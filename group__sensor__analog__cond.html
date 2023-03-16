@@ -1,0 +1,2136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Supported Sensors &raquo; Conductivity via Analog Electrical Resistance module | ModularSensors</title>
+  <link rel="stylesheet" href="m-EnviroDIY+documentation.compiled.css" />
+<link
+  rel="stylesheet"
+  id="gp-parent-style-css"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/style.css?ver=6.1.1"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="ghostpool-style-css"
+  href="https://www.envirodiy.org/wp-content/themes/socialize-child/style.css?ver=6.1.1"
+  type="text/css"
+  media="all"
+/>
+<style id="ghostpool-style-inline-css" type="text/css">
+  #gp-main-header {
+    min-height: 80px;
+  }
+  .gp-desktop-scrolling #gp-main-header {
+    min-height: 80px;
+  }
+  .gp-header-standard #gp-logo {
+    padding: 19px 0;
+  }
+  .gp-desktop-scrolling.gp-header-standard #gp-logo {
+    padding: 12.5px 0;
+  }
+  .gp-header-standard #gp-primary-main-nav .menu > li > a {
+    padding: 30.5px 0;
+  }
+  .gp-header-standard #gp-cart-button,
+  .gp-header-standard #gp-search-button,
+  .gp-header-standard #gp-profile-button {
+    padding: 31px 0;
+  }
+  .gp-desktop-scrolling.gp-header-standard #gp-primary-main-nav .menu > li > a {
+    padding: 30.5px 0;
+  }
+  .gp-desktop-scrolling.gp-header-standard #gp-cart-button,
+  .gp-desktop-scrolling.gp-header-standard #gp-search-button,
+  .gp-desktop-scrolling.gp-header-standard #gp-profile-button {
+    padding: 31px 0;
+  }
+  .gp-nav .menu > .gp-standard-menu > .sub-menu > li:hover > a {
+    color: #fff;
+  }
+  .gp-theme li:hover .gp-primary-dropdown-icon {
+    color: #fff;
+  }
+  .gp-theme .sub-menu li:hover .gp-secondary-dropdown-icon {
+    color: #fff;
+  }
+  .gp-header-centered #gp-cart-button,
+  .gp-header-centered #gp-search-button,
+  .gp-header-centered #gp-profile-button {
+    line-height: 18px;
+  }
+  .gp-header-standard #gp-secondary-main-nav .menu > li > a {
+    padding: 31.5px 0;
+  }
+  .gp-desktop-scrolling.gp-header-standard #gp-secondary-main-nav .menu > li > a {
+    padding: 31.5px 0;
+  }
+  .gp-header-centered #gp-secondary-main-nav .menu > li > a {
+    line-height: 16px;
+  }
+  .gp-active {
+    color: #000;
+  }
+  .gp-theme .widget.buddypress div.item-options a.selected:hover {
+    color: #0579bd !important;
+  }
+  .gp-theme #buddypress .activity-list .activity-content blockquote a {
+    color: #0579bd;
+  }
+  .gp-theme #buddypress .activity-list .activity-content blockquote a:hover {
+    color: #000;
+  }
+  @media only screen and (max-width: 1082px) {
+    .gp-header-standard #gp-primary-main-nav .menu > li > a {
+      padding: 30.5px 0;
+    }
+    .gp-desktop-scrolling.gp-header-standard #gp-primary-main-nav .menu > li > a {
+      padding: 30.5px 0;
+    }
+    .gp-header-standard #gp-cart-button,
+    .gp-header-standard #gp-search-button,
+    .gp-header-standard #gp-profile-button {
+      padding: 31px 0;
+    }
+    .gp-desktop-scrolling.gp-header-standard #gp-cart-button,
+    .gp-desktop-scrolling.gp-header-standard #gp-search-button,
+    .gp-desktop-scrolling.gp-header-standard #gp-profile-button {
+      padding: 31px 0;
+    }
+    .gp-header-standard #gp-secondary-main-nav .menu > li > a {
+      padding: 31.5px 0;
+    }
+    .gp-desktop-scrolling.gp-header-standard #gp-secondary-main-nav .menu > li > a {
+      padding: 31.5px 0;
+    }
+  }
+  @media only screen and (max-width: 1023px) {
+    .gp-responsive #gp-main-header {
+      min-height: 80px;
+    }
+    .gp-responsive #gp-logo {
+      padding: 26px 0;
+    }
+    .gp-responsive #gp-mobile-nav-button,
+    .gp-responsive #gp-cart-button,
+    .gp-responsive #gp-search-button,
+    .gp-responsive #gp-profile-button {
+      padding: 31px 0;
+    }
+  }
+</style>
+<link
+  rel="stylesheet"
+  id="fontawesome-css"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/fonts/font-awesome/css/font-awesome.min.css?ver=6.1.1"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="prettyphoto-css"
+  href="https://www.envirodiy.org/wp-content/plugins/js_composer/assets/lib/prettyphoto/css/prettyPhoto.min.css?ver=6.10.0"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="gp-bp-css"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/css/bp.css?ver=6.1.1"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="gp-bbp-css"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/css/bbpress.css?ver=6.1.1"
+  type="text/css"
+  media="all"
+/>
+<style type="text/css" id="wp-custom-css">
+  /* Print Styles */
+  @media print {
+    @page {
+      margin: 10mm 0;
+    }
+    body {
+      background: white;
+      color: black;
+      background-image: none;
+      margin: 0 !important;
+      padding: 0;
+    }
+    body:not(.gp-full-page-page-header) .gp-page-header.gp-has-text:before,
+    body:not(.gp-full-page-page-header)
+      .gp-page-header.gp-has-teaser-video.gp-has-text
+      .gp-video-header:before {
+      background-image: none !important;
+    }
+    #gp-main-header,
+    #gp-small-header,
+    #gp-header-area,
+    #gp-footer,
+    #gp-sidebar-right,
+    #swrc-post-navigation,
+    .hkb-subheader,
+    .hkb-feedback,
+    .hkb-mainpage__sidebar,
+    .print-page {
+      display: none;
+    }
+    .hkb-mainpage-wrapper {
+      padding: 0 !important;
+      background-image: none !important;
+    }
+    a#gp-to-top,
+    span#toTopHover {
+      display: none;
+    }
+    a[href]:after {
+      content: ' (' attr(href) ')';
+    }
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-size: 1.25em;
+      page-break-after: avoid;
+      page-break-inside: avoid;
+    }
+    .hkb-article__content h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-size: 1.25em;
+      page-break-after: avoid;
+      page-break-inside: avoid;
+    }
+    table {
+      page-break-before: avoid;
+      page-break-inside: avoid;
+      page-break-after: avoid;
+    }
+    img {
+      page-break-inside: avoid;
+      visibility: visible;
+    }
+    blockquote,
+    table,
+    pre {
+      page-break-inside: avoid;
+    }
+    ul,
+    ol,
+    dl {
+      page-break-before: avoid;
+    }
+  }
+  /* End print styles */
+  /*Gutenberg styles*/
+  /*Buttons*/
+  a.wp-block-button__link {
+    background-color: #538122;
+    border-radius: 5px;
+    text-decoration: none !important;
+  }
+  .wp-block-button__link:hover {
+    background: #365516 !important;
+    color: #ffffff !important;
+  }
+  figcaption {
+    font-style: italic;
+  }
+  /*End Gutenberg styles*/
+  #gp-content a,
+  .gp-sidebar a {
+    font-weight: 400;
+    text-decoration: underline;
+  }
+  /*BuddyPress styles*/
+  /*Make activity feed content darker*/
+  #buddypress .activity-list .activity-content .activity-inner p {
+    color: #000000;
+  }
+  /*Hide activity filter on activity page*/
+  #activity-filter-select.last {
+    display: none !important;
+  }
+  /*Hide disabled BuddyPress status updates on profile page, activity page*/
+  #latest-update {
+    display: none;
+  }
+  .item-title .update {
+    display: none;
+  }
+  /*Prevent display of comment/favorite links in activity stream. Because the comments do not get applied to posts or forum topics, they just confuse users*/
+  .gp-theme #buddypress .activity-list div.activity-meta a.button,
+  .gp-theme #buddypress .activity .acomment-options a,
+  .gp-theme #buddypress .activity-list li.load-newest a,
+  .widget.buddypress div.item-options a.selected {
+    color: #26a9e0;
+    display: none;
+  }
+  /*End BuddyPress styles*/
+  /* Style print link */
+  .pdfprnt-buttons > a > span {
+    margin: 15px 0;
+    padding-left: 0;
+    text-decoration: underline;
+  }
+  /*Change caption text color and size*/
+  .wp-caption-text {
+    color: #333;
+    font-size: 14px;
+  }
+  /*Collapse table borders */
+  #gp-content table {
+    border-collapse: collapse;
+  }
+  /*Add borders to Tableizer tables */
+  .tableizer table,
+  th,
+  td {
+    border: 1px solid #333;
+  }
+  /*Nested list styles*/
+  #gp-content,
+  .hkb-article ol ol li {
+    list-style-type: lower-alpha;
+  }
+  #gp-content,
+  .hkb-article ol ol ol li {
+    list-style-type: lower-roman;
+  }
+  #gp-content,
+  .hkb-article ul ul li {
+    list-style-type: circle !important;
+  }
+  /* Add border */
+  tr:last-child td {
+    border-width: 1px;
+  }
+  /*bbPress*/
+  /* Make forum title and description larger, remove link underlining */
+  div.bbp-forum-content {
+    font-size: 22px;
+    line-height: 28px;
+  }
+  div.bbp-forum-content p {
+    font-size: 16px;
+    line-height: 22px;
+  }
+  #bbpress-forums a.bbp-forum-title {
+    text-decoration: none;
+  }
+  .widgettitle {
+    border-bottom: 3px solid #92d050 !important;
+  }
+  .bbp-author-name {
+    font-size: 14px;
+  }
+  /*End bbpress styles*/
+  #gp-copyright-text,
+  #gp-copyright-text a:link,
+  #gp-copyright-text a:visited {
+    color: #fff;
+    font-weight: 400;
+  }
+  /*WooCommerce styles*/
+  bdi {
+    color: #538122;
+    font-weight: 500;
+  }
+  a.button.product_type_simple {
+    display: none;
+  }
+  p.stock.out-of-stock {
+    color: red;
+    font-weight: 500;
+  }
+  .products li * {
+    text-decoration: none !important;
+  }
+  div.gp-entry-cats {
+    color: #333333;
+  }
+  span.woocommerce-Price-amount.amount {
+    text-decoration: none !important;
+  }
+  /*End WooCommerce styles*/
+  /*The Events Calendar*/
+  #tribe-events-content a {
+    color: #0579bd;
+  }
+  #gp-sidebar-right
+    > div
+    > div.tribe-common.tribe-events.tribe-events-view.tribe-events-view--widget-events-list.tribe-events-widget {
+    background-color: #fff;
+    padding: 15px;
+  }
+  #gp-sidebar-right
+    > div
+    > div.tribe-common.tribe-events.tribe-events-view.tribe-events-view--widget-events-list.tribe-events-widget
+    > div
+    > header {
+    text-transform: uppercase;
+    color: #000;
+    border-bottom: 3px solid #92d050;
+  }
+  #gp-sidebar-right
+    > div
+    > div.tribe-common.tribe-events.tribe-events-view.tribe-events-view--widget-events-list.tribe-events-widget
+    > div
+    > header
+    > h3 {
+    font-family: Roboto !important;
+    font-size: 14px !important;
+    font-weight: 500;
+    padding-bottom: 11px;
+  }
+  #gp-sidebar-right
+    > div
+    > div.tribe-common.tribe-events.tribe-events-view.tribe-events-view--widget-events-list.tribe-events-widget
+    > div
+    > div.tribe-events-widget-events-list__view-more.tribe-common-b1.tribe-common-b2--min-medium
+    > a {
+    color: #26a9e0;
+  }
+  /*Hero Knowledge Base styles*/
+  #hkb .hkb-fullwcontainer {
+    max-width: var(--hkb-main-container-width);
+    margin: 0 auto;
+    padding: 20px 20px;
+    left: 0 !important;
+    right: 0 !important;
+  }
+  h1.hkb-article__title {
+    font-weight: 300 !important;
+    margin: 0 0 0.5em !important;
+  }
+  .hkb-categoryheader__title {
+    font-weight: 300 !important;
+    font-size: 40px !important;
+  }
+  .hkb-articlepreview__title a {
+    font-weight: 300 !important;
+    font-size: 28px !important;
+    text-decoration: underline !important;
+    color: #0579bd !important;
+    font-size: 28px !important;
+  }
+  #hkb a {
+    text-decoration: underline;
+    font-weight: 400;
+  }
+  a.hkb_widget_exit__btn {
+    background-color: #538122 !important;
+    border-radius: 5px;
+    text-decoration: none !important;
+  }
+  a.hkb_widget_exit__btn:hover {
+    background: #365516 !important;
+    color: #ffffff !important;
+  }
+  /* End Heroic KB styles */
+  #swrc-post-navigation a {
+    font-size: small;
+  }
+  p.last-updated {
+    font-size: 12px;
+    font-style: italic;
+  }
+  aside#gp-sidebar-right.gp-sidebar p.last-updated {
+    display: none;
+  }
+  #gp-content p.last-updated {
+    display: none;
+  }
+</style>
+<style id="socialize-dynamic-css" title="dynamic-css" class="redux-options-output">
+  #footer-image img {
+    margin-top: 10px;
+    margin-right: 0px;
+    margin-bottom: 10px;
+    margin-left: 0px;
+  }
+  body {
+    background-color: #f1f1f1;
+  }
+  body:not(.gp-full-page-page-header) #gp-page-wrapper,
+  body:not(.gp-full-page-page-header) #gp-small-header .gp-container,
+  .gp-homepage .widgettitle.gp-fancy-title:before {
+    background-color: #e8e8e8;
+  }
+  body:not(.gp-full-page-page-header) #gp-small-header .gp-left-triangle {
+    border-left-color: #e8e8e8;
+  }
+  body:not(.gp-full-page-page-header) #gp-small-header .gp-right-triangle {
+    border-bottom-color: #e8e8e8;
+  }
+  #gp-content {
+    background-color: #ffffff;
+  }
+  body {
+    font-family: Roboto, 'Arial Black', Gadget, sans-serif;
+    line-height: 28px;
+    font-weight: 300;
+    font-style: normal;
+    color: #000;
+    font-size: 16px;
+    font-display: swap;
+  }
+  a {
+    color: #0579bd;
+  }
+  a:hover {
+    color: #000;
+  }
+  h1 {
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    line-height: 40px;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 36px;
+    font-display: swap;
+  }
+  h2 {
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    line-height: 32px;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 28px;
+    font-display: swap;
+  }
+  h3,
+  #tab-description h2,
+  .woocommerce #comments h2,
+  .woocommerce #reviews h3,
+  .woocommerce .related h2,
+  .woocommerce-checkout .woocommerce h2,
+  .woocommerce-checkout .woocommerce h3 {
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    line-height: 28px;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 24px;
+    font-display: swap;
+  }
+  h4 {
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    line-height: 30px;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 20px;
+    font-display: swap;
+  }
+  h5 {
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    line-height: 26px;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 18px;
+    font-display: swap;
+  }
+  h6 {
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    line-height: 24px;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 16px;
+    font-display: swap;
+  }
+  .gp-entry-meta .gp-post-meta-row-1,
+  .gp-homepage #gp-content .gp-vc-element-3,
+  .gp-homepage #gp-content .gp-vc-element-4,
+  .gp-homepage #gp-content .gp-vc-element-5,
+  .gp-homepage #gp-content .gp-vc-element-6,
+  #comments .commentlist li .comment_container,
+  .gp-loop-divider:before,
+  .gp-recent-comments ul li,
+  .gp-search {
+    border-top: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  .gp-entry-video-wrapper .gp-entry-meta .gp-post-meta-row-1,
+  .gp-footer-widget .gp-recent-comments ul li {
+    border-top: 1px solid #50504b;
+    border-bottom: 1px solid #50504b;
+  }
+  #gp-main-header {
+    background-color: #222222;
+  }
+  .gp-desktop-scrolling #gp-main-header {
+    background-color: #222222;
+  }
+  #gp-primary-main-nav .menu > li,
+  #gp-primary-main-nav .menu > li > a {
+    font-family: Roboto;
+    text-transform: none;
+    line-height: 16px;
+    font-weight: 400;
+    font-style: normal;
+    color: #ababab;
+    font-size: 16px;
+    font-display: swap;
+  }
+  #gp-primary-main-nav .menu > li:hover > a,
+  #gp-primary-main-nav .menu > li > a {
+    color: #fff;
+  }
+  #gp-primary-main-nav .menu > li:hover > a:hover,
+  #gp-primary-main-nav .menu > li > a:hover {
+    color: #fff;
+  }
+  #gp-primary-main-nav .menu > li > a:hover,
+  #gp-primary-main-nav .menu > li:hover > a {
+    border-top: 3px solid #fff;
+  }
+  #gp-secondary-main-nav .menu > li,
+  #gp-secondary-main-nav .menu > li > a {
+    font-family: Roboto;
+    text-transform: none;
+    line-height: 14px;
+    font-weight: 400;
+    font-style: normal;
+    color: #fff;
+    font-size: 14px;
+    font-display: swap;
+  }
+  #gp-secondary-main-nav .menu > li:hover > a,
+  #gp-secondary-main-nav .menu > li > a {
+    color: #fff;
+  }
+  #gp-secondary-main-nav .menu > li:hover > a:hover,
+  #gp-secondary-main-nav .menu > li > a:hover {
+    color: #fff;
+  }
+  #gp-secondary-main-nav .menu > li > a:hover,
+  #gp-secondary-main-nav .menu > li:hover > a {
+    border-top: 3px solid #fff;
+  }
+  #gp-search-button,
+  #gp-cart-button {
+    color: #fff;
+  }
+  #gp-search-button:hover,
+  #gp-cart-button:hover {
+    color: #fff;
+  }
+  .gp-nav .sub-menu,
+  .gp-nav .menu li .gp-menu-tabs li:hover,
+  .gp-nav .menu li .gp-menu-tabs li.gp-selected,
+  #gp-search-box {
+    background-color: #fff;
+  }
+  .gp-nav .menu > .gp-standard-menu > .sub-menu > li a:hover,
+  .gp-nav .menu > .gp-standard-menu > .sub-menu > li:hover > a {
+    background-color: #353535;
+  }
+  .gp-nav .gp-standard-menu .sub-menu li,
+  .gp-nav .gp-standard-menu .sub-menu li a,
+  .gp-nav li.gp-megamenu .sub-menu li,
+  .gp-nav .gp-megamenu .sub-menu li a {
+    font-family: Roboto;
+    font-weight: 400;
+    font-style: normal;
+    color: #000;
+    font-size: 14px;
+    font-display: swap;
+  }
+  .gp-nav .menu > .gp-standard-menu > .sub-menu > li a {
+    color: #000;
+  }
+  .gp-nav .menu > .gp-standard-menu > .sub-menu > li a:hover {
+    color: #fff;
+  }
+  .gp-nav .sub-menu li,
+  #gp-dropdowncart .total,
+  #gp-dropdowncart .buttons {
+    border-top: 1px solid #e0e0e0;
+  }
+  .gp-nav .gp-megamenu > .sub-menu > li > a,
+  .gp-nav .gp-megamenu > .sub-menu > li > span {
+    color: #000000;
+  }
+  .gp-nav li.gp-megamenu a {
+    color: #000;
+  }
+  .gp-nav li.gp-megamenu a:hover {
+    color: #e93100;
+  }
+  .gp-primary-dropdown-icon {
+    color: #fff;
+  }
+  .gp-primary-dropdown-icon:hover {
+    color: #fff;
+  }
+  .gp-secondary-dropdown-icon {
+    color: #000;
+  }
+  .gp-secondary-dropdown-icon:hover {
+    color: #fff;
+  }
+  .gp-menu-tabs {
+    background-color: #353535;
+  }
+  .gp-nav .menu li .gp-menu-tabs li {
+    color: #ffffff;
+  }
+  .gp-nav .menu li .gp-menu-tabs li:hover,
+  .gp-nav .menu li .gp-menu-tabs li.gp-selected {
+    color: #e93100;
+  }
+  #gp-small-header #gp-top-nav {
+    background-color: #26a9e0;
+  }
+  #gp-small-header .menu > li,
+  #gp-small-header .menu > li > a {
+    color: #ffffff;
+  }
+  #gp-small-header .menu > li:hover,
+  #gp-small-header .menu > li > a:hover {
+    color: #e0e0e0;
+  }
+  #gp-mobile-nav-button,
+  #gp-profile-button,
+  #gp-mobile-nav-close-button {
+    color: #ffffff;
+  }
+  #gp-mobile-nav {
+    background-color: #fff;
+  }
+  #gp-mobile-nav-close-button {
+    background-color: #0579bd;
+  }
+  #gp-mobile-nav li {
+    color: #000000;
+  }
+  #gp-mobile-nav .menu li span,
+  #gp-mobile-nav .menu li a {
+    color: #000;
+  }
+  #gp-mobile-nav .menu li span:hover,
+  #gp-mobile-nav .menu li a:hover {
+    color: #000;
+  }
+  #gp-mobile-nav li a:hover {
+    background-color: #f1f1f1;
+  }
+  #gp-mobile-nav li {
+    border-top: 1px solid #e0e0e0;
+  }
+  #gp-mobile-nav .gp-megamenu > .sub-menu > li > a {
+    color: #000000;
+  }
+  .gp-large-page-header .gp-page-header,
+  .gp-fullwidth-page-header .gp-page-header,
+  #gp-full-page-bg {
+    background-color: #353535;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+    background-position: center center;
+    background-size: cover;
+  }
+  .gp-page-header h1,
+  .gp-page-header h2 {
+    font-family: Roboto;
+    line-height: 90px;
+    font-weight: normal;
+    font-style: normal;
+    color: #fff;
+    font-size: 80px;
+    font-display: swap;
+  }
+  .gp-page-header .gp-container {
+    height: 250px;
+  }
+  .gp-entry-title,
+  .woocommerce .page-title,
+  .woocommerce div.product .entry-title.product_title {
+    font-family: Roboto;
+    line-height: 46px;
+    font-weight: 300;
+    font-style: normal;
+    color: #000;
+    font-size: 40px;
+    font-display: swap;
+  }
+  .gp-subtitle {
+    font-family: Roboto;
+    line-height: 32px;
+    font-weight: 300;
+    font-style: normal;
+    color: #0579bd;
+    font-size: 20px;
+    font-display: swap;
+  }
+  #gp-post-links a,
+  .gp-pagination-arrows a.prev,
+  .gp-pagination-arrows a.next,
+  .gp-carousel-wrapper .flex-direction-nav a {
+    color: #aaa;
+  }
+  #gp-post-links a:hover,
+  .gp-pagination-arrows a.prev:hover,
+  .gp-pagination-arrows a.next:hover,
+  .gp-carousel-wrapper .flex-direction-nav a:hover {
+    color: #333;
+  }
+  .gp-entry-meta,
+  .gp-meta-comments a {
+    color: #aaaaaa;
+  }
+  .gp-entry-cats,
+  .gp-entry-cats a,
+  .gp-entry-cats a:hover {
+    color: #ffffff;
+  }
+  .gp-entry-cats {
+    background-color: #92d050;
+  }
+  .gp-entry-tags a,
+  .gp-entry-tags a:hover {
+    color: #ffffff;
+  }
+  .gp-entry-tags a {
+    background-color: #353535;
+  }
+  .gp-author-info,
+  #gp-post-navigation #gp-share-icons {
+    background-color: #353535;
+  }
+  .gp-author-info,
+  .gp-author-info a,
+  #gp-post-navigation #gp-share-icons h3 {
+    line-height: 24px;
+    color: #fff;
+    font-size: 14px;
+    font-display: swap;
+  }
+  .gp-author-info a {
+    color: #b1b1b1;
+  }
+  .gp-author-info a:hover {
+    color: #fff;
+  }
+  .gp-entry-video-wrapper {
+    background-color: #353535;
+  }
+  .gp-entry-video-wrapper .gp-entry-title {
+    color: #ffffff;
+  }
+  .gp-entry-video-wrapper .gp-video-description {
+    color: #777777;
+  }
+  blockquote {
+    background-color: #0579bd;
+  }
+  blockquote,
+  blockquote a,
+  blockquote a:hover {
+    font-family: 'Roboto Slab';
+    line-height: 38px;
+    font-weight: 400;
+    font-style: normal;
+    color: #fff;
+    font-size: 24px;
+    font-display: swap;
+  }
+  .gp-loop-title {
+    line-height: 22px;
+    font-weight: 400;
+    font-size: 19px;
+    font-display: swap;
+  }
+  .gp-blog-large .gp-loop-title {
+    line-height: 46px;
+    font-weight: 200;
+    font-size: 40px;
+    font-display: swap;
+  }
+  .gp-loop-title a,
+  .bboss_search_item .entry-title a {
+    color: #000;
+  }
+  .gp-loop-title a:hover,
+  .bboss_search_item .entry-title a:hover {
+    color: #0579bd;
+  }
+  .gp-loop-text,
+  .gp-login-wrapper p {
+    color: #545454;
+  }
+  .gp-loop-meta,
+  .gp-loop-meta a,
+  #gp-breadcrumbs,
+  #gp-breadcrumbs a,
+  .woocommerce .woocommerce-breadcrumb a,
+  .woocommerce .woocommerce-breadcrumb,
+  .comment-text time,
+  div.bbp-breadcrumb,
+  div.bbp-breadcrumb a,
+  .gp-statistics-wrapper .gp-stat-title,
+  .widget_display_replies ul li div,
+  .widget_display_topics ul li div {
+    color: #545454;
+  }
+  .gp-loop-cats,
+  .gp-loop-cats a,
+  .gp-loop-cats a:hover {
+    color: #545454;
+  }
+  .gp-loop-tags,
+  .gp-loop-tags a,
+  .gp-loop-tags a:hover {
+    color: #0579bd;
+  }
+  .gp-blog-masonry section,
+  section.sticky {
+    background-color: #f8f8f8;
+  }
+  ul.page-numbers .page-numbers {
+    background-color: #538122;
+  }
+  ul.page-numbers .page-numbers:hover,
+  ul.page-numbers .page-numbers.current,
+  ul.page-numbers > span.page-numbers {
+    background-color: #353535;
+  }
+  ul.page-numbers .page-numbers {
+    color: #ffffff;
+  }
+  .widgettitle,
+  .widget-title,
+  .wp-block-search__label {
+    font-family: Roboto;
+    line-height: 18px;
+    font-weight: 500;
+    font-style: normal;
+    color: #000;
+    font-size: 14px;
+    font-display: swap;
+  }
+  .widgettitle a,
+  .widget-title a,
+  .wp-block-search__label {
+    color: #0579bd;
+  }
+  .widgettitle a:hover,
+  .widget-title a:hover,
+  .wp-block-search__label:hover {
+    color: #000;
+  }
+  .gp-sidebar .widgettitle,
+  .widgettitle.gp-standard-title,
+  .gp-sidebar .widget-title,
+  .gp-sidebar .wp-block-search__label {
+    border-bottom: 3px solid #538122;
+  }
+  .widget,
+  .gp-vc-element,
+  .widgettitle.gp-fancy-title .gp-widget-title,
+  .widgettitle.gp-fancy-title .gp-element-icon,
+  .widget .woocommerce {
+    background-color: #ffffff;
+  }
+  .widgettitle.gp-fancy-title .gp-triangle {
+    border-left-color: #ffffff;
+  }
+  input,
+  textarea,
+  .gp-search-bar,
+  .wp-block-search__input,
+  .gp-theme #buddypress .dir-search input[type='search'],
+  .gp-theme #buddypress .dir-search input[type='text'],
+  .gp-theme #buddypress .groups-members-search input[type='search'],
+  .gp-theme #buddypress .standard-form input[type='color'],
+  .gp-theme #buddypress .standard-form input[type='date'],
+  .gp-theme #buddypress .standard-form input[type='datetime-local'],
+  .gp-theme #buddypress .standard-form input[type='datetime'],
+  .gp-theme #buddypress .standard-form input[type='email'],
+  .gp-theme #buddypress .standard-form input[type='month'],
+  .gp-theme #buddypress .standard-form input[type='number'],
+  .gp-theme #buddypress .standard-form input[type='password'],
+  .gp-theme #buddypress .standard-form input[type='range'],
+  .gp-theme #buddypress .standard-form input[type='search'],
+  .gp-theme #buddypress .standard-form input[type='tel'],
+  .gp-theme #buddypress .standard-form input[type='text'],
+  .gp-theme #buddypress .standard-form input[type='time'],
+  .gp-theme #buddypress .standard-form input[type='url'],
+  .gp-theme #buddypress .standard-form input[type='week'],
+  .gp-theme #buddypress .standard-form textarea,
+  .gp-theme #buddypress div.activity-comments form .ac-textarea,
+  .gp-theme #buddypress form#whats-new-form textarea {
+    background-color: #fafafa;
+  }
+  input,
+  textarea,
+  .gp-search-bar,
+  .wp-block-search__input,
+  .gp-login-wrapper .gp-login-icon,
+  .gp-login-wrapper .gp-password-icon,
+  .gp-login-wrapper .gp-email-icon,
+  .gp-theme #buddypress .dir-search input[type='search'],
+  .gp-theme #buddypress .dir-search input[type='text'],
+  .gp-theme #buddypress .groups-members-search input[type='search'],
+  .gp-theme #buddypress .standard-form input[type='color'],
+  .gp-theme #buddypress .standard-form input[type='date'],
+  .gp-theme #buddypress .standard-form input[type='datetime-local'],
+  .gp-theme #buddypress .standard-form input[type='datetime'],
+  .gp-theme #buddypress .standard-form input[type='email'],
+  .gp-theme #buddypress .standard-form input[type='month'],
+  .gp-theme #buddypress .standard-form input[type='number'],
+  .gp-theme #buddypress .standard-form input[type='password'],
+  .gp-theme #buddypress .standard-form input[type='range'],
+  .gp-theme #buddypress .standard-form input[type='search'],
+  .gp-theme #buddypress .standard-form input[type='tel'],
+  .gp-theme #buddypress .standard-form input[type='text'],
+  .gp-theme #buddypress .standard-form input[type='time'],
+  .gp-theme #buddypress .standard-form input[type='url'],
+  .gp-theme #buddypress .standard-form input[type='week'],
+  .gp-theme #buddypress .standard-form textarea,
+  .gp-theme #buddypress div.activity-comments form .ac-textarea,
+  .bb-global-search-ac.ui-autocomplete {
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+  }
+  input,
+  textarea,
+  .gp-search-bar,
+  .wp-block-search__input,
+  .gp-theme #buddypress .dir-search input[type='search'],
+  .gp-theme #buddypress .dir-search input[type='text'],
+  .gp-theme #buddypress .groups-members-search input[type='search'],
+  .gp-theme #buddypress .groups-members-search input[type='text'],
+  .gp-theme #buddypress .standard-form input[type='color'],
+  .gp-theme #buddypress .standard-form input[type='date'],
+  .gp-theme #buddypress .standard-form input[type='datetime-local'],
+  .gp-theme #buddypress .standard-form input[type='datetime'],
+  .gp-theme #buddypress .standard-form input[type='email'],
+  .gp-theme #buddypress .standard-form input[type='month'],
+  .gp-theme #buddypress .standard-form input[type='number'],
+  .gp-theme #buddypress .standard-form input[type='password'],
+  .gp-theme #buddypress .standard-form input[type='range'],
+  .gp-theme #buddypress .standard-form input[type='search'],
+  .gp-theme #buddypress .standard-form input[type='tel'],
+  .gp-theme #buddypress .standard-form input[type='text'],
+  .gp-theme #buddypress .standard-form input[type='time'],
+  .gp-theme #buddypress .standard-form input[type='url'],
+  .gp-theme #buddypress .standard-form input[type='week'],
+  .gp-theme #buddypress .standard-form textarea,
+  .gp-theme #buddypress div.activity-comments form .ac-textarea,
+  .gp-theme #buddypress form#whats-new-form textarea {
+    color: #000000;
+  }
+  select,
+  .gp-theme #buddypress .standard-form select,
+  .gp-theme #buddypress form#whats-new-form #whats-new-options select,
+  #buddypress .standard-form select:focus {
+    background-color: #353535;
+  }
+  select,
+  .gp-theme #buddypress .standard-form select,
+  .gp-theme #buddypress form#whats-new-form #whats-new-options select {
+    color: #ffffff;
+  }
+  input[type='button'],
+  input[type='submit'],
+  input[type='reset'],
+  button,
+  .button,
+  .wp-block-search__button,
+  .gp-theme #buddypress .comment-reply-link,
+  .gp-notification-counter,
+  #gp-cart-counter,
+  .gp-theme #buddypress a.button,
+  .gp-theme #buddypress button,
+  .gp-theme #buddypress div.generic-button a,
+  .gp-theme #buddypress input[type='button'],
+  .gp-theme #buddypress input[type='reset'],
+  .gp-theme #buddypress input[type='submit'],
+  .gp-theme #buddypress ul.button-nav li a,
+  a.bp-title-button,
+  .gp-theme #buddypress .activity-list #reply-title small a span,
+  .gp-theme #buddypress .activity-list a.bp-primary-action span,
+  .tribe-events-calendar thead th,
+  #tribe-events .tribe-events-button,
+  #tribe-events .tribe-events-button:hover,
+  #tribe_events_filters_wrapper input[type='submit'],
+  .tribe-events-button,
+  .tribe-events-button.tribe-active:hover,
+  .tribe-events-button.tribe-inactive,
+  .tribe-events-button:hover,
+  .tribe-events-calendar td.tribe-events-present div[id*='tribe-events-daynum-'],
+  .tribe-events-calendar td.tribe-events-present div[id*='tribe-events-daynum-'] > a,
+  #tribe-bar-form .tribe-bar-submit input[type='submit'],
+  .woocommerce #respond input#submit.alt,
+  .woocommerce a.button.alt,
+  .woocommerce button.button.alt,
+  .woocommerce input.button.alt,
+  #gp-dropdowncart .woocommerce a.button {
+    background-color: #0579bd;
+  }
+  input[type='button']:hover,
+  input[type='submit']:hover,
+  input[type='reset']:hover,
+  button:hover,
+  .button:hover,
+  .wp-block-search__button:hover,
+  .gp-theme #buddypress .comment-reply-link:hover,
+  .gp-theme #buddypress a.button:hover,
+  .gp-theme #buddypress button:hover,
+  .gp-theme #buddypress div.generic-button a:hover,
+  .gp-theme #buddypress input[type='button']:hover,
+  .gp-theme #buddypress input[type='reset']:hover,
+  .gp-theme #buddypress input[type='submit']:hover,
+  .gp-theme #buddypress ul.button-nav li a:hover,
+  a.bp-title-button:hover,
+  .gp-theme #buddypress .activity-list #reply-title small a:hover span,
+  .gp-theme #buddypress .activity-list a.bp-primary-action:hover span,
+  .woocommerce #respond input#submit.alt:hover,
+  .woocommerce a.button.alt:hover,
+  .woocommerce button.button.alt:hover,
+  .woocommerce input.button.alt:hover,
+  #gp-dropdowncart .woocommerce a.button:hover {
+    background-color: #353535;
+  }
+  input[type='button'],
+  input[type='submit'],
+  input[type='reset'],
+  button,
+  .button,
+  .wp-block-search__button,
+  a.gp-notification-counter,
+  a.gp-notification-counter:hover,
+  #gp-cart-counter:hover,
+  .gp-theme #buddypress .comment-reply-link,
+  .gp-theme #buddypress a.button,
+  .gp-theme #buddypress button,
+  .gp-theme #buddypress div.generic-button a,
+  .gp-theme #buddypress input[type='button'],
+  .gp-theme #buddypress input[type='reset'],
+  .gp-theme #buddypress input[type='submit'],
+  .gp-theme #buddypress ul.button-nav li a,
+  a.bp-title-button,
+  .gp-theme #buddypress .activity-list #reply-title small a span,
+  .gp-theme #buddypress .activity-list a.bp-primary-action span,
+  #gp-dropdowncart .woocommerce a.button {
+    color: #ffffff;
+  }
+  input[type='button']:hover,
+  input[type='submit']:hover,
+  input[type='reset']:hover,
+  button,
+  .button:hover,
+  .wp-block-search__button:hover,
+  .gp-theme #buddypress .comment-reply-link:hover,
+  .gp-theme #buddypress a.button:hover,
+  .gp-theme #buddypress button:hover,
+  .gp-theme #buddypress div.generic-button a:hover,
+  .gp-theme #buddypress input[type='button']:hover,
+  .gp-theme #buddypress input[type='reset']:hover,
+  .gp-theme #buddypress input[type='submit']:hover,
+  .gp-theme #buddypress ul.button-nav li a:hover,
+  a.bp-title-button:hover,
+  .gp-theme #buddypress .activity-list #reply-title small a span,
+  .gp-theme #buddypress .activity-list a.bp-primary-action span,
+  #gp-dropdowncart .woocommerce a.button:hover {
+    color: #ffffff;
+  }
+  #gp-footer {
+    background-color: #353535;
+  }
+  .gp-footer-widget .widgettitle,
+  .gp-footer-widget .widget-title,
+  .gp-footer-widget .wp-block-search__label {
+    font-family: Roboto;
+    line-height: 20px;
+    font-weight: 300;
+    font-style: normal;
+    color: #fff;
+    font-size: 16px;
+    font-display: swap;
+  }
+  .gp-footer-widget {
+    font-family: Roboto;
+    line-height: 20px;
+    font-weight: 300;
+    font-style: normal;
+    color: #ffffff;
+    font-size: 14px;
+    font-display: swap;
+  }
+  .gp-footer-widget a {
+    color: #f9bd16;
+  }
+  .gp-footer-widget a:hover {
+    color: #b1b1b1;
+  }
+  #gp-copyright {
+    background-color: #353535;
+  }
+  #gp-copyright {
+    border-top: 1px solid #444;
+  }
+  #gp-copyright {
+    color: #777777;
+  }
+  #gp-copyright a {
+    color: #999;
+  }
+  #gp-copyright a:hover {
+    color: #e0e0e0;
+  }
+  #gp-to-top {
+    background-color: #0579bd;
+  }
+  #gp-to-top {
+    color: #ffffff;
+  }
+  .woocommerce ul.products li.product .price,
+  .woocommerce div.product p.price,
+  .woocommerce div.product span.price {
+    color: #00bee9;
+  }
+  .woocommerce span.onsale {
+    background-color: #e93100;
+  }
+  #buddypress .activity-list .activity-content .activity-header,
+  #buddypress .activity-list .activity-content .comment-header,
+  #buddypress .activity-list .activity-header a,
+  #buddypress .activity-list div.activity-comments div.acomment-meta,
+  #buddypress .activity-list .acomment-meta a,
+  .widget.buddypress .item-title a,
+  .widget.buddypress div.item-options.gp-small-item-options:before,
+  .widget.buddypress div.item-options a,
+  #buddypress ul.item-list li div.item-title a,
+  #buddypress ul.item-list li h4 > a,
+  #buddypress ul.item-list li h5 > a,
+  #buddypress div#item-header div#item-meta {
+    color: #000000;
+  }
+  #buddypress .activity-list .activity-content .activity-inner {
+    color: #aaaaaa;
+  }
+  #buddypress .activity-list a.activity-time-since,
+  .widget_display_replies ul li a + div,
+  .widget_display_topics ul li a + div,
+  #buddypress .activity-list .acomment-meta a.activity-time-since,
+  #buddypress .activity-list div.activity-comments div.acomment-content,
+  .widget.buddypress div.item-meta,
+  #buddypress span.activity,
+  #buddypress ul.item-list li div.meta {
+    color: #545454;
+  }
+  .gp-theme #buddypress .activity-list div.activity-meta a.button,
+  .gp-theme #buddypress .activity .acomment-options a,
+  .gp-theme #buddypress .activity-list li.load-more a,
+  .gp-theme #buddypress .activity-list li.load-newest a,
+  .widget.buddypress div.item-options a.selected {
+    color: #26a9e0;
+  }
+  .gp-theme #buddypress .activity-list div.activity-meta a.button:hover,
+  .gp-theme #buddypress .activity .acomment-options a:hover,
+  .gp-theme #buddypress .activity-list li.load-more a:hover,
+  .gp-theme #buddypress .activity-list li.load-newest a:hover,
+  .widget.buddypress div.item-options a.selected:hover {
+    color: #000;
+  }
+  .gp-theme #buddypress ul.item-list li,
+  .gp-theme #buddypress div.activity-comments ul li:first-child,
+  .widget.buddypress #friends-list li,
+  .widget.buddypress #groups-list li,
+  .widget.buddypress #members-list li {
+    border-top: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  .gp-theme #buddypress div.item-list-tabs {
+    background-color: #353535;
+  }
+  .gp-theme #buddypress div.item-list-tabs ul li a span,
+  .gp-theme #buddypress div.item-list-tabs ul li a:hover span,
+  .gp-theme #buddypress div.item-list-tabs ul li.current a span,
+  .gp-theme #buddypress div.item-list-tabs ul li.selected a span {
+    color: #353535;
+  }
+  .gp-theme #buddypress div.item-list-tabs ul li a span {
+    background-color: #ffffff;
+  }
+  .gp-theme #buddypress div.item-list-tabs ul li a,
+  .gp-theme #buddypress #gp-bp-tabs-button,
+  .gp-theme #buddypress div.item-list-tabs ul li span {
+    color: #ffffff;
+  }
+  .gp-theme #buddypress div.item-list-tabs ul li.current a,
+  .gp-theme #buddypress div.item-list-tabs ul li.selected a,
+  .gp-theme #buddypress div.item-list-tabs ul li a:hover {
+    color: #b1b1b1;
+  }
+  .gp-theme #buddypress div.item-list-tabs ul li a:hover span,
+  .gp-theme #buddypress div.item-list-tabs ul li.current a span,
+  .gp-theme #buddypress div.item-list-tabs ul li.selected a span {
+    background: #b1b1b1;
+  }
+  .gp-theme #buddypress div.item-list-tabs#subnav ul,
+  .widget.buddypress div.item-options.gp-small-item-options > a {
+    background-color: #f8f8f8;
+  }
+  .gp-theme #buddypress div.item-list-tabs#subnav ul li a span,
+  .gp-theme #buddypress div.item-list-tabs#subnav ul li a:hover span,
+  .gp-theme #buddypress div.item-list-tabs#subnav ul li.current a span,
+  .gp-theme #buddypress div.item-list-tabs#subnav ul li.selected a span {
+    color: #f8f8f8;
+  }
+  .gp-theme #buddypress div.item-list-tabs#subnav ul li a span {
+    background-color: #000000;
+  }
+  .gp-theme #buddypress div.item-list-tabs#subnav ul li a {
+    color: #000000;
+  }
+  .gp-theme #buddypress div.item-list-tabs#subnav ul li.current a,
+  .gp-theme #buddypress div.item-list-tabs#subnav ul li.selected a,
+  .gp-theme #buddypress div.item-list-tabs#subnav ul li a:hover {
+    color: #26a9e0;
+  }
+  .gp-theme #buddypress div.item-list-tabs#subnav ul li a:hover span,
+  .gp-theme #buddypress div.item-list-tabs#subnav ul li.current a span,
+  .gp-theme #buddypress div.item-list-tabs#subnav ul li.selected a span {
+    background: #26a9e0;
+  }
+  #bbpress-forums
+    .gp-forum-home.bbp-forums
+    .bbp-has-subforums
+    .bbp-forum-info
+    > .bbp-forum-title,
+  #bbpress-forums .bbp-topics .bbp-header,
+  #bbpress-forums .bbp-replies .bbp-header,
+  #bbpress-forums .bbp-search-results .bbp-header {
+    background-color: #353535;
+  }
+  #bbpress-forums
+    .gp-forum-home.bbp-forums
+    .bbp-has-subforums
+    .bbp-forum-info
+    > .bbp-forum-title,
+  #bbpress-forums .bbp-topics .bbp-header,
+  #bbpress-forums .bbp-replies .bbp-header,
+  #bbpress-forums .bbp-search-results .bbp-header {
+    color: #ffffff;
+  }
+  #bbpress-forums .bbp-header div.bbp-reply-content a {
+    color: #ddd;
+  }
+  #bbpress-forums .bbp-header div.bbp-reply-content a:hover {
+    color: #fff;
+  }
+  #bbpress-forums .bbp-forums-list li.odd-forum-row,
+  #bbpress-forums div.odd,
+  #bbpress-forums ul.odd {
+    background-color: #f8f8f8;
+  }
+  #bbpress-forums .bbp-forums-list li.even-forum-row,
+  #bbpress-forums div.even,
+  #bbpress-forums ul.even {
+    background-color: #fff;
+  }
+  #bbpress-forums .gp-forum-home.bbp-forums .bbp-forum-info > .bbp-forum-title,
+  #bbpress-forums div.bbp-forum-header,
+  #bbpress-forums div.bbp-topic-header,
+  #bbpress-forums div.bbp-reply-header,
+  #bbpress-forums .bbp-forums-list,
+  #bbpress-forums li.bbp-body {
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+  }
+  #bbpress-forums .bbp-forums-list .bbp-forum .bbp-forum-link,
+  body.forum #bbpress-forums .bbp-forums .bbp-forum-info > .bbp-forum-title,
+  #bbpress-forums .bbp-topics .bbp-topic-permalink,
+  #bbpress-forums .gp-forum-home.bbp-forums .bbp-forum-info > .bbp-forum-title,
+  .gp-theme
+    #bbpress-forums
+    .gp-forum-shortcode
+    ul.forum:not(.status-category)
+    .bbp-forum-info
+    a {
+    color: #000000;
+  }
+  #bbpress-forums div.bbp-forum-author .bbp-author-role,
+  #bbpress-forums div.bbp-topic-author .bbp-author-role,
+  #bbpress-forums div.bbp-reply-author .bbp-author-role {
+    background-color: #92d050;
+  }
+  #bbpress-forums div.bbp-forum-author .bbp-author-role,
+  #bbpress-forums div.bbp-topic-author .bbp-author-role,
+  #bbpress-forums div.bbp-reply-author .bbp-author-role {
+    color: #ffffff;
+  }
+</style>
+    <style id="kadence-blocks-global-variables-inline-css" type="text/css">
+      :root {
+        --global-kb-font-size-sm: clamp(0.8rem, 0.73rem + 0.217vw, 0.9rem);
+        --global-kb-font-size-md: clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem);
+        --global-kb-font-size-lg: clamp(1.75rem, 1.576rem + 0.543vw, 2rem);
+        --global-kb-font-size-xl: clamp(2.25rem, 1.728rem + 1.63vw, 3rem);
+        --global-kb-font-size-xxl: clamp(2.5rem, 1.456rem + 3.26vw, 4rem);
+        --global-kb-font-size-xxxl: clamp(2.75rem, 0.489rem + 7.065vw, 6rem);
+      }
+    </style>
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.1.1"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.1.1"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript
+      ><link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.1.1"
+    /></noscript>
+<script
+  type="text/javascript"
+  src="https://www.envirodiy.org/wp-includes/js/jquery/jquery.min.js?ver=3.6.1"
+  id="jquery-core-js"
+></script>
+<script
+  type="text/javascript"
+  src="https://www.envirodiy.org/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2"
+  id="jquery-migrate-js"
+></script>  <link rel="icon" href="MS_FavIcon.png" type="image/png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#cb4b16" />
+</head>
+
+<body class="home-page bp-legacy home page-template page-template-homepage-template page-template-homepage-template-php page page-id-977 logged-in admin-bar no-customize-support theme-socialize woocommerce-no-js tribe-no-js page-template-socialize-child gp-theme gp-responsive gp-wide-layout gp-retina gp-normal-scrolling gp-no-back-to-top gp-relative-header gp-header-standard gp-cart-disabled gp-search-all gp-profile-disabled gp-small-header-all gp-standard-page-header gp-no-sidebar gp-homepage wpb-js-composer js-comp-ver-6.10.0 vc_responsive no-js">
+	<div id="gp-site-wrapper">
+
+  <nav id="gp-mobile-nav">
+    <div id="gp-mobile-nav-close-button"></div>
+    <ul class="menu">
+        <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
+            <a class="menu-link main-menu-link" href="index.html">About</a>
+          <ul class="sub-menu menu-odd menu-depth-1">
+              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                <a href="index.html#data_receivers">Data Endpoints</a>
+              </li>
+              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                <a href="index.html#supported_sensors">Supported Sensors</a>
+              </li>
+              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                <a href="index.html#modems">Supported Cellular/Wifi Modules</a>
+              </li>
+              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                <a href="index.html#contributing">Contributing</a>
+              </li>
+              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                <a href="index.html#license">License</a>
+              </li>
+              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                <a href="index.html#acknowledgments">Acknowledgments</a>
+              </li>
+              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                <a href="change_log.html">ChangeLog</a>
+              </li>
+          </ul>
+        </li>
+        <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
+            <a class="menu-link main-menu-link" href="page_getting_started.html">Getting Started</a>
+          <ul class="sub-menu menu-odd menu-depth-1">
+              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                <a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>
+              </li>
+              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                <a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>
+              </li>
+              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                <a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>
+              </li>
+              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                <a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>
+              </li>
+              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                <a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>
+              </li>
+          </ul>
+        </li>
+        <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
+            <a class="menu-link main-menu-link" href="page_faq.html">FAQs</a>
+          <ul class="sub-menu menu-odd menu-depth-1">
+              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                <a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>
+              </li>
+              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                <a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>
+              </li>
+              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                <a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>
+              </li>
+              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                <a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>
+              </li>
+              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                <a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>
+              </li>
+              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                <a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>
+              </li>
+          </ul>
+        </li>
+          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
+<a class="menu-link main-menu-link" href="modules.html">Modules</a>          </li>
+          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
+<a class="menu-link main-menu-link" href="annotated.html">Classes</a>          </li>
+          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
+<a class="menu-link main-menu-link" href="files.html">Source Files</a>          </li>
+          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
+<a class="menu-link main-menu-link" href="page_the_examples.html">Examples Using ModularSensors</a>          </li>
+          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
+<a class="menu-link main-menu-link" href="pages.html">More</a>          </li>
+    </ul>
+  </nav><div id="gp-mobile-nav-bg"></div>
+
+  <div id="gp-page-wrapper">
+
+    <header id="gp-main-header">
+      <div class="gp-container">
+        <div id="gp-logo">
+          <a href="index.html" title="ModularSensors">
+            <img
+              src="ModularSensors_ubuntu_264x55.png"
+              alt="ModularSensors"
+                  width="200"
+                  height="42"
+              class="gp-desktop-logo"
+            />
+            <img
+              src="ModularSensors_ubuntu_264x55.png"
+              alt="ModularSensors"
+              width="264"
+              height="55"
+              class="gp-scrolling-logo"
+            />
+            <img
+              src="ModularSensors_ubuntu_264x55.png"
+              alt="ModularSensors"
+              width="132"
+              height="28"
+              class="gp-mobile-logo"
+            />
+          </a>
+        </div>
+
+        <a id="gp-mobile-nav-button"></a>
+
+        <nav id="gp-main-nav" class="gp-nav">
+          <nav id="gp-primary-main-nav">
+              <ul id="menu-main-menu-1" class="menu">
+                <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
+                    <a class="menu-link main-menu-link" href="index.html">About</a>
+                  <ul class="sub-menu menu-odd menu-depth-1">
+                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                        <a href="index.html#data_receivers">Data Endpoints</a>
+                      </li>
+                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                        <a href="index.html#supported_sensors">Supported Sensors</a>
+                      </li>
+                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                        <a href="index.html#modems">Supported Cellular/Wifi Modules</a>
+                      </li>
+                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                        <a href="index.html#contributing">Contributing</a>
+                      </li>
+                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                        <a href="index.html#license">License</a>
+                      </li>
+                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                        <a href="index.html#acknowledgments">Acknowledgments</a>
+                      </li>
+                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                        <a href="change_log.html">ChangeLog</a>
+                      </li>
+                  </ul>
+                </li>
+                <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
+                    <a class="menu-link main-menu-link" href="page_getting_started.html">Getting Started</a>
+                  <ul class="sub-menu menu-odd menu-depth-1">
+                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                        <a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>
+                      </li>
+                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                        <a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>
+                      </li>
+                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                        <a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>
+                      </li>
+                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                        <a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>
+                      </li>
+                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                        <a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>
+                      </li>
+                  </ul>
+                </li>
+                <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
+                    <a class="menu-link main-menu-link" href="page_faq.html">FAQs</a>
+                  <ul class="sub-menu menu-odd menu-depth-1">
+                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                        <a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>
+                      </li>
+                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                        <a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>
+                      </li>
+                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                        <a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>
+                      </li>
+                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                        <a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>
+                      </li>
+                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                        <a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>
+                      </li>
+                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
+                        <a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>
+                      </li>
+                  </ul>
+                </li>
+                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
+<a class="menu-link main-menu-link" href="modules.html">Modules</a>                  </li>
+                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
+<a class="menu-link main-menu-link" href="annotated.html">Classes</a>                  </li>
+                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
+<a class="menu-link main-menu-link" href="files.html">Source Files</a>                  </li>
+                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
+<a class="menu-link main-menu-link" href="page_the_examples.html">Examples Using ModularSensors</a>                  </li>
+                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
+<a class="menu-link main-menu-link" href="pages.html">More</a>                  </li>
+              </ul>
+          </nav>
+
+          <div id="gp-search">
+            <div id="m-search-button" class="m-show-m" onclick="return showSearch()">
+            </div>
+					</div>
+
+
+
+          <nav id="gp-secondary-main-nav"></nav>
+        </nav></div>
+    </header><header id="gp-small-header">
+      <div class="gp-container">
+        <div class="gp-left-triangle"></div>
+        <div class="gp-right-triangle"></div>
+
+        <nav id="gp-top-nav" class="gp-nav">
+          <div id="gp-left-top-nav">
+            <p style="color:#fff">An Arduino library to give environmental sensors a common interface of functions for use with Arduino-framework dataloggers, such as the EnviroDIY Mayfly.</p>
+          </div>
+
+          <div id="gp-right-top-nav">
+            <ul id="menu-icon-links" class="menu">
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 fa fa-github menu-item menu-item-type-custom menu-item-object-custom"
+              >
+                <a
+                  title="See it on GitHub"
+                  href="https://github.com/EnviroDIY/ModularSensors"
+                  class="menu-link main-menu-link"
+                  >See the source code on GitHub</a
+                >
+              </li>
+            </ul>
+          </div>
+
+        </nav>
+      </div>
+    </header><div id="gp-fixed-header-padding"></div>
+
+    <div class="m-doc-search" id="search">
+      <a href="#!" onclick="return hideSearch()"></a>
+      <div id="gp-header-area">
+        <div class="gp-container">
+          <div style="background-color:#fff;padding:20px;">
+            <div class="m-doc-search-header m-text m-small">
+              <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+              <div id="search-symbolcount">&hellip;</div>
+            </div>
+            <div class="m-doc-search-content">
+              <form>
+                <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+              </form>
+              <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
+              <div id="search-help" class="m-text m-dim m-text-center">
+                <p class="m-noindent">Search for symbols, directories, files, pages or
+            modules. You can omit any prefix from the symbol or file path; adding a
+            <code>:</code> or <code>/</code> suffix lists all members of given symbol or
+            directory.</p>
+            <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+            / <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+            <span class="m-label m-dim">Enter</span> to go.
+            <span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+            copy a link to the result using <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">M</span> produces a Markdown link.</p>
+              </div>
+              <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.</div>
+              <ul id="search-results"></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="search-v2.js"></script>
+    <script src="searchdata-v2.js" async="async"></script>
+
+    <div class="gp-clear"></div>
+
+    <div id="gp-content-wrapper" class="gp-container">
+      <div id="gp-inner-container">
+          <div id="gp-content">
+
+            <main>
+              <article>
+                <div class="m-container m-container-inflatable">
+                  <div class="m-row">
+                    <div class="m-col-l-10 m-push-l-1">
+          <span class="m-breadcrumb">
+            <a href="index.html">
+              ModularSensors
+            </a>  &gt; <wbr/>
+          </span>
+          <span class="m-breadcrumb">
+            <a href="modules.html">
+              Modules
+            </a>  &gt; <wbr/>
+          </span>
+                    <span class="m-breadcrumb">
+          <a href="group__the__sensors.html">Supported Sensors</a> &gt; <wbr/>
+          </span>
+          <span class="m-breadcrumb">
+            Conductivity via Analog Electrical Resistance
+          </span>
+
+        <header class="gp-entry-header">
+          <h1 class="gp-entry-title" itemprop="headline">
+
+          Conductivity via Analog Electrical Resistance <span class="m-thin">module</span>
+          </h1>
+        </header>
+        <div class="m-block m-default">
+          <ul>
+            <li><a href="#sensor_analog_cond_notes">Introduction</a></li>
+            <li><a href="#sensor_analog_cond_circuit">The Circuit</a></li>
+            <li><a href="#sensor_analog_cond_calcs">Calculating the Conductivity</a></li>
+            <li><a href="#sensor_analog_cond_ref">References</a></li>
+            <li><a href="#sensor_analog_cond_flags">Build flags</a></li>
+            <li><a href="#sensor_analog_cond_ctor">Sensor Constructor</a></li>
+            <li><a href="#sensor_analog_cond_examples">Example Code</a></li>
+                <li><a href="#nested-classes">Classes</a></li>
+                <li><a href="#define-members">Defines</a></li>
+                <li><a href="#sensor-timing">Sensor Timing</a></li>
+                <li><a href="#electrical-conductance">Electrical Conductance</a></li>
+          </ul>
+        </div>
+          <p>Classes for measuring conductivity using a simple analog voltage divider.</p><section id="sensor_analog_cond_notes"><h2>Introduction</h2><p>This is for a very basic conductivity circuit built with a single resistor and an old power cord. DC power is briefly supplied across the power cord causing the water to act as one of the resistors on a voltage divider. Knowing the voltage of the other resistor in the divider, we can calculate to resistance from the water (and then its electrical conductivity) based on the drop in volage across the divider.</p><p>For this to work, the power across the circuit <strong>MUST</strong> be turned off between readings. If the power to the circuit is left on the water will become polarized and the values will not be valid. The water temperature (if used) must be suplied separately for a calculation.</p><aside class="m-note m-info"><h4>Note</h4><p>The return from this &quot;sensor&quot; is conductivity - not the typically reported specific conductance, which is referenced to 25°C. The temperature compensation, if desired, should be done via a calculated variable. See the example code as a guide.</p></aside></section><section id="sensor_analog_cond_circuit"><h2>The Circuit</h2><p>One pole of the power cord wire is connected to the ground of the main logger board. The other pole is connected to the sensor power supply via a resistor of known resistance (R1) and then to an analog pin to measure the voltage.</p><p>So the circuit is:</p><pre class="m-code">Vin (sensor power) --- R1 --- power cord  --- Vout
+                                   |
+                                   |
+                      water between prongs (Rwater)
+                                   |
+                                   |
+                                ground</pre><p>The above diagram and the calculations assume the reistance of the analog pins themselves on the Arduino is negligible.</p></section><section id="sensor_analog_cond_calcs"><h2>Calculating the Conductivity</h2><p>First, we need to convert the bit reading of the ADC into volts based on the range of the ADC (1 bit more than the resolution):</p><p><code>meas_voltage = (analog_ref_voltage * raw_adc_bits) / ANALOG_EC_ADC_RANGE</code></p><p>Assuming the voltage of the ADC reference is the same as that used to power the EC resistor circuit we can replace the reference voltage with the sensor power voltage:</p><p><code>meas_voltage = (sensor_power_voltage * raw_adc_bits) / ANALOG_EC_ADC_RANGE</code></p><aside class="m-note m-info"><h4>Note</h4><p>The Vcc going to the circuit (~3.3V) can and will vary, as battery level gets low. If possible, you should use setup the processor to use an external reference (<code>-D ANALOG_EC_ADC_REFERENCE_MODE=EXTEERNAL</code>) and tie the Aref pin to the sensor power pin.</p><p>The analog reference of the Mayfly is not broken out (and is tied to ground). If using a Mayfly, you have no choice by to use the internal analog reference.</p></aside><p>Now we can calculate the resistance of the water, knowing the resistance of the resistor we put in the circuit and the voltage drop:</p><p><code>Rwater_ohms = (meas_voltage * Rseries_ohms) / (sensor_power_voltage - meas_voltage)</code></p><p>Combining the above equations and doing some rearranging, we get:</p><p><code>Rwater_ohms = Rseries_ohms / ((ANALOG_EC_ADC_RANGE / raw_adc_bits) - 1)</code></p><p>The conductivity is then the inverse of the resistance - multiplied by a measured cell constant and a 10^6 conversion to µS/cm.</p><p><code>water_conductivity = 1000000 / (Rwater_ohms * sensorEC_Konst)</code></p><p>The real cell constant will vary based on the size of the &quot;cell&quot; - that is, the size of the plug on the power cord. You can calculate the cell constant for each power cord sensor you use following the <a href="https://hackaday.io/project/7008-fly-wars-a-hackers-solution-to-world-hunger/log/24646-three-dollar-ec-ppm-meter-arduino">calibration program</a>.</p><p>For one AC Power Cord 12t with male IEC 320-C8 connector the cell constant was 2.88.</p><aside class="m-note m-info"><h4>Note</h4><p>These calulations are for the on-board processor ADC, not an external ACD like the TI ADS1115 built into the Mayfly!</p></aside></section><section id="sensor_analog_cond_ref"><h2>References</h2><ul><li>For the sensor setup and calculations: <a href="https://hackaday.io/project/7008-fly-wars-a-hackers-solution-to-world-hunger/log/24646-three-dollar-ec-ppm-meter-arduino">https:/<wbr />/<wbr />hackaday.io/<wbr />project/<wbr />7008-fly-wars-a-hackers-solution-to-world-hunger/<wbr />log/<wbr />24646-three-dollar-ec-ppm-meter-arduino</a></li><li>For temperature compensation: <a href="https://link.springer.com/article/10.1023/B:EMAS.0000031719.83065.68">https:/<wbr />/<wbr />link.springer.com/<wbr />article/<wbr />10.1023/<wbr />B:EMAS.0000031719.83065.68</a></li></ul></section><section id="sensor_analog_cond_flags"><h2>Build flags</h2><ul><li><code>-D ANALOG_EC_ADC_RESOLUTION=##</code><ul><li>used to set the resolution of the processor ADC</li><li><aside class="m-note m-default"><h4>See also</h4><p><a href="group__sensor__analog__cond.html#gadbe35b81bb92f4e5ef792cebadacb5e1" class="m-doc">ANALOG_<wbr />EC_<wbr />ADC_<wbr />RESOLUTION</a></p></aside></li></ul></li><li><code>-D ANALOG_EC_ADC_REFERENCE_MODE=xxx</code><ul><li>used to set the processor ADC value reference mode</li><li><aside class="m-note m-default"><h4>See also</h4><p><a href="group__sensor__analog__cond.html#ga43e703297f3f106a450e8a2c877d2f95" class="m-doc">ANALOG_<wbr />EC_<wbr />ADC_<wbr />REFERENCE_<wbr />MODE</a></p></aside></li></ul></li></ul></section><section id="sensor_analog_cond_ctor"><h2>Sensor Constructor</h2><p><section class="m-doc-details" id="abbca8c741df876ebdf5164bc26ddcb67"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span><a class="m-doc-self" href="class_analog_elec_conductivity.html#abbca8c741df876ebdf5164bc26ddcb67">AnalogElecConductivity</a>(</span><span class="m-doc-wrap"><span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">dataPin</span>,
+              <span class="m-dim">float</span> <span class="m-param">Rseries_ohms</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__analog__cond.html#ga9ba41421c44c6d3c44e72a51ee203806">RSERIES_<wbr/>OHMS_<wbr/>DEF</a></span>,
+              <span class="m-dim">float</span> <span class="m-param">sensorEC_Konst</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__analog__cond.html#ga3674aa1b2b032ed25ebd42ed473675bb">SENSOREC_<wbr/>KONST_<wbr/>DEF</a></span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_analog_elec_conductivity.html">AnalogElecConductivity</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">powerPin</span></td>
+<td>The port pin providing power to the EC probe. Needs to be switched, and assumed to be same V as the dataPin's ADC.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">dataPin</span></td>
+<td><p>The processor ADC port pin to read the voltage from the EC probe. Not all processor pins can be used as analog pins. Those usable as analog pins generally are numbered with an "A" in front of the number</p><ul><li>ie, A1.</li></ul></td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">Rseries_ohms</span></td>
+<td>The resistance of the resistor series (R) in the line; optional with default value of 499.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">sensorEC_Konst</span></td>
+<td>The cell constant for the sensing circuit; optional with default value of 2.88 - which is what has been measured for a typical standard sized lamp-type plug.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">measurementsToAverage</span></td>
+<td>The number of measurements to average; optional with default value of 1.</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p><hr/></section><section id="sensor_analog_cond_examples"><h2>Example Code</h2><p>The analog electrical conductivity sensor is used in the <a href="example_menu.html#menu_walk_analog_elec_conductivity" class="m-doc">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensors/AnalogElecConductivity.h&gt;</span>
+
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">ECpwrPin</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">A4</span><span class="p">;</span><span class="w">  </span><span class="c1">// Power pin (-1 if continuously powered)</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">ECdataPin1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">A0</span><span class="p">;</span><span class="w">  </span><span class="c1">// Data pin (must be an analog pin, ie A#)</span>
+
+<span class="c1">// Create an Analog Electrical Conductivity sensor object</span>
+<span class="n">AnalogElecConductivity</span><span class="w"> </span><span class="nf">analogEC_phy</span><span class="p">(</span><span class="n">ECpwrPin</span><span class="p">,</span><span class="w"> </span><span class="n">ECdataPin1</span><span class="p">);</span>
+
+<span class="c1">// Create a conductivity variable pointer for the analog sensor</span>
+<span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">analogEc_cond</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">AnalogElecConductivity_EC</span><span class="p">(</span>
+<span class="w">    </span><span class="o">&amp;</span><span class="n">analogEC_phy</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
+
+<span class="c1">// Create a calculated variable for the temperature compensated conductivity</span>
+<span class="c1">// (that is, the specific conductance).  For this example, we will use the</span>
+<span class="c1">// temperature measured by the Maxim DS18 saved as ds18Temp several sections</span>
+<span class="c1">// above this.  You could use the temperature returned by any other water</span>
+<span class="c1">// temperature sensor if desired.  **DO NOT** use your logger board temperature</span>
+<span class="c1">// (ie, from the DS3231) to calculate specific conductance!</span>
+<span class="kr">float</span><span class="w"> </span><span class="nf">calculateAnalogSpCond</span><span class="p">(</span><span class="kr">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="n">spCond</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="mi">-9999</span><span class="p">;</span><span class="w">  </span><span class="c1">// Always safest to start with a bad value</span>
+<span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="n">waterTemp</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">ds18Temp</span><span class="o">-&gt;</span><span class="n">getValue</span><span class="p">();</span>
+<span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="n">rawCond</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="n">analogEc_cond</span><span class="o">-&gt;</span><span class="n">getValue</span><span class="p">();</span>
+<span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="n">temperatureCoef</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.019</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// ^^ Linearized temperature correction coefficient per degrees Celsius.</span>
+<span class="w">    </span><span class="c1">// The value of 0.019 comes from measurements reported here:</span>
+<span class="w">    </span><span class="c1">// Hayashi M. Temperature-electrical conductivity relation of water for</span>
+<span class="w">    </span><span class="c1">// environmental monitoring and geophysical data inversion. Environ Monit</span>
+<span class="w">    </span><span class="c1">// Assess. 2004 Aug-Sep;96(1-3):119-28.</span>
+<span class="w">    </span><span class="c1">// doi: 10.1023/b:emas.0000031719.83065.68. PMID: 15327152.</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">waterTemp</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">-9999</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">rawCond</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">-9999</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// make sure both inputs are good</span>
+<span class="w">        </span><span class="n">spCond</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rawCond</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">temperatureCoef</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">waterTemp</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">25.0</span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">spCond</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// Properties of the calculated variable</span>
+<span class="c1">// The number of digits after the decimal place</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">uint8_t</span><span class="w"> </span><span class="n">analogSpCondResolution</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="c1">// This must be a value from http://vocabulary.odm2.org/variablename/</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w"> </span><span class="n">analogSpCondName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;specificConductance&quot;</span><span class="p">;</span>
+<span class="c1">// This must be a value from http://vocabulary.odm2.org/units/</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w"> </span><span class="n">analogSpCondUnit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;microsiemenPerCentimeter&quot;</span><span class="p">;</span>
+<span class="c1">// A short code for the variable</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w"> </span><span class="n">analogSpCondCode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;anlgSpCond&quot;</span><span class="p">;</span>
+<span class="c1">// The (optional) universallly unique identifier</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w"> </span><span class="n">analogSpCondUUID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">;</span>
+
+<span class="c1">// Finally, Create the specific conductance variable and return a pointer to it</span>
+<span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">analogEc_spcond</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Variable</span><span class="p">(</span>
+<span class="w">    </span><span class="n">calculateAnalogSpCond</span><span class="p">,</span><span class="w"> </span><span class="n">analogSpCondResolution</span><span class="p">,</span><span class="w"> </span><span class="n">analogSpCondName</span><span class="p">,</span>
+<span class="w">    </span><span class="n">analogSpCondUnit</span><span class="p">,</span><span class="w"> </span><span class="n">analogSpCondCode</span><span class="p">,</span><span class="w"> </span><span class="n">analogSpCondUUID</span><span class="p">);</span></pre></section>
+        <section id="nested-classes">
+          <h2>Classes</h2>
+          <dl class="m-doc">
+            <dt>
+              class <a href="class_analog_elec_conductivity.html" class="m-doc">AnalogElecConductivity</a>
+            </dt>
+            <dd>Class for the analog Electrical Conductivity monitor.</dd>
+            <dt>
+              class <a href="class_analog_elec_conductivity___e_c.html" class="m-doc">AnalogElecConductivity_EC</a>
+            </dt>
+            <dd>The variable class used for electricalConductivity measured using an analog pin connected to electrodes submerged in the medium.</dd>
+          </dl>
+        </section>
+        <section id="define-members">
+          <h2>Defines</h2>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gadff49875437dbdf485b0d7e8b38119bf" class="m-doc">ANALOGELECCONDUCTIVITY_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; we only get one value from the analog conductivity sensor.</dd>
+
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga0f9a765449bd767de386d03da995520b" class="m-doc">ANALOGELECCONDUCTIVITY_INC_CALC_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values - though we recommend users include a temperature sensor and calculate specific conductance in their own program.</dd>
+
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gadbe35b81bb92f4e5ef792cebadacb5e1" class="m-doc">ANALOG_EC_ADC_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 10</span></span>
+            </dt>
+            <dd>Default resolution (in bits) of the voltage measurement.</dd>
+
+              <dd><p>The default for all boards is 10, use a build flag to change this, if necessary.</p></dd>
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gae1b77eeba86c12dbe2c886caf8a31f27" class="m-doc">ANALOG_EC_ADC_MAX</a><span class="m-dim m-right-m m-text-right"> = ((1 << </span></span>
+            </dt>
+            <dd>The maximum possible value of the ADC - one less than the resolution shifted up one bit.</dd>
+
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga996d178e739945cd3b6f66216c2a9475" class="m-doc">ANALOG_EC_ADC_RANGE</a><span class="m-dim m-right-m m-text-right"> = (1 << </span></span>
+            </dt>
+            <dd>The maximum possible range of the ADC - the resolution shifted up one bit.</dd>
+
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga43e703297f3f106a450e8a2c877d2f95" class="m-doc">ANALOG_EC_ADC_REFERENCE_MODE</a><span class="m-dim m-right-m m-text-right"> = DEFAULT</span></span>
+            </dt>
+            <dd>The voltage reference mode for the processor&#x27;s ADC.</dd>
+
+              <dd><p>For an AVR board, this must be one of:</p><ul><li><code>DEFAULT</code>: the default built-in analog reference of 5 volts (on 5V Arduino boards) or 3.3 volts (on 3.3V Arduino boards)</li><li><code>INTERNAL</code>: a built-in reference, equal to 1.1 volts on the ATmega168 or ATmega328P and 2.56 volts on the ATmega32U4 and ATmega8 (not available on the Arduino Mega)</li><li><code>INTERNAL1V1</code>: a built-in 1.1V reference (Arduino Mega only)</li><li><code>INTERNAL2V56</code>: a built-in 2.56V reference (Arduino Mega only)</li><li><code>EXTERNAL</code>: the voltage applied to the AREF pin (0 to 5V only) is used as the reference.</li></ul><p>If not set on an AVR board <code>DEFAULT</code> is used.</p><p>For the best accuracy, use an <code>EXTERNAL</code> reference with the AREF pin connected to the power supply for the EC sensor.</p><p>For a SAMD board, this must be one of:</p><ul><li><code>AR_DEFAULT</code>: the default built-in analog reference of 3.3V</li><li><code>AR_INTERNAL</code>: a built-in 2.23V reference</li><li><code>AR_INTERNAL1V0</code>: a built-in 1.0V reference</li><li><code>AR_INTERNAL1V65</code>: a built-in 1.65V reference</li><li><code>AR_INTERNAL2V23</code>: a built-in 2.23V reference</li><li><code>AR_EXTERNAL</code>: the voltage applied to the AREF pin is used as the reference</li></ul><p>If not set on an SAMD board <code>AR_DEFAULT</code> is used.</p><p>For the best accuracy, use an <code>EXTERNAL</code> reference with the AREF pin connected to the power supply for the EC sensor.</p><aside class="m-note m-default"><h4>See also</h4><p><a href="https://www.arduino.cc/reference/en/language/functions/analog-io/analogreference/">https:/<wbr />/<wbr />www.arduino.cc/<wbr />reference/<wbr />en/<wbr />language/<wbr />functions/<wbr />analog-io/<wbr />analogreference/<wbr /></a></p></aside></dd>
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga43e703297f3f106a450e8a2c877d2f95" class="m-doc">ANALOG_EC_ADC_REFERENCE_MODE</a><span class="m-dim m-right-m m-text-right"> = AR_DEFAULT</span></span>
+            </dt>
+            <dd>The voltage reference mode for the processor&#x27;s ADC.</dd>
+
+              <dd><p>For an AVR board, this must be one of:</p><ul><li><code>DEFAULT</code>: the default built-in analog reference of 5 volts (on 5V Arduino boards) or 3.3 volts (on 3.3V Arduino boards)</li><li><code>INTERNAL</code>: a built-in reference, equal to 1.1 volts on the ATmega168 or ATmega328P and 2.56 volts on the ATmega32U4 and ATmega8 (not available on the Arduino Mega)</li><li><code>INTERNAL1V1</code>: a built-in 1.1V reference (Arduino Mega only)</li><li><code>INTERNAL2V56</code>: a built-in 2.56V reference (Arduino Mega only)</li><li><code>EXTERNAL</code>: the voltage applied to the AREF pin (0 to 5V only) is used as the reference.</li></ul><p>If not set on an AVR board <code>DEFAULT</code> is used.</p><p>For the best accuracy, use an <code>EXTERNAL</code> reference with the AREF pin connected to the power supply for the EC sensor.</p><p>For a SAMD board, this must be one of:</p><ul><li><code>AR_DEFAULT</code>: the default built-in analog reference of 3.3V</li><li><code>AR_INTERNAL</code>: a built-in 2.23V reference</li><li><code>AR_INTERNAL1V0</code>: a built-in 1.0V reference</li><li><code>AR_INTERNAL1V65</code>: a built-in 1.65V reference</li><li><code>AR_INTERNAL2V23</code>: a built-in 2.23V reference</li><li><code>AR_EXTERNAL</code>: the voltage applied to the AREF pin is used as the reference</li></ul><p>If not set on an SAMD board <code>AR_DEFAULT</code> is used.</p><p>For the best accuracy, use an <code>EXTERNAL</code> reference with the AREF pin connected to the power supply for the EC sensor.</p><aside class="m-note m-default"><h4>See also</h4><p><a href="https://www.arduino.cc/reference/en/language/functions/analog-io/analogreference/">https:/<wbr />/<wbr />www.arduino.cc/<wbr />reference/<wbr />en/<wbr />language/<wbr />functions/<wbr />analog-io/<wbr />analogreference/<wbr /></a></p></aside></dd>
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga9ba41421c44c6d3c44e72a51ee203806" class="m-doc">RSERIES_OHMS_DEF</a><span class="m-dim m-right-m m-text-right"> = 499</span></span>
+            </dt>
+            <dd>The default resistance (in ohms) of the measuring resistor. This should not be less than 300 ohms when measuring EC in water.</dd>
+
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga3674aa1b2b032ed25ebd42ed473675bb" class="m-doc">SENSOREC_KONST_DEF</a><span class="m-dim m-right-m m-text-right"> = 1.0</span></span>
+            </dt>
+            <dd>Cell Constant For EC Measurements.</dd>
+
+              <dd><p>This should be measured following the calibration example on <a href="https://hackaday.io/project/7008-fly-wars-a-hackers-solution-to-world-hunger/log/24646-three-dollar-ec-ppm-meter-arduino">https:/<wbr />/<wbr />hackaday.io/<wbr />project/<wbr />7008-fly-wars-a-hackers-solution-to-world-hunger/<wbr />log/<wbr />24646-three-dollar-ec-ppm-meter-arduino</a>.</p><p>Mine was around 2.9 with plugs being a standard size they should all be around the same. If you get bad readings you can use the calibration script and fluid to get a better estimate for K. Default to 1.0, and can be set at startup.</p></dd>
+
+          </dl>
+        </section>
+        <section id="sensor-timing">
+          <h2>Sensor Timing</h2>
+<p><a name="sensor_analog_cond_parts_timing"></a> The timing for analog conductivity via resistance.</p>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaf8a40fdca74f6f9f9053e40d1dc30fe5" class="m-doc">ANALOGELECCONDUCTIVITY_WARM_UP_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#aaaefd7f306f86382a3dac726531756b4" class="m-doc">Sensor::<wbr />_warmUpTime_ms</a>; giving 2ms for warm-up.</dd>
+
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaf07555e87ca6d06100af4fca97612472" class="m-doc">ANALOGELECCONDUCTIVITY_STABILIZATION_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#ad6822ad09fb64658c911ce86820db79c" class="m-doc">Sensor::<wbr />_stabilizationTime_ms</a>; we give just a tiny delay for stabilization.</dd>
+
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gac910dea8e5e6f77eb62f286d599c1e6b" class="m-doc">ANALOGELECCONDUCTIVITY_MEASUREMENT_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba" class="m-doc">Sensor::<wbr />_measurementTime_ms</a>; we assume the analog voltage is measured instantly.</dd>
+
+              <dd><p>It&#x27;s not really <em>quite</em> instantly, but it is very fast and the time to measure is included in the read function. On ATmega based boards (UNO, Nano, Mini, Mega), it takes about 100 microseconds (0.0001 s) to read an analog input, so the maximum reading rate is about 10,000 times a second.</p></dd>
+
+          </dl>
+        </section>
+        <section id="electrical-conductance">
+          <h2>Electrical Conductance</h2>
+<p><a name="sensor_analog_cond_parts_ec"></a> The humidity variable from an AOSong DHT</p><ul><li>Range: low 100&#x27;s when open air, for short circuit: a high number</li><li>Accuracy: needs determining for each combination of ADC. ADC_REF, and series R. its designed as a very simple relative EC measurement</li></ul><p><section class="m-doc-details" id="a294881192a5783b1f04ce9c3bb10edf2"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span><a class="m-doc-self" href="class_analog_elec_conductivity___e_c.html#a294881192a5783b1f04ce9c3bb10edf2">AnalogElecConductivity_EC</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_analog_elec_conductivity.html">AnalogElecConductivity</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__analog__cond.html#ga3ff0849107a02c6b157fcc64da2bd800">ANALOGELECCONDUCTIVITY_<wbr/>EC_<wbr/>DEFAULT_<wbr/>CODE</a></span>)</span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_analog_elec_conductivity___e_c.html">AnalogElecConductivity_<wbr/>EC</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_analog_elec_conductivity.html">AnalogElecConductivity</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "anlgEc".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga6f98dedc961028af8124849d98f37b22" class="m-doc">ANALOGELECCONDUCTIVITY_EC_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
+            </dt>
+            <dd>Decimals places in string representation; EC should have 1.</dd>
+
+              <dd><p>Range of 0-3V3 with 10bit ADC - resolution of 0.003 = 3 µS/cm.</p></dd>
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga7e6b60448dd178eeff15f5c721590782" class="m-doc">ANALOGELECCONDUCTIVITY_EC_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+            </dt>
+            <dd><a href="class_sensor.html" class="m-doc">Sensor</a> vensor variable number; EC is stored in sensorValues[0].</dd>
+
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga2d7eafbf7ffb16bd07f081ac264cd4dd" class="m-doc">ANALOGELECCONDUCTIVITY_EC_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "electricalConductivity"</span></span>
+            </dt>
+            <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;electricalConductivity&quot;.</dd>
+
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga30342e2736369eeac02306c6a5fa3080" class="m-doc">ANALOGELECCONDUCTIVITY_EC_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "microsiemenPerCentimeter"</span></span>
+            </dt>
+            <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;microsiemenPerCentimeter&quot; (µS/cm)</dd>
+
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga3ff0849107a02c6b157fcc64da2bd800" class="m-doc">ANALOGELECCONDUCTIVITY_EC_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "anlgEc"</span></span>
+            </dt>
+            <dd>Default variable short code; &quot;anlgEc&quot;.</dd>
+
+
+          </dl>
+        </section>
+
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </main>
+
+          </div>      </div></div><div id="footer-image">
+          <div class="gp-container">
+            <img
+              src="https://www.envirodiy.org/wp-content/uploads/2016/05/EnviroDIY_LogoMaster_Square_V5_TwoTree_Trans_notext-e1462820115833.png"
+              width="99"
+              height="22"
+              alt=""
+            />
+          </div>
+        </div>
+
+    <footer id="gp-footer">
+      <div id="gp-copyright">
+        <div class="gp-container">
+          <div id="gp-copyright-text">
+            <p>
+              <a href="http://www.stroudcenter.org/" target="_blank"
+                ><img
+                  style="float: left; margin-right: 20px;"
+                  src="https://www.envirodiy.org/wp-content/uploads/2017/01/stroud-white-white-165px.png"
+                  alt=""
+                  width="165"
+                  height="70" /></a
+              >EnviroDIY™ is a community for do-it-yourself ideas for
+              environmental science and monitoring. EnviroDIY is an
+              initiative of
+              <a href="http://www.stroudcenter.org/" target="_blank"
+                >Stroud™ Water Research Center</a
+              >, which seeks to advance knowledge and stewardship of
+              freshwater systems through global research, education, and
+              watershed restoration.
+            </p>
+            <p>
+              All content on EnviroDIY is licensed as Creative Commons
+              Attribution-ShareAlike 4.0 International (CC-BY-SA). Hardware
+              designs on this website are released under the CERN Open
+              Hardware License 1.2.
+              <a href="https://envirodiy.org/licenses/"
+                >Alternative licenses are available.</a
+              >
+              <a href="https://envirodiy.org/terms/">Terms of Use</a> |
+              <a href="https://envirodiy.org/privacy/">Privacy Policy</a> |
+              <a href="https://envirodiy.org/cookies/">Cookie Policy</a> |
+              <a href="https://envirodiy.org/contact/">Contact</a>
+            </p>
+            <p>
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.6 and <a href="https://mcss.mosra.cz/">m.css</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <div class="gp-clear"></div>
+
+    </div></div><script
+  type="text/javascript"
+  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/modernizr.js?ver=6.1.1"
+  id="modernizr-js"
+></script>
+<script
+  type="text/javascript"
+  src="https://www.envirodiy.org/wp-includes/js/imagesloaded.min.js?ver=4.1.4"
+  id="imagesloaded-js"
+></script>
+<script
+  type="text/javascript"
+  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/selectivizr.min.js?ver=6.1.1"
+  id="selectivizr-js"
+></script>
+<script
+  type="text/javascript"
+  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/placeholders.min.js?ver=6.1.1"
+  id="placeholder-js"
+></script>
+<script
+  type="text/javascript"
+  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/jquery.ui.totop.min.js.js?ver=6.1.1"
+  id="jquery-totop-js"
+></script>
+<script
+  type="text/javascript"
+  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/jquery.flexslider-min.js?ver=6.1.1"
+  id="jquery-flexslider-js"
+></script>
+<script type="text/javascript" id="ghostpool-custom-js-js-extra">
+  /* <![CDATA[ */
+  var ghostpool_script = {
+    lightbox: 'separate_images',
+    url: 'https:\/\/www.envirodiy.org\/',
+    related_items_in_view: '',
+  };
+  /* ]]> */
+</script>
+<script
+  type="text/javascript"
+  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/jquery.stellar.min.js?ver=6.1.1"
+  id="jquery-stellar-js"
+></script>
+
+<script
+  type="text/javascript"
+  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/custom.js?ver=6.1.1"
+  id="ghostpool-custom-js-js"
+></script>
+<script type="text/javascript" id="ghostpool-ajax-loop-js-extra">
+  /* <![CDATA[ */
+  var ghostpoolAjax = {
+    ajaxurl: 'https:\/\/www.envirodiy.org\/wp-admin\/admin-ajax.php',
+    ajaxnonce: 'e2424257d3',
+    querystring: '',
+  };
+  /* ]]> */
+</script>
+<script
+  type="text/javascript"
+  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/ajax-loop.js?ver=6.1.1"
+  id="ghostpool-ajax-loop-js"
+></script>
+</body>
+</html>
