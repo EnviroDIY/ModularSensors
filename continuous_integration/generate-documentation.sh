@@ -37,7 +37,7 @@ python fixSectionsInXml.py
 # echo "\n\e[32mFixing copied function documentation in group documentation\e[0m"
 # python fixFunctionsInGroups.py
 
-python $GITHUB_WORKSPACE/code_docs/m.css/documentation/doxygen.py "mcss-conf.py" --no-doxygen --output "$GITHUB_WORKSPACE/code_docs/ModularSensors/docs/output_mcss.log" --templates "$GITHUB_WORKSPACE/code_docs/m.css/documentation/templates/EnviroDIY" --debug
+python $GITHUB_WORKSPACE/code_docs/m.css/documentation/doxygen.py "mcss-conf.py" --no-doxygen --output "$GITHUB_WORKSPACE/code_docs/ModularSensors/docs/output_mcss.log" --templates "$GITHUB_WORKSPACE/code_docs/m.css/documentation/templates/EnviroDIY"
 
 echo "\n\e[32mCopying function documentation\e[0m"
 python copyFunctions.py
