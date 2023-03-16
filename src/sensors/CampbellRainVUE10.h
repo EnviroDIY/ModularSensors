@@ -112,7 +112,7 @@
  * - Accuracy is ±3% at 0 to 300 mm/h intensity (0 to 11.8 in./h intensity)
  *               ±5% at 300 to 500 mm/h intensity (11.8 to 19.7 in./h intensity)
  *
- * {{ @ref CampbellRainVUE10_Preciptation::CampbellRainVUE10_Precipitation }}
+ * {{ @ref CampbellRainVUE10_Precipitation::CampbellRainVUE10_Precipitation }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; depth should have 2

@@ -19,8 +19,8 @@ _______
 [//]: # ( @m_footernavigation )
 
 [//]: # ( Start GitHub Only )
-- [DRWI Sites with a Mayfly 1.x and EnviroDIY ESP32 WiFi Bees](#drwi-sites-with-a-mayfly-1x-and-envirodiy-esp32-wifi-bees)
-- [Unique Features of the DRWI Mayfly 1.x WiFi Example](#unique-features-of-the-drwi-mayfly-1x-wifi-example)
+- [DRWI Sites with a Mayfly 1.x and EnviroDIY ESP32 WiFi Bees ](#drwi-sites-with-a-mayfly-1x-and-envirodiy-esp32-wifi-bees-)
+- [Unique Features of the DRWI Mayfly 1.x WiFi Example ](#unique-features-of-the-drwi-mayfly-1x-wifi-example-)
 
 [//]: # ( End GitHub Only )
 
@@ -37,4 +37,4 @@ _______
 
 [//]: # ( @section example_drwi_mayfly1_wifi_code The Complete Code )
 
-[//]: # ( @include{lineno} DRWI_Mayfly1_WiFi/DRWI_Mayfly1_._WiFi.ino )
+[//]: # ( @include{lineno} DRWI_Mayfly1_WiFi/DRWI_Mayfly1_WiFi.ino )
