@@ -26,14 +26,14 @@ There is extensive documentation available in the [ModularSensors github pages](
 [//]: # ( @m_footernavigation )
 
 [//]: # ( Start GitHub Only )
-- [ModularSensors](#modularsensors)
-  - [The EnviroDIY ModularSensors Library](#the-envirodiy-modularsensors-library)
-  - [Supported Sensors](#supported-sensors)
-  - [Data Endpoints](#data-endpoints)
-  - [Supported Cellular/Wifi Modules:](#supported-cellularwifi-modules)
-  - [Contributing](#contributing)
-  - [License](#license)
-  - [Acknowledgments](#acknowledgments)
+- [ModularSensors ](#modularsensors-)
+  - [The EnviroDIY ModularSensors Library ](#the-envirodiy-modularsensors-library-)
+  - [Supported Sensors ](#supported-sensors-)
+  - [Data Endpoints ](#data-endpoints-)
+  - [Supported Cellular/Wifi Modules: ](#supported-cellularwifi-modules-)
+  - [Contributing ](#contributing-)
+  - [License ](#license-)
+  - [Acknowledgments ](#acknowledgments-)
 
 [//]: # ( End GitHub Only )
 
@@ -58,6 +58,7 @@ For some generalized information about attaching sensors to an Arduino style boa
 - [Bosch BMP388 and BMP390: barometric pressure & temperature](https://envirodiy.github.io/ModularSensors/group__sensor__bmp3xx.html)
 - [Campbell Scientific OBS-3+: turbidity, via TI ADS1115](https://envirodiy.github.io/ModularSensors/group__sensor__obs3.html)
 - [Campbell Scientific ClariVUE10: turbidity](https://envirodiy.github.io/ModularSensors/group__sensor__clarivue.html)
+- [Campbell Scientific RainVUE10: precipitation](https://envirodiy.github.io/ModularSensors/group__sensor__rainvue.html)
 - [Decagon Devices ES-2: conductivity ](https://envirodiy.github.io/ModularSensors/group__sensor__es2.html)
 - [Decagon Devices CTD-10: conductivity, temperature & depth ](https://envirodiy.github.io/ModularSensors/group__sensor__decagon__ctd.html)
 - [Everlight ALS-PT19 Analog Light Sensor (via processor ADC)](https://envirodiy.github.io/ModularSensors/group__sensor__alspt19.html)
@@ -91,6 +92,7 @@ For some generalized information about attaching sensors to an Arduino style boa
     - [Y533: ORP, and Temperature](https://envirodiy.github.io/ModularSensors/group__sensor__y533.html)
     - [Y551: UV254/COD, Turbidity, and Temperature](https://envirodiy.github.io/ModularSensors/group__sensor__y551.html)
     - [Y560: Ammonium, Temperature, and pH](https://envirodiy.github.io/ModularSensors/group__sensor__y560.html)
+    - [Y700: Pressure and Temperature](https://envirodiy.github.io/ModularSensors/group__sensor__y700.html)
     - [Y4000 Multiparameter Sonde](https://envirodiy.github.io/ModularSensors/group__sensor__y4000.html)
 - [Zebra-Tech D-Opto: dissolved oxygen](https://envirodiy.github.io/ModularSensors/group__sensor__dopto.html)
 
