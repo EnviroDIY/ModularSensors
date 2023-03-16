@@ -23,23 +23,21 @@ const char* DreamHostPublisher::timestampTagDH = "&Loggertime=";
 // Constructors
 DreamHostPublisher::DreamHostPublisher() : dataPublisher() {}
 
-DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, uint8_t sendEveryX,
-                                       uint8_t sendOffset)
-    : dataPublisher(baseLogger, sendEveryX, sendOffset) {}
+DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, int sendEveryX)
+    : dataPublisher(baseLogger, sendEveryX) {}
 
 DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client* inClient,
-                                       uint8_t sendEveryX, uint8_t sendOffset)
-    : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset) {}
+                                       int sendEveryX)
+    : dataPublisher(baseLogger, inClient, sendEveryX) {}
 
 DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, const char* dhUrl,
-                                       uint8_t sendEveryX, uint8_t sendOffset)
-    : dataPublisher(baseLogger, sendEveryX, sendOffset) {
+                                       int sendEveryX)
+    : dataPublisher(baseLogger, sendEveryX) {
     setDreamHostPortalRX(dhUrl);
 }
 DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client* inClient,
-                                       const char* dhUrl, uint8_t sendEveryX,
-                                       uint8_t sendOffset)
-    : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset) {
+                                       const char* dhUrl, int sendEveryX)
+    : dataPublisher(baseLogger, inClient, sendEveryX) {
     setDreamHostPortalRX(dhUrl);
 }
 // Destructor

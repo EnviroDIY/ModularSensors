@@ -85,11 +85,8 @@ class dataPublisher {
      * logger.
      *
      * @param baseLogger The logger supplying the data to be published
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
+     * @param sendEveryX Interval (in units of the logging interval) between
+     * attempted data transmissions. Not respected by all publishers.
      *
      * @note It is possible (though very unlikey) that using this constructor
      * could cause errors if the compiler attempts to initialize the publisher
@@ -97,8 +94,7 @@ class dataPublisher {
      * issue, use the null constructor and a populated begin(...) within your
      * set-up function.
      */
-    explicit dataPublisher(Logger& baseLogger, uint8_t sendEveryX = 1,
-                           uint8_t sendOffset = 0);
+    explicit dataPublisher(Logger& baseLogger, int sendEveryX = 1);
     /**
      * @brief Construct a new data Publisher object.
      *
@@ -106,11 +102,8 @@ class dataPublisher {
      * @param inClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
+     * @param sendEveryX Interval (in units of the logging interval) between
+     * attempted data transmissions. Not respected by all publishers.
      *
      * @note It is possible (though very unlikey) that using this constructor
      * could cause errors if the compiler attempts to initialize the publisher
@@ -118,8 +111,7 @@ class dataPublisher {
      * issue, use the null constructor and a populated begin(...) within your
      * set-up function.
      */
-    dataPublisher(Logger& baseLogger, Client* inClient, uint8_t sendEveryX = 1,
-                  uint8_t sendOffset = 0);
+    dataPublisher(Logger& baseLogger, Client* inClient, int sendEveryX = 1);
     /**
      * @brief Destroy the data Publisher object - no action is taken.
      */
@@ -144,18 +136,13 @@ class dataPublisher {
      */
     void attachToLogger(Logger& baseLogger);
     /**
-     * @brief Set the parameters for frequency of sending and any offset, if
-     * needed.
+     * @brief Sets the interval (in units of the logging interval) between
+     * attempted data transmissions
      *
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
-     *
-     * @note These parameters are not currently used!
+     * @param sendEveryX Interval (in units of the logging interval) between
+     * attempted data transmissions. Not respected by all publishers.
      */
-    void setSendFrequency(uint8_t sendEveryX, uint8_t sendOffset);
+    void setSendInterval(int sendEveryX);
 
     /**
      * @brief Begin the publisher - linking it to the client and logger.
@@ -323,15 +310,10 @@ class dataPublisher {
     static void txBufferFlush();
 
     /**
-     * @brief Unimplemented; intended for future use to enable caching and bulk
-     * publishing.
+     * @brief Interval (in units of the logging interval) between
+     * attempted data transmissions. Not respected by all publishers.
      */
-    uint8_t _sendEveryX = 1;
-    /**
-     * @brief Unimplemented; intended for future use to enable publishing data
-     * at a time slightly delayed from when it is collected.
-     */
-    uint8_t _sendOffset = 0;
+    int _sendEveryX = 1;
 
     // Basic chunks of HTTP
     /**
