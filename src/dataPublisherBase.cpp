@@ -10,7 +10,9 @@
  */
 #include "dataPublisherBase.h"
 
-char dataPublisher::txBuffer[MS_SEND_BUFFER_SIZE];
+char    dataPublisher::txBuffer[MS_SEND_BUFFER_SIZE];
+Client* dataPublisher::txBufferOutClient = nullptr;
+size_t  dataPublisher::txBufferLen;
 
 // Basic chunks of HTTP
 const char* dataPublisher::getHeader  = "GET ";
@@ -71,34 +73,46 @@ void dataPublisher::begin(Logger& baseLogger) {
 }
 
 
-// Empties the outgoing buffer
-void dataPublisher::emptyTxBuffer(void) {
-    MS_DBG(F("Dumping the TX Buffer"));
-    for (int i = 0; i < MS_SEND_BUFFER_SIZE; i++) { txBuffer[i] = '\0'; }
+void dataPublisher::txBufferInit(Client* outClient) {
+    // remember client we are sending to
+    txBufferOutClient = outClient;
+
+    // reset buffer length to be empty
+    txBufferLen = 0;
 }
 
+void dataPublisher::txBufferAppend(const char* data, size_t length) {
+    while (length > 0) {
+        size_t remaining = MS_SEND_BUFFER_SIZE - txBufferLen;
+        size_t amount    = remaining < length ? remaining : length;
 
-// Returns how much space is left in the buffer
-int dataPublisher::bufferFree(void) {
-    MS_DBG(F("Current TX Buffer Size:"), strlen(txBuffer));
-    return MS_SEND_BUFFER_SIZE - strlen(txBuffer);
+        memcpy(&txBuffer[txBufferLen], data, amount);
+        length -= amount;
+        data += amount;
+        txBufferLen += amount;
+
+        if (txBufferLen == MS_SEND_BUFFER_SIZE) { txBufferFlush(); }
+    }
 }
 
+void dataPublisher::txBufferAppend(const char* s) {
+    txBufferAppend(s, strlen(s));
+}
 
-// Sends the tx buffer to a stream and then clears it
-void dataPublisher::printTxBuffer(Stream* stream, bool addNewLine) {
-// Send the out buffer so far to the serial for debugging
+void dataPublisher::txBufferAppend(char c) {
+    txBufferAppend(&c, 1);
+}
+
+void dataPublisher::txBufferFlush() {
 #if defined(STANDARD_SERIAL_OUTPUT)
-    STANDARD_SERIAL_OUTPUT.write(txBuffer, strlen(txBuffer));
-    if (addNewLine) { PRINTOUT('\n'); }
+    // send to debugging stream
+    STANDARD_SERIAL_OUTPUT.write((const uint8_t*)txBuffer, txBufferLen);
     STANDARD_SERIAL_OUTPUT.flush();
 #endif
-    stream->write(txBuffer, strlen(txBuffer));
-    if (addNewLine) { stream->print("\r\n"); }
-    stream->flush();
+    txBufferOutClient->write((const uint8_t*)txBuffer, txBufferLen);
+    txBufferOutClient->flush();
 
-    // empty the buffer after printing it
-    emptyTxBuffer();
+    txBufferLen = 0;
 }
 
 

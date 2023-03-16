@@ -32,11 +32,10 @@
  * @def MS_SEND_BUFFER_SIZE
  * @brief Send Buffer
  *
- * This determines how many characters to set out at once over the TCP/UDP
- * connection.  Increasing this may decrease data use by a loger, while
- * decreasing it will save memory.  Do not make it smaller than 47 (to keep all
- * variable values with their UUID's) or bigger than 1500 (a typical TCP/UDP
- * Maximum Transmission Unit).
+ * This determines how many characters to set out at once over the TCP
+ * connection. Increasing this may decrease data use by a logger, while
+ * decreasing it will save memory. Do not make it smaller than 32 or bigger
+ * than 1500 (a typical TCP Maximum Transmission Unit).
  *
  * This can be changed by setting the build flag MS_SEND_BUFFER_SIZE when
  * compiling.
@@ -280,29 +279,48 @@ class dataPublisher {
     Client* _inClient = nullptr;
 
     /**
-     * @brief A buffer for outgoing data.
+     * @brief The buffer for outgoing data.
      */
     static char txBuffer[MS_SEND_BUFFER_SIZE];
     /**
-     * @brief Get the number of empty spots in the buffer.
-     *
-     * @return **int** The number of available characters in the buffer
+     * @brief The pointer to the client instance the TX buffer is writing to.
      */
-    static int bufferFree(void);
+    static Client* txBufferOutClient;
     /**
-     * @brief Fill the TX buffer with nulls ('\0').
+     * @brief The number of used characters in the TX buffer.
      */
-    static void emptyTxBuffer(void);
+    static size_t txBufferLen;
     /**
-     * @brief Write the TX buffer to a stream and also to the debugging
-     * port.
+     * @brief Initialize the TX buffer to be empty and start writing to the
+     * given client.
      *
-     * @param stream A pointer to an Arduino Stream instance to use to print
-     * data
-     * @param addNewLine True to add a new line character ("\n") at the end of
-     * the print
+     * @param client The client to transmit to.
      */
-    static void printTxBuffer(Stream* stream, bool addNewLine = false);
+    static void txBufferInit(Client* outClient);
+    /**
+     * @brief Append the given data to the TX buffer, flushing if necessary.
+     *
+     * @param data The data start pointer.
+     * @param length The number of bytes to add.
+     */
+    static void txBufferAppend(const char* data, size_t length);
+    /**
+     * @brief Append the given string to the TX buffer, flushing if necessary.
+     *
+     * @param s The null-terminated string to append.
+     */
+    static void txBufferAppend(const char* s);
+    /**
+     * @brief Append the given char to the TX buffer, flushing if necessary.
+     *
+     * @param c The char to append.
+     */
+    static void txBufferAppend(char c);
+    /**
+     * @brief Write the TX buffer contents to the initialized stream and also to
+     * the debugging port.
+     */
+    static void txBufferFlush();
 
     /**
      * @brief Unimplemented; intended for future use to enable caching and bulk
