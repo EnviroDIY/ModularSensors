@@ -85,27 +85,27 @@
 /**@}*/
 
 /**
- * @anchor sensor_gplp8_cond
- * @name Conductivity
- * The conductivity variable from a GroPoint Profile GPLP-8
- * - Range is 1 µS/cm to 200 mS/cm
- * - Accuracy is ± 1 % Full Scale
+ * @anchor sensor_gplp8_moist
+ * @name Moisture
+ * The volumetric soil moisture variable from a GroPoint Profile GPLP-8
+ * - Range is 0% to 50% volumetric water content
+ * - Accuracy is ± 1%
  *
  * {{ @ref GroPointProfileGPLP8_Moist::GroPointProfileGPLP8_Moist }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; conductivity should have 1
-/// - resolution is 0.1 µS/cm.
+/// @brief Decimals places in string representation; soil moisture should have 1
+/// - resolution is 0.1 %.
 #define GPLP8_MOIST_RESOLUTION 1
-/// @brief Sensor variable number; conductivity is stored in sensorValues[2].
-#define GPLP8_MOIST_VAR_NUM 2
+/// @brief Sensor variable number; soil moisture is stored in sensorValues[2].
+#define GPLP8_MOIST_VAR_NUM 0
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
-/// "specificConductance"
+/// "volumetricWaterContent"
 #define GPLP8_MOIST_VAR_NAME "specificConductance"
 /// @brief Variable unit name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
-/// "microsiemenPerCentimeter" (µS/cm)
+/// "percent" (%)
 #define GPLP8_MOIST_UNIT_NAME "microsiemenPerCentimeter"
 /// @brief Default variable short code; "GPLP8Moist"
 #define GPLP8_MOIST_DEFAULT_CODE "GPLP8Moist"
@@ -115,8 +115,8 @@
  * @anchor sensor_gplp8_temp
  * @name Temperature
  * The temperature variable from a GroPoint Profile GPLP-8 
- * - Range is 0°C to + 50°C
- * - Accuracy is ± 0.2°C
+ * - Range is -20°C to + 70°C
+ * - Accuracy is ± 0.5°C
  *
  * {{ @ref GroPointProfileGPLP8_Temp::GroPointProfileGPLP8_Temp }}
  */
@@ -125,7 +125,7 @@
 /// resolution is 0.1°C.
 #define GPLP8_TEMP_RESOLUTION 1
 /// @brief Sensor variable number; temperature is stored in sensorValues[4].
-#define GPLP8_TEMP_VAR_NUM 4
+#define GPLP8_TEMP_VAR_NUM 1
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
 /// "temperature"
@@ -211,7 +211,7 @@ class GroPointProfileGPLP8 : public GroPointParent {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [conductivity output](@ref sensor_gplp8_cond) from a
+ * [soil moisture output](@ref sensor_gplp8_moist) from a
  * [GroPoint Profile GPLP8 probe](@ref sensor_gplp8).
  *
  * @ingroup sensor_gplp8
