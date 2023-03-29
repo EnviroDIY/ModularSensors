@@ -1,11 +1,11 @@
 /**
- * @file GroPointProfileGPLP8.h
+ * @file GroPointGPLP8.h
  * @copyright 2017-2023 Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Anthony Aufdenkampe <aaufdenkampe@limno.com>
  *
- * @brief Contains the GroPointProfileGPLP8 sensor subclass and the variable
- * subclasses GroPointProfileGPLP8_Moist and GroPointProfileGPLP8_Temp
+ * @brief Contains the GroPointGPLP8 sensor subclass and the variable
+ * subclasses GroPointGPLP8_Moist and GroPointGPLP8_Temp
  *
  * These are for the GroPoint Profile GPLP-8 Eight-Segment Soil Moisture 
  * and Temperature Profiling Probe.
@@ -35,7 +35,7 @@
  * - [GroPoint Profile Technical Info](https://www.gropoint.com/s/GroPoint-Profile-Technical-Info.pdf)
  * *
  * @section sensor_gplp8_ctor Sensor Constructor
- * {{ @ref GroPointProfileGPLP8::GroPointProfileGPLP8 }}
+ * {{ @ref GroPointGPLP8::GroPointGPLP8 }}
  *
  * ___
  * @section sensor_gplp8_examples Example Code
@@ -46,8 +46,8 @@
 /* clang-format on */
 
 // Header Guards
-#ifndef SRC_SENSORS_GROPOINTPROFILEGPLP8_H_
-#define SRC_SENSORS_GROPOINTPROFILEGPLP8_H_
+#ifndef SRC_SENSORS_GROPOINTGPLP8_H_
+#define SRC_SENSORS_GROPOINTGPLP8_H_
 
 // Included Dependencies
 #include "sensors/GroPointParent.h"
@@ -91,7 +91,7 @@
  * - Range is 0% to 50% volumetric water content
  * - Accuracy is ± 1%
  *
- * {{ @ref GroPointProfileGPLP8_Moist::GroPointProfileGPLP8_Moist }}
+ * {{ @ref GroPointGPLP8_Moist::GroPointGPLP8_Moist }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; soil moisture should have 1
@@ -101,12 +101,10 @@
 #define GPLP8_MOIST_VAR_NUM 0
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
-/// "volumetricWaterContent"
-#define GPLP8_MOIST_VAR_NAME "specificConductance"
+#define GPLP8_MOIST_VAR_NAME "volumetricWaterContent"
 /// @brief Variable unit name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
-/// "percent" (%)
-#define GPLP8_MOIST_UNIT_NAME "microsiemenPerCentimeter"
+#define GPLP8_MOIST_UNIT_NAME "percent"
 /// @brief Default variable short code; "GPLP8Moist"
 #define GPLP8_MOIST_DEFAULT_CODE "GPLP8Moist"
 /**@}*/
@@ -118,7 +116,7 @@
  * - Range is -20°C to + 70°C
  * - Accuracy is ± 0.5°C
  *
- * {{ @ref GroPointProfileGPLP8_Temp::GroPointProfileGPLP8_Temp }}
+ * {{ @ref GroPointGPLP8_Temp::GroPointGPLP8_Temp }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; temperature should have 1 -
@@ -147,7 +145,7 @@
  * @ingroup sensor_gplp8
  */
 /* clang-format on */
-class GroPointProfileGPLP8 : public GroPointParent {
+class GroPointGPLP8 : public GroPointParent {
  public:
     // Constructors with overloads
     /**
@@ -170,31 +168,31 @@ class GroPointProfileGPLP8 : public GroPointParent {
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
      */
-    GroPointProfileGPLP8(byte modbusAddress, Stream* stream, int8_t powerPin,
+    GroPointGPLP8(byte modbusAddress, Stream* stream, int8_t powerPin,
                     int8_t powerPin2 = -1, int8_t enablePin = -1,
                     uint8_t measurementsToAverage = 1)
         : GroPointParent(modbusAddress, stream, powerPin, powerPin2,
                            enablePin, measurementsToAverage, GPLP8,
-                           "GroPointProfileGPLP8", GPLP8_NUM_VARIABLES,
+                           "GroPointGPLP8", GPLP8_NUM_VARIABLES,
                            GPLP8_WARM_UP_TIME_MS, GPLP8_STABILIZATION_TIME_MS,
                            GPLP8_MEASUREMENT_TIME_MS,
                            GPLP8_INC_CALC_VARIABLES) {}
     /**
-     * @copydoc GroPointProfileGPLP8::GroPointProfileGPLP8
+     * @copydoc GroPointGPLP8::GroPointGPLP8
      */
-    GroPointProfileGPLP8(byte modbusAddress, Stream& stream, int8_t powerPin,
+    GroPointGPLP8(byte modbusAddress, Stream& stream, int8_t powerPin,
                     int8_t powerPin2 = -1, int8_t enablePin = -1,
                     uint8_t measurementsToAverage = 1)
         : GroPointParent(modbusAddress, stream, powerPin, powerPin2,
                            enablePin, measurementsToAverage, GPLP8,
-                           "GroPointProfileGPLP8", GPLP8_NUM_VARIABLES,
+                           "GroPointGPLP8", GPLP8_NUM_VARIABLES,
                            GPLP8_WARM_UP_TIME_MS, GPLP8_STABILIZATION_TIME_MS,
                            GPLP8_MEASUREMENT_TIME_MS,
                            GPLP8_INC_CALC_VARIABLES) {}
     /**
      * @brief Destroy the GroPoint GPLP8 object
      */
-    ~GroPointProfileGPLP8() {}
+    ~GroPointGPLP8() {}
 };
 
 
@@ -217,38 +215,38 @@ class GroPointProfileGPLP8 : public GroPointParent {
  * @ingroup sensor_gplp8
  */
 /* clang-format on */
-class GroPointProfileGPLP8_Moist : public Variable {
+class GroPointGPLP8_Moist : public Variable {
  public:
     /**
-     * @brief Construct a new GroPointProfileGPLP8_Moist object.
+     * @brief Construct a new GroPointGPLP8_Moist object.
      *
-     * @param parentSense The parent GroPointProfileGPLP8 providing the result
+     * @param parentSense The parent GroPointGPLP8 providing the result
      * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "GPLP8Moist".
      */
-    explicit GroPointProfileGPLP8_Moist(GroPointProfileGPLP8* parentSense,
+    explicit GroPointGPLP8_Moist(GroPointGPLP8* parentSense,
                                   const char*      uuid = "",
                                   const char* varCode = GPLP8_MOIST_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)GPLP8_MOIST_VAR_NUM,
                    (uint8_t)GPLP8_MOIST_RESOLUTION, GPLP8_MOIST_VAR_NAME,
                    GPLP8_MOIST_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new GroPointProfileGPLP8_Moist object.
+     * @brief Construct a new GroPointGPLP8_Moist object.
      *
-     * @note This must be tied with a parent GroPointProfileGPLP8 before it can be
+     * @note This must be tied with a parent GroPointGPLP8 before it can be
      * used.
      */
-    GroPointProfileGPLP8_Moist()
+    GroPointGPLP8_Moist()
         : Variable((const uint8_t)GPLP8_MOIST_VAR_NUM,
                    (uint8_t)GPLP8_MOIST_RESOLUTION, GPLP8_MOIST_VAR_NAME,
                    GPLP8_MOIST_UNIT_NAME, GPLP8_MOIST_DEFAULT_CODE) {}
     /**
-     * @brief Destroy the GroPointProfileGPLP8_Moist object - no action needed.
+     * @brief Destroy the GroPointGPLP8_Moist object - no action needed.
      */
-    ~GroPointProfileGPLP8_Moist() {}
+    ~GroPointGPLP8_Moist() {}
 };
 
 /* clang-format off */
@@ -260,39 +258,39 @@ class GroPointProfileGPLP8_Moist : public Variable {
  * @ingroup sensor_gplp8
  */
 /* clang-format on */
-class GroPointProfileGPLP8_Temp : public Variable {
+class GroPointGPLP8_Temp : public Variable {
  public:
     /**
-     * @brief Construct a new GroPointProfileGPLP8_Temp object.
+     * @brief Construct a new GroPointGPLP8_Temp object.
      *
-     * @param parentSense The parent GroPointProfileGPLP8 providing the result
+     * @param parentSense The parent GroPointGPLP8 providing the result
      * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "GPLP8Temp".
      */
-    explicit GroPointProfileGPLP8_Temp(GroPointProfileGPLP8* parentSense,
+    explicit GroPointGPLP8_Temp(GroPointGPLP8* parentSense,
                                   const char*      uuid = "",
                                   const char* varCode = GPLP8_TEMP_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)GPLP8_TEMP_VAR_NUM,
                    (uint8_t)GPLP8_TEMP_RESOLUTION, GPLP8_TEMP_VAR_NAME,
                    GPLP8_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new GroPointProfileGPLP8_Temp object.
+     * @brief Construct a new GroPointGPLP8_Temp object.
      *
-     * @note This must be tied with a parent GroPointProfileGPLP8 before it can be
+     * @note This must be tied with a parent GroPointGPLP8 before it can be
      * used.
      */
-    GroPointProfileGPLP8_Temp()
+    GroPointGPLP8_Temp()
         : Variable((const uint8_t)GPLP8_TEMP_VAR_NUM,
                    (uint8_t)GPLP8_TEMP_RESOLUTION, GPLP8_TEMP_VAR_NAME,
                    GPLP8_TEMP_UNIT_NAME, GPLP8_TEMP_DEFAULT_CODE) {}
     /**
-     * @brief Destroy the GroPointProfileGPLP8_Temp object - no action needed.
+     * @brief Destroy the GroPointGPLP8_Temp object - no action needed.
      */
-    ~GroPointProfileGPLP8_Temp() {}
+    ~GroPointGPLP8_Temp() {}
 };
 
 /**@}*/
-#endif  // SRC_SENSORS_GROPOINTPROFILEGPLP8_H_
+#endif  // SRC_SENSORS_GROPOINTGPLP8_H_

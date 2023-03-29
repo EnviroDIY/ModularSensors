@@ -195,22 +195,21 @@ void GroPointParent::powerDown(void) {
 
 bool GroPointParent::addSingleMeasurementResult(void) {
     bool success = false;
+    // Initialize float variables
+    float valueM1 = -9999;
+    float valueM2 = -9999;
+    float valueM3 = -9999;
+    float valueM4 = -9999;
+    float valueM5 = -9999;
+    float valueM6 = -9999;
+    float valueM7 = -9999;
+    float valueM8 = -9999;
 
     // Check a measurement was *successfully* started (status bit 6 set)
     // Only go on to get a result if it was
     if (bitRead(_sensorStatus, 6)) {
         switch (_model) {
             case GPLP8: {
-                // Initialize float variables
-                float valueM1 = -9999;
-                float valueM2 = -9999;
-                float valueM3 = -9999;
-                float valueM4 = -9999;
-                float valueM5 = -9999;
-                float valueM6 = -9999;
-                float valueM7 = -9999;
-                float valueM8 = -9999;
-
                 // Get Values
                 MS_DBG(F("Get Values from"), getSensorNameAndLocation());
                 success = _gsensor.getValues(valueM1, valueM2, valueM3,
@@ -228,8 +227,9 @@ bool GroPointParent::addSingleMeasurementResult(void) {
                 if (!success || isnan(valueM8)) valueM8 = -9999;
 
                 MS_DBG(F("    "), _gsensor.getParameter());
-                MS_DBG(F("    "), DOmgL, ',', Turbidity, ',', Cond, ',', pH,
-                       ',', Temp, ',', ORP, ',', Chlorophyll, ',', BGA);
+                MS_DBG(F("    "), valueM1, ',', valueM2, ',', valueM3, ',',
+                    valueM4, ',', valueM5, ',', valueM6, ',', valueM7, ',', 
+                    valueM8);
 
                 // Put values into the array
                 verifyAndAddMeasurementResult(0, valueM1);
@@ -246,7 +246,6 @@ bool GroPointParent::addSingleMeasurementResult(void) {
             default: {
                 // Get Values
                 MS_DBG(F("Other GroPoint models not yet implemented."));
-
             }
         }
     } else {
