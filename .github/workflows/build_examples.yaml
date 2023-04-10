@@ -65,21 +65,21 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Set environment variables for pushes to any branch in EnviroDIY/ModularSensors
-        if: github.event_name != 'pull_request'
+        if: github.event_name == 'push'
         run: |
           echo "Push to commit ${GITHUB_SHA}"
           echo "LIBRARY_INSTALL_ZIP=https://github.com/${GITHUB_REPOSITORY}/archive/${GITHUB_SHA}.zip" >> $GITHUB_ENV
           echo "LIBRARY_INSTALL_GIT=https://github.com/${GITHUB_REPOSITORY}.git#${GITHUB_SHA}" >> $GITHUB_ENV
 
       - name: Set environment variable for PR's from any branch in EnviroDIY/ModularSensors
-        if: github.event.pull_request.head.repo.name == github.repository
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.name == github.repository
         run: |
           echo "Pull Request from the ${GITHUB_HEAD_REF} branch"
           echo "LIBRARY_INSTALL_ZIP=https://github.com/${GITHUB_REPOSITORY}/archive/${GITHUB_HEAD_REF}.zip" >> $GITHUB_ENV
           echo "LIBRARY_INSTALL_GIT=https://github.com/${GITHUB_REPOSITORY}.git#${GITHUB_HEAD_REF}" >> $GITHUB_ENV
 
       - name: Set environment variable for PR's from any branch in EnviroDIY/ModularSensors
-        if: github.event.pull_request.head.repo.name != github.repository
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.name != github.repository
         run: |
           echo "Pull Request from the fork ${{ github.event.pull_request.head.repo.full_name }} at ${{ github.event.pull_request.head.ref }}"
           echo "LIBRARY_INSTALL_ZIP=https://github.com/${{ github.event.pull_request.head.repo.full_name }}/archive/${{ github.event.pull_request.head.ref }}.zip" >> $GITHUB_ENV
