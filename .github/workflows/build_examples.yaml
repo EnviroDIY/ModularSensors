@@ -53,26 +53,69 @@ jobs:
           echo "PlatformIO job matrix"
           echo "${{ needs.generate_matrix.outputs.pio_job_matrix }}"
 
+  determine_library_source:
+    name: determine_library_source
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
+    outputs:
+      library_install_zip: ${{ steps.store_vars.outputs.library_install_zip }}
+      library_install_git: ${{ steps.store_vars.outputs.library_install_git }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set environment variables for pushes to any branch in EnviroDIY/ModularSensors
+        if: github.event_name != 'pull_request'
+        run: |
+          echo "Push to commit ${GITHUB_SHA}"
+          echo "LIBRARY_INSTALL_ZIP=https://github.com/${GITHUB_REPOSITORY}/archive/${GITHUB_SHA}.zip" >> $GITHUB_ENV
+          echo "LIBRARY_INSTALL_GIT=https://github.com/${GITHUB_REPOSITORY}.git#${GITHUB_SHA}" >> $GITHUB_ENV
+
+      - name: Set environment variable for PR's from any branch in EnviroDIY/ModularSensors
+        if: github.event.pull_request.head.repo.name == github.repository
+        run: |
+          echo "Pull Request from the ${GITHUB_HEAD_REF} branch"
+          echo "LIBRARY_INSTALL_ZIP=https://github.com/${GITHUB_REPOSITORY}/archive/${GITHUB_HEAD_REF}.zip" >> $GITHUB_ENV
+          echo "LIBRARY_INSTALL_GIT=https://github.com/${GITHUB_REPOSITORY}.git#${GITHUB_HEAD_REF}" >> $GITHUB_ENV
+
+      - name: Set environment variable for PR's from any branch in EnviroDIY/ModularSensors
+        if: github.event.pull_request.head.repo.name != github.repository
+        run: |
+          echo "Pull Request from the fork ${{ github.event.pull_request.head.repo.full_name }} at ${{ github.event.pull_request.head.ref }}"
+          echo "LIBRARY_INSTALL_ZIP=https://github.com/${{ github.event.pull_request.head.repo.full_name }}/archive/${{ github.event.pull_request.head.ref }}.zip" >> $GITHUB_ENV
+          echo "LIBRARY_INSTALL_GIT=https://github.com${{ github.event.pull_request.head.repo.full_name }}.git#${{ github.event.pull_request.head.ref }}" >> $GITHUB_ENV
+
+      - name: store enviroment variables as output
+        id: store_vars
+        run: |
+          echo "library_install_zip=${{ env.LIBRARY_INSTALL_ZIP }}" >> $GITHUB_OUTPUT
+          echo "library_install_git=${{ env.LIBRARY_INSTALL_GIT }}" >> $GITHUB_OUTPUT
+
+  print_library_source:
+    name: print_library_source
+    runs-on: ubuntu-latest
+    needs: determine_library_source
+    steps:
+      - name: Check the generated matrix output
+        run: |
+          echo "Link to zip for Arduino CLI testing install:"
+          echo "${{ needs.generate_matrix.outputs.library_install_zip }}"
+          echo
+          echo "Git reference for PlatformIO testing install"
+          echo "${{ needs.generate_matrix.outputs.library_install_git }}"
+
   build_ex_arduino:
     name: ${{ matrix.job_info.job_name }}
     runs-on: ubuntu-latest
-    needs: generate_matrix
+    needs: [generate_matrix, determine_library_source]
+    env:
+      LIBRARY_INSTALL_ZIP: ${{ needs.generate_matrix.outputs.library_install_zip }}
     strategy:
       matrix:
         job_info: ${{ fromJSON(needs.generate_matrix.outputs.arduino_job_matrix) }}
 
     steps:
       - uses: actions/checkout@v3
-
-      - name: Set environment variable for library installation source
-        run: |
-          if [[ -z "${GITHUB_HEAD_REF}" ]]; then
-            echo "::debug::Push to commit ${GITHUB_SHA}"
-            echo "LIBRARY_INSTALL_ZIP=https://github.com/${GITHUB_REPOSITORY}/archive/${GITHUB_SHA}.zip" >> $GITHUB_ENV
-          else
-            echo "::debug::Pull Request from the ${GITHUB_HEAD_REF} branch"
-            echo "LIBRARY_INSTALL_ZIP=https://github.com/${GITHUB_REPOSITORY}/archive/${GITHUB_HEAD_REF}.zip" >> $GITHUB_ENV
-          fi
 
       - name: Unused Step
         run: echo "This is needed to make the step number match with the PlatformIO jobs. =)"
@@ -134,23 +177,15 @@ jobs:
   build_pio:
     name: ${{ matrix.job_info.job_name }}
     runs-on: ubuntu-latest
-    needs: generate_matrix
+    needs: [generate_matrix, determine_library_source]
+    env:
+      LIBRARY_INSTALL_ZIP: ${{ needs.generate_matrix.outputs.library_install_zip }}
     strategy:
       matrix:
         job_info: ${{ fromJSON(needs.generate_matrix.outputs.pio_job_matrix) }}
 
     steps:
       - uses: actions/checkout@v3
-
-      - name: Set environment variable for library installation source
-        run: |
-          if [[ -z "${GITHUB_HEAD_REF}" ]]; then
-            echo "::debug::Push to commit ${GITHUB_SHA}"
-            echo "LIBRARY_INSTALL_SOURCE=https://github.com/${GITHUB_REPOSITORY}.git#${GITHUB_SHA}" >> $GITHUB_ENV
-          else
-            echo "::debug::Pull Request from the ${GITHUB_HEAD_REF} branch"
-            echo "LIBRARY_INSTALL_SOURCE=https://github.com/${GITHUB_REPOSITORY}.git#${GITHUB_HEAD_REF}" >> $GITHUB_ENV
-          fi
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -184,7 +219,7 @@ jobs:
       # Force install to get the right version
       - name: Install the testing version of Modular Sensors for PlatformIO
         run: |
-          pio pkg install -g --library ${{ env.LIBRARY_INSTALL_SOURCE }}
+          pio pkg install -g --library ${{ env.LIBRARY_INSTALL_GIT }}
 
       - name: Download the prepared examples
         uses: actions/download-artifact@v3
