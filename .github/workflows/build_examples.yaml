@@ -96,20 +96,20 @@ jobs:
     runs-on: ubuntu-latest
     needs: determine_library_source
     steps:
-      - name: Check the generated matrix output
+      - name: Check the library installation source
         run: |
           echo "Link to zip for Arduino CLI testing install:"
-          echo "${{ needs.generate_matrix.outputs.library_install_zip }}"
+          echo "${{ needs.determine_library_source.outputs.library_install_zip }}"
           echo
           echo "Git reference for PlatformIO testing install"
-          echo "${{ needs.generate_matrix.outputs.library_install_git }}"
+          echo "${{ needs.determine_library_source.outputs.library_install_git }}"
 
   build_ex_arduino:
     name: ${{ matrix.job_info.job_name }}
     runs-on: ubuntu-latest
     needs: [generate_matrix, determine_library_source]
     env:
-      LIBRARY_INSTALL_ZIP: ${{ needs.generate_matrix.outputs.library_install_zip }}
+      LIBRARY_INSTALL_ZIP: ${{ needs.determine_library_source.outputs.library_install_zip }}
     strategy:
       matrix:
         job_info: ${{ fromJSON(needs.generate_matrix.outputs.arduino_job_matrix) }}
@@ -179,7 +179,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [generate_matrix, determine_library_source]
     env:
-      LIBRARY_INSTALL_ZIP: ${{ needs.generate_matrix.outputs.library_install_zip }}
+      LIBRARY_INSTALL_GIT: ${{ needs.determine_library_source.outputs.library_install_zip }}
     strategy:
       matrix:
         job_info: ${{ fromJSON(needs.generate_matrix.outputs.pio_job_matrix) }}
