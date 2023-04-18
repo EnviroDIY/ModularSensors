@@ -195,51 +195,86 @@ void GroPointParent::powerDown(void) {
 
 bool GroPointParent::addSingleMeasurementResult(void) {
     bool success = false;
-    // Initialize float variables
-    float valueM1 = -9999;
-    float valueM2 = -9999;
-    float valueM3 = -9999;
-    float valueM4 = -9999;
-    float valueM5 = -9999;
-    float valueM6 = -9999;
-    float valueM7 = -9999;
-    float valueM8 = -9999;
+    bool successT = false;
+    // Initialize moisture variables for each probe segement
+    float M1, M2, M3, M4, M5, M6, M7, M8 = -9999;
+    // Initialize temperature variables for each probe sensor
+    float T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13 = -9999;
 
     // Check a measurement was *successfully* started (status bit 6 set)
     // Only go on to get a result if it was
     if (bitRead(_sensorStatus, 6)) {
         switch (_model) {
             case GPLP8: {
-                // Get Values
+                // Get Moisture Values
                 MS_DBG(F("Get Values from"), getSensorNameAndLocation());
-                success = _gsensor.getValues(valueM1, valueM2, valueM3,
-                                             valueM4, valueM5, valueM6, 
-                                             valueM7, valueM8);
+                success = _gsensor.getValues(M1, M2, M3, M4, M5, M6, M7, M8);
 
                 // Fix not-a-number values
-                if (!success || isnan(valueM1)) valueM1 = -9999;
-                if (!success || isnan(valueM2)) valueM2 = -9999;
-                if (!success || isnan(valueM3)) valueM3 = -9999;
-                if (!success || isnan(valueM4)) valueM4 = -9999;
-                if (!success || isnan(valueM5)) valueM5 = -9999;
-                if (!success || isnan(valueM6)) valueM6 = -9999;
-                if (!success || isnan(valueM7)) valueM7 = -9999;
-                if (!success || isnan(valueM8)) valueM8 = -9999;
+                if (!success || isnan(M1)) M1 = -9999;
+                if (!success || isnan(M2)) M2 = -9999;
+                if (!success || isnan(M3)) M3 = -9999;
+                if (!success || isnan(M4)) M4 = -9999;
+                if (!success || isnan(M5)) M5 = -9999;
+                if (!success || isnan(M6)) M6 = -9999;
+                if (!success || isnan(M7)) M7 = -9999;
+                if (!success || isnan(M8)) M8 = -9999;
 
                 MS_DBG(F("    "), _gsensor.getParameter());
-                MS_DBG(F("    "), valueM1, ',', valueM2, ',', valueM3, ',',
-                    valueM4, ',', valueM5, ',', valueM6, ',', valueM7, ',', 
-                    valueM8);
+                MS_DBG(F("    "), _gsensor.getUnits());                
+                MS_DBG(F("    "), M1,',', M2,',', M3,',', M4,',', M5,',', 
+                                  M6,',', M7,',', M8);
+                
+                // Get Temperature Values
+                successT = _gsensor.getTemperatureValues(T1, T2, T3, T4, T5, 
+                                        T6, T7, T8, T9, T10, T11, T12, T13);
+
+                // Fix not-a-number values
+                if (!success || isnan(T1)) T1 = -9999;
+                if (!success || isnan(T2)) T2 = -9999;
+                if (!success || isnan(T3)) T3 = -9999;
+                if (!success || isnan(T4)) T4 = -9999;
+                if (!success || isnan(T5)) T5 = -9999;
+                if (!success || isnan(T6)) T6 = -9999;
+                if (!success || isnan(T7)) T7 = -9999;
+                if (!success || isnan(T8)) T8 = -9999;
+                if (!success || isnan(T9)) T9 = -9999;
+                if (!success || isnan(T10)) T10 = -9999;
+                if (!success || isnan(T11)) T11 = -9999;
+                if (!success || isnan(T12)) T12 = -9999;
+                if (!success || isnan(T13)) T13 = -9999;
+
+                MS_DBG(F("    "), _gsensor.getParameter1());
+                MS_DBG(F("    "), _gsensor.getUnits1());                
+                MS_DBG(F("    "), T1, ',', T2, ',', T3, ',', T4, ',', T5, ',', 
+                                  T6, ',', T7, ',', T8, ',', T9, ',', T10, ',', 
+                                  T11, ',', T12, ',', T13);
+
 
                 // Put values into the array
-                verifyAndAddMeasurementResult(0, valueM1);
-                verifyAndAddMeasurementResult(1, valueM2);
-                verifyAndAddMeasurementResult(2, valueM3);
-                verifyAndAddMeasurementResult(3, valueM4);
-                verifyAndAddMeasurementResult(4, valueM5);
-                verifyAndAddMeasurementResult(5, valueM6);
-                verifyAndAddMeasurementResult(6, valueM7);
-                verifyAndAddMeasurementResult(7, valueM8);
+                verifyAndAddMeasurementResult(0, M1);
+                verifyAndAddMeasurementResult(1, M2);
+                verifyAndAddMeasurementResult(2, M3);
+                verifyAndAddMeasurementResult(3, M4);
+                verifyAndAddMeasurementResult(4, M5);
+                verifyAndAddMeasurementResult(5, M6);
+                verifyAndAddMeasurementResult(6, M7);
+                verifyAndAddMeasurementResult(7, M8);
+
+                verifyAndAddMeasurementResult(8, T1);
+                verifyAndAddMeasurementResult(9, T2);
+                verifyAndAddMeasurementResult(10, T3);
+                verifyAndAddMeasurementResult(11, T4);
+                verifyAndAddMeasurementResult(12, T5);
+                verifyAndAddMeasurementResult(13, T6);
+                verifyAndAddMeasurementResult(14, T7);
+                verifyAndAddMeasurementResult(15, T8);
+                verifyAndAddMeasurementResult(16, T9);
+                verifyAndAddMeasurementResult(17, T10);
+                verifyAndAddMeasurementResult(18, T11);
+                verifyAndAddMeasurementResult(19, T12);
+                verifyAndAddMeasurementResult(20, T13);
+
 
                 break;
             }

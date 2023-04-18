@@ -57,7 +57,7 @@
 
 // Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the GPLP8 can report 8 values.
-#define GPLP8_NUM_VARIABLES 2
+#define GPLP8_NUM_VARIABLES 21
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define GPLP8_INC_CALC_VARIABLES 0
 
@@ -123,7 +123,7 @@
 /// resolution is 0.1°C.
 #define GPLP8_TEMP_RESOLUTION 1
 /// @brief Sensor variable number; temperature is stored in sensorValues[4].
-#define GPLP8_TEMP_VAR_NUM 1
+#define GPLP8_TEMP_VAR_NUM 8
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
 /// "temperature"
@@ -195,16 +195,6 @@ class GroPointGPLP8 : public GroPointParent {
     ~GroPointGPLP8() {}
 };
 
-
-/* clang-format off */
-/**
- * @brief The Variable sub-class used for the
- * [dissolved oxygen concentration output](@ref sensor_gplp8_domgl) from a
- * [GroPoint Profile GPLP8 probe](@ref sensor_gplp8).
- *
- * @ingroup sensor_gplp8
- */
-/* clang-format on */
 
 /* clang-format off */
 /**

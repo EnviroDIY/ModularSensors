@@ -1363,6 +1363,119 @@ Variable* mplTemp = new FreescaleMPL115A2_Temp(
 /** End [freescale_mpl115a2] */
 #endif
 
+#if defined BUILD_SENSOR_GROPOINT_GPLP8
+// ==========================================================================
+//  GroPoint Profile GPLP-8 Soil Moisture and Temperature Sensor
+// ==========================================================================
+/** Start [gropoint_gplp8] */
+#include <sensors/GroPointGPLP8.h>
+
+// NOTE: Extra hardware and software serial ports are created in the "Settings
+// for Additional Serial Ports" section
+
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+byte          gplp8ModbusAddress  = 0x19;  // The modbus address of the gplp8
+// Raw Request >>> {0x19, 0x03, 0x00, 0xC8, 0x00, 0x01, 0x06, 0x2C}
+const int8_t  gplp8AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  gplp8SensorPower    = modbusSensorPowerPin;              // Sensor power pin
+const int8_t  gplp8EnablePin      = -1;              // Adapter RE/DE pin
+const uint8_t gplp8NumberReadings = 1;
+// The manufacturer recommends averaging 10 readings, but we take 5 to minimize
+// power consumption
+
+// Create a GroPoint Profile GPLP-8 sensor object
+GroPointGPLP8 gplp8(gplp8ModbusAddress, modbusSerial, gplp8AdapterPower,
+                      gplp8SensorPower, gplp8EnablePin, gplp8NumberReadings);
+
+// Create moisture and temperature variable pointers for the GPLP-8
+Variable* gplp8Moist1 = new Variable(&gplp8, 0, 
+    GPLP8_MOIST_RESOLUTION, "volumetricWaterContent at M1", 
+    GPLP8_MOIST_UNIT_NAME, "GPLP8Moist1",
+    "12345678-abcd-1234-ef00-1234567890ab");
+Variable* gplp8Moist2 = new Variable(&gplp8, 1, 
+    GPLP8_MOIST_RESOLUTION, "volumetricWaterContent at M2", 
+    GPLP8_MOIST_UNIT_NAME, "GPLP8Moist2",
+    "12345678-abcd-1234-ef00-1234567890ab");
+Variable* gplp8Moist3 = new Variable(&gplp8, 2, 
+    GPLP8_MOIST_RESOLUTION, "volumetricWaterContent at M3", 
+    GPLP8_MOIST_UNIT_NAME, "GPLP8Moist3",
+    "12345678-abcd-1234-ef00-1234567890ab");
+Variable* gplp8Moist4 = new Variable(&gplp8, 3, 
+    GPLP8_MOIST_RESOLUTION, "volumetricWaterContent at M4", 
+    GPLP8_MOIST_UNIT_NAME, "GPLP8Moist4",
+    "12345678-abcd-1234-ef00-1234567890ab");
+Variable* gplp8Moist5 = new Variable(&gplp8, 4, 
+    GPLP8_MOIST_RESOLUTION, "volumetricWaterContent at M5", 
+    GPLP8_MOIST_UNIT_NAME, "GPLP8Moist5",
+    "12345678-abcd-1234-ef00-1234567890ab");
+Variable* gplp8Moist6 = new Variable(&gplp8, 5, 
+    GPLP8_MOIST_RESOLUTION, "volumetricWaterContent at M6", 
+    GPLP8_MOIST_UNIT_NAME, "GPLP8Moist6",
+    "12345678-abcd-1234-ef00-1234567890ab");
+Variable* gplp8Moist7 = new Variable(&gplp8, 6, 
+    GPLP8_MOIST_RESOLUTION, "volumetricWaterContent at M7", 
+    GPLP8_MOIST_UNIT_NAME, "GPLP8Moist7",
+    "12345678-abcd-1234-ef00-1234567890ab");
+Variable* gplp8Moist8 = new Variable(&gplp8, 7, 
+    GPLP8_MOIST_RESOLUTION, "volumetricWaterContent at M8", 
+    GPLP8_MOIST_UNIT_NAME, "GPLP8Moist8",
+    "12345678-abcd-1234-ef00-1234567890ab");
+
+Variable* gplp8Temp1 = new Variable(&gplp8, 8,
+    GPLP8_TEMP_RESOLUTION, "temperature at T1", 
+    GPLP8_TEMP_UNIT_NAME, "GPLP8Temp1",
+    "12345678-abcd-1234-ef00-1234567890ab");
+Variable* gplp8Temp2 = new Variable(&gplp8, 9,
+    GPLP8_TEMP_RESOLUTION, "temperature at T2", 
+    GPLP8_TEMP_UNIT_NAME, "GPLP8Temp1",
+    "12345678-abcd-1234-ef00-1234567890ab");
+Variable* gplp8Temp3 = new Variable(&gplp8, 10,
+    GPLP8_TEMP_RESOLUTION, "temperature at T3", 
+    GPLP8_TEMP_UNIT_NAME, "GPLP8Temp3",
+    "12345678-abcd-1234-ef00-1234567890ab");
+Variable* gplp8Temp4 = new Variable(&gplp8, 11,
+    GPLP8_TEMP_RESOLUTION, "temperature at T4", 
+    GPLP8_TEMP_UNIT_NAME, "GPLP8Temp4",
+    "12345678-abcd-1234-ef00-1234567890ab");
+Variable* gplp8Temp5 = new Variable(&gplp8, 12,
+    GPLP8_TEMP_RESOLUTION, "temperature at T5", 
+    GPLP8_TEMP_UNIT_NAME, "GPLP8Temp5",
+    "12345678-abcd-1234-ef00-1234567890ab");
+Variable* gplp8Temp6 = new Variable(&gplp8, 13,
+    GPLP8_TEMP_RESOLUTION, "temperature at T6", 
+    GPLP8_TEMP_UNIT_NAME, "GPLP8Temp6",
+    "12345678-abcd-1234-ef00-1234567890ab");
+Variable* gplp8Temp7 = new Variable(&gplp8, 14,
+    GPLP8_TEMP_RESOLUTION, "temperature at T7", 
+    GPLP8_TEMP_UNIT_NAME, "GPLP8Temp7",
+    "12345678-abcd-1234-ef00-1234567890ab");
+Variable* gplp8Temp8 = new Variable(&gplp8, 15,
+    GPLP8_TEMP_RESOLUTION, "temperature at T8", 
+    GPLP8_TEMP_UNIT_NAME, "GPLP8Temp8",
+    "12345678-abcd-1234-ef00-1234567890ab");
+Variable* gplp8Temp9 = new Variable(&gplp8, 16,
+    GPLP8_TEMP_RESOLUTION, "temperature at T9", 
+    GPLP8_TEMP_UNIT_NAME, "GPLP8Temp9",
+    "12345678-abcd-1234-ef00-1234567890ab");
+Variable* gplp8Temp10 = new Variable(&gplp8, 17,
+    GPLP8_TEMP_RESOLUTION, "temperature at T10", 
+    GPLP8_TEMP_UNIT_NAME, "GPLP8Temp10",
+    "12345678-abcd-1234-ef00-1234567890ab");
+Variable* gplp8Temp11 = new Variable(&gplp8, 18,
+    GPLP8_TEMP_RESOLUTION, "temperature at T11", 
+    GPLP8_TEMP_UNIT_NAME, "GPLP8Temp11",
+    "12345678-abcd-1234-ef00-1234567890ab");
+Variable* gplp8Temp12 = new Variable(&gplp8, 19,
+    GPLP8_TEMP_RESOLUTION, "temperature at T12", 
+    GPLP8_TEMP_UNIT_NAME, "GPLP8Temp12",
+    "12345678-abcd-1234-ef00-1234567890ab");
+Variable* gplp8Temp13 = new Variable(&gplp8, 20,
+    GPLP8_TEMP_RESOLUTION, "temperature at T13", 
+    GPLP8_TEMP_UNIT_NAME, "GPLP8Temp13",
+    "12345678-abcd-1234-ef00-1234567890ab");
+/** End [gropoint_gplp8] */
+#endif
+
 
 #if defined BUILD_SENSOR_IN_SITU_RDO
 // ==========================================================================
@@ -2376,7 +2489,7 @@ Variable* calculatedVar = new Variable(
 #if defined BUILD_TEST_CREATE_IN_ARRAY
 // ==========================================================================
 //  Creating the Variable Array[s] and Filling with Variable Objects
-//  NOTE:  This shows three differnt ways of creating the same variable array
+//  NOTE:  This shows three different ways of creating the same variable array
 //         and filling it with variables
 // ==========================================================================
 /** Start [variables_create_in_array] */
