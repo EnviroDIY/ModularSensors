@@ -329,6 +329,15 @@
       "authors": ["Sara Damiano", "Anthony Aufdenkampe"],
       "frameworks": "arduino",
       "platforms": "atmelavr, atmelsam"
+    },
+    {
+        "name": "GropointModbus",
+        "owner": "envirodiy",
+        "version": "https://github.com/EnviroDIY/GroPointModbus.git",
+        "note": "AA library to use an Arduino as a master to control and communicate via modbus with GroPoint soil moisture sensors. ",
+        "authors": ["Anthony Aufdenkampe"],
+        "frameworks": "arduino",
+        "platforms": "atmelavr, atmelsam"
     }
   ]
 }
