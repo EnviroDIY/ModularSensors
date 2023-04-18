@@ -1387,7 +1387,7 @@ const uint8_t gplp8NumberReadings = 1;
 GroPointGPLP8 gplp8(gplp8ModbusAddress, modbusSerial, gplp8AdapterPower,
                       gplp8SensorPower, gplp8EnablePin, gplp8NumberReadings);
 
-// Create moisture and temperature variable pointers for the GPLP-8
+// Create moisture variable pointers for each segment of the GPLP-8
 Variable* gplp8Moist1 = new Variable(&gplp8, 0, 
     GPLP8_MOIST_RESOLUTION, "volumetricWaterContent at M1", 
     GPLP8_MOIST_UNIT_NAME, "GPLP8Moist1",
@@ -1421,6 +1421,7 @@ Variable* gplp8Moist8 = new Variable(&gplp8, 7,
     GPLP8_MOIST_UNIT_NAME, "GPLP8Moist8",
     "12345678-abcd-1234-ef00-1234567890ab");
 
+// Create temperature variable pointers for each sensor of the GPLP-8
 Variable* gplp8Temp1 = new Variable(&gplp8, 8,
     GPLP8_TEMP_RESOLUTION, "temperature at T1", 
     GPLP8_TEMP_UNIT_NAME, "GPLP8Temp1",
@@ -2651,6 +2652,29 @@ Variable* variableList[] = {
 #if defined BUILD_SENSOR_FREESCALE_MPL115A2
     mplTemp,
     mplPress,
+#endif
+#if defined BUILD_SENSOR_GROPOINT_GPLP8
+    gplp8Moist1,
+    gplp8Moist2,
+    gplp8Moist3,
+    gplp8Moist4,
+    gplp8Moist5,
+    gplp8Moist6,
+    gplp8Moist7,
+    gplp8Moist8,
+    gplp8Temp1,
+    gplp8Temp2,
+    gplp8Temp3,
+    gplp8Temp4,
+    gplp8Temp5,
+    gplp8Temp6,
+    gplp8Temp7,
+    gplp8Temp8,
+    gplp8Temp9,
+    gplp8Temp10,
+    gplp8Temp11,
+    gplp8Temp12,
+    gplp8Temp13,
 #endif
 #if defined BUILD_SENSOR_IN_SITU_RDO
     rdoTemp,
