@@ -2963,15 +2963,15 @@ float getBatteryVoltage() {
 //  Arduino Setup Function
 // ==========================================================================
 void setup() {
-/** Start [setup_wait] */
-// Wait for USB connection to be established by PC
-// NOTE:  Only use this when debugging - if not connected to a PC, this
-// could prevent the script from starting
-#if defined SERIAL_PORT_USBVIRTUAL
-    while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000L)) {
-        // wait
-    }
-#endif
+    /** Start [setup_wait] */
+    // Wait for USB connection to be established by PC
+    // NOTE:  Only use this when debugging - if not connected to a PC, this
+    // could prevent the script from starting
+    #if defined SERIAL_PORT_USBVIRTUAL
+        while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000L)) {
+            // wait
+        }
+    #endif
     /** End [setup_wait] */
 
     /** Start [setup_prints] */
@@ -2990,7 +2990,7 @@ void setup() {
     Serial.print(F("TinyGSM Library version "));
     Serial.println(TINYGSM_VERSION);
     Serial.println();
-/** End [setup_prints] */
+    /** End [setup_prints] */
 
 /** Start [setup_softserial] */
 // Allow interrupts for software serial
