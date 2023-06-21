@@ -10,12 +10,16 @@
 #include "LoggerModem.h"
 
 // Initialize the static members
-int16_t loggerModem::_priorRSSI           = -9999;
-int16_t loggerModem::_priorSignalPercent  = -9999;
-float   loggerModem::_priorModemTemp      = -9999;
-float   loggerModem::_priorBatteryState   = -9999;
-float   loggerModem::_priorBatteryPercent = -9999;
-float   loggerModem::_priorBatteryVoltage = -9999;
+loggerModem::PollModemMetaData_t loggerModem::_pollModemMetaData =
+    POLL_MODEM_META_DATA_DEF;
+
+int16_t loggerModem::_priorRSSI           = SENSOR_DEFAULT_I;
+int16_t loggerModem::_priorSignalPercent  = SENSOR_DEFAULT_I;
+float   loggerModem::_priorModemTemp      = SENSOR_DEFAULT_F;
+float   loggerModem::_priorBatteryState   = SENSOR_DEFAULT_F;
+float   loggerModem::_priorBatteryPercent = SENSOR_DEFAULT_F;
+float   loggerModem::_priorBatteryVoltage = SENSOR_DEFAULT_F;
+
 
 // Constructor
 loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
@@ -305,6 +309,9 @@ void loggerModem::setModemPinModes(void) {
 }
 
 
+void loggerModem::pollModemMetadata(PollModemMetaData_t status) {
+    _pollModemMetaData = status;
+}
 bool loggerModem::updateModemMetadata(void) {
     bool success = true;
 
