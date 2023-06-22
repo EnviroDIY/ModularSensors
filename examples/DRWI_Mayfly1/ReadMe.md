@@ -1,8 +1,10 @@
 # DRWI Sites with a Mayfly 1.x and EnviroDIY LTE Bees <!-- {#example_drwi_mayfly1} -->
 Example sketch for using the EnviroDIY SIM7080G LTE cellular module with an EnviroDIY Mayfly Data Logger.
 
+This example uses the sensors and equipment used by most groups participating in the DRWI (Delaware River Watershed Initiative) Citizen Science project with the Stroud Water Research Center. It includes a Meter Hydros 21 (CTD) and a SIM7080G-based EnviroDIY LTEbee for communication. This examples also makes use of the on-board light, temperature, and humidity sensors on the Mayfly 1.x. The results are saved to the SD card and posted to the Monitor My Watershed data portal. Only to be used with newer Mayfly v1.0 and v1.1 boards.
+
 The exact hardware configuration used in this example:
- * Mayfly v1.1 board
+ * Mayfly v1.x board
  * EnviroDIY SIM7080 LTE module (with Hologram SIM card)
  * Hydros21 CTD sensor
 
@@ -15,6 +17,7 @@ The EnviroDIY LTE SIM7080 module includes 2 antennas in the package.  The small 
 The included cell antenna works best in high-signal-strength areas.  For most remote areas and logger deployments, we suggest a larger LTE antenna, like the W3907B0100
 from PulseLarsen (Digikey 1837-1003-ND or Mouser 673-W3907B0100)
 
+Users purchasing a new Hydros21 CTD sensor will need to change the SDI-12 address of the sensor in order to use this sketch.  Full instructions for using this sketch as part of a monitoring station can be found in the EnviroDIY Monitoring Station Manual.  
 _______
 
 [//]: # ( @tableofcontents )
