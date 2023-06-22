@@ -2,6 +2,12 @@
 
 This example uses the sensors and equipment common to older stations (2016-2020) deployed by groups participating in the DRWI Citizen Science project with the Stroud Water Research Center. It includes a Meter Hydros21 CTD (formerly know as a Decagon), a Campbell OBS3+ (Turbidity), and a Digi XBee3 LTE-M cellular board for communication.  The Digi LTE module also required the use of a EnviroDIY LTEbee Adapter board (discontinued in 2021).  The Digi LTE modules are no longer recommended for use and have been replace by the EnviroDIY LTEbee in all DRWI-SWRC-managed stations.
 
+The exact hardware configuration used in this example:
+ * Mayfly v0.5b board
+ * Digi Xbee LTE module (with Hologram SIM card and EnviroDIY bee adapter)
+ * Hydros21 CTD sensor
+ * Campbell OBS3+ turbidity sensor
+
 
 _______
 
