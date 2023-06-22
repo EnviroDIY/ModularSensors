@@ -2,6 +2,13 @@
 
 This code was used for DRWI monitoring stations in 2016-2022.  The 2G GPRSbee cellular boards no longer function in the USA, so this code should not be used and is only provided to archival and reference purposes.
 
+The exact hardware configuration used in this example:
+ * Mayfly v0.5b board
+ * SODAQ GPRSbee 2G cell module (with Hologram SIM card)
+ * Hydros21 CTD sensor
+ * Campbell OBS3+ turbidity sensor
+
+
 _______
 
 [//]: # ( @tableofcontents )
