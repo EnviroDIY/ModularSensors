@@ -164,7 +164,7 @@
       "owner": "adafruit",
       "library id": "11710",
       "url": "https://github.com/adafruit/Adafruit_SHT4X",
-      "version": "~1.0.2",
+      "version": "~1.0.4",
       "note": "Sensirion SHT4x Library by Adafruit",
       "authors": ["Adafruit"],
       "frameworks": "arduino"
