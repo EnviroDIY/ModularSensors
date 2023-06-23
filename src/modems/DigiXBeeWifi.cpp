@@ -456,72 +456,63 @@ bool DigiXBeeWifi::updateModemMetadata(void) {
     bool success = true;
 
     // Unset whatever we had previously
-    loggerModem::_priorRSSI           = SENSOR_DEFAULT_I;
-    loggerModem::_priorSignalPercent  = SENSOR_DEFAULT_I;
-    loggerModem::_priorBatteryState   = SENSOR_DEFAULT_I;
-    loggerModem::_priorBatteryPercent = SENSOR_DEFAULT_I;
-    loggerModem::_priorBatteryPercent = SENSOR_DEFAULT_I;
-    loggerModem::_priorModemTemp      = SENSOR_DEFAULT_F;
+    loggerModem::_priorRSSI           = -9999;
+    loggerModem::_priorSignalPercent  = -9999;
+    loggerModem::_priorBatteryState   = -9999;
+    loggerModem::_priorBatteryPercent = -9999;
+    loggerModem::_priorBatteryPercent = -9999;
+    loggerModem::_priorModemTemp      = -9999;
 
     // Initialize variable
-    int16_t rssi = SENSOR_DEFAULT_I;
-    // int16_t  percent = SENSOR_DEFAULT_I;
-#define XBEE_V_KEY 9999
-    uint16_t volt_mV = XBEE_V_KEY;
+    int16_t rssi = -9999;
+    // int16_t  percent = -9999;
+    uint16_t volt_mV = 9999;
 
-    // if not enabled don't collect data
-    if (0 == loggerModem::_pollModemMetaData) {
-        MS_DBG(F("updateModemMetadata None to update"));
-        return false;
-    }
     // Enter command mode only once for temp and battery
-    MS_DBG(F("updateModemMetadata Entering Command Mode:"));
+    MS_DBG(F("Entering Command Mode to update modem metadata:"));
     success &= gsmModem.commandMode();
-    if (POLL_MODEM_META_DATA_RSSI & loggerModem::_pollModemMetaData) {
-        // Assume a signal has already been established.
-        // Try to get a valid signal quality
-        // NOTE:  We can't actually distinguish between a bad modem response, no
-        // modem response, and a real response from the modem of no
-        // service/signal. The TinyGSM getSignalQuality function returns the
-        // same "no signal" value (99 CSQ or 0 RSSI) in all 3 cases. Try up to 5
-        // times to get a signal quality - that is, ping NIST 5 times and see if
-        // the value updates
-        int8_t num_trys_remaining = 5;
-        do {
-            rssi = gsmModem.getSignalQuality();
-            MS_DBG(F("Raw signal quality("), num_trys_remaining, F("):"), rssi);
-            if (rssi != 0 && rssi != SENSOR_DEFAULT_I) break;
-            num_trys_remaining--;
-        } while ((rssi == 0 || rssi == SENSOR_DEFAULT_I) && num_trys_remaining);
+
+    // Assume a signal has already been established.
+    // Try to get a valid signal quality
+    // NOTE:  We can't actually distinguish between a bad modem response, no
+    // modem response, and a real response from the modem of no
+    // service/signal. The TinyGSM getSignalQuality function returns the
+    // same "no signal" value (99 CSQ or 0 RSSI) in all 3 cases.
+
+    // Try up to 5 times to get a signal quality
+    int8_t num_trys_remaining = 5;
+    do {
+        rssi = gsmModem.getSignalQuality();
+        MS_DBG(F("Raw signal quality("), num_trys_remaining, F("):"), rssi);
+        if (rssi != 0 && rssi != -9999) break;
+        num_trys_remaining--;
+    } while ((rssi == 0 || rssi == -9999) && num_trys_remaining);
 
 
-        loggerModem::_priorSignalPercent = getPctFromRSSI(rssi);
-        MS_DBG(F("CURRENT Percent signal strength:"),
-               loggerModem::_priorSignalPercent);
+    // Convert signal quality to a percent
+    loggerModem::_priorSignalPercent = getPctFromRSSI(rssi);
+    MS_DBG(F("CURRENT Percent signal strength:"),
+           loggerModem::_priorSignalPercent);
 
-        loggerModem::_priorRSSI = rssi;
-        MS_DBG(F("CURRENT RSSI:"), rssi);
+    loggerModem::_priorRSSI = rssi;
+    MS_DBG(F("CURRENT RSSI:"), rssi);
+
+
+    MS_DBG(F("Getting input voltage:"));
+    volt_mV = gsmModem.getBattVoltage();
+    MS_DBG(F("CURRENT Modem battery (mV):"), volt_mV);
+    if (volt_mV != 9999) {
+        loggerModem::_priorBatteryVoltage = static_cast<float>(volt_mV / 1000);
+    } else {
+        loggerModem::_priorBatteryVoltage = static_cast<float>(-9999);
     }
-    if (POLL_MODEM_META_DATA_VCC & loggerModem::_pollModemMetaData) {
-        // MS_DBG(F("Getting input voltage:"));
-        volt_mV = gsmModem.getBattVoltage();
-        MS_DBG(F("CURRENT Modem battery (mV):"), volt_mV);
-        if (volt_mV != XBEE_V_KEY) {
-            loggerModem::_priorBatteryVoltage =
-                static_cast<float>(volt_mV / 1000);
-        } else {
-            loggerModem::_priorBatteryVoltage =
-                static_cast<float>(SENSOR_DEFAULT_I);
-        }
-    }
-    if (POLL_MODEM_META_DATA_TEMP & loggerModem::_pollModemMetaData) {
-        // MS_DBG(F("Getting chip temperature:"));
-        loggerModem::_priorModemTemp = getModemChipTemperature();
-        MS_DBG(F("CURRENT Modem temperature(C):"),
-               loggerModem::_priorModemTemp);
-    }
-    // Exit command modem
-    MS_DBG(F("updateModemMetadata Leaving Command Mode:"));
+
+    MS_DBG(F("Getting chip temperature:"));
+    loggerModem::_priorModemTemp = getModemChipTemperature();
+    MS_DBG(F("CURRENT Modem temperature(C):"), loggerModem::_priorModemTemp);
+
+    // Exit command mode
+    MS_DBG(F("Leaving Command Mode:"));
     gsmModem.exitCommand();
 
     ++updateModemMetadata_cnt;
