@@ -92,29 +92,36 @@ bool DigiXBeeWifi::extraModemSetup(void) {
     /** First run the TinyGSM init() function for the XBee. */
     MS_DBG(F("Initializing the XBee..."));
     success &= gsmModem.init();
-    if (!success) { MS_DBG(F("Failed init")); }
+    if (!success) { MS_DBG(F("Failed TinyGSM init")); }
     gsmClient.init(&gsmModem);
     _modemName = gsmModem.getModemName();
     /** Then enter command mode to set pin outputs. */
+    MS_DBG(F("Putting XBee into command mode..."));
     if (gsmModem.commandMode()) {
-        String  xbeeSnLow,xbeeSnHigh;//XbeeDevHwVer,XbeeFwVer;
+        MS_DBG(F("Getting Detailed Modem Version..."));
+        String xbeeSnLow;
+        String xbeeSnHigh;
+        String _modemHwVersion;
+        String _modemFwVersion;
         gsmModem.getSeries();
         _modemName = gsmModem.getModemName();
         gsmModem.sendAT(F("SL"));  // Request Module MAC/Serial Number Low
         gsmModem.waitResponse(1000, xbeeSnLow);
         gsmModem.sendAT(F("SH"));  // Request Module MAC/Serial Number High
         gsmModem.waitResponse(1000, xbeeSnHigh);
-        _modemSerialNumber = xbeeSnHigh+xbeeSnLow;
         gsmModem.sendAT(F("HV"));  // Request Module Hw Version
         gsmModem.waitResponse(1000, _modemHwVersion);
         gsmModem.sendAT(F("VR"));  // Firmware Version
         gsmModem.waitResponse(1000, _modemFwVersion);
-        PRINTOUT(F("XbeeWiFi internet comms with"),_modemName, 
-                F("Mac/Sn "), _modemSerialNumber,F("HwVer"),_modemHwVersion, F("FwVer"), _modemFwVersion);
+        PRINTOUT(F("Digi XBee"), _modemName, F("Mac/SN"), xbeeSnHigh, ,
+                 xbeeSnLow, F("HwVer"), _modemHwVersion, F("FwVer"),
+                 _modemFwVersion);
 
-        // Leave all unused pins disconnected. Use the PR command to pull all of
-        // the inputs on the device high using 40 k internal pull-up resistors.
-        // You do not need a specific treatment for unused outputs.
+        MS_DBG(F("Enabling XBee Pin Pullups..."));
+        // Leave all unused pins disconnected. Use the PR command to pull
+        // all of the inputs on the device high using 40 k internal pull-up
+        // resistors. You do not need a specific treatment for unused
+        // outputs.
         //   Mask Bit Description
         // 1 0001  0 TH11 DIO4
         // 1 0002  1 TH17 DIO3
@@ -134,7 +141,8 @@ bool DigiXBeeWifi::extraModemSetup(void) {
         //   3D3F
         gsmModem.sendAT(GF("PR"), "3D3F");
         success &= gsmModem.waitResponse() == 1;
-        if (!success) { MS_DBG(F("Fail PR "), success); }
+        if (!success) { MS_DBG(F("Failed to set pin pullups"), success); }
+
 #if !defined MODEMPHY_NEVER_SLEEPS
 #define XBEE_SLEEP_SETTING 1
 #define XBEE_SLEEP_ASSOCIATE 100
@@ -142,46 +150,69 @@ bool DigiXBeeWifi::extraModemSetup(void) {
 #define XBEE_SLEEP_SETTING 0
 #define XBEE_SLEEP_ASSOCIATE 40
 #endif  // MODEMPHY_NEVER_SLEEPS
+
+        MS_DBG(F("Setting I/O Pins..."));
         // To use sleep pins they physically need to be enabled.
-        // Set DIO8 to be used for sleep requests
-        // NOTE:  Only pin 9/DIO8/DTR can be used for this function
+        /** Enable pin sleep functionality on `DIO8`.
+         * NOTE: Only the `DTR_N/SLEEP_RQ/DIO8` pin (9 on the bee socket) can be
+         * used for this pin sleep/wake. */
         gsmModem.sendAT(GF("D8"), XBEE_SLEEP_SETTING);
         success &= gsmModem.waitResponse() == 1;
-        // Turn on status indication pin - it will be HIGH when the XBee is
-        // awake NOTE:  Only pin 13/ON/SLEEPnot/DIO9 can be used for this
-        // function
+        if (!success) {
+            MS_DBG(F("Failed to set DTR_N/SLEEP_RQ/DIO8"), success);
+        }
+        /** Enable status indication on `DIO9` - it will be HIGH when the XBee
+         * is awake.
+         * NOTE: Only the `ON/SLEEP_N/DIO9` pin (13 on the bee socket) can be
+         * used for direct status indication. */
         gsmModem.sendAT(GF("D9"), XBEE_SLEEP_SETTING);
         success &= gsmModem.waitResponse() == 1;
-        if (!success) { MS_DBG(F("Fail D9 "), success); } /**/
-        // /#endif //MODEMPHY_USE_SLEEP_PINS_SETTING
-        // Turn on CTS pin - it will be LOW when the XBee is ready to receive
-        // commands This can be used as proxy for status indication if the true
-        // status pin is not accessible NOTE:  Only pin 12/DIO7/CTS can be used
-        // for this function
-        /*gsmModem.sendAT(GF("D7"),1);
+        if (!success) { MS_DBG(F("Failed to set ON/SLEEP_N/DIO9"), success); }
+        /** Enable CTS on `DIO7` - it will be `LOW` when it is clear to send
+         * data to the XBee.  This can be used as proxy for status indication if
+         * that pin is not readable.
+         * NOTE: Only the `CTS_N/DIO7` pin (12 on the bee socket) can be used
+         * for CTS. */
+        gsmModem.sendAT(GF("D7"), 1);
         success &= gsmModem.waitResponse() == 1;
-        if (!success) {MS_DBG(F("Fail D7 "),success);}*/
-        // Turn on the associate LED (if you're using a board with one)
-        // NOTE:  Only pin 15/DIO5 can be used for this function
-        // gsmModem.sendAT(GF("D5"),1);
-        // success &= gsmModem.waitResponse() == 1;
-        // Turn on the RSSI indicator LED (if you're using a board with one)
-        // NOTE:  Only pin 6/DIO10/PWM0 can be used for this function
-        // gsmModem.sendAT(GF("P0"),1);
-        // success &= gsmModem.waitResponse() == 1;
+        if (!success) { MS_DBG(F("Failed to set CTS_N/DIO7"), success); }
+        /** Enable association indication on `DIO5` - this is should be
+         * directly attached to an LED if possible.
+         * - Solid light indicates no connection
+         * - Single blink indicates connection
+         * - double blink indicates connection but failed TCP link on last
+         * attempt
+         *
+         * NOTE: Only the `Associate/DIO5` pin (15 on the bee socket) can be
+         * used for this function. */
+        gsmModem.sendAT(GF("D5"), 1);
+        success &= gsmModem.waitResponse() == 1;
+        if (!success) { MS_DBG(F("Failed to set Associate/DIO5"), success); }
+        /** Enable RSSI PWM output on `DIO10` - this should be directly
+         * attached to an LED if possible.  A higher PWM duty cycle (and
+         * thus brighter LED) indicates better signal quality. NOTE: Only
+         * the `DIO10/PWM0` pin (6 on the bee socket) can be used for this
+         * function. */
+        gsmModem.sendAT(GF("P0"), 1);
+        success &= gsmModem.waitResponse() == 1;
+        if (!success) { MS_DBG(F("Failed to set DIO10/PWM0"), success); }
+
         // Set to TCP mode
         gsmModem.sendAT(GF("IP"), 1);
         success &= gsmModem.waitResponse() == 1;
-        if (!success) { MS_DBG(F("Fail IP "), success); }
+        if (!success) { MS_DBG(F("Fail to set IP mode"), success); }
 
-        // Put the XBee in pin sleep mode in conjuction with D8=1
+        /** Put the XBee in pin sleep mode in conjuction with D8=1 */
         MS_DBG(F("Setting Sleep Options..."));
         gsmModem.sendAT(GF("SM"), XBEE_SLEEP_SETTING);
         success &= gsmModem.waitResponse() == 1;
-        // Disassociate from network for lowest power deep sleep
-        // 40 - Aay associated with AP during sleep - draws more current
-        // (+10mA?) 100 -Cyclic sleep ST specifies time before reutnring to
-        // sleep 200 - SRGD magic number
+        // Disassociate from the network for the lowest power deep sleep.
+        // 40 - Stay associated with AP during sleep - draws more current
+        // (+10mA?)
+        // 100 - For cyclic sleep, ST specifies the time before
+        // returning to sleep. With this bit set, new receptions from either
+        // the serial or the RF port do not restart the ST timer.  Current
+        // implementation does not support this bit being turned off.
         gsmModem.sendAT(GF("SO"), XBEE_SLEEP_ASSOCIATE);
         success &= gsmModem.waitResponse() == 1;
 
@@ -193,9 +224,10 @@ bool DigiXBeeWifi::extraModemSetup(void) {
             MS_DBG(F("Fail Connect "), success);
             success = true;
         }
+        /** Set the socket timeout to 10s (this is default). */
         gsmModem.sendAT(GF("TM"), 64);
         success &= gsmModem.waitResponse() == 1;
-        //IPAddress newHostIp = IPAddress(0, 0, 0, 0); //default in NV
+        /** Set the destination IP to 0 (this is default). */
         gsmModem.sendAT(GF("DL"), GF("0.0.0.0"));
         success &= gsmModem.waitResponse() == 1;
 
@@ -205,7 +237,8 @@ bool DigiXBeeWifi::extraModemSetup(void) {
         } else {
             MS_DBG(F("Failed Setting WiFi"), _ssid);
         }
-        // Write changes to flash and apply them
+        /** Write all changes to flash and apply them. */
+        MS_DBG(F("Applying changes..."));
         gsmModem.writeChanges();
 
         // Scan for AI  last node join request
