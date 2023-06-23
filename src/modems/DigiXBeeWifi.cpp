@@ -461,29 +461,13 @@ bool DigiXBeeWifi::getModemSignalQuality(int16_t& rssi, int16_t& percent) {
     percent            = -9999;
     rssi               = -9999;
 
-    // NOTE:  using Google doesn't work because there's no reply
-    MS_DBG(F("Opening connection to NIST to check connection strength..."));
-    // This is the IP address of time-c-g.nist.gov
-    // XBee's address lookup falters on time.nist.gov
-    // NOTE:  This "connect" only sets up the connection parameters, the TCP
-    // socket isn't actually opened until we first send data (the '!' below)
-    // IPAddress ip(132, 163, 97, 6);
-    // gsmClient.connect(ip, 37);
-    // Wait so NIST doesn't refuse us!
-    //while (millis() < _lastNISTrequest + 4000) {}
-    // Need to send something before connection is made
-    //gsmClient.println('!');
-    //uint32_t start = millis();
-    //delay(100);  // Need this delay!  Can get away with 50, but 100 is safer.
-    //while (gsmClient && gsmClient.available() < 4 && millis() - start < 5000L) {
-    //}
 
     // Assume measurement from previous connection
     // Get signal quality
     // NOTE:  We can't actually distinguish between a bad modem response, no
     // modem response, and a real response from the modem of no service/signal.
-    // The TinyGSM getSignalQuality function returns the same "no signal"
-    // value (99 CSQ or 0 RSSI) in all 3 cases.
+    // The TinyGSM getSignalQuality function returns the same "no signal" value
+    // (99 CSQ or 0 RSSI) in all 3 cases.
     MS_DBG(F("Getting signal quality:"));
     signalQual = gsmModem.getSignalQuality();
     MS_DBG(F("Raw signal quality:"), signalQual);
