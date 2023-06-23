@@ -113,9 +113,8 @@ bool DigiXBeeWifi::extraModemSetup(void) {
         gsmModem.waitResponse(1000, _modemHwVersion);
         gsmModem.sendAT(F("VR"));  // Firmware Version
         gsmModem.waitResponse(1000, _modemFwVersion);
-        PRINTOUT(F("Digi XBee"), _modemName, F("Mac/SN"), xbeeSnHigh, ,
-                 xbeeSnLow, F("HwVer"), _modemHwVersion, F("FwVer"),
-                 _modemFwVersion);
+        PRINTOUT(F("Digi XBee"), _modemName, F("Mac/SN"), xbeeSnHigh, xbeeSnLow,
+                 F("HwVer"), _modemHwVersion, F("FwVer"), _modemFwVersion);
 
         MS_DBG(F("Enabling XBee Pin Pullups..."));
         // Leave all unused pins disconnected. Use the PR command to pull
