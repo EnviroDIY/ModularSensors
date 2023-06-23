@@ -989,6 +989,99 @@ class loggerModem {
 
     // modemType gsmModem;
     // modemClientType gsmClient;
+
+   /**
+     * @brief The retreived modem paramters
+     *
+     */
+    String _modemHwVersion;
+    String _modemSerialNumber;
+    String _modemFwVersion;
+
+     /**
+     * @brief Get a printable description of the modem.
+     *
+     *
+     * @note These values are polled for and cached in memory till needed
+     *
+     * @return *string discritption of modem.
+     */
+    String getModemDevId(void)
+    {return _modemName+F(" Sn ")+_modemSerialNumber+F(" HwVer " )+_modemHwVersion+F(" FwVer ")+_modemFwVersion;}
+
+    /**
+     * @brief modem management data setup
+     *
+     * Set in setup()
+     *
+     * @param status type of default polling
+     */
+#if !defined POLL_MODEM_META_DATA_ON
+#define POLL_MODEM_META_DATA_ALL 0xFF
+#endif  // POLL_MODEM_META_DATA_ON
+    typedef enum {
+        POLL_MODEM_META_DATA_OFF  = 0x0,
+        POLL_MODEM_META_DATA_RSSI  = 0x01,
+        POLL_MODEM_META_DATA_VCC   = 0x02,
+        POLL_MODEM_META_DATA_TEMP  = 0x04,
+        POLL_MODEM_META_DATA_PARM4 = 0x08,
+        POLL_MODEM_META_DATA_PARM5 = 0x010,
+        POLL_MODEM_META_DATA_DEF   = POLL_MODEM_META_DATA_ALL,
+    } PollModemMetaData_t;
+    /**
+     * @brief poll modem meta data 
+     *
+     * Set polling status.
+     * Default won't poll
+     */
+    void pollModemMetadata(PollModemMetaData_t status = POLL_MODEM_META_DATA_DEF);
+
+    /**
+     * @brief return state of modem poll and what to poll for 
+     *
+     * Set polling status.
+     * @param status return poll status ~ one of PollModemMetaData_t 
+     */
+    uint8_t getModemMetadata() {
+        return _pollModemMetaData;
+    }
+
+
+#if not defined SENSOR_DEFAULT_I
+#define SENSOR_DEFAULT_I -1
+// old standard -9999
+#endif  // SENSOR_DEFAULT
+
+#if not defined SENSOR_DEFAULT_F
+#define SENSOR_DEFAULT_F -0.0099
+// old standard -9999
+#endif  // SENSOR_DEFAULT
+
+public:
+    /**
+     * @brief Set the power pin.
+     *
+     * If this function is not called, the power pin is defined on init
+     *
+     * @param powerPin The arduino pin number or if none <0 .
+     */
+    inline void   setPowerPin(int8_t powerPin) {_powerPin = powerPin;}
+
+    /**
+     * @brief get the power pin.
+     *
+     * @returns powerPin 
+     */
+    inline int8_t getPowerPin() {return _powerPin;}
+
+ protected:
+    /**
+     * @brief poll the modem management data
+     *
+     * Set in the init() portion of the #modemSetup().
+     */
+    PollModemMetaData_t static _pollModemMetaData;
+
 };
 
 // typedef float (loggerModem::_*loggerGetValueFxn)(void);
