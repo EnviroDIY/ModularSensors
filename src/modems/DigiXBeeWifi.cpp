@@ -358,16 +358,17 @@ bool DigiXBeeWifi::extraModemSetup(void) {
 
 
 void DigiXBeeWifi::disconnectInternet(void) {
-    // Ensure Wifi XBee IP socket torn down by forcing connection to localhost IP
-    // For A XBee S6B bug, then force restart
-    // Note: TinyGsmClientXbee.h:modemStop() had a hack for closing socket with Timeout=0 "TM0" for S6B disabled
+    // Ensure Wifi XBee IP socket torn down by forcing connection to
+    // localhost IP For A XBee S6B bug, then force restart. Note:
+    // TinyGsmClientXbee.h:modemStop() had a hack for closing socket with
+    // Timeout=0 "TM0" for S6B disabled
 
-    String oldRemoteIp = gsmClient.remoteIP();
-    IPAddress newHostIp = IPAddress(127, 0, 0, 1); //localhost
-    gsmClient.connect(newHostIp,80);
-    //??gsmClient.modemConnect(newHostpP,80);// doesn't work
-    MS_DBG(gsmModem.getBeeName(), oldRemoteIp, F(" disconnectInternet set to "),gsmClient.remoteIP());
-    
+    String    oldRemoteIp = gsmClient.remoteIP();
+    IPAddress newHostIp   = IPAddress(127, 0, 0, 1);  // localhost
+    gsmClient.connect(newHostIp, 80);
+    MS_DBG(gsmModem.getBeeName(), oldRemoteIp, F(" disconnectInternet set to "),
+           gsmClient.remoteIP());
+
     gsmModem.restart();
 }
 
@@ -382,63 +383,46 @@ uint32_t DigiXBeeWifi::getNISTTime(void) {
 
     gsmClient.stop();
 
-    // Try up to 12 times to get a timestamp from NIST
+    // Try up to 4 NIST IP addresses attempting to get a timestamp from NIST
 #if !defined NIST_SERVER_RETRYS
 #define NIST_SERVER_RETRYS 4
 #endif  // NIST_SERVER_RETRYS
-    String  nistIpStr;
-    __attribute__((unused)) uint8_t index = 0;
+
     for (uint8_t i = 0; i < NIST_SERVER_RETRYS; i++) {
-        // Must ensure that we do not ping the daylight more than once every 4
-        // seconds.  NIST clearly specifies here that this is a requirement for
-        // all software that accesses its servers:
+        // Must ensure that we do not ping the daylight servers more than once
+        // every 4 seconds.  NIST clearly specifies here that this is a
+        // requirement for all software that accesses its servers:
         // https://tf.nist.gov/tf-cgi/servers.cgi
         while (millis() < _lastNISTrequest + 4000) {
             // wait
         }
 
         // Make TCP connection
+        // Uses "TIME" protocol on port 37 NIST: This protocol is expensive,
+        // since it uses the complete tcp machinery to transmit only 32 bits
+        // of data. FUTURE Users are *strongly* encouraged to upgrade to the
+        // network time protocol (NTP), which is both more accurate and more
+        // robust.
         MS_DBG(F("\nConnecting to NIST daytime Server"));
         bool connectionMade = false;
 
-        // This is the IP address of time-e-wwv.nist.gov
+        // These are is the IP address of time-[a,b,c,d]-wwv.nist.gov
         // XBee's address lookup falters on time.nist.gov
-        // NOTE:  This "connect" only sets up the connection parameters, the TCP
-        // socket isn't actually opened until we first send data (the '!' below)
- 
-       // Uses "TIME" protocol on port 37 NIST: This protocol is expensive, since it
-        // uses the complete tcp machinery to transmit only 32 bits of data.
-        // FUTURE Users are *strongly* encouraged to upgrade to the network time protocol
-        // (NTP), which is both more accurate and more robust.*/
+
 #define TIME_PROTOCOL_PORT 37
 #define IP_STR_LEN 18
         const char ipAddr[NIST_SERVER_RETRYS][IP_STR_LEN] = {
-            {"132,163, 97, 1"},
+            {"132, 163, 97, 1"},
             {"132, 163, 97, 2"},
             {"132, 163, 97, 3"},
             {"132, 163, 97, 4"}};
         IPAddress ip1(132, 163, 97, 1);  // Initialize
-#if 0
-        gsmModem.sendAT(F("time-e-wwv.nist.gov"));
-        index = gsmModem.waitResponse(4000, nistIpStr);
-        nistIpStr.trim();
-        uint16_t nistIp_len = nistIpStr.length();
-        if ((nistIp_len < 7) || (nistIp_len > 20)) 
-        {
-            ip1.fromString(ipAddr[i]);
-            MS_DBG(F("Bad lookup"), nistIpStr, "'=", nistIp_len, F(" Using "),
-                   ipAddr[i]);
-        } else {
-            ip1.fromString(nistIpStr);
-            PRINTOUT(F("Good lookup mdmIP["), i, "/", NIST_SERVER_RETRYS,
-                   F("] '"), nistIpStr, "'=", nistIp_len);
-        }
-#else
         ip1.fromString(ipAddr[i]);
-        PRINTOUT(F("NIST lookup mdmIP["), i, "/", NIST_SERVER_RETRYS,
-                   F("] with "), ip1);
-//                   F("] with "), ipAddr[i]);                   
-#endif 
+        MS_DBG(F("NIST lookup mdmIP["), i, "/", NIST_SERVER_RETRYS,
+               F("] with "), ip1);
+
+        // NOTE:  This "connect" only sets up the connection parameters, the TCP
+        // socket isn't actually opened until we first send data (the '!' below)
         connectionMade = gsmClient.connect(ip1, TIME_PROTOCOL_PORT);
         // Need to send something before connection is made
         gsmClient.println('!');
