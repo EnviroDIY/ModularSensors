@@ -35,20 +35,52 @@ DigiXBeeWifi::~DigiXBeeWifi() {}
 MS_IS_MODEM_AWAKE(DigiXBeeWifi);
 MS_MODEM_WAKE(DigiXBeeWifi);
 
-// MS_MODEM_CONNECT_INTERNET(DigiXBeeWifi); has instability
-// See https://github.com/neilh10/ModularSensors/issues/125             
-bool DigiXBeeWifi::connectInternet(uint32_t maxConnectionTime) { 
-    MS_START_DEBUG_TIMER                                          
-    MS_DBG(F("\nDigiXbee Attempting to connect to WiFi network..."));      
-    if (!(gsmModem.isNetworkConnected())) {                       
-        if (!gsmModem.waitForNetwork(maxConnectionTime)) {        
-            PRINTOUT(F("... WiFi connection failed"));            
-            return false;                                         
-        }                                                         
-     }                                                            
-    MS_DBG(F("... WiFi connected after"), MS_PRINT_DEBUG_TIMER, 
-               F("milliseconds!"));                             
-        return true;                                            
+
+// This is different MS_MODEM_CONNECT_INTERNET in that it doesn't attempt to
+// resend credentials
+bool DigiXBeeWifi::connectInternet(uint32_t maxConnectionTime) {
+    bool success = true;
+
+    /** Power up, if necessary */
+    bool wasPowered = true;
+    if (_millisPowerOn == 0) {
+        modemPowerUp();
+        wasPowered = false;
+    }
+
+    /** Check if the modem was awake, wake it if not */
+    bool wasAwake = isModemAwake();
+    if (!wasAwake) {
+        MS_DBG(F("Waiting for modem to boot after power on ..."));
+        while (millis() - _millisPowerOn < _wakeDelayTime_ms) { /** wait */
+        }
+        MS_DBG(F("Waking up the modem to connect to the internet ..."));
+        success &= modemWake();
+    } else {
+        MS_DBG(F("Modem was already awake and should be ready."));
+    }
+
+    if (success) {
+        MS_START_DEBUG_TIMER
+        MS_DBG(F("\nAttempting to connect to WiFi without sending new "
+                 "credentials..."));
+        if (!(gsmModem.isNetworkConnected())) {
+            if (!gsmModem.waitForNetwork(maxConnectionTime)) {
+                PRINTOUT(F("... WiFi connection failed"));
+                return false;
+            }
+        }
+        MS_DBG(F("... WiFi connected after"), MS_PRINT_DEBUG_TIMER,
+               F("milliseconds!"));
+        return true;
+    }
+    if (!wasPowered) {
+        MS_DBG(F("Modem was powered to connect to the internet!  "
+                 "Remember to turn it off when you're done."));
+    } else if (!wasAwake) {
+        MS_DBG(F("Modem was woken up to connect to the internet!   "
+                 "Remember to put it to sleep when you're done."));
+    }
 }
 MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeWifi);
 
