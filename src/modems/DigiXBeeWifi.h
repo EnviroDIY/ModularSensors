@@ -105,10 +105,15 @@ class DigiXBeeWifi : public DigiXBee {
      * reference.
      * @param ssid The wifi network ID.
      * @param pwd The wifi network password, assuming WPA2.
+     * @param maintainAssociation Whether to maintain association with the
+     * access point during sleep. Maitaining the association during sleep draws
+     * more current (+10mA?), but also allows a faster reconnection on the next
+     * wake.
      */
     DigiXBeeWifi(Stream* modemStream, int8_t powerPin, int8_t statusPin,
                  bool useCTSStatus, int8_t modemResetPin,
-                 int8_t modemSleepRqPin, const char* ssid, const char* pwd);
+                 int8_t modemSleepRqPin, const char* ssid, const char* pwd,
+                 bool maintainAssociation = false);
     /**
      * @brief Destroy the Digi XBee Wifi object - no action taken
      */
@@ -133,7 +138,7 @@ class DigiXBeeWifi : public DigiXBee {
     void   setWiFiPwd(const char* WiFiPwd, bool copyId = false);
     String getWiFiId(void);
     String getWiFiPwd(void);
-    
+
 #ifdef MS_DIGIXBEEWIFI_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
 #endif
@@ -164,15 +169,15 @@ class DigiXBeeWifi : public DigiXBee {
  private:
     const char* _ssid;
     const char* _pwd;
+    bool        _maintainAssociation;
 
     // Access Management
     char* _ssid_buf = NULL;
     char* _pwd_buf  = NULL;
 
     uint16_t updateModemMetadata_cnt = 0;
-    //This causes the Xbee to reset afte this number of transmission attempts
+    // This causes the Xbee to reset after this number of transmission attempts
 #define XBEE_RESET_THRESHOLD 4
-
 };
 /**@}*/
 #endif  // SRC_MODEMS_DIGIXBEEWIFI_H_

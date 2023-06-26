@@ -15,7 +15,8 @@
 DigiXBeeWifi::DigiXBeeWifi(Stream* modemStream, int8_t powerPin,
                            int8_t statusPin, bool useCTSStatus,
                            int8_t modemResetPin, int8_t modemSleepRqPin,
-                           const char* ssid, const char* pwd)
+                           const char* ssid, const char* pwd,
+                           bool maintainAssociation)
     : DigiXBee(powerPin, statusPin, useCTSStatus, modemResetPin,
                modemSleepRqPin),
 #ifdef MS_DIGIXBEEWIFI_DEBUG_DEEP
@@ -26,7 +27,8 @@ DigiXBeeWifi::DigiXBeeWifi(Stream* modemStream, int8_t powerPin,
 #endif
       gsmClient(gsmModem),
       _ssid(ssid),
-      _pwd(pwd) {
+      _pwd(pwd),
+      _maintainAssociation(maintainAssociation) {
 }
 
 // Destructor
@@ -67,12 +69,11 @@ bool DigiXBeeWifi::connectInternet(uint32_t maxConnectionTime) {
         if (!(gsmModem.isNetworkConnected())) {
             if (!gsmModem.waitForNetwork(maxConnectionTime)) {
                 PRINTOUT(F("... WiFi connection failed"));
-                return false;
+                success = false;
             }
         }
         MS_DBG(F("... WiFi connected after"), MS_PRINT_DEBUG_TIMER,
                F("milliseconds!"));
-        return true;
     }
     if (!wasPowered) {
         MS_DBG(F("Modem was powered to connect to the internet!  "
@@ -81,6 +82,7 @@ bool DigiXBeeWifi::connectInternet(uint32_t maxConnectionTime) {
         MS_DBG(F("Modem was woken up to connect to the internet!   "
                  "Remember to put it to sleep when you're done."));
     }
+    return success;
 }
 MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeWifi);
 
@@ -141,39 +143,41 @@ bool DigiXBeeWifi::extraModemSetup(void) {
         success &= gsmModem.waitResponse() == 1;
         if (!success) { MS_DBG(F("Failed to set pin pullups"), success); }
 
-#if !defined MODEMPHY_NEVER_SLEEPS
-#define XBEE_SLEEP_SETTING 1
-#define XBEE_SLEEP_ASSOCIATE 100
-#else
-#define XBEE_SLEEP_SETTING 0
-#define XBEE_SLEEP_ASSOCIATE 40
-#endif  // MODEMPHY_NEVER_SLEEPS
-
         MS_DBG(F("Setting I/O Pins..."));
         // To use sleep pins they physically need to be enabled.
-        /** Enable pin sleep functionality on `DIO8`.
+        /** Enable pin sleep functionality on `DIO8` if a pin is assigned.
          * NOTE: Only the `DTR_N/SLEEP_RQ/DIO8` pin (9 on the bee socket) can be
          * used for this pin sleep/wake. */
-        gsmModem.sendAT(GF("D8"), XBEE_SLEEP_SETTING);
+        gsmModem.sendAT(GF("D8"), _modemSleepRqPin >= 0);
         success &= gsmModem.waitResponse() == 1;
         if (!success) {
-            MS_DBG(F("Failed to set DTR_N/SLEEP_RQ/DIO8"), success);
+            MS_DBG(F("Failed to set DTR_N/SLEEP_RQ/DIO8 to"),
+                   _modemSleepRqPin >= 0, success);
         }
-        /** Enable status indication on `DIO9` - it will be HIGH when the XBee
-         * is awake.
+
+        /** Enable status indication on `DIO9` if a pin is assigned - it will be
+         * HIGH when the XBee is awake.
          * NOTE: Only the `ON/SLEEP_N/DIO9` pin (13 on the bee socket) can be
          * used for direct status indication. */
-        gsmModem.sendAT(GF("D9"), XBEE_SLEEP_SETTING);
+        gsmModem.sendAT(GF("D9"), _statusPin >= 0);
         success &= gsmModem.waitResponse() == 1;
-        if (!success) { MS_DBG(F("Failed to set ON/SLEEP_N/DIO9"), success); }
-        /** Enable CTS on `DIO7` - it will be `LOW` when it is clear to send
-         * data to the XBee.  This can be used as proxy for status indication if
-         * that pin is not readable.
+        if (!success) {
+            MS_DBG(F("Failed to set ON/SLEEP_N/DIO9 to"), _statusPin >= 0,
+                   success);
+        }
+
+        /** Enable CTS on `DIO7` if a pin is assigned - it will be `LOW` when
+         * it is clear to send data to the XBee.  This can be used as proxy for
+         * status indication if that pin is not readable.
          * NOTE: Only the `CTS_N/DIO7` pin (12 on the bee socket) can be used
          * for CTS. */
-        gsmModem.sendAT(GF("D7"), 1);
+        gsmModem.sendAT(GF("D7"), _statusPin >= 0 && !_statusLevel);
         success &= gsmModem.waitResponse() == 1;
-        if (!success) { MS_DBG(F("Failed to set CTS_N/DIO7"), success); }
+        if (!success) {
+            MS_DBG(F("Failed to set CTS_N/DIO7 to"),
+                   _statusPin >= 0 && !_statusLevel, success);
+        }
+
         /** Enable association indication on `DIO5` - this is should be
          * directly attached to an LED if possible.
          * - Solid light indicates no connection
@@ -201,18 +205,40 @@ bool DigiXBeeWifi::extraModemSetup(void) {
         if (!success) { MS_DBG(F("Fail to set IP mode"), success); }
 
         /** Put the XBee in pin sleep mode in conjuction with D8=1 */
-        MS_DBG(F("Setting Sleep Options..."));
-        gsmModem.sendAT(GF("SM"), XBEE_SLEEP_SETTING);
-        success &= gsmModem.waitResponse() == 1;
+        // From the S6B User Guide:
+        // 0  - Normal. In this mode the device never sleeps.
+        // 1  - Pin Sleep. In this mode the device honors the SLEEP_RQ pin.
+        //      Set D8 (DIO8 Configuration) to the sleep request function: 1.
+        // 4  - Cyclic Sleep. In this mode the device repeatedly sleeps for the
+        // value specified by SP and spends ST time awake.
+        // 5  - Cyclic Sleep with Pin Wake. In this mode the device acts as in
+        // Cyclic Sleep but does not sleep if the SLEEP_RQ pin is inactive,
+        // allowing the device to be kept awake or woken by the connected
+        // system.
+        if (_modemSleepRqPin >= 0) {
+            MS_DBG(F("Setting Sleep Options..."));
+            gsmModem.sendAT(GF("SM"), _modemSleepRqPin >= 0);
+            success &= gsmModem.waitResponse() == 1;
+        }
+        if (!success) {
+            MS_DBG(F("Failed to set sleep mode to"), _modemSleepRqPin >= 0,
+                   success);
+        }
         // Disassociate from the network for the lowest power deep sleep.
-        // 40 - Stay associated with AP during sleep - draws more current
-        // (+10mA?)
-        // 100 - For cyclic sleep, ST specifies the time before
-        // returning to sleep. With this bit set, new receptions from either
-        // the serial or the RF port do not restart the ST timer.  Current
-        // implementation does not support this bit being turned off.
-        gsmModem.sendAT(GF("SO"), XBEE_SLEEP_ASSOCIATE);
+        // From S6B User Guide:
+        // 0x40 - Stay associated with AP during sleep. Draw more current
+        // (+10mA?) during sleep with this option enabled, but also avoid data
+        // loss.
+        // 0x100 - For cyclic sleep, ST specifies the time before returning
+        // to sleep. With this bit set, new receptions from either the serial or
+        // the RF port do not restart the ST timer.  Current implementation does
+        // not support this bit being turned off.
+        gsmModem.sendAT(GF("SO"), _maintainAssociation ? 0x40 : 0x100);
         success &= gsmModem.waitResponse() == 1;
+        if (!success) {
+            MS_DBG(F("Failed to set sleep mode to"),
+                   _maintainAssociation ? 0x40 : 0x100, success);
+        }
 
         MS_DBG(F("Setting Wifi Network Options..."));
         // Put the network connection parameters into flash
@@ -357,9 +383,7 @@ bool DigiXBeeWifi::extraModemSetup(void) {
 
 void DigiXBeeWifi::disconnectInternet(void) {
     // Ensure Wifi XBee IP socket torn down by forcing connection to
-    // localhost IP For A XBee S6B bug, then force restart. Note:
-    // TinyGsmClientXbee.h:modemStop() had a hack for closing socket with
-    // Timeout=0 "TM0" for S6B disabled
+    // localhost IP For A XBee S6B bug, then force restart.
 
     String    oldRemoteIp = gsmClient.remoteIP();
     IPAddress newHostIp   = IPAddress(127, 0, 0, 1);  // localhost
