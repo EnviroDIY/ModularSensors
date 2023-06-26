@@ -50,6 +50,10 @@
 #define MS_DEBUGGING_STD "DigiXBeeWifi"
 #endif
 
+#ifdef MS_DIGIXBEEWIFI_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP "DigiXBeeWifi"
+#endif
+
 /** @ingroup modem_digi_wifi */
 /**@{*/
 

@@ -117,6 +117,7 @@ bool DigiXBeeWifi::extraModemSetup(void) {
         PRINTOUT(F("Digi XBee"), _modemName, F("Mac/SN"), xbeeSnHigh, xbeeSnLow,
                  F("HwVer"), _modemHwVersion, F("FwVer"), _modemFwVersion);
 
+        bool changesMade = false;
         MS_DBG(F("Enabling XBee Pin Pullups..."));
         // Leave all unused pins disconnected. Use the PR command to pull
         // all of the inputs on the device high using 40 k internal pull-up
@@ -139,31 +140,40 @@ bool DigiXBeeWifi::extraModemSetup(void) {
         // 1 2000 13 TH12 DIO7/-CTR
         // 0 4000 14 TH02 DIO13/DOUT
         //   3D3F
-        gsmModem.sendAT(GF("PR"), "3D3F");
-        success &= gsmModem.waitResponse() == 1;
-        if (!success) { MS_DBG(F("Failed to set pin pullups"), success); }
+        bool changedRP = gsmModem.changeSettingIfNeeded(GF("PR"), "3D3F");
+        changesMade |= changedRP;
+        if (changedRP) {
+            MS_DBG(F("Pin pullup bits changed to"), F("3D3F"));
+        } else {
+            MS_DEEP_DBG(F("Pin pullup bits not changed"));
+        }
+
 
         MS_DBG(F("Setting I/O Pins..."));
         // To use sleep pins they physically need to be enabled.
         /** Enable pin sleep functionality on `DIO8` if a pin is assigned.
          * NOTE: Only the `DTR_N/SLEEP_RQ/DIO8` pin (9 on the bee socket) can be
          * used for this pin sleep/wake. */
-        gsmModem.sendAT(GF("D8"), _modemSleepRqPin >= 0);
-        success &= gsmModem.waitResponse() == 1;
-        if (!success) {
-            MS_DBG(F("Failed to set DTR_N/SLEEP_RQ/DIO8 to"),
-                   _modemSleepRqPin >= 0, success);
+        bool changedD8 = gsmModem.changeSettingIfNeeded(GF("D8"),
+                                                        _modemSleepRqPin >= 0);
+        changesMade |= changedD8;
+        if (changedD8) {
+            MS_DBG(F("DTR_N/SLEEP_RQ/DIO8 changed to"), _modemSleepRqPin >= 0);
+        } else {
+            MS_DEEP_DBG(F("DTR_N/SLEEP_RQ/DIO8 not changed"));
         }
 
         /** Enable status indication on `DIO9` if a pin is assigned - it will be
          * HIGH when the XBee is awake.
          * NOTE: Only the `ON/SLEEP_N/DIO9` pin (13 on the bee socket) can be
          * used for direct status indication. */
-        gsmModem.sendAT(GF("D9"), _statusPin >= 0);
-        success &= gsmModem.waitResponse() == 1;
-        if (!success) {
-            MS_DBG(F("Failed to set ON/SLEEP_N/DIO9 to"), _statusPin >= 0,
-                   success);
+        bool changedD9 = gsmModem.changeSettingIfNeeded(GF("D9"),
+                                                        _statusPin >= 0);
+        changesMade |= changedD9;
+        if (changedD9) {
+            MS_DBG(F("ON/SLEEP_N/DIO9 changed to"), _statusPin >= 0);
+        } else {
+            MS_DEEP_DBG(F("ON/SLEEP_N/DIO9 not changed"));
         }
 
         /** Enable CTS on `DIO7` if a pin is assigned - it will be `LOW` when
@@ -171,11 +181,14 @@ bool DigiXBeeWifi::extraModemSetup(void) {
          * status indication if that pin is not readable.
          * NOTE: Only the `CTS_N/DIO7` pin (12 on the bee socket) can be used
          * for CTS. */
-        gsmModem.sendAT(GF("D7"), _statusPin >= 0 && !_statusLevel);
-        success &= gsmModem.waitResponse() == 1;
-        if (!success) {
-            MS_DBG(F("Failed to set CTS_N/DIO7 to"),
-                   _statusPin >= 0 && !_statusLevel, success);
+        bool changedD7 = gsmModem.changeSettingIfNeeded(
+            GF("D7"), _statusPin >= 0 && !_statusLevel);
+        changesMade |= changedD7;
+        if (changedD7) {
+            MS_DBG(F("CTS_N/DIO7 changed to"),
+                   _statusPin >= 0 && !_statusLevel);
+        } else {
+            MS_DEEP_DBG(F("CTS_N/DIO7 not changed"));
         }
 
         /** Enable association indication on `DIO5` - this is should be
@@ -187,22 +200,26 @@ bool DigiXBeeWifi::extraModemSetup(void) {
          *
          * NOTE: Only the `Associate/DIO5` pin (15 on the bee socket) can be
          * used for this function. */
-        gsmModem.sendAT(GF("D5"), 1);
-        success &= gsmModem.waitResponse() == 1;
-        if (!success) { MS_DBG(F("Failed to set Associate/DIO5"), success); }
+        bool changedD5 = gsmModem.changeSettingIfNeeded(GF("D5"), 1);
+        changesMade |= changedD5;
+        if (changedD5) {
+            MS_DBG(F("Associate/DIO5 changed to"), 1);
+        } else {
+            MS_DEEP_DBG(F("Associate/DIO5 not changed"));
+        }
+
         /** Enable RSSI PWM output on `DIO10` - this should be directly
          * attached to an LED if possible.  A higher PWM duty cycle (and
          * thus brighter LED) indicates better signal quality. NOTE: Only
          * the `DIO10/PWM0` pin (6 on the bee socket) can be used for this
          * function. */
-        gsmModem.sendAT(GF("P0"), 1);
-        success &= gsmModem.waitResponse() == 1;
-        if (!success) { MS_DBG(F("Failed to set DIO10/PWM0"), success); }
-
-        // Set to TCP mode
-        gsmModem.sendAT(GF("IP"), 1);
-        success &= gsmModem.waitResponse() == 1;
-        if (!success) { MS_DBG(F("Fail to set IP mode"), success); }
+        bool changedP0 = gsmModem.changeSettingIfNeeded(GF("D5"), 1);
+        changesMade |= changedP0;
+        if (changedP0) {
+            MS_DBG(F("DIO10/PWM0 changed to"), 1);
+        } else {
+            MS_DEEP_DBG(F("ADIO10/PWM0 not changed"));
+        }
 
         /** Put the XBee in pin sleep mode in conjuction with D8=1 */
         // From the S6B User Guide:
@@ -215,57 +232,103 @@ bool DigiXBeeWifi::extraModemSetup(void) {
         // Cyclic Sleep but does not sleep if the SLEEP_RQ pin is inactive,
         // allowing the device to be kept awake or woken by the connected
         // system.
-        if (_modemSleepRqPin >= 0) {
-            MS_DBG(F("Setting Sleep Options..."));
-            gsmModem.sendAT(GF("SM"), _modemSleepRqPin >= 0);
-            success &= gsmModem.waitResponse() == 1;
-        }
-        if (!success) {
-            MS_DBG(F("Failed to set sleep mode to"), _modemSleepRqPin >= 0,
-                   success);
+        bool changedSM = gsmModem.changeSettingIfNeeded(GF("SM"),
+                                                        _modemSleepRqPin >= 0);
+        changesMade |= changedSM;
+        if (changedSM) {
+            MS_DBG(F("Sleep mode changed to"), _modemSleepRqPin >= 0);
+        } else {
+            MS_DEEP_DBG(F("Sleep mode not changed"));
         }
         // Disassociate from the network for the lowest power deep sleep.
         // From S6B User Guide:
         // 0x40 - Stay associated with AP during sleep. Draw more current
         // (+10mA?) during sleep with this option enabled, but also avoid data
-        // loss.
+        // loss. [0x40 = 64]
         // 0x100 - For cyclic sleep, ST specifies the time before returning
         // to sleep. With this bit set, new receptions from either the serial or
         // the RF port do not restart the ST timer.  Current implementation does
-        // not support this bit being turned off.
-        gsmModem.sendAT(GF("SO"), _maintainAssociation ? 0x40 : 0x100);
-        success &= gsmModem.waitResponse() == 1;
-        if (!success) {
-            MS_DBG(F("Failed to set sleep mode to"),
-                   _maintainAssociation ? 0x40 : 0x100, success);
+        // not support this bit being turned off. [0x100 = 256]
+        bool changedSO = gsmModem.changeSettingIfNeeded(
+            GF("SO"), _maintainAssociation ? "40" : "100");
+        changesMade |= changedSO;
+        if (changedSO) {
+            MS_DBG(F("Sleep mode changed to"),
+                   _maintainAssociation ? "0x40" : "0x100");
+        } else {
+            MS_DEEP_DBG(F("Sleep mode not changed"));
+        }
+
+        /** Write pin and sleep options to flash and apply them, if needed. */
+        if (changesMade) {
+            MS_DBG(F("Applying changes to pin and sleep options..."));
+            gsmModem.writeChanges();
+        } else {
+            MS_DBG(F("No pin or sleep option changes to apply"));
         }
 
         MS_DBG(F("Setting Wifi Network Options..."));
         // Put the network connection parameters into flash
+        // NOTE: This will write to the flash every time if there is a password
+        // set!
         success &= gsmModem.networkConnect(_ssid, _pwd);
         // Set the socket timeout to 10s (this is default)
         if (!success) {
             MS_DBG(F("Fail Connect "), success);
             success = true;
         }
-        /** Set the socket timeout to 10s (this is default). */
-        gsmModem.sendAT(GF("TM"), 64);
-        success &= gsmModem.waitResponse() == 1;
-        /** Set the destination IP to 0 (this is default). */
-        gsmModem.sendAT(GF("DL"), GF("0.0.0.0"));
-        success &= gsmModem.waitResponse() == 1;
 
+        // Set to TCP mode
+        // NOTE: If
+        // gsmModem.sendAT(GF("IP"), 1);
+        // success &= gsmModem.waitResponse() == 1;
+        // if (!success) { MS_DBG(F("Fail to set IP mode"), success); }
+        changesMade        = false;
+        bool changedIPMode = gsmModem.changeSettingIfNeeded(GF("IP"), 1);
+        changesMade |= changedIPMode;
+        if (changedIPMode) {
+            MS_DBG(F("IP mode changed to"), 1);
+        } else {
+            MS_DEEP_DBG(F("IP mode not changed"));
+        }
+
+
+        /** Set the socket timeout to 10s (this is default).*/
+        // gsmModem.sendAT(GF("TM"), 64);
+        // success &= gsmModem.waitResponse() == 1;
+        bool changedTM = gsmModem.changeSettingIfNeeded(GF("TM"), "64");
+        changesMade |= changedTM;
+        if (changedTM) {
+            MS_DBG(F("Socket timeout changed to"), F("0x64"));
+        } else {
+            MS_DEEP_DBG(F("Socket timeout not changed"));
+        }
+
+        /** Set the destination IP to 0 (this is default). */
+        // gsmModem.sendAT(GF("DL"), GF("0.0.0.0"));
+        // success &= gsmModem.waitResponse() == 1;
+        bool changedDL = gsmModem.changeSettingIfNeeded(GF("DL"),
+                                                        GF("0.0.0.0"));
+        changesMade |= changedDL;
+        if (changedDL) {
+            MS_DBG(F("Destination IP changed to"), F("0.0.0.0"));
+        } else {
+            MS_DEEP_DBG(F("Destination IP not changed"));
+        }
+
+        /** Write all changes to flash and apply them. */
+        if (changesMade) {
+            MS_DBG(F("Applying changes to socket times..."));
+            success &= gsmModem.writeChanges();
+        }
 
         if (success) {
             MS_DBG(F("Setup Wifi Network "), _ssid);
         } else {
             MS_DBG(F("Failed Setting WiFi"), _ssid);
         }
-        /** Write all changes to flash and apply them. */
-        MS_DBG(F("Applying changes..."));
-        gsmModem.writeChanges();
 
-        // Scan for AI  last node join request
+        // Scan for AI last node join request
         uint16_t loops = 0;
         int16_t  ui_db;
         uint8_t  status;
