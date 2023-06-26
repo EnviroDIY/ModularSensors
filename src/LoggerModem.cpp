@@ -63,6 +63,11 @@ String loggerModem::getModemName(void) {
     return _modemName;
 }
 
+String loggerModem::getModemDevId(void) {
+    return _modemName + F(" Sn ") + _modemSerialNumber + F(" HwVer ") +
+        _modemHwVersion + F(" FwVer ") + _modemFwVersion;
+}
+
 void loggerModem::modemPowerUp(void) {
     if (_powerPin >= 0) {
         if (_modemSleepRqPin >= 0) {

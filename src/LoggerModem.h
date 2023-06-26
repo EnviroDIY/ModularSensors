@@ -341,6 +341,16 @@ class loggerModem {
     String getModemName(void);
 
     /**
+     * @brief Get a detailed printable description of the modem.
+     *
+     * @note These values are polled for and cached in memory till needed
+     *
+     * @return **String** The concatenated name, hardware version, firmware
+     * version, and serial number fo the modem..
+     */
+    String getModemDevId(void);
+
+    /**
      * @brief Set up the modem before first use.
      *
      * This is used for operations that cannot happen in the modem constructor -
@@ -989,6 +999,28 @@ class loggerModem {
 
     // modemType gsmModem;
     // modemClientType gsmClient;
+
+    /**
+     * @brief The modem hardware version.
+     *
+     * Set in #modemSetup().
+     * Returned as a portion of the #getModemDevId().
+     */
+    String _modemHwVersion;
+    /**
+     * @brief The modem firmware version.
+     *
+     * Set in #modemSetup().
+     * Returned as a portion of the #getModemDevId().
+     */
+    String _modemFwVersion;
+    /**
+     * @brief The modem serial number.
+     *
+     * Set in #modemSetup().
+     * Returned as a portion of the #getModemDevId().
+     */
+    String _modemSerialNumber;
 };
 
 // typedef float (loggerModem::_*loggerGetValueFxn)(void);
