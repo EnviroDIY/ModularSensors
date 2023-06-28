@@ -498,6 +498,7 @@ bool DigiXBeeWifi::updateModemMetadata(void) {
     // Enter command mode only once
     MS_DBG(F("Entering Command Mode to update modem metadata:"));
     success &= gsmModem.commandMode();
+
     if ((_pollModemMetaData & MODEM_RSSI_ENABLE_BITMASK) ==
             MODEM_RSSI_ENABLE_BITMASK ||
         (_pollModemMetaData & MODEM_PERCENT_SIGNAL_ENABLE_BITMASK) ==
