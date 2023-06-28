@@ -253,10 +253,10 @@ bool DigiXBeeWifi::extraModemSetup(void) {
             GF("SO"), _maintainAssociation ? "40" : "100");
         changesMade |= changedSO;
         if (changedSO) {
-            MS_DBG(F("Sleep mode changed to"),
+            MS_DBG(F("Sleep options changed to"),
                    _maintainAssociation ? "0x40" : "0x100");
         } else {
-            MS_DEEP_DBG(F("Sleep mode not changed"));
+            MS_DEEP_DBG(F("Sleep options not changed"));
         }
 
         /** Write pin and sleep options to flash and apply them, if needed. */
@@ -279,10 +279,6 @@ bool DigiXBeeWifi::extraModemSetup(void) {
         }
 
         // Set to TCP mode
-        // NOTE: If
-        // gsmModem.sendAT(GF("IP"), 1);
-        // success &= gsmModem.waitResponse() == 1;
-        // if (!success) { MS_DBG(F("Fail to set IP mode"), success); }
         changesMade        = false;
         bool changedIPMode = gsmModem.changeSettingIfNeeded(GF("IP"), 1);
         changesMade |= changedIPMode;
@@ -294,8 +290,6 @@ bool DigiXBeeWifi::extraModemSetup(void) {
 
 
         /** Set the socket timeout to 10s (this is default).*/
-        // gsmModem.sendAT(GF("TM"), 64);
-        // success &= gsmModem.waitResponse() == 1;
         bool changedTM = gsmModem.changeSettingIfNeeded(GF("TM"), "64");
         changesMade |= changedTM;
         if (changedTM) {
@@ -305,8 +299,6 @@ bool DigiXBeeWifi::extraModemSetup(void) {
         }
 
         /** Set the destination IP to 0 (this is default). */
-        // gsmModem.sendAT(GF("DL"), GF("0.0.0.0"));
-        // success &= gsmModem.waitResponse() == 1;
         bool changedDL = gsmModem.changeSettingIfNeeded(GF("DL"),
                                                         GF("0.0.0.0"));
         changesMade |= changedDL;
@@ -323,122 +315,31 @@ bool DigiXBeeWifi::extraModemSetup(void) {
         }
 
         if (success) {
-            MS_DBG(F("Setup Wifi Network "), _ssid);
+            MS_DBG(F("Successfully setup Wifi Network"), _ssid);
         } else {
             MS_DBG(F("Failed Setting WiFi"), _ssid);
         }
 
-        // Scan for AI last node join request
-        uint16_t loops = 0;
-        int16_t  ui_db;
-        uint8_t  status;
-        String   ui_op;
-        bool     apRegistered = false;
-        PRINTOUT(F("Loop=Sec] rx db : Status #Polled Status every 1sec/30sec"));
-        uint8_t reg_count = 0;
-        #define TIMER_POLL_AP_STATUS_MSEC 300000
-        for (unsigned long start = millis(); millis() - start < 300000;
-             loops++) {
-            ui_db = 0;  // gsmModem.getSignalQuality();
-            gsmModem.sendAT(GF("AI"));
-            status = gsmModem.readResponseInt(10000L);
-            ui_op  = String(loops) + "=" + String((float)millis() / 1000) +
-                "] " + String(ui_db) + ":0x" + String(status, HEX);
-            if (0 == status) {
-                ui_op += " Cnt=" + String(reg_count);
-#define XBEE_SUCCESS_CNTS 3
-                if (++reg_count > XBEE_SUCCESS_CNTS) {
-                    PRINTOUT(ui_op);
-                    apRegistered = true;
-                    break;
-                }
-            } else {
-                reg_count =0; //reset 
-            }
-            PRINTOUT(ui_op);
-            //Need to pet the watchDog as 8sec timeout ~ but how, LoggerBase::petDog()
-            delay(1000);
-        }
-        if (apRegistered) 
-        { 
-            MS_DBG(F("Get IP number"));
-            String  xbeeRsp;
-            uint8_t index              = 0;
-            bool    AllocatedIpSuccess = false;
-// Checkfor IP allocation
-#define MDM_IP_STR_MIN_LEN 7
-#define MDM_LP_IPMAX 16
-            for (int mdm_lp = 1; mdm_lp <= MDM_LP_IPMAX; mdm_lp++) {
-                delay(mdm_lp * 500);
-                gsmModem.sendAT(F("MY"));  // Request IP #
-                index = gsmModem.waitResponse(1000, xbeeRsp);
-                MS_DBG(F("mdmIP["), mdm_lp, "/", MDM_LP_IPMAX, F("] '"),
-                       xbeeRsp, "'=", xbeeRsp.length());
-                if (0 != xbeeRsp.compareTo("0.0.0.0") &&
-                    (xbeeRsp.length() > MDM_IP_STR_MIN_LEN)) {
-                    AllocatedIpSuccess = true;
-                    break;
-                }
-                xbeeRsp = "";
-            }
-            if (!AllocatedIpSuccess) {
+        // Since this is the only time we're going to send the credentials,
+        // confirm that we can connect to the network and get both an IP and DNS
+        // address.
+        if (!(gsmModem.isNetworkConnected())) {
+            if (!gsmModem.waitForNetwork()) {
                 PRINTOUT(
-                    F("XbeeWiFi not received IP# -hope it works next time"));
-                // delay(1000);
-                // NVIC_SystemReset();
+                    F("... Initial WiFi connection failed - resetting module"));
+                loggerModem::modemHardReset();
+                delay(50);
                 success = false;
             } else {
-                // success &= AllocatedIpSuccess;
-                PRINTOUT(F("XbeeWiFi IP# ["), xbeeRsp, F("]"));
-                xbeeRsp = "";
-                // Display DNS allocation
-                bool DnsIpSuccess = false;
-#define MDM_LP_DNSMAX 11
-                for (int mdm_lp = 1; mdm_lp <= MDM_LP_DNSMAX; mdm_lp++) {
-                    delay(mdm_lp * 500);
-                    gsmModem.sendAT(F("NS"));  // Request DNS #
-                    index &= gsmModem.waitResponse(1000, xbeeRsp);
-                    MS_DBG(F("mdmDNS["), mdm_lp, "/", MDM_LP_DNSMAX, F("] '"),
-                           xbeeRsp, "'");
-                    if (0 != xbeeRsp.compareTo("0.0.0.0") &&
-                        (xbeeRsp.length() > MDM_IP_STR_MIN_LEN)) {
-                        DnsIpSuccess = true;
-                        break;
-                    }
-                    xbeeRsp = "";
-                }
-
-                if (false == DnsIpSuccess) {
-                    success = false;
-                    PRINTOUT(F(
-                        "XbeeWifi init test FAILED - hope it works next time"));
-                } else {
-                    PRINTOUT(F("XbeeWifi init test PASSED"));
-                }
+                PRINTOUT(F("... Initial WiFi connection succeeded!"));
+                success = true;
             }
-#if 0   // defined MS_DIGIXBEEWIFI_DEBUG
-        // as of 0.23.15 the modem as sensor has problems
-                int16_t rssi, percent;
-                getModemSignalQuality(rssi, percent);
-                MS_DBG(F("mdmSQ["),toAscii(rssi),F(","),percent,F("%]"));
-#endif  // MS_DIGIXBEEWIFI_DEBUG
-            gsmModem.exitCommand();
-        } 
-        else 
-        { // !apRegistered  could be invalid SSID, no SSID, or stuck module
-            PRINTOUT(F(
-                "XbeeWiFi AP not Registered - reseting module, hope it works "
-                "next time"));
-            loggerModem::modemHardReset();
-            delay(50);
-            // NVIC_SystemReset();
-            success = false;
+        } else {
+            PRINTOUT(F("... Initial WiFi connection succeeded!"));
+            success = true;
         }
-    } else {
-        success = false;
+        gsmModem.exitCommand();
     }
-
-    if (false == success) { PRINTOUT(F("Xbee '"), _modemName, F("' failed.")); }
 
     return success;
 }
@@ -451,7 +352,7 @@ void DigiXBeeWifi::disconnectInternet(void) {
     String    oldRemoteIp = gsmClient.remoteIP();
     IPAddress newHostIp   = IPAddress(127, 0, 0, 1);  // localhost
     gsmClient.connect(newHostIp, 80);
-    MS_DBG(gsmModem.getBeeName(), oldRemoteIp, F(" disconnectInternet set to "),
+    MS_DBG(gsmModem.getBeeName(), oldRemoteIp, F("disconnectInternet set to"),
            gsmClient.remoteIP());
 
     gsmModem.restart();
@@ -719,7 +620,3 @@ String DigiXBeeWifi::getWiFiId(void) {
 String DigiXBeeWifi::getWiFiPwd(void) {
     return _pwd;
 }
-//If needed can provide specific information
-//String DigiXBeeWifi::getModemDevId(void) {return "DigiXbeeWiFiId";}
-
-
