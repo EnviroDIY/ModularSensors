@@ -1363,7 +1363,7 @@ Variable* mplTemp = new FreescaleMPL115A2_Temp(
 /** End [freescale_mpl115a2] */
 #endif
 
-#if defined BUILD_SENSOR_GROPOINT_GPLP8
+#if defined BUILD_SENSOR_GRO_POINT_GPLP8
 // ==========================================================================
 //  GroPoint Profile GPLP-8 Soil Moisture and Temperature Sensor
 // ==========================================================================
@@ -2653,7 +2653,7 @@ Variable* variableList[] = {
     mplTemp,
     mplPress,
 #endif
-#if defined BUILD_SENSOR_GROPOINT_GPLP8
+#if defined BUILD_SENSOR_GRO_POINT_GPLP8
     gplp8Moist1,
     gplp8Moist2,
     gplp8Moist3,
