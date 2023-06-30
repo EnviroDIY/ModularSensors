@@ -21,6 +21,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ***
 
+## [0.34.1]
+
+### Changed
+- Incorporated improvements to the XBee Wifi - from [neilh10](https://github.com/EnviroDIY/ModularSensors/commits?author=neilh10)
+  - #347 -WiFi S6B stability - tears dwon TCP/IP before going to sleep, doesn't automatically poll for meta data
+
+### Added
+- Added the ability to enable or disable polling of modem attached variables.
+By default, all polling is off, but polling is enabled for a modem sensor when a sensor is created and attached to a modem.
+This functionailty is inspired from [neilh10](https://github.com/EnviroDIY/ModularSensors/commits?author=neilh10).
 
 ## [0.34.0]
 

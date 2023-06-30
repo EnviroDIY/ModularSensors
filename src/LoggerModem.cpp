@@ -63,6 +63,11 @@ String loggerModem::getModemName(void) {
     return _modemName;
 }
 
+String loggerModem::getModemDevId(void) {
+    return _modemName + F(" Sn ") + _modemSerialNumber + F(" HwVer ") +
+        _modemHwVersion + F(" FwVer ") + _modemFwVersion;
+}
+
 void loggerModem::modemPowerUp(void) {
     if (_powerPin >= 0) {
         if (_modemSleepRqPin >= 0) {
@@ -305,6 +310,17 @@ void loggerModem::setModemPinModes(void) {
 }
 
 
+void loggerModem::enableMetadataPolling(uint8_t pollingBitmask) {
+    _pollModemMetaData |= pollingBitmask;
+}
+void loggerModem::disableMetadataPolling(uint8_t pollingBitmask) {
+    _pollModemMetaData |= ~pollingBitmask;
+}
+void loggerModem::setMetadataPolling(uint8_t pollingBitmask) {
+    _pollModemMetaData = pollingBitmask;
+}
+
+
 bool loggerModem::updateModemMetadata(void) {
     bool success = true;
 
@@ -323,40 +339,64 @@ bool loggerModem::updateModemMetadata(void) {
     int8_t   bpercent = -99;
     uint16_t volt     = 9999;
 
-    // Try for up to 15 seconds to get a valid signal quality
-    uint32_t startMillis = millis();
-    do {
-        success &= getModemSignalQuality(rssi, percent);
-        loggerModem::_priorRSSI          = rssi;
-        loggerModem::_priorSignalPercent = percent;
-        if (rssi != 0 && rssi != -9999) break;
-        delay(250);
-    } while ((rssi == 0 || rssi == -9999) && millis() - startMillis < 15000L &&
-             success);
-    MS_DBG(F("CURRENT RSSI:"), rssi);
-    MS_DBG(F("CURRENT Percent signal strength:"), percent);
+    MS_DBG(F("Modem polling settings:"), String(_pollModemMetaData, BIN));
 
-    success &= getModemBatteryStats(state, bpercent, volt);
-    MS_DBG(F("CURRENT Modem Battery Charge State:"), state);
-    MS_DBG(F("CURRENT Modem Battery Charge Percentage:"), bpercent);
-    MS_DBG(F("CURRENT Modem Battery Voltage:"), volt);
-    if (state != 99)
-        loggerModem::_priorBatteryState = static_cast<float>(state);
-    else
-        loggerModem::_priorBatteryState = static_cast<float>(-9999);
+    if ((_pollModemMetaData & MODEM_RSSI_ENABLE_BITMASK) ==
+            MODEM_RSSI_ENABLE_BITMASK ||
+        (_pollModemMetaData & MODEM_PERCENT_SIGNAL_ENABLE_BITMASK) ==
+            MODEM_PERCENT_SIGNAL_ENABLE_BITMASK) {
+        // Try for up to 15 seconds to get a valid signal quality
+        uint32_t startMillis = millis();
+        do {
+            success &= getModemSignalQuality(rssi, percent);
+            loggerModem::_priorRSSI          = rssi;
+            loggerModem::_priorSignalPercent = percent;
+            if (rssi != 0 && rssi != -9999) break;
+            delay(250);
+        } while ((rssi == 0 || rssi == -9999) &&
+                 millis() - startMillis < 15000L && success);
+        MS_DBG(F("CURRENT RSSI:"), rssi);
+        MS_DBG(F("CURRENT Percent signal strength:"), percent);
+    } else {
+        MS_DBG(F("Polling for both RSSI and signal strength is disabled"));
+    }
 
-    if (bpercent != -99)
-        loggerModem::_priorBatteryPercent = static_cast<float>(bpercent);
-    else
-        loggerModem::_priorBatteryPercent = static_cast<float>(-9999);
+    if ((_pollModemMetaData & MODEM_BATTERY_STATE_ENABLE_BITMASK) ==
+            MODEM_BATTERY_STATE_ENABLE_BITMASK ||
+        (_pollModemMetaData & MODEM_BATTERY_PERCENT_ENABLE_BITMASK) ==
+            MODEM_BATTERY_PERCENT_ENABLE_BITMASK ||
+        (_pollModemMetaData & MODEM_BATTERY_VOLTAGE_ENABLE_BITMASK) ==
+            MODEM_BATTERY_VOLTAGE_ENABLE_BITMASK) {
+        success &= getModemBatteryStats(state, bpercent, volt);
+        MS_DBG(F("CURRENT Modem Battery Charge State:"), state);
+        MS_DBG(F("CURRENT Modem Battery Charge Percentage:"), bpercent);
+        MS_DBG(F("CURRENT Modem Battery Voltage:"), volt);
+        if (state != 99)
+            loggerModem::_priorBatteryState = static_cast<float>(state);
+        else
+            loggerModem::_priorBatteryState = static_cast<float>(-9999);
 
-    if (volt != 9999)
-        loggerModem::_priorBatteryVoltage = static_cast<float>(volt);
-    else
-        loggerModem::_priorBatteryVoltage = static_cast<float>(-9999);
+        if (bpercent != -99)
+            loggerModem::_priorBatteryPercent = static_cast<float>(bpercent);
+        else
+            loggerModem::_priorBatteryPercent = static_cast<float>(-9999);
 
-    loggerModem::_priorModemTemp = getModemChipTemperature();
-    MS_DBG(F("CURRENT Modem Chip Temperature:"), loggerModem::_priorModemTemp);
+        if (volt != 9999)
+            loggerModem::_priorBatteryVoltage = static_cast<float>(volt);
+        else
+            loggerModem::_priorBatteryVoltage = static_cast<float>(-9999);
+    } else {
+        MS_DBG(F("Polling for all modem battery parameters is disabled"));
+    }
+
+    if ((_pollModemMetaData & MODEM_TEMPERATURE_ENABLE_BITMASK) ==
+        MODEM_TEMPERATURE_ENABLE_BITMASK) {
+        loggerModem::_priorModemTemp = getModemChipTemperature();
+        MS_DBG(F("CURRENT Modem Chip Temperature:"),
+               loggerModem::_priorModemTemp);
+    } else {
+        MS_DBG(F("Polling for modem chip temperature is disabled"));
+    }
 
     return success;
 }
