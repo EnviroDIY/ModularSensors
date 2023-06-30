@@ -267,7 +267,7 @@ const int8_t  greenLED   = 8;       // Pin for the green LED
 const int8_t  redLED     = 9;       // Pin for the red LED
 const int8_t  buttonPin  = 21;      // Pin for debugging mode (ie, button pin)
 const int8_t  wakePin    = 31;  // MCU interrupt/alarm pin to wake from sleep
-// Mayfly 0.x D31 = A7
+// Mayfly 0.x, 1.x D31 = A7
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
@@ -1374,106 +1374,64 @@ Variable* mplTemp = new FreescaleMPL115A2_Temp(
 // for Additional Serial Ports" section
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-byte          gplp8ModbusAddress  = 0x19;  // The modbus address of the gplp8
+byte gplp8ModbusAddress = 0x19;  // The modbus address of the gplp8
 // Raw Request >>> {0x19, 0x03, 0x00, 0xC8, 0x00, 0x01, 0x06, 0x2C}
 const int8_t  gplp8AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  gplp8SensorPower    = modbusSensorPowerPin;              // Sensor power pin
-const int8_t  gplp8EnablePin      = -1;              // Adapter RE/DE pin
+const int8_t  gplp8SensorPower    = modbusSensorPowerPin;  // Sensor power pin
+const int8_t  gplp8EnablePin      = -1;                    // Adapter RE/DE pin
 const uint8_t gplp8NumberReadings = 1;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
 // power consumption
 
 // Create a GroPoint Profile GPLP-8 sensor object
 GroPointGPLP8 gplp8(gplp8ModbusAddress, modbusSerial, gplp8AdapterPower,
-                      gplp8SensorPower, gplp8EnablePin, gplp8NumberReadings);
+                    gplp8SensorPower, gplp8EnablePin, gplp8NumberReadings);
 
 // Create moisture variable pointers for each segment of the GPLP-8
-Variable* gplp8Moist1 = new Variable(&gplp8, 0, 
-    GPLP8_MOIST_RESOLUTION, "volumetricWaterContent at M1", 
-    GPLP8_MOIST_UNIT_NAME, "GPLP8Moist1",
-    "12345678-abcd-1234-ef00-1234567890ab");
-Variable* gplp8Moist2 = new Variable(&gplp8, 1, 
-    GPLP8_MOIST_RESOLUTION, "volumetricWaterContent at M2", 
-    GPLP8_MOIST_UNIT_NAME, "GPLP8Moist2",
-    "12345678-abcd-1234-ef00-1234567890ab");
-Variable* gplp8Moist3 = new Variable(&gplp8, 2, 
-    GPLP8_MOIST_RESOLUTION, "volumetricWaterContent at M3", 
-    GPLP8_MOIST_UNIT_NAME, "GPLP8Moist3",
-    "12345678-abcd-1234-ef00-1234567890ab");
-Variable* gplp8Moist4 = new Variable(&gplp8, 3, 
-    GPLP8_MOIST_RESOLUTION, "volumetricWaterContent at M4", 
-    GPLP8_MOIST_UNIT_NAME, "GPLP8Moist4",
-    "12345678-abcd-1234-ef00-1234567890ab");
-Variable* gplp8Moist5 = new Variable(&gplp8, 4, 
-    GPLP8_MOIST_RESOLUTION, "volumetricWaterContent at M5", 
-    GPLP8_MOIST_UNIT_NAME, "GPLP8Moist5",
-    "12345678-abcd-1234-ef00-1234567890ab");
-Variable* gplp8Moist6 = new Variable(&gplp8, 5, 
-    GPLP8_MOIST_RESOLUTION, "volumetricWaterContent at M6", 
-    GPLP8_MOIST_UNIT_NAME, "GPLP8Moist6",
-    "12345678-abcd-1234-ef00-1234567890ab");
-Variable* gplp8Moist7 = new Variable(&gplp8, 6, 
-    GPLP8_MOIST_RESOLUTION, "volumetricWaterContent at M7", 
-    GPLP8_MOIST_UNIT_NAME, "GPLP8Moist7",
-    "12345678-abcd-1234-ef00-1234567890ab");
-Variable* gplp8Moist8 = new Variable(&gplp8, 7, 
-    GPLP8_MOIST_RESOLUTION, "volumetricWaterContent at M8", 
-    GPLP8_MOIST_UNIT_NAME, "GPLP8Moist8",
-    "12345678-abcd-1234-ef00-1234567890ab");
+Variable* gplp8Moist1 = new GroPointGPLP8_Moist(
+    &gplp8, 0, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Moist1");
+Variable* gplp8Moist2 = new GroPointGPLP8_Moist(
+    &gplp8, 1, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Moist2");
+Variable* gplp8Moist3 = new GroPointGPLP8_Moist(
+    &gplp8, 2, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Moist3");
+Variable* gplp8Moist4 = new GroPointGPLP8_Moist(
+    &gplp8, 3, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Moist4");
+Variable* gplp8Moist5 = new GroPointGPLP8_Moist(
+    &gplp8, 4, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Moist5");
+Variable* gplp8Moist6 = new GroPointGPLP8_Moist(
+    &gplp8, 5, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Moist6");
+Variable* gplp8Moist7 = new GroPointGPLP8_Moist(
+    &gplp8, 6, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Moist7");
+Variable* gplp8Moist8 = new GroPointGPLP8_Moist(
+    &gplp8, 7, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Moist8");
 
 // Create temperature variable pointers for each sensor of the GPLP-8
-Variable* gplp8Temp1 = new Variable(&gplp8, 8,
-    GPLP8_TEMP_RESOLUTION, "temperature at T1", 
-    GPLP8_TEMP_UNIT_NAME, "GPLP8Temp1",
-    "12345678-abcd-1234-ef00-1234567890ab");
-Variable* gplp8Temp2 = new Variable(&gplp8, 9,
-    GPLP8_TEMP_RESOLUTION, "temperature at T2", 
-    GPLP8_TEMP_UNIT_NAME, "GPLP8Temp1",
-    "12345678-abcd-1234-ef00-1234567890ab");
-Variable* gplp8Temp3 = new Variable(&gplp8, 10,
-    GPLP8_TEMP_RESOLUTION, "temperature at T3", 
-    GPLP8_TEMP_UNIT_NAME, "GPLP8Temp3",
-    "12345678-abcd-1234-ef00-1234567890ab");
-Variable* gplp8Temp4 = new Variable(&gplp8, 11,
-    GPLP8_TEMP_RESOLUTION, "temperature at T4", 
-    GPLP8_TEMP_UNIT_NAME, "GPLP8Temp4",
-    "12345678-abcd-1234-ef00-1234567890ab");
-Variable* gplp8Temp5 = new Variable(&gplp8, 12,
-    GPLP8_TEMP_RESOLUTION, "temperature at T5", 
-    GPLP8_TEMP_UNIT_NAME, "GPLP8Temp5",
-    "12345678-abcd-1234-ef00-1234567890ab");
-Variable* gplp8Temp6 = new Variable(&gplp8, 13,
-    GPLP8_TEMP_RESOLUTION, "temperature at T6", 
-    GPLP8_TEMP_UNIT_NAME, "GPLP8Temp6",
-    "12345678-abcd-1234-ef00-1234567890ab");
-Variable* gplp8Temp7 = new Variable(&gplp8, 14,
-    GPLP8_TEMP_RESOLUTION, "temperature at T7", 
-    GPLP8_TEMP_UNIT_NAME, "GPLP8Temp7",
-    "12345678-abcd-1234-ef00-1234567890ab");
-Variable* gplp8Temp8 = new Variable(&gplp8, 15,
-    GPLP8_TEMP_RESOLUTION, "temperature at T8", 
-    GPLP8_TEMP_UNIT_NAME, "GPLP8Temp8",
-    "12345678-abcd-1234-ef00-1234567890ab");
-Variable* gplp8Temp9 = new Variable(&gplp8, 16,
-    GPLP8_TEMP_RESOLUTION, "temperature at T9", 
-    GPLP8_TEMP_UNIT_NAME, "GPLP8Temp9",
-    "12345678-abcd-1234-ef00-1234567890ab");
-Variable* gplp8Temp10 = new Variable(&gplp8, 17,
-    GPLP8_TEMP_RESOLUTION, "temperature at T10", 
-    GPLP8_TEMP_UNIT_NAME, "GPLP8Temp10",
-    "12345678-abcd-1234-ef00-1234567890ab");
-Variable* gplp8Temp11 = new Variable(&gplp8, 18,
-    GPLP8_TEMP_RESOLUTION, "temperature at T11", 
-    GPLP8_TEMP_UNIT_NAME, "GPLP8Temp11",
-    "12345678-abcd-1234-ef00-1234567890ab");
-Variable* gplp8Temp12 = new Variable(&gplp8, 19,
-    GPLP8_TEMP_RESOLUTION, "temperature at T12", 
-    GPLP8_TEMP_UNIT_NAME, "GPLP8Temp12",
-    "12345678-abcd-1234-ef00-1234567890ab");
-Variable* gplp8Temp13 = new Variable(&gplp8, 20,
-    GPLP8_TEMP_RESOLUTION, "temperature at T13", 
-    GPLP8_TEMP_UNIT_NAME, "GPLP8Temp13",
-    "12345678-abcd-1234-ef00-1234567890ab");
+Variable* gplp8Temp1 = new GroPointGPLP8_Temp(
+    &gplp8, 8, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp1");
+Variable* gplp8Temp2 = new GroPointGPLP8_Temp(
+    &gplp8, 9, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp1");
+Variable* gplp8Temp3 = new GroPointGPLP8_Temp(
+    &gplp8, 10, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp3");
+Variable* gplp8Temp4 = new GroPointGPLP8_Temp(
+    &gplp8, 11, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp4");
+Variable* gplp8Temp5 = new GroPointGPLP8_Temp(
+    &gplp8, 12, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp5");
+Variable* gplp8Temp6 = new GroPointGPLP8_Temp(
+    &gplp8, 13, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp6");
+Variable* gplp8Temp7 = new GroPointGPLP8_Temp(
+    &gplp8, 14, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp7");
+Variable* gplp8Temp8 = new GroPointGPLP8_Temp(
+    &gplp8, 15, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp8");
+Variable* gplp8Temp9 = new GroPointGPLP8_Temp(
+    &gplp8, 16, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp9");
+Variable* gplp8Temp10 = new GroPointGPLP8_Temp(
+    &gplp8, 17, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp10");
+Variable* gplp8Temp11 = new GroPointGPLP8_Temp(
+    &gplp8, 18, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp11");
+Variable* gplp8Temp12 = new GroPointGPLP8_Temp(
+    &gplp8, 19, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp12");
+Variable* gplp8Temp13 = new GroPointGPLP8_Temp(
+    &gplp8, 20, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp13");
 /** End [gropoint_gplp8] */
 #endif
 
@@ -2963,15 +2921,15 @@ float getBatteryVoltage() {
 //  Arduino Setup Function
 // ==========================================================================
 void setup() {
-    /** Start [setup_wait] */
-    // Wait for USB connection to be established by PC
-    // NOTE:  Only use this when debugging - if not connected to a PC, this
-    // could prevent the script from starting
-    #if defined SERIAL_PORT_USBVIRTUAL
-        while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000L)) {
-            // wait
-        }
-    #endif
+/** Start [setup_wait] */
+// Wait for USB connection to be established by PC
+// NOTE:  Only use this when debugging - if not connected to a PC, this
+// could prevent the script from starting
+#if defined SERIAL_PORT_USBVIRTUAL
+    while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000L)) {
+        // wait
+    }
+#endif
     /** End [setup_wait] */
 
     /** Start [setup_prints] */
