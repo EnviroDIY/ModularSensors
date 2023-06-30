@@ -58,7 +58,18 @@ bool SIMComSIM7080::modemWakeFxn(void) {
         digitalWrite(_modemSleepRqPin, _wakeLevel);
         delay(_wakePulse_ms);  // >1s
         digitalWrite(_modemSleepRqPin, !_wakeLevel);
-        return gsmModem.waitResponse(30000L, GF("SMS Ready")) == 1;
+        int ready_response = gsmModem.waitResponse(30000L, GF("SMS Ready"),
+                                                   GF("+CPIN: NOT INSERTED"));
+        if (ready_response == 1) {
+            MS_DBG(F("Got SMS Ready indicating modem is awake and ready"));
+        } else if (ready_response == 2) {
+            MS_DBG(F("Got +CPIN: NOT INSERTED indicating modem is awake and "
+                     "ready but has no SIM card"));
+        } else {
+            MS_DBG(F("Didn't get expected finish URC for modem wake!"));
+        }
+
+        return ready_response == 1 || ready_response == 2;
     }
     return true;
 }
