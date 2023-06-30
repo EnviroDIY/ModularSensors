@@ -21,6 +21,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ***
 
+## [0.34.1]
+### Fixed
+#347 -WiFi S6B stability - tears dwon TCP/IP before going to sleep, doesn't automatically poll for meta data
 
 ## [0.34.0]
 
