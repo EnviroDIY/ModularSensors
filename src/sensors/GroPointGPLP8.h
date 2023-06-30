@@ -7,7 +7,7 @@
  * @brief Contains the GroPointGPLP8 sensor subclass and the variable
  * subclasses GroPointGPLP8_Moist and GroPointGPLP8_Temp
  *
- * These are for the GroPoint Profile GPLP-8 Eight-Segment Soil Moisture 
+ * These are for the GroPoint Profile GPLP-8 Eight-Segment Soil Moisture
  * and Temperature Profiling Probe.
  *
  * This depends on the GroPointParent super class.
@@ -21,8 +21,8 @@
  */
 /* clang-format off */
 /**
- * @defgroup sensor_gplp8 GroPoint Profile GPLP-8 Soil Moisture & Temperature 
- * Profiling Probe. Classes for the GroPoint Profile GPLP-8 Soil Moisture & 
+ * @defgroup sensor_gplp8 GroPoint Profile GPLP-8 Soil Moisture & Temperature
+ * Profiling Probe. Classes for the GroPoint Profile GPLP-8 Soil Moisture &
  * Temperature Probe.
  *
  * @ingroup GroPoint_group
@@ -97,8 +97,6 @@
 /// @brief Decimals places in string representation; soil moisture should have 1
 /// - resolution is 0.1 %.
 #define GPLP8_MOIST_RESOLUTION 1
-/// @brief Sensor variable number; soil moisture is stored in sensorValues[2].
-#define GPLP8_MOIST_VAR_NUM 0
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
 #define GPLP8_MOIST_VAR_NAME "volumetricWaterContent"
@@ -112,7 +110,7 @@
 /**
  * @anchor sensor_gplp8_temp
  * @name Temperature
- * The temperature variable from a GroPoint Profile GPLP-8 
+ * The temperature variable from a GroPoint Profile GPLP-8
  * - Range is -20°C to + 70°C
  * - Accuracy is ± 0.5°C
  *
@@ -122,8 +120,6 @@
 /// @brief Decimals places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define GPLP8_TEMP_RESOLUTION 1
-/// @brief Sensor variable number; temperature is stored in sensorValues[4].
-#define GPLP8_TEMP_VAR_NUM 8
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
 /// "temperature"
@@ -169,26 +165,24 @@ class GroPointGPLP8 : public GroPointParent {
      * default value of 1.
      */
     GroPointGPLP8(byte modbusAddress, Stream* stream, int8_t powerPin,
-                    int8_t powerPin2 = -1, int8_t enablePin = -1,
-                    uint8_t measurementsToAverage = 1)
-        : GroPointParent(modbusAddress, stream, powerPin, powerPin2,
-                           enablePin, measurementsToAverage, GPLP8,
-                           "GroPointGPLP8", GPLP8_NUM_VARIABLES,
-                           GPLP8_WARM_UP_TIME_MS, GPLP8_STABILIZATION_TIME_MS,
-                           GPLP8_MEASUREMENT_TIME_MS,
-                           GPLP8_INC_CALC_VARIABLES) {}
+                  int8_t powerPin2 = -1, int8_t enablePin = -1,
+                  uint8_t measurementsToAverage = 1)
+        : GroPointParent(modbusAddress, stream, powerPin, powerPin2, enablePin,
+                         measurementsToAverage, GPLP8, "GroPointGPLP8",
+                         GPLP8_NUM_VARIABLES, GPLP8_WARM_UP_TIME_MS,
+                         GPLP8_STABILIZATION_TIME_MS, GPLP8_MEASUREMENT_TIME_MS,
+                         GPLP8_INC_CALC_VARIABLES) {}
     /**
      * @copydoc GroPointGPLP8::GroPointGPLP8
      */
     GroPointGPLP8(byte modbusAddress, Stream& stream, int8_t powerPin,
-                    int8_t powerPin2 = -1, int8_t enablePin = -1,
-                    uint8_t measurementsToAverage = 1)
-        : GroPointParent(modbusAddress, stream, powerPin, powerPin2,
-                           enablePin, measurementsToAverage, GPLP8,
-                           "GroPointGPLP8", GPLP8_NUM_VARIABLES,
-                           GPLP8_WARM_UP_TIME_MS, GPLP8_STABILIZATION_TIME_MS,
-                           GPLP8_MEASUREMENT_TIME_MS,
-                           GPLP8_INC_CALC_VARIABLES) {}
+                  int8_t powerPin2 = -1, int8_t enablePin = -1,
+                  uint8_t measurementsToAverage = 1)
+        : GroPointParent(modbusAddress, stream, powerPin, powerPin2, enablePin,
+                         measurementsToAverage, GPLP8, "GroPointGPLP8",
+                         GPLP8_NUM_VARIABLES, GPLP8_WARM_UP_TIME_MS,
+                         GPLP8_STABILIZATION_TIME_MS, GPLP8_MEASUREMENT_TIME_MS,
+                         GPLP8_INC_CALC_VARIABLES) {}
     /**
      * @brief Destroy the GroPoint GPLP8 object
      */

@@ -4,16 +4,17 @@
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Anthony Aufdenkampe <aaufdenkampe@limno.com>
  *
- * @brief Contains the GroPointParent sensor subclass, itself a parent 
+ * @brief Contains the GroPointParent sensor subclass, itself a parent
  * class for all GroPoint Soil Moisture and Temperature sensors
  * that communicate via SDI-12 or Modbus.
  * NOTE: Presently this library only supports Modbus communication and GroPoint
  * Profile Multi Segment Soil Moisture & Temperature Profiling Probes (GPLP-X)
  * via the EnviroDIY GroPointModbus library.
  *
- * Documentation for the GroPointModbus Modbus Protocol commands and responses, along with
- * information about the various variables, can be found in the EnviroDIY
- * GroPointModbus library at: https://github.com/EnviroDIY/GroPointModbus
+ * Documentation for the GroPointModbus Modbus Protocol commands and responses,
+ * along with information about the various variables, can be found in the
+ * EnviroDIY GroPointModbus library at:
+ * https://github.com/EnviroDIY/GroPointModbus
  */
 /* clang-format off */
 /**
@@ -124,28 +125,26 @@ class GroPointParent : public Sensor {
      * optional with a default value of 0.
      */
     GroPointParent(byte modbusAddress, Stream* stream, int8_t powerPin,
-                     int8_t powerPin2, int8_t enablePin = -1,
-                     uint8_t measurementsToAverage = 1,
-                     gropointModel model = GPLPX,
-                     const char* sensName = "GroPoint-Sensor",
-                     uint8_t numVariables = 2, 
-                     uint32_t warmUpTime_ms = 350,
-                     uint32_t stabilizationTime_ms = 100,
-                     uint32_t measurementTime_ms   = 200,
-                     uint8_t  incCalcValues        = 0);
+                   int8_t powerPin2, int8_t enablePin = -1,
+                   uint8_t       measurementsToAverage = 1,
+                   gropointModel model                 = GPLPX,
+                   const char*   sensName              = "GroPoint-Sensor",
+                   uint8_t numVariables = 2, uint32_t warmUpTime_ms = 350,
+                   uint32_t stabilizationTime_ms = 100,
+                   uint32_t measurementTime_ms   = 200,
+                   uint8_t  incCalcValues        = 0);
     /**
      * @copydoc GroPointParent::GroPointParent
      */
     GroPointParent(byte modbusAddress, Stream& stream, int8_t powerPin,
-                     int8_t powerPin2, int8_t enablePin = -1,
-                     uint8_t measurementsToAverage = 1,
-                     gropointModel model = GPLPX,
-                     const char* sensName = "GroPoint-Sensor",
-                     uint8_t numVariables = 2, 
-                     uint32_t warmUpTime_ms = 350,
-                     uint32_t stabilizationTime_ms = 100,
-                     uint32_t measurementTime_ms   = 200,
-                     uint8_t  incCalcValues        = 0);
+                   int8_t powerPin2, int8_t enablePin = -1,
+                   uint8_t       measurementsToAverage = 1,
+                   gropointModel model                 = GPLPX,
+                   const char*   sensName              = "GroPoint-Sensor",
+                   uint8_t numVariables = 2, uint32_t warmUpTime_ms = 350,
+                   uint32_t stabilizationTime_ms = 100,
+                   uint32_t measurementTime_ms   = 200,
+                   uint8_t  incCalcValues        = 0);
     /**
      * @brief Destroy the GroPoint Parent object - no action taken
      */
@@ -200,12 +199,12 @@ class GroPointParent : public Sensor {
     bool addSingleMeasurementResult(void) override;
 
  private:
-    gropoint        _gsensor;
-    gropointModel   _model;
-    byte            _modbusAddress;
-    Stream*         _stream;
-    int8_t          _RS485EnablePin;
-    int8_t          _powerPin2;
+    gropoint      _gsensor;
+    gropointModel _model;
+    byte          _modbusAddress;
+    Stream*       _stream;
+    int8_t        _RS485EnablePin;
+    int8_t        _powerPin2;
 };
 
 #endif  // SRC_SENSORS_GROPOINTPARENT_H_

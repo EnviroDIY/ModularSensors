@@ -11,34 +11,38 @@
 
 // The constructor - need the sensor type, modbus address, power pin, stream for
 // data, and number of readings to average
-GroPointParent::GroPointParent(
-    byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2,
-    int8_t enablePin, uint8_t measurementsToAverage, gropointModel model,
-    const char* sensName, uint8_t numVariables, uint32_t warmUpTime_ms,
-    uint32_t stabilizationTime_ms, uint32_t measurementTime_ms,
-    uint8_t incCalcValues)
+GroPointParent::GroPointParent(byte modbusAddress, Stream* stream,
+                               int8_t powerPin, int8_t powerPin2,
+                               int8_t enablePin, uint8_t measurementsToAverage,
+                               gropointModel model, const char* sensName,
+                               uint8_t numVariables, uint32_t warmUpTime_ms,
+                               uint32_t stabilizationTime_ms,
+                               uint32_t measurementTime_ms,
+                               uint8_t  incCalcValues)
     : Sensor(sensName, numVariables, warmUpTime_ms, stabilizationTime_ms,
              measurementTime_ms, powerPin, -1, measurementsToAverage,
              incCalcValues),
-            _model(model),
-            _modbusAddress(modbusAddress),
-            _stream(stream),
-            _RS485EnablePin(enablePin),
-            _powerPin2(powerPin2) {}
-GroPointParent::GroPointParent(
-    byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2,
-    int8_t enablePin, uint8_t measurementsToAverage, gropointModel model,
-    const char* sensName, uint8_t numVariables, uint32_t warmUpTime_ms,
-    uint32_t stabilizationTime_ms, uint32_t measurementTime_ms,
-    uint8_t incCalcValues)
+      _model(model),
+      _modbusAddress(modbusAddress),
+      _stream(stream),
+      _RS485EnablePin(enablePin),
+      _powerPin2(powerPin2) {}
+GroPointParent::GroPointParent(byte modbusAddress, Stream& stream,
+                               int8_t powerPin, int8_t powerPin2,
+                               int8_t enablePin, uint8_t measurementsToAverage,
+                               gropointModel model, const char* sensName,
+                               uint8_t numVariables, uint32_t warmUpTime_ms,
+                               uint32_t stabilizationTime_ms,
+                               uint32_t measurementTime_ms,
+                               uint8_t  incCalcValues)
     : Sensor(sensName, numVariables, warmUpTime_ms, stabilizationTime_ms,
              measurementTime_ms, powerPin, -1, measurementsToAverage,
              incCalcValues),
-            _model(model),
-            _modbusAddress(modbusAddress),
-            _stream(&stream),
-            _RS485EnablePin(enablePin),
-            _powerPin2(powerPin2) {}
+      _model(model),
+      _modbusAddress(modbusAddress),
+      _stream(&stream),
+      _RS485EnablePin(enablePin),
+      _powerPin2(powerPin2) {}
 // Destructor
 GroPointParent::~GroPointParent() {}
 
@@ -194,7 +198,7 @@ void GroPointParent::powerDown(void) {
 
 
 bool GroPointParent::addSingleMeasurementResult(void) {
-    bool success = false;
+    bool success  = false;
     bool successT = false;
     // Initialize moisture variables for each probe segement
     float M1, M2, M3, M4, M5, M6, M7, M8 = -9999;
@@ -221,13 +225,13 @@ bool GroPointParent::addSingleMeasurementResult(void) {
                 if (!success || isnan(M8)) M8 = -9999;
 
                 MS_DBG(F("    "), _gsensor.getParameter());
-                MS_DBG(F("    "), _gsensor.getUnits());                
-                MS_DBG(F("    "), M1,',', M2,',', M3,',', M4,',', M5,',', 
-                                  M6,',', M7,',', M8);
-                
+                MS_DBG(F("    "), _gsensor.getUnits());
+                MS_DBG(F("    "), M1, ',', M2, ',', M3, ',', M4, ',', M5, ',',
+                       M6, ',', M7, ',', M8);
+
                 // Get Temperature Values
-                successT = _gsensor.getTemperatureValues(T1, T2, T3, T4, T5, 
-                                        T6, T7, T8, T9, T10, T11, T12, T13);
+                successT = _gsensor.getTemperatureValues(
+                    T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13);
 
                 // Fix not-a-number values
                 if (!success || isnan(T1)) T1 = -9999;
@@ -245,10 +249,10 @@ bool GroPointParent::addSingleMeasurementResult(void) {
                 if (!success || isnan(T13)) T13 = -9999;
 
                 MS_DBG(F("    "), _gsensor.getParameter1());
-                MS_DBG(F("    "), _gsensor.getUnits1());                
-                MS_DBG(F("    "), T1, ',', T2, ',', T3, ',', T4, ',', T5, ',', 
-                                  T6, ',', T7, ',', T8, ',', T9, ',', T10, ',', 
-                                  T11, ',', T12, ',', T13);
+                MS_DBG(F("    "), _gsensor.getUnits1());
+                MS_DBG(F("    "), T1, ',', T2, ',', T3, ',', T4, ',', T5, ',',
+                       T6, ',', T7, ',', T8, ',', T9, ',', T10, ',', T11, ',',
+                       T12, ',', T13);
 
 
                 // Put values into the array
