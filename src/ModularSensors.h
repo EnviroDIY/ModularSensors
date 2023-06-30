@@ -13,6 +13,10 @@
 
 /**
  * @brief The current library version number
+ * https://semver.org/
+ * Add hypen '-' and alpha number for a branches unique tracking number
+ * A pre-release version will always be indicated as slightly ahead of the
+ * EnviroDIY branch that it is based on.
  */
 #define MODULAR_SENSORS_VERSION "0.35.0"
 

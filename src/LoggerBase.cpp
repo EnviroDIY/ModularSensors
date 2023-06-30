@@ -1272,14 +1272,6 @@ void Logger::testingMode() {
         PRINTOUT(F("------------------------------------------"));
 
         // Update the modem metadata
-        // NOTE:  the extra get signal quality is an annoying redundancy
-        // needed only for the wifi XBee.  Update metadata will also ask the
-        // module for current signal quality using the underlying TinyGSM
-        // getSignalQuality() function, but for the WiFi XBee it will not
-        // actually measure anything except by explicitly making a connection,
-        // which getModemSignalQuality() does.  For all of the other modules,
-        // getModemSignalQuality() is just a straight pass-through to
-        // getSignalQuality().
         if (gotInternetConnection) { _logModem->updateModemMetadata(); }
 
         watchDogTimer.resetWatchDog();
