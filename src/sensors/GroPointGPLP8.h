@@ -218,21 +218,22 @@ class GroPointGPLP8_Moist : public Variable {
      * optional with a default value of "GPLP8Moist".
      */
     explicit GroPointGPLP8_Moist(GroPointGPLP8* parentSense,
-                                  const char*      uuid = "",
-                                  const char* varCode = GPLP8_MOIST_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)GPLP8_MOIST_VAR_NUM,
-                   (uint8_t)GPLP8_MOIST_RESOLUTION, GPLP8_MOIST_VAR_NAME,
-                   GPLP8_MOIST_UNIT_NAME, varCode, uuid) {}
+                                 const uint8_t  sensorVarNum,
+                                 const char*    uuid = "",
+                                 const char* varCode = GPLP8_MOIST_DEFAULT_CODE)
+        : Variable(parentSense, sensorVarNum, (uint8_t)GPLP8_MOIST_RESOLUTION,
+                   GPLP8_MOIST_VAR_NAME, GPLP8_MOIST_UNIT_NAME, varCode, uuid) {
+    }
     /**
      * @brief Construct a new GroPointGPLP8_Moist object.
      *
      * @note This must be tied with a parent GroPointGPLP8 before it can be
      * used.
      */
-    GroPointGPLP8_Moist()
-        : Variable((const uint8_t)GPLP8_MOIST_VAR_NUM,
-                   (uint8_t)GPLP8_MOIST_RESOLUTION, GPLP8_MOIST_VAR_NAME,
-                   GPLP8_MOIST_UNIT_NAME, GPLP8_MOIST_DEFAULT_CODE) {}
+    GroPointGPLP8_Moist(const uint8_t sensorVarNum)
+        : Variable(sensorVarNum, (uint8_t)GPLP8_MOIST_RESOLUTION,
+                   GPLP8_MOIST_VAR_NAME, GPLP8_MOIST_UNIT_NAME,
+                   GPLP8_MOIST_DEFAULT_CODE) {}
     /**
      * @brief Destroy the GroPointGPLP8_Moist object - no action needed.
      */
@@ -261,21 +262,21 @@ class GroPointGPLP8_Temp : public Variable {
      * optional with a default value of "GPLP8Temp".
      */
     explicit GroPointGPLP8_Temp(GroPointGPLP8* parentSense,
-                                  const char*      uuid = "",
-                                  const char* varCode = GPLP8_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)GPLP8_TEMP_VAR_NUM,
-                   (uint8_t)GPLP8_TEMP_RESOLUTION, GPLP8_TEMP_VAR_NAME,
-                   GPLP8_TEMP_UNIT_NAME, varCode, uuid) {}
+                                const uint8_t  sensorVarNum,
+                                const char*    uuid = "",
+                                const char* varCode = GPLP8_TEMP_DEFAULT_CODE)
+        : Variable(parentSense, sensorVarNum, (uint8_t)GPLP8_TEMP_RESOLUTION,
+                   GPLP8_TEMP_VAR_NAME, GPLP8_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new GroPointGPLP8_Temp object.
      *
      * @note This must be tied with a parent GroPointGPLP8 before it can be
      * used.
      */
-    GroPointGPLP8_Temp()
-        : Variable((const uint8_t)GPLP8_TEMP_VAR_NUM,
-                   (uint8_t)GPLP8_TEMP_RESOLUTION, GPLP8_TEMP_VAR_NAME,
-                   GPLP8_TEMP_UNIT_NAME, GPLP8_TEMP_DEFAULT_CODE) {}
+    GroPointGPLP8_Temp(const uint8_t sensorVarNum)
+        : Variable(sensorVarNum, (uint8_t)GPLP8_TEMP_RESOLUTION,
+                   GPLP8_TEMP_VAR_NAME, GPLP8_TEMP_UNIT_NAME,
+                   GPLP8_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the GroPointGPLP8_Temp object - no action needed.
      */
