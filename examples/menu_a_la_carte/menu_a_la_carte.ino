@@ -1367,7 +1367,7 @@ Variable* mplTemp = new FreescaleMPL115A2_Temp(
 // ==========================================================================
 //  GroPoint Profile GPLP-8 Soil Moisture and Temperature Sensor
 // ==========================================================================
-/** Start [gropoint_gplp8] */
+/** Start [gro_point_gplp8] */
 #include <sensors/GroPointGPLP8.h>
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
@@ -1432,7 +1432,7 @@ Variable* gplp8Temp12 = new GroPointGPLP8_Temp(
     &gplp8, 19, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp12");
 Variable* gplp8Temp13 = new GroPointGPLP8_Temp(
     &gplp8, 20, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp13");
-/** End [gropoint_gplp8] */
+/** End [gro_point_gplp8] */
 #endif
 
 

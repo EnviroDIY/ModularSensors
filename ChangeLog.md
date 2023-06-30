@@ -13,14 +13,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 ### Added
-- Support [GroPoint Profile GPLP-8 Eight-Segment Soil Moisture and Temperature Profiling Probe](https://www.gropoint.com/products/soil-sensors/gropoint-profile)  
 ### Removed
 
 ### Fixed
-- Fixed GitHub actions for pull requests from forks.
 
 ***
 
+
+## [0.35.0]
+
+### Added
+- Support [GroPoint Profile GPLP-8 Eight-Segment Soil Moisture and Temperature Profiling Probe](https://www.gropoint.com/products/soil-sensors/gropoint-profile)
+
+### Fixed
+- Fixed GitHub actions for pull requests from forks.
 
 ## [0.34.0]
 

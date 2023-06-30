@@ -837,7 +837,7 @@ ___
 
 @see @ref sensor_gplp8
 
-[//]: # ( @menusnip{gropoint_gplp8} )
+[//]: # ( @menusnip{gro_point_gplp8} )
 
 ___
 

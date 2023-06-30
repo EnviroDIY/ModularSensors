@@ -41,7 +41,7 @@
  * @section sensor_gplp8_examples Example Code
  * The GPLP-8 Probe is used in the @menulink{GroPoint_gplp8} example.
  *
- * @menusnip{gropoint_gplp8}
+ * @menusnip{gro_point_gplp8}
  */
 /* clang-format on */
 
