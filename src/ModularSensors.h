@@ -18,7 +18,7 @@
  * A pre-release version will always be indicated as slightly ahead of the
  * EnviroDIY branch that it is based on.
  */
-#define MODULAR_SENSORS_VERSION "0.34.1"
+#define MODULAR_SENSORS_VERSION "0.34.2.aaa"
 
 
 // To get all of the base classes for ModularSensors, include LoggerBase.

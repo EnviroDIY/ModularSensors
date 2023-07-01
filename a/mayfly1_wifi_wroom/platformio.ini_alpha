@@ -1,0 +1,187 @@
+; PlatformIO Project Configuration File
+;
+;   Build options: build flags, source filter
+;   Upload options: custom upload port, speed and extra flags
+;   Library options: dependencies, extra library storages
+;   Advanced options: extra scripting
+;
+; Please visit documentation for the other options and examples
+; http://docs.platformio.org/page/projectconf.html
+
+[platformio]
+description = ModularSensors example intended for DRWI users with CTD and a EnviroDIY ESP32 Bee
+
+[env]
+monitor_speed = 115200 ;57600
+framework = arduino
+; deep search for dependencies, evalulating preprocessor conditionals
+lib_ldf_mode = deep+
+; look for the library director
+lib_extra_dirs = .
+; We have to ignore these folders or PlatformIO will double count all the dependencies
+lib_ignore =
+    .git
+    .vscode
+    doc
+    examples
+    sensor_tests
+    extras
+    build
+    RTCZero
+    Adafruit NeoPixel
+    Adafruit GFX Library
+    Adafruit SSD1306
+    Adafruit ADXL343
+    Adafruit STMPE610
+    Adafruit TouchScreen
+    Adafruit ILI9341
+; All these library dependencies must be listed out since we're in the library
+; source code and won't read the dependencies from the library.json like a
+; typical user would
+lib_deps =
+    envirodiy/EnviroDIY_DS3231
+    arduino-libraries/RTCZero
+    greygnome/EnableInterrupt
+    greiman/SdFat
+    vshymanskyy/TinyGSM
+    ;https://github.com/neilh10/TinyGSM#iss347_digi_wifi_s6b_becomes_unstable
+    knolleary/PubSubClient
+    adafruit/Adafruit BusIO
+    adafruit/Adafruit Unified Sensor
+    https://github.com/soligen2010/Adafruit_ADS1X15.git
+    adafruit/Adafruit AM2315
+    adafruit/Adafruit BME280 Library
+    adafruit/DHT sensor library
+    adafruit/Adafruit INA219
+    adafruit/Adafruit MPL115A2
+    adafruit/Adafruit SHT4x Library
+    https://github.com/MartinL1/BMP388_DEV
+    paulstoffregen/OneWire
+    milesburton/DallasTemperature
+    envirodiy/SDI-12
+    northernwidget/MS5803
+    https://github.com/EnviroDIY/Tally_Library.git#Dev_I2C
+    envirodiy/SensorModbusMaster
+    envirodiy/KellerModbus
+    envirodiy/YosemitechModbus
+    vshymanskyy/StreamDebugger
+; The directories for the ModularSensors library source code
+build_src_filter = +<*>  +<../../../src>  +<../../../src/sensors> +<../../../src/publishers> +<../../../src/modems>
+
+
+; Some common build flags
+build_flags =
+    -Isrc
+    -I../../src ; .h For easy debug
+    -I../../src/sensors ; .h For easy debug
+    ;-Ilib/TinyGSM/src
+    -D SDI12_EXTERNAL_PCINT
+    -D NEOSWSERIAL_EXTERNAL_PCINT
+    -D MQTT_MAX_PACKET_SIZE=240
+    -D TINY_GSM_RX_BUFFER=64
+    -D TINY_GSM_YIELD_MS=2
+    ;-D STREAMDEBUGGER_DBG
+    ;-D TinyGsmClientXbee_DBG=Serial
+    ;-D MS_DIGIXBEEWIFI_DEBUG
+    ;-D MS_DIGIXBEE_DEBUG
+    ;-D MS_LOGGERMODEM_DEBUG
+;extra_scripts = pre:pioScripts/generate_compile_commands.py
+
+[env:mayfly]
+;monitor_speed = 115200
+board = mayfly
+platform = atmelavr
+;framework = arduino
+;lib_ldf_mode = deep+
+
+lib_deps = ${env.lib_deps}
+;    envirodiy/EnviroDIY_ModularSensors
+;  ^^ Use this when working from an official release of the library
+    ;https://github.com/neilh10/ModularSensors.git#develop
+    ;https://github.com/neilh10/ModularSensors.git#dvlp_batch_build
+;  ^^ Use this when if you want to pull from the develop branch
+    https://github.com/EnviroDIY/SoftwareSerial_ExternalInts.git
+    https://github.com/PaulStoffregen/AltSoftSerial.git
+    https://github.com/SRGDamia1/NeoSWSerial.git
+    https://github.com/vshymanskyy/StreamDebugger 
+
+lib_ignore =
+    ${env.lib_ignore}
+    RTCZero
+    Adafruit Zero DMA Library
+
+build_flags =
+    ${env.build_flags}
+    ;-DSDI12_EXTERNAL_PCINT
+    ;-Isrc
+    ;-I../../src ; .h For easy debug
+    ;-I../../src/sensors ; .h For easy debug
+    ;-I../../src/modems
+    !python git_rev_macro.py  ;returns -DPIO_SRC_REV=<git_revision>
+    ;-DNO_FIRST_SYNC_WITH_NIST
+    -DNIST_SYNC_HOURLY
+    ;-DCORE_DEBUG_LEVEL=5 ; for rpcUnified 
+    -DMS_LOGGING_TO_MMW_DEBUG
+    ;-DMS_TU_XX_DEBUG_DEEP
+    ;-DSTREAMDEBUGGER_DBG
+    ;-DMS_DUMP_FREE_RAM
+    ;-DMS_TTY_USER_INPUT
+    ;-DSerialCommand_inFlash ;requires MS_TTY_USER_INPUT
+    ;-DMS_TTY_INPUT_COUNT   ;only if no MS_TTY_USER_INPUT
+    ;-DSERIALCOMMAND_DEBUG
+    -DMS_LOGGERBASE_POSTS
+    ;-DMS_LOGGERBASE_SLEEP_DEBUG ;Need or below
+    ;-DMS_LOGGERBASE_DEBUG
+    -DMS_LOGGERMODEM_DEBUG
+    ;-DMS_LOGGERMODEM_DEBUG_DEEP
+    ;-DMS_SENSORBASE_DEBUG
+    ;-DMS_VARIABLEARRAY_DEBUG
+    ;-DMS_VARIABLEARRAY_DEBUG_DEEP
+    ;-DMS_VARIABLEBASE_DEBUG
+    ;-DMS_VARIABLEBASE_DEBUG_DEEP
+    ;-DMS_DATAPUBLISHERBASE_DEBUG
+    ;-DMS_ENVIRODIYPUBLISHER_DEBUG
+    ;-DMS_THINGSPEAKPUBLISHER_DEBUG
+    ;-DMS_UBIDOTSPUBLISHER_DEBUG
+    ;-DMS_WIOTERMINAL_RPCWIFI_DEBUG
+    -DMS_ESPRESSIFESP8266_DEBUG
+    -DMS_ESPRESSIFESP8266_DEBUG_DEEP
+    ;-DMS_DIGIXBEEWIFI_DEBUG
+    ;-DMS_DIGIXBEEWIFI_DEBUG_DEEP
+    ;-DMS_DIGIXBEECELLULARTRANSPARENT_DEBUG
+    ;-DMS_DIGIXBEECELLULARTRANSPARENT_DEBUG_DEEP
+    ;-DMS_DIGIXBEE_DEBUG
+    -DTINY_GSM_DEBUG=Serial
+    ;-DTinyGsmClientXbee_DBG=Serial
+    -DSDI12_EXTERNAL_PCINT 
+    ;-DMS_BATTERYMANAGEMENT_DEBUG
+    ;-DMS_PROCSTATS_DEBUG ?
+    ;-DMS_MODEM_DEBUG ?
+    ;-DMS_PROCESSORSTATS_DEBUG
+    ;-DMS_PROCESSORADC_DEBUG
+    ;-DMS_MAXIMDS18_DEBUG
+    ;-DMS_TIINA219M_DEBUG
+    ;-DMS_AOSONGAM2315_DEBUG
+    ;-DMS_EXTERNALVOLTAGE_DEBUG
+    ;-DMS_EXTERNALVOLTAGE_DEBUG_DEEP
+    ;-DMS_KELLERPARENT_DEBUG
+    ;-DMS_KELLERPARENT_DEBUG_DEEP has problem
+    ;-DMS_MODBUS_DEBUG
+    -DSENSORMODBUSMASTER_NO_DBG
+    ;-DMS_ANALOGELECCONDUCTIVITY_DEBUG
+    ;-DMS_ANALOGELECCONDUCTIVITY_DEBUG_DEEP
+    ;-DMS_SDI12SENSORS_DEBUG ;LT500 sometimes responding
+    ;-DMS_SDI12SENSORS_DEBUG_DEEP
+    ;For -DMS_SDI12 options: NONE or MS_SDI12_SINGLE_LINE_RESPONSE  OR MS_SDI12_NON_CONCURRENT not BOTH
+    ;-DMS_SDI12_SINGLE_LINE_RESPONSE
+    ;-DMS_SDI12_NON_CONCURRENT
+    ;-DENVIRODIY_SDI12_USE_CRC
+    ;-DMS_ENVIRODIYPUBLISHER_DEBUG
+    ;-DMS_ENVIRODIYPUBLISHER_DEBUG_DEEP
+    ;-DSodaq_DS3231_DEBUG
+    -DMS_WATCHDOGAVR_DEBUG
+    -DMS_WATCHDOGAVR_DEBUG_DEEP
+    -D STANDARD_SERIAL_OUTPUT=Serial
+    -D DEBUGGING_SERIAL_OUTPUT=Serial
+    -D DEEP_DEBUGGING_SERIAL_OUTPUT=Serial
+
