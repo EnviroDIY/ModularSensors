@@ -50,6 +50,7 @@ USE_RTCLIB  rtcExtPhy;
 #define DateTimeClass(varNam, epochTime) \
     DateTime varNam((long)((uint64_t)(epochTime - EPOCH_TIME_DTCLASS)));
 #endif  //  USE_RTCLIB
+#define TEMP_BUFFER_SZ 37
 
 // Constructors
 Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,

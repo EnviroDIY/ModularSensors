@@ -17,4 +17,8 @@ on uSD internet connection synospsis  DBGyymm.log
 rtc - renamed to rtcExtPhy
  going with compatible versions for SAMDxx
 
+Note if "old date" that forces MMW to decompress 
+gets 400 "bad request" 
+-- Response Code -- 400 waited  108 mS Timeout 15432
+data needs to be deleted
 remove /* atl_extension */ 

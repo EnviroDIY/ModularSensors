@@ -1318,7 +1318,7 @@ uint32_t wakeUpTime_secs;
 
 
 public:
-#define TEMP_BUFFER_SZ 37
+
 void forceSysReset(uint8_t source, uint16_t simpleCheck);
 /**
  * @brief Process queued readings to send to remote if internet available.

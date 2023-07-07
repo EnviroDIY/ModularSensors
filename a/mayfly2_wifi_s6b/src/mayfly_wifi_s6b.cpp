@@ -369,9 +369,9 @@ void setup() {
     // Begin the logger
     dataLogger.begin();
     #if defined MS_NETWORK_LAYER
-    //EnviroDIYPOST.setQuedState(true);
-    //EnviroDIYPOST.setTimerPostTimeout_mS(15432); //15.4Sec
-    //EnviroDIYPOST.setTimerPostPacing_mS(500);
+    EnviroDIYPOST.setQuedState(true);
+    EnviroDIYPOST.setTimerPostTimeout_mS(9876); //9.876Sec
+    EnviroDIYPOST.setTimerPostPacing_mS(500);
     dataLogger.setLoggingInterval(2); //Set every minute, default 5min
 
     #endif //MS_NETWORK_LAYER
@@ -434,7 +434,7 @@ void setup() {
     dataLogger.setSendOffset(0);
     dataLogger._sendEveryX_cnt=1;
     dataLogger.setPostMax_num(100);
-    dataLogger.logDataAndPubReliably(0x3);
+    dataLogger.logDataAndPubReliably(0x08 |0x03);
     #endif //    #if defined MS_NETWORK_LAYER
     // Call the processor sleep
     Serial.println(F("Putting processor to sleep\n"));

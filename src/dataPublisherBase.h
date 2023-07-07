@@ -341,7 +341,6 @@ class dataPublisher {
     // uint8_t _timerPost_mS;
 
  public:
-    virtual int16_t storAndPublish();
 
     bool useQueDataSource = false;
     bool virtual setQuedState(bool state, char uniqueId = '0') {
