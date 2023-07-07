@@ -70,9 +70,9 @@ const char* sketchName = "mayfly1_wifi_wroom.cpp";
 const char* LoggerID = "itest1";
 
 // How frequently (in minutes) to log data
-const uint8_t loggingInterval = 15;
+const uint8_t loggingInterval = 2;
 // Your logger's timezone.
-const int8_t timeZone = -5;  // Eastern Standard Time
+const int8_t timeZone = -8;  // PST
 // NOTE:  Daylight savings time will not be applied!  Please use standard time!
 #define SerialStd STANDARD_SERIAL_OUTPUT
 

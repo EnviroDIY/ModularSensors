@@ -368,7 +368,13 @@ void setup() {
 
     // Begin the logger
     dataLogger.begin();
+    #if defined MS_NETWORK_LAYER
+    //EnviroDIYPOST.setQuedState(true);
+    //EnviroDIYPOST.setTimerPostTimeout_mS(15432); //15.4Sec
+    //EnviroDIYPOST.setTimerPostPacing_mS(500);
+    dataLogger.setLoggingInterval(2); //Set every minute, default 5min
 
+    #endif //MS_NETWORK_LAYER
     // Note:  Please change these battery voltages to match your battery
     // Set up the sensors, except at lowest battery level
     //if (getBatteryVoltage() > 3.4) 
@@ -424,7 +430,12 @@ void setup() {
         dataLogger.turnOffSDcard(
             true);  // true = wait for internal housekeeping after write
     }
-
+    #if defined MS_NETWORK_LAYER
+    dataLogger.setSendOffset(0);
+    dataLogger._sendEveryX_cnt=1;
+    dataLogger.setPostMax_num(100);
+    dataLogger.logDataAndPubReliably(0x3);
+    #endif //    #if defined MS_NETWORK_LAYER
     // Call the processor sleep
     Serial.println(F("Putting processor to sleep\n"));
     dataLogger.systemSleep();
@@ -451,7 +462,11 @@ void loop() {
     // If the battery is good, send the data to the world
     else */ 
     {
+        #if !defined MS_NETWORK_LAYER
         dataLogger.logDataAndPublish();
+        #else
+        dataLogger.logDataAndPubReliably();  //TCP / RTL !there
+        #endif 
     }
 }
 /** End [loop] */
