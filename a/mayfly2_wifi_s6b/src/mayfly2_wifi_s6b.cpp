@@ -1,13 +1,12 @@
 /** =========================================================================
- * @file DRWI_SIM7080LTE.cpp
+ * @file Mayfly2_wifi_s6b_.cpp
  * @brief Adapted for for testing ReliableDelivery/ WiFi .
  *
  * This example shows proper settings for the following configuration:
  *
- * Mayfly v1.0 board
- * EnviroDIY SIM7080 LTE module (with Hologram SIM card)
- * Hydros21 CTD sensor
- * Campbell Scientific OBS3+ Turbidity sensor
+ * Mayfly v1.x board
+ * EnviroDIY Digi WiFi S6B
+ * Internal sensors
  *
  * @author Neil Hancock & Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  * @copyright (c) 2017-2022 Stroud Water Research Center (SWRC)
@@ -40,10 +39,10 @@
 //  Include the libraries required for any data logger
 // ==========================================================================
 /** Start [includes] */
-//Site https://monitormywatershed.org/sites/bq_test01/
-#include "ms_cfg.h"
 // The Arduino library is needed for every Arduino program.
 #include <Arduino.h>
+//Site https://monitormywatershed.org/sites/bq_test02/
+#include "ms_cfg.h"
 
 // EnableInterrupt is used by ModularSensors for external and pin change
 // interrupts and must be explicitly included in the main program.
@@ -77,17 +76,18 @@ const char* LoggerID = "reldlv2";
 // How frequently (in minutes) to log data
 const uint8_t loggingInterval = 2;
 // Your logger's timezone.
-const int8_t timeZone = -5;  // Eastern Standard Time
+const int8_t timeZone = -8;  // PST
 // NOTE:  Daylight savings time will not be applied!  Please use standard time!
+#define SerialStd STANDARD_SERIAL_OUTPUT
 
 // Set the input and output pins for the logger
 // NOTE:  Use -1 for pins that do not apply
-const int32_t serialBaud = 115200;  // 57600 Baud rate for debugging 
+const int32_t serialBaud = 115200;  // Baud rate for debugging
 const int8_t  greenLED   = 8;      // Pin for the green LED
 const int8_t  redLED     = 9;      // Pin for the red LED
 const int8_t  buttonPin  = 21;     // Pin for debugging mode (ie, button pin)
 const int8_t  wakePin    = 31;     // MCU interrupt/alarm pin to wake from sleep
-// Mayfly 0.x D31 = A7
+// Mayfly 0.x, 1.x D31 = A7
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
 const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
@@ -98,13 +98,14 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 //  Wifi/Cellular Modem Options
 // ==========================================================================
 HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
-#if defined STREAMDEBUGGER_DBG
+/*#if defined STREAMDEBUGGER_DBG
 #include <StreamDebugger.h>
 StreamDebugger modemDebugger(modemSerial, STANDARD_SERIAL_OUTPUT);
 #define modemSerHw modemDebugger
-#else
+#else */
 #define modemSerHw modemSerial
-#endif  // STREAMDEBUGGER_DBG
+
+//#endif  // STREAMDEBUGGER_DBG
 
 #define sim_com_xbee_wifi
 #if defined sim_com_sim7080
@@ -186,17 +187,21 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 
 // ==========================================================================
 //  Maxim DS3231 RTC (Real Time Clock)
+//  Built in on all versions of the Mayfly
 // ==========================================================================
 /** Start [ds3231] */
+#if 0
 #include <sensors/MaximDS3231.h>
 
 // Create a DS3231 sensor object
 MaximDS3231 ds3231(1);
+#endif
 /** End [ds3231] */
 
 #if defined SENSIRION_SHT4X_UUID
 // ==========================================================================
 //  Sensirion SHT4X Digital Humidity and Temperature Sensor
+//  Built in on Mayfly 1.x
 // ==========================================================================
 /** Start [sensirion_sht4x] */
 #include <sensors/SensirionSHT4x.h>
@@ -207,28 +212,15 @@ const bool   SHT4xUseHeater = true;
 
 // Create an Sensirion SHT4X sensor object
 SensirionSHT4x sht4x(SHT4xPower, SHT4xUseHeater);
-
-// Create humidity and temperature variable pointers for the SHT4X
-/*Variable* sht4xHumid =
-    new SensirionSHT4x_Humidity(&sht4x, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* sht4xTemp =
-    new SensirionSHT4x_Temp(&sht4x, "12345678-abcd-1234-ef00-1234567890ab");*/
 /** End [sensirion_sht4x] */
 #endif //SENSIRION_SHT4X_UUID
+
 // ==========================================================================
 //  Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
 /** Start [variable_arrays] */
 
 Variable* variableList[] = {
-    #if defined SENSORS_EXTERNAL
-    new MeterHydros21_Cond(&hydros),
-    new MeterHydros21_Depth(&hydros),
-    new MeterHydros21_Temp(&hydros),
-    new CampbellOBS3_Turbidity(&osb3low, "", "TurbLow"),
-    new CampbellOBS3_Turbidity(&osb3high, "", "TurbHigh"),
-    new ProcessorStats_Battery(&mcuBoard),
-    #endif //SENSORS_EXTERNAL
     // Should follow UUIDs
     new ProcessorStats_SampleNumber(&mcuBoard),
     new ProcessorStats_Battery(&mcuBoard ),
@@ -251,10 +243,7 @@ Variable* variableList[] = {
 
 /* clang-format off */
 // ---------------------   Beginning of Token UUID List   ---------------------
-// see ms_cfg.h  initially setup for https://monitormywatershed.org/sites/bq_test01/
-
-//const char* registrationToken = registrationToken_UUID;  // Device registration token
-//const char* samplingFeature   = samplingFeature_UUID;  // Sampling feature UUID
+// see ms_cfg.h  initially setup for https://monitormywatershed.org/sites/bq_test02/
 
 
 // -----------------------   End of Token UUID List  -----------------------
@@ -318,27 +307,28 @@ float getBatteryVoltage() {
 // ==========================================================================
 /** Start [setup] */
 void setup() {
-    // Start the primary serial connection
-    Serial.begin(serialBaud);
-    Serial.print(F("\n---Boot. Sw Build: "));
-    Serial.print(build_ref);
-    Serial.print(" ");
-    Serial.println(git_usr);
-    Serial.print(" ");
-    Serial.println(git_branch);
+    // Start the Debug serial connection
+    SerialStd.begin(serialBaud);
 
     // Print a start-up note to the first serial port
-    Serial.print(F("\nNow running "));
-    Serial.print(sketchName);
-    Serial.print(F(" on Logger "));
-    Serial.println(LoggerID);
-    Serial.println();
+    SerialStd.print(F("\n---Boot. Sw Build: "));
+    SerialStd.print(build_ref);
+    SerialStd.print(" ");
+    SerialStd.println(git_usr);
+    SerialStd.print(" ");
+    SerialStd.println(git_branch);
 
-    Serial.print(F("Using ModularSensors Library version "));
-    Serial.println(MODULAR_SENSORS_VERSION);
-    Serial.print(F("TinyGSM Library version "));
-    Serial.println(TINYGSM_VERSION);
-    Serial.println();
+    SerialStd.print(F("Sw Name: "));
+    SerialStd.print(sketchName);
+    SerialStd.print(F(" on Logger "));
+    SerialStd.println(LoggerID);
+    SerialStd.println();
+
+    SerialStd.print(F("Using ModularSensors Library version "));
+    SerialStd.println(MODULAR_SENSORS_VERSION);
+    SerialStd.print(F("TinyGSM Library version "));
+    SerialStd.println(TINYGSM_VERSION);
+    SerialStd.println();
 
     // Start the serial connection with the modem
     modemSerial.begin(modemBaud);
@@ -368,18 +358,12 @@ void setup() {
 
     // Begin the logger
     dataLogger.begin();
-    #if defined MS_NETWORK_LAYER
-    EnviroDIYPOST.setQuedState(true);
-    EnviroDIYPOST.setTimerPostTimeout_mS(9876); //9.876Sec
-    EnviroDIYPOST.setTimerPostPacing_mS(500);
-    dataLogger.setLoggingInterval(2); //Set every minute, default 5min
 
-    #endif //MS_NETWORK_LAYER
     // Note:  Please change these battery voltages to match your battery
     // Set up the sensors, except at lowest battery level
     //if (getBatteryVoltage() > 3.4) 
     {
-        Serial.println(F("Setting up sensors..."));
+        SerialStd.println(F("Setting up sensors..."));
         varArray.setupSensors();
     }
 
@@ -387,7 +371,7 @@ void setup() {
     /** Start [setup_sim7080] */
     modem.setModemWakeLevel(HIGH);   // ModuleFun Bee inverts the signal
     modem.setModemResetLevel(HIGH);  // ModuleFun Bee inverts the signal
-    Serial.println(F("Waking modem and setting Cellular Carrier Options..."));
+    SerialStd.println(F("Waking modem and setting Cellular Carrier Options..."));
     modem.modemWake();  // NOTE:  This will also set up the modem
     modem.gsmModem.setBaud(modemBaud);   // Make sure we're *NOT* auto-bauding!
     modem.gsmModem.setNetworkMode(38);   // set to LTE only
@@ -403,13 +387,13 @@ void setup() {
     #elif defined sim_com_xbee_wifi
     /** Start [setup_sim7080] */
 
-    Serial.println(F("Waking modem WiFi  ..."));
+    SerialStd.println(F("Waking modem WiFi  ..."));
     modemPhy.modemWake();  // NOTE:  This will also set up the modem
     modemPhy.gsmModem.setBaud(modemBaud);   // Make sure we're *NOT* auto-bauding!
     #endif //Modem setup
 
     // Sync the clock if it isn't valid or we have battery to spare
-    if (1) //(getBatteryVoltage() > 3.55 || !dataLogger.isRTCSane()) 
+    //if (getBatteryVoltage() > 3.55 || !dataLogger.isRTCSane()) 
     {
         // Synchronize the RTC with NIST
         // This will also set up the modem
@@ -417,13 +401,12 @@ void setup() {
     }
 
     // Create the log file, adding the default header to it
-    // Do this last so we have the best chance of getting the time correct and
-    // all sensor names correct
-    // Writing to the SD card can be power intensive, so if we're skipping
-    // the sensor setup we'll skip this too.
+    // Do this last so we have the best chance of getting the time correct
+    // and all sensor names correct Writing to the SD card can be power
+    // intensive, so if we're skipping the sensor setup we'll skip this too.
     //if (getBatteryVoltage() > 3.4) 
     {
-        Serial.println(F("Setting up file on SD card"));
+        SerialStd.println(F("Setting up file on SD card"));
         dataLogger.turnOnSDcard(
             true);  // true = wait for card to settle after power up
         dataLogger.createLogFile(true);  // true = write a new header
@@ -431,13 +414,18 @@ void setup() {
             true);  // true = wait for internal housekeeping after write
     }
     #if defined MS_NETWORK_LAYER
+    EnviroDIYPOST.setQuedState(true);
+    EnviroDIYPOST.setTimerPostTimeout_mS(9876); //9.876Sec
+    EnviroDIYPOST.setTimerPostPacing_mS(500);
+
+    dataLogger.setLoggingInterval(2); //Set every minute, default 5min
     dataLogger.setSendOffset(0);
     dataLogger._sendEveryX_cnt=1;
-    dataLogger.setPostMax_num(100);
+    dataLogger.setPostMax_num(5);
     dataLogger.logDataAndPubReliably(0x08 |0x03);
     #endif //    #if defined MS_NETWORK_LAYER
     // Call the processor sleep
-    Serial.println(F("Putting processor to sleep\n"));
+    SerialStd.println(F("Putting processor to sleep\n"));
     dataLogger.systemSleep();
 }
 /** End [setup] */
@@ -449,18 +437,7 @@ void setup() {
 /** Start [loop] */
 // Use this short loop for simple data logging and sending
 void loop() {
-    // Note:  Please change these battery voltages to match your battery
-    // At very low battery, just go back to sleep
-    /*if (getBatteryVoltage() < 3.4)     {
-        dataLogger.systemSleep();
-    }
-    // At moderate voltage, log data but don't send it over the modem
-    else if (getBatteryVoltage() < 3.55) 
-    {
-        dataLogger.logData();
-    }
-    // If the battery is good, send the data to the world
-    else */ 
+
     {
         #if !defined MS_NETWORK_LAYER
         dataLogger.logDataAndPublish();

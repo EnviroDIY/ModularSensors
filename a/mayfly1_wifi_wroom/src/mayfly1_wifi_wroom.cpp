@@ -1,14 +1,14 @@
 /** =========================================================================
- * @file DRWI_Mayfly1_WiFi.ino
- * @brief Example for DRWI CitSci LTE sites.
+ * @file DRWI_Mayfly1_WiFi_wroom.ino
+ * @brief Adapted for for testing ReliableDelivery/ WiFi .
  *
  * This example shows proper settings for the following configuration:
  *
  * Mayfly v1.x board
  * EnviroDIY ESP32 Wifi Bee module
- * Hydros21 CTD sensor
+ * Internal sensors
  *
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ * @author Neil Hancock & Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  * @copyright (c) 2017-2022 Stroud Water Research Center (SWRC)
  *                          and the EnviroDIY Development Team
  *            This example is published under the BSD-3 license.
@@ -21,7 +21,10 @@
  * ======================================================================= */
 
 // ==========================================================================
-//  Defines for TinyGSM
+//  Defines for the Arduino IDE
+//  NOTE:  These are ONLY needed to compile with the Arduino IDE.
+//         If you use PlatformIO, you should set these build flags in your
+//         platformio.ini
 // ==========================================================================
 /** Start [defines] */
 #ifndef TINY_GSM_RX_BUFFER
@@ -38,6 +41,7 @@
 /** Start [includes] */
 // The Arduino library is needed for every Arduino program.
 #include <Arduino.h>
+//Site https://monitormywatershed.org/sites/bq_test01/
 #include "ms_cfg.h"
 
 // EnableInterrupt is used by ModularSensors for external and pin change
@@ -52,7 +56,7 @@
 // ==========================================================================
 //  Data Logging Options
 // ==========================================================================
-/** Start [logging_options] */
+// Details for this build
 extern const String build_ref = "a\\" __FILE__ " " __DATE__ " " __TIME__ " ";
 #ifdef PIO_SRC_REV
 const char git_branch[] = PIO_SRC_REV;
@@ -64,11 +68,11 @@ const char git_usr[] = PIO_SRC_USR;
 #else
 const char git_usr[] = "usr";
 #endif
+/** Start [logging_options] */
 // The name of this program file
 const char* sketchName = "mayfly1_wifi_wroom.cpp";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char* LoggerID = "itest1";
-
+const char* LoggerID = "reldlv1";
 // How frequently (in minutes) to log data
 const uint8_t loggingInterval = 2;
 // Your logger's timezone.
@@ -99,7 +103,11 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 // Create a reference to the serial port for the modem
 
 HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
-const int32_t   modemBaud   = 115200;   // Communication speed of the modem
+#define ESP32_MODEM_115K_BAUD 115200
+#define ESP32_MODEM_57K_BAUD  57600
+#define ESP32_MODEM_9K6_BAUD   9600
+#define ESP32_MODEM_DEF_BAUD  ESP32_MODEM_57K_BAUD 
+ const int32_t   modemBaud   = ESP32_MODEM_DEF_BAUD;   // Communication speed of the modem
 // NOTE:  This baud rate too fast for the Mayfly.  We'll slow it down in the
 // setup.
 
@@ -120,7 +128,7 @@ const char* wifiPwd = WIFIPWD_DEF;  // WiFi password (WPA2)
 EspressifESP32 modemESP(&modemSerial, modemVccPin, modemResetPin, wifiId,
                         wifiPwd);
 // Create an extra reference to the modem by a generic name
-EspressifESP32 modem = modemESP;
+EspressifESP32 modemPhy = modemESP;
 /** End [espressif_esp32] */
 
 
@@ -149,7 +157,7 @@ MaximDS3231 ds3231(1);
 #endif
 /** End [ds3231] */
 
-
+#if defined SENSIRION_SHT4X_UUID
 // ==========================================================================
 //  Sensirion SHT4X Digital Humidity and Temperature Sensor
 //  Built in on Mayfly 1.x
@@ -164,33 +172,15 @@ const bool   SHT4xUseHeater = true;
 // Create an Sensirion SHT4X sensor object
 SensirionSHT4x sht4x(SHT4xPower, SHT4xUseHeater);
 /** End [sensirion_sht4x] */
+#endif //SENSIRION_SHT4X_UUID
 
-
-// ==========================================================================
-//  Meter Hydros 21 Conductivity, Temperature, and Depth Sensor
-// ==========================================================================
-/** Start [hydros21] */
-/*#include <sensors/MeterHydros21.h>
-
-const char*   hydrosSDI12address = "1";  // The SDI-12 Address of the Hydros 21
-const uint8_t hydrosNumberReadings = 6;  // The number of readings to average
-const int8_t  SDI12Power = sensorPowerPin;  // Power pin (-1 if unconnected)
-const int8_t  SDI12Data  = 7;               // The SDI12 data pin
-
-// Create a Meter Hydros 21 sensor object
-MeterHydros21 hydros(*hydrosSDI12address, SDI12Power, SDI12Data,
-                     hydrosNumberReadings);
-*/
-/** End [hydros21] */
-
-
-/* clang-format off */
 // ==========================================================================
 //  Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
 /** Start [variable_arrays] */
-#include "ms_cfg.h"
+//#include "ms_cfg.h"
 Variable* variableList[] = {
+    // Should follow UUIDs
     new ProcessorStats_SampleNumber(&mcuBoard),
     new ProcessorStats_Battery(&mcuBoard),       // Battery voltage (EnviroDIY_Mayfly_Batt)
     new SensirionSHT4x_Temp(&sht4x),             // Temperature (Sensirion_SHT40_Temperature)
@@ -211,10 +201,10 @@ Variable* variableList[] = {
 
 // Replace all of the text in the following section with the UUID array from
 // MonitorMyWatershed
+
+/* clang-format off */
 // ---------------------   Beginning of Token UUID List   ---------------------
-
-
-//See ms_cfg.h
+// see ms_cfg.h  initially setup for https://monitormywatershed.org/sites/bq_test01/
 
 
 // -----------------------   End of Token UUID List  -----------------------
@@ -243,7 +233,7 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 /** Start [publishers] */
 // Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modem.gsmClient,
+EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modemPhy.gsmClient,
                                  registrationToken, samplingFeature);
 /** End [publishers] */
 
@@ -278,14 +268,11 @@ float getBatteryVoltage() {
 // ==========================================================================
 /** Start [setup] */
 void setup() {
-    // Start the primary serial connection
+    // Start the Debug serial connection
     SerialStd.begin(serialBaud);
 
     // Print a start-up note to the first serial port
-    // Print a start-up note to the first serial port
-    SerialStd.print(F("\n---Boot("));
-    //SerialStd.print(mcu_status,HEX);
-    SerialStd.print(F(") Sw Build: "));
+    SerialStd.print(F("\n---Boot. Sw Build: "));
     SerialStd.print(build_ref);
     SerialStd.print(" ");
     SerialStd.println(git_usr);
@@ -293,9 +280,6 @@ void setup() {
     SerialStd.println(git_branch);
 
     SerialStd.print(F("Sw Name: "));
-    SerialStd.println(sketchName);
-
-    SerialStd.print(F("Now running "));
     SerialStd.print(sketchName);
     SerialStd.print(F(" on Logger "));
     SerialStd.println(LoggerID);
@@ -328,8 +312,8 @@ void setup() {
     Logger::setRTCTimeZone(0);
 
     // Attach the modem and information pins to the logger
-    dataLogger.attachModem(modem);
-    modem.setModemLED(modemLEDPin);
+    dataLogger.attachModem(modemPhy);
+    modemPhy.setModemLED(modemLEDPin);
     dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin,
                              greenLED);
 
@@ -345,16 +329,73 @@ void setup() {
     }
 
     /** Start [setup_esp] */
-    for (int8_t ntries = 5; ntries; ntries--) {
+    // Modem wroom default baud is 115200
+    // Mayfly TinyGSM read() processing doesn't work at 115200.
+    // It needs to be slowed down.
+    // On a newly installed modem, it will be at 115200, 
+    // however previously programmed modems could be 57600 or 9600
+    uint32_t cfgMdmBaud = modemBaud;
+    SerialStd.print("ModemESP32 init default ");
+    SerialStd.println(cfgMdmBaud );
+    //modemSerial.end();
+    modemSerial.begin(cfgMdmBaud );
+
+    for (uint8_t ntries = 0; ntries<5; ntries++) {
         // This will also verify communication and set up the modem
-        if (modem.modemWake()) break;
+        if (modemPhy.modemWake())  break;
+
         // if that didn't work, try changing baud rate
-        modemSerial.begin(115200);
-        modem.gsmModem.sendAT(GF("+UART_DEF=9600,8,1,0,0"));
-        modem.gsmModem.waitResponse();
+        cfgMdmBaud= ESP32_MODEM_115K_BAUD;
+        SerialStd.print(ntries);
+        SerialStd.print("] ModemESP32 init ");
+        SerialStd.println(cfgMdmBaud);
+        modemPhy.gsmModem.sendAT(GF("+UART_DEF=115200,8,1,0,0"));
+        modemPhy.gsmModem.waitResponse();
         modemSerial.end();
-        modemSerial.begin(9600);
+        modemSerial.begin(cfgMdmBaud);
+        if (modemPhy.modemWake()) break;
+
+        // if that didn't work, try changing baud rate
+        cfgMdmBaud= ESP32_MODEM_57K_BAUD;
+        SerialStd.print(ntries);
+        SerialStd.print("] ModemESP32 init ");
+        SerialStd.println(cfgMdmBaud);
+        modemPhy.gsmModem.sendAT(GF("+UART_DEF=57600,8,1,0,0"));
+        modemPhy.gsmModem.waitResponse();
+        modemSerial.end();
+        modemSerial.begin(cfgMdmBaud);
+        if (modemPhy.modemWake()) break;
+
+
+        cfgMdmBaud=ESP32_MODEM_9K6_BAUD;
+        SerialStd.print(ntries);
+        SerialStd.print("] ModemESP32 init ");
+        SerialStd.println(cfgMdmBaud );
+        modemPhy.gsmModem.sendAT(GF("+UART_DEF=9600,8,1,0,0"));
+        modemPhy.gsmModem.waitResponse();
+        modemSerial.end();
+        modemSerial.begin(cfgMdmBaud);
     }
+    // set BAUD if not expected value
+    if (ESP32_MODEM_DEF_BAUD== cfgMdmBaud ) {
+        cfgMdmBaud= ESP32_MODEM_57K_BAUD;
+        modemPhy.gsmModem.sendAT(GF("+UART_DEF=57600,8,1,0,0"));
+        modemPhy.gsmModem.waitResponse();
+        modemSerial.end();
+        modemSerial.begin(cfgMdmBaud);
+    }
+    SerialStd.print("ModemESP32 connected at baud ");
+    SerialStd.println(cfgMdmBaud);
+
+    modemPhy.gsmModem.sendAT(GF("+GMR"));
+    //String MdmRsp;
+    modemPhy.gsmModem.waitResponse();   
+    modemPhy.gsmModem.sendAT(GF("+UART_DEF?"));
+    modemPhy.gsmModem.waitResponse();   
+    //modemPhy.gsmModem.sendAT(GF("+UART_DEF=115200,8,1,0,0"));
+    //modemPhy.gsmModem.waitResponse();  
+    modemPhy.gsmModem.sendAT(GF("+UART_CUR?"));
+    modemPhy.gsmModem.waitResponse();     
     /** End [setup_esp] */
 
 
@@ -379,7 +420,17 @@ void setup() {
         dataLogger.turnOffSDcard(
             true);  // true = wait for internal housekeeping after write
     }
+    #if defined MS_NETWORK_LAYER
+    EnviroDIYPOST.setQuedState(true);
+    EnviroDIYPOST.setTimerPostTimeout_mS(9876); //9.876Sec
+    EnviroDIYPOST.setTimerPostPacing_mS(500);
 
+    dataLogger.setLoggingInterval(2); //Set every minute, default 5min
+    dataLogger.setSendOffset(0);
+    dataLogger._sendEveryX_cnt=1;
+    dataLogger.setPostMax_num(5);
+    dataLogger.logDataAndPubReliably(0x08 |0x03);
+    #endif //    #if defined MS_NETWORK_LAYER
     // Call the processor sleep
     SerialStd.println(F("Putting processor to sleep\n"));
     dataLogger.systemSleep();
@@ -393,20 +444,13 @@ void setup() {
 /** Start [loop] */
 // Use this short loop for simple data logging and sending
 void loop() {
-    // Note:  Please change these battery voltages to match your battery
-    // At very low battery, just go back to sleep
- /*  if (getBatteryVoltage() < 3.4) 
+
     {
-        dataLogger.systemSleep();
-    }
-    // At moderate voltage, log data but don't send it over the modem
-    else if (getBatteryVoltage() < 3.55) {
-        dataLogger.logData();
-    }
-    // If the battery is good, send the data to the world
-    else */ 
-    {
+        #if !defined MS_NETWORK_LAYER
         dataLogger.logDataAndPublish();
+        #else
+        dataLogger.logDataAndPubReliably();  //TCP / RTL !there
+        #endif 
     }
 }
 /** End [loop] */

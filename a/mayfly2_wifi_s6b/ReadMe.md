@@ -22,3 +22,9 @@ gets 400 "bad request"
 -- Response Code -- 400 waited  108 mS Timeout 15432
 data needs to be deleted
 remove /* atl_extension */ 
+
+230707-1600 First pass testing
+tested bad WIFi signal and then resend on good
+tested timeout - and generates 504 and puts in QUE0.txt
+tested sample and delay and stores in RDELAY.txt
+tested for send limit of 5, disabled WiFi allowed, number to buld up, and then send in groups of 5
