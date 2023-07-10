@@ -23,6 +23,7 @@ gets 400 "bad request"
 data needs to be deleted
 remove /* atl_extension */ 
 
+230710 Overnight testing seemed to go well. Going to submit the PR
 230707-1600 First pass testing
 tested bad WIFi signal and then resend on good
 tested timeout - and generates 504 and puts in QUE0.txt
