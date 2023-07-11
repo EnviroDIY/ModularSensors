@@ -342,14 +342,14 @@ class dataPublisher {
 
  public:
 
-    bool useQueDataSource = false;
-    bool virtual setQuedState(bool state, char uniqueId = '0') {
-        PRINTOUT(F("dataPublisherBase setQued check"), useQueDataSource);
-        return useQueDataSource;  // Default not updated.
+    bool useQueueDataSource = false;
+    bool virtual setQueuedState(bool state, char uniqueId = '0') {
+        PRINTOUT(F("dataPublisherBase setQueued check"), useQueueDataSource);
+        return useQueueDataSource;  // Default not updated.
     }
-    bool virtual getQuedStatus() {
-        PRINTOUT(F("dataPublisherBase gQS check"), useQueDataSource);
-        return useQueDataSource;  // Default for not supported.
+    bool virtual getQueuedStatus() {
+        PRINTOUT(F("dataPublisherBase gQS check"), useQueueDataSource);
+        return useQueueDataSource;  // Default for not supported.
     }
 
     //Required to implement the following

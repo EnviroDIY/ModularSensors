@@ -281,21 +281,21 @@ class EnviroDIYPublisher : public dataPublisher {
      * @param tempBuffer - place for the POST.
      */
     void mmwPostDataArray(char* tempBuffer);
-    void mmwPostDataQued(char* tempBuffer);
+    void mmwPostDataQueued(char* tempBuffer);
 
  public:
     /**
      * @brief This routes subsequent POST construction
      *
-     * @param state - true for Qued, false for standard
+     * @param state - true for Queued, false for standard
      */
-    bool setQuedState(bool state, char uniqueId = '0') override {
-        MS_DBG(F("EnvrDIYPub setQued "), state);
-        return useQueDataSource = state;
+    bool setQueuedState(bool state, char uniqueId = '0') override {
+        MS_DBG(F("EnvrDIYPub setQueued "), state);
+        return useQueueDataSource = state;
     }
-    bool getQuedStatus() override {
-        MS_DBG(F("EnvrDIYPub gQS "), useQueDataSource);
-        return useQueDataSource;
+    bool getQueuedStatus() override {
+        MS_DBG(F("EnvrDIYPub gQS "), useQueueDataSource);
+        return useQueueDataSource;
     }
 
 #if !defined TIMER_EDP_POST_TIMEOUT_DEF_MSEC

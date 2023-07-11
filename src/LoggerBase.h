@@ -1285,19 +1285,19 @@ uint8_t getSendPacingDelay(void) {
 #define SERIALIZE_sendPacingDelay_mSec 2
 uint16_t _sendPacingDelay_mSec = SERIALIZE_sendPacingDelay_mSec;
 
-    uint16_t setSendQueSz_num(uint16_t sqz_num) {
-        MS_DBG(F("setSendQueSz_num"), sqz_num);
-        return _sendQueSz_num = sqz_num;
+    uint16_t setSendQueueSz_num(uint16_t sqz_num) {
+        MS_DBG(F("setSendQueueSz_num"), sqz_num);
+        return _sendQueueSz_num = sqz_num;
     }
 
-    uint16_t getSendQueSz_num() {
-        MS_DBG(F("getSendQueSz_num"), _sendQueSz_num);
-        return _sendQueSz_num;
+    uint16_t getSendQueueSz_num() {
+        MS_DBG(F("getSendQueueSz_num"), _sendQueueSz_num);
+        return _sendQueueSz_num;
     }   
 #if !defined LB_SENDQUESZ_NUM_DEF 
 #define LB_SENDQUESZ_NUM_DEF  2800L //MMWGI_SEND_QUE_SZ_NUM_DEF
 #endif  // LB_SENDQUESZ_NUM_DEF 
-    uint16_t _sendQueSz_num = LB_SENDQUESZ_NUM_DEF ; //See MMMWGI_SEND_QUE_SZ_NUM_DEF 
+    uint16_t _sendQueueSz_num = LB_SENDQUESZ_NUM_DEF ; //See MMMWGI_SEND_QUE_SZ_NUM_DEF 
 
     uint16_t setPostMax_num(uint16_t mp_num) {
         MS_DBG(F("setMaxPost_num"), mp_num);
@@ -1352,7 +1352,7 @@ void logDataAndPubReliably(uint8_t cia_val_override =0);
  *   RDELAY_FAILED_POSTS_THRESHOLD 
  */
 #define RDELAY_FAILED_POSTS_THRESHOLD 7
-void publishDataQuedToRemotes(bool internetPresent);
+void publishDataQueuedToRemotes(bool internetPresent);
 
 /**
  * @brief Set up for sleep.
@@ -1375,7 +1375,7 @@ bool publishRspCodeAccepted(int16_t  rspCode);
 /* Serializing/Deserialing
   A common set of functions that operate on files
   serzRdelFn_str
-  serzQuedFn
+  serzQueuedFn
 */
 // ===================================================================== //
 public:
@@ -1413,10 +1413,10 @@ const char* serzRdelFn_str = "RDELAY.TXT";
 // QUEueD for reliable delivery
 // first POST didn't suceed to serialize/deserialize
 // Potentially multiple versions of files based on dataPublisher[]
-File serzQuedFile;
+File serzQueuedFile;
 #define FN_BUFFER_SZ 13
-char        serzQuedFn[FN_BUFFER_SZ] = "";
-const char* serzQuedFn_str           = "QUE";  // begin of name, keep 8.3
+char        serzQueuedFn[FN_BUFFER_SZ] = "";
+const char* serzQueuedFn_str           = "QUE";  // begin of name, keep 8.3
 
 
 // perform a serialize to RdelFile
@@ -1427,14 +1427,14 @@ char* deszFind(const char* in_line, char caller_id);
 #define deszRdelLine() deszLine(&serzRdelFile)
 bool deszRdelClose(bool deleteFile = false);
 
-// Uses serzQuedFn_str, File  serzQuedFile
-bool serzQuedStart(char uniqueId);  // Use 1st, & sets filename
-bool deszQuedStart(void);
-#define deszQuedLine() deszLine(&serzQuedFile)
-uint16_t serzQuedFlushFile();
-bool serzQuedCloseFile(bool action);
+// Uses serzQueuedFn_str, File  serzQueuedFile
+bool serzQueuedStart(char uniqueId);  // Use 1st, & sets filename
+bool deszQueuedStart(void);
+#define deszQueuedLine() deszLine(&serzQueuedFile)
+uint16_t serzQueuedFlushFile();
+bool serzQueuedCloseFile(bool action);
 /*
-bool deszQuedCleanup(bool debug = false);
+bool deszQueuedCleanup(bool debug = false);
 */
 // This does the work
 bool deszLine(File* filep);

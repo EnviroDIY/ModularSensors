@@ -1721,7 +1721,7 @@ void Logger::logDataAndPubReliably(uint8_t cia_val_override) {
             // Create a csv data record and save it to the log file
             logToSD();
 
-            serzRdel_Line();  // Start Que
+            serzRdel_Line();  // Start Queue
         }
         if (cia_val & CIA_POST_READINGS) {
             if (_logModem != NULL) {
@@ -1738,7 +1738,7 @@ void Logger::logDataAndPubReliably(uint8_t cia_val_override) {
                         //This doesn't work PRINT_LOGLINE_P2(CONNECT_INTERNET_pm,_logModem->getModemName().c_str());
                         // Publish data to remotes
                         watchDogTimer.resetWatchDog();
-                        publishDataQuedToRemotes(true);
+                        publishDataQueuedToRemotes(true);
                         watchDogTimer.resetWatchDog();
 
 // Sync the clock at midnight or on the hour
@@ -1789,7 +1789,7 @@ void Logger::logDataAndPubReliably(uint8_t cia_val_override) {
         } else if (cia_val & CIA_RLB_READINGS) {
             // Values not transmitted,  save readings for later transmission
             PRINTOUT(F("logDataAndPubReliably - store readings, no pub"));
-            publishDataQuedToRemotes(false);
+            publishDataQueuedToRemotes(false);
         }
 
 
@@ -1835,14 +1835,14 @@ bool Logger::publishRspCodeAccepted(int16_t  rspCode) {
     return false;
 } //publishRspCodeAccepted
 
-void Logger::publishDataQuedToRemotes(bool internetPresent) {
+void Logger::publishDataQueuedToRemotes(bool internetPresent) {
     // Assumes that there is an internet connection
-    // bool    useQue = false;
+    // bool    useQueue = false;
     int16_t  rspCode = 0;
     uint32_t tmrGateway_ms;
     bool     dslStatus = false;
     bool     retVal    = false;
-    // MS_DBG(F("Pub Data Qued"));
+    // MS_DBG(F("Pub Data Queued"));
     MS_DBG(F("pubDQTR from"), serzRdelFn_str, internetPresent);
 
     // Open debug file
@@ -1856,7 +1856,7 @@ void Logger::publishDataQuedToRemotes(bool internetPresent) {
             PRINTOUT(F("\npubDQTR Sending data to ["), i, F("]"),
                      dataPublishers[i]->getEndpoint());
             // open the qued file for serialized readings
-            // (char*)serzQuedFn_str
+            // (char*)serzQueuedFn_str
 
 
             // dataPublishers[i]->publishData(_logModem->getClient());
@@ -1869,10 +1869,10 @@ void Logger::publishDataQuedToRemotes(bool internetPresent) {
             if (no power) break out for loop;
             */
 
-            if (dataPublishers[i]->getQuedStatus()) {
+            if (dataPublishers[i]->getQueuedStatus()) {
                 uint16_t delay_posted_pacing_ms = dataPublishers[i]->getTimerPostPacing_mS();
                 uint16_t published_this_pass =0;
-                serzQuedStart((char)('0' + i));
+                serzQueuedStart((char)('0' + i));
                 deszRdelStart();
                 // MS_START_DEBUG_TIMER;
                 tmrGateway_ms = millis();
@@ -1909,15 +1909,15 @@ void Logger::publishDataQuedToRemotes(bool internetPresent) {
                         }
 #endif  // if x
 #if defined(USE_PS_modularSensorsNetwork)
-                        if ((desz_pending_records >= _sendQueSz_num)&&(MMWGI_SEND_QUE_SZ_NUM_NOP != _sendQueSz_num )) {
-                                PRINTOUT(F("pubDQTR QuedFull, skip reading. sendQue "),  _sendQueSz_num);
+                        if ((desz_pending_records >= _sendQueueSz_num)&&(MMWGI_SEND_QUE_SZ_NUM_NOP != _sendQueueSz_num )) {
+                                PRINTOUT(F("pubDQTR QueuedFull, skip reading. sendQueue "),  _sendQueueSz_num);
                                 postLogLine(0,rspCode); //Log skipped readings
                         } else 
  #endif // USE_PS_modularSensorsNetwork
                         {
-                            retVal = serzQuedFile.print(deszq_line);
+                            retVal = serzQueuedFile.print(deszq_line);
                             if (0 >= retVal) {
-                                PRINTOUT(F("pubDQTR serzQuedFil err"), retVal);
+                                PRINTOUT(F("pubDQTR serzQueuedFil err"), retVal);
                             }
                             desz_pending_records++;  
                         }
@@ -1934,21 +1934,21 @@ void Logger::publishDataQuedToRemotes(bool internetPresent) {
 
                     //Check for any limits that might have been exceeded
                     if ((attemptPostCnt >= _postMax_num) && (0 != _postMax_num)) {
-                        //Exceeded number to attempt, force write to serzQue
+                        //Exceeded number to attempt, force write to serzQueue
                         attemptPostStatus = false;
                     }
 
                     if (++attemptPostFailedCnt > RDELAY_FAILED_POSTS_THRESHOLD ) {
-                        //Exceeded number of consecutive failures, force write to serzQue
+                        //Exceeded number of consecutive failures, force write to serzQueue
                         attemptPostStatus = false;
                     }
                 }  // while reading line
                 deszRdelClose(true);
-                serzQuedCloseFile(false);
-                // retVal = serzQuedFile.close();
+                serzQueuedCloseFile(false);
+                // retVal = serzQueuedFile.close();
                 // if (!retVal)
                 //    PRINTOUT(
-                //        F("publishDataQuedToRemote serzQuedFile.close err"));
+                //        F("publishDataQueuedToRemote serzQueuedFile.close err"));
 
                 PRINTOUT(F("Sent"), deszLinesRead, F("readings in"),
                          ((float)(millis() - tmrGateway_ms)) / 1000,
@@ -1956,12 +1956,12 @@ void Logger::publishDataQuedToRemotes(bool internetPresent) {
 
                 if (true == publishRspCodeAccepted(rspCode)) {
                     // Do retrys through publisher - if file exists
-                    if (sd1_card_fatfs.exists(serzQuedFn)) {
+                    if (sd1_card_fatfs.exists(serzQueuedFn)) {
                         uint16_t tot_posted           = 0;
                         uint16_t cnt_for_pwr_analysis = 1;
-                        MS_DBG(F("pubDQTR retry from"), serzQuedFn);
-                         deszQuedStart();
-                        while ((dslStatus = deszQuedLine()) )  {
+                        MS_DBG(F("pubDQTR retry from"), serzQueuedFn);
+                         deszQueuedStart();
+                        while ((dslStatus = deszQueuedLine()) )  {
 
                             /*At least one publish has been sucessfull.
                              * Slow Down sending based on publishers acceptance rate
@@ -2008,15 +2008,15 @@ void Logger::publishDataQuedToRemotes(bool internetPresent) {
                             deszq_line[DESLZ_STATUS_POS] = DESLZ_STATUS_MAX;
                         }
 #endif  // if z
-        // deszQuedCloseFile() is serzQuedCloseFile(true)
+        // deszQueuedCloseFile() is serzQueuedCloseFile(true)
                         if (tot_posted) {
                             // At least one POST was accepted, if 2 or more, the last may have failed
                             // and still be in deszq_line
-                            serzQuedCloseFile(true);
+                            serzQueuedCloseFile(true);
                         } else {
-                            serzQuedCloseFile(false);
+                            serzQueuedCloseFile(false);
                         }
-                    } else { MS_DBG(F("pubDQTR no queued file"), serzQuedFn);}
+                    } else { MS_DBG(F("pubDQTR no queued file"), serzQueuedFn);}
                 } else {
                     MS_DBG(F("pubDQTR drop retrys. rspCode"), rspCode);
                 }
@@ -2024,7 +2024,7 @@ void Logger::publishDataQuedToRemotes(bool internetPresent) {
         }
     }
     postLogClose();
-} // publishDataQuedToRemotes
+} // publishDataQueuedToRemotes
 
 // ===================================================================== //
 // Serialize/deserialize functions
@@ -2033,37 +2033,37 @@ void Logger::publishDataQuedToRemotes(bool internetPresent) {
 
 #define DELIM_CHAR2 ','
 #define SERZQUED_OFLAGS
-bool Logger::serzQuedStart(char uniqueId) {
-    strcpy(serzQuedFn, serzQuedFn_str);
-    strncat(serzQuedFn, &uniqueId, 1);
-    strcat(serzQuedFn, ".TXT");
+bool Logger::serzQueuedStart(char uniqueId) {
+    strcpy(serzQueuedFn, serzQueuedFn_str);
+    strncat(serzQueuedFn, &uniqueId, 1);
+    strcat(serzQueuedFn, ".TXT");
 
-    if (!serzQuedFile.open(serzQuedFn, (O_WRITE | O_CREAT | O_AT_END))) {
-        PRINTOUT(F("serzQuedStart open err"));
+    if (!serzQueuedFile.open(serzQueuedFn, (O_WRITE | O_CREAT | O_AT_END))) {
+        PRINTOUT(F("serzQueuedStart open err"));
         return false;
     } else {
-        MS_DEEP_DBG(F("serzQuedStart open"), serzQuedFn);
+        MS_DEEP_DBG(F("serzQueuedStart open"), serzQueuedFn);
     }
     return true;
 }
 
-bool Logger::serzQuedCloseFile(bool flush) {
+bool Logger::serzQueuedCloseFile(bool flush) {
     /* This closes the file, removing the sent messages
-     Assumes serzQuedFile points incoming file if flush==true
+     Assumes serzQueuedFile points incoming file if flush==true
     */
     bool    retBool=true;
 
     if (flush) {   
-        // There may be 0, or more of unsent records left in serzQued
-        uint16_t num_lines = serzQuedFlushFile();
+        // There may be 0, or more of unsent records left in serzQueued
+        uint16_t num_lines = serzQueuedFlushFile();
 
-        PRINTOUT(F("seQCF Que for next pass unsent records"), num_lines);
+        PRINTOUT(F("seQCF Queue for next pass unsent records"), num_lines);
         desz_pending_records = num_lines;
 
     } else { // !flush simple clean
-        retBool = serzQuedFile.close();
+        retBool = serzQueuedFile.close();
         if (!retBool) {
-            sd1_Err("seQCF serzQuedFile.close2 err");
+            sd1_Err("seQCF serzQueuedFile.close2 err");
             return false;
         }
     }
@@ -2072,12 +2072,12 @@ bool Logger::serzQuedCloseFile(bool flush) {
 
 #define TEMP_BASE_FN_STR "TMP01.TXT"
 #define QUEOLD_BASE_FN_STR "QUEDEL01.TXT"
-inline uint16_t Logger::serzQuedFlushFile() {
+inline uint16_t Logger::serzQueuedFlushFile() {
     /*  The flush algorithim is, 
-     copy unsent lines to a temporary_file up to _sendQueSz_num, and then discard rest
-     Assumes serzQuedFile points incoming file
-     when complete rename serzQuedFile  to delete_file
-     rename temporary_file to serzQuedFile to complete flush
+     copy unsent lines to a temporary_file up to _sendQueueSz_num, and then discard rest
+     Assumes serzQueuedFile points incoming file
+     when complete rename serzQueuedFile  to delete_file
+     rename temporary_file to serzQueuedFile to complete flush
     */
     const char* tempFn = TEMP_BASE_FN_STR;
     const char* queDelFn = QUEOLD_BASE_FN_STR;
@@ -2118,12 +2118,12 @@ inline uint16_t Logger::serzQuedFlushFile() {
     } 
 
     MS_DBG(F("seQFF cpy lines across"));
-    while (0 < (num_char = serzQuedFile.fgets(deszq_line,
+    while (0 < (num_char = serzQueuedFile.fgets(deszq_line,
                                                 QUEFILE_MAX_LINE))) {
 
 #if defined(USE_PS_modularSensorsNetwork)
-        if ((num_lines>=_sendQueSz_num)&&(MMWGI_SEND_QUE_SZ_NUM_NOP != _sendQueSz_num )) {
-            /*Limit sendQueSz on Copy, implicitly this not on creation 
+        if ((num_lines>=_sendQueueSz_num)&&(MMWGI_SEND_QUE_SZ_NUM_NOP != _sendQueueSz_num )) {
+            /*Limit sendQueueSz on Copy, implicitly this not on creation 
             This is the first pass at limiting the size of the que by dumping the newest.
             FIFO.
             Future may want to keep the latest readings 
@@ -2148,9 +2148,9 @@ inline uint16_t Logger::serzQuedFlushFile() {
         }
     }
     if (num_skipped){ 
-        PRINTOUT(F("seQFF sendQue Size "), _sendQueSz_num, F(",queued"),num_lines, F(",latest readings discarded"),num_skipped);
+        PRINTOUT(F("seQFF sendQueue Size "), _sendQueueSz_num, F(",queued"),num_lines, F(",latest readings discarded"),num_skipped);
     };
-    //Cleanup flushed serzQuedFile to del_file as debugging aid
+    //Cleanup flushed serzQueuedFile to del_file as debugging aid
     if (sd1_card_fatfs.exists(queDelFn)) {
         if (!sd1_card_fatfs.remove(queDelFn)) {
             PRINTOUT(F("seQFF remove2 err"), queDelFn);
@@ -2161,32 +2161,32 @@ inline uint16_t Logger::serzQuedFlushFile() {
         }
     }     
 
-    retBool = serzQuedFile.rename(queDelFn);
+    retBool = serzQueuedFile.rename(queDelFn);
     if (!retBool) {
         PRINTOUT(F("seQFF REBOOT rename1 err"), queDelFn);
         //Problem - unrecoverable, so reboot
-        retBool = serzQuedFile.close();
+        retBool = serzQueuedFile.close();
         if (!retBool) {
-            PRINTOUT(F("seQFF close1 failed err"), serzQuedFn);
+            PRINTOUT(F("seQFF close1 failed err"), serzQueuedFn);
         }
         forceSysReset(1,4567);
-        //sd1_card_fatfs.remove(serzQuedFn);
+        //sd1_card_fatfs.remove(serzQueuedFn);
         // sd1_Err("seQFF rename2");
         //return num_lines;
     } else {
-        MS_DBG(F("seQFF cleanup rename "), serzQuedFn, F("to"), queDelFn);
+        MS_DBG(F("seQFF cleanup rename "), serzQueuedFn, F("to"), queDelFn);
 
-        retBool = serzQuedFile.close();
+        retBool = serzQueuedFile.close();
         if (!retBool) {
-            sd1_Err("seQFF serzQuedFile.close2 err");
+            sd1_Err("seQFF serzQueuedFile.close2 err");
             return  num_lines;
-        } else {MS_DEEP_DBG(F("seQFF close serzQuedFile")); }
+        } else {MS_DEEP_DBG(F("seQFF close serzQueuedFile")); }
 
-        retBool = tgtoutFile.rename(serzQuedFn);
+        retBool = tgtoutFile.rename(serzQueuedFn);
         if (!retBool) {
             sd1_Err("seQFF tgtoutFile.rename err");
             return  num_lines;
-        } else {MS_DEEP_DBG(F("seQFF rename "), tempFn, F("to"), serzQuedFn); }
+        } else {MS_DEEP_DBG(F("seQFF rename "), tempFn, F("to"), serzQueuedFn); }
 
         retBool = tgtoutFile.close();
         if (!retBool) {
@@ -2196,7 +2196,7 @@ inline uint16_t Logger::serzQuedFlushFile() {
     }
 
     return  num_lines;
-} //serzQuedFlushFile
+} //serzQueuedFlushFile
 
 /*
 For serialize, create ASCII CSV records of the form
@@ -2273,19 +2273,19 @@ bool Logger::deszRdelStart() {
     return true;
 }
 
-bool Logger::deszQuedStart() {
+bool Logger::deszQueuedStart() {
     deszLinesRead = deszLinesUnsent = 0;
 
     deszq_nextChar = deszq_line;
     // Open - RD & WR. WR needed to be able to delete when complete.
-    // Expect serzQuedFn to be setup in serzQuedStart
-    if (!serzQuedFile.open(serzQuedFn, O_RDWR)) {
-        // This could be that there aren;t any Qued readings
-        MS_DEEP_DBG(F("deQS; No file "), serzQuedFn);
+    // Expect serzQueuedFn to be setup in serzQueuedStart
+    if (!serzQueuedFile.open(serzQueuedFn, O_RDWR)) {
+        // This could be that there aren;t any Queued readings
+        MS_DEEP_DBG(F("deQS; No file "), serzQueuedFn);
         // sd1_card_fatfs.ls();
         return false;
     } else {
-        MS_DEEP_DBG(F("deQS open READ"), serzQuedFn);
+        MS_DEEP_DBG(F("deQS open READ"), serzQueuedFn);
     }
 
     return true;
@@ -2500,7 +2500,7 @@ void Logger::postLogLine(uint32_t tmr_ms, int16_t rspParam) {
 #if defined MS_LOGGERBASE_POSTS
 #if 0
     if (0 == postsLogHndl.print(getNowEpochUTC())) {
-        PRINTOUT(F("publishDataQuedToRemote postsLog err"));
+        PRINTOUT(F("publishDataQueuedToRemote postsLog err"));
     }
 #else
 
@@ -2641,25 +2641,25 @@ bool Logger::serzBegin(void) {
     }
     // Test1 ** QUED new file name & update
     MS_DBG(F("TESTQ1"));
-    serzQuedStart((char)(QUE_TST));
-    serzQuedFile.println(F("1,1595654100,1,4.7,-38"));
-    serzQuedFile.println(F("1,1595654200,2,4.7,-38"));
-    serzQuedCloseFile(false);
+    serzQueuedStart((char)(QUE_TST));
+    serzQueuedFile.println(F("1,1595654100,1,4.7,-38"));
+    serzQueuedFile.println(F("1,1595654200,2,4.7,-38"));
+    serzQueuedCloseFile(false);
 
 
     // Test2 ** QUED file update
     MS_DBG(F("TESTQ2"));
-    if (!serzQuedFile.open(serzQuedFn, (O_WRITE | O_AT_END))) {
+    if (!serzQueuedFile.open(serzQueuedFn, (O_WRITE | O_AT_END))) {
         // Could be that there are no retrys.
-        PRINTOUT(F("serzQuedFile.open err"), serzQuedFn);
-        sd1_Err("serzQuedFile.open err2");
+        PRINTOUT(F("serzQueuedFile.open err"), serzQueuedFn);
+        sd1_Err("serzQueuedFile.open err2");
         return false;
     } else {
-        PRINTOUT(F("Testq2 Opened"), serzQuedFn);
+        PRINTOUT(F("Testq2 Opened"), serzQueuedFn);
     }
-    serzQuedFile.println(F("1,1595654300,3,4.7,-38"));
-    serzQuedFile.println(F("1,1595654400,4,4.7,-38"));
-    if (!serzQuedCloseFile(false)) return false;
+    serzQueuedFile.println(F("1,1595654300,3,4.7,-38"));
+    serzQueuedFile.println(F("1,1595654400,4,4.7,-38"));
+    if (!serzQueuedCloseFile(false)) return false;
 
     PRINTOUT(F("serzBegin list4---"));
     if (!sd1_card_fatfs.ls()) {
@@ -2669,20 +2669,20 @@ bool Logger::serzBegin(void) {
     } else {
         PRINTOUT(F("---4Complete"));
     }
-    listFile(&serzQuedFile, serzQuedFn, (char*)"2");
+    listFile(&serzQueuedFile, serzQueuedFn, (char*)"2");
 
     // Test3 ** QUED file rollover
     MS_DBG(F("TESTQ3"));
-    if (!deszQuedStart()) return false;
+    if (!deszQueuedStart()) return false;
 
-    dslStat_bool = deszQuedLine();
+    dslStat_bool = deszQueuedLine();
     MS_DBG(F("1: deszq_line"), dslStat_bool, deszq_line);
     if (!dslStat_bool) return false;
-    dslStat_bool = deszQuedLine();
+    dslStat_bool = deszQueuedLine();
     MS_DBG(F("2: deszq_line"), dslStat_bool, deszq_line);
     if (!dslStat_bool) return false;
     // only the 1: should be dropped
-    dslStat_bool = serzQuedCloseFile(true);
+    dslStat_bool = serzQueuedCloseFile(true);
     PRINTOUT(F("serzBegin list5---"));
     if (!sd1_card_fatfs.ls()) {
         // MS_DBG(F("serzBegin ls err"));
@@ -2691,13 +2691,13 @@ bool Logger::serzBegin(void) {
     } else {
         PRINTOUT(F("---5Complete"));
     }
-    listFile(&serzQuedFile, serzQuedFn, (char*)"3");
+    listFile(&serzQueuedFile, serzQueuedFn, (char*)"3");
     if (!dslStat_bool) return false;
 
-    if (sd1_card_fatfs.exists(serzQuedFn)) {
-        PRINTOUT(F("serzBegin removing "), serzQuedFn);
-        if (!sd1_card_fatfs.remove(serzQuedFn)) {
-            PRINTOUT(F("serzBegin err remove"), serzQuedFn);
+    if (sd1_card_fatfs.exists(serzQueuedFn)) {
+        PRINTOUT(F("serzBegin removing "), serzQueuedFn);
+        if (!sd1_card_fatfs.remove(serzQueuedFn)) {
+            PRINTOUT(F("serzBegin err remove"), serzQueuedFn);
             sd1_Err("serzBegin err6 remove");
         }
     } else {

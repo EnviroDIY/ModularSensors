@@ -414,7 +414,7 @@ void setup() {
             true);  // true = wait for internal housekeeping after write
     }
     #if defined MS_NETWORK_LAYER
-    EnviroDIYPOST.setQuedState(true);
+    EnviroDIYPOST.setQueuedState(true);
     EnviroDIYPOST.setTimerPostTimeout_mS(9876); //9.876Sec
     EnviroDIYPOST.setTimerPostPacing_mS(500);
 

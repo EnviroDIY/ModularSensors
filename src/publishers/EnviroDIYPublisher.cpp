@@ -78,7 +78,7 @@ uint16_t EnviroDIYPublisher::calculateJsonSize() {
         jsonLength += 1;   //  "
         jsonLength += 36;  // variable UUID
         jsonLength += 2;   //  ":
-        if (!useQueDataSource) {
+        if (!useQueueDataSource) {
             // Actively calculate the length
             jsonLength += _baseLogger->getValueStringAtI(i).length();
             if (i + 1 != _baseLogger->getArrayVarCount()) {
@@ -86,7 +86,7 @@ uint16_t EnviroDIYPublisher::calculateJsonSize() {
             }
         }
     }
-    if (useQueDataSource) {
+    if (useQueueDataSource) {
         // Get precalculated length
         jsonLength += _baseLogger->deszq_timeVariant_sz;
     }
@@ -181,8 +181,8 @@ const int32_t CONNECT_TIMEOUT_SEC =7;
         MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms to "),_enviroDIYHost,':',enviroDIYPort);
 
         mmwPostHeader(tempBuffer);
-        if (useQueDataSource) {
-            mmwPostDataQued(tempBuffer);
+        if (useQueueDataSource) {
+            mmwPostDataQueued(tempBuffer);
         } else {
             mmwPostDataArray(tempBuffer);
         }
@@ -325,9 +325,9 @@ void EnviroDIYPublisher::mmwPostDataArray(char* tempBuffer) {
         }
     }
 }
-void EnviroDIYPublisher::mmwPostDataQued(char* tempBuffer) {
+void EnviroDIYPublisher::mmwPostDataQueued(char* tempBuffer) {
     // Fill the body - format is per MMW requirements
-    //  MS_DBG(F("Filling from Que"));
+    //  MS_DBG(F("Filling from Queue"));
     MS_START_DEBUG_TIMER;
     strcat(txBuffer, timestampTag);
     _baseLogger->formatDateTime_ISO8601(_baseLogger->deszq_epochTime)
