@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed GitHub actions for pull requests from forks.
 
 ***
+## [0.35.0]
+Added new feature reliable delivery of readings to MMW. Also called batch or queued messaege delivery. See https://github.com/EnviroDIY/ModularSensors/issues/194
 
 ## [0.34.1]
 
