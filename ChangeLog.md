@@ -13,13 +13,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 ### Added
-
 ### Removed
 
 ### Fixed
-- Fixed GitHub actions for pull requests from forks.
 
 ***
+
+
+## [0.35.0]
+
+### Added
+- Support [GroPoint Profile GPLP-8 Eight-Segment Soil Moisture and Temperature Profiling Probe](https://www.gropoint.com/products/soil-sensors/gropoint-profile)
 
 ## [0.34.1]
 
@@ -31,6 +35,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the ability to enable or disable polling of modem attached variables.
 By default, all polling is off, but polling is enabled for a modem sensor when a sensor is created and attached to a modem.
 This functionailty is inspired from [neilh10](https://github.com/EnviroDIY/ModularSensors/commits?author=neilh10).
+
+### Fixed
+- Fixed GitHub actions for pull requests from forks.
 
 ## [0.34.0]
 

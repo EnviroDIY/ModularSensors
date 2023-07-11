@@ -7,7 +7,7 @@
  * @brief Contains the YosemitechY700 sensor subclass and the variable
  * subclasses YosemitechY700_Pressure and YosemitechY700_Temp.
  *
- * These are for the Yosemitech Y700 Pressure sensor.
+ * These are for the Yosemitech Y700 Pressure Sensor.
  *
  * This depends on the YosemitechParent super class.
  *

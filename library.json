@@ -1,6 +1,6 @@
 {
   "name": "EnviroDIY_ModularSensors",
-  "version": "0.34.1",
+  "version": "0.35.0",
   "description": "A library that allows access to multiple sensors through a unified interface.  This allows the user to simply access many sensors to log the data or send the data to data repositories like the EnviroDIY data portal.",
   "keywords": "modular, sensor, sensors, datalogger, logger, low power, sleeping, EnviroDIY, ModularSensors, Mayfly, WikiWatershed, Monitor My Watershed, ThingSpeak",
   "platforms": "atmelavr, atmelsam",
@@ -327,6 +327,16 @@
       "version": "~0.4.0",
       "note": "Arduino library for communication with Yosemitech sensors via Modbus.",
       "authors": ["Sara Damiano", "Anthony Aufdenkampe"],
+      "frameworks": "arduino",
+      "platforms": "atmelavr, atmelsam"
+    },
+    {
+      "name": "GroPointModbus",
+      "owner": "envirodiy",
+      "url": "https://github.com/EnviroDIY/GroPointModbus.git",
+      "version": "~0.1.0",
+      "note": "A library to use an Arduino as a master to control and communicate via modbus with GroPoint soil moisture sensors. ",
+      "authors": ["Anthony Aufdenkampe"],
       "frameworks": "arduino",
       "platforms": "atmelavr, atmelsam"
     }
