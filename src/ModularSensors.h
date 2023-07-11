@@ -20,7 +20,6 @@
  */
 #define MODULAR_SENSORS_VERSION "0.35.0"
 
-
 // To get all of the base classes for ModularSensors, include LoggerBase.
 // NOTE:  Individual sensor definitions must be included separately.
 #include "LoggerBase.h"
