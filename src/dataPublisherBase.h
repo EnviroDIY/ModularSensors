@@ -332,6 +332,71 @@ class dataPublisher {
      * @brief the text "\r\nHost: "
      */
     static const char* hostHeader;
+
+
+    /**
+     * @brief TimerPost (ms); How long to wait for a response to a POST before
+     * declaring a timeout
+     */
+    // uint8_t _timerPost_mS;
+
+ public:
+
+    bool useQueueDataSource = false;
+    bool virtual setQueuedState(bool state, char uniqueId = '0') {
+        PRINTOUT(F("dataPublisherBase setQueued check"), useQueueDataSource);
+        return useQueueDataSource;  // Default not updated.
+    }
+    bool virtual getQueuedStatus() {
+        PRINTOUT(F("dataPublisherBase gQS check"), useQueueDataSource);
+        return useQueueDataSource;  // Default for not supported.
+    }
+
+    //Required to implement the following
+    uint16_t virtual setTimerPostTimeout_mS(uint16_t tpt_ms) {
+        MS_DBG(F("setTPT rejected "));
+        return 0;  // Default not updated.
+    }
+
+    uint16_t virtual getTimerPostTimeout_mS() {
+        MS_DBG(F("getTPT rejected"));
+        return 0;
+    }
+
+    //Required to implement the following
+    uint16_t virtual setTimerPostPacing_mS(uint16_t tpt_ms) {
+        MS_DBG(F("setTPP rejected "));
+        return 0;  // Default not updated.
+    }
+
+    uint16_t virtual getTimerPostPacing_mS() {
+        MS_DBG(F("setTPP rejected"));
+        return 0;
+    }
+
 };
+
+/* atl_extension */
+/*
+ * HTTP STATUS Codes that are used by Modular Sensors
+ * Placed at the end of the file, to facilitate mergein code
+ * https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+ */
+
+#define HTTPSTATUS_CREATED_201 201
+// Server Error indicating a Gateway Timeout.
+// Server error that doesn't seem to receover 
+// https://github.com/ODM2/ODM2DataSharingPortal/issues/628
+#define HTTPSTATUS_GT_500 500
+// Also supplied if the server didn't respond to a POST
+#define HTTPSTATUS_GT_504 504
+// This is an internaly created error, indicating No Connection with server
+#define HTTPSTATUS_NC_901 901
+// internal error, not enough power to connect with server
+#define HTTPSTATUS_NC_902 902
+// internal error, value dumped
+#define HTTPSTATUS_NC_903 903
+// internal error, value queued
+#define HTTPSTATUS_NC_904 904
 
 #endif  // SRC_DATAPUBLISHERBASE_H_

@@ -20,9 +20,16 @@
 #define MS_DEBUGGING_STD "EnviroDIYPublisher"
 #endif
 
+// #define MS_ENVIRODIYPUBLISHER_DEBUG_DEEP
+#ifdef MS_ENVIRODIYPUBLISHER_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP "EnviroDIYPublisher"
+#endif
+
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
+#undef MS_DEBUGGING_DEEP
+#undef MS_ENVIRODIYPUBLISHER_DEBUG_DEEP
 #include "dataPublisherBase.h"
 
 
@@ -131,7 +138,7 @@ class EnviroDIYPublisher : public dataPublisher {
 
     // Returns the data destination
     String getEndpoint(void) override {
-        return String(enviroDIYHost);
+        return String(_enviroDIYHost)+':'+String(enviroDIYPort);
     }
 
     // Adds the site registration token
@@ -240,6 +247,85 @@ class EnviroDIYPublisher : public dataPublisher {
  private:
     // Tokens and UUID's for EnviroDIY
     const char* _registrationToken = nullptr;
+    const char* _enviroDIYHost     = enviroDIYHost;
+    //FUT: int   _enviroDIYPort;
+
+ public:
+     /**
+     * @brief Set the destination Host URL
+     *
+     * @param enviroDIYHost The Host URL for the site on the
+     * Monitor My Watershed data portal.
+     */
+    void setDIYHost(const char* enviroDIYHost);
+
+    /* FUT:
+     * @brief Set the destination Port
+     *
+     * @param enviroDIYPort The Port on Host URL for the site on the
+     * Monitor My Watershed data portal.
+     */
+    //void setDIYPort(const int enviroDIYPort);
+
+ protected:
+    /**
+     * @brief This constructs a POST header for MMW
+     *
+     * @param tempBuffer - place for the POST.
+     */
+    void mmwPostHeader(char* tempBuffer);
+
+    /**
+     * @brief This constructs a POST body EnviroDIY
+     *
+     * @param tempBuffer - place for the POST.
+     */
+    void mmwPostDataArray(char* tempBuffer);
+    void mmwPostDataQueued(char* tempBuffer);
+
+ public:
+    /**
+     * @brief This routes subsequent POST construction
+     *
+     * @param state - true for Queued, false for standard
+     */
+    bool setQueuedState(bool state, char uniqueId = '0') override {
+        MS_DBG(F("EnvrDIYPub setQueued "), state);
+        return useQueueDataSource = state;
+    }
+    bool getQueuedStatus() override {
+        MS_DBG(F("EnvrDIYPub gQS "), useQueueDataSource);
+        return useQueueDataSource;
+    }
+
+#if !defined TIMER_EDP_POST_TIMEOUT_DEF_MSEC
+#define TIMER_EDP_POST_TIMEOUT_DEF_MSEC 10000L
+#endif  // TIMER_EDP_POST_TIMEOUT_DEF_MSEC
+    uint16_t _timerPostTimeout_ms = TIMER_EDP_POST_TIMEOUT_DEF_MSEC;
+    uint16_t virtual setTimerPostTimeout_mS(uint16_t tpt_ms) {
+        MS_DBG(F("setTPT(mS)"), tpt_ms);
+        return _timerPostTimeout_ms = tpt_ms;  // Default for not supported.
+    }
+
+    uint16_t getTimerPostTimeout_mS() {
+        MS_DBG(F("getTPT(mS)"), _timerPostTimeout_ms);
+        return _timerPostTimeout_ms;  // Default for not supported.
+    }
+
+#if !defined TIMER_EDP_POSTED_PACING_DEF_MSEC
+#define TIMER_EDP_POSTED_PACING_DEF_MSEC 2000L
+#endif  // TIMER_EDP_POSTED_PACING_DEF_MSEC
+    uint16_t _timerPostPacing_ms = TIMER_EDP_POSTED_PACING_DEF_MSEC;
+    uint16_t virtual setTimerPostPacing_mS(uint16_t tpp_ms) {
+        MS_DBG(F("setTPP(mS)"), tpp_ms);
+        return _timerPostPacing_ms = tpp_ms;
+    }
+
+    uint16_t getTimerPostPacing_mS() {
+        MS_DBG(F("getTPP(mS)"), _timerPostPacing_ms);
+        return _timerPostPacing_ms;
+    }    
+
 };
 
 #endif  // SRC_PUBLISHERS_ENVIRODIYPUBLISHER_H_

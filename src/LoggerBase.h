@@ -31,6 +31,8 @@
 #undef MS_DEBUGGING_DEEP
 #include "VariableArray.h"
 #include "LoggerModem.h"
+#include "ms_common.h"
+#include <Arduino.h>  // The base Arduino library
 
 // Bring in the libraries to handle the processor sleep/standby modes
 // The SAMD library can also the built-in clock on those modules
@@ -46,6 +48,9 @@
 // Bring in the library to communicate with an external high-precision real time
 // clock This also implements a needed date/time class
 #include <Sodaq_DS3231.h>
+//FUT using namespace sodaq_DS3231_nm;
+//This is a fudge for handling time between DS3231 and SAMD
+#define EPOCH_TIME_DTCLASS EPOCH_TIME_OFF
 
 /**
  * @brief January 1, 2000 00:00:00 in "epoch" time
@@ -57,6 +62,15 @@
 #define EPOCH_TIME_OFF 946684800
 
 #include <SdFat.h>  // To communicate with the SD card
+
+typedef enum {
+    LB_PWR_USEABLE_REQ = 0,
+    LB_PWR_SENSOR_USE_REQ,
+    LB_PWR_MODEM_USE_REQ,
+    LB_PWR_END
+} lb_pwr_req_t;
+typedef bool (*bat_handler_atl)(lb_pwr_req_t reqBatState);
+
 
 /**
  * @brief The largest number of variables from a single sensor
@@ -808,7 +822,12 @@ class Logger {
      * @return **bool** True if the current time on the RTC is an even interval
      * of the logging rate.
      */
-    bool checkInterval(void);
+    uint8_t       checkInterval(void);
+    static const uint8_t CIA_NOACTION      = 0x0;
+    static const uint8_t CIA_NEW_READING   = 0x01;
+    static const uint8_t CIA_POST_READINGS = 0x02;
+    static const uint8_t CIA_RLB_READINGS  = 0x04;  // store readings, no pub"
+    static const uint8_t CIA_NO_SLEEP      = 0x08;  // 
 
     /**
      * @brief Check if the MARKED time is an even interval of the logging rate -
@@ -1022,7 +1041,7 @@ class Logger {
     /**
      * @brief An internal reference to SdFat for SD card control
      */
-    SdFat sd;
+    SdFat sd1_card_fatfs;
     /**
      * @brief An internal reference to an SdFat file instance
      */
@@ -1057,7 +1076,7 @@ class Logger {
      * @param stampFlag The "flag" of the timestamp to change - should be
      * T_CREATE, T_WRITE, or T_ACCESS
      */
-    void setFileTimestamp(File fileToStamp, uint8_t stampFlag);
+    void setFileTimestamp(File fileToStamp, uint8_t stampFlag, bool localTime=false);
 
     /**
      * @brief Open or creates a file, converting a string file name to a
@@ -1198,6 +1217,250 @@ class Logger {
      */
     static volatile bool startTesting;
     /**@}*/
+
+ protected:
+    /**
+     * @brief Active instance of the attached data publishers
+     */
+    uint8_t _dataPubInstance;
+public:
+/* Provides a method of getting battery voltage
+ to determine if enough power to continue
+*/
+bat_handler_atl _bat_handler_atl = NULL;
+
+void setBatHandler(bool (*bat_handler_atl)(lb_pwr_req_t reqBatState));
+
+
+#if !defined SERIALIZE_POST_MAX_READINGS
+#define SERIALIZE_POST_MAX_READINGS 20
+#endif  // SERIALIZE_POST_MAX_READINGS
+uint16_t _sendAtOneTimeMaxX_num = SERIALIZE_POST_MAX_READINGS;
+void     setSendEveryX(
+        uint8_t  sendEveryX_num,
+        uint16_t sendAtOneTimeMaxX_num = SERIALIZE_POST_MAX_READINGS) {
+    _sendEveryX_num = sendEveryX_num;
+    // Check range, if too small set to max
+    if (sendAtOneTimeMaxX_num > 3) {
+        _sendAtOneTimeMaxX_num = sendAtOneTimeMaxX_num;
+    } else {
+        _sendAtOneTimeMaxX_num = -1;  // Max
+    }
+}
+uint8_t getSendEveryX(void) {
+    return _sendEveryX_num;
+}
+#if !defined SERIALIZE_sendEveryX_NUM
+#define SERIALIZE_sendEveryX_NUM 2
+#endif  // SERIALIZE_sendEveryX_NUM
+// Range typically 0-20
+uint8_t _sendEveryX_num = SERIALIZE_sendEveryX_NUM;
+int8_t  _sendEveryX_cnt = 0;  // Counter to track status
+
+void setSendOffset(uint8_t param1) {
+    // Might also have check for SampleTime * _sendEveryX_num < param1
+    if (_sendOffset_MAX >= param1) {
+        _sendOffset_min = param1;
+    } else {
+        _sendOffset_min = _sendOffset_MAX;
+    }
+}
+uint8_t getSendOffset(void) {
+    return _sendOffset_min;
+}
+#if !defined SERIALIZE_sendOffset_min
+#define SERIALIZE_sendOffset_min 0
+#endif  // SERIALIZE_sendOffset_min
+uint8_t       _sendOffset_min = SERIALIZE_sendOffset_min;
+const uint8_t _sendOffset_MAX = 14;  // Max allowed
+bool          _sendOffset_act = false;
+uint8_t       _sendOffset_cnt = 0;
+
+void setSendPacingDelay(uint8_t param) {
+    _sendPacingDelay_mSec = param;
+}
+uint8_t getSendPacingDelay(void) {
+    return _sendPacingDelay_mSec;
+}
+#define SERIALIZE_sendPacingDelay_mSec 2
+uint16_t _sendPacingDelay_mSec = SERIALIZE_sendPacingDelay_mSec;
+
+    uint16_t setSendQueueSz_num(uint16_t sqz_num) {
+        MS_DBG(F("setSendQueueSz_num"), sqz_num);
+        return _sendQueueSz_num = sqz_num;
+    }
+
+    uint16_t getSendQueueSz_num() {
+        MS_DBG(F("getSendQueueSz_num"), _sendQueueSz_num);
+        return _sendQueueSz_num;
+    }   
+#if !defined LB_SENDQUESZ_NUM_DEF 
+#define LB_SENDQUESZ_NUM_DEF  2800L //MMWGI_SEND_QUE_SZ_NUM_DEF
+#endif  // LB_SENDQUESZ_NUM_DEF 
+    uint16_t _sendQueueSz_num = LB_SENDQUESZ_NUM_DEF ; //See MMMWGI_SEND_QUE_SZ_NUM_DEF 
+
+    uint16_t setPostMax_num(uint16_t mp_num) {
+        MS_DBG(F("setMaxPost_num"), mp_num);
+        return _postMax_num = mp_num;
+    }
+
+    uint16_t getPostMax_num() {
+        MS_DBG(F("getPostMax_num"), _postMax_num);
+        return _postMax_num;
+    }   
+#if !defined LB_POSTMAX_NUM_DEF 
+#define LB_POSTMAX_NUM_DEF 96L //MMWGI_POST_MAX_RECS_MUM_DEF
+#endif  // LB_POSTMAX_NUM_DEF
+    uint16_t _postMax_num = LB_POSTMAX_NUM_DEF; //See MMWGI_POST_MAX_RECS_MUM_DEF   
+
+// Time woken up
+uint32_t wakeUpTime_secs;
+
+
+public:
+
+void forceSysReset(uint8_t source, uint16_t simpleCheck);
+/**
+ * @brief Process queued readings to send to remote if internet available.
+ *
+ * If previously registered, it will determine if battery power is available
+ * It uses an algorithim to reliably deliver the readings.
+ *
+ */
+#define LOGGER_RELIABLE_POST (Logger::CIA_NEW_READING|Logger::CIA_POST_READINGS)
+#define LOGGER_NEW_READING (Logger::CIA_NEW_READING)
+void logDataAndPubReliably(uint8_t cia_val_override =0);
+
+/**
+ * @brief Process queued readings to send to remote if internet available.
+ *
+ * @param internetPresent  true if an internet connection is present.
+ *   For false store the readings for later transmission
+ *   This reads from stored files
+ *   1) RDELAY.txt
+ *   2) QUE0.txt
+ *   For data in RDELAY.txt, an attempt is made to transmit each line,
+ *   if not sucessful then it is stored at the end of QUE0.txt
+ *   Once RDELAY.txt is complete, 
+ *   any readings in QUE0.txt are attempted,
+ * 
+ *   The format of he readings in the file are dependent on sensor configuration, 
+ *   so they maynot be compatible if the builds sensor configuration changes.
+ * 
+ *   The forwarding of RDELAY.txt to QUE0.txt is only up to specific thresholds
+ *   POST_MAX_NUM
+ *   RDELAY_FAILED_POSTS_THRESHOLD 
+ */
+#define RDELAY_FAILED_POSTS_THRESHOLD 7
+void publishDataQueuedToRemotes(bool internetPresent);
+
+/**
+ * @brief Set up for sleep.
+ *
+ * For external clock chip need to ensure the data is set correctly
+ *
+ */
+void setExtRtcSleep(); 
+
+private:
+/**
+ * @brief Check HTTP status response
+ *
+ * @param rspCode  true if server is deemed to have received message
+ * or nothing further can be done with message. 
+ */
+bool publishRspCodeAccepted(int16_t  rspCode);
+
+// ===================================================================== //
+/* Serializing/Deserialing
+  A common set of functions that operate on files
+  serzRdelFn_str
+  serzQueuedFn
+*/
+// ===================================================================== //
+public:
+bool     deszqNextCh(void);
+long     deszq_epochTime = 0;  // Marked Epoch Time
+char*    deszq_nextChar;
+uint16_t deszq_nextCharSz;
+
+// Calculated length of timeVariant data fields as ASCII+ delimiter, except
+// for last data field
+uint16_t deszq_timeVariant_sz;
+
+private:
+#define sd1_Err(s) sd1_card_fatfs.errorPrint(F(s))
+uint16_t deszq_status    = 0;  // Bit wise status of reading
+uint16_t deszLinesRead   = 0;
+uint16_t deszLinesUnsent = 0;
+#define QUEFILE_MAX_LINE 100
+char     deszq_line[QUEFILE_MAX_LINE] = "";
+uint16_t desz_pending_records         = 0;
+
+// Qu SdFat/sd1_card_fatfs connects to Physical pins or File/logFile or
+// keep to LFN - capitals  https://en.wikipedia.org/wiki/8.3_filename
+
+#if defined MS_LOGGERBASE_POSTS
+File        postsLogHndl;            // Record all POSTS when enabled
+const char* postsLogFn_str = "DBG";  // Not more than 8.3 total
+
+#endif  // MS_LOGGERBASE_POSTS
+
+// que Readings DELAYed (RDEL) ~ serialize/deserialize
+File        serzRdelFile;
+const char* serzRdelFn_str = "RDELAY.TXT";
+
+// QUEueD for reliable delivery
+// first POST didn't suceed to serialize/deserialize
+// Potentially multiple versions of files based on dataPublisher[]
+File serzQueuedFile;
+#define FN_BUFFER_SZ 13
+char        serzQueuedFn[FN_BUFFER_SZ] = "";
+const char* serzQueuedFn_str           = "QUE";  // begin of name, keep 8.3
+
+
+// perform a serialize to RdelFile
+bool serzRdel_Line(void);
+// Uses serzRdelFn_str, File serzRdelFile
+bool  deszRdelStart();
+char* deszFind(const char* in_line, char caller_id);
+#define deszRdelLine() deszLine(&serzRdelFile)
+bool deszRdelClose(bool deleteFile = false);
+
+// Uses serzQueuedFn_str, File  serzQueuedFile
+bool serzQueuedStart(char uniqueId);  // Use 1st, & sets filename
+bool deszQueuedStart(void);
+#define deszQueuedLine() deszLine(&serzQueuedFile)
+uint16_t serzQueuedFlushFile();
+bool serzQueuedCloseFile(bool action);
+/*
+bool deszQueuedCleanup(bool debug = false);
+*/
+// This does the work
+bool deszLine(File* filep);
+
+// Utility resources
+//void setFileTimeStampMet(File fileToStamp, uint8_t stampFlag);
+bool deszDbg(void);
+bool postLogOpen();
+bool postLogOpen(const char* postsLogNm_str);
+void postLogLine(uint32_t tmr_ms, int16_t rspParam);
+void postLogLine(const char *logMsg,bool addCR=true);
+// Macro to print to TTY and log on uSD 
+#define PRINT_LOGLINE_P(msg_parm) \
+    char tttbuf[sizeof(msg_parm)+1]; \
+    strcpy_P(tttbuf,msg_parm);\
+    PRINTOUT(tttbuf);\
+    postLogLine(tttbuf);
+void postLogClose();
+bool listFile(File* filep, char* fn_str, char* uid);
+
+public:
+// A simple data-time formatting, compatible with reading into excel spreadsheet - see also formatDateTime_ISO8601()
+String formatDateTime_str(DateTime& dt);
+String formatDateTime_str(uint32_t epochTime);
+bool serzBegin(void);
+
 };
 
 #endif  // SRC_LOGGERBASE_H_

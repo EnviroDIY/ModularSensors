@@ -544,6 +544,8 @@ class Sensor {
      * defined once for the whole class.
      */
     Variable* variables[MAX_NUMBER_VARS];
+ 
+   virtual void set_sensorName(const char *sensorName) {_sensorName=sensorName;}
 };
 
 #endif  // SRC_SENSORBASE_H_
