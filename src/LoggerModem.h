@@ -43,7 +43,7 @@
  * Variable objects to be tied to a loggerModem.  These are measured by a modem,
  * but are implemented as calculated variables.
  *
- * @note  The modem is NOT set up as a sensor.  ALl of these variables for the
+ * @note  The modem is NOT set up as a sensor.  ALL of these variables for the
  * modem object are actually being called as calculated variables where the
  * calculation function is to ask the modem object for the values from the last
  * time it connected to the internet.
@@ -68,7 +68,8 @@
  * RSSI is a rough calculation, so it has 0 decimal place resolution
  */
 #define MODEM_RSSI_RESOLUTION 0
-/// @brief The bit mask for #_pollModemMetaData to enable RSSI polling.
+/// @brief The bit mask for loggerModem::_pollModemMetaData to enable RSSI
+/// polling.
 #define MODEM_RSSI_ENABLE_BITMASK 0b00000001
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
@@ -96,8 +97,8 @@
  * Percent signal is a rough calculation, so it has 0 decimal place resolution
  */
 #define MODEM_PERCENT_SIGNAL_RESOLUTION 0
-/// @brief The bit mask for #_pollModemMetaData to enable percent signal
-/// polling.
+/// @brief The bit mask for loggerModem::_pollModemMetaData to enable percent
+/// signal polling.
 #define MODEM_PERCENT_SIGNAL_ENABLE_BITMASK 0b00000010
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
@@ -129,8 +130,8 @@
  * Battery state is a code value; it has 0 decimal place resolution
  */
 #define MODEM_BATTERY_STATE_RESOLUTION 0
-/// @brief The bit mask for #_pollModemMetaData to enable modem battery charging
-/// state polling.
+/// @brief The bit mask for loggerModem::_pollModemMetaData to enable modem
+/// battery charging state polling.
 #define MODEM_BATTERY_STATE_ENABLE_BITMASK 0b00000100
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
@@ -159,8 +160,8 @@
 /// @brief Decimals places in string representation; battery charge percent
 /// should have 0.
 #define MODEM_BATTERY_PERCENT_RESOLUTION 0
-/// @brief The bit mask for #_pollModemMetaData to enable modem battery percent
-/// polling.
+/// @brief The bit mask for loggerModem::_pollModemMetaData to enable modem
+/// battery percent polling.
 #define MODEM_BATTERY_PERCENT_ENABLE_BITMASK 0b00001000
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
@@ -192,8 +193,8 @@
  * No supported module has higher than 1mV resolution in battery reading.
  */
 #define MODEM_BATTERY_VOLTAGE_RESOLUTION 0
-/// @brief The bit mask for #_pollModemMetaData to enable modem battery voltage
-/// polling.
+/// @brief The bit mask for loggerModem::_pollModemMetaData to enable modem
+/// battery voltage polling.
 #define MODEM_BATTERY_VOLTAGE_ENABLE_BITMASK 0b00010000
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
@@ -224,8 +225,8 @@
  * Most modules that can measure temperature measure to 0.1°C
  */
 #define MODEM_TEMPERATURE_RESOLUTION 1
-/// @brief The bit mask for #_pollModemMetaData to enable modem temperature
-/// polling.
+/// @brief The bit mask for loggerModem::_pollModemMetaData to enable modem
+/// temperature polling.
 #define MODEM_TEMPERATURE_ENABLE_BITMASK 0b00100000
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
@@ -253,8 +254,8 @@
 /// @brief Decimals places in string representation; total active time should
 /// have 3.
 #define MODEM_ACTIVATION_RESOLUTION 3
-/// @brief The bit mask for #_pollModemMetaData to enable modem activation time
-/// polling.
+/// @brief The bit mask for loggerModem::_pollModemMetaData to enable modem
+/// activation time polling.
 #define MODEM_ACTIVATION_ENABLE_BITMASK 0b01000000
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
@@ -280,8 +281,8 @@
 /// @brief Decimals places in string representation; total powered time should
 /// have 3.
 #define MODEM_POWERED_RESOLUTION 3
-/// @brief The bit mask for #_pollModemMetaData to enable modem power time
-/// polling
+/// @brief The bit mask for loggerModem::_pollModemMetaData to enable modem
+/// power time polling
 #define MODEM_POWERED_ENABLE_BITMASK 0b10000000
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
@@ -1080,6 +1081,21 @@ class loggerModem {
 
     /**
      * @brief An 8-bit code for the enabled modem polling variables
+     *
+     * Setting a bit to 0 will disable polling, to 1 will enable it.  By default
+     * no polling is enabled to save time and power by not requesting
+     * unnecessary information from the modem.  When modem measured variables
+     * are attached to a modem, polling for those results is automatically
+     * enabled.
+     *
+     * Bit | Variable Class | Relevent Define
+     * ----|----------------|----------------
+     *  0  | #Modem_RSSI | #MODEM_RSSI_ENABLE_BITMASK
+     *  1  | #Modem_SignalPercent | #MODEM_PERCENT_SIGNAL_ENABLE_BITMASK
+     *  2  | #Modem_BatteryState | #MODEM_BATTERY_STATE_ENABLE_BITMASK
+     *  3  | #Modem_BatteryPercent | #MODEM_BATTERY_PERCENT_ENABLE_BITMASK
+     *  4  | #Modem_BatteryVoltage | #MODEM_BATTERY_VOLTAGE_ENABLE_BITMASK
+     *  5  | #Modem_Temp | #MODEM_TEMPERATURE_ENABLE_BITMASK
      */
     uint8_t _pollModemMetaData = 0;
 };
