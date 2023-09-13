@@ -36,6 +36,24 @@
 // ============================================================================
 //  Functions for the EnviroDIY data portal receivers.
 // ============================================================================
+
+
+#if !defined TIMER_EDP_POST_TIMEOUT_DEF_MSEC
+/**
+ * @brief The default time-out to wait for a response from the EnviroDIY
+ * (Monitor My Watershed) data portal.
+ */
+#define TIMER_EDP_POST_TIMEOUT_DEF_MSEC 10000L
+#endif  // TIMER_EDP_POST_TIMEOUT_DEF_MSEC
+
+#if !defined TIMER_EDP_POSTED_PACING_DEF_MSEC
+/**
+ * @brief The default pacing (in milliseconds) between subsequent posts to the
+ * EnviroDIY (Monitor My Watershed) data portal.
+ */
+#define TIMER_EDP_POSTED_PACING_DEF_MSEC 250L
+#endif  // TIMER_EDP_POSTED_PACING_DEF_MSEC
+
 /**
  * @brief The EnviroDIYPublisher subclass of dataPublisher for publishing data
  * to the Monitor My Watershed/EnviroDIY data portal at
@@ -138,7 +156,7 @@ class EnviroDIYPublisher : public dataPublisher {
 
     // Returns the data destination
     String getEndpoint(void) override {
-        return String(_enviroDIYHost)+':'+String(enviroDIYPort);
+        return String(_enviroDIYHost) + ':' + String(enviroDIYPort);
     }
 
     // Adds the site registration token
@@ -248,10 +266,10 @@ class EnviroDIYPublisher : public dataPublisher {
     // Tokens and UUID's for EnviroDIY
     const char* _registrationToken = nullptr;
     const char* _enviroDIYHost     = enviroDIYHost;
-    //FUT: int   _enviroDIYPort;
+    // FUT: int   _enviroDIYPort;
 
  public:
-     /**
+    /**
      * @brief Set the destination Host URL
      *
      * @param enviroDIYHost The Host URL for the site on the
@@ -265,7 +283,7 @@ class EnviroDIYPublisher : public dataPublisher {
      * @param enviroDIYPort The Port on Host URL for the site on the
      * Monitor My Watershed data portal.
      */
-    //void setDIYPort(const int enviroDIYPort);
+    // void setDIYPort(const int enviroDIYPort);
 
  protected:
     /**
@@ -282,50 +300,6 @@ class EnviroDIYPublisher : public dataPublisher {
      */
     void mmwPostDataArray(char* tempBuffer);
     void mmwPostDataQueued(char* tempBuffer);
-
- public:
-    /**
-     * @brief This routes subsequent POST construction
-     *
-     * @param state - true for Queued, false for standard
-     */
-    bool setQueuedState(bool state, char uniqueId = '0') override {
-        MS_DBG(F("EnvrDIYPub setQueued "), state);
-        return useQueueDataSource = state;
-    }
-    bool getQueuedStatus() override {
-        MS_DBG(F("EnvrDIYPub gQS "), useQueueDataSource);
-        return useQueueDataSource;
-    }
-
-#if !defined TIMER_EDP_POST_TIMEOUT_DEF_MSEC
-#define TIMER_EDP_POST_TIMEOUT_DEF_MSEC 10000L
-#endif  // TIMER_EDP_POST_TIMEOUT_DEF_MSEC
-    uint16_t _timerPostTimeout_ms = TIMER_EDP_POST_TIMEOUT_DEF_MSEC;
-    uint16_t virtual setTimerPostTimeout_mS(uint16_t tpt_ms) {
-        MS_DBG(F("setTPT(mS)"), tpt_ms);
-        return _timerPostTimeout_ms = tpt_ms;  // Default for not supported.
-    }
-
-    uint16_t getTimerPostTimeout_mS() {
-        MS_DBG(F("getTPT(mS)"), _timerPostTimeout_ms);
-        return _timerPostTimeout_ms;  // Default for not supported.
-    }
-
-#if !defined TIMER_EDP_POSTED_PACING_DEF_MSEC
-#define TIMER_EDP_POSTED_PACING_DEF_MSEC 2000L
-#endif  // TIMER_EDP_POSTED_PACING_DEF_MSEC
-    uint16_t _timerPostPacing_ms = TIMER_EDP_POSTED_PACING_DEF_MSEC;
-    uint16_t virtual setTimerPostPacing_mS(uint16_t tpp_ms) {
-        MS_DBG(F("setTPP(mS)"), tpp_ms);
-        return _timerPostPacing_ms = tpp_ms;
-    }
-
-    uint16_t getTimerPostPacing_mS() {
-        MS_DBG(F("getTPP(mS)"), _timerPostPacing_ms);
-        return _timerPostPacing_ms;
-    }    
-
 };
 
 #endif  // SRC_PUBLISHERS_ENVIRODIYPUBLISHER_H_

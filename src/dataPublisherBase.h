@@ -341,39 +341,75 @@ class dataPublisher {
     // uint8_t _timerPost_mS;
 
  public:
-
+    /**
+     * @brief Whether the publisher should use data stored in a text file queue
+     * on the SD-card or use data values stored in the variable array to create
+     * output for the publisher.  This routes subsequent POST construction.
+     *
+     */
     bool useQueueDataSource = false;
-    bool virtual setQueuedState(bool state, char uniqueId = '0') {
-        PRINTOUT(F("dataPublisherBase setQueued check"), useQueueDataSource);
-        return useQueueDataSource;  // Default not updated.
-    }
-    bool virtual getQueuedStatus() {
-        PRINTOUT(F("dataPublisherBase gQS check"), useQueueDataSource);
-        return useQueueDataSource;  // Default for not supported.
-    }
+    /**
+     * @brief Sets the publisher to use either data stored in a text file queue
+     * on the SD-card or use data values stored in the variable array to create
+     * output for the publisher.  This routes subsequent POST construction
+     *
+     * @param state - true for Queued, false for standard
+     */
+    void setQueuedState(bool state);
+    /**
+     * @brief Get the current data source for publisher output.
+     *
+     * @return *true*  The publisher is using data read from a text file on an
+     * SD-card.
+     * @return *false*  The publisher is using data directly from the variable
+     * array.
+     */
+    bool getQueuedStatus();
 
-    //Required to implement the following
-    uint16_t virtual setTimerPostTimeout_mS(uint16_t tpt_ms) {
-        MS_DBG(F("setTPT rejected "));
-        return 0;  // Default not updated.
-    }
+    /**
+     * @brief The time-out (in milliseconds) to wait for a response from the
+     * data publisher
+     */
+    uint16_t _timerPostTimeout_ms;
+    /**
+     * @brief Set the time-out (in milliseconds) to wait for a response from the
+     * data publisher
+     *
+     * @param tpt_ms The time-out (in milliseconds) to wait for a response from
+     * the data publisher
+     */
+    void setTimerPostTimeout_mS(uint16_t tpt_ms);
+    /**
+     * @brief Get the current time-out (in milliseconds) to wait for a response
+     * from the data publisher
+     * @return *uint16_t* The current time-out (in milliseconds) to wait for a
+     * response from the data publisher
+     */
+    uint16_t getTimerPostTimeout_mS();
 
-    uint16_t virtual getTimerPostTimeout_mS() {
-        MS_DBG(F("getTPT rejected"));
-        return 0;
-    }
-
-    //Required to implement the following
-    uint16_t virtual setTimerPostPacing_mS(uint16_t tpt_ms) {
-        MS_DBG(F("setTPP rejected "));
-        return 0;  // Default not updated.
-    }
-
-    uint16_t virtual getTimerPostPacing_mS() {
-        MS_DBG(F("setTPP rejected"));
-        return 0;
-    }
-
+    /**
+     * @brief The pacing (in milliseconds) between subsequent outputs to the
+     * publisher when posting multiple time-points of queued data.
+     */
+    uint16_t _timerPostPacing_ms;
+    /**
+     * @brief Set the pacing (in milliseconds) between subsequent outputs to the
+     * publisher when posting multiple time-points of queued data.
+     *
+     * @param tpp_ms The pacing (in milliseconds) between subsequent outputs to
+     * the publisher when posting multiple time-points of queued data.
+     */
+    void setTimerPostPacing_mS(uint16_t tpp_ms);
+    /**
+     * @brief Get the current pacing (in milliseconds) between subsequent
+     * outputs to the publisher when posting multiple time-points of queued
+     * data.
+     *
+     * @return *uint16_t* The current pacing (in milliseconds) between
+     * subsequent outputs to the publisher when posting multiple time-points of
+     * queued data.
+     */
+    uint16_t getTimerPostPacing_mS();
 };
 
 /* atl_extension */
@@ -385,7 +421,7 @@ class dataPublisher {
 
 #define HTTPSTATUS_CREATED_201 201
 // Server Error indicating a Gateway Timeout.
-// Server error that doesn't seem to receover 
+// Server error that doesn't seem to receover
 // https://github.com/ODM2/ODM2DataSharingPortal/issues/628
 #define HTTPSTATUS_GT_500 500
 // Also supplied if the server didn't respond to a POST

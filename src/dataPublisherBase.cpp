@@ -147,3 +147,25 @@ String dataPublisher::parseMQTTState(int state) {
         default: return String(state) + ": UNKNOWN";
     }
 }
+
+
+void dataPublisher::setQueuedState(bool state) {
+    useQueueDataSource = state;
+}
+bool dataPublisher::getQueuedStatus() {
+    return useQueueDataSource;
+}
+
+void dataPublisher::setTimerPostTimeout_mS(uint16_t tpt_ms) {
+    _timerPostTimeout_ms = tpt_ms;
+}
+uint16_t dataPublisher::getTimerPostTimeout_mS() {
+    return _timerPostTimeout_ms;  // Default for not supported.
+}
+
+void dataPublisher::setTimerPostPacing_mS(uint16_t tpp_ms) {
+    _timerPostPacing_ms = tpp_ms;
+}
+uint16_t dataPublisher::getTimerPostPacing_mS() {
+    return _timerPostPacing_ms;
+}

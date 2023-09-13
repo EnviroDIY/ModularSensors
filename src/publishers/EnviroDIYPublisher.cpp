@@ -34,6 +34,8 @@ EnviroDIYPublisher::EnviroDIYPublisher() : dataPublisher() {
     // MS_DBG(F("dataPublisher object created"));
     _registrationToken = NULL;
     setDIYHost(enviroDIYHost);
+    setTimerPostTimeout_mS(TIMER_EDP_POST_TIMEOUT_DEF_MSEC);
+    setTimerPostPacing_mS(TIMER_EDP_POSTED_PACING_DEF_MSEC);
 }
 EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, uint8_t sendEveryX,
                                        uint8_t sendOffset)
@@ -48,6 +50,8 @@ EnviroDIYPublisher::EnviroDIYPublisher(Logger&     baseLogger,
     : dataPublisher(baseLogger, sendEveryX, sendOffset) {
     setToken(registrationToken);
     setDIYHost(enviroDIYHost);
+    setTimerPostTimeout_mS(TIMER_EDP_POST_TIMEOUT_DEF_MSEC);
+    setTimerPostPacing_mS(TIMER_EDP_POSTED_PACING_DEF_MSEC);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
 }
 EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
@@ -56,6 +60,8 @@ EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
                                        uint8_t sendEveryX, uint8_t sendOffset)
     : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset) {
     setToken(registrationToken);
+    setTimerPostTimeout_mS(TIMER_EDP_POST_TIMEOUT_DEF_MSEC);
+    setTimerPostPacing_mS(TIMER_EDP_POSTED_PACING_DEF_MSEC);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
 }
 // Destructor
@@ -173,12 +179,13 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient) {
     if (bufferSz < (MS_SEND_BUFFER_SIZE - 50)) printTxBuffer(outClient);
 
     // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
-const int32_t CONNECT_TIMEOUT_SEC =7;
+    const int32_t CONNECT_TIMEOUT_SEC = 7;
     MS_DBG(F("Connecting client. Timer(sec)"), CONNECT_TIMEOUT_SEC);
     MS_START_DEBUG_TIMER;
     outClient->setTimeout(CONNECT_TIMEOUT_SEC);
-    if (outClient->connect(_enviroDIYHost, (uint16_t)enviroDIYPort) ) {
-        MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms to "),_enviroDIYHost,':',enviroDIYPort);
+    if (outClient->connect(_enviroDIYHost, (uint16_t)enviroDIYPort)) {
+        MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms to "),
+               _enviroDIYHost, ':', enviroDIYPort);
 
         mmwPostHeader(tempBuffer);
         if (useQueueDataSource) {
@@ -205,8 +212,8 @@ const int32_t CONNECT_TIMEOUT_SEC =7;
         // Read only the first 12 characters of the response
         // We're only reading as far as the http code, anything beyond that
         // we don't care about.
-        memset(tempBuffer,0,TEMP_BUFFER_SZ);
-        did_respond   = outClient->readBytes(tempBuffer, REQUIRED_MIN_RSP_SZ);
+        memset(tempBuffer, 0, TEMP_BUFFER_SZ);
+        did_respond = outClient->readBytes(tempBuffer, REQUIRED_MIN_RSP_SZ);
         // MS_DBG(F("Rsp read,"), did_respond, F("bytes in"), elapsed_ms,
         // F("mS"));
         // Close the TCP/IP connection
@@ -250,7 +257,7 @@ const int32_t CONNECT_TIMEOUT_SEC =7;
 
 void EnviroDIYPublisher::setDIYHost(const char* enviroDIYHost) {
     _enviroDIYHost = enviroDIYHost;
-    //MS_DBG(F("DIY Host set to "), _enviroDIYHost);
+    // MS_DBG(F("DIY Host set to "), _enviroDIYHost);
 }
 
 /* FUT: void EnviroDIYPublisher::setDIYPort(const int enviroDIYPort) {
