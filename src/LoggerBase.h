@@ -48,8 +48,8 @@
 // Bring in the library to communicate with an external high-precision real time
 // clock This also implements a needed date/time class
 #include <Sodaq_DS3231.h>
-//FUT using namespace sodaq_DS3231_nm;
-//This is a fudge for handling time between DS3231 and SAMD
+// FUT using namespace sodaq_DS3231_nm;
+// This is a fudge for handling time between DS3231 and SAMD
 #define EPOCH_TIME_DTCLASS EPOCH_TIME_OFF
 
 /**
@@ -73,7 +73,7 @@ typedef bool (*bat_handler_atl)(lb_pwr_req_t reqBatState);
 
 
 /**
- * @brief The largest number of variables from a single sensor
+ * @brief The largest number of data publishers possible
  */
 #define MAX_NUMBER_SENDERS 4
 
@@ -819,15 +819,19 @@ class Logger {
     /**
      * @brief Check if the CURRENT time is an even interval of the logging rate
      *
-     * @return **bool** True if the current time on the RTC is an even interval
-     * of the logging rate.
+     * @return **unit8_t** Bitmask settings for actions to take on the inteval
      */
-    uint8_t       checkInterval(void);
-    static const uint8_t CIA_NOACTION      = 0x0;
-    static const uint8_t CIA_NEW_READING   = 0x01;
+    uint8_t checkInterval(void);
+    /// @brief  Take no action on interval
+    static const uint8_t CIA_NOACTION = 0x0;
+    /// @brief Take a new set of sensor readings on the interval (0x01 = 0b0001)
+    static const uint8_t CIA_NEW_READING = 0x01;
+    /// @brief Post new readings to publishers on the interval (0x02 = 0b0010)
     static const uint8_t CIA_POST_READINGS = 0x02;
-    static const uint8_t CIA_RLB_READINGS  = 0x04;  // store readings, no pub"
-    static const uint8_t CIA_NO_SLEEP      = 0x08;  // 
+    /// @brief Store readings to a queue file on the interval (0x04 = 0b0100)
+    static const uint8_t CIA_RLB_READINGS = 0x04;  // store readings, no pub"
+    /// @brief Prevent the logger from sleeping on this interval (0x08 = 0b1000)
+    static const uint8_t CIA_NO_SLEEP = 0x08;  //
 
     /**
      * @brief Check if the MARKED time is an even interval of the logging rate -
@@ -837,6 +841,9 @@ class Logger {
      * data outputs from a single data update session (SD, EnviroDIY, serial
      * printing, etc) have the same timestamp even though the update routine may
      * take several (or many) seconds.
+     *
+     * @todo: Rewrite this function to align with changes to the check interval
+     * function.
      *
      * @return **bool** True if the marked time is an even interval of the
      * logging rate.
@@ -1076,7 +1083,8 @@ class Logger {
      * @param stampFlag The "flag" of the timestamp to change - should be
      * T_CREATE, T_WRITE, or T_ACCESS
      */
-    void setFileTimestamp(File fileToStamp, uint8_t stampFlag, bool localTime=false);
+    void setFileTimestamp(File fileToStamp, uint8_t stampFlag,
+                          bool localTime = false);
 
     /**
      * @brief Open or creates a file, converting a string file name to a
@@ -1223,67 +1231,152 @@ class Logger {
      * @brief Active instance of the attached data publishers
      */
     uint8_t _dataPubInstance;
-public:
-/* Provides a method of getting battery voltage
- to determine if enough power to continue
-*/
-bat_handler_atl _bat_handler_atl = NULL;
 
-void setBatHandler(bool (*bat_handler_atl)(lb_pwr_req_t reqBatState));
+ public:
+    /**
+     * @brief A pointer to a battery handler object with the required voltages
+     * for different actions and a function for determining the current voltage.
+     */
+    bat_handler_atl _bat_handler_atl = NULL;
+
+    /**
+     * @brief Sets the battery handler function.
+     */
+    void setBatHandler(bool (*bat_handler_atl)(lb_pwr_req_t reqBatState));
 
 
 #if !defined SERIALIZE_POST_MAX_READINGS
+/**
+ * @brief The default maximum number of readings to upload after a successful
+ * connection to a data publishing endpoint.
+ */
 #define SERIALIZE_POST_MAX_READINGS 20
 #endif  // SERIALIZE_POST_MAX_READINGS
-uint16_t _sendAtOneTimeMaxX_num = SERIALIZE_POST_MAX_READINGS;
-void     setSendEveryX(
+    /**
+     * @brief The maximum number of readings to upload after a
+     * successful connection to a data publishing endpoint.
+     */
+    uint16_t _sendAtOneTimeMaxX_num = SERIALIZE_POST_MAX_READINGS;
+    /**
+     * @brief Sets the interval for how frequently to post collected data to the
+     * internet and the maximum number of queued readings to send at each post
+     * attempt.
+     */
+    void setSendEveryX(
         uint8_t  sendEveryX_num,
         uint16_t sendAtOneTimeMaxX_num = SERIALIZE_POST_MAX_READINGS) {
-    _sendEveryX_num = sendEveryX_num;
-    // Check range, if too small set to max
-    if (sendAtOneTimeMaxX_num > 3) {
-        _sendAtOneTimeMaxX_num = sendAtOneTimeMaxX_num;
-    } else {
-        _sendAtOneTimeMaxX_num = -1;  // Max
+        _sendEveryX_num = sendEveryX_num;
+        // Check range, if too small set to max
+        if (sendAtOneTimeMaxX_num > 3) {
+            _sendAtOneTimeMaxX_num = sendAtOneTimeMaxX_num;
+        } else {
+            _sendAtOneTimeMaxX_num = -1;  // Max
+        }
     }
-}
-uint8_t getSendEveryX(void) {
-    return _sendEveryX_num;
-}
+    /**
+     * @brief Gets the number of readings to collect before publishing data.
+     *
+     * @return **uint8_t** The current publishing interval
+     */
+    uint8_t getSendEveryX(void) {
+        return _sendEveryX_num;
+    }
 #if !defined SERIALIZE_sendEveryX_NUM
+/**
+ * @brief The default number of readings to collect before publishing data.
+ */
 #define SERIALIZE_sendEveryX_NUM 2
 #endif  // SERIALIZE_sendEveryX_NUM
-// Range typically 0-20
-uint8_t _sendEveryX_num = SERIALIZE_sendEveryX_NUM;
-int8_t  _sendEveryX_cnt = 0;  // Counter to track status
+    /**
+     * @brief The number of readings to collect and queue before publishing
+     * data.  Range typically 0-20.  Defaults to #SERIALIZE_sendEveryX_NUM
+     */
+    uint8_t _sendEveryX_num = SERIALIZE_sendEveryX_NUM;
+    /**
+     * @brief A counter for the number of readings that have been taken since
+     * data was last published.
+     */
+    int8_t _sendEveryX_cnt = 0;
 
-void setSendOffset(uint8_t param1) {
-    // Might also have check for SampleTime * _sendEveryX_num < param1
-    if (_sendOffset_MAX >= param1) {
-        _sendOffset_min = param1;
-    } else {
-        _sendOffset_min = _sendOffset_MAX;
+    /**
+     * @brief Sets the offset between when samples are collected and published.
+     *
+     * @param sendOffset_min The number of minutes to offset the data publishing
+     * from the data collection.
+     */
+    void setSendOffset(uint8_t sendOffset_min) {
+        // TODO: Might also have check for SampleTime * _sendEveryX_num <
+        // sendOffset_min
+        if (_sendOffset_MAX >= sendOffset_min) {
+            _sendOffset_min = sendOffset_min;
+        } else {
+            _sendOffset_min = _sendOffset_MAX;
+        }
     }
-}
-uint8_t getSendOffset(void) {
-    return _sendOffset_min;
-}
+    /**
+     * @brief Get the offset (in minutes) between when samples are collected and
+     * published.
+     *
+     * @return *uint8_t* The offset (in minutes) between when samples are
+     * collected and published
+     */
+    uint8_t getSendOffset(void) {
+        return _sendOffset_min;
+    }
 #if !defined SERIALIZE_sendOffset_min
+/**
+ * @brief The default offset (in minutes) between when samples are collected and
+ * published.
+ */
 #define SERIALIZE_sendOffset_min 0
 #endif  // SERIALIZE_sendOffset_min
-uint8_t       _sendOffset_min = SERIALIZE_sendOffset_min;
-const uint8_t _sendOffset_MAX = 14;  // Max allowed
-bool          _sendOffset_act = false;
-uint8_t       _sendOffset_cnt = 0;
+    /**
+     * @brief The offset (in minutes) between when samples are collected and
+     * published.
+     */
+    uint8_t _sendOffset_min = SERIALIZE_sendOffset_min;
+    /**
+     * @brief The maximum allowed offset (in minutes) between when samples are
+     * collected and published.
+     */
+    const uint8_t _sendOffset_MAX = 14;  // Max allowed
+    /**
+     * @brief Whether a send offset is active or not; that is, whether or not
+     * the current reading should be held for offset publishing or published
+     * when it is taken.
+     */
+    bool _sendOffset_act = false;
+    /**
+     * @brief A counter for delayed data publishing.
+     */
+    uint8_t _sendOffset_cnt = 0;
 
-void setSendPacingDelay(uint8_t param) {
-    _sendPacingDelay_mSec = param;
-}
-uint8_t getSendPacingDelay(void) {
-    return _sendPacingDelay_mSec;
-}
+    /**
+     * @brief Sets the delay (in milliseconds) between each publication when
+     * publishing multiple queued data points in a single connection.
+     */
+    void setSendPacingDelay(uint8_t sendPacingDelay_mSec) {
+        _sendPacingDelay_mSec = sendPacingDelay_mSec;
+    }
+    /**
+     * @brief Get the pacing delay (in millseconds).
+     *
+     * @return *uint8_t* The delay (in milliseconds) between each publication
+     * when publishing multiple queued data points in a single connection.
+     */
+    uint8_t getSendPacingDelay(void) {
+        return _sendPacingDelay_mSec;
+    }
+    /**
+     * @brief The default pacing delay (in milliseconds) between each
+     * publication when publishing multiple queued data points in a single
+     * connection.
+     */
 #define SERIALIZE_sendPacingDelay_mSec 2
-uint16_t _sendPacingDelay_mSec = SERIALIZE_sendPacingDelay_mSec;
+    /**
+     * @brief Internal reference to the pacing delay (in milliseconds).
+     */
+    uint16_t _sendPacingDelay_mSec = SERIALIZE_sendPacingDelay_mSec;
 
     uint16_t setSendQueueSz_num(uint16_t sqz_num) {
         MS_DBG(F("setSendQueueSz_num"), sqz_num);
@@ -1293,11 +1386,12 @@ uint16_t _sendPacingDelay_mSec = SERIALIZE_sendPacingDelay_mSec;
     uint16_t getSendQueueSz_num() {
         MS_DBG(F("getSendQueueSz_num"), _sendQueueSz_num);
         return _sendQueueSz_num;
-    }   
-#if !defined LB_SENDQUESZ_NUM_DEF 
-#define LB_SENDQUESZ_NUM_DEF  2800L //MMWGI_SEND_QUE_SZ_NUM_DEF
-#endif  // LB_SENDQUESZ_NUM_DEF 
-    uint16_t _sendQueueSz_num = LB_SENDQUESZ_NUM_DEF ; //See MMMWGI_SEND_QUE_SZ_NUM_DEF 
+    }
+#if !defined LB_SENDQUESZ_NUM_DEF
+#define LB_SENDQUESZ_NUM_DEF 2800L  // MMWGI_SEND_QUE_SZ_NUM_DEF
+#endif                              // LB_SENDQUESZ_NUM_DEF
+    uint16_t _sendQueueSz_num =
+        LB_SENDQUESZ_NUM_DEF;  // See MMMWGI_SEND_QUE_SZ_NUM_DEF
 
     uint16_t setPostMax_num(uint16_t mp_num) {
         MS_DBG(F("setMaxPost_num"), mp_num);
@@ -1307,19 +1401,20 @@ uint16_t _sendPacingDelay_mSec = SERIALIZE_sendPacingDelay_mSec;
     uint16_t getPostMax_num() {
         MS_DBG(F("getPostMax_num"), _postMax_num);
         return _postMax_num;
-    }   
-#if !defined LB_POSTMAX_NUM_DEF 
-#define LB_POSTMAX_NUM_DEF 96L //MMWGI_POST_MAX_RECS_MUM_DEF
-#endif  // LB_POSTMAX_NUM_DEF
-    uint16_t _postMax_num = LB_POSTMAX_NUM_DEF; //See MMWGI_POST_MAX_RECS_MUM_DEF   
+    }
+#if !defined LB_POSTMAX_NUM_DEF
+#define LB_POSTMAX_NUM_DEF 96L  // MMWGI_POST_MAX_RECS_MUM_DEF
+#endif                          // LB_POSTMAX_NUM_DEF
+    uint16_t _postMax_num =
+        LB_POSTMAX_NUM_DEF;  // See MMWGI_POST_MAX_RECS_MUM_DEF
 
-// Time woken up
-uint32_t wakeUpTime_secs;
+    // Time woken up
+    uint32_t wakeUpTime_secs;
 
 
-public:
+ public:
 
-void forceSysReset(uint8_t source, uint16_t simpleCheck);
+    void forceSysReset(uint8_t source, uint16_t simpleCheck);
 /**
  * @brief Process queued readings to send to remote if internet available.
  *
@@ -1327,140 +1422,202 @@ void forceSysReset(uint8_t source, uint16_t simpleCheck);
  * It uses an algorithim to reliably deliver the readings.
  *
  */
-#define LOGGER_RELIABLE_POST (Logger::CIA_NEW_READING|Logger::CIA_POST_READINGS)
+#define LOGGER_RELIABLE_POST \
+    (Logger::CIA_NEW_READING | Logger::CIA_POST_READINGS)
 #define LOGGER_NEW_READING (Logger::CIA_NEW_READING)
-void logDataAndPubReliably(uint8_t cia_val_override =0);
+    void logDataAndPubReliably(uint8_t cia_val_override = 0);
 
-/**
- * @brief Process queued readings to send to remote if internet available.
- *
- * @param internetPresent  true if an internet connection is present.
- *   For false store the readings for later transmission
- *   This reads from stored files
- *   1) RDELAY.txt
- *   2) QUE0.txt
- *   For data in RDELAY.txt, an attempt is made to transmit each line,
- *   if not sucessful then it is stored at the end of QUE0.txt
- *   Once RDELAY.txt is complete, 
- *   any readings in QUE0.txt are attempted,
- * 
- *   The format of he readings in the file are dependent on sensor configuration, 
- *   so they maynot be compatible if the builds sensor configuration changes.
- * 
- *   The forwarding of RDELAY.txt to QUE0.txt is only up to specific thresholds
- *   POST_MAX_NUM
- *   RDELAY_FAILED_POSTS_THRESHOLD 
- */
 #define RDELAY_FAILED_POSTS_THRESHOLD 7
-void publishDataQueuedToRemotes(bool internetPresent);
+    /**
+     * @brief Process queued readings to send to remote if internet available.
+     *
+     * @param internetPresent  true if an internet connection is present.
+     *   For false store the readings for later transmission
+     *   This reads from stored files
+     *   1) RDELAY.txt
+     *   2) QUE0.txt
+     *   For data in RDELAY.txt, an attempt is made to transmit each line,
+     *   if not sucessful then it is stored at the end of QUE0.txt
+     *   Once RDELAY.txt is complete,
+     *   any readings in QUE0.txt are attempted,
+     *
+     *   The format of he readings in the file are dependent on sensor
+     * configuration, so they maynot be compatible if the builds sensor
+     * configuration changes.
+     *
+     *   The forwarding of RDELAY.txt to QUE0.txt is only up to specific
+     * thresholds POST_MAX_NUM RDELAY_FAILED_POSTS_THRESHOLD
+     */
+    void publishDataQueuedToRemotes(bool internetPresent);
 
-/**
- * @brief Set up for sleep.
- *
- * For external clock chip need to ensure the data is set correctly
- *
- */
-void setExtRtcSleep(); 
+    /**
+     * @brief Set up for sleep.
+     *
+     * For external clock chip need to ensure the data is set correctly
+     *
+     */
+    void setExtRtcSleep();
 
-private:
-/**
- * @brief Check HTTP status response
- *
- * @param rspCode  true if server is deemed to have received message
- * or nothing further can be done with message. 
- */
-bool publishRspCodeAccepted(int16_t  rspCode);
+ private:
+    /**
+     * @brief Check HTTP status response
+     *
+     * @param rspCode True if server is deemed to have received message
+     * or nothing further can be done with message.
+     */
+    bool publishRspCodeAccepted(int16_t rspCode);
 
-// ===================================================================== //
-/* Serializing/Deserialing
-  A common set of functions that operate on files
-  serzRdelFn_str
-  serzQueuedFn
-*/
-// ===================================================================== //
-public:
-bool     deszqNextCh(void);
-long     deszq_epochTime = 0;  // Marked Epoch Time
-char*    deszq_nextChar;
-uint16_t deszq_nextCharSz;
+    // ===================================================================== //
+    /* Serializing/Deserialing
+      A common set of functions that operate on files
+      serzRdelFn_str
+      serzQueuedFn
+    */
+    // ===================================================================== //
 
-// Calculated length of timeVariant data fields as ASCII+ delimiter, except
-// for last data field
-uint16_t deszq_timeVariant_sz;
 
-private:
+ public:
+    /**
+     * @brief Sets the pointer to start of the next field to be deserialized
+     *
+     * @return **bool** True if a new pointer could be set.
+     */
+    bool deszqNextCh(void);
+    /**
+     * @brief The epoch time deserialized from the queue file.
+     */
+    uint32_t deszq_epochTime = 0;  // Marked Epoch Time
+    /**
+     * @brief A pointer to the start of the next field to be deserialized.
+     *
+     * This pointer is set by deszqNextCh().
+     */
+    char* deszq_nextChar;
+    /**
+     * @brief The size of the next field to be deserialized
+     */
+    uint16_t deszq_nextCharSz;
+
+    /**
+     * @brief Calculated length of timeVariant data fields as ASCII+ delimiter,
+     * except for last data field
+     */
+    uint16_t deszq_timeVariant_sz;
+
+ private:
 #define sd1_Err(s) sd1_card_fatfs.errorPrint(F(s))
-uint16_t deszq_status    = 0;  // Bit wise status of reading
-uint16_t deszLinesRead   = 0;
-uint16_t deszLinesUnsent = 0;
+    uint16_t deszq_status    = 0;  // Bit wise status of reading
+    uint16_t deszLinesRead   = 0;
+    uint16_t deszLinesUnsent = 0;
+    /**
+     * @brief The maximum length of one line of queued data
+     */
 #define QUEFILE_MAX_LINE 100
-char     deszq_line[QUEFILE_MAX_LINE] = "";
-uint16_t desz_pending_records         = 0;
+    /**
+     * @brief A character buffer holding the current line being deserialized
+     * (read) from the queue file.
+     */
+    char     deszq_line[QUEFILE_MAX_LINE] = "";
+    uint16_t desz_pending_records         = 0;
 
-// Qu SdFat/sd1_card_fatfs connects to Physical pins or File/logFile or
-// keep to LFN - capitals  https://en.wikipedia.org/wiki/8.3_filename
+    // Qu SdFat/sd1_card_fatfs connects to Physical pins or File/logFile or
+    // keep to LFN - capitals  https://en.wikipedia.org/wiki/8.3_filename
 
 #if defined MS_LOGGERBASE_POSTS
-File        postsLogHndl;            // Record all POSTS when enabled
-const char* postsLogFn_str = "DBG";  // Not more than 8.3 total
+    File        postsLogHndl;            // Record all POSTS when enabled
+    const char* postsLogFn_str = "DBG";  // Not more than 8.3 total
 
 #endif  // MS_LOGGERBASE_POSTS
 
-// que Readings DELAYed (RDEL) ~ serialize/deserialize
-File        serzRdelFile;
-const char* serzRdelFn_str = "RDELAY.TXT";
+    // que Readings DELAYed (RDEL) ~ serialize/deserialize
+    File        serzRdelFile;
+    const char* serzRdelFn_str = "RDELAY.TXT";
 
-// QUEueD for reliable delivery
-// first POST didn't suceed to serialize/deserialize
-// Potentially multiple versions of files based on dataPublisher[]
-File serzQueuedFile;
+    // QUEueD for reliable delivery
+    // first POST didn't suceed to serialize/deserialize
+    // Potentially multiple versions of files based on dataPublisher[]
+    File serzQueuedFile;
 #define FN_BUFFER_SZ 13
-char        serzQueuedFn[FN_BUFFER_SZ] = "";
-const char* serzQueuedFn_str           = "QUE";  // begin of name, keep 8.3
+    char        serzQueuedFn[FN_BUFFER_SZ] = "";
+    const char* serzQueuedFn_str           = "QUE";  // begin of name, keep 8.3
 
 
-// perform a serialize to RdelFile
-bool serzRdel_Line(void);
-// Uses serzRdelFn_str, File serzRdelFile
-bool  deszRdelStart();
-char* deszFind(const char* in_line, char caller_id);
+    // perform a serialize to RdelFile
+    bool serzRdel_Line(void);
+    // Uses serzRdelFn_str, File serzRdelFile
+    bool deszRdelStart();
+
+    /**
+     * @brief Finds the location of fixed delimeter within a string data line;
+     * behave as strchrnul() if goes past end of string (that is, returns a
+     * pointer to the null at the end of the string)
+     *
+     * @param in_line The deserialized string (data line) to search for the
+     * delimeter.
+     * @param caller_id For debug printing only; a character representing the
+     * function calling the find.
+     *
+     * @return **char\*** A pointer to the location of the delimeter in the
+     * string.
+     */
+    char* deszFind(const char* in_line, char caller_id);
 #define deszRdelLine() deszLine(&serzRdelFile)
-bool deszRdelClose(bool deleteFile = false);
+    bool deszRdelClose(bool deleteFile = false);
 
-// Uses serzQueuedFn_str, File  serzQueuedFile
-bool serzQueuedStart(char uniqueId);  // Use 1st, & sets filename
-bool deszQueuedStart(void);
+    /**
+     * @brief Creates and opens a queue file for future sending of data.
+     *
+     * The filename will be a concatenation of the Logger::serzQueuedFn_str and
+     * the uniqueId.  The filename is stored in Logger::serzQueuedFn.  Uses the
+     * file object Logger::serzQueuedFile.
+     *
+     * @param uniqueId A unique letter to append to the end of the queue file
+     * name (Logger::serzQueuedFn).
+     *
+     * @return **bool** True if the file was successfully opened or created
+     */
+    bool serzQueuedStart(char uniqueId);  // Use 1st, & sets filename
+    /**
+     * @brief Opens the file named Logger::serzQueuedFn and reads the first line
+     * from it.
+     *
+     * Logger::serzQueuedFn is set in Logger::serzQueuedStart(char uniqueId).
+     *
+     * @return **bool** True if the file was successfully opened
+     */
+    bool deszQueuedStart(void);
 #define deszQueuedLine() deszLine(&serzQueuedFile)
-uint16_t serzQueuedFlushFile();
-bool serzQueuedCloseFile(bool action);
-/*
-bool deszQueuedCleanup(bool debug = false);
-*/
-// This does the work
-bool deszLine(File* filep);
+    uint16_t serzQueuedFlushFile();
+    bool     serzQueuedCloseFile(bool action);
+    /*
+    bool deszQueuedCleanup(bool debug = false);
+    */
+    // This does the work
+    bool deszLine(File* filep);
 
-// Utility resources
-//void setFileTimeStampMet(File fileToStamp, uint8_t stampFlag);
-bool deszDbg(void);
-bool postLogOpen();
-bool postLogOpen(const char* postsLogNm_str);
-void postLogLine(uint32_t tmr_ms, int16_t rspParam);
-void postLogLine(const char *logMsg,bool addCR=true);
-// Macro to print to TTY and log on uSD 
-#define PRINT_LOGLINE_P(msg_parm) \
-    char tttbuf[sizeof(msg_parm)+1]; \
-    strcpy_P(tttbuf,msg_parm);\
-    PRINTOUT(tttbuf);\
+    // Utility resources
+    // void setFileTimeStampMet(File fileToStamp, uint8_t stampFlag);
+    bool deszDbg(void);
+    bool postLogOpen();
+    bool postLogOpen(const char* postsLogNm_str);
+    void postLogLine(uint32_t tmr_ms, int16_t rspParam);
+    void postLogLine(const char* logMsg, bool addCR = true);
+// Macro to print to TTY and log on uSD
+#define PRINT_LOGLINE_P(msg_parm)      \
+    char tttbuf[sizeof(msg_parm) + 1]; \
+    strcpy_P(tttbuf, msg_parm);        \
+    PRINTOUT(tttbuf);                  \
     postLogLine(tttbuf);
-void postLogClose();
-bool listFile(File* filep, char* fn_str, char* uid);
+    void postLogClose();
+    bool listFile(File* filep, char* fn_str, char* uid);
 
-public:
-// A simple data-time formatting, compatible with reading into excel spreadsheet - see also formatDateTime_ISO8601()
-String formatDateTime_str(DateTime& dt);
-String formatDateTime_str(uint32_t epochTime);
-bool serzBegin(void);
-
+ public:
+    // A simple data-time formatting, compatible with reading into excel
+    // spreadsheet - see also formatDateTime_ISO8601()
+    String formatDateTime_str(DateTime& dt);
+    String formatDateTime_str(uint32_t epochTime);
+    bool   serzBegin(void);
+    /**@}*/
 };
 
 #endif  // SRC_LOGGERBASE_H_
