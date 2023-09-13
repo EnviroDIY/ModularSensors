@@ -40,9 +40,9 @@ RTCZero Logger::zero_sleep_rtc;
 #endif
 
 #if defined USE_RTCLIB
-// or change to 
+// or change to
 // USE_RTC_EXTPHY rtcExtPhy;
-USE_RTCLIB  rtcExtPhy;
+USE_RTCLIB rtcExtPhy;
 // For RTClib.h:DateTime(uint32_t) use secs since 1970
 #define DateTimeClass(varNam, epochTime) DateTime varNam(epochTime);
 #else
@@ -607,14 +607,13 @@ void Logger::markTime(void) {
 // This checks to see if the CURRENT time is an even interval of the logging
 // rate
 uint8_t Logger::checkInterval(void) {
-    uint8_t retval = CIA_NOACTION;
-    uint32_t checkTime = getNowLocalEpoch();
-    int modulus_time_sec =checkTime % (_loggingIntervalMinutes * 60);
+    uint8_t  retval           = CIA_NOACTION;
+    uint32_t checkTime        = getNowLocalEpoch();
+    int      modulus_time_sec = checkTime % (_loggingIntervalMinutes * 60);
     MS_DBG(F("Current Epoch local Timestamp:"), checkTime, F("->"),
            formatDateTime_ISO8601(checkTime));
     MS_DBG(F("Logging interval in seconds:"), (_loggingIntervalMinutes * 60));
-    MS_DBG(F("Mod of Logging Interval:"),
-           modulus_time_sec);
+    MS_DBG(F("Mod of Logging Interval:"), modulus_time_sec);
 
     if (_sendOffset_act) {
         // A Timer is counting down to perform delayed Post Readings
@@ -628,7 +627,7 @@ uint8_t Logger::checkInterval(void) {
         }
     }
 
-    if (modulus_time_sec < 59 ) {
+    if (modulus_time_sec < 59) {
         // Update the time variables with the current time
         markTime();
         MS_DBG(F("Take Sensor readings. Epoch:"), Logger::markedLocalEpochTime);
@@ -1104,27 +1103,28 @@ bool Logger::initializeSDCard(void) {
 
 
 // Protected helper function - This sets a timestamp on a file
-void Logger::setFileTimestamp(File fileToStamp, uint8_t stampFlag, bool localTime) {
+void Logger::setFileTimestamp(File fileToStamp, uint8_t stampFlag,
+                              bool localTime) {
     if (false == localTime) {
         fileToStamp.timestamp(stampFlag, dtFromEpoch(getNowLocalEpoch()).year(),
-                            dtFromEpoch(getNowLocalEpoch()).month(),
-                            dtFromEpoch(getNowLocalEpoch()).date(),
-                            dtFromEpoch(getNowLocalEpoch()).hour(),
-                            dtFromEpoch(getNowLocalEpoch()).minute(),
-                            dtFromEpoch(getNowLocalEpoch()).second());
-    }else {
+                              dtFromEpoch(getNowLocalEpoch()).month(),
+                              dtFromEpoch(getNowLocalEpoch()).date(),
+                              dtFromEpoch(getNowLocalEpoch()).hour(),
+                              dtFromEpoch(getNowLocalEpoch()).minute(),
+                              dtFromEpoch(getNowLocalEpoch()).second());
+    } else {
+        DateTime markedDtTz(getNowLocalEpoch() - EPOCH_TIME_DTCLASS);
 
-        DateTime markedDtTz(getNowLocalEpoch()- EPOCH_TIME_DTCLASS );
-
-        MS_DEEP_DBG(F("setFTTz"),markedDtTz.year(),markedDtTz.month(), markedDtTz.date(),
-            markedDtTz.hour(), markedDtTz.minute(), markedDtTz.second());
+        MS_DEEP_DBG(F("setFTTz"), markedDtTz.year(), markedDtTz.month(),
+                    markedDtTz.date(), markedDtTz.hour(), markedDtTz.minute(),
+                    markedDtTz.second());
         bool crStat = fileToStamp.timestamp(
             stampFlag, markedDtTz.year(), markedDtTz.month(), markedDtTz.date(),
             markedDtTz.hour(), markedDtTz.minute(), markedDtTz.second());
         if (!crStat) {
-            PRINTOUT(F("setFTTz err for "), markedDtTz.year(), markedDtTz.month(),
-                    markedDtTz.date(), markedDtTz.hour(), markedDtTz.minute(),
-                    markedDtTz.second());
+            PRINTOUT(F("setFTTz err for "), markedDtTz.year(),
+                     markedDtTz.month(), markedDtTz.date(), markedDtTz.hour(),
+                     markedDtTz.minute(), markedDtTz.second());
         }
     }
 }
@@ -1628,15 +1628,14 @@ void Logger::logDataAndPublish(void) {
 }
 
 void Logger::forceSysReset(uint8_t source, uint16_t simpleMagicNumber) {
-    
-    if (4567 !=simpleMagicNumber) return;
+    if (4567 != simpleMagicNumber) return;
 
     PRINTOUT(F("Forcing reset"), source);
     delay(20);
     watchDogTimer.setupWatchDog(1);
     watchDogTimer.enableWatchDog();
-    delay(100000); //Expect watchdog to kick in within 8secs
-} //forceReset
+    delay(100000);  // Expect watchdog to kick in within 8secs
+}  // forceReset
 
 // ===================================================================== //
 // Reliable Delivery functions
@@ -1644,7 +1643,6 @@ void Logger::forceSysReset(uint8_t source, uint16_t simpleMagicNumber) {
 // ===================================================================== //
 
 void Logger::logDataAndPubReliably(uint8_t cia_val_override) {
-
     if (cia_val_override & CIA_NO_SLEEP) {
         cia_val_override &= ~CIA_NO_SLEEP;
     } else {
@@ -1660,19 +1658,19 @@ void Logger::logDataAndPubReliably(uint8_t cia_val_override) {
     // an even interval of the logging interval
     uint8_t cia_val = checkInterval();
     if (cia_val_override) {
-        cia_val = cia_val_override;
-        wakeUpTime_secs = getNowLocalEpoch();//Set reference time
+        cia_val         = cia_val_override;
+        wakeUpTime_secs = getNowLocalEpoch();  // Set reference time
         markTime();
-        PRINTOUT(F("logDataAndPubReliably - overide with "),cia_val);
+        PRINTOUT(F("logDataAndPubReliably - overide with "), cia_val);
     }
 
     if (NULL != _bat_handler_atl) {
         _bat_handler_atl(LB_PWR_USEABLE_REQ);  // Set battery status
         if (!_bat_handler_atl(LB_PWR_SENSOR_USE_REQ)) {
             // Squash any activity
-            //PRINTOUT(F("logDataAndPubReliably - all cancelled"));
-            const static char ALL_CANCELLED_pm[] EDIY_PROGMEM = 
-            "logDataAndPubReliably - all cancelled"; 
+            // PRINTOUT(F("logDataAndPubReliably - all cancelled"));
+            const static char ALL_CANCELLED_pm[] EDIY_PROGMEM =
+                "logDataAndPubReliably - all cancelled";
             // njh PRINT_LOGLINE_P(ALL_CANCELLED_pm);
             cia_val = 0;
         }
@@ -1681,9 +1679,9 @@ void Logger::logDataAndPubReliably(uint8_t cia_val_override) {
                 // Change publish attempt to saving for next publish attempt
                 cia_val &= ~CIA_POST_READINGS;
                 cia_val |= CIA_RLB_READINGS;  //
-                //PRINTOUT(F("logDataAndPubReliably - tx cancelled"));
-                const static char TX_CANCELLED_pm[] EDIY_PROGMEM = 
-                "logDataAndPubReliably - tx cancelled";
+                // PRINTOUT(F("logDataAndPubReliably - tx cancelled"));
+                const static char TX_CANCELLED_pm[] EDIY_PROGMEM =
+                    "logDataAndPubReliably - tx cancelled";
                 // njh PRINT_LOGLINE_P(TX_CANCELLED_pm);
             }
         }
@@ -1697,9 +1695,9 @@ void Logger::logDataAndPubReliably(uint8_t cia_val_override) {
         watchDogTimer.resetWatchDog();
 
         // Print a line to show new reading
-        //PRINTOUT(F("---logDataAndPubReliably ("),cia_val,F(")----"));
+        // PRINTOUT(F("---logDataAndPubReliably ("),cia_val,F(")----"));
         STANDARD_SERIAL_OUTPUT.print(F("---logDataAndPubReliably (0x"));
-        STANDARD_SERIAL_OUTPUT.print(cia_val,HEX);
+        STANDARD_SERIAL_OUTPUT.print(cia_val, HEX);
         STANDARD_SERIAL_OUTPUT.println(F(")----"));
         // Turn on the LED to show we're taking a reading
         alertOn();
@@ -1729,13 +1727,15 @@ void Logger::logDataAndPubReliably(uint8_t cia_val_override) {
                 if (_logModem->modemWake()) {
                     // Connect to the network
                     watchDogTimer.resetWatchDog();
-                    PRINTOUT(F("Connecting to the Internet with"),_logModem->getModemName());
+                    PRINTOUT(F("Connecting to the Internet with"),
+                             _logModem->getModemName());
                     if (_logModem->connectInternet()) {
-                        const static char CONNECT_INTERNET_pm[] EDIY_PROGMEM = 
-                        "Connected Internet"; 
+                        const static char CONNECT_INTERNET_pm[] EDIY_PROGMEM =
+                            "Connected Internet";
                         PRINT_LOGLINE_P(CONNECT_INTERNET_pm);
                         // be nice to add _logModem->getModemName()
-                        //This doesn't work PRINT_LOGLINE_P2(CONNECT_INTERNET_pm,_logModem->getModemName().c_str());
+                        // This doesn't work
+                        // PRINT_LOGLINE_P2(CONNECT_INTERNET_pm,_logModem->getModemName().c_str());
                         // Publish data to remotes
                         watchDogTimer.resetWatchDog();
                         publishDataQueuedToRemotes(true);
@@ -1745,22 +1745,30 @@ void Logger::logDataAndPubReliably(uint8_t cia_val_override) {
 #define NIST_SYNC_DAY 86400
 #define NIST_SYNC_HR 3600
 #if defined NIST_SYNC_HOURLY
-#define NIST_SYNC_RATE NIST_SYNC_HR 
+#define NIST_SYNC_RATE NIST_SYNC_HR
 #else
 #define NIST_SYNC_RATE NIST_SYNC_DAY
-#endif //NIST_SYNC_HOURLY
-                        uint32_t logIntvl_sec = _loggingIntervalMinutes * 60; 
-                        uint32_t timeToday_sec = markedLocalEpochTime % NIST_SYNC_RATE;
-                        bool doSyncTimeCheck = (timeToday_sec< logIntvl_sec);
-                        /*MS_DBG*/PRINTOUT(F("SyncTimeCheck "),doSyncTimeCheck," modulo_sec",timeToday_sec," Time",Logger::markedLocalEpochTime);
+#endif  // NIST_SYNC_HOURLY
+                        uint32_t logIntvl_sec  = _loggingIntervalMinutes * 60;
+                        uint32_t timeToday_sec = markedLocalEpochTime %
+                            NIST_SYNC_RATE;
+                        bool doSyncTimeCheck = (timeToday_sec < logIntvl_sec);
+                        /*MS_DBG*/ PRINTOUT(F("SyncTimeCheck "),
+                                            doSyncTimeCheck, " modulo_sec",
+                                            timeToday_sec, " Time",
+                                            Logger::markedLocalEpochTime);
                         if (doSyncTimeCheck) {
                             MS_DBG(F("Running an NIST clock sync..."));
-                            if(setRTClock(_logModem->getNISTTime())) {
-                                const static char CLOCK_NIST_OK_pm[] EDIY_PROGMEM ="Clock Nist Synced"; 
-                                PRINT_LOGLINE_P(CLOCK_NIST_OK_pm);                                       
+                            if (setRTClock(_logModem->getNISTTime())) {
+                                const static char
+                                    CLOCK_NIST_OK_pm[] EDIY_PROGMEM =
+                                        "Clock Nist Synced";
+                                PRINT_LOGLINE_P(CLOCK_NIST_OK_pm);
                             } else {
-                                const static char CLOCK_NIST_FAIL_pm[] EDIY_PROGMEM ="Clock Nist Failed"; 
-                                PRINT_LOGLINE_P(CLOCK_NIST_FAIL_pm);       
+                                const static char
+                                    CLOCK_NIST_FAIL_pm[] EDIY_PROGMEM =
+                                        "Clock Nist Failed";
+                                PRINT_LOGLINE_P(CLOCK_NIST_FAIL_pm);
                             }
                         }
                         watchDogTimer.resetWatchDog();
@@ -1773,9 +1781,10 @@ void Logger::logDataAndPubReliably(uint8_t cia_val_override) {
                         MS_DBG(F("Disconnecting from the Internet..."));
                         _logModem->disconnectInternet();
                     } else {
-                        //RINTOUT(F("Connect to the internet failed with"),_logModem->getModemName());
-                        const static char CONNECT_FAILED_pm[] EDIY_PROGMEM = 
-                        "Connected Internet Failed"; 
+                        // RINTOUT(F("Connect to the internet failed
+                        // with"),_logModem->getModemName());
+                        const static char CONNECT_FAILED_pm[] EDIY_PROGMEM =
+                            "Connected Internet Failed";
                         PRINT_LOGLINE_P(CONNECT_FAILED_pm);
                         watchDogTimer.resetWatchDog();
                     }
@@ -1807,33 +1816,34 @@ void Logger::logDataAndPubReliably(uint8_t cia_val_override) {
 
         // Unset flag
         Logger::isLoggingNow = false;
-        Logger::startTesting = false; //Interrupt going off
+        Logger::startTesting = false;  // Interrupt going off
         // njh dumpFreeRam(8256); //large Number
     }
 
     // Check if it was instead the testing interrupt that woke us up
     if (Logger::startTesting) testingMode();
 
-    // Call the processor sleep
-    //systemSleep();
-    #endif //0
-} // logDataAndPubReliably
+// Call the processor sleep
+// systemSleep();
+#endif  // 0
+}  // logDataAndPubReliably
 
-bool Logger::publishRspCodeAccepted(int16_t  rspCode) {
+bool Logger::publishRspCodeAccepted(int16_t rspCode) {
     if (HTTPSTATUS_CREATED_201 == rspCode) return true;
-    //return (HTTPSTATUS_CREATED_201 == rspCode);
-    #if defined MS_DISCARD_HTTP_500
+// return (HTTPSTATUS_CREATED_201 == rspCode);
+#if defined MS_DISCARD_HTTP_500
     if (HTTPSTATUS_GT_500 == rspCode) {
-        //As of 2022Sept15 this error is repetitive and prevents more messages being sent 
-        // https://github.com/ODM2/ODM2DataSharingPortal/issues/628
-        //https://github.com/neilh10/ModularSensors/issues/119
-        // Unfortunately throw away this reading
+        // As of 2022Sept15 this error is repetitive and prevents more messages
+        // being sent
+        //  https://github.com/ODM2/ODM2DataSharingPortal/issues/628
+        // https://github.com/neilh10/ModularSensors/issues/119
+        //  Unfortunately throw away this reading
         PRINTOUT(F("pubRspCode SERVER ERROR discard reading"));
         return true;
-        }
-    #endif //MS_DISCARD_HTTP_500
+    }
+#endif  // MS_DISCARD_HTTP_500
     return false;
-} //publishRspCodeAccepted
+}  // publishRspCodeAccepted
 
 void Logger::publishDataQueuedToRemotes(bool internetPresent) {
     // Assumes that there is an internet connection
@@ -1870,16 +1880,17 @@ void Logger::publishDataQueuedToRemotes(bool internetPresent) {
             */
 
             if (dataPublishers[i]->getQueuedStatus()) {
-                uint16_t delay_posted_pacing_ms = dataPublishers[i]->getTimerPostPacing_mS();
-                uint16_t published_this_pass =0;
+                uint16_t delay_posted_pacing_ms =
+                    dataPublishers[i]->getTimerPostPacing_mS();
+                uint16_t published_this_pass = 0;
                 serzQueuedStart((char)('0' + i));
                 deszRdelStart();
                 // MS_START_DEBUG_TIMER;
                 tmrGateway_ms = millis();
                 uint32_t tmrThisPublish_ms;
-                bool attemptPostStatus=true;
-                uint16_t attemptPostCnt=0;
-                uint16_t attemptPostFailedCnt=0;
+                bool     attemptPostStatus    = true;
+                uint16_t attemptPostCnt       = 0;
+                uint16_t attemptPostFailedCnt = 0;
                 while ((dslStatus = deszRdelLine())) {
                     attemptPostCnt++;
                     tmrThisPublish_ms = millis();
@@ -1889,7 +1900,7 @@ void Logger::publishDataQueuedToRemotes(bool internetPresent) {
                         if (internetPresent) {
                             rspCode = HTTPSTATUS_NC_901;
                         } else {
-                            //then must be attemptPostStatus==false
+                            // then must be attemptPostStatus==false
                             rspCode = HTTPSTATUS_NC_904;
                         }
                     }
@@ -1897,7 +1908,7 @@ void Logger::publishDataQueuedToRemotes(bool internetPresent) {
                     watchDogTimer.resetWatchDog();
                     // MS_DBG(F("Rsp"), rspCode, F(", in"),
                     // MS_PRINT_DEBUG_TIMER,    F("ms\n"));
-                    postLogLine( (millis() -tmrThisPublish_ms), rspCode);
+                    postLogLine((millis() - tmrThisPublish_ms), rspCode);
 
                     if (false == publishRspCodeAccepted(rspCode)) {
 #define DESLZ_STATUS_UNACK '1'
@@ -1909,37 +1920,47 @@ void Logger::publishDataQueuedToRemotes(bool internetPresent) {
                         }
 #endif  // if x
 #if defined(USE_PS_modularSensorsNetwork)
-                        if ((desz_pending_records >= _sendQueueSz_num)&&(MMWGI_SEND_QUE_SZ_NUM_NOP != _sendQueueSz_num )) {
-                                PRINTOUT(F("pubDQTR QueuedFull, skip reading. sendQueue "),  _sendQueueSz_num);
-                                postLogLine(0,rspCode); //Log skipped readings
-                        } else 
- #endif // USE_PS_modularSensorsNetwork
+                        if ((desz_pending_records >= _sendQueueSz_num) &&
+                            (MMWGI_SEND_QUE_SZ_NUM_NOP != _sendQueueSz_num)) {
+                            PRINTOUT(F("pubDQTR QueuedFull, skip reading. "
+                                       "sendQueue "),
+                                     _sendQueueSz_num);
+                            postLogLine(0, rspCode);  // Log skipped readings
+                        } else
+#endif  // USE_PS_modularSensorsNetwork
                         {
                             retVal = serzQueuedFile.print(deszq_line);
                             if (0 >= retVal) {
-                                PRINTOUT(F("pubDQTR serzQueuedFil err"), retVal);
+                                PRINTOUT(F("pubDQTR serzQueuedFil err"),
+                                         retVal);
                             }
-                            desz_pending_records++;  
+                            desz_pending_records++;
                         }
                     } else {
                         /*A publish has been sucessfull.
                          * Slow Down sending based on publishers acceptance rate
-                         * Each publish creates and tears down a TCP connection */
-                        /*TODO njh create intergrate all POSTS to one tcp/ip connection */
+                         * Each publish creates and tears down a TCP connection
+                         */
+                        /*TODO njh create intergrate all POSTS to one tcp/ip
+                         * connection */
                         published_this_pass++;
-                        attemptPostFailedCnt=0;
-                        MS_DBG(F("pubDQTR1 delay"),delay_posted_pacing_ms ,F("mS : posted"), published_this_pass);
+                        attemptPostFailedCnt = 0;
+                        MS_DBG(F("pubDQTR1 delay"), delay_posted_pacing_ms,
+                               F("mS : posted"), published_this_pass);
                         delay(delay_posted_pacing_ms);
                     }
 
-                    //Check for any limits that might have been exceeded
-                    if ((attemptPostCnt >= _postMax_num) && (0 != _postMax_num)) {
-                        //Exceeded number to attempt, force write to serzQueue
+                    // Check for any limits that might have been exceeded
+                    if ((attemptPostCnt >= _postMax_num) &&
+                        (0 != _postMax_num)) {
+                        // Exceeded number to attempt, force write to serzQueue
                         attemptPostStatus = false;
                     }
 
-                    if (++attemptPostFailedCnt > RDELAY_FAILED_POSTS_THRESHOLD ) {
-                        //Exceeded number of consecutive failures, force write to serzQueue
+                    if (++attemptPostFailedCnt >
+                        RDELAY_FAILED_POSTS_THRESHOLD) {
+                        // Exceeded number of consecutive failures, force write
+                        // to serzQueue
                         attemptPostStatus = false;
                     }
                 }  // while reading line
@@ -1948,7 +1969,8 @@ void Logger::publishDataQueuedToRemotes(bool internetPresent) {
                 // retVal = serzQueuedFile.close();
                 // if (!retVal)
                 //    PRINTOUT(
-                //        F("publishDataQueuedToRemote serzQueuedFile.close err"));
+                //        F("publishDataQueuedToRemote serzQueuedFile.close
+                //        err"));
 
                 PRINTOUT(F("Sent"), deszLinesRead, F("readings in"),
                          ((float)(millis() - tmrGateway_ms)) / 1000,
@@ -1960,13 +1982,14 @@ void Logger::publishDataQueuedToRemotes(bool internetPresent) {
                         uint16_t tot_posted           = 0;
                         uint16_t cnt_for_pwr_analysis = 1;
                         MS_DBG(F("pubDQTR retry from"), serzQueuedFn);
-                         deszQueuedStart();
-                        while ((dslStatus = deszQueuedLine()) )  {
-
+                        deszQueuedStart();
+                        while ((dslStatus = deszQueuedLine())) {
                             /*At least one publish has been sucessfull.
-                             * Slow Down sending based on publishers acceptance rate
-                             * Each publish creates and tears down a TCP connection */
-                            MS_DBG(F("pubDQTR2 delay"),delay_posted_pacing_ms ,F("mS : total posted"), published_this_pass);
+                             * Slow Down sending based on publishers acceptance
+                             * rate Each publish creates and tears down a TCP
+                             * connection */
+                            MS_DBG(F("pubDQTR2 delay"), delay_posted_pacing_ms,
+                                   F("mS : total posted"), published_this_pass);
                             delay(delay_posted_pacing_ms);
 
                             // setup for publisher to call deszqNextCh()
@@ -1990,17 +2013,20 @@ void Logger::publishDataQueuedToRemotes(bool internetPresent) {
                                             LB_PWR_MODEM_USE_REQ)) {
                                         // stop transmission
                                         cnt_for_pwr_analysis = 0;
-                                        PRINTOUT(F("pubDQTR not enough power available"));
+                                        PRINTOUT(F("pubDQTR not enough power "
+                                                   "available"));
                                         break;
                                     }
                                 }
                                 cnt_for_pwr_analysis = 1;
                             }
-                            if ((tot_posted  >= _postMax_num) && (0 != _postMax_num)) {
-                                PRINTOUT(F("pubDQTR POST_MAX_NUM reached"), tot_posted);
-                                break; /// unsent lines are copied through
+                            if ((tot_posted >= _postMax_num) &&
+                                (0 != _postMax_num)) {
+                                PRINTOUT(F("pubDQTR POST_MAX_NUM reached"),
+                                         tot_posted);
+                                break;  /// unsent lines are copied through
                             }
-                        } //while
+                        }  // while
 // increment status of number attempts
 #if 0
                         if (deszq_line[DESLZ_STATUS_POS]++ >=
@@ -2010,13 +2036,15 @@ void Logger::publishDataQueuedToRemotes(bool internetPresent) {
 #endif  // if z
         // deszQueuedCloseFile() is serzQueuedCloseFile(true)
                         if (tot_posted) {
-                            // At least one POST was accepted, if 2 or more, the last may have failed
-                            // and still be in deszq_line
+                            // At least one POST was accepted, if 2 or more, the
+                            // last may have failed and still be in deszq_line
                             serzQueuedCloseFile(true);
                         } else {
                             serzQueuedCloseFile(false);
                         }
-                    } else { MS_DBG(F("pubDQTR no queued file"), serzQueuedFn);}
+                    } else {
+                        MS_DBG(F("pubDQTR no queued file"), serzQueuedFn);
+                    }
                 } else {
                     MS_DBG(F("pubDQTR drop retrys. rspCode"), rspCode);
                 }
@@ -2024,7 +2052,7 @@ void Logger::publishDataQueuedToRemotes(bool internetPresent) {
         }
     }
     postLogClose();
-} // publishDataQueuedToRemotes
+}  // publishDataQueuedToRemotes
 
 // ===================================================================== //
 // Serialize/deserialize functions
@@ -2051,16 +2079,16 @@ bool Logger::serzQueuedCloseFile(bool flush) {
     /* This closes the file, removing the sent messages
      Assumes serzQueuedFile points incoming file if flush==true
     */
-    bool    retBool=true;
+    bool retBool = true;
 
-    if (flush) {   
+    if (flush) {
         // There may be 0, or more of unsent records left in serzQueued
         uint16_t num_lines = serzQueuedFlushFile();
 
         PRINTOUT(F("seQCF Queue for next pass unsent records"), num_lines);
         desz_pending_records = num_lines;
 
-    } else { // !flush simple clean
+    } else {  // !flush simple clean
         retBool = serzQueuedFile.close();
         if (!retBool) {
             sd1_Err("seQCF serzQueuedFile.close2 err");
@@ -2073,20 +2101,20 @@ bool Logger::serzQueuedCloseFile(bool flush) {
 #define TEMP_BASE_FN_STR "TMP01.TXT"
 #define QUEOLD_BASE_FN_STR "QUEDEL01.TXT"
 inline uint16_t Logger::serzQueuedFlushFile() {
-    /*  The flush algorithim is, 
-     copy unsent lines to a temporary_file up to _sendQueueSz_num, and then discard rest
-     Assumes serzQueuedFile points incoming file
-     when complete rename serzQueuedFile  to delete_file
-     rename temporary_file to serzQueuedFile to complete flush
+    /*  The flush algorithim is,
+     copy unsent lines to a temporary_file up to _sendQueueSz_num, and then
+     discard rest Assumes serzQueuedFile points incoming file when complete
+     rename serzQueuedFile  to delete_file rename temporary_file to
+     serzQueuedFile to complete flush
     */
-    const char* tempFn = TEMP_BASE_FN_STR;
+    const char* tempFn   = TEMP_BASE_FN_STR;
     const char* queDelFn = QUEOLD_BASE_FN_STR;
-    File    tgtoutFile;
-    int16_t retNum;
-    int16_t  num_char ;
-    uint16_t num_lines = 0;   
-    uint16_t num_skipped=0;
-    bool    retBool;
+    File        tgtoutFile;
+    int16_t     retNum;
+    int16_t     num_char;
+    uint16_t    num_lines   = 0;
+    uint16_t    num_skipped = 0;
+    bool        retBool;
 
     // Check if exists and delete
     if (sd1_card_fatfs.exists(tempFn)) {
@@ -2096,42 +2124,41 @@ inline uint16_t Logger::serzQueuedFlushFile() {
         } else {
             MS_DEEP_DBG(F("seQFF remove "), tempFn);
         }
-    }  
+    }
     retBool = tgtoutFile.open(tempFn, (O_WRITE | O_CREAT));
     if (!retBool) {
         PRINTOUT(F("seQFF open2 err"), tempFn);
         // sd1_Err("seQCF open4");
-        //todo close all other files
+        // todo close all other files
         return 0;
     } else {
         MS_DEEP_DBG(F("seQFF opened "), tempFn);
     }
 
-    num_char  = strlen(deszq_line);
+    num_char = strlen(deszq_line);
     if (num_char) {  // Test could be min size, but this unknown
-        MS_DBG(F("seQFF Last POST Failed "),  deszq_line);
+        MS_DBG(F("seQFF Last POST Failed "), deszq_line);
         retNum = tgtoutFile.write(deszq_line, num_char);
         if (retNum != num_char) {
             PRINTOUT(F("seQFF tgtoutFile write1 err"), num_char);
             // sd1_Err("seQCF write2");
         }
-    } 
+    }
 
     MS_DBG(F("seQFF cpy lines across"));
-    while (0 < (num_char = serzQueuedFile.fgets(deszq_line,
-                                                QUEFILE_MAX_LINE))) {
-
+    while (0 <
+           (num_char = serzQueuedFile.fgets(deszq_line, QUEFILE_MAX_LINE))) {
 #if defined(USE_PS_modularSensorsNetwork)
-        if ((num_lines>=_sendQueueSz_num)&&(MMWGI_SEND_QUE_SZ_NUM_NOP != _sendQueueSz_num )) {
-            /*Limit sendQueueSz on Copy, implicitly this not on creation 
-            This is the first pass at limiting the size of the que by dumping the newest.
-            FIFO.
-            Future may want to keep the latest readings 
+        if ((num_lines >= _sendQueueSz_num) &&
+            (MMWGI_SEND_QUE_SZ_NUM_NOP != _sendQueueSz_num)) {
+            /*Limit sendQueueSz on Copy, implicitly this not on creation
+            This is the first pass at limiting the size of the que by dumping
+            the newest. FIFO. Future may want to keep the latest readings
             */
-            postLogLine((MAX_NUMBER_SENDERS+1),HTTPSTATUS_NC_903);
+            postLogLine((MAX_NUMBER_SENDERS + 1), HTTPSTATUS_NC_903);
             num_skipped++;
         } else
-#endif // USE_PS_modularSensorsNetwork 
+#endif  // USE_PS_modularSensorsNetwork
         {
 
             retNum = tgtoutFile.write(deszq_line, num_char);
@@ -2139,18 +2166,18 @@ inline uint16_t Logger::serzQueuedFlushFile() {
             deszq_line[sizeof(deszq_line) - 1] = 0;
             MS_DBG(deszq_line);
             if (retNum != num_char) {
-                PRINTOUT(F("seQFF tgtoutFile write3 err"), num_char,
-                            retNum);
+                PRINTOUT(F("seQFF tgtoutFile write3 err"), num_char, retNum);
                 // sd1_Err("seQFF write4");
                 break;
             }
             num_lines++;
         }
     }
-    if (num_skipped){ 
-        PRINTOUT(F("seQFF sendQueue Size "), _sendQueueSz_num, F(",queued"),num_lines, F(",latest readings discarded"),num_skipped);
+    if (num_skipped) {
+        PRINTOUT(F("seQFF sendQueue Size "), _sendQueueSz_num, F(",queued"),
+                 num_lines, F(",latest readings discarded"), num_skipped);
     };
-    //Cleanup flushed serzQueuedFile to del_file as debugging aid
+    // Cleanup flushed serzQueuedFile to del_file as debugging aid
     if (sd1_card_fatfs.exists(queDelFn)) {
         if (!sd1_card_fatfs.remove(queDelFn)) {
             PRINTOUT(F("seQFF remove2 err"), queDelFn);
@@ -2159,44 +2186,48 @@ inline uint16_t Logger::serzQueuedFlushFile() {
         if (sd1_card_fatfs.exists(queDelFn)) {
             PRINTOUT(F("seQFF err failed remove"), queDelFn);
         }
-    }     
+    }
 
     retBool = serzQueuedFile.rename(queDelFn);
     if (!retBool) {
         PRINTOUT(F("seQFF REBOOT rename1 err"), queDelFn);
-        //Problem - unrecoverable, so reboot
+        // Problem - unrecoverable, so reboot
         retBool = serzQueuedFile.close();
-        if (!retBool) {
-            PRINTOUT(F("seQFF close1 failed err"), serzQueuedFn);
-        }
-        forceSysReset(1,4567);
-        //sd1_card_fatfs.remove(serzQueuedFn);
-        // sd1_Err("seQFF rename2");
-        //return num_lines;
+        if (!retBool) { PRINTOUT(F("seQFF close1 failed err"), serzQueuedFn); }
+        forceSysReset(1, 4567);
+        // sd1_card_fatfs.remove(serzQueuedFn);
+        //  sd1_Err("seQFF rename2");
+        // return num_lines;
     } else {
         MS_DBG(F("seQFF cleanup rename "), serzQueuedFn, F("to"), queDelFn);
 
         retBool = serzQueuedFile.close();
         if (!retBool) {
             sd1_Err("seQFF serzQueuedFile.close2 err");
-            return  num_lines;
-        } else {MS_DEEP_DBG(F("seQFF close serzQueuedFile")); }
+            return num_lines;
+        } else {
+            MS_DEEP_DBG(F("seQFF close serzQueuedFile"));
+        }
 
         retBool = tgtoutFile.rename(serzQueuedFn);
         if (!retBool) {
             sd1_Err("seQFF tgtoutFile.rename err");
-            return  num_lines;
-        } else {MS_DEEP_DBG(F("seQFF rename "), tempFn, F("to"), serzQueuedFn); }
+            return num_lines;
+        } else {
+            MS_DEEP_DBG(F("seQFF rename "), tempFn, F("to"), serzQueuedFn);
+        }
 
         retBool = tgtoutFile.close();
         if (!retBool) {
             sd1_Err("seQFF tgtoutFile.close1 err");
-            return  num_lines;
-        } else {MS_DEEP_DBG(F("seQFF closed tgtoutFile")); }
+            return num_lines;
+        } else {
+            MS_DEEP_DBG(F("seQFF closed tgtoutFile"));
+        }
     }
 
-    return  num_lines;
-} //serzQueuedFlushFile
+    return num_lines;
+}  // serzQueuedFlushFile
 
 /*
 For serialize, create ASCII CSV records of the form
@@ -2217,7 +2248,7 @@ bool Logger::serzRdel_Line() {
         // setFileAccessTime(serzRdelFile);
         serzRdelFile.close();
         MS_DEEP_DBG(F("serzRdel_Line on"), serzRdelFn_str, F(" at "),
-               markedLocalEpochTime, F(" size="), outputSz);
+                    markedLocalEpochTime, F(" size="), outputSz);
     } else {
         PRINTOUT(F("serzRdel_Line; No file"), serzRdelFn_str);
         return false;
@@ -2343,8 +2374,8 @@ bool Logger::deszLine(File* filep) {
     deszq_nextCharSz  = nextCharEnd - deszq_nextChar;
 
     deszq_timeVariant_sz = strlen(deszq_nextChar) - 1;
-    MS_DBG(F("deszLine Reading sz"), deszq_timeVariant_sz, F(":"), deszq_nextChar,
-           F(":"));
+    MS_DBG(F("deszLine Reading sz"), deszq_timeVariant_sz, F(":"),
+           deszq_nextChar, F(":"));
     return true;
 }
 
@@ -2451,15 +2482,16 @@ bool Logger::postLogOpen(const char* postLogNam_str) {
 #if defined MS_LOGGERBASE_POSTS
     // Generate the file name from logger ID and date
     // Create rotating log of 4 chars YYMM - formatDateTime is YYYY MM DD
-     String nameTemp = formatDateTime_str(getNowLocalEpoch());
+    String nameTemp = formatDateTime_str(getNowLocalEpoch());
 
     // Drop middle _ and get YYMM
-    String fileName = String(postLogNam_str + nameTemp.substring(2, 4) + nameTemp.substring(5, 7) + ".log");
+    String fileName = String(postLogNam_str + nameTemp.substring(2, 4) +
+                             nameTemp.substring(5, 7) + ".log");
 
     // Convert the string filename to a character file name for SdFat
-    uint16_t fileNameLength = fileName.length()+2;
-    MS_DBG(F("PLO postLog file"), fileName, F("res len"),fileNameLength);
-    char    charFileName[fileNameLength];
+    uint16_t fileNameLength = fileName.length() + 2;
+    MS_DBG(F("PLO postLog file"), fileName, F("res len"), fileNameLength);
+    char charFileName[fileNameLength];
     fileName.toCharArray(charFileName, fileNameLength);
 
     // Attempt to open an existing file
@@ -2471,7 +2503,7 @@ bool Logger::postLogOpen(const char* postLogNam_str) {
             PRINTOUT(F("logPLO err opening"), charFileName);
 
         } else {
-            setFileTimestamp(postsLogHndl, T_CREATE,true);
+            setFileTimestamp(postsLogHndl, T_CREATE, true);
             MS_DBG(F("logPLO new file"), charFileName);
         }
     }
@@ -2479,16 +2511,16 @@ bool Logger::postLogOpen(const char* postLogNam_str) {
     return retVal;
 }
 bool Logger::postLogOpen() {
-    bool     retVal    = false;
+    bool retVal = false;
 #if defined MS_LOGGERBASE_POSTS
-    retVal =postLogOpen(postsLogFn_str);
-#endif // 
+    retVal = postLogOpen(postsLogFn_str);
+#endif  //
     return retVal;
 }
 void        Logger::postLogClose() {
 #if defined MS_LOGGERBASE_POSTS
 
-    setFileTimestamp(postsLogHndl, (T_WRITE),true);  //| T_ACCESS
+    setFileTimestamp(postsLogHndl, (T_WRITE), true);  //| T_ACCESS
     postsLogHndl.close();
 
 
@@ -2505,7 +2537,7 @@ void Logger::postLogLine(uint32_t tmr_ms, int16_t rspParam) {
 #else
 
     char tempBuffer[TEMP_BUFFER_SZ];
-    //Print internal time
+    // Print internal time
     formatDateTime_str(getNowLocalEpoch())
         .toCharArray(tempBuffer, TEMP_BUFFER_SZ);
     postsLogHndl.print(tempBuffer);
@@ -2513,36 +2545,36 @@ void Logger::postLogLine(uint32_t tmr_ms, int16_t rspParam) {
     postsLogHndl.print(F(",POST,"));
     itoa(rspParam, tempBuffer, 10);
     postsLogHndl.print(tempBuffer);
-        postsLogHndl.print(F(","));
-        itoa(tmr_ms, tempBuffer, 10);
-        postsLogHndl.print(tempBuffer);
-        postsLogHndl.print(F(","));
+    postsLogHndl.print(F(","));
+    itoa(tmr_ms, tempBuffer, 10);
+    postsLogHndl.print(tempBuffer);
+    postsLogHndl.print(F(","));
     postsLogHndl.print(deszq_line);
 #endif  //#if defined MS_LOGGERBASE_POSTS
 }
 
-void Logger::postLogLine(const char *logMsg,bool addCRNL) {
-#if defined MS_LOGGERBASE_POSTS 
-    bool wasOpen =true;   
+void        Logger::postLogLine(const char* logMsg, bool addCRNL) {
+#if defined MS_LOGGERBASE_POSTS
+    bool wasOpen = true;
     if (!postsLogHndl.isOpen()) {
-        wasOpen=false;
+        wasOpen = false;
         if (!postLogOpen()) {
-            PRINTOUT(F("postLogLine can't open file"));      
-            //TODO possible reboot         
+            PRINTOUT(F("postLogLine can't open file"));
+            // TODO possible reboot
             return;
-        } 
+        }
     }
     char tempBuffer[TEMP_BUFFER_SZ];
-    //Print internal time
+    // Print internal time
     formatDateTime_str(getNowLocalEpoch())
-        .toCharArray(tempBuffer, TEMP_BUFFER_SZ);    
+        .toCharArray(tempBuffer, TEMP_BUFFER_SZ);
     postsLogHndl.print(tempBuffer);
     postsLogHndl.print(F(",MSG,"));
     postsLogHndl.print(logMsg);
-    if (addCRNL)postsLogHndl.println();
+    if (addCRNL) postsLogHndl.println();
 
     if (!wasOpen) postLogClose();
-#endif //MS_LOGGERBASE_POSTS
+#endif  // MS_LOGGERBASE_POSTS
 }
 /*
 Cleanup if necessary
