@@ -21,19 +21,12 @@ const char* dataPublisher::hostHeader = "\r\nHost: ";
 // Constructors
 dataPublisher::dataPublisher() {}
 
-dataPublisher::dataPublisher(Logger& baseLogger, uint8_t sendEveryX,
-                             uint8_t sendOffset)
-    : _baseLogger(&baseLogger),
-      _sendEveryX(sendEveryX),
-      _sendOffset(sendOffset) {
+dataPublisher::dataPublisher(Logger& baseLogger) : _baseLogger(&baseLogger) {
     _baseLogger->registerDataPublisher(this);  // register self with logger
 }
-dataPublisher::dataPublisher(Logger& baseLogger, Client* inClient,
-                             uint8_t sendEveryX, uint8_t sendOffset)
+dataPublisher::dataPublisher(Logger& baseLogger, Client* inClient)
     : _baseLogger(&baseLogger),
-      _inClient(inClient),
-      _sendEveryX(sendEveryX),
-      _sendOffset(sendOffset) {
+      _inClient(inClient) {
     _baseLogger->registerDataPublisher(this);  // register self with logger
 }
 // Destructor
@@ -50,14 +43,6 @@ void dataPublisher::setClient(Client* inClient) {
 void dataPublisher::attachToLogger(Logger& baseLogger) {
     _baseLogger = &baseLogger;
     _baseLogger->registerDataPublisher(this);  // register self with logger
-}
-
-
-// Sets the parameters for frequency of sending and any offset, if needed
-// NOTE:  These parameters are not currently used!!
-void dataPublisher::setSendFrequency(uint8_t sendEveryX, uint8_t sendOffset) {
-    _sendEveryX = sendEveryX;
-    _sendOffset = sendOffset;
 }
 
 

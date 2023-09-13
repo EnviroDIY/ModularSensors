@@ -86,20 +86,8 @@ class dataPublisher {
      * logger.
      *
      * @param baseLogger The logger supplying the data to be published
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
-     *
-     * @note It is possible (though very unlikey) that using this constructor
-     * could cause errors if the compiler attempts to initialize the publisher
-     * instance before the logger instance.  If you suspect you are seeing that
-     * issue, use the null constructor and a populated begin(...) within your
-     * set-up function.
      */
-    explicit dataPublisher(Logger& baseLogger, uint8_t sendEveryX = 1,
-                           uint8_t sendOffset = 0);
+    explicit dataPublisher(Logger& baseLogger);
     /**
      * @brief Construct a new data Publisher object.
      *
@@ -107,20 +95,8 @@ class dataPublisher {
      * @param inClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
-     *
-     * @note It is possible (though very unlikey) that using this constructor
-     * could cause errors if the compiler attempts to initialize the publisher
-     * instance before the logger instance.  If you suspect you are seeing that
-     * issue, use the null constructor and a populated begin(...) within your
-     * set-up function.
      */
-    dataPublisher(Logger& baseLogger, Client* inClient, uint8_t sendEveryX = 1,
-                  uint8_t sendOffset = 0);
+    dataPublisher(Logger& baseLogger, Client* inClient);
     /**
      * @brief Destroy the data Publisher object - no action is taken.
      */
@@ -144,19 +120,6 @@ class dataPublisher {
      * @param baseLogger A reference to the ModularSensors logger instance
      */
     void attachToLogger(Logger& baseLogger);
-    /**
-     * @brief Set the parameters for frequency of sending and any offset, if
-     * needed.
-     *
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
-     *
-     * @note These parameters are not currently used!
-     */
-    void setSendFrequency(uint8_t sendEveryX, uint8_t sendOffset);
 
     /**
      * @brief Begin the publisher - linking it to the client and logger.
@@ -304,17 +267,6 @@ class dataPublisher {
      */
     static void printTxBuffer(Stream* stream, bool addNewLine = false);
 
-    /**
-     * @brief Unimplemented; intended for future use to enable caching and bulk
-     * publishing.
-     */
-    uint8_t _sendEveryX = 1;
-    /**
-     * @brief Unimplemented; intended for future use to enable publishing data
-     * at a time slightly delayed from when it is collected.
-     */
-    uint8_t _sendOffset = 0;
-
     // Basic chunks of HTTP
     /**
      * @brief the text "GET "
@@ -332,13 +284,6 @@ class dataPublisher {
      * @brief the text "\r\nHost: "
      */
     static const char* hostHeader;
-
-
-    /**
-     * @brief TimerPost (ms); How long to wait for a response to a POST before
-     * declaring a timeout
-     */
-    // uint8_t _timerPost_mS;
 
  public:
     /**

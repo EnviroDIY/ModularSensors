@@ -37,17 +37,14 @@ EnviroDIYPublisher::EnviroDIYPublisher() : dataPublisher() {
     setTimerPostTimeout_mS(TIMER_EDP_POST_TIMEOUT_DEF_MSEC);
     setTimerPostPacing_mS(TIMER_EDP_POSTED_PACING_DEF_MSEC);
 }
-EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, uint8_t sendEveryX,
-                                       uint8_t sendOffset)
-    : dataPublisher(baseLogger, sendEveryX, sendOffset) {}
-EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
-                                       uint8_t sendEveryX, uint8_t sendOffset)
-    : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset) {}
+EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger)
+    : dataPublisher(baseLogger) {}
+EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client* inClient)
+    : dataPublisher(baseLogger, inClient) {}
 EnviroDIYPublisher::EnviroDIYPublisher(Logger&     baseLogger,
                                        const char* registrationToken,
-                                       const char* samplingFeatureUUID,
-                                       uint8_t sendEveryX, uint8_t sendOffset)
-    : dataPublisher(baseLogger, sendEveryX, sendOffset) {
+                                       const char* samplingFeatureUUID)
+    : dataPublisher(baseLogger) {
     setToken(registrationToken);
     setDIYHost(enviroDIYHost);
     setTimerPostTimeout_mS(TIMER_EDP_POST_TIMEOUT_DEF_MSEC);
@@ -56,9 +53,8 @@ EnviroDIYPublisher::EnviroDIYPublisher(Logger&     baseLogger,
 }
 EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
                                        const char* registrationToken,
-                                       const char* samplingFeatureUUID,
-                                       uint8_t sendEveryX, uint8_t sendOffset)
-    : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset) {
+                                       const char* samplingFeatureUUID)
+    : dataPublisher(baseLogger, inClient) {
     setToken(registrationToken);
     setTimerPostTimeout_mS(TIMER_EDP_POST_TIMEOUT_DEF_MSEC);
     setTimerPostPacing_mS(TIMER_EDP_POSTED_PACING_DEF_MSEC);

@@ -76,20 +76,8 @@ class EnviroDIYPublisher : public dataPublisher {
      * logger.
      *
      * @param baseLogger The logger supplying the data to be published
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
-     *
-     * @note It is possible (though very unlikey) that using this constructor
-     * could cause errors if the compiler attempts to initialize the publisher
-     * instance before the logger instance.  If you suspect you are seeing that
-     * issue, use the null constructor and a populated begin(...) within your
-     * set-up function.
      */
-    explicit EnviroDIYPublisher(Logger& baseLogger, uint8_t sendEveryX = 1,
-                                uint8_t sendOffset = 0);
+    explicit EnviroDIYPublisher(Logger& baseLogger);
     /**
      * @brief Construct a new EnviroDIY Publisher object
      *
@@ -97,20 +85,8 @@ class EnviroDIYPublisher : public dataPublisher {
      * @param inClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
-     *
-     * @note It is possible (though very unlikey) that using this constructor
-     * could cause errors if the compiler attempts to initialize the publisher
-     * instance before the logger instance.  If you suspect you are seeing that
-     * issue, use the null constructor and a populated begin(...) within your
-     * set-up function.
      */
-    EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
-                       uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    EnviroDIYPublisher(Logger& baseLogger, Client* inClient);
     /**
      * @brief Construct a new EnviroDIY Publisher object
      *
@@ -119,15 +95,9 @@ class EnviroDIYPublisher : public dataPublisher {
      * Monitor My Watershed data portal.
      * @param samplingFeatureUUID The sampling feature UUID for the site on the
      * Monitor My Watershed data portal.
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
      */
     EnviroDIYPublisher(Logger& baseLogger, const char* registrationToken,
-                       const char* samplingFeatureUUID, uint8_t sendEveryX = 1,
-                       uint8_t sendOffset = 0);
+                       const char* samplingFeatureUUID);
     /**
      * @brief Construct a new EnviroDIY Publisher object
      *
@@ -139,16 +109,10 @@ class EnviroDIYPublisher : public dataPublisher {
      * Monitor My Watershed data portal.
      * @param samplingFeatureUUID The sampling feature UUID for the site on the
      * Monitor My Watershed data portal.
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
      */
     EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
                        const char* registrationToken,
-                       const char* samplingFeatureUUID, uint8_t sendEveryX = 1,
-                       uint8_t sendOffset = 0);
+                       const char* samplingFeatureUUID);
     /**
      * @brief Destroy the EnviroDIY Publisher object
      */
