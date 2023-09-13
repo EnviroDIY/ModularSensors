@@ -2305,7 +2305,7 @@ char* Logger::deszFind(const char* in_line, char caller_id) {
 
 
 bool Logger::deszRdelStart() {
-    deszLinesRead = deszLinesUnsent = 0;
+    deszLinesRead = 0;
 
     deszq_nextChar = deszq_line;
     // Open - RD & WR. WR needed to be able to delete when complete.
@@ -2319,7 +2319,7 @@ bool Logger::deszRdelStart() {
 }
 
 bool Logger::deszQueuedStart() {
-    deszLinesRead = deszLinesUnsent = 0;
+    deszLinesRead = 0;
 
     deszq_nextChar = deszq_line;
     // Open - RD & WR. WR needed to be able to delete when complete.

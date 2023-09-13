@@ -1237,7 +1237,7 @@ class Logger {
      * @brief A pointer to a battery handler object with the required voltages
      * for different actions and a function for determining the current voltage.
      */
-    bat_handler_atl _bat_handler_atl = NULL;
+    bat_handler_atl _bat_handler_atl = nullptr;
 
     /**
      * @brief Sets the battery handler function.
@@ -1386,18 +1386,23 @@ class Logger {
 
 
  public:
-
+    /**
+     * @brief Forces the logger to restart by delaying until the watchdog kicks
+     * in.
+     */
     void forceSysReset(uint8_t source, uint16_t simpleCheck);
+
 /**
- * @brief Process queued readings to send to remote if internet available.
- *
- * If previously registered, it will determine if battery power is available
- * It uses an algorithim to reliably deliver the readings.
- *
+ * @brief The maximum number of read-delayed records to attempt to post before
+ * forwarding the data directly to the failed queue.
  */
 #define RDELAY_FAILED_POSTS_THRESHOLD 7
+
     /**
      * @brief Process queued readings to send to remote if internet available.
+     *
+     * If previously registered, it will determine if battery power is available
+     * It uses an algorithim to reliably deliver the readings.
      *
      * @param internetPresent  true if an internet connection is present.
      *   For false store the readings for later transmission
@@ -1409,8 +1414,8 @@ class Logger {
      *   Once RDELAY.txt is complete,
      *   any readings in QUE0.txt are attempted,
      *
-     *   The format of he readings in the file are dependent on sensor
-     * configuration, so they maynot be compatible if the builds sensor
+     * The format of the readings in the file are dependent on sensor
+     * configuration, so they may not be compatible if the builds sensor
      * configuration changes.
      *
      *   The forwarding of RDELAY.txt to QUE0.txt is only up to specific
@@ -1439,12 +1444,15 @@ class Logger {
  public:
     /**
      * @brief Sets the pointer to start of the next field to be deserialized
+     * from the character string created from the last line to have been
+     * read from an SD-card file.
      *
      * @return **bool** True if a new pointer could be set.
      */
     bool deszqNextCh(void);
     /**
-     * @brief The epoch time deserialized from the queue file.
+     * @brief The epoch time deserialized from the character string created from
+     * the last line to have been read from an SD-card file.
      */
     uint32_t deszq_epochTime = 0;  // Marked Epoch Time
     /**
@@ -1459,20 +1467,27 @@ class Logger {
     uint16_t deszq_nextCharSz;
 
     /**
-     * @brief Calculated length of timeVariant data fields as ASCII+ delimiter,
-     * except for last data field
+     * @brief Calculated total length of all of the time variant data fields as
+     * ASCII+ delimiter, except for last data field
      */
     uint16_t deszq_timeVariant_sz;
 
  private:
 #define sd1_Err(s) sd1_card_fatfs.errorPrint(F(s))
-    uint16_t deszq_status    = 0;  // Bit wise status of reading
-    uint16_t deszLinesRead   = 0;
-    uint16_t deszLinesUnsent = 0;
+    /**
+     * @brief The bit wise status of reading deserialized from the character
+     * string created from the last line to have been read from an SD-card file.
+     */
+    uint16_t deszq_status = 0;
+    /**
+     * @brief The total number of lines published from both the read-delay and
+     * queue file.
+     */
+    uint16_t deszLinesRead = 0;
     /**
      * @brief The maximum length of one line of queued data
      */
-#define QUEFILE_MAX_LINE 100
+#define QUEFILE_MAX_LINE 255
     /**
      * @brief A character buffer holding the current line being deserialized
      * (read) from the queue file.
