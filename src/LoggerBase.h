@@ -1391,6 +1391,16 @@ class Logger {
      * in.
      */
     void forceSysReset(uint8_t source, uint16_t simpleCheck);
+    /**
+     * @brief This is a one-and-done to log data, queue it to the read-delay
+     * file, and publish the data from the read-delayed and queued files to any
+     * associated publishers when the countdown is reached.
+     *
+     * If previously registered, it will determine if battery power is available
+     * It uses an algorithim to reliably deliver the readings.
+     */
+    void logDataAndPubReliably(uint8_t cia_val_override = 0);
+
 
 /**
  * @brief The maximum number of read-delayed records to attempt to post before
@@ -1400,9 +1410,6 @@ class Logger {
 
     /**
      * @brief Process queued readings to send to remote if internet available.
-     *
-     * If previously registered, it will determine if battery power is available
-     * It uses an algorithim to reliably deliver the readings.
      *
      * @param internetPresent  true if an internet connection is present.
      *   For false store the readings for later transmission
