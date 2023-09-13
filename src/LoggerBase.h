@@ -1301,16 +1301,16 @@ class Logger {
     /**
      * @brief Sets the offset between when samples are collected and published.
      *
-     * @param sendOffset_min The number of minutes to offset the data publishing
-     * from the data collection.
+     * @param sendOffset_minutes The number of minutes to offset the data
+     * publishing from the data collection.
      */
-    void setSendOffset(uint8_t sendOffset_min) {
+    void setSendOffset(uint8_t sendOffset_minutes) {
         // TODO: Might also have check for SampleTime * _sendEveryX_num <
-        // sendOffset_min
-        if (_sendOffset_MAX >= sendOffset_min) {
-            _sendOffset_min = sendOffset_min;
+        // sendOffset_minutes
+        if (_sendOffset_MAX >= sendOffset_minutes) {
+            _sendOffset_minutes = sendOffset_minutes;
         } else {
-            _sendOffset_min = _sendOffset_MAX;
+            _sendOffset_minutes = _sendOffset_MAX;
         }
     }
     /**
@@ -1321,20 +1321,20 @@ class Logger {
      * collected and published
      */
     uint8_t getSendOffset(void) {
-        return _sendOffset_min;
+        return _sendOffset_minutes;
     }
-#if !defined SERIALIZE_sendOffset_min
+#if !defined SERIALIZE_sendOffset_minutes
 /**
  * @brief The default offset (in minutes) between when samples are collected and
  * published.
  */
-#define SERIALIZE_sendOffset_min 0
-#endif  // SERIALIZE_sendOffset_min
+#define SERIALIZE_sendOffset_minutes 0
+#endif  // SERIALIZE_sendOffset_minutes
     /**
      * @brief The offset (in minutes) between when samples are collected and
      * published.
      */
-    uint8_t _sendOffset_min = SERIALIZE_sendOffset_min;
+    uint8_t _sendOffset_minutes = SERIALIZE_sendOffset_minutes;
     /**
      * @brief The maximum allowed offset (in minutes) between when samples are
      * collected and published.

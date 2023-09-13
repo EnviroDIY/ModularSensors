@@ -639,16 +639,16 @@ uint8_t Logger::checkInterval(void) {
             if (_sendEveryX_cnt >= _sendEveryX_num) {
                 _sendEveryX_cnt = 0;
                 // Check if delay ~ offset to Send Readings
-                if (0 == _sendOffset_min) {
+                if (0 == _sendOffset_minutes) {
                     // No dealy ~ send readings now
                     retval |= CIA_POST_READINGS;
                     MS_DBG(F("sendEveryX Post Readings"));
                 } else {
                     // delayed retval |= CIA_POST_READINGS;
                     _sendOffset_act = true;
-                    _sendOffset_cnt = _sendOffset_min;
+                    _sendOffset_cnt = _sendOffset_minutes;
                     MS_DBG(F("sendEveryX Timer sendOffset started "),
-                           _sendOffset_min);
+                           _sendOffset_minutes);
                 }
             } else {
                 MS_DBG(F("sendEveryX "), _sendEveryX_cnt, F("counting to "),
