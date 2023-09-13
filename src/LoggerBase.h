@@ -1281,17 +1281,17 @@ class Logger {
     uint8_t getSendEveryX(void) {
         return _sendEveryX_num;
     }
-#if !defined SERIALIZE_sendEveryX_NUM
+#if !defined SERIALIZE_SENDEVERYX_NUM
 /**
  * @brief The default number of readings to collect before publishing data.
  */
-#define SERIALIZE_sendEveryX_NUM 2
-#endif  // SERIALIZE_sendEveryX_NUM
+#define SERIALIZE_SENDEVERYX_NUM 2
+#endif  // SERIALIZE_SENDEVERYX_NUM
     /**
      * @brief The number of readings to collect and queue before publishing
-     * data.  Range typically 0-20.  Defaults to #SERIALIZE_sendEveryX_NUM
+     * data.  Range typically 0-20.  Defaults to #SERIALIZE_SENDEVERYX_NUM
      */
-    uint8_t _sendEveryX_num = SERIALIZE_sendEveryX_NUM;
+    uint8_t _sendEveryX_num = SERIALIZE_SENDEVERYX_NUM;
     /**
      * @brief A counter for the number of readings that have been taken since
      * data was last published.
@@ -1323,18 +1323,18 @@ class Logger {
     uint8_t getSendOffset(void) {
         return _sendOffset_minutes;
     }
-#if !defined SERIALIZE_sendOffset_minutes
+#if !defined SERIALIZE_SENDOFFSET_MINUTES
 /**
  * @brief The default offset (in minutes) between when samples are collected and
  * published.
  */
-#define SERIALIZE_sendOffset_minutes 0
-#endif  // SERIALIZE_sendOffset_minutes
+#define SERIALIZE_SENDOFFSET_MINUTES 0
+#endif  // SERIALIZE_SENDOFFSET_MINUTES
     /**
      * @brief The offset (in minutes) between when samples are collected and
      * published.
      */
-    uint8_t _sendOffset_minutes = SERIALIZE_sendOffset_minutes;
+    uint8_t _sendOffset_minutes = SERIALIZE_SENDOFFSET_MINUTES;
     /**
      * @brief The maximum allowed offset (in minutes) between when samples are
      * collected and published.

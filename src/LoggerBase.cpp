@@ -2463,7 +2463,7 @@ bool Logger::deszDbg(void) {
     // char* next_token;
 #define TEMPBUF_SZ 37
     char tempBuffer[TEMPBUF_SZ] = "";
-    if (++serialCnt >= SERIALIZE_sendEveryX_NUM) {
+    if (++serialCnt >= SERIALIZE_SENDEVERYX_NUM) {
         String d_str(80);
         serialCnt = 0;
         deszRdelStart();
