@@ -709,6 +709,7 @@ uint8_t Logger::checkInterval(void) {
         alertOff();
         delay(25);
     }
+    MS_DBG(F("Check inteval action:"), retval);
     return retval;
 }
 
@@ -1647,6 +1648,8 @@ void Logger::logDataAndPubReliably(uint8_t cia_val_override) {
         cia_val_override &= ~CIA_NO_SLEEP;
     } else {
         // Sleep at start of cycle, so data is available for caller at the end
+        // The logger will resume in the middle of this function on the next
+        // wake on go to the next line (reset watch dog)
         systemSleep();
     }
 
@@ -1664,7 +1667,10 @@ void Logger::logDataAndPubReliably(uint8_t cia_val_override) {
         PRINTOUT(F("logDataAndPubReliably - overide with "), cia_val);
     }
 
-    if (NULL != _bat_handler_atl) {
+    // Check the status of the battery handler, if there is one (ie, not a null
+    // pointer) Change the interval actions as necessary based on the battery
+    // voltage
+    if (nullptr != _bat_handler_atl) {
         _bat_handler_atl(LB_PWR_USEABLE_REQ);  // Set battery status
         if (!_bat_handler_atl(LB_PWR_SENSOR_USE_REQ)) {
             // Squash any activity
@@ -1687,8 +1693,7 @@ void Logger::logDataAndPubReliably(uint8_t cia_val_override) {
         }
     }
 
-#if 1
-    if (cia_val) {
+    if (cia_val) {  // if there's some action that needs to happen
         // Flag to notify that we're in already awake and logging a point
         Logger::isLoggingNow = true;
         // Reset the watchdog
@@ -1719,10 +1724,11 @@ void Logger::logDataAndPubReliably(uint8_t cia_val_override) {
             // Create a csv data record and save it to the log file
             logToSD();
 
-            serzRdel_Line();  // Start Queue
+            serzRdel_Line();  // Start a new line in the read-delay file, adding
+                              // the timestamp
         }
         if (cia_val & CIA_POST_READINGS) {
-            if (_logModem != NULL) {
+            if (_logModem != nullptr) {
                 MS_DBG(F("Waking up"), _logModem->getModemName(), F("..."));
                 if (_logModem->modemWake()) {
                     // Connect to the network
@@ -1732,7 +1738,7 @@ void Logger::logDataAndPubReliably(uint8_t cia_val_override) {
                     if (_logModem->connectInternet()) {
                         const static char CONNECT_INTERNET_pm[] EDIY_PROGMEM =
                             "Connected Internet";
-                        PRINT_LOGLINE_P(CONNECT_INTERNET_pm);
+                        PRINT_LOGLINE_P(CONNECT_INTERNET_pm)
                         // be nice to add _logModem->getModemName()
                         // This doesn't work
                         // PRINT_LOGLINE_P2(CONNECT_INTERNET_pm,_logModem->getModemName().c_str());
@@ -1753,22 +1759,21 @@ void Logger::logDataAndPubReliably(uint8_t cia_val_override) {
                         uint32_t timeToday_sec = markedLocalEpochTime %
                             NIST_SYNC_RATE;
                         bool doSyncTimeCheck = (timeToday_sec < logIntvl_sec);
-                        /*MS_DBG*/ PRINTOUT(F("SyncTimeCheck "),
-                                            doSyncTimeCheck, " modulo_sec",
-                                            timeToday_sec, " Time",
-                                            Logger::markedLocalEpochTime);
+                        MS_DBG(F("SyncTimeCheck "), doSyncTimeCheck,
+                               " modulo_sec", timeToday_sec, " Time",
+                               Logger::markedLocalEpochTime);
                         if (doSyncTimeCheck) {
                             MS_DBG(F("Running an NIST clock sync..."));
                             if (setRTClock(_logModem->getNISTTime())) {
                                 const static char
                                     CLOCK_NIST_OK_pm[] EDIY_PROGMEM =
-                                        "Clock Nist Synced";
-                                PRINT_LOGLINE_P(CLOCK_NIST_OK_pm);
+                                        "Clock NIST Synced";
+                                PRINT_LOGLINE_P(CLOCK_NIST_OK_pm)
                             } else {
                                 const static char
                                     CLOCK_NIST_FAIL_pm[] EDIY_PROGMEM =
-                                        "Clock Nist Failed";
-                                PRINT_LOGLINE_P(CLOCK_NIST_FAIL_pm);
+                                        "Clock NIST Failed";
+                                PRINT_LOGLINE_P(CLOCK_NIST_FAIL_pm)
                             }
                         }
                         watchDogTimer.resetWatchDog();
@@ -1781,11 +1786,11 @@ void Logger::logDataAndPubReliably(uint8_t cia_val_override) {
                         MS_DBG(F("Disconnecting from the Internet..."));
                         _logModem->disconnectInternet();
                     } else {
-                        // RINTOUT(F("Connect to the internet failed
+                        // PRINTOUT(F("Connect to the internet failed
                         // with"),_logModem->getModemName());
                         const static char CONNECT_FAILED_pm[] EDIY_PROGMEM =
                             "Connected Internet Failed";
-                        PRINT_LOGLINE_P(CONNECT_FAILED_pm);
+                        PRINT_LOGLINE_P(CONNECT_FAILED_pm)
                         watchDogTimer.resetWatchDog();
                     }
                 } else {
@@ -1794,9 +1799,9 @@ void Logger::logDataAndPubReliably(uint8_t cia_val_override) {
                 // Turn the modem off
                 _logModem->modemSleepPowerDown();
             } else
-                PRINTOUT(F("Internet failed, no _logModem "));
+                PRINTOUT(F("Internet failed, no _logModem"));
         } else if (cia_val & CIA_RLB_READINGS) {
-            // Values not transmitted,  save readings for later transmission
+            // Values not transmitted, save readings for later transmission
             PRINTOUT(F("logDataAndPubReliably - store readings, no pub"));
             publishDataQueuedToRemotes(false);
         }
@@ -1823,9 +1828,8 @@ void Logger::logDataAndPubReliably(uint8_t cia_val_override) {
     // Check if it was instead the testing interrupt that woke us up
     if (Logger::startTesting) testingMode();
 
-// Call the processor sleep
-// systemSleep();
-#endif  // 0
+    // Call the processor sleep
+    // systemSleep();
 }  // logDataAndPubReliably
 
 bool Logger::publishRspCodeAccepted(int16_t rspCode) {
@@ -2104,7 +2108,7 @@ inline uint16_t Logger::serzQueuedFlushFile() {
     /*  The flush algorithim is,
      copy unsent lines to a temporary_file up to _sendQueueSz_num, and then
      discard rest Assumes serzQueuedFile points incoming file when complete
-     rename serzQueuedFile  to delete_file rename temporary_file to
+     rename serzQueuedFile to delete_file rename temporary_file to
      serzQueuedFile to complete flush
     */
     const char* tempFn   = TEMP_BASE_FN_STR;
@@ -2116,7 +2120,7 @@ inline uint16_t Logger::serzQueuedFlushFile() {
     uint16_t    num_skipped = 0;
     bool        retBool;
 
-    // Check if exists and delete
+    // Check if the temporary file exists and delete if it does
     if (sd1_card_fatfs.exists(tempFn)) {
         if (!sd1_card_fatfs.remove(tempFn)) {
             PRINTOUT(F("seQFF remove1 err"), tempFn);
@@ -2125,6 +2129,7 @@ inline uint16_t Logger::serzQueuedFlushFile() {
             MS_DEEP_DBG(F("seQFF remove "), tempFn);
         }
     }
+    // Open and create a new temporary file
     retBool = tgtoutFile.open(tempFn, (O_WRITE | O_CREAT));
     if (!retBool) {
         PRINTOUT(F("seQFF open2 err"), tempFn);
@@ -2135,7 +2140,9 @@ inline uint16_t Logger::serzQueuedFlushFile() {
         MS_DEEP_DBG(F("seQFF opened "), tempFn);
     }
 
+    // Get the length of the line being read
     num_char = strlen(deszq_line);
+    // If there is data in the line being read, copy it to the new temp file
     if (num_char) {  // Test could be min size, but this unknown
         MS_DBG(F("seQFF Last POST Failed "), deszq_line);
         retNum = tgtoutFile.write(deszq_line, num_char);
@@ -2146,6 +2153,8 @@ inline uint16_t Logger::serzQueuedFlushFile() {
     }
 
     MS_DBG(F("seQFF cpy lines across"));
+    // While still able to read lines from the queue file, copy them to the new
+    // temp file
     while (0 <
            (num_char = serzQueuedFile.fgets(deszq_line, QUEFILE_MAX_LINE))) {
 #if defined(USE_PS_modularSensorsNetwork)
@@ -2272,8 +2281,13 @@ deszLine()  to populate
  * behave as strchrnul() if goes past end of string
  */
 char* Logger::deszFind(const char* in_line, char caller_id) {
+    // Find the position of the delimeter, getting a pointer to it
     char* retResult = strchr(in_line, DELIM_CHAR2);
-    if (NULL != retResult) return retResult;
+    // If a pointer to the delimeter was found return it
+    if (nullptr != retResult) return retResult;
+
+    // If the delimeter wasn't found, print a warning and return a pointer to
+    // the end of the searched string.
     MS_DEEP_DBG(F("deszFind NULL found on "), caller_id);
     // For NULL return pointer as per strchrnul
     // should only occur on last search
@@ -2328,7 +2342,7 @@ bool Logger::deszLine(File* filep) {
       <ascii Digitis>, represnting inteeger marked Epoch Time
       .... <ascii Digits> representing reading values
 
-    Not renetrant, assumption: there is only deserialize going on at a time.
+    Not re-enetrant, assumption: there is only deserialize going on at a time.
     Uses
     char    deszq_line[],
     uint8_t deszq_status
@@ -2365,7 +2379,7 @@ bool Logger::deszLine(File* filep) {
     orig_nextChar  = deszq_nextChar;
     deszq_nextChar = 1 + deszFind(deszq_nextChar, '2');
     if (orig_nextChar == deszq_nextChar) {
-        PRINTOUT(F("deszLine readung start not found"), deszq_line, F("'"));
+        PRINTOUT(F("deszLine reading start not found"), deszq_line, F("'"));
         deszq_nextCharSz = 0;
         return false;
     }
