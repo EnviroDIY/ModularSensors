@@ -1351,33 +1351,6 @@ class Logger {
      */
     uint8_t _sendOffset_cnt = 0;
 
-    /**
-     * @brief Sets the delay (in milliseconds) between each publication when
-     * publishing multiple queued data points in a single connection.
-     */
-    void setSendPacingDelay(uint8_t sendPacingDelay_mSec) {
-        _sendPacingDelay_mSec = sendPacingDelay_mSec;
-    }
-    /**
-     * @brief Get the pacing delay (in millseconds).
-     *
-     * @return *uint8_t* The delay (in milliseconds) between each publication
-     * when publishing multiple queued data points in a single connection.
-     */
-    uint8_t getSendPacingDelay(void) {
-        return _sendPacingDelay_mSec;
-    }
-    /**
-     * @brief The default pacing delay (in milliseconds) between each
-     * publication when publishing multiple queued data points in a single
-     * connection.
-     */
-#define SERIALIZE_sendPacingDelay_mSec 2
-    /**
-     * @brief Internal reference to the pacing delay (in milliseconds).
-     */
-    uint16_t _sendPacingDelay_mSec = SERIALIZE_sendPacingDelay_mSec;
-
     uint16_t setSendQueueSz_num(uint16_t sqz_num) {
         MS_DBG(F("setSendQueueSz_num"), sqz_num);
         return _sendQueueSz_num = sqz_num;
