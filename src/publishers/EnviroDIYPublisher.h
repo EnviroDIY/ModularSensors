@@ -294,11 +294,18 @@ class EnviroDIYPublisher : public dataPublisher {
     void mmwPostHeader(char* tempBuffer);
 
     /**
-     * @brief This constructs a POST body EnviroDIY
+     * @brief This constructs a POST body to go to the Monitor My Watershed
+     * (EnviroDIY) data portal from values within the variable array.
      *
      * @param tempBuffer - place for the POST.
      */
     void mmwPostDataArray(char* tempBuffer);
+    /**
+     * @brief This constructs a POST body to go to the Monitor My Watershed
+     * (EnviroDIY) data portal from read off of a queue file on an SD-card
+     *
+     * @param tempBuffer - place for the POST.
+     */
     void mmwPostDataQueued(char* tempBuffer);
 };
 
