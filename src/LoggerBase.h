@@ -1395,11 +1395,6 @@ class Logger {
  * It uses an algorithim to reliably deliver the readings.
  *
  */
-#define LOGGER_RELIABLE_POST \
-    (Logger::CIA_NEW_READING | Logger::CIA_POST_READINGS)
-#define LOGGER_NEW_READING (Logger::CIA_NEW_READING)
-    void logDataAndPubReliably(uint8_t cia_val_override = 0);
-
 #define RDELAY_FAILED_POSTS_THRESHOLD 7
     /**
      * @brief Process queued readings to send to remote if internet available.
@@ -1422,14 +1417,6 @@ class Logger {
      * thresholds POST_MAX_NUM RDELAY_FAILED_POSTS_THRESHOLD
      */
     void publishDataQueuedToRemotes(bool internetPresent);
-
-    /**
-     * @brief Set up for sleep.
-     *
-     * For external clock chip need to ensure the data is set correctly
-     *
-     */
-    void setExtRtcSleep();
 
  private:
     /**
