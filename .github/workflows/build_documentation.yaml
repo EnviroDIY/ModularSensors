@@ -36,7 +36,7 @@ jobs:
     name: Check that all classes are documented in the menu-a-la-carte example
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -84,7 +84,7 @@ jobs:
 
     steps:
       # check out the ModularSensors repo
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           path: code_docs/ModularSensors
 
@@ -124,7 +124,7 @@ jobs:
 
       # check out my fork of m.css, for processing Doxygen output
       - name: Checkout m.css
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           # Repository name with owner. For example, actions/checkout
           repository: SRGDamia1/m.css

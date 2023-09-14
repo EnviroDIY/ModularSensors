@@ -17,7 +17,7 @@ jobs:
       pio_job_matrix: ${{ steps.py_matrix.outputs.pio_job_matrix }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -62,7 +62,7 @@ jobs:
       library_install_git: ${{ steps.store_vars.outputs.library_install_git }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set environment variables for pushes to any branch in EnviroDIY/ModularSensors
         if: github.event_name == 'push'
@@ -115,7 +115,7 @@ jobs:
         job_info: ${{ fromJSON(needs.generate_matrix.outputs.arduino_job_matrix) }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Unused Step
         run: echo "This is needed to make the step number match with the PlatformIO jobs. =)"
@@ -185,7 +185,7 @@ jobs:
         job_info: ${{ fromJSON(needs.generate_matrix.outputs.pio_job_matrix) }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v4
