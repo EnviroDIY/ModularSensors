@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- **BREAKING** Refactored how the publisher transmit buffer works. This will require adjustment to custom data publishers.
 
 ### Added
 ### Removed
