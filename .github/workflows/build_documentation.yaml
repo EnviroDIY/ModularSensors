@@ -43,7 +43,7 @@ jobs:
         with:
           python-version: '3.x'
 
-      # Using anwer from here to get the exit code and pass the output:  https://stackoverflow.com/questions/59191913/how-do-i-get-the-output-of-a-specific-step-in-github-actions
+      # Using answer from here to get the exit code and pass the output:  https://stackoverflow.com/questions/59191913/how-do-i-get-the-output-of-a-specific-step-in-github-actions
       - name: check for classes in the menu example
         id: check_component
         continue-on-error: true
