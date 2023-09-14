@@ -32,7 +32,7 @@ const char* EnviroDIYPublisher::timestampTag       = "\",\"timestamp\":\"";
 // Constructors
 EnviroDIYPublisher::EnviroDIYPublisher() : dataPublisher() {
     // MS_DBG(F("dataPublisher object created"));
-    _registrationToken = NULL;
+    _registrationToken = nullptr;
     setDIYHost(enviroDIYHost);
     setTimerPostTimeout_mS(TIMER_EDP_POST_TIMEOUT_DEF_MSEC);
     setTimerPostPacing_mS(TIMER_EDP_POSTED_PACING_DEF_MSEC);

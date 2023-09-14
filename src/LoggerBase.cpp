@@ -1865,7 +1865,7 @@ void Logger::publishDataQueuedToRemotes(bool internetPresent) {
 #endif  // MS_LOGGERBASE_POSTS
 
     for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
-        if (dataPublishers[i] != NULL) {
+        if (dataPublishers[i] != nullptr) {
             _dataPubInstance = i;
             PRINTOUT(F("\npubDQTR Sending data to ["), i, F("]"),
                      dataPublishers[i]->getEndpoint());
@@ -2010,7 +2010,7 @@ void Logger::publishDataQueuedToRemotes(bool internetPresent) {
                             // Check for enough battery power
                             if (cnt_for_pwr_analysis++ >=
                                 _sendAtOneTimeMaxX_num) {
-                                if (NULL != _bat_handler_atl) {
+                                if (nullptr != _bat_handler_atl) {
                                     // Measure  battery
                                     _bat_handler_atl(LB_PWR_USEABLE_REQ);
                                     if (!_bat_handler_atl(
