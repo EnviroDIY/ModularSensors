@@ -1499,8 +1499,12 @@ class Logger {
      * @brief A character buffer holding the current line being deserialized
      * (read) from the queue file.
      */
-    char     deszq_line[QUEFILE_MAX_LINE] = "";
-    uint16_t desz_pending_records         = 0;
+    char deszq_line[QUEFILE_MAX_LINE] = "";
+    /**
+     * @brief The number of records that have been added to the data queue
+     * files.
+     */
+    uint16_t desz_pending_records = 0;
 
     // Qu SdFat/sd1_card_fatfs connects to Physical pins or File/logFile or
     // keep to LFN - capitals  https://en.wikipedia.org/wiki/8.3_filename
@@ -1512,21 +1516,85 @@ class Logger {
 #endif  // MS_LOGGERBASE_POSTS
 
     // que Readings DELAYed (RDEL) ~ serialize/deserialize
-    File        serzRdelFile;
+    /**
+     * @brief File reference to the read-delayed file.
+     *
+     * The read-delayed file is for records that have never been published at
+     * all, they're simply in storage waiting their first publishing attempt.
+     */
+    File serzRdelFile;
+    /**
+     * @brief String filename of the read-delayed file.
+     *
+     * The read-delayed file is for records that have never been published at
+     * all, they're simply in storage waiting their first publishing attempt.
+     */
     const char* serzRdelFn_str = "RDELAY.TXT";
 
     // QUEueD for reliable delivery
     // first POST didn't suceed to serialize/deserialize
     // Potentially multiple versions of files based on dataPublisher[]
+
+    /**
+     * @brief File reference to the queued data file.
+     *
+     * The queue file is for data that has already had one publication attempt,
+     * which failed due to lack of internet connection or unsuccessful
+     * serialize/deserialize.
+     *
+     * Potentially multiple queue files based on the number of data publishers
+     * attached to the logger.
+     */
     File serzQueuedFile;
+    /**
+     * @brief The buffer size needed for the file name of the
+     * Logger::serzQueuedFile.
+     */
 #define FN_BUFFER_SZ 13
-    char        serzQueuedFn[FN_BUFFER_SZ] = "";
-    const char* serzQueuedFn_str           = "QUE";  // begin of name, keep 8.3
+
+    /**
+     * @brief Character string holding the string filename for the queue for the
+     * current data publisher.
+     *
+     * The queue file is for data that has already had one publication
+     * attempt, which failed due to lack of internet connection or
+     * unsuccessful serialize/deserialize.
+     *
+     * Potentially multiple queue files based on the number of data
+     * publishers attached to the logger.
+     *
+     * The filename will be a concatenation of the Logger::serzQueuedFn_str and
+     * the uniqueId.
+     */
+    char serzQueuedFn[FN_BUFFER_SZ] = "";
+    /**
+     * @brief The beginning of the filename for the queue files.
+     */
+    const char* serzQueuedFn_str = "QUE";  // begin of name, keep 8.3
 
 
     // perform a serialize to RdelFile
+    /**
+     * @brief Open the [read-delayed file](@ref Logger::serzRdelFile) and
+     * write a line to it.
+     *
+     * The line will have the timestamp, a status code of zero, and the logged
+     * data values separated by commas.
+     *
+     * @return *true* The file was successfully opened.
+     * @return *false* There was an error in opening the file.
+     */
     bool serzRdel_Line(void);
     // Uses serzRdelFn_str, File serzRdelFile
+    /**
+     * @brief Opens the read-delayed file on the SD-card.
+     *
+     * Also sets the pointer for the next character to be read to the start of
+     * the buffer for the next line.
+     *
+     * @return *true* The file was successfully opened.
+     * @return *false* There was an error in opening the file.
+     */
     bool deszRdelStart();
 
     /**
@@ -1544,6 +1612,14 @@ class Logger {
      */
     char* deszFind(const char* in_line, char caller_id);
 #define deszRdelLine() deszLine(&serzRdelFile)
+    /**
+     * @brief Closes the read-delayed file (Logger::serzRdelFile) and deletes it
+     * if requested.
+     *
+     * @param deleteFile True to delete the read-delay file after closing it.
+     * @return *true* The file was successfully closed.
+     * @return *false* There was an error in closing the file.
+     */
     bool deszRdelClose(bool deleteFile = false);
 
     /**
@@ -1569,8 +1645,26 @@ class Logger {
      */
     bool deszQueuedStart(void);
 #define deszQueuedLine() deszLine(&serzQueuedFile)
+    /**
+     * @brief "Flushes" the queued data file by writing all lines from the
+     * current position forward to a new temporary file, deleting the old queue
+     * file, and renaming the temporary file to the original queue file name.
+     * This has the effect of removing all lines from the queue file prior to
+     * the current read point within the queue file.
+     *
+     * @return *uint16_t* The number of lines available in the new queue file.
+     */
     uint16_t serzQueuedFlushFile();
-    bool     serzQueuedCloseFile(bool action);
+    /**
+     * @brief Close the queue file and flush it if requested.
+     *
+     * @param flush Whether or not to flush the queue file using
+     * Logger::serzQueuedFlushFile.
+     *
+     * @return *true* The file was successfully closed.
+     * @return *false* There was an error in closing the file.
+     */
+    bool serzQueuedCloseFile(bool flush);
     /*
     bool deszQueuedCleanup(bool debug = false);
     */

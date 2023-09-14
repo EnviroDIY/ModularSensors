@@ -2140,9 +2140,10 @@ inline uint16_t Logger::serzQueuedFlushFile() {
         MS_DEEP_DBG(F("seQFF opened "), tempFn);
     }
 
-    // Get the length of the line being read
+    // Get the length of the last line that was deserialized
     num_char = strlen(deszq_line);
-    // If there is data in the line being read, copy it to the new temp file
+    // If there is data in the last deserialized line, copy it to the new temp
+    // file
     if (num_char) {  // Test could be min size, but this unknown
         MS_DBG(F("seQFF Last POST Failed "), deszq_line);
         retNum = tgtoutFile.write(deszq_line, num_char);
@@ -2154,7 +2155,9 @@ inline uint16_t Logger::serzQueuedFlushFile() {
 
     MS_DBG(F("seQFF cpy lines across"));
     // While still able to read lines from the queue file, copy them to the new
-    // temp file
+    // temp file.  This will proceed from the last point of entry to the file,
+    // not from the beginning, so only lines after the last one read will be
+    // transferred.
     while (0 <
            (num_char = serzQueuedFile.fgets(deszq_line, QUEFILE_MAX_LINE))) {
 #if defined(USE_PS_modularSensorsNetwork)
@@ -2166,21 +2169,24 @@ inline uint16_t Logger::serzQueuedFlushFile() {
             */
             postLogLine((MAX_NUMBER_SENDERS + 1), HTTPSTATUS_NC_903);
             num_skipped++;
-        } else
+        } else {
 #endif  // USE_PS_modularSensorsNetwork
-        {
 
             retNum = tgtoutFile.write(deszq_line, num_char);
             // Squelch last char LF
             deszq_line[sizeof(deszq_line) - 1] = 0;
             MS_DBG(deszq_line);
-            if (retNum != num_char) {
+            if (retNum != num_char) {  // If the number of characters read and
+                                       // written don't match
                 PRINTOUT(F("seQFF tgtoutFile write3 err"), num_char, retNum);
                 // sd1_Err("seQFF write4");
                 break;
             }
+            // add one to the total number of lines in the file
             num_lines++;
+#if defined(USE_PS_modularSensorsNetwork)
         }
+#endif  // USE_PS_modularSensorsNetwork
     }
     if (num_skipped) {
         PRINTOUT(F("seQFF sendQueue Size "), _sendQueueSz_num, F(",queued"),
@@ -2197,8 +2203,9 @@ inline uint16_t Logger::serzQueuedFlushFile() {
         }
     }
 
+    // rename the old queue file to the deletable queue name
     retBool = serzQueuedFile.rename(queDelFn);
-    if (!retBool) {
+    if (!retBool) {  // If rename fails, reboot
         PRINTOUT(F("seQFF REBOOT rename1 err"), queDelFn);
         // Problem - unrecoverable, so reboot
         retBool = serzQueuedFile.close();
@@ -2210,6 +2217,7 @@ inline uint16_t Logger::serzQueuedFlushFile() {
     } else {
         MS_DBG(F("seQFF cleanup rename "), serzQueuedFn, F("to"), queDelFn);
 
+        // close the original queue file
         retBool = serzQueuedFile.close();
         if (!retBool) {
             sd1_Err("seQFF serzQueuedFile.close2 err");
@@ -2218,14 +2226,17 @@ inline uint16_t Logger::serzQueuedFlushFile() {
             MS_DEEP_DBG(F("seQFF close serzQueuedFile"));
         }
 
+        // rename the new temporary file to the proper queue file name
         retBool = tgtoutFile.rename(serzQueuedFn);
         if (!retBool) {
             sd1_Err("seQFF tgtoutFile.rename err");
+            // return the number of lines copied from one file to the next
             return num_lines;
         } else {
             MS_DEEP_DBG(F("seQFF rename "), tempFn, F("to"), serzQueuedFn);
         }
 
+        // close the renamed temporary file
         retBool = tgtoutFile.close();
         if (!retBool) {
             sd1_Err("seQFF tgtoutFile.close1 err");
@@ -2235,6 +2246,7 @@ inline uint16_t Logger::serzQueuedFlushFile() {
         }
     }
 
+    // return the number of lines copied from one file to the next
     return num_lines;
 }  // serzQueuedFlushFile
 
@@ -2307,6 +2319,8 @@ char* Logger::deszFind(const char* in_line, char caller_id) {
 bool Logger::deszRdelStart() {
     deszLinesRead = 0;
 
+    // Reset the pointer for the next character to the start of the pointer for
+    // the whole line
     deszq_nextChar = deszq_line;
     // Open - RD & WR. WR needed to be able to delete when complete.
     if (!serzRdelFile.open(serzRdelFn_str, (O_RDWR | O_CREAT))) {
@@ -2321,6 +2335,8 @@ bool Logger::deszRdelStart() {
 bool Logger::deszQueuedStart() {
     deszLinesRead = 0;
 
+    // Reset the pointer for the next character to the start of the pointer for
+    // the whole line
     deszq_nextChar = deszq_line;
     // Open - RD & WR. WR needed to be able to delete when complete.
     // Expect serzQueuedFn to be setup in serzQueuedStart
@@ -2414,7 +2430,7 @@ bool Logger::deszqNextCh(void) {
         // Found end of line
         MS_DBG(F("dSRN unexpected EOL "));
         return false;
-    } else if (NULL == nextCharEnd) {
+    } else if (nullptr == nextCharEnd) {
         // Found <value>EOF ~ nextSr_sz is valid
         deszq_nextCharSz -= 1;  // take off turds <LF>
         MS_DEEP_DBG(F("dSRN info "), deszq_nextCharSz, " '", deszq_nextChar,
