@@ -30,27 +30,34 @@ const char* EnviroDIYPublisher::timestampTag       = "\",\"timestamp\":\"";
 
 
 // Constructors
-EnviroDIYPublisher::EnviroDIYPublisher() : dataPublisher() {}
-EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, uint8_t sendEveryX,
-                                       uint8_t sendOffset)
-    : dataPublisher(baseLogger, sendEveryX, sendOffset) {}
-EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
-                                       uint8_t sendEveryX, uint8_t sendOffset)
-    : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset) {}
+EnviroDIYPublisher::EnviroDIYPublisher() : dataPublisher() {
+    // MS_DBG(F("dataPublisher object created"));
+    _registrationToken = nullptr;
+    setDIYHost(enviroDIYHost);
+    setTimerPostTimeout_mS(TIMER_EDP_POST_TIMEOUT_DEF_MSEC);
+    setTimerPostPacing_mS(TIMER_EDP_POSTED_PACING_DEF_MSEC);
+}
+EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger)
+    : dataPublisher(baseLogger) {}
+EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client* inClient)
+    : dataPublisher(baseLogger, inClient) {}
 EnviroDIYPublisher::EnviroDIYPublisher(Logger&     baseLogger,
                                        const char* registrationToken,
-                                       const char* samplingFeatureUUID,
-                                       uint8_t sendEveryX, uint8_t sendOffset)
-    : dataPublisher(baseLogger, sendEveryX, sendOffset) {
+                                       const char* samplingFeatureUUID)
+    : dataPublisher(baseLogger) {
     setToken(registrationToken);
+    setDIYHost(enviroDIYHost);
+    setTimerPostTimeout_mS(TIMER_EDP_POST_TIMEOUT_DEF_MSEC);
+    setTimerPostPacing_mS(TIMER_EDP_POSTED_PACING_DEF_MSEC);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
 }
 EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
                                        const char* registrationToken,
-                                       const char* samplingFeatureUUID,
-                                       uint8_t sendEveryX, uint8_t sendOffset)
-    : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset) {
+                                       const char* samplingFeatureUUID)
+    : dataPublisher(baseLogger, inClient) {
     setToken(registrationToken);
+    setTimerPostTimeout_mS(TIMER_EDP_POST_TIMEOUT_DEF_MSEC);
+    setTimerPostPacing_mS(TIMER_EDP_POSTED_PACING_DEF_MSEC);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
 }
 // Destructor
@@ -73,11 +80,19 @@ uint16_t EnviroDIYPublisher::calculateJsonSize() {
         jsonLength += 1;   //  "
         jsonLength += 36;  // variable UUID
         jsonLength += 2;   //  ":
-        jsonLength += _baseLogger->getValueStringAtI(i).length();
-        if (i + 1 != _baseLogger->getArrayVarCount()) {
-            jsonLength += 1;  // ,
+        if (!useQueueDataSource) {
+            // Actively calculate the length
+            jsonLength += _baseLogger->getValueStringAtI(i).length();
+            if (i + 1 != _baseLogger->getArrayVarCount()) {
+                jsonLength += 1;  // ,
+            }
         }
     }
+    if (useQueueDataSource) {
+        // Get precalculated length
+        jsonLength += _baseLogger->deszq_timeVariant_sz;
+    }
+
     jsonLength += 1;  // }
 
     return jsonLength;
@@ -111,7 +126,7 @@ void EnviroDIYPublisher::printEnviroDIYRequest(Stream* stream) {
     stream->print(postEndpoint);
     stream->print(HTTPtag);
     stream->print(hostHeader);
-    stream->print(enviroDIYHost);
+    stream->print(_enviroDIYHost);
     stream->print(tokenHeader);
     stream->print(_registrationToken);
     stream->print(contentLengthHeader);
@@ -147,107 +162,58 @@ void EnviroDIYPublisher::begin(Logger&     baseLogger,
 // int16_t EnviroDIYPublisher::postDataEnviroDIY(void)
 int16_t EnviroDIYPublisher::publishData(Client* outClient) {
     // Create a buffer for the portions of the request and response
-    char     tempBuffer[37] = "";
-    uint16_t did_respond    = 0;
+#define REQUIRED_MIN_RSP_SZ 12
+#define TEMP_BUFFER_SZ (REQUIRED_MIN_RSP_SZ + 25)
+#define RESPONSE_UNINIT 0xFFFE
+    char     tempBuffer[TEMP_BUFFER_SZ] = "";
+    uint16_t did_respond                = RESPONSE_UNINIT;
 
-    MS_DBG(F("Outgoing JSON size:"), calculateJsonSize());
+    // Following is record specific - start with space in buffer
+    uint32_t elapsed_ms = 0;
+    uint32_t gatewayStart_ms;
+    uint16_t bufferSz = bufferFree();
+    if (bufferSz < (MS_SEND_BUFFER_SIZE - 50)) printTxBuffer(outClient);
 
     // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
-    MS_DBG(F("Connecting client"));
+    const int32_t CONNECT_TIMEOUT_SEC = 7;
+    MS_DBG(F("Connecting client. Timer(sec)"), CONNECT_TIMEOUT_SEC);
     MS_START_DEBUG_TIMER;
-    if (outClient->connect(enviroDIYHost, enviroDIYPort)) {
-        MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms\n"));
+    outClient->setTimeout(CONNECT_TIMEOUT_SEC);
+    if (outClient->connect(_enviroDIYHost, (uint16_t)enviroDIYPort)) {
+        MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms to "),
+               _enviroDIYHost, ':', enviroDIYPort);
 
-        // copy the initial post header into the tx buffer
-        snprintf(txBuffer, sizeof(txBuffer), "%s", postHeader);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", postEndpoint);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", HTTPtag);
-
-        // add the rest of the HTTP POST headers to the outgoing buffer
-        // before adding each line/chunk to the outgoing buffer, we make sure
-        // there is space for that line, sending out buffer if not
-        if (bufferFree() < 28) printTxBuffer(outClient);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", hostHeader);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", enviroDIYHost);
-
-        if (bufferFree() < 47) printTxBuffer(outClient);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", tokenHeader);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", _registrationToken);
-
-        if (bufferFree() < 26) printTxBuffer(outClient);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s",
-                 contentLengthHeader);
-        itoa(calculateJsonSize(), tempBuffer, 10);  // BASE 10
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", tempBuffer);
-
-        if (bufferFree() < 42) printTxBuffer(outClient);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", contentTypeHeader);
-
-        // put the start of the JSON into the outgoing response_buffer
-        if (bufferFree() < 21) printTxBuffer(outClient);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", samplingFeatureTag);
-
-        if (bufferFree() < 36) printTxBuffer(outClient);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s",
-                 _baseLogger->getSamplingFeatureUUID());
-
-        if (bufferFree() < 42) printTxBuffer(outClient);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", timestampTag);
-        Logger::formatDateTime_ISO8601(Logger::markedLocalEpochTime)
-            .toCharArray(tempBuffer, 37);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", tempBuffer);
-        txBuffer[strlen(txBuffer)] = '"';
-        txBuffer[strlen(txBuffer)] = ',';
-
-        for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
-            // Once the buffer fills, send it out
-            if (bufferFree() < 47) printTxBuffer(outClient);
-
-            txBuffer[strlen(txBuffer)] = '"';
-            _baseLogger->getVarUUIDAtI(i).toCharArray(tempBuffer, 37);
-            snprintf(txBuffer + strlen(txBuffer),
-                     sizeof(txBuffer) - strlen(txBuffer), "%s", tempBuffer);
-            txBuffer[strlen(txBuffer)] = '"';
-            txBuffer[strlen(txBuffer)] = ':';
-            _baseLogger->getValueStringAtI(i).toCharArray(tempBuffer, 37);
-            snprintf(txBuffer + strlen(txBuffer),
-                     sizeof(txBuffer) - strlen(txBuffer), "%s", tempBuffer);
-            if (i + 1 != _baseLogger->getArrayVarCount()) {
-                txBuffer[strlen(txBuffer)] = ',';
-            } else {
-                txBuffer[strlen(txBuffer)] = '}';
-            }
+        mmwPostHeader(tempBuffer);
+        if (useQueueDataSource) {
+            mmwPostDataQueued(tempBuffer);
+        } else {
+            mmwPostDataArray(tempBuffer);
         }
-
+        MS_DEEP_DBG(F("SZEND "), bufferFree());
         // Send out the finished request (or the last unsent section of it)
         printTxBuffer(outClient, true);
 
-        // Wait 10 seconds for a response from the server
-        uint32_t start = millis();
-        while ((millis() - start) < 10000L && outClient->available() < 12) {
-            delay(10);
-        }
+        // Poll for a response from the server with timeout
+        gatewayStart_ms = millis();
 
+        did_respond = 0;
+        while ((elapsed_ms < _timerPostTimeout_ms) &&
+               (did_respond < REQUIRED_MIN_RSP_SZ)) {
+            delay(10);  // mS delay to poll
+            did_respond = outClient->available();
+            elapsed_ms  = millis() - gatewayStart_ms;
+        }
+        // MS_DBG(F("Rsp avl,"), did_respond, F("bytes in"), elapsed_ms,
+        // F("mS"));
         // Read only the first 12 characters of the response
         // We're only reading as far as the http code, anything beyond that
         // we don't care about.
-        did_respond = outClient->readBytes(tempBuffer, 12);
-
+        memset(tempBuffer, 0, TEMP_BUFFER_SZ);
+        did_respond = outClient->readBytes(tempBuffer, REQUIRED_MIN_RSP_SZ);
+        // MS_DBG(F("Rsp read,"), did_respond, F("bytes in"), elapsed_ms,
+        // F("mS"));
         // Close the TCP/IP connection
-        MS_DBG(F("Stopping client"));
+        // MS_DBG(F("Stopping client"));
         MS_RESET_DEBUG_TIMER;
         outClient->stop();
         MS_DBG(F("Client stopped after"), MS_PRINT_DEBUG_TIMER, F("ms"));
@@ -258,18 +224,139 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient) {
 
     // Process the HTTP response
     int16_t responseCode = 0;
-    if (did_respond > 0) {
+    if (RESPONSE_UNINIT == did_respond) {
+        // 901 Outside HTTP Status, No Connection to server
+        responseCode = HTTPSTATUS_NC_901;
+    } else if (did_respond >= REQUIRED_MIN_RSP_SZ) {
         char responseCode_char[4];
+        // Put in monitor check on actual size received
+        if ((did_respond + 5) >= TEMP_BUFFER_SZ) {
+            PRINTOUT(F(" -- Gateway Timeout warning buffer sz small"),
+                     did_respond, TEMP_BUFFER_SZ);
+        }
         for (uint8_t i = 0; i < 3; i++) {
             responseCode_char[i] = tempBuffer[i + 9];
         }
         responseCode = atoi(responseCode_char);
     } else {
-        responseCode = 504;
+        // 504 Gateway Timeout
+        responseCode = HTTPSTATUS_GT_504;
     }
 
-    PRINTOUT(F("-- Response Code --"));
-    PRINTOUT(responseCode);
+    tempBuffer[TEMP_BUFFER_SZ - 1] = 0;
+    MS_DBG(F("Rsp:'"), tempBuffer, F("'"));
+    PRINTOUT(F("-- Response Code --"), responseCode, F("waited "), elapsed_ms,
+             F("mS Timeout"), _timerPostTimeout_ms);
 
     return responseCode;
+}
+
+void EnviroDIYPublisher::setDIYHost(const char* enviroDIYHost) {
+    _enviroDIYHost = enviroDIYHost;
+    // MS_DBG(F("DIY Host set to "), _enviroDIYHost);
+}
+
+/* FUT: void EnviroDIYPublisher::setDIYPort(const int enviroDIYPort) {
+    _enviroDIYPort = enviroDIYPort;
+    MS_DBG(F("DIY Port set to "), _enviroDIYPort);
+}*/
+
+void EnviroDIYPublisher::mmwPostHeader(char* tempBuffer) {
+    // char tempBuffer[TEMP_BUFFER_SZ] = "";
+    // copy the initial post header into the tx buffer
+    strcpy(txBuffer, postHeader);
+    strcat(txBuffer, postEndpoint);
+    strcat(txBuffer, HTTPtag);
+
+    // add the rest of the HTTP POST headers to the outgoing buffer
+    // before adding each line/chunk to the outgoing buffer, we make sure
+    // there is space for that line, sending out buffer if not
+    // if (bufferFree() < 28) printTxBuffer(_outClient);
+    strcat(txBuffer, hostHeader);
+    strcat(txBuffer, _enviroDIYHost);
+
+    // if (bufferFree() < 47) printTxBuffer(_outClient);
+    strcat(txBuffer, tokenHeader);
+    strcat(txBuffer, _registrationToken);
+
+    // if (bufferFree() < 27) printTxBuffer(_outClient);
+    // strcat(txBuffer, cacheHeader);
+
+    // if (bufferFree() < 21) printTxBuffer(_outClient);
+    // strcat(txBuffer, connectionHeader);
+
+    // if (bufferFree() < 26) printTxBuffer(_outClient);
+    strcat(txBuffer, contentLengthHeader);
+    itoa(calculateJsonSize(), tempBuffer, 10);  // BASE 10
+    strcat(txBuffer, tempBuffer);
+
+    // if (bufferFree() < 42) printTxBuffer(_outClient);
+    strcat(txBuffer, contentTypeHeader);
+
+    // put the start of the JSON into the outgoing response_buffer
+    // if (bufferFree() < 21) printTxBuffer(_outClient);
+    strcat(txBuffer, samplingFeatureTag);
+
+    // if (bufferFree() < 36) printTxBuffer(_outClient);
+    strcat(txBuffer, _baseLogger->getSamplingFeatureUUID());
+}
+
+void EnviroDIYPublisher::mmwPostDataArray(char* tempBuffer) {
+    // Fill the body
+    MS_DBG(F("Filling from Array"));
+    strcat(txBuffer, timestampTag);
+    _baseLogger->formatDateTime_ISO8601(Logger::markedLocalEpochTime)
+        .toCharArray(tempBuffer, TEMP_BUFFER_SZ);
+    strcat(txBuffer, tempBuffer);
+    txBuffer[strlen(txBuffer)] = '"';
+    txBuffer[strlen(txBuffer)] = ',';
+
+    for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
+        // Fill with variables
+        txBuffer[strlen(txBuffer)] = '"';
+        _baseLogger->getVarUUIDAtI(i).toCharArray(tempBuffer, TEMP_BUFFER_SZ);
+        strcat(txBuffer, tempBuffer);
+        txBuffer[strlen(txBuffer)] = '"';
+        txBuffer[strlen(txBuffer)] = ':';
+        _baseLogger->getValueStringAtI(i).toCharArray(tempBuffer,
+                                                      TEMP_BUFFER_SZ);
+        strcat(txBuffer, tempBuffer);
+        if (i + 1 != _baseLogger->getArrayVarCount()) {
+            txBuffer[strlen(txBuffer)] = ',';
+        } else {
+            txBuffer[strlen(txBuffer)] = '}';
+        }
+    }
+}
+void EnviroDIYPublisher::mmwPostDataQueued(char* tempBuffer) {
+    // Fill the body - format is per MMW requirements
+    //  MS_DBG(F("Filling from Queue"));
+    MS_START_DEBUG_TIMER;
+    strcat(txBuffer, timestampTag);
+    _baseLogger->formatDateTime_ISO8601(_baseLogger->deszq_epochTime)
+        .toCharArray(tempBuffer, TEMP_BUFFER_SZ);
+    strcat(txBuffer, tempBuffer);
+    txBuffer[strlen(txBuffer)] = '"';
+    txBuffer[strlen(txBuffer)] = ',';
+
+    for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
+        // Fill with variables
+        txBuffer[strlen(txBuffer)] = '"';
+        _baseLogger->getVarUUIDAtI(i).toCharArray(tempBuffer, TEMP_BUFFER_SZ);
+        strcat(txBuffer, tempBuffer);
+        txBuffer[strlen(txBuffer)] = '"';
+        txBuffer[strlen(txBuffer)] = ':';
+        strncat(txBuffer, _baseLogger->deszq_nextChar,
+                _baseLogger->deszq_nextCharSz);
+        //_baseLogger-> getValueStringAtI(i).toCharArray(tempBuffer, 37);
+        // strcat(txBuffer, tempBuffer);
+        if (i + 1 != _baseLogger->getArrayVarCount()) {
+            txBuffer[strlen(txBuffer)] = ',';
+        } else {
+            txBuffer[strlen(txBuffer)] = '}';
+        }
+        // Read the Next Stored character of SD
+        if (!_baseLogger->deszqNextCh()) break;
+    }
+    MS_DBG(F("Filled from SD QUE in "), MS_PRINT_DEBUG_TIMER, F("ms"));
 }

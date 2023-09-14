@@ -76,20 +76,8 @@ class ThingSpeakPublisher : public dataPublisher {
      * logger.
      *
      * @param baseLogger The logger supplying the data to be published
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
-     *
-     * @note It is possible (though very unlikey) that using this constructor
-     * could cause errors if the compiler attempts to initialize the publisher
-     * instance before the logger instance.  If you suspect you are seeing that
-     * issue, use the null constructor and a populated begin(...) within your
-     * set-up function.
      */
-    explicit ThingSpeakPublisher(Logger& baseLogger, uint8_t sendEveryX = 1,
-                                 uint8_t sendOffset = 0);
+    explicit ThingSpeakPublisher(Logger& baseLogger);
     /**
      * @brief Construct a new ThingSpeak Publisher object
      *
@@ -97,20 +85,8 @@ class ThingSpeakPublisher : public dataPublisher {
      * @param inClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
-     *
-     * @note It is possible (though very unlikey) that using this constructor
-     * could cause errors if the compiler attempts to initialize the publisher
-     * instance before the logger instance.  If you suspect you are seeing that
-     * issue, use the null constructor and a populated begin(...) within your
-     * set-up function.
      */
-    ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
-                        uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    ThingSpeakPublisher(Logger& baseLogger, Client* inClient);
     /**
      * @brief Construct a new ThingSpeak Publisher object
      *
@@ -118,15 +94,10 @@ class ThingSpeakPublisher : public dataPublisher {
      * @param thingSpeakMQTTKey Your MQTT API Key from Account > MyProfile.
      * @param thingSpeakChannelID The numeric channel id for your channel
      * @param thingSpeakChannelKey The write API key for your channel
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
      */
     ThingSpeakPublisher(Logger& baseLogger, const char* thingSpeakMQTTKey,
                         const char* thingSpeakChannelID,
-                        const char* thingSpeakChannelKey,
-                        uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+                        const char* thingSpeakChannelKey);
     /**
      * @brief Construct a new ThingSpeak Publisher object
      *
@@ -137,17 +108,11 @@ class ThingSpeakPublisher : public dataPublisher {
      * @param thingSpeakMQTTKey Your MQTT API Key from Account > MyProfile.
      * @param thingSpeakChannelID The numeric channel id for your channel
      * @param thingSpeakChannelKey The write API key for your channel
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
      */
     ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
                         const char* thingSpeakMQTTKey,
                         const char* thingSpeakChannelID,
-                        const char* thingSpeakChannelKey,
-                        uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+                        const char* thingSpeakChannelKey);
     /**
      * @brief Destroy the ThingSpeak Publisher object
      */

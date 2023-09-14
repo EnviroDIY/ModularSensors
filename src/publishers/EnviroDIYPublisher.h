@@ -20,15 +20,40 @@
 #define MS_DEBUGGING_STD "EnviroDIYPublisher"
 #endif
 
+// #define MS_ENVIRODIYPUBLISHER_DEBUG_DEEP
+#ifdef MS_ENVIRODIYPUBLISHER_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP "EnviroDIYPublisher"
+#endif
+
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
+#undef MS_DEBUGGING_DEEP
+#undef MS_ENVIRODIYPUBLISHER_DEBUG_DEEP
 #include "dataPublisherBase.h"
 
 
 // ============================================================================
 //  Functions for the EnviroDIY data portal receivers.
 // ============================================================================
+
+
+#if !defined TIMER_EDP_POST_TIMEOUT_DEF_MSEC
+/**
+ * @brief The default time-out to wait for a response from the EnviroDIY
+ * (Monitor My Watershed) data portal.
+ */
+#define TIMER_EDP_POST_TIMEOUT_DEF_MSEC 10000L
+#endif  // TIMER_EDP_POST_TIMEOUT_DEF_MSEC
+
+#if !defined TIMER_EDP_POSTED_PACING_DEF_MSEC
+/**
+ * @brief The default pacing (in milliseconds) between subsequent posts to the
+ * EnviroDIY (Monitor My Watershed) data portal.
+ */
+#define TIMER_EDP_POSTED_PACING_DEF_MSEC 250L
+#endif  // TIMER_EDP_POSTED_PACING_DEF_MSEC
+
 /**
  * @brief The EnviroDIYPublisher subclass of dataPublisher for publishing data
  * to the Monitor My Watershed/EnviroDIY data portal at
@@ -51,20 +76,8 @@ class EnviroDIYPublisher : public dataPublisher {
      * logger.
      *
      * @param baseLogger The logger supplying the data to be published
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
-     *
-     * @note It is possible (though very unlikey) that using this constructor
-     * could cause errors if the compiler attempts to initialize the publisher
-     * instance before the logger instance.  If you suspect you are seeing that
-     * issue, use the null constructor and a populated begin(...) within your
-     * set-up function.
      */
-    explicit EnviroDIYPublisher(Logger& baseLogger, uint8_t sendEveryX = 1,
-                                uint8_t sendOffset = 0);
+    explicit EnviroDIYPublisher(Logger& baseLogger);
     /**
      * @brief Construct a new EnviroDIY Publisher object
      *
@@ -72,20 +85,8 @@ class EnviroDIYPublisher : public dataPublisher {
      * @param inClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
-     *
-     * @note It is possible (though very unlikey) that using this constructor
-     * could cause errors if the compiler attempts to initialize the publisher
-     * instance before the logger instance.  If you suspect you are seeing that
-     * issue, use the null constructor and a populated begin(...) within your
-     * set-up function.
      */
-    EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
-                       uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    EnviroDIYPublisher(Logger& baseLogger, Client* inClient);
     /**
      * @brief Construct a new EnviroDIY Publisher object
      *
@@ -94,15 +95,9 @@ class EnviroDIYPublisher : public dataPublisher {
      * Monitor My Watershed data portal.
      * @param samplingFeatureUUID The sampling feature UUID for the site on the
      * Monitor My Watershed data portal.
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
      */
     EnviroDIYPublisher(Logger& baseLogger, const char* registrationToken,
-                       const char* samplingFeatureUUID, uint8_t sendEveryX = 1,
-                       uint8_t sendOffset = 0);
+                       const char* samplingFeatureUUID);
     /**
      * @brief Construct a new EnviroDIY Publisher object
      *
@@ -114,16 +109,10 @@ class EnviroDIYPublisher : public dataPublisher {
      * Monitor My Watershed data portal.
      * @param samplingFeatureUUID The sampling feature UUID for the site on the
      * Monitor My Watershed data portal.
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
      */
     EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
                        const char* registrationToken,
-                       const char* samplingFeatureUUID, uint8_t sendEveryX = 1,
-                       uint8_t sendOffset = 0);
+                       const char* samplingFeatureUUID);
     /**
      * @brief Destroy the EnviroDIY Publisher object
      */
@@ -131,7 +120,7 @@ class EnviroDIYPublisher : public dataPublisher {
 
     // Returns the data destination
     String getEndpoint(void) override {
-        return String(enviroDIYHost);
+        return String(_enviroDIYHost) + ':' + String(enviroDIYPort);
     }
 
     // Adds the site registration token
@@ -240,6 +229,48 @@ class EnviroDIYPublisher : public dataPublisher {
  private:
     // Tokens and UUID's for EnviroDIY
     const char* _registrationToken = nullptr;
+    const char* _enviroDIYHost     = enviroDIYHost;
+    // FUT: int   _enviroDIYPort;
+
+ public:
+    /**
+     * @brief Set the destination Host URL
+     *
+     * @param enviroDIYHost The Host URL for the site on the
+     * Monitor My Watershed data portal.
+     */
+    void setDIYHost(const char* enviroDIYHost);
+
+    /* FUT:
+     * @brief Set the destination Port
+     *
+     * @param enviroDIYPort The Port on Host URL for the site on the
+     * Monitor My Watershed data portal.
+     */
+    // void setDIYPort(const int enviroDIYPort);
+
+ protected:
+    /**
+     * @brief This constructs a POST header for MMW
+     *
+     * @param tempBuffer - place for the POST.
+     */
+    void mmwPostHeader(char* tempBuffer);
+
+    /**
+     * @brief This constructs a POST body to go to the Monitor My Watershed
+     * (EnviroDIY) data portal from values within the variable array.
+     *
+     * @param tempBuffer - place for the POST.
+     */
+    void mmwPostDataArray(char* tempBuffer);
+    /**
+     * @brief This constructs a POST body to go to the Monitor My Watershed
+     * (EnviroDIY) data portal from read off of a queue file on an SD-card
+     *
+     * @param tempBuffer - place for the POST.
+     */
+    void mmwPostDataQueued(char* tempBuffer);
 };
 
 #endif  // SRC_PUBLISHERS_ENVIRODIYPUBLISHER_H_

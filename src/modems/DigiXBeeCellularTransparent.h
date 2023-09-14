@@ -151,8 +151,8 @@ class DigiXBeeCellularTransparent : public DigiXBee {
     DigiXBeeCellularTransparent(Stream* modemStream, int8_t powerPin,
                                 int8_t statusPin, bool useCTSStatus,
                                 int8_t modemResetPin, int8_t modemSleepRqPin,
-                                const char* apn, const char* user = NULL,
-                                const char* pwd = NULL);
+                                const char* apn, const char* user = nullptr,
+                                const char* pwd = nullptr);
     /**
      * @brief Destroy the Digi XBee Cellular Transparent object - no action
      * needed

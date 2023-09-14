@@ -51,20 +51,8 @@ class DreamHostPublisher : public dataPublisher {
      * logger.
      *
      * @param baseLogger The logger supplying the data to be published
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
-     *
-     * @note It is possible (though very unlikey) that using this constructor
-     * could cause errors if the compiler attempts to initialize the publisher
-     * instance before the logger instance.  If you suspect you are seeing that
-     * issue, use the null constructor and a populated begin(...) within your
-     * set-up function.
      */
-    explicit DreamHostPublisher(Logger& baseLogger, uint8_t sendEveryX = 1,
-                                uint8_t sendOffset = 0);
+    explicit DreamHostPublisher(Logger& baseLogger);
     /**
      * @brief Construct a new DreamHost Publisher object
      *
@@ -72,33 +60,15 @@ class DreamHostPublisher : public dataPublisher {
      * @param inClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
-     *
-     * @note It is possible (though very unlikey) that using this constructor
-     * could cause errors if the compiler attempts to initialize the publisher
-     * instance before the logger instance.  If you suspect you are seeing that
-     * issue, use the null constructor and a populated begin(...) within your
-     * set-up function.
      */
-    DreamHostPublisher(Logger& baseLogger, Client* inClient,
-                       uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    DreamHostPublisher(Logger& baseLogger, Client* inClient);
     /**
      * @brief Construct a new DreamHost Publisher object
      *
      * @param baseLogger The logger supplying the data to be published
      * @param dhUrl The URL for sending data to DreamHost
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
      */
-    DreamHostPublisher(Logger& baseLogger, const char* dhUrl,
-                       uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    DreamHostPublisher(Logger& baseLogger, const char* dhUrl);
     /**
      * @brief Construct a new DreamHost Publisher object
      *
@@ -107,14 +77,8 @@ class DreamHostPublisher : public dataPublisher {
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
      * @param dhUrl The URL for sending data to DreamHost
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
      */
-    DreamHostPublisher(Logger& baseLogger, Client* inClient, const char* dhUrl,
-                       uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    DreamHostPublisher(Logger& baseLogger, Client* inClient, const char* dhUrl);
     /**
      * @brief Destroy the DreamHost Publisher object
      */

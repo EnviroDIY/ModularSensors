@@ -21,19 +21,12 @@ const char* dataPublisher::hostHeader = "\r\nHost: ";
 // Constructors
 dataPublisher::dataPublisher() {}
 
-dataPublisher::dataPublisher(Logger& baseLogger, uint8_t sendEveryX,
-                             uint8_t sendOffset)
-    : _baseLogger(&baseLogger),
-      _sendEveryX(sendEveryX),
-      _sendOffset(sendOffset) {
+dataPublisher::dataPublisher(Logger& baseLogger) : _baseLogger(&baseLogger) {
     _baseLogger->registerDataPublisher(this);  // register self with logger
 }
-dataPublisher::dataPublisher(Logger& baseLogger, Client* inClient,
-                             uint8_t sendEveryX, uint8_t sendOffset)
+dataPublisher::dataPublisher(Logger& baseLogger, Client* inClient)
     : _baseLogger(&baseLogger),
-      _inClient(inClient),
-      _sendEveryX(sendEveryX),
-      _sendOffset(sendOffset) {
+      _inClient(inClient) {
     _baseLogger->registerDataPublisher(this);  // register self with logger
 }
 // Destructor
@@ -50,14 +43,6 @@ void dataPublisher::setClient(Client* inClient) {
 void dataPublisher::attachToLogger(Logger& baseLogger) {
     _baseLogger = &baseLogger;
     _baseLogger->registerDataPublisher(this);  // register self with logger
-}
-
-
-// Sets the parameters for frequency of sending and any offset, if needed
-// NOTE:  These parameters are not currently used!!
-void dataPublisher::setSendFrequency(uint8_t sendEveryX, uint8_t sendOffset) {
-    _sendEveryX = sendEveryX;
-    _sendOffset = sendOffset;
 }
 
 
@@ -146,4 +131,26 @@ String dataPublisher::parseMQTTState(int state) {
         case 5: return "5: MQTT_CONNECT_UNAUTHORIZED";
         default: return String(state) + ": UNKNOWN";
     }
+}
+
+
+void dataPublisher::setQueuedState(bool state) {
+    useQueueDataSource = state;
+}
+bool dataPublisher::getQueuedStatus() {
+    return useQueueDataSource;
+}
+
+void dataPublisher::setTimerPostTimeout_mS(uint16_t tpt_ms) {
+    _timerPostTimeout_ms = tpt_ms;
+}
+uint16_t dataPublisher::getTimerPostTimeout_mS() {
+    return _timerPostTimeout_ms;  // Default for not supported.
+}
+
+void dataPublisher::setTimerPostPacing_mS(uint16_t tpp_ms) {
+    _timerPostPacing_ms = tpp_ms;
+}
+uint16_t dataPublisher::getTimerPostPacing_mS() {
+    return _timerPostPacing_ms;
 }

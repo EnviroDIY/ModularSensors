@@ -86,20 +86,8 @@ class dataPublisher {
      * logger.
      *
      * @param baseLogger The logger supplying the data to be published
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
-     *
-     * @note It is possible (though very unlikey) that using this constructor
-     * could cause errors if the compiler attempts to initialize the publisher
-     * instance before the logger instance.  If you suspect you are seeing that
-     * issue, use the null constructor and a populated begin(...) within your
-     * set-up function.
      */
-    explicit dataPublisher(Logger& baseLogger, uint8_t sendEveryX = 1,
-                           uint8_t sendOffset = 0);
+    explicit dataPublisher(Logger& baseLogger);
     /**
      * @brief Construct a new data Publisher object.
      *
@@ -107,20 +95,8 @@ class dataPublisher {
      * @param inClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
-     *
-     * @note It is possible (though very unlikey) that using this constructor
-     * could cause errors if the compiler attempts to initialize the publisher
-     * instance before the logger instance.  If you suspect you are seeing that
-     * issue, use the null constructor and a populated begin(...) within your
-     * set-up function.
      */
-    dataPublisher(Logger& baseLogger, Client* inClient, uint8_t sendEveryX = 1,
-                  uint8_t sendOffset = 0);
+    dataPublisher(Logger& baseLogger, Client* inClient);
     /**
      * @brief Destroy the data Publisher object - no action is taken.
      */
@@ -144,19 +120,6 @@ class dataPublisher {
      * @param baseLogger A reference to the ModularSensors logger instance
      */
     void attachToLogger(Logger& baseLogger);
-    /**
-     * @brief Set the parameters for frequency of sending and any offset, if
-     * needed.
-     *
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
-     *
-     * @note These parameters are not currently used!
-     */
-    void setSendFrequency(uint8_t sendEveryX, uint8_t sendOffset);
 
     /**
      * @brief Begin the publisher - linking it to the client and logger.
@@ -304,17 +267,6 @@ class dataPublisher {
      */
     static void printTxBuffer(Stream* stream, bool addNewLine = false);
 
-    /**
-     * @brief Unimplemented; intended for future use to enable caching and bulk
-     * publishing.
-     */
-    uint8_t _sendEveryX = 1;
-    /**
-     * @brief Unimplemented; intended for future use to enable publishing data
-     * at a time slightly delayed from when it is collected.
-     */
-    uint8_t _sendOffset = 0;
-
     // Basic chunks of HTTP
     /**
      * @brief the text "GET "
@@ -332,6 +284,100 @@ class dataPublisher {
      * @brief the text "\r\nHost: "
      */
     static const char* hostHeader;
+
+ public:
+    /**
+     * @brief Whether the publisher should use data stored in a text file queue
+     * on the SD-card or use data values stored in the variable array to create
+     * output for the publisher.  This routes subsequent POST construction.
+     *
+     */
+    bool useQueueDataSource = false;
+    /**
+     * @brief Sets the publisher to use either data stored in a text file queue
+     * on the SD-card or use data values stored in the variable array to create
+     * output for the publisher.  This routes subsequent POST construction
+     *
+     * @param state - true for Queued, false for standard
+     */
+    void setQueuedState(bool state);
+    /**
+     * @brief Get the current data source for publisher output.
+     *
+     * @return *true*  The publisher is using data read from a text file on an
+     * SD-card.
+     * @return *false*  The publisher is using data directly from the variable
+     * array.
+     */
+    bool getQueuedStatus();
+
+    /**
+     * @brief The time-out (in milliseconds) to wait for a response from the
+     * data publisher
+     */
+    uint16_t _timerPostTimeout_ms;
+    /**
+     * @brief Set the time-out (in milliseconds) to wait for a response from the
+     * data publisher
+     *
+     * @param tpt_ms The time-out (in milliseconds) to wait for a response from
+     * the data publisher
+     */
+    void setTimerPostTimeout_mS(uint16_t tpt_ms);
+    /**
+     * @brief Get the current time-out (in milliseconds) to wait for a response
+     * from the data publisher
+     * @return *uint16_t* The current time-out (in milliseconds) to wait for a
+     * response from the data publisher
+     */
+    uint16_t getTimerPostTimeout_mS();
+
+    /**
+     * @brief The pacing (in milliseconds) between subsequent outputs to the
+     * publisher when posting multiple time-points of queued data.
+     */
+    uint16_t _timerPostPacing_ms;
+    /**
+     * @brief Set the pacing (in milliseconds) between subsequent outputs to the
+     * publisher when posting multiple time-points of queued data.
+     *
+     * @param tpp_ms The pacing (in milliseconds) between subsequent outputs to
+     * the publisher when posting multiple time-points of queued data.
+     */
+    void setTimerPostPacing_mS(uint16_t tpp_ms);
+    /**
+     * @brief Get the current pacing (in milliseconds) between subsequent
+     * outputs to the publisher when posting multiple time-points of queued
+     * data.
+     *
+     * @return *uint16_t* The current pacing (in milliseconds) between
+     * subsequent outputs to the publisher when posting multiple time-points of
+     * queued data.
+     */
+    uint16_t getTimerPostPacing_mS();
 };
+
+/* atl_extension */
+/*
+ * HTTP STATUS Codes that are used by Modular Sensors
+ * Placed at the end of the file, to facilitate mergein code
+ * https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+ */
+
+#define HTTPSTATUS_CREATED_201 201
+// Server Error indicating a Gateway Timeout.
+// Server error that doesn't seem to receover
+// https://github.com/ODM2/ODM2DataSharingPortal/issues/628
+#define HTTPSTATUS_GT_500 500
+// Also supplied if the server didn't respond to a POST
+#define HTTPSTATUS_GT_504 504
+// This is an internaly created error, indicating No Connection with server
+#define HTTPSTATUS_NC_901 901
+// internal error, not enough power to connect with server
+#define HTTPSTATUS_NC_902 902
+// internal error, value dumped
+#define HTTPSTATUS_NC_903 903
+// internal error, value queued
+#define HTTPSTATUS_NC_904 904
 
 #endif  // SRC_DATAPUBLISHERBASE_H_

@@ -68,7 +68,7 @@
  * RSSI is a rough calculation, so it has 0 decimal place resolution
  */
 #define MODEM_RSSI_RESOLUTION 0
-/// @brief The bit mask for loggerModem::_pollModemMetaData to enable RSSI
+/// @brief The bit mask for LoggerModem#_pollModemMetaData to enable RSSI
 /// polling.
 #define MODEM_RSSI_ENABLE_BITMASK 0b00000001
 /// @brief Variable name in
@@ -97,7 +97,7 @@
  * Percent signal is a rough calculation, so it has 0 decimal place resolution
  */
 #define MODEM_PERCENT_SIGNAL_RESOLUTION 0
-/// @brief The bit mask for loggerModem::_pollModemMetaData to enable percent
+/// @brief The bit mask for LoggerModem#_pollModemMetaData to enable percent
 /// signal polling.
 #define MODEM_PERCENT_SIGNAL_ENABLE_BITMASK 0b00000010
 /// @brief Variable name in
@@ -130,7 +130,7 @@
  * Battery state is a code value; it has 0 decimal place resolution
  */
 #define MODEM_BATTERY_STATE_RESOLUTION 0
-/// @brief The bit mask for loggerModem::_pollModemMetaData to enable modem
+/// @brief The bit mask for LoggerModem#_pollModemMetaData to enable modem
 /// battery charging state polling.
 #define MODEM_BATTERY_STATE_ENABLE_BITMASK 0b00000100
 /// @brief Variable name in
@@ -160,7 +160,7 @@
 /// @brief Decimals places in string representation; battery charge percent
 /// should have 0.
 #define MODEM_BATTERY_PERCENT_RESOLUTION 0
-/// @brief The bit mask for loggerModem::_pollModemMetaData to enable modem
+/// @brief The bit mask for LoggerModem#_pollModemMetaData to enable modem
 /// battery percent polling.
 #define MODEM_BATTERY_PERCENT_ENABLE_BITMASK 0b00001000
 /// @brief Variable name in
@@ -193,7 +193,7 @@
  * No supported module has higher than 1mV resolution in battery reading.
  */
 #define MODEM_BATTERY_VOLTAGE_RESOLUTION 0
-/// @brief The bit mask for loggerModem::_pollModemMetaData to enable modem
+/// @brief The bit mask for LoggerModem#_pollModemMetaData to enable modem
 /// battery voltage polling.
 #define MODEM_BATTERY_VOLTAGE_ENABLE_BITMASK 0b00010000
 /// @brief Variable name in
@@ -225,7 +225,7 @@
  * Most modules that can measure temperature measure to 0.1°C
  */
 #define MODEM_TEMPERATURE_RESOLUTION 1
-/// @brief The bit mask for loggerModem::_pollModemMetaData to enable modem
+/// @brief The bit mask for LoggerModem#_pollModemMetaData to enable modem
 /// temperature polling.
 #define MODEM_TEMPERATURE_ENABLE_BITMASK 0b00100000
 /// @brief Variable name in
@@ -254,7 +254,7 @@
 /// @brief Decimals places in string representation; total active time should
 /// have 3.
 #define MODEM_ACTIVATION_RESOLUTION 3
-/// @brief The bit mask for loggerModem::_pollModemMetaData to enable modem
+/// @brief The bit mask for LoggerModem#_pollModemMetaData to enable modem
 /// activation time polling.
 #define MODEM_ACTIVATION_ENABLE_BITMASK 0b01000000
 /// @brief Variable name in
@@ -281,7 +281,7 @@
 /// @brief Decimals places in string representation; total powered time should
 /// have 3.
 #define MODEM_POWERED_RESOLUTION 3
-/// @brief The bit mask for loggerModem::_pollModemMetaData to enable modem
+/// @brief The bit mask for LoggerModem#_pollModemMetaData to enable modem
 /// power time polling
 #define MODEM_POWERED_ENABLE_BITMASK 0b10000000
 /// @brief Variable name in

@@ -176,8 +176,8 @@ class DigiXBeeWifi : public DigiXBee {
     bool        _maintainAssociation;
 
     // Access Management
-    char* _ssid_buf = NULL;
-    char* _pwd_buf  = NULL;
+    char* _ssid_buf = nullptr;
+    char* _pwd_buf  = nullptr;
 
     uint16_t updateModemMetadata_cnt = 0;
     // This causes the Xbee to reset after this number of transmission attempts

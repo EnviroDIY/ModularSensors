@@ -591,12 +591,12 @@ void DigiXBeeWifi::setWiFiId(const char* newSsid, bool copyId) {
             WiFiId2[newSsid_sz] = 0;  // Trim max size
             newSsid_sz          = WIFI_SSID_MAX_sz;
         }
-        if (NULL == _ssid_buf) {
+        if (nullptr == _ssid_buf) {
             _ssid_buf = new char[newSsid_sz + 2];  // Allow for trailing 0
         } else {
             PRINTOUT(F("\nLoggerModem::setWiFiId error - expected NULL ptr"));
         }
-        if (NULL == _ssid_buf) {
+        if (nullptr == _ssid_buf) {
             // Major problem
             PRINTOUT(F("\nLoggerModem::setWiFiId error -no buffer "),
                      _ssid_buf);
@@ -625,12 +625,12 @@ void DigiXBeeWifi::setWiFiPwd(const char* newPwd, bool copyId) {
             pwd2[newPwd_sz] = 0;  // Trim max size
             newPwd_sz       = WIFI_PWD_MAX_sz;
         }
-        if (NULL == _pwd_buf) {
+        if (nullptr == _pwd_buf) {
             _pwd_buf = new char[newPwd_sz + 2];  // Allow for trailing 0
         } else {
             PRINTOUT(F("\nLoggerModem::setWiFiPwd error - expected NULL ptr"));
         }
-        if (NULL == _pwd_buf) {
+        if (nullptr == _pwd_buf) {
             // Major problem
             PRINTOUT(F("\nLoggerModem::setWiFiPwd error -no buffer "),
                      _pwd_buf);
