@@ -434,31 +434,16 @@ float loggerModem::getModemTemperature() {
 
 // Helper to get approximate RSSI from CSQ (assuming no noise)
 int16_t loggerModem::getRSSIFromCSQ(int16_t csq) {
-    int16_t CSQs[33]  = {0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10,
-                         11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-                         22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 99};
-    int16_t RSSIs[33] = {-113, -111, -109, -107, -105, -103, -101, -99, -97,
-                         -95,  -93,  -91,  -89,  -87,  -85,  -83,  -81, -79,
-                         -77,  -75,  -73,  -71,  -69,  -67,  -65,  -63, -61,
-                         -59,  -57,  -55,  -53,  -51,  0};
-    for (uint8_t i = 0; i < 33; i++) {
-        if (CSQs[i] == csq) return RSSIs[i];
-    }
-    return 0;
+    if ((csq < 0) || (csq > 31)) return 0;
+    // equation matches previous table. not sure the original motivation.
+    return ((csq * 2) - 113);
 }
 
 // Helper to get signal percent from CSQ
 int16_t loggerModem::getPctFromCSQ(int16_t csq) {
-    int16_t CSQs[33] = {0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10,
-                        11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-                        22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 99};
-    int16_t PCTs[33] = {0,  3,  6,  10, 13, 16, 19, 23, 26, 29,  32,
-                        36, 39, 42, 45, 48, 52, 55, 58, 61, 65,  68,
-                        71, 74, 78, 81, 84, 87, 90, 94, 97, 100, 0};
-    for (uint8_t i = 0; i < 33; i++) {
-        if (CSQs[i] == csq) return PCTs[i];
-    }
-    return 0;
+    if ((csq < 0) || (csq > 31)) return 0;
+    // equation matches previous table. not sure the original motivation.
+    return (csq * 827 + 127) >> 8;
 }
 
 // Helper to get signal percent from RSSI
