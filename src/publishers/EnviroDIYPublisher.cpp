@@ -35,10 +35,14 @@ const char* EnviroDIYPublisher::timestampTag       = "\",\"timestamp\":[";
 // Constructors
 EnviroDIYPublisher::EnviroDIYPublisher() : dataPublisher() {}
 EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, int sendEveryX)
-    : dataPublisher(baseLogger, sendEveryX) {}
+    : dataPublisher(baseLogger, sendEveryX) {
+    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
+}
 EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
                                        int sendEveryX)
-    : dataPublisher(baseLogger, inClient, sendEveryX) {}
+    : dataPublisher(baseLogger, inClient, sendEveryX) {
+    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
+}
 EnviroDIYPublisher::EnviroDIYPublisher(Logger&     baseLogger,
                                        const char* registrationToken,
                                        const char* samplingFeatureUUID,
@@ -70,6 +74,10 @@ void EnviroDIYPublisher::setToken(const char* registrationToken) {
 uint16_t EnviroDIYPublisher::calculateJsonSize() {
     uint8_t variables = _logBuffer.getNumVariables();
     int     records   = _logBuffer.getNumRecords();
+    MS_DBG(F("Number of records in log buffer:"), records);
+    MS_DBG(F("Number of variables in log buffer:"), variables);
+    MS_DBG(F("Number of variables in base logger:"),
+           _baseLogger->getArrayVarCount());
 
     uint16_t jsonLength = strlen(samplingFeatureTag);
     jsonLength += 36;  // sampling feature UUID
@@ -96,6 +104,7 @@ uint16_t EnviroDIYPublisher::calculateJsonSize() {
         }
     }
     jsonLength += 1;  // }
+    MS_DBG(F("Outgoing JSON size:"), jsonLength);
 
     return jsonLength;
 }
@@ -124,6 +133,7 @@ bool EnviroDIYPublisher::connectionNeeded(void) {
     // have less of a chance of losing data
     int     interval = _sendEveryX;
     uint8_t percent  = _logBuffer.getPercentFull();
+    MS_DBG(F("Buffer is"), percent, F("percent full"));
     if (percent >= 50) {
         interval /= 2;
     } else if (percent >= 75) {
@@ -172,6 +182,7 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient, bool forceFlush) {
     // that function said so we know to do it after we record this data point.
     // we also flush if requested (in which case the internet is connected too)
     bool willFlush = connectionNeeded() || forceFlush;
+    MS_DBG(F("Publishing record to buffer.  Will flush:"), willFlush);
 
     // create record to hold timestamp and variable values in the log buffer
     int record = _logBuffer.addRecord(Logger::markedLocalEpochTime);
@@ -199,8 +210,6 @@ int16_t EnviroDIYPublisher::flushDataBuffer(Client* outClient) {
     // Create a buffer for the portions of the request and response
     char     tempBuffer[37] = "";
     uint16_t did_respond    = 0;
-
-    MS_DBG(F("Outgoing JSON size:"), calculateJsonSize());
 
     // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
     MS_DBG(F("Connecting client"));

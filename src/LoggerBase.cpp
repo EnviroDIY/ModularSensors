@@ -1479,6 +1479,14 @@ void Logger::begin() {
         PRINTOUT(F("Sampling feature UUID is:"), _samplingFeatureUUID);
     }
 
+
+    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
+        if (dataPublishers[i] != nullptr) {
+            PRINTOUT(F("Data will be published to ["), i, F("]"),
+                     dataPublishers[i]->getEndpoint());
+        }
+    }
+
     PRINTOUT(F("Logger portion of setup finished.\n"));
 }
 
