@@ -79,6 +79,7 @@ uint16_t EnviroDIYPublisher::calculateJsonSize() {
         }
     }
     jsonLength += 1;  // }
+    MS_DBG(F("Outgoing JSON size:"), jsonLength);
 
     return jsonLength;
 }
@@ -109,8 +110,6 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient) {
     // Create a buffer for the portions of the request and response
     char     tempBuffer[37] = "";
     uint16_t did_respond    = 0;
-
-    MS_DBG(F("Outgoing JSON size:"), calculateJsonSize());
 
     // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
     MS_DBG(F("Connecting client"));
