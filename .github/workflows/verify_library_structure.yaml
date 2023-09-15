@@ -42,7 +42,7 @@ jobs:
           exit $result_code
 
       - name: Create commit comment
-        uses: peter-evans/commit-comment@v2
+        uses: peter-evans/commit-comment@v3
         if: steps.validate_manifest.outcome=='failure'
         with:
           body: |
@@ -87,7 +87,7 @@ jobs:
           echo "$(cat arduino_lint.md)" >> $GITHUB_STEP_SUMMARY
 
       - name: Create commit comment
-        uses: peter-evans/commit-comment@v2
+        uses: peter-evans/commit-comment@v3
         if: steps.validate_library.outcome=='failure'
         with:
           body: ${{ steps.beautify_output.outputs.lint_errors }}
