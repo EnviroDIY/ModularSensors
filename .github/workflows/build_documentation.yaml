@@ -65,7 +65,7 @@ jobs:
           exit $result_code
 
       - name: Create commit comment
-        uses: peter-evans/commit-comment@v2
+        uses: peter-evans/commit-comment@v3
         if: steps.check_component.outcome=='failure'
         with:
           body: |
