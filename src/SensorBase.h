@@ -39,7 +39,7 @@
  * @brief The largest number of variables from a single sensor
  */
 #define MAX_NUMBER_VARS 21
-    // GroPoint Profile GPLP-8 has 8 Moisture and 13 Temperature values
+// GroPoint Profile GPLP-8 has 8 Moisture and 13 Temperature values
 
 class Variable;  // Forward declaration
 
