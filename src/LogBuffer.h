@@ -111,7 +111,7 @@ class LogBuffer {
     uint32_t getRecordTimestamp(int record);
 
     /**
-     * @brief Gets the value of a particular vaiable in a particular record.
+     * @brief Gets the value of a particular variable in a particular record.
      *
      * @param[in]  record    The record
      * @param[in]  variable  The variable
@@ -125,6 +125,19 @@ class LogBuffer {
      * @brief Buffer which stores the log data.
      */
     uint8_t dataBuffer[MS_LOG_DATA_BUFFER_SIZE];
+
+    /**
+     * @brief Index of buffer head.
+     */
+    uint16_t dataBufferTail;
+    /**
+     * @brief Index of buffer tail.
+     */
+    uint16_t dataBufferHead;
+    /**
+     * @brief The buffer overflow status
+     */
+    bool _bufferOverflow = false;
 
     /**
      * @brief Number of records currently in the buffer.
