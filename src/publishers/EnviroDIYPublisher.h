@@ -196,7 +196,7 @@ class EnviroDIYPublisher : public dataPublisher {
     static const char* timestampTag;        ///< The JSON feature timestamp tag
                                             /**@}*/
 
-    static LogBuffer _logBuffer;
+    LogBuffer _logBuffer;
 
     // actually transmit rather than just buffer data
     int16_t flushDataBuffer(Client* outClient);
