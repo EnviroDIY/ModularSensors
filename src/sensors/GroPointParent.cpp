@@ -234,19 +234,19 @@ bool GroPointParent::addSingleMeasurementResult(void) {
                     T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13);
 
                 // Fix not-a-number values
-                if (!success || isnan(T1)) T1 = -9999;
-                if (!success || isnan(T2)) T2 = -9999;
-                if (!success || isnan(T3)) T3 = -9999;
-                if (!success || isnan(T4)) T4 = -9999;
-                if (!success || isnan(T5)) T5 = -9999;
-                if (!success || isnan(T6)) T6 = -9999;
-                if (!success || isnan(T7)) T7 = -9999;
-                if (!success || isnan(T8)) T8 = -9999;
-                if (!success || isnan(T9)) T9 = -9999;
-                if (!success || isnan(T10)) T10 = -9999;
-                if (!success || isnan(T11)) T11 = -9999;
-                if (!success || isnan(T12)) T12 = -9999;
-                if (!success || isnan(T13)) T13 = -9999;
+                if (!successT || isnan(T1)) T1 = -9999;
+                if (!successT || isnan(T2)) T2 = -9999;
+                if (!successT || isnan(T3)) T3 = -9999;
+                if (!successT || isnan(T4)) T4 = -9999;
+                if (!successT || isnan(T5)) T5 = -9999;
+                if (!successT || isnan(T6)) T6 = -9999;
+                if (!successT || isnan(T7)) T7 = -9999;
+                if (!successT || isnan(T8)) T8 = -9999;
+                if (!successT || isnan(T9)) T9 = -9999;
+                if (!successT || isnan(T10)) T10 = -9999;
+                if (!successT || isnan(T11)) T11 = -9999;
+                if (!successT || isnan(T12)) T12 = -9999;
+                if (!successT || isnan(T13)) T13 = -9999;
 
                 MS_DBG(F("    "), _gsensor.getParameter1());
                 MS_DBG(F("    "), _gsensor.getUnits1());
@@ -297,5 +297,5 @@ bool GroPointParent::addSingleMeasurementResult(void) {
     _sensorStatus &= 0b10011111;
 
     // Return true when finished
-    return success;
+    return success && successT;
 }
