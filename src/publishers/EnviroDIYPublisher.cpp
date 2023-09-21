@@ -11,8 +11,6 @@
 
 #include "EnviroDIYPublisher.h"
 
-LogBuffer EnviroDIYPublisher::_logBuffer;
-
 // ============================================================================
 //  Functions for the EnviroDIY data portal receivers.
 // ============================================================================
