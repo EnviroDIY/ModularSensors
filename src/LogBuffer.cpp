@@ -24,12 +24,15 @@ void LogBuffer::setNumVariables(uint8_t numVariables_) {
     numVariables = numVariables_;
 
     // this scrambles all the data in the buffer so clear it out
-    numRecords = 0;
+    clear();
 }
 
 void LogBuffer::clear(void) {
     // clear out the buffer
-    numRecords = 0;
+    numRecords      = 0;
+    dataBufferTail  = 0;
+    dataBufferHead  = 0;
+    _bufferOverflow = false;
 }
 
 uint8_t LogBuffer::getNumVariables(void) {
@@ -48,6 +51,7 @@ uint8_t LogBuffer::getPercentFull(void) {
 }
 
 int LogBuffer::addRecord(uint32_t timestamp) {
+    // check how many records currently exist
     int record = numRecords;
     // compute position of the new record's timestamp in the buffer
     // (the timestamp is the first data in the record)
@@ -60,6 +64,7 @@ int LogBuffer::addRecord(uint32_t timestamp) {
            sizeof(uint32_t));
     numRecords += 1;  // just added another record
 
+    // return the index of the record number just created
     return record;
 }
 
