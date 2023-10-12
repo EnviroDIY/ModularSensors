@@ -11,15 +11,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- **BREAKING** Refactored how the publisher transmit buffer works. This will require adjustment to custom data publishers.
 
 ### Added
-
 ### Removed
 
 ### Fixed
 
 ***
 
+
+## [0.35.0]
+
+### Added
+- Support [GroPoint Profile GPLP-8 Eight-Segment Soil Moisture and Temperature Profiling Probe](https://www.gropoint.com/products/soil-sensors/gropoint-profile)
+
+## [0.34.1]
+
+### Changed
+- Incorporated improvements to the XBee Wifi - from [neilh10](https://github.com/EnviroDIY/ModularSensors/commits?author=neilh10)
+  - #347 -WiFi S6B stability - tears dwon TCP/IP before going to sleep, doesn't automatically poll for meta data
+
+### Added
+- Added the ability to enable or disable polling of modem attached variables.
+By default, all polling is off, but polling is enabled for a modem sensor when a sensor is created and attached to a modem.
+This functionailty is inspired from [neilh10](https://github.com/EnviroDIY/ModularSensors/commits?author=neilh10).
+
+### Fixed
+- Fixed GitHub actions for pull requests from forks.
 
 ## [0.34.0]
 

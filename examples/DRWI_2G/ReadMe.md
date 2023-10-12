@@ -1,10 +1,13 @@
 # DRWI 2G Sites <!-- {#example_drwi_2g} -->
 
-This is the code example that should be used for all groups working with the Stroud Water Research Center within the Delaware River Watershed Initiative.
-This should be used at all sites with cellular 2G service.
+This code was used for DRWI monitoring stations in 2016-2022.  The 2G GPRSbee cellular boards no longer function in the USA, so this code should not be used and is only provided to archival and reference purposes.
 
-Before programming your board with this example, you must register your site and sensors at http://data.envirodiy.org/.
-Stroud can provide directions for registering your site if you need assistance.
+The exact hardware configuration used in this example:
+ * Mayfly v0.5b board
+ * SODAQ GPRSbee 2G cell module (with Hologram SIM card)
+ * Hydros21 CTD sensor
+ * Campbell OBS3+ turbidity sensor
+
 
 _______
 

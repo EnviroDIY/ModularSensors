@@ -34,26 +34,23 @@ const char* UbidotsPublisher::payload = "{";
 
 // Constructors
 UbidotsPublisher::UbidotsPublisher() : dataPublisher() {}
-UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, uint8_t sendEveryX,
-                                   uint8_t sendOffset)
-    : dataPublisher(baseLogger, sendEveryX, sendOffset) {}
+UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, int sendEveryX)
+    : dataPublisher(baseLogger, sendEveryX) {}
 UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, Client* inClient,
-                                   uint8_t sendEveryX, uint8_t sendOffset)
-    : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset) {}
+                                   int sendEveryX)
+    : dataPublisher(baseLogger, inClient, sendEveryX) {}
 UbidotsPublisher::UbidotsPublisher(Logger&     baseLogger,
                                    const char* authentificationToken,
-                                   const char* deviceID, uint8_t sendEveryX,
-                                   uint8_t sendOffset)
-    : dataPublisher(baseLogger, sendEveryX, sendOffset) {
+                                   const char* deviceID, int sendEveryX)
+    : dataPublisher(baseLogger, sendEveryX) {
     setToken(authentificationToken);
     _baseLogger->setSamplingFeatureUUID(deviceID);
     MS_DBG(F("dataPublisher object created"));
 }
 UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, Client* inClient,
                                    const char* authentificationToken,
-                                   const char* deviceID, uint8_t sendEveryX,
-                                   uint8_t sendOffset)
-    : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset) {
+                                   const char* deviceID, int sendEveryX)
+    : dataPublisher(baseLogger, inClient, sendEveryX) {
     setToken(authentificationToken);
     _baseLogger->setSamplingFeatureUUID(deviceID);
     MS_DBG(F("dataPublisher object created"));
@@ -93,46 +90,6 @@ uint16_t UbidotsPublisher::calculateJsonSize() {
 }
 
 
-// This prints a properly formatted JSON for EnviroDIY to an Arduino stream
-void UbidotsPublisher::printSensorDataJSON(Stream* stream) {
-    stream->print(payload);
-
-    for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
-        stream->print('"');
-        stream->print(_baseLogger->getVarUUIDAtI(i));
-        stream->print(F("\":{'value':"));
-        stream->print(_baseLogger->getValueStringAtI(i));
-        stream->print(",'timestamp':");
-        stream->print(Logger::markedUTCEpochTime);
-        stream->print(
-            F("000}"));  // Convert microseconds to milliseconds for ubidots
-        if (i + 1 != _baseLogger->getArrayVarCount()) { stream->print(','); }
-    }
-
-    stream->print(F("}}"));
-}
-
-
-// This prints a fully structured post request for Ubidots to the
-// specified stream.
-void UbidotsPublisher::printUbidotsRequest(Stream* stream) {
-    // Stream the HTTP headers for the post request
-    stream->print(postHeader);
-    stream->print(postEndpoint);
-    stream->print(HTTPtag);
-    stream->print(hostHeader);
-    stream->print(ubidotsHost);
-    stream->print(tokenHeader);
-    stream->print(_authentificationToken);
-    stream->print(contentLengthHeader);
-    stream->print(calculateJsonSize());
-    stream->print(contentTypeHeader);
-
-    // Stream the JSON itself
-    printSensorDataJSON(stream);
-}
-
-
 // A way to begin with everything already set
 void UbidotsPublisher::begin(Logger& baseLogger, Client* inClient,
                              const char* authentificationToken,
@@ -167,93 +124,48 @@ int16_t UbidotsPublisher::publishData(Client* outClient) {
     MS_START_DEBUG_TIMER;
     if (outClient->connect(ubidotsHost, ubidotsPort)) {
         MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms\n"));
+        txBufferInit(outClient);
 
         // copy the initial post header into the tx buffer
-        snprintf(txBuffer, sizeof(txBuffer), "%s", postHeader);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", postEndpoint);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s",
-                 _baseLogger->getSamplingFeatureUUID());
-        txBuffer[strlen(txBuffer)] = '/';
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", HTTPtag);
+        txBufferAppend(postHeader);
+        txBufferAppend(postEndpoint);
+        txBufferAppend(_baseLogger->getSamplingFeatureUUID());
+        txBufferAppend('/');
+        txBufferAppend(HTTPtag);
 
         // add the rest of the HTTP POST headers to the outgoing buffer
-        // before adding each line/chunk to the outgoing buffer, we make sure
-        // there is space for that line, sending out buffer if not
-        if (bufferFree() < 28) printTxBuffer(outClient);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", hostHeader);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", ubidotsHost);
+        txBufferAppend(hostHeader);
+        txBufferAppend(ubidotsHost);
+        txBufferAppend(tokenHeader);
+        txBufferAppend(_authentificationToken);
 
-        if (bufferFree() < 47) printTxBuffer(outClient);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", tokenHeader);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s",
-                 _authentificationToken);
-
-        if (bufferFree() < 26) printTxBuffer(outClient);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s",
-                 contentLengthHeader);
+        txBufferAppend(contentLengthHeader);
         itoa(calculateJsonSize(), tempBuffer, 10);  // BASE 10
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", tempBuffer);
+        txBufferAppend(tempBuffer);
 
-        if (bufferFree() < 42) printTxBuffer(outClient);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", contentTypeHeader);
+        txBufferAppend(contentTypeHeader);
 
         // put the start of the JSON into the outgoing response_buffer
-        if (bufferFree() < 21) printTxBuffer(outClient);
-
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", payload);
+        txBufferAppend(payload);
 
         for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
-            // Once the buffer fills, send it out
-            if (bufferFree() < 47) printTxBuffer(outClient);
-
-            txBuffer[strlen(txBuffer)] = '"';
-            _baseLogger->getVarUUIDAtI(i).toCharArray(tempBuffer, 37);
-            snprintf(txBuffer + strlen(txBuffer),
-                     sizeof(txBuffer) - strlen(txBuffer), "%s", tempBuffer);
-            txBuffer[strlen(txBuffer)] = '"';
-            snprintf(txBuffer + strlen(txBuffer),
-                     sizeof(txBuffer) - strlen(txBuffer), "%s", ":{");
-            txBuffer[strlen(txBuffer)] = '"';
-            snprintf(txBuffer + strlen(txBuffer),
-                     sizeof(txBuffer) - strlen(txBuffer), "%s", "value");
-            txBuffer[strlen(txBuffer)] = '"';
-            txBuffer[strlen(txBuffer)] = ':';
-            _baseLogger->getValueStringAtI(i).toCharArray(tempBuffer, 37);
-            snprintf(txBuffer + strlen(txBuffer),
-                     sizeof(txBuffer) - strlen(txBuffer), "%s", tempBuffer);
-            txBuffer[strlen(txBuffer)] = ',';
-            txBuffer[strlen(txBuffer)] = '"';
-            snprintf(txBuffer + strlen(txBuffer),
-                     sizeof(txBuffer) - strlen(txBuffer), "%s", "timestamp");
-            txBuffer[strlen(txBuffer)] = '"';
-            txBuffer[strlen(txBuffer)] = ':';
+            txBufferAppend('"');
+            txBufferAppend(_baseLogger->getVarUUIDAtI(i).c_str());
+            txBufferAppend("\":{\"value\":");
+            txBufferAppend(_baseLogger->getValueStringAtI(i).c_str());
+            txBufferAppend(",\"timestamp\":");
             ltoa(Logger::markedUTCEpochTime, tempBuffer, 10);  // BASE 10
-            snprintf(txBuffer + strlen(txBuffer),
-                     sizeof(txBuffer) - strlen(txBuffer), "%s", tempBuffer);
-            snprintf(txBuffer + strlen(txBuffer),
-                     sizeof(txBuffer) - strlen(txBuffer), "%s", "000");
+            txBufferAppend(tempBuffer);
+            txBufferAppend("000}");
             if (i + 1 != _baseLogger->getArrayVarCount()) {
-                txBuffer[strlen(txBuffer)] = '}';
-                txBuffer[strlen(txBuffer)] = ',';
+                txBufferAppend(',');
             } else {
-                txBuffer[strlen(txBuffer)] = '}';
-                txBuffer[strlen(txBuffer)] = '}';
+                txBufferAppend('}');
             }
         }
 
-        // Send out the finished request (or the last unsent section of it)
-        printTxBuffer(outClient, true);
+        // Flush the complete request
+        txBufferFlush();
 
         // Wait 10 seconds for a response from the server
         uint32_t start = millis();
@@ -279,6 +191,7 @@ int16_t UbidotsPublisher::publishData(Client* outClient) {
     int16_t responseCode = 0;
     if (did_respond > 0) {
         char responseCode_char[4];
+        responseCode_char[3] = 0;
         for (uint8_t i = 0; i < 3; i++) {
             responseCode_char[i] = tempBuffer[i + 9];
         }
@@ -287,7 +200,7 @@ int16_t UbidotsPublisher::publishData(Client* outClient) {
         responseCode = 504;
     }
 
-    PRINTOUT(F("-- Response Code --"));
+    PRINTOUT(F("\n-- Response Code --"));
     PRINTOUT(responseCode);
 
     return responseCode;

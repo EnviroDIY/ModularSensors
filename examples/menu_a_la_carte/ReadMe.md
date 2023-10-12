@@ -77,6 +77,7 @@ ___
       - [Everlight ALS-PT19 Ambient Light Sensor ](#everlight-als-pt19-ambient-light-sensor-)
     - [External Voltage via TI ADS1x15 ](#external-voltage-via-ti-ads1x15-)
     - [Freescale Semiconductor MPL115A2 Miniature I2C Digital Barometer ](#freescale-semiconductor-mpl115a2-miniature-i2c-digital-barometer-)
+    - [GroPoint Profile GPLP-8 Eight-Segment Soil Moisture and Temperature Profiling Probe ](#gropoint-profile-gplp-8-eight-segment-soil-moisture-and-temperature-profiling-probe-)
       - [In-Situ Aqua/Level TROLL Pressure, Temperature, and Depth Sensor ](#in-situ-aqualevel-troll-pressure-temperature-and-depth-sensor-)
       - [In-Situ RDO PRO-X Rugged Dissolved Oxygen Probe ](#in-situ-rdo-pro-x-rugged-dissolved-oxygen-probe-)
     - [Keller RS485/Modbus Water Level Sensors ](#keller-rs485modbus-water-level-sensors-)
@@ -828,6 +829,15 @@ Because this sensor can have only one I2C address (0x60), it is only possible to
 @see @ref sensor_mpl115a2
 
 [//]: # ( @menusnip{freescale_mpl115a2} )
+
+___
+
+
+### GroPoint Profile GPLP-8 Eight-Segment Soil Moisture and Temperature Profiling Probe <!-- {#menu_walk_gplp8} -->
+
+@see @ref sensor_gplp8
+
+[//]: # ( @menusnip{gro_point_gplp8} )
 
 ___
 

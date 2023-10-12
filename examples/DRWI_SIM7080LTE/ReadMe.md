@@ -1,8 +1,9 @@
 # DRWI Sites with EnviroDIY LTE Bees <!-- {#example_drwi_ediylte} -->
-Example sketch for using the EnviroDIY SIM7080G LTE cellular module with an EnviroDIY Mayfly Data Logger.
+
+The DRWI EnviroDIY LTEbee example uses the sensors and equipment common to older stations (2016-2020) deployed by groups participating in the DRWI Citizen Science project with the Stroud Water Research Center. It includes a Meter Hydros 21 (CTD), a Campbell OBS3+, (Turbidity) and a SIM7080G-based EnviroDIY LTEbee for communication.
 
 The exact hardware configuration used in this example:
- * Mayfly v1.0 board
+ * Mayfly v1.x board
  * EnviroDIY SIM7080 LTE module (with Hologram SIM card)
  * Hydros21 CTD sensor
  * Campbell Scientific OBS3+ Turbidity sensor

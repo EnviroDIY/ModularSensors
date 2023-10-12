@@ -305,25 +305,11 @@ bool Logger::syncRTC() {
             PRINTOUT(F("Could not wake modem for clock sync."));
         }
         watchDogTimer.resetWatchDog();
-        // Power down the modem - but only if there will be more than 15 seconds
-        // before the NEXT logging interval - it can take the modem that long to
-        // shut down
 
-        uint32_t setupFinishTime = getNowLocalEpoch();
-        if (setupFinishTime % (_loggingIntervalMinutes * 60) > 15) {
-            MS_DBG(F("At"), formatDateTime_ISO8601(setupFinishTime), F("with"),
-                   setupFinishTime % (_loggingIntervalMinutes * 60),
-                   F("seconds until next logging interval, putting modem to "
-                     "sleep"));
-            _logModem->disconnectInternet();
-            _logModem->modemSleepPowerDown();
-        } else {
-            MS_DBG(F("At"), formatDateTime_ISO8601(setupFinishTime),
-                   F("there are only"),
-                   setupFinishTime % (_loggingIntervalMinutes * 60),
-                   F("seconds until next logging interval; leaving modem on "
-                     "and connected to the internet."));
-        }
+        // Power down the modem now that we are done with it
+        MS_DBG(F("Powering down modem after clock sync."));
+        _logModem->disconnectInternet();
+        _logModem->modemSleepPowerDown();
     }
     watchDogTimer.resetWatchDog();
     return success;
@@ -1053,12 +1039,10 @@ bool Logger::initializeSDCard(void) {
 
 // Protected helper function - This sets a timestamp on a file
 void Logger::setFileTimestamp(File fileToStamp, uint8_t stampFlag) {
-    fileToStamp.timestamp(stampFlag, dtFromEpoch(getNowLocalEpoch()).year(),
-                          dtFromEpoch(getNowLocalEpoch()).month(),
-                          dtFromEpoch(getNowLocalEpoch()).date(),
-                          dtFromEpoch(getNowLocalEpoch()).hour(),
-                          dtFromEpoch(getNowLocalEpoch()).minute(),
-                          dtFromEpoch(getNowLocalEpoch()).second());
+    DateTime dt = dtFromEpoch(getNowLocalEpoch());
+
+    fileToStamp.timestamp(stampFlag, dt.year(), dt.month(), dt.date(),
+                          dt.hour(), dt.minute(), dt.second());
 }
 
 
@@ -1272,14 +1256,6 @@ void Logger::testingMode() {
         PRINTOUT(F("------------------------------------------"));
 
         // Update the modem metadata
-        // NOTE:  the extra get signal quality is an annoying redundancy
-        // needed only for the wifi XBee.  Update metadata will also ask the
-        // module for current signal quality using the underlying TinyGSM
-        // getSignalQuality() function, but for the WiFi XBee it will not
-        // actually measure anything except by explicitly making a connection,
-        // which getModemSignalQuality() does.  For all of the other modules,
-        // getModemSignalQuality() is just a straight pass-through to
-        // getSignalQuality().
         if (gotInternetConnection) { _logModem->updateModemMetadata(); }
 
         watchDogTimer.resetWatchDog();

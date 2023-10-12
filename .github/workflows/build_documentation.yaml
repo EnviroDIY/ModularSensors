@@ -36,14 +36,14 @@ jobs:
     name: Check that all classes are documented in the menu-a-la-carte example
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
 
-      # Using anwer from here to get the exit code and pass the output:  https://stackoverflow.com/questions/59191913/how-do-i-get-the-output-of-a-specific-step-in-github-actions
+      # Using answer from here to get the exit code and pass the output:  https://stackoverflow.com/questions/59191913/how-do-i-get-the-output-of-a-specific-step-in-github-actions
       - name: check for classes in the menu example
         id: check_component
         continue-on-error: true
@@ -84,7 +84,7 @@ jobs:
 
     steps:
       # check out the ModularSensors repo
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           path: code_docs/ModularSensors
 
@@ -124,7 +124,7 @@ jobs:
 
       # check out my fork of m.css, for processing Doxygen output
       - name: Checkout m.css
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           # Repository name with owner. For example, actions/checkout
           repository: SRGDamia1/m.css
@@ -149,7 +149,7 @@ jobs:
 
       - name: Deploy to github pages
         if: "(github.event_name == 'release' && github.event.action == 'published') || (github.event_name == 'workflow_dispatch' && github.event.inputs.publish == 'true')"
-        uses: peaceiris/actions-gh-pages@v3.9.2
+        uses: peaceiris/actions-gh-pages@v3.9.3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ${{ github.workspace }}/code_docs/ModularSensorsDoxygen/m.css

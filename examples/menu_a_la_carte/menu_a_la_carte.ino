@@ -267,7 +267,7 @@ const int8_t  greenLED   = 8;       // Pin for the green LED
 const int8_t  redLED     = 9;       // Pin for the red LED
 const int8_t  buttonPin  = 21;      // Pin for debugging mode (ie, button pin)
 const int8_t  wakePin    = 31;  // MCU interrupt/alarm pin to wake from sleep
-// Mayfly 0.x D31 = A7
+// Mayfly 0.x, 1.x D31 = A7
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
@@ -1363,6 +1363,78 @@ Variable* mplTemp = new FreescaleMPL115A2_Temp(
 /** End [freescale_mpl115a2] */
 #endif
 
+#if defined BUILD_SENSOR_GRO_POINT_GPLP8
+// ==========================================================================
+//  GroPoint Profile GPLP-8 Soil Moisture and Temperature Sensor
+// ==========================================================================
+/** Start [gro_point_gplp8] */
+#include <sensors/GroPointGPLP8.h>
+
+// NOTE: Extra hardware and software serial ports are created in the "Settings
+// for Additional Serial Ports" section
+
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+byte gplp8ModbusAddress = 0x19;  // The modbus address of the gplp8
+// Raw Request >>> {0x19, 0x03, 0x00, 0xC8, 0x00, 0x01, 0x06, 0x2C}
+const int8_t  gplp8AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  gplp8SensorPower    = A3;  // Sensor power pin
+const int8_t  gplp8EnablePin      = -1;                    // Adapter RE/DE pin
+const uint8_t gplp8NumberReadings = 1;
+// The manufacturer recommends averaging 10 readings, but we take 5 to minimize
+// power consumption
+
+// Create a GroPoint Profile GPLP-8 sensor object
+GroPointGPLP8 gplp8(gplp8ModbusAddress, modbusSerial, gplp8AdapterPower,
+                    gplp8SensorPower, gplp8EnablePin, gplp8NumberReadings);
+
+// Create moisture variable pointers for each segment of the GPLP-8
+Variable* gplp8Moist1 = new GroPointGPLP8_Moist(
+    &gplp8, 0, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Moist1");
+Variable* gplp8Moist2 = new GroPointGPLP8_Moist(
+    &gplp8, 1, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Moist2");
+Variable* gplp8Moist3 = new GroPointGPLP8_Moist(
+    &gplp8, 2, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Moist3");
+Variable* gplp8Moist4 = new GroPointGPLP8_Moist(
+    &gplp8, 3, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Moist4");
+Variable* gplp8Moist5 = new GroPointGPLP8_Moist(
+    &gplp8, 4, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Moist5");
+Variable* gplp8Moist6 = new GroPointGPLP8_Moist(
+    &gplp8, 5, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Moist6");
+Variable* gplp8Moist7 = new GroPointGPLP8_Moist(
+    &gplp8, 6, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Moist7");
+Variable* gplp8Moist8 = new GroPointGPLP8_Moist(
+    &gplp8, 7, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Moist8");
+
+// Create temperature variable pointers for each sensor of the GPLP-8
+Variable* gplp8Temp1 = new GroPointGPLP8_Temp(
+    &gplp8, 8, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp1");
+Variable* gplp8Temp2 = new GroPointGPLP8_Temp(
+    &gplp8, 9, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp1");
+Variable* gplp8Temp3 = new GroPointGPLP8_Temp(
+    &gplp8, 10, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp3");
+Variable* gplp8Temp4 = new GroPointGPLP8_Temp(
+    &gplp8, 11, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp4");
+Variable* gplp8Temp5 = new GroPointGPLP8_Temp(
+    &gplp8, 12, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp5");
+Variable* gplp8Temp6 = new GroPointGPLP8_Temp(
+    &gplp8, 13, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp6");
+Variable* gplp8Temp7 = new GroPointGPLP8_Temp(
+    &gplp8, 14, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp7");
+Variable* gplp8Temp8 = new GroPointGPLP8_Temp(
+    &gplp8, 15, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp8");
+Variable* gplp8Temp9 = new GroPointGPLP8_Temp(
+    &gplp8, 16, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp9");
+Variable* gplp8Temp10 = new GroPointGPLP8_Temp(
+    &gplp8, 17, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp10");
+Variable* gplp8Temp11 = new GroPointGPLP8_Temp(
+    &gplp8, 18, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp11");
+Variable* gplp8Temp12 = new GroPointGPLP8_Temp(
+    &gplp8, 19, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp12");
+Variable* gplp8Temp13 = new GroPointGPLP8_Temp(
+    &gplp8, 20, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp13");
+/** End [gro_point_gplp8] */
+#endif
+
 
 #if defined BUILD_SENSOR_IN_SITU_RDO
 // ==========================================================================
@@ -2376,7 +2448,7 @@ Variable* calculatedVar = new Variable(
 #if defined BUILD_TEST_CREATE_IN_ARRAY
 // ==========================================================================
 //  Creating the Variable Array[s] and Filling with Variable Objects
-//  NOTE:  This shows three differnt ways of creating the same variable array
+//  NOTE:  This shows three different ways of creating the same variable array
 //         and filling it with variables
 // ==========================================================================
 /** Start [variables_create_in_array] */
@@ -2538,6 +2610,29 @@ Variable* variableList[] = {
 #if defined BUILD_SENSOR_FREESCALE_MPL115A2
     mplTemp,
     mplPress,
+#endif
+#if defined BUILD_SENSOR_GRO_POINT_GPLP8
+    gplp8Moist1,
+    gplp8Moist2,
+    gplp8Moist3,
+    gplp8Moist4,
+    gplp8Moist5,
+    gplp8Moist6,
+    gplp8Moist7,
+    gplp8Moist8,
+    gplp8Temp1,
+    gplp8Temp2,
+    gplp8Temp3,
+    gplp8Temp4,
+    gplp8Temp5,
+    gplp8Temp6,
+    gplp8Temp7,
+    gplp8Temp8,
+    gplp8Temp9,
+    gplp8Temp10,
+    gplp8Temp11,
+    gplp8Temp12,
+    gplp8Temp13,
 #endif
 #if defined BUILD_SENSOR_IN_SITU_RDO
     rdoTemp,
@@ -2853,7 +2948,7 @@ void setup() {
     Serial.print(F("TinyGSM Library version "));
     Serial.println(TINYGSM_VERSION);
     Serial.println();
-/** End [setup_prints] */
+    /** End [setup_prints] */
 
 /** Start [setup_softserial] */
 // Allow interrupts for software serial

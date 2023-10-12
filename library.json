@@ -1,6 +1,6 @@
 {
   "name": "EnviroDIY_ModularSensors",
-  "version": "0.34.0",
+  "version": "0.35.0",
   "description": "A library that allows access to multiple sensors through a unified interface.  This allows the user to simply access many sensors to log the data or send the data to data repositories like the EnviroDIY data portal.",
   "keywords": "modular, sensor, sensors, datalogger, logger, low power, sleeping, EnviroDIY, ModularSensors, Mayfly, WikiWatershed, Monitor My Watershed, ThingSpeak",
   "platforms": "atmelavr, atmelsam",
@@ -109,7 +109,7 @@
     {
       "name": "TinyGSM",
       "owner": "vshymanskyy",
-      "version": "~0.11.5",
+      "version": "~0.11.7",
       "note": "A small Arduino library for GPRS modules.",
       "authors": ["Volodymyr Shymanskyy", "Sara Damiano"],
       "frameworks": "arduino",
@@ -140,7 +140,7 @@
       "owner": "adafruit",
       "library id": "31",
       "url": "https://github.com/adafruit/Adafruit_Sensor",
-      "version": "~1.1.9",
+      "version": "~1.1.13",
       "note": "Adafruit's unified sensor library is used by their other libraries",
       "authors": ["Adafruit"],
       "frameworks": "arduino",
@@ -225,7 +225,7 @@
       "owner": "adafruit",
       "library id": "11710",
       "url": "https://github.com/adafruit/Adafruit_SHT4X",
-      "version": "~1.0.2",
+      "version": "~1.0.4",
       "note": "Sensirion SHT4x Library by Adafruit",
       "authors": ["Adafruit"],
       "frameworks": "arduino"
@@ -331,6 +331,16 @@
       "platforms": "atmelavr, atmelsam"
     },
     {
+      "name": "GroPointModbus",
+      "owner": "envirodiy",
+      "url": "https://github.com/EnviroDIY/GroPointModbus.git",
+      "version": "~0.1.0",
+      "note": "A library to use an Arduino as a master to control and communicate via modbus with GroPoint soil moisture sensors. ",
+      "authors": ["Anthony Aufdenkampe"],
+      "frameworks": "arduino",
+      "platforms": "atmelavr, atmelsam"
+    },
+    {
         "name": "cryptosuite2",
         "owner": "envirodiy",
         "url": "https://github.com/EnviroDIY/cryptosuite2",
@@ -339,6 +349,6 @@
         "authors": [],
         "frameworks": "arduino",
         "platforms": "*"
-      }  
+    }
   ]
 }

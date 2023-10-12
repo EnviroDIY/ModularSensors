@@ -132,6 +132,9 @@ arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install Ke
 echo "\n\e[32mInstalling EnviroDIY YosemitechModbus library from Arduino library index\e[0m"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install YosemitechModbus
 
+echo "\n\e[32mInstalling EnviroDIY GropointModbus library from Arduino library index\e[0m"
+arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install GropointModbus
+
 echo "\n\e[32mInstalling StreamDebugger library from Arduino library index\e[0m"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install StreamDebugger
 
