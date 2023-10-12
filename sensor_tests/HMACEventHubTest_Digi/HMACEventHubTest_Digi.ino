@@ -1,6 +1,11 @@
 /** =========================================================================
- * @file DRWI_DigiLTE.ino
- * @brief Example for DRWI CitSci LTE sites.
+ * @file HMACEventHubTest_Digi.ino
+ * @brief Test, based off DRWI_DigiLTE.ino.ino
+ *
+ * This example shows proper settings for the following configuration:
+ *
+ * Mayfly v1.1 board
+ * EnviroDIY SIM7080 LTE module (with Hologram SIM card)
  *
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  * @author Anthony Aufdenkampe <aaufdenkampe@limno.com>
@@ -16,7 +21,10 @@
  * ======================================================================= */
 
 // ==========================================================================
-//  Defines for TinyGSM
+//  Defines for the Arduino IDE
+//  NOTE:  These are ONLY needed to compile with the Arduino IDE.
+//         If you use PlatformIO, you should set these build flags in your
+//         platformio.ini
 // ==========================================================================
 /** Start [defines] */
 #ifndef TINY_GSM_RX_BUFFER
@@ -48,25 +56,23 @@
 // ==========================================================================
 /** Start [logging_options] */
 // The name of this program file
-const char* sketchName = "DRWI_DigiLTE.ino";
+const char* sketchName = "HMACEventHubTest_Digi.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char* LoggerID = "XXXXX";
+const char* LoggerID = "HMACEventHubTest_Digi";
 // How frequently (in minutes) to log data
-const uint8_t loggingInterval = 15;
+const uint8_t loggingInterval = 1;
 // Your logger's timezone.
 const int8_t timeZone = -5;  // Eastern Standard Time
 // NOTE:  Daylight savings time will not be applied!  Please use standard time!
 
 // Set the input and output pins for the logger
 // NOTE:  Use -1 for pins that do not apply
-const int32_t serialBaud = 57600;  // Baud rate for debugging
+const int32_t serialBaud = 115200;  // Baud rate for debugging
 const int8_t  greenLED   = 8;      // Pin for the green LED
 const int8_t  redLED     = 9;      // Pin for the red LED
 const int8_t  buttonPin  = 21;     // Pin for debugging mode (ie, button pin)
 const int8_t  wakePin    = 31;     // MCU interrupt/alarm pin to wake from sleep
 // Mayfly 0.x D31 = A7
-// Set the wake pin to -1 if you do not want the main processor to sleep.
-// In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
 const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
@@ -98,11 +104,13 @@ const int8_t modemLEDPin = redLED;   // MCU pin connected an LED to show modem
                                      // status (-1 if unconnected)
 
 // Network connection information
-const char* apn = "hologram";  // The APN for the gprs connection
+const char* apn =
+    "hologram";  // APN connection name, typically Hologram unless you have a
+                 // different provider's SIM card. Change as needed
 
 DigiXBeeCellularTransparent modemXBCT(&modemSerial, modemVccPin, modemStatusPin,
                                       useCTSforStatus, modemResetPin,
-                                      modemSleepRqPin, apn);
+                        modemSleepRqPin, apn);
 // Create an extra reference to the modem by a generic name
 DigiXBeeCellularTransparent modem = modemXBCT;
 /** End [digi_xbee_cellular_transparent] */
@@ -131,68 +139,15 @@ MaximDS3231 ds3231(1);
 /** End [ds3231] */
 
 
-// ==========================================================================
-//  Campbell OBS 3 / OBS 3+ Analog Turbidity Sensor
-// ==========================================================================
-/** Start [obs3] */
-#include <sensors/CampbellOBS3.h>
-
-const int8_t  OBS3Power = sensorPowerPin;  // Power pin (-1 if unconnected)
-const uint8_t OBS3NumberReadings = 10;
-const uint8_t ADSi2c_addr        = 0x48;  // The I2C address of the ADS1115 ADC
-// Campbell OBS 3+ *Low* Range Calibration in Volts
-const int8_t OBSLowADSChannel = 0;  // ADS channel for *low* range output
-const float  OBSLow_A         = 0.000E+00;  // "A" value (X^2) [*low* range]
-const float  OBSLow_B         = 1.000E+00;  // "B" value (X) [*low* range]
-const float  OBSLow_C         = 0.000E+00;  // "C" value [*low* range]
-
-// Create a Campbell OBS3+ *low* range sensor object
-CampbellOBS3 osb3low(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B, OBSLow_C,
-                     ADSi2c_addr, OBS3NumberReadings);
-
-
-// Campbell OBS 3+ *High* Range Calibration in Volts
-const int8_t OBSHighADSChannel = 1;  // ADS channel for *high* range output
-const float  OBSHigh_A         = 0.000E+00;  // "A" value (X^2) [*high* range]
-const float  OBSHigh_B         = 1.000E+00;  // "B" value (X) [*high* range]
-const float  OBSHigh_C         = 0.000E+00;  // "C" value [*high* range]
-
-// Create a Campbell OBS3+ *high* range sensor object
-CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B,
-                      OBSHigh_C, ADSi2c_addr, OBS3NumberReadings);
-/** End [obs3] */
-
-
-// ==========================================================================
-//  Meter Hydros 21 Conductivity, Temperature, and Depth Sensor
-// ==========================================================================
-/** Start [hydros21] */
-#include <sensors/MeterHydros21.h>
-
-const char*   hydrosSDI12address = "1";  // The SDI-12 Address of the Hydros 21
-const uint8_t hydrosNumberReadings = 6;  // The number of readings to average
-const int8_t  SDI12Power = sensorPowerPin;  // Power pin (-1 if unconnected)
-const int8_t  SDI12Data  = 7;               // The SDI12 data pin
-
-// Create a Meter Hydros 21 sensor object
-MeterHydros21 hydros(*hydrosSDI12address, SDI12Power, SDI12Data,
-                     hydrosNumberReadings);
-/** End [hydros21] */
-
 
 // ==========================================================================
 //  Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
 /** Start [variable_arrays] */
 Variable* variableList[] = {
-    new MeterHydros21_Cond(&hydros),
-    new MeterHydros21_Depth(&hydros),
-    new MeterHydros21_Temp(&hydros),
-    new CampbellOBS3_Turbidity(&osb3low, "", "TurbLow"),
-    new CampbellOBS3_Turbidity(&osb3high, "", "TurbHigh"),
-    new ProcessorStats_Battery(&mcuBoard),
+    // new ProcessorStats_Battery(&mcuBoard),
     new MaximDS3231_Temp(&ds3231),
-    new Modem_SignalPercent(&modem),
+    // new Modem_SignalPercent(&modem),
 };
 
 // All UUID's, device registration, and sampling feature information can be
@@ -216,17 +171,13 @@ Variable* variableList[] = {
 
 const char* UUIDs[] =  // UUID array for device sensors
     {
-        "12345678-abcd-1234-ef00-1234567890ab",  // Specific conductance (Meter_Hydros21_Cond)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Water depth (Meter_Hydros21_Depth)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Temperature (Meter_Hydros21_Temp)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity (Campbell_OBS3_Turb) (Low)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity (Campbell_OBS3_Turb) (High)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Battery voltage (EnviroDIY_Mayfly_Batt)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Battery voltage (EnviroDIY_Mayfly_Batt)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Percent full scale (Digi_Cellular_SignalPercent)
+        // formatted below to all have 11 characters
+        // "Mayfly_Batt",  // Battery voltage (EnviroDIY_Mayfly_Batt)
+        "measurement",  // Board Temperature (EnviroDIY_Mayfly_Temp)
+        // "LTEB_Signal",  // Percent full scale (EnviroDIY_LTEB_SignalPercent)
 };
-const char* registrationToken = "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
-const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  // Sampling feature UUID
+const char* registrationToken = "SharedAccessSignature sr=https%3A%2F%2Fevent-hub-data-logger.servicebus.windows.net%2Fdevices%2Fmessages&sig=c9JbL/90pYNuGVOPx7pcsk2xtYvlcUSVPS5td8Uqgk0%3D&se=1650395209&skn=mayfly-device";  // Device registration token
+const char* samplingFeature = "27abab02-2c22-452e-8c26-3bce138554ee";  // Sampling feature UUID
 
 
 // -----------------------   End of Token UUID List  -----------------------
@@ -254,8 +205,8 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 // ==========================================================================
 /** Start [publishers] */
 // Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
-#include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modem.gsmClient,
+#include <publishers/EventHubPublisher.h>
+EventHubPublisher EventHubPOST(dataLogger, &modem.gsmClient,
                                  registrationToken, samplingFeature);
 /** End [publishers] */
 
@@ -334,6 +285,15 @@ void setup() {
 
     // Begin the logger
     dataLogger.begin();
+
+    // Test HMAC token
+    // Secret key and Plain Text to Compute Hash
+    const char*   key     = "Jefe";
+    const char*   text_to_hash = "what do ya want for nothing?";
+
+    // Call method of dataPublisher object
+    EventHubPOST.writeHMACtoken(key, text_to_hash);
+
 
     // Note:  Please change these battery voltages to match your battery
     // Set up the sensors, except at lowest battery level
