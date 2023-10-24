@@ -161,7 +161,7 @@
       "owner": "adafruit",
       "library id": "773",
       "url": "https://github.com/adafruit/Adafruit_AM2315",
-      "version": "~2.2.1",
+      "version": "~2.2.3",
       "note": "AOSong AM2315 I2C Temp/Humidity Sensor Library by Adafruit",
       "authors": ["Adafruit"],
       "frameworks": "arduino",
@@ -181,8 +181,7 @@
     {
       "name": "BMP388_DEV",
       "owner": "MartinL1",
-      "version": "https://github.com/MartinL1/BMP388_DEV.git",
-      "version_note": "~1.0.9",
+      "version": "~1.0.11",
       "note": "An Arduino compatible, non-blocking, I2C/SPI library for the Bosch BMP388 barometer.",
       "authors": ["Martin Lindupp"],
       "frameworks": "arduino",
@@ -215,7 +214,7 @@
       "owner": "adafruit",
       "library id": "406",
       "url": "https://github.com/adafruit/Adafruit_MPL115A2",
-      "version": "~2.0.0",
+      "version": "~2.0.2",
       "note": "MPL115A2 Barometer Library by Adafruit",
       "authors": ["Adafruit"],
       "frameworks": "arduino"
