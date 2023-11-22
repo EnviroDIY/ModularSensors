@@ -7,7 +7,7 @@
  * Adapted from ApogeeSQ212.h and https://github.com/bellahenkel/Soil-Sensing-Device
  * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief Contains the AlphasenseCO2 sensor subclass and the variable subclasses
+ * @brief Contains the AlphasenseCO2 sensor class and the variable subclasses
  * AlphasenseCO2_CO2 and AlphasenseCO2_Voltage.
  *
  * These are used for the Alphasense IRC-A1 Nondispersive Infrared (NDIR) 
@@ -244,7 +244,7 @@ class AlphasenseCO2 : public Sensor {
      */
     AlphasenseCO2(int8_t powerPin, 
                 uint8_t i2cAddress            = ADS1115_ADDRESS,
-                uint8_t measurementsToAverage = 1);
+                uint8_t measurementsToAverage = 7);
     /**
      * @brief Destroy the AlphasenseCO2 object - no action needed
      */
