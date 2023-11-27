@@ -43,6 +43,7 @@ String CampbellOBS3::getSensorLocation(void) {
 
 bool CampbellOBS3::addSingleMeasurementResult(void) {
     // Variables to store the results in
+    int16_t adcCounts = -9999;
     float adcVoltage  = -9999;
     float calibResult = -9999;
 
@@ -82,10 +83,10 @@ bool CampbellOBS3::addSingleMeasurementResult(void) {
 
         // Read Analog to Digital Converter (ADC)
         // Taking this reading includes the 8ms conversion delay.
-        // We're allowing the ADS1115 library to do the bit-to-volts conversion
-        // for us
-        adcVoltage =
-            ads.readADC_SingleEnded(_adsChannel);  // Getting the reading
+        // Measure the ADC raw count
+        adcCounts = ads.readADC_SingleEnded(_adsChannel);
+        // Convert ADC raw counts value to voltage (V)
+        adcVoltage = ads.computeVolts(adcCounts)
         MS_DBG(F("  ads.readADC_SingleEnded("), _adsChannel, F("):"),
                adcVoltage);
 
