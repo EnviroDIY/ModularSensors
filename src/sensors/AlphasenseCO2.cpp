@@ -1,50 +1,50 @@
 /**
- * @file CampbellOBS3.cpp
+ * @file AlphasenseCO2.cpp
  * @copyright 2017-2022 Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ * @copyright 2017-2023 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Written by Anthony Aufdenkampe <aaufdenkampe@limno.com>
+ * and Bella Henkel <bella.henkel@mnsu.edu>
+ * Adapted from ApogeeSQ212.h and https://github.com/bellahenkel/Soil-Sensing-Device
  *
- * @brief Implements the CampbellOBS3 class.
+ * @brief Implements the AlphasenseCO2 class.
  */
 
 
-#include "CampbellOBS3.h"
+#include "AlphasenseCO2.h"
 #include <Adafruit_ADS1X15.h>
 
 
-// The constructor - need the power pin, the data pin, and the calibration info
-CampbellOBS3::CampbellOBS3(int8_t powerPin, uint8_t adsChannel,
-                           float x2_coeff_A, float x1_coeff_B, float x0_coeff_C,
-                           uint8_t i2cAddress, uint8_t measurementsToAverage)
-    : Sensor("CampbellOBS3", OBS3_NUM_VARIABLES, OBS3_WARM_UP_TIME_MS,
-             OBS3_STABILIZATION_TIME_MS, OBS3_MEASUREMENT_TIME_MS, powerPin, -1,
-             measurementsToAverage, OBS3_INC_CALC_VARIABLES),
-      _adsChannel(adsChannel),
-      _x2_coeff_A(x2_coeff_A),
-      _x1_coeff_B(x1_coeff_B),
-      _x0_coeff_C(x0_coeff_C),
+// The constructor - need the power pin and the data pin
+AlphasenseCO2::AlphasenseCO2(int8_t powerPin,
+                         uint8_t i2cAddress, uint8_t measurementsToAverage)
+    : Sensor("AlphasenseCO2", ALPHASENSE_CO2_NUM_VARIABLES, ALPHASENSE_CO2_WARM_UP_TIME_MS,
+             ALPHASENSE_CO2_STABILIZATION_TIME_MS, ALPHASENSE_CO2_MEASUREMENT_TIME_MS, powerPin,
+             -1, measurementsToAverage, ALPHASENSE_CO2_INC_CALC_VARIABLES),
       _i2cAddress(i2cAddress) {}
+
 // Destructor
-CampbellOBS3::~CampbellOBS3() {}
+AlphasenseCO2::~AlphasenseCO2() {}
 
 
-String CampbellOBS3::getSensorLocation(void) {
+String AlphasenseCO2::getSensorLocation(void) {
 #ifndef MS_USE_ADS1015
     String sensorLocation = F("ADS1115_0x");
 #else
     String sensorLocation = F("ADS1015_0x");
 #endif
     sensorLocation += String(_i2cAddress, HEX);
-    sensorLocation += F("_Channel");
-    sensorLocation += String(_adsChannel);
+    sensorLocation += F("; differential between channels 2 and 3");
     return sensorLocation;
 }
 
 
-bool CampbellOBS3::addSingleMeasurementResult(void) {
+bool AlphasenseCO2::addSingleMeasurementResult(void) {
     // Variables to store the results in
     int16_t adcCounts = -9999;
     float adcVoltage  = -9999;
+    float co2Current  = -9999;
     float calibResult = -9999;
 
     // Check a measurement was *successfully* started (status bit 6 set)
@@ -77,34 +77,35 @@ bool CampbellOBS3::addSingleMeasurementResult(void) {
         // Begin ADC
         ads.begin(_i2cAddress);
 
-        // Print out the calibration curve
-        MS_DBG(F("  Input calibration Curve:"), _x2_coeff_A, F("x^2 +"),
-               _x1_coeff_B, F("x +"), _x0_coeff_C);
-
         // Read Analog to Digital Converter (ADC)
         // Taking this reading includes the 8ms conversion delay.
-        // Measure the ADC raw count
-        adcCounts = ads.readADC_SingleEnded(_adsChannel);
-        // Convert ADC raw counts value to voltage (V)
+        // We're allowing the ADS1115 library to do the bit-to-volts conversion
+        // for us
+        // Measure the voltage difference across two pins from the CO2 sensor
+        adcCounts = ads.readADC_Differential_2_3();
+        // Convert ADC counts value to voltage (V)
         adcVoltage = ads.computeVolts(adcCounts)
-        MS_DBG(F("  ads.readADC_SingleEnded("), _adsChannel, F("):"),
+        MS_DBG(F("  ads.readADC_Differential_2_3() converted to volts:"), 
                adcVoltage);
+        
 
         if (adcVoltage < 3.6 && adcVoltage > -0.3) {
             // Skip results out of range
-            // Apply the unique calibration curve for the given sensor
-            calibResult = (_x2_coeff_A * sq(adcVoltage)) +
-                (_x1_coeff_B * adcVoltage) + _x0_coeff_C;
+            // Convert voltage to current (mA) - assuming a 250 Ohm resistor is in series
+            co2Current = (adcVoltage / 250) * 1000;
+            // Convert current to ppm (using a formula recommended by the sensor manufacturer)
+            calibResult = 312.5 * co2Current - 1250;
             MS_DBG(F("  calibResult:"), calibResult);
-        } else {  // set invalid voltages back to -9999
+        } else {
+            // set invalid voltages back to -9999
             adcVoltage = -9999;
         }
     } else {
         MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
     }
 
-    verifyAndAddMeasurementResult(OBS3_TURB_VAR_NUM, calibResult);
-    verifyAndAddMeasurementResult(OBS3_VOLTAGE_VAR_NUM, adcVoltage);
+    verifyAndAddMeasurementResult(ALPHASENSE_CO2_VAR_NUM, calibResult);
+    verifyAndAddMeasurementResult(ALPHASENSE_CO2_VOLTAGE_VAR_NUM, adcVoltage);
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
