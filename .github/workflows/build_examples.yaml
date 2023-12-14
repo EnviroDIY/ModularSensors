@@ -150,7 +150,7 @@ jobs:
           sh continuous_integration/install-test-version-arduino-cli.sh
 
       - name: Download the prepared examples
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: generated_examples
           path: |
@@ -222,7 +222,7 @@ jobs:
           pio pkg install -g --library ${{ env.LIBRARY_INSTALL_GIT }}
 
       - name: Download the prepared examples
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: generated_examples
           path: |
