@@ -34,7 +34,7 @@ jobs:
           python continuous_integration/generate_job_matrix.py
 
       - name: Store generated examples
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: generated_examples
           path: |
