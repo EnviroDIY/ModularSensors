@@ -110,6 +110,11 @@ void Logger::setLoggingInterval(uint16_t loggingIntervalMinutes) {
     _loggingIntervalMinutes = loggingIntervalMinutes;
 }
 
+// Sets the number of short intervals
+void Logger::setNumShortIntervals(uint8_t numShortIntervals) {
+    _remainingShortIntervals = numShortIntervals;
+}
+
 
 // Adds the sampling feature UUID
 void Logger::setSamplingFeatureUUID(const char* samplingFeatureUUID) {
@@ -266,10 +271,19 @@ String Logger::getVarCodeAtI(uint8_t position_i) {
 String Logger::getVarUUIDAtI(uint8_t position_i) {
     return _internalArray->arrayOfVars[position_i]->getVarUUID();
 }
+// This returns the current value of the variable as a float
+float Logger::getValueAtI(uint8_t position_i) {
+    return _internalArray->arrayOfVars[position_i]->getValue();
+}
 // This returns the current value of the variable as a string with the
 // correct number of significant figures
 String Logger::getValueStringAtI(uint8_t position_i) {
     return _internalArray->arrayOfVars[position_i]->getValueString();
+}
+// This returns a particular value of the variable as a string with the
+// correct number of significant figures
+String Logger::formatValueStringAtI(uint8_t position_i, float value) {
+    return _internalArray->arrayOfVars[position_i]->formatValueString(value);
 }
 
 
@@ -331,15 +345,27 @@ void Logger::registerDataPublisher(dataPublisher* publisher) {
     dataPublishers[i] = publisher;
 }
 
+bool Logger::checkRemotesConnectionNeeded(void) {
+    MS_DBG(F("Asking publishers if they need a connection."));
 
-void Logger::publishDataToRemotes(void) {
+    bool needed = false;
+    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
+        if (dataPublishers[i] != nullptr) {
+            needed = needed || dataPublishers[i]->connectionNeeded();
+        }
+    }
+
+    return needed;
+}
+
+void Logger::publishDataToRemotes(bool forceFlush) {
     MS_DBG(F("Sending out remote data."));
 
     for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
         if (dataPublishers[i] != nullptr) {
             PRINTOUT(F("\nSending data to ["), i, F("]"),
                      dataPublishers[i]->getEndpoint());
-            dataPublishers[i]->publishData();
+            dataPublishers[i]->publishData(forceFlush);
             watchDogTimer.resetWatchDog();
         }
     }
@@ -581,17 +607,23 @@ void Logger::markTime(void) {
 bool Logger::checkInterval(void) {
     bool     retval;
     uint32_t checkTime = getNowLocalEpoch();
+    uint16_t interval  = _loggingIntervalMinutes;
+    if (_remainingShortIntervals > 0) { interval = 1; }
+
     MS_DBG(F("Current Unix Timestamp:"), checkTime, F("->"),
            formatDateTime_ISO8601(checkTime));
-    MS_DBG(F("Logging interval in seconds:"), (_loggingIntervalMinutes * 60));
-    MS_DBG(F("Mod of Logging Interval:"),
-           checkTime % (_loggingIntervalMinutes * 60));
+    MS_DBG(F("Logging interval in seconds:"), (interval * 60));
+    MS_DBG(F("Mod of Logging Interval:"), checkTime % (interval * 60));
 
-    if (checkTime % (_loggingIntervalMinutes * 60) == 0) {
+    bool testing = Logger::startTesting;
+    if ((checkTime % (interval * 60) == 0) || testing) {
         // Update the time variables with the current time
         markTime();
         MS_DBG(F("Time marked at (unix):"), Logger::markedLocalEpochTime);
         MS_DBG(F("Time to log!"));
+        if ((_remainingShortIntervals > 0) && (!testing)) {
+            _remainingShortIntervals -= 1;
+        }
         retval = true;
     } else {
         MS_DBG(F("Not time yet."));
@@ -650,15 +682,19 @@ bool Logger::checkInterval(void) {
 
 // This checks to see if the MARKED time is an even interval of the logging rate
 bool Logger::checkMarkedInterval(void) {
+    uint16_t interval = _loggingIntervalMinutes;
+    if (_remainingShortIntervals > 0) { interval = 1; }
+
     bool retval;
     MS_DBG(F("Marked Time:"), Logger::markedLocalEpochTime,
-           F("Logging interval in seconds:"), (_loggingIntervalMinutes * 60),
+           F("Logging interval in seconds:"), (interval * 60),
            F("Mod of Logging Interval:"),
-           Logger::markedLocalEpochTime % (_loggingIntervalMinutes * 60));
+           Logger::markedLocalEpochTime % (interval * 60));
 
     if (Logger::markedLocalEpochTime != 0 &&
-        (Logger::markedLocalEpochTime % (_loggingIntervalMinutes * 60) == 0)) {
+        (Logger::markedLocalEpochTime % (interval * 60) == 0)) {
         MS_DBG(F("Time to log!"));
+        if (_remainingShortIntervals > 0) { _remainingShortIntervals -= 1; }
         retval = true;
     } else {
         MS_DBG(F("Not time yet."));
@@ -1217,15 +1253,19 @@ void Logger::testingISR() {
 }
 
 
-// This defines what to do in the testing mode
-void Logger::testingMode() {
+// This defines what to do in the bench testing mode
+void Logger::benchTestingMode(void) {
+    // If bench testing is not enabled, return now. Allows the function body to
+    // be compiled out if this functionality is disabled.
+    if (!(MS_LOGGERBASE_BUTTON_BENCH_TEST)) return;
+
     // Flag to notify that we're in testing mode
     Logger::isTestingNow = true;
     // Unset the startTesting flag
     Logger::startTesting = false;
 
     PRINTOUT(F("------------------------------------------"));
-    PRINTOUT(F("Entering sensor testing mode"));
+    PRINTOUT(F("Entering bench testing mode"));
     delay(100);  // This seems to prevent crashes, no clue why ....
 
     // Get the modem ready
@@ -1397,9 +1437,13 @@ void Logger::logData(void) {
     // Reset the watchdog
     watchDogTimer.resetWatchDog();
 
-    // Assuming we were woken up by the clock, check if the current time is an
-    // even interval of the logging interval
-    if (checkInterval()) {
+    // If bench testing is enabled and button was pressed, do the bench test
+    if ((MS_LOGGERBASE_BUTTON_BENCH_TEST) && Logger::startTesting) {
+        benchTestingMode();
+    } else if (checkInterval()) {
+        // We've checked that the current time is an even interval of the
+        // logging interval or we were requested to log by the button
+
         // Flag to notify that we're in already awake and logging a point
         Logger::isLoggingNow = true;
         // Reset the watchdog
@@ -1432,22 +1476,26 @@ void Logger::logData(void) {
 
         // Unset flag
         Logger::isLoggingNow = false;
+        // Acknowledge testing button if pressed
+        Logger::startTesting = false;
     }
-
-    // Check if it was instead the testing interrupt that woke us up
-    if (Logger::startTesting) testingMode();
 
     // Sleep
     systemSleep();
 }
+
 // This is a one-and-done to log data
 void Logger::logDataAndPublish(void) {
     // Reset the watchdog
     watchDogTimer.resetWatchDog();
 
-    // Assuming we were woken up by the clock, check if the current time is an
-    // even interval of the logging interval
-    if (checkInterval()) {
+    // If bench testing is enabled and button was pressed, do the bench test
+    if ((MS_LOGGERBASE_BUTTON_BENCH_TEST) && Logger::startTesting) {
+        benchTestingMode();
+    } else if (checkInterval()) {
+        // We've checked that the current time is an even interval of the
+        // logging interval or we were requested to log by the button
+
         // Flag to notify that we're in already awake and logging a point
         Logger::isLoggingNow = true;
         // Reset the watchdog
@@ -1482,22 +1530,31 @@ void Logger::logDataAndPublish(void) {
         // Create a csv data record and save it to the log file
         logToSD();
 
-        if (_logModem != nullptr) {
+        // flush the publisher buffers (if any) if we have been invoked by the
+        // testing button
+        bool forceFlush = Logger::startTesting;
+
+        // Sync the clock at noon
+        bool clockSyncNeeded =
+            (Logger::markedLocalEpochTime != 0 &&
+             Logger::markedLocalEpochTime % 86400 == 43200) ||
+            !isRTCSane(Logger::markedLocalEpochTime);
+        bool connectionNeeded = checkRemotesConnectionNeeded() ||
+            clockSyncNeeded || forceFlush;
+
+        if (_logModem != nullptr && connectionNeeded) {
             MS_DBG(F("Waking up"), _logModem->getModemName(), F("..."));
             if (_logModem->modemWake()) {
                 // Connect to the network
                 watchDogTimer.resetWatchDog();
                 MS_DBG(F("Connecting to the Internet..."));
-                if (_logModem->connectInternet()) {
+                if (_logModem->connectInternet(240000L)) {
                     // Publish data to remotes
                     watchDogTimer.resetWatchDog();
-                    publishDataToRemotes();
+                    publishDataToRemotes(forceFlush);
                     watchDogTimer.resetWatchDog();
 
-                    if ((Logger::markedLocalEpochTime != 0 &&
-                         Logger::markedLocalEpochTime % 86400 == 43200) ||
-                        !isRTCSane(Logger::markedLocalEpochTime)) {
-                        // Sync the clock at noon
+                    if (clockSyncNeeded) {
                         MS_DBG(F("Running a daily clock sync..."));
                         setRTClock(_logModem->getNISTTime());
                         watchDogTimer.resetWatchDog();
@@ -1517,6 +1574,12 @@ void Logger::logDataAndPublish(void) {
             }
             // Turn the modem off
             _logModem->modemSleepPowerDown();
+        } else if (_logModem != nullptr) {
+            MS_DBG(F("Nobody needs it so publishing without connecting..."));
+            // Call publish function without connection
+            watchDogTimer.resetWatchDog();
+            publishDataToRemotes(false);  // can't flush without a connection
+            watchDogTimer.resetWatchDog();
         }
 
 
@@ -1534,11 +1597,10 @@ void Logger::logDataAndPublish(void) {
 
         // Unset flag
         Logger::isLoggingNow = false;
+        // Acknowledge testing button if pressed
+        Logger::startTesting = false;
     }
 
-    // Check if it was instead the testing interrupt that woke us up
-    if (Logger::startTesting) testingMode();
-
-    // Call the processor sleep
+    // Sleep
     systemSleep();
 }

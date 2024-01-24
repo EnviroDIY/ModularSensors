@@ -1,8 +1,10 @@
 /**
  * @file EnviroDIYPublisher.h
  * @copyright 2017-2022 Stroud Water Research Center
+ * @copyright 2023 Thomas Watson
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ * @author Thomas Watson <twatson52@icloud.com>
  *
  * @brief Contains the EnviroDIYPublisher subclass of dataPublisher for
  * publishing data to the Monitor My Watershed/EnviroDIY data portal at
@@ -24,6 +26,7 @@
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 #include "dataPublisherBase.h"
+#include "LogBuffer.h"
 
 
 // ============================================================================
@@ -52,7 +55,7 @@ class EnviroDIYPublisher : public dataPublisher {
      *
      * @param baseLogger The logger supplying the data to be published
      * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. NOTE: not implemented by this publisher!
+     * attempted data transmissions.
      */
     explicit EnviroDIYPublisher(Logger& baseLogger, int sendEveryX = 1);
     /**
@@ -63,7 +66,7 @@ class EnviroDIYPublisher : public dataPublisher {
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
      * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. NOTE: not implemented by this publisher!
+     * attempted data transmissions.
      */
     EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
                        int sendEveryX = 1);
@@ -76,7 +79,7 @@ class EnviroDIYPublisher : public dataPublisher {
      * @param samplingFeatureUUID The sampling feature UUID for the site on the
      * Monitor My Watershed data portal.
      * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. NOTE: not implemented by this publisher!
+     * attempted data transmissions.
      */
     EnviroDIYPublisher(Logger& baseLogger, const char* registrationToken,
                        const char* samplingFeatureUUID, int sendEveryX = 1);
@@ -92,7 +95,7 @@ class EnviroDIYPublisher : public dataPublisher {
      * @param samplingFeatureUUID The sampling feature UUID for the site on the
      * Monitor My Watershed data portal.
      * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. NOTE: not implemented by this publisher!
+     * attempted data transmissions.
      */
     EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
                        const char* registrationToken,
@@ -145,6 +148,14 @@ class EnviroDIYPublisher : public dataPublisher {
                const char* samplingFeatureUUID);
 
     /**
+     * @brief Checks if the publisher needs an Internet connection for the next
+     * publishData call (as opposed to just buffering data internally).
+     *
+     * @return True if an internet connection is needed for the next publish.
+     */
+    bool connectionNeeded(void) override;
+
+    /**
      * @brief Utilize an attached modem to open a a TCP connection to the
      * EnviroDIY/ODM2DataSharingPortal and then stream out a post request over
      * that connection.
@@ -155,9 +166,10 @@ class EnviroDIYPublisher : public dataPublisher {
      * @param outClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
+     * @param forceFlush Ask the publisher to flush buffered data immediately.
      * @return **int16_t** The http status code of the response.
      */
-    int16_t publishData(Client* outClient) override;
+    int16_t publishData(Client* outClient, bool forceFlush = false) override;
 
  protected:
     /**
@@ -183,6 +195,15 @@ class EnviroDIYPublisher : public dataPublisher {
     static const char* samplingFeatureTag;  ///< The JSON feature UUID tag
     static const char* timestampTag;        ///< The JSON feature timestamp tag
                                             /**@}*/
+
+    LogBuffer _logBuffer;
+
+    // actually transmit rather than just buffer data
+    int16_t flushDataBuffer(Client* outClient);
+
+    // we send every one of the first five data points immediately for field
+    // validation
+    uint8_t _initialTransmissionsRemaining = 5;
 
  private:
     // Tokens and UUID's for EnviroDIY

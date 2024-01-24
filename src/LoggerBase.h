@@ -17,6 +17,18 @@
 // Debugging Statement
 // #define MS_LOGGERBASE_DEBUG
 
+#ifndef MS_LOGGERBASE_BUTTON_BENCH_TEST
+/**
+ * @brief Enable bench testing mode for the testing button.
+ *
+ * When enabled, the testing button uses the benchTestingMode() function to
+ * repeatedly read and print out sensor data. When disabled (default), the
+ * testing button causes a reading to be taken and transmitted immediately
+ * using the normal procedure.
+ */
+#define MS_LOGGERBASE_BUTTON_BENCH_TEST false
+#endif
+
 #ifdef MS_LOGGERBASE_DEBUG
 #define MS_DEBUGGING_STD "LoggerBase"
 #endif
@@ -178,6 +190,15 @@ class Logger {
     uint16_t getLoggingInterval() {
         return _loggingIntervalMinutes;
     }
+
+    /**
+     * @brief Set the number of short transmission intervals to be performed.
+     *
+     * @param numShortIntervals Number of short intervals. This number of
+     * transmissions will be performed with an interval of 1 minute regardless
+     * of the programmed interval. Useful for fast field verification.
+     */
+    void setNumShortIntervals(uint8_t numShortIntervals);
 
     /**
      * @brief Set the universally unique identifier (UUID or GUID) of the
@@ -392,6 +413,11 @@ class Logger {
      */
     uint16_t _loggingIntervalMinutes = 5;
     /**
+     * @brief The number of remaining samples to log at an interval of 1 minute
+     * for fast field verification.
+     */
+    uint8_t _remainingShortIntervals = 0;
+    /**
      * @brief Digital pin number on the mcu controlling the SD card slave
      * select.
      */
@@ -514,10 +540,28 @@ class Logger {
      * the internal variable array object.
      *
      * @param position_i The position of the variable in the array.
+     * @return **float** The value of the variable as a float.
+     */
+    float getValueAtI(uint8_t position_i);
+    /**
+     * @brief Get the most recent value of the variable at the given position in
+     * the internal variable array object.
+     *
+     * @param position_i The position of the variable in the array.
      * @return **String** The value of the variable as a string with the correct
      * number of significant figures.
      */
     String getValueStringAtI(uint8_t position_i);
+    /**
+     * @brief Get the string representing a particular value of the variable at
+     * the given position in the internal variable array object.
+     *
+     * @param position_i The position of the variable in the array.
+     * @param value The value to format.
+     * @return **String** The given value as a string with the correct number of
+     *  significant figures.
+     */
+    String formatValueStringAtI(uint8_t position_i, float value);
 
  protected:
     /**
@@ -563,9 +607,18 @@ class Logger {
      */
     void registerDataPublisher(dataPublisher* publisher);
     /**
-     * @brief Publish data to all registered data publishers.
+     * @brief Check if any data publishers need an Internet connection for the
+     * next publish call.
+     *
+     * @return True if any remotes need a connection.
      */
-    void publishDataToRemotes(void);
+    bool checkRemotesConnectionNeeded(void);
+    /**
+     * @brief Publish data to all registered data publishers.
+     *
+     * @param forceFlush Ask the publishers to flush buffered data immediately.
+     */
+    void publishDataToRemotes(bool forceFlush = false);
     /**
      * @brief Retained for backwards compatibility, use publishDataToRemotes()
      * in new code.
@@ -1093,7 +1146,7 @@ class Logger {
     static void testingISR(void);
 
     /**
-     * @brief Execute testing mode.
+     * @brief Execute bench testing mode if enabled.
      *
      * In testing mode, the logger uses the loggerModem, if attached, to connect
      * to the internet.  It then powers up all sensors tied to variable in the
@@ -1101,9 +1154,10 @@ class Logger {
      * sensors 25 times with a 5 second wait in between.  All results are output
      * to the "main" output - ie Serial - and NOT to the SD card.  After 25
      * measurements, the sensors are put to sleep, the modem is disconnected
-     * from the internet, and the logger goes back to sleep.
+     * from the internet, and the logger goes back to sleep. Does nothing unless
+     * MS_LOGGERBASE_BUTTON_BENCH_TEST is defined true.
      */
-    virtual void testingMode();
+    virtual void benchTestingMode(void);
     /**@}*/
 
     // ===================================================================== //
