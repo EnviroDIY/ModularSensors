@@ -1,13 +1,14 @@
 /**
  * @file YosemitechY700.h
- * @copyright 2017-2022 Stroud Water Research Center
- * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino.
+ * This library is published under the BSD-3 license.
  * @author Anthony Aufdenkampe <aaufdenkampe@limno.com>
  *
  * @brief Contains the YosemitechY700 sensor subclass and the variable
  * subclasses YosemitechY700_Pressure and YosemitechY700_Temp.
  *
- * These are for the Yosemitech Y700 Pressure sensor.
+ * These are for the Yosemitech Y700 Pressure Sensor.
  *
  * This depends on the YosemitechParent super class.
  *
@@ -70,11 +71,11 @@
 /// 1000 ms.
 #define Y700_WARM_UP_TIME_MS 1000
 /// @brief Sensor::_stabilizationTime_ms; time between "StartMeasurement"
-/// command and stable reading - Y700 takes 4 s to get stability <1 mm, 
+/// command and stable reading - Y700 takes 4 s to get stability <1 mm,
 /// but 12 s for <0.1 mm. If highest precision is required, increase to 12000.
 #define Y700_STABILIZATION_TIME_MS 4000
 /// @brief Sensor::_measurementTime_ms; the Y700 takes <1 s for new values.
-///  but >1 s for values that don't seem autocorrelated.  
+///  but >1 s for values that don't seem autocorrelated.
 #define Y700_MEASUREMENT_TIME_MS 1000
 /**@}*/
 
@@ -211,9 +212,9 @@ class YosemitechY700_Pressure : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "Y700Pres".
      */
-    explicit YosemitechY700_Pressure(YosemitechY700* parentSense,
-                                 const char*     uuid = "",
-                                 const char* varCode  = Y700_PRES_DEFAULT_CODE)
+    explicit YosemitechY700_Pressure(
+        YosemitechY700* parentSense, const char* uuid = "",
+        const char* varCode = Y700_PRES_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)Y700_PRES_VAR_NUM,
                    (uint8_t)Y700_PRES_RESOLUTION, Y700_PRES_VAR_NAME,
                    Y700_PRES_UNIT_NAME, varCode, uuid) {}

@@ -1,7 +1,8 @@
 /**
  * @file DreamHostPublisher.h
- * @copyright 2017-2022 Stroud Water Research Center
- * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino.
+ * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Contains the DreamHostPublisher subclass of dataPublisher for
@@ -51,20 +52,10 @@ class DreamHostPublisher : public dataPublisher {
      * logger.
      *
      * @param baseLogger The logger supplying the data to be published
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
-     *
-     * @note It is possible (though very unlikey) that using this constructor
-     * could cause errors if the compiler attempts to initialize the publisher
-     * instance before the logger instance.  If you suspect you are seeing that
-     * issue, use the null constructor and a populated begin(...) within your
-     * set-up function.
+     * @param sendEveryX Interval (in units of the logging interval) between
+     * attempted data transmissions. NOTE: not implemented by this publisher!
      */
-    explicit DreamHostPublisher(Logger& baseLogger, uint8_t sendEveryX = 1,
-                                uint8_t sendOffset = 0);
+    explicit DreamHostPublisher(Logger& baseLogger, int sendEveryX = 1);
     /**
      * @brief Construct a new DreamHost Publisher object
      *
@@ -72,33 +63,21 @@ class DreamHostPublisher : public dataPublisher {
      * @param inClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
-     *
-     * @note It is possible (though very unlikey) that using this constructor
-     * could cause errors if the compiler attempts to initialize the publisher
-     * instance before the logger instance.  If you suspect you are seeing that
-     * issue, use the null constructor and a populated begin(...) within your
-     * set-up function.
+     * @param sendEveryX Interval (in units of the logging interval) between
+     * attempted data transmissions. NOTE: not implemented by this publisher!
      */
     DreamHostPublisher(Logger& baseLogger, Client* inClient,
-                       uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+                       int sendEveryX = 1);
     /**
      * @brief Construct a new DreamHost Publisher object
      *
      * @param baseLogger The logger supplying the data to be published
      * @param dhUrl The URL for sending data to DreamHost
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
+     * @param sendEveryX Interval (in units of the logging interval) between
+     * attempted data transmissions. NOTE: not implemented by this publisher!
      */
     DreamHostPublisher(Logger& baseLogger, const char* dhUrl,
-                       uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+                       int sendEveryX = 1);
     /**
      * @brief Construct a new DreamHost Publisher object
      *
@@ -107,14 +86,11 @@ class DreamHostPublisher : public dataPublisher {
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
      * @param dhUrl The URL for sending data to DreamHost
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
+     * @param sendEveryX Interval (in units of the logging interval) between
+     * attempted data transmissions. NOTE: not implemented by this publisher!
      */
     DreamHostPublisher(Logger& baseLogger, Client* inClient, const char* dhUrl,
-                       uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+                       int sendEveryX = 1);
     /**
      * @brief Destroy the DreamHost Publisher object
      */
@@ -133,26 +109,6 @@ class DreamHostPublisher : public dataPublisher {
      */
     void setDreamHostPortalRX(const char* dhUrl);
 
-    /**
-     * @brief This creates all of the URL parameter tags and values and writes
-     * the result to an Arduino stream.
-     *
-     * HTML headers are not included.
-     *
-     * @param stream The Arduino stream to write out the URL and parameters to.
-     */
-    void printSensorDataDreamHost(Stream* stream);
-
-    /**
-     * @brief This prints a fully structured GET request for DreamHost to the
-     * specified stream.
-     *
-     * This includes the HTML headers.
-     *
-     * @param stream The Arduino stream to write out the URL and parameters to.
-     */
-    void printDreamHostRequest(Stream* stream);
-
     // A way to begin with everything already set
     /**
      * @copydoc dataPublisher::begin(Logger& baseLogger, Client* inClient)
@@ -165,7 +121,6 @@ class DreamHostPublisher : public dataPublisher {
      */
     void begin(Logger& baseLogger, const char* dhUrl);
 
-    // int16_t postDataDreamHost(void);
     /**
      * @brief Utilizes an attached modem to make a TCP connection to the
      * DreamHost URL and then stream out a get request over that connection.

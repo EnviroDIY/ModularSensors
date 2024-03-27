@@ -107,6 +107,9 @@ pio pkg install -g --library envirodiy/KellerModbus
 echo "\e[32mInstalling envirodiy/YosemitechModbus\e[0m"
 pio pkg install -g --library envirodiy/YosemitechModbus
 
+echo "\e[32mInstalling envirodiy/GroPointModbus\e[0m"
+pio pkg install -g --library envirodiy/GroPointModbus
+
 echo "\e[32mInstalling vshymanskyy/StreamDebugger\e[0m"
 pio pkg install -g --library vshymanskyy/StreamDebugger
 
