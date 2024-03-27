@@ -3,11 +3,10 @@
  * @brief Example with all possible functionality.
  *
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
- * @copyright (c) 2017-2022 Stroud Water Research Center (SWRC)
- *                          and the EnviroDIY Development Team
- *            This example is published under the BSD-3 license.
+ * @copyright Stroud Water Research Center
+ * This example is published under the BSD-3 license.
  *
- * Build Environment: Visual Studios Code with PlatformIO
+ * Build Environment: Visual Studio Code with PlatformIO
  * Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
  *
  * DISCLAIMER:
@@ -1377,8 +1376,8 @@ Variable* mplTemp = new FreescaleMPL115A2_Temp(
 byte gplp8ModbusAddress = 0x19;  // The modbus address of the gplp8
 // Raw Request >>> {0x19, 0x03, 0x00, 0xC8, 0x00, 0x01, 0x06, 0x2C}
 const int8_t  gplp8AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  gplp8SensorPower    = A3;  // Sensor power pin
-const int8_t  gplp8EnablePin      = -1;                    // Adapter RE/DE pin
+const int8_t  gplp8SensorPower    = A3;              // Sensor power pin
+const int8_t  gplp8EnablePin      = -1;              // Adapter RE/DE pin
 const uint8_t gplp8NumberReadings = 1;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
 // power consumption

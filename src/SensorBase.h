@@ -1,7 +1,8 @@
 /**
  * @file SensorBase.h
- * @copyright 2017-2022 Stroud Water Research Center
- * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino.
+ * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Contains the Sensor class.
@@ -39,7 +40,7 @@
  * @brief The largest number of variables from a single sensor
  */
 #define MAX_NUMBER_VARS 21
-    // GroPoint Profile GPLP-8 has 8 Moisture and 13 Temperature values
+// GroPoint Profile GPLP-8 has 8 Moisture and 13 Temperature values
 
 class Variable;  // Forward declaration
 
