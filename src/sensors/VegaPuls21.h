@@ -15,7 +15,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup sensor_vegapuls VEGAPULS C 21
+ * @defgroup sensor_vega_puls21 VEGAPULS C 21
  * Classes for the [VEGAPULS C 21](https://www.vega.com/en-us/products/product-catalog/level/radar/vegapuls-c-21) radar sensor.
  *
  * @ingroup sdi12_group
@@ -23,7 +23,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section sensor_vegapuls21_intro Introduction
+ * @section sensor_vega_puls21_intro Introduction
  *
  * > VEGAPULS C 21 is the ideal sensor for non-contact level measurement in simple applications
  * > where a high degree of protection is required. It is particularly suitable for use in water treatment,
@@ -34,20 +34,20 @@
  * It requires a 8 to 30 Vdc power supply, which can be turned off between measurements.
  * It pulls 25 mW in low-power mode and 100 mW in standard mode.
  *
- * @section sensor_vegapuls21_datasheet Sensor Datasheet
+ * @section sensor_vega_puls21_datasheet Sensor Datasheet
  * The specifications and datasheet are available at https://www.vega.com/api/sitecore/DocumentDownload/Handler?documentContainerId=1006748&languageId=2&fileExtension=pdf&softwareVersion=&documentGroupId=58354&version=03-04-2023
  *
- * @section sensor_vegapuls21_flags Build flags
+ * @section sensor_vega_puls21_flags Build flags
  * @see @ref sdi12_group_flags
  *
- * @section sensor_vegapuls21_ctor Sensor Constructor
+ * @section sensor_vega_puls21_ctor Sensor Constructor
  * {{ @ref VegaPuls21::VegaPuls21 }}
  *
  * ___
- * @section sensor_vegapuls21_examples Example Code
- * The VEGAPULS C 21 is used in the @menulink{vega_puls_21} example.
+ * @section sensor_vega_puls21_examples Example Code
+ * The VEGAPULS C 21 is used in the @menulink{vega_puls21} example.
  *
- * @menusnip{vega_puls_21}
+ * @menusnip{vega_puls21}
  */
 /* clang-format on */
 
@@ -58,7 +58,7 @@
 // Included Dependencies
 #include "sensors/SDI12Sensors.h"
 
-/** @ingroup sensor_vegapuls */
+/** @ingroup sensor_vega_puls21 */
 /**@{*/
 
 // Sensor Specific Defines
@@ -68,7 +68,7 @@
 #define VEGAPULS21_INC_CALC_VARIABLES 0
 
 /**
- * @anchor sensor_vegapuls21_timing
+ * @anchor sensor_vega_puls21_timing
  * @name Sensor Timing
  * The sensor timing for a VEGAPULS C 21
  */
@@ -98,7 +98,7 @@
 /**@}*/
 
 /**
- * @anchor sensor_vegapuls21_stage
+ * @anchor sensor_vega_puls21_stage
  * @name Stage
  * The stage variable from a VEGAPULS C 21
  * - Accuracy is ≤ 2 mm (meas. distance > 0.25 m/0.8202 ft)
@@ -124,7 +124,7 @@
 /**@}*/
 
 /**
- * @anchor sensor_vegapuls21_distance
+ * @anchor sensor_vega_puls21_distance
  * @name Distance
  * The distance variable from a VEGAPULS C 21
  * - Accuracy is ≤ 2 mm (meas. distance > 0.25 m/0.8202 ft)
@@ -150,7 +150,7 @@
 /**@}*/
 
 /**
- * @anchor sensor_vegapuls_temp
+ * @anchor sensor_vega_puls21_temp
  * @name Temperature
  * The temperature variable from a VEGAPULS C 21
  *
@@ -175,7 +175,7 @@
 /**@}*/
 
 /**
- * @anchor sensor_vegapuls21_reliability
+ * @anchor sensor_vega_puls21_reliability
  * @name Reliability
  * The reliability variable from a VEGAPULS C 21
  *
@@ -200,7 +200,7 @@
 /**@}*/
 
 /**
- * @anchor sensor_vegapuls21_error
+ * @anchor sensor_vega_puls21_error
  * @name Error Code
  * The error code variable from a VEGAPULS C 21
  * - Significance of error code values is unknown.
@@ -228,9 +228,9 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [VEGAPULS C 21 radar level sensor](@ref sensor_vegapuls).
+ * [VEGAPULS C 21 radar level sensor](@ref sensor_vega_puls21).
  *
- * @ingroup sensor_vegapuls
+ * @ingroup sensor_vega_puls21
  */
 /* clang-format on */
 class VegaPuls21 : public SDI12Sensors {
@@ -298,10 +298,10 @@ class VegaPuls21 : public SDI12Sensors {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature output](@ref sensor_vegapuls21_stage) from a
- * [VEGAPULS C 21 radar level sensor](@ref sensor_vegapuls).
+ * [temperature output](@ref sensor_vega_puls21_stage) from a
+ * [VEGAPULS C 21 radar level sensor](@ref sensor_vega_puls21).
  *
- * @ingroup sensor_vegapuls
+ * @ingroup sensor_vega_puls21
  */
 /* clang-format on */
 class VegaPuls21_Stage : public Variable {
@@ -344,10 +344,10 @@ class VegaPuls21_Stage : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature output](@ref sensor_vegapuls21_distance) from a
- * [VEGAPULS C 21 radar level sensor](@ref sensor_vegapuls).
+ * [temperature output](@ref sensor_vega_puls21_distance) from a
+ * [VEGAPULS C 21 radar level sensor](@ref sensor_vega_puls21).
  *
- * @ingroup sensor_vegapuls
+ * @ingroup sensor_vega_puls21
  */
 /* clang-format on */
 class VegaPuls21_Distance : public Variable {
@@ -390,10 +390,10 @@ class VegaPuls21_Distance : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature output](@ref sensor_vegapuls_temp) from a
- * [VEGAPULS C 21 radar level sensor](@ref sensor_vegapuls).
+ * [temperature output](@ref sensor_vega_puls21_temp) from a
+ * [VEGAPULS C 21 radar level sensor](@ref sensor_vega_puls21).
  *
- * @ingroup sensor_vegapuls
+ * @ingroup sensor_vega_puls21
  */
 /* clang-format on */
 class VegaPuls21_Temp : public Variable {
@@ -435,10 +435,10 @@ class VegaPuls21_Temp : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [reliability output](@ref sensor_vegapuls21_reliability)
- * from a [VEGAPULS C 21 radar level sensor](@ref sensor_vegapuls).
+ * [reliability output](@ref sensor_vega_puls21_reliability)
+ * from a [VEGAPULS C 21 radar level sensor](@ref sensor_vega_puls21).
  *
- * @ingroup sensor_vegapuls
+ * @ingroup sensor_vega_puls21
  */
 /* clang-format on */
 class VegaPuls21_Reliability : public Variable {
@@ -483,10 +483,10 @@ class VegaPuls21_Reliability : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [error code output](@ref sensor_vegapuls21_error) from a
- * [VEGAPULS C 21 radar level sensor](@ref sensor_vegapuls).
+ * [error code output](@ref sensor_vega_puls21_error) from a
+ * [VEGAPULS C 21 radar level sensor](@ref sensor_vega_puls21).
  *
- * @ingroup sensor_vegapuls
+ * @ingroup sensor_vega_puls21
  */
 /* clang-format on */
 class VegaPuls21_ErrorCode : public Variable {

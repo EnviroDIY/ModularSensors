@@ -3,11 +3,10 @@
  * @brief Example with all possible functionality.
  *
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
- * @copyright (c) 2017-2022 Stroud Water Research Center (SWRC)
- *                          and the EnviroDIY Development Team
- *            This example is published under the BSD-3 license.
+ * @copyright Stroud Water Research Center
+ * This example is published under the BSD-3 license.
  *
- * Build Environment: Visual Studios Code with PlatformIO
+ * Build Environment: Visual Studio Code with PlatformIO
  * Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
  *
  * DISCLAIMER:
@@ -2003,6 +2002,39 @@ Variable* analogEc_spcond = new Variable(
 #endif
 
 
+#if defined BUILD_SENSOR_VEGA_PULS21
+// ==========================================================================
+//  VEGA PULS 21 Radar Sensor
+// ==========================================================================
+/** Start [vega_puls21] */
+#include <sensors/VegaPuls21.h>
+
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+const char* VegaPulsSDI12address = "0";  // The SDI-12 Address of the VegaPuls10
+const int8_t VegaPulsPower       = sensorPowerPin;  // Power pin
+const int8_t VegaPulsData        = 7;               // The SDI-12 data pin
+// NOTE:  you should NOT take more than one readings.  THe sensor already takes
+// and averages 8 by default.
+
+// Create a Campbell VegaPusl21 sensor object
+VegaPuls21 VegaPuls(*VegaPulsSDI12address, VegaPulsPower, VegaPulsData);
+
+// Create stage, distance, temperature, reliability, and error variable pointers
+// for the VegaPuls21
+Variable* VegaPulsStage =
+    new VegaPuls21_Stage(&VegaPuls, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* VegaPulsDistance =
+    new VegaPuls21_Distance(&VegaPuls, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* VegaPulsTemp =
+    new VegaPuls21_Temp(&VegaPuls, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* VegaPulsRelia = new VegaPuls21_Reliability(
+    &VegaPuls, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* VegaPulsError =
+    new VegaPuls21_ErrorCode(&VegaPuls, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [vega_puls21] */
+#endif
+
+
 #if defined BUILD_SENSOR_YOSEMITECH_Y504
 // ==========================================================================
 //  Yosemitech Y504 Dissolved Oxygen Sensor
@@ -2719,6 +2751,13 @@ Variable* variableList[] = {
 #if defined BUILD_SENSOR_ANALOG_ELEC_CONDUCTIVITY
     analogEc_cond,
     analogEc_spcond,
+#endif
+#if defined BUILD_SENSOR_VEGA_PULS21
+    VegaPulsStage,
+    VegaPulsDistance,
+    VegaPulsTemp,
+    VegaPulsRelia,
+    VegaPulsError,
 #endif
 #if defined BUILD_SENSOR_YOSEMITECH_Y504
     y504DOpct,
