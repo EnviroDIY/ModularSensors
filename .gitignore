@@ -109,3 +109,4 @@ continuous_integration_artifacts/*
 arduino_cli.log
 **/sensor_tests/*
 docs/Doxyfile.bak
+continuous_integration/output_check_component_inclusion.log

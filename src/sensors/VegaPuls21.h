@@ -73,13 +73,14 @@
  * The sensor timing for a VEGAPULS C 21
  */
 /**@{*/
-/** @brief Sensor::_warmUpTime_ms; the VEGA PULS 21 warms up in ~4400ms.
+/** @brief Sensor::_warmUpTime_ms; the VEGA PULS 21 warms up in ~5200ms.
  *
  * This is longer than the expected 250ms for a SDI-12 sensor, but I couldn't
  * get a response from the sensor faster than that.  The instruction sheet says
- * the warm-up is less than 10s.
+ * the warm-up is less than 10s, but also says that the initial tests on
+ * power-up can take up to 3 minutes.
  */
-#define VEGAPULS21_WARM_UP_TIME_MS 4500
+#define VEGAPULS21_WARM_UP_TIME_MS 5200
 /// @brief Sensor::_stabilizationTime_ms; the VEGA PULS 21 is stable as soon as
 /// it warms up (0ms stabilization).
 #define VEGAPULS21_STABILIZATION_TIME_MS 0
@@ -89,9 +90,9 @@
  *
  * Spec sheet says the measurement time is 250ms but when you ask the sensor it
  * says it won't return for 14s.  When taking a standard measurement I was
- * getting a result after about 5800ms.
+ * getting a result after about 5800-6000 ms.
  */
-#define VEGAPULS21_MEASUREMENT_TIME_MS 6000
+#define VEGAPULS21_MEASUREMENT_TIME_MS 6050
 /// @brief Extra wake time required for an SDI-12 sensor between the "break"
 /// and the time the command is sent.  The VEGA PULS 21 requires no extra time.
 #define VEGAPULS21_EXTRA_WAKE_TIME_MS 0
