@@ -358,12 +358,16 @@
  * wait for network registration, then provide the access point name, and then
  * establish a GPRS/EPS connection.
  *
+ * @note WiFi modems can frequently reconnect with saved credentials instead of
+ * sending new credentials each time.  This function waits for an automatic
+ * connection to be made, if possible.
+ *
  * @param specificModem The modem subclass
  *
  * @return The text of a connectInternet(uint32_t maxConnectionTime) function
  * specific to a single modem subclass.
  */
-#define MS_MODEM_CONNECT_INTERNET(specificModem)                             \
+#define MS_MODEM_CONNECT_INTERNET(specificModem, auto_reconnect_time)        \
     bool specificModem::connectInternet(uint32_t maxConnectionTime) {        \
         bool success = true;                                                 \
                                                                              \
@@ -387,9 +391,17 @@
             MS_DBG(F("Modem was already awake and should be ready."));       \
         }                                                                    \
                                                                              \
+        /** Wait to see if a connection was made automatically from saved    \
+         * credentials */                                                    \
         if (success) {                                                       \
             MS_START_DEBUG_TIMER                                             \
-            MS_DBG(F("\nAttempting to connect to WiFi network..."));         \
+            MS_DBG(F("\nWaiting"), auto_reconnect_time,                      \
+                   F("ms to see if WiFi connects without sending new "       \
+                     "credentials..."));                                     \
+            if (!(gsmModem.isNetworkConnected())) {                          \
+                gsmModem.waitForNetwork(auto_reconnect_time);                \
+            }                                                                \
+            /** If still not connected, send new credentials */              \
             if (!(gsmModem.isNetworkConnected())) {                          \
                 MS_DBG(F("Sending credentials..."));                         \
                 for (uint8_t i = 0; i < 5; i++) {                            \
@@ -405,6 +417,7 @@
             MS_DBG(F("... WiFi connected after"), MS_PRINT_DEBUG_TIMER,      \
                    F("milliseconds!"));                                      \
         }                                                                    \
+                                                                             \
         if (!wasPowered) {                                                   \
             MS_DBG(F("Modem was powered to connect to the internet!  "       \
                      "Remember to turn it off when you're done."));          \
