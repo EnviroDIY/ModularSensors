@@ -65,7 +65,7 @@ def camel_to_snake(name, lower_case=True):
 
 #%%
 # make sure class names match file names
-class_pattern = re.compile("^\s*class[\s\n]+(\w+)[\s\n]", re.MULTILINE)
+class_pattern = re.compile(r"^\s*class[\s\n]+(\w+)[\s\n]", re.MULTILINE)
 
 for header_file in header_files:
     textfile = open(header_file, mode="r", encoding="utf-8")
