@@ -136,7 +136,7 @@ int16_t FreeRam() {
 
 bool ProcessorStats::addSingleMeasurementResult(void) {
     // Get the battery voltage
-    MS_DBG(F("Getting battery voltage"));
+    MS_DBG(F("Getting battery voltage from pin"), _batteryPin);
 
     float sensorValue_battery = -9999;
 
@@ -146,8 +146,10 @@ bool ProcessorStats::addSingleMeasurementResult(void) {
         // The return value from analogRead() is IN BITS NOT IN VOLTS!!
         analogRead(_batteryPin);  // priming reading
         float rawBattery = analogRead(_batteryPin);
+        MS_DBG(F("Raw battery pin reading in bits:"), rawBattery);
         // convert bits to volts
         sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
+        MS_DBG(F("Battery in Volts:"), sensorValue_battery);
     }
     if (strcmp(_version, "v0.5") == 0 || strcmp(_version, "v0.5b") ||
         strcmp(_version, "v1.0") || strcmp(_version, "v1.1") == 0) {
@@ -155,8 +157,10 @@ bool ProcessorStats::addSingleMeasurementResult(void) {
         // The return value from analogRead() is IN BITS NOT IN VOLTS!!
         analogRead(_batteryPin);  // priming reading
         float rawBattery = analogRead(_batteryPin);
+        MS_DBG(F("Raw battery pin reading in bits:"), rawBattery);
         // convert bits to volts
         sensorValue_battery = (3.3 / 1023.) * 4.7 * rawBattery;
+        MS_DBG(F("Battery in Volts:"), sensorValue_battery);
     }
 
 #elif defined(ARDUINO_AVR_FEATHER32U4) || defined(ARDUINO_SAMD_FEATHER_M0) || \
@@ -170,20 +174,26 @@ bool ProcessorStats::addSingleMeasurementResult(void) {
 #elif defined(ARDUINO_SODAQ_ONE) || defined(ARDUINO_SODAQ_ONE_BETA)
     if (strcmp(_version, "v0.1") == 0) {
         // Get the battery voltage
-        float rawBattery    = analogRead(_batteryPin);
+        float rawBattery = analogRead(_batteryPin);
+        MS_DBG(F("Raw battery pin reading in bits:"), rawBattery);
         sensorValue_battery = (3.3 / 1023.) * 2 * rawBattery;
+        MS_DBG(F("Battery in Volts:"), sensorValue_battery);
     }
     if (strcmp(_version, "v0.2") == 0) {
         // Get the battery voltage
-        float rawBattery    = analogRead(_batteryPin);
+        float rawBattery = analogRead(_batteryPin);
+        MS_DBG(F("Raw battery pin reading in bits:"), rawBattery);
         sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
+        MS_DBG(F("Battery in Volts:"), sensorValue_battery);
     }
 
 #elif defined(ARDUINO_AVR_SODAQ_NDOGO) || defined(ARDUINO_SODAQ_AUTONOMO) || \
     defined(ARDUINO_AVR_SODAQ_MBILI)
     // Get the battery voltage
-    float rawBattery    = analogRead(_batteryPin);
+    float rawBattery = analogRead(_batteryPin);
+    MS_DBG(F("Raw battery pin reading in bits:"), rawBattery);
     sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
+    MS_DBG(F("Battery in Volts:"), sensorValue_battery);
 
 #else
     sensorValue_battery = -9999;

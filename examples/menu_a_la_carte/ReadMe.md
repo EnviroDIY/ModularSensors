@@ -834,7 +834,7 @@ Because this sensor can have only one I2C address (0x60), it is only possible to
 ___
 
 
-### GroPoint Profile GPLP-8 Eight-Segment Soil Moisture and Temperature Profiling Probe <!-- {#menu_walk_gplp8} -->
+### GroPoint Profile GPLP-8 Eight-Segment Soil Moisture and Temperature Profiling Probe <!-- {#menu_walk_gro_point_gplp8} -->
 
 @see @ref sensor_gplp8
 

@@ -432,8 +432,7 @@ DigiXBeeWifi modem = modemXBWF;
 // ==========================================================================
 
 
-#elif defined BUILD_MODEM_ESPRESSIF_ESP8266 || \
-    defined   BUILD_MODEM_ESPRESSIF_ESP32
+#elif defined BUILD_MODEM_ESPRESSIF_ESP8266
 /** Start [espressif_esp8266] */
 // For almost anything based on the Espressif ESP8266 using the
 // AT command firmware
@@ -465,6 +464,41 @@ EspressifESP8266 modemESP(&modemSerial, modemVccPin, modemResetPin, wifiId,
 // Create an extra reference to the modem by a generic name
 EspressifESP8266 modem = modemESP;
 /** End [espressif_esp8266] */
+// ==========================================================================
+
+
+#elif defined BUILD_MODEM_ESPRESSIF_ESP32
+/** Start [espressif_esp32] */
+// For almost anything based on the Espressif ESP8266 using the
+// AT command firmware
+#include <modems/EspressifESP32.h>
+
+// NOTE: Extra hardware and software serial ports are created in the "Settings
+// for Additional Serial Ports" section
+const int32_t modemBaud = 57600;  // Communication speed of the modem
+// NOTE:  This baud rate too fast for an 8MHz board, like the Mayfly!  The
+// module should be programmed to a slower baud rate or set to auto-baud using
+// the AT+UART_CUR or AT+UART_DEF command.
+
+// Modem Pins - Describe the physical pin connection of your modem to your board
+// NOTE:  Use -1 for pins that do not apply
+// Example pins here are for a EnviroDIY ESP32 Bluetooth/Wifi Bee with
+// Mayfly 1.1
+const int8_t modemVccPin   = 18;      // MCU pin controlling modem power
+const int8_t modemResetPin = -1;      // MCU pin connected to modem reset pin
+const int8_t modemLEDPin   = redLED;  // MCU pin connected an LED to show modem
+                                      // status
+
+// Network connection information
+const char* wifiId  = "xxxxx";  // WiFi access point name
+const char* wifiPwd = "xxxxx";  // WiFi password (WPA2)
+
+// Create the modem object
+EspressifESP32 modemESP(&modemSerial, modemVccPin, modemResetPin, wifiId,
+                        wifiPwd);
+// Create an extra reference to the modem by a generic name
+EspressifESP32 modem = modemESP;
+/** End [espressif_esp32] */
 // ==========================================================================
 
 
@@ -1376,8 +1410,8 @@ Variable* mplTemp = new FreescaleMPL115A2_Temp(
 byte gplp8ModbusAddress = 0x19;  // The modbus address of the gplp8
 // Raw Request >>> {0x19, 0x03, 0x00, 0xC8, 0x00, 0x01, 0x06, 0x2C}
 const int8_t  gplp8AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  gplp8SensorPower    = A3;  // Sensor power pin
-const int8_t  gplp8EnablePin      = -1;                    // Adapter RE/DE pin
+const int8_t  gplp8SensorPower    = A3;              // Sensor power pin
+const int8_t  gplp8EnablePin      = -1;              // Adapter RE/DE pin
 const uint8_t gplp8NumberReadings = 1;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
 // power consumption
@@ -2950,8 +2984,8 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
 // Uses the processor sensor object to read the battery voltage
 // NOTE: This will actually return the battery level from the previous update!
 float getBatteryVoltage() {
-    if (mcuBoard.sensorValues[0] == -9999) mcuBoard.update();
-    return mcuBoard.sensorValues[0];
+    if (mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM] == -9999) mcuBoard.update();
+    return mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM];
 }
 /** End [working_functions] */
 
@@ -2991,11 +3025,11 @@ void setup() {
 
 /** Start [setup_softserial] */
 // Allow interrupts for software serial
-#if defined SoftwareSerial_ExtInts_h
+#if defined BUILD_TEST_SOFTSERIAL
     enableInterrupt(softSerialRx, SoftwareSerial_ExtInts::handle_interrupt,
                     CHANGE);
 #endif
-#if defined NeoSWSerial_h
+#if defined BUILD_TEST_NEOSWSERIAL
     enableInterrupt(neoSSerial1Rx, neoSSerial1ISR, CHANGE);
 #endif
     /** End [setup_softserial] */
@@ -3039,6 +3073,9 @@ void setup() {
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
     /** End [setup_flashing_led] */
+
+    pinMode(20, OUTPUT);  // for proper operation of the onboard flash memory
+                          // chip's ChipSelect (Mayfly v1.0 and later)
 
     /** Start [setup_logger] */
     // Set the timezones for the logger/data and the RTC
