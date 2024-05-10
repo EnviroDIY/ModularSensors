@@ -196,7 +196,7 @@ jobs:
       - name: Install python dependencies, including PlatformIO
         run: pip install -r continuous_integration/requirements.txt
 
-      - name: Restore PlatformIO and Arduino platforms and libraries
+      - name: Restore PlatformIO platforms and libraries
         uses: actions/cache@v4
         id: cache_libraries
         with:
