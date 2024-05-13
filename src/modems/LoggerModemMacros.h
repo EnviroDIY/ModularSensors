@@ -100,13 +100,14 @@
  */
 #define MS_MODEM_WAKE(specificModem)                                           \
     bool specificModem::modemWake(void) {                                      \
-        /* Power up */                                                         \
-        if (_millisPowerOn == 0) { modemPowerUp(); }                           \
-                                                                               \
         /** Set-up pin modes.                                                  \
           Because the modem calls wake BEFORE the first setup, we must set     \
           the pin modes in the wake function. */                               \
         setModemPinModes();                                                    \
+                                                                               \
+        /* Power up */                                                         \
+        if (_millisPowerOn == 0) { modemPowerUp(); }                           \
+                                                                               \
         if (millis() - _millisPowerOn < _wakeDelayTime_ms) {                   \
             MS_DBG(F("Wait"), _wakeDelayTime_ms - (millis() - _millisPowerOn), \
                    F("ms longer for warm-up"));                                \
@@ -399,19 +400,18 @@
                    F("ms to see if WiFi connects without sending new "       \
                      "credentials..."));                                     \
             if (!(gsmModem.isNetworkConnected())) {                          \
-                gsmModem.waitForNetwork(auto_reconnect_time);                \
-            }                                                                \
-            /** If still not connected, send new credentials */              \
-            if (!(gsmModem.isNetworkConnected())) {                          \
-                MS_DBG(F("Sending credentials..."));                         \
-                for (uint8_t i = 0; i < 5; i++) {                            \
-                    if (gsmModem.networkConnect(_ssid, _pwd)) { break; }     \
-                }                                                            \
-                MS_DBG(F("Waiting up to"), maxConnectionTime / 1000,         \
-                       F("seconds for connection"));                         \
-                if (!gsmModem.waitForNetwork(maxConnectionTime)) {           \
-                    MS_DBG(F("... WiFi connection failed"));                 \
-                    return false;                                            \
+                /** If still not connected, send new credentials */          \
+                if (!(gsmModem.waitForNetwork(auto_reconnect_time))) {       \
+                    MS_DBG(F("Sending credentials..."));                     \
+                    for (uint8_t i = 0; i < 5; i++) {                        \
+                        if (gsmModem.networkConnect(_ssid, _pwd)) { break; } \
+                    }                                                        \
+                    MS_DBG(F("Waiting up to"), maxConnectionTime / 1000,     \
+                           F("seconds for connection"));                     \
+                    if (!gsmModem.waitForNetwork(maxConnectionTime)) {       \
+                        MS_DBG(F("... WiFi connection failed"));             \
+                        return false;                                        \
+                    }                                                        \
                 }                                                            \
             }                                                                \
             MS_DBG(F("... WiFi connected after"), MS_PRINT_DEBUG_TIMER,      \
