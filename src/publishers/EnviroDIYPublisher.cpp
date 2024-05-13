@@ -159,7 +159,7 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient) {
             }
         }
 
-        // Flush the complete request
+        // Write out the complete request
         txBufferFlush();
 
         // Wait 10 seconds for a response from the server
