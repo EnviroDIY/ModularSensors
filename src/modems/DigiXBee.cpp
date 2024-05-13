@@ -27,7 +27,7 @@ DigiXBee::~DigiXBee() {}
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
 // After enabling pin sleep, the sleep request pin is held `LOW` to keep the
-// XBee on Enable pin sleep in the setup function or using XCTU prior to
+// XBee on. Enable pin sleep in the setup function or using XCTU prior to
 // connecting the XBee
 bool DigiXBee::modemWakeFxn(void) {
     if (_modemSleepRqPin >= 0) {
