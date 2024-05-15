@@ -21,25 +21,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ***
 
 
-## [0.36.0]
+## [0.35.0]
 
 ### Changed
 - **BREAKING** Refactored how the publisher transmit buffer works. This will require adjustment to custom data publishers.
 
 ### Added
-- Support [Vega Puls 21 Radar](https://www.vega.com/en-us/products/product-catalog/level/radar/vegapuls-21)
--
-### Removed
-
-### Fixed
-
-***
-
-
-## [0.35.0]
-
-### Added
 - Support [GroPoint Profile GPLP-8 Eight-Segment Soil Moisture and Temperature Profiling Probe](https://www.gropoint.com/products/soil-sensors/gropoint-profile)
+- Support [Vega Puls 21 Radar](https://www.vega.com/en-us/products/product-catalog/level/radar/vegapuls-21)
 
 ## [0.34.1]
 
