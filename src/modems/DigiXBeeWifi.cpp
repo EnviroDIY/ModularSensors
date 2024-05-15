@@ -564,8 +564,8 @@ bool DigiXBeeWifi::updateModemMetadata(void) {
     ++updateModemMetadata_cnt;
     if (0 == rssi || (XBEE_RESET_THRESHOLD <= updateModemMetadata_cnt)) {
         updateModemMetadata_cnt = 0;
-        /** Since not giving an rssi value, restart the modem for next time.
-         * This is likely to take over 2 seconds         */
+        // Since not giving an rssi value, restart the modem for next time.
+        // This is likely to take over 2 seconds
         PRINTOUT(F("updateModemMetadata forcing restart xbee..."));
         success &= gsmModem.restart();
     }

@@ -80,6 +80,12 @@
 #endif
 
 /**
+ * @brief This causes the Xbee to reset after this number of transmission
+ * attempts
+ */
+#define XBEE_RESET_THRESHOLD 4
+
+/**
  * @brief The class for the [Digi XBee](@ref modem_digi)
  * [S6B wifi](@ref modem_digi_wifi) module operating in Digi's "transparent"
  * mode.
@@ -180,8 +186,6 @@ class DigiXBeeWifi : public DigiXBee {
     char* _pwd_buf  = NULL;
 
     uint16_t updateModemMetadata_cnt = 0;
-    // This causes the Xbee to reset after this number of transmission attempts
-#define XBEE_RESET_THRESHOLD 4
 };
 /**@}*/
 #endif  // SRC_MODEMS_DIGIXBEEWIFI_H_
