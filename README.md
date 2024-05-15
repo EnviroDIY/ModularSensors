@@ -83,6 +83,7 @@ For some generalized information about attaching sensors to an Arduino style boa
 - [TI ADS1115: external voltage with support for divided current](https://envirodiy.github.io/ModularSensors/group__sensor__ads1x15.html)
 - [TI INA219: current, voltage, and power draw](https://envirodiy.github.io/ModularSensors/group__sensor__ina219.html)
 - [Turner Cyclops-7F: various parameters](https://envirodiy.github.io/ModularSensors/group__sensor__cyclops.html)
+- [Vega Puls 21: radar distance](https://envirodiy.github.io/ModularSensors/group__sensor__vega__puls21.html)
 - [Yosemitech: water quality sensors](https://envirodiy.github.io/ModularSensors/group__yosemitech__group.html)
     - [Y502-A or Y504-A: Optical DO and Temperature](https://envirodiy.github.io/ModularSensors/group__sensor__y504.html)
     - [Y510-B: Optical Turbidity and Temperature](https://envirodiy.github.io/ModularSensors/group__sensor__y510.html)

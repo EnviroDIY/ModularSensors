@@ -174,6 +174,12 @@
  */
 #define ESP8266_DISCONNECT_TIME_MS 500
 
+/**
+ * @brief The amount of time in ms it takes the ESP8266 to reconnect using saved
+ * credentials.
+ */
+#define ESP8266_RECONNECT_TIME_MS 2500
+
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD

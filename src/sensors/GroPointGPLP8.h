@@ -39,7 +39,7 @@
  *
  * ___
  * @section sensor_gplp8_examples Example Code
- * The GPLP-8 Probe is used in the @menulink{GroPoint_gplp8} example.
+ * The GPLP-8 Probe is used in the @menulink{gro_point_gplp8} example.
  *
  * @menusnip{gro_point_gplp8}
  */
@@ -206,6 +206,10 @@ class GroPointGPLP8_Moist : public Variable {
      *
      * @param parentSense The parent GroPointGPLP8 providing the result
      * values.
+     * @param sensorVarNum The position the variable result holds in the
+     * variable result array.  The GroPoint GPLP8 can have up to 8 soil moisture
+     * results. When creating the variable for soil moisture, you must specify
+     * the output number from the sensor.
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
@@ -220,6 +224,11 @@ class GroPointGPLP8_Moist : public Variable {
     }
     /**
      * @brief Construct a new GroPointGPLP8_Moist object.
+     *
+     * @param sensorVarNum The position the variable result holds in the
+     * variable result array.  The GroPoint GPLP8 can have up to 8 soil moisture
+     * results. When creating the variable for soil moisture, you must specify
+     * the output number from the sensor.
      *
      * @note This must be tied with a parent GroPointGPLP8 before it can be
      * used.
@@ -250,6 +259,10 @@ class GroPointGPLP8_Temp : public Variable {
      *
      * @param parentSense The parent GroPointGPLP8 providing the result
      * values.
+     * @param sensorVarNum The position the variable result holds in the
+     * variable result array.  The GroPoint GPLP8 can have up to 8 temperature
+     * results. When creating the variable for temperature, you must specify the
+     * output number from the sensor.
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
@@ -263,6 +276,11 @@ class GroPointGPLP8_Temp : public Variable {
                    GPLP8_TEMP_VAR_NAME, GPLP8_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new GroPointGPLP8_Temp object.
+     *
+     * @param sensorVarNum The position the variable result holds in the
+     * variable result array.  The GroPoint GPLP8 can have up to 8 temperature
+     * results. When creating the variable for temperature, you must specify the
+     * output number from the sensor.
      *
      * @note This must be tied with a parent GroPointGPLP8 before it can be
      * used.

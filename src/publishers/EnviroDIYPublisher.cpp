@@ -116,7 +116,7 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient) {
     MS_DBG(F("Connecting client"));
     MS_START_DEBUG_TIMER;
     if (outClient->connect(enviroDIYHost, enviroDIYPort)) {
-        MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms\n"));
+        MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
         txBufferInit(outClient);
 
         // copy the initial post header into the tx buffer
@@ -160,7 +160,7 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient) {
             }
         }
 
-        // Flush the complete request
+        // Write out the complete request
         txBufferFlush();
 
         // Wait 10 seconds for a response from the server

@@ -102,19 +102,18 @@ bool DigiXBeeWifi::extraModemSetup(void) {
     MS_DBG(F("Putting XBee into command mode..."));
     if (gsmModem.commandMode()) {
         MS_DBG(F("Getting Detailed Modem Version..."));
-        String xbeeSnLow;
-        String xbeeSnHigh;
+
         gsmModem.getSeries();
-        _modemName = gsmModem.getModemName();
-        gsmModem.sendAT(F("SL"));  // Request Module MAC/Serial Number Low
-        gsmModem.waitResponse(1000, xbeeSnLow);
-        gsmModem.sendAT(F("SH"));  // Request Module MAC/Serial Number High
-        gsmModem.waitResponse(1000, xbeeSnHigh);
+        _modemName       = gsmModem.getModemName();
+        String xbeeSnLow = gsmModem.sendATGetString(
+            F("SL"));  // Request Module MAC/Serial Number Low
+        String xbeeSnHigh = gsmModem.sendATGetString(
+            F("SH"));  // Request Module MAC/Serial Number High
         _modemSerialNumber = xbeeSnHigh + xbeeSnLow;
-        gsmModem.sendAT(F("HV"));  // Request Module Hw Version
-        gsmModem.waitResponse(1000, _modemHwVersion);
-        gsmModem.sendAT(F("VR"));  // Firmware Version
-        gsmModem.waitResponse(1000, _modemFwVersion);
+        _modemHwVersion =
+            gsmModem.sendATGetString(F("HV"));  // Request Module Hw Version
+        _modemFwVersion =
+            gsmModem.sendATGetString(F("VR"));  // Firmware Version
         PRINTOUT(F("Digi XBee"), _modemName, F("Mac/SN"), xbeeSnHigh, xbeeSnLow,
                  F("HwVer"), _modemHwVersion, F("FwVer"), _modemFwVersion);
 
@@ -566,8 +565,8 @@ bool DigiXBeeWifi::updateModemMetadata(void) {
     ++updateModemMetadata_cnt;
     if (0 == rssi || (XBEE_RESET_THRESHOLD <= updateModemMetadata_cnt)) {
         updateModemMetadata_cnt = 0;
-        /** Since not giving an rssi value, restart the modem for next time.
-         * This is likely to take over 2 seconds         */
+        // Since not giving an rssi value, restart the modem for next time.
+        // This is likely to take over 2 seconds
         PRINTOUT(F("updateModemMetadata forcing restart xbee..."));
         success &= gsmModem.restart();
     }

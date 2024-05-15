@@ -48,6 +48,7 @@
 // clock This also implements a needed date/time class
 #include <Sodaq_DS3231.h>
 
+#ifndef EPOCH_TIME_OFF
 /**
  * @brief January 1, 2000 00:00:00 in "epoch" time
  *
@@ -56,6 +57,7 @@
  * epoch beginning 1970-jan-01 00:00:00.
  */
 #define EPOCH_TIME_OFF 946684800
+#endif
 
 #include <SdFat.h>  // To communicate with the SD card
 

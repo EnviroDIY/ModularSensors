@@ -10,6 +10,7 @@ void changeBauds(void) {
         Serial.println("[1] - 9600");
         Serial.println("[2] - 57600");
         Serial.println("[3] - 115200");
+        Serial.println("[4] - 74880");
         Serial.println("");
         Serial.println(
             "Enter you selection in the Serial Monitor and press <enter>");
@@ -38,6 +39,7 @@ void changeBauds(void) {
                 default: baud = 9600; break;
                 case 2: baud = 57600; break;
                 case 3: baud = 115200; break;
+                case 4: baud = 74880; break;
             }
         }
 

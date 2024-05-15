@@ -258,7 +258,7 @@ class dataPublisher {
      * @brief Initialize the TX buffer to be empty and start writing to the
      * given client.
      *
-     * @param client The client to transmit to.
+     * @param outClient The client to transmit to.
      */
     static void txBufferInit(Client* outClient);
     /**

@@ -97,6 +97,7 @@ ___
     - [TI INA219 High Side Current Sensor ](#ti-ina219-high-side-current-sensor-)
     - [Turner Cyclops-7F Submersible Fluorometer ](#turner-cyclops-7f-submersible-fluorometer-)
     - [Analog Electrical Conductivity using the Processor's Analog Pins ](#analog-electrical-conductivity-using-the-processors-analog-pins-)
+      - [VEGA VEGA PULS 21 ](#vega-vega-puls-21-)
     - [Yosemitech RS485/Modbus Environmental Sensors ](#yosemitech-rs485modbus-environmental-sensors-)
       - [Yosemitech Y504 Dissolved Oxygen Sensor ](#yosemitech-y504-dissolved-oxygen-sensor-)
       - [Yosemitech Y510 Turbidity Sensor ](#yosemitech-y510-turbidity-sensor-)
@@ -833,7 +834,7 @@ Because this sensor can have only one I2C address (0x60), it is only possible to
 ___
 
 
-### GroPoint Profile GPLP-8 Eight-Segment Soil Moisture and Temperature Profiling Probe <!-- {#menu_walk_gplp8} -->
+### GroPoint Profile GPLP-8 Eight-Segment Soil Moisture and Temperature Profiling Probe <!-- {#menu_walk_gro_point_gplp8} -->
 
 @see @ref sensor_gplp8
 
@@ -1082,6 +1083,15 @@ For best results, you should also connect the AREF pin of your processors ADC to
 @see @ref sensor_analog_cond
 
 [//]: # ( @menusnip{analog_elec_conductivity} )
+
+___
+
+
+#### VEGA VEGA PULS 21 <!-- {#menu_walk_vega_puls21} -->
+
+@see @ref sensor_vega_puls21
+
+[//]: # ( @menusnip{vega_puls21} )
 
 ___
 
