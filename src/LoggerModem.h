@@ -371,7 +371,9 @@ class loggerModem {
      * @note These values are polled for and cached in memory till needed
      *
      * @return **String** The concatenated name, hardware version, firmware
-     * version, and serial number fo the modem..
+     * version, and serial number of the modem.
+     *
+     * @todo Implement this for modems other than the XBee WiFi
      */
     String getModemDevId(void);
 
@@ -1058,11 +1060,15 @@ class loggerModem {
     // modemType gsmModem;
     // modemClientType gsmClient;
 
+    // @TODO: Implement these for all modems; most support it.
+
     /**
      * @brief The modem hardware version.
      *
      * Set in #modemSetup().
      * Returned as a portion of the #getModemDevId().
+     *
+     * @todo Implement this for modems other than the XBee WiFi
      */
     String _modemHwVersion;
     /**
@@ -1070,6 +1076,8 @@ class loggerModem {
      *
      * Set in #modemSetup().
      * Returned as a portion of the #getModemDevId().
+     *
+     * @todo Implement this for modems other than the XBee WiFi
      */
     String _modemFwVersion;
     /**
@@ -1077,6 +1085,8 @@ class loggerModem {
      *
      * Set in #modemSetup().
      * Returned as a portion of the #getModemDevId().
+     *
+     * @todo Implement this for modems other than the XBee WiFi
      */
     String _modemSerialNumber;
 

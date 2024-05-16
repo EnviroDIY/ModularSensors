@@ -64,6 +64,7 @@ String loggerModem::getModemName(void) {
     return _modemName;
 }
 
+// @TODO Implement this for all modems
 String loggerModem::getModemDevId(void) {
     return _modemName + F(" Sn ") + _modemSerialNumber + F(" HwVer ") +
         _modemHwVersion + F(" FwVer ") + _modemFwVersion;
