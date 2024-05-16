@@ -481,11 +481,6 @@ bool DigiXBeeWifi::updateModemMetadata(void) {
     loggerModem::_priorBatteryPercent = -9999;
     loggerModem::_priorModemTemp      = -9999;
 
-    // Initialize variable
-    int16_t rssi = -9999;
-    // int16_t  percent = -9999;
-    uint16_t volt_mV = 9999;
-
     MS_DBG(F("Modem polling settings:"), String(_pollModemMetaData, BIN));
 
     // if not enabled don't collect data
@@ -510,7 +505,8 @@ bool DigiXBeeWifi::updateModemMetadata(void) {
         // same "no signal" value (99 CSQ or 0 RSSI) in all 3 cases.
 
         // Try up to 5 times to get a signal quality
-        int8_t num_trys_remaining = 5;
+        int8_t  num_trys_remaining = 5;
+        int16_t rssi               = -9999;
         do {
             rssi = gsmModem.getSignalQuality();
             MS_DBG(F("Raw signal quality ("), num_trys_remaining, F("):"),
@@ -527,6 +523,8 @@ bool DigiXBeeWifi::updateModemMetadata(void) {
 
         loggerModem::_priorRSSI = rssi;
         MS_DBG(F("CURRENT RSSI:"), rssi);
+
+        success &= ((rssi != -9999) && (rssi != 0));
     } else {
         MS_DBG(F("Polling for both RSSI and signal strength is disabled"));
     }
@@ -535,7 +533,8 @@ bool DigiXBeeWifi::updateModemMetadata(void) {
     if ((_pollModemMetaData & MODEM_BATTERY_VOLTAGE_ENABLE_BITMASK) ==
         MODEM_BATTERY_VOLTAGE_ENABLE_BITMASK) {
         MS_DBG(F("Getting input voltage:"));
-        volt_mV = gsmModem.getBattVoltage();
+        uint16_t volt_mV = 9999;
+        volt_mV          = gsmModem.getBattVoltage();
         MS_DBG(F("CURRENT Modem battery (mV):"), volt_mV);
         if (volt_mV != 9999) {
             loggerModem::_priorBatteryVoltage =
@@ -543,6 +542,8 @@ bool DigiXBeeWifi::updateModemMetadata(void) {
         } else {
             loggerModem::_priorBatteryVoltage = static_cast<float>(-9999);
         }
+
+        success &= ((volt_mV != 9999) && (volt_mV != 0));
     } else {
         MS_DBG(F("Polling for modem battery voltage is disabled"));
     }
@@ -550,9 +551,17 @@ bool DigiXBeeWifi::updateModemMetadata(void) {
     if ((_pollModemMetaData & MODEM_TEMPERATURE_ENABLE_BITMASK) ==
         MODEM_TEMPERATURE_ENABLE_BITMASK) {
         MS_DBG(F("Getting chip temperature:"));
-        loggerModem::_priorModemTemp = getModemChipTemperature();
+        float chip_temp = -9999;
+        chip_temp       = getModemChipTemperature();
         MS_DBG(F("CURRENT Modem temperature(C):"),
                loggerModem::_priorModemTemp);
+        if (chip_temp != -9999.f) {
+            loggerModem::_priorModemTemp = chip_temp;
+        } else {
+            loggerModem::_priorModemTemp = static_cast<float>(-9999);
+        }
+
+        success &= ((chip_temp != -9999.f) && (chip_temp != 0));
     } else {
         MS_DBG(F("Polling for modem chip temperature is disabled"));
     }
@@ -561,13 +570,18 @@ bool DigiXBeeWifi::updateModemMetadata(void) {
     MS_DBG(F("Leaving Command Mode after updating modem metadata:"));
     gsmModem.exitCommand();
 
-    ++updateModemMetadata_cnt;
-    if (0 == rssi || (XBEE_RESET_THRESHOLD <= updateModemMetadata_cnt)) {
-        updateModemMetadata_cnt = 0;
-        // Since not giving an rssi value, restart the modem for next time.
-        // This is likely to take over 2 seconds
+
+    // bump up the failure count if we didn't successfully update any of the
+    // metadata parameters
+    if (!success) { metadata_failure_count++; }
+
+    // If the metadata update has failed more than the XBEE_RESET_THRESHOLD
+    // number of times, restart the modem for next time. This is likely to take
+    // over 2 seconds.
+    if (metadata_failure_count >= XBEE_RESET_THRESHOLD) {
+        metadata_failure_count = 0;  // reset the count
         PRINTOUT(F("updateModemMetadata forcing restart xbee..."));
-        success &= gsmModem.restart();
+        gsmModem.restart();
     }
 
     return success;

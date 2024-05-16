@@ -186,7 +186,7 @@ class DigiXBeeWifi : public DigiXBee {
     char* _ssid_buf = NULL;
     char* _pwd_buf  = NULL;
 
-    uint16_t updateModemMetadata_cnt = 0;
+    uint16_t metadata_failure_count = 0;
 };
 /**@}*/
 #endif  // SRC_MODEMS_DIGIXBEEWIFI_H_
