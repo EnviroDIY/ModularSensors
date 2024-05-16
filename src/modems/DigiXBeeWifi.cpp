@@ -272,7 +272,6 @@ bool DigiXBeeWifi::extraModemSetup(void) {
         // NOTE: This will write to the flash every time if there is a password
         // set!
         success &= gsmModem.networkConnect(_ssid, _pwd);
-        // Set the socket timeout to 10s (this is default)
         if (!success) {
             MS_DBG(F("Fail Connect "), success);
             success = true;

@@ -1,7 +1,8 @@
 /*
  * @file InSituTrollSdi12a.h
- * @copyright 2017-2024 Stroud Water Research Center
- * Part of the EnviroDIY modular sensors
+ * @copyright Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino.
+ * This library is published under the BSD-3 license.
  * @author Neil Hancock  https://github.com/neilh10/ModularSensors/
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
