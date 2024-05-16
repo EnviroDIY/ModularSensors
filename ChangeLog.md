@@ -49,6 +49,7 @@ If you are not using the GroPoint sensors which require many variables, I recomm
 - Minor bug fixes for XBee Wifi
 - Handle no SIM card response from SIM7080G (EnviroDIY LTE Bee)
 - Fixed Keller debugging output.
+- Fixed file reference for SDFat 2.2.3
 
 ### Known Issues
 - The modem hardware, firmware, and serial number is only implemented for the Digi XBee WiFi.

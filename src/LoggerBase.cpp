@@ -1039,7 +1039,7 @@ bool Logger::initializeSDCard(void) {
 
 
 // Protected helper function - This sets a timestamp on a file
-void Logger::setFileTimestamp(File fileToStamp, uint8_t stampFlag) {
+void Logger::setFileTimestamp(File& fileToStamp, uint8_t stampFlag) {
     DateTime dt = dtFromEpoch(getNowLocalEpoch());
 
     fileToStamp.timestamp(stampFlag, dt.year(), dt.month(), dt.date(),
