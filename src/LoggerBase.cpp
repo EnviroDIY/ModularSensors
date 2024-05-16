@@ -18,7 +18,7 @@
  */
 #define LIBCALL_ENABLEINTERRUPT
 // To handle external and pin change interrupts
-#include <EnableInterrupt.h>
+#include "ModSensorInterrupts.h"
 // For all i2c communication, including with the real time clock
 #include <Wire.h>
 

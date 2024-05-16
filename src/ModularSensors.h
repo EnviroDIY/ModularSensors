@@ -5,7 +5,7 @@
  * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief A simple include file for the Arduino command line interface (CLI).s
+ * @brief A simple include file for the Arduino command line interface (CLI).
  */
 
 // Header Guards
@@ -20,6 +20,9 @@
  * EnviroDIY branch that it is based on.
  */
 #define MODULAR_SENSORS_VERSION "0.35.0"
+
+// To support interrupts
+#include "ModSensorInterrupts.h"
 
 // To get all of the base classes for ModularSensors, include LoggerBase.
 // NOTE:  Individual sensor definitions must be included separately.

@@ -32,10 +32,6 @@
 // The Arduino library is needed for every Arduino program.
 #include <Arduino.h>
 
-// EnableInterrupt is used by ModularSensors for external and pin change
-// interrupts and must be explicitly included in the main program.
-#include <EnableInterrupt.h>
-
 // Include the main header for ModularSensors
 #include <ModularSensors.h>
 /** End [includes] */

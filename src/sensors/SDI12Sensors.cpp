@@ -8,8 +8,14 @@
  * @brief Implements the SDI12Sensors class.
  */
 
-#define LIBCALL_ENABLEINTERRUPT  // To prevent compiler/linker crashes
-#include <EnableInterrupt.h>     // To handle external and pin change interrupts
+/**
+ * @brief To prevent compiler/linker crashes with enable interrupt library, we
+ * must define LIBCALL_ENABLEINTERRUPT before importing EnableInterrupt within a
+ * library.
+ */
+#define LIBCALL_ENABLEINTERRUPT
+// To handle external and pin change interrupts
+#include "ModSensorInterrupts.h"
 
 #include "SDI12Sensors.h"
 
