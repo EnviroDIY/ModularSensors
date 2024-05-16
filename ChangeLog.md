@@ -25,10 +25,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - **BREAKING** Refactored how the publisher transmit buffer works. This will require adjustment to custom data publishers.
+- Update GitHub actions
+- Remove date from copyright for easier tracking
+- Turn modem off at end of setup, regardless of time
+- Clean function to set file timestamp on SD card
+- Use equation rather than table for CSQ
+- Only polling modem for enabled parameters
+- INCREASED THE MAXIMUM NUMBER OF VARIABLES FROM A SINGLE SENSOR and implemented an option to set this by build flag.
+  - This will increase memory use for the entire library.
+If you are not using the GroPoint sensors which require many variables, I recommend you change this value via the build flag `-D MAX_NUMBER_VARS=8`
+- Allow all WiFi modems to first attempt to connect using existing on-modem saved credentials rather than immediately sending new credentials.
+- Add further debug printouts to the processor stats
 
 ### Added
 - Support [GroPoint Profile GPLP-8 Eight-Segment Soil Moisture and Temperature Profiling Probe](https://www.gropoint.com/products/soil-sensors/gropoint-profile)
 - Support [Vega Puls 21 Radar](https://www.vega.com/en-us/products/product-catalog/level/radar/vegapuls-21)
+- Functions to enable and disable modem metadata polling by bitmask
+
+### Removed
+- Removed the (unused) sendOffset parameter from dataPublisherBase.
+
+### Fixed
+- Minor bug fixes for XBee Wifi
+- Handle no SIM card response from SIM7080G (EnviroDIY LTE Bee)
+- Fixed Keller debugging output.
+
+### Known Issues
+- The modem hardware, firmware, and serial number is only implemented for the Digi XBee WiFi.
 
 ## [0.34.1]
 
