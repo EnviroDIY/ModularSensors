@@ -486,7 +486,7 @@ String Logger::formatDateTime_ISO8601(DateTime& dt) {
         tzString = tzString.substring(0, 1) + '0' + tzString.substring(1, 2) +
             F(":00");
     } else if (_loggerTimeZone == 0) {
-        tzString = 'Z';
+        tzString = "Z";
     } else if (0 < _loggerTimeZone && _loggerTimeZone < 10) {
         tzString = "+0" + tzString + F(":00");
     } else if (10 <= _loggerTimeZone && _loggerTimeZone <= 24) {

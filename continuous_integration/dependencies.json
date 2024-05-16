@@ -1,5 +1,5 @@
 {
-  "action_cache_version": 17,
+  "action_cache_version": 18,
   "dependencies": [
     {
       "name": "EnviroDIY_DS3231",
@@ -46,7 +46,7 @@
       "owner": "greiman",
       "library id": "322",
       "url": "https://github.com/greiman/SdFat",
-      "version": "~2.1.2",
+      "version": "~2.2.3",
       "note": "SdFat - FAT16/FAT32 file system for SD cards.",
       "authors": [
         "Bill Greiman"
@@ -82,7 +82,7 @@
       "owner": "adafruit",
       "library id": "6214",
       "url": "https://github.com/adafruit/Adafruit_BusIO",
-      "version": "~1.11.6",
+      "version": "~1.16.0",
       "note": "Adafruit BusIO, a dependency of other Adafruit libraries",
       "authors": [
         "Adafruit"
@@ -95,7 +95,7 @@
       "owner": "adafruit",
       "library id": "31",
       "url": "https://github.com/adafruit/Adafruit_Sensor",
-      "version": "~1.1.13",
+      "version": "~1.1.14",
       "note": "Adafruit's unified sensor library is used by their other libraries",
       "authors": [
         "Adafruit"
@@ -133,7 +133,7 @@
       "owner": "adafruit",
       "library id": "166",
       "url": "https://github.com/adafruit/Adafruit_BME280_Library",
-      "version": "~2.2.2",
+      "version": "~2.2.4",
       "note": "Bosch BME280 Temp/Humidity/Pressure Sensor Library by Adafruit",
       "authors": [
         "Adafruit"
@@ -157,7 +157,7 @@
       "owner": "adafruit",
       "library id": "19",
       "url": "https://github.com/adafruit/DHT-sensor-library",
-      "version": "~1.4.4",
+      "version": "~1.4.6",
       "note": "AOSong DHT Sensor Library by Adafruit",
       "authors": [
         "Adafruit"
@@ -170,7 +170,7 @@
       "owner": "adafruit",
       "library id": "160",
       "url": "https://github.com/adafruit/Adafruit_INA219",
-      "version": "~1.2.1",
+      "version": "~1.2.3",
       "note": "This is a library for the Adafruit INA219 high side DC current sensor boards",
       "authors": [
         "Adafruit"
@@ -207,7 +207,7 @@
       "owner": "paulstoffregen",
       "library id": "1",
       "url": "https://github.com/PaulStoffregen/OneWire",
-      "version": "~2.3.7",
+      "version": "~2.3.8",
       "note": "OneWire - Control 1-Wire protocol (DS18S20, DS18B20, DS2408 and etc)",
       "authors": [
         "Paul Stoffregen",
@@ -231,7 +231,7 @@
       "owner": "milesburton",
       "library id": "54",
       "url": "https://github.com/milesburton/Arduino-Temperature-Control-Library",
-      "version": "~3.9.1",
+      "version": "~3.11.0",
       "note": "DallasTemperature - Arduino Library for Dallas Temperature ICs (DS18B20, DS18S20, DS1822, DS1820)",
       "authors": [
         "Guil Barros",
@@ -328,7 +328,9 @@
       "url": "https://github.com/EnviroDIY/GroPointModbus.git",
       "version": "~0.1.0",
       "note": "A library to use an Arduino as a master to control and communicate via modbus with GroPoint soil moisture sensors. ",
-      "authors": ["Anthony Aufdenkampe"],
+      "authors": [
+        "Anthony Aufdenkampe"
+      ],
       "frameworks": "arduino",
       "platforms": "atmelavr, atmelsam"
     }

@@ -550,7 +550,8 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
             // that the measurement is ready.
 
             uint32_t timerStart = millis();
-            while ((millis() - timerStart) < (1000 * (wait))) {
+            while ((millis() - timerStart) <
+                   static_cast<uint32_t>(1000 * (wait))) {
                 // sensor can interrupt us to let us know it is done early
                 if (_SDI12Internal.available()) {
 #ifdef MS_SDI12SENSORS_DEBUG_DEEP

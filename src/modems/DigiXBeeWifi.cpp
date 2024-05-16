@@ -106,14 +106,14 @@ bool DigiXBeeWifi::extraModemSetup(void) {
         gsmModem.getSeries();
         _modemName       = gsmModem.getModemName();
         String xbeeSnLow = gsmModem.sendATGetString(
-            F("SL"));  // Request Module MAC/Serial Number Low
+            GFP("SL"));  // Request Module MAC/Serial Number Low
         String xbeeSnHigh = gsmModem.sendATGetString(
-            F("SH"));  // Request Module MAC/Serial Number High
+            GFP("SH"));  // Request Module MAC/Serial Number High
         _modemSerialNumber = xbeeSnHigh + xbeeSnLow;
         _modemHwVersion =
-            gsmModem.sendATGetString(F("HV"));  // Request Module Hw Version
+            gsmModem.sendATGetString(GFP("HV"));  // Request Module Hw Version
         _modemFwVersion =
-            gsmModem.sendATGetString(F("VR"));  // Firmware Version
+            gsmModem.sendATGetString(GFP("VR"));  // Firmware Version
         PRINTOUT(F("Digi XBee"), _modemName, F("Mac/SN"), xbeeSnHigh, xbeeSnLow,
                  F("HwVer"), _modemHwVersion, F("FwVer"), _modemFwVersion);
 
