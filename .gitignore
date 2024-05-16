@@ -110,3 +110,4 @@ arduino_cli.log
 **/sensor_tests/*
 docs/Doxyfile.bak
 continuous_integration/output_check_component_inclusion.log
+continuous_integration/platformio_ci_local.ini

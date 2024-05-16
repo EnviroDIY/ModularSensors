@@ -112,8 +112,6 @@ def create_pio_ci_command(pio_env_file: str, pio_env: str, code_subfolder: str) 
         # "--verbose",
         "--project-conf",
         pio_env_file,
-        "--project-conf",
-        pio_env_file,
         "--environment",
         pio_env,
         os.path.join(examples_path, code_subfolder),
@@ -314,7 +312,7 @@ def extend_pio_config(added_envs):
 # %% read build flags out of the menu-a-la-cart example
 # Pattern for flags in the menu-a-la-cart example
 pattern = re.compile(
-    "^(?:#if|#elif) defined[\s\(](?P<flag1>BUILD_\w+)((?:[\s\n\\\)]*?\|\|[\s\n\\]*defined[\s\n\\\(]*?)(?P<flag_last>BUILD_\w+))*",
+    r"^(?:#if|#elif) defined[\s\(](?P<flag1>BUILD_\w+)((?:[\s\n\\\)]*?\|\|[\s\n\\]*defined[\s\n\\\(]*?)(?P<flag_last>BUILD_\w+))*",
     re.MULTILINE,
 )
 

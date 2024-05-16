@@ -179,7 +179,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [generate_matrix, determine_library_source]
     env:
-      LIBRARY_INSTALL_GIT: ${{ needs.determine_library_source.outputs.library_install_zip }}
+      LIBRARY_INSTALL_GIT: ${{ needs.determine_library_source.outputs.library_install_git }}
     strategy:
       matrix:
         job_info: ${{ fromJSON(needs.generate_matrix.outputs.pio_job_matrix) }}
