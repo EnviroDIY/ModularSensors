@@ -111,3 +111,4 @@ arduino_cli.log
 docs/Doxyfile.bak
 continuous_integration/output_check_component_inclusion.log
 continuous_integration/platformio_ci_local.ini
+pioScripts/install_shared_deps.py

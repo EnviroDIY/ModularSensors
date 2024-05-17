@@ -35,8 +35,8 @@ volatile bool Logger::isLoggingNow = false;
 volatile bool Logger::isTestingNow = false;
 volatile bool Logger::startTesting = false;
 
-// Initialize the RTC for the SAMD boards
-#if defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAMD_ZERO)
+// Initialize the RTC for the SAMD boards using build in RTC
+#if not defined(MS_SAMD_DS3231) && defined(ARDUINO_ARCH_SAMD)
 RTCZero Logger::zero_sleep_rtc;
 #endif
 
@@ -1329,7 +1329,7 @@ void Logger::begin() {
     // Enable the watchdog
     watchDogTimer.enableWatchDog();
 
-#if defined ARDUINO_ARCH_SAMD
+#if not defined(MS_SAMD_DS3231) && defined(ARDUINO_ARCH_SAMD)
     MS_DBG(F("Beginning internal real time clock"));
     zero_sleep_rtc.begin();
 #endif

@@ -36,7 +36,9 @@
 // Bring in the libraries to handle the processor sleep/standby modes
 // The SAMD library can also the built-in clock on those modules
 #if defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAMD_ZERO)
+#if not defined(MS_SAMD_DS3231)
 #include <RTCZero.h>
+#endif
 #include "WatchDogs/WatchDogSAMD.h"
 #elif defined(ARDUINO_ARCH_AVR) || defined(__AVR__)
 #include <avr/power.h>
@@ -680,7 +682,8 @@ class Logger {
 // This gets the current epoch time (unix time, ie, the number of seconds
 // from January 1, 1970 00:00:00 UTC) and corrects it for the specified time
 // zone
-#if defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAMD_ZERO)
+#if (defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAMD_ZERO)) && \
+    not defined(MS_SAMD_DS3231)
     /**
      * @brief The RTC object.
      *
