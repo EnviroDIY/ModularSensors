@@ -1,7 +1,8 @@
 /**
  * @file LoggerBase.cpp
- * @copyright 2017-2022 Stroud Water Research Center
- * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino.
+ * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Implements the Logger class.
@@ -17,7 +18,7 @@
  */
 #define LIBCALL_ENABLEINTERRUPT
 // To handle external and pin change interrupts
-#include <EnableInterrupt.h>
+#include "ModSensorInterrupts.h"
 // For all i2c communication, including with the real time clock
 #include <Wire.h>
 
@@ -34,8 +35,8 @@ volatile bool Logger::isLoggingNow = false;
 volatile bool Logger::isTestingNow = false;
 volatile bool Logger::startTesting = false;
 
-// Initialize the RTC for the SAMD boards
-#if defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAMD_ZERO)
+// Initialize the RTC for the SAMD boards using build in RTC
+#if not defined(MS_SAMD_DS3231) && defined(ARDUINO_ARCH_SAMD)
 RTCZero Logger::zero_sleep_rtc;
 #endif
 
@@ -305,25 +306,11 @@ bool Logger::syncRTC() {
             PRINTOUT(F("Could not wake modem for clock sync."));
         }
         watchDogTimer.resetWatchDog();
-        // Power down the modem - but only if there will be more than 15 seconds
-        // before the NEXT logging interval - it can take the modem that long to
-        // shut down
 
-        uint32_t setupFinishTime = getNowLocalEpoch();
-        if (setupFinishTime % (_loggingIntervalMinutes * 60) > 15) {
-            MS_DBG(F("At"), formatDateTime_ISO8601(setupFinishTime), F("with"),
-                   setupFinishTime % (_loggingIntervalMinutes * 60),
-                   F("seconds until next logging interval, putting modem to "
-                     "sleep"));
-            _logModem->disconnectInternet();
-            _logModem->modemSleepPowerDown();
-        } else {
-            MS_DBG(F("At"), formatDateTime_ISO8601(setupFinishTime),
-                   F("there are only"),
-                   setupFinishTime % (_loggingIntervalMinutes * 60),
-                   F("seconds until next logging interval; leaving modem on "
-                     "and connected to the internet."));
-        }
+        // Power down the modem now that we are done with it
+        MS_DBG(F("Powering down modem after clock sync."));
+        _logModem->disconnectInternet();
+        _logModem->modemSleepPowerDown();
     }
     watchDogTimer.resetWatchDog();
     return success;
@@ -499,7 +486,7 @@ String Logger::formatDateTime_ISO8601(DateTime& dt) {
         tzString = tzString.substring(0, 1) + '0' + tzString.substring(1, 2) +
             F(":00");
     } else if (_loggerTimeZone == 0) {
-        tzString = 'Z';
+        tzString = "Z";
     } else if (0 < _loggerTimeZone && _loggerTimeZone < 10) {
         tzString = "+0" + tzString + F(":00");
     } else if (10 <= _loggerTimeZone && _loggerTimeZone <= 24) {
@@ -1052,13 +1039,11 @@ bool Logger::initializeSDCard(void) {
 
 
 // Protected helper function - This sets a timestamp on a file
-void Logger::setFileTimestamp(File fileToStamp, uint8_t stampFlag) {
-    fileToStamp.timestamp(stampFlag, dtFromEpoch(getNowLocalEpoch()).year(),
-                          dtFromEpoch(getNowLocalEpoch()).month(),
-                          dtFromEpoch(getNowLocalEpoch()).date(),
-                          dtFromEpoch(getNowLocalEpoch()).hour(),
-                          dtFromEpoch(getNowLocalEpoch()).minute(),
-                          dtFromEpoch(getNowLocalEpoch()).second());
+void Logger::setFileTimestamp(File& fileToStamp, uint8_t stampFlag) {
+    DateTime dt = dtFromEpoch(getNowLocalEpoch());
+
+    fileToStamp.timestamp(stampFlag, dt.year(), dt.month(), dt.date(),
+                          dt.hour(), dt.minute(), dt.second());
 }
 
 
@@ -1272,14 +1257,6 @@ void Logger::testingMode() {
         PRINTOUT(F("------------------------------------------"));
 
         // Update the modem metadata
-        // NOTE:  the extra get signal quality is an annoying redundancy
-        // needed only for the wifi XBee.  Update metadata will also ask the
-        // module for current signal quality using the underlying TinyGSM
-        // getSignalQuality() function, but for the WiFi XBee it will not
-        // actually measure anything except by explicitly making a connection,
-        // which getModemSignalQuality() does.  For all of the other modules,
-        // getModemSignalQuality() is just a straight pass-through to
-        // getSignalQuality().
         if (gotInternetConnection) { _logModem->updateModemMetadata(); }
 
         watchDogTimer.resetWatchDog();
@@ -1352,7 +1329,7 @@ void Logger::begin() {
     // Enable the watchdog
     watchDogTimer.enableWatchDog();
 
-#if defined ARDUINO_ARCH_SAMD
+#if not defined(MS_SAMD_DS3231) && defined(ARDUINO_ARCH_SAMD)
     MS_DBG(F("Beginning internal real time clock"));
     zero_sleep_rtc.begin();
 #endif

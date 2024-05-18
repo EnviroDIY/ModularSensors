@@ -1,10 +1,11 @@
 /**
  * @file ModularSensors.h
- * @copyright 2017-2022 Stroud Water Research Center
- * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino.
+ * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief A simple include file for the Arduino command line interface (CLI).s
+ * @brief A simple include file for the Arduino command line interface (CLI).
  */
 
 // Header Guards
@@ -13,8 +14,15 @@
 
 /**
  * @brief The current library version number
+ * https://semver.org/
+ * Add hypen '-' and alpha number for a branches unique tracking number
+ * A pre-release version will always be indicated as slightly ahead of the
+ * EnviroDIY branch that it is based on.
  */
-#define MODULAR_SENSORS_VERSION "0.34.0"
+#define MODULAR_SENSORS_VERSION "0.35.0"
+
+// To support interrupts
+#include "ModSensorInterrupts.h"
 
 // To get all of the base classes for ModularSensors, include LoggerBase.
 // NOTE:  Individual sensor definitions must be included separately.

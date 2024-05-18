@@ -91,14 +91,8 @@ arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install "A
 echo "\n\e[32mInstalling Adafruit SHT4x Library from Arduino library index\e[0m"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install "Adafruit SHT4x Library"
 
-echo "\n\e[32mDownloading Martin Lindupp's BMP388 Library as a zip"
-# Soligen fork needs to be manually unzipped and moved because the CLI chokes on the library name not matching the h file
-curl -L  --retry 15 --retry-delay 0 https://github.com/MartinL1/BMP388_DEV/archive/master.zip --create-dirs -o home/arduino/downloads/BMP388_DEV.zip
-echo "\e[32mDecompressing BMP388_DEV\e[0m"
-unzip -q -o home/arduino/downloads/BMP388_DEV.zip -d home/arduino/downloads/
-echo "\e[32mMoving BMP388_DEV to the libraries folder\e[0m"
-mkdir -p home/arduino/user/libraries/BMP388_DEV
-mv home/arduino/downloads/BMP388_DEV-master/* home/arduino/user/libraries/BMP388_DEV
+echo "\n\e[32mInstalling Martin Lindupp's BMP388 Library from Arduino library index\e[0m"
+arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install "BMP388_DEV"
 
 echo "\n\e[32mInstalling OneWire library from Arduino library index\e[0m"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install OneWire
@@ -131,6 +125,9 @@ arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install Ke
 
 echo "\n\e[32mInstalling EnviroDIY YosemitechModbus library from Arduino library index\e[0m"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install YosemitechModbus
+
+echo "\n\e[32mInstalling EnviroDIY GropointModbus library from Arduino library index\e[0m"
+arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install GropointModbus
 
 echo "\n\e[32mInstalling StreamDebugger library from Arduino library index\e[0m"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install StreamDebugger

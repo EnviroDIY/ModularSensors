@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
           cache: 'pip'
@@ -34,7 +34,7 @@ jobs:
           python continuous_integration/generate_job_matrix.py
 
       - name: Store generated examples
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: generated_examples
           path: |
@@ -83,7 +83,7 @@ jobs:
         run: |
           echo "Pull Request from the fork ${{ github.event.pull_request.head.repo.full_name }} at ${{ github.event.pull_request.head.ref }}"
           echo "LIBRARY_INSTALL_ZIP=https://github.com/${{ github.event.pull_request.head.repo.full_name }}/archive/${{ github.event.pull_request.head.ref }}.zip" >> $GITHUB_ENV
-          echo "LIBRARY_INSTALL_GIT=https://github.com${{ github.event.pull_request.head.repo.full_name }}.git#${{ github.event.pull_request.head.ref }}" >> $GITHUB_ENV
+          echo "LIBRARY_INSTALL_GIT=https://github.com/${{ github.event.pull_request.head.repo.full_name }}.git#${{ github.event.pull_request.head.ref }}" >> $GITHUB_ENV
 
       - name: store enviroment variables as output
         id: store_vars
@@ -126,7 +126,7 @@ jobs:
         uses: arduino/setup-arduino-cli@v1.1.2
 
       - name: Restore Arduino platforms and libraries
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: cache_libraries
         with:
           path: |
@@ -150,7 +150,7 @@ jobs:
           sh continuous_integration/install-test-version-arduino-cli.sh
 
       - name: Download the prepared examples
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: generated_examples
           path: |
@@ -179,7 +179,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [generate_matrix, determine_library_source]
     env:
-      LIBRARY_INSTALL_GIT: ${{ needs.determine_library_source.outputs.library_install_zip }}
+      LIBRARY_INSTALL_GIT: ${{ needs.determine_library_source.outputs.library_install_git }}
     strategy:
       matrix:
         job_info: ${{ fromJSON(needs.generate_matrix.outputs.pio_job_matrix) }}
@@ -188,7 +188,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
           cache: 'pip'
@@ -196,8 +196,8 @@ jobs:
       - name: Install python dependencies, including PlatformIO
         run: pip install -r continuous_integration/requirements.txt
 
-      - name: Restore PlatformIO and Arduino platforms and libraries
-        uses: actions/cache@v3
+      - name: Restore PlatformIO platforms and libraries
+        uses: actions/cache@v4
         id: cache_libraries
         with:
           path: |
@@ -222,7 +222,7 @@ jobs:
           pio pkg install -g --library ${{ env.LIBRARY_INSTALL_GIT }}
 
       - name: Download the prepared examples
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: generated_examples
           path: |

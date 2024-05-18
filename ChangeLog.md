@@ -17,10 +17,56 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 ### Fixed
-- Fixed GitHub actions for pull requests from forks.
 
 ***
 
+
+## [0.35.0]
+
+### Changed
+- **BREAKING** Refactored how the publisher transmit buffer works. This will require adjustment to custom data publishers.
+- Update GitHub actions
+- Remove date from copyright for easier tracking
+- Turn modem off at end of setup, regardless of time
+- Clean function to set file timestamp on SD card
+- Use equation rather than table for CSQ
+- Only polling modem for enabled parameters
+- INCREASED THE MAXIMUM NUMBER OF VARIABLES FROM A SINGLE SENSOR and implemented an option to set this by build flag.
+  - This will increase memory use for the entire library.
+If you are not using the GroPoint sensors which require many variables, I recommend you change this value via the build flag `-D MAX_NUMBER_VARS=8`
+- Allow all WiFi modems to first attempt to connect using existing on-modem saved credentials rather than immediately sending new credentials.
+- Add further debug printouts to the processor stats
+
+### Added
+- Support [GroPoint Profile GPLP-8 Eight-Segment Soil Moisture and Temperature Profiling Probe](https://www.gropoint.com/products/soil-sensors/gropoint-profile)
+- Support [Vega Puls 21 Radar](https://www.vega.com/en-us/products/product-catalog/level/radar/vegapuls-21)
+- Functions to enable and disable modem metadata polling by bitmask
+
+### Removed
+- Removed the (unused) sendOffset parameter from dataPublisherBase.
+
+### Fixed
+- Minor bug fixes for XBee Wifi
+- Handle no SIM card response from SIM7080G (EnviroDIY LTE Bee)
+- Fixed Keller debugging output.
+- Fixed file reference for SDFat 2.2.3
+
+### Known Issues
+- The modem hardware, firmware, and serial number is only implemented for the Digi XBee WiFi.
+
+## [0.34.1]
+
+### Changed
+- Incorporated improvements to the XBee Wifi - from [neilh10](https://github.com/EnviroDIY/ModularSensors/commits?author=neilh10)
+  - #347 -WiFi S6B stability - tears dwon TCP/IP before going to sleep, doesn't automatically poll for meta data
+
+### Added
+- Added the ability to enable or disable polling of modem attached variables.
+By default, all polling is off, but polling is enabled for a modem sensor when a sensor is created and attached to a modem.
+This functionailty is inspired from [neilh10](https://github.com/EnviroDIY/ModularSensors/commits?author=neilh10).
+
+### Fixed
+- Fixed GitHub actions for pull requests from forks.
 
 ## [0.34.0]
 

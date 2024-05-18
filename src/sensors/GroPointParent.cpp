@@ -1,23 +1,25 @@
 /**
- * @file YosemitechParent.cpp
+ * @file GroPointParent.cpp
  * @copyright Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino.
  * This library is published under the BSD-3 license.
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ * @author Anthony Aufdenkampe <aaufdenkampe@limno.com>
  *
- * @brief Implements the YosemitechParent class.
+ * @brief Implements the GroPointParent class.
  */
 
-#include "YosemitechParent.h"
+#include "GroPointParent.h"
 
 // The constructor - need the sensor type, modbus address, power pin, stream for
 // data, and number of readings to average
-YosemitechParent::YosemitechParent(
-    byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2,
-    int8_t enablePin, uint8_t measurementsToAverage, yosemitechModel model,
-    const char* sensName, uint8_t numVariables, uint32_t warmUpTime_ms,
-    uint32_t stabilizationTime_ms, uint32_t measurementTime_ms,
-    uint8_t incCalcValues)
+GroPointParent::GroPointParent(byte modbusAddress, Stream* stream,
+                               int8_t powerPin, int8_t powerPin2,
+                               int8_t enablePin, uint8_t measurementsToAverage,
+                               gropointModel model, const char* sensName,
+                               uint8_t numVariables, uint32_t warmUpTime_ms,
+                               uint32_t stabilizationTime_ms,
+                               uint32_t measurementTime_ms,
+                               uint8_t  incCalcValues)
     : Sensor(sensName, numVariables, warmUpTime_ms, stabilizationTime_ms,
              measurementTime_ms, powerPin, -1, measurementsToAverage,
              incCalcValues),
@@ -26,12 +28,14 @@ YosemitechParent::YosemitechParent(
       _stream(stream),
       _RS485EnablePin(enablePin),
       _powerPin2(powerPin2) {}
-YosemitechParent::YosemitechParent(
-    byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2,
-    int8_t enablePin, uint8_t measurementsToAverage, yosemitechModel model,
-    const char* sensName, uint8_t numVariables, uint32_t warmUpTime_ms,
-    uint32_t stabilizationTime_ms, uint32_t measurementTime_ms,
-    uint8_t incCalcValues)
+GroPointParent::GroPointParent(byte modbusAddress, Stream& stream,
+                               int8_t powerPin, int8_t powerPin2,
+                               int8_t enablePin, uint8_t measurementsToAverage,
+                               gropointModel model, const char* sensName,
+                               uint8_t numVariables, uint32_t warmUpTime_ms,
+                               uint32_t stabilizationTime_ms,
+                               uint32_t measurementTime_ms,
+                               uint8_t  incCalcValues)
     : Sensor(sensName, numVariables, warmUpTime_ms, stabilizationTime_ms,
              measurementTime_ms, powerPin, -1, measurementsToAverage,
              incCalcValues),
@@ -41,11 +45,11 @@ YosemitechParent::YosemitechParent(
       _RS485EnablePin(enablePin),
       _powerPin2(powerPin2) {}
 // Destructor
-YosemitechParent::~YosemitechParent() {}
+GroPointParent::~GroPointParent() {}
 
 
 // The sensor installation location on the Mayfly
-String YosemitechParent::getSensorLocation(void) {
+String GroPointParent::getSensorLocation(void) {
     String sensorLocation = F("modbus_0x");
     if (_modbusAddress < 16) sensorLocation += "0";
     sensorLocation += String(_modbusAddress, HEX);
@@ -53,20 +57,20 @@ String YosemitechParent::getSensorLocation(void) {
 }
 
 
-bool YosemitechParent::setup(void) {
+bool GroPointParent::setup(void) {
     bool retVal =
         Sensor::setup();  // this will set pin modes and the setup status bit
     if (_RS485EnablePin >= 0) pinMode(_RS485EnablePin, OUTPUT);
     if (_powerPin2 >= 0) pinMode(_powerPin2, OUTPUT);
 
-#ifdef MS_YOSEMITECHPARENT_DEBUG_DEEP
-    _ysensor.setDebugStream(&DEEP_DEBUGGING_SERIAL_OUTPUT);
+#ifdef MS_GROPOINTPARENT_DEBUG_DEEP
+    _gsensor.setDebugStream(&DEEP_DEBUGGING_SERIAL_OUTPUT);
 #endif
 
     // This sensor begin is just setting more pin modes, etc, no sensor power
     // required This realy can't fail so adding the return value is just for
     // show
-    retVal &= _ysensor.begin(_model, _modbusAddress, _stream, _RS485EnablePin);
+    retVal &= _gsensor.begin(_model, _modbusAddress, _stream, _RS485EnablePin);
 
     return retVal;
 }
@@ -75,7 +79,7 @@ bool YosemitechParent::setup(void) {
 // The function to wake up a sensor
 // Different from the standard in that it waits for warm up and starts
 // measurements
-bool YosemitechParent::wake(void) {
+bool GroPointParent::wake(void) {
     // Sensor::wake() checks if the power pin is on and sets the wake timestamp
     // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
@@ -86,7 +90,7 @@ bool YosemitechParent::wake(void) {
     MS_DBG(F("Start Measurement on"), getSensorNameAndLocation());
     while (!success && ntries < 5) {
         MS_DBG('(', ntries + 1, F("):"));
-        success = _ysensor.startMeasurement();
+        success = _gsensor.startMeasurement();
         ntries++;
     }
 
@@ -102,25 +106,13 @@ bool YosemitechParent::wake(void) {
         _sensorStatus &= 0b11101111;
     }
 
-    // Manually activate the brush
-    // Needed for newer sensors that do not immediate activate on getting power
-    if (_model == Y511 || _model == Y514 || _model == Y551 || _model == Y560 ||
-        _model == Y4000) {
-        MS_DBG(F("Activate Brush on"), getSensorNameAndLocation());
-        if (_ysensor.activateBrush()) {
-            MS_DBG(F("Brush activated."));
-        } else {
-            MS_DBG(F("Brush NOT activated!"));
-        }
-    }
-
     return success;
 }
 
 
 // The function to put the sensor to sleep
 // Different from the standard in that it stops measurements
-bool YosemitechParent::sleep(void) {
+bool GroPointParent::sleep(void) {
     if (!checkPowerOn()) { return true; }
     if (_millisSensorActivated == 0) {
         MS_DBG(getSensorNameAndLocation(), F("was not measuring!"));
@@ -133,7 +125,7 @@ bool YosemitechParent::sleep(void) {
     MS_DBG(F("Stop Measurement on"), getSensorNameAndLocation());
     while (!success && ntries < 5) {
         MS_DBG('(', ntries + 1, F("):"));
-        success = _ysensor.stopMeasurement();
+        success = _gsensor.stopMeasurement();
         ntries++;
     }
     if (success) {
@@ -154,7 +146,7 @@ bool YosemitechParent::sleep(void) {
 
 
 // This turns on sensor power
-void YosemitechParent::powerUp(void) {
+void GroPointParent::powerUp(void) {
     if (_powerPin >= 0) {
         MS_DBG(F("Powering"), getSensorNameAndLocation(), F("with pin"),
                _powerPin);
@@ -177,7 +169,7 @@ void YosemitechParent::powerUp(void) {
 
 
 // This turns off sensor power
-void YosemitechParent::powerDown(void) {
+void GroPointParent::powerDown(void) {
     if (_powerPin >= 0) {
         MS_DBG(F("Turning off power to"), getSensorNameAndLocation(),
                F("with pin"), _powerPin);
@@ -206,88 +198,94 @@ void YosemitechParent::powerDown(void) {
 }
 
 
-bool YosemitechParent::addSingleMeasurementResult(void) {
-    bool success = false;
+bool GroPointParent::addSingleMeasurementResult(void) {
+    bool success  = false;
+    bool successT = false;
+    // Initialize moisture variables for each probe segement
+    float M1, M2, M3, M4, M5, M6, M7, M8 = -9999;
+    // Initialize temperature variables for each probe sensor
+    float T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13 = -9999;
 
     // Check a measurement was *successfully* started (status bit 6 set)
     // Only go on to get a result if it was
     if (bitRead(_sensorStatus, 6)) {
         switch (_model) {
-            case Y4000: {
-                // Initialize float variables
-                float DOmgL       = -9999;
-                float Turbidity   = -9999;
-                float Cond        = -9999;
-                float pH          = -9999;
-                float Temp        = -9999;
-                float ORP         = -9999;
-                float Chlorophyll = -9999;
-                float BGA         = -9999;
-
-                // Get Values
+            case GPLP8: {
+                // Get Moisture Values
                 MS_DBG(F("Get Values from"), getSensorNameAndLocation());
-                success = _ysensor.getValues(DOmgL, Turbidity, Cond, pH, Temp,
-                                             ORP, Chlorophyll, BGA);
+                success = _gsensor.getValues(M1, M2, M3, M4, M5, M6, M7, M8);
 
                 // Fix not-a-number values
-                if (!success || isnan(DOmgL)) DOmgL = -9999;
-                if (!success || isnan(Turbidity)) Turbidity = -9999;
-                if (!success || isnan(Cond)) Cond = -9999;
-                if (!success || isnan(pH)) pH = -9999;
-                if (!success || isnan(Temp)) Temp = -9999;
-                if (!success || isnan(ORP)) ORP = -9999;
-                if (!success || isnan(Chlorophyll)) Chlorophyll = -9999;
-                if (!success || isnan(BGA)) BGA = -9999;
+                if (!success || isnan(M1)) M1 = -9999;
+                if (!success || isnan(M2)) M2 = -9999;
+                if (!success || isnan(M3)) M3 = -9999;
+                if (!success || isnan(M4)) M4 = -9999;
+                if (!success || isnan(M5)) M5 = -9999;
+                if (!success || isnan(M6)) M6 = -9999;
+                if (!success || isnan(M7)) M7 = -9999;
+                if (!success || isnan(M8)) M8 = -9999;
 
-                // For conductivity, convert mS/cm to µS/cm
-                if (Cond != -9999) Cond *= 1000;
+                MS_DBG(F("    "), _gsensor.getParameter());
+                MS_DBG(F("    "), _gsensor.getUnits());
+                MS_DBG(F("    "), M1, ',', M2, ',', M3, ',', M4, ',', M5, ',',
+                       M6, ',', M7, ',', M8);
 
-                MS_DBG(F("    "), _ysensor.getParameter());
-                MS_DBG(F("    "), DOmgL, ',', Turbidity, ',', Cond, ',', pH,
-                       ',', Temp, ',', ORP, ',', Chlorophyll, ',', BGA);
+                // Get Temperature Values
+                successT = _gsensor.getTemperatureValues(
+                    T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13);
+
+                // Fix not-a-number values
+                if (!successT || isnan(T1)) T1 = -9999;
+                if (!successT || isnan(T2)) T2 = -9999;
+                if (!successT || isnan(T3)) T3 = -9999;
+                if (!successT || isnan(T4)) T4 = -9999;
+                if (!successT || isnan(T5)) T5 = -9999;
+                if (!successT || isnan(T6)) T6 = -9999;
+                if (!successT || isnan(T7)) T7 = -9999;
+                if (!successT || isnan(T8)) T8 = -9999;
+                if (!successT || isnan(T9)) T9 = -9999;
+                if (!successT || isnan(T10)) T10 = -9999;
+                if (!successT || isnan(T11)) T11 = -9999;
+                if (!successT || isnan(T12)) T12 = -9999;
+                if (!successT || isnan(T13)) T13 = -9999;
+
+                MS_DBG(F("    "), _gsensor.getParameter1());
+                MS_DBG(F("    "), _gsensor.getUnits1());
+                MS_DBG(F("    "), T1, ',', T2, ',', T3, ',', T4, ',', T5, ',',
+                       T6, ',', T7, ',', T8, ',', T9, ',', T10, ',', T11, ',',
+                       T12, ',', T13);
+
 
                 // Put values into the array
-                verifyAndAddMeasurementResult(0, DOmgL);
-                verifyAndAddMeasurementResult(1, Turbidity);
-                verifyAndAddMeasurementResult(2, Cond);
-                verifyAndAddMeasurementResult(3, pH);
-                verifyAndAddMeasurementResult(4, Temp);
-                verifyAndAddMeasurementResult(5, ORP);
-                verifyAndAddMeasurementResult(6, Chlorophyll);
-                verifyAndAddMeasurementResult(7, BGA);
+                verifyAndAddMeasurementResult(0, M1);
+                verifyAndAddMeasurementResult(1, M2);
+                verifyAndAddMeasurementResult(2, M3);
+                verifyAndAddMeasurementResult(3, M4);
+                verifyAndAddMeasurementResult(4, M5);
+                verifyAndAddMeasurementResult(5, M6);
+                verifyAndAddMeasurementResult(6, M7);
+                verifyAndAddMeasurementResult(7, M8);
+
+                verifyAndAddMeasurementResult(8, T1);
+                verifyAndAddMeasurementResult(9, T2);
+                verifyAndAddMeasurementResult(10, T3);
+                verifyAndAddMeasurementResult(11, T4);
+                verifyAndAddMeasurementResult(12, T5);
+                verifyAndAddMeasurementResult(13, T6);
+                verifyAndAddMeasurementResult(14, T7);
+                verifyAndAddMeasurementResult(15, T8);
+                verifyAndAddMeasurementResult(16, T9);
+                verifyAndAddMeasurementResult(17, T10);
+                verifyAndAddMeasurementResult(18, T11);
+                verifyAndAddMeasurementResult(19, T12);
+                verifyAndAddMeasurementResult(20, T13);
+
 
                 break;
             }
             default: {
-                // Initialize float variables
-                float parmValue  = -9999;
-                float tempValue  = -9999;
-                float thirdValue = -9999;
-
                 // Get Values
-                MS_DBG(F("Get Values from"), getSensorNameAndLocation());
-                success = _ysensor.getValues(parmValue, tempValue, thirdValue);
-
-                // Fix not-a-number values
-                if (!success || isnan(parmValue)) parmValue = -9999;
-                if (!success || isnan(tempValue)) tempValue = -9999;
-                if (!success || isnan(thirdValue)) thirdValue = -9999;
-
-                // For conductivity, convert mS/cm to µS/cm
-                if (_model == Y520 && parmValue != -9999) parmValue *= 1000;
-
-                MS_DBG(F(" "), _ysensor.getParameter(), ':', parmValue);
-                MS_DBG(F("  Temp:"), tempValue);
-
-                // Not all sensors return a third value
-                if (_numReturnedValues > 2) {
-                    MS_DBG(F("  Third:"), thirdValue);
-                }
-
-                // Put values into the array
-                verifyAndAddMeasurementResult(0, parmValue);
-                verifyAndAddMeasurementResult(1, tempValue);
-                verifyAndAddMeasurementResult(2, thirdValue);
+                MS_DBG(F("Other GroPoint models not yet implemented."));
             }
         }
     } else {
@@ -300,5 +298,5 @@ bool YosemitechParent::addSingleMeasurementResult(void) {
     _sensorStatus &= 0b10011111;
 
     // Return true when finished
-    return success;
+    return success && successT;
 }

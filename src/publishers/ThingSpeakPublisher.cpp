@@ -1,7 +1,8 @@
 /**
  * @file ThingSpeakPublisher.cpp
- * @copyright 2017-2022 Stroud Water Research Center
- * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino.
+ * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Implements the ThingSpeakPublisher class.
@@ -25,18 +26,17 @@ const char* ThingSpeakPublisher::mqttUser       = THING_SPEAK_USER_NAME;
 
 // Constructors
 ThingSpeakPublisher::ThingSpeakPublisher() : dataPublisher() {}
-ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, uint8_t sendEveryX,
-                                         uint8_t sendOffset)
-    : dataPublisher(baseLogger, sendEveryX, sendOffset) {}
+ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, int sendEveryX)
+    : dataPublisher(baseLogger, sendEveryX) {}
 ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
-                                         uint8_t sendEveryX, uint8_t sendOffset)
-    : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset) {}
+                                         int sendEveryX)
+    : dataPublisher(baseLogger, inClient, sendEveryX) {}
 ThingSpeakPublisher::ThingSpeakPublisher(Logger&     baseLogger,
                                          const char* thingSpeakMQTTKey,
                                          const char* thingSpeakChannelID,
                                          const char* thingSpeakChannelKey,
-                                         uint8_t sendEveryX, uint8_t sendOffset)
-    : dataPublisher(baseLogger, sendEveryX, sendOffset) {
+                                         int         sendEveryX)
+    : dataPublisher(baseLogger, sendEveryX) {
     setMQTTKey(thingSpeakMQTTKey);
     setChannelID(thingSpeakChannelID);
     setChannelKey(thingSpeakChannelKey);
@@ -45,8 +45,8 @@ ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
                                          const char* thingSpeakMQTTKey,
                                          const char* thingSpeakChannelID,
                                          const char* thingSpeakChannelKey,
-                                         uint8_t sendEveryX, uint8_t sendOffset)
-    : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset) {
+                                         int         sendEveryX)
+    : dataPublisher(baseLogger, inClient, sendEveryX) {
     setMQTTKey(thingSpeakMQTTKey);
     setChannelID(thingSpeakChannelID);
     setChannelKey(thingSpeakChannelKey);
@@ -129,27 +129,19 @@ int16_t ThingSpeakPublisher::publishData(Client* outClient) {
              _thingSpeakChannelKey);
     MS_DBG(F("Topic ["), strlen(topicBuffer), F("]:"), String(topicBuffer));
 
-    emptyTxBuffer();
+    // buffer is used only locally, it does not transmit
+    txBufferInit(nullptr);
 
-    Logger::formatDateTime_ISO8601(Logger::markedLocalEpochTime)
-        .toCharArray(tempBuffer, 26);
-    snprintf(txBuffer + strlen(txBuffer), sizeof(txBuffer) - strlen(txBuffer),
-             "%s", "created_at=");
-    snprintf(txBuffer + strlen(txBuffer), sizeof(txBuffer) - strlen(txBuffer),
-             "%s", tempBuffer);
-    txBuffer[strlen(txBuffer)] = '&';
+    txBufferAppend("created_at=");
+    txBufferAppend(
+        Logger::formatDateTime_ISO8601(Logger::markedLocalEpochTime).c_str());
 
     for (uint8_t i = 0; i < numChannels; i++) {
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", "field");
+        txBufferAppend("&field");
         itoa(i + 1, tempBuffer, 10);  // BASE 10
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", tempBuffer);
-        txBuffer[strlen(txBuffer)] = '=';
-        _baseLogger->getValueStringAtI(i).toCharArray(tempBuffer, 26);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", tempBuffer);
-        if (i + 1 != numChannels) { txBuffer[strlen(txBuffer)] = '&'; }
+        txBufferAppend(tempBuffer);
+        txBufferAppend('=');
+        txBufferAppend(_baseLogger->getValueStringAtI(i).c_str());
     }
     MS_DBG(F("Message ["), strlen(txBuffer), F("]:"), String(txBuffer));
 

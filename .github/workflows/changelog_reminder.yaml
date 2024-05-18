@@ -15,4 +15,4 @@ jobs:
           changelog_regex: '/CHANGELOG\/.*\/*.md'
           customPrMessage: 'Please add your changes to the change log!'
         env:
-          GITHUB_TOKEN: ${{ secrets.SARA_PUSH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

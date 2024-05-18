@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#%%
+# %%
 import json
 import shutil
 import re
@@ -9,7 +9,7 @@ import re
 import os
 import copy
 
-#%%
+# %%
 # Some working directories
 # The workspace directory
 if "GITHUB_WORKSPACE" in os.environ.keys():
@@ -37,7 +37,7 @@ if not os.path.exists(artifact_dir):
     os.makedirs(artifact_dir)
 
 compilers = ["Arduino CLI", "PlatformIO"]
-#%%
+# %%
 # The locations of some important files
 
 # The massive "menu" example
@@ -72,6 +72,8 @@ pio_to_acli = {
     "megaatmega2560": {"fqbn": "arduino:avr:mega"},
     "zeroUSB": {"fqbn": "arduino:samd:mzero_bl"},
     "adafruit_feather_m0": {"fqbn": "adafruit:samd:adafruit_feather_m0"},
+    "adafruit_feather_m4": {"fqbn": "adafruit:samd:adafruit_feather_m4"},
+    "adafruit_grandcentral_m4": {"fqbn": "adafruit:samd:adafruit_grandcentral_m4"},
 }
 
 
@@ -108,8 +110,6 @@ def create_pio_ci_command(pio_env_file: str, pio_env: str, code_subfolder: str) 
         "pio",
         "ci",
         # "--verbose",
-        "--project-conf",
-        pio_env_file,
         "--project-conf",
         pio_env_file,
         "--environment",
@@ -183,14 +183,14 @@ def snake_to_camel(snake_str):
         return camel_str
 
 
-#%%
+# %%
 # set up outputs
 arduino_job_matrix = []
 pio_job_matrix = []
 start_job_commands = "status=0"
 end_job_commands = "\n\nexit $status"
 
-#%%
+# %%
 # Create job info for the basic examples
 # Use one job per board with one command per example
 for pio_env in pio_config.envs():
@@ -234,7 +234,7 @@ for pio_env in pio_config.envs():
     )
 
 
-#%%
+# %%
 # Helper functions for preparing the menu-a-la-carte example for building
 def modify_example_filename(example_subfolder, in_file_defines):
 
@@ -309,10 +309,10 @@ def extend_pio_config(added_envs):
     return new_config_path
 
 
-#%% read build flags out of the menu-a-la-cart example
+# %% read build flags out of the menu-a-la-cart example
 # Pattern for flags in the menu-a-la-cart example
 pattern = re.compile(
-    "^(?:#if|#elif) defined[\s\(](?P<flag1>BUILD_\w+)((?:[\s\n\\\)]*?\|\|[\s\n\\]*defined[\s\n\\\(]*?)(?P<flag_last>BUILD_\w+))*",
+    r"^(?:#if|#elif) defined[\s\(](?P<flag1>BUILD_\w+)((?:[\s\n\\\)]*?\|\|[\s\n\\]*defined[\s\n\\\(]*?)(?P<flag_last>BUILD_\w+))*",
     re.MULTILINE,
 )
 
@@ -350,7 +350,7 @@ for match in re.finditer(pattern, filetext):
         all_publisher_flags.append(match.group("flag1"))
 
 
-#%%
+# %%
 # Create jobs for all of the modems together
 for pio_env in pio_config.envs():
     arduino_modem_commands = [
@@ -396,7 +396,7 @@ for pio_env in pio_config.envs():
         }
     )
 
-#%%
+# %%
 # Create jobs for all of the publishers together
 for pio_env in pio_config.envs():
     arduino_pub_commands = [
@@ -442,7 +442,7 @@ for pio_env in pio_config.envs():
         }
     )
 
-#%%
+# %%
 # Create jobs for all of the sensors together
 # The sensors are a bit different because we run extra PlatformIO enviroments for some of the sensors
 for pio_env in pio_config.envs():
@@ -540,7 +540,7 @@ for pio_env in pio_config.envs():
         }
     )
 
-#%%
+# %%
 # Tack on a few extra build configurations for the menu example
 for pio_env in pio_config.envs():
     arduino_loop_commands = [
@@ -596,7 +596,7 @@ for pio_env in pio_config.envs():
         }
     )
 
-#%%
+# %%
 # Tack on a few more extra build configurations for the software serial libraries
 for pio_env in ["Mayfly"]:
     arduino_serial_commands = [
@@ -654,7 +654,7 @@ for pio_env in ["Mayfly"]:
     )
 
 
-#%%
+# %%
 # Convert commands in the matrix into bash scripts
 for matrix_job in arduino_job_matrix + pio_job_matrix:
     bash_file_name = matrix_job["job_name"].replace(" ", "") + ".sh"
@@ -676,7 +676,7 @@ for items in arduino_job_matrix + pio_job_matrix:
         del items["command"]
 
 
-#%%
+# %%
 # Write out output
 print(
     'echo "arduino_job_matrix={}" >> $GITHUB_OUTPUT'.format(
@@ -694,14 +694,14 @@ json.dump(pio_job_matrix, json_out, indent=2)
 json_out.close()
 
 
-#%%
+# %%
 # different attempt to save output
 with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
     print("arduino_job_matrix={}".format(json.dumps(arduino_job_matrix)), file=fh)
     print("pio_job_matrix={}".format(json.dumps(pio_job_matrix)), file=fh)
 
 
-#%%
+# %%
 if "GITHUB_WORKSPACE" not in os.environ.keys():
     try:
         shutil.rmtree(artifact_dir)

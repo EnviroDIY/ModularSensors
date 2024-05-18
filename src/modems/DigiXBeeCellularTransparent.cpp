@@ -1,7 +1,8 @@
 /**
  * @file DigiXBeeCellularTransparent.cpp
- * @copyright 2017-2022 Stroud Water Research Center
- * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino.
+ * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  * @author Greg Cutrell <gcutrell@limno.com>
  *
@@ -259,37 +260,59 @@ bool DigiXBeeCellularTransparent::updateModemMetadata(void) {
     // Initialize variable
     int16_t signalQual = -9999;
 
+    MS_DBG(F("Modem polling settings:"), String(_pollModemMetaData, BIN));
+
+    // if not enabled don't collect data
+    if (_pollModemMetaData == 0) {
+        MS_DBG(F("No modem metadata to update"));
+        return false;
+    }
+
     // Enter command mode only once
-    MS_DBG(F("Entering Command Mode:"));
+    MS_DBG(F("Entering Command Mode to update modem metadata:"));
     gsmModem.commandMode();
 
-    // Try for up to 15 seconds to get a valid signal quality
-    // NOTE:  We can't actually distinguish between a bad modem response, no
-    // modem response, and a real response from the modem of no service/signal.
-    // The TinyGSM getSignalQuality function returns the same "no signal"
-    // value (99 CSQ or 0 RSSI) in all 3 cases.
-    uint32_t startMillis = millis();
-    do {
-        MS_DBG(F("Getting signal quality:"));
-        signalQual = gsmModem.getSignalQuality();
-        MS_DBG(F("Raw signal quality:"), signalQual);
-        if (signalQual != 0 && signalQual != -9999) break;
-        delay(250);
-    } while ((signalQual == 0 || signalQual == -9999) &&
-             millis() - startMillis < 15000L && success);
+    if ((_pollModemMetaData & MODEM_RSSI_ENABLE_BITMASK) ==
+            MODEM_RSSI_ENABLE_BITMASK ||
+        (_pollModemMetaData & MODEM_PERCENT_SIGNAL_ENABLE_BITMASK) ==
+            MODEM_PERCENT_SIGNAL_ENABLE_BITMASK) {  // Try for up to 15 seconds
+                                                    // to get a valid signal
+                                                    // quality
+        // NOTE:  We can't actually distinguish between a bad modem response, no
+        // modem response, and a real response from the modem of no
+        // service/signal. The TinyGSM getSignalQuality function returns the
+        // same "no signal" value (99 CSQ or 0 RSSI) in all 3 cases.
+        uint32_t startMillis = millis();
+        do {
+            MS_DBG(F("Getting signal quality:"));
+            signalQual = gsmModem.getSignalQuality();
+            MS_DBG(F("Raw signal quality:"), signalQual);
+            if (signalQual != 0 && signalQual != -9999) break;
+            delay(250);
+        } while ((signalQual == 0 || signalQual == -9999) &&
+                 millis() - startMillis < 15000L && success);
 
-    // Convert signal quality to RSSI
-    loggerModem::_priorRSSI = signalQual;
-    MS_DBG(F("CURRENT RSSI:"), signalQual);
-    loggerModem::_priorSignalPercent = getPctFromRSSI(signalQual);
-    MS_DBG(F("CURRENT Percent signal strength:"), getPctFromRSSI(signalQual));
+        // Convert signal quality to RSSI
+        loggerModem::_priorRSSI = signalQual;
+        MS_DBG(F("CURRENT RSSI:"), signalQual);
+        loggerModem::_priorSignalPercent = getPctFromRSSI(signalQual);
+        MS_DBG(F("CURRENT Percent signal strength:"),
+               getPctFromRSSI(signalQual));
+    } else {
+        MS_DBG(F("Polling for both RSSI and signal strength is disabled"));
+    }
 
-    MS_DBG(F("Getting chip temperature:"));
-    loggerModem::_priorModemTemp = getModemChipTemperature();
-    MS_DBG(F("CURRENT Modem temperature:"), loggerModem::_priorModemTemp);
+    if ((_pollModemMetaData & MODEM_TEMPERATURE_ENABLE_BITMASK) ==
+        MODEM_TEMPERATURE_ENABLE_BITMASK) {
+        MS_DBG(F("Getting chip temperature:"));
+        loggerModem::_priorModemTemp = getModemChipTemperature();
+        MS_DBG(F("CURRENT Modem temperature:"), loggerModem::_priorModemTemp);
+    } else {
+        MS_DBG(F("Polling for modem chip temperature is disabled"));
+    }
 
     // Exit command modem
-    MS_DBG(F("Leaving Command Mode:"));
+    MS_DBG(F("Leaving Command Mode after updating modem metadata:"));
     gsmModem.exitCommand();
 
     return success;

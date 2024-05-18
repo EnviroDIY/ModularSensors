@@ -3,11 +3,10 @@
  * @brief Example for DRWI CitSci 2G sites.
  *
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
- * @copyright (c) 2017-2022 Stroud Water Research Center (SWRC)
- *                          and the EnviroDIY Development Team
- *            This example is published under the BSD-3 license.
+ * @copyright Stroud Water Research Center
+ * This example is published under the BSD-3 license.
  *
- * Build Environment: Visual Studios Code with PlatformIO
+ * Build Environment: Visual Studio Code with PlatformIO
  * Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
  *
  * DISCLAIMER:
@@ -32,10 +31,6 @@
 /** Start [includes] */
 // The Arduino library is needed for every Arduino program.
 #include <Arduino.h>
-
-// EnableInterrupt is used by ModularSensors for external and pin change
-// interrupts and must be explicitly included in the main program.
-#include <EnableInterrupt.h>
 
 // Include the main header for ModularSensors
 #include <ModularSensors.h>

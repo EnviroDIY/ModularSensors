@@ -3,11 +3,10 @@
  * @brief Example with all possible functionality.
  *
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
- * @copyright (c) 2017-2022 Stroud Water Research Center (SWRC)
- *                          and the EnviroDIY Development Team
- *            This example is published under the BSD-3 license.
+ * @copyright Stroud Water Research Center
+ * This example is published under the BSD-3 license.
  *
- * Build Environment: Visual Studios Code with PlatformIO
+ * Build Environment: Visual Studio Code with PlatformIO
  * Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
  *
  * DISCLAIMER:
@@ -36,10 +35,6 @@
 /** Start [includes] */
 // The Arduino library is needed for every Arduino program.
 #include <Arduino.h>
-
-// EnableInterrupt is used by ModularSensors for external and pin change
-// interrupts and must be explicitly included in the main program.
-#include <EnableInterrupt.h>
 
 // Include the main header for ModularSensors
 #include <ModularSensors.h>
@@ -267,7 +262,7 @@ const int8_t  greenLED   = 8;       // Pin for the green LED
 const int8_t  redLED     = 9;       // Pin for the red LED
 const int8_t  buttonPin  = 21;      // Pin for debugging mode (ie, button pin)
 const int8_t  wakePin    = 31;  // MCU interrupt/alarm pin to wake from sleep
-// Mayfly 0.x D31 = A7
+// Mayfly 0.x, 1.x D31 = A7
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
@@ -433,8 +428,7 @@ DigiXBeeWifi modem = modemXBWF;
 // ==========================================================================
 
 
-#elif defined BUILD_MODEM_ESPRESSIF_ESP8266 || \
-    defined   BUILD_MODEM_ESPRESSIF_ESP32
+#elif defined BUILD_MODEM_ESPRESSIF_ESP8266
 /** Start [espressif_esp8266] */
 // For almost anything based on the Espressif ESP8266 using the
 // AT command firmware
@@ -466,6 +460,41 @@ EspressifESP8266 modemESP(&modemSerial, modemVccPin, modemResetPin, wifiId,
 // Create an extra reference to the modem by a generic name
 EspressifESP8266 modem = modemESP;
 /** End [espressif_esp8266] */
+// ==========================================================================
+
+
+#elif defined BUILD_MODEM_ESPRESSIF_ESP32
+/** Start [espressif_esp32] */
+// For almost anything based on the Espressif ESP8266 using the
+// AT command firmware
+#include <modems/EspressifESP32.h>
+
+// NOTE: Extra hardware and software serial ports are created in the "Settings
+// for Additional Serial Ports" section
+const int32_t modemBaud = 57600;  // Communication speed of the modem
+// NOTE:  This baud rate too fast for an 8MHz board, like the Mayfly!  The
+// module should be programmed to a slower baud rate or set to auto-baud using
+// the AT+UART_CUR or AT+UART_DEF command.
+
+// Modem Pins - Describe the physical pin connection of your modem to your board
+// NOTE:  Use -1 for pins that do not apply
+// Example pins here are for a EnviroDIY ESP32 Bluetooth/Wifi Bee with
+// Mayfly 1.1
+const int8_t modemVccPin   = 18;      // MCU pin controlling modem power
+const int8_t modemResetPin = -1;      // MCU pin connected to modem reset pin
+const int8_t modemLEDPin   = redLED;  // MCU pin connected an LED to show modem
+                                      // status
+
+// Network connection information
+const char* wifiId  = "xxxxx";  // WiFi access point name
+const char* wifiPwd = "xxxxx";  // WiFi password (WPA2)
+
+// Create the modem object
+EspressifESP32 modemESP(&modemSerial, modemVccPin, modemResetPin, wifiId,
+                        wifiPwd);
+// Create an extra reference to the modem by a generic name
+EspressifESP32 modem = modemESP;
+/** End [espressif_esp32] */
 // ==========================================================================
 
 
@@ -1363,6 +1392,78 @@ Variable* mplTemp = new FreescaleMPL115A2_Temp(
 /** End [freescale_mpl115a2] */
 #endif
 
+#if defined BUILD_SENSOR_GRO_POINT_GPLP8
+// ==========================================================================
+//  GroPoint Profile GPLP-8 Soil Moisture and Temperature Sensor
+// ==========================================================================
+/** Start [gro_point_gplp8] */
+#include <sensors/GroPointGPLP8.h>
+
+// NOTE: Extra hardware and software serial ports are created in the "Settings
+// for Additional Serial Ports" section
+
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+byte gplp8ModbusAddress = 0x19;  // The modbus address of the gplp8
+// Raw Request >>> {0x19, 0x03, 0x00, 0xC8, 0x00, 0x01, 0x06, 0x2C}
+const int8_t  gplp8AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  gplp8SensorPower    = A3;              // Sensor power pin
+const int8_t  gplp8EnablePin      = -1;              // Adapter RE/DE pin
+const uint8_t gplp8NumberReadings = 1;
+// The manufacturer recommends averaging 10 readings, but we take 5 to minimize
+// power consumption
+
+// Create a GroPoint Profile GPLP-8 sensor object
+GroPointGPLP8 gplp8(gplp8ModbusAddress, modbusSerial, gplp8AdapterPower,
+                    gplp8SensorPower, gplp8EnablePin, gplp8NumberReadings);
+
+// Create moisture variable pointers for each segment of the GPLP-8
+Variable* gplp8Moist1 = new GroPointGPLP8_Moist(
+    &gplp8, 0, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Moist1");
+Variable* gplp8Moist2 = new GroPointGPLP8_Moist(
+    &gplp8, 1, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Moist2");
+Variable* gplp8Moist3 = new GroPointGPLP8_Moist(
+    &gplp8, 2, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Moist3");
+Variable* gplp8Moist4 = new GroPointGPLP8_Moist(
+    &gplp8, 3, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Moist4");
+Variable* gplp8Moist5 = new GroPointGPLP8_Moist(
+    &gplp8, 4, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Moist5");
+Variable* gplp8Moist6 = new GroPointGPLP8_Moist(
+    &gplp8, 5, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Moist6");
+Variable* gplp8Moist7 = new GroPointGPLP8_Moist(
+    &gplp8, 6, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Moist7");
+Variable* gplp8Moist8 = new GroPointGPLP8_Moist(
+    &gplp8, 7, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Moist8");
+
+// Create temperature variable pointers for each sensor of the GPLP-8
+Variable* gplp8Temp1 = new GroPointGPLP8_Temp(
+    &gplp8, 8, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp1");
+Variable* gplp8Temp2 = new GroPointGPLP8_Temp(
+    &gplp8, 9, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp1");
+Variable* gplp8Temp3 = new GroPointGPLP8_Temp(
+    &gplp8, 10, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp3");
+Variable* gplp8Temp4 = new GroPointGPLP8_Temp(
+    &gplp8, 11, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp4");
+Variable* gplp8Temp5 = new GroPointGPLP8_Temp(
+    &gplp8, 12, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp5");
+Variable* gplp8Temp6 = new GroPointGPLP8_Temp(
+    &gplp8, 13, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp6");
+Variable* gplp8Temp7 = new GroPointGPLP8_Temp(
+    &gplp8, 14, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp7");
+Variable* gplp8Temp8 = new GroPointGPLP8_Temp(
+    &gplp8, 15, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp8");
+Variable* gplp8Temp9 = new GroPointGPLP8_Temp(
+    &gplp8, 16, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp9");
+Variable* gplp8Temp10 = new GroPointGPLP8_Temp(
+    &gplp8, 17, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp10");
+Variable* gplp8Temp11 = new GroPointGPLP8_Temp(
+    &gplp8, 18, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp11");
+Variable* gplp8Temp12 = new GroPointGPLP8_Temp(
+    &gplp8, 19, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp12");
+Variable* gplp8Temp13 = new GroPointGPLP8_Temp(
+    &gplp8, 20, "12345678-abcd-1234-ef00-1234567890ab", "GPLP8Temp13");
+/** End [gro_point_gplp8] */
+#endif
+
 
 #if defined BUILD_SENSOR_IN_SITU_RDO
 // ==========================================================================
@@ -1931,6 +2032,39 @@ Variable* analogEc_spcond = new Variable(
 #endif
 
 
+#if defined BUILD_SENSOR_VEGA_PULS21
+// ==========================================================================
+//  VEGA PULS 21 Radar Sensor
+// ==========================================================================
+/** Start [vega_puls21] */
+#include <sensors/VegaPuls21.h>
+
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+const char* VegaPulsSDI12address = "0";  // The SDI-12 Address of the VegaPuls10
+const int8_t VegaPulsPower       = sensorPowerPin;  // Power pin
+const int8_t VegaPulsData        = 7;               // The SDI-12 data pin
+// NOTE:  you should NOT take more than one readings.  THe sensor already takes
+// and averages 8 by default.
+
+// Create a Campbell VegaPusl21 sensor object
+VegaPuls21 VegaPuls(*VegaPulsSDI12address, VegaPulsPower, VegaPulsData);
+
+// Create stage, distance, temperature, reliability, and error variable pointers
+// for the VegaPuls21
+Variable* VegaPulsStage =
+    new VegaPuls21_Stage(&VegaPuls, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* VegaPulsDistance =
+    new VegaPuls21_Distance(&VegaPuls, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* VegaPulsTemp =
+    new VegaPuls21_Temp(&VegaPuls, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* VegaPulsRelia = new VegaPuls21_Reliability(
+    &VegaPuls, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* VegaPulsError =
+    new VegaPuls21_ErrorCode(&VegaPuls, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [vega_puls21] */
+#endif
+
+
 #if defined BUILD_SENSOR_YOSEMITECH_Y504
 // ==========================================================================
 //  Yosemitech Y504 Dissolved Oxygen Sensor
@@ -2376,7 +2510,7 @@ Variable* calculatedVar = new Variable(
 #if defined BUILD_TEST_CREATE_IN_ARRAY
 // ==========================================================================
 //  Creating the Variable Array[s] and Filling with Variable Objects
-//  NOTE:  This shows three differnt ways of creating the same variable array
+//  NOTE:  This shows three different ways of creating the same variable array
 //         and filling it with variables
 // ==========================================================================
 /** Start [variables_create_in_array] */
@@ -2539,6 +2673,29 @@ Variable* variableList[] = {
     mplTemp,
     mplPress,
 #endif
+#if defined BUILD_SENSOR_GRO_POINT_GPLP8
+    gplp8Moist1,
+    gplp8Moist2,
+    gplp8Moist3,
+    gplp8Moist4,
+    gplp8Moist5,
+    gplp8Moist6,
+    gplp8Moist7,
+    gplp8Moist8,
+    gplp8Temp1,
+    gplp8Temp2,
+    gplp8Temp3,
+    gplp8Temp4,
+    gplp8Temp5,
+    gplp8Temp6,
+    gplp8Temp7,
+    gplp8Temp8,
+    gplp8Temp9,
+    gplp8Temp10,
+    gplp8Temp11,
+    gplp8Temp12,
+    gplp8Temp13,
+#endif
 #if defined BUILD_SENSOR_IN_SITU_RDO
     rdoTemp,
     rdoDOpct,
@@ -2624,6 +2781,13 @@ Variable* variableList[] = {
 #if defined BUILD_SENSOR_ANALOG_ELEC_CONDUCTIVITY
     analogEc_cond,
     analogEc_spcond,
+#endif
+#if defined BUILD_SENSOR_VEGA_PULS21
+    VegaPulsStage,
+    VegaPulsDistance,
+    VegaPulsTemp,
+    VegaPulsRelia,
+    VegaPulsError,
 #endif
 #if defined BUILD_SENSOR_YOSEMITECH_Y504
     y504DOpct,
@@ -2816,8 +2980,8 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
 // Uses the processor sensor object to read the battery voltage
 // NOTE: This will actually return the battery level from the previous update!
 float getBatteryVoltage() {
-    if (mcuBoard.sensorValues[0] == -9999) mcuBoard.update();
-    return mcuBoard.sensorValues[0];
+    if (mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM] == -9999) mcuBoard.update();
+    return mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM];
 }
 /** End [working_functions] */
 
@@ -2853,15 +3017,15 @@ void setup() {
     Serial.print(F("TinyGSM Library version "));
     Serial.println(TINYGSM_VERSION);
     Serial.println();
-/** End [setup_prints] */
+    /** End [setup_prints] */
 
 /** Start [setup_softserial] */
 // Allow interrupts for software serial
-#if defined SoftwareSerial_ExtInts_h
+#if defined BUILD_TEST_SOFTSERIAL
     enableInterrupt(softSerialRx, SoftwareSerial_ExtInts::handle_interrupt,
                     CHANGE);
 #endif
-#if defined NeoSWSerial_h
+#if defined BUILD_TEST_NEOSWSERIAL
     enableInterrupt(neoSSerial1Rx, neoSSerial1ISR, CHANGE);
 #endif
     /** End [setup_softserial] */
@@ -2905,6 +3069,9 @@ void setup() {
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
     /** End [setup_flashing_led] */
+
+    pinMode(20, OUTPUT);  // for proper operation of the onboard flash memory
+                          // chip's ChipSelect (Mayfly v1.0 and later)
 
     /** Start [setup_logger] */
     // Set the timezones for the logger/data and the RTC

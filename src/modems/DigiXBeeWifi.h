@@ -1,7 +1,8 @@
 /**
  * @file DigiXBeeWifi.h
- * @copyright 2017-2022 Stroud Water Research Center
- * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino.
+ * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Contains the DigiXBeeWifi subclass of the DigiXBee class for Digi S6B
@@ -50,6 +51,10 @@
 #define MS_DEBUGGING_STD "DigiXBeeWifi"
 #endif
 
+#ifdef MS_DIGIXBEEWIFI_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP "DigiXBeeWifi"
+#endif
+
 /** @ingroup modem_digi_wifi */
 /**@{*/
 
@@ -74,6 +79,12 @@
 #ifdef MS_DIGIXBEEWIFI_DEBUG_DEEP
 #include <StreamDebugger.h>
 #endif
+
+/**
+ * @brief This causes the Xbee to reset after this number of transmission
+ * attempts
+ */
+#define XBEE_RESET_THRESHOLD 4
 
 /**
  * @brief The class for the [Digi XBee](@ref modem_digi)
@@ -105,10 +116,15 @@ class DigiXBeeWifi : public DigiXBee {
      * reference.
      * @param ssid The wifi network ID.
      * @param pwd The wifi network password, assuming WPA2.
+     * @param maintainAssociation Whether to maintain association with the
+     * access point during sleep. Maitaining the association during sleep draws
+     * more current (+10mA?), but also allows a faster reconnection on the next
+     * wake.
      */
     DigiXBeeWifi(Stream* modemStream, int8_t powerPin, int8_t statusPin,
                  bool useCTSStatus, int8_t modemResetPin,
-                 int8_t modemSleepRqPin, const char* ssid, const char* pwd);
+                 int8_t modemSleepRqPin, const char* ssid, const char* pwd,
+                 bool maintainAssociation = false);
     /**
      * @brief Destroy the Digi XBee Wifi object - no action taken
      */
@@ -127,6 +143,12 @@ class DigiXBeeWifi : public DigiXBee {
     float getModemChipTemperature(void) override;
 
     bool updateModemMetadata(void) override;
+
+    // Access Management
+    void   setWiFiId(const char* WiFiId, bool copyId = false);
+    void   setWiFiPwd(const char* WiFiPwd, bool copyId = false);
+    String getWiFiId(void);
+    String getWiFiPwd(void);
 
 #ifdef MS_DIGIXBEEWIFI_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
@@ -158,6 +180,13 @@ class DigiXBeeWifi : public DigiXBee {
  private:
     const char* _ssid;
     const char* _pwd;
+    bool        _maintainAssociation;
+
+    // Access Management
+    char* _ssid_buf = NULL;
+    char* _pwd_buf  = NULL;
+
+    uint16_t metadata_failure_count = 0;
 };
 /**@}*/
 #endif  // SRC_MODEMS_DIGIXBEEWIFI_H_

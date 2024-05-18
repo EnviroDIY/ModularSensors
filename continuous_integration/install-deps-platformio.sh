@@ -81,7 +81,7 @@ echo "\e[32mInstalling adafruit/'Adafruit SHT'\e[0m"
 pio pkg install -g --library adafruit/'Adafruit SHT4x Library'
 
 echo "\e[32mInstalling Martin Lindupp's BMP388 Library\e[0m"
-pio pkg install -g --library https://github.com/MartinL1/BMP388_DEV.git
+pio pkg install -g --library MartinL1/BMP388_DEV
 
 echo "\e[32mInstalling paulstoffregen/OneWire\e[0m"
 pio pkg install -g --library paulstoffregen/OneWire
@@ -106,6 +106,9 @@ pio pkg install -g --library envirodiy/KellerModbus
 
 echo "\e[32mInstalling envirodiy/YosemitechModbus\e[0m"
 pio pkg install -g --library envirodiy/YosemitechModbus
+
+echo "\e[32mInstalling envirodiy/GroPointModbus\e[0m"
+pio pkg install -g --library envirodiy/GroPointModbus
 
 echo "\e[32mInstalling vshymanskyy/StreamDebugger\e[0m"
 pio pkg install -g --library vshymanskyy/StreamDebugger

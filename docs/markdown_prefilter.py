@@ -95,7 +95,7 @@ with fileinput.FileInput(
         # Convert markdown comment tags to c++/dox style comment tags
         massaged_line = re.sub(r"\[//\]: # \( @(\w+?.*) \)", r"@\1", massaged_line)
         # allow thank you tags
-        massaged_line = massaged_line.replace("thanks to @", "thanks to \@")
+        massaged_line = massaged_line.replace("thanks to @", r"thanks to \@")
 
         # Convert GitHub pages url's to refs
         # I'm putting the long URL in the markdown because I want the links there to

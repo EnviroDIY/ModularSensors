@@ -1,14 +1,21 @@
 /**
  * @file SDI12Sensors.cpp
- * @copyright 2017-2022 Stroud Water Research Center
- * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino.
+ * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Implements the SDI12Sensors class.
  */
 
-#define LIBCALL_ENABLEINTERRUPT  // To prevent compiler/linker crashes
-#include <EnableInterrupt.h>     // To handle external and pin change interrupts
+/**
+ * @brief To prevent compiler/linker crashes with enable interrupt library, we
+ * must define LIBCALL_ENABLEINTERRUPT before importing EnableInterrupt within a
+ * library.
+ */
+#define LIBCALL_ENABLEINTERRUPT
+// To handle external and pin change interrupts
+#include "ModSensorInterrupts.h"
 
 #include "SDI12Sensors.h"
 
@@ -549,7 +556,8 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
             // that the measurement is ready.
 
             uint32_t timerStart = millis();
-            while ((millis() - timerStart) < (1000 * (wait))) {
+            while ((millis() - timerStart) <
+                   static_cast<uint32_t>(1000 * (wait))) {
                 // sensor can interrupt us to let us know it is done early
                 if (_SDI12Internal.available()) {
 #ifdef MS_SDI12SENSORS_DEBUG_DEEP

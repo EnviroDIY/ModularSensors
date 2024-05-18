@@ -1,7 +1,8 @@
 /**
  * @file dataPublisherBase.cpp
- * @copyright 2017-2022 Stroud Water Research Center
- * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino.
+ * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Implements the dataPublisher class.
@@ -10,7 +11,9 @@
  */
 #include "dataPublisherBase.h"
 
-char dataPublisher::txBuffer[MS_SEND_BUFFER_SIZE] = {'\0'};
+char    dataPublisher::txBuffer[MS_SEND_BUFFER_SIZE];
+Client* dataPublisher::txBufferOutClient = nullptr;
+size_t  dataPublisher::txBufferLen;
 
 // Basic chunks of HTTP
 const char* dataPublisher::getHeader  = "GET ";
@@ -21,19 +24,16 @@ const char* dataPublisher::hostHeader = "\r\nHost: ";
 // Constructors
 dataPublisher::dataPublisher() {}
 
-dataPublisher::dataPublisher(Logger& baseLogger, uint8_t sendEveryX,
-                             uint8_t sendOffset)
+dataPublisher::dataPublisher(Logger& baseLogger, int sendEveryX)
     : _baseLogger(&baseLogger),
-      _sendEveryX(sendEveryX),
-      _sendOffset(sendOffset) {
+      _sendEveryX(sendEveryX) {
     _baseLogger->registerDataPublisher(this);  // register self with logger
 }
 dataPublisher::dataPublisher(Logger& baseLogger, Client* inClient,
-                             uint8_t sendEveryX, uint8_t sendOffset)
+                             int sendEveryX)
     : _baseLogger(&baseLogger),
       _inClient(inClient),
-      _sendEveryX(sendEveryX),
-      _sendOffset(sendOffset) {
+      _sendEveryX(sendEveryX) {
     _baseLogger->registerDataPublisher(this);  // register self with logger
 }
 // Destructor
@@ -53,11 +53,10 @@ void dataPublisher::attachToLogger(Logger& baseLogger) {
 }
 
 
-// Sets the parameters for frequency of sending and any offset, if needed
-// NOTE:  These parameters are not currently used!!
-void dataPublisher::setSendFrequency(uint8_t sendEveryX, uint8_t sendOffset) {
+// Sets the interval (in units of the logging interval) between attempted
+// data transmissions
+void dataPublisher::setSendInterval(int sendEveryX) {
     _sendEveryX = sendEveryX;
-    _sendOffset = sendOffset;
 }
 
 
@@ -71,34 +70,56 @@ void dataPublisher::begin(Logger& baseLogger) {
 }
 
 
-// Empties the outgoing buffer
-void dataPublisher::emptyTxBuffer(void) {
-    MS_DBG(F("Dumping the TX Buffer"));
-    for (int i = 0; i < MS_SEND_BUFFER_SIZE; i++) { txBuffer[i] = '\0'; }
+void dataPublisher::txBufferInit(Client* outClient) {
+    // remember client we are sending to
+    txBufferOutClient = outClient;
+
+    // reset buffer length to be empty
+    txBufferLen = 0;
 }
 
+void dataPublisher::txBufferAppend(const char* data, size_t length) {
+    while (length > 0) {
+        // space left in the buffer
+        size_t remaining = MS_SEND_BUFFER_SIZE - txBufferLen;
+        // the number of characters that will be added to the buffer
+        // this will be the lesser of the length desired and the space left in
+        // the buffer
+        size_t amount = remaining < length ? remaining : length;
 
-// Returns how much space is left in the buffer
-int dataPublisher::bufferFree(void) {
-    MS_DBG(F("Current TX Buffer Size:"), strlen(txBuffer));
-    return MS_SEND_BUFFER_SIZE - strlen(txBuffer);
+        // copy as much as possible into the buffer
+        memcpy(&txBuffer[txBufferLen], data, amount);
+        // re-count how much is left to go
+        length -= amount;
+        // bump forward the pointer to where we're currently adding
+        data += amount;
+        // bump up the current length of the buffer
+        txBufferLen += amount;
+
+        // write out the buffer if it fills
+        if (txBufferLen == MS_SEND_BUFFER_SIZE) { txBufferFlush(); }
+    }
 }
 
+void dataPublisher::txBufferAppend(const char* s) {
+    txBufferAppend(s, strlen(s));
+}
 
-// Sends the tx buffer to a stream and then clears it
-void dataPublisher::printTxBuffer(Stream* stream, bool addNewLine) {
-// Send the out buffer so far to the serial for debugging
+void dataPublisher::txBufferAppend(char c) {
+    txBufferAppend(&c, 1);
+}
+
+void dataPublisher::txBufferFlush() {
 #if defined(STANDARD_SERIAL_OUTPUT)
-    STANDARD_SERIAL_OUTPUT.write(txBuffer, strlen(txBuffer));
-    if (addNewLine) { PRINTOUT('\n'); }
+    // write out to the printout stream
+    STANDARD_SERIAL_OUTPUT.write((const uint8_t*)txBuffer, txBufferLen);
     STANDARD_SERIAL_OUTPUT.flush();
 #endif
-    stream->write(txBuffer, strlen(txBuffer));
-    if (addNewLine) { stream->print("\r\n"); }
-    stream->flush();
+    // write out to the client
+    txBufferOutClient->write((const uint8_t*)txBuffer, txBufferLen);
+    txBufferOutClient->flush();
 
-    // empty the buffer after printing it
-    emptyTxBuffer();
+    txBufferLen = 0;
 }
 
 

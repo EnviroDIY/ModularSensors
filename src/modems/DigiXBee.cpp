@@ -1,7 +1,8 @@
 /**
  * @file DigiXBee.cpp
- * @copyright 2017-2022 Stroud Water Research Center
- * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino.
+ * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Implements the DigiXBee class.
@@ -27,7 +28,7 @@ DigiXBee::~DigiXBee() {}
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
 // After enabling pin sleep, the sleep request pin is held `LOW` to keep the
-// XBee on Enable pin sleep in the setup function or using XCTU prior to
+// XBee on. Enable pin sleep in the setup function or using XCTU prior to
 // connecting the XBee
 bool DigiXBee::modemWakeFxn(void) {
     if (_modemSleepRqPin >= 0) {
