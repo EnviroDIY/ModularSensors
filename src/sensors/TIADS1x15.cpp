@@ -13,7 +13,7 @@
 
 
 #include "TIADS1x15.h"
-#include <Adafruit_ADS1015.h>
+#include <Adafruit_ADS1X15.h>
 
 
 // The constructor - need the power pin the data pin, and gain if non standard
@@ -44,6 +44,7 @@ String TIADS1x15::getSensorLocation(void) {
 
 bool TIADS1x15::addSingleMeasurementResult(void) {
     // Variables to store the results in
+    int16_t adcCounts = -9999;
     float adcVoltage  = -9999;
     float calibResult = -9999;
 
@@ -56,7 +57,7 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
 // We create and set up the ADC object here so that each sensor using
 // the ADC may set the gain appropriately without effecting others.
 #ifndef MS_USE_ADS1015
-        Adafruit_ADS1115 ads(_i2cAddress);  // Use this for the 16-bit version
+        Adafruit_ADS1115 ads;  // Use this for the 16-bit version
 #else
         Adafruit_ADS1015 ads(_i2cAddress);  // Use this for the 12-bit version
 #endif
@@ -73,15 +74,15 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
         // Bump the gain up to 1x = +/- 4.096V range
         ads.setGain(GAIN_ONE);
         // Begin ADC
-        ads.begin();
+        ads.begin(_i2cAddress);
 
         // Read Analog to Digital Converter (ADC)
         // Taking this reading includes the 8ms conversion delay.
-        // We're allowing the ADS1115 library to do the bit-to-volts conversion
-        // for us
-        adcVoltage =
-            ads.readADC_SingleEnded_V(_adsChannel);  // Getting the reading
-        MS_DBG(F("  ads.readADC_SingleEnded_V("), _adsChannel, F("):"),
+        // Measure the ADC raw count
+        adcCounts = ads.readADC_SingleEnded(_adsChannel);
+        // Convert ADC raw counts value to voltage (V)
+        adcVoltage = ads.computeVolts(adcCounts)
+        MS_DBG(F("  ads.readADC_SingleEnded("), _adsChannel, F("):"),
                adcVoltage);
 
         if (adcVoltage < 3.6 && adcVoltage > -0.3) {
