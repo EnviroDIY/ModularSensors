@@ -400,7 +400,7 @@ class Logger {
      * @brief The initial number of samples to log at an interval of 1 minute
      * for fast field verification
      */
-    uint8_t _initialShortIntervals = 5;
+    uint8_t _initialShortIntervals = 0;
     /**
      * @brief Digital pin number on the mcu controlling the SD card slave
      * select.
@@ -1129,6 +1129,19 @@ class Logger {
      * on the pin assigned for "testing" mode.
      */
     static void testingISR(void);
+
+    /**
+     * @brief Execute testing mode.
+     *
+     * In testing mode, the logger uses the loggerModem, if attached, to connect
+     * to the internet.  It then powers up all sensors tied to variable in the
+     * internal variable array.  The logger then updates readings from all
+     * sensors 25 times with a 5 second wait in between.  All results are output
+     * to the "main" output - ie Serial - and NOT to the SD card.  After 25
+     * measurements, the sensors are put to sleep, the modem is disconnected
+     * from the internet, and the logger goes back to sleep.
+     */
+    virtual void testingMode();
     /**@}*/
 
     // ===================================================================== //
@@ -1212,6 +1225,11 @@ class Logger {
      * sensors or writing to the SD card
      */
     static volatile bool isLoggingNow;
+    /**
+     * @brief Internal flag set to true when the logger is going through the
+     * "testing mode" routine.
+     */
+    static volatile bool isTestingNow;
     /**
      * @brief Internal flag set to true with then logger should begin the
      * "testing mode" routine when it finishes other operations.

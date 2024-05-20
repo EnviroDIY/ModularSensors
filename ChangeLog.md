@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 ### Added
+- Added support for caching readings in RAM and sending in batches.
+This currently only works on the EnviroDIY/Monitor My Watershed Publisher.
+Thank you to [Thomas Watson](https://github.com/tpwrules) for this work.
 
 ### Removed
 
