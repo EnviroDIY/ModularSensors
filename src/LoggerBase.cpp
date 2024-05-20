@@ -32,6 +32,7 @@ uint32_t Logger::markedLocalEpochTime = 0;
 uint32_t Logger::markedUTCEpochTime   = 0;
 // Initialize the testing/logging flags
 volatile bool Logger::isLoggingNow = false;
+volatile bool Logger::isTestingNow = false;
 volatile bool Logger::startTesting = false;
 
 // Initialize the RTC for the SAMD boards using build in RTC
@@ -53,6 +54,7 @@ Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
 
     // Set the testing/logging flags to false
     isLoggingNow = false;
+    isTestingNow = false;
     startTesting = false;
 
     // Clear arrays
@@ -69,6 +71,7 @@ Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
 
     // Set the testing/logging flags to false
     isLoggingNow = false;
+    isTestingNow = false;
     startTesting = false;
 
     // Clear arrays
@@ -79,6 +82,7 @@ Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
 Logger::Logger() {
     // Set the testing/logging flags to false
     isLoggingNow = false;
+    isTestingNow = false;
     startTesting = false;
 
     // Clear arrays
@@ -1288,7 +1292,7 @@ bool Logger::logToSD(void) {
 // A static function if you'd prefer to enter testing based on an interrupt
 void Logger::testingISR() {
     MS_DEEP_DBG(F("Testing interrupt!"));
-    if (!Logger::isLoggingNow) {
+    if (!Logger::isTestingNow && !Logger::isLoggingNow) {
         Logger::startTesting = true;
         MS_DEEP_DBG(F("Testing flag has been set."));
     }
@@ -1537,6 +1541,9 @@ void Logger::logData(bool sleepBeforeReturning) {
         Logger::startTesting = false;
     }
 
+    // Check if it was instead the testing interrupt that woke us up
+    if (Logger::startTesting) testingMode();
+
     if (sleepBeforeReturning) {
         // Sleep
         systemSleep();
@@ -1656,8 +1663,11 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
         Logger::startTesting = false;
     }
 
+    // Check if it was instead the testing interrupt that woke us up
+    if (Logger::startTesting) testingMode();
+
     if (sleepBeforeReturning) {
-        // Sleep
+        // Call the processor sleep
         systemSleep();
     }
 }
