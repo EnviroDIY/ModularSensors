@@ -1,7 +1,8 @@
 /**
  * @file EspressifESP8266.h
- * @copyright 2017-2022 Stroud Water Research Center
- * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino.
+ * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Contains the EspressifESP8266 subclass of loggerModem which _SHOULD_
@@ -172,6 +173,12 @@
  * isn't valid) so this time is just an estimate.
  */
 #define ESP8266_DISCONNECT_TIME_MS 500
+
+/**
+ * @brief The amount of time in ms it takes the ESP8266 to reconnect using saved
+ * credentials.
+ */
+#define ESP8266_RECONNECT_TIME_MS 2500
 
 // Included Dependencies
 #include "ModSensorDebugger.h"

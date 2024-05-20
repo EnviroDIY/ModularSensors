@@ -109,3 +109,6 @@ continuous_integration_artifacts/*
 arduino_cli.log
 **/sensor_tests/*
 docs/Doxyfile.bak
+continuous_integration/output_check_component_inclusion.log
+continuous_integration/platformio_ci_local.ini
+pioScripts/install_shared_deps.py

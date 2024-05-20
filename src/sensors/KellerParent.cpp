@@ -1,7 +1,8 @@
 /**
  * @file KellerParent.cpp
- * @copyright 2017-2022 Stroud Water Research Center
- * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino.
+ * This library is published under the BSD-3 license.
  * @author Written By: Anthony Aufdenkampe <aaufdenkampe@limno.com>
  * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
@@ -62,7 +63,7 @@ bool KellerParent::setup(void) {
     if (_powerPin2 >= 0) pinMode(_powerPin2, OUTPUT);
 
 #ifdef MS_KELLERPARENT_DEBUG_DEEP
-    sensor.setDebugStream(&DEEP_DEBUGGING_SERIAL_OUTPUT);
+    _ksensor.setDebugStream(&DEEP_DEBUGGING_SERIAL_OUTPUT);
 #endif
 
     // This sensor begin is just setting more pin modes, etc, no sensor power

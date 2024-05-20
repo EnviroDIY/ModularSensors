@@ -1,8 +1,8 @@
 /**
  * @file EnviroDIYPublisher.cpp
- * @copyright 2017-2022 Stroud Water Research Center
- * @copyright 2023 Thomas Watson
- * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino.
+ * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  * @author Thomas Watson <twatson52@icloud.com>
  *
@@ -207,20 +207,20 @@ bool EnviroDIYPublisher::connectionNeeded(void) {
         }
     }
 
-    // the initial log transmissions have not completed (we send every one
-    // of the first five data points immediately for field validation)
+    // the initial log transmissions have not completed (we send every one of
+    // the first five data points immediately for field validation)
     bool initialTransmission = _initialTransmissionsRemaining > 0;
 
     return atSendInterval || initialTransmission;
 }
 
 // This utilizes an attached modem to make a TCP connection to the
-// EnviroDIY/ODM2DataSharingPortal and then streams out a post request
-// over that connection.
+// EnviroDIY/ODM2DataSharingPortal and then streams out a post request over that
+// connection.
 // The return is the http status code of the response.
 int16_t EnviroDIYPublisher::publishData(Client* outClient, bool forceFlush) {
-    // do we intend to flush this call? if so, we have just returned true from
-    // connectionNeeded() and the internet is connected and waiting. check what
+    // Do we intend to flush this call? If so, we have just returned true from
+    // connectionNeeded() and the internet is connected and waiting. Check what
     // that function said so we know to do it after we record this data point.
     // we also flush if requested (in which case the internet is connected too)
     bool willFlush = connectionNeeded() || forceFlush;
@@ -328,9 +328,9 @@ int16_t EnviroDIYPublisher::flushDataBuffer(Client* outClient) {
             delay(10);
         }
 
-        // Read only the first 12 characters of the response
-        // We're only reading as far as the http code, anything beyond that
-        // we don't care about.
+        // Read only the first 12 characters of the response.
+        // We're only reading as far as the http code, anything beyond that we
+        // don't care about.
         did_respond = outClient->readBytes(tempBuffer, 12);
 
         // Close the TCP/IP connection

@@ -1,8 +1,8 @@
 /**
  * @file EnviroDIYPublisher.h
- * @copyright 2017-2022 Stroud Water Research Center
- * @copyright 2023 Thomas Watson
- * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino.
+ * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  * @author Thomas Watson <twatson52@icloud.com>
  *
@@ -55,7 +55,7 @@ class EnviroDIYPublisher : public dataPublisher {
      *
      * @param baseLogger The logger supplying the data to be published
      * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions.
+     * attempted data transmissions. NOTE: not implemented by this publisher!
      */
     explicit EnviroDIYPublisher(Logger& baseLogger, int sendEveryX = 1);
     /**
@@ -66,7 +66,7 @@ class EnviroDIYPublisher : public dataPublisher {
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
      * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions.
+     * attempted data transmissions. NOTE: not implemented by this publisher!
      */
     EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
                        int sendEveryX = 1);
@@ -79,7 +79,7 @@ class EnviroDIYPublisher : public dataPublisher {
      * @param samplingFeatureUUID The sampling feature UUID for the site on the
      * Monitor My Watershed data portal.
      * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions.
+     * attempted data transmissions. NOTE: not implemented by this publisher!
      */
     EnviroDIYPublisher(Logger& baseLogger, const char* registrationToken,
                        const char* samplingFeatureUUID, int sendEveryX = 1);
@@ -95,7 +95,7 @@ class EnviroDIYPublisher : public dataPublisher {
      * @param samplingFeatureUUID The sampling feature UUID for the site on the
      * Monitor My Watershed data portal.
      * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions.
+     * attempted data transmissions. NOTE: not implemented by this publisher!
      */
     EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
                        const char* registrationToken,

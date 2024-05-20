@@ -1,7 +1,8 @@
 /**
  * @file dataPublisherBase.cpp
- * @copyright 2017-2022 Stroud Water Research Center
- * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino.
+ * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Implements the dataPublisher class.
@@ -79,14 +80,23 @@ void dataPublisher::txBufferInit(Client* outClient) {
 
 void dataPublisher::txBufferAppend(const char* data, size_t length) {
     while (length > 0) {
+        // space left in the buffer
         size_t remaining = MS_SEND_BUFFER_SIZE - txBufferLen;
-        size_t amount    = remaining < length ? remaining : length;
+        // the number of characters that will be added to the buffer
+        // this will be the lesser of the length desired and the space left in
+        // the buffer
+        size_t amount = remaining < length ? remaining : length;
 
+        // copy as much as possible into the buffer
         memcpy(&txBuffer[txBufferLen], data, amount);
+        // re-count how much is left to go
         length -= amount;
+        // bump forward the pointer to where we're currently adding
         data += amount;
+        // bump up the current length of the buffer
         txBufferLen += amount;
 
+        // write out the buffer if it fills
         if (txBufferLen == MS_SEND_BUFFER_SIZE) { txBufferFlush(); }
     }
 }
@@ -107,11 +117,11 @@ void dataPublisher::txBufferFlush() {
     }
 
 #if defined(STANDARD_SERIAL_OUTPUT)
-    // send to debugging stream
+    // write out to the printout stream
     STANDARD_SERIAL_OUTPUT.write((const uint8_t*)txBuffer, txBufferLen);
     STANDARD_SERIAL_OUTPUT.flush();
 #endif
-
+    // write out to the client
     uint8_t        tries = 10;
     const uint8_t* ptr   = (const uint8_t*)txBuffer;
     while (true) {

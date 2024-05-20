@@ -78,7 +78,7 @@ lib_deps =
     adafruit/Adafruit INA219
     adafruit/Adafruit MPL115A2
     adafruit/Adafruit SHT4x Library
-    https://github.com/MartinL1/BMP388_DEV
+    MartinL1/BMP388_DEV
     paulstoffregen/OneWire
     milesburton/DallasTemperature
     envirodiy/SDI-12

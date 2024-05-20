@@ -1,7 +1,8 @@
 /**
  * @file LoggerBase.h
- * @copyright 2017-2022 Stroud Water Research Center
- * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino.
+ * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Contains the LoggerBase class which handles basic logging functions.
@@ -35,7 +36,9 @@
 // Bring in the libraries to handle the processor sleep/standby modes
 // The SAMD library can also the built-in clock on those modules
 #if defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAMD_ZERO)
+#if not defined(MS_SAMD_DS3231)
 #include <RTCZero.h>
+#endif
 #include "WatchDogs/WatchDogSAMD.h"
 #elif defined(ARDUINO_ARCH_AVR) || defined(__AVR__)
 #include <avr/power.h>
@@ -47,6 +50,7 @@
 // clock This also implements a needed date/time class
 #include <Sodaq_DS3231.h>
 
+#ifndef EPOCH_TIME_OFF
 /**
  * @brief January 1, 2000 00:00:00 in "epoch" time
  *
@@ -55,6 +59,7 @@
  * epoch beginning 1970-jan-01 00:00:00.
  */
 #define EPOCH_TIME_OFF 946684800
+#endif
 
 #include <SdFat.h>  // To communicate with the SD card
 
@@ -709,7 +714,8 @@ class Logger {
 // This gets the current epoch time (unix time, ie, the number of seconds
 // from January 1, 1970 00:00:00 UTC) and corrects it for the specified time
 // zone
-#if defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAMD_ZERO)
+#if (defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAMD_ZERO)) && \
+    not defined(MS_SAMD_DS3231)
     /**
      * @brief The RTC object.
      *
@@ -1089,7 +1095,7 @@ class Logger {
      * @param stampFlag The "flag" of the timestamp to change - should be
      * T_CREATE, T_WRITE, or T_ACCESS
      */
-    void setFileTimestamp(File fileToStamp, uint8_t stampFlag);
+    void setFileTimestamp(File& fileToStamp, uint8_t stampFlag);
 
     /**
      * @brief Open or creates a file, converting a string file name to a

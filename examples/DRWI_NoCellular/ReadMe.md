@@ -3,6 +3,12 @@
 This is the code example that should be used for all groups working with the Stroud Water Research Center within the Delaware River Watershed Initiative.
 This example should be used in cases where no cellular service of any kind is available and the data will only be logged on the SD card.
 
+The exact hardware configuration used in this example:
+ * Mayfly v1.x board
+ * Hydros21 CTD sensor
+ * Campbell OBS3+ turbidity sensor
+
+
 Before using this example, you must register a site and sensors at the data portal (http://data.envirodiy.org/).
 After you have registered the site and sensors, the portal will generate a registration token and universally unique identifier (UUID) for each site and further UUID's for each variable.
 You will need to copy all of those UUID values into your sketch to replace the `12345678-abcd-1234-ef00-1234567890ab` place holders in this example.

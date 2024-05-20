@@ -77,6 +77,7 @@ ___
       - [Everlight ALS-PT19 Ambient Light Sensor ](#everlight-als-pt19-ambient-light-sensor-)
     - [External Voltage via TI ADS1x15 ](#external-voltage-via-ti-ads1x15-)
     - [Freescale Semiconductor MPL115A2 Miniature I2C Digital Barometer ](#freescale-semiconductor-mpl115a2-miniature-i2c-digital-barometer-)
+    - [GroPoint Profile GPLP-8 Eight-Segment Soil Moisture and Temperature Profiling Probe ](#gropoint-profile-gplp-8-eight-segment-soil-moisture-and-temperature-profiling-probe-)
       - [In-Situ Aqua/Level TROLL Pressure, Temperature, and Depth Sensor ](#in-situ-aqualevel-troll-pressure-temperature-and-depth-sensor-)
       - [In-Situ RDO PRO-X Rugged Dissolved Oxygen Probe ](#in-situ-rdo-pro-x-rugged-dissolved-oxygen-probe-)
     - [Keller RS485/Modbus Water Level Sensors ](#keller-rs485modbus-water-level-sensors-)
@@ -96,6 +97,7 @@ ___
     - [TI INA219 High Side Current Sensor ](#ti-ina219-high-side-current-sensor-)
     - [Turner Cyclops-7F Submersible Fluorometer ](#turner-cyclops-7f-submersible-fluorometer-)
     - [Analog Electrical Conductivity using the Processor's Analog Pins ](#analog-electrical-conductivity-using-the-processors-analog-pins-)
+      - [VEGA VEGA PULS 21 ](#vega-vega-puls-21-)
     - [Yosemitech RS485/Modbus Environmental Sensors ](#yosemitech-rs485modbus-environmental-sensors-)
       - [Yosemitech Y504 Dissolved Oxygen Sensor ](#yosemitech-y504-dissolved-oxygen-sensor-)
       - [Yosemitech Y510 Turbidity Sensor ](#yosemitech-y510-turbidity-sensor-)
@@ -832,6 +834,15 @@ Because this sensor can have only one I2C address (0x60), it is only possible to
 ___
 
 
+### GroPoint Profile GPLP-8 Eight-Segment Soil Moisture and Temperature Profiling Probe <!-- {#menu_walk_gro_point_gplp8} -->
+
+@see @ref sensor_gplp8
+
+[//]: # ( @menusnip{gro_point_gplp8} )
+
+___
+
+
 #### In-Situ Aqua/Level TROLL Pressure, Temperature, and Depth Sensor <!-- {#menu_walk_in_situ_troll_sdi12a} -->
 
 @see @ref sensor_insitu_troll
@@ -1072,6 +1083,15 @@ For best results, you should also connect the AREF pin of your processors ADC to
 @see @ref sensor_analog_cond
 
 [//]: # ( @menusnip{analog_elec_conductivity} )
+
+___
+
+
+#### VEGA VEGA PULS 21 <!-- {#menu_walk_vega_puls21} -->
+
+@see @ref sensor_vega_puls21
+
+[//]: # ( @menusnip{vega_puls21} )
 
 ___
 

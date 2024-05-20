@@ -68,13 +68,13 @@ for filename in all_files:
             i += 1
             new_line = line
             match = re.search(
-                '\{\{ <a href="(?P<copy_source_file>.*?)#(?P<copy_section_id>.*?)" .*? \}\}',
+                r'{{ <a href="(?P<copy_source_file>.*?)#(?P<copy_section_id>.*?)" .*? }}',
                 line,
             )
             if match is not None:
                 copy_paste_needed = True
                 new_line = re.sub(
-                    '\{\{ <a href="(?P<copy_source_file>.*?)#(?P<copy_section_id>.*?)" .*? \}\}',
+                    r'{{ <a href="(?P<copy_source_file>.*?)#(?P<copy_section_id>.*?)" .*? }}',
                     get_section_to_paste,
                     line,
                 )

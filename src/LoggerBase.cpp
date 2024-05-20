@@ -1,7 +1,8 @@
 /**
  * @file LoggerBase.cpp
- * @copyright 2017-2022 Stroud Water Research Center
- * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino.
+ * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Implements the Logger class.
@@ -17,7 +18,7 @@
  */
 #define LIBCALL_ENABLEINTERRUPT
 // To handle external and pin change interrupts
-#include <EnableInterrupt.h>
+#include "ModSensorInterrupts.h"
 // For all i2c communication, including with the real time clock
 #include <Wire.h>
 
@@ -33,8 +34,8 @@ uint32_t Logger::markedUTCEpochTime   = 0;
 volatile bool Logger::isLoggingNow = false;
 volatile bool Logger::startTesting = false;
 
-// Initialize the RTC for the SAMD boards
-#if defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAMD_ZERO)
+// Initialize the RTC for the SAMD boards using build in RTC
+#if not defined(MS_SAMD_DS3231) && defined(ARDUINO_ARCH_SAMD)
 RTCZero Logger::zero_sleep_rtc;
 #endif
 
@@ -502,7 +503,7 @@ String Logger::formatDateTime_ISO8601(DateTime& dt) {
         tzString = tzString.substring(0, 1) + '0' + tzString.substring(1, 2) +
             F(":00");
     } else if (_loggerTimeZone == 0) {
-        tzString = 'Z';
+        tzString = "Z";
     } else if (0 < _loggerTimeZone && _loggerTimeZone < 10) {
         tzString = "+0" + tzString + F(":00");
     } else if (10 <= _loggerTimeZone && _loggerTimeZone <= 24) {
@@ -1079,7 +1080,7 @@ bool Logger::initializeSDCard(void) {
 
 
 // Protected helper function - This sets a timestamp on a file
-void Logger::setFileTimestamp(File fileToStamp, uint8_t stampFlag) {
+void Logger::setFileTimestamp(File& fileToStamp, uint8_t stampFlag) {
     DateTime dt = dtFromEpoch(getNowLocalEpoch());
 
     fileToStamp.timestamp(stampFlag, dt.year(), dt.month(), dt.date(),
@@ -1258,6 +1259,89 @@ void Logger::testingISR() {
 }
 
 
+// This defines what to do in the testing mode
+void Logger::testingMode() {
+    // Flag to notify that we're in testing mode
+    Logger::isTestingNow = true;
+    // Unset the startTesting flag
+    Logger::startTesting = false;
+
+    PRINTOUT(F("------------------------------------------"));
+    PRINTOUT(F("Entering sensor testing mode"));
+    delay(100);  // This seems to prevent crashes, no clue why ....
+
+    // Get the modem ready
+
+    bool gotInternetConnection = false;
+    if (_logModem != nullptr) {
+        MS_DBG(F("Waking up"), _logModem->getModemName(), F("..."));
+        if (_logModem->modemWake()) {
+            // Connect to the network
+            watchDogTimer.resetWatchDog();
+            MS_DBG(F("Connecting to the Internet..."));
+            if (_logModem->connectInternet()) {
+                gotInternetConnection = true;
+                // Publish data to remotes
+                watchDogTimer.resetWatchDog();
+            }
+        }
+    }
+
+    // Power up all of the sensors
+    _internalArray->sensorsPowerUp();
+
+    // Wake up all of the sensors
+    _internalArray->sensorsWake();
+
+    // Update the sensors and print out data 25 times
+    for (uint8_t i = 0; i < 25; i++) {
+        PRINTOUT(F("------------------------------------------"));
+
+        // Update the modem metadata
+        if (gotInternetConnection) { _logModem->updateModemMetadata(); }
+
+        watchDogTimer.resetWatchDog();
+        // Update the values from all attached sensors
+        // NOTE:  NOT using complete update because we want the sensors to be
+        // left on between iterations in testing mode.
+        _internalArray->updateAllSensors();
+        // Print out the current logger time
+        PRINTOUT(F("Current logger time is"),
+                 formatDateTime_ISO8601(getNowLocalEpoch()));
+        PRINTOUT(F("-----------------------"));
+// Print out the sensor data
+#if defined(STANDARD_SERIAL_OUTPUT)
+        _internalArray->printSensorData(&STANDARD_SERIAL_OUTPUT);
+#endif
+        PRINTOUT(F("-----------------------"));
+        watchDogTimer.resetWatchDog();
+
+        delay(5000);
+        watchDogTimer.resetWatchDog();
+    }
+
+    // Put sensors to sleep
+    _internalArray->sensorsSleep();
+    _internalArray->sensorsPowerDown();
+
+    // Turn the modem off
+    if (_logModem != nullptr) {
+        if (gotInternetConnection) { _logModem->disconnectInternet(); }
+        _logModem->modemSleepPowerDown();
+    }
+
+    PRINTOUT(F("Exiting testing mode"));
+    PRINTOUT(F("------------------------------------------"));
+    watchDogTimer.resetWatchDog();
+
+    // Unset testing mode flag
+    Logger::isTestingNow = false;
+
+    // Sleep
+    systemSleep();
+}
+
+
 // ===================================================================== //
 // Convience functions to call several of the above functions
 // ===================================================================== //
@@ -1286,7 +1370,7 @@ void Logger::begin() {
     // Enable the watchdog
     watchDogTimer.enableWatchDog();
 
-#if defined ARDUINO_ARCH_SAMD
+#if not defined(MS_SAMD_DS3231) && defined(ARDUINO_ARCH_SAMD)
     MS_DBG(F("Beginning internal real time clock"));
     zero_sleep_rtc.begin();
 #endif

@@ -1,7 +1,8 @@
 /**
  * @file dataPublisherBase.h
- * @copyright 2017-2022 Stroud Water Research Center
- * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino.
+ * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Contains the dataPublisher class - a virtual class used by other
@@ -268,7 +269,7 @@ class dataPublisher {
      * @brief Initialize the TX buffer to be empty and start writing to the
      * given client.
      *
-     * @param client The client to transmit to.
+     * @param outClient The client to transmit to.
      */
     static void txBufferInit(Client* outClient);
     /**

@@ -1,11 +1,10 @@
 /**
  * @file AnalogElecConductivity.h
- * @copyright 2017-2022 Stroud Water Research Center
+ * @copyright Stroud Water Research Center and Neil Hancock
  * Part of the EnviroDIY ModularSensors library
- * @copyright 2020 Neil Hancock
+ * This library is published under the BSD-3 license.
  * @author Written By: Neil Hancock <neilh20+aec2008@wLLw.net>; Edited by Sara
  * Geleskie Damiano <sdamiano@stroudcenter.org>
- *
  *
  * @brief Encapsulates an Electrical Conductivity sensors using an anlog
  * input and onboard ADC and ADC ref.

@@ -5,7 +5,7 @@ jobs:
     name: Changelog Reminder
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
 
@@ -15,4 +15,4 @@ jobs:
           changelog_regex: '/CHANGELOG\/.*\/*.md'
           customPrMessage: 'Please add your changes to the change log!'
         env:
-          GITHUB_TOKEN: ${{ secrets.SARA_PUSH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

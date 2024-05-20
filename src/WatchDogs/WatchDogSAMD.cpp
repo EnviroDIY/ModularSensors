@@ -1,7 +1,8 @@
 /**
  * @file WatchDogSAMD.cpp
- * @copyright 2017-2022 Stroud Water Research Center
- * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino.
+ * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Implements the extendedWatchDogSAMD class
@@ -97,10 +98,19 @@ void extendedWatchDogSAMD::setupWatchDog(uint32_t resetTime_s) {
 #endif
 
     // Set up the watch dog control parameters
-    WDT->CTRL.bit.WEN = 0;       // Disable window mode
-    waitForWDTBitSync();         // ?? Needed here ??
+#if defined(__SAMD51__)
+    WDT->CTRLA.bit.WEN = 0;  // Disable window mode
+#else
+    WDT->CTRL.bit.WEN      = 0;  // Disable window mode
+#endif
+    waitForWDTBitSync();  // ?? Needed here ??
+#if defined(__SAMD51__)
+    WDT->CTRLA.bit.ALWAYSON = 0;  // NOT always on!
+#else
     WDT->CTRL.bit.ALWAYSON = 0;  // NOT always on!
-    waitForWDTBitSync();         // ?? Needed here ??
+#endif
+
+    waitForWDTBitSync();  // ?? Needed here ??
 
     WDT->CONFIG.bit.PER =
         0xB;  // Period = 16384 clockcycles @ 1024hz = 16 seconds
@@ -134,7 +144,7 @@ void extendedWatchDogSAMD::enableWatchDog() {
 #if defined(__SAMD51__)
     WDT->CTRLA.bit.ENABLE = 1;
 #else
-    WDT->CTRL.bit.ENABLE = 1;
+    WDT->CTRL.bit.ENABLE   = 1;
 #endif
     waitForWDTBitSync();
 }
@@ -144,7 +154,7 @@ void extendedWatchDogSAMD::disableWatchDog() {
 #if defined(__SAMD51__)
     WDT->CTRLA.bit.ENABLE = 0;
 #else
-    WDT->CTRL.bit.ENABLE = 0;
+    WDT->CTRL.bit.ENABLE   = 0;
 #endif
     waitForWDTBitSync();
     MS_DBG(F("Watch dog disabled."));
