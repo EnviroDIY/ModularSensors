@@ -18,9 +18,6 @@
 // Constant values for post requests
 // I want to refer to these more than once while ensuring there is only one copy
 // in memory
-const char* EnviroDIYPublisher::postEndpoint        = "/api/data-stream/";
-const char* EnviroDIYPublisher::enviroDIYHost       = "data.envirodiy.org";
-const int   EnviroDIYPublisher::enviroDIYPort       = 80;
 const char* EnviroDIYPublisher::tokenHeader         = "\r\nTOKEN: ";
 const char* EnviroDIYPublisher::contentLengthHeader = "\r\nContent-Length: ";
 const char* EnviroDIYPublisher::contentTypeHeader =
@@ -31,12 +28,24 @@ const char* EnviroDIYPublisher::timestampTag       = "\",\"timestamp\":\"";
 
 
 // Constructors
-EnviroDIYPublisher::EnviroDIYPublisher() : dataPublisher() {}
+EnviroDIYPublisher::EnviroDIYPublisher() : dataPublisher() {
+    setHost("monitormywatershed.org");
+    setPath("/api/data-stream/");
+    setPort(80);
+}
 EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, int sendEveryX)
-    : dataPublisher(baseLogger, sendEveryX) {}
+    : dataPublisher(baseLogger, sendEveryX) {
+    setHost("monitormywatershed.org");
+    setPath("/api/data-stream/");
+    setPort(80);
+}
 EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
                                        int sendEveryX)
-    : dataPublisher(baseLogger, inClient, sendEveryX) {}
+    : dataPublisher(baseLogger, inClient, sendEveryX) {
+    setHost("monitormywatershed.org");
+    setPath("/api/data-stream/");
+    setPort(80);
+}
 EnviroDIYPublisher::EnviroDIYPublisher(Logger&     baseLogger,
                                        const char* registrationToken,
                                        const char* samplingFeatureUUID,
@@ -44,6 +53,9 @@ EnviroDIYPublisher::EnviroDIYPublisher(Logger&     baseLogger,
     : dataPublisher(baseLogger, sendEveryX) {
     setToken(registrationToken);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
+    setHost("monitormywatershed.org");
+    setPath("/api/data-stream/");
+    setPort(80);
 }
 EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
                                        const char* registrationToken,
@@ -52,9 +64,43 @@ EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
     : dataPublisher(baseLogger, inClient, sendEveryX) {
     setToken(registrationToken);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
+    setHost("monitormywatershed.org");
+    setPath("/api/data-stream/");
+    setPort(80);
 }
 // Destructor
 EnviroDIYPublisher::~EnviroDIYPublisher() {}
+
+
+// Returns the data destination
+String EnviroDIYPublisher::getHost(void) {
+    return String(enviroDIYHost);
+}
+
+// Returns the data destination
+void EnviroDIYPublisher::setHost(const char* host) {
+    enviroDIYHost = host;
+}
+
+// Returns the data destination
+String EnviroDIYPublisher::getPath(void) {
+    return String(enviroDIYPath);
+}
+
+// Returns the data destination
+void EnviroDIYPublisher::setPath(const char* endpoint) {
+    enviroDIYPath = endpoint;
+}
+
+// Returns the data destination
+int EnviroDIYPublisher::getPort(void) {
+    return enviroDIYPort;
+}
+
+// Returns the data destination
+void EnviroDIYPublisher::setPort(int port) {
+    enviroDIYPort = port;
+}
 
 
 void EnviroDIYPublisher::setToken(const char* registrationToken) {
@@ -120,7 +166,7 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient) {
 
         // copy the initial post header into the tx buffer
         txBufferAppend(postHeader);
-        txBufferAppend(postEndpoint);
+        txBufferAppend(enviroDIYPath);
         txBufferAppend(HTTPtag);
 
         // add the rest of the HTTP POST headers to the outgoing buffer

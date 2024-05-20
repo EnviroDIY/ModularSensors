@@ -105,8 +105,48 @@ class EnviroDIYPublisher : public dataPublisher {
 
     // Returns the data destination
     String getEndpoint(void) override {
-        return String(enviroDIYHost);
+        return String(enviroDIYHost) + String(enviroDIYPath);
     }
+
+    /**
+     * @brief Get the EnviroDIY/Monitor My Watershed web host
+     *
+     * @return *String* The EnviroDIY/Monitor My Watershed web host
+     */
+    String getHost(void);
+
+    /**
+     * @brief Set the EnviroDIY/Monitor My Watershed web host
+     *
+     * @param host The EnviroDIY/Monitor My Watershed web host
+     */
+    void setHost(const char* host);
+
+    /**
+     * @brief Get the EnviroDIY/Monitor My Watershed API path
+     *
+     * @return *String* The EnviroDIY/Monitor My Watershed API path
+     */
+    String getPath(void);
+    /**
+     * @brief Set the EnviroDIY/Monitor My Watershed API path
+     *
+     * @param endpoint The EnviroDIY/Monitor My Watershed API path
+     */
+    void setPath(const char* endpoint);
+
+    /**
+     * @brief Get the EnviroDIY/Monitor My Watershed API port
+     *
+     * @return *int* The EnviroDIY/Monitor My Watershed API port
+     */
+    int getPort(void);
+    /**
+     * @brief Set the EnviroDIY/Monitor My Watershed API port
+     *
+     * @param port The EnviroDIY/Monitor My Watershed API port
+     */
+    void setPort(int port);
 
     // Adds the site registration token
     /**
@@ -167,9 +207,9 @@ class EnviroDIYPublisher : public dataPublisher {
      *
      * @{
      */
-    static const char* postEndpoint;         ///< The endpoint
-    static const char* enviroDIYHost;        ///< The host name
-    static const int   enviroDIYPort;        ///< The host port
+    const char*        enviroDIYPath;        ///< The api path
+    const char*        enviroDIYHost;        ///< The host name
+    int                enviroDIYPort;        ///< The host port
     static const char* tokenHeader;          ///< The token header text
     static const char* contentLengthHeader;  ///< The content length header text
     static const char* contentTypeHeader;    ///< The content type header text
