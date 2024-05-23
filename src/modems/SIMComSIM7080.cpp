@@ -44,6 +44,21 @@ bool SIMComSIM7080::extraModemSetup(void) {
     // problems by maxing out the send buffer size. This size should accommodate
     // a completely full 8K LogBuffer and a crappy connection.
     gsmModem.sendAT(F("+CACFG=\"SNDBUF\",29200"));
+    gsmModem.waitResponse();
+
+    // Enable the netlight indicator
+    gsmModem.sendAT(F("+CNETLIGHT=1"));
+    gsmModem.waitResponse();
+    // Enable netlight indication of GPRS status
+    // Enable, the netlight will be forced to enter into 64ms on/300ms off
+    // blinking state in GPRS data transmission service.Otherwise,  the netlight
+    // state is not restricted.
+    gsmModem.sendAT(F("+CNETLIGHT=1"));
+    gsmModem.waitResponse();
+
+    // Enable the battery check functionality
+    gsmModem.sendAT(F("+CBATCHK=1"));
+    gsmModem.waitResponse();
 
     return success;
 }
