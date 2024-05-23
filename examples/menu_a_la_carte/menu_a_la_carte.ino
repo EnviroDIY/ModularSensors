@@ -1608,10 +1608,11 @@ Variable* nanolevHeight = new KellerNanolevel_Height(
 const int8_t SonarPower    = sensorPowerPin;  // Excite (power) pin
 const int8_t Sonar1Trigger = -1;              // Trigger pin
 // Trigger should be a *unique* negative number if unconnected
-const uint8_t sonar1NumberReadings = 3;  // The number of readings to average
+const int16_t Sonar1MaxRange       = 9999;  // Maximum range of sonar
+const uint8_t sonar1NumberReadings = 3;     // The number of readings to average
 
 // Create a MaxBotix Sonar sensor object
-MaxBotixSonar sonar1(sonarSerial, SonarPower, Sonar1Trigger,
+MaxBotixSonar sonar1(sonarSerial, SonarPower, Sonar1Trigger, Sonar1MaxRange,
                      sonar1NumberReadings);
 
 // Create an ultrasonic range variable pointer
@@ -2978,7 +2979,10 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
 // Uses the processor sensor object to read the battery voltage
 // NOTE: This will actually return the battery level from the previous update!
 float getBatteryVoltage() {
-    if (mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM] == -9999) mcuBoard.update();
+    if (mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM] == -9999 ||
+        mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM] == 0) {
+        mcuBoard.update();
+    }
     return mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM];
 }
 /** End [working_functions] */

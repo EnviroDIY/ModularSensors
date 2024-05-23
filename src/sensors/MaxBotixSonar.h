@@ -184,25 +184,25 @@ class MaxBotixSonar : public Sensor {
      * can be used.
      * @param powerPin The pin on the mcu controlling power to the MaxSonar.
      * Use -1 if it is continuously powered.
-     * @param maxRange Maximum valid measurement reported by the specific sensor
-     * model (e.g. 5000 or 9999 or 765).
      * - The MaxSonar requires a 2.7V - 5.5V power supply.
      * @param triggerPin The pin on the mcu controlling the "trigger" for the
      * MaxSonar.  Use -1 or omit for continuous ranging.
+     * @param maxRange Maximum valid measurement reported by the specific sensor
+     * model (e.g. 5000 or 9999 or 765).
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
      * @param convertCm Convert centimeter range data from certain models to
      * millimeters. Default false.
      */
-    MaxBotixSonar(Stream* stream, int8_t powerPin, int16_t maxRange,
-                  int8_t triggerPin = -1, uint8_t measurementsToAverage = 1,
+    MaxBotixSonar(Stream* stream, int8_t powerPin, int8_t triggerPin = -1,
+                  int16_t maxRange = 9999, uint8_t measurementsToAverage = 1,
                   bool convertCm = false);
     /**
      * @copydoc MaxBotixSonar::MaxBotixSonar
      */
-    MaxBotixSonar(Stream& stream, int8_t powerPin, int16_t maxRange,
-                  int8_t triggerPin = -1, uint8_t measurementsToAverage = 1,
+    MaxBotixSonar(Stream& stream, int8_t powerPin, int8_t triggerPin = -1,
+                  int16_t maxRange = 9999, uint8_t measurementsToAverage = 1,
                   bool convertCm = false);
     /**
      * @brief Destroy the MaxBotix Sonar object
