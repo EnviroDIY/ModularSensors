@@ -26,7 +26,11 @@
  * compiling. 8192 bytes is a safe value for the Mayfly 1.1 with six variables.
  */
 #ifndef MS_LOG_DATA_BUFFER_SIZE
+#ifdef ARDUINO_AVR_MEGA2560
+#define MS_LOG_DATA_BUFFER_SIZE 2048
+#else
 #define MS_LOG_DATA_BUFFER_SIZE 8192
+#endif
 #endif
 
 #include <stddef.h>
