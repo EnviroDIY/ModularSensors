@@ -1,4 +1,4 @@
-# Developer Setup <!-- {#page_for_developers} -->
+# Developer Setup<!-- {#page_for_developers} -->
 
 If you want to fork this repository and work with it, you'll need to set PlatformIO up a bit differently than you would to merely use this library.
 
@@ -41,7 +41,7 @@ check_flags =
     clangtidy: --checks=-*
 ; deep search for dependencies, evalulating preprocessor conditionals
 lib_ldf_mode = deep+
-; look for the library director
+; look for the library directory
 lib_extra_dirs = .
 ; We have to ignore these folders or PlatformIO will double count all the dependencies
 lib_ignore =

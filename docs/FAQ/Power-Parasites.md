@@ -1,4 +1,4 @@
-# Power Draw over Data Lines <!-- {#page_power_parasites} -->
+# Power Draw over Data Lines<!-- {#page_power_parasites} -->
 
 When deploying a logger out into the wild and depending on only battery or solar charging, getting the power draw from sensors to be as low as possible is crucial.
 This library assumes that the main power/Vcc supply to each sensor can be turned on by setting its powerPin high and off by setting its powerPin low.

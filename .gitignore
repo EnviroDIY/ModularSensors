@@ -84,14 +84,14 @@ barometric_correction/
 __pycache__/
 runDoxygen.bat
 docs/examples/*
-output_doxygen.log
-output_doxygen_run.log
-output_mcss_run.log
-output_mcss.log
 docs/examples.dox_x
 platformio_extra_envs.ini
 src/sensors/table.md
 cache
+output_doxygen.log
+output_doxygen_run.log
+output_mcss_run.log
+output_mcss.log
 docs/output_copyFunctions.log
 docs/output_documentExamples.log
 docs/output_fixSectionsInXml.log
@@ -112,3 +112,4 @@ docs/Doxyfile.bak
 continuous_integration/output_check_component_inclusion.log
 continuous_integration/platformio_ci_local.ini
 pioScripts/install_shared_deps.py
+runDoxygen_archive.bat

@@ -1,4 +1,4 @@
-# DRWI Sites with EnviroDIY LTE Bees <!-- {#example_drwi_ediylte} -->
+# DRWI Sites with EnviroDIY LTE Bees<!-- {#example_drwi_ediylte} -->
 
 The DRWI EnviroDIY LTEbee example uses the sensors and equipment common to older stations (2016-2020) deployed by groups participating in the DRWI Citizen Science project with the Stroud Water Research Center. It includes a Meter Hydros 21 (CTD), a Campbell OBS3+, (Turbidity) and a SIM7080G-based EnviroDIY LTEbee for communication.
 
@@ -31,7 +31,7 @@ _______
 
 _______
 
-# Unique Features of the DRWI EnviroDIY LTE Example <!-- {#example_drwi_ediylte_unique} -->
+# Unique Features of the DRWI EnviroDIY LTE Example<!-- {#example_drwi_ediylte_unique} -->
 - Specifically for sites within the Delaware River Watershed Initiative.
 - Uses a EnviroDIY LTE Bee based on the SIMCom SIM7080G
 
