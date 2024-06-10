@@ -113,9 +113,9 @@ class Logger {
      * @param mcuWakePin The pin used to wake the logger from deep sleep -
      * expected to be attached to an alarm pin of the real-time clock.  Use a
      * value of -1 to prevent the board from sleeping.
-     * @param inputArray A variableArray object instance providing data to be
-     * logged.  This is NOT an array of variables, but an object of the variable
-     * array class.
+     * @param inputArray A pointer to a variableArray object instance providing
+     * data to be logged.  This is NOT an array of variables, but an object of
+     * the variable array class.
      */
     Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
            int8_t SDCardSSPin, int8_t mcuWakePin, VariableArray* inputArray);
@@ -462,8 +462,8 @@ class Logger {
     /**
      * @brief Set the variable array object.
      *
-     * @param inputArray A variable array object instance.  This is NOT an array
-     * of variables, but an object of the variable array class.
+     * @param inputArray A pointer to a variable array object instance.  This is
+     * NOT an array of variables, but an object of the variable array class.
      */
     void setVariableArray(VariableArray* inputArray);
 

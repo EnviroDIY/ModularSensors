@@ -1,4 +1,4 @@
-# Library Dependencies <!-- {#page_library_dependencies} -->
+# Library Dependencies<!-- {#page_library_dependencies} -->
 
 In order to support multiple functions and sensors, there are quite a lot of sub-libraries that this library depends on.
 _Even if you do not use the modules, you must have all of the dependencies installed for the library itself to properly compile._
