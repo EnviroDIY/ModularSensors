@@ -12,6 +12,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- Applied markdown lint to markdown files
+- Bumped TinyGSM dependency
+  - Changed datatypes for modem voltage outputs.
+
 ### Added
 
 ### Removed
@@ -179,7 +183,7 @@ This means having the pull-up resistors on negates the button signal.
 The pin mode had been set as `INPUT_PULLUP` for the button, backwards for the Mayfly, since  [July of 2017](https://github.com/EnviroDIY/ModularSensors/commit/6bafb0fd149589f71ca6f46b761fe72b1f9523a6).
 By some electrical luck, with the 0.x versions of the Mayfly, the external pull-down on the button pin was strong enough to out-weigh the incorretly activated pull-up resistors and an interrupt was still registered when the button was pressed.
 With a different pull-down resistor on the Mayfly 1.x, the button no longer registers with the pull-up resistors active.
-So, for most of our users with Mayflies, this will be a _**fix**_.
+So, for most of our users with Mayflies, this will be a ***fix***.
 But for anyone using a different board/processor/button configuration that depended on the processor pull-up resistors, this will be a breaking change and they will need to specify the button mode in the `setTestingModePin` or `setLoggerPins` function to return to the previous behavior.
 - Added a longer warm up time and removed some of the modem set-up to work with the ESP-IDF AT firmware versions >2.0
 - Made sure that all example clock synchronization happens at noon instead of midnight.
@@ -233,7 +237,7 @@ This is separate from any calculated variables that are created on-the-fly and d
 In many cases, this is 0 and in most of the other cases the value is informational only.
 For the SDI-12 sensors, I'm actually using this to make sure I'm getting the number of values expected.
 - **Sensor:** Added support for [v0.2.0](https://github.com/EnviroDIY/TippingBucketRainCounter/releases) of the [EnviroDIY/TippingBucketRainCounter](https://github.com/EnviroDIY/TippingBucketRainCounter) device firmware, which added capability to count rotations on a reed-switch anemometer and fixed a critical bug that failed to count high rainfall rates.
-  - For details, see: https://github.com/EnviroDIY/TippingBucketRainCounter/releases/tag/v0.2.0
+  - For details, see: <https://github.com/EnviroDIY/TippingBucketRainCounter/releases/tag/v0.2.0>
 
 ***
 
@@ -273,7 +277,7 @@ Remove support for AOSong DHT
 
 ### Removed
 
-- **Breaking:** Temporarily **_REMOVED_** support for AOSong DHT sensor.
+- **Breaking:** Temporarily ***REMOVED*** support for AOSong DHT sensor.
   - Intend to restore this after updating to support newest Adafruit DHT library
 
 ***
@@ -309,7 +313,7 @@ Fix YosemiTech Y533 ORP sensor outputs
 
 ### Fixed
 
-- Modified `YosemitechY533.h` and examples to work with updated ORP `getValues()` function in https://github.com/EnviroDIY/YosemitechModbus released with v0.2.5.
+- Modified `YosemitechY533.h` and examples to work with updated ORP `getValues()` function in <https://github.com/EnviroDIY/YosemitechModbus> released with v0.2.5.
 
 ***
 
@@ -375,7 +379,7 @@ Gigantic SDI-12 bug
 
 ### Fixed
 
-- Fixes an **_EGREGIOUS_** error in the SDI-12 code causing the code to lock up if debugging was off (but always work with it on)
+- Fixes an ***EGREGIOUS*** error in the SDI-12 code causing the code to lock up if debugging was off (but always work with it on)
   - [Issue #346](https://github.com/EnviroDIY/ModularSensors/issues/346)
   - This was first introduced in [0.27.5](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.27.5)
 - Fix GitHub action for pull requests.
@@ -484,11 +488,11 @@ Styling & Doxygen Code Documentation
 
 ### Added
 
-- **Documentation:** Automated code documentation using [Doxygen](https://www.doxygen.nl/index.html), now available at https://envirodiy.github.io/ModularSensors/
+- **Documentation:** Automated code documentation using [Doxygen](https://www.doxygen.nl/index.html), now available at <https://envirodiy.github.io/ModularSensors/>
 
 ### Fixed
 
-- Fixed issue where the Digi XBee LTE-M modem did not wake during normal logging mode to transmit data to the publisher. See https://github.com/EnviroDIY/ModularSensors/pull/309#commitcomment-39786167
+- Fixed issue where the Digi XBee LTE-M modem did not wake during normal logging mode to transmit data to the publisher. See <https://github.com/EnviroDIY/ModularSensors/pull/309#commitcomment-39786167>
 
 For more details, see [Pull Request #309: The style sheet](https://github.com/EnviroDIY/ModularSensors/pull/309)
 
@@ -564,7 +568,7 @@ Modem Simplification
 
 **NOTE:  This release is NOT backwards compatible with previous releases.**
 
--  All code must be updated to the current format for modems and time zones to work with this version of the library.
+- All code must be updated to the current format for modems and time zones to work with this version of the library.
 
 ### Changed
 
@@ -670,8 +674,8 @@ Support for all Atlas Scientific I2C sensors, compiler-safe begin functions
   - pH
   - RTD (temperature
 - Created empty constructors for the logger, publisher, variable array, and variable classes and all of their subclasses.  For all classes created a corresponding "begin" function to set internal class object values.
-  - See note for more details: https://github.com/EnviroDIY/ModularSensors/commit/b1a619ed74bc790743bce35b3a4e78a2d2237b22
-  - The order of input arguments for all variable objects has changed.  For variable subclasses (ie, variables from sensors), there is no change to the user.  __**For calculated variable objects, all code must be updated!**__ Please check the structure in the examples!  Older code will compile without error but the variable metadata fields will be incorrectly populated.
+  - See note for more details: <https://github.com/EnviroDIY/ModularSensors/commit/b1a619ed74bc790743bce35b3a4e78a2d2237b22>
+  - The order of input arguments for all variable objects has changed.  For variable subclasses (ie, variables from sensors), there is no change to the user.  ****For calculated variable objects, all code must be updated!**** Please check the structure in the examples!  Older code will compile without error but the variable metadata fields will be incorrectly populated.
 - Very preliminary support for SD cards with switchable power
 
 ### Removed
@@ -756,7 +760,7 @@ Major Update!
 
 - Improved power management.
 - Improved stability.
-- A huge number of other changes, with most of them are documented here:  https://github.com/EnviroDIY/ModularSensors/pull/173
+- A huge number of other changes, with most of them are documented here:  <https://github.com/EnviroDIY/ModularSensors/pull/173>
 
 ***
 
@@ -772,7 +776,7 @@ NOTE: This **THIS RELEASE DESTROYS BACKWARDS COMPATIBILITY!!** All `.ino` files 
 
 ### Fixed
 
-- Fixes issue with MaxSonar giving weird readings, due to buffer not being cleared between readings, as described in https://www.envirodiy.org/topic/minor-glitch-reading-maxbotix-mb7389-with-mayfly/
+- Fixes issue with MaxSonar giving weird readings, due to buffer not being cleared between readings, as described in <https://www.envirodiy.org/topic/minor-glitch-reading-maxbotix-mb7389-with-mayfly/>
 
 See PR #160 for a full list of improvements and fixes.
 
@@ -818,7 +822,7 @@ Added sensors and fixed timing bugs
 
 - Removed the "checkForUpdate()" function.
   When asking for a value from a variable, you now must explicitly state whether you want the variable to ask its parent sensor for an updated value or not.
-  By default, it will _not_ ask the parent sensor to update, but only return the last value received or -9999 if a value has never been received.
+  By default, it will *not* ask the parent sensor to update, but only return the last value received or -9999 if a value has never been received.
 
 ### Fixed
 
@@ -959,7 +963,6 @@ Our first release of the modular sensors library to support easily logging data 
 [0.28.5]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.28.5
 [0.28.4]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.28.4
 [0.28.3]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.28.3
-[0.28.1]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.28.1
 [0.28.0]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.28.0
 [0.27.8]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.27.8
 [0.27.7]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.27.7
@@ -985,10 +988,6 @@ Our first release of the modular sensors library to support easily logging data 
 [0.6.10]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.6.10
 [0.6.9]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.6.9
 [0.5.4-beta]: https://github.com/EnviroDIY/ModularSensors/releases/tag/0.5.4-beta
-[0.3.0-beta]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.3.0-beta
-[0.2.5-beta]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.2.5-beta
-[0.2.4-beta]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.2.4-beta
-[0.2.2-beta]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.2.2-beta
 
 [//]: # ( @tableofcontents{XML:1} )
 
