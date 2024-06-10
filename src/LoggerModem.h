@@ -601,8 +601,8 @@ class loggerModem {
      * @return **bool** True indicates that the communication with the modem was
      * successful and the values referenced by the pointers should be valid.
      */
-    virtual bool getModemBatteryStats(uint8_t& chargeState, int8_t& percent,
-                                      uint16_t& milliVolts) = 0;
+    virtual bool getModemBatteryStats(int8_t& chargeState, int8_t& percent,
+                                      int16_t& milliVolts) = 0;
     /**
      * @brief Get the current temperature provided by the modem module.
      *

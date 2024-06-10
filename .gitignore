@@ -113,3 +113,4 @@ continuous_integration/output_check_component_inclusion.log
 continuous_integration/platformio_ci_local.ini
 pioScripts/install_shared_deps.py
 runDoxygen_archive.bat
+generateKeywords.bat
