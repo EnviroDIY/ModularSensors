@@ -144,12 +144,6 @@ class DigiXBeeWifi : public DigiXBee {
 
     bool updateModemMetadata(void) override;
 
-    // Access Management
-    void   setWiFiId(const char* WiFiId, bool copyId = false);
-    void   setWiFiPwd(const char* WiFiPwd, bool copyId = false);
-    String getWiFiId(void);
-    String getWiFiPwd(void);
-
 #ifdef MS_DIGIXBEEWIFI_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
 #endif
@@ -181,10 +175,6 @@ class DigiXBeeWifi : public DigiXBee {
     const char* _ssid;
     const char* _pwd;
     bool        _maintainAssociation;
-
-    // Access Management
-    char* _ssid_buf = NULL;
-    char* _pwd_buf  = NULL;
 
     uint16_t metadata_failure_count = 0;
 };
