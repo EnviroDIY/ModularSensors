@@ -233,8 +233,8 @@ class EspressifESP8266 : public loggerModem {
     uint32_t getNISTTime(void) override;
 
     bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
-    bool  getModemBatteryStats(uint8_t& chargeState, int8_t& percent,
-                               uint16_t& milliVolts) override;
+    bool  getModemBatteryStats(int8_t& chargeState, int8_t& percent,
+                               int16_t& milliVolts) override;
     float getModemChipTemperature(void) override;
 
 #ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP

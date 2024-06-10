@@ -1,4 +1,4 @@
-# DRWI Sites with a Mayfly 1.x and EnviroDIY ESP32 WiFi Bees <!-- {#example_drwi_mayfly1_wifi} -->
+# DRWI Sites with a Mayfly 1.x and EnviroDIY ESP32 WiFi Bees<!-- {#example_drwi_mayfly1_wifi} -->
 Example sketch for using the EnviroDIY ESP32 WiFi cellular module with an EnviroDIY Mayfly Data Logger.
 
 The exact hardware configuration used in this example:
@@ -12,7 +12,7 @@ Mayfly v0.5b has the Bee socket constantly powered, therefore using "-1" is the 
 
 The WiFi antenna is built into the ESP32 Bee - no external antenna is needed
 
-Be sure to edit lines 101 and 102 to enter your Wifi access point name and password, and edit the UUID section beginning at line 200 with the correct UUIDs from your specific site on MonitorMyWatershed.   
+Be sure to edit lines 101 and 102 to enter your Wifi access point name and password, and edit the UUID section beginning at line 200 with the correct UUIDs from your specific site on MonitorMyWatershed.
 
 _______
 
@@ -28,7 +28,7 @@ _______
 
 _______
 
-# Unique Features of the DRWI Mayfly 1.x WiFi Example <!-- {#example_drwi_mayfly1_wifi_unique} -->
+# Unique Features of the DRWI Mayfly 1.x WiFi Example<!-- {#example_drwi_mayfly1_wifi_unique} -->
 - Specifically for sites within the Delaware River Watershed Initiative.
 - Uses a EnviroDIY WiFi Bee based on the Espressif ESP32-WROOM-32
 

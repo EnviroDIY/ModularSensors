@@ -1,4 +1,4 @@
-# Notes on Arduino Streams and Software Serial <!-- {#page_arduino_streams} -->
+# Notes on Arduino Streams and Software Serial<!-- {#page_arduino_streams} -->
 
 [//]: # ( @tableofcontents )
 
@@ -34,7 +34,7 @@ This is not a bug that will be fixed.
 
 See the section on [Processor/Board Compatibility](https://envirodiy.github.io/ModularSensors/page_processor_compatibility.html) for more specific notes on what serial ports are available on the various supported processors.
 
-## Hardware Serial <!-- {#streams_hardware} -->
+## Hardware Serial<!-- {#streams_hardware} -->
 
 For stream communication, **hardware serial** should _always_ be your first choice, if your processor has enough hardware serial ports.
 Hardware serial ports are the most stable and have the best performance of any of the other streams.
@@ -51,7 +51,7 @@ HardwareSerial* streamName = &Serial;
 ```
 
 
-## AltSoftSerial <!-- {#streams_altss} -->
+## AltSoftSerial<!-- {#streams_altss} -->
 
 If the [proper pins](https://www.pjrc.com/teensy/td_libs_AltSoftSerial.html) are available, **[AltSoftSerial](https://github.com/PaulStoffregen/AltSoftSerial)** by Paul Stoffregen is also superior to SoftwareSerial, especially at slow baud rates.
 AltSoftSerial is compatible with ModularSensors "out of the box" - that is, you don't need and modifications to the library or extra defines or build flags to make it work.
@@ -69,7 +69,7 @@ AltSoftSerial streamName.
 ```
 
 
-## NeoSWSerial <!-- {#streams_neosw} -->
+## NeoSWSerial<!-- {#streams_neosw} -->
 
 Another possible serial port emulator is [NeoSWSerial](https://github.com/SRGDamia1/NeoSWSerial).
 While not as stable as AltSoftSerial, it supports using any pin with pin change interrupts for communication.
@@ -110,7 +110,7 @@ enableInterrupt(rx_pin, neoSSerial1ISR, CHANGE);
 ```
 
 
-## Neutered SoftwareSerial <!-- {#streams_softwareserial} -->
+## Neutered SoftwareSerial<!-- {#streams_softwareserial} -->
 
 [The EnviroDIY modified version of SoftwareSerial](https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts) removes direct interrupt control from the SoftwareSerial library, making it dependent on another interrupt library, but able to be compiled with ModularSensors.
 This is, _by far_, the _least_ stable serial port option and should only be used on sensors that are not very picky about the quality of the serial stream or that only require one-way communication (ie, only posting data rather than needing to receive commands).
@@ -137,7 +137,7 @@ enableInterrupt(rx_pin, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
 ```
 
 
-## SAMD SERCOMs <!-- {#streams_samd_sercom} -->
+## SAMD SERCOMs<!-- {#streams_samd_sercom} -->
 
 Example code for creating more serial ports on an Adafruit feather M0 using the SERCOMs is available [in the menu a la carte example](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_samd_serial_ports).
 

@@ -370,6 +370,9 @@ uint32_t DigiXBeeWifi::getNISTTime(void) {
 
     // Try up to 4 NIST IP addresses attempting to get a timestamp from NIST
 #if !defined NIST_SERVER_RETRYS
+/**
+ * @brief The number of retry attempts when connecting to the NIST server.
+ */
 #define NIST_SERVER_RETRYS 4
 #endif  // NIST_SERVER_RETRYS
 
@@ -393,8 +396,13 @@ uint32_t DigiXBeeWifi::getNISTTime(void) {
 
         // These are is the IP address of time-[a,b,c,d]-wwv.nist.gov
         // XBee's address lookup falters on time.nist.gov
-
+/**
+ * @brief The port hosting the NIST "time" protocol (37)
+ */
 #define TIME_PROTOCOL_PORT 37
+/**
+ * @brief The length of the NIST IP address (18)
+ */
 #define IP_STR_LEN 18
         const char ipAddr[NIST_SERVER_RETRYS][IP_STR_LEN] = {
             {"132, 163, 97, 1"},
@@ -585,79 +593,4 @@ bool DigiXBeeWifi::updateModemMetadata(void) {
     }
 
     return success;
-}
-
-
-// Az extensions
-void DigiXBeeWifi::setWiFiId(const char* newSsid, bool copyId) {
-    uint8_t newSsid_sz = strlen(newSsid);
-    _ssid              = newSsid;
-    if (copyId) {
-/* Do size checks, allocate memory for the LoggerID, copy it there
- *  then set assignment.
- */
-#define WIFI_SSID_MAX_sz 32
-        if (newSsid_sz > WIFI_SSID_MAX_sz) {
-            char* WiFiId2 = (char*)newSsid;
-            PRINTOUT(F("\n\r   LoggerModem:setWiFiId too long: Trimmed to "),
-                     newSsid_sz);
-            WiFiId2[newSsid_sz] = 0;  // Trim max size
-            newSsid_sz          = WIFI_SSID_MAX_sz;
-        }
-        if (NULL == _ssid_buf) {
-            _ssid_buf = new char[newSsid_sz + 2];  // Allow for trailing 0
-        } else {
-            PRINTOUT(F("\nLoggerModem::setWiFiId error - expected NULL ptr"));
-        }
-        if (NULL == _ssid_buf) {
-            // Major problem
-            PRINTOUT(F("\nLoggerModem::setWiFiId error -no buffer "),
-                     _ssid_buf);
-        } else {
-            strcpy(_ssid_buf, newSsid);
-            _ssid = _ssid_buf;
-            //_ssid2 =  _ssid_buf;
-        }
-        MS_DBG(F("\nsetWiFiId cp "), _ssid, " sz: ", newSsid_sz);
-    }
-}
-
-void DigiXBeeWifi::setWiFiPwd(const char* newPwd, bool copyId) {
-    uint8_t newPwd_sz = strlen(newPwd);
-    _pwd              = newPwd;
-
-    if (copyId) {
-/* Do size checks, allocate memory for the LoggerID, copy it there
- *  then set assignment.
- */
-#define WIFI_PWD_MAX_sz 63  // Len 63 printable chars + 0
-        if (newPwd_sz > WIFI_PWD_MAX_sz) {
-            char* pwd2 = (char*)newPwd;
-            PRINTOUT(F("\n\r   LoggerModem:setWiFiPwd too long: Trimmed to "),
-                     newPwd_sz);
-            pwd2[newPwd_sz] = 0;  // Trim max size
-            newPwd_sz       = WIFI_PWD_MAX_sz;
-        }
-        if (NULL == _pwd_buf) {
-            _pwd_buf = new char[newPwd_sz + 2];  // Allow for trailing 0
-        } else {
-            PRINTOUT(F("\nLoggerModem::setWiFiPwd error - expected NULL ptr"));
-        }
-        if (NULL == _pwd_buf) {
-            // Major problem
-            PRINTOUT(F("\nLoggerModem::setWiFiPwd error -no buffer "),
-                     _pwd_buf);
-        } else {
-            strcpy(_pwd_buf, newPwd);
-            _pwd = _pwd_buf;
-        }
-        MS_DEEP_DBG(F("\nsetWiFiPwd cp "), _ssid, " sz: ", newPwd_sz);
-    }
-}
-
-String DigiXBeeWifi::getWiFiId(void) {
-    return _ssid;
-}
-String DigiXBeeWifi::getWiFiPwd(void) {
-    return _pwd;
 }

@@ -589,11 +589,11 @@
 
 #ifdef TINY_GSM_MODEM_HAS_BATTERY
 /**
- * @brief Creates a getModemBatteryStats(uint8_t& chargeState, int8_t& percent,
- * uint16_t& milliVolts) function for a specific modem subclass.
+ * @brief Creates a getModemBatteryStats(int8_t& chargeState, int8_t& percent,
+ * int16_t& milliVolts) function for a specific modem subclass.
  *
  * This is a passthrough to the specific modem's getBattStats(uint8_t&
- * chargeState, int8_t& percent, uint16_t& milliVolts) for modems where such
+ * chargeState, int8_t& percent, int16_t& milliVolts) for modems where such
  * data is available.
  *
  * This populates the entered references with -9999s for modems where such data
@@ -601,24 +601,24 @@
  *
  * @param specificModem The modem subclass
  *
- * @return The text of a getModemBatteryStats(uint8_t& chargeState, int8_t&
- * percent, uint16_t& milliVolts) function specific to a single modem subclass.
+ * @return The text of a getModemBatteryStats(int8_t& chargeState, int8_t&
+ * percent, int16_t& milliVolts) function specific to a single modem subclass.
  *
  */
 #define MS_MODEM_GET_MODEM_BATTERY_DATA(specificModem)                  \
     bool specificModem::getModemBatteryStats(                           \
-        uint8_t& chargeState, int8_t& percent, uint16_t& milliVolts) {  \
+        int8_t& chargeState, int8_t& percent, int16_t& milliVolts) {    \
         MS_DBG(F("Getting modem battery data:"));                       \
         return gsmModem.getBattStats(chargeState, percent, milliVolts); \
     }
 
 #else
 /**
- * @brief Creates a getModemBatteryStats(uint8_t& chargeState, int8_t& percent,
- * uint16_t& milliVolts) function for a specific modem subclass.
+ * @brief Creates a getModemBatteryStats(int8_t& chargeState, int8_t& percent,
+ * int16_t& milliVolts) function for a specific modem subclass.
  *
  * This is a passthrough to the specific modem's getBattStats(uint8_t&
- * chargeState, int8_t& percent, uint16_t& milliVolts) for modems where such
+ * chargeState, int8_t& percent, int16_t& milliVolts) for modems where such
  * data is available.
  *
  * This populates the entered references with -9999s for modems where such data
@@ -626,18 +626,18 @@
  *
  * @param specificModem The modem subclass
  *
- * @return The text of a getModemBatteryStats(uint8_t& chargeState, int8_t&
- * percent, uint16_t& milliVolts) function specific to a single modem subclass.
+ * @return The text of a getModemBatteryStats(int8_t& chargeState, int8_t&
+ * percent, int16_t& milliVolts) function specific to a single modem subclass.
  *
  */
-#define MS_MODEM_GET_MODEM_BATTERY_DATA(specificModem)                 \
-    bool specificModem::getModemBatteryStats(                          \
-        uint8_t& chargeState, int8_t& percent, uint16_t& milliVolts) { \
-        MS_DBG(F("This modem doesn't return battery information!"));   \
-        chargeState = 99;                                              \
-        percent     = -99;                                             \
-        milliVolts  = 9999;                                            \
-        return false;                                                  \
+#define MS_MODEM_GET_MODEM_BATTERY_DATA(specificModem)               \
+    bool specificModem::getModemBatteryStats(                        \
+        int8_t& chargeState, int8_t& percent, int16_t& milliVolts) { \
+        MS_DBG(F("This modem doesn't return battery information!")); \
+        chargeState = 99;                                            \
+        percent     = -99;                                           \
+        milliVolts  = 9999;                                          \
+        return false;                                                \
     }
 #endif
 

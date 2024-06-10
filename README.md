@@ -1,8 +1,8 @@
-# ModularSensors <!-- {#mainpage} -->
+# ModularSensors<!-- {#mainpage} -->
 
 ___
 
-## The EnviroDIY ModularSensors Library <!-- {#mainpage_intro} -->
+## The EnviroDIY ModularSensors Library<!-- {#mainpage_intro} -->
 
 If you're new to EnviroDIY, I suggest you check out the [Just Getting Started](https://envirodiy.github.io/ModularSensors/page_getting_started.html) section of the documentation!
 
@@ -26,18 +26,18 @@ There is extensive documentation available in the [ModularSensors github pages](
 [//]: # ( @m_footernavigation )
 
 [//]: # ( Start GitHub Only )
-- [ModularSensors ](#modularsensors-)
-  - [The EnviroDIY ModularSensors Library ](#the-envirodiy-modularsensors-library-)
-  - [Supported Sensors ](#supported-sensors-)
-  - [Data Endpoints ](#data-endpoints-)
-  - [Supported Cellular/Wifi Modules: ](#supported-cellularwifi-modules-)
-  - [Contributing ](#contributing-)
-  - [License ](#license-)
-  - [Acknowledgments ](#acknowledgments-)
+- [ModularSensors](#modularsensors)
+  - [The EnviroDIY ModularSensors Library](#the-envirodiy-modularsensors-library)
+  - [Supported Sensors](#supported-sensors)
+  - [Data Endpoints](#data-endpoints)
+  - [Supported Cellular/Wifi Modules:](#supported-cellularwifi-modules)
+  - [Contributing](#contributing)
+  - [License](#license)
+  - [Acknowledgments](#acknowledgments)
 
 [//]: # ( End GitHub Only )
 
-## Supported Sensors <!-- {#mainpage_supported_sensors} -->
+## Supported Sensors<!-- {#mainpage_supported_sensors} -->
 
 For some generalized information about attaching sensors to an Arduino style board, see the [Sensor Notes page](https://envirodiy.github.io/ModularSensors/page_sensor_notes.html).
 
@@ -99,7 +99,7 @@ For some generalized information about attaching sensors to an Arduino style boa
 - [Zebra-Tech D-Opto: dissolved oxygen](https://envirodiy.github.io/ModularSensors/group__sensor__dopto.html)
 
 
-## Data Endpoints <!-- {#mainpage_data_receivers} -->
+## Data Endpoints<!-- {#mainpage_data_receivers} -->
 
 Within ModularSensors, the "dataPublisher" objects add the functionality to send data to remote web services.
 The currently supported services are the [Monitor My Watershed data portal](http://data.envirodiy.org/), [ThingSpeak](https://thingspeak.com/), and the [Ubidots IoT platform](https://ubidots.com).
@@ -111,7 +111,7 @@ The currently supported services are the [Monitor My Watershed data portal](http
 [//]: # ( @todo Page on Data Endpoints )
 
 
-## Supported Cellular/Wifi Modules: <!-- {#mainpage_modems} -->
+## Supported Cellular/Wifi Modules:<!-- {#mainpage_modems} -->
 
 For information common to all modems and for tables of the proper class, baud rate, and pins to uses, see the [Modem Notes page](https://envirodiy.github.io/ModularSensors/page_modem_notes.html).
 
@@ -131,7 +131,7 @@ For information common to all modems and for tables of the proper class, baud ra
 - u-blox 2G, 3G, and 4G, including the [Sodaq 3GBee](https://envirodiy.github.io/ModularSensors/group__modem__ubee__3g.html)
 
 
-## Contributing <!-- {#mainpage_contributing} -->
+## Contributing<!-- {#mainpage_contributing} -->
 Open an [issue](https://github.com/EnviroDIY/ModularSensors/issues) to suggest and discuss potential changes/additions.
 Feel free to open issues about any bugs you find or any sensors you would like to have added.
 
@@ -141,14 +141,14 @@ This library is built to fully take advantage of Objecting Oriented Programing (
 There is _extensive_ documentation on our [github pages](https://envirodiy.github.io/ModularSensors/index.html) and an _enormous_ number of comments and debugging printouts in the code itself to help you get going.
 
 
-## License <!-- {#mainpage_license} -->
+## License<!-- {#mainpage_license} -->
 Software sketches and code are released under the BSD 3-Clause License -- See [LICENSE.md](https://github.com/EnviroDIY/ModularSensors/blob/master/LICENSE.md) file for details.
 
 Documentation is licensed as [Creative Commons Attribution-ShareAlike 4.0](https://creativecommons.org/licenses/by-sa/4.0/) (CC-BY-SA) copyright.
 
 Hardware designs shared are released, unless otherwise indicated, under the [CERN Open Hardware License 1.2](http://www.ohwr.org/licenses/cern-ohl/v1.2) (CERN_OHL).
 
-## Acknowledgments <!-- {#mainpage_acknowledgments} -->
+## Acknowledgments<!-- {#mainpage_acknowledgments} -->
 [EnviroDIY](http://envirodiy.org/)™ is presented by the Stroud Water Research Center, with contributions from a community of enthusiasts sharing do-it-yourself ideas for environmental science and monitoring.
 
 [Sara Damiano](https://github.com/SRGDamia1) is the primary developer of the EnviroDIY ModularSensors library, with input from many [other contributors](https://github.com/EnviroDIY/ModularSensors/graphs/contributors).

@@ -110,9 +110,9 @@ class Logger {
      * @param mcuWakePin The pin used to wake the logger from deep sleep -
      * expected to be attached to an alarm pin of the real-time clock.  Use a
      * value of -1 to prevent the board from sleeping.
-     * @param inputArray A variableArray object instance providing data to be
-     * logged.  This is NOT an array of variables, but an object of the variable
-     * array class.
+     * @param inputArray A pointer to a variableArray object instance providing
+     * data to be logged.  This is NOT an array of variables, but an object of
+     * the variable array class.
      */
     Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
            int8_t SDCardSSPin, int8_t mcuWakePin, VariableArray* inputArray);
@@ -397,6 +397,11 @@ class Logger {
      */
     uint16_t _loggingIntervalMinutes = 5;
     /**
+     * @brief The initial number of samples to log at an interval of 1 minute
+     * for fast field verification
+     */
+    uint8_t _initialShortIntervals = 0;
+    /**
      * @brief Digital pin number on the mcu controlling the SD card slave
      * select.
      */
@@ -445,8 +450,8 @@ class Logger {
     /**
      * @brief Set the variable array object.
      *
-     * @param inputArray A variable array object instance.  This is NOT an array
-     * of variables, but an object of the variable array class.
+     * @param inputArray A pointer to a variable array object instance.  This is
+     * NOT an array of variables, but an object of the variable array class.
      */
     void setVariableArray(VariableArray* inputArray);
 
@@ -519,10 +524,28 @@ class Logger {
      * the internal variable array object.
      *
      * @param position_i The position of the variable in the array.
+     * @return **float** The value of the variable as a float.
+     */
+    float getValueAtI(uint8_t position_i);
+    /**
+     * @brief Get the most recent value of the variable at the given position in
+     * the internal variable array object.
+     *
+     * @param position_i The position of the variable in the array.
      * @return **String** The value of the variable as a string with the correct
      * number of significant figures.
      */
     String getValueStringAtI(uint8_t position_i);
+    /**
+     * @brief Get the string representing a particular value of the variable at
+     * the given position in the internal variable array object.
+     *
+     * @param position_i The position of the variable in the array.
+     * @param value The value to format.
+     * @return **String** The given value as a string with the correct number of
+     *  significant figures.
+     */
+    String formatValueStringAtI(uint8_t position_i, float value);
 
  protected:
     /**
@@ -568,9 +591,18 @@ class Logger {
      */
     void registerDataPublisher(dataPublisher* publisher);
     /**
-     * @brief Publish data to all registered data publishers.
+     * @brief Check if any data publishers need an Internet connection for the
+     * next publish call.
+     *
+     * @return True if any remotes need a connection.
      */
-    void publishDataToRemotes(void);
+    bool checkRemotesConnectionNeeded(void);
+    /**
+     * @brief Publish data to all registered data publishers.
+     *
+     * @param forceFlush Ask the publishers to flush buffered data immediately.
+     */
+    void publishDataToRemotes(bool forceFlush = false);
     /**
      * @brief Retained for backwards compatibility, use publishDataToRemotes()
      * in new code.
@@ -1166,13 +1198,13 @@ class Logger {
     /**
      * @brief This is a one-and-done to log data
      */
-    virtual void logData(void);
+    virtual void logData(bool sleepBeforeReturning = true);
 
     /**
      * @brief This is a one-and-done to log data and publish the results to any
      * associated publishers.
      */
-    void logDataAndPublish(void);
+    void logDataAndPublish(bool sleepBeforeReturning = true);
 
     /**
      * @brief The static "marked" epoch time for the local timezone.

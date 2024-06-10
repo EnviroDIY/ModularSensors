@@ -138,17 +138,11 @@ class DigiXBeeWifi : public DigiXBee {
     uint32_t getNISTTime(void) override;
 
     bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
-    bool  getModemBatteryStats(uint8_t& chargeState, int8_t& percent,
-                               uint16_t& milliVolts) override;
+    bool  getModemBatteryStats(int8_t& chargeState, int8_t& percent,
+                               int16_t& milliVolts) override;
     float getModemChipTemperature(void) override;
 
     bool updateModemMetadata(void) override;
-
-    // Access Management
-    void   setWiFiId(const char* WiFiId, bool copyId = false);
-    void   setWiFiPwd(const char* WiFiPwd, bool copyId = false);
-    String getWiFiId(void);
-    String getWiFiPwd(void);
 
 #ifdef MS_DIGIXBEEWIFI_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
@@ -181,10 +175,6 @@ class DigiXBeeWifi : public DigiXBee {
     const char* _ssid;
     const char* _pwd;
     bool        _maintainAssociation;
-
-    // Access Management
-    char* _ssid_buf = NULL;
-    char* _pwd_buf  = NULL;
 
     uint16_t metadata_failure_count = 0;
 };

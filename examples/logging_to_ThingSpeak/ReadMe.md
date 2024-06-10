@@ -1,4 +1,4 @@
-# Sending data to ThingSpeak <!-- {#example_thingspeak} -->
+# Sending data to ThingSpeak<!-- {#example_thingspeak} -->
 
 This shows the use of a "ThingSpeak logger" object.
 Data is sent to [ThingSpeak](https://thingspeak.com) using MQTT.
@@ -21,13 +21,13 @@ _______
 
 _______
 
-# Unique Features of the ThingSpeak Example <!-- {#example_thingspeak_unique} -->
+# Unique Features of the ThingSpeak Example<!-- {#example_thingspeak_unique} -->
 - A single logger publishes data to ThingSpeak.
 - Uses an Espressif ESP8266 to publish data.
 
-# To Use this Example <!-- {#example_thingspeak_using} -->
+# To Use this Example<!-- {#example_thingspeak_using} -->
 
-## Prepare and set up PlatformIO <!-- {#example_thingspeak_pio} -->
+## Prepare and set up PlatformIO<!-- {#example_thingspeak_pio} -->
 - Create a channel on ThingSpeak with fields to receive your data.
 - Create a new PlatformIO project
 - Replace the contents of the platformio.ini for your new project with the [platformio.ini](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/logging_to_ThingSpeak/platformio.ini) file in the examples/logging_to_ThingSpeak folder on GitHub.
@@ -38,7 +38,7 @@ _______
     - Move it into the src directory of your project.
     - Delete main.cpp in that folder.
 
-## Modify the Example <!-- {#example_thingspeak_modify} -->
+## Modify the Example<!-- {#example_thingspeak_modify} -->
 - Modify logging_to_ThingSpeak.ino to have the modem, sensor, and variable objects that you are interested in.
     - This example is written for an _ESP8266 (wifi)_ modem.
 Change this to whatever modem you are using.
@@ -63,7 +63,7 @@ const char *thingSpeakChannelID = "######";  // The numeric channel id for your 
 const char *thingSpeakChannelKey = "XXXXXXXXXXXXXXXX";  // The Write API Key for your channel
 ```
 
-## Upload! <!-- {#example_thingspeak_upload} -->
+## Upload!<!-- {#example_thingspeak_upload} -->
 - Test everything at home **before** deploying out in the wild!
 
 _______

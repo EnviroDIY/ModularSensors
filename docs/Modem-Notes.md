@@ -1,4 +1,4 @@
-# Notes about Modems <!-- {#page_modem_notes} -->
+# Notes about Modems<!-- {#page_modem_notes} -->
 
 [//]: # ( @tableofcontents )
 
@@ -18,7 +18,7 @@
 If you are having trouble, please see the pages for the specific modems and the TinyGSM [getting started](https://github.com/vshymanskyy/TinyGSM#getting-started) and [troubleshooting](https://github.com/vshymanskyy/TinyGSM#troubleshooting) sections.
 
 
-## Summary of Classes to use for Various Manufactured Modules <!-- {#modem_notes_classes} -->
+## Summary of Classes to use for Various Manufactured Modules<!-- {#modem_notes_classes} -->
 
 |                    Module                     |                      Class                       |
 | :-------------------------------------------: | :----------------------------------------------: |
@@ -56,7 +56,7 @@ If you are having trouble, please see the pages for the specific modems and the 
 
 ***
 
-## Default baud rates of supported modules <!-- {#modem_notes_bauds} -->
+## Default baud rates of supported modules<!-- {#modem_notes_bauds} -->
 
 |               Module               |                    Default Baud Rate                     |
 | :--------------------------------: | :------------------------------------------------------: |
@@ -71,7 +71,7 @@ If you are having trouble, please see the pages for the specific modems and the 
 
 ***
 
-## Power Requirements of Supported Modems <!-- {#modem_notes_power} -->
+## Power Requirements of Supported Modems<!-- {#modem_notes_power} -->
 
 @note Standard USB ports and most Arduino boards (including the Mayfly) are only cabable of supplying **500mA** of power.
 Any model that requires a higher level of current (almost all of them) should be given a separate power supply than the main processor.
@@ -105,7 +105,7 @@ Most modules are capable of serial communication and some level of functionality
 
 ***
 
-## Sleep and Reset Pin Labels <!-- {#modem_notes_sleep} -->
+## Sleep and Reset Pin Labels<!-- {#modem_notes_sleep} -->
 
 |            Module             |              Status Pin Label               | Reset Label |            Wake / Sleep Request             |
 | :---------------------------: | :-----------------------------------------: | :---------: | :-----------------------------------------: |
@@ -130,7 +130,7 @@ Most modules are capable of serial communication and some level of functionality
 
 ***
 
-## Pin Numbers to Use when Connecting to a Mayfly 0.x <!-- {#modem_notes_mayfly_0_pins} -->
+## Pin Numbers to Use when Connecting to a Mayfly 0.x<!-- {#modem_notes_mayfly_0_pins} -->
 
 Here are the pin numbers to use for modules that can be attached directly to an EnviroDIY Mayfly v0.3, 0.4, 0.5, 0.5b, or 0.5c using its Bee socket.
 
@@ -178,7 +178,7 @@ modem.setModemResetLevel(HIGH);
 
 ***
 
-## Pin Numbers to Use when Connecting to a Mayfly 1.x <!-- {#modem_notes_mayfly_1_pins} -->
+## Pin Numbers to Use when Connecting to a Mayfly 1.x<!-- {#modem_notes_mayfly_1_pins} -->
 
 Here are the pin numbers to use for modules that can be attached directly to an EnviroDIY Mayfly v1.0 or 1.1 using its Bee socket.
 
