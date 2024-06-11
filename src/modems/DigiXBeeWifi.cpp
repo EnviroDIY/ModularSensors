@@ -368,14 +368,6 @@ uint32_t DigiXBeeWifi::getNISTTime(void) {
 
     gsmClient.stop();
 
-    // Try up to 4 NIST IP addresses attempting to get a timestamp from NIST
-#if !defined NIST_SERVER_RETRYS
-/**
- * @brief The number of retry attempts when connecting to the NIST server.
- */
-#define NIST_SERVER_RETRYS 4
-#endif  // NIST_SERVER_RETRYS
-
     for (uint8_t i = 0; i < NIST_SERVER_RETRYS; i++) {
         // Must ensure that we do not ping the daylight servers more than once
         // every 4 seconds.  NIST clearly specifies here that this is a
@@ -396,14 +388,7 @@ uint32_t DigiXBeeWifi::getNISTTime(void) {
 
         // These are is the IP address of time-[a,b,c,d]-wwv.nist.gov
         // XBee's address lookup falters on time.nist.gov
-/**
- * @brief The port hosting the NIST "time" protocol (37)
- */
-#define TIME_PROTOCOL_PORT 37
-/**
- * @brief The length of the NIST IP address (18)
- */
-#define IP_STR_LEN 18
+
         const char ipAddr[NIST_SERVER_RETRYS][IP_STR_LEN] = {
             {"132, 163, 97, 1"},
             {"132, 163, 97, 2"},
