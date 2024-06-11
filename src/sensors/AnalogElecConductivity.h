@@ -381,11 +381,6 @@ class AnalogElecConductivity : public Sensor {
     float readEC(uint8_t analogPinNum);
 
  private:
-    int8_t _EcPowerPin;
-    int8_t _EcAdcPin;
-
-    float* _ptrWaterTemperature_C;
-
     /// @brief The resistance of the circiut resistor plus any series port
     /// resistance
     float _Rseries_ohms = RSERIES_OHMS_DEF;
