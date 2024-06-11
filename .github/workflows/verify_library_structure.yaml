@@ -13,6 +13,5 @@ jobs:
     if: ${{ ! contains(github.event.head_commit.message, 'ci skip') }}
     uses: EnviroDIY/workflows/.github/workflows/verify_library_structure.yaml@main
     with:
-      library-manager: 'update'
-      library-compliance: 'specification'
-      # NOTE: cannot use strict for this library, because it has already been submitted with too long a name
+      library-manager: 'submit'
+      library-compliance: 'strict'
