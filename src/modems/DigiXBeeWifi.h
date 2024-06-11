@@ -86,6 +86,22 @@
  */
 #define XBEE_RESET_THRESHOLD 4
 
+// Try up to 4 NIST IP addresses attempting to get a timestamp from NIST
+#if !defined NIST_SERVER_RETRYS
+/**
+ * @brief The number of retry attempts when connecting to the NIST server.
+ */
+#define NIST_SERVER_RETRYS 4
+#endif  // NIST_SERVER_RETRYS
+/**
+ * @brief The port hosting the NIST "time" protocol (37)
+ */
+#define TIME_PROTOCOL_PORT 37
+/**
+ * @brief The length of the NIST IP address (18)
+ */
+#define IP_STR_LEN 18
+
 /**
  * @brief The class for the [Digi XBee](@ref modem_digi)
  * [S6B wifi](@ref modem_digi_wifi) module operating in Digi's "transparent"
