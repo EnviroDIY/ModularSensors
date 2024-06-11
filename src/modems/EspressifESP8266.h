@@ -266,9 +266,17 @@ class EspressifESP8266 : public loggerModem {
     bool isModemAwake(void) override;
 
  private:
+    /**
+     * @brief Waits for the Espressif module to reboot and print out it's boot
+     * up string. Because the boot up string is at a different baud rate (74880
+     * baud), it usually comes out as junk.
+     *
+     * @return *true* Text (assumed to be the start message) was received
+     * @return *false* No boot text was receivedd
+     */
     bool        ESPwaitForBoot(void);
-    const char* _ssid;
-    const char* _pwd;
+    const char* _ssid;  ///< Internal reference to the WiFi SSID
+    const char* _pwd;   ///< Internal reference to the WiFi password
 };
 
 /**

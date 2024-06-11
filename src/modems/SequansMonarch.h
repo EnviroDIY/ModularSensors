@@ -250,7 +250,7 @@ class SequansMonarch : public loggerModem {
     bool isModemAwake(void) override;
 
  private:
-    const char* _apn;
+    const char* _apn;  ///< Internal reference to the cellular APN
 };
 /**@}*/
 #endif  // SRC_MODEMS_SEQUANSMONARCH_H_

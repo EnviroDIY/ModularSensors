@@ -152,6 +152,9 @@ class DreamHostPublisher : public dataPublisher {
 
 
  private:
+    /**
+     * @brief A pointer to the base URL for the dreamhost portal.
+     */
     const char* _DreamHostPortalRX = nullptr;
     bool        _dualPost          = true;
 };

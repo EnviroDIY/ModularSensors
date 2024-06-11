@@ -1248,12 +1248,22 @@ class Logger {
 
     /**
      * @brief This is a one-and-done to log data
+     *
+     * @param sleepBeforeReturning True to put the logger to sleep before
+     * returning from the function; optional with a default value of true.
+     * @note If sleepBeforeReturning is set to false, the logger WILL NOT sleep
+     * between readings.
      */
     virtual void logData(bool sleepBeforeReturning = true);
 
     /**
      * @brief This is a one-and-done to log data and publish the results to any
      * associated publishers.
+     *
+     * @param sleepBeforeReturning True to put the logger to sleep before
+     * returning from the function; optional with a default value of true.
+     * @note If sleepBeforeReturning is set to false, the logger WILL NOT sleep
+     * between readings.
      */
     void logDataAndPublish(bool sleepBeforeReturning = true);
 

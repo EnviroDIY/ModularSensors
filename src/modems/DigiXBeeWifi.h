@@ -188,10 +188,20 @@ class DigiXBeeWifi : public DigiXBee {
     bool isModemAwake(void) override;
 
  private:
-    const char* _ssid;
-    const char* _pwd;
-    bool        _maintainAssociation;
 
+    const char* _ssid;  ///< Internal reference to the WiFi SSID
+    const char* _pwd;   ///< Internal reference to the WiFi password
+    /**
+     * @brief True to maintain association with the WiFi network while in sleep
+     * mode.
+     */
+    bool _maintainAssociation;
+
+    /**
+     * @brief The number of times the XBee has failed to update metadata.
+     *
+     * If this is larger than #XBEE_RESET_THRESHOLD the XBee will be reset.
+     */
     uint16_t metadata_failure_count = 0;
 };
 /**@}*/

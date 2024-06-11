@@ -250,12 +250,33 @@ class KellerParent : public Sensor {
     bool addSingleMeasurementResult(void) override;
 
  private:
-    keller      _ksensor;
+    /**
+     * @brief Private reference to the keller class for communication with the
+     * Keller sensor.
+     */
+    keller _ksensor;
+    /**
+     * @brief Private reference to the model of Keller sensor
+     */
     kellerModel _model;
+    /**
+     * @brief Private reference to the Keller sensor's modbus address
+     */
     byte        _modbusAddress;
+    /**
+     * @brief Private reference to the stream for communciation with the
+     * Keller sensor.
+     */
     Stream*     _stream;
-    int8_t      _RS485EnablePin;
-    int8_t      _powerPin2;
+    /**
+     * @brief Private reference to the RS-485 adapter's flow direction control
+     * pin.
+     */
+    int8_t _RS485EnablePin;
+    /**
+     * @brief Private reference to the power pin fro the RS-485 adapter.
+     */
+    int8_t _powerPin2;
 };
 /**@}*/
 #endif  // SRC_SENSORS_KELLERPARENT_H_

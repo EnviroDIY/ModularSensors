@@ -194,6 +194,12 @@ class UbidotsPublisher : public dataPublisher {
 
  private:
     // Tokens for Ubidots
+    /**
+     * @brief The authentication token from Ubdots, either the Organization's
+     * Integration Token (under Users > Organization menu, visible by Admin
+     * only) OR the STEM User's Device Token (under the specific device's setup
+     * panel).
+     */
     const char* _authentificationToken = nullptr;
 };
 

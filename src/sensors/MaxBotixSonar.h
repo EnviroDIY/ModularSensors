@@ -247,9 +247,17 @@ class MaxBotixSonar : public Sensor {
     bool addSingleMeasurementResult(void) override;
 
  private:
-    int16_t _maxRange;
-    int8_t  _triggerPin;
-    bool    _convertCm;
+    int16_t _maxRange;    ///< The maximum range of the Maxbotix sonar
+    int8_t  _triggerPin;  ///< The pin to trigger the Maxbotix sonar
+    /**
+     * @brief True to convert the output from the Maxbotix from centimeters to
+     * millimeters.
+     */
+    bool _convertCm;
+    /**
+     * @brief Private reference to the stream for communciation with the
+     * Maxbotix sensor.
+     */
     Stream* _stream;
 };
 

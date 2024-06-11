@@ -284,9 +284,33 @@ class VariableArray {
     uint8_t _maxSamplestoAverage;
 
  private:
-    bool    isLastVarFromSensor(int arrayIndex);
+    /**
+     * @brief Check if the current variable is the last variable that the sensor
+     * will return.
+     *
+     * This is used for formating output where the format is slightly different
+     * for the last value. (ie, no comma after the last value)
+     *
+     * @param arrayIndex The index of the variable in the sensor variable array
+     * @return True if the variable is the last in the array.
+     */
+    bool isLastVarFromSensor(int arrayIndex);
+    /**
+     * @brief Count the maximum number of measurements needed from a single
+     * sensor for the requested averaging
+     *
+     * @return *uint8_t* The number of measurements needed.
+     */
     uint8_t countMaxToAverage(void);
-    bool    checkVariableUUIDs(void);
+    /**
+     * @brief Check that all variable have valid UUID's, if they are assigned
+     *
+     * @return True if all variables have valid UUID's.
+     *
+     * @warning This does not check that the UUID's are the true UUID's for the
+     * variables, just that the text is a validly formed UUID.
+     */
+    bool checkVariableUUIDs(void);
 
 #ifdef MS_VARIABLEARRAY_DEBUG_DEEP
     /**

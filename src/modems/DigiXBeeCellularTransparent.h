@@ -204,9 +204,9 @@ class DigiXBeeCellularTransparent : public DigiXBee {
     bool isModemAwake(void) override;
 
  private:
-    const char* _apn;
-    const char* _user;
-    const char* _pwd;
+    const char* _apn;   ///< Internal reference to the cellular APN
+    const char* _user;  ///< Internal reference to the APN's user name
+    const char* _pwd;   ///< Internal reference to the APN's password
 };
 /**@}*/
 #endif  // SRC_MODEMS_DIGIXBEECELLULARTRANSPARENT_H_

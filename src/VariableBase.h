@@ -377,15 +377,41 @@ class Variable {
 
 
  private:
+    /**
+     * @brief Private reference to function used to calculate the variables
+     * value.
+     */
     float (*_calcFxn)(void) = nullptr;
 
-    const uint8_t _sensorVarNum      = 0;
-    uint8_t       _decimalResolution = 0;
 
+    /**
+     * @brief The position in the sensor's value array of this variable's value.
+     */
+    const uint8_t _sensorVarNum = 0;
+    /**
+     * @brief The resolution (in decimal places) of the value.
+     */
+    uint8_t _decimalResolution = 0;
+
+    /**
+     * @brief The name of the variable per the [ODM2 variable name controlled
+     * vocabulary](http://vocabulary.odm2.org/variablename/)
+     */
     const char* _varName = nullptr;
+    /**
+     * @brief The unit of the variable per the [ODM2 unit controlled
+     * vocabulary](http://vocabulary.odm2.org/units/)
+     */
     const char* _varUnit = nullptr;
+    /**
+     * @brief A custom code for the variable.  This can be any short text
+     * helping to identify the variable in files.
+     */
     const char* _varCode = nullptr;
-    const char* _uuid    = nullptr;
+    /**
+     * @brief A universally unique identifier for the variable.
+     */
+    const char* _uuid = nullptr;
 };
 
 #endif  // SRC_VARIABLEBASE_H_

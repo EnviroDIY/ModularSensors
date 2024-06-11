@@ -166,6 +166,10 @@ class Sodaq2GBeeR6 : public SIMComSIM800 {
     bool extraModemSetup(void) override;
 
  private:
+    /**
+     * @brief The digital pin number of a pin on the mcu controlling the voltage
+     * reference (pin 1) for the GPRSBee.
+     */
     int8_t _vRefPin;
 };
 /**@}*/

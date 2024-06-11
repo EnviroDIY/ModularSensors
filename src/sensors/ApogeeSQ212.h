@@ -267,7 +267,13 @@ class ApogeeSQ212 : public Sensor {
     bool addSingleMeasurementResult(void) override;
 
  private:
+    /**
+     * @brief Internal reference to the ADS channel number of the Apogee SQ-212
+     */
     uint8_t _adsChannel;
+    /**
+     * @brief Internal reference to the I2C address of the TI-ADS1x15
+     */
     uint8_t _i2cAddress;
 };
 

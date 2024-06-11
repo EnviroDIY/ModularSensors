@@ -111,7 +111,7 @@ class EnviroDIYPublisher : public dataPublisher {
     /**
      * @brief Get the EnviroDIY/Monitor My Watershed web host
      *
-     * @return *String* The EnviroDIY/Monitor My Watershed web host
+     * @return **String** The EnviroDIY/Monitor My Watershed web host
      */
     String getHost(void);
 
@@ -125,7 +125,7 @@ class EnviroDIYPublisher : public dataPublisher {
     /**
      * @brief Get the EnviroDIY/Monitor My Watershed API path
      *
-     * @return *String* The EnviroDIY/Monitor My Watershed API path
+     * @return **String** The EnviroDIY/Monitor My Watershed API path
      */
     String getPath(void);
     /**
@@ -138,7 +138,7 @@ class EnviroDIYPublisher : public dataPublisher {
     /**
      * @brief Get the EnviroDIY/Monitor My Watershed API port
      *
-     * @return *int* The EnviroDIY/Monitor My Watershed API port
+     * @return **int** The EnviroDIY/Monitor My Watershed API port
      */
     int getPort(void);
     /**
@@ -223,10 +223,14 @@ class EnviroDIYPublisher : public dataPublisher {
      */
     static const char* samplingFeatureTag;  ///< The JSON feature UUID tag
     static const char* timestampTag;        ///< The JSON feature timestamp tag
-                                            /**@}*/
+
+    /**@}*/
 
  private:
-    // Tokens and UUID's for EnviroDIY
+    /**
+     * @brief Internal reference to the EnviroDIY/Monitor My Watershed
+     * registration token.
+     */
     const char* _registrationToken = nullptr;
 };
 

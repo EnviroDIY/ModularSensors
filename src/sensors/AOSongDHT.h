@@ -247,8 +247,8 @@ class AOSongDHT : public Sensor {
     bool addSingleMeasurementResult(void) override;
 
  private:
-    DHT     dht_internal;
-    uint8_t _dhtType;
+    DHT     dht_internal;  ///< Internal reference to the Adafruit DHT object
+    uint8_t _dhtType;      ///< Internal reference to the DHT type
 };
 
 
