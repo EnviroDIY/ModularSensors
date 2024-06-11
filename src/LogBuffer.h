@@ -13,8 +13,11 @@
 #ifndef SRC_LOGBUFFER_H_
 #define SRC_LOGBUFFER_H_
 
+#ifndef MS_LOG_DATA_BUFFER_SIZE
+#ifdef ARDUINO_AVR_MEGA2560
+#define MS_LOG_DATA_BUFFER_SIZE 2048
+#else
 /**
- * @def MS_LOG_DATA_BUFFER_SIZE
  * @brief Log Data Buffer
  *
  * This determines how much RAM is reserved to buffer log records before
@@ -25,10 +28,6 @@
  * This can be changed by setting the build flag MS_LOG_DATA_BUFFER_SIZE when
  * compiling. 8192 bytes is a safe value for the Mayfly 1.1 with six variables.
  */
-#ifndef MS_LOG_DATA_BUFFER_SIZE
-#ifdef ARDUINO_AVR_MEGA2560
-#define MS_LOG_DATA_BUFFER_SIZE 2048
-#else
 #define MS_LOG_DATA_BUFFER_SIZE 8192
 #endif
 #endif
@@ -57,14 +56,14 @@ class LogBuffer {
      * @brief Sets the number of variables the buffer will store in each record.
      * Clears the buffer as a side effect.
      *
-     * @param[in]  numVariables_  The number of variables to store.
+     * @param numVariables_  The number of variables to store.
      */
     void setNumVariables(uint8_t numVariables_);
 
     /**
      * @brief Gets the number of variables that will be stored in each record.
      *
-     * @return     The variable count.
+     * @return The variable count.
      */
     uint8_t getNumVariables(void);
 
@@ -74,53 +73,53 @@ class LogBuffer {
     void clear(void);
 
     /**
-     * @brief      Gets the number of records currently in the log.
+     * @brief Gets the number of records currently in the log.
      *
-     * @return     The number of records.
+     * @return The number of records.
      */
     int getNumRecords(void);
 
     /**
-     * @brief      Computes the percentage full of the buffer.
+     * @brief Computes the percentage full of the buffer.
      *
-     * @return     The current percent full.
+     * @return The current percent full.
      */
     uint8_t getPercentFull(void);
 
     /**
      * @brief Adds a new record with the given timestamp.
      *
-     * @param[in]  timestamp  The timestamp
+     * @param timestamp  The timestamp
      *
-     * @return     Index of the new record, or -1 if there was no space.
+     * @return Index of the new record, or -1 if there was no space.
      */
     int addRecord(uint32_t timestamp);
 
     /**
      * @brief Sets the value of a particular variable in a particular record.
      *
-     * @param[in]  record    The record
-     * @param[in]  variable  The variable
-     * @param[in]  value     The value
+     * @param record    The record
+     * @param variable  The variable
+     * @param value     The value
      */
     void setRecordValue(int record, uint8_t variable, float value);
 
     /**
      * @brief Gets the timestamp of a particular record.
      *
-     * @param[in]  record  The record
+     * @param record  The record
      *
-     * @return     The record's timestamp.
+     * @return **uint32_t** The record's timestamp.
      */
     uint32_t getRecordTimestamp(int record);
 
     /**
      * @brief Gets the value of a particular variable in a particular record.
      *
-     * @param[in]  record    The record
-     * @param[in]  variable  The variable
+     * @param record    The record
+     * @param variable  The variable
      *
-     * @return     The variable's value.
+     * @return **float** The variable's value.
      */
     float getRecordValue(int record, uint8_t variable);
 
