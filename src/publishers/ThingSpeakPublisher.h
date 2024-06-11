@@ -203,9 +203,22 @@ class ThingSpeakPublisher : public dataPublisher {
 
  private:
     // Keys for ThingSpeak
-    const char*  _thingSpeakMQTTKey    = nullptr;
-    const char*  _thingSpeakChannelID  = nullptr;
-    const char*  _thingSpeakChannelKey = nullptr;
+    /**
+     * @brief The MQTT key for ThingSpeak
+     */
+    const char* _thingSpeakMQTTKey = nullptr;
+    /**
+     * @brief The channel ID for ThingSpeak
+     */
+    const char* _thingSpeakChannelID = nullptr;
+    /**
+     * @brief The channel key for ThingSpeak
+     */
+    const char* _thingSpeakChannelKey = nullptr;
+    /**
+     * @brief Internal reference ot the PubSubClient instance for MQTT
+     * communication.
+     */
     PubSubClient _mqttClient;
 };
 

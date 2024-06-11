@@ -26,7 +26,7 @@
  * Profiling Probe. Classes for the GroPoint Profile GPLP-8 Soil Moisture &
  * Temperature Probe.
  *
- * @ingroup GroPoint_group
+ * @ingroup gropoint_group
  *
  * @tableofcontents
  * @m_footernavigation

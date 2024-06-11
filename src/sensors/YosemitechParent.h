@@ -253,12 +253,33 @@ class YosemitechParent : public Sensor {
     bool addSingleMeasurementResult(void) override;
 
  private:
-    yosemitech      _ysensor;
+    /**
+     * @brief Private reference to the yosemitech class for communication with
+     * the Yosemitech sensor.
+     */
+    yosemitech _ysensor;
+    /**
+     * @brief Private reference to the model of Yosemitech Sensor
+     */
     yosemitechModel _model;
+    /**
+     * @brief Private reference to the Yosemitech sensor's modbus address
+     */
     byte            _modbusAddress;
+    /**
+     * @brief Private reference to the stream for communciation with the
+     * Yosemitech sensor.
+     */
     Stream*         _stream;
-    int8_t          _RS485EnablePin;
-    int8_t          _powerPin2;
+    /**
+     * @brief Private reference to the RS-485 adapter's flow direction control
+     * pin.
+     */
+    int8_t _RS485EnablePin;
+    /**
+     * @brief Private reference to the power pin fro the RS-485 adapter.
+     */
+    int8_t _powerPin2;
 };
 
 #endif  // SRC_SENSORS_YOSEMITECHPARENT_H_

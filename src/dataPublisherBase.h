@@ -29,8 +29,8 @@
 #endif
 
 
+#ifndef MS_SEND_BUFFER_SIZE
 /**
- * @def MS_SEND_BUFFER_SIZE
  * @brief Send Buffer
  *
  * This determines how many characters to set out at once over the TCP
@@ -40,10 +40,7 @@
  *
  * This can be changed by setting the build flag MS_SEND_BUFFER_SIZE when
  * compiling.
- *
- * @ingroup the_publishers
  */
-#ifndef MS_SEND_BUFFER_SIZE
 #define MS_SEND_BUFFER_SIZE 750
 #endif
 

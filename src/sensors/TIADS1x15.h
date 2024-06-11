@@ -287,8 +287,18 @@ class TIADS1x15 : public Sensor {
     bool addSingleMeasurementResult(void) override;
 
  private:
+    /**
+     * @brief Internal reference to the ADS channel number of the device
+     * attached to the TI-ADS1x15
+     */
     uint8_t _adsChannel;
+    /**
+     * @brief Internal reference to the gain setting for the TI-ADS1x15
+     */
     float   _gain;
+    /**
+     * @brief Internal reference to the I2C address of the TI-ADS1x15
+     */
     uint8_t _i2cAddress;
 };
 

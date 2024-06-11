@@ -249,15 +249,32 @@ class MaximDS18 : public Sensor {
     bool addSingleMeasurementResult(void) override;
 
  private:
+    /**
+     * @brief Internal reference to the OneWire device address.
+     *
+     */
     DeviceAddress _OneWireAddress;
+    /**
+     * @brief True to indicate that the address of the OneWire device was
+     * specified. If false, the first device to respond will be the one used.
+     */
     bool          _addressKnown;
-    // Setup an internal OneWire instance to communicate with any OneWire
-    // devices (not just Maxim/Dallas temperature ICs)
+    /**
+     * @brief An internal OneWire instance to communicate with any OneWire
+     * devices (not just Maxim/Dallas temperature ICs)
+     */
     OneWire _internalOneWire;
-    // Set up the internal a "Dallas Temperature" instance for communication
-    // specifically with the temperature sensors.
+    /**
+     * @brief The internal "Dallas Temperature" instance for communication
+     * specifically with the temperature sensors.
+     */
     DallasTemperature _internalDallasTemp;
-    // Turns the address into a printable string
+    /**
+     * @brief Turns the address into a printable string
+     *
+     * @param OneWireAddress The one wire address as a DeviceAddress object
+     * @return *String* A pretty string version of the OneWire device address.
+     */
     String makeAddressString(DeviceAddress OneWireAddress);
 };
 

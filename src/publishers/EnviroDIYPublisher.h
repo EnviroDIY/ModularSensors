@@ -113,7 +113,7 @@ class EnviroDIYPublisher : public dataPublisher {
     /**
      * @brief Get the EnviroDIY/Monitor My Watershed web host
      *
-     * @return *String* The EnviroDIY/Monitor My Watershed web host
+     * @return **String** The EnviroDIY/Monitor My Watershed web host
      */
     String getHost(void);
 
@@ -127,7 +127,7 @@ class EnviroDIYPublisher : public dataPublisher {
     /**
      * @brief Get the EnviroDIY/Monitor My Watershed API path
      *
-     * @return *String* The EnviroDIY/Monitor My Watershed API path
+     * @return **String** The EnviroDIY/Monitor My Watershed API path
      */
     String getPath(void);
     /**
@@ -140,7 +140,7 @@ class EnviroDIYPublisher : public dataPublisher {
     /**
      * @brief Get the EnviroDIY/Monitor My Watershed API port
      *
-     * @return *int* The EnviroDIY/Monitor My Watershed API port
+     * @return **int** The EnviroDIY/Monitor My Watershed API port
      */
     int getPort(void);
     /**
@@ -234,19 +234,37 @@ class EnviroDIYPublisher : public dataPublisher {
      */
     static const char* samplingFeatureTag;  ///< The JSON feature UUID tag
     static const char* timestampTag;        ///< The JSON feature timestamp tag
-                                            /**@}*/
 
-    LogBuffer _logBuffer;
+    /**@}*/
+
+
+    LogBuffer _logBuffer;  ///< Internal reference to the logger buffer
 
     // actually transmit rather than just buffer data
+    /**
+     * @brief Transmit data from the data buffer to an external site
+     *
+     * @param outClient The client to publish the data over
+     * @return **int16_t** The HTTP response code from the publish attempt
+     *
+     * @note A 504 will be returned automatically if the server does not
+     * respond within 30 seconds.
+     */
     int16_t flushDataBuffer(Client* outClient);
 
-    // we send every one of the first five data points immediately for field
-    // validation
+    /**
+     * @brief The number of transmissions remaing at the single minute intervals
+     *
+     * We send every one of the first five data points at only one minute
+     * intervals for faster in-field validation.
+     */
     uint8_t _initialTransmissionsRemaining = 5;
 
  private:
-    // Tokens and UUID's for EnviroDIY
+    /**
+     * @brief Internal reference to the EnviroDIY/Monitor My Watershed
+     * registration token.
+     */
     const char* _registrationToken = nullptr;
 };
 

@@ -365,6 +365,8 @@
  * connection to be made, if possible.
  *
  * @param specificModem The modem subclass
+ * @param auto_reconnect_time The amount of time, in milliseconds, to allow the
+ * modem to attempt to connect automatically from saved credentials.
  *
  * @return The text of a connectInternet(uint32_t maxConnectionTime) function
  * specific to a single modem subclass.

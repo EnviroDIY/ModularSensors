@@ -350,6 +350,9 @@ class Sensor {
     /**
      * @brief Average the results of all measurements by dividing the sum of
      * all measurements by the number of measurements taken.
+     *
+     * @param resultNumber The position of the result within the result array.
+     * @param resultValue The value of the result.
      */
     void verifyAndAddMeasurementResult(uint8_t resultNumber,
                                        int32_t resultValue);
@@ -541,10 +544,10 @@ class Sensor {
     uint8_t _sensorStatus = 0;
 
     /**
-     * @brief An array for each sensor containing the variable objects tied to
-     * that sensor.  The #MAX_NUMBER_VARS cannot be determined on a per-sensor
-     * basis, because of the way memory is used on an Arduino.  It must be
-     * defined once for the whole class.
+     * @brief An array for each sensor containing pointers to the variable
+     * objects tied to that sensor.  The #MAX_NUMBER_VARS cannot be determined
+     * on a per-sensor basis, because of the way memory is used on an Arduino.
+     * It must be defined once for the whole class.
      */
     Variable* variables[MAX_NUMBER_VARS];
 };

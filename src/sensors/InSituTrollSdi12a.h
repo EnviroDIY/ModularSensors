@@ -240,12 +240,18 @@ class InSituTrollSdi12a : public SDI12Sensors {
                        "InSituTrollSdi12a", ITROLLA_NUM_VARIABLES,
                        ITROLLA_WARM_UP_TIME_MS, ITROLLA_STABILIZATION_TIME_MS,
                        ITROLLA_MEASUREMENT_TIME_MS) {}
+    /**
+     * @copydoc InSituTrollSdi12a::InSituTrollSdi12a
+     */
     InSituTrollSdi12a(char* SDI12address, int8_t powerPin, int8_t dataPin,
                       uint8_t measurementsToAverage = 1)
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "InSituTrollSdi12a", ITROLLA_NUM_VARIABLES,
                        ITROLLA_WARM_UP_TIME_MS, ITROLLA_STABILIZATION_TIME_MS,
                        ITROLLA_MEASUREMENT_TIME_MS) {}
+    /**
+     * @copydoc InSituTrollSdi12a::InSituTrollSdi12a
+     */
     InSituTrollSdi12a(int SDI12address, int8_t powerPin, int8_t dataPin,
                       uint8_t measurementsToAverage = 1)
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,

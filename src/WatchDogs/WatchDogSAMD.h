@@ -83,7 +83,14 @@ class extendedWatchDogSAMD {
     static volatile uint32_t _barksUntilReset;
 
  private:
+    /**
+     * @brief Wait for the SAMD processor bit sync to finish.+
+     */
     void inline waitForWDTBitSync();
+    /**
+     * @brief Internal reference to the number of seconds of silence before the
+     * module is reset.
+     */
     uint32_t _resetTime_s;
 };
 

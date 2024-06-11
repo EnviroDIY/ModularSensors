@@ -183,7 +183,7 @@ class DigiXBeeLTEBypass : public DigiXBee {
     bool isModemAwake(void) override;
 
  private:
-    const char* _apn;
+    const char* _apn;  ///< Internal reference to the cellular APN
 };
 /**@}*/
 #endif  // SRC_MODEMS_DIGIXBEELTEBYPASS_H_

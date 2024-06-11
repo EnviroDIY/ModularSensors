@@ -235,9 +235,9 @@ class ProcessorStats : public Sensor {
     bool addSingleMeasurementResult(void) override;
 
  private:
-    const char* _version;
-    int8_t      _batteryPin;
-    int16_t     sampNum = 0;
+    const char* _version;     ///< Internal reference to the board version
+    int8_t      _batteryPin;  ///< Internal reference to the battery pin
+    int16_t     sampNum = 0;  ///< The current sample number
 };
 
 
