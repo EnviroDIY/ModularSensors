@@ -115,3 +115,5 @@ pioScripts/install_shared_deps.py
 runDoxygen_archive.bat
 generateKeywords.bat
 update_path.bat
+pioScripts/install_working_dependencies.py
+pioScripts/target_pio_versions.py
