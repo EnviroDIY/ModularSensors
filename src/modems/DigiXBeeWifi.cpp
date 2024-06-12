@@ -389,19 +389,16 @@ uint32_t DigiXBeeWifi::getNISTTime(void) {
         // These are is the IP address of time-[a,b,c,d]-wwv.nist.gov
         // XBee's address lookup falters on time.nist.gov
 
-        const char ipAddr[NIST_SERVER_RETRYS][IP_STR_LEN] = {
-            {"132, 163, 97, 1"},
-            {"132, 163, 97, 2"},
-            {"132, 163, 97, 3"},
-            {"132, 163, 97, 4"}};
-        IPAddress ip1(132, 163, 97, 1);  // Initialize
-        ip1.fromString(ipAddr[i]);
-        MS_DBG(F("NIST lookup mdmIP["), i, "/", NIST_SERVER_RETRYS,
-               F("] with "), ip1);
+        IPAddress nistIPs[] = {
+            IPAddress(132, 163, 97, 1), IPAddress(132, 163, 97, 2),
+            IPAddress(132, 163, 97, 3), IPAddress(132, 163, 97, 4),
+            IPAddress(132, 163, 97, 6), IPAddress(132, 163, 97, 8)};
+        MS_DBG(F("\nConnecting to NIST daytime Server at ip"), nistIPs[i],
+               F("attempt"), i, F("of"), NIST_SERVER_RETRYS);
 
         // NOTE:  This "connect" only sets up the connection parameters, the TCP
         // socket isn't actually opened until we first send data (the '!' below)
-        connectionMade = gsmClient.connect(ip1, TIME_PROTOCOL_PORT);
+        connectionMade = gsmClient.connect(nistIPs[i], TIME_PROTOCOL_PORT);
         // Need to send something before connection is made
         gsmClient.println('!');
 
