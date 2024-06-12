@@ -141,6 +141,15 @@
  * {{ @ref ApogeeSQ212_PAR }}
  */
 /**@{*/
+#ifdef MS_USE_ADS1015
+/// @brief Decimals places in string representation; PAR should have 0 when
+/// using an ADS1015.
+#define SQ212_PAR_RESOLUTION 0
+#else
+/// @brief Decimals places in string representation; PAR should have 4 when
+/// using an ADS1115.
+#define SQ212_PAR_RESOLUTION 4
+#endif
 /// Variable number; PAR is stored in sensorValues[0].
 #define SQ212_PAR_VAR_NUM 0
 /// @brief Variable name in [ODM2 controlled
@@ -153,15 +162,6 @@
 #define SQ212_PAR_UNIT_NAME "microeinsteinPerSquareMeterPerSecond"
 /// @brief Default variable short code; "photosyntheticallyActiveRadiation"
 #define SQ212_PAR_DEFAULT_CODE "photosyntheticallyActiveRadiation"
-#ifdef MS_USE_ADS1015
-/// @brief Decimals places in string representation; PAR should have 0 when
-/// using an ADS1015.
-#define SQ212_PAR_RESOLUTION 0
-#else
-/// @brief Decimals places in string representation; PAR should have 4 when
-/// using an ADS1115.
-#define SQ212_PAR_RESOLUTION 4
-#endif
 /**@}*/
 
 /**

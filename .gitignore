@@ -88,13 +88,7 @@ docs/examples.dox_x
 platformio_extra_envs.ini
 src/sensors/table.md
 cache
-output_doxygen.log
-output_doxygen_run.log
-output_mcss_run.log
-output_mcss.log
-docs/output_copyFunctions.log
-docs/output_documentExamples.log
-docs/output_fixSectionsInXml.log
+output_*.log
 examples/DRWI_Mayfly1_Wifi_5tm_ds18b20_1/DRWI_Mayfly1_Wifi_5tm_ds18b20_1.ino
 clang_format_all.bat
 arduino_lint.md
@@ -109,7 +103,6 @@ continuous_integration_artifacts/*
 arduino_cli.log
 **/sensor_tests/*
 docs/Doxyfile.bak
-continuous_integration/output_check_component_inclusion.log
 continuous_integration/platformio_ci_local.ini
 pioScripts/install_shared_deps.py
 runDoxygen_archive.bat
