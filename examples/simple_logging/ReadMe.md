@@ -13,31 +13,33 @@ _______
 [//]: # ( @m_footernavigation )
 
 [//]: # ( Start GitHub Only )
+
 - [Simple Logging](#simple-logging)
-- [Unique Features of the Simple Logging Example](#unique-features-of-the-simple-logging-example)
-- [To Use this Example](#to-use-this-example)
-  - [Prepare and set up PlatformIO](#prepare-and-set-up-platformio)
-  - [Set the logger ID](#set-the-logger-id)
-  - [Upload!](#upload)
+  - [Unique Features of the Simple Logging Example](#unique-features-of-the-simple-logging-example)
+  - [To Use this Example](#to-use-this-example)
+    - [Prepare and set up PlatformIO](#prepare-and-set-up-platformio)
+    - [Set the logger ID](#set-the-logger-id)
+    - [Upload!](#upload)
 
 [//]: # ( End GitHub Only )
 
+## Unique Features of the Simple Logging Example<!-- {#example_simple_logging_unique} -->
 
-
-# Unique Features of the Simple Logging Example<!-- {#example_simple_logging_unique} -->
 - Only logs data to an SD card.
 
-# To Use this Example<!-- {#example_simple_logging_using} -->
+## To Use this Example<!-- {#example_simple_logging_using} -->
 
-## Prepare and set up PlatformIO<!-- {#example_simple_logging_pio} -->
+### Prepare and set up PlatformIO<!-- {#example_simple_logging_pio} -->
+
 - Create a new PlatformIO project
 - Replace the contents of the platformio.ini for your new project with the [platformio.ini](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/simple_logging/platformio.ini) file in the examples/simple_logging folder on GitHub.
-    - It is important that your PlatformIO configuration has the lib_ldf_mode and build flags set as they are in the example.
-    - Without this, the program won't compile.
+  - It is important that your PlatformIO configuration has the lib_ldf_mode and build flags set as they are in the example.
+  - Without this, the program won't compile.
 - Open [simple_logging.ino](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/simple_logging/simple_logging.ino) and save it to your computer.  Put it into the src directory of your project.
-    - Delete main.cpp in that folder.
+  - Delete main.cpp in that folder.
 
-## Set the logger ID<!-- {#example_simple_logging_logger_id} -->
+### Set the logger ID<!-- {#example_simple_logging_logger_id} -->
+
 - Change the "XXXX" in this section of code to the loggerID assigned by Stroud:
 
 ```cpp
@@ -45,11 +47,11 @@ _______
 const char *LoggerID = "XXXX";
 ```
 
-## Upload!<!-- {#example_simple_logging_upload} -->
+### Upload!<!-- {#example_simple_logging_upload} -->
+
 - Test everything at home **before** deploying out in the wild!
 
 _______
-
 
 [//]: # ( @section example_simple_logging_pio_config PlatformIO Configuration )
 
