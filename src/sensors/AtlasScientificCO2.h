@@ -63,17 +63,30 @@
 #include "VariableBase.h"
 #include "sensors/AtlasParent.h"
 
-// Sensor Specific Defines
 /** @ingroup sensor_atlas_co2 */
 /**@{*/
 
-/// Default I2C address is 0x69 (105)
-#define ATLAS_CO2_I2C_ADDR 0x69  // 105
-
+/**
+ * @anchor sensor_atlas_co2_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the Atlas CO2 sensor
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the Atlas CO2 sensor can report 2 values.
 #define ATLAS_CO2_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define ATLAS_CO2_INC_CALC_VARIABLES 0
+/**@}*/
+
+/**
+ * @anchor sensor_atlas_co2_config
+ * @name Configuration Defines
+ * Defines to configure and set the address of the Atlas CO2 sensor
+ */
+/**@{*/
+/// @brief The default I2C address of the Atlas CO2 sensor is 0x69 (105)
+#define ATLAS_CO2_I2C_ADDR 0x69
+/**@}*/
 
 /**
  * @anchor sensor_atlas_co2_timing

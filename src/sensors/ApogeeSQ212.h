@@ -92,12 +92,37 @@
 /** @ingroup sensor_sq212 */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_sq212_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the Apogee SQ-212
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the SQ212 can report 2 values, raw
 /// voltage and calculated PAR.
 #define SQ212_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; PAR is calculated from the raw voltage.
 #define SQ212_INC_CALC_VARIABLES 1
+/**@}*/
+
+/**
+ * @anchor sensor_sq212_config
+ * @name Configuration Defines
+ * Defines to set the calibration of the SQ-212 and the address of the ADD.
+ */
+/**@{*/
+#ifndef SQ212_CALIBRATION_FACTOR || defined(DOXYGEN)
+/**
+ * @brief The calibration factor between output in volts and PAR
+ * (microeinsteinPerSquareMeterPerSecond) 1 µmol mˉ² sˉ¹ per mV (reciprocal of
+ * sensitivity)
+ */
+#define SQ212_CALIBRATION_FACTOR 1
+#endif
+
+/// The assumed address of the ADS1115, 1001 000 (ADDR = GND)
+#define ADS1115_ADDRESS 0x48
+/**@}*/
 
 /**
  * @anchor sensor_sq212_timing
@@ -202,18 +227,6 @@
 #define SQ212_VOLTAGE_RESOLUTION 4
 #endif
 /**@}*/
-
-/**
- * @brief The calibration factor between output in volts and PAR
- * (microeinsteinPerSquareMeterPerSecond) 1 µmol mˉ² sˉ¹ per mV (reciprocal of
- * sensitivity)
- */
-#ifndef SQ212_CALIBRATION_FACTOR
-#define SQ212_CALIBRATION_FACTOR 1
-#endif
-
-/// The assumed address of the ADS1115, 1001 000 (ADDR = GND)
-#define ADS1115_ADDRESS 0x48
 
 /**
  * @brief The Sensor sub-class for the [Apogee SQ-212](@ref sensor_sq212) sensor

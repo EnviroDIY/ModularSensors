@@ -43,6 +43,7 @@
  * of known resistance (R1) and then to an analog pin to measure the voltage.
  *
  * So the circuit is:
+ *
  * @code{.unparsed}
  *  Vin (sensor power) --- R1 --- power cord  --- Vout
  *                                     |
@@ -133,6 +134,10 @@
 #ifndef SRC_SENSORS_ANALOGELECCONDUCTIVITY_H_
 #define SRC_SENSORS_ANALOGELECCONDUCTIVITY_H_
 
+// Debugging Statement
+// #define MS_ANALOGELECCONDUCTIVITY_DEBUG
+// #define MS_ANALOGELECCONDUCTIVITY_DEBUG_DEEP
+
 #ifdef MS_ANALOGELECCONDUCTIVITY_DEBUG
 #define MS_DEBUGGING_STD "AnalogElecConductivity"
 #endif
@@ -151,7 +156,13 @@
 /** @ingroup sensor_analog_cond */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_analog_cond_parts_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the analog conductivity
+ * sensor
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; we only get one value from the analog
 /// conductivity sensor.
 #define ANALOGELECCONDUCTIVITY_NUM_VARIABLES 1
@@ -159,35 +170,13 @@
 /// though we recommend users include a temperature sensor and calculate
 /// specific conductance in their own program.
 #define ANALOGELECCONDUCTIVITY_INC_CALC_VARIABLES 0
-
-/**
- * @anchor sensor_analog_cond_parts_timing
- * @name Sensor Timing
- * The timing for analog conductivity via resistance.
- */
-/**@{*/
-/// @brief Sensor::_warmUpTime_ms; giving 2ms for warm-up.
-#define ANALOGELECCONDUCTIVITY_WARM_UP_TIME_MS 2
-/// @brief Sensor::_stabilizationTime_ms; we give just a tiny delay for
-/// stabilization.
-#define ANALOGELECCONDUCTIVITY_STABILIZATION_TIME_MS 1
-/**
- * @brief Sensor::_measurementTime_ms; we assume the analog voltage is measured
- * instantly.
- *
- * It's not really *quite* instantly, but it is very fast and the time to
- * measure is included in the read function.
- * On ATmega based boards (UNO, Nano, Mini, Mega), it takes about 100
- * microseconds (0.0001 s) to read an analog input, so the maximum reading rate
- * is about 10,000 times a second.
- */
-#define ANALOGELECCONDUCTIVITY_MEASUREMENT_TIME_MS 0
 /**@}*/
 
 /**
  * @anchor sensor_analog_cond_parts_config
  * @name Configuration Defines
- * Defines to help configure the outputs from the home-made conductivity sensor.
+ * Defines to help configure the range and resolution of the home-made
+ * conductivity sensor depending on the processor and ADC in use.
  */
 /**@{*/
 #if !defined ANALOG_EC_ADC_RESOLUTION || defined(DOXYGEN)
@@ -281,6 +270,29 @@
 #endif  // SENSOREC_KONST_DEF
 /**@}*/
 
+/**
+ * @anchor sensor_analog_cond_parts_timing
+ * @name Sensor Timing
+ * The timing for analog conductivity via resistance.
+ */
+/**@{*/
+/// @brief Sensor::_warmUpTime_ms; giving 2ms for warm-up.
+#define ANALOGELECCONDUCTIVITY_WARM_UP_TIME_MS 2
+/// @brief Sensor::_stabilizationTime_ms; we give just a tiny delay for
+/// stabilization.
+#define ANALOGELECCONDUCTIVITY_STABILIZATION_TIME_MS 1
+/**
+ * @brief Sensor::_measurementTime_ms; we assume the analog voltage is measured
+ * instantly.
+ *
+ * It's not really *quite* instantly, but it is very fast and the time to
+ * measure is included in the read function.
+ * On ATmega based boards (UNO, Nano, Mini, Mega), it takes about 100
+ * microseconds (0.0001 s) to read an analog input, so the maximum reading rate
+ * is about 10,000 times a second.
+ */
+#define ANALOGELECCONDUCTIVITY_MEASUREMENT_TIME_MS 0
+/**@}*/
 /**
  * @anchor sensor_analog_cond_parts_ec
  * @name Electrical Conductance

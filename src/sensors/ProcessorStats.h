@@ -72,12 +72,17 @@
 /** @ingroup sensor_processor */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_processor_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the main processor
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the processor can report 3 values.
 #define PROCESSOR_NUM_VARIABLES 3
 /// @brief Sensor::_incCalcValues; sample number is (sort-of) calculated.
 #define PROCESSOR_INC_CALC_VARIABLES 1
-
+/**@}*/
 
 /**
  * @anchor sensor_processor_sensor_timing

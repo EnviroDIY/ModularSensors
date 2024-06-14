@@ -62,20 +62,31 @@
 #include "VariableBase.h"
 #include "sensors/AtlasParent.h"
 
-/**
- * @brief Default I2C address is 0x61 (97)
- */
-#define ATLAS_DO_I2C_ADDR 0x61
-
 /** @ingroup sensor_atlas_do */
 /**@{*/
 
-// Sensor Specific Defines
-/// @brief Sensor::_numReturnedValues; the Atlas DO sensor can report 2 values.
+/**
+ * @anchor sensor_atlas_do_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the Atlas DO sensor
+ */
+/**@{*/
+/// @brief Sensor::_numReturnedValues; the Atlas EZO DO circuit can report 2
+/// values.
 #define ATLAS_DO_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define ATLAS_DO_INC_CALC_VARIABLES 0
+/**@}*/
 
+/**
+ * @anchor sensor_atlas_do_config
+ * @name Configuration Defines
+ * Defines to configure and set the address of the Atlas DO sensor
+ */
+/**@{*/
+/// @brief The default I2C address of the Atlas DO sensor is 0x61 (97)
+#define ATLAS_DO_I2C_ADDR 0x61
+/**@}*/
 
 /**
  * @anchor sensor_atlas_do_timing
