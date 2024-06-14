@@ -1,3 +1,9 @@
+/** =========================================================================
+ * @file i2c_warmUp.ino
+ * @brief Testing sketch to see how long an attached I2C device takes to
+ * begin to respond to commands.
+ * ======================================================================= */
+
 #include <Arduino.h>
 #include <Wire.h>
 

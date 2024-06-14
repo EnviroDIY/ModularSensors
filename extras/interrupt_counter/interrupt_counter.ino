@@ -1,3 +1,8 @@
+/** =========================================================================
+ * @file interrupt_counter.ino
+ * @brief Testing sketch counting pin change interrupts.
+ * ======================================================================= */
+
 #include <Arduino.h>
 
 #define EI_ARDUINO_INTERRUPTED_PIN

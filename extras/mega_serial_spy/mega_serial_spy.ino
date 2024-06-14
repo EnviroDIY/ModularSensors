@@ -1,3 +1,9 @@
+/** =========================================================================
+ * @file mega_serial_spy.ino
+ * @brief Testing sketch to run on an Arduino Mega to print all output from
+ * connected serial ports to the terminal.
+ * ======================================================================= */
+
 #include <Arduino.h>
 
 void changeBauds(void) {
