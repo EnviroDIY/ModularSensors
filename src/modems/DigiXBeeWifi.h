@@ -55,9 +55,6 @@
 #define MS_DEBUGGING_DEEP "DigiXBeeWifi"
 #endif
 
-/** @ingroup modem_digi_wifi */
-/**@{*/
-
 /**
  * @brief The modem type for the underlying TinyGSM library.
  */
@@ -80,11 +77,21 @@
 #include <StreamDebugger.h>
 #endif
 
+/** @ingroup modem_digi_wifi */
+/**@{*/
+
+/**
+ * @anchor modem_digi_wifi_config
+ * @name Configuration Defines
+ * Defines to configure if and when to reset the WiFi XBee
+ */
+/**@{*/
 /**
  * @brief This causes the WiFi XBee to reset after this number of transmission
  * attempts
  */
 #define XBEE_RESET_THRESHOLD 4
+/**@}*/
 
 /**
  * @brief The class for the [Digi XBee](@ref modem_digi)

@@ -70,9 +70,6 @@
 #define MS_DEBUGGING_STD "QuectelBG96"
 #endif
 
-/** @ingroup modem_bg96 */
-/**@{*/
-
 /**
  * @brief The modem type for the underlying TinyGSM library.
  */
@@ -84,7 +81,25 @@
 #define TINY_GSM_RX_BUFFER 64
 #endif
 
+// Included Dependencies
+#include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
+#include "TinyGsmClient.h"
+#include "LoggerModem.h"
 
+#ifdef MS_QUECTELBG96_DEBUG_DEEP
+#include <StreamDebugger.h>
+#endif
+
+/** @ingroup modem_bg96 */
+/**@{*/
+
+/**
+ * @anchor modem_bg96_pins_timing
+ * @name Modem Pin Settings and Timing
+ * The timing and pin level settings for a Quectel BG96
+ */
+/**@{*/
 /**
  * @brief The loggerModem::_statusLevel.
  *
@@ -148,17 +163,7 @@
  * Documentation for the BG96 says to allow >2s for clean shutdown.
  */
 #define BG96_DISCONNECT_TIME_MS 5000L
-
-// Included Dependencies
-#include "ModSensorDebugger.h"
-#undef MS_DEBUGGING_STD
-#include "TinyGsmClient.h"
-#include "LoggerModem.h"
-
-#ifdef MS_QUECTELBG96_DEBUG_DEEP
-#include <StreamDebugger.h>
-#endif
-
+/**@}*/
 
 /**
  * @brief The loggerModem subclass for Dragino, Nimbelink, or any other module

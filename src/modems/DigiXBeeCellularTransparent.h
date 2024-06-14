@@ -81,9 +81,6 @@
 #define MS_DEBUGGING_STD "DigiXBeeCellularTransparent"
 #endif
 
-/** @ingroup modem_digi_cellular */
-/**@{*/
-
 /**
  * @brief The modem type for the underlying TinyGSM library.
  */
@@ -105,6 +102,9 @@
 #ifdef MS_DIGIXBEECELLULARTRANSPARENT_DEBUG_DEEP
 #include <StreamDebugger.h>
 #endif
+
+/** @ingroup modem_digi_cellular */
+/**@{*/
 
 /**
  * @brief The class for any of

@@ -74,9 +74,6 @@
 #define MS_DEBUGGING_STD "DigiXBeeLTEBypass"
 #endif
 
-/** @ingroup modem_digi_lte_bypass */
-/**@{*/
-
 /**
  * @brief The modem type for the underlying TinyGSM library.
  */
@@ -98,6 +95,9 @@
 #ifdef MS_DIGIXBEELTEBYPASS_DEBUG_DEEP
 #include <StreamDebugger.h>
 #endif
+
+/** @ingroup modem_digi_lte_bypass */
+/**@{*/
 
 /**
  * @brief The class for any of Digi's cellular LTE-M [XBee3](@ref modem_digi)

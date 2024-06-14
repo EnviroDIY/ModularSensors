@@ -59,9 +59,6 @@
 #define MS_DEBUGGING_STD "SIMComSIM7000"
 #endif
 
-/** @ingroup modem_sim7000 */
-/**@{*/
-
 /**
  * @brief The modem type for the underlying TinyGSM library.
  */
@@ -73,7 +70,25 @@
 #define TINY_GSM_RX_BUFFER 64
 #endif
 
+// Included Dependencies
+#include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
+#include "TinyGsmClient.h"
+#include "LoggerModem.h"
 
+#ifdef MS_SIMCOMSIM7000_DEBUG_DEEP
+#include <StreamDebugger.h>
+#endif
+
+/** @ingroup modem_sim7000 */
+/**@{*/
+
+/**
+ * @anchor modem_sim7000_pins_timing
+ * @name Modem Pin Settings and Timing
+ * The timing and pin level settings for a SIMCom SIM7000
+ */
+/**@{*/
 /**
  * @brief The loggerModem::_statusLevel.
  *
@@ -139,17 +154,7 @@
  * SIM7000 power down (gracefully) takes 1.8-6.9 sec.
  */
 #define SIM7000_DISCONNECT_TIME_MS 7000L
-
-// Included Dependencies
-#include "ModSensorDebugger.h"
-#undef MS_DEBUGGING_STD
-#include "TinyGsmClient.h"
-#include "LoggerModem.h"
-
-#ifdef MS_SIMCOMSIM7000_DEBUG_DEEP
-#include <StreamDebugger.h>
-#endif
-
+/**@}*/
 
 /**
  * @brief The loggerModem subclass for Botletics, And1, and other modules based

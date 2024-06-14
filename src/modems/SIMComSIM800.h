@@ -63,9 +63,6 @@
 #define MS_DEBUGGING_STD "SIMComSIM800"
 #endif
 
-/** @ingroup modem_sim800 */
-/**@{*/
-
 /**
  * @brief The modem type for the underlying TinyGSM library.
  */
@@ -77,7 +74,25 @@
 #define TINY_GSM_RX_BUFFER 64
 #endif
 
+// Included Dependencies
+#include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
+#include "TinyGsmClient.h"
+#include "LoggerModem.h"
 
+#ifdef MS_SIMCOMSIM800_DEBUG_DEEP
+#include <StreamDebugger.h>
+#endif
+
+/** @ingroup modem_sim800 */
+/**@{*/
+
+/**
+ * @anchor modem_sim800_pins_timing
+ * @name Modem Pin Settings and Timing
+ * The timing and pin level settings for a SIMCom SIM800
+ */
+/**@{*/
 /**
  * @brief The loggerModem::_statusLevel.
  *
@@ -141,17 +156,7 @@
  * shutdown in case it is not monitored.
  */
 #define SIM800_DISCONNECT_TIME_MS 15000L
-
-// Included Dependencies
-#include "ModSensorDebugger.h"
-#undef MS_DEBUGGING_STD
-#include "TinyGsmClient.h"
-#include "LoggerModem.h"
-
-#ifdef MS_SIMCOMSIM800_DEBUG_DEEP
-#include <StreamDebugger.h>
-#endif
-
+/**@}*/
 
 /**
  * @brief The loggerModem subclass for the Adafruit Fona 2G, the Sodaq GPRSBeeR4
