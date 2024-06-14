@@ -1,0 +1,44 @@
+/**
+ * @example{lineno} powerOn.ino
+ * @brief Testing sketch that simply turns on power to the sensors on the Mayfly.
+ */
+/**
+ * @example{lineno} oneWireSearch.ino
+ * @brief Testing sketch to scan for 1-Wire devices + code snippet generator
+ */
+/**
+ * @example{lineno} i2c_scanner.ino
+ * @brief Testing sketch to scan for attached I2C devices
+ */
+/**
+ * @example{lineno} i2c_warmUp.ino
+ * @brief Testing sketch to see how long an attached I2C device takes to begin to respond to commands.
+ */
+/**
+ * @example{lineno} interrupt_counter.ino
+ * @brief Testing sketch counting pin change interrupts.
+ */
+/**
+ * @example{lineno} resetBee.ino
+ * @brief Testing sketch to fully reset an XBee
+ */
+/**
+ * @example{lineno} LTExBee_FirstConnection.ino
+ * @brief Testing sketch to set up a never-previously-connected LTE XBee running in standard (transparent) mode.
+ */
+/**
+ * @example{lineno} LTExBee_FirstConnectionBypass.ino
+ * @brief Testing sketch to set up a never-previously-connected LTE XBee running in bypass mode.
+ */
+/**
+ * @example{lineno} mega_serial_spy.ino
+ * @brief Testing sketch to run on an Arduino Mega to print all output from connected serial ports to the terminal.
+ */
+/**
+ * @example{lineno} sdi12_address_change.ino
+ * @brief Copy of SDI-12 Example B: Changing the Address of your SDI-12 Sensor
+ */
+/**
+ * @example{lineno} Stream_Debug.ino
+ * @brief Testing sketch to run StreamDebugger to copy text from one serial output to another.
+ */

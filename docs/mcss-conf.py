@@ -45,31 +45,66 @@ LINKS_NAVBAR1 = [
                 #     ),
                 # ],
             ),
-            ("Library Dependencies", "page_library_dependencies",),
-            ("Physical Dependencies", "page_physical_dependencies",),
-            ("Terminology", "page_library_terminology",),
-            ("Other Sensor and Modem Notes", "page_other_notes",),
+            (
+                "Library Dependencies",
+                "page_library_dependencies",
+            ),
+            (
+                "Physical Dependencies",
+                "page_physical_dependencies",
+            ),
+            (
+                "Terminology",
+                "page_library_terminology",
+            ),
+            (
+                "Other Sensor and Modem Notes",
+                "page_other_notes",
+            ),
         ],
     ),
     (
         "FAQs",
         "page_faq",
         [
-            ("Processor Compatibility", "page_processor_compatibility",),
-            ("Arduino Streams and Software Serial", "page_arduino_streams",),
-            ("Power Draw over Data Lines", "page_power_parasites",),
+            (
+                "Processor Compatibility",
+                "page_processor_compatibility",
+            ),
+            (
+                "Arduino Streams and Software Serial",
+                "page_arduino_streams",
+            ),
+            (
+                "Power Draw over Data Lines",
+                "page_power_parasites",
+            ),
             ("Decreasing Memory Footprint", "page_memory_use"),
-            ("In-Library Debugging", "page_code_debugging",),
-            ("For Developers", "page_for_developers",),
+            (
+                "In-Library Debugging",
+                "page_code_debugging",
+            ),
+            (
+                "For Developers",
+                "page_for_developers",
+            ),
         ],
     ),
     ("Modules", "modules", []),
-    ("Classes", "annotated", [],),
-    ("Source Files", "files", [],),
+    (
+        "Classes",
+        "annotated",
+        [],
+    ),
+    (
+        "Source Files",
+        "files",
+        [],
+    ),
     (
         "Examples",
         "page_the_examples",
-        [],
+        [("Other Helper Sketches", "page_extra_helper_sketches")],
         # [
         #     (
         #         "Basic Functionality",
@@ -115,7 +150,11 @@ LINKS_NAVBAR1 = [
         #     ),
         # ],
     ),
-    ("More", "pages", [],),
+    (
+        "More",
+        "pages",
+        [],
+    ),
 ]
 LINKS_NAVBAR2 = []
 VERSION_LABELS = True
@@ -124,6 +163,7 @@ CLASS_INDEX_EXPAND_LEVELS = 2
 STYLESHEETS = [
     "css/m-EnviroDIY+documentation.compiled.css",
 ]
+
 EXTRA_FILES = ["gp-desktop-logo.png", "gp-mobile-logo.png", "gp-scrolling-logo.png"]
 DESKTOP_LOGO = "gp-desktop-logo.png"
 MOBILE_LOGO = "gp-mobile-logo.png"

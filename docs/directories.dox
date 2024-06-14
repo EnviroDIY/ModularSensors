@@ -1,0 +1,25 @@
+/**
+ * @dir docs
+ *
+ * @brief Contains extra documentation and files to help build the documentation
+ */
+/**
+ * @dir docs/FAQ
+ *
+ * @brief Contains documentation on frequently asked questions
+ */
+/**
+ * @dir docs/Getting-Started
+ *
+ * @brief Contains documentation for new users
+ */
+/**
+ * @dir examples
+ *
+ * @brief Contains all of the example sketches
+ */
+/**
+ * @dir extras
+ *
+ * @brief Contains extra sketches for testing sensors and sub-libraries
+ */
