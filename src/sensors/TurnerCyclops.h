@@ -145,6 +145,13 @@
 // Sensor Specific Defines
 /** @ingroup sensor_cyclops */
 /**@{*/
+
+/**
+ * @anchor sensor_cyclops_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by Cyclops
+ */
+/**@{*/
 /**
  * @brief Sensor::_numReturnedValues; the Cyclops can report 2 values.
  *
@@ -159,6 +166,17 @@
 /// @brief Sensor::_incCalcValues; the raw voltage is reported, the other
 /// parameter is calculated using the input calibration equation.
 #define CYCLOPS_INC_CALC_VARIABLES 1
+/**@}*/
+
+/**
+ * @anchor sensor_cyclops_config
+ * @name Configuration Defines
+ * Defines to help configure the address of the ADD used by the Cyclops
+ */
+/**@{*/
+/// @brief The assumed address of the ADS1115, 1001 000 (ADDR = GND)
+#define ADS1115_ADDRESS 0x48
+/**@}*/
 
 /**
  * @anchor sensor_cyclops_timing
@@ -245,9 +263,6 @@
 #define CYCLOPS_VOLTAGE_RESOLUTION 4
 #endif
 /**@}*/
-
-/// @brief The assumed address of the ADS1115, 1001 000 (ADDR = GND)
-#define ADS1115_ADDRESS 0x48
 
 /* clang-format off */
 /**

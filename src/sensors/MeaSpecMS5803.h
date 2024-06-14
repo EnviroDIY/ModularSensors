@@ -95,11 +95,17 @@
 /** @ingroup sensor_ms5803 */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_ms5803_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the MS5803
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the MS5803 can report 2 values.
 #define MS5803_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define MS5803_INC_CALC_VARIABLES 0
+/**@}*/
 
 /**
  * @anchor sensor_ms5803_timing

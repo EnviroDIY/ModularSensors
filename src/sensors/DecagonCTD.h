@@ -69,11 +69,17 @@
 /** @ingroup sensor_decagon_ctd */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_decagon_ctd_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by Decagon CTD
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the CTD can report 3 values.
 #define CTD_NUM_VARIABLES 3
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define CTD_INC_CALC_VARIABLES 0
+/**@}*/
 
 /**
  * @anchor sensor_decagon_ctd_timing

@@ -80,11 +80,20 @@
 // Included Dependencies
 #include "sensors/SDI12Sensors.h"
 
-// Sensor Specific Defines
 /** @ingroup sensor_insitu_troll */
+/**@{*/
+
+/**
+ * @anchor sensor_insitu_troll_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the TROLL 500
+ */
 /**@{*/
 /// @brief Sensor::_numReturnedValues; the TROLL 500 can report 3 values.
 #define ITROLLA_NUM_VARIABLES 3
+/// @brief Sensor::_incCalcValues; we don't calculate any additional values.
+#define ITROLLA_INC_CALC_VARIABLES 0
+/**@}*/
 
 /**
  * @anchor sensor_insitu_troll_timing

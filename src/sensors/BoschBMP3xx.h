@@ -149,12 +149,31 @@
 /** @ingroup sensor_bmp3xx */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_bmp3xx_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by Bosch BMP3xx
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the BMP3xx can report 3 values.
 #define BMP3XX_NUM_VARIABLES 3
 /// @brief Sensor::_incCalcValues; altitude is calculted within the Adafruit
 /// library.
 #define BMP3XX_INC_CALC_VARIABLES 1
+/**@}*/
+
+/**
+ * @anchor sensor_bme3xx_config
+ * @name Configuration Defines
+ * Defines to set the calibration of the calculated base pressure used to
+ * calculate altitude by the BME3xx.
+ */
+/**@{*/
+#ifndef SEALEVELPRESSURE_HPA || defined(DOXYGEN)
+/// The atmospheric pressure at sea level
+#define SEALEVELPRESSURE_HPA (1013.25)
+#endif
+/**@}*/
 
 /**
  * @anchor sensor_bmp3xx_timing
@@ -302,11 +321,6 @@
 /// @brief Default variable short code; "BoschBMP3xxAltitude"
 #define BMP3XX_ALTITUDE_DEFAULT_CODE "BoschBMP3xxAltitude"
 /**@}*/
-
-/// The atmospheric pressure at sea level
-#ifndef SEALEVELPRESSURE_HPA
-#define SEALEVELPRESSURE_HPA (1013.25)
-#endif
 
 /* clang-format off */
 /**

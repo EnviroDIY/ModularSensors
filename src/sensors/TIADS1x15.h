@@ -156,11 +156,27 @@
 /** @ingroup sensor_ads1x15 */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_ads1x15_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by ADS1x15
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the ADS1115 can report 1 value.
 #define TIADS1X15_NUM_VARIABLES 1
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define TIADS1X15_INC_CALC_VARIABLES 0
+/**@}*/
+
+/**
+ * @anchor sensor_ads1x15_config
+ * @name Configuration Defines
+ * Defines to help configure the address of the ADD
+ */
+/**@{*/
+/// @brief The assumed address of the ADS1115, 1001 000 (ADDR = GND)
+#define ADS1115_ADDRESS 0x48
+/**@}*/
 
 /**
  * @anchor sensor_ads1x15_timing
@@ -233,9 +249,6 @@
 #define TIADS1X15_RESOLUTION 4
 #endif
 /**@}*/
-
-/// @brief The assumed address of the ADS1115, 1001 000 (ADDR = GND)
-#define ADS1115_ADDRESS 0x48
 
 /* clang-format off */
 /**

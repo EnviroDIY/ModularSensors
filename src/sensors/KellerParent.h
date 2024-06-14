@@ -102,12 +102,18 @@
 /** @ingroup keller_group */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor keller_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the RDO PRO-X
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the Keller level sensors can report 3
 /// values.
 #define KELLER_NUM_VARIABLES 3
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define KELLER_INC_CALC_VARIABLES 0
+/**@}*/
 
 /**
  * @anchor keller_pressure

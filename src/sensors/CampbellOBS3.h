@@ -82,8 +82,14 @@
 #include "VariableBase.h"
 #include "SensorBase.h"
 
-// Sensor Specific Defines
 /** @ingroup sensor_obs3 */
+/**@{*/
+
+/**
+ * @anchor sensor_obs3_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by OBS3
+ */
 /**@{*/
 /**
  * @brief Sensor::_numReturnedValues; the OBS3 can report 2 values.
@@ -97,6 +103,17 @@
 /// @brief Sensor::_incCalcValues; turbidity is calculated from raw voltage
 /// using the input calibration equation.
 #define OBS3_INC_CALC_VARIABLES 1
+/**@}*/
+
+/**
+ * @anchor sensor_obs3_config
+ * @name Configuration Defines
+ * Defines to help configure the address of the ADD used by the Campbell OBS3+
+ */
+/**@{*/
+/// @brief The assumed address of the ADS1115, 1001 000 (ADDR = GND)
+#define ADS1115_ADDRESS 0x48
+/**@}*/
 
 /**
  * @anchor sensor_obs3_timing
@@ -204,9 +221,6 @@
 #define OBS3_VOLTAGE_RESOLUTION 4
 #endif
 /**@}*/
-
-/// @brief The assumed address of the ADS1115, 1001 000 (ADDR = GND)
-#define ADS1115_ADDRESS 0x48
 
 /* clang-format off */
 /**

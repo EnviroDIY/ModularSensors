@@ -54,7 +54,6 @@
 // Included Dependencies
 #include "sensors/KellerParent.h"
 
-// Sensor Specific Defines
 /** @ingroup sensor_acculevel */
 /**@{*/
 

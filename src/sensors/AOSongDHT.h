@@ -95,11 +95,17 @@ static const uint8_t AM2301{21}; /**< AM2301 */
 /** @ingroup sensor_dht */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_dht_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by an AOSong DHT
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the DHT can report 3 values.
 #define DHT_NUM_VARIABLES 3
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define DHT_INC_CALC_VARIABLES 0
+/**@}*/
 
 /**
  * @anchor sensor_dht_timing

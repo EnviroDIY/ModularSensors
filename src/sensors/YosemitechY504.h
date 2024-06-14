@@ -60,12 +60,18 @@
 /** @ingroup sensor_y504 */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_y504_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by a Yosemitech Y504
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the Y504 can report 3 values.
 #define Y504_NUM_VARIABLES 3
 /// @brief Sensor::_incCalcValues; we calculated DO concentration from the
 /// percent saturation and the temperature.
 #define Y504_INC_CALC_VARIABLES 1
+/**@}*/
 
 /**
  * @anchor sensor_y504_timing
