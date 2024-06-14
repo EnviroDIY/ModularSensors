@@ -58,9 +58,6 @@
 #define MS_DEBUGGING_STD "DigiXBee3GBypass"
 #endif
 
-/** @ingroup modem_digi_3g_bypass */
-/**@{*/
-
 /**
  * @brief The modem type for the underlying TinyGSM library.
  */
@@ -83,6 +80,8 @@
 #include <StreamDebugger.h>
 #endif
 
+/** @ingroup modem_digi_3g_bypass */
+/**@{*/
 
 /**
  * @brief The loggerModem subclass for [Digi Cellular XBee's](@ref modem_digi)

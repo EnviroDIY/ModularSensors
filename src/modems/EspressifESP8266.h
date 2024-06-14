@@ -78,9 +78,6 @@
 #define MS_DEBUGGING_STD "EspressifESP8266"
 #endif
 
-/** @ingroup modem_esp8266 */
-/**@{*/
-
 /**
  * @brief The modem type for the underlying TinyGSM library.
  */
@@ -92,7 +89,25 @@
 #define TINY_GSM_RX_BUFFER 64
 #endif
 
+// Included Dependencies
+#include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
+#include "TinyGsmClient.h"
+#include "LoggerModem.h"
 
+#ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
+#include <StreamDebugger.h>
+#endif
+
+/** @ingroup modem_esp8266 */
+/**@{*/
+
+/**
+ * @anchor modem_esp8266_pins_timing
+ * @name Modem Pin Settings and Timing
+ * The timing and pin level settings for an ESP8266 (or ESP32)
+ */
+/**@{*/
 /**
  * @brief The loggerModem::_statusLevel.
  *
@@ -179,16 +194,7 @@
  * credentials.
  */
 #define ESP8266_RECONNECT_TIME_MS 2500
-
-// Included Dependencies
-#include "ModSensorDebugger.h"
-#undef MS_DEBUGGING_STD
-#include "TinyGsmClient.h"
-#include "LoggerModem.h"
-
-#ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
-#include <StreamDebugger.h>
-#endif
+/**@}*/
 
 /**
  * @brief The loggerModem subclass for any breakout of the
@@ -278,11 +284,11 @@ class EspressifESP8266 : public loggerModem {
     const char* _ssid;  ///< Internal reference to the WiFi SSID
     const char* _pwd;   ///< Internal reference to the WiFi password
 };
+/**@}*/
 
 /**
- * @brief typedef to avoid confusion for users
+ * @brief Assign EspressifESP32 as type EspressifESP8266 to avoid user confusion
  */
 typedef EspressifESP8266 EspressifESP32;
 
-/**@}*/
 #endif  // SRC_MODEMS_ESPRESSIFESP8266_H_

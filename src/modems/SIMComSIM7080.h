@@ -51,9 +51,6 @@
 #define MS_DEBUGGING_STD "SIMComSIM7080"
 #endif
 
-/** @ingroup modem_sim7080 */
-/**@{*/
-
 /**
  * @brief The modem type for the underlying TinyGSM library.
  */
@@ -65,7 +62,25 @@
 #define TINY_GSM_RX_BUFFER 64
 #endif
 
+// Included Dependencies
+#include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
+#include "TinyGsmClient.h"
+#include "LoggerModem.h"
 
+#ifdef MS_SIMCOMSIM7080_DEBUG_DEEP
+#include <StreamDebugger.h>
+#endif
+
+/** @ingroup modem_sim7080 */
+/**@{*/
+
+/**
+ * @anchor modem_sim7080_pins_timing
+ * @name Modem Pin Settings and Timing
+ * The timing and pin level settings for a SIMCom SIM7080
+ */
+/**@{*/
 /**
  * @brief The loggerModem::_statusLevel.
  *
@@ -134,17 +149,7 @@
  * SIM7080 power down (gracefully) takes 1.8-2 sec.
  */
 #define SIM7080_DISCONNECT_TIME_MS 2000L
-
-// Included Dependencies
-#include "ModSensorDebugger.h"
-#undef MS_DEBUGGING_STD
-#include "TinyGsmClient.h"
-#include "LoggerModem.h"
-
-#ifdef MS_SIMCOMSIM7080_DEBUG_DEEP
-#include <StreamDebugger.h>
-#endif
-
+/**@}*/
 
 /**
  * @brief The loggerModem subclass for modules based on the [SIMCOM
