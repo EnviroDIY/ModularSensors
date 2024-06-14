@@ -6,12 +6,12 @@ This example should *never* be used directly; it is intended to document all pos
 
 To create your own code, I recommend starting from a much simpler targeted example, like the [Logging to MMW](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/logging_to_MMW) example, and then adding to it based on only the parts of this menu example that apply to you.
 
-_______
+___
 
 # Walking Through the Code<!-- {#example_menu_walk} -->
 
 [//]: # ( @note )
-*NOTE:  This walkthrough is intended to be viewed on GitHub pages at https://envirodiy.github.io/ModularSensors/example_menu.html*
+*NOTE:  This walkthrough is intended to be viewed on GitHub pages at <https://envirodiy.github.io/ModularSensors/example_menu.html>*
 
 [//]: # ( @warning )
 WARNING:  This example is long.
@@ -24,139 +24,140 @@ ___
 [//]: # ( @m_footernavigation )
 
 [//]: # ( Start GitHub Only )
-- [Example showing all possible functionality ](#example-showing-all-possible-functionality-)
-- [Walking Through the Code ](#walking-through-the-code-)
-  - [Defines and Includes ](#defines-and-includes-)
-    - [Defines for the Arduino IDE ](#defines-for-the-arduino-ide-)
-    - [Library Includes ](#library-includes-)
-  - [Logger Settings ](#logger-settings-)
-    - [Creating Extra Serial Ports ](#creating-extra-serial-ports-)
-      - [AVR Boards ](#avr-boards-)
-        - [AltSoftSerial ](#altsoftserial-)
-        - [NeoSWSerial ](#neoswserial-)
-        - [SoftwareSerial with External Interrupts ](#softwareserial-with-external-interrupts-)
-        - [Software I2C/Wire ](#software-i2cwire-)
-      - [SAMD Boards ](#samd-boards-)
-    - [Assigning Serial Port Functionality ](#assigning-serial-port-functionality-)
-    - [Logging Options ](#logging-options-)
-  - [Wifi/Cellular Modem Options ](#wificellular-modem-options-)
-    - [Digi XBee Cellular - Transparent Mode ](#digi-xbee-cellular---transparent-mode-)
-    - [Digi XBee3 LTE-M - Bypass Mode ](#digi-xbee3-lte-m---bypass-mode-)
-    - [Digi XBee 3G - Bypass Mode ](#digi-xbee-3g---bypass-mode-)
-    - [Digi XBee S6B Wifi ](#digi-xbee-s6b-wifi-)
-    - [Espressif ESP8266 ](#espressif-esp8266-)
-    - [Quectel BG96 ](#quectel-bg96-)
-    - [Sequans Monarch ](#sequans-monarch-)
-    - [SIMCom SIM800 ](#simcom-sim800-)
-    - [SIMCom SIM7000 ](#simcom-sim7000-)
-    - [SIMCom SIM7080G (EnviroDIY LTE Bee\]) ](#simcom-sim7080g-envirodiy-lte-bee-)
-    - [Sodaq GPRSBee ](#sodaq-gprsbee-)
-    - [u-blox SARA R410M ](#u-blox-sara-r410m-)
-    - [u-blox SARA U201 ](#u-blox-sara-u201-)
-    - [Modem Measured Variables ](#modem-measured-variables-)
-  - [Sensors and Measured Variables ](#sensors-and-measured-variables-)
-    - [The processor as a sensor ](#the-processor-as-a-sensor-)
-    - [Maxim DS3231 RTC as a sensor ](#maxim-ds3231-rtc-as-a-sensor-)
-    - [AOSong AM2315 ](#aosong-am2315-)
-    - [AOSong DHT ](#aosong-dht-)
-    - [Apogee SQ-212 Quantum Light Sensor ](#apogee-sq-212-quantum-light-sensor-)
-    - [Atlas Scientific EZO Circuits ](#atlas-scientific-ezo-circuits-)
-      - [Atlas Scientific EZO-CO2 Embedded NDIR Carbon Dioxide Sensor ](#atlas-scientific-ezo-co2-embedded-ndir-carbon-dioxide-sensor-)
-      - [Atlas Scientific EZO-DO Dissolved Oxygen Sensor ](#atlas-scientific-ezo-do-dissolved-oxygen-sensor-)
-      - [Atlas Scientific EZO-ORP Oxidation/Reduction Potential Sensor ](#atlas-scientific-ezo-orp-oxidationreduction-potential-sensor-)
-      - [Atlas Scientific EZO-pH Sensor ](#atlas-scientific-ezo-ph-sensor-)
-      - [Atlas Scientific EZO-RTD Temperature Sensor ](#atlas-scientific-ezo-rtd-temperature-sensor-)
-      - [Atlas Scientific EZO-EC Conductivity Sensor ](#atlas-scientific-ezo-ec-conductivity-sensor-)
-    - [Bosch BME280 Environmental Sensor ](#bosch-bme280-environmental-sensor-)
-    - [Bosch BMP388 and BMP398 Pressure Sensors ](#bosch-bmp388-and-bmp398-pressure-sensors-)
-      - [Campbell ClariVUE SDI-12 Turbidity Sensor ](#campbell-clarivue-sdi-12-turbidity-sensor-)
-    - [Campbell OBS3+ Analog Turbidity Sensor ](#campbell-obs3-analog-turbidity-sensor-)
-      - [Campbell RainVUE SDI-12 Precipitation Sensor ](#campbell-rainvue-sdi-12-precipitation-sensor-)
-      - [Decagon CTD-10 Conductivity, Temperature, and Depth Sensor ](#decagon-ctd-10-conductivity-temperature-and-depth-sensor-)
-    - [Decagon ES2 Conductivity and Temperature Sensor ](#decagon-es2-conductivity-and-temperature-sensor-)
-      - [Everlight ALS-PT19 Ambient Light Sensor ](#everlight-als-pt19-ambient-light-sensor-)
-    - [External Voltage via TI ADS1x15 ](#external-voltage-via-ti-ads1x15-)
-    - [Freescale Semiconductor MPL115A2 Miniature I2C Digital Barometer ](#freescale-semiconductor-mpl115a2-miniature-i2c-digital-barometer-)
-    - [GroPoint Profile GPLP-8 Eight-Segment Soil Moisture and Temperature Profiling Probe ](#gropoint-profile-gplp-8-eight-segment-soil-moisture-and-temperature-profiling-probe-)
-      - [In-Situ Aqua/Level TROLL Pressure, Temperature, and Depth Sensor ](#in-situ-aqualevel-troll-pressure-temperature-and-depth-sensor-)
-      - [In-Situ RDO PRO-X Rugged Dissolved Oxygen Probe ](#in-situ-rdo-pro-x-rugged-dissolved-oxygen-probe-)
-    - [Keller RS485/Modbus Water Level Sensors ](#keller-rs485modbus-water-level-sensors-)
-      - [Keller Acculevel High Accuracy Submersible Level Transmitter ](#keller-acculevel-high-accuracy-submersible-level-transmitter-)
-      - [Keller Nanolevel Level Transmitter ](#keller-nanolevel-level-transmitter-)
-    - [Maxbotix HRXL Ultrasonic Range Finder ](#maxbotix-hrxl-ultrasonic-range-finder-)
-    - [Maxim DS18 One Wire Temperature Sensor ](#maxim-ds18-one-wire-temperature-sensor-)
-    - [Measurement Specialties MS5803-14BA Pressure Sensor ](#measurement-specialties-ms5803-14ba-pressure-sensor-)
-    - [Meter SDI-12 Sensors ](#meter-sdi-12-sensors-)
-      - [Meter ECH2O Soil Moisture Sensor ](#meter-ech2o-soil-moisture-sensor-)
-      - [Meter Hydros 21 Conductivity, Temperature, and Depth Sensor ](#meter-hydros-21-conductivity-temperature-and-depth-sensor-)
-      - [Meter Teros 11 Soil Moisture Sensor ](#meter-teros-11-soil-moisture-sensor-)
-    - [PaleoTerra Redox Sensors ](#paleoterra-redox-sensors-)
-    - [Trinket-Based Tipping Bucket Rain Gauge ](#trinket-based-tipping-bucket-rain-gauge-)
-      - [Sensirion SHT4X Digital Humidity and Temperature Sensor ](#sensirion-sht4x-digital-humidity-and-temperature-sensor-)
-    - [Northern Widget Tally Event Counter ](#northern-widget-tally-event-counter-)
-    - [TI INA219 High Side Current Sensor ](#ti-ina219-high-side-current-sensor-)
-    - [Turner Cyclops-7F Submersible Fluorometer ](#turner-cyclops-7f-submersible-fluorometer-)
-    - [Analog Electrical Conductivity using the Processor's Analog Pins ](#analog-electrical-conductivity-using-the-processors-analog-pins-)
-      - [VEGA VEGA PULS 21 ](#vega-vega-puls-21-)
-    - [Yosemitech RS485/Modbus Environmental Sensors ](#yosemitech-rs485modbus-environmental-sensors-)
-      - [Yosemitech Y504 Dissolved Oxygen Sensor ](#yosemitech-y504-dissolved-oxygen-sensor-)
-      - [Yosemitech Y510 Turbidity Sensor ](#yosemitech-y510-turbidity-sensor-)
-      - [Yosemitech Y511 Turbidity Sensor with Wiper ](#yosemitech-y511-turbidity-sensor-with-wiper-)
-      - [Yosemitech Y514 Chlorophyll Sensor ](#yosemitech-y514-chlorophyll-sensor-)
-      - [Yosemitech Y520 Conductivity Sensor ](#yosemitech-y520-conductivity-sensor-)
-      - [Yosemitech Y532 pH Sensor ](#yosemitech-y532-ph-sensor-)
-      - [Yosemitech Y533 Oxidation Reduction Potential (ORP) Sensor ](#yosemitech-y533-oxidation-reduction-potential-orp-sensor-)
-      - [Yosemitech Y551 Carbon Oxygen Demand (COD) Sensor with Wiper ](#yosemitech-y551-carbon-oxygen-demand-cod-sensor-with-wiper-)
-      - [Yosemitech Y560 Ammonium Sensor ](#yosemitech-y560-ammonium-sensor-)
-      - [Yosemitech Y700 Pressure Sensor ](#yosemitech-y700-pressure-sensor-)
-      - [Yosemitech Y4000 Multi-Parameter Sonde ](#yosemitech-y4000-multi-parameter-sonde-)
-    - [Zebra Tech D-Opto Dissolved Oxygen Sensor ](#zebra-tech-d-opto-dissolved-oxygen-sensor-)
-  - [Calculated Variables ](#calculated-variables-)
-  - [Creating the array, logger, publishers ](#creating-the-array-logger-publishers-)
-    - [The variable array ](#the-variable-array-)
-      - [Creating Variables within an Array ](#creating-variables-within-an-array-)
-      - [Creating Variables and Pasting UUIDs from MonitorMyWatershed ](#creating-variables-and-pasting-uuids-from-monitormywatershed-)
-      - [Creating Variables within an Array ](#creating-variables-within-an-array--1)
-    - [The Logger Object ](#the-logger-object-)
-    - [Data Publishers ](#data-publishers-)
-      - [Monitor My Watershed ](#monitor-my-watershed-)
-      - [DreamHost ](#dreamhost-)
-      - [ThingSpeak ](#thingspeak-)
-      - [Ubidots ](#ubidots-)
-  - [Extra Working Functions ](#extra-working-functions-)
-  - [Arduino Setup Function ](#arduino-setup-function-)
-    - [Starting the Function ](#starting-the-function-)
-    - [Wait for USB ](#wait-for-usb-)
-    - [Printing a Hello ](#printing-a-hello-)
-    - [Serial Interrupts ](#serial-interrupts-)
-    - [Serial Begin ](#serial-begin-)
-    - [SAMD Pin Peripherals ](#samd-pin-peripherals-)
-    - [Flash the LEDs ](#flash-the-leds-)
-    - [Begin the Logger ](#begin-the-logger-)
-    - [Setup the Sensors ](#setup-the-sensors-)
-    - [Custom Modem Setup ](#custom-modem-setup-)
-      - [ESP8266 Baud Rate ](#esp8266-baud-rate-)
-      - [Skywire Pin Inversions ](#skywire-pin-inversions-)
-      - [SimCom SIM7080G Network Mode ](#simcom-sim7080g-network-mode-)
-      - [XBee Cellular Carrier ](#xbee-cellular-carrier-)
-      - [SARA R4 Cellular Carrier ](#sara-r4-cellular-carrier-)
-    - [Sync the Real Time Clock ](#sync-the-real-time-clock-)
-    - [Setup File on the SD card ](#setup-file-on-the-sd-card-)
-    - [Sleep until the First Data Collection Time ](#sleep-until-the-first-data-collection-time-)
-    - [Setup Complete ](#setup-complete-)
-  - [Arduino Loop Function ](#arduino-loop-function-)
-    - [A Typical Loop ](#a-typical-loop-)
-    - [A Complex Loop ](#a-complex-loop-)
+
+- [Example showing all possible functionality](#example-showing-all-possible-functionality)
+- [Walking Through the Code](#walking-through-the-code)
+  - [Defines and Includes](#defines-and-includes)
+    - [Defines for the Arduino IDE](#defines-for-the-arduino-ide)
+    - [Library Includes](#library-includes)
+  - [Logger Settings](#logger-settings)
+    - [Creating Extra Serial Ports](#creating-extra-serial-ports)
+      - [AVR Boards](#avr-boards)
+        - [AltSoftSerial](#altsoftserial)
+        - [NeoSWSerial](#neoswserial)
+        - [SoftwareSerial with External Interrupts](#softwareserial-with-external-interrupts)
+        - [Software I2C/Wire](#software-i2cwire)
+      - [SAMD Boards](#samd-boards)
+    - [Assigning Serial Port Functionality](#assigning-serial-port-functionality)
+    - [Logging Options](#logging-options)
+  - [Wifi/Cellular Modem Options](#wificellular-modem-options)
+    - [Digi XBee Cellular - Transparent Mode](#digi-xbee-cellular---transparent-mode)
+    - [Digi XBee3 LTE-M - Bypass Mode](#digi-xbee3-lte-m---bypass-mode)
+    - [Digi XBee 3G - Bypass Mode](#digi-xbee-3g---bypass-mode)
+    - [Digi XBee S6B Wifi](#digi-xbee-s6b-wifi)
+    - [Espressif ESP8266](#espressif-esp8266)
+    - [Quectel BG96](#quectel-bg96)
+    - [Sequans Monarch](#sequans-monarch)
+    - [SIMCom SIM800](#simcom-sim800)
+    - [SIMCom SIM7000](#simcom-sim7000)
+    - [SIMCom SIM7080G (EnviroDIY LTE Bee\])](#simcom-sim7080g-envirodiy-lte-bee)
+    - [Sodaq GPRSBee](#sodaq-gprsbee)
+    - [u-blox SARA R410M](#u-blox-sara-r410m)
+    - [u-blox SARA U201](#u-blox-sara-u201)
+    - [Modem Measured Variables](#modem-measured-variables)
+  - [Sensors and Measured Variables](#sensors-and-measured-variables)
+    - [The processor as a sensor](#the-processor-as-a-sensor)
+    - [Maxim DS3231 RTC as a sensor](#maxim-ds3231-rtc-as-a-sensor)
+    - [AOSong AM2315](#aosong-am2315)
+    - [AOSong DHT](#aosong-dht)
+    - [Apogee SQ-212 Quantum Light Sensor](#apogee-sq-212-quantum-light-sensor)
+    - [Atlas Scientific EZO Circuits](#atlas-scientific-ezo-circuits)
+      - [Atlas Scientific EZO-CO2 Embedded NDIR Carbon Dioxide Sensor](#atlas-scientific-ezo-co2-embedded-ndir-carbon-dioxide-sensor)
+      - [Atlas Scientific EZO-DO Dissolved Oxygen Sensor](#atlas-scientific-ezo-do-dissolved-oxygen-sensor)
+      - [Atlas Scientific EZO-ORP Oxidation/Reduction Potential Sensor](#atlas-scientific-ezo-orp-oxidationreduction-potential-sensor)
+      - [Atlas Scientific EZO-pH Sensor](#atlas-scientific-ezo-ph-sensor)
+      - [Atlas Scientific EZO-RTD Temperature Sensor](#atlas-scientific-ezo-rtd-temperature-sensor)
+      - [Atlas Scientific EZO-EC Conductivity Sensor](#atlas-scientific-ezo-ec-conductivity-sensor)
+    - [Bosch BME280 Environmental Sensor](#bosch-bme280-environmental-sensor)
+    - [Bosch BMP388 and BMP398 Pressure Sensors](#bosch-bmp388-and-bmp398-pressure-sensors)
+      - [Campbell ClariVUE SDI-12 Turbidity Sensor](#campbell-clarivue-sdi-12-turbidity-sensor)
+    - [Campbell OBS3+ Analog Turbidity Sensor](#campbell-obs3-analog-turbidity-sensor)
+      - [Campbell RainVUE SDI-12 Precipitation Sensor](#campbell-rainvue-sdi-12-precipitation-sensor)
+      - [Decagon CTD-10 Conductivity, Temperature, and Depth Sensor](#decagon-ctd-10-conductivity-temperature-and-depth-sensor)
+    - [Decagon ES2 Conductivity and Temperature Sensor](#decagon-es2-conductivity-and-temperature-sensor)
+      - [Everlight ALS-PT19 Ambient Light Sensor](#everlight-als-pt19-ambient-light-sensor)
+    - [External Voltage via TI ADS1x15](#external-voltage-via-ti-ads1x15)
+    - [Freescale Semiconductor MPL115A2 Miniature I2C Digital Barometer](#freescale-semiconductor-mpl115a2-miniature-i2c-digital-barometer)
+    - [GroPoint Profile GPLP-8 Eight-Segment Soil Moisture and Temperature Profiling Probe](#gropoint-profile-gplp-8-eight-segment-soil-moisture-and-temperature-profiling-probe)
+      - [In-Situ Aqua/Level TROLL Pressure, Temperature, and Depth Sensor](#in-situ-aqualevel-troll-pressure-temperature-and-depth-sensor)
+      - [In-Situ RDO PRO-X Rugged Dissolved Oxygen Probe](#in-situ-rdo-pro-x-rugged-dissolved-oxygen-probe)
+    - [Keller RS485/Modbus Water Level Sensors](#keller-rs485modbus-water-level-sensors)
+      - [Keller Acculevel High Accuracy Submersible Level Transmitter](#keller-acculevel-high-accuracy-submersible-level-transmitter)
+      - [Keller Nanolevel Level Transmitter](#keller-nanolevel-level-transmitter)
+    - [Maxbotix HRXL Ultrasonic Range Finder](#maxbotix-hrxl-ultrasonic-range-finder)
+    - [Maxim DS18 One Wire Temperature Sensor](#maxim-ds18-one-wire-temperature-sensor)
+    - [Measurement Specialties MS5803-14BA Pressure Sensor](#measurement-specialties-ms5803-14ba-pressure-sensor)
+    - [Meter SDI-12 Sensors](#meter-sdi-12-sensors)
+      - [Meter ECH2O Soil Moisture Sensor](#meter-ech2o-soil-moisture-sensor)
+      - [Meter Hydros 21 Conductivity, Temperature, and Depth Sensor](#meter-hydros-21-conductivity-temperature-and-depth-sensor)
+      - [Meter Teros 11 Soil Moisture Sensor](#meter-teros-11-soil-moisture-sensor)
+    - [PaleoTerra Redox Sensors](#paleoterra-redox-sensors)
+    - [Trinket-Based Tipping Bucket Rain Gauge](#trinket-based-tipping-bucket-rain-gauge)
+      - [Sensirion SHT4X Digital Humidity and Temperature Sensor](#sensirion-sht4x-digital-humidity-and-temperature-sensor)
+    - [Northern Widget Tally Event Counter](#northern-widget-tally-event-counter)
+    - [TI INA219 High Side Current Sensor](#ti-ina219-high-side-current-sensor)
+    - [Turner Cyclops-7F Submersible Fluorometer](#turner-cyclops-7f-submersible-fluorometer)
+    - [Analog Electrical Conductivity using the Processor's Analog Pins](#analog-electrical-conductivity-using-the-processors-analog-pins)
+      - [VEGA VEGA PULS 21](#vega-vega-puls-21)
+    - [Yosemitech RS485/Modbus Environmental Sensors](#yosemitech-rs485modbus-environmental-sensors)
+      - [Yosemitech Y504 Dissolved Oxygen Sensor](#yosemitech-y504-dissolved-oxygen-sensor)
+      - [Yosemitech Y510 Turbidity Sensor](#yosemitech-y510-turbidity-sensor)
+      - [Yosemitech Y511 Turbidity Sensor with Wiper](#yosemitech-y511-turbidity-sensor-with-wiper)
+      - [Yosemitech Y514 Chlorophyll Sensor](#yosemitech-y514-chlorophyll-sensor)
+      - [Yosemitech Y520 Conductivity Sensor](#yosemitech-y520-conductivity-sensor)
+      - [Yosemitech Y532 pH Sensor](#yosemitech-y532-ph-sensor)
+      - [Yosemitech Y533 Oxidation Reduction Potential (ORP) Sensor](#yosemitech-y533-oxidation-reduction-potential-orp-sensor)
+      - [Yosemitech Y551 Carbon Oxygen Demand (COD) Sensor with Wiper](#yosemitech-y551-carbon-oxygen-demand-cod-sensor-with-wiper)
+      - [Yosemitech Y560 Ammonium Sensor](#yosemitech-y560-ammonium-sensor)
+      - [Yosemitech Y700 Pressure Sensor](#yosemitech-y700-pressure-sensor)
+      - [Yosemitech Y4000 Multi-Parameter Sonde](#yosemitech-y4000-multi-parameter-sonde)
+    - [Zebra Tech D-Opto Dissolved Oxygen Sensor](#zebra-tech-d-opto-dissolved-oxygen-sensor)
+  - [Calculated Variables](#calculated-variables)
+  - [Creating the array, logger, publishers](#creating-the-array-logger-publishers)
+    - [The variable array](#the-variable-array)
+      - [Creating Variables within an Array](#creating-variables-within-an-array)
+      - [Creating Variables and Pasting UUIDs from MonitorMyWatershed](#creating-variables-and-pasting-uuids-from-monitormywatershed)
+      - [Creating Variables within an Array](#creating-variables-within-an-array-1)
+    - [The Logger Object](#the-logger-object)
+    - [Data Publishers](#data-publishers)
+      - [Monitor My Watershed](#monitor-my-watershed)
+      - [DreamHost](#dreamhost)
+      - [ThingSpeak](#thingspeak)
+      - [Ubidots](#ubidots)
+  - [Extra Working Functions](#extra-working-functions)
+  - [Arduino Setup Function](#arduino-setup-function)
+    - [Starting the Function](#starting-the-function)
+    - [Wait for USB](#wait-for-usb)
+    - [Printing a Hello](#printing-a-hello)
+    - [Serial Interrupts](#serial-interrupts)
+    - [Serial Begin](#serial-begin)
+    - [SAMD Pin Peripherals](#samd-pin-peripherals)
+    - [Flash the LEDs](#flash-the-leds)
+    - [Begin the Logger](#begin-the-logger)
+    - [Setup the Sensors](#setup-the-sensors)
+    - [Custom Modem Setup](#custom-modem-setup)
+      - [ESP8266 Baud Rate](#esp8266-baud-rate)
+      - [Skywire Pin Inversions](#skywire-pin-inversions)
+      - [SimCom SIM7080G Network Mode](#simcom-sim7080g-network-mode)
+      - [XBee Cellular Carrier](#xbee-cellular-carrier)
+      - [SARA R4 Cellular Carrier](#sara-r4-cellular-carrier)
+    - [Sync the Real Time Clock](#sync-the-real-time-clock)
+    - [Setup File on the SD card](#setup-file-on-the-sd-card)
+    - [Sleep until the First Data Collection Time](#sleep-until-the-first-data-collection-time)
+    - [Setup Complete](#setup-complete)
+  - [Arduino Loop Function](#arduino-loop-function)
+    - [A Typical Loop](#a-typical-loop)
+    - [A Complex Loop](#a-complex-loop)
 
 [//]: # ( End GitHub Only )
-
 
 ## Defines and Includes<!-- {#menu_walk_defines_includes} -->
 
 ### Defines for the Arduino IDE<!-- {#menu_walk_defines} -->
+
 The top few lines of the examples set defines of buffer sizes and yields needed for the Arduino IDE.
 That IDE read any defines within the top few lines and applies them as build flags for the processor.
-This is _not_ standard behavior for C++ (which is what Arduino code really is) - this is a unique aspect of the Arduino IDE.
+This is *not* standard behavior for C++ (which is what Arduino code really is) - this is a unique aspect of the Arduino IDE.
 
 [//]: # ( @menusnip{defines} )
 
@@ -171,6 +172,7 @@ build_flags =
     -DTINY_GSM_RX_BUFFER=64
     -DTINY_GSM_YIELD_MS=2
 ```
+
 ___
 
 ### Library Includes<!-- {#menu_walk_includes} -->
@@ -194,14 +196,13 @@ Among these are any sensors using RS232, RS485, RS422.
 Generally each serial variant (or sometimes each sensor) needs a dedicated serial "port" - its own connection to the processor.
 Most processors have built in dedicated wires for serial communication - "Hardware" serial.
 See the page on [Arduino streams](@ref page_arduino_streams) for much more detail about serial connections with Arduino processors.
-_______
+___
 
 #### AVR Boards<!-- {#menu_walk_avr_serial_ports} -->
 
-Most Arduino AVR style boards have very few (ie, one, or none) dedicated serial ports _available_ after counting out the programming serial port.
+Most Arduino AVR style boards have very few (ie, one, or none) dedicated serial ports *available* after counting out the programming serial port.
 So to connect anything else, we need to try to emulate the processor serial functionality with a software library.
 This example shows three possible libraries that can be used to emulate a serial port on an AVR board.
-
 
 ##### AltSoftSerial<!-- {#menu_walk_altsoftserial} -->
 
@@ -211,7 +212,6 @@ Not all AVR boards are supported by AltSoftSerial.
 See the [processor compatibility](@ref page_processor_compatibility) page for more information on which pins are used on supported boards.
 
 [//]: # ( @menusnip{altsoftserial} )
-
 
 ##### NeoSWSerial<!-- {#menu_walk_neoswserial} -->
 
@@ -224,7 +224,6 @@ Not all AVR boards are supported by NeoSWSerial.
 [//]: # ( @menusnip{neoswserial} )
 
 When using NeoSWSerial we will also have to actually set the data receiving (Rx) pin modes for interrupt in the [setup function](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_setup_serial_interrupts).
-
 
 ##### SoftwareSerial with External Interrupts<!-- {#menu_walk_softwareserial} -->
 
@@ -241,7 +240,6 @@ If you only want to use the serial line for incoming or outgoing data, set the o
 
 When using SoftwareSerial with External Interrupts we will also have to actually set the data receiving (Rx) pin modes for interrupt in the [setup function](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_setup_serial_interrupts).
 
-
 ##### Software I2C/Wire<!-- {#menu_walk_softwarewire} -->
 
 This creates a software I2C (wire) instance that can be shared between multiple sensors.
@@ -249,11 +247,11 @@ Only Testato's [SoftwareWire](https://github.com/Testato/SoftwareWire) library i
 
 [//]: # ( @menusnip{softwarewire} )
 
----
+___
 
 #### SAMD Boards<!-- {#menu_walk_samd_serial_ports} -->
 
-The SAMD21 supports up to 6 _hardware_ serial ports, which is _awesome_.
+The SAMD21 supports up to 6 *hardware* serial ports, which is *awesome*.
 But, the Arduino core doesn't make use of all of them, so we have to assign them ourselves.
 
 This section of code assigns SERCOM's 1 and 2 to act as Serial2 and Serial3 on pins 10/11 and 5/2 respectively.
@@ -264,10 +262,9 @@ These pin selections are based on the Adafruit Feather M0.
 In addition to creating the extra SERCOM ports here, the pins must be set up as the proper pin peripherals after the serial ports are begun.
 This is shown in the [SAMD Pin Peripherals section](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_setup_pin_periph) of the setup function.
 
+NOTE:  The SAMD51 board has an amazing *8* available SERCOM's, but I do not have any exmple code for using them.
 
-NOTE:  The SAMD51 board has an amazing _8_ available SERCOM's, but I do not have any exmple code for using them.
-
----
+___
 
 ### Assigning Serial Port Functionality<!-- {#menu_walk_assign_ports_sw} -->
 
@@ -281,7 +278,7 @@ Depending on how you rank the importance of each component, you can adjust these
 
 [//]: # ( @menusnip{assign_ports_sw} )
 
----
+___
 
 ### Logging Options<!-- {#menu_walk_logging_options} -->
 
@@ -292,11 +289,10 @@ This includes setting the time zone (daylight savings time is **NOT** applied) a
 
 ___
 
-
 ## Wifi/Cellular Modem Options<!-- {#menu_walk_modem_settings} -->
 
 This modem section is very lengthy because it contains the code with the constructor for every possible supported modem module.
-Do _NOT_ try to use more than one modem at a time - it will _NOT_ work.
+Do *NOT* try to use more than one modem at a time - it will *NOT* work.
 
 To create any of the modems, we follow a similar pattern:
 
@@ -313,12 +309,12 @@ All the modems also need some sort of network credentials for internet access.
 For WiFi modems, you need the network name and password (assuming WPA2).
 For cellular models, you will need the APN assigned to you by the carrier you bought your SIM card from.
 
-
 ### Digi XBee Cellular - Transparent Mode<!-- {#menu_walk_digi_xbee_cellular_transparent} -->
 
-This is the code to use for _any_ of Digi's cellular XBee or XBee3 modules.
+This is the code to use for *any* of Digi's cellular XBee or XBee3 modules.
 All of them can be implented as a DigiXBeeCellularTransparent object - a subclass of DigiXBee and loggerModem.
 To create a DigiXBeeCellularTransparent object we need to know
+
 - the serial object name,
 - the MCU pin controlling modem power,
 - the MCU pin connected to the status pin,
@@ -339,11 +335,11 @@ Depending on your cellular carrier, it is best to select the proper carrier prof
 Setting these helps the modem to connect to network faster.
 This is shows in the [XBee Cellular Carrier](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_setup_xbeec_carrier) chunk of the setup function.
 
-
 ### Digi XBee3 LTE-M - Bypass Mode<!-- {#menu_walk_digi_xbee_lte_bypass} -->
 
 This code is for Digi's LTE-M XBee3 based on the u-blox SARA R410M - used in bypass mode.
 To create a DigiXBeeLTEBypass object we need to know
+
 - the serial object name,
 - the MCU pin controlling modem power,
 - the MCU pin connected to the status pin,
@@ -361,11 +357,11 @@ Depending on your cellular carrier, it is best to select the proper carrier prof
 Setting these helps the modem to connect to network faster.
 This is shows in the [SARA R4 Cellular Carrier](@ref setup_r4_carrrier) chunk of the setup function.
 
-
 ### Digi XBee 3G - Bypass Mode<!-- {#menu_walk_digi_xbee_3g_bypass} -->
 
 This code is for Digi's 3G/2G XBee based on the u-blox SARA U201 - used in bypass mode.
 To create a DigiXBee3GBypass object we need to know
+
 - the serial object name,
 - the MCU pin controlling modem power,
 - the MCU pin connected to the status pin,
@@ -383,6 +379,7 @@ A helpful table detailing the pins to use with the EnviroDIY Mayfly is available
 
 This code is for the Digi's S6B wifi module.
 To create a DigiXBeeWifi object we need to know
+
 - the serial object name,
 - the MCU pin controlling modem power,
 - the MCU pin connected to the status pin,
@@ -397,11 +394,11 @@ A helpful table detailing the pins to use with the EnviroDIY Mayfly is available
 
 [//]: # ( @menusnip{digi_xbee_wifi} )
 
-
 ### Espressif ESP8266<!-- {#menu_walk_espressif_esp8266} -->
 
 This code is for the Espressif ESP8266 or ESP32 operating with "AT" firmware.
 To create a EspressifESP8266 object we need to know
+
 - the serial object name,
 - the MCU pin controlling modem power,
 - the reset pin (MCU pin connected to the ESP's `RSTB/DIO16`),
@@ -413,13 +410,13 @@ Pins that do not apply should be set as -1.
 [//]: # ( @menusnip{espressif_esp8266} )
 
 Because the ESP8266's default baud rate is too fast for an 8MHz board like the Mayfly, to use it you need to drop the baud rate down for sucessful communication.
-You can set the slower baud rate using some external method, or useing the code from the ESP8266 Baud Rate(https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_setup_esp) part of the setup function below.
-
+You can set the slower baud rate using some external method, or useing the code from the ESP8266 Baud Rate(<https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_setup_esp>) part of the setup function below.
 
 ### Quectel BG96<!-- {#menu_walk_quectel_bg96} -->
 
 This code is for the Dragino, Nimbelink or other boards based on the Quectel BG96.
 To create a QuectelBG96 object we need to know
+
 - the serial object name,
 - the MCU pin controlling modem power,
 - the MCU pin connected to the `STATUS` pin,
@@ -434,11 +431,11 @@ Pins that do not apply should be set as -1.
 If you are interfacing with a Nimbelink Skywire board via the Skywire development board, you also need to handle the fact that the development board reverses the levels of the status, wake, and reset pins.
 Code to invert the pin levels is in the [Skywire Pin Inversions](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_setup_skywire) part of the setup function below.
 
-
 ### Sequans Monarch<!-- {#menu_walk_sequans_monarch} -->
 
 This code is for the Nimbelink LTE-M Verizon/Sequans or other boards based on the Sequans Monarch series SoC.
 To create a SequansMonarch object we need to know
+
 - the serial object name,
 - the MCU pin controlling modem power,
 - the MCU pin connected to either the `GPIO3/STATUS_LED` or `POWER_MON` pin,
@@ -454,14 +451,14 @@ If you are interfacing with a Nimbelink Skywire board via the Skywire developmen
 Code to invert the pin levels is in the [Skywire Pin Inversions](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_setup_skywire) part of the setup function below.
 
 The default baud rate of the SVZM20 is much too fast for almost all Arduino boards.
-_Before_ attampting to connect a SVZM20 to an Arduino you should connect it to your computer and use AT commands to decrease the baud rate.
+*Before* attampting to connect a SVZM20 to an Arduino you should connect it to your computer and use AT commands to decrease the baud rate.
 The proper command to decrease the baud rate to 9600 (8N1) is: `AT+IPR=9600`.
-
 
 ### SIMCom SIM800<!-- {#menu_walk_sim_com_sim800} -->
 
 This code is for a SIMCom SIM800 or SIM900 or one of their many variants, including the Adafruit Fona and the Sodaq 2GBee R4.
 To create a SIMComSIM800 object we need to know
+
 - the serial object name,
 - the MCU pin controlling modem power,
 - the MCU pin connected to the `STATUS` pin,
@@ -471,16 +468,16 @@ To create a SIMComSIM800 object we need to know
 
 Pins that do not apply should be set as -1.
 
-_NOTE:_  This is NOT the correct form for a Sodaq 2GBee R6 or R7.
+*NOTE:*  This is NOT the correct form for a Sodaq 2GBee R6 or R7.
 See the  section for a 2GBee R6.
 
 [//]: # ( @menusnip{sim_com_sim800} )
-
 
 ### SIMCom SIM7000<!-- {#menu_walk_sim_com_sim7000} -->
 
 This code is for a SIMCom SIM7000 or one of its variants.
 To create a SIMComSIM7000 object we need to know
+
 - the serial object name,
 - the MCU pin controlling modem power,
 - the MCU pin connected to the `STATUS` pin,
@@ -492,12 +489,12 @@ Pins that do not apply should be set as -1.
 
 [//]: # ( @menusnip{sim_com_sim7000} )
 
-
 ### SIMCom SIM7080G (EnviroDIY LTE Bee])<!-- {#menu_walk_sim_com_sim7080} -->
 
 This code is for a SIMCom SIM7080G or one of its variants, including the [EnviroDIY LTE Bee](https://www.envirodiy.org/product/envirodiy-lte-bee-pack-of-5/).
 
 To create a SIMComSIM7080 object we need to know
+
 - the serial object name,
 - the MCU pin controlling modem power,
 - the MCU pin connected to the `STATUS` pin,
@@ -509,13 +506,13 @@ A helpful table detailing the pins to use with the EnviroDIY LTE Bee and the Env
 
 [//]: # ( @menusnip{sim_com_sim7080} )
 
-
 ### Sodaq GPRSBee<!-- {#menu_walk_sodaq_2g_bee_r6} -->
 
 This code is for the Sodaq 2GBee R6 and R7 based on the SIMCom SIM800.
 To create a Sodaq2GBeeR6 object we need to know
+
 - the serial object name,
-- the MCU pin controlling modem power, (**NOTE:**  On the GPRSBee R6 and R7 the pin labeled as ON/OFF in Sodaq's diagrams is tied to _both_ the SIM800 power supply and the (inverted) SIM800 `PWRKEY`.
+- the MCU pin controlling modem power, (**NOTE:**  On the GPRSBee R6 and R7 the pin labeled as ON/OFF in Sodaq's diagrams is tied to *both* the SIM800 power supply and the (inverted) SIM800 `PWRKEY`.
 You should enter this pin as the power pin.)
 - and the SIM card's cellular access point name (APN).
 
@@ -530,6 +527,7 @@ A helpful table detailing the pins to use with the Sodaq GPRSBee and the EnviroD
 
 This code is for modules based on the 4G LTE-M u-blox SARA R410M including the Sodaq UBee.
 To create a SodaqUBeeR410M object we need to know
+
 - the serial object name,
 - the MCU pin controlling modem power,
 - the MCU pin connected to the `V_INT` pin (for status),
@@ -550,6 +548,7 @@ This is shows in the [SARA R4 Cellular Carrier](@ref setup_r4_carrrier) chunk of
 
 This code is for modules based on the 3G/2G u-blox SARA U201 including the Sodaq UBee or the Sodaq 3GBee.
 To create a SodaqUBeeU201 object we need to know
+
 - the serial object name,
 - the MCU pin controlling modem power,
 - the MCU pin connected to the `V_INT` pin (for status),
@@ -567,7 +566,7 @@ A helpful table detailing the pins to use with the Sodaq UBee U201 and the Envir
 After creating the modem object, we can create Variable objects for each of the variables the modem is capable of measuring (Modem_SignalPercent, Modem_BatteryState, Modem_BatteryPercent, Modem_BatteryVoltage, and Modem_Temp).
 When we create the modem-linked variable objects, the first argument of the constructor, the loggerModem to like the variables to is required.
 The second and third arguments (the UUID and the variable code) included here are optional.
-Note that here we create the variables for anything measured by _any_ of the modems, but most modems are not capable of measuring all of the values.
+Note that here we create the variables for anything measured by *any* of the modems, but most modems are not capable of measuring all of the values.
 Some modem-measured values may be meaningless depending on the board configuration - often the battery parameters returned by a cellular component have little meaning because the module is downstream of a voltage regulator.
 
 [//]: # ( @menusnip{modem_variables} )
@@ -595,7 +594,7 @@ ___
 ### Maxim DS3231 RTC as a sensor<!-- {#menu_walk_maxim_ds3231} -->
 
 In addition to the time, we can also use the required DS3231 real time clock to report the temperature of the circuit board.
-This temperature is _not_ equivalent to an environmental temperature measurement and should only be used to as a diagnostic.
+This temperature is *not* equivalent to an environmental temperature measurement and should only be used to as a diagnostic.
 As above, we create both the sensor and the variables measured by it.
 
 @see @ref sensor_ds3231
@@ -632,7 +631,7 @@ ___
 
 Here is the code for the Apogee SQ-212 Quantum Light Sensor.
 The SQ-212 is not directly connected to the MCU, but rather to an TI ADS1115 that communicates with the MCU.
-The Arduino pin controlling power on/off and the analog data channel _on the TI ADS1115_ are required for the sensor constructor.
+The Arduino pin controlling power on/off and the analog data channel *on the TI ADS1115* are required for the sensor constructor.
 If your ADD converter is not at the standard address of 0x48, you can enter its actual address as the third argument.
 The number of readings to average from the sensor is optional, but can be supplied as the fourth argument for the constructor if desired.
 
@@ -641,7 +640,6 @@ The number of readings to average from the sensor is optional, but can be suppli
 [//]: # ( @menusnip{apogee_sq212} )
 
 ___
-
 
 ### Atlas Scientific EZO Circuits<!-- {#menu_walk_atlas_scientific_sensors} -->
 
@@ -653,6 +651,7 @@ In the most common setup, with hardware I2C, the only required argument for the 
 If you do not isolate them from your main I2C bus and you turn off power to the circuits between measurements the I2C lines will be pulled down to ground causing the I2C bus (and thus your logger) to crash.
 
 The default I2C addresses for the circuits are:
+
 - CO2: 0x69 (105)
 - DO: 0x61 (97)
 - EC (conductivity): 0x64 (100)
@@ -664,7 +663,6 @@ To use multiple circuits of the same type, re-address them.
 
 @see @ref atlas_group
 
-
 #### Atlas Scientific EZO-CO2 Embedded NDIR Carbon Dioxide Sensor<!-- {#menu_walk_atlas_scientific_co2} -->
 
 @see @ref sensor_atlas_co2
@@ -672,7 +670,6 @@ To use multiple circuits of the same type, re-address them.
 [//]: # ( @menusnip{atlas_scientific_co2} )
 
 ___
-
 
 #### Atlas Scientific EZO-DO Dissolved Oxygen Sensor<!-- {#menu_walk_atlas_scientific_do} -->
 
@@ -682,7 +679,6 @@ ___
 
 ___
 
-
 #### Atlas Scientific EZO-ORP Oxidation/Reduction Potential Sensor<!-- {#menu_walk_atlas_scientific_orp} -->
 
 @see @ref sensor_atlas_orp
@@ -690,7 +686,6 @@ ___
 [//]: # ( @menusnip{atlas_scientific_orp} )
 
 ___
-
 
 #### Atlas Scientific EZO-pH Sensor<!-- {#menu_walk_atlas_scientific_ph} -->
 
@@ -700,7 +695,6 @@ ___
 
 ___
 
-
 #### Atlas Scientific EZO-RTD Temperature Sensor<!-- {#menu_walk_atlas_scientific_rtd} -->
 
 @see @ref sensor_atlas_rtd
@@ -709,7 +703,6 @@ ___
 
 ___
 
-
 #### Atlas Scientific EZO-EC Conductivity Sensor<!-- {#menu_walk_atlas_scientific_ec} -->
 
 @see @ref sensor_atlas_cond
@@ -717,7 +710,6 @@ ___
 [//]: # ( @menusnip{atlas_scientific_ec} )
 
 ___
-
 
 ### Bosch BME280 Environmental Sensor<!-- {#menu_walk_bosch_bme280} -->
 
@@ -731,7 +723,6 @@ Keep in mind that the possible I2C addresses of the BME280 match those of the MS
 
 ___
 
-
 ### Bosch BMP388 and BMP398 Pressure Sensors<!-- {#menu_walk_bosch_bmp3xx} -->
 
 @see @ref sensor_bmp3xx
@@ -739,7 +730,6 @@ ___
 [//]: # ( @menusnip{bosch_bmp3xx} )
 
 ___
-
 
 #### Campbell ClariVUE SDI-12 Turbidity Sensor<!-- {#menu_walk_campbell_clari_vue10} -->
 
@@ -749,14 +739,13 @@ ___
 
 ___
 
-
 ### Campbell OBS3+ Analog Turbidity Sensor<!-- {#menu_walk_campbell_obs3} -->
 
 This is the code for the Campbell OBS3+.
-The Arduino pin controlling power on/off, analog data channel _on the TI ADS1115_, and calibration values _in Volts_ for Ax^2 + Bx + C are required for the sensor constructor.
+The Arduino pin controlling power on/off, analog data channel *on the TI ADS1115*, and calibration values *in Volts* for Ax^2 + Bx + C are required for the sensor constructor.
 A custom variable code can be entered as a second argument in the variable constructors, and it is very strongly recommended that you use this otherwise it will be very difficult to determine which return is high and which is low range on the sensor.
 If your ADD converter is not at the standard address of 0x48, you can enter its actual address as the third argument.
-Do NOT forget that if you want to give a number of measurements to average, that comes _after_ the i2c address in the constructor!
+Do NOT forget that if you want to give a number of measurements to average, that comes *after* the i2c address in the constructor!
 
 Note that to access both the high and low range returns, two instances must be created, one at the low range return pin and one at the high pin.
 
@@ -766,7 +755,6 @@ Note that to access both the high and low range returns, two instances must be c
 
 ___
 
-
 #### Campbell RainVUE SDI-12 Precipitation Sensor<!-- {#menu_walk_campbell_rain_vue10} -->
 
 @see @ref sensor_rainvue
@@ -775,7 +763,6 @@ ___
 
 ___
 
-
 #### Decagon CTD-10 Conductivity, Temperature, and Depth Sensor<!-- {#menu_walk_decagon_ctd} -->
 
 @see @ref sensor_decagon_ctd
@@ -783,7 +770,6 @@ ___
 [//]: # ( @menusnip{decagon_ctd} )
 
 ___
-
 
 ### Decagon ES2 Conductivity and Temperature Sensor<!-- {#menu_walk_decagon_es2} -->
 
@@ -797,7 +783,6 @@ The data pin must be a pin that supports pin-change interrupts.
 
 ___
 
-
 #### Everlight ALS-PT19 Ambient Light Sensor<!-- {#menu_walk_everlight_alspt19} -->
 
 @see @ref sensor_alspt19
@@ -806,11 +791,9 @@ ___
 
 ___
 
-
-
 ### External Voltage via TI ADS1x15<!-- {#menu_walk_tiads1x15} -->
 
-The Arduino pin controlling power on/off and the analog data channel _on the TI ADS1115_ are required for the sensor constructor.
+The Arduino pin controlling power on/off and the analog data channel *on the TI ADS1115* are required for the sensor constructor.
 If using a voltage divider to increase the measurable voltage range, enter the gain multiplier as the third argument.
 If your ADD converter is not at the standard address of 0x48, you can enter its actual address as the fourth argument.
 The number of measurements to average, if more than one is desired, goes as the fifth argument.
@@ -820,7 +803,6 @@ The number of measurements to average, if more than one is desired, goes as the 
 [//]: # ( @menusnip{tiads1x15} )
 
 ___
-
 
 ### Freescale Semiconductor MPL115A2 Miniature I2C Digital Barometer<!-- {#menu_walk_mpl115a2} -->
 
@@ -833,7 +815,6 @@ Because this sensor can have only one I2C address (0x60), it is only possible to
 
 ___
 
-
 ### GroPoint Profile GPLP-8 Eight-Segment Soil Moisture and Temperature Profiling Probe<!-- {#menu_walk_gro_point_gplp8} -->
 
 @see @ref sensor_gplp8
@@ -841,7 +822,6 @@ ___
 [//]: # ( @menusnip{gro_point_gplp8} )
 
 ___
-
 
 #### In-Situ Aqua/Level TROLL Pressure, Temperature, and Depth Sensor<!-- {#menu_walk_in_situ_troll_sdi12a} -->
 
@@ -851,7 +831,6 @@ ___
 
 ___
 
-
 #### In-Situ RDO PRO-X Rugged Dissolved Oxygen Probe<!-- {#menu_walk_in_situ_rdo} -->
 
 @see @ref sensor_insitu_rdo
@@ -860,7 +839,6 @@ ___
 
 ___
 
-
 ### Keller RS485/Modbus Water Level Sensors<!-- {#menu_walk_keller_sensors} -->
 
 The next two sections are for Keller RS485/Modbus water level sensors.
@@ -868,19 +846,18 @@ The sensor class constructors for each are nearly identical, except for the clas
 The sensor constructors require as input: the sensor modbus address,  a stream instance for data (ie, `Serial`), and one or two power pins.
 The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
 (Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)  Please see the section "[Notes on Arduino Streams and Software Serial](https://envirodiy.github.io/ModularSensors/page_arduino_streams.html)" for more information about what streams can be used along with this library.
-In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.
+In tests on these sensors, SoftwareSerial_ExtInts *did not work* to communicate with these sensors, because it isn't stable enough.
 AltSoftSerial and HardwareSerial work fine.
 
 The serial ports for this example are created in the @ref menu_walk_serial_ports section and then assigned to modbus functionality in the @ref menu_walk_assign_ports_sw section.
 
 Up to two power pins are provided so that the RS485 adapter, the sensor and/or an external power relay can be controlled separately.
 If the power to everything is controlled by the same pin, use -1 for the second power pin or omit the argument.
-If they are controlled by different pins _and no other sensors are dependent on power from either pin_ then the order of the pins doesn't matter.
-If the RS485 adapter, sensor, or relay are controlled by different pins _and any other sensors are controlled by the same pins_ you should put the shared pin first and the un-shared pin second.
-Both pins _cannot_ be shared pins.
+If they are controlled by different pins *and no other sensors are dependent on power from either pin* then the order of the pins doesn't matter.
+If the RS485 adapter, sensor, or relay are controlled by different pins *and any other sensors are controlled by the same pins* you should put the shared pin first and the un-shared pin second.
+Both pins *cannot* be shared pins.
 
 @see @ref keller_group
-
 
 #### Keller Acculevel High Accuracy Submersible Level Transmitter<!-- {#menu_walk_keller_acculevel} -->
 
@@ -890,7 +867,6 @@ Both pins _cannot_ be shared pins.
 
 ___
 
-
 #### Keller Nanolevel Level Transmitter<!-- {#menu_walk_keller_nanolevel} -->
 
 @see @ref sensor_nanolevel
@@ -898,7 +874,6 @@ ___
 [//]: # ( @menusnip{keller_nanolevel} )
 
 ___
-
 
 ### Maxbotix HRXL Ultrasonic Range Finder<!-- {#menu_walk_max_botix_sonar} -->
 
@@ -914,7 +889,6 @@ The serial ports for this example are created in the @ref menu_walk_serial_ports
 
 ___
 
-
 ### Maxim DS18 One Wire Temperature Sensor<!-- {#menu_walk_maxim_ds18} -->
 
 The OneWire hex address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor, though the address can be omitted if only one sensor is used.
@@ -928,7 +902,6 @@ The sensor address is programmed at the factory and cannot be changed.
 
 ___
 
-
 ### Measurement Specialties MS5803-14BA Pressure Sensor<!-- {#menu_walk_mea_spec_ms5803} -->
 
 The only input needed is the Arduino pin controlling power on/off; the i2cAddressHex and maximum pressure are optional as is the number of readings to average.
@@ -940,14 +913,12 @@ Keep in mind that the possible I2C addresses of the MS5803 match those of the BM
 
 ___
 
-
 ### Meter SDI-12 Sensors<!-- {#menu_walk_meter_sensors} -->
 
 The next few sections are for Meter SDI-12 sensors.
 The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor.
 Optionally, you can include a number of distinct readings to average.
 The data pin must be a pin that supports pin-change interrupts.
-
 
 #### Meter ECH2O Soil Moisture Sensor<!-- {#menu_walk_decagon_5tm} -->
 
@@ -957,7 +928,6 @@ The data pin must be a pin that supports pin-change interrupts.
 
 ___
 
-
 #### Meter Hydros 21 Conductivity, Temperature, and Depth Sensor<!-- {#menu_walk_meter_hydros21} -->
 
 @see @ref sensor_hydros21
@@ -966,7 +936,6 @@ ___
 
 ___
 
-
 #### Meter Teros 11 Soil Moisture Sensor<!-- {#menu_walk_meter_teros11} -->
 
 @see @ref sensor_teros11
@@ -974,7 +943,6 @@ ___
 [//]: # ( @menusnip{meter_teros11} )
 
 ___
-
 
 ### PaleoTerra Redox Sensors<!-- {#menu_walk_paleo_terra_redox} -->
 
@@ -987,7 +955,9 @@ The constructors for the software I2C implementation requires either the SCL and
 All variants of the constructor require the Arduino power pin.
 The I2C address can be given if it the sensor is not set to the default of 0x68.
 A number of readings to average can also be given.
-****
+
+___
+
 @warning Either all or none of your attached redox probes may use software I2C.
 Using some with software I2C and others with hardware I2C is not supported.
 
@@ -996,7 +966,6 @@ Using some with software I2C and others with hardware I2C is not supported.
 [//]: # ( @menusnip{paleo_terra_redox} )
 
 ___
-
 
 ### Trinket-Based Tipping Bucket Rain Gauge<!-- {#menu_walk_rain_counter_i2c} -->
 
@@ -1012,7 +981,6 @@ Note that you cannot input a number of measurements to average because averaging
 
 ___
 
-
 #### Sensirion SHT4X Digital Humidity and Temperature Sensor<!-- {#menu_walk_sensirion_sht4x} -->
 
 @see @ref sensor_sht4x
@@ -1020,7 +988,6 @@ ___
 [//]: # ( @menusnip{sensirion_sht4x} )
 
 ___
-
 
 ### Northern Widget Tally Event Counter<!-- {#menu_walk_tally} -->
 
@@ -1039,7 +1006,6 @@ The counter should be continuously powered.
 
 ___
 
-
 ### TI INA219 High Side Current Sensor<!-- {#menu_walk_ti_ina219} -->
 
 This is the code for the TI INA219 high side current and voltage sensor.
@@ -1052,7 +1018,6 @@ The number of measurements to average, if more than one is desired, goes as the 
 [//]: # ( @menusnip{ti_ina219} )
 
 ___
-
 
 ### Turner Cyclops-7F Submersible Fluorometer<!-- {#menu_walk_turner_cyclops} -->
 
@@ -1069,8 +1034,6 @@ The Cyclops sensors are *NOT* pre-calibrated and must be calibrated prior to dep
 
 ___
 
-
-
 ### Analog Electrical Conductivity using the Processor's Analog Pins<!-- {#menu_walk_analog_elec_conductivity} -->
 
 This is the code for the measuring electrical conductivity using the processor's internal ADC and analog input pins.
@@ -1086,7 +1049,6 @@ For best results, you should also connect the AREF pin of your processors ADC to
 
 ___
 
-
 #### VEGA VEGA PULS 21<!-- {#menu_walk_vega_puls21} -->
 
 @see @ref sensor_vega_puls21
@@ -1094,7 +1056,6 @@ ___
 [//]: # ( @menusnip{vega_puls21} )
 
 ___
-
 
 ### Yosemitech RS485/Modbus Environmental Sensors<!-- {#menu_walk_yosemitech_sensors} -->
 
@@ -1105,14 +1066,13 @@ The Arduino pin controlling the receive and data enable on your RS485-to-TTL ada
 (Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
 For most of the sensors, Yosemitech strongly recommends averaging multiple (in most cases 10) readings for each measurement.
 Please see the section "[Notes on Arduino Streams and Software Serial](https://envirodiy.github.io/ModularSensors/page_arduino_streams.html)" for more information about what streams can be used along with this library.
-In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.
+In tests on these sensors, SoftwareSerial_ExtInts *did not work* to communicate with these sensors, because it isn't stable enough.
 AltSoftSerial and HardwareSerial work fine.
 NeoSWSerial is a bit hit or miss, but can be used in a pinch.
 
 The serial ports for this example are created in the @ref menu_walk_serial_ports section and then assigned to modbus functionality in the @ref menu_walk_assign_ports_sw section.
 
 @see @ref yosemitech_group
-
 
 #### Yosemitech Y504 Dissolved Oxygen Sensor<!-- {#menu_walk_yosemitech_y504} -->
 
@@ -1122,7 +1082,6 @@ The serial ports for this example are created in the @ref menu_walk_serial_ports
 
 ___
 
-
 #### Yosemitech Y510 Turbidity Sensor<!-- {#menu_walk_yosemitech_y510} -->
 
 @see @ref sensor_y510
@@ -1130,7 +1089,6 @@ ___
 [//]: # ( @menusnip{yosemitech_y510} )
 
 ___
-
 
 #### Yosemitech Y511 Turbidity Sensor with Wiper<!-- {#menu_walk_yosemitech_y511} -->
 
@@ -1140,7 +1098,6 @@ ___
 
 ___
 
-
 #### Yosemitech Y514 Chlorophyll Sensor<!-- {#menu_walk_yosemitech_y514} -->
 
 @see @ref sensor_y514
@@ -1148,7 +1105,6 @@ ___
 [//]: # ( @menusnip{yosemitech_y514} )
 
 ___
-
 
 #### Yosemitech Y520 Conductivity Sensor<!-- {#menu_walk_yosemitech_y520} -->
 
@@ -1158,7 +1114,6 @@ ___
 
 ___
 
-
 #### Yosemitech Y532 pH Sensor<!-- {#menu_walk_yosemitech_y532} -->
 
 @see @ref sensor_y532
@@ -1166,7 +1121,6 @@ ___
 [//]: # ( @menusnip{yosemitech_y532} )
 
 ___
-
 
 #### Yosemitech Y533 Oxidation Reduction Potential (ORP) Sensor<!-- {#menu_walk_yosemitech_y533} -->
 
@@ -1176,7 +1130,6 @@ ___
 
 ___
 
-
 #### Yosemitech Y551 Carbon Oxygen Demand (COD) Sensor with Wiper<!-- {#menu_walk_yosemitech_y551} -->
 
 @see @ref sensor_y551
@@ -1184,7 +1137,6 @@ ___
 [//]: # ( @menusnip{yosemitech_y551} )
 
 ___
-
 
 #### Yosemitech Y560 Ammonium Sensor<!-- {#menu_walk_yosemitech_y560} -->
 
@@ -1194,7 +1146,6 @@ ___
 
 ___
 
-
 #### Yosemitech Y700 Pressure Sensor<!-- {#menu_walk_yosemitech_y700} -->
 
 @see @ref sensor_y700
@@ -1203,7 +1154,6 @@ ___
 
 ___
 
-
 #### Yosemitech Y4000 Multi-Parameter Sonde<!-- {#menu_walk_yosemitech_y4000} -->
 
 @see @ref sensor_y4000
@@ -1211,7 +1161,6 @@ ___
 [//]: # ( @menusnip{yosemitech_y4000} )
 
 ___
-
 
 ### Zebra Tech D-Opto Dissolved Oxygen Sensor<!-- {#menu_walk_zebra_tech_d_opto} -->
 
@@ -1224,7 +1173,6 @@ The data pin must be a pin that supports pin-change interrupts.
 [//]: # ( @menusnip{zebra_tech_d_opto} )
 
 ___
-
 
 ## Calculated Variables<!-- {#menu_walk_calculated_variables} -->
 
@@ -1250,14 +1198,12 @@ Here we use the `new` keyword to create multiple variables and get pointers to t
 
 [//]: # ( @menusnip{variables_create_in_array} )
 
-
 #### Creating Variables and Pasting UUIDs from MonitorMyWatershed<!-- {#menu_walk_variables_separate_uuids} -->
 
 If you are sending data to monitor my watershed, it is much easier to create the variables in an array and then to paste the UUID's all together as copied from the "View Token UUID List" link for a site.
 If using this method, be very, very, very careful to make sure the order of your variables exactly matches the order of your UUID's.
 
 [//]: # ( @menusnip{variables_separate_uuids} )
-
 
 #### Creating Variables within an Array<!-- {#menu_walk_variables_pre_named} -->
 
@@ -1266,7 +1212,6 @@ You can also create and name variable pointer objects outside of the array (as i
 [//]: # ( @menusnip{variables_pre_named} )
 
 ___
-
 
 ### The Logger Object<!-- {#menu_walk_logger_obj} -->
 
@@ -1282,7 +1227,7 @@ Here we set up all three possible data publisers and link all of them to the sam
 
 #### Monitor My Watershed<!-- {#menu_walk_enviro_diy_publisher} -->
 
-To publish data to the Monitor My Watershed / EnviroDIY Data Sharing Portal first you must register yourself as a user at https://monitormywatershed.org or https://data.envirodiy.org.
+To publish data to the Monitor My Watershed / EnviroDIY Data Sharing Portal first you must register yourself as a user at <https://monitormywatershed.org> or <https://data.envirodiy.org>.
 Then you must register your site.
 After registering your site, a sampling feature and registration token for that site should be visible on the site page.
 
@@ -1334,7 +1279,7 @@ In Arduino coding, the classic "main" function is replaced by two functions: set
 The setup() function runs once when the board boots or restarts.
 It usually contains many functions that set the mode of input and output pins and prints out some debugging information to the serial port.
 These functions are frequently named "begin".
-Because we have a _lot_ of parts to set up, there's a lot going on in this function!
+Because we have a *lot* of parts to set up, there's a lot going on in this function!
 
 Let's break it down.
 
@@ -1370,11 +1315,13 @@ The [NeoSWSerial](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8in
 **NOTE:**  If you create more than one NeoSWSerial or Software serial object, you need to call the enableInterrupt function for each Rx pin!
 
 For NeoSWSerial we use:
+
 ```cpp
     enableInterrupt(neoSSerial1Rx, neoSSerial1ISR, CHANGE);
 ```
 
 For SoftwareSerial with External interrupts we use:
+
 ```cpp
     enableInterrupt(softSerialRx, SoftwareSerial_ExtInts::handle_interrupt,
                     CHANGE);
@@ -1507,16 +1454,18 @@ ___
 
 This is the loop function which will run repeatedly as long as the board is turned on.
 **NOTE:**  This example has code for both a typical simple loop and a complex loop that calls lower level logger functions.
-You should only pick _one_ loop function and delete the other.
+You should only pick *one* loop function and delete the other.
 
 ### A Typical Loop<!-- {#menu_walk_simple_loop} -->
 
 After the incredibly long setup function, we can do the vast majority of all logger work in a very simple loop function.
 Every time the logger wakes we check the battery voltage and do 1 of three things:
+
 1. If the battery is very low, go immediately back to sleep and hope the sun comes back out
 2. If the battery is at a moderate level, attempt to collect data from sensors, but do not attempt to publish data.
 The modem the biggest power user of the whole system.
 3.
+
 At full power, do everything.
 
 [//]: # ( @menusnip{simple_loop} )

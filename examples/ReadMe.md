@@ -6,6 +6,7 @@ Each example has slightly different functionality.
 ___
 
 [//]: # ( Start GitHub Only )
+
 - [Examples Using ModularSensors](#examples-using-modularsensors)
   - [Basic Functionality](#basic-functionality)
     - [Single Sensor](#single-sensor)
@@ -20,7 +21,7 @@ ___
     - [Minimizing Cell Data Usage](#minimizing-cell-data-usage)
   - [DRWI Citizen Science](#drwi-citizen-science)
     - [DRWI Mayfly 1.x LTE](#drwi-mayfly-1x-lte)
-    - [DRWI EnviroDIY Bee LTE](#drwi-envirodiy-bee-lte)
+    - [DRWI EnviroDIY LTEbee](#drwi-envirodiy-ltebee)
     - [DRWI Digi LTE](#drwi-digi-lte)
     - [DRWI CitSci (2G)](#drwi-citsci-2g)
     - [DRWI CitSci No Cellular](#drwi-citsci-no-cellular)
@@ -43,14 +44,12 @@ It also shows creating a calculated variable which is the water depth.
 - [Instructions for the single sensor example](https://envirodiy.github.io/ModularSensors/example_single_sensor.html)
 - [The single sensor example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/single_sensor)
 
-
 ### Simple Logging<!-- {#examples_simple_logging} -->
 
 The simple logging example shows how to create multiple sensors, create variables for the sensors in a variable array, and log the data from the sensors to an SD card.
 
 - [Instructions for the simple logging example](https://envirodiy.github.io/ModularSensors/example_simple_logging.html)
 - [The simple logging example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/simple_logging)
-
 
 ### Simple Logging for the Learn EnviroDIY course<!-- {#examples_learn_envirodiy} -->
 
@@ -59,7 +58,6 @@ It is very similar to the other simple logging example, with just a few extra se
 
 - [Instructions for the learn EnviroDIY course example](https://envirodiy.github.io/ModularSensors/example_learn_envirodiy.html)
 - [The learn EnviroDIY course example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/simple_logging_LearnEnviroDIY)
-
 
 ___
 
@@ -72,7 +70,6 @@ The logging to Monitor My Watershed example uses a Digi XBee in transparent mode
 - [Instructions for the logging to Monitor My Watershed example](https://envirodiy.github.io/ModularSensors/example_mmw.html)
 - [The logging to Monitor My Watershed example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/logging_to_MMW)
 
-
 ### Publishing to ThingSpeak<!-- {#examples_thingspeak} -->
 
 The logging to ThingSpeak example uses an ESP8266 to send data to ThingSpeak.
@@ -80,7 +77,6 @@ It also includes a Meter Hydros 21 (formerly know as a Decagon CTD) and a Campbe
 
 - [Instructions for the logging to ThingSpeak example](https://envirodiy.github.io/ModularSensors/example_thingspeak.html)
 - [The logging to ThingSpeak example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/logging_to_ThingSpeak)
-
 
 ___
 
@@ -93,7 +89,6 @@ The barometric pressure correction  example demonstrates how to work with calcul
 - [Instructions for the barometric pressure correction example](https://envirodiy.github.io/ModularSensors/example_baro_rho.html)
 - [The barometric pressure correction example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/baro_rho_correction)
 
-
 ### Multiple Logging Intervals<!-- {#examples_double_log} -->
 
 The more complicated double logger example using two different logger instances to log data at two different intervals, in this case, an AM3215 logging every minute, while checking the battery voltage only every 5 minutes.
@@ -102,8 +97,7 @@ This showcases both how to use two different logging instances and how to use so
 - [Instructions for the double logger example](https://envirodiy.github.io/ModularSensors/example_double_log.html)
 - [The double logger example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/double_logger)
 
-
-###  Minimizing Cell Data Usage<!-- {#examples_data_saving} -->
+### Minimizing Cell Data Usage<!-- {#examples_data_saving} -->
 
 The data saving example is another double logger example, but in this case, both loggers are going at the same interval and the only difference between the loggers is the list of variables.
 There are two sets of variables, all coming from Yosemitech sensors.
@@ -112,7 +106,6 @@ This example also shows how to stop power draw from an RS485 adapter with automa
 
 - [Instructions for the data saving example](https://envirodiy.github.io/ModularSensors/example_data_saving.html)
 - [The data saving example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/data_saving)
-
 
 ___
 
@@ -148,7 +141,6 @@ The only difference between this and the other cellular DRWI examples is the typ
 - [Instructions for the Digi LTE DRWI Citizen Science example](https://envirodiy.github.io/ModularSensors/example_drwi_digilte.html)
 - [The Digi LTE DRWI Citizen Science example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/DRWI_DigiLTE)
 
-
 ### DRWI CitSci (2G)<!-- {#examples_drwi_2g} -->
 
 The 2G DRWI Citizen Science example uses the sensors and equipment found on older stations used in the DRWI Citizen Science project prior to 2020. The 2G GPRSbee boards no longer function in the USA, so this code should not be used and is only provided to archival and reference purposes.
@@ -159,7 +151,6 @@ The only difference between this and the other cellular DRWI examples is the typ
 - [Instructions for the 2G DRWI Citizen Science example](https://envirodiy.github.io/ModularSensors/example_drwi_2g.html)
 - [The 2G DRWI Citizen Science example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/DRWI_CitSci)
 
-
 ### DRWI CitSci No Cellular<!-- {#examples_drwi_no_cell} -->
 
 The DRWI no cellular example uses the sensors and equipment standard to the DRWI Citizen Science project but omits the data publisher for circumstances where there is no cellular signal.
@@ -168,7 +159,6 @@ The exclusion of the modem and publisher simplifies the code from the other DRWI
 
 - [Instructions for the no-cellular DRWI Citizen Science example](https://envirodiy.github.io/ModularSensors/example_drwi_no_cell.html)
 - [The no-cellular DRWI Citizen Science example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/DRWI_NoCellular)
-
 
 ___
 

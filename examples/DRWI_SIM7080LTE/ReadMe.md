@@ -3,10 +3,11 @@
 The DRWI EnviroDIY LTEbee example uses the sensors and equipment common to older stations (2016-2020) deployed by groups participating in the DRWI Citizen Science project with the Stroud Water Research Center. It includes a Meter Hydros 21 (CTD), a Campbell OBS3+, (Turbidity) and a SIM7080G-based EnviroDIY LTEbee for communication.
 
 The exact hardware configuration used in this example:
- * Mayfly v1.x board
- * EnviroDIY SIM7080 LTE module (with Hologram SIM card)
- * Hydros21 CTD sensor
- * Campbell Scientific OBS3+ Turbidity sensor
+
+- Mayfly v1.x board
+- EnviroDIY SIM7080 LTE module (with Hologram SIM card)
+- Hydros21 CTD sensor
+- Campbell Scientific OBS3+ Turbidity sensor
 
 An EnviroDIY LTE SIM7080 module can be used with the older Mayfly v0.5b boards if you change line 101 (for modemVccPin) from 18 to -1.
 This is because the Mayfly v1.0 board has a separate 3.3v regulator to power the Bee socket and is controlled by turning pin 18 on or off.
@@ -24,17 +25,18 @@ _______
 [//]: # ( @m_footernavigation )
 
 [//]: # ( Start GitHub Only )
+
 - [DRWI Sites with EnviroDIY LTE Bees](#drwi-sites-with-envirodiy-lte-bees)
-- [Unique Features of the DRWI EnviroDIY LTE Example](#unique-features-of-the-drwi-envirodiy-lte-example)
+  - [Unique Features of the DRWI EnviroDIY LTE Example](#unique-features-of-the-drwi-envirodiy-lte-example)
 
 [//]: # ( End GitHub Only )
 
 _______
 
-# Unique Features of the DRWI EnviroDIY LTE Example<!-- {#example_drwi_ediylte_unique} -->
+## Unique Features of the DRWI EnviroDIY LTE Example<!-- {#example_drwi_ediylte_unique} -->
+
 - Specifically for sites within the Delaware River Watershed Initiative.
 - Uses a EnviroDIY LTE Bee based on the SIMCom SIM7080G
-
 
 [//]: # ( @section example_drwi_ediylte_pio_config PlatformIO Configuration )
 

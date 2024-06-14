@@ -5,6 +5,7 @@
 [//]: # ( @m_footernavigation )
 
 [//]: # ( Start GitHub Only )
+
 - [Notes about Modems](#notes-about-modems)
   - [Summary of Classes to use for Various Manufactured Modules](#summary-of-classes-to-use-for-various-manufactured-modules)
   - [Default baud rates of supported modules](#default-baud-rates-of-supported-modules)
@@ -16,7 +17,6 @@
 [//]: # ( End GitHub Only )
 
 If you are having trouble, please see the pages for the specific modems and the TinyGSM [getting started](https://github.com/vshymanskyy/TinyGSM#getting-started) and [troubleshooting](https://github.com/vshymanskyy/TinyGSM#troubleshooting) sections.
-
 
 ## Summary of Classes to use for Various Manufactured Modules<!-- {#modem_notes_classes} -->
 
@@ -78,7 +78,7 @@ Any model that requires a higher level of current (almost all of them) should be
 **The most common symptom of insufficient power is that the module will not connect to the internet.**
 Most modules are capable of serial communication and some level of functionality at current levels much below ideal, but will silently refuse to make a network connection.
 
-@see https://github.com/vshymanskyy/TinyGSM/wiki/Powering-GSM-module
+@see <https://github.com/vshymanskyy/TinyGSM/wiki/Powering-GSM-module>
 
 |                Module                | Operating Voltage |     Minimum Current Required      | Power Pin Label |
 | :----------------------------------: | :---------------: | :-------------------------------: | :-------------: |
@@ -147,7 +147,6 @@ Here are the pin numbers to use for modules that can be attached directly to an 
 |               Sodaq UBee 3G (u-blox SARA U201)               |       23       |       19       |       -1       |       20       |
 |                 EnviroDIY LTE Bee (SIM7080G)                 |       -1       |       19       |      N/A       | 23<sup>9</sup> |
 
-
 ¹ To use the cellular Digi XBee's without the LTE adapter, your Mayfly must be at least v0.5b, you must use SJ13 to connect the Bee directly to the LiPo, and you must always have a battery connected to provide enough power for the XBee to make a cellular connection.
 If you turn off the Mayfly via its switch but leave the XBee connected as above, it will drain your battery very quickly.
 Disconnect the battery if you turn off the Mayfly.
@@ -160,10 +159,10 @@ Instead, you must use the XBee's `CTS` pin (pin 12) which is connected to Mayfly
 <sup>4</sup> The LTE adapter switches pins 12 and 13 so that the true `STATUS` pin of the XBee is connected to Mayfly pin 19.
 You should set the argument `useCTSforStatus` to `false` in the bee constructor
 
-<sup>5</sup> I *strongly* recommend running a new wire along the back of the Mayfly to connect pin 5 of the XBee socket to pin A4.
+<sup>5</sup> I _strongly_ recommend running a new wire along the back of the Mayfly to connect pin 5 of the XBee socket to pin A4.
    This will enable you to use A4 as the reset pin which allows you to use deep sleep.
 
-<sup>7</sup> I *strongly* recommend running two new wires along the back of the Mayfly to connect pin 5 of the XBee socket to pin A4 and pin 18 of the XBee socket to A3.
+<sup>7</sup> I _strongly_ recommend running two new wires along the back of the Mayfly to connect pin 5 of the XBee socket to pin A4 and pin 18 of the XBee socket to A3.
 This will enable you to use A4 as the reset pin and A3 as the sleep request pin.
 With those connections made, the Dragino BG96 becomes the _**only**_ LTE module that can be run using only the 500mA regulator on the Mayfly (ie, without a separate battery connection for the modem).
 
@@ -171,6 +170,7 @@ With those connections made, the Dragino BG96 becomes the _**only**_ LTE module 
 
 <sup>9</sup> The EnviroDIY LTE Bee inverts the signal to the sleep request pin (`PWRKEY`) - which is also used for reset.
 To use it, you must add these commands to your setup:
+
 ```cpp
 modem.setModemWakeLevel(HIGH);
 modem.setModemResetLevel(HIGH);
@@ -194,7 +194,6 @@ Here are the pin numbers to use for modules that can be attached directly to an 
 |       Sodaq UBee LTE-M (u-blox SARA R410M)        |  23   |   19   | A5<sup>3</sup> |       20       |
 |         Sodaq UBee 3G (u-blox SARA U201)          |  23   |   19   | A5<sup>3</sup> |       20       |
 
-
 ¹ This assumes you have not changed solder jumper 18.  If you have switched SJ18 to connect bee pin one directly to 3.3V, use -1.
 
 ² The Digi XBee reports ON/SLEEP_N on pin 13, but this is not connected to a Mayfly pin by default.
@@ -205,6 +204,7 @@ Alternately (and preferably) you can change solder jumper 19 (SJ19) to connect b
 
 <sup>4</sup> The EnviroDIY LTE Bee inverts the signal to the sleep request pin (`PWRKEY`) - which is also used for reset.
 To use it, you must add these commands to your setup:
+
 ```cpp
 modem.setModemWakeLevel(HIGH);
 modem.setModemResetLevel(HIGH);

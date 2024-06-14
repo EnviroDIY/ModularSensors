@@ -3,11 +3,11 @@
 This code was used for DRWI monitoring stations in 2016-2022.  The 2G GPRSbee cellular boards no longer function in the USA, so this code should not be used and is only provided to archival and reference purposes.
 
 The exact hardware configuration used in this example:
- * Mayfly v0.5b board
- * SODAQ GPRSbee 2G cell module (with Hologram SIM card)
- * Hydros21 CTD sensor
- * Campbell OBS3+ turbidity sensor
 
+- Mayfly v0.5b board
+- SODAQ GPRSbee 2G cell module (with Hologram SIM card)
+- Hydros21 CTD sensor
+- Campbell OBS3+ turbidity sensor
 
 _______
 
@@ -16,37 +16,41 @@ _______
 [//]: # ( @m_footernavigation )
 
 [//]: # ( Start GitHub Only )
+
 - [DRWI 2G Sites](#drwi-2g-sites)
-- [Unique Features of the DRWI 2G Example](#unique-features-of-the-drwi-2g-example)
-- [To Use this Example](#to-use-this-example)
-  - [Prepare and set up PlatformIO](#prepare-and-set-up-platformio)
-  - [Set the logger ID](#set-the-logger-id)
-  - [Set the calibration coefficients for the Campbell OBS3+](#set-the-calibration-coefficients-for-the-campbell-obs3)
-  - [Set the universally universal identifiers (UUID) for each variable](#set-the-universally-universal-identifiers-uuid-for-each-variable)
-  - [Upload!](#upload)
+  - [Unique Features of the DRWI 2G Example](#unique-features-of-the-drwi-2g-example)
+  - [To Use this Example](#to-use-this-example)
+    - [Prepare and set up PlatformIO](#prepare-and-set-up-platformio)
+    - [Set the logger ID](#set-the-logger-id)
+    - [Set the calibration coefficients for the Campbell OBS3+](#set-the-calibration-coefficients-for-the-campbell-obs3)
+    - [Set the universally universal identifiers (UUID) for each variable](#set-the-universally-universal-identifiers-uuid-for-each-variable)
+    - [Upload!](#upload)
 
 [//]: # ( End GitHub Only )
 
 _______
 
-# Unique Features of the DRWI 2G Example<!-- {#example_drwi_2g_unique} -->
+## Unique Features of the DRWI 2G Example<!-- {#example_drwi_2g_unique} -->
+
 - Specifically for sites within the Delaware River Watershed Initiative.
 - Uses a Sodaq 2GBee for live data.
 
-# To Use this Example<!-- {#example_drwi_2g_use} -->
+## To Use this Example<!-- {#example_drwi_2g_use} -->
 
-## Prepare and set up PlatformIO<!-- {#example_drwi_2g_pio} -->
-- Register a site and sensors at the Monitor My Watershed/EnviroDIY data portal (http://monitormywatershed.org/)
+### Prepare and set up PlatformIO<!-- {#example_drwi_2g_pio} -->
+
+- Register a site and sensors at the Monitor My Watershed/EnviroDIY data portal (<http://monitormywatershed.org/>)
 - Create a new PlatformIO project
 - Replace the contents of the platformio.ini for your new project with the [platformio.ini](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/DRWI_CitSci/platformio.ini) file in the examples/DRWI_CitSci folder on GitHub.
-    - It is important that your PlatformIO configuration has the lib_ldf_mode and build flags set as they are in the example.
-    - Without this, the program won't compile.
+  - It is important that your PlatformIO configuration has the lib_ldf_mode and build flags set as they are in the example.
+  - Without this, the program won't compile.
 - Open [DRWI_CitSci.ino](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/DRWI_CitSci/DRWI_CitSci.ino) and save it to your computer.
-    - After opening the link, you should be able to right click anywhere on the page and select "Save Page As".
-    - Move it into the src directory of your project.
-    - Delete main.cpp in that folder.
+  - After opening the link, you should be able to right click anywhere on the page and select "Save Page As".
+  - Move it into the src directory of your project.
+  - Delete main.cpp in that folder.
 
-## Set the logger ID<!-- {#example_drwi_2g_logger_id} -->
+### Set the logger ID<!-- {#example_drwi_2g_logger_id} -->
+
 - Change the "XXXX" in this section of code to the loggerID assigned by Stroud:
 
 ```cpp
@@ -54,12 +58,13 @@ _______
 const char *LoggerID = "XXXX";
 ```
 
-## Set the calibration coefficients for the Campbell OBS3+<!-- {#example_drwi_2g_obs3_calibration} -->
+### Set the calibration coefficients for the Campbell OBS3+<!-- {#example_drwi_2g_obs3_calibration} -->
+
 - The OBS3+ ships with a calibration certificate; you need this sheet!
 - Change _**all**_ of the the `0.000E+00` and `1.000E+00` values in this section of code to the values on that calibration sheet.
 Use numbers from the side of the calibration sheet that shows the calibration in _**volts**_.
-    - The sketch will not compile if these values are not entered properly.
-    - Do not change any values except those that are `0.000E+00` and `1.000E+00`!
+  - The sketch will not compile if these values are not entered properly.
+  - Do not change any values except those that are `0.000E+00` and `1.000E+00`!
 
 ```cpp
 // ==========================================================================
@@ -83,8 +88,9 @@ const float OBSHigh_C = 0.000E+00;  // "C" value [*high* range]
 CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADSi2c_addr, OBS3numberReadings);
 ```
 
-## Set the universally universal identifiers (UUID) for each variable<!-- {#example_drwi_2g_uuids} -->
-- Go back to the web page for your site at the Monitor My Watershed/EnviroDIY data portal (http://monitormywatershed.org/)
+### Set the universally universal identifiers (UUID) for each variable<!-- {#example_drwi_2g_uuids} -->
+
+- Go back to the web page for your site at the Monitor My Watershed/EnviroDIY data portal (<http://monitormywatershed.org/>)
 - Find and click the white "View Token UUID List" button above the small map on your site page
 - **VERY CAREFULLY** check that the variables are in exactly the same order as in the variable array:
 
@@ -122,11 +128,11 @@ const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  // Sampli
 
 ```
 
-## Upload!<!-- {#example_drwi_2g_upload} -->
+### Upload!<!-- {#example_drwi_2g_upload} -->
+
 - Test everything at home **before** deploying out in the wild!
 
 _______
-
 
 [//]: # ( @section example_drwi_2g_pio_config PlatformIO Configuration )
 

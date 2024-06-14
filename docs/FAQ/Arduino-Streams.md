@@ -5,6 +5,7 @@
 [//]: # ( @m_footernavigation )
 
 [//]: # ( Start GitHub Only )
+
 - [Notes on Arduino Streams and Software Serial](#notes-on-arduino-streams-and-software-serial)
   - [Hardware Serial](#hardware-serial)
   - [AltSoftSerial](#altsoftserial)
@@ -16,6 +17,7 @@
 
 In this library, the Arduino communicates with the computer for debugging, the modem for sending data, and some sensors (like the [MaxBotix MaxSonar](https://github.com/EnviroDIY/ModularSensors/wiki/MaxBotix-MaxSonar)) via instances of Arduino TTL [streams](https://www.arduino.cc/en/Reference/Stream).
 The streams can either be an instance of
+
 - [serial (hardware serial)](https://www.arduino.cc/en/Reference/Serial),
 - [AltSoftSerial](https://github.com/PaulStoffregen/AltSoftSerial),
 - [NeoSWSerial](https://github.com/SRGDamia1/NeoSWSerial),
@@ -50,7 +52,6 @@ If you would like to give your hardware serial port an easy-to-remember alias, y
 HardwareSerial* streamName = &Serial;
 ```
 
-
 ## AltSoftSerial<!-- {#streams_altss} -->
 
 If the [proper pins](https://www.pjrc.com/teensy/td_libs_AltSoftSerial.html) are available, **[AltSoftSerial](https://github.com/PaulStoffregen/AltSoftSerial)** by Paul Stoffregen is also superior to SoftwareSerial, especially at slow baud rates.
@@ -67,7 +68,6 @@ To use AltSoftSerial:
 AltSoftSerial streamName.
 // Create an instance of AltSoftSerial
 ```
-
 
 ## NeoSWSerial<!-- {#streams_neosw} -->
 
@@ -109,7 +109,6 @@ Additionally, for the EnviroDIY modified version of SoftwareSerial, (or NeoSWSer
 enableInterrupt(rx_pin, neoSSerial1ISR, CHANGE);
 ```
 
-
 ## Neutered SoftwareSerial<!-- {#streams_softwareserial} -->
 
 [The EnviroDIY modified version of SoftwareSerial](https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts) removes direct interrupt control from the SoftwareSerial library, making it dependent on another interrupt library, but able to be compiled with ModularSensors.
@@ -135,7 +134,6 @@ Additionally, for the EnviroDIY modified version of SoftwareSerial, you must ena
 // Allow enableInterrrupt to control the interrupts for software serial
 enableInterrupt(rx_pin, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
 ```
-
 
 ## SAMD SERCOMs<!-- {#streams_samd_sercom} -->
 
