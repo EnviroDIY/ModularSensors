@@ -1,4 +1,9 @@
 /**
+ * @dir examples
+ *
+ * @brief Contains all of the example sketches. There is only one example in each subfolder - a standard for Arduino coding.
+ */
+/**
  * @page page_the_examples
  * @m_innerpage{page_examples_basic}
  * @page page_examples_basic Basic Functionality

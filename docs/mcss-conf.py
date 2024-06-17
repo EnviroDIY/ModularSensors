@@ -164,7 +164,12 @@ STYLESHEETS = [
     "css/m-EnviroDIY+documentation.compiled.css",
 ]
 
-EXTRA_FILES = ["gp-desktop-logo.png", "gp-mobile-logo.png", "gp-scrolling-logo.png"]
+EXTRA_FILES = [
+    "gp-desktop-logo.png",
+    "gp-mobile-logo.png",
+    "gp-scrolling-logo.png",
+    "clipboard.js",
+]
 DESKTOP_LOGO = "gp-desktop-logo.png"
 MOBILE_LOGO = "gp-mobile-logo.png"
 SCROLLING_LOGO = "gp-scrolling-logo.png"

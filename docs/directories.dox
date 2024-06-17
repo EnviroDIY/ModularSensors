@@ -13,13 +13,3 @@
  *
  * @brief Contains documentation for new users
  */
-/**
- * @dir examples
- *
- * @brief Contains all of the example sketches
- */
-/**
- * @dir extras
- *
- * @brief Contains extra sketches for testing sensors and sub-libraries
- */
