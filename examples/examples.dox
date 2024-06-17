@@ -97,6 +97,7 @@
  * @page page_examples_drwi DRWI Citizen Science
  * [DRWI Citizen Science](@ref examples_drwi)
  * @m_innerpage{example_drwi_mayfly1}
+ * @m_innerpage{example_drwi_mayfly1_wifi}
  * @m_innerpage{example_drwi_ediylte}
  * @m_innerpage{example_drwi_digilte}
  * @m_innerpage{example_drwi_2g}

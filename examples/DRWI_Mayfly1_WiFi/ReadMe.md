@@ -1,4 +1,4 @@
-# DRWI Sites with a Mayfly 1.x and EnviroDIY ESP32 WiFi Bees<!-- {#example_drwi_mayfly1_wifi} -->
+# DRWI Sites with a Mayfly 1.x and EnviroDIY ESP32 WiFi Bee<!-- {#example_drwi_mayfly1_wifi} -->
 
 Example sketch for using the EnviroDIY ESP32 WiFi cellular module with an EnviroDIY Mayfly Data Logger.
 
@@ -24,7 +24,7 @@ _______
 
 [//]: # ( Start GitHub Only )
 
-- [DRWI Sites with a Mayfly 1.x and EnviroDIY ESP32 WiFi Bees](#drwi-sites-with-a-mayfly-1x-and-envirodiy-esp32-wifi-bees)
+- [DRWI Sites with a Mayfly 1.x and EnviroDIY ESP32 WiFi Bee](#drwi-sites-with-a-mayfly-1x-and-envirodiy-esp32-wifi-bee)
   - [Unique Features of the DRWI Mayfly 1.x WiFi Example](#unique-features-of-the-drwi-mayfly-1x-wifi-example)
 
 [//]: # ( End GitHub Only )

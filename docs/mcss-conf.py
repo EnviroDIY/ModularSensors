@@ -104,7 +104,8 @@ LINKS_NAVBAR1 = [
     (
         "Examples",
         "page_the_examples",
-        [("Other Helper Sketches", "page_extra_helper_sketches")],
+        [],
+        # [("Other Helper Sketches", "page_extra_helper_sketches")],
         # [
         #     (
         #         "Basic Functionality",

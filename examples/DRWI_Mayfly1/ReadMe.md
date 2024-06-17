@@ -1,4 +1,4 @@
-# DRWI Sites with a Mayfly 1.x and EnviroDIY LTE Bees<!-- {#example_drwi_mayfly1} -->
+# DRWI Sites with a Mayfly 1.x and EnviroDIY LTE Bee<!-- {#example_drwi_mayfly1} -->
 
 Example sketch for using the EnviroDIY SIM7080G LTE cellular module with an EnviroDIY Mayfly Data Logger.
 
@@ -28,7 +28,7 @@ _______
 
 [//]: # ( Start GitHub Only )
 
-- [DRWI Sites with a Mayfly 1.x and EnviroDIY LTE Bees](#drwi-sites-with-a-mayfly-1x-and-envirodiy-lte-bees)
+- [DRWI Sites with a Mayfly 1.x and EnviroDIY LTE Bee](#drwi-sites-with-a-mayfly-1x-and-envirodiy-lte-bee)
   - [Unique Features of the DRWI Mayfly 1.x LTE Example](#unique-features-of-the-drwi-mayfly-1x-lte-example)
 
 [//]: # ( End GitHub Only )
