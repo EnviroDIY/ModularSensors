@@ -1,4 +1,9 @@
 /**
+ * @dir extras
+ *
+ * @brief Contains extra sketches for testing and configuring new sensors.
+ */
+/**
  * @example{lineno} powerOn.ino
  * @brief Testing sketch that simply turns on power to the sensors on the Mayfly.
  */
