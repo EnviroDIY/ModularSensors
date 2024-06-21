@@ -22,9 +22,14 @@
 #define MS_DEBUGGING_STD "WatchDogAVR"
 #endif
 
+#ifdef MS_WATCHDOGAVR_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP "WatchDogAVR"
+#endif
+
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
+#undef MS_DEBUGGING_DEEP
 
 /**
  * @brief The extendedWatchDogAVR class uses the pre-reset interrupt to of the
@@ -75,8 +80,9 @@ class extendedWatchDogAVR {
     /**
      * @brief The number of times the pre-reset interrupt is allowed to fire
      * before the watchdog reset is allowed.
+     * Range: low 10s, must be signed integer
      */
-    static volatile uint32_t _barksUntilReset;
+    static volatile int16_t _barksUntilReset;
 
  private:
     uint32_t _resetTime_s;
