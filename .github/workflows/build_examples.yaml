@@ -123,7 +123,7 @@ jobs:
       # We use the `arduino/setup-arduino-cli` action to install and
       # configure the Arduino CLI on the system.
       - name: Setup Arduino CLI
-        uses: arduino/setup-arduino-cli@v1.1.2
+        uses: arduino/setup-arduino-cli@v2.0.0
 
       - name: Restore Arduino platforms and libraries
         uses: actions/cache@v4
