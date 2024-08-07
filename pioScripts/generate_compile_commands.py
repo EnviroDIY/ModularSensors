@@ -3,7 +3,7 @@ import sys
 
 Import("env")
 
-if "compiledb" not in COMMAND_LINE_TARGETS:
+if "compiledb" in COMMAND_LINE_TARGETS:
     print("Generating compile commands!")
 
     # include toolchain paths
