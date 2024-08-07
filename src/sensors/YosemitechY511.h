@@ -57,11 +57,17 @@
 /** @ingroup sensor_y511 */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_y511_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by a Yosemitch Y511
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the Y511 can report 2 values.
 #define Y511_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define Y511_INC_CALC_VARIABLES 0
+/**@}*/
 
 /**
  * @anchor sensor_y511_timing

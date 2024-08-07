@@ -29,8 +29,8 @@
 #endif
 
 
+#ifndef MS_SEND_BUFFER_SIZE
 /**
- * @def MS_SEND_BUFFER_SIZE
  * @brief Send Buffer
  *
  * This determines how many characters to set out at once over the TCP
@@ -40,10 +40,7 @@
  *
  * This can be changed by setting the build flag MS_SEND_BUFFER_SIZE when
  * compiling.
- *
- * @ingroup the_publishers
  */
-#ifndef MS_SEND_BUFFER_SIZE
 #define MS_SEND_BUFFER_SIZE 750
 #endif
 
@@ -172,6 +169,14 @@ class dataPublisher {
 
 
     /**
+     * @brief Checks if the publisher needs an Internet connection for the next
+     * publishData call (as opposed to just buffering data internally).
+     *
+     * @return True if an internet connection is needed for the next publish.
+     */
+    virtual bool connectionNeeded(void);
+
+    /**
      * @brief Open a socket to the correct receiver and sends out the formatted
      * data.
      *
@@ -181,10 +186,11 @@ class dataPublisher {
      * @param outClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
+     * @param forceFlush Ask the publisher to flush buffered data immediately.
      * @return **int16_t** The result of publishing data.  May be an http
      * response code or a result code from PubSubClient.
      */
-    virtual int16_t publishData(Client* outClient) = 0;
+    virtual int16_t publishData(Client* outClient, bool forceFlush = false) = 0;
     /**
      * @brief Open a socket to the correct receiver and send out the formatted
      * data.
@@ -193,10 +199,12 @@ class dataPublisher {
      * either a client having been linked to the publisher or a logger modem
      * having been linked to the logger linked to the publisher.
      *
+     * @param forceFlush Ask the publisher to flush buffered data immediately.
+     *
      * @return **int16_t** The result of publishing data.  May be an http
      * response code or a result code from PubSubClient.
      */
-    virtual int16_t publishData();
+    virtual int16_t publishData(bool forceFlush = false);
 
     /**
      * @brief Retained for backwards compatibility; use publishData(Client*

@@ -67,13 +67,19 @@
 /** @ingroup sensor_clarivue */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_clarivue_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the ClariVUE10
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the ClariVUE10 can report 7 values
 /// (although we only keep 3).
 #define CLARIVUE10_NUM_VARIABLES 7
 /// @brief Sensor::_incCalcValues; The ClariVUE calculates averages and other
 /// stats on board, but we don't calculate any additional values.
 #define CLARIVUE10_INC_CALC_VARIABLES 0
+/**@}*/
 
 /**
  * @anchor sensor_clarivue_timing

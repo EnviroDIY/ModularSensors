@@ -1,3 +1,9 @@
+/** =========================================================================
+ * @file LTExBee_FirstConnection.ino
+ * @brief Testing sketch to set up a never-previously-connected LTE XBee running
+ * in standard (transparent) mode.
+ * ======================================================================= */
+
 #define TINY_GSM_MODEM_XBEE
 #define TINY_GSM_RX_BUFFER 64
 #define TINY_GSM_YIELD_MS 2

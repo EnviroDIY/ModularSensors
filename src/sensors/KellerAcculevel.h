@@ -54,7 +54,6 @@
 // Included Dependencies
 #include "sensors/KellerParent.h"
 
-// Sensor Specific Defines
 /** @ingroup sensor_acculevel */
 /**@{*/
 
@@ -177,7 +176,9 @@ class KellerAcculevel : public KellerParent {
               measurementsToAverage, Acculevel_kellerModel, "KellerAcculevel",
               KELLER_NUM_VARIABLES, ACCULEVEL_WARM_UP_TIME_MS,
               ACCULEVEL_STABILIZATION_TIME_MS, ACCULEVEL_MEASUREMENT_TIME_MS) {}
-    // Destructor
+    /**
+     * @brief Destroy the Keller Acculevel object
+     */
     ~KellerAcculevel() {}
 };
 

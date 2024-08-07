@@ -601,8 +601,8 @@ class loggerModem {
      * @return **bool** True indicates that the communication with the modem was
      * successful and the values referenced by the pointers should be valid.
      */
-    virtual bool getModemBatteryStats(uint8_t& chargeState, int8_t& percent,
-                                      uint16_t& milliVolts) = 0;
+    virtual bool getModemBatteryStats(int8_t& chargeState, int8_t& percent,
+                                      int16_t& milliVolts) = 0;
     /**
      * @brief Get the current temperature provided by the modem module.
      *
@@ -616,6 +616,10 @@ class loggerModem {
      * variables. Setting this to 0b11111111 will enable polling for all modem
      * measured variables.
      *
+     * @param pollingBitmask The bitmask indicating which paramters to poll.
+     *
+     * @see loggerModem::_pollModemMetaData
+     *
      * @note This will **not** disable polling for any unset bits in the
      * provided bitmask.  It will only enable those bits that are set.
      */
@@ -625,6 +629,10 @@ class loggerModem {
      * @brief Disables metadata polling for one or more modem measured
      * variables.  Setting this to 0b11111111 will disable polling for all modem
      * measured variables.
+     *
+     * @param pollingBitmask The bitmask indicating which paramters to poll.
+     *
+     * @see loggerModem::_pollModemMetaData
      *
      * @note This will **not** enable polling for any unset bits in the
      * provided bitmask.  It will only disable polling for those bits that are
@@ -639,6 +647,10 @@ class loggerModem {
      * Setting this to 0 (0b00000000) will disable polling for all metadata
      * parameters.  Setting it to 256 (0b11111111) will enable polling for all
      * parameters.
+     *
+     * @param pollingBitmask The bitmask indicating which paramters to poll.
+     *
+     * @see loggerModem::_pollModemMetaData
      */
     void setMetadataPolling(uint8_t pollingBitmask);
 

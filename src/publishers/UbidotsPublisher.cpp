@@ -113,7 +113,7 @@ void UbidotsPublisher::begin(Logger&     baseLogger,
 // over that connection.
 // The return is the http status code of the response.
 // int16_t EnviroDIYPublisher::postDataEnviroDIY(void)
-int16_t UbidotsPublisher::publishData(Client* outClient) {
+int16_t UbidotsPublisher::publishData(Client* outClient, bool) {
     // Create a buffer for the portions of the request and response
     char     tempBuffer[37] = "";
     uint16_t did_respond    = 0;

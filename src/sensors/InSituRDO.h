@@ -159,10 +159,15 @@
 // Included Dependencies
 #include "sensors/SDI12Sensors.h"
 
-// Sensor Specific Defines
 /** @ingroup sensor_insitu_rdo */
 /**@{*/
 
+/**
+ * @anchor sensor_insitu_rdo_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the RDO PRO-X
+ */
+/**@{*/
 /**
  * @brief Sensor::_numReturnedValues; the RDO PRO-X can report 4 values.
  *
@@ -173,6 +178,7 @@
 #define INSITU_RDO_NUM_VARIABLES 4
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define INSITU_RDO_INC_CALC_VARIABLES 0
+/**@}*/
 
 /**
  * @anchor sensor_insitu_rdo_timing

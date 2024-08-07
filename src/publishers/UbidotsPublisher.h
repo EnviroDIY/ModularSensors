@@ -164,9 +164,10 @@ class UbidotsPublisher : public dataPublisher {
      * @param outClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
+     * @param forceFlush Ask the publisher to flush buffered data immediately.
      * @return **int16_t** The http status code of the response.
      */
-    int16_t publishData(Client* outClient) override;
+    int16_t publishData(Client* outClient, bool forceFlush) override;
 
  protected:
     /**
@@ -194,6 +195,12 @@ class UbidotsPublisher : public dataPublisher {
 
  private:
     // Tokens for Ubidots
+    /**
+     * @brief The authentication token from Ubdots, either the Organization's
+     * Integration Token (under Users > Organization menu, visible by Admin
+     * only) OR the STEM User's Device Token (under the specific device's setup
+     * panel).
+     */
     const char* _authentificationToken = nullptr;
 };
 

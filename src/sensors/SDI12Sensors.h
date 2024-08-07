@@ -290,10 +290,10 @@ class SDI12Sensors : public Sensor {
     int8_t _extraWakeTime;
 
  private:
-    String _sensorVendor;
-    String _sensorModel;
-    String _sensorVersion;
-    String _sensorSerialNumber;
+    String _sensorVendor;   ///< The vendor (manufacturer) of the SDI-12 sensor
+    String _sensorModel;    ///< The model of the SDI-12 sensor
+    String _sensorVersion;  ///< The version of the SDI-12 sensor
+    String _sensorSerialNumber;  ///< The serial number of the SDI-12 sensor
 };
 
 #endif  // SRC_SENSORS_SDI12SENSORS_H_

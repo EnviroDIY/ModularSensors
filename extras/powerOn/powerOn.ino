@@ -1,3 +1,9 @@
+/** =========================================================================
+ * @file powerOn.ino
+ * @brief Testing sketch that simply turns on power to the sensors on the
+ * Mayfly.
+ * ======================================================================= */
+
 #include <Arduino.h>
 
 int8_t powerPin = 22;

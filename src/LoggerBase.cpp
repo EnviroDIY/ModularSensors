@@ -267,10 +267,19 @@ String Logger::getVarCodeAtI(uint8_t position_i) {
 String Logger::getVarUUIDAtI(uint8_t position_i) {
     return _internalArray->arrayOfVars[position_i]->getVarUUID();
 }
+// This returns the current value of the variable as a float
+float Logger::getValueAtI(uint8_t position_i) {
+    return _internalArray->arrayOfVars[position_i]->getValue();
+}
 // This returns the current value of the variable as a string with the
 // correct number of significant figures
 String Logger::getValueStringAtI(uint8_t position_i) {
     return _internalArray->arrayOfVars[position_i]->getValueString();
+}
+// This returns a particular value of the variable as a string with the
+// correct number of significant figures
+String Logger::formatValueStringAtI(uint8_t position_i, float value) {
+    return _internalArray->arrayOfVars[position_i]->formatValueString(value);
 }
 
 
@@ -332,15 +341,27 @@ void Logger::registerDataPublisher(dataPublisher* publisher) {
     dataPublishers[i] = publisher;
 }
 
+bool Logger::checkRemotesConnectionNeeded(void) {
+    MS_DBG(F("Asking publishers if they need a connection."));
 
-void Logger::publishDataToRemotes(void) {
+    bool needed = false;
+    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
+        if (dataPublishers[i] != nullptr) {
+            needed = needed || dataPublishers[i]->connectionNeeded();
+        }
+    }
+
+    return needed;
+}
+
+void Logger::publishDataToRemotes(bool forceFlush) {
     MS_DBG(F("Sending out remote data."));
 
     for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
         if (dataPublishers[i] != nullptr) {
             PRINTOUT(F("\nSending data to ["), i, F("]"),
                      dataPublishers[i]->getEndpoint());
-            dataPublishers[i]->publishData();
+            dataPublishers[i]->publishData(forceFlush);
             watchDogTimer.resetWatchDog();
         }
     }
@@ -582,13 +603,20 @@ void Logger::markTime(void) {
 bool Logger::checkInterval(void) {
     bool     retval;
     uint32_t checkTime = getNowLocalEpoch();
+    uint16_t interval  = _loggingIntervalMinutes;
+    if (_initialShortIntervals > 0) {
+        // log the first few samples at an interval of 1 minute so that
+        // operation can be quickly verified in the field
+        _initialShortIntervals -= 1;
+        interval = 1;
+    }
+
     MS_DBG(F("Current Unix Timestamp:"), checkTime, F("->"),
            formatDateTime_ISO8601(checkTime));
-    MS_DBG(F("Logging interval in seconds:"), (_loggingIntervalMinutes * 60));
-    MS_DBG(F("Mod of Logging Interval:"),
-           checkTime % (_loggingIntervalMinutes * 60));
+    MS_DBG(F("Logging interval in seconds:"), (interval * 60));
+    MS_DBG(F("Mod of Logging Interval:"), checkTime % (interval * 60));
 
-    if (checkTime % (_loggingIntervalMinutes * 60) == 0) {
+    if ((checkTime % (interval * 60) == 0) || Logger::startTesting) {
         // Update the time variables with the current time
         markTime();
         MS_DBG(F("Time marked at (unix):"), Logger::markedLocalEpochTime);
@@ -785,6 +813,20 @@ void Logger::systemSleep(void) {
 
 #elif defined ARDUINO_ARCH_AVR
 
+    // force bee reset pullup high (not used by SIM7080LTE)
+    pinMode(A5, OUTPUT);
+    digitalWrite(A5, HIGH);
+
+    // force UART 1 TX low
+    pinMode(11, OUTPUT);
+    digitalWrite(11, LOW);
+
+    // back up old UART configuration
+    uint8_t uart1_old = UCSR1B;
+
+    // disable UART so they stop setting TX pins high
+    UCSR1B = 0;
+
     // Set the sleep mode
     // In the avr/sleep.h file, the call names of these 5 sleep modes are:
     // SLEEP_MODE_IDLE         -the least power savings
@@ -869,6 +911,9 @@ void Logger::systemSleep(void) {
 
     // Re-enable the processor ADC
     ADCSRA |= _BV(ADEN);
+
+    // restore UART settings
+    UCSR1B = uart1_old;
 
     // Re-enables interrupts
     interrupts();
@@ -1389,20 +1434,30 @@ void Logger::begin() {
         PRINTOUT(F("Sampling feature UUID is:"), _samplingFeatureUUID);
     }
 
+
+    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
+        if (dataPublishers[i] != nullptr) {
+            PRINTOUT(F("Data will be published to ["), i, F("]"),
+                     dataPublishers[i]->getEndpoint());
+        }
+    }
+
     PRINTOUT(F("Logger portion of setup finished.\n"));
 }
 
 
 // This is a one-and-done to log data
-void Logger::logData(void) {
+void Logger::logData(bool sleepBeforeReturning) {
     // Reset the watchdog
     watchDogTimer.resetWatchDog();
 
     // Assuming we were woken up by the clock, check if the current time is an
-    // even interval of the logging interval
+    // even interval of the logging interval or that we have been specifically
+    // requested to log by pushbutton
     if (checkInterval()) {
         // Flag to notify that we're in already awake and logging a point
         Logger::isLoggingNow = true;
+
         // Reset the watchdog
         watchDogTimer.resetWatchDog();
 
@@ -1433,21 +1488,26 @@ void Logger::logData(void) {
 
         // Unset flag
         Logger::isLoggingNow = false;
+        // Acknowledge testing button if pressed
+        Logger::startTesting = false;
     }
 
     // Check if it was instead the testing interrupt that woke us up
     if (Logger::startTesting) testingMode();
 
-    // Sleep
-    systemSleep();
+    if (sleepBeforeReturning) {
+        // Sleep
+        systemSleep();
+    }
 }
 // This is a one-and-done to log data
-void Logger::logDataAndPublish(void) {
+void Logger::logDataAndPublish(bool sleepBeforeReturning) {
     // Reset the watchdog
     watchDogTimer.resetWatchDog();
 
     // Assuming we were woken up by the clock, check if the current time is an
-    // even interval of the logging interval
+    // even interval of the logging interval or that we have been specifically
+    // requested to log by pushbutton
     if (checkInterval()) {
         // Flag to notify that we're in already awake and logging a point
         Logger::isLoggingNow = true;
@@ -1483,22 +1543,31 @@ void Logger::logDataAndPublish(void) {
         // Create a csv data record and save it to the log file
         logToSD();
 
-        if (_logModem != nullptr) {
+        // flush the publisher buffers (if any) if we have been invoked by the
+        // testing button
+        bool forceFlush = Logger::startTesting;
+
+        // Sync the clock at noon
+        bool clockSyncNeeded =
+            (Logger::markedLocalEpochTime != 0 &&
+             Logger::markedLocalEpochTime % 86400 == 43200) ||
+            !isRTCSane(Logger::markedLocalEpochTime);
+        bool connectionNeeded = checkRemotesConnectionNeeded() ||
+            clockSyncNeeded || forceFlush;
+
+        if (_logModem != nullptr && connectionNeeded) {
             MS_DBG(F("Waking up"), _logModem->getModemName(), F("..."));
             if (_logModem->modemWake()) {
                 // Connect to the network
                 watchDogTimer.resetWatchDog();
                 MS_DBG(F("Connecting to the Internet..."));
-                if (_logModem->connectInternet()) {
+                if (_logModem->connectInternet(240000L)) {
                     // Publish data to remotes
                     watchDogTimer.resetWatchDog();
-                    publishDataToRemotes();
+                    publishDataToRemotes(forceFlush);
                     watchDogTimer.resetWatchDog();
 
-                    if ((Logger::markedLocalEpochTime != 0 &&
-                         Logger::markedLocalEpochTime % 86400 == 43200) ||
-                        !isRTCSane(Logger::markedLocalEpochTime)) {
-                        // Sync the clock at noon
+                    if (clockSyncNeeded) {
                         MS_DBG(F("Running a daily clock sync..."));
                         setRTClock(_logModem->getNISTTime());
                         watchDogTimer.resetWatchDog();
@@ -1518,6 +1587,12 @@ void Logger::logDataAndPublish(void) {
             }
             // Turn the modem off
             _logModem->modemSleepPowerDown();
+        } else if (_logModem != nullptr) {
+            MS_DBG(F("Nobody needs it so publishing without connecting..."));
+            // Call publish function without connection
+            watchDogTimer.resetWatchDog();
+            publishDataToRemotes(false);  // can't flush without a connection
+            watchDogTimer.resetWatchDog();
         }
 
 
@@ -1535,11 +1610,15 @@ void Logger::logDataAndPublish(void) {
 
         // Unset flag
         Logger::isLoggingNow = false;
+        // Acknowledge testing button if pressed
+        Logger::startTesting = false;
     }
 
     // Check if it was instead the testing interrupt that woke us up
     if (Logger::startTesting) testingMode();
 
-    // Call the processor sleep
-    systemSleep();
+    if (sleepBeforeReturning) {
+        // Call the processor sleep
+        systemSleep();
+    }
 }

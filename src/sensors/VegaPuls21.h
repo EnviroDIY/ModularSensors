@@ -61,11 +61,17 @@
 /** @ingroup sensor_vega_puls21 */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_vega_puls21_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the VEGA PULS 21
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the VEGA PULS 21 can report 5 values
 #define VEGAPULS21_NUM_VARIABLES 5
 /// @brief Sensor::_incCalcValues;
 #define VEGAPULS21_INC_CALC_VARIABLES 0
+/**@}*/
 
 /**
  * @anchor sensor_vega_puls21_timing

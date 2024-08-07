@@ -92,13 +92,19 @@
 /** @ingroup sensor_i2c_rain */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_i2c_rain_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the tipping bucket counter
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the tipping bucket counter can report 2
 /// values.
 #define BUCKET_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; we calculate rain depth from the number of
 /// tips, assuming either English or metric calibration.
 #define BUCKET_INC_CALC_VARIABLES 1
+/**@}*/
 
 /**
  * @anchor sensor_i2c_rain_timing

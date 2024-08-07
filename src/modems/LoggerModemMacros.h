@@ -365,6 +365,8 @@
  * connection to be made, if possible.
  *
  * @param specificModem The modem subclass
+ * @param auto_reconnect_time The amount of time, in milliseconds, to allow the
+ * modem to attempt to connect automatically from saved credentials.
  *
  * @return The text of a connectInternet(uint32_t maxConnectionTime) function
  * specific to a single modem subclass.
@@ -452,6 +454,18 @@
     }
 #endif  // #if defined TINY_GSM_MODEM_HAS_GPRS
 
+/**
+ * @brief The port hosting the NIST "time" protocol (37)
+ */
+#define TIME_PROTOCOL_PORT 37
+
+// Try up to 4 NIST IP addresses attempting to get a timestamp from NIST
+#if !defined NIST_SERVER_RETRYS || defined(DOXYGEN)
+/**
+ * @brief The number of retry attempts when connecting to the NIST server.
+ */
+#define NIST_SERVER_RETRYS 4
+#endif  // NIST_SERVER_RETRYS
 
 /**
  * @brief Creates a getNISTTime() function for a specific modem subclass.
@@ -472,45 +486,47 @@
  * subclass.
  *
  */
-#define MS_MODEM_GET_NIST_TIME(specificModem)                                 \
-    uint32_t specificModem::getNISTTime(void) {                               \
-        /** Check for and bail if not connected to the internet. */           \
-        if (!isInternetAvailable()) {                                         \
-            MS_DBG(F("No internet connection, cannot connect to NIST."));     \
-            return 0;                                                         \
-        }                                                                     \
-                                                                              \
-        /** Try up to 12 times to get a timestamp from NIST. */               \
-        for (uint8_t i = 0; i < 12; i++) {                                    \
-            while (millis() < _lastNISTrequest + 4000) { /* wait */           \
-            }                                                                 \
-                                                                              \
-            /** Make TCP connection. */                                       \
-            MS_DBG(F("\nConnecting to NIST daytime Server"));                 \
-            bool connectionMade = gsmClient.connect("time.nist.gov", 37, 15); \
-                                                                              \
-            /** Wait up to 5 seconds for a response. */                       \
-            if (connectionMade) {                                             \
-                uint32_t start = millis();                                    \
-                while (gsmClient && gsmClient.available() < 4 &&              \
-                       millis() - start < 5000L) {}                           \
-                                                                              \
-                if (gsmClient.available() >= 4) {                             \
-                    MS_DBG(F("NIST responded after"), millis() - start,       \
-                           F("ms"));                                          \
-                    byte response[4] = {0};                                   \
-                    gsmClient.read(response, 4);                              \
-                    if (gsmClient.connected()) gsmClient.stop();              \
-                    return parseNISTBytes(response);                          \
-                } else {                                                      \
-                    MS_DBG(F("NIST Time server did not respond!"));           \
-                    if (gsmClient.connected()) gsmClient.stop();              \
-                }                                                             \
-            } else {                                                          \
-                MS_DBG(F("Unable to open TCP to NIST!"));                     \
-            }                                                                 \
-        }                                                                     \
-        return 0;                                                             \
+#define MS_MODEM_GET_NIST_TIME(specificModem)                                \
+    uint32_t specificModem::getNISTTime(void) {                              \
+        /** Check for and bail if not connected to the internet. */          \
+        if (!isInternetAvailable()) {                                        \
+            MS_DBG(F("No internet connection, cannot connect to NIST."));    \
+            return 0;                                                        \
+        }                                                                    \
+                                                                             \
+        /** Try up to 12 times to get a timestamp from NIST. */              \
+        for (uint8_t i = 0; i < 12; i++) {                                   \
+            while (millis() < _lastNISTrequest + 4000) { /* wait */          \
+            }                                                                \
+                                                                             \
+            /** Make TCP connection. */                                      \
+            MS_DBG(F("\nConnecting to NIST daytime Server"));                \
+            bool connectionMade = gsmClient.connect("time.nist.gov",         \
+                                                    TIME_PROTOCOL_PORT, 15); \
+                                                                             \
+            /** Wait up to 5 seconds for a response. */                      \
+            if (connectionMade) {                                            \
+                uint32_t start = millis();                                   \
+                while (gsmClient &&                                          \
+                       gsmClient.available() < NIST_SERVER_RETRYS &&         \
+                       millis() - start < 5000L) {}                          \
+                                                                             \
+                if (gsmClient.available() >= 4) {                            \
+                    MS_DBG(F("NIST responded after"), millis() - start,      \
+                           F("ms"));                                         \
+                    byte response[4] = {0};                                  \
+                    gsmClient.read(response, 4);                             \
+                    if (gsmClient.connected()) gsmClient.stop();             \
+                    return parseNISTBytes(response);                         \
+                } else {                                                     \
+                    MS_DBG(F("NIST Time server did not respond!"));          \
+                    if (gsmClient.connected()) gsmClient.stop();             \
+                }                                                            \
+            } else {                                                         \
+                MS_DBG(F("Unable to open TCP to NIST!"));                    \
+            }                                                                \
+        }                                                                    \
+        return 0;                                                            \
     }
 
 #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
@@ -589,11 +605,11 @@
 
 #ifdef TINY_GSM_MODEM_HAS_BATTERY
 /**
- * @brief Creates a getModemBatteryStats(uint8_t& chargeState, int8_t& percent,
- * uint16_t& milliVolts) function for a specific modem subclass.
+ * @brief Creates a getModemBatteryStats(int8_t& chargeState, int8_t& percent,
+ * int16_t& milliVolts) function for a specific modem subclass.
  *
  * This is a passthrough to the specific modem's getBattStats(uint8_t&
- * chargeState, int8_t& percent, uint16_t& milliVolts) for modems where such
+ * chargeState, int8_t& percent, int16_t& milliVolts) for modems where such
  * data is available.
  *
  * This populates the entered references with -9999s for modems where such data
@@ -601,24 +617,24 @@
  *
  * @param specificModem The modem subclass
  *
- * @return The text of a getModemBatteryStats(uint8_t& chargeState, int8_t&
- * percent, uint16_t& milliVolts) function specific to a single modem subclass.
+ * @return The text of a getModemBatteryStats(int8_t& chargeState, int8_t&
+ * percent, int16_t& milliVolts) function specific to a single modem subclass.
  *
  */
 #define MS_MODEM_GET_MODEM_BATTERY_DATA(specificModem)                  \
     bool specificModem::getModemBatteryStats(                           \
-        uint8_t& chargeState, int8_t& percent, uint16_t& milliVolts) {  \
+        int8_t& chargeState, int8_t& percent, int16_t& milliVolts) {    \
         MS_DBG(F("Getting modem battery data:"));                       \
         return gsmModem.getBattStats(chargeState, percent, milliVolts); \
     }
 
 #else
 /**
- * @brief Creates a getModemBatteryStats(uint8_t& chargeState, int8_t& percent,
- * uint16_t& milliVolts) function for a specific modem subclass.
+ * @brief Creates a getModemBatteryStats(int8_t& chargeState, int8_t& percent,
+ * int16_t& milliVolts) function for a specific modem subclass.
  *
  * This is a passthrough to the specific modem's getBattStats(uint8_t&
- * chargeState, int8_t& percent, uint16_t& milliVolts) for modems where such
+ * chargeState, int8_t& percent, int16_t& milliVolts) for modems where such
  * data is available.
  *
  * This populates the entered references with -9999s for modems where such data
@@ -626,18 +642,18 @@
  *
  * @param specificModem The modem subclass
  *
- * @return The text of a getModemBatteryStats(uint8_t& chargeState, int8_t&
- * percent, uint16_t& milliVolts) function specific to a single modem subclass.
+ * @return The text of a getModemBatteryStats(int8_t& chargeState, int8_t&
+ * percent, int16_t& milliVolts) function specific to a single modem subclass.
  *
  */
-#define MS_MODEM_GET_MODEM_BATTERY_DATA(specificModem)                 \
-    bool specificModem::getModemBatteryStats(                          \
-        uint8_t& chargeState, int8_t& percent, uint16_t& milliVolts) { \
-        MS_DBG(F("This modem doesn't return battery information!"));   \
-        chargeState = 99;                                              \
-        percent     = -99;                                             \
-        milliVolts  = 9999;                                            \
-        return false;                                                  \
+#define MS_MODEM_GET_MODEM_BATTERY_DATA(specificModem)               \
+    bool specificModem::getModemBatteryStats(                        \
+        int8_t& chargeState, int8_t& percent, int16_t& milliVolts) { \
+        MS_DBG(F("This modem doesn't return battery information!")); \
+        chargeState = 99;                                            \
+        percent     = -99;                                           \
+        milliVolts  = 9999;                                          \
+        return false;                                                \
     }
 #endif
 

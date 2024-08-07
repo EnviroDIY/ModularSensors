@@ -82,11 +82,17 @@
 /** @ingroup sensor_sht4x */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_sht4x_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the SHT4x
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the SHT4x can report 2 values.
 #define SHT4X_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define SHT4X_INC_CALC_VARIABLES 0
+/**@}*/
 
 /**
  * @anchor sensor_sht4x_timing

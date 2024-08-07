@@ -80,11 +80,17 @@
 /** @ingroup sensor_mpl115a2 */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_mpl115a2_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the MPL115A2
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the MPL115A2 can report 2 values.
 #define MPL115A2_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define MPL115A2_INC_CALC_VARIABLES 0
+/**@}*/
 
 /**
  * @anchor sensor_mpl115a2_timing

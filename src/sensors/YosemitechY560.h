@@ -57,11 +57,17 @@
 /** @ingroup sensor_y560 */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_y560_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by a Yosemitch Y560
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the Y560 can report 3 values.
 #define Y560_NUM_VARIABLES 3
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define Y560_INC_CALC_VARIABLES 0
+/**@}*/
 
 /**
  * @anchor sensor_y560_timing

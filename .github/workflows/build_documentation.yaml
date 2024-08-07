@@ -21,18 +21,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  REBUILD_CACHE_NUMBER: 2
-  PYTHON_DEPS_ARCHIVE_NUM: 2
-  DOXYGEN_VERSION: Release_1_9_6
-  TEX_VERSION: 2019
-  # ^^ 2019 is the latest TeX live available on apt-get and that's good enough
-  GRAPHVIZ_VERSION: 2.43.0
-
 jobs:
   check_menu_inclusion:
     runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, 'ci skip')"
+    if: ${{ ! contains(github.event.head_commit.message, 'ci skip') }}
     name: Check that all classes are documented in the menu-a-la-carte example
 
     steps:
@@ -78,78 +70,10 @@ jobs:
         run: exit 1
 
   doc_build:
-    runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, 'ci skip')"
+    if: ${{ ! contains(github.event.head_commit.message, 'ci skip') }}
     name: Build documentation
-
-    steps:
-      # check out the ModularSensors repo
-      - uses: actions/checkout@v4
-        with:
-          path: code_docs/ModularSensors
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-
-      - name: Restore Python Dependencies
-        uses: actions/cache@v4
-        id: cache_python
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-python-${{ env.REBUILD_CACHE_NUMBER }}-${{ env.PYTHON_DEPS_ARCHIVE_NUM }}
-
-      - name: Install Pygments and other m.css Python Requirements
-        run: |
-          python -m pip install --upgrade pip
-          pip3 install --upgrade --upgrade-strategy only-if-needed jinja2 Pygments beautifulsoup4
-
-      - name: Restore Doxygen, Graphviz, and TeX Live
-        id: cache_doxygen
-        uses: actions/cache@v4
-        with:
-          path: |
-            /usr/lib/x86_64-linux-gnu/texlive
-            /usr/lib/x86_64-linux-gnu/graphviz
-            doxygen-src
-          key: ${{ runner.os }}-doxygen-${{ env.REBUILD_CACHE_NUMBER }}-${{ env.DOXYGEN_VERSION }}-${{ env.TEX_VERSION }}-${{ env.GRAPHVIZ_VERSION }}
-
-      - name: Build and install doxygen and its dependencies
-        if: steps.cache_doxygen.outputs.cache-hit != 'true'
-        run: |
-          cd ${{ github.workspace }}/code_docs/ModularSensors/
-          chmod +x continuous_integration/build-install-doxygen.sh
-          sh continuous_integration/build-install-doxygen.sh
-
-      # check out my fork of m.css, for processing Doxygen output
-      - name: Checkout m.css
-        uses: actions/checkout@v4
-        with:
-          # Repository name with owner. For example, actions/checkout
-          repository: SRGDamia1/m.css
-          path: code_docs/m.css
-
-      - name: Generate all the documentation
-        continue-on-error: true
-        run: |
-          cd ${{ github.workspace }}/code_docs/ModularSensors/
-          chmod +x continuous_integration/generate-documentation.sh
-          sh continuous_integration/generate-documentation.sh 2>&1 | tee doxygen_run_output.log
-          result_code=${PIPESTATUS[0]}
-          echo "doxygen_warnings=$(cat docs/output_doxygen.log)" >> $GITHUB_OUTPUT
-          echo "mcss_warnings=$(cat docs/output_mcss.log)" >> $GITHUB_OUTPUT
-          echo "## Doxygen completed with the following warnings:" >> $GITHUB_STEP_SUMMARY
-          echo "$(cat docs/output_doxygen.log)" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## mcss Doxygen post-processing completed with the following warnings:" >> $GITHUB_STEP_SUMMARY
-          echo "$(cat docs/output_mcss.log)" >> $GITHUB_STEP_SUMMARY
-          echo "Finished generating documentation"
-          exit $result_code
-
-      - name: Deploy to github pages
-        if: "(github.event_name == 'release' && github.event.action == 'published') || (github.event_name == 'workflow_dispatch' && github.event.inputs.publish == 'true')"
-        uses: peaceiris/actions-gh-pages@v4.0.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ${{ github.workspace }}/code_docs/ModularSensorsDoxygen/m.css
+    uses: EnviroDIY/workflows/.github/workflows/build_documentation.yaml@main
+    with:
+      publish: ${{ (github.event_name == 'release' && github.event.action == 'published') || (github.event_name == 'workflow_dispatch' && github.event.inputs.publish == 'true') }}
+      rebuild_cache_number: 1
+    secrets: inherit

@@ -22,8 +22,6 @@ AnalogElecConductivity::AnalogElecConductivity(int8_t powerPin, int8_t dataPin,
              ANALOGELECCONDUCTIVITY_STABILIZATION_TIME_MS,
              ANALOGELECCONDUCTIVITY_MEASUREMENT_TIME_MS, powerPin, dataPin,
              measurementsToAverage, ANALOGELECCONDUCTIVITY_INC_CALC_VARIABLES),
-      _EcPowerPin(powerPin),
-      _EcAdcPin(dataPin),
       _Rseries_ohms(Rseries_ohms),
       _sensorEC_Konst(sensorEC_Konst) {}
 // Destructor
@@ -31,13 +29,13 @@ AnalogElecConductivity::~AnalogElecConductivity() {}
 
 String AnalogElecConductivity::getSensorLocation(void) {
     String sensorLocation = F("anlgEc Proc Data/Pwr");
-    sensorLocation += String(_EcAdcPin) + "/" + String(_EcPowerPin);
+    sensorLocation += String(_dataPin) + "/" + String(_powerPin);
     return sensorLocation;
 }
 
 
 float AnalogElecConductivity::readEC() {
-    return readEC(_EcAdcPin);
+    return readEC(_dataPin);
 }
 
 
@@ -92,7 +90,7 @@ bool AnalogElecConductivity::addSingleMeasurementResult(void) {
     if (bitRead(_sensorStatus, 6)) {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-        sensorEC_uScm = readEC(_EcAdcPin);
+        sensorEC_uScm = readEC(_dataPin);
         MS_DBG(F("Water EC (uSm/cm)"), sensorEC_uScm);
     } else {
         MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));

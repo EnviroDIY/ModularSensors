@@ -43,6 +43,7 @@
  * of known resistance (R1) and then to an analog pin to measure the voltage.
  *
  * So the circuit is:
+ *
  * @code{.unparsed}
  *  Vin (sensor power) --- R1 --- power cord  --- Vout
  *                                     |
@@ -133,89 +134,52 @@
 #ifndef SRC_SENSORS_ANALOGELECCONDUCTIVITY_H_
 #define SRC_SENSORS_ANALOGELECCONDUCTIVITY_H_
 
+// Debugging Statement
+// #define MS_ANALOGELECCONDUCTIVITY_DEBUG
+// #define MS_ANALOGELECCONDUCTIVITY_DEBUG_DEEP
+
 #ifdef MS_ANALOGELECCONDUCTIVITY_DEBUG
 #define MS_DEBUGGING_STD "AnalogElecConductivity"
 #endif
 #ifdef MS_ANALOGELECCONDUCTIVITY_DEBUG_DEEP
 #define MS_DEBUGGING_DEEP "AnalogElecConductivity"
 #endif
+
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 #undef MS_DEBUGGING_DEEP
-#include "SensorBase.h"
 #include "VariableBase.h"
+#include "SensorBase.h"
 #include "math.h"
 
 /** @ingroup sensor_analog_cond */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_analog_cond_parts_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the analog conductivity
+ * sensor
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; we only get one value from the analog
 /// conductivity sensor.
 #define ANALOGELECCONDUCTIVITY_NUM_VARIABLES 1
-/// @brief Sensor::_incCalcValues; we don't calculate any additional values -
+/// @brief Sensor::_incCalcValues; we don't calculate any additional values
 /// though we recommend users include a temperature sensor and calculate
 /// specific conductance in their own program.
 #define ANALOGELECCONDUCTIVITY_INC_CALC_VARIABLES 0
-
-/**
- * @anchor sensor_analog_cond_parts_timing
- * @name Sensor Timing
- * The timing for analog conductivity via resistance.
- */
-/**@{*/
-/// @brief Sensor::_warmUpTime_ms; giving 2ms for warm-up.
-#define ANALOGELECCONDUCTIVITY_WARM_UP_TIME_MS 2
-/// @brief Sensor::_stabilizationTime_ms; we give just a tiny delay for
-/// stabilization.
-#define ANALOGELECCONDUCTIVITY_STABILIZATION_TIME_MS 1
-/**
- * @brief Sensor::_measurementTime_ms; we assume the analog voltage is measured
- * instantly.
- *
- * It's not really *quite* instantly, but it is very fast and the time to
- * measure is included in the read function.
- * On ATmega based boards (UNO, Nano, Mini, Mega), it takes about 100
- * microseconds (0.0001 s) to read an analog input, so the maximum reading rate
- * is about 10,000 times a second.
- */
-#define ANALOGELECCONDUCTIVITY_MEASUREMENT_TIME_MS 0
 /**@}*/
 
-
 /**
- * @anchor sensor_analog_cond_parts_ec
- * @name Electrical Conductance
- * The humidity variable from an AOSong DHT
- * - Range: low 100's when open air, for short circuit: a high number
- * - Accuracy: needs determining for each combination of ADC. ADC_REF, and
- * series R. its designed as a very simple relative EC measurement
- *
- * {{ @ref AnalogElecConductivity_EC::AnalogElecConductivity_EC }}
+ * @anchor sensor_analog_cond_parts_config
+ * @name Configuration Defines
+ * Defines to help configure the range and resolution of the home-made
+ * conductivity sensor depending on the processor and ADC in use.
  */
 /**@{*/
-/**
- * @brief Decimals places in string representation; EC should have 1
- *
- * Range of 0-3V3 with 10bit ADC - resolution of 0.003 = 3 µS/cm.
- */
-#define ANALOGELECCONDUCTIVITY_EC_RESOLUTION 1
-/// @brief Sensor vensor variable number; EC is stored in sensorValues[0].
-#define ANALOGELECCONDUCTIVITY_EC_VAR_NUM 0
-/// @brief Variable name in
-/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
-/// "electricalConductivity"
-#define ANALOGELECCONDUCTIVITY_EC_VAR_NAME "electricalConductivity"
-/// @brief Variable unit name in
-/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
-/// "microsiemenPerCentimeter" (µS/cm)
-#define ANALOGELECCONDUCTIVITY_EC_UNIT_NAME "microsiemenPerCentimeter"
-/// @brief Default variable short code; "anlgEc"
-#define ANALOGELECCONDUCTIVITY_EC_DEFAULT_CODE "anlgEc"
-/**@}*/
-
-#if !defined ANALOG_EC_ADC_RESOLUTION
+#if !defined ANALOG_EC_ADC_RESOLUTION || defined(DOXYGEN)
 /**
  * @brief Default resolution (in bits) of the voltage measurement
  *
@@ -232,7 +196,7 @@
 #define ANALOG_EC_ADC_RANGE (1 << ANALOG_EC_ADC_RESOLUTION)
 
 /* clang-format off */
-#if !defined ANALOG_EC_ADC_REFERENCE_MODE
+#if !defined ANALOG_EC_ADC_REFERENCE_MODE || defined (DOXYGEN)
 #if defined (ARDUINO_ARCH_AVR) || defined (DOXYGEN)
 /**
  * @brief The voltage reference mode for the processor's ADC.
@@ -282,7 +246,7 @@
 #endif  // ARDUINO_ARCH_SAMD
 /* clang-format on */
 
-#if !defined RSERIES_OHMS_DEF
+#if !defined RSERIES_OHMS_DEF || defined(DOXYGEN)
 /**
  * @brief The default resistance (in ohms) of the measuring resistor.
  * This should not be less than 300 ohms when measuring EC in water.
@@ -290,7 +254,7 @@
 #define RSERIES_OHMS_DEF 499
 #endif  // RSERIES_OHMS_DEF
 
-#if !defined SENSOREC_KONST_DEF
+#if !defined SENSOREC_KONST_DEF || defined(DOXYGEN)
 /**
  * @brief Cell Constant For EC Measurements.
  *
@@ -304,9 +268,62 @@
  */
 #define SENSOREC_KONST_DEF 1.0
 #endif  // SENSOREC_KONST_DEF
+/**@}*/
 
 /**
- * @brief Class for the analog Electrical Conductivity monitor
+ * @anchor sensor_analog_cond_parts_timing
+ * @name Sensor Timing
+ * The timing for analog conductivity via resistance.
+ */
+/**@{*/
+/// @brief Sensor::_warmUpTime_ms; giving 2ms for warm-up.
+#define ANALOGELECCONDUCTIVITY_WARM_UP_TIME_MS 2
+/// @brief Sensor::_stabilizationTime_ms; we give just a tiny delay for
+/// stabilization.
+#define ANALOGELECCONDUCTIVITY_STABILIZATION_TIME_MS 1
+/**
+ * @brief Sensor::_measurementTime_ms; we assume the analog voltage is measured
+ * instantly.
+ *
+ * It's not really *quite* instantly, but it is very fast and the time to
+ * measure is included in the read function.
+ * On ATmega based boards (UNO, Nano, Mini, Mega), it takes about 100
+ * microseconds (0.0001 s) to read an analog input, so the maximum reading rate
+ * is about 10,000 times a second.
+ */
+#define ANALOGELECCONDUCTIVITY_MEASUREMENT_TIME_MS 0
+/**@}*/
+/**
+ * @anchor sensor_analog_cond_parts_ec
+ * @name Electrical Conductance
+ * The electrical conductance variable from a home-made analog sensor.
+ *
+ * {{ @ref AnalogElecConductivity_EC::AnalogElecConductivity_EC }}
+ */
+/**@{*/
+/**
+ * @brief Decimals places in string representation; EC should have 1
+ *
+ * Range of 0-3V3 with 10bit ADC - resolution of 0.003 = 3 µS/cm.
+ */
+#define ANALOGELECCONDUCTIVITY_EC_RESOLUTION 1
+/// @brief Sensor variable number; EC is stored in sensorValues[0].
+#define ANALOGELECCONDUCTIVITY_EC_VAR_NUM 0
+/// @brief Variable name in [ODM2 controlled
+/// vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "electricalConductivity"
+#define ANALOGELECCONDUCTIVITY_EC_VAR_NAME "electricalConductivity"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "microsiemenPerCentimeter" (µS/cm)
+#define ANALOGELECCONDUCTIVITY_EC_UNIT_NAME "microsiemenPerCentimeter"
+/// @brief Default variable short code; "anlgEc"
+#define ANALOGELECCONDUCTIVITY_EC_DEFAULT_CODE "anlgEc"
+/**@}*/
+
+/**
+ * @brief Class for the analog [Electrical Conductivity monitor](@ref
+ * sensor_analog_cond)
  *
  * @ingroup sensor_analog_cond
  */
@@ -381,11 +398,6 @@ class AnalogElecConductivity : public Sensor {
     float readEC(uint8_t analogPinNum);
 
  private:
-    int8_t _EcPowerPin;
-    int8_t _EcAdcPin;
-
-    float* _ptrWaterTemperature_C;
-
     /// @brief The resistance of the circiut resistor plus any series port
     /// resistance
     float _Rseries_ohms = RSERIES_OHMS_DEF;
@@ -395,11 +407,10 @@ class AnalogElecConductivity : public Sensor {
 };
 
 /**
- * @brief The variable class used for electricalConductivity measured using an
- * analog pin connected to electrodes submerged in the medium
+ * @brief The Variable sub-class used for electrical conductivity measured using
+ * an analog pin connected to electrodes submerged in the medium
  *
  * @ingroup sensor_analog_cond
- *
  */
 class AnalogElecConductivity_EC : public Variable {
  public:

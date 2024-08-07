@@ -4,6 +4,7 @@
  * Part of the EnviroDIY ModularSensors library for Arduino.
  * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ * @author Thomas Watson <twatson52@icloud.com>
  *
  * @brief Contains the EnviroDIYPublisher subclass of dataPublisher for
  * publishing data to the Monitor My Watershed/EnviroDIY data portal at
@@ -25,6 +26,7 @@
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 #include "dataPublisherBase.h"
+#include "LogBuffer.h"
 
 
 // ============================================================================
@@ -105,8 +107,48 @@ class EnviroDIYPublisher : public dataPublisher {
 
     // Returns the data destination
     String getEndpoint(void) override {
-        return String(enviroDIYHost);
+        return String(enviroDIYHost) + String(enviroDIYPath);
     }
+
+    /**
+     * @brief Get the EnviroDIY/Monitor My Watershed web host
+     *
+     * @return **String** The EnviroDIY/Monitor My Watershed web host
+     */
+    String getHost(void);
+
+    /**
+     * @brief Set the EnviroDIY/Monitor My Watershed web host
+     *
+     * @param host The EnviroDIY/Monitor My Watershed web host
+     */
+    void setHost(const char* host);
+
+    /**
+     * @brief Get the EnviroDIY/Monitor My Watershed API path
+     *
+     * @return **String** The EnviroDIY/Monitor My Watershed API path
+     */
+    String getPath(void);
+    /**
+     * @brief Set the EnviroDIY/Monitor My Watershed API path
+     *
+     * @param endpoint The EnviroDIY/Monitor My Watershed API path
+     */
+    void setPath(const char* endpoint);
+
+    /**
+     * @brief Get the EnviroDIY/Monitor My Watershed API port
+     *
+     * @return **int** The EnviroDIY/Monitor My Watershed API port
+     */
+    int getPort(void);
+    /**
+     * @brief Set the EnviroDIY/Monitor My Watershed API port
+     *
+     * @param port The EnviroDIY/Monitor My Watershed API port
+     */
+    void setPort(int port);
 
     // Adds the site registration token
     /**
@@ -146,6 +188,14 @@ class EnviroDIYPublisher : public dataPublisher {
                const char* samplingFeatureUUID);
 
     /**
+     * @brief Checks if the publisher needs an Internet connection for the next
+     * publishData call (as opposed to just buffering data internally).
+     *
+     * @return True if an internet connection is needed for the next publish.
+     */
+    bool connectionNeeded(void) override;
+
+    /**
      * @brief Utilize an attached modem to open a a TCP connection to the
      * EnviroDIY/ODM2DataSharingPortal and then stream out a post request over
      * that connection.
@@ -156,9 +206,10 @@ class EnviroDIYPublisher : public dataPublisher {
      * @param outClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
+     * @param forceFlush Ask the publisher to flush buffered data immediately.
      * @return **int16_t** The http status code of the response.
      */
-    int16_t publishData(Client* outClient) override;
+    int16_t publishData(Client* outClient, bool forceFlush = false) override;
 
  protected:
     /**
@@ -167,9 +218,9 @@ class EnviroDIYPublisher : public dataPublisher {
      *
      * @{
      */
-    static const char* postEndpoint;         ///< The endpoint
-    static const char* enviroDIYHost;        ///< The host name
-    static const int   enviroDIYPort;        ///< The host port
+    const char*        enviroDIYPath;        ///< The api path
+    const char*        enviroDIYHost;        ///< The host name
+    int                enviroDIYPort;        ///< The host port
     static const char* tokenHeader;          ///< The token header text
     static const char* contentLengthHeader;  ///< The content length header text
     static const char* contentTypeHeader;    ///< The content type header text
@@ -183,10 +234,37 @@ class EnviroDIYPublisher : public dataPublisher {
      */
     static const char* samplingFeatureTag;  ///< The JSON feature UUID tag
     static const char* timestampTag;        ///< The JSON feature timestamp tag
-                                            /**@}*/
+
+    /**@}*/
+
+
+    LogBuffer _logBuffer;  ///< Internal reference to the logger buffer
+
+    // actually transmit rather than just buffer data
+    /**
+     * @brief Transmit data from the data buffer to an external site
+     *
+     * @param outClient The client to publish the data over
+     * @return **int16_t** The HTTP response code from the publish attempt
+     *
+     * @note A 504 will be returned automatically if the server does not
+     * respond within 30 seconds.
+     */
+    int16_t flushDataBuffer(Client* outClient);
+
+    /**
+     * @brief The number of transmissions remaing at the single minute intervals
+     *
+     * We send every one of the first five data points at only one minute
+     * intervals for faster in-field validation.
+     */
+    uint8_t _initialTransmissionsRemaining = 5;
 
  private:
-    // Tokens and UUID's for EnviroDIY
+    /**
+     * @brief Internal reference to the EnviroDIY/Monitor My Watershed
+     * registration token.
+     */
     const char* _registrationToken = nullptr;
 };
 

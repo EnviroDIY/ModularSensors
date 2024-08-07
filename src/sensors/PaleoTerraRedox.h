@@ -82,12 +82,28 @@
 /** @ingroup sensor_pt_redox */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_pt_redox_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by PaleoTerra redox sensor
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the PaleoTerra redox sensor can report 1
 /// value.
 #define PTR_NUM_VARIABLES 1
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define PTR_INC_CALC_VARIABLES 0
+/**@}*/
+
+/**
+ * @anchor sensor_pt_redox_config
+ * @name Configuration Defines
+ * Defines to set the address of the PaleoTerra redox sensor.
+ */
+/**@{*/
+/// @brief The default I2C address of the PaleoTerra redox sensor
+#define MCP3421_ADR 0x68
+/**@}*/
 
 /**
  * @anchor sensor_pt_redox_timing
@@ -134,9 +150,6 @@
 /// @brief Default variable short code; "PTRVoltage"
 #define PTR_VOLTAGE_DEFAULT_CODE "PTRVoltage"
 /**@}*/
-
-/// @brief The default I2C address of the PaleoTerra redox sensor
-#define MCP3421_ADR 0x68
 
 // The main class for the PaleoTerra Redox Sensor
 /* clang-format off */

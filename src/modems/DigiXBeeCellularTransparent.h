@@ -81,9 +81,6 @@
 #define MS_DEBUGGING_STD "DigiXBeeCellularTransparent"
 #endif
 
-/** @ingroup modem_digi_cellular */
-/**@{*/
-
 /**
  * @brief The modem type for the underlying TinyGSM library.
  */
@@ -105,6 +102,9 @@
 #ifdef MS_DIGIXBEECELLULARTRANSPARENT_DEBUG_DEEP
 #include <StreamDebugger.h>
 #endif
+
+/** @ingroup modem_digi_cellular */
+/**@{*/
 
 /**
  * @brief The class for any of
@@ -168,8 +168,8 @@ class DigiXBeeCellularTransparent : public DigiXBee {
     uint32_t getNISTTime(void) override;
 
     bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
-    bool  getModemBatteryStats(uint8_t& chargeState, int8_t& percent,
-                               uint16_t& milliVolts) override;
+    bool  getModemBatteryStats(int8_t& chargeState, int8_t& percent,
+                               int16_t& milliVolts) override;
     float getModemChipTemperature(void) override;
 
     bool updateModemMetadata(void) override;
@@ -204,9 +204,9 @@ class DigiXBeeCellularTransparent : public DigiXBee {
     bool isModemAwake(void) override;
 
  private:
-    const char* _apn;
-    const char* _user;
-    const char* _pwd;
+    const char* _apn;   ///< Internal reference to the cellular APN
+    const char* _user;  ///< Internal reference to the APN's user name
+    const char* _pwd;   ///< Internal reference to the APN's password
 };
 /**@}*/
 #endif  // SRC_MODEMS_DIGIXBEECELLULARTRANSPARENT_H_

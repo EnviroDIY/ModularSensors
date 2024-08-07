@@ -1,3 +1,9 @@
+/** =========================================================================
+ * @file Stream_Debug.ino
+ * @brief Testing sketch to run StreamDebugger to copy text from one serial
+ * output to another.
+ * ======================================================================= */
+
 #include <Arduino.h>
 #include <StreamDebugger.h>
 StreamDebugger StreamDbg(Serial1, Serial);

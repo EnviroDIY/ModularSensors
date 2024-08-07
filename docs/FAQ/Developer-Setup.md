@@ -1,4 +1,4 @@
-# Developer Setup <!-- {#page_for_developers} -->
+# Developer Setup<!-- {#page_for_developers} -->
 
 If you want to fork this repository and work with it, you'll need to set PlatformIO up a bit differently than you would to merely use this library.
 
@@ -41,7 +41,7 @@ check_flags =
     clangtidy: --checks=-*
 ; deep search for dependencies, evalulating preprocessor conditionals
 lib_ldf_mode = deep+
-; look for the library director
+; look for the library directory
 lib_extra_dirs = .
 ; We have to ignore these folders or PlatformIO will double count all the dependencies
 lib_ignore =
@@ -161,6 +161,6 @@ build_flags =
 build_unflags = -D USE_TINYUSB
 ```
 
-While you're working on development, there is *extensive* debugging text built into this library.
+While you're working on development, there is _extensive_ debugging text built into this library.
 More on that is in the [Code Debugging](https://github.com/EnviroDIY/ModularSensors/wiki/Code-Debugging) page.
 In fact, there is _so much_ debugging that turning it on universally through a build flag will cause the program to be too big to fit on a Mayfly and will likely crash a SAMD board's on-board USB drivers.

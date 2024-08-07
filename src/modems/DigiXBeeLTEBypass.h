@@ -74,9 +74,6 @@
 #define MS_DEBUGGING_STD "DigiXBeeLTEBypass"
 #endif
 
-/** @ingroup modem_digi_lte_bypass */
-/**@{*/
-
 /**
  * @brief The modem type for the underlying TinyGSM library.
  */
@@ -98,6 +95,9 @@
 #ifdef MS_DIGIXBEELTEBYPASS_DEBUG_DEEP
 #include <StreamDebugger.h>
 #endif
+
+/** @ingroup modem_digi_lte_bypass */
+/**@{*/
 
 /**
  * @brief The class for any of Digi's cellular LTE-M [XBee3](@ref modem_digi)
@@ -149,8 +149,8 @@ class DigiXBeeLTEBypass : public DigiXBee {
     uint32_t getNISTTime(void) override;
 
     bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
-    bool  getModemBatteryStats(uint8_t& chargeState, int8_t& percent,
-                               uint16_t& milliVolts) override;
+    bool  getModemBatteryStats(int8_t& chargeState, int8_t& percent,
+                               int16_t& milliVolts) override;
     float getModemChipTemperature(void) override;
 
     bool modemHardReset(void) override;
@@ -183,7 +183,7 @@ class DigiXBeeLTEBypass : public DigiXBee {
     bool isModemAwake(void) override;
 
  private:
-    const char* _apn;
+    const char* _apn;  ///< Internal reference to the cellular APN
 };
 /**@}*/
 #endif  // SRC_MODEMS_DIGIXBEELTEBYPASS_H_
