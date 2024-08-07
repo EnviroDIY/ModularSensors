@@ -47,22 +47,22 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+# Python
+__pycache__/
+
 # PyCharm
 .idea/
 
-# Atom / PlatformIO
-.pio
-.pioenvs
-.piolibdeps
-.pio
-.pio/libdeps
-.pio/build
+# Atom
+.atomrc.cson
+
+# PlatformIO
 .pio/*
 .clang_complete
 .gcc-flags.json
-.atomrc.cson
 lib/*
 include/*
+boards/*
 /platformio.ini
 .sconsign.dblite
 
@@ -80,8 +80,6 @@ YosemitechDO/
 LongTermLogger/
 barometric_correction/
 3G_Test/
-
-__pycache__/
 runDoxygen.bat
 docs/examples/*
 docs/examples.dox_x

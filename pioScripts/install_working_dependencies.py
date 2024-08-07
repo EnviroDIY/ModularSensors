@@ -161,11 +161,16 @@ def parse_global_installs(verbose: bool = False):
     list_cmd.extend(["--storage-dir", shared_lib_dir])
 
     # Run list command
-    # print("Listing libraries")
-    # print(list_cmd)
-    list_result = subprocess.run(list_cmd, capture_output=True, text=True, check=True)
-    # print(list_result.stdout)
-    # print(list_result.stderr)
+    print("Listing libraries")
+    print(" ".join(list_cmd))
+    try:
+        list_result = subprocess.run(
+            list_cmd, capture_output=True, text=True, check=True
+        )
+        # print(list_result.stdout)
+        # print(list_result.stderr)
+    except:
+        return []
 
     lib_list_presort = []
 
