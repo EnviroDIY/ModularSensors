@@ -46,6 +46,7 @@ try:
     shared_lib_dir = env["LIBSOURCE_DIRS"][0]
     shared_lib_abbr = "lib"
     project_ini_file = f"{env['PROJECT_DIR']}\\platformio.ini"
+    libdeps_ini_file = f"{env['PROJECT_DIR']}\\pio_common_libdeps.ini"
     library_json_file = f"{env['PROJECT_DIR']}\\library.json"
     examples_deps_file = f"{env['PROJECT_DIR']}\\examples\\example_dependencies.json"
     proj_config = env.GetProjectConfig()
@@ -54,6 +55,7 @@ except:
     shared_lib_dir = f"{os.getcwd()}\\..\\lib"
     shared_lib_abbr = "lib"
     project_ini_file = f"{os.getcwd()}\\..\\platformio.ini"
+    libdeps_ini_file = f"{os.getcwd()}\\pio_common_libdeps.ini"
     library_json_file = f"{os.getcwd()}\\..\\library.json"
     examples_deps_file = f"{os.getcwd()}\\..\\examples\\example_dependencies.json"
     proj_config = ProjectConfig.get_instance(path=project_ini_file)
@@ -65,13 +67,13 @@ envs = proj_config.envs()
 # %%
 # find dependencies in the platformio.ini file
 def get_shared_lib_deps(env):
-    # Get lib_deps
+    # Get lib_deps in the custom shared_lib_deps folder
     raw_lib_deps = proj_config.get(
         section=f"env:{env}", option="custom_shared_lib_deps", default=""
     )
     lib_deps = proj_config.parse_multi_values(raw_lib_deps)
-    # return lib_deps
-    # convert to a PlatformIO PackageSpec
+
+    # convert each custom lib_dep to a PlatformIO PackageSpec
     lib_deps_specs = []
     for lib_deps in lib_deps:
         spec = PackageSpec(lib_deps)
@@ -89,7 +91,7 @@ if os.path.isfile(library_json_file):
         library_specs = json.load(f)
 else:
     library_specs = {"dependencies": []}
-# find dependencies based on the examples
+# find dependencies based on the examples dependency specs
 if os.path.isfile(examples_deps_file):
     with open(examples_deps_file) as f:
         example_specs = json.load(f)
@@ -162,7 +164,8 @@ def parse_global_installs(verbose: bool = False):
 
     # Run list command
     print("Listing libraries")
-    print(" ".join(list_cmd))
+    if int(verbose) >= 1:
+        print(" ".join(list_cmd))
     try:
         list_result = subprocess.run(
             list_cmd, capture_output=True, text=True, check=True
@@ -251,7 +254,7 @@ def create_pio_ci_command(
         "pio",
         "pkg",
         "update" if update else "install",
-        "--skip-dependencies",
+        # "--skip-dependencies",
         "-g",
         "--storage-dir",
         shared_lib_dir,
@@ -270,7 +273,7 @@ def create_pio_ci_command(
 
 # %%
 def install_shared_dependencies(verbose):
-    if verbose:
+    if int(verbose) >= 1:
         print("\nInstalling libraries")
 
     for lib in libs_to_install:
@@ -278,10 +281,10 @@ def install_shared_dependencies(verbose):
             library=lib, update=False, include_version=True
         )
 
-        # Run command
-        # print(lib_install_cmd)
-        if verbose:
+        if int(verbose) >= 1:
             print(f"Installing {lib}")
+            print(" ".join(lib_install_cmd))
+        # Run command
         install_result = subprocess.run(
             lib_install_cmd, capture_output=True, text=True, check=True
         )
@@ -294,7 +297,7 @@ install_shared_dependencies(True)
 
 # %%
 def update_shared_dependencies(verbose):
-    if verbose:
+    if int(verbose) >= 1:
         print("\nUpdating libraries")
 
     for lib in libs_to_update:
@@ -302,10 +305,10 @@ def update_shared_dependencies(verbose):
             library=lib, update=True, include_version=False
         )
 
-        # Run update command
-        # print(lib_update_cmd)
-        if verbose:
+        if int(verbose) >= 1:
             print(f"Updating {lib}")
+            print(" ".join(lib_update_cmd))
+        # Run update command
         update_result = subprocess.run(
             lib_update_cmd, capture_output=True, text=True, check=True
         )
@@ -324,40 +327,88 @@ print(lib_list)
 
 # %%
 def create_symlink_list(environment: str, verbose: bool = False):
-    lib_symlinks = []
+    all_symlinks = []
+    req_symlinks = []
     ign_symlinks = []
+    other_symlinks = []
     print("Creating symlink list")
     for lib in lib_list:
+        symlink = (
+            f"{lib['lib_name']}=symlink://{lib['lib_dir']}".replace(
+                shared_lib_dir, shared_lib_abbr
+            )
+            .replace("\\\\", "/")
+            .replace("\\", "/")
+        )
+        all_symlinks.append(symlink)
+        is_req = lib["is_in_reqs"]
         is_ignored = lib["lib_name"] in get_ignored_lib_deps(environment)
-        if not is_ignored or lib["lib_name"] in [
-            "Adafruit GFX Library",
-            "Adafruit SSD1306",
-        ]:
-            lib_symlinks.append(
-                f"{lib['lib_name']}=symlink://{lib['lib_dir']}".replace(
-                    shared_lib_dir, shared_lib_abbr
-                )
-                .replace("\\\\", "/")
-                .replace("\\", "/")
-            )
+        if is_req:
+            req_symlinks.append(symlink)
+        elif is_ignored:
+            ign_symlinks.append(symlink)
         else:
-            ign_symlinks.append(
-                f"{lib['lib_name']}=symlink://{lib['lib_dir']}".replace(
-                    shared_lib_dir, shared_lib_abbr
-                )
-                .replace("\\\\", "/")
-                .replace("\\", "/")
-            )
+            other_symlinks.append(symlink)
     if int(verbose) >= 1:
-        print(lib_symlinks)
+        print(other_symlinks)
 
-    return lib_symlinks
+    return {
+        "all_symlinks": all_symlinks,
+        "req_symlinks": req_symlinks,
+        "ign_symlinks": ign_symlinks,
+        "other_symlinks": other_symlinks,
+    }
 
 
 common_lib_symlinks = create_symlink_list("env", False)
-for item in common_lib_symlinks:
+print("<<<<<<<<<<<<Required Symlinks>>>>>>>>>>>>")
+for item in common_lib_symlinks["req_symlinks"]:
+    print("   ", item)
+print("<<<<<<<<<<<<Ignored Symlinks>>>>>>>>>>>>")
+for item in common_lib_symlinks["ign_symlinks"]:
+    print("   ", item)
+print("<<<<<<<<<<<<Other Symlinks>>>>>>>>>>>>")
+for item in common_lib_symlinks["other_symlinks"]:
     print("   ", item)
 # for env in envs:
 #     env_symlinks = create_symlink_list(env, False)
+
+
+# %%
+with open(libdeps_ini_file, "w+") as out_file:
+    out_file.write(
+        "; File Automatically Generated by pioScripts/install_working_dependencies.py\n"
+    )
+    out_file.write("; DO NOT MODIFY\n\n")
+    out_file.write("; Global data for all [env:***]\n")
+    out_file.write("[env]\n")
+
+    out_file.write("lib_deps =\n")
+    for item in common_lib_symlinks["all_symlinks"]:
+        out_file.write("   ")
+        out_file.write(item)
+        out_file.write("\n")
+
+    out_file.write("lib_ignore =\n")
+    ignored_folders = [
+        ".git",
+        ".pio",
+        ".vscode",
+        ".history",
+        "doc",
+        "examples",
+        "extras",
+        "sensor_tests",
+    ]
+    for folder in ignored_folders:
+        out_file.write("   ")
+        out_file.write(folder)
+        out_file.write("\n")
+    for lib in lib_list:
+        is_req = lib["is_in_reqs"]
+        if not is_req:
+            out_file.write("   ")
+            out_file.write(lib["lib_name"])
+            out_file.write("\n")
 
 # %%
