@@ -105,3 +105,4 @@ continuous_integration/platformio_ci_local.ini
 runDoxygen_archive.bat
 generateKeywords.bat
 update_path.bat
+pio_common_libdeps.ini
