@@ -1,0 +1,31 @@
+{
+  "action_cache_version": 1,
+  "dependencies": [
+    {
+      "name": "Adafruit SHT4x Library",
+      "owner": "adafruit",
+      "library id": "11710",
+      "url": "https://github.com/adafruit/Adafruit_SHT4X",
+      "version": "~1.0.4",
+      "note": "Sensirion SHT4x Library by Adafruit",
+      "authors": ["Adafruit"],
+      "frameworks": "arduino"
+    },
+    {
+      "name": "SDI-12",
+      "owner": "envirodiy",
+      "library id": "1486",
+      "version": "~2.1.4",
+      "url": "https://github.com/EnviroDIY/Arduino-SDI-12",
+      "note": "EnviroDIY SDI-12 Library for Arduino",
+      "author_notes": [
+        "Kevin M. Smith",
+        "Sara Damiano",
+        "Shannon Hicks",
+        "Anthony Aufdenkampe"
+      ],
+      "frameworks": "arduino",
+      "platforms": "atmelavr, atmelsam"
+    }
+  ]
+}

@@ -3,15 +3,6 @@ import copy
 import os
 import sys
 from typing import Union
-from SCons.Script import (
-    ARGUMENTS,
-    BUILD_TARGETS,
-    COMMAND_LINE_TARGETS,
-    AlwaysBuild,
-    Builder,
-    Default,
-    DefaultEnvironment,
-)
 import subprocess
 from os import makedirs
 from os.path import isdir
@@ -19,43 +10,55 @@ import re
 import json
 
 from platformio.project.config import ProjectConfig
-
-# from platformio.package.meta import PackageSpec
+from platformio.package.meta import PackageSpec
 
 
 # %%
-Import("env")
-print("Working on environment (PIOENV) {}".format(env["PIOENV"]))
-print("Enviroment and project settings:")
-for project_directory in [
-    "PROJECT_DIR",
-    "PROJECT_CORE_DIR",
-    "PROJECT_PACKAGES_DIR",
-    "PROJECT_WORKSPACE_DIR",
-    "PROJECT_INCLUDE_DIR",
-    "PROJECT_SRC_DIR",
-    "PROJECT_TEST_DIR",
-    "PROJECT_DATA_DIR",
-    "PROJECT_BUILD_DIR",
-    "PROJECT_LIBDEPS_DIR",
-    "LIBSOURCE_DIRS",
-    "LIBPATH",
-    "PIOENV",
-    "BUILD_DIR",
-    "BUILD_TYPE",
-    "BUILD_CACHE_DIR",
-    "LINKFLAGS",
-]:
-    print(f"{project_directory}: {env[project_directory]}")
+try:
+    # Import the current working construction
+    # environment to the `env` variable.
+    # alias of `env = DefaultEnvironment()`
+    Import("env")
 
+    print("Working on environment (PIOENV) {}".format(env["PIOENV"]))
+    print("Enviroment and project settings:")
+    for project_directory in [
+        "PROJECT_DIR",
+        "PROJECT_CORE_DIR",
+        "PROJECT_PACKAGES_DIR",
+        "PROJECT_WORKSPACE_DIR",
+        "PROJECT_INCLUDE_DIR",
+        "PROJECT_SRC_DIR",
+        "PROJECT_TEST_DIR",
+        "PROJECT_DATA_DIR",
+        "PROJECT_BUILD_DIR",
+        "PROJECT_LIBDEPS_DIR",
+        "LIBSOURCE_DIRS",
+        "LIBPATH",
+        "PIOENV",
+        "BUILD_DIR",
+        "BUILD_TYPE",
+        "BUILD_CACHE_DIR",
+        "LINKFLAGS",
+    ]:
+        print(f"{project_directory}: {env[project_directory]}")
 
-shared_lib_dir = env["LIBSOURCE_DIRS"][0]
-shared_lib_abbr = ".pio/libdeps/shared"
-project_ini_file = f"{env['PROJECT_DIR']}\\platformio.ini"
-library_json_file = f"{env['PROJECT_DIR']}\\library.json"
-examples_deps_file = f"{env['PROJECT_DIR']}\\examples\\example_dependencies.json"
+    shared_lib_dir = env["LIBSOURCE_DIRS"][0]
+    shared_lib_abbr = "lib"
+    project_ini_file = f"{env['PROJECT_DIR']}\\platformio.ini"
+    library_json_file = f"{env['PROJECT_DIR']}\\library.json"
+    examples_deps_file = f"{env['PROJECT_DIR']}\\examples\\example_dependencies.json"
+    proj_config = env.GetProjectConfig()
+    env_name = env["PIOENV"]
+except:
+    shared_lib_dir = f"{os.getcwd()}\\..\\lib"
+    shared_lib_abbr = "lib"
+    project_ini_file = f"{os.getcwd()}\\..\\platformio.ini"
+    library_json_file = f"{os.getcwd()}\\..\\library.json"
+    examples_deps_file = f"{os.getcwd()}\\..\\examples\\example_dependencies.json"
+    proj_config = ProjectConfig.get_instance(path=project_ini_file)
+    env_name = proj_config.get_default_env()
 
-proj_config = ProjectConfig(path=project_ini_file)
 envs = proj_config.envs()
 
 
@@ -63,169 +66,101 @@ envs = proj_config.envs()
 # find dependencies in the platformio.ini file
 def get_shared_lib_deps(env):
     # Get lib_deps
-    config = env.GetProjectConfig()
-    raw_lib_deps = env.GetProjectOption("custom_shared_lib_deps", "")
-    lib_deps = config.parse_multi_values(raw_lib_deps)
-    return lib_deps
-    # convert to dict, taking advantage of PlatformIO's PackageSpec parser
-    # lib_deps = []
-    # for raw_lib_dep in raw_lib_deps:
-    #     spec = PackageSpec(raw_lib_dep)
-    #     dep_dict = {}
-    #     if spec.owner is not None:
-    #         dep_dict["owner"] = spec.owner
-    #     if spec.name is not None:
-    #         dep_dict["name"] = spec.name
-    #     if spec.uri is not None:
-    #         dep_dict["version"] = spec.uri
-    #     elif spec.requirements is not None:
-    #         dep_dict["version"] = spec.requirements
-    #     lib_deps.append(copy.deepcopy(dep_dict))
+    raw_lib_deps = proj_config.get(
+        section=f"env:{env}", option="custom_shared_lib_deps", default=""
+    )
+    lib_deps = proj_config.parse_multi_values(raw_lib_deps)
     # return lib_deps
+    # convert to a PlatformIO PackageSpec
+    lib_deps_specs = []
+    for lib_deps in lib_deps:
+        spec = PackageSpec(lib_deps)
+        lib_deps_specs.append(copy.deepcopy(spec))
+    return lib_deps_specs
 
 
 def get_ignored_lib_deps(env):
-    return proj_config.get(section=f"env:{env}", option="lib_ignore")
+    return proj_config.get(section=f"env:{env}", option="lib_ignore", default=[])
 
 
 # find dependencies based on the library specification
-if os.path.isfile(os.path.join(env["PROJECT_DIR"], "library.json")):
-    with open(os.path.join(env["PROJECT_DIR"], "library.json")) as f:
+if os.path.isfile(library_json_file):
+    with open(library_json_file) as f:
         library_specs = json.load(f)
 else:
     library_specs = {"dependencies": []}
 # find dependencies based on the examples
-if os.path.isfile(
-    os.path.join(env["PROJECT_DIR"], "examples/example_dependencies.json")
-):
-    with open(
-        os.path.join(env["PROJECT_DIR"], "examples/example_dependencies.json")
-    ) as f:
+if os.path.isfile(examples_deps_file):
+    with open(examples_deps_file) as f:
         example_specs = json.load(f)
 else:
     example_specs = {"dependencies": []}
 
-dependencies = get_shared_lib_deps(env)
+
+def get_package_spec(dependency: dict):
+    spec = PackageSpec(
+        id=dependency.get("id"),
+        owner=dependency.get("owner"),
+        name=dependency.get("name"),
+        requirements=dependency.get("version"),
+    )
+    return spec
+
+
+def convert_dep_dict_to_str(dependency: dict, include_version: bool = True) -> str:
+    install_str = ""
+    if "owner" in dependency.keys() and "github" in dependency["version"]:
+        if "name" in dependency.keys():
+            install_str += f"{dependency['name']}="
+        install_str += dependency["version"]
+    elif (
+        "owner" in dependency.keys()
+        and "name" in dependency.keys()
+        and "version" in dependency.keys()
+    ):
+        lib_dep = f"{dependency['owner']}/{dependency['name']}"
+        if include_version:
+            lib_dep += f"@{dependency['version']}"
+        install_str += lib_dep
+    elif "name" in dependency.keys() and "version" in dependency.keys():
+        lib_dep = f"{dependency['name']}"
+        if include_version:
+            lib_dep += f"@{dependency['version']}"
+        install_str += lib_dep
+    else:
+        install_str += dependency["name"]
+
+    return install_str
+
+
+dependencies = get_shared_lib_deps(env_name)
 if "dependencies" in library_specs.keys():
-    dependencies.extend(library_specs["dependencies"])
+    dependencies.extend(
+        [get_package_spec(dependency) for dependency in library_specs["dependencies"]]
+    )
 if "dependencies" in example_specs.keys():
-    dependencies.extend(example_specs["dependencies"])
+    dependencies.extend(
+        [get_package_spec(dependency) for dependency in example_specs["dependencies"]]
+    )
+
+humanized_deps = [dep.as_dependency() for dep in dependencies]
 
 # quit if there are no dependencies
 if len(dependencies) == 0:
     print("No dependencies to install!")
     sys.exit()
 
-# %%
-print(f"\nInstalling and updating common libraries in {shared_lib_dir}")
-
-# Create shared_lib_dir if it does not exist
-if not isdir(shared_lib_dir):
-    makedirs(shared_lib_dir)
-
-
-def create_pio_ci_command(
-    library: Union[dict | str],
-    update: bool = True,
-    include_version: bool = True,
-) -> list:
-    pio_command_args = [
-        "pio",
-        "pkg",
-        "update" if update else "install",
-        "--skip-dependencies",
-        "-g",
-        "--storage-dir",
-        shared_lib_dir,
-        "--library",
-    ]
-    if isinstance(library, str):
-        pio_command_args.append(library)
-        return pio_command_args
-
-    if "owner" in library.keys() and "github" in library["version"]:
-        pio_command_args.append(library["version"])
-    elif (
-        "owner" in library.keys()
-        and "name" in library.keys()
-        and "version" in library.keys()
-    ):
-        lib_dep = f"{library['owner']}/{library['name']}"
-        if include_version:
-            lib_dep += f"@{library['version']}"
-        pio_command_args.append(lib_dep)
-    elif "name" in library.keys() and "version" in library.keys():
-        lib_dep = f"{library['name']}"
-        if include_version:
-            lib_dep += f"@{library['version']}"
-        pio_command_args.append(lib_dep)
-    else:
-        pio_command_args.append(library["name"])
-    return pio_command_args
-
-
-deps_to_install = []
-
 
 # %%
-def install_shared_dependencies(verbose):
-    if verbose:
-        print("\nInstalling libraries")
-
-    for lib in dependencies:
-        lib_install_cmd = create_pio_ci_command(
-            library=lib, update=False, include_version=True
-        )
-        deps_to_install.extend(lib_install_cmd[-1])
-
-        # Run command
-        print(lib_install_cmd)
-        if verbose:
-            print(f"Installing {lib}")
-        install_result = subprocess.run(
-            lib_install_cmd, capture_output=True, text=True, check=True
-        )
-        print(install_result.stdout)
-        # print(install_result.stderr)
-
-
-install_shared_dependencies(True)
-
-
-# %%
-def update_shared_dependencies(verbose):
-    if verbose:
-        print("\nUpdating libraries")
-
-    for lib in dependencies:
-        lib_update_cmd = create_pio_ci_command(
-            library=lib, update=True, include_version=False
-        )
-
-        # Run update command
-        print(lib_update_cmd)
-        if verbose:
-            print(f"Updating {lib}")
-        update_result = subprocess.run(
-            lib_update_cmd, capture_output=True, text=True, check=True
-        )
-        print(update_result.stdout)
-        # print(update_result.stderr)
-
-
-update_shared_dependencies(True)
-
-
-# %%
+# check what's already installed
 def parse_global_installs(verbose: bool = False):
     # Build dependency list command
-    # pio pkg list -v -g  --only-libraries  --storage-dir "C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\.pio\libdeps\shared"
     list_cmd = ["pio", "pkg", "list", "-g", "--only-libraries", "-v"]
 
     # set the storage directory for the libraries
     list_cmd.extend(["--storage-dir", shared_lib_dir])
 
-    # Run update command
+    # Run list command
     # print("Listing libraries")
     # print(list_cmd)
     list_result = subprocess.run(list_cmd, capture_output=True, text=True, check=True)
@@ -248,23 +183,23 @@ def parse_global_installs(verbose: bool = False):
                 print("Library Version: {}".format(match.group("lib_version")))
                 print("Library Req: {}".format(match.group("lib_req")))
                 print("Library Storage Dir: {}".format(match.group("lib_dir")))
-            shared_entry = list(
+            req_entry = list(
                 filter(
                     lambda x: match.group("lib_req").lower() in x.lower(),
-                    deps_to_install,
+                    humanized_deps,
                 )
             )
-            is_in_shared = len(shared_entry) > 0
-            if is_in_shared:
-                shared_position = deps_to_install.index(shared_entry[0])
+            is_in_reqs = len(req_entry) > 0
+            if is_in_reqs:
+                req_position = humanized_deps.index(req_entry[0])
             else:
-                shared_position = -1
+                req_position = -1
             if match.group("lib_name") == "Adafruit BusIO":
-                shared_position = -2
+                req_position = -2
             match_groups = match.groupdict()
-            match_groups["shared_entry"] = shared_entry
-            match_groups["is_in_shared"] = is_in_shared
-            match_groups["shared_position"] = shared_position
+            match_groups["req_entry"] = req_entry
+            match_groups["is_in_reqs"] = is_in_reqs
+            match_groups["req_position"] = req_position
             lib_list_presort.append(match_groups)
         else:
             if int(verbose) >= 1:
@@ -272,13 +207,114 @@ def parse_global_installs(verbose: bool = False):
         if int(verbose) >= 1:
             print("##########")
 
-    lib_list = sorted(lib_list_presort, key=lambda d: d["shared_position"])
+    lib_list = sorted(lib_list_presort, key=lambda d: d["req_position"])
     if int(verbose) >= 1:
         print(lib_list)
     return lib_list
 
 
 lib_list = parse_global_installs(False)
+print(lib_list)
+
+# decide what to install and what to update
+libs_to_install = []
+libs_to_update = []
+for dep_spec in dependencies:
+    print()
+    if f"{dep_spec.owner}/{dep_spec.name}".lower() not in [
+        lib["lib_req"].lower() for lib in lib_list
+    ]:
+        libs_to_install.append(dep_spec)
+    else:
+        libs_to_update.append(dep_spec)
+
+
+# %%
+print(f"\nInstalling and updating common libraries in {shared_lib_dir}")
+
+# Create shared_lib_dir if it does not exist
+if not isdir(shared_lib_dir):
+    makedirs(shared_lib_dir)
+
+
+def create_pio_ci_command(
+    library: Union[str | dict | PackageSpec],
+    update: bool = True,
+    include_version: bool = True,
+) -> list:
+    pio_command_args = [
+        "pio",
+        "pkg",
+        "update" if update else "install",
+        "--skip-dependencies",
+        "-g",
+        "--storage-dir",
+        shared_lib_dir,
+        "--library",
+    ]
+    if isinstance(library, PackageSpec):
+        pio_command_args.append(library.as_dependency())
+        return pio_command_args
+    elif isinstance(library, dict):
+        pio_command_args.append(convert_dep_dict_to_str(library))
+        return pio_command_args
+    elif isinstance(library, str):
+        pio_command_args.append(library)
+        return pio_command_args
+
+
+# %%
+def install_shared_dependencies(verbose):
+    if verbose:
+        print("\nInstalling libraries")
+
+    for lib in libs_to_install:
+        lib_install_cmd = create_pio_ci_command(
+            library=lib, update=False, include_version=True
+        )
+
+        # Run command
+        # print(lib_install_cmd)
+        if verbose:
+            print(f"Installing {lib}")
+        install_result = subprocess.run(
+            lib_install_cmd, capture_output=True, text=True, check=True
+        )
+        print(install_result.stdout)
+        # print(install_result.stderr)
+
+
+install_shared_dependencies(True)
+
+
+# %%
+def update_shared_dependencies(verbose):
+    if verbose:
+        print("\nUpdating libraries")
+
+    for lib in libs_to_update:
+        lib_update_cmd = create_pio_ci_command(
+            library=lib, update=True, include_version=False
+        )
+
+        # Run update command
+        # print(lib_update_cmd)
+        if verbose:
+            print(f"Updating {lib}")
+        update_result = subprocess.run(
+            lib_update_cmd, capture_output=True, text=True, check=True
+        )
+        print(update_result.stdout)
+        # print(update_result.stderr)
+
+
+update_shared_dependencies(True)
+
+
+# %%
+# check what's now installed
+lib_list = parse_global_installs(False)
+print(lib_list)
 
 
 # %%
