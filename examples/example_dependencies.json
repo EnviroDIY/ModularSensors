@@ -1,0 +1,26 @@
+{
+  "action_cache_version": 1,
+  "dependencies": [
+    {
+      "name": "StreamDebugger",
+      "owner": "vshymanskyy",
+      "version": "~1.0.1"
+    },
+    {
+      "name": "NeoSWSerial",
+      "version": "https://github.com/SRGDamia1/NeoSWSerial.git"
+    },
+    {
+      "name": "AltSoftSerial",
+      "version": "https://github.com/PaulStoffregen/AltSoftSerial.git"
+    },
+    {
+      "name": "SoftwareWire",
+      "version": "https://github.com/Testato/SoftwareWire.git#v1.5.1"
+    },
+    {
+      "name": "SoftwareSerial_ExternalInts",
+      "version": "https://github.com/EnviroDIY/SoftwareSerial_ExternalInts.git"
+    }
+  ]
+}
