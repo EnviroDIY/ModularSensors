@@ -11,6 +11,11 @@
  * Mayfly v1.0 board
  * EnviroDIY SIM7080 LTE module (with Hologram SIM card)
  * Hydros21 CTD sensor
+ *
+ * See [the walkthrough page](@ref example_drwi_mayfly1) for detailed
+ * instructions.
+ *
+ * @m_examplenavigation{example_drwi_mayfly1,}
  * ======================================================================= */
 
 // ==========================================================================

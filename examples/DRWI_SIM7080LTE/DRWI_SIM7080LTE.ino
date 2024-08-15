@@ -12,6 +12,11 @@
  * EnviroDIY SIM7080 LTE module (with Hologram SIM card)
  * Hydros21 CTD sensor
  * Campbell Scientific OBS3+ Turbidity sensor
+ *
+ * See [the walkthrough page](@ref example_drwi_ediylte) for detailed
+ * instructions.
+ *
+ * @m_examplenavigation{example_drwi_ediylte,}
  * ======================================================================= */
 
 // ==========================================================================

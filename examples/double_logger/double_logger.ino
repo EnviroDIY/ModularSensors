@@ -5,6 +5,11 @@
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Example logging at two different timing intervals
+ *
+ * See [the walkthrough page](@ref example_double_log) for detailed
+ * instructions.
+ *
+ * @m_examplenavigation{example_double_log,}
  * ======================================================================= */
 
 // ==========================================================================

@@ -5,6 +5,10 @@
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Example logging data and publishing to Monitor My Watershed.
+ *
+ * See [the walkthrough page](@ref example_mmw) for detailed instructions.
+ *
+ * @m_examplenavigation{example_mmw,}
  * ======================================================================= */
 
 // ==========================================================================

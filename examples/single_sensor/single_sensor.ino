@@ -5,6 +5,11 @@
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief An example using only sensor functions and no logging.
+ *
+ * See [the walkthrough page](@ref example_single_sensor) for detailed
+ * instructions.
+ *
+ * @m_examplenavigation{example_single_sensor,}
  * ======================================================================= */
 
 // ==========================================================================

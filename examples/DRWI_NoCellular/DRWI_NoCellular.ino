@@ -5,6 +5,11 @@
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Example for DRWI CitSci without cellular service.
+ *
+ * See [the walkthrough page](@ref example_drwi_no_cell) for detailed
+ * instructions.
+ *
+ * @m_examplenavigation{example_drwi_no_cell,}
  * ======================================================================= */
 
 // ==========================================================================

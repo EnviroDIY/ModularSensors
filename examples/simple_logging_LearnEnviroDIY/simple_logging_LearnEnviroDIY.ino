@@ -5,6 +5,11 @@
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief A data logging example for the Learn EnviroDIY tutorial.
+ *
+ * See [the walkthrough page](@ref example_learn_envirodiy) for detailed
+ * instructions.
+ *
+ * @m_examplenavigation{example_learn_envirodiy,}
  * ======================================================================= */
 
 // ==========================================================================

@@ -5,6 +5,10 @@
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Example demonstrating calculated variables.
+ *
+ * See [the walkthrough page](@ref example_baro_rho) for detailed instructions.
+ *
+ * @m_examplenavigation{example_baro_rho,}
  * ======================================================================= */
 
 // ==========================================================================

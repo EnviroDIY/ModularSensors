@@ -5,6 +5,10 @@
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Example with all possible functionality.
+ *
+ * See [the walkthrough page](@ref example_menu) for detailed instructions.
+ *
+ * @m_examplenavigation{example_menu,}
  * ======================================================================= */
 
 // ==========================================================================

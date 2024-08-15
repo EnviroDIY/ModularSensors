@@ -5,6 +5,11 @@
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Example publishing only a portion of the logged variables.
+ *
+ * See [the walkthrough page](@ref example_data_saving) for detailed
+ * instructions.
+ *
+ * @m_examplenavigation{example_data_saving,}
  * ======================================================================= */
 
 // ==========================================================================

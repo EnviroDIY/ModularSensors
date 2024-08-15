@@ -5,6 +5,11 @@
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief A simple data logging example.
+ *
+ * See [the walkthrough page](@ref example_simple_logging) for detailed
+ * instructions.
+ *
+ * @m_examplenavigation{example_simple_logging,}
  * ======================================================================= */
 
 // ==========================================================================

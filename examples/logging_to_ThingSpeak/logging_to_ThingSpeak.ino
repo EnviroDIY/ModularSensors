@@ -5,6 +5,11 @@
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Example logging data and publishing to ThingSpeak.
+ *
+ * See [the walkthrough page](@ref example_thingspeak) for detailed
+ * instructions.
+ *
+ * @m_examplenavigation{example_thingspeak,}
  * ======================================================================= */
 
 // ==========================================================================
