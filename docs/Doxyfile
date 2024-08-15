@@ -74,7 +74,7 @@ PROJECT_ICON           = enviroDIY_Favicon.png
 # entered, it will be relative to the location where Doxygen was started. If
 # left blank the current directory will be used.
 
-OUTPUT_DIRECTORY       = ../../ModularSensorsDoxygen
+OUTPUT_DIRECTORY       = ../../ModularSensors_Doxygen
 
 # If the CREATE_SUBDIRS tag is set to YES then Doxygen will create up to 4096
 # sub-directories (in 2 levels) under the output directory of each output format
@@ -1064,7 +1064,8 @@ EXCLUDE                = ../src/ReadMe.md \
                          ../src/sensors/table.md \
                          ../lib \
                          ../boards \
-                         ../variants
+                         ../variants \
+                         ../continuous_integration_artifacts
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded
@@ -1347,7 +1348,7 @@ IGNORE_PREFIX          =
 # If the GENERATE_HTML tag is set to YES, Doxygen will generate HTML output
 # The default value is: YES.
 
-GENERATE_HTML          = NO
+GENERATE_HTML          = YES
 
 # The HTML_OUTPUT tag is used to specify where the HTML docs will be put. If a
 # relative path is entered the value of OUTPUT_DIRECTORY will be put in front of
