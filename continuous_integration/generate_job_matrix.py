@@ -28,6 +28,7 @@ else:
 workspace_path = os.path.abspath(os.path.realpath(workspace_dir))
 print(f"Workspace Path: {workspace_path}")
 
+# %%
 # The examples directory
 examples_dir = "./examples/"
 examples_path = os.path.join(workspace_dir, examples_dir)
@@ -652,7 +653,7 @@ for pio_env in pio_config.envs():
 
 # %%
 # Tack on a few more extra build configurations for the software serial libraries
-for pio_env in ["Mayfly"]:
+for pio_env in ["mayfly"]:
     arduino_serial_commands = [
         start_job_commands,
         # 'echo "## [Extra Serials on {} with the Arduino CLI](https://github.com/EnviroDIY/ModularSensors/runs/$ACTION_RUN_ID?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
