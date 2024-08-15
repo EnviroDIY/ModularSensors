@@ -1,16 +1,10 @@
 /** =========================================================================
- * @file double_logger.ino
- * @brief Example logging at two different timing intervals
- *
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ * @example{lineno} double_logger.ino
  * @copyright Stroud Water Research Center
- * This example is published under the BSD-3 license.
+ * @license This example is published under the BSD-3 license.
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * Build Environment: Visual Studio Code with PlatformIO
- * Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
- *
- * DISCLAIMER:
- * THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
+ * @brief Example logging at two different timing intervals
  * ======================================================================= */
 
 // ==========================================================================

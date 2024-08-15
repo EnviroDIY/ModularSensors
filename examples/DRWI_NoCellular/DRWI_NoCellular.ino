@@ -1,16 +1,10 @@
 /** =========================================================================
- * @file DRWI_NoCellular.ino
- * @brief Example for DRWI CitSci without cellular service.
- *
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ * @example{lineno} DRWI_NoCellular.ino
  * @copyright Stroud Water Research Center
- * This example is published under the BSD-3 license.
+ * @license This example is published under the BSD-3 license.
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * Build Environment: Visual Studio Code with PlatformIO
- * Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
- *
- * DISCLAIMER:
- * THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
+ * @brief Example for DRWI CitSci without cellular service.
  * ======================================================================= */
 
 // ==========================================================================

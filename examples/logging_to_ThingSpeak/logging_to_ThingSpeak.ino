@@ -1,16 +1,10 @@
 /** =========================================================================
- * @file logging_to_ThingSpeak.ino
- * @brief Example logging data and publishing to ThingSpeak.
- *
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ * @example{lineno} logging_to_ThingSpeak.ino
  * @copyright Stroud Water Research Center
- * This example is published under the BSD-3 license.
+ * @license This example is published under the BSD-3 license.
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * Build Environment: Visual Studio Code with PlatformIO
- * Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
- *
- * DISCLAIMER:
- * THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
+ * @brief Example logging data and publishing to ThingSpeak.
  * ======================================================================= */
 
 // ==========================================================================
