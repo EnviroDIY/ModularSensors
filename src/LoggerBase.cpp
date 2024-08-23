@@ -36,6 +36,7 @@ volatile bool Logger::isTestingNow = false;
 volatile bool Logger::startTesting = false;
 
 // Initialize the RTC for the SAMD boards using build in RTC
+// Needed for static instances
 #if not defined(MS_SAMD_DS3231) && defined(ARDUINO_ARCH_SAMD)
 RTCZero Logger::zero_sleep_rtc;
 #endif
@@ -55,10 +56,6 @@ Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
     isLoggingNow = false;
     isTestingNow = false;
     startTesting = false;
-
-    // Set the initial pin values
-    // NOTE: Only setting values here, not the pin mode.
-    // The pin mode can only be set at run time, not here at compile time.
 
     // Clear arrays
     for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
@@ -428,7 +425,6 @@ int8_t Logger::getTZOffset(void) {
 
 // This gets the current epoch time (unix time, ie, the number of seconds
 // from January 1, 1970 00:00:00 UTC) and corrects it to the specified time zone
-
 uint32_t Logger::getNowEpoch(void) {
     // Depreciated in 0.33.0, left in for compatiblity
     return getNowLocalEpoch();
@@ -523,14 +519,14 @@ bool Logger::setRTClock(uint32_t UTCEpochSeconds) {
     // the user
     uint32_t set_logTZ = UTCEpochSeconds +
         ((uint32_t)getLoggerTimeZone()) * 3600;
-    MS_DBG(F("    Time for Logger supplied by NIST:"), set_logTZ, F("->"),
+    MS_DBG(F("    Time for Logger supplied as input:"), set_logTZ, F("->"),
            formatDateTime_ISO8601(set_logTZ));
 
     // Check the current RTC time
     uint32_t cur_logTZ = getNowLocalEpoch();
     MS_DBG(F("    Current Time on RTC:"), cur_logTZ, F("->"),
            formatDateTime_ISO8601(cur_logTZ));
-    MS_DBG(F("    Offset between NIST and RTC:"), abs(set_logTZ - cur_logTZ));
+    MS_DBG(F("    Offset between input and RTC:"), abs(set_logTZ - cur_logTZ));
 
     // NOTE:  Because we take the time to do some UTC/Local conversions and
     // print stuff out, the clock might end up being set up to a few
@@ -762,28 +758,43 @@ void Logger::systemSleep(void) {
     // Disable the watch-dog timer
     watchDogTimer.disableWatchDog();
 
-    // Sleep code from ArduinoLowPowerClass::sleep()
-    bool restoreUSBDevice = false;
-    // if (SERIAL_PORT_USBVIRTUAL)
-    // {
-    //     USBDevice.standby();
-    // }
-    // else
-    // {
 #ifndef USE_TINYUSB
+    // Detach the USB, iff not using TinyUSB
+    MS_DEEP_DBG(F("USBDevice.detach"));
     USBDevice.detach();
+    MS_DEEP_DBG(F("USBDevice.end"));
+    USBDevice.end();
+    USBDevice.standby();
 #endif
-    restoreUSBDevice = true;
-    // }
+
+#if defined(__SAMD51__)
+    // PM_SLEEPCFG_SLEEPMODE_BACKUP = 0x4
+    PM->SLEEPCFG.bit.SLEEPMODE = 0x4;
+    while (PM->SLEEPCFG.bit.SLEEPMODE != 0x4)
+        ;  // Wait for it to take
+#else
     // Disable systick interrupt:  See
     // https://www.avrfreaks.net/forum/samd21-samd21e16b-sporadically-locks-and-does-not-wake-standby-sleep-mode
+    // Due to a hardware bug on the SAMD21, the SysTick interrupts become active
+    // before the flash has powered up from sleep, causing a hard fault. To
+    // prevent this the SysTick interrupts are disabled before entering sleep
+    // mode.
     SysTick->CTRL &= ~SysTick_CTRL_TICKINT_Msk;
     // Now go to sleep
     SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
-    __DSB();
-    __WFI();
+#endif
+
+    __DSB();  // Data sync to ensure outgoing memory accesses complete
+    __WFI();  // Wait for interrupt (places device in sleep mode)
 
 #elif defined ARDUINO_ARCH_AVR
+
+// Disable USB if it exists
+#ifdef USBCON
+    USBCON |= _BV(FRZCLK);  // freeze USB clock
+    PLLCSR &= ~_BV(PLLE);   // turn off USB PLL
+    USBCON &= ~_BV(USBE);   // disable USB
+#endif
 
     // Set the sleep mode
     // In the avr/sleep.h file, the call names of these 5 sleep modes are:
@@ -839,18 +850,16 @@ void Logger::systemSleep(void) {
     // -- The portion below this happens on wake up, after any wake ISR's --
 
 #if defined ARDUINO_ARCH_SAMD
+#if (SAMD20_SERIES || SAMD21_SERIES)
     // Reattach the USB after waking
     // Enable systick interrupt
     SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;
-    if (restoreUSBDevice) {
-#ifndef USE_TINYUSB
-        USBDevice.attach();
 #endif
-        uint32_t startTimer = millis();
-        while (!SERIAL_PORT_USBVIRTUAL && ((millis() - startTimer) < 1000L)) {
-            // wait
-        }
-    }
+    // Reattach the USB
+#ifndef USE_TINYUSB
+    USBDevice.init();
+    USBDevice.attach();
+#endif
 #endif
 
 #if defined ARDUINO_ARCH_AVR
@@ -1323,8 +1332,19 @@ void Logger::begin() {
     MS_DBG(F("Logger is set to record at"), _loggingIntervalMinutes,
            F("minute intervals."));
 
+#if defined(ARDUINO_ARCH_SAMD)
+    MS_DBG(F("Disabling the USB on stnadby to lower sleep current"));
+    USB->DEVICE.CTRLA.bit.ENABLE = 0;  // Disable the USB peripheral
+    while (USB->DEVICE.SYNCBUSY.bit.ENABLE)
+        ;                                // Wait for synchronization
+    USB->DEVICE.CTRLA.bit.RUNSTDBY = 0;  // Deactivate run on standby
+    USB->DEVICE.CTRLA.bit.ENABLE   = 1;  // Enable the USB peripheral
+    while (USB->DEVICE.SYNCBUSY.bit.ENABLE)
+        ;  // Wait for synchronization
+#endif
+
     MS_DBG(F(
-        "Setting up a watch-dog timer to fire after 5 minutes of inactivity"));
+        "Setting up a watch-dog timer to fire after 15 minutes of inactivity"));
     watchDogTimer.setupWatchDog((uint32_t)(5 * 60 * 3));
     // Enable the watchdog
     watchDogTimer.enableWatchDog();

@@ -33,12 +33,6 @@ void extendedWatchDogSAMD::setupWatchDog(uint32_t resetTime_s) {
            extendedWatchDogSAMD::_barksUntilReset,
            F("times before the reset."));
 
-    // Enable WDT early-warning interrupt
-    NVIC_DisableIRQ(WDT_IRQn);
-    NVIC_ClearPendingIRQ(WDT_IRQn);
-    NVIC_SetPriority(WDT_IRQn, 1);  // Priority behind RTC!
-    NVIC_EnableIRQ(WDT_IRQn);
-
 // Disable watchdog for config
 #if defined(__SAMD51__)
     WDT->CTRLA.reg = 0;
@@ -97,27 +91,33 @@ void extendedWatchDogSAMD::setupWatchDog(uint32_t resetTime_s) {
 
 #endif
 
+    // Enable WDT early-warning interrupt
+    NVIC_DisableIRQ(WDT_IRQn);
+    NVIC_ClearPendingIRQ(WDT_IRQn);
+    NVIC_SetPriority(WDT_IRQn, 1);  // Priority behind RTC!
+    NVIC_EnableIRQ(WDT_IRQn);
+
     // Set up the watch dog control parameters
 #if defined(__SAMD51__)
     WDT->CTRLA.bit.WEN = 0;  // Disable window mode
 #else
     WDT->CTRL.bit.WEN      = 0;  // Disable window mode
 #endif
-    waitForWDTBitSync();  // ?? Needed here ??
+    waitForWDTBitSync();
 #if defined(__SAMD51__)
     WDT->CTRLA.bit.ALWAYSON = 0;  // NOT always on!
 #else
     WDT->CTRL.bit.ALWAYSON = 0;  // NOT always on!
 #endif
 
-    waitForWDTBitSync();  // ?? Needed here ??
+    waitForWDTBitSync();
 
     WDT->CONFIG.bit.PER =
         0xB;  // Period = 16384 clockcycles @ 1024hz = 16 seconds
     WDT->EWCTRL.bit.EWOFFSET = 0xA;  // Early Warning Interrupt Time Offset 0xA
                                      // = 8192 clockcycles @ 1024hz = 8 seconds
     WDT->INTENSET.bit.EW = 1;        // Enable early warning interrupt
-    waitForWDTBitSync();             // ?? Needed here ??
+    waitForWDTBitSync();
 
     /*In normal mode, the Early Warning interrupt generation is defined by the
     Early Warning Offset in the Early Warning Control register

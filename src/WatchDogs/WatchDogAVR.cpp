@@ -39,26 +39,28 @@ void extendedWatchDogAVR::setupWatchDog(uint32_t resetTime_s) {
 void extendedWatchDogAVR::enableWatchDog() {
     MS_DBG(F("Enabling watch dog..."));
 
-    cli();  // disable interrupts
-
-    MCUSR = 0;  // reset status register flags
+    // The next section is timing critical so interrupts are disabled.
+    cli();
+    // First clear any previous watchdog reset.
+    MCUSR &= ~(1 << WDRF);
 
     // Put timer in interrupt-only mode:
     // WDTCSR - Watchdog Timer Control Register
+
+    // Set WDCE and WDE to enable changes.
+    // If changes aren't enabled, we cannot change the prescaler
     WDTCSR |= 0b00011000;  // Set Bit 4 – WDCE: Watchdog Change Enable
                            // Set Bit 3 – WDE: Watchdog System Reset Enable
     // bitwise OR assignment (leaves other bits unchanged)
-    // Need to set the change and reset enables before changing the prescaler
 
-    WDTCSR = 0b01100001;  // Set Bit 6 – WDIE: Watchdog Interrupt Enable
-                          // Unset Bit 4 – WDCE: Watchdog Change Enable
-                          // Unset Bit 3 – WDE: Watchdog System Reset Enable
-                          // Set Bit 5 - WDP[3] and Bit 0 – WDP[0]:
-    // Watchdog Timer Prescalers 3 and 0 - 1024K cycles = 8.0s
-    // bitwise OR assignment (leaves other bits unchanged)
-
-    sei();  // re-enable interrupts
-    // wdt_reset();  // this is not needed...timer starts without it
+    // Now can set the full register including the prescaler
+    WDTCSR = 0b01100001;
+    // Bit 7: WDIF (Watchdog Interrupt Flag) - 0 (Read only)
+    // Bit 6: WDIE (Watchdog Interrupt Enable) - 1 (Enabled)
+    // Bit 5: WDP3 (Watchdog Timer Prescaler) - see delay interval patterns
+    // Bit 4: WDCE (Watchdog Change Enable) - 0 (disable further changes)
+    // Bit 3: WDE  (Watchdog System Reset Enable) - 0 (Clear?)
+    // Bits 2:0 Watchdog timer prescaler [WDP2:0] - see delay interval patterns
 
     // delay interval patterns:
     //  16 ms:     0bxx0xx000
@@ -67,6 +69,9 @@ void extendedWatchDogAVR::enableWatchDog() {
     //  2 seconds: 0bxx0xx111
     //  4 seconds: 0bxx1xx000
     //  8 seconds: 0bxx1xx001
+
+    sei();  // re-enable interrupts
+    // wdt_reset();  // this is not needed...timer starts without it
 
     extendedWatchDogAVR::_barksUntilReset = _resetTime_s / 8;
     MS_DBG(F("The watch dog is enabled in interrupt-only mode."));
