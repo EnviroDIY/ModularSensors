@@ -1,5 +1,9 @@
 /** =========================================================================
- * @file DRWI_SIM7080LTE.ino
+ * @example{lineno} DRWI_SIM7080LTE.ino
+ * @copyright Stroud Water Research Center
+ * @license This example is published under the BSD-3 license.
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
  * @brief Example for DRWI CitSci LTE sites.
  *
  * This example shows proper settings for the following configuration:
@@ -9,15 +13,10 @@
  * Hydros21 CTD sensor
  * Campbell Scientific OBS3+ Turbidity sensor
  *
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
- * @copyright Stroud Water Research Center
- * This example is published under the BSD-3 license.
+ * See [the walkthrough page](@ref example_drwi_ediylte) for detailed
+ * instructions.
  *
-
- * Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
- *
- * DISCLAIMER:
- * THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
+ * @m_examplenavigation{example_drwi_ediylte,}
  * ======================================================================= */
 
 // ==========================================================================

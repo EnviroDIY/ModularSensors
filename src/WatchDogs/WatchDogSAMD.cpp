@@ -33,13 +33,8 @@ void extendedWatchDogSAMD::setupWatchDog(uint32_t resetTime_s) {
            extendedWatchDogSAMD::_barksUntilReset,
            F("times before the reset."));
 
-    // Enable WDT early-warning interrupt
-    NVIC_DisableIRQ(WDT_IRQn);
-    NVIC_ClearPendingIRQ(WDT_IRQn);
-    NVIC_SetPriority(WDT_IRQn, 1);  // Priority behind RTC!
-    NVIC_EnableIRQ(WDT_IRQn);
-
 // Disable watchdog for config
+    MS_DEEP_DBG(F("Disabling the watchdog for configuration."));
 #if defined(__SAMD51__)
     WDT->CTRLA.reg = 0;
 #else
@@ -50,52 +45,160 @@ void extendedWatchDogSAMD::setupWatchDog(uint32_t resetTime_s) {
 #if defined(__SAMD51__)
     // SAMD51 WDT uses OSCULP32k as input clock now
     // section: 20.5.3
+    MS_DEEP_DBG(F("Configuring the output of the ultra-low power internal 32k "
+                  "oscillator for the watchdog."));
     OSC32KCTRL->OSCULP32K.bit.EN1K  = 1;  // Enable out 1K (for WDT)
     OSC32KCTRL->OSCULP32K.bit.EN32K = 0;  // Disable out 32K
-
     waitForWDTBitSync();
 
-    USB->DEVICE.CTRLA.bit.ENABLE = 0;  // Disable the USB peripheral
+    MS_DEEP_DBG(F("Making sure the the USB will be disabled on standby."));
+    USB->DEVICE.CTRLA.bit.ENABLE = 0;  // Disable the USB peripheral for config
     while (USB->DEVICE.SYNCBUSY.bit.ENABLE) {
         // Wait for synchronization
     }
     USB->DEVICE.CTRLA.bit.RUNSTDBY = 0;  // Deactivate run on standby
-    USB->DEVICE.CTRLA.bit.ENABLE   = 1;  // Enable the USB peripheral
+    USB->DEVICE.CTRLA.bit.ENABLE   = 1;  // Re-enable the USB peripheral
     while (USB->DEVICE.SYNCBUSY.bit.ENABLE) {
         // Wait for synchronization
     }
 
 #else  // SAMD21
 
-    // We're going to use generic clock generator *5*
-    // Many watch-dog examples use 2, but this conflicts with RTC-zero
-    // Generic clock generator 5, divisor = 32 (2^(DIV+1))  = 4
-    GCLK->GENDIV.reg = GCLK_GENDIV_ID(5) |  // Select Generic Clock Generator 5
+    // Within the SAMD core for the SAMD21
+    // SystemInit() in startup.c configures these clocks:
+    // 1) Enable XOSC32K clock (External on-board 32.768Hz oscillator) or
+    //    OSC32K (if crystalless).
+    //     - This will be used as DFLL48M reference.
+    // 2) Put XOSC32K as source of Generic Clock Generator 1
+    // 3) Put Generic Clock Generator 1 as source for Generic Clock Multiplexer
+    //    0 (DFLL48M reference)
+    // 4) Enable DFLL48M clock
+    // 5) Switch Generic Clock Generator 0 to DFLL48M. CPU will run at 48MHz.
+    // 6) Modify PRESCaler value of OSCM to have 8MHz
+    // 7) Put OSC8M as source for Generic Clock Generator 3
+    // See:
+    // https://github.com/adafruit/ArduinoCore-samd/blob/ce20340620bfd9c545649ee5c4873888ee0475d0/cores/arduino/startup.c#L311
+
+    // The ZeroPowerManager library changes clocks (including the main clock
+    // source, GCLK_MAIN, which is always sourced from GCLKGEN[0]) to reduce
+    // power draw. Changing the GCLK_MAIN configuration will cause some
+    // functions like delay() to operate incorrectly. See:
+    // https://github.com/ee-quipment/ZeroPowerManager/blob/master/ZeroPowerManager.c#L170
+    // To avoid any confusing with delay(), we're not going to change anything
+    // with GCLK0. This means we won't be in the lowest power state like that
+    // offered by ZeroPowerManager
+    // TODO: Revisit this decision
+
+    // After a power-on reset, the clock generators for peripherals default to:
+    // RTC: GCLK0
+    // WDT: GCLK2
+    // Anything else: GCLK0
+
+    // We're going to configure generic clock generator 2, which is the default
+    // for the watchdog. RTCZero uses the same clock for the RTC. Because we're
+    // using identical divisors and prescalers, we can share the clock
+    // generator. We will also use the very same generator for the external
+    // nterrupt controller (EIC).
+
+    // The watchdog must be attached to a clock source so it can tell how much
+    // time has passed and whether it needs to bite.
+
+    // The external interrupt controller must be attached to a on clock to tell
+    // the difference between rising and falling interrupts. If the external
+    // interupt controller is not attached to a running clock, then interrupts
+    // will not work! Thus, if the clock source for interrupts is not running in
+    // standby, the interrupts will not be able to wake the device. In
+    // WInterrupts.c in the Adafruit SAMD core, generic clock generator 0 (ie
+    // GCLK_MAIN) is used for the EIC peripheral. See:
+    // https://github.com/adafruit/ArduinoCore-samd/blob/ce20340620bfd9c545649ee5c4873888ee0475d0/cores/arduino/WInterrupts.c#L56
+    // We'll shift the interrupts to clock 2, configured to our liking.
+
+    // Configure the generic clock generator divisor for generator 2
+    // The divisor register must be configured before generator control register
+    // Generic clock generator 2, divisor = 32 (2^(DIV+1))  = 4
+    GCLK->GENDIV.reg = GCLK_GENDIV_ID(2) |  // Select Generic Clock Generator 5
         GCLK_GENDIV_DIV(4);                 // Divide the clock source by 32
     while (GCLK->STATUS.bit.SYNCBUSY) {
         // Wait for synchronization
     }
 
-    // Enable clock generator 5 using low-power 32.768kHz oscillator.
-    // With /32 divisor above, this yields 1024Hz clock.
-    GCLK->GENCTRL.reg = GCLK_GENCTRL_ID(5) |  // Select GCLK5
-        GCLK_GENCTRL_GENEN |          // Enable the generic clock clontrol
-        GCLK_GENCTRL_SRC_OSCULP32K |  // Select the ultra-low power oscillator
-        GCLK_GENCTRL_IDC |            // Set the duty cycle to 50/50 HIGH/LOW
-        GCLK_GENCTRL_DIVSEL;  // Select to divide clock by the prescaler above
-    while (GCLK->STATUS.bit.SYNCBUSY) {
-        // Wait for synchronization
-    }
+// Configure the generic clock generator 2 to use the 32.768kHz external or
+// internal oscillator and the divisor above.
+// With /32 divisor above, this yields 1024Hz clock.
+// By default, the XOSC32K is stopped in standby, while the default for the
+// OSCULP32K is to run in standby.
+// NOTE: there is also a generic XOSC which can be attached to crystal of any
+// frequency from 0.4-32MHz, but we're only supporting a 32.768kHz crystal.
+#ifndef CRYSTALLESS
+    // If there is an external 32.768 kHz crystal, use it
 
-    // Feed GCLK5 to WDT (Watchdog Timer)
-    GCLK->CLKCTRL.reg = GCLK_CLKCTRL_GEN_GCLK5 |  // Select generic clock 5
-        GCLK_CLKCTRL_CLKEN |  // Enable the generic clock clontrol
-        GCLK_CLKCTRL_ID_WDT;  // Feed the GCLK to the WDT
+    // configure the settings for the oscillator
+
+    MS_DEEP_DBG(F("Configuring the external 32k oscillator."));
+    SYSCTRL->XOSC32K.reg =
+        SYSCTRL_XOSC32K_ONDEMAND |    // run only when demanded by a peripheral
+        SYSCTRL_XOSC32K_RUNSTDBY |    // run the external oscillator in standby
+                                      // (iff demanded by peripheral)
+        SYSCTRL_XOSC32K_EN32K |       // enable the 32kHz output
+        SYSCTRL_XOSC32K_XTALEN |      // specify that the crystal is connected
+                                      // between XIN32/XOUT32
+        SYSCTRL_XOSC32K_STARTUP(6) |  // set the start up to 0x6 (??)
+        SYSCTRL_XOSC32K_ENABLE;       // enable the oscillator
+
+    // source GCLK2 from the external oscillator
+    MS_DEEP_DBG(F("Setting the external 32k oscillator as the clock source for "
+                  "the generic clock generator 2."));
+    GCLK->GENCTRL.reg = GCLK_GENCTRL_ID(2) |  // Select GCLK2
+        GCLK_GENCTRL_GENEN |        // Enable the generic clock clontrol
+        GCLK_GENCTRL_SRC_XOSC32K |  // Select the external crystal
+        GCLK_GENCTRL_RUNSTDBY |     // DO run in standby
+        GCLK_GENCTRL_DIVSEL;  // Select to divide clock by the prescaler above
+
+#else
+    // If there isn't an external crystal, use the built-in ultra-low power
+    // internal 32.768kHz oscillator.
+
+    // NOTE: There are no settings we need to configure for ultra-low power
+    // internal oscillator (OSCULP32K). The only things that can be configured
+    // are the write lock and over-writing the factory calibration. We don't
+    // want to do either of those.
+
+    // source GCLK2 from the external oscillator
+    MS_DEEP_DBG(F("Setting the ultra-low power internal 32k oscillator as the "
+                  "clock source for the generic clock generator 2."));
+    GCLK->GENCTRL.reg = GCLK_GENCTRL_ID(2) |  // Select GCLK2
+        GCLK_GENCTRL_GENEN |          // Enable the generic clock clontrol
+        GCLK_GENCTRL_SRC_OSCULP32K |  // built-in ultra-low power internal
+                                      // oscillator
+        GCLK_GENCTRL_RUNSTDBY |       // DO run in standby
+        GCLK_GENCTRL_DIVSEL;          // Select to divide clock by
+                                      // the prescaler above
+#endif
+    while (GCLK->STATUS.reg & GCLK_STATUS_SYNCBUSY)
+        ;  // Wait for synchronization
+
+    GCLK->GENCTRL.bit.RUNSTDBY = 1;  // run standby
+    while (GCLK->STATUS.reg & GCLK_STATUS_SYNCBUSY)
+        ;  // Wait for synchronization
+
+    // Feed configured GCLK2 to WDT (Watchdog Timer) **AND** the EIC (external
+    // interrupt controller)
+    MS_DEEP_DBG(F("Feeding configured GCLK2 to WDT and EIC"));
+    GCLK->CLKCTRL.reg = GCLK_CLKCTRL_GEN(2) |  // Select generic clock 2
+        GCLK_CLKCTRL_CLKEN |        // Enable the generic clock clontrol
+        GCLK_CLKCTRL_ID(GCM_WDT) |  // Feed the GCLK to the WDT
+        GCLK_CLKCTRL_ID(GCM_EIC);   // Feed the GCLK to the EIC
     while (GCLK->STATUS.bit.SYNCBUSY) {
         // Wait for synchronization
     }
 
 #endif
+
+    // Enable WDT early-warning interrupt
+    NVIC_DisableIRQ(WDT_IRQn);
+    NVIC_ClearPendingIRQ(WDT_IRQn);
+    NVIC_SetPriority(WDT_IRQn, 1);  // Priority behind RTC!
+    NVIC_EnableIRQ(WDT_IRQn);
 
     // Set up the watch dog control parameters
 #if defined(__SAMD51__)
@@ -103,21 +206,21 @@ void extendedWatchDogSAMD::setupWatchDog(uint32_t resetTime_s) {
 #else
     WDT->CTRL.bit.WEN      = 0;  // Disable window mode
 #endif
-    waitForWDTBitSync();  // ?? Needed here ??
+    waitForWDTBitSync();
 #if defined(__SAMD51__)
     WDT->CTRLA.bit.ALWAYSON = 0;  // NOT always on!
 #else
     WDT->CTRL.bit.ALWAYSON = 0;  // NOT always on!
 #endif
 
-    waitForWDTBitSync();  // ?? Needed here ??
+    waitForWDTBitSync();
 
     WDT->CONFIG.bit.PER =
         0xB;  // Period = 16384 clockcycles @ 1024hz = 16 seconds
     WDT->EWCTRL.bit.EWOFFSET = 0xA;  // Early Warning Interrupt Time Offset 0xA
                                      // = 8192 clockcycles @ 1024hz = 8 seconds
     WDT->INTENSET.bit.EW = 1;        // Enable early warning interrupt
-    waitForWDTBitSync();             // ?? Needed here ??
+    waitForWDTBitSync();
 
     /*In normal mode, the Early Warning interrupt generation is defined by the
     Early Warning Offset in the Early Warning Control register

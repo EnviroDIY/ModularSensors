@@ -1,16 +1,14 @@
 /** =========================================================================
- * @file DRWI_2G.ino
+ * @example{lineno} DRWI_2G.ino
+ * @copyright Stroud Water Research Center
+ * @license This example is published under the BSD-3 license.
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
  * @brief Example for DRWI CitSci 2G sites.
  *
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
- * @copyright Stroud Water Research Center
- * This example is published under the BSD-3 license.
+ * See [the walkthrough page](@ref example_drwi_2g) for detailed instructions.
  *
- * Build Environment: Visual Studio Code with PlatformIO
- * Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
- *
- * DISCLAIMER:
- * THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
+ * @m_examplenavigation{example_drwi_2g,}
  * ======================================================================= */
 
 // ==========================================================================

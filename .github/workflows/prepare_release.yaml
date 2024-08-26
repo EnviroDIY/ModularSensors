@@ -6,166 +6,49 @@ on:
     paths:
       - 'VERSION' # Push events when the VERSION file changes
   workflow_dispatch:
+    inputs:
+      include_dependencies:
+        description: 'True to include a zip file with dependencies in the release'
+        required: false
+        type: boolean
+        default: true
 
-name: Prepare a new release and add release assets
+name: Create a New Release
 
 env:
   PLATFORMIO_AUTH_TOKEN: ${{ secrets.PLATFORMIO_AUTH_TOKEN }}
 
 jobs:
+  wait_for_checks:
+    if: ${{ github.event_name != 'workflow_dispatch' }}
+    strategy:
+      matrix:
+        req_workflow:
+          [
+            verify_library_structure.yaml,
+            build_examples.yaml,
+            build_documentation.yaml,
+          ]
+    name: Wait for Checks to complete
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait on Workflow
+        uses: ArcticLampyrid/action-wait-for-workflow@v1.2.0
+        with:
+          workflow: ${{ matrix.req_workflow }}
+          sha: ${{ github.sha || github.event.pull_request.head.sha || github.event.pull_request.head.ref }} # optional
+          allowed-conclusions: |
+            success
+            cancelled
+            skipped
+
   release:
     name: Prepare a new release
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set environment variable for current library version
-        run: |
-          echo "::debug::Get the current version number"
-          VER=$(cat VERSION)
-          ZIP_FILE="ModularSensors_Dependencies_${VER}"
-          echo "VERSION=$VER" >> $GITHUB_ENV
-          echo "ZIP_NAME=$ZIP_FILE" >> $GITHUB_ENV
-
-      - name: Set up python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-
-      - name: Install PlatformIO
-        run: |
-          python -m pip install --upgrade pip
-          pip install --upgrade platformio
-
-      # Install *all* the libraries!
-      - name: Install the libraries
-        run: |
-          chmod +x continuous_integration/install-deps-platformio.sh
-          sh continuous_integration/install-deps-platformio.sh
-
-      - name: Install ModularSensors from the master branch
-        run: |
-          pio pkg install -g -l https://github.com/EnviroDIY/ModularSensors
-
-      # Uninstall graphics libraries from Adafruit
-      - name: Uninstall Adafruit GFX Library library
-        continue-on-error: true
-        run: |
-          echo "::debug::Removing Adafruit GFX Library"
-          pio pkg uninstall -g -l "adafruit/Adafruit GFX Library"
-
-      - name: Uninstall Adafruit NeoPixel library
-        continue-on-error: true
-        run: |
-          echo "::debug::Removing Adafruit NeoPixel"
-          pio pkg uninstall -g -l "adafruit/Adafruit NeoPixel"
-
-      - name: Uninstall Adafruit SSD1306 library
-        continue-on-error: true
-        run: |
-          echo "::debug::Removing Adafruit SSD1306"
-          pio pkg uninstall -g -l "adafruit/Adafruit SSD1306"
-
-      - name: Uninstall Adafruit ADXL343 library
-        continue-on-error: true
-        run: |
-          echo "::debug::Removing Adafruit ADXL343"
-          pio pkg uninstall -g -l "adafruit/Adafruit ADXL343"
-
-      - name: Uninstall Adafruit STMPE610 library
-        continue-on-error: true
-        run: |
-          echo "::debug::Removing Adafruit STMPE610"
-          pio pkg uninstall -g -l "adafruit/Adafruit STMPE610"
-
-      - name: Uninstall Adafruit TouchScreen library
-        continue-on-error: true
-        run: |
-          echo "::debug::Removing Adafruit TouchScreen"
-          pio pkg uninstall -g -l "adafruit/Adafruit TouchScreen"
-
-      - name: Uninstall Adafruit ILI9341 library
-        continue-on-error: true
-        run: |
-          echo "::debug::Removing Adafruit ILI9341"
-          pio pkg uninstall -g -l "adafruit/Adafruit ILI9341"
-
-      # zip up all the installed libraries
-      # need to cd into the pio directory so we don't get extra junk directories
-      - name: Zip libraries
-        run: |
-          echo "::debug::Listing global libraries"
-          pio pkg list -g -v --only-libraries
-          echo "::debug::Zipping global libraries"
-          cd /home/runner/.platformio/
-          zip ${{ env.ZIP_NAME }}.zip -r lib
-          mv ${{ env.ZIP_NAME }}.zip $GITHUB_WORKSPACE
-          cd $GITHUB_WORKSPACE
-          ls
-
-      # Remove some extras from the zip
-      - name: Remove git files from the zip
-        continue-on-error: true
-        run: |
-          echo "::debug::Deleting extra files to decrease size of zip"
-          echo "::debug::Removing Git folders"
-          zip -d -q ${{ env.ZIP_NAME }} "*/.gitattributes" "*/.gitignore" "*/.gitmodules" "*/.github/*" "*.sh"  "*/Doxyfile" "*/.travis.yml"
-      - name: Remove other pdfs from the zip
-        continue-on-error: true
-        run: |
-          echo "::debug::Removing other pdfs"
-          zip -d -q libraries "*/doc/*.pdf"
-      - name: Remove TinyGSM extras from the zip
-        continue-on-error: true
-        run: |
-          echo "::debug::Removing TinyGSM extras"
-          zip -d -q libraries "*/TinyGSM/extras/*"
-      - name: Remove YosemitechModbus extras from the zip
-        continue-on-error: true
-        run: |
-          echo "::debug::Removing YosemitechModbus extras"
-          zip -d -q libraries "*/YosemitechModbus/doc/*"
-      - name: Remove SDFat extras from the zip
-        continue-on-error: true
-        run: |
-          echo "::debug::Removing SDFat extras"
-          zip -d -q libraries "*/SdFat/extras/*"
-
-      - name: Get change log entry for release notes
-        id: changelog_reader
-        uses: mindsers/changelog-reader-action@v2
-        with:
-          path: ChangeLog.md
-          version: ${{ env.VERSION }}
-          # validation_depth: 10
-
-      # I use the first line of the change log entry as the name, so read it here
-      # - name: Get release name
-      #   id: get_release_name
-      #   run: |
-      #     release_name=$(echo ${{steps.changelog_reader.outputs.changes}} | cut -d '\n' -f 1)
-      #      echo "release_name=release_name" >> $GITHUB_OUTPUT
-
-      # Create a new release
-      - name: Create release
-        id: create_release
-        uses: softprops/action-gh-release@v2.0.8
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ format('v{0}',env.VERSION) }}
-          # name: ${{ format('v{0} - {1}', env.VERSION, steps.get_release_name.outputs.release_name) }}
-          name: ${{ format('v{0}',env.VERSION) }}
-          draft: ${{ steps.changelog_reader.outputs.status == 'unreleased' }}
-          prerelease: ${{ steps.changelog_reader.outputs.status == 'prereleased' }}
-          body: ${{ steps.changelog_reader.outputs.changes }}
-          generate_release_notes: false
-          files: ${{ format('./{0}.zip', env.ZIP_NAME) }}
-          fail_on_unmatched_files: true
-
-      # Publish the new release to the PlatformIO package manager
-      - name: Publish release to the PlatformIO package manager
-        id: publish-pio
-        run: pio package publish --owner envirodiy --non-interactive
+    needs: [wait_for_checks]
+    if: |
+      always() &&
+      (needs.wait_for_checks.result == 'success' || needs.wait_for_checks.result == 'skipped')
+    uses: EnviroDIY/workflows/.github/workflows/prepare_release.yaml@main
+    secrets: inherit
+    with:
+      include_dependencies: ${{ ( true ) || (github.event_name == 'workflow_dispatch' && github.event.inputs.publish == 'true') }}
