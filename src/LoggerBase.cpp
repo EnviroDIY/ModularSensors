@@ -785,7 +785,7 @@ void Logger::systemSleep(void) {
 
 #if defined ARDUINO_ARCH_SAMD
 
-#ifndef USE_TINYUSB&& defined(USBCON)
+#if not defined(USE_TINYUSB) && defined(USBCON)
     // Detach the USB, iff not using TinyUSB
     MS_DEEP_DBG(F("Detaching USB"));
     Serial.flush();  // wait for any outgoing messages on Serial = USB
@@ -896,7 +896,7 @@ void Logger::systemSleep(void) {
     SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;
 #endif
     // Reattach the USB
-#ifndef USE_TINYUSB&& defined(USBCON)
+#if not defined(USE_TINYUSB) && defined(USBCON)
     USBDevice.init();
     USBDevice.attach();
 #endif
