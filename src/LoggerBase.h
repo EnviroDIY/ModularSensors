@@ -414,6 +414,15 @@ class Logger {
      */
     int8_t _mcuWakePin = -1;
     /**
+     * @brief The pin mode used for wake up on the clock alert pin.
+     *
+     * Must be either `INPUT` OR `INPUT_PULLUP` with an AVR board.  On a SAM/D
+     * board `INPUT_PULLDOWN` is also an option.  Optional with a default value
+     * of `INPUT_PULLUP`.  The DS3231 has an active low interrupt, so the
+     * pull-up resistors should be enabled.
+     */
+    uint8_t _wakePinMode = INPUT_PULLUP;
+    /**
      * @brief Digital pin number on the mcu used to output an alert that the
      * logger is measuring.
      *

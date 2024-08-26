@@ -167,7 +167,8 @@ void Logger::setSDCardPins(int8_t SDCardSSPin, int8_t SDCardPowerPin) {
 // Sets up the wake up pin for an RTC interrupt
 // NOTE:  This sets the pin mode but does NOT enable the interrupt!
 void Logger::setRTCWakePin(int8_t mcuWakePin, uint8_t wakePinMode) {
-    _mcuWakePin = mcuWakePin;
+    _mcuWakePin  = mcuWakePin;
+    _wakePinMode = wakePinMode;
     if (_mcuWakePin >= 0) {
         pinMode(_mcuWakePin, wakePinMode);
         MS_DBG(F("Pin"), _mcuWakePin, F("set as RTC wake up pin"));
@@ -687,6 +688,9 @@ void Logger::systemSleep(void) {
         return;
     }
 
+    // Send a message that we're getting ready
+    MS_DBG(F("Preparing processor for  sleep.  ZZzzz..."));
+
 #if defined(MS_SAMD_DS3231) || not defined(ARDUINO_ARCH_SAMD)
 
     // Unfortunately, because of the way the alarm on the DS3231 is set up, it
@@ -703,7 +707,10 @@ void Logger::systemSleep(void) {
     rtc.clearINTStatus();
 
     // Set up a pin to hear clock interrupt and attach the wake ISR to it
-    pinMode(_mcuWakePin, INPUT_PULLUP);
+    MS_DBG(F("Enabling interrupts on pin"), _mcuWakePin);
+    // Set the pin mode, although this shouldn't really need to be re-set here
+    pinMode(_mcuWakePin, _wakePinMode);
+    // attach the interrupt
     enableInterrupt(_mcuWakePin, wakeISR, CHANGE);
 
 #elif defined ARDUINO_ARCH_SAMD
