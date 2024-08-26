@@ -719,7 +719,7 @@ void Logger::systemSleep(void) {
     // clock source for the EIC to GCLK0 every time a new interrupt is attached
     // - and after being detached, reattaching the same interrupt is just like a
     // new one). We need to switch the EIC source back to our configured GCLK2.
-    Serial.println(F("Re-attaching the EIC to GCLK2"));
+    MS_DEEP_DBG(F("Re-attaching the EIC to GCLK2"));
     GCLK->CLKCTRL.reg = GCLK_CLKCTRL_GEN(2) |  // Select generic clock 2
         GCLK_CLKCTRL_CLKEN |       // Enable the generic clock clontrol
         GCLK_CLKCTRL_ID(GCM_EIC);  // Feed the GCLK to the EIC

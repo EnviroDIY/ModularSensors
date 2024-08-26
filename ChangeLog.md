@@ -12,13 +12,26 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
-- Switched to reusable workflows for CI
-
 ### Added
 
 ### Removed
 
 ### Fixed
+
+***
+
+
+## [0.35.1]
+
+### Changed
+
+- **BREAKING** Switched default clock for SAMD21 from the built-in 32bit RTC to the DS3231.
+*This is not be a permanent change.*
+- Switched to reusable workflows for CI
+
+### Fixed
+
+Fixed clock configuration for SAMD21
 
 ***
 
@@ -831,7 +844,10 @@ Our first release of the modular sensors library to support easily logging data 
 
 ***
 
-[Unreleased]: https://github.com/EnviroDIY/ModularSensors/compare/v0.33.4...HEAD
+[Unreleased]: https://github.com/EnviroDIY/ModularSensors/compare/v0.35.1...HEAD
+[0.35.1]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.35.1
+[0.35.0]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.35.0
+[0.34.0]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.34.0
 [0.33.4]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.33.4
 [0.33.3]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.33.3
 [0.33.2]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.33.2
