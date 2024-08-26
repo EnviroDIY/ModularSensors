@@ -713,6 +713,26 @@ void Logger::systemSleep(void) {
     // attach the interrupt
     enableInterrupt(_mcuWakePin, wakeISR, CHANGE);
 
+#if defined ARDUINO_ARCH_SAMD && not defined(__SAMD51__)
+    // Reconfigure the clock after attaching the interrupt
+    // This is needed because the attachInterrupt function will reconfigure the
+    // clock source for the EIC to GCLK0 every time a new interrupt is attached
+    // - and after being detached, reattaching the same interrupt is just like a
+    // new one). We need to switch the EIC source back to our configured GCLK2.
+    Serial.println(F("Re-attaching the EIC to GCLK2"));
+    GCLK->CLKCTRL.reg = GCLK_CLKCTRL_GEN(2) |  // Select generic clock 2
+        GCLK_CLKCTRL_CLKEN |       // Enable the generic clock clontrol
+        GCLK_CLKCTRL_ID(GCM_EIC);  // Feed the GCLK to the EIC
+    while (GCLK->STATUS.bit.SYNCBUSY) {
+        // Wait for synchronization
+    }
+
+    // get the interrupt number associated with the pin
+    EExt_Interrupts in = g_APinDescription[_mcuWakePin].ulExtInt;
+    // Enable wakeup capability on pin in case being used during sleep
+    EIC->WAKEUP.reg |= (1 << in);
+#endif  // defined ARDUINO_ARCH_SAMD && not defined(__SAMD51__)
+
 #elif defined ARDUINO_ARCH_SAMD
 
     // Make sure interrupts are enabled for the clock
@@ -729,22 +749,11 @@ void Logger::systemSleep(void) {
     zero_sleep_rtc.setAlarmSeconds(59);
     zero_sleep_rtc.enableAlarm(zero_sleep_rtc.MATCH_SS);
 
-#endif
+#endif  // defined(MS_SAMD_DS3231) || not defined(ARDUINO_ARCH_SAMD)
 
-    // Send one last message before shutting down serial ports
-    MS_DBG(F("Putting processor to sleep.  ZZzzz..."));
-
-// Wait until the serial ports have finished transmitting
-// This does not clear their buffers, it just waits until they are finished
-// TODO(SRGDamia1):  Make sure can find all serial ports
-#if defined(STANDARD_SERIAL_OUTPUT)
-    STANDARD_SERIAL_OUTPUT.flush();  // for debugging
-#endif
-#if defined DEBUGGING_SERIAL_OUTPUT
-    DEBUGGING_SERIAL_OUTPUT.flush();  // for debugging
-#endif
 
     // Stop any I2C connections
+    MS_DEEP_DBG(F("Ending I2C"));
     // This function actually disables the two-wire pin functionality and
     // turns off the internal pull-up resistors.
     Wire.end();
@@ -760,37 +769,65 @@ void Logger::systemSleep(void) {
     digitalWrite(SCL, LOW);
 #endif
 
-#if defined ARDUINO_ARCH_SAMD
-
     // Disable the watch-dog timer
+    MS_DEEP_DBG(F("Disabling the watchdog"));
     watchDogTimer.disableWatchDog();
 
-#ifndef USE_TINYUSB
+// Wait until the serial ports have finished transmitting
+// This does not clear their buffers, it just waits until they are finished
+// TODO(SRGDamia1):  Make sure can find all serial ports
+#if defined(STANDARD_SERIAL_OUTPUT)
+    STANDARD_SERIAL_OUTPUT.flush();  // for debugging
+#endif
+#if defined DEBUGGING_SERIAL_OUTPUT
+    DEBUGGING_SERIAL_OUTPUT.flush();  // for debugging
+#endif
+
+#if defined ARDUINO_ARCH_SAMD
+
+#ifndef USE_TINYUSB&& defined(USBCON)
     // Detach the USB, iff not using TinyUSB
-    MS_DEEP_DBG(F("USBDevice.detach"));
+    MS_DEEP_DBG(F("Detaching USB"));
+    Serial.flush();  // wait for any outgoing messages on Serial = USB
     USBDevice.detach();
-    MS_DEEP_DBG(F("USBDevice.end"));
     USBDevice.end();
     USBDevice.standby();
 #endif
 
+    // Copied from Adafruit SleepDog
+    // Enable standby sleep mode (deepest sleep) and activate.
+    // Insights from Atmel ASF library.
+
+    // NOTE: The macros SAMD20_SERIES and SAMD21_SERIES capture all of the MCU
+    // defines for all processors in that series.
+
 #if defined(__SAMD51__)
+    // Set the sleep config
     // PM_SLEEPCFG_SLEEPMODE_BACKUP = 0x4
     PM->SLEEPCFG.bit.SLEEPMODE = 0x4;
     while (PM->SLEEPCFG.bit.SLEEPMODE != 0x4)
         ;  // Wait for it to take
 #else
-    // Disable systick interrupt:  See
-    // https://www.avrfreaks.net/forum/samd21-samd21e16b-sporadically-locks-and-does-not-wake-standby-sleep-mode
+    // Don't fully power down flash when in sleep
+    // Adafruit SleepDog and ArduinoLowPower both do this.
+    // TODO: Figure out if this is really necessary
+    // NVMCTRL->CTRLB.bit.SLEEPPRM = NVMCTRL_CTRLB_SLEEPPRM_DISABLED_Val;
+
+    // Disable systick interrupt
     // Due to a hardware bug on the SAMD21, the SysTick interrupts become active
     // before the flash has powered up from sleep, causing a hard fault. To
     // prevent this the SysTick interrupts are disabled before entering sleep
     // mode.
     SysTick->CTRL &= ~SysTick_CTRL_TICKINT_Msk;
-    // Now go to sleep
+    // Set the sleep config
+    // SCB = System Control Space Base Address
+    // SCR = System Control Register
+    // SCB_SCR_SLEEPDEEP_Msk = (1UL << 2U), the position of the deep sleep bit
+    // in the system control register
     SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
 #endif
 
+    // Actually sleep
     __DSB();  // Data sync to ensure outgoing memory accesses complete
     __WFI();  // Wait for interrupt (places device in sleep mode)
 
@@ -811,9 +848,6 @@ void Logger::systemSleep(void) {
     // SLEEP_MODE_STANDBY
     // SLEEP_MODE_PWR_DOWN     -the most power savings
     set_sleep_mode(SLEEP_MODE_PWR_DOWN);
-
-    // Disable the watch-dog timer
-    watchDogTimer.disableWatchDog();
 
     // Temporarily disables interrupts, so no mistakes are made when writing
     // to the processor registers
@@ -857,13 +891,12 @@ void Logger::systemSleep(void) {
     // -- The portion below this happens on wake up, after any wake ISR's --
 
 #if defined ARDUINO_ARCH_SAMD
-#if (SAMD20_SERIES || SAMD21_SERIES)
-    // Reattach the USB after waking
+#if not defined(__SAMD51__)
     // Enable systick interrupt
     SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;
 #endif
     // Reattach the USB
-#ifndef USE_TINYUSB
+#ifndef USE_TINYUSB&& defined(USBCON)
     USBDevice.init();
     USBDevice.attach();
 #endif
@@ -891,10 +924,15 @@ void Logger::systemSleep(void) {
 
 #endif
 
+    // Wake-up message
+    MS_DBG(F("\n\n\n... zzzZZ Processor is now awake!"));
+
     // Re-enable the watch-dog timer
+    MS_DEEP_DBG(F("Re-enabling the watchdog"));
     watchDogTimer.enableWatchDog();
 
-// Re-start the I2C interface
+    // Re-start the I2C interface
+    MS_DEEP_DBG(F("Restarting I2C"));
 #ifdef SDA
     pinMode(SDA, INPUT_PULLUP);  // set as input with the pull-up on
 #endif
@@ -915,16 +953,15 @@ void Logger::systemSleep(void) {
     // Stop the clock from sending out any interrupts while we're awake.
     // There's no reason to waste thought on the clock interrupt if it
     // happens while the processor is awake and doing other things.
+    MS_DEEP_DBG(F("Unsetting the alarm on the DS2321"));
     rtc.disableInterrupts();
     // Detach the from the pin
     disableInterrupt(_mcuWakePin);
 
 #elif defined ARDUINO_ARCH_SAMD
+    MS_DEEP_DBG(F("Unsetting the alarm on the built in RTC"));
     zero_sleep_rtc.disableAlarm();
 #endif
-
-    // Wake-up message
-    MS_DBG(F("\n\n\n... zzzZZ Processor is now awake!"));
 
     // The logger will now start the next function after the systemSleep
     // function in either the loop or setup
@@ -1340,7 +1377,7 @@ void Logger::begin() {
            F("minute intervals."));
 
 #if defined(ARDUINO_ARCH_SAMD)
-    MS_DBG(F("Disabling the USB on stnadby to lower sleep current"));
+    MS_DBG(F("Disabling the USB on standby to lower sleep current"));
     USB->DEVICE.CTRLA.bit.ENABLE = 0;  // Disable the USB peripheral
     while (USB->DEVICE.SYNCBUSY.bit.ENABLE)
         ;                                // Wait for synchronization
