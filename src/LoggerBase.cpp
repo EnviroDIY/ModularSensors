@@ -288,7 +288,7 @@ String Logger::formatValueStringAtI(uint8_t position_i, float value) {
 // ===================================================================== //
 
 // Set up communications
-// Adds a loggerModem objct to the logger
+// Adds a loggerModem object to the logger
 // loggerModem = TinyGSM modem + TinyGSM client + Modem On Off
 void Logger::attachModem(loggerModem& modem) {
     _logModem = &modem;
