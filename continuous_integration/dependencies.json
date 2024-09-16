@@ -1,14 +1,17 @@
 {
-  "action_cache_version": 18,
+  "action_cache_version": 19,
   "dependencies": [
     {
       "name": "EnviroDIY_DS3231",
       "owner": "envirodiy",
       "library id": "2079",
       "url": "https://github.com/EnviroDIY/Sodaq_DS3231",
-      "version": "~1.3.4",
+      "version": "~1.3.5",
       "note": "An Arduino library for the DS3231 RTC (Real Time Clock), based off of the Sodaq_DS3231 library.",
-      "authors": ["Kees Bakker", "Sara Damiano"],
+      "authors": [
+        "Kees Bakker",
+        "Sara Damiano"
+      ],
       "frameworks": "arduino",
       "platforms": "atmelavr, atmelsam"
     },
@@ -19,7 +22,9 @@
       "url": "https://github.com/arduino-libraries/RTCZero",
       "version": "~1.6.0",
       "note": "Functions for using the processor real time clock in SAMD21 processors",
-      "authors": ["Arduino"],
+      "authors": [
+        "Arduino"
+      ],
       "frameworks": "arduino",
       "platforms": "atmelsam"
     },
@@ -30,7 +35,9 @@
       "url": "https://github.com/GreyGnome/EnableInterrupt",
       "version": "~1.1.0",
       "note": "GreyGnome's EnableInterrupt - Assign an interrupt to any supported pin on all Arduinos",
-      "authors": ["Mike 'GreyGnome' Schwager"],
+      "authors": [
+        "Mike 'GreyGnome' Schwager"
+      ],
       "frameworks": "arduino",
       "platforms": "atmelavr, atmelsam"
     },
@@ -41,7 +48,9 @@
       "url": "https://github.com/greiman/SdFat",
       "version": "~2.2.3",
       "note": "SdFat - FAT16/FAT32 file system for SD cards.",
-      "authors": ["Bill Greiman"],
+      "authors": [
+        "Bill Greiman"
+      ],
       "frameworks": "arduino",
       "platforms": "atmelavr, atmelsam"
     },
@@ -50,7 +59,10 @@
       "owner": "vshymanskyy",
       "version": "~0.12.0",
       "note": "A small Arduino library for GPRS modules.",
-      "authors": ["Volodymyr Shymanskyy", "Sara Damiano"],
+      "authors": [
+        "Volodymyr Shymanskyy",
+        "Sara Damiano"
+      ],
       "frameworks": "arduino",
       "platforms": "atmelavr, atmelsam"
     },
@@ -59,9 +71,11 @@
       "owner": "knolleary",
       "library id": "89",
       "url": "https://github.com/knolleary/pubsubclient",
-      "version": "~2.8",
+      "version": "~2.8.0",
       "note": "A client library for MQTT messaging.",
-      "authors": ["Nick O'Leary"]
+      "authors": [
+        "Nick O'Leary"
+      ]
     },
     {
       "name": "Adafruit BusIO",
@@ -70,7 +84,9 @@
       "url": "https://github.com/adafruit/Adafruit_BusIO",
       "version": "~1.16.0",
       "note": "Adafruit BusIO, a dependency of other Adafruit libraries",
-      "authors": ["Adafruit"],
+      "authors": [
+        "Adafruit"
+      ],
       "frameworks": "arduino",
       "platforms": "atmelavr, atmelsam"
     },
@@ -81,7 +97,9 @@
       "url": "https://github.com/adafruit/Adafruit_Sensor",
       "version": "~1.1.14",
       "note": "Adafruit's unified sensor library is used by their other libraries",
-      "authors": ["Adafruit"],
+      "authors": [
+        "Adafruit"
+      ],
       "frameworks": "arduino",
       "platforms": "atmelavr, atmelsam"
     },
@@ -91,7 +109,9 @@
       "version_note": "=1.2.0",
       "version": "https://github.com/soligen2010/Adafruit_ADS1X15.git#7d67b451f739e9a63f40f2d6d139ab582258572b",
       "note": "Driver for TI's ADS1015: 12-bit Differential or Single-Ended ADC with PGA and Comparator.  This fork removes bugs in the Adafruit original library.",
-      "authors_note": ["soligen2010"],
+      "authors_note": [
+        "soligen2010"
+      ],
       "frameworks_note": "arduino",
       "platforms_note": "*"
     },
@@ -102,7 +122,9 @@
       "url": "https://github.com/adafruit/Adafruit_AM2315",
       "version": "~2.2.3",
       "note": "AOSong AM2315 I2C Temp/Humidity Sensor Library by Adafruit",
-      "authors": ["Adafruit"],
+      "authors": [
+        "Adafruit"
+      ],
       "frameworks": "arduino",
       "platforms": "atmelavr, atmelsam"
     },
@@ -113,7 +135,9 @@
       "url": "https://github.com/adafruit/Adafruit_BME280_Library",
       "version": "~2.2.4",
       "note": "Bosch BME280 Temp/Humidity/Pressure Sensor Library by Adafruit",
-      "authors": ["Adafruit"],
+      "authors": [
+        "Adafruit"
+      ],
       "frameworks": "arduino",
       "platforms": "atmelavr, atmelsam"
     },
@@ -122,7 +146,9 @@
       "owner": "MartinL1",
       "version": "~1.0.11",
       "note": "An Arduino compatible, non-blocking, I2C/SPI library for the Bosch BMP388 barometer.",
-      "authors": ["Martin Lindupp"],
+      "authors": [
+        "Martin Lindupp"
+      ],
       "frameworks": "arduino",
       "platforms": "atmelavr, atmelsam"
     },
@@ -133,7 +159,9 @@
       "url": "https://github.com/adafruit/DHT-sensor-library",
       "version": "~1.4.6",
       "note": "AOSong DHT Sensor Library by Adafruit",
-      "authors": ["Adafruit"],
+      "authors": [
+        "Adafruit"
+      ],
       "frameworks": "arduino",
       "platforms": "atmelavr, atmelsam"
     },
@@ -144,7 +172,9 @@
       "url": "https://github.com/adafruit/Adafruit_INA219",
       "version": "~1.2.3",
       "note": "This is a library for the Adafruit INA219 high side DC current sensor boards",
-      "authors": ["Adafruit"],
+      "authors": [
+        "Adafruit"
+      ],
       "frameworks": "arduino",
       "platforms": "atmelavr, atmelsam"
     },
@@ -155,7 +185,9 @@
       "url": "https://github.com/adafruit/Adafruit_MPL115A2",
       "version": "~2.0.2",
       "note": "MPL115A2 Barometer Library by Adafruit",
-      "authors": ["Adafruit"],
+      "authors": [
+        "Adafruit"
+      ],
       "frameworks": "arduino"
     },
     {
@@ -165,7 +197,9 @@
       "url": "https://github.com/adafruit/Adafruit_SHT4X",
       "version": "~1.0.4",
       "note": "Sensirion SHT4x Library by Adafruit",
-      "authors": ["Adafruit"],
+      "authors": [
+        "Adafruit"
+      ],
       "frameworks": "arduino"
     },
     {
@@ -199,7 +233,12 @@
       "url": "https://github.com/milesburton/Arduino-Temperature-Control-Library",
       "version": "~3.11.0",
       "note": "DallasTemperature - Arduino Library for Dallas Temperature ICs (DS18B20, DS18S20, DS1822, DS1820)",
-      "authors": ["Guil Barros", "Miles Burton", "Rob Tillart", "Tim Nuewsome"],
+      "authors": [
+        "Guil Barros",
+        "Miles Burton",
+        "Rob Tillart",
+        "Tim Nuewsome"
+      ],
       "frameworks": "arduino",
       "platforms": "atmelavr, atmelsam"
     },
@@ -226,14 +265,22 @@
       "url": "https://github.com/NorthernWidget/MS5803",
       "version": "~0.1.2",
       "note": "General interface to MS5803-series pressure transducers",
-      "authors": ["Bobby Schulz", "Andrew Wickert", "Chad Sandell", "Sara Damiano"]
+      "authors": [
+        "Bobby Schulz",
+        "Andrew Wickert",
+        "Chad Sandell",
+        "Sara Damiano"
+      ]
     },
     {
       "name": "Tally_Library_I2C",
       "version": "https://github.com/EnviroDIY/Tally_Library.git#Dev_I2C",
       "version_note": "Uses `Dev_I2C` feature branch",
       "note": "An Arduino library for interfacing to the Project Tally Event counter from NorthernWidget.",
-      "authors": ["Bobby Schulz", "Anthony Aufdenkampe"],
+      "authors": [
+        "Bobby Schulz",
+        "Anthony Aufdenkampe"
+      ],
       "frameworks": "arduino",
       "platforms": "atmelavr, atmelsam"
     },
@@ -244,7 +291,9 @@
       "url": "https://github.com/EnviroDIY/SensorModbusMaster",
       "version": "~0.7.0",
       "note": "EnviroDIY SensorModbusMaster - Arduino library for communicating via modbus with the Arduino acting as the modbus master.",
-      "authors": ["Sara Damiano"],
+      "authors": [
+        "Sara Damiano"
+      ],
       "frameworks": "arduino",
       "platforms": "atmelavr, atmelsam"
     },
@@ -255,7 +304,9 @@
       "url": "https://github.com/EnviroDIY/KellerModbus",
       "version": "~0.2.3",
       "note": "Arduino library for communication with Keller pressure and water level sensors via Modbus.",
-      "authors": ["Anthony Aufdenkampe"]
+      "authors": [
+        "Anthony Aufdenkampe"
+      ]
     },
     {
       "name": "YosemitechModbus",
@@ -264,7 +315,10 @@
       "url": "https://github.com/EnviroDIY/YosemitechModbus",
       "version": "~0.4.1",
       "note": "Arduino library for communication with Yosemitech sensors via Modbus.",
-      "authors": ["Sara Damiano", "Anthony Aufdenkampe"],
+      "authors": [
+        "Sara Damiano",
+        "Anthony Aufdenkampe"
+      ],
       "frameworks": "arduino",
       "platforms": "atmelavr, atmelsam"
     },
@@ -274,7 +328,9 @@
       "url": "https://github.com/EnviroDIY/GroPointModbus.git",
       "version": "~0.1.0",
       "note": "A library to use an Arduino as a master to control and communicate via modbus with GroPoint soil moisture sensors. ",
-      "authors": ["Anthony Aufdenkampe"],
+      "authors": [
+        "Anthony Aufdenkampe"
+      ],
       "frameworks": "arduino",
       "platforms": "atmelavr, atmelsam"
     }

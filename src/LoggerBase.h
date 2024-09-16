@@ -18,6 +18,9 @@
 // Debugging Statement
 // #define MS_LOGGERBASE_DEBUG
 
+// Set default clock for SAMD21 as DS3231 instead of built-in RTC
+#define MS_SAMD_DS3231
+
 #ifdef MS_LOGGERBASE_DEBUG
 #define MS_DEBUGGING_STD "LoggerBase"
 #endif
@@ -416,6 +419,15 @@ class Logger {
      */
     int8_t _mcuWakePin = -1;
     /**
+     * @brief The pin mode used for wake up on the clock alert pin.
+     *
+     * Must be either `INPUT` OR `INPUT_PULLUP` with an AVR board.  On a SAM/D
+     * board `INPUT_PULLDOWN` is also an option.  Optional with a default value
+     * of `INPUT_PULLUP`.  The DS3231 has an active low interrupt, so the
+     * pull-up resistors should be enabled.
+     */
+    uint8_t _wakePinMode = INPUT_PULLUP;
+    /**
      * @brief Digital pin number on the mcu used to output an alert that the
      * logger is measuring.
      *
@@ -711,9 +723,6 @@ class Logger {
      */
     static int8_t getTZOffset(void);
 
-// This gets the current epoch time (unix time, ie, the number of seconds
-// from January 1, 1970 00:00:00 UTC) and corrects it for the specified time
-// zone
 #if (defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAMD_ZERO)) && \
     not defined(MS_SAMD_DS3231)
     /**
@@ -885,6 +894,75 @@ class Logger {
      * @anchor logger_sleep
      * @name Clock and Timezones
      * Public Functions for sleeping the logger
+     *
+     * # AVR Sleep modes
+     *
+     * In the avr/sleep.h file, the call names of these 5 sleep modes are:
+     * SLEEP_MODE_IDLE         - the least power savings
+     * SLEEP_MODE_ADC
+     * SLEEP_MODE_PWR_SAVE
+     * SLEEP_MODE_STANDBY
+     * SLEEP_MODE_PWR_DOWN     - the most power savings
+     *
+     * # SAMD21 Sleep Modes
+     *
+     * > The SAM D21/DA1 have two software-selectable sleep modes, Idle and
+     * > Stand-by.
+     * > In Idle mode, the CPU is stopped while all other functions can be kept
+     * > running.
+     * > In Stand-by mode, all clocks and functions are stopped, expect those
+     * > selected to continue running.
+     * > The device supports SleepWalking.
+     * > This feature allows the peripheral to wake up from sleep based on
+     * > predefined conditions, and thus allows the CPU to wake up only when
+     * > needed, e.g., when a threshold is crossed or a result is ready.
+     * > The Event System supports synchronous and asynchronous events, allowing
+     * > peripherals to receive, react to and send events even in Stand-by mode.
+     *
+     * # SAMD51 Sleep Modes
+     *
+     * > The device can be set in a sleep mode. In sleep mode, the CPU is
+     * > stopped and the peripherals are either active or idle, according to the
+     * > sleep mode depth:
+     * >
+     * >  - Idle sleep mode:
+     * >    - The CPU is stopped.
+     * >    - Synchronous clocks are stopped except when requested.
+     * >    - The logic is retained.
+     * >  - Standby sleep mode:
+     * >    - The CPU is stopped as well as the peripherals.
+     * >    - The logic is retained, and power domain gating can be used to
+     * > fully or partially turn off the PDSYSRAM power domain.
+     * >  - Hibernate sleep mode:
+     * >    - PDCORESW power domain is turned OFF.
+     * >    - The backup power domain is kept powered to allow few features to
+     * > run (RTC, 32KHz clock sources, and wake-up from external pins).
+     * >    - The PDSYSRAM power domain can be retained according to software
+     * > configuration.
+     * >  - Backup sleep mode:
+     * >    - Only the backup domain is kept powered to allow few features to
+     * > run (RTC, 32KHz clock sources, and wake-up from external pins).
+     * >    - The PDBKUPRAM power domain can be retained according to software
+     * > configuration.
+     * >  - Off sleep mode:
+     * >    - The entire device is powered off.
+     *
+     * ## Bit Settings
+     * | Value |    Name   |                 Definition                 |
+     * |:-----:|:---------:|:------------------------------------------:|
+     * | 0x0   | Reserved  | -                                          |
+     * | 0x1   | Reserved  | -                                          |
+     * | 0x2   | IDLE      | CPU, AHBx, and APBx clocks are OFF         |
+     * | 0x3   | Reserved  | Reserved                                   |
+     * | 0x4   | STANDBY   | All Clocks are OFF                         |
+     * | 0x5   | HIBERNATE | Backup domain is ON as well as some PDRAMs |
+     * | 0x6   | BACKUP    | Only Backup domain is powered ON           |
+     * | 0x7   | OFF       | All power domains are powered OFF          |
+     *
+     * @note For the SAMD51, hibernate, backup, and off modes cause a full
+     * system reset on wake. Because we don't want to fully reset the device
+     * (and go back to the setup) on wake, the lowest power mode we can use is
+     * standby.
      */
     /**@{*/
     // ===================================================================== //

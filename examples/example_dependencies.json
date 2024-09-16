@@ -21,6 +21,11 @@
     {
       "name": "SoftwareSerial_ExternalInts",
       "version": "https://github.com/EnviroDIY/SoftwareSerial_ExternalInts.git"
+    },
+    {
+      "name": "SDI-12_ExtInts",
+      "owner": "envirodiy",
+      "version": "https://github.com/EnviroDIY/Arduino-SDI-12#ExtInts"
     }
   ]
 }

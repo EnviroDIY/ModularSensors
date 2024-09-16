@@ -1,5 +1,9 @@
 /** =========================================================================
- * @file DRWI_Mayfly1.ino
+ * @example{lineno} DRWI_Mayfly1.ino
+ * @copyright Stroud Water Research Center
+ * @license This example is published under the BSD-3 license.
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
  * @brief Example for DRWI CitSci LTE sites.
  *
  * This example shows proper settings for the following configuration:
@@ -8,15 +12,10 @@
  * EnviroDIY SIM7080 LTE module (with Hologram SIM card)
  * Hydros21 CTD sensor
  *
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
- * @copyright Stroud Water Research Center
- * This example is published under the BSD-3 license.
+ * See [the walkthrough page](@ref example_drwi_mayfly1) for detailed
+ * instructions.
  *
-
- * Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
- *
- * DISCLAIMER:
- * THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
+ * @m_examplenavigation{example_drwi_mayfly1,}
  * ======================================================================= */
 
 // ==========================================================================

@@ -12,4 +12,6 @@ jobs:
     name: Build all examples with PlatformIO and the Arduino CLI
     if: ${{ ! contains(github.event.head_commit.message, 'ci skip') }}
     uses: EnviroDIY/workflows/.github/workflows/build_examples.yaml@main
+    with:
+      boards_to_build: 'mayfly,megaatmega2560,zeroUSB,adafruit_feather_m0'
     secrets: inherit

@@ -34,7 +34,7 @@
  * @section sensor_gplp8_datasheet Sensor Datasheet
  * - [GroPoint Profile User Manual](https://www.gropoint.com/s/2625-N-T-GroPoint-Profile-User-Manual-V113.pdf), including Modbus Instructions.
  * - [GroPoint Profile Technical Info](https://www.gropoint.com/s/GroPoint-Profile-Technical-Info.pdf)
- * *
+ *
  * @section sensor_gplp8_ctor Sensor Constructor
  * {{ @ref GroPointGPLP8::GroPointGPLP8 }}
  *

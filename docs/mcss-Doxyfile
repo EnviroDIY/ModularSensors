@@ -19,3 +19,7 @@ ALIASES += \
     "m_enum_values_as_keywords=@xmlonly<mcss:search xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:enum-values-as-keywords=\"true\" />@endxmlonly" \
     "m_since{2}=@since @m_class{m-label m-success m-flat} @ref changelog-\1-\2 \"since v\1.\2\"" \
     "m_deprecated_since{3}=@since deprecated in v\1.\2.\3 @deprecated"
+
+HAVE_DOT = NO
+DOT_FONTNAME = Source Sans Pro
+DOT_FONTSIZE = 16
