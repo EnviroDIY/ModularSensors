@@ -1,7 +1,9 @@
 /** =========================================================================
- * @file LTExBee_FirstConnection.ino
+ * @example{lineno} LTExBee_FirstConnection.ino
  * @brief Testing sketch to set up a never-previously-connected LTE XBee running
  * in standard (transparent) mode.
+ *
+ * @m_examplenavigation{page_extra_helper_sketches,}
  * ======================================================================= */
 
 #define TINY_GSM_MODEM_XBEE

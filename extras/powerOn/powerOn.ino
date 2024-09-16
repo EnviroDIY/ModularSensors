@@ -1,7 +1,9 @@
 /** =========================================================================
- * @file powerOn.ino
+ * @example{lineno} powerOn.ino
  * @brief Testing sketch that simply turns on power to the sensors on the
  * Mayfly.
+ *
+ * @m_examplenavigation{page_extra_helper_sketches,}
  * ======================================================================= */
 
 #include <Arduino.h>

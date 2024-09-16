@@ -1,7 +1,9 @@
 /** =========================================================================
- * @file LTExBee_FirstConnectionBypass.ino
+ * @example{lineno} LTExBee_FirstConnectionBypass.ino
  * @brief Testing sketch to set up a never-previously-connected LTE XBee running
  * in bypass mode.
+ *
+ * @m_examplenavigation{page_extra_helper_sketches,}
  * ======================================================================= */
 
 #define TINY_GSM_MODEM_SARAR4

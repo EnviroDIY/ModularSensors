@@ -106,3 +106,4 @@ runDoxygen_archive.bat
 generateKeywords.bat
 update_path.bat
 pio_common_libdeps.ini
+ex_one_offs/*
