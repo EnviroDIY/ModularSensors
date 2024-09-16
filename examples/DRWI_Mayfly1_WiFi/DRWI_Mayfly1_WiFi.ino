@@ -11,6 +11,8 @@
  * Mayfly v1.x board
  * EnviroDIY ESP32 Wifi Bee module
  * Hydros21 CTD sensor
+ *
+ * @m_examplenavigation{example_drwi_mayfly1_wifi,}
  * ======================================================================= */
 
 // ==========================================================================

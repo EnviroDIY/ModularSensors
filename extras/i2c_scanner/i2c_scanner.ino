@@ -1,5 +1,5 @@
 /** =========================================================================
- * @file i2c_scanner.ino
+ * @example{lineno} i2c_scanner.ino
  * @brief Testing sketch to scan for attached I2C devices
  *
  * Version 1
@@ -26,6 +26,8 @@
  *
  * This sketch tests the standard 7-bit addresses.
  * Devices with higher bit address might not be seen properly.
+ *
+ * @m_examplenavigation{page_extra_helper_sketches,}
  * ======================================================================= */
 
 #include <Arduino.h>

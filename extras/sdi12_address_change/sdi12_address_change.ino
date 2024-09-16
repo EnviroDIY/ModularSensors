@@ -1,5 +1,5 @@
 /**
- * @file sdi12_address_change.ino
+ * @example{lineno} sdi12_address_change.ino
  * @copyright Stroud Water Research Center
  * This example is published under the BSD-3 license.
  * @author Kevin M.Smith <SDI12@ethosengineering.org>
@@ -9,6 +9,8 @@
  *
  * The SDI-12 specification is available at: http://www.sdi-12.org/
  * The library is available at: https://github.com/EnviroDIY/Arduino-SDI-12
+ *
+ * @m_examplenavigation{page_extra_helper_sketches,}
  */
 
 

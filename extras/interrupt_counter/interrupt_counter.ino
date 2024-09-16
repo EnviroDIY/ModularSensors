@@ -1,6 +1,8 @@
 /** =========================================================================
- * @file interrupt_counter.ino
+ * @example{lineno} interrupt_counter.ino
  * @brief Testing sketch counting pin change interrupts.
+ *
+ * @m_examplenavigation{page_extra_helper_sketches,}
  * ======================================================================= */
 
 #include <Arduino.h>

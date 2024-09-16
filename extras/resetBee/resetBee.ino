@@ -1,6 +1,8 @@
 /** =========================================================================
- * @file resetBee.ino
+ * @example{lineno} resetBee.ino
  * @brief Testing sketch to fully reset an XBee
+ *
+ * @m_examplenavigation{page_extra_helper_sketches,}
  * ======================================================================= */
 
 #include <Arduino.h>
