@@ -405,15 +405,15 @@ uint32_t DigiXBeeWifi::getNISTTime(void) {
         // Wait up to 5 seconds for a response
         if (connectionMade) {
             uint32_t start = millis();
-            while (gsmClient && gsmClient.available() < 4 &&
+            while (gsmClient && gsmClient.available() < NIST_RESPONSE_BYTES &&
                    millis() - start < 5000L) {
                 // wait
             }
 
             if (gsmClient.available() >= 4) {
                 MS_DBG(F("NIST responded after"), millis() - start, F("ms"));
-                byte response[4] = {0};
-                gsmClient.read(response, 4);
+                byte response[NIST_RESPONSE_BYTES] = {0};
+                gsmClient.read(response, NIST_RESPONSE_BYTES);
                 gsmClient.stop();
                 return parseNISTBytes(response);
             } else {
