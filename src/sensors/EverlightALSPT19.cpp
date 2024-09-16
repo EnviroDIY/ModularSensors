@@ -73,7 +73,7 @@ bool EverlightALSPT19::addSingleMeasurementResult(void) {
         // resistance is entered in kΩ and we want µA
         current_val = (volt_val / (_loadResistor * 1000)) * 1e6;
         // convert current to illuminance
-        // from sensor datasheet, typical 200µA current for1000 Lux
+        // from sensor datasheet, typical 200µA current for 1000 Lux
         lux_val = current_val * (1000. / 200.);
 
 

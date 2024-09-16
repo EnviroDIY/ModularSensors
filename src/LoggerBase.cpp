@@ -681,7 +681,7 @@ bool Logger::checkMarkedInterval(void) {
 // Set up the Interrupt Service Request for waking
 // In this case, we're doing nothing, we just want the processor to wake
 // This must be a static function (which means it can only call other static
-// funcions.)
+// functions.)
 void Logger::wakeISR(void) {
     MS_DEEP_DBG(F("\nClock interrupt!"));
 }
