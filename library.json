@@ -314,7 +314,7 @@
       "owner": "envirodiy",
       "library id": "5439",
       "url": "https://github.com/EnviroDIY/KellerModbus",
-      "version": "~0.2.2",
+      "version": "~0.2.3",
       "note": "Arduino library for communication with Keller pressure and water level sensors via Modbus.",
       "authors": ["Anthony Aufdenkampe"]
     },
