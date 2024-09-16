@@ -895,7 +895,7 @@ class Logger {
      *
      * In this case, we're doing nothing, we just want the processor to wake.
      * This must be a static function (which means it can only call other static
-     * funcions.)
+     * functions.)
      */
     static void wakeISR(void);
 
