@@ -947,9 +947,6 @@ void Logger::systemSleep(void) {
     // Re-enable the processor ADC
     ADCSRA |= _BV(ADEN);
 
-    // restore UART settings
-    UCSR1B = uart1_old;
-
     // Re-enables interrupts
     interrupts();
 
