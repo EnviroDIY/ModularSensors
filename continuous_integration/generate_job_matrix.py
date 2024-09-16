@@ -8,35 +8,55 @@ from platformio.project.config import ProjectConfig
 import re
 import os
 import copy
+import requests
+
+# %%
+# set verbose
+use_verbose = False
+if "RUNNER_DEBUG" in os.environ.keys() and os.environ["RUNNER_DEBUG"] == "1":
+    use_verbose = True
+
 
 # %%
 # Some working directories
+
 # The workspace directory
 if "GITHUB_WORKSPACE" in os.environ.keys():
     workspace_dir = os.environ.get("GITHUB_WORKSPACE")
 else:
-    fileDir = os.path.dirname(os.path.realpath("__file__"))
-    workspace_dir = os.path.join(fileDir, "../")
-    workspace_dir = os.path.abspath(os.path.realpath(workspace_dir))
+    workspace_dir = os.getcwd()
+workspace_path = os.path.abspath(os.path.realpath(workspace_dir))
+print(f"Workspace Path: {workspace_path}")
 
+# %%
 # The examples directory
 examples_dir = "./examples/"
 examples_path = os.path.join(workspace_dir, examples_dir)
 examples_path = os.path.abspath(os.path.realpath(examples_path))
+print(f"Examples Path: {examples_path}")
 
 # The continuous integration directory
 ci_dir = "./continuous_integration/"
 ci_path = os.path.join(workspace_dir, ci_dir)
 ci_path = os.path.abspath(os.path.realpath(ci_path))
+print(f"Continuous Integration Path: {ci_path}")
+if not os.path.exists(ci_path):
+    print(f"Creating the directory for CI: {ci_path}")
+    os.makedirs(ci_path, exist_ok=True)
 
 # A directory of files to save and upload as artifacts to use in future jobs
 artifact_dir = os.path.join(
     os.path.join(workspace_dir, "continuous_integration_artifacts")
 )
+artifact_path = os.path.abspath(os.path.realpath(artifact_dir))
+print(f"Artifact Path: {artifact_path}")
 if not os.path.exists(artifact_dir):
+    print(f"Creating the directory for artifacts: {artifact_path}")
     os.makedirs(artifact_dir)
 
 compilers = ["Arduino CLI", "PlatformIO"]
+
+
 # %%
 # The locations of some important files
 
@@ -46,6 +66,18 @@ menu_file_path = os.path.join(
     os.path.join(examples_path, menu_example_name), menu_example_name + ".ino"
 )
 
+
+# %%
+# Pull files to convert between boards and platforms and FQBNs
+response = requests.get(
+    "https://raw.githubusercontent.com/EnviroDIY/workflows/main/scripts/platformio_to_arduino_boards.json"
+)
+with open(os.path.join(ci_path, "platformio_to_arduino_boards.json"), "wb") as f:
+    f.write(response.content)
+# Translation between board names on PlatformIO and the Arduino CLI
+with open(os.path.join(ci_path, "platformio_to_arduino_boards.json")) as f:
+    pio_to_acli = json.load(f)
+
 # Find all of the non-menu examples
 non_menu_examples = [
     f
@@ -54,13 +86,30 @@ non_menu_examples = [
     and f not in [".history", "logger_test", menu_example_name]
 ]
 
-# Arduino CLI configurations
+# %%
+# read configurations based on existing files and environment variables
+
+# Arduino CLI configuration
+# Always use the generic one from the shared workflow repository
 if "GITHUB_WORKSPACE" in os.environ.keys():
-    arduino_cli_config = os.path.join(ci_dir, "arduino_cli.yaml")
+    arduino_cli_config = os.path.join(ci_path, "arduino_cli.yaml")
+    if not os.path.isfile(arduino_cli_config):
+        # download the default file
+        response = requests.get(
+            "https://raw.githubusercontent.com/EnviroDIY/workflows/main/scripts/arduino_cli.yaml"
+        )
+        # copy to the CI directory
+        with open(os.path.join(ci_path, "arduino_cli.yaml"), "wb") as f:
+            f.write(response.content)
+        # also copy to the artifacts directory
+        shutil.copyfile(
+            os.path.join(ci_path, "arduino_cli.yaml"),
+            os.path.join(artifact_path, "arduino_cli.yaml"),
+        )
 else:
     arduino_cli_config = os.path.join(ci_dir, "arduino_cli_local.yaml")
 
-# PlatformIO configurations
+# PlatformIO configuration
 pio_config_file = os.path.join(ci_path, "platformio.ini")
 pio_extra_config_file = os.path.join(ci_path, "platformio_extra_flags.ini")
 pio_config = ProjectConfig(pio_config_file)
@@ -88,33 +137,39 @@ def get_example_filepath(subfolder_name):
 
 
 def create_arduino_cli_command(pio_env_name: str, code_subfolder: str) -> str:
-    arduino_command_arguments = [
+    arduino_command_args = [
         "arduino-cli",
         "compile",
-        # "--verbose",
+    ]
+    if use_verbose:
+        arduino_command_args += ["--verbose"]
+    arduino_command_args += [
         "--warnings",
         "more",
         "--config-file",
-        arduino_cli_config,
+        f'"{arduino_cli_config}"',
         "--format",
         "text",
         "--fqbn",
         pio_to_acli[pio_config.get("env:{}".format(pio_env_name), "board")]["fqbn"],
-        os.path.join(examples_path, code_subfolder),
+        f'"{os.path.join(examples_path, code_subfolder)}"',
     ]
-    return " ".join(arduino_command_arguments)
+    return " ".join(arduino_command_args)
 
 
 def create_pio_ci_command(pio_env_file: str, pio_env: str, code_subfolder: str) -> str:
     pio_command_args = [
         "pio",
         "ci",
-        # "--verbose",
+    ]
+    if use_verbose:
+        pio_command_args += ["--verbose"]
+    pio_command_args += [
         "--project-conf",
-        pio_env_file,
+        f'"{pio_env_file}"',
         "--environment",
         pio_env,
-        os.path.join(examples_path, code_subfolder),
+        f'"{os.path.join(examples_path, code_subfolder)}"',
     ]
     return " ".join(pio_command_args)
 
@@ -134,7 +189,7 @@ def add_log_to_command(command: str, group_title: str) -> List:
     )
     command_list.append("echo ::endgroup::")
     command_list.append(
-        'if [ "$result_code" -eq "0" ]; then echo -e "\e[32m{title} successfully compiled\e[0m"; else echo -e "\e[31m{title} failed to compile\e[0m"; fi'.format(
+        'if [ "$result_code" -eq "0" ]; then echo -e "\\e[32m{title} successfully compiled\\e[0m"; else echo -e "\\e[31m{title} failed to compile\\e[0m"; fi'.format(
             title=group_title
         )
     )
@@ -247,7 +302,7 @@ def modify_example_filename(example_subfolder, in_file_defines):
     preped_folder_name = "{}_{}".format(example_subfolder, suffix).replace(
         "_a_la_carte", ""
     )
-    prepped_ex_folder = os.path.join(artifact_dir, preped_folder_name)
+    prepped_ex_folder = os.path.join(artifact_path, preped_folder_name)
     prepped_ex_file = os.path.join(prepped_ex_folder, preped_folder_name + ".ino")
 
     return prepped_ex_folder, prepped_ex_file
@@ -296,7 +351,7 @@ def extend_pio_config(added_envs):
 
     new_config = copy.deepcopy(pio_config)
     new_config_path = os.path.join(
-        artifact_dir, "test_ci_" + "_".join(added_envs) + ".ini"
+        artifact_path, "test_ci_" + "_".join(added_envs) + ".ini"
     )
 
     for added_env in added_envs:
@@ -598,7 +653,7 @@ for pio_env in pio_config.envs():
 
 # %%
 # Tack on a few more extra build configurations for the software serial libraries
-for pio_env in ["Mayfly"]:
+for pio_env in ["mayfly"]:
     arduino_serial_commands = [
         start_job_commands,
         # 'echo "## [Extra Serials on {} with the Arduino CLI](https://github.com/EnviroDIY/ModularSensors/runs/$ACTION_RUN_ID?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
@@ -658,17 +713,23 @@ for pio_env in ["Mayfly"]:
 # Convert commands in the matrix into bash scripts
 for matrix_job in arduino_job_matrix + pio_job_matrix:
     bash_file_name = matrix_job["job_name"].replace(" ", "") + ".sh"
-    bash_out = open(os.path.join(artifact_dir, bash_file_name), "w+")
+    print(f"Writing bash file to {os.path.join(artifact_path, bash_file_name)}")
+    bash_out = open(os.path.join(artifact_path, bash_file_name), "w+")
     bash_out.write("#!/bin/bash\n\n")
     bash_out.write(
-        "# Makes the bash script print out every command before it is executed, except echo\n"
-    )
-    bash_out.write(
-        "trap '[[ $BASH_COMMAND != echo* ]] && echo $BASH_COMMAND' DEBUG\n\n"
+        """
+set -e # Exit with nonzero exit code if anything fails
+if [ "$RUNNER_DEBUG" = "1" ]; then
+    echo "Enabling debugging!"
+    set -v # Prints shell input lines as they are read.
+    set -x # Print command traces before executing command.
+fi
+
+"""
     )
     bash_out.write(matrix_job["command"])
     bash_out.close()
-    matrix_job["script"] = os.path.join(artifact_dir, bash_file_name)
+    matrix_job["script"] = os.path.join(artifact_path, bash_file_name)
 
 # Remove the command from the dictionaries before outputting them
 for items in arduino_job_matrix + pio_job_matrix:
