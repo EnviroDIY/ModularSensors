@@ -125,7 +125,7 @@
  * calculate altitude by the BME280.
  */
 /**@{*/
-#ifndef SEALEVELPRESSURE_HPA || defined(DOXYGEN)
+#if !defined(SEALEVELPRESSURE_HPA) || defined(DOXYGEN)
 /// The atmospheric pressure at sea level
 #define SEALEVELPRESSURE_HPA (1013.25)
 #endif

@@ -111,7 +111,7 @@
  * Defines to set the calibration of the SQ-212 and the address of the ADD.
  */
 /**@{*/
-#ifndef SQ212_CALIBRATION_FACTOR || defined(DOXYGEN)
+#if !defined(SQ212_CALIBRATION_FACTOR) || defined(DOXYGEN)
 /**
  * @brief The calibration factor between output in volts and PAR
  * (microeinsteinPerSquareMeterPerSecond) 1 µmol mˉ² sˉ¹ per mV (reciprocal of
