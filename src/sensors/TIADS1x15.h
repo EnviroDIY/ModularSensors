@@ -308,7 +308,7 @@ class TIADS1x15 : public Sensor {
     /**
      * @brief Internal reference to the gain setting for the TI-ADS1x15
      */
-    float   _gain;
+    float _gain;
     /**
      * @brief Internal reference to the I2C address of the TI-ADS1x15
      */

@@ -268,12 +268,12 @@ class KellerParent : public Sensor {
     /**
      * @brief Private reference to the Keller sensor's modbus address
      */
-    byte        _modbusAddress;
+    byte _modbusAddress;
     /**
      * @brief Private reference to the stream for communciation with the
      * Keller sensor.
      */
-    Stream*     _stream;
+    Stream* _stream;
     /**
      * @brief Private reference to the RS-485 adapter's flow direction control
      * pin.

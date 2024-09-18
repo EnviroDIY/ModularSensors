@@ -587,7 +587,8 @@ class TurnerCyclops_Fluorescein : public Variable {
         : Variable((const uint8_t)CYCLOPS_VAR_NUM, (uint8_t)CYCLOPS_RESOLUTION,
                    "fluorescein", "partPerBillion", "CyclopsFluorescein") {}
     /**
-     * @brief Destroy the Turner Cyclops Fluorescein variable object - no action needed.
+     * @brief Destroy the Turner Cyclops Fluorescein variable object - no action
+     * needed.
      */
     ~TurnerCyclops_Fluorescein() {}
 };
