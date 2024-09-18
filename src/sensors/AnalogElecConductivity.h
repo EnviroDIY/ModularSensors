@@ -179,7 +179,7 @@
  * conductivity sensor depending on the processor and ADC in use.
  */
 /**@{*/
-#if !defined ANALOG_EC_ADC_RESOLUTION || defined(DOXYGEN)
+#if !defined(ANALOG_EC_ADC_RESOLUTION) || defined(DOXYGEN)
 /**
  * @brief Default resolution (in bits) of the voltage measurement
  *
@@ -196,8 +196,8 @@
 #define ANALOG_EC_ADC_RANGE (1 << ANALOG_EC_ADC_RESOLUTION)
 
 /* clang-format off */
-#if !defined ANALOG_EC_ADC_REFERENCE_MODE || defined (DOXYGEN)
-#if defined (ARDUINO_ARCH_AVR) || defined (DOXYGEN)
+#if ! defined (ANALOG_EC_ADC_REFERENCE_MODE) || defined (DOXYGEN)
+#if defined(ARDUINO_ARCH_AVR) || defined (DOXYGEN)
 /**
  * @brief The voltage reference mode for the processor's ADC.
  *
@@ -219,7 +219,7 @@
  */
 #define ANALOG_EC_ADC_REFERENCE_MODE DEFAULT
 #endif
-#if defined (ARDUINO_ARCH_SAMD) || defined (DOXYGEN)
+#if defined(ARDUINO_ARCH_SAMD) || defined (DOXYGEN)
 /**
  * @brief The voltage reference mode for the processor's ADC.
  *
@@ -240,13 +240,13 @@
  */
 #define ANALOG_EC_ADC_REFERENCE_MODE AR_DEFAULT
 #endif
-#if !defined ANALOG_EC_ADC_REFERENCE_MODE
+#if ! defined (ANALOG_EC_ADC_REFERENCE_MODE)
 #error The processor ADC reference type must be defined!
 #endif  // ANALOG_EC_ADC_REFERENCE_MODE
 #endif  // ARDUINO_ARCH_SAMD
 /* clang-format on */
 
-#if !defined RSERIES_OHMS_DEF || defined(DOXYGEN)
+#if !defined(RSERIES_OHMS_DEF) || defined(DOXYGEN)
 /**
  * @brief The default resistance (in ohms) of the measuring resistor.
  * This should not be less than 300 ohms when measuring EC in water.
@@ -254,7 +254,7 @@
 #define RSERIES_OHMS_DEF 499
 #endif  // RSERIES_OHMS_DEF
 
-#if !defined SENSOREC_KONST_DEF || defined(DOXYGEN)
+#if !defined(SENSOREC_KONST_DEF) || defined(DOXYGEN)
 /**
  * @brief Cell Constant For EC Measurements.
  *

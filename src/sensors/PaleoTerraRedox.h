@@ -75,7 +75,7 @@
 #include "SensorBase.h"
 #include <Wire.h>
 
-#if defined MS_PALEOTERRA_SOFTWAREWIRE
+#if defined(MS_PALEOTERRA_SOFTWAREWIRE)
 #include <SoftwareWire.h>  // Testato's SoftwareWire
 #endif
 
@@ -272,7 +272,7 @@ class PaleoTerraRedox : public Sensor {
      * @brief The I2C address of the redox sensor.
      */
     uint8_t _i2cAddressHex;
-#if defined MS_PALEOTERRA_SOFTWAREWIRE
+#if defined(MS_PALEOTERRA_SOFTWAREWIRE)
     /**
      * @brief An internal reference to the SoftwareWire instance.
      */

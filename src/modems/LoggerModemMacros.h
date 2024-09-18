@@ -179,7 +179,7 @@
         return success;                                                        \
     }
 
-#if defined TINY_GSM_MODEM_HAS_GPRS
+#if defined(TINY_GSM_MODEM_HAS_GPRS)
 /**
  * @brief Creates an isInternetAvailable() function for a specific modem
  * subclass.
@@ -321,7 +321,7 @@
                MS_PRINT_DEBUG_TIMER, F("milliseconds."));     \
     }
 
-#else  // from #if defined TINY_GSM_MODEM_HAS_GPRS (ie, this is wifi)
+#else  // from #if defined(TINY_GSM_MODEM_HAS_GPRS) (ie, this is wifi)
 
 /**
  * @brief Creates an isInternetAvailable() function for a specific
@@ -452,7 +452,7 @@
         MS_DBG(F("Disconnected from WiFi network after"), \
                MS_PRINT_DEBUG_TIMER, F("milliseconds.")); \
     }
-#endif  // #if defined TINY_GSM_MODEM_HAS_GPRS
+#endif  // #if defined(TINY_GSM_MODEM_HAS_GPRS)
 
 /**
  * @brief The port hosting the NIST "time" protocol (37)
@@ -463,7 +463,7 @@
  */
 #define NIST_RESPONSE_BYTES 4
 
-#if !defined NIST_SERVER_RETRYS || defined(DOXYGEN)
+#if !defined(NIST_SERVER_RETRYS) || defined(DOXYGEN)
 /**
  * @brief The number of retry attempts when connecting to the NIST server.
  */

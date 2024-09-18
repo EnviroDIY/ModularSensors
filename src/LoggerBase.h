@@ -41,7 +41,7 @@
 // Bring in the libraries to handle the processor sleep/standby modes
 // The SAMD library can also the built-in clock on those modules
 #if defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAMD_ZERO)
-#if not defined(MS_SAMD_DS3231)
+#if !defined(MS_SAMD_DS3231)
 #include <RTCZero.h>
 #endif
 #include "WatchDogs/WatchDogSAMD.h"
@@ -699,7 +699,7 @@ class Logger {
     static int8_t getTZOffset(void);
 
 #if (defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAMD_ZERO)) && \
-    not defined(MS_SAMD_DS3231)
+    !defined(MS_SAMD_DS3231)
     /**
      * @brief The RTC object.
      *
