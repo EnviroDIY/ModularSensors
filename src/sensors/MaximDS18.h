@@ -264,7 +264,7 @@ class MaximDS18 : public Sensor {
      * @brief True to indicate that the address of the OneWire device was
      * specified. If false, the first device to respond will be the one used.
      */
-    bool          _addressKnown;
+    bool _addressKnown;
     /**
      * @brief An internal OneWire instance to communicate with any OneWire
      * devices (not just Maxim/Dallas temperature ICs)

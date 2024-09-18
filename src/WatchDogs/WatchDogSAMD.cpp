@@ -33,7 +33,7 @@ void extendedWatchDogSAMD::setupWatchDog(uint32_t resetTime_s) {
            extendedWatchDogSAMD::_barksUntilReset,
            F("times before the reset."));
 
-// Disable watchdog for config
+    // Disable watchdog for config
     MS_DEEP_DBG(F("Disabling the watchdog for configuration."));
 #if defined(__SAMD51__)
     WDT->CTRLA.reg = 0;
