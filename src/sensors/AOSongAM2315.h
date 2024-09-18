@@ -239,7 +239,7 @@ class AOSongAM2315 : public Sensor {
     /**
      * @brief An internal reference to the hardware Wire instance.
      */
-    TwoWire*         _i2c;
+    TwoWire* _i2c;
     /**
      * @brief Internal reference to the Adafruit sensor class
      */

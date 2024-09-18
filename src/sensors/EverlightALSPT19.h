@@ -101,7 +101,7 @@
  * on the processor and ADC in use.
  */
 /**@{*/
-#if !defined ALSPT19_ADC_RESOLUTION || defined(DOXYGEN)
+#if !defined(ALSPT19_ADC_RESOLUTION) || defined(DOXYGEN)
 /**
  * @brief Default resolution (in bits) of the voltage measurement
  *
@@ -118,8 +118,8 @@
 #define ALSPT19_ADC_RANGE (1 << ALSPT19_ADC_RESOLUTION)
 
 /* clang-format off */
-#if !defined ALSPT19_ADC_REFERENCE_MODE || defined (DOXYGEN)
-#if defined (ARDUINO_ARCH_AVR) || defined (DOXYGEN)
+#if ! defined (ALSPT19_ADC_REFERENCE_MODE) || defined (DOXYGEN)
+#if defined(ARDUINO_ARCH_AVR) || defined (DOXYGEN)
 /**
  * @brief The voltage reference mode for the processor's ADC.
  *
@@ -141,7 +141,7 @@
  */
 #define ALSPT19_ADC_REFERENCE_MODE DEFAULT
 #endif
-#if defined (ARDUINO_ARCH_SAMD) || defined (DOXYGEN)
+#if defined(ARDUINO_ARCH_SAMD) || defined (DOXYGEN)
 /**
  * @brief The voltage reference mode for the processor's ADC.
  *
@@ -162,7 +162,7 @@
  */
 #define ALSPT19_ADC_REFERENCE_MODE AR_DEFAULT
 #endif
-#if !defined ALSPT19_ADC_REFERENCE_MODE
+#if ! defined (ALSPT19_ADC_REFERENCE_MODE)
 #error The processor ADC reference type must be defined!
 #endif  // ALSPT19_ADC_REFERENCE_MODE
 #endif  // ARDUINO_ARCH_SAMD

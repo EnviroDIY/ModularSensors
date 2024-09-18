@@ -85,7 +85,7 @@
 #include "SensorBase.h"
 #include <Wire.h>
 
-#if defined MS_RAIN_SOFTWAREWIRE
+#if defined(MS_RAIN_SOFTWAREWIRE)
 #include <SoftwareWire.h>  // Testato's SoftwareWire
 #endif
 
