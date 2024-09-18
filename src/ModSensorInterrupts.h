@@ -14,7 +14,9 @@
 #ifndef SRC_MODSENSORINTERRUPTS_H_
 #define SRC_MODSENSORINTERRUPTS_H_
 
-#if defined(__AVR__)
+#include <Arduino.h>
+
+#if defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
 // #define LIBCALL_ENABLEINTERRUPT  // To prevent compiler/linker crashes
 #include <EnableInterrupt.h>  // To handle external and pin change interrupts
 #else
