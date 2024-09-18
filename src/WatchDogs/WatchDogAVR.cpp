@@ -13,7 +13,7 @@
 // Be careful to use a platform-specific conditional include to only make the
 // code visible for the appropriate platform.  Arduino will try to compile and
 // link all .cpp files regardless of platform.
-#if defined(ARDUINO_ARCH_AVR) || defined(__AVR__)
+#if defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
 
 #include <avr/interrupt.h>
 #include <avr/wdt.h>

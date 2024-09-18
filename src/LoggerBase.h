@@ -45,7 +45,7 @@
 #include <RTCZero.h>
 #endif
 #include "WatchDogs/WatchDogSAMD.h"
-#elif defined(ARDUINO_ARCH_AVR) || defined(__AVR__)
+#elif defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
 #include <avr/power.h>
 #include <avr/sleep.h>
 #include "WatchDogs/WatchDogAVR.h"
