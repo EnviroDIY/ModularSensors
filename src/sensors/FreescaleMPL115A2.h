@@ -224,7 +224,7 @@ class FreescaleMPL115A2 : public Sensor {
      * powered for setup.  This doesn't return anything to indicate failure or
      * success, we just have to hope it worked.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     bool setup(void) override;
     /**

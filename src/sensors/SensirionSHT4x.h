@@ -251,7 +251,7 @@ class SensirionSHT4x : public Sensor {
     /**
      * @brief Report the I2C address of the SHT4x - which is always 0x44.
      *
-     * @return **String** Text describing how the sensor is attached to the mcu.
+     * @return Text describing how the sensor is attached to the mcu.
      */
     String getSensorLocation(void) override;
 
@@ -263,7 +263,7 @@ class SensirionSHT4x : public Sensor {
      * and modes for I2C), and updates the #_sensorStatus.  No sensor power is
      * required.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     bool setup(void) override;
 

@@ -270,7 +270,7 @@ class ApogeeSQ212 : public Sensor {
      * @brief Report the I1C address of the ADS and the channel that the SQ-212
      * is attached to.
      *
-     * @return **String** Text describing how the sensor is attached to the mcu.
+     * @return Text describing how the sensor is attached to the mcu.
      */
     String getSensorLocation(void) override;
 

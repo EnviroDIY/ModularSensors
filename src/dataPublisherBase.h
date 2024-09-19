@@ -163,7 +163,7 @@ class dataPublisher {
      * @brief Get the destination for published data - generally the host name
      * of the data receiver.
      *
-     * @return **String** The URL or HOST to receive published data
+     * @return The URL or HOST to receive published data
      */
     virtual String getEndpoint(void) = 0;
 
@@ -187,7 +187,7 @@ class dataPublisher {
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
      * @param forceFlush Ask the publisher to flush buffered data immediately.
-     * @return **int16_t** The result of publishing data.  May be an http
+     * @return The result of publishing data.  May be an http
      * response code or a result code from PubSubClient.
      */
     virtual int16_t publishData(Client* outClient, bool forceFlush = false) = 0;
@@ -201,7 +201,7 @@ class dataPublisher {
      *
      * @param forceFlush Ask the publisher to flush buffered data immediately.
      *
-     * @return **int16_t** The result of publishing data.  May be an http
+     * @return The result of publishing data.  May be an http
      * response code or a result code from PubSubClient.
      */
     virtual int16_t publishData(bool forceFlush = false);
@@ -215,7 +215,7 @@ class dataPublisher {
      * @param outClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
-     * @return **int16_t** The result of publishing data.  May be an http
+     * @return The result of publishing data.  May be an http
      * response code or a result code from PubSubClient.
      */
     virtual int16_t sendData(Client* outClient);
@@ -225,7 +225,7 @@ class dataPublisher {
      *
      * @m_deprecated_since{0,22,5}
      *
-     * @return **int16_t** The result of publishing data.  May be an http
+     * @return The result of publishing data.  May be an http
      * response code or a result code from PubSubClient.
      */
     virtual int16_t sendData();
@@ -235,7 +235,7 @@ class dataPublisher {
      * explanation.
      *
      * @param state A result code returned by a PubSubClient action
-     * @return **String** The meaning of the code
+     * @return The meaning of the code
      */
     String parseMQTTState(int state);
 

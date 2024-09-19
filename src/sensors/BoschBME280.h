@@ -322,7 +322,7 @@ class BoschBME280 : public Sensor {
      *
      * @note This does NOT include any wait for sensor readiness.
      *
-     * @return **bool** True if the wake function completed successfully.
+     * @return True if the wake function completed successfully.
      */
     bool wake(void) override;
     /**
@@ -333,7 +333,7 @@ class BoschBME280 : public Sensor {
      * calibration coefficients from the BME280, and updates the #_sensorStatus.
      * The BME280 must be powered for setup.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     bool setup(void) override;
     /**

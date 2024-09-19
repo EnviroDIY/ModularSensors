@@ -234,7 +234,7 @@ class AtlasScientificCO2 : public AtlasParent {
      * circuit to report all possible measurement parameters, and sets the
      * status bit if successful.  The circuit must be powered for setup.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     bool setup(void) override;
 };

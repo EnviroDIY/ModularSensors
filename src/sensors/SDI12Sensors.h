@@ -211,7 +211,7 @@ class SDI12Sensors : public Sensor {
      * sensor and calls the getSensorInfo() function.  Sensor power **is**
      * required.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     bool setup(void) override;
 
@@ -226,7 +226,7 @@ class SDI12Sensors : public Sensor {
      * @note This function does NOT include any waiting for the sensor to be
      * warmed up or stable!
      *
-     * @return **bool** True if the start measurement function completed
+     * @return True if the start measurement function completed
      * successfully.
      */
     bool startSingleMeasurement(void) override;
@@ -241,7 +241,7 @@ class SDI12Sensors : public Sensor {
      * @brief Send the SDI-12 'acknowledge active' command [address][!] to a
      * sensor and confirm that the correct sensor responded.
      *
-     * @return **bool** True if the correct SDI-12 sensor replied to the
+     * @return True if the correct SDI-12 sensor replied to the
      * command.
      */
     bool requestSensorAcknowledgement(void);
@@ -249,7 +249,7 @@ class SDI12Sensors : public Sensor {
      * @brief Send the SDI-12 'info' command [address][I][!] to a sensor and
      * parse the result into the vendor, model, version, and serial number.
      *
-     * @return **bool** True if all expected information fields returned by the
+     * @return True if all expected information fields returned by the
      * sensor.
      */
     bool getSensorInfo(void);
@@ -264,14 +264,14 @@ class SDI12Sensors : public Sensor {
      * @param isConcurrent Whether to start a concurrent or standard
      * measurement.  Defaults to 'true' for a concurrent measurement.
      *
-     * @return **int8_t** The length of time the measurement is expected to
+     * @return The length of time the measurement is expected to
      * take.
      */
     int8_t startSDI12Measurement(bool isConcurrent = true);
     /**
      * @brief Gets the results of either a standard or a concurrent measurement
      *
-     * @return **bool** True if the full number of expected results was
+     * @return True if the full number of expected results was
      * returned.
      */
     virtual bool getResults(void);

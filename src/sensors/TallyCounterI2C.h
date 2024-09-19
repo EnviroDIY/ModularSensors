@@ -206,7 +206,7 @@ class TallyCounterI2C : public Sensor {
      * #_sensorStatus. It also engages sleep mode on the Tally counter and
      * clears the counter memory. The Tally must be powered for setup.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     bool setup(void) override;
     /**

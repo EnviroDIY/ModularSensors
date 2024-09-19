@@ -229,7 +229,7 @@ class MaximDS18 : public Sensor {
      * operating in ASYNC mode and updates the #_sensorStatus.  The sensor must
      * be powered for setup.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     bool setup(void) override;
     /**
@@ -245,7 +245,7 @@ class MaximDS18 : public Sensor {
      * @note This function does NOT include any waiting for the sensor to be
      * warmed up or stable!
      *
-     * @return **bool** True if the start measurement function completed
+     * @return True if the start measurement function completed
      * successfully. successfully.
      */
     bool startSingleMeasurement(void) override;
@@ -279,7 +279,7 @@ class MaximDS18 : public Sensor {
      * @brief Turns the address into a printable string
      *
      * @param OneWireAddress The one wire address as a DeviceAddress object
-     * @return *String* A pretty string version of the OneWire device address.
+     * @return A pretty string version of the OneWire device address.
      */
     String makeAddressString(DeviceAddress OneWireAddress);
 };

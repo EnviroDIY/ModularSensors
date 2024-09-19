@@ -228,7 +228,7 @@ class MaxBotixSonar : public Sensor {
      * timeout for modbus and updates the #_sensorStatus.  No sensor power is
      * required.  This will always return true.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     bool setup(void) override;
     /**
@@ -243,7 +243,7 @@ class MaxBotixSonar : public Sensor {
      *
      * @note This does NOT include any wait for sensor readiness.
      *
-     * @return **bool** True if the wake function completed successfully.
+     * @return True if the wake function completed successfully.
      */
     bool wake(void) override;
 

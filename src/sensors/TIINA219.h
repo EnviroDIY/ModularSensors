@@ -270,7 +270,7 @@ class TIINA219 : public Sensor {
      *
      * @note This does NOT include any wait for sensor readiness.
      *
-     * @return **bool** True if the wake function completed successfully.
+     * @return True if the wake function completed successfully.
      */
     bool wake(void) override;
     /**
@@ -281,7 +281,7 @@ class TIINA219 : public Sensor {
      * and modes for I2C).  This also sets the calibration range of the INA219,
      * and updates the #_sensorStatus.  The INA219 must be powered for setup.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     bool setup(void) override;
     /**

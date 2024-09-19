@@ -240,7 +240,7 @@ class MeaSpecMS5803 : public Sensor {
      * return anything to indicate failure or success, we just have to hope it
      * succeeded.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     bool setup(void) override;
     /**

@@ -167,7 +167,7 @@ class Logger {
     /**
      * @brief Get the Logger ID.
      *
-     * @return **const char\*** A pointer to the logger ID
+     * @return A pointer to the logger ID
      */
     const char* getLoggerID() {
         return _loggerID;
@@ -183,7 +183,7 @@ class Logger {
     /**
      * @brief Get the Logging Interval.
      *
-     * @return **uint16_t** The logging interval in minutes
+     * @return The logging interval in minutes
      */
     uint16_t getLoggingInterval() {
         return _loggingIntervalMinutes;
@@ -199,7 +199,7 @@ class Logger {
     /**
      * @brief Get the Sampling Feature UUID.
      *
-     * @return **const char\*** The sampling feature UUID
+     * @return The sampling feature UUID
      */
     const char* getSamplingFeatureUUID() {
         return _samplingFeatureUUID;
@@ -472,7 +472,7 @@ class Logger {
     /**
      * @brief Get the number of variables in the internal variable array object.
      *
-     * @return **uint8_t** The number of variables in the internal variable
+     * @return The number of variables in the internal variable
      * array object
      */
     uint8_t getArrayVarCount();
@@ -482,7 +482,7 @@ class Logger {
      * position in the internal variable array object.
      *
      * @param position_i The position of the variable in the array.
-     * @return **String** The name of the parent sensor of that variable, if
+     * @return The name of the parent sensor of that variable, if
      * applicable.
      */
     String getParentSensorNameAtI(uint8_t position_i);
@@ -491,7 +491,7 @@ class Logger {
      * at the given position in the internal variable array object.
      *
      * @param position_i The position of the variable in the array.
-     * @return **String** The concatenated name and pin location of the parent
+     * @return The concatenated name and pin location of the parent
      * sensor of that variable, if applicable.
      */
     String getParentSensorNameAndLocationAtI(uint8_t position_i);
@@ -503,7 +503,7 @@ class Logger {
      * http://vocabulary.odm2.org/variablename/
      *
      * @param position_i The position of the variable in the array.
-     * @return **String** The variable name
+     * @return The variable name
      */
     String getVarNameAtI(uint8_t position_i);
     /**
@@ -514,7 +514,7 @@ class Logger {
      * http://vocabulary.odm2.org/units/
      *
      * @param position_i The position of the variable in the array.
-     * @return **String** The variable unit
+     * @return The variable unit
      */
     String getVarUnitAtI(uint8_t position_i);
     /**
@@ -522,7 +522,7 @@ class Logger {
      * the internal variable array object.
      *
      * @param position_i The position of the variable in the array.
-     * @return **String** The variable code
+     * @return The variable code
      */
     String getVarCodeAtI(uint8_t position_i);
     /**
@@ -530,7 +530,7 @@ class Logger {
      * variable array object.
      *
      * @param position_i The position of the variable in the array.
-     * @return **String** The variable UUID
+     * @return The variable UUID
      */
     String getVarUUIDAtI(uint8_t position_i);
     /**
@@ -538,7 +538,7 @@ class Logger {
      * the internal variable array object.
      *
      * @param position_i The position of the variable in the array.
-     * @return **float** The value of the variable as a float.
+     * @return The value of the variable as a float.
      */
     float getValueAtI(uint8_t position_i);
     /**
@@ -546,7 +546,7 @@ class Logger {
      * the internal variable array object.
      *
      * @param position_i The position of the variable in the array.
-     * @return **String** The value of the variable as a string with the correct
+     * @return The value of the variable as a string with the correct
      * number of significant figures.
      */
     String getValueStringAtI(uint8_t position_i);
@@ -556,7 +556,7 @@ class Logger {
      *
      * @param position_i The position of the variable in the array.
      * @param value The value to format.
-     * @return **String** The given value as a string with the correct number of
+     * @return The given value as a string with the correct number of
      *  significant figures.
      */
     String formatValueStringAtI(uint8_t position_i, float value);
@@ -594,7 +594,7 @@ class Logger {
      * @brief Use the attahed loggerModem to synchronize the real-time clock
      * with NIST time servers.
      *
-     * @return **bool** True if clock synchronization was successful
+     * @return True if clock synchronization was successful
      */
     bool syncRTC();
 
@@ -664,7 +664,7 @@ class Logger {
     /**
      * @brief Get the Logger Time Zone.
      *
-     * @return **int8_t** The timezone data is be saved to the SD card in.  This
+     * @return The timezone data is be saved to the SD card in.  This
      * is not be the same as the timezone of the real time clock.
      */
     static int8_t getLoggerTimeZone(void);
@@ -684,7 +684,7 @@ class Logger {
      *
      * @m_deprecated_since{0,22,4}
      *
-     * @return **int8_t** The timezone data is be saved to the SD card in.  This
+     * @return The timezone data is be saved to the SD card in.  This
      * is not be the same as the timezone of the real time clock.
      */
     static int8_t getTimeZone(void);
@@ -700,7 +700,7 @@ class Logger {
     /**
      * @brief Get the timezone of the real-time clock (RTC).
      *
-     * @return **int8_t** The timezone of the real-time clock (RTC)
+     * @return The timezone of the real-time clock (RTC)
      */
     static int8_t getRTCTimeZone(void);
 
@@ -720,7 +720,7 @@ class Logger {
      * @brief Get the offset between the built-in clock and the time zone
      * where the data is being recorded.
      *
-     * @return **int8_t** The offset between the built-in clock and the time
+     * @return The offset between the built-in clock and the time
      * zone where the data is being recorded.
      */
     static int8_t getTZOffset(void);
@@ -741,7 +741,7 @@ class Logger {
      * number of seconds from January 1, 1970 00:00:00) and correct it to the
      * logging time zone.
      *
-     * @return **uint32_t**  The number of seconds from January 1, 1970 in the
+     * @return  The number of seconds from January 1, 1970 in the
      * logging time zone.
      *
      * @m_deprecated_since{0,33,0}
@@ -753,7 +753,7 @@ class Logger {
      * number of seconds from January 1, 1970 00:00:00) and correct it to the
      * logging time zone.
      *
-     * @return **uint32_t**  The number of seconds from January 1, 1970 in the
+     * @return  The number of seconds from January 1, 1970 in the
      * logging time zone.
      */
     static uint32_t getNowLocalEpoch(void);
@@ -763,7 +763,7 @@ class Logger {
      * the RTC (unix time, ie, the number of seconds from January 1, 1970
      * 00:00:00 UTC)
      *
-     * @return **uint32_t**  The number of seconds from 1970-01-01T00:00:00Z0000
+     * @return  The number of seconds from 1970-01-01T00:00:00Z0000
      */
     static uint32_t getNowUTCEpoch(void);
     /**
@@ -783,7 +783,7 @@ class Logger {
      * object instance.
      *
      * @param epochTime The number of seconds since 1970.
-     * @return **DateTime** The equivalent DateTime
+     * @return The equivalent DateTime
      */
     static DateTime dtFromEpoch(uint32_t epochTime);
 
@@ -794,7 +794,7 @@ class Logger {
      * the LOGGER's offset as the time zone offset in the string.
      *
      * @param dt A DateTime object to convert
-     * @return **String** An ISO8601 formatted String.
+     * @return An ISO8601 formatted String.
      */
     static String formatDateTime_ISO8601(DateTime& dt);
 
@@ -805,7 +805,7 @@ class Logger {
      * the LOGGER's offset as the time zone offset in the string.
      *
      * @param epochTime The number of seconds since 1970.
-     * @return **String** An ISO8601 formatted String.
+     * @return An ISO8601 formatted String.
      */
     static String formatDateTime_ISO8601(uint32_t epochTime);
 
@@ -814,7 +814,7 @@ class Logger {
      * clock to the given time.
      *
      * @param UTCEpochSeconds The number of seconds since 1970 in UTC.
-     * @return **bool** True if the input timestamp passes sanity checks **and**
+     * @return True if the input timestamp passes sanity checks **and**
      * the clock has been successfully set.
      */
     bool setRTClock(uint32_t UTCEpochSeconds);
@@ -824,7 +824,7 @@ class Logger {
      *
      * To be sane the clock  must be between 2020 and 2030.
      *
-     * @return **bool** True if the current time on the RTC passes sanity range
+     * @return True if the current time on the RTC passes sanity range
      * checking
      */
     static bool isRTCSane(void);
@@ -835,7 +835,7 @@ class Logger {
      * To be sane the clock  must be between 2020 and 2025.
      *
      * @param epochTime The epoch time to be checked.
-     * @return **bool** True if the given time passes sanity range checking.
+     * @return True if the given time passes sanity range checking.
      */
     static bool isRTCSane(uint32_t epochTime);
 
@@ -854,7 +854,7 @@ class Logger {
     /**
      * @brief Check if the CURRENT time is an even interval of the logging rate
      *
-     * @return **bool** True if the current time on the RTC is an even interval
+     * @return True if the current time on the RTC is an even interval
      * of the logging rate.
      */
     bool checkInterval(void);
@@ -868,7 +868,7 @@ class Logger {
      * printing, etc) have the same timestamp even though the update routine may
      * take several (or many) seconds.
      *
-     * @return **bool** True if the marked time is an even interval of the
+     * @return True if the marked time is an even interval of the
      * logging rate.
      */
     bool checkMarkedInterval(void);
@@ -1038,7 +1038,7 @@ class Logger {
      * an auto-generated filename which is a concatenation of the logger id and
      * the date when the file was started.
      *
-     * @return **String** The name of the file data is currently being saved to.
+     * @return The name of the file data is currently being saved to.
      */
     String getFileName(void) {
         return _fileName;
@@ -1076,7 +1076,7 @@ class Logger {
      * @param filename The name of the file to create
      * @param writeDefaultHeader True to write a header to the file, default is
      * false
-     * @return **bool** True if the file was successfully created.
+     * @return True if the file was successfully created.
      */
     bool createLogFile(String& filename, bool writeDefaultHeader = false);
     /**
@@ -1090,7 +1090,7 @@ class Logger {
      *
      * @param writeDefaultHeader True to write a header to the file, default is
      * false
-     * @return **bool** True if the file was successfully created.
+     * @return True if the file was successfully created.
      */
     bool createLogFile(bool writeDefaultHeader = false);
 
@@ -1104,7 +1104,7 @@ class Logger {
      *
      * @param filename The name of the file to write to
      * @param rec The line to be written to the file
-     * @return **bool** True if the file was successfully accessed or created
+     * @return True if the file was successfully accessed or created
      * _and_ data appended to it.
      */
     bool logToSD(String& filename, String& rec);
@@ -1117,7 +1117,7 @@ class Logger {
      * modified and accessed timestamps of the file to the current time.
      *
      * @param rec The line to be written to the file
-     * @return **bool** True if the file was successfully accessed or created
+     * @return True if the file was successfully accessed or created
      * _and_ data appended to it.
      */
     bool logToSD(String& rec);
@@ -1130,7 +1130,7 @@ class Logger {
      * attempt to create the file and add a header to it.  Set the modified and
      * accessed timestamps of the file to the current time.
      *
-     * @return **bool** True if the file was successfully accessed or created
+     * @return True if the file was successfully accessed or created
      * _and_ data appended to it.
      */
     bool logToSD(void);
@@ -1157,7 +1157,7 @@ class Logger {
      * We run this check before every communication with the SD card to prevent
      * hanging.
      *
-     * @return **bool** True if the SD card is ready
+     * @return True if the SD card is ready
      */
     bool initializeSDCard(void);
 
@@ -1185,7 +1185,7 @@ class Logger {
      * @param createFile True to create the file if it did not already exist
      * @param writeDefaultHeader True to add a header to the file if it is
      * created
-     * @return **bool** True if a file was successfully opened or created.
+     * @return True if a file was successfully opened or created.
      */
     bool openFile(String& filename, bool createFile, bool writeDefaultHeader);
     /**@}*/

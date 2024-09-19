@@ -109,7 +109,7 @@ class LogBuffer {
      *
      * @param record  The record
      *
-     * @return **uint32_t** The record's timestamp.
+     * @return The record's timestamp.
      */
     uint32_t getRecordTimestamp(int record);
 
@@ -119,7 +119,7 @@ class LogBuffer {
      * @param record    The record
      * @param variable  The variable
      *
-     * @return **float** The variable's value.
+     * @return The variable's value.
      */
     float getRecordValue(int record, uint8_t variable);
 

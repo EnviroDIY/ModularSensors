@@ -113,7 +113,7 @@ class EnviroDIYPublisher : public dataPublisher {
     /**
      * @brief Get the EnviroDIY/Monitor My Watershed web host
      *
-     * @return **String** The EnviroDIY/Monitor My Watershed web host
+     * @return The EnviroDIY/Monitor My Watershed web host
      */
     String getHost(void);
 
@@ -127,7 +127,7 @@ class EnviroDIYPublisher : public dataPublisher {
     /**
      * @brief Get the EnviroDIY/Monitor My Watershed API path
      *
-     * @return **String** The EnviroDIY/Monitor My Watershed API path
+     * @return The EnviroDIY/Monitor My Watershed API path
      */
     String getPath(void);
     /**
@@ -140,7 +140,7 @@ class EnviroDIYPublisher : public dataPublisher {
     /**
      * @brief Get the EnviroDIY/Monitor My Watershed API port
      *
-     * @return **int** The EnviroDIY/Monitor My Watershed API port
+     * @return The EnviroDIY/Monitor My Watershed API port
      */
     int getPort(void);
     /**
@@ -162,7 +162,7 @@ class EnviroDIYPublisher : public dataPublisher {
     /**
      * @brief Calculates how long the outgoing JSON will be
      *
-     * @return uint16_t The number of characters in the JSON object.
+     * @return The number of characters in the JSON object.
      */
     uint16_t calculateJsonSize();
 
@@ -207,7 +207,7 @@ class EnviroDIYPublisher : public dataPublisher {
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
      * @param forceFlush Ask the publisher to flush buffered data immediately.
-     * @return **int16_t** The http status code of the response.
+     * @return The http status code of the response.
      */
     int16_t publishData(Client* outClient, bool forceFlush = false) override;
 
@@ -245,7 +245,7 @@ class EnviroDIYPublisher : public dataPublisher {
      * @brief Transmit data from the data buffer to an external site
      *
      * @param outClient The client to publish the data over
-     * @return **int16_t** The HTTP response code from the publish attempt
+     * @return The HTTP response code from the publish attempt
      *
      * @note A 504 will be returned automatically if the server does not
      * respond within 30 seconds.
