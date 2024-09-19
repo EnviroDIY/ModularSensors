@@ -174,3 +174,5 @@ EXTRA_FILES = [
 DESKTOP_LOGO = "gp-desktop-logo.png"
 MOBILE_LOGO = "gp-mobile-logo.png"
 SCROLLING_LOGO = "gp-scrolling-logo.png"
+M_MATH_RENDER_AS_CODE = False
+M_MATH_CACHE_FILE = "m.math.cache"
