@@ -175,7 +175,7 @@ class MaximDS3231 : public Sensor {
      * the RTC.  The clock should be continuously powered, so we never need to
      * worry about power up.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     bool setup(void) override;
 
@@ -187,7 +187,7 @@ class MaximDS3231 : public Sensor {
      * @note This function does NOT include any waiting for the sensor to be
      * warmed up or stable!
      *
-     * @return **bool** True if the start measurement function completed
+     * @return True if the start measurement function completed
      * successfully. successfully.
      */
     bool startSingleMeasurement(void) override;

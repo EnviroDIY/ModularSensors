@@ -213,7 +213,7 @@ class AOSongAM2315 : public Sensor {
     /**
      * @brief Report the I2C address of the AM2315 - which is always 0xB8.
      *
-     * @return **String** Text describing how the sensor is attached to the mcu.
+     * @return Text describing how the sensor is attached to the mcu.
      */
     String getSensorLocation(void) override;
 
@@ -225,7 +225,7 @@ class AOSongAM2315 : public Sensor {
      * and modes for I2C), and updates the #_sensorStatus.  No sensor power is
      * required.
      *
-     * @return **bool** True if the setup was successful.  For the AOSong AM2315
+     * @return True if the setup was successful.  For the AOSong AM2315
      * the result will always be true.
      */
     bool setup(void) override;

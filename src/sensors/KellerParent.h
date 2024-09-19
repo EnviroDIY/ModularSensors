@@ -242,7 +242,7 @@ class KellerParent : public Sensor {
      * updates the #_sensorStatus.  No sensor power is required.  This will
      * always return true.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     bool setup(void) override;
 

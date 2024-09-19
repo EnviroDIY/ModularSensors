@@ -254,7 +254,7 @@ class PaleoTerraRedox : public Sensor {
      * This begins the Wire library (sets pin levels and modes for I2C) and
      * updates the #_sensorStatus.  No sensor power is required.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     bool setup(void) override;
     /**

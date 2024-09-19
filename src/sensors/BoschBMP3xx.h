@@ -443,7 +443,7 @@ class BoschBMP3xx : public Sensor {
      *
      * @note This does NOT include any wait for sensor readiness.
      *
-     * @return **bool** True if the wake function completed successfully.
+     * @return True if the wake function completed successfully.
      */
     bool wake(void) override;
     /**
@@ -454,7 +454,7 @@ class BoschBMP3xx : public Sensor {
      * calibration coefficients from the BMP3xx, and updates the #_sensorStatus.
      * The BMP3xx must be powered for setup.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     bool setup(void) override;
     /**

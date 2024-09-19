@@ -359,7 +359,7 @@ class AnalogElecConductivity : public Sensor {
     /**
      * @brief Report the sensor info.
      *
-     * @return **String** Text describing how the sensor is attached to the mcu.
+     * @return Text describing how the sensor is attached to the mcu.
      */
     String getSensorLocation(void) override;
 

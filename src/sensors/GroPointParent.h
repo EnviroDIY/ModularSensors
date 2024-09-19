@@ -165,7 +165,7 @@ class GroPointParent : public Sensor {
      * updates the #_sensorStatus.   No sensor power is required.  This will
      * always return true.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     bool setup(void) override;
     /**
@@ -177,7 +177,7 @@ class GroPointParent : public Sensor {
      *
      * @note This does NOT include any wait for sensor readiness.
      *
-     * @return **bool** True if the wake function completed successfully.
+     * @return True if the wake function completed successfully.
      */
     bool wake(void) override;
     /**
@@ -186,7 +186,7 @@ class GroPointParent : public Sensor {
      * This also un-sets the #_millisSensorActivated timestamp (sets it to 0).
      * This does NOT power down the sensor!
      *
-     * @return **bool** True if the sleep function completed successfully.
+     * @return True if the sleep function completed successfully.
      */
     bool sleep(void) override;
 

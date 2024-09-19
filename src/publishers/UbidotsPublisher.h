@@ -124,7 +124,7 @@ class UbidotsPublisher : public dataPublisher {
     /**
      * @brief Calculates how long the outgoing JSON will be
      *
-     * @return uint16_t The number of characters in the JSON object.
+     * @return The number of characters in the JSON object.
      */
     uint16_t calculateJsonSize();
 
@@ -164,7 +164,7 @@ class UbidotsPublisher : public dataPublisher {
      * @param outClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
-     * @return **int16_t** The http status code of the response.
+     * @return The http status code of the response.
      */
     int16_t publishData(Client* outClient) override;
 
