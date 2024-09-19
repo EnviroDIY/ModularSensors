@@ -244,7 +244,7 @@ class EnviroDIYPublisher : public dataPublisher {
      * @brief Transmit data from the data buffer to an external site
      *
      * @param outClient The client to publish the data over
-     * @return **int16_t** The HTTP response code from the publish attempt
+     * @return The HTTP response code from the publish attempt
      *
      * @note A 504 will be returned automatically if the server does not
      * respond within 30 seconds.
