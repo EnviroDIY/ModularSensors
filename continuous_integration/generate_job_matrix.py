@@ -266,14 +266,18 @@ for pio_env in pio_config.envs():
         for compiler, command_list in zip(
             compilers, [arduino_ex_commands, pio_ex_commands]
         ):
-            command_list.extend(
-                create_logged_command(
-                    compiler=compiler,
-                    group_title=example,
-                    code_subfolder=example,
-                    pio_env=pio_env,
+            if compiler == "Arduino CLI" and example == "data_saving":
+                # skip this one, it's too big
+                pass
+            else:
+                command_list.extend(
+                    create_logged_command(
+                        compiler=compiler,
+                        group_title=example,
+                        code_subfolder=example,
+                        pio_env=pio_env,
+                    )
                 )
-            )
 
     arduino_job_matrix.append(
         {
