@@ -277,8 +277,8 @@ class EspressifESP8266 : public loggerModem {
      * up string. Because the boot up string is at a different baud rate (74880
      * baud), it usually comes out as junk.
      *
-     * @return *true* Text (assumed to be the start message) was received
-     * @return *false* No boot text was receivedd
+     * @return True if text (assumed to be the start message) was received;
+     * false if text was received after boot.
      */
     bool        ESPwaitForBoot(void);
     const char* _ssid;  ///< Internal reference to the WiFi SSID

@@ -106,6 +106,12 @@ class UbidotsPublisher : public dataPublisher {
     virtual ~UbidotsPublisher();
 
     // Returns the data destination
+    /**
+     * @brief Get the destination for published data - generally the host name
+     * of the data receiver.
+     *
+     * @return The URL or HOST to receive published data
+     */
     String getEndpoint(void) override {
         return String(ubidotsHost);
     }
