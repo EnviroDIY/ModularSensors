@@ -48,7 +48,7 @@
 // peripherals as possible.  In some cases (ie, modbus communication) many
 // sensors can share the same serial port.
 
-#if defined(ARDUINO_ARCH_AVR) || defined(__AVR__)  // For AVR boards
+#if defined(__AVR__) || defined(ARDUINO_ARCH_AVR)  // For AVR boards
 // Unfortunately, most AVR boards have only one or two hardware serial ports,
 // so we'll set up three types of extra software serial ports to use
 
