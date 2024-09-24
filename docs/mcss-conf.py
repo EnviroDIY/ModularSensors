@@ -90,7 +90,7 @@ LINKS_NAVBAR1 = [
             ),
         ],
     ),
-    ("Modules", "modules", []),
+    ("Topics", "topics", []),
     (
         "Classes",
         "annotated",
