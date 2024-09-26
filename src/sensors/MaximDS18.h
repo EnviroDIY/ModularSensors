@@ -99,11 +99,17 @@
 /** @ingroup sensor_ds18 */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_ds18_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the DS18
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the DS18 can report 1 value.
 #define DS18_NUM_VARIABLES 1
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define DS18_INC_CALC_VARIABLES 0
+/**@}*/
 
 /**
  * @anchor sensor_ds18_timing
@@ -223,7 +229,7 @@ class MaximDS18 : public Sensor {
      * operating in ASYNC mode and updates the #_sensorStatus.  The sensor must
      * be powered for setup.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     bool setup(void) override;
     /**
@@ -239,7 +245,7 @@ class MaximDS18 : public Sensor {
      * @note This function does NOT include any waiting for the sensor to be
      * warmed up or stable!
      *
-     * @return **bool** True if the start measurement function completed
+     * @return True if the start measurement function completed
      * successfully. successfully.
      */
     bool startSingleMeasurement(void) override;
@@ -249,15 +255,32 @@ class MaximDS18 : public Sensor {
     bool addSingleMeasurementResult(void) override;
 
  private:
+    /**
+     * @brief Internal reference to the OneWire device address.
+     *
+     */
     DeviceAddress _OneWireAddress;
-    bool          _addressKnown;
-    // Setup an internal OneWire instance to communicate with any OneWire
-    // devices (not just Maxim/Dallas temperature ICs)
+    /**
+     * @brief True to indicate that the address of the OneWire device was
+     * specified. If false, the first device to respond will be the one used.
+     */
+    bool _addressKnown;
+    /**
+     * @brief An internal OneWire instance to communicate with any OneWire
+     * devices (not just Maxim/Dallas temperature ICs)
+     */
     OneWire _internalOneWire;
-    // Set up the internal a "Dallas Temperature" instance for communication
-    // specifically with the temperature sensors.
+    /**
+     * @brief The internal "Dallas Temperature" instance for communication
+     * specifically with the temperature sensors.
+     */
     DallasTemperature _internalDallasTemp;
-    // Turns the address into a printable string
+    /**
+     * @brief Turns the address into a printable string
+     *
+     * @param OneWireAddress The one wire address as a DeviceAddress object
+     * @return A pretty string version of the OneWire device address.
+     */
     String makeAddressString(DeviceAddress OneWireAddress);
 };
 

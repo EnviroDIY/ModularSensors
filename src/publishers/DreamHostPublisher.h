@@ -133,7 +133,7 @@ class DreamHostPublisher : public dataPublisher {
      * single TinyGSM modem instance
      * @param forceFlush Ask the publisher to flush buffered data immediately.
      *
-     * @return **int16_t** The http status code of the response.
+     * @return The http status code of the response.
      */
     int16_t publishData(Client* outClient, bool forceFlush = false) override;
 
@@ -153,8 +153,10 @@ class DreamHostPublisher : public dataPublisher {
 
 
  private:
+    /**
+     * @brief A pointer to the base URL for the dreamhost portal.
+     */
     const char* _DreamHostPortalRX = nullptr;
-    bool        _dualPost          = true;
 };
 
 #endif  // SRC_PUBLISHERS_DREAMHOSTPUBLISHER_H_

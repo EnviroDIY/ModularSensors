@@ -172,7 +172,7 @@ class AtlasParent : public Sensor {
     /**
      * @brief Return the I2C address of the EZO circuit.
      *
-     * @return **String** Text describing how the sensor is attached to the mcu.
+     * @return Text describing how the sensor is attached to the mcu.
      */
     String getSensorLocation(void) override;
 
@@ -184,7 +184,7 @@ class AtlasParent : public Sensor {
      * and modes for I2C), and updates the #_sensorStatus.  No sensor power is
      * required.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     bool setup(void) override;
 
@@ -199,7 +199,7 @@ class AtlasParent : public Sensor {
      * This also un-sets the #_millisSensorActivated timestamp (sets it to 0).
      * This does NOT power down the sensor!
      *
-     * @return **bool** True if the sleep function completed successfully.
+     * @return True if the sleep function completed successfully.
      */
     bool sleep(void) override;
 
@@ -211,7 +211,7 @@ class AtlasParent : public Sensor {
      * @note This function does NOT include any waiting for the sensor to be
      * warmed up or stable!
      *
-     * @return **bool** True if the start measurement function completed
+     * @return True if the start measurement function completed
      * successfully.
      */
     bool startSingleMeasurement(void) override;
@@ -243,7 +243,7 @@ class AtlasParent : public Sensor {
      * unavailable.
      *
      * @param timeout The maximum amout of time to wait in ms.
-     * @return **bool** True processing completed and a status code was returned
+     * @return True processing completed and a status code was returned
      * within the wait period.
      */
     bool waitForProcessing(uint32_t timeout = 1000L);

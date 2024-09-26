@@ -149,12 +149,31 @@
 /** @ingroup sensor_bmp3xx */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_bmp3xx_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by Bosch BMP3xx
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the BMP3xx can report 3 values.
 #define BMP3XX_NUM_VARIABLES 3
 /// @brief Sensor::_incCalcValues; altitude is calculted within the Adafruit
 /// library.
 #define BMP3XX_INC_CALC_VARIABLES 1
+/**@}*/
+
+/**
+ * @anchor sensor_bme3xx_config
+ * @name Configuration Defines
+ * Defines to set the calibration of the calculated base pressure used to
+ * calculate altitude by the BME3xx.
+ */
+/**@{*/
+#if !defined(SEALEVELPRESSURE_HPA) || defined(DOXYGEN)
+/// The atmospheric pressure at sea level
+#define SEALEVELPRESSURE_HPA (1013.25)
+#endif
+/**@}*/
 
 /**
  * @anchor sensor_bmp3xx_timing
@@ -303,11 +322,6 @@
 #define BMP3XX_ALTITUDE_DEFAULT_CODE "BoschBMP3xxAltitude"
 /**@}*/
 
-/// The atmospheric pressure at sea level
-#ifndef SEALEVELPRESSURE_HPA
-#define SEALEVELPRESSURE_HPA (1013.25)
-#endif
-
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the [Bosch BMP3xx](@ref sensor_bmp3xx).
@@ -429,7 +443,7 @@ class BoschBMP3xx : public Sensor {
      *
      * @note This does NOT include any wait for sensor readiness.
      *
-     * @return **bool** True if the wake function completed successfully.
+     * @return True if the wake function completed successfully.
      */
     bool wake(void) override;
     /**
@@ -440,7 +454,7 @@ class BoschBMP3xx : public Sensor {
      * calibration coefficients from the BMP3xx, and updates the #_sensorStatus.
      * The BMP3xx must be powered for setup.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     bool setup(void) override;
     /**

@@ -335,11 +335,11 @@ bool loggerModem::updateModemMetadata(void) {
     loggerModem::_priorModemTemp      = -9999;
 
     // Initialize variable
-    int16_t  rssi     = -9999;
-    int16_t  percent  = -9999;
-    uint8_t  state    = 99;
-    int8_t   bpercent = -99;
-    uint16_t volt     = 9999;
+    int16_t rssi     = -9999;
+    int16_t percent  = -9999;
+    int8_t  state    = 99;
+    int8_t  bpercent = -99;
+    int16_t volt     = 9999;
 
     MS_DBG(F("Modem polling settings:"), String(_pollModemMetaData, BIN));
 

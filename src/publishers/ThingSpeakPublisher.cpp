@@ -102,7 +102,7 @@ void ThingSpeakPublisher::begin(Logger&     baseLogger,
 
 // This sends the data to ThingSpeak
 // bool ThingSpeakPublisher::mqttThingSpeak(void)
-int16_t ThingSpeakPublisher::publishData(Client* outClient, bool ) {
+int16_t ThingSpeakPublisher::publishData(Client* outClient, bool) {
     bool retVal = false;
 
     // Make sure we don't have too many fields

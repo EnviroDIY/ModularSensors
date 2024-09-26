@@ -56,11 +56,17 @@
 /** @ingroup sensor_gplp8 */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_gplp8_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by GPLP8
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the GPLP8 can report 8 values.
 #define GPLP8_NUM_VARIABLES 21
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define GPLP8_INC_CALC_VARIABLES 0
+/**@}*/
 
 /**
  * @anchor sensor_gplp8_timing

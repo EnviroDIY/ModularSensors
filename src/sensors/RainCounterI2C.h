@@ -85,20 +85,26 @@
 #include "SensorBase.h"
 #include <Wire.h>
 
-#if defined MS_RAIN_SOFTWAREWIRE
+#if defined(MS_RAIN_SOFTWAREWIRE)
 #include <SoftwareWire.h>  // Testato's SoftwareWire
 #endif
 
 /** @ingroup sensor_i2c_rain */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_i2c_rain_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the tipping bucket counter
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the tipping bucket counter can report 2
 /// values.
 #define BUCKET_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; we calculate rain depth from the number of
 /// tips, assuming either English or metric calibration.
 #define BUCKET_INC_CALC_VARIABLES 1
+/**@}*/
 
 /**
  * @anchor sensor_i2c_rain_timing
@@ -267,7 +273,7 @@ class RainCounterI2C : public Sensor {
      * This begins the Wire library (sets pin levels and modes for I2C) and
      * updates the #_sensorStatus.  No sensor power is required.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     bool setup(void) override;
     /**

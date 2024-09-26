@@ -44,7 +44,7 @@ bool EverlightALSPT19::addSingleMeasurementResult(void) {
     if (bitRead(_sensorStatus, 6)) {
         // Set the resolution for the processor ADC, only applies to SAMD
         // boards.
-#if !defined ARDUINO_ARCH_AVR
+#if !defined(ARDUINO_ARCH_AVR)
         analogReadResolution(ALSPT19_ADC_RESOLUTION);
 #endif  // ARDUINO_ARCH_AVR
         // Set the analog reference mode for the voltage measurement.
@@ -73,7 +73,7 @@ bool EverlightALSPT19::addSingleMeasurementResult(void) {
         // resistance is entered in kΩ and we want µA
         current_val = (volt_val / (_loadResistor * 1000)) * 1e6;
         // convert current to illuminance
-        // from sensor datasheet, typical 200µA current for1000 Lux
+        // from sensor datasheet, typical 200µA current for 1000 Lux
         lux_val = current_val * (1000. / 200.);
 
 

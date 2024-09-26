@@ -218,7 +218,7 @@ class YosemitechParent : public Sensor {
      * updates the #_sensorStatus.   No sensor power is required.  This will
      * always return true.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     bool setup(void) override;
     /**
@@ -230,7 +230,7 @@ class YosemitechParent : public Sensor {
      *
      * @note This does NOT include any wait for sensor readiness.
      *
-     * @return **bool** True if the wake function completed successfully.
+     * @return True if the wake function completed successfully.
      */
     bool wake(void) override;
     /**
@@ -239,7 +239,7 @@ class YosemitechParent : public Sensor {
      * This also un-sets the #_millisSensorActivated timestamp (sets it to 0).
      * This does NOT power down the sensor!
      *
-     * @return **bool** True if the sleep function completed successfully.
+     * @return True if the sleep function completed successfully.
      */
     bool sleep(void) override;
 
@@ -253,12 +253,33 @@ class YosemitechParent : public Sensor {
     bool addSingleMeasurementResult(void) override;
 
  private:
-    yosemitech      _ysensor;
+    /**
+     * @brief Private reference to the yosemitech class for communication with
+     * the Yosemitech sensor.
+     */
+    yosemitech _ysensor;
+    /**
+     * @brief Private reference to the model of Yosemitech Sensor
+     */
     yosemitechModel _model;
-    byte            _modbusAddress;
-    Stream*         _stream;
-    int8_t          _RS485EnablePin;
-    int8_t          _powerPin2;
+    /**
+     * @brief Private reference to the Yosemitech sensor's modbus address
+     */
+    byte _modbusAddress;
+    /**
+     * @brief Private reference to the stream for communciation with the
+     * Yosemitech sensor.
+     */
+    Stream* _stream;
+    /**
+     * @brief Private reference to the RS-485 adapter's flow direction control
+     * pin.
+     */
+    int8_t _RS485EnablePin;
+    /**
+     * @brief Private reference to the power pin fro the RS-485 adapter.
+     */
+    int8_t _powerPin2;
 };
 
 #endif  // SRC_SENSORS_YOSEMITECHPARENT_H_

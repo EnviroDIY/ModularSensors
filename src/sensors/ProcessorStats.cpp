@@ -21,7 +21,7 @@ ProcessorStats::ProcessorStats(const char* version)
 #elif defined(ARDUINO_AVR_FEATHER32U4) || defined(ARDUINO_SAMD_FEATHER_M0) || \
     defined(SAMD_FEATHER_M0) || defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS) ||   \
     defined(SAMD_FEATHER_M0_EXPRESS)
-    _batteryPin        = 9;
+    _batteryPin = 9;
 #elif defined(ARDUINO_SODAQ_ONE) || defined(ARDUINO_SODAQ_ONE_BETA) || \
     defined(ARDUINO_AVR_SODAQ_NDOGO)
     _batteryPin = 10;
@@ -108,7 +108,7 @@ bool ProcessorStats::addSingleMeasurementResult(void) {
     MS_DBG(F("Raw battery pin reading in bits:"), rawBattery);
     sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
     MS_DBG(F("Battery in Volts:"), sensorValue_battery);
-    }
+}
 
 #elif defined(ARDUINO_AVR_SODAQ_NDOGO) || defined(ARDUINO_SODAQ_AUTONOMO) || \
     defined(ARDUINO_AVR_SODAQ_MBILI)
@@ -140,7 +140,7 @@ bool ProcessorStats::addSingleMeasurementResult(void) {
     float sensorValue_freeRam = FreeRam();
 
 #else
-    float sensorValue_freeRam = -9999;
+float sensorValue_freeRam = -9999;
 #endif
 
     verifyAndAddMeasurementResult(PROCESSOR_RAM_VAR_NUM, sensorValue_freeRam);

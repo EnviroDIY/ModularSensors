@@ -102,12 +102,18 @@
 /** @ingroup keller_group */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor keller_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the RDO PRO-X
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the Keller level sensors can report 3
 /// values.
 #define KELLER_NUM_VARIABLES 3
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define KELLER_INC_CALC_VARIABLES 0
+/**@}*/
 
 /**
  * @anchor keller_pressure
@@ -236,7 +242,7 @@ class KellerParent : public Sensor {
      * updates the #_sensorStatus.  No sensor power is required.  This will
      * always return true.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     bool setup(void) override;
 
@@ -250,12 +256,33 @@ class KellerParent : public Sensor {
     bool addSingleMeasurementResult(void) override;
 
  private:
-    keller      _ksensor;
+    /**
+     * @brief Private reference to the keller class for communication with the
+     * Keller sensor.
+     */
+    keller _ksensor;
+    /**
+     * @brief Private reference to the model of Keller sensor
+     */
     kellerModel _model;
-    byte        _modbusAddress;
-    Stream*     _stream;
-    int8_t      _RS485EnablePin;
-    int8_t      _powerPin2;
+    /**
+     * @brief Private reference to the Keller sensor's modbus address
+     */
+    byte _modbusAddress;
+    /**
+     * @brief Private reference to the stream for communciation with the
+     * Keller sensor.
+     */
+    Stream* _stream;
+    /**
+     * @brief Private reference to the RS-485 adapter's flow direction control
+     * pin.
+     */
+    int8_t _RS485EnablePin;
+    /**
+     * @brief Private reference to the power pin fro the RS-485 adapter.
+     */
+    int8_t _powerPin2;
 };
 /**@}*/
 #endif  // SRC_SENSORS_KELLERPARENT_H_

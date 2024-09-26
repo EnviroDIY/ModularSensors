@@ -116,11 +116,17 @@
 /** @ingroup sensor_maxbotix */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_maxbotix_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by Maxbotix sonar
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the HRXL can report 1 value.
 #define HRXL_NUM_VARIABLES 1
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define HRXL_INC_CALC_VARIABLES 0
+/**@}*/
 
 /**
  * @anchor sensor_maxbotix_timing
@@ -129,27 +135,27 @@
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; warm up time to completion of header:  160ms.
-#define HRXL_WARM_UP_TIME_MS 160
+#define HRXL_WARM_UP_TIME_MS 250
 /// @brief Sensor::_stabilizationTime_ms; the HRXL is stable as soon as it warms
 /// up (0ms stabilization).
 #define HRXL_STABILIZATION_TIME_MS 0
 /// @brief Sensor::_measurementTime_ms; the HRXL takes 166ms to complete a
 /// measurement.
-#define HRXL_MEASUREMENT_TIME_MS 166
+#define HRXL_MEASUREMENT_TIME_MS 250
 /**@}*/
 
 /**
  * @anchor sensor_maxbotix_range
  * @name Range
  * The range variable from a Maxbotix HRXL ultrasonic range finder
- * - Range is 300 to 5000mm or 500 to 9999mm, depending on model
+ * - Range depends on the exact model
  * - Accuracy is ±1%
  *
  * {{ @ref MaxBotixSonar_Range::MaxBotixSonar_Range }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; range should have 0 -
-/// resolution is 1mm.
+/// resolution is 1mm (except for models which have range 10mm).
 #define HRXL_RESOLUTION 0
 /// @brief Sensor variable number; range is stored in sensorValues[0].
 #define HRXL_VAR_NUM 0
@@ -187,17 +193,23 @@ class MaxBotixSonar : public Sensor {
      * - The MaxSonar requires a 2.7V - 5.5V power supply.
      * @param triggerPin The pin on the mcu controlling the "trigger" for the
      * MaxSonar.  Use -1 or omit for continuous ranging.
+     * @param maxRange Maximum valid measurement reported by the specific sensor
+     * model (e.g. 5000 or 9999 or 765).
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
+     * @param convertCm Convert centimeter range data from certain models to
+     * millimeters. Default false.
      */
     MaxBotixSonar(Stream* stream, int8_t powerPin, int8_t triggerPin = -1,
-                  uint8_t measurementsToAverage = 1);
+                  int16_t maxRange = 9999, uint8_t measurementsToAverage = 1,
+                  bool convertCm = false);
     /**
      * @copydoc MaxBotixSonar::MaxBotixSonar
      */
     MaxBotixSonar(Stream& stream, int8_t powerPin, int8_t triggerPin = -1,
-                  uint8_t measurementsToAverage = 1);
+                  int16_t maxRange = 9999, uint8_t measurementsToAverage = 1,
+                  bool convertCm = false);
     /**
      * @brief Destroy the MaxBotix Sonar object
      */
@@ -216,7 +228,7 @@ class MaxBotixSonar : public Sensor {
      * timeout for modbus and updates the #_sensorStatus.  No sensor power is
      * required.  This will always return true.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     bool setup(void) override;
     /**
@@ -231,7 +243,7 @@ class MaxBotixSonar : public Sensor {
      *
      * @note This does NOT include any wait for sensor readiness.
      *
-     * @return **bool** True if the wake function completed successfully.
+     * @return True if the wake function completed successfully.
      */
     bool wake(void) override;
 
@@ -241,7 +253,17 @@ class MaxBotixSonar : public Sensor {
     bool addSingleMeasurementResult(void) override;
 
  private:
-    int8_t  _triggerPin;
+    int16_t _maxRange;    ///< The maximum range of the Maxbotix sonar
+    int8_t  _triggerPin;  ///< The pin to trigger the Maxbotix sonar
+    /**
+     * @brief True to convert the output from the Maxbotix from centimeters to
+     * millimeters.
+     */
+    bool _convertCm;
+    /**
+     * @brief Private reference to the stream for communciation with the
+     * Maxbotix sensor.
+     */
     Stream* _stream;
 };
 

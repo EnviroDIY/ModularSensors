@@ -16,7 +16,7 @@
 
 
 // Constructors
-#if defined MS_PALEOTERRA_SOFTWAREWIRE
+#if defined(MS_PALEOTERRA_SOFTWAREWIRE)
 PaleoTerraRedox::PaleoTerraRedox(SoftwareWire* theI2C, int8_t powerPin,
                                  uint8_t i2cAddressHex,
                                  uint8_t measurementsToAverage)
@@ -57,7 +57,7 @@ PaleoTerraRedox::PaleoTerraRedox(int8_t powerPin, uint8_t i2cAddressHex,
 
 
 // Destructors
-#if defined MS_PALEOTERRA_SOFTWAREWIRE
+#if defined(MS_PALEOTERRA_SOFTWAREWIRE)
 // If we created a new SoftwareWire instance, we need to destroy it or
 // there will be a memory leak
 PaleoTerraRedox::~PaleoTerraRedox() {
@@ -68,8 +68,8 @@ PaleoTerraRedox::~PaleoTerraRedox() {}
 #endif
 
 
-String      PaleoTerraRedox::getSensorLocation(void) {
-#if defined MS_PALEOTERRA_SOFTWAREWIRE
+String PaleoTerraRedox::getSensorLocation(void) {
+#if defined(MS_PALEOTERRA_SOFTWAREWIRE)
     String address = F("SoftwareWire");
     if (_dataPin >= 0) address += _dataPin;
     address += F("_0x");

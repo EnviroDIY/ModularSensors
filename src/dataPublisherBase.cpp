@@ -121,7 +121,7 @@ void dataPublisher::txBufferFlush() {
     STANDARD_SERIAL_OUTPUT.write((const uint8_t*)txBuffer, txBufferLen);
     STANDARD_SERIAL_OUTPUT.flush();
 #endif
-
+    // write out to the client
     uint8_t        tries = 10;
     const uint8_t* ptr   = (const uint8_t*)txBuffer;
     while (true) {

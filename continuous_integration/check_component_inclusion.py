@@ -1,4 +1,4 @@
-#%%
+# %%
 import glob
 import re
 import sys
@@ -15,7 +15,7 @@ publisherHeaderFiles = glob.glob(os.path.join(script_dir, "../src/publishers/*.h
 header_files = modemHeaderFiles + sensorHeaderFiles + publisherHeaderFiles
 # print(header_files)
 
-#%% function to find the lowest level class
+# %% function to find the lowest level class
 def find_subclasses(class_name):
     subclass_pattern = r"class[\s\n]+(\w+)[\s\n]+:[\s\n]+public[\s\n]+" + re.escape(
         class_name
@@ -63,7 +63,7 @@ def camel_to_snake(name, lower_case=True):
         return name_lower.upper()
 
 
-#%%
+# %%
 # make sure class names match file names
 class_pattern = re.compile(r"^\s*class[\s\n]+(\w+)[\s\n]", re.MULTILINE)
 
@@ -86,7 +86,7 @@ for header_file in header_files:
                 )
             )
 
-#%%
+# %%
 # make sure there are examples of all classes in the menu example
 must_doc_classes = []
 
@@ -140,7 +140,7 @@ for publisher_sub_class in publisher_sub_classes:
     )
 
 # print(must_doc_classes)
-#%%
+# %%
 menu_example_file = open(
     os.path.join(script_dir, "../examples/menu_a_la_carte/menu_a_la_carte.ino"),
     mode="r",
@@ -222,3 +222,5 @@ if len(missing_classes + missing_build_flags + missing_snips + missing_walks) > 
         },
     }
     sys.exit(1)
+else:
+    print("All classes, flags, snippets, and walkthroughs seem to be documented")

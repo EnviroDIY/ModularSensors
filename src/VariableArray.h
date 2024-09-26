@@ -148,7 +148,7 @@ class VariableArray {
     /**
      * @brief Get the count of variables in the variable array
      *
-     * @return **uint8_t** the number of variables
+     * @return The number of variables
      */
     uint8_t getVariableCount(void) {
         return _variableCount;
@@ -157,7 +157,7 @@ class VariableArray {
     /**
      * @brief Get the number of calculated variables
      *
-     * @return **uint8_t** The number of calculated (ie, not measured by a
+     * @return The number of calculated (ie, not measured by a
      * sensor) variables
      */
     uint8_t getCalculatedVariableCount(void);
@@ -170,7 +170,7 @@ class VariableArray {
      * This will often be different from the number of variables because many
      * sensors can return multiple variables.
      *
-     * @return **uint8_t** The number of sensors
+     * @return The number of sensors
      */
     uint8_t getSensorCount(void);
 
@@ -194,7 +194,7 @@ class VariableArray {
      * respond to its setup command, the command is called 5 times in attempt to
      * make a connection.  If all sensors are set up successfully, returns true.
      *
-     * @return **bool** True indicates all sensors have been set up
+     * @return True indicates all sensors have been set up
      * successfully.
      */
     bool setupSensors(void);
@@ -212,7 +212,7 @@ class VariableArray {
      * Runs the wake sensor function for each unique sensor.  Repeatedly checks
      * each sensor's readiness state to optimize timing.
      *
-     * @return **bool** True if all wake functions were run successfully.
+     * @return True if all wake functions were run successfully.
      */
     bool sensorsWake(void);
 
@@ -221,7 +221,7 @@ class VariableArray {
      *
      * Runs the sleep sensor function for each unique sensor.
      *
-     * @return **bool** True if all sleep functions were run successfully.
+     * @return True if all sleep functions were run successfully.
      */
     bool sensorsSleep(void);
 
@@ -238,7 +238,7 @@ class VariableArray {
      * overall success.  Does NOT return any values.  Repeatedly checks each
      * sensor's readiness state to optimize timing.
      *
-     * @return **bool** True if all steps of the update succeeded.
+     * @return True if all steps of the update succeeded.
      */
     bool updateAllSensors(void);
 
@@ -252,7 +252,7 @@ class VariableArray {
      * values.  Repeatedly checks each sensor's readiness state to optimize
      * timing.
      *
-     * @return **bool** True if all steps of the update succeeded.
+     * @return True if all steps of the update succeeded.
      */
     bool completeUpdate(void);
 
@@ -284,9 +284,33 @@ class VariableArray {
     uint8_t _maxSamplestoAverage;
 
  private:
-    bool    isLastVarFromSensor(int arrayIndex);
+    /**
+     * @brief Check if the current variable is the last variable that the sensor
+     * will return.
+     *
+     * This is used for formating output where the format is slightly different
+     * for the last value. (ie, no comma after the last value)
+     *
+     * @param arrayIndex The index of the variable in the sensor variable array
+     * @return True if the variable is the last in the array.
+     */
+    bool isLastVarFromSensor(int arrayIndex);
+    /**
+     * @brief Count the maximum number of measurements needed from a single
+     * sensor for the requested averaging
+     *
+     * @return The number of measurements needed.
+     */
     uint8_t countMaxToAverage(void);
-    bool    checkVariableUUIDs(void);
+    /**
+     * @brief Check that all variable have valid UUID's, if they are assigned
+     *
+     * @return True if all variables have valid UUID's.
+     *
+     * @warning This does not check that the UUID's are the true UUID's for the
+     * variables, just that the text is a validly formed UUID.
+     */
+    bool checkVariableUUIDs(void);
 
 #ifdef MS_VARIABLEARRAY_DEBUG_DEEP
     /**

@@ -25,7 +25,7 @@
 #if defined(SERIAL_PORT_USBVIRTUAL)
 // #define Serial SERIAL_PORT_USBVIRTUAL
 #define STANDARD_SERIAL_OUTPUT SERIAL_PORT_USBVIRTUAL
-#elif defined __AVR__ || defined ARDUINO_ARCH_AVR
+#elif defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
 #define STANDARD_SERIAL_OUTPUT Serial
 #endif
 #endif  // ifndef STANDARD_SERIAL_OUTPUT
@@ -68,7 +68,7 @@ static void PRINTOUT(T head, Args... tail) {
 #if defined(SERIAL_PORT_USBVIRTUAL)
 // #define Serial SERIAL_PORT_USBVIRTUAL
 #define DEBUGGING_SERIAL_OUTPUT SERIAL_PORT_USBVIRTUAL
-#elif defined __AVR__ || defined ARDUINO_ARCH_AVR
+#elif defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
 #define DEBUGGING_SERIAL_OUTPUT Serial
 #endif
 #endif  // ifndef DEBUGGING_SERIAL_OUTPUT
@@ -166,7 +166,7 @@ static void MS_DBG(T head, Args... tail) {
 #if defined(SERIAL_PORT_USBVIRTUAL)
 // #define Serial SERIAL_PORT_USBVIRTUAL
 #define DEEP_DEBUGGING_SERIAL_OUTPUT SERIAL_PORT_USBVIRTUAL
-#elif defined __AVR__ || defined ARDUINO_ARCH_AVR
+#elif defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
 #define DEEP_DEBUGGING_SERIAL_OUTPUT Serial
 #endif
 #endif  // ifndef DEEP_DEBUGGING_SERIAL_OUTPUT
@@ -221,7 +221,7 @@ static void MS_DEEP_DBG(T head, Args... tail) {
 
 
 /***
-#if defined (__AVR__) || defined (ARDUINO_ARCH_AVR)
+#if defined(__AVR__) || defined (ARDUINO_ARCH_AVR)
   typedef const __FlashStringHelper* GsmConstStr;
   #define GFP(x) (reinterpret_cast<GsmConstStr>(x))
   #define GF(x)  F(x)
