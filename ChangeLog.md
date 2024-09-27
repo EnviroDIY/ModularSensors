@@ -18,12 +18,13 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+- Added support for Yosemitech Y513 Blue Green Algae Sensor thanks to @aufdenkampe
+
 ### Removed
 
 ### Fixed
 
 ***
-
 
 ## [0.35.1]
 
@@ -38,7 +39,6 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 Fixed clock configuration for SAMD21
 
 ***
-
 
 ## [0.35.0]
 

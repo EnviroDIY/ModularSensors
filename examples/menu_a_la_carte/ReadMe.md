@@ -103,6 +103,7 @@ ___
       - [Yosemitech Y504 Dissolved Oxygen Sensor](#yosemitech-y504-dissolved-oxygen-sensor)
       - [Yosemitech Y510 Turbidity Sensor](#yosemitech-y510-turbidity-sensor)
       - [Yosemitech Y511 Turbidity Sensor with Wiper](#yosemitech-y511-turbidity-sensor-with-wiper)
+      - [Yosemitech Y513 Blue-Green Algae Sensor](#yosemitech-y513-blue-green-algae-sensor)
       - [Yosemitech Y514 Chlorophyll Sensor](#yosemitech-y514-chlorophyll-sensor)
       - [Yosemitech Y520 Conductivity Sensor](#yosemitech-y520-conductivity-sensor)
       - [Yosemitech Y532 pH Sensor](#yosemitech-y532-ph-sensor)
@@ -1095,6 +1096,14 @@ ___
 @see @ref sensor_y511
 
 [//]: # ( @menusnip{yosemitech_y511} )
+
+___
+
+#### Yosemitech Y513 Blue-Green Algae Sensor<!-- {#menu_walk_yosemitech_y513} -->
+
+@see @ref sensor_y513
+
+[//]: # ( @menusnip{yosemitech_y513} )
 
 ___
 

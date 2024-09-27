@@ -90,6 +90,7 @@ For some generalized information about attaching sensors to an Arduino style boa
   - [Y502-A or Y504-A: Optical DO and Temperature](https://envirodiy.github.io/ModularSensors/group__sensor__y504.html)
   - [Y510-B: Optical Turbidity and Temperature](https://envirodiy.github.io/ModularSensors/group__sensor__y510.html)
   - [Y511-A: Optical Turbidity and Temperature](https://envirodiy.github.io/ModularSensors/group__sensor__y511.html)
+  - [Y513-A: Self-Cleaning Blue-Green Algae Sensor](https://envirodiy.github.io/ModularSensors/group__sensor__y513.html)
   - [Y514-A: Optical Chlorophyll and Temperature](https://envirodiy.github.io/ModularSensors/group__sensor__y514.html)
   - [Y520-A: Conductivity and Temperature](https://envirodiy.github.io/ModularSensors/group__sensor__y520.html)
   - [Y532-A: Digital pH and Temperature](https://envirodiy.github.io/ModularSensors/group__sensor__y532.html)
