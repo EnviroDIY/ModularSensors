@@ -2163,6 +2163,38 @@ Variable* y511Temp =
 #endif
 
 
+#if defined(BUILD_SENSOR_YOSEMITECH_Y513)
+// ==========================================================================
+//  Yosemitech Y513 Blue Green Algae (BGA) Sensor
+// ==========================================================================
+/** Start [yosemitech_y513] */
+#include <sensors/YosemitechY513.h>
+
+// NOTE: Extra hardware and software serial ports are created in the "Settings
+// for Additional Serial Ports" section
+
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+byte          y513ModbusAddress  = 0x13;  // The modbus address of the Y513
+const int8_t  y513AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  y513SensorPower    = modbusSensorPowerPin;  // Sensor power pin
+const int8_t  y513EnablePin      = -1;                    // Adapter RE/DE pin
+const uint8_t y513NumberReadings = 5;
+// The manufacturer recommends averaging 10 readings, but we take 5 to minimize
+// power consumption
+
+// Create a Y513 Blue Green Algae (BGA) sensor object
+YosemitechY513 y513(y513ModbusAddress, modbusSerial, y513AdapterPower,
+                    y513SensorPower, y513EnablePin, y513NumberReadings);
+
+// Create Blue Green Algae (BGA) concentration and temperature variable
+// pointers for the Y513
+Variable* y513BGA =
+    new YosemitechY513_BGA(&y513, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* y513Temp =
+    new YosemitechY513_Temp(&y513, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [yosemitech_y513] */
+#endif
+
 #if defined(BUILD_SENSOR_YOSEMITECH_Y514)
 // ==========================================================================
 //  Yosemitech Y514 Chlorophyll Sensor
@@ -2800,6 +2832,10 @@ Variable* variableList[] = {
 #if defined(BUILD_SENSOR_YOSEMITECH_Y511)
     y511Turb,
     y511Temp,
+#endif
+#if defined(BUILD_SENSOR_YOSEMITECH_Y513)
+    y513BGA,
+    y513Temp,
 #endif
 #if defined(BUILD_SENSOR_YOSEMITECH_Y514)
     y514Chloro,
