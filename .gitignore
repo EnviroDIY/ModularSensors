@@ -111,3 +111,4 @@ output_deep.txt
 output_deep+.txt
 envDump.txt
 -Q
+act.log
