@@ -87,7 +87,7 @@ bool TurnerCyclops::addSingleMeasurementResult(void) {
         // Measure the ADC raw count
         adcCounts = ads.readADC_SingleEnded(_adsChannel);
         // Convert ADC raw counts value to voltage (V)
-        adcVoltage = ads.computeVolts(adcCounts)
+        adcVoltage = ads.computeVolts(adcCounts);
         MS_DBG(F("  ads.readADC_SingleEnded("), _adsChannel, F("):"),
                adcVoltage);
 

@@ -84,10 +84,9 @@ bool AlphasenseCO2::addSingleMeasurementResult(void) {
         // Measure the voltage difference across two pins from the CO2 sensor
         adcCounts = ads.readADC_Differential_2_3();
         // Convert ADC counts value to voltage (V)
-        adcVoltage = ads.computeVolts(adcCounts)
-        MS_DBG(F("  ads.readADC_Differential_2_3() converted to volts:"), 
+        adcVoltage = ads.computeVolts(adcCounts);
+        MS_DBG(F("  ads.readADC_Differential_2_3() converted to volts:"),
                adcVoltage);
-        
 
         if (adcVoltage < 3.6 && adcVoltage > -0.3) {
             // Skip results out of range
