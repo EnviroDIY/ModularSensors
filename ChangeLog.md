@@ -15,10 +15,12 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Applied markdown lint to markdown files
 - Bumped TinyGSM dependency
   - Changed datatypes for modem voltage outputs.
+- Switched from Soligen fork of ADS1115 library to the standard Adafruit version.
 
 ### Added
 
 - Added support for Yosemitech Y513 Blue Green Algae Sensor thanks to @aufdenkampe
+- Added support for Alphasense CO2 Sensor thanks to @aufdenkampe
 
 ### Removed
 

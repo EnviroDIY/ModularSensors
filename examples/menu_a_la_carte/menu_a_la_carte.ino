@@ -815,6 +815,30 @@ Variable* ds3231Temp =
 #endif
 
 
+#if defined(BUILD_SENSOR_ALPHASENSE_CO2)
+// ==========================================================================
+//  Alphasense CO2 Sensor
+// ==========================================================================
+/** Start [alphasense_co2] */
+#include <sensors/AlphasenseCO2.h>
+
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+const int8_t  AlphasenseCO2Power = sensorPowerPin;  // Power pin
+const uint8_t AlphasenseCO2ADSi2c_addr =
+    0x48;  // The I2C address of the ADS1115 ADC
+
+// Create an Alphasense CO2 sensor object
+AlphasenseCO2 alphasenseCO2(AlphasenseCO2Power, AlphasenseCO2ADSi2c_addr);
+
+// Create PAR and raw voltage variable pointers for the CO2
+Variable* asCO2        = new AlphasenseCO2_CO2(&alphasenseCO2,
+                                               "12345678-abcd-1234-ef00-1234567890ab");
+Variable* asco2voltage = new AlphasenseCO2_Voltage(
+    &alphasenseCO2, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [alphasense_co2] */
+#endif
+
+
 #if defined(BUILD_SENSOR_AO_SONG_AM2315)
 // ==========================================================================
 //  AOSong AM2315 Digital Humidity and Temperature Sensor
@@ -2617,6 +2641,10 @@ Variable* variableList[] = {
     calculatedVar,
 #if defined(ARDUINO_ARCH_AVR) || defined(MS_SAMD_DS3231)
     ds3231Temp,
+#endif
+#if defined(BUILD_SENSOR_ALPHASENSE_CO2)
+    asCO2,
+    asco2voltage,
 #endif
 #if defined(BUILD_SENSOR_AO_SONG_AM2315)
     am2315Humid,

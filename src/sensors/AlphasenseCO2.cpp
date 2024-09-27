@@ -6,7 +6,8 @@
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Written by Anthony Aufdenkampe <aaufdenkampe@limno.com>
  * and Bella Henkel <bella.henkel@mnsu.edu>
- * Adapted from ApogeeSQ212.h and https://github.com/bellahenkel/Soil-Sensing-Device
+ * Adapted from ApogeeSQ212.h and
+ * https://github.com/bellahenkel/Soil-Sensing-Device
  *
  * @brief Implements the AlphasenseCO2 class.
  */
@@ -17,11 +18,13 @@
 
 
 // The constructor - need the power pin and the data pin
-AlphasenseCO2::AlphasenseCO2(int8_t powerPin,
-                         uint8_t i2cAddress, uint8_t measurementsToAverage)
-    : Sensor("AlphasenseCO2", ALPHASENSE_CO2_NUM_VARIABLES, ALPHASENSE_CO2_WARM_UP_TIME_MS,
-             ALPHASENSE_CO2_STABILIZATION_TIME_MS, ALPHASENSE_CO2_MEASUREMENT_TIME_MS, powerPin,
-             -1, measurementsToAverage, ALPHASENSE_CO2_INC_CALC_VARIABLES),
+AlphasenseCO2::AlphasenseCO2(int8_t powerPin, uint8_t i2cAddress,
+                             uint8_t measurementsToAverage)
+    : Sensor("AlphasenseCO2", ALPHASENSE_CO2_NUM_VARIABLES,
+             ALPHASENSE_CO2_WARM_UP_TIME_MS,
+             ALPHASENSE_CO2_STABILIZATION_TIME_MS,
+             ALPHASENSE_CO2_MEASUREMENT_TIME_MS, powerPin, -1,
+             measurementsToAverage, ALPHASENSE_CO2_INC_CALC_VARIABLES),
       _i2cAddress(i2cAddress) {}
 
 // Destructor
@@ -42,10 +45,10 @@ String AlphasenseCO2::getSensorLocation(void) {
 
 bool AlphasenseCO2::addSingleMeasurementResult(void) {
     // Variables to store the results in
-    int16_t adcCounts = -9999;
-    float adcVoltage  = -9999;
-    float co2Current  = -9999;
-    float calibResult = -9999;
+    int16_t adcCounts   = -9999;
+    float   adcVoltage  = -9999;
+    float   co2Current  = -9999;
+    float   calibResult = -9999;
 
     // Check a measurement was *successfully* started (status bit 6 set)
     // Only go on to get a result if it was
@@ -90,9 +93,11 @@ bool AlphasenseCO2::addSingleMeasurementResult(void) {
 
         if (adcVoltage < 3.6 && adcVoltage > -0.3) {
             // Skip results out of range
-            // Convert voltage to current (mA) - assuming a 250 Ohm resistor is in series
+            // Convert voltage to current (mA) - assuming a 250 Ohm resistor is
+            // in series
             co2Current = (adcVoltage / 250) * 1000;
-            // Convert current to ppm (using a formula recommended by the sensor manufacturer)
+            // Convert current to ppm (using a formula recommended by the sensor
+            // manufacturer)
             calibResult = 312.5 * co2Current - 1250;
             MS_DBG(F("  calibResult:"), calibResult);
         } else {

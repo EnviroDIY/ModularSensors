@@ -44,9 +44,9 @@ String TIADS1x15::getSensorLocation(void) {
 
 bool TIADS1x15::addSingleMeasurementResult(void) {
     // Variables to store the results in
-    int16_t adcCounts = -9999;
-    float adcVoltage  = -9999;
-    float calibResult = -9999;
+    int16_t adcCounts   = -9999;
+    float   adcVoltage  = -9999;
+    float   calibResult = -9999;
 
     // Check a measurement was *successfully* started (status bit 6 set)
     // Only go on to get a result if it was
