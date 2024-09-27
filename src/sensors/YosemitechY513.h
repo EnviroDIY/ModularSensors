@@ -89,8 +89,8 @@
  * {{ @ref YosemitechY513_BGA::YosemitechY513_BGA }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; blue green algae concentration
-/// should have 1 - resolution is 0.1 µg/L / 0.1 RFU.
+/// @brief Decimals places in string representation; blue green algae
+/// concentration should have 1 - resolution is 0.1 µg/L / 0.1 RFU.
 #define Y513_BGA_RESOLUTION 1
 /// @brief Sensor variable number; blue green algae concentration is stored in
 /// sensorValues[0].
@@ -213,9 +213,9 @@ class YosemitechY513_BGA : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "Y513BGA".
      */
-    explicit YosemitechY513_BGA(
-        YosemitechY513* parentSense, const char* uuid = "",
-        const char* varCode = Y513_BGA_DEFAULT_CODE)
+    explicit YosemitechY513_BGA(YosemitechY513* parentSense,
+                                const char*     uuid    = "",
+                                const char*     varCode = Y513_BGA_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)Y513_BGA_VAR_NUM,
                    (uint8_t)Y513_BGA_RESOLUTION, Y513_BGA_VAR_NAME,
                    Y513_BGA_UNIT_NAME, varCode, uuid) {}
