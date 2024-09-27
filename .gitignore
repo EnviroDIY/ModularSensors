@@ -106,3 +106,9 @@ runDoxygen_archive.bat
 generateKeywords.bat
 update_path.bat
 pio_common_libdeps.ini
+ex_one_offs/*
+output_deep.txt
+output_deep+.txt
+envDump.txt
+-Q
+act.log

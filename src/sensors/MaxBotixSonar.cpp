@@ -12,19 +12,28 @@
 
 
 MaxBotixSonar::MaxBotixSonar(Stream* stream, int8_t powerPin, int8_t triggerPin,
-                             uint8_t measurementsToAverage)
+                             int16_t maxRange, uint8_t measurementsToAverage,
+                             bool convertCm)
     : Sensor("MaxBotixMaxSonar", HRXL_NUM_VARIABLES, HRXL_WARM_UP_TIME_MS,
              HRXL_STABILIZATION_TIME_MS, HRXL_MEASUREMENT_TIME_MS, powerPin, -1,
              measurementsToAverage),
+      _maxRange(maxRange),
       _triggerPin(triggerPin),
+      _convertCm(convertCm),
       _stream(stream) {}
+
+
 MaxBotixSonar::MaxBotixSonar(Stream& stream, int8_t powerPin, int8_t triggerPin,
-                             uint8_t measurementsToAverage)
+                             int16_t maxRange, uint8_t measurementsToAverage,
+                             bool convertCm)
     : Sensor("MaxBotixMaxSonar", HRXL_NUM_VARIABLES, HRXL_WARM_UP_TIME_MS,
              HRXL_STABILIZATION_TIME_MS, HRXL_MEASUREMENT_TIME_MS, powerPin, -1,
              measurementsToAverage, HRXL_INC_CALC_VARIABLES),
+      _maxRange(maxRange),
       _triggerPin(triggerPin),
+      _convertCm(convertCm),
       _stream(&stream) {}
+
 // Destructor
 MaxBotixSonar::~MaxBotixSonar() {}
 
@@ -45,8 +54,8 @@ bool MaxBotixSonar::setup(void) {
     }
 
     // Set the stream timeout
-    // Even the slowest sensors should respond at a rate of 6Hz (166ms).
-    _stream->setTimeout(180);
+    // Even the slowest sensors should respond at a rate of 4Hz (250ms).
+    _stream->setTimeout(250);
 
     return Sensor::setup();  // this will set pin modes and the setup status bit
 }
@@ -63,8 +72,12 @@ bool MaxBotixSonar::wake(void) {
     // ~160ms. Although we are waiting for them to complete in the
     // "waitForWarmUp" function, the values will still be in the serial buffer
     // and need to be read to be cleared out For an HRXL without temperature
-    // compensation, the headers are: HRXL-MaxSonar-WRL PN:MB7386 Copyright
-    // 2011-2013 MaxBotix Inc. RoHS 1.8b090  0713 TempI
+    // compensation, the headers are:
+    // HRXL-MaxSonar-WRL
+    // PN:MB7386
+    // Copyright 2011-2013 MaxBotix Inc.
+    // RoHS 1.8b090
+    // 0713 TempI
 
     // NOTE ALSO:  Depending on what type of serial stream you are using, there
     // may also be a bunch of junk in the buffer that this will clear out.
@@ -143,21 +156,19 @@ bool MaxBotixSonar::addSingleMeasurementResult(void) {
             MS_DBG(F("  Sonar Range:"), result);
             rangeAttempts++;
 
-            // If it cannot obtain a result , the sonar is supposed to send a
-            // value just above it's max range.  For 10m models, this is 9999,
-            // for 5m models it's 4999.  The sonar might also send readings of
-            // 300 or 500 (the blanking distance) if there are too many acoustic
-            // echos. If the result becomes garbled or the sonar is
-            // disconnected, the parseInt function returns 0.  Luckily, these
-            // sensors are not capable of reading 0, so we also know the 0 value
-            // is bad.
-            if (result <= 300 || result == 500 || result == 4999 ||
-                result == 9999 || result == 0) {
+            // If it cannot obtain a result, the sonar is supposed to send a
+            // value just above its max range. If the result becomes garbled or
+            // the sonar is disconnected, the parseInt function returns 0.
+            // Luckily, these sensors are not capable of reading 0, so we also
+            // know the 0 value is bad.
+            if (result <= 0 || result >= _maxRange) {
                 MS_DBG(F("  Bad or Suspicious Result, Retry Attempt #"),
                        rangeAttempts);
                 result = -9999;
             } else {
                 MS_DBG(F("  Good result found"));
+                // convert result from cm to mm if convertCm is set to true
+                if (_convertCm == true) { result *= 10; }
                 success = true;
             }
         }

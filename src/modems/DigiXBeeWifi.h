@@ -55,9 +55,6 @@
 #define MS_DEBUGGING_DEEP "DigiXBeeWifi"
 #endif
 
-/** @ingroup modem_digi_wifi */
-/**@{*/
-
 /**
  * @brief The modem type for the underlying TinyGSM library.
  */
@@ -80,11 +77,21 @@
 #include <StreamDebugger.h>
 #endif
 
+/** @ingroup modem_digi_wifi */
+/**@{*/
+
 /**
- * @brief This causes the Xbee to reset after this number of transmission
+ * @anchor modem_digi_wifi_config
+ * @name Configuration Defines
+ * Defines to configure if and when to reset the WiFi XBee
+ */
+/**@{*/
+/**
+ * @brief This causes the WiFi XBee to reset after this number of transmission
  * attempts
  */
 #define XBEE_RESET_THRESHOLD 4
+/**@}*/
 
 /**
  * @brief The class for the [Digi XBee](@ref modem_digi)
@@ -138,17 +145,11 @@ class DigiXBeeWifi : public DigiXBee {
     uint32_t getNISTTime(void) override;
 
     bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
-    bool  getModemBatteryStats(uint8_t& chargeState, int8_t& percent,
-                               uint16_t& milliVolts) override;
+    bool  getModemBatteryStats(int8_t& chargeState, int8_t& percent,
+                               int16_t& milliVolts) override;
     float getModemChipTemperature(void) override;
 
     bool updateModemMetadata(void) override;
-
-    // Access Management
-    void   setWiFiId(const char* WiFiId, bool copyId = false);
-    void   setWiFiPwd(const char* WiFiPwd, bool copyId = false);
-    String getWiFiId(void);
-    String getWiFiPwd(void);
 
 #ifdef MS_DIGIXBEEWIFI_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
@@ -172,20 +173,26 @@ class DigiXBeeWifi : public DigiXBee {
      * bypass), enables pin sleep, sets the DIO pins to the expected functions,
      * and reboots the modem to ensure all settings are applied.
      *
-     * @return **bool** True if the extra setup succeeded.
+     * @return True if the extra setup succeeded.
      */
     bool extraModemSetup(void) override;
     bool isModemAwake(void) override;
 
  private:
-    const char* _ssid;
-    const char* _pwd;
-    bool        _maintainAssociation;
 
-    // Access Management
-    char* _ssid_buf = NULL;
-    char* _pwd_buf  = NULL;
+    const char* _ssid;  ///< Internal reference to the WiFi SSID
+    const char* _pwd;   ///< Internal reference to the WiFi password
+    /**
+     * @brief True to maintain association with the WiFi network while in sleep
+     * mode.
+     */
+    bool _maintainAssociation;
 
+    /**
+     * @brief The number of times the XBee has failed to update metadata.
+     *
+     * If this is larger than #XBEE_RESET_THRESHOLD the XBee will be reset.
+     */
     uint16_t metadata_failure_count = 0;
 };
 /**@}*/

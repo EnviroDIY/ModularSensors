@@ -84,12 +84,18 @@
 /** @ingroup sensor_fivetm */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_fivetm_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the Decagon 5TM
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the 5TM can report 3 values.
 #define TM_NUM_VARIABLES 3
 /// @brief Sensor::_incCalcValues; volumetric water content is calculated from
 /// the permittivity and the temperature.
 #define TM_INC_CALC_VARIABLES 1
+/**@}*/
 
 /**
  * @anchor sensor_fivetm_timing

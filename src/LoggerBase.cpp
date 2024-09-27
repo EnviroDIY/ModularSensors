@@ -37,7 +37,7 @@ volatile bool Logger::startTesting = false;
 
 // Initialize the RTC for the SAMD boards using build in RTC
 // Needed for static instances
-#if not defined(MS_SAMD_DS3231) && defined(ARDUINO_ARCH_SAMD)
+#if !defined(MS_SAMD_DS3231) && defined(ARDUINO_ARCH_SAMD)
 RTCZero Logger::zero_sleep_rtc;
 #endif
 
@@ -277,7 +277,7 @@ String Logger::getValueStringAtI(uint8_t position_i) {
 // ===================================================================== //
 
 // Set up communications
-// Adds a loggerModem objct to the logger
+// Adds a loggerModem object to the logger
 // loggerModem = TinyGSM modem + TinyGSM client + Modem On Off
 void Logger::attachModem(loggerModem& modem) {
     _logModem = &modem;
@@ -438,7 +438,7 @@ uint32_t Logger::getNowLocalEpoch(void) {
     return currentEpochTime;
 }
 
-#if defined(MS_SAMD_DS3231) || not defined(ARDUINO_ARCH_SAMD)
+#if defined(MS_SAMD_DS3231) || !defined(ARDUINO_ARCH_SAMD)
 
 uint32_t Logger::getNowUTCEpoch(void) {
     return rtc.now().getEpoch();
@@ -447,7 +447,7 @@ void Logger::setNowUTCEpoch(uint32_t ts) {
     rtc.setEpoch(ts);
 }
 
-#elif defined ARDUINO_ARCH_SAMD
+#elif defined(ARDUINO_ARCH_SAMD)
 
 uint32_t Logger::getNowUTCEpoch(void) {
     return zero_sleep_rtc.getEpoch();
@@ -579,13 +579,21 @@ void Logger::markTime(void) {
 bool Logger::checkInterval(void) {
     bool     retval;
     uint32_t checkTime = getNowLocalEpoch();
+    uint16_t interval = _loggingIntervalMinutes;
+    if (_initialShortIntervals > 0) {
+        // log the first few samples at an interval of 1 minute so that
+        // operation can be quickly verified in the field
+        _initialShortIntervals -= 1;
+        interval = 1;
+    }
+
     MS_DBG(F("Current Unix Timestamp:"), checkTime, F("->"),
            formatDateTime_ISO8601(checkTime));
-    MS_DBG(F("Logging interval in seconds:"), (_loggingIntervalMinutes * 60));
+    MS_DBG(F("Logging interval in seconds:"), (interval * 60));
     MS_DBG(F("Mod of Logging Interval:"),
-           checkTime % (_loggingIntervalMinutes * 60));
+           checkTime % (interval * 60));
 
-    if (checkTime % (_loggingIntervalMinutes * 60) == 0) {
+    if (checkTime % (interval * 60) == 0) {
         // Update the time variables with the current time
         markTime();
         MS_DBG(F("Time marked at (unix):"), Logger::markedLocalEpochTime);
@@ -673,7 +681,7 @@ bool Logger::checkMarkedInterval(void) {
 // Set up the Interrupt Service Request for waking
 // In this case, we're doing nothing, we just want the processor to wake
 // This must be a static function (which means it can only call other static
-// funcions.)
+// functions.)
 void Logger::wakeISR(void) {
     MS_DEEP_DBG(F("\nClock interrupt!"));
 }
@@ -691,7 +699,7 @@ void Logger::systemSleep(void) {
     // Send a message that we're getting ready
     MS_DBG(F("Preparing processor for  sleep.  ZZzzz..."));
 
-#if defined(MS_SAMD_DS3231) || not defined(ARDUINO_ARCH_SAMD)
+#if defined(MS_SAMD_DS3231) || !defined(ARDUINO_ARCH_SAMD)
 
     // Unfortunately, because of the way the alarm on the DS3231 is set up, it
     // cannot interrupt on any frequencies other than every second, minute,
@@ -713,7 +721,7 @@ void Logger::systemSleep(void) {
     // attach the interrupt
     enableInterrupt(_mcuWakePin, wakeISR, CHANGE);
 
-#if defined ARDUINO_ARCH_SAMD && not defined(__SAMD51__)
+#if defined(ARDUINO_ARCH_SAMD) && !defined(__SAMD51__)
     // Reconfigure the clock after attaching the interrupt
     // This is needed because the attachInterrupt function will reconfigure the
     // clock source for the EIC to GCLK0 every time a new interrupt is attached
@@ -731,9 +739,9 @@ void Logger::systemSleep(void) {
     EExt_Interrupts in = g_APinDescription[_mcuWakePin].ulExtInt;
     // Enable wakeup capability on pin in case being used during sleep
     EIC->WAKEUP.reg |= (1 << in);
-#endif  // defined ARDUINO_ARCH_SAMD && not defined(__SAMD51__)
+#endif  // #if defined(ARDUINO_ARCH_SAMD) && ! defined(__SAMD51__)
 
-#elif defined ARDUINO_ARCH_SAMD
+#elif defined(ARDUINO_ARCH_SAMD)
 
     // Make sure interrupts are enabled for the clock
     NVIC_EnableIRQ(RTC_IRQn);       // enable RTC interrupt
@@ -749,7 +757,7 @@ void Logger::systemSleep(void) {
     zero_sleep_rtc.setAlarmSeconds(59);
     zero_sleep_rtc.enableAlarm(zero_sleep_rtc.MATCH_SS);
 
-#endif  // defined(MS_SAMD_DS3231) || not defined(ARDUINO_ARCH_SAMD)
+#endif  // defined(MS_SAMD_DS3231) || ! defined(ARDUINO_ARCH_SAMD)
 
 
     // Stop any I2C connections
@@ -779,13 +787,13 @@ void Logger::systemSleep(void) {
 #if defined(STANDARD_SERIAL_OUTPUT)
     STANDARD_SERIAL_OUTPUT.flush();  // for debugging
 #endif
-#if defined DEBUGGING_SERIAL_OUTPUT
+#if defined(DEBUGGING_SERIAL_OUTPUT)
     DEBUGGING_SERIAL_OUTPUT.flush();  // for debugging
 #endif
 
-#if defined ARDUINO_ARCH_SAMD
+#if defined(ARDUINO_ARCH_SAMD)
 
-#if not defined(USE_TINYUSB) && defined(USBCON)
+#if !defined(USE_TINYUSB) && defined(USBCON)
     // Detach the USB, iff not using TinyUSB
     MS_DEEP_DBG(F("Detaching USB"));
     Serial.flush();  // wait for any outgoing messages on Serial = USB
@@ -831,7 +839,7 @@ void Logger::systemSleep(void) {
     __DSB();  // Data sync to ensure outgoing memory accesses complete
     __WFI();  // Wait for interrupt (places device in sleep mode)
 
-#elif defined ARDUINO_ARCH_AVR
+#elif defined(ARDUINO_ARCH_AVR)
 
 // Disable USB if it exists
 #ifdef USBCON
@@ -890,19 +898,19 @@ void Logger::systemSleep(void) {
     // ---------------------------------------------------------------------
     // -- The portion below this happens on wake up, after any wake ISR's --
 
-#if defined ARDUINO_ARCH_SAMD
-#if not defined(__SAMD51__)
+#if defined(ARDUINO_ARCH_SAMD)
+#if !defined(__SAMD51__)
     // Enable systick interrupt
     SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;
 #endif
     // Reattach the USB
-#if not defined(USE_TINYUSB) && defined(USBCON)
+#if !defined(USE_TINYUSB) && defined(USBCON)
     USBDevice.init();
     USBDevice.attach();
 #endif
 #endif
 
-#if defined ARDUINO_ARCH_AVR
+#if defined(ARDUINO_ARCH_AVR)
 
     // Temporarily disables interrupts, so no mistakes are made when writing
     // to the processor registers
@@ -949,7 +957,7 @@ void Logger::systemSleep(void) {
     // the timeout period is a useless delay.
     Wire.setTimeout(0);
 
-#if defined(MS_SAMD_DS3231) || not defined(ARDUINO_ARCH_SAMD)
+#if defined(MS_SAMD_DS3231) || !defined(ARDUINO_ARCH_SAMD)
     // Stop the clock from sending out any interrupts while we're awake.
     // There's no reason to waste thought on the clock interrupt if it
     // happens while the processor is awake and doing other things.
@@ -958,7 +966,7 @@ void Logger::systemSleep(void) {
     // Detach the from the pin
     disableInterrupt(_mcuWakePin);
 
-#elif defined ARDUINO_ARCH_SAMD
+#elif defined(ARDUINO_ARCH_SAMD)
     MS_DEEP_DBG(F("Unsetting the alarm on the built in RTC"));
     zero_sleep_rtc.disableAlarm();
 #endif
@@ -1272,7 +1280,7 @@ void Logger::testingISR() {
 
 
 // This defines what to do in the testing mode
-void Logger::testingMode() {
+void Logger::testingMode(bool sleepBeforeReturning) {
     // Flag to notify that we're in testing mode
     Logger::isTestingNow = true;
     // Unset the startTesting flag
@@ -1349,8 +1357,10 @@ void Logger::testingMode() {
     // Unset testing mode flag
     Logger::isTestingNow = false;
 
-    // Sleep
-    systemSleep();
+    if (sleepBeforeReturning) {
+        // Sleep
+        systemSleep();
+    }
 }
 
 
@@ -1393,7 +1403,7 @@ void Logger::begin() {
     // Enable the watchdog
     watchDogTimer.enableWatchDog();
 
-#if not defined(MS_SAMD_DS3231) && defined(ARDUINO_ARCH_SAMD)
+#if !defined(MS_SAMD_DS3231) && defined(ARDUINO_ARCH_SAMD)
     MS_DBG(F("Beginning internal real time clock"));
     zero_sleep_rtc.begin();
 #endif
@@ -1425,7 +1435,7 @@ void Logger::begin() {
     setLoggerPins(_mcuWakePin, _SDCardSSPin, _SDCardPowerPin, _buttonPin,
                   _ledPin);
 
-#if defined(MS_SAMD_DS3231) || not defined(ARDUINO_ARCH_SAMD)
+#if defined(MS_SAMD_DS3231) || !defined(ARDUINO_ARCH_SAMD)
     MS_DBG(F("Beginning DS3231 real time clock"));
     rtc.begin();
 #endif
@@ -1453,12 +1463,20 @@ void Logger::begin() {
         PRINTOUT(F("Sampling feature UUID is:"), _samplingFeatureUUID);
     }
 
+
+    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
+        if (dataPublishers[i] != nullptr) {
+            PRINTOUT(F("Data will be published to ["), i, F("]"),
+                     dataPublishers[i]->getEndpoint());
+        }
+    }
+
     PRINTOUT(F("Logger portion of setup finished.\n"));
 }
 
 
 // This is a one-and-done to log data
-void Logger::logData(void) {
+void Logger::logData(bool sleepBeforeReturning) {
     // Reset the watchdog
     watchDogTimer.resetWatchDog();
 
@@ -1502,11 +1520,13 @@ void Logger::logData(void) {
     // Check if it was instead the testing interrupt that woke us up
     if (Logger::startTesting) testingMode();
 
-    // Sleep
-    systemSleep();
+    if (sleepBeforeReturning) {
+        // Sleep
+        systemSleep();
+    }
 }
 // This is a one-and-done to log data
-void Logger::logDataAndPublish(void) {
+void Logger::logDataAndPublish(bool sleepBeforeReturning) {
     // Reset the watchdog
     watchDogTimer.resetWatchDog();
 
@@ -1553,7 +1573,7 @@ void Logger::logDataAndPublish(void) {
                 // Connect to the network
                 watchDogTimer.resetWatchDog();
                 MS_DBG(F("Connecting to the Internet..."));
-                if (_logModem->connectInternet()) {
+                if (_logModem->connectInternet(240000L)) {
                     // Publish data to remotes
                     watchDogTimer.resetWatchDog();
                     publishDataToRemotes();
@@ -1602,8 +1622,10 @@ void Logger::logDataAndPublish(void) {
     }
 
     // Check if it was instead the testing interrupt that woke us up
-    if (Logger::startTesting) testingMode();
+    if (Logger::startTesting) testingMode(sleepBeforeReturning);
 
-    // Call the processor sleep
-    systemSleep();
+    if (sleepBeforeReturning) {
+        // Sleep
+        systemSleep();
+    }
 }

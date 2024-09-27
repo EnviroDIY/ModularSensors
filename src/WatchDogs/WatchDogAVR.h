@@ -79,6 +79,10 @@ class extendedWatchDogAVR {
     static volatile uint32_t _barksUntilReset;
 
  private:
+    /**
+     * @brief Internal reference to the number of seconds of silence before the
+     * module is reset.
+     */
     uint32_t _resetTime_s;
 };
 

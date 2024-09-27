@@ -63,13 +63,27 @@
 /** @ingroup sensor_alspt19 */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_alspt19_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by an ALS-PT19
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the ALS-PT19 can report 1 "raw" value
 /// (voltage) and we calculate current and illuminance from it.
 #define ALSPT19_NUM_VARIABLES 3
 /// @brief Sensor::_incCalcValues; we calculate photocurrent from the supply
 /// voltage and loading resistance and illuminance from the photocurrent.
 #define ALSPT19_INC_CALC_VARIABLES 2
+/**@}*/
+
+/**
+ * @anchor sensor_alspt19_mayfly
+ * @name Pin Definitions for the Mayfly
+ * Specific pin definitions for the ALS-PT19 built in to the EnviroDIY Mayfly
+ * v1.x
+ */
+/**@{*/
 /// @brief The power pin for the ALS on the EnviroDIY Mayfly v1.x
 #define MAYFLY_ALS_POWER_PIN -1
 /// @brief The data pin for the ALS on the EnviroDIY Mayfly v1.x
@@ -78,8 +92,16 @@
 #define MAYFLY_ALS_SUPPLY_VOLTAGE 3.3
 /// @brief The loading resistance for the ALS on the EnviroDIY Mayfly v1.x
 #define MAYFLY_ALS_LOADING_RESISTANCE 10
+/**@}*/
 
-#if !defined ALSPT19_ADC_RESOLUTION
+/**
+ * @anchor sensor_alspt19_config
+ * @name Configuration Defines
+ * Defines to help configure the range and resolution of the ALS-PT119 depending
+ * on the processor and ADC in use.
+ */
+/**@{*/
+#if !defined(ALSPT19_ADC_RESOLUTION) || defined(DOXYGEN)
 /**
  * @brief Default resolution (in bits) of the voltage measurement
  *
@@ -96,8 +118,8 @@
 #define ALSPT19_ADC_RANGE (1 << ALSPT19_ADC_RESOLUTION)
 
 /* clang-format off */
-#if !defined ALSPT19_ADC_REFERENCE_MODE
-#if defined (ARDUINO_ARCH_AVR) || defined (DOXYGEN)
+#if ! defined (ALSPT19_ADC_REFERENCE_MODE) || defined (DOXYGEN)
+#if defined(ARDUINO_ARCH_AVR) || defined (DOXYGEN)
 /**
  * @brief The voltage reference mode for the processor's ADC.
  *
@@ -119,7 +141,7 @@
  */
 #define ALSPT19_ADC_REFERENCE_MODE DEFAULT
 #endif
-#if defined (ARDUINO_ARCH_SAMD) || defined (DOXYGEN)
+#if defined(ARDUINO_ARCH_SAMD) || defined (DOXYGEN)
 /**
  * @brief The voltage reference mode for the processor's ADC.
  *
@@ -140,10 +162,11 @@
  */
 #define ALSPT19_ADC_REFERENCE_MODE AR_DEFAULT
 #endif
-#if !defined ALSPT19_ADC_REFERENCE_MODE
+#if ! defined (ALSPT19_ADC_REFERENCE_MODE)
 #error The processor ADC reference type must be defined!
 #endif  // ALSPT19_ADC_REFERENCE_MODE
 #endif  // ARDUINO_ARCH_SAMD
+/**@}*/
 /* clang-format on */
 
 /**

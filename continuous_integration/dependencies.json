@@ -57,7 +57,7 @@
     {
       "name": "TinyGSM",
       "owner": "vshymanskyy",
-      "version": "~0.11.7",
+      "version": "~0.12.0",
       "note": "A small Arduino library for GPRS modules.",
       "authors": [
         "Volodymyr Shymanskyy",
@@ -246,7 +246,7 @@
       "name": "SDI-12",
       "owner": "envirodiy",
       "library id": "1486",
-      "version": "~2.1.4",
+      "version": "~2.2.0",
       "url": "https://github.com/EnviroDIY/Arduino-SDI-12",
       "note": "EnviroDIY SDI-12 Library for Arduino",
       "author_notes": [
@@ -289,7 +289,7 @@
       "owner": "envirodiy",
       "library id": "1824",
       "url": "https://github.com/EnviroDIY/SensorModbusMaster",
-      "version": "~0.6.8",
+      "version": "~0.7.0",
       "note": "EnviroDIY SensorModbusMaster - Arduino library for communicating via modbus with the Arduino acting as the modbus master.",
       "authors": [
         "Sara Damiano"

@@ -79,11 +79,27 @@
 /** @ingroup sensor_ina219 */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_ina219_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the INA219
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the INA219 can report 3 values.
 #define INA219_NUM_VARIABLES 3
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define INA219_INC_CALC_VARIABLES 0
+/**@}*/
+
+/**
+ * @anchor sensor_ina219_config
+ * @name Configuration Defines
+ * Defines to set the address of the INA219.
+ */
+/**@{*/
+/// @brief The default address of the INA219
+#define INA219_ADDRESS_BASE 0x40
+/**@}*/
 
 /**
  * @anchor sensor_ina219_timing
@@ -192,9 +208,6 @@
 #define INA219_POWER_MW_DEFAULT_CODE "TIINA219Power"
 /**@}*/
 
-/// @brief The default address of the INA219
-#define INA219_ADDRESS_BASE 0x40
-
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
@@ -257,7 +270,7 @@ class TIINA219 : public Sensor {
      *
      * @note This does NOT include any wait for sensor readiness.
      *
-     * @return **bool** True if the wake function completed successfully.
+     * @return True if the wake function completed successfully.
      */
     bool wake(void) override;
     /**
@@ -268,7 +281,7 @@ class TIINA219 : public Sensor {
      * and modes for I2C).  This also sets the calibration range of the INA219,
      * and updates the #_sensorStatus.  The INA219 must be powered for setup.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     bool setup(void) override;
     /**

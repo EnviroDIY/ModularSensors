@@ -60,9 +60,6 @@
 #define MS_DEBUGGING_STD "SodaqUBeeU201"
 #endif
 
-/** @ingroup modem_ubee_3g */
-/**@{*/
-
 /**
  * @brief The modem type for the underlying TinyGSM library.
  */
@@ -74,6 +71,25 @@
 #define TINY_GSM_RX_BUFFER 64
 #endif
 
+// Included Dependencies
+#include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
+#include "TinyGsmClient.h"
+#include "LoggerModem.h"
+
+#ifdef MS_SODAQUBEEU201_DEBUG_DEEP
+#include <StreamDebugger.h>
+#endif
+
+/** @ingroup modem_ubee_3g */
+/**@{*/
+
+/**
+ * @anchor modem_ubee_3g_pins_timing
+ * @name Modem Pin Settings and Timing
+ * The timing and pin level settings for a Sodaq UBee U201
+ */
+/**@{*/
 /**
  * @brief The loggerModem::_statusLevel.
  *
@@ -137,18 +153,7 @@
  * low.  We allow up to 15 seconds for shutdown in case it is not monitored.
  */
 #define U201_DISCONNECT_TIME_MS 15000L
-
-
-// Included Dependencies
-#include "ModSensorDebugger.h"
-#undef MS_DEBUGGING_STD
-#include "TinyGsmClient.h"
-#include "LoggerModem.h"
-
-#ifdef MS_SODAQUBEEU201_DEBUG_DEEP
-#include <StreamDebugger.h>
-#endif
-
+/**@}*/
 
 /**
  * @brief The loggerModem subclass for the [2G/3G](@ref modem_ubee_3g)
@@ -200,8 +205,8 @@ class SodaqUBeeU201 : public loggerModem {
     uint32_t getNISTTime(void) override;
 
     bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
-    bool  getModemBatteryStats(uint8_t& chargeState, int8_t& percent,
-                               uint16_t& milliVolts) override;
+    bool  getModemBatteryStats(int8_t& chargeState, int8_t& percent,
+                               int16_t& milliVolts) override;
     float getModemChipTemperature(void) override;
 
 #ifdef MS_SODAQUBEEU201_DEBUG_DEEP
@@ -225,7 +230,7 @@ class SodaqUBeeU201 : public loggerModem {
     bool isModemAwake(void) override;
 
  private:
-    const char* _apn;
+    const char* _apn;  ///< Internal reference to the cellular APN
 };
 /**@}*/
 #endif  // SRC_MODEMS_SODAQUBEEU201_H_
