@@ -1,5 +1,5 @@
 {
-  "action_cache_version": 20,
+  "action_cache_version": 21,
   "dependencies": [
     {
       "name": "EnviroDIY_DS3231",
@@ -105,15 +105,15 @@
     },
     {
       "name": "Adafruit ADS1X15",
-      "library id": "344",
-      "version_note": "=1.2.0",
-      "version": "https://github.com/soligen2010/Adafruit_ADS1X15.git#7d67b451f739e9a63f40f2d6d139ab582258572b",
-      "note": "Driver for TI's ADS1015: 12-bit Differential or Single-Ended ADC with PGA and Comparator.  This fork removes bugs in the Adafruit original library.",
-      "authors_note": [
-        "soligen2010"
+      "owner": "adafruit",
+      "url": "https://github.com/adafruit/Adafruit_ADS1X15",
+      "version": "~2.4.2",
+      "note": "Driver for TI's ADS1X15: 12 and 16-bit Differential or Single-Ended ADC with PGA and Comparator.",
+      "authors": [
+        "Adafruit"
       ],
-      "frameworks_note": "arduino",
-      "platforms_note": "*"
+      "frameworks": "arduino",
+      "platforms": "atmelavr, atmelsam"
     },
     {
       "name": "Adafruit AM2315",

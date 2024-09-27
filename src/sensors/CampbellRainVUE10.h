@@ -31,7 +31,7 @@
  * accurate precipitation and intensity measurements.
  *
  * The sensor is implemented as a sub-classes of the SDI12Sensors class.
- * It requires a continuous 6 to 18 Vdc power supply. As backup, ann internal
+ * It requires a continuous 6 to 18 Vdc power supply. As backup, an internal
  * 240 mAh lithium battery (3V Coin Cell CR2032) provides up to 15 days of
  * continual operation after power loss.
  * It draws < 80 µA when inactive and 1 mA while measuring.
