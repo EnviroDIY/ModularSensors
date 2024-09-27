@@ -1211,6 +1211,9 @@ class Logger {
      * to the "main" output - ie Serial - and NOT to the SD card.  After 25
      * measurements, the sensors are put to sleep, the modem is disconnected
      * from the internet, and the logger goes back to sleep.
+     *
+     * @param sleepBeforeReturning True to put the logger to sleep before
+     * returning from the function; optional with a default value of true.
      */
     virtual void testingMode(bool sleepBeforeReturning = true);
     /**@}*/
