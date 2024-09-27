@@ -61,13 +61,13 @@
  * First, we need to convert the bit reading of the ADC into volts based on the
  * range of the ADC (1 bit more than the resolution):
  *
- * `meas_voltage = (analog_ref_voltage * raw_adc_bits) / ANALOG_EC_ADC_RANGE`
+ * \f[meas\_voltage = \frac{analog\_ref\_voltage * raw\_adc\_bits}{ANALOG\_EC\_ADC\_RANGE}\f]
  *
  * Assuming the voltage of the ADC reference is the same as that used to power
  * the EC resistor circuit we can replace the reference voltage with the sensor
  * power voltage:
  *
- * `meas_voltage = (sensor_power_voltage * raw_adc_bits) / ANALOG_EC_ADC_RANGE`
+ * \f[meas\_voltage = \frac{sensor\_power\_voltage * raw\_adc\_bits}{ANALOG\_EC\_ADC\_RANGE}\f]
  *
  * @note The Vcc going to the circuit (~3.3V) can and will vary, as battery
  * level gets low.  If possible, you should use setup the processor to use an
@@ -81,16 +81,16 @@
  * Now we can calculate the resistance of the water, knowing the resistance of
  * the resistor we put in the circuit and the voltage drop:
  *
- * `Rwater_ohms = (meas_voltage * Rseries_ohms) / (sensor_power_voltage - meas_voltage)`
+ * \f[R_{water\_ohms} = \frac{meas\_voltage * R_{series\_ohms}}{sensor\_power\_voltage - meas\_voltage}\f]
  *
  * Combining the above equations and doing some rearranging, we get:
  *
- * `Rwater_ohms = Rseries_ohms / ((ANALOG_EC_ADC_RANGE / raw_adc_bits) - 1)`
+ * \f[R_{water\_ohms} = \frac{R_{series\_ohms}}{\frac{ANALOG\_EC\_ADC\_RANGE}{raw\_adc\_bits} - 1}\f]
  *
  * The conductivity is then the inverse of the resistance - multiplied by a
  * measured cell constant and a 10^6 conversion to µS/cm.
  *
- * `water_conductivity = 1000000 / (Rwater_ohms * sensorEC_Konst)`
+ * \f[water\_conductivity = \frac{1000000}{R_{water\_ohms} * sensor_{EC\_Konst}}\f]
  *
  * The real cell constant will vary based on the size of the "cell" - that is,
  * the size of the plug on the power cord.  You can calculate the cell constant
