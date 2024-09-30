@@ -10,7 +10,7 @@
  *
  * These are used for the Campbell Scientific OBS-3+.
  *
- * This depends on the soligen2010 fork of the Adafruit ADS1015 library.
+ * This depends on the Adafruit ADS1X15 v2.x library
  */
 /* clang-format off */
 /**
@@ -108,7 +108,7 @@
 /**
  * @anchor sensor_obs3_config
  * @name Configuration Defines
- * Defines to help configure the address of the ADD used by the Campbell OBS3+
+ * Defines to set the address of the ADD.
  */
 /**@{*/
 /// @brief The assumed address of the ADS1115, 1001 000 (ADDR = GND)

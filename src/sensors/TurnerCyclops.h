@@ -10,7 +10,7 @@
  *
  * These are used for the Turner Scientific Cyclops-7F.
  *
- * This depends on the soligen2010 fork of the Adafruit ADS1015 library.
+ * This depends on the Adafruit ADS1X15 v2.x library
  */
 /* clang-format off */
 /**

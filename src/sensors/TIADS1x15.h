@@ -15,7 +15,7 @@
  * is a multiplier allowed for a voltage divider between the raw voltage and the
  * ADS.
  *
- * This depends on the soligen2010 fork of the Adafruit ADS1015 library.
+ * This depends on the Adafruit ADS1X15 v2.x library
  */
 /* clang-format off */
 /**
