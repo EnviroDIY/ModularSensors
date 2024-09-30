@@ -2200,7 +2200,7 @@ Variable* y511Temp =
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 byte          y513ModbusAddress  = 0x13;  // The modbus address of the Y513
 const int8_t  y513AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  y513SensorPower    = modbusSensorPowerPin;  // Sensor power pin
+const int8_t  y513SensorPower    = A3;  // Sensor power pin
 const int8_t  y513EnablePin      = -1;                    // Adapter RE/DE pin
 const uint8_t y513NumberReadings = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
