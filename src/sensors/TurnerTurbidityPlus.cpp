@@ -9,26 +9,27 @@
 
 
 #include "TurnerTurbidityPlus.h"
-#include <Adafruit_ADS1015.h>
 
 
 // The constructor - need the power pin, the data pin, and the calibration info
-TurnerTurbidityPlus::TurnerTurbidityPlus(int8_t powerPin, int8_t wiperTriggerPin, adsDiffMux_t adsDiffMux,
-                             float conc_std, float volt_std, float volt_blank,
-                             uint8_t i2cAddress, adsGain_t PGA_gain,
-                             uint8_t measurementsToAverage, float voltageDividerFactor)
-    : Sensor("TurnerTurbidityPlus", TURBIDITY_PLUS_NUM_VARIABLES, TURBIDITY_PLUS_WARM_UP_TIME_MS,
-             TURBIDITY_PLUS_STABILIZATION_TIME_MS, TURBIDITY_PLUS_MEASUREMENT_TIME_MS,
-             powerPin, -1, measurementsToAverage) {
-    _wiperTriggerPin = wiperTriggerPin;
-    _adsDiffMux = adsDiffMux;
-    _conc_std   = conc_std;
-    _volt_std   = volt_std;
-    _volt_blank = volt_blank;
-    _i2cAddress = i2cAddress;
-    _PGA_gain   = PGA_gain;
-    _voltageDividerFactor = voltageDividerFactor;
-}
+TurnerTurbidityPlus::TurnerTurbidityPlus(
+    int8_t powerPin, int8_t wiperTriggerPin, ttp_adsDiffMux_t adsDiffMux,
+    float conc_std, float volt_std, float volt_blank, uint8_t i2cAddress,
+    adsGain_t PGA_gain, uint8_t measurementsToAverage,
+    float voltageDividerFactor)
+    : Sensor("TurnerTurbidityPlus", TURBIDITY_PLUS_NUM_VARIABLES,
+             TURBIDITY_PLUS_WARM_UP_TIME_MS,
+             TURBIDITY_PLUS_STABILIZATION_TIME_MS,
+             TURBIDITY_PLUS_MEASUREMENT_TIME_MS, powerPin, -1,
+             measurementsToAverage),
+      _wiperTriggerPin(wiperTriggerPin),
+      _adsDiffMux(adsDiffMux),
+      _conc_std(conc_std),
+      _volt_std(volt_std),
+      _volt_blank(volt_blank),
+      _i2cAddress(i2cAddress),
+      _PGA_gain(PGA_gain),
+      _voltageDividerFactor(voltageDividerFactor) {}
 // Destructor
 TurnerTurbidityPlus::~TurnerTurbidityPlus() {}
 
@@ -86,6 +87,7 @@ void TurnerTurbidityPlus::powerUp(void) {
 
 bool TurnerTurbidityPlus::addSingleMeasurementResult(void) {
     // Variables to store the results in
+    int16_t adcCounts   = -9999;
     float adcVoltage  = -9999;
     float calibResult = -9999;
 
@@ -98,9 +100,9 @@ bool TurnerTurbidityPlus::addSingleMeasurementResult(void) {
 // We create and set up the ADC object here so that each sensor using
 // the ADC may set the gain appropriately without effecting others.
 #ifndef MS_USE_ADS1015
-        Adafruit_ADS1115 ads(_i2cAddress);  // Use this for the 16-bit version
+        Adafruit_ADS1115 ads;  // Use this for the 16-bit version
 #else
-        Adafruit_ADS1015 ads(_i2cAddress);  // Use this for the 12-bit version
+        Adafruit_ADS1015 ads;  // Use this for the 12-bit version
 #endif
         // ADS Library default settings:
         //  - TI1115 (16 bit)
@@ -112,10 +114,9 @@ bool TurnerTurbidityPlus::addSingleMeasurementResult(void) {
         //    - 1600 samples per second (625µs conversion time)
         //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
 
-
         ads.setGain(_PGA_gain);
         // Begin ADC
-        ads.begin();
+        ads.begin(_i2cAddress);
 
         // Print out the calibration curve
         MS_DBG(F("  Input calibration Curve:"), _volt_std, F("V at"), _conc_std,
@@ -123,10 +124,27 @@ bool TurnerTurbidityPlus::addSingleMeasurementResult(void) {
 
         // Read Analog to Digital Converter (ADC)
         // Taking this reading includes the 8ms conversion delay.
-        // We're using the ADS1115 library's voltsPerBit() to do the bit-to-volts conversion
-        // for us
-        adcVoltage =
-            ads.readADC_Differential(_adsDiffMux) * ads.voltsPerBit() * _voltageDividerFactor;  // Getting the reading
+        // Measure the voltage differential across the two voltage pins
+        switch (_adsDiffMux) {
+            case DIFF_MUX_0_1: {
+                adcCounts = ads.readADC_Differential_0_1();
+                break;
+            }
+            case DIFF_MUX_0_3: {
+                adcCounts = ads.readADC_Differential_0_3();
+                break;
+            }
+            case DIFF_MUX_1_3: {
+                adcCounts = ads.readADC_Differential_1_3();
+                break;
+            }
+            case DIFF_MUX_2_3: {
+                adcCounts = ads.readADC_Differential_2_3();
+                break;
+            }
+        }
+        // Convert ADC counts value to voltage (V)
+        adcVoltage = ads.computeVolts(adcCounts);
         MS_DBG(F("  ads.readADC_Differential("), _adsDiffMux, F("):"),
                String(adcVoltage, 3));
 

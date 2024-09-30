@@ -98,6 +98,7 @@ ___
     - [Northern Widget Tally Event Counter](#northern-widget-tally-event-counter)
     - [TI INA219 High Side Current Sensor](#ti-ina219-high-side-current-sensor)
     - [Turner Cyclops-7F Submersible Fluorometer](#turner-cyclops-7f-submersible-fluorometer)
+    - [Turner Turbidity Plus with Integrated Wiper](#turner-turbidity-plus-with-integrated-wiper)
     - [Analog Electrical Conductivity using the Processor's Analog Pins](#analog-electrical-conductivity-using-the-processors-analog-pins)
       - [VEGA VEGA PULS 21](#vega-vega-puls-21)
     - [Yosemitech RS485/Modbus Environmental Sensors](#yosemitech-rs485modbus-environmental-sensors)
@@ -1041,6 +1042,18 @@ The Cyclops sensors are *NOT* pre-calibrated and must be calibrated prior to dep
 @see @ref sensor_cyclops
 
 [//]: # ( @menusnip{turner_cyclops} )
+
+___
+
+### Turner Turbidity Plus with Integrated Wiper<!-- {#menu_walk_turner_turbidity_plus} -->
+
+This is the code for the Turner Turbidity Plus analog turbidity sensor.
+
+The Turbidity Plus sensors are *NOT* pre-calibrated and must be calibrated prior to deployment.
+
+@see @ref sensor_turbidity_plus
+
+[//]: # ( @menusnip{turner_turbidity_plus} )
 
 ___
 

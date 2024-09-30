@@ -1994,6 +1994,44 @@ Variable* cyclopsRedChloro = new TurnerCyclops_RedChlorophyll(
 #endif
 
 
+#if defined(BUILD_SENSOR_TURNER_TURBIDITY_PLUS)
+// ==========================================================================
+//  Turner Turbidity Plus Turbidity Sensor
+// ==========================================================================
+/** Start [turner_turbidity_plus] */
+#include <sensors/TurnerTurbidityPlus.h>
+
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+const int8_t  turbidityPlusPower          = sensorPowerPin;  // Power pin
+const int8_t  turbidityPlusWiper          = A3;  // Wiper pin
+ttp_adsDiffMux_t  turbidityPlusDiffMux = DIFF_MUX_2_3; // Differential voltage config
+const uint8_t turbidityPlusNumberReadings = 10;
+const uint8_t turbidityPlusADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
+adsGain_t turbidityPlusGain = GAIN_ONE;// The gain of the ADS
+float     tpVoltageDividerFactor  = 1; // The factor for a voltage divider, if any
+
+// Turbidity Plus calibration information
+const float turbidityPlusStdConc = 1.000;  // Concentration of the standard used
+                                     // for a 1-point sensor calibration.
+const float turbidityPlusStdVolt =
+    1.000;  // The voltage (in volts) measured for the conc_std.
+const float turbidityPlusBlankVolt =
+    0.000;  // The voltage (in volts) measured for a blank.
+
+// Create a Turner Turbidity Plus sensor object
+TurnerTurbidityPlus turbidityPlus(turbidityPlusPower, turbidityPlusWiper, turbidityPlusDiffMux,turbidityPlusStdConc,
+                      turbidityPlusStdVolt, turbidityPlusBlankVolt, turbidityPlusADSi2c_addr,turbidityPlusGain,
+                      turbidityPlusNumberReadings,tpVoltageDividerFactor);
+
+// Create the variable pointers
+Variable* turbidityPlusVoltage =
+    new TurnerTurbidityPlus_Voltage(&turbidityPlus, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* turbidityPlusTurbidity = new TurnerTurbidityPlus_Turbidity(
+    &turbidityPlus, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [turner_turbidity_plus] */
+#endif
+
+
 #if defined(BUILD_SENSOR_ANALOG_ELEC_CONDUCTIVITY)
 // ==========================================================================
 //   Analog Electrical Conductivity using the Processor's Analog Pins
@@ -2836,6 +2874,9 @@ Variable* variableList[] = {
     cyclopsBTEX,
     cyclopsTryptophan,
     cyclopsRedChloro,
+#endif
+#if defined(BUILD_SENSOR_TURNER_TURBIDITY_PLUS)
+turbidityPlusVoltage,turbidityPlusTurbidity,
 #endif
 #if defined(BUILD_SENSOR_ANALOG_ELEC_CONDUCTIVITY)
     analogEc_cond,
