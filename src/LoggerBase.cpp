@@ -11,6 +11,10 @@
 #include "LoggerBase.h"
 #include "dataPublisherBase.h"
 
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR)) && \
+    not defined(SDI12_INTERNAL_PCINT)
+// Unless we're forcing use of internal interrupts, use EnableInterrupt for AVR
+// boards
 /**
  * @brief To prevent compiler/linker crashes with enable interrupt library, we
  * must define LIBCALL_ENABLEINTERRUPT before importing EnableInterrupt within a
@@ -21,6 +25,13 @@
 #include "ModSensorInterrupts.h"
 // For all i2c communication, including with the real time clock
 #include <Wire.h>
+
+#elif not defined(__AVR__) && not defined(ARDUINO_ARCH_AVR)
+// For compatibility with non AVR boards, we need these macros
+#define enableInterrupt(pin, userFunc, mode) \
+    attachInterrupt(digitalPinToInterrupt(pin), userFunc, mode)
+#define disableInterrupt(pin) detachInterrupt(digitalPinToInterrupt(pin))
+#endif
 
 
 // Initialize the static timezone
@@ -35,9 +46,13 @@ volatile bool Logger::isLoggingNow = false;
 volatile bool Logger::isTestingNow = false;
 volatile bool Logger::startTesting = false;
 
-// Initialize the RTC for the SAMD boards using build in RTC
+// Initialize the RTC
 // Needed for static instances
-#if !defined(MS_SAMD_DS3231) && defined(ARDUINO_ARCH_SAMD)
+// NOTE: The Sodaq DS3231 library externs the clock instance, so it's not needed
+// here.
+#if defined(MS_USE_RV8803)
+RV8803 Logger::rtc;
+#elif defined(MS_USE_RTC_ZERO)
 RTCZero Logger::zero_sleep_rtc;
 #endif
 
@@ -127,19 +142,36 @@ void Logger::setSDCardPwr(int8_t SDCardPowerPin) {
 // https://thecavepearlproject.org/2017/05/21/switching-off-sd-cards-for-low-power-data-logging/
 void Logger::turnOnSDcard(bool waitToSettle) {
     if (_SDCardPowerPin >= 0) {
+        MS_DBG(F("Pulling SS pin"), _SDCardSSPin,
+               F("HIGH and then powering the SD card with pin"),
+               _SDCardPowerPin);
+        // Pull the SS pin high before power up.
+        // Cave Pearl notes that some cars will fail on power-up unless SS is
+        // pulled up
+        pinMode(_SDCardSSPin, OUTPUT);
+        digitalWrite(_SDCardSSPin, HIGH);
+        delay(6);
+        pinMode(_SDCardPowerPin, OUTPUT);
         digitalWrite(_SDCardPowerPin, HIGH);
+        delay(6);
         // TODO(SRGDamia1):  figure out how long to wait
-        if (waitToSettle) { delay(6); }
+        if (waitToSettle) {
+            MS_DEEP_DBG(F("Waiting 100ms for SD card to boot"));
+            delay(100);
+        }
     }
 }
 void Logger::turnOffSDcard(bool waitForHousekeeping) {
     if (_SDCardPowerPin >= 0) {
+        MS_DBG(F("Cutting power to the SD card with pin"), _SDCardPowerPin);
         // TODO(SRGDamia1): set All SPI pins to INPUT?
         // TODO(SRGDamia1): set ALL SPI pins HIGH (~30k pull-up)
         pinMode(_SDCardPowerPin, OUTPUT);
         digitalWrite(_SDCardPowerPin, LOW);
         // TODO(SRGDamia1):  wait in lower power mode
         if (waitForHousekeeping) {
+            MS_DEEP_DBG(
+                F("Waiting 1s for SD card to finish any on-going writes"));
             // Specs say up to 1s for internal housekeeping after each write
             delay(1000);
         }
@@ -355,6 +387,12 @@ void Logger::sendDataToRemotes(void) {
 // Sets the static timezone that the data will be logged in - this must be set
 void Logger::setLoggerTimeZone(int8_t timeZone) {
     _loggerTimeZone = timeZone;
+#if defined(MS_USE_RV8803)
+    // void setTimeZoneQuarterHours(int8_t quarterHours);
+    // Write the time zone to RV8803_RAM as int8_t (signed) in 15 minute
+    // increments
+    rtc.setTimeZoneQuarterHours(timeZone * 4);
+#endif
 // Some helpful prints for debugging
 #ifdef STANDARD_SERIAL_OUTPUT
     const char* prtout1 = "Logger timezone is set to UTC";
@@ -431,15 +469,35 @@ uint32_t Logger::getNowEpoch(void) {
     return getNowLocalEpoch();
 }
 uint32_t Logger::getNowLocalEpoch(void) {
+#if defined(MS_USE_RV8803)
+    // Get the local epoch - without subtracting the time zone
+    rtc.updateTime();
+    uint32_t currentEpochTime = rtc.getLocalEpoch();
+#else
     uint32_t currentEpochTime = getNowUTCEpoch();
+#endif
     // Do NOT apply an offset if the timestamp is obviously bad
     if (isRTCSane(currentEpochTime))
         currentEpochTime += ((uint32_t)_loggerRTCOffset) * 3600;
     return currentEpochTime;
 }
 
-#if defined(MS_SAMD_DS3231) || !defined(ARDUINO_ARCH_SAMD)
+#if defined(MS_USE_RV8803)
+uint32_t Logger::getNowUTCEpoch(void) {
+    // uint32_t getEpoch(bool use1970sEpoch = false);
+    // Get the epoch - with the time zone subtracted (i.e. return UTC epoch)
+    rtc.updateTime();
+    return rtc.getEpoch();
+}
+void Logger::setNowUTCEpoch(uint32_t ts) {
+    // bool setEpoch(uint32_t value, bool use1970sEpoch = false, int8_t
+    // timeZoneQuarterHours = 0);
+    // If timeZoneQuarterHours is non-zero, update RV8803_RAM. Add the zone to
+    // the epoch before setting
+    rtc.setEpoch(ts);
+}
 
+#elif defined(MS_USE_DS3231)
 uint32_t Logger::getNowUTCEpoch(void) {
     return rtc.now().getEpoch();
 }
@@ -447,7 +505,7 @@ void Logger::setNowUTCEpoch(uint32_t ts) {
     rtc.setEpoch(ts);
 }
 
-#elif defined(ARDUINO_ARCH_SAMD)
+#elif defined(MS_UES_RTC_ZERO)
 
 uint32_t Logger::getNowUTCEpoch(void) {
     return zero_sleep_rtc.getEpoch();
@@ -457,6 +515,8 @@ void Logger::setNowUTCEpoch(uint32_t ts) {
 }
 
 #endif
+
+#if !defined(MS_USE_RV8803)
 
 // This converts the current UNIX timestamp (ie, the number of seconds
 // from January 1, 1970 00:00:00 UTC) into a DateTime object
@@ -493,13 +553,22 @@ String Logger::formatDateTime_ISO8601(DateTime& dt) {
     return dateTimeStr;
 }
 
+#endif
+
 // This converts an epoch time (unix time) into a ISO8601 formatted string.
 // It assumes the supplied date/time is in the LOGGER's timezone and adds the
 // LOGGER's offset as the time zone offset in the string.
 String Logger::formatDateTime_ISO8601(uint32_t epochTime) {
+#if defined(MS_USE_RV8803)
+    // char* stringTime8601TZ();
+    // Return time in ISO 8601 format yyyy-mm-ddThh:mm:ss+/-hh:mm
+    rtc.updateTime();
+    return String(rtc.stringTime8601TZ());
+#else
     // Create a DateTime object from the epochTime
     DateTime dt = dtFromEpoch(epochTime);
     return formatDateTime_ISO8601(dt);
+#endif
 }
 
 
@@ -696,9 +765,19 @@ void Logger::systemSleep(void) {
     }
 
     // Send a message that we're getting ready
-    MS_DBG(F("Preparing processor for  sleep.  ZZzzz..."));
+    MS_DBG(F("Preparing clock interrupts to wake processor"));
 
-#if defined(MS_SAMD_DS3231) || !defined(ARDUINO_ARCH_SAMD)
+#if defined(MS_USE_RV8803)
+    // Disable any previous interrupts
+    rtc.disableAllInterrupts();
+    // Clear all flags in case any interrupts have occurred.
+    rtc.clearAllInterruptFlags();
+    // Enable a periodic update for every minute
+    rtc.setPeriodicTimeUpdateFrequency(TIME_UPDATE_1_MINUTE);
+    // Enable the hardware interrupt
+    rtc.enableHardwareInterrupt(UPDATE_INTERRUPT);
+
+#elif defined(MS_USE_DS3231)
 
     // Unfortunately, because of the way the alarm on the DS3231 is set up, it
     // cannot interrupt on any frequencies other than every second, minute,
@@ -712,7 +791,9 @@ void Logger::systemSleep(void) {
     // Clear the last interrupt flag in the RTC status register
     // The next timed interrupt will not be sent until this is cleared
     rtc.clearINTStatus();
+#endif
 
+#if defined(MS_USE_RV8803) || defined(MS_USE_DS3231)
     // Set up a pin to hear clock interrupt and attach the wake ISR to it
     MS_DBG(F("Enabling interrupts on pin"), _mcuWakePin);
     // Set the pin mode, although this shouldn't really need to be re-set here
@@ -721,9 +802,10 @@ void Logger::systemSleep(void) {
     enableInterrupt(_mcuWakePin, wakeISR, CHANGE);
 
 #if defined(ARDUINO_ARCH_SAMD) && !defined(__SAMD51__)
-    // Reconfigure the clock after attaching the interrupt
-    // This is needed because the attachInterrupt function will reconfigure the
-    // clock source for the EIC to GCLK0 every time a new interrupt is attached
+    // Reconfigure the external interrupt controller (EIC) clock after attaching
+    // the interrupt This is needed because the attachInterrupt function will
+    // reconfigure the clock source for the EIC to GCLK0 every time a new
+    // interrupt is attached
     // - and after being detached, reattaching the same interrupt is just like a
     // new one). We need to switch the EIC source back to our configured GCLK2.
     MS_DEEP_DBG(F("Re-attaching the EIC to GCLK2"));
@@ -739,8 +821,9 @@ void Logger::systemSleep(void) {
     // Enable wakeup capability on pin in case being used during sleep
     EIC->WAKEUP.reg |= (1 << in);
 #endif  // #if defined(ARDUINO_ARCH_SAMD) && ! defined(__SAMD51__)
+#endif  //#if defined(MS_USE_RV8803) || defined(MS_USE_DS3231)
 
-#elif defined(ARDUINO_ARCH_SAMD)
+#if defined(MS_USE_RTC_ZERO)
 
     // Make sure interrupts are enabled for the clock
     NVIC_EnableIRQ(RTC_IRQn);       // enable RTC interrupt
@@ -756,8 +839,21 @@ void Logger::systemSleep(void) {
     zero_sleep_rtc.setAlarmSeconds(59);
     zero_sleep_rtc.enableAlarm(zero_sleep_rtc.MATCH_SS);
 
-#endif  // defined(MS_SAMD_DS3231) || ! defined(ARDUINO_ARCH_SAMD)
+#endif  // defined(MS_USE_RTC_ZERO)
 
+
+    // Send one last message before shutting down serial ports
+    MS_DBG(F("Putting processor to sleep.  ZZzzz..."));
+
+// Wait until the serial ports have finished transmitting
+// This does not clear their buffers, it just waits until they are finished
+// TODO(SRGDamia1):  Make sure can find all serial ports
+#if defined(STANDARD_SERIAL_OUTPUT)
+    STANDARD_SERIAL_OUTPUT.flush();  // for debugging
+#endif
+#if defined DEBUGGING_SERIAL_OUTPUT
+    DEBUGGING_SERIAL_OUTPUT.flush();  // for debugging
+#endif
 
     // Stop any I2C connections
     MS_DEEP_DBG(F("Ending I2C"));
@@ -820,7 +916,8 @@ void Logger::systemSleep(void) {
     // TODO: Figure out if this is really necessary
     // NVMCTRL->CTRLB.bit.SLEEPPRM = NVMCTRL_CTRLB_SLEEPPRM_DISABLED_Val;
 
-    // Disable systick interrupt
+    // Disable systick interrupt:  See
+    // https://www.avrfreaks.net/forum/samd21-samd21e16b-sporadically-locks-and-does-not-wake-standby-sleep-mode
     // Due to a hardware bug on the SAMD21, the SysTick interrupts become active
     // before the flash has powered up from sleep, causing a hard fault. To
     // prevent this the SysTick interrupts are disabled before entering sleep
@@ -956,16 +1053,23 @@ void Logger::systemSleep(void) {
     // the timeout period is a useless delay.
     Wire.setTimeout(0);
 
-#if defined(MS_SAMD_DS3231) || !defined(ARDUINO_ARCH_SAMD)
     // Stop the clock from sending out any interrupts while we're awake.
     // There's no reason to waste thought on the clock interrupt if it
     // happens while the processor is awake and doing other things.
+#if defined(MS_USE_RV8803)
+    MS_DEEP_DBG(F("Unsetting the alarm on the RV-8803"));
+    rtc.disableHardwareInterrupt(UPDATE_INTERRUPT);
+#elif defined(MS_USE_DS3231)
     MS_DEEP_DBG(F("Unsetting the alarm on the DS2321"));
     rtc.disableInterrupts();
+#endif
+
+#if defined(MS_USE_RV8803) || defined(MS_USE_DS3231)
     // Detach the from the pin
     disableInterrupt(_mcuWakePin);
+#endif
 
-#elif defined(ARDUINO_ARCH_SAMD)
+#if defined(MS_USE_RTC_ZERO)
     MS_DEEP_DBG(F("Unsetting the alarm on the built in RTC"));
     zero_sleep_rtc.disableAlarm();
 #endif
@@ -1084,12 +1188,37 @@ bool Logger::initializeSDCard(void) {
         return false;
     }
     // Initialise the SD card
-    if (!sd.begin(_SDCardSSPin, SPI_FULL_SPEED)) {
+    // If you have a dedicated SPI for the SD card, you can overrride the
+    // default shared SPI using this:
+
+    // SdSpiConfig(SdCsPin_t cs, uint8_t opt, uint32_t maxSpeed, SpiPort_t*
+    // port);
+    // sd.begin(SdSpiConfig(_SDCardSSPin, DEDICATED_SPI, SPI_FULL_SPEED));
+    // else the default writes to
+    // sd.begin(SdSpiConfig(_SDCardSSPin, SHARED_SPI, SPI_FULL_SPEED));
+    // With DEDICATED_SPI, multi-block SD I/O may be used for better
+    // performance. The SPI bus may not be shared with other devices in this
+    // mode.
+    // NOTE: SPI_FULL_SPEED is 50MHz
+
+    // In order to prevent the SD card library from calling SPI.begin ever
+    // again, we need to make sure we set up the SD card object with a
+    // SdSpiConfig object with option "USER_SPI_BEGIN."
+    // so we extend the options to be
+    // sd.begin(SdSpiConfig(_SDCardSSPin, DEDICATED_SPI | USER_SPI_BEGIN,
+    // SPI_FULL_SPEED));
+
+
+    SdSpiConfig customSdConfig(static_cast<SdCsPin_t>(_SDCardSSPin),
+                               (uint8_t)(DEDICATED_SPI | USER_SPI_BEGIN),
+                               SPI_FULL_SPEED, &SPI);
+
+    if (!sd.begin(customSdConfig)) {
         PRINTOUT(F("Error: SD card failed to initialize or is missing."));
         PRINTOUT(F("Data will not be saved!"));
         return false;
     } else {
-        // skip everything else if there's no SD card, otherwise it mighthang
+        // skip everything else if there's no SD card, otherwise it might hang
         MS_DBG(F("Successfully connected to SD Card with card/slave select on "
                  "pin"),
                _SDCardSSPin);
@@ -1100,10 +1229,16 @@ bool Logger::initializeSDCard(void) {
 
 // Protected helper function - This sets a timestamp on a file
 void Logger::setFileTimestamp(File& fileToStamp, uint8_t stampFlag) {
+#if defined(MS_USE_RV8803)
+    rtc.updateTime();
+    fileToStamp.timestamp(stampFlag, rtc.getYear(), rtc.getMonth(),
+                          rtc.getDate(), rtc.getHours(), rtc.getMinutes(),
+                          rtc.getSeconds());
+#else
     DateTime dt = dtFromEpoch(getNowLocalEpoch());
-
     fileToStamp.timestamp(stampFlag, dt.year(), dt.month(), dt.date(),
                           dt.hour(), dt.minute(), dt.second());
+#endif
 }
 
 
@@ -1402,7 +1537,7 @@ void Logger::begin() {
     // Enable the watchdog
     watchDogTimer.enableWatchDog();
 
-#if !defined(MS_SAMD_DS3231) && defined(ARDUINO_ARCH_SAMD)
+#if defined(MS_USE_RTC_ZERO)
     MS_DBG(F("Beginning internal real time clock"));
     zero_sleep_rtc.begin();
 #endif
@@ -1434,10 +1569,15 @@ void Logger::begin() {
     setLoggerPins(_mcuWakePin, _SDCardSSPin, _SDCardPowerPin, _buttonPin,
                   _ledPin);
 
-#if defined(MS_SAMD_DS3231) || !defined(ARDUINO_ARCH_SAMD)
+#if defined(MS_USE_RV8803)
+    MS_DBG(F("Beginning RV-8803 real time clock"));
+    rtc.begin();
+    rtc.set24Hour();
+#elif defined(MS_USE_DS3231)
     MS_DBG(F("Beginning DS3231 real time clock"));
     rtc.begin();
 #endif
+
     watchDogTimer.resetWatchDog();
 
     // Print out the current time

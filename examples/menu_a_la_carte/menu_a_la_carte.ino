@@ -798,7 +798,7 @@ Variable* mcuBoardSampNo = new ProcessorStats_SampleNumber(
 /** End [processor_stats] */
 
 
-#if defined(ARDUINO_ARCH_AVR) || defined(MS_SAMD_DS3231)
+#if defined(MS_USE_DS3231)
 // ==========================================================================
 //  Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
@@ -2678,7 +2678,7 @@ Variable* variableList[] = {
     mcuBoardAvailableRAM,
     mcuBoardBatt,
     calculatedVar,
-#if defined(ARDUINO_ARCH_AVR) || defined(MS_SAMD_DS3231)
+#if defined(MS_USE_DS3231)
     ds3231Temp,
 #endif
 #if defined(BUILD_SENSOR_ALPHASENSE_CO2)

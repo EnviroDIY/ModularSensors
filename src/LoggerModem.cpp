@@ -463,7 +463,8 @@ uint32_t loggerModem::parseNISTBytes(byte nistBytes[4]) {
     uint32_t secFrom1900 = 0;
     for (uint8_t i = 0; i < 4; i++) {
         MS_DBG(F("Response Byte"), i, ':', static_cast<char>(nistBytes[i]), '=',
-               nistBytes[i], '=', String(nistBytes[i], BIN));
+               static_cast<uint8_t>(nistBytes[i]), '=',
+               String(nistBytes[i], BIN));
         secFrom1900 += 0x000000FF & nistBytes[i];
         if (i + 1 < 4) { secFrom1900 = secFrom1900 << 8; }
     }

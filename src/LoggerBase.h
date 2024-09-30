@@ -18,10 +18,29 @@
 // Debugging Statement
 // #define MS_LOGGERBASE_DEBUG
 
+#if defined(ENVIRODIY_STONEFLY_M4) && not defined(MS_USE_DS3231)
 /**
- * @brief Set default clock for SAMD21 as DS3231 instead of built-in RTC
+ * @brief Select RV-8803 as the RTC
  */
-#define MS_SAMD_DS3231
+#define MS_USE_RV8803
+#elif defined(ARDUINO_AVR_ENVIRODIY_MAYFLY) && not defined(MS_USE_RV8803)
+/**
+ * @brief Select RV-8803 as the RTC
+ */
+#define MS_USE_DS3231
+#elif (defined(ARDUINO_ARCH_SAMD) && !defined(__SAMD51__) || \
+       defined(ARDUINO_SAMD_ZERO)) &&                        \
+    not defined(MS_USE_DS3231) && not defined(MS_USE_RV8803)
+/**
+ * @brief Select the SAMD21's internal clock (via RTC Zero)
+ */
+#define MS_USE_RTC_ZERO
+#endif
+
+#if !defined(MS_USE_RV8803) && !defined(MS_USE_DS3231) && \
+    !defined(MS_USE_RTC_ZERO)
+#error Define a clock to use for the RTC for Modular Sensors!
+#endif
 
 #ifdef MS_LOGGERBASE_DEBUG
 #define MS_DEBUGGING_STD "LoggerBase"
@@ -41,9 +60,6 @@
 // Bring in the libraries to handle the processor sleep/standby modes
 // The SAMD library can also the built-in clock on those modules
 #if defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAMD_ZERO)
-#if !defined(MS_SAMD_DS3231)
-#include <RTCZero.h>
-#endif
 #include "WatchDogs/WatchDogSAMD.h"
 #elif defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
 #include <avr/power.h>
@@ -52,8 +68,14 @@
 #endif
 
 // Bring in the library to communicate with an external high-precision real time
-// clock This also implements a needed date/time class
+// clock.
+#if defined(MS_USE_RV8803)
+#include <SparkFun_RV8803.h>
+#elif defined(MS_USE_DS3231)
 #include <Sodaq_DS3231.h>
+#elif defined(MS_USE_RTC_ZERO)
+#include <RTCZero.h>
+#endif
 
 #ifndef EPOCH_TIME_OFF
 /**
@@ -716,8 +738,15 @@ class Logger {
      */
     static int8_t getTZOffset(void);
 
-#if (defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAMD_ZERO)) && \
-    !defined(MS_SAMD_DS3231)
+#if defined(MS_USE_RV8803)
+    /**
+     * @brief The RTC object.
+     *
+     * @note Only one RTC may be used.  Either the built-in RTC of a SAMD board,
+     * a DS3231, or a RV-8803.
+     */
+    static RV8803 rtc;
+#elif defined(MS_USE_RTC_ZERO)
     /**
      * @brief The RTC object.
      *
@@ -769,6 +798,7 @@ class Logger {
      */
     static void setNowUTCEpoch(uint32_t ts);
 
+#if !defined(MS_USE_RV8803)
     /**
      * @brief Convert the number of seconds from January 1, 1970 to a DateTime
      * object instance.
@@ -788,6 +818,7 @@ class Logger {
      * @return An ISO8601 formatted String.
      */
     static String formatDateTime_ISO8601(DateTime& dt);
+#endif
 
     /**
      * @brief Convert an epoch time (unix time) into a ISO8601 formatted string.
