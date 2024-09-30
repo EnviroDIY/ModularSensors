@@ -12,19 +12,37 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+### Added
+
+### Removed
+
+### Fixed
+
+***
+
+## [0.36.0]
+
+### Changed
+
 - Applied markdown lint to markdown files
 - Bumped TinyGSM dependency
   - Changed datatypes for modem voltage outputs.
 - Switched from Soligen fork of ADS1115 library to the standard Adafruit version.
+- Rearranged documation of examples
+- Consistently apply all pre-processor `defined` checks with function-like syntax
+- Consistently check for both `__AVR__` and `ARDUINO_ARCH_AVR` in all cases.
+  - Not all AVR boards defin `__AVR__` within the PlatformIO system, which was confusing the SCons preprocessor.
+- Modified implementation of initial short logging intervals.
+- Allow non-sleep before returing from testing or logging functions.
+- Modified returns of modem variables from uint's to int's for consistency with the latest version of TinyGSM.
+- Add pre-processor macro for number of times to attempt to update the clock.
 
 ### Added
 
 - Added support for Yosemitech Y513 Blue Green Algae Sensor thanks to @aufdenkampe
 - Added support for Alphasense CO2 Sensor thanks to @aufdenkampe
-
-### Removed
-
-### Fixed
+- Added support for Turner Turbidity Plus thanks to @mbarneytu
+- Added complete paramter documentation where it was missing.
 
 ***
 
@@ -946,7 +964,8 @@ Our first release of the modular sensors library to support easily logging data 
 
 ***
 
-[Unreleased]: https://github.com/EnviroDIY/ModularSensors/compare/v0.35.1...HEAD
+[Unreleased]: https://github.com/EnviroDIY/ModularSensors/compare/v0.36.0...HEAD
+[0.36.0]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.36.0
 [0.35.1]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.35.1
 [0.35.0]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.35.0
 [0.34.0]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.34.0
