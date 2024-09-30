@@ -64,9 +64,6 @@
 #define MS_DEBUGGING_STD "SequansMonarch"
 #endif
 
-/** @ingroup modem_monarch */
-/**@{*/
-
 /**
  * @brief The modem type for the underlying TinyGSM library.
  */
@@ -78,7 +75,25 @@
 #define TINY_GSM_RX_BUFFER 64
 #endif
 
+// Included Dependencies
+#include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
+#include "TinyGsmClient.h"
+#include "LoggerModem.h"
 
+#ifdef MS_SEQUANSMONARCH_DEBUG_DEEP
+#include <StreamDebugger.h>
+#endif
+
+/** @ingroup modem_monarch */
+/**@{*/
+
+/**
+ * @anchor modem_monarch_pins_timing
+ * @name Modem Pin Settings and Timing
+ * The timing and pin level settings for a Sequans Monarch
+ */
+/**@{*/
 /**
  * @brief The loggerModem::_statusLevel.
  *
@@ -168,17 +183,7 @@
  * monitored.
  */
 #define VZM20Q_DISCONNECT_TIME_MS 15000L
-
-// Included Dependencies
-#include "ModSensorDebugger.h"
-#undef MS_DEBUGGING_STD
-#include "TinyGsmClient.h"
-#include "LoggerModem.h"
-
-#ifdef MS_SEQUANSMONARCH_DEBUG_DEEP
-#include <StreamDebugger.h>
-#endif
-
+/**@}*/
 
 /**
  * @brief The loggerModem subclass for Nimbelink or other modules based on the
@@ -225,8 +230,8 @@ class SequansMonarch : public loggerModem {
     uint32_t getNISTTime(void) override;
 
     bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
-    bool  getModemBatteryStats(uint8_t& chargeState, int8_t& percent,
-                               uint16_t& milliVolts) override;
+    bool  getModemBatteryStats(int8_t& chargeState, int8_t& percent,
+                               int16_t& milliVolts) override;
     float getModemChipTemperature(void) override;
 
 #ifdef MS_SEQUANSMONARCH_DEBUG_DEEP
@@ -250,7 +255,7 @@ class SequansMonarch : public loggerModem {
     bool isModemAwake(void) override;
 
  private:
-    const char* _apn;
+    const char* _apn;  ///< Internal reference to the cellular APN
 };
 /**@}*/
 #endif  // SRC_MODEMS_SEQUANSMONARCH_H_

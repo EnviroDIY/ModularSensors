@@ -1,12 +1,12 @@
 {
-  "action_cache_version": 19,
+  "action_cache_version": 22,
   "dependencies": [
     {
       "name": "EnviroDIY_DS3231",
       "owner": "envirodiy",
       "library id": "2079",
       "url": "https://github.com/EnviroDIY/Sodaq_DS3231",
-      "version": "~1.3.5",
+      "version": "~1.3.6",
       "note": "An Arduino library for the DS3231 RTC (Real Time Clock), based off of the Sodaq_DS3231 library.",
       "authors": [
         "Kees Bakker",
@@ -57,7 +57,8 @@
     {
       "name": "TinyGSM",
       "owner": "vshymanskyy",
-      "version": "~0.11.7",
+      "url": "https://github.com/vshymanskyy/TinyGSM",
+      "version": "~0.12.0",
       "note": "A small Arduino library for GPRS modules.",
       "authors": [
         "Volodymyr Shymanskyy",
@@ -82,7 +83,7 @@
       "owner": "adafruit",
       "library id": "6214",
       "url": "https://github.com/adafruit/Adafruit_BusIO",
-      "version": "~1.16.0",
+      "version": "~1.16.1",
       "note": "Adafruit BusIO, a dependency of other Adafruit libraries",
       "authors": [
         "Adafruit"
@@ -105,15 +106,15 @@
     },
     {
       "name": "Adafruit ADS1X15",
-      "library id": "344",
-      "version_note": "=1.2.0",
-      "version": "https://github.com/soligen2010/Adafruit_ADS1X15.git#7d67b451f739e9a63f40f2d6d139ab582258572b",
-      "note": "Driver for TI's ADS1015: 12-bit Differential or Single-Ended ADC with PGA and Comparator.  This fork removes bugs in the Adafruit original library.",
-      "authors_note": [
-        "soligen2010"
+      "owner": "adafruit",
+      "url": "https://github.com/adafruit/Adafruit_ADS1X15",
+      "version": "~2.5.0",
+      "note": "Driver for TI's ADS1X15: 12 and 16-bit Differential or Single-Ended ADC with PGA and Comparator.",
+      "authors": [
+        "Adafruit"
       ],
-      "frameworks_note": "arduino",
-      "platforms_note": "*"
+      "frameworks": "arduino",
+      "platforms": "atmelavr, atmelsam"
     },
     {
       "name": "Adafruit AM2315",
@@ -195,7 +196,7 @@
       "owner": "adafruit",
       "library id": "11710",
       "url": "https://github.com/adafruit/Adafruit_SHT4X",
-      "version": "~1.0.4",
+      "version": "~1.0.5",
       "note": "Sensirion SHT4x Library by Adafruit",
       "authors": [
         "Adafruit"
@@ -246,7 +247,7 @@
       "name": "SDI-12",
       "owner": "envirodiy",
       "library id": "1486",
-      "version": "~2.1.4",
+      "version": "~2.2.0",
       "url": "https://github.com/EnviroDIY/Arduino-SDI-12",
       "note": "EnviroDIY SDI-12 Library for Arduino",
       "author_notes": [
@@ -289,7 +290,7 @@
       "owner": "envirodiy",
       "library id": "1824",
       "url": "https://github.com/EnviroDIY/SensorModbusMaster",
-      "version": "~0.6.8",
+      "version": "~0.7.3",
       "note": "EnviroDIY SensorModbusMaster - Arduino library for communicating via modbus with the Arduino acting as the modbus master.",
       "authors": [
         "Sara Damiano"
@@ -313,7 +314,7 @@
       "owner": "envirodiy",
       "library id": "2078",
       "url": "https://github.com/EnviroDIY/YosemitechModbus",
-      "version": "~0.4.1",
+      "version": "~0.5.0",
       "note": "Arduino library for communication with Yosemitech sensors via Modbus.",
       "authors": [
         "Sara Damiano",
@@ -326,7 +327,7 @@
       "name": "GroPointModbus",
       "owner": "envirodiy",
       "url": "https://github.com/EnviroDIY/GroPointModbus.git",
-      "version": "~0.1.0",
+      "version": "~0.1.1",
       "note": "A library to use an Arduino as a master to control and communicate via modbus with GroPoint soil moisture sensors. ",
       "authors": [
         "Anthony Aufdenkampe"

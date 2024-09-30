@@ -105,12 +105,31 @@
 /** @ingroup sensor_bme280 */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_bme280_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the BME280
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the BME280 can report 4 values.
 #define BME280_NUM_VARIABLES 4
 /// @brief Sensor::_incCalcValues; altitude is calculted within the Adafruit
 /// library.
 #define BME280_INC_CALC_VARIABLES 1
+/**@}*/
+
+/**
+ * @anchor sensor_bme280_config
+ * @name Configuration Defines
+ * Defines to set the calibration of the calculated base pressure used to
+ * calculate altitude by the BME280.
+ */
+/**@{*/
+#if !defined(SEALEVELPRESSURE_HPA) || defined(DOXYGEN)
+/// The atmospheric pressure at sea level
+#define SEALEVELPRESSURE_HPA (1013.25)
+#endif
+/**@}*/
 
 /**
  * @anchor sensor_bme280_timing
@@ -243,11 +262,6 @@
 #define BME280_ALTITUDE_DEFAULT_CODE "BoschBME280Altitude"
 /**@}*/
 
-/// The atmospheric pressure at sea level
-#ifndef SEALEVELPRESSURE_HPA
-#define SEALEVELPRESSURE_HPA (1013.25)
-#endif
-
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the [Bosch BME280](@ref sensor_bme280).
@@ -308,7 +322,7 @@ class BoschBME280 : public Sensor {
      *
      * @note This does NOT include any wait for sensor readiness.
      *
-     * @return **bool** True if the wake function completed successfully.
+     * @return True if the wake function completed successfully.
      */
     bool wake(void) override;
     /**
@@ -319,7 +333,7 @@ class BoschBME280 : public Sensor {
      * calibration coefficients from the BME280, and updates the #_sensorStatus.
      * The BME280 must be powered for setup.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     bool setup(void) override;
     /**

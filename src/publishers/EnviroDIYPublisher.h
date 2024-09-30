@@ -105,8 +105,48 @@ class EnviroDIYPublisher : public dataPublisher {
 
     // Returns the data destination
     String getEndpoint(void) override {
-        return String(enviroDIYHost);
+        return String(enviroDIYHost) + String(enviroDIYPath);
     }
+
+    /**
+     * @brief Get the EnviroDIY/Monitor My Watershed web host
+     *
+     * @return The EnviroDIY/Monitor My Watershed web host
+     */
+    String getHost(void);
+
+    /**
+     * @brief Set the EnviroDIY/Monitor My Watershed web host
+     *
+     * @param host The EnviroDIY/Monitor My Watershed web host
+     */
+    void setHost(const char* host);
+
+    /**
+     * @brief Get the EnviroDIY/Monitor My Watershed API path
+     *
+     * @return The EnviroDIY/Monitor My Watershed API path
+     */
+    String getPath(void);
+    /**
+     * @brief Set the EnviroDIY/Monitor My Watershed API path
+     *
+     * @param endpoint The EnviroDIY/Monitor My Watershed API path
+     */
+    void setPath(const char* endpoint);
+
+    /**
+     * @brief Get the EnviroDIY/Monitor My Watershed API port
+     *
+     * @return The EnviroDIY/Monitor My Watershed API port
+     */
+    int getPort(void);
+    /**
+     * @brief Set the EnviroDIY/Monitor My Watershed API port
+     *
+     * @param port The EnviroDIY/Monitor My Watershed API port
+     */
+    void setPort(int port);
 
     // Adds the site registration token
     /**
@@ -120,7 +160,7 @@ class EnviroDIYPublisher : public dataPublisher {
     /**
      * @brief Calculates how long the outgoing JSON will be
      *
-     * @return uint16_t The number of characters in the JSON object.
+     * @return The number of characters in the JSON object.
      */
     uint16_t calculateJsonSize();
 
@@ -156,7 +196,7 @@ class EnviroDIYPublisher : public dataPublisher {
      * @param outClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
-     * @return **int16_t** The http status code of the response.
+     * @return The http status code of the response.
      */
     int16_t publishData(Client* outClient) override;
 
@@ -167,9 +207,9 @@ class EnviroDIYPublisher : public dataPublisher {
      *
      * @{
      */
-    static const char* postEndpoint;         ///< The endpoint
-    static const char* enviroDIYHost;        ///< The host name
-    static const int   enviroDIYPort;        ///< The host port
+    const char*        enviroDIYPath;        ///< The api path
+    const char*        enviroDIYHost;        ///< The host name
+    int                enviroDIYPort;        ///< The host port
     static const char* tokenHeader;          ///< The token header text
     static const char* contentLengthHeader;  ///< The content length header text
     static const char* contentTypeHeader;    ///< The content type header text
@@ -183,10 +223,14 @@ class EnviroDIYPublisher : public dataPublisher {
      */
     static const char* samplingFeatureTag;  ///< The JSON feature UUID tag
     static const char* timestampTag;        ///< The JSON feature timestamp tag
-                                            /**@}*/
+
+    /**@}*/
 
  private:
-    // Tokens and UUID's for EnviroDIY
+    /**
+     * @brief Internal reference to the EnviroDIY/Monitor My Watershed
+     * registration token.
+     */
     const char* _registrationToken = nullptr;
 };
 

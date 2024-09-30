@@ -48,7 +48,7 @@
 // peripherals as possible.  In some cases (ie, modbus communication) many
 // sensors can share the same serial port.
 
-#if defined(ARDUINO_ARCH_AVR) || defined(__AVR__)  // For AVR boards
+#if defined(__AVR__) || defined(ARDUINO_ARCH_AVR)  // For AVR boards
 // Unfortunately, most AVR boards have only one or two hardware serial ports,
 // so we'll set up three types of extra software serial ports to use
 
@@ -115,11 +115,11 @@ const int8_t softwareSDA = 5;
 const int8_t softwareSCL = 4;
 SoftwareWire softI2C(softwareSDA, softwareSCL);
 /** End [softwarewire] */
-#endif  //  #if defined MS_PALEOTERRA_SOFTWAREWIRE ...
+#endif  //  #if defined(MS_PALEOTERRA_SOFTWAREWIRE) ...
 
 #endif  // End software serial for avr boards
 
-#if defined ARDUINO_ARCH_SAMD
+#if defined(ARDUINO_ARCH_SAMD)
 /** Start [serial_ports_SAMD] */
 // The SAMD21 has 6 "SERCOM" ports, any of which can be used for UART
 // communication.  The "core" code for most boards defines one or more UART
@@ -213,9 +213,9 @@ void SERCOM2_Handler() {
 // SoftwareSerial **WILL NOT** work for modbus!
 #ifdef BUILD_TEST_ALTSOFTSERIAL
 #define modbusSerial altSoftSerial  // For AltSoftSerial
-#elif defined BUILD_TEST_NEOSWSERIAL
+#elif defined(BUILD_TEST_NEOSWSERIAL)
 #define modbusSerial neoSSerial1  // For Neo software serial
-#elif defined BUILD_TEST_SOFTSERIAL
+#elif defined(BUILD_TEST_SOFTSERIAL)
 #define modbusSerial softSerial1  // For software serial
 #else
 #define modbusSerial Serial1  // Hardware serial
@@ -227,9 +227,9 @@ void SERCOM2_Handler() {
 // string repeatedly, almost any software serial port will do for it.
 #ifdef BUILD_TEST_ALTSOFTSERIAL
 #define sonarSerial altSoftSerial  // For AltSoftSerial
-#elif defined BUILD_TEST_NEOSWSERIAL
+#elif defined(BUILD_TEST_NEOSWSERIAL)
 #define sonarSerial neoSSerial1  // For Neo software serial
-#elif defined BUILD_TEST_SOFTSERIAL
+#elif defined(BUILD_TEST_SOFTSERIAL)
 #define sonarSerial softSerial1  // For software serial
 #else
 #define sonarSerial Serial1  // Hardware serial
@@ -275,7 +275,7 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 //           Delete the sections you are not using!
 // ==========================================================================
 
-#if defined BUILD_MODEM_DIGI_XBEE_CELLULAR_TRANSPARENT
+#if defined(BUILD_MODEM_DIGI_XBEE_CELLULAR_TRANSPARENT)
 /** Start [digi_xbee_cellular_transparent] */
 // For any Digi Cellular XBee's
 // NOTE:  The u-blox based Digi XBee's (3G global and LTE-M global) can be used
@@ -316,7 +316,7 @@ DigiXBeeCellularTransparent modem = modemXBCT;
 // ==========================================================================
 
 
-#elif defined BUILD_MODEM_DIGI_XBEE_LTE_BYPASS
+#elif defined(BUILD_MODEM_DIGI_XBEE_LTE_BYPASS)
 /** Start [digi_xbee_lte_bypass] */
 // For the u-blox SARA R410M based Digi LTE-M XBee3
 // NOTE:  According to the manual, this should be less stable than transparent
@@ -353,7 +353,7 @@ DigiXBeeLTEBypass modem = modemXBLTEB;
 // ==========================================================================
 
 
-#elif defined BUILD_MODEM_DIGI_XBEE_3G_BYPASS
+#elif defined(BUILD_MODEM_DIGI_XBEE_3G_BYPASS)
 /** Start [digi_xbee_3g_bypass] */
 // For the u-blox SARA U201 based Digi 3G XBee with 2G fallback
 // NOTE:  According to the manual, this should be less stable than transparent
@@ -390,7 +390,7 @@ DigiXBee3GBypass modem = modemXB3GB;
 // ==========================================================================
 
 
-#elif defined BUILD_MODEM_DIGI_XBEE_WIFI
+#elif defined(BUILD_MODEM_DIGI_XBEE_WIFI)
 /** Start [digi_xbee_wifi] */
 // For the Digi Wifi XBee (S6B)
 #include <modems/DigiXBeeWifi.h>
@@ -426,7 +426,7 @@ DigiXBeeWifi modem = modemXBWF;
 // ==========================================================================
 
 
-#elif defined BUILD_MODEM_ESPRESSIF_ESP8266
+#elif defined(BUILD_MODEM_ESPRESSIF_ESP8266)
 /** Start [espressif_esp8266] */
 // For almost anything based on the Espressif ESP8266 using the
 // AT command firmware
@@ -461,7 +461,7 @@ EspressifESP8266 modem = modemESP;
 // ==========================================================================
 
 
-#elif defined BUILD_MODEM_ESPRESSIF_ESP32
+#elif defined(BUILD_MODEM_ESPRESSIF_ESP32)
 /** Start [espressif_esp32] */
 // For almost anything based on the Espressif ESP8266 using the
 // AT command firmware
@@ -496,7 +496,7 @@ EspressifESP32 modem = modemESP;
 // ==========================================================================
 
 
-#elif defined BUILD_MODEM_QUECTEL_BG96
+#elif defined(BUILD_MODEM_QUECTEL_BG96)
 /** Start [quectel_bg96] */
 // For the Dragino, Nimbelink or other boards based on the Quectel BG96
 #include <modems/QuectelBG96.h>
@@ -530,7 +530,7 @@ QuectelBG96 modem = modemBG96;
 // ==========================================================================
 
 
-#elif defined BUILD_MODEM_SEQUANS_MONARCH
+#elif defined(BUILD_MODEM_SEQUANS_MONARCH)
 /** Start [sequans_monarch] */
 // For the Nimbelink LTE-M Verizon/Sequans or other boards based on the Sequans
 // Monarch series
@@ -565,7 +565,7 @@ SequansMonarch modem = modemSVZM;
 // ==========================================================================
 
 
-#elif defined BUILD_MODEM_SIM_COM_SIM800
+#elif defined(BUILD_MODEM_SIM_COM_SIM800)
 /** Start [sim_com_sim800] */
 // For almost anything based on the SIMCom SIM800 EXCEPT the Sodaq 2GBee R6 and
 // higher
@@ -597,7 +597,7 @@ SIMComSIM800 modem = modemS800;
 // ==========================================================================
 
 
-#elif defined BUILD_MODEM_SIM_COM_SIM7000
+#elif defined(BUILD_MODEM_SIM_COM_SIM7000)
 /** Start [sim_com_sim7000] */
 // For almost anything based on the SIMCom SIM7000
 #include <modems/SIMComSIM7000.h>
@@ -627,7 +627,7 @@ SIMComSIM7000 modem = modem7000;
 // ==========================================================================
 
 
-#elif defined BUILD_MODEM_SIM_COM_SIM7080
+#elif defined(BUILD_MODEM_SIM_COM_SIM7080)
 /** Start [sim_com_sim7080] */
 // For almost anything based on the SIMCom SIM7080G
 #include <modems/SIMComSIM7080.h>
@@ -658,7 +658,7 @@ SIMComSIM7080 modem = modem7080;
 // ==========================================================================
 
 
-#elif defined BUILD_MODEM_SODAQ_2G_BEE_R6
+#elif defined(BUILD_MODEM_SODAQ_2G_BEE_R6)
 /** Start [sodaq_2g_bee_r6] */
 // For the Sodaq 2GBee R6 and R7 based on the SIMCom SIM800
 // NOTE:  The Sodaq GPRSBee doesn't expose the SIM800's reset pin
@@ -689,7 +689,7 @@ Sodaq2GBeeR6 modem = modem2GB;
 // ==========================================================================
 
 
-#elif defined BUILD_MODEM_SODAQ_UBEE_R410M
+#elif defined(BUILD_MODEM_SODAQ_UBEE_R410M)
 /** Start [sodaq_ubee_r410m] */
 // For the Sodaq UBee based on the 4G LTE-M u-blox SARA R410M
 #include <modems/SodaqUBeeR410M.h>
@@ -727,7 +727,7 @@ SodaqUBeeR410M modem = modemR410;
 // ==========================================================================
 
 
-#elif defined BUILD_MODEM_SODAQ_UBEE_U201
+#elif defined(BUILD_MODEM_SODAQ_UBEE_U201)
 /** Start [sodaq_ubee_u201] */
 // For the Sodaq UBee based on the 3G u-blox SARA U201
 #include <modems/SodaqUBeeU201.h>
@@ -815,7 +815,32 @@ Variable* ds3231Temp =
 #endif
 
 
-#if defined BUILD_SENSOR_AO_SONG_AM2315
+#if defined(BUILD_SENSOR_ALPHASENSE_CO2)
+// ==========================================================================
+//  Alphasense CO2 Sensor
+// ==========================================================================
+/** Start [alphasense_co2] */
+#include <sensors/AlphasenseCO2.h>
+
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+const int8_t  AlphasenseCO2Power = sensorPowerPin;  // Power pin
+aco2_adsDiffMux_t  AlphasenseDiffMux = DIFF_MUX_2_3; // Differential voltage config
+const uint8_t AlphasenseCO2ADSi2c_addr =
+    0x48;  // The I2C address of the ADS1115 ADC
+
+// Create an Alphasense CO2 sensor object
+AlphasenseCO2 alphasenseCO2(AlphasenseCO2Power, AlphasenseDiffMux,AlphasenseCO2ADSi2c_addr);
+
+// Create PAR and raw voltage variable pointers for the CO2
+Variable* asCO2        = new AlphasenseCO2_CO2(&alphasenseCO2,
+                                               "12345678-abcd-1234-ef00-1234567890ab");
+Variable* asco2voltage = new AlphasenseCO2_Voltage(
+    &alphasenseCO2, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [alphasense_co2] */
+#endif
+
+
+#if defined(BUILD_SENSOR_AO_SONG_AM2315)
 // ==========================================================================
 //  AOSong AM2315 Digital Humidity and Temperature Sensor
 // ==========================================================================
@@ -837,7 +862,7 @@ Variable* am2315Temp =
 #endif
 
 
-#if defined BUILD_SENSOR_AO_SONG_DHT
+#if defined(BUILD_SENSOR_AO_SONG_DHT)
 // ==========================================================================
 //  AOSong DHT 11/21 (AM2301)/22 (AM2302) Digital Humidity and Temperature
 // ==========================================================================
@@ -864,7 +889,7 @@ Variable* dhtHI   = new AOSongDHT_HI(&dht,
 #endif
 
 
-#if defined BUILD_SENSOR_APOGEE_SQ212
+#if defined(BUILD_SENSOR_APOGEE_SQ212)
 // ==========================================================================
 //  Apogee SQ-212 Photosynthetically Active Radiation (PAR) Sensor
 // ==========================================================================
@@ -888,7 +913,7 @@ Variable* sq212voltage =
 #endif
 
 
-#if defined BUILD_SENSOR_ATLAS_SCIENTIFIC_CO2
+#if defined(BUILD_SENSOR_ATLAS_SCIENTIFIC_CO2)
 // ==========================================================================
 //  Atlas Scientific EZO-CO2 Embedded NDIR Carbon Dioxide Sensor
 // ==========================================================================
@@ -915,7 +940,7 @@ Variable* atlasCO2Temp = new AtlasScientificCO2_Temp(
 #endif
 
 
-#if defined BUILD_SENSOR_ATLAS_SCIENTIFIC_DO
+#if defined(BUILD_SENSOR_ATLAS_SCIENTIFIC_DO)
 // ==========================================================================
 //  Atlas Scientific EZO-DO Dissolved Oxygen Sensor
 // ==========================================================================
@@ -942,7 +967,7 @@ Variable* atlasDOpct = new AtlasScientificDO_DOpct(
 #endif
 
 
-#if defined BUILD_SENSOR_ATLAS_SCIENTIFIC_ORP
+#if defined(BUILD_SENSOR_ATLAS_SCIENTIFIC_ORP)
 // ==========================================================================
 //  Atlas Scientific EZO-ORP Oxidation/Reduction Potential Sensor
 // ==========================================================================
@@ -967,7 +992,7 @@ Variable* atlasORPot = new AtlasScientificORP_Potential(
 #endif
 
 
-#if defined BUILD_SENSOR_ATLAS_SCIENTIFIC_PH
+#if defined(BUILD_SENSOR_ATLAS_SCIENTIFIC_PH)
 // ==========================================================================
 //  Atlas Scientific EZO-pH Sensor
 // ==========================================================================
@@ -1018,7 +1043,7 @@ Variable* atlasTemp = new AtlasScientificRTD_Temp(
 #endif
 
 
-#if defined BUILD_SENSOR_ATLAS_SCIENTIFIC_EC
+#if defined(BUILD_SENSOR_ATLAS_SCIENTIFIC_EC)
 // ==========================================================================
 //  Atlas Scientific EZO-EC Conductivity Sensor
 // ==========================================================================
@@ -1090,7 +1115,7 @@ Variable* atlasSpCond =
 #endif
 
 
-#if defined BUILD_SENSOR_BOSCH_BME280
+#if defined(BUILD_SENSOR_BOSCH_BME280)
 // ==========================================================================
 //  Bosch BME280 Environmental Sensor
 // ==========================================================================
@@ -1119,7 +1144,7 @@ Variable* bme280Alt =
 #endif
 
 
-#if defined BUILD_SENSOR_BOSCH_BMP3XX
+#if defined(BUILD_SENSOR_BOSCH_BMP3XX)
 // ==========================================================================
 //  Bosch BMP 3xx Barometric Pressure Sensor
 // ==========================================================================
@@ -1152,7 +1177,7 @@ Variable* bmp3xxAlt =
 #endif
 
 
-#if defined BUILD_SENSOR_CAMPBELL_CLARI_VUE10
+#if defined(BUILD_SENSOR_CAMPBELL_CLARI_VUE10)
 // ==========================================================================
 //  Campbell ClariVUE Turbidity Sensor
 // ==========================================================================
@@ -1180,7 +1205,7 @@ Variable* clarivueError = new CampbellClariVUE10_ErrorCode(
 #endif
 
 
-#if defined BUILD_SENSOR_CAMPBELL_OBS3
+#if defined(BUILD_SENSOR_CAMPBELL_OBS3)
 // ==========================================================================
 //  Campbell OBS 3 / OBS 3+ Analog Turbidity Sensor
 // ==========================================================================
@@ -1229,7 +1254,7 @@ Variable* obs3VoltHigh = new CampbellOBS3_Voltage(
 /** End [campbell_obs3] */
 #endif
 
-#if defined BUILD_SENSOR_CAMPBELL_RAIN_VUE10
+#if defined(BUILD_SENSOR_CAMPBELL_RAIN_VUE10)
 // ==========================================================================
 //  Campbell RainVUE Precipitation Sensor
 // ==========================================================================
@@ -1259,7 +1284,7 @@ Variable* rainvueRainRateMax = new CampbellRainVUE10_RainRateMax(
 #endif
 
 
-#if defined BUILD_SENSOR_DECAGON_CTD
+#if defined(BUILD_SENSOR_DECAGON_CTD)
 // ==========================================================================
 //  Decagon CTD-10 Conductivity, Temperature, and Depth Sensor
 // ==========================================================================
@@ -1286,7 +1311,7 @@ Variable* ctdDepth =
 #endif
 
 
-#if defined BUILD_SENSOR_DECAGON_ES2
+#if defined(BUILD_SENSOR_DECAGON_ES2)
 // ==========================================================================
 //  Decagon ES2 Conductivity and Temperature Sensor
 // ==========================================================================
@@ -1311,7 +1336,7 @@ Variable* es2Temp = new DecagonES2_Temp(&es2,
 #endif
 
 
-#if defined BUILD_SENSOR_EVERLIGHT_ALSPT19
+#if defined(BUILD_SENSOR_EVERLIGHT_ALSPT19)
 // ==========================================================================
 //  Everlight ALS-PT19 Ambient Light Sensor
 // ==========================================================================
@@ -1343,7 +1368,7 @@ Variable* alsPt19Lux = new EverlightALSPT19_Illuminance(
 #endif
 
 
-#if defined BUILD_SENSOR_TIADS1X15
+#if defined(BUILD_SENSOR_TIADS1X15)
 // ==========================================================================
 //  External Voltage via TI ADS1115
 // ==========================================================================
@@ -1368,7 +1393,7 @@ Variable* ads1x15Volt =
 #endif
 
 
-#if defined BUILD_SENSOR_FREESCALE_MPL115A2
+#if defined(BUILD_SENSOR_FREESCALE_MPL115A2)
 // ==========================================================================
 //  Freescale Semiconductor MPL115A2 Barometer
 // ==========================================================================
@@ -1390,7 +1415,7 @@ Variable* mplTemp = new FreescaleMPL115A2_Temp(
 /** End [freescale_mpl115a2] */
 #endif
 
-#if defined BUILD_SENSOR_GRO_POINT_GPLP8
+#if defined(BUILD_SENSOR_GRO_POINT_GPLP8)
 // ==========================================================================
 //  GroPoint Profile GPLP-8 Soil Moisture and Temperature Sensor
 // ==========================================================================
@@ -1463,7 +1488,7 @@ Variable* gplp8Temp13 = new GroPointGPLP8_Temp(
 #endif
 
 
-#if defined BUILD_SENSOR_IN_SITU_RDO
+#if defined(BUILD_SENSOR_IN_SITU_RDO)
 // ==========================================================================
 //  In-Situ RDO PRO-X Rugged Dissolved Oxygen Probe
 // ==========================================================================
@@ -1493,7 +1518,7 @@ Variable* rdoO2pp =
 #endif
 
 
-#if defined BUILD_SENSOR_IN_SITU_TROLL_SDI12A
+#if defined(BUILD_SENSOR_IN_SITU_TROLL_SDI12A)
 // ==========================================================================
 //    In-Situ Aqua/Level TROLL Pressure, Temperature, and Depth Sensor
 // ==========================================================================
@@ -1523,7 +1548,7 @@ Variable* trollDepth = new InSituTrollSdi12a_Depth(
 #endif
 
 
-#if defined BUILD_SENSOR_KELLER_ACCULEVEL
+#if defined(BUILD_SENSOR_KELLER_ACCULEVEL)
 // ==========================================================================
 //  Keller Acculevel High Accuracy Submersible Level Transmitter
 // ==========================================================================
@@ -1557,7 +1582,7 @@ Variable* acculevHeight = new KellerAcculevel_Height(
 #endif
 
 
-#if defined BUILD_SENSOR_KELLER_NANOLEVEL
+#if defined(BUILD_SENSOR_KELLER_NANOLEVEL)
 // ==========================================================================
 //  Keller Nanolevel High Accuracy Submersible Level Transmitter
 // ==========================================================================
@@ -1591,7 +1616,7 @@ Variable* nanolevHeight = new KellerNanolevel_Height(
 #endif
 
 
-#if defined BUILD_SENSOR_MAX_BOTIX_SONAR
+#if defined(BUILD_SENSOR_MAX_BOTIX_SONAR)
 // ==========================================================================
 //  Maxbotix HRXL Ultrasonic Range Finder
 // ==========================================================================
@@ -1608,10 +1633,11 @@ Variable* nanolevHeight = new KellerNanolevel_Height(
 const int8_t SonarPower    = sensorPowerPin;  // Excite (power) pin
 const int8_t Sonar1Trigger = -1;              // Trigger pin
 // Trigger should be a *unique* negative number if unconnected
-const uint8_t sonar1NumberReadings = 3;  // The number of readings to average
+const int16_t Sonar1MaxRange       = 9999;  // Maximum range of sonar
+const uint8_t sonar1NumberReadings = 3;     // The number of readings to average
 
 // Create a MaxBotix Sonar sensor object
-MaxBotixSonar sonar1(sonarSerial, SonarPower, Sonar1Trigger,
+MaxBotixSonar sonar1(sonarSerial, SonarPower, Sonar1Trigger, Sonar1MaxRange,
                      sonar1NumberReadings);
 
 // Create an ultrasonic range variable pointer
@@ -1652,7 +1678,7 @@ Variable* ds18Temp = new MaximDS18_Temp(&ds18,
 #endif
 
 
-#if defined BUILD_SENSOR_MEA_SPEC_MS5803
+#if defined(BUILD_SENSOR_MEA_SPEC_MS5803)
 // ==========================================================================
 //  Measurement Specialties MS5803-14BA pressure sensor
 // ==========================================================================
@@ -1680,7 +1706,7 @@ Variable* ms5803Temp =
 #endif
 
 
-#if defined BUILD_SENSOR_DECAGON_5TM
+#if defined(BUILD_SENSOR_DECAGON_5TM)
 // ==========================================================================
 //  Meter ECH2O Soil Moisture Sensor
 // ==========================================================================
@@ -1707,7 +1733,7 @@ Variable* fivetmTemp =
 #endif
 
 
-#if defined BUILD_SENSOR_METER_HYDROS21
+#if defined(BUILD_SENSOR_METER_HYDROS21)
 // ==========================================================================
 //  Meter Hydros 21 Conductivity, Temperature, and Depth Sensor
 // ==========================================================================
@@ -1736,7 +1762,7 @@ Variable* hydros21Depth =
 #endif
 
 
-#if defined BUILD_SENSOR_METER_TEROS11
+#if defined(BUILD_SENSOR_METER_TEROS11)
 // ==========================================================================
 //  Meter Teros 11 Soil Moisture Sensor
 // ==========================================================================
@@ -1767,7 +1793,7 @@ Variable* teros11Count =
 #endif
 
 
-#if defined BUILD_SENSOR_PALEO_TERRA_REDOX
+#if defined(BUILD_SENSOR_PALEO_TERRA_REDOX)
 // ==========================================================================
 //  PaleoTerra Redox Sensors
 // ==========================================================================
@@ -1794,7 +1820,7 @@ Variable* ptVolt = new PaleoTerraRedox_Voltage(
 #endif
 
 
-#if defined BUILD_SENSOR_RAIN_COUNTER_I2C
+#if defined(BUILD_SENSOR_RAIN_COUNTER_I2C)
 // ==========================================================================
 //  External I2C Rain Tipping Bucket Counter
 // ==========================================================================
@@ -1823,7 +1849,7 @@ Variable* tbi2cDepth =
 #endif
 
 
-#if defined BUILD_SENSOR_SENSIRION_SHT4X
+#if defined(BUILD_SENSOR_SENSIRION_SHT4X)
 // ==========================================================================
 //  Sensirion SHT4X Digital Humidity and Temperature Sensor
 // ==========================================================================
@@ -1846,7 +1872,7 @@ Variable* sht4xTemp =
 #endif
 
 
-#if defined BUILD_SENSOR_TALLY_COUNTER_I2C
+#if defined(BUILD_SENSOR_TALLY_COUNTER_I2C)
 // ==========================================================================
 //    Tally I2C Event Counter for rain or wind reed-switch sensors
 // ==========================================================================
@@ -1879,7 +1905,7 @@ Variable* tallyEvents = new TallyCounterI2C_Events(
 #endif
 
 
-#if defined BUILD_SENSOR_TI_INA219
+#if defined(BUILD_SENSOR_TI_INA219)
 // ==========================================================================
 //  TI INA219 High Side Current/Voltage Sensor (Current mA, Voltage, Power)
 // ==========================================================================
@@ -1907,7 +1933,7 @@ Variable* inaPower = new TIINA219_Power(&ina219,
 #endif
 
 
-#if defined BUILD_SENSOR_TURNER_CYCLOPS
+#if defined(BUILD_SENSOR_TURNER_CYCLOPS)
 // ==========================================================================
 //  Turner Cyclops-7F Submersible Fluorometer
 // ==========================================================================
@@ -1969,7 +1995,45 @@ Variable* cyclopsRedChloro = new TurnerCyclops_RedChlorophyll(
 #endif
 
 
-#if defined BUILD_SENSOR_ANALOG_ELEC_CONDUCTIVITY
+#if defined(BUILD_SENSOR_TURNER_TURBIDITY_PLUS)
+// ==========================================================================
+//  Turner Turbidity Plus Turbidity Sensor
+// ==========================================================================
+/** Start [turner_turbidity_plus] */
+#include <sensors/TurnerTurbidityPlus.h>
+
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+const int8_t  turbidityPlusPower          = sensorPowerPin;  // Power pin
+const int8_t  turbidityPlusWiper          = A3;  // Wiper pin
+ttp_adsDiffMux_t  turbidityPlusDiffMux = DIFF_MUX_2_3; // Differential voltage config
+const uint8_t turbidityPlusNumberReadings = 10;
+const uint8_t turbidityPlusADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
+adsGain_t turbidityPlusGain = GAIN_ONE;// The gain of the ADS
+float     tpVoltageDividerFactor  = 1; // The factor for a voltage divider, if any
+
+// Turbidity Plus calibration information
+const float turbidityPlusStdConc = 1.000;  // Concentration of the standard used
+                                     // for a 1-point sensor calibration.
+const float turbidityPlusStdVolt =
+    1.000;  // The voltage (in volts) measured for the conc_std.
+const float turbidityPlusBlankVolt =
+    0.000;  // The voltage (in volts) measured for a blank.
+
+// Create a Turner Turbidity Plus sensor object
+TurnerTurbidityPlus turbidityPlus(turbidityPlusPower, turbidityPlusWiper, turbidityPlusDiffMux,turbidityPlusStdConc,
+                      turbidityPlusStdVolt, turbidityPlusBlankVolt, turbidityPlusADSi2c_addr,turbidityPlusGain,
+                      turbidityPlusNumberReadings,tpVoltageDividerFactor);
+
+// Create the variable pointers
+Variable* turbidityPlusVoltage =
+    new TurnerTurbidityPlus_Voltage(&turbidityPlus, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* turbidityPlusTurbidity = new TurnerTurbidityPlus_Turbidity(
+    &turbidityPlus, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [turner_turbidity_plus] */
+#endif
+
+
+#if defined(BUILD_SENSOR_ANALOG_ELEC_CONDUCTIVITY)
 // ==========================================================================
 //   Analog Electrical Conductivity using the Processor's Analog Pins
 // ==========================================================================
@@ -2030,7 +2094,7 @@ Variable* analogEc_spcond = new Variable(
 #endif
 
 
-#if defined BUILD_SENSOR_VEGA_PULS21
+#if defined(BUILD_SENSOR_VEGA_PULS21)
 // ==========================================================================
 //  VEGA PULS 21 Radar Sensor
 // ==========================================================================
@@ -2063,7 +2127,7 @@ Variable* VegaPulsError =
 #endif
 
 
-#if defined BUILD_SENSOR_YOSEMITECH_Y504
+#if defined(BUILD_SENSOR_YOSEMITECH_Y504)
 // ==========================================================================
 //  Yosemitech Y504 Dissolved Oxygen Sensor
 // ==========================================================================
@@ -2098,7 +2162,7 @@ Variable* y504Temp =
 #endif
 
 
-#if defined BUILD_SENSOR_YOSEMITECH_Y510
+#if defined(BUILD_SENSOR_YOSEMITECH_Y510)
 // ==========================================================================
 //  Yosemitech Y510 Turbidity Sensor
 // ==========================================================================
@@ -2130,7 +2194,7 @@ Variable* y510Temp =
 #endif
 
 
-#if defined BUILD_SENSOR_YOSEMITECH_Y511
+#if defined(BUILD_SENSOR_YOSEMITECH_Y511)
 // ==========================================================================
 //  Yosemitech Y511 Turbidity Sensor with Wiper
 // ==========================================================================
@@ -2162,7 +2226,39 @@ Variable* y511Temp =
 #endif
 
 
-#if defined BUILD_SENSOR_YOSEMITECH_Y514
+#if defined(BUILD_SENSOR_YOSEMITECH_Y513)
+// ==========================================================================
+//  Yosemitech Y513 Blue Green Algae (BGA) Sensor
+// ==========================================================================
+/** Start [yosemitech_y513] */
+#include <sensors/YosemitechY513.h>
+
+// NOTE: Extra hardware and software serial ports are created in the "Settings
+// for Additional Serial Ports" section
+
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+byte          y513ModbusAddress  = 0x13;  // The modbus address of the Y513
+const int8_t  y513AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  y513SensorPower    = A3;  // Sensor power pin
+const int8_t  y513EnablePin      = -1;                    // Adapter RE/DE pin
+const uint8_t y513NumberReadings = 5;
+// The manufacturer recommends averaging 10 readings, but we take 5 to minimize
+// power consumption
+
+// Create a Y513 Blue Green Algae (BGA) sensor object
+YosemitechY513 y513(y513ModbusAddress, modbusSerial, y513AdapterPower,
+                    y513SensorPower, y513EnablePin, y513NumberReadings);
+
+// Create Blue Green Algae (BGA) concentration and temperature variable
+// pointers for the Y513
+Variable* y513BGA =
+    new YosemitechY513_BGA(&y513, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* y513Temp =
+    new YosemitechY513_Temp(&y513, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [yosemitech_y513] */
+#endif
+
+#if defined(BUILD_SENSOR_YOSEMITECH_Y514)
 // ==========================================================================
 //  Yosemitech Y514 Chlorophyll Sensor
 // ==========================================================================
@@ -2195,7 +2291,7 @@ Variable* y514Temp =
 #endif
 
 
-#if defined BUILD_SENSOR_YOSEMITECH_Y520
+#if defined(BUILD_SENSOR_YOSEMITECH_Y520)
 // ==========================================================================
 //  Yosemitech Y520 Conductivity Sensor
 // ==========================================================================
@@ -2227,7 +2323,7 @@ Variable* y520Temp =
 #endif
 
 
-#if defined BUILD_SENSOR_YOSEMITECH_Y532
+#if defined(BUILD_SENSOR_YOSEMITECH_Y532)
 // ==========================================================================
 //  Yosemitech Y532 pH
 // ==========================================================================
@@ -2261,7 +2357,7 @@ Variable* y532Temp =
 #endif
 
 
-#if defined BUILD_SENSOR_YOSEMITECH_Y533
+#if defined(BUILD_SENSOR_YOSEMITECH_Y533)
 // ==========================================================================
 //  Yosemitech Y533 Oxidation Reduction Potential (ORP)
 // ==========================================================================
@@ -2292,7 +2388,7 @@ Variable* y533Temp =
 #endif
 
 
-#if defined BUILD_SENSOR_YOSEMITECH_Y551
+#if defined(BUILD_SENSOR_YOSEMITECH_Y551)
 // ==========================================================================
 //  Yosemitech Y551 COD Sensor with Wiper
 // ==========================================================================
@@ -2326,7 +2422,7 @@ Variable* y551Temp =
 #endif
 
 
-#if defined BUILD_SENSOR_YOSEMITECH_Y560
+#if defined(BUILD_SENSOR_YOSEMITECH_Y560)
 // ==========================================================================
 //  Yosemitech Y560 Ammonium Probe with Wiper
 // ==========================================================================
@@ -2362,7 +2458,7 @@ Variable* y560Temp =
 #endif
 
 
-#if defined BUILD_SENSOR_YOSEMITECH_Y700
+#if defined(BUILD_SENSOR_YOSEMITECH_Y700)
 // ==========================================================================
 //  Yosemitech Y700 Pressure Sensor
 // ==========================================================================
@@ -2394,7 +2490,7 @@ Variable* y700Temp =
 #endif
 
 
-#if defined BUILD_SENSOR_YOSEMITECH_Y4000
+#if defined(BUILD_SENSOR_YOSEMITECH_Y4000)
 // ==========================================================================
 //  Yosemitech Y4000 Multiparameter Sonde (DOmgL, Turbidity, Cond, pH, Temp,
 //    ORP, Chlorophyll, BGA)
@@ -2439,7 +2535,7 @@ Variable* y4000BGA =
 #endif
 
 
-#if defined BUILD_SENSOR_ZEBRA_TECH_D_OPTO
+#if defined(BUILD_SENSOR_ZEBRA_TECH_D_OPTO)
 // ==========================================================================
 //  Zebra Tech D-Opto Dissolved Oxygen Sensor
 // ==========================================================================
@@ -2505,7 +2601,7 @@ Variable* calculatedVar = new Variable(
 /** End [calculated_variables] */
 
 
-#if defined BUILD_TEST_CREATE_IN_ARRAY
+#if defined(BUILD_TEST_CREATE_IN_ARRAY)
 // ==========================================================================
 //  Creating the Variable Array[s] and Filling with Variable Objects
 //  NOTE:  This shows three different ways of creating the same variable array
@@ -2538,7 +2634,7 @@ VariableArray varArray(variableCount, variableList);
 // ==========================================================================
 
 
-#elif defined BUILD_TEST_SEPARATE_UUIDS
+#elif defined(BUILD_TEST_SEPARATE_UUIDS)
 /** Start [variables_separate_uuids] */
 // Version 2: Create two separate arrays, on for the variables and a separate
 // one for the UUID's, then give both as input to the variable array
@@ -2585,93 +2681,97 @@ Variable* variableList[] = {
 #if defined(ARDUINO_ARCH_AVR) || defined(MS_SAMD_DS3231)
     ds3231Temp,
 #endif
-#if defined BUILD_SENSOR_AO_SONG_AM2315
+#if defined(BUILD_SENSOR_ALPHASENSE_CO2)
+    asCO2,
+    asco2voltage,
+#endif
+#if defined(BUILD_SENSOR_AO_SONG_AM2315)
     am2315Humid,
     am2315Temp,
 #endif
-#if defined BUILD_SENSOR_AO_SONG_DHT
+#if defined(BUILD_SENSOR_AO_SONG_DHT)
     dhtHumid,
     dhtTemp,
     dhtHI,
 #endif
-#if defined BUILD_SENSOR_APOGEE_SQ212
+#if defined(BUILD_SENSOR_APOGEE_SQ212)
     sq212PAR,
     sq212voltage,
 #endif
-#if defined BUILD_SENSOR_ATLAS_SCIENTIFIC_CO2
+#if defined(BUILD_SENSOR_ATLAS_SCIENTIFIC_CO2)
     atlasCO2CO2,
     atlasCO2Temp,
 #endif
-#if defined BUILD_SENSOR_ATLAS_SCIENTIFIC_DO
+#if defined(BUILD_SENSOR_ATLAS_SCIENTIFIC_DO)
     atlasDOconc,
     atlasDOpct,
 #endif
-#if defined BUILD_SENSOR_ATLAS_SCIENTIFIC_ORP
+#if defined(BUILD_SENSOR_ATLAS_SCIENTIFIC_ORP)
     atlasORPot,
 #endif
-#if defined BUILD_SENSOR_ATLAS_SCIENTIFIC_PH
+#if defined(BUILD_SENSOR_ATLAS_SCIENTIFIC_PH)
     atlaspHpH,
 #endif
-#if defined BUILD_SENSOR_ATLAS_SCIENTIFIC_RTD
+#if defined(BUILD_SENSOR_ATLAS_SCIENTIFIC_RTD)
     atlasTemp,
 #endif
-#if defined BUILD_SENSOR_ATLAS_SCIENTIFIC_EC
+#if defined(BUILD_SENSOR_ATLAS_SCIENTIFIC_EC)
     atlasCond,
     atlasTDS,
     atlasSal,
     atlasGrav,
     atlasSpCond,
 #endif
-#if defined BUILD_SENSOR_BOSCH_BME280
+#if defined(BUILD_SENSOR_BOSCH_BME280)
     bme280Temp,
     bme280Humid,
     bme280Press,
     bme280Alt,
 #endif
-#if defined BUILD_SENSOR_BOSCH_BMP3XX
+#if defined(BUILD_SENSOR_BOSCH_BMP3XX)
     bmp3xxTemp,
     bmp3xxPress,
     bmp3xxAlt,
 #endif
-#if defined BUILD_SENSOR_CAMPBELL_CLARI_VUE10
+#if defined(BUILD_SENSOR_CAMPBELL_CLARI_VUE10)
     clarivueTurbidity,
     clarivueTemp,
     clarivueError,
 #endif
-#if defined BUILD_SENSOR_CAMPBELL_OBS3
+#if defined(BUILD_SENSOR_CAMPBELL_OBS3)
     obs3TurbLow,
     obs3VoltLow,
     obs3TurbHigh,
     obs3VoltHigh,
 #endif
-#if defined BUILD_SENSOR_CAMPBELL_RAIN_VUE10
+#if defined(BUILD_SENSOR_CAMPBELL_RAIN_VUE10)
     rainvuePrecipitation,
     rainvueTips,
     rainvueRainRateAve,
     rainvueRainRateMax,
 #endif
-#if defined BUILD_SENSOR_DECAGON_CTD
+#if defined(BUILD_SENSOR_DECAGON_CTD)
     ctdCond,
     ctdTemp,
     ctdDepth,
 #endif
-#if defined BUILD_SENSOR_DECAGON_ES2
+#if defined(BUILD_SENSOR_DECAGON_ES2)
     es2Cond,
     es2Temp,
 #endif
-#if defined BUILD_SENSOR_EVERLIGHT_ALSPT19
+#if defined(BUILD_SENSOR_EVERLIGHT_ALSPT19)
     alsPt19Volt,
     alsPt19Current,
     alsPt19Lux,
 #endif
-#if defined BUILD_SENSOR_TIADS1X15
+#if defined(BUILD_SENSOR_TIADS1X15)
     ads1x15Volt,
 #endif
-#if defined BUILD_SENSOR_FREESCALE_MPL115A2
+#if defined(BUILD_SENSOR_FREESCALE_MPL115A2)
     mplTemp,
     mplPress,
 #endif
-#if defined BUILD_SENSOR_GRO_POINT_GPLP8
+#if defined(BUILD_SENSOR_GRO_POINT_GPLP8)
     gplp8Moist1,
     gplp8Moist2,
     gplp8Moist3,
@@ -2694,73 +2794,73 @@ Variable* variableList[] = {
     gplp8Temp12,
     gplp8Temp13,
 #endif
-#if defined BUILD_SENSOR_IN_SITU_RDO
+#if defined(BUILD_SENSOR_IN_SITU_RDO)
     rdoTemp,
     rdoDOpct,
     rdoDOmgL,
     rdoO2pp,
 #endif
-#if defined BUILD_SENSOR_IN_SITU_TROLL_SDI12A
+#if defined(BUILD_SENSOR_IN_SITU_TROLL_SDI12A)
     trollPressure,
     trollTemp,
     trollDepth,
 #endif
-#if defined BUILD_SENSOR_KELLER_ACCULEVEL
+#if defined(BUILD_SENSOR_KELLER_ACCULEVEL)
     acculevPress,
     acculevTemp,
     acculevHeight,
 #endif
-#if defined BUILD_SENSOR_KELLER_NANOLEVEL
+#if defined(BUILD_SENSOR_KELLER_NANOLEVEL)
     nanolevPress,
     nanolevTemp,
     nanolevHeight,
 #endif
-#if defined BUILD_SENSOR_MAX_BOTIX_SONAR
+#if defined(BUILD_SENSOR_MAX_BOTIX_SONAR)
     sonar1Range,
 #endif
-#if defined BUILD_SENSOR_MAXIM_DS18
+#if defined(BUILD_SENSOR_MAXIM_DS18)
     ds18Temp,
 #endif
-#if defined BUILD_SENSOR_MEA_SPEC_MS5803
+#if defined(BUILD_SENSOR_MEA_SPEC_MS5803)
     ms5803Temp,
     ms5803Press,
 #endif
-#if defined BUILD_SENSOR_DECAGON_5TM
+#if defined(BUILD_SENSOR_DECAGON_5TM)
     fivetmEa,
     fivetmVWC,
     fivetmTemp,
 #endif
-#if defined BUILD_SENSOR_METER_HYDROS21
+#if defined(BUILD_SENSOR_METER_HYDROS21)
     hydros21Cond,
     hydros21Temp,
     hydros21Depth,
 #endif
-#if defined BUILD_SENSOR_METER_TEROS11
+#if defined(BUILD_SENSOR_METER_TEROS11)
     teros11Ea,
     teros11Temp,
     teros11VWC,
     teros11Count,
 #endif
-#if defined BUILD_SENSOR_PALEO_TERRA_REDOX
+#if defined(BUILD_SENSOR_PALEO_TERRA_REDOX)
     ptVolt,
 #endif
-#if defined BUILD_SENSOR_RAIN_COUNTER_I2C
+#if defined(BUILD_SENSOR_RAIN_COUNTER_I2C)
     tbi2cTips,
     tbi2cDepth,
 #endif
-#if defined BUILD_SENSOR_SENSIRION_SHT4X
+#if defined(BUILD_SENSOR_SENSIRION_SHT4X)
     sht4xHumid,
     sht4xTemp,
 #endif
-#if defined BUILD_SENSOR_TALLY_COUNTER_I2C
+#if defined(BUILD_SENSOR_TALLY_COUNTER_I2C)
     tallyEvents,
 #endif
-#if defined BUILD_SENSOR_TI_INA219
+#if defined(BUILD_SENSOR_TI_INA219)
     inaVolt,
     inaCurrent,
     inaPower,
 #endif
-#if defined BUILD_SENSOR_TURNER_CYCLOPS
+#if defined(BUILD_SENSOR_TURNER_CYCLOPS)
     cyclopsVoltage,
     cyclopsChloro,
     cyclopsRWT,
@@ -2776,62 +2876,69 @@ Variable* variableList[] = {
     cyclopsTryptophan,
     cyclopsRedChloro,
 #endif
-#if defined BUILD_SENSOR_ANALOG_ELEC_CONDUCTIVITY
+#if defined(BUILD_SENSOR_TURNER_TURBIDITY_PLUS)
+turbidityPlusVoltage,turbidityPlusTurbidity,
+#endif
+#if defined(BUILD_SENSOR_ANALOG_ELEC_CONDUCTIVITY)
     analogEc_cond,
     analogEc_spcond,
 #endif
-#if defined BUILD_SENSOR_VEGA_PULS21
+#if defined(BUILD_SENSOR_VEGA_PULS21)
     VegaPulsStage,
     VegaPulsDistance,
     VegaPulsTemp,
     VegaPulsRelia,
     VegaPulsError,
 #endif
-#if defined BUILD_SENSOR_YOSEMITECH_Y504
+#if defined(BUILD_SENSOR_YOSEMITECH_Y504)
     y504DOpct,
     y504DOmgL,
     y504Temp,
 #endif
-#if defined BUILD_SENSOR_YOSEMITECH_Y510
+#if defined(BUILD_SENSOR_YOSEMITECH_Y510)
     y510Turb,
     y510Temp,
 #endif
-#if defined BUILD_SENSOR_YOSEMITECH_Y511
+#if defined(BUILD_SENSOR_YOSEMITECH_Y511)
     y511Turb,
     y511Temp,
 #endif
-#if defined BUILD_SENSOR_YOSEMITECH_Y514
+#if defined(BUILD_SENSOR_YOSEMITECH_Y513)
+    y513BGA,
+    y513Temp,
+#endif
+#if defined(BUILD_SENSOR_YOSEMITECH_Y514)
     y514Chloro,
     y514Temp,
 #endif
-#if defined BUILD_SENSOR_YOSEMITECH_Y520
+#if defined(BUILD_SENSOR_YOSEMITECH_Y520)
     y520Cond,
     y520Temp,
 #endif
-#if defined BUILD_SENSOR_YOSEMITECH_Y532
+#if defined(BUILD_SENSOR_YOSEMITECH_Y532)
     y532Voltage,
     y532pH,
     y532Temp,
 #endif
-#if defined BUILD_SENSOR_YOSEMITECH_Y533
+#if defined(BUILD_SENSOR_YOSEMITECH_Y533)
     y533ORP,
     y533Temp,
 #endif
-#if defined BUILD_SENSOR_YOSEMITECH_Y551
+#if defined(BUILD_SENSOR_YOSEMITECH_Y551)
     y551COD,
     y551Turbid,
     y551Temp,
 #endif
-#if defined BUILD_SENSOR_YOSEMITECH_Y560
+#if defined(BUILD_SENSOR_YOSEMITECH_Y560)
     y560NH4_N,
     y560pH,
     y560Temp,
 #endif
-#if defined BUILD_SENSOR_YOSEMITECH_Y700
+#if defined(BUILD_SENSOR_YOSEMITECH_Y700)
     y700Pres,
     y700Temp,
 #endif
-#if defined BUILD_SENSOR_YOSEMITECH_Y4000
+#if defined(BUILD_SENSOR_YOSEMITECH_Y4000)
     y4000DO,
     y4000Turb,
     y4000Cond,
@@ -2841,7 +2948,7 @@ Variable* variableList[] = {
     y4000Chloro,
     y4000BGA,
 #endif
-#if defined BUILD_SENSOR_ZEBRA_TECH_D_OPTO
+#if defined(BUILD_SENSOR_ZEBRA_TECH_D_OPTO)
     dOptoDOpct,
     dOptoDOmgL,
     dOptoTemp,
@@ -2874,7 +2981,7 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 /** End [loggers] */
 
 
-#if defined BUILD_PUB_ENVIRO_DIY_PUBLISHER
+#if defined(BUILD_PUB_ENVIRO_DIY_PUBLISHER)
 // ==========================================================================
 //  A Publisher to Monitor My Watershed / EnviroDIY Data Sharing Portal
 // ==========================================================================
@@ -2894,7 +3001,7 @@ EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modem.gsmClient,
 #endif
 
 
-#if defined BUILD_PUB_DREAM_HOST_PUBLISHER
+#if defined(BUILD_PUB_DREAM_HOST_PUBLISHER)
 // ==========================================================================
 //  A Publisher to DreamHost
 // ==========================================================================
@@ -2912,7 +3019,7 @@ DreamHostPublisher DreamHostGET(dataLogger, &modem.gsmClient,
 #endif
 
 
-#if defined BUILD_PUB_THING_SPEAK_PUBLISHER
+#if defined(BUILD_PUB_THING_SPEAK_PUBLISHER)
 // ==========================================================================
 //  ThingSpeak Data Publisher
 // ==========================================================================
@@ -2937,7 +3044,7 @@ ThingSpeakPublisher TsMqtt(dataLogger, &modem.gsmClient, thingSpeakMQTTKey,
 #endif
 
 
-#if defined BUILD_PUB_UBIDOTS_PUBLISHER
+#if defined(BUILD_PUB_UBIDOTS_PUBLISHER)
 // ==========================================================================
 //  Ubidots Data Publisher
 // ==========================================================================
@@ -2978,7 +3085,10 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
 // Uses the processor sensor object to read the battery voltage
 // NOTE: This will actually return the battery level from the previous update!
 float getBatteryVoltage() {
-    if (mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM] == -9999) mcuBoard.update();
+    if (mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM] == -9999 ||
+        mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM] == 0) {
+        mcuBoard.update();
+    }
     return mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM];
 }
 /** End [working_functions] */
@@ -2992,7 +3102,7 @@ void setup() {
 // Wait for USB connection to be established by PC
 // NOTE:  Only use this when debugging - if not connected to a PC, this
 // could prevent the script from starting
-#if defined SERIAL_PORT_USBVIRTUAL
+#if defined(SERIAL_PORT_USBVIRTUAL)
     while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000L)) {
         // wait
     }
@@ -3019,11 +3129,11 @@ void setup() {
 
 /** Start [setup_softserial] */
 // Allow interrupts for software serial
-#if defined BUILD_TEST_SOFTSERIAL
+#if defined(BUILD_TEST_SOFTSERIAL)
     enableInterrupt(softSerialRx, SoftwareSerial_ExtInts::handle_interrupt,
                     CHANGE);
 #endif
-#if defined BUILD_TEST_NEOSWSERIAL
+#if defined(BUILD_TEST_NEOSWSERIAL)
     enableInterrupt(neoSSerial1Rx, neoSSerial1ISR, CHANGE);
 #endif
     /** End [setup_softserial] */
@@ -3036,7 +3146,7 @@ void setup() {
     // all currently supported modbus sensors use 9600 baud
     modbusSerial.begin(9600);
 
-#if defined BUILD_SENSOR_MAX_BOTIX_SONAR
+#if defined(BUILD_SENSOR_MAX_BOTIX_SONAR)
     // Start the SoftwareSerial stream for the sonar; it will always be at 9600
     // baud
     sonarSerial.begin(9600);
@@ -3046,7 +3156,7 @@ void setup() {
 // Assign pins SERCOM functionality for SAMD boards
 // NOTE:  This must happen *after* the various serial.begin statements
 /** Start [setup_samd_pins] */
-#if defined ARDUINO_ARCH_SAMD
+#if defined(ARDUINO_ARCH_SAMD)
 #ifndef ENABLE_SERIAL2
     pinPeripheral(10, PIO_SERCOM);  // Serial2 Tx/Dout = SERCOM1 Pad #2
     pinPeripheral(11, PIO_SERCOM);  // Serial2 Rx/Din = SERCOM1 Pad #0
@@ -3112,7 +3222,7 @@ void setup() {
 /** End [setup_esp] */
 #endif
 
-#if defined BUILD_TEST_SKYWIRE
+#if defined(BUILD_TEST_SKYWIRE)
     /** Start [setup_skywire] */
     modem.setModemStatusLevel(LOW);  // If using CTS, LOW
     modem.setModemWakeLevel(HIGH);   // Skywire dev board inverts the signal
@@ -3120,7 +3230,7 @@ void setup() {
     /** End [setup_skywire] */
 #endif
 
-#if defined BUILD_MODEM_SIM_COM_SIM7080
+#if defined(BUILD_MODEM_SIM_COM_SIM7080)
     /** Start [setup_sim7080] */
     modem.setModemWakeLevel(HIGH);   // ModuleFun Bee inverts the signal
     modem.setModemResetLevel(HIGH);  // ModuleFun Bee inverts the signal
@@ -3139,7 +3249,7 @@ void setup() {
     /** End [setup_sim7080] */
 #endif
 
-#if defined BUILD_MODEM_DIGI_XBEE_CELLULAR_TRANSPARENT
+#if defined(BUILD_MODEM_DIGI_XBEE_CELLULAR_TRANSPARENT)
     /** Start [setup_xbeec_carrier] */
     // Extra modem set-up
     Serial.println(F("Waking modem and setting Cellular Carrier Options..."));
@@ -3176,7 +3286,7 @@ void setup() {
 #endif
 
 
-#if defined BUILD_MODEM_DIGI_XBEE_LTE_BYPASS
+#if defined(BUILD_MODEM_DIGI_XBEE_LTE_BYPASS)
     /** Start [setup_r4_carrrier] */
     // Extra modem set-up
     Serial.println(F("Waking modem and setting Cellular Carrier Options..."));

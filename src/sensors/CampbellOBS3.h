@@ -10,7 +10,7 @@
  *
  * These are used for the Campbell Scientific OBS-3+.
  *
- * This depends on the soligen2010 fork of the Adafruit ADS1015 library.
+ * This depends on the Adafruit ADS1X15 v2.x library
  */
 /* clang-format off */
 /**
@@ -82,8 +82,14 @@
 #include "VariableBase.h"
 #include "SensorBase.h"
 
-// Sensor Specific Defines
 /** @ingroup sensor_obs3 */
+/**@{*/
+
+/**
+ * @anchor sensor_obs3_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by OBS3
+ */
 /**@{*/
 /**
  * @brief Sensor::_numReturnedValues; the OBS3 can report 2 values.
@@ -97,6 +103,17 @@
 /// @brief Sensor::_incCalcValues; turbidity is calculated from raw voltage
 /// using the input calibration equation.
 #define OBS3_INC_CALC_VARIABLES 1
+/**@}*/
+
+/**
+ * @anchor sensor_obs3_config
+ * @name Configuration Defines
+ * Defines to set the address of the ADD.
+ */
+/**@{*/
+/// @brief The assumed address of the ADS1115, 1001 000 (ADDR = GND)
+#define ADS1115_ADDRESS 0x48
+/**@}*/
 
 /**
  * @anchor sensor_obs3_timing
@@ -205,9 +222,6 @@
 #endif
 /**@}*/
 
-/// @brief The assumed address of the ADS1115, 1001 000 (ADDR = GND)
-#define ADS1115_ADDRESS 0x48
-
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
@@ -270,8 +284,17 @@ class CampbellOBS3 : public Sensor {
     bool addSingleMeasurementResult(void) override;
 
  private:
+    /**
+     * @brief Internal reference to the ADS channel number of the Campbell OBS
+     * 3+
+     */
     uint8_t _adsChannel;
-    float   _x2_coeff_A, _x1_coeff_B, _x0_coeff_C;
+    float   _x2_coeff_A;  ///< Internal reference to the x^2 coefficient
+    float   _x1_coeff_B;  ///< Internal reference to the x coefficient
+    float   _x0_coeff_C;  ///< Internal reference to the x^0 coefficient
+    /**
+     * @brief Internal reference to the I2C address of the TI-ADS1x15
+     */
     uint8_t _i2cAddress;
 };
 
@@ -315,6 +338,9 @@ class CampbellOBS3_Turbidity : public Variable {
         : Variable((const uint8_t)OBS3_TURB_VAR_NUM, (uint8_t)OBS3_RESOLUTION,
                    OBS3_TURB_VAR_NAME, OBS3_TURB_UNIT_NAME,
                    OBS3_TURB_DEFAULT_CODE) {}
+    /**
+     * @brief Destroy the Campbell OBS3 Turbidity object
+     */
     ~CampbellOBS3_Turbidity() {}
 };
 

@@ -10,7 +10,7 @@
  *
  * These are used for the Turner Scientific Cyclops-7F.
  *
- * This depends on the soligen2010 fork of the Adafruit ADS1015 library.
+ * This depends on the Adafruit ADS1X15 v2.x library
  */
 /* clang-format off */
 /**
@@ -145,6 +145,13 @@
 // Sensor Specific Defines
 /** @ingroup sensor_cyclops */
 /**@{*/
+
+/**
+ * @anchor sensor_cyclops_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by Cyclops
+ */
+/**@{*/
 /**
  * @brief Sensor::_numReturnedValues; the Cyclops can report 2 values.
  *
@@ -159,6 +166,17 @@
 /// @brief Sensor::_incCalcValues; the raw voltage is reported, the other
 /// parameter is calculated using the input calibration equation.
 #define CYCLOPS_INC_CALC_VARIABLES 1
+/**@}*/
+
+/**
+ * @anchor sensor_cyclops_config
+ * @name Configuration Defines
+ * Defines to help configure the address of the ADD used by the Cyclops
+ */
+/**@{*/
+/// @brief The assumed address of the ADS1115, 1001 000 (ADDR = GND)
+#define ADS1115_ADDRESS 0x48
+/**@}*/
 
 /**
  * @anchor sensor_cyclops_timing
@@ -246,9 +264,6 @@
 #endif
 /**@}*/
 
-/// @brief The assumed address of the ADS1115, 1001 000 (ADDR = GND)
-#define ADS1115_ADDRESS 0x48
-
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
@@ -329,8 +344,31 @@ class TurnerCyclops : public Sensor {
     bool addSingleMeasurementResult(void) override;
 
  private:
+    /**
+     * @brief Internal reference to the ADS channel number of the Turner Cyclops
+     */
     uint8_t _adsChannel;
-    float   _conc_std, _volt_std, _volt_blank;
+    /**
+     * @brief The concentration of the standard used for a 1-point sensor
+     * calibration.  The concentration units should be the same as the final
+     * measuring units.
+     */
+    float _conc_std;
+    /**
+     * @brief The voltage (in volts) measured for the conc_std.  This voltage
+     * should be the final voltage *after* accounting for any voltage dividers
+     * or gain settings.
+     */
+    float _volt_std;
+    /**
+     * @brief The voltage (in volts) measured for a blank.  This voltage should
+     * be the final voltage *after* accounting for any voltage dividers or gain
+     * settings.
+     */
+    float _volt_blank;
+    /**
+     * @brief Internal reference to the I2C address of the TI-ADS1x15
+     */
     uint8_t _i2cAddress;
 };
 
@@ -379,7 +417,7 @@ class TurnerCyclops_Voltage : public Variable {
                    CYCLOPS_VOLTAGE_VAR_NAME, CYCLOPS_VOLTAGE_UNIT_NAME,
                    CYCLOPS_VOLTAGE_DEFAULT_CODE) {}
     /**
-     * @brief Destroy the TurnerCyclops_Voltage object - no action needed.
+     * @brief Destroy the Turner Cyclops Voltage object - no action needed.
      */
     ~TurnerCyclops_Voltage() {}
 };
@@ -435,6 +473,10 @@ class TurnerCyclops_Chlorophyll : public Variable {
         : Variable((const uint8_t)CYCLOPS_VAR_NUM, (uint8_t)CYCLOPS_RESOLUTION,
                    "chlorophyllFluorescence", "microgramPerLiter",
                    "CyclopsChlorophyll") {}
+    /**
+     * @brief Destroy the Turner Cyclops Chlorophyll variable object - no action
+     * needed.
+     */
     ~TurnerCyclops_Chlorophyll() {}
 };
 
@@ -488,6 +530,10 @@ class TurnerCyclops_Rhodamine : public Variable {
         : Variable((const uint8_t)CYCLOPS_VAR_NUM, (uint8_t)CYCLOPS_RESOLUTION,
                    "RhodamineFluorescence", "partPerBillion",
                    "CyclopsRhodamine") {}
+    /**
+     * @brief Destroy the Turner Cyclops Rhodamine variable object - no action
+     * needed.
+     */
     ~TurnerCyclops_Rhodamine() {}
 };
 
@@ -540,6 +586,10 @@ class TurnerCyclops_Fluorescein : public Variable {
     TurnerCyclops_Fluorescein()
         : Variable((const uint8_t)CYCLOPS_VAR_NUM, (uint8_t)CYCLOPS_RESOLUTION,
                    "fluorescein", "partPerBillion", "CyclopsFluorescein") {}
+    /**
+     * @brief Destroy the Turner Cyclops Fluorescein variable object - no action
+     * needed.
+     */
     ~TurnerCyclops_Fluorescein() {}
 };
 
@@ -595,6 +645,10 @@ class TurnerCyclops_Phycocyanin : public Variable {
         : Variable((const uint8_t)CYCLOPS_VAR_NUM, (uint8_t)CYCLOPS_RESOLUTION,
                    "blue_GreenAlgae_Cyanobacteria_Phycocyanin",
                    "partPerBillion", "CyclopsPhycocyanin") {}
+    /**
+     * @brief Destroy the Turner Cyclops Phycocyanin variable object - no action
+     * needed.
+     */
     ~TurnerCyclops_Phycocyanin() {}
 };
 
@@ -648,6 +702,10 @@ class TurnerCyclops_Phycoerythrin : public Variable {
     TurnerCyclops_Phycoerythrin()
         : Variable((const uint8_t)CYCLOPS_VAR_NUM, (uint8_t)CYCLOPS_RESOLUTION,
                    "phycoerythrin", "partPerBillion", "CyclopsPhycoerythrin") {}
+    /**
+     * @brief Destroy the Turner Cyclops Phycoerythrin variable object - no
+     * action needed.
+     */
     ~TurnerCyclops_Phycoerythrin() {}
 };
 
@@ -706,6 +764,10 @@ class TurnerCyclops_CDOM : public Variable {
         : Variable((const uint8_t)CYCLOPS_VAR_NUM, (uint8_t)CYCLOPS_RESOLUTION,
                    "fluorescenceDissolvedOrganicMatter", "partPerBillion",
                    "CyclopsCDOM") {}
+    /**
+     * @brief Destroy the Turner Cyclops CDOM variable object - no action
+     * needed.
+     */
     ~TurnerCyclops_CDOM() {}
 };
 
@@ -761,6 +823,10 @@ class TurnerCyclops_CrudeOil : public Variable {
         : Variable((const uint8_t)CYCLOPS_VAR_NUM, (uint8_t)CYCLOPS_RESOLUTION,
                    "petroleumHydrocarbonTotal", "partPerBillion",
                    "CyclopsCrudeOil") {}
+    /**
+     * @brief Destroy the Turner Cyclops CrudeOil variable object - no action
+     * needed.
+     */
     ~TurnerCyclops_CrudeOil() {}
 };
 
@@ -817,6 +883,9 @@ class TurnerCyclops_Brighteners : public Variable {
         : Variable((const uint8_t)CYCLOPS_VAR_NUM, (uint8_t)CYCLOPS_RESOLUTION,
                    "opticalBrighteners", "partPerBillion",
                    "CyclopsOpticalBrighteners") {}
+    /**
+     * @brief Destroy the Turner Cyclops Brighteners object - no action needed.
+     */
     ~TurnerCyclops_Brighteners() {}
 };
 
@@ -870,6 +939,10 @@ class TurnerCyclops_Turbidity : public Variable {
         : Variable((const uint8_t)CYCLOPS_VAR_NUM, (uint8_t)CYCLOPS_RESOLUTION,
                    "Turbidity", "nephelometricTurbidityUnit",
                    "CyclopsTurbidity") {}
+    /**
+     * @brief Destroy the Turner Cyclops Turbidity variable object - no action
+     * needed.
+     */
     ~TurnerCyclops_Turbidity() {}
 };
 
@@ -923,6 +996,10 @@ class TurnerCyclops_PTSA : public Variable {
     TurnerCyclops_PTSA()
         : Variable((const uint8_t)CYCLOPS_VAR_NUM, (uint8_t)CYCLOPS_RESOLUTION,
                    "ptsa", "partPerBillion", "CyclopsPTSA") {}
+    /**
+     * @brief Destroy the Turner Cyclops PTSA variable object - no action
+     * needed.
+     */
     ~TurnerCyclops_PTSA() {}
 };
 
@@ -976,6 +1053,10 @@ class TurnerCyclops_BTEX : public Variable {
     TurnerCyclops_BTEX()
         : Variable((const uint8_t)CYCLOPS_VAR_NUM, (uint8_t)CYCLOPS_RESOLUTION,
                    "btex", "partPerMillion", "CyclopsBTEX") {}
+    /**
+     * @brief Destroy the Turner Cyclops BTEX variable object - no action
+     * needed.
+     */
     ~TurnerCyclops_BTEX() {}
 };
 
@@ -1028,6 +1109,10 @@ class TurnerCyclops_Tryptophan : public Variable {
     TurnerCyclops_Tryptophan()
         : Variable((const uint8_t)CYCLOPS_VAR_NUM, (uint8_t)CYCLOPS_RESOLUTION,
                    "tryptophan", "partPerBillion", "CyclopsTryptophan") {}
+    /**
+     * @brief Destroy the Turner Cyclops Tryptophan variable object - no action
+     * needed.
+     */
     ~TurnerCyclops_Tryptophan() {}
 };
 
@@ -1082,6 +1167,10 @@ class TurnerCyclops_RedChlorophyll : public Variable {
         : Variable((const uint8_t)CYCLOPS_VAR_NUM, (uint8_t)CYCLOPS_RESOLUTION,
                    "chlorophyllFluorescence", "microgramPerLiter",
                    "CyclopsRedChlorophyll") {}
+    /**
+     * @brief Destroy the Turner Cyclops Red Chlorophyll variable object - no
+     * action needed.
+     */
     ~TurnerCyclops_RedChlorophyll() {}
 };
 /**@}*/

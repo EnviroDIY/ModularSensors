@@ -132,7 +132,7 @@ class DreamHostPublisher : public dataPublisher {
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
      *
-     * @return **int16_t** The http status code of the response.
+     * @return The http status code of the response.
      */
     int16_t publishData(Client* outClient) override;
 
@@ -152,8 +152,10 @@ class DreamHostPublisher : public dataPublisher {
 
 
  private:
+    /**
+     * @brief A pointer to the base URL for the dreamhost portal.
+     */
     const char* _DreamHostPortalRX = nullptr;
-    bool        _dualPost          = true;
 };
 
 #endif  // SRC_PUBLISHERS_DREAMHOSTPUBLISHER_H_

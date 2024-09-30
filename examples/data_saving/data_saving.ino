@@ -47,7 +47,7 @@
 // peripherals as possible.  In some cases (ie, modbus communication) many
 // sensors can share the same serial port.
 
-#if not defined ARDUINO_ARCH_SAMD && not defined ATMEGA2560  // For AVR boards
+#if !defined(ARDUINO_ARCH_SAMD) && !defined(ATMEGA2560)  // For AVR boards
 // Unfortunately, most AVR boards have only one or two hardware serial ports,
 // so we'll set up three types of extra software serial ports to use
 
@@ -61,7 +61,7 @@ AltSoftSerial altSoftSerial;
 #endif  // End software serial for avr boards
 
 
-#if defined ARDUINO_ARCH_SAMD
+#if defined(ARDUINO_ARCH_SAMD)
 #include <wiring_private.h>  // Needed for SAMD pinPeripheral() function
 
 #ifndef ENABLE_SERIAL2
@@ -395,7 +395,7 @@ void setup() {
 // Wait for USB connection to be established by PC
 // NOTE:  Only use this when debugging - if not connected to a PC, this
 // could prevent the script from starting
-#if defined SERIAL_PORT_USBVIRTUAL
+#if defined(SERIAL_PORT_USBVIRTUAL)
     while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000)) {
         // wait
     }
@@ -423,7 +423,7 @@ void setup() {
 
 // Assign pins SERCOM functionality for SAMD boards
 // NOTE:  This must happen *after* the various serial.begin statements
-#if defined ARDUINO_ARCH_SAMD
+#if defined(ARDUINO_ARCH_SAMD)
 #ifndef ENABLE_SERIAL2
     pinPeripheral(10, PIO_SERCOM);  // Serial2 Tx/Dout = SERCOM1 Pad #2
     pinPeripheral(11, PIO_SERCOM);  // Serial2 Rx/Din = SERCOM1 Pad #0
@@ -544,7 +544,7 @@ void loop() {
         // we will explicitly start and end the serial connection in the loop.
         modbusSerial.end();
 
-#if defined AltSoftSerial_h
+#if defined(AltSoftSerial_h)
         // Explicitly set the pin modes for the AltSoftSerial pins to make sure
         // they're low
         pinMode(5, OUTPUT);  // On a Mayfly, pin D5 is the AltSoftSerial Tx pin
@@ -553,7 +553,7 @@ void loop() {
         digitalWrite(6, LOW);
 #endif
 
-#if defined ARDUINO_SAMD_ZERO
+#if defined(ARDUINO_SAMD_ZERO)
         digitalWrite(10, LOW);
         digitalWrite(11, LOW);
 #endif
