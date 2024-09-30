@@ -18,13 +18,14 @@
 
 
 // The constructor - need the power pin and the data pin
-AlphasenseCO2::AlphasenseCO2(int8_t powerPin, uint8_t i2cAddress,
-                             uint8_t measurementsToAverage)
+AlphasenseCO2::AlphasenseCO2(int8_t powerPin, aco2_adsDiffMux_t adsDiffMux,
+                             uint8_t i2cAddress, uint8_t measurementsToAverage)
     : Sensor("AlphasenseCO2", ALPHASENSE_CO2_NUM_VARIABLES,
              ALPHASENSE_CO2_WARM_UP_TIME_MS,
              ALPHASENSE_CO2_STABILIZATION_TIME_MS,
              ALPHASENSE_CO2_MEASUREMENT_TIME_MS, powerPin, -1,
              measurementsToAverage, ALPHASENSE_CO2_INC_CALC_VARIABLES),
+      _adsDiffMux(adsDiffMux),
       _i2cAddress(i2cAddress) {}
 
 // Destructor
@@ -82,9 +83,7 @@ bool AlphasenseCO2::addSingleMeasurementResult(void) {
 
         // Read Analog to Digital Converter (ADC)
         // Taking this reading includes the 8ms conversion delay.
-        // We're allowing the ADS1115 library to do the bit-to-volts conversion
-        // for us
-        // Measure the voltage difference across two pins from the CO2 sensor
+        // Measure the voltage differential across the two voltage pins
         adcCounts = ads.readADC_Differential_2_3();
         // Convert ADC counts value to voltage (V)
         adcVoltage = ads.computeVolts(adcCounts);

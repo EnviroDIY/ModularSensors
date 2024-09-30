@@ -824,11 +824,12 @@ Variable* ds3231Temp =
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const int8_t  AlphasenseCO2Power = sensorPowerPin;  // Power pin
+aco2_adsDiffMux_t  AlphasenseDiffMux = DIFF_MUX_2_3; // Differential voltage config
 const uint8_t AlphasenseCO2ADSi2c_addr =
     0x48;  // The I2C address of the ADS1115 ADC
 
 // Create an Alphasense CO2 sensor object
-AlphasenseCO2 alphasenseCO2(AlphasenseCO2Power, AlphasenseCO2ADSi2c_addr);
+AlphasenseCO2 alphasenseCO2(AlphasenseCO2Power, AlphasenseDiffMux,AlphasenseCO2ADSi2c_addr);
 
 // Create PAR and raw voltage variable pointers for the CO2
 Variable* asCO2        = new AlphasenseCO2_CO2(&alphasenseCO2,

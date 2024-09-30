@@ -117,8 +117,16 @@
  */
 #define ALPHASENSE_CO2_CALIBRATION_FACTOR 1
 #endif
-
-/// The assumed address of the ADS1115, 1001 000 (ADDR = GND)
+/**
+ * @brief Enum for the pins used for differential voltages.
+ */
+typedef enum : uint16_t {
+    DIFF_MUX_0_1,  ///< differential across pins 0 and 1
+    DIFF_MUX_0_3,  ///< differential across pins 0 and 3
+    DIFF_MUX_1_3,  ///< differential across pins 1 and 3
+    DIFF_MUX_2_3   ///< differential across pins 2 and 3
+} aco2_adsDiffMux_t;
+/// @brief The assumed address of the ADS1115, 1001 000 (ADDR = GND)
 #define ADS1115_ADDRESS 0x48
 /**@}*/
 
@@ -165,6 +173,17 @@
  * {{ @ref AlphasenseCO2_CO2 }}
  */
 /**@{*/
+/// Variable number; CO2 is stored in sensorValues[0].
+#define ALPHASENSE_CO2_VAR_NUM 0
+/// @brief Variable name in [ODM2 controlled
+/// vocabulary](http://vocabulary.odm2.org/variablename/); "carbonDioxide"
+#define ALPHASENSE_CO2_VAR_NAME "carbonDioxide"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "partPerMillion" (ppm)
+#define ALPHASENSE_CO2_UNIT_NAME "partPerMillion"
+/// @brief Default variable short code; "AlphasenseCO2ppm"
+#define ALPHASENSE_CO2_DEFAULT_CODE "AlphasenseCO2ppm"
 #ifdef MS_USE_ADS1015
 /// @brief Decimals places in string representation; CO2 should have 0 when
 /// using an ADS1015.
@@ -174,19 +193,6 @@
 /// using an ADS1115.
 #define ALPHASENSE_CO2_RESOLUTION 4
 #endif
-/// Variable number; CO2 is stored in sensorValues[0].
-#define ALPHASENSE_CO2_VAR_NUM 0
-/// @brief Variable name in [ODM2 controlled
-/// vocabulary](http://vocabulary.odm2.org/variablename/);
-/// "radiationIncomingPAR"
-#define ALPHASENSE_CO2_VAR_NAME "carbonDioxide"
-/// @brief Variable unit name in
-/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
-/// "partPerMillion" (ppm)
-#define ALPHASENSE_CO2_UNIT_NAME "partPerMillion"
-/// @brief Default variable short code; "AlphasenseCO2ppm"
-#define ALPHASENSE_CO2_DEFAULT_CODE "AlphasenseCO2ppm"
-
 /**@}*/
 
 /**
@@ -212,8 +218,8 @@
 /// @brief Variable name in [ODM2 controlled
 /// vocabulary](http://vocabulary.odm2.org/variablename/); "voltage"
 #define ALPHASENSE_CO2_VOLTAGE_VAR_NAME "voltage"
-/// @brief Variable unit name in
-/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "volt" (V)
+/// @brief Variable unit name in [ODM2 controlled
+/// vocabulary](http://vocabulary.odm2.org/units/); "volt" (V)
 #define ALPHASENSE_CO2_VOLTAGE_UNIT_NAME "volt"
 /// @brief Default variable short code; "AlphasenseCO2Voltage"
 #define ALPHASENSE_CO2_VOLTAGE_DEFAULT_CODE "AlphasenseCO2Voltage"
@@ -249,6 +255,8 @@ class AlphasenseCO2 : public Sensor {
      * Alphasense CO2 sensor.  Use -1 if it is continuously powered.
      * - The Alphasense CO2 sensor requires 2-5 V DC; current draw 20-60 mA
      * - The ADS1115 requires 2.0-5.5V but is assumed to be powered at 3.3V
+     * @param adsDiffMux Which two pins _on the TI ADS1115_ that will measure
+     * differential voltage. See #aco2_adsDiffMux_t.
      * @param i2cAddress The I2C address of the ADS 1x15, default is 0x48 (ADDR
      * = GND)
      * @param measurementsToAverage The number of measurements to take and
@@ -258,7 +266,8 @@ class AlphasenseCO2 : public Sensor {
      * its power controlled by the same pin as the Alphasense CO2 sensor.  This
      * library does not support any other configuration.
      */
-    AlphasenseCO2(int8_t powerPin, uint8_t i2cAddress = ADS1115_ADDRESS,
+    AlphasenseCO2(int8_t powerPin, aco2_adsDiffMux_t adsDiffMux = DIFF_MUX_2_3,
+                  uint8_t i2cAddress            = ADS1115_ADDRESS,
                   uint8_t measurementsToAverage = 7);
     /**
      * @brief Destroy the AlphasenseCO2 object - no action needed
@@ -279,6 +288,11 @@ class AlphasenseCO2 : public Sensor {
     bool addSingleMeasurementResult(void) override;
 
  private:
+    /**
+     * @brief Which two pins _on the TI ADS1115_ that will measure differential
+     * voltage from the Turbidity Plus. See #aco2_adsDiffMux_t
+     */
+    aco2_adsDiffMux_t _adsDiffMux;
     /**
      * @brief Internal reference to the I2C address of the TI-ADS1x15
      */
@@ -330,7 +344,6 @@ class AlphasenseCO2_CO2 : public Variable {
 };
 
 
-/* clang-format off */
 /**
  * @brief The Variable sub-class used for the
  * [raw voltage output](@ref sensor_alphasense_co2_voltage) from an
@@ -338,7 +351,6 @@ class AlphasenseCO2_CO2 : public Variable {
  *
  * @ingroup sensor_alphasense_co2
  */
-/* clang-format on */
 class AlphasenseCO2_Voltage : public Variable {
  public:
     /**
