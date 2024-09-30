@@ -107,11 +107,9 @@
       "name": "Adafruit ADS1X15",
       "owner": "adafruit",
       "url": "https://github.com/adafruit/Adafruit_ADS1X15",
-      "version": "~2.4.2",
+      "version": "~2.5.0",
       "note": "Driver for TI's ADS1X15: 12 and 16-bit Differential or Single-Ended ADC with PGA and Comparator.",
-      "authors": [
-        "Adafruit"
-      ],
+      "authors": ["Adafruit"],
       "frameworks": "arduino",
       "platforms": "atmelavr, atmelsam"
     },

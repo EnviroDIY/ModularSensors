@@ -59,7 +59,7 @@ bool TurnerCyclops::addSingleMeasurementResult(void) {
 #ifndef MS_USE_ADS1015
         Adafruit_ADS1115 ads;  // Use this for the 16-bit version
 #else
-        Adafruit_ADS1015 ads(_i2cAddress);  // Use this for the 12-bit version
+        Adafruit_ADS1015 ads;  // Use this for the 12-bit version
 #endif
         // ADS Library default settings:
         //  - TI1115 (16 bit)
