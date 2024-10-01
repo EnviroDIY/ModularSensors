@@ -1,0 +1,115 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "page",
+    "id": "page_arduino_streams",
+    "name": "Notes on Arduino Streams and Software Serial",
+    "url_base": "page_arduino_streams",
+    "url": "page_arduino_streams.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p><a name=\"md_docs_2_f_a_q_2_arduino-_streams\"></a></p><p>In this library, the Arduino communicates with the computer for debugging, the modem for sending data, and some sensors (like the <a href=\"https://github.com/EnviroDIY/ModularSensors/wiki/MaxBotix-MaxSonar\">MaxBotix MaxSonar</a>) via instances of Arduino TTL <a href=\"https://www.arduino.cc/en/Reference/Stream\">streams</a>. The streams can either be an instance of</p><ul><li><a href=\"https://www.arduino.cc/en/Reference/Serial\">serial (hardware serial)</a>,</li><li><a href=\"https://github.com/PaulStoffregen/AltSoftSerial\">AltSoftSerial</a>,</li><li><a href=\"https://github.com/SRGDamia1/NeoSWSerial\">NeoSWSerial</a>,</li><li><a href=\"https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts\">the EnviroDIY modified version of SoftwareSerial</a>,</li><li>or any other stream type you desire.</li></ul><p>Because of the limited number of serial ports available on most boards, I suggest giving first priority (i.e. the first (or only) hardware serial port, &quot;Serial&quot;) to your programming and debugging stream going to your PC (if you intend to debug), second priority to the stream for the modem, and third priority to any sensors that require a stream for communication.</p><p>The very commonly used build-in version of the software serial library for AVR processors uses interrupts that conflict with several other sub-libraries or this library and <em>cannot be used</em>. I repeat. <em><strong>You cannot use the built-in version of SoftwareSerial!</strong></em>. You simply cannot. It will not work. Period. This is not a bug that will be fixed.</p><p>See the section on <a href=\"https://envirodiy.github.io/ModularSensors/page_processor_compatibility.html\">Processor/Board Compatibility</a> for more specific notes on what serial ports are available on the various supported processors.</p><section id=\"streams_hardware\"><h2>Hardware Serial</h2><p>For stream communication, <strong>hardware serial</strong> should <em>always</em> be your first choice, if your processor has enough hardware serial ports. Hardware serial ports are the most stable and have the best performance of any of the other streams. Hardware serial ports are also the only option if you need to communicate with any device that uses even or odd parity, more than one stop bit, or does not use 8 data bits. (That is, hardware serial ports are the only way to communicate with a device that doesn&#x27;t use the 8N1 configuration. Again, <em><strong>always use a hardware serial port for communication if possible!</strong></em></p><p>To use a hardware serial stream, you do not need to include any libraries or write any extra lines. You can simply write in <code>Serial#</code> where ever you need a stream. If you would like to give your hardware serial port an easy-to-remember alias, you can use code like this:</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\">1</span><span class=\"n\">HardwareSerial</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">streamName</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"o\">&amp;</span><span class=\"n\">Serial</span><span class=\"p\">;</span>\n</div></div></div></section><section id=\"streams_altss\"><h2>AltSoftSerial</h2><p>If the <a href=\"https://www.pjrc.com/teensy/td_libs_AltSoftSerial.html\">proper pins</a> are available, <strong><a href=\"https://github.com/PaulStoffregen/AltSoftSerial\">AltSoftSerial</a></strong> by Paul Stoffregen is also superior to SoftwareSerial, especially at slow baud rates. AltSoftSerial is compatible with ModularSensors &quot;out of the box&quot; - that is, you don&#x27;t need and modifications to the library or extra defines or build flags to make it work. The biggest drawback to AltSoftSerial is that it is limited to <em>a single set of pins on any given processor</em>. That means you can only ever have one instance of it running at a time. On the EnviroDIY Mayfly, the AltSoftSerial pins are 5 (Transmit/Tx/Dout) and 6 (Receive/Rx/Din).</p><p>To use AltSoftSerial:</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\">1</span><span class=\"cp\">#include &lt;AltSoftSerial.h.</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\">2</span><span class=\"c1\">// include the AltSoftSerial library</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\">3</span><span class=\"n\">AltSoftSerial</span><span class=\"w\"> </span><span class=\"n\">streamName</span><span class=\"p\">.</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\">4</span><span class=\"c1\">// Create an instance of AltSoftSerial</span>\n</div></div></div></section><section id=\"streams_neosw\"><h2>NeoSWSerial</h2><p>Another possible serial port emulator is <a href=\"https://github.com/SRGDamia1/NeoSWSerial\">NeoSWSerial</a>. While not as stable as AltSoftSerial, it supports using any pin with pin change interrupts for communication. To use NeoSWSerial with ModularSensors, you must add the line <code>-D NEOSWSERIAL_EXTERNAL_PCINT</code> to the build flags section of your platformio.ini file If you are using the ArduinoIDE, you must find and open the library install location and open and modify the NeoSWSerial.h file. Find and remove the two slashes from the start of the line <code>//#define NEOSWSERIAL_EXTERNAL_PCINT</code>) and then recompile the library. There are instructions in the NeoSWSerial ReadMe on how to use EnableInterrupt to activate NeoSWSerial. Note that NeoSWSerial must be used with great care with the SDI-12 communication library on most 8MHz processors (including the EnviroDIY Mayfly). The two libraries can be compiled together, but because they are in competition for a timer, you must be very careful to enable and disable each when using the other.. The way this (ModularSensors) uses the SDI-12 library resets the timer settings when ending communication, so you should be able to use the two libraries together. Please test your configuration before deploying it!</p><p>After correctly compiling NeoSWSerial, to use it:</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\">1</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;NeoSWSerial.h&gt;</span><span class=\"c1\">          // for the stream communication</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\">2</span><span class=\"k\">const</span><span class=\"w\"> </span><span class=\"kt\">int8_t</span><span class=\"w\"> </span><span class=\"n\">neoSSerial1Rx</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">11</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// data in pin</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\">3</span><span class=\"k\">const</span><span class=\"w\"> </span><span class=\"kt\">int8_t</span><span class=\"w\"> </span><span class=\"n\">neoSSerial1Tx</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">-1</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// data out pin</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\">4</span><span class=\"n\">NeoSWSerial</span><span class=\"w\">  </span><span class=\"nf\">neoSSerial1</span><span class=\"p\">(</span><span class=\"n\">neoSSerial1Rx</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">neoSSerial1Tx</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\">5</span><span class=\"c1\">// To use NeoSWSerial in this library, we define a function to receive data</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\">6</span><span class=\"c1\">// This is just a short-cut for later</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\">7</span><span class=\"kt\">void</span><span class=\"w\"> </span><span class=\"nf\">neoSSerial1ISR</span><span class=\"p\">()</span><span class=\"w\"> </span><span class=\"p\">{</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\">8</span><span class=\"w\">    </span><span class=\"n\">NeoSWSerial</span><span class=\"o\">::</span><span class=\"n\">rxISR</span><span class=\"p\">(</span><span class=\"o\">*</span><span class=\"n\">portInputRegister</span><span class=\"p\">(</span><span class=\"n\">digitalPinToPort</span><span class=\"p\">(</span><span class=\"n\">neoSSerial1Rx</span><span class=\"p\">)));</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\">9</span><span class=\"p\">}</span>\n</div></div></div><p>After creating the stream instances, you must always remember to &quot;begin&quot; your stream within the main setup function.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\">1</span><span class=\"n\">streamName</span><span class=\"p\">.</span><span class=\"n\">begin</span><span class=\"p\">(</span><span class=\"n\">BAUD_RATE</span><span class=\"p\">);</span>\n</div></div></div><p>Additionally, for the EnviroDIY modified version of SoftwareSerial, (or NeoSWSerial) you must enable the interrupts in your setup function:</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\">1</span><span class=\"c1\">// Allow enableInterrrupt to control the interrupts for software serial</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\">2</span><span class=\"n\">enableInterrupt</span><span class=\"p\">(</span><span class=\"n\">rx_pin</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">neoSSerial1ISR</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">CHANGE</span><span class=\"p\">);</span>\n</div></div></div></section><section id=\"streams_softwareserial\"><h2>Neutered SoftwareSerial</h2><p><a href=\"https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts\">The EnviroDIY modified version of SoftwareSerial</a> removes direct interrupt control from the SoftwareSerial library, making it dependent on another interrupt library, but able to be compiled with ModularSensors. This is, <em>by far</em>, the <em>least</em> stable serial port option and should only be used on sensors that are not very picky about the quality of the serial stream or that only require one-way communication (ie, only posting data rather than needing to receive commands).</p><p>To use the EnviroDIY modified version of SoftwareSerial:</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\">1</span><span class=\"cp\">#include &lt;SoftwareSerial_ExtInts.h.</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\">2</span><span class=\"c1\">// include the SoftwareSerial library</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\">3</span><span class=\"n\">SoftwareSerial_ExtInts</span><span class=\"w\"> </span><span class=\"nf\">streamName</span><span class=\"p\">(</span><span class=\"n\">tx_pin</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">rx_pin</span><span class=\"p\">);</span>\n</div></div></div><p>After creating the stream instances, you must always remember to &quot;begin&quot; your stream within the main setup function.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\">1</span><span class=\"n\">streamName</span><span class=\"p\">.</span><span class=\"n\">begin</span><span class=\"p\">(</span><span class=\"n\">BAUD_RATE</span><span class=\"p\">);</span>\n</div></div></div><p>Additionally, for the EnviroDIY modified version of SoftwareSerial, you must enable the interrupts in your setup function:</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\">1</span><span class=\"c1\">// Allow enableInterrrupt to control the interrupts for software serial</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\">2</span><span class=\"n\">enableInterrupt</span><span class=\"p\">(</span><span class=\"n\">rx_pin</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">SoftwareSerial_ExtInts</span><span class=\"o\">::</span><span class=\"n\">handle_interrupt</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">CHANGE</span><span class=\"p\">);</span>\n</div></div></div></section><section id=\"streams_samd_sercom\"><h2>SAMD SERCOMs</h2><p>Example code for creating more serial ports on an Adafruit feather M0 using the SERCOMs is available <a href=\"https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_samd_serial_ports\">in the menu a la carte example</a>.</p><p>Here are some helpful links for more information about the number of serial ports available on some of the different Arduino-style boards:</p><ul><li>For Arduino brand boards. <a href=\"https://www.arduino.cc/en/Reference/Serial\">https:/<wbr />/<wbr />www.arduino.cc/<wbr />en/<wbr />Reference/<wbr />Serial</a></li><li>For AtSAMD21 boards. <a href=\"https://learn.adafruit.com/using-atsamd21-sercom-to-add-more-spi-i2c-serial-ports/overview\">https:/<wbr />/<wbr />learn.adafruit.com/<wbr />using-atsamd21-sercom-to-add-more-spi-i2c-serial-ports/<wbr />overview</a></li></ul></section>",
+    "sections": [
+      [
+        "streams_hardware",
+        "Hardware Serial",
+        []
+      ],
+      [
+        "streams_altss",
+        "AltSoftSerial",
+        []
+      ],
+      [
+        "streams_neosw",
+        "NeoSWSerial",
+        []
+      ],
+      [
+        "streams_softwareserial",
+        "Neutered SoftwareSerial",
+        []
+      ],
+      [
+        "streams_samd_sercom",
+        "SAMD SERCOMs",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": [
+      [
+        "page_processor_compatibility.html",
+        "Processor Compatibility"
+      ],
+      [
+        "page_faq.html",
+        "FAQs"
+      ],
+      [
+        "page_power_parasites.html",
+        "Power Draw over Data Lines"
+      ]
+    ],
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "ModularSensors",
+        "index.html"
+      ],
+      [
+        "FAQs",
+        "page_faq.html"
+      ],
+      [
+        "Notes on Arduino Streams and Software Serial",
+        "page_arduino_streams.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Notes on Arduino Streams and Software Serial",
+        "page_arduino_streams.html"
+      ]
+    ]
+  }
+}

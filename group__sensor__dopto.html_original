@@ -1,20 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
 <head>
   <meta charset="UTF-8" />
-  <title>Supported Sensors &raquo; SDI-12 Sensors &raquo; Zebra-Tech D-Opto module | ModularSensors</title>
+  <title>Supported Sensors &raquo; SDI-12 Sensors &raquo; Zebra-Tech D-Opto topic | ModularSensors0.36.0</title>
   <link rel="stylesheet" href="m-EnviroDIY+documentation.compiled.css" />
+
+<style id="wp-emoji-styles-inline-css" type="text/css">
+  img.wp-smiley,
+  img.emoji {
+    display: inline !important;
+    border: none !important;
+    box-shadow: none !important;
+    height: 1em !important;
+    width: 1em !important;
+    margin: 0 0.07em !important;
+    vertical-align: -0.1em !important;
+    background: none !important;
+    padding: 0 !important;
+  }
+</style>
 <link
   rel="stylesheet"
   id="gp-parent-style-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/style.css?ver=6.1.1"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/style.css?ver=6.5.4"
   type="text/css"
   media="all"
 />
 <link
   rel="stylesheet"
-  id="ghostpool-style-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize-child/style.css?ver=6.1.1"
+  id="redux-extendify-styles-css"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/framework/redux/assets/css/extendify-utilities.css?ver=4.4.11"
   type="text/css"
   media="all"
 />
@@ -124,31 +139,27 @@
 <link
   rel="stylesheet"
   id="fontawesome-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/fonts/font-awesome/css/font-awesome.min.css?ver=6.1.1"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/fonts/font-awesome/css/font-awesome.min.css?ver=6.5.4"
   type="text/css"
   media="all"
 />
 <link
-  rel="stylesheet"
-  id="prettyphoto-css"
-  href="https://www.envirodiy.org/wp-content/plugins/js_composer/assets/lib/prettyphoto/css/prettyPhoto.min.css?ver=6.10.0"
-  type="text/css"
-  media="all"
+  rel="preload"
+  as="style"
+  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
 />
 <link
   rel="stylesheet"
-  id="gp-bp-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/css/bp.css?ver=6.1.1"
-  type="text/css"
-  media="all"
+  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
+  media="print"
+  onload="this.media='all'"
 />
-<link
-  rel="stylesheet"
-  id="gp-bbp-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/css/bbpress.css?ver=6.1.1"
-  type="text/css"
-  media="all"
-/>
+<noscript
+  ><link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
+/></noscript>
+
 <style type="text/css" id="wp-custom-css">
   /* Print Styles */
   @media print {
@@ -162,12 +173,15 @@
       margin: 0 !important;
       padding: 0;
     }
+
     body:not(.gp-full-page-page-header) .gp-page-header.gp-has-text:before,
     body:not(.gp-full-page-page-header)
       .gp-page-header.gp-has-teaser-video.gp-has-text
       .gp-video-header:before {
       background-image: none !important;
     }
+    /* End print styles */
+
     #gp-main-header,
     #gp-small-header,
     #gp-header-area,
@@ -219,6 +233,7 @@
     img {
       page-break-inside: avoid;
       visibility: visible;
+      float: none;
     }
     blockquote,
     table,
@@ -231,7 +246,7 @@
       page-break-before: avoid;
     }
   }
-  /* End print styles */
+
   /*Gutenberg styles*/
   /*Buttons*/
   a.wp-block-button__link {
@@ -362,10 +377,17 @@
   span.woocommerce-Price-amount.amount {
     text-decoration: none !important;
   }
+  /* Hide additional information tab */
+  div.woocommerce-tabs {
+    display: none !important;
+  }
   /*End WooCommerce styles*/
   /*The Events Calendar*/
   #tribe-events-content a {
     color: #0579bd;
+  }
+  #tribe-events-content .wp-block-button__link {
+    color: #ffffff;
   }
   #gp-sidebar-right
     > div
@@ -451,6 +473,9 @@
   #gp-content p.last-updated {
     display: none;
   }
+  #gp-content ul {
+    margin: 0 0 0 20px !important;
+  }
 </style>
 <style id="socialize-dynamic-css" title="dynamic-css" class="redux-options-output">
   #footer-image img {
@@ -483,7 +508,6 @@
     font-style: normal;
     color: #000;
     font-size: 16px;
-    font-display: swap;
   }
   a {
     color: #0579bd;
@@ -497,7 +521,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 36px;
-    font-display: swap;
   }
   h2 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -505,7 +528,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 28px;
-    font-display: swap;
   }
   h3,
   #tab-description h2,
@@ -519,7 +541,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 24px;
-    font-display: swap;
   }
   h4 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -527,7 +548,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 20px;
-    font-display: swap;
   }
   h5 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -535,7 +555,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 18px;
-    font-display: swap;
   }
   h6 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -543,7 +562,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 16px;
-    font-display: swap;
   }
   .gp-entry-meta .gp-post-meta-row-1,
   .gp-homepage #gp-content .gp-vc-element-3,
@@ -577,7 +595,6 @@
     font-style: normal;
     color: #ababab;
     font-size: 16px;
-    font-display: swap;
   }
   #gp-primary-main-nav .menu > li:hover > a,
   #gp-primary-main-nav .menu > li > a {
@@ -600,7 +617,6 @@
     font-style: normal;
     color: #fff;
     font-size: 14px;
-    font-display: swap;
   }
   #gp-secondary-main-nav .menu > li:hover > a,
   #gp-secondary-main-nav .menu > li > a {
@@ -641,7 +657,6 @@
     font-style: normal;
     color: #000;
     font-size: 14px;
-    font-display: swap;
   }
   .gp-nav .menu > .gp-standard-menu > .sub-menu > li a {
     color: #000;
@@ -745,7 +760,6 @@
     font-style: normal;
     color: #fff;
     font-size: 80px;
-    font-display: swap;
   }
   .gp-page-header .gp-container {
     height: 250px;
@@ -759,7 +773,6 @@
     font-style: normal;
     color: #000;
     font-size: 40px;
-    font-display: swap;
   }
   .gp-subtitle {
     font-family: Roboto;
@@ -768,7 +781,6 @@
     font-style: normal;
     color: #0579bd;
     font-size: 20px;
-    font-display: swap;
   }
   #gp-post-links a,
   .gp-pagination-arrows a.prev,
@@ -811,7 +823,6 @@
     line-height: 24px;
     color: #fff;
     font-size: 14px;
-    font-display: swap;
   }
   .gp-author-info a {
     color: #b1b1b1;
@@ -840,19 +851,16 @@
     font-style: normal;
     color: #fff;
     font-size: 24px;
-    font-display: swap;
   }
   .gp-loop-title {
     line-height: 22px;
     font-weight: 400;
     font-size: 19px;
-    font-display: swap;
   }
   .gp-blog-large .gp-loop-title {
     line-height: 46px;
     font-weight: 200;
     font-size: 40px;
-    font-display: swap;
   }
   .gp-loop-title a,
   .bboss_search_item .entry-title a {
@@ -914,7 +922,6 @@
     font-style: normal;
     color: #000;
     font-size: 14px;
-    font-display: swap;
   }
   .widgettitle a,
   .widget-title a,
@@ -1157,7 +1164,6 @@
     font-style: normal;
     color: #fff;
     font-size: 16px;
-    font-display: swap;
   }
   .gp-footer-widget {
     font-family: Roboto;
@@ -1166,7 +1172,6 @@
     font-style: normal;
     color: #ffffff;
     font-size: 14px;
-    font-display: swap;
   }
   .gp-footer-widget a {
     color: #f9bd16;
@@ -1195,441 +1200,295 @@
   #gp-to-top {
     color: #ffffff;
   }
-  .woocommerce ul.products li.product .price,
-  .woocommerce div.product p.price,
-  .woocommerce div.product span.price {
-    color: #00bee9;
-  }
-  .woocommerce span.onsale {
-    background-color: #e93100;
-  }
-  #buddypress .activity-list .activity-content .activity-header,
-  #buddypress .activity-list .activity-content .comment-header,
-  #buddypress .activity-list .activity-header a,
-  #buddypress .activity-list div.activity-comments div.acomment-meta,
-  #buddypress .activity-list .acomment-meta a,
-  .widget.buddypress .item-title a,
-  .widget.buddypress div.item-options.gp-small-item-options:before,
-  .widget.buddypress div.item-options a,
-  #buddypress ul.item-list li div.item-title a,
-  #buddypress ul.item-list li h4 > a,
-  #buddypress ul.item-list li h5 > a,
-  #buddypress div#item-header div#item-meta {
-    color: #000000;
-  }
-  #buddypress .activity-list .activity-content .activity-inner {
-    color: #aaaaaa;
-  }
-  #buddypress .activity-list a.activity-time-since,
-  .widget_display_replies ul li a + div,
-  .widget_display_topics ul li a + div,
-  #buddypress .activity-list .acomment-meta a.activity-time-since,
-  #buddypress .activity-list div.activity-comments div.acomment-content,
-  .widget.buddypress div.item-meta,
-  #buddypress span.activity,
-  #buddypress ul.item-list li div.meta {
-    color: #545454;
-  }
-  .gp-theme #buddypress .activity-list div.activity-meta a.button,
-  .gp-theme #buddypress .activity .acomment-options a,
-  .gp-theme #buddypress .activity-list li.load-more a,
-  .gp-theme #buddypress .activity-list li.load-newest a,
-  .widget.buddypress div.item-options a.selected {
-    color: #26a9e0;
-  }
-  .gp-theme #buddypress .activity-list div.activity-meta a.button:hover,
-  .gp-theme #buddypress .activity .acomment-options a:hover,
-  .gp-theme #buddypress .activity-list li.load-more a:hover,
-  .gp-theme #buddypress .activity-list li.load-newest a:hover,
-  .widget.buddypress div.item-options a.selected:hover {
-    color: #000;
-  }
-  .gp-theme #buddypress ul.item-list li,
-  .gp-theme #buddypress div.activity-comments ul li:first-child,
-  .widget.buddypress #friends-list li,
-  .widget.buddypress #groups-list li,
-  .widget.buddypress #members-list li {
-    border-top: 1px solid #e0e0e0;
-    border-bottom: 1px solid #e0e0e0;
-  }
-  .gp-theme #buddypress div.item-list-tabs {
-    background-color: #353535;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a span,
-  .gp-theme #buddypress div.item-list-tabs ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs ul li.selected a span {
-    color: #353535;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a span {
-    background-color: #ffffff;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a,
-  .gp-theme #buddypress #gp-bp-tabs-button,
-  .gp-theme #buddypress div.item-list-tabs ul li span {
-    color: #ffffff;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li.current a,
-  .gp-theme #buddypress div.item-list-tabs ul li.selected a,
-  .gp-theme #buddypress div.item-list-tabs ul li a:hover {
-    color: #b1b1b1;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs ul li.selected a span {
-    background: #b1b1b1;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul,
-  .widget.buddypress div.item-options.gp-small-item-options > a {
-    background-color: #f8f8f8;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.selected a span {
-    color: #f8f8f8;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a span {
-    background-color: #000000;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a {
-    color: #000000;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.current a,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.selected a,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a:hover {
-    color: #26a9e0;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.selected a span {
-    background: #26a9e0;
-  }
-  #bbpress-forums
-    .gp-forum-home.bbp-forums
-    .bbp-has-subforums
-    .bbp-forum-info
-    > .bbp-forum-title,
-  #bbpress-forums .bbp-topics .bbp-header,
-  #bbpress-forums .bbp-replies .bbp-header,
-  #bbpress-forums .bbp-search-results .bbp-header {
-    background-color: #353535;
-  }
-  #bbpress-forums
-    .gp-forum-home.bbp-forums
-    .bbp-has-subforums
-    .bbp-forum-info
-    > .bbp-forum-title,
-  #bbpress-forums .bbp-topics .bbp-header,
-  #bbpress-forums .bbp-replies .bbp-header,
-  #bbpress-forums .bbp-search-results .bbp-header {
-    color: #ffffff;
-  }
-  #bbpress-forums .bbp-header div.bbp-reply-content a {
-    color: #ddd;
-  }
-  #bbpress-forums .bbp-header div.bbp-reply-content a:hover {
-    color: #fff;
-  }
-  #bbpress-forums .bbp-forums-list li.odd-forum-row,
-  #bbpress-forums div.odd,
-  #bbpress-forums ul.odd {
-    background-color: #f8f8f8;
-  }
-  #bbpress-forums .bbp-forums-list li.even-forum-row,
-  #bbpress-forums div.even,
-  #bbpress-forums ul.even {
-    background-color: #fff;
-  }
-  #bbpress-forums .gp-forum-home.bbp-forums .bbp-forum-info > .bbp-forum-title,
-  #bbpress-forums div.bbp-forum-header,
-  #bbpress-forums div.bbp-topic-header,
-  #bbpress-forums div.bbp-reply-header,
-  #bbpress-forums .bbp-forums-list,
-  #bbpress-forums li.bbp-body {
-    border-top: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
-    border-left: 1px solid #ddd;
-    border-right: 1px solid #ddd;
-  }
-  #bbpress-forums .bbp-forums-list .bbp-forum .bbp-forum-link,
-  body.forum #bbpress-forums .bbp-forums .bbp-forum-info > .bbp-forum-title,
-  #bbpress-forums .bbp-topics .bbp-topic-permalink,
-  #bbpress-forums .gp-forum-home.bbp-forums .bbp-forum-info > .bbp-forum-title,
-  .gp-theme
-    #bbpress-forums
-    .gp-forum-shortcode
-    ul.forum:not(.status-category)
-    .bbp-forum-info
-    a {
-    color: #000000;
-  }
-  #bbpress-forums div.bbp-forum-author .bbp-author-role,
-  #bbpress-forums div.bbp-topic-author .bbp-author-role,
-  #bbpress-forums div.bbp-reply-author .bbp-author-role {
-    background-color: #92d050;
-  }
-  #bbpress-forums div.bbp-forum-author .bbp-author-role,
-  #bbpress-forums div.bbp-topic-author .bbp-author-role,
-  #bbpress-forums div.bbp-reply-author .bbp-author-role {
-    color: #ffffff;
-  }
 </style>
-    <style id="kadence-blocks-global-variables-inline-css" type="text/css">
-      :root {
-        --global-kb-font-size-sm: clamp(0.8rem, 0.73rem + 0.217vw, 0.9rem);
-        --global-kb-font-size-md: clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem);
-        --global-kb-font-size-lg: clamp(1.75rem, 1.576rem + 0.543vw, 2rem);
-        --global-kb-font-size-xl: clamp(2.25rem, 1.728rem + 1.63vw, 3rem);
-        --global-kb-font-size-xxl: clamp(2.5rem, 1.456rem + 3.26vw, 4rem);
-        --global-kb-font-size-xxxl: clamp(2.75rem, 0.489rem + 7.065vw, 6rem);
-      }
-    </style>
-    <link
-      rel="preload"
-      as="style"
-      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.1.1"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.1.1"
-      media="print"
-      onload="this.media='all'"
-    />
-    <noscript
-      ><link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.1.1"
-    /></noscript>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-includes/js/jquery/jquery.min.js?ver=3.6.1"
-  id="jquery-core-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2"
-  id="jquery-migrate-js"
-></script>  <link rel="icon" href="MS_FavIcon.png" type="image/png" />
+  <link rel="icon" href="MS_FavIcon.png" type="image/png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#cb4b16" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="clipboard.js"></script>
 </head>
 
-<body class="home-page bp-legacy home page-template page-template-homepage-template page-template-homepage-template-php page page-id-977 logged-in admin-bar no-customize-support theme-socialize woocommerce-no-js tribe-no-js page-template-socialize-child gp-theme gp-responsive gp-wide-layout gp-retina gp-normal-scrolling gp-no-back-to-top gp-relative-header gp-header-standard gp-cart-disabled gp-search-all gp-profile-disabled gp-small-header-all gp-standard-page-header gp-no-sidebar gp-homepage wpb-js-composer js-comp-ver-6.10.0 vc_responsive no-js">
+<body
+    class="theme-socialize page-template-socialize-child gp-theme gp-responsive gp-wide-layout gp-retina gp-normal-scrolling gp-no-back-to-top gp-relative-header gp-header-standard gp-cart-disabled gp-search-all gp-profile-disabled gp-small-header-all gp-standard-page-header gp-no-sidebar"
+>
 	<div id="gp-site-wrapper">
 
   <nav id="gp-mobile-nav">
     <div id="gp-mobile-nav-close-button"></div>
     <ul class="menu">
-        <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-            <a class="menu-link main-menu-link" href="index.html">About</a>
-          <ul class="sub-menu menu-odd menu-depth-1">
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#data_receivers">Data Endpoints</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#supported_sensors">Supported Sensors</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#modems">Supported Cellular/Wifi Modules</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#contributing">Contributing</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#license">License</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#acknowledgments">Acknowledgments</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="change_log.html">ChangeLog</a>
-              </li>
-          </ul>
-        </li>
-        <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-            <a class="menu-link main-menu-link" href="page_getting_started.html">Getting Started</a>
-          <ul class="sub-menu menu-odd menu-depth-1">
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>
-              </li>
-          </ul>
-        </li>
-        <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-            <a class="menu-link main-menu-link" href="page_faq.html">FAQs</a>
-          <ul class="sub-menu menu-odd menu-depth-1">
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>
-              </li>
-          </ul>
-        </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="modules.html">Modules</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="annotated.html">Classes</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="files.html">Source Files</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="page_the_examples.html">Examples Using ModularSensors</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="pages.html">More</a>          </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+      >
+<a href="index.html" class="menu-link main-menu-link">About</a>        <ul class="sub-menu menu-odd menu-depth-1">
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#data_receivers">Data Endpoints</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#supported_sensors">Supported Sensors</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#modems">Supported Cellular/Wifi Modules</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#contributing">Contributing</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#license">License</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#acknowledgments">Acknowledgments</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="change_log.html">ChangeLog</a>          </li>
+        </ul>
+      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+      >
+<a href="page_getting_started.html" class="menu-link main-menu-link">Getting Started</a>        <ul class="sub-menu menu-odd menu-depth-1">
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>          </li>
+        </ul>
+      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+      >
+<a href="page_faq.html" class="menu-link main-menu-link">FAQs</a>        <ul class="sub-menu menu-odd menu-depth-1">
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>          </li>
+        </ul>
+      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="topics.html" class="menu-link main-menu-link">Topics</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="annotated.html" class="menu-link main-menu-link">Classes</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="files.html" class="menu-link main-menu-link">Source Files</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="page_the_examples.html" class="menu-link main-menu-link">Examples Using ModularSensors</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="pages.html" class="menu-link main-menu-link">More</a>      </li>
     </ul>
-  </nav><div id="gp-mobile-nav-bg"></div>
+  </nav> <!-- gp-mobile-nav -->
+  <div id="gp-mobile-nav-bg"></div>
 
   <div id="gp-page-wrapper">
 
     <header id="gp-main-header">
       <div class="gp-container">
         <div id="gp-logo">
-          <a href="index.html" title="ModularSensors">
+          <a href="index.html" title="ModularSensors 0.36.0">
             <img
-              src="ModularSensors_ubuntu_264x55.png"
-              alt="ModularSensors"
-                  width="200"
-                  height="42"
+              src="gp-desktop-logo.png"
+              alt="ModularSensors 0.36.0"
+              width="200"
+              height="42"
               class="gp-desktop-logo"
             />
             <img
-              src="ModularSensors_ubuntu_264x55.png"
-              alt="ModularSensors"
+              src="gp-scrolling-logo.png"
+              alt="ModularSensors 0.36.0"
               width="264"
               height="55"
               class="gp-scrolling-logo"
             />
             <img
-              src="ModularSensors_ubuntu_264x55.png"
-              alt="ModularSensors"
+              src="gp-mobile-logo.png"
+              alt="ModularSensors 0.36.0"
               width="132"
               height="28"
               class="gp-mobile-logo"
             />
           </a>
-        </div>
+        </div> <!-- gp-logo -->
 
         <a id="gp-mobile-nav-button"></a>
 
         <nav id="gp-main-nav" class="gp-nav">
           <nav id="gp-primary-main-nav">
-              <ul id="menu-main-menu-1" class="menu">
-                <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-                    <a class="menu-link main-menu-link" href="index.html">About</a>
-                  <ul class="sub-menu menu-odd menu-depth-1">
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#data_receivers">Data Endpoints</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#supported_sensors">Supported Sensors</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#modems">Supported Cellular/Wifi Modules</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#contributing">Contributing</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#license">License</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#acknowledgments">Acknowledgments</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="change_log.html">ChangeLog</a>
-                      </li>
-                  </ul>
-                </li>
-                <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-                    <a class="menu-link main-menu-link" href="page_getting_started.html">Getting Started</a>
-                  <ul class="sub-menu menu-odd menu-depth-1">
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>
-                      </li>
-                  </ul>
-                </li>
-                <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-                    <a class="menu-link main-menu-link" href="page_faq.html">FAQs</a>
-                  <ul class="sub-menu menu-odd menu-depth-1">
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>
-                      </li>
-                  </ul>
-                </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="modules.html">Modules</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="annotated.html">Classes</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="files.html">Source Files</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="page_the_examples.html">Examples Using ModularSensors</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="pages.html">More</a>                  </li>
-              </ul>
-          </nav>
+            <ul id="menu-main-menu-1" class="menu">
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+              >
+<a href="index.html" class="menu-link main-menu-link" >About</a>                <ul class="sub-menu menu-odd menu-depth-1">
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#data_receivers">Data Endpoints</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#supported_sensors">Supported Sensors</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#modems">Supported Cellular/Wifi Modules</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#contributing">Contributing</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#license">License</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#acknowledgments">Acknowledgments</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="change_log.html">ChangeLog</a>                  </li>
+                </ul>
+              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+              >
+<a href="page_getting_started.html" class="menu-link main-menu-link" >Getting Started</a>                <ul class="sub-menu menu-odd menu-depth-1">
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>                  </li>
+                </ul>
+              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+              >
+<a href="page_faq.html" class="menu-link main-menu-link" >FAQs</a>                <ul class="sub-menu menu-odd menu-depth-1">
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>                  </li>
+                </ul>
+              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="topics.html"class="menu-link main-menu-link">Topics</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="annotated.html"class="menu-link main-menu-link">Classes</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="files.html"class="menu-link main-menu-link">Source Files</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="page_the_examples.html"class="menu-link main-menu-link">Examples Using ModularSensors</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="pages.html"class="menu-link main-menu-link">More</a>              </li>
+            </ul>
+          </nav> <!-- gp-primary-main-nav -->
 
           <div id="gp-search">
             <div id="m-search-button" class="m-show-m" onclick="return showSearch()">
-            </div>
-					</div>
-
-
+            </div> <!-- gp-search-box -->
+          </div> <!-- gp-search -->
 
           <nav id="gp-secondary-main-nav"></nav>
-        </nav></div>
-    </header><header id="gp-small-header">
+        </nav> <!-- gp-main-nav -->
+      </div> <!-- gp-container -->
+    </header> <!-- gp-main-header -->
+
+    <header id="gp-small-header">
       <div class="gp-container">
         <div class="gp-left-triangle"></div>
         <div class="gp-right-triangle"></div>
@@ -1656,7 +1515,9 @@
 
         </nav>
       </div>
-    </header><div id="gp-fixed-header-padding"></div>
+    </header> <!-- gp-small-header -->
+
+    <div id="gp-fixed-header-padding"></div>
 
     <div class="m-doc-search" id="search">
       <a href="#!" onclick="return hideSearch()"></a>
@@ -1664,7 +1525,7 @@
         <div class="gp-container">
           <div style="background-color:#fff;padding:20px;">
             <div class="m-doc-search-header m-text m-small">
-              <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+              <div><span class="m-label m-info">Tab</span> / <span class="m-label m-info">T</span> to search, <span class="m-label m-info">Esc</span> to close</div>
               <div id="search-symbolcount">&hellip;</div>
             </div>
             <div class="m-doc-search-content">
@@ -1674,7 +1535,7 @@
               <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
               <div id="search-help" class="m-text m-dim m-text-center">
                 <p class="m-noindent">Search for symbols, directories, files, pages or
-            modules. You can omit any prefix from the symbol or file path; adding a
+            topics. You can omit any prefix from the symbol or file path; adding a
             <code>:</code> or <code>/</code> suffix lists all members of given symbol or
             directory.</p>
             <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
@@ -1699,72 +1560,91 @@
 
     <div id="gp-content-wrapper" class="gp-container">
       <div id="gp-inner-container">
+        <div id="gp-left-column">
           <div id="gp-content">
 
             <main>
               <article>
-                <div class="m-container m-container-inflatable">
-                  <div class="m-row">
-                    <div class="m-col-l-10 m-push-l-1">
+                <div class="breadcrumbs" typeof="BreadcrumbList" vocab="http://schema.org/">
           <span class="m-breadcrumb">
             <a href="index.html">
               ModularSensors
             </a>  &gt; <wbr/>
           </span>
           <span class="m-breadcrumb">
-            <a href="modules.html">
-              Modules
+            <a href="topics.html">
+              Topics
             </a>  &gt; <wbr/>
           </span>
                     <span class="m-breadcrumb">
-          <a href="group__the__sensors.html">Supported Sensors</a> &gt; <wbr/>
+          <a href="group__the__sensors.html">
+            Supported Sensors
+          </a> &gt; <wbr/>
           </span>
           <span class="m-breadcrumb">
-          <a href="group__sdi12__group.html">SDI-12 Sensors</a> &gt; <wbr/>
+          <a href="group__sdi12__group.html">
+            SDI-12 Sensors
+          </a> &gt; <wbr/>
           </span>
           <span class="m-breadcrumb">
             Zebra-Tech D-Opto
           </span>
+                </div>
+                <header class="gp-entry-header">
+                  <h1 class="gp-entry-title" itemprop="headline">
+          Zebra-Tech D-Opto
+          <span class="m-thin">
+            topic
+          </span>
 
-        <header class="gp-entry-header">
-          <h1 class="gp-entry-title" itemprop="headline">
 
-          Zebra-Tech D-Opto <span class="m-thin">module</span>
-          </h1>
-        </header>
-        <div class="m-block m-default">
+                </h1>
+                </header>
+        <nav class="m-block m-default">
           <ul>
             <li><a href="#sensor_dopto_intro">Introduction</a></li>
             <li><a href="#sensor_dopto_datasheet">Sensor Datasheet</a></li>
             <li><a href="#sensor_dopto_flags">Build flags</a></li>
             <li><a href="#sensor_dopto_ctor">Sensor Constructor</a></li>
             <li><a href="#sensor_dopto_examples">Example Code</a></li>
+            <li>
+              Reference
+              <ul>
                 <li><a href="#nested-classes">Classes</a></li>
-                <li><a href="#define-members">Defines</a></li>
+                <li><a href="#sensor-variable-counts">Sensor Variable Counts</a></li>
                 <li><a href="#sensor-timing">Sensor Timing</a></li>
                 <li><a href="#temperature">Temperature</a></li>
                 <li><a href="#dissolved-oxygen-percent-saturation">Dissolved Oxygen Percent Saturation</a></li>
                 <li><a href="#dissolved-oxygen-concentration">Dissolved Oxygen Concentration</a></li>
+              </ul>
+            </li>
+            <li>
+              Detailed Descriptions
+              <ul>
+                <li><a href="#define-details">Defines</a></li>
+              </ul>
+            </li>
           </ul>
-        </div>
-          <p>Classes for the Zebra-Tech D-Opto digital dissolved oxygen sensor.</p><section id="sensor_dopto_intro"><h2>Introduction</h2><p>The <a href="http://www.zebra-tech.co.nz/d-opto-sensor/">Zebra-Tech D-Opto</a> sensor is implemented as a sub-classes of the <a href="class_s_d_i12_sensors.html" class="m-doc">SDI12Sensors</a> class. It requires an 8-12V power supply, which can be turned off between measurements. The connection between the logger and the Arduino board is made by way of a white interface module provided by Zebra-Tech. You will need a voltage booster or a separate power supply to give the D-Opto sufficient voltage to run. At the Stroud Center, we use <a href="https://www.pololu.com/product/2116">Pololu 9V Step-Up Voltage Regulators</a>.</p></section><section id="sensor_dopto_datasheet"><h2>Sensor Datasheet</h2><p>The manual for this sensor is available at: www.zebra-tech.co.nz/wp-content/uploads/2014/04/D-Opto-Sensor-manual-A4-ver-2.pdf</p></section><section id="sensor_dopto_flags"><h2>Build flags</h2><aside class="m-note m-default"><h4>See also</h4><p><a href="group__sdi12__group.html#sdi12_group_flags" class="m-doc">Build flags</a></p></aside></section><section id="sensor_dopto_ctor"><h2>Sensor Constructor</h2><p>{{ <a href="class_zebra_tech_d_opto.html#a751320c4a80c7ae96742aa583772bf9a" class="m-doc">ZebraTechDOpto::<wbr />ZebraTechDOpto</a> }}</p><hr/></section><section id="sensor_dopto_examples"><h2>Example Code</h2><p>The Zebra-Tech D-Opto is used in the <a href="example_menu.html#menu_walk_zebra_tech_d_opto" class="m-doc">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensors/ZebraTechDOpto.h&gt;</span>
-
-<span class="c1">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>
-<span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w">  </span><span class="n">DOptoSDI12address</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;5&quot;</span><span class="p">;</span><span class="w">  </span><span class="c1">// The SDI-12 Address of the D-Opto</span>
-<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">ZTPower</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="n">sensorPowerPin</span><span class="p">;</span><span class="w">  </span><span class="c1">// Power pin</span>
-<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">ZTData</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="mi">7</span><span class="p">;</span><span class="w">               </span><span class="c1">// The SDI-12 data pin</span>
-
-<span class="c1">// Create a Zebra Tech DOpto dissolved oxygen sensor object</span>
-<span class="n">ZebraTechDOpto</span><span class="w"> </span><span class="nf">dopto</span><span class="p">(</span><span class="o">*</span><span class="n">DOptoSDI12address</span><span class="p">,</span><span class="w"> </span><span class="n">ZTPower</span><span class="p">,</span><span class="w"> </span><span class="n">ZTData</span><span class="p">);</span>
-
-<span class="c1">// Create dissolved oxygen percent, dissolved oxygen concentration, and</span>
-<span class="c1">// temperature variable pointers for the Zebra Tech</span>
-<span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">dOptoDOpct</span><span class="w"> </span><span class="o">=</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">ZebraTechDOpto_DOpct</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dopto</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
-<span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">dOptoDOmgL</span><span class="w"> </span><span class="o">=</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">ZebraTechDOpto_DOmgL</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dopto</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
-<span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">dOptoTemp</span><span class="w"> </span><span class="o">=</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">ZebraTechDOpto_Temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dopto</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span></pre></section>
+        </nav>
+          <p>Classes for the Zebra-Tech D-Opto digital dissolved oxygen sensor.</p><section id="sensor_dopto_intro"><h2>Introduction</h2><p>The <a href="http://www.zebra-tech.co.nz/d-opto-sensor/">Zebra-Tech D-Opto</a> sensor is implemented as a sub-classes of the <a href="class_s_d_i12_sensors.html" class="m-doc">SDI12Sensors</a> class. It requires an 8-12V power supply, which can be turned off between measurements. The connection between the logger and the Arduino board is made by way of a white interface module provided by Zebra-Tech. You will need a voltage booster or a separate power supply to give the D-Opto sufficient voltage to run. At the Stroud Center, we use <a href="https://www.pololu.com/product/2116">Pololu 9V Step-Up Voltage Regulators</a>.</p></section><section id="sensor_dopto_datasheet"><h2>Sensor Datasheet</h2><p>The manual for this sensor is available at: www.zebra-tech.co.nz/wp-content/uploads/2014/04/D-Opto-Sensor-manual-A4-ver-2.pdf</p></section><section id="sensor_dopto_flags"><h2>Build flags</h2><aside class="m-note m-default"><h4>See also</h4><p><a href="group__sdi12__group.html#sdi12_group_flags" class="m-doc">Build flags</a></p></aside></section><section id="sensor_dopto_ctor"><h2>Sensor Constructor</h2><p>{{ <a href="class_zebra_tech_d_opto.html#a751320c4a80c7ae96742aa583772bf9a" class="m-doc">ZebraTechDOpto::<wbr />ZebraTechDOpto</a> }}</p><hr/></section><section id="sensor_dopto_examples"><h2>Example Code</h2><p>The Zebra-Tech D-Opto is used in the <a href="example_menu.html#menu_walk_zebra_tech_d_opto" class="m-doc">menu a la carte</a> example.</p><div class="m-code-arduino"><div class="highlight"><div class="line"><a id="l-1" name="l-1"></a><span class="linenos"> 1</span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensors/ZebraTechDOpto.h&gt;</span>
+</div><div class="line"><a id="l-2" name="l-2"></a><span class="linenos"> 2</span>
+</div><div class="line"><a id="l-3" name="l-3"></a><span class="linenos"> 3</span><span class="c1">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>
+</div><div class="line"><a id="l-4" name="l-4"></a><span class="linenos"> 4</span><span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w">  </span><span class="n">DOptoSDI12address</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;5&quot;</span><span class="p">;</span><span class="w">  </span><span class="c1">// The SDI-12 Address of the D-Opto</span>
+</div><div class="line"><a id="l-5" name="l-5"></a><span class="linenos"> 5</span><span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">ZTPower</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="n">sensorPowerPin</span><span class="p">;</span><span class="w">  </span><span class="c1">// Power pin</span>
+</div><div class="line"><a id="l-6" name="l-6"></a><span class="linenos"> 6</span><span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">ZTData</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="mi">7</span><span class="p">;</span><span class="w">               </span><span class="c1">// The SDI-12 data pin</span>
+</div><div class="line"><a id="l-7" name="l-7"></a><span class="linenos"> 7</span>
+</div><div class="line"><a id="l-8" name="l-8"></a><span class="linenos"> 8</span><span class="c1">// Create a Zebra Tech DOpto dissolved oxygen sensor object</span>
+</div><div class="line"><a id="l-9" name="l-9"></a><span class="linenos"> 9</span><span class="n">ZebraTechDOpto</span><span class="w"> </span><span class="nf">dopto</span><span class="p">(</span><span class="o">*</span><span class="n">DOptoSDI12address</span><span class="p">,</span><span class="w"> </span><span class="n">ZTPower</span><span class="p">,</span><span class="w"> </span><span class="n">ZTData</span><span class="p">);</span>
+</div><div class="line"><a id="l-10" name="l-10"></a><span class="linenos">10</span>
+</div><div class="line"><a id="l-11" name="l-11"></a><span class="linenos">11</span><span class="c1">// Create dissolved oxygen percent, dissolved oxygen concentration, and</span>
+</div><div class="line"><a id="l-12" name="l-12"></a><span class="linenos">12</span><span class="c1">// temperature variable pointers for the Zebra Tech</span>
+</div><div class="line"><a id="l-13" name="l-13"></a><span class="linenos">13</span><span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">dOptoDOpct</span><span class="w"> </span><span class="o">=</span>
+</div><div class="line"><a id="l-14" name="l-14"></a><span class="linenos">14</span><span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">ZebraTechDOpto_DOpct</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dopto</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
+</div><div class="line"><a id="l-15" name="l-15"></a><span class="linenos">15</span><span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">dOptoDOmgL</span><span class="w"> </span><span class="o">=</span>
+</div><div class="line"><a id="l-16" name="l-16"></a><span class="linenos">16</span><span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">ZebraTechDOpto_DOmgL</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dopto</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
+</div><div class="line"><a id="l-17" name="l-17"></a><span class="linenos">17</span><span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">dOptoTemp</span><span class="w"> </span><span class="o">=</span>
+</div><div class="line"><a id="l-18" name="l-18"></a><span class="linenos">18</span><span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">ZebraTechDOpto_Temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dopto</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
+</div></div></div></section>
         <section id="nested-classes">
           <h2>Classes</h2>
           <dl class="m-doc">
@@ -1786,216 +1666,507 @@
             <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__dopto.html#sensor_dopto_domgl" class="m-doc">dissolved oxygen concentration output</a> from a <a href="group__sensor__dopto.html" class="m-doc">Zebra-Tech D-Opto dissolved oxygen sensor</a>.</dd>
           </dl>
         </section>
-        <section id="define-members">
-          <h2>Defines</h2>
+        <section id="sensor-variable-counts">
+          <h2>Sensor Variable Counts</h2>
+<p><a name="sensor_dopto_var_counts"></a> The number of variables that can be returned by a ZebraTech D-Opto</p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga94c54cbdde9a78f5d79078a534798c9e" class="m-doc">DOPTO_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
             </dt>
             <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the D-Opto can report 3 values.</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga8b8ec45ec89b40dc4903ccdfcdcbe57e" class="m-doc">DOPTO_INC_CALC_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
             </dt>
             <dd><a href="class_sensor.html#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.</dd>
-
-
           </dl>
         </section>
         <section id="sensor-timing">
           <h2>Sensor Timing</h2>
-<p><a name="sensor_dopto_timing"></a> The sensor timing for an ZebraTech D-Opto</p>
+<p><a name="sensor_dopto_timing"></a> The sensor timing for a ZebraTech D-Opto</p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga949ca1d1e8fe8dbce0240e0139b4e849" class="m-doc">DOPTO_WARM_UP_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 275</span></span>
             </dt>
             <dd><a href="class_sensor.html#aaaefd7f306f86382a3dac726531756b4" class="m-doc">Sensor::<wbr />_warmUpTime_ms</a>; the D-Opto warms up in 275ms. Maximum warm-up time in SDI-12 mode: ~250ms, give a bit of extra for safety.</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gae13292c0413db691b6d83661b5b24205" class="m-doc">DOPTO_STABILIZATION_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
             </dt>
             <dd><a href="class_sensor.html#ad6822ad09fb64658c911ce86820db79c" class="m-doc">Sensor::<wbr />_stabilizationTime_ms</a>; the D-Opto is stable as soon as it warms up (0ms stabilization).</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gae36702cf4451acd216251b6d503388a0" class="m-doc">DOPTO_MEASUREMENT_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 5335</span></span>
             </dt>
             <dd><a href="class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba" class="m-doc">Sensor::<wbr />_measurementTime_ms</a>; the D-Opto takes 5335ms to complete a measurement.</dd>
-
-              <dd><ul><li>Excitiation time before measurement: ~5225ms</li><li>Maximum measurement duration: ~110ms</li></ul><p>Obnoxiously, the sensor will not take a &quot;concurrent&quot; measurement and leave the sensor powered on, so we must wait entire ~5200ms exitation time and the 110ms measurement time each time. There is the ability to do a non-concurrent measurement and leave the sensor powered on, in which case the re-measurement takes ~110ms, but doing it that way the sensor would send an interruption when it was finished, possibly colliding with and confusing other sensor results.</p></dd>
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga64ed157f1e468718383eb291c3f71562" class="m-doc">DOPTO_EXTRA_WAKE_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
             </dt>
             <dd>Extra wake time required for an SDI-12 sensor between the &quot;break&quot; and the time the command is sent. The D-Opto requires no extra time.</dd>
-
-
           </dl>
         </section>
         <section id="temperature">
           <h2>Temperature</h2>
-<p><a name="sensor_dopto_temp"></a> The temperature variable from an ZebraTech D-Opto</p><ul><li>Range is not specified in sensor datasheet</li><li>Accuracy is ± 0.1°C</li></ul><p>{{ <a href="class_zebra_tech_d_opto___temp.html#a6612e3571596416e0b060a65f7aaa5be" class="m-doc">ZebraTechDOpto_Temp::<wbr />ZebraTechDOpto_Temp</a> }}</p>
+<p><a name="sensor_dopto_temp"></a> The temperature variable from a ZebraTech D-Opto</p><ul><li>Range is not specified in sensor datasheet</li><li>Accuracy is ± 0.1°C</li></ul><p>{{ <a href="class_zebra_tech_d_opto___temp.html#a3a17106ef3350bed13f81a5b9d0e5d56" class="m-doc">ZebraTechDOpto_Temp::<wbr />ZebraTechDOpto_Temp</a> }}</p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gad417132157f9ae9ddd93e9aae35ff7c8" class="m-doc">DOPTO_TEMP_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
             </dt>
             <dd>Decimals places in string representation; temperature should have 2 - resolution is 0.01°C.</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga0c5950b4ed10f69439bbc100d44a5c39" class="m-doc">DOPTO_TEMP_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
             </dt>
             <dd><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; temperature is stored in sensorValues[0].</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga85b54b3c4203ff91941d95abbd1496d1" class="m-doc">DOPTO_TEMP_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "temperature"</span></span>
             </dt>
             <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;temperature&quot;.</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gaf32a4e97b38ac09d5721c23b51eb88b6" class="m-doc">DOPTO_TEMP_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "degreeCelsius"</span></span>
             </dt>
             <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;degreeCelsius&quot; (°C)</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga28b9bcc1b0a61f5de3a860f3c696a94c" class="m-doc">DOPTO_TEMP_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "DOtempC"</span></span>
             </dt>
             <dd>Default variable short code; &quot;DOtempC&quot;.</dd>
-
-
           </dl>
         </section>
         <section id="dissolved-oxygen-percent-saturation">
           <h2>Dissolved Oxygen Percent Saturation</h2>
-<p><a name="sensor_dopto_dopercent"></a> The percent saturation variable from an ZebraTech D-Opto</p><ul><li>Range is not specified in sensor datasheet</li><li>Accuracy is 1 % of reading or 0.02PPM, whichever is greater</li></ul><p>{{ <a href="class_zebra_tech_d_opto___d_opct.html#a2624e5e39e8736506f24a46e29ccfb95" class="m-doc">ZebraTechDOpto_DOpct::<wbr />ZebraTechDOpto_DOpct</a> }}</p>
+<p><a name="sensor_dopto_dopercent"></a> The percent saturation variable from a ZebraTech D-Opto</p><ul><li>Range is not specified in sensor datasheet</li><li>Accuracy is 1 % of reading or 0.02PPM, whichever is greater</li></ul><p>{{ <a href="class_zebra_tech_d_opto___d_opct.html#a022578c500342a4b355669459e21ccb8" class="m-doc">ZebraTechDOpto_DOpct::<wbr />ZebraTechDOpto_DOpct</a> }}</p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga0d661e2ef21cc588d605f6a7ff6d1bb5" class="m-doc">DOPTO_DOPCT_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
             </dt>
             <dd>Decimals places in string representation; dissolved oxygen percent should have 2.</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gaa994bac563d90814b1f00f98a30b92be" class="m-doc">DOPTO_DOPCT_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
             </dt>
             <dd><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; dissolved oxygen percent is stored in sensorValues[1].</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gaecbc79ce742adaf742cc74017be36ee2" class="m-doc">DOPTO_DOPCT_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "oxygenDissolvedPercentOfSaturation"</span></span>
             </dt>
             <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;oxygenDissolvedPercentOfSaturation&quot;.</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga113d1ec9b18488a3c02884788e4c3fa4" class="m-doc">DOPTO_DOPCT_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "percent"</span></span>
             </dt>
             <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;percent&quot; (% saturation)</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga32b702341b2628159f8daaee46de36b2" class="m-doc">DOPTO_DOPCT_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "DOpercent"</span></span>
             </dt>
             <dd>Default variable short code; &quot;DOpercent&quot;.</dd>
-
-
           </dl>
         </section>
         <section id="dissolved-oxygen-concentration">
           <h2>Dissolved Oxygen Concentration</h2>
-<p><a name="sensor_dopto_domgl"></a> The DO concentration variable from an ZebraTech D-Opto</p><ul><li>Range is not specified in sensor datasheet</li><li>Accuracy is 1 % of reading or 0.02PPM, whichever is greater</li></ul><p>{{ <a href="class_zebra_tech_d_opto___d_omg_l.html#a3da19763e32946e75c63117dda6522fa" class="m-doc">ZebraTechDOpto_DOmgL::<wbr />ZebraTechDOpto_DOmgL</a> }}</p>
+<p><a name="sensor_dopto_domgl"></a> The DO concentration variable from a ZebraTech D-Opto</p><ul><li>Range is not specified in sensor datasheet</li><li>Accuracy is 1 % of reading or 0.02PPM, whichever is greater</li></ul><p>{{ <a href="class_zebra_tech_d_opto___d_omg_l.html#a5b8ac619a5cd287a774057a4cf145c5b" class="m-doc">ZebraTechDOpto_DOmgL::<wbr />ZebraTechDOpto_DOmgL</a> }}</p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gadbde680c2ab20494cdcc2c59928f3f38" class="m-doc">DOPTO_DOMGL_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
             </dt>
             <dd>Decimals places in string representation; dissolved oxygen concentration should have 3 - resolution is 0.01 % / 0.001 PPM.</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga1868480e78cd2eb443f2cc3fb25514cd" class="m-doc">DOPTO_DOMGL_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
             </dt>
             <dd><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; dissolved oxygen concentration is stored in sensorValues[2].</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gacee17b5238f975286e65fa289ef05b27" class="m-doc">DOPTO_DOMGL_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "oxygenDissolved"</span></span>
             </dt>
             <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;oxygenDissolved&quot;.</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gaf5dc7a5af961ed76e2adedb0d0b14f9e" class="m-doc">DOPTO_DOMGL_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "milligramPerLiter"</span></span>
             </dt>
             <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;milligramPerLiter&quot; (mg/L)</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gaaba698e5191eeacc91e09aaea44932ca" class="m-doc">DOPTO_DOMGL_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "DOppm"</span></span>
             </dt>
             <dd>Default variable short code; &quot;DOppm&quot;.</dd>
-
-
           </dl>
         </section>
 
-                    </div>
-                  </div>
-                </div>
+        <section id="define-details">
+          <h2>Define documentation</h2>
+        <section class="m-doc-details" id="ga94c54cbdde9a78f5d79078a534798c9e">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga94c54cbdde9a78f5d79078a534798c9e" class="m-doc-self">DOPTO_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_zebra_tech_d_opto_8h.html">&lt;src/sensors/ZebraTechDOpto.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the D-Opto can report 3 values.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga8b8ec45ec89b40dc4903ccdfcdcbe57e">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga8b8ec45ec89b40dc4903ccdfcdcbe57e" class="m-doc-self">DOPTO_INC_CALC_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_zebra_tech_d_opto_8h.html">&lt;src/sensors/ZebraTechDOpto.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_sensor.html#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga949ca1d1e8fe8dbce0240e0139b4e849">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga949ca1d1e8fe8dbce0240e0139b4e849" class="m-doc-self">DOPTO_WARM_UP_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 275</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_zebra_tech_d_opto_8h.html">&lt;src/sensors/ZebraTechDOpto.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_sensor.html#aaaefd7f306f86382a3dac726531756b4" class="m-doc">Sensor::<wbr />_warmUpTime_ms</a>; the D-Opto warms up in 275ms. Maximum warm-up time in SDI-12 mode: ~250ms, give a bit of extra for safety.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gae13292c0413db691b6d83661b5b24205">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gae13292c0413db691b6d83661b5b24205" class="m-doc-self">DOPTO_STABILIZATION_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_zebra_tech_d_opto_8h.html">&lt;src/sensors/ZebraTechDOpto.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_sensor.html#ad6822ad09fb64658c911ce86820db79c" class="m-doc">Sensor::<wbr />_stabilizationTime_ms</a>; the D-Opto is stable as soon as it warms up (0ms stabilization).</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gae36702cf4451acd216251b6d503388a0">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gae36702cf4451acd216251b6d503388a0" class="m-doc-self">DOPTO_MEASUREMENT_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 5335</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_zebra_tech_d_opto_8h.html">&lt;src/sensors/ZebraTechDOpto.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba" class="m-doc">Sensor::<wbr />_measurementTime_ms</a>; the D-Opto takes 5335ms to complete a measurement.</p>
+
+
+              <ul><li>Excitiation time before measurement: ~5225ms</li><li>Maximum measurement duration: ~110ms</li></ul><p>Obnoxiously, the sensor will not take a &quot;concurrent&quot; measurement and leave the sensor powered on, so we must wait entire ~5200ms exitation time and the 110ms measurement time each time. There is the ability to do a non-concurrent measurement and leave the sensor powered on, in which case the re-measurement takes ~110ms, but doing it that way the sensor would send an interruption when it was finished, possibly colliding with and confusing other sensor results.</p>
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga64ed157f1e468718383eb291c3f71562">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga64ed157f1e468718383eb291c3f71562" class="m-doc-self">DOPTO_EXTRA_WAKE_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_zebra_tech_d_opto_8h.html">&lt;src/sensors/ZebraTechDOpto.h&gt;</a></div>
+            </h3>
+
+            <p>Extra wake time required for an SDI-12 sensor between the &quot;break&quot; and the time the command is sent. The D-Opto requires no extra time.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gad417132157f9ae9ddd93e9aae35ff7c8">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gad417132157f9ae9ddd93e9aae35ff7c8" class="m-doc-self">DOPTO_TEMP_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_zebra_tech_d_opto_8h.html">&lt;src/sensors/ZebraTechDOpto.h&gt;</a></div>
+            </h3>
+
+            <p>Decimals places in string representation; temperature should have 2 - resolution is 0.01°C.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga0c5950b4ed10f69439bbc100d44a5c39">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga0c5950b4ed10f69439bbc100d44a5c39" class="m-doc-self">DOPTO_TEMP_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_zebra_tech_d_opto_8h.html">&lt;src/sensors/ZebraTechDOpto.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; temperature is stored in sensorValues[0].</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga85b54b3c4203ff91941d95abbd1496d1">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga85b54b3c4203ff91941d95abbd1496d1" class="m-doc-self">DOPTO_TEMP_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "temperature"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_zebra_tech_d_opto_8h.html">&lt;src/sensors/ZebraTechDOpto.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;temperature&quot;.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gaf32a4e97b38ac09d5721c23b51eb88b6">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaf32a4e97b38ac09d5721c23b51eb88b6" class="m-doc-self">DOPTO_TEMP_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "degreeCelsius"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_zebra_tech_d_opto_8h.html">&lt;src/sensors/ZebraTechDOpto.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;degreeCelsius&quot; (°C)</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga28b9bcc1b0a61f5de3a860f3c696a94c">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga28b9bcc1b0a61f5de3a860f3c696a94c" class="m-doc-self">DOPTO_TEMP_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "DOtempC"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_zebra_tech_d_opto_8h.html">&lt;src/sensors/ZebraTechDOpto.h&gt;</a></div>
+            </h3>
+
+            <p>Default variable short code; &quot;DOtempC&quot;.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga0d661e2ef21cc588d605f6a7ff6d1bb5">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga0d661e2ef21cc588d605f6a7ff6d1bb5" class="m-doc-self">DOPTO_DOPCT_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_zebra_tech_d_opto_8h.html">&lt;src/sensors/ZebraTechDOpto.h&gt;</a></div>
+            </h3>
+
+            <p>Decimals places in string representation; dissolved oxygen percent should have 2.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gaa994bac563d90814b1f00f98a30b92be">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaa994bac563d90814b1f00f98a30b92be" class="m-doc-self">DOPTO_DOPCT_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_zebra_tech_d_opto_8h.html">&lt;src/sensors/ZebraTechDOpto.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; dissolved oxygen percent is stored in sensorValues[1].</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gaecbc79ce742adaf742cc74017be36ee2">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaecbc79ce742adaf742cc74017be36ee2" class="m-doc-self">DOPTO_DOPCT_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "oxygenDissolvedPercentOfSaturation"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_zebra_tech_d_opto_8h.html">&lt;src/sensors/ZebraTechDOpto.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;oxygenDissolvedPercentOfSaturation&quot;.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga113d1ec9b18488a3c02884788e4c3fa4">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga113d1ec9b18488a3c02884788e4c3fa4" class="m-doc-self">DOPTO_DOPCT_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "percent"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_zebra_tech_d_opto_8h.html">&lt;src/sensors/ZebraTechDOpto.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;percent&quot; (% saturation)</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga32b702341b2628159f8daaee46de36b2">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga32b702341b2628159f8daaee46de36b2" class="m-doc-self">DOPTO_DOPCT_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "DOpercent"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_zebra_tech_d_opto_8h.html">&lt;src/sensors/ZebraTechDOpto.h&gt;</a></div>
+            </h3>
+
+            <p>Default variable short code; &quot;DOpercent&quot;.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gadbde680c2ab20494cdcc2c59928f3f38">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gadbde680c2ab20494cdcc2c59928f3f38" class="m-doc-self">DOPTO_DOMGL_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_zebra_tech_d_opto_8h.html">&lt;src/sensors/ZebraTechDOpto.h&gt;</a></div>
+            </h3>
+
+            <p>Decimals places in string representation; dissolved oxygen concentration should have 3 - resolution is 0.01 % / 0.001 PPM.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga1868480e78cd2eb443f2cc3fb25514cd">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga1868480e78cd2eb443f2cc3fb25514cd" class="m-doc-self">DOPTO_DOMGL_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_zebra_tech_d_opto_8h.html">&lt;src/sensors/ZebraTechDOpto.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; dissolved oxygen concentration is stored in sensorValues[2].</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gacee17b5238f975286e65fa289ef05b27">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gacee17b5238f975286e65fa289ef05b27" class="m-doc-self">DOPTO_DOMGL_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "oxygenDissolved"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_zebra_tech_d_opto_8h.html">&lt;src/sensors/ZebraTechDOpto.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;oxygenDissolved&quot;.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gaf5dc7a5af961ed76e2adedb0d0b14f9e">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaf5dc7a5af961ed76e2adedb0d0b14f9e" class="m-doc-self">DOPTO_DOMGL_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "milligramPerLiter"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_zebra_tech_d_opto_8h.html">&lt;src/sensors/ZebraTechDOpto.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;milligramPerLiter&quot; (mg/L)</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gaaba698e5191eeacc91e09aaea44932ca">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaaba698e5191eeacc91e09aaea44932ca" class="m-doc-self">DOPTO_DOMGL_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "DOppm"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_zebra_tech_d_opto_8h.html">&lt;src/sensors/ZebraTechDOpto.h&gt;</a></div>
+            </h3>
+
+            <p>Default variable short code; &quot;DOppm&quot;.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        </section>
               </article>
             </main>
 
-          </div>      </div></div><div id="footer-image">
-          <div class="gp-container">
-            <img
-              src="https://www.envirodiy.org/wp-content/uploads/2016/05/EnviroDIY_LogoMaster_Square_V5_TwoTree_Trans_notext-e1462820115833.png"
-              width="99"
-              height="22"
-              alt=""
-            />
-          </div>
-        </div>
+          </div> <!-- gp-content -->
+        </div> <!-- gp-left-column -->
+      </div> <!-- gp-inner-container -->
+    </div> <!-- gp-content-wrapper -->
+
+    <div id="footer-image">
+      <div class="gp-container">
+        <img
+          src="https://www.envirodiy.org/wp-content/uploads/2016/05/EnviroDIY_LogoMaster_Square_V5_TwoTree_Trans_notext-e1462820115833.png"
+          width="99"
+          height="22"
+          alt=""
+        />
+      </div>
+    </div>
 
     <footer id="gp-footer">
       <div id="gp-copyright">
         <div class="gp-container">
           <div id="gp-copyright-text">
             <p>
-              <a href="http://www.stroudcenter.org/" target="_blank"
-                ><img
-                  style="float: left; margin-right: 20px;"
-                  src="https://www.envirodiy.org/wp-content/uploads/2017/01/stroud-white-white-165px.png"
-                  alt=""
-                  width="165"
-                  height="70" /></a
-              >EnviroDIY™ is a community for do-it-yourself ideas for
-              environmental science and monitoring. EnviroDIY is an
-              initiative of
-              <a href="http://www.stroudcenter.org/" target="_blank"
-                >Stroud™ Water Research Center</a
-              >, which seeks to advance knowledge and stewardship of
-              freshwater systems through global research, education, and
-              watershed restoration.
+              <a href="https://stroudcenter.org/" target="_blank"
+                >EnviroDIY™ is a community for do-it-yourself ideas for environmental
+                science and monitoring. EnviroDIY is an initiative of
+                <a
+                  style="text-decoration: underline"
+                  href="https://stroudcenter.org/"
+                  target="_blank"
+                  >Stroud Water Research Center</a
+                >, which advances knowledge and stewardship of freshwater systems through
+                global research, education, and watershed restoration.
+              </a>
             </p>
             <p>
               All content on EnviroDIY is licensed as Creative Commons
-              Attribution-ShareAlike 4.0 International (CC-BY-SA). Hardware
-              designs on this website are released under the CERN Open
-              Hardware License 1.2.
-              <a href="https://envirodiy.org/licenses/"
-                >Alternative licenses are available.</a
+              Attribution-ShareAlike 4.0 International (CC-BY-SA). Hardware designs on this
+              website are released under the CERN Open Hardware License 1.2.
+              <a style="text-decoration: underline" href="https://envirodiy.org/licenses/"
+                >See all licenses.</a
               >
-              <a href="https://envirodiy.org/terms/">Terms of Use</a> |
-              <a href="https://envirodiy.org/privacy/">Privacy Policy</a> |
-              <a href="https://envirodiy.org/cookies/">Cookie Policy</a> |
-              <a href="https://envirodiy.org/contact/">Contact</a>
+              <a style="text-decoration: underline" href="https://envirodiy.org/terms/"
+                >Terms of Use</a
+              >
+              |
+              <a style="text-decoration: underline" href="https://envirodiy.org/privacy/"
+                >Privacy Policy</a
+              >
+              |
+              <a style="text-decoration: underline" href="https://envirodiy.org/cookies/"
+                >Cookie Policy</a
+              >
+              |
+              <a
+                style="text-decoration: underline"
+                href="https://envirodiy.org/shop-policies/"
+                >Shop Policies</a
+              >
+              |
+              <a style="text-decoration: underline" href="https://envirodiy.org/contact/"
+                >Contact</a
+              >
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.6 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.12.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>
@@ -2004,69 +2175,8 @@
 
     <div class="gp-clear"></div>
 
-    </div></div><script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/modernizr.js?ver=6.1.1"
-  id="modernizr-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-includes/js/imagesloaded.min.js?ver=4.1.4"
-  id="imagesloaded-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/selectivizr.min.js?ver=6.1.1"
-  id="selectivizr-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/placeholders.min.js?ver=6.1.1"
-  id="placeholder-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/jquery.ui.totop.min.js.js?ver=6.1.1"
-  id="jquery-totop-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/jquery.flexslider-min.js?ver=6.1.1"
-  id="jquery-flexslider-js"
-></script>
-<script type="text/javascript" id="ghostpool-custom-js-js-extra">
-  /* <![CDATA[ */
-  var ghostpool_script = {
-    lightbox: 'separate_images',
-    url: 'https:\/\/www.envirodiy.org\/',
-    related_items_in_view: '',
-  };
-  /* ]]> */
-</script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/jquery.stellar.min.js?ver=6.1.1"
-  id="jquery-stellar-js"
-></script>
+    </div> <!-- gp-site-wrapper -->
+  </div> <!-- gp-site-wrapper -->
 
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/custom.js?ver=6.1.1"
-  id="ghostpool-custom-js-js"
-></script>
-<script type="text/javascript" id="ghostpool-ajax-loop-js-extra">
-  /* <![CDATA[ */
-  var ghostpoolAjax = {
-    ajaxurl: 'https:\/\/www.envirodiy.org\/wp-admin\/admin-ajax.php',
-    ajaxnonce: 'e2424257d3',
-    querystring: '',
-  };
-  /* ]]> */
-</script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/ajax-loop.js?ver=6.1.1"
-  id="ghostpool-ajax-loop-js"
-></script>
 </body>
 </html>

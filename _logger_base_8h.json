@@ -1,0 +1,128 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "file",
+    "id": "_logger_base_8h",
+    "name": "LoggerBase.h",
+    "url_base": "_logger_base_8h",
+    "url": "_logger_base_8h.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "Contains the LoggerBase class which handles basic logging functions.",
+    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside><p>Basic logger functions include communicating with a real-time clock, saving to an SD card, and publishing data to remotes via a <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> connection.</p>",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_logger.html",
+        "name": "Logger",
+        "brief": "The &quot;Logger&quot; Class handles low power sleep for the main processor, interfacing with the real-time clock and modem, writing to the SD card, and passing data on to the data publishers.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [
+      {
+        "base_url": "_logger_base_8h.html",
+        "id": "ae92514e3bcf07576967f7afb4ca7efa7",
+        "include": null,
+        "has_details": false,
+        "name": "MS_SAMD_DS3231",
+        "initializer": null,
+        "brief": "Set default clock for SAMD21 as DS3231 instead of built-in RTC.",
+        "description": "",
+        "return_value": null,
+        "deprecated": null,
+        "since": null,
+        "has_param_details": false,
+        "params": null
+      },
+      {
+        "base_url": "_logger_base_8h.html",
+        "id": "a0c71a1835572d6242a3741c3a28b3972",
+        "include": null,
+        "has_details": true,
+        "name": "EPOCH_TIME_OFF",
+        "initializer": "946684800",
+        "brief": "January 1, 2000 00:00:00 in &quot;epoch&quot; time.",
+        "description": "<p>Need this b/c the date/time class in Sodaq_DS3231 treats a 32-bit long timestamp as time from 2000-jan-01 00:00:00 instead of the standard (unix) epoch beginning 1970-jan-01 00:00:00.</p>",
+        "return_value": null,
+        "deprecated": null,
+        "since": null,
+        "has_param_details": false,
+        "params": null
+      },
+      {
+        "base_url": "_logger_base_8h.html",
+        "id": "a4222b0bca1e5bd18869a3328d9ba5750",
+        "include": null,
+        "has_details": false,
+        "name": "MAX_NUMBER_SENDERS",
+        "initializer": "4",
+        "brief": "The largest number of variables from a single sensor.",
+        "description": "",
+        "return_value": null,
+        "deprecated": null,
+        "since": null,
+        "has_param_details": false,
+        "params": null
+      }
+    ],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "src",
+        "dir_68267d1309a1af8e8297ef4c3efbcdba.html"
+      ],
+      [
+        "LoggerBase.h",
+        "_logger_base_8h.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "LoggerBase.h",
+        "_logger_base_8h.html"
+      ]
+    ]
+  }
+}

@@ -1,0 +1,305 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__modem__bg96",
+    "name": "Quectel BG96",
+    "url_base": "group__modem__bg96",
+    "url": "group__modem__bg96.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<section id=\"modem_bg96_notes\"><h2>Introduction</h2><p>The Quectel BG96 is another LTE CatM1/NB1 chip. This same constructor should work for most boards based on this chip, including the <a href=\"https://www.dragino.com/products/nb-iot/item/132-nb-iot-bee.html\">Dragino</a> and <a href=\"https://nimbelink.com/products/4g-lte-m-global-quectel/\">Nimbelink</a> boards.</p><p>This is the <strong>only</strong> cellular module that I have found to function well on only a 500mA power supply - provided the cellular signal is strong and 2G fallback isn&#x27;t required. To enable 2G fallback, expect power draws of up to 2A.</p></section><section id=\"modem_bg96_mayfly\"><h2>Connecting a BG96 to a Mayfly</h2><p>To my knowledge, there are not any Quectel BG96 modules available that can directly connect to a Mayfly. Although both the Dragino and Nimbelink boards linked above would fit the physical XBee footprint on the Mayfly, neither will work without some additional interface or other modifications. The Dragino module comes really close, but it will not actually work because the BG96 requires more power than the Mayfly can provide on its own but <em>cannot</em> be connected directly to a LiPo because it cannot handle a voltage over 3.6V. The Nimbelink module has the same power supply problem, voltage reference problems, and requires 3 extra ground pins that aren&#x27;t available on the Mayfly.</p></section><section id=\"modem_bg96_docs\"><h2>Manufacturer Documentation</h2><p>The module datasheet and AT commands are available here: <a href=\"https://www.quectel.com/product/bg96.htm\">https:/<wbr />/<wbr />www.quectel.com/<wbr />product/<wbr />bg96.htm</a></p></section><section id=\"modem_bg96_ctor\"><h2>Modem Constructor</h2><p>{{ <a href=\"class_quectel_b_g96.html#a4c8d6952ccfbb24fd9a4b8562c71cd06\" class=\"m-doc\">QuectelBG96::<wbr />QuectelBG96</a> }}</p><hr/></section><section id=\"modem_bg96_examples\"><h2>Example Code</h2><p>The Quectel BG96 is used in the <a href=\"example_menu.html#menu_walk_quectel_bg96\" class=\"m-doc\">menu a la carte</a>.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"c1\">// For the Dragino, Nimbelink or other boards based on the Quectel BG96</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;modems/QuectelBG96.h&gt;</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"c1\">// NOTE: Extra hardware and software serial ports are created in the &quot;Settings</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span><span class=\"c1\">// for Additional Serial Ports&quot; section</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int32_t</span><span class=\"w\"> </span><span class=\"n\">modemBaud</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">115200</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// Communication speed of the modem</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"c1\">// NOTE:  This baud rate too fast for an 8MHz board, like the Mayfly!  The</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span><span class=\"c1\">// module should be programmed to a slower baud rate or set to auto-baud using</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span><span class=\"c1\">// the AT+IPR=9600 command.</span>\n</div><div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span>\n</div><div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span><span class=\"c1\">// Modem Pins - Describe the physical pin connection of your modem to your board</span>\n</div><div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"c1\">// NOTE:  Use -1 for pins that do not apply</span>\n</div><div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span><span class=\"c1\">// Example pins here are for a Mayfly 1.x and a Dragino IoT Bee</span>\n</div><div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemVccPin</span><span class=\"w\">     </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">18</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// MCU pin controlling modem power</span>\n</div><div class=\"line\"><a id=\"l-15\" name=\"l-15\"></a><span class=\"linenos\">15</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemStatusPin</span><span class=\"w\">  </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">-1</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// MCU pin used to read modem status</span>\n</div><div class=\"line\"><a id=\"l-16\" name=\"l-16\"></a><span class=\"linenos\">16</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemResetPin</span><span class=\"w\">   </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">A5</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// MCU pin connected to modem reset pin</span>\n</div><div class=\"line\"><a id=\"l-17\" name=\"l-17\"></a><span class=\"linenos\">17</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemSleepRqPin</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">-1</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// MCU pin for modem sleep/wake request</span>\n</div><div class=\"line\"><a id=\"l-18\" name=\"l-18\"></a><span class=\"linenos\">18</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemLEDPin</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">redLED</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// MCU pin connected an LED to show modem</span>\n</div><div class=\"line\"><a id=\"l-19\" name=\"l-19\"></a><span class=\"linenos\">19</span><span class=\"w\">                                    </span><span class=\"c1\">// status</span>\n</div><div class=\"line\"><a id=\"l-20\" name=\"l-20\"></a><span class=\"linenos\">20</span>\n</div><div class=\"line\"><a id=\"l-21\" name=\"l-21\"></a><span class=\"linenos\">21</span><span class=\"c1\">// Network connection information</span>\n</div><div class=\"line\"><a id=\"l-22\" name=\"l-22\"></a><span class=\"linenos\">22</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">char</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">apn</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"s\">&quot;xxxxx&quot;</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// APN for GPRS connection</span>\n</div><div class=\"line\"><a id=\"l-23\" name=\"l-23\"></a><span class=\"linenos\">23</span>\n</div><div class=\"line\"><a id=\"l-24\" name=\"l-24\"></a><span class=\"linenos\">24</span><span class=\"c1\">// Create the modem object</span>\n</div><div class=\"line\"><a id=\"l-25\" name=\"l-25\"></a><span class=\"linenos\">25</span><span class=\"n\">QuectelBG96</span><span class=\"w\"> </span><span class=\"nf\">modemBG96</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">modemSerial</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">modemVccPin</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">modemStatusPin</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">modemResetPin</span><span class=\"p\">,</span>\n</div><div class=\"line\"><a id=\"l-26\" name=\"l-26\"></a><span class=\"linenos\">26</span><span class=\"w\">                      </span><span class=\"n\">modemSleepRqPin</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">apn</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-27\" name=\"l-27\"></a><span class=\"linenos\">27</span><span class=\"c1\">// Create an extra reference to the modem by a generic name</span>\n</div><div class=\"line\"><a id=\"l-28\" name=\"l-28\"></a><span class=\"linenos\">28</span><span class=\"n\">QuectelBG96</span><span class=\"w\"> </span><span class=\"n\">modem</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">modemBG96</span><span class=\"p\">;</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "modem_bg96_notes",
+        "Introduction",
+        []
+      ],
+      [
+        "modem_bg96_mayfly",
+        "Connecting a BG96 to a Mayfly",
+        []
+      ],
+      [
+        "modem_bg96_docs",
+        "Manufacturer Documentation",
+        []
+      ],
+      [
+        "modem_bg96_ctor",
+        "Modem Constructor",
+        []
+      ],
+      [
+        "modem_bg96_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_quectel_b_g96.html",
+        "name": "QuectelBG96",
+        "brief": "The <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> subclass for Dragino, Nimbelink, or any other module based on the <a href=\"group__modem__bg96.html\" class=\"m-doc\">Quectel BG96</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Modem Pin Settings and Timing",
+        "id": "modem-pin-settings-and-timing",
+        "description": "<p><a name=\"modem_bg96_pins_timing\"></a> The timing and pin level settings for a Quectel BG96</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__modem__bg96.html",
+              "id": "gab1ae455ca14433c80229530476876592",
+              "include": [
+                "&lt;src/modems/QuectelBG96.h&gt;",
+                "_quectel_b_g96_8h.html"
+              ],
+              "has_details": true,
+              "name": "BG96_STATUS_LEVEL",
+              "initializer": "HIGH",
+              "brief": "The <a href=\"classlogger_modem.html#af44caee8dd6acf7c72cd1271441a41cb\" class=\"m-doc\">loggerModem::<wbr />_statusLevel</a>.",
+              "description": "<p>Status of the BG96 can be monitored on the <code>STATUS(D0)</code> pin. Time after end pulse until status pin becomes active is 4.8s.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__bg96.html",
+              "id": "gac62da79b1ab53cd9ae1a26211780691b",
+              "include": [
+                "&lt;src/modems/QuectelBG96.h&gt;",
+                "_quectel_b_g96_8h.html"
+              ],
+              "has_details": true,
+              "name": "BG96_STATUS_TIME_MS",
+              "initializer": "5000L",
+              "brief": "The <a href=\"classlogger_modem.html#a755d93cb67e9184a7cdfeae17448667b\" class=\"m-doc\">loggerModem::<wbr />_statusTime_ms</a>.",
+              "description": "<p>Status of the BG96 can be monitored on the <code>STATUS(D0)</code> pin. Time after end pulse until status pin becomes active is 4.8s.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__bg96.html",
+              "id": "gaf332acdb61354035b7cb64431038df35",
+              "include": [
+                "&lt;src/modems/QuectelBG96.h&gt;",
+                "_quectel_b_g96_8h.html"
+              ],
+              "has_details": true,
+              "name": "BG96_RESET_LEVEL",
+              "initializer": "LOW",
+              "brief": "The <a href=\"classlogger_modem.html#a4832f4560020f57bfb2e11ddade73d0a\" class=\"m-doc\">loggerModem::<wbr />_resetLevel</a>.",
+              "description": "<p>BG96 is reset with a 150-460ms low pulse on the <code>RESET_N</code> pin</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__bg96.html",
+              "id": "ga5fc8f55b6b0a25202ae2e7f7084a0bb6",
+              "include": [
+                "&lt;src/modems/QuectelBG96.h&gt;",
+                "_quectel_b_g96_8h.html"
+              ],
+              "has_details": true,
+              "name": "BG96_RESET_PULSE_MS",
+              "initializer": "300",
+              "brief": "The <a href=\"classlogger_modem.html#a9ee81f2d0dd9e5cdf89e8e469147c38c\" class=\"m-doc\">loggerModem::<wbr />_resetPulse_ms</a>.",
+              "description": "<p>BG96 is reset with a 150-460ms low pulse on the <code>RESET_N</code> pin</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__bg96.html",
+              "id": "ga1adbbfc95fcbbf3b3e5afc0408421038",
+              "include": [
+                "&lt;src/modems/QuectelBG96.h&gt;",
+                "_quectel_b_g96_8h.html"
+              ],
+              "has_details": true,
+              "name": "BG96_WAKE_LEVEL",
+              "initializer": "LOW",
+              "brief": "The <a href=\"classlogger_modem.html#a71c42d58d22d8481e6e6f7e5b7d8f0bf\" class=\"m-doc\">loggerModem::<wbr />_wakeLevel</a>.",
+              "description": "<p>Module is switched on by a &gt;100 millisecond <code>LOW</code> pulse on the <code>PWRKEY</code> pin. Module is switched on by a &gt;650 millisecond <code>LOW</code> pulse on the <code>PWRKEY</code> pin. Using something between those times for wake and using AT commands for sleep, we should keep in the proper state.</p><aside class=\"m-note m-info\"><h4>Note</h4><p>If at all possible, the BG96 status pin should be monitored to confirm active status.</p></aside>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__bg96.html",
+              "id": "ga4e1e4b31676139427eeec1bd06127314",
+              "include": [
+                "&lt;src/modems/QuectelBG96.h&gt;",
+                "_quectel_b_g96_8h.html"
+              ],
+              "has_details": true,
+              "name": "BG96_WAKE_PULSE_MS",
+              "initializer": "110",
+              "brief": "The <a href=\"classlogger_modem.html#a1b4e78a1e0963fb1cc970ce6273c124d\" class=\"m-doc\">loggerModem::<wbr />_wakePulse_ms</a>.",
+              "description": "<p>Module is switched on by a &gt;100 millisecond <code>LOW</code> pulse on the <code>PWRKEY</code> pin. Module is switched on by a &gt;650 millisecond <code>LOW</code> pulse on the <code>PWRKEY</code> pin. Using something between those times for wake and using AT commands for sleep, we should keep in the proper state.</p><aside class=\"m-note m-info\"><h4>Note</h4><p>If at all possible, the BG96 status pin should be monitored to confirm active status.</p></aside>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__bg96.html",
+              "id": "gacce25cf16895e71f6bf673ae0f480d09",
+              "include": [
+                "&lt;src/modems/QuectelBG96.h&gt;",
+                "_quectel_b_g96_8h.html"
+              ],
+              "has_details": true,
+              "name": "BG96_WAKE_DELAY_MS",
+              "initializer": "100",
+              "brief": "The <a href=\"classlogger_modem.html#a68051ed68b85195bf188a1914c71a9c8\" class=\"m-doc\">loggerModem::<wbr />_wakeDelayTime_ms</a>.",
+              "description": "<p>Time after <code>VBAT</code> is stable before <code>PWRKEY</code> can be used on BG96 is &gt;30ms</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__bg96.html",
+              "id": "ga6df0e54fad1961be2691f16462059c7f",
+              "include": [
+                "&lt;src/modems/QuectelBG96.h&gt;",
+                "_quectel_b_g96_8h.html"
+              ],
+              "has_details": true,
+              "name": "BG96_ATRESPONSE_TIME_MS",
+              "initializer": "10000L",
+              "brief": "The <a href=\"classlogger_modem.html#aa9bf26acfae6ec2611b4d7a806dd2489\" class=\"m-doc\">loggerModem::<wbr />_max_atresponse_time_ms</a>.",
+              "description": "<p>The BG96 has USB active at &gt;4.2 sec, status at &gt;4.8 sec, URAT at &gt;4.9</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__bg96.html",
+              "id": "ga9b814e89abef176f687a5453c85a8f7e",
+              "include": [
+                "&lt;src/modems/QuectelBG96.h&gt;",
+                "_quectel_b_g96_8h.html"
+              ],
+              "has_details": true,
+              "name": "BG96_DISCONNECT_TIME_MS",
+              "initializer": "5000L",
+              "brief": "The <a href=\"classlogger_modem.html#a32496b2b79dc9317639900a3c385405d\" class=\"m-doc\">loggerModem::<wbr />_disconnetTime_ms</a>.",
+              "description": "<p>Documentation for the BG96 says to allow &gt;2s for clean shutdown.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Modems and Communication Modules",
+        "group__the__modems.html"
+      ],
+      [
+        "Quectel BG96",
+        "group__modem__bg96.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Quectel BG96",
+        "group__modem__bg96.html"
+      ]
+    ]
+  }
+}

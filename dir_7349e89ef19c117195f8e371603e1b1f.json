@@ -1,0 +1,696 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "dir",
+    "id": "dir_7349e89ef19c117195f8e371603e1b1f",
+    "name": "src/sensors",
+    "url_base": "dir_7349e89ef19c117195f8e371603e1b1f",
+    "url": "dir_7349e89ef19c117195f8e371603e1b1f.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "Contains the source code for all <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> subclasses, including the <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> subclasses which themselves are the parent classes to other Sensors.",
+    "description": "",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [
+      {
+        "url": "_alphasense_c_o2_8cpp.html",
+        "name": "AlphasenseCO2.cpp",
+        "brief": "Implements the <a href=\"class_alphasense_c_o2.html\" class=\"m-doc\">AlphasenseCO2</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_alphasense_c_o2_8h.html",
+        "name": "AlphasenseCO2.h",
+        "brief": "Contains the <a href=\"class_alphasense_c_o2.html\" class=\"m-doc\">AlphasenseCO2</a> sensor class and the variable subclasses <a href=\"class_alphasense_c_o2___c_o2.html\" class=\"m-doc\">AlphasenseCO2_<wbr />CO2</a> and <a href=\"class_alphasense_c_o2___voltage.html\" class=\"m-doc\">AlphasenseCO2_<wbr />Voltage</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_analog_elec_conductivity_8cpp.html",
+        "name": "AnalogElecConductivity.cpp",
+        "brief": "This encapsulates an Electrical Conductivity sensors using an anlog input and onboard ADC and ADC ref.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_analog_elec_conductivity_8h.html",
+        "name": "AnalogElecConductivity.h",
+        "brief": "Encapsulates an Electrical Conductivity sensors using an anlog input and onboard ADC and ADC ref.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_a_o_song_a_m2315_8cpp.html",
+        "name": "AOSongAM2315.cpp",
+        "brief": "Implements the <a href=\"class_a_o_song_a_m2315.html\" class=\"m-doc\">AOSongAM2315</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_a_o_song_a_m2315_8h.html",
+        "name": "AOSongAM2315.h",
+        "brief": "Contains the <a href=\"class_a_o_song_a_m2315.html\" class=\"m-doc\">AOSongAM2315</a> sensor subclass and the variable subclasses <a href=\"class_a_o_song_a_m2315___humidity.html\" class=\"m-doc\">AOSongAM2315_<wbr />Humidity</a> and <a href=\"class_a_o_song_a_m2315___temp.html\" class=\"m-doc\">AOSongAM2315_<wbr />Temp</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_a_o_song_d_h_t_8cpp.html",
+        "name": "AOSongDHT.cpp",
+        "brief": "Implements the <a href=\"class_a_o_song_d_h_t.html\" class=\"m-doc\">AOSongDHT</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_apogee_s_q212_8cpp.html",
+        "name": "ApogeeSQ212.cpp",
+        "brief": "Implements the <a href=\"class_apogee_s_q212.html\" class=\"m-doc\">ApogeeSQ212</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_apogee_s_q212_8h.html",
+        "name": "ApogeeSQ212.h",
+        "brief": "Contains the <a href=\"class_apogee_s_q212.html\" class=\"m-doc\">ApogeeSQ212</a> sensor subclass and the variable subclasses <a href=\"class_apogee_s_q212___p_a_r.html\" class=\"m-doc\">ApogeeSQ212_<wbr />PAR</a> and <a href=\"class_apogee_s_q212___voltage.html\" class=\"m-doc\">ApogeeSQ212_<wbr />Voltage</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_atlas_parent_8cpp.html",
+        "name": "AtlasParent.cpp",
+        "brief": "Implements the <a href=\"class_atlas_parent.html\" class=\"m-doc\">AtlasParent</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_atlas_parent_8h.html",
+        "name": "AtlasParent.h",
+        "brief": "Contains the <a href=\"class_atlas_parent.html\" class=\"m-doc\">AtlasParent</a> sensor subclass which is itself the parent class for all Atlas sensors.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_atlas_scientific_c_o2_8cpp.html",
+        "name": "AtlasScientificCO2.cpp",
+        "brief": "Implements the <a href=\"class_atlas_scientific_c_o2.html\" class=\"m-doc\">AtlasScientificCO2</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_atlas_scientific_c_o2_8h.html",
+        "name": "AtlasScientificCO2.h",
+        "brief": "Contains the <a href=\"class_atlas_scientific_c_o2.html\" class=\"m-doc\">AtlasScientificCO2</a> subclass of the <a href=\"class_atlas_parent.html\" class=\"m-doc\">AtlasParent</a> sensor class along with the variable subclasses <a href=\"class_atlas_scientific_c_o2___c_o2.html\" class=\"m-doc\">AtlasScientificCO2_<wbr />CO2</a> and <a href=\"class_atlas_scientific_c_o2___temp.html\" class=\"m-doc\">AtlasScientificCO2_<wbr />Temp</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_atlas_scientific_d_o_8cpp.html",
+        "name": "AtlasScientificDO.cpp",
+        "brief": "Implements the <a href=\"class_atlas_scientific_c_o2.html\" class=\"m-doc\">AtlasScientificCO2</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_atlas_scientific_d_o_8h.html",
+        "name": "AtlasScientificDO.h",
+        "brief": "Contains the <a href=\"class_atlas_scientific_c_o2.html\" class=\"m-doc\">AtlasScientificCO2</a> subclass of the <a href=\"class_atlas_parent.html\" class=\"m-doc\">AtlasParent</a> sensor class along with the variable subclasses <a href=\"class_atlas_scientific_d_o___d_omg_l.html\" class=\"m-doc\">AtlasScientificDO_<wbr />DOmgL</a> and <a href=\"class_atlas_scientific_d_o___d_opct.html\" class=\"m-doc\">AtlasScientificDO_<wbr />DOpct</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_atlas_scientific_e_c_8cpp.html",
+        "name": "AtlasScientificEC.cpp",
+        "brief": "Implements the <a href=\"class_atlas_scientific_e_c.html\" class=\"m-doc\">AtlasScientificEC</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_atlas_scientific_e_c_8h.html",
+        "name": "AtlasScientificEC.h",
+        "brief": "Contains the <a href=\"class_atlas_scientific_c_o2.html\" class=\"m-doc\">AtlasScientificCO2</a> subclass of the <a href=\"class_atlas_parent.html\" class=\"m-doc\">AtlasParent</a> sensor class along with the variable subclasses <a href=\"class_atlas_scientific_e_c___cond.html\" class=\"m-doc\">AtlasScientificEC_<wbr />Cond</a>, <a href=\"class_atlas_scientific_e_c___t_d_s.html\" class=\"m-doc\">AtlasScientificEC_<wbr />TDS</a>, <a href=\"class_atlas_scientific_e_c___salinity.html\" class=\"m-doc\">AtlasScientificEC_<wbr />Salinity</a> and <a href=\"class_atlas_scientific_e_c___specific_gravity.html\" class=\"m-doc\">AtlasScientificEC_<wbr />SpecificGravity</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_atlas_scientific_o_r_p_8h.html",
+        "name": "AtlasScientificORP.h",
+        "brief": "Contains the <a href=\"class_atlas_scientific_r_t_d.html\" class=\"m-doc\">AtlasScientificRTD</a> subclass of the <a href=\"class_atlas_parent.html\" class=\"m-doc\">AtlasParent</a> sensor class along with the variable subclass <a href=\"class_atlas_scientific_o_r_p___potential.html\" class=\"m-doc\">AtlasScientificORP_<wbr />Potential</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_atlas_scientificp_h_8h.html",
+        "name": "AtlasScientificpH.h",
+        "brief": "Contains the <a href=\"class_atlas_scientific_r_t_d.html\" class=\"m-doc\">AtlasScientificRTD</a> subclass of the <a href=\"class_atlas_parent.html\" class=\"m-doc\">AtlasParent</a> sensor class along with the variable subclass <a href=\"class_atlas_scientificp_h__p_h.html\" class=\"m-doc\">AtlasScientificpH_<wbr />pH</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_atlas_scientific_r_t_d_8h.html",
+        "name": "AtlasScientificRTD.h",
+        "brief": "Contains the <a href=\"class_atlas_scientific_r_t_d.html\" class=\"m-doc\">AtlasScientificRTD</a> subclass of the <a href=\"class_atlas_parent.html\" class=\"m-doc\">AtlasParent</a> sensor class along with the variable subclass <a href=\"class_atlas_scientific_r_t_d___temp.html\" class=\"m-doc\">AtlasScientificRTD_<wbr />Temp</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_bosch_b_m_e280_8cpp.html",
+        "name": "BoschBME280.cpp",
+        "brief": "Implements the <a href=\"class_bosch_b_m_e280.html\" class=\"m-doc\">BoschBME280</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_bosch_b_m_e280_8h.html",
+        "name": "BoschBME280.h",
+        "brief": "Contains the <a href=\"class_bosch_b_m_e280.html\" class=\"m-doc\">BoschBME280</a> sensor subclass and the variable subclasses <a href=\"class_bosch_b_m_e280___temp.html\" class=\"m-doc\">BoschBME280_<wbr />Temp</a>, <a href=\"class_bosch_b_m_e280___humidity.html\" class=\"m-doc\">BoschBME280_<wbr />Humidity</a>, <a href=\"class_bosch_b_m_e280___pressure.html\" class=\"m-doc\">BoschBME280_<wbr />Pressure</a>, and <a href=\"class_bosch_b_m_e280___altitude.html\" class=\"m-doc\">BoschBME280_<wbr />Altitude</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_bosch_b_m_p3xx_8cpp.html",
+        "name": "BoschBMP3xx.cpp",
+        "brief": "Implements the <a href=\"class_bosch_b_m_p3xx.html\" class=\"m-doc\">BoschBMP3xx</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_bosch_b_m_p3xx_8h.html",
+        "name": "BoschBMP3xx.h",
+        "brief": "Contains the <a href=\"class_bosch_b_m_p3xx.html\" class=\"m-doc\">BoschBMP3xx</a> sensor subclass and the variable subclasses <a href=\"class_bosch_b_m_p3xx___temp.html\" class=\"m-doc\">BoschBMP3xx_<wbr />Temp</a>, BoschBMP3xx_Humidity, <a href=\"class_bosch_b_m_p3xx___pressure.html\" class=\"m-doc\">BoschBMP3xx_<wbr />Pressure</a>, and <a href=\"class_bosch_b_m_p3xx___altitude.html\" class=\"m-doc\">BoschBMP3xx_<wbr />Altitude</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_campbell_clari_v_u_e10_8h.html",
+        "name": "CampbellClariVUE10.h",
+        "brief": "Contains the <a href=\"class_campbell_clari_v_u_e10.html\" class=\"m-doc\">CampbellClariVUE10</a> sensor subclass and the variable subclasses <a href=\"class_campbell_clari_v_u_e10___temp.html\" class=\"m-doc\">CampbellClariVUE10_<wbr />Temp</a>, <a href=\"class_campbell_clari_v_u_e10___turbidity.html\" class=\"m-doc\">CampbellClariVUE10_<wbr />Turbidity</a>, and <a href=\"class_campbell_clari_v_u_e10___error_code.html\" class=\"m-doc\">CampbellClariVUE10_<wbr />ErrorCode</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_campbell_o_b_s3_8cpp.html",
+        "name": "CampbellOBS3.cpp",
+        "brief": "Implements the <a href=\"class_campbell_o_b_s3.html\" class=\"m-doc\">CampbellOBS3</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_campbell_o_b_s3_8h.html",
+        "name": "CampbellOBS3.h",
+        "brief": "Contains the <a href=\"class_campbell_o_b_s3.html\" class=\"m-doc\">CampbellOBS3</a> sensor subclass and the variable subclasses <a href=\"class_campbell_o_b_s3___turbidity.html\" class=\"m-doc\">CampbellOBS3_<wbr />Turbidity</a> and <a href=\"class_campbell_o_b_s3___voltage.html\" class=\"m-doc\">CampbellOBS3_<wbr />Voltage</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_campbell_rain_v_u_e10_8h.html",
+        "name": "CampbellRainVUE10.h",
+        "brief": "Contains the <a href=\"class_campbell_rain_v_u_e10.html\" class=\"m-doc\">CampbellRainVUE10</a> sensor subclass and the variable subclasses <a href=\"class_campbell_rain_v_u_e10___precipitation.html\" class=\"m-doc\">CampbellRainVUE10_<wbr />Precipitation</a>, <a href=\"class_campbell_rain_v_u_e10___tips.html\" class=\"m-doc\">CampbellRainVUE10_<wbr />Tips</a>, <a href=\"class_campbell_rain_v_u_e10___rain_rate_ave.html\" class=\"m-doc\">CampbellRainVUE10_<wbr />RainRateAve</a>, and <a href=\"class_campbell_rain_v_u_e10___rain_rate_max.html\" class=\"m-doc\">CampbellRainVUE10_<wbr />RainRateMax</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_decagon5_t_m_8cpp.html",
+        "name": "Decagon5TM.cpp",
+        "brief": "Implements the <a href=\"class_decagon5_t_m.html\" class=\"m-doc\">Decagon5TM</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_decagon5_t_m_8h.html",
+        "name": "Decagon5TM.h",
+        "brief": "Contains the <a href=\"class_decagon5_t_m.html\" class=\"m-doc\">Decagon5TM</a> subclass of the <a href=\"class_s_d_i12_sensors.html\" class=\"m-doc\">SDI12Sensors</a> class along with the variable subclasses <a href=\"class_decagon5_t_m___ea.html\" class=\"m-doc\">Decagon5TM_<wbr />Ea</a>, <a href=\"class_decagon5_t_m___temp.html\" class=\"m-doc\">Decagon5TM_<wbr />Temp</a>, and <a href=\"class_decagon5_t_m___v_w_c.html\" class=\"m-doc\">Decagon5TM_<wbr />VWC</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_decagon_c_t_d_8h.html",
+        "name": "DecagonCTD.h",
+        "brief": "Contains the <a href=\"class_decagon_c_t_d.html\" class=\"m-doc\">DecagonCTD</a> subclass of the <a href=\"class_s_d_i12_sensors.html\" class=\"m-doc\">SDI12Sensors</a> class along with the variable subclasses <a href=\"class_decagon_c_t_d___cond.html\" class=\"m-doc\">DecagonCTD_<wbr />Cond</a>, <a href=\"class_decagon_c_t_d___temp.html\" class=\"m-doc\">DecagonCTD_<wbr />Temp</a>, and <a href=\"class_decagon_c_t_d___depth.html\" class=\"m-doc\">DecagonCTD_<wbr />Depth</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_decagon_e_s2_8h.html",
+        "name": "DecagonES2.h",
+        "brief": "Contains the <a href=\"class_decagon_e_s2.html\" class=\"m-doc\">DecagonES2</a> subclass of the <a href=\"class_s_d_i12_sensors.html\" class=\"m-doc\">SDI12Sensors</a> class along with the variable subclasses <a href=\"class_decagon_e_s2___cond.html\" class=\"m-doc\">DecagonES2_<wbr />Cond</a> and <a href=\"class_decagon_e_s2___temp.html\" class=\"m-doc\">DecagonES2_<wbr />Temp</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_everlight_a_l_s_p_t19_8cpp.html",
+        "name": "EverlightALSPT19.cpp",
+        "brief": "Implements the <a href=\"class_everlight_a_l_s_p_t19.html\" class=\"m-doc\">EverlightALSPT19</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_everlight_a_l_s_p_t19_8h.html",
+        "name": "EverlightALSPT19.h",
+        "brief": "Contains the <a href=\"class_everlight_a_l_s_p_t19.html\" class=\"m-doc\">EverlightALSPT19</a> sensor subclass and the variable subclasses <a href=\"class_everlight_a_l_s_p_t19___current.html\" class=\"m-doc\">EverlightALSPT19_<wbr />Current</a> and <a href=\"class_everlight_a_l_s_p_t19___illuminance.html\" class=\"m-doc\">EverlightALSPT19_<wbr />Illuminance</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_external_voltage_8h.html",
+        "name": "ExternalVoltage.h",
+        "brief": "This file only serves to support backwards compatibility for the renamed <a href=\"class_t_i_a_d_s1x15.html\" class=\"m-doc\">TIADS1x15</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_freescale_m_p_l115_a2_8cpp.html",
+        "name": "FreescaleMPL115A2.cpp",
+        "brief": "Implements the <a href=\"class_freescale_m_p_l115_a2.html\" class=\"m-doc\">FreescaleMPL115A2</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_freescale_m_p_l115_a2_8h.html",
+        "name": "FreescaleMPL115A2.h",
+        "brief": "Contains the <a href=\"class_freescale_m_p_l115_a2.html\" class=\"m-doc\">FreescaleMPL115A2</a> sensor subclass and the variable subclasses <a href=\"class_freescale_m_p_l115_a2___temp.html\" class=\"m-doc\">FreescaleMPL115A2_<wbr />Temp</a> and <a href=\"class_freescale_m_p_l115_a2___pressure.html\" class=\"m-doc\">FreescaleMPL115A2_<wbr />Pressure</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_gro_point_g_p_l_p8_8h.html",
+        "name": "GroPointGPLP8.h",
+        "brief": "Contains the <a href=\"class_gro_point_g_p_l_p8.html\" class=\"m-doc\">GroPointGPLP8</a> sensor subclass and the variable subclasses <a href=\"class_gro_point_g_p_l_p8___moist.html\" class=\"m-doc\">GroPointGPLP8_<wbr />Moist</a> and <a href=\"class_gro_point_g_p_l_p8___temp.html\" class=\"m-doc\">GroPointGPLP8_<wbr />Temp</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_gro_point_parent_8cpp.html",
+        "name": "GroPointParent.cpp",
+        "brief": "Implements the <a href=\"class_gro_point_parent.html\" class=\"m-doc\">GroPointParent</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_in_situ_r_d_o_8h.html",
+        "name": "InSituRDO.h",
+        "brief": "Contains the <a href=\"class_in_situ_r_d_o.html\" class=\"m-doc\">InSituRDO</a> sensor subclass and the variable subclasses <a href=\"class_in_situ_r_d_o___temp.html\" class=\"m-doc\">InSituRDO_<wbr />Temp</a>, <a href=\"class_in_situ_r_d_o___d_opct.html\" class=\"m-doc\">InSituRDO_<wbr />DOpct</a>, and <a href=\"class_in_situ_r_d_o___d_omg_l.html\" class=\"m-doc\">InSituRDO_<wbr />DOmgL</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_keller_acculevel_8h.html",
+        "name": "KellerAcculevel.h",
+        "brief": "Contains the <a href=\"class_keller_acculevel.html\" class=\"m-doc\">KellerAcculevel</a> sensor subclass and the <a href=\"class_keller_acculevel___pressure.html\" class=\"m-doc\">KellerAcculevel_<wbr />Pressure</a>, <a href=\"class_keller_acculevel___temp.html\" class=\"m-doc\">KellerAcculevel_<wbr />Temp</a>, and <a href=\"class_keller_acculevel___height.html\" class=\"m-doc\">KellerAcculevel_<wbr />Height</a> variable subclasses.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_keller_nanolevel_8h.html",
+        "name": "KellerNanolevel.h",
+        "brief": "Contains the <a href=\"class_keller_nanolevel.html\" class=\"m-doc\">KellerNanolevel</a> sensor subclass and the <a href=\"class_keller_nanolevel___pressure.html\" class=\"m-doc\">KellerNanolevel_<wbr />Pressure</a>, <a href=\"class_keller_nanolevel___temp.html\" class=\"m-doc\">KellerNanolevel_<wbr />Temp</a>, and <a href=\"class_keller_nanolevel___height.html\" class=\"m-doc\">KellerNanolevel_<wbr />Height</a> variable subclasses.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_keller_parent_8cpp.html",
+        "name": "KellerParent.cpp",
+        "brief": "Implements the <a href=\"class_keller_parent.html\" class=\"m-doc\">KellerParent</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_keller_parent_8h.html",
+        "name": "KellerParent.h",
+        "brief": "Contains the <a href=\"class_keller_parent.html\" class=\"m-doc\">KellerParent</a> sensor subclass, itself used as a parent class for all Keller modbus sensors.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_max_botix_sonar_8cpp.html",
+        "name": "MaxBotixSonar.cpp",
+        "brief": "Implements the <a href=\"class_max_botix_sonar.html\" class=\"m-doc\">MaxBotixSonar</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_max_botix_sonar_8h.html",
+        "name": "MaxBotixSonar.h",
+        "brief": "Contains the <a href=\"class_max_botix_sonar.html\" class=\"m-doc\">MaxBotixSonar</a> sensor subclass and the <a href=\"class_max_botix_sonar___range.html\" class=\"m-doc\">MaxBotixSonar_<wbr />Range</a> variable subclass.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_maxim_d_s18_8cpp.html",
+        "name": "MaximDS18.cpp",
+        "brief": "Implements the <a href=\"class_maxim_d_s18.html\" class=\"m-doc\">MaximDS18</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_maxim_d_s18_8h.html",
+        "name": "MaximDS18.h",
+        "brief": "Contains the <a href=\"class_maxim_d_s18.html\" class=\"m-doc\">MaximDS18</a> sensor subclass and the <a href=\"class_maxim_d_s18___temp.html\" class=\"m-doc\">MaximDS18_<wbr />Temp</a> variable subclass.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_maxim_d_s3231_8cpp.html",
+        "name": "MaximDS3231.cpp",
+        "brief": "Implements the <a href=\"class_maxim_d_s18.html\" class=\"m-doc\">MaximDS18</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_maxim_d_s3231_8h.html",
+        "name": "MaximDS3231.h",
+        "brief": "Contains the <a href=\"class_maxim_d_s3231.html\" class=\"m-doc\">MaximDS3231</a> sensor subclass and the <a href=\"class_maxim_d_s3231___temp.html\" class=\"m-doc\">MaximDS3231_<wbr />Temp</a> variable subclass.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_mea_spec_m_s5803_8cpp.html",
+        "name": "MeaSpecMS5803.cpp",
+        "brief": "Implements the <a href=\"class_mea_spec_m_s5803.html\" class=\"m-doc\">MeaSpecMS5803</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_mea_spec_m_s5803_8h.html",
+        "name": "MeaSpecMS5803.h",
+        "brief": "Contains the <a href=\"class_mea_spec_m_s5803.html\" class=\"m-doc\">MeaSpecMS5803</a> semsor subclass and the variable subclasses <a href=\"class_mea_spec_m_s5803___temp.html\" class=\"m-doc\">MeaSpecMS5803_<wbr />Temp</a> and <a href=\"class_mea_spec_m_s5803___pressure.html\" class=\"m-doc\">MeaSpecMS5803_<wbr />Pressure</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_meter_hydros21_8h.html",
+        "name": "MeterHydros21.h",
+        "brief": "Contains the <a href=\"class_meter_hydros21.html\" class=\"m-doc\">MeterHydros21</a> subclass of the <a href=\"class_s_d_i12_sensors.html\" class=\"m-doc\">SDI12Sensors</a> class along with the variable subclasses <a href=\"class_meter_hydros21___cond.html\" class=\"m-doc\">MeterHydros21_<wbr />Cond</a>, <a href=\"class_meter_hydros21___temp.html\" class=\"m-doc\">MeterHydros21_<wbr />Temp</a>, and <a href=\"class_meter_hydros21___depth.html\" class=\"m-doc\">MeterHydros21_<wbr />Depth</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_meter_teros11_8cpp.html",
+        "name": "MeterTeros11.cpp",
+        "brief": "Implements the <a href=\"class_meter_teros11.html\" class=\"m-doc\">MeterTeros11</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_meter_teros11_8h.html",
+        "name": "MeterTeros11.h",
+        "brief": "Contains the <a href=\"class_meter_teros11.html\" class=\"m-doc\">MeterTeros11</a> sensor subclass and the variable subclasses <a href=\"class_meter_teros11___ea.html\" class=\"m-doc\">MeterTeros11_<wbr />Ea</a>, <a href=\"class_meter_teros11___temp.html\" class=\"m-doc\">MeterTeros11_<wbr />Temp</a>, and <a href=\"class_meter_teros11___v_w_c.html\" class=\"m-doc\">MeterTeros11_<wbr />VWC</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_paleo_terra_redox_8h.html",
+        "name": "PaleoTerraRedox.h",
+        "brief": "Contains the <a href=\"class_paleo_terra_redox.html\" class=\"m-doc\">PaleoTerraRedox</a> semsor subclass and the variable subclass <a href=\"class_paleo_terra_redox___voltage.html\" class=\"m-doc\">PaleoTerraRedox_<wbr />Voltage</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_processor_stats_8cpp.html",
+        "name": "ProcessorStats.cpp",
+        "brief": "Implements the <a href=\"class_processor_stats.html\" class=\"m-doc\">ProcessorStats</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_processor_stats_8h.html",
+        "name": "ProcessorStats.h",
+        "brief": "Contains the <a href=\"class_processor_stats.html\" class=\"m-doc\">ProcessorStats</a> sensor subclass and the variable subclasses <a href=\"class_processor_stats___battery.html\" class=\"m-doc\">ProcessorStats_<wbr />Battery</a>, <a href=\"class_processor_stats___free_ram.html\" class=\"m-doc\">ProcessorStats_<wbr />FreeRam</a>, and <a href=\"class_processor_stats___sample_number.html\" class=\"m-doc\">ProcessorStats_<wbr />SampleNumber</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_rain_counter_i2_c_8cpp.html",
+        "name": "RainCounterI2C.cpp",
+        "brief": "Implements the <a href=\"class_rain_counter_i2_c.html\" class=\"m-doc\">RainCounterI2C</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_rain_counter_i2_c_8h.html",
+        "name": "RainCounterI2C.h",
+        "brief": "Contains the <a href=\"class_rain_counter_i2_c.html\" class=\"m-doc\">RainCounterI2C</a> sensor subclass and the variable subclasses <a href=\"class_rain_counter_i2_c___tips.html\" class=\"m-doc\">RainCounterI2C_<wbr />Tips</a> and <a href=\"class_rain_counter_i2_c___depth.html\" class=\"m-doc\">RainCounterI2C_<wbr />Depth</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_s_d_i12_sensors_8cpp.html",
+        "name": "SDI12Sensors.cpp",
+        "brief": "Implements the <a href=\"class_s_d_i12_sensors.html\" class=\"m-doc\">SDI12Sensors</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_s_d_i12_sensors_8h.html",
+        "name": "SDI12Sensors.h",
+        "brief": "Contains the <a href=\"class_s_d_i12_sensors.html\" class=\"m-doc\">SDI12Sensors</a> sensor subclass, itself a parent class for all devices that communicate over SDI-12.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_sensirion_s_h_t4x_8cpp.html",
+        "name": "SensirionSHT4x.cpp",
+        "brief": "Implements the <a href=\"class_sensirion_s_h_t4x.html\" class=\"m-doc\">SensirionSHT4x</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_sensirion_s_h_t4x_8h.html",
+        "name": "SensirionSHT4x.h",
+        "brief": "Contains the <a href=\"class_sensirion_s_h_t4x.html\" class=\"m-doc\">SensirionSHT4x</a> sensor subclass and the variable subclasses <a href=\"class_sensirion_s_h_t4x___humidity.html\" class=\"m-doc\">SensirionSHT4x_<wbr />Humidity</a> and <a href=\"class_sensirion_s_h_t4x___temp.html\" class=\"m-doc\">SensirionSHT4x_<wbr />Temp</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_tally_counter_i2_c_8h.html",
+        "name": "TallyCounterI2C.h",
+        "brief": "Implements the <a href=\"class_tally_counter_i2_c.html\" class=\"m-doc\">TallyCounterI2C</a> sensor subclass.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_t_i_a_d_s1x15_8cpp.html",
+        "name": "TIADS1x15.cpp",
+        "brief": "Implements the <a href=\"class_t_i_a_d_s1x15.html\" class=\"m-doc\">TIADS1x15</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_t_i_a_d_s1x15_8h.html",
+        "name": "TIADS1x15.h",
+        "brief": "This file contains the <a href=\"class_t_i_a_d_s1x15.html\" class=\"m-doc\">TIADS1x15</a> sensor subclass and the <a href=\"class_t_i_a_d_s1x15___voltage.html\" class=\"m-doc\">TIADS1x15_<wbr />Voltage</a> variable subclass.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_t_i_i_n_a219_8cpp.html",
+        "name": "TIINA219.cpp",
+        "brief": "Implements the <a href=\"class_t_i_i_n_a219.html\" class=\"m-doc\">TIINA219</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_t_i_i_n_a219_8h.html",
+        "name": "TIINA219.h",
+        "brief": "Contains the <a href=\"class_t_i_i_n_a219.html\" class=\"m-doc\">TIINA219</a> sensor subclass and the variale subclasses <a href=\"class_t_i_i_n_a219___current.html\" class=\"m-doc\">TIINA219_<wbr />Current</a>, <a href=\"class_t_i_i_n_a219___voltage.html\" class=\"m-doc\">TIINA219_<wbr />Voltage</a>, and <a href=\"class_t_i_i_n_a219___power.html\" class=\"m-doc\">TIINA219_<wbr />Power</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_turner_cyclops_8cpp.html",
+        "name": "TurnerCyclops.cpp",
+        "brief": "Implements the <a href=\"class_turner_cyclops.html\" class=\"m-doc\">TurnerCyclops</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_turner_cyclops_8h.html",
+        "name": "TurnerCyclops.h",
+        "brief": "Contains the <a href=\"class_turner_cyclops.html\" class=\"m-doc\">TurnerCyclops</a> sensor subclass and the variable subclasses <a href=\"class_turner_cyclops___turbidity.html\" class=\"m-doc\">TurnerCyclops_<wbr />Turbidity</a> and <a href=\"class_turner_cyclops___voltage.html\" class=\"m-doc\">TurnerCyclops_<wbr />Voltage</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_turner_turbidity_plus_8cpp.html",
+        "name": "TurnerTurbidityPlus.cpp",
+        "brief": "Implements the <a href=\"class_turner_turbidity_plus.html\" class=\"m-doc\">TurnerTurbidityPlus</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_turner_turbidity_plus_8h.html",
+        "name": "TurnerTurbidityPlus.h",
+        "brief": "Contains the <a href=\"class_turner_turbidity_plus.html\" class=\"m-doc\">TurnerTurbidityPlus</a> sensor subclass and the variable subclasses <a href=\"class_turner_turbidity_plus___turbidity.html\" class=\"m-doc\">TurnerTurbidityPlus_<wbr />Turbidity</a> and <a href=\"class_turner_turbidity_plus___voltage.html\" class=\"m-doc\">TurnerTurbidityPlus_<wbr />Voltage</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_vega_puls21_8h.html",
+        "name": "VegaPuls21.h",
+        "brief": "Contains the <a href=\"class_vega_puls21.html\" class=\"m-doc\">VegaPuls21</a> sensor subclass and the variable subclasses <a href=\"class_vega_puls21___stage.html\" class=\"m-doc\">VegaPuls21_<wbr />Stage</a>, <a href=\"class_vega_puls21___distance.html\" class=\"m-doc\">VegaPuls21_<wbr />Distance</a>, <a href=\"class_vega_puls21___reliability.html\" class=\"m-doc\">VegaPuls21_<wbr />Reliability</a>, and <a href=\"class_vega_puls21___error_code.html\" class=\"m-doc\">VegaPuls21_<wbr />ErrorCode</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_yosemitech_parent_8cpp.html",
+        "name": "YosemitechParent.cpp",
+        "brief": "Implements the <a href=\"class_yosemitech_parent.html\" class=\"m-doc\">YosemitechParent</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_yosemitech_parent_8h.html",
+        "name": "YosemitechParent.h",
+        "brief": "Contains the <a href=\"class_yosemitech_parent.html\" class=\"m-doc\">YosemitechParent</a> sensor subclass, itself a parent class for all Yosemitech sensors that communicate via Modbus and are supported by the EnviroDIY Yosemitech library.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_yosemitech_y4000_8h.html",
+        "name": "YosemitechY4000.h",
+        "brief": "Contains the <a href=\"class_yosemitech_y4000.html\" class=\"m-doc\">YosemitechY4000</a> sensor subclass and the variable subclasses <a href=\"class_yosemitech_y4000___d_omg_l.html\" class=\"m-doc\">YosemitechY4000_<wbr />DOmgL</a>, <a href=\"class_yosemitech_y4000___turbidity.html\" class=\"m-doc\">YosemitechY4000_<wbr />Turbidity</a>, <a href=\"class_yosemitech_y4000___cond.html\" class=\"m-doc\">YosemitechY4000_<wbr />Cond</a>, <a href=\"class_yosemitech_y4000__p_h.html\" class=\"m-doc\">YosemitechY4000_<wbr />pH</a>, <a href=\"class_yosemitech_y4000___temp.html\" class=\"m-doc\">YosemitechY4000_<wbr />Temp</a>, <a href=\"class_yosemitech_y4000___o_r_p.html\" class=\"m-doc\">YosemitechY4000_<wbr />ORP</a>, <a href=\"class_yosemitech_y4000___chlorophyll.html\" class=\"m-doc\">YosemitechY4000_<wbr />Chlorophyll</a>, and <a href=\"class_yosemitech_y4000___b_g_a.html\" class=\"m-doc\">YosemitechY4000_<wbr />BGA</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_yosemitech_y504_8h.html",
+        "name": "YosemitechY504.h",
+        "brief": "Contains the <a href=\"class_yosemitech_y504.html\" class=\"m-doc\">YosemitechY504</a> sensor subclass and the variable subclasses <a href=\"class_yosemitech_y504___d_opct.html\" class=\"m-doc\">YosemitechY504_<wbr />DOpct</a>, <a href=\"class_yosemitech_y504___temp.html\" class=\"m-doc\">YosemitechY504_<wbr />Temp</a>, and <a href=\"class_yosemitech_y504___d_omg_l.html\" class=\"m-doc\">YosemitechY504_<wbr />DOmgL</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_yosemitech_y510_8h.html",
+        "name": "YosemitechY510.h",
+        "brief": "Contains the <a href=\"class_yosemitech_y510.html\" class=\"m-doc\">YosemitechY510</a> sensor subclass and the variable subclasses <a href=\"class_yosemitech_y510___turbidity.html\" class=\"m-doc\">YosemitechY510_<wbr />Turbidity</a> and <a href=\"class_yosemitech_y510___temp.html\" class=\"m-doc\">YosemitechY510_<wbr />Temp</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_yosemitech_y511_8h.html",
+        "name": "YosemitechY511.h",
+        "brief": "Contains the <a href=\"class_yosemitech_y511.html\" class=\"m-doc\">YosemitechY511</a> sensor subclass and the variable subclasses <a href=\"class_yosemitech_y511___turbidity.html\" class=\"m-doc\">YosemitechY511_<wbr />Turbidity</a> and <a href=\"class_yosemitech_y511___temp.html\" class=\"m-doc\">YosemitechY511_<wbr />Temp</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_yosemitech_y513_8h.html",
+        "name": "YosemitechY513.h",
+        "brief": "Contains the <a href=\"class_yosemitech_y513.html\" class=\"m-doc\">YosemitechY513</a> sensor subclass and the variable subclasses <a href=\"class_yosemitech_y513___b_g_a.html\" class=\"m-doc\">YosemitechY513_<wbr />BGA</a> and <a href=\"class_yosemitech_y513___temp.html\" class=\"m-doc\">YosemitechY513_<wbr />Temp</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_yosemitech_y514_8h.html",
+        "name": "YosemitechY514.h",
+        "brief": "Contains the <a href=\"class_yosemitech_y514.html\" class=\"m-doc\">YosemitechY514</a> sensor subclass and the variable subclasses <a href=\"class_yosemitech_y514___chlorophyll.html\" class=\"m-doc\">YosemitechY514_<wbr />Chlorophyll</a> and <a href=\"class_yosemitech_y514___temp.html\" class=\"m-doc\">YosemitechY514_<wbr />Temp</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_yosemitech_y520_8h.html",
+        "name": "YosemitechY520.h",
+        "brief": "Contains the <a href=\"class_yosemitech_y520.html\" class=\"m-doc\">YosemitechY520</a> sensor subclass and the variable subclasses <a href=\"class_yosemitech_y520___cond.html\" class=\"m-doc\">YosemitechY520_<wbr />Cond</a> and <a href=\"class_yosemitech_y520___temp.html\" class=\"m-doc\">YosemitechY520_<wbr />Temp</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_yosemitech_y532_8h.html",
+        "name": "YosemitechY532.h",
+        "brief": "Contains the <a href=\"class_yosemitech_y532.html\" class=\"m-doc\">YosemitechY532</a> sensor subclass and the variable subclasses <a href=\"class_yosemitech_y532__p_h.html\" class=\"m-doc\">YosemitechY532_<wbr />pH</a>, <a href=\"class_yosemitech_y532___temp.html\" class=\"m-doc\">YosemitechY532_<wbr />Temp</a>, and <a href=\"class_yosemitech_y532___voltage.html\" class=\"m-doc\">YosemitechY532_<wbr />Voltage</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_yosemitech_y533_8h.html",
+        "name": "YosemitechY533.h",
+        "brief": "Contains the <a href=\"class_yosemitech_y533.html\" class=\"m-doc\">YosemitechY533</a> sensor subclass and the variable subclasses <a href=\"class_yosemitech_y533___o_r_p.html\" class=\"m-doc\">YosemitechY533_<wbr />ORP</a> and <a href=\"class_yosemitech_y533___temp.html\" class=\"m-doc\">YosemitechY533_<wbr />Temp</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_yosemitech_y551_8h.html",
+        "name": "YosemitechY551.h",
+        "brief": "Contains the <a href=\"class_yosemitech_y551.html\" class=\"m-doc\">YosemitechY551</a> sensor subclass and the variable subclasses <a href=\"class_yosemitech_y551___c_o_d.html\" class=\"m-doc\">YosemitechY551_<wbr />COD</a>, <a href=\"class_yosemitech_y551___temp.html\" class=\"m-doc\">YosemitechY551_<wbr />Temp</a>, and <a href=\"class_yosemitech_y551___turbidity.html\" class=\"m-doc\">YosemitechY551_<wbr />Turbidity</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_yosemitech_y560_8h.html",
+        "name": "YosemitechY560.h",
+        "brief": "Contains the <a href=\"class_yosemitech_y560.html\" class=\"m-doc\">YosemitechY560</a> sensor subclass and the variable subclasses <a href=\"class_yosemitech_y560___n_h4___n.html\" class=\"m-doc\">YosemitechY560_<wbr />NH4_<wbr />N</a>, <a href=\"class_yosemitech_y560___temp.html\" class=\"m-doc\">YosemitechY560_<wbr />Temp</a>, and <a href=\"class_yosemitech_y560__p_h.html\" class=\"m-doc\">YosemitechY560_<wbr />pH</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_yosemitech_y700_8h.html",
+        "name": "YosemitechY700.h",
+        "brief": "Contains the <a href=\"class_yosemitech_y700.html\" class=\"m-doc\">YosemitechY700</a> sensor subclass and the variable subclasses <a href=\"class_yosemitech_y700___pressure.html\" class=\"m-doc\">YosemitechY700_<wbr />Pressure</a> and <a href=\"class_yosemitech_y700___temp.html\" class=\"m-doc\">YosemitechY700_<wbr />Temp</a>.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_zebra_tech_d_opto_8h.html",
+        "name": "ZebraTechDOpto.h",
+        "brief": "Contains the <a href=\"class_zebra_tech_d_opto.html\" class=\"m-doc\">ZebraTechDOpto</a> sensor subclass and the variable subclasses <a href=\"class_zebra_tech_d_opto___temp.html\" class=\"m-doc\">ZebraTechDOpto_<wbr />Temp</a>, <a href=\"class_zebra_tech_d_opto___d_opct.html\" class=\"m-doc\">ZebraTechDOpto_<wbr />DOpct</a>, and <a href=\"class_zebra_tech_d_opto___d_omg_l.html\" class=\"m-doc\">ZebraTechDOpto_<wbr />DOmgL</a>.",
+        "deprecated": null,
+        "since": null
+      }
+    ],
+    "namespaces": [],
+    "classes": [],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "src",
+        "dir_68267d1309a1af8e8297ef4c3efbcdba.html"
+      ],
+      [
+        "sensors",
+        "dir_7349e89ef19c117195f8e371603e1b1f.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "sensors",
+        "dir_7349e89ef19c117195f8e371603e1b1f.html"
+      ]
+    ]
+  }
+}

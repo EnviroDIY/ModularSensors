@@ -1,0 +1,101 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "dir",
+    "id": "dir_1fc62a3d58a17c0f606ad39220918d89",
+    "name": "src/WatchDogs",
+    "url_base": "dir_1fc62a3d58a17c0f606ad39220918d89",
+    "url": "dir_1fc62a3d58a17c0f606ad39220918d89.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "Contains the source code for setting up the watch-dog reset on the various supported processors.",
+    "description": "",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [
+      {
+        "url": "_watch_dog_a_v_r_8cpp.html",
+        "name": "WatchDogAVR.cpp",
+        "brief": "Implements the <a href=\"classextended_watch_dog_a_v_r.html\" class=\"m-doc\">extendedWatchDogAVR</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_watch_dog_a_v_r_8h.html",
+        "name": "WatchDogAVR.h",
+        "brief": "Contains the <a href=\"classextended_watch_dog_a_v_r.html\" class=\"m-doc\">extendedWatchDogAVR</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_watch_dog_s_a_m_d_8cpp.html",
+        "name": "WatchDogSAMD.cpp",
+        "brief": "Implements the <a href=\"classextended_watch_dog_s_a_m_d.html\" class=\"m-doc\">extendedWatchDogSAMD</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_watch_dog_s_a_m_d_8h.html",
+        "name": "WatchDogSAMD.h",
+        "brief": "Contains the <a href=\"classextended_watch_dog_s_a_m_d.html\" class=\"m-doc\">extendedWatchDogSAMD</a> class.",
+        "deprecated": null,
+        "since": null
+      }
+    ],
+    "namespaces": [],
+    "classes": [],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "src",
+        "dir_68267d1309a1af8e8297ef4c3efbcdba.html"
+      ],
+      [
+        "WatchDogs",
+        "dir_1fc62a3d58a17c0f606ad39220918d89.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "WatchDogs",
+        "dir_1fc62a3d58a17c0f606ad39220918d89.html"
+      ]
+    ]
+  }
+}

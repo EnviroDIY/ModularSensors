@@ -1,0 +1,72 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "page",
+    "id": "page_other_notes",
+    "name": "Other Sensor and Modem Notes",
+    "url_base": "page_other_notes",
+    "url": "page_other_notes.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>Here are links to detailed information about the various supported sensors and modems.</p><p><a href=\"page_sensor_notes.html\" class=\"m-doc\">Notes about Sensors</a></p><p><a href=\"page_modem_notes.html\" class=\"m-doc\">Notes about Modems</a></p>",
+    "sections": [],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "ModularSensors",
+        "index.html"
+      ],
+      [
+        "Other Sensor and Modem Notes",
+        "page_other_notes.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Other Sensor and Modem Notes",
+        "page_other_notes.html"
+      ]
+    ]
+  }
+}

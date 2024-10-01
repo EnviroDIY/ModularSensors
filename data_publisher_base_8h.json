@@ -1,0 +1,98 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "file",
+    "id": "data_publisher_base_8h",
+    "name": "dataPublisherBase.h",
+    "url_base": "data_publisher_base_8h",
+    "url": "data_publisher_base_8h.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "Contains the <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> class - a virtual class used by other publishers to distribute data online.",
+    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside><p>A <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> is a abstract concept. It is something that &quot;watches&quot; the logger for new data and correctly formats and sends that data to some online web service.</p>",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "classdata_publisher.html",
+        "name": "dataPublisher",
+        "brief": "The <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> class is a virtual class used by other publishers to distribute data online.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [
+      {
+        "base_url": "data_publisher_base_8h.html",
+        "id": "a81b769375c72853184e1c40c56a5dfd9",
+        "include": null,
+        "has_details": true,
+        "name": "MS_SEND_BUFFER_SIZE",
+        "initializer": "750",
+        "brief": "Send Buffer.",
+        "description": "<p>This determines how many characters to set out at once over the TCP connection. Increasing this may decrease data use by a logger, while decreasing it will save memory. Do not make it smaller than 32 or bigger than 1500 (a typical TCP Maximum Transmission Unit).</p><p>This can be changed by setting the build flag MS_SEND_BUFFER_SIZE when compiling.</p>",
+        "return_value": null,
+        "deprecated": null,
+        "since": null,
+        "has_param_details": false,
+        "params": null
+      }
+    ],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "src",
+        "dir_68267d1309a1af8e8297ef4c3efbcdba.html"
+      ],
+      [
+        "dataPublisherBase.h",
+        "data_publisher_base_8h.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "dataPublisherBase.h",
+        "data_publisher_base_8h.html"
+      ]
+    ]
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "file",
+    "id": "_vega_puls21_8h",
+    "name": "VegaPuls21.h",
+    "url_base": "_vega_puls21_8h",
+    "url": "_vega_puls21_8h.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "Contains the <a href=\"class_vega_puls21.html\" class=\"m-doc\">VegaPuls21</a> sensor subclass and the variable subclasses <a href=\"class_vega_puls21___stage.html\" class=\"m-doc\">VegaPuls21_<wbr />Stage</a>, <a href=\"class_vega_puls21___distance.html\" class=\"m-doc\">VegaPuls21_<wbr />Distance</a>, <a href=\"class_vega_puls21___reliability.html\" class=\"m-doc\">VegaPuls21_<wbr />Reliability</a>, and <a href=\"class_vega_puls21___error_code.html\" class=\"m-doc\">VegaPuls21_<wbr />ErrorCode</a>.",
+    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside><p>These are for the VEGAPULS C 21 digital SDI-12 radar level sensor.</p><p>This depends on the <a href=\"class_s_d_i12_sensors.html\" class=\"m-doc\">SDI12Sensors</a> parent class.</p>",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_vega_puls21.html",
+        "name": "VegaPuls21",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__vega__puls21.html\" class=\"m-doc\">VEGAPULS C 21 radar level sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_vega_puls21___stage.html",
+        "name": "VegaPuls21_Stage",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__vega__puls21.html#sensor_vega_puls21_stage\" class=\"m-doc\">temperature output</a> from a <a href=\"group__sensor__vega__puls21.html\" class=\"m-doc\">VEGAPULS C 21 radar level sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_vega_puls21___distance.html",
+        "name": "VegaPuls21_Distance",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__vega__puls21.html#sensor_vega_puls21_distance\" class=\"m-doc\">temperature output</a> from a <a href=\"group__sensor__vega__puls21.html\" class=\"m-doc\">VEGAPULS C 21 radar level sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_vega_puls21___temp.html",
+        "name": "VegaPuls21_Temp",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__vega__puls21.html#sensor_vega_puls21_temp\" class=\"m-doc\">temperature output</a> from a <a href=\"group__sensor__vega__puls21.html\" class=\"m-doc\">VEGAPULS C 21 radar level sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_vega_puls21___reliability.html",
+        "name": "VegaPuls21_Reliability",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__vega__puls21.html#sensor_vega_puls21_reliability\" class=\"m-doc\">reliability output</a> from a <a href=\"group__sensor__vega__puls21.html\" class=\"m-doc\">VEGAPULS C 21 radar level sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_vega_puls21___error_code.html",
+        "name": "VegaPuls21_ErrorCode",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__vega__puls21.html#sensor_vega_puls21_error\" class=\"m-doc\">error code output</a> from a <a href=\"group__sensor__vega__puls21.html\" class=\"m-doc\">VEGAPULS C 21 radar level sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "src",
+        "dir_68267d1309a1af8e8297ef4c3efbcdba.html"
+      ],
+      [
+        "sensors",
+        "dir_7349e89ef19c117195f8e371603e1b1f.html"
+      ],
+      [
+        "VegaPuls21.h",
+        "_vega_puls21_8h.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "VegaPuls21.h",
+        "_vega_puls21_8h.html"
+      ]
+    ]
+  }
+}

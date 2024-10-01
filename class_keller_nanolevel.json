@@ -1,0 +1,304 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "class",
+    "id": "class_keller_nanolevel",
+    "name": "KellerNanolevel",
+    "url_base": "class_keller_nanolevel",
+    "url": "class_keller_nanolevel.html",
+    "include": [
+      "&lt;src/sensors/KellerNanolevel.h&gt;",
+      "_keller_nanolevel_8h.html"
+    ],
+    "has_template_details": false,
+    "templates": null,
+    "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__nanolevel.html\" class=\"m-doc\">Keller nanolevel sensor</a>.",
+    "description": "",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [],
+    "base_classes": [
+      {
+        "kind": "class",
+        "url": "class_keller_parent.html",
+        "name": "KellerParent",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for all <a href=\"group__keller__group.html\" class=\"m-doc\">Keller water level sensors</a>.",
+        "templates": null,
+        "deprecated": null,
+        "since": null,
+        "is_protected": false,
+        "is_virtual": false
+      }
+    ],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [
+      {
+        "base_url": "class_keller_nanolevel.html",
+        "id": "a0f155091be9a5baa6e8092ef844f9307",
+        "include": null,
+        "has_details": true,
+        "type": "",
+        "name": "KellerNanolevel",
+        "brief": "Construct a new Keller Nanolevel instance.",
+        "description": "<aside class=\"m-note m-info\"><h4>Note</h4><p>An RS485 adapter with integrated flow control is strongly recommended.</p></aside>",
+        "return_value": null,
+        "return_values": [],
+        "exceptions": [],
+        "deprecated": null,
+        "since": null,
+        "is_constexpr": false,
+        "is_consteval": false,
+        "is_explicit": false,
+        "is_virtual": false,
+        "prefix": "",
+        "is_defaulted": false,
+        "is_deleted": false,
+        "is_pure_virtual": false,
+        "is_final": false,
+        "is_override": false,
+        "is_noexcept": false,
+        "is_conditional_noexcept": false,
+        "suffix": "",
+        "is_protected": false,
+        "is_private": false,
+        "is_signal": false,
+        "is_slot": false,
+        "has_template_details": false,
+        "templates": null,
+        "has_param_details": true,
+        "params": [
+          {
+            "name": "modbusAddress",
+            "type": "byte",
+            "type_name": "byte modbusAddress",
+            "default": null,
+            "description": "The modbus address of the Nanolevel.",
+            "direction": ""
+          },
+          {
+            "name": "stream",
+            "type": "Stream*",
+            "type_name": "Stream* stream",
+            "default": null,
+            "description": "An Arduino data stream for modbus communication. See <a href=\"page_arduino_streams.html\" class=\"m-doc\">notes</a> for more information on what streams can be used.",
+            "direction": ""
+          },
+          {
+            "name": "powerPin",
+            "type": "int8_t",
+            "type_name": "int8_t powerPin",
+            "default": null,
+            "description": "<p>The pin on the mcu controlling power to the Nanolevel. Use -1 if it is continuously powered.</p><ul><li>The Nanolevel requires a 9-28 VDC power supply.</li></ul>",
+            "direction": ""
+          },
+          {
+            "name": "powerPin2",
+            "type": "int8_t",
+            "type_name": "int8_t powerPin2",
+            "default": "-1",
+            "description": "The pin on the mcu controlling power to the RS485 adapter, if it is different from that used to power the sensor. Use -1 or omit if not applicable.",
+            "direction": ""
+          },
+          {
+            "name": "enablePin",
+            "type": "int8_t",
+            "type_name": "int8_t enablePin",
+            "default": "-1",
+            "description": "The pin on the mcu controlling the direction enable on the RS485 adapter, if necessary; use -1 or omit if not applicable.",
+            "direction": ""
+          },
+          {
+            "name": "measurementsToAverage",
+            "type": "uint8_t",
+            "type_name": "uint8_t measurementsToAverage",
+            "default": "1",
+            "description": "The number of measurements to take and average before giving a &quot;final&quot; result from the sensor; optional with a default value of 1.",
+            "direction": ""
+          }
+        ]
+      },
+      {
+        "base_url": "class_keller_nanolevel.html",
+        "id": "a0ad9a5f63e28bde13ac3abf8cd753610",
+        "include": null,
+        "has_details": true,
+        "type": "",
+        "name": "KellerNanolevel",
+        "brief": "Construct a new Keller Nanolevel instance.",
+        "description": "<aside class=\"m-note m-info\"><h4>Note</h4><p>An RS485 adapter with integrated flow control is strongly recommended.</p></aside>",
+        "return_value": null,
+        "return_values": [],
+        "exceptions": [],
+        "deprecated": null,
+        "since": null,
+        "is_constexpr": false,
+        "is_consteval": false,
+        "is_explicit": false,
+        "is_virtual": false,
+        "prefix": "",
+        "is_defaulted": false,
+        "is_deleted": false,
+        "is_pure_virtual": false,
+        "is_final": false,
+        "is_override": false,
+        "is_noexcept": false,
+        "is_conditional_noexcept": false,
+        "suffix": "",
+        "is_protected": false,
+        "is_private": false,
+        "is_signal": false,
+        "is_slot": false,
+        "has_template_details": false,
+        "templates": null,
+        "has_param_details": true,
+        "params": [
+          {
+            "name": "modbusAddress",
+            "type": "byte",
+            "type_name": "byte modbusAddress",
+            "default": null,
+            "description": "The modbus address of the Nanolevel.",
+            "direction": ""
+          },
+          {
+            "name": "stream",
+            "type": "Stream&amp;",
+            "type_name": "Stream&amp; stream",
+            "default": null,
+            "description": "An Arduino data stream for modbus communication. See <a href=\"page_arduino_streams.html\" class=\"m-doc\">notes</a> for more information on what streams can be used.",
+            "direction": ""
+          },
+          {
+            "name": "powerPin",
+            "type": "int8_t",
+            "type_name": "int8_t powerPin",
+            "default": null,
+            "description": "<p>The pin on the mcu controlling power to the Nanolevel. Use -1 if it is continuously powered.</p><ul><li>The Nanolevel requires a 9-28 VDC power supply.</li></ul>",
+            "direction": ""
+          },
+          {
+            "name": "powerPin2",
+            "type": "int8_t",
+            "type_name": "int8_t powerPin2",
+            "default": "-1",
+            "description": "The pin on the mcu controlling power to the RS485 adapter, if it is different from that used to power the sensor. Use -1 or omit if not applicable.",
+            "direction": ""
+          },
+          {
+            "name": "enablePin",
+            "type": "int8_t",
+            "type_name": "int8_t enablePin",
+            "default": "-1",
+            "description": "The pin on the mcu controlling the direction enable on the RS485 adapter, if necessary; use -1 or omit if not applicable.",
+            "direction": ""
+          },
+          {
+            "name": "measurementsToAverage",
+            "type": "uint8_t",
+            "type_name": "uint8_t measurementsToAverage",
+            "default": "1",
+            "description": "The number of measurements to take and average before giving a &quot;final&quot; result from the sensor; optional with a default value of 1.",
+            "direction": ""
+          }
+        ]
+      },
+      {
+        "base_url": "class_keller_nanolevel.html",
+        "id": "a96bb825a2a8c7872d1b8fb60864a03a7",
+        "include": null,
+        "has_details": false,
+        "type": "",
+        "name": "~KellerNanolevel",
+        "brief": "Destroy the Keller Nanolevel object.",
+        "description": "",
+        "return_value": null,
+        "return_values": [],
+        "exceptions": [],
+        "deprecated": null,
+        "since": null,
+        "is_constexpr": false,
+        "is_consteval": false,
+        "is_explicit": false,
+        "is_virtual": false,
+        "prefix": "",
+        "is_defaulted": false,
+        "is_deleted": false,
+        "is_pure_virtual": false,
+        "is_final": false,
+        "is_override": false,
+        "is_noexcept": false,
+        "is_conditional_noexcept": false,
+        "suffix": "",
+        "is_protected": false,
+        "is_private": false,
+        "is_signal": false,
+        "is_slot": false,
+        "has_template_details": false,
+        "templates": null,
+        "has_param_details": false,
+        "params": []
+      }
+    ],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": true,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "Sensor",
+        "class_sensor.html"
+      ],
+      [
+        "KellerParent",
+        "class_keller_parent.html"
+      ],
+      [
+        "KellerNanolevel",
+        "class_keller_nanolevel.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Keller Nanolevel",
+        "group__sensor__nanolevel.html"
+      ],
+      [
+        "KellerNanolevel",
+        "class_keller_nanolevel.html"
+      ]
+    ],
+    "is_final": false,
+    "prefix_wbr": "KellerNanolevel::<wbr />"
+  }
+}

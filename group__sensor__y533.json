@@ -1,0 +1,464 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__sensor__y533",
+    "name": "Yosemitech Y533 ORP Sensor",
+    "url_base": "group__sensor__y533",
+    "url": "group__sensor__y533.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>Classes for the Yosemitech Y533 oxidation/reduction potential (ORP) sensor.</p><section id=\"sensor_y533_datasheet\"><h2>Sensor Datasheet</h2><ul><li><a href=\"https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y532-pH_UserManual-v1.0.pdf\">Manual</a></li><li><a href=\"https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y532-pH-ORP-v1.7_ModbusInstructions.pdf\">Modbus Instructions</a></li></ul><aside class=\"m-note m-info\"><h4>Note</h4><p>The reported resolution (32 bit) gives far more precision than is significant based on the specified accuracy of the sensor, so the resolutions kept in the string representation of the variable values is based on the accuracy not the maximum reported resolution of the sensor.</p></aside></section><section id=\"sensor_y533_ctor\"><h2>Sensor Constructor</h2><p>{{ <a href=\"class_yosemitech_y533.html#a8b3445ffffadbe24ce765136f238b8e9\" class=\"m-doc\">YosemitechY533::<wbr />YosemitechY533</a> }}</p><hr/></section><section id=\"sensor_y533_examples\"><h2>Example Code</h2><p>The Yosemitech Y533 ORP sensor is used in the <a href=\"example_menu.html#menu_walk_yosemitech_y533\" class=\"m-doc\">menu a la carte</a> example.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;sensors/YosemitechY533.h&gt;</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"c1\">// NOTE: Extra hardware and software serial ports are created in the &quot;Settings</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"c1\">// for Additional Serial Ports&quot; section</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span><span class=\"c1\">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"kr\">byte</span><span class=\"w\">          </span><span class=\"n\">y533ModbusAddress</span><span class=\"w\">  </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mh\">0x32</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// The modbus address of the Y533</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">y533AdapterPower</span><span class=\"w\">   </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">sensorPowerPin</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// RS485 adapter power pin</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">y533SensorPower</span><span class=\"w\">    </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">A3</span><span class=\"p\">;</span><span class=\"w\">              </span><span class=\"c1\">// Sensor power pin</span>\n</div><div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">y533EnablePin</span><span class=\"w\">      </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">4</span><span class=\"p\">;</span><span class=\"w\">               </span><span class=\"c1\">// Adapter RE/DE pin</span>\n</div><div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">uint8_t</span><span class=\"w\"> </span><span class=\"n\">y533NumberReadings</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">1</span><span class=\"p\">;</span>\n</div><div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"c1\">// The manufacturer actually doesn&#39;t mention averaging for this one</span>\n</div><div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span>\n</div><div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span><span class=\"c1\">// Create a Yosemitech Y533 ORP sensor object</span>\n</div><div class=\"line\"><a id=\"l-15\" name=\"l-15\"></a><span class=\"linenos\">15</span><span class=\"n\">YosemitechY533</span><span class=\"w\"> </span><span class=\"nf\">y533</span><span class=\"p\">(</span><span class=\"n\">y533ModbusAddress</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">modbusSerial</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">y533AdapterPower</span><span class=\"p\">,</span>\n</div><div class=\"line\"><a id=\"l-16\" name=\"l-16\"></a><span class=\"linenos\">16</span><span class=\"w\">                    </span><span class=\"n\">y533SensorPower</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">y533EnablePin</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">y533NumberReadings</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-17\" name=\"l-17\"></a><span class=\"linenos\">17</span>\n</div><div class=\"line\"><a id=\"l-18\" name=\"l-18\"></a><span class=\"linenos\">18</span><span class=\"c1\">// Create ORP and temperature variable pointers for the Y533</span>\n</div><div class=\"line\"><a id=\"l-19\" name=\"l-19\"></a><span class=\"linenos\">19</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">y533ORP</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-20\" name=\"l-20\"></a><span class=\"linenos\">20</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">YosemitechY533_ORP</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">y533</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-21\" name=\"l-21\"></a><span class=\"linenos\">21</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">y533Temp</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-22\" name=\"l-22\"></a><span class=\"linenos\">22</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">YosemitechY533_Temp</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">y533</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "sensor_y533_datasheet",
+        "Sensor Datasheet",
+        []
+      ],
+      [
+        "sensor_y533_ctor",
+        "Sensor Constructor",
+        []
+      ],
+      [
+        "sensor_y533_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_yosemitech_y533.html",
+        "name": "YosemitechY533",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__y533.html\" class=\"m-doc\">Yosemitech Y533 ORP sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_yosemitech_y533___o_r_p.html",
+        "name": "YosemitechY533_ORP",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__y533.html#sensor_y533_orp\" class=\"m-doc\">pH output</a> from a <a href=\"group__sensor__y533.html\" class=\"m-doc\">Yosemitech Y533 ORP sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_yosemitech_y533___temp.html",
+        "name": "YosemitechY533_Temp",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__y533.html#sensor_y533_temp\" class=\"m-doc\">temperature output</a> from a <a href=\"group__sensor__y533.html\" class=\"m-doc\">Yosemitech Y533 ORP sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Sensor Variable Counts",
+        "id": "sensor-variable-counts",
+        "description": "<p><a name=\"sensor_y533_var_counts\"></a> The number of variables that can be returned by a Yosemitch Y533</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y533.html",
+              "id": "ga27b357f89ce6b09f523929a24c48e3d8",
+              "include": [
+                "&lt;src/sensors/YosemitechY533.h&gt;",
+                "_yosemitech_y533_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y533_NUM_VARIABLES",
+              "initializer": "2",
+              "brief": "<a href=\"class_sensor.html#af26786329fd01b44cf31410d046fc8f3\" class=\"m-doc\">Sensor::<wbr />_numReturnedValues</a>; the Y533 can report 2 values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y533.html",
+              "id": "gaca619c5deb6f8244ec01c140c57bc427",
+              "include": [
+                "&lt;src/sensors/YosemitechY533.h&gt;",
+                "_yosemitech_y533_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y533_INC_CALC_VARIABLES",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#a2f3f93a9205efb134cef1216d65077d2\" class=\"m-doc\">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Sensor Timing",
+        "id": "sensor-timing",
+        "description": "<p><a name=\"sensor_y533_timing\"></a> The sensor timing for a Yosemitch Y533</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y533.html",
+              "id": "ga7816aa9c162c11c4314255c46b3eeeec",
+              "include": [
+                "&lt;src/sensors/YosemitechY533.h&gt;",
+                "_yosemitech_y533_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y533_WARM_UP_TIME_MS",
+              "initializer": "500",
+              "brief": "<a href=\"class_sensor.html#aaaefd7f306f86382a3dac726531756b4\" class=\"m-doc\">Sensor::<wbr />_warmUpTime_ms</a>; time before sensor responds after power - 500ms.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y533.html",
+              "id": "ga9a5d88b434beec2242d845243489c495",
+              "include": [
+                "&lt;src/sensors/YosemitechY533.h&gt;",
+                "_yosemitech_y533_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y533_STABILIZATION_TIME_MS",
+              "initializer": "4500",
+              "brief": "<a href=\"class_sensor.html#ad6822ad09fb64658c911ce86820db79c\" class=\"m-doc\">Sensor::<wbr />_stabilizationTime_ms</a>; time between &quot;StartMeasurement&quot; command and stable reading - 4.5sec (4500ms).",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y533.html",
+              "id": "ga1aa35e6ef5a1f6c10330626fe0caf306",
+              "include": [
+                "&lt;src/sensors/YosemitechY533.h&gt;",
+                "_yosemitech_y533_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y533_MEASUREMENT_TIME_MS",
+              "initializer": "1800",
+              "brief": "<a href=\"class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba\" class=\"m-doc\">Sensor::<wbr />_measurementTime_ms</a>; the Y533 takes ~1800ms to complete a measurement.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "pH",
+        "id": "ph",
+        "description": "<p><a name=\"sensor_y533_orp\"></a> The ORP variable from a Yosemitch Y533</p><ul><li>Range is -999 to 999 mV</li><li>Accuracy is \u00b120 mV</li><li>Resolution is 1 mV</li></ul><p>{{ <a href=\"class_yosemitech_y533___o_r_p.html#a4ca22104762f1a39e0da0ad8d35a184f\" class=\"m-doc\">YosemitechY533_ORP::<wbr />YosemitechY533_ORP</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y533.html",
+              "id": "ga0b2a7c3efb21fd4009f790a618041c4a",
+              "include": [
+                "&lt;src/sensors/YosemitechY533.h&gt;",
+                "_yosemitech_y533_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y533_ORP_RESOLUTION",
+              "initializer": "0",
+              "brief": "Decimals places in string representation; ph should have 2 - resolution is 1 mV units.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y533.html",
+              "id": "ga43596c3cd4bc752741305cc7dc5d9e34",
+              "include": [
+                "&lt;src/sensors/YosemitechY533.h&gt;",
+                "_yosemitech_y533_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y533_ORP_VAR_NUM",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; ORP is stored in sensorValues[0].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y533.html",
+              "id": "gaf3d5836e31b3215f38e352c0f40fd607",
+              "include": [
+                "&lt;src/sensors/YosemitechY533.h&gt;",
+                "_yosemitech_y533_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y533_ORP_VAR_NAME",
+              "initializer": "\"voltage\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;voltage&quot; NOTE: ORP should be added to ODM2 CVs, as ORP refers to a specific measure of electron potential relative to a silver chloride reference electrode.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y533.html",
+              "id": "gac963b14307daba7a3e0ae1054103df57",
+              "include": [
+                "&lt;src/sensors/YosemitechY533.h&gt;",
+                "_yosemitech_y533_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y533_ORP_UNIT_NAME",
+              "initializer": "\"millivolt\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;millivolt&quot; (mV)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y533.html",
+              "id": "ga85c00fb1501af7983bdb82eec191a79f",
+              "include": [
+                "&lt;src/sensors/YosemitechY533.h&gt;",
+                "_yosemitech_y533_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y533_ORP_DEFAULT_CODE",
+              "initializer": "\"Y533ORP\"",
+              "brief": "Default variable short code; &quot;Y533ORP&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Temperature",
+        "id": "temperature",
+        "description": "<p><a name=\"sensor_y533_temp\"></a> The temperature variable from a Yosemitch Y533</p><ul><li>Range is 0\u00b0C to + 50\u00b0C</li><li>Accuracy is \u00b1 0.2\u00b0C</li></ul><p>{{ <a href=\"class_yosemitech_y533___temp.html#a56de95331cdc28635a6f2e5f2d87efad\" class=\"m-doc\">YosemitechY533_Temp::<wbr />YosemitechY533_Temp</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y533.html",
+              "id": "gaece495e7720107cc78d14cb53218f4e6",
+              "include": [
+                "&lt;src/sensors/YosemitechY533.h&gt;",
+                "_yosemitech_y533_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y533_TEMP_RESOLUTION",
+              "initializer": "1",
+              "brief": "Decimals places in string representation; temperature should have 1 - resolution is 0.1\u00b0C.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y533.html",
+              "id": "ga50b5530151f745f4b35b5247c6d5fd97",
+              "include": [
+                "&lt;src/sensors/YosemitechY533.h&gt;",
+                "_yosemitech_y533_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y533_TEMP_VAR_NUM",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; temperature is stored in sensorValues[1].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y533.html",
+              "id": "ga648ec93bfc6753ec4bb730352efa9338",
+              "include": [
+                "&lt;src/sensors/YosemitechY533.h&gt;",
+                "_yosemitech_y533_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y533_TEMP_VAR_NAME",
+              "initializer": "\"temperature\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;temperature&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y533.html",
+              "id": "ga47cf1f90ec7ddcea0e0b5ab917531c55",
+              "include": [
+                "&lt;src/sensors/YosemitechY533.h&gt;",
+                "_yosemitech_y533_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y533_TEMP_UNIT_NAME",
+              "initializer": "\"degreeCelsius\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;degreeCelsius&quot; (\u00b0C)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y533.html",
+              "id": "ga7ff2688431f962a85eb7ba489f5fc4ee",
+              "include": [
+                "&lt;src/sensors/YosemitechY533.h&gt;",
+                "_yosemitech_y533_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y533_TEMP_DEFAULT_CODE",
+              "initializer": "\"Y533Temp\"",
+              "brief": "Default variable short code; &quot;Y533Temp&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "Yosemitech Sensors",
+        "group__yosemitech__group.html"
+      ],
+      [
+        "Yosemitech Y533 ORP Sensor",
+        "group__sensor__y533.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Yosemitech Y533 ORP Sensor",
+        "group__sensor__y533.html"
+      ]
+    ]
+  }
+}

@@ -1,0 +1,300 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__modem__sim800",
+    "name": "SIMCom SIM800",
+    "url_base": "group__modem__sim800",
+    "url": "group__modem__sim800.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<section id=\"modem_sim800_notes\"><h2>Introduction</h2><p>There are a multitude of boards available that feature a variant of the SIMCom SIM800 or the nearly identical SIM900, including the <a href=\"whttps://www.adafruit.com/product/1946\">Adafruit Fona</a> Mini cellular GSM breakout. Almost all of those boards should work with ModularSensors as a generic SIM800. The one exception is the Sodaq GPRSBee <strong>R6 and higher</strong>, which has its own <a href=\"group__modem__gprsbee.html\" class=\"m-doc\">constructor</a>. The earlier Sodaq GPRSBee&#x27;s (ie, R4) do use this version.</p><p>The SIM800 consumes up to 2A of power while connecting to the network. That is 4x what a typical USB or Arduino board can supply, so expect to give the module it&#x27;s own independent power source.</p><p>The Adafruit <em>3G</em> Fona is not currently supported.</p></section><section id=\"modem_sim800_docs\"><h2>Manufacturer Documentation</h2><p>The module datasheet and AT commands are available here: <a href=\"https://simcom.ee/modules/gsm-gprs/sim800/\">https:/<wbr />/<wbr />simcom.ee/<wbr />modules/<wbr />gsm-gprs/<wbr />sim800/<wbr /></a></p></section><section id=\"modem_sim800_ctor\"><h2>Modem Constructor</h2><p>{{ <a href=\"class_s_i_m_com_s_i_m800.html#a2d6c990b7f5fd7aa52d87bddedc99031\" class=\"m-doc\">SIMComSIM800::<wbr />SIMComSIM800</a> }}</p><hr/></section><section id=\"modem_sim800_examples\"><h2>Example Code</h2><p>The SIM800 is used in the <a href=\"example_menu.html#menu_walk_sim_com_sim800\" class=\"m-doc\">menu a la carte</a> example.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"c1\">// For almost anything based on the SIMCom SIM800 EXCEPT the Sodaq 2GBee R6 and</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span><span class=\"c1\">// higher</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;modems/SIMComSIM800.h&gt;</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span><span class=\"c1\">// NOTE: Extra hardware and software serial ports are created in the &quot;Settings</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span><span class=\"c1\">// for Additional Serial Ports&quot; section</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int32_t</span><span class=\"w\"> </span><span class=\"n\">modemBaud</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">9600</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">//  SIM800 does auto-bauding by default</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span><span class=\"c1\">// Modem Pins - Describe the physical pin connection of your modem to your board</span>\n</div><div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span><span class=\"c1\">// NOTE:  Use -1 for pins that do not apply</span>\n</div><div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span><span class=\"c1\">// Example pins are for a Sodaq GPRSBee R4 with a Mayfly 0.x</span>\n</div><div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemVccPin</span><span class=\"w\">     </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">-1</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// MCU pin controlling modem power</span>\n</div><div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemStatusPin</span><span class=\"w\">  </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">19</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// MCU pin used to read modem status</span>\n</div><div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemResetPin</span><span class=\"w\">   </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">-1</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// MCU pin connected to modem reset pin</span>\n</div><div class=\"line\"><a id=\"l-15\" name=\"l-15\"></a><span class=\"linenos\">15</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemSleepRqPin</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">23</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// MCU pin for modem sleep/wake request</span>\n</div><div class=\"line\"><a id=\"l-16\" name=\"l-16\"></a><span class=\"linenos\">16</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemLEDPin</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">redLED</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// MCU pin connected an LED to show modem</span>\n</div><div class=\"line\"><a id=\"l-17\" name=\"l-17\"></a><span class=\"linenos\">17</span><span class=\"w\">                                    </span><span class=\"c1\">// status</span>\n</div><div class=\"line\"><a id=\"l-18\" name=\"l-18\"></a><span class=\"linenos\">18</span>\n</div><div class=\"line\"><a id=\"l-19\" name=\"l-19\"></a><span class=\"linenos\">19</span><span class=\"c1\">// Network connection information</span>\n</div><div class=\"line\"><a id=\"l-20\" name=\"l-20\"></a><span class=\"linenos\">20</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">char</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">apn</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"s\">&quot;xxxxx&quot;</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// APN for GPRS connection</span>\n</div><div class=\"line\"><a id=\"l-21\" name=\"l-21\"></a><span class=\"linenos\">21</span>\n</div><div class=\"line\"><a id=\"l-22\" name=\"l-22\"></a><span class=\"linenos\">22</span><span class=\"c1\">// Create the modem object</span>\n</div><div class=\"line\"><a id=\"l-23\" name=\"l-23\"></a><span class=\"linenos\">23</span><span class=\"n\">SIMComSIM800</span><span class=\"w\"> </span><span class=\"nf\">modemS800</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">modemSerial</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">modemVccPin</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">modemStatusPin</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">modemResetPin</span><span class=\"p\">,</span>\n</div><div class=\"line\"><a id=\"l-24\" name=\"l-24\"></a><span class=\"linenos\">24</span><span class=\"w\">                       </span><span class=\"n\">modemSleepRqPin</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">apn</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-25\" name=\"l-25\"></a><span class=\"linenos\">25</span><span class=\"c1\">// Create an extra reference to the modem by a generic name</span>\n</div><div class=\"line\"><a id=\"l-26\" name=\"l-26\"></a><span class=\"linenos\">26</span><span class=\"n\">SIMComSIM800</span><span class=\"w\"> </span><span class=\"n\">modem</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">modemS800</span><span class=\"p\">;</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "modem_sim800_notes",
+        "Introduction",
+        []
+      ],
+      [
+        "modem_sim800_docs",
+        "Manufacturer Documentation",
+        []
+      ],
+      [
+        "modem_sim800_ctor",
+        "Modem Constructor",
+        []
+      ],
+      [
+        "modem_sim800_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_s_i_m_com_s_i_m800.html",
+        "name": "SIMComSIM800",
+        "brief": "The <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> subclass for the Adafruit Fona 2G, the Sodaq GPRSBeeR4 and almost any other module based on the <a href=\"group__modem__sim800.html\" class=\"m-doc\">SIMCOM SIM800 or SIM900 modules and</a>thier variants&quot;.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Modem Pin Settings and Timing",
+        "id": "modem-pin-settings-and-timing",
+        "description": "<p><a name=\"modem_sim800_pins_timing\"></a> The timing and pin level settings for a SIMCom SIM800</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__modem__sim800.html",
+              "id": "ga85dd4b8ecbf44e460788dcac684a2c49",
+              "include": [
+                "&lt;src/modems/SIMComSIM800.h&gt;",
+                "_s_i_m_com_s_i_m800_8h.html"
+              ],
+              "has_details": true,
+              "name": "SIM800_STATUS_LEVEL",
+              "initializer": "HIGH",
+              "brief": "The <a href=\"classlogger_modem.html#af44caee8dd6acf7c72cd1271441a41cb\" class=\"m-doc\">loggerModem::<wbr />_statusLevel</a>.",
+              "description": "<p>SIM800 status can be monitored on the <code>STATUS</code> pin which is active <code>HIGH</code> Time after end pulse until status pin becomes active:</p><ul><li>SIM800 - &gt;3sec from start of 1s pulse</li><li>SIM900 - &gt;2.2sec from end of pulse</li></ul>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__sim800.html",
+              "id": "ga1a8065bdc02d2ab54f4357948bf082a8",
+              "include": [
+                "&lt;src/modems/SIMComSIM800.h&gt;",
+                "_s_i_m_com_s_i_m800_8h.html"
+              ],
+              "has_details": true,
+              "name": "SIM800_STATUS_TIME_MS",
+              "initializer": "3000",
+              "brief": "The <a href=\"classlogger_modem.html#a755d93cb67e9184a7cdfeae17448667b\" class=\"m-doc\">loggerModem::<wbr />_statusTime_ms</a>.",
+              "description": "<p>SIM800 status can be monitored on the <code>STATUS</code> pin which is active <code>HIGH</code> Time after end pulse until status pin becomes active:</p><ul><li>SIM800 - &gt;3sec from start of 1s pulse</li><li>SIM900 - &gt;2.2sec from end of pulse</li></ul>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__sim800.html",
+              "id": "gaa1488001b5e3e06929a7436416bf610e",
+              "include": [
+                "&lt;src/modems/SIMComSIM800.h&gt;",
+                "_s_i_m_com_s_i_m800_8h.html"
+              ],
+              "has_details": true,
+              "name": "SIM800_RESET_LEVEL",
+              "initializer": "LOW",
+              "brief": "The <a href=\"classlogger_modem.html#a4832f4560020f57bfb2e11ddade73d0a\" class=\"m-doc\">loggerModem::<wbr />_resetLevel</a>.",
+              "description": "<p>SIM800 is reset with a &gt;105ms low pulse on the <code>RESET_N</code> pin</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__sim800.html",
+              "id": "gaa5a1ce9abb6dc6b01c266b79b1b26261",
+              "include": [
+                "&lt;src/modems/SIMComSIM800.h&gt;",
+                "_s_i_m_com_s_i_m800_8h.html"
+              ],
+              "has_details": true,
+              "name": "SIM800_RESET_PULSE_MS",
+              "initializer": "105",
+              "brief": "The <a href=\"classlogger_modem.html#a9ee81f2d0dd9e5cdf89e8e469147c38c\" class=\"m-doc\">loggerModem::<wbr />_resetPulse_ms</a>.",
+              "description": "<p>SIM800 is reset with a &gt;105ms low pulse on the <code>RESET_N</code> pin</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__sim800.html",
+              "id": "ga71a474348c5e90906d5d9bdebf4ff052",
+              "include": [
+                "&lt;src/modems/SIMComSIM800.h&gt;",
+                "_s_i_m_com_s_i_m800_8h.html"
+              ],
+              "has_details": true,
+              "name": "SIM800_WAKE_LEVEL",
+              "initializer": "LOW",
+              "brief": "The <a href=\"classlogger_modem.html#a71c42d58d22d8481e6e6f7e5b7d8f0bf\" class=\"m-doc\">loggerModem::<wbr />_wakeLevel</a>.",
+              "description": "<p>The SIM800 is switched on by a &gt; 1 second <code>LOW</code> pulse on the <code>PWR_ON</code> pin. Module is switched on by a 1-3 second <code>LOW</code> pulse on the <code>PWR_ON</code> pin.</p><aside class=\"m-note m-info\"><h4>Note</h4><p>Please monitor the status so on and off are correct!</p></aside>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__sim800.html",
+              "id": "gac9f6d407f479cb1cdb63b03a29cb4a55",
+              "include": [
+                "&lt;src/modems/SIMComSIM800.h&gt;",
+                "_s_i_m_com_s_i_m800_8h.html"
+              ],
+              "has_details": true,
+              "name": "SIM800_WAKE_PULSE_MS",
+              "initializer": "1100",
+              "brief": "The <a href=\"classlogger_modem.html#a1b4e78a1e0963fb1cc970ce6273c124d\" class=\"m-doc\">loggerModem::<wbr />_wakePulse_ms</a>.",
+              "description": "<p>The SIM800 is switched on by a &gt; 1 second <code>LOW</code> pulse on the <code>PWR_ON</code> pin. Module is switched on by a 1-3 second <code>LOW</code> pulse on the <code>PWR_ON</code> pin.</p><aside class=\"m-note m-info\"><h4>Note</h4><p>Please monitor the status so on and off are correct!</p></aside>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__sim800.html",
+              "id": "gace9194292cff12d1ca96ff9113a2c874",
+              "include": [
+                "&lt;src/modems/SIMComSIM800.h&gt;",
+                "_s_i_m_com_s_i_m800_8h.html"
+              ],
+              "has_details": true,
+              "name": "SIM800_WAKE_DELAY_MS",
+              "initializer": "450",
+              "brief": "The <a href=\"classlogger_modem.html#a68051ed68b85195bf188a1914c71a9c8\" class=\"m-doc\">loggerModem::<wbr />_wakeDelayTime_ms</a>.",
+              "description": "<p>Time after power on before <code>PWRKEY</code> on SIM800 can be used is &gt;0.4sec.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__sim800.html",
+              "id": "gad1464e54ea7b446779f6a93203bd13ce",
+              "include": [
+                "&lt;src/modems/SIMComSIM800.h&gt;",
+                "_s_i_m_com_s_i_m800_8h.html"
+              ],
+              "has_details": true,
+              "name": "SIM800_ATRESPONSE_TIME_MS",
+              "initializer": "3000",
+              "brief": "The <a href=\"classlogger_modem.html#aa9bf26acfae6ec2611b4d7a806dd2489\" class=\"m-doc\">loggerModem::<wbr />_max_atresponse_time_ms</a>.",
+              "description": "<p>Time after end pulse until serial port becomes active on SIM800 is &gt;3sec from start of 1s pulse.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__sim800.html",
+              "id": "ga87ff3bf11fed42b764d968421f914ff9",
+              "include": [
+                "&lt;src/modems/SIMComSIM800.h&gt;",
+                "_s_i_m_com_s_i_m800_8h.html"
+              ],
+              "has_details": true,
+              "name": "SIM800_DISCONNECT_TIME_MS",
+              "initializer": "15000L",
+              "brief": "The <a href=\"classlogger_modem.html#a32496b2b79dc9317639900a3c385405d\" class=\"m-doc\">loggerModem::<wbr />_disconnetTime_ms</a>.",
+              "description": "<p>SIM800 power down (gracefully) takes &gt;3sec. We allow up to 15sec for shutdown in case it is not monitored.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Modems and Communication Modules",
+        "group__the__modems.html"
+      ],
+      [
+        "SIMCom SIM800",
+        "group__modem__sim800.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "SIMCom SIM800",
+        "group__modem__sim800.html"
+      ]
+    ]
+  }
+}

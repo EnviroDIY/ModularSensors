@@ -1,0 +1,616 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__sensor__fivetm",
+    "name": "Meter ECH2O (5TM)",
+    "url_base": "group__sensor__fivetm",
+    "url": "group__sensor__fivetm.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>Classes for the Meter ECH2O (5TM) soil moisture sensor.</p><section id=\"sensor_fivetm_intro\"><h2>Introduction</h2><p>Meter Environmental makes two series of soil moisture sensors, the <a href=\"https://www.metergroup.com/environment/products/?product_category=9525\">ECH2O series</a> and the <a href=\"https://www.metergroup.com/environment/products/teros-12/\">Teros series</a>. <strong>This page is for the ECH2O series.</strong></p><aside class=\"m-note m-info\"><h4>Note</h4><p>Meter Environmental was formerly known as Decagon Devices and sold a very similar sensor to the current EC-5 sensor as the 5TM.</p></aside><p>Both series of sensors operate as sub-classes of the <a href=\"class_s_d_i12_sensors.html\" class=\"m-doc\">SDI12Sensors</a> class. They require a 3.5-12V power supply, which can be turned off between measurements. While contrary to the manual, they will run with power as low as 3.3V. On the 5TM with a stereo cable, the power is connected to the tip, data to the ring, and ground to the sleeve. On the bare-wire version, the power is connected to the <em>white</em> cable, data to <em>red</em>, and ground to the unshielded cable.</p></section><section id=\"sensor_fivetm_datasheet\"><h2>Sensor Datasheet</h2><p><a href=\"http://publications.metergroup.com/Manuals/20431_EC-5_Manual_Web.pdf\">Datasheet</a></p></section><section id=\"sensor_fivetm_flags\"><h2>Build flags</h2><aside class=\"m-note m-default\"><h4>See also</h4><p><a href=\"group__sdi12__group.html#sdi12_group_flags\" class=\"m-doc\">Build flags</a></p></aside></section><section id=\"sensor_fivetm_ctor\"><h2>Sensor Constructor</h2><p>{{ <a href=\"class_decagon5_t_m.html#a279692adf91bb92187415b56ff91e766\" class=\"m-doc\">Decagon5TM::<wbr />Decagon5TM</a> }}</p><hr/></section><section id=\"sensor_fivetm_examples\"><h2>Example Code</h2><p>The Meter ECH2O (5TM) is used in the <a href=\"example_menu.html#menu_walk_decagon_5tm\" class=\"m-doc\">menu a la carte</a> example.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;sensors/Decagon5TM.h&gt;</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"c1\">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">char</span><span class=\"o\">*</span><span class=\"w\">  </span><span class=\"n\">TMSDI12address</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"s\">&quot;2&quot;</span><span class=\"p\">;</span><span class=\"w\">             </span><span class=\"c1\">// The SDI-12 Address of the 5-TM</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">TMPower</span><span class=\"w\">        </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">sensorPowerPin</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// Power pin</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">TMData</span><span class=\"w\">         </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">7</span><span class=\"p\">;</span><span class=\"w\">               </span><span class=\"c1\">// The SDI-12 data pin</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span><span class=\"c1\">// Create a Decagon 5TM sensor object</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span><span class=\"n\">Decagon5TM</span><span class=\"w\"> </span><span class=\"nf\">fivetm</span><span class=\"p\">(</span><span class=\"o\">*</span><span class=\"n\">TMSDI12address</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">TMPower</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">TMData</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span>\n</div><div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span><span class=\"c1\">// Create the matric potential, volumetric water content, and temperature</span>\n</div><div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"c1\">// variable pointers for the 5TM</span>\n</div><div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">fivetmEa</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">Decagon5TM_Ea</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">fivetm</span><span class=\"p\">,</span>\n</div><div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span><span class=\"w\">                                       </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-15\" name=\"l-15\"></a><span class=\"linenos\">15</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">fivetmVWC</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-16\" name=\"l-16\"></a><span class=\"linenos\">16</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">Decagon5TM_VWC</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">fivetm</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-17\" name=\"l-17\"></a><span class=\"linenos\">17</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">fivetmTemp</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-18\" name=\"l-18\"></a><span class=\"linenos\">18</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">Decagon5TM_Temp</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">fivetm</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "sensor_fivetm_intro",
+        "Introduction",
+        []
+      ],
+      [
+        "sensor_fivetm_datasheet",
+        "Sensor Datasheet",
+        []
+      ],
+      [
+        "sensor_fivetm_flags",
+        "Build flags",
+        []
+      ],
+      [
+        "sensor_fivetm_ctor",
+        "Sensor Constructor",
+        []
+      ],
+      [
+        "sensor_fivetm_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_decagon5_t_m.html",
+        "name": "Decagon5TM",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__fivetm.html\" class=\"m-doc\">Meter ECH2O soil moisture sensors</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_decagon5_t_m___ea.html",
+        "name": "Decagon5TM_Ea",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__fivetm.html#sensor_fivetm_ea\" class=\"m-doc\">apparent dielectric permittivity (\u03b5a, matric potential) output</a> from a <a href=\"group__sensor__fivetm.html\" class=\"m-doc\">Meter ECH20 or Decagon 5TM soil moisture probe</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_decagon5_t_m___temp.html",
+        "name": "Decagon5TM_Temp",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__fivetm.html#sensor_fivetm_temp\" class=\"m-doc\">temperature output</a> output from a <a href=\"group__sensor__fivetm.html\" class=\"m-doc\">Meter ECH20 or Decagon 5TM soil moisture probe</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_decagon5_t_m___v_w_c.html",
+        "name": "Decagon5TM_VWC",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__fivetm.html#sensor_fivetm_vwc\" class=\"m-doc\">volumetric water content</a> output from a <a href=\"group__sensor__fivetm.html\" class=\"m-doc\">Meter ECH20 or Decagon 5TM soil moisture probe</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Sensor Variable Counts",
+        "id": "sensor-variable-counts",
+        "description": "<p><a name=\"sensor_fivetm_var_counts\"></a> The number of variables that can be returned by the Decagon 5TM</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__fivetm.html",
+              "id": "ga052ea3313a414564f800aca0609f81f2",
+              "include": [
+                "&lt;src/sensors/Decagon5TM.h&gt;",
+                "_decagon5_t_m_8h.html"
+              ],
+              "has_details": true,
+              "name": "TM_NUM_VARIABLES",
+              "initializer": "3",
+              "brief": "<a href=\"class_sensor.html#af26786329fd01b44cf31410d046fc8f3\" class=\"m-doc\">Sensor::<wbr />_numReturnedValues</a>; the 5TM can report 3 values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__fivetm.html",
+              "id": "gae645f6c4df0f11aa9262de4efbcb94d9",
+              "include": [
+                "&lt;src/sensors/Decagon5TM.h&gt;",
+                "_decagon5_t_m_8h.html"
+              ],
+              "has_details": true,
+              "name": "TM_INC_CALC_VARIABLES",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html#a2f3f93a9205efb134cef1216d65077d2\" class=\"m-doc\">Sensor::<wbr />_incCalcValues</a>; volumetric water content is calculated from the permittivity and the temperature.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Sensor Timing",
+        "id": "sensor-timing",
+        "description": "<p><a name=\"sensor_fivetm_timing\"></a> The sensor timing for a Meter ECH2O</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__fivetm.html",
+              "id": "ga39f45fdad8a111c968ee265d523d3de2",
+              "include": [
+                "&lt;src/sensors/Decagon5TM.h&gt;",
+                "_decagon5_t_m_8h.html"
+              ],
+              "has_details": true,
+              "name": "TM_WARM_UP_TIME_MS",
+              "initializer": "200",
+              "brief": "<a href=\"class_sensor.html#aaaefd7f306f86382a3dac726531756b4\" class=\"m-doc\">Sensor::<wbr />_warmUpTime_ms</a>; maximum warm-up time in SDI-12 mode: 200ms.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__fivetm.html",
+              "id": "ga6dbf7145c3bf31651f08cb7ea51e1f6b",
+              "include": [
+                "&lt;src/sensors/Decagon5TM.h&gt;",
+                "_decagon5_t_m_8h.html"
+              ],
+              "has_details": true,
+              "name": "TM_STABILIZATION_TIME_MS",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#ad6822ad09fb64658c911ce86820db79c\" class=\"m-doc\">Sensor::<wbr />_stabilizationTime_ms</a>; the 5TM is stable as soon as it warms up (0ms stabilization).",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__fivetm.html",
+              "id": "ga1b30359ceff994e45ef181c3eef20306",
+              "include": [
+                "&lt;src/sensors/Decagon5TM.h&gt;",
+                "_decagon5_t_m_8h.html"
+              ],
+              "has_details": true,
+              "name": "TM_MEASUREMENT_TIME_MS",
+              "initializer": "200",
+              "brief": "<a href=\"class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba\" class=\"m-doc\">Sensor::<wbr />_measurementTime_ms</a>; maximum measurement duration: 200ms.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__fivetm.html",
+              "id": "gad1a96fe89414be50b85fb78f204d5d77",
+              "include": [
+                "&lt;src/sensors/Decagon5TM.h&gt;",
+                "_decagon5_t_m_8h.html"
+              ],
+              "has_details": true,
+              "name": "TM_EXTRA_WAKE_TIME_MS",
+              "initializer": "0",
+              "brief": "Extra wake time required for an SDI-12 sensor between the &quot;break&quot; and the time the command is sent. The 5TM requires no extra time.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "EA",
+        "id": "ea",
+        "description": "<p><a name=\"sensor_fivetm_ea\"></a> The EA variable from a Meter ECH2O</p><ul><li>Range is 0 \u2013 1 m3/m3 (0 \u2013 100% VWC)</li><li>Accuracy for generic calibration equation: \u00b1 0.03 m3/m3 (\u00b1 3% VWC) typical</li><li>Accuracy for medium-specific calibration: \u00b1 0.02 m3/m3 (\u00b1 2% VWC)</li></ul><p>{{ <a href=\"class_decagon5_t_m___ea.html#af674ef3bef2b4310c8aea4c9871ff219\" class=\"m-doc\">Decagon5TM_Ea::<wbr />Decagon5TM_Ea</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__fivetm.html",
+              "id": "ga7031c1963725bafbacca30c9ecf541a2",
+              "include": [
+                "&lt;src/sensors/Decagon5TM.h&gt;",
+                "_decagon5_t_m_8h.html"
+              ],
+              "has_details": true,
+              "name": "TM_EA_RESOLUTION",
+              "initializer": "5",
+              "brief": "Decimals places in string representation; EA should have 5.",
+              "description": "<p>4 are reported, adding extra digit to resolution to allow the proper number of significant figures for averaging - resolution is 0.0008 m3/m3 (0.08% VWC) from 0 \u2013 50% VWC.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__fivetm.html",
+              "id": "ga6c1f2d04e5dcff488467884d4d2aad50",
+              "include": [
+                "&lt;src/sensors/Decagon5TM.h&gt;",
+                "_decagon5_t_m_8h.html"
+              ],
+              "has_details": true,
+              "name": "TM_EA_VAR_NUM",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; EA is stored in sensorValues[0].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__fivetm.html",
+              "id": "ga6d8b58a8c2252d1cf46d3816278239e7",
+              "include": [
+                "&lt;src/sensors/Decagon5TM.h&gt;",
+                "_decagon5_t_m_8h.html"
+              ],
+              "has_details": true,
+              "name": "TM_EA_VAR_NAME",
+              "initializer": "\"permittivity\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;permittivity&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__fivetm.html",
+              "id": "ga7fb820b9589570631eb2ae5cc0f3fb1d",
+              "include": [
+                "&lt;src/sensors/Decagon5TM.h&gt;",
+                "_decagon5_t_m_8h.html"
+              ],
+              "has_details": true,
+              "name": "TM_EA_UNIT_NAME",
+              "initializer": "\"faradPerMeter\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;faradPerMeter&quot; (F/m)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__fivetm.html",
+              "id": "gad07be7e10a98112dae0da5fa22200bfc",
+              "include": [
+                "&lt;src/sensors/Decagon5TM.h&gt;",
+                "_decagon5_t_m_8h.html"
+              ],
+              "has_details": true,
+              "name": "TM_EA_DEFAULT_CODE",
+              "initializer": "\"SoilEa\"",
+              "brief": "Default variable short code; &quot;SoilEa&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Temperature",
+        "id": "temperature",
+        "description": "<p><a name=\"sensor_fivetm_temp\"></a> The temperature variable from a Meter ECH2O</p><ul><li>Range is - 40\u00b0C to + 50\u00b0C</li><li>Accuracy is \u00b1 1\u00b0C</li></ul><p>{{ <a href=\"class_decagon5_t_m___temp.html#a79ee6b2ac44109cd85480343da1fb037\" class=\"m-doc\">Decagon5TM_Temp::<wbr />Decagon5TM_Temp</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__fivetm.html",
+              "id": "ga14d1dabd1f9cc2aff7db5ec8c4e01114",
+              "include": [
+                "&lt;src/sensors/Decagon5TM.h&gt;",
+                "_decagon5_t_m_8h.html"
+              ],
+              "has_details": true,
+              "name": "TM_TEMP_RESOLUTION",
+              "initializer": "2",
+              "brief": "Decimals places in string representation; temperature should have 2.",
+              "description": "<p>1 is reported, adding extra digit to resolution to allow the proper number of significant figures for averaging - resolution is 0.1\u00b0C.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__fivetm.html",
+              "id": "ga60f4b2699932675b39a58af3d2fc0003",
+              "include": [
+                "&lt;src/sensors/Decagon5TM.h&gt;",
+                "_decagon5_t_m_8h.html"
+              ],
+              "has_details": true,
+              "name": "TM_TEMP_VAR_NUM",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; temperature is stored in sensorValues[1].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__fivetm.html",
+              "id": "ga7fbb3fdb1ae73bc7cddb54af9d123cb5",
+              "include": [
+                "&lt;src/sensors/Decagon5TM.h&gt;",
+                "_decagon5_t_m_8h.html"
+              ],
+              "has_details": true,
+              "name": "TM_TEMP_VAR_NAME",
+              "initializer": "\"temperature\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;temperature&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__fivetm.html",
+              "id": "ga9c8ad5dae9e2d5d65b1f819d86feaa5f",
+              "include": [
+                "&lt;src/sensors/Decagon5TM.h&gt;",
+                "_decagon5_t_m_8h.html"
+              ],
+              "has_details": true,
+              "name": "TM_TEMP_UNIT_NAME",
+              "initializer": "\"degreeCelsius\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;degreeCelsius&quot; (\u00b0C)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__fivetm.html",
+              "id": "ga9cec1905705148e423a820e444bc56e2",
+              "include": [
+                "&lt;src/sensors/Decagon5TM.h&gt;",
+                "_decagon5_t_m_8h.html"
+              ],
+              "has_details": true,
+              "name": "TM_TEMP_DEFAULT_CODE",
+              "initializer": "\"SoilTemp\"",
+              "brief": "Default variable short code; &quot;SoilTemp&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Volumetric Water Content",
+        "id": "volumetric-water-content",
+        "description": "<p><a name=\"sensor_fivetm_vwc\"></a> The VWC variable from a Meter ECH2O</p><ul><li>Range is 0 \u2013 1 m3/m3 (0 \u2013 100% VWC)</li><li>Accuracy for Generic calibration equation: \u00b1 0.03 m3/m3 (\u00b1 3% VWC) typ</li><li>Accuracy for Medium Specific Calibration: \u00b1 0.02 m3/m3 (\u00b1 2% VWC)</li></ul><p>{{ <a href=\"class_decagon5_t_m___v_w_c.html#aebe66010093cf5ffefa26c8b444c9fda\" class=\"m-doc\">Decagon5TM_VWC::<wbr />Decagon5TM_VWC</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__fivetm.html",
+              "id": "ga681ccd02725904d948c2dbeeaa8428c2",
+              "include": [
+                "&lt;src/sensors/Decagon5TM.h&gt;",
+                "_decagon5_t_m_8h.html"
+              ],
+              "has_details": true,
+              "name": "TM_VWC_RESOLUTION",
+              "initializer": "3",
+              "brief": "Decimals places in string representation; VWC should have 3.",
+              "description": "<p>2 are reported, adding extra digit to resolution to allow the proper number of significant figures for averaging - resolution is 0.0008 m3/m3 (0.08% VWC) from 0 \u2013 50% VWC.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__fivetm.html",
+              "id": "gadb22069ef288f555ff798558f502b517",
+              "include": [
+                "&lt;src/sensors/Decagon5TM.h&gt;",
+                "_decagon5_t_m_8h.html"
+              ],
+              "has_details": true,
+              "name": "TM_VWC_VAR_NUM",
+              "initializer": "2",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; VWC is stored in sensorValues[2].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__fivetm.html",
+              "id": "ga432b93620ae4d00546b6b9ec78141917",
+              "include": [
+                "&lt;src/sensors/Decagon5TM.h&gt;",
+                "_decagon5_t_m_8h.html"
+              ],
+              "has_details": true,
+              "name": "TM_VWC_VAR_NAME",
+              "initializer": "\"volumetricWaterContent\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;volumetricWaterContent&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__fivetm.html",
+              "id": "gabfb8a297ea252813af85735c3d607ed3",
+              "include": [
+                "&lt;src/sensors/Decagon5TM.h&gt;",
+                "_decagon5_t_m_8h.html"
+              ],
+              "has_details": true,
+              "name": "TM_VWC_UNIT_NAME",
+              "initializer": "\"percent\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;percent&quot; - volumetric percent water content (%, m3/100m3)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__fivetm.html",
+              "id": "ga7ce48d248350e0f38f5a55bae2317452",
+              "include": [
+                "&lt;src/sensors/Decagon5TM.h&gt;",
+                "_decagon5_t_m_8h.html"
+              ],
+              "has_details": true,
+              "name": "TM_VWC_DEFAULT_CODE",
+              "initializer": "\"SoilVWC\"",
+              "brief": "Default variable short code; &quot;SoilVWC&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "SDI-12 Sensors",
+        "group__sdi12__group.html"
+      ],
+      [
+        "Meter ECH2O (5TM)",
+        "group__sensor__fivetm.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Meter ECH2O (5TM)",
+        "group__sensor__fivetm.html"
+      ]
+    ]
+  }
+}

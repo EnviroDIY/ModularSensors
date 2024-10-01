@@ -1,20 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
 <head>
   <meta charset="UTF-8" />
-  <title>src/sensors/InSituRDO.h file | ModularSensors</title>
+  <title>src/sensors/InSituRDO.h file | ModularSensors0.36.0</title>
   <link rel="stylesheet" href="m-EnviroDIY+documentation.compiled.css" />
+
+<style id="wp-emoji-styles-inline-css" type="text/css">
+  img.wp-smiley,
+  img.emoji {
+    display: inline !important;
+    border: none !important;
+    box-shadow: none !important;
+    height: 1em !important;
+    width: 1em !important;
+    margin: 0 0.07em !important;
+    vertical-align: -0.1em !important;
+    background: none !important;
+    padding: 0 !important;
+  }
+</style>
 <link
   rel="stylesheet"
   id="gp-parent-style-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/style.css?ver=6.1.1"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/style.css?ver=6.5.4"
   type="text/css"
   media="all"
 />
 <link
   rel="stylesheet"
-  id="ghostpool-style-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize-child/style.css?ver=6.1.1"
+  id="redux-extendify-styles-css"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/framework/redux/assets/css/extendify-utilities.css?ver=4.4.11"
   type="text/css"
   media="all"
 />
@@ -124,31 +139,27 @@
 <link
   rel="stylesheet"
   id="fontawesome-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/fonts/font-awesome/css/font-awesome.min.css?ver=6.1.1"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/fonts/font-awesome/css/font-awesome.min.css?ver=6.5.4"
   type="text/css"
   media="all"
 />
 <link
-  rel="stylesheet"
-  id="prettyphoto-css"
-  href="https://www.envirodiy.org/wp-content/plugins/js_composer/assets/lib/prettyphoto/css/prettyPhoto.min.css?ver=6.10.0"
-  type="text/css"
-  media="all"
+  rel="preload"
+  as="style"
+  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
 />
 <link
   rel="stylesheet"
-  id="gp-bp-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/css/bp.css?ver=6.1.1"
-  type="text/css"
-  media="all"
+  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
+  media="print"
+  onload="this.media='all'"
 />
-<link
-  rel="stylesheet"
-  id="gp-bbp-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/css/bbpress.css?ver=6.1.1"
-  type="text/css"
-  media="all"
-/>
+<noscript
+  ><link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
+/></noscript>
+
 <style type="text/css" id="wp-custom-css">
   /* Print Styles */
   @media print {
@@ -162,12 +173,15 @@
       margin: 0 !important;
       padding: 0;
     }
+
     body:not(.gp-full-page-page-header) .gp-page-header.gp-has-text:before,
     body:not(.gp-full-page-page-header)
       .gp-page-header.gp-has-teaser-video.gp-has-text
       .gp-video-header:before {
       background-image: none !important;
     }
+    /* End print styles */
+
     #gp-main-header,
     #gp-small-header,
     #gp-header-area,
@@ -219,6 +233,7 @@
     img {
       page-break-inside: avoid;
       visibility: visible;
+      float: none;
     }
     blockquote,
     table,
@@ -231,7 +246,7 @@
       page-break-before: avoid;
     }
   }
-  /* End print styles */
+
   /*Gutenberg styles*/
   /*Buttons*/
   a.wp-block-button__link {
@@ -362,10 +377,17 @@
   span.woocommerce-Price-amount.amount {
     text-decoration: none !important;
   }
+  /* Hide additional information tab */
+  div.woocommerce-tabs {
+    display: none !important;
+  }
   /*End WooCommerce styles*/
   /*The Events Calendar*/
   #tribe-events-content a {
     color: #0579bd;
+  }
+  #tribe-events-content .wp-block-button__link {
+    color: #ffffff;
   }
   #gp-sidebar-right
     > div
@@ -451,6 +473,9 @@
   #gp-content p.last-updated {
     display: none;
   }
+  #gp-content ul {
+    margin: 0 0 0 20px !important;
+  }
 </style>
 <style id="socialize-dynamic-css" title="dynamic-css" class="redux-options-output">
   #footer-image img {
@@ -483,7 +508,6 @@
     font-style: normal;
     color: #000;
     font-size: 16px;
-    font-display: swap;
   }
   a {
     color: #0579bd;
@@ -497,7 +521,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 36px;
-    font-display: swap;
   }
   h2 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -505,7 +528,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 28px;
-    font-display: swap;
   }
   h3,
   #tab-description h2,
@@ -519,7 +541,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 24px;
-    font-display: swap;
   }
   h4 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -527,7 +548,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 20px;
-    font-display: swap;
   }
   h5 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -535,7 +555,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 18px;
-    font-display: swap;
   }
   h6 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -543,7 +562,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 16px;
-    font-display: swap;
   }
   .gp-entry-meta .gp-post-meta-row-1,
   .gp-homepage #gp-content .gp-vc-element-3,
@@ -577,7 +595,6 @@
     font-style: normal;
     color: #ababab;
     font-size: 16px;
-    font-display: swap;
   }
   #gp-primary-main-nav .menu > li:hover > a,
   #gp-primary-main-nav .menu > li > a {
@@ -600,7 +617,6 @@
     font-style: normal;
     color: #fff;
     font-size: 14px;
-    font-display: swap;
   }
   #gp-secondary-main-nav .menu > li:hover > a,
   #gp-secondary-main-nav .menu > li > a {
@@ -641,7 +657,6 @@
     font-style: normal;
     color: #000;
     font-size: 14px;
-    font-display: swap;
   }
   .gp-nav .menu > .gp-standard-menu > .sub-menu > li a {
     color: #000;
@@ -745,7 +760,6 @@
     font-style: normal;
     color: #fff;
     font-size: 80px;
-    font-display: swap;
   }
   .gp-page-header .gp-container {
     height: 250px;
@@ -759,7 +773,6 @@
     font-style: normal;
     color: #000;
     font-size: 40px;
-    font-display: swap;
   }
   .gp-subtitle {
     font-family: Roboto;
@@ -768,7 +781,6 @@
     font-style: normal;
     color: #0579bd;
     font-size: 20px;
-    font-display: swap;
   }
   #gp-post-links a,
   .gp-pagination-arrows a.prev,
@@ -811,7 +823,6 @@
     line-height: 24px;
     color: #fff;
     font-size: 14px;
-    font-display: swap;
   }
   .gp-author-info a {
     color: #b1b1b1;
@@ -840,19 +851,16 @@
     font-style: normal;
     color: #fff;
     font-size: 24px;
-    font-display: swap;
   }
   .gp-loop-title {
     line-height: 22px;
     font-weight: 400;
     font-size: 19px;
-    font-display: swap;
   }
   .gp-blog-large .gp-loop-title {
     line-height: 46px;
     font-weight: 200;
     font-size: 40px;
-    font-display: swap;
   }
   .gp-loop-title a,
   .bboss_search_item .entry-title a {
@@ -914,7 +922,6 @@
     font-style: normal;
     color: #000;
     font-size: 14px;
-    font-display: swap;
   }
   .widgettitle a,
   .widget-title a,
@@ -1157,7 +1164,6 @@
     font-style: normal;
     color: #fff;
     font-size: 16px;
-    font-display: swap;
   }
   .gp-footer-widget {
     font-family: Roboto;
@@ -1166,7 +1172,6 @@
     font-style: normal;
     color: #ffffff;
     font-size: 14px;
-    font-display: swap;
   }
   .gp-footer-widget a {
     color: #f9bd16;
@@ -1195,441 +1200,295 @@
   #gp-to-top {
     color: #ffffff;
   }
-  .woocommerce ul.products li.product .price,
-  .woocommerce div.product p.price,
-  .woocommerce div.product span.price {
-    color: #00bee9;
-  }
-  .woocommerce span.onsale {
-    background-color: #e93100;
-  }
-  #buddypress .activity-list .activity-content .activity-header,
-  #buddypress .activity-list .activity-content .comment-header,
-  #buddypress .activity-list .activity-header a,
-  #buddypress .activity-list div.activity-comments div.acomment-meta,
-  #buddypress .activity-list .acomment-meta a,
-  .widget.buddypress .item-title a,
-  .widget.buddypress div.item-options.gp-small-item-options:before,
-  .widget.buddypress div.item-options a,
-  #buddypress ul.item-list li div.item-title a,
-  #buddypress ul.item-list li h4 > a,
-  #buddypress ul.item-list li h5 > a,
-  #buddypress div#item-header div#item-meta {
-    color: #000000;
-  }
-  #buddypress .activity-list .activity-content .activity-inner {
-    color: #aaaaaa;
-  }
-  #buddypress .activity-list a.activity-time-since,
-  .widget_display_replies ul li a + div,
-  .widget_display_topics ul li a + div,
-  #buddypress .activity-list .acomment-meta a.activity-time-since,
-  #buddypress .activity-list div.activity-comments div.acomment-content,
-  .widget.buddypress div.item-meta,
-  #buddypress span.activity,
-  #buddypress ul.item-list li div.meta {
-    color: #545454;
-  }
-  .gp-theme #buddypress .activity-list div.activity-meta a.button,
-  .gp-theme #buddypress .activity .acomment-options a,
-  .gp-theme #buddypress .activity-list li.load-more a,
-  .gp-theme #buddypress .activity-list li.load-newest a,
-  .widget.buddypress div.item-options a.selected {
-    color: #26a9e0;
-  }
-  .gp-theme #buddypress .activity-list div.activity-meta a.button:hover,
-  .gp-theme #buddypress .activity .acomment-options a:hover,
-  .gp-theme #buddypress .activity-list li.load-more a:hover,
-  .gp-theme #buddypress .activity-list li.load-newest a:hover,
-  .widget.buddypress div.item-options a.selected:hover {
-    color: #000;
-  }
-  .gp-theme #buddypress ul.item-list li,
-  .gp-theme #buddypress div.activity-comments ul li:first-child,
-  .widget.buddypress #friends-list li,
-  .widget.buddypress #groups-list li,
-  .widget.buddypress #members-list li {
-    border-top: 1px solid #e0e0e0;
-    border-bottom: 1px solid #e0e0e0;
-  }
-  .gp-theme #buddypress div.item-list-tabs {
-    background-color: #353535;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a span,
-  .gp-theme #buddypress div.item-list-tabs ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs ul li.selected a span {
-    color: #353535;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a span {
-    background-color: #ffffff;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a,
-  .gp-theme #buddypress #gp-bp-tabs-button,
-  .gp-theme #buddypress div.item-list-tabs ul li span {
-    color: #ffffff;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li.current a,
-  .gp-theme #buddypress div.item-list-tabs ul li.selected a,
-  .gp-theme #buddypress div.item-list-tabs ul li a:hover {
-    color: #b1b1b1;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs ul li.selected a span {
-    background: #b1b1b1;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul,
-  .widget.buddypress div.item-options.gp-small-item-options > a {
-    background-color: #f8f8f8;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.selected a span {
-    color: #f8f8f8;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a span {
-    background-color: #000000;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a {
-    color: #000000;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.current a,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.selected a,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a:hover {
-    color: #26a9e0;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.selected a span {
-    background: #26a9e0;
-  }
-  #bbpress-forums
-    .gp-forum-home.bbp-forums
-    .bbp-has-subforums
-    .bbp-forum-info
-    > .bbp-forum-title,
-  #bbpress-forums .bbp-topics .bbp-header,
-  #bbpress-forums .bbp-replies .bbp-header,
-  #bbpress-forums .bbp-search-results .bbp-header {
-    background-color: #353535;
-  }
-  #bbpress-forums
-    .gp-forum-home.bbp-forums
-    .bbp-has-subforums
-    .bbp-forum-info
-    > .bbp-forum-title,
-  #bbpress-forums .bbp-topics .bbp-header,
-  #bbpress-forums .bbp-replies .bbp-header,
-  #bbpress-forums .bbp-search-results .bbp-header {
-    color: #ffffff;
-  }
-  #bbpress-forums .bbp-header div.bbp-reply-content a {
-    color: #ddd;
-  }
-  #bbpress-forums .bbp-header div.bbp-reply-content a:hover {
-    color: #fff;
-  }
-  #bbpress-forums .bbp-forums-list li.odd-forum-row,
-  #bbpress-forums div.odd,
-  #bbpress-forums ul.odd {
-    background-color: #f8f8f8;
-  }
-  #bbpress-forums .bbp-forums-list li.even-forum-row,
-  #bbpress-forums div.even,
-  #bbpress-forums ul.even {
-    background-color: #fff;
-  }
-  #bbpress-forums .gp-forum-home.bbp-forums .bbp-forum-info > .bbp-forum-title,
-  #bbpress-forums div.bbp-forum-header,
-  #bbpress-forums div.bbp-topic-header,
-  #bbpress-forums div.bbp-reply-header,
-  #bbpress-forums .bbp-forums-list,
-  #bbpress-forums li.bbp-body {
-    border-top: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
-    border-left: 1px solid #ddd;
-    border-right: 1px solid #ddd;
-  }
-  #bbpress-forums .bbp-forums-list .bbp-forum .bbp-forum-link,
-  body.forum #bbpress-forums .bbp-forums .bbp-forum-info > .bbp-forum-title,
-  #bbpress-forums .bbp-topics .bbp-topic-permalink,
-  #bbpress-forums .gp-forum-home.bbp-forums .bbp-forum-info > .bbp-forum-title,
-  .gp-theme
-    #bbpress-forums
-    .gp-forum-shortcode
-    ul.forum:not(.status-category)
-    .bbp-forum-info
-    a {
-    color: #000000;
-  }
-  #bbpress-forums div.bbp-forum-author .bbp-author-role,
-  #bbpress-forums div.bbp-topic-author .bbp-author-role,
-  #bbpress-forums div.bbp-reply-author .bbp-author-role {
-    background-color: #92d050;
-  }
-  #bbpress-forums div.bbp-forum-author .bbp-author-role,
-  #bbpress-forums div.bbp-topic-author .bbp-author-role,
-  #bbpress-forums div.bbp-reply-author .bbp-author-role {
-    color: #ffffff;
-  }
 </style>
-    <style id="kadence-blocks-global-variables-inline-css" type="text/css">
-      :root {
-        --global-kb-font-size-sm: clamp(0.8rem, 0.73rem + 0.217vw, 0.9rem);
-        --global-kb-font-size-md: clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem);
-        --global-kb-font-size-lg: clamp(1.75rem, 1.576rem + 0.543vw, 2rem);
-        --global-kb-font-size-xl: clamp(2.25rem, 1.728rem + 1.63vw, 3rem);
-        --global-kb-font-size-xxl: clamp(2.5rem, 1.456rem + 3.26vw, 4rem);
-        --global-kb-font-size-xxxl: clamp(2.75rem, 0.489rem + 7.065vw, 6rem);
-      }
-    </style>
-    <link
-      rel="preload"
-      as="style"
-      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.1.1"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.1.1"
-      media="print"
-      onload="this.media='all'"
-    />
-    <noscript
-      ><link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.1.1"
-    /></noscript>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-includes/js/jquery/jquery.min.js?ver=3.6.1"
-  id="jquery-core-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2"
-  id="jquery-migrate-js"
-></script>  <link rel="icon" href="MS_FavIcon.png" type="image/png" />
+  <link rel="icon" href="MS_FavIcon.png" type="image/png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#cb4b16" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="clipboard.js"></script>
 </head>
 
-<body class="home-page bp-legacy home page-template page-template-homepage-template page-template-homepage-template-php page page-id-977 logged-in admin-bar no-customize-support theme-socialize woocommerce-no-js tribe-no-js page-template-socialize-child gp-theme gp-responsive gp-wide-layout gp-retina gp-normal-scrolling gp-no-back-to-top gp-relative-header gp-header-standard gp-cart-disabled gp-search-all gp-profile-disabled gp-small-header-all gp-standard-page-header gp-no-sidebar gp-homepage wpb-js-composer js-comp-ver-6.10.0 vc_responsive no-js">
+<body
+    class="theme-socialize page-template-socialize-child gp-theme gp-responsive gp-wide-layout gp-retina gp-normal-scrolling gp-no-back-to-top gp-relative-header gp-header-standard gp-cart-disabled gp-search-all gp-profile-disabled gp-small-header-all gp-standard-page-header gp-no-sidebar"
+>
 	<div id="gp-site-wrapper">
 
   <nav id="gp-mobile-nav">
     <div id="gp-mobile-nav-close-button"></div>
     <ul class="menu">
-        <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-            <a class="menu-link main-menu-link" href="index.html">About</a>
-          <ul class="sub-menu menu-odd menu-depth-1">
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#data_receivers">Data Endpoints</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#supported_sensors">Supported Sensors</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#modems">Supported Cellular/Wifi Modules</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#contributing">Contributing</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#license">License</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#acknowledgments">Acknowledgments</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="change_log.html">ChangeLog</a>
-              </li>
-          </ul>
-        </li>
-        <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-            <a class="menu-link main-menu-link" href="page_getting_started.html">Getting Started</a>
-          <ul class="sub-menu menu-odd menu-depth-1">
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>
-              </li>
-          </ul>
-        </li>
-        <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-            <a class="menu-link main-menu-link" href="page_faq.html">FAQs</a>
-          <ul class="sub-menu menu-odd menu-depth-1">
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>
-              </li>
-          </ul>
-        </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="modules.html">Modules</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="annotated.html">Classes</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="files.html">Source Files</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="page_the_examples.html">Examples Using ModularSensors</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="pages.html">More</a>          </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+      >
+<a href="index.html" class="menu-link main-menu-link">About</a>        <ul class="sub-menu menu-odd menu-depth-1">
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#data_receivers">Data Endpoints</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#supported_sensors">Supported Sensors</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#modems">Supported Cellular/Wifi Modules</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#contributing">Contributing</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#license">License</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#acknowledgments">Acknowledgments</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="change_log.html">ChangeLog</a>          </li>
+        </ul>
+      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+      >
+<a href="page_getting_started.html" class="menu-link main-menu-link">Getting Started</a>        <ul class="sub-menu menu-odd menu-depth-1">
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>          </li>
+        </ul>
+      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+      >
+<a href="page_faq.html" class="menu-link main-menu-link">FAQs</a>        <ul class="sub-menu menu-odd menu-depth-1">
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>          </li>
+        </ul>
+      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="topics.html" class="menu-link main-menu-link">Topics</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="annotated.html" class="menu-link main-menu-link">Classes</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="files.html" class="menu-link main-menu-link">Source Files</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="page_the_examples.html" class="menu-link main-menu-link">Examples Using ModularSensors</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="pages.html" class="menu-link main-menu-link">More</a>      </li>
     </ul>
-  </nav><div id="gp-mobile-nav-bg"></div>
+  </nav> <!-- gp-mobile-nav -->
+  <div id="gp-mobile-nav-bg"></div>
 
   <div id="gp-page-wrapper">
 
     <header id="gp-main-header">
       <div class="gp-container">
         <div id="gp-logo">
-          <a href="index.html" title="ModularSensors">
+          <a href="index.html" title="ModularSensors 0.36.0">
             <img
-              src="ModularSensors_ubuntu_264x55.png"
-              alt="ModularSensors"
-                  width="200"
-                  height="42"
+              src="gp-desktop-logo.png"
+              alt="ModularSensors 0.36.0"
+              width="200"
+              height="42"
               class="gp-desktop-logo"
             />
             <img
-              src="ModularSensors_ubuntu_264x55.png"
-              alt="ModularSensors"
+              src="gp-scrolling-logo.png"
+              alt="ModularSensors 0.36.0"
               width="264"
               height="55"
               class="gp-scrolling-logo"
             />
             <img
-              src="ModularSensors_ubuntu_264x55.png"
-              alt="ModularSensors"
+              src="gp-mobile-logo.png"
+              alt="ModularSensors 0.36.0"
               width="132"
               height="28"
               class="gp-mobile-logo"
             />
           </a>
-        </div>
+        </div> <!-- gp-logo -->
 
         <a id="gp-mobile-nav-button"></a>
 
         <nav id="gp-main-nav" class="gp-nav">
           <nav id="gp-primary-main-nav">
-              <ul id="menu-main-menu-1" class="menu">
-                <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-                    <a class="menu-link main-menu-link" href="index.html">About</a>
-                  <ul class="sub-menu menu-odd menu-depth-1">
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#data_receivers">Data Endpoints</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#supported_sensors">Supported Sensors</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#modems">Supported Cellular/Wifi Modules</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#contributing">Contributing</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#license">License</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#acknowledgments">Acknowledgments</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="change_log.html">ChangeLog</a>
-                      </li>
-                  </ul>
-                </li>
-                <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-                    <a class="menu-link main-menu-link" href="page_getting_started.html">Getting Started</a>
-                  <ul class="sub-menu menu-odd menu-depth-1">
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>
-                      </li>
-                  </ul>
-                </li>
-                <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-                    <a class="menu-link main-menu-link" href="page_faq.html">FAQs</a>
-                  <ul class="sub-menu menu-odd menu-depth-1">
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>
-                      </li>
-                  </ul>
-                </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="modules.html">Modules</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="annotated.html">Classes</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="files.html">Source Files</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="page_the_examples.html">Examples Using ModularSensors</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="pages.html">More</a>                  </li>
-              </ul>
-          </nav>
+            <ul id="menu-main-menu-1" class="menu">
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+              >
+<a href="index.html" class="menu-link main-menu-link" >About</a>                <ul class="sub-menu menu-odd menu-depth-1">
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#data_receivers">Data Endpoints</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#supported_sensors">Supported Sensors</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#modems">Supported Cellular/Wifi Modules</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#contributing">Contributing</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#license">License</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#acknowledgments">Acknowledgments</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="change_log.html">ChangeLog</a>                  </li>
+                </ul>
+              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+              >
+<a href="page_getting_started.html" class="menu-link main-menu-link" >Getting Started</a>                <ul class="sub-menu menu-odd menu-depth-1">
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>                  </li>
+                </ul>
+              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+              >
+<a href="page_faq.html" class="menu-link main-menu-link" >FAQs</a>                <ul class="sub-menu menu-odd menu-depth-1">
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>                  </li>
+                </ul>
+              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="topics.html"class="menu-link main-menu-link">Topics</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="annotated.html"class="menu-link main-menu-link">Classes</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="files.html"class="menu-link main-menu-link">Source Files</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="page_the_examples.html"class="menu-link main-menu-link">Examples Using ModularSensors</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="pages.html"class="menu-link main-menu-link">More</a>              </li>
+            </ul>
+          </nav> <!-- gp-primary-main-nav -->
 
           <div id="gp-search">
             <div id="m-search-button" class="m-show-m" onclick="return showSearch()">
-            </div>
-					</div>
-
-
+            </div> <!-- gp-search-box -->
+          </div> <!-- gp-search -->
 
           <nav id="gp-secondary-main-nav"></nav>
-        </nav></div>
-    </header><header id="gp-small-header">
+        </nav> <!-- gp-main-nav -->
+      </div> <!-- gp-container -->
+    </header> <!-- gp-main-header -->
+
+    <header id="gp-small-header">
       <div class="gp-container">
         <div class="gp-left-triangle"></div>
         <div class="gp-right-triangle"></div>
@@ -1656,7 +1515,9 @@
 
         </nav>
       </div>
-    </header><div id="gp-fixed-header-padding"></div>
+    </header> <!-- gp-small-header -->
+
+    <div id="gp-fixed-header-padding"></div>
 
     <div class="m-doc-search" id="search">
       <a href="#!" onclick="return hideSearch()"></a>
@@ -1664,7 +1525,7 @@
         <div class="gp-container">
           <div style="background-color:#fff;padding:20px;">
             <div class="m-doc-search-header m-text m-small">
-              <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+              <div><span class="m-label m-info">Tab</span> / <span class="m-label m-info">T</span> to search, <span class="m-label m-info">Esc</span> to close</div>
               <div id="search-symbolcount">&hellip;</div>
             </div>
             <div class="m-doc-search-content">
@@ -1674,7 +1535,7 @@
               <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
               <div id="search-help" class="m-text m-dim m-text-center">
                 <p class="m-noindent">Search for symbols, directories, files, pages or
-            modules. You can omit any prefix from the symbol or file path; adding a
+            topics. You can omit any prefix from the symbol or file path; adding a
             <code>:</code> or <code>/</code> suffix lists all members of given symbol or
             directory.</p>
             <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
@@ -1699,13 +1560,12 @@
 
     <div id="gp-content-wrapper" class="gp-container">
       <div id="gp-inner-container">
+        <div id="gp-left-column">
           <div id="gp-content">
 
             <main>
               <article>
-                <div class="m-container m-container-inflatable">
-                  <div class="m-row">
-                    <div class="m-col-l-10 m-push-l-1">
+                <div class="breadcrumbs" typeof="BreadcrumbList" vocab="http://schema.org/">
           <span class="m-breadcrumb">
             <a href="index.html">
               ModularSensors
@@ -1717,23 +1577,31 @@
             </a> &gt; <wbr/>
           </span>
                     <span class="m-breadcrumb">
-          <a href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a>
+          <a href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">
+            src
+          </a>
           /
           </span>
           <span class="m-breadcrumb">
-          <a href="dir_7349e89ef19c117195f8e371603e1b1f.html">sensors</a>
+          <a href="dir_7349e89ef19c117195f8e371603e1b1f.html">
+            sensors
+          </a>
           /
           </span>
           <span class="m-breadcrumb">
             InSituRDO.h
           </span>
+                </div>
+                <header class="gp-entry-header">
+                  <h1 class="gp-entry-title" itemprop="headline">
+          InSituRDO.h
+          <span class="m-thin">
+            file
+          </span>
 
-        <header class="gp-entry-header">
-          <h1 class="gp-entry-title" itemprop="headline">
-          InSituRDO.h <span class="m-thin">file</span>
 
-          </h1>
-        </header>
+                </h1>
+                </header>
         <p>Contains the <a href="class_in_situ_r_d_o.html" class="m-doc">InSituRDO</a> sensor subclass and the variable subclasses <a href="class_in_situ_r_d_o___temp.html" class="m-doc">InSituRDO_<wbr />Temp</a>, <a href="class_in_situ_r_d_o___d_opct.html" class="m-doc">InSituRDO_<wbr />DOpct</a>, and <a href="class_in_situ_r_d_o___d_omg_l.html" class="m-doc">InSituRDO_<wbr />DOmgL</a>.</p>
         <nav class="m-block m-default">
           <ul>
@@ -1741,12 +1609,6 @@
               Reference
               <ul>
                 <li><a href="#nested-classes">Classes</a></li>
-                <li><a href="#define-members">Defines</a></li>
-                <li><a href="#sensor-timing">Sensor Timing</a></li>
-                <li><a href="#dissolved-oxygen-concentration">Dissolved Oxygen Concentration</a></li>
-                <li><a href="#dissolved-oxygen-percent-saturation">Dissolved Oxygen Percent Saturation</a></li>
-                <li><a href="#temperature">Temperature</a></li>
-                <li><a href="#oxygen-partial-pressure">Oxygen Partial Pressure</a></li>
               </ul>
             </li>
             <li>
@@ -1756,7 +1618,7 @@
             </li>
           </ul>
         </nav>
-          <aside class="m-note m-default"><h4>Copyright</h4><p>2017-2022 Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino</p></aside><aside class="m-note m-default"><h4>Author</h4><p>Sara Geleskie Damiano <a href="mailto:sdamiano@stroudcenter.org">sdamiano@stroudcenter.org</a></p></aside><p>These are for the In-Situ RDO PRO-X digital dissolved oxygen sensor.</p><p>This depends on the <a href="class_s_d_i12_sensors.html" class="m-doc">SDI12Sensors</a> parent class.</p>
+          <aside class="m-note m-default"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class="m-note m-default"><h4>Author</h4><p>Sara Geleskie Damiano <a href="mailto:sdamiano@stroudcenter.org">sdamiano@stroudcenter.org</a></p></aside><p>These are for the In-Situ RDO PRO-X digital dissolved oxygen sensor.</p><p>This depends on the <a href="class_s_d_i12_sensors.html" class="m-doc">SDI12Sensors</a> parent class.</p>
         <section id="nested-classes">
           <h2>Classes</h2>
           <dl class="m-doc">
@@ -1782,316 +1644,74 @@
             <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__insitu__rdo.html#sensor_insitu_rdo_pressure" class="m-doc">oxygen partial pressure output</a> from a <a href="group__sensor__insitu__rdo.html" class="m-doc">In-Situ RDO PRO-X dissolved oxygen sensor</a>.</dd>
           </dl>
         </section>
-        <section id="define-members">
-          <h2>Defines</h2>
-          <dl class="m-doc">
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__insitu__rdo.html#ga9fd50d02f54c25c1351c1318905d4bc3" class="m-doc">INSITU_RDO_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 4</span></span>
-            </dt>
-            <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the RDO PRO-X can report 4 values.</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__insitu__rdo.html#gabd8d8d06a3d1845efe8a00af73be8e7f" class="m-doc">INSITU_RDO_INC_CALC_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
-            </dt>
-            <dd><a href="class_sensor.html#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.</dd>
-          </dl>
-        </section>
-        <section id="sensor-timing">
-          <h2>Sensor Timing</h2>
-<p><a name="sensor_insitu_rdo_timing"></a> The sensor timing for an In-Situ RDO PRO-X.</p><p>None of these values are specified in the documentation for the sensor; this is all based on SRGD&#x27;s testing.</p>
-          <dl class="m-doc">
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__insitu__rdo.html#ga95c76a9b4ad198ad87c478f0569481b3" class="m-doc">INSITU_RDO_WARM_UP_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 125</span></span>
-            </dt>
-            <dd><a href="class_sensor.html#aaaefd7f306f86382a3dac726531756b4" class="m-doc">Sensor::<wbr />_warmUpTime_ms</a>; ~125ms in SRGD tests.</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__insitu__rdo.html#ga52f3b034976178775c20e15e8618dbeb" class="m-doc">INSITU_RDO_STABILIZATION_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
-            </dt>
-            <dd><a href="class_sensor.html#ad6822ad09fb64658c911ce86820db79c" class="m-doc">Sensor::<wbr />_stabilizationTime_ms</a>; the sensor is stable as soon as it can take a measurement.</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__insitu__rdo.html#gadf4af20ad66332f6e057bbbca62a9580" class="m-doc">INSITU_RDO_MEASUREMENT_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 850</span></span>
-            </dt>
-            <dd><a href="class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba" class="m-doc">Sensor::<wbr />_measurementTime_ms</a>; ~775 minimum.</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__insitu__rdo.html#ga10ba60508a949ea30908a98288818341" class="m-doc">INSITU_RDO_EXTRA_WAKE_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
-            </dt>
-            <dd>Extra wake time required for an SDI-12 sensor between the &quot;break&quot; and the time the command is sent. We give the RDO an extra 10ms.</dd>
-          </dl>
-        </section>
-        <section id="dissolved-oxygen-concentration">
-          <h2>Dissolved Oxygen Concentration</h2>
-<p><a name="sensor_insitu_rdo_domgl"></a> The DO concentration variable from an In-Situ RDO PRO-X</p><ul><li>Range is 0 to 50 mg/L concentration</li><li>Accuracy:<ul><li>± 0.1 mg/L from 0 to 8 mg/L</li><li>± 0.2 mg/L of reading from 8-20 mg/L</li><li>± 10% of reading from 20-50 mg/L</li></ul></li></ul><aside class="m-note m-info"><h4>Note</h4><p>To acheive maximum accuracy, the sensor must be calibrated using either a one or two point calibration.</p></aside><p><section class="m-doc-details" id="afc2ec039177daa7b46d3de21d5afa485"><div>
-<h3>
-<span class="m-doc-wrap-bumper"><span class="m-dim"></span><a class="m-doc-self" href="class_in_situ_r_d_o___d_omg_l.html#afc2ec039177daa7b46d3de21d5afa485">InSituRDO_DOmgL</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_in_situ_r_d_o.html">InSituRDO</a>*</span> <span class="m-param">parentSense</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__insitu__rdo.html#ga0bc725f1832e78bf2f8b4f9fa6fecfd5">INSITU_<wbr/>RDO_<wbr/>DOMGL_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span>
-</h3>
-<p>Construct a new <a class="m-doc" href="class_in_situ_r_d_o___d_omg_l.html">InSituRDO_<wbr/>DOmgL</a> object.</p>
-<table class="m-table m-fullwidth m-flat">
-<thead>
-<tr><th colspan="2">Parameters</th></tr>
-</thead>
-<tbody>
-<tr>
-<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
-<td>The parent <a class="m-doc" href="class_in_situ_r_d_o.html">InSituRDO</a> providing the result values.</td>
-</tr>
-<tr>
-<td class="m-param"><span class="m-param">uuid</span></td>
-<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
-</tr>
-<tr>
-<td class="m-param"><span class="m-param">varCode</span></td>
-<td>A short code to help identify the variable in files; optional with a default value of "RDOppm".</td>
-</tr>
-</tbody>
-</table>
-<hr/>
-</div>
-</section></p>
-          <dl class="m-doc">
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__insitu__rdo.html#ga2a9e2d5772dac848a2fc0bf2dfcd8bb3" class="m-doc">INSITU_RDO_DOMGL_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
-            </dt>
-            <dd>Decimals places in string representation; dissolved oxygen concentration should have 2 - resolution is 0.01 mg/L.</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__insitu__rdo.html#ga0645fc7b6a6f0b99e3d66f0631289bd7" class="m-doc">INSITU_RDO_DOMGL_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
-            </dt>
-            <dd><a href="class_variable.html" class="m-doc">Variable</a> number; dissolved oxygen concentration is stored in sensorValues[0].</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__insitu__rdo.html#ga763f608a8f931b1ab87d1497ec3f8359" class="m-doc">INSITU_RDO_DOMGL_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "oxygenDissolved"</span></span>
-            </dt>
-            <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;oxygenDissolved&quot;.</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__insitu__rdo.html#gac7988877570dc9eb4af936b421e9a18e" class="m-doc">INSITU_RDO_DOMGL_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "milligramPerLiter"</span></span>
-            </dt>
-            <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;milligramPerLiter&quot; (mg/L)</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__insitu__rdo.html#ga0bc725f1832e78bf2f8b4f9fa6fecfd5" class="m-doc">INSITU_RDO_DOMGL_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "RDOppm"</span></span>
-            </dt>
-            <dd>Default variable short code; &quot;RDOppm&quot;.</dd>
-          </dl>
-        </section>
-        <section id="dissolved-oxygen-percent-saturation">
-          <h2>Dissolved Oxygen Percent Saturation</h2>
-<p><a name="sensor_insitu_rdo_dopercent"></a> The percent saturation variable from an In-Situ RDO PRO-X</p><ul><li>Range is 0 to 50 mg/L concentration</li><li>Accuracy:<ul><li>± 0.1 mg/L from 0 to 8 mg/L</li><li>± 0.2 mg/L of reading from 8-20 mg/L</li><li><p>± 10% of reading from 20-50 mg/L</p><aside class="m-note m-info"><h4>Note</h4><p>To acheive maximum accuracy, the sensor must be calibrated using either a one or two point calibration.</p></aside><p><section class="m-doc-details" id="a9b095d54553d3ebc853113835cb3427e"><div>
-<h3>
-<span class="m-doc-wrap-bumper"><span class="m-dim"></span><a class="m-doc-self" href="class_in_situ_r_d_o___d_opct.html#a9b095d54553d3ebc853113835cb3427e">InSituRDO_DOpct</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_in_situ_r_d_o.html">InSituRDO</a>*</span> <span class="m-param">parentSense</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__insitu__rdo.html#ga7699954b68f94fe3995a8c92bedccf77">INSITU_<wbr/>RDO_<wbr/>DOPCT_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span>
-</h3>
-<p>Construct a new <a class="m-doc" href="class_in_situ_r_d_o___d_opct.html">InSituRDO_<wbr/>DOpct</a> object.</p>
-<table class="m-table m-fullwidth m-flat">
-<thead>
-<tr><th colspan="2">Parameters</th></tr>
-</thead>
-<tbody>
-<tr>
-<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
-<td>The parent <a class="m-doc" href="class_in_situ_r_d_o.html">InSituRDO</a> providing the result values.</td>
-</tr>
-<tr>
-<td class="m-param"><span class="m-param">uuid</span></td>
-<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
-</tr>
-<tr>
-<td class="m-param"><span class="m-param">varCode</span></td>
-<td>A short code to help identify the variable in files; optional with a default value of "RDOpercent".</td>
-</tr>
-</tbody>
-</table>
-<hr/>
-</div>
-</section></p></li></ul></li></ul>
-          <dl class="m-doc">
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__insitu__rdo.html#ga1a582a156a2e8ff3dbd0eaa9af90da35" class="m-doc">INSITU_RDO_DOPCT_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
-            </dt>
-            <dd>Decimals places in string representation; dissolved oxygen percent saturation should have 1.</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__insitu__rdo.html#ga519a68c38a4f713c6b88877eeca35a17" class="m-doc">INSITU_RDO_DOPCT_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
-            </dt>
-            <dd><a href="class_variable.html" class="m-doc">Variable</a> number; dissolved oxygen percent is stored in sensorValues[1].</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__insitu__rdo.html#ga75a7485f84441c1923b1b0a2f68b8533" class="m-doc">INSITU_RDO_DOPCT_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "oxygenDissolvedPercentOfSaturation"</span></span>
-            </dt>
-            <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;oxygenDissolvedPercentOfSaturation&quot;.</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__insitu__rdo.html#ga615051e478534b09a862a98fb4b0eb75" class="m-doc">INSITU_RDO_DOPCT_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "percent"</span></span>
-            </dt>
-            <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;percent&quot; (% saturation)</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__insitu__rdo.html#ga7699954b68f94fe3995a8c92bedccf77" class="m-doc">INSITU_RDO_DOPCT_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "RDOpercent"</span></span>
-            </dt>
-            <dd>Default variable short code; &quot;RDOpercent&quot;.</dd>
-          </dl>
-        </section>
-        <section id="temperature">
-          <h2>Temperature</h2>
-<p><a name="sensor_insitu_rdo_temp"></a> The temperature variable from an In-Situ RDO PRO-X</p><ul><li>Range is 0° to 50°C (32° to 122°F)</li><li>Accuracy is ± 0.1°C typical</li></ul><p><section class="m-doc-details" id="a445c4651ec79085684dc65d22d9858e6"><div>
-<h3>
-<span class="m-doc-wrap-bumper"><span class="m-dim"></span><a class="m-doc-self" href="class_in_situ_r_d_o___temp.html#a445c4651ec79085684dc65d22d9858e6">InSituRDO_Temp</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_in_situ_r_d_o.html">InSituRDO</a>*</span> <span class="m-param">parentSense</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__insitu__rdo.html#gadb9497dcb640a94c15b813a9ee22d703">INSITU_<wbr/>RDO_<wbr/>TEMP_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span>
-</h3>
-<p>Construct a new <a class="m-doc" href="class_in_situ_r_d_o___temp.html">InSituRDO_<wbr/>Temp</a> object.</p>
-<table class="m-table m-fullwidth m-flat">
-<thead>
-<tr><th colspan="2">Parameters</th></tr>
-</thead>
-<tbody>
-<tr>
-<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
-<td>The parent <a class="m-doc" href="class_in_situ_r_d_o.html">InSituRDO</a> providing the result values.</td>
-</tr>
-<tr>
-<td class="m-param"><span class="m-param">uuid</span></td>
-<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
-</tr>
-<tr>
-<td class="m-param"><span class="m-param">varCode</span></td>
-<td>A short code to help identify the variable in files; optional with a default value of "RDOtempC".</td>
-</tr>
-</tbody>
-</table>
-<hr/>
-</div>
-</section></p>
-          <dl class="m-doc">
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__insitu__rdo.html#ga8219e8515217e8ad7ae72d6147956b22" class="m-doc">INSITU_RDO_TEMP_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
-            </dt>
-            <dd>Decimals places in string representation; temperature should have 2 - resolution is 0.01°C.</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__insitu__rdo.html#ga41ed47b309da78326dd09de87bd19fb2" class="m-doc">INSITU_RDO_TEMP_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
-            </dt>
-            <dd><a href="class_variable.html" class="m-doc">Variable</a> number; temperature is stored in sensorValues[2].</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__insitu__rdo.html#gaef3f7e3c081849bb2c477c54d71a753e" class="m-doc">INSITU_RDO_TEMP_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "temperature"</span></span>
-            </dt>
-            <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;temperature&quot;.</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__insitu__rdo.html#ga9ab96b5b0177f73653f17b870c9d25e5" class="m-doc">INSITU_RDO_TEMP_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "degreeCelsius"</span></span>
-            </dt>
-            <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;degreeCelsius&quot; (°C)</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__insitu__rdo.html#gadb9497dcb640a94c15b813a9ee22d703" class="m-doc">INSITU_RDO_TEMP_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "RDOtempC"</span></span>
-            </dt>
-            <dd>Default variable short code; &quot;RDOtempC&quot;.</dd>
-          </dl>
-        </section>
-        <section id="oxygen-partial-pressure">
-          <h2>Oxygen Partial Pressure</h2>
-<p><a name="sensor_insitu_rdo_pressure"></a> The oxygen partial pressure variable from an In-Situ RDO PRO-X</p><aside class="m-note m-info"><h4>Note</h4><p>The oxygen partial pressure output must be manually enabled in SDI-12 mode using the Win-Situ software.</p></aside><p><section class="m-doc-details" id="a037a37a1b92b66dc1fa56dbd20a58e39"><div>
-<h3>
-<span class="m-doc-wrap-bumper"><span class="m-dim"></span><a class="m-doc-self" href="class_in_situ_r_d_o___pressure.html#a037a37a1b92b66dc1fa56dbd20a58e39">InSituRDO_Pressure</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_in_situ_r_d_o.html">InSituRDO</a>*</span> <span class="m-param">parentSense</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__insitu__rdo.html#gafa1272ccc53c546d7a27cb8ce5ecd896">INSITU_<wbr/>RDO_<wbr/>PRESSURE_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span>
-</h3>
-<p>Construct a new <a class="m-doc" href="class_in_situ_r_d_o___pressure.html">InSituRDO_<wbr/>Pressure</a> object.</p>
-<table class="m-table m-fullwidth m-flat">
-<thead>
-<tr><th colspan="2">Parameters</th></tr>
-</thead>
-<tbody>
-<tr>
-<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
-<td>The parent <a class="m-doc" href="class_in_situ_r_d_o.html">InSituRDO</a> providing the result values.</td>
-</tr>
-<tr>
-<td class="m-param"><span class="m-param">uuid</span></td>
-<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
-</tr>
-<tr>
-<td class="m-param"><span class="m-param">varCode</span></td>
-<td>A short code to help identify the variable in files; optional with a default value of "RDOppO2".</td>
-</tr>
-</tbody>
-</table>
-<hr/>
-</div>
-</section></p>
-          <dl class="m-doc">
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__insitu__rdo.html#ga1c8b1154552b2b10fd55f6b1c834ccb8" class="m-doc">INSITU_RDO_PRESSURE_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
-            </dt>
-            <dd>Decimals places in string representation; pressure should have 3.</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__insitu__rdo.html#gaac55a3244e377dcced605afea650f54f" class="m-doc">INSITU_RDO_PRESSURE_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
-            </dt>
-            <dd><a href="class_variable.html" class="m-doc">Variable</a> number; temperature is stored in sensorValues[3].</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__insitu__rdo.html#gad709f07ee2df5e96af9b2dceedae1159" class="m-doc">INSITU_RDO_PRESSURE_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "vaporPressure"</span></span>
-            </dt>
-            <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;vaporPressure&quot;.</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__insitu__rdo.html#ga8278d057af3f8b368aeb416b49ea8452" class="m-doc">INSITU_RDO_PRESSURE_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "torr"</span></span>
-            </dt>
-            <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;torr&quot;.</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__insitu__rdo.html#gafa1272ccc53c546d7a27cb8ce5ecd896" class="m-doc">INSITU_RDO_PRESSURE_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "RDOppO2"</span></span>
-            </dt>
-            <dd>Default variable short code; &quot;RDOppO2&quot;.</dd>
-          </dl>
-        </section>
 
-
-
-
-
-
-                    </div>
-                  </div>
-                </div>
               </article>
             </main>
 
-          </div>      </div></div><div id="footer-image">
-          <div class="gp-container">
-            <img
-              src="https://www.envirodiy.org/wp-content/uploads/2016/05/EnviroDIY_LogoMaster_Square_V5_TwoTree_Trans_notext-e1462820115833.png"
-              width="99"
-              height="22"
-              alt=""
-            />
-          </div>
-        </div>
+          </div> <!-- gp-content -->
+        </div> <!-- gp-left-column -->
+      </div> <!-- gp-inner-container -->
+    </div> <!-- gp-content-wrapper -->
+
+    <div id="footer-image">
+      <div class="gp-container">
+        <img
+          src="https://www.envirodiy.org/wp-content/uploads/2016/05/EnviroDIY_LogoMaster_Square_V5_TwoTree_Trans_notext-e1462820115833.png"
+          width="99"
+          height="22"
+          alt=""
+        />
+      </div>
+    </div>
 
     <footer id="gp-footer">
       <div id="gp-copyright">
         <div class="gp-container">
           <div id="gp-copyright-text">
             <p>
-              <a href="http://www.stroudcenter.org/" target="_blank"
-                ><img
-                  style="float: left; margin-right: 20px;"
-                  src="https://www.envirodiy.org/wp-content/uploads/2017/01/stroud-white-white-165px.png"
-                  alt=""
-                  width="165"
-                  height="70" /></a
-              >EnviroDIY™ is a community for do-it-yourself ideas for
-              environmental science and monitoring. EnviroDIY is an
-              initiative of
-              <a href="http://www.stroudcenter.org/" target="_blank"
-                >Stroud™ Water Research Center</a
-              >, which seeks to advance knowledge and stewardship of
-              freshwater systems through global research, education, and
-              watershed restoration.
+              <a href="https://stroudcenter.org/" target="_blank"
+                >EnviroDIY™ is a community for do-it-yourself ideas for environmental
+                science and monitoring. EnviroDIY is an initiative of
+                <a
+                  style="text-decoration: underline"
+                  href="https://stroudcenter.org/"
+                  target="_blank"
+                  >Stroud Water Research Center</a
+                >, which advances knowledge and stewardship of freshwater systems through
+                global research, education, and watershed restoration.
+              </a>
             </p>
             <p>
               All content on EnviroDIY is licensed as Creative Commons
-              Attribution-ShareAlike 4.0 International (CC-BY-SA). Hardware
-              designs on this website are released under the CERN Open
-              Hardware License 1.2.
-              <a href="https://envirodiy.org/licenses/"
-                >Alternative licenses are available.</a
+              Attribution-ShareAlike 4.0 International (CC-BY-SA). Hardware designs on this
+              website are released under the CERN Open Hardware License 1.2.
+              <a style="text-decoration: underline" href="https://envirodiy.org/licenses/"
+                >See all licenses.</a
               >
-              <a href="https://envirodiy.org/terms/">Terms of Use</a> |
-              <a href="https://envirodiy.org/privacy/">Privacy Policy</a> |
-              <a href="https://envirodiy.org/cookies/">Cookie Policy</a> |
-              <a href="https://envirodiy.org/contact/">Contact</a>
+              <a style="text-decoration: underline" href="https://envirodiy.org/terms/"
+                >Terms of Use</a
+              >
+              |
+              <a style="text-decoration: underline" href="https://envirodiy.org/privacy/"
+                >Privacy Policy</a
+              >
+              |
+              <a style="text-decoration: underline" href="https://envirodiy.org/cookies/"
+                >Cookie Policy</a
+              >
+              |
+              <a
+                style="text-decoration: underline"
+                href="https://envirodiy.org/shop-policies/"
+                >Shop Policies</a
+              >
+              |
+              <a style="text-decoration: underline" href="https://envirodiy.org/contact/"
+                >Contact</a
+              >
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.6 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.12.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>
@@ -2100,69 +1720,8 @@
 
     <div class="gp-clear"></div>
 
-    </div></div><script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/modernizr.js?ver=6.1.1"
-  id="modernizr-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-includes/js/imagesloaded.min.js?ver=4.1.4"
-  id="imagesloaded-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/selectivizr.min.js?ver=6.1.1"
-  id="selectivizr-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/placeholders.min.js?ver=6.1.1"
-  id="placeholder-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/jquery.ui.totop.min.js.js?ver=6.1.1"
-  id="jquery-totop-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/jquery.flexslider-min.js?ver=6.1.1"
-  id="jquery-flexslider-js"
-></script>
-<script type="text/javascript" id="ghostpool-custom-js-js-extra">
-  /* <![CDATA[ */
-  var ghostpool_script = {
-    lightbox: 'separate_images',
-    url: 'https:\/\/www.envirodiy.org\/',
-    related_items_in_view: '',
-  };
-  /* ]]> */
-</script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/jquery.stellar.min.js?ver=6.1.1"
-  id="jquery-stellar-js"
-></script>
+    </div> <!-- gp-site-wrapper -->
+  </div> <!-- gp-site-wrapper -->
 
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/custom.js?ver=6.1.1"
-  id="ghostpool-custom-js-js"
-></script>
-<script type="text/javascript" id="ghostpool-ajax-loop-js-extra">
-  /* <![CDATA[ */
-  var ghostpoolAjax = {
-    ajaxurl: 'https:\/\/www.envirodiy.org\/wp-admin\/admin-ajax.php',
-    ajaxnonce: 'e2424257d3',
-    querystring: '',
-  };
-  /* ]]> */
-</script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/ajax-loop.js?ver=6.1.1"
-  id="ghostpool-ajax-loop-js"
-></script>
 </body>
 </html>

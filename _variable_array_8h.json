@@ -1,0 +1,103 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "file",
+    "id": "_variable_array_8h",
+    "name": "VariableArray.h",
+    "url_base": "_variable_array_8h",
+    "url": "_variable_array_8h.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "Contains the <a href=\"class_variable_array.html\" class=\"m-doc\">VariableArray</a> class.",
+    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside><p>This takes advantage of various time stamps within the <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> class to optimize the timing of communications with many sensors.</p><p>In general, the order of the variables in the variable list or array should not matter. The library attempts to minimize sensor on time as much as possible by requesting data from the each sensor as soon as it is able to report a result, regardless of its position in the array. The only place the order of the variables will be reflected is in the order of the data columns in data saved by a logger or when sending data to ThingSpeak.</p><p>To use the <a href=\"class_variable_array.html\" class=\"m-doc\">VariableArray</a> module, you must first create the array of pointers. This should be done outside of the setup() or loop() functions. Remember that for measured variables you must first create a new sensor instance and then one or more new variable instances for that sensor (depending on how many values it can return). The sensor functions for sensors within a variable array take advantage of all of the timestamps and status bits within the sensor object to minimize the amount of time that all sensors are powered and the processor is awake. That is, the first sensor to be warmed up will be set up or activated first; the first sensor to stabilize will be asked for values first. All calculations for any calculated variables happen after all the sensor updating has finished. The order of the variables within the array should not matter, though for code readability, I strongly suggest putting all the variables attached to a single sensor next to each other in the array. When creating a logger, the order of variables in the array determines the order the values will be written to the data file.</p>",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_variable_array.html",
+        "name": "VariableArray",
+        "brief": "The variable array class defines the logic for iterating through many variable objects.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [
+      {
+        "base_url": "_variable_array_8h.html",
+        "id": "a379c67e56cff0e11eb3e6fe7c03d1c43",
+        "include": null,
+        "has_details": false,
+        "name": "prettyPrintArray",
+        "initializer": null,
+        "brief": "Prints out the contents of an array with even spaces and commas between the members.",
+        "description": "",
+        "return_value": null,
+        "deprecated": null,
+        "since": null,
+        "has_param_details": false,
+        "params": [
+          [
+            "...",
+            ""
+          ]
+        ]
+      }
+    ],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "src",
+        "dir_68267d1309a1af8e8297ef4c3efbcdba.html"
+      ],
+      [
+        "VariableArray.h",
+        "_variable_array_8h.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "VariableArray.h",
+        "_variable_array_8h.html"
+      ]
+    ]
+  }
+}

@@ -1,0 +1,344 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__sensor__ds18",
+    "name": "Maxim DS18",
+    "url_base": "group__sensor__ds18",
+    "url": "group__sensor__ds18.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>Classes for the Maxim DS18 one-wire temperature sensors.</p><section id=\"sensor_ds18_intro\"><h2>Introduction</h2><p>The Maxim temperature probes communicate using the OneWire library, which can be used on any digital pin on any of the supported boards. The same module should work with a <a href=\"https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18B20.html\">DS18B20</a>, <a href=\"https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18S20.html\">DS18S20</a>, <a href=\"https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS1822.html\">DS1822</a>, <a href=\"https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/MAX31820.html\">MAX31820</a>, and the no-longer-sold <a href=\"https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS1820.html\">DS1820</a> sensor. These sensors can be attached to a 3.0-5.5V power source or they can take &quot;parasitic power&quot; from the data line. When using the more typical setup with power, ground, and data lines, a 4.7k resistor must be attached as a pull-up between the data and power lines. The one-wire communication protocol is slow and <em>interrupts are turned off during communication</em>. Keep this in mind if using this sensor in combination with a rain gauge or other interrupt-driven sensor.</p><p>The resolution of the DS18B20, DS1822, and MAX31820 temperature sensors are user-configurable to 9, 10, 11, or 12 bits, corresponding to increments of 0.5\u00b0C, 0.25\u00b0C, 0.125\u00b0C, and 0.0625\u00b0C, respectively. The default resolution at power-up is 12-bit, unless it has previously been set to something else. The resolution of the DS18S20 is set at 9-bit</p><p>The OneWire hex address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor. The OneWire address is an array of 8 hex values, for example: {0x28, 0x1D, 0x39, 0x31, 0x2, 0x0, 0x0, 0xF0}. To get the address of your sensor, plug a single sensor into your device and run the <a href=\"https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/oneWireSearch/oneWireSearch.ino\">oneWireSearch</a> example or the <a href=\"https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/Single/Single.pde\">Single</a> example provided within the Dallas Temperature library. The sensor address is programmed at the factory and cannot be changed.</p></section><section id=\"sensor_ds18_datasheet\"><h2>Sensor Datasheet</h2><ul><li><a href=\"https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxim-DS18B20-1-Wire-Temperature-Probe-Datasheet.pdf\">DS18B20 Datasheet</a></li><li><a href=\"https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxim-DS18S20-1-Wire-Temperature-Probe-Datasheet.pdf\">DS18S20 Datasheet</a></li><li><a href=\"https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-DatasheetsMaxim-DS1822-1-Wire-Temperature-Probe-Datasheet.pdf\">DS1822 Datasheet</a></li><li><a href=\"https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxim-MAX31820-1-Wire-Temperature-Probe-Datasheet.pdf\">MAX31820 Datasheet</a></li></ul></section><section id=\"sensor_ds18_ctor\"><h2>Sensor Constructor</h2><p>{{ <a href=\"class_maxim_d_s18.html#a6e6f39a5b63dbbf85897e5d66ea97c1e\" class=\"m-doc\">MaximDS18::<wbr />MaximDS18</a> }}</p><hr/></section><section id=\"sensor_ds18_examples\"><h2>Example Code</h2><p>The Maxim DS18 is used in the <a href=\"example_menu.html#menu_walk_maxim_ds18\" class=\"m-doc\">menu a la carte</a> example.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;sensors/MaximDS18.h&gt;</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"c1\">// OneWire Address [array of 8 hex characters]</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"c1\">// If only using a single sensor on the OneWire bus, you may omit the address</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span><span class=\"n\">DeviceAddress</span><span class=\"w\"> </span><span class=\"n\">OneWireAddress1</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"p\">{</span><span class=\"mh\">0x28</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"mh\">0xFF</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"mh\">0xBD</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"mh\">0xBA</span><span class=\"p\">,</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span><span class=\"w\">                                 </span><span class=\"mh\">0x81</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"mh\">0x16</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"mh\">0x03</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"mh\">0x0C</span><span class=\"p\">};</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"c1\">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">OneWirePower</span><span class=\"w\">       </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">sensorPowerPin</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// Power pin</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">OneWireBus</span><span class=\"w\">         </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">A0</span><span class=\"p\">;</span><span class=\"w\">              </span><span class=\"c1\">// OneWire Bus Pin</span>\n</div><div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">ds18NumberReadings</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">3</span><span class=\"p\">;</span>\n</div><div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span>\n</div><div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"c1\">// Create a Maxim DS18 sensor objects (use this form for a known address)</span>\n</div><div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span><span class=\"n\">MaximDS18</span><span class=\"w\"> </span><span class=\"nf\">ds18</span><span class=\"p\">(</span><span class=\"n\">OneWireAddress1</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">OneWirePower</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">OneWireBus</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">ds18NumberReadings</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span>\n</div><div class=\"line\"><a id=\"l-15\" name=\"l-15\"></a><span class=\"linenos\">15</span><span class=\"c1\">// Create a Maxim DS18 sensor object (use this form for a single sensor on bus</span>\n</div><div class=\"line\"><a id=\"l-16\" name=\"l-16\"></a><span class=\"linenos\">16</span><span class=\"c1\">// with an unknown address)</span>\n</div><div class=\"line\"><a id=\"l-17\" name=\"l-17\"></a><span class=\"linenos\">17</span><span class=\"c1\">// MaximDS18 ds18(OneWirePower, OneWireBus);</span>\n</div><div class=\"line\"><a id=\"l-18\" name=\"l-18\"></a><span class=\"linenos\">18</span>\n</div><div class=\"line\"><a id=\"l-19\" name=\"l-19\"></a><span class=\"linenos\">19</span><span class=\"c1\">// Create a temperature variable pointer for the DS18</span>\n</div><div class=\"line\"><a id=\"l-20\" name=\"l-20\"></a><span class=\"linenos\">20</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">ds18Temp</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">MaximDS18_Temp</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">ds18</span><span class=\"p\">,</span>\n</div><div class=\"line\"><a id=\"l-21\" name=\"l-21\"></a><span class=\"linenos\">21</span><span class=\"w\">                                        </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "sensor_ds18_intro",
+        "Introduction",
+        []
+      ],
+      [
+        "sensor_ds18_datasheet",
+        "Sensor Datasheet",
+        []
+      ],
+      [
+        "sensor_ds18_ctor",
+        "Sensor Constructor",
+        []
+      ],
+      [
+        "sensor_ds18_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_maxim_d_s18.html",
+        "name": "MaximDS18",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__ds18.html\" class=\"m-doc\">DS18 one-wire temperature sensors</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_maxim_d_s18___temp.html",
+        "name": "MaximDS18_Temp",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__ds18.html#sensor_ds18_temp\" class=\"m-doc\">temperature output</a> from a <a href=\"group__sensor__ds18.html\" class=\"m-doc\">Maxim one-wire temperature sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Sensor Variable Counts",
+        "id": "sensor-variable-counts",
+        "description": "<p><a name=\"sensor_ds18_var_counts\"></a> The number of variables that can be returned by the DS18</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ds18.html",
+              "id": "ga8965187620cbbb854ac475c50a0b77a9",
+              "include": [
+                "&lt;src/sensors/MaximDS18.h&gt;",
+                "_maxim_d_s18_8h.html"
+              ],
+              "has_details": true,
+              "name": "DS18_NUM_VARIABLES",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html#af26786329fd01b44cf31410d046fc8f3\" class=\"m-doc\">Sensor::<wbr />_numReturnedValues</a>; the DS18 can report 1 value.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ds18.html",
+              "id": "gac3d3745e1d0754c518970120ceed18ac",
+              "include": [
+                "&lt;src/sensors/MaximDS18.h&gt;",
+                "_maxim_d_s18_8h.html"
+              ],
+              "has_details": true,
+              "name": "DS18_INC_CALC_VARIABLES",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#a2f3f93a9205efb134cef1216d65077d2\" class=\"m-doc\">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Sensor Timing",
+        "id": "sensor-timing",
+        "description": "<p><a name=\"sensor_ds18_timing\"></a> The sensor timing for a Maxim DS18</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ds18.html",
+              "id": "gafeda851a3e72adb18b11c18731c9126d",
+              "include": [
+                "&lt;src/sensors/MaximDS18.h&gt;",
+                "_maxim_d_s18_8h.html"
+              ],
+              "has_details": true,
+              "name": "DS18_WARM_UP_TIME_MS",
+              "initializer": "2",
+              "brief": "<a href=\"class_sensor.html#aaaefd7f306f86382a3dac726531756b4\" class=\"m-doc\">Sensor::<wbr />_warmUpTime_ms</a>; the DS18 warms up in 2ms (reset time is &lt; 480 \u00b5s).",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ds18.html",
+              "id": "ga42c5636f15677da7bb485f6d291c4f0d",
+              "include": [
+                "&lt;src/sensors/MaximDS18.h&gt;",
+                "_maxim_d_s18_8h.html"
+              ],
+              "has_details": true,
+              "name": "DS18_STABILIZATION_TIME_MS",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#ad6822ad09fb64658c911ce86820db79c\" class=\"m-doc\">Sensor::<wbr />_stabilizationTime_ms</a>; the DS18 is stable as soon as it warms up (0ms stabilization).",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ds18.html",
+              "id": "ga6c849476144b151e003043cbb3bfd0bb",
+              "include": [
+                "&lt;src/sensors/MaximDS18.h&gt;",
+                "_maxim_d_s18_8h.html"
+              ],
+              "has_details": true,
+              "name": "DS18_MEASUREMENT_TIME_MS",
+              "initializer": "750",
+              "brief": "<a href=\"class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba\" class=\"m-doc\">Sensor::<wbr />_measurementTime_ms</a>; the DS18 takes 750ms to complete a measurement (at 12-bit: 750ms).",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Temperature",
+        "id": "temperature",
+        "description": "<p><a name=\"sensor_ds18_temp\"></a> The temperature variable from an Maxim DS18</p><ul><li>Range is -55\u00b0C to 125\u00b0C</li><li>Accuracy:<ul><li>\u00b1 0.5\u00b0C from -10\u00b0C to +85\u00b0C for DS18S20 and DS18B20</li><li>\u00b1 2\u00b0C for DS1822 and MAX31820</li></ul></li><li>Resolution:<ul><li>0.0625\u00b0C for DS18B20, DS1822, and MAX31820 (12-bit)</li><li>0.5\u00b0C for DS18S20 (9-bit)</li><li><span class=\"m-dim\"><a href=\"#ga98d55b0d059d2d359fde80a4681246a1\" class=\"m-doc\">DS18_<wbr />TEMP_<wbr />RESOLUTION</a> = 4</span></li></ul></li><li>Reported as degrees Celsius (\u00b0C)</li><li>Default variable code is DS18Temp</li></ul><p>{{ <a href=\"class_maxim_d_s18___temp.html#ab1750c555b823aed0aea7dab128cd0c4\" class=\"m-doc\">MaximDS18_Temp::<wbr />MaximDS18_Temp</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ds18.html",
+              "id": "ga98d55b0d059d2d359fde80a4681246a1",
+              "include": [
+                "&lt;src/sensors/MaximDS18.h&gt;",
+                "_maxim_d_s18_8h.html"
+              ],
+              "has_details": true,
+              "name": "DS18_TEMP_RESOLUTION",
+              "initializer": "4",
+              "brief": "Decimals places in string representation; temperature should have 4.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ds18.html",
+              "id": "ga8cdcd7b737e019326f6d7a08760314b3",
+              "include": [
+                "&lt;src/sensors/MaximDS18.h&gt;",
+                "_maxim_d_s18_8h.html"
+              ],
+              "has_details": true,
+              "name": "DS18_TEMP_VAR_NUM",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; temperature is stored in sensorValues[0].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ds18.html",
+              "id": "gaf0113c77b83a09a204b45a07fa75bb24",
+              "include": [
+                "&lt;src/sensors/MaximDS18.h&gt;",
+                "_maxim_d_s18_8h.html"
+              ],
+              "has_details": true,
+              "name": "DS18_TEMP_VAR_NAME",
+              "initializer": "\"temperature\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;temperature&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ds18.html",
+              "id": "ga443fdf63cacca8727cc24d9f775eed1d",
+              "include": [
+                "&lt;src/sensors/MaximDS18.h&gt;",
+                "_maxim_d_s18_8h.html"
+              ],
+              "has_details": true,
+              "name": "DS18_TEMP_UNIT_NAME",
+              "initializer": "\"degreeCelsius\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;degreeCelsius&quot; (\u00b0C)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ds18.html",
+              "id": "ga616aae63718645073cb149c1c4cb4a17",
+              "include": [
+                "&lt;src/sensors/MaximDS18.h&gt;",
+                "_maxim_d_s18_8h.html"
+              ],
+              "has_details": true,
+              "name": "DS18_TEMP_DEFAULT_CODE",
+              "initializer": "\"DS18Temp\"",
+              "brief": "Default variable short code; &quot;DS18Temp&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "Maxim DS18",
+        "group__sensor__ds18.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Maxim DS18",
+        "group__sensor__ds18.html"
+      ]
+    ]
+  }
+}

@@ -1,0 +1,740 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__sensor__bme280",
+    "name": "Bosch BME280",
+    "url_base": "group__sensor__bme280",
+    "url": "group__sensor__bme280.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>Classes for the Bosch BME280 environmental sensor.</p><section id=\"sensor_bme280_intro\"><h2>Introduction</h2><blockquote><p>The BME280 is a humidity sensor especially developed for mobile applications and wearables where size and low power consumption are key design parameters. The unit combines high linearity and high accuracy sensors and is perfectly feasible for low current consumption, long-term stability and high EMC robustness. The humidity sensor offers an extremely fast response time and therefore supports performance requirements for emerging applications such as context awareness, and high accuracy over a wide temperature range.</p></blockquote><p>Although this sensor has the option of either I2C or SPI communication, this library only supports I2C. The default I2C address varies by manufacturer and is either 0x77 or 0x76. The Adafruit and Sparkfun defaults are both 0x77 and Seeed/Grove default is 0x76, though all can be changed by physical modification of the sensor, if necessary (by cutting the board connection for the manufacturer default and soldering the optional address jumpers). To connect two of these sensors to your system, you must ensure they are soldered so as to have different I2C addresses. No more than two can be attached. This module is likely to also work with the <a href=\"https://www.bosch-sensortec.com/bst/products/all_products/bmp280\">Bosch BMP280 Barometric Pressure Sensor</a>, though it has not been tested on it. These sensors should be attached to a 1.7-3.6V power source and the power supply to the sensor can be stopped between measurements.</p><p>The <a href=\"https://github.com/adafruit/Adafruit_BME280_Library\">Adafruit BME280 library</a> is used internally for communication with the BME280.</p><aside class=\"m-note m-danger\"><h4>Warning</h4><p>The I2C addresses used by the BME280 are the same as those of the BMP388, BMP390, and MS5803! If you are also using one of those sensors, make sure that the address for that sensor does not conflict with the address of this sensor.</p></aside><aside class=\"m-note m-info\"><h4>Note</h4><p>Software I2C is <em>not</em> supported for the BME280. A secondary hardware I2C on a SAMD board is supported.</p></aside></section><section id=\"sensor_bme280_datasheet\"><h2>Sensor Datasheet</h2><p>Documentation for the sensor can be found at: <a href=\"https://www.bosch-sensortec.com/products/environmental-sensors/humidity-sensors-bme280/\">https:/<wbr />/<wbr />www.bosch-sensortec.com/<wbr />products/<wbr />environmental-sensors/<wbr />humidity-sensors-bme280/<wbr /></a></p><p><a href=\"https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Bosch-BME280-Datasheet.pdf\">Datasheet</a></p></section><section id=\"sensor_bme280_flags\"><h2>Build flags</h2><ul><li><code>-D SEALEVELPRESSURE_HPA</code><ul><li>use to adjust the sea level pressure used to calculate altitude from measured barometric pressure</li><li>if not defined, 1013.25 is used</li><li>The same sea level pressure flag is used for both the BMP3xx and the BME280. Whatever you select will be used for both sensors.</li></ul></li></ul></section><section id=\"sensor_bme280_ctor\"><h2>Sensor Constructors</h2><p>{{ <a href=\"class_bosch_b_m_e280.html#af1f2ec4a5b1dba3f9402cbb606d40258\" class=\"m-doc\">BoschBME280::<wbr />BoschBME280(int8_t, uint8_t, uint8_t)</a> }} {{ <a href=\"class_bosch_b_m_e280.html#adeee07525828c7bac5c962eb55bc5b71\" class=\"m-doc\">BoschBME280::<wbr />BoschBME280(TwoWire*, int8_t, uint8_t, uint8_t)</a> }}</p><hr/></section><section id=\"sensor_bme280_examples\"><h2>Example Code</h2><p>The BME280 is used in the <a href=\"example_menu.html#menu_walk_bosch_bme280\" class=\"m-doc\">menu a la carte</a> example.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;sensors/BoschBME280.h&gt;</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"c1\">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">BME280Power</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">sensorPowerPin</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// Power pin</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span><span class=\"kr\">uint8_t</span><span class=\"w\">      </span><span class=\"n\">BMEi2c_addr</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mh\">0x76</span><span class=\"p\">;</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span><span class=\"c1\">// The BME280 can be addressed either as 0x77 (Adafruit default) or 0x76 (Grove</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"c1\">// default) Either can be physically mofidied for the other address</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span><span class=\"c1\">// Create a Bosch BME280 sensor object</span>\n</div><div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span><span class=\"n\">BoschBME280</span><span class=\"w\"> </span><span class=\"nf\">bme280</span><span class=\"p\">(</span><span class=\"n\">BME280Power</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">BMEi2c_addr</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span>\n</div><div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"c1\">// Create four variable pointers for the BME280</span>\n</div><div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">bme280Humid</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">BoschBME280_Humidity</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">bme280</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-15\" name=\"l-15\"></a><span class=\"linenos\">15</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">bme280Temp</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-16\" name=\"l-16\"></a><span class=\"linenos\">16</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">BoschBME280_Temp</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">bme280</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-17\" name=\"l-17\"></a><span class=\"linenos\">17</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">bme280Press</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-18\" name=\"l-18\"></a><span class=\"linenos\">18</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">BoschBME280_Pressure</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">bme280</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-19\" name=\"l-19\"></a><span class=\"linenos\">19</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">bme280Alt</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-20\" name=\"l-20\"></a><span class=\"linenos\">20</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">BoschBME280_Altitude</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">bme280</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "sensor_bme280_intro",
+        "Introduction",
+        []
+      ],
+      [
+        "sensor_bme280_datasheet",
+        "Sensor Datasheet",
+        []
+      ],
+      [
+        "sensor_bme280_flags",
+        "Build flags",
+        []
+      ],
+      [
+        "sensor_bme280_ctor",
+        "Sensor Constructors",
+        []
+      ],
+      [
+        "sensor_bme280_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_bosch_b_m_e280.html",
+        "name": "BoschBME280",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__bme280.html\" class=\"m-doc\">Bosch BME280</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_bosch_b_m_e280___temp.html",
+        "name": "BoschBME280_Temp",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__bme280.html#sensor_bme280_temp\" class=\"m-doc\">temperature output</a> from a <a href=\"group__sensor__bme280.html\" class=\"m-doc\">Bosch BME280</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_bosch_b_m_e280___humidity.html",
+        "name": "BoschBME280_Humidity",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__bme280.html#sensor_bme280_humidity\" class=\"m-doc\">relative humidity output</a> from a <a href=\"group__sensor__bme280.html\" class=\"m-doc\">Bosch BME280</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_bosch_b_m_e280___pressure.html",
+        "name": "BoschBME280_Pressure",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__bme280.html#sensor_bme280_pressure\" class=\"m-doc\">atmospheric pressure output</a> from a <a href=\"group__sensor__bme280.html\" class=\"m-doc\">Bosch BME280</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_bosch_b_m_e280___altitude.html",
+        "name": "BoschBME280_Altitude",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__bme280.html#sensor_bme280_altitude\" class=\"m-doc\">altitude</a> calculated from the measurements made by a <a href=\"group__sensor__bme280.html\" class=\"m-doc\">Bosch BME280</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Sensor Variable Counts",
+        "id": "sensor-variable-counts",
+        "description": "<p><a name=\"sensor_bme280_var_counts\"></a> The number of variables that can be returned by the BME280</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__bme280.html",
+              "id": "gae5ee790ad3ed98ad016ee3b50d52e54e",
+              "include": [
+                "&lt;src/sensors/BoschBME280.h&gt;",
+                "_bosch_b_m_e280_8h.html"
+              ],
+              "has_details": true,
+              "name": "BME280_NUM_VARIABLES",
+              "initializer": "4",
+              "brief": "<a href=\"class_sensor.html#af26786329fd01b44cf31410d046fc8f3\" class=\"m-doc\">Sensor::<wbr />_numReturnedValues</a>; the BME280 can report 4 values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__bme280.html",
+              "id": "gaf73d178c9844e66b4ce08b2a40824626",
+              "include": [
+                "&lt;src/sensors/BoschBME280.h&gt;",
+                "_bosch_b_m_e280_8h.html"
+              ],
+              "has_details": true,
+              "name": "BME280_INC_CALC_VARIABLES",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html#a2f3f93a9205efb134cef1216d65077d2\" class=\"m-doc\">Sensor::<wbr />_incCalcValues</a>; altitude is calculted within the Adafruit library.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Configuration Defines",
+        "id": "configuration-defines",
+        "description": "<p><a name=\"sensor_bme280_config\"></a> Defines to set the calibration of the calculated base pressure used to calculate altitude by the BME280.</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__bme280.html",
+              "id": "ga3fd1be5675628ccdd1cd809ee995b2e7",
+              "include": [
+                "&lt;src/sensors/BoschBME280.h&gt;",
+                "_bosch_b_m_e280_8h.html"
+              ],
+              "has_details": true,
+              "name": "SEALEVELPRESSURE_HPA",
+              "initializer": "(1013.25)",
+              "brief": "The atmospheric pressure at sea level.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Sensor Timing",
+        "id": "sensor-timing",
+        "description": "<p><a name=\"sensor_bme280_timing\"></a> The sensor timing for a Bosch BME280</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__bme280.html",
+              "id": "ga52072b7990a5a497efa897318b769e7e",
+              "include": [
+                "&lt;src/sensors/BoschBME280.h&gt;",
+                "_bosch_b_m_e280_8h.html"
+              ],
+              "has_details": true,
+              "name": "BME280_WARM_UP_TIME_MS",
+              "initializer": "100",
+              "brief": "<a href=\"class_sensor.html#aaaefd7f306f86382a3dac726531756b4\" class=\"m-doc\">Sensor::<wbr />_warmUpTime_ms</a>; BME280 warms up in 100ms.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__bme280.html",
+              "id": "ga31c3f00496355267174f865492a54620",
+              "include": [
+                "&lt;src/sensors/BoschBME280.h&gt;",
+                "_bosch_b_m_e280_8h.html"
+              ],
+              "has_details": true,
+              "name": "BME280_STABILIZATION_TIME_MS",
+              "initializer": "4000",
+              "brief": "<a href=\"class_sensor.html#ad6822ad09fb64658c911ce86820db79c\" class=\"m-doc\">Sensor::<wbr />_stabilizationTime_ms</a>; BME280 is stable after 4000ms.",
+              "description": "<p>0.5 s for good numbers, but optimal at 4 s based on tests using bme280timingTest.ino</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__bme280.html",
+              "id": "ga3c611ae771cb26727fe12bb93e76424f",
+              "include": [
+                "&lt;src/sensors/BoschBME280.h&gt;",
+                "_bosch_b_m_e280_8h.html"
+              ],
+              "has_details": true,
+              "name": "BME280_MEASUREMENT_TIME_MS",
+              "initializer": "1100",
+              "brief": "<a href=\"class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba\" class=\"m-doc\">Sensor::<wbr />_measurementTime_ms</a>; BME280 takes 1100ms to complete a measurement.",
+              "description": "<p>1.0 s according to datasheet, but slightly better stdev when 1.1 s For details on BME280 stabilization time updates, include testing sketch and link to data in Google Sheet, see: <a href=\"https://github.com/EnviroDIY/ModularSensors/commit/27e3cb531162ed6971a41f3c38f5920d356089e9\">https:/<wbr />/<wbr />github.com/<wbr />EnviroDIY/<wbr />ModularSensors/<wbr />commit/<wbr />27e3cb531162ed6971a41f3c38f5920d356089e9</a></p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Temperature",
+        "id": "temperature",
+        "description": "<p><a name=\"sensor_bme280_temp\"></a> The temperature variable from a Bosch BME280</p><ul><li>Range is -40\u00b0C to +85\u00b0C</li><li>Accuracy is \u00b10.5\u00b0C</li></ul><p>{{ <a href=\"class_bosch_b_m_e280___temp.html#a1e48be78ef5e2345dbb6aeb6c5440674\" class=\"m-doc\">BoschBME280_Temp::<wbr />BoschBME280_Temp</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__bme280.html",
+              "id": "ga60970d70575b2d45c2709aacdc1922b6",
+              "include": [
+                "&lt;src/sensors/BoschBME280.h&gt;",
+                "_bosch_b_m_e280_8h.html"
+              ],
+              "has_details": true,
+              "name": "BME280_TEMP_RESOLUTION",
+              "initializer": "2",
+              "brief": "Decimals places in string representation; temperature should have 2 - resolution is 0.01\u00b0C.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__bme280.html",
+              "id": "ga81689bfea69a7d6ae109e37cab7ab514",
+              "include": [
+                "&lt;src/sensors/BoschBME280.h&gt;",
+                "_bosch_b_m_e280_8h.html"
+              ],
+              "has_details": true,
+              "name": "BME280_TEMP_VAR_NUM",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; temperature is stored in sensorValues[0].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__bme280.html",
+              "id": "gaeddf0470c1a5e745970e79db652ddc46",
+              "include": [
+                "&lt;src/sensors/BoschBME280.h&gt;",
+                "_bosch_b_m_e280_8h.html"
+              ],
+              "has_details": true,
+              "name": "BME280_TEMP_VAR_NAME",
+              "initializer": "\"temperature\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;temperature&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__bme280.html",
+              "id": "ga86a61f87a0b61f6674119046590dc2c4",
+              "include": [
+                "&lt;src/sensors/BoschBME280.h&gt;",
+                "_bosch_b_m_e280_8h.html"
+              ],
+              "has_details": true,
+              "name": "BME280_TEMP_UNIT_NAME",
+              "initializer": "\"degreeCelsius\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;degreeCelsius&quot; (\u00b0C)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__bme280.html",
+              "id": "ga586641383564f42193d22799509f6a93",
+              "include": [
+                "&lt;src/sensors/BoschBME280.h&gt;",
+                "_bosch_b_m_e280_8h.html"
+              ],
+              "has_details": true,
+              "name": "BME280_TEMP_DEFAULT_CODE",
+              "initializer": "\"BoschBME280Temp\"",
+              "brief": "Default variable short code; &quot;BoschBME280Temp&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Humidity",
+        "id": "humidity",
+        "description": "<p><a name=\"sensor_bme280_humidity\"></a> The humidity variable from a Bosch BME280</p><p>{{ <a href=\"class_bosch_b_m_e280___humidity.html#acf9d4f58dae14c5d3777285bf53a72a4\" class=\"m-doc\">BoschBME280_Humidity::<wbr />BoschBME280_Humidity</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__bme280.html",
+              "id": "gad79814d92ab26ea817401291b47cf94b",
+              "include": [
+                "&lt;src/sensors/BoschBME280.h&gt;",
+                "_bosch_b_m_e280_8h.html"
+              ],
+              "has_details": true,
+              "name": "BME280_HUMIDITY_RESOLUTION",
+              "initializer": "3",
+              "brief": "Decimals places in string representation; humidity should have 3- resolution is 0.008 % RH (16 bit).",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__bme280.html",
+              "id": "gadaf49479ea1f8645b218d5639a965eb2",
+              "include": [
+                "&lt;src/sensors/BoschBME280.h&gt;",
+                "_bosch_b_m_e280_8h.html"
+              ],
+              "has_details": true,
+              "name": "BME280_HUMIDITY_VAR_NUM",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; humidity is stored in sensorValues[1].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__bme280.html",
+              "id": "gad5d45bd87d115817f3fc960cfbdf55f2",
+              "include": [
+                "&lt;src/sensors/BoschBME280.h&gt;",
+                "_bosch_b_m_e280_8h.html"
+              ],
+              "has_details": true,
+              "name": "BME280_HUMIDITY_VAR_NAME",
+              "initializer": "\"relativeHumidity\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;relativeHumidity&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__bme280.html",
+              "id": "ga65509fbd815251c16cf1cd817c0b02fb",
+              "include": [
+                "&lt;src/sensors/BoschBME280.h&gt;",
+                "_bosch_b_m_e280_8h.html"
+              ],
+              "has_details": true,
+              "name": "BME280_HUMIDITY_UNIT_NAME",
+              "initializer": "\"percent\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;percent&quot; - percent relative humidity (% RH)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__bme280.html",
+              "id": "ga7b615604888edba4efa00342bd0bb0df",
+              "include": [
+                "&lt;src/sensors/BoschBME280.h&gt;",
+                "_bosch_b_m_e280_8h.html"
+              ],
+              "has_details": true,
+              "name": "BME280_HUMIDITY_DEFAULT_CODE",
+              "initializer": "\"BoschBME280Humidity\"",
+              "brief": "Default variable short code; &quot;BoschBME280Humidity&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Barometric Pressure",
+        "id": "barometric-pressure",
+        "description": "<p><a name=\"sensor_bme280_pressure\"></a> The barometric pressure variable from a Bosch BME280</p><ul><li>Range is 300 to 1100 hPa<ul><li>Absolute accuracy is \u00b11 hPa</li><li>Relative accuracy is \u00b10.12 hPa</li></ul></li></ul><p>{{ <a href=\"class_bosch_b_m_e280___pressure.html#aedcec8971781bda3957b54c31103b86b\" class=\"m-doc\">BoschBME280_Pressure::<wbr />BoschBME280_Pressure</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__bme280.html",
+              "id": "ga79bb396d1d5fb9fde9cd881598d7da15",
+              "include": [
+                "&lt;src/sensors/BoschBME280.h&gt;",
+                "_bosch_b_m_e280_8h.html"
+              ],
+              "has_details": true,
+              "name": "BME280_PRESSURE_RESOLUTION",
+              "initializer": "2",
+              "brief": "Decimals places in string representation; barometric pressure should have 2.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__bme280.html",
+              "id": "ga53ed1d936f6f27f2c37ec45b5d81d071",
+              "include": [
+                "&lt;src/sensors/BoschBME280.h&gt;",
+                "_bosch_b_m_e280_8h.html"
+              ],
+              "has_details": true,
+              "name": "BME280_PRESSURE_VAR_NUM",
+              "initializer": "2",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; pressure is stored in sensorValues[2].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__bme280.html",
+              "id": "gadf9a108e980a94a233f2f1301c72cb84",
+              "include": [
+                "&lt;src/sensors/BoschBME280.h&gt;",
+                "_bosch_b_m_e280_8h.html"
+              ],
+              "has_details": true,
+              "name": "BME280_PRESSURE_VAR_NAME",
+              "initializer": "\"barometricPressure\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;barometricPressure&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__bme280.html",
+              "id": "ga9e6fcd1ae9cdc9e331c394db4518926e",
+              "include": [
+                "&lt;src/sensors/BoschBME280.h&gt;",
+                "_bosch_b_m_e280_8h.html"
+              ],
+              "has_details": true,
+              "name": "BME280_PRESSURE_UNIT_NAME",
+              "initializer": "\"pascal\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;pascal&quot; (Pa)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__bme280.html",
+              "id": "ga57075f10d7f879d0e35f7646369d544f",
+              "include": [
+                "&lt;src/sensors/BoschBME280.h&gt;",
+                "_bosch_b_m_e280_8h.html"
+              ],
+              "has_details": true,
+              "name": "BME280_PRESSURE_DEFAULT_CODE",
+              "initializer": "\"BoschBME280Pressure\"",
+              "brief": "Default variable short code; &quot;BoschBME280Pressure&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Altitude",
+        "id": "altitude",
+        "description": "<p><a name=\"sensor_bme280_altitude\"></a> The altitude variable from a Bosch BME280</p><p>{{ <a href=\"class_bosch_b_m_e280___altitude.html#af70827714d45fc389be0112c3569c2da\" class=\"m-doc\">BoschBME280_Altitude::<wbr />BoschBME280_Altitude</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__bme280.html",
+              "id": "ga8c3db71a3017108a1f4b94cb1d13f470",
+              "include": [
+                "&lt;src/sensors/BoschBME280.h&gt;",
+                "_bosch_b_m_e280_8h.html"
+              ],
+              "has_details": true,
+              "name": "BME280_ALTITUDE_RESOLUTION",
+              "initializer": "0",
+              "brief": "Decimals places in string representation; altitude should have 0 - resolution is 1m.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__bme280.html",
+              "id": "ga6ae3d18ad5c7e984bb98480c296f716c",
+              "include": [
+                "&lt;src/sensors/BoschBME280.h&gt;",
+                "_bosch_b_m_e280_8h.html"
+              ],
+              "has_details": true,
+              "name": "BME280_ALTITUDE_VAR_NUM",
+              "initializer": "3",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; altitude is stored in sensorValues[3].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__bme280.html",
+              "id": "ga916fed9fda25e48fa7a28db7ee61f8eb",
+              "include": [
+                "&lt;src/sensors/BoschBME280.h&gt;",
+                "_bosch_b_m_e280_8h.html"
+              ],
+              "has_details": true,
+              "name": "BME280_ALTITUDE_VAR_NAME",
+              "initializer": "\"heightAboveSeaFloor\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;heightAboveSeaFloor&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__bme280.html",
+              "id": "ga19c79163581bd322996d4fa0b13757bd",
+              "include": [
+                "&lt;src/sensors/BoschBME280.h&gt;",
+                "_bosch_b_m_e280_8h.html"
+              ],
+              "has_details": true,
+              "name": "BME280_ALTITUDE_UNIT_NAME",
+              "initializer": "\"meter\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;meter&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__bme280.html",
+              "id": "gadad89cd9f4a53712d38e772118782bf1",
+              "include": [
+                "&lt;src/sensors/BoschBME280.h&gt;",
+                "_bosch_b_m_e280_8h.html"
+              ],
+              "has_details": true,
+              "name": "BME280_ALTITUDE_DEFAULT_CODE",
+              "initializer": "\"BoschBME280Altitude\"",
+              "brief": "Default variable short code; &quot;BoschBME280Altitude&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "Bosch BME280",
+        "group__sensor__bme280.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Bosch BME280",
+        "group__sensor__bme280.html"
+      ]
+    ]
+  }
+}

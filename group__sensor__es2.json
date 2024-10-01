@@ -1,0 +1,495 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__sensor__es2",
+    "name": "Decagon ES-2",
+    "url_base": "group__sensor__es2",
+    "url": "group__sensor__es2.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>Classes for the Decagon ES-2 conductivity and temperature sensor.</p><section id=\"sensor_es2_intro\"><h2>Introduction</h2><aside class=\"m-note m-danger\"><h4>Warning</h4><p>This sensor is no longer manufactured!</p></aside><p>If you still have one of these sensors, it is implemented as a sub-classes of the <a href=\"class_s_d_i12_sensors.html\" class=\"m-doc\">SDI12Sensors</a> class. It requires a 3.5-12V power supply, which can be turned off between measurements. While contrary to the manual, they will run with power as low as 3.3V. On the version with a stereo cable, the power is connected to the tip, data to the ring, and ground to the sleeve. On the bare-wire version, the power is connected to the <em>white</em> cable, data to <em>red</em>, and ground to the unshielded cable.</p></section><section id=\"sensor_es2_datasheet\"><h2>Sensor Datasheet</h2><ul><li><a href=\"https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Decagon-ES-2-Manual.pdf\">Manual</a></li><li><a href=\"https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Decagon-ES-2-Integrators-Guide.pdf\">Integrator&#x27;s Guide</a></li></ul></section><section id=\"sensor_es2_flags\"><h2>Build flags</h2><aside class=\"m-note m-default\"><h4>See also</h4><p><a href=\"group__sdi12__group.html#sdi12_group_flags\" class=\"m-doc\">Build flags</a></p></aside></section><section id=\"sensor_es2_ctor\"><h2>Sensor Constructor</h2><p>{{ <a href=\"class_decagon_e_s2.html#ad9451cec3015af6fe091ed611cdf1a7d\" class=\"m-doc\">DecagonES2::<wbr />DecagonES2</a> }}</p><hr/></section><section id=\"sensor_es2_examples\"><h2>Example Code</h2><p>The Decagon ES-2 is used in the <a href=\"example_menu.html#menu_walk_decagon_es2\" class=\"m-doc\">menu a la carte</a> example.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;sensors/DecagonES2.h&gt;</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"c1\">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">char</span><span class=\"o\">*</span><span class=\"w\">   </span><span class=\"n\">ES2SDI12address</span><span class=\"w\">   </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"s\">&quot;3&quot;</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// The SDI-12 Address of the ES2</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">ES2Power</span><span class=\"w\">          </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">sensorPowerPin</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// Power pin</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">ES2Data</span><span class=\"w\">           </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">7</span><span class=\"p\">;</span><span class=\"w\">               </span><span class=\"c1\">// The SDI-12 data pin</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">uint8_t</span><span class=\"w\"> </span><span class=\"n\">ES2NumberReadings</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">5</span><span class=\"p\">;</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span><span class=\"c1\">// Create a Decagon ES2 sensor object</span>\n</div><div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span><span class=\"n\">DecagonES2</span><span class=\"w\"> </span><span class=\"nf\">es2</span><span class=\"p\">(</span><span class=\"o\">*</span><span class=\"n\">ES2SDI12address</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">ES2Power</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">ES2Data</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">ES2NumberReadings</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span>\n</div><div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"c1\">// Create specific conductance and temperature variable pointers for the ES2</span>\n</div><div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">es2Cond</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">DecagonES2_Cond</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">es2</span><span class=\"p\">,</span>\n</div><div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span><span class=\"w\">                                        </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-15\" name=\"l-15\"></a><span class=\"linenos\">15</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">es2Temp</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">DecagonES2_Temp</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">es2</span><span class=\"p\">,</span>\n</div><div class=\"line\"><a id=\"l-16\" name=\"l-16\"></a><span class=\"linenos\">16</span><span class=\"w\">                                        </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "sensor_es2_intro",
+        "Introduction",
+        []
+      ],
+      [
+        "sensor_es2_datasheet",
+        "Sensor Datasheet",
+        []
+      ],
+      [
+        "sensor_es2_flags",
+        "Build flags",
+        []
+      ],
+      [
+        "sensor_es2_ctor",
+        "Sensor Constructor",
+        []
+      ],
+      [
+        "sensor_es2_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_decagon_e_s2.html",
+        "name": "DecagonES2",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__es2.html\" class=\"m-doc\">Decagon ES-2 sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_decagon_e_s2___cond.html",
+        "name": "DecagonES2_Cond",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__es2.html#sensor_es2_cond\" class=\"m-doc\">conductivity output</a> from a <a href=\"group__sensor__es2.html\" class=\"m-doc\">Decagon ES-2 electrical conductivity sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_decagon_e_s2___temp.html",
+        "name": "DecagonES2_Temp",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__es2.html#sensor_es2_temp\" class=\"m-doc\">temperature output</a> from a <a href=\"group__sensor__es2.html\" class=\"m-doc\">Decagon ES-2 electrical conductivity sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Sensor Variable Counts",
+        "id": "sensor-variable-counts",
+        "description": "<p><a name=\"sensor_es2_var_counts\"></a> The number of variables that can be returned by Decagon ES2</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__es2.html",
+              "id": "gab72343b2cbe845277b2ddecef41b3968",
+              "include": [
+                "&lt;src/sensors/DecagonES2.h&gt;",
+                "_decagon_e_s2_8h.html"
+              ],
+              "has_details": true,
+              "name": "ES2_NUM_VARIABLES",
+              "initializer": "2",
+              "brief": "<a href=\"class_sensor.html#af26786329fd01b44cf31410d046fc8f3\" class=\"m-doc\">Sensor::<wbr />_numReturnedValues</a>; the ES2 can report 2 values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__es2.html",
+              "id": "gab41685455127a7d5ec13e0f79597ae73",
+              "include": [
+                "&lt;src/sensors/DecagonES2.h&gt;",
+                "_decagon_e_s2_8h.html"
+              ],
+              "has_details": true,
+              "name": "ES2_INC_CALC_VARIABLES",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#a2f3f93a9205efb134cef1216d65077d2\" class=\"m-doc\">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Sensor Timing",
+        "id": "sensor-timing",
+        "description": "<p><a name=\"sensor_es2_timing\"></a> The sensor timing for a Decagon ES-2</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__es2.html",
+              "id": "ga5ae1ce055f78872bb90f43e390fc3385",
+              "include": [
+                "&lt;src/sensors/DecagonES2.h&gt;",
+                "_decagon_e_s2_8h.html"
+              ],
+              "has_details": true,
+              "name": "ES2_WARM_UP_TIME_MS",
+              "initializer": "250",
+              "brief": "<a href=\"class_sensor.html#aaaefd7f306f86382a3dac726531756b4\" class=\"m-doc\">Sensor::<wbr />_warmUpTime_ms</a>; maximum warm-up time in SDI-12 mode: 250ms.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__es2.html",
+              "id": "ga19327c0f10668430491429a1c528180f",
+              "include": [
+                "&lt;src/sensors/DecagonES2.h&gt;",
+                "_decagon_e_s2_8h.html"
+              ],
+              "has_details": true,
+              "name": "ES2_STABILIZATION_TIME_MS",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#ad6822ad09fb64658c911ce86820db79c\" class=\"m-doc\">Sensor::<wbr />_stabilizationTime_ms</a>; the ES2 is stable as soon as it warms up (0ms stabilization).",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__es2.html",
+              "id": "ga439853b72ce6108e3f562feed5dbef44",
+              "include": [
+                "&lt;src/sensors/DecagonES2.h&gt;",
+                "_decagon_e_s2_8h.html"
+              ],
+              "has_details": true,
+              "name": "ES2_MEASUREMENT_TIME_MS",
+              "initializer": "250",
+              "brief": "<a href=\"class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba\" class=\"m-doc\">Sensor::<wbr />_measurementTime_ms</a>; maximum measurement duration: 250ms.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__es2.html",
+              "id": "ga43382c9084c75ec16b19f0b71c2793d8",
+              "include": [
+                "&lt;src/sensors/DecagonES2.h&gt;",
+                "_decagon_e_s2_8h.html"
+              ],
+              "has_details": true,
+              "name": "ES2_EXTRA_WAKE_TIME_MS",
+              "initializer": "0",
+              "brief": "Extra wake time required for an SDI-12 sensor between the &quot;break&quot; and the time the command is sent. The ES-2 requires no extra time.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Conductivity",
+        "id": "conductivity",
+        "description": "<p><a name=\"sensor_es2_cond\"></a> The conductivity variable from a Decagon ES-2</p><ul><li>Range is 0 \u2013 120 mS/cm (bulk)</li><li>Accuracy is \u00b10.01mS/cm or \u00b110% (whichever is greater)</li></ul><p>{{ <a href=\"class_decagon_e_s2___cond.html#a6311de8872fa6c1aa6e856e59c3a8325\" class=\"m-doc\">DecagonES2_Cond::<wbr />DecagonES2_Cond</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__es2.html",
+              "id": "ga0f02f3dcae760cb9e53cc8fc3044425d",
+              "include": [
+                "&lt;src/sensors/DecagonES2.h&gt;",
+                "_decagon_e_s2_8h.html"
+              ],
+              "has_details": true,
+              "name": "ES2_COND_RESOLUTION",
+              "initializer": "1",
+              "brief": "Decimals places in string representation; conductivity should have 1.",
+              "description": "<p>0 are reported, adding extra digit to resolution to allow the proper number of significant figures for averaging - resolution is 0.001 mS/cm = 1 \u00b5S/cm</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__es2.html",
+              "id": "ga42a1e24527a4b4a88a6936ee40cf24e6",
+              "include": [
+                "&lt;src/sensors/DecagonES2.h&gt;",
+                "_decagon_e_s2_8h.html"
+              ],
+              "has_details": true,
+              "name": "ES2_COND_VAR_NUM",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; conductivity is stored in sensorValues[0].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__es2.html",
+              "id": "ga87957317d213801bb91a3c4e8b89abbf",
+              "include": [
+                "&lt;src/sensors/DecagonES2.h&gt;",
+                "_decagon_e_s2_8h.html"
+              ],
+              "has_details": true,
+              "name": "ES2_COND_VAR_NAME",
+              "initializer": "\"specificConductance\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;specificConductance&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__es2.html",
+              "id": "gac699514a55ae9e75d6fe7af577c7f3a5",
+              "include": [
+                "&lt;src/sensors/DecagonES2.h&gt;",
+                "_decagon_e_s2_8h.html"
+              ],
+              "has_details": true,
+              "name": "ES2_COND_UNIT_NAME",
+              "initializer": "\"microsiemenPerCentimeter\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;microsiemenPerCentimeter&quot; (\u00b5S/cm)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__es2.html",
+              "id": "ga9e6b624f456306539ad1b9630bdce53c",
+              "include": [
+                "&lt;src/sensors/DecagonES2.h&gt;",
+                "_decagon_e_s2_8h.html"
+              ],
+              "has_details": true,
+              "name": "ES2_COND_DEFAULT_CODE",
+              "initializer": "\"ES2Cond\"",
+              "brief": "Default variable short code; &quot;ES2Cond&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Temperature",
+        "id": "temperature",
+        "description": "<p><a name=\"sensor_es2_temp\"></a> The temperature variable from a Decagon ES-2</p><ul><li>Range is -40\u00b0C to +50\u00b0C</li><li>Accuracy is \u00b11\u00b0C</li></ul><p>{{ <a href=\"class_decagon_e_s2___temp.html#aaa81e674592103463ae8f10c1cabfcb2\" class=\"m-doc\">DecagonES2_Temp::<wbr />DecagonES2_Temp</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__es2.html",
+              "id": "gad975b4d2187495ee090c13458f48aadc",
+              "include": [
+                "&lt;src/sensors/DecagonES2.h&gt;",
+                "_decagon_e_s2_8h.html"
+              ],
+              "has_details": true,
+              "name": "ES2_TEMP_RESOLUTION",
+              "initializer": "2",
+              "brief": "Decimals places in string representation; temperature should have 2.",
+              "description": "<p>1 is reported, adding extra digit to resolution to allow the proper number of significant figures for averaging - resolution is 0.1\u00b0C</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__es2.html",
+              "id": "gaf7139cde123e59c55ef72ce0a37129f7",
+              "include": [
+                "&lt;src/sensors/DecagonES2.h&gt;",
+                "_decagon_e_s2_8h.html"
+              ],
+              "has_details": true,
+              "name": "ES2_TEMP_VAR_NUM",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; temperature is stored in sensorValues[1].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__es2.html",
+              "id": "ga85b841ec8fcd4d3b017def126c5538a6",
+              "include": [
+                "&lt;src/sensors/DecagonES2.h&gt;",
+                "_decagon_e_s2_8h.html"
+              ],
+              "has_details": true,
+              "name": "ES2_TEMP_VAR_NAME",
+              "initializer": "\"temperature\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;temperature&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__es2.html",
+              "id": "ga7ae53b4ee0304e8e09775a28f52246b2",
+              "include": [
+                "&lt;src/sensors/DecagonES2.h&gt;",
+                "_decagon_e_s2_8h.html"
+              ],
+              "has_details": true,
+              "name": "ES2_TEMP_UNIT_NAME",
+              "initializer": "\"degreeCelsius\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;degreeCelsius&quot; (\u00b0C)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__es2.html",
+              "id": "ga02d42d1d1179f2b85757fbe6eae5156b",
+              "include": [
+                "&lt;src/sensors/DecagonES2.h&gt;",
+                "_decagon_e_s2_8h.html"
+              ],
+              "has_details": true,
+              "name": "ES2_TEMP_DEFAULT_CODE",
+              "initializer": "\"ES2Temp\"",
+              "brief": "Default variable short code; &quot;ES2Temp&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "SDI-12 Sensors",
+        "group__sdi12__group.html"
+      ],
+      [
+        "Decagon ES-2",
+        "group__sensor__es2.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Decagon ES-2",
+        "group__sensor__es2.html"
+      ]
+    ]
+  }
+}

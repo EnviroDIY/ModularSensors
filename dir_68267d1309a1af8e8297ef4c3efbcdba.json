@@ -1,0 +1,203 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "dir",
+    "id": "dir_68267d1309a1af8e8297ef4c3efbcdba",
+    "name": "src",
+    "url_base": "dir_68267d1309a1af8e8297ef4c3efbcdba",
+    "url": "dir_68267d1309a1af8e8297ef4c3efbcdba.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "Contains the source code for ModularSensors.",
+    "description": "<p>The main directory contains the parent classes and sub-directories containing sub-classes</p>",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [
+      {
+        "url": "dir_d60b8e8795161a141bba4403c07b6046.html",
+        "name": "modems",
+        "brief": "Contains the source code for all <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> subclasses.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "dir_d557642a802d85ded7abaec913ee220c.html",
+        "name": "publishers",
+        "brief": "Contains the source code for all <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> subclasses.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "dir_7349e89ef19c117195f8e371603e1b1f.html",
+        "name": "sensors",
+        "brief": "Contains the source code for all <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> subclasses, including the <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> subclasses which themselves are the parent classes to other Sensors.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "dir_1fc62a3d58a17c0f606ad39220918d89.html",
+        "name": "WatchDogs",
+        "brief": "Contains the source code for setting up the watch-dog reset on the various supported processors.",
+        "deprecated": null,
+        "since": null
+      }
+    ],
+    "files": [
+      {
+        "url": "data_publisher_base_8cpp.html",
+        "name": "dataPublisherBase.cpp",
+        "brief": "Implements the <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "data_publisher_base_8h.html",
+        "name": "dataPublisherBase.h",
+        "brief": "Contains the <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> class - a virtual class used by other publishers to distribute data online.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_logger_base_8cpp.html",
+        "name": "LoggerBase.cpp",
+        "brief": "Implements the <a href=\"class_logger.html\" class=\"m-doc\">Logger</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_logger_base_8h.html",
+        "name": "LoggerBase.h",
+        "brief": "Contains the LoggerBase class which handles basic logging functions.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_logger_modem_8cpp.html",
+        "name": "LoggerModem.cpp",
+        "brief": "Implements the <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_logger_modem_8h.html",
+        "name": "LoggerModem.h",
+        "brief": "Contains the <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> class and the variable subclasses <a href=\"class_modem___r_s_s_i.html\" class=\"m-doc\">Modem_<wbr />RSSI</a>, <a href=\"class_modem___signal_percent.html\" class=\"m-doc\">Modem_<wbr />SignalPercent</a>, <a href=\"class_modem___battery_state.html\" class=\"m-doc\">Modem_<wbr />BatteryState</a>, <a href=\"class_modem___battery_percent.html\" class=\"m-doc\">Modem_<wbr />BatteryPercent</a>, and <a href=\"class_modem___battery_voltage.html\" class=\"m-doc\">Modem_<wbr />BatteryVoltage</a> - all of which are implemented as &quot;calculated&quot; variables.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_mod_sensor_debugger_8h.html",
+        "name": "ModSensorDebugger.h",
+        "brief": "Contains template functions used to print out debugging information.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_mod_sensor_interrupts_8h.html",
+        "name": "ModSensorInterrupts.h",
+        "brief": "A work-around for the AVR interrupt library not supporting SAMD boards. That libary isn&#x27;t necessary for them.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_modular_sensors_8h.html",
+        "name": "ModularSensors.h",
+        "brief": "A simple include file for the Arduino command line interface (CLI).",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_sensor_base_8cpp.html",
+        "name": "SensorBase.cpp",
+        "brief": "Implements the <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_sensor_base_8h.html",
+        "name": "SensorBase.h",
+        "brief": "Contains the <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_variable_array_8cpp.html",
+        "name": "VariableArray.cpp",
+        "brief": "Implements the <a href=\"class_variable_array.html\" class=\"m-doc\">VariableArray</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_variable_array_8h.html",
+        "name": "VariableArray.h",
+        "brief": "Contains the <a href=\"class_variable_array.html\" class=\"m-doc\">VariableArray</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_variable_base_8cpp.html",
+        "name": "VariableBase.cpp",
+        "brief": "Implements the <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_variable_base_8h.html",
+        "name": "VariableBase.h",
+        "brief": "Contains the <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> class.",
+        "deprecated": null,
+        "since": null
+      }
+    ],
+    "namespaces": [],
+    "classes": [],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "src",
+        "dir_68267d1309a1af8e8297ef4c3efbcdba.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "src",
+        "dir_68267d1309a1af8e8297ef4c3efbcdba.html"
+      ]
+    ]
+  }
+}

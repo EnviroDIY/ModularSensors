@@ -1,0 +1,82 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "file",
+    "id": "_variable_base_8h",
+    "name": "VariableBase.h",
+    "url_base": "_variable_base_8h",
+    "url": "_variable_base_8h.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "Contains the <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> class.",
+    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside><p>A variable is a result value taken by a sensor <em>or</em> calculated from the results of one or more sensors. It is characterized by a name (what it is a measurement of), a unit of measurement, and a resolution. The <a href=\"http://vocabulary.odm2.org/variablename/\">names</a> and <a href=\"http://vocabulary.odm2.org/units/\">units</a> of measurements for all variables come from the controlled vocabularies developed for the ODM2 data system. (<a href=\"http://vocabulary.odm2.org/\">http:/<wbr />/<wbr />vocabulary.odm2.org/<wbr /></a>) The resolution is determined by the method used to take the measurement by the sensor. A variable may also be assigned a universally unique identifier (UUID) and a unique variable code. Many sensors are capable of measuring multiple variables at a single time. For example, a Decagon CTD-10 is a <em>sensor</em>. It is able to measure 3 <em>variables</em>: specific conductance, temperature, and water depth. The variable named &quot;specificConductance&quot; has <em>units</em> of microsiemens per centimeter (\u00b5S/cm) and a <em>resolution</em> of 1 \u00b5S/cm. Each measured variable is explicitly tied to the &quot;parent&quot; sensor that &quot;notifies&quot; the variable when a new value has been measured. Each calculated variable has a parent function returning a float which is the value for that variable.</p><p>Variables are expected to be grouped together into VariableArrays.</p>",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_variable.html",
+        "name": "Variable",
+        "brief": "The variable class for a value and related metadata.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "src",
+        "dir_68267d1309a1af8e8297ef4c3efbcdba.html"
+      ],
+      [
+        "VariableBase.h",
+        "_variable_base_8h.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "VariableBase.h",
+        "_variable_base_8h.html"
+      ]
+    ]
+  }
+}

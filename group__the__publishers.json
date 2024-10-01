@@ -1,0 +1,105 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__the__publishers",
+    "name": "Supported Data Endpoints",
+    "url_base": "group__the__publishers",
+    "url": "group__the__publishers.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>All implemented data endpoint (publisher) classes</p><p>A <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> is a abstract concept. It is something that &quot;watches&quot; the logger for new data and correctly formats and sends that data to some online web service.</p>",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_dream_host_publisher.html",
+        "name": "DreamHostPublisher",
+        "brief": "The <a href=\"class_dream_host_publisher.html\" class=\"m-doc\">DreamHostPublisher</a> subclass of <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> is for publishing data to the Stroud Center&#x27;s now-deprecated DreamHost based live sensor data system.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_enviro_d_i_y_publisher.html",
+        "name": "EnviroDIYPublisher",
+        "brief": "The <a href=\"class_enviro_d_i_y_publisher.html\" class=\"m-doc\">EnviroDIYPublisher</a> subclass of <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> for publishing data to the Monitor My Watershed/EnviroDIY data portal at <a href=\"http://data.enviroDIY.org\">http:/<wbr />/<wbr />data.enviroDIY.org</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_thing_speak_publisher.html",
+        "name": "ThingSpeakPublisher",
+        "brief": "The <a href=\"class_thing_speak_publisher.html\" class=\"m-doc\">ThingSpeakPublisher</a> subclass of <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> for publishing data to ThingSpeak using the MQTT protocol.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_ubidots_publisher.html",
+        "name": "UbidotsPublisher",
+        "brief": "The <a href=\"class_ubidots_publisher.html\" class=\"m-doc\">UbidotsPublisher</a> subclass of <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> for publishing data to the Ubidots data portal at <a href=\"https://ubidots.com\">https:/<wbr />/<wbr />ubidots.com</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "Supported Data Endpoints",
+        "group__the__publishers.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Supported Data Endpoints",
+        "group__the__publishers.html"
+      ]
+    ]
+  }
+}

@@ -1,0 +1,139 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__the__modems",
+    "name": "Supported Modems and Communication Modules",
+    "url_base": "group__the__modems",
+    "url": "group__the__modems.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>All implemented <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> classes</p><p>A modem is a device that can be controlled by a logger to send out data directly to the world wide web.</p><p>The <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> class wraps the TinyGSM library and adds in the power functions to turn the modem on and off and some error checking.</p><p>TinyGSM is available here: <a href=\"https://github.com/vshymanskyy/TinyGSM\">https:/<wbr />/<wbr />github.com/<wbr />vshymanskyy/<wbr />TinyGSM</a></p><aside class=\"m-note m-default\"><h4>See also</h4><p><a href=\"page_modem_notes.html\" class=\"m-doc\">Notes about Modems</a></p></aside>",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [
+      {
+        "url": "group__modem__measured__variables.html",
+        "name": "Modem Variables",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "group__modem__digi.html",
+        "name": "Digi XBee&#x27;s",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "group__modem__esp8266.html",
+        "name": "Espressif ESP8266 and ESP32",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "group__modem__bg96.html",
+        "name": "Quectel BG96",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "group__modem__monarch.html",
+        "name": "Sequans Monarch VZM20Q",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "group__modem__sim7000.html",
+        "name": "SIMCom SIM7000",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "group__modem__sim7080.html",
+        "name": "SIMCom SIM7080",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "group__modem__sim800.html",
+        "name": "SIMCom SIM800",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "group__modem__gprsbee.html",
+        "name": "Sodaq GPRSBee",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "group__modem__ublox.html",
+        "name": "Sodaq UBee&#x27;s and other u-blox modules",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      }
+    ],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "Supported Modems and Communication Modules",
+        "group__the__modems.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Supported Modems and Communication Modules",
+        "group__the__modems.html"
+      ]
+    ]
+  }
+}

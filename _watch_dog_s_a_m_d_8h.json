@@ -1,0 +1,132 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "file",
+    "id": "_watch_dog_s_a_m_d_8h",
+    "name": "WatchDogSAMD.h",
+    "url_base": "_watch_dog_s_a_m_d_8h",
+    "url": "_watch_dog_s_a_m_d_8h.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "Contains the <a href=\"classextended_watch_dog_s_a_m_d.html\" class=\"m-doc\">extendedWatchDogSAMD</a> class.",
+    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside><p>Code for this is taken from the Adafruit SleepyDog library: <a href=\"https://github.com/adafruit/Adafruit_SleepyDog/\">https://github.com/adafruit/Adafruit_<wbr />SleepyDog/</a> and this library: <a href=\"https://github.com/javos65/WDTZero\">https:/<wbr />/<wbr />github.com/<wbr />javos65/<wbr />WDTZero</a></p>",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "classextended_watch_dog_s_a_m_d.html",
+        "name": "extendedWatchDogSAMD",
+        "brief": "The <a href=\"classextended_watch_dog_s_a_m_d.html\" class=\"m-doc\">extendedWatchDogSAMD</a> class uses the early warning interrupt to of the built in SAMD watchdog to extend the allowable time between resets of the watchdog&#x27;s clock up to multiple minute timescales.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [
+      {
+        "base_url": "_watch_dog_s_a_m_d_8h.html",
+        "id": "a3a2e83b64bfd57689085381db4ac7dee",
+        "include": null,
+        "has_details": false,
+        "type": "void",
+        "name": "WDT_Handler",
+        "brief": "ISR handler for watchdog timer early warning (WDT EW ) interrupt.",
+        "description": "",
+        "return_value": null,
+        "return_values": [],
+        "exceptions": [],
+        "deprecated": null,
+        "since": null,
+        "is_constexpr": false,
+        "is_consteval": false,
+        "is_explicit": false,
+        "is_virtual": false,
+        "prefix": "",
+        "is_defaulted": false,
+        "is_deleted": false,
+        "is_pure_virtual": false,
+        "is_final": false,
+        "is_override": false,
+        "is_noexcept": false,
+        "is_conditional_noexcept": false,
+        "suffix": "",
+        "is_protected": false,
+        "is_private": false,
+        "is_signal": false,
+        "is_slot": false,
+        "has_template_details": false,
+        "templates": null,
+        "has_param_details": false,
+        "params": [
+          {
+            "name": "",
+            "type": "void",
+            "type_name": "void",
+            "default": null,
+            "description": "",
+            "direction": ""
+          }
+        ]
+      }
+    ],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "src",
+        "dir_68267d1309a1af8e8297ef4c3efbcdba.html"
+      ],
+      [
+        "WatchDogs",
+        "dir_1fc62a3d58a17c0f606ad39220918d89.html"
+      ],
+      [
+        "WatchDogSAMD.h",
+        "_watch_dog_s_a_m_d_8h.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "WatchDogSAMD.h",
+        "_watch_dog_s_a_m_d_8h.html"
+      ]
+    ]
+  }
+}

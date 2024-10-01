@@ -1,0 +1,616 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__sensor__dopto",
+    "name": "Zebra-Tech D-Opto",
+    "url_base": "group__sensor__dopto",
+    "url": "group__sensor__dopto.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>Classes for the Zebra-Tech D-Opto digital dissolved oxygen sensor.</p><section id=\"sensor_dopto_intro\"><h2>Introduction</h2><p>The <a href=\"http://www.zebra-tech.co.nz/d-opto-sensor/\">Zebra-Tech D-Opto</a> sensor is implemented as a sub-classes of the <a href=\"class_s_d_i12_sensors.html\" class=\"m-doc\">SDI12Sensors</a> class. It requires an 8-12V power supply, which can be turned off between measurements. The connection between the logger and the Arduino board is made by way of a white interface module provided by Zebra-Tech. You will need a voltage booster or a separate power supply to give the D-Opto sufficient voltage to run. At the Stroud Center, we use <a href=\"https://www.pololu.com/product/2116\">Pololu 9V Step-Up Voltage Regulators</a>.</p></section><section id=\"sensor_dopto_datasheet\"><h2>Sensor Datasheet</h2><p>The manual for this sensor is available at: www.zebra-tech.co.nz/wp-content/uploads/2014/04/D-Opto-Sensor-manual-A4-ver-2.pdf</p></section><section id=\"sensor_dopto_flags\"><h2>Build flags</h2><aside class=\"m-note m-default\"><h4>See also</h4><p><a href=\"group__sdi12__group.html#sdi12_group_flags\" class=\"m-doc\">Build flags</a></p></aside></section><section id=\"sensor_dopto_ctor\"><h2>Sensor Constructor</h2><p>{{ <a href=\"class_zebra_tech_d_opto.html#a751320c4a80c7ae96742aa583772bf9a\" class=\"m-doc\">ZebraTechDOpto::<wbr />ZebraTechDOpto</a> }}</p><hr/></section><section id=\"sensor_dopto_examples\"><h2>Example Code</h2><p>The Zebra-Tech D-Opto is used in the <a href=\"example_menu.html#menu_walk_zebra_tech_d_opto\" class=\"m-doc\">menu a la carte</a> example.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;sensors/ZebraTechDOpto.h&gt;</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"c1\">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">char</span><span class=\"o\">*</span><span class=\"w\">  </span><span class=\"n\">DOptoSDI12address</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"s\">&quot;5&quot;</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// The SDI-12 Address of the D-Opto</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">ZTPower</span><span class=\"w\">           </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">sensorPowerPin</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// Power pin</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">ZTData</span><span class=\"w\">            </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">7</span><span class=\"p\">;</span><span class=\"w\">               </span><span class=\"c1\">// The SDI-12 data pin</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span><span class=\"c1\">// Create a Zebra Tech DOpto dissolved oxygen sensor object</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span><span class=\"n\">ZebraTechDOpto</span><span class=\"w\"> </span><span class=\"nf\">dopto</span><span class=\"p\">(</span><span class=\"o\">*</span><span class=\"n\">DOptoSDI12address</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">ZTPower</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">ZTData</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span>\n</div><div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span><span class=\"c1\">// Create dissolved oxygen percent, dissolved oxygen concentration, and</span>\n</div><div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"c1\">// temperature variable pointers for the Zebra Tech</span>\n</div><div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">dOptoDOpct</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">ZebraTechDOpto_DOpct</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">dopto</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-15\" name=\"l-15\"></a><span class=\"linenos\">15</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">dOptoDOmgL</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-16\" name=\"l-16\"></a><span class=\"linenos\">16</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">ZebraTechDOpto_DOmgL</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">dopto</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-17\" name=\"l-17\"></a><span class=\"linenos\">17</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">dOptoTemp</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-18\" name=\"l-18\"></a><span class=\"linenos\">18</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">ZebraTechDOpto_Temp</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">dopto</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "sensor_dopto_intro",
+        "Introduction",
+        []
+      ],
+      [
+        "sensor_dopto_datasheet",
+        "Sensor Datasheet",
+        []
+      ],
+      [
+        "sensor_dopto_flags",
+        "Build flags",
+        []
+      ],
+      [
+        "sensor_dopto_ctor",
+        "Sensor Constructor",
+        []
+      ],
+      [
+        "sensor_dopto_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_zebra_tech_d_opto.html",
+        "name": "ZebraTechDOpto",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__dopto.html\" class=\"m-doc\">Zebra-Tech D-Opto dissolved oxygen sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_zebra_tech_d_opto___temp.html",
+        "name": "ZebraTechDOpto_Temp",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__dopto.html#sensor_dopto_temp\" class=\"m-doc\">temperature output</a> from a <a href=\"group__sensor__dopto.html\" class=\"m-doc\">Zebra-Tech D-Opto dissolved oxygen sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_zebra_tech_d_opto___d_opct.html",
+        "name": "ZebraTechDOpto_DOpct",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__dopto.html#sensor_dopto_dopercent\" class=\"m-doc\">dissolved oxygen percent saturation output</a> from a <a href=\"group__sensor__dopto.html\" class=\"m-doc\">Zebra-Tech D-Opto dissolved oxygen sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_zebra_tech_d_opto___d_omg_l.html",
+        "name": "ZebraTechDOpto_DOmgL",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__dopto.html#sensor_dopto_domgl\" class=\"m-doc\">dissolved oxygen concentration output</a> from a <a href=\"group__sensor__dopto.html\" class=\"m-doc\">Zebra-Tech D-Opto dissolved oxygen sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Sensor Variable Counts",
+        "id": "sensor-variable-counts",
+        "description": "<p><a name=\"sensor_dopto_var_counts\"></a> The number of variables that can be returned by a ZebraTech D-Opto</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dopto.html",
+              "id": "ga94c54cbdde9a78f5d79078a534798c9e",
+              "include": [
+                "&lt;src/sensors/ZebraTechDOpto.h&gt;",
+                "_zebra_tech_d_opto_8h.html"
+              ],
+              "has_details": true,
+              "name": "DOPTO_NUM_VARIABLES",
+              "initializer": "3",
+              "brief": "<a href=\"class_sensor.html#af26786329fd01b44cf31410d046fc8f3\" class=\"m-doc\">Sensor::<wbr />_numReturnedValues</a>; the D-Opto can report 3 values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dopto.html",
+              "id": "ga8b8ec45ec89b40dc4903ccdfcdcbe57e",
+              "include": [
+                "&lt;src/sensors/ZebraTechDOpto.h&gt;",
+                "_zebra_tech_d_opto_8h.html"
+              ],
+              "has_details": true,
+              "name": "DOPTO_INC_CALC_VARIABLES",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#a2f3f93a9205efb134cef1216d65077d2\" class=\"m-doc\">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Sensor Timing",
+        "id": "sensor-timing",
+        "description": "<p><a name=\"sensor_dopto_timing\"></a> The sensor timing for a ZebraTech D-Opto</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dopto.html",
+              "id": "ga949ca1d1e8fe8dbce0240e0139b4e849",
+              "include": [
+                "&lt;src/sensors/ZebraTechDOpto.h&gt;",
+                "_zebra_tech_d_opto_8h.html"
+              ],
+              "has_details": true,
+              "name": "DOPTO_WARM_UP_TIME_MS",
+              "initializer": "275",
+              "brief": "<a href=\"class_sensor.html#aaaefd7f306f86382a3dac726531756b4\" class=\"m-doc\">Sensor::<wbr />_warmUpTime_ms</a>; the D-Opto warms up in 275ms. Maximum warm-up time in SDI-12 mode: ~250ms, give a bit of extra for safety.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dopto.html",
+              "id": "gae13292c0413db691b6d83661b5b24205",
+              "include": [
+                "&lt;src/sensors/ZebraTechDOpto.h&gt;",
+                "_zebra_tech_d_opto_8h.html"
+              ],
+              "has_details": true,
+              "name": "DOPTO_STABILIZATION_TIME_MS",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#ad6822ad09fb64658c911ce86820db79c\" class=\"m-doc\">Sensor::<wbr />_stabilizationTime_ms</a>; the D-Opto is stable as soon as it warms up (0ms stabilization).",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dopto.html",
+              "id": "gae36702cf4451acd216251b6d503388a0",
+              "include": [
+                "&lt;src/sensors/ZebraTechDOpto.h&gt;",
+                "_zebra_tech_d_opto_8h.html"
+              ],
+              "has_details": true,
+              "name": "DOPTO_MEASUREMENT_TIME_MS",
+              "initializer": "5335",
+              "brief": "<a href=\"class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba\" class=\"m-doc\">Sensor::<wbr />_measurementTime_ms</a>; the D-Opto takes 5335ms to complete a measurement.",
+              "description": "<ul><li>Excitiation time before measurement: ~5225ms</li><li>Maximum measurement duration: ~110ms</li></ul><p>Obnoxiously, the sensor will not take a &quot;concurrent&quot; measurement and leave the sensor powered on, so we must wait entire ~5200ms exitation time and the 110ms measurement time each time. There is the ability to do a non-concurrent measurement and leave the sensor powered on, in which case the re-measurement takes ~110ms, but doing it that way the sensor would send an interruption when it was finished, possibly colliding with and confusing other sensor results.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dopto.html",
+              "id": "ga64ed157f1e468718383eb291c3f71562",
+              "include": [
+                "&lt;src/sensors/ZebraTechDOpto.h&gt;",
+                "_zebra_tech_d_opto_8h.html"
+              ],
+              "has_details": true,
+              "name": "DOPTO_EXTRA_WAKE_TIME_MS",
+              "initializer": "0",
+              "brief": "Extra wake time required for an SDI-12 sensor between the &quot;break&quot; and the time the command is sent. The D-Opto requires no extra time.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Temperature",
+        "id": "temperature",
+        "description": "<p><a name=\"sensor_dopto_temp\"></a> The temperature variable from a ZebraTech D-Opto</p><ul><li>Range is not specified in sensor datasheet</li><li>Accuracy is \u00b1 0.1\u00b0C</li></ul><p>{{ <a href=\"class_zebra_tech_d_opto___temp.html#a3a17106ef3350bed13f81a5b9d0e5d56\" class=\"m-doc\">ZebraTechDOpto_Temp::<wbr />ZebraTechDOpto_Temp</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dopto.html",
+              "id": "gad417132157f9ae9ddd93e9aae35ff7c8",
+              "include": [
+                "&lt;src/sensors/ZebraTechDOpto.h&gt;",
+                "_zebra_tech_d_opto_8h.html"
+              ],
+              "has_details": true,
+              "name": "DOPTO_TEMP_RESOLUTION",
+              "initializer": "2",
+              "brief": "Decimals places in string representation; temperature should have 2 - resolution is 0.01\u00b0C.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dopto.html",
+              "id": "ga0c5950b4ed10f69439bbc100d44a5c39",
+              "include": [
+                "&lt;src/sensors/ZebraTechDOpto.h&gt;",
+                "_zebra_tech_d_opto_8h.html"
+              ],
+              "has_details": true,
+              "name": "DOPTO_TEMP_VAR_NUM",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; temperature is stored in sensorValues[0].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dopto.html",
+              "id": "ga85b54b3c4203ff91941d95abbd1496d1",
+              "include": [
+                "&lt;src/sensors/ZebraTechDOpto.h&gt;",
+                "_zebra_tech_d_opto_8h.html"
+              ],
+              "has_details": true,
+              "name": "DOPTO_TEMP_VAR_NAME",
+              "initializer": "\"temperature\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;temperature&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dopto.html",
+              "id": "gaf32a4e97b38ac09d5721c23b51eb88b6",
+              "include": [
+                "&lt;src/sensors/ZebraTechDOpto.h&gt;",
+                "_zebra_tech_d_opto_8h.html"
+              ],
+              "has_details": true,
+              "name": "DOPTO_TEMP_UNIT_NAME",
+              "initializer": "\"degreeCelsius\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;degreeCelsius&quot; (\u00b0C)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dopto.html",
+              "id": "ga28b9bcc1b0a61f5de3a860f3c696a94c",
+              "include": [
+                "&lt;src/sensors/ZebraTechDOpto.h&gt;",
+                "_zebra_tech_d_opto_8h.html"
+              ],
+              "has_details": true,
+              "name": "DOPTO_TEMP_DEFAULT_CODE",
+              "initializer": "\"DOtempC\"",
+              "brief": "Default variable short code; &quot;DOtempC&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Dissolved Oxygen Percent Saturation",
+        "id": "dissolved-oxygen-percent-saturation",
+        "description": "<p><a name=\"sensor_dopto_dopercent\"></a> The percent saturation variable from a ZebraTech D-Opto</p><ul><li>Range is not specified in sensor datasheet</li><li>Accuracy is 1 % of reading or 0.02PPM, whichever is greater</li></ul><p>{{ <a href=\"class_zebra_tech_d_opto___d_opct.html#a022578c500342a4b355669459e21ccb8\" class=\"m-doc\">ZebraTechDOpto_DOpct::<wbr />ZebraTechDOpto_DOpct</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dopto.html",
+              "id": "ga0d661e2ef21cc588d605f6a7ff6d1bb5",
+              "include": [
+                "&lt;src/sensors/ZebraTechDOpto.h&gt;",
+                "_zebra_tech_d_opto_8h.html"
+              ],
+              "has_details": true,
+              "name": "DOPTO_DOPCT_RESOLUTION",
+              "initializer": "2",
+              "brief": "Decimals places in string representation; dissolved oxygen percent should have 2.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dopto.html",
+              "id": "gaa994bac563d90814b1f00f98a30b92be",
+              "include": [
+                "&lt;src/sensors/ZebraTechDOpto.h&gt;",
+                "_zebra_tech_d_opto_8h.html"
+              ],
+              "has_details": true,
+              "name": "DOPTO_DOPCT_VAR_NUM",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; dissolved oxygen percent is stored in sensorValues[1].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dopto.html",
+              "id": "gaecbc79ce742adaf742cc74017be36ee2",
+              "include": [
+                "&lt;src/sensors/ZebraTechDOpto.h&gt;",
+                "_zebra_tech_d_opto_8h.html"
+              ],
+              "has_details": true,
+              "name": "DOPTO_DOPCT_VAR_NAME",
+              "initializer": "\"oxygenDissolvedPercentOfSaturation\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;oxygenDissolvedPercentOfSaturation&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dopto.html",
+              "id": "ga113d1ec9b18488a3c02884788e4c3fa4",
+              "include": [
+                "&lt;src/sensors/ZebraTechDOpto.h&gt;",
+                "_zebra_tech_d_opto_8h.html"
+              ],
+              "has_details": true,
+              "name": "DOPTO_DOPCT_UNIT_NAME",
+              "initializer": "\"percent\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;percent&quot; (% saturation)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dopto.html",
+              "id": "ga32b702341b2628159f8daaee46de36b2",
+              "include": [
+                "&lt;src/sensors/ZebraTechDOpto.h&gt;",
+                "_zebra_tech_d_opto_8h.html"
+              ],
+              "has_details": true,
+              "name": "DOPTO_DOPCT_DEFAULT_CODE",
+              "initializer": "\"DOpercent\"",
+              "brief": "Default variable short code; &quot;DOpercent&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Dissolved Oxygen Concentration",
+        "id": "dissolved-oxygen-concentration",
+        "description": "<p><a name=\"sensor_dopto_domgl\"></a> The DO concentration variable from a ZebraTech D-Opto</p><ul><li>Range is not specified in sensor datasheet</li><li>Accuracy is 1 % of reading or 0.02PPM, whichever is greater</li></ul><p>{{ <a href=\"class_zebra_tech_d_opto___d_omg_l.html#a5b8ac619a5cd287a774057a4cf145c5b\" class=\"m-doc\">ZebraTechDOpto_DOmgL::<wbr />ZebraTechDOpto_DOmgL</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dopto.html",
+              "id": "gadbde680c2ab20494cdcc2c59928f3f38",
+              "include": [
+                "&lt;src/sensors/ZebraTechDOpto.h&gt;",
+                "_zebra_tech_d_opto_8h.html"
+              ],
+              "has_details": true,
+              "name": "DOPTO_DOMGL_RESOLUTION",
+              "initializer": "3",
+              "brief": "Decimals places in string representation; dissolved oxygen concentration should have 3 - resolution is 0.01 % / 0.001 PPM.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dopto.html",
+              "id": "ga1868480e78cd2eb443f2cc3fb25514cd",
+              "include": [
+                "&lt;src/sensors/ZebraTechDOpto.h&gt;",
+                "_zebra_tech_d_opto_8h.html"
+              ],
+              "has_details": true,
+              "name": "DOPTO_DOMGL_VAR_NUM",
+              "initializer": "2",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; dissolved oxygen concentration is stored in sensorValues[2].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dopto.html",
+              "id": "gacee17b5238f975286e65fa289ef05b27",
+              "include": [
+                "&lt;src/sensors/ZebraTechDOpto.h&gt;",
+                "_zebra_tech_d_opto_8h.html"
+              ],
+              "has_details": true,
+              "name": "DOPTO_DOMGL_VAR_NAME",
+              "initializer": "\"oxygenDissolved\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;oxygenDissolved&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dopto.html",
+              "id": "gaf5dc7a5af961ed76e2adedb0d0b14f9e",
+              "include": [
+                "&lt;src/sensors/ZebraTechDOpto.h&gt;",
+                "_zebra_tech_d_opto_8h.html"
+              ],
+              "has_details": true,
+              "name": "DOPTO_DOMGL_UNIT_NAME",
+              "initializer": "\"milligramPerLiter\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;milligramPerLiter&quot; (mg/L)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dopto.html",
+              "id": "gaaba698e5191eeacc91e09aaea44932ca",
+              "include": [
+                "&lt;src/sensors/ZebraTechDOpto.h&gt;",
+                "_zebra_tech_d_opto_8h.html"
+              ],
+              "has_details": true,
+              "name": "DOPTO_DOMGL_DEFAULT_CODE",
+              "initializer": "\"DOppm\"",
+              "brief": "Default variable short code; &quot;DOppm&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "SDI-12 Sensors",
+        "group__sdi12__group.html"
+      ],
+      [
+        "Zebra-Tech D-Opto",
+        "group__sensor__dopto.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Zebra-Tech D-Opto",
+        "group__sensor__dopto.html"
+      ]
+    ]
+  }
+}

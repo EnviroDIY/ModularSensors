@@ -1,0 +1,2575 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8" />
+  <title>Supported Sensors &raquo; SDI-12 Sensors &raquo; VEGAPULS C 21 topic | ModularSensors0.36.0</title>
+  <link rel="stylesheet" href="m-EnviroDIY+documentation.compiled.css" />
+
+<style id="wp-emoji-styles-inline-css" type="text/css">
+  img.wp-smiley,
+  img.emoji {
+    display: inline !important;
+    border: none !important;
+    box-shadow: none !important;
+    height: 1em !important;
+    width: 1em !important;
+    margin: 0 0.07em !important;
+    vertical-align: -0.1em !important;
+    background: none !important;
+    padding: 0 !important;
+  }
+</style>
+<link
+  rel="stylesheet"
+  id="gp-parent-style-css"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/style.css?ver=6.5.4"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="redux-extendify-styles-css"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/framework/redux/assets/css/extendify-utilities.css?ver=4.4.11"
+  type="text/css"
+  media="all"
+/>
+<style id="ghostpool-style-inline-css" type="text/css">
+  #gp-main-header {
+    min-height: 80px;
+  }
+  .gp-desktop-scrolling #gp-main-header {
+    min-height: 80px;
+  }
+  .gp-header-standard #gp-logo {
+    padding: 19px 0;
+  }
+  .gp-desktop-scrolling.gp-header-standard #gp-logo {
+    padding: 12.5px 0;
+  }
+  .gp-header-standard #gp-primary-main-nav .menu > li > a {
+    padding: 30.5px 0;
+  }
+  .gp-header-standard #gp-cart-button,
+  .gp-header-standard #gp-search-button,
+  .gp-header-standard #gp-profile-button {
+    padding: 31px 0;
+  }
+  .gp-desktop-scrolling.gp-header-standard #gp-primary-main-nav .menu > li > a {
+    padding: 30.5px 0;
+  }
+  .gp-desktop-scrolling.gp-header-standard #gp-cart-button,
+  .gp-desktop-scrolling.gp-header-standard #gp-search-button,
+  .gp-desktop-scrolling.gp-header-standard #gp-profile-button {
+    padding: 31px 0;
+  }
+  .gp-nav .menu > .gp-standard-menu > .sub-menu > li:hover > a {
+    color: #fff;
+  }
+  .gp-theme li:hover .gp-primary-dropdown-icon {
+    color: #fff;
+  }
+  .gp-theme .sub-menu li:hover .gp-secondary-dropdown-icon {
+    color: #fff;
+  }
+  .gp-header-centered #gp-cart-button,
+  .gp-header-centered #gp-search-button,
+  .gp-header-centered #gp-profile-button {
+    line-height: 18px;
+  }
+  .gp-header-standard #gp-secondary-main-nav .menu > li > a {
+    padding: 31.5px 0;
+  }
+  .gp-desktop-scrolling.gp-header-standard #gp-secondary-main-nav .menu > li > a {
+    padding: 31.5px 0;
+  }
+  .gp-header-centered #gp-secondary-main-nav .menu > li > a {
+    line-height: 16px;
+  }
+  .gp-active {
+    color: #000;
+  }
+  .gp-theme .widget.buddypress div.item-options a.selected:hover {
+    color: #0579bd !important;
+  }
+  .gp-theme #buddypress .activity-list .activity-content blockquote a {
+    color: #0579bd;
+  }
+  .gp-theme #buddypress .activity-list .activity-content blockquote a:hover {
+    color: #000;
+  }
+  @media only screen and (max-width: 1082px) {
+    .gp-header-standard #gp-primary-main-nav .menu > li > a {
+      padding: 30.5px 0;
+    }
+    .gp-desktop-scrolling.gp-header-standard #gp-primary-main-nav .menu > li > a {
+      padding: 30.5px 0;
+    }
+    .gp-header-standard #gp-cart-button,
+    .gp-header-standard #gp-search-button,
+    .gp-header-standard #gp-profile-button {
+      padding: 31px 0;
+    }
+    .gp-desktop-scrolling.gp-header-standard #gp-cart-button,
+    .gp-desktop-scrolling.gp-header-standard #gp-search-button,
+    .gp-desktop-scrolling.gp-header-standard #gp-profile-button {
+      padding: 31px 0;
+    }
+    .gp-header-standard #gp-secondary-main-nav .menu > li > a {
+      padding: 31.5px 0;
+    }
+    .gp-desktop-scrolling.gp-header-standard #gp-secondary-main-nav .menu > li > a {
+      padding: 31.5px 0;
+    }
+  }
+  @media only screen and (max-width: 1023px) {
+    .gp-responsive #gp-main-header {
+      min-height: 80px;
+    }
+    .gp-responsive #gp-logo {
+      padding: 26px 0;
+    }
+    .gp-responsive #gp-mobile-nav-button,
+    .gp-responsive #gp-cart-button,
+    .gp-responsive #gp-search-button,
+    .gp-responsive #gp-profile-button {
+      padding: 31px 0;
+    }
+  }
+</style>
+<link
+  rel="stylesheet"
+  id="fontawesome-css"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/fonts/font-awesome/css/font-awesome.min.css?ver=6.5.4"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="preload"
+  as="style"
+  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
+/>
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
+  media="print"
+  onload="this.media='all'"
+/>
+<noscript
+  ><link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
+/></noscript>
+
+<style type="text/css" id="wp-custom-css">
+  /* Print Styles */
+  @media print {
+    @page {
+      margin: 10mm 0;
+    }
+    body {
+      background: white;
+      color: black;
+      background-image: none;
+      margin: 0 !important;
+      padding: 0;
+    }
+
+    body:not(.gp-full-page-page-header) .gp-page-header.gp-has-text:before,
+    body:not(.gp-full-page-page-header)
+      .gp-page-header.gp-has-teaser-video.gp-has-text
+      .gp-video-header:before {
+      background-image: none !important;
+    }
+    /* End print styles */
+
+    #gp-main-header,
+    #gp-small-header,
+    #gp-header-area,
+    #gp-footer,
+    #gp-sidebar-right,
+    #swrc-post-navigation,
+    .hkb-subheader,
+    .hkb-feedback,
+    .hkb-mainpage__sidebar,
+    .print-page {
+      display: none;
+    }
+    .hkb-mainpage-wrapper {
+      padding: 0 !important;
+      background-image: none !important;
+    }
+    a#gp-to-top,
+    span#toTopHover {
+      display: none;
+    }
+    a[href]:after {
+      content: ' (' attr(href) ')';
+    }
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-size: 1.25em;
+      page-break-after: avoid;
+      page-break-inside: avoid;
+    }
+    .hkb-article__content h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-size: 1.25em;
+      page-break-after: avoid;
+      page-break-inside: avoid;
+    }
+    table {
+      page-break-before: avoid;
+      page-break-inside: avoid;
+      page-break-after: avoid;
+    }
+    img {
+      page-break-inside: avoid;
+      visibility: visible;
+      float: none;
+    }
+    blockquote,
+    table,
+    pre {
+      page-break-inside: avoid;
+    }
+    ul,
+    ol,
+    dl {
+      page-break-before: avoid;
+    }
+  }
+
+  /*Gutenberg styles*/
+  /*Buttons*/
+  a.wp-block-button__link {
+    background-color: #538122;
+    border-radius: 5px;
+    text-decoration: none !important;
+  }
+  .wp-block-button__link:hover {
+    background: #365516 !important;
+    color: #ffffff !important;
+  }
+  figcaption {
+    font-style: italic;
+  }
+  /*End Gutenberg styles*/
+  #gp-content a,
+  .gp-sidebar a {
+    font-weight: 400;
+    text-decoration: underline;
+  }
+  /*BuddyPress styles*/
+  /*Make activity feed content darker*/
+  #buddypress .activity-list .activity-content .activity-inner p {
+    color: #000000;
+  }
+  /*Hide activity filter on activity page*/
+  #activity-filter-select.last {
+    display: none !important;
+  }
+  /*Hide disabled BuddyPress status updates on profile page, activity page*/
+  #latest-update {
+    display: none;
+  }
+  .item-title .update {
+    display: none;
+  }
+  /*Prevent display of comment/favorite links in activity stream. Because the comments do not get applied to posts or forum topics, they just confuse users*/
+  .gp-theme #buddypress .activity-list div.activity-meta a.button,
+  .gp-theme #buddypress .activity .acomment-options a,
+  .gp-theme #buddypress .activity-list li.load-newest a,
+  .widget.buddypress div.item-options a.selected {
+    color: #26a9e0;
+    display: none;
+  }
+  /*End BuddyPress styles*/
+  /* Style print link */
+  .pdfprnt-buttons > a > span {
+    margin: 15px 0;
+    padding-left: 0;
+    text-decoration: underline;
+  }
+  /*Change caption text color and size*/
+  .wp-caption-text {
+    color: #333;
+    font-size: 14px;
+  }
+  /*Collapse table borders */
+  #gp-content table {
+    border-collapse: collapse;
+  }
+  /*Add borders to Tableizer tables */
+  .tableizer table,
+  th,
+  td {
+    border: 1px solid #333;
+  }
+  /*Nested list styles*/
+  #gp-content,
+  .hkb-article ol ol li {
+    list-style-type: lower-alpha;
+  }
+  #gp-content,
+  .hkb-article ol ol ol li {
+    list-style-type: lower-roman;
+  }
+  #gp-content,
+  .hkb-article ul ul li {
+    list-style-type: circle !important;
+  }
+  /* Add border */
+  tr:last-child td {
+    border-width: 1px;
+  }
+  /*bbPress*/
+  /* Make forum title and description larger, remove link underlining */
+  div.bbp-forum-content {
+    font-size: 22px;
+    line-height: 28px;
+  }
+  div.bbp-forum-content p {
+    font-size: 16px;
+    line-height: 22px;
+  }
+  #bbpress-forums a.bbp-forum-title {
+    text-decoration: none;
+  }
+  .widgettitle {
+    border-bottom: 3px solid #92d050 !important;
+  }
+  .bbp-author-name {
+    font-size: 14px;
+  }
+  /*End bbpress styles*/
+  #gp-copyright-text,
+  #gp-copyright-text a:link,
+  #gp-copyright-text a:visited {
+    color: #fff;
+    font-weight: 400;
+  }
+  /*WooCommerce styles*/
+  bdi {
+    color: #538122;
+    font-weight: 500;
+  }
+  a.button.product_type_simple {
+    display: none;
+  }
+  p.stock.out-of-stock {
+    color: red;
+    font-weight: 500;
+  }
+  .products li * {
+    text-decoration: none !important;
+  }
+  div.gp-entry-cats {
+    color: #333333;
+  }
+  span.woocommerce-Price-amount.amount {
+    text-decoration: none !important;
+  }
+  /* Hide additional information tab */
+  div.woocommerce-tabs {
+    display: none !important;
+  }
+  /*End WooCommerce styles*/
+  /*The Events Calendar*/
+  #tribe-events-content a {
+    color: #0579bd;
+  }
+  #tribe-events-content .wp-block-button__link {
+    color: #ffffff;
+  }
+  #gp-sidebar-right
+    > div
+    > div.tribe-common.tribe-events.tribe-events-view.tribe-events-view--widget-events-list.tribe-events-widget {
+    background-color: #fff;
+    padding: 15px;
+  }
+  #gp-sidebar-right
+    > div
+    > div.tribe-common.tribe-events.tribe-events-view.tribe-events-view--widget-events-list.tribe-events-widget
+    > div
+    > header {
+    text-transform: uppercase;
+    color: #000;
+    border-bottom: 3px solid #92d050;
+  }
+  #gp-sidebar-right
+    > div
+    > div.tribe-common.tribe-events.tribe-events-view.tribe-events-view--widget-events-list.tribe-events-widget
+    > div
+    > header
+    > h3 {
+    font-family: Roboto !important;
+    font-size: 14px !important;
+    font-weight: 500;
+    padding-bottom: 11px;
+  }
+  #gp-sidebar-right
+    > div
+    > div.tribe-common.tribe-events.tribe-events-view.tribe-events-view--widget-events-list.tribe-events-widget
+    > div
+    > div.tribe-events-widget-events-list__view-more.tribe-common-b1.tribe-common-b2--min-medium
+    > a {
+    color: #26a9e0;
+  }
+  /*Hero Knowledge Base styles*/
+  #hkb .hkb-fullwcontainer {
+    max-width: var(--hkb-main-container-width);
+    margin: 0 auto;
+    padding: 20px 20px;
+    left: 0 !important;
+    right: 0 !important;
+  }
+  h1.hkb-article__title {
+    font-weight: 300 !important;
+    margin: 0 0 0.5em !important;
+  }
+  .hkb-categoryheader__title {
+    font-weight: 300 !important;
+    font-size: 40px !important;
+  }
+  .hkb-articlepreview__title a {
+    font-weight: 300 !important;
+    font-size: 28px !important;
+    text-decoration: underline !important;
+    color: #0579bd !important;
+    font-size: 28px !important;
+  }
+  #hkb a {
+    text-decoration: underline;
+    font-weight: 400;
+  }
+  a.hkb_widget_exit__btn {
+    background-color: #538122 !important;
+    border-radius: 5px;
+    text-decoration: none !important;
+  }
+  a.hkb_widget_exit__btn:hover {
+    background: #365516 !important;
+    color: #ffffff !important;
+  }
+  /* End Heroic KB styles */
+  #swrc-post-navigation a {
+    font-size: small;
+  }
+  p.last-updated {
+    font-size: 12px;
+    font-style: italic;
+  }
+  aside#gp-sidebar-right.gp-sidebar p.last-updated {
+    display: none;
+  }
+  #gp-content p.last-updated {
+    display: none;
+  }
+  #gp-content ul {
+    margin: 0 0 0 20px !important;
+  }
+</style>
+<style id="socialize-dynamic-css" title="dynamic-css" class="redux-options-output">
+  #footer-image img {
+    margin-top: 10px;
+    margin-right: 0px;
+    margin-bottom: 10px;
+    margin-left: 0px;
+  }
+  body {
+    background-color: #f1f1f1;
+  }
+  body:not(.gp-full-page-page-header) #gp-page-wrapper,
+  body:not(.gp-full-page-page-header) #gp-small-header .gp-container,
+  .gp-homepage .widgettitle.gp-fancy-title:before {
+    background-color: #e8e8e8;
+  }
+  body:not(.gp-full-page-page-header) #gp-small-header .gp-left-triangle {
+    border-left-color: #e8e8e8;
+  }
+  body:not(.gp-full-page-page-header) #gp-small-header .gp-right-triangle {
+    border-bottom-color: #e8e8e8;
+  }
+  #gp-content {
+    background-color: #ffffff;
+  }
+  body {
+    font-family: Roboto, 'Arial Black', Gadget, sans-serif;
+    line-height: 28px;
+    font-weight: 300;
+    font-style: normal;
+    color: #000;
+    font-size: 16px;
+  }
+  a {
+    color: #0579bd;
+  }
+  a:hover {
+    color: #000;
+  }
+  h1 {
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    line-height: 40px;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 36px;
+  }
+  h2 {
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    line-height: 32px;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 28px;
+  }
+  h3,
+  #tab-description h2,
+  .woocommerce #comments h2,
+  .woocommerce #reviews h3,
+  .woocommerce .related h2,
+  .woocommerce-checkout .woocommerce h2,
+  .woocommerce-checkout .woocommerce h3 {
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    line-height: 28px;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 24px;
+  }
+  h4 {
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    line-height: 30px;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 20px;
+  }
+  h5 {
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    line-height: 26px;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 18px;
+  }
+  h6 {
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    line-height: 24px;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 16px;
+  }
+  .gp-entry-meta .gp-post-meta-row-1,
+  .gp-homepage #gp-content .gp-vc-element-3,
+  .gp-homepage #gp-content .gp-vc-element-4,
+  .gp-homepage #gp-content .gp-vc-element-5,
+  .gp-homepage #gp-content .gp-vc-element-6,
+  #comments .commentlist li .comment_container,
+  .gp-loop-divider:before,
+  .gp-recent-comments ul li,
+  .gp-search {
+    border-top: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  .gp-entry-video-wrapper .gp-entry-meta .gp-post-meta-row-1,
+  .gp-footer-widget .gp-recent-comments ul li {
+    border-top: 1px solid #50504b;
+    border-bottom: 1px solid #50504b;
+  }
+  #gp-main-header {
+    background-color: #222222;
+  }
+  .gp-desktop-scrolling #gp-main-header {
+    background-color: #222222;
+  }
+  #gp-primary-main-nav .menu > li,
+  #gp-primary-main-nav .menu > li > a {
+    font-family: Roboto;
+    text-transform: none;
+    line-height: 16px;
+    font-weight: 400;
+    font-style: normal;
+    color: #ababab;
+    font-size: 16px;
+  }
+  #gp-primary-main-nav .menu > li:hover > a,
+  #gp-primary-main-nav .menu > li > a {
+    color: #fff;
+  }
+  #gp-primary-main-nav .menu > li:hover > a:hover,
+  #gp-primary-main-nav .menu > li > a:hover {
+    color: #fff;
+  }
+  #gp-primary-main-nav .menu > li > a:hover,
+  #gp-primary-main-nav .menu > li:hover > a {
+    border-top: 3px solid #fff;
+  }
+  #gp-secondary-main-nav .menu > li,
+  #gp-secondary-main-nav .menu > li > a {
+    font-family: Roboto;
+    text-transform: none;
+    line-height: 14px;
+    font-weight: 400;
+    font-style: normal;
+    color: #fff;
+    font-size: 14px;
+  }
+  #gp-secondary-main-nav .menu > li:hover > a,
+  #gp-secondary-main-nav .menu > li > a {
+    color: #fff;
+  }
+  #gp-secondary-main-nav .menu > li:hover > a:hover,
+  #gp-secondary-main-nav .menu > li > a:hover {
+    color: #fff;
+  }
+  #gp-secondary-main-nav .menu > li > a:hover,
+  #gp-secondary-main-nav .menu > li:hover > a {
+    border-top: 3px solid #fff;
+  }
+  #gp-search-button,
+  #gp-cart-button {
+    color: #fff;
+  }
+  #gp-search-button:hover,
+  #gp-cart-button:hover {
+    color: #fff;
+  }
+  .gp-nav .sub-menu,
+  .gp-nav .menu li .gp-menu-tabs li:hover,
+  .gp-nav .menu li .gp-menu-tabs li.gp-selected,
+  #gp-search-box {
+    background-color: #fff;
+  }
+  .gp-nav .menu > .gp-standard-menu > .sub-menu > li a:hover,
+  .gp-nav .menu > .gp-standard-menu > .sub-menu > li:hover > a {
+    background-color: #353535;
+  }
+  .gp-nav .gp-standard-menu .sub-menu li,
+  .gp-nav .gp-standard-menu .sub-menu li a,
+  .gp-nav li.gp-megamenu .sub-menu li,
+  .gp-nav .gp-megamenu .sub-menu li a {
+    font-family: Roboto;
+    font-weight: 400;
+    font-style: normal;
+    color: #000;
+    font-size: 14px;
+  }
+  .gp-nav .menu > .gp-standard-menu > .sub-menu > li a {
+    color: #000;
+  }
+  .gp-nav .menu > .gp-standard-menu > .sub-menu > li a:hover {
+    color: #fff;
+  }
+  .gp-nav .sub-menu li,
+  #gp-dropdowncart .total,
+  #gp-dropdowncart .buttons {
+    border-top: 1px solid #e0e0e0;
+  }
+  .gp-nav .gp-megamenu > .sub-menu > li > a,
+  .gp-nav .gp-megamenu > .sub-menu > li > span {
+    color: #000000;
+  }
+  .gp-nav li.gp-megamenu a {
+    color: #000;
+  }
+  .gp-nav li.gp-megamenu a:hover {
+    color: #e93100;
+  }
+  .gp-primary-dropdown-icon {
+    color: #fff;
+  }
+  .gp-primary-dropdown-icon:hover {
+    color: #fff;
+  }
+  .gp-secondary-dropdown-icon {
+    color: #000;
+  }
+  .gp-secondary-dropdown-icon:hover {
+    color: #fff;
+  }
+  .gp-menu-tabs {
+    background-color: #353535;
+  }
+  .gp-nav .menu li .gp-menu-tabs li {
+    color: #ffffff;
+  }
+  .gp-nav .menu li .gp-menu-tabs li:hover,
+  .gp-nav .menu li .gp-menu-tabs li.gp-selected {
+    color: #e93100;
+  }
+  #gp-small-header #gp-top-nav {
+    background-color: #26a9e0;
+  }
+  #gp-small-header .menu > li,
+  #gp-small-header .menu > li > a {
+    color: #ffffff;
+  }
+  #gp-small-header .menu > li:hover,
+  #gp-small-header .menu > li > a:hover {
+    color: #e0e0e0;
+  }
+  #gp-mobile-nav-button,
+  #gp-profile-button,
+  #gp-mobile-nav-close-button {
+    color: #ffffff;
+  }
+  #gp-mobile-nav {
+    background-color: #fff;
+  }
+  #gp-mobile-nav-close-button {
+    background-color: #0579bd;
+  }
+  #gp-mobile-nav li {
+    color: #000000;
+  }
+  #gp-mobile-nav .menu li span,
+  #gp-mobile-nav .menu li a {
+    color: #000;
+  }
+  #gp-mobile-nav .menu li span:hover,
+  #gp-mobile-nav .menu li a:hover {
+    color: #000;
+  }
+  #gp-mobile-nav li a:hover {
+    background-color: #f1f1f1;
+  }
+  #gp-mobile-nav li {
+    border-top: 1px solid #e0e0e0;
+  }
+  #gp-mobile-nav .gp-megamenu > .sub-menu > li > a {
+    color: #000000;
+  }
+  .gp-large-page-header .gp-page-header,
+  .gp-fullwidth-page-header .gp-page-header,
+  #gp-full-page-bg {
+    background-color: #353535;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+    background-position: center center;
+    background-size: cover;
+  }
+  .gp-page-header h1,
+  .gp-page-header h2 {
+    font-family: Roboto;
+    line-height: 90px;
+    font-weight: normal;
+    font-style: normal;
+    color: #fff;
+    font-size: 80px;
+  }
+  .gp-page-header .gp-container {
+    height: 250px;
+  }
+  .gp-entry-title,
+  .woocommerce .page-title,
+  .woocommerce div.product .entry-title.product_title {
+    font-family: Roboto;
+    line-height: 46px;
+    font-weight: 300;
+    font-style: normal;
+    color: #000;
+    font-size: 40px;
+  }
+  .gp-subtitle {
+    font-family: Roboto;
+    line-height: 32px;
+    font-weight: 300;
+    font-style: normal;
+    color: #0579bd;
+    font-size: 20px;
+  }
+  #gp-post-links a,
+  .gp-pagination-arrows a.prev,
+  .gp-pagination-arrows a.next,
+  .gp-carousel-wrapper .flex-direction-nav a {
+    color: #aaa;
+  }
+  #gp-post-links a:hover,
+  .gp-pagination-arrows a.prev:hover,
+  .gp-pagination-arrows a.next:hover,
+  .gp-carousel-wrapper .flex-direction-nav a:hover {
+    color: #333;
+  }
+  .gp-entry-meta,
+  .gp-meta-comments a {
+    color: #aaaaaa;
+  }
+  .gp-entry-cats,
+  .gp-entry-cats a,
+  .gp-entry-cats a:hover {
+    color: #ffffff;
+  }
+  .gp-entry-cats {
+    background-color: #92d050;
+  }
+  .gp-entry-tags a,
+  .gp-entry-tags a:hover {
+    color: #ffffff;
+  }
+  .gp-entry-tags a {
+    background-color: #353535;
+  }
+  .gp-author-info,
+  #gp-post-navigation #gp-share-icons {
+    background-color: #353535;
+  }
+  .gp-author-info,
+  .gp-author-info a,
+  #gp-post-navigation #gp-share-icons h3 {
+    line-height: 24px;
+    color: #fff;
+    font-size: 14px;
+  }
+  .gp-author-info a {
+    color: #b1b1b1;
+  }
+  .gp-author-info a:hover {
+    color: #fff;
+  }
+  .gp-entry-video-wrapper {
+    background-color: #353535;
+  }
+  .gp-entry-video-wrapper .gp-entry-title {
+    color: #ffffff;
+  }
+  .gp-entry-video-wrapper .gp-video-description {
+    color: #777777;
+  }
+  blockquote {
+    background-color: #0579bd;
+  }
+  blockquote,
+  blockquote a,
+  blockquote a:hover {
+    font-family: 'Roboto Slab';
+    line-height: 38px;
+    font-weight: 400;
+    font-style: normal;
+    color: #fff;
+    font-size: 24px;
+  }
+  .gp-loop-title {
+    line-height: 22px;
+    font-weight: 400;
+    font-size: 19px;
+  }
+  .gp-blog-large .gp-loop-title {
+    line-height: 46px;
+    font-weight: 200;
+    font-size: 40px;
+  }
+  .gp-loop-title a,
+  .bboss_search_item .entry-title a {
+    color: #000;
+  }
+  .gp-loop-title a:hover,
+  .bboss_search_item .entry-title a:hover {
+    color: #0579bd;
+  }
+  .gp-loop-text,
+  .gp-login-wrapper p {
+    color: #545454;
+  }
+  .gp-loop-meta,
+  .gp-loop-meta a,
+  #gp-breadcrumbs,
+  #gp-breadcrumbs a,
+  .woocommerce .woocommerce-breadcrumb a,
+  .woocommerce .woocommerce-breadcrumb,
+  .comment-text time,
+  div.bbp-breadcrumb,
+  div.bbp-breadcrumb a,
+  .gp-statistics-wrapper .gp-stat-title,
+  .widget_display_replies ul li div,
+  .widget_display_topics ul li div {
+    color: #545454;
+  }
+  .gp-loop-cats,
+  .gp-loop-cats a,
+  .gp-loop-cats a:hover {
+    color: #545454;
+  }
+  .gp-loop-tags,
+  .gp-loop-tags a,
+  .gp-loop-tags a:hover {
+    color: #0579bd;
+  }
+  .gp-blog-masonry section,
+  section.sticky {
+    background-color: #f8f8f8;
+  }
+  ul.page-numbers .page-numbers {
+    background-color: #538122;
+  }
+  ul.page-numbers .page-numbers:hover,
+  ul.page-numbers .page-numbers.current,
+  ul.page-numbers > span.page-numbers {
+    background-color: #353535;
+  }
+  ul.page-numbers .page-numbers {
+    color: #ffffff;
+  }
+  .widgettitle,
+  .widget-title,
+  .wp-block-search__label {
+    font-family: Roboto;
+    line-height: 18px;
+    font-weight: 500;
+    font-style: normal;
+    color: #000;
+    font-size: 14px;
+  }
+  .widgettitle a,
+  .widget-title a,
+  .wp-block-search__label {
+    color: #0579bd;
+  }
+  .widgettitle a:hover,
+  .widget-title a:hover,
+  .wp-block-search__label:hover {
+    color: #000;
+  }
+  .gp-sidebar .widgettitle,
+  .widgettitle.gp-standard-title,
+  .gp-sidebar .widget-title,
+  .gp-sidebar .wp-block-search__label {
+    border-bottom: 3px solid #538122;
+  }
+  .widget,
+  .gp-vc-element,
+  .widgettitle.gp-fancy-title .gp-widget-title,
+  .widgettitle.gp-fancy-title .gp-element-icon,
+  .widget .woocommerce {
+    background-color: #ffffff;
+  }
+  .widgettitle.gp-fancy-title .gp-triangle {
+    border-left-color: #ffffff;
+  }
+  input,
+  textarea,
+  .gp-search-bar,
+  .wp-block-search__input,
+  .gp-theme #buddypress .dir-search input[type='search'],
+  .gp-theme #buddypress .dir-search input[type='text'],
+  .gp-theme #buddypress .groups-members-search input[type='search'],
+  .gp-theme #buddypress .standard-form input[type='color'],
+  .gp-theme #buddypress .standard-form input[type='date'],
+  .gp-theme #buddypress .standard-form input[type='datetime-local'],
+  .gp-theme #buddypress .standard-form input[type='datetime'],
+  .gp-theme #buddypress .standard-form input[type='email'],
+  .gp-theme #buddypress .standard-form input[type='month'],
+  .gp-theme #buddypress .standard-form input[type='number'],
+  .gp-theme #buddypress .standard-form input[type='password'],
+  .gp-theme #buddypress .standard-form input[type='range'],
+  .gp-theme #buddypress .standard-form input[type='search'],
+  .gp-theme #buddypress .standard-form input[type='tel'],
+  .gp-theme #buddypress .standard-form input[type='text'],
+  .gp-theme #buddypress .standard-form input[type='time'],
+  .gp-theme #buddypress .standard-form input[type='url'],
+  .gp-theme #buddypress .standard-form input[type='week'],
+  .gp-theme #buddypress .standard-form textarea,
+  .gp-theme #buddypress div.activity-comments form .ac-textarea,
+  .gp-theme #buddypress form#whats-new-form textarea {
+    background-color: #fafafa;
+  }
+  input,
+  textarea,
+  .gp-search-bar,
+  .wp-block-search__input,
+  .gp-login-wrapper .gp-login-icon,
+  .gp-login-wrapper .gp-password-icon,
+  .gp-login-wrapper .gp-email-icon,
+  .gp-theme #buddypress .dir-search input[type='search'],
+  .gp-theme #buddypress .dir-search input[type='text'],
+  .gp-theme #buddypress .groups-members-search input[type='search'],
+  .gp-theme #buddypress .standard-form input[type='color'],
+  .gp-theme #buddypress .standard-form input[type='date'],
+  .gp-theme #buddypress .standard-form input[type='datetime-local'],
+  .gp-theme #buddypress .standard-form input[type='datetime'],
+  .gp-theme #buddypress .standard-form input[type='email'],
+  .gp-theme #buddypress .standard-form input[type='month'],
+  .gp-theme #buddypress .standard-form input[type='number'],
+  .gp-theme #buddypress .standard-form input[type='password'],
+  .gp-theme #buddypress .standard-form input[type='range'],
+  .gp-theme #buddypress .standard-form input[type='search'],
+  .gp-theme #buddypress .standard-form input[type='tel'],
+  .gp-theme #buddypress .standard-form input[type='text'],
+  .gp-theme #buddypress .standard-form input[type='time'],
+  .gp-theme #buddypress .standard-form input[type='url'],
+  .gp-theme #buddypress .standard-form input[type='week'],
+  .gp-theme #buddypress .standard-form textarea,
+  .gp-theme #buddypress div.activity-comments form .ac-textarea,
+  .bb-global-search-ac.ui-autocomplete {
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+  }
+  input,
+  textarea,
+  .gp-search-bar,
+  .wp-block-search__input,
+  .gp-theme #buddypress .dir-search input[type='search'],
+  .gp-theme #buddypress .dir-search input[type='text'],
+  .gp-theme #buddypress .groups-members-search input[type='search'],
+  .gp-theme #buddypress .groups-members-search input[type='text'],
+  .gp-theme #buddypress .standard-form input[type='color'],
+  .gp-theme #buddypress .standard-form input[type='date'],
+  .gp-theme #buddypress .standard-form input[type='datetime-local'],
+  .gp-theme #buddypress .standard-form input[type='datetime'],
+  .gp-theme #buddypress .standard-form input[type='email'],
+  .gp-theme #buddypress .standard-form input[type='month'],
+  .gp-theme #buddypress .standard-form input[type='number'],
+  .gp-theme #buddypress .standard-form input[type='password'],
+  .gp-theme #buddypress .standard-form input[type='range'],
+  .gp-theme #buddypress .standard-form input[type='search'],
+  .gp-theme #buddypress .standard-form input[type='tel'],
+  .gp-theme #buddypress .standard-form input[type='text'],
+  .gp-theme #buddypress .standard-form input[type='time'],
+  .gp-theme #buddypress .standard-form input[type='url'],
+  .gp-theme #buddypress .standard-form input[type='week'],
+  .gp-theme #buddypress .standard-form textarea,
+  .gp-theme #buddypress div.activity-comments form .ac-textarea,
+  .gp-theme #buddypress form#whats-new-form textarea {
+    color: #000000;
+  }
+  select,
+  .gp-theme #buddypress .standard-form select,
+  .gp-theme #buddypress form#whats-new-form #whats-new-options select,
+  #buddypress .standard-form select:focus {
+    background-color: #353535;
+  }
+  select,
+  .gp-theme #buddypress .standard-form select,
+  .gp-theme #buddypress form#whats-new-form #whats-new-options select {
+    color: #ffffff;
+  }
+  input[type='button'],
+  input[type='submit'],
+  input[type='reset'],
+  button,
+  .button,
+  .wp-block-search__button,
+  .gp-theme #buddypress .comment-reply-link,
+  .gp-notification-counter,
+  #gp-cart-counter,
+  .gp-theme #buddypress a.button,
+  .gp-theme #buddypress button,
+  .gp-theme #buddypress div.generic-button a,
+  .gp-theme #buddypress input[type='button'],
+  .gp-theme #buddypress input[type='reset'],
+  .gp-theme #buddypress input[type='submit'],
+  .gp-theme #buddypress ul.button-nav li a,
+  a.bp-title-button,
+  .gp-theme #buddypress .activity-list #reply-title small a span,
+  .gp-theme #buddypress .activity-list a.bp-primary-action span,
+  .tribe-events-calendar thead th,
+  #tribe-events .tribe-events-button,
+  #tribe-events .tribe-events-button:hover,
+  #tribe_events_filters_wrapper input[type='submit'],
+  .tribe-events-button,
+  .tribe-events-button.tribe-active:hover,
+  .tribe-events-button.tribe-inactive,
+  .tribe-events-button:hover,
+  .tribe-events-calendar td.tribe-events-present div[id*='tribe-events-daynum-'],
+  .tribe-events-calendar td.tribe-events-present div[id*='tribe-events-daynum-'] > a,
+  #tribe-bar-form .tribe-bar-submit input[type='submit'],
+  .woocommerce #respond input#submit.alt,
+  .woocommerce a.button.alt,
+  .woocommerce button.button.alt,
+  .woocommerce input.button.alt,
+  #gp-dropdowncart .woocommerce a.button {
+    background-color: #0579bd;
+  }
+  input[type='button']:hover,
+  input[type='submit']:hover,
+  input[type='reset']:hover,
+  button:hover,
+  .button:hover,
+  .wp-block-search__button:hover,
+  .gp-theme #buddypress .comment-reply-link:hover,
+  .gp-theme #buddypress a.button:hover,
+  .gp-theme #buddypress button:hover,
+  .gp-theme #buddypress div.generic-button a:hover,
+  .gp-theme #buddypress input[type='button']:hover,
+  .gp-theme #buddypress input[type='reset']:hover,
+  .gp-theme #buddypress input[type='submit']:hover,
+  .gp-theme #buddypress ul.button-nav li a:hover,
+  a.bp-title-button:hover,
+  .gp-theme #buddypress .activity-list #reply-title small a:hover span,
+  .gp-theme #buddypress .activity-list a.bp-primary-action:hover span,
+  .woocommerce #respond input#submit.alt:hover,
+  .woocommerce a.button.alt:hover,
+  .woocommerce button.button.alt:hover,
+  .woocommerce input.button.alt:hover,
+  #gp-dropdowncart .woocommerce a.button:hover {
+    background-color: #353535;
+  }
+  input[type='button'],
+  input[type='submit'],
+  input[type='reset'],
+  button,
+  .button,
+  .wp-block-search__button,
+  a.gp-notification-counter,
+  a.gp-notification-counter:hover,
+  #gp-cart-counter:hover,
+  .gp-theme #buddypress .comment-reply-link,
+  .gp-theme #buddypress a.button,
+  .gp-theme #buddypress button,
+  .gp-theme #buddypress div.generic-button a,
+  .gp-theme #buddypress input[type='button'],
+  .gp-theme #buddypress input[type='reset'],
+  .gp-theme #buddypress input[type='submit'],
+  .gp-theme #buddypress ul.button-nav li a,
+  a.bp-title-button,
+  .gp-theme #buddypress .activity-list #reply-title small a span,
+  .gp-theme #buddypress .activity-list a.bp-primary-action span,
+  #gp-dropdowncart .woocommerce a.button {
+    color: #ffffff;
+  }
+  input[type='button']:hover,
+  input[type='submit']:hover,
+  input[type='reset']:hover,
+  button,
+  .button:hover,
+  .wp-block-search__button:hover,
+  .gp-theme #buddypress .comment-reply-link:hover,
+  .gp-theme #buddypress a.button:hover,
+  .gp-theme #buddypress button:hover,
+  .gp-theme #buddypress div.generic-button a:hover,
+  .gp-theme #buddypress input[type='button']:hover,
+  .gp-theme #buddypress input[type='reset']:hover,
+  .gp-theme #buddypress input[type='submit']:hover,
+  .gp-theme #buddypress ul.button-nav li a:hover,
+  a.bp-title-button:hover,
+  .gp-theme #buddypress .activity-list #reply-title small a span,
+  .gp-theme #buddypress .activity-list a.bp-primary-action span,
+  #gp-dropdowncart .woocommerce a.button:hover {
+    color: #ffffff;
+  }
+  #gp-footer {
+    background-color: #353535;
+  }
+  .gp-footer-widget .widgettitle,
+  .gp-footer-widget .widget-title,
+  .gp-footer-widget .wp-block-search__label {
+    font-family: Roboto;
+    line-height: 20px;
+    font-weight: 300;
+    font-style: normal;
+    color: #fff;
+    font-size: 16px;
+  }
+  .gp-footer-widget {
+    font-family: Roboto;
+    line-height: 20px;
+    font-weight: 300;
+    font-style: normal;
+    color: #ffffff;
+    font-size: 14px;
+  }
+  .gp-footer-widget a {
+    color: #f9bd16;
+  }
+  .gp-footer-widget a:hover {
+    color: #b1b1b1;
+  }
+  #gp-copyright {
+    background-color: #353535;
+  }
+  #gp-copyright {
+    border-top: 1px solid #444;
+  }
+  #gp-copyright {
+    color: #777777;
+  }
+  #gp-copyright a {
+    color: #999;
+  }
+  #gp-copyright a:hover {
+    color: #e0e0e0;
+  }
+  #gp-to-top {
+    background-color: #0579bd;
+  }
+  #gp-to-top {
+    color: #ffffff;
+  }
+</style>
+  <link rel="icon" href="MS_FavIcon.png" type="image/png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#cb4b16" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="clipboard.js"></script>
+</head>
+
+<body
+    class="theme-socialize page-template-socialize-child gp-theme gp-responsive gp-wide-layout gp-retina gp-normal-scrolling gp-no-back-to-top gp-relative-header gp-header-standard gp-cart-disabled gp-search-all gp-profile-disabled gp-small-header-all gp-standard-page-header gp-no-sidebar"
+>
+	<div id="gp-site-wrapper">
+
+  <nav id="gp-mobile-nav">
+    <div id="gp-mobile-nav-close-button"></div>
+    <ul class="menu">
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+      >
+<a href="index.html" class="menu-link main-menu-link">About</a>        <ul class="sub-menu menu-odd menu-depth-1">
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#data_receivers">Data Endpoints</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#supported_sensors">Supported Sensors</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#modems">Supported Cellular/Wifi Modules</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#contributing">Contributing</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#license">License</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#acknowledgments">Acknowledgments</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="change_log.html">ChangeLog</a>          </li>
+        </ul>
+      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+      >
+<a href="page_getting_started.html" class="menu-link main-menu-link">Getting Started</a>        <ul class="sub-menu menu-odd menu-depth-1">
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>          </li>
+        </ul>
+      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+      >
+<a href="page_faq.html" class="menu-link main-menu-link">FAQs</a>        <ul class="sub-menu menu-odd menu-depth-1">
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>          </li>
+        </ul>
+      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="topics.html" class="menu-link main-menu-link">Topics</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="annotated.html" class="menu-link main-menu-link">Classes</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="files.html" class="menu-link main-menu-link">Source Files</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="page_the_examples.html" class="menu-link main-menu-link">Examples Using ModularSensors</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="pages.html" class="menu-link main-menu-link">More</a>      </li>
+    </ul>
+  </nav> <!-- gp-mobile-nav -->
+  <div id="gp-mobile-nav-bg"></div>
+
+  <div id="gp-page-wrapper">
+
+    <header id="gp-main-header">
+      <div class="gp-container">
+        <div id="gp-logo">
+          <a href="index.html" title="ModularSensors 0.36.0">
+            <img
+              src="gp-desktop-logo.png"
+              alt="ModularSensors 0.36.0"
+              width="200"
+              height="42"
+              class="gp-desktop-logo"
+            />
+            <img
+              src="gp-scrolling-logo.png"
+              alt="ModularSensors 0.36.0"
+              width="264"
+              height="55"
+              class="gp-scrolling-logo"
+            />
+            <img
+              src="gp-mobile-logo.png"
+              alt="ModularSensors 0.36.0"
+              width="132"
+              height="28"
+              class="gp-mobile-logo"
+            />
+          </a>
+        </div> <!-- gp-logo -->
+
+        <a id="gp-mobile-nav-button"></a>
+
+        <nav id="gp-main-nav" class="gp-nav">
+          <nav id="gp-primary-main-nav">
+            <ul id="menu-main-menu-1" class="menu">
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+              >
+<a href="index.html" class="menu-link main-menu-link" >About</a>                <ul class="sub-menu menu-odd menu-depth-1">
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#data_receivers">Data Endpoints</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#supported_sensors">Supported Sensors</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#modems">Supported Cellular/Wifi Modules</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#contributing">Contributing</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#license">License</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#acknowledgments">Acknowledgments</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="change_log.html">ChangeLog</a>                  </li>
+                </ul>
+              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+              >
+<a href="page_getting_started.html" class="menu-link main-menu-link" >Getting Started</a>                <ul class="sub-menu menu-odd menu-depth-1">
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>                  </li>
+                </ul>
+              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+              >
+<a href="page_faq.html" class="menu-link main-menu-link" >FAQs</a>                <ul class="sub-menu menu-odd menu-depth-1">
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>                  </li>
+                </ul>
+              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="topics.html"class="menu-link main-menu-link">Topics</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="annotated.html"class="menu-link main-menu-link">Classes</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="files.html"class="menu-link main-menu-link">Source Files</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="page_the_examples.html"class="menu-link main-menu-link">Examples Using ModularSensors</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="pages.html"class="menu-link main-menu-link">More</a>              </li>
+            </ul>
+          </nav> <!-- gp-primary-main-nav -->
+
+          <div id="gp-search">
+            <div id="m-search-button" class="m-show-m" onclick="return showSearch()">
+            </div> <!-- gp-search-box -->
+          </div> <!-- gp-search -->
+
+          <nav id="gp-secondary-main-nav"></nav>
+        </nav> <!-- gp-main-nav -->
+      </div> <!-- gp-container -->
+    </header> <!-- gp-main-header -->
+
+    <header id="gp-small-header">
+      <div class="gp-container">
+        <div class="gp-left-triangle"></div>
+        <div class="gp-right-triangle"></div>
+
+        <nav id="gp-top-nav" class="gp-nav">
+          <div id="gp-left-top-nav">
+            <p style="color:#fff">An Arduino library to give environmental sensors a common interface of functions for use with Arduino-framework dataloggers, such as the EnviroDIY Mayfly.</p>
+          </div>
+
+          <div id="gp-right-top-nav">
+            <ul id="menu-icon-links" class="menu">
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 fa fa-github menu-item menu-item-type-custom menu-item-object-custom"
+              >
+                <a
+                  title="See it on GitHub"
+                  href="https://github.com/EnviroDIY/ModularSensors"
+                  class="menu-link main-menu-link"
+                  >See the source code on GitHub</a
+                >
+              </li>
+            </ul>
+          </div>
+
+        </nav>
+      </div>
+    </header> <!-- gp-small-header -->
+
+    <div id="gp-fixed-header-padding"></div>
+
+    <div class="m-doc-search" id="search">
+      <a href="#!" onclick="return hideSearch()"></a>
+      <div id="gp-header-area">
+        <div class="gp-container">
+          <div style="background-color:#fff;padding:20px;">
+            <div class="m-doc-search-header m-text m-small">
+              <div><span class="m-label m-info">Tab</span> / <span class="m-label m-info">T</span> to search, <span class="m-label m-info">Esc</span> to close</div>
+              <div id="search-symbolcount">&hellip;</div>
+            </div>
+            <div class="m-doc-search-content">
+              <form>
+                <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+              </form>
+              <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
+              <div id="search-help" class="m-text m-dim m-text-center">
+                <p class="m-noindent">Search for symbols, directories, files, pages or
+            topics. You can omit any prefix from the symbol or file path; adding a
+            <code>:</code> or <code>/</code> suffix lists all members of given symbol or
+            directory.</p>
+            <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+            / <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+            <span class="m-label m-dim">Enter</span> to go.
+            <span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+            copy a link to the result using <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">M</span> produces a Markdown link.</p>
+              </div>
+              <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.</div>
+              <ul id="search-results"></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="search-v2.js"></script>
+    <script src="searchdata-v2.js" async="async"></script>
+
+    <div class="gp-clear"></div>
+
+    <div id="gp-content-wrapper" class="gp-container">
+      <div id="gp-inner-container">
+        <div id="gp-left-column">
+          <div id="gp-content">
+
+            <main>
+              <article>
+                <div class="breadcrumbs" typeof="BreadcrumbList" vocab="http://schema.org/">
+          <span class="m-breadcrumb">
+            <a href="index.html">
+              ModularSensors
+            </a>  &gt; <wbr/>
+          </span>
+          <span class="m-breadcrumb">
+            <a href="topics.html">
+              Topics
+            </a>  &gt; <wbr/>
+          </span>
+                    <span class="m-breadcrumb">
+          <a href="group__the__sensors.html">
+            Supported Sensors
+          </a> &gt; <wbr/>
+          </span>
+          <span class="m-breadcrumb">
+          <a href="group__sdi12__group.html">
+            SDI-12 Sensors
+          </a> &gt; <wbr/>
+          </span>
+          <span class="m-breadcrumb">
+            VEGAPULS C 21
+          </span>
+                </div>
+                <header class="gp-entry-header">
+                  <h1 class="gp-entry-title" itemprop="headline">
+          VEGAPULS C 21
+          <span class="m-thin">
+            topic
+          </span>
+
+
+                </h1>
+                </header>
+        <nav class="m-block m-default">
+          <ul>
+            <li><a href="#sensor_vega_puls21_intro">Introduction</a></li>
+            <li><a href="#sensor_vega_puls21_datasheet">Sensor Datasheet</a></li>
+            <li><a href="#sensor_vega_puls21_flags">Build flags</a></li>
+            <li><a href="#sensor_vega_puls21_ctor">Sensor Constructor</a></li>
+            <li><a href="#sensor_vega_puls21_examples">Example Code</a></li>
+            <li>
+              Reference
+              <ul>
+                <li><a href="#nested-classes">Classes</a></li>
+                <li><a href="#sensor-variable-counts">Sensor Variable Counts</a></li>
+                <li><a href="#sensor-timing">Sensor Timing</a></li>
+                <li><a href="#stage">Stage</a></li>
+                <li><a href="#distance">Distance</a></li>
+                <li><a href="#temperature">Temperature</a></li>
+                <li><a href="#reliability">Reliability</a></li>
+                <li><a href="#error-code">Error Code</a></li>
+              </ul>
+            </li>
+            <li>
+              Detailed Descriptions
+              <ul>
+                <li><a href="#define-details">Defines</a></li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+          <p>Classes for the <a href="https://www.vega.com/en-us/products/product-catalog/level/radar/vegapuls-c-21">VEGAPULS C 21</a> radar sensor.</p><section id="sensor_vega_puls21_intro"><h2>Introduction</h2><blockquote><p>VEGAPULS C 21 is the ideal sensor for non-contact level measurement in simple applications where a high degree of protection is required. It is particularly suitable for use in water treatment, pumping stations and rain overflow basins, for flow measurement in open channels and level monitoring. In bulk solids the sensors are used in small bulk solids silos or open containers.</p></blockquote><p>The sensor is implemented as a sub-classes of the <a href="class_s_d_i12_sensors.html" class="m-doc">SDI12Sensors</a> class. It requires a 8 to 30 Vdc power supply, which can be turned off between measurements. It pulls 25 mW in low-power mode and 100 mW in standard mode.</p></section><section id="sensor_vega_puls21_datasheet"><h2>Sensor Datasheet</h2><p>The specifications and datasheet are available at <a href="https://www.vega.com/api/sitecore/DocumentDownload/Handler?documentContainerId=1006748&amp;languageId=2&amp;fileExtension=pdf&amp;softwareVersion=&amp;documentGroupId=58354&amp;version=03-04-2023">https:/<wbr />/<wbr />www.vega.com/<wbr />api/<wbr />sitecore/<wbr />DocumentDownload/<wbr />Handler?documentContainerId=1006748&amp;languageId=2&amp;fileExtension=pdf&amp;softwareVersion=&amp;documentGroupId=58354&amp;version=03-04-2023</a></p></section><section id="sensor_vega_puls21_flags"><h2>Build flags</h2><aside class="m-note m-default"><h4>See also</h4><p><a href="group__sdi12__group.html#sdi12_group_flags" class="m-doc">Build flags</a></p></aside></section><section id="sensor_vega_puls21_ctor"><h2>Sensor Constructor</h2><p><section class="m-doc-details" id="af0ce81fbf0385cb3fb7919570862da95"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"> VegaPuls21::<wbr/></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_vega_puls21.html#af0ce81fbf0385cb3fb7919570862da95">VegaPuls21</a>(</span><span class="m-doc-wrap"><span class="m-dim">char</span> <span class="m-param">SDI12address</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">dataPin</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
+</h3>
+<p>Construct a new VEGAPULS C 21 object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">SDI12address</span></td>
+<td>The SDI-12 address of the VEGA PULS 21; can be a char, char*, or int.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">powerPin</span></td>
+<td><p>The pin on the mcu controlling power to the VEGA PULS 21 Use -1 if it is continuously powered.</p><ul><li>The VEGA PULS 21 requires a 8 to 30 Vdc power supply, which can be turned off between measurements</li></ul></td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">dataPin</span></td>
+<td>The pin on the mcu connected to the data line of the SDI-12 circuit.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">measurementsToAverage</span></td>
+<td>The number of measurements to take and average before giving a "final" result from the sensor; optional with a default value of 1.</td>
+</tr>
+</tbody>
+</table>
+<p>The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor. Optionally, you can include a number of distinct readings to average. The data pin must be a pin that supports pin-change interrupts.</p>
+<hr/>
+</div>
+</section></p><hr/></section><section id="sensor_vega_puls21_examples"><h2>Example Code</h2><p>The VEGAPULS C 21 is used in the <a href="example_menu.html#menu_walk_vega_puls21" class="m-doc">menu a la carte</a> example.</p><div class="m-code-arduino"><div class="highlight"><div class="line"><a id="l-1" name="l-1"></a><span class="linenos"> 1</span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensors/VegaPuls21.h&gt;</span>
+</div><div class="line"><a id="l-2" name="l-2"></a><span class="linenos"> 2</span>
+</div><div class="line"><a id="l-3" name="l-3"></a><span class="linenos"> 3</span><span class="c1">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>
+</div><div class="line"><a id="l-4" name="l-4"></a><span class="linenos"> 4</span><span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w"> </span><span class="n">VegaPulsSDI12address</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;0&quot;</span><span class="p">;</span><span class="w">  </span><span class="c1">// The SDI-12 Address of the VegaPuls10</span>
+</div><div class="line"><a id="l-5" name="l-5"></a><span class="linenos"> 5</span><span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">VegaPulsPower</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">sensorPowerPin</span><span class="p">;</span><span class="w">  </span><span class="c1">// Power pin</span>
+</div><div class="line"><a id="l-6" name="l-6"></a><span class="linenos"> 6</span><span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">VegaPulsData</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="mi">7</span><span class="p">;</span><span class="w">               </span><span class="c1">// The SDI-12 data pin</span>
+</div><div class="line"><a id="l-7" name="l-7"></a><span class="linenos"> 7</span><span class="c1">// NOTE:  you should NOT take more than one readings.  THe sensor already takes</span>
+</div><div class="line"><a id="l-8" name="l-8"></a><span class="linenos"> 8</span><span class="c1">// and averages 8 by default.</span>
+</div><div class="line"><a id="l-9" name="l-9"></a><span class="linenos"> 9</span>
+</div><div class="line"><a id="l-10" name="l-10"></a><span class="linenos">10</span><span class="c1">// Create a Campbell VegaPusl21 sensor object</span>
+</div><div class="line"><a id="l-11" name="l-11"></a><span class="linenos">11</span><span class="n">VegaPuls21</span><span class="w"> </span><span class="nf">VegaPuls</span><span class="p">(</span><span class="o">*</span><span class="n">VegaPulsSDI12address</span><span class="p">,</span><span class="w"> </span><span class="n">VegaPulsPower</span><span class="p">,</span><span class="w"> </span><span class="n">VegaPulsData</span><span class="p">);</span>
+</div><div class="line"><a id="l-12" name="l-12"></a><span class="linenos">12</span>
+</div><div class="line"><a id="l-13" name="l-13"></a><span class="linenos">13</span><span class="c1">// Create stage, distance, temperature, reliability, and error variable pointers</span>
+</div><div class="line"><a id="l-14" name="l-14"></a><span class="linenos">14</span><span class="c1">// for the VegaPuls21</span>
+</div><div class="line"><a id="l-15" name="l-15"></a><span class="linenos">15</span><span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">VegaPulsStage</span><span class="w"> </span><span class="o">=</span>
+</div><div class="line"><a id="l-16" name="l-16"></a><span class="linenos">16</span><span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">VegaPuls21_Stage</span><span class="p">(</span><span class="o">&amp;</span><span class="n">VegaPuls</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
+</div><div class="line"><a id="l-17" name="l-17"></a><span class="linenos">17</span><span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">VegaPulsDistance</span><span class="w"> </span><span class="o">=</span>
+</div><div class="line"><a id="l-18" name="l-18"></a><span class="linenos">18</span><span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">VegaPuls21_Distance</span><span class="p">(</span><span class="o">&amp;</span><span class="n">VegaPuls</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
+</div><div class="line"><a id="l-19" name="l-19"></a><span class="linenos">19</span><span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">VegaPulsTemp</span><span class="w"> </span><span class="o">=</span>
+</div><div class="line"><a id="l-20" name="l-20"></a><span class="linenos">20</span><span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">VegaPuls21_Temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">VegaPuls</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
+</div><div class="line"><a id="l-21" name="l-21"></a><span class="linenos">21</span><span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">VegaPulsRelia</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">VegaPuls21_Reliability</span><span class="p">(</span>
+</div><div class="line"><a id="l-22" name="l-22"></a><span class="linenos">22</span><span class="w">    </span><span class="o">&amp;</span><span class="n">VegaPuls</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
+</div><div class="line"><a id="l-23" name="l-23"></a><span class="linenos">23</span><span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">VegaPulsError</span><span class="w"> </span><span class="o">=</span>
+</div><div class="line"><a id="l-24" name="l-24"></a><span class="linenos">24</span><span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">VegaPuls21_ErrorCode</span><span class="p">(</span><span class="o">&amp;</span><span class="n">VegaPuls</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
+</div></div></div></section>
+        <section id="nested-classes">
+          <h2>Classes</h2>
+          <dl class="m-doc">
+            <dt>
+              class <a href="class_vega_puls21.html" class="m-doc">VegaPuls21</a>
+            </dt>
+            <dd>The <a href="class_sensor.html" class="m-doc">Sensor</a> sub-class for the <a href="group__sensor__vega__puls21.html" class="m-doc">VEGAPULS C 21 radar level sensor</a>.</dd>
+            <dt>
+              class <a href="class_vega_puls21___stage.html" class="m-doc">VegaPuls21_Stage</a>
+            </dt>
+            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__vega__puls21.html#sensor_vega_puls21_stage" class="m-doc">temperature output</a> from a <a href="group__sensor__vega__puls21.html" class="m-doc">VEGAPULS C 21 radar level sensor</a>.</dd>
+            <dt>
+              class <a href="class_vega_puls21___distance.html" class="m-doc">VegaPuls21_Distance</a>
+            </dt>
+            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__vega__puls21.html#sensor_vega_puls21_distance" class="m-doc">temperature output</a> from a <a href="group__sensor__vega__puls21.html" class="m-doc">VEGAPULS C 21 radar level sensor</a>.</dd>
+            <dt>
+              class <a href="class_vega_puls21___temp.html" class="m-doc">VegaPuls21_Temp</a>
+            </dt>
+            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__vega__puls21.html#sensor_vega_puls21_temp" class="m-doc">temperature output</a> from a <a href="group__sensor__vega__puls21.html" class="m-doc">VEGAPULS C 21 radar level sensor</a>.</dd>
+            <dt>
+              class <a href="class_vega_puls21___reliability.html" class="m-doc">VegaPuls21_Reliability</a>
+            </dt>
+            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__vega__puls21.html#sensor_vega_puls21_reliability" class="m-doc">reliability output</a> from a <a href="group__sensor__vega__puls21.html" class="m-doc">VEGAPULS C 21 radar level sensor</a>.</dd>
+            <dt>
+              class <a href="class_vega_puls21___error_code.html" class="m-doc">VegaPuls21_ErrorCode</a>
+            </dt>
+            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__vega__puls21.html#sensor_vega_puls21_error" class="m-doc">error code output</a> from a <a href="group__sensor__vega__puls21.html" class="m-doc">VEGAPULS C 21 radar level sensor</a>.</dd>
+          </dl>
+        </section>
+        <section id="sensor-variable-counts">
+          <h2>Sensor Variable Counts</h2>
+<p><a name="sensor_vega_puls21_var_counts"></a> The number of variables that can be returned by the VEGA PULS 21</p>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gad7f73d1e8bbbad0dbc185251d9e8141f" class="m-doc">VEGAPULS21_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 5</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the VEGA PULS 21 can report 5 values.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaffb35dab29610038a5332e7a60fa21e6" class="m-doc">VEGAPULS21_INC_CALC_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">Sensor::<wbr />_incCalcValues</a>;.</dd>
+          </dl>
+        </section>
+        <section id="sensor-timing">
+          <h2>Sensor Timing</h2>
+<p><a name="sensor_vega_puls21_timing"></a> The sensor timing for a VEGAPULS C 21</p>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga1feb7047ff5519f0ab16413076145fa2" class="m-doc">VEGAPULS21_WARM_UP_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 5200</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#aaaefd7f306f86382a3dac726531756b4" class="m-doc">Sensor::<wbr />_warmUpTime_ms</a>; the VEGA PULS 21 warms up in ~5200ms.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga1679d4bed5fe64d694d4959a0cba1019" class="m-doc">VEGAPULS21_STABILIZATION_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#ad6822ad09fb64658c911ce86820db79c" class="m-doc">Sensor::<wbr />_stabilizationTime_ms</a>; the VEGA PULS 21 is stable as soon as it warms up (0ms stabilization).</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga716ba636da53cba3884481085b56867f" class="m-doc">VEGAPULS21_MEASUREMENT_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 6050</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba" class="m-doc">Sensor::<wbr />_measurementTime_ms</a>; the VEGA PULS 21 takes ~6000ms to complete a measurement.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaedec7ba370e9b3b0819a4f2f902bb7fe" class="m-doc">VEGAPULS21_EXTRA_WAKE_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+            </dt>
+            <dd>Extra wake time required for an SDI-12 sensor between the &quot;break&quot; and the time the command is sent. The VEGA PULS 21 requires no extra time.</dd>
+          </dl>
+        </section>
+        <section id="stage">
+          <h2>Stage</h2>
+<p><a name="sensor_vega_puls21_stage"></a> The stage variable from a VEGAPULS C 21</p><ul><li>Accuracy is ≤ 2 mm (meas. distance &gt; 0.25 m/0.8202 ft)</li></ul><p><section class="m-doc-details" id="a31ccd06dbdae79000d47fbcd3e41f4d1"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"> VegaPuls21_<wbr/>Stage::<wbr/></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_vega_puls21___stage.html#a31ccd06dbdae79000d47fbcd3e41f4d1">VegaPuls21_Stage</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_vega_puls21.html">VegaPuls21</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = "VegaPulsStage"</span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_vega_puls21___stage.html">VegaPuls21_<wbr/>Stage</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_vega_puls21.html">VegaPuls21</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "VegaPulsStage".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga7dab9cab932e32c72889a2ea20bd7b3b" class="m-doc">VEGAPULS21_STAGE_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
+            </dt>
+            <dd>Decimals places in string representation; stage in meters should have 3 - resolution is 1mm.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga98712079054a2f610c6a8026aafceb1c" class="m-doc">VEGAPULS21_STAGE_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+            </dt>
+            <dd><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; stage is stored in sensorValues[0].</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga2b94829a8179bc8945ea33445e07ab43" class="m-doc">VEGAPULS21_STAGE_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "gageHeight"</span></span>
+            </dt>
+            <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;gageHeight&quot;.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga24b0ea7d85ac8cbd9d4ee6bf36bcdc54" class="m-doc">VEGAPULS21_STAGE_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "meter"</span></span>
+            </dt>
+            <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;meter&quot; (m)</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga0ac21919f90b155c6b560b755e3d7aa0" class="m-doc">VEGAPULS21_STAGE_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "VegaPulsStage"</span></span>
+            </dt>
+            <dd>Default variable short code; &quot;VegaPulsStage&quot;.</dd>
+          </dl>
+        </section>
+        <section id="distance">
+          <h2>Distance</h2>
+<p><a name="sensor_vega_puls21_distance"></a> The distance variable from a VEGAPULS C 21</p><ul><li>Accuracy is ≤ 2 mm (meas. distance &gt; 0.25 m/0.8202 ft)</li></ul><p><section class="m-doc-details" id="a2af2da5d196724eff32530c8e52f3322"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"> VegaPuls21_<wbr/>Distance::<wbr/></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_vega_puls21___distance.html#a2af2da5d196724eff32530c8e52f3322">VegaPuls21_Distance</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_vega_puls21.html">VegaPuls21</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = "VegaPulsDistance"</span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_vega_puls21___distance.html">VegaPuls21_<wbr/>Distance</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_vega_puls21.html">VegaPuls21</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "VegaPulsDistance".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaae2b13538c26482f1ae47a76bb4bcee3" class="m-doc">VEGAPULS21_DISTANCE_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
+            </dt>
+            <dd>Decimals places in string representation; distance in meters should have 3 - resolution is 1mm.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga470e45f3a743a973368b6311d439d066" class="m-doc">VEGAPULS21_DISTANCE_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
+            </dt>
+            <dd><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; stage is stored in sensorValues[1].</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaf148a0a387f95c6e6708f50103e351d6" class="m-doc">VEGAPULS21_DISTANCE_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "distance"</span></span>
+            </dt>
+            <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;distance&quot;.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga933402607116fb672166ec7409ed7b0b" class="m-doc">VEGAPULS21_DISTANCE_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "meter"</span></span>
+            </dt>
+            <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;meter&quot; (m)</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga8adfc77f62bc5eff495b95833f9ac8ca" class="m-doc">VEGAPULS21_DISTANCE_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "VegaPulsDistance"</span></span>
+            </dt>
+            <dd>Default variable short code; &quot;VegaPulsDistance&quot;.</dd>
+          </dl>
+        </section>
+        <section id="temperature">
+          <h2>Temperature</h2>
+<p><a name="sensor_vega_puls21_temp"></a> The temperature variable from a VEGAPULS C 21</p><p><section class="m-doc-details" id="a8be71b2e275f1b648ae830489c2ecc86"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"> VegaPuls21_<wbr/>Temp::<wbr/></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_vega_puls21___temp.html#a8be71b2e275f1b648ae830489c2ecc86">VegaPuls21_Temp</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_vega_puls21.html">VegaPuls21</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = "VegaPulsTemp"</span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_vega_puls21___temp.html">VegaPuls21_<wbr/>Temp</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_vega_puls21.html">VegaPuls21</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "VegaPulsTemp".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga1329cb8905d7dd7f6e2358b14d5abfa8" class="m-doc">VEGAPULS21_TEMP_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
+            </dt>
+            <dd>Decimals places in string representation; temperature should have 1 - resolution is 0.1°C.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gab29d6921d050f498c735d97f59ffa9a2" class="m-doc">VEGAPULS21_TEMP_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
+            </dt>
+            <dd><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; temperature is stored in sensorValues[2].</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga74bf0d3ec435f7478dd0836557174f5b" class="m-doc">VEGAPULS21_TEMP_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "temperature"</span></span>
+            </dt>
+            <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;temperature&quot;.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gada77662f824b0c805e17f08205c915a2" class="m-doc">VEGAPULS21_TEMP_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "degreeCelsius"</span></span>
+            </dt>
+            <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;degreeCelsius&quot; (°C)</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga6714e0af37f6595979fa2e4d1530c556" class="m-doc">VEGAPULS21_TEMP_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "VegaPulsTemp"</span></span>
+            </dt>
+            <dd>Default variable short code; &quot;VegaPulsTemp&quot;.</dd>
+          </dl>
+        </section>
+        <section id="reliability">
+          <h2>Reliability</h2>
+<p><a name="sensor_vega_puls21_reliability"></a> The reliability variable from a VEGAPULS C 21</p><p><section class="m-doc-details" id="a0cdb7cb6d8c1661626d61c4f29549062"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"> VegaPuls21_<wbr/>Reliability::<wbr/></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_vega_puls21___reliability.html#a0cdb7cb6d8c1661626d61c4f29549062">VegaPuls21_Reliability</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_vega_puls21.html">VegaPuls21</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = "VegaPulsReliability"</span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_vega_puls21___reliability.html">VegaPuls21_<wbr/>Reliability</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_vega_puls21.html">VegaPuls21</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "VegaPulsReliability".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gae784639b01ccbba8959ca98bbff29021" class="m-doc">VEGAPULS21_RELIABILITY_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
+            </dt>
+            <dd>Decimals places in string representation; reliability should have 1 (resolution is 0.1 dB).</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaf22ba7f2f3e62bb6cd81048f834dd100" class="m-doc">VEGAPULS21_RELIABILITY_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
+            </dt>
+            <dd><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; reliability is stored in sensorValues[3].</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga49567bb42e6555b5d99ea205082bca40" class="m-doc">VEGAPULS21_RELIABILITY_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "reliability"</span></span>
+            </dt>
+            <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;reliability&quot;.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaf721dea785b286d551c468cbf1021c56" class="m-doc">VEGAPULS21_RELIABILITY_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "decibel"</span></span>
+            </dt>
+            <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;decibel&quot; (dB)</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gae456cc92647f06605813f3de38834f2d" class="m-doc">VEGAPULS21_RELIABILITY_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "VegaPulsReliability"</span></span>
+            </dt>
+            <dd>Default variable short code; &quot;VegaPulsReliability&quot;.</dd>
+          </dl>
+        </section>
+        <section id="error-code">
+          <h2>Error Code</h2>
+<p><a name="sensor_vega_puls21_error"></a> The error code variable from a VEGAPULS C 21</p><ul><li>Significance of error code values is unknown.</li></ul><p><section class="m-doc-details" id="aee29b6093c2af1bfe683b4cc3a33c45e"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"> VegaPuls21_<wbr/>ErrorCode::<wbr/></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_vega_puls21___error_code.html#aee29b6093c2af1bfe683b4cc3a33c45e">VegaPuls21_ErrorCode</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_vega_puls21.html">VegaPuls21</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = "VegaPulsError"</span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_vega_puls21___error_code.html">VegaPuls21_<wbr/>ErrorCode</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_vega_puls21.html">VegaPuls21</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "VegaPulsError".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaab047bebc499be2abbfee39a6ed14488" class="m-doc">VEGAPULS21_ERRORCODE_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+            </dt>
+            <dd>Decimals places in string representation; the error code has 0.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga45a087de96540de637d8c7b60b34b7ba" class="m-doc">VEGAPULS21_ERRORCODE_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 4</span></span>
+            </dt>
+            <dd><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; error code is stored in sensorValues[4].</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaa954127ca9a55f2153ca6e96b8aa6b58" class="m-doc">VEGAPULS21_ERRORCODE_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "instrumentStatusCode"</span></span>
+            </dt>
+            <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;instrumentStatusCode&quot;.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga8f96f03c6586d38e6e05261be35e6518" class="m-doc">VEGAPULS21_ERRORCODE_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "dimensionless"</span></span>
+            </dt>
+            <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;dimensionless&quot;.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga5a992e8b605fb40bb76db859d2ae8a0a" class="m-doc">VEGAPULS21_ERRORCODE_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "VegaPulsError"</span></span>
+            </dt>
+            <dd>Default variable short code; &quot;VegaPulsError&quot;.</dd>
+          </dl>
+        </section>
+
+        <section id="define-details">
+          <h2>Define documentation</h2>
+        <section class="m-doc-details" id="gad7f73d1e8bbbad0dbc185251d9e8141f">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gad7f73d1e8bbbad0dbc185251d9e8141f" class="m-doc-self">VEGAPULS21_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 5</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_vega_puls21_8h.html">&lt;src/sensors/VegaPuls21.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the VEGA PULS 21 can report 5 values.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gaffb35dab29610038a5332e7a60fa21e6">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaffb35dab29610038a5332e7a60fa21e6" class="m-doc-self">VEGAPULS21_INC_CALC_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_vega_puls21_8h.html">&lt;src/sensors/VegaPuls21.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_sensor.html#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">Sensor::<wbr />_incCalcValues</a>;.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga1feb7047ff5519f0ab16413076145fa2">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga1feb7047ff5519f0ab16413076145fa2" class="m-doc-self">VEGAPULS21_WARM_UP_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 5200</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_vega_puls21_8h.html">&lt;src/sensors/VegaPuls21.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_sensor.html#aaaefd7f306f86382a3dac726531756b4" class="m-doc">Sensor::<wbr />_warmUpTime_ms</a>; the VEGA PULS 21 warms up in ~5200ms.</p>
+
+
+              <p>This is longer than the expected 250ms for a SDI-12 sensor, but I couldn&#x27;t get a response from the sensor faster than that. The instruction sheet says the warm-up is less than 10s, but also says that the initial tests on power-up can take up to 3 minutes.</p>
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga1679d4bed5fe64d694d4959a0cba1019">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga1679d4bed5fe64d694d4959a0cba1019" class="m-doc-self">VEGAPULS21_STABILIZATION_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_vega_puls21_8h.html">&lt;src/sensors/VegaPuls21.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_sensor.html#ad6822ad09fb64658c911ce86820db79c" class="m-doc">Sensor::<wbr />_stabilizationTime_ms</a>; the VEGA PULS 21 is stable as soon as it warms up (0ms stabilization).</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga716ba636da53cba3884481085b56867f">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga716ba636da53cba3884481085b56867f" class="m-doc-self">VEGAPULS21_MEASUREMENT_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 6050</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_vega_puls21_8h.html">&lt;src/sensors/VegaPuls21.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba" class="m-doc">Sensor::<wbr />_measurementTime_ms</a>; the VEGA PULS 21 takes ~6000ms to complete a measurement.</p>
+
+
+              <p>Spec sheet says the measurement time is 250ms but when you ask the sensor it says it won&#x27;t return for 14s. When taking a standard measurement I was getting a result after about 5800-6000 ms.</p>
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gaedec7ba370e9b3b0819a4f2f902bb7fe">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaedec7ba370e9b3b0819a4f2f902bb7fe" class="m-doc-self">VEGAPULS21_EXTRA_WAKE_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_vega_puls21_8h.html">&lt;src/sensors/VegaPuls21.h&gt;</a></div>
+            </h3>
+
+            <p>Extra wake time required for an SDI-12 sensor between the &quot;break&quot; and the time the command is sent. The VEGA PULS 21 requires no extra time.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga7dab9cab932e32c72889a2ea20bd7b3b">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga7dab9cab932e32c72889a2ea20bd7b3b" class="m-doc-self">VEGAPULS21_STAGE_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_vega_puls21_8h.html">&lt;src/sensors/VegaPuls21.h&gt;</a></div>
+            </h3>
+
+            <p>Decimals places in string representation; stage in meters should have 3 - resolution is 1mm.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga98712079054a2f610c6a8026aafceb1c">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga98712079054a2f610c6a8026aafceb1c" class="m-doc-self">VEGAPULS21_STAGE_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_vega_puls21_8h.html">&lt;src/sensors/VegaPuls21.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; stage is stored in sensorValues[0].</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga2b94829a8179bc8945ea33445e07ab43">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga2b94829a8179bc8945ea33445e07ab43" class="m-doc-self">VEGAPULS21_STAGE_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "gageHeight"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_vega_puls21_8h.html">&lt;src/sensors/VegaPuls21.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;gageHeight&quot;.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga24b0ea7d85ac8cbd9d4ee6bf36bcdc54">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga24b0ea7d85ac8cbd9d4ee6bf36bcdc54" class="m-doc-self">VEGAPULS21_STAGE_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "meter"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_vega_puls21_8h.html">&lt;src/sensors/VegaPuls21.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;meter&quot; (m)</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga0ac21919f90b155c6b560b755e3d7aa0">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga0ac21919f90b155c6b560b755e3d7aa0" class="m-doc-self">VEGAPULS21_STAGE_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "VegaPulsStage"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_vega_puls21_8h.html">&lt;src/sensors/VegaPuls21.h&gt;</a></div>
+            </h3>
+
+            <p>Default variable short code; &quot;VegaPulsStage&quot;.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gaae2b13538c26482f1ae47a76bb4bcee3">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaae2b13538c26482f1ae47a76bb4bcee3" class="m-doc-self">VEGAPULS21_DISTANCE_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_vega_puls21_8h.html">&lt;src/sensors/VegaPuls21.h&gt;</a></div>
+            </h3>
+
+            <p>Decimals places in string representation; distance in meters should have 3 - resolution is 1mm.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga470e45f3a743a973368b6311d439d066">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga470e45f3a743a973368b6311d439d066" class="m-doc-self">VEGAPULS21_DISTANCE_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_vega_puls21_8h.html">&lt;src/sensors/VegaPuls21.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; stage is stored in sensorValues[1].</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gaf148a0a387f95c6e6708f50103e351d6">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaf148a0a387f95c6e6708f50103e351d6" class="m-doc-self">VEGAPULS21_DISTANCE_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "distance"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_vega_puls21_8h.html">&lt;src/sensors/VegaPuls21.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;distance&quot;.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga933402607116fb672166ec7409ed7b0b">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga933402607116fb672166ec7409ed7b0b" class="m-doc-self">VEGAPULS21_DISTANCE_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "meter"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_vega_puls21_8h.html">&lt;src/sensors/VegaPuls21.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;meter&quot; (m)</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga8adfc77f62bc5eff495b95833f9ac8ca">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga8adfc77f62bc5eff495b95833f9ac8ca" class="m-doc-self">VEGAPULS21_DISTANCE_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "VegaPulsDistance"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_vega_puls21_8h.html">&lt;src/sensors/VegaPuls21.h&gt;</a></div>
+            </h3>
+
+            <p>Default variable short code; &quot;VegaPulsDistance&quot;.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga1329cb8905d7dd7f6e2358b14d5abfa8">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga1329cb8905d7dd7f6e2358b14d5abfa8" class="m-doc-self">VEGAPULS21_TEMP_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_vega_puls21_8h.html">&lt;src/sensors/VegaPuls21.h&gt;</a></div>
+            </h3>
+
+            <p>Decimals places in string representation; temperature should have 1 - resolution is 0.1°C.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gab29d6921d050f498c735d97f59ffa9a2">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gab29d6921d050f498c735d97f59ffa9a2" class="m-doc-self">VEGAPULS21_TEMP_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_vega_puls21_8h.html">&lt;src/sensors/VegaPuls21.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; temperature is stored in sensorValues[2].</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga74bf0d3ec435f7478dd0836557174f5b">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga74bf0d3ec435f7478dd0836557174f5b" class="m-doc-self">VEGAPULS21_TEMP_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "temperature"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_vega_puls21_8h.html">&lt;src/sensors/VegaPuls21.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;temperature&quot;.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gada77662f824b0c805e17f08205c915a2">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gada77662f824b0c805e17f08205c915a2" class="m-doc-self">VEGAPULS21_TEMP_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "degreeCelsius"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_vega_puls21_8h.html">&lt;src/sensors/VegaPuls21.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;degreeCelsius&quot; (°C)</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga6714e0af37f6595979fa2e4d1530c556">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga6714e0af37f6595979fa2e4d1530c556" class="m-doc-self">VEGAPULS21_TEMP_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "VegaPulsTemp"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_vega_puls21_8h.html">&lt;src/sensors/VegaPuls21.h&gt;</a></div>
+            </h3>
+
+            <p>Default variable short code; &quot;VegaPulsTemp&quot;.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gae784639b01ccbba8959ca98bbff29021">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gae784639b01ccbba8959ca98bbff29021" class="m-doc-self">VEGAPULS21_RELIABILITY_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_vega_puls21_8h.html">&lt;src/sensors/VegaPuls21.h&gt;</a></div>
+            </h3>
+
+            <p>Decimals places in string representation; reliability should have 1 (resolution is 0.1 dB).</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gaf22ba7f2f3e62bb6cd81048f834dd100">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaf22ba7f2f3e62bb6cd81048f834dd100" class="m-doc-self">VEGAPULS21_RELIABILITY_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_vega_puls21_8h.html">&lt;src/sensors/VegaPuls21.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; reliability is stored in sensorValues[3].</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga49567bb42e6555b5d99ea205082bca40">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga49567bb42e6555b5d99ea205082bca40" class="m-doc-self">VEGAPULS21_RELIABILITY_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "reliability"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_vega_puls21_8h.html">&lt;src/sensors/VegaPuls21.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;reliability&quot;.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gaf721dea785b286d551c468cbf1021c56">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaf721dea785b286d551c468cbf1021c56" class="m-doc-self">VEGAPULS21_RELIABILITY_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "decibel"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_vega_puls21_8h.html">&lt;src/sensors/VegaPuls21.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;decibel&quot; (dB)</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gae456cc92647f06605813f3de38834f2d">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gae456cc92647f06605813f3de38834f2d" class="m-doc-self">VEGAPULS21_RELIABILITY_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "VegaPulsReliability"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_vega_puls21_8h.html">&lt;src/sensors/VegaPuls21.h&gt;</a></div>
+            </h3>
+
+            <p>Default variable short code; &quot;VegaPulsReliability&quot;.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gaab047bebc499be2abbfee39a6ed14488">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaab047bebc499be2abbfee39a6ed14488" class="m-doc-self">VEGAPULS21_ERRORCODE_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_vega_puls21_8h.html">&lt;src/sensors/VegaPuls21.h&gt;</a></div>
+            </h3>
+
+            <p>Decimals places in string representation; the error code has 0.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga45a087de96540de637d8c7b60b34b7ba">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga45a087de96540de637d8c7b60b34b7ba" class="m-doc-self">VEGAPULS21_ERRORCODE_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 4</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_vega_puls21_8h.html">&lt;src/sensors/VegaPuls21.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; error code is stored in sensorValues[4].</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gaa954127ca9a55f2153ca6e96b8aa6b58">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaa954127ca9a55f2153ca6e96b8aa6b58" class="m-doc-self">VEGAPULS21_ERRORCODE_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "instrumentStatusCode"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_vega_puls21_8h.html">&lt;src/sensors/VegaPuls21.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;instrumentStatusCode&quot;.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga8f96f03c6586d38e6e05261be35e6518">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga8f96f03c6586d38e6e05261be35e6518" class="m-doc-self">VEGAPULS21_ERRORCODE_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "dimensionless"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_vega_puls21_8h.html">&lt;src/sensors/VegaPuls21.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;dimensionless&quot;.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga5a992e8b605fb40bb76db859d2ae8a0a">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga5a992e8b605fb40bb76db859d2ae8a0a" class="m-doc-self">VEGAPULS21_ERRORCODE_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "VegaPulsError"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_vega_puls21_8h.html">&lt;src/sensors/VegaPuls21.h&gt;</a></div>
+            </h3>
+
+            <p>Default variable short code; &quot;VegaPulsError&quot;.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        </section>
+              </article>
+            </main>
+
+          </div> <!-- gp-content -->
+        </div> <!-- gp-left-column -->
+      </div> <!-- gp-inner-container -->
+    </div> <!-- gp-content-wrapper -->
+
+    <div id="footer-image">
+      <div class="gp-container">
+        <img
+          src="https://www.envirodiy.org/wp-content/uploads/2016/05/EnviroDIY_LogoMaster_Square_V5_TwoTree_Trans_notext-e1462820115833.png"
+          width="99"
+          height="22"
+          alt=""
+        />
+      </div>
+    </div>
+
+    <footer id="gp-footer">
+      <div id="gp-copyright">
+        <div class="gp-container">
+          <div id="gp-copyright-text">
+            <p>
+              <a href="https://stroudcenter.org/" target="_blank"
+                >EnviroDIY™ is a community for do-it-yourself ideas for environmental
+                science and monitoring. EnviroDIY is an initiative of
+                <a
+                  style="text-decoration: underline"
+                  href="https://stroudcenter.org/"
+                  target="_blank"
+                  >Stroud Water Research Center</a
+                >, which advances knowledge and stewardship of freshwater systems through
+                global research, education, and watershed restoration.
+              </a>
+            </p>
+            <p>
+              All content on EnviroDIY is licensed as Creative Commons
+              Attribution-ShareAlike 4.0 International (CC-BY-SA). Hardware designs on this
+              website are released under the CERN Open Hardware License 1.2.
+              <a style="text-decoration: underline" href="https://envirodiy.org/licenses/"
+                >See all licenses.</a
+              >
+              <a style="text-decoration: underline" href="https://envirodiy.org/terms/"
+                >Terms of Use</a
+              >
+              |
+              <a style="text-decoration: underline" href="https://envirodiy.org/privacy/"
+                >Privacy Policy</a
+              >
+              |
+              <a style="text-decoration: underline" href="https://envirodiy.org/cookies/"
+                >Cookie Policy</a
+              >
+              |
+              <a
+                style="text-decoration: underline"
+                href="https://envirodiy.org/shop-policies/"
+                >Shop Policies</a
+              >
+              |
+              <a style="text-decoration: underline" href="https://envirodiy.org/contact/"
+                >Contact</a
+              >
+            </p>
+            <p>
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.12.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <div class="gp-clear"></div>
+
+    </div> <!-- gp-site-wrapper -->
+  </div> <!-- gp-site-wrapper -->
+
+</body>
+</html>

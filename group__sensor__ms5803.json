@@ -1,0 +1,465 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__sensor__ms5803",
+    "name": "Measurement Specialties MS5803",
+    "url_base": "group__sensor__ms5803",
+    "url": "group__sensor__ms5803.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>Classes for the Measurement Specialties MS5803 digital preassure sensor.</p><section id=\"sensor_ms5803_intro\"><h2>Introduction</h2><p>The Measurement Specialties MS5803 is a miniature digital pressure sensor. It comes in several different pressure ranges, with 14 bar being one of the most common. Although this sensor has the option of either I2C or SPI communication, this library only supports I2C. The sensor&#x27;s I2C address is determined the voltage level of the CSB pin; it will be either 0x76 or 0x77. Breakout boards purchased from Sparkfun are set to 0x76 while those from Northern Widget are variable depending on the model as outlined in their <a href=\"https://github.com/NorthernWidget/TP-Downhole_Library\">library</a>. To connect two of these sensors to your system, you must ensure they are soldered so as to have different I2C addresses. No more than two can be attached. These sensors should be attached to a 1.7-3.6V power source and the power supply to the sensor can be stopped between measurements.</p><aside class=\"m-note m-danger\"><h4>Warning</h4><p>These I2C addresses are the same as those available for the Bosch BME280, BMP388, and BMP390 sensors! If you are also using one of those sensors, make sure that the address for that sensor does not conflict with the address of this sensor.</p></aside><aside class=\"m-note m-info\"><h4>Note</h4><p>Neither secondary hardware nor software I2C is supported for the MS5803. Only the primary hardware I2C defined in the Arduino core can be used.</p></aside><p>The lower level communication between the mcu and the MS5803 is handled by the <a href=\"https://github.com/NorthernWidget/MS5803\">Northern Widget MS5803 library</a>.</p></section><section id=\"sensor_ms5803_datasheet\"><h2>Sensor Datasheet</h2><p>Documentation for the sensor can be found at: <a href=\"https://www.sparkfun.com/products/12909\">https:/<wbr />/<wbr />www.sparkfun.com/<wbr />products/<wbr />12909</a> and <a href=\"https://cdn.sparkfun.com/datasheets/Sensors/Weather/sensor_ms5803_14ba.pdf\">https://cdn.sparkfun.com/datasheets/Sensors/Weather/sensor_<wbr />ms5803_<wbr />14ba.pdf</a></p><p>The datasheet is also available here: <a href=\"https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Measurement-Specialities-MS5803-14ba-Pressure-Sensor.pdf\">https:/<wbr />/<wbr />github.com/<wbr />EnviroDIY/<wbr />ModularSensors/<wbr />wiki/<wbr />Sensor-Datasheets/<wbr />Measurement-Specialities-MS5803-14ba-Pressure-Sensor.pdf</a></p></section><section id=\"sensor_ms5803_ctor\"><h2>Sensor Constructor</h2><p>{{ <a href=\"class_mea_spec_m_s5803.html#a5327064d919aa2ef2c30888bcdbcd26f\" class=\"m-doc\">MeaSpecMS5803::<wbr />MeaSpecMS5803</a> }}</p><hr/></section><section id=\"sensor_ms5803_examples\"><h2>Example Code</h2><p>The Measurement Specialties MS5803 is used in the <a href=\"example_menu.html#menu_walk_mea_spec_ms5803\" class=\"m-doc\">menu a la carte</a> example.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;sensors/MeaSpecMS5803.h&gt;</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"c1\">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">MS5803Power</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">sensorPowerPin</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// Power pin</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">uint8_t</span><span class=\"w\"> </span><span class=\"n\">MS5803i2c_addr</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span><span class=\"w\">    </span><span class=\"mh\">0x76</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// The MS5803 can be addressed either as 0x76 (default) or 0x77</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int16_t</span><span class=\"w\"> </span><span class=\"n\">MS5803maxPressure</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span><span class=\"w\">    </span><span class=\"mi\">14</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// The maximum pressure measurable by the specific MS5803 model</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">uint8_t</span><span class=\"w\"> </span><span class=\"n\">MS5803ReadingsToAvg</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">1</span><span class=\"p\">;</span>\n</div><div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span>\n</div><div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span><span class=\"c1\">// Create a MeaSpec MS5803 pressure and temperature sensor object</span>\n</div><div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"n\">MeaSpecMS5803</span><span class=\"w\"> </span><span class=\"nf\">ms5803</span><span class=\"p\">(</span><span class=\"n\">MS5803Power</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">MS5803i2c_addr</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">MS5803maxPressure</span><span class=\"p\">,</span>\n</div><div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span><span class=\"w\">                     </span><span class=\"n\">MS5803ReadingsToAvg</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span>\n</div><div class=\"line\"><a id=\"l-15\" name=\"l-15\"></a><span class=\"linenos\">15</span><span class=\"c1\">// Create pressure and temperature variable pointers for the MS5803</span>\n</div><div class=\"line\"><a id=\"l-16\" name=\"l-16\"></a><span class=\"linenos\">16</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">ms5803Press</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-17\" name=\"l-17\"></a><span class=\"linenos\">17</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">MeaSpecMS5803_Pressure</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">ms5803</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-18\" name=\"l-18\"></a><span class=\"linenos\">18</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">ms5803Temp</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-19\" name=\"l-19\"></a><span class=\"linenos\">19</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">MeaSpecMS5803_Temp</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">ms5803</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "sensor_ms5803_intro",
+        "Introduction",
+        []
+      ],
+      [
+        "sensor_ms5803_datasheet",
+        "Sensor Datasheet",
+        []
+      ],
+      [
+        "sensor_ms5803_ctor",
+        "Sensor Constructor",
+        []
+      ],
+      [
+        "sensor_ms5803_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_mea_spec_m_s5803.html",
+        "name": "MeaSpecMS5803",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__ms5803.html\" class=\"m-doc\">Measurement Specialties MS5803 sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_mea_spec_m_s5803___temp.html",
+        "name": "MeaSpecMS5803_Temp",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__ms5803.html#sensor_ms5803_temp\" class=\"m-doc\">temperature output</a> from a <a href=\"group__sensor__ms5803.html\" class=\"m-doc\">Measurement Specialties MS5803 digital pressure sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_mea_spec_m_s5803___pressure.html",
+        "name": "MeaSpecMS5803_Pressure",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__ms5803.html#sensor_ms5803_pressure\" class=\"m-doc\">pressure output</a> from a <a href=\"group__sensor__ms5803.html\" class=\"m-doc\">Measurement Specialties MS5803 digital pressure sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Sensor Variable Counts",
+        "id": "sensor-variable-counts",
+        "description": "<p><a name=\"sensor_ms5803_var_counts\"></a> The number of variables that can be returned by the MS5803</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ms5803.html",
+              "id": "ga6bd779b31cfdc1278298589bf3277552",
+              "include": [
+                "&lt;src/sensors/MeaSpecMS5803.h&gt;",
+                "_mea_spec_m_s5803_8h.html"
+              ],
+              "has_details": true,
+              "name": "MS5803_NUM_VARIABLES",
+              "initializer": "2",
+              "brief": "<a href=\"class_sensor.html#af26786329fd01b44cf31410d046fc8f3\" class=\"m-doc\">Sensor::<wbr />_numReturnedValues</a>; the MS5803 can report 2 values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ms5803.html",
+              "id": "ga09002a45847c4b1d6a02aae85815c88a",
+              "include": [
+                "&lt;src/sensors/MeaSpecMS5803.h&gt;",
+                "_mea_spec_m_s5803_8h.html"
+              ],
+              "has_details": true,
+              "name": "MS5803_INC_CALC_VARIABLES",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#a2f3f93a9205efb134cef1216d65077d2\" class=\"m-doc\">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Sensor Timing",
+        "id": "sensor-timing",
+        "description": "<p><a name=\"sensor_ms5803_timing\"></a> The sensor timing for a Measurement Specialties MS5803</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ms5803.html",
+              "id": "ga3473fd7f443b37f1028b7730890708f7",
+              "include": [
+                "&lt;src/sensors/MeaSpecMS5803.h&gt;",
+                "_mea_spec_m_s5803_8h.html"
+              ],
+              "has_details": true,
+              "name": "MS5803_WARM_UP_TIME_MS",
+              "initializer": "10",
+              "brief": "<a href=\"class_sensor.html#aaaefd7f306f86382a3dac726531756b4\" class=\"m-doc\">Sensor::<wbr />_warmUpTime_ms</a>; the MS5803 warms up in 10ms.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ms5803.html",
+              "id": "ga9a31ab85823e3f672d0654c99dff69f2",
+              "include": [
+                "&lt;src/sensors/MeaSpecMS5803.h&gt;",
+                "_mea_spec_m_s5803_8h.html"
+              ],
+              "has_details": true,
+              "name": "MS5803_STABILIZATION_TIME_MS",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#ad6822ad09fb64658c911ce86820db79c\" class=\"m-doc\">Sensor::<wbr />_stabilizationTime_ms</a>; the MS5803 is stable as soon as it warms up (0ms stabilization).",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ms5803.html",
+              "id": "gaca62c189e577e6de3d26f38aa95e3c0a",
+              "include": [
+                "&lt;src/sensors/MeaSpecMS5803.h&gt;",
+                "_mea_spec_m_s5803_8h.html"
+              ],
+              "has_details": true,
+              "name": "MS5803_MEASUREMENT_TIME_MS",
+              "initializer": "10",
+              "brief": "<a href=\"class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba\" class=\"m-doc\">Sensor::<wbr />_measurementTime_ms</a>; the MS5803 takes 10ms to complete a measurement.",
+              "description": "<ul><li><a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> takes about 0.5 / 1.1 / 2.1 / 4.1 / 8.22 ms to respond at oversampling ratios: 256 / 512 / 1024 / 2048 / 4096, respectively.</li></ul>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Temperature",
+        "id": "temperature",
+        "description": "<p><a name=\"sensor_ms5803_temp\"></a> The temperature variable from a Measurement Specialties MS5803</p><ul><li>Range is -40\u00b0C to +85\u00b0C</li><li>Accuracy is \u00b10.8\u00b0C</li></ul><p>{{ <a href=\"class_mea_spec_m_s5803___temp.html#a43ac15b9e9b1df5394f88f843ee80add\" class=\"m-doc\">MeaSpecMS5803_Temp::<wbr />MeaSpecMS5803_Temp</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ms5803.html",
+              "id": "ga1c2e60f662ade3cf9f664a2456f04c0c",
+              "include": [
+                "&lt;src/sensors/MeaSpecMS5803.h&gt;",
+                "_mea_spec_m_s5803_8h.html"
+              ],
+              "has_details": true,
+              "name": "MS5803_TEMP_RESOLUTION",
+              "initializer": "2",
+              "brief": "Decimals places in string representation; temperature should have 2 - resolution is &lt;0.01\u00b0C.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ms5803.html",
+              "id": "gac0fbadab7b7ea2c64038b9376e342605",
+              "include": [
+                "&lt;src/sensors/MeaSpecMS5803.h&gt;",
+                "_mea_spec_m_s5803_8h.html"
+              ],
+              "has_details": true,
+              "name": "MS5803_TEMP_VAR_NUM",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; temperature is stored in sensorValues[0].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ms5803.html",
+              "id": "gadcb20d65137b7921864a3a8e71e67743",
+              "include": [
+                "&lt;src/sensors/MeaSpecMS5803.h&gt;",
+                "_mea_spec_m_s5803_8h.html"
+              ],
+              "has_details": true,
+              "name": "MS5803_TEMP_VAR_NAME",
+              "initializer": "\"temperature\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;temperature&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ms5803.html",
+              "id": "ga29d10a54ba728faf71016d6a88404c59",
+              "include": [
+                "&lt;src/sensors/MeaSpecMS5803.h&gt;",
+                "_mea_spec_m_s5803_8h.html"
+              ],
+              "has_details": true,
+              "name": "MS5803_TEMP_UNIT_NAME",
+              "initializer": "\"degreeCelsius\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;degreeCelsius&quot; (\u00b0C)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ms5803.html",
+              "id": "gae921e196f9f50f2d6cb1b45c3182b3d0",
+              "include": [
+                "&lt;src/sensors/MeaSpecMS5803.h&gt;",
+                "_mea_spec_m_s5803_8h.html"
+              ],
+              "has_details": true,
+              "name": "MS5803_TEMP_DEFAULT_CODE",
+              "initializer": "\"MeaSpecMS5803Temp\"",
+              "brief": "Default variable short code; &quot;MeaSpecMS5803Temp&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Pressure",
+        "id": "pressure",
+        "description": "<p><a name=\"sensor_ms5803_pressure\"></a> The pressure variable from a Measurement Specialties MS5803</p><ul><li>Range is 0 to 14 bar</li><li>Accuracy between 0 and +40\u00b0C is:<ul><li>14ba: \u00b120mbar</li><li>2ba: \u00b11.5mbar</li><li>1ba: \u00b11.5mbar</li></ul></li><li>Long term stability is:<ul><li>14ba: -20 mbar/yr</li><li>2ba: -1 mbar/yr</li></ul></li><li>Resolution is: (at oversampling ratios: 256 / 512 / 1024 / 2048 / 4096, respectively))<ul><li>14ba: 1 / 0.6 / 0.4 / 0.3 / 0.2 mbar (where 1 mbar = 100 pascals)</li><li>2ba: 0.13 / 0.084 / 0.054 / 0.036 / 0.024</li><li>1ba: 0.065 / 0.042 / 0.027 / 0.018 / 0.012</li><li><span class=\"m-dim\"><a href=\"#ga58a776dea7e006702ef0608657314b37\" class=\"m-doc\">MS5803_<wbr />PRESSURE_<wbr />RESOLUTION</a> = 3</span></li></ul></li></ul><p>{{ <a href=\"class_mea_spec_m_s5803___pressure.html#a8901f6e4dbb59bc0d41af9f25573edf8\" class=\"m-doc\">MeaSpecMS5803_Pressure::<wbr />MeaSpecMS5803_Pressure</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ms5803.html",
+              "id": "ga58a776dea7e006702ef0608657314b37",
+              "include": [
+                "&lt;src/sensors/MeaSpecMS5803.h&gt;",
+                "_mea_spec_m_s5803_8h.html"
+              ],
+              "has_details": true,
+              "name": "MS5803_PRESSURE_RESOLUTION",
+              "initializer": "3",
+              "brief": "Decimals places in string representation; pressure should have 3.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ms5803.html",
+              "id": "ga8f8119a1ca53e8bd54e072d75799eaf8",
+              "include": [
+                "&lt;src/sensors/MeaSpecMS5803.h&gt;",
+                "_mea_spec_m_s5803_8h.html"
+              ],
+              "has_details": true,
+              "name": "MS5803_PRESSURE_VAR_NUM",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; pressure is stored in sensorValues[1].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ms5803.html",
+              "id": "ga02719f2e5bfc7ed0d8fc5926b31b910b",
+              "include": [
+                "&lt;src/sensors/MeaSpecMS5803.h&gt;",
+                "_mea_spec_m_s5803_8h.html"
+              ],
+              "has_details": true,
+              "name": "MS5803_PRESSURE_VAR_NAME",
+              "initializer": "\"barometricPressure\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;barometricPressure&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ms5803.html",
+              "id": "ga254194d250e07a7a82ee2a99fb34224c",
+              "include": [
+                "&lt;src/sensors/MeaSpecMS5803.h&gt;",
+                "_mea_spec_m_s5803_8h.html"
+              ],
+              "has_details": true,
+              "name": "MS5803_PRESSURE_UNIT_NAME",
+              "initializer": "\"millibar\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;millibar&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ms5803.html",
+              "id": "ga0362cc35c6cd7ee45c156abfa00ba733",
+              "include": [
+                "&lt;src/sensors/MeaSpecMS5803.h&gt;",
+                "_mea_spec_m_s5803_8h.html"
+              ],
+              "has_details": true,
+              "name": "MS5803_PRESSURE_DEFAULT_CODE",
+              "initializer": "\"MeaSpecMS5803Pressure\"",
+              "brief": "Default variable short code; &quot;MeaSpecMS5803Pressure&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "Measurement Specialties MS5803",
+        "group__sensor__ms5803.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Measurement Specialties MS5803",
+        "group__sensor__ms5803.html"
+      ]
+    ]
+  }
+}

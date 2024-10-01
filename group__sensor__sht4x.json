@@ -1,0 +1,465 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__sensor__sht4x",
+    "name": "Sensirion SHT40, SHT41, and SHT45",
+    "url_base": "group__sensor__sht4x",
+    "url": "group__sensor__sht4x.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>Classes for the Sensirion SHT40, SHT41, and SHT45 I2C humidity and temperature sensors.</p><section id=\"sensor_sht4x_intro\"><h2>Introduction</h2><blockquote><p>SHT4x is a digital sensor platform for measuring relative humidity and temperature at different accuracy classes. The I2C interface provides several preconfigured I2C addresses and maintains an ultra-low power budget. The power-trimmed internal heater can be used at three heating levels thus enabling sensor operation in demanding environments.</p></blockquote><ul><li>The code for this library should work for 0x44 addressed SHT4x sensors - the SHT40, SHT41, and SHT45.</li><li>Depends on the <a href=\"https://github.com/adafruit/Adafruit_SHT40\">Adafruit SHT4x Library</a>.</li><li>Communicates via I2C<ul><li>There are versions of the SHT40, SHT40-AD1B with the I2C address 0x44 and SHT40-BD1B with the I2C address 0x45. <strong>This library only supports the 0x44 addressed sensor!</strong></li><li>The SHT41 and SHT45 only have one possible address, 0x44.</li></ul></li><li><strong>Only 1 can be connected to a single I2C bus at a time</strong></li><li>Requires a 3.3 power source</li></ul><aside class=\"m-note m-info\"><h4>Note</h4><p>Software I2C is <em>not</em> supported for the SHT4x. A secondary hardware I2C on a SAMD board is supported.</p></aside></section><section id=\"sensor_sht4x_datasheet\"><h2>Sensor Datasheet</h2><p><a href=\"https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Sensirion_Humidity_Sensors_SHT4x_Datasheet.pdf\">Datasheet</a></p></section><section id=\"sensor_sht4x_ctor\"><h2>Sensor Constructors</h2><p>{{ <a href=\"class_sensirion_s_h_t4x.html#a1cfd1e1e9743827b1d373c7e8ad0d393\" class=\"m-doc\">SensirionSHT4x::<wbr />SensirionSHT4x(int8_t, bool, uint8_t)</a> }} {{ <a href=\"class_sensirion_s_h_t4x.html#aeb3d3f532654f1ded85f8325b25dabb2\" class=\"m-doc\">SensirionSHT4x::<wbr />SensirionSHT4x(TwoWire*, int8_t, bool, uint8_t)</a> }}</p></section><section id=\"sensor_sht4x_examples\"><h2>Example Code</h2><p>The SHT40 is used in the <a href=\"example_menu.html#menu_walk_sensirion_sht4x\" class=\"m-doc\">menu a la carte</a> example</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;sensors/SensirionSHT4x.h&gt;</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"c1\">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">SHT4xPower</span><span class=\"w\">     </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">sensorPowerPin</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// Power pin</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">bool</span><span class=\"w\">   </span><span class=\"n\">SHT4xUseHeater</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"kr\">true</span><span class=\"p\">;</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"c1\">// Create an Sensirion SHT4X sensor object</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span><span class=\"n\">SensirionSHT4x</span><span class=\"w\"> </span><span class=\"nf\">sht4x</span><span class=\"p\">(</span><span class=\"n\">SHT4xPower</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">SHT4xUseHeater</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span>\n</div><div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span><span class=\"c1\">// Create humidity and temperature variable pointers for the SHT4X</span>\n</div><div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">sht4xHumid</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">SensirionSHT4x_Humidity</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">sht4x</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">sht4xTemp</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">SensirionSHT4x_Temp</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">sht4x</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "sensor_sht4x_intro",
+        "Introduction",
+        []
+      ],
+      [
+        "sensor_sht4x_datasheet",
+        "Sensor Datasheet",
+        []
+      ],
+      [
+        "sensor_sht4x_ctor",
+        "Sensor Constructors",
+        []
+      ],
+      [
+        "sensor_sht4x_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_sensirion_s_h_t4x.html",
+        "name": "SensirionSHT4x",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__sht4x.html\" class=\"m-doc\">Sensirion SHT4x</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_sensirion_s_h_t4x___humidity.html",
+        "name": "SensirionSHT4x_Humidity",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__sht4x.html#sensor_sht4x_humidity\" class=\"m-doc\">relative humidity output</a> from an <a href=\"group__sensor__sht4x.html\" class=\"m-doc\">Sensirion SHT4x</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_sensirion_s_h_t4x___temp.html",
+        "name": "SensirionSHT4x_Temp",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__sht4x.html#sensor_sht4x_temperature\" class=\"m-doc\">temperature output</a> from an <a href=\"group__sensor__sht4x.html\" class=\"m-doc\">Sensirion SHTx0</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Sensor Variable Counts",
+        "id": "sensor-variable-counts",
+        "description": "<p><a name=\"sensor_sht4x_var_counts\"></a> The number of variables that can be returned by the SHT4x</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__sht4x.html",
+              "id": "ga461d437b3941080fa70a36b512f84896",
+              "include": [
+                "&lt;src/sensors/SensirionSHT4x.h&gt;",
+                "_sensirion_s_h_t4x_8h.html"
+              ],
+              "has_details": true,
+              "name": "SHT4X_NUM_VARIABLES",
+              "initializer": "2",
+              "brief": "<a href=\"class_sensor.html#af26786329fd01b44cf31410d046fc8f3\" class=\"m-doc\">Sensor::<wbr />_numReturnedValues</a>; the SHT4x can report 2 values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__sht4x.html",
+              "id": "ga57a6801b328c165980a373ad62a46a45",
+              "include": [
+                "&lt;src/sensors/SensirionSHT4x.h&gt;",
+                "_sensirion_s_h_t4x_8h.html"
+              ],
+              "has_details": true,
+              "name": "SHT4X_INC_CALC_VARIABLES",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#a2f3f93a9205efb134cef1216d65077d2\" class=\"m-doc\">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Sensor Timing",
+        "id": "sensor-timing",
+        "description": "<p><a name=\"sensor_sht4x_timing\"></a> The sensor timing for an Sensirion SHT4x</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__sht4x.html",
+              "id": "ga3324393d00d65c0a687f96aa7f3e449b",
+              "include": [
+                "&lt;src/sensors/SensirionSHT4x.h&gt;",
+                "_sensirion_s_h_t4x_8h.html"
+              ],
+              "has_details": true,
+              "name": "SHT4X_WARM_UP_TIME_MS",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html#aaaefd7f306f86382a3dac726531756b4\" class=\"m-doc\">Sensor::<wbr />_warmUpTime_ms</a>; SHT4x warms up in 0.3ms (typical) and soft-resets in 1ms (max).",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__sht4x.html",
+              "id": "ga97e07270bdfe1fb0edbc38e68bcc0742",
+              "include": [
+                "&lt;src/sensors/SensirionSHT4x.h&gt;",
+                "_sensirion_s_h_t4x_8h.html"
+              ],
+              "has_details": true,
+              "name": "SHT4X_STABILIZATION_TIME_MS",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#ad6822ad09fb64658c911ce86820db79c\" class=\"m-doc\">Sensor::<wbr />_stabilizationTime_ms</a>; SHT4x is assumed to be immediately stable.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__sht4x.html",
+              "id": "ga835f44fff8b0cf99b1459c081f5107c7",
+              "include": [
+                "&lt;src/sensors/SensirionSHT4x.h&gt;",
+                "_sensirion_s_h_t4x_8h.html"
+              ],
+              "has_details": true,
+              "name": "SHT4X_MEASUREMENT_TIME_MS",
+              "initializer": "9",
+              "brief": "<a href=\"class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba\" class=\"m-doc\">Sensor::<wbr />_measurementTime_ms</a>; SHT4x takes 8.2ms (max) to complete a measurement at the highest precision. At medium precision measurement time is 4.5ms (max) and it is 1.7ms (max) at low precision.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Humidity",
+        "id": "humidity",
+        "description": "<p><a name=\"sensor_sht4x_humidity\"></a> The humidity variable from an Sensirion SHT4x</p><ul><li>Range is 0 to 100% RH</li><li>Accuracy is \u00b1 1.8 % RH (typical)</li></ul><p>{{ <a href=\"class_sensirion_s_h_t4x___humidity.html#a287cb355573e72d4dcfae25918eaf14f\" class=\"m-doc\">SensirionSHT4x_Humidity::<wbr />SensirionSHT4x_Humidity</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__sht4x.html",
+              "id": "gaa7545e6e0348896f84c75e5c4798c0bc",
+              "include": [
+                "&lt;src/sensors/SensirionSHT4x.h&gt;",
+                "_sensirion_s_h_t4x_8h.html"
+              ],
+              "has_details": true,
+              "name": "SHT4X_HUMIDITY_RESOLUTION",
+              "initializer": "2",
+              "brief": "Decimals places in string representation; humidity should have 2 (0.01 % RH).",
+              "description": "<aside class=\"m-note m-info\"><h4>Note</h4><p>This resolution is some-what silly in light of the \u00b1 1.8 % RH accuracy.</p></aside>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__sht4x.html",
+              "id": "ga0b914df606b652e8dfcf4f88791f8e2e",
+              "include": [
+                "&lt;src/sensors/SensirionSHT4x.h&gt;",
+                "_sensirion_s_h_t4x_8h.html"
+              ],
+              "has_details": true,
+              "name": "SHT4X_HUMIDITY_VAR_NUM",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; humidity is stored in sensorValues[0].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__sht4x.html",
+              "id": "ga55a7de4fedc8c8379efd41da90612bd8",
+              "include": [
+                "&lt;src/sensors/SensirionSHT4x.h&gt;",
+                "_sensirion_s_h_t4x_8h.html"
+              ],
+              "has_details": true,
+              "name": "SHT4X_HUMIDITY_VAR_NAME",
+              "initializer": "\"relativeHumidity\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;relativeHumidity&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__sht4x.html",
+              "id": "ga3d05c0e99f07f957d8c343644a19698e",
+              "include": [
+                "&lt;src/sensors/SensirionSHT4x.h&gt;",
+                "_sensirion_s_h_t4x_8h.html"
+              ],
+              "has_details": true,
+              "name": "SHT4X_HUMIDITY_UNIT_NAME",
+              "initializer": "\"percent\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;percent&quot; (percent relative humidity)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__sht4x.html",
+              "id": "ga8c8ed3e5490048ff0b45d59e22f06701",
+              "include": [
+                "&lt;src/sensors/SensirionSHT4x.h&gt;",
+                "_sensirion_s_h_t4x_8h.html"
+              ],
+              "has_details": true,
+              "name": "SHT4X_HUMIDITY_DEFAULT_CODE",
+              "initializer": "\"SHT4xHumidity\"",
+              "brief": "Default variable short code; &quot;SHT4xHumidity&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Temperature",
+        "id": "temperature",
+        "description": "<p><a name=\"sensor_sht4x_temperature\"></a> The temperature variable from an Sensirion SHT4x</p><ul><li>Range is -40\u00b0C to +125\u00b0C</li><li>Accuracy is \u00b10.2\u00b0C</li></ul><p>{{ <a href=\"class_sensirion_s_h_t4x___temp.html#a362272b4192bf8eb8cee7ff4dc369d15\" class=\"m-doc\">SensirionSHT4x_Temp::<wbr />SensirionSHT4x_Temp</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__sht4x.html",
+              "id": "ga4a8997522692f3e8035e48a58f8177ee",
+              "include": [
+                "&lt;src/sensors/SensirionSHT4x.h&gt;",
+                "_sensirion_s_h_t4x_8h.html"
+              ],
+              "has_details": true,
+              "name": "SHT4X_TEMP_RESOLUTION",
+              "initializer": "2",
+              "brief": "Decimals places in string representation; humidity should have 2 (0.01 \u00b0C).",
+              "description": "<aside class=\"m-note m-info\"><h4>Note</h4><p>This resolution is some-what silly in light of the \u00b1 0.2\u00b0C accuracy.</p></aside>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__sht4x.html",
+              "id": "ga6cb8de5dbf91a52b3e5fa04e6312e6e5",
+              "include": [
+                "&lt;src/sensors/SensirionSHT4x.h&gt;",
+                "_sensirion_s_h_t4x_8h.html"
+              ],
+              "has_details": true,
+              "name": "SHT4X_TEMP_VAR_NUM",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; temperature is stored in sensorValues[1].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__sht4x.html",
+              "id": "gabe8694b20d1231f0dfcee438fa8ca977",
+              "include": [
+                "&lt;src/sensors/SensirionSHT4x.h&gt;",
+                "_sensirion_s_h_t4x_8h.html"
+              ],
+              "has_details": true,
+              "name": "SHT4X_TEMP_VAR_NAME",
+              "initializer": "\"temperature\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;temperature&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__sht4x.html",
+              "id": "gaa36d83b7aba3385a105bb49fedf1c360",
+              "include": [
+                "&lt;src/sensors/SensirionSHT4x.h&gt;",
+                "_sensirion_s_h_t4x_8h.html"
+              ],
+              "has_details": true,
+              "name": "SHT4X_TEMP_UNIT_NAME",
+              "initializer": "\"degreeCelsius\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;degreeCelsius&quot; (\u00b0C)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__sht4x.html",
+              "id": "gaca55ccb1ceabfeee19006bbf393f403b",
+              "include": [
+                "&lt;src/sensors/SensirionSHT4x.h&gt;",
+                "_sensirion_s_h_t4x_8h.html"
+              ],
+              "has_details": true,
+              "name": "SHT4X_TEMP_DEFAULT_CODE",
+              "initializer": "\"SHT4xTemp\"",
+              "brief": "Default variable short code; &quot;SHT4xTemp&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "Sensirion SHT40, SHT41, and SHT45",
+        "group__sensor__sht4x.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Sensirion SHT40, SHT41, and SHT45",
+        "group__sensor__sht4x.html"
+      ]
+    ]
+  }
+}

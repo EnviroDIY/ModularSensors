@@ -1,0 +1,314 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__modem__digi",
+    "name": "Digi XBee's",
+    "url_base": "group__modem__digi",
+    "url": "group__modem__digi.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<section id=\"modem_digi_notes\"><h2>Introduction</h2><p>All of the various cellular XBee&#x27;s and XBee3&#x27;s are supported by this library. The wifi S6B is also supported.</p><aside class=\"m-note m-danger\"><h4>Warning</h4><p>This library does <em>NOT</em> directly support the ZigBee, 900mHZ, or any other radio-based XBee&#x27;s. It is for the cellular and WiFi Bee&#x27;s only.</p></aside><aside class=\"m-note m-info\"><h4>Note</h4><p>All GPIOs are user configurable and are configured to use the expected input/output mode in the modem setup functions.</p></aside></section><section id=\"modem_digi_mayfly-and-digi-xbee-connections\"><h2>Mayfly and Digi XBee Connections</h2><section id=\"modem_digi_raw_pins_1x\"><h3>Pin Numbers for connecting Digi XBee&#x27;s Directly to a Mayfly v1.x</h3><p>This applies to <em>all</em> Digi XBees and XBee3&#x27;s when attached directly to the Mayfly&#x27;s bee slot.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\">1</span><span class=\"k\">const</span><span class=\"w\"> </span><span class=\"kt\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemVccPin</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">18</span><span class=\"p\">;</span><span class=\"w\">      </span><span class=\"c1\">// MCU pin controlling modem power</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\">2</span><span class=\"k\">const</span><span class=\"w\"> </span><span class=\"kt\">bool</span><span class=\"w\"> </span><span class=\"n\">useCTSforStatus</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"nb\">true</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// Flag to use the XBee `CTS` pin for status</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\">3</span><span class=\"k\">const</span><span class=\"w\"> </span><span class=\"kt\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemStatusPin</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">19</span><span class=\"p\">;</span><span class=\"w\">   </span><span class=\"c1\">// MCU pin used to read modem status</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\">4</span><span class=\"k\">const</span><span class=\"w\"> </span><span class=\"kt\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemResetPin</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">A5</span><span class=\"p\">;</span><span class=\"w\">    </span><span class=\"c1\">// MCU pin connected to modem reset pin</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\">5</span><span class=\"k\">const</span><span class=\"w\"> </span><span class=\"kt\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemSleepRqPin</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">23</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// MCU pin used for modem sleep/wake request</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\">6</span><span class=\"k\">const</span><span class=\"w\"> </span><span class=\"kt\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemLEDPin</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">redLED</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// MCU pin connected an LED to show modem status</span>\n</div></div></div></section><section id=\"modem_digi_raw_pins\"><h3>Pin Numbers for connecting Digi XBee&#x27;s Directly to a Mayfly v0.3-v0.5c</h3><p>This applies to <em>all</em> Digi XBees and XBee3&#x27;s when attached directly to the Mayfly&#x27;s bee slot.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\">1</span><span class=\"k\">const</span><span class=\"w\"> </span><span class=\"kt\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemVccPin</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">-1</span><span class=\"p\">;</span><span class=\"w\">      </span><span class=\"c1\">// MCU pin controlling modem power</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\">2</span><span class=\"k\">const</span><span class=\"w\"> </span><span class=\"kt\">bool</span><span class=\"w\"> </span><span class=\"n\">useCTSforStatus</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"nb\">true</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// Flag to use the XBee `CTS` pin for status</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\">3</span><span class=\"k\">const</span><span class=\"w\"> </span><span class=\"kt\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemStatusPin</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">19</span><span class=\"p\">;</span><span class=\"w\">   </span><span class=\"c1\">// MCU pin used to read modem status</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\">4</span><span class=\"k\">const</span><span class=\"w\"> </span><span class=\"kt\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemResetPin</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">-1</span><span class=\"p\">;</span><span class=\"w\">    </span><span class=\"c1\">// MCU pin connected to modem reset pin</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\">5</span><span class=\"k\">const</span><span class=\"w\"> </span><span class=\"kt\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemSleepRqPin</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">23</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// MCU pin used for modem sleep/wake request</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\">6</span><span class=\"k\">const</span><span class=\"w\"> </span><span class=\"kt\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemLEDPin</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">redLED</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// MCU pin connected an LED to show modem status</span>\n</div></div></div><ul><li>The Digi XBee gets power from pin 1; on a Mayfly this pin is always powered - the XBee cannot be powered down.<ul><li>NOTE: If using a cellular XBee or XBee3 directly with the Mayfly your Mayfly must be at least v0.5b, you must use SJ13 to connect the Bee directly to the LiPo, and you must always have a battery connected to provide enough power for the XBee to make a cellular connection.</li><li>NOTE 2: If you turn off the Mayfly via its switch but leave the XBee connected as above, it will drain your battery very quickly. Disconnect the battery if you turn off the Mayfly.</li></ul></li><li>The Digi XBee reports ON/SLEEP_N on pin 13, but this is not connected to a Mayfly pin. Instead, use the XBee&#x27;s <code>CTS</code> pin (pin 12) which is connected to Mayfly pin 19.</li><li>XBee pin 5 is <code>RESET_N</code> but this is not connected to any pin on the Mayfly.</li><li>XBee pin 9 is SLEEP_RQ which is connected to Mayfly pin 23.</li><li>I like to use the red LED to show the bee wake/sleep since the Digi XBee&#x27;s have no LEDs of their own.</li></ul></section><section id=\"modem_digi_adapter_pins\"><h3>Pin Numbers for connecting Digi LTE XBee3&#x27;s to a Mayfly v0.3-v0.5c via the LTE adapter board</h3><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\">1</span><span class=\"k\">const</span><span class=\"w\"> </span><span class=\"kt\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemVccPin</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">-1</span><span class=\"p\">;</span><span class=\"w\">       </span><span class=\"c1\">// MCU pin controlling modem power</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\">2</span><span class=\"k\">const</span><span class=\"w\"> </span><span class=\"kt\">bool</span><span class=\"w\"> </span><span class=\"n\">useCTSforStatus</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"nb\">false</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// Flag to use the XBee `CTS` pin for status</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\">3</span><span class=\"k\">const</span><span class=\"w\"> </span><span class=\"kt\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemStatusPin</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">19</span><span class=\"p\">;</span><span class=\"w\">    </span><span class=\"c1\">// MCU pin used to read modem status</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\">4</span><span class=\"k\">const</span><span class=\"w\"> </span><span class=\"kt\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemResetPin</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">20</span><span class=\"p\">;</span><span class=\"w\">     </span><span class=\"c1\">// MCU pin connected to modem reset pin</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\">5</span><span class=\"k\">const</span><span class=\"w\"> </span><span class=\"kt\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemSleepRqPin</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">23</span><span class=\"p\">;</span><span class=\"w\">   </span><span class=\"c1\">// MCU pin used for modem sleep/wake request</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\">6</span><span class=\"k\">const</span><span class=\"w\"> </span><span class=\"kt\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemLEDPin</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">redLED</span><span class=\"p\">;</span><span class=\"w\">   </span><span class=\"c1\">// MCU pin connected an LED to show modem status</span>\n</div></div></div><ul><li>The power is still not controllable unless you use both SJ7 on the Mayfly and SJ1 on the adapter. Doing so, you could use pin A5 for modem Vcc.</li><li>The LTE adapter connects ON/SLEEP_N on bee pin 13 to Mayfly pin 19 (unless you change this with adapter SJ2).</li><li>XBee pin 5 is <code>RESET_N</code> which the adapter connects to Mayfly pin 20.</li><li>XBee pin 9 is SLEEP_RQ which is connected still to Mayfly pin 23.</li><li>I still like to use the red LED to show the bee wake/sleep in addition to the lights on the adapter.</li></ul></section></section>",
+    "sections": [
+      [
+        "modem_digi_notes",
+        "Introduction",
+        []
+      ],
+      [
+        "modem_digi_mayfly-and-digi-xbee-connections",
+        "Mayfly and Digi XBee Connections",
+        [
+          [
+            "modem_digi_raw_pins_1x",
+            "Pin Numbers for connecting Digi XBee&#x27;s Directly to a Mayfly v1.x",
+            []
+          ],
+          [
+            "modem_digi_raw_pins",
+            "Pin Numbers for connecting Digi XBee&#x27;s Directly to a Mayfly v0.3-v0.5c",
+            []
+          ],
+          [
+            "modem_digi_adapter_pins",
+            "Pin Numbers for connecting Digi LTE XBee3&#x27;s to a Mayfly v0.3-v0.5c via the LTE adapter board",
+            []
+          ]
+        ]
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [
+      {
+        "url": "group__modem__digi__3g__bypass.html",
+        "name": "Digi XBee\u00ae Cellular 3G",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "group__modem__digi__cellular.html",
+        "name": "XBee Cellular",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "group__modem__digi__lte__bypass.html",
+        "name": "Digi XBee\u00ae Cellular LTE-M/NB-IoT",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "group__modem__digi__wifi.html",
+        "name": "XBee Wifi S6B",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      }
+    ],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_digi_x_bee.html",
+        "name": "DigiXBee",
+        "brief": "The parent class for all <a href=\"group__modem__digi.html\" class=\"m-doc\">Digi XBee and XBee3</a> wifi and cellular modules.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Modem Pin Settings and Timing",
+        "id": "modem-pin-settings-and-timing",
+        "description": "<p><a name=\"modem_digi_pins_timing\"></a> The timing and pin level settings for a Digi XBee</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__modem__digi.html",
+              "id": "gac620ac612b9b734a4dc280a6f657b586",
+              "include": [
+                "&lt;src/modems/DigiXBee.h&gt;",
+                "_digi_x_bee_8h.html"
+              ],
+              "has_details": true,
+              "name": "XBEE_STATUS_TIME_MS",
+              "initializer": "15",
+              "brief": "The <a href=\"classlogger_modem.html#a755d93cb67e9184a7cdfeae17448667b\" class=\"m-doc\">loggerModem::<wbr />_statusTime_ms</a>.",
+              "description": "<p>XBee status can either be measured directly with <code>ON/SLEEP_N/DIO9</code> or indirectly with <code>CTS_N/DIO7</code>. The status level will depend on which is being used:</p><ul><li>the <code>ON/SLEEP_N/DIO9</code> will be <code>HIGH</code> when the XBee is awake (ie, yes, I am not sleeping)</li><li>but the <code>CTS_N/DIO7</code> will be <code>LOW</code> when the board is awake (ie, no it&#x27;s not not clear to send).</li></ul><p>To use the <code>CTS_N/DIO7</code> as the status indicator, set useCTSStatus to true in the constructor.</p><p>The time from wake until the status pin is active is not documented.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__digi.html",
+              "id": "ga56a13974a305cad34e633df38d95f3d5",
+              "include": [
+                "&lt;src/modems/DigiXBee.h&gt;",
+                "_digi_x_bee_8h.html"
+              ],
+              "has_details": true,
+              "name": "XBEE_RESET_LEVEL",
+              "initializer": "LOW",
+              "brief": "The <a href=\"classlogger_modem.html#a4832f4560020f57bfb2e11ddade73d0a\" class=\"m-doc\">loggerModem::<wbr />_resetLevel</a>.",
+              "description": "<p>All Digi XBee/XBee3&#x27;s are reset via a <code>LOW</code> pulse on the <code>RESET_N</code> pin.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__digi.html",
+              "id": "ga7258aace209b2d1ed08c994ea780cc40",
+              "include": [
+                "&lt;src/modems/DigiXBee.h&gt;",
+                "_digi_x_bee_8h.html"
+              ],
+              "has_details": true,
+              "name": "XBEE_RESET_PULSE_MS",
+              "initializer": "5",
+              "brief": "The <a href=\"classlogger_modem.html#a9ee81f2d0dd9e5cdf89e8e469147c38c\" class=\"m-doc\">loggerModem::<wbr />_resetPulse_ms</a>.",
+              "description": "<p>All Digi XBee/XBee3&#x27;s are reset via a <code>LOW</code> pulse on the <code>RESET_N</code> pin.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__digi.html",
+              "id": "ga96b530db2a1a821e11f1370c0166fee2",
+              "include": [
+                "&lt;src/modems/DigiXBee.h&gt;",
+                "_digi_x_bee_8h.html"
+              ],
+              "has_details": true,
+              "name": "XBEE_WAKE_LEVEL",
+              "initializer": "LOW",
+              "brief": "The <a href=\"classlogger_modem.html#a71c42d58d22d8481e6e6f7e5b7d8f0bf\" class=\"m-doc\">loggerModem::<wbr />_wakeLevel</a>.",
+              "description": "<p>All XBee/XBee3 modules are woken by holding <code>DTR_N/SLEEP_RQ/DIO8</code> <code>LOW</code> (not pulsed).</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__digi.html",
+              "id": "gac9efb4a4e2ed0f68eab0f757ec389f71",
+              "include": [
+                "&lt;src/modems/DigiXBee.h&gt;",
+                "_digi_x_bee_8h.html"
+              ],
+              "has_details": true,
+              "name": "XBEE_WAKE_PULSE_MS",
+              "initializer": "0",
+              "brief": "The <a href=\"classlogger_modem.html#a1b4e78a1e0963fb1cc970ce6273c124d\" class=\"m-doc\">loggerModem::<wbr />_wakePulse_ms</a>.",
+              "description": "<p>All XBee/XBee3 modules are woken by holding <code>DTR_N/SLEEP_RQ/DIO8</code> <code>LOW</code> (not pulsed).</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__digi.html",
+              "id": "ga620aa79267cabc3c7928a4b1cec9e6c0",
+              "include": [
+                "&lt;src/modems/DigiXBee.h&gt;",
+                "_digi_x_bee_8h.html"
+              ],
+              "has_details": true,
+              "name": "XBEE_WAKE_DELAY_MS",
+              "initializer": "100",
+              "brief": "The <a href=\"classlogger_modem.html#a68051ed68b85195bf188a1914c71a9c8\" class=\"m-doc\">loggerModem::<wbr />_wakeDelayTime_ms</a>.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__digi.html",
+              "id": "ga4fae98ae887214c047d648795647ec48",
+              "include": [
+                "&lt;src/modems/DigiXBee.h&gt;",
+                "_digi_x_bee_8h.html"
+              ],
+              "has_details": true,
+              "name": "XBEE_ATRESPONSE_TIME_MS",
+              "initializer": "15000L",
+              "brief": "The <a href=\"classlogger_modem.html#aa9bf26acfae6ec2611b4d7a806dd2489\" class=\"m-doc\">loggerModem::<wbr />_max_atresponse_time_ms</a>.",
+              "description": "<p>The serial response time is not documented for the XBee so we allow a long (15s) buffer. It is probably much less than this, except possibly in bypass mode.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__digi.html",
+              "id": "ga0dca9131ad149e8c7d6d7167111931dd",
+              "include": [
+                "&lt;src/modems/DigiXBee.h&gt;",
+                "_digi_x_bee_8h.html"
+              ],
+              "has_details": true,
+              "name": "XBEE_DISCONNECT_TIME_MS",
+              "initializer": "15000L",
+              "brief": "The <a href=\"classlogger_modem.html#a32496b2b79dc9317639900a3c385405d\" class=\"m-doc\">loggerModem::<wbr />_disconnetTime_ms</a>.",
+              "description": "<p>Power down time for the XBee is dependent on the underlying cellular or wifi component. We allow 15 seconds in case it is not monitored. The u-blox SARA R4 on the LTE-M model takes nearly that long to shut down.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Modems and Communication Modules",
+        "group__the__modems.html"
+      ],
+      [
+        "Digi XBee&#x27;s",
+        "group__modem__digi.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Digi XBee&#x27;s",
+        "group__modem__digi.html"
+      ]
+    ]
+  }
+}

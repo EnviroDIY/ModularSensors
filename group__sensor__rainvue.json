@@ -1,0 +1,737 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__sensor__rainvue",
+    "name": "Campbell RainVUE10",
+    "url_base": "group__sensor__rainvue",
+    "url": "group__sensor__rainvue.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>Classes for the <a href=\"https://www.campbellsci.com/rainvue10\">Campbell RainVUE10</a> precipitation sensor.</p><section id=\"sensor_rainvue_intro\"><h2>Introduction</h2><p>The RainVUETM10 is an SDI-12 tipping bucket rain gage in the RainVUE\u2122 family of products. Advanced algorithms and digital processing within the sensor compensate for errors caused by high-intensity rain and provide accurate precipitation and intensity measurements.</p><p>The sensor is implemented as a sub-classes of the <a href=\"class_s_d_i12_sensors.html\" class=\"m-doc\">SDI12Sensors</a> class. It requires a continuous 6 to 18 Vdc power supply. As backup, an internal 240 mAh lithium battery (3V Coin Cell CR2032) provides up to 15 days of continual operation after power loss. It draws &lt; 80 \u00b5A when inactive and 1 mA while measuring.</p><aside class=\"m-note m-info\"><h4>Note</h4><p>You should not average measurements for this sensor. The sensor takes continuous readings and returns the cumulative value over each logging interval.</p></aside></section><section id=\"sensor_rainvue_datasheet\"><h2>Sensor Datasheet</h2><p>The specifications and datasheet are available at <a href=\"https://www.campbellsci.com/rainvue10\">https:/<wbr />/<wbr />www.campbellsci.com/<wbr />rainvue10</a></p></section><section id=\"sensor_rainvue_flags\"><h2>Build flags</h2><aside class=\"m-note m-default\"><h4>See also</h4><p><a href=\"group__sdi12__group.html#sdi12_group_flags\" class=\"m-doc\">Build flags</a></p></aside></section><section id=\"sensor_rainvue_ctor\"><h2>Sensor Constructor</h2><p>{{ <a href=\"class_campbell_rain_v_u_e10.html#a78a47f4f4e8c21b86721c2240207988a\" class=\"m-doc\">CampbellRainVUE10::<wbr />CampbellRainVUE10</a> }}</p><hr/></section><section id=\"sensor_rainvue_examples\"><h2>Example Code</h2><p>The Campbell RainVUE10 is used in the <a href=\"example_menu.html#menu_walk_campbell_rain_vue10\" class=\"m-doc\">menu a la carte</a> example.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;sensors/CampbellRainVUE10.h&gt;</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"c1\">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">char</span><span class=\"o\">*</span><span class=\"w\">  </span><span class=\"n\">RainVUESDI12address</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"s\">&quot;0&quot;</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// The SDI-12 Address of the RainVUE10</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">RainVUEPower</span><span class=\"w\">        </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">-1</span><span class=\"p\">;</span><span class=\"w\">   </span><span class=\"c1\">// Power pin, for continous power</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">RainVUEData</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">5</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// The SDI-12 data pin, for continuous power</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"c1\">// NOTE:  you should NOT take more than one readings.  THe sensor counts</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span><span class=\"c1\">// cummulative tips and rain accumulation since the last measurement.</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span>\n</div><div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span><span class=\"c1\">// Create a Campbell RainVUE10 sensor object</span>\n</div><div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span><span class=\"n\">CampbellRainVUE10</span><span class=\"w\"> </span><span class=\"nf\">rainvue</span><span class=\"p\">(</span><span class=\"o\">*</span><span class=\"n\">RainVUESDI12address</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">RainVUEPower</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">RainVUEData</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span>\n</div><div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span><span class=\"c1\">// Create turbidity, temperature, and error variable pointers for the RainVUE10</span>\n</div><div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">rainvuePrecipitation</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">CampbellRainVUE10_Precipitation</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-15\" name=\"l-15\"></a><span class=\"linenos\">15</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">rainvue</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-16\" name=\"l-16\"></a><span class=\"linenos\">16</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">rainvueTips</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">CampbellRainVUE10_Tips</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-17\" name=\"l-17\"></a><span class=\"linenos\">17</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">rainvue</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-18\" name=\"l-18\"></a><span class=\"linenos\">18</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">rainvueRainRateAve</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">CampbellRainVUE10_RainRateAve</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-19\" name=\"l-19\"></a><span class=\"linenos\">19</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">rainvue</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-20\" name=\"l-20\"></a><span class=\"linenos\">20</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">rainvueRainRateMax</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">CampbellRainVUE10_RainRateMax</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-21\" name=\"l-21\"></a><span class=\"linenos\">21</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">rainvue</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "sensor_rainvue_intro",
+        "Introduction",
+        []
+      ],
+      [
+        "sensor_rainvue_datasheet",
+        "Sensor Datasheet",
+        []
+      ],
+      [
+        "sensor_rainvue_flags",
+        "Build flags",
+        []
+      ],
+      [
+        "sensor_rainvue_ctor",
+        "Sensor Constructor",
+        []
+      ],
+      [
+        "sensor_rainvue_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_campbell_rain_v_u_e10.html",
+        "name": "CampbellRainVUE10",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__rainvue.html\" class=\"m-doc\">Campbell RainVUE10 precipitation sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_campbell_rain_v_u_e10___precipitation.html",
+        "name": "CampbellRainVUE10_Precipitation",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__rainvue.html#sensor_rainvue_precipitation\" class=\"m-doc\">precipitation output</a> from a <a href=\"group__sensor__rainvue.html\" class=\"m-doc\">Campbell RainVUE10 precipitation sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_campbell_rain_v_u_e10___tips.html",
+        "name": "CampbellRainVUE10_Tips",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__rainvue.html#sensor_rainvue_tips\" class=\"m-doc\">tip count output</a> from a <a href=\"group__sensor__rainvue.html\" class=\"m-doc\">Campbell RainVUE10 precipitation sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_campbell_rain_v_u_e10___rain_rate_ave.html",
+        "name": "CampbellRainVUE10_RainRateAve",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__rainvue.html#sensor_rainvue_rainrateave\" class=\"m-doc\">average rainfall rate output</a> from a <a href=\"group__sensor__rainvue.html\" class=\"m-doc\">Campbell RainVUE10 precipitation sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_campbell_rain_v_u_e10___rain_rate_max.html",
+        "name": "CampbellRainVUE10_RainRateMax",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__rainvue.html#sensor_rainvue_rainratemax\" class=\"m-doc\">maximum rainfall rate output</a> from a <a href=\"group__sensor__rainvue.html\" class=\"m-doc\">Campbell RainVUE10 precipitation sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Sensor Variable Counts",
+        "id": "sensor-variable-counts",
+        "description": "<p><a name=\"sensor_rainvue_var_counts\"></a> The number of variables that can be returned by RainVUE10</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__rainvue.html",
+              "id": "ga4d7d75ed968da9cdc077ab1dc1a5a6a0",
+              "include": [
+                "&lt;src/sensors/CampbellRainVUE10.h&gt;",
+                "_campbell_rain_v_u_e10_8h.html"
+              ],
+              "has_details": true,
+              "name": "RAINVUE10_NUM_VARIABLES",
+              "initializer": "5",
+              "brief": "<a href=\"class_sensor.html#af26786329fd01b44cf31410d046fc8f3\" class=\"m-doc\">Sensor::<wbr />_numReturnedValues</a>; the RainVUE10 can report 5 values (although we only keep 4).",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__rainvue.html",
+              "id": "ga6bdf92dfba0c8c1b56554bfc10314a85",
+              "include": [
+                "&lt;src/sensors/CampbellRainVUE10.h&gt;",
+                "_campbell_rain_v_u_e10_8h.html"
+              ],
+              "has_details": true,
+              "name": "RAINVUE10_INC_CALC_VARIABLES",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#a2f3f93a9205efb134cef1216d65077d2\" class=\"m-doc\">Sensor::<wbr />_incCalcValues</a>; The RainVUE calculates averages and other stats on board, but we don&#x27;t calculate any additional values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Sensor Timing",
+        "id": "sensor-timing",
+        "description": "<p><a name=\"sensor_rainvue_timing\"></a> The sensor timing for a Campbell RainVUE10</p><ul><li>Readings transferred from the tipping bucket to the logger are from past tips, so there is no need to wait for stability or measuring.</li></ul>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__rainvue.html",
+              "id": "ga650230577bd6914463b53c094aa6d165",
+              "include": [
+                "&lt;src/sensors/CampbellRainVUE10.h&gt;",
+                "_campbell_rain_v_u_e10_8h.html"
+              ],
+              "has_details": true,
+              "name": "RAINVUE10_WARM_UP_TIME_MS",
+              "initializer": "100",
+              "brief": "<a href=\"class_sensor.html#aaaefd7f306f86382a3dac726531756b4\" class=\"m-doc\">Sensor::<wbr />_warmUpTime_ms</a>; the RainVUE10 warms up in &gt;100ms.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__rainvue.html",
+              "id": "gabb3881d212531460732c081613a824e3",
+              "include": [
+                "&lt;src/sensors/CampbellRainVUE10.h&gt;",
+                "_campbell_rain_v_u_e10_8h.html"
+              ],
+              "has_details": true,
+              "name": "RAINVUE10_STABILIZATION_TIME_MS",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#ad6822ad09fb64658c911ce86820db79c\" class=\"m-doc\">Sensor::<wbr />_stabilizationTime_ms</a>; the RainVUE10 is stable as soon as it warms up (0ms stabilization).",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__rainvue.html",
+              "id": "ga08fbdf89a78aa50b639a75b15751f666",
+              "include": [
+                "&lt;src/sensors/CampbellRainVUE10.h&gt;",
+                "_campbell_rain_v_u_e10_8h.html"
+              ],
+              "has_details": true,
+              "name": "RAINVUE10_MEASUREMENT_TIME_MS",
+              "initializer": "100",
+              "brief": "<a href=\"class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba\" class=\"m-doc\">Sensor::<wbr />_measurementTime_ms</a>; the RainVUE10 takes &gt;100ms to complete a measurement.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__rainvue.html",
+              "id": "ga677012b67e6b9f74ebbb1e2bb6c5354f",
+              "include": [
+                "&lt;src/sensors/CampbellRainVUE10.h&gt;",
+                "_campbell_rain_v_u_e10_8h.html"
+              ],
+              "has_details": true,
+              "name": "RAINVUE10_EXTRA_WAKE_TIME_MS",
+              "initializer": "0",
+              "brief": "Extra wake time required for an SDI-12 sensor between the &quot;break&quot; and the time the command is sent. The RainVUE requires no extra time.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Precipitation Accumulated Depth",
+        "id": "precipitation-accumulated-depth",
+        "description": "<p><a name=\"sensor_rainvue_precipitation\"></a> The intensity-corrected accumulation variable from a Campbell RainVUE10 For the &quot;-IN&quot; Option (English units)</p><ul><li>Range is 0 to 1000 mm/h (0 to 40 in./h).</li><li>Resolution is 0.254 mm (0.01 in.)</li><li>Accuracy is \u00b11% at 0 to 500 mm/h intensity (0 to 19.7 in./h intensity) For the &quot;-MM&quot; Option (Metric units)</li><li>Range is 0 to 500 mm/h (0 to 19.7 in./h)</li><li>Resolution is 0.1 mm (0.004 in.)</li><li>Accuracy is \u00b13% at 0 to 300 mm/h intensity (0 to 11.8 in./h intensity) \u00b15% at 300 to 500 mm/h intensity (11.8 to 19.7 in./h intensity)</li></ul><p>{{ <a href=\"class_campbell_rain_v_u_e10___precipitation.html#a03cdb7ca6ec5d10286ba0a5ba7b43155\" class=\"m-doc\">CampbellRainVUE10_Precipitation::<wbr />CampbellRainVUE10_Precipitation</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__rainvue.html",
+              "id": "gaf7f5285d046fac32f39067365b0eb1f9",
+              "include": [
+                "&lt;src/sensors/CampbellRainVUE10.h&gt;",
+                "_campbell_rain_v_u_e10_8h.html"
+              ],
+              "has_details": true,
+              "name": "RAINVUE10_PRECIPITATION_RESOLUTION",
+              "initializer": "2",
+              "brief": "Decimals places in string representation; depth should have 2 (resolution is 0.01 inches).",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__rainvue.html",
+              "id": "gaf81e3c770144a8502469c21f8f9e89d0",
+              "include": [
+                "&lt;src/sensors/CampbellRainVUE10.h&gt;",
+                "_campbell_rain_v_u_e10_8h.html"
+              ],
+              "has_details": true,
+              "name": "RAINVUE10_PRECIPITATION_VAR_NUM",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; precipitation is stored in sensorValues[0].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__rainvue.html",
+              "id": "gae8c4da26fa820e98ff402e4d90fec24d",
+              "include": [
+                "&lt;src/sensors/CampbellRainVUE10.h&gt;",
+                "_campbell_rain_v_u_e10_8h.html"
+              ],
+              "has_details": true,
+              "name": "RAINVUE10_PRECIPITATION_VAR_NAME",
+              "initializer": "\"precipitation\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;precipitation&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__rainvue.html",
+              "id": "ga757fc3c59e6c91cfd7fd7279ec45daf3",
+              "include": [
+                "&lt;src/sensors/CampbellRainVUE10.h&gt;",
+                "_campbell_rain_v_u_e10_8h.html"
+              ],
+              "has_details": true,
+              "name": "RAINVUE10_PRECIPITATION_UNIT_NAME",
+              "initializer": "\"inch\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;inch&quot; (in_i)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__rainvue.html",
+              "id": "gab051d67b89a48c70c03195c4f47c4bf4",
+              "include": [
+                "&lt;src/sensors/CampbellRainVUE10.h&gt;",
+                "_campbell_rain_v_u_e10_8h.html"
+              ],
+              "has_details": true,
+              "name": "RAINVUE10_PRECIPITATION_DEFAULT_CODE",
+              "initializer": "\"RainVUEPrecipitation\"",
+              "brief": "Default variable short code; &quot;RainVUEPrecipitation&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Tip Count",
+        "id": "tip-count",
+        "description": "<p><a name=\"sensor_rainvue_tips\"></a> Defines for tip count variable from a tipping bucket counter</p><ul><li>Range and accuracy depend on the tipping bucket used.</li></ul><p>{{ <a href=\"class_campbell_rain_v_u_e10___tips.html#a3f9fa51d9e9116d33408002b1195de4c\" class=\"m-doc\">CampbellRainVUE10_Tips::<wbr />CampbellRainVUE10_Tips</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__rainvue.html",
+              "id": "ga2f93316a91e45577908a9e6729ae7cfe",
+              "include": [
+                "&lt;src/sensors/CampbellRainVUE10.h&gt;",
+                "_campbell_rain_v_u_e10_8h.html"
+              ],
+              "has_details": true,
+              "name": "RAINVUE10_TIPS_RESOLUTION",
+              "initializer": "0",
+              "brief": "Decimals places in string representation; the number of tips should have 0 - resolution is 1 tip.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__rainvue.html",
+              "id": "ga3b405802506bf90c9a2a4ac3de1cd1eb",
+              "include": [
+                "&lt;src/sensors/CampbellRainVUE10.h&gt;",
+                "_campbell_rain_v_u_e10_8h.html"
+              ],
+              "has_details": true,
+              "name": "RAINVUE10_TIPS_VAR_NUM",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; tips is stored in sensorValues[1].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__rainvue.html",
+              "id": "ga9c3c3f97415a35ac3616bd153fa0ba76",
+              "include": [
+                "&lt;src/sensors/CampbellRainVUE10.h&gt;",
+                "_campbell_rain_v_u_e10_8h.html"
+              ],
+              "has_details": true,
+              "name": "RAINVUE10_TIPS_VAR_NAME",
+              "initializer": "\"precipitation\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;precipitation&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__rainvue.html",
+              "id": "ga91e2182e84187fc5fd77299feb9a6959",
+              "include": [
+                "&lt;src/sensors/CampbellRainVUE10.h&gt;",
+                "_campbell_rain_v_u_e10_8h.html"
+              ],
+              "has_details": true,
+              "name": "RAINVUE10_TIPS_UNIT_NAME",
+              "initializer": "\"event\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;event&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__rainvue.html",
+              "id": "ga69362a7870e5ee0216c0751bb7aab388",
+              "include": [
+                "&lt;src/sensors/CampbellRainVUE10.h&gt;",
+                "_campbell_rain_v_u_e10_8h.html"
+              ],
+              "has_details": true,
+              "name": "RAINVUE10_TIPS_DEFAULT_CODE",
+              "initializer": "\"RainVUETips\"",
+              "brief": "Default variable short code; &quot;RainVUETips&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Rainfall Rate Average",
+        "id": "rainfall-rate-average",
+        "description": "<p><a name=\"sensor_rainvue_rainrateave\"></a> The average rainfall rate variable from a Campbell RainVUE10, defined as average precipitation intensity since last measurement. For the &quot;-IN&quot; Option (English units)</p><ul><li>Range is 0.01 to 1000 mm/h (0.0004 to 39.4 in./h)</li><li>Resolution is 0.254 mm (0.01 in.)</li><li>Accuracy is \u00b11% For the &quot;-MM&quot; Option (Metric units)</li><li>Range is 0.01 to 500 mm/h (0.0004 to 19.7 in./h)</li><li>Resolution is 0.1 mm (0.004 in.)</li><li>Accuracy is \u00b13.5% at 0 to 300 mm/h (0 to 11.8 in./h) \u00b15% at 300 to 500 mm/h (11.8 to 19.7 in./h)</li></ul><p>{{ <a href=\"class_campbell_rain_v_u_e10___rain_rate_ave.html#a95ffc68f7c0a962ed5d5e4df598f6e5b\" class=\"m-doc\">CampbellRainVUE10_RainRateAve::<wbr />CampbellRainVUE10_RainRateAve</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__rainvue.html",
+              "id": "ga3f4f58a394d6c0de115ef0e1e6683d2f",
+              "include": [
+                "&lt;src/sensors/CampbellRainVUE10.h&gt;",
+                "_campbell_rain_v_u_e10_8h.html"
+              ],
+              "has_details": true,
+              "name": "RAINVUE10_RAINRATEAVE_RESOLUTION",
+              "initializer": "2",
+              "brief": "Decimals places in string representation; the rainfall intensity has 2.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__rainvue.html",
+              "id": "gab4dccbb56ae6e138d2219aa002b01114",
+              "include": [
+                "&lt;src/sensors/CampbellRainVUE10.h&gt;",
+                "_campbell_rain_v_u_e10_8h.html"
+              ],
+              "has_details": true,
+              "name": "RAINVUE10_RAINRATEAVE_VAR_NUM",
+              "initializer": "3",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; average intensity is stored in sensorValues[3].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__rainvue.html",
+              "id": "ga95caf45f72b62e38fe2ac05c6ea2537a",
+              "include": [
+                "&lt;src/sensors/CampbellRainVUE10.h&gt;",
+                "_campbell_rain_v_u_e10_8h.html"
+              ],
+              "has_details": true,
+              "name": "RAINVUE10_RAINRATEAVE_VAR_NAME",
+              "initializer": "\"rainfallRate\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;instrumentStatusCode&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__rainvue.html",
+              "id": "gade737cae41e353934e0fab95f0de9b5e",
+              "include": [
+                "&lt;src/sensors/CampbellRainVUE10.h&gt;",
+                "_campbell_rain_v_u_e10_8h.html"
+              ],
+              "has_details": true,
+              "name": "RAINVUE10_RAINRATEAVE_UNIT_NAME",
+              "initializer": "\"inchPerHour\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;inchPerHour&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__rainvue.html",
+              "id": "ga9da672ec229be7d3f5fff25d120afb6f",
+              "include": [
+                "&lt;src/sensors/CampbellRainVUE10.h&gt;",
+                "_campbell_rain_v_u_e10_8h.html"
+              ],
+              "has_details": true,
+              "name": "RAINVUE10_RAINRATEAVE_DEFAULT_CODE",
+              "initializer": "\"RainVUERateAve\"",
+              "brief": "Default variable short code; &quot;RainVUERateAve&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Rainfall Rate Maximum",
+        "id": "rainfall-rate-maximum",
+        "description": "<p><a name=\"sensor_rainvue_rainratemax\"></a> The maximum rainfall rate variable from a Campbell RainVUE10, defined as maximum precipitation intensity since last measurement.</p><ul><li>Range &amp; Accuracy same as for sensor_rainvue_rainratemax {{ <a href=\"class_campbell_rain_v_u_e10___rain_rate_max.html#ac4bcc22d89868a04306d823a337fad10\" class=\"m-doc\">CampbellRainVUE10_RainRateMax::<wbr />CampbellRainVUE10_RainRateMax</a> }}</li></ul>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__rainvue.html",
+              "id": "gaf9fe2e21e27024705af1628ebf8d2a5a",
+              "include": [
+                "&lt;src/sensors/CampbellRainVUE10.h&gt;",
+                "_campbell_rain_v_u_e10_8h.html"
+              ],
+              "has_details": true,
+              "name": "RAINVUE10_RAINRATEMAX_RESOLUTION",
+              "initializer": "2",
+              "brief": "Decimals places in string representation; the rainfall intensity has 2.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__rainvue.html",
+              "id": "gae951e05b2bfbe903bcbc958c5cd207cc",
+              "include": [
+                "&lt;src/sensors/CampbellRainVUE10.h&gt;",
+                "_campbell_rain_v_u_e10_8h.html"
+              ],
+              "has_details": true,
+              "name": "RAINVUE10_RAINRATEMAX_VAR_NUM",
+              "initializer": "4",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; average intensity is stored in sensorValues[4].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__rainvue.html",
+              "id": "gafe28d40b29ec33a8f209ca60b6116608",
+              "include": [
+                "&lt;src/sensors/CampbellRainVUE10.h&gt;",
+                "_campbell_rain_v_u_e10_8h.html"
+              ],
+              "has_details": true,
+              "name": "RAINVUE10_RAINRATEMAX_VAR_NAME",
+              "initializer": "\"rainfallRate\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;instrumentStatusCode&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__rainvue.html",
+              "id": "ga96d7f0673efb28d6646321868660f252",
+              "include": [
+                "&lt;src/sensors/CampbellRainVUE10.h&gt;",
+                "_campbell_rain_v_u_e10_8h.html"
+              ],
+              "has_details": true,
+              "name": "RAINVUE10_RAINRATEMAX_UNIT_NAME",
+              "initializer": "\"inchPerHour\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;inchPerHour&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__rainvue.html",
+              "id": "ga777114f0aff8ced3a5fc9e5c1e85f206",
+              "include": [
+                "&lt;src/sensors/CampbellRainVUE10.h&gt;",
+                "_campbell_rain_v_u_e10_8h.html"
+              ],
+              "has_details": true,
+              "name": "RAINVUE10_RAINRATEMAX_DEFAULT_CODE",
+              "initializer": "\"RainVUERateMax\"",
+              "brief": "Default variable short code; &quot;RainVUERateAve&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "SDI-12 Sensors",
+        "group__sdi12__group.html"
+      ],
+      [
+        "Campbell RainVUE10",
+        "group__sensor__rainvue.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Campbell RainVUE10",
+        "group__sensor__rainvue.html"
+      ]
+    ]
+  }
+}

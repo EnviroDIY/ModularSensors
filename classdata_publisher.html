@@ -1,20 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
 <head>
   <meta charset="UTF-8" />
-  <title>dataPublisher class | ModularSensors</title>
+  <title>dataPublisher class | ModularSensors0.36.0</title>
   <link rel="stylesheet" href="m-EnviroDIY+documentation.compiled.css" />
+
+<style id="wp-emoji-styles-inline-css" type="text/css">
+  img.wp-smiley,
+  img.emoji {
+    display: inline !important;
+    border: none !important;
+    box-shadow: none !important;
+    height: 1em !important;
+    width: 1em !important;
+    margin: 0 0.07em !important;
+    vertical-align: -0.1em !important;
+    background: none !important;
+    padding: 0 !important;
+  }
+</style>
 <link
   rel="stylesheet"
   id="gp-parent-style-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/style.css?ver=6.1.1"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/style.css?ver=6.5.4"
   type="text/css"
   media="all"
 />
 <link
   rel="stylesheet"
-  id="ghostpool-style-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize-child/style.css?ver=6.1.1"
+  id="redux-extendify-styles-css"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/framework/redux/assets/css/extendify-utilities.css?ver=4.4.11"
   type="text/css"
   media="all"
 />
@@ -124,31 +139,27 @@
 <link
   rel="stylesheet"
   id="fontawesome-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/fonts/font-awesome/css/font-awesome.min.css?ver=6.1.1"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/fonts/font-awesome/css/font-awesome.min.css?ver=6.5.4"
   type="text/css"
   media="all"
 />
 <link
-  rel="stylesheet"
-  id="prettyphoto-css"
-  href="https://www.envirodiy.org/wp-content/plugins/js_composer/assets/lib/prettyphoto/css/prettyPhoto.min.css?ver=6.10.0"
-  type="text/css"
-  media="all"
+  rel="preload"
+  as="style"
+  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
 />
 <link
   rel="stylesheet"
-  id="gp-bp-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/css/bp.css?ver=6.1.1"
-  type="text/css"
-  media="all"
+  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
+  media="print"
+  onload="this.media='all'"
 />
-<link
-  rel="stylesheet"
-  id="gp-bbp-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/css/bbpress.css?ver=6.1.1"
-  type="text/css"
-  media="all"
-/>
+<noscript
+  ><link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
+/></noscript>
+
 <style type="text/css" id="wp-custom-css">
   /* Print Styles */
   @media print {
@@ -162,12 +173,15 @@
       margin: 0 !important;
       padding: 0;
     }
+
     body:not(.gp-full-page-page-header) .gp-page-header.gp-has-text:before,
     body:not(.gp-full-page-page-header)
       .gp-page-header.gp-has-teaser-video.gp-has-text
       .gp-video-header:before {
       background-image: none !important;
     }
+    /* End print styles */
+
     #gp-main-header,
     #gp-small-header,
     #gp-header-area,
@@ -219,6 +233,7 @@
     img {
       page-break-inside: avoid;
       visibility: visible;
+      float: none;
     }
     blockquote,
     table,
@@ -231,7 +246,7 @@
       page-break-before: avoid;
     }
   }
-  /* End print styles */
+
   /*Gutenberg styles*/
   /*Buttons*/
   a.wp-block-button__link {
@@ -362,10 +377,17 @@
   span.woocommerce-Price-amount.amount {
     text-decoration: none !important;
   }
+  /* Hide additional information tab */
+  div.woocommerce-tabs {
+    display: none !important;
+  }
   /*End WooCommerce styles*/
   /*The Events Calendar*/
   #tribe-events-content a {
     color: #0579bd;
+  }
+  #tribe-events-content .wp-block-button__link {
+    color: #ffffff;
   }
   #gp-sidebar-right
     > div
@@ -451,6 +473,9 @@
   #gp-content p.last-updated {
     display: none;
   }
+  #gp-content ul {
+    margin: 0 0 0 20px !important;
+  }
 </style>
 <style id="socialize-dynamic-css" title="dynamic-css" class="redux-options-output">
   #footer-image img {
@@ -483,7 +508,6 @@
     font-style: normal;
     color: #000;
     font-size: 16px;
-    font-display: swap;
   }
   a {
     color: #0579bd;
@@ -497,7 +521,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 36px;
-    font-display: swap;
   }
   h2 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -505,7 +528,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 28px;
-    font-display: swap;
   }
   h3,
   #tab-description h2,
@@ -519,7 +541,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 24px;
-    font-display: swap;
   }
   h4 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -527,7 +548,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 20px;
-    font-display: swap;
   }
   h5 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -535,7 +555,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 18px;
-    font-display: swap;
   }
   h6 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -543,7 +562,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 16px;
-    font-display: swap;
   }
   .gp-entry-meta .gp-post-meta-row-1,
   .gp-homepage #gp-content .gp-vc-element-3,
@@ -577,7 +595,6 @@
     font-style: normal;
     color: #ababab;
     font-size: 16px;
-    font-display: swap;
   }
   #gp-primary-main-nav .menu > li:hover > a,
   #gp-primary-main-nav .menu > li > a {
@@ -600,7 +617,6 @@
     font-style: normal;
     color: #fff;
     font-size: 14px;
-    font-display: swap;
   }
   #gp-secondary-main-nav .menu > li:hover > a,
   #gp-secondary-main-nav .menu > li > a {
@@ -641,7 +657,6 @@
     font-style: normal;
     color: #000;
     font-size: 14px;
-    font-display: swap;
   }
   .gp-nav .menu > .gp-standard-menu > .sub-menu > li a {
     color: #000;
@@ -745,7 +760,6 @@
     font-style: normal;
     color: #fff;
     font-size: 80px;
-    font-display: swap;
   }
   .gp-page-header .gp-container {
     height: 250px;
@@ -759,7 +773,6 @@
     font-style: normal;
     color: #000;
     font-size: 40px;
-    font-display: swap;
   }
   .gp-subtitle {
     font-family: Roboto;
@@ -768,7 +781,6 @@
     font-style: normal;
     color: #0579bd;
     font-size: 20px;
-    font-display: swap;
   }
   #gp-post-links a,
   .gp-pagination-arrows a.prev,
@@ -811,7 +823,6 @@
     line-height: 24px;
     color: #fff;
     font-size: 14px;
-    font-display: swap;
   }
   .gp-author-info a {
     color: #b1b1b1;
@@ -840,19 +851,16 @@
     font-style: normal;
     color: #fff;
     font-size: 24px;
-    font-display: swap;
   }
   .gp-loop-title {
     line-height: 22px;
     font-weight: 400;
     font-size: 19px;
-    font-display: swap;
   }
   .gp-blog-large .gp-loop-title {
     line-height: 46px;
     font-weight: 200;
     font-size: 40px;
-    font-display: swap;
   }
   .gp-loop-title a,
   .bboss_search_item .entry-title a {
@@ -914,7 +922,6 @@
     font-style: normal;
     color: #000;
     font-size: 14px;
-    font-display: swap;
   }
   .widgettitle a,
   .widget-title a,
@@ -1157,7 +1164,6 @@
     font-style: normal;
     color: #fff;
     font-size: 16px;
-    font-display: swap;
   }
   .gp-footer-widget {
     font-family: Roboto;
@@ -1166,7 +1172,6 @@
     font-style: normal;
     color: #ffffff;
     font-size: 14px;
-    font-display: swap;
   }
   .gp-footer-widget a {
     color: #f9bd16;
@@ -1195,441 +1200,295 @@
   #gp-to-top {
     color: #ffffff;
   }
-  .woocommerce ul.products li.product .price,
-  .woocommerce div.product p.price,
-  .woocommerce div.product span.price {
-    color: #00bee9;
-  }
-  .woocommerce span.onsale {
-    background-color: #e93100;
-  }
-  #buddypress .activity-list .activity-content .activity-header,
-  #buddypress .activity-list .activity-content .comment-header,
-  #buddypress .activity-list .activity-header a,
-  #buddypress .activity-list div.activity-comments div.acomment-meta,
-  #buddypress .activity-list .acomment-meta a,
-  .widget.buddypress .item-title a,
-  .widget.buddypress div.item-options.gp-small-item-options:before,
-  .widget.buddypress div.item-options a,
-  #buddypress ul.item-list li div.item-title a,
-  #buddypress ul.item-list li h4 > a,
-  #buddypress ul.item-list li h5 > a,
-  #buddypress div#item-header div#item-meta {
-    color: #000000;
-  }
-  #buddypress .activity-list .activity-content .activity-inner {
-    color: #aaaaaa;
-  }
-  #buddypress .activity-list a.activity-time-since,
-  .widget_display_replies ul li a + div,
-  .widget_display_topics ul li a + div,
-  #buddypress .activity-list .acomment-meta a.activity-time-since,
-  #buddypress .activity-list div.activity-comments div.acomment-content,
-  .widget.buddypress div.item-meta,
-  #buddypress span.activity,
-  #buddypress ul.item-list li div.meta {
-    color: #545454;
-  }
-  .gp-theme #buddypress .activity-list div.activity-meta a.button,
-  .gp-theme #buddypress .activity .acomment-options a,
-  .gp-theme #buddypress .activity-list li.load-more a,
-  .gp-theme #buddypress .activity-list li.load-newest a,
-  .widget.buddypress div.item-options a.selected {
-    color: #26a9e0;
-  }
-  .gp-theme #buddypress .activity-list div.activity-meta a.button:hover,
-  .gp-theme #buddypress .activity .acomment-options a:hover,
-  .gp-theme #buddypress .activity-list li.load-more a:hover,
-  .gp-theme #buddypress .activity-list li.load-newest a:hover,
-  .widget.buddypress div.item-options a.selected:hover {
-    color: #000;
-  }
-  .gp-theme #buddypress ul.item-list li,
-  .gp-theme #buddypress div.activity-comments ul li:first-child,
-  .widget.buddypress #friends-list li,
-  .widget.buddypress #groups-list li,
-  .widget.buddypress #members-list li {
-    border-top: 1px solid #e0e0e0;
-    border-bottom: 1px solid #e0e0e0;
-  }
-  .gp-theme #buddypress div.item-list-tabs {
-    background-color: #353535;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a span,
-  .gp-theme #buddypress div.item-list-tabs ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs ul li.selected a span {
-    color: #353535;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a span {
-    background-color: #ffffff;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a,
-  .gp-theme #buddypress #gp-bp-tabs-button,
-  .gp-theme #buddypress div.item-list-tabs ul li span {
-    color: #ffffff;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li.current a,
-  .gp-theme #buddypress div.item-list-tabs ul li.selected a,
-  .gp-theme #buddypress div.item-list-tabs ul li a:hover {
-    color: #b1b1b1;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs ul li.selected a span {
-    background: #b1b1b1;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul,
-  .widget.buddypress div.item-options.gp-small-item-options > a {
-    background-color: #f8f8f8;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.selected a span {
-    color: #f8f8f8;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a span {
-    background-color: #000000;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a {
-    color: #000000;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.current a,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.selected a,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a:hover {
-    color: #26a9e0;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.selected a span {
-    background: #26a9e0;
-  }
-  #bbpress-forums
-    .gp-forum-home.bbp-forums
-    .bbp-has-subforums
-    .bbp-forum-info
-    > .bbp-forum-title,
-  #bbpress-forums .bbp-topics .bbp-header,
-  #bbpress-forums .bbp-replies .bbp-header,
-  #bbpress-forums .bbp-search-results .bbp-header {
-    background-color: #353535;
-  }
-  #bbpress-forums
-    .gp-forum-home.bbp-forums
-    .bbp-has-subforums
-    .bbp-forum-info
-    > .bbp-forum-title,
-  #bbpress-forums .bbp-topics .bbp-header,
-  #bbpress-forums .bbp-replies .bbp-header,
-  #bbpress-forums .bbp-search-results .bbp-header {
-    color: #ffffff;
-  }
-  #bbpress-forums .bbp-header div.bbp-reply-content a {
-    color: #ddd;
-  }
-  #bbpress-forums .bbp-header div.bbp-reply-content a:hover {
-    color: #fff;
-  }
-  #bbpress-forums .bbp-forums-list li.odd-forum-row,
-  #bbpress-forums div.odd,
-  #bbpress-forums ul.odd {
-    background-color: #f8f8f8;
-  }
-  #bbpress-forums .bbp-forums-list li.even-forum-row,
-  #bbpress-forums div.even,
-  #bbpress-forums ul.even {
-    background-color: #fff;
-  }
-  #bbpress-forums .gp-forum-home.bbp-forums .bbp-forum-info > .bbp-forum-title,
-  #bbpress-forums div.bbp-forum-header,
-  #bbpress-forums div.bbp-topic-header,
-  #bbpress-forums div.bbp-reply-header,
-  #bbpress-forums .bbp-forums-list,
-  #bbpress-forums li.bbp-body {
-    border-top: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
-    border-left: 1px solid #ddd;
-    border-right: 1px solid #ddd;
-  }
-  #bbpress-forums .bbp-forums-list .bbp-forum .bbp-forum-link,
-  body.forum #bbpress-forums .bbp-forums .bbp-forum-info > .bbp-forum-title,
-  #bbpress-forums .bbp-topics .bbp-topic-permalink,
-  #bbpress-forums .gp-forum-home.bbp-forums .bbp-forum-info > .bbp-forum-title,
-  .gp-theme
-    #bbpress-forums
-    .gp-forum-shortcode
-    ul.forum:not(.status-category)
-    .bbp-forum-info
-    a {
-    color: #000000;
-  }
-  #bbpress-forums div.bbp-forum-author .bbp-author-role,
-  #bbpress-forums div.bbp-topic-author .bbp-author-role,
-  #bbpress-forums div.bbp-reply-author .bbp-author-role {
-    background-color: #92d050;
-  }
-  #bbpress-forums div.bbp-forum-author .bbp-author-role,
-  #bbpress-forums div.bbp-topic-author .bbp-author-role,
-  #bbpress-forums div.bbp-reply-author .bbp-author-role {
-    color: #ffffff;
-  }
 </style>
-    <style id="kadence-blocks-global-variables-inline-css" type="text/css">
-      :root {
-        --global-kb-font-size-sm: clamp(0.8rem, 0.73rem + 0.217vw, 0.9rem);
-        --global-kb-font-size-md: clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem);
-        --global-kb-font-size-lg: clamp(1.75rem, 1.576rem + 0.543vw, 2rem);
-        --global-kb-font-size-xl: clamp(2.25rem, 1.728rem + 1.63vw, 3rem);
-        --global-kb-font-size-xxl: clamp(2.5rem, 1.456rem + 3.26vw, 4rem);
-        --global-kb-font-size-xxxl: clamp(2.75rem, 0.489rem + 7.065vw, 6rem);
-      }
-    </style>
-    <link
-      rel="preload"
-      as="style"
-      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.1.1"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.1.1"
-      media="print"
-      onload="this.media='all'"
-    />
-    <noscript
-      ><link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.1.1"
-    /></noscript>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-includes/js/jquery/jquery.min.js?ver=3.6.1"
-  id="jquery-core-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2"
-  id="jquery-migrate-js"
-></script>  <link rel="icon" href="MS_FavIcon.png" type="image/png" />
+  <link rel="icon" href="MS_FavIcon.png" type="image/png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#cb4b16" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="clipboard.js"></script>
 </head>
 
-<body class="home-page bp-legacy home page-template page-template-homepage-template page-template-homepage-template-php page page-id-977 logged-in admin-bar no-customize-support theme-socialize woocommerce-no-js tribe-no-js page-template-socialize-child gp-theme gp-responsive gp-wide-layout gp-retina gp-normal-scrolling gp-no-back-to-top gp-relative-header gp-header-standard gp-cart-disabled gp-search-all gp-profile-disabled gp-small-header-all gp-standard-page-header gp-no-sidebar gp-homepage wpb-js-composer js-comp-ver-6.10.0 vc_responsive no-js">
+<body
+    class="theme-socialize page-template-socialize-child gp-theme gp-responsive gp-wide-layout gp-retina gp-normal-scrolling gp-no-back-to-top gp-relative-header gp-header-standard gp-cart-disabled gp-search-all gp-profile-disabled gp-small-header-all gp-standard-page-header gp-no-sidebar"
+>
 	<div id="gp-site-wrapper">
 
   <nav id="gp-mobile-nav">
     <div id="gp-mobile-nav-close-button"></div>
     <ul class="menu">
-        <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-            <a class="menu-link main-menu-link" href="index.html">About</a>
-          <ul class="sub-menu menu-odd menu-depth-1">
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#data_receivers">Data Endpoints</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#supported_sensors">Supported Sensors</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#modems">Supported Cellular/Wifi Modules</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#contributing">Contributing</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#license">License</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#acknowledgments">Acknowledgments</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="change_log.html">ChangeLog</a>
-              </li>
-          </ul>
-        </li>
-        <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-            <a class="menu-link main-menu-link" href="page_getting_started.html">Getting Started</a>
-          <ul class="sub-menu menu-odd menu-depth-1">
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>
-              </li>
-          </ul>
-        </li>
-        <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-            <a class="menu-link main-menu-link" href="page_faq.html">FAQs</a>
-          <ul class="sub-menu menu-odd menu-depth-1">
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>
-              </li>
-          </ul>
-        </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="modules.html">Modules</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="annotated.html">Classes</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="files.html">Source Files</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="page_the_examples.html">Examples Using ModularSensors</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="pages.html">More</a>          </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+      >
+<a href="index.html" class="menu-link main-menu-link">About</a>        <ul class="sub-menu menu-odd menu-depth-1">
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#data_receivers">Data Endpoints</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#supported_sensors">Supported Sensors</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#modems">Supported Cellular/Wifi Modules</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#contributing">Contributing</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#license">License</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#acknowledgments">Acknowledgments</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="change_log.html">ChangeLog</a>          </li>
+        </ul>
+      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+      >
+<a href="page_getting_started.html" class="menu-link main-menu-link">Getting Started</a>        <ul class="sub-menu menu-odd menu-depth-1">
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>          </li>
+        </ul>
+      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+      >
+<a href="page_faq.html" class="menu-link main-menu-link">FAQs</a>        <ul class="sub-menu menu-odd menu-depth-1">
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>          </li>
+        </ul>
+      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="topics.html" class="menu-link main-menu-link">Topics</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="annotated.html" class="menu-link main-menu-link">Classes</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="files.html" class="menu-link main-menu-link">Source Files</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="page_the_examples.html" class="menu-link main-menu-link">Examples Using ModularSensors</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="pages.html" class="menu-link main-menu-link">More</a>      </li>
     </ul>
-  </nav><div id="gp-mobile-nav-bg"></div>
+  </nav> <!-- gp-mobile-nav -->
+  <div id="gp-mobile-nav-bg"></div>
 
   <div id="gp-page-wrapper">
 
     <header id="gp-main-header">
       <div class="gp-container">
         <div id="gp-logo">
-          <a href="index.html" title="ModularSensors">
+          <a href="index.html" title="ModularSensors 0.36.0">
             <img
-              src="ModularSensors_ubuntu_264x55.png"
-              alt="ModularSensors"
-                  width="200"
-                  height="42"
+              src="gp-desktop-logo.png"
+              alt="ModularSensors 0.36.0"
+              width="200"
+              height="42"
               class="gp-desktop-logo"
             />
             <img
-              src="ModularSensors_ubuntu_264x55.png"
-              alt="ModularSensors"
+              src="gp-scrolling-logo.png"
+              alt="ModularSensors 0.36.0"
               width="264"
               height="55"
               class="gp-scrolling-logo"
             />
             <img
-              src="ModularSensors_ubuntu_264x55.png"
-              alt="ModularSensors"
+              src="gp-mobile-logo.png"
+              alt="ModularSensors 0.36.0"
               width="132"
               height="28"
               class="gp-mobile-logo"
             />
           </a>
-        </div>
+        </div> <!-- gp-logo -->
 
         <a id="gp-mobile-nav-button"></a>
 
         <nav id="gp-main-nav" class="gp-nav">
           <nav id="gp-primary-main-nav">
-              <ul id="menu-main-menu-1" class="menu">
-                <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-                    <a class="menu-link main-menu-link" href="index.html">About</a>
-                  <ul class="sub-menu menu-odd menu-depth-1">
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#data_receivers">Data Endpoints</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#supported_sensors">Supported Sensors</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#modems">Supported Cellular/Wifi Modules</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#contributing">Contributing</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#license">License</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#acknowledgments">Acknowledgments</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="change_log.html">ChangeLog</a>
-                      </li>
-                  </ul>
-                </li>
-                <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-                    <a class="menu-link main-menu-link" href="page_getting_started.html">Getting Started</a>
-                  <ul class="sub-menu menu-odd menu-depth-1">
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>
-                      </li>
-                  </ul>
-                </li>
-                <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-                    <a class="menu-link main-menu-link" href="page_faq.html">FAQs</a>
-                  <ul class="sub-menu menu-odd menu-depth-1">
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>
-                      </li>
-                  </ul>
-                </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="modules.html">Modules</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="annotated.html">Classes</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="files.html">Source Files</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="page_the_examples.html">Examples Using ModularSensors</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="pages.html">More</a>                  </li>
-              </ul>
-          </nav>
+            <ul id="menu-main-menu-1" class="menu">
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+              >
+<a href="index.html" class="menu-link main-menu-link" >About</a>                <ul class="sub-menu menu-odd menu-depth-1">
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#data_receivers">Data Endpoints</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#supported_sensors">Supported Sensors</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#modems">Supported Cellular/Wifi Modules</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#contributing">Contributing</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#license">License</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#acknowledgments">Acknowledgments</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="change_log.html">ChangeLog</a>                  </li>
+                </ul>
+              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+              >
+<a href="page_getting_started.html" class="menu-link main-menu-link" >Getting Started</a>                <ul class="sub-menu menu-odd menu-depth-1">
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>                  </li>
+                </ul>
+              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+              >
+<a href="page_faq.html" class="menu-link main-menu-link" >FAQs</a>                <ul class="sub-menu menu-odd menu-depth-1">
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>                  </li>
+                </ul>
+              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="topics.html"class="menu-link main-menu-link">Topics</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="annotated.html"class="menu-link main-menu-link">Classes</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="files.html"class="menu-link main-menu-link">Source Files</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="page_the_examples.html"class="menu-link main-menu-link">Examples Using ModularSensors</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="pages.html"class="menu-link main-menu-link">More</a>              </li>
+            </ul>
+          </nav> <!-- gp-primary-main-nav -->
 
           <div id="gp-search">
             <div id="m-search-button" class="m-show-m" onclick="return showSearch()">
-            </div>
-					</div>
-
-
+            </div> <!-- gp-search-box -->
+          </div> <!-- gp-search -->
 
           <nav id="gp-secondary-main-nav"></nav>
-        </nav></div>
-    </header><header id="gp-small-header">
+        </nav> <!-- gp-main-nav -->
+      </div> <!-- gp-container -->
+    </header> <!-- gp-main-header -->
+
+    <header id="gp-small-header">
       <div class="gp-container">
         <div class="gp-left-triangle"></div>
         <div class="gp-right-triangle"></div>
@@ -1656,7 +1515,9 @@
 
         </nav>
       </div>
-    </header><div id="gp-fixed-header-padding"></div>
+    </header> <!-- gp-small-header -->
+
+    <div id="gp-fixed-header-padding"></div>
 
     <div class="m-doc-search" id="search">
       <a href="#!" onclick="return hideSearch()"></a>
@@ -1664,7 +1525,7 @@
         <div class="gp-container">
           <div style="background-color:#fff;padding:20px;">
             <div class="m-doc-search-header m-text m-small">
-              <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+              <div><span class="m-label m-info">Tab</span> / <span class="m-label m-info">T</span> to search, <span class="m-label m-info">Esc</span> to close</div>
               <div id="search-symbolcount">&hellip;</div>
             </div>
             <div class="m-doc-search-content">
@@ -1674,7 +1535,7 @@
               <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
               <div id="search-help" class="m-text m-dim m-text-center">
                 <p class="m-noindent">Search for symbols, directories, files, pages or
-            modules. You can omit any prefix from the symbol or file path; adding a
+            topics. You can omit any prefix from the symbol or file path; adding a
             <code>:</code> or <code>/</code> suffix lists all members of given symbol or
             directory.</p>
             <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
@@ -1699,13 +1560,12 @@
 
     <div id="gp-content-wrapper" class="gp-container">
       <div id="gp-inner-container">
+        <div id="gp-left-column">
           <div id="gp-content">
 
             <main>
               <article>
-                <div class="m-container m-container-inflatable">
-                  <div class="m-row">
-                    <div class="m-col-l-10 m-push-l-1">
+                <div class="breadcrumbs" typeof="BreadcrumbList" vocab="http://schema.org/">
         <span class="m-breadcrumb">
           <a href="index.html">
             ModularSensors
@@ -1719,15 +1579,15 @@
                 <span class="m-breadcrumb">
           dataPublisher
         </span>
-<br>
+        <br>
         <span class="m-breadcrumb">
           <a href="index.html">
             ModularSensors
           </a>  &gt; <wbr/>
         </span>
         <span class="m-breadcrumb">
-          <a href="modules.html">
-            Modules
+          <a href="topics.html">
+            Topics
           </a>  &gt; <wbr/>
         </span>
                 <span class="m-breadcrumb">
@@ -1736,17 +1596,18 @@
         <span class="m-breadcrumb">
           dataPublisher
         </span>
-<br>
-        <header class="gp-entry-header">
-          <h1 class="gp-entry-title" itemprop="headline">
+        <br>
+                </div>
+                <header class="gp-entry-header">
+                  <h1 class="gp-entry-title" itemprop="headline">
 
-
-            <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="data_publisher_base_8h.html">&lt;src/dataPublisherBase.h&gt;</a></div><br>
+            <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="data_publisher_base_8h.html">&lt;src/dataPublisherBase.h&gt;</a></div>
 
             dataPublisher
             <span class="m-thin">class</span>
-          </h1>
-        </header>
+
+                </h1>
+                </header>
         <p>The <a href="classdata_publisher.html" class="m-doc">dataPublisher</a> class is a virtual class used by other publishers to distribute data online.</p>
         <nav class="m-block m-default">
           <ul>
@@ -1770,8 +1631,6 @@
           </ul>
         </nav>
           <p>A <a href="classdata_publisher.html" class="m-doc">dataPublisher</a> is a abstract concept. It is something that &quot;watches&quot; the logger for new data and correctly formats and sends that data to some online web service.</p>
-
-
         <section id="derived-classes">
           <h2>Derived classes</h2>
           <dl class="m-doc">
@@ -1794,10 +1653,6 @@
           </dl>
         </section>
         <hr>
-
-
-
-
         <section id="typeless-methods">
           <h2>Constructors, destructors, conversion operators</h2>
           <dl class="m-doc">
@@ -1806,16 +1661,14 @@
             </dt>
             <dd>Construct a new data Publisher object untied to any logger or client.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim"></span><a href="#a24f08cfe2923a4081cfc1a541f7667c1" class="m-doc">dataPublisher</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_logger.html" class="m-doc">Logger</a>&amp;</span> <span class="m-param">baseLogger</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">sendEveryX</span><span class="m-dim"> = 1</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">sendOffset</span><span class="m-dim"> = 0</span>) <span class="m-label m-flat m-info">explicit</span> </span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim"></span><a href="#ac4dbe63c7423a23da387804d4a05d795" class="m-doc">dataPublisher</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_logger.html" class="m-doc">Logger</a>&amp;</span> <span class="m-param">baseLogger</span>,
+              <span class="m-dim">int</span> <span class="m-param">sendEveryX</span><span class="m-dim"> = 1</span>) <span class="m-label m-flat m-info">explicit</span> </span>
             </dt>
             <dd>Construct a new data Publisher object using a single client created on the TinyGSM based logger modem.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim"></span><a href="#aae6962a112d409bcb44d741fbdf3dd86" class="m-doc">dataPublisher</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_logger.html" class="m-doc">Logger</a>&amp;</span> <span class="m-param">baseLogger</span>,
+              <span class="m-doc-wrap-bumper"><span class="m-dim"></span><a href="#a8f288cdcdcd279ba5817c4db15644a93" class="m-doc">dataPublisher</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_logger.html" class="m-doc">Logger</a>&amp;</span> <span class="m-param">baseLogger</span>,
               <span class="m-dim">Client*</span> <span class="m-param">inClient</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">sendEveryX</span><span class="m-dim"> = 1</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">sendOffset</span><span class="m-dim"> = 0</span>)</span>
+              <span class="m-dim">int</span> <span class="m-param">sendEveryX</span><span class="m-dim"> = 1</span>)</span>
             </dt>
             <dd>Construct a new data Publisher object.</dd>
                           <dt id="acded3c78f9a6e91681eb50215c43aaef">
@@ -1825,7 +1678,6 @@
           </dl>
         </section>
         <hr>
-
         <section id="pub-methods">
           <h2>Public functions</h2>
           <dl class="m-doc">
@@ -1838,10 +1690,9 @@
             </dt>
             <dd>Attach the publisher to a logger.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#aab7c9d005937f32ecd2da53db17f4293" class="m-doc">setSendFrequency</a>(</span><span class="m-doc-wrap"><span class="m-dim">uint8_t</span> <span class="m-param">sendEveryX</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">sendOffset</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#a01d9795f4c55929f1e1c959793bfccb4" class="m-doc">setSendInterval</a>(</span><span class="m-doc-wrap"><span class="m-dim">int</span> <span class="m-param">sendEveryX</span>)</span>
             </dt>
-            <dd>Set the parameters for frequency of sending and any offset, if needed.</dd>
+            <dd>Sets the interval (in units of the logging interval) between attempted data transmissions.</dd>
                           <dt>
               <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#ad67778bc826660bc7c67da515b8a449e" class="m-doc">begin</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_logger.html" class="m-doc">Logger</a>&amp;</span> <span class="m-param">baseLogger</span>,
               <span class="m-dim">Client*</span> <span class="m-param">inClient</span>)</span>
@@ -1852,67 +1703,75 @@
             </dt>
             <dd>Begin the publisher - linking it to the logger but not attaching a client.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#a7151f0ae85bd0c9c456144beccd7046a" class="m-doc">getEndpoint</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-flat m-warning">pure virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#a7151f0ae85bd0c9c456144beccd7046a" class="m-doc">getEndpoint</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>) -&gt; String <span class="m-label m-flat m-warning">pure virtual</span></span>
             </dt>
             <dd>Get the destination for published data - generally the host name of the data receiver.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">int16_t </span><a href="#aa45185b326a22fe3350fe6a603d4c4bf" class="m-doc">publishData</a>(</span><span class="m-doc-wrap"><span class="m-dim">Client*</span> <span class="m-param">outClient</span>) <span class="m-label m-flat m-warning">pure virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">int16_t </span><a href="#aa45185b326a22fe3350fe6a603d4c4bf" class="m-doc">publishData</a>(</span><span class="m-doc-wrap"><span class="m-dim">Client*</span> <span class="m-param">outClient</span>) -&gt; int16_t <span class="m-label m-flat m-warning">pure virtual</span></span>
             </dt>
             <dd>Open a socket to the correct receiver and sends out the formatted data.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">int16_t </span><a href="#aed4ff4d923a9ab893b39f662c9f071d0" class="m-doc">publishData</a>(</span><span class="m-doc-wrap">) <span class="m-label m-flat m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">int16_t </span><a href="#aed4ff4d923a9ab893b39f662c9f071d0" class="m-doc">publishData</a>(</span><span class="m-doc-wrap">) -&gt; int16_t <span class="m-label m-flat m-warning">virtual</span></span>
             </dt>
             <dd>Open a socket to the correct receiver and send out the formatted data.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">int16_t </span><a href="#a176a2ecb3c3062cb20a509d5606f48d4" class="m-doc">sendData</a>(</span><span class="m-doc-wrap"><span class="m-dim">Client*</span> <span class="m-param">outClient</span>) <span class="m-label m-danger">deprecated in v0.22.5</span> <span class="m-label m-flat m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">int16_t </span><a href="#a176a2ecb3c3062cb20a509d5606f48d4" class="m-doc">sendData</a>(</span><span class="m-doc-wrap"><span class="m-dim">Client*</span> <span class="m-param">outClient</span>) -&gt; int16_t <span class="m-label m-danger">deprecated in v0.22.5</span> <span class="m-label m-flat m-warning">virtual</span></span>
             </dt>
-            <dd>Retained for backwards compatibility; use <a href="classdata_publisher.html#aa45185b326a22fe3350fe6a603d4c4bf" class="m-doc">publishData(Client*
+            <dd>Retained for backwards compatibility; use <a href="#aa45185b326a22fe3350fe6a603d4c4bf" class="m-doc">publishData(Client*
 outClient)</a> in new code.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">int16_t </span><a href="#acf08fe6a045e797e00fdcf593289e782" class="m-doc">sendData</a>(</span><span class="m-doc-wrap">) <span class="m-label m-danger">deprecated in v0.22.5</span> <span class="m-label m-flat m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">int16_t </span><a href="#acf08fe6a045e797e00fdcf593289e782" class="m-doc">sendData</a>(</span><span class="m-doc-wrap">) -&gt; int16_t <span class="m-label m-danger">deprecated in v0.22.5</span> <span class="m-label m-flat m-warning">virtual</span></span>
             </dt>
-            <dd>Retained for backwards compatibility; use <a href="classdata_publisher.html#aed4ff4d923a9ab893b39f662c9f071d0" class="m-doc">publishData()</a> in new code.</dd>
+            <dd>Retained for backwards compatibility; use <a href="#aed4ff4d923a9ab893b39f662c9f071d0" class="m-doc">publishData()</a> in new code.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#a8aa172930258b75bcb24cc40e2f3dae7" class="m-doc">parseMQTTState</a>(</span><span class="m-doc-wrap"><span class="m-dim">int</span> <span class="m-param">state</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#a8aa172930258b75bcb24cc40e2f3dae7" class="m-doc">parseMQTTState</a>(</span><span class="m-doc-wrap"><span class="m-dim">int</span> <span class="m-param">state</span>) -&gt; String</span>
             </dt>
             <dd>Translate a PubSubClient code into a String with the code explanation.</dd>
           </dl>
         </section>
         <hr>
-
-
-
-
-
         <section id="pro-static-methods">
           <h2>Protected static functions</h2>
           <dl class="m-doc">
                           <dt>
-              <span class="m-doc-wrap-bumper">static <span class="m-dim">int </span><a href="#ae64366a723e3a8715890b1bd8d83ea7d" class="m-doc">bufferFree</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
+              <span class="m-doc-wrap-bumper">static <span class="m-dim">void </span><a href="#a981315f653a0ca03e0fa6e3053932f38" class="m-doc">txBufferInit</a>(</span><span class="m-doc-wrap"><span class="m-dim">Client*</span> <span class="m-param">outClient</span>)</span>
             </dt>
-            <dd>Get the number of empty spots in the buffer.</dd>
-                          <dt id="a56384a15096056e70f98c7f48f76fc06">
-              <span class="m-doc-wrap-bumper">static <span class="m-dim">void </span><a href="#a56384a15096056e70f98c7f48f76fc06" class="m-doc-self">emptyTxBuffer</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
-            </dt>
-            <dd>Fill the TX buffer with nulls (&#x27;\0&#x27;).</dd>
+            <dd>Initialize the TX buffer to be empty and start writing to the given client.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper">static <span class="m-dim">void </span><a href="#af3a3cd605623a85f286858119c21877f" class="m-doc">printTxBuffer</a>(</span><span class="m-doc-wrap"><span class="m-dim">Stream*</span> <span class="m-param">stream</span>,
-              <span class="m-dim">bool</span> <span class="m-param">addNewLine</span><span class="m-dim"> = false</span>)</span>
+              <span class="m-doc-wrap-bumper">static <span class="m-dim">void </span><a href="#a4f0511ced6bca70ec98bd590e50b061b" class="m-doc">txBufferAppend</a>(</span><span class="m-doc-wrap"><span class="m-dim">const char*</span> <span class="m-param">data</span>,
+              <span class="m-dim">size_t</span> <span class="m-param">length</span>)</span>
             </dt>
-            <dd>Write the TX buffer to a stream and also to the debugging port.</dd>
+            <dd>Append the given data to the TX buffer, flushing if necessary.</dd>
+                          <dt>
+              <span class="m-doc-wrap-bumper">static <span class="m-dim">void </span><a href="#a37d9c2f407a5b60f82c9974e034e65de" class="m-doc">txBufferAppend</a>(</span><span class="m-doc-wrap"><span class="m-dim">const char*</span> <span class="m-param">s</span>)</span>
+            </dt>
+            <dd>Append the given string to the TX buffer, flushing if necessary.</dd>
+                          <dt>
+              <span class="m-doc-wrap-bumper">static <span class="m-dim">void </span><a href="#a1c7dd4f40f31a8e4bd32bb86222891eb" class="m-doc">txBufferAppend</a>(</span><span class="m-doc-wrap"><span class="m-dim">char</span> <span class="m-param">c</span>)</span>
+            </dt>
+            <dd>Append the given char to the TX buffer, flushing if necessary.</dd>
+                          <dt id="a12f6aea46abb2350c4ea9badb6c6fd2c">
+              <span class="m-doc-wrap-bumper">static <span class="m-dim">void </span><a href="#a12f6aea46abb2350c4ea9badb6c6fd2c" class="m-doc-self">txBufferFlush</a>(</span><span class="m-doc-wrap">)</span>
+            </dt>
+            <dd>Write the TX buffer contents to the initialized stream and also to the debugging port.</dd>
           </dl>
         </section>
         <hr>
-
-
-
         <section id="pro-static-attribs">
           <h2>Protected static variables</h2>
           <dl class="m-doc">
-                          <dt id="a6514d1b42fb99e77fb7a91006b9216fc">
-              static <span class="m-dim">char</span> <a href="#a6514d1b42fb99e77fb7a91006b9216fc" class="m-doc-self">txBuffer</a>
+                          <dt id="a25d196e295155d2c4bd66c488508eb30">
+              static <span class="m-dim">char</span> <a href="#a25d196e295155d2c4bd66c488508eb30" class="m-doc-self">txBuffer</a>
             </dt>
-            <dd>A buffer for outgoing data.</dd>
+            <dd>The buffer for outgoing data.</dd>
+                          <dt id="acc4d9b7ab5134a2373fe315c43a2c1a8">
+              static <span class="m-dim">Client*</span> <a href="#acc4d9b7ab5134a2373fe315c43a2c1a8" class="m-doc-self">txBufferOutClient</a>
+            </dt>
+            <dd>The pointer to the client instance the TX buffer is writing to.</dd>
+                          <dt id="a53d08ce2ba51bb6b8c3e9cceb136eef2">
+              static <span class="m-dim">size_t</span> <a href="#a53d08ce2ba51bb6b8c3e9cceb136eef2" class="m-doc-self">txBufferLen</a>
+            </dt>
+            <dd>The number of used characters in the TX buffer.</dd>
                           <dt id="a4f3e4e3938ed90f40360ff3bf5ab3f40">
               static <span class="m-dim">const char*</span> <a href="#a4f3e4e3938ed90f40360ff3bf5ab3f40" class="m-doc-self">getHeader</a>
             </dt>
@@ -1932,7 +1791,6 @@ outClient)</a> in new code.</dd>
           </dl>
         </section>
         <hr>
-
         <section id="pro-attribs">
           <h2>Protected variables</h2>
           <dl class="m-doc">
@@ -1944,42 +1802,35 @@ outClient)</a> in new code.</dd>
               <span class="m-dim">Client*</span> <a href="#a9bde77730ea8e2bccec973b76d10e8ad" class="m-doc-self">_inClient</a>
             </dt>
             <dd>The internal pointer to the client instance to be used.</dd>
-                          <dt id="a3187ca930f6a7bf805771746a6561c4f">
-              <span class="m-dim">uint8_t</span> <a href="#a3187ca930f6a7bf805771746a6561c4f" class="m-doc-self">_sendEveryX</a>
+                          <dt id="ac3bd9a04525ca9519ca1b45c0d34833a">
+              <span class="m-dim">int</span> <a href="#ac3bd9a04525ca9519ca1b45c0d34833a" class="m-doc-self">_sendEveryX</a>
             </dt>
-            <dd>Unimplemented; intended for future use to enable caching and bulk publishing.</dd>
-                          <dt id="ac32a14783abcf07ae60f076e57c96ac2">
-              <span class="m-dim">uint8_t</span> <a href="#ac32a14783abcf07ae60f076e57c96ac2" class="m-doc-self">_sendOffset</a>
-            </dt>
-            <dd>Unimplemented; intended for future use to enable publishing data at a time slightly delayed from when it is collected.</dd>
+            <dd>Interval (in units of the logging interval) between attempted data transmissions. Not respected by all publishers.</dd>
           </dl>
         </section>
         <hr>
-
-
-
-
-
-
 
 
         <section id="function-details">
           <h2>Function documentation</h2>
                       <section class="m-doc-details" id="a1ad107dcadb503ab83dad53a4f197188"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim"></span><a href="#a1ad107dcadb503ab83dad53a4f197188" class="m-doc-self">dataPublisher</a>(</span><span class="m-doc-wrap">)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim"> dataPublisher::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a1ad107dcadb503ab83dad53a4f197188" class="m-doc-self">dataPublisher</a>(</span><span class="m-doc-wrap">)</span></span>
             </h3>
             <p>Construct a new data Publisher object untied to any logger or client.</p>
-            <aside class="m-note m-info"><h4>Note</h4><p>Using the default empty constructor requires you to use a the <a href="classdata_publisher.html#ad67778bc826660bc7c67da515b8a449e" class="m-doc">begin(Logger&amp; baseLogger, Client* inClient)</a> function to initialize the logger and client values. If a client is never specified, the publisher will attempt to create and use a client on a LoggerModem instance tied to the attached logger. If a logger is never specified the publisher will not function.</p></aside>
+            <aside class="m-note m-info"><h4>Note</h4><p>Using the default empty constructor requires you to use a the <a href="#ad67778bc826660bc7c67da515b8a449e" class="m-doc">begin(Logger&amp; baseLogger, Client* inClient)</a> function to initialize the logger and client values. If a client is never specified, the publisher will attempt to create and use a client on a LoggerModem instance tied to the attached logger. If a logger is never specified the publisher will not function.</p></aside>
 
             <hr>
           </div>
         </section>
-                      <section class="m-doc-details" id="a24f08cfe2923a4081cfc1a541f7667c1"><div>
+                      <section class="m-doc-details" id="ac4dbe63c7423a23da387804d4a05d795"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim"></span><a href="#a24f08cfe2923a4081cfc1a541f7667c1" class="m-doc-self">dataPublisher</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_logger.html" class="m-doc">Logger</a>&amp;</span> <span class="m-param">baseLogger</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">sendEveryX</span><span class="m-dim"> = 1</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">sendOffset</span><span class="m-dim"> = 0</span>) <span class="m-label m-info">explicit</span> </span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim"> dataPublisher::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#ac4dbe63c7423a23da387804d4a05d795" class="m-doc-self">dataPublisher</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_logger.html" class="m-doc">Logger</a>&amp;</span> <span
+                    class="m-param">baseLogger</span>,
+              <span class="m-dim">int</span> <span
+                    class="m-param">sendEveryX</span><span class="m-dim"> = 1</span>) <span class="m-label m-info">explicit</span> </span></span>
             </h3>
             <p>Construct a new data Publisher object using a single client created on the TinyGSM based logger modem.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -1993,25 +1844,24 @@ outClient)</a> in new code.</dd>
                 </tr>
                 <tr>
                   <td class="m-param" ><span class="m-param">sendEveryX</span></td>
-                  <td>Currently unimplemented, intended for future use to enable caching and bulk publishing</td>
-                </tr>
-                <tr>
-                  <td class="m-param" ><span class="m-param">sendOffset</span></td>
-                  <td>Currently unimplemented, intended for future use to enable publishing data at a time slightly delayed from when it is collected</td>
+                  <td>Interval (in units of the logging interval) between attempted data transmissions. Not respected by all publishers.</td>
                 </tr>
               </tbody>
             </table>
-            <aside class="m-note m-info"><h4>Note</h4><p>If a client is never specified, the publisher will attempt to create and use a client on a LoggerModem instance tied to the attached logger.</p></aside><aside class="m-note m-info"><h4>Note</h4><p>It is possible (though very unlikey) that using this constructor could cause errors if the compiler attempts to initialize the publisher instance before the logger instance. If you suspect you are seeing that issue, use the null constructor and a populated begin(...) within your set-up function.</p></aside>
+            <aside class="m-note m-info"><h4>Note</h4><p>If a client is never specified, the publisher will attempt to create and use a client on a LoggerModem instance tied to the attached logger.</p></aside>
 
             <hr>
           </div>
         </section>
-                      <section class="m-doc-details" id="aae6962a112d409bcb44d741fbdf3dd86"><div>
+                      <section class="m-doc-details" id="a8f288cdcdcd279ba5817c4db15644a93"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim"></span><a href="#aae6962a112d409bcb44d741fbdf3dd86" class="m-doc-self">dataPublisher</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_logger.html" class="m-doc">Logger</a>&amp;</span> <span class="m-param">baseLogger</span>,
-              <span class="m-dim">Client*</span> <span class="m-param">inClient</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">sendEveryX</span><span class="m-dim"> = 1</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">sendOffset</span><span class="m-dim"> = 0</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim"> dataPublisher::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a8f288cdcdcd279ba5817c4db15644a93" class="m-doc-self">dataPublisher</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_logger.html" class="m-doc">Logger</a>&amp;</span> <span
+                    class="m-param">baseLogger</span>,
+              <span class="m-dim">Client*</span> <span
+                    class="m-param">inClient</span>,
+              <span class="m-dim">int</span> <span
+                    class="m-param">sendEveryX</span><span class="m-dim"> = 1</span>)</span></span>
             </h3>
             <p>Construct a new data Publisher object.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -2029,22 +1879,19 @@ outClient)</a> in new code.</dd>
                 </tr>
                 <tr>
                   <td class="m-param" ><span class="m-param">sendEveryX</span></td>
-                  <td>Currently unimplemented, intended for future use to enable caching and bulk publishing</td>
-                </tr>
-                <tr>
-                  <td class="m-param" ><span class="m-param">sendOffset</span></td>
-                  <td>Currently unimplemented, intended for future use to enable publishing data at a time slightly delayed from when it is collected</td>
+                  <td>Interval (in units of the logging interval) between attempted data transmissions. Not respected by all publishers.</td>
                 </tr>
               </tbody>
             </table>
-            <aside class="m-note m-info"><h4>Note</h4><p>It is possible (though very unlikey) that using this constructor could cause errors if the compiler attempts to initialize the publisher instance before the logger instance. If you suspect you are seeing that issue, use the null constructor and a populated begin(...) within your set-up function.</p></aside>
 
             <hr>
           </div>
         </section>
                       <section class="m-doc-details" id="a942b9ced747f7f351f853b503cbf5fc0"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#a942b9ced747f7f351f853b503cbf5fc0" class="m-doc-self">setClient</a>(</span><span class="m-doc-wrap"><span class="m-dim">Client*</span> <span class="m-param">inClient</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void  dataPublisher::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a942b9ced747f7f351f853b503cbf5fc0" class="m-doc-self">setClient</a>(</span><span class="m-doc-wrap"><span class="m-dim">Client*</span> <span
+                    class="m-param">inClient</span>)</span></span>
             </h3>
             <p>Set the Client object.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -2065,7 +1912,9 @@ outClient)</a> in new code.</dd>
         </section>
                       <section class="m-doc-details" id="a2c9837dfda40b50d3fd9ec5b1b53c8ab"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#a2c9837dfda40b50d3fd9ec5b1b53c8ab" class="m-doc-self">attachToLogger</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_logger.html" class="m-doc">Logger</a>&amp;</span> <span class="m-param">baseLogger</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void  dataPublisher::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a2c9837dfda40b50d3fd9ec5b1b53c8ab" class="m-doc-self">attachToLogger</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_logger.html" class="m-doc">Logger</a>&amp;</span> <span
+                    class="m-param">baseLogger</span>)</span></span>
             </h3>
             <p>Attach the publisher to a logger.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -2084,12 +1933,13 @@ outClient)</a> in new code.</dd>
             <hr>
           </div>
         </section>
-                      <section class="m-doc-details" id="aab7c9d005937f32ecd2da53db17f4293"><div>
+                      <section class="m-doc-details" id="a01d9795f4c55929f1e1c959793bfccb4"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#aab7c9d005937f32ecd2da53db17f4293" class="m-doc-self">setSendFrequency</a>(</span><span class="m-doc-wrap"><span class="m-dim">uint8_t</span> <span class="m-param">sendEveryX</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">sendOffset</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void  dataPublisher::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a01d9795f4c55929f1e1c959793bfccb4" class="m-doc-self">setSendInterval</a>(</span><span class="m-doc-wrap"><span class="m-dim">int</span> <span
+                    class="m-param">sendEveryX</span>)</span></span>
             </h3>
-            <p>Set the parameters for frequency of sending and any offset, if needed.</p>
+            <p>Sets the interval (in units of the logging interval) between attempted data transmissions.</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Parameters</th></tr>
@@ -2097,23 +1947,21 @@ outClient)</a> in new code.</dd>
               <tbody>
                 <tr>
                   <td class="m-param"  style="width: 1%"><span class="m-param">sendEveryX</span></td>
-                  <td>Currently unimplemented, intended for future use to enable caching and bulk publishing</td>
-                </tr>
-                <tr>
-                  <td class="m-param" ><span class="m-param">sendOffset</span></td>
-                  <td>Currently unimplemented, intended for future use to enable publishing data at a time slightly delayed from when it is collected</td>
+                  <td>Interval (in units of the logging interval) between attempted data transmissions. Not respected by all publishers.</td>
                 </tr>
               </tbody>
             </table>
-            <aside class="m-note m-info"><h4>Note</h4><p>These parameters are not currently used!</p></aside>
 
             <hr>
           </div>
         </section>
                       <section class="m-doc-details" id="ad67778bc826660bc7c67da515b8a449e"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#ad67778bc826660bc7c67da515b8a449e" class="m-doc-self">begin</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_logger.html" class="m-doc">Logger</a>&amp;</span> <span class="m-param">baseLogger</span>,
-              <span class="m-dim">Client*</span> <span class="m-param">inClient</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void  dataPublisher::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#ad67778bc826660bc7c67da515b8a449e" class="m-doc-self">begin</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_logger.html" class="m-doc">Logger</a>&amp;</span> <span
+                    class="m-param">baseLogger</span>,
+              <span class="m-dim">Client*</span> <span
+                    class="m-param">inClient</span>)</span></span>
             </h3>
             <p>Begin the publisher - linking it to the client and logger.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -2131,14 +1979,16 @@ outClient)</a> in new code.</dd>
                 </tr>
               </tbody>
             </table>
-            <p>This can be used as an alternative to adding the logger and client in the constructor. This is slightly &quot;safer&quot; because we expect the publishers to be created in the &quot;global scope&quot; and we cannot control the order in which objects in that global scope will be created. That is, we cannot guarantee that the logger will actually be created before the publisher that wants to attach to it unless we wait to attach the publisher until in the setup or loop function of the main program. In reality, it is very unlikely that this is necessary.</p>
+            <p>This can be used as an alternative to adding the logger and client in the constructor.</p>
 
             <hr>
           </div>
         </section>
                       <section class="m-doc-details" id="a0f999c8092b201f3222aebff8883e2f9"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#a0f999c8092b201f3222aebff8883e2f9" class="m-doc-self">begin</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_logger.html" class="m-doc">Logger</a>&amp;</span> <span class="m-param">baseLogger</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void  dataPublisher::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a0f999c8092b201f3222aebff8883e2f9" class="m-doc-self">begin</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_logger.html" class="m-doc">Logger</a>&amp;</span> <span
+                    class="m-param">baseLogger</span>)</span></span>
             </h3>
             <p>Begin the publisher - linking it to the logger but not attaching a client.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -2152,21 +2002,24 @@ outClient)</a> in new code.</dd>
                 </tr>
               </tbody>
             </table>
-            <aside class="m-note m-info"><h4>Note</h4><p>If a client is never specified, the publisher will attempt to create and use a client on a LoggerModem instance tied to the attached logger.</p></aside><p>This can be used as an alternative to adding the logger and client in the constructor. This is slightly &quot;safer&quot; because we expect the publishers to be created in the &quot;global scope&quot; and we cannot control the order in which objects in that global scope will be created. That is, we cannot guarantee that the logger will actually be created before the publisher that wants to attach to it unless we wait to attach the publisher until in the setup or loop function of the main program. In reality, it is very unlikely that this is necessary.</p>
+            <aside class="m-note m-info"><h4>Note</h4><p>If a client is never specified, the publisher will attempt to create and use a client on a LoggerModem instance tied to the attached logger.</p></aside><p>This can be used as an alternative to adding the logger and client in the constructor.</p>
 
             <hr>
           </div>
         </section>
                       <section class="m-doc-details" id="a7151f0ae85bd0c9c456144beccd7046a"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#a7151f0ae85bd0c9c456144beccd7046a" class="m-doc-self">getEndpoint</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-warning">pure virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">String  dataPublisher::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a7151f0ae85bd0c9c456144beccd7046a" class="m-doc-self">getEndpoint</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span
+                    class="m-param"></span>) <span class="m-label m-warning">pure
+                    virtual</span></span></span>
             </h3>
             <p>Get the destination for published data - generally the host name of the data receiver.</p>
             <table class="m-table m-fullwidth m-flat">
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td><strong>String</strong> The URL or HOST to receive published data</td>
+                  <td><span class="m-dim">String</span> The URL or HOST to receive published data</td>
                 </tr>
               </tfoot>
             </table>
@@ -2176,7 +2029,10 @@ outClient)</a> in new code.</dd>
         </section>
                       <section class="m-doc-details" id="aa45185b326a22fe3350fe6a603d4c4bf"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">int16_t </span><a href="#aa45185b326a22fe3350fe6a603d4c4bf" class="m-doc-self">publishData</a>(</span><span class="m-doc-wrap"><span class="m-dim">Client*</span> <span class="m-param">outClient</span>) <span class="m-label m-warning">pure virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">int16_t  dataPublisher::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#aa45185b326a22fe3350fe6a603d4c4bf" class="m-doc-self">publishData</a>(</span><span class="m-doc-wrap"><span class="m-dim">Client*</span> <span
+                    class="m-param">outClient</span>) <span class="m-label m-warning">pure
+                    virtual</span></span></span>
             </h3>
             <p>Open a socket to the correct receiver and sends out the formatted data.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -2192,7 +2048,7 @@ outClient)</a> in new code.</dd>
               <tfoot>
                 <tr>
                   <th>Returns</th>
-                  <td><strong>int16_t</strong> The result of publishing data. May be an http response code or a result code from PubSubClient.</td>
+                  <td><span class="m-dim">int16_t</span> The result of publishing data. May be an http response code or a result code from PubSubClient.</td>
                 </tr>
               </tfoot>
             </table>
@@ -2203,14 +2059,15 @@ outClient)</a> in new code.</dd>
         </section>
                       <section class="m-doc-details" id="aed4ff4d923a9ab893b39f662c9f071d0"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">int16_t </span><a href="#aed4ff4d923a9ab893b39f662c9f071d0" class="m-doc-self">publishData</a>(</span><span class="m-doc-wrap">) <span class="m-label m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">int16_t  dataPublisher::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#aed4ff4d923a9ab893b39f662c9f071d0" class="m-doc-self">publishData</a>(</span><span class="m-doc-wrap">) <span class="m-label m-warning">virtual</span></span></span>
             </h3>
             <p>Open a socket to the correct receiver and send out the formatted data.</p>
             <table class="m-table m-fullwidth m-flat">
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td><strong>int16_t</strong> The result of publishing data. May be an http response code or a result code from PubSubClient.</td>
+                  <td><span class="m-dim">int16_t</span> The result of publishing data. May be an http response code or a result code from PubSubClient.</td>
                 </tr>
               </tfoot>
             </table>
@@ -2221,9 +2078,11 @@ outClient)</a> in new code.</dd>
         </section>
                       <section class="m-doc-details" id="a176a2ecb3c3062cb20a509d5606f48d4"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">int16_t </span><a href="#a176a2ecb3c3062cb20a509d5606f48d4" class="m-doc-self">sendData</a>(</span><span class="m-doc-wrap"><span class="m-dim">Client*</span> <span class="m-param">outClient</span>) <span class="m-label m-danger">deprecated in v0.22.5</span> <span class="m-label m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">int16_t  dataPublisher::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a176a2ecb3c3062cb20a509d5606f48d4" class="m-doc-self">sendData</a>(</span><span class="m-doc-wrap"><span class="m-dim">Client*</span> <span
+                    class="m-param">outClient</span>) <span class="m-label m-warning">virtual</span> <span class="m-label m-danger">deprecated in v0.22.5</span></span></span>
             </h3>
-            <p>Retained for backwards compatibility; use <a href="classdata_publisher.html#aa45185b326a22fe3350fe6a603d4c4bf" class="m-doc">publishData(Client*
+            <p>Retained for backwards compatibility; use <a href="#aa45185b326a22fe3350fe6a603d4c4bf" class="m-doc">publishData(Client*
 outClient)</a> in new code.</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
@@ -2238,7 +2097,7 @@ outClient)</a> in new code.</p>
               <tfoot>
                 <tr>
                   <th>Returns</th>
-                  <td><strong>int16_t</strong> The result of publishing data. May be an http response code or a result code from PubSubClient.</td>
+                  <td><span class="m-dim">int16_t</span> The result of publishing data. May be an http response code or a result code from PubSubClient.</td>
                 </tr>
               </tfoot>
             </table>
@@ -2249,14 +2108,15 @@ outClient)</a> in new code.</p>
         </section>
                       <section class="m-doc-details" id="acf08fe6a045e797e00fdcf593289e782"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">int16_t </span><a href="#acf08fe6a045e797e00fdcf593289e782" class="m-doc-self">sendData</a>(</span><span class="m-doc-wrap">) <span class="m-label m-danger">deprecated in v0.22.5</span> <span class="m-label m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">int16_t  dataPublisher::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#acf08fe6a045e797e00fdcf593289e782" class="m-doc-self">sendData</a>(</span><span class="m-doc-wrap">) <span class="m-label m-warning">virtual</span> <span class="m-label m-danger">deprecated in v0.22.5</span></span></span>
             </h3>
-            <p>Retained for backwards compatibility; use <a href="classdata_publisher.html#aed4ff4d923a9ab893b39f662c9f071d0" class="m-doc">publishData()</a> in new code.</p>
+            <p>Retained for backwards compatibility; use <a href="#aed4ff4d923a9ab893b39f662c9f071d0" class="m-doc">publishData()</a> in new code.</p>
             <table class="m-table m-fullwidth m-flat">
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td><strong>int16_t</strong> The result of publishing data. May be an http response code or a result code from PubSubClient.</td>
+                  <td><span class="m-dim">int16_t</span> The result of publishing data. May be an http response code or a result code from PubSubClient.</td>
                 </tr>
               </tfoot>
             </table>
@@ -2267,7 +2127,9 @@ outClient)</a> in new code.</p>
         </section>
                       <section class="m-doc-details" id="a8aa172930258b75bcb24cc40e2f3dae7"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#a8aa172930258b75bcb24cc40e2f3dae7" class="m-doc-self">parseMQTTState</a>(</span><span class="m-doc-wrap"><span class="m-dim">int</span> <span class="m-param">state</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">String  dataPublisher::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a8aa172930258b75bcb24cc40e2f3dae7" class="m-doc-self">parseMQTTState</a>(</span><span class="m-doc-wrap"><span class="m-dim">int</span> <span
+                    class="m-param">state</span>)</span></span>
             </h3>
             <p>Translate a PubSubClient code into a String with the code explanation.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -2283,7 +2145,7 @@ outClient)</a> in new code.</p>
               <tfoot>
                 <tr>
                   <th>Returns</th>
-                  <td><strong>String</strong> The meaning of the code</td>
+                  <td><span class="m-dim">String</span> The meaning of the code</td>
                 </tr>
               </tfoot>
             </table>
@@ -2291,41 +2153,93 @@ outClient)</a> in new code.</p>
             <hr>
           </div>
         </section>
-                      <section class="m-doc-details" id="ae64366a723e3a8715890b1bd8d83ea7d"><div>
+                      <section class="m-doc-details" id="a981315f653a0ca03e0fa6e3053932f38"><div>
             <h3>
-              <span class="m-doc-wrap-bumper">static <span class="m-dim">int </span><a href="#ae64366a723e3a8715890b1bd8d83ea7d" class="m-doc-self">bufferFree</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
+              <span class="m-doc-wrap-bumper">static <span class="m-dim">void  dataPublisher::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a981315f653a0ca03e0fa6e3053932f38" class="m-doc-self">txBufferInit</a>(</span><span class="m-doc-wrap"><span class="m-dim">Client*</span> <span
+                    class="m-param">outClient</span>)                  <span class="m-label m-warning">protected</span></span></span>
             </h3>
-            <p>Get the number of empty spots in the buffer.</p>
-            <table class="m-table m-fullwidth m-flat">
-              <tfoot>
-                <tr>
-                  <th style="width: 1%">Returns</th>
-                  <td><strong>int</strong> The number of available characters in the buffer</td>
-                </tr>
-              </tfoot>
-            </table>
-
-            <hr>
-          </div>
-        </section>
-                      <section class="m-doc-details" id="af3a3cd605623a85f286858119c21877f"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper">static <span class="m-dim">void </span><a href="#af3a3cd605623a85f286858119c21877f" class="m-doc-self">printTxBuffer</a>(</span><span class="m-doc-wrap"><span class="m-dim">Stream*</span> <span class="m-param">stream</span>,
-              <span class="m-dim">bool</span> <span class="m-param">addNewLine</span><span class="m-dim"> = false</span>)</span>
-            </h3>
-            <p>Write the TX buffer to a stream and also to the debugging port.</p>
+            <p>Initialize the TX buffer to be empty and start writing to the given client.</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Parameters</th></tr>
               </thead>
               <tbody>
                 <tr>
-                  <td class="m-param"  style="width: 1%"><span class="m-param">stream</span></td>
-                  <td>A pointer to an Arduino Stream instance to use to print data</td>
+                  <td class="m-param"  style="width: 1%"><span class="m-param">outClient</span></td>
+                  <td>The client to transmit to.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <hr>
+          </div>
+        </section>
+                      <section class="m-doc-details" id="a4f0511ced6bca70ec98bd590e50b061b"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">static <span class="m-dim">void  dataPublisher::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a4f0511ced6bca70ec98bd590e50b061b" class="m-doc-self">txBufferAppend</a>(</span><span class="m-doc-wrap"><span class="m-dim">const char*</span> <span
+                    class="m-param">data</span>,
+              <span class="m-dim">size_t</span> <span
+                    class="m-param">length</span>)                  <span class="m-label m-warning">protected</span></span></span>
+            </h3>
+            <p>Append the given data to the TX buffer, flushing if necessary.</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="m-param"  style="width: 1%"><span class="m-param">data</span></td>
+                  <td>The data start pointer.</td>
                 </tr>
                 <tr>
-                  <td class="m-param" ><span class="m-param">addNewLine</span></td>
-                  <td>True to add a new line character (&quot;\n&quot;) at the end of the print</td>
+                  <td class="m-param" ><span class="m-param">length</span></td>
+                  <td>The number of bytes to add.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <hr>
+          </div>
+        </section>
+                      <section class="m-doc-details" id="a37d9c2f407a5b60f82c9974e034e65de"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">static <span class="m-dim">void  dataPublisher::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a37d9c2f407a5b60f82c9974e034e65de" class="m-doc-self">txBufferAppend</a>(</span><span class="m-doc-wrap"><span class="m-dim">const char*</span> <span
+                    class="m-param">s</span>)                  <span class="m-label m-warning">protected</span></span></span>
+            </h3>
+            <p>Append the given string to the TX buffer, flushing if necessary.</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="m-param"  style="width: 1%"><span class="m-param">s</span></td>
+                  <td>The null-terminated string to append.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <hr>
+          </div>
+        </section>
+                      <section class="m-doc-details" id="a1c7dd4f40f31a8e4bd32bb86222891eb"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">static <span class="m-dim">void  dataPublisher::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a1c7dd4f40f31a8e4bd32bb86222891eb" class="m-doc-self">txBufferAppend</a>(</span><span class="m-doc-wrap"><span class="m-dim">char</span> <span
+                    class="m-param">c</span>)                  <span class="m-label m-warning">protected</span></span></span>
+            </h3>
+            <p>Append the given char to the TX buffer, flushing if necessary.</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="m-param"  style="width: 1%"><span class="m-param">c</span></td>
+                  <td>The char to append.</td>
                 </tr>
               </tbody>
             </table>
@@ -2336,62 +2250,73 @@ outClient)</a> in new code.</p>
         </section>
         <hr>
 
-
-
-
-                    </div>
-                  </div>
-                </div>
               </article>
             </main>
 
-          </div>      </div></div><div id="footer-image">
-          <div class="gp-container">
-            <img
-              src="https://www.envirodiy.org/wp-content/uploads/2016/05/EnviroDIY_LogoMaster_Square_V5_TwoTree_Trans_notext-e1462820115833.png"
-              width="99"
-              height="22"
-              alt=""
-            />
-          </div>
-        </div>
+          </div> <!-- gp-content -->
+        </div> <!-- gp-left-column -->
+      </div> <!-- gp-inner-container -->
+    </div> <!-- gp-content-wrapper -->
+
+    <div id="footer-image">
+      <div class="gp-container">
+        <img
+          src="https://www.envirodiy.org/wp-content/uploads/2016/05/EnviroDIY_LogoMaster_Square_V5_TwoTree_Trans_notext-e1462820115833.png"
+          width="99"
+          height="22"
+          alt=""
+        />
+      </div>
+    </div>
 
     <footer id="gp-footer">
       <div id="gp-copyright">
         <div class="gp-container">
           <div id="gp-copyright-text">
             <p>
-              <a href="http://www.stroudcenter.org/" target="_blank"
-                ><img
-                  style="float: left; margin-right: 20px;"
-                  src="https://www.envirodiy.org/wp-content/uploads/2017/01/stroud-white-white-165px.png"
-                  alt=""
-                  width="165"
-                  height="70" /></a
-              >EnviroDIY™ is a community for do-it-yourself ideas for
-              environmental science and monitoring. EnviroDIY is an
-              initiative of
-              <a href="http://www.stroudcenter.org/" target="_blank"
-                >Stroud™ Water Research Center</a
-              >, which seeks to advance knowledge and stewardship of
-              freshwater systems through global research, education, and
-              watershed restoration.
+              <a href="https://stroudcenter.org/" target="_blank"
+                >EnviroDIY™ is a community for do-it-yourself ideas for environmental
+                science and monitoring. EnviroDIY is an initiative of
+                <a
+                  style="text-decoration: underline"
+                  href="https://stroudcenter.org/"
+                  target="_blank"
+                  >Stroud Water Research Center</a
+                >, which advances knowledge and stewardship of freshwater systems through
+                global research, education, and watershed restoration.
+              </a>
             </p>
             <p>
               All content on EnviroDIY is licensed as Creative Commons
-              Attribution-ShareAlike 4.0 International (CC-BY-SA). Hardware
-              designs on this website are released under the CERN Open
-              Hardware License 1.2.
-              <a href="https://envirodiy.org/licenses/"
-                >Alternative licenses are available.</a
+              Attribution-ShareAlike 4.0 International (CC-BY-SA). Hardware designs on this
+              website are released under the CERN Open Hardware License 1.2.
+              <a style="text-decoration: underline" href="https://envirodiy.org/licenses/"
+                >See all licenses.</a
               >
-              <a href="https://envirodiy.org/terms/">Terms of Use</a> |
-              <a href="https://envirodiy.org/privacy/">Privacy Policy</a> |
-              <a href="https://envirodiy.org/cookies/">Cookie Policy</a> |
-              <a href="https://envirodiy.org/contact/">Contact</a>
+              <a style="text-decoration: underline" href="https://envirodiy.org/terms/"
+                >Terms of Use</a
+              >
+              |
+              <a style="text-decoration: underline" href="https://envirodiy.org/privacy/"
+                >Privacy Policy</a
+              >
+              |
+              <a style="text-decoration: underline" href="https://envirodiy.org/cookies/"
+                >Cookie Policy</a
+              >
+              |
+              <a
+                style="text-decoration: underline"
+                href="https://envirodiy.org/shop-policies/"
+                >Shop Policies</a
+              >
+              |
+              <a style="text-decoration: underline" href="https://envirodiy.org/contact/"
+                >Contact</a
+              >
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.6 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.12.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>
@@ -2400,69 +2325,8 @@ outClient)</a> in new code.</p>
 
     <div class="gp-clear"></div>
 
-    </div></div><script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/modernizr.js?ver=6.1.1"
-  id="modernizr-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-includes/js/imagesloaded.min.js?ver=4.1.4"
-  id="imagesloaded-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/selectivizr.min.js?ver=6.1.1"
-  id="selectivizr-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/placeholders.min.js?ver=6.1.1"
-  id="placeholder-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/jquery.ui.totop.min.js.js?ver=6.1.1"
-  id="jquery-totop-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/jquery.flexslider-min.js?ver=6.1.1"
-  id="jquery-flexslider-js"
-></script>
-<script type="text/javascript" id="ghostpool-custom-js-js-extra">
-  /* <![CDATA[ */
-  var ghostpool_script = {
-    lightbox: 'separate_images',
-    url: 'https:\/\/www.envirodiy.org\/',
-    related_items_in_view: '',
-  };
-  /* ]]> */
-</script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/jquery.stellar.min.js?ver=6.1.1"
-  id="jquery-stellar-js"
-></script>
+    </div> <!-- gp-site-wrapper -->
+  </div> <!-- gp-site-wrapper -->
 
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/custom.js?ver=6.1.1"
-  id="ghostpool-custom-js-js"
-></script>
-<script type="text/javascript" id="ghostpool-ajax-loop-js-extra">
-  /* <![CDATA[ */
-  var ghostpoolAjax = {
-    ajaxurl: 'https:\/\/www.envirodiy.org\/wp-admin\/admin-ajax.php',
-    ajaxnonce: 'e2424257d3',
-    querystring: '',
-  };
-  /* ]]> */
-</script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/ajax-loop.js?ver=6.1.1"
-  id="ghostpool-ajax-loop-js"
-></script>
 </body>
 </html>

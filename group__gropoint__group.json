@@ -1,0 +1,90 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__gropoint__group",
+    "name": "GroPoint Sensors",
+    "url_base": "group__gropoint__group",
+    "url": "group__gropoint__group.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> and <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> objects for all GroPoint sensors.</p><p>This library currently supports the following <a href=\"https://www.gropoint.com\">GroPoint</a> sensors:</p><ul><li><a href=\"https://www.gropoint.com/products/soil-sensors/gropoint-profile\">GroPoint Profile GPLP-8</a>, 8-Segment Soil Moisture &amp; Temperature Profiling Probe<ul><li><a href=\"https://www.gropoint.com/s/2625-N-T-GroPoint-Profile-User-Manual-V113.pdf\">GroPoint Profile User Manual</a>, including Modbus Instructions.</li><li><a href=\"https://www.gropoint.com/s/GroPoint-Profile-Technical-Info.pdf\">GroPoint Profile Technical Info</a></li><li><a href=\"group__sensor__gplp8.html\" class=\"m-doc\">Class Documentation</a></li></ul></li></ul><p>These sensors operate a 7.5 to 14.0 VDC power supply (Max 18.0 VDC). The power supply can be stopped between measurements for all. They communicate via <a href=\"https://en.wikipedia.org/wiki/Modbus\">Modbus RTU</a> over <a href=\"https://en.wikipedia.org/wiki/RS-485\">RS-485</a>. To interface with them, you will need an RS485-to-TTL adapter.</p><p>The sensor constructor requires as input: the sensor modbus address, a stream instance for data (ie, <code>Serial</code>), and one or two power pins. The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional. (Use -1 for the second power pin and -1 for the enable pin if these don&#x27;t apply and you want to average more than one reading.) Please see the section &quot;[Notes on Arduino Streams and Software Serial](@ref page_arduino_streams)&quot; for more information about what streams can be used along with this library. In tests on these sensors, SoftwareSerial_ExtInts <em>did not work</em> to communicate with these sensors, because it isn&#x27;t stable enough. AltSoftSerial and HardwareSerial work fine. Up to two power pins are provided so that the RS485 adapter, the sensor and/or an external power relay can be controlled separately. If the power to everything is controlled by the same pin, use -1 for the second power pin or omit the argument. If they are controlled by different pins <em>and no other sensors are dependent on power from either pin</em> then the order of the pins doesn&#x27;t matter. If the RS485 adapter, sensor, or relay are controlled by different pins <em>and any other sensors are controlled by the same pins</em> you should put the shared pin first and the un-shared pin second. Both pins <em>cannot</em> be shared pins.</p><p>By default, this library cuts power to the sensors between readings, causing them to lose track of their brushing interval. The library manually activates the brushes as part of the &quot;wake&quot; command. There are currently no other ways to set the brushing interval in this library.</p><p>The lower level details of the communication with the sensors is managed by the <a href=\"https://github.com/EnviroDIY/GroPointModbus\">EnviroDIY GroPointModbus library</a></p>",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [
+      {
+        "url": "group__sensor__gplp8.html",
+        "name": "GroPoint Profile GPLP-8 Soil Moisture &amp; Temperature",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      }
+    ],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_gro_point_parent.html",
+        "name": "GroPointParent",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for all the <a href=\"group__gropoint__group.html\" class=\"m-doc\">GroPoint sensors</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "GroPoint Sensors",
+        "group__gropoint__group.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "GroPoint Sensors",
+        "group__gropoint__group.html"
+      ]
+    ]
+  }
+}

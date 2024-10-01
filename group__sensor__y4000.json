@@ -1,0 +1,1190 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__sensor__y4000",
+    "name": "Yosemitech Y4000 Multi-Parameter Sonde",
+    "url_base": "group__sensor__y4000",
+    "url": "group__sensor__y4000.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>Classes for the Yosemitech Y4000 multi-parameter sonde.</p><section id=\"sensor_y4000_datasheet\"><h2>Sensor Datasheet</h2><ul><li><a href=\"https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y4000-Sonde_UserManual_v2.0.pdf\">Manual</a></li><li><a href=\"https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y4000-Sonde-1.6-ModbusInstruction-en.pdf\">Modbus Instructions</a></li></ul><aside class=\"m-note m-info\"><h4>Note</h4><p>The reported resolution (32 bit) gives far more precision than is significant based on the specified accuracy of the sensor, so the resolutions kept in the string representation of the variable values is based on the accuracy not the maximum reported resolution of the sensor.</p></aside></section><section id=\"sensor_y4000_ctor\"><h2>Sensor Constructor</h2><p>{{ <a href=\"class_yosemitech_y4000.html#a0bbc51132590575c15324be42b6651cb\" class=\"m-doc\">YosemitechY4000::<wbr />YosemitechY4000</a> }}</p><hr/></section><section id=\"sensor_y4000_examples\"><h2>Example Code</h2><p>The Y4000 Sonde is used in the <a href=\"example_menu.html#menu_walk_yosemitech_y4000\" class=\"m-doc\">menu a la carte</a> example.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;sensors/YosemitechY4000.h&gt;</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"c1\">// NOTE: Extra hardware and software serial ports are created in the &quot;Settings</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"c1\">// for Additional Serial Ports&quot; section</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span><span class=\"c1\">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"kr\">byte</span><span class=\"w\">          </span><span class=\"n\">y4000ModbusAddress</span><span class=\"w\">  </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mh\">0x05</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// The modbus address of the Y4000</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">y4000AdapterPower</span><span class=\"w\">   </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">sensorPowerPin</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// RS485 adapter power pin</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">y4000SensorPower</span><span class=\"w\">    </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">A3</span><span class=\"p\">;</span><span class=\"w\">              </span><span class=\"c1\">// Sensor power pin</span>\n</div><div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">y4000EnablePin</span><span class=\"w\">      </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">-1</span><span class=\"p\">;</span><span class=\"w\">              </span><span class=\"c1\">// Adapter RE/DE pin</span>\n</div><div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">uint8_t</span><span class=\"w\"> </span><span class=\"n\">y4000NumberReadings</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">5</span><span class=\"p\">;</span>\n</div><div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"c1\">// The manufacturer recommends averaging 10 readings, but we take 5 to minimize</span>\n</div><div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span><span class=\"c1\">// power consumption</span>\n</div><div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span>\n</div><div class=\"line\"><a id=\"l-15\" name=\"l-15\"></a><span class=\"linenos\">15</span><span class=\"c1\">// Create a Yosemitech Y4000 multi-parameter sensor object</span>\n</div><div class=\"line\"><a id=\"l-16\" name=\"l-16\"></a><span class=\"linenos\">16</span><span class=\"n\">YosemitechY4000</span><span class=\"w\"> </span><span class=\"nf\">y4000</span><span class=\"p\">(</span><span class=\"n\">y4000ModbusAddress</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">modbusSerial</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">y4000AdapterPower</span><span class=\"p\">,</span>\n</div><div class=\"line\"><a id=\"l-17\" name=\"l-17\"></a><span class=\"linenos\">17</span><span class=\"w\">                      </span><span class=\"n\">y4000SensorPower</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">y4000EnablePin</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">y4000NumberReadings</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-18\" name=\"l-18\"></a><span class=\"linenos\">18</span>\n</div><div class=\"line\"><a id=\"l-19\" name=\"l-19\"></a><span class=\"linenos\">19</span><span class=\"c1\">// Create all of the variable pointers for the Y4000</span>\n</div><div class=\"line\"><a id=\"l-20\" name=\"l-20\"></a><span class=\"linenos\">20</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">y4000DO</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-21\" name=\"l-21\"></a><span class=\"linenos\">21</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">YosemitechY4000_DOmgL</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">y4000</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-22\" name=\"l-22\"></a><span class=\"linenos\">22</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">y4000Turb</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">YosemitechY4000_Turbidity</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-23\" name=\"l-23\"></a><span class=\"linenos\">23</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">y4000</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-24\" name=\"l-24\"></a><span class=\"linenos\">24</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">y4000Cond</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-25\" name=\"l-25\"></a><span class=\"linenos\">25</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">YosemitechY4000_Cond</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">y4000</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-26\" name=\"l-26\"></a><span class=\"linenos\">26</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">y4000pH</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-27\" name=\"l-27\"></a><span class=\"linenos\">27</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">YosemitechY4000_pH</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">y4000</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-28\" name=\"l-28\"></a><span class=\"linenos\">28</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">y4000Temp</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-29\" name=\"l-29\"></a><span class=\"linenos\">29</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">YosemitechY4000_Temp</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">y4000</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-30\" name=\"l-30\"></a><span class=\"linenos\">30</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">y4000ORP</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-31\" name=\"l-31\"></a><span class=\"linenos\">31</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">YosemitechY4000_ORP</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">y4000</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-32\" name=\"l-32\"></a><span class=\"linenos\">32</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">y4000Chloro</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">YosemitechY4000_Chlorophyll</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-33\" name=\"l-33\"></a><span class=\"linenos\">33</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">y4000</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-34\" name=\"l-34\"></a><span class=\"linenos\">34</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">y4000BGA</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-35\" name=\"l-35\"></a><span class=\"linenos\">35</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">YosemitechY4000_BGA</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">y4000</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "sensor_y4000_datasheet",
+        "Sensor Datasheet",
+        []
+      ],
+      [
+        "sensor_y4000_ctor",
+        "Sensor Constructor",
+        []
+      ],
+      [
+        "sensor_y4000_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_yosemitech_y4000.html",
+        "name": "YosemitechY4000",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__y4000.html\" class=\"m-doc\">Yosemitech Y4000 multiparameter sonde</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_yosemitech_y4000___d_omg_l.html",
+        "name": "YosemitechY4000_DOmgL",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__y4000.html#sensor_y4000_domgl\" class=\"m-doc\">dissolved oxygen concentration output</a> from a <a href=\"group__sensor__y4000.html\" class=\"m-doc\">Yosemitech Y4000 multiparameter sonde</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_yosemitech_y4000___turbidity.html",
+        "name": "YosemitechY4000_Turbidity",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__y4000.html#sensor_y4000_turb\" class=\"m-doc\">turbidity output</a> from a <a href=\"group__sensor__y4000.html\" class=\"m-doc\">Yosemitech Y4000 multiparameter sonde</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_yosemitech_y4000___cond.html",
+        "name": "YosemitechY4000_Cond",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__y4000.html#sensor_y4000_cond\" class=\"m-doc\">conductivity output</a> from a <a href=\"group__sensor__y4000.html\" class=\"m-doc\">Yosemitech Y4000 multiparameter sonde</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_yosemitech_y4000__p_h.html",
+        "name": "YosemitechY4000_pH",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__y4000.html#sensor_y4000_ph\" class=\"m-doc\">pH output</a> from a <a href=\"group__sensor__y4000.html\" class=\"m-doc\">Yosemitech Y4000 multiparameter sonde</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_yosemitech_y4000___temp.html",
+        "name": "YosemitechY4000_Temp",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__y4000.html#sensor_y4000_temp\" class=\"m-doc\">temperature output</a> from a <a href=\"group__sensor__y4000.html\" class=\"m-doc\">Yosemitech Y4000 multiparameter sonde</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_yosemitech_y4000___o_r_p.html",
+        "name": "YosemitechY4000_ORP",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__y4000.html#sensor_y4000_orp\" class=\"m-doc\">electrode electrical potential output</a> from a <a href=\"group__sensor__y4000.html\" class=\"m-doc\">Yosemitech Y4000 multiparameter sonde</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_yosemitech_y4000___chlorophyll.html",
+        "name": "YosemitechY4000_Chlorophyll",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__y4000.html#sensor_y4000_chloro\" class=\"m-doc\">chlorophyll concentration output</a> from a <a href=\"group__sensor__y4000.html\" class=\"m-doc\">Yosemitech Y4000 multiparameter sonde</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_yosemitech_y4000___b_g_a.html",
+        "name": "YosemitechY4000_BGA",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__y4000.html#sensor_y4000_bga\" class=\"m-doc\">blue green algae (BGA) concentration output</a> from a <a href=\"group__sensor__y4000.html\" class=\"m-doc\">Yosemitech Y4000 multiparameter sonde</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Sensor Variable Counts",
+        "id": "sensor-variable-counts",
+        "description": "<p><a name=\"sensor_y4000_var_counts\"></a> The number of variables that can be returned by a Yosemitch Y4000</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "ga876521da045c7c166e30b732f1db7137",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_NUM_VARIABLES",
+              "initializer": "8",
+              "brief": "<a href=\"class_sensor.html#af26786329fd01b44cf31410d046fc8f3\" class=\"m-doc\">Sensor::<wbr />_numReturnedValues</a>; the Y4000 can report 8 values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "gab681bbb34bfbe6eaa954e4fb52882c65",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_INC_CALC_VARIABLES",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#a2f3f93a9205efb134cef1216d65077d2\" class=\"m-doc\">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Sensor Timing",
+        "id": "sensor-timing",
+        "description": "<p><a name=\"sensor_y4000_timing\"></a> The sensor timing for a Yosemitch Y4000 multi-parameter sonde</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "ga9996636aefb2a28ad5b30684b9145141",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_WARM_UP_TIME_MS",
+              "initializer": "1000",
+              "brief": "<a href=\"class_sensor.html#aaaefd7f306f86382a3dac726531756b4\" class=\"m-doc\">Sensor::<wbr />_warmUpTime_ms</a>; time before sensor responds after power - 1.6 seconds (1600ms).",
+              "description": "<p>This is the time for communication to begin.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "ga3146d2da2e6a3757169f9637ae98d82f",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_STABILIZATION_TIME_MS",
+              "initializer": "50000",
+              "brief": "<a href=\"class_sensor.html#ad6822ad09fb64658c911ce86820db79c\" class=\"m-doc\">Sensor::<wbr />_stabilizationTime_ms</a>; the Y4000 is stable after 60000ms.",
+              "description": "<p>Y4000 Modbus manual says 60s; we find Cond takes about 40s to respond.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "ga4cc43be3d8e62c6e9c8a06f9615443d9",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_MEASUREMENT_TIME_MS",
+              "initializer": "4000",
+              "brief": "<a href=\"class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba\" class=\"m-doc\">Sensor::<wbr />_measurementTime_ms</a>; the Y4000 takes ~4000ms to complete a measurement.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Dissolved Oxygen Concentration",
+        "id": "dissolved-oxygen-concentration",
+        "description": "<p><a name=\"sensor_y4000_domgl\"></a> The dissolved oxygen concentration variable from a Yosemitch Y4000 multi-parameter sonde</p><ul><li>Range is 0-20mg/L or 0-200% Air Saturation</li><li>Accuracy is \u00b1 0.3 mg/L</li></ul><p>{{ <a href=\"class_yosemitech_y4000___d_omg_l.html#ac7ca46aae51be7f928c4ddb2f1b82e01\" class=\"m-doc\">YosemitechY4000_DOmgL::<wbr />YosemitechY4000_DOmgL</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "gad5fc6a3e97097cd70633038792a2f200",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_DOMGL_RESOLUTION",
+              "initializer": "2",
+              "brief": "Decimals places in string representation; dissolved oxygen concentration should have 2 - resolution is 0.01 mg/L.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "ga7d425eb6d21d362c5dc1e203a9713db7",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_DOMGL_VAR_NUM",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; dissolved oxygen concentration is stored in sensorValues[0].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "gafa8792cd653461cb7717cc4d39e9a53c",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_DOMGL_VAR_NAME",
+              "initializer": "\"oxygenDissolved\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;oxygenDissolved&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "ga077dd59770ab832811cad99a78196a8a",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_DOMGL_UNIT_NAME",
+              "initializer": "\"milligramPerLiter\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;milligramPerLiter&quot; (mg/L)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "gaf2521d8a81142dc86f9c2d433e8af7a7",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_DOMGL_DEFAULT_CODE",
+              "initializer": "\"Y4000DOmgL\"",
+              "brief": "Default variable short code; &quot;Y4000DOmgL&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Turbidity",
+        "id": "turbidity",
+        "description": "<p><a name=\"sensor_y4000_turb\"></a> The turbidity variable from a Yosemitch Y4000 multi-parameter sonde</p><ul><li>Range is 0.1~1000 NTU</li><li>Accuracy is \uff1c5% or 0.3NTU</li></ul><p>{{ <a href=\"class_yosemitech_y4000___turbidity.html#a866d5c709d7a7ae870e58cab8f23ba90\" class=\"m-doc\">YosemitechY4000_Turbidity::<wbr />YosemitechY4000_Turbidity</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "ga00c68a89c9e622785e9b4d73124a01ef",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_TURB_RESOLUTION",
+              "initializer": "2",
+              "brief": "Decimals places in string representation; turbidity should have 2 - resolution is 0.01 NTU.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "ga299ae178e23795fb9f8281a90470f98b",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_TURB_VAR_NUM",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; turbidity is stored in sensorValues[1].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "ga4dc76a859a27ef03f60884b929fd3e24",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_TURB_VAR_NAME",
+              "initializer": "\"turbidity\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;turbidity&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "ga46cecf743f56d6cb508cb6655ad7a87d",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_TURB_UNIT_NAME",
+              "initializer": "\"nephelometricTurbidityUnit\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;nephelometricTurbidityUnit&quot; (NTU)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "ga78fa8dc16ae96c7c76b32a67c11349b1",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_TURB_DEFAULT_CODE",
+              "initializer": "\"Y4000Turbidity\"",
+              "brief": "Default variable short code; &quot;Y4000Turbidity&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Conductivity",
+        "id": "conductivity",
+        "description": "<p><a name=\"sensor_y4000_cond\"></a> The conductivity variable from a Yosemitch Y4000 multi-parameter sonde</p><ul><li>Range is 1 \u00b5S/cm to 200 mS/cm</li><li>Accuracy is \u00b1 1 % Full Scale</li></ul><p>{{ <a href=\"class_yosemitech_y4000___cond.html#a2ac0dc2eeb5138a626bb695424a52fb6\" class=\"m-doc\">YosemitechY4000_Cond::<wbr />YosemitechY4000_Cond</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "ga5cd899832889fbf2dc1e0855c9e8b91e",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_COND_RESOLUTION",
+              "initializer": "1",
+              "brief": "Decimals places in string representation; conductivity should have 1.",
+              "description": "<ul><li>resolution is 0.1 \u00b5S/cm.</li></ul>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "gaa21f4bdf8ea9b6a22e45656fc358976b",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_COND_VAR_NUM",
+              "initializer": "2",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; conductivity is stored in sensorValues[2].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "gad44c1e19332bb20b2706b9df890bedf9",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_COND_VAR_NAME",
+              "initializer": "\"specificConductance\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;specificConductance&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "gaef1039128c5e745d43d4b4c951f4cd01",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_COND_UNIT_NAME",
+              "initializer": "\"microsiemenPerCentimeter\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;microsiemenPerCentimeter&quot; (\u00b5S/cm)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "ga113d6ed4b5de5169d2b1740cdc25b434",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_COND_DEFAULT_CODE",
+              "initializer": "\"Y4000Cond\"",
+              "brief": "Default variable short code; &quot;Y4000Cond&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "pH",
+        "id": "ph",
+        "description": "<p><a name=\"sensor_y4000_ph\"></a> The pH variable from a Yosemitch Y4000 multi-parameter sonde</p><ul><li>Range is 2 to 12 pH units</li><li>Accuracy is \u00b1 0.1 pH units</li></ul><p>{{ <a href=\"class_yosemitech_y4000__p_h.html#a152d3eabef6252e37b298ff8555cd997\" class=\"m-doc\">YosemitechY4000_pH::<wbr />YosemitechY4000_pH</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "ga422476165a7453cfcf2e6b3308d45709",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_PH_RESOLUTION",
+              "initializer": "2",
+              "brief": "Decimals places in string representation; ph should have 2 - resolution is 0.01 pH units.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "gabdec8e307b189e3af58deb87d4533b76",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_PH_VAR_NUM",
+              "initializer": "3",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; pH is stored in sensorValues[3].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "gad1d69338aeda52b85f2fe48eab686645",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_PH_VAR_NAME",
+              "initializer": "\"pH\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;pH&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "gaca586071770450e30697d0f8dd90ee77",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_PH_UNIT_NAME",
+              "initializer": "\"pH\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;pH&quot; (dimensionless pH units)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "gabbd28d81bb552d0fc2e942a7ee9739da",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_PH_DEFAULT_CODE",
+              "initializer": "\"Y4000pH\"",
+              "brief": "Default variable short code; &quot;Y4000pH&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Temperature",
+        "id": "temperature",
+        "description": "<p><a name=\"sensor_y4000_temp\"></a> The temperature variable from a Yosemitch Y4000 multi-parameter sonde</p><ul><li>Range is 0\u00b0C to + 50\u00b0C</li><li>Accuracy is \u00b1 0.2\u00b0C</li></ul><p>{{ <a href=\"class_yosemitech_y4000___temp.html#a0b90228719cdd15a2e1e878c4cf8a9ff\" class=\"m-doc\">YosemitechY4000_Temp::<wbr />YosemitechY4000_Temp</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "ga53582adb8469ac5ddf90cc6779f44f62",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_TEMP_RESOLUTION",
+              "initializer": "1",
+              "brief": "Decimals places in string representation; temperature should have 1 - resolution is 0.1\u00b0C.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "gaf0aa4f7081bb12e9e83fa7260a144d05",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_TEMP_VAR_NUM",
+              "initializer": "4",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; temperature is stored in sensorValues[4].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "gafc9774277d9fdaae362c54afc487e750",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_TEMP_VAR_NAME",
+              "initializer": "\"temperature\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;temperature&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "gad0be5c40a24a955586a6f5849b0091c3",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_TEMP_UNIT_NAME",
+              "initializer": "\"degreeCelsius\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;degreeCelsius&quot; (\u00b0C)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "gaf75e4c09972b5c4f0716b0f37d8c07e7",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_TEMP_DEFAULT_CODE",
+              "initializer": "\"Y4000Temp\"",
+              "brief": "Default variable short code; &quot;Y4000Temp&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "ORP",
+        "id": "orp",
+        "description": "<p><a name=\"sensor_y4000_orp\"></a> The ORP variable from a Yosemitch Y4000 multi-parameter sonde</p><ul><li>Range is -999 ~ 999 mV</li><li>Accuracy is \u00b1 20 mV</li></ul><p>{{ <a href=\"class_yosemitech_y4000___o_r_p.html#a39a940a109638c31eab8c4af77d684e2\" class=\"m-doc\">YosemitechY4000_ORP::<wbr />YosemitechY4000_ORP</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "ga91ceca2923a665fa9fcd921b99319fdf",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_ORP_RESOLUTION",
+              "initializer": "0",
+              "brief": "Decimals places in string representation; orp should have 0 - resolution is 1 mV.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "ga0a840350ab091547da8e35eeb7e66068",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_ORP_VAR_NUM",
+              "initializer": "5",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; ORP is stored in sensorValues[5].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "ga5de4d3cda9de76290fd4b688c8ac5d3b",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_ORP_VAR_NAME",
+              "initializer": "\"ORP\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;ORP&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "ga04ed32677c7045c471bb21501b8405e9",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_ORP_UNIT_NAME",
+              "initializer": "\"millivolt\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;millivolt&quot; (mV)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "gac6793ea95dba733583c311b0c14fae34",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_ORP_DEFAULT_CODE",
+              "initializer": "\"Y4000Potential\"",
+              "brief": "Default variable short code; &quot;Y4000Potential&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Chlorophyll Concentration",
+        "id": "chlorophyll-concentration",
+        "description": "<p><a name=\"sensor_y4000_chloro\"></a> The chlorophyll concentration variable from a Yosemitch Y4000 multi-parameter sonde</p><ul><li>Range is 0 to 400 \u00b5g/L or 0 to 100 RFU</li><li>Accuracy is \u00b1 1 %</li></ul><p>{{ <a href=\"class_yosemitech_y4000___chlorophyll.html#abe7781b39a212d9a9a5db6f57fce1012\" class=\"m-doc\">YosemitechY4000_Chlorophyll::<wbr />YosemitechY4000_Chlorophyll</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "ga6fc391998c64690b9e3c9b561605b175",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_CHLORO_RESOLUTION",
+              "initializer": "1",
+              "brief": "Decimals places in string representation; chlorophyll concentration should have 1 - resolution is 0.1 \u00b5g/L / 0.1 RFU.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "ga59d1ea714af2de35b97d9586ffbf2bd7",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_CHLORO_VAR_NUM",
+              "initializer": "6",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; chlorophyll concentration is stored in sensorValues[6].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "gacfd23ff2c1b6ba7abfda909899673b22",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_CHLORO_VAR_NAME",
+              "initializer": "\"chlorophyll_a_b_c\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;chlorophyll_a_b_c&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "ga3d60d78f3e5589b2e50a1e837abfa581",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_CHLORO_UNIT_NAME",
+              "initializer": "\"microgramPerLiter\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;microgramPerLiter&quot; (\u00b5g/L)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "ga4e42198dfbf84b91fd0fbd03c36b4a98",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_CHLORO_DEFAULT_CODE",
+              "initializer": "\"Y4000Chloro\"",
+              "brief": "Default variable short code; &quot;Y4000Chloro&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Blue Green Algae Concentration",
+        "id": "blue-green-algae-concentration",
+        "description": "<p><a name=\"sensor_y4000_bga\"></a> The BGA variable from a Yosemitch Y4000 multi-parameter sonde</p><ul><li>Range is 0 to 100 \u00b5g/L or 0 to 100 RFU</li><li>Accuracy is \u00b1 0.04ug/L PC</li></ul><p>{{ <a href=\"class_yosemitech_y4000___b_g_a.html#ade79675bb431aba3f2fa2ff26421006b\" class=\"m-doc\">YosemitechY4000_BGA::<wbr />YosemitechY4000_BGA</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "gaac1fbdfeae0cb7f544f0edc37fd18619",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_BGA_RESOLUTION",
+              "initializer": "2",
+              "brief": "Decimals places in string representation; bga should have 2 - resolution is 0.01 \u00b5g/L / 0.01 RFU.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "ga75bf2df62fb1ce4cbff2b1d3d2de207b",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_BGA_VAR_NUM",
+              "initializer": "7",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; BGA is stored in sensorValues[7].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "ga7e1888b3dbaa0beb3ea17b4945ee882e",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_BGA_VAR_NAME",
+              "initializer": "\"blueGreenAlgaeCyanobacteriaPhycocyanin\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;blueGreenAlgaeCyanobacteriaPhycocyanin&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "gaa1034cfd8a90e128500b2cd2d1d7984b",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_BGA_UNIT_NAME",
+              "initializer": "\"microgramPerLiter\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;microgramPerLiter&quot; (\u00b5g/L)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y4000.html",
+              "id": "ga12fa56c79036de695243527ce5430c2e",
+              "include": [
+                "&lt;src/sensors/YosemitechY4000.h&gt;",
+                "_yosemitech_y4000_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y4000_BGA_DEFAULT_CODE",
+              "initializer": "\"Y4000BGA\"",
+              "brief": "Default variable short code; &quot;Y4000BGA&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "Yosemitech Sensors",
+        "group__yosemitech__group.html"
+      ],
+      [
+        "Yosemitech Y4000 Multi-Parameter Sonde",
+        "group__sensor__y4000.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Yosemitech Y4000 Multi-Parameter Sonde",
+        "group__sensor__y4000.html"
+      ]
+    ]
+  }
+}

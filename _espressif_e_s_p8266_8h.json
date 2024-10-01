@@ -1,0 +1,120 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "file",
+    "id": "_espressif_e_s_p8266_8h",
+    "name": "EspressifESP8266.h",
+    "url_base": "_espressif_e_s_p8266_8h",
+    "url": "_espressif_e_s_p8266_8h.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "Contains the <a href=\"class_espressif_e_s_p8266.html\" class=\"m-doc\">EspressifESP8266</a> subclass of <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> which <em>SHOULD</em> work for essentially any breakout of the Espressif ESP8266 wifi chip or ESP32 wifi/bluetooth chip that has been flashed with Espressif&#x27;s AT command firmware.",
+    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside>",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_espressif_e_s_p8266.html",
+        "name": "EspressifESP8266",
+        "brief": "The <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> subclass for any breakout of the <a href=\"group__modem__esp8266.html\" class=\"m-doc\">Espressif ESP8266</a> wifi chip or ESP32 wifi/bluetooth chip that has been flashed with Espressif&#x27;s AT command firmware.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [
+      {
+        "base_url": "_espressif_e_s_p8266_8h.html",
+        "id": "aa65272ec1b1b60c2be4a15d38d96178f",
+        "include": null,
+        "has_details": false,
+        "is_using": false,
+        "type": "<a href=\"class_espressif_e_s_p8266.html\" class=\"m-doc\">EspressifESP8266</a>",
+        "args": "",
+        "name": "EspressifESP32",
+        "brief": "Assign EspressifESP32 as type <a href=\"class_espressif_e_s_p8266.html\" class=\"m-doc\">EspressifESP8266</a> to avoid user confusion.",
+        "description": "",
+        "deprecated": null,
+        "since": null,
+        "is_protected": false,
+        "has_template_details": false,
+        "templates": null
+      }
+    ],
+    "funcs": [],
+    "vars": [],
+    "defines": [
+      {
+        "base_url": "_espressif_e_s_p8266_8h.html",
+        "id": "a36baca7e2d54f471ffdf1b2a422a8113",
+        "include": null,
+        "has_details": false,
+        "name": "TINY_GSM_MODEM_ESP8266",
+        "initializer": null,
+        "brief": "The modem type for the underlying TinyGSM library.",
+        "description": "",
+        "return_value": null,
+        "deprecated": null,
+        "since": null,
+        "has_param_details": false,
+        "params": null
+      }
+    ],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "src",
+        "dir_68267d1309a1af8e8297ef4c3efbcdba.html"
+      ],
+      [
+        "modems",
+        "dir_d60b8e8795161a141bba4403c07b6046.html"
+      ],
+      [
+        "EspressifESP8266.h",
+        "_espressif_e_s_p8266_8h.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "EspressifESP8266.h",
+        "_espressif_e_s_p8266_8h.html"
+      ]
+    ]
+  }
+}

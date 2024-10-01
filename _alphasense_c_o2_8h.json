@@ -1,0 +1,104 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "file",
+    "id": "_alphasense_c_o2_8h",
+    "name": "AlphasenseCO2.h",
+    "url_base": "_alphasense_c_o2_8h",
+    "url": "_alphasense_c_o2_8h.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "Contains the <a href=\"class_alphasense_c_o2.html\" class=\"m-doc\">AlphasenseCO2</a> sensor class and the variable subclasses <a href=\"class_alphasense_c_o2___c_o2.html\" class=\"m-doc\">AlphasenseCO2_<wbr />CO2</a> and <a href=\"class_alphasense_c_o2___voltage.html\" class=\"m-doc\">AlphasenseCO2_<wbr />Voltage</a>.",
+    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>2017-2023 Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Written by Anthony Aufdenkampe <a href=\"mailto:aaufdenkampe@limno.com\">aaufdenkampe@limno.com</a> and Bella Henkel <a href=\"mailto:bella.henkel@mnsu.edu\">bella.henkel@mnsu.edu</a> Adapted from <a href=\"_apogee_s_q212_8h.html\" class=\"m-doc\">ApogeeSQ212.h</a> and <a href=\"https://github.com/bellahenkel/Soil-Sensing-Device\">https:/<wbr />/<wbr />github.com/<wbr />bellahenkel/<wbr />Soil-Sensing-Device</a> Edited by Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside><p>These are used for the Alphasense IRC-A1 Nondispersive Infrared (NDIR) Carbon Dioxide (CO2) sensor. This library will almost certainly also work with the Alphasense IRC-AT CO2 sensor (which uses a thermopile detector), although the warmup and stabilization times might be different.</p><p>This depends on the Adafruit ADS1X15 v2.x library.</p>",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_alphasense_c_o2.html",
+        "name": "AlphasenseCO2",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the [Alphasense IRC-A1 CO2](<a href=\"group__sensor__alphasense__co2.html\" class=\"m-doc\">Alphasense IRC-A1 CO2</a>) sensor.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_alphasense_c_o2___c_o2.html",
+        "name": "AlphasenseCO2_CO2",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__alphasense__co2.html#sensor_alphasense_co2_co2\" class=\"m-doc\">carbon dioxide (CO2) output</a> from an <a href=\"group__sensor__alphasense__co2.html\" class=\"m-doc\">Alphasense IRC-A1 CO2</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_alphasense_c_o2___voltage.html",
+        "name": "AlphasenseCO2_Voltage",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__alphasense__co2.html#sensor_alphasense_co2_voltage\" class=\"m-doc\">raw voltage output</a> from an <a href=\"group__sensor__alphasense__co2.html\" class=\"m-doc\">Alphasense IRC-A1 CO2</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "src",
+        "dir_68267d1309a1af8e8297ef4c3efbcdba.html"
+      ],
+      [
+        "sensors",
+        "dir_7349e89ef19c117195f8e371603e1b1f.html"
+      ],
+      [
+        "AlphasenseCO2.h",
+        "_alphasense_c_o2_8h.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "AlphasenseCO2.h",
+        "_alphasense_c_o2_8h.html"
+      ]
+    ]
+  }
+}

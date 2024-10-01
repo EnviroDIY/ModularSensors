@@ -1,0 +1,98 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__modem__ublox",
+    "name": "Sodaq UBee's and other u-blox modules",
+    "url_base": "group__modem__ublox",
+    "url": "group__modem__ublox.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<section id=\"modem_ublox_notes\"><h2>Introduction</h2><p>There are several variants of the <a href=\"https://support.sodaq.com/sodaq-one/ubee/\">Sodaq UBee</a> available. This library supports 2G [SARA G3xx], 3G [SARA Uxx] and LTE M1 [SARA R4xx], but <em>not</em> NB IoT only [SARA N2xx].</p><p>The classes for the UBeeU201 can be used for any other u-blox 2G or 3G based module.</p><p>The classes for the UBeeR410M can be used for any other u-blox LTE-M module.</p><aside class=\"m-note m-danger\"><h4>Warning</h4><p>The NB IoT only UBee - based on the u-blox SARA N211 - is not supported.</p></aside></section><section id=\"modem_ublox_mayfly\"><h2>Pin Numbers for connecting Sodaq UBees to a Mayfly</h2><p>This applies to <em>all</em> Sodaq UBee&#x27;s</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\">1</span><span class=\"k\">const</span><span class=\"w\"> </span><span class=\"kt\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemVccPin</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">23</span><span class=\"p\">;</span><span class=\"w\">      </span><span class=\"c1\">// MCU pin controlling modem power</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\">2</span><span class=\"k\">const</span><span class=\"w\"> </span><span class=\"kt\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemStatusPin</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">19</span><span class=\"p\">;</span><span class=\"w\">   </span><span class=\"c1\">// MCU pin used to read modem status</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\">3</span><span class=\"k\">const</span><span class=\"w\"> </span><span class=\"kt\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemResetPin</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">-1</span><span class=\"p\">;</span><span class=\"w\">    </span><span class=\"c1\">// MCU pin connected to modem reset pin</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\">4</span><span class=\"k\">const</span><span class=\"w\"> </span><span class=\"kt\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemSleepRqPin</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">20</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// MCU pin used for modem sleep/wake request</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\">5</span><span class=\"k\">const</span><span class=\"w\"> </span><span class=\"kt\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemLEDPin</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">redLED</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// MCU pin connected an LED to show modem status</span>\n</div></div></div><ul><li>Power to the u-blox module is controlled by a switch connected to bee socket pin 9, which is Mayfly pin 23 NOTE: The power for the u-blox module is supplied by either a battery for 2/3G (U201/G3) modules or by bee socket pin 1 for LTE-M modules. In the case of the LTE-M module where power comes from pin 1, it could also be cut by setting pin 1 low, but neither the Mayfly nor this library support it.</li><li>The u-blox <code>V_INT</code> pin is connected to UBEE pin 12 which is connected to Mayfly pin 19.</li><li>The UBee pin 5 is connected to the u-blox <code>RESET_N</code>, but this is not connected to any pin on the Mayfly.</li><li>The u-blox <code>PWR_ON</code> pin (which controls deep sleep) is connected to UBee pin 16 which is connected to Mayfly pin 20.</li><li>I like to use the red LED to show the bee wake/sleep in addition to the LED on the UBee itself.</li></ul></section>",
+    "sections": [
+      [
+        "modem_ublox_notes",
+        "Introduction",
+        []
+      ],
+      [
+        "modem_ublox_mayfly",
+        "Pin Numbers for connecting Sodaq UBees to a Mayfly",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [
+      {
+        "url": "group__modem__ubee__ltem.html",
+        "name": "Sodaq UBee LTE-M and other u-blox LTE-M Modules",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "group__modem__ubee__3g.html",
+        "name": "Sodaq UBee 2G, 3G, and other u-blox 2G and 3G Modules",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      }
+    ],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "Supported Modems and Communication Modules",
+        "group__the__modems.html"
+      ],
+      [
+        "Sodaq UBee&#x27;s and other u-blox modules",
+        "group__modem__ublox.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Sodaq UBee&#x27;s and other u-blox modules",
+        "group__modem__ublox.html"
+      ]
+    ]
+  }
+}

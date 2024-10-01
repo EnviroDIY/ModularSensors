@@ -1,20 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
 <head>
   <meta charset="UTF-8" />
-  <title>loggerModem &raquo; DigiXBee &raquo; DigiXBee3GBypass class | ModularSensors</title>
+  <title>loggerModem &raquo; DigiXBee &raquo; DigiXBee3GBypass class | ModularSensors0.36.0</title>
   <link rel="stylesheet" href="m-EnviroDIY+documentation.compiled.css" />
+
+<style id="wp-emoji-styles-inline-css" type="text/css">
+  img.wp-smiley,
+  img.emoji {
+    display: inline !important;
+    border: none !important;
+    box-shadow: none !important;
+    height: 1em !important;
+    width: 1em !important;
+    margin: 0 0.07em !important;
+    vertical-align: -0.1em !important;
+    background: none !important;
+    padding: 0 !important;
+  }
+</style>
 <link
   rel="stylesheet"
   id="gp-parent-style-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/style.css?ver=6.1.1"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/style.css?ver=6.5.4"
   type="text/css"
   media="all"
 />
 <link
   rel="stylesheet"
-  id="ghostpool-style-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize-child/style.css?ver=6.1.1"
+  id="redux-extendify-styles-css"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/framework/redux/assets/css/extendify-utilities.css?ver=4.4.11"
   type="text/css"
   media="all"
 />
@@ -124,31 +139,27 @@
 <link
   rel="stylesheet"
   id="fontawesome-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/fonts/font-awesome/css/font-awesome.min.css?ver=6.1.1"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/fonts/font-awesome/css/font-awesome.min.css?ver=6.5.4"
   type="text/css"
   media="all"
 />
 <link
-  rel="stylesheet"
-  id="prettyphoto-css"
-  href="https://www.envirodiy.org/wp-content/plugins/js_composer/assets/lib/prettyphoto/css/prettyPhoto.min.css?ver=6.10.0"
-  type="text/css"
-  media="all"
+  rel="preload"
+  as="style"
+  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
 />
 <link
   rel="stylesheet"
-  id="gp-bp-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/css/bp.css?ver=6.1.1"
-  type="text/css"
-  media="all"
+  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
+  media="print"
+  onload="this.media='all'"
 />
-<link
-  rel="stylesheet"
-  id="gp-bbp-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/css/bbpress.css?ver=6.1.1"
-  type="text/css"
-  media="all"
-/>
+<noscript
+  ><link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
+/></noscript>
+
 <style type="text/css" id="wp-custom-css">
   /* Print Styles */
   @media print {
@@ -162,12 +173,15 @@
       margin: 0 !important;
       padding: 0;
     }
+
     body:not(.gp-full-page-page-header) .gp-page-header.gp-has-text:before,
     body:not(.gp-full-page-page-header)
       .gp-page-header.gp-has-teaser-video.gp-has-text
       .gp-video-header:before {
       background-image: none !important;
     }
+    /* End print styles */
+
     #gp-main-header,
     #gp-small-header,
     #gp-header-area,
@@ -219,6 +233,7 @@
     img {
       page-break-inside: avoid;
       visibility: visible;
+      float: none;
     }
     blockquote,
     table,
@@ -231,7 +246,7 @@
       page-break-before: avoid;
     }
   }
-  /* End print styles */
+
   /*Gutenberg styles*/
   /*Buttons*/
   a.wp-block-button__link {
@@ -362,10 +377,17 @@
   span.woocommerce-Price-amount.amount {
     text-decoration: none !important;
   }
+  /* Hide additional information tab */
+  div.woocommerce-tabs {
+    display: none !important;
+  }
   /*End WooCommerce styles*/
   /*The Events Calendar*/
   #tribe-events-content a {
     color: #0579bd;
+  }
+  #tribe-events-content .wp-block-button__link {
+    color: #ffffff;
   }
   #gp-sidebar-right
     > div
@@ -451,6 +473,9 @@
   #gp-content p.last-updated {
     display: none;
   }
+  #gp-content ul {
+    margin: 0 0 0 20px !important;
+  }
 </style>
 <style id="socialize-dynamic-css" title="dynamic-css" class="redux-options-output">
   #footer-image img {
@@ -483,7 +508,6 @@
     font-style: normal;
     color: #000;
     font-size: 16px;
-    font-display: swap;
   }
   a {
     color: #0579bd;
@@ -497,7 +521,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 36px;
-    font-display: swap;
   }
   h2 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -505,7 +528,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 28px;
-    font-display: swap;
   }
   h3,
   #tab-description h2,
@@ -519,7 +541,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 24px;
-    font-display: swap;
   }
   h4 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -527,7 +548,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 20px;
-    font-display: swap;
   }
   h5 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -535,7 +555,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 18px;
-    font-display: swap;
   }
   h6 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -543,7 +562,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 16px;
-    font-display: swap;
   }
   .gp-entry-meta .gp-post-meta-row-1,
   .gp-homepage #gp-content .gp-vc-element-3,
@@ -577,7 +595,6 @@
     font-style: normal;
     color: #ababab;
     font-size: 16px;
-    font-display: swap;
   }
   #gp-primary-main-nav .menu > li:hover > a,
   #gp-primary-main-nav .menu > li > a {
@@ -600,7 +617,6 @@
     font-style: normal;
     color: #fff;
     font-size: 14px;
-    font-display: swap;
   }
   #gp-secondary-main-nav .menu > li:hover > a,
   #gp-secondary-main-nav .menu > li > a {
@@ -641,7 +657,6 @@
     font-style: normal;
     color: #000;
     font-size: 14px;
-    font-display: swap;
   }
   .gp-nav .menu > .gp-standard-menu > .sub-menu > li a {
     color: #000;
@@ -745,7 +760,6 @@
     font-style: normal;
     color: #fff;
     font-size: 80px;
-    font-display: swap;
   }
   .gp-page-header .gp-container {
     height: 250px;
@@ -759,7 +773,6 @@
     font-style: normal;
     color: #000;
     font-size: 40px;
-    font-display: swap;
   }
   .gp-subtitle {
     font-family: Roboto;
@@ -768,7 +781,6 @@
     font-style: normal;
     color: #0579bd;
     font-size: 20px;
-    font-display: swap;
   }
   #gp-post-links a,
   .gp-pagination-arrows a.prev,
@@ -811,7 +823,6 @@
     line-height: 24px;
     color: #fff;
     font-size: 14px;
-    font-display: swap;
   }
   .gp-author-info a {
     color: #b1b1b1;
@@ -840,19 +851,16 @@
     font-style: normal;
     color: #fff;
     font-size: 24px;
-    font-display: swap;
   }
   .gp-loop-title {
     line-height: 22px;
     font-weight: 400;
     font-size: 19px;
-    font-display: swap;
   }
   .gp-blog-large .gp-loop-title {
     line-height: 46px;
     font-weight: 200;
     font-size: 40px;
-    font-display: swap;
   }
   .gp-loop-title a,
   .bboss_search_item .entry-title a {
@@ -914,7 +922,6 @@
     font-style: normal;
     color: #000;
     font-size: 14px;
-    font-display: swap;
   }
   .widgettitle a,
   .widget-title a,
@@ -1157,7 +1164,6 @@
     font-style: normal;
     color: #fff;
     font-size: 16px;
-    font-display: swap;
   }
   .gp-footer-widget {
     font-family: Roboto;
@@ -1166,7 +1172,6 @@
     font-style: normal;
     color: #ffffff;
     font-size: 14px;
-    font-display: swap;
   }
   .gp-footer-widget a {
     color: #f9bd16;
@@ -1195,441 +1200,295 @@
   #gp-to-top {
     color: #ffffff;
   }
-  .woocommerce ul.products li.product .price,
-  .woocommerce div.product p.price,
-  .woocommerce div.product span.price {
-    color: #00bee9;
-  }
-  .woocommerce span.onsale {
-    background-color: #e93100;
-  }
-  #buddypress .activity-list .activity-content .activity-header,
-  #buddypress .activity-list .activity-content .comment-header,
-  #buddypress .activity-list .activity-header a,
-  #buddypress .activity-list div.activity-comments div.acomment-meta,
-  #buddypress .activity-list .acomment-meta a,
-  .widget.buddypress .item-title a,
-  .widget.buddypress div.item-options.gp-small-item-options:before,
-  .widget.buddypress div.item-options a,
-  #buddypress ul.item-list li div.item-title a,
-  #buddypress ul.item-list li h4 > a,
-  #buddypress ul.item-list li h5 > a,
-  #buddypress div#item-header div#item-meta {
-    color: #000000;
-  }
-  #buddypress .activity-list .activity-content .activity-inner {
-    color: #aaaaaa;
-  }
-  #buddypress .activity-list a.activity-time-since,
-  .widget_display_replies ul li a + div,
-  .widget_display_topics ul li a + div,
-  #buddypress .activity-list .acomment-meta a.activity-time-since,
-  #buddypress .activity-list div.activity-comments div.acomment-content,
-  .widget.buddypress div.item-meta,
-  #buddypress span.activity,
-  #buddypress ul.item-list li div.meta {
-    color: #545454;
-  }
-  .gp-theme #buddypress .activity-list div.activity-meta a.button,
-  .gp-theme #buddypress .activity .acomment-options a,
-  .gp-theme #buddypress .activity-list li.load-more a,
-  .gp-theme #buddypress .activity-list li.load-newest a,
-  .widget.buddypress div.item-options a.selected {
-    color: #26a9e0;
-  }
-  .gp-theme #buddypress .activity-list div.activity-meta a.button:hover,
-  .gp-theme #buddypress .activity .acomment-options a:hover,
-  .gp-theme #buddypress .activity-list li.load-more a:hover,
-  .gp-theme #buddypress .activity-list li.load-newest a:hover,
-  .widget.buddypress div.item-options a.selected:hover {
-    color: #000;
-  }
-  .gp-theme #buddypress ul.item-list li,
-  .gp-theme #buddypress div.activity-comments ul li:first-child,
-  .widget.buddypress #friends-list li,
-  .widget.buddypress #groups-list li,
-  .widget.buddypress #members-list li {
-    border-top: 1px solid #e0e0e0;
-    border-bottom: 1px solid #e0e0e0;
-  }
-  .gp-theme #buddypress div.item-list-tabs {
-    background-color: #353535;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a span,
-  .gp-theme #buddypress div.item-list-tabs ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs ul li.selected a span {
-    color: #353535;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a span {
-    background-color: #ffffff;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a,
-  .gp-theme #buddypress #gp-bp-tabs-button,
-  .gp-theme #buddypress div.item-list-tabs ul li span {
-    color: #ffffff;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li.current a,
-  .gp-theme #buddypress div.item-list-tabs ul li.selected a,
-  .gp-theme #buddypress div.item-list-tabs ul li a:hover {
-    color: #b1b1b1;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs ul li.selected a span {
-    background: #b1b1b1;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul,
-  .widget.buddypress div.item-options.gp-small-item-options > a {
-    background-color: #f8f8f8;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.selected a span {
-    color: #f8f8f8;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a span {
-    background-color: #000000;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a {
-    color: #000000;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.current a,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.selected a,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a:hover {
-    color: #26a9e0;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.selected a span {
-    background: #26a9e0;
-  }
-  #bbpress-forums
-    .gp-forum-home.bbp-forums
-    .bbp-has-subforums
-    .bbp-forum-info
-    > .bbp-forum-title,
-  #bbpress-forums .bbp-topics .bbp-header,
-  #bbpress-forums .bbp-replies .bbp-header,
-  #bbpress-forums .bbp-search-results .bbp-header {
-    background-color: #353535;
-  }
-  #bbpress-forums
-    .gp-forum-home.bbp-forums
-    .bbp-has-subforums
-    .bbp-forum-info
-    > .bbp-forum-title,
-  #bbpress-forums .bbp-topics .bbp-header,
-  #bbpress-forums .bbp-replies .bbp-header,
-  #bbpress-forums .bbp-search-results .bbp-header {
-    color: #ffffff;
-  }
-  #bbpress-forums .bbp-header div.bbp-reply-content a {
-    color: #ddd;
-  }
-  #bbpress-forums .bbp-header div.bbp-reply-content a:hover {
-    color: #fff;
-  }
-  #bbpress-forums .bbp-forums-list li.odd-forum-row,
-  #bbpress-forums div.odd,
-  #bbpress-forums ul.odd {
-    background-color: #f8f8f8;
-  }
-  #bbpress-forums .bbp-forums-list li.even-forum-row,
-  #bbpress-forums div.even,
-  #bbpress-forums ul.even {
-    background-color: #fff;
-  }
-  #bbpress-forums .gp-forum-home.bbp-forums .bbp-forum-info > .bbp-forum-title,
-  #bbpress-forums div.bbp-forum-header,
-  #bbpress-forums div.bbp-topic-header,
-  #bbpress-forums div.bbp-reply-header,
-  #bbpress-forums .bbp-forums-list,
-  #bbpress-forums li.bbp-body {
-    border-top: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
-    border-left: 1px solid #ddd;
-    border-right: 1px solid #ddd;
-  }
-  #bbpress-forums .bbp-forums-list .bbp-forum .bbp-forum-link,
-  body.forum #bbpress-forums .bbp-forums .bbp-forum-info > .bbp-forum-title,
-  #bbpress-forums .bbp-topics .bbp-topic-permalink,
-  #bbpress-forums .gp-forum-home.bbp-forums .bbp-forum-info > .bbp-forum-title,
-  .gp-theme
-    #bbpress-forums
-    .gp-forum-shortcode
-    ul.forum:not(.status-category)
-    .bbp-forum-info
-    a {
-    color: #000000;
-  }
-  #bbpress-forums div.bbp-forum-author .bbp-author-role,
-  #bbpress-forums div.bbp-topic-author .bbp-author-role,
-  #bbpress-forums div.bbp-reply-author .bbp-author-role {
-    background-color: #92d050;
-  }
-  #bbpress-forums div.bbp-forum-author .bbp-author-role,
-  #bbpress-forums div.bbp-topic-author .bbp-author-role,
-  #bbpress-forums div.bbp-reply-author .bbp-author-role {
-    color: #ffffff;
-  }
 </style>
-    <style id="kadence-blocks-global-variables-inline-css" type="text/css">
-      :root {
-        --global-kb-font-size-sm: clamp(0.8rem, 0.73rem + 0.217vw, 0.9rem);
-        --global-kb-font-size-md: clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem);
-        --global-kb-font-size-lg: clamp(1.75rem, 1.576rem + 0.543vw, 2rem);
-        --global-kb-font-size-xl: clamp(2.25rem, 1.728rem + 1.63vw, 3rem);
-        --global-kb-font-size-xxl: clamp(2.5rem, 1.456rem + 3.26vw, 4rem);
-        --global-kb-font-size-xxxl: clamp(2.75rem, 0.489rem + 7.065vw, 6rem);
-      }
-    </style>
-    <link
-      rel="preload"
-      as="style"
-      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.1.1"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.1.1"
-      media="print"
-      onload="this.media='all'"
-    />
-    <noscript
-      ><link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.1.1"
-    /></noscript>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-includes/js/jquery/jquery.min.js?ver=3.6.1"
-  id="jquery-core-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2"
-  id="jquery-migrate-js"
-></script>  <link rel="icon" href="MS_FavIcon.png" type="image/png" />
+  <link rel="icon" href="MS_FavIcon.png" type="image/png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#cb4b16" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="clipboard.js"></script>
 </head>
 
-<body class="home-page bp-legacy home page-template page-template-homepage-template page-template-homepage-template-php page page-id-977 logged-in admin-bar no-customize-support theme-socialize woocommerce-no-js tribe-no-js page-template-socialize-child gp-theme gp-responsive gp-wide-layout gp-retina gp-normal-scrolling gp-no-back-to-top gp-relative-header gp-header-standard gp-cart-disabled gp-search-all gp-profile-disabled gp-small-header-all gp-standard-page-header gp-no-sidebar gp-homepage wpb-js-composer js-comp-ver-6.10.0 vc_responsive no-js">
+<body
+    class="theme-socialize page-template-socialize-child gp-theme gp-responsive gp-wide-layout gp-retina gp-normal-scrolling gp-no-back-to-top gp-relative-header gp-header-standard gp-cart-disabled gp-search-all gp-profile-disabled gp-small-header-all gp-standard-page-header gp-no-sidebar"
+>
 	<div id="gp-site-wrapper">
 
   <nav id="gp-mobile-nav">
     <div id="gp-mobile-nav-close-button"></div>
     <ul class="menu">
-        <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-            <a class="menu-link main-menu-link" href="index.html">About</a>
-          <ul class="sub-menu menu-odd menu-depth-1">
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#data_receivers">Data Endpoints</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#supported_sensors">Supported Sensors</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#modems">Supported Cellular/Wifi Modules</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#contributing">Contributing</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#license">License</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#acknowledgments">Acknowledgments</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="change_log.html">ChangeLog</a>
-              </li>
-          </ul>
-        </li>
-        <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-            <a class="menu-link main-menu-link" href="page_getting_started.html">Getting Started</a>
-          <ul class="sub-menu menu-odd menu-depth-1">
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>
-              </li>
-          </ul>
-        </li>
-        <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-            <a class="menu-link main-menu-link" href="page_faq.html">FAQs</a>
-          <ul class="sub-menu menu-odd menu-depth-1">
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>
-              </li>
-          </ul>
-        </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="modules.html">Modules</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="annotated.html">Classes</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="files.html">Source Files</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="page_the_examples.html">Examples Using ModularSensors</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="pages.html">More</a>          </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+      >
+<a href="index.html" class="menu-link main-menu-link">About</a>        <ul class="sub-menu menu-odd menu-depth-1">
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#data_receivers">Data Endpoints</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#supported_sensors">Supported Sensors</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#modems">Supported Cellular/Wifi Modules</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#contributing">Contributing</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#license">License</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#acknowledgments">Acknowledgments</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="change_log.html">ChangeLog</a>          </li>
+        </ul>
+      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+      >
+<a href="page_getting_started.html" class="menu-link main-menu-link">Getting Started</a>        <ul class="sub-menu menu-odd menu-depth-1">
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>          </li>
+        </ul>
+      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+      >
+<a href="page_faq.html" class="menu-link main-menu-link">FAQs</a>        <ul class="sub-menu menu-odd menu-depth-1">
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>          </li>
+        </ul>
+      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="topics.html" class="menu-link main-menu-link">Topics</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="annotated.html" class="menu-link main-menu-link">Classes</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="files.html" class="menu-link main-menu-link">Source Files</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="page_the_examples.html" class="menu-link main-menu-link">Examples Using ModularSensors</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="pages.html" class="menu-link main-menu-link">More</a>      </li>
     </ul>
-  </nav><div id="gp-mobile-nav-bg"></div>
+  </nav> <!-- gp-mobile-nav -->
+  <div id="gp-mobile-nav-bg"></div>
 
   <div id="gp-page-wrapper">
 
     <header id="gp-main-header">
       <div class="gp-container">
         <div id="gp-logo">
-          <a href="index.html" title="ModularSensors">
+          <a href="index.html" title="ModularSensors 0.36.0">
             <img
-              src="ModularSensors_ubuntu_264x55.png"
-              alt="ModularSensors"
-                  width="200"
-                  height="42"
+              src="gp-desktop-logo.png"
+              alt="ModularSensors 0.36.0"
+              width="200"
+              height="42"
               class="gp-desktop-logo"
             />
             <img
-              src="ModularSensors_ubuntu_264x55.png"
-              alt="ModularSensors"
+              src="gp-scrolling-logo.png"
+              alt="ModularSensors 0.36.0"
               width="264"
               height="55"
               class="gp-scrolling-logo"
             />
             <img
-              src="ModularSensors_ubuntu_264x55.png"
-              alt="ModularSensors"
+              src="gp-mobile-logo.png"
+              alt="ModularSensors 0.36.0"
               width="132"
               height="28"
               class="gp-mobile-logo"
             />
           </a>
-        </div>
+        </div> <!-- gp-logo -->
 
         <a id="gp-mobile-nav-button"></a>
 
         <nav id="gp-main-nav" class="gp-nav">
           <nav id="gp-primary-main-nav">
-              <ul id="menu-main-menu-1" class="menu">
-                <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-                    <a class="menu-link main-menu-link" href="index.html">About</a>
-                  <ul class="sub-menu menu-odd menu-depth-1">
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#data_receivers">Data Endpoints</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#supported_sensors">Supported Sensors</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#modems">Supported Cellular/Wifi Modules</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#contributing">Contributing</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#license">License</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#acknowledgments">Acknowledgments</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="change_log.html">ChangeLog</a>
-                      </li>
-                  </ul>
-                </li>
-                <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-                    <a class="menu-link main-menu-link" href="page_getting_started.html">Getting Started</a>
-                  <ul class="sub-menu menu-odd menu-depth-1">
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>
-                      </li>
-                  </ul>
-                </li>
-                <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-                    <a class="menu-link main-menu-link" href="page_faq.html">FAQs</a>
-                  <ul class="sub-menu menu-odd menu-depth-1">
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>
-                      </li>
-                  </ul>
-                </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="modules.html">Modules</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="annotated.html">Classes</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="files.html">Source Files</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="page_the_examples.html">Examples Using ModularSensors</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="pages.html">More</a>                  </li>
-              </ul>
-          </nav>
+            <ul id="menu-main-menu-1" class="menu">
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+              >
+<a href="index.html" class="menu-link main-menu-link" >About</a>                <ul class="sub-menu menu-odd menu-depth-1">
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#data_receivers">Data Endpoints</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#supported_sensors">Supported Sensors</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#modems">Supported Cellular/Wifi Modules</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#contributing">Contributing</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#license">License</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#acknowledgments">Acknowledgments</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="change_log.html">ChangeLog</a>                  </li>
+                </ul>
+              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+              >
+<a href="page_getting_started.html" class="menu-link main-menu-link" >Getting Started</a>                <ul class="sub-menu menu-odd menu-depth-1">
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>                  </li>
+                </ul>
+              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+              >
+<a href="page_faq.html" class="menu-link main-menu-link" >FAQs</a>                <ul class="sub-menu menu-odd menu-depth-1">
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>                  </li>
+                </ul>
+              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="topics.html"class="menu-link main-menu-link">Topics</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="annotated.html"class="menu-link main-menu-link">Classes</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="files.html"class="menu-link main-menu-link">Source Files</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="page_the_examples.html"class="menu-link main-menu-link">Examples Using ModularSensors</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="pages.html"class="menu-link main-menu-link">More</a>              </li>
+            </ul>
+          </nav> <!-- gp-primary-main-nav -->
 
           <div id="gp-search">
             <div id="m-search-button" class="m-show-m" onclick="return showSearch()">
-            </div>
-					</div>
-
-
+            </div> <!-- gp-search-box -->
+          </div> <!-- gp-search -->
 
           <nav id="gp-secondary-main-nav"></nav>
-        </nav></div>
-    </header><header id="gp-small-header">
+        </nav> <!-- gp-main-nav -->
+      </div> <!-- gp-container -->
+    </header> <!-- gp-main-header -->
+
+    <header id="gp-small-header">
       <div class="gp-container">
         <div class="gp-left-triangle"></div>
         <div class="gp-right-triangle"></div>
@@ -1656,7 +1515,9 @@
 
         </nav>
       </div>
-    </header><div id="gp-fixed-header-padding"></div>
+    </header> <!-- gp-small-header -->
+
+    <div id="gp-fixed-header-padding"></div>
 
     <div class="m-doc-search" id="search">
       <a href="#!" onclick="return hideSearch()"></a>
@@ -1664,7 +1525,7 @@
         <div class="gp-container">
           <div style="background-color:#fff;padding:20px;">
             <div class="m-doc-search-header m-text m-small">
-              <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+              <div><span class="m-label m-info">Tab</span> / <span class="m-label m-info">T</span> to search, <span class="m-label m-info">Esc</span> to close</div>
               <div id="search-symbolcount">&hellip;</div>
             </div>
             <div class="m-doc-search-content">
@@ -1674,7 +1535,7 @@
               <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
               <div id="search-help" class="m-text m-dim m-text-center">
                 <p class="m-noindent">Search for symbols, directories, files, pages or
-            modules. You can omit any prefix from the symbol or file path; adding a
+            topics. You can omit any prefix from the symbol or file path; adding a
             <code>:</code> or <code>/</code> suffix lists all members of given symbol or
             directory.</p>
             <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
@@ -1699,13 +1560,12 @@
 
     <div id="gp-content-wrapper" class="gp-container">
       <div id="gp-inner-container">
+        <div id="gp-left-column">
           <div id="gp-content">
 
             <main>
               <article>
-                <div class="m-container m-container-inflatable">
-                  <div class="m-row">
-                    <div class="m-col-l-10 m-push-l-1">
+                <div class="breadcrumbs" typeof="BreadcrumbList" vocab="http://schema.org/">
         <span class="m-breadcrumb">
           <a href="index.html">
             ModularSensors
@@ -1729,15 +1589,15 @@
         <span class="m-breadcrumb">
           DigiXBee3GBypass
         </span>
-<br>
+        <br>
         <span class="m-breadcrumb">
           <a href="index.html">
             ModularSensors
           </a>  &gt; <wbr/>
         </span>
         <span class="m-breadcrumb">
-          <a href="modules.html">
-            Modules
+          <a href="topics.html">
+            Topics
           </a>  &gt; <wbr/>
         </span>
                 <span class="m-breadcrumb">
@@ -1746,17 +1606,18 @@
         <span class="m-breadcrumb">
           DigiXBee3GBypass
         </span>
-<br>
-        <header class="gp-entry-header">
-          <h1 class="gp-entry-title" itemprop="headline">
+        <br>
+                </div>
+                <header class="gp-entry-header">
+                  <h1 class="gp-entry-title" itemprop="headline">
 
-
-            <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_digi_x_bee3_g_bypass_8h.html">&lt;src/modems/DigiXBee3GBypass.h&gt;</a></div><br>
+            <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_digi_x_bee3_g_bypass_8h.html">&lt;src/modems/DigiXBee3GBypass.h&gt;</a></div>
 
             DigiXBee3GBypass
             <span class="m-thin">class</span>
-          </h1>
-        </header>
+
+                </h1>
+                </header>
         <p>The <a href="classlogger_modem.html" class="m-doc">loggerModem</a> subclass for <a href="group__modem__digi.html" class="m-doc">Digi Cellular XBee&#x27;s</a> based on u-blox SARA U201 chips and operated in <a href="group__modem__digi__3g__bypass.html" class="m-doc">bypass mode</a>.</p>
         <nav class="m-block m-default">
           <ul>
@@ -1779,7 +1640,6 @@
           </ul>
         </nav>
           <aside class="m-note m-danger"><h4>Warning</h4><p>Digi strongly recommends against this, but it actually seems to be more stable in our tests. Your milage may vary.</p></aside>
-
         <section id="base-classes">
           <h2>Base classes</h2>
           <dl class="m-doc">
@@ -1790,11 +1650,6 @@
           </dl>
         </section>
         <hr>
-
-
-
-
-
         <section id="typeless-methods">
           <h2>Constructors, destructors, conversion operators</h2>
           <dl class="m-doc">
@@ -1815,51 +1670,47 @@
           </dl>
         </section>
         <hr>
-
         <section id="pub-methods">
           <h2>Public functions</h2>
           <dl class="m-doc">
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#ad93a1c7fc0e6458463f5e9ba4246472f" class="m-doc">modemWake</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-flat m-warning">override</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#ad93a1c7fc0e6458463f5e9ba4246472f" class="m-doc">modemWake</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>) -&gt; bool <span class="m-label m-flat m-warning">override</span></span>
             </dt>
             <dd>Wake up the modem.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a172d4ceda6be0a28b4bbad5ea278b1c9" class="m-doc">connectInternet</a>(</span><span class="m-doc-wrap"><span class="m-dim">uint32_t</span> <span class="m-param">maxConnectionTime</span><span class="m-dim"> = 50000L</span>) <span class="m-label m-flat m-warning">override</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a172d4ceda6be0a28b4bbad5ea278b1c9" class="m-doc">connectInternet</a>(</span><span class="m-doc-wrap"><span class="m-dim">uint32_t</span> <span class="m-param">maxConnectionTime</span><span class="m-dim"> = 50000L</span>) -&gt; bool <span class="m-label m-flat m-warning">override</span></span>
             </dt>
             <dd>Wait for the modem to successfully register on the cellular network and then request that it establish either EPS or GPRS data connection.</dd>
                           <dt id="a3a97d50b21a39d623c934e9d27fbb40f">
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#a3a97d50b21a39d623c934e9d27fbb40f" class="m-doc-self">disconnectInternet</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-flat m-warning">override</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#a3a97d50b21a39d623c934e9d27fbb40f" class="m-doc-self">disconnectInternet</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>) <span class="m-label m-flat m-warning">override</span></span>
             </dt>
             <dd>Detatch from EPS or GPRS data connection and then deregister from the cellular network.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">uint32_t </span><a href="#a5f9983fa6cf836edc1c8efd4eaf055f2" class="m-doc">getNISTTime</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-flat m-warning">override</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">uint32_t </span><a href="#a5f9983fa6cf836edc1c8efd4eaf055f2" class="m-doc">getNISTTime</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>) -&gt; uint32_t <span class="m-label m-flat m-warning">override</span></span>
             </dt>
             <dd>Get the time from NIST via TIME protocol (rfc868).</dd>
                           <dt>
               <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a9eca13352e687e01eb5a93703ca014c4" class="m-doc">getModemSignalQuality</a>(</span><span class="m-doc-wrap"><span class="m-dim">int16_t&amp;</span> <span class="m-param">rssi</span>,
-              <span class="m-dim">int16_t&amp;</span> <span class="m-param">percent</span>) <span class="m-label m-flat m-warning">override</span></span>
+              <span class="m-dim">int16_t&amp;</span> <span class="m-param">percent</span>) -&gt; bool <span class="m-label m-flat m-warning">override</span></span>
             </dt>
             <dd>Query the modem for the current signal quality and write the results to the supplied non-constant references.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a65ad95664865f49c792c641267d116e9" class="m-doc">getModemBatteryStats</a>(</span><span class="m-doc-wrap"><span class="m-dim">uint8_t&amp;</span> <span class="m-param">chargeState</span>,
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a437cc5ed5826c8ab6e91859ca4267701" class="m-doc">getModemBatteryStats</a>(</span><span class="m-doc-wrap"><span class="m-dim">int8_t&amp;</span> <span class="m-param">chargeState</span>,
               <span class="m-dim">int8_t&amp;</span> <span class="m-param">percent</span>,
-              <span class="m-dim">uint16_t&amp;</span> <span class="m-param">milliVolts</span>) <span class="m-label m-flat m-warning">override</span></span>
+              <span class="m-dim">int16_t&amp;</span> <span class="m-param">milliVolts</span>) -&gt; bool <span class="m-label m-flat m-warning">override</span></span>
             </dt>
             <dd>Query the modem for battery information and write the values to the supplied non-constant references.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">float </span><a href="#acdbcb46cdacd87f84bab965ad7a0a309" class="m-doc">getModemChipTemperature</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-flat m-warning">override</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">float </span><a href="#acdbcb46cdacd87f84bab965ad7a0a309" class="m-doc">getModemChipTemperature</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>) -&gt; float <span class="m-label m-flat m-warning">override</span></span>
             </dt>
             <dd>Get the current temperature provided by the modem module.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a903c7cdb35ffa050909fab8b7482e06e" class="m-doc">modemHardReset</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-flat m-warning">override</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a903c7cdb35ffa050909fab8b7482e06e" class="m-doc">modemHardReset</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>) -&gt; bool <span class="m-label m-flat m-warning">override</span></span>
             </dt>
             <dd>Use the modem reset pin specified in the constructor to perform a &quot;hard&quot; or &quot;panic&quot; reset.</dd>
           </dl>
         </section>
         <hr>
-
-
-
         <section id="pub-attribs">
           <h2>Public variables</h2>
           <dl class="m-doc">
@@ -1874,22 +1725,19 @@
           </dl>
         </section>
         <hr>
-
-
-
         <section id="pro-methods">
           <h2>Protected functions</h2>
           <dl class="m-doc">
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a0898aa0b0e74d1e359e666ec5db6005e" class="m-doc">isInternetAvailable</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-flat m-warning">override</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a0898aa0b0e74d1e359e666ec5db6005e" class="m-doc">isInternetAvailable</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>) -&gt; bool <span class="m-label m-flat m-warning">override</span></span>
             </dt>
             <dd>Check whether there is an active internet connection available.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#aeb65b7810bd786e6c91a556eae6b439f" class="m-doc">extraModemSetup</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-flat m-warning">override</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#aeb65b7810bd786e6c91a556eae6b439f" class="m-doc">extraModemSetup</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>) -&gt; bool <span class="m-label m-flat m-warning">override</span></span>
             </dt>
             <dd>Perform the parts of the modem set up process that are unique to a specific module, as opposed to the parts of setup that are common to all modem modules.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a0a83675a3565bf9c9a1cbaf59e70f0a4" class="m-doc">isModemAwake</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-flat m-warning">override</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a0a83675a3565bf9c9a1cbaf59e70f0a4" class="m-doc">isModemAwake</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>) -&gt; bool <span class="m-label m-flat m-warning">override</span></span>
             </dt>
             <dd>Check if the modem was awake using all possible means.</dd>
           </dl>
@@ -1897,26 +1745,25 @@
         <hr>
 
 
-
-
-
-
-
-
-
-
-
         <section id="function-details">
           <h2>Function documentation</h2>
                       <section class="m-doc-details" id="a7f0e8c0e2cc340f53f2f72ce15339c95"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim"></span><a href="#a7f0e8c0e2cc340f53f2f72ce15339c95" class="m-doc-self">DigiXBee3GBypass</a>(</span><span class="m-doc-wrap"><span class="m-dim">Stream*</span> <span class="m-param">modemStream</span>,
-              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
-              <span class="m-dim">int8_t</span> <span class="m-param">statusPin</span>,
-              <span class="m-dim">bool</span> <span class="m-param">useCTSStatus</span>,
-              <span class="m-dim">int8_t</span> <span class="m-param">modemResetPin</span>,
-              <span class="m-dim">int8_t</span> <span class="m-param">modemSleepRqPin</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">apn</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim"> DigiXBee3GBypass::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a7f0e8c0e2cc340f53f2f72ce15339c95" class="m-doc-self">DigiXBee3GBypass</a>(</span><span class="m-doc-wrap"><span class="m-dim">Stream*</span> <span
+                    class="m-param">modemStream</span>,
+              <span class="m-dim">int8_t</span> <span
+                    class="m-param">powerPin</span>,
+              <span class="m-dim">int8_t</span> <span
+                    class="m-param">statusPin</span>,
+              <span class="m-dim">bool</span> <span
+                    class="m-param">useCTSStatus</span>,
+              <span class="m-dim">int8_t</span> <span
+                    class="m-param">modemResetPin</span>,
+              <span class="m-dim">int8_t</span> <span
+                    class="m-param">modemSleepRqPin</span>,
+              <span class="m-dim">const char*</span> <span
+                    class="m-param">apn</span>)</span></span>
             </h3>
             <p>Construct a new Digi XBee 3G Bypass object.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -1954,21 +1801,27 @@
                 </tr>
               </tbody>
             </table>
-            <p>The constuctor initializes all of the provided member variables, constructs a <a href="classlogger_modem.html" class="m-doc">loggerModem</a> parent class with the appropriate timing for the module, calls the constructor for a TinyGSM modem on the provided modemStream, and creates a TinyGSM Client linked to the modem.</p><p>Should be set to a negative number if the modem should be continuously powered or the power cannot be controlled by the MCU.</p><p>Should be set to a negative number if the modem status pin cannot be read.   This can be either the pin named <code>ON/SLEEP_N/DIO9</code> or <code>CTS_N/DIO7</code> pin in Digi&#x27;s hardware reference.</p><p>Should be set to a negative number if the modem reset pin is not connected to the MCU.   This shold be the pin called <code>RESET_N</code> in Digi&#x27;s hardware reference.</p><p>Should be set to a negative number if there is no pin usable for deep sleep modes or it is not accessible to the MCU.   This shold be the pin called <code>DTR_N/SLEEP_RQ/DIO8</code> in Digi&#x27;s hardware reference.</p><aside class="m-note m-default"><h4>See also</h4><p><a href="class_digi_x_bee.html#ab0e646918d321b3b6db52a049a5a3a99" class="m-doc">DigiXBee::<wbr />DigiXBee</a></p></aside>
+            <p>The constuctor initializes all of the provided member variables, constructs a <a href="classlogger_modem.html" class="m-doc">loggerModem</a> parent class with the appropriate timing for the module, calls the constructor for a TinyGSM modem on the provided modemStream, and creates a TinyGSM Client linked to the modem.</p><p>Should be set to a negative number if the modem should be continuously powered or the power cannot be controlled by the MCU.    
+Should be set to a negative number if the modem status pin cannot be read.    This can be either the pin named <code>ON/SLEEP_N/DIO9</code> or <code>CTS_N/DIO7</code> pin in Digi&#x27;s hardware reference. 
+Should be set to a negative number if the modem reset pin is not connected to the MCU.    This shold be the pin called <code>RESET_N</code> in Digi&#x27;s hardware reference. 
+Should be set to a negative number if there is no pin usable for deep sleep modes or it is not accessible to the MCU.    This shold be the pin called <code>DTR_N/SLEEP_RQ/DIO8</code> in Digi&#x27;s hardware reference.</p><aside class="m-note m-default"><h4>See also</h4><p><a href="class_digi_x_bee.html#ab0e646918d321b3b6db52a049a5a3a99" class="m-doc">DigiXBee::<wbr />DigiXBee</a></p></aside>
 
             <hr>
           </div>
         </section>
                       <section class="m-doc-details" id="ad93a1c7fc0e6458463f5e9ba4246472f"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#ad93a1c7fc0e6458463f5e9ba4246472f" class="m-doc-self">modemWake</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-warning">override</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool  DigiXBee3GBypass::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#ad93a1c7fc0e6458463f5e9ba4246472f" class="m-doc-self">modemWake</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span
+                    class="m-param"></span>) <span
+                    class="m-label m-warning">override</span></span></span>
             </h3>
             <p>Wake up the modem.</p>
             <table class="m-table m-fullwidth m-flat">
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td><strong>bool</strong> True if the modem is responsive and ready for action.</td>
+                  <td><span class="m-dim">bool</span> True if the modem is responsive and ready for action.</td>
                 </tr>
               </tfoot>
             </table>
@@ -1979,7 +1832,10 @@
         </section>
                       <section class="m-doc-details" id="a172d4ceda6be0a28b4bbad5ea278b1c9"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a172d4ceda6be0a28b4bbad5ea278b1c9" class="m-doc-self">connectInternet</a>(</span><span class="m-doc-wrap"><span class="m-dim">uint32_t</span> <span class="m-param">maxConnectionTime</span><span class="m-dim"> = 50000L</span>) <span class="m-label m-warning">override</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool  DigiXBee3GBypass::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a172d4ceda6be0a28b4bbad5ea278b1c9" class="m-doc-self">connectInternet</a>(</span><span class="m-doc-wrap"><span class="m-dim">uint32_t</span> <span
+                    class="m-param">maxConnectionTime</span><span class="m-dim"> = 50000L</span>) <span
+                    class="m-label m-warning">override</span></span></span>
             </h3>
             <p>Wait for the modem to successfully register on the cellular network and then request that it establish either EPS or GPRS data connection.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -1995,7 +1851,7 @@
               <tfoot>
                 <tr>
                   <th>Returns</th>
-                  <td><strong>bool</strong> True if EPS or GPRS data connection has been established. False if the modem wasunresponsive, unable to register with the cellular network, or unable to establish a EPS or GPRS connection.</td>
+                  <td><span class="m-dim">bool</span> True if EPS or GPRS data connection has been established. False if the modem wasunresponsive, unable to register with the cellular network, or unable to establish a EPS or GPRS connection.</td>
                 </tr>
               </tfoot>
             </table>
@@ -2006,14 +1862,17 @@
         </section>
                       <section class="m-doc-details" id="a5f9983fa6cf836edc1c8efd4eaf055f2"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">uint32_t </span><a href="#a5f9983fa6cf836edc1c8efd4eaf055f2" class="m-doc-self">getNISTTime</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-warning">override</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">uint32_t  DigiXBee3GBypass::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a5f9983fa6cf836edc1c8efd4eaf055f2" class="m-doc-self">getNISTTime</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span
+                    class="m-param"></span>) <span
+                    class="m-label m-warning">override</span></span></span>
             </h3>
             <p>Get the time from NIST via TIME protocol (rfc868).</p>
             <table class="m-table m-fullwidth m-flat">
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td><strong>uint32_t</strong> The number of seconds since Jan 1, 1970 IN UTC</td>
+                  <td><span class="m-dim">uint32_t</span> The number of seconds since Jan 1, 1970 IN UTC</td>
                 </tr>
               </tfoot>
             </table>
@@ -2024,8 +1883,12 @@
         </section>
                       <section class="m-doc-details" id="a9eca13352e687e01eb5a93703ca014c4"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a9eca13352e687e01eb5a93703ca014c4" class="m-doc-self">getModemSignalQuality</a>(</span><span class="m-doc-wrap"><span class="m-dim">int16_t&amp;</span> <span class="m-param">rssi</span>,
-              <span class="m-dim">int16_t&amp;</span> <span class="m-param">percent</span>) <span class="m-label m-warning">override</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool  DigiXBee3GBypass::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a9eca13352e687e01eb5a93703ca014c4" class="m-doc-self">getModemSignalQuality</a>(</span><span class="m-doc-wrap"><span class="m-dim">int16_t&amp;</span> <span
+                    class="m-param">rssi</span>,
+              <span class="m-dim">int16_t&amp;</span> <span
+                    class="m-param">percent</span>) <span
+                    class="m-label m-warning">override</span></span></span>
             </h3>
             <p>Query the modem for the current signal quality and write the results to the supplied non-constant references.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -2045,7 +1908,7 @@
               <tfoot>
                 <tr>
                   <th>Returns</th>
-                  <td><strong>bool</strong> True indicates that the communication with the modem was successful and the values referenced by the pointers should be valid.</td>
+                  <td><span class="m-dim">bool</span> True indicates that the communication with the modem was successful and the values referenced by the pointers should be valid.</td>
                 </tr>
               </tfoot>
             </table>
@@ -2053,11 +1916,16 @@
             <hr>
           </div>
         </section>
-                      <section class="m-doc-details" id="a65ad95664865f49c792c641267d116e9"><div>
+                      <section class="m-doc-details" id="a437cc5ed5826c8ab6e91859ca4267701"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a65ad95664865f49c792c641267d116e9" class="m-doc-self">getModemBatteryStats</a>(</span><span class="m-doc-wrap"><span class="m-dim">uint8_t&amp;</span> <span class="m-param">chargeState</span>,
-              <span class="m-dim">int8_t&amp;</span> <span class="m-param">percent</span>,
-              <span class="m-dim">uint16_t&amp;</span> <span class="m-param">milliVolts</span>) <span class="m-label m-warning">override</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool  DigiXBee3GBypass::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a437cc5ed5826c8ab6e91859ca4267701" class="m-doc-self">getModemBatteryStats</a>(</span><span class="m-doc-wrap"><span class="m-dim">int8_t&amp;</span> <span
+                    class="m-param">chargeState</span>,
+              <span class="m-dim">int8_t&amp;</span> <span
+                    class="m-param">percent</span>,
+              <span class="m-dim">int16_t&amp;</span> <span
+                    class="m-param">milliVolts</span>) <span
+                    class="m-label m-warning">override</span></span></span>
             </h3>
             <p>Query the modem for battery information and write the values to the supplied non-constant references.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -2081,7 +1949,7 @@
               <tfoot>
                 <tr>
                   <th>Returns</th>
-                  <td><strong>bool</strong> True indicates that the communication with the modem was successful and the values referenced by the pointers should be valid.</td>
+                  <td><span class="m-dim">bool</span> True indicates that the communication with the modem was successful and the values referenced by the pointers should be valid.</td>
                 </tr>
               </tfoot>
             </table>
@@ -2091,14 +1959,17 @@
         </section>
                       <section class="m-doc-details" id="acdbcb46cdacd87f84bab965ad7a0a309"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">float </span><a href="#acdbcb46cdacd87f84bab965ad7a0a309" class="m-doc-self">getModemChipTemperature</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-warning">override</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">float  DigiXBee3GBypass::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#acdbcb46cdacd87f84bab965ad7a0a309" class="m-doc-self">getModemChipTemperature</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span
+                    class="m-param"></span>) <span
+                    class="m-label m-warning">override</span></span></span>
             </h3>
             <p>Get the current temperature provided by the modem module.</p>
             <table class="m-table m-fullwidth m-flat">
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td><strong>float</strong> The temperature in degrees Celsius</td>
+                  <td><span class="m-dim">float</span> The temperature in degrees Celsius</td>
                 </tr>
               </tfoot>
             </table>
@@ -2108,14 +1979,17 @@
         </section>
                       <section class="m-doc-details" id="a903c7cdb35ffa050909fab8b7482e06e"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a903c7cdb35ffa050909fab8b7482e06e" class="m-doc-self">modemHardReset</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-warning">override</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool  DigiXBee3GBypass::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a903c7cdb35ffa050909fab8b7482e06e" class="m-doc-self">modemHardReset</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span
+                    class="m-param"></span>) <span
+                    class="m-label m-warning">override</span></span></span>
             </h3>
             <p>Use the modem reset pin specified in the constructor to perform a &quot;hard&quot; or &quot;panic&quot; reset.</p>
             <table class="m-table m-fullwidth m-flat">
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td><strong>bool</strong> True if the reset succeeded and the modem should now be responsive. False if the modem remains non-responsive either because the reset failed to fix the communication issue or because a reset is not possible with the current pin/modem configuration.</td>
+                  <td><span class="m-dim">bool</span> True if the reset succeeded and the modem should now be responsive. False if the modem remains non-responsive either because the reset failed to fix the communication issue or because a reset is not possible with the current pin/modem configuration.</td>
                 </tr>
               </tfoot>
             </table>
@@ -2126,14 +2000,17 @@
         </section>
                       <section class="m-doc-details" id="a0898aa0b0e74d1e359e666ec5db6005e"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a0898aa0b0e74d1e359e666ec5db6005e" class="m-doc-self">isInternetAvailable</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-warning">override</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool  DigiXBee3GBypass::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a0898aa0b0e74d1e359e666ec5db6005e" class="m-doc-self">isInternetAvailable</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span
+                    class="m-param"></span>) <span
+                    class="m-label m-warning">override</span>                  <span class="m-label m-warning">protected</span></span></span>
             </h3>
             <p>Check whether there is an active internet connection available.</p>
             <table class="m-table m-fullwidth m-flat">
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td><strong>bool</strong> True if there is an active data connection to the internet.</td>
+                  <td><span class="m-dim">bool</span> True if there is an active data connection to the internet.</td>
                 </tr>
               </tfoot>
             </table>
@@ -2143,14 +2020,17 @@
         </section>
                       <section class="m-doc-details" id="aeb65b7810bd786e6c91a556eae6b439f"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#aeb65b7810bd786e6c91a556eae6b439f" class="m-doc-self">extraModemSetup</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-warning">override</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool  DigiXBee3GBypass::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#aeb65b7810bd786e6c91a556eae6b439f" class="m-doc-self">extraModemSetup</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span
+                    class="m-param"></span>) <span
+                    class="m-label m-warning">override</span>                  <span class="m-label m-warning">protected</span></span></span>
             </h3>
             <p>Perform the parts of the modem set up process that are unique to a specific module, as opposed to the parts of setup that are common to all modem modules.</p>
             <table class="m-table m-fullwidth m-flat">
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td><strong>bool</strong> True if the extra setup succeeded.</td>
+                  <td><span class="m-dim">bool</span> True if the extra setup succeeded.</td>
                 </tr>
               </tfoot>
             </table>
@@ -2161,14 +2041,17 @@
         </section>
                       <section class="m-doc-details" id="a0a83675a3565bf9c9a1cbaf59e70f0a4"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a0a83675a3565bf9c9a1cbaf59e70f0a4" class="m-doc-self">isModemAwake</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-warning">override</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool  DigiXBee3GBypass::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a0a83675a3565bf9c9a1cbaf59e70f0a4" class="m-doc-self">isModemAwake</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span
+                    class="m-param"></span>) <span
+                    class="m-label m-warning">override</span>                  <span class="m-label m-warning">protected</span></span></span>
             </h3>
             <p>Check if the modem was awake using all possible means.</p>
             <table class="m-table m-fullwidth m-flat">
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td><strong>bool</strong> True if the modem is already awake.</td>
+                  <td><span class="m-dim">bool</span> True if the modem is already awake.</td>
                 </tr>
               </tfoot>
             </table>
@@ -2180,62 +2063,73 @@
         </section>
         <hr>
 
-
-
-
-                    </div>
-                  </div>
-                </div>
               </article>
             </main>
 
-          </div>      </div></div><div id="footer-image">
-          <div class="gp-container">
-            <img
-              src="https://www.envirodiy.org/wp-content/uploads/2016/05/EnviroDIY_LogoMaster_Square_V5_TwoTree_Trans_notext-e1462820115833.png"
-              width="99"
-              height="22"
-              alt=""
-            />
-          </div>
-        </div>
+          </div> <!-- gp-content -->
+        </div> <!-- gp-left-column -->
+      </div> <!-- gp-inner-container -->
+    </div> <!-- gp-content-wrapper -->
+
+    <div id="footer-image">
+      <div class="gp-container">
+        <img
+          src="https://www.envirodiy.org/wp-content/uploads/2016/05/EnviroDIY_LogoMaster_Square_V5_TwoTree_Trans_notext-e1462820115833.png"
+          width="99"
+          height="22"
+          alt=""
+        />
+      </div>
+    </div>
 
     <footer id="gp-footer">
       <div id="gp-copyright">
         <div class="gp-container">
           <div id="gp-copyright-text">
             <p>
-              <a href="http://www.stroudcenter.org/" target="_blank"
-                ><img
-                  style="float: left; margin-right: 20px;"
-                  src="https://www.envirodiy.org/wp-content/uploads/2017/01/stroud-white-white-165px.png"
-                  alt=""
-                  width="165"
-                  height="70" /></a
-              >EnviroDIY™ is a community for do-it-yourself ideas for
-              environmental science and monitoring. EnviroDIY is an
-              initiative of
-              <a href="http://www.stroudcenter.org/" target="_blank"
-                >Stroud™ Water Research Center</a
-              >, which seeks to advance knowledge and stewardship of
-              freshwater systems through global research, education, and
-              watershed restoration.
+              <a href="https://stroudcenter.org/" target="_blank"
+                >EnviroDIY™ is a community for do-it-yourself ideas for environmental
+                science and monitoring. EnviroDIY is an initiative of
+                <a
+                  style="text-decoration: underline"
+                  href="https://stroudcenter.org/"
+                  target="_blank"
+                  >Stroud Water Research Center</a
+                >, which advances knowledge and stewardship of freshwater systems through
+                global research, education, and watershed restoration.
+              </a>
             </p>
             <p>
               All content on EnviroDIY is licensed as Creative Commons
-              Attribution-ShareAlike 4.0 International (CC-BY-SA). Hardware
-              designs on this website are released under the CERN Open
-              Hardware License 1.2.
-              <a href="https://envirodiy.org/licenses/"
-                >Alternative licenses are available.</a
+              Attribution-ShareAlike 4.0 International (CC-BY-SA). Hardware designs on this
+              website are released under the CERN Open Hardware License 1.2.
+              <a style="text-decoration: underline" href="https://envirodiy.org/licenses/"
+                >See all licenses.</a
               >
-              <a href="https://envirodiy.org/terms/">Terms of Use</a> |
-              <a href="https://envirodiy.org/privacy/">Privacy Policy</a> |
-              <a href="https://envirodiy.org/cookies/">Cookie Policy</a> |
-              <a href="https://envirodiy.org/contact/">Contact</a>
+              <a style="text-decoration: underline" href="https://envirodiy.org/terms/"
+                >Terms of Use</a
+              >
+              |
+              <a style="text-decoration: underline" href="https://envirodiy.org/privacy/"
+                >Privacy Policy</a
+              >
+              |
+              <a style="text-decoration: underline" href="https://envirodiy.org/cookies/"
+                >Cookie Policy</a
+              >
+              |
+              <a
+                style="text-decoration: underline"
+                href="https://envirodiy.org/shop-policies/"
+                >Shop Policies</a
+              >
+              |
+              <a style="text-decoration: underline" href="https://envirodiy.org/contact/"
+                >Contact</a
+              >
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.6 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.12.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>
@@ -2244,69 +2138,8 @@
 
     <div class="gp-clear"></div>
 
-    </div></div><script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/modernizr.js?ver=6.1.1"
-  id="modernizr-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-includes/js/imagesloaded.min.js?ver=4.1.4"
-  id="imagesloaded-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/selectivizr.min.js?ver=6.1.1"
-  id="selectivizr-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/placeholders.min.js?ver=6.1.1"
-  id="placeholder-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/jquery.ui.totop.min.js.js?ver=6.1.1"
-  id="jquery-totop-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/jquery.flexslider-min.js?ver=6.1.1"
-  id="jquery-flexslider-js"
-></script>
-<script type="text/javascript" id="ghostpool-custom-js-js-extra">
-  /* <![CDATA[ */
-  var ghostpool_script = {
-    lightbox: 'separate_images',
-    url: 'https:\/\/www.envirodiy.org\/',
-    related_items_in_view: '',
-  };
-  /* ]]> */
-</script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/jquery.stellar.min.js?ver=6.1.1"
-  id="jquery-stellar-js"
-></script>
+    </div> <!-- gp-site-wrapper -->
+  </div> <!-- gp-site-wrapper -->
 
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/custom.js?ver=6.1.1"
-  id="ghostpool-custom-js-js"
-></script>
-<script type="text/javascript" id="ghostpool-ajax-loop-js-extra">
-  /* <![CDATA[ */
-  var ghostpoolAjax = {
-    ajaxurl: 'https:\/\/www.envirodiy.org\/wp-admin\/admin-ajax.php',
-    ajaxnonce: 'e2424257d3',
-    querystring: '',
-  };
-  /* ]]> */
-</script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/ajax-loop.js?ver=6.1.1"
-  id="ghostpool-ajax-loop-js"
-></script>
 </body>
 </html>

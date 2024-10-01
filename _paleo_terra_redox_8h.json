@@ -1,0 +1,95 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "file",
+    "id": "_paleo_terra_redox_8h",
+    "name": "PaleoTerraRedox.h",
+    "url_base": "_paleo_terra_redox_8h",
+    "url": "_paleo_terra_redox_8h.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "Contains the <a href=\"class_paleo_terra_redox.html\" class=\"m-doc\">PaleoTerraRedox</a> semsor subclass and the variable subclass <a href=\"class_paleo_terra_redox___voltage.html\" class=\"m-doc\">PaleoTerraRedox_<wbr />Voltage</a>.",
+    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Anthony Aufdenkampe <a href=\"mailto:aaufdenkampe@limno.com\">aaufdenkampe@limno.com</a> with help from Beth Fisher, Evan Host and Bobby Schulz. Heavliy edited by Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside><p>These are for the PaleoTerra redox sensors.</p><p>This depends on Testato&#x27;s <a href=\"https://github.com/Testato/SoftwareWire\">SoftwareWire</a> library if software I2C is needed.</p>",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_paleo_terra_redox.html",
+        "name": "PaleoTerraRedox",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__pt__redox.html\" class=\"m-doc\">PaleoTerra redox sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_paleo_terra_redox___voltage.html",
+        "name": "PaleoTerraRedox_Voltage",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__pt__redox.html#sensor_pt_redox_volt\" class=\"m-doc\">voltage output</a> from a PaleoTerra redox sensor.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "src",
+        "dir_68267d1309a1af8e8297ef4c3efbcdba.html"
+      ],
+      [
+        "sensors",
+        "dir_7349e89ef19c117195f8e371603e1b1f.html"
+      ],
+      [
+        "PaleoTerraRedox.h",
+        "_paleo_terra_redox_8h.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "PaleoTerraRedox.h",
+        "_paleo_terra_redox_8h.html"
+      ]
+    ]
+  }
+}

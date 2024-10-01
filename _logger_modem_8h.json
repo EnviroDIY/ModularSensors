@@ -1,0 +1,136 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "file",
+    "id": "_logger_modem_8h",
+    "name": "LoggerModem.h",
+    "url_base": "_logger_modem_8h",
+    "url": "_logger_modem_8h.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "Contains the <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> class and the variable subclasses <a href=\"class_modem___r_s_s_i.html\" class=\"m-doc\">Modem_<wbr />RSSI</a>, <a href=\"class_modem___signal_percent.html\" class=\"m-doc\">Modem_<wbr />SignalPercent</a>, <a href=\"class_modem___battery_state.html\" class=\"m-doc\">Modem_<wbr />BatteryState</a>, <a href=\"class_modem___battery_percent.html\" class=\"m-doc\">Modem_<wbr />BatteryPercent</a>, and <a href=\"class_modem___battery_voltage.html\" class=\"m-doc\">Modem_<wbr />BatteryVoltage</a> - all of which are implemented as &quot;calculated&quot; variables.",
+    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside>",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "classlogger_modem.html",
+        "name": "loggerModem",
+        "brief": "The <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> class provides an internet connection for the logger and supplies an Arduino Client instance to use to publish data.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_modem___r_s_s_i.html",
+        "name": "Modem_RSSI",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the RSSI measured by a modem.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_modem___signal_percent.html",
+        "name": "Modem_SignalPercent",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the percent of maximum signal measured by a modem.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_modem___battery_state.html",
+        "name": "Modem_BatteryState",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the battery charge state measured by a modem.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_modem___battery_percent.html",
+        "name": "Modem_BatteryPercent",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the battery charge percent measured by a modem.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_modem___battery_voltage.html",
+        "name": "Modem_BatteryVoltage",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the battery voltage measured by a modem.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_modem___temp.html",
+        "name": "Modem_Temp",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the chip temperature as measured by the modem.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "src",
+        "dir_68267d1309a1af8e8297ef4c3efbcdba.html"
+      ],
+      [
+        "LoggerModem.h",
+        "_logger_modem_8h.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "LoggerModem.h",
+        "_logger_modem_8h.html"
+      ]
+    ]
+  }
+}

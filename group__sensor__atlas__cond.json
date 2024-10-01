@@ -1,0 +1,734 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__sensor__atlas__cond",
+    "name": "Atlas EZO-EC",
+    "url_base": "group__sensor__atlas__cond",
+    "url": "group__sensor__atlas__cond.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>Classes for the Atlas Scientific EZO-EC conductivity circuit and probes.</p><p>The Atlas Scientifc Conductivity sensor outputs raw conductivity, TDS, salinity, and specific gravity</p><ul><li>Accuracy is \u00b1 2%</li><li>Range is 0.07 \u2212 500,000+ \u03bcS/cm</li><li>Resolution is 3 decimal places</li></ul><aside class=\"m-note m-info\"><h4>Note</h4><p>This library <em>DOES NOT</em> support using the built-in temperature compensation for conductivity. The returned result is conductivity, not the more typically reported specific. If you need specific conductance, you should calculate it separately, as shown in the example code below.</p></aside><section id=\"sensor_atlas_cond_datasheet\"><h2>Sensor Datasheet</h2><ul><li><a href=\"https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_EZO_Datasheet.pdf\">Circuit Datasheet</a></li><li><a href=\"https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_0.1_probe.pdf\">K0.1 Probe Datasheet</a></li><li><a href=\"https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_1.0_probe.pdf\">K1.0 Probe Datasheet</a></li><li><a href=\"https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_10_probe.pdf\">K10 Probe Datasheet</a></li></ul></section><section id=\"sensor_atlas_cond_ctor\"><h2>Sensor Constructors</h2><p>{{ <a href=\"class_atlas_scientific_e_c.html#ac6755ba4cd3de3c492c0aba8ee2aa4fd\" class=\"m-doc\">AtlasScientificEC::<wbr />AtlasScientificEC(int8_t, uint8_t, uint8_t)</a> }} {{ <a href=\"class_atlas_scientific_e_c.html#a9b1691863ebf8b1521f16965e1462043\" class=\"m-doc\">AtlasScientificEC::<wbr />AtlasScientificEC(TwoWire*, int8_t, uint8_t, uint8_t)</a> }}</p><hr/></section><section id=\"sensor_atlas_cond_examples\"><h2>Example Code</h2><p>The Atlas conductivity sensor is used in the <a href=\"example_menu.html#menu_walk_atlas_scientific_ec\" class=\"m-doc\">menu a la carte</a> example.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;sensors/AtlasScientificEC.h&gt;</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"c1\">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">AtlasECPower</span><span class=\"w\">    </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">sensorPowerPin</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// Power pin</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span><span class=\"kr\">uint8_t</span><span class=\"w\">      </span><span class=\"n\">AtlasECi2c_addr</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mh\">0x64</span><span class=\"p\">;</span><span class=\"w\">            </span><span class=\"c1\">// Default for EC is 0x64 (100)</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span><span class=\"c1\">// All Atlas sensors have different default I2C addresses, but any of them can</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"c1\">// be re-addressed to any 8 bit number.  If using the default address for any</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span><span class=\"c1\">// Atlas Scientific sensor, you may omit this argument.</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span>\n</div><div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span><span class=\"c1\">// Create an Atlas Scientific Conductivity sensor object</span>\n</div><div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span><span class=\"c1\">// AtlasScientificEC atlasEC(AtlasECPower, AtlasECi2c_addr);</span>\n</div><div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"n\">AtlasScientificEC</span><span class=\"w\"> </span><span class=\"nf\">atlasEC</span><span class=\"p\">(</span><span class=\"n\">AtlasECPower</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span>\n</div><div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span><span class=\"c1\">// Create four variable pointers for the EZO-ES</span>\n</div><div class=\"line\"><a id=\"l-15\" name=\"l-15\"></a><span class=\"linenos\">15</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">atlasCond</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">AtlasScientificEC_Cond</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-16\" name=\"l-16\"></a><span class=\"linenos\">16</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">atlasEC</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-17\" name=\"l-17\"></a><span class=\"linenos\">17</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">atlasTDS</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-18\" name=\"l-18\"></a><span class=\"linenos\">18</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">AtlasScientificEC_TDS</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">atlasEC</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-19\" name=\"l-19\"></a><span class=\"linenos\">19</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">atlasSal</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">AtlasScientificEC_Salinity</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-20\" name=\"l-20\"></a><span class=\"linenos\">20</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">atlasEC</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-21\" name=\"l-21\"></a><span class=\"linenos\">21</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">atlasGrav</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">AtlasScientificEC_SpecificGravity</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-22\" name=\"l-22\"></a><span class=\"linenos\">22</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">atlasEC</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-23\" name=\"l-23\"></a><span class=\"linenos\">23</span>\n</div><div class=\"line\"><a id=\"l-24\" name=\"l-24\"></a><span class=\"linenos\">24</span><span class=\"c1\">// Create a calculated variable for the temperature compensated conductivity</span>\n</div><div class=\"line\"><a id=\"l-25\" name=\"l-25\"></a><span class=\"linenos\">25</span><span class=\"c1\">// (that is, the specific conductance).  For this example, we will use the</span>\n</div><div class=\"line\"><a id=\"l-26\" name=\"l-26\"></a><span class=\"linenos\">26</span><span class=\"c1\">// temperature measured by the Atlas RTD above this.  You could use the</span>\n</div><div class=\"line\"><a id=\"l-27\" name=\"l-27\"></a><span class=\"linenos\">27</span><span class=\"c1\">// temperature returned by any other water temperature sensor if desired.</span>\n</div><div class=\"line\"><a id=\"l-28\" name=\"l-28\"></a><span class=\"linenos\">28</span><span class=\"c1\">// **DO NOT** use your logger board temperature (ie, from the DS3231) to</span>\n</div><div class=\"line\"><a id=\"l-29\" name=\"l-29\"></a><span class=\"linenos\">29</span><span class=\"c1\">// calculate specific conductance!</span>\n</div><div class=\"line\"><a id=\"l-30\" name=\"l-30\"></a><span class=\"linenos\">30</span><span class=\"kr\">float</span><span class=\"w\"> </span><span class=\"nf\">calculateAtlasSpCond</span><span class=\"p\">(</span><span class=\"kr\">void</span><span class=\"p\">)</span><span class=\"w\"> </span><span class=\"p\">{</span>\n</div><div class=\"line\"><a id=\"l-31\" name=\"l-31\"></a><span class=\"linenos\">31</span><span class=\"w\">    </span><span class=\"kr\">float</span><span class=\"w\"> </span><span class=\"n\">spCond</span><span class=\"w\">    </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">-9999</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// Always safest to start with a bad value</span>\n</div><div class=\"line\"><a id=\"l-32\" name=\"l-32\"></a><span class=\"linenos\">32</span><span class=\"w\">    </span><span class=\"kr\">float</span><span class=\"w\"> </span><span class=\"n\">waterTemp</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">atlasTemp</span><span class=\"o\">-&gt;</span><span class=\"n\">getValue</span><span class=\"p\">();</span>\n</div><div class=\"line\"><a id=\"l-33\" name=\"l-33\"></a><span class=\"linenos\">33</span><span class=\"w\">    </span><span class=\"kr\">float</span><span class=\"w\"> </span><span class=\"n\">rawCond</span><span class=\"w\">   </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">atlasCond</span><span class=\"o\">-&gt;</span><span class=\"n\">getValue</span><span class=\"p\">();</span>\n</div><div class=\"line\"><a id=\"l-34\" name=\"l-34\"></a><span class=\"linenos\">34</span><span class=\"w\">    </span><span class=\"c1\">// ^^ Linearized temperature correction coefficient per degrees Celsius.</span>\n</div><div class=\"line\"><a id=\"l-35\" name=\"l-35\"></a><span class=\"linenos\">35</span><span class=\"w\">    </span><span class=\"c1\">// The value of 0.019 comes from measurements reported here:</span>\n</div><div class=\"line\"><a id=\"l-36\" name=\"l-36\"></a><span class=\"linenos\">36</span><span class=\"w\">    </span><span class=\"c1\">// Hayashi M. Temperature-electrical conductivity relation of water for</span>\n</div><div class=\"line\"><a id=\"l-37\" name=\"l-37\"></a><span class=\"linenos\">37</span><span class=\"w\">    </span><span class=\"c1\">// environmental monitoring and geophysical data inversion. Environ Monit</span>\n</div><div class=\"line\"><a id=\"l-38\" name=\"l-38\"></a><span class=\"linenos\">38</span><span class=\"w\">    </span><span class=\"c1\">// Assess. 2004 Aug-Sep;96(1-3):119-28.</span>\n</div><div class=\"line\"><a id=\"l-39\" name=\"l-39\"></a><span class=\"linenos\">39</span><span class=\"w\">    </span><span class=\"c1\">// doi: 10.1023/b:emas.0000031719.83065.68. PMID: 15327152.</span>\n</div><div class=\"line\"><a id=\"l-40\" name=\"l-40\"></a><span class=\"linenos\">40</span><span class=\"w\">    </span><span class=\"k\">if</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"n\">waterTemp</span><span class=\"w\"> </span><span class=\"o\">!=</span><span class=\"w\"> </span><span class=\"mi\">-9999</span><span class=\"w\"> </span><span class=\"o\">&amp;&amp;</span><span class=\"w\"> </span><span class=\"n\">rawCond</span><span class=\"w\"> </span><span class=\"o\">!=</span><span class=\"w\"> </span><span class=\"mi\">-9999</span><span class=\"p\">)</span><span class=\"w\"> </span><span class=\"p\">{</span>\n</div><div class=\"line\"><a id=\"l-41\" name=\"l-41\"></a><span class=\"linenos\">41</span><span class=\"w\">        </span><span class=\"c1\">// make sure both inputs are good</span>\n</div><div class=\"line\"><a id=\"l-42\" name=\"l-42\"></a><span class=\"linenos\">42</span><span class=\"w\">        </span><span class=\"kr\">float</span><span class=\"w\"> </span><span class=\"n\">temperatureCoef</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mf\">0.019</span><span class=\"p\">;</span>\n</div><div class=\"line\"><a id=\"l-43\" name=\"l-43\"></a><span class=\"linenos\">43</span><span class=\"w\">        </span><span class=\"n\">spCond</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">rawCond</span><span class=\"w\"> </span><span class=\"o\">/</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"mi\">1</span><span class=\"w\"> </span><span class=\"o\">+</span><span class=\"w\"> </span><span class=\"n\">temperatureCoef</span><span class=\"w\"> </span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"p\">(</span><span class=\"n\">waterTemp</span><span class=\"w\"> </span><span class=\"o\">-</span><span class=\"w\"> </span><span class=\"mf\">25.0</span><span class=\"p\">));</span>\n</div><div class=\"line\"><a id=\"l-44\" name=\"l-44\"></a><span class=\"linenos\">44</span><span class=\"w\">    </span><span class=\"p\">}</span>\n</div><div class=\"line\"><a id=\"l-45\" name=\"l-45\"></a><span class=\"linenos\">45</span><span class=\"w\">    </span><span class=\"k\">return</span><span class=\"w\"> </span><span class=\"n\">spCond</span><span class=\"p\">;</span>\n</div><div class=\"line\"><a id=\"l-46\" name=\"l-46\"></a><span class=\"linenos\">46</span><span class=\"p\">}</span>\n</div><div class=\"line\"><a id=\"l-47\" name=\"l-47\"></a><span class=\"linenos\">47</span>\n</div><div class=\"line\"><a id=\"l-48\" name=\"l-48\"></a><span class=\"linenos\">48</span><span class=\"c1\">// Properties of the calculated variable</span>\n</div><div class=\"line\"><a id=\"l-49\" name=\"l-49\"></a><span class=\"linenos\">49</span><span class=\"c1\">// The number of digits after the decimal place</span>\n</div><div class=\"line\"><a id=\"l-50\" name=\"l-50\"></a><span class=\"linenos\">50</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">uint8_t</span><span class=\"w\"> </span><span class=\"n\">atlasSpCondResolution</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">0</span><span class=\"p\">;</span>\n</div><div class=\"line\"><a id=\"l-51\" name=\"l-51\"></a><span class=\"linenos\">51</span><span class=\"c1\">// This must be a value from http://vocabulary.odm2.org/variablename/</span>\n</div><div class=\"line\"><a id=\"l-52\" name=\"l-52\"></a><span class=\"linenos\">52</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">char</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">atlasSpCondName</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"s\">&quot;specificConductance&quot;</span><span class=\"p\">;</span>\n</div><div class=\"line\"><a id=\"l-53\" name=\"l-53\"></a><span class=\"linenos\">53</span><span class=\"c1\">// This must be a value from http://vocabulary.odm2.org/units/</span>\n</div><div class=\"line\"><a id=\"l-54\" name=\"l-54\"></a><span class=\"linenos\">54</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">char</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">atlasSpCondUnit</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"s\">&quot;microsiemenPerCentimeter&quot;</span><span class=\"p\">;</span>\n</div><div class=\"line\"><a id=\"l-55\" name=\"l-55\"></a><span class=\"linenos\">55</span><span class=\"c1\">// A short code for the variable</span>\n</div><div class=\"line\"><a id=\"l-56\" name=\"l-56\"></a><span class=\"linenos\">56</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">char</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">atlasSpCondCode</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"s\">&quot;atlasSpCond&quot;</span><span class=\"p\">;</span>\n</div><div class=\"line\"><a id=\"l-57\" name=\"l-57\"></a><span class=\"linenos\">57</span><span class=\"c1\">// The (optional) universallly unique identifier</span>\n</div><div class=\"line\"><a id=\"l-58\" name=\"l-58\"></a><span class=\"linenos\">58</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">char</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">atlasSpCondUUID</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">;</span>\n</div><div class=\"line\"><a id=\"l-59\" name=\"l-59\"></a><span class=\"linenos\">59</span>\n</div><div class=\"line\"><a id=\"l-60\" name=\"l-60\"></a><span class=\"linenos\">60</span><span class=\"c1\">// Finally, create the specific conductance variable and return a pointer to it</span>\n</div><div class=\"line\"><a id=\"l-61\" name=\"l-61\"></a><span class=\"linenos\">61</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">atlasSpCond</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-62\" name=\"l-62\"></a><span class=\"linenos\">62</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">Variable</span><span class=\"p\">(</span><span class=\"n\">calculateAtlasSpCond</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">atlasSpCondResolution</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">atlasSpCondName</span><span class=\"p\">,</span>\n</div><div class=\"line\"><a id=\"l-63\" name=\"l-63\"></a><span class=\"linenos\">63</span><span class=\"w\">                 </span><span class=\"n\">atlasSpCondUnit</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">atlasSpCondCode</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">atlasSpCondUUID</span><span class=\"p\">);</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "sensor_atlas_cond_datasheet",
+        "Sensor Datasheet",
+        []
+      ],
+      [
+        "sensor_atlas_cond_ctor",
+        "Sensor Constructors",
+        []
+      ],
+      [
+        "sensor_atlas_cond_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_atlas_scientific_e_c.html",
+        "name": "AtlasScientificEC",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__atlas__cond.html\" class=\"m-doc\">Atlas Scientific conductivity circuit and sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_atlas_scientific_e_c___cond.html",
+        "name": "AtlasScientificEC_Cond",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__atlas__cond.html#sensor_atlas_cond_cond\" class=\"m-doc\">conductivity output</a> from an <a href=\"group__sensor__atlas__cond.html\" class=\"m-doc\">Atlas Scientific EC EZO circuit</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_atlas_scientific_e_c___t_d_s.html",
+        "name": "AtlasScientificEC_TDS",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__atlas__cond.html#sensor_atlas_cond_tds\" class=\"m-doc\">total dissolved solids output</a> from an <a href=\"group__sensor__atlas__cond.html\" class=\"m-doc\">Atlas Scientific EC EZO circuit</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_atlas_scientific_e_c___salinity.html",
+        "name": "AtlasScientificEC_Salinity",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__atlas__cond.html#sensor_atlas_cond_salinity\" class=\"m-doc\">salinity output</a> from an <a href=\"group__sensor__atlas__cond.html\" class=\"m-doc\">Atlas Scientific EC EZO circuit</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_atlas_scientific_e_c___specific_gravity.html",
+        "name": "AtlasScientificEC_SpecificGravity",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__atlas__cond.html#sensor_atlas_cond_sg\" class=\"m-doc\">specific gravity output</a> from an <a href=\"group__sensor__atlas__cond.html\" class=\"m-doc\">Atlas Scientific EC EZO circuit</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Sensor Variable Counts",
+        "id": "sensor-variable-counts",
+        "description": "<p><a name=\"sensor_atlas_cond_var_counts\"></a> The number of variables that can be returned by the Atlas conductivity sensor</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__cond.html",
+              "id": "gac5b2498205ccb1b303a2b4f1d62141ea",
+              "include": [
+                "&lt;src/sensors/AtlasScientificEC.h&gt;",
+                "_atlas_scientific_e_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_COND_NUM_VARIABLES",
+              "initializer": "4",
+              "brief": "<a href=\"class_sensor.html#af26786329fd01b44cf31410d046fc8f3\" class=\"m-doc\">Sensor::<wbr />_numReturnedValues</a>; Atlas EZO conductivity circuit can report 4 values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__cond.html",
+              "id": "ga68d60167de1bde39229e69a4277b3091",
+              "include": [
+                "&lt;src/sensors/AtlasScientificEC.h&gt;",
+                "_atlas_scientific_e_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_COND_INC_CALC_VARIABLES",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#a2f3f93a9205efb134cef1216d65077d2\" class=\"m-doc\">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values - though we recommend users include a temperature sensor and calculate specific conductance in their own program.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Configuration Defines",
+        "id": "configuration-defines",
+        "description": "<p><a name=\"sensor_atlas_cond_config\"></a> Defines to configure and set the address of the Atlas conductivity sensor</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__cond.html",
+              "id": "ga8272843bc785fe53f11877b9f2e2992d",
+              "include": [
+                "&lt;src/sensors/AtlasScientificEC.h&gt;",
+                "_atlas_scientific_e_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_COND_I2C_ADDR",
+              "initializer": "0x64",
+              "brief": "The default I2C address of the Atlas conductivity sensor is 0x64 (100)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Sensor Timing",
+        "id": "sensor-timing",
+        "description": "<p><a name=\"sensor_atlas_cond_timing\"></a> The sensor timing for an Atlas EC (conducticity) sensor</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__cond.html",
+              "id": "gad9bf87c5271874f53d760c53c01c71a0",
+              "include": [
+                "&lt;src/sensors/AtlasScientificEC.h&gt;",
+                "_atlas_scientific_e_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_COND_WARM_UP_TIME_MS",
+              "initializer": "745",
+              "brief": "<a href=\"class_sensor.html#aaaefd7f306f86382a3dac726531756b4\" class=\"m-doc\">Sensor::<wbr />_warmUpTime_ms</a>; Atlas EZO conductivity circuit warms up in 745ms.",
+              "description": "<p>739-740 in tests</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__cond.html",
+              "id": "ga378c222a48288eda317251cb6dd1241a",
+              "include": [
+                "&lt;src/sensors/AtlasScientificEC.h&gt;",
+                "_atlas_scientific_e_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_COND_STABILIZATION_TIME_MS",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#ad6822ad09fb64658c911ce86820db79c\" class=\"m-doc\">Sensor::<wbr />_stabilizationTime_ms</a>; Atlas EZO conductivity circuit is stable 0ms after warm-up. (stable at completion of warm up)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__cond.html",
+              "id": "gaa25a650e6fd94d5fc408c8e66b380f99",
+              "include": [
+                "&lt;src/sensors/AtlasScientificEC.h&gt;",
+                "_atlas_scientific_e_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_COND_MEASUREMENT_TIME_MS",
+              "initializer": "600",
+              "brief": "<a href=\"class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba\" class=\"m-doc\">Sensor::<wbr />_measurementTime_ms</a>; Atlas EZO conductivity circuit takes 600ms to complete a measurement.",
+              "description": "<p>only ~555 measurement time in tests, but keep the 600 recommended by manual</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Conductivity",
+        "id": "conductivity",
+        "description": "<p><a name=\"sensor_atlas_cond_cond\"></a> The conductivity variable from an Atlas EC (conducticity) sensor</p><ul><li>Accuracy is \u00b1 2%</li><li>Range is 0.07 \u2212 500,000+ \u03bcS/cm</li></ul><p>{{ <a href=\"class_atlas_scientific_e_c___cond.html#ad44468aea10b4bcfd57606c59ff61b2a\" class=\"m-doc\">AtlasScientificEC_Cond::<wbr />AtlasScientificEC_Cond</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__cond.html",
+              "id": "ga667ce2a5b9713eb00613e59c47714fce",
+              "include": [
+                "&lt;src/sensors/AtlasScientificEC.h&gt;",
+                "_atlas_scientific_e_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_COND_RESOLUTION",
+              "initializer": "3",
+              "brief": "Decimals places in string representation; conductivity should have 3.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__cond.html",
+              "id": "gad450e4b015fecba1418b69265cd6e8ef",
+              "include": [
+                "&lt;src/sensors/AtlasScientificEC.h&gt;",
+                "_atlas_scientific_e_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_COND_VAR_NUM",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; conductivity is stored in sensorValues[0].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__cond.html",
+              "id": "ga70c0b0c45917497df5aa7c596a6b79b4",
+              "include": [
+                "&lt;src/sensors/AtlasScientificEC.h&gt;",
+                "_atlas_scientific_e_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_COND_VAR_NAME",
+              "initializer": "\"electricalConductivity\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;electricalConductivity&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__cond.html",
+              "id": "ga4bdfba031ca8cac4a784ccfeabcf8100",
+              "include": [
+                "&lt;src/sensors/AtlasScientificEC.h&gt;",
+                "_atlas_scientific_e_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_COND_UNIT_NAME",
+              "initializer": "\"microsiemenPerCentimeter\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;microsiemenPerCentimeter&quot; (\u00b5S/cm)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__cond.html",
+              "id": "ga1eb91d3bd7b6f36c3ecd2fafca558de7",
+              "include": [
+                "&lt;src/sensors/AtlasScientificEC.h&gt;",
+                "_atlas_scientific_e_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_COND_DEFAULT_CODE",
+              "initializer": "\"AtlasCond\"",
+              "brief": "Default variable short code; &quot;AtlasCond&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Total Dissolved Solids",
+        "id": "total-dissolved-solids",
+        "description": "<p><a name=\"sensor_atlas_cond_tds\"></a> The TDS variable from an Atlas EC (conducticity) sensor</p><ul><li>Accuracy is \u00b1 2%</li><li>Range is 0.07 \u2212 500,000+ \u03bcS/cm</li></ul><p>{{ <a href=\"class_atlas_scientific_e_c___t_d_s.html#ae00712f12d460890b79b37c1d9e2a2e9\" class=\"m-doc\">AtlasScientificEC_TDS::<wbr />AtlasScientificEC_TDS</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__cond.html",
+              "id": "gafdadeac70a9dbc8afab6b09ba2a5c2dc",
+              "include": [
+                "&lt;src/sensors/AtlasScientificEC.h&gt;",
+                "_atlas_scientific_e_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_TDS_RESOLUTION",
+              "initializer": "3",
+              "brief": "Decimals places in string representation; TDS should have 3.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__cond.html",
+              "id": "gab2b9a23982fd9f3617fc3a0774ffc77a",
+              "include": [
+                "&lt;src/sensors/AtlasScientificEC.h&gt;",
+                "_atlas_scientific_e_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_TDS_VAR_NUM",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; TDS is stored in sensorValues[1].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__cond.html",
+              "id": "gaff8dfd7cb4f153df0048fd5b857ffa9b",
+              "include": [
+                "&lt;src/sensors/AtlasScientificEC.h&gt;",
+                "_atlas_scientific_e_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_TDS_VAR_NAME",
+              "initializer": "\"solidsTotalDissolved\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;solidsTotalDissolved&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__cond.html",
+              "id": "ga8eab74eb415a847976aef7e400a92efa",
+              "include": [
+                "&lt;src/sensors/AtlasScientificEC.h&gt;",
+                "_atlas_scientific_e_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_TDS_UNIT_NAME",
+              "initializer": "\"partPerMillion\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;partPerMillion&quot; (ppm)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__cond.html",
+              "id": "ga29904b0c40fdf493c961e9fc7dc2cc4a",
+              "include": [
+                "&lt;src/sensors/AtlasScientificEC.h&gt;",
+                "_atlas_scientific_e_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_TDS_DEFAULT_CODE",
+              "initializer": "\"AtlasTDS\"",
+              "brief": "Default variable short code; &quot;AtlasTDS&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Salinity",
+        "id": "salinity",
+        "description": "<p><a name=\"sensor_atlas_cond_salinity\"></a> The salinity variable from an Atlas EC (conducticity) sensor</p><ul><li>Accuracy is \u00b1 2%</li><li>Range is 0.07 \u2212 500,000+ \u03bcS/cm</li></ul><p>{{ <a href=\"class_atlas_scientific_e_c___salinity.html#a363fc16327ec6523c320bedf0c8a0086\" class=\"m-doc\">AtlasScientificEC_Salinity::<wbr />AtlasScientificEC_Salinity</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__cond.html",
+              "id": "gafb1070f49103c831022c0431a6f21555",
+              "include": [
+                "&lt;src/sensors/AtlasScientificEC.h&gt;",
+                "_atlas_scientific_e_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_SALINITY_RESOLUTION",
+              "initializer": "3",
+              "brief": "Decimals places in string representation; salinity should have 3.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__cond.html",
+              "id": "ga4424feebeefe760b6d2fcb5585c7648a",
+              "include": [
+                "&lt;src/sensors/AtlasScientificEC.h&gt;",
+                "_atlas_scientific_e_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_SALINITY_VAR_NUM",
+              "initializer": "2",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; salinity is stored in sensorValues[2].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__cond.html",
+              "id": "ga9c36420f1a285f78772377445d4f69af",
+              "include": [
+                "&lt;src/sensors/AtlasScientificEC.h&gt;",
+                "_atlas_scientific_e_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_SALINITY_VAR_NAME",
+              "initializer": "\"salinity\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;salinity&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__cond.html",
+              "id": "ga464e2231239bf530b56348e979cc5482",
+              "include": [
+                "&lt;src/sensors/AtlasScientificEC.h&gt;",
+                "_atlas_scientific_e_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_SALINITY_UNIT_NAME",
+              "initializer": "\"practicalSalinityUnit\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;practicalSalinityUnit&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__cond.html",
+              "id": "ga33b9c284aa1436f2519ddca2152008fe",
+              "include": [
+                "&lt;src/sensors/AtlasScientificEC.h&gt;",
+                "_atlas_scientific_e_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_SALINITY_DEFAULT_CODE",
+              "initializer": "\"AtlasSalinity\"",
+              "brief": "Default variable short code; &quot;AtlasSalinity&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Specific Gravity",
+        "id": "specific-gravity",
+        "description": "<p><a name=\"sensor_atlas_cond_sg\"></a> The specific gravity variable from an Atlas EC (conducticity) sensor</p><ul><li>Accuracy is \u00b1 2%</li><li>Range is 0.07 \u2212 500,000+ \u03bcS/cm</li></ul><p>{{ <a href=\"class_atlas_scientific_e_c___specific_gravity.html#a06cdb977b6ecafc892ec5b79c5e29b85\" class=\"m-doc\">AtlasScientificEC_SpecificGravity::<wbr />AtlasScientificEC_SpecificGravity</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__cond.html",
+              "id": "ga62f76255364b3519f394680cbaab42a5",
+              "include": [
+                "&lt;src/sensors/AtlasScientificEC.h&gt;",
+                "_atlas_scientific_e_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_SG_RESOLUTION",
+              "initializer": "3",
+              "brief": "Decimals places in string representation; specific gravity should have 3.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__cond.html",
+              "id": "ga1a5705e4154ff5a7df8c2bb2f433e88a",
+              "include": [
+                "&lt;src/sensors/AtlasScientificEC.h&gt;",
+                "_atlas_scientific_e_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_SG_VAR_NUM",
+              "initializer": "3",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; specific gravity is stored in sensorValues[3].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__cond.html",
+              "id": "ga071f4f1d9fc1d245bd471265d460c076",
+              "include": [
+                "&lt;src/sensors/AtlasScientificEC.h&gt;",
+                "_atlas_scientific_e_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_SG_VAR_NAME",
+              "initializer": "\"specificGravity\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;specificGravity&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__cond.html",
+              "id": "ga0df18a00ead4ed4a863b2792b447a043",
+              "include": [
+                "&lt;src/sensors/AtlasScientificEC.h&gt;",
+                "_atlas_scientific_e_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_SG_UNIT_NAME",
+              "initializer": "\"dimensionless\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;dimensionless&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__cond.html",
+              "id": "ga689108b0e9e2df4491f0708fd874ae68",
+              "include": [
+                "&lt;src/sensors/AtlasScientificEC.h&gt;",
+                "_atlas_scientific_e_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_SG_DEFAULT_CODE",
+              "initializer": "\"AtlasSpecGravity\"",
+              "brief": "Default variable short code; &quot;AtlasSpecGravity&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "Atlas Scientific EZO Circuits",
+        "group__atlas__group.html"
+      ],
+      [
+        "Atlas EZO-EC",
+        "group__sensor__atlas__cond.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Atlas EZO-EC",
+        "group__sensor__atlas__cond.html"
+      ]
+    ]
+  }
+}

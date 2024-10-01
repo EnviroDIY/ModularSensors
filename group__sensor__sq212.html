@@ -1,20 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
 <head>
   <meta charset="UTF-8" />
-  <title>Supported Sensors &raquo; Analog Sensors via TI ADS1x15 &raquo; Apogee SQ-212 module | ModularSensors</title>
+  <title>Supported Sensors &raquo; Analog Sensors via TI ADS1x15 &raquo; Apogee SQ-212 topic | ModularSensors0.36.0</title>
   <link rel="stylesheet" href="m-EnviroDIY+documentation.compiled.css" />
+
+<style id="wp-emoji-styles-inline-css" type="text/css">
+  img.wp-smiley,
+  img.emoji {
+    display: inline !important;
+    border: none !important;
+    box-shadow: none !important;
+    height: 1em !important;
+    width: 1em !important;
+    margin: 0 0.07em !important;
+    vertical-align: -0.1em !important;
+    background: none !important;
+    padding: 0 !important;
+  }
+</style>
 <link
   rel="stylesheet"
   id="gp-parent-style-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/style.css?ver=6.1.1"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/style.css?ver=6.5.4"
   type="text/css"
   media="all"
 />
 <link
   rel="stylesheet"
-  id="ghostpool-style-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize-child/style.css?ver=6.1.1"
+  id="redux-extendify-styles-css"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/framework/redux/assets/css/extendify-utilities.css?ver=4.4.11"
   type="text/css"
   media="all"
 />
@@ -124,31 +139,27 @@
 <link
   rel="stylesheet"
   id="fontawesome-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/fonts/font-awesome/css/font-awesome.min.css?ver=6.1.1"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/fonts/font-awesome/css/font-awesome.min.css?ver=6.5.4"
   type="text/css"
   media="all"
 />
 <link
-  rel="stylesheet"
-  id="prettyphoto-css"
-  href="https://www.envirodiy.org/wp-content/plugins/js_composer/assets/lib/prettyphoto/css/prettyPhoto.min.css?ver=6.10.0"
-  type="text/css"
-  media="all"
+  rel="preload"
+  as="style"
+  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
 />
 <link
   rel="stylesheet"
-  id="gp-bp-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/css/bp.css?ver=6.1.1"
-  type="text/css"
-  media="all"
+  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
+  media="print"
+  onload="this.media='all'"
 />
-<link
-  rel="stylesheet"
-  id="gp-bbp-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/css/bbpress.css?ver=6.1.1"
-  type="text/css"
-  media="all"
-/>
+<noscript
+  ><link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
+/></noscript>
+
 <style type="text/css" id="wp-custom-css">
   /* Print Styles */
   @media print {
@@ -162,12 +173,15 @@
       margin: 0 !important;
       padding: 0;
     }
+
     body:not(.gp-full-page-page-header) .gp-page-header.gp-has-text:before,
     body:not(.gp-full-page-page-header)
       .gp-page-header.gp-has-teaser-video.gp-has-text
       .gp-video-header:before {
       background-image: none !important;
     }
+    /* End print styles */
+
     #gp-main-header,
     #gp-small-header,
     #gp-header-area,
@@ -219,6 +233,7 @@
     img {
       page-break-inside: avoid;
       visibility: visible;
+      float: none;
     }
     blockquote,
     table,
@@ -231,7 +246,7 @@
       page-break-before: avoid;
     }
   }
-  /* End print styles */
+
   /*Gutenberg styles*/
   /*Buttons*/
   a.wp-block-button__link {
@@ -362,10 +377,17 @@
   span.woocommerce-Price-amount.amount {
     text-decoration: none !important;
   }
+  /* Hide additional information tab */
+  div.woocommerce-tabs {
+    display: none !important;
+  }
   /*End WooCommerce styles*/
   /*The Events Calendar*/
   #tribe-events-content a {
     color: #0579bd;
+  }
+  #tribe-events-content .wp-block-button__link {
+    color: #ffffff;
   }
   #gp-sidebar-right
     > div
@@ -451,6 +473,9 @@
   #gp-content p.last-updated {
     display: none;
   }
+  #gp-content ul {
+    margin: 0 0 0 20px !important;
+  }
 </style>
 <style id="socialize-dynamic-css" title="dynamic-css" class="redux-options-output">
   #footer-image img {
@@ -483,7 +508,6 @@
     font-style: normal;
     color: #000;
     font-size: 16px;
-    font-display: swap;
   }
   a {
     color: #0579bd;
@@ -497,7 +521,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 36px;
-    font-display: swap;
   }
   h2 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -505,7 +528,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 28px;
-    font-display: swap;
   }
   h3,
   #tab-description h2,
@@ -519,7 +541,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 24px;
-    font-display: swap;
   }
   h4 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -527,7 +548,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 20px;
-    font-display: swap;
   }
   h5 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -535,7 +555,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 18px;
-    font-display: swap;
   }
   h6 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -543,7 +562,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 16px;
-    font-display: swap;
   }
   .gp-entry-meta .gp-post-meta-row-1,
   .gp-homepage #gp-content .gp-vc-element-3,
@@ -577,7 +595,6 @@
     font-style: normal;
     color: #ababab;
     font-size: 16px;
-    font-display: swap;
   }
   #gp-primary-main-nav .menu > li:hover > a,
   #gp-primary-main-nav .menu > li > a {
@@ -600,7 +617,6 @@
     font-style: normal;
     color: #fff;
     font-size: 14px;
-    font-display: swap;
   }
   #gp-secondary-main-nav .menu > li:hover > a,
   #gp-secondary-main-nav .menu > li > a {
@@ -641,7 +657,6 @@
     font-style: normal;
     color: #000;
     font-size: 14px;
-    font-display: swap;
   }
   .gp-nav .menu > .gp-standard-menu > .sub-menu > li a {
     color: #000;
@@ -745,7 +760,6 @@
     font-style: normal;
     color: #fff;
     font-size: 80px;
-    font-display: swap;
   }
   .gp-page-header .gp-container {
     height: 250px;
@@ -759,7 +773,6 @@
     font-style: normal;
     color: #000;
     font-size: 40px;
-    font-display: swap;
   }
   .gp-subtitle {
     font-family: Roboto;
@@ -768,7 +781,6 @@
     font-style: normal;
     color: #0579bd;
     font-size: 20px;
-    font-display: swap;
   }
   #gp-post-links a,
   .gp-pagination-arrows a.prev,
@@ -811,7 +823,6 @@
     line-height: 24px;
     color: #fff;
     font-size: 14px;
-    font-display: swap;
   }
   .gp-author-info a {
     color: #b1b1b1;
@@ -840,19 +851,16 @@
     font-style: normal;
     color: #fff;
     font-size: 24px;
-    font-display: swap;
   }
   .gp-loop-title {
     line-height: 22px;
     font-weight: 400;
     font-size: 19px;
-    font-display: swap;
   }
   .gp-blog-large .gp-loop-title {
     line-height: 46px;
     font-weight: 200;
     font-size: 40px;
-    font-display: swap;
   }
   .gp-loop-title a,
   .bboss_search_item .entry-title a {
@@ -914,7 +922,6 @@
     font-style: normal;
     color: #000;
     font-size: 14px;
-    font-display: swap;
   }
   .widgettitle a,
   .widget-title a,
@@ -1157,7 +1164,6 @@
     font-style: normal;
     color: #fff;
     font-size: 16px;
-    font-display: swap;
   }
   .gp-footer-widget {
     font-family: Roboto;
@@ -1166,7 +1172,6 @@
     font-style: normal;
     color: #ffffff;
     font-size: 14px;
-    font-display: swap;
   }
   .gp-footer-widget a {
     color: #f9bd16;
@@ -1195,441 +1200,295 @@
   #gp-to-top {
     color: #ffffff;
   }
-  .woocommerce ul.products li.product .price,
-  .woocommerce div.product p.price,
-  .woocommerce div.product span.price {
-    color: #00bee9;
-  }
-  .woocommerce span.onsale {
-    background-color: #e93100;
-  }
-  #buddypress .activity-list .activity-content .activity-header,
-  #buddypress .activity-list .activity-content .comment-header,
-  #buddypress .activity-list .activity-header a,
-  #buddypress .activity-list div.activity-comments div.acomment-meta,
-  #buddypress .activity-list .acomment-meta a,
-  .widget.buddypress .item-title a,
-  .widget.buddypress div.item-options.gp-small-item-options:before,
-  .widget.buddypress div.item-options a,
-  #buddypress ul.item-list li div.item-title a,
-  #buddypress ul.item-list li h4 > a,
-  #buddypress ul.item-list li h5 > a,
-  #buddypress div#item-header div#item-meta {
-    color: #000000;
-  }
-  #buddypress .activity-list .activity-content .activity-inner {
-    color: #aaaaaa;
-  }
-  #buddypress .activity-list a.activity-time-since,
-  .widget_display_replies ul li a + div,
-  .widget_display_topics ul li a + div,
-  #buddypress .activity-list .acomment-meta a.activity-time-since,
-  #buddypress .activity-list div.activity-comments div.acomment-content,
-  .widget.buddypress div.item-meta,
-  #buddypress span.activity,
-  #buddypress ul.item-list li div.meta {
-    color: #545454;
-  }
-  .gp-theme #buddypress .activity-list div.activity-meta a.button,
-  .gp-theme #buddypress .activity .acomment-options a,
-  .gp-theme #buddypress .activity-list li.load-more a,
-  .gp-theme #buddypress .activity-list li.load-newest a,
-  .widget.buddypress div.item-options a.selected {
-    color: #26a9e0;
-  }
-  .gp-theme #buddypress .activity-list div.activity-meta a.button:hover,
-  .gp-theme #buddypress .activity .acomment-options a:hover,
-  .gp-theme #buddypress .activity-list li.load-more a:hover,
-  .gp-theme #buddypress .activity-list li.load-newest a:hover,
-  .widget.buddypress div.item-options a.selected:hover {
-    color: #000;
-  }
-  .gp-theme #buddypress ul.item-list li,
-  .gp-theme #buddypress div.activity-comments ul li:first-child,
-  .widget.buddypress #friends-list li,
-  .widget.buddypress #groups-list li,
-  .widget.buddypress #members-list li {
-    border-top: 1px solid #e0e0e0;
-    border-bottom: 1px solid #e0e0e0;
-  }
-  .gp-theme #buddypress div.item-list-tabs {
-    background-color: #353535;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a span,
-  .gp-theme #buddypress div.item-list-tabs ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs ul li.selected a span {
-    color: #353535;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a span {
-    background-color: #ffffff;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a,
-  .gp-theme #buddypress #gp-bp-tabs-button,
-  .gp-theme #buddypress div.item-list-tabs ul li span {
-    color: #ffffff;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li.current a,
-  .gp-theme #buddypress div.item-list-tabs ul li.selected a,
-  .gp-theme #buddypress div.item-list-tabs ul li a:hover {
-    color: #b1b1b1;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs ul li.selected a span {
-    background: #b1b1b1;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul,
-  .widget.buddypress div.item-options.gp-small-item-options > a {
-    background-color: #f8f8f8;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.selected a span {
-    color: #f8f8f8;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a span {
-    background-color: #000000;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a {
-    color: #000000;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.current a,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.selected a,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a:hover {
-    color: #26a9e0;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.selected a span {
-    background: #26a9e0;
-  }
-  #bbpress-forums
-    .gp-forum-home.bbp-forums
-    .bbp-has-subforums
-    .bbp-forum-info
-    > .bbp-forum-title,
-  #bbpress-forums .bbp-topics .bbp-header,
-  #bbpress-forums .bbp-replies .bbp-header,
-  #bbpress-forums .bbp-search-results .bbp-header {
-    background-color: #353535;
-  }
-  #bbpress-forums
-    .gp-forum-home.bbp-forums
-    .bbp-has-subforums
-    .bbp-forum-info
-    > .bbp-forum-title,
-  #bbpress-forums .bbp-topics .bbp-header,
-  #bbpress-forums .bbp-replies .bbp-header,
-  #bbpress-forums .bbp-search-results .bbp-header {
-    color: #ffffff;
-  }
-  #bbpress-forums .bbp-header div.bbp-reply-content a {
-    color: #ddd;
-  }
-  #bbpress-forums .bbp-header div.bbp-reply-content a:hover {
-    color: #fff;
-  }
-  #bbpress-forums .bbp-forums-list li.odd-forum-row,
-  #bbpress-forums div.odd,
-  #bbpress-forums ul.odd {
-    background-color: #f8f8f8;
-  }
-  #bbpress-forums .bbp-forums-list li.even-forum-row,
-  #bbpress-forums div.even,
-  #bbpress-forums ul.even {
-    background-color: #fff;
-  }
-  #bbpress-forums .gp-forum-home.bbp-forums .bbp-forum-info > .bbp-forum-title,
-  #bbpress-forums div.bbp-forum-header,
-  #bbpress-forums div.bbp-topic-header,
-  #bbpress-forums div.bbp-reply-header,
-  #bbpress-forums .bbp-forums-list,
-  #bbpress-forums li.bbp-body {
-    border-top: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
-    border-left: 1px solid #ddd;
-    border-right: 1px solid #ddd;
-  }
-  #bbpress-forums .bbp-forums-list .bbp-forum .bbp-forum-link,
-  body.forum #bbpress-forums .bbp-forums .bbp-forum-info > .bbp-forum-title,
-  #bbpress-forums .bbp-topics .bbp-topic-permalink,
-  #bbpress-forums .gp-forum-home.bbp-forums .bbp-forum-info > .bbp-forum-title,
-  .gp-theme
-    #bbpress-forums
-    .gp-forum-shortcode
-    ul.forum:not(.status-category)
-    .bbp-forum-info
-    a {
-    color: #000000;
-  }
-  #bbpress-forums div.bbp-forum-author .bbp-author-role,
-  #bbpress-forums div.bbp-topic-author .bbp-author-role,
-  #bbpress-forums div.bbp-reply-author .bbp-author-role {
-    background-color: #92d050;
-  }
-  #bbpress-forums div.bbp-forum-author .bbp-author-role,
-  #bbpress-forums div.bbp-topic-author .bbp-author-role,
-  #bbpress-forums div.bbp-reply-author .bbp-author-role {
-    color: #ffffff;
-  }
 </style>
-    <style id="kadence-blocks-global-variables-inline-css" type="text/css">
-      :root {
-        --global-kb-font-size-sm: clamp(0.8rem, 0.73rem + 0.217vw, 0.9rem);
-        --global-kb-font-size-md: clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem);
-        --global-kb-font-size-lg: clamp(1.75rem, 1.576rem + 0.543vw, 2rem);
-        --global-kb-font-size-xl: clamp(2.25rem, 1.728rem + 1.63vw, 3rem);
-        --global-kb-font-size-xxl: clamp(2.5rem, 1.456rem + 3.26vw, 4rem);
-        --global-kb-font-size-xxxl: clamp(2.75rem, 0.489rem + 7.065vw, 6rem);
-      }
-    </style>
-    <link
-      rel="preload"
-      as="style"
-      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.1.1"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.1.1"
-      media="print"
-      onload="this.media='all'"
-    />
-    <noscript
-      ><link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.1.1"
-    /></noscript>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-includes/js/jquery/jquery.min.js?ver=3.6.1"
-  id="jquery-core-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2"
-  id="jquery-migrate-js"
-></script>  <link rel="icon" href="MS_FavIcon.png" type="image/png" />
+  <link rel="icon" href="MS_FavIcon.png" type="image/png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#cb4b16" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="clipboard.js"></script>
 </head>
 
-<body class="home-page bp-legacy home page-template page-template-homepage-template page-template-homepage-template-php page page-id-977 logged-in admin-bar no-customize-support theme-socialize woocommerce-no-js tribe-no-js page-template-socialize-child gp-theme gp-responsive gp-wide-layout gp-retina gp-normal-scrolling gp-no-back-to-top gp-relative-header gp-header-standard gp-cart-disabled gp-search-all gp-profile-disabled gp-small-header-all gp-standard-page-header gp-no-sidebar gp-homepage wpb-js-composer js-comp-ver-6.10.0 vc_responsive no-js">
+<body
+    class="theme-socialize page-template-socialize-child gp-theme gp-responsive gp-wide-layout gp-retina gp-normal-scrolling gp-no-back-to-top gp-relative-header gp-header-standard gp-cart-disabled gp-search-all gp-profile-disabled gp-small-header-all gp-standard-page-header gp-no-sidebar"
+>
 	<div id="gp-site-wrapper">
 
   <nav id="gp-mobile-nav">
     <div id="gp-mobile-nav-close-button"></div>
     <ul class="menu">
-        <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-            <a class="menu-link main-menu-link" href="index.html">About</a>
-          <ul class="sub-menu menu-odd menu-depth-1">
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#data_receivers">Data Endpoints</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#supported_sensors">Supported Sensors</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#modems">Supported Cellular/Wifi Modules</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#contributing">Contributing</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#license">License</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#acknowledgments">Acknowledgments</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="change_log.html">ChangeLog</a>
-              </li>
-          </ul>
-        </li>
-        <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-            <a class="menu-link main-menu-link" href="page_getting_started.html">Getting Started</a>
-          <ul class="sub-menu menu-odd menu-depth-1">
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>
-              </li>
-          </ul>
-        </li>
-        <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-            <a class="menu-link main-menu-link" href="page_faq.html">FAQs</a>
-          <ul class="sub-menu menu-odd menu-depth-1">
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>
-              </li>
-          </ul>
-        </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="modules.html">Modules</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="annotated.html">Classes</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="files.html">Source Files</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="page_the_examples.html">Examples Using ModularSensors</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="pages.html">More</a>          </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+      >
+<a href="index.html" class="menu-link main-menu-link">About</a>        <ul class="sub-menu menu-odd menu-depth-1">
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#data_receivers">Data Endpoints</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#supported_sensors">Supported Sensors</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#modems">Supported Cellular/Wifi Modules</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#contributing">Contributing</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#license">License</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#acknowledgments">Acknowledgments</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="change_log.html">ChangeLog</a>          </li>
+        </ul>
+      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+      >
+<a href="page_getting_started.html" class="menu-link main-menu-link">Getting Started</a>        <ul class="sub-menu menu-odd menu-depth-1">
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>          </li>
+        </ul>
+      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+      >
+<a href="page_faq.html" class="menu-link main-menu-link">FAQs</a>        <ul class="sub-menu menu-odd menu-depth-1">
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>          </li>
+        </ul>
+      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="topics.html" class="menu-link main-menu-link">Topics</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="annotated.html" class="menu-link main-menu-link">Classes</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="files.html" class="menu-link main-menu-link">Source Files</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="page_the_examples.html" class="menu-link main-menu-link">Examples Using ModularSensors</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="pages.html" class="menu-link main-menu-link">More</a>      </li>
     </ul>
-  </nav><div id="gp-mobile-nav-bg"></div>
+  </nav> <!-- gp-mobile-nav -->
+  <div id="gp-mobile-nav-bg"></div>
 
   <div id="gp-page-wrapper">
 
     <header id="gp-main-header">
       <div class="gp-container">
         <div id="gp-logo">
-          <a href="index.html" title="ModularSensors">
+          <a href="index.html" title="ModularSensors 0.36.0">
             <img
-              src="ModularSensors_ubuntu_264x55.png"
-              alt="ModularSensors"
-                  width="200"
-                  height="42"
+              src="gp-desktop-logo.png"
+              alt="ModularSensors 0.36.0"
+              width="200"
+              height="42"
               class="gp-desktop-logo"
             />
             <img
-              src="ModularSensors_ubuntu_264x55.png"
-              alt="ModularSensors"
+              src="gp-scrolling-logo.png"
+              alt="ModularSensors 0.36.0"
               width="264"
               height="55"
               class="gp-scrolling-logo"
             />
             <img
-              src="ModularSensors_ubuntu_264x55.png"
-              alt="ModularSensors"
+              src="gp-mobile-logo.png"
+              alt="ModularSensors 0.36.0"
               width="132"
               height="28"
               class="gp-mobile-logo"
             />
           </a>
-        </div>
+        </div> <!-- gp-logo -->
 
         <a id="gp-mobile-nav-button"></a>
 
         <nav id="gp-main-nav" class="gp-nav">
           <nav id="gp-primary-main-nav">
-              <ul id="menu-main-menu-1" class="menu">
-                <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-                    <a class="menu-link main-menu-link" href="index.html">About</a>
-                  <ul class="sub-menu menu-odd menu-depth-1">
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#data_receivers">Data Endpoints</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#supported_sensors">Supported Sensors</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#modems">Supported Cellular/Wifi Modules</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#contributing">Contributing</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#license">License</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#acknowledgments">Acknowledgments</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="change_log.html">ChangeLog</a>
-                      </li>
-                  </ul>
-                </li>
-                <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-                    <a class="menu-link main-menu-link" href="page_getting_started.html">Getting Started</a>
-                  <ul class="sub-menu menu-odd menu-depth-1">
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>
-                      </li>
-                  </ul>
-                </li>
-                <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-                    <a class="menu-link main-menu-link" href="page_faq.html">FAQs</a>
-                  <ul class="sub-menu menu-odd menu-depth-1">
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>
-                      </li>
-                  </ul>
-                </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="modules.html">Modules</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="annotated.html">Classes</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="files.html">Source Files</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="page_the_examples.html">Examples Using ModularSensors</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="pages.html">More</a>                  </li>
-              </ul>
-          </nav>
+            <ul id="menu-main-menu-1" class="menu">
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+              >
+<a href="index.html" class="menu-link main-menu-link" >About</a>                <ul class="sub-menu menu-odd menu-depth-1">
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#data_receivers">Data Endpoints</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#supported_sensors">Supported Sensors</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#modems">Supported Cellular/Wifi Modules</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#contributing">Contributing</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#license">License</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#acknowledgments">Acknowledgments</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="change_log.html">ChangeLog</a>                  </li>
+                </ul>
+              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+              >
+<a href="page_getting_started.html" class="menu-link main-menu-link" >Getting Started</a>                <ul class="sub-menu menu-odd menu-depth-1">
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>                  </li>
+                </ul>
+              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+              >
+<a href="page_faq.html" class="menu-link main-menu-link" >FAQs</a>                <ul class="sub-menu menu-odd menu-depth-1">
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>                  </li>
+                </ul>
+              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="topics.html"class="menu-link main-menu-link">Topics</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="annotated.html"class="menu-link main-menu-link">Classes</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="files.html"class="menu-link main-menu-link">Source Files</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="page_the_examples.html"class="menu-link main-menu-link">Examples Using ModularSensors</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="pages.html"class="menu-link main-menu-link">More</a>              </li>
+            </ul>
+          </nav> <!-- gp-primary-main-nav -->
 
           <div id="gp-search">
             <div id="m-search-button" class="m-show-m" onclick="return showSearch()">
-            </div>
-					</div>
-
-
+            </div> <!-- gp-search-box -->
+          </div> <!-- gp-search -->
 
           <nav id="gp-secondary-main-nav"></nav>
-        </nav></div>
-    </header><header id="gp-small-header">
+        </nav> <!-- gp-main-nav -->
+      </div> <!-- gp-container -->
+    </header> <!-- gp-main-header -->
+
+    <header id="gp-small-header">
       <div class="gp-container">
         <div class="gp-left-triangle"></div>
         <div class="gp-right-triangle"></div>
@@ -1656,7 +1515,9 @@
 
         </nav>
       </div>
-    </header><div id="gp-fixed-header-padding"></div>
+    </header> <!-- gp-small-header -->
+
+    <div id="gp-fixed-header-padding"></div>
 
     <div class="m-doc-search" id="search">
       <a href="#!" onclick="return hideSearch()"></a>
@@ -1664,7 +1525,7 @@
         <div class="gp-container">
           <div style="background-color:#fff;padding:20px;">
             <div class="m-doc-search-header m-text m-small">
-              <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+              <div><span class="m-label m-info">Tab</span> / <span class="m-label m-info">T</span> to search, <span class="m-label m-info">Esc</span> to close</div>
               <div id="search-symbolcount">&hellip;</div>
             </div>
             <div class="m-doc-search-content">
@@ -1674,7 +1535,7 @@
               <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
               <div id="search-help" class="m-text m-dim m-text-center">
                 <p class="m-noindent">Search for symbols, directories, files, pages or
-            modules. You can omit any prefix from the symbol or file path; adding a
+            topics. You can omit any prefix from the symbol or file path; adding a
             <code>:</code> or <code>/</code> suffix lists all members of given symbol or
             directory.</p>
             <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
@@ -1699,59 +1560,78 @@
 
     <div id="gp-content-wrapper" class="gp-container">
       <div id="gp-inner-container">
+        <div id="gp-left-column">
           <div id="gp-content">
 
             <main>
               <article>
-                <div class="m-container m-container-inflatable">
-                  <div class="m-row">
-                    <div class="m-col-l-10 m-push-l-1">
+                <div class="breadcrumbs" typeof="BreadcrumbList" vocab="http://schema.org/">
           <span class="m-breadcrumb">
             <a href="index.html">
               ModularSensors
             </a>  &gt; <wbr/>
           </span>
           <span class="m-breadcrumb">
-            <a href="modules.html">
-              Modules
+            <a href="topics.html">
+              Topics
             </a>  &gt; <wbr/>
           </span>
                     <span class="m-breadcrumb">
-          <a href="group__the__sensors.html">Supported Sensors</a> &gt; <wbr/>
+          <a href="group__the__sensors.html">
+            Supported Sensors
+          </a> &gt; <wbr/>
           </span>
           <span class="m-breadcrumb">
-          <a href="group__analog__group.html">Analog Sensors via TI ADS1x15</a> &gt; <wbr/>
+          <a href="group__analog__group.html">
+            Analog Sensors via TI ADS1x15
+          </a> &gt; <wbr/>
           </span>
           <span class="m-breadcrumb">
             Apogee SQ-212
           </span>
+                </div>
+                <header class="gp-entry-header">
+                  <h1 class="gp-entry-title" itemprop="headline">
+          Apogee SQ-212
+          <span class="m-thin">
+            topic
+          </span>
 
-        <header class="gp-entry-header">
-          <h1 class="gp-entry-title" itemprop="headline">
 
-          Apogee SQ-212 <span class="m-thin">module</span>
-          </h1>
-        </header>
-        <div class="m-block m-default">
+                </h1>
+                </header>
+        <nav class="m-block m-default">
           <ul>
             <li><a href="#sensor_sq212_intro">Introduction</a></li>
             <li><a href="#sensor_sq212_datasheet">Sensor Datasheet</a></li>
             <li><a href="#sensor_sq212_flags">Build flags</a></li>
             <li><a href="#sensor_sq212_ctor">Sensor Constructor</a></li>
             <li><a href="#sensor_sq212_examples">Example Code</a></li>
+            <li>
+              Reference
+              <ul>
                 <li><a href="#nested-classes">Classes</a></li>
-                <li><a href="#define-members">Defines</a></li>
+                <li><a href="#sensor-variable-counts">Sensor Variable Counts</a></li>
+                <li><a href="#configuration-defines">Configuration Defines</a></li>
                 <li><a href="#sensor-timing">Sensor Timing</a></li>
                 <li><a href="#par">PAR</a></li>
                 <li><a href="#voltage">Voltage</a></li>
+              </ul>
+            </li>
+            <li>
+              Detailed Descriptions
+              <ul>
+                <li><a href="#define-details">Defines</a></li>
+              </ul>
+            </li>
           </ul>
-        </div>
-          <p>Classes for the Apogee SQ-212 quantum light sensor.</p><section id="sensor_sq212_intro"><h2>Introduction</h2><p>The <a href="https://www.apogeeinstruments.com/sq-212-amplified-0-2-5-volt-sun-calibration-quantum-sensor/">Apogee SQ-212 quantum light sensor</a> measures <a href="https://en.wikipedia.org/wiki/Photosynthetically_active_radiation">photosynthetically active radiation (PAR)</a> - typically defined as total radiation across a range of 400 to 700 nm. PAR is often expressed as photosynthetic photon flux density (PPFD): photon flux in units of micromoles per square meter per second (μmol m-2 s-1, equal to microEinsteins per square meter per second) summed from 400 to 700 nm. The raw output from the sensor is a simple analog signal which must be converted to a digital signal and then multiplied by a calibration factor to get the final PAR value. The PAR sensor requires a 5-24 V DC power source with a nominal current draw of 300 μA. The power supply to the sensor can be stopped between measurements.</p><p>To convert the sensor&#x27;s analog signal to a high resolution digital signal, the sensor must be attached to an analog-to-digital converter. See the <a href="group__analog__group.html" class="m-doc">ADS1115</a> for details on the conversion.</p><p>The calibration factor this library uses to convert from raw voltage to PAR is that specified by Apogee for the SQ-212: 1 µmol mˉ² sˉ¹ per mV (reciprocal of sensitivity). If needed, this calibration factor can be modified by compiling with the build flag <code>-D SQ212_CALIBRATION_FACTOR=x</code> where x is the calibration factor. This allows you to adjust the calibration or change to another Apogee sensor (e.g. SQ-215 or SQ225) as needed.</p></section><section id="sensor_sq212_datasheet"><h2>Sensor Datasheet</h2><p><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Apogee SQ-212-215 Manual.pdf">Datasheet</a></p></section><section id="sensor_sq212_flags"><h2>Build flags</h2><ul><li><code>-D MS_USE_ADS1015</code><ul><li>switches from the 16-bit ADS1115 to the 12 bit ADS1015</li></ul></li><li><code>-D SQ212_CALIBRATION_FACTOR=x</code><ul><li>Changes the calibration factor from 1 to x</li></ul></li></ul></section><section id="sensor_sq212_ctor"><h2>Sensor Constructor</h2><p><section class="m-doc-details" id="adeacd9942e843ad815e8fa3525f28910"><div>
+        </nav>
+          <p>Classes for the Apogee SQ-212 quantum light sensor.</p><section id="sensor_sq212_intro"><h2>Introduction</h2><p>The <a href="https://www.apogeeinstruments.com/sq-212-amplified-0-2-5-volt-sun-calibration-quantum-sensor/">Apogee SQ-212 quantum light sensor</a> measures <a href="https://en.wikipedia.org/wiki/Photosynthetically_active_radiation">photosynthetically active radiation (PAR)</a> - typically defined as total radiation across a range of 400 to 700 nm. PAR is often expressed as photosynthetic photon flux density (PPFD): photon flux in units of micromoles per square meter per second (μmol m-2 s-1, equal to microEinsteins per square meter per second) summed from 400 to 700 nm. The raw output from the sensor is a simple analog signal which must be converted to a digital signal and then multiplied by a calibration factor to get the final PAR value. The PAR sensor requires a 5-24 V DC power source with a nominal current draw of 300 μA. The power supply to the sensor can be stopped between measurements.</p><p>To convert the sensor&#x27;s analog signal to a high resolution digital signal, the sensor must be attached to an analog-to-digital converter. See the <a href="group__analog__group.html" class="m-doc">ADS1115</a> for details on the conversion.</p><p>The calibration factor this library uses to convert from raw voltage to PAR is that specified by Apogee for the SQ-212: 1 µmol mˉ² sˉ¹ per mV (reciprocal of sensitivity). If needed, this calibration factor can be modified by compiling with the build flag <code>-D SQ212_CALIBRATION_FACTOR=x</code> where x is the calibration factor. This allows you to adjust the calibration or change to another Apogee sensor (e.g. SQ-215 or SQ225) as needed.</p></section><section id="sensor_sq212_datasheet"><h2>Sensor Datasheet</h2><p><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Apogee SQ-212-215 Manual.pdf">Datasheet</a></p></section><section id="sensor_sq212_flags"><h2>Build flags</h2><ul><li><code>-D MS_USE_ADS1015</code><ul><li>switches from the 16-bit ADS1115 to the 12 bit ADS1015</li></ul></li><li><code>-D SQ212_CALIBRATION_FACTOR=x</code><ul><li>Changes the calibration factor from 1 to x</li></ul></li></ul></section><section id="sensor_sq212_ctor"><h2>Sensor Constructor</h2><p><section class="m-doc-details" id="ad22fcf51312bb40e5ab84adeb3ea9939"><div>
 <h3>
-<span class="m-doc-wrap-bumper"><span class="m-dim"></span><a class="m-doc-self" href="class_apogee_s_q212.html#adeacd9942e843ad815e8fa3525f28910">ApogeeSQ212</a>(</span><span class="m-doc-wrap"><span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+<span class="m-doc-wrap-bumper"><span class="m-dim"> ApogeeSQ212::<wbr/></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_apogee_s_q212.html#ad22fcf51312bb40e5ab84adeb3ea9939">ApogeeSQ212</a>(</span><span class="m-doc-wrap"><span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
               <span class="m-dim">uint8_t</span> <span class="m-param">adsChannel</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddress</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__sq212.html#gaf5e311c48b7a1778d4ce4b13ea0be68d">ADS1115_<wbr/>ADDRESS</a></span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span>
+              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddress</span><span class="m-dim"> = 0x48</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
 </h3>
 <p>Construct a new Apogee SQ-212 object - need the power pin and the data channel on the ADS1x15.</p>
 <table class="m-table m-fullwidth m-flat">
@@ -1780,21 +1660,22 @@
 <aside class="m-note m-info"><h4>Note</h4><p>ModularSensors only supports connecting the ADS1x15 to the primary hardware I2C instance defined in the Arduino core. Connecting the ADS to a secondary hardware or software I2C instance is <em>not</em> supported!</p></aside><aside class="m-note m-info"><h4>Note</h4><p>The ADS is expected to be either continuously powered or have its power controlled by the same pin as the SQ-212. This library does not support any other configuration.</p></aside>
 <hr/>
 </div>
-</section></p><hr/></section><section id="sensor_sq212_examples"><h2>Example Code</h2><p>The SQ-212 is used in the <a href="example_menu.html#menu_walk_apogee_sq212" class="m-doc">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensors/ApogeeSQ212.h&gt;</span>
-
-<span class="c1">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>
-<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w">  </span><span class="n">SQ212Power</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">sensorPowerPin</span><span class="p">;</span><span class="w">  </span><span class="c1">// Power pin</span>
-<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w">  </span><span class="n">SQ212ADSChannel</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w">     </span><span class="c1">// The ADS channel for the SQ212</span>
-<span class="kr">const</span><span class="w"> </span><span class="kr">uint8_t</span><span class="w"> </span><span class="n">SQ212ADSi2c_addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x48</span><span class="p">;</span><span class="w">  </span><span class="c1">// The I2C address of the ADS1115 ADC</span>
-
-<span class="c1">// Create an Apogee SQ212 sensor object</span>
-<span class="n">ApogeeSQ212</span><span class="w"> </span><span class="nf">SQ212</span><span class="p">(</span><span class="n">SQ212Power</span><span class="p">,</span><span class="w"> </span><span class="n">SQ212ADSChannel</span><span class="p">,</span><span class="w"> </span><span class="n">SQ212ADSi2c_addr</span><span class="p">);</span>
-
-<span class="c1">// Create PAR and raw voltage variable pointers for the SQ212</span>
-<span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">sq212PAR</span><span class="w"> </span><span class="o">=</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">ApogeeSQ212_PAR</span><span class="p">(</span><span class="o">&amp;</span><span class="n">SQ212</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
-<span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">sq212voltage</span><span class="w"> </span><span class="o">=</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">ApogeeSQ212_Voltage</span><span class="p">(</span><span class="o">&amp;</span><span class="n">SQ212</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span></pre></section>
+</section></p><hr/></section><section id="sensor_sq212_examples"><h2>Example Code</h2><p>The SQ-212 is used in the <a href="example_menu.html#menu_walk_apogee_sq212" class="m-doc">menu a la carte</a> example.</p><div class="m-code-arduino"><div class="highlight"><div class="line"><a id="l-1" name="l-1"></a><span class="linenos"> 1</span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensors/ApogeeSQ212.h&gt;</span>
+</div><div class="line"><a id="l-2" name="l-2"></a><span class="linenos"> 2</span>
+</div><div class="line"><a id="l-3" name="l-3"></a><span class="linenos"> 3</span><span class="c1">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>
+</div><div class="line"><a id="l-4" name="l-4"></a><span class="linenos"> 4</span><span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w">  </span><span class="n">SQ212Power</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">sensorPowerPin</span><span class="p">;</span><span class="w">  </span><span class="c1">// Power pin</span>
+</div><div class="line"><a id="l-5" name="l-5"></a><span class="linenos"> 5</span><span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w">  </span><span class="n">SQ212ADSChannel</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w">     </span><span class="c1">// The ADS channel for the SQ212</span>
+</div><div class="line"><a id="l-6" name="l-6"></a><span class="linenos"> 6</span><span class="kr">const</span><span class="w"> </span><span class="kr">uint8_t</span><span class="w"> </span><span class="n">SQ212ADSi2c_addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x48</span><span class="p">;</span><span class="w">  </span><span class="c1">// The I2C address of the ADS1115 ADC</span>
+</div><div class="line"><a id="l-7" name="l-7"></a><span class="linenos"> 7</span>
+</div><div class="line"><a id="l-8" name="l-8"></a><span class="linenos"> 8</span><span class="c1">// Create an Apogee SQ212 sensor object</span>
+</div><div class="line"><a id="l-9" name="l-9"></a><span class="linenos"> 9</span><span class="n">ApogeeSQ212</span><span class="w"> </span><span class="nf">SQ212</span><span class="p">(</span><span class="n">SQ212Power</span><span class="p">,</span><span class="w"> </span><span class="n">SQ212ADSChannel</span><span class="p">,</span><span class="w"> </span><span class="n">SQ212ADSi2c_addr</span><span class="p">);</span>
+</div><div class="line"><a id="l-10" name="l-10"></a><span class="linenos">10</span>
+</div><div class="line"><a id="l-11" name="l-11"></a><span class="linenos">11</span><span class="c1">// Create PAR and raw voltage variable pointers for the SQ212</span>
+</div><div class="line"><a id="l-12" name="l-12"></a><span class="linenos">12</span><span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">sq212PAR</span><span class="w"> </span><span class="o">=</span>
+</div><div class="line"><a id="l-13" name="l-13"></a><span class="linenos">13</span><span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">ApogeeSQ212_PAR</span><span class="p">(</span><span class="o">&amp;</span><span class="n">SQ212</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
+</div><div class="line"><a id="l-14" name="l-14"></a><span class="linenos">14</span><span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">sq212voltage</span><span class="w"> </span><span class="o">=</span>
+</div><div class="line"><a id="l-15" name="l-15"></a><span class="linenos">15</span><span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">ApogeeSQ212_Voltage</span><span class="p">(</span><span class="o">&amp;</span><span class="n">SQ212</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
+</div></div></div></section>
         <section id="nested-classes">
           <h2>Classes</h2>
           <dl class="m-doc">
@@ -1812,33 +1693,32 @@
             <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__sq212.html#sensor_sq212_voltage" class="m-doc">raw voltage output</a> from an <a href="group__sensor__sq212.html" class="m-doc">Apogee SQ-212</a>.</dd>
           </dl>
         </section>
-        <section id="define-members">
-          <h2>Defines</h2>
+        <section id="sensor-variable-counts">
+          <h2>Sensor Variable Counts</h2>
+<p><a name="sensor_sq212_var_counts"></a> The number of variables that can be returned by the Apogee SQ-212</p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga999a151130d9a161b108c7e4bda1621d" class="m-doc">SQ212_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
             </dt>
             <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the SQ212 can report 2 values, raw voltage and calculated PAR.</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga1b0b23f5080d58c6bb6755b3d2e526c9" class="m-doc">SQ212_INC_CALC_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
             </dt>
             <dd><a href="class_sensor.html#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">Sensor::<wbr />_incCalcValues</a>; PAR is calculated from the raw voltage.</dd>
-
-
+          </dl>
+        </section>
+        <section id="configuration-defines">
+          <h2>Configuration Defines</h2>
+<p><a name="sensor_sq212_config"></a> Defines to set the calibration of the SQ-212 and the address of the ADD.</p>
+          <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga77e4252e928dda81ccbec1a8da5898fc" class="m-doc">SQ212_CALIBRATION_FACTOR</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
             </dt>
             <dd>The calibration factor between output in volts and PAR (microeinsteinPerSquareMeterPerSecond) 1 µmol mˉ² sˉ¹ per mV (reciprocal of sensitivity)</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gaf5e311c48b7a1778d4ce4b13ea0be68d" class="m-doc">ADS1115_ADDRESS</a><span class="m-dim m-right-m m-text-right"> = 0x48</span></span>
             </dt>
             <dd>The assumed address of the ADS1115, 1001 000 (ADDR = GND)</dd>
-
-
           </dl>
         </section>
         <section id="sensor-timing">
@@ -1849,22 +1729,14 @@
               <span class="m-doc-wrap-bumper">#define <a href="#ga913a59d05559256622f5bcb347f2309d" class="m-doc">SQ212_WARM_UP_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
             </dt>
             <dd><a href="class_sensor.html#aaaefd7f306f86382a3dac726531756b4" class="m-doc">Sensor::<wbr />_warmUpTime_ms</a>; the warm up time is unknown; using the 2ms for the TI ADS1x15 to warm up.</dd>
-
-              <dd><aside class="m-note m-dim"><h4><a href="todo.html#_todo000004" class="m-doc">Todo</a></h4><p>Measure warm-up time of the SQ-212</p></aside></dd>
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga1fe8246d1520197f856fde7485ad07a7" class="m-doc">SQ212_STABILIZATION_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
             </dt>
             <dd><a href="class_sensor.html#ad6822ad09fb64658c911ce86820db79c" class="m-doc">Sensor::<wbr />_stabilizationTime_ms</a>; the ADS1115 is stable after 2ms.</dd>
-
-              <dd><p>The stabilization time of the SQ-212 itself is not known!</p><aside class="m-note m-dim"><h4><a href="todo.html#_todo000005" class="m-doc">Todo</a></h4><p>Measure stabilization time of the SQ-212</p></aside></dd>
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga909ba7f07c92b0753f6d48b036069084" class="m-doc">SQ212_MEASUREMENT_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
             </dt>
             <dd><a href="class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba" class="m-doc">Sensor::<wbr />_measurementTime_ms</a>; ADS1115 takes almost 2ms to complete a measurement (860/sec).</dd>
-
-
           </dl>
         </section>
         <section id="par">
@@ -1872,35 +1744,25 @@
 <p><a name="sensor_sq212_par"></a> The PAR variable from an Apogee SQ-212</p><ul><li>Range is 0 to 2500 µmol m-2 s-1</li><li>Accuracy is ± 0.5%</li><li>Resolution:<ul><li>16-bit ADC (ADS1115): 0.3125 µmol m-2 s-1 (ADS1115)</li><li>12-bit ADC (ADS1015, using build flag <code>MS_USE_ADS1015</code>): 5 µmol m-2 s-1 (ADS1015)</li></ul></li><li>Reported as microeinsteins per square meter per second (µE m-2 s-1 or µmol m-2 s-1)</li></ul><p>{{ <a href="class_apogee_s_q212___p_a_r.html" class="m-doc">ApogeeSQ212_<wbr />PAR</a> }}</p>
           <dl class="m-doc">
             <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga8a155a4388da4bc36c5c3778034cc51c" class="m-doc">SQ212_PAR_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 4</span></span>
+            </dt>
+            <dd>Decimals places in string representation; PAR should have 4 when using an ADS1115.</dd>
+            <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga6daf11e6c9dd405ca545dd0d57b50b35" class="m-doc">SQ212_PAR_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
             </dt>
             <dd><a href="class_variable.html" class="m-doc">Variable</a> number; PAR is stored in sensorValues[0].</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gacc8e0f51566c4cc891c8fcd34278e3ba" class="m-doc">SQ212_PAR_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "radiationIncomingPAR"</span></span>
             </dt>
             <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;radiationIncomingPAR&quot;.</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga373ade1eee8f6dfa3c52e3cbd946a0a4" class="m-doc">SQ212_PAR_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "microeinsteinPerSquareMeterPerSecond"</span></span>
             </dt>
             <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;microeinsteinPerSquareMeterPerSecond&quot; (µE m-2 s-1 or µmol * m-2 s-1)</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gacdad83fa3c5b5c92b7317fe94c567c17" class="m-doc">SQ212_PAR_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "photosyntheticallyActiveRadiation"</span></span>
             </dt>
             <dd>Default variable short code; &quot;photosyntheticallyActiveRadiation&quot;.</dd>
-
-
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#ga8a155a4388da4bc36c5c3778034cc51c" class="m-doc">SQ212_PAR_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 4</span></span>
-            </dt>
-            <dd>Decimals places in string representation; PAR should have 4 when using an ADS1115.</dd>
-
-
           </dl>
         </section>
         <section id="voltage">
@@ -1911,88 +1773,352 @@
               <span class="m-doc-wrap-bumper">#define <a href="#gae3b6e61a3d58267a364be5709df54a32" class="m-doc">SQ212_VOLTAGE_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
             </dt>
             <dd><a href="class_variable.html" class="m-doc">Variable</a> number; voltage is stored in sensorValues[1].</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gab70151cb580432c24f2ebcf6f7d60a52" class="m-doc">SQ212_VOLTAGE_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "voltage"</span></span>
             </dt>
             <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;voltage&quot;.</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gafed9d203722d496ce670fbed86c3c2c9" class="m-doc">SQ212_VOLTAGE_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "volt"</span></span>
             </dt>
             <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;volt&quot; (V)</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga11e4bbdb434acf92f186849a5e91956c" class="m-doc">SQ212_VOLTAGE_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "SQ212Voltage"</span></span>
             </dt>
             <dd>Default variable short code; &quot;SQ212Voltage&quot;.</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga4128420dc8b7b58e551e68dcde6d034d" class="m-doc">SQ212_VOLTAGE_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 4</span></span>
             </dt>
             <dd>Decimals places in string representation; voltage should have 4 when used with an ADS1115.</dd>
-
-
           </dl>
         </section>
 
-                    </div>
-                  </div>
-                </div>
+        <section id="define-details">
+          <h2>Define documentation</h2>
+        <section class="m-doc-details" id="ga999a151130d9a161b108c7e4bda1621d">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga999a151130d9a161b108c7e4bda1621d" class="m-doc-self">SQ212_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_apogee_s_q212_8h.html">&lt;src/sensors/ApogeeSQ212.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the SQ212 can report 2 values, raw voltage and calculated PAR.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga1b0b23f5080d58c6bb6755b3d2e526c9">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga1b0b23f5080d58c6bb6755b3d2e526c9" class="m-doc-self">SQ212_INC_CALC_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_apogee_s_q212_8h.html">&lt;src/sensors/ApogeeSQ212.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_sensor.html#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">Sensor::<wbr />_incCalcValues</a>; PAR is calculated from the raw voltage.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga77e4252e928dda81ccbec1a8da5898fc">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga77e4252e928dda81ccbec1a8da5898fc" class="m-doc-self">SQ212_CALIBRATION_FACTOR</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_apogee_s_q212_8h.html">&lt;src/sensors/ApogeeSQ212.h&gt;</a></div>
+            </h3>
+
+            <p>The calibration factor between output in volts and PAR (microeinsteinPerSquareMeterPerSecond) 1 µmol mˉ² sˉ¹ per mV (reciprocal of sensitivity)</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gaf5e311c48b7a1778d4ce4b13ea0be68d">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaf5e311c48b7a1778d4ce4b13ea0be68d" class="m-doc-self">ADS1115_ADDRESS</a><span class="m-dim m-right-m m-text-right"> = 0x48</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_apogee_s_q212_8h.html">&lt;src/sensors/ApogeeSQ212.h&gt;</a></div>
+            </h3>
+
+            <p>The assumed address of the ADS1115, 1001 000 (ADDR = GND)</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga913a59d05559256622f5bcb347f2309d">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga913a59d05559256622f5bcb347f2309d" class="m-doc-self">SQ212_WARM_UP_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_apogee_s_q212_8h.html">&lt;src/sensors/ApogeeSQ212.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_sensor.html#aaaefd7f306f86382a3dac726531756b4" class="m-doc">Sensor::<wbr />_warmUpTime_ms</a>; the warm up time is unknown; using the 2ms for the TI ADS1x15 to warm up.</p>
+
+
+              <aside class="m-note m-dim"><h4><a href="todo.html#_todo000008" class="m-doc">Todo</a></h4><p>Measure warm-up time of the SQ-212</p></aside>
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga1fe8246d1520197f856fde7485ad07a7">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga1fe8246d1520197f856fde7485ad07a7" class="m-doc-self">SQ212_STABILIZATION_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_apogee_s_q212_8h.html">&lt;src/sensors/ApogeeSQ212.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_sensor.html#ad6822ad09fb64658c911ce86820db79c" class="m-doc">Sensor::<wbr />_stabilizationTime_ms</a>; the ADS1115 is stable after 2ms.</p>
+
+
+              <p>The stabilization time of the SQ-212 itself is not known!</p><aside class="m-note m-dim"><h4><a href="todo.html#_todo000009" class="m-doc">Todo</a></h4><p>Measure stabilization time of the SQ-212</p></aside>
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga909ba7f07c92b0753f6d48b036069084">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga909ba7f07c92b0753f6d48b036069084" class="m-doc-self">SQ212_MEASUREMENT_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_apogee_s_q212_8h.html">&lt;src/sensors/ApogeeSQ212.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba" class="m-doc">Sensor::<wbr />_measurementTime_ms</a>; ADS1115 takes almost 2ms to complete a measurement (860/sec).</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga8a155a4388da4bc36c5c3778034cc51c">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga8a155a4388da4bc36c5c3778034cc51c" class="m-doc-self">SQ212_PAR_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 4</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_apogee_s_q212_8h.html">&lt;src/sensors/ApogeeSQ212.h&gt;</a></div>
+            </h3>
+
+            <p>Decimals places in string representation; PAR should have 4 when using an ADS1115.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga6daf11e6c9dd405ca545dd0d57b50b35">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga6daf11e6c9dd405ca545dd0d57b50b35" class="m-doc-self">SQ212_PAR_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_apogee_s_q212_8h.html">&lt;src/sensors/ApogeeSQ212.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_variable.html" class="m-doc">Variable</a> number; PAR is stored in sensorValues[0].</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gacc8e0f51566c4cc891c8fcd34278e3ba">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gacc8e0f51566c4cc891c8fcd34278e3ba" class="m-doc-self">SQ212_PAR_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "radiationIncomingPAR"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_apogee_s_q212_8h.html">&lt;src/sensors/ApogeeSQ212.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;radiationIncomingPAR&quot;.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga373ade1eee8f6dfa3c52e3cbd946a0a4">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga373ade1eee8f6dfa3c52e3cbd946a0a4" class="m-doc-self">SQ212_PAR_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "microeinsteinPerSquareMeterPerSecond"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_apogee_s_q212_8h.html">&lt;src/sensors/ApogeeSQ212.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;microeinsteinPerSquareMeterPerSecond&quot; (µE m-2 s-1 or µmol * m-2 s-1)</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gacdad83fa3c5b5c92b7317fe94c567c17">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gacdad83fa3c5b5c92b7317fe94c567c17" class="m-doc-self">SQ212_PAR_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "photosyntheticallyActiveRadiation"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_apogee_s_q212_8h.html">&lt;src/sensors/ApogeeSQ212.h&gt;</a></div>
+            </h3>
+
+            <p>Default variable short code; &quot;photosyntheticallyActiveRadiation&quot;.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gae3b6e61a3d58267a364be5709df54a32">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gae3b6e61a3d58267a364be5709df54a32" class="m-doc-self">SQ212_VOLTAGE_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_apogee_s_q212_8h.html">&lt;src/sensors/ApogeeSQ212.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_variable.html" class="m-doc">Variable</a> number; voltage is stored in sensorValues[1].</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gab70151cb580432c24f2ebcf6f7d60a52">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gab70151cb580432c24f2ebcf6f7d60a52" class="m-doc-self">SQ212_VOLTAGE_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "voltage"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_apogee_s_q212_8h.html">&lt;src/sensors/ApogeeSQ212.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;voltage&quot;.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gafed9d203722d496ce670fbed86c3c2c9">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gafed9d203722d496ce670fbed86c3c2c9" class="m-doc-self">SQ212_VOLTAGE_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "volt"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_apogee_s_q212_8h.html">&lt;src/sensors/ApogeeSQ212.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;volt&quot; (V)</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga11e4bbdb434acf92f186849a5e91956c">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga11e4bbdb434acf92f186849a5e91956c" class="m-doc-self">SQ212_VOLTAGE_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "SQ212Voltage"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_apogee_s_q212_8h.html">&lt;src/sensors/ApogeeSQ212.h&gt;</a></div>
+            </h3>
+
+            <p>Default variable short code; &quot;SQ212Voltage&quot;.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga4128420dc8b7b58e551e68dcde6d034d">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga4128420dc8b7b58e551e68dcde6d034d" class="m-doc-self">SQ212_VOLTAGE_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 4</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_apogee_s_q212_8h.html">&lt;src/sensors/ApogeeSQ212.h&gt;</a></div>
+            </h3>
+
+            <p>Decimals places in string representation; voltage should have 4 when used with an ADS1115.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        </section>
               </article>
             </main>
 
-          </div>      </div></div><div id="footer-image">
-          <div class="gp-container">
-            <img
-              src="https://www.envirodiy.org/wp-content/uploads/2016/05/EnviroDIY_LogoMaster_Square_V5_TwoTree_Trans_notext-e1462820115833.png"
-              width="99"
-              height="22"
-              alt=""
-            />
-          </div>
-        </div>
+          </div> <!-- gp-content -->
+        </div> <!-- gp-left-column -->
+      </div> <!-- gp-inner-container -->
+    </div> <!-- gp-content-wrapper -->
+
+    <div id="footer-image">
+      <div class="gp-container">
+        <img
+          src="https://www.envirodiy.org/wp-content/uploads/2016/05/EnviroDIY_LogoMaster_Square_V5_TwoTree_Trans_notext-e1462820115833.png"
+          width="99"
+          height="22"
+          alt=""
+        />
+      </div>
+    </div>
 
     <footer id="gp-footer">
       <div id="gp-copyright">
         <div class="gp-container">
           <div id="gp-copyright-text">
             <p>
-              <a href="http://www.stroudcenter.org/" target="_blank"
-                ><img
-                  style="float: left; margin-right: 20px;"
-                  src="https://www.envirodiy.org/wp-content/uploads/2017/01/stroud-white-white-165px.png"
-                  alt=""
-                  width="165"
-                  height="70" /></a
-              >EnviroDIY™ is a community for do-it-yourself ideas for
-              environmental science and monitoring. EnviroDIY is an
-              initiative of
-              <a href="http://www.stroudcenter.org/" target="_blank"
-                >Stroud™ Water Research Center</a
-              >, which seeks to advance knowledge and stewardship of
-              freshwater systems through global research, education, and
-              watershed restoration.
+              <a href="https://stroudcenter.org/" target="_blank"
+                >EnviroDIY™ is a community for do-it-yourself ideas for environmental
+                science and monitoring. EnviroDIY is an initiative of
+                <a
+                  style="text-decoration: underline"
+                  href="https://stroudcenter.org/"
+                  target="_blank"
+                  >Stroud Water Research Center</a
+                >, which advances knowledge and stewardship of freshwater systems through
+                global research, education, and watershed restoration.
+              </a>
             </p>
             <p>
               All content on EnviroDIY is licensed as Creative Commons
-              Attribution-ShareAlike 4.0 International (CC-BY-SA). Hardware
-              designs on this website are released under the CERN Open
-              Hardware License 1.2.
-              <a href="https://envirodiy.org/licenses/"
-                >Alternative licenses are available.</a
+              Attribution-ShareAlike 4.0 International (CC-BY-SA). Hardware designs on this
+              website are released under the CERN Open Hardware License 1.2.
+              <a style="text-decoration: underline" href="https://envirodiy.org/licenses/"
+                >See all licenses.</a
               >
-              <a href="https://envirodiy.org/terms/">Terms of Use</a> |
-              <a href="https://envirodiy.org/privacy/">Privacy Policy</a> |
-              <a href="https://envirodiy.org/cookies/">Cookie Policy</a> |
-              <a href="https://envirodiy.org/contact/">Contact</a>
+              <a style="text-decoration: underline" href="https://envirodiy.org/terms/"
+                >Terms of Use</a
+              >
+              |
+              <a style="text-decoration: underline" href="https://envirodiy.org/privacy/"
+                >Privacy Policy</a
+              >
+              |
+              <a style="text-decoration: underline" href="https://envirodiy.org/cookies/"
+                >Cookie Policy</a
+              >
+              |
+              <a
+                style="text-decoration: underline"
+                href="https://envirodiy.org/shop-policies/"
+                >Shop Policies</a
+              >
+              |
+              <a style="text-decoration: underline" href="https://envirodiy.org/contact/"
+                >Contact</a
+              >
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.6 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.12.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>
@@ -2001,69 +2127,8 @@
 
     <div class="gp-clear"></div>
 
-    </div></div><script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/modernizr.js?ver=6.1.1"
-  id="modernizr-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-includes/js/imagesloaded.min.js?ver=4.1.4"
-  id="imagesloaded-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/selectivizr.min.js?ver=6.1.1"
-  id="selectivizr-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/placeholders.min.js?ver=6.1.1"
-  id="placeholder-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/jquery.ui.totop.min.js.js?ver=6.1.1"
-  id="jquery-totop-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/jquery.flexslider-min.js?ver=6.1.1"
-  id="jquery-flexslider-js"
-></script>
-<script type="text/javascript" id="ghostpool-custom-js-js-extra">
-  /* <![CDATA[ */
-  var ghostpool_script = {
-    lightbox: 'separate_images',
-    url: 'https:\/\/www.envirodiy.org\/',
-    related_items_in_view: '',
-  };
-  /* ]]> */
-</script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/jquery.stellar.min.js?ver=6.1.1"
-  id="jquery-stellar-js"
-></script>
+    </div> <!-- gp-site-wrapper -->
+  </div> <!-- gp-site-wrapper -->
 
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/custom.js?ver=6.1.1"
-  id="ghostpool-custom-js-js"
-></script>
-<script type="text/javascript" id="ghostpool-ajax-loop-js-extra">
-  /* <![CDATA[ */
-  var ghostpoolAjax = {
-    ajaxurl: 'https:\/\/www.envirodiy.org\/wp-admin\/admin-ajax.php',
-    ajaxnonce: 'e2424257d3',
-    querystring: '',
-  };
-  /* ]]> */
-</script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/ajax-loop.js?ver=6.1.1"
-  id="ghostpool-ajax-loop-js"
-></script>
 </body>
 </html>

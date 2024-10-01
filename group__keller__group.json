@@ -1,0 +1,357 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__keller__group",
+    "name": "Keller Water Level Sensors",
+    "url_base": "group__keller__group",
+    "url": "group__keller__group.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> and <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> objects for all Keller water level sensors.</p><p>This library currently supports the following Keller pressure and water level sensors:</p><ul><li><a href=\"https://www.kelleramerica.com/submersible-level-transmitters/acculevel-high-accuracy-submersible-level-transmitter.html\">Acculevel</a><ul><li><a href=\"https://www.kelleramerica.com/manuals-and-software/manuals/Keller_America_Users_Guide.pdf\">Manual</a></li><li><a href=\"https://www.kelleramerica.com/pdf-library/High%20Accuracy%20Analog%20Digital%20Submersible%20Level%20Transmitters%20Acculevel.pdf\">Datasheet</a></li><li><a href=\"group__sensor__acculevel.html\" class=\"m-doc\">Class Documentation</a></li></ul></li><li><a href=\"https://www.kelleramerica.com/submersible-level-transmitters/nanolevel-ceramic-capacitive-level-transmitter.html\">Nanolevel</a><ul><li><a href=\"https://www.kelleramerica.com/manuals-and-software/manuals/Keller_America_Users_Guide.pdf\">Manual</a></li><li><a href=\"https://www.kelleramerica.com/pdf-library/Very%20Low%20Range%20Submersible%20Transmitter%20Nanolevel.pdf\">Datasheet</a></li><li><a href=\"group__sensor__nanolevel.html\" class=\"m-doc\">Class Documentation</a></li></ul></li><li>Any Keller Series 30, Class 5, Group 20 sensors that are software version 5.20-12.28 and later (i.e. made after the 2012 in the 28th week)</li></ul><p>These sensors communicate via Modbus RTU over RS485 at 9600 baud. More documentation for our implementation of the Keller Modbus communication commands and responses, along with information about the various variables, can be found in the <a href=\"https://github.com/EnviroDIY/KellerModbus\">EnviroDIY KellerModbus library</a>.</p><p>Sensors ship with default slave addresses set to 0x01, which can be set by the user.</p><p>The Keller sensors expect an input voltage of 9-28 VDC, so they also require a voltage booster and an RS485 to TTL Serial converter with logic level shifting from the higher output voltage to the 3.3V or 5V of the Arduino data logging board.</p><p>Digital communication with Keller sensors configured for SDI12 communication protocols are not supported by this library.</p><p>The sensor constructors require as input: the sensor modbus address, a stream instance for data (ie, <code>Serial</code>), and one or two power pins. The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional. (Use -1 for the second power pin and -1 for the enable pin if these don&#x27;t apply and you want to average more than one reading.) Please see the section &quot;[Notes on Arduino Streams and Software Serial](@ref page_arduino_streams)&quot; for more information about what streams can be used along with this library. In tests on these sensors, SoftwareSerial_ExtInts <em>did not work</em> to communicate with these sensors, because it isn&#x27;t stable enough. AltSoftSerial and HardwareSerial work fine. Up to two power pins are provided so that the RS485 adapter, the sensor and/or an external power relay can be controlled separately. If the power to everything is controlled by the same pin, use -1 for the second power pin or omit the argument. If they are controlled by different pins <em>and no other sensors are dependent on power from either pin</em> then the order of the pins doesn&#x27;t matter. If the RS485 adapter, sensor, or relay are controlled by different pins <em>and any other sensors are controlled by the same pins</em> you should put the shared pin first and the un-shared pin second. Both pins <em>cannot</em> be shared pins.</p><p>The lower level details of the communication with the sensors is managed by the <a href=\"https://github.com/EnviroDIY/KellerModbus\">EnviroDIY Keller library</a></p>",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [
+      {
+        "url": "group__sensor__acculevel.html",
+        "name": "Keller Acculevel",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "group__sensor__nanolevel.html",
+        "name": "Keller Nanolevel",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      }
+    ],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_keller_parent.html",
+        "name": "KellerParent",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for all <a href=\"group__keller__group.html\" class=\"m-doc\">Keller water level sensors</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Sensor Variable Counts",
+        "id": "sensor-variable-counts",
+        "description": "<p><a name=\"keller_var_counts\"></a> The number of variables that can be returned by the RDO PRO-X</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__keller__group.html",
+              "id": "ga0a014d993ee356d75abb1ab67f407245",
+              "include": [
+                "&lt;src/sensors/KellerParent.h&gt;",
+                "_keller_parent_8h.html"
+              ],
+              "has_details": true,
+              "name": "KELLER_NUM_VARIABLES",
+              "initializer": "3",
+              "brief": "<a href=\"class_sensor.html#af26786329fd01b44cf31410d046fc8f3\" class=\"m-doc\">Sensor::<wbr />_numReturnedValues</a>; the Keller level sensors can report 3 values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__keller__group.html",
+              "id": "ga84e80849a7bc1803ba3f64cd6297ce4b",
+              "include": [
+                "&lt;src/sensors/KellerParent.h&gt;",
+                "_keller_parent_8h.html"
+              ],
+              "has_details": true,
+              "name": "KELLER_INC_CALC_VARIABLES",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#a2f3f93a9205efb134cef1216d65077d2\" class=\"m-doc\">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Pressure",
+        "id": "pressure",
+        "description": "<p><a name=\"keller_pressure\"></a> The pressure variable from a Keller modbus sensor</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__keller__group.html",
+              "id": "ga97b3b6dae94713320153e67b9d2fbad2",
+              "include": [
+                "&lt;src/sensors/KellerParent.h&gt;",
+                "_keller_parent_8h.html"
+              ],
+              "has_details": true,
+              "name": "KELLER_PRESSURE_VAR_NUM",
+              "initializer": "0",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> number; pressure is stored in sensorValues[0].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__keller__group.html",
+              "id": "gaf1ca065368bb5d1b79f303573957b1ef",
+              "include": [
+                "&lt;src/sensors/KellerParent.h&gt;",
+                "_keller_parent_8h.html"
+              ],
+              "has_details": true,
+              "name": "KELLER_PRESSURE_VAR_NAME",
+              "initializer": "\"pressureGauge\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;pressureGauge&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__keller__group.html",
+              "id": "gaeab910e537f64a13ed0c192519f58ce2",
+              "include": [
+                "&lt;src/sensors/KellerParent.h&gt;",
+                "_keller_parent_8h.html"
+              ],
+              "has_details": true,
+              "name": "KELLER_PRESSURE_UNIT_NAME",
+              "initializer": "\"millibar\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;millibar&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Temperature",
+        "id": "temperature",
+        "description": "<p><a name=\"keller_temp\"></a> The temperature variable from a Keller modbus sensor</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__keller__group.html",
+              "id": "gafc9a91095069e1d3d7737d5b835b4f35",
+              "include": [
+                "&lt;src/sensors/KellerParent.h&gt;",
+                "_keller_parent_8h.html"
+              ],
+              "has_details": true,
+              "name": "KELLER_TEMP_VAR_NUM",
+              "initializer": "1",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> number; temperature is stored in sensorValues[1].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__keller__group.html",
+              "id": "ga39ab414e80cef21004a45534d949d668",
+              "include": [
+                "&lt;src/sensors/KellerParent.h&gt;",
+                "_keller_parent_8h.html"
+              ],
+              "has_details": true,
+              "name": "KELLER_TEMP_VAR_NAME",
+              "initializer": "\"temperature\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;temperature&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__keller__group.html",
+              "id": "ga5d41107675c79a5871d28fcc7cba868d",
+              "include": [
+                "&lt;src/sensors/KellerParent.h&gt;",
+                "_keller_parent_8h.html"
+              ],
+              "has_details": true,
+              "name": "KELLER_TEMP_UNIT_NAME",
+              "initializer": "\"degreeCelsius\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;degreeCelsius&quot; (\u00b0C)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Height",
+        "id": "height",
+        "description": "<p><a name=\"keller_height\"></a> The height variable from a Keller modbus sensor</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__keller__group.html",
+              "id": "ga7c9d8fa4f278d08456aaf4acece16d0c",
+              "include": [
+                "&lt;src/sensors/KellerParent.h&gt;",
+                "_keller_parent_8h.html"
+              ],
+              "has_details": true,
+              "name": "KELLER_HEIGHT_VAR_NUM",
+              "initializer": "2",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> number; height is stored in sensorValues[2].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__keller__group.html",
+              "id": "ga9d2964768eebbbd0a23627b45fd4ed7e",
+              "include": [
+                "&lt;src/sensors/KellerParent.h&gt;",
+                "_keller_parent_8h.html"
+              ],
+              "has_details": true,
+              "name": "KELLER_HEIGHT_VAR_NAME",
+              "initializer": "\"gaugeHeight\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;gaugeHeight&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__keller__group.html",
+              "id": "ga6bb7188d38730367d8c7d97f224d44d7",
+              "include": [
+                "&lt;src/sensors/KellerParent.h&gt;",
+                "_keller_parent_8h.html"
+              ],
+              "has_details": true,
+              "name": "KELLER_HEIGHT_UNIT_NAME",
+              "initializer": "\"meter\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;meter&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "Keller Water Level Sensors",
+        "group__keller__group.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Keller Water Level Sensors",
+        "group__keller__group.html"
+      ]
+    ]
+  }
+}

@@ -1,0 +1,523 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__sensor__sq212",
+    "name": "Apogee SQ-212",
+    "url_base": "group__sensor__sq212",
+    "url": "group__sensor__sq212.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>Classes for the Apogee SQ-212 quantum light sensor.</p><section id=\"sensor_sq212_intro\"><h2>Introduction</h2><p>The <a href=\"https://www.apogeeinstruments.com/sq-212-amplified-0-2-5-volt-sun-calibration-quantum-sensor/\">Apogee SQ-212 quantum light sensor</a> measures <a href=\"https://en.wikipedia.org/wiki/Photosynthetically_active_radiation\">photosynthetically active radiation (PAR)</a> - typically defined as total radiation across a range of 400 to 700 nm. PAR is often expressed as photosynthetic photon flux density (PPFD): photon flux in units of micromoles per square meter per second (\u03bcmol m-2 s-1, equal to microEinsteins per square meter per second) summed from 400 to 700 nm. The raw output from the sensor is a simple analog signal which must be converted to a digital signal and then multiplied by a calibration factor to get the final PAR value. The PAR sensor requires a 5-24 V DC power source with a nominal current draw of 300 \u03bcA. The power supply to the sensor can be stopped between measurements.</p><p>To convert the sensor&#x27;s analog signal to a high resolution digital signal, the sensor must be attached to an analog-to-digital converter. See the <a href=\"group__analog__group.html\" class=\"m-doc\">ADS1115</a> for details on the conversion.</p><p>The calibration factor this library uses to convert from raw voltage to PAR is that specified by Apogee for the SQ-212: 1 \u00b5mol m\u02c9\u00b2 s\u02c9\u00b9 per mV (reciprocal of sensitivity). If needed, this calibration factor can be modified by compiling with the build flag <code>-D SQ212_CALIBRATION_FACTOR=x</code> where x is the calibration factor. This allows you to adjust the calibration or change to another Apogee sensor (e.g. SQ-215 or SQ225) as needed.</p></section><section id=\"sensor_sq212_datasheet\"><h2>Sensor Datasheet</h2><p><a href=\"https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Apogee SQ-212-215 Manual.pdf\">Datasheet</a></p></section><section id=\"sensor_sq212_flags\"><h2>Build flags</h2><ul><li><code>-D MS_USE_ADS1015</code><ul><li>switches from the 16-bit ADS1115 to the 12 bit ADS1015</li></ul></li><li><code>-D SQ212_CALIBRATION_FACTOR=x</code><ul><li>Changes the calibration factor from 1 to x</li></ul></li></ul></section><section id=\"sensor_sq212_ctor\"><h2>Sensor Constructor</h2><p>{{ <a href=\"class_apogee_s_q212.html#ad22fcf51312bb40e5ab84adeb3ea9939\" class=\"m-doc\">ApogeeSQ212::<wbr />ApogeeSQ212</a> }}</p><hr/></section><section id=\"sensor_sq212_examples\"><h2>Example Code</h2><p>The SQ-212 is used in the <a href=\"example_menu.html#menu_walk_apogee_sq212\" class=\"m-doc\">menu a la carte</a> example.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;sensors/ApogeeSQ212.h&gt;</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"c1\">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">SQ212Power</span><span class=\"w\">       </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">sensorPowerPin</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// Power pin</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">SQ212ADSChannel</span><span class=\"w\">  </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">3</span><span class=\"p\">;</span><span class=\"w\">     </span><span class=\"c1\">// The ADS channel for the SQ212</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">uint8_t</span><span class=\"w\"> </span><span class=\"n\">SQ212ADSi2c_addr</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mh\">0x48</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// The I2C address of the ADS1115 ADC</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span><span class=\"c1\">// Create an Apogee SQ212 sensor object</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span><span class=\"n\">ApogeeSQ212</span><span class=\"w\"> </span><span class=\"nf\">SQ212</span><span class=\"p\">(</span><span class=\"n\">SQ212Power</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">SQ212ADSChannel</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">SQ212ADSi2c_addr</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span>\n</div><div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span><span class=\"c1\">// Create PAR and raw voltage variable pointers for the SQ212</span>\n</div><div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">sq212PAR</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">ApogeeSQ212_PAR</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">SQ212</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">sq212voltage</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-15\" name=\"l-15\"></a><span class=\"linenos\">15</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">ApogeeSQ212_Voltage</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">SQ212</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "sensor_sq212_intro",
+        "Introduction",
+        []
+      ],
+      [
+        "sensor_sq212_datasheet",
+        "Sensor Datasheet",
+        []
+      ],
+      [
+        "sensor_sq212_flags",
+        "Build flags",
+        []
+      ],
+      [
+        "sensor_sq212_ctor",
+        "Sensor Constructor",
+        []
+      ],
+      [
+        "sensor_sq212_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_apogee_s_q212.html",
+        "name": "ApogeeSQ212",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__sq212.html\" class=\"m-doc\">Apogee SQ-212</a> sensor.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_apogee_s_q212___p_a_r.html",
+        "name": "ApogeeSQ212_PAR",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__sq212.html#sensor_sq212_par\" class=\"m-doc\">photosynthetically active radiation (PAR) output</a> from an <a href=\"group__sensor__sq212.html\" class=\"m-doc\">Apogee SQ-212</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_apogee_s_q212___voltage.html",
+        "name": "ApogeeSQ212_Voltage",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__sq212.html#sensor_sq212_voltage\" class=\"m-doc\">raw voltage output</a> from an <a href=\"group__sensor__sq212.html\" class=\"m-doc\">Apogee SQ-212</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Sensor Variable Counts",
+        "id": "sensor-variable-counts",
+        "description": "<p><a name=\"sensor_sq212_var_counts\"></a> The number of variables that can be returned by the Apogee SQ-212</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__sq212.html",
+              "id": "ga999a151130d9a161b108c7e4bda1621d",
+              "include": [
+                "&lt;src/sensors/ApogeeSQ212.h&gt;",
+                "_apogee_s_q212_8h.html"
+              ],
+              "has_details": true,
+              "name": "SQ212_NUM_VARIABLES",
+              "initializer": "2",
+              "brief": "<a href=\"class_sensor.html#af26786329fd01b44cf31410d046fc8f3\" class=\"m-doc\">Sensor::<wbr />_numReturnedValues</a>; the SQ212 can report 2 values, raw voltage and calculated PAR.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__sq212.html",
+              "id": "ga1b0b23f5080d58c6bb6755b3d2e526c9",
+              "include": [
+                "&lt;src/sensors/ApogeeSQ212.h&gt;",
+                "_apogee_s_q212_8h.html"
+              ],
+              "has_details": true,
+              "name": "SQ212_INC_CALC_VARIABLES",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html#a2f3f93a9205efb134cef1216d65077d2\" class=\"m-doc\">Sensor::<wbr />_incCalcValues</a>; PAR is calculated from the raw voltage.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Configuration Defines",
+        "id": "configuration-defines",
+        "description": "<p><a name=\"sensor_sq212_config\"></a> Defines to set the calibration of the SQ-212 and the address of the ADD.</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__sq212.html",
+              "id": "ga77e4252e928dda81ccbec1a8da5898fc",
+              "include": [
+                "&lt;src/sensors/ApogeeSQ212.h&gt;",
+                "_apogee_s_q212_8h.html"
+              ],
+              "has_details": true,
+              "name": "SQ212_CALIBRATION_FACTOR",
+              "initializer": "1",
+              "brief": "The calibration factor between output in volts and PAR (microeinsteinPerSquareMeterPerSecond) 1 \u00b5mol m\u02c9\u00b2 s\u02c9\u00b9 per mV (reciprocal of sensitivity)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__sq212.html",
+              "id": "gaf5e311c48b7a1778d4ce4b13ea0be68d",
+              "include": [
+                "&lt;src/sensors/ApogeeSQ212.h&gt;",
+                "_apogee_s_q212_8h.html"
+              ],
+              "has_details": true,
+              "name": "ADS1115_ADDRESS",
+              "initializer": "0x48",
+              "brief": "The assumed address of the ADS1115, 1001 000 (ADDR = GND)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Sensor Timing",
+        "id": "sensor-timing",
+        "description": "<p><a name=\"sensor_sq212_timing\"></a> The sensor timing for an Apogee SQ-212</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__sq212.html",
+              "id": "ga913a59d05559256622f5bcb347f2309d",
+              "include": [
+                "&lt;src/sensors/ApogeeSQ212.h&gt;",
+                "_apogee_s_q212_8h.html"
+              ],
+              "has_details": true,
+              "name": "SQ212_WARM_UP_TIME_MS",
+              "initializer": "2",
+              "brief": "<a href=\"class_sensor.html#aaaefd7f306f86382a3dac726531756b4\" class=\"m-doc\">Sensor::<wbr />_warmUpTime_ms</a>; the warm up time is unknown; using the 2ms for the TI ADS1x15 to warm up.",
+              "description": "<aside class=\"m-note m-dim\"><h4><a href=\"todo.html#_todo000008\" class=\"m-doc\">Todo</a></h4><p>Measure warm-up time of the SQ-212</p></aside>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__sq212.html",
+              "id": "ga1fe8246d1520197f856fde7485ad07a7",
+              "include": [
+                "&lt;src/sensors/ApogeeSQ212.h&gt;",
+                "_apogee_s_q212_8h.html"
+              ],
+              "has_details": true,
+              "name": "SQ212_STABILIZATION_TIME_MS",
+              "initializer": "2",
+              "brief": "<a href=\"class_sensor.html#ad6822ad09fb64658c911ce86820db79c\" class=\"m-doc\">Sensor::<wbr />_stabilizationTime_ms</a>; the ADS1115 is stable after 2ms.",
+              "description": "<p>The stabilization time of the SQ-212 itself is not known!</p><aside class=\"m-note m-dim\"><h4><a href=\"todo.html#_todo000009\" class=\"m-doc\">Todo</a></h4><p>Measure stabilization time of the SQ-212</p></aside>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__sq212.html",
+              "id": "ga909ba7f07c92b0753f6d48b036069084",
+              "include": [
+                "&lt;src/sensors/ApogeeSQ212.h&gt;",
+                "_apogee_s_q212_8h.html"
+              ],
+              "has_details": true,
+              "name": "SQ212_MEASUREMENT_TIME_MS",
+              "initializer": "2",
+              "brief": "<a href=\"class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba\" class=\"m-doc\">Sensor::<wbr />_measurementTime_ms</a>; ADS1115 takes almost 2ms to complete a measurement (860/sec).",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "PAR",
+        "id": "par",
+        "description": "<p><a name=\"sensor_sq212_par\"></a> The PAR variable from an Apogee SQ-212</p><ul><li>Range is 0 to 2500 \u00b5mol m-2 s-1</li><li>Accuracy is \u00b1 0.5%</li><li>Resolution:<ul><li>16-bit ADC (ADS1115): 0.3125 \u00b5mol m-2 s-1 (ADS1115)</li><li>12-bit ADC (ADS1015, using build flag <code>MS_USE_ADS1015</code>): 5 \u00b5mol m-2 s-1 (ADS1015)</li></ul></li><li>Reported as microeinsteins per square meter per second (\u00b5E m-2 s-1 or \u00b5mol m-2 s-1)</li></ul><p>{{ <a href=\"class_apogee_s_q212___p_a_r.html\" class=\"m-doc\">ApogeeSQ212_<wbr />PAR</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__sq212.html",
+              "id": "ga8a155a4388da4bc36c5c3778034cc51c",
+              "include": [
+                "&lt;src/sensors/ApogeeSQ212.h&gt;",
+                "_apogee_s_q212_8h.html"
+              ],
+              "has_details": true,
+              "name": "SQ212_PAR_RESOLUTION",
+              "initializer": "4",
+              "brief": "Decimals places in string representation; PAR should have 4 when using an ADS1115.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__sq212.html",
+              "id": "ga6daf11e6c9dd405ca545dd0d57b50b35",
+              "include": [
+                "&lt;src/sensors/ApogeeSQ212.h&gt;",
+                "_apogee_s_q212_8h.html"
+              ],
+              "has_details": true,
+              "name": "SQ212_PAR_VAR_NUM",
+              "initializer": "0",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> number; PAR is stored in sensorValues[0].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__sq212.html",
+              "id": "gacc8e0f51566c4cc891c8fcd34278e3ba",
+              "include": [
+                "&lt;src/sensors/ApogeeSQ212.h&gt;",
+                "_apogee_s_q212_8h.html"
+              ],
+              "has_details": true,
+              "name": "SQ212_PAR_VAR_NAME",
+              "initializer": "\"radiationIncomingPAR\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;radiationIncomingPAR&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__sq212.html",
+              "id": "ga373ade1eee8f6dfa3c52e3cbd946a0a4",
+              "include": [
+                "&lt;src/sensors/ApogeeSQ212.h&gt;",
+                "_apogee_s_q212_8h.html"
+              ],
+              "has_details": true,
+              "name": "SQ212_PAR_UNIT_NAME",
+              "initializer": "\"microeinsteinPerSquareMeterPerSecond\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;microeinsteinPerSquareMeterPerSecond&quot; (\u00b5E m-2 s-1 or \u00b5mol * m-2 s-1)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__sq212.html",
+              "id": "gacdad83fa3c5b5c92b7317fe94c567c17",
+              "include": [
+                "&lt;src/sensors/ApogeeSQ212.h&gt;",
+                "_apogee_s_q212_8h.html"
+              ],
+              "has_details": true,
+              "name": "SQ212_PAR_DEFAULT_CODE",
+              "initializer": "\"photosyntheticallyActiveRadiation\"",
+              "brief": "Default variable short code; &quot;photosyntheticallyActiveRadiation&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Voltage",
+        "id": "voltage",
+        "description": "<p><a name=\"sensor_sq212_voltage\"></a> The voltage variable from an Apogee SQ-212</p><ul><li>Range is 0 to 3.6V [when ADC is powered at 3.3V]</li><li>Accuracy is \u00b1 0.5%<ul><li>16-bit ADC (ADS1115): &lt; 0.25% (gain error), &lt;0.25 LSB (offset error)</li><li>12-bit ADC (ADS1015, using build flag <code>MS_USE_ADS1015</code>): &lt; 0.15% (gain error), &lt;3 LSB (offset error)</li></ul></li><li>Resolution [assuming the ADC is powered at 3.3V with inbuilt gain set to 1 (0-4.096V)]:<ul><li>16-bit ADC (ADS1115): 0.125 mV (ADS1115)</li><li>12-bit ADC (ADS1015, using build flag <code>MS_USE_ADS1015</code>): 2 mV (ADS1015)</li></ul></li></ul><p>{{ <a href=\"class_apogee_s_q212___voltage.html\" class=\"m-doc\">ApogeeSQ212_<wbr />Voltage</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__sq212.html",
+              "id": "gae3b6e61a3d58267a364be5709df54a32",
+              "include": [
+                "&lt;src/sensors/ApogeeSQ212.h&gt;",
+                "_apogee_s_q212_8h.html"
+              ],
+              "has_details": true,
+              "name": "SQ212_VOLTAGE_VAR_NUM",
+              "initializer": "1",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> number; voltage is stored in sensorValues[1].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__sq212.html",
+              "id": "gab70151cb580432c24f2ebcf6f7d60a52",
+              "include": [
+                "&lt;src/sensors/ApogeeSQ212.h&gt;",
+                "_apogee_s_q212_8h.html"
+              ],
+              "has_details": true,
+              "name": "SQ212_VOLTAGE_VAR_NAME",
+              "initializer": "\"voltage\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;voltage&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__sq212.html",
+              "id": "gafed9d203722d496ce670fbed86c3c2c9",
+              "include": [
+                "&lt;src/sensors/ApogeeSQ212.h&gt;",
+                "_apogee_s_q212_8h.html"
+              ],
+              "has_details": true,
+              "name": "SQ212_VOLTAGE_UNIT_NAME",
+              "initializer": "\"volt\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;volt&quot; (V)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__sq212.html",
+              "id": "ga11e4bbdb434acf92f186849a5e91956c",
+              "include": [
+                "&lt;src/sensors/ApogeeSQ212.h&gt;",
+                "_apogee_s_q212_8h.html"
+              ],
+              "has_details": true,
+              "name": "SQ212_VOLTAGE_DEFAULT_CODE",
+              "initializer": "\"SQ212Voltage\"",
+              "brief": "Default variable short code; &quot;SQ212Voltage&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__sq212.html",
+              "id": "ga4128420dc8b7b58e551e68dcde6d034d",
+              "include": [
+                "&lt;src/sensors/ApogeeSQ212.h&gt;",
+                "_apogee_s_q212_8h.html"
+              ],
+              "has_details": true,
+              "name": "SQ212_VOLTAGE_RESOLUTION",
+              "initializer": "4",
+              "brief": "Decimals places in string representation; voltage should have 4 when used with an ADS1115.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "Analog Sensors via TI ADS1x15",
+        "group__analog__group.html"
+      ],
+      [
+        "Apogee SQ-212",
+        "group__sensor__sq212.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Apogee SQ-212",
+        "group__sensor__sq212.html"
+      ]
+    ]
+  }
+}

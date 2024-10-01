@@ -1,0 +1,556 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__sensor__turbidity__plus",
+    "name": "Turner Turbidity Plus",
+    "url_base": "group__sensor__turbidity__plus",
+    "url": "group__sensor__turbidity__plus.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>Classes for the Turner Turbidity Plus sensor.</p><section id=\"sensor_turbidity_plus_datasheet\"><h2>Sensor Datasheet</h2><p><a href=\"http://docs.turnerdesigns.com/t2/doc/brochures/S-0210.pdf\">Datasheet</a></p></section><section id=\"sensor_turbidity_plus_flags\"><h2>Build flags</h2><ul><li><code>-D MS_USE_ADS1015</code><ul><li>switches from the 16-bit ADS1115 to the 12 bit ADS1015</li></ul></li></ul></section><section id=\"sensor_turbidity_plus_ctor\"><h2>Sensor Constructor</h2><p>{{ <a href=\"class_turner_turbidity_plus.html#a007115f7bd7c8d6a93097eee1b054b54\" class=\"m-doc\">TurnerTurbidityPlus::<wbr />TurnerTurbidityPlus</a> }}</p><hr/></section><section id=\"sensor_turbidity_plus_examples\"><h2>Example Code</h2><p>The Alphasense CO2 sensor is used in the <a href=\"example_menu.html#menu_walk_turner_turbidity_plus\" class=\"m-doc\">menu a la carte</a> example.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;sensors/TurnerTurbidityPlus.h&gt;</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"c1\">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">turbidityPlusPower</span><span class=\"w\">          </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">sensorPowerPin</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// Power pin</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">turbidityPlusWiper</span><span class=\"w\">          </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">A3</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// Wiper pin</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span><span class=\"n\">ttp_adsDiffMux_t</span><span class=\"w\">  </span><span class=\"n\">turbidityPlusDiffMux</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">DIFF_MUX_2_3</span><span class=\"p\">;</span><span class=\"w\"> </span><span class=\"c1\">// Differential voltage config</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">uint8_t</span><span class=\"w\"> </span><span class=\"n\">turbidityPlusNumberReadings</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">10</span><span class=\"p\">;</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">uint8_t</span><span class=\"w\"> </span><span class=\"n\">turbidityPlusADSi2c_addr</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mh\">0x48</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// The I2C address of the ADS1115 ADC</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span><span class=\"n\">adsGain_t</span><span class=\"w\"> </span><span class=\"n\">turbidityPlusGain</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">GAIN_ONE</span><span class=\"p\">;</span><span class=\"c1\">// The gain of the ADS</span>\n</div><div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span><span class=\"kr\">float</span><span class=\"w\">     </span><span class=\"n\">tpVoltageDividerFactor</span><span class=\"w\">  </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">1</span><span class=\"p\">;</span><span class=\"w\"> </span><span class=\"c1\">// The factor for a voltage divider, if any</span>\n</div><div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span>\n</div><div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"c1\">// Turbidity Plus calibration information</span>\n</div><div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">float</span><span class=\"w\"> </span><span class=\"n\">turbidityPlusStdConc</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mf\">1.000</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// Concentration of the standard used</span>\n</div><div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span><span class=\"w\">                                     </span><span class=\"c1\">// for a 1-point sensor calibration.</span>\n</div><div class=\"line\"><a id=\"l-15\" name=\"l-15\"></a><span class=\"linenos\">15</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">float</span><span class=\"w\"> </span><span class=\"n\">turbidityPlusStdVolt</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-16\" name=\"l-16\"></a><span class=\"linenos\">16</span><span class=\"w\">    </span><span class=\"mf\">1.000</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// The voltage (in volts) measured for the conc_std.</span>\n</div><div class=\"line\"><a id=\"l-17\" name=\"l-17\"></a><span class=\"linenos\">17</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">float</span><span class=\"w\"> </span><span class=\"n\">turbidityPlusBlankVolt</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-18\" name=\"l-18\"></a><span class=\"linenos\">18</span><span class=\"w\">    </span><span class=\"mf\">0.000</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// The voltage (in volts) measured for a blank.</span>\n</div><div class=\"line\"><a id=\"l-19\" name=\"l-19\"></a><span class=\"linenos\">19</span>\n</div><div class=\"line\"><a id=\"l-20\" name=\"l-20\"></a><span class=\"linenos\">20</span><span class=\"c1\">// Create a Turner Turbidity Plus sensor object</span>\n</div><div class=\"line\"><a id=\"l-21\" name=\"l-21\"></a><span class=\"linenos\">21</span><span class=\"n\">TurnerTurbidityPlus</span><span class=\"w\"> </span><span class=\"nf\">turbidityPlus</span><span class=\"p\">(</span><span class=\"n\">turbidityPlusPower</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">turbidityPlusWiper</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">turbidityPlusDiffMux</span><span class=\"p\">,</span><span class=\"n\">turbidityPlusStdConc</span><span class=\"p\">,</span>\n</div><div class=\"line\"><a id=\"l-22\" name=\"l-22\"></a><span class=\"linenos\">22</span><span class=\"w\">                      </span><span class=\"n\">turbidityPlusStdVolt</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">turbidityPlusBlankVolt</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">turbidityPlusADSi2c_addr</span><span class=\"p\">,</span><span class=\"n\">turbidityPlusGain</span><span class=\"p\">,</span>\n</div><div class=\"line\"><a id=\"l-23\" name=\"l-23\"></a><span class=\"linenos\">23</span><span class=\"w\">                      </span><span class=\"n\">turbidityPlusNumberReadings</span><span class=\"p\">,</span><span class=\"n\">tpVoltageDividerFactor</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-24\" name=\"l-24\"></a><span class=\"linenos\">24</span>\n</div><div class=\"line\"><a id=\"l-25\" name=\"l-25\"></a><span class=\"linenos\">25</span><span class=\"c1\">// Create the variable pointers</span>\n</div><div class=\"line\"><a id=\"l-26\" name=\"l-26\"></a><span class=\"linenos\">26</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">turbidityPlusVoltage</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-27\" name=\"l-27\"></a><span class=\"linenos\">27</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">TurnerTurbidityPlus_Voltage</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">turbidityPlus</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-28\" name=\"l-28\"></a><span class=\"linenos\">28</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">turbidityPlusTurbidity</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">TurnerTurbidityPlus_Turbidity</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-29\" name=\"l-29\"></a><span class=\"linenos\">29</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">turbidityPlus</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "sensor_turbidity_plus_datasheet",
+        "Sensor Datasheet",
+        []
+      ],
+      [
+        "sensor_turbidity_plus_flags",
+        "Build flags",
+        []
+      ],
+      [
+        "sensor_turbidity_plus_ctor",
+        "Sensor Constructor",
+        []
+      ],
+      [
+        "sensor_turbidity_plus_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_turner_turbidity_plus.html",
+        "name": "TurnerTurbidityPlus",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__turbidity__plus.html\" class=\"m-doc\">Turner Turbidity Plus turbidity</a>sensor&quot;.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_turner_turbidity_plus___voltage.html",
+        "name": "TurnerTurbidityPlus_Voltage",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the [raw voltage output](<a href=\"group__sensor__turbidity__plus.html#sensor_turbidity_plus_voltage\" class=\"m-doc\">sensor_<wbr />turbidity_<wbr />plus_<wbr />voltage</a>) from a [Turner Turbidity Plus](<a href=\"group__sensor__turbidity__plus.html\" class=\"m-doc\">Turner Turbidity Plus</a>).",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_turner_turbidity_plus___turbidity.html",
+        "name": "TurnerTurbidityPlus_Turbidity",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__turbidity__plus.html#sensor_turbidity_plus_output\" class=\"m-doc\">turbidity output</a> from a <a href=\"group__sensor__turbidity__plus.html\" class=\"m-doc\">Turner Turbidity Plus</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Configuration Defines",
+        "id": "configuration-defines",
+        "description": "<p><a name=\"sensor__turbidity_plus_config\"></a> Defines to set the address of the ADD.</p>",
+        "members": [
+          [
+            "enum",
+            {
+              "base_url": "group__sensor__turbidity__plus.html",
+              "id": "ga5654dd846b6a98f42b592b8d1313ba36",
+              "include": [
+                "&lt;src/sensors/TurnerTurbidityPlus.h&gt;",
+                "_turner_turbidity_plus_8h.html"
+              ],
+              "has_details": true,
+              "type": "uint16_t",
+              "name": "ttp_adsDiffMux_t",
+              "brief": "Enum for the pins used for differential voltages.",
+              "description": "",
+              "deprecated": null,
+              "since": null,
+              "is_protected": false,
+              "is_strong": false,
+              "values": [
+                {
+                  "id": "gga5654dd846b6a98f42b592b8d1313ba36ad85510d0b6830cebe4043e6bb80e51ec",
+                  "name": "DIFF_MUX_0_1",
+                  "initializer": "",
+                  "brief": "differential across pins 0 and 1",
+                  "description": "",
+                  "deprecated": null,
+                  "since": null
+                },
+                {
+                  "id": "gga5654dd846b6a98f42b592b8d1313ba36a23517f6003a65cb3e9a203c78bf65ea2",
+                  "name": "DIFF_MUX_0_3",
+                  "initializer": "",
+                  "brief": "differential across pins 0 and 3",
+                  "description": "",
+                  "deprecated": null,
+                  "since": null
+                },
+                {
+                  "id": "gga5654dd846b6a98f42b592b8d1313ba36a17e3008b12ea4c1720def8eeadcac03e",
+                  "name": "DIFF_MUX_1_3",
+                  "initializer": "",
+                  "brief": "differential across pins 1 and 3",
+                  "description": "",
+                  "deprecated": null,
+                  "since": null
+                },
+                {
+                  "id": "gga5654dd846b6a98f42b592b8d1313ba36a838e8ef2a0cbfcf82b408147a0617cab",
+                  "name": "DIFF_MUX_2_3",
+                  "initializer": "",
+                  "brief": "differential across pins 2 and 3",
+                  "description": "",
+                  "deprecated": null,
+                  "since": null
+                }
+              ],
+              "has_value_details": true
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__turbidity__plus.html",
+              "id": "gaf5e311c48b7a1778d4ce4b13ea0be68d",
+              "include": [
+                "&lt;src/sensors/TurnerTurbidityPlus.h&gt;",
+                "_turner_turbidity_plus_8h.html"
+              ],
+              "has_details": true,
+              "name": "ADS1115_ADDRESS",
+              "initializer": "0x48",
+              "brief": "The assumed address of the ADS1115, 1001 000 (ADDR = GND)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Sensor Variable Counts",
+        "id": "sensor-variable-counts",
+        "description": "<p><a name=\"sensor_turbidity_plus_var_counts\"></a> The number of variables that can be returned by Turbidity Plus</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__turbidity__plus.html",
+              "id": "gab447f97352463755b7c656febace51a7",
+              "include": [
+                "&lt;src/sensors/TurnerTurbidityPlus.h&gt;",
+                "_turner_turbidity_plus_8h.html"
+              ],
+              "has_details": true,
+              "name": "TURBIDITY_PLUS_NUM_VARIABLES",
+              "initializer": "2",
+              "brief": "<a href=\"class_sensor.html#af26786329fd01b44cf31410d046fc8f3\" class=\"m-doc\">Sensor::<wbr />_numReturnedValues</a>; the Turbidity Plus can report 2 values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__turbidity__plus.html",
+              "id": "ga6b0ed9f4c182ba58a293cf03e6d3038b",
+              "include": [
+                "&lt;src/sensors/TurnerTurbidityPlus.h&gt;",
+                "_turner_turbidity_plus_8h.html"
+              ],
+              "has_details": true,
+              "name": "TURBIDITY_PLUS_INC_CALC_VARIABLES",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html#a2f3f93a9205efb134cef1216d65077d2\" class=\"m-doc\">Sensor::<wbr />_incCalcValues</a>; turbidity is calculated from raw voltage using the input calibration equation.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Sensor Timing",
+        "id": "sensor-timing",
+        "description": "<p><a name=\"sensor_turbidity_plus_timing\"></a> The sensor timing for an Turbidity Plus</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__turbidity__plus.html",
+              "id": "ga9674b67590b535f3401e5af764ea9589",
+              "include": [
+                "&lt;src/sensors/TurnerTurbidityPlus.h&gt;",
+                "_turner_turbidity_plus_8h.html"
+              ],
+              "has_details": true,
+              "name": "TURBIDITY_PLUS_WARM_UP_TIME_MS",
+              "initializer": "2",
+              "brief": "<a href=\"class_sensor.html#aaaefd7f306f86382a3dac726531756b4\" class=\"m-doc\">Sensor::<wbr />_warmUpTime_ms</a>; the ADS1115 warms up in 2ms.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__turbidity__plus.html",
+              "id": "ga36564db42d7fef9a0f962d4aff2993dc",
+              "include": [
+                "&lt;src/sensors/TurnerTurbidityPlus.h&gt;",
+                "_turner_turbidity_plus_8h.html"
+              ],
+              "has_details": true,
+              "name": "TURBIDITY_PLUS_STABILIZATION_TIME_MS",
+              "initializer": "3000",
+              "brief": "<a href=\"class_sensor.html#ad6822ad09fb64658c911ce86820db79c\" class=\"m-doc\">Sensor::<wbr />_stabilizationTime_ms</a>; Turner states that it takes 3 sec settling time from power-on.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__turbidity__plus.html",
+              "id": "ga836f085e61f72e7cd6998469d2053206",
+              "include": [
+                "&lt;src/sensors/TurnerTurbidityPlus.h&gt;",
+                "_turner_turbidity_plus_8h.html"
+              ],
+              "has_details": true,
+              "name": "TURBIDITY_PLUS_MEASUREMENT_TIME_MS",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba\" class=\"m-doc\">Sensor::<wbr />_measurementTime_ms</a>; the ADS1115 completes 860 conversions per second, but the wait for the conversion to complete is built into the underlying library, so we do not need to wait further here.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Calibrated Turbidity Output",
+        "id": "calibrated-turbidity-output",
+        "description": "<p><a name=\"sensor_turbidity_plus_output\"></a> The primary turbidity output from an Turbidity Plus</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__turbidity__plus.html",
+              "id": "ga3f6970fbebe1ca57036d7ec4c000a37c",
+              "include": [
+                "&lt;src/sensors/TurnerTurbidityPlus.h&gt;",
+                "_turner_turbidity_plus_8h.html"
+              ],
+              "has_details": true,
+              "name": "TURBIDITY_PLUS_VAR_NUM",
+              "initializer": "0",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> number; the primary variable is stored in sensorValues[0].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__turbidity__plus.html",
+              "id": "ga27b9bc45fcbf5304ea8260e09354a42d",
+              "include": [
+                "&lt;src/sensors/TurnerTurbidityPlus.h&gt;",
+                "_turner_turbidity_plus_8h.html"
+              ],
+              "has_details": true,
+              "name": "TURBIDITY_PLUS_VAR_NAME",
+              "initializer": "\"turbidity\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;turbidity&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__turbidity__plus.html",
+              "id": "ga7420d16c49f34a3de937d1a2bd0ce5f9",
+              "include": [
+                "&lt;src/sensors/TurnerTurbidityPlus.h&gt;",
+                "_turner_turbidity_plus_8h.html"
+              ],
+              "has_details": true,
+              "name": "TURBIDITY_PLUS_UNIT_NAME",
+              "initializer": "\"nephelometricTurbidityUnit\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;nephelometricTurbidityUnit&quot; (NTU)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__turbidity__plus.html",
+              "id": "ga9f506a821b8c05296921609b8e49c584",
+              "include": [
+                "&lt;src/sensors/TurnerTurbidityPlus.h&gt;",
+                "_turner_turbidity_plus_8h.html"
+              ],
+              "has_details": true,
+              "name": "TURBIDITY_PLUS_DEFAULT_CODE",
+              "initializer": "\"TurnerTurbidity\"",
+              "brief": "Default variable short code; &quot;TurnerTurbidity&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__turbidity__plus.html",
+              "id": "gaf0d72cffe0a347d99fa54f865e00778d",
+              "include": [
+                "&lt;src/sensors/TurnerTurbidityPlus.h&gt;",
+                "_turner_turbidity_plus_8h.html"
+              ],
+              "has_details": true,
+              "name": "TURBIDITY_PLUS_RESOLUTION",
+              "initializer": "5",
+              "brief": "Decimals places in string representation; 5.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Voltage",
+        "id": "voltage",
+        "description": "<p><a name=\"sensor_turbidity_plus_voltage\"></a> The voltage variable from an Turbidity Plus</p><ul><li>Range is 0 to 3.6V when using an ADS1x15 powered at 3.3V<ul><li>Full sensor range is 0-5V</li></ul></li><li>Accuracy:<ul><li>16-bit ADC (ADS1115): &lt; 0.25% (gain error), &lt;0.25 LSB (offset errror)<ul><li><span class=\"m-dim\">(<a href=\"#ga305b9468ea0330f27471fe55e01c878f\" class=\"m-doc\">TURBIDITY_<wbr />PLUS_<wbr />VOLTAGE_<wbr />RESOLUTION</a> = 4)</span></li></ul></li><li>12-bit ADC (ADS1015, using build flag <code>MS_USE_ADS1015</code>): &lt; 0.15% (gain error), &lt;3 LSB (offset errror)<ul><li><span class=\"m-dim\">(<a href=\"#ga305b9468ea0330f27471fe55e01c878f\" class=\"m-doc\">TURBIDITY_<wbr />PLUS_<wbr />VOLTAGE_<wbr />RESOLUTION</a> = 1)</span></li></ul></li></ul></li></ul><p>{{ <a href=\"class_turner_turbidity_plus___voltage.html#a29be4abca16d27d5f4b971a60d9bf693\" class=\"m-doc\">TurnerTurbidityPlus_Voltage::<wbr />TurnerTurbidityPlus_Voltage</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__turbidity__plus.html",
+              "id": "ga81f32a7cbd3b4486de3992c68225cfae",
+              "include": [
+                "&lt;src/sensors/TurnerTurbidityPlus.h&gt;",
+                "_turner_turbidity_plus_8h.html"
+              ],
+              "has_details": true,
+              "name": "TURBIDITY_PLUS_VOLTAGE_VAR_NUM",
+              "initializer": "1",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> number; voltage is stored in sensorValues[1].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__turbidity__plus.html",
+              "id": "gabde8ebba475421934c59782219ca00c4",
+              "include": [
+                "&lt;src/sensors/TurnerTurbidityPlus.h&gt;",
+                "_turner_turbidity_plus_8h.html"
+              ],
+              "has_details": true,
+              "name": "TURBIDITY_PLUS_VOLTAGE_VAR_NAME",
+              "initializer": "\"voltage\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;voltage&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__turbidity__plus.html",
+              "id": "ga757f5f578a3dd1df83919a0502c22ae2",
+              "include": [
+                "&lt;src/sensors/TurnerTurbidityPlus.h&gt;",
+                "_turner_turbidity_plus_8h.html"
+              ],
+              "has_details": true,
+              "name": "TURBIDITY_PLUS_VOLTAGE_UNIT_NAME",
+              "initializer": "\"volt\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;volt&quot; (V)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__turbidity__plus.html",
+              "id": "ga68eda7026cb2675f823dd8da07b3f163",
+              "include": [
+                "&lt;src/sensors/TurnerTurbidityPlus.h&gt;",
+                "_turner_turbidity_plus_8h.html"
+              ],
+              "has_details": true,
+              "name": "TURBIDITY_PLUS_VOLTAGE_DEFAULT_CODE",
+              "initializer": "\"TurbidityPlusVoltage\"",
+              "brief": "Default variable short code; &quot;TurbidityPlusVoltage&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__turbidity__plus.html",
+              "id": "ga305b9468ea0330f27471fe55e01c878f",
+              "include": [
+                "&lt;src/sensors/TurnerTurbidityPlus.h&gt;",
+                "_turner_turbidity_plus_8h.html"
+              ],
+              "has_details": true,
+              "name": "TURBIDITY_PLUS_VOLTAGE_RESOLUTION",
+              "initializer": "4",
+              "brief": "Decimals places in string representation; voltage should have 4.",
+              "description": "<ul><li>Resolution:<ul><li>12-bit ADC (ADS1015, using build flag <code>MS_USE_ADS1015</code>): 2 mV</li></ul></li></ul>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": true,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "Analog Sensors via TI ADS1x15",
+        "group__analog__group.html"
+      ],
+      [
+        "Turner Turbidity Plus",
+        "group__sensor__turbidity__plus.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Turner Turbidity Plus",
+        "group__sensor__turbidity__plus.html"
+      ]
+    ]
+  }
+}

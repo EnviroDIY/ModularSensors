@@ -1,0 +1,464 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__sensor__y511",
+    "name": "Yosemitech Y511 Wipered Turbidty Sensor",
+    "url_base": "group__sensor__y511",
+    "url": "group__sensor__y511.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>Classes for the Yosemitech Y511 wipered turbidity sensor.</p><section id=\"sensor_y511_datasheet\"><h2>Sensor Datasheet</h2><ul><li><a href=\"https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y511-Turbidity+Wiper_UserManual-v1.1.pdf\">Manual</a></li><li><a href=\"https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y511-Turbidity+Wiper-v1.7_ModbusInstructions.pdf\">Modbus Instructions</a></li></ul><aside class=\"m-note m-info\"><h4>Note</h4><p>The reported resolution (32 bit) gives far more precision than is significant based on the specified accuracy of the sensor, so the resolutions kept in the string representation of the variable values is based on the accuracy not the maximum reported resolution of the sensor.</p></aside></section><section id=\"sensor_y511_ctor\"><h2>Sensor Constructor</h2><p>{{ <a href=\"class_yosemitech_y511.html#adf37e3fe3f87065f703cfdb36355a69a\" class=\"m-doc\">YosemitechY511::<wbr />YosemitechY511</a> }}</p><hr/></section><section id=\"sensor_y511_examples\"><h2>Example Code</h2><p>The Yosemitech Y511 wipered turbidity sensor is used in the <a href=\"example_menu.html#menu_walk_yosemitech_y511\" class=\"m-doc\">menu a la carte</a> example.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;sensors/YosemitechY511.h&gt;</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"c1\">// NOTE: Extra hardware and software serial ports are created in the &quot;Settings</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"c1\">// for Additional Serial Ports&quot; section</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span><span class=\"c1\">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"kr\">byte</span><span class=\"w\">          </span><span class=\"n\">y511ModbusAddress</span><span class=\"w\">  </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mh\">0x1A</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// The modbus address of the Y511</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">y511AdapterPower</span><span class=\"w\">   </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">sensorPowerPin</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// RS485 adapter power pin</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">y511SensorPower</span><span class=\"w\">    </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">A3</span><span class=\"p\">;</span><span class=\"w\">              </span><span class=\"c1\">// Sensor power pin</span>\n</div><div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">y511EnablePin</span><span class=\"w\">      </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">-1</span><span class=\"p\">;</span><span class=\"w\">              </span><span class=\"c1\">// Adapter RE/DE pin</span>\n</div><div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">uint8_t</span><span class=\"w\"> </span><span class=\"n\">y511NumberReadings</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">5</span><span class=\"p\">;</span>\n</div><div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"c1\">// The manufacturer recommends averaging 10 readings, but we take 5 to minimize</span>\n</div><div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span><span class=\"c1\">// power consumption</span>\n</div><div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span>\n</div><div class=\"line\"><a id=\"l-15\" name=\"l-15\"></a><span class=\"linenos\">15</span><span class=\"c1\">// Create a Y511-A Turbidity sensor object</span>\n</div><div class=\"line\"><a id=\"l-16\" name=\"l-16\"></a><span class=\"linenos\">16</span><span class=\"n\">YosemitechY511</span><span class=\"w\"> </span><span class=\"nf\">y511</span><span class=\"p\">(</span><span class=\"n\">y511ModbusAddress</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">modbusSerial</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">y511AdapterPower</span><span class=\"p\">,</span>\n</div><div class=\"line\"><a id=\"l-17\" name=\"l-17\"></a><span class=\"linenos\">17</span><span class=\"w\">                    </span><span class=\"n\">y511SensorPower</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">y511EnablePin</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">y511NumberReadings</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-18\" name=\"l-18\"></a><span class=\"linenos\">18</span>\n</div><div class=\"line\"><a id=\"l-19\" name=\"l-19\"></a><span class=\"linenos\">19</span><span class=\"c1\">// Create turbidity and temperature variable pointers for the Y511</span>\n</div><div class=\"line\"><a id=\"l-20\" name=\"l-20\"></a><span class=\"linenos\">20</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">y511Turb</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-21\" name=\"l-21\"></a><span class=\"linenos\">21</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">YosemitechY511_Turbidity</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">y511</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-22\" name=\"l-22\"></a><span class=\"linenos\">22</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">y511Temp</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-23\" name=\"l-23\"></a><span class=\"linenos\">23</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">YosemitechY511_Temp</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">y511</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "sensor_y511_datasheet",
+        "Sensor Datasheet",
+        []
+      ],
+      [
+        "sensor_y511_ctor",
+        "Sensor Constructor",
+        []
+      ],
+      [
+        "sensor_y511_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_yosemitech_y511.html",
+        "name": "YosemitechY511",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__y511.html\" class=\"m-doc\">Yosemitech Y511-A optical turbidity sensor with wiper</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_yosemitech_y511___turbidity.html",
+        "name": "YosemitechY511_Turbidity",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__y511.html#sensor_y511_turb\" class=\"m-doc\">turbidity output</a> from a <a href=\"group__sensor__y511.html\" class=\"m-doc\">Yosemitech Y511-A optical turbidity sensor with wiper</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_yosemitech_y511___temp.html",
+        "name": "YosemitechY511_Temp",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__y511.html#sensor_y511_temp\" class=\"m-doc\">temperature output</a> from a <a href=\"group__sensor__y511.html\" class=\"m-doc\">Yosemitech Y511-A optical turbidity sensor with wiper</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Sensor Variable Counts",
+        "id": "sensor-variable-counts",
+        "description": "<p><a name=\"sensor_y511_var_counts\"></a> The number of variables that can be returned by a Yosemitch Y511</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y511.html",
+              "id": "gacc743b83a59d148513c89fe897901b89",
+              "include": [
+                "&lt;src/sensors/YosemitechY511.h&gt;",
+                "_yosemitech_y511_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y511_NUM_VARIABLES",
+              "initializer": "2",
+              "brief": "<a href=\"class_sensor.html#af26786329fd01b44cf31410d046fc8f3\" class=\"m-doc\">Sensor::<wbr />_numReturnedValues</a>; the Y511 can report 2 values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y511.html",
+              "id": "ga394e2626e8b01773cc95b14775805de2",
+              "include": [
+                "&lt;src/sensors/YosemitechY511.h&gt;",
+                "_yosemitech_y511_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y511_INC_CALC_VARIABLES",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#a2f3f93a9205efb134cef1216d65077d2\" class=\"m-doc\">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Sensor Timing",
+        "id": "sensor-timing",
+        "description": "<p><a name=\"sensor_y511_timing\"></a> The sensor timing for a Yosemitch Y511</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y511.html",
+              "id": "gacc4df7e571159c67f8993d6d6ee01c94",
+              "include": [
+                "&lt;src/sensors/YosemitechY511.h&gt;",
+                "_yosemitech_y511_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y511_WARM_UP_TIME_MS",
+              "initializer": "8000",
+              "brief": "<a href=\"class_sensor.html#aaaefd7f306f86382a3dac726531756b4\" class=\"m-doc\">Sensor::<wbr />_warmUpTime_ms</a>; Y511 warms up in 8000ms.",
+              "description": "<p>500 ms to receive commands, but if activating brush warmup+stabilization must &gt;20s</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y511.html",
+              "id": "ga7b9f79ad9f825874f18cefd352b74cd3",
+              "include": [
+                "&lt;src/sensors/YosemitechY511.h&gt;",
+                "_yosemitech_y511_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y511_STABILIZATION_TIME_MS",
+              "initializer": "40000",
+              "brief": "<a href=\"class_sensor.html#ad6822ad09fb64658c911ce86820db79c\" class=\"m-doc\">Sensor::<wbr />_stabilizationTime_ms</a>; Y511 is stable after 40s.",
+              "description": "<p>warmup+stabilization &gt; 48 s for consecutive readings to give different results</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y511.html",
+              "id": "gab61ab25ab15a3c7efd70985b334a934c",
+              "include": [
+                "&lt;src/sensors/YosemitechY511.h&gt;",
+                "_yosemitech_y511_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y511_MEASUREMENT_TIME_MS",
+              "initializer": "4000",
+              "brief": "<a href=\"class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba\" class=\"m-doc\">Sensor::<wbr />_measurementTime_ms</a>; Y511 take ~4s (4000ms) to complete a measurement.",
+              "description": "<p>Could potentially be lower with a longer stabilization time; more testing needed.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Turbidity",
+        "id": "turbidity",
+        "description": "<p><a name=\"sensor_y511_turb\"></a> The turbidity variable from a Yosemitch Y511</p><ul><li>Range is 0.1 to 1000 NTU</li><li>Accuracy is \u00b1 5 % or 0.3 NTU</li></ul><p>{{ <a href=\"class_yosemitech_y511___turbidity.html#a513f3bc967fd790b5034be1f8241051a\" class=\"m-doc\">YosemitechY511_Turbidity::<wbr />YosemitechY511_Turbidity</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y511.html",
+              "id": "gae83f6745aa7e41baf3e26dcaafa335a3",
+              "include": [
+                "&lt;src/sensors/YosemitechY511.h&gt;",
+                "_yosemitech_y511_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y511_TURB_RESOLUTION",
+              "initializer": "2",
+              "brief": "Decimals places in string representation; turbidity should have 2 - resolution is 0.01 NTU.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y511.html",
+              "id": "gab28ad190ddefd3b82b185579dc395a7e",
+              "include": [
+                "&lt;src/sensors/YosemitechY511.h&gt;",
+                "_yosemitech_y511_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y511_TURB_VAR_NUM",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; turbidity is stored in sensorValues[0].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y511.html",
+              "id": "gaaf92e25baae0c8529ac16f8bd5311e81",
+              "include": [
+                "&lt;src/sensors/YosemitechY511.h&gt;",
+                "_yosemitech_y511_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y511_TURB_VAR_NAME",
+              "initializer": "\"turbidity\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;turbidity&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y511.html",
+              "id": "ga20ae6b6ce74d9ffe19946b7c22833883",
+              "include": [
+                "&lt;src/sensors/YosemitechY511.h&gt;",
+                "_yosemitech_y511_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y511_TURB_UNIT_NAME",
+              "initializer": "\"nephelometricTurbidityUnit\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;nephelometricTurbidityUnit&quot; (NTU)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y511.html",
+              "id": "gae4373e9be99f3b8ef32d0c61986b1283",
+              "include": [
+                "&lt;src/sensors/YosemitechY511.h&gt;",
+                "_yosemitech_y511_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y511_TURB_DEFAULT_CODE",
+              "initializer": "\"Y511Turbidity\"",
+              "brief": "Default variable short code; &quot;Y511Turbidity&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Temperature",
+        "id": "temperature",
+        "description": "<p><a name=\"sensor_y511_temp\"></a> The temperature variable from a Yosemitch Y511</p><ul><li>Range is 0\u00b0C to + 50\u00b0C</li><li>Accuracy is \u00b1 0.2\u00b0C</li></ul><p>{{ <a href=\"class_yosemitech_y511___temp.html#ac9e90f33da47ca4c37fb2372db2a0837\" class=\"m-doc\">YosemitechY511_Temp::<wbr />YosemitechY511_Temp</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y511.html",
+              "id": "gae1a8b1de4ba1090c7fd295d0a3374136",
+              "include": [
+                "&lt;src/sensors/YosemitechY511.h&gt;",
+                "_yosemitech_y511_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y511_TEMP_RESOLUTION",
+              "initializer": "1",
+              "brief": "Decimals places in string representation; temperature should have 1 - resolution is 0.1\u00b0C.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y511.html",
+              "id": "ga689c5172e14de8045e39deb71eb43a39",
+              "include": [
+                "&lt;src/sensors/YosemitechY511.h&gt;",
+                "_yosemitech_y511_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y511_TEMP_VAR_NUM",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; temperature is stored in sensorValues[1].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y511.html",
+              "id": "ga3eb24ab8fda42378831e86f35ff0bbc2",
+              "include": [
+                "&lt;src/sensors/YosemitechY511.h&gt;",
+                "_yosemitech_y511_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y511_TEMP_VAR_NAME",
+              "initializer": "\"temperature\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;temperature&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y511.html",
+              "id": "ga35d4098f3f25771452572cfe6ddcb37b",
+              "include": [
+                "&lt;src/sensors/YosemitechY511.h&gt;",
+                "_yosemitech_y511_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y511_TEMP_UNIT_NAME",
+              "initializer": "\"degreeCelsius\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;degreeCelsius&quot; (\u00b0C)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y511.html",
+              "id": "gaca7a6f4c9973341096d604c501e2fbba",
+              "include": [
+                "&lt;src/sensors/YosemitechY511.h&gt;",
+                "_yosemitech_y511_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y511_TEMP_DEFAULT_CODE",
+              "initializer": "\"Y511Temp\"",
+              "brief": "Default variable short code; &quot;Y511Temp&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "Yosemitech Sensors",
+        "group__yosemitech__group.html"
+      ],
+      [
+        "Yosemitech Y511 Wipered Turbidty Sensor",
+        "group__sensor__y511.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Yosemitech Y511 Wipered Turbidty Sensor",
+        "group__sensor__y511.html"
+      ]
+    ]
+  }
+}

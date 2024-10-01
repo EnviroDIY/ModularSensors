@@ -1,0 +1,156 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__sdi12__group",
+    "name": "SDI-12 Sensors",
+    "url_base": "group__sdi12__group",
+    "url": "group__sdi12__group.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> and <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> objects for all SDI-12 Sensors</p><p>SDI-12 is a common single-wire data protocol in environmental sensors. The details of the communication are managed by the <a href=\"https://github.com/EnviroDIY/Arduino-SDI-12\">Arduino SDI-12 library</a>. In short, data is transferred between a master and a slave on a single wire at 1200 baud. The number of possible SDI-12 commands is fairly limited, focused only on taking measurements and collecting data. The voltage range for the data communication and the sensors wake and sleep timings are also limited by the protocol.</p><p>The SDI-12 protocol specifies that all new devices should come from the manufacturer with a pre-programmed address of &quot;0&quot;. For Meter brand sensors, you <em>must</em> change the sensor address before you can begin to use it. For other sensors, the address may be left at 0 if you are only using a single sensor. If you want to use more than one SDI-12 sensor, you must ensure that each sensor has a different address. To find or change the SDI-12 address of your sensor, load and run the <a href=\"https://github.com/EnviroDIY/ModularSensors/blob/master/extras/sdi12_address_change/sdi12_address_change.ino\">sdi12_<wbr />address_<wbr />change</a> program from the <a href=\"https://github.com/EnviroDIY/ModularSensors/tree/master/extras\">extras</a> directory or the <a href=\"https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change\">b_<wbr />address_<wbr />change</a> example within the SDI-12 library.</p><p>Keep in mind that SDI12 is a slow communication protocol (only 1200 baud) and <em>ALL interrupts are turned off during communication</em>. This means that if you have any interrupt driven sensors (like a tipping bucket) attached with an SDI12 sensor, no interrupts (or tips) will be registered during SDI12 communication.</p><section id=\"sdi12_group_flags\"><h2>Build flags</h2><ul><li><code>-D MS_SDI12_NON_CONCURRENT</code><ul><li>Instructs <em>all</em> SDI-12 sensors to take non-concurrent measurements</li><li>After starting a measurement on an SDI-12 sensor, the processor will stop everything, waiting for that measurement to complete before moving on to the next sensor.</li><li>This may be necessary if your sensor uses a version of the SDI-12 protocol prior to 1.2 or if your sensor is not properly compliant with the protocol.</li></ul></li></ul></section>",
+    "sections": [
+      [
+        "sdi12_group_flags",
+        "Build flags",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [
+      {
+        "url": "group__sensor__clarivue.html",
+        "name": "Campbell ClariVUE10",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "group__sensor__rainvue.html",
+        "name": "Campbell RainVUE10",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "group__sensor__fivetm.html",
+        "name": "Meter ECH2O (5TM)",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "group__sensor__decagon__ctd.html",
+        "name": "Decagon CTD-10",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "group__sensor__es2.html",
+        "name": "Decagon ES-2",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "group__sensor__insitu__rdo.html",
+        "name": "In-Situ RDO PRO-X",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "group__sensor__insitu__troll.html",
+        "name": "In-Situ LevelTROLL 400, 500, and 700 Data Loggers",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "group__sensor__hydros21.html",
+        "name": "Meter Hydros 21",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "group__sensor__teros11.html",
+        "name": "Meter Teros 11",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "group__sensor__vega__puls21.html",
+        "name": "VEGAPULS C 21",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "group__sensor__dopto.html",
+        "name": "Zebra-Tech D-Opto",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      }
+    ],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "SDI-12 Sensors",
+        "group__sdi12__group.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "SDI-12 Sensors",
+        "group__sdi12__group.html"
+      ]
+    ]
+  }
+}

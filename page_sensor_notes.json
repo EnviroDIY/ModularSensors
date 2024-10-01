@@ -1,0 +1,76 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "page",
+    "id": "page_sensor_notes",
+    "name": "Notes about Sensors",
+    "url_base": "page_sensor_notes",
+    "url": "page_sensor_notes.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p><a name=\"md_docs_2_general-_sensor-_notes\"></a></p><p>There are a number of sensors supported by this library. Depending on the sensor, it may communicate with the Arduino board using as a serial peripheral interface (SPI), inter-integrated circuit (I2C, also called &quot;Wire,&quot; &quot;Two Wire&quot;, or &quot;TWI&quot;), or some type of universal synchronous/asynchronous receiver/transmitter (UART/USART, or simply &quot;serial&quot;) protocol. (USART or serial includes transistor-transistor logic (TTL), RS232 (adapter needed), and RS485 (adapter needed) communication). See the section on <a href=\"https://envirodiy.github.io/ModularSensors/page_processor_compatibility.html\">Processor Compatibility</a> for more specific notes on which pins are available for each type of communication on the various supported processors.</p><p>Essentially all of the sensors can have their power supplies turned off between readings, but not all boards are able to switch output power on and off. When the sensor constructor asks for the Arduino pin controlling power on/off, use -1 for any board which is not capable of switching the output power on and off.</p><p>Please, please, when setting up multiple sensors on a logger, be smart about it. Don&#x27;t try to connect too many sensors all at once or you&#x27;re likely to exceed your logger&#x27;s power regulator or come across strange interferences between them. <em><strong>TEST YOUR LOGGER WITH ALL SENSORS ATTACHED BEFORE DEPLOYING IT TO THE FIELD!</strong></em> Don&#x27;t even think about skipping the in-lab testing! Theoretically every single sensor possible could be attached to the same processor, but the reality is that boards have finite numbers of pins, solar panels can only create so much charge, and not all sensors like each other very much.</p>",
+    "sections": [],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "ModularSensors",
+        "index.html"
+      ],
+      [
+        "Other Sensor and Modem Notes",
+        "page_other_notes.html"
+      ],
+      [
+        "Notes about Sensors",
+        "page_sensor_notes.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Notes about Sensors",
+        "page_sensor_notes.html"
+      ]
+    ]
+  }
+}

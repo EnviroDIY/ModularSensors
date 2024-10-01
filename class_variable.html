@@ -1,20 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
 <head>
   <meta charset="UTF-8" />
-  <title>Variable class | ModularSensors</title>
+  <title>Variable class | ModularSensors0.36.0</title>
   <link rel="stylesheet" href="m-EnviroDIY+documentation.compiled.css" />
+
+<style id="wp-emoji-styles-inline-css" type="text/css">
+  img.wp-smiley,
+  img.emoji {
+    display: inline !important;
+    border: none !important;
+    box-shadow: none !important;
+    height: 1em !important;
+    width: 1em !important;
+    margin: 0 0.07em !important;
+    vertical-align: -0.1em !important;
+    background: none !important;
+    padding: 0 !important;
+  }
+</style>
 <link
   rel="stylesheet"
   id="gp-parent-style-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/style.css?ver=6.1.1"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/style.css?ver=6.5.4"
   type="text/css"
   media="all"
 />
 <link
   rel="stylesheet"
-  id="ghostpool-style-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize-child/style.css?ver=6.1.1"
+  id="redux-extendify-styles-css"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/framework/redux/assets/css/extendify-utilities.css?ver=4.4.11"
   type="text/css"
   media="all"
 />
@@ -124,31 +139,27 @@
 <link
   rel="stylesheet"
   id="fontawesome-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/fonts/font-awesome/css/font-awesome.min.css?ver=6.1.1"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/fonts/font-awesome/css/font-awesome.min.css?ver=6.5.4"
   type="text/css"
   media="all"
 />
 <link
-  rel="stylesheet"
-  id="prettyphoto-css"
-  href="https://www.envirodiy.org/wp-content/plugins/js_composer/assets/lib/prettyphoto/css/prettyPhoto.min.css?ver=6.10.0"
-  type="text/css"
-  media="all"
+  rel="preload"
+  as="style"
+  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
 />
 <link
   rel="stylesheet"
-  id="gp-bp-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/css/bp.css?ver=6.1.1"
-  type="text/css"
-  media="all"
+  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
+  media="print"
+  onload="this.media='all'"
 />
-<link
-  rel="stylesheet"
-  id="gp-bbp-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/css/bbpress.css?ver=6.1.1"
-  type="text/css"
-  media="all"
-/>
+<noscript
+  ><link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
+/></noscript>
+
 <style type="text/css" id="wp-custom-css">
   /* Print Styles */
   @media print {
@@ -162,12 +173,15 @@
       margin: 0 !important;
       padding: 0;
     }
+
     body:not(.gp-full-page-page-header) .gp-page-header.gp-has-text:before,
     body:not(.gp-full-page-page-header)
       .gp-page-header.gp-has-teaser-video.gp-has-text
       .gp-video-header:before {
       background-image: none !important;
     }
+    /* End print styles */
+
     #gp-main-header,
     #gp-small-header,
     #gp-header-area,
@@ -219,6 +233,7 @@
     img {
       page-break-inside: avoid;
       visibility: visible;
+      float: none;
     }
     blockquote,
     table,
@@ -231,7 +246,7 @@
       page-break-before: avoid;
     }
   }
-  /* End print styles */
+
   /*Gutenberg styles*/
   /*Buttons*/
   a.wp-block-button__link {
@@ -362,10 +377,17 @@
   span.woocommerce-Price-amount.amount {
     text-decoration: none !important;
   }
+  /* Hide additional information tab */
+  div.woocommerce-tabs {
+    display: none !important;
+  }
   /*End WooCommerce styles*/
   /*The Events Calendar*/
   #tribe-events-content a {
     color: #0579bd;
+  }
+  #tribe-events-content .wp-block-button__link {
+    color: #ffffff;
   }
   #gp-sidebar-right
     > div
@@ -451,6 +473,9 @@
   #gp-content p.last-updated {
     display: none;
   }
+  #gp-content ul {
+    margin: 0 0 0 20px !important;
+  }
 </style>
 <style id="socialize-dynamic-css" title="dynamic-css" class="redux-options-output">
   #footer-image img {
@@ -483,7 +508,6 @@
     font-style: normal;
     color: #000;
     font-size: 16px;
-    font-display: swap;
   }
   a {
     color: #0579bd;
@@ -497,7 +521,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 36px;
-    font-display: swap;
   }
   h2 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -505,7 +528,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 28px;
-    font-display: swap;
   }
   h3,
   #tab-description h2,
@@ -519,7 +541,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 24px;
-    font-display: swap;
   }
   h4 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -527,7 +548,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 20px;
-    font-display: swap;
   }
   h5 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -535,7 +555,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 18px;
-    font-display: swap;
   }
   h6 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -543,7 +562,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 16px;
-    font-display: swap;
   }
   .gp-entry-meta .gp-post-meta-row-1,
   .gp-homepage #gp-content .gp-vc-element-3,
@@ -577,7 +595,6 @@
     font-style: normal;
     color: #ababab;
     font-size: 16px;
-    font-display: swap;
   }
   #gp-primary-main-nav .menu > li:hover > a,
   #gp-primary-main-nav .menu > li > a {
@@ -600,7 +617,6 @@
     font-style: normal;
     color: #fff;
     font-size: 14px;
-    font-display: swap;
   }
   #gp-secondary-main-nav .menu > li:hover > a,
   #gp-secondary-main-nav .menu > li > a {
@@ -641,7 +657,6 @@
     font-style: normal;
     color: #000;
     font-size: 14px;
-    font-display: swap;
   }
   .gp-nav .menu > .gp-standard-menu > .sub-menu > li a {
     color: #000;
@@ -745,7 +760,6 @@
     font-style: normal;
     color: #fff;
     font-size: 80px;
-    font-display: swap;
   }
   .gp-page-header .gp-container {
     height: 250px;
@@ -759,7 +773,6 @@
     font-style: normal;
     color: #000;
     font-size: 40px;
-    font-display: swap;
   }
   .gp-subtitle {
     font-family: Roboto;
@@ -768,7 +781,6 @@
     font-style: normal;
     color: #0579bd;
     font-size: 20px;
-    font-display: swap;
   }
   #gp-post-links a,
   .gp-pagination-arrows a.prev,
@@ -811,7 +823,6 @@
     line-height: 24px;
     color: #fff;
     font-size: 14px;
-    font-display: swap;
   }
   .gp-author-info a {
     color: #b1b1b1;
@@ -840,19 +851,16 @@
     font-style: normal;
     color: #fff;
     font-size: 24px;
-    font-display: swap;
   }
   .gp-loop-title {
     line-height: 22px;
     font-weight: 400;
     font-size: 19px;
-    font-display: swap;
   }
   .gp-blog-large .gp-loop-title {
     line-height: 46px;
     font-weight: 200;
     font-size: 40px;
-    font-display: swap;
   }
   .gp-loop-title a,
   .bboss_search_item .entry-title a {
@@ -914,7 +922,6 @@
     font-style: normal;
     color: #000;
     font-size: 14px;
-    font-display: swap;
   }
   .widgettitle a,
   .widget-title a,
@@ -1157,7 +1164,6 @@
     font-style: normal;
     color: #fff;
     font-size: 16px;
-    font-display: swap;
   }
   .gp-footer-widget {
     font-family: Roboto;
@@ -1166,7 +1172,6 @@
     font-style: normal;
     color: #ffffff;
     font-size: 14px;
-    font-display: swap;
   }
   .gp-footer-widget a {
     color: #f9bd16;
@@ -1195,441 +1200,295 @@
   #gp-to-top {
     color: #ffffff;
   }
-  .woocommerce ul.products li.product .price,
-  .woocommerce div.product p.price,
-  .woocommerce div.product span.price {
-    color: #00bee9;
-  }
-  .woocommerce span.onsale {
-    background-color: #e93100;
-  }
-  #buddypress .activity-list .activity-content .activity-header,
-  #buddypress .activity-list .activity-content .comment-header,
-  #buddypress .activity-list .activity-header a,
-  #buddypress .activity-list div.activity-comments div.acomment-meta,
-  #buddypress .activity-list .acomment-meta a,
-  .widget.buddypress .item-title a,
-  .widget.buddypress div.item-options.gp-small-item-options:before,
-  .widget.buddypress div.item-options a,
-  #buddypress ul.item-list li div.item-title a,
-  #buddypress ul.item-list li h4 > a,
-  #buddypress ul.item-list li h5 > a,
-  #buddypress div#item-header div#item-meta {
-    color: #000000;
-  }
-  #buddypress .activity-list .activity-content .activity-inner {
-    color: #aaaaaa;
-  }
-  #buddypress .activity-list a.activity-time-since,
-  .widget_display_replies ul li a + div,
-  .widget_display_topics ul li a + div,
-  #buddypress .activity-list .acomment-meta a.activity-time-since,
-  #buddypress .activity-list div.activity-comments div.acomment-content,
-  .widget.buddypress div.item-meta,
-  #buddypress span.activity,
-  #buddypress ul.item-list li div.meta {
-    color: #545454;
-  }
-  .gp-theme #buddypress .activity-list div.activity-meta a.button,
-  .gp-theme #buddypress .activity .acomment-options a,
-  .gp-theme #buddypress .activity-list li.load-more a,
-  .gp-theme #buddypress .activity-list li.load-newest a,
-  .widget.buddypress div.item-options a.selected {
-    color: #26a9e0;
-  }
-  .gp-theme #buddypress .activity-list div.activity-meta a.button:hover,
-  .gp-theme #buddypress .activity .acomment-options a:hover,
-  .gp-theme #buddypress .activity-list li.load-more a:hover,
-  .gp-theme #buddypress .activity-list li.load-newest a:hover,
-  .widget.buddypress div.item-options a.selected:hover {
-    color: #000;
-  }
-  .gp-theme #buddypress ul.item-list li,
-  .gp-theme #buddypress div.activity-comments ul li:first-child,
-  .widget.buddypress #friends-list li,
-  .widget.buddypress #groups-list li,
-  .widget.buddypress #members-list li {
-    border-top: 1px solid #e0e0e0;
-    border-bottom: 1px solid #e0e0e0;
-  }
-  .gp-theme #buddypress div.item-list-tabs {
-    background-color: #353535;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a span,
-  .gp-theme #buddypress div.item-list-tabs ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs ul li.selected a span {
-    color: #353535;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a span {
-    background-color: #ffffff;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a,
-  .gp-theme #buddypress #gp-bp-tabs-button,
-  .gp-theme #buddypress div.item-list-tabs ul li span {
-    color: #ffffff;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li.current a,
-  .gp-theme #buddypress div.item-list-tabs ul li.selected a,
-  .gp-theme #buddypress div.item-list-tabs ul li a:hover {
-    color: #b1b1b1;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs ul li.selected a span {
-    background: #b1b1b1;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul,
-  .widget.buddypress div.item-options.gp-small-item-options > a {
-    background-color: #f8f8f8;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.selected a span {
-    color: #f8f8f8;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a span {
-    background-color: #000000;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a {
-    color: #000000;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.current a,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.selected a,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a:hover {
-    color: #26a9e0;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.selected a span {
-    background: #26a9e0;
-  }
-  #bbpress-forums
-    .gp-forum-home.bbp-forums
-    .bbp-has-subforums
-    .bbp-forum-info
-    > .bbp-forum-title,
-  #bbpress-forums .bbp-topics .bbp-header,
-  #bbpress-forums .bbp-replies .bbp-header,
-  #bbpress-forums .bbp-search-results .bbp-header {
-    background-color: #353535;
-  }
-  #bbpress-forums
-    .gp-forum-home.bbp-forums
-    .bbp-has-subforums
-    .bbp-forum-info
-    > .bbp-forum-title,
-  #bbpress-forums .bbp-topics .bbp-header,
-  #bbpress-forums .bbp-replies .bbp-header,
-  #bbpress-forums .bbp-search-results .bbp-header {
-    color: #ffffff;
-  }
-  #bbpress-forums .bbp-header div.bbp-reply-content a {
-    color: #ddd;
-  }
-  #bbpress-forums .bbp-header div.bbp-reply-content a:hover {
-    color: #fff;
-  }
-  #bbpress-forums .bbp-forums-list li.odd-forum-row,
-  #bbpress-forums div.odd,
-  #bbpress-forums ul.odd {
-    background-color: #f8f8f8;
-  }
-  #bbpress-forums .bbp-forums-list li.even-forum-row,
-  #bbpress-forums div.even,
-  #bbpress-forums ul.even {
-    background-color: #fff;
-  }
-  #bbpress-forums .gp-forum-home.bbp-forums .bbp-forum-info > .bbp-forum-title,
-  #bbpress-forums div.bbp-forum-header,
-  #bbpress-forums div.bbp-topic-header,
-  #bbpress-forums div.bbp-reply-header,
-  #bbpress-forums .bbp-forums-list,
-  #bbpress-forums li.bbp-body {
-    border-top: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
-    border-left: 1px solid #ddd;
-    border-right: 1px solid #ddd;
-  }
-  #bbpress-forums .bbp-forums-list .bbp-forum .bbp-forum-link,
-  body.forum #bbpress-forums .bbp-forums .bbp-forum-info > .bbp-forum-title,
-  #bbpress-forums .bbp-topics .bbp-topic-permalink,
-  #bbpress-forums .gp-forum-home.bbp-forums .bbp-forum-info > .bbp-forum-title,
-  .gp-theme
-    #bbpress-forums
-    .gp-forum-shortcode
-    ul.forum:not(.status-category)
-    .bbp-forum-info
-    a {
-    color: #000000;
-  }
-  #bbpress-forums div.bbp-forum-author .bbp-author-role,
-  #bbpress-forums div.bbp-topic-author .bbp-author-role,
-  #bbpress-forums div.bbp-reply-author .bbp-author-role {
-    background-color: #92d050;
-  }
-  #bbpress-forums div.bbp-forum-author .bbp-author-role,
-  #bbpress-forums div.bbp-topic-author .bbp-author-role,
-  #bbpress-forums div.bbp-reply-author .bbp-author-role {
-    color: #ffffff;
-  }
 </style>
-    <style id="kadence-blocks-global-variables-inline-css" type="text/css">
-      :root {
-        --global-kb-font-size-sm: clamp(0.8rem, 0.73rem + 0.217vw, 0.9rem);
-        --global-kb-font-size-md: clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem);
-        --global-kb-font-size-lg: clamp(1.75rem, 1.576rem + 0.543vw, 2rem);
-        --global-kb-font-size-xl: clamp(2.25rem, 1.728rem + 1.63vw, 3rem);
-        --global-kb-font-size-xxl: clamp(2.5rem, 1.456rem + 3.26vw, 4rem);
-        --global-kb-font-size-xxxl: clamp(2.75rem, 0.489rem + 7.065vw, 6rem);
-      }
-    </style>
-    <link
-      rel="preload"
-      as="style"
-      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.1.1"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.1.1"
-      media="print"
-      onload="this.media='all'"
-    />
-    <noscript
-      ><link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.1.1"
-    /></noscript>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-includes/js/jquery/jquery.min.js?ver=3.6.1"
-  id="jquery-core-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2"
-  id="jquery-migrate-js"
-></script>  <link rel="icon" href="MS_FavIcon.png" type="image/png" />
+  <link rel="icon" href="MS_FavIcon.png" type="image/png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#cb4b16" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="clipboard.js"></script>
 </head>
 
-<body class="home-page bp-legacy home page-template page-template-homepage-template page-template-homepage-template-php page page-id-977 logged-in admin-bar no-customize-support theme-socialize woocommerce-no-js tribe-no-js page-template-socialize-child gp-theme gp-responsive gp-wide-layout gp-retina gp-normal-scrolling gp-no-back-to-top gp-relative-header gp-header-standard gp-cart-disabled gp-search-all gp-profile-disabled gp-small-header-all gp-standard-page-header gp-no-sidebar gp-homepage wpb-js-composer js-comp-ver-6.10.0 vc_responsive no-js">
+<body
+    class="theme-socialize page-template-socialize-child gp-theme gp-responsive gp-wide-layout gp-retina gp-normal-scrolling gp-no-back-to-top gp-relative-header gp-header-standard gp-cart-disabled gp-search-all gp-profile-disabled gp-small-header-all gp-standard-page-header gp-no-sidebar"
+>
 	<div id="gp-site-wrapper">
 
   <nav id="gp-mobile-nav">
     <div id="gp-mobile-nav-close-button"></div>
     <ul class="menu">
-        <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-            <a class="menu-link main-menu-link" href="index.html">About</a>
-          <ul class="sub-menu menu-odd menu-depth-1">
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#data_receivers">Data Endpoints</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#supported_sensors">Supported Sensors</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#modems">Supported Cellular/Wifi Modules</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#contributing">Contributing</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#license">License</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#acknowledgments">Acknowledgments</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="change_log.html">ChangeLog</a>
-              </li>
-          </ul>
-        </li>
-        <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-            <a class="menu-link main-menu-link" href="page_getting_started.html">Getting Started</a>
-          <ul class="sub-menu menu-odd menu-depth-1">
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>
-              </li>
-          </ul>
-        </li>
-        <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-            <a class="menu-link main-menu-link" href="page_faq.html">FAQs</a>
-          <ul class="sub-menu menu-odd menu-depth-1">
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>
-              </li>
-          </ul>
-        </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="modules.html">Modules</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="annotated.html">Classes</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="files.html">Source Files</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="page_the_examples.html">Examples Using ModularSensors</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="pages.html">More</a>          </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+      >
+<a href="index.html" class="menu-link main-menu-link">About</a>        <ul class="sub-menu menu-odd menu-depth-1">
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#data_receivers">Data Endpoints</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#supported_sensors">Supported Sensors</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#modems">Supported Cellular/Wifi Modules</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#contributing">Contributing</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#license">License</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#acknowledgments">Acknowledgments</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="change_log.html">ChangeLog</a>          </li>
+        </ul>
+      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+      >
+<a href="page_getting_started.html" class="menu-link main-menu-link">Getting Started</a>        <ul class="sub-menu menu-odd menu-depth-1">
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>          </li>
+        </ul>
+      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+      >
+<a href="page_faq.html" class="menu-link main-menu-link">FAQs</a>        <ul class="sub-menu menu-odd menu-depth-1">
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>          </li>
+        </ul>
+      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="topics.html" class="menu-link main-menu-link">Topics</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="annotated.html" class="menu-link main-menu-link">Classes</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="files.html" class="menu-link main-menu-link">Source Files</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="page_the_examples.html" class="menu-link main-menu-link">Examples Using ModularSensors</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="pages.html" class="menu-link main-menu-link">More</a>      </li>
     </ul>
-  </nav><div id="gp-mobile-nav-bg"></div>
+  </nav> <!-- gp-mobile-nav -->
+  <div id="gp-mobile-nav-bg"></div>
 
   <div id="gp-page-wrapper">
 
     <header id="gp-main-header">
       <div class="gp-container">
         <div id="gp-logo">
-          <a href="index.html" title="ModularSensors">
+          <a href="index.html" title="ModularSensors 0.36.0">
             <img
-              src="ModularSensors_ubuntu_264x55.png"
-              alt="ModularSensors"
-                  width="200"
-                  height="42"
+              src="gp-desktop-logo.png"
+              alt="ModularSensors 0.36.0"
+              width="200"
+              height="42"
               class="gp-desktop-logo"
             />
             <img
-              src="ModularSensors_ubuntu_264x55.png"
-              alt="ModularSensors"
+              src="gp-scrolling-logo.png"
+              alt="ModularSensors 0.36.0"
               width="264"
               height="55"
               class="gp-scrolling-logo"
             />
             <img
-              src="ModularSensors_ubuntu_264x55.png"
-              alt="ModularSensors"
+              src="gp-mobile-logo.png"
+              alt="ModularSensors 0.36.0"
               width="132"
               height="28"
               class="gp-mobile-logo"
             />
           </a>
-        </div>
+        </div> <!-- gp-logo -->
 
         <a id="gp-mobile-nav-button"></a>
 
         <nav id="gp-main-nav" class="gp-nav">
           <nav id="gp-primary-main-nav">
-              <ul id="menu-main-menu-1" class="menu">
-                <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-                    <a class="menu-link main-menu-link" href="index.html">About</a>
-                  <ul class="sub-menu menu-odd menu-depth-1">
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#data_receivers">Data Endpoints</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#supported_sensors">Supported Sensors</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#modems">Supported Cellular/Wifi Modules</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#contributing">Contributing</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#license">License</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#acknowledgments">Acknowledgments</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="change_log.html">ChangeLog</a>
-                      </li>
-                  </ul>
-                </li>
-                <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-                    <a class="menu-link main-menu-link" href="page_getting_started.html">Getting Started</a>
-                  <ul class="sub-menu menu-odd menu-depth-1">
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>
-                      </li>
-                  </ul>
-                </li>
-                <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-                    <a class="menu-link main-menu-link" href="page_faq.html">FAQs</a>
-                  <ul class="sub-menu menu-odd menu-depth-1">
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>
-                      </li>
-                  </ul>
-                </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="modules.html">Modules</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="annotated.html">Classes</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="files.html">Source Files</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="page_the_examples.html">Examples Using ModularSensors</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="pages.html">More</a>                  </li>
-              </ul>
-          </nav>
+            <ul id="menu-main-menu-1" class="menu">
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+              >
+<a href="index.html" class="menu-link main-menu-link" >About</a>                <ul class="sub-menu menu-odd menu-depth-1">
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#data_receivers">Data Endpoints</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#supported_sensors">Supported Sensors</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#modems">Supported Cellular/Wifi Modules</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#contributing">Contributing</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#license">License</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#acknowledgments">Acknowledgments</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="change_log.html">ChangeLog</a>                  </li>
+                </ul>
+              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+              >
+<a href="page_getting_started.html" class="menu-link main-menu-link" >Getting Started</a>                <ul class="sub-menu menu-odd menu-depth-1">
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>                  </li>
+                </ul>
+              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+              >
+<a href="page_faq.html" class="menu-link main-menu-link" >FAQs</a>                <ul class="sub-menu menu-odd menu-depth-1">
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>                  </li>
+                </ul>
+              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="topics.html"class="menu-link main-menu-link">Topics</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="annotated.html"class="menu-link main-menu-link">Classes</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="files.html"class="menu-link main-menu-link">Source Files</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="page_the_examples.html"class="menu-link main-menu-link">Examples Using ModularSensors</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="pages.html"class="menu-link main-menu-link">More</a>              </li>
+            </ul>
+          </nav> <!-- gp-primary-main-nav -->
 
           <div id="gp-search">
             <div id="m-search-button" class="m-show-m" onclick="return showSearch()">
-            </div>
-					</div>
-
-
+            </div> <!-- gp-search-box -->
+          </div> <!-- gp-search -->
 
           <nav id="gp-secondary-main-nav"></nav>
-        </nav></div>
-    </header><header id="gp-small-header">
+        </nav> <!-- gp-main-nav -->
+      </div> <!-- gp-container -->
+    </header> <!-- gp-main-header -->
+
+    <header id="gp-small-header">
       <div class="gp-container">
         <div class="gp-left-triangle"></div>
         <div class="gp-right-triangle"></div>
@@ -1656,7 +1515,9 @@
 
         </nav>
       </div>
-    </header><div id="gp-fixed-header-padding"></div>
+    </header> <!-- gp-small-header -->
+
+    <div id="gp-fixed-header-padding"></div>
 
     <div class="m-doc-search" id="search">
       <a href="#!" onclick="return hideSearch()"></a>
@@ -1664,7 +1525,7 @@
         <div class="gp-container">
           <div style="background-color:#fff;padding:20px;">
             <div class="m-doc-search-header m-text m-small">
-              <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+              <div><span class="m-label m-info">Tab</span> / <span class="m-label m-info">T</span> to search, <span class="m-label m-info">Esc</span> to close</div>
               <div id="search-symbolcount">&hellip;</div>
             </div>
             <div class="m-doc-search-content">
@@ -1674,7 +1535,7 @@
               <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
               <div id="search-help" class="m-text m-dim m-text-center">
                 <p class="m-noindent">Search for symbols, directories, files, pages or
-            modules. You can omit any prefix from the symbol or file path; adding a
+            topics. You can omit any prefix from the symbol or file path; adding a
             <code>:</code> or <code>/</code> suffix lists all members of given symbol or
             directory.</p>
             <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
@@ -1699,13 +1560,12 @@
 
     <div id="gp-content-wrapper" class="gp-container">
       <div id="gp-inner-container">
+        <div id="gp-left-column">
           <div id="gp-content">
 
             <main>
               <article>
-                <div class="m-container m-container-inflatable">
-                  <div class="m-row">
-                    <div class="m-col-l-10 m-push-l-1">
+                <div class="breadcrumbs" typeof="BreadcrumbList" vocab="http://schema.org/">
         <span class="m-breadcrumb">
           <a href="index.html">
             ModularSensors
@@ -1719,15 +1579,15 @@
                 <span class="m-breadcrumb">
           Variable
         </span>
-<br>
+        <br>
         <span class="m-breadcrumb">
           <a href="index.html">
             ModularSensors
           </a>  &gt; <wbr/>
         </span>
         <span class="m-breadcrumb">
-          <a href="modules.html">
-            Modules
+          <a href="topics.html">
+            Topics
           </a>  &gt; <wbr/>
         </span>
                 <span class="m-breadcrumb">
@@ -1736,17 +1596,18 @@
         <span class="m-breadcrumb">
           Variable
         </span>
-<br>
-        <header class="gp-entry-header">
-          <h1 class="gp-entry-title" itemprop="headline">
+        <br>
+                </div>
+                <header class="gp-entry-header">
+                  <h1 class="gp-entry-title" itemprop="headline">
 
-
-            <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_variable_base_8h.html">&lt;src/VariableBase.h&gt;</a></div><br>
+            <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_variable_base_8h.html">&lt;src/VariableBase.h&gt;</a></div>
 
             Variable
             <span class="m-thin">class</span>
-          </h1>
-        </header>
+
+                </h1>
+                </header>
         <p>The variable class for a value and related metadata.</p>
         <nav class="m-block m-default">
           <ul>
@@ -1770,8 +1631,6 @@
           </ul>
         </nav>
           <p>A variable is a result value taken by a sensor <em>or</em> calculated from the results of one or more sensors. It is characterized by a name (what it is a measurement of), a unit of measurement, and a resolution. The <a href="http://vocabulary.odm2.org/variablename/">names</a> and <a href="http://vocabulary.odm2.org/units/">units</a> of measurements for all variables come from the controlled vocabularies developed for the ODM2 data system. (<a href="http://vocabulary.odm2.org/">http:/<wbr />/<wbr />vocabulary.odm2.org/<wbr /></a>) The resolution is determined by the method used to take the measurement by the sensor. A variable may also be assigned a universally unique identifier (UUID) and a unique variable code. Many sensors are capable of measuring multiple variables at a single time. For example, a Decagon CTD-10 is a <em>sensor</em>. It is able to measure 3 <em>variables</em>: specific conductance, temperature, and water depth. The variable named &quot;specificConductance&quot; has <em>units</em> of microsiemens per centimeter (µS/cm) and a <em>resolution</em> of 1 µS/cm. Each measured variable is explicitly tied to the &quot;parent&quot; sensor that &quot;notifies&quot; the variable when a new value has been measured. Each calculated variable has a parent function returning a float which is the value for that variable.</p><p>Variables are expected to be grouped together into VariableArrays.</p>
-
-
         <section id="derived-classes">
           <h2>Derived classes</h2>
           <dl class="m-doc">
@@ -1796,9 +1655,17 @@
             </dt>
             <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__dht.html#sensor_dht_temperature" class="m-doc">temperature output</a> from an <a href="group__sensor__dht.html" class="m-doc">AOSong DHT</a>.</dd>
                           <dt>
+              class <a href="class_alphasense_c_o2___c_o2.html" class="m-doc">AlphasenseCO2_CO2</a>
+            </dt>
+            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__alphasense__co2.html#sensor_alphasense_co2_co2" class="m-doc">carbon dioxide (CO2) output</a> from an <a href="group__sensor__alphasense__co2.html" class="m-doc">Alphasense IRC-A1 CO2</a>.</dd>
+                          <dt>
+              class <a href="class_alphasense_c_o2___voltage.html" class="m-doc">AlphasenseCO2_Voltage</a>
+            </dt>
+            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__alphasense__co2.html#sensor_alphasense_co2_voltage" class="m-doc">raw voltage output</a> from an <a href="group__sensor__alphasense__co2.html" class="m-doc">Alphasense IRC-A1 CO2</a>.</dd>
+                          <dt>
               class <a href="class_analog_elec_conductivity___e_c.html" class="m-doc">AnalogElecConductivity_EC</a>
             </dt>
-            <dd>The variable class used for electricalConductivity measured using an analog pin connected to electrodes submerged in the medium.</dd>
+            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for electrical conductivity measured using an analog pin connected to electrodes submerged in the medium.</dd>
                           <dt>
               class <a href="class_apogee_s_q212___p_a_r.html" class="m-doc">ApogeeSQ212_PAR</a>
             </dt>
@@ -1967,6 +1834,14 @@
               class <a href="class_freescale_m_p_l115_a2___temp.html" class="m-doc">FreescaleMPL115A2_Temp</a>
             </dt>
             <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__mpl115a2.html#sensor_mpl115a2_temp" class="m-doc">temperature output</a> from a <a href="group__sensor__mpl115a2.html" class="m-doc">Freescale Semiconductor MPL115A2</a>.</dd>
+                          <dt>
+              class <a href="class_gro_point_g_p_l_p8___moist.html" class="m-doc">GroPointGPLP8_Moist</a>
+            </dt>
+            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__gplp8.html#sensor_gplp8_moist" class="m-doc">soil moisture output</a> from a <a href="group__sensor__gplp8.html" class="m-doc">GroPoint Profile GPLP8 probe</a>.</dd>
+                          <dt>
+              class <a href="class_gro_point_g_p_l_p8___temp.html" class="m-doc">GroPointGPLP8_Temp</a>
+            </dt>
+            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__gplp8.html#sensor_gplp8_temp" class="m-doc">temperature output</a> from a <a href="group__sensor__gplp8.html" class="m-doc">GroPoint Profile GPLP8 probe</a>.</dd>
                           <dt>
               class <a href="class_in_situ_r_d_o___d_omg_l.html" class="m-doc">InSituRDO_DOmgL</a>
             </dt>
@@ -2200,6 +2075,34 @@
             </dt>
             <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__cyclops.html#sensor_cyclops_voltage" class="m-doc">raw voltage output</a> from a <a href="group__sensor__cyclops.html" class="m-doc">Turner Cyclops-7F</a>.</dd>
                           <dt>
+              class <a href="class_turner_turbidity_plus___turbidity.html" class="m-doc">TurnerTurbidityPlus_Turbidity</a>
+            </dt>
+            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__turbidity__plus.html#sensor_turbidity_plus_output" class="m-doc">turbidity output</a> from a <a href="group__sensor__turbidity__plus.html" class="m-doc">Turner Turbidity Plus</a>.</dd>
+                          <dt>
+              class <a href="class_turner_turbidity_plus___voltage.html" class="m-doc">TurnerTurbidityPlus_Voltage</a>
+            </dt>
+            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the [raw voltage output](<a href="group__sensor__turbidity__plus.html#sensor_turbidity_plus_voltage" class="m-doc">sensor_<wbr />turbidity_<wbr />plus_<wbr />voltage</a>) from a [Turner Turbidity Plus](<a href="group__sensor__turbidity__plus.html" class="m-doc">Turner Turbidity Plus</a>).</dd>
+                          <dt>
+              class <a href="class_vega_puls21___distance.html" class="m-doc">VegaPuls21_Distance</a>
+            </dt>
+            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__vega__puls21.html#sensor_vega_puls21_distance" class="m-doc">temperature output</a> from a <a href="group__sensor__vega__puls21.html" class="m-doc">VEGAPULS C 21 radar level sensor</a>.</dd>
+                          <dt>
+              class <a href="class_vega_puls21___error_code.html" class="m-doc">VegaPuls21_ErrorCode</a>
+            </dt>
+            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__vega__puls21.html#sensor_vega_puls21_error" class="m-doc">error code output</a> from a <a href="group__sensor__vega__puls21.html" class="m-doc">VEGAPULS C 21 radar level sensor</a>.</dd>
+                          <dt>
+              class <a href="class_vega_puls21___reliability.html" class="m-doc">VegaPuls21_Reliability</a>
+            </dt>
+            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__vega__puls21.html#sensor_vega_puls21_reliability" class="m-doc">reliability output</a> from a <a href="group__sensor__vega__puls21.html" class="m-doc">VEGAPULS C 21 radar level sensor</a>.</dd>
+                          <dt>
+              class <a href="class_vega_puls21___stage.html" class="m-doc">VegaPuls21_Stage</a>
+            </dt>
+            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__vega__puls21.html#sensor_vega_puls21_stage" class="m-doc">temperature output</a> from a <a href="group__sensor__vega__puls21.html" class="m-doc">VEGAPULS C 21 radar level sensor</a>.</dd>
+                          <dt>
+              class <a href="class_vega_puls21___temp.html" class="m-doc">VegaPuls21_Temp</a>
+            </dt>
+            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__vega__puls21.html#sensor_vega_puls21_temp" class="m-doc">temperature output</a> from a <a href="group__sensor__vega__puls21.html" class="m-doc">VEGAPULS C 21 radar level sensor</a>.</dd>
+                          <dt>
               class <a href="class_yosemitech_y4000___b_g_a.html" class="m-doc">YosemitechY4000_BGA</a>
             </dt>
             <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__y4000.html#sensor_y4000_bga" class="m-doc">blue green algae (BGA) concentration output</a> from a <a href="group__sensor__y4000.html" class="m-doc">Yosemitech Y4000 multiparameter sonde</a>.</dd>
@@ -2259,6 +2162,14 @@
               class <a href="class_yosemitech_y511___turbidity.html" class="m-doc">YosemitechY511_Turbidity</a>
             </dt>
             <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__y511.html#sensor_y511_turb" class="m-doc">turbidity output</a> from a <a href="group__sensor__y511.html" class="m-doc">Yosemitech Y511-A optical turbidity sensor with wiper</a>.</dd>
+                          <dt>
+              class <a href="class_yosemitech_y513___b_g_a.html" class="m-doc">YosemitechY513_BGA</a>
+            </dt>
+            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__y513.html#sensor_y513_bga" class="m-doc">blue green algae concentration output</a> from a <a href="group__sensor__y513.html" class="m-doc">Yosemitech Y513 Blue Green Algae (BGA) sensor with wiper</a>.</dd>
+                          <dt>
+              class <a href="class_yosemitech_y513___temp.html" class="m-doc">YosemitechY513_Temp</a>
+            </dt>
+            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__y513.html#sensor_y513_temp" class="m-doc">temperature output</a> from a <a href="group__sensor__y513.html" class="m-doc">Yosemitech Y513-A blue green algae sensor with wiper</a>.</dd>
                           <dt>
               class <a href="class_yosemitech_y514___chlorophyll.html" class="m-doc">YosemitechY514_Chlorophyll</a>
             </dt>
@@ -2342,10 +2253,6 @@
           </dl>
         </section>
         <hr>
-
-
-
-
         <section id="typeless-methods">
           <h2>Constructors, destructors, conversion operators</h2>
           <dl class="m-doc">
@@ -2395,23 +2302,22 @@
           </dl>
         </section>
         <hr>
-
         <section id="pub-methods">
           <h2>Public functions</h2>
           <dl class="m-doc">
                           <dt>
               <span class="m-doc-wrap-bumper"><span class="m-dim"><a href="class_variable.html" class="m-doc">Variable</a>* </span><a href="#af7a0c1ea9db89fda323f0d93ec25eb5f" class="m-doc">begin</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_sensor.html" class="m-doc">Sensor</a>*</span> <span class="m-param">parentSense</span>,
               <span class="m-dim">const char*</span> <span class="m-param">uuid</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">customVarCode</span>)</span>
+              <span class="m-dim">const char*</span> <span class="m-param">customVarCode</span>) -&gt; <a href="class_variable.html" class="m-doc">Variable</a>*</span>
             </dt>
             <dd>Begin for the <a href="class_variable.html" class="m-doc">Variable</a> object.</dd>
                           <dt>
               <span class="m-doc-wrap-bumper"><span class="m-dim"><a href="class_variable.html" class="m-doc">Variable</a>* </span><a href="#a89ce99804b4381f02122ecf2cde2215e" class="m-doc">begin</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_sensor.html" class="m-doc">Sensor</a>*</span> <span class="m-param">parentSense</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">uuid</span>)</span>
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span>) -&gt; <a href="class_variable.html" class="m-doc">Variable</a>*</span>
             </dt>
             <dd>Begin for the <a href="class_variable.html" class="m-doc">Variable</a> object.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim"><a href="class_variable.html" class="m-doc">Variable</a>* </span><a href="#a19ce3fbc633bbb8bb6ca36da7e3e0b25" class="m-doc">begin</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_sensor.html" class="m-doc">Sensor</a>*</span> <span class="m-param">parentSense</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim"><a href="class_variable.html" class="m-doc">Variable</a>* </span><a href="#a19ce3fbc633bbb8bb6ca36da7e3e0b25" class="m-doc">begin</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_sensor.html" class="m-doc">Sensor</a>*</span> <span class="m-param">parentSense</span>) -&gt; <a href="class_variable.html" class="m-doc">Variable</a>*</span>
             </dt>
             <dd>Begin for the <a href="class_variable.html" class="m-doc">Variable</a> object.</dd>
                           <dt>
@@ -2420,7 +2326,7 @@
               <span class="m-dim">const char*</span> <span class="m-param">varName</span>,
               <span class="m-dim">const char*</span> <span class="m-param">varUnit</span>,
               <span class="m-dim">const char*</span> <span class="m-param">varCode</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">uuid</span>)</span>
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span>) -&gt; <a href="class_variable.html" class="m-doc">Variable</a>*</span>
             </dt>
             <dd>Begin for the <a href="class_variable.html" class="m-doc">Variable</a> object.</dd>
                           <dt>
@@ -2428,7 +2334,7 @@
               <span class="m-dim">uint8_t</span> <span class="m-param">decimalResolution</span>,
               <span class="m-dim">const char*</span> <span class="m-param">varName</span>,
               <span class="m-dim">const char*</span> <span class="m-param">varUnit</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">varCode</span>)</span>
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span>) -&gt; <a href="class_variable.html" class="m-doc">Variable</a>*</span>
             </dt>
             <dd>Begin for the <a href="class_variable.html" class="m-doc">Variable</a> object.</dd>
                           <dt>
@@ -2440,11 +2346,11 @@
             </dt>
             <dd>Updates the interally stored data value.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#abe17e06fa54d25c7e2b9d8e348233f33" class="m-doc">getParentSensorName</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#abe17e06fa54d25c7e2b9d8e348233f33" class="m-doc">getParentSensorName</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>) -&gt; String</span>
             </dt>
             <dd>Get the parent sensor name, if applicable.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#a967a46f2b866821fb8a355ce8e9494c4" class="m-doc">getParentSensorNameAndLocation</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#a967a46f2b866821fb8a355ce8e9494c4" class="m-doc">getParentSensorNameAndLocation</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>) -&gt; String</span>
             </dt>
             <dd>Get the parent sensor name and location, if applicable.</dd>
                           <dt>
@@ -2452,7 +2358,7 @@
             </dt>
             <dd>Set the calculation function for a calculted variable.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">uint8_t </span><a href="#a93ee039034a993cfc26fb191d09009d9" class="m-doc">getResolution</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">uint8_t </span><a href="#a93ee039034a993cfc26fb191d09009d9" class="m-doc">getResolution</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>) -&gt; uint8_t</span>
             </dt>
             <dd>Get the variable&#x27;s resolution - in decimal places.</dd>
                           <dt>
@@ -2460,7 +2366,7 @@
             </dt>
             <dd>Set the variable&#x27;s resolution.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#af02712a973fb305c54961f3e03430bc6" class="m-doc">getVarName</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#af02712a973fb305c54961f3e03430bc6" class="m-doc">getVarName</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>) -&gt; String</span>
             </dt>
             <dd>Get the variable name.</dd>
                           <dt>
@@ -2468,7 +2374,7 @@
             </dt>
             <dd>Set the variable name.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#a730b9f3819742a77e9d6251d5fed7855" class="m-doc">getVarUnit</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#a730b9f3819742a77e9d6251d5fed7855" class="m-doc">getVarUnit</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>) -&gt; String</span>
             </dt>
             <dd>Get the variable unit.</dd>
                           <dt>
@@ -2476,7 +2382,7 @@
             </dt>
             <dd>Set the variable unit.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#a75d077ad19d0f736132be0592bd5a4d9" class="m-doc">getVarCode</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#a75d077ad19d0f736132be0592bd5a4d9" class="m-doc">getVarCode</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>) -&gt; String</span>
             </dt>
             <dd>Get the customized code for the variable.</dd>
                           <dt>
@@ -2484,7 +2390,7 @@
             </dt>
             <dd>Set a customized code for the variable.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#a6e58b13fa6fa8ad50ccb56ff5dfb54dc" class="m-doc">getVarUUID</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#a6e58b13fa6fa8ad50ccb56ff5dfb54dc" class="m-doc">getVarUUID</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>) -&gt; String</span>
             </dt>
             <dd>Get the customized code for the variable.</dd>
                           <dt>
@@ -2492,23 +2398,24 @@
             </dt>
             <dd>Set a customized code for the variable.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a6951a420bdc05009affca150525e5e30" class="m-doc">checkUUIDFormat</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a6951a420bdc05009affca150525e5e30" class="m-doc">checkUUIDFormat</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>) -&gt; bool</span>
             </dt>
             <dd>Verify the the UUID is correctly formatted.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">float </span><a href="#a06e2bbb4c1e40387881215d36fc04e49" class="m-doc">getValue</a>(</span><span class="m-doc-wrap"><span class="m-dim">bool</span> <span class="m-param">updateValue</span><span class="m-dim"> = false</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">float </span><a href="#a06e2bbb4c1e40387881215d36fc04e49" class="m-doc">getValue</a>(</span><span class="m-doc-wrap"><span class="m-dim">bool</span> <span class="m-param">updateValue</span><span class="m-dim"> = false</span>) -&gt; float</span>
             </dt>
             <dd>Get current value of the variable as a float.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#ac3acd66d0739483affedb4f1a3d7308b" class="m-doc">getValueString</a>(</span><span class="m-doc-wrap"><span class="m-dim">bool</span> <span class="m-param">updateValue</span><span class="m-dim"> = false</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#ac3acd66d0739483affedb4f1a3d7308b" class="m-doc">getValueString</a>(</span><span class="m-doc-wrap"><span class="m-dim">bool</span> <span class="m-param">updateValue</span><span class="m-dim"> = false</span>) -&gt; String</span>
             </dt>
             <dd>Get current value of the variable as a string with the correct decimal resolution.</dd>
+                          <dt>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#a5868f82b12f6f11885158d01b511ae61" class="m-doc">formatValueString</a>(</span><span class="m-doc-wrap"><span class="m-dim">float</span> <span class="m-param">value</span>) -&gt; String</span>
+            </dt>
+            <dd>Get a particular value of the variable as a string with the correct decimal resolution.</dd>
           </dl>
         </section>
         <hr>
-
-
-
         <section id="pub-attribs">
           <h2>Public variables</h2>
           <dl class="m-doc">
@@ -2523,12 +2430,6 @@
           </dl>
         </section>
         <hr>
-
-
-
-
-
-
         <section id="pro-attribs">
           <h2>Protected variables</h2>
           <dl class="m-doc">
@@ -2541,23 +2442,25 @@
         <hr>
 
 
-
-
-
-
-
-
         <section id="function-details">
           <h2>Function documentation</h2>
                       <section class="m-doc-details" id="aeb3bfd6481c087b181b25a354871e6ee"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim"></span><a href="#aeb3bfd6481c087b181b25a354871e6ee" class="m-doc-self">Variable</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_sensor.html" class="m-doc">Sensor</a>*</span> <span class="m-param">parentSense</span>,
-              <span class="m-dim">const uint8_t</span> <span class="m-param">sensorVarNum</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">decimalResolution</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">varName</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">varUnit</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">varCode</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">uuid</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim"> Variable::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#aeb3bfd6481c087b181b25a354871e6ee" class="m-doc-self">Variable</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_sensor.html" class="m-doc">Sensor</a>*</span> <span
+                    class="m-param">parentSense</span>,
+              <span class="m-dim">const uint8_t</span> <span
+                    class="m-param">sensorVarNum</span>,
+              <span class="m-dim">uint8_t</span> <span
+                    class="m-param">decimalResolution</span>,
+              <span class="m-dim">const char*</span> <span
+                    class="m-param">varName</span>,
+              <span class="m-dim">const char*</span> <span
+                    class="m-param">varUnit</span>,
+              <span class="m-dim">const char*</span> <span
+                    class="m-param">varCode</span>,
+              <span class="m-dim">const char*</span> <span
+                    class="m-param">uuid</span>)</span></span>
             </h3>
             <p>Construct a new <a href="class_variable.html" class="m-doc">Variable</a> objectfor a measured variable - that is, one whose values are updated by a sensor.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -2602,11 +2505,17 @@
         </section>
                       <section class="m-doc-details" id="ae1c2dace55e6c3f4b349a4b46951dd68"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim"></span><a href="#ae1c2dace55e6c3f4b349a4b46951dd68" class="m-doc-self">Variable</a>(</span><span class="m-doc-wrap"><span class="m-dim">const uint8_t</span> <span class="m-param">sensorVarNum</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">decimalResolution</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">varName</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">varUnit</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">varCode</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim"> Variable::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#ae1c2dace55e6c3f4b349a4b46951dd68" class="m-doc-self">Variable</a>(</span><span class="m-doc-wrap"><span class="m-dim">const uint8_t</span> <span
+                    class="m-param">sensorVarNum</span>,
+              <span class="m-dim">uint8_t</span> <span
+                    class="m-param">decimalResolution</span>,
+              <span class="m-dim">const char*</span> <span
+                    class="m-param">varName</span>,
+              <span class="m-dim">const char*</span> <span
+                    class="m-param">varUnit</span>,
+              <span class="m-dim">const char*</span> <span
+                    class="m-param">varCode</span>)</span></span>
             </h3>
             <p>Construct a new <a href="class_variable.html" class="m-doc">Variable</a> objectfor a measured variable - that is, one whose values are updated by a sensor - but do not tie it to a specific sensor.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -2643,12 +2552,19 @@
         </section>
                       <section class="m-doc-details" id="a42b0137579e136568b5ee8c8103c1745"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim"></span><a href="#a42b0137579e136568b5ee8c8103c1745" class="m-doc-self">Variable</a>(</span><span class="m-doc-wrap"><span class="m-dim">float(*)()</span> <span class="m-param">calcFxn</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">decimalResolution</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">varName</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">varUnit</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">varCode</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">uuid</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim"> Variable::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a42b0137579e136568b5ee8c8103c1745" class="m-doc-self">Variable</a>(</span><span class="m-doc-wrap"><span class="m-dim">float(*)()</span> <span
+                    class="m-param">calcFxn</span>,
+              <span class="m-dim">uint8_t</span> <span
+                    class="m-param">decimalResolution</span>,
+              <span class="m-dim">const char*</span> <span
+                    class="m-param">varName</span>,
+              <span class="m-dim">const char*</span> <span
+                    class="m-param">varUnit</span>,
+              <span class="m-dim">const char*</span> <span
+                    class="m-param">varCode</span>,
+              <span class="m-dim">const char*</span> <span
+                    class="m-param">uuid</span>)</span></span>
             </h3>
             <p>Construct a new <a href="class_variable.html" class="m-doc">Variable</a> object for a calculated variable - that is, one whose value is calculated by the calcFxn which returns a float.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -2688,11 +2604,17 @@
         </section>
                       <section class="m-doc-details" id="a99c320baf24da3cc9d84b00f1c2a7641"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim"></span><a href="#a99c320baf24da3cc9d84b00f1c2a7641" class="m-doc-self">Variable</a>(</span><span class="m-doc-wrap"><span class="m-dim">float(*)()</span> <span class="m-param">calcFxn</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">decimalResolution</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">varName</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">varUnit</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">varCode</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim"> Variable::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a99c320baf24da3cc9d84b00f1c2a7641" class="m-doc-self">Variable</a>(</span><span class="m-doc-wrap"><span class="m-dim">float(*)()</span> <span
+                    class="m-param">calcFxn</span>,
+              <span class="m-dim">uint8_t</span> <span
+                    class="m-param">decimalResolution</span>,
+              <span class="m-dim">const char*</span> <span
+                    class="m-param">varName</span>,
+              <span class="m-dim">const char*</span> <span
+                    class="m-param">varUnit</span>,
+              <span class="m-dim">const char*</span> <span
+                    class="m-param">varCode</span>)</span></span>
             </h3>
             <p>Construct a new <a href="class_variable.html" class="m-doc">Variable</a> object for a calculated variable - that is, one whose value is calculated by the calcFxn which returns a float.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -2728,9 +2650,13 @@
         </section>
                       <section class="m-doc-details" id="af7a0c1ea9db89fda323f0d93ec25eb5f"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim"><a href="class_variable.html" class="m-doc">Variable</a>* </span><a href="#af7a0c1ea9db89fda323f0d93ec25eb5f" class="m-doc-self">begin</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_sensor.html" class="m-doc">Sensor</a>*</span> <span class="m-param">parentSense</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">uuid</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">customVarCode</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim"><a href="class_variable.html" class="m-doc">Variable</a>*  Variable::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#af7a0c1ea9db89fda323f0d93ec25eb5f" class="m-doc-self">begin</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_sensor.html" class="m-doc">Sensor</a>*</span> <span
+                    class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span
+                    class="m-param">uuid</span>,
+              <span class="m-dim">const char*</span> <span
+                    class="m-param">customVarCode</span>)</span></span>
             </h3>
             <p>Begin for the <a href="class_variable.html" class="m-doc">Variable</a> object.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -2754,7 +2680,7 @@
               <tfoot>
                 <tr>
                   <th>Returns</th>
-                  <td><a href="class_variable.html" class="m-doc">Variable</a> A pointer to the variable object</td>
+                  <td><span class="m-dim"><a href="class_variable.html" class="m-doc">Variable</a>*</span> A pointer to the variable object</td>
                 </tr>
               </tfoot>
             </table>
@@ -2764,8 +2690,11 @@
         </section>
                       <section class="m-doc-details" id="a89ce99804b4381f02122ecf2cde2215e"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim"><a href="class_variable.html" class="m-doc">Variable</a>* </span><a href="#a89ce99804b4381f02122ecf2cde2215e" class="m-doc-self">begin</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_sensor.html" class="m-doc">Sensor</a>*</span> <span class="m-param">parentSense</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">uuid</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim"><a href="class_variable.html" class="m-doc">Variable</a>*  Variable::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a89ce99804b4381f02122ecf2cde2215e" class="m-doc-self">begin</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_sensor.html" class="m-doc">Sensor</a>*</span> <span
+                    class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span
+                    class="m-param">uuid</span>)</span></span>
             </h3>
             <p>Begin for the <a href="class_variable.html" class="m-doc">Variable</a> object.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -2785,7 +2714,7 @@
               <tfoot>
                 <tr>
                   <th>Returns</th>
-                  <td><a href="class_variable.html" class="m-doc">Variable</a> A pointer to the variable object</td>
+                  <td><span class="m-dim"><a href="class_variable.html" class="m-doc">Variable</a>*</span> A pointer to the variable object</td>
                 </tr>
               </tfoot>
             </table>
@@ -2795,7 +2724,9 @@
         </section>
                       <section class="m-doc-details" id="a19ce3fbc633bbb8bb6ca36da7e3e0b25"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim"><a href="class_variable.html" class="m-doc">Variable</a>* </span><a href="#a19ce3fbc633bbb8bb6ca36da7e3e0b25" class="m-doc-self">begin</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_sensor.html" class="m-doc">Sensor</a>*</span> <span class="m-param">parentSense</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim"><a href="class_variable.html" class="m-doc">Variable</a>*  Variable::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a19ce3fbc633bbb8bb6ca36da7e3e0b25" class="m-doc-self">begin</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_sensor.html" class="m-doc">Sensor</a>*</span> <span
+                    class="m-param">parentSense</span>)</span></span>
             </h3>
             <p>Begin for the <a href="class_variable.html" class="m-doc">Variable</a> object.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -2811,7 +2742,7 @@
               <tfoot>
                 <tr>
                   <th>Returns</th>
-                  <td><a href="class_variable.html" class="m-doc">Variable</a> A pointer to the variable object</td>
+                  <td><span class="m-dim"><a href="class_variable.html" class="m-doc">Variable</a>*</span> A pointer to the variable object</td>
                 </tr>
               </tfoot>
             </table>
@@ -2821,12 +2752,19 @@
         </section>
                       <section class="m-doc-details" id="ac4a2bbbc4ea4c05915c45767e94ef207"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim"><a href="class_variable.html" class="m-doc">Variable</a>* </span><a href="#ac4a2bbbc4ea4c05915c45767e94ef207" class="m-doc-self">begin</a>(</span><span class="m-doc-wrap"><span class="m-dim">float(*)()</span> <span class="m-param">calcFxn</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">decimalResolution</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">varName</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">varUnit</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">varCode</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">uuid</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim"><a href="class_variable.html" class="m-doc">Variable</a>*  Variable::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#ac4a2bbbc4ea4c05915c45767e94ef207" class="m-doc-self">begin</a>(</span><span class="m-doc-wrap"><span class="m-dim">float(*)()</span> <span
+                    class="m-param">calcFxn</span>,
+              <span class="m-dim">uint8_t</span> <span
+                    class="m-param">decimalResolution</span>,
+              <span class="m-dim">const char*</span> <span
+                    class="m-param">varName</span>,
+              <span class="m-dim">const char*</span> <span
+                    class="m-param">varUnit</span>,
+              <span class="m-dim">const char*</span> <span
+                    class="m-param">varCode</span>,
+              <span class="m-dim">const char*</span> <span
+                    class="m-param">uuid</span>)</span></span>
             </h3>
             <p>Begin for the <a href="class_variable.html" class="m-doc">Variable</a> object.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -2862,7 +2800,7 @@
               <tfoot>
                 <tr>
                   <th>Returns</th>
-                  <td><a href="class_variable.html" class="m-doc">Variable</a> A pointer to the variable object</td>
+                  <td><span class="m-dim"><a href="class_variable.html" class="m-doc">Variable</a>*</span> A pointer to the variable object</td>
                 </tr>
               </tfoot>
             </table>
@@ -2872,11 +2810,17 @@
         </section>
                       <section class="m-doc-details" id="aab84cff4caf6acdb5dec0a5878697c91"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim"><a href="class_variable.html" class="m-doc">Variable</a>* </span><a href="#aab84cff4caf6acdb5dec0a5878697c91" class="m-doc-self">begin</a>(</span><span class="m-doc-wrap"><span class="m-dim">float(*)()</span> <span class="m-param">calcFxn</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">decimalResolution</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">varName</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">varUnit</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">varCode</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim"><a href="class_variable.html" class="m-doc">Variable</a>*  Variable::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#aab84cff4caf6acdb5dec0a5878697c91" class="m-doc-self">begin</a>(</span><span class="m-doc-wrap"><span class="m-dim">float(*)()</span> <span
+                    class="m-param">calcFxn</span>,
+              <span class="m-dim">uint8_t</span> <span
+                    class="m-param">decimalResolution</span>,
+              <span class="m-dim">const char*</span> <span
+                    class="m-param">varName</span>,
+              <span class="m-dim">const char*</span> <span
+                    class="m-param">varUnit</span>,
+              <span class="m-dim">const char*</span> <span
+                    class="m-param">varCode</span>)</span></span>
             </h3>
             <p>Begin for the <a href="class_variable.html" class="m-doc">Variable</a> object.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -2908,7 +2852,7 @@
               <tfoot>
                 <tr>
                   <th>Returns</th>
-                  <td><a href="class_variable.html" class="m-doc">Variable</a> A pointer to the variable object</td>
+                  <td><span class="m-dim"><a href="class_variable.html" class="m-doc">Variable</a>*</span> A pointer to the variable object</td>
                 </tr>
               </tfoot>
             </table>
@@ -2918,7 +2862,9 @@
         </section>
                       <section class="m-doc-details" id="ab9b9575dd56582221248d735afbad9ea"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#ab9b9575dd56582221248d735afbad9ea" class="m-doc-self">attachSensor</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_sensor.html" class="m-doc">Sensor</a>*</span> <span class="m-param">parentSense</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void  Variable::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#ab9b9575dd56582221248d735afbad9ea" class="m-doc-self">attachSensor</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_sensor.html" class="m-doc">Sensor</a>*</span> <span
+                    class="m-param">parentSense</span>)</span></span>
             </h3>
             <p>Notify the parent sensor that it has an observing variable.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -2939,7 +2885,9 @@
         </section>
                       <section class="m-doc-details" id="a054ef43d5beeb4649e6f42658fe3e303"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#a054ef43d5beeb4649e6f42658fe3e303" class="m-doc-self">onSensorUpdate</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_sensor.html" class="m-doc">Sensor</a>*</span> <span class="m-param">parentSense</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void  Variable::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a054ef43d5beeb4649e6f42658fe3e303" class="m-doc-self">onSensorUpdate</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_sensor.html" class="m-doc">Sensor</a>*</span> <span
+                    class="m-param">parentSense</span>)</span></span>
             </h3>
             <p>Updates the interally stored data value.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -2960,14 +2908,16 @@
         </section>
                       <section class="m-doc-details" id="abe17e06fa54d25c7e2b9d8e348233f33"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#abe17e06fa54d25c7e2b9d8e348233f33" class="m-doc-self">getParentSensorName</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">String  Variable::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#abe17e06fa54d25c7e2b9d8e348233f33" class="m-doc-self">getParentSensorName</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span
+                    class="m-param"></span>)</span></span>
             </h3>
             <p>Get the parent sensor name, if applicable.</p>
             <table class="m-table m-fullwidth m-flat">
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td><strong>String</strong> The parent sensor name</td>
+                  <td><span class="m-dim">String</span> The parent sensor name</td>
                 </tr>
               </tfoot>
             </table>
@@ -2978,14 +2928,16 @@
         </section>
                       <section class="m-doc-details" id="a967a46f2b866821fb8a355ce8e9494c4"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#a967a46f2b866821fb8a355ce8e9494c4" class="m-doc-self">getParentSensorNameAndLocation</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">String  Variable::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a967a46f2b866821fb8a355ce8e9494c4" class="m-doc-self">getParentSensorNameAndLocation</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span
+                    class="m-param"></span>)</span></span>
             </h3>
             <p>Get the parent sensor name and location, if applicable.</p>
             <table class="m-table m-fullwidth m-flat">
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td><strong>String</strong> The parent sensor&#x27;s concatentated name and location.</td>
+                  <td><span class="m-dim">String</span> The parent sensor&#x27;s concatentated name and location.</td>
                 </tr>
               </tfoot>
             </table>
@@ -2996,7 +2948,9 @@
         </section>
                       <section class="m-doc-details" id="a02f5e0cc670cadbeae24a935f84d5bcc"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#a02f5e0cc670cadbeae24a935f84d5bcc" class="m-doc-self">setCalculation</a>(</span><span class="m-doc-wrap"><span class="m-dim">float(*)()</span> <span class="m-param">calcFxn</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void  Variable::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a02f5e0cc670cadbeae24a935f84d5bcc" class="m-doc-self">setCalculation</a>(</span><span class="m-doc-wrap"><span class="m-dim">float(*)()</span> <span
+                    class="m-param">calcFxn</span>)</span></span>
             </h3>
             <p>Set the calculation function for a calculted variable.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -3016,14 +2970,16 @@
         </section>
                       <section class="m-doc-details" id="a93ee039034a993cfc26fb191d09009d9"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">uint8_t </span><a href="#a93ee039034a993cfc26fb191d09009d9" class="m-doc-self">getResolution</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">uint8_t  Variable::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a93ee039034a993cfc26fb191d09009d9" class="m-doc-self">getResolution</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span
+                    class="m-param"></span>)</span></span>
             </h3>
             <p>Get the variable&#x27;s resolution - in decimal places.</p>
             <table class="m-table m-fullwidth m-flat">
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td><strong>uint8_t</strong> the variable resolution</td>
+                  <td><span class="m-dim">uint8_t</span> the variable resolution</td>
                 </tr>
               </tfoot>
             </table>
@@ -3033,7 +2989,9 @@
         </section>
                       <section class="m-doc-details" id="aaa42249cedabc0556ebe8f96a1e1d43b"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#aaa42249cedabc0556ebe8f96a1e1d43b" class="m-doc-self">setResolution</a>(</span><span class="m-doc-wrap"><span class="m-dim">uint8_t</span> <span class="m-param">decimalResolution</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void  Variable::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#aaa42249cedabc0556ebe8f96a1e1d43b" class="m-doc-self">setResolution</a>(</span><span class="m-doc-wrap"><span class="m-dim">uint8_t</span> <span
+                    class="m-param">decimalResolution</span>)</span></span>
             </h3>
             <p>Set the variable&#x27;s resolution.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -3053,14 +3011,16 @@
         </section>
                       <section class="m-doc-details" id="af02712a973fb305c54961f3e03430bc6"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#af02712a973fb305c54961f3e03430bc6" class="m-doc-self">getVarName</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">String  Variable::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#af02712a973fb305c54961f3e03430bc6" class="m-doc-self">getVarName</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span
+                    class="m-param"></span>)</span></span>
             </h3>
             <p>Get the variable name.</p>
             <table class="m-table m-fullwidth m-flat">
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td><strong>String</strong> The variable name</td>
+                  <td><span class="m-dim">String</span> The variable name</td>
                 </tr>
               </tfoot>
             </table>
@@ -3070,7 +3030,9 @@
         </section>
                       <section class="m-doc-details" id="afaf080a7d3e23e27ab2bfb7c2d586ec1"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#afaf080a7d3e23e27ab2bfb7c2d586ec1" class="m-doc-self">setVarName</a>(</span><span class="m-doc-wrap"><span class="m-dim">const char*</span> <span class="m-param">varName</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void  Variable::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#afaf080a7d3e23e27ab2bfb7c2d586ec1" class="m-doc-self">setVarName</a>(</span><span class="m-doc-wrap"><span class="m-dim">const char*</span> <span
+                    class="m-param">varName</span>)</span></span>
             </h3>
             <p>Set the variable name.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -3091,14 +3053,16 @@
         </section>
                       <section class="m-doc-details" id="a730b9f3819742a77e9d6251d5fed7855"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#a730b9f3819742a77e9d6251d5fed7855" class="m-doc-self">getVarUnit</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">String  Variable::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a730b9f3819742a77e9d6251d5fed7855" class="m-doc-self">getVarUnit</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span
+                    class="m-param"></span>)</span></span>
             </h3>
             <p>Get the variable unit.</p>
             <table class="m-table m-fullwidth m-flat">
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td><strong>String</strong> The variable unit</td>
+                  <td><span class="m-dim">String</span> The variable unit</td>
                 </tr>
               </tfoot>
             </table>
@@ -3108,7 +3072,9 @@
         </section>
                       <section class="m-doc-details" id="af9b268076a340c852456677c2cb79d50"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#af9b268076a340c852456677c2cb79d50" class="m-doc-self">setVarUnit</a>(</span><span class="m-doc-wrap"><span class="m-dim">const char*</span> <span class="m-param">varUnit</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void  Variable::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#af9b268076a340c852456677c2cb79d50" class="m-doc-self">setVarUnit</a>(</span><span class="m-doc-wrap"><span class="m-dim">const char*</span> <span
+                    class="m-param">varUnit</span>)</span></span>
             </h3>
             <p>Set the variable unit.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -3129,14 +3095,16 @@
         </section>
                       <section class="m-doc-details" id="a75d077ad19d0f736132be0592bd5a4d9"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#a75d077ad19d0f736132be0592bd5a4d9" class="m-doc-self">getVarCode</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">String  Variable::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a75d077ad19d0f736132be0592bd5a4d9" class="m-doc-self">getVarCode</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span
+                    class="m-param"></span>)</span></span>
             </h3>
             <p>Get the customized code for the variable.</p>
             <table class="m-table m-fullwidth m-flat">
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td><strong>String</strong> The customized code for the variable</td>
+                  <td><span class="m-dim">String</span> The customized code for the variable</td>
                 </tr>
               </tfoot>
             </table>
@@ -3146,7 +3114,9 @@
         </section>
                       <section class="m-doc-details" id="a2591b83c95eab3d29b9ea97d689d515c"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#a2591b83c95eab3d29b9ea97d689d515c" class="m-doc-self">setVarCode</a>(</span><span class="m-doc-wrap"><span class="m-dim">const char*</span> <span class="m-param">varCode</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void  Variable::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a2591b83c95eab3d29b9ea97d689d515c" class="m-doc-self">setVarCode</a>(</span><span class="m-doc-wrap"><span class="m-dim">const char*</span> <span
+                    class="m-param">varCode</span>)</span></span>
             </h3>
             <p>Set a customized code for the variable.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -3166,14 +3136,16 @@
         </section>
                       <section class="m-doc-details" id="a6e58b13fa6fa8ad50ccb56ff5dfb54dc"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#a6e58b13fa6fa8ad50ccb56ff5dfb54dc" class="m-doc-self">getVarUUID</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">String  Variable::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a6e58b13fa6fa8ad50ccb56ff5dfb54dc" class="m-doc-self">getVarUUID</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span
+                    class="m-param"></span>)</span></span>
             </h3>
             <p>Get the customized code for the variable.</p>
             <table class="m-table m-fullwidth m-flat">
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td><strong>String</strong> The customized code for the variable</td>
+                  <td><span class="m-dim">String</span> The customized code for the variable</td>
                 </tr>
               </tfoot>
             </table>
@@ -3183,7 +3155,9 @@
         </section>
                       <section class="m-doc-details" id="ae0fc2b635a3b1a3f42cd9fa7ab3abfad"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#ae0fc2b635a3b1a3f42cd9fa7ab3abfad" class="m-doc-self">setVarUUID</a>(</span><span class="m-doc-wrap"><span class="m-dim">const char*</span> <span class="m-param">uuid</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void  Variable::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#ae0fc2b635a3b1a3f42cd9fa7ab3abfad" class="m-doc-self">setVarUUID</a>(</span><span class="m-doc-wrap"><span class="m-dim">const char*</span> <span
+                    class="m-param">uuid</span>)</span></span>
             </h3>
             <p>Set a customized code for the variable.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -3203,14 +3177,16 @@
         </section>
                       <section class="m-doc-details" id="a6951a420bdc05009affca150525e5e30"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a6951a420bdc05009affca150525e5e30" class="m-doc-self">checkUUIDFormat</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool  Variable::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a6951a420bdc05009affca150525e5e30" class="m-doc-self">checkUUIDFormat</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span
+                    class="m-param"></span>)</span></span>
             </h3>
             <p>Verify the the UUID is correctly formatted.</p>
             <table class="m-table m-fullwidth m-flat">
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td><strong>bool</strong> True if the UUID is correctly formatted.</td>
+                  <td><span class="m-dim">bool</span> True if the UUID is correctly formatted.</td>
                 </tr>
               </tfoot>
             </table>
@@ -3221,7 +3197,9 @@
         </section>
                       <section class="m-doc-details" id="a06e2bbb4c1e40387881215d36fc04e49"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">float </span><a href="#a06e2bbb4c1e40387881215d36fc04e49" class="m-doc-self">getValue</a>(</span><span class="m-doc-wrap"><span class="m-dim">bool</span> <span class="m-param">updateValue</span><span class="m-dim"> = false</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">float  Variable::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a06e2bbb4c1e40387881215d36fc04e49" class="m-doc-self">getValue</a>(</span><span class="m-doc-wrap"><span class="m-dim">bool</span> <span
+                    class="m-param">updateValue</span><span class="m-dim"> = false</span>)</span></span>
             </h3>
             <p>Get current value of the variable as a float.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -3237,7 +3215,7 @@
               <tfoot>
                 <tr>
                   <th>Returns</th>
-                  <td><strong>float</strong> The current value of the variable</td>
+                  <td><span class="m-dim">float</span> The current value of the variable</td>
                 </tr>
               </tfoot>
             </table>
@@ -3247,7 +3225,9 @@
         </section>
                       <section class="m-doc-details" id="ac3acd66d0739483affedb4f1a3d7308b"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#ac3acd66d0739483affedb4f1a3d7308b" class="m-doc-self">getValueString</a>(</span><span class="m-doc-wrap"><span class="m-dim">bool</span> <span class="m-param">updateValue</span><span class="m-dim"> = false</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">String  Variable::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#ac3acd66d0739483affedb4f1a3d7308b" class="m-doc-self">getValueString</a>(</span><span class="m-doc-wrap"><span class="m-dim">bool</span> <span
+                    class="m-param">updateValue</span><span class="m-dim"> = false</span>)</span></span>
             </h3>
             <p>Get current value of the variable as a string with the correct decimal resolution.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -3263,7 +3243,35 @@
               <tfoot>
                 <tr>
                   <th>Returns</th>
-                  <td><strong>String</strong> The current value of the variable</td>
+                  <td><span class="m-dim">String</span> The current value of the variable</td>
+                </tr>
+              </tfoot>
+            </table>
+
+            <hr>
+          </div>
+        </section>
+                      <section class="m-doc-details" id="a5868f82b12f6f11885158d01b511ae61"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">String  Variable::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a5868f82b12f6f11885158d01b511ae61" class="m-doc-self">formatValueString</a>(</span><span class="m-doc-wrap"><span class="m-dim">float</span> <span
+                    class="m-param">value</span>)</span></span>
+            </h3>
+            <p>Get a particular value of the variable as a string with the correct decimal resolution.</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="m-param"  style="width: 1%"><span class="m-param">value</span></td>
+                  <td>value to format</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td><span class="m-dim">String</span> The formatted value of the variable</td>
                 </tr>
               </tfoot>
             </table>
@@ -3273,7 +3281,6 @@
         </section>
         </section>
         <hr>
-
         <section id="variable-details">
           <h2>Variable documentation</h2>
                       <section class="m-doc-details" id="a25eab99165e1e06e02adf7739b1a7bc7"><div>
@@ -3289,61 +3296,73 @@
         </section>
         <hr>
 
-
-
-                    </div>
-                  </div>
-                </div>
               </article>
             </main>
 
-          </div>      </div></div><div id="footer-image">
-          <div class="gp-container">
-            <img
-              src="https://www.envirodiy.org/wp-content/uploads/2016/05/EnviroDIY_LogoMaster_Square_V5_TwoTree_Trans_notext-e1462820115833.png"
-              width="99"
-              height="22"
-              alt=""
-            />
-          </div>
-        </div>
+          </div> <!-- gp-content -->
+        </div> <!-- gp-left-column -->
+      </div> <!-- gp-inner-container -->
+    </div> <!-- gp-content-wrapper -->
+
+    <div id="footer-image">
+      <div class="gp-container">
+        <img
+          src="https://www.envirodiy.org/wp-content/uploads/2016/05/EnviroDIY_LogoMaster_Square_V5_TwoTree_Trans_notext-e1462820115833.png"
+          width="99"
+          height="22"
+          alt=""
+        />
+      </div>
+    </div>
 
     <footer id="gp-footer">
       <div id="gp-copyright">
         <div class="gp-container">
           <div id="gp-copyright-text">
             <p>
-              <a href="http://www.stroudcenter.org/" target="_blank"
-                ><img
-                  style="float: left; margin-right: 20px;"
-                  src="https://www.envirodiy.org/wp-content/uploads/2017/01/stroud-white-white-165px.png"
-                  alt=""
-                  width="165"
-                  height="70" /></a
-              >EnviroDIY™ is a community for do-it-yourself ideas for
-              environmental science and monitoring. EnviroDIY is an
-              initiative of
-              <a href="http://www.stroudcenter.org/" target="_blank"
-                >Stroud™ Water Research Center</a
-              >, which seeks to advance knowledge and stewardship of
-              freshwater systems through global research, education, and
-              watershed restoration.
+              <a href="https://stroudcenter.org/" target="_blank"
+                >EnviroDIY™ is a community for do-it-yourself ideas for environmental
+                science and monitoring. EnviroDIY is an initiative of
+                <a
+                  style="text-decoration: underline"
+                  href="https://stroudcenter.org/"
+                  target="_blank"
+                  >Stroud Water Research Center</a
+                >, which advances knowledge and stewardship of freshwater systems through
+                global research, education, and watershed restoration.
+              </a>
             </p>
             <p>
               All content on EnviroDIY is licensed as Creative Commons
-              Attribution-ShareAlike 4.0 International (CC-BY-SA). Hardware
-              designs on this website are released under the CERN Open
-              Hardware License 1.2.
-              <a href="https://envirodiy.org/licenses/"
-                >Alternative licenses are available.</a
+              Attribution-ShareAlike 4.0 International (CC-BY-SA). Hardware designs on this
+              website are released under the CERN Open Hardware License 1.2.
+              <a style="text-decoration: underline" href="https://envirodiy.org/licenses/"
+                >See all licenses.</a
               >
-              <a href="https://envirodiy.org/terms/">Terms of Use</a> |
-              <a href="https://envirodiy.org/privacy/">Privacy Policy</a> |
-              <a href="https://envirodiy.org/cookies/">Cookie Policy</a> |
-              <a href="https://envirodiy.org/contact/">Contact</a>
+              <a style="text-decoration: underline" href="https://envirodiy.org/terms/"
+                >Terms of Use</a
+              >
+              |
+              <a style="text-decoration: underline" href="https://envirodiy.org/privacy/"
+                >Privacy Policy</a
+              >
+              |
+              <a style="text-decoration: underline" href="https://envirodiy.org/cookies/"
+                >Cookie Policy</a
+              >
+              |
+              <a
+                style="text-decoration: underline"
+                href="https://envirodiy.org/shop-policies/"
+                >Shop Policies</a
+              >
+              |
+              <a style="text-decoration: underline" href="https://envirodiy.org/contact/"
+                >Contact</a
+              >
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.6 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.12.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>
@@ -3352,69 +3371,8 @@
 
     <div class="gp-clear"></div>
 
-    </div></div><script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/modernizr.js?ver=6.1.1"
-  id="modernizr-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-includes/js/imagesloaded.min.js?ver=4.1.4"
-  id="imagesloaded-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/selectivizr.min.js?ver=6.1.1"
-  id="selectivizr-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/placeholders.min.js?ver=6.1.1"
-  id="placeholder-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/jquery.ui.totop.min.js.js?ver=6.1.1"
-  id="jquery-totop-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/jquery.flexslider-min.js?ver=6.1.1"
-  id="jquery-flexslider-js"
-></script>
-<script type="text/javascript" id="ghostpool-custom-js-js-extra">
-  /* <![CDATA[ */
-  var ghostpool_script = {
-    lightbox: 'separate_images',
-    url: 'https:\/\/www.envirodiy.org\/',
-    related_items_in_view: '',
-  };
-  /* ]]> */
-</script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/jquery.stellar.min.js?ver=6.1.1"
-  id="jquery-stellar-js"
-></script>
+    </div> <!-- gp-site-wrapper -->
+  </div> <!-- gp-site-wrapper -->
 
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/custom.js?ver=6.1.1"
-  id="ghostpool-custom-js-js"
-></script>
-<script type="text/javascript" id="ghostpool-ajax-loop-js-extra">
-  /* <![CDATA[ */
-  var ghostpoolAjax = {
-    ajaxurl: 'https:\/\/www.envirodiy.org\/wp-admin\/admin-ajax.php',
-    ajaxnonce: 'e2424257d3',
-    querystring: '',
-  };
-  /* ]]> */
-</script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/ajax-loop.js?ver=6.1.1"
-  id="ghostpool-ajax-loop-js"
-></script>
 </body>
 </html>

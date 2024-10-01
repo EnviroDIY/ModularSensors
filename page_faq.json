@@ -1,0 +1,72 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "page",
+    "id": "page_faq",
+    "name": "FAQs",
+    "url_base": "page_faq",
+    "url": "page_faq.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>Here are some links to pages with more detailed information about some common issues with the ModularSensors library.</p><p><a href=\"page_processor_compatibility.html\" class=\"m-doc\">Processor Compatibility</a></p><p><a href=\"page_arduino_streams.html\" class=\"m-doc\">Notes on Arduino Streams and Software Serial</a></p><p><a href=\"page_power_parasites.html\" class=\"m-doc\">Power Draw over Data Lines</a></p><p><a href=\"page_memory_use.html\" class=\"m-doc\">Decreasing Memory Footprint</a></p><p><a href=\"page_code_debugging.html\" class=\"m-doc\">In-Library Debugging</a></p><p><a href=\"page_for_developers.html\" class=\"m-doc\">Developer Setup</a></p><p><a href=\"https://github.com/vshymanskyy/TinyGSM#troubleshooting\">TinyGSM Troubleshooting page</a></p>",
+    "sections": [],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "ModularSensors",
+        "index.html"
+      ],
+      [
+        "FAQs",
+        "page_faq.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "FAQs",
+        "page_faq.html"
+      ]
+    ]
+  }
+}

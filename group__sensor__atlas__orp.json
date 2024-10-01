@@ -1,0 +1,371 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__sensor__atlas__orp",
+    "name": "Atlas EZO-ORP",
+    "url_base": "group__sensor__atlas__orp",
+    "url": "group__sensor__atlas__orp.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>Classes for the Atlas Scientific EZO-ORP oxidation/reduction potential circuit and probes.</p><section id=\"sensor_atlas_orp_datasheet\"><h2>Sensor Datasheet</h2><p>Documentation on the circuit is available here: <a href=\"https://www.atlas-scientific.com/circuits/ezo-orp-circuit/\">https:/<wbr />/<wbr />www.atlas-scientific.com/<wbr />circuits/<wbr />ezo-orp-circuit/<wbr /></a></p></section><section id=\"sensor_atlas_orp_ctor\"><h2>Sensor Constructors</h2><p>{{ <a href=\"class_atlas_scientific_o_r_p.html#aa6dada61c62decff65d4731604e790f6\" class=\"m-doc\">AtlasScientificORP::<wbr />AtlasScientificORP(int8_t, uint8_t, uint8_t)</a> }} {{ <a href=\"class_atlas_scientific_o_r_p.html#a4bf7be24db4890f7fa59721bb3912151\" class=\"m-doc\">AtlasScientificORP::<wbr />AtlasScientificORP(TwoWire*, int8_t, uint8_t, uint8_t)</a> }}</p><hr/></section><section id=\"sensor_atlas_orp_examples\"><h2>Example Code</h2><p>The Atlas ORP sensor is used in the <a href=\"example_menu.html#menu_walk_atlas_scientific_orp\" class=\"m-doc\">menu a la carte</a> example.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;sensors/AtlasScientificORP.h&gt;</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"c1\">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">AtlasORPPower</span><span class=\"w\">    </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">sensorPowerPin</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// Power pin</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span><span class=\"kr\">uint8_t</span><span class=\"w\">      </span><span class=\"n\">AtlasORPi2c_addr</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mh\">0x62</span><span class=\"p\">;</span><span class=\"w\">            </span><span class=\"c1\">// Default for ORP is 0x62 (98)</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span><span class=\"c1\">// All Atlas sensors have different default I2C addresses, but any of them can</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"c1\">// be re-addressed to any 8 bit number.  If using the default address for any</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span><span class=\"c1\">// Atlas Scientific sensor, you may omit this argument.</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span>\n</div><div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span><span class=\"c1\">// Create an Atlas Scientific ORP sensor object</span>\n</div><div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span><span class=\"c1\">// AtlasScientificORP atlasORP(AtlasORPPower, AtlasORPi2c_addr);</span>\n</div><div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"n\">AtlasScientificORP</span><span class=\"w\"> </span><span class=\"nf\">atlasORP</span><span class=\"p\">(</span><span class=\"n\">AtlasORPPower</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span>\n</div><div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span><span class=\"c1\">// Create a potential variable pointer for the ORP</span>\n</div><div class=\"line\"><a id=\"l-15\" name=\"l-15\"></a><span class=\"linenos\">15</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">atlasORPot</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">AtlasScientificORP_Potential</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-16\" name=\"l-16\"></a><span class=\"linenos\">16</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">atlasORP</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "sensor_atlas_orp_datasheet",
+        "Sensor Datasheet",
+        []
+      ],
+      [
+        "sensor_atlas_orp_ctor",
+        "Sensor Constructors",
+        []
+      ],
+      [
+        "sensor_atlas_orp_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_atlas_scientific_o_r_p.html",
+        "name": "AtlasScientificORP",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__atlas__orp.html\" class=\"m-doc\">Atlas Scientific ORP (oxidation/reduction potential) sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_atlas_scientific_o_r_p___potential.html",
+        "name": "AtlasScientificORP_Potential",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__atlas__orp.html#sensor_atlas_orp_orp\" class=\"m-doc\">oxidation/reduction potential output</a> from an <a href=\"group__sensor__atlas__orp.html\" class=\"m-doc\">Atlas Scientific EZO-ORP circuit</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Sensor Variable Counts",
+        "id": "sensor-variable-counts",
+        "description": "<p><a name=\"sensor_atlas_orp_var_counts\"></a> The number of variables that can be returned by the Atlas ORP sensor</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__orp.html",
+              "id": "ga1e2a49c1b904dbc2140d2916909648c7",
+              "include": [
+                "&lt;src/sensors/AtlasScientificORP.h&gt;",
+                "_atlas_scientific_o_r_p_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_ORP_NUM_VARIABLES",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html#af26786329fd01b44cf31410d046fc8f3\" class=\"m-doc\">Sensor::<wbr />_numReturnedValues</a>; the Atlas EZO ORP circuit can report 1 value.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__orp.html",
+              "id": "ga5b8ad0791fb434460200cb369d68bbf6",
+              "include": [
+                "&lt;src/sensors/AtlasScientificORP.h&gt;",
+                "_atlas_scientific_o_r_p_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_ORP_INC_CALC_VARIABLES",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#a2f3f93a9205efb134cef1216d65077d2\" class=\"m-doc\">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Configuration Defines",
+        "id": "configuration-defines",
+        "description": "<p><a name=\"sensor_atlas_orp_config\"></a> Defines to configure and set the address of the Atlas ORP sensor</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__orp.html",
+              "id": "gac7f2cf509c360c0bc1bc33523bef0804",
+              "include": [
+                "&lt;src/sensors/AtlasScientificORP.h&gt;",
+                "_atlas_scientific_o_r_p_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_ORP_I2C_ADDR",
+              "initializer": "0x62",
+              "brief": "The default I2C address of the Atlas ORP sensor is 0x62 (98)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Sensor Timing",
+        "id": "sensor-timing",
+        "description": "<p><a name=\"sensor_atlas_orp_timing\"></a> The sensor timing for an Atlas ORP (redox) sensor</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__orp.html",
+              "id": "gad658be4f114269970bbc0ded21b1066a",
+              "include": [
+                "&lt;src/sensors/AtlasScientificORP.h&gt;",
+                "_atlas_scientific_o_r_p_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_ORP_WARM_UP_TIME_MS",
+              "initializer": "850",
+              "brief": "<a href=\"class_sensor.html#aaaefd7f306f86382a3dac726531756b4\" class=\"m-doc\">Sensor::<wbr />_warmUpTime_ms</a>; the Atlas EZO ORP circuit warms up in 850ms.",
+              "description": "<p>846 in SRGD tests</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__orp.html",
+              "id": "ga93ff3bec656eed01520c1083a6547a26",
+              "include": [
+                "&lt;src/sensors/AtlasScientificORP.h&gt;",
+                "_atlas_scientific_o_r_p_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_ORP_STABILIZATION_TIME_MS",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#ad6822ad09fb64658c911ce86820db79c\" class=\"m-doc\">Sensor::<wbr />_stabilizationTime_ms</a>; the Atlas EZO ORP circuit is stable 0ms after warm-up (stable at completion of warm up).",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__orp.html",
+              "id": "gab3e4613ce2747b53796cf4ce1844cd16",
+              "include": [
+                "&lt;src/sensors/AtlasScientificORP.h&gt;",
+                "_atlas_scientific_o_r_p_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_ORP_MEASUREMENT_TIME_MS",
+              "initializer": "1580",
+              "brief": "<a href=\"class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba\" class=\"m-doc\">Sensor::<wbr />_measurementTime_ms</a>; the Atlas EZO ORP circuit takes 1580ms to complete a measurement.",
+              "description": "<aside class=\"m-note m-info\"><h4>Note</h4><p>Manual says measurement takes 900 ms, but in SRGD tests, no result was available until after 1577 ms.</p></aside>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "ORP",
+        "id": "orp",
+        "description": "<p><a name=\"sensor_atlas_orp_orp\"></a> The ORP variable from an Atlas ORP (redox) sensor</p><ul><li>Accuracy is \u00b1 1 mV</li><li>Range is -1019.9mV \u2212 1019.9mV</li></ul><p>{{ <a href=\"class_atlas_scientific_o_r_p___potential.html#ab1cc7609471dc6740628480ad3eff7c6\" class=\"m-doc\">AtlasScientificORP_Potential::<wbr />AtlasScientificORP_Potential</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__orp.html",
+              "id": "gac08c5c94bef005cbffc3136d124ae6c8",
+              "include": [
+                "&lt;src/sensors/AtlasScientificORP.h&gt;",
+                "_atlas_scientific_o_r_p_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_ORP_RESOLUTION",
+              "initializer": "1",
+              "brief": "Decimals places in string representation; ORP should have 1 - resolution is 0.1 mV.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__orp.html",
+              "id": "ga81ac3c593ac052b144c898c2162aa120",
+              "include": [
+                "&lt;src/sensors/AtlasScientificORP.h&gt;",
+                "_atlas_scientific_o_r_p_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_ORP_VAR_NUM",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; ORP is stored in sensorValues[0].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__orp.html",
+              "id": "ga54f7d135060b32fa5c3c8f38169fddd2",
+              "include": [
+                "&lt;src/sensors/AtlasScientificORP.h&gt;",
+                "_atlas_scientific_o_r_p_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_ORP_VAR_NAME",
+              "initializer": "\"reductionPotential\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;reductionPotential&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__orp.html",
+              "id": "ga98606a44e4ab1eb88643a307893a78e3",
+              "include": [
+                "&lt;src/sensors/AtlasScientificORP.h&gt;",
+                "_atlas_scientific_o_r_p_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_ORP_UNIT_NAME",
+              "initializer": "\"millivolt\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;millivolt&quot; (mV)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__orp.html",
+              "id": "gab7f194e5e88c18fca08b97ebc1a53790",
+              "include": [
+                "&lt;src/sensors/AtlasScientificORP.h&gt;",
+                "_atlas_scientific_o_r_p_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_ORP_DEFAULT_CODE",
+              "initializer": "\"AtlasORP\"",
+              "brief": "Default variable short code; &quot;AtlasORP&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "Atlas Scientific EZO Circuits",
+        "group__atlas__group.html"
+      ],
+      [
+        "Atlas EZO-ORP",
+        "group__sensor__atlas__orp.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Atlas EZO-ORP",
+        "group__sensor__atlas__orp.html"
+      ]
+    ]
+  }
+}

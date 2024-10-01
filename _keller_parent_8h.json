@@ -1,0 +1,86 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "file",
+    "id": "_keller_parent_8h",
+    "name": "KellerParent.h",
+    "url_base": "_keller_parent_8h",
+    "url": "_keller_parent_8h.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "Contains the <a href=\"class_keller_parent.html\" class=\"m-doc\">KellerParent</a> sensor subclass, itself used as a parent class for all Keller modbus sensors.",
+    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Written By: Anthony Aufdenkampe <a href=\"mailto:aaufdenkampe@limno.com\">aaufdenkampe@limno.com</a> Edited by Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside><p>This depends on the KellerModbus and SensorModbusMaster libraries.</p><p>Documentation for the Keller Protocol commands and responses, along with information about the various variables, can be found in the EnviroDIY KellerModbus library at: <a href=\"https://github.com/EnviroDIY/KellerModbus\">https:/<wbr />/<wbr />github.com/<wbr />EnviroDIY/<wbr />KellerModbus</a></p>",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_keller_parent.html",
+        "name": "KellerParent",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for all <a href=\"group__keller__group.html\" class=\"m-doc\">Keller water level sensors</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "src",
+        "dir_68267d1309a1af8e8297ef4c3efbcdba.html"
+      ],
+      [
+        "sensors",
+        "dir_7349e89ef19c117195f8e371603e1b1f.html"
+      ],
+      [
+        "KellerParent.h",
+        "_keller_parent_8h.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "KellerParent.h",
+        "_keller_parent_8h.html"
+      ]
+    ]
+  }
+}

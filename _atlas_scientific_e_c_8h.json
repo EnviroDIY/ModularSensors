@@ -1,0 +1,122 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "file",
+    "id": "_atlas_scientific_e_c_8h",
+    "name": "AtlasScientificEC.h",
+    "url_base": "_atlas_scientific_e_c_8h",
+    "url": "_atlas_scientific_e_c_8h.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "Contains the <a href=\"class_atlas_scientific_c_o2.html\" class=\"m-doc\">AtlasScientificCO2</a> subclass of the <a href=\"class_atlas_parent.html\" class=\"m-doc\">AtlasParent</a> sensor class along with the variable subclasses <a href=\"class_atlas_scientific_e_c___cond.html\" class=\"m-doc\">AtlasScientificEC_<wbr />Cond</a>, <a href=\"class_atlas_scientific_e_c___t_d_s.html\" class=\"m-doc\">AtlasScientificEC_<wbr />TDS</a>, <a href=\"class_atlas_scientific_e_c___salinity.html\" class=\"m-doc\">AtlasScientificEC_<wbr />Salinity</a> and <a href=\"class_atlas_scientific_e_c___specific_gravity.html\" class=\"m-doc\">AtlasScientificEC_<wbr />SpecificGravity</a>.",
+    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Initial developement for Atlas Sensors was done by Adam Gold Files were edited by Sara Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside><p>These are used for any sensor attached to an <a href=\"https://www.atlas-scientific.com/conductivity.html\">Atlas EZO conductivity circuit</a>.</p>",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_atlas_scientific_e_c.html",
+        "name": "AtlasScientificEC",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__atlas__cond.html\" class=\"m-doc\">Atlas Scientific conductivity circuit and sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_atlas_scientific_e_c___cond.html",
+        "name": "AtlasScientificEC_Cond",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__atlas__cond.html#sensor_atlas_cond_cond\" class=\"m-doc\">conductivity output</a> from an <a href=\"group__sensor__atlas__cond.html\" class=\"m-doc\">Atlas Scientific EC EZO circuit</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_atlas_scientific_e_c___t_d_s.html",
+        "name": "AtlasScientificEC_TDS",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__atlas__cond.html#sensor_atlas_cond_tds\" class=\"m-doc\">total dissolved solids output</a> from an <a href=\"group__sensor__atlas__cond.html\" class=\"m-doc\">Atlas Scientific EC EZO circuit</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_atlas_scientific_e_c___salinity.html",
+        "name": "AtlasScientificEC_Salinity",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__atlas__cond.html#sensor_atlas_cond_salinity\" class=\"m-doc\">salinity output</a> from an <a href=\"group__sensor__atlas__cond.html\" class=\"m-doc\">Atlas Scientific EC EZO circuit</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_atlas_scientific_e_c___specific_gravity.html",
+        "name": "AtlasScientificEC_SpecificGravity",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__atlas__cond.html#sensor_atlas_cond_sg\" class=\"m-doc\">specific gravity output</a> from an <a href=\"group__sensor__atlas__cond.html\" class=\"m-doc\">Atlas Scientific EC EZO circuit</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "src",
+        "dir_68267d1309a1af8e8297ef4c3efbcdba.html"
+      ],
+      [
+        "sensors",
+        "dir_7349e89ef19c117195f8e371603e1b1f.html"
+      ],
+      [
+        "AtlasScientificEC.h",
+        "_atlas_scientific_e_c_8h.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "AtlasScientificEC.h",
+        "_atlas_scientific_e_c_8h.html"
+      ]
+    ]
+  }
+}

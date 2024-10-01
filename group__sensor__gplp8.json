@@ -1,0 +1,422 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__sensor__gplp8",
+    "name": "GroPoint Profile GPLP-8 Soil Moisture & Temperature",
+    "url_base": "group__sensor__gplp8",
+    "url": "group__sensor__gplp8.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>Profiling Probe. Classes for the GroPoint Profile GPLP-8 Soil Moisture &amp; Temperature Probe.</p><section id=\"sensor_gplp8_datasheet\"><h2>Sensor Datasheet</h2><ul><li><a href=\"https://www.gropoint.com/s/2625-N-T-GroPoint-Profile-User-Manual-V113.pdf\">GroPoint Profile User Manual</a>, including Modbus Instructions.</li><li><a href=\"https://www.gropoint.com/s/GroPoint-Profile-Technical-Info.pdf\">GroPoint Profile Technical Info</a></li></ul></section><section id=\"sensor_gplp8_ctor\"><h2>Sensor Constructor</h2><p>{{ <a href=\"class_gro_point_g_p_l_p8.html#a1346fa8202f4969c45ecb32c74682ea1\" class=\"m-doc\">GroPointGPLP8::<wbr />GroPointGPLP8</a> }}</p><hr/></section><section id=\"sensor_gplp8_examples\"><h2>Example Code</h2><p>The GPLP-8 Probe is used in the <a href=\"example_menu.html#menu_walk_gro_point_gplp8\" class=\"m-doc\">menu a la carte</a> example.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;sensors/GroPointGPLP8.h&gt;</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"c1\">// NOTE: Extra hardware and software serial ports are created in the &quot;Settings</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"c1\">// for Additional Serial Ports&quot; section</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span><span class=\"c1\">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"kr\">byte</span><span class=\"w\"> </span><span class=\"n\">gplp8ModbusAddress</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mh\">0x19</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// The modbus address of the gplp8</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span><span class=\"c1\">// Raw Request &gt;&gt;&gt; {0x19, 0x03, 0x00, 0xC8, 0x00, 0x01, 0x06, 0x2C}</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">gplp8AdapterPower</span><span class=\"w\">   </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">sensorPowerPin</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// RS485 adapter power pin</span>\n</div><div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">gplp8SensorPower</span><span class=\"w\">    </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">A3</span><span class=\"p\">;</span><span class=\"w\">              </span><span class=\"c1\">// Sensor power pin</span>\n</div><div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">gplp8EnablePin</span><span class=\"w\">      </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">-1</span><span class=\"p\">;</span><span class=\"w\">              </span><span class=\"c1\">// Adapter RE/DE pin</span>\n</div><div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">uint8_t</span><span class=\"w\"> </span><span class=\"n\">gplp8NumberReadings</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">1</span><span class=\"p\">;</span>\n</div><div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span><span class=\"c1\">// The manufacturer recommends averaging 10 readings, but we take 5 to minimize</span>\n</div><div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span><span class=\"c1\">// power consumption</span>\n</div><div class=\"line\"><a id=\"l-15\" name=\"l-15\"></a><span class=\"linenos\">15</span>\n</div><div class=\"line\"><a id=\"l-16\" name=\"l-16\"></a><span class=\"linenos\">16</span><span class=\"c1\">// Create a GroPoint Profile GPLP-8 sensor object</span>\n</div><div class=\"line\"><a id=\"l-17\" name=\"l-17\"></a><span class=\"linenos\">17</span><span class=\"n\">GroPointGPLP8</span><span class=\"w\"> </span><span class=\"nf\">gplp8</span><span class=\"p\">(</span><span class=\"n\">gplp8ModbusAddress</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">modbusSerial</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">gplp8AdapterPower</span><span class=\"p\">,</span>\n</div><div class=\"line\"><a id=\"l-18\" name=\"l-18\"></a><span class=\"linenos\">18</span><span class=\"w\">                    </span><span class=\"n\">gplp8SensorPower</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">gplp8EnablePin</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">gplp8NumberReadings</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-19\" name=\"l-19\"></a><span class=\"linenos\">19</span>\n</div><div class=\"line\"><a id=\"l-20\" name=\"l-20\"></a><span class=\"linenos\">20</span><span class=\"c1\">// Create moisture variable pointers for each segment of the GPLP-8</span>\n</div><div class=\"line\"><a id=\"l-21\" name=\"l-21\"></a><span class=\"linenos\">21</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">gplp8Moist1</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">GroPointGPLP8_Moist</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-22\" name=\"l-22\"></a><span class=\"linenos\">22</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">gplp8</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"mi\">0</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;GPLP8Moist1&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-23\" name=\"l-23\"></a><span class=\"linenos\">23</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">gplp8Moist2</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">GroPointGPLP8_Moist</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-24\" name=\"l-24\"></a><span class=\"linenos\">24</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">gplp8</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"mi\">1</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;GPLP8Moist2&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-25\" name=\"l-25\"></a><span class=\"linenos\">25</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">gplp8Moist3</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">GroPointGPLP8_Moist</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-26\" name=\"l-26\"></a><span class=\"linenos\">26</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">gplp8</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"mi\">2</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;GPLP8Moist3&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-27\" name=\"l-27\"></a><span class=\"linenos\">27</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">gplp8Moist4</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">GroPointGPLP8_Moist</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-28\" name=\"l-28\"></a><span class=\"linenos\">28</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">gplp8</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"mi\">3</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;GPLP8Moist4&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-29\" name=\"l-29\"></a><span class=\"linenos\">29</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">gplp8Moist5</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">GroPointGPLP8_Moist</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-30\" name=\"l-30\"></a><span class=\"linenos\">30</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">gplp8</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"mi\">4</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;GPLP8Moist5&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-31\" name=\"l-31\"></a><span class=\"linenos\">31</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">gplp8Moist6</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">GroPointGPLP8_Moist</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-32\" name=\"l-32\"></a><span class=\"linenos\">32</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">gplp8</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"mi\">5</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;GPLP8Moist6&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-33\" name=\"l-33\"></a><span class=\"linenos\">33</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">gplp8Moist7</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">GroPointGPLP8_Moist</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-34\" name=\"l-34\"></a><span class=\"linenos\">34</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">gplp8</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"mi\">6</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;GPLP8Moist7&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-35\" name=\"l-35\"></a><span class=\"linenos\">35</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">gplp8Moist8</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">GroPointGPLP8_Moist</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-36\" name=\"l-36\"></a><span class=\"linenos\">36</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">gplp8</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"mi\">7</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;GPLP8Moist8&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-37\" name=\"l-37\"></a><span class=\"linenos\">37</span>\n</div><div class=\"line\"><a id=\"l-38\" name=\"l-38\"></a><span class=\"linenos\">38</span><span class=\"c1\">// Create temperature variable pointers for each sensor of the GPLP-8</span>\n</div><div class=\"line\"><a id=\"l-39\" name=\"l-39\"></a><span class=\"linenos\">39</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">gplp8Temp1</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">GroPointGPLP8_Temp</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-40\" name=\"l-40\"></a><span class=\"linenos\">40</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">gplp8</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"mi\">8</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;GPLP8Temp1&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-41\" name=\"l-41\"></a><span class=\"linenos\">41</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">gplp8Temp2</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">GroPointGPLP8_Temp</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-42\" name=\"l-42\"></a><span class=\"linenos\">42</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">gplp8</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"mi\">9</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;GPLP8Temp1&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-43\" name=\"l-43\"></a><span class=\"linenos\">43</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">gplp8Temp3</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">GroPointGPLP8_Temp</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-44\" name=\"l-44\"></a><span class=\"linenos\">44</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">gplp8</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"mi\">10</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;GPLP8Temp3&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-45\" name=\"l-45\"></a><span class=\"linenos\">45</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">gplp8Temp4</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">GroPointGPLP8_Temp</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-46\" name=\"l-46\"></a><span class=\"linenos\">46</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">gplp8</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"mi\">11</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;GPLP8Temp4&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-47\" name=\"l-47\"></a><span class=\"linenos\">47</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">gplp8Temp5</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">GroPointGPLP8_Temp</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-48\" name=\"l-48\"></a><span class=\"linenos\">48</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">gplp8</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"mi\">12</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;GPLP8Temp5&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-49\" name=\"l-49\"></a><span class=\"linenos\">49</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">gplp8Temp6</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">GroPointGPLP8_Temp</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-50\" name=\"l-50\"></a><span class=\"linenos\">50</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">gplp8</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"mi\">13</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;GPLP8Temp6&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-51\" name=\"l-51\"></a><span class=\"linenos\">51</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">gplp8Temp7</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">GroPointGPLP8_Temp</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-52\" name=\"l-52\"></a><span class=\"linenos\">52</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">gplp8</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"mi\">14</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;GPLP8Temp7&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-53\" name=\"l-53\"></a><span class=\"linenos\">53</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">gplp8Temp8</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">GroPointGPLP8_Temp</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-54\" name=\"l-54\"></a><span class=\"linenos\">54</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">gplp8</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"mi\">15</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;GPLP8Temp8&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-55\" name=\"l-55\"></a><span class=\"linenos\">55</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">gplp8Temp9</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">GroPointGPLP8_Temp</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-56\" name=\"l-56\"></a><span class=\"linenos\">56</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">gplp8</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"mi\">16</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;GPLP8Temp9&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-57\" name=\"l-57\"></a><span class=\"linenos\">57</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">gplp8Temp10</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">GroPointGPLP8_Temp</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-58\" name=\"l-58\"></a><span class=\"linenos\">58</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">gplp8</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"mi\">17</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;GPLP8Temp10&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-59\" name=\"l-59\"></a><span class=\"linenos\">59</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">gplp8Temp11</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">GroPointGPLP8_Temp</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-60\" name=\"l-60\"></a><span class=\"linenos\">60</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">gplp8</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"mi\">18</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;GPLP8Temp11&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-61\" name=\"l-61\"></a><span class=\"linenos\">61</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">gplp8Temp12</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">GroPointGPLP8_Temp</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-62\" name=\"l-62\"></a><span class=\"linenos\">62</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">gplp8</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"mi\">19</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;GPLP8Temp12&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-63\" name=\"l-63\"></a><span class=\"linenos\">63</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">gplp8Temp13</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">GroPointGPLP8_Temp</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-64\" name=\"l-64\"></a><span class=\"linenos\">64</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">gplp8</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"mi\">20</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;GPLP8Temp13&quot;</span><span class=\"p\">);</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "sensor_gplp8_datasheet",
+        "Sensor Datasheet",
+        []
+      ],
+      [
+        "sensor_gplp8_ctor",
+        "Sensor Constructor",
+        []
+      ],
+      [
+        "sensor_gplp8_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_gro_point_g_p_l_p8.html",
+        "name": "GroPointGPLP8",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__gplp8.html\" class=\"m-doc\">GroPoint Profile GPLP8 probe</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_gro_point_g_p_l_p8___moist.html",
+        "name": "GroPointGPLP8_Moist",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__gplp8.html#sensor_gplp8_moist\" class=\"m-doc\">soil moisture output</a> from a <a href=\"group__sensor__gplp8.html\" class=\"m-doc\">GroPoint Profile GPLP8 probe</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_gro_point_g_p_l_p8___temp.html",
+        "name": "GroPointGPLP8_Temp",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__gplp8.html#sensor_gplp8_temp\" class=\"m-doc\">temperature output</a> from a <a href=\"group__sensor__gplp8.html\" class=\"m-doc\">GroPoint Profile GPLP8 probe</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Sensor Variable Counts",
+        "id": "sensor-variable-counts",
+        "description": "<p><a name=\"sensor_gplp8_var_counts\"></a> The number of variables that can be returned by GPLP8</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__gplp8.html",
+              "id": "ga283ee6c1056774612caec89e851b5876",
+              "include": [
+                "&lt;src/sensors/GroPointGPLP8.h&gt;",
+                "_gro_point_g_p_l_p8_8h.html"
+              ],
+              "has_details": true,
+              "name": "GPLP8_NUM_VARIABLES",
+              "initializer": "21",
+              "brief": "<a href=\"class_sensor.html#af26786329fd01b44cf31410d046fc8f3\" class=\"m-doc\">Sensor::<wbr />_numReturnedValues</a>; the GPLP8 can report 8 values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__gplp8.html",
+              "id": "gab36def945313cf7680930806b92e296c",
+              "include": [
+                "&lt;src/sensors/GroPointGPLP8.h&gt;",
+                "_gro_point_g_p_l_p8_8h.html"
+              ],
+              "has_details": true,
+              "name": "GPLP8_INC_CALC_VARIABLES",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#a2f3f93a9205efb134cef1216d65077d2\" class=\"m-doc\">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Sensor Timing",
+        "id": "sensor-timing",
+        "description": "<p><a name=\"sensor_gplp8_timing\"></a> The sensor timing for a GroPoint Profile GPLP-8</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__gplp8.html",
+              "id": "gabae0973e01b0db78f5af3c61aeddc903",
+              "include": [
+                "&lt;src/sensors/GroPointGPLP8.h&gt;",
+                "_gro_point_g_p_l_p8_8h.html"
+              ],
+              "has_details": true,
+              "name": "GPLP8_WARM_UP_TIME_MS",
+              "initializer": "350",
+              "brief": "<a href=\"class_sensor.html#aaaefd7f306f86382a3dac726531756b4\" class=\"m-doc\">Sensor::<wbr />_warmUpTime_ms</a>; time before sensor responds after power - 1.6 seconds (1600ms).",
+              "description": "<p>This is the time for communication to begin.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__gplp8.html",
+              "id": "ga437054d35bd4116624a81bfab96ac525",
+              "include": [
+                "&lt;src/sensors/GroPointGPLP8.h&gt;",
+                "_gro_point_g_p_l_p8_8h.html"
+              ],
+              "has_details": true,
+              "name": "GPLP8_STABILIZATION_TIME_MS",
+              "initializer": "100",
+              "brief": "<a href=\"class_sensor.html#ad6822ad09fb64658c911ce86820db79c\" class=\"m-doc\">Sensor::<wbr />_stabilizationTime_ms</a>; the GPLP-8 is stable after 100 ms.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__gplp8.html",
+              "id": "ga067be34e3f7d0932426edece4501cf74",
+              "include": [
+                "&lt;src/sensors/GroPointGPLP8.h&gt;",
+                "_gro_point_g_p_l_p8_8h.html"
+              ],
+              "has_details": true,
+              "name": "GPLP8_MEASUREMENT_TIME_MS",
+              "initializer": "200",
+              "brief": "<a href=\"class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba\" class=\"m-doc\">Sensor::<wbr />_measurementTime_ms</a>; the GPLP-8 takes ~200 ms to complete a measurement.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Moisture",
+        "id": "moisture",
+        "description": "<p><a name=\"sensor_gplp8_moist\"></a> The volumetric soil moisture variable from a GroPoint Profile GPLP-8</p><ul><li>Range is 0% to 50% volumetric water content</li><li>Accuracy is \u00b1 1%</li></ul><p>{{ <a href=\"class_gro_point_g_p_l_p8___moist.html#a8a25b2b013f39e16cb3ee32984b02fc3\" class=\"m-doc\">GroPointGPLP8_Moist::<wbr />GroPointGPLP8_Moist</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__gplp8.html",
+              "id": "gaebe03ee6d2c0750b2fbbc78bca630dbd",
+              "include": [
+                "&lt;src/sensors/GroPointGPLP8.h&gt;",
+                "_gro_point_g_p_l_p8_8h.html"
+              ],
+              "has_details": true,
+              "name": "GPLP8_MOIST_RESOLUTION",
+              "initializer": "1",
+              "brief": "Decimals places in string representation; soil moisture should have 1.",
+              "description": "<ul><li>resolution is 0.1 %.</li></ul>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__gplp8.html",
+              "id": "gadebd5f8e60edc23b9558da20a2b21f52",
+              "include": [
+                "&lt;src/sensors/GroPointGPLP8.h&gt;",
+                "_gro_point_g_p_l_p8_8h.html"
+              ],
+              "has_details": true,
+              "name": "GPLP8_MOIST_VAR_NAME",
+              "initializer": "\"volumetricWaterContent\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__gplp8.html",
+              "id": "gaa11cc12b16fe1f548133901b4f99108e",
+              "include": [
+                "&lt;src/sensors/GroPointGPLP8.h&gt;",
+                "_gro_point_g_p_l_p8_8h.html"
+              ],
+              "has_details": true,
+              "name": "GPLP8_MOIST_UNIT_NAME",
+              "initializer": "\"percent\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__gplp8.html",
+              "id": "gabad48082711419dc36bb1d3f4fcc7c4d",
+              "include": [
+                "&lt;src/sensors/GroPointGPLP8.h&gt;",
+                "_gro_point_g_p_l_p8_8h.html"
+              ],
+              "has_details": true,
+              "name": "GPLP8_MOIST_DEFAULT_CODE",
+              "initializer": "\"GPLP8Moist\"",
+              "brief": "Default variable short code; &quot;GPLP8Moist&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Temperature",
+        "id": "temperature",
+        "description": "<p><a name=\"sensor_gplp8_temp\"></a> The temperature variable from a GroPoint Profile GPLP-8</p><ul><li>Range is -20\u00b0C to + 70\u00b0C</li><li>Accuracy is \u00b1 0.5\u00b0C</li></ul><p>{{ <a href=\"class_gro_point_g_p_l_p8___temp.html#a94df6d174af0e4086671680524424889\" class=\"m-doc\">GroPointGPLP8_Temp::<wbr />GroPointGPLP8_Temp</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__gplp8.html",
+              "id": "ga4631c94b984c0e9bf00e43d2af8f869e",
+              "include": [
+                "&lt;src/sensors/GroPointGPLP8.h&gt;",
+                "_gro_point_g_p_l_p8_8h.html"
+              ],
+              "has_details": true,
+              "name": "GPLP8_TEMP_RESOLUTION",
+              "initializer": "1",
+              "brief": "Decimals places in string representation; temperature should have 1 - resolution is 0.1\u00b0C.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__gplp8.html",
+              "id": "gafa5ce2e62586098b9f4f98f708b8ef2d",
+              "include": [
+                "&lt;src/sensors/GroPointGPLP8.h&gt;",
+                "_gro_point_g_p_l_p8_8h.html"
+              ],
+              "has_details": true,
+              "name": "GPLP8_TEMP_VAR_NAME",
+              "initializer": "\"temperature\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;temperature&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__gplp8.html",
+              "id": "gae5cabe698ff5156fa4ee8a1a45f33bd4",
+              "include": [
+                "&lt;src/sensors/GroPointGPLP8.h&gt;",
+                "_gro_point_g_p_l_p8_8h.html"
+              ],
+              "has_details": true,
+              "name": "GPLP8_TEMP_UNIT_NAME",
+              "initializer": "\"degreeCelsius\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;degreeCelsius&quot; (\u00b0C)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__gplp8.html",
+              "id": "gada93fc5563969473f64079a47957281d",
+              "include": [
+                "&lt;src/sensors/GroPointGPLP8.h&gt;",
+                "_gro_point_g_p_l_p8_8h.html"
+              ],
+              "has_details": true,
+              "name": "GPLP8_TEMP_DEFAULT_CODE",
+              "initializer": "\"GPLP8Temp\"",
+              "brief": "Default variable short code; &quot;GPLP8Temp&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "GroPoint Sensors",
+        "group__gropoint__group.html"
+      ],
+      [
+        "GroPoint Profile GPLP-8 Soil Moisture &amp; Temperature",
+        "group__sensor__gplp8.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "GroPoint Profile GPLP-8 Soil Moisture &amp; Temperature",
+        "group__sensor__gplp8.html"
+      ]
+    ]
+  }
+}

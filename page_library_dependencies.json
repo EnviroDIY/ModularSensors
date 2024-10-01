@@ -1,0 +1,76 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "page",
+    "id": "page_library_dependencies",
+    "name": "Library Dependencies",
+    "url_base": "page_library_dependencies",
+    "url": "page_library_dependencies.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p><a name=\"md_docs_2_getting-_started_2_library-_dependencies\"></a></p><aside class=\"m-note m-danger\"><h4>Warning</h4><p>This page is frequently out of date. Please see the library.json or dependencies.json and example_dependencies.json for the most up-to-date library references!</p></aside><p>In order to support multiple functions and sensors, there are quite a lot of sub-libraries that this library depends on. <em>Even if you do not use the modules, you must have all of the dependencies installed for the library itself to properly compile.</em> Please check the <a href=\"https://github.com/EnviroDIY/ModularSensors/blob/master/library.json\">library.json</a> file for more details on the versions required of each library. If you are using <a href=\"https://platformio.org\">PlatformIO</a>, you can list &quot;EnviroDIY_ModularSensors&quot; in the <code>lib_deps</code> section of your platformio.ini file and all of these libraries will be installed automatically. If using the &quot;standard&quot; Arduino IDE, you must install each of these libraries individually, or in a bundle from the <a href=\"https://github.com/EnviroDIY/Libraries\">EnviroDIY Libraries</a> meta-repository.</p><ul><li><a href=\"https://github.com/GreyGnome/EnableInterrupt\">EnableInterrupt</a> - Administrates and handles pin change interrupts, allowing the logger to sleep and save battery. This also controls the interrupts for the versions of SoftwareSerial and SDI-12 linked below that have been stripped of interrupt control. Because we use this library, <em>you must always add the line <code>#include &lt;EnableInterrupt.h&gt;</code> to the top of your sketch.</em></li><li>AVR sleep library - This is for low power sleeping for AVR processors. (This library is built in to the Arduino and PlatformIO IDEs.)</li><li><a href=\"https://github.com/EnviroDIY/Sodaq_DS3231\">EnviroDIY DS-3231</a> - For real time clock control</li><li><a href=\"https://github.com/arduino-libraries/RTCZero\">RTCZero library</a> - This real time clock control and low power sleeping on SAMD processors. (This library may be built in to the Arduino IDE.) NOTE: If using an AVR board, you must explicitly <em>ignore</em> this library when compiling with PlatformIO or you will have compiler errors.</li><li><a href=\"https://github.com/greiman/SdFat\">SdFat library</a> - This enables communication with the SD card.</li><li><a href=\"https://github.com/vshymanskyy/TinyGSM\">TinyGSM library</a> - This provides internet (TCP/IP) connectivity.</li><li><a href=\"https://github.com/knolleary/pubsubclient\">PubSubClient</a> - For MQTT connectivity</li><li><a href=\"https://github.com/adafruit/Adafruit_ADS1X15\">Adafruit ADS1X15 library</a> - For high-resolution analog to digital conversion.<ul><li>NOTE: As of version 0.36.0 the standard Adafruit library should be used, <em>NOT</em> the Soligen2010 fork.</li></ul></li><li><a href=\"https://github.com/EnviroDIY/Arduino-SDI-12/tree/ExtInts\">EnviroDIY Arduino SDI-12 library</a> - For control of SDI-12 based sensors. This modified version is needed so there are no pin change interrupt conflicts with the SoftwareSerial library or the software pin change interrupt library used to wake the processor.</li><li><a href=\"https://github.com/EnviroDIY/SensorModbusMaster\">SensorModbusMaster</a> - for easy communication with Modbus devices.</li><li><a href=\"https://github.com/PaulStoffregen/OneWire\">OneWire</a> - This enables communication with Maxim/Dallas OneWire devices.</li><li><a href=\"https://github.com/milesburton/Arduino-Temperature-Control-Library\">DallasTemperature</a> - for communication with the DS18 line of Maxim/Dallas OneWire temperature probes.</li><li><a href=\"https://github.com/adafruit/Adafruit_BusIO\">Adafruit BusIO</a> - a dependency of several other Adafruit libraries, used to unify commands for fetching data via SPI and I2C.</li><li><a href=\"https://github.com/adafruit/Adafruit_Sensor\">Adafruit Unified Sensor Driver</a> - a dependency of several other Adafruit libraries, used to unify sensor data return types.</li><li><a href=\"https://github.com/adafruit/Adafruit_AM2315\">Adafruit AM2315 library</a> - for the AOSong AM2315 temperature and humidity sensor.</li><li><a href=\"https://github.com/adafruit/DHT-sensor-library\">Adafruit DHT library</a> - for other AOSong temperature and humidity sensors.</li><li><a href=\"https://github.com/adafruit/Adafruit_BME280_Library\">Adafruit BME280 library</a> - for the Bosch BME280 environmental sensor.</li><li><a href=\"https://github.com/adafruit/Adafruit_INA219\">Adafruit INA219 library</a> - for the INA219 current/voltage sensor.</li><li><a href=\"https://github.com/adafruit/Adafruit_MPL115A2\">Adafruit MPL115A2 library</a> - for the Freescale Semiconductor MPL115A2 barometer.</li><li><a href=\"https://github.com/adafruit/Adafruit_SHT4X\">Adafruit SHT4x library</a> - for the Senserion SHT40 temperature and humidity sensor. This sensor is built into the EnviroDIY Mayfly and Stonefly.</li><li><a href=\"https://github.com/EnviroDIY/YosemitechModbus\">YosemitechModbus</a> - for all Yosemitech modbus environmental sensors.</li><li><a href=\"https://github.com/NorthernWidget/MS5803\">Northern Widget MS5803 Library</a> - for the TE Connectivity MEAS MS5803 pressure sensor</li><li><a href=\"https://github.com/EnviroDIY/KellerModbus\">EnviroDIY KellerModbus Library</a> - for all Keller modbus pressure and water level sensors.</li><li><a href=\"https://github.com/EnviroDIY/GroPointModbus.git\">EnviroDIY GroPointModbus Library</a> - For GroPoint soil moisture probes.</li><li><a href=\"https://registry.platformio.org/libraries/martinl1/BMP388_DEV\">BMP388_<wbr />DEV</a> - for communication with the Bosch BMP388 barometer<ul><li>WARNING: The repository for this library has been removed from GitHub. The library itself is still available in the PlatformIO and Arduino library registries.</li></ul></li><li><a href=\"https://github.com/EnviroDIY/Tally_Library.git#Dev_I2C\">Tally Library</a> - For the Project Tally Event sensor<ul><li>NOTE: Use the <code>Dev_I2C</code> feature branch</li></ul></li></ul>",
+    "sections": [],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "ModularSensors",
+        "index.html"
+      ],
+      [
+        "Getting Started",
+        "page_getting_started.html"
+      ],
+      [
+        "Library Dependencies",
+        "page_library_dependencies.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Library Dependencies",
+        "page_library_dependencies.html"
+      ]
+    ]
+  }
+}

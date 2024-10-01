@@ -1,0 +1,535 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__sensor__insitu__troll",
+    "name": "In-Situ LevelTROLL 400, 500, and 700 Data Loggers",
+    "url_base": "group__sensor__insitu__troll",
+    "url": "group__sensor__insitu__troll.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>Classes for the In-Situ LevelTROLL feature sensors pressure, temperature, and depth.</p><section id=\"sensor_insitu_troll_intro\"><h2>Introduction</h2><blockquote><p>A slim 1.8 cm diameter sensor, depth measuremente temperature compensated to 0.1% (0.05%) across Full Scale depth range and across temperature range.</p><p>Has an internal logger for reliable data collection.</p><p>Reports sensor serial number and model in uSD .csv file</p></blockquote><p>The In-Situ Aqua/Level TROLL requires 8-36V DC input.</p><aside class=\"m-note m-danger\"><h4>Warning</h4><p>Coming from the factory, TROLL sensors are set at SDI-12 address &#x27;0&#x27;.</p></aside><p>The In-Situ Aqua/Level TROLLs are programmed through WinSitu.</p><p>The SDI address needs to be changed to what the class is set to - default is &#x27;1&#x27;.</p><p>Parameters are very flexible and need to be aligned used WinSitu with this module.</p><p>The depth sensor third paramter may need to be created. The expected paramters and order are Pressure (PSI), Temperature (C), Depth (ft).</p><p>Tested with Level TROLL 500.</p></section><section id=\"sensor_insitu_troll_datasheet\"><h2>Sensor Datasheet</h2><p>Documentation for the SDI-12 Protocol commands and responses The In-Situ Level/Aqua TROLL can be found at:</p><p><a href=\"https://in-situ.com/en/pub/media/support/documents/SDI-12_Commands_Tech_Note.pdf\">https://in-situ.com/en/pub/media/support/documents/SDI-12_<wbr />Commands_<wbr />Tech_<wbr />Note.pdf</a></p><p><a href=\"https://in-situ.com/us/support/documents/sdi-12-commands-and-level-troll-400500700-responses\">https:/<wbr />/<wbr />in-situ.com/<wbr />us/<wbr />support/<wbr />documents/<wbr />sdi-12-commands-and-level-troll-400500700-responses</a></p></section><section id=\"sensor_insitu_troll_flags\"><h2>Build flags</h2><aside class=\"m-note m-default\"><h4>See also</h4><p><a href=\"group__sdi12__group.html#sdi12_group_flags\" class=\"m-doc\">Build flags</a></p></aside></section><section id=\"sensor_insitu_troll_ctor\"><h2>Sensor Constructor</h2><p>{{ <a href=\"class_in_situ_troll_sdi12a.html#a771ef79bd01c5353011c36b2bf238281\" class=\"m-doc\">InSituTrollSdi12a::<wbr />InSituTrollSdi12a</a> }}</p><hr/></section><section id=\"sensor_insitu_troll_examples\"><h2>Example Code</h2><p>The In-Situ TROLL is used in the <a href=\"example_menu.html#menu_walk_in_situ_troll_sdi12a\" class=\"m-doc\">menu a la carte</a> example.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;sensors/InSituTrollSdi12a.h&gt;</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"c1\">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">char</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">TROLLSDI12address</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span><span class=\"w\">    </span><span class=\"s\">&quot;1&quot;</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// The SDI-12 Address of the Aqua/Level TROLL</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">TROLLPower</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"w\">    </span><span class=\"n\">sensorPowerPin</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// Pin to switch power on and off (-1 if unconnected)</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">TROLLData</span><span class=\"w\">           </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">7</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// The SDI-12 data pin</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">uint8_t</span><span class=\"w\"> </span><span class=\"n\">TROLLNumberReadings</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">2</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// The number of readings to average</span>\n</div><div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span>\n</div><div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span><span class=\"c1\">// Create an In-Situ TROLL sensor object</span>\n</div><div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"n\">InSituTrollSdi12a</span><span class=\"w\"> </span><span class=\"nf\">insituTROLL</span><span class=\"p\">(</span><span class=\"o\">*</span><span class=\"n\">TROLLSDI12address</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">TROLLPower</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">TROLLData</span><span class=\"p\">,</span>\n</div><div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span><span class=\"w\">                              </span><span class=\"n\">TROLLNumberReadings</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span>\n</div><div class=\"line\"><a id=\"l-15\" name=\"l-15\"></a><span class=\"linenos\">15</span><span class=\"c1\">// Create pressure, temperature, and depth variable pointers for the TROLL</span>\n</div><div class=\"line\"><a id=\"l-16\" name=\"l-16\"></a><span class=\"linenos\">16</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">trollPressure</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">InSituTrollSdi12a_Pressure</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-17\" name=\"l-17\"></a><span class=\"linenos\">17</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">insituTROLL</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-18\" name=\"l-18\"></a><span class=\"linenos\">18</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">trollTemp</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">InSituTrollSdi12a_Temp</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-19\" name=\"l-19\"></a><span class=\"linenos\">19</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">insituTROLL</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-20\" name=\"l-20\"></a><span class=\"linenos\">20</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">trollDepth</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">InSituTrollSdi12a_Depth</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-21\" name=\"l-21\"></a><span class=\"linenos\">21</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">insituTROLL</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "sensor_insitu_troll_intro",
+        "Introduction",
+        []
+      ],
+      [
+        "sensor_insitu_troll_datasheet",
+        "Sensor Datasheet",
+        []
+      ],
+      [
+        "sensor_insitu_troll_flags",
+        "Build flags",
+        []
+      ],
+      [
+        "sensor_insitu_troll_ctor",
+        "Sensor Constructor",
+        []
+      ],
+      [
+        "sensor_insitu_troll_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_in_situ_troll_sdi12a.html",
+        "name": "InSituTrollSdi12a",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__insitu__troll.html\" class=\"m-doc\">Insitu Level/Aqua TROLL pressure, temperature, and depth sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_in_situ_troll_sdi12a___pressure.html",
+        "name": "InSituTrollSdi12a_Pressure",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__insitu__troll.html#sensor_insitu_troll_pressure\" class=\"m-doc\">pressure output</a> from a <a href=\"group__sensor__insitu__troll.html\" class=\"m-doc\">Insitu TROLL 3-in-1 water level sensor.</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_in_situ_troll_sdi12a___temp.html",
+        "name": "InSituTrollSdi12a_Temp",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__insitu__troll.html#sensor_insitu_troll_temp\" class=\"m-doc\">temperature Output</a> from a <a href=\"group__sensor__insitu__troll.html\" class=\"m-doc\">Insitu TROLL 3-in-1 water level sensor.</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_in_situ_troll_sdi12a___depth.html",
+        "name": "InSituTrollSdi12a_Depth",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__insitu__troll.html#sensor_insitu_troll_depth\" class=\"m-doc\">depth output</a> from a <a href=\"group__sensor__insitu__troll.html\" class=\"m-doc\">Insitu TROLL 3-in-1 water level sensor.</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Sensor Variable Counts",
+        "id": "sensor-variable-counts",
+        "description": "<p><a name=\"sensor_insitu_troll_var_counts\"></a> The number of variables that can be returned by the TROLL 500</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__insitu__troll.html",
+              "id": "gae73d161087a45a1609c44de425b0f968",
+              "include": null,
+              "has_details": false,
+              "name": "ITROLLA_NUM_VARIABLES",
+              "initializer": "3",
+              "brief": "<a href=\"class_sensor.html#af26786329fd01b44cf31410d046fc8f3\" class=\"m-doc\">Sensor::<wbr />_numReturnedValues</a>; the TROLL 500 can report 3 values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__insitu__troll.html",
+              "id": "gaeaeb9f9e0f2716ee319f2b1568079234",
+              "include": null,
+              "has_details": false,
+              "name": "ITROLLA_INC_CALC_VARIABLES",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#a2f3f93a9205efb134cef1216d65077d2\" class=\"m-doc\">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Sensor Timing",
+        "id": "sensor-timing",
+        "description": "<p><a name=\"sensor_insitu_troll_timing\"></a> The sensor timing for a In-Situ TROLL</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__insitu__troll.html",
+              "id": "gaa7381c6ef255d67799d9a94f72d807fa",
+              "include": null,
+              "has_details": false,
+              "name": "ITROLLA_WARM_UP_TIME_MS",
+              "initializer": "500",
+              "brief": "<a href=\"class_sensor.html#aaaefd7f306f86382a3dac726531756b4\" class=\"m-doc\">Sensor::<wbr />_warmUpTime_ms</a>; maximum warm-up time in SDI-12 mode: 500ms.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__insitu__troll.html",
+              "id": "gaa0aaf06031a6c9e92f16e98f6d3f7c6f",
+              "include": null,
+              "has_details": false,
+              "name": "ITROLLA_STABILIZATION_TIME_MS",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#ad6822ad09fb64658c911ce86820db79c\" class=\"m-doc\">Sensor::<wbr />_stabilizationTime_ms</a>; the TROLL 500 is stable as soon as it warms up (0ms stabilization).",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__insitu__troll.html",
+              "id": "ga5d994da55f520a38a9b6f295597cc286",
+              "include": null,
+              "has_details": false,
+              "name": "ITROLLA_MEASUREMENT_TIME_MS",
+              "initializer": "500",
+              "brief": "<a href=\"class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba\" class=\"m-doc\">Sensor::<wbr />_measurementTime_ms</a>; maximum measurement duration: 500ms.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Pressure",
+        "id": "pressure",
+        "description": "<p><a name=\"sensor_insitu_troll_pressure\"></a> The pressue variable from a In-Situ TROLL</p><ul><li>Range is 0 \u2013 x (depends on range eg 5psig)</li></ul><p>{{ <a href=\"class_in_situ_troll_sdi12a___pressure.html#ae99ab100af6847208d7bebabd5f39ca3\" class=\"m-doc\">InSituTrollSdi12a_Pressure::<wbr />InSituTrollSdi12a_Pressure</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__insitu__troll.html",
+              "id": "ga248dfd336469cbeb7e28fae4cea28981",
+              "include": null,
+              "has_details": true,
+              "name": "ITROLLA_PRESSURE_RESOLUTION",
+              "initializer": "5",
+              "brief": "Decimals places in string representation; conductivity should have 1.",
+              "description": "<p>0 are reported, adding extra digit to resolution to allow the proper number of significant figures for averaging - resolution is 0.001 mS/cm = 1 \u00b5S/cm</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__insitu__troll.html",
+              "id": "ga748e3a85307c7443a32d0213574560cd",
+              "include": null,
+              "has_details": false,
+              "name": "ITROLLA_PRESSURE_VAR_NUM",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; pressure is stored in sensorValues[0].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__insitu__troll.html",
+              "id": "ga218240aff29a953e6015479108f660bb",
+              "include": null,
+              "has_details": false,
+              "name": "ITROLLA_PRESSURE_VAR_NAME",
+              "initializer": "\"pressureGauge\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;specificConductance&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__insitu__troll.html",
+              "id": "ga5e8c1b2f86d7baf3b6d10f5d5646588a",
+              "include": null,
+              "has_details": false,
+              "name": "ITROLLA_PRESSURE_UNIT_NAME",
+              "initializer": "\"psi\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;pounds per square inch&quot; (psi)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__insitu__troll.html",
+              "id": "ga47488520589df8dae66459c189aaae43",
+              "include": null,
+              "has_details": false,
+              "name": "ITROLLA_PRESSURE_DEFAULT_CODE",
+              "initializer": "\"ITROLLpressure\"",
+              "brief": "Default variable short code; &quot;ITROLLpressure&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Temperature",
+        "id": "temperature",
+        "description": "<p><a name=\"sensor_insitu_troll_temp\"></a> The temperature variable from a In-Situ TROLL</p><ul><li>Range is -11\u00b0C to +49\u00b0C</li><li>Accuracy is \u00b11\u00b0C</li></ul><p>{{ <a href=\"class_in_situ_troll_sdi12a___temp.html#a3fa9e789e95ec49dddab46c2206c084a\" class=\"m-doc\">InSituTrollSdi12a_Temp::<wbr />InSituTrollSdi12a_Temp</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__insitu__troll.html",
+              "id": "gaa107b6797063909431a013bee518a0c6",
+              "include": null,
+              "has_details": true,
+              "name": "ITROLLA_TEMP_RESOLUTION",
+              "initializer": "2",
+              "brief": "Decimals places in string representation; temperature should have 2.",
+              "description": "<p>1 is reported, adding extra digit to resolution to allow the proper number of significant figures for averaging - resolution is 0.1\u00b0C</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__insitu__troll.html",
+              "id": "ga036d5dd65d5ae3428f59141b33b1eaaf",
+              "include": null,
+              "has_details": false,
+              "name": "ITROLLA_TEMP_VAR_NUM",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; temperature is stored in sensorValues[1].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__insitu__troll.html",
+              "id": "ga596dc786a5e56cf240dcb55e032df532",
+              "include": null,
+              "has_details": false,
+              "name": "ITROLLA_TEMP_TEMP_VAR_NAME",
+              "initializer": "\"temperature\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;temperature&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__insitu__troll.html",
+              "id": "gabfa5d24dbe411825b6b50c313448be7c",
+              "include": null,
+              "has_details": false,
+              "name": "ITROLLA_TEMP_TEMP_UNIT_NAME",
+              "initializer": "\"degreeCelsius\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;degreeCelsius&quot; (\u00b0C)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__insitu__troll.html",
+              "id": "gab6de4b5660614c9c00c04143c8497efb",
+              "include": null,
+              "has_details": false,
+              "name": "ITROLLA_TEMP_DEFAULT_CODE",
+              "initializer": "\"ITROLLtemp\"",
+              "brief": "Default variable short code; &quot;ITROLLtemp&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Water Depth",
+        "id": "water-depth",
+        "description": "<p><a name=\"sensor_insitu_troll_depth\"></a> The water depth variable from a In-Situ TROLL</p><ul><li>Range is 0 to 3.5m to 350m depending on model</li><li>Accuracy is \u00b10.05% of full scale</li></ul><p>{{ <a href=\"class_in_situ_troll_sdi12a___depth.html#afcf266dcfb8c3b654511d69e6dd47209\" class=\"m-doc\">InSituTrollSdi12a_Depth::<wbr />InSituTrollSdi12a_Depth</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__insitu__troll.html",
+              "id": "ga37005b6aeb8b7b14e7805345ea211479",
+              "include": null,
+              "has_details": true,
+              "name": "ITROLLA_DEPTH_RESOLUTION",
+              "initializer": "5",
+              "brief": "Decimals places in string representation; depth should have 1.",
+              "description": "<p>0 are reported, adding extra digit to resolution to allow the proper number of significant figures for averaging - resolution is 2 mm</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__insitu__troll.html",
+              "id": "ga8e1efcfc9d1f65043e3856b95edca05d",
+              "include": null,
+              "has_details": false,
+              "name": "ITROLLA_DEPTH_VAR_NUM",
+              "initializer": "2",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; depth is stored in sensorValues[2].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__insitu__troll.html",
+              "id": "gadcd784dbc98df7e721fbcd8fca3af129",
+              "include": null,
+              "has_details": false,
+              "name": "ITROLLA_DEPTH_VAR_NAME",
+              "initializer": "\"waterDepth\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;waterDepth&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__insitu__troll.html",
+              "id": "gaf40ed7f9e1275055dcbe76dd5416c03d",
+              "include": null,
+              "has_details": false,
+              "name": "ITROLLA_DEPTH_UNIT_NAME",
+              "initializer": "\"feet\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;millimeter&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__insitu__troll.html",
+              "id": "ga7baaf1773ea91d181f09f802753510af",
+              "include": null,
+              "has_details": false,
+              "name": "ITROLLA_DEPTH_DEFAULT_CODE",
+              "initializer": "\"ITROLLdepth\"",
+              "brief": "Default variable short code; &quot;ITROLLdepth&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "SDI-12 Sensors",
+        "group__sdi12__group.html"
+      ],
+      [
+        "In-Situ LevelTROLL 400, 500, and 700 Data Loggers",
+        "group__sensor__insitu__troll.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "In-Situ LevelTROLL 400, 500, and 700 Data Loggers",
+        "group__sensor__insitu__troll.html"
+      ]
+    ]
+  }
+}

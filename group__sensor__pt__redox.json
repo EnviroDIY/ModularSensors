@@ -1,0 +1,398 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__sensor__pt__redox",
+    "name": "PaleoTerra Redox",
+    "url_base": "group__sensor__pt__redox",
+    "url": "group__sensor__pt__redox.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>Classes for the PaleoTerra Redox digital preassure sensor.</p><section id=\"sensor_pt_redox_intro\"><h2>Introduction</h2><p>Because older versions of these sensors all ship with the same I2C address, and more than one is frequently used at different soil depths in the same profile, this module has an optional dependence on Testato&#x27;s <a href=\"https://github.com/Testato/SoftwareWire\">SoftwareWire</a> library for software I2C.</p></section><section id=\"sensor_pt_redox_datasheet\"><h2>Sensor Datasheet</h2><p>Documentation for the sensor can be found at: <a href=\"https://paleoterra.nl/\">https:/<wbr />/<wbr />paleoterra.nl/<wbr /></a></p></section><section id=\"sensor_pt_redox_flags\"><h2>Build flags</h2><ul><li><code>-D MS_PALEOTERRA_SOFTWAREWIRE</code><ul><li><p>switches from using hardware I2C to software I2C</p><aside class=\"m-note m-danger\"><h4>Warning</h4><p>Either all or none of your attached redox probes may use software I2C. Using some with software I2C and others with hardware I2C is not supported.</p></aside></li></ul></li></ul></section><section id=\"sensor_pt_redox_ctor\"><h2>Sensor Constructor</h2><p>{{ <a href=\"class_paleo_terra_redox.html#ab781d3b09d336ce306b88f48854cbe87\" class=\"m-doc\">PaleoTerraRedox::<wbr />PaleoTerraRedox(int8_t, uint8_t, uint8_t)</a> }} {{ <a href=\"class_paleo_terra_redox.html#abbed2c4233439611293b90c4307272f6\" class=\"m-doc\">PaleoTerraRedox::<wbr />PaleoTerraRedox(TwoWire*, int8_t, uint8_t, uint8_t)</a> }} {{ <a href=\"class_paleo_terra_redox.html#a42bfe7700be622fbb5aaf683cb9a514e\" class=\"m-doc\">PaleoTerraRedox::<wbr />PaleoTerraRedox(SoftwareWire*, int8_t, uint8_t, uint8_t)</a> }} {{ <a href=\"class_paleo_terra_redox.html#abeb6fd527903749a634c9b322e7bed8b\" class=\"m-doc\">PaleoTerraRedox::<wbr />PaleoTerraRedox(int8_t, int8_t, int8_t, uint8_t, uint8_t)</a> }}</p><hr/></section><section id=\"sensor_pt_redox_examples\"><h2>Example Code</h2><p>The PaleoTerra Redox is used in the <a href=\"example_menu.html#menu_walk_paleo_terra_redox\" class=\"m-doc\">menu a la carte</a> example.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;sensors/PaleoTerraRedox.h&gt;</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"c1\">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">paleoTerraPower</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">sensorPowerPin</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// Power pin</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span><span class=\"kr\">uint8_t</span><span class=\"w\"> </span><span class=\"n\">paleoI2CAddress</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mh\">0x68</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// the I2C address of the redox sensor</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"c1\">// Create the PaleoTerra sensor object</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span><span class=\"cp\">#ifdef MS_PALEOTERRA_SOFTWAREWIRE</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span><span class=\"n\">PaleoTerraRedox</span><span class=\"w\"> </span><span class=\"nf\">ptRedox</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">softI2C</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">paleoTerraPower</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">paleoI2CAddress</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span><span class=\"c1\">// PaleoTerraRedox ptRedox(paleoTerraPower, softwareSDA, softwareSCL,</span>\n</div><div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span><span class=\"c1\">// paleoI2CAddress);</span>\n</div><div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"cp\">#else</span>\n</div><div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span><span class=\"n\">PaleoTerraRedox</span><span class=\"w\"> </span><span class=\"nf\">ptRedox</span><span class=\"p\">(</span><span class=\"n\">paleoTerraPower</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">paleoI2CAddress</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span><span class=\"cp\">#endif</span>\n</div><div class=\"line\"><a id=\"l-15\" name=\"l-15\"></a><span class=\"linenos\">15</span>\n</div><div class=\"line\"><a id=\"l-16\" name=\"l-16\"></a><span class=\"linenos\">16</span><span class=\"c1\">// Create the voltage variable for the redox sensor</span>\n</div><div class=\"line\"><a id=\"l-17\" name=\"l-17\"></a><span class=\"linenos\">17</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">ptVolt</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">PaleoTerraRedox_Voltage</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-18\" name=\"l-18\"></a><span class=\"linenos\">18</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">ptRedox</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "sensor_pt_redox_intro",
+        "Introduction",
+        []
+      ],
+      [
+        "sensor_pt_redox_datasheet",
+        "Sensor Datasheet",
+        []
+      ],
+      [
+        "sensor_pt_redox_flags",
+        "Build flags",
+        []
+      ],
+      [
+        "sensor_pt_redox_ctor",
+        "Sensor Constructor",
+        []
+      ],
+      [
+        "sensor_pt_redox_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_paleo_terra_redox.html",
+        "name": "PaleoTerraRedox",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__pt__redox.html\" class=\"m-doc\">PaleoTerra redox sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_paleo_terra_redox___voltage.html",
+        "name": "PaleoTerraRedox_Voltage",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__pt__redox.html#sensor_pt_redox_volt\" class=\"m-doc\">voltage output</a> from a PaleoTerra redox sensor.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [
+      {
+        "base_url": "group__sensor__pt__redox.html",
+        "id": "ga7d3c65900a551f06044cf712d284caf7",
+        "include": [
+          "&lt;src/sensors/PaleoTerraRedox.h&gt;",
+          "_paleo_terra_redox_8h.html"
+        ],
+        "has_details": true,
+        "is_using": false,
+        "type": "<a href=\"class_paleo_terra_redox___voltage.html\" class=\"m-doc\">PaleoTerraRedox_<wbr />Voltage</a>",
+        "args": "",
+        "name": "PaleoTerraRedox_Volt",
+        "brief": "typedef for backwards compatibility; use the <a href=\"class_paleo_terra_redox___voltage.html\" class=\"m-doc\">PaleoTerraRedox_<wbr />Voltage</a> class in new code",
+        "description": "<aside class=\"m-note m-danger\"><h4><a href=\"deprecated.html#_deprecated000012\" class=\"m-doc\">Deprecated in v0.33.0</a></h4></aside>",
+        "deprecated": "deprecated in v0.33.0",
+        "since": null,
+        "is_protected": false,
+        "has_template_details": false,
+        "templates": null
+      }
+    ],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Sensor Variable Counts",
+        "id": "sensor-variable-counts",
+        "description": "<p><a name=\"sensor_pt_redox_var_counts\"></a> The number of variables that can be returned by PaleoTerra redox sensor</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__pt__redox.html",
+              "id": "ga4a559652f9d994b02d2e8db64a52dd40",
+              "include": [
+                "&lt;src/sensors/PaleoTerraRedox.h&gt;",
+                "_paleo_terra_redox_8h.html"
+              ],
+              "has_details": true,
+              "name": "PTR_NUM_VARIABLES",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html#af26786329fd01b44cf31410d046fc8f3\" class=\"m-doc\">Sensor::<wbr />_numReturnedValues</a>; the PaleoTerra redox sensor can report 1 value.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__pt__redox.html",
+              "id": "gaeb19d1bada2782b22073a1e77e92bb10",
+              "include": [
+                "&lt;src/sensors/PaleoTerraRedox.h&gt;",
+                "_paleo_terra_redox_8h.html"
+              ],
+              "has_details": true,
+              "name": "PTR_INC_CALC_VARIABLES",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#a2f3f93a9205efb134cef1216d65077d2\" class=\"m-doc\">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Configuration Defines",
+        "id": "configuration-defines",
+        "description": "<p><a name=\"sensor_pt_redox_config\"></a> Defines to set the address of the PaleoTerra redox sensor.</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__pt__redox.html",
+              "id": "ga2c3bf440e1d303158bd6b040a0f5b6e8",
+              "include": [
+                "&lt;src/sensors/PaleoTerraRedox.h&gt;",
+                "_paleo_terra_redox_8h.html"
+              ],
+              "has_details": true,
+              "name": "MCP3421_ADR",
+              "initializer": "0x68",
+              "brief": "The default I2C address of the PaleoTerra redox sensor.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Sensor Timing",
+        "id": "sensor-timing",
+        "description": "<p><a name=\"sensor_pt_redox_timing\"></a> The sensor timing for a PaleoTerra redox probe</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__pt__redox.html",
+              "id": "gaec7fb48a0b95a3270b4622b2f0b1fef8",
+              "include": [
+                "&lt;src/sensors/PaleoTerraRedox.h&gt;",
+                "_paleo_terra_redox_8h.html"
+              ],
+              "has_details": true,
+              "name": "PTR_WARM_UP_TIME_MS",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html#aaaefd7f306f86382a3dac726531756b4\" class=\"m-doc\">Sensor::<wbr />_warmUpTime_ms</a>; the PaleoTerra redox sensor is immediately warmed up.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__pt__redox.html",
+              "id": "ga9c2387901df65ba49542878b3c71ef0b",
+              "include": [
+                "&lt;src/sensors/PaleoTerraRedox.h&gt;",
+                "_paleo_terra_redox_8h.html"
+              ],
+              "has_details": true,
+              "name": "PTR_STABILIZATION_TIME_MS",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#ad6822ad09fb64658c911ce86820db79c\" class=\"m-doc\">Sensor::<wbr />_stabilizationTime_ms</a>; the PaleoTerra redox sensor is immediately stable.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__pt__redox.html",
+              "id": "ga2a8fab23c9ec229c88e0751d9c466de0",
+              "include": [
+                "&lt;src/sensors/PaleoTerraRedox.h&gt;",
+                "_paleo_terra_redox_8h.html"
+              ],
+              "has_details": true,
+              "name": "PTR_MEASUREMENT_TIME_MS",
+              "initializer": "67",
+              "brief": "<a href=\"class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba\" class=\"m-doc\">Sensor::<wbr />_measurementTime_ms</a>; the PaleoTerra redox sensor takes 67ms to complete a measurement.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Voltage",
+        "id": "voltage",
+        "description": "<p><a name=\"sensor_pt_redox_volt\"></a> The voltage variable from a PaleoTerra redox probe</p><ul><li>Accuracy is \u00b15mV</li></ul><p>{{ <a href=\"class_paleo_terra_redox___voltage.html#aaa1a8b25019a2d64c636cd8dfcfcad34\" class=\"m-doc\">PaleoTerraRedox_Voltage::<wbr />PaleoTerraRedox_Voltage</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__pt__redox.html",
+              "id": "ga90ceabb71f1ffed8830a39ee9e1f3665",
+              "include": [
+                "&lt;src/sensors/PaleoTerraRedox.h&gt;",
+                "_paleo_terra_redox_8h.html"
+              ],
+              "has_details": true,
+              "name": "PTR_VOLTAGE_RESOLUTION",
+              "initializer": "2",
+              "brief": "Decimals places in string representation; voltage should have 2.",
+              "description": "<p>Resolution is 1mV and 1 extra digit is added to increase the number of significant figures to allow for averaging of multiple measurements.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__pt__redox.html",
+              "id": "gab9ed9f5da368f0ac841ba409c6145265",
+              "include": [
+                "&lt;src/sensors/PaleoTerraRedox.h&gt;",
+                "_paleo_terra_redox_8h.html"
+              ],
+              "has_details": true,
+              "name": "PTR_VOLTAGE_VAR_NUM",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; voltage is stored in sensorValues[0].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__pt__redox.html",
+              "id": "gaabffa24a980d6d037bbf905b8f9bd0f3",
+              "include": [
+                "&lt;src/sensors/PaleoTerraRedox.h&gt;",
+                "_paleo_terra_redox_8h.html"
+              ],
+              "has_details": true,
+              "name": "PTR_VOLTAGE_VAR_NAME",
+              "initializer": "\"Voltage\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;Voltage&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__pt__redox.html",
+              "id": "gaeefe513422e081f9cbdad41caa9a472d",
+              "include": [
+                "&lt;src/sensors/PaleoTerraRedox.h&gt;",
+                "_paleo_terra_redox_8h.html"
+              ],
+              "has_details": true,
+              "name": "PTR_VOLTAGE_UNIT_NAME",
+              "initializer": "\"millivolt\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;millivolt&quot; (mV)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__pt__redox.html",
+              "id": "gab00fec60dc84603180d3502ab69a68cf",
+              "include": [
+                "&lt;src/sensors/PaleoTerraRedox.h&gt;",
+                "_paleo_terra_redox_8h.html"
+              ],
+              "has_details": true,
+              "name": "PTR_VOLTAGE_DEFAULT_CODE",
+              "initializer": "\"PTRVoltage\"",
+              "brief": "Default variable short code; &quot;PTRVoltage&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": true,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "PaleoTerra Redox",
+        "group__sensor__pt__redox.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "PaleoTerra Redox",
+        "group__sensor__pt__redox.html"
+      ]
+    ]
+  }
+}

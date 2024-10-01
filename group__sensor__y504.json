@@ -1,0 +1,585 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__sensor__y504",
+    "name": "Yosemitech Y504 Dissolved Oxygen Sensor",
+    "url_base": "group__sensor__y504",
+    "url": "group__sensor__y504.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>Classes for the Yosemitech Y502-A or Y504-A optical dissolved oxygen sensor.</p><section id=\"sensor_y504_datasheet\"><h2>Sensor Datasheet</h2><ul><li><a href=\"https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y504-DO_UserManual-v1.1.pdf\">Y504 Manual</a></li><li><a href=\"https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y505-DO_UserManual-v1.2.pdf\">Y504 Manual</a></li><li><a href=\"https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y504-DO-v6.2_ModbusInstructions.pdf\">Modbus Instructions</a></li></ul><aside class=\"m-note m-info\"><h4>Note</h4><p>The reported resolution (32 bit) gives far more precision than is significant based on the specified accuracy of the sensor, so the resolutions kept in the string representation of the variable values is based on the accuracy not the maximum reported resolution of the sensor.</p></aside></section><section id=\"sensor_y504_ctor\"><h2>Sensor Constructor</h2><p>{{ <a href=\"class_yosemitech_y504.html#a1f791605cddb212a7fdd088b2bae2528\" class=\"m-doc\">YosemitechY504::<wbr />YosemitechY504</a> }}</p><hr/></section><section id=\"sensor_y504_examples\"><h2>Example Code</h2><p>The Yosemitech Y504 Dissolved Oxygen is used in the <a href=\"example_menu.html#menu_walk_yosemitech_y504\" class=\"m-doc\">menu a la carte</a> example.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;sensors/YosemitechY504.h&gt;</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"c1\">// NOTE: Extra hardware and software serial ports are created in the &quot;Settings</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"c1\">// for Additional Serial Ports&quot; section</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span><span class=\"c1\">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"kr\">byte</span><span class=\"w\">          </span><span class=\"n\">y504ModbusAddress</span><span class=\"w\">  </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mh\">0x04</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// The modbus address of the Y504</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">y504AdapterPower</span><span class=\"w\">   </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">sensorPowerPin</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// RS485 adapter power pin</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">y504SensorPower</span><span class=\"w\">    </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">A3</span><span class=\"p\">;</span><span class=\"w\">              </span><span class=\"c1\">// Sensor power pin</span>\n</div><div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">y504EnablePin</span><span class=\"w\">      </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">-1</span><span class=\"p\">;</span><span class=\"w\">              </span><span class=\"c1\">// Adapter RE/DE pin</span>\n</div><div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">uint8_t</span><span class=\"w\"> </span><span class=\"n\">y504NumberReadings</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">5</span><span class=\"p\">;</span>\n</div><div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"c1\">// The manufacturer recommends averaging 10 readings, but we take 5 to minimize</span>\n</div><div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span><span class=\"c1\">// power consumption</span>\n</div><div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span>\n</div><div class=\"line\"><a id=\"l-15\" name=\"l-15\"></a><span class=\"linenos\">15</span><span class=\"c1\">// Create a Yosemitech Y504 dissolved oxygen sensor object</span>\n</div><div class=\"line\"><a id=\"l-16\" name=\"l-16\"></a><span class=\"linenos\">16</span><span class=\"n\">YosemitechY504</span><span class=\"w\"> </span><span class=\"nf\">y504</span><span class=\"p\">(</span><span class=\"n\">y504ModbusAddress</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">modbusSerial</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">y504AdapterPower</span><span class=\"p\">,</span>\n</div><div class=\"line\"><a id=\"l-17\" name=\"l-17\"></a><span class=\"linenos\">17</span><span class=\"w\">                    </span><span class=\"n\">y504SensorPower</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">y504EnablePin</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">y504NumberReadings</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-18\" name=\"l-18\"></a><span class=\"linenos\">18</span>\n</div><div class=\"line\"><a id=\"l-19\" name=\"l-19\"></a><span class=\"linenos\">19</span><span class=\"c1\">// Create the dissolved oxygen percent, dissolved oxygen concentration, and</span>\n</div><div class=\"line\"><a id=\"l-20\" name=\"l-20\"></a><span class=\"linenos\">20</span><span class=\"c1\">// temperature variable pointers for the Y504</span>\n</div><div class=\"line\"><a id=\"l-21\" name=\"l-21\"></a><span class=\"linenos\">21</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">y504DOpct</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-22\" name=\"l-22\"></a><span class=\"linenos\">22</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">YosemitechY504_DOpct</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">y504</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-23\" name=\"l-23\"></a><span class=\"linenos\">23</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">y504DOmgL</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-24\" name=\"l-24\"></a><span class=\"linenos\">24</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">YosemitechY504_DOmgL</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">y504</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-25\" name=\"l-25\"></a><span class=\"linenos\">25</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">y504Temp</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-26\" name=\"l-26\"></a><span class=\"linenos\">26</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">YosemitechY504_Temp</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">y504</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "sensor_y504_datasheet",
+        "Sensor Datasheet",
+        []
+      ],
+      [
+        "sensor_y504_ctor",
+        "Sensor Constructor",
+        []
+      ],
+      [
+        "sensor_y504_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_yosemitech_y504.html",
+        "name": "YosemitechY504",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__y504.html\" class=\"m-doc\">Yosemitech Y502-A or Y504-A optical dissolved oxygen sensors</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_yosemitech_y504___d_opct.html",
+        "name": "YosemitechY504_DOpct",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__y504.html#sensor_y504_dopercent\" class=\"m-doc\">dissolved oxygen percent saturation output</a> from a <a href=\"group__sensor__y504.html\" class=\"m-doc\">Yosemitech Y502-A or Y504-A optical dissolved oxygen sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_yosemitech_y504___temp.html",
+        "name": "YosemitechY504_Temp",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__y504.html#sensor_y504_temp\" class=\"m-doc\">temperature output</a> from a <a href=\"group__sensor__y504.html\" class=\"m-doc\">Yosemitech Y504 optical dissolved oxygen sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_yosemitech_y504___d_omg_l.html",
+        "name": "YosemitechY504_DOmgL",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__y504.html#sensor_y504_domgl\" class=\"m-doc\">dissolved oxygen concentration output</a> from a <a href=\"group__sensor__y504.html\" class=\"m-doc\">Yosemitech Y502-A or Y504-A optical dissolved oxygen sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Sensor Variable Counts",
+        "id": "sensor-variable-counts",
+        "description": "<p><a name=\"sensor_y504_var_counts\"></a> The number of variables that can be returned by a Yosemitech Y504</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y504.html",
+              "id": "gad2b959f14c9d9d306a2b8ff5ade2f85f",
+              "include": [
+                "&lt;src/sensors/YosemitechY504.h&gt;",
+                "_yosemitech_y504_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y504_NUM_VARIABLES",
+              "initializer": "3",
+              "brief": "<a href=\"class_sensor.html#af26786329fd01b44cf31410d046fc8f3\" class=\"m-doc\">Sensor::<wbr />_numReturnedValues</a>; the Y504 can report 3 values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y504.html",
+              "id": "ga6fea253f664d80270133f4e913cc3338",
+              "include": [
+                "&lt;src/sensors/YosemitechY504.h&gt;",
+                "_yosemitech_y504_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y504_INC_CALC_VARIABLES",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html#a2f3f93a9205efb134cef1216d65077d2\" class=\"m-doc\">Sensor::<wbr />_incCalcValues</a>; we calculated DO concentration from the percent saturation and the temperature.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Sensor Timing",
+        "id": "sensor-timing",
+        "description": "<p><a name=\"sensor_y504_timing\"></a> The sensor timing for a Yosemitch Y504</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y504.html",
+              "id": "ga7446f93b950558c00c498c826549fabc",
+              "include": [
+                "&lt;src/sensors/YosemitechY504.h&gt;",
+                "_yosemitech_y504_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y504_WARM_UP_TIME_MS",
+              "initializer": "375",
+              "brief": "<a href=\"class_sensor.html#aaaefd7f306f86382a3dac726531756b4\" class=\"m-doc\">Sensor::<wbr />_warmUpTime_ms</a>; time before sensor responds after power - 375ms.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y504.html",
+              "id": "ga6e08618fc10c5af3f63a84a6b4a5845f",
+              "include": [
+                "&lt;src/sensors/YosemitechY504.h&gt;",
+                "_yosemitech_y504_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y504_STABILIZATION_TIME_MS",
+              "initializer": "8000",
+              "brief": "<a href=\"class_sensor.html#ad6822ad09fb64658c911ce86820db79c\" class=\"m-doc\">Sensor::<wbr />_stabilizationTime_ms</a>; time between &quot;StartMeasurement&quot; command and stable reading - 8sec (8000ms).",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y504.html",
+              "id": "ga97843b107f5569a49539c9a844638406",
+              "include": [
+                "&lt;src/sensors/YosemitechY504.h&gt;",
+                "_yosemitech_y504_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y504_MEASUREMENT_TIME_MS",
+              "initializer": "1700",
+              "brief": "<a href=\"class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba\" class=\"m-doc\">Sensor::<wbr />_measurementTime_ms</a>; the Y504 takes ~1700ms to complete a measurement.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Dissolved Oxygen Percent Saturation",
+        "id": "dissolved-oxygen-percent-saturation",
+        "description": "<p><a name=\"sensor_y504_dopercent\"></a> The dissolved oxygen percent saturation variable from a Yosemitch Y504</p><ul><li>Range is 0-20mg/L or 0-200% Saturation</li><li>Accuracy is \u00b1 1 %</li></ul><p>{{ <a href=\"class_yosemitech_y504___d_opct.html#af5f98420f0c4325d7120326848e84d0d\" class=\"m-doc\">YosemitechY504_DOpct::<wbr />YosemitechY504_DOpct</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y504.html",
+              "id": "gadd91d368cfa97db00e40e432cabb7590",
+              "include": [
+                "&lt;src/sensors/YosemitechY504.h&gt;",
+                "_yosemitech_y504_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y504_DOPCT_RESOLUTION",
+              "initializer": "1",
+              "brief": "Decimals places in string representation; dissolved oxygen percent should have 1 - resolution is 0.1%.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y504.html",
+              "id": "gad325cf0a9108b8d242e34c809ff95942",
+              "include": [
+                "&lt;src/sensors/YosemitechY504.h&gt;",
+                "_yosemitech_y504_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y504_DOPCT_VAR_NUM",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; dissolved oxygen percent is stored in sensorValues[0].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y504.html",
+              "id": "gac0211c662c76603aed7ec9babf10a216",
+              "include": [
+                "&lt;src/sensors/YosemitechY504.h&gt;",
+                "_yosemitech_y504_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y504_DOPCT_VAR_NAME",
+              "initializer": "\"oxygenDissolvedPercentOfSaturation\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;oxygenDissolvedPercentOfSaturation&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y504.html",
+              "id": "ga8e8da012581f93eb3e0b2e6f95ec90b8",
+              "include": [
+                "&lt;src/sensors/YosemitechY504.h&gt;",
+                "_yosemitech_y504_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y504_DOPCT_UNIT_NAME",
+              "initializer": "\"percent\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;milligramPerLiter&quot; (mg/L)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y504.html",
+              "id": "ga71868e67b294cb4db3465efc782e9918",
+              "include": [
+                "&lt;src/sensors/YosemitechY504.h&gt;",
+                "_yosemitech_y504_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y504_DOPCT_DEFAULT_CODE",
+              "initializer": "\"Y504DOpct\"",
+              "brief": "Default variable short code; &quot;Y504DOmgL&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Temperature",
+        "id": "temperature",
+        "description": "<p><a name=\"sensor_y504_temp\"></a> The temperature variable from a Yosemitch Y504</p><ul><li>Range is 0\u00b0C to + 50\u00b0C</li><li>Accuracy is \u00b1 0.2\u00b0C</li></ul><p>{{ <a href=\"class_yosemitech_y504___temp.html#a6f4626380d41df3150dec694cb10748e\" class=\"m-doc\">YosemitechY504_Temp::<wbr />YosemitechY504_Temp</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y504.html",
+              "id": "ga95058ca3442c7b853f617fe04a521c06",
+              "include": [
+                "&lt;src/sensors/YosemitechY504.h&gt;",
+                "_yosemitech_y504_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y504_TEMP_RESOLUTION",
+              "initializer": "1",
+              "brief": "Decimals places in string representation; temperature should have 1 - resolution is 0.1\u00b0C.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y504.html",
+              "id": "gae536b092a3c954974920ed189990895b",
+              "include": [
+                "&lt;src/sensors/YosemitechY504.h&gt;",
+                "_yosemitech_y504_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y504_TEMP_VAR_NUM",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; temperature is stored in sensorValues[1].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y504.html",
+              "id": "ga3bfc55ff7d728e88e333ea8baeedafa8",
+              "include": [
+                "&lt;src/sensors/YosemitechY504.h&gt;",
+                "_yosemitech_y504_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y504_TEMP_VAR_NAME",
+              "initializer": "\"temperature\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;temperature&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y504.html",
+              "id": "gaae0767e0719f58baf716783356e41812",
+              "include": [
+                "&lt;src/sensors/YosemitechY504.h&gt;",
+                "_yosemitech_y504_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y504_TEMP_UNIT_NAME",
+              "initializer": "\"degreeCelsius\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;degreeCelsius&quot; (\u00b0C)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y504.html",
+              "id": "ga5592dbd37fec305911ec3f2ccf25a681",
+              "include": [
+                "&lt;src/sensors/YosemitechY504.h&gt;",
+                "_yosemitech_y504_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y504_TEMP_DEFAULT_CODE",
+              "initializer": "\"Y504Temp\"",
+              "brief": "Default variable short code; &quot;Y504Temp&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Dissolved Oxygen Concentration",
+        "id": "dissolved-oxygen-concentration",
+        "description": "<p><a name=\"sensor_y504_domgl\"></a> The dissolved oxygen concentration variable from a Yosemitch Y504</p><ul><li>Range is 0-20mg/L or 0-200% Saturation</li><li>Accuracy is \u00b1 1 %</li></ul><p>{{ <a href=\"class_yosemitech_y504___d_omg_l.html#a36a86df04cd727b5b5b0eeb2328c514f\" class=\"m-doc\">YosemitechY504_DOmgL::<wbr />YosemitechY504_DOmgL</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y504.html",
+              "id": "ga60225ce680363b4ef65d5508dd5b9e6b",
+              "include": [
+                "&lt;src/sensors/YosemitechY504.h&gt;",
+                "_yosemitech_y504_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y504_DOMGL_RESOLUTION",
+              "initializer": "2",
+              "brief": "Decimals places in string representation; dissolved oxygen concentration should have 2 - resolution is 0.01 mg/L.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y504.html",
+              "id": "gae4daf93b6fca5876a8cba8228d32eec1",
+              "include": [
+                "&lt;src/sensors/YosemitechY504.h&gt;",
+                "_yosemitech_y504_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y504_DOMGL_VAR_NUM",
+              "initializer": "2",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; dissolved oxygen concentration is stored in sensorValues[2].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y504.html",
+              "id": "ga2414a4f0c33c4a186dcdc0cbf71956f1",
+              "include": [
+                "&lt;src/sensors/YosemitechY504.h&gt;",
+                "_yosemitech_y504_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y504_DOMGL_VAR_NAME",
+              "initializer": "\"oxygenDissolved\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;oxygenDissolved&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y504.html",
+              "id": "ga535483ccba329b2814ad587b3f46d12b",
+              "include": [
+                "&lt;src/sensors/YosemitechY504.h&gt;",
+                "_yosemitech_y504_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y504_DOMGL_UNIT_NAME",
+              "initializer": "\"milligramPerLiter\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;milligramPerLiter&quot; (mg/L)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y504.html",
+              "id": "ga5af60c3bedd562409b20034ddacd9b87",
+              "include": [
+                "&lt;src/sensors/YosemitechY504.h&gt;",
+                "_yosemitech_y504_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y504_DOMGL_DEFAULT_CODE",
+              "initializer": "\"Y504DOmgL\"",
+              "brief": "Default variable short code; &quot;Y504DOmgL&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "Yosemitech Sensors",
+        "group__yosemitech__group.html"
+      ],
+      [
+        "Yosemitech Y504 Dissolved Oxygen Sensor",
+        "group__sensor__y504.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Yosemitech Y504 Dissolved Oxygen Sensor",
+        "group__sensor__y504.html"
+      ]
+    ]
+  }
+}

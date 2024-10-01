@@ -1,0 +1,277 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "file",
+    "id": "_mod_sensor_debugger_8h",
+    "name": "ModSensorDebugger.h",
+    "url_base": "_mod_sensor_debugger_8h",
+    "url": "_mod_sensor_debugger_8h.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "Contains template functions used to print out debugging information.",
+    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a> *</p><p>Volodymyr Shymanskyy</p></aside><p>These classes are taken with minor modifications from the debugger in TinyGsmCommon.h from the TinyGSM library authored by Volodymyr Shymanskyy.</p>",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [
+      {
+        "base_url": "_mod_sensor_debugger_8h.html",
+        "id": "aaa98cf8c033c060745bf21d92e3e29ca",
+        "include": null,
+        "has_details": true,
+        "type": "void",
+        "name": "PRINTOUT",
+        "brief": "Prints text to the &quot;debugging&quot; serial port. This is intended for text that should <em>always</em> be printed, even in field operation.",
+        "description": "",
+        "return_value": null,
+        "return_values": [],
+        "exceptions": [],
+        "deprecated": null,
+        "since": null,
+        "is_constexpr": false,
+        "is_consteval": false,
+        "is_explicit": false,
+        "is_virtual": false,
+        "prefix": "static ",
+        "is_defaulted": false,
+        "is_deleted": false,
+        "is_pure_virtual": false,
+        "is_final": false,
+        "is_override": false,
+        "is_noexcept": false,
+        "is_conditional_noexcept": false,
+        "suffix": "",
+        "is_protected": false,
+        "is_private": false,
+        "is_signal": false,
+        "is_slot": false,
+        "has_template_details": true,
+        "templates": [
+          {
+            "type": "typename",
+            "name": "T",
+            "default": "",
+            "description": "Any type that can be printed"
+          }
+        ],
+        "has_param_details": true,
+        "params": [
+          {
+            "name": "last",
+            "type": "T",
+            "type_name": "T last",
+            "default": null,
+            "description": "The last text to print out",
+            "direction": ""
+          }
+        ]
+      },
+      {
+        "base_url": "_mod_sensor_debugger_8h.html",
+        "id": "ad47a569608f9122ca43d7b3db78a37a0",
+        "include": null,
+        "has_details": true,
+        "type": "void",
+        "name": "PRINTOUT",
+        "brief": "Prints text to the &quot;debugging&quot; serial port. This is intended for text that should <em>always</em> be printed, even in field operation.",
+        "description": "",
+        "return_value": null,
+        "return_values": [],
+        "exceptions": [],
+        "deprecated": null,
+        "since": null,
+        "is_constexpr": false,
+        "is_consteval": false,
+        "is_explicit": false,
+        "is_virtual": false,
+        "prefix": "static ",
+        "is_defaulted": false,
+        "is_deleted": false,
+        "is_pure_virtual": false,
+        "is_final": false,
+        "is_override": false,
+        "is_noexcept": false,
+        "is_conditional_noexcept": false,
+        "suffix": "",
+        "is_protected": false,
+        "is_private": false,
+        "is_signal": false,
+        "is_slot": false,
+        "has_template_details": true,
+        "templates": [
+          {
+            "type": "typename",
+            "name": "T",
+            "default": "",
+            "description": "Any type that can be printed"
+          },
+          {
+            "type": "typename...",
+            "name": "Args",
+            "default": "",
+            "description": "Any type that can be printed"
+          }
+        ],
+        "has_param_details": true,
+        "params": [
+          {
+            "name": "head",
+            "type": "T",
+            "type_name": "T head",
+            "default": null,
+            "description": "The first text to print out",
+            "direction": ""
+          },
+          {
+            "name": "tail",
+            "type": "Args...",
+            "type_name": "Args... tail",
+            "default": null,
+            "description": "The last text to print out",
+            "direction": ""
+          }
+        ]
+      }
+    ],
+    "vars": [],
+    "defines": [
+      {
+        "base_url": "_mod_sensor_debugger_8h.html",
+        "id": "ace29b6c3f8272bc574ec027c030180c6",
+        "include": null,
+        "has_details": true,
+        "name": "MS_DBG",
+        "initializer": null,
+        "brief": "Prints text to the &quot;debugging&quot; serial port. This is intended for debugging the code of a specific module.",
+        "description": "<p>The name of the header file calling the print command is appended to the end of the text.</p>",
+        "return_value": null,
+        "deprecated": null,
+        "since": null,
+        "has_param_details": false,
+        "params": [
+          [
+            "...",
+            ""
+          ]
+        ]
+      },
+      {
+        "base_url": "_mod_sensor_debugger_8h.html",
+        "id": "a65646fc5bd2d655f71c8cf1d97b08693",
+        "include": null,
+        "has_details": true,
+        "name": "MS_START_DEBUG_TIMER",
+        "initializer": null,
+        "brief": "Initializes a variable called start with the current processor millis.",
+        "description": "<p>Only to be used with debugging.</p>",
+        "return_value": null,
+        "deprecated": null,
+        "since": null,
+        "has_param_details": false,
+        "params": null
+      },
+      {
+        "base_url": "_mod_sensor_debugger_8h.html",
+        "id": "ae3e8e60053144765e6609290887f5462",
+        "include": null,
+        "has_details": true,
+        "name": "MS_RESET_DEBUG_TIMER",
+        "initializer": null,
+        "brief": "Re-sets the variable called start to the current processor millis.",
+        "description": "<p>Only to be used with debugging.</p>",
+        "return_value": null,
+        "deprecated": null,
+        "since": null,
+        "has_param_details": false,
+        "params": null
+      },
+      {
+        "base_url": "_mod_sensor_debugger_8h.html",
+        "id": "a34893f3a3f02dc2c5df7114f2d6e361b",
+        "include": null,
+        "has_details": true,
+        "name": "MS_PRINT_DEBUG_TIMER",
+        "initializer": null,
+        "brief": "Calculates the difference between the current processor millis and the value of the start variable.",
+        "description": "<p>Only to be used with debugging.</p>",
+        "return_value": null,
+        "deprecated": null,
+        "since": null,
+        "has_param_details": false,
+        "params": null
+      },
+      {
+        "base_url": "_mod_sensor_debugger_8h.html",
+        "id": "af617132c6701146cfe9dff7b306d3d35",
+        "include": null,
+        "has_details": true,
+        "name": "MS_DEEP_DBG",
+        "initializer": null,
+        "brief": "Prints text to the &quot;debugging&quot; serial port. This is intended for printouts considered to be excessive during &quot;normal&quot; debugging.",
+        "description": "<p>The name of the header file calling the print command is appended to the end of the text.</p>",
+        "return_value": null,
+        "deprecated": null,
+        "since": null,
+        "has_param_details": false,
+        "params": [
+          [
+            "...",
+            ""
+          ]
+        ]
+      }
+    ],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": true,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "src",
+        "dir_68267d1309a1af8e8297ef4c3efbcdba.html"
+      ],
+      [
+        "ModSensorDebugger.h",
+        "_mod_sensor_debugger_8h.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "ModSensorDebugger.h",
+        "_mod_sensor_debugger_8h.html"
+      ]
+    ]
+  }
+}

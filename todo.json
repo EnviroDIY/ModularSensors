@@ -1,0 +1,72 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "page",
+    "id": "todo",
+    "name": "Todo List",
+    "url_base": "todo",
+    "url": "todo.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<dl class=\"m-doc\"><dt>Page <a href=\"page_memory_use.html\" class=\"m-doc\">Decreasing Memory Footprint</a></dt><dd><a name=\"_todo000001\"></a>The decreasing memory footprint section is not yet written.</dd><dt>Member <a href=\"classlogger_modem.html#a735ec434c0154f11f89390c911f83382\" class=\"m-doc\">loggerModem::<wbr />_modemFwVersion</a></dt><dd><a name=\"_todo000006\"></a>Implement this for modems other than the XBee WiFi</dd><dt>Member <a href=\"classlogger_modem.html#a9845b9fa726fd7067eba730d48f13287\" class=\"m-doc\">loggerModem::<wbr />_modemHwVersion</a></dt><dd><a name=\"_todo000005\"></a>Implement this for modems other than the XBee WiFi</dd><dt>Member <a href=\"classlogger_modem.html#ad160a8fec3ace78cc460b88277fc161d\" class=\"m-doc\">loggerModem::<wbr />_modemSerialNumber</a></dt><dd><a name=\"_todo000007\"></a>Implement this for modems other than the XBee WiFi</dd><dt>Member <a href=\"classlogger_modem.html#a1e69bc7eb1091cc54b5dd587c2221e6b\" class=\"m-doc\">loggerModem::<wbr />getModemDevId</a>  (void)</dt><dd><a name=\"_todo000004\"></a>Implement this for modems other than the XBee WiFi</dd><dt>page <a href=\"index.html\" class=\"m-doc\">ModularSensors</a></dt><dd><a name=\"_todo000003\"></a>Page on Data Endpoints</dd><dt>Page <a href=\"page_power_parasites.html\" class=\"m-doc\">Power Draw over Data Lines</a></dt><dd><a name=\"_todo000002\"></a>add link to loop of datasaving example) example shows setting ending a serial stream and seeting pins low to prevent an RS485 adapter from drawing power during sleep.</dd><dt>Member <a href=\"group__sensor__sq212.html#ga1fe8246d1520197f856fde7485ad07a7\" class=\"m-doc\">SQ212_<wbr />STABILIZATION_<wbr />TIME_<wbr />MS</a></dt><dd><a name=\"_todo000009\"></a>Measure stabilization time of the SQ-212</dd><dt>Member <a href=\"group__sensor__sq212.html#ga913a59d05559256622f5bcb347f2309d\" class=\"m-doc\">SQ212_<wbr />WARM_<wbr />UP_<wbr />TIME_<wbr />MS</a></dt><dd><a name=\"_todo000008\"></a>Measure warm-up time of the SQ-212</dd></dl>",
+    "sections": [],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "ModularSensors",
+        "index.html"
+      ],
+      [
+        "Todo List",
+        "todo.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Todo List",
+        "todo.html"
+      ]
+    ]
+  }
+}

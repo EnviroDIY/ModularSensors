@@ -1,20 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
 <head>
   <meta charset="UTF-8" />
-  <title>ModularSensors &raquo; ChangeLog | ModularSensors</title>
+  <title>ModularSensors &raquo; ChangeLog | ModularSensors0.36.0</title>
   <link rel="stylesheet" href="m-EnviroDIY+documentation.compiled.css" />
+
+<style id="wp-emoji-styles-inline-css" type="text/css">
+  img.wp-smiley,
+  img.emoji {
+    display: inline !important;
+    border: none !important;
+    box-shadow: none !important;
+    height: 1em !important;
+    width: 1em !important;
+    margin: 0 0.07em !important;
+    vertical-align: -0.1em !important;
+    background: none !important;
+    padding: 0 !important;
+  }
+</style>
 <link
   rel="stylesheet"
   id="gp-parent-style-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/style.css?ver=6.1.1"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/style.css?ver=6.5.4"
   type="text/css"
   media="all"
 />
 <link
   rel="stylesheet"
-  id="ghostpool-style-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize-child/style.css?ver=6.1.1"
+  id="redux-extendify-styles-css"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/framework/redux/assets/css/extendify-utilities.css?ver=4.4.11"
   type="text/css"
   media="all"
 />
@@ -124,31 +139,27 @@
 <link
   rel="stylesheet"
   id="fontawesome-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/fonts/font-awesome/css/font-awesome.min.css?ver=6.1.1"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/fonts/font-awesome/css/font-awesome.min.css?ver=6.5.4"
   type="text/css"
   media="all"
 />
 <link
-  rel="stylesheet"
-  id="prettyphoto-css"
-  href="https://www.envirodiy.org/wp-content/plugins/js_composer/assets/lib/prettyphoto/css/prettyPhoto.min.css?ver=6.10.0"
-  type="text/css"
-  media="all"
+  rel="preload"
+  as="style"
+  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
 />
 <link
   rel="stylesheet"
-  id="gp-bp-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/css/bp.css?ver=6.1.1"
-  type="text/css"
-  media="all"
+  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
+  media="print"
+  onload="this.media='all'"
 />
-<link
-  rel="stylesheet"
-  id="gp-bbp-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/css/bbpress.css?ver=6.1.1"
-  type="text/css"
-  media="all"
-/>
+<noscript
+  ><link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
+/></noscript>
+
 <style type="text/css" id="wp-custom-css">
   /* Print Styles */
   @media print {
@@ -162,12 +173,15 @@
       margin: 0 !important;
       padding: 0;
     }
+
     body:not(.gp-full-page-page-header) .gp-page-header.gp-has-text:before,
     body:not(.gp-full-page-page-header)
       .gp-page-header.gp-has-teaser-video.gp-has-text
       .gp-video-header:before {
       background-image: none !important;
     }
+    /* End print styles */
+
     #gp-main-header,
     #gp-small-header,
     #gp-header-area,
@@ -219,6 +233,7 @@
     img {
       page-break-inside: avoid;
       visibility: visible;
+      float: none;
     }
     blockquote,
     table,
@@ -231,7 +246,7 @@
       page-break-before: avoid;
     }
   }
-  /* End print styles */
+
   /*Gutenberg styles*/
   /*Buttons*/
   a.wp-block-button__link {
@@ -362,10 +377,17 @@
   span.woocommerce-Price-amount.amount {
     text-decoration: none !important;
   }
+  /* Hide additional information tab */
+  div.woocommerce-tabs {
+    display: none !important;
+  }
   /*End WooCommerce styles*/
   /*The Events Calendar*/
   #tribe-events-content a {
     color: #0579bd;
+  }
+  #tribe-events-content .wp-block-button__link {
+    color: #ffffff;
   }
   #gp-sidebar-right
     > div
@@ -451,6 +473,9 @@
   #gp-content p.last-updated {
     display: none;
   }
+  #gp-content ul {
+    margin: 0 0 0 20px !important;
+  }
 </style>
 <style id="socialize-dynamic-css" title="dynamic-css" class="redux-options-output">
   #footer-image img {
@@ -483,7 +508,6 @@
     font-style: normal;
     color: #000;
     font-size: 16px;
-    font-display: swap;
   }
   a {
     color: #0579bd;
@@ -497,7 +521,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 36px;
-    font-display: swap;
   }
   h2 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -505,7 +528,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 28px;
-    font-display: swap;
   }
   h3,
   #tab-description h2,
@@ -519,7 +541,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 24px;
-    font-display: swap;
   }
   h4 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -527,7 +548,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 20px;
-    font-display: swap;
   }
   h5 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -535,7 +555,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 18px;
-    font-display: swap;
   }
   h6 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -543,7 +562,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 16px;
-    font-display: swap;
   }
   .gp-entry-meta .gp-post-meta-row-1,
   .gp-homepage #gp-content .gp-vc-element-3,
@@ -577,7 +595,6 @@
     font-style: normal;
     color: #ababab;
     font-size: 16px;
-    font-display: swap;
   }
   #gp-primary-main-nav .menu > li:hover > a,
   #gp-primary-main-nav .menu > li > a {
@@ -600,7 +617,6 @@
     font-style: normal;
     color: #fff;
     font-size: 14px;
-    font-display: swap;
   }
   #gp-secondary-main-nav .menu > li:hover > a,
   #gp-secondary-main-nav .menu > li > a {
@@ -641,7 +657,6 @@
     font-style: normal;
     color: #000;
     font-size: 14px;
-    font-display: swap;
   }
   .gp-nav .menu > .gp-standard-menu > .sub-menu > li a {
     color: #000;
@@ -745,7 +760,6 @@
     font-style: normal;
     color: #fff;
     font-size: 80px;
-    font-display: swap;
   }
   .gp-page-header .gp-container {
     height: 250px;
@@ -759,7 +773,6 @@
     font-style: normal;
     color: #000;
     font-size: 40px;
-    font-display: swap;
   }
   .gp-subtitle {
     font-family: Roboto;
@@ -768,7 +781,6 @@
     font-style: normal;
     color: #0579bd;
     font-size: 20px;
-    font-display: swap;
   }
   #gp-post-links a,
   .gp-pagination-arrows a.prev,
@@ -811,7 +823,6 @@
     line-height: 24px;
     color: #fff;
     font-size: 14px;
-    font-display: swap;
   }
   .gp-author-info a {
     color: #b1b1b1;
@@ -840,19 +851,16 @@
     font-style: normal;
     color: #fff;
     font-size: 24px;
-    font-display: swap;
   }
   .gp-loop-title {
     line-height: 22px;
     font-weight: 400;
     font-size: 19px;
-    font-display: swap;
   }
   .gp-blog-large .gp-loop-title {
     line-height: 46px;
     font-weight: 200;
     font-size: 40px;
-    font-display: swap;
   }
   .gp-loop-title a,
   .bboss_search_item .entry-title a {
@@ -914,7 +922,6 @@
     font-style: normal;
     color: #000;
     font-size: 14px;
-    font-display: swap;
   }
   .widgettitle a,
   .widget-title a,
@@ -1157,7 +1164,6 @@
     font-style: normal;
     color: #fff;
     font-size: 16px;
-    font-display: swap;
   }
   .gp-footer-widget {
     font-family: Roboto;
@@ -1166,7 +1172,6 @@
     font-style: normal;
     color: #ffffff;
     font-size: 14px;
-    font-display: swap;
   }
   .gp-footer-widget a {
     color: #f9bd16;
@@ -1195,441 +1200,295 @@
   #gp-to-top {
     color: #ffffff;
   }
-  .woocommerce ul.products li.product .price,
-  .woocommerce div.product p.price,
-  .woocommerce div.product span.price {
-    color: #00bee9;
-  }
-  .woocommerce span.onsale {
-    background-color: #e93100;
-  }
-  #buddypress .activity-list .activity-content .activity-header,
-  #buddypress .activity-list .activity-content .comment-header,
-  #buddypress .activity-list .activity-header a,
-  #buddypress .activity-list div.activity-comments div.acomment-meta,
-  #buddypress .activity-list .acomment-meta a,
-  .widget.buddypress .item-title a,
-  .widget.buddypress div.item-options.gp-small-item-options:before,
-  .widget.buddypress div.item-options a,
-  #buddypress ul.item-list li div.item-title a,
-  #buddypress ul.item-list li h4 > a,
-  #buddypress ul.item-list li h5 > a,
-  #buddypress div#item-header div#item-meta {
-    color: #000000;
-  }
-  #buddypress .activity-list .activity-content .activity-inner {
-    color: #aaaaaa;
-  }
-  #buddypress .activity-list a.activity-time-since,
-  .widget_display_replies ul li a + div,
-  .widget_display_topics ul li a + div,
-  #buddypress .activity-list .acomment-meta a.activity-time-since,
-  #buddypress .activity-list div.activity-comments div.acomment-content,
-  .widget.buddypress div.item-meta,
-  #buddypress span.activity,
-  #buddypress ul.item-list li div.meta {
-    color: #545454;
-  }
-  .gp-theme #buddypress .activity-list div.activity-meta a.button,
-  .gp-theme #buddypress .activity .acomment-options a,
-  .gp-theme #buddypress .activity-list li.load-more a,
-  .gp-theme #buddypress .activity-list li.load-newest a,
-  .widget.buddypress div.item-options a.selected {
-    color: #26a9e0;
-  }
-  .gp-theme #buddypress .activity-list div.activity-meta a.button:hover,
-  .gp-theme #buddypress .activity .acomment-options a:hover,
-  .gp-theme #buddypress .activity-list li.load-more a:hover,
-  .gp-theme #buddypress .activity-list li.load-newest a:hover,
-  .widget.buddypress div.item-options a.selected:hover {
-    color: #000;
-  }
-  .gp-theme #buddypress ul.item-list li,
-  .gp-theme #buddypress div.activity-comments ul li:first-child,
-  .widget.buddypress #friends-list li,
-  .widget.buddypress #groups-list li,
-  .widget.buddypress #members-list li {
-    border-top: 1px solid #e0e0e0;
-    border-bottom: 1px solid #e0e0e0;
-  }
-  .gp-theme #buddypress div.item-list-tabs {
-    background-color: #353535;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a span,
-  .gp-theme #buddypress div.item-list-tabs ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs ul li.selected a span {
-    color: #353535;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a span {
-    background-color: #ffffff;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a,
-  .gp-theme #buddypress #gp-bp-tabs-button,
-  .gp-theme #buddypress div.item-list-tabs ul li span {
-    color: #ffffff;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li.current a,
-  .gp-theme #buddypress div.item-list-tabs ul li.selected a,
-  .gp-theme #buddypress div.item-list-tabs ul li a:hover {
-    color: #b1b1b1;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs ul li.selected a span {
-    background: #b1b1b1;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul,
-  .widget.buddypress div.item-options.gp-small-item-options > a {
-    background-color: #f8f8f8;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.selected a span {
-    color: #f8f8f8;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a span {
-    background-color: #000000;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a {
-    color: #000000;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.current a,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.selected a,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a:hover {
-    color: #26a9e0;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.selected a span {
-    background: #26a9e0;
-  }
-  #bbpress-forums
-    .gp-forum-home.bbp-forums
-    .bbp-has-subforums
-    .bbp-forum-info
-    > .bbp-forum-title,
-  #bbpress-forums .bbp-topics .bbp-header,
-  #bbpress-forums .bbp-replies .bbp-header,
-  #bbpress-forums .bbp-search-results .bbp-header {
-    background-color: #353535;
-  }
-  #bbpress-forums
-    .gp-forum-home.bbp-forums
-    .bbp-has-subforums
-    .bbp-forum-info
-    > .bbp-forum-title,
-  #bbpress-forums .bbp-topics .bbp-header,
-  #bbpress-forums .bbp-replies .bbp-header,
-  #bbpress-forums .bbp-search-results .bbp-header {
-    color: #ffffff;
-  }
-  #bbpress-forums .bbp-header div.bbp-reply-content a {
-    color: #ddd;
-  }
-  #bbpress-forums .bbp-header div.bbp-reply-content a:hover {
-    color: #fff;
-  }
-  #bbpress-forums .bbp-forums-list li.odd-forum-row,
-  #bbpress-forums div.odd,
-  #bbpress-forums ul.odd {
-    background-color: #f8f8f8;
-  }
-  #bbpress-forums .bbp-forums-list li.even-forum-row,
-  #bbpress-forums div.even,
-  #bbpress-forums ul.even {
-    background-color: #fff;
-  }
-  #bbpress-forums .gp-forum-home.bbp-forums .bbp-forum-info > .bbp-forum-title,
-  #bbpress-forums div.bbp-forum-header,
-  #bbpress-forums div.bbp-topic-header,
-  #bbpress-forums div.bbp-reply-header,
-  #bbpress-forums .bbp-forums-list,
-  #bbpress-forums li.bbp-body {
-    border-top: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
-    border-left: 1px solid #ddd;
-    border-right: 1px solid #ddd;
-  }
-  #bbpress-forums .bbp-forums-list .bbp-forum .bbp-forum-link,
-  body.forum #bbpress-forums .bbp-forums .bbp-forum-info > .bbp-forum-title,
-  #bbpress-forums .bbp-topics .bbp-topic-permalink,
-  #bbpress-forums .gp-forum-home.bbp-forums .bbp-forum-info > .bbp-forum-title,
-  .gp-theme
-    #bbpress-forums
-    .gp-forum-shortcode
-    ul.forum:not(.status-category)
-    .bbp-forum-info
-    a {
-    color: #000000;
-  }
-  #bbpress-forums div.bbp-forum-author .bbp-author-role,
-  #bbpress-forums div.bbp-topic-author .bbp-author-role,
-  #bbpress-forums div.bbp-reply-author .bbp-author-role {
-    background-color: #92d050;
-  }
-  #bbpress-forums div.bbp-forum-author .bbp-author-role,
-  #bbpress-forums div.bbp-topic-author .bbp-author-role,
-  #bbpress-forums div.bbp-reply-author .bbp-author-role {
-    color: #ffffff;
-  }
 </style>
-    <style id="kadence-blocks-global-variables-inline-css" type="text/css">
-      :root {
-        --global-kb-font-size-sm: clamp(0.8rem, 0.73rem + 0.217vw, 0.9rem);
-        --global-kb-font-size-md: clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem);
-        --global-kb-font-size-lg: clamp(1.75rem, 1.576rem + 0.543vw, 2rem);
-        --global-kb-font-size-xl: clamp(2.25rem, 1.728rem + 1.63vw, 3rem);
-        --global-kb-font-size-xxl: clamp(2.5rem, 1.456rem + 3.26vw, 4rem);
-        --global-kb-font-size-xxxl: clamp(2.75rem, 0.489rem + 7.065vw, 6rem);
-      }
-    </style>
-    <link
-      rel="preload"
-      as="style"
-      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.1.1"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.1.1"
-      media="print"
-      onload="this.media='all'"
-    />
-    <noscript
-      ><link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.1.1"
-    /></noscript>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-includes/js/jquery/jquery.min.js?ver=3.6.1"
-  id="jquery-core-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2"
-  id="jquery-migrate-js"
-></script>  <link rel="icon" href="MS_FavIcon.png" type="image/png" />
+  <link rel="icon" href="MS_FavIcon.png" type="image/png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#cb4b16" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="clipboard.js"></script>
 </head>
 
-<body class="home-page bp-legacy home page-template page-template-homepage-template page-template-homepage-template-php page page-id-977 logged-in admin-bar no-customize-support theme-socialize woocommerce-no-js tribe-no-js page-template-socialize-child gp-theme gp-responsive gp-wide-layout gp-retina gp-normal-scrolling gp-no-back-to-top gp-relative-header gp-header-standard gp-cart-disabled gp-search-all gp-profile-disabled gp-small-header-all gp-standard-page-header gp-no-sidebar gp-homepage wpb-js-composer js-comp-ver-6.10.0 vc_responsive no-js">
+<body
+    class="theme-socialize page-template-socialize-child gp-theme gp-responsive gp-wide-layout gp-retina gp-normal-scrolling gp-no-back-to-top gp-relative-header gp-header-standard gp-cart-disabled gp-search-all gp-profile-disabled gp-small-header-all gp-standard-page-header gp-no-sidebar"
+>
 	<div id="gp-site-wrapper">
 
   <nav id="gp-mobile-nav">
     <div id="gp-mobile-nav-close-button"></div>
     <ul class="menu">
-        <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-            <a class="menu-link main-menu-link" href="index.html">About</a>
-          <ul class="sub-menu menu-odd menu-depth-1">
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#data_receivers">Data Endpoints</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#supported_sensors">Supported Sensors</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#modems">Supported Cellular/Wifi Modules</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#contributing">Contributing</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#license">License</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#acknowledgments">Acknowledgments</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="change_log.html">ChangeLog</a>
-              </li>
-          </ul>
-        </li>
-        <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-            <a class="menu-link main-menu-link" href="page_getting_started.html">Getting Started</a>
-          <ul class="sub-menu menu-odd menu-depth-1">
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>
-              </li>
-          </ul>
-        </li>
-        <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-            <a class="menu-link main-menu-link" href="page_faq.html">FAQs</a>
-          <ul class="sub-menu menu-odd menu-depth-1">
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>
-              </li>
-          </ul>
-        </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="modules.html">Modules</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="annotated.html">Classes</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="files.html">Source Files</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="page_the_examples.html">Examples Using ModularSensors</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="pages.html">More</a>          </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+      >
+<a href="index.html" class="menu-link main-menu-link">About</a>        <ul class="sub-menu menu-odd menu-depth-1">
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#data_receivers">Data Endpoints</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#supported_sensors">Supported Sensors</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#modems">Supported Cellular/Wifi Modules</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#contributing">Contributing</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#license">License</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#acknowledgments">Acknowledgments</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="change_log.html">ChangeLog</a>          </li>
+        </ul>
+      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+      >
+<a href="page_getting_started.html" class="menu-link main-menu-link">Getting Started</a>        <ul class="sub-menu menu-odd menu-depth-1">
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>          </li>
+        </ul>
+      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+      >
+<a href="page_faq.html" class="menu-link main-menu-link">FAQs</a>        <ul class="sub-menu menu-odd menu-depth-1">
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>          </li>
+        </ul>
+      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="topics.html" class="menu-link main-menu-link">Topics</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="annotated.html" class="menu-link main-menu-link">Classes</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="files.html" class="menu-link main-menu-link">Source Files</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="page_the_examples.html" class="menu-link main-menu-link">Examples Using ModularSensors</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="pages.html" class="menu-link main-menu-link">More</a>      </li>
     </ul>
-  </nav><div id="gp-mobile-nav-bg"></div>
+  </nav> <!-- gp-mobile-nav -->
+  <div id="gp-mobile-nav-bg"></div>
 
   <div id="gp-page-wrapper">
 
     <header id="gp-main-header">
       <div class="gp-container">
         <div id="gp-logo">
-          <a href="index.html" title="ModularSensors">
+          <a href="index.html" title="ModularSensors 0.36.0">
             <img
-              src="ModularSensors_ubuntu_264x55.png"
-              alt="ModularSensors"
-                  width="200"
-                  height="42"
+              src="gp-desktop-logo.png"
+              alt="ModularSensors 0.36.0"
+              width="200"
+              height="42"
               class="gp-desktop-logo"
             />
             <img
-              src="ModularSensors_ubuntu_264x55.png"
-              alt="ModularSensors"
+              src="gp-scrolling-logo.png"
+              alt="ModularSensors 0.36.0"
               width="264"
               height="55"
               class="gp-scrolling-logo"
             />
             <img
-              src="ModularSensors_ubuntu_264x55.png"
-              alt="ModularSensors"
+              src="gp-mobile-logo.png"
+              alt="ModularSensors 0.36.0"
               width="132"
               height="28"
               class="gp-mobile-logo"
             />
           </a>
-        </div>
+        </div> <!-- gp-logo -->
 
         <a id="gp-mobile-nav-button"></a>
 
         <nav id="gp-main-nav" class="gp-nav">
           <nav id="gp-primary-main-nav">
-              <ul id="menu-main-menu-1" class="menu">
-                <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-                    <a class="menu-link main-menu-link" href="index.html">About</a>
-                  <ul class="sub-menu menu-odd menu-depth-1">
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#data_receivers">Data Endpoints</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#supported_sensors">Supported Sensors</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#modems">Supported Cellular/Wifi Modules</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#contributing">Contributing</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#license">License</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#acknowledgments">Acknowledgments</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="change_log.html">ChangeLog</a>
-                      </li>
-                  </ul>
-                </li>
-                <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-                    <a class="menu-link main-menu-link" href="page_getting_started.html">Getting Started</a>
-                  <ul class="sub-menu menu-odd menu-depth-1">
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>
-                      </li>
-                  </ul>
-                </li>
-                <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-                    <a class="menu-link main-menu-link" href="page_faq.html">FAQs</a>
-                  <ul class="sub-menu menu-odd menu-depth-1">
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>
-                      </li>
-                  </ul>
-                </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="modules.html">Modules</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="annotated.html">Classes</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="files.html">Source Files</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="page_the_examples.html">Examples Using ModularSensors</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="pages.html">More</a>                  </li>
-              </ul>
-          </nav>
+            <ul id="menu-main-menu-1" class="menu">
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+              >
+<a href="index.html" class="menu-link main-menu-link" >About</a>                <ul class="sub-menu menu-odd menu-depth-1">
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#data_receivers">Data Endpoints</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#supported_sensors">Supported Sensors</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#modems">Supported Cellular/Wifi Modules</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#contributing">Contributing</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#license">License</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#acknowledgments">Acknowledgments</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="change_log.html">ChangeLog</a>                  </li>
+                </ul>
+              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+              >
+<a href="page_getting_started.html" class="menu-link main-menu-link" >Getting Started</a>                <ul class="sub-menu menu-odd menu-depth-1">
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>                  </li>
+                </ul>
+              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+              >
+<a href="page_faq.html" class="menu-link main-menu-link" >FAQs</a>                <ul class="sub-menu menu-odd menu-depth-1">
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>                  </li>
+                </ul>
+              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="topics.html"class="menu-link main-menu-link">Topics</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="annotated.html"class="menu-link main-menu-link">Classes</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="files.html"class="menu-link main-menu-link">Source Files</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="page_the_examples.html"class="menu-link main-menu-link">Examples Using ModularSensors</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="pages.html"class="menu-link main-menu-link">More</a>              </li>
+            </ul>
+          </nav> <!-- gp-primary-main-nav -->
 
           <div id="gp-search">
             <div id="m-search-button" class="m-show-m" onclick="return showSearch()">
-            </div>
-					</div>
-
-
+            </div> <!-- gp-search-box -->
+          </div> <!-- gp-search -->
 
           <nav id="gp-secondary-main-nav"></nav>
-        </nav></div>
-    </header><header id="gp-small-header">
+        </nav> <!-- gp-main-nav -->
+      </div> <!-- gp-container -->
+    </header> <!-- gp-main-header -->
+
+    <header id="gp-small-header">
       <div class="gp-container">
         <div class="gp-left-triangle"></div>
         <div class="gp-right-triangle"></div>
@@ -1656,7 +1515,9 @@
 
         </nav>
       </div>
-    </header><div id="gp-fixed-header-padding"></div>
+    </header> <!-- gp-small-header -->
+
+    <div id="gp-fixed-header-padding"></div>
 
     <div class="m-doc-search" id="search">
       <a href="#!" onclick="return hideSearch()"></a>
@@ -1664,7 +1525,7 @@
         <div class="gp-container">
           <div style="background-color:#fff;padding:20px;">
             <div class="m-doc-search-header m-text m-small">
-              <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+              <div><span class="m-label m-info">Tab</span> / <span class="m-label m-info">T</span> to search, <span class="m-label m-info">Esc</span> to close</div>
               <div id="search-symbolcount">&hellip;</div>
             </div>
             <div class="m-doc-search-content">
@@ -1674,7 +1535,7 @@
               <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
               <div id="search-help" class="m-text m-dim m-text-center">
                 <p class="m-noindent">Search for symbols, directories, files, pages or
-            modules. You can omit any prefix from the symbol or file path; adding a
+            topics. You can omit any prefix from the symbol or file path; adding a
             <code>:</code> or <code>/</code> suffix lists all members of given symbol or
             directory.</p>
             <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
@@ -1699,13 +1560,12 @@
 
     <div id="gp-content-wrapper" class="gp-container">
       <div id="gp-inner-container">
+        <div id="gp-left-column">
           <div id="gp-content">
 
             <main>
               <article>
-                <div class="m-container m-container-inflatable">
-                  <div class="m-row">
-                    <div class="m-col-l-10 m-push-l-1">
+                <div class="breadcrumbs" typeof="BreadcrumbList" vocab="http://schema.org/">
           <span class="m-breadcrumb">
             <a href="index.html">
               ModularSensors
@@ -1717,19 +1577,20 @@
             </a>  &gt; <wbr/>
           </span>
                     <span class="m-breadcrumb">
-          <a href="index.html">ModularSensors</a> &gt; <wbr/>
+          <a href="index.html">
+            ModularSensors
+          </a> &gt; <wbr/>
           </span>
           <span class="m-breadcrumb">
             ChangeLog
           </span>
-
-        <header class="gp-entry-header">
-          <h1 class="gp-entry-title" itemprop="headline">
-
+                </div>
+                <header class="gp-entry-header">
+                  <h1 class="gp-entry-title" itemprop="headline">
           ChangeLog
 
-          </h1>
-        </header>
+                </h1>
+                </header>
         <nav class="m-block m-default">
           <ul>
             <li>
@@ -1739,6 +1600,38 @@
                 <li><a href="#change_log_unreleased_added">Added</a></li>
                 <li><a href="#change_log_unreleased_removed">Removed</a></li>
                 <li><a href="#change_log_unreleased_fixed">Fixed</a></li>
+              </ul>
+            </li>
+            <li>
+              <a href="#change_log_0-36-0">0.36.0</a>
+              <ul>
+                <li><a href="#change_log_0-36-0_changed">Changed</a></li>
+                <li><a href="#change_log_0-36-0_added">Added</a></li>
+              </ul>
+            </li>
+            <li>
+              <a href="#change_log_0-35-1">0.35.1</a>
+              <ul>
+                <li><a href="#change_log_0-35-1_changed">Changed</a></li>
+                <li><a href="#change_log_0-35-1_fixed">Fixed</a></li>
+              </ul>
+            </li>
+            <li>
+              <a href="#change_log_0-35-0">0.35.0</a>
+              <ul>
+                <li><a href="#change_log_0-35-0_changed">Changed</a></li>
+                <li><a href="#change_log_0-35-0_added">Added</a></li>
+                <li><a href="#change_log_0-35-0_removed">Removed</a></li>
+                <li><a href="#change_log_0-35-0_fixed">Fixed</a></li>
+                <li><a href="#change_log_0-35-0_known__issues">Known Issues</a></li>
+              </ul>
+            </li>
+            <li>
+              <a href="#change_log_0-34-1">0.34.1</a>
+              <ul>
+                <li><a href="#change_log_0-34-1_changed">Changed</a></li>
+                <li><a href="#change_log_0-34-1_added">Added</a></li>
+                <li><a href="#change_log_0-34-1_fixed">Fixed</a></li>
               </ul>
             </li>
             <li>
@@ -2062,61 +1955,74 @@
             <li><a href="#change_log_0-2-2">0.2.2-beta - 2017-05-09</a></li>
           </ul>
         </nav>
-<p><a name="md_ChangeLog"></a>All notable changes to this project will be documented in this file.</p><p>The format is based on <a href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a> and its stricter, better defined, brother <a href="https://common-changelog.org/">Common Changelog</a>, and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p><hr/><section id="change_log_unreleased"><h2>Unreleased</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/compare/v0.33.4...HEAD">Unreleased</a></p><section id="change_log_unreleased_changed"><h3>Changed</h3></section><section id="change_log_unreleased_added"><h3>Added</h3></section><section id="change_log_unreleased_removed"><h3>Removed</h3></section><section id="change_log_unreleased_fixed"><h3>Fixed</h3><hr/></section></section><section id="change_log_0-34-0"><h2>0.34.0</h2><p>GitHub Release: [0.34.0]</p><section id="change_log_0-34-0_changed"><h3>Changed</h3><ul><li><strong>BREAKING</strong> - Removed support for light sleep on Espressif modules. <strong>This changes the order of the constructor for the ESP32 and ESP8266!</strong><ul><li>The light sleep mode is non-functional anyway, and confusion over the sleep request pin was putting the board in a position not to sleep at all.</li></ul></li><li>Minor tweek to clang-format</li><li>Moved all variable initialization to default header values and initializer lists</li><li>Converted all &quot;c-style&quot; casts to static casts</li><li>Switched cases of strcat and strcpy to snprintf</li><li>Specify python version 3.x for actions (used by PlatformIO)</li></ul></section><section id="change_log_0-34-0_added"><h3>Added</h3><ul><li>Support Campbell RainVUE10 SDI-12 Precipitation <a href="class_sensor.html" class="m-doc">Sensor</a> <a href="https://github.com/EnviroDIY/ModularSensors/issues/416">#416</a></li><li>Support YosemiTech Y700 Pressor <a href="class_sensor.html" class="m-doc">Sensor</a> (<a href="https://github.com/EnviroDIY/ModularSensors/issues/421">#421</a>)</li></ul></section><section id="change_log_0-34-0_removed"><h3>Removed</h3></section><section id="change_log_0-34-0_fixed"><h3>Fixed</h3><ul><li>Fixed bug in YosemiTech Y4000 Sonde (<a href="https://github.com/EnviroDIY/ModularSensors/issues/420">#420</a>)</li><li>Fixed non-concurrent data fetch for SDI-12 when <em>NOT</em> using debugging.</li><li>Fixed internet connection when in &quot;testing mode&quot;</li><li>Allow a non-zero wait time for SDI-12 sensors</li><li>Fixed outdated GitHub actions</li></ul><hr/></section></section><section id="change_log_0-33-4"><h2>0.33.4</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.33.4">0.33.4</a></p><section id="change_log_0-33-4_fixed"><h3>Fixed</h3><ul><li><p>Increased warm-up and measurement time for Campbell ClariVUE-10 to work with the latest version of the sensor.</p><hr/></li></ul></section></section><section id="change_log_0-33-3"><h2>0.33.3</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.33.3">0.33.3</a></p><section id="change_log_0-33-3_fixed"><h3>Fixed</h3><ul><li><p>Increased measurement time for Hydros21 to work with the latest version of the sensor.</p><hr/></li></ul></section></section><section id="change_log_0-33-2"><h2>0.33.2</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.33.2">0.33.2</a></p><section id="change_log_0-33-2_fixed"><h3>Fixed</h3><ul><li><p>Fixed script to install and zip libraries for a release</p><hr/></li></ul></section></section><section id="change_log_0-33-1"><h2>0.33.1 - 2022-04-11</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.33.1">0.33.1</a></p><section id="change_log_0-33-1_changed"><h3>Changed</h3></section><section id="change_log_0-33-1_added"><h3>Added</h3><ul><li>Added a typedef and header for the ESP32<ul><li>This is just another name to the ESP8266 class to help any who don&#x27;t know they&#x27;re identical for our purposes.</li></ul></li><li><strong>Example:</strong> Created a new DRWI wifi example for workshop.</li></ul></section><section id="change_log_0-33-1_removed"><h3>Removed</h3></section><section id="change_log_0-33-1_fixed"><h3>Fixed</h3><hr/></section></section><section id="change_log_0-33-0"><h2>0.33.0 - 2022-04-01</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.33.0">0.33.0</a></p><section id="change_log_0-33-0_changed"><h3>Changed</h3><ul><li><strong>Breaking:</strong> Renamed the static <code>markedEpochTime</code> variable to <code>markedLocalEpochTime</code>.<ul><li>This was sometimes used in &quot;complex&quot; loops. Code utilizing it will have to be changed.</li><li>This is part of the effort to clarify where localized and UTC time are being used. We recommend a logger&#x27;s real time clock always be set in UTC and then localized for printing and storing data.</li></ul></li><li><strong>Breaking:</strong> Renamed the function <code>setNowEpoch(uint32_t)</code> to <code>setNowUTCEpoch(uint32_t)</code>.<ul><li>Although public, this was never intended to be used externally.</li></ul></li><li><strong>Breaking:</strong> Renamed the YosemiTech Y550 COD sensor as Y551. See below.</li><li><strong>Potentially Breaking:</strong> Changed the default &quot;button&quot; interrupt pin mode from <code>INPUT_PULLUP</code> to <code>INPUT</code> and created optional arguments to the <code>setTestingModePin</code> and <code>setLoggerPins</code> functions to specify the pin mode and pull-up resistor state.<ul><li><code>INPUT</code> is the proper mode for the Mayfly. The Mayfly has an external pull <em>down</em> on the button pin with the button being active high. This means having the pull-up resistors on negates the button signal. The pin mode had been set as <code>INPUT_PULLUP</code> for the button, backwards for the Mayfly, since <a href="https://github.com/EnviroDIY/ModularSensors/commit/6bafb0fd149589f71ca6f46b761fe72b1f9523a6">July of 2017</a>. By some electrical luck, with the 0.x versions of the Mayfly, the external pull-down on the button pin was strong enough to out-weigh the incorretly activated pull-up resistors and an interrupt was still registered when the button was pressed. With a different pull-down resistor on the Mayfly 1.x, the button no longer registers with the pull-up resistors active. So, for most of our users with Mayflies, this will be a <em><strong>fix</strong></em>. But for anyone using a different board/processor/button configuration that depended on the processor pull-up resistors, this will be a breaking change and they will need to specify the button mode in the <code>setTestingModePin</code> or <code>setLoggerPins</code> function to return to the previous behavior.</li></ul></li><li>Added a longer warm up time and removed some of the modem set-up to work with the ESP-IDF AT firmware versions &gt;2.0</li><li>Made sure that all example clock synchronization happens at noon instead of midnight.</li><li><strong>Renamed Classes:</strong> Renamed several classes for internal consistency. These are <em>not</em> breaking changes at this time; the old class names are still usable.<ul><li>Rename class <code>MPL115A2</code> to <code><a href="class_freescale_m_p_l115_a2.html" class="m-doc">FreescaleMPL115A2</a></code></li><li>Rename class <code>MPL115A2_Pressure</code> to <code><a href="class_freescale_m_p_l115_a2___pressure.html" class="m-doc">FreescaleMPL115A2_<wbr />Pressure</a></code></li><li>Rename class <code>MPL115A2_Temp</code> to <code><a href="class_freescale_m_p_l115_a2___temp.html" class="m-doc">FreescaleMPL115A2_<wbr />Temp</a></code></li><li>Rename class <code>TIINA219_Volt</code> to <code><a href="class_t_i_i_n_a219___voltage.html" class="m-doc">TIINA219_<wbr />Voltage</a></code></li><li>Rename class <code>PaleoTerraRedox_Volt</code> to <code><a href="class_paleo_terra_redox___voltage.html" class="m-doc">PaleoTerraRedox_<wbr />Voltage</a></code></li><li>Rename class <code>ExternalVoltage</code> to <code><a href="class_t_i_a_d_s1x15.html" class="m-doc">TIADS1x15</a></code></li><li>Rename class <code>ExternalVoltage_Volt</code> to <code><a href="class_t_i_a_d_s1x15___voltage.html" class="m-doc">TIADS1x15_<wbr />Voltage</a></code></li></ul></li><li><strong>Documentation:</strong> Migrated to latest version of Doxygen (1.9.3).</li></ul></section><section id="change_log_0-33-0_added"><h3>Added</h3><ul><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a></strong> Added support for the <a href="http://en.yosemitech.com/aspcms/product/2020-5-8/94.html">YosemiTech Y551 COD Sensor</a>, which makes a UV254 light absorption and translates it to estimates of Chemical Oxygen Demand (COD) (or Total Organic Carbon (TOC)) and Turbidity.<ul><li>NOTE that this upgrade removes the earlier Y550 from the library, as it was never tested and is no longer available form YosemiTech. If anyone has a Y550 sensor, the Y551 commands should work. Let us know if they don&#x27;t.</li></ul></li><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a></strong> Added support for the <a href="http://en.yosemitech.com/aspcms/product/2020-4-23/61.html">YosemiTech Y560 Ammonium Probe</a>, which is a mini sonde for three Ion Selective Electrode (ISE) sensors (pH, NH4+, K+) that together are used to provide a corrected estimate of total ammonium nitrogen (NH4_N) in mg/L.<ul><li>NOTE that this release only includes outputs for NH4_N, pH, and temperature. A future release will also include estimates of potassium (K) and raw potential values from each of the electrodes.</li></ul></li><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a></strong> Added support for the SDI-12 In-Situ <a href="https://in-situ.com/pub/media/support/documents/LevelTROLL_SS.pdf">Level TROLL 400, 500 &amp; 700 Data Loggers</a></li><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a></strong> Added support for the Sensirion SHT40 relative humidity and temperature sensor</li><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a></strong> Added support for the Everlight ALS-PT19 ambient light sensor</li><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a></strong> Added support for the Bosch SensorTec BMP388 and BMP390 pressure sensors</li></ul></section><section id="change_log_0-33-0_removed"><h3>Removed</h3></section><section id="change_log_0-33-0_fixed"><h3>Fixed</h3><ul><li>Fixed memory leak for AOSong AM2315 thanks to @neilh10</li></ul><hr/></section></section><section id="change_log_0-32-2"><h2>0.32.2 - 2021-11-23</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.32.2">0.32.2</a></p><section id="change_log_0-32-2_changed"><h3>Changed</h3><ul><li>Restructured SDI-12 slightly to break out the start measurement functionality into a new function.</li><li>Modified Decagon 5-TM and Meter Teros 11 to use the SDI-12 get results function rather than addSingleMeasurmentResult. This will allow both sensors to honor the &#x27;non-concurrent&#x27; flag, if that is set. Previously, they would not have.</li><li><strong>Documentation:</strong> Migrated to latest version of Doxygen (1.9.2). This required some changes with m.css to properly ignore the doxyfile.xml the current version generates.</li></ul></section><section id="change_log_0-32-2_added"><h3>Added</h3><ul><li><strong>Board:</strong> Adds 1.0 and 1.1 as valid version numbers for the Mayfly. Does not yet support any new features of those boards.</li><li>Add a new parameter (internal variable) to the sensor base class for the number of internally calculated variables. These are used for values that we would always calculate for a sensor and depend only on the raw results of that single sensor. This is separate from any calculated variables that are created on-the-fly and depend on multiple other sensors. In many cases, this is 0 and in most of the other cases the value is informational only. For the SDI-12 sensors, I&#x27;m actually using this to make sure I&#x27;m getting the number of values expected.</li><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a>:</strong> Added support for <a href="https://github.com/EnviroDIY/TippingBucketRainCounter/releases">v0.2.0</a> of the <a href="https://github.com/EnviroDIY/TippingBucketRainCounter">EnviroDIY/<wbr />TippingBucketRainCounter</a> device firmware, which added capability to count rotations on a reed-switch anemometer and fixed a critical bug that failed to count high rainfall rates.<ul><li>For details, see: <a href="https://github.com/EnviroDIY/TippingBucketRainCounter/releases/tag/v0.2.0">https:/<wbr />/<wbr />github.com/<wbr />EnviroDIY/<wbr />TippingBucketRainCounter/<wbr />releases/<wbr />tag/<wbr />v0.2.0</a></li></ul></li></ul><hr/></section></section><section id="change_log_0-32-0"><h2>0.32.0 - 2021-11-19</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.32.0">0.32.0</a> Reinstate support for AOSong DHT</p><section id="change_log_0-32-0_changed"><h3>Changed</h3><ul><li><strong>Documentation:</strong> Restructured the changelog</li><li><strong>Documentation:</strong> Restyled and corrected documentation links for new and renamed DRWI examples</li><li><strong>Continuous Integration:</strong> Updated changelog reader and automated releaser</li></ul></section><section id="change_log_0-32-0_added"><h3>Added</h3><ul><li>Restored support for AOSong DHT sensor.</li></ul><hr/></section></section><section id="change_log_0-31-2"><h2>0.31.2 - 2021-11-03</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.31.2">0.31.2</a> Fix build without AOSong DHT</p><section id="change_log_0-31-2_fixed"><h3>Fixed</h3><ul><li>Fixed build matrix to remove DHT</li></ul><hr/></section></section><section id="change_log_0-31-0"><h2>0.31.0 - 2021-11-02</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.31.0">0.31.0</a> Remove support for AOSong DHT</p><section id="change_log_0-31-0_added"><h3>Added</h3><ul><li><strong>Examples:</strong> Added a new example for the DRWI site using the new EnviroDIY bee based on the SIMCOM SIM7080G</li></ul></section><section id="change_log_0-31-0_removed"><h3>Removed</h3><ul><li><strong>Breaking:</strong> Temporarily **_REMOVED_** support for AOSong DHT sensor.<ul><li>Intend to restore this after updating to support newest Adafruit DHT library</li></ul></li></ul><hr/></section></section><section id="change_log_0-30-0"><h2>0.30.0 - 2021-07-06</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.30.0">0.30.0</a> Remove support for SoftwareWire for Atlas sensors</p><section id="change_log_0-30-0_changed"><h3>Changed</h3><ul><li>Changed build flags and created a pre-commit hook for myself to update the menu build matrix</li></ul></section><section id="change_log_0-30-0_added"><h3>Added</h3><ul><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a>:</strong> Added support for <a href="https://www.campbellsci.com/clarivue10">Campbell ClariVUE10</a> turbidity sensor</li></ul></section><section id="change_log_0-30-0_removed"><h3>Removed</h3><ul><li><strong>Breaking:</strong> Removed support for SoftwareWire for Atlas sensors.<ul><li>The only supported version of a bit-banged (software) version of I2C removed inheritance from the core Wire library. Without inheritance, the parseFloat functions used by the Atlas sensors will not work. As I think this feature was completely unused for the Atlas sensors and I see no reason to use it with sensors that have completely flexible addressing, I removed it.</li></ul></li></ul></section><section id="change_log_0-30-0_fixed"><h3>Fixed</h3><ul><li>Fixed GitHub actions for pull requests</li></ul><hr/></section></section><section id="change_log_0-29-1"><h2>0.29.1 - 2021-07-01</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.29.1">0.29.1</a> Fix YosemiTech Y533 ORP sensor outputs</p><section id="change_log_0-29-1_fixed"><h3>Fixed</h3><ul><li>Modified <code><a href="_yosemitech_y533_8h.html" class="m-doc">YosemitechY533.h</a></code> and examples to work with updated ORP <code>getValues()</code> function in <a href="https://github.com/EnviroDIY/YosemitechModbus">https:/<wbr />/<wbr />github.com/<wbr />EnviroDIY/<wbr />YosemitechModbus</a> released with v0.2.5.</li></ul><hr/></section></section><section id="change_log_0-29-0"><h2>0.29.0 - 2021-05-19</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.29.0">0.29.0</a> Create a <a href="_modular_sensors_8h.html" class="m-doc">ModularSensors.h</a></p><section id="change_log_0-29-0_changed"><h3>Changed</h3><ul><li>Modified examples to use Hydros 21</li></ul></section><section id="change_log_0-29-0_added"><h3>Added</h3><ul><li>Created a <a href="_modular_sensors_8h.html" class="m-doc">ModularSensors.h</a> file to include. This makes it much easiler to install and use the library from the Arduino CLI.<ul><li>Modified examples to include the <a href="_modular_sensors_8h.html" class="m-doc">ModularSensors.h</a> file</li></ul></li><li>Added continuous integration testing with the Arduino CLI</li></ul><hr/></section></section><section id="change_log_0-28-5"><h2>0.28.5 - 2021-05-11</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.28.5">0.28.5</a> Duplicate and Rename Hydros 21</p><section id="change_log_0-28-5_added"><h3>Added</h3><ul><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a>:</strong> Created a new module for the Meter Hydros 21. This is exactly identical to the Decagon CTD in everything but the name. The Decagon CTD module still exists and can be used. No old code needs to be adjusted for this change. Moving forward, the two can be used interchangably. The addition was only made to stop complaints about typing in an older name.</li></ul><hr/></section></section><section id="change_log_0-28-4"><h2>0.28.4 - 2021-05-05</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.28.4">0.28.4</a> SDI-12 Timing <a href="class_sensor.html" class="m-doc">Sensor</a> Customization</p><section id="change_log_0-28-4_changed"><h3>Changed</h3><ul><li>Allow each SDI-12 sensor to set the necessary command delay for that sensor.<ul><li>Per protocol, sensors are allowed to take up to 100ms after receiving a break before being ready to receive a command. This allows each sensor to specify what delay it needs. This was added to support conflicting delay needs; the RDO needed a short delay, the newest Meter sensors do not respond properly if the delay is added.</li></ul></li><li>For SDI-12 sensors, add repeated attempts to start a measurement if the first attempt unexpectedly fails.</li></ul><hr/></section></section><section id="change_log_0-28-3"><h2>0.28.3 - 2021-03-24</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.28.3">0.28.3</a> Valid version number</p><section id="change_log_0-28-3_fixed"><h3>Fixed</h3><ul><li>Use a valid semantic version number</li></ul><hr/></section></section><section id="change_log_0-28-01"><h2>0.28.01 - 2021-02-10</h2><p>GitHub Release: [0.28.01] Gigantic SDI-12 bug</p><section id="change_log_0-28-01_fixed"><h3>Fixed</h3><ul><li>Fixes an **_EGREGIOUS_** error in the SDI-12 code causing the code to lock up if debugging was off (but always work with it on)<ul><li><a href="https://github.com/EnviroDIY/ModularSensors/issues/346">Issue #346</a></li><li>This was first introduced in <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.27.5">0.27.5</a></li></ul></li><li>Fix GitHub action for pull requests.</li></ul><hr/></section></section><section id="change_log_0-28-0"><h2>0.28.0 - 2021-02-10</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.28.0">0.28.0</a> Add Support for Turner Cyclops</p><section id="change_log_0-28-0_added"><h3>Added</h3><ul><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a>:</strong> Add support for all standard configurations of the <a href="https://www.turnerdesigns.com/cyclops-7f-submersible-fluorometer">Turner Cyclops-7F submersible fluorometer</a></li></ul></section><section id="change_log_0-28-0_fixed"><h3>Fixed</h3><ul><li><strong>Documentation:</strong> Fix some minor Doxygen warnings</li><li><strong>Documentation:</strong> Small grammar fixes</li><li><strong>Documentation:</strong> Fixes in the EnviroDIY fork of m.css:<ul><li>Added extra navigation hints to classes leading back to the containing module</li><li>Correctly included script for the to-top element</li></ul></li></ul><hr/></section></section><section id="change_log_0-27-8"><h2>0.27.8 - 2021-01-19</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.27.8">0.27.8</a> Fix GitHub Action</p><section id="change_log_0-27-8_fixed"><h3>Fixed</h3><ul><li>Just fixed an error in the github action to post a release</li></ul><hr/></section></section><section id="change_log_0-27-7"><h2>0.27.7 - 2021-01-19</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.27.7">0.27.7</a> SDI-12 Bug Fix</p><section id="change_log_0-27-7_fixed"><h3>Fixed</h3><ul><li>Fixed a compiler error for non-concurrent SDI-12 sensors.</li></ul><hr/></section></section><section id="change_log_0-27-6"><h2>0.27.6 - 2021-01-19</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.27.6">0.27.6</a> Update Documentation</p><section id="change_log_0-27-6_changed"><h3>Changed</h3><ul><li>Update instructions for examples</li><li>Update developer instructions</li></ul><hr/></section></section><section id="change_log_0-27-5"><h2>0.27.5 - 2020-12-15</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.27.5">0.27.5</a> Multiple new Sensors and Workflows</p><section id="change_log_0-27-5_changed"><h3>Changed</h3><ul><li>Complete re-styling of the Doxygen output to be similar to envirodiy.org</li><li>Add enourmous amounts of documentation</li><li>Improved explanations and added walkthrough of menu a la carte example</li><li>Added example calculating specific conductance where applicable</li><li>For SDI-12 sensors, added calls to additional data commands (D1-D9) if full number of expected results are not returned by D0.</li><li>For SDI-12 sensors, added ability to disable concurrent measurements using the build flag <code>MS_SDI12_NON_CONCURRENT</code>.<ul><li>NOTE: Setting the build flag disables concurrent measurements for <em>ALL</em> SDI-12 sensors!</li></ul></li></ul></section><section id="change_log_0-27-5_added"><h3>Added</h3><ul><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a>:</strong> PaleoTerra Redox sensors</li><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a>:</strong> Northern Widget Tally Counters</li><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a>:</strong> simple analog electrical conductance sensors</li><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a>:</strong> In-Situ RDO PRO-X rugged dissolved oxygen sensors</li><li><strong>Publisher:</strong> Add Soracom/Ubidots as a data publisher</li><li>Migrated from Travis CI to Github Actions for continuous integration</li><li>Deprecated wiki, moving contents to docs folder where needed</li><li>Add static variable for marked time in UTC</li><li>Add user name and password for GSM/SIM for XBee Cellular</li><li>Support software I2C or secondary hardware I2C for all sensors possible</li></ul></section><section id="change_log_0-27-5_known__issues"><h3>Known Issues</h3><ul><li>The instructions for using most of the examples are out of date.</li></ul><hr/></section></section><section id="change_log_0-25-0"><h2>0.25.0 - 2020-06-25</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.25.0">0.25.0</a> Styling &amp; Doxygen Code Documentation</p><p><a href="https://doi.org/10.5281/zenodo.3908530"><img class="m-image" src="https://zenodo.org/badge/DOI/10.5281/zenodo.3908530.svg" alt="Image" /></a></p><section id="change_log_0-25-0_changed"><h3>Changed</h3><ul><li>Improved C++ code styling elements in every file in the library, to:<ul><li>Better take advantage of the <a href="https://clang.llvm.org">Clang</a> compiler and code error <a href="https://en.wikipedia.org/wiki/Lint_(software)">linter</a> tool;</li><li>Generally follow <a href="https://clang.llvm.org/docs/ClangFormat.html">Clang Format</a> and <a href="https://google.github.io/styleguide/cppguide.html">Google&#x27;s coding style guides</a> used with <a href="https://en.wikipedia.org/wiki/Cpplint">cpplint</a> <a href="https://en.wikipedia.org/wiki/Lint_(software)">linter</a>, which:<ul><li>includes massive white space changes to improve readability while not changing how the code is executed</li></ul></li><li>Support Doxygen documentation.</li></ul></li><li>Encapsulated modem wake check logic into a function and checking for status using a quick AT ping if no other option is available.<ul><li>This will only affect modems/breakouts that depend on a pulse on their wake pin to turn on or off but for whatever reason don&#x27;t have a separate status pin connected to the mcu. I <em>do not</em> recommend this configuration.</li></ul></li><li>Always re-set the pin mode of a sensor power pin before attempting to turn it on.<ul><li>This could come into play when first attempting to power on a sensor before the initial setup if the pin mode on the sensor power pin was set to input by whatever program the mcu had run prior to running ModularSensors code.</li></ul></li></ul></section><section id="change_log_0-25-0_added"><h3>Added</h3><ul><li><strong>Documentation:</strong> Automated code documentation using <a href="https://www.doxygen.nl/index.html">Doxygen</a>, now available at <a href="https://envirodiy.github.io/ModularSensors/">https:/<wbr />/<wbr />envirodiy.github.io/<wbr />ModularSensors/<wbr /></a></li></ul></section><section id="change_log_0-25-0_fixed"><h3>Fixed</h3><ul><li>Fixed issue where the Digi XBee LTE-M modem did not wake during normal logging mode to transmit data to the publisher. See <a href="https://github.com/EnviroDIY/ModularSensors/pull/309#commitcomment-39786167">https:/<wbr />/<wbr />github.com/<wbr />EnviroDIY/<wbr />ModularSensors/<wbr />pull/<wbr />309#commitcomment-39786167</a></li></ul><p>For more details, see <a href="https://github.com/EnviroDIY/ModularSensors/pull/309">Pull Request #309: The style sheet</a></p><hr/></section></section><section id="change_log_0-24-1"><h2>0.24.1 - 2020-03-02</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.24.1">0.24.1</a> Modem Restructuring</p><p><a href="https://doi.org/10.5281/zenodo.3693784"><img class="m-image" src="https://zenodo.org/badge/DOI/10.5281/zenodo.3693784.svg" alt="Image" /></a></p><section id="change_log_0-24-1_changed"><h3>Changed</h3><ul><li>Restructured modem so that it no longer operates as a sensor. Variables tied to the modem are now effectively calculated variables and all values from the modem will be offset by 1 sending cycle (ie, the signal strength posted will always be the strength from the prior send, not the current one).</li></ul><hr/></section></section><section id="change_log_0-23-13"><h2>0.23.13 - 2019-09-19</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.23.13">0.23.13</a> More agressive attempts to set clock</p><p><a href="https://doi.org/10.5281/zenodo.3451413"><img class="m-image" src="https://zenodo.org/badge/DOI/10.5281/zenodo.3451413.svg" alt="Image" /></a></p><section id="change_log_0-23-13_changed"><h3>Changed</h3><ul><li>Much more aggressive attempts to set the clock if the time is not reasonable - before 01Sep2019 or after 01Jan2025.<ul><li>The LED will flicker and warnings will be sent over the serial port for invalid times at every check.</li><li>The logDataAndPublish function will attempt to synchronize the clock at every measurement until a valid time is received.</li><li>The NIST sync will attempt to open the socket to the daytime server up to 12 times trying to get a valid response.</li></ul></li><li>Now using automatic network technology and carrier profile for Digi LTE-M XBee3&#x27;s<ul><li>with the current firmware there is not a significant time savings in manually selecting the carrier and manually selecting the carrier gives no options when the relative signal strength of the carriers changes.</li></ul></li></ul><hr/></section></section><section id="change_log_0-23-11"><h2>0.23.11 - 2019-09-11</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.23.11">0.23.11</a> Watchdogs and More</p><p><a href="https://doi.org/10.5281/zenodo.3405562"><img class="m-image" src="https://zenodo.org/badge/DOI/10.5281/zenodo.3405562.svg" alt="Image" /></a></p><section id="change_log_0-23-11_changed"><h3>Changed</h3><ul><li>Added extra compile tests in the menu a la carte example.</li><li>Improvements made to nearly all modem modules</li><li>Restore XBee access to resets by TinyGSM</li></ul></section><section id="change_log_0-23-11_added"><h3>Added</h3><ul><li>A watch-dog timer has been implemented for both the AVR and SAMD21 (and 51) boards to restart the boards in case of failure during logging<ul><li>The watch-dog is turned off during sleep to save power, so recovery is only possible if the failure is while the processor is awake.</li></ul></li><li>Added support for Meter Terros 11 soil moisture and temperature sensor</li><li>Implemented a function to verify that UUID&#x27;s are at least correctly formed and unique - though it does not verify that they are valid.</li><li>Pushing to the master branch of this repo will now also cause a re-run of the travis script that updates the EnviroDIY &quot;Libraries&quot; repository.</li><li>Added debugging variables to modems to track how long they are powered/active.</li></ul></section><section id="change_log_0-23-11_fixed"><h3>Fixed</h3><ul><li>Fixed all compiler warnings seen with the -Wextra flag (mostly by adding technically-unnecessary-but-visually-helpful braces)</li><li>Fixed issue with creating a calculated variable without a UUID</li></ul></section><section id="change_log_0-23-11_known__issues"><h3>Known Issues</h3><ul><li>polling the AM2315 more frequently than every 2 seconds will now return a bad value (-9999) rather than returning the same value multiple times. This is a reflection of a change in the Adafruit library. The measurement time set for the sensor has always been this long so this issue should never be seen unless you attempt to call get measurement results from the AM2315 without first waiting for the measurement completion. The update function and all variable array functions should behave properly.</li></ul><hr/></section></section><section id="change_log_0-22-5"><h2>0.22.5 - 2019-06-24</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.22.5">0.22.5</a> Modem Simplification</p><p><a href="https://doi.org/10.5281/zenodo.3255084"><img class="m-image" src="https://zenodo.org/badge/DOI/10.5281/zenodo.3255084.svg" alt="Image" /></a></p><p><strong>NOTE: This release is NOT backwards compatible with previous releases.</strong></p><ul><li>All code must be updated to the current format for modems and time zones to work with this version of the library.</li></ul><section id="change_log_0-22-5_changed"><h3>Changed</h3><ul><li>Daily clock synchronization has been moved from midnight to noon. For loggers with solar charging, this should place the extra draw of the modem to do the synchronization to a time of peak charging.</li><li>All &quot;send&quot; data functions have been renamed to &quot;publish&quot; to line up with module names.</li><li>Updated AM2315 to use most current Adafruit library (2.0.0)</li></ul></section><section id="change_log_0-22-5_added"><h3>Added</h3><ul><li><strong>Breaking:</strong> LoggerModem has become a parent class. All modems now exist as separate subclass objects.<ul><li>This should greatly simplify creating a modem object in code.</li><li>Currently supported modems:<ul><li>Digi XBee and XBee3 cellular modems of all types running in transparent mode</li><li>Digi XBee3 cellular LTE-M modems in bypass mode (this is <em>in addition</em> to transparent mode)</li><li>Digi XBee cellular 3G global modems in bypass mode (this is <em>in addition</em> to transparent mode)</li><li>Digi XBee Wifi S6B modules</li><li>Sodaq UBee LTE-M (SARA R410M)</li><li>Sodaq UBee 3G (SARA U201)</li><li>Sodaq 2GBee R6/R7</li><li>Sodaq 2GBee R4, Adafruit Fona, and other SIMComm SIM800 modules</li><li>Botletics and other SIMCom SIM7000 modules</li><li>Dragino, Nimbelink, and other Quectel BG96 modules</li><li>Nimbelink LTE-M Verizon</li><li>Espressif ESP8266 based modules</li></ul></li><li>The older way of creating a modem object and feeding it wake/sleep functions is no longer supported.</li></ul></li><li>The real time clock&#x27;s timezone can now be explicit set (as opposed to setting the logger timezone and the offset between the RTC and the logger)<ul><li>The function to set the logger timezone has been renamed from setTimeZone to setLoggerTimeZone.</li></ul></li></ul></section><section id="change_log_0-22-5_fixed"><h3>Fixed</h3><ul><li>Fixed #259 where time zones offset by more than 9 hours from UTC would not work correctly.</li><li>Fixed #183 where enabling debugging would cause non AVR boards to crash.</li><li>Adjusted some timing parameters for the SIM800 based on testing.</li></ul></section><section id="change_log_0-22-5_known__issues"><h3>Known Issues</h3><ul><li>polling the AM2315 more frequently than every 2 seconds will now return a bad value (-9999) rather than returning the same value multiple times. This is a reflection of a change in the Adafruit library. The measurement time set for the sensor has always been this long so this issue should never be seen unless you attempt to call get measurement results from the AM2315 without first waiting for the measurement completion. The update function and all variable array functions should behave properly.</li></ul><hr/></section></section><section id="change_log_0-21-4"><h2>0.21.4 - 2019-05-02</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.21.4">0.21.4</a> Deep debug error</p><section id="change_log_0-21-4_fixed"><h3>Fixed</h3><ul><li>Fixed minor bug in debugging created in previous release</li></ul><hr/></section></section><section id="change_log_0-21-3"><h2>0.21.3 - 2019-05-02</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.21.3">0.21.3</a> Minor Bugs and Simplified Debugging</p><section id="change_log_0-21-3_added"><h3>Added</h3><ul><li>Gave every header file a unique debugging define statement so each file can be debugged individually by building with the build flag -DMS_xxx_DEBUG where xxx is the file name in upper case.<ul><li>Some files also have a &quot;deep&quot; debugging option with -DMS_xxx_DEBUG_DEEP</li></ul></li><li>Created examples for LearnEnviroDIYCode</li></ul></section><section id="change_log_0-21-3_fixed"><h3>Fixed</h3><ul><li>Fixed a bug causing modem to not be turned because the processor thought it was on already</li><li>Corrected warm-up timing for Yosemitech Sonde</li><li>Typo fixes in comments</li></ul><hr/></section></section><section id="change_log_0-21-2"><h2>0.21.2 - 2019-03-19</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.21.2">0.21.2</a> Fix write to SD card</p><section id="change_log_0-21-2_fixed"><h3>Fixed</h3><ul><li>Fixed bug intoduced in 0.21.0 preventing writing to SD card - file must be closed (not sync&#x27;ed)</li></ul><hr/></section></section><section id="change_log_0-21-0"><h2>0.21.0 - 2019-03-06</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.21.0">0.21.0</a> Support for all Atlas Scientific I2C sensors, compiler-safe begin functions</p><p><a href="https://doi.org/10.5281/zenodo.2586200"><img class="m-image" src="https://zenodo.org/badge/DOI/10.5281/zenodo.2586200.svg" alt="Image" /></a></p><section id="change_log_0-21-0_changed"><h3>Changed</h3><ul><li>Eliminated any time-out waits on libraries using the Wire class</li><li>Simplified the logger begin function - the removed functionality should be called in individual program setup functions<ul><li>Removed clock sync</li><li>Removed logger file creation</li><li>Removed sensor setup</li></ul></li><li>Moved the check for setup from the wake function to the startSingleMeasurement function for all sensors<ul><li>Previously, the first time the wake was called for a function, the status bit for setup was checked and if the sensor had not been setup, the setup function was called. This will no longer happen the first time the wake function is called, but instead the first time the startSingleMeasurement function is called. The main motivator for the change was the modem which could end up behaving strangely because the setup function actually called the wake function internally.</li></ul></li><li>Improved example coding for SARA R410 cellular modules</li></ul></section><section id="change_log_0-21-0_added"><h3>Added</h3><ul><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a>:</strong> Added full support for all Atlas Scientific EZO curcuits and sensors that support I2C<ul><li>CO2</li><li>DO (dissolved oxygen)</li><li>EC (conductivity)</li><li>ORP (oxidation/reduction potential)</li><li>pH</li><li>RTD (temperature</li></ul></li><li>Created empty constructors for the logger, publisher, variable array, and variable classes and all of their subclasses. For all classes created a corresponding &quot;begin&quot; function to set internal class object values.<ul><li>See note for more details: <a href="https://github.com/EnviroDIY/ModularSensors/commit/b1a619ed74bc790743bce35b3a4e78a2d2237b22">https:/<wbr />/<wbr />github.com/<wbr />EnviroDIY/<wbr />ModularSensors/<wbr />commit/<wbr />b1a619ed74bc790743bce35b3a4e78a2d2237b22</a></li><li>The order of input arguments for all variable objects has changed. For variable subclasses (ie, variables from sensors), there is no change to the user. <strong><strong>For calculated variable objects, all code must be updated!</strong></strong> Please check the structure in the examples! Older code will compile without error but the variable metadata fields will be incorrectly populated.</li></ul></li><li>Very preliminary support for SD cards with switchable power</li></ul></section><section id="change_log_0-21-0_removed"><h3>Removed</h3><ul><li>Removed &quot;default&quot; wake/sleep functions from modem. These were non-working skeleton functions.</li></ul></section><section id="change_log_0-21-0_fixed"><h3>Fixed</h3><ul><li>Fixed call to a null pointer causing the array&#x27;s completeUpdate to crash with calculated variables</li><li>Fixed source of ADS1x15 dependency</li></ul></section><section id="change_log_0-21-0_known__issues"><h3>Known Issues</h3><ul><li>Running some I2C sensors on switched power will cause unrecoverable hangs at the first call to any other I2C peripheral (ie, the DS3231 RTC) after sensor power is turned off. This is a hardware problem and is un-fixable within this library.</li><li>The sensor class and all of its subclasses still require input arguments in the constructor.</li></ul><hr/></section></section><section id="change_log_0-19-6"><h2>0.19.6 - 2019-02-27</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.19.6">0.19.6</a> Modem Improvements &amp; ADS1X15 Generalization</p><p><a href="https://doi.org/10.5281/zenodo.2579301"><img class="m-image" src="https://zenodo.org/badge/DOI/10.5281/zenodo.2579301.svg" alt="Image" /></a></p><section id="change_log_0-19-6_changed"><h3>Changed</h3><ul><li>Modem waits for signal strength return before sending data</li><li>Other modem tweaks</li><li>Restructuring of data publishers</li></ul></section><section id="change_log_0-19-6_added"><h3>Added</h3><ul><li>Added ADS1015 as an optional analog to digital converter (ADC) for boards other than the Mayfly</li></ul></section><section id="change_log_0-19-6_fixed"><h3>Fixed</h3><ul><li>Fixed bug with ADS1115 for M0/SAM21</li></ul><hr/></section></section><section id="change_log_0-19-3"><h2>0.19.3 - 2019-01-15</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.19.3">0.19.3</a> Bug fix and example re-working</p><section id="change_log_0-19-3_changed"><h3>Changed</h3><ul><li>Re-works the examples to remove duplication between them.</li></ul></section><section id="change_log_0-19-3_fixed"><h3>Fixed</h3><ul><li>Fixes bug in sending data to the WikiWatershed / <a href="https://monitormywatershed.org/">Monitor My Watershed</a> data sharing portal.</li></ul><hr/></section></section><section id="change_log_0-19-2"><h2>0.19.2 - 2018-12-22</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.19.2">0.19.2</a> Decreased Data Consumption</p><section id="change_log_0-19-2_changed"><h3>Changed</h3><ul><li>Reduced telemetry data consumption (by half in one test) and therefore overall power use, by creating an outgoing text buffer.<ul><li>Note : the default buffer size is quite large, decrease it to decrease program memory size.</li></ul></li><li>Refactored data publishers as a new class rather than subclasses of loggers</li></ul></section><section id="change_log_0-19-2_added"><h3>Added</h3><ul><li>Added ThingSpeak support via MQTT (PubSubClient is now a required dependency)</li><li>Added support for TI INA219 thanks to @neilh21 (Adafruit INA219 library is now a required dependency)</li></ul><hr/></section></section><section id="change_log_0-17-2"><h2>0.17.2 - 2018-11-27</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.17.2">0.17.2</a> Major Update!</p><p><strong>NOTE: THIS RELEASE DESTROYS BACKWARDS COMPATIBILITY!!</strong></p><ul><li>All <code>.ino</code> sketch files will need to be updated to follow the updated <a href="https://github.com/EnviroDIY/ModularSensors/tree/master/examples">examples</a>.</li><li>All library dependencies will need to be updated to match versions in the <a href="https://github.com/EnviroDIY/ModularSensors/blob/master/library.json">library.json</a> file.</li></ul><section id="change_log_0-17-2_changed"><h3>Changed</h3><ul><li>Improved power management.</li><li>Improved stability.</li><li>A huge number of other changes, with most of them are documented here: <a href="https://github.com/EnviroDIY/ModularSensors/pull/173">https:/<wbr />/<wbr />github.com/<wbr />EnviroDIY/<wbr />ModularSensors/<wbr />pull/<wbr />173</a></li></ul><hr/></section></section><section id="change_log_0-12-2"><h2>0.12.2 - 2018-09-25</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.12.2">0.12.2</a> Calculated variables and bug fixes</p><p>NOTE: This <strong>THIS RELEASE DESTROYS BACKWARDS COMPATIBILITY!!</strong> All <code>.ino</code> files will need to be updated to follow the updated examples.</p><section id="change_log_0-12-2_added"><h3>Added</h3><ul><li>Implemented real calculated variables, from PR #153, closing issue #127 (Create generic calculated variables).</li></ul></section><section id="change_log_0-12-2_fixed"><h3>Fixed</h3><ul><li>Fixes issue with MaxSonar giving weird readings, due to buffer not being cleared between readings, as described in <a href="https://www.envirodiy.org/topic/minor-glitch-reading-maxbotix-mb7389-with-mayfly/">https:/<wbr />/<wbr />www.envirodiy.org/<wbr />topic/<wbr />minor-glitch-reading-maxbotix-mb7389-with-mayfly/<wbr /></a></li></ul><p>See PR #160 for a full list of improvements and fixes.</p><hr/></section></section><section id="change_log_0-11-6"><h2>0.11.6 - 2018-05-11</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.11.6">0.11.6</a> Fixed Longer <a href="class_logger.html" class="m-doc">Logger</a> Intervals and Improved Documentation</p><section id="change_log_0-11-6_changed"><h3>Changed</h3><ul><li><strong>Documentation:</strong> Improved documentation for examples</li><li>Applying &quot;sensor testing mode&quot; more consistently in examples</li><li>Made variables necessary for sensor testing mode with custom loops public</li></ul></section><section id="change_log_0-11-6_fixed"><h3>Fixed</h3><ul><li>Fixed variable type for logging interval from uint8_t to uint16_t allowing consistent logging at intervals greater than 5 minutes</li></ul><hr/></section></section><section id="change_log_0-11-3"><h2>0.11.3 - 2018-05-03</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.11.3">0.11.3</a> Added sensors and fixed timing bugs</p><section id="change_log_0-11-3_changed"><h3>Changed</h3><ul><li>Tweeked code generating csv&#x27;s and json outputs to allow a modified csv or json to be written to the SD card or posted to data.EnviroDIY.org</li></ul></section><section id="change_log_0-11-3_added"><h3>Added</h3><ul><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a>:</strong> Added support for Freescale MPL115A2 pressure sensor</li><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a>:</strong> Added support for Keller Acculevel</li><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a>:</strong> Added support for Yosemitech Y4000 multi-parameter sonde</li><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a>:</strong> Added support for a generic &quot;voltage&quot; measurement on an ADS1115 with and without a voltage divider</li><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a>:</strong> Added support for an external rain tipping bucket counter deployed using the EnviroDIY TippingBucketRainGauge library and communicating with the main logger via I2C</li><li><strong>Documentation:</strong> Added some helpful details on the default I2C addresses of several sensors</li><li><strong>Documentation:</strong> Expanded explanations of sensor and variable terminology in ReadMe</li><li><strong>Documentation:</strong> Added 2 new examples of creating a calculated variable from those variables directly measured by multiple sensors</li><li><strong>Documentation:</strong> Minor corrections to Yosemitech sensor resolution and accuracy.</li></ul></section><section id="change_log_0-11-3_removed"><h3>Removed</h3><ul><li>Removed the &quot;checkForUpdate()&quot; function. When asking for a value from a variable, you now must explicitly state whether you want the variable to ask its parent sensor for an updated value or not. By default, it will <em>not</em> ask the parent sensor to update, but only return the last value received or -9999 if a value has never been received.</li></ul></section><section id="change_log_0-11-3_fixed"><h3>Fixed</h3><ul><li>Fixed major bug causing sensors with long stabilization times to not be updated</li></ul><hr/></section></section><section id="change_log_0-9-0"><h2>0.9.0 - 2018-04-17</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.9.0">0.9.0</a> Timing Improvements</p><section id="change_log_0-9-0_changed"><h3>Changed</h3><ul><li>Major restructuring of sensor status and internal sensor time stamps to improve efficiency when using variables/sensors in arrays - this makes sensor/variable order much less important</li><li>Restructured Zebra Tech D-Opto</li></ul></section><section id="change_log_0-9-0_added"><h3>Added</h3><ul><li>Added MS5803, external voltage, and external tip counter</li></ul></section><section id="change_log_0-9-0_fixed"><h3>Fixed</h3><ul><li>Fixed bugs with modem and 5TM</li></ul><hr/></section></section><section id="change_log_0-6-10"><h2>0.6.10 - 2018-02-26</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.6.10">0.6.10</a> Fixes bugs in description and examples</p><section id="change_log_0-6-10_fixed"><h3>Fixed</h3><ul><li>Small bug-fixing release</li></ul><hr/></section></section><section id="change_log_0-6-9"><h2>0.6.9 - 2018-02-26</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.6.9">0.6.9</a> Uniformity of missing values, averaging for all sensors</p><section id="change_log_0-6-9_changed"><h3>Changed</h3><ul><li>Allows all sensors to be averaged</li><li>More uniform return of -9999 for missing/bad values</li><li>Better time synching</li><li>Example platformio.ini files</li></ul></section></section><section id="change_log_0-5-4-beta"><h2>0.5.4-beta - 2018-01-18</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/0.5.4-beta">0.5.4-beta</a></p><section id="change_log_0-5-4-beta_changed"><h3>Changed</h3><ul><li>Improvements to modem support and debugging</li><li>Improved examples</li><li>Renaming of a large number of internal variables</li><li>Inching closer to full support for SAMD21 (M0/Zero) processors, though still some bugs present.</li></ul></section><section id="change_log_0-5-4-beta_added"><h3>Added</h3><ul><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a>:</strong> Added Yosemitech brand sensors which communicate via RS485</li></ul></section><section id="change_log_0-5-4-beta_fixed"><h3>Fixed</h3><ul><li>Clock synchronization fixes</li><li>Library metadata and dependency fixes</li></ul><hr/></section></section><section id="change_log_0-3-0"><h2>0.3.0-beta - 2017-06-07</h2><p>GitHub Release: [0.3.0] Beta Release</p><section id="change_log_0-3-0_changed"><h3>Changed</h3><ul><li>Changed the interrupt library to EnableInterrupt, which now controls all interrupts.</li></ul></section><section id="change_log_0-3-0_added"><h3>Added</h3><ul><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a>:</strong> Added the Apogee SQ-212 PAR sensor.</li><li>Added the modem as a &quot;sensor&quot; which can return it&#x27;s signal strength as a variable.</li><li>Added a &quot;debugging&quot; mode, accessible by pushing a button while the checkForDebugMode function is running.</li></ul><hr/></section></section><section id="change_log_0-2-5"><h2>0.2.5-beta - 2017-05-31</h2><p>GitHub Release: [0.2.5] Impoved setup functions</p><section id="change_log_0-2-5_changed"><h3>Changed</h3><ul><li>Slight rearrangement of setup functions to improve efficiency.</li></ul><hr/></section></section><section id="change_log_0-2-4"><h2>0.2.4-beta - 2017-05-17</h2><p>GitHub Release: [0.2.4] Another beta release</p><section id="change_log_0-2-4_changed"><h3>Changed</h3><ul><li>Shorted time allowed to attempt to turn Bee on/off</li><li>Shorted wait for network time to 55 sec (from 60)</li><li>Put disconnect step within if block so it only tries to disconnect if it was connected in the first place</li></ul></section><section id="change_log_0-2-4_added"><h3>Added</h3><ul><li>Added a check that Bee is on before trying to connect to network</li></ul></section><section id="change_log_0-2-4_fixed"><h3>Fixed</h3><ul><li>Fixed extra spaces in CSV</li></ul><hr/></section></section><section id="change_log_0-2-2"><h2>0.2.2-beta - 2017-05-09</h2><p>GitHub Release: [0.2.2] Initial release</p><p>Our first release of the modular sensors library to support easily logging data from a variety of environmental sensors and sending that data to the EnviroDIY data portal.</p><hr/></section>
-
-                    </div>
-                  </div>
-                </div>
+<p><a name="md__change_log"></a></p><p>All notable changes to this project will be documented in this file.</p><p>The format is based on <a href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a> and its stricter, better defined, brother <a href="https://common-changelog.org/">Common Changelog</a>.</p><p>This project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p><hr/><section id="change_log_unreleased"><h2>Unreleased</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/compare/v0.36.0...HEAD">Unreleased</a></p><section id="change_log_unreleased_changed"><h3>Changed</h3></section><section id="change_log_unreleased_added"><h3>Added</h3></section><section id="change_log_unreleased_removed"><h3>Removed</h3></section><section id="change_log_unreleased_fixed"><h3>Fixed</h3><hr/></section></section><section id="change_log_0-36-0"><h2>0.36.0</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.36.0">0.36.0</a></p><section id="change_log_0-36-0_changed"><h3>Changed</h3><ul><li>Applied markdown lint to markdown files</li><li>Bumped TinyGSM dependency<ul><li>Changed datatypes for modem voltage outputs.</li></ul></li><li>Switched from Soligen fork of ADS1115 library to the standard Adafruit version.</li><li>Rearranged documation of examples</li><li>Consistently apply all pre-processor <code>defined</code> checks with function-like syntax</li><li>Consistently check for both <code>__AVR__</code> and <code>ARDUINO_ARCH_AVR</code> in all cases.<ul><li>Not all AVR boards defin <code>__AVR__</code> within the PlatformIO system, which was confusing the SCons preprocessor.</li></ul></li><li>Modified implementation of initial short logging intervals.</li><li>Allow non-sleep before returing from testing or logging functions.</li><li>Modified returns of modem variables from uint&#x27;s to int&#x27;s for consistency with the latest version of TinyGSM.</li><li>Add pre-processor macro for number of times to attempt to update the clock.</li></ul></section><section id="change_log_0-36-0_added"><h3>Added</h3><ul><li>Added support for Yosemitech Y513 Blue Green Algae <a href="class_sensor.html" class="m-doc">Sensor</a> thanks to @aufdenkampe</li><li>Added support for Alphasense CO2 <a href="class_sensor.html" class="m-doc">Sensor</a> thanks to @aufdenkampe</li><li>Added support for Turner Turbidity Plus thanks to @mbarneytu</li><li>Added complete paramter documentation where it was missing.</li></ul><hr/></section></section><section id="change_log_0-35-1"><h2>0.35.1</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.35.1">0.35.1</a></p><section id="change_log_0-35-1_changed"><h3>Changed</h3><ul><li><strong>BREAKING</strong> Switched default clock for SAMD21 from the built-in 32bit RTC to the DS3231. <em>This is not be a permanent change.</em></li><li>Switched to reusable workflows for CI</li></ul></section><section id="change_log_0-35-1_fixed"><h3>Fixed</h3><p>Fixed clock configuration for SAMD21</p><hr/></section></section><section id="change_log_0-35-0"><h2>0.35.0</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.35.0">0.35.0</a></p><section id="change_log_0-35-0_changed"><h3>Changed</h3><ul><li><strong>BREAKING</strong> Refactored how the publisher transmit buffer works. This will require adjustment to custom data publishers.</li><li>Update GitHub actions</li><li>Remove date from copyright for easier tracking</li><li>Turn modem off at end of setup, regardless of time</li><li>Clean function to set file timestamp on SD card</li><li>Use equation rather than table for CSQ</li><li>Only polling modem for enabled parameters</li><li>INCREASED THE MAXIMUM NUMBER OF VARIABLES FROM A SINGLE SENSOR and implemented an option to set this by build flag.<ul><li>This will increase memory use for the entire library. If you are not using the GroPoint sensors which require many variables, I recommend you change this value via the build flag <code>-D MAX_NUMBER_VARS=8</code></li></ul></li><li>Allow all WiFi modems to first attempt to connect using existing on-modem saved credentials rather than immediately sending new credentials.</li><li>Add further debug printouts to the processor stats</li></ul></section><section id="change_log_0-35-0_added"><h3>Added</h3><ul><li>Support <a href="https://www.gropoint.com/products/soil-sensors/gropoint-profile">GroPoint Profile GPLP-8 Eight-Segment Soil Moisture and Temperature Profiling Probe</a></li><li>Support <a href="https://www.vega.com/en-us/products/product-catalog/level/radar/vegapuls-21">Vega Puls 21 Radar</a></li><li>Functions to enable and disable modem metadata polling by bitmask</li></ul></section><section id="change_log_0-35-0_removed"><h3>Removed</h3><ul><li>Removed the (unused) sendOffset parameter from dataPublisherBase.</li></ul></section><section id="change_log_0-35-0_fixed"><h3>Fixed</h3><ul><li>Minor bug fixes for XBee Wifi</li><li>Handle no SIM card response from SIM7080G (EnviroDIY LTE Bee)</li><li>Fixed Keller debugging output.</li><li>Fixed file reference for SDFat 2.2.3</li></ul></section><section id="change_log_0-35-0_known__issues"><h3>Known Issues</h3><ul><li>The modem hardware, firmware, and serial number is only implemented for the Digi XBee WiFi.</li></ul></section></section><section id="change_log_0-34-1"><h2>0.34.1</h2><p>GitHub Release: [0.34.1]</p><section id="change_log_0-34-1_changed"><h3>Changed</h3><ul><li>Incorporated improvements to the XBee Wifi - from <a href="https://github.com/EnviroDIY/ModularSensors/commits?author=neilh10">neilh10</a><ul><li>#347 -WiFi S6B stability - tears dwon TCP/IP before going to sleep, doesn&#x27;t automatically poll for meta data</li></ul></li></ul></section><section id="change_log_0-34-1_added"><h3>Added</h3><ul><li>Added the ability to enable or disable polling of modem attached variables. By default, all polling is off, but polling is enabled for a modem sensor when a sensor is created and attached to a modem. This functionailty is inspired from <a href="https://github.com/EnviroDIY/ModularSensors/commits?author=neilh10">neilh10</a>.</li></ul></section><section id="change_log_0-34-1_fixed"><h3>Fixed</h3><ul><li>Fixed GitHub actions for pull requests from forks.</li></ul></section></section><section id="change_log_0-34-0"><h2>0.34.0</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.34.0">0.34.0</a></p><section id="change_log_0-34-0_changed"><h3>Changed</h3><ul><li><strong>BREAKING</strong> - Removed support for light sleep on Espressif modules. <strong>This changes the order of the constructor for the ESP32 and ESP8266!</strong><ul><li>The light sleep mode is non-functional anyway, and confusion over the sleep request pin was putting the board in a position not to sleep at all.</li></ul></li><li>Minor tweek to clang-format</li><li>Moved all variable initialization to default header values and initializer lists</li><li>Converted all &quot;c-style&quot; casts to static casts</li><li>Switched cases of strcat and strcpy to snprintf</li><li>Specify python version 3.x for actions (used by PlatformIO)</li></ul></section><section id="change_log_0-34-0_added"><h3>Added</h3><ul><li>Support Campbell RainVUE10 SDI-12 Precipitation <a href="class_sensor.html" class="m-doc">Sensor</a> <a href="https://github.com/EnviroDIY/ModularSensors/issues/416">#416</a></li><li>Support YosemiTech Y700 Pressor <a href="class_sensor.html" class="m-doc">Sensor</a> (<a href="https://github.com/EnviroDIY/ModularSensors/issues/421">#421</a>)</li></ul></section><section id="change_log_0-34-0_removed"><h3>Removed</h3></section><section id="change_log_0-34-0_fixed"><h3>Fixed</h3><ul><li>Fixed bug in YosemiTech Y4000 Sonde (<a href="https://github.com/EnviroDIY/ModularSensors/issues/420">#420</a>)</li><li>Fixed non-concurrent data fetch for SDI-12 when <em>NOT</em> using debugging.</li><li>Fixed internet connection when in &quot;testing mode&quot;</li><li>Allow a non-zero wait time for SDI-12 sensors</li><li>Fixed outdated GitHub actions</li></ul><hr/></section></section><section id="change_log_0-33-4"><h2>0.33.4</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.33.4">0.33.4</a></p><section id="change_log_0-33-4_fixed"><h3>Fixed</h3><ul><li>Increased warm-up and measurement time for Campbell ClariVUE-10 to work with the latest version of the sensor.</li></ul><hr/></section></section><section id="change_log_0-33-3"><h2>0.33.3</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.33.3">0.33.3</a></p><section id="change_log_0-33-3_fixed"><h3>Fixed</h3><ul><li>Increased measurement time for Hydros21 to work with the latest version of the sensor.</li></ul><hr/></section></section><section id="change_log_0-33-2"><h2>0.33.2</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.33.2">0.33.2</a></p><section id="change_log_0-33-2_fixed"><h3>Fixed</h3><ul><li>Fixed script to install and zip libraries for a release</li></ul><hr/></section></section><section id="change_log_0-33-1"><h2>0.33.1 - 2022-04-11</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.33.1">0.33.1</a></p><section id="change_log_0-33-1_changed"><h3>Changed</h3></section><section id="change_log_0-33-1_added"><h3>Added</h3><ul><li>Added a typedef and header for the ESP32<ul><li>This is just another name to the ESP8266 class to help any who don&#x27;t know they&#x27;re identical for our purposes.</li></ul></li><li><strong>Example:</strong> Created a new DRWI wifi example for workshop.</li></ul></section><section id="change_log_0-33-1_removed"><h3>Removed</h3></section><section id="change_log_0-33-1_fixed"><h3>Fixed</h3><hr/></section></section><section id="change_log_0-33-0"><h2>0.33.0 - 2022-04-01</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.33.0">0.33.0</a></p><section id="change_log_0-33-0_changed"><h3>Changed</h3><ul><li><strong>Breaking:</strong> Renamed the static <code>markedEpochTime</code> variable to <code>markedLocalEpochTime</code>.<ul><li>This was sometimes used in &quot;complex&quot; loops. Code utilizing it will have to be changed.</li><li>This is part of the effort to clarify where localized and UTC time are being used. We recommend a logger&#x27;s real time clock always be set in UTC and then localized for printing and storing data.</li></ul></li><li><strong>Breaking:</strong> Renamed the function <code>setNowEpoch(uint32_t)</code> to <code>setNowUTCEpoch(uint32_t)</code>.<ul><li>Although public, this was never intended to be used externally.</li></ul></li><li><strong>Breaking:</strong> Renamed the YosemiTech Y550 COD sensor as Y551. See below.</li><li><strong>Potentially Breaking:</strong> Changed the default &quot;button&quot; interrupt pin mode from <code>INPUT_PULLUP</code> to <code>INPUT</code> and created optional arguments to the <code>setTestingModePin</code> and <code>setLoggerPins</code> functions to specify the pin mode and pull-up resistor state.<ul><li><code>INPUT</code> is the proper mode for the Mayfly. The Mayfly has an external pull <em>down</em> on the button pin with the button being active high. This means having the pull-up resistors on negates the button signal. The pin mode had been set as <code>INPUT_PULLUP</code> for the button, backwards for the Mayfly, since <a href="https://github.com/EnviroDIY/ModularSensors/commit/6bafb0fd149589f71ca6f46b761fe72b1f9523a6">July of 2017</a>. By some electrical luck, with the 0.x versions of the Mayfly, the external pull-down on the button pin was strong enough to out-weigh the incorretly activated pull-up resistors and an interrupt was still registered when the button was pressed. With a different pull-down resistor on the Mayfly 1.x, the button no longer registers with the pull-up resistors active. So, for most of our users with Mayflies, this will be a <em><strong>fix</strong></em>. But for anyone using a different board/processor/button configuration that depended on the processor pull-up resistors, this will be a breaking change and they will need to specify the button mode in the <code>setTestingModePin</code> or <code>setLoggerPins</code> function to return to the previous behavior.</li></ul></li><li>Added a longer warm up time and removed some of the modem set-up to work with the ESP-IDF AT firmware versions &gt;2.0</li><li>Made sure that all example clock synchronization happens at noon instead of midnight.</li><li><strong>Renamed Classes:</strong> Renamed several classes for internal consistency. These are <em>not</em> breaking changes at this time; the old class names are still usable.<ul><li>Rename class <code>MPL115A2</code> to <code><a href="class_freescale_m_p_l115_a2.html" class="m-doc">FreescaleMPL115A2</a></code></li><li>Rename class <code>MPL115A2_Pressure</code> to <code><a href="class_freescale_m_p_l115_a2___pressure.html" class="m-doc">FreescaleMPL115A2_<wbr />Pressure</a></code></li><li>Rename class <code>MPL115A2_Temp</code> to <code><a href="class_freescale_m_p_l115_a2___temp.html" class="m-doc">FreescaleMPL115A2_<wbr />Temp</a></code></li><li>Rename class <code>TIINA219_Volt</code> to <code><a href="class_t_i_i_n_a219___voltage.html" class="m-doc">TIINA219_<wbr />Voltage</a></code></li><li>Rename class <code>PaleoTerraRedox_Volt</code> to <code><a href="class_paleo_terra_redox___voltage.html" class="m-doc">PaleoTerraRedox_<wbr />Voltage</a></code></li><li>Rename class <code>ExternalVoltage</code> to <code><a href="class_t_i_a_d_s1x15.html" class="m-doc">TIADS1x15</a></code></li><li>Rename class <code>ExternalVoltage_Volt</code> to <code><a href="class_t_i_a_d_s1x15___voltage.html" class="m-doc">TIADS1x15_<wbr />Voltage</a></code></li></ul></li><li><strong>Documentation:</strong> Migrated to latest version of Doxygen (1.9.3).</li></ul></section><section id="change_log_0-33-0_added"><h3>Added</h3><ul><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a></strong> Added support for the <a href="http://en.yosemitech.com/aspcms/product/2020-5-8/94.html">YosemiTech Y551 COD Sensor</a>, which makes a UV254 light absorption and translates it to estimates of Chemical Oxygen Demand (COD) (or Total Organic Carbon (TOC)) and Turbidity.<ul><li>NOTE that this upgrade removes the earlier Y550 from the library, as it was never tested and is no longer available form YosemiTech. If anyone has a Y550 sensor, the Y551 commands should work. Let us know if they don&#x27;t.</li></ul></li><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a></strong> Added support for the <a href="http://en.yosemitech.com/aspcms/product/2020-4-23/61.html">YosemiTech Y560 Ammonium Probe</a>, which is a mini sonde for three Ion Selective Electrode (ISE) sensors (pH, NH4+, K+) that together are used to provide a corrected estimate of total ammonium nitrogen (NH4_N) in mg/L.<ul><li>NOTE that this release only includes outputs for NH4_N, pH, and temperature. A future release will also include estimates of potassium (K) and raw potential values from each of the electrodes.</li></ul></li><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a></strong> Added support for the SDI-12 In-Situ <a href="https://in-situ.com/pub/media/support/documents/LevelTROLL_SS.pdf">Level TROLL 400, 500 &amp; 700 Data Loggers</a></li><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a></strong> Added support for the Sensirion SHT40 relative humidity and temperature sensor</li><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a></strong> Added support for the Everlight ALS-PT19 ambient light sensor</li><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a></strong> Added support for the Bosch SensorTec BMP388 and BMP390 pressure sensors</li></ul></section><section id="change_log_0-33-0_removed"><h3>Removed</h3></section><section id="change_log_0-33-0_fixed"><h3>Fixed</h3><ul><li>Fixed memory leak for AOSong AM2315 thanks to @neilh10</li></ul><hr/></section></section><section id="change_log_0-32-2"><h2>0.32.2 - 2021-11-23</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.32.2">0.32.2</a></p><section id="change_log_0-32-2_changed"><h3>Changed</h3><ul><li>Restructured SDI-12 slightly to break out the start measurement functionality into a new function.</li><li>Modified Decagon 5-TM and Meter Teros 11 to use the SDI-12 get results function rather than addSingleMeasurmentResult. This will allow both sensors to honor the &#x27;non-concurrent&#x27; flag, if that is set. Previously, they would not have.</li><li><strong>Documentation:</strong> Migrated to latest version of Doxygen (1.9.2). This required some changes with m.css to properly ignore the doxyfile.xml the current version generates.</li></ul></section><section id="change_log_0-32-2_added"><h3>Added</h3><ul><li><strong>Board:</strong> Adds 1.0 and 1.1 as valid version numbers for the Mayfly. Does not yet support any new features of those boards.</li><li>Add a new parameter (internal variable) to the sensor base class for the number of internally calculated variables. These are used for values that we would always calculate for a sensor and depend only on the raw results of that single sensor. This is separate from any calculated variables that are created on-the-fly and depend on multiple other sensors. In many cases, this is 0 and in most of the other cases the value is informational only. For the SDI-12 sensors, I&#x27;m actually using this to make sure I&#x27;m getting the number of values expected.</li><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a>:</strong> Added support for <a href="https://github.com/EnviroDIY/TippingBucketRainCounter/releases">v0.2.0</a> of the <a href="https://github.com/EnviroDIY/TippingBucketRainCounter">EnviroDIY/<wbr />TippingBucketRainCounter</a> device firmware, which added capability to count rotations on a reed-switch anemometer and fixed a critical bug that failed to count high rainfall rates.<ul><li>For details, see: <a href="https://github.com/EnviroDIY/TippingBucketRainCounter/releases/tag/v0.2.0">https:/<wbr />/<wbr />github.com/<wbr />EnviroDIY/<wbr />TippingBucketRainCounter/<wbr />releases/<wbr />tag/<wbr />v0.2.0</a></li></ul></li></ul><hr/></section></section><section id="change_log_0-32-0"><h2>0.32.0 - 2021-11-19</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.32.0">0.32.0</a> Reinstate support for AOSong DHT</p><section id="change_log_0-32-0_changed"><h3>Changed</h3><ul><li><strong>Documentation:</strong> Restructured the changelog</li><li><strong>Documentation:</strong> Restyled and corrected documentation links for new and renamed DRWI examples</li><li><strong>Continuous Integration:</strong> Updated changelog reader and automated releaser</li></ul></section><section id="change_log_0-32-0_added"><h3>Added</h3><ul><li>Restored support for AOSong DHT sensor.</li></ul><hr/></section></section><section id="change_log_0-31-2"><h2>0.31.2 - 2021-11-03</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.31.2">0.31.2</a> Fix build without AOSong DHT</p><section id="change_log_0-31-2_fixed"><h3>Fixed</h3><ul><li>Fixed build matrix to remove DHT</li></ul><hr/></section></section><section id="change_log_0-31-0"><h2>0.31.0 - 2021-11-02</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.31.0">0.31.0</a> Remove support for AOSong DHT</p><section id="change_log_0-31-0_added"><h3>Added</h3><ul><li><strong>Examples:</strong> Added a new example for the DRWI site using the new EnviroDIY bee based on the SIMCOM SIM7080G</li></ul></section><section id="change_log_0-31-0_removed"><h3>Removed</h3><ul><li><strong>Breaking:</strong> Temporarily <em><strong>REMOVED</strong></em> support for AOSong DHT sensor.<ul><li>Intend to restore this after updating to support newest Adafruit DHT library</li></ul></li></ul><hr/></section></section><section id="change_log_0-30-0"><h2>0.30.0 - 2021-07-06</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.30.0">0.30.0</a> Remove support for SoftwareWire for Atlas sensors</p><section id="change_log_0-30-0_changed"><h3>Changed</h3><ul><li>Changed build flags and created a pre-commit hook for myself to update the menu build matrix</li></ul></section><section id="change_log_0-30-0_added"><h3>Added</h3><ul><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a>:</strong> Added support for <a href="https://www.campbellsci.com/clarivue10">Campbell ClariVUE10</a> turbidity sensor</li></ul></section><section id="change_log_0-30-0_removed"><h3>Removed</h3><ul><li><strong>Breaking:</strong> Removed support for SoftwareWire for Atlas sensors.<ul><li>The only supported version of a bit-banged (software) version of I2C removed inheritance from the core Wire library. Without inheritance, the parseFloat functions used by the Atlas sensors will not work. As I think this feature was completely unused for the Atlas sensors and I see no reason to use it with sensors that have completely flexible addressing, I removed it.</li></ul></li></ul></section><section id="change_log_0-30-0_fixed"><h3>Fixed</h3><ul><li>Fixed GitHub actions for pull requests</li></ul><hr/></section></section><section id="change_log_0-29-1"><h2>0.29.1 - 2021-07-01</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.29.1">0.29.1</a> Fix YosemiTech Y533 ORP sensor outputs</p><section id="change_log_0-29-1_fixed"><h3>Fixed</h3><ul><li>Modified <code><a href="_yosemitech_y533_8h.html" class="m-doc">YosemitechY533.h</a></code> and examples to work with updated ORP <code>getValues()</code> function in <a href="https://github.com/EnviroDIY/YosemitechModbus">https:/<wbr />/<wbr />github.com/<wbr />EnviroDIY/<wbr />YosemitechModbus</a> released with v0.2.5.</li></ul><hr/></section></section><section id="change_log_0-29-0"><h2>0.29.0 - 2021-05-19</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.29.0">0.29.0</a> Create a <a href="_modular_sensors_8h.html" class="m-doc">ModularSensors.h</a></p><section id="change_log_0-29-0_changed"><h3>Changed</h3><ul><li>Modified examples to use Hydros 21</li></ul></section><section id="change_log_0-29-0_added"><h3>Added</h3><ul><li>Created a <a href="_modular_sensors_8h.html" class="m-doc">ModularSensors.h</a> file to include. This makes it much easiler to install and use the library from the Arduino CLI.<ul><li>Modified examples to include the <a href="_modular_sensors_8h.html" class="m-doc">ModularSensors.h</a> file</li></ul></li><li>Added continuous integration testing with the Arduino CLI</li></ul><hr/></section></section><section id="change_log_0-28-5"><h2>0.28.5 - 2021-05-11</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.28.5">0.28.5</a> Duplicate and Rename Hydros 21</p><section id="change_log_0-28-5_added"><h3>Added</h3><ul><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a>:</strong> Created a new module for the Meter Hydros 21. This is exactly identical to the Decagon CTD in everything but the name. The Decagon CTD module still exists and can be used. No old code needs to be adjusted for this change. Moving forward, the two can be used interchangably. The addition was only made to stop complaints about typing in an older name.</li></ul><hr/></section></section><section id="change_log_0-28-4"><h2>0.28.4 - 2021-05-05</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.28.4">0.28.4</a> SDI-12 Timing <a href="class_sensor.html" class="m-doc">Sensor</a> Customization</p><section id="change_log_0-28-4_changed"><h3>Changed</h3><ul><li>Allow each SDI-12 sensor to set the necessary command delay for that sensor.<ul><li>Per protocol, sensors are allowed to take up to 100ms after receiving a break before being ready to receive a command. This allows each sensor to specify what delay it needs. This was added to support conflicting delay needs; the RDO needed a short delay, the newest Meter sensors do not respond properly if the delay is added.</li></ul></li><li>For SDI-12 sensors, add repeated attempts to start a measurement if the first attempt unexpectedly fails.</li></ul><hr/></section></section><section id="change_log_0-28-3"><h2>0.28.3 - 2021-03-24</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.28.3">0.28.3</a> Valid version number</p><section id="change_log_0-28-3_fixed"><h3>Fixed</h3><ul><li>Use a valid semantic version number</li></ul><hr/></section></section><section id="change_log_0-28-01"><h2>0.28.01 - 2021-02-10</h2><p>GitHub Release: [0.28.01] Gigantic SDI-12 bug</p><section id="change_log_0-28-01_fixed"><h3>Fixed</h3><ul><li>Fixes an <em><strong>EGREGIOUS</strong></em> error in the SDI-12 code causing the code to lock up if debugging was off (but always work with it on)<ul><li><a href="https://github.com/EnviroDIY/ModularSensors/issues/346">Issue #346</a></li><li>This was first introduced in <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.27.5">0.27.5</a></li></ul></li><li>Fix GitHub action for pull requests.</li></ul><hr/></section></section><section id="change_log_0-28-0"><h2>0.28.0 - 2021-02-10</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.28.0">0.28.0</a> Add Support for Turner Cyclops</p><section id="change_log_0-28-0_added"><h3>Added</h3><ul><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a>:</strong> Add support for all standard configurations of the <a href="https://www.turnerdesigns.com/cyclops-7f-submersible-fluorometer">Turner Cyclops-7F submersible fluorometer</a></li></ul></section><section id="change_log_0-28-0_fixed"><h3>Fixed</h3><ul><li><strong>Documentation:</strong> Fix some minor Doxygen warnings</li><li><strong>Documentation:</strong> Small grammar fixes</li><li><strong>Documentation:</strong> Fixes in the EnviroDIY fork of m.css:<ul><li>Added extra navigation hints to classes leading back to the containing module</li><li>Correctly included script for the to-top element</li></ul></li></ul><hr/></section></section><section id="change_log_0-27-8"><h2>0.27.8 - 2021-01-19</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.27.8">0.27.8</a> Fix GitHub Action</p><section id="change_log_0-27-8_fixed"><h3>Fixed</h3><ul><li>Just fixed an error in the github action to post a release</li></ul><hr/></section></section><section id="change_log_0-27-7"><h2>0.27.7 - 2021-01-19</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.27.7">0.27.7</a> SDI-12 Bug Fix</p><section id="change_log_0-27-7_fixed"><h3>Fixed</h3><ul><li>Fixed a compiler error for non-concurrent SDI-12 sensors.</li></ul><hr/></section></section><section id="change_log_0-27-6"><h2>0.27.6 - 2021-01-19</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.27.6">0.27.6</a> Update Documentation</p><section id="change_log_0-27-6_changed"><h3>Changed</h3><ul><li>Update instructions for examples</li><li>Update developer instructions</li></ul><hr/></section></section><section id="change_log_0-27-5"><h2>0.27.5 - 2020-12-15</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.27.5">0.27.5</a> Multiple new Sensors and Workflows</p><section id="change_log_0-27-5_changed"><h3>Changed</h3><ul><li>Complete re-styling of the Doxygen output to be similar to envirodiy.org</li><li>Add enourmous amounts of documentation</li><li>Improved explanations and added walkthrough of menu a la carte example</li><li>Added example calculating specific conductance where applicable</li><li>For SDI-12 sensors, added calls to additional data commands (D1-D9) if full number of expected results are not returned by D0.</li><li>For SDI-12 sensors, added ability to disable concurrent measurements using the build flag <code>MS_SDI12_NON_CONCURRENT</code>.<ul><li>NOTE: Setting the build flag disables concurrent measurements for <em>ALL</em> SDI-12 sensors!</li></ul></li></ul></section><section id="change_log_0-27-5_added"><h3>Added</h3><ul><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a>:</strong> PaleoTerra Redox sensors</li><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a>:</strong> Northern Widget Tally Counters</li><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a>:</strong> simple analog electrical conductance sensors</li><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a>:</strong> In-Situ RDO PRO-X rugged dissolved oxygen sensors</li><li><strong>Publisher:</strong> Add Soracom/Ubidots as a data publisher</li><li>Migrated from Travis CI to Github Actions for continuous integration</li><li>Deprecated wiki, moving contents to docs folder where needed</li><li>Add static variable for marked time in UTC</li><li>Add user name and password for GSM/SIM for XBee Cellular</li><li>Support software I2C or secondary hardware I2C for all sensors possible</li></ul></section><section id="change_log_0-27-5_known__issues"><h3>Known Issues</h3><ul><li>The instructions for using most of the examples are out of date.</li></ul><hr/></section></section><section id="change_log_0-25-0"><h2>0.25.0 - 2020-06-25</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.25.0">0.25.0</a> Styling &amp; Doxygen Code Documentation</p><p><a href="https://doi.org/10.5281/zenodo.3908530"><img class="m-image" src="https://zenodo.org/badge/DOI/10.5281/zenodo.3908530.svg" alt="DOI" /></a></p><section id="change_log_0-25-0_changed"><h3>Changed</h3><ul><li>Improved C++ code styling elements in every file in the library, to:<ul><li>Better take advantage of the <a href="https://clang.llvm.org">Clang</a> compiler and code error <a href="https://en.wikipedia.org/wiki/Lint_(software)">linter</a> tool;</li><li>Generally follow <a href="https://clang.llvm.org/docs/ClangFormat.html">Clang Format</a> and <a href="https://google.github.io/styleguide/cppguide.html">Google&#x27;s coding style guides</a> used with <a href="https://en.wikipedia.org/wiki/Cpplint">cpplint</a> <a href="https://en.wikipedia.org/wiki/Lint_(software)">linter</a>, which:<ul><li>includes massive white space changes to improve readability while not changing how the code is executed</li></ul></li><li>Support Doxygen documentation.</li></ul></li><li>Encapsulated modem wake check logic into a function and checking for status using a quick AT ping if no other option is available.<ul><li>This will only affect modems/breakouts that depend on a pulse on their wake pin to turn on or off but for whatever reason don&#x27;t have a separate status pin connected to the mcu. I <em>do not</em> recommend this configuration.</li></ul></li><li>Always re-set the pin mode of a sensor power pin before attempting to turn it on.<ul><li>This could come into play when first attempting to power on a sensor before the initial setup if the pin mode on the sensor power pin was set to input by whatever program the mcu had run prior to running ModularSensors code.</li></ul></li></ul></section><section id="change_log_0-25-0_added"><h3>Added</h3><ul><li><strong>Documentation:</strong> Automated code documentation using <a href="https://www.doxygen.nl/index.html">Doxygen</a>, now available at <a href="https://envirodiy.github.io/ModularSensors/">https:/<wbr />/<wbr />envirodiy.github.io/<wbr />ModularSensors/<wbr /></a></li></ul></section><section id="change_log_0-25-0_fixed"><h3>Fixed</h3><ul><li>Fixed issue where the Digi XBee LTE-M modem did not wake during normal logging mode to transmit data to the publisher. See <a href="https://github.com/EnviroDIY/ModularSensors/pull/309#commitcomment-39786167">https:/<wbr />/<wbr />github.com/<wbr />EnviroDIY/<wbr />ModularSensors/<wbr />pull/<wbr />309#commitcomment-39786167</a></li></ul><p>For more details, see <a href="https://github.com/EnviroDIY/ModularSensors/pull/309">Pull Request #309: The style sheet</a></p><hr/></section></section><section id="change_log_0-24-1"><h2>0.24.1 - 2020-03-02</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.24.1">0.24.1</a> Modem Restructuring</p><p><a href="https://doi.org/10.5281/zenodo.3693784"><img class="m-image" src="https://zenodo.org/badge/DOI/10.5281/zenodo.3693784.svg" alt="DOI" /></a></p><section id="change_log_0-24-1_changed"><h3>Changed</h3><ul><li>Restructured modem so that it no longer operates as a sensor. Variables tied to the modem are now effectively calculated variables and all values from the modem will be offset by 1 sending cycle (ie, the signal strength posted will always be the strength from the prior send, not the current one).</li></ul><hr/></section></section><section id="change_log_0-23-13"><h2>0.23.13 - 2019-09-19</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.23.13">0.23.13</a> More agressive attempts to set clock</p><p><a href="https://doi.org/10.5281/zenodo.3451413"><img class="m-image" src="https://zenodo.org/badge/DOI/10.5281/zenodo.3451413.svg" alt="DOI" /></a></p><section id="change_log_0-23-13_changed"><h3>Changed</h3><ul><li>Much more aggressive attempts to set the clock if the time is not reasonable - before 01Sep2019 or after 01Jan2025.<ul><li>The LED will flicker and warnings will be sent over the serial port for invalid times at every check.</li><li>The logDataAndPublish function will attempt to synchronize the clock at every measurement until a valid time is received.</li><li>The NIST sync will attempt to open the socket to the daytime server up to 12 times trying to get a valid response.</li></ul></li><li>Now using automatic network technology and carrier profile for Digi LTE-M XBee3&#x27;s<ul><li>with the current firmware there is not a significant time savings in manually selecting the carrier and manually selecting the carrier gives no options when the relative signal strength of the carriers changes.</li></ul></li></ul><hr/></section></section><section id="change_log_0-23-11"><h2>0.23.11 - 2019-09-11</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.23.11">0.23.11</a> Watchdogs and More</p><p><a href="https://doi.org/10.5281/zenodo.3405562"><img class="m-image" src="https://zenodo.org/badge/DOI/10.5281/zenodo.3405562.svg" alt="DOI" /></a></p><section id="change_log_0-23-11_changed"><h3>Changed</h3><ul><li>Added extra compile tests in the menu a la carte example.</li><li>Improvements made to nearly all modem modules</li><li>Restore XBee access to resets by TinyGSM</li></ul></section><section id="change_log_0-23-11_added"><h3>Added</h3><ul><li>A watch-dog timer has been implemented for both the AVR and SAMD21 (and 51) boards to restart the boards in case of failure during logging<ul><li>The watch-dog is turned off during sleep to save power, so recovery is only possible if the failure is while the processor is awake.</li></ul></li><li>Added support for Meter Terros 11 soil moisture and temperature sensor</li><li>Implemented a function to verify that UUID&#x27;s are at least correctly formed and unique - though it does not verify that they are valid.</li><li>Pushing to the master branch of this repo will now also cause a re-run of the travis script that updates the EnviroDIY &quot;Libraries&quot; repository.</li><li>Added debugging variables to modems to track how long they are powered/active.</li></ul></section><section id="change_log_0-23-11_fixed"><h3>Fixed</h3><ul><li>Fixed all compiler warnings seen with the -Wextra flag (mostly by adding technically-unnecessary-but-visually-helpful braces)</li><li>Fixed issue with creating a calculated variable without a UUID</li></ul></section><section id="change_log_0-23-11_known__issues"><h3>Known Issues</h3><ul><li>polling the AM2315 more frequently than every 2 seconds will now return a bad value (-9999) rather than returning the same value multiple times. This is a reflection of a change in the Adafruit library. The measurement time set for the sensor has always been this long so this issue should never be seen unless you attempt to call get measurement results from the AM2315 without first waiting for the measurement completion. The update function and all variable array functions should behave properly.</li></ul><hr/></section></section><section id="change_log_0-22-5"><h2>0.22.5 - 2019-06-24</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.22.5">0.22.5</a> Modem Simplification</p><p><a href="https://doi.org/10.5281/zenodo.3255084"><img class="m-image" src="https://zenodo.org/badge/DOI/10.5281/zenodo.3255084.svg" alt="DOI" /></a></p><p><strong>NOTE: This release is NOT backwards compatible with previous releases.</strong></p><ul><li>All code must be updated to the current format for modems and time zones to work with this version of the library.</li></ul><section id="change_log_0-22-5_changed"><h3>Changed</h3><ul><li>Daily clock synchronization has been moved from midnight to noon. For loggers with solar charging, this should place the extra draw of the modem to do the synchronization to a time of peak charging.</li><li>All &quot;send&quot; data functions have been renamed to &quot;publish&quot; to line up with module names.</li><li>Updated AM2315 to use most current Adafruit library (2.0.0)</li></ul></section><section id="change_log_0-22-5_added"><h3>Added</h3><ul><li><strong>Breaking:</strong> LoggerModem has become a parent class. All modems now exist as separate subclass objects.<ul><li>This should greatly simplify creating a modem object in code.</li><li>Currently supported modems:<ul><li>Digi XBee and XBee3 cellular modems of all types running in transparent mode</li><li>Digi XBee3 cellular LTE-M modems in bypass mode (this is <em>in addition</em> to transparent mode)</li><li>Digi XBee cellular 3G global modems in bypass mode (this is <em>in addition</em> to transparent mode)</li><li>Digi XBee Wifi S6B modules</li><li>Sodaq UBee LTE-M (SARA R410M)</li><li>Sodaq UBee 3G (SARA U201)</li><li>Sodaq 2GBee R6/R7</li><li>Sodaq 2GBee R4, Adafruit Fona, and other SIMComm SIM800 modules</li><li>Botletics and other SIMCom SIM7000 modules</li><li>Dragino, Nimbelink, and other Quectel BG96 modules</li><li>Nimbelink LTE-M Verizon</li><li>Espressif ESP8266 based modules</li></ul></li><li>The older way of creating a modem object and feeding it wake/sleep functions is no longer supported.</li></ul></li><li>The real time clock&#x27;s timezone can now be explicit set (as opposed to setting the logger timezone and the offset between the RTC and the logger)<ul><li>The function to set the logger timezone has been renamed from setTimeZone to setLoggerTimeZone.</li></ul></li></ul></section><section id="change_log_0-22-5_fixed"><h3>Fixed</h3><ul><li>Fixed #259 where time zones offset by more than 9 hours from UTC would not work correctly.</li><li>Fixed #183 where enabling debugging would cause non AVR boards to crash.</li><li>Adjusted some timing parameters for the SIM800 based on testing.</li></ul></section><section id="change_log_0-22-5_known__issues"><h3>Known Issues</h3><ul><li>polling the AM2315 more frequently than every 2 seconds will now return a bad value (-9999) rather than returning the same value multiple times. This is a reflection of a change in the Adafruit library. The measurement time set for the sensor has always been this long so this issue should never be seen unless you attempt to call get measurement results from the AM2315 without first waiting for the measurement completion. The update function and all variable array functions should behave properly.</li></ul><hr/></section></section><section id="change_log_0-21-4"><h2>0.21.4 - 2019-05-02</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.21.4">0.21.4</a> Deep debug error</p><section id="change_log_0-21-4_fixed"><h3>Fixed</h3><ul><li>Fixed minor bug in debugging created in previous release</li></ul><hr/></section></section><section id="change_log_0-21-3"><h2>0.21.3 - 2019-05-02</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.21.3">0.21.3</a> Minor Bugs and Simplified Debugging</p><section id="change_log_0-21-3_added"><h3>Added</h3><ul><li>Gave every header file a unique debugging define statement so each file can be debugged individually by building with the build flag -DMS_xxx_DEBUG where xxx is the file name in upper case.<ul><li>Some files also have a &quot;deep&quot; debugging option with -DMS_xxx_DEBUG_DEEP</li></ul></li><li>Created examples for LearnEnviroDIYCode</li></ul></section><section id="change_log_0-21-3_fixed"><h3>Fixed</h3><ul><li>Fixed a bug causing modem to not be turned because the processor thought it was on already</li><li>Corrected warm-up timing for Yosemitech Sonde</li><li>Typo fixes in comments</li></ul><hr/></section></section><section id="change_log_0-21-2"><h2>0.21.2 - 2019-03-19</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.21.2">0.21.2</a> Fix write to SD card</p><section id="change_log_0-21-2_fixed"><h3>Fixed</h3><ul><li>Fixed bug intoduced in 0.21.0 preventing writing to SD card - file must be closed (not sync&#x27;ed)</li></ul><hr/></section></section><section id="change_log_0-21-0"><h2>0.21.0 - 2019-03-06</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.21.0">0.21.0</a> Support for all Atlas Scientific I2C sensors, compiler-safe begin functions</p><p><a href="https://doi.org/10.5281/zenodo.2586200"><img class="m-image" src="https://zenodo.org/badge/DOI/10.5281/zenodo.2586200.svg" alt="DOI" /></a></p><section id="change_log_0-21-0_changed"><h3>Changed</h3><ul><li>Eliminated any time-out waits on libraries using the Wire class</li><li>Simplified the logger begin function - the removed functionality should be called in individual program setup functions<ul><li>Removed clock sync</li><li>Removed logger file creation</li><li>Removed sensor setup</li></ul></li><li>Moved the check for setup from the wake function to the startSingleMeasurement function for all sensors<ul><li>Previously, the first time the wake was called for a function, the status bit for setup was checked and if the sensor had not been setup, the setup function was called. This will no longer happen the first time the wake function is called, but instead the first time the startSingleMeasurement function is called. The main motivator for the change was the modem which could end up behaving strangely because the setup function actually called the wake function internally.</li></ul></li><li>Improved example coding for SARA R410 cellular modules</li></ul></section><section id="change_log_0-21-0_added"><h3>Added</h3><ul><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a>:</strong> Added full support for all Atlas Scientific EZO curcuits and sensors that support I2C<ul><li>CO2</li><li>DO (dissolved oxygen)</li><li>EC (conductivity)</li><li>ORP (oxidation/reduction potential)</li><li>pH</li><li>RTD (temperature</li></ul></li><li>Created empty constructors for the logger, publisher, variable array, and variable classes and all of their subclasses. For all classes created a corresponding &quot;begin&quot; function to set internal class object values.<ul><li>See note for more details: <a href="https://github.com/EnviroDIY/ModularSensors/commit/b1a619ed74bc790743bce35b3a4e78a2d2237b22">https:/<wbr />/<wbr />github.com/<wbr />EnviroDIY/<wbr />ModularSensors/<wbr />commit/<wbr />b1a619ed74bc790743bce35b3a4e78a2d2237b22</a></li><li>The order of input arguments for all variable objects has changed. For variable subclasses (ie, variables from sensors), there is no change to the user. ****For calculated variable objects, all code must be updated!**** Please check the structure in the examples! Older code will compile without error but the variable metadata fields will be incorrectly populated.</li></ul></li><li>Very preliminary support for SD cards with switchable power</li></ul></section><section id="change_log_0-21-0_removed"><h3>Removed</h3><ul><li>Removed &quot;default&quot; wake/sleep functions from modem. These were non-working skeleton functions.</li></ul></section><section id="change_log_0-21-0_fixed"><h3>Fixed</h3><ul><li>Fixed call to a null pointer causing the array&#x27;s completeUpdate to crash with calculated variables</li><li>Fixed source of ADS1x15 dependency</li></ul></section><section id="change_log_0-21-0_known__issues"><h3>Known Issues</h3><ul><li>Running some I2C sensors on switched power will cause unrecoverable hangs at the first call to any other I2C peripheral (ie, the DS3231 RTC) after sensor power is turned off. This is a hardware problem and is un-fixable within this library.</li><li>The sensor class and all of its subclasses still require input arguments in the constructor.</li></ul><hr/></section></section><section id="change_log_0-19-6"><h2>0.19.6 - 2019-02-27</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.19.6">0.19.6</a> Modem Improvements &amp; ADS1X15 Generalization</p><p><a href="https://doi.org/10.5281/zenodo.2579301"><img class="m-image" src="https://zenodo.org/badge/DOI/10.5281/zenodo.2579301.svg" alt="DOI" /></a></p><section id="change_log_0-19-6_changed"><h3>Changed</h3><ul><li>Modem waits for signal strength return before sending data</li><li>Other modem tweaks</li><li>Restructuring of data publishers</li></ul></section><section id="change_log_0-19-6_added"><h3>Added</h3><ul><li>Added ADS1015 as an optional analog to digital converter (ADC) for boards other than the Mayfly</li></ul></section><section id="change_log_0-19-6_fixed"><h3>Fixed</h3><ul><li>Fixed bug with ADS1115 for M0/SAM21</li></ul><hr/></section></section><section id="change_log_0-19-3"><h2>0.19.3 - 2019-01-15</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.19.3">0.19.3</a> Bug fix and example re-working</p><section id="change_log_0-19-3_changed"><h3>Changed</h3><ul><li>Re-works the examples to remove duplication between them.</li></ul></section><section id="change_log_0-19-3_fixed"><h3>Fixed</h3><ul><li>Fixes bug in sending data to the WikiWatershed / <a href="https://monitormywatershed.org/">Monitor My Watershed</a> data sharing portal.</li></ul><hr/></section></section><section id="change_log_0-19-2"><h2>0.19.2 - 2018-12-22</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.19.2">0.19.2</a> Decreased Data Consumption</p><section id="change_log_0-19-2_changed"><h3>Changed</h3><ul><li>Reduced telemetry data consumption (by half in one test) and therefore overall power use, by creating an outgoing text buffer.<ul><li>Note : the default buffer size is quite large, decrease it to decrease program memory size.</li></ul></li><li>Refactored data publishers as a new class rather than subclasses of loggers</li></ul></section><section id="change_log_0-19-2_added"><h3>Added</h3><ul><li>Added ThingSpeak support via MQTT (PubSubClient is now a required dependency)</li><li>Added support for TI INA219 thanks to @neilh21 (Adafruit INA219 library is now a required dependency)</li></ul><hr/></section></section><section id="change_log_0-17-2"><h2>0.17.2 - 2018-11-27</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.17.2">0.17.2</a> Major Update!</p><p><strong>NOTE: THIS RELEASE DESTROYS BACKWARDS COMPATIBILITY!!</strong></p><ul><li>All <code>.ino</code> sketch files will need to be updated to follow the updated <a href="https://github.com/EnviroDIY/ModularSensors/tree/master/examples">examples</a>.</li><li>All library dependencies will need to be updated to match versions in the <a href="https://github.com/EnviroDIY/ModularSensors/blob/master/library.json">library.json</a> file.</li></ul><section id="change_log_0-17-2_changed"><h3>Changed</h3><ul><li>Improved power management.</li><li>Improved stability.</li><li>A huge number of other changes, with most of them are documented here: <a href="https://github.com/EnviroDIY/ModularSensors/pull/173">https:/<wbr />/<wbr />github.com/<wbr />EnviroDIY/<wbr />ModularSensors/<wbr />pull/<wbr />173</a></li></ul><hr/></section></section><section id="change_log_0-12-2"><h2>0.12.2 - 2018-09-25</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.12.2">0.12.2</a> Calculated variables and bug fixes</p><p>NOTE: This <strong>THIS RELEASE DESTROYS BACKWARDS COMPATIBILITY!!</strong> All <code>.ino</code> files will need to be updated to follow the updated examples.</p><section id="change_log_0-12-2_added"><h3>Added</h3><ul><li>Implemented real calculated variables, from PR #153, closing issue #127 (Create generic calculated variables).</li></ul></section><section id="change_log_0-12-2_fixed"><h3>Fixed</h3><ul><li>Fixes issue with MaxSonar giving weird readings, due to buffer not being cleared between readings, as described in <a href="https://www.envirodiy.org/topic/minor-glitch-reading-maxbotix-mb7389-with-mayfly/">https:/<wbr />/<wbr />www.envirodiy.org/<wbr />topic/<wbr />minor-glitch-reading-maxbotix-mb7389-with-mayfly/<wbr /></a></li></ul><p>See PR #160 for a full list of improvements and fixes.</p><hr/></section></section><section id="change_log_0-11-6"><h2>0.11.6 - 2018-05-11</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.11.6">0.11.6</a> Fixed Longer <a href="class_logger.html" class="m-doc">Logger</a> Intervals and Improved Documentation</p><section id="change_log_0-11-6_changed"><h3>Changed</h3><ul><li><strong>Documentation:</strong> Improved documentation for examples</li><li>Applying &quot;sensor testing mode&quot; more consistently in examples</li><li>Made variables necessary for sensor testing mode with custom loops public</li></ul></section><section id="change_log_0-11-6_fixed"><h3>Fixed</h3><ul><li>Fixed variable type for logging interval from uint8_t to uint16_t allowing consistent logging at intervals greater than 5 minutes</li></ul><hr/></section></section><section id="change_log_0-11-3"><h2>0.11.3 - 2018-05-03</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.11.3">0.11.3</a> Added sensors and fixed timing bugs</p><section id="change_log_0-11-3_changed"><h3>Changed</h3><ul><li>Tweeked code generating csv&#x27;s and json outputs to allow a modified csv or json to be written to the SD card or posted to data.EnviroDIY.org</li></ul></section><section id="change_log_0-11-3_added"><h3>Added</h3><ul><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a>:</strong> Added support for Freescale MPL115A2 pressure sensor</li><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a>:</strong> Added support for Keller Acculevel</li><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a>:</strong> Added support for Yosemitech Y4000 multi-parameter sonde</li><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a>:</strong> Added support for a generic &quot;voltage&quot; measurement on an ADS1115 with and without a voltage divider</li><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a>:</strong> Added support for an external rain tipping bucket counter deployed using the EnviroDIY TippingBucketRainGauge library and communicating with the main logger via I2C</li><li><strong>Documentation:</strong> Added some helpful details on the default I2C addresses of several sensors</li><li><strong>Documentation:</strong> Expanded explanations of sensor and variable terminology in ReadMe</li><li><strong>Documentation:</strong> Added 2 new examples of creating a calculated variable from those variables directly measured by multiple sensors</li><li><strong>Documentation:</strong> Minor corrections to Yosemitech sensor resolution and accuracy.</li></ul></section><section id="change_log_0-11-3_removed"><h3>Removed</h3><ul><li>Removed the &quot;checkForUpdate()&quot; function. When asking for a value from a variable, you now must explicitly state whether you want the variable to ask its parent sensor for an updated value or not. By default, it will <em>not</em> ask the parent sensor to update, but only return the last value received or -9999 if a value has never been received.</li></ul></section><section id="change_log_0-11-3_fixed"><h3>Fixed</h3><ul><li>Fixed major bug causing sensors with long stabilization times to not be updated</li></ul><hr/></section></section><section id="change_log_0-9-0"><h2>0.9.0 - 2018-04-17</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.9.0">0.9.0</a> Timing Improvements</p><section id="change_log_0-9-0_changed"><h3>Changed</h3><ul><li>Major restructuring of sensor status and internal sensor time stamps to improve efficiency when using variables/sensors in arrays - this makes sensor/variable order much less important</li><li>Restructured Zebra Tech D-Opto</li></ul></section><section id="change_log_0-9-0_added"><h3>Added</h3><ul><li>Added MS5803, external voltage, and external tip counter</li></ul></section><section id="change_log_0-9-0_fixed"><h3>Fixed</h3><ul><li>Fixed bugs with modem and 5TM</li></ul><hr/></section></section><section id="change_log_0-6-10"><h2>0.6.10 - 2018-02-26</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.6.10">0.6.10</a> Fixes bugs in description and examples</p><section id="change_log_0-6-10_fixed"><h3>Fixed</h3><ul><li>Small bug-fixing release</li></ul><hr/></section></section><section id="change_log_0-6-9"><h2>0.6.9 - 2018-02-26</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.6.9">0.6.9</a> Uniformity of missing values, averaging for all sensors</p><section id="change_log_0-6-9_changed"><h3>Changed</h3><ul><li>Allows all sensors to be averaged</li><li>More uniform return of -9999 for missing/bad values</li><li>Better time synching</li><li>Example platformio.ini files</li></ul></section></section><section id="change_log_0-5-4-beta"><h2>0.5.4-beta - 2018-01-18</h2><p>GitHub Release: <a href="https://github.com/EnviroDIY/ModularSensors/releases/tag/0.5.4-beta">0.5.4-beta</a></p><section id="change_log_0-5-4-beta_changed"><h3>Changed</h3><ul><li>Improvements to modem support and debugging</li><li>Improved examples</li><li>Renaming of a large number of internal variables</li><li>Inching closer to full support for SAMD21 (M0/Zero) processors, though still some bugs present.</li></ul></section><section id="change_log_0-5-4-beta_added"><h3>Added</h3><ul><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a>:</strong> Added Yosemitech brand sensors which communicate via RS485</li></ul></section><section id="change_log_0-5-4-beta_fixed"><h3>Fixed</h3><ul><li>Clock synchronization fixes</li><li>Library metadata and dependency fixes</li></ul><hr/></section></section><section id="change_log_0-3-0"><h2>0.3.0-beta - 2017-06-07</h2><p>GitHub Release: [0.3.0] Beta Release</p><section id="change_log_0-3-0_changed"><h3>Changed</h3><ul><li>Changed the interrupt library to EnableInterrupt, which now controls all interrupts.</li></ul></section><section id="change_log_0-3-0_added"><h3>Added</h3><ul><li><strong><a href="class_sensor.html" class="m-doc">Sensor</a>:</strong> Added the Apogee SQ-212 PAR sensor.</li><li>Added the modem as a &quot;sensor&quot; which can return it&#x27;s signal strength as a variable.</li><li>Added a &quot;debugging&quot; mode, accessible by pushing a button while the checkForDebugMode function is running.</li></ul><hr/></section></section><section id="change_log_0-2-5"><h2>0.2.5-beta - 2017-05-31</h2><p>GitHub Release: [0.2.5] Impoved setup functions</p><section id="change_log_0-2-5_changed"><h3>Changed</h3><ul><li>Slight rearrangement of setup functions to improve efficiency.</li></ul><hr/></section></section><section id="change_log_0-2-4"><h2>0.2.4-beta - 2017-05-17</h2><p>GitHub Release: [0.2.4] Another beta release</p><section id="change_log_0-2-4_changed"><h3>Changed</h3><ul><li>Shorted time allowed to attempt to turn Bee on/off</li><li>Shorted wait for network time to 55 sec (from 60)</li><li>Put disconnect step within if block so it only tries to disconnect if it was connected in the first place</li></ul></section><section id="change_log_0-2-4_added"><h3>Added</h3><ul><li>Added a check that Bee is on before trying to connect to network</li></ul></section><section id="change_log_0-2-4_fixed"><h3>Fixed</h3><ul><li>Fixed extra spaces in CSV</li></ul><hr/></section></section><section id="change_log_0-2-2"><h2>0.2.2-beta - 2017-05-09</h2><p>GitHub Release: [0.2.2] Initial release</p><p>Our first release of the modular sensors library to support easily logging data from a variety of environmental sensors and sending that data to the EnviroDIY data portal.</p><hr/></section>
               </article>
             </main>
 
-          </div>      </div></div><div id="footer-image">
-          <div class="gp-container">
-            <img
-              src="https://www.envirodiy.org/wp-content/uploads/2016/05/EnviroDIY_LogoMaster_Square_V5_TwoTree_Trans_notext-e1462820115833.png"
-              width="99"
-              height="22"
-              alt=""
-            />
-          </div>
-        </div>
+          </div> <!-- gp-content -->
+        </div> <!-- gp-left-column -->
+      </div> <!-- gp-inner-container -->
+    </div> <!-- gp-content-wrapper -->
+
+    <div id="footer-image">
+      <div class="gp-container">
+        <img
+          src="https://www.envirodiy.org/wp-content/uploads/2016/05/EnviroDIY_LogoMaster_Square_V5_TwoTree_Trans_notext-e1462820115833.png"
+          width="99"
+          height="22"
+          alt=""
+        />
+      </div>
+    </div>
 
     <footer id="gp-footer">
       <div id="gp-copyright">
         <div class="gp-container">
           <div id="gp-copyright-text">
             <p>
-              <a href="http://www.stroudcenter.org/" target="_blank"
-                ><img
-                  style="float: left; margin-right: 20px;"
-                  src="https://www.envirodiy.org/wp-content/uploads/2017/01/stroud-white-white-165px.png"
-                  alt=""
-                  width="165"
-                  height="70" /></a
-              >EnviroDIY™ is a community for do-it-yourself ideas for
-              environmental science and monitoring. EnviroDIY is an
-              initiative of
-              <a href="http://www.stroudcenter.org/" target="_blank"
-                >Stroud™ Water Research Center</a
-              >, which seeks to advance knowledge and stewardship of
-              freshwater systems through global research, education, and
-              watershed restoration.
+              <a href="https://stroudcenter.org/" target="_blank"
+                >EnviroDIY™ is a community for do-it-yourself ideas for environmental
+                science and monitoring. EnviroDIY is an initiative of
+                <a
+                  style="text-decoration: underline"
+                  href="https://stroudcenter.org/"
+                  target="_blank"
+                  >Stroud Water Research Center</a
+                >, which advances knowledge and stewardship of freshwater systems through
+                global research, education, and watershed restoration.
+              </a>
             </p>
             <p>
               All content on EnviroDIY is licensed as Creative Commons
-              Attribution-ShareAlike 4.0 International (CC-BY-SA). Hardware
-              designs on this website are released under the CERN Open
-              Hardware License 1.2.
-              <a href="https://envirodiy.org/licenses/"
-                >Alternative licenses are available.</a
+              Attribution-ShareAlike 4.0 International (CC-BY-SA). Hardware designs on this
+              website are released under the CERN Open Hardware License 1.2.
+              <a style="text-decoration: underline" href="https://envirodiy.org/licenses/"
+                >See all licenses.</a
               >
-              <a href="https://envirodiy.org/terms/">Terms of Use</a> |
-              <a href="https://envirodiy.org/privacy/">Privacy Policy</a> |
-              <a href="https://envirodiy.org/cookies/">Cookie Policy</a> |
-              <a href="https://envirodiy.org/contact/">Contact</a>
+              <a style="text-decoration: underline" href="https://envirodiy.org/terms/"
+                >Terms of Use</a
+              >
+              |
+              <a style="text-decoration: underline" href="https://envirodiy.org/privacy/"
+                >Privacy Policy</a
+              >
+              |
+              <a style="text-decoration: underline" href="https://envirodiy.org/cookies/"
+                >Cookie Policy</a
+              >
+              |
+              <a
+                style="text-decoration: underline"
+                href="https://envirodiy.org/shop-policies/"
+                >Shop Policies</a
+              >
+              |
+              <a style="text-decoration: underline" href="https://envirodiy.org/contact/"
+                >Contact</a
+              >
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.6 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.12.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>
@@ -2125,69 +2031,8 @@
 
     <div class="gp-clear"></div>
 
-    </div></div><script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/modernizr.js?ver=6.1.1"
-  id="modernizr-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-includes/js/imagesloaded.min.js?ver=4.1.4"
-  id="imagesloaded-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/selectivizr.min.js?ver=6.1.1"
-  id="selectivizr-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/placeholders.min.js?ver=6.1.1"
-  id="placeholder-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/jquery.ui.totop.min.js.js?ver=6.1.1"
-  id="jquery-totop-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/jquery.flexslider-min.js?ver=6.1.1"
-  id="jquery-flexslider-js"
-></script>
-<script type="text/javascript" id="ghostpool-custom-js-js-extra">
-  /* <![CDATA[ */
-  var ghostpool_script = {
-    lightbox: 'separate_images',
-    url: 'https:\/\/www.envirodiy.org\/',
-    related_items_in_view: '',
-  };
-  /* ]]> */
-</script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/jquery.stellar.min.js?ver=6.1.1"
-  id="jquery-stellar-js"
-></script>
+    </div> <!-- gp-site-wrapper -->
+  </div> <!-- gp-site-wrapper -->
 
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/custom.js?ver=6.1.1"
-  id="ghostpool-custom-js-js"
-></script>
-<script type="text/javascript" id="ghostpool-ajax-loop-js-extra">
-  /* <![CDATA[ */
-  var ghostpoolAjax = {
-    ajaxurl: 'https:\/\/www.envirodiy.org\/wp-admin\/admin-ajax.php',
-    ajaxnonce: 'e2424257d3',
-    querystring: '',
-  };
-  /* ]]> */
-</script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/ajax-loop.js?ver=6.1.1"
-  id="ghostpool-ajax-loop-js"
-></script>
 </body>
 </html>

@@ -1,0 +1,86 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "file",
+    "id": "_sodaq2_g_bee_r6_8h",
+    "name": "Sodaq2GBeeR6.h",
+    "url_base": "_sodaq2_g_bee_r6_8h",
+    "url": "_sodaq2_g_bee_r6_8h.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "Contains the <a href=\"class_sodaq2_g_bee_r6.html\" class=\"m-doc\">Sodaq2GBeeR6</a> subclass of the <a href=\"class_s_i_m_com_s_i_m800.html\" class=\"m-doc\">SIMComSIM800</a> class and is specific to the Sodaq 2GBee revisions 6 and higher based on the SIMCOM SIM800h.",
+    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside>",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_sodaq2_g_bee_r6.html",
+        "name": "Sodaq2GBeeR6",
+        "brief": "The <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> subclass for the <a href=\"group__modem__gprsbee.html\" class=\"m-doc\">Sodaq 2GBee</a> revisions 6 and higher based on the SIMCOM SIM800H.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "src",
+        "dir_68267d1309a1af8e8297ef4c3efbcdba.html"
+      ],
+      [
+        "modems",
+        "dir_d60b8e8795161a141bba4403c07b6046.html"
+      ],
+      [
+        "Sodaq2GBeeR6.h",
+        "_sodaq2_g_bee_r6_8h.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Sodaq2GBeeR6.h",
+        "_sodaq2_g_bee_r6_8h.html"
+      ]
+    ]
+  }
+}

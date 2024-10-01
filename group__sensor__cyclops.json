@@ -1,0 +1,552 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__sensor__cyclops",
+    "name": "Turner Cyclops-7F",
+    "url_base": "group__sensor__cyclops",
+    "url": "group__sensor__cyclops.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>Classes for the Turner Cyclops-7F analog turbidity sensor.</p><section id=\"sensor_cyclops_intro\"><h2>Introduction</h2><blockquote><p>Cyclops-7F Sensors are high performance, compact submersible sensors designed for integration into any platform that provides power and datalogging.</p></blockquote><p>The Cyclops sensors come pre-configured for one of 13 fluorophores and can also be ordered with custom wavelength configurations. The standard configurations are:</p><table class=\"m-table m-fullwidth m-flat\"><thead><tr><th>ID</th><th><a href=\"class_variable.html\" class=\"m-doc\">Variable</a></th><th>Application</th></tr></thead><tbody><tr><td><strong>U</strong></td><td><a href=\"class_turner_cyclops___c_d_o_m.html\" class=\"m-doc\">TurnerCyclops_<wbr />CDOM</a></td><td>CDOM/FDOM</td></tr><tr><td><strong>C</strong></td><td><a href=\"class_turner_cyclops___chlorophyll.html\" class=\"m-doc\">TurnerCyclops_<wbr />Chlorophyll</a></td><td>Chl in vivo (Blue Excitation)</td></tr><tr><td><strong>D</strong></td><td><a href=\"class_turner_cyclops___red_chlorophyll.html\" class=\"m-doc\">TurnerCyclops_<wbr />RedChlorophyll</a></td><td>Chl in vivo (Red Excitation)</td></tr><tr><td><strong>F</strong></td><td><a href=\"class_turner_cyclops___fluorescein.html\" class=\"m-doc\">TurnerCyclops_<wbr />Fluorescein</a></td><td>Fluorescein Dye</td></tr><tr><td><strong>O</strong></td><td><a href=\"class_turner_cyclops___crude_oil.html\" class=\"m-doc\">TurnerCyclops_<wbr />CrudeOil</a></td><td>Oil - Crude</td></tr><tr><td><strong>G</strong></td><td><a href=\"class_turner_cyclops___b_t_e_x.html\" class=\"m-doc\">TurnerCyclops_<wbr />BTEX</a></td><td>Oil - Fine (Refined Fuels)</td></tr><tr><td><strong>B</strong></td><td><a href=\"class_turner_cyclops___brighteners.html\" class=\"m-doc\">TurnerCyclops_<wbr />Brighteners</a></td><td>Optical Brighteners for Wastewater Monitoring</td></tr><tr><td><strong>P</strong></td><td><a href=\"class_turner_cyclops___phycocyanin.html\" class=\"m-doc\">TurnerCyclops_<wbr />Phycocyanin</a></td><td>Phycocyanin (Freshwater Cyanobacteria)</td></tr><tr><td><strong>E</strong></td><td><a href=\"class_turner_cyclops___phycoerythrin.html\" class=\"m-doc\">TurnerCyclops_<wbr />Phycoerythrin</a></td><td>Phycoerythrin (Marine Cyanobacteria)</td></tr><tr><td><strong>A</strong></td><td><a href=\"class_turner_cyclops___p_t_s_a.html\" class=\"m-doc\">TurnerCyclops_<wbr />PTSA</a></td><td>PTSA (1,3,6,8-Pyrenetetrasulfonic Acid Tetrasodium Salt)</td></tr><tr><td><strong>R</strong></td><td><a href=\"class_turner_cyclops___rhodamine.html\" class=\"m-doc\">TurnerCyclops_<wbr />Rhodamine</a></td><td>Rhodamine Dye</td></tr><tr><td><strong>L</strong></td><td><a href=\"class_turner_cyclops___tryptophan.html\" class=\"m-doc\">TurnerCyclops_<wbr />Tryptophan</a></td><td>Tryptophan for Wastewater Monitoring</td></tr><tr><td><strong>T</strong></td><td><a href=\"class_turner_cyclops___turbidity.html\" class=\"m-doc\">TurnerCyclops_<wbr />Turbidity</a></td><td>Turbidity</td></tr></tbody></table><p>The detection limits, ranges, and wavelengths of each configuration are:</p><table class=\"m-table m-fullwidth m-flat\"><thead><tr><th>ID</th><th>MDL</th><th>Linear Range</th><th>LED (CWL)</th><th>Excitation</th><th>Emission</th><th>Power @ 12V</th></tr></thead><tbody><tr><td rowspan=\"2\"><strong>U</strong></td><td>0.1 ppb\u00b9</td><td>0-1,500 ppb\u00b9</td><td>365 nm</td><td>325/120 nm</td><td>470/60 nm</td><td rowspan=\"2\">240 mW</td></tr><tr><td>0.5 ppb\u00b2</td><td>0-3,000 ppb\u00b2</td><td>365 nm</td><td>325/120 nm</td><td>470/60 nm</td></tr><tr><td><strong>C</strong></td><td>0.03 \u03bcg/L</td><td>0-500 \u03bcg/L</td><td>460 nm</td><td>465/170 nm</td><td>696/44 nm</td><td>240 mW</td></tr><tr><td><strong>D</strong></td><td>0.3 \u03bcg/L</td><td>0-500 \u03bcg/L</td><td>635 nm</td><td>\u2264 635 nm</td><td>&gt; 695 nm</td><td>240</td></tr><tr><td><strong>F</strong></td><td>0.01 ppb</td><td>0-500 ppb</td><td>460 nm</td><td>400/150 nm</td><td>545/28 nm</td><td>145 mW</td></tr><tr><td><strong>O</strong></td><td>0.2 ppb\u00b2</td><td>0-1,500 ppb\u00b2</td><td>365 nm</td><td>325/120 nm</td><td>410-600 nm</td><td>250 mW</td></tr><tr><td><strong>G</strong></td><td>0.4ppm\u00b3</td><td>0-20 ppm\u00b3</td><td>255 nm</td><td>\u2264 290 nm</td><td>350/50 nm</td><td>530 mW</td></tr><tr><td><strong>B</strong></td><td>0.6 ppb\u00b2</td><td>0-2,500 ppb\u00b2</td><td>365 nm</td><td>325/120 nm</td><td>445/15 nm</td><td>200 mW</td></tr><tr><td><strong>P</strong></td><td>2 ppb\u2074</td><td>0-4,500 ppb\u2074</td><td>590 nm</td><td>590/30 nm</td><td>\u2265 645 nm</td><td>160 mW</td></tr><tr><td><strong>E</strong></td><td>0.1 ppb\u2075</td><td>0-750 ppb\u2075</td><td>525 nm</td><td>515-547 nm</td><td>\u2265 590 nm</td><td>270 mW</td></tr><tr><td><strong>A</strong></td><td>0.1 ppb\u00b2</td><td>0-650 ppb\u00b2</td><td>365 nm</td><td>325/120 nm</td><td>405/10 nm</td><td>320 mW</td></tr><tr><td><strong>R</strong></td><td>0.01 ppb</td><td>0-1,000 ppb</td><td>530 nm</td><td>535/60 nm</td><td>590-715 nm</td><td>175 mW</td></tr><tr><td><strong>L</strong></td><td>3 ppb</td><td>0-5,000 ppb</td><td>275 nm</td><td>-</td><td>350/55 nm</td><td>540 mW</td></tr><tr><td><strong>T</strong></td><td>0.05 NTU</td><td>0-1,500 NTU</td><td>850 nm</td><td>850 nm</td><td>850 nm</td><td>120 mW</td></tr></tbody></table><p>\u00b9 Quinine Sulfate</p><p>\u00b2 PTSA (1,3,6,8-Pyrenetetrasulfonic Acid Tetrasodium Salt)</p><p>\u00b3 BTEX (Benzene, Toluene, Ethylbenzene, Xylenes)</p><p>\u2074 Phycocyanin pigment from Prozyme diluted in Deionized water</p><p>\u2075 Phycoerythrin pigment from Prozyme diluted in Deionized water</p><aside class=\"m-note m-info\"><h4>Note</h4><p><strong>The Cyclops configuration is set at the time of the sensor manufacturing and cannot be changed.</strong> Each individual sensor is only capable of measuring the single parameter it is configured for. A Cyclops that is configured to measure chlorophyll <em>cannot</em> be used to measure turbidity.</p></aside></section><section id=\"sensor_cyclops_calib\"><h2>Calibration</h2><p>The Cyclops does <em>not</em> come pre-calibrated and must be calibrated by the user after purchase. Turner recommends using a simple 1-point calibration, which is what this library supports. Full calibration instructions are in the instrument manual.</p><p>The Cyclops-7F puts out a simple analog signal between 0 and 5V. It has three possible gain settings, 1x, 10x and 100x. The gain setting is selected by grounding the appropriate gain wire. Because the output signal can range up to 5V, if using an ADS1115 or ADS1015 powered at only 3.3V, the gain must be reduced or a voltage devider used to ensure the output signal does not exceed 3.6V. This library does <em>not</em> support variable gain or any type of auto-gaining for the Cyclops sensors.</p><aside class=\"m-note m-info\"><h4>Note</h4><p>The Cyclops should be calibrated in as close to field conditions as possible. All gain settings and voltage dividers should be in place for the calibration.</p></aside><p>Before applying any calibration, the analog output from the Cyclops-7F must be converted into a high resolution digital signal. See the <a href=\"group__analog__group.html\" class=\"m-doc\">ADS1115 page</a> for details on the conversion.</p></section><section id=\"sensor_cyclops_datasheet\"><h2>Sensor Datasheet</h2><ul><li><a href=\"https://www.turnerdesigns.com/cyclops-7f-submersible-fluorometer\">Main Information Page</a></li><li><a href=\"http://docs.turnerdesigns.com/t2/doc/spec-guides/998-2181.pdf\">Optical Specification Guide</a></li><li><a href=\"http://docs.turnerdesigns.com/t2/doc/manuals/998-2100.pdf\">Manual</a></li></ul></section><section id=\"sensor_cyclops_flags\"><h2>Build flags</h2><ul><li><code>-D MS_USE_ADS1015</code><ul><li>switches from the 16-bit ADS1115 to the 12 bit ADS1015</li></ul></li></ul></section><section id=\"sensor_cyclops_ctor\"><h2>Sensor Constructor</h2><p>{{ <a href=\"class_turner_cyclops.html#a50a90bb7cd5ba0996b89ec1f3f650cf5\" class=\"m-doc\">TurnerCyclops::<wbr />TurnerCyclops</a> }}</p><hr/></section><section id=\"sensor_cyclops_examples\"><h2>Example Code</h2><p>The Turner Cyclops-7F is used in the <a href=\"example_menu.html#menu_walk_turner_cyclops\" class=\"m-doc\">menu a la carte</a> example.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;sensors/TurnerCyclops.h&gt;</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"c1\">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">cyclopsPower</span><span class=\"w\">          </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">sensorPowerPin</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// Power pin</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">uint8_t</span><span class=\"w\"> </span><span class=\"n\">cyclopsNumberReadings</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">10</span><span class=\"p\">;</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">uint8_t</span><span class=\"w\"> </span><span class=\"n\">cyclopsADSi2c_addr</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mh\">0x48</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// The I2C address of the ADS1115 ADC</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">cyclopsADSChannel</span><span class=\"w\">  </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">0</span><span class=\"p\">;</span><span class=\"w\">     </span><span class=\"c1\">// ADS channel</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span><span class=\"c1\">// Cyclops calibration information</span>\n</div><div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">float</span><span class=\"w\"> </span><span class=\"n\">cyclopsStdConc</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mf\">1.000</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// Concentration of the standard used</span>\n</div><div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span><span class=\"w\">                                     </span><span class=\"c1\">// for a 1-point sensor calibration.</span>\n</div><div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">float</span><span class=\"w\"> </span><span class=\"n\">cyclopsStdVolt</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span><span class=\"w\">    </span><span class=\"mf\">1.000</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// The voltage (in volts) measured for the conc_std.</span>\n</div><div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">float</span><span class=\"w\"> </span><span class=\"n\">cyclopsBlankVolt</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-15\" name=\"l-15\"></a><span class=\"linenos\">15</span><span class=\"w\">    </span><span class=\"mf\">0.000</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// The voltage (in volts) measured for a blank.</span>\n</div><div class=\"line\"><a id=\"l-16\" name=\"l-16\"></a><span class=\"linenos\">16</span>\n</div><div class=\"line\"><a id=\"l-17\" name=\"l-17\"></a><span class=\"linenos\">17</span><span class=\"c1\">// Create a Turner Cyclops sensor object</span>\n</div><div class=\"line\"><a id=\"l-18\" name=\"l-18\"></a><span class=\"linenos\">18</span><span class=\"n\">TurnerCyclops</span><span class=\"w\"> </span><span class=\"nf\">cyclops</span><span class=\"p\">(</span><span class=\"n\">cyclopsPower</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">cyclopsADSChannel</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">cyclopsStdConc</span><span class=\"p\">,</span>\n</div><div class=\"line\"><a id=\"l-19\" name=\"l-19\"></a><span class=\"linenos\">19</span><span class=\"w\">                      </span><span class=\"n\">cyclopsStdVolt</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">cyclopsBlankVolt</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">cyclopsADSi2c_addr</span><span class=\"p\">,</span>\n</div><div class=\"line\"><a id=\"l-20\" name=\"l-20\"></a><span class=\"linenos\">20</span><span class=\"w\">                      </span><span class=\"n\">cyclopsNumberReadings</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-21\" name=\"l-21\"></a><span class=\"linenos\">21</span>\n</div><div class=\"line\"><a id=\"l-22\" name=\"l-22\"></a><span class=\"linenos\">22</span><span class=\"c1\">// Create the voltage variable pointer - used for any type of Cyclops</span>\n</div><div class=\"line\"><a id=\"l-23\" name=\"l-23\"></a><span class=\"linenos\">23</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">cyclopsVoltage</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-24\" name=\"l-24\"></a><span class=\"linenos\">24</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">TurnerCyclops_Voltage</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">cyclops</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-25\" name=\"l-25\"></a><span class=\"linenos\">25</span>\n</div><div class=\"line\"><a id=\"l-26\" name=\"l-26\"></a><span class=\"linenos\">26</span><span class=\"c1\">// Create the variable pointer for the primary output parameter.  Only use</span>\n</div><div class=\"line\"><a id=\"l-27\" name=\"l-27\"></a><span class=\"linenos\">27</span><span class=\"c1\">// **ONE** of these!  Which is possible depends on your specific sensor!</span>\n</div><div class=\"line\"><a id=\"l-28\" name=\"l-28\"></a><span class=\"linenos\">28</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">cyclopsChloro</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">TurnerCyclops_Chlorophyll</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-29\" name=\"l-29\"></a><span class=\"linenos\">29</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">cyclops</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-30\" name=\"l-30\"></a><span class=\"linenos\">30</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">cyclopsRWT</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">TurnerCyclops_Rhodamine</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-31\" name=\"l-31\"></a><span class=\"linenos\">31</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">cyclops</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-32\" name=\"l-32\"></a><span class=\"linenos\">32</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">cyclopsFluoroscein</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">TurnerCyclops_Fluorescein</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-33\" name=\"l-33\"></a><span class=\"linenos\">33</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">cyclops</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-34\" name=\"l-34\"></a><span class=\"linenos\">34</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">cyclopsPhycocyanin</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">TurnerCyclops_Phycocyanin</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-35\" name=\"l-35\"></a><span class=\"linenos\">35</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">cyclops</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-36\" name=\"l-36\"></a><span class=\"linenos\">36</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">cyclopsPhycoerythrin</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">TurnerCyclops_Phycoerythrin</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-37\" name=\"l-37\"></a><span class=\"linenos\">37</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">cyclops</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-38\" name=\"l-38\"></a><span class=\"linenos\">38</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">cyclopsCDOM</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-39\" name=\"l-39\"></a><span class=\"linenos\">39</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">TurnerCyclops_CDOM</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">cyclops</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-40\" name=\"l-40\"></a><span class=\"linenos\">40</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">cyclopsCrudeOil</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">TurnerCyclops_CrudeOil</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-41\" name=\"l-41\"></a><span class=\"linenos\">41</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">cyclops</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-42\" name=\"l-42\"></a><span class=\"linenos\">42</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">cyclopsBrighteners</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">TurnerCyclops_Brighteners</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-43\" name=\"l-43\"></a><span class=\"linenos\">43</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">cyclops</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-44\" name=\"l-44\"></a><span class=\"linenos\">44</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">cyclopsTurbidity</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">TurnerCyclops_Turbidity</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-45\" name=\"l-45\"></a><span class=\"linenos\">45</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">cyclops</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-46\" name=\"l-46\"></a><span class=\"linenos\">46</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">cyclopsPTSA</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-47\" name=\"l-47\"></a><span class=\"linenos\">47</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">TurnerCyclops_PTSA</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">cyclops</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-48\" name=\"l-48\"></a><span class=\"linenos\">48</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">cyclopsBTEX</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-49\" name=\"l-49\"></a><span class=\"linenos\">49</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">TurnerCyclops_BTEX</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">cyclops</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-50\" name=\"l-50\"></a><span class=\"linenos\">50</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">cyclopsTryptophan</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">TurnerCyclops_Tryptophan</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-51\" name=\"l-51\"></a><span class=\"linenos\">51</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">cyclops</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-52\" name=\"l-52\"></a><span class=\"linenos\">52</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">cyclopsRedChloro</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">TurnerCyclops_RedChlorophyll</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-53\" name=\"l-53\"></a><span class=\"linenos\">53</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">cyclops</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "sensor_cyclops_intro",
+        "Introduction",
+        []
+      ],
+      [
+        "sensor_cyclops_calib",
+        "Calibration",
+        []
+      ],
+      [
+        "sensor_cyclops_datasheet",
+        "Sensor Datasheet",
+        []
+      ],
+      [
+        "sensor_cyclops_flags",
+        "Build flags",
+        []
+      ],
+      [
+        "sensor_cyclops_ctor",
+        "Sensor Constructor",
+        []
+      ],
+      [
+        "sensor_cyclops_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_turner_cyclops.html",
+        "name": "TurnerCyclops",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__cyclops.html\" class=\"m-doc\">Turner Cyclops-7F submersible fluorometer</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_turner_cyclops___voltage.html",
+        "name": "TurnerCyclops_Voltage",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__cyclops.html#sensor_cyclops_voltage\" class=\"m-doc\">raw voltage output</a> from a <a href=\"group__sensor__cyclops.html\" class=\"m-doc\">Turner Cyclops-7F</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_turner_cyclops___chlorophyll.html",
+        "name": "TurnerCyclops_Chlorophyll",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__cyclops.html#sensor_cyclops_output\" class=\"m-doc\">chlorophyll output</a> from a <a href=\"group__sensor__cyclops.html\" class=\"m-doc\">Turner Cyclops-7F</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_turner_cyclops___rhodamine.html",
+        "name": "TurnerCyclops_Rhodamine",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__cyclops.html#sensor_cyclops_output\" class=\"m-doc\">Rhodamine output</a> from a <a href=\"group__sensor__cyclops.html\" class=\"m-doc\">Turner Cyclops-7F</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_turner_cyclops___fluorescein.html",
+        "name": "TurnerCyclops_Fluorescein",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__cyclops.html#sensor_cyclops_output\" class=\"m-doc\">fluorescein output</a> from a <a href=\"group__sensor__cyclops.html\" class=\"m-doc\">Turner Cyclops-7F</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_turner_cyclops___phycocyanin.html",
+        "name": "TurnerCyclops_Phycocyanin",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__cyclops.html#sensor_cyclops_output\" class=\"m-doc\">phycocyanin output</a> from a <a href=\"group__sensor__cyclops.html\" class=\"m-doc\">Turner Cyclops-7F</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_turner_cyclops___phycoerythrin.html",
+        "name": "TurnerCyclops_Phycoerythrin",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__cyclops.html#sensor_cyclops_output\" class=\"m-doc\">phycoerythrin output</a> from a <a href=\"group__sensor__cyclops.html\" class=\"m-doc\">Turner Cyclops-7F</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_turner_cyclops___c_d_o_m.html",
+        "name": "TurnerCyclops_CDOM",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__cyclops.html#sensor_cyclops_output\" class=\"m-doc\">CDOM output</a> from a <a href=\"group__sensor__cyclops.html\" class=\"m-doc\">Turner Cyclops-7F</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_turner_cyclops___crude_oil.html",
+        "name": "TurnerCyclops_CrudeOil",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__cyclops.html#sensor_cyclops_output\" class=\"m-doc\">crude oil output</a> from a <a href=\"group__sensor__cyclops.html\" class=\"m-doc\">Turner Cyclops-7F</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_turner_cyclops___brighteners.html",
+        "name": "TurnerCyclops_Brighteners",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__cyclops.html#sensor_cyclops_output\" class=\"m-doc\">opticalBrighteners output</a> from a <a href=\"group__sensor__cyclops.html\" class=\"m-doc\">Turner Cyclops-7F</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_turner_cyclops___turbidity.html",
+        "name": "TurnerCyclops_Turbidity",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__cyclops.html#sensor_cyclops_output\" class=\"m-doc\">turbidity output</a> from a <a href=\"group__sensor__cyclops.html\" class=\"m-doc\">Turner Cyclops-7F</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_turner_cyclops___p_t_s_a.html",
+        "name": "TurnerCyclops_PTSA",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__cyclops.html#sensor_cyclops_output\" class=\"m-doc\">PTSA output</a> from a <a href=\"group__sensor__cyclops.html\" class=\"m-doc\">Turner Cyclops-7F</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_turner_cyclops___b_t_e_x.html",
+        "name": "TurnerCyclops_BTEX",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__cyclops.html#sensor_cyclops_output\" class=\"m-doc\">refined fuels (BTEX) output</a> from a <a href=\"group__sensor__cyclops.html\" class=\"m-doc\">Turner Cyclops-7F</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_turner_cyclops___tryptophan.html",
+        "name": "TurnerCyclops_Tryptophan",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__cyclops.html#sensor_cyclops_output\" class=\"m-doc\">tryptophan output</a> from a <a href=\"group__sensor__cyclops.html\" class=\"m-doc\">Turner Cyclops-7F</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_turner_cyclops___red_chlorophyll.html",
+        "name": "TurnerCyclops_RedChlorophyll",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__cyclops.html#sensor_cyclops_output\" class=\"m-doc\">chlorophyll output</a> from a <a href=\"group__sensor__cyclops.html\" class=\"m-doc\">Turner Cyclops-7F</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Sensor Variable Counts",
+        "id": "sensor-variable-counts",
+        "description": "<p><a name=\"sensor_cyclops_var_counts\"></a> The number of variables that can be returned by Cyclops</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__cyclops.html",
+              "id": "ga08d3198ef03dcec91bcc4fe69eec505a",
+              "include": [
+                "&lt;src/sensors/TurnerCyclops.h&gt;",
+                "_turner_cyclops_8h.html"
+              ],
+              "has_details": true,
+              "name": "CYCLOPS_NUM_VARIABLES",
+              "initializer": "2",
+              "brief": "<a href=\"class_sensor.html#af26786329fd01b44cf31410d046fc8f3\" class=\"m-doc\">Sensor::<wbr />_numReturnedValues</a>; the Cyclops can report 2 values.",
+              "description": "<aside class=\"m-note m-info\"><h4>Note</h4><p>Although the Cyclops can come pre-configured for one of up to 13 standard parameters and additional custom parameters, each individual sensor is only capable of measuring the single parameter it is configured for. A Cyclops that is configured to measure blue-green algae <em>cannot</em> be used to measure turbidity. The raw voltage value can be recorded for all variants of the Cyclops.</p></aside>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__cyclops.html",
+              "id": "ga800be1275f9db5ae29156a9bd9422cdd",
+              "include": [
+                "&lt;src/sensors/TurnerCyclops.h&gt;",
+                "_turner_cyclops_8h.html"
+              ],
+              "has_details": true,
+              "name": "CYCLOPS_INC_CALC_VARIABLES",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html#a2f3f93a9205efb134cef1216d65077d2\" class=\"m-doc\">Sensor::<wbr />_incCalcValues</a>; the raw voltage is reported, the other parameter is calculated using the input calibration equation.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Configuration Defines",
+        "id": "configuration-defines",
+        "description": "<p><a name=\"sensor_cyclops_config\"></a> Defines to help configure the address of the ADD used by the Cyclops</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__cyclops.html",
+              "id": "gaf5e311c48b7a1778d4ce4b13ea0be68d",
+              "include": [
+                "&lt;src/sensors/TurnerCyclops.h&gt;",
+                "_turner_cyclops_8h.html"
+              ],
+              "has_details": true,
+              "name": "ADS1115_ADDRESS",
+              "initializer": "0x48",
+              "brief": "The assumed address of the ADS1115, 1001 000 (ADDR = GND)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Sensor Timing",
+        "id": "sensor-timing",
+        "description": "<p><a name=\"sensor_cyclops_timing\"></a> The sensor timing for an Cyclops-7F</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__cyclops.html",
+              "id": "gad34a811421867578e06d472ccd030b74",
+              "include": [
+                "&lt;src/sensors/TurnerCyclops.h&gt;",
+                "_turner_cyclops_8h.html"
+              ],
+              "has_details": true,
+              "name": "CYCLOPS_WARM_UP_TIME_MS",
+              "initializer": "2",
+              "brief": "<a href=\"class_sensor.html#aaaefd7f306f86382a3dac726531756b4\" class=\"m-doc\">Sensor::<wbr />_warmUpTime_ms</a>; the ADS1115 warms up in 2ms.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__cyclops.html",
+              "id": "ga1ee8557964ca97b86b594812f34753ba",
+              "include": [
+                "&lt;src/sensors/TurnerCyclops.h&gt;",
+                "_turner_cyclops_8h.html"
+              ],
+              "has_details": true,
+              "name": "CYCLOPS_STABILIZATION_TIME_MS",
+              "initializer": "1000",
+              "brief": "<a href=\"class_sensor.html#ad6822ad09fb64658c911ce86820db79c\" class=\"m-doc\">Sensor::<wbr />_stabilizationTime_ms</a>; minimum stabilization time for the Cyclops-7F is 1s (1000ms).",
+              "description": "<aside class=\"m-note m-info\"><h4>Note</h4><p>The original Cyclops sensor (Cyclops-7) manufactured prior to 2017 had a 5s warm-up time. In the current model (Cyclops-7**F**) the warm-up time is reduced to 1s.</p></aside>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__cyclops.html",
+              "id": "ga1a0f5ccd0aa6555c19a38cfb63a50a1b",
+              "include": [
+                "&lt;src/sensors/TurnerCyclops.h&gt;",
+                "_turner_cyclops_8h.html"
+              ],
+              "has_details": true,
+              "name": "CYCLOPS_MEASUREMENT_TIME_MS",
+              "initializer": "100",
+              "brief": "<a href=\"class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba\" class=\"m-doc\">Sensor::<wbr />_measurementTime_ms</a>; Cyclops takes 100ms to complete a measurement - Maximum data rate = 10Hz (100ms/sample).",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Calibrated Parameter Output",
+        "id": "calibrated-parameter-output",
+        "description": "<p><a name=\"sensor_cyclops_output\"></a> The primary output variable from an Cyclops-7F</p><p>See the <a href=\"http://docs.turnerdesigns.com/t2/doc/spec-guides/998-2181.pdf\">optical specification guide</a> for the minimum detection limit, accuracy, and range of the various Cyclops parameter configurations.</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__cyclops.html",
+              "id": "gac012fd8c61c27039e86de4464722aa2c",
+              "include": [
+                "&lt;src/sensors/TurnerCyclops.h&gt;",
+                "_turner_cyclops_8h.html"
+              ],
+              "has_details": true,
+              "name": "CYCLOPS_VAR_NUM",
+              "initializer": "0",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> number; the primary variable is stored in sensorValues[0].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__cyclops.html",
+              "id": "ga562bc2089a205b3b2a3f47e56638360b",
+              "include": [
+                "&lt;src/sensors/TurnerCyclops.h&gt;",
+                "_turner_cyclops_8h.html"
+              ],
+              "has_details": true,
+              "name": "CYCLOPS_RESOLUTION",
+              "initializer": "5",
+              "brief": "Decimals places in string representation; 5.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Voltage",
+        "id": "voltage",
+        "description": "<p><a name=\"sensor_cyclops_voltage\"></a> The voltage variable from an Cyclops-7F</p><ul><li>Range is 0 to 3.6V when using an ADS1x15 powered at 3.3V<ul><li>Full sensor range is 0-5V</li></ul></li><li>Accuracy:<ul><li>16-bit ADC (ADS1115): &lt; 0.25% (gain error), &lt;0.25 LSB (offset errror)<ul><li><span class=\"m-dim\">(<a href=\"#ga51692ee8946cbd95336e0ca51e71ec38\" class=\"m-doc\">CYCLOPS_<wbr />VOLTAGE_<wbr />RESOLUTION</a> = 4)</span></li></ul></li><li>12-bit ADC (ADS1015, using build flag <code>MS_USE_ADS1015</code>): &lt; 0.15% (gain error), &lt;3 LSB (offset errror)<ul><li><span class=\"m-dim\">(<a href=\"#ga51692ee8946cbd95336e0ca51e71ec38\" class=\"m-doc\">CYCLOPS_<wbr />VOLTAGE_<wbr />RESOLUTION</a> = 1)</span></li></ul></li></ul></li></ul><p>{{ <a href=\"class_turner_cyclops___voltage.html#a66dcae9eecb553dc2731116bd20de0be\" class=\"m-doc\">TurnerCyclops_Voltage::<wbr />TurnerCyclops_Voltage</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__cyclops.html",
+              "id": "ga7584f580d86e7504a6fc49e5e2905ce9",
+              "include": [
+                "&lt;src/sensors/TurnerCyclops.h&gt;",
+                "_turner_cyclops_8h.html"
+              ],
+              "has_details": true,
+              "name": "CYCLOPS_VOLTAGE_VAR_NUM",
+              "initializer": "1",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> number; voltage is stored in sensorValues[1].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__cyclops.html",
+              "id": "gae65c9594833dadfdeb98613379652b6b",
+              "include": [
+                "&lt;src/sensors/TurnerCyclops.h&gt;",
+                "_turner_cyclops_8h.html"
+              ],
+              "has_details": true,
+              "name": "CYCLOPS_VOLTAGE_VAR_NAME",
+              "initializer": "\"voltage\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;voltage&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__cyclops.html",
+              "id": "ga3a792e1dbacdc56996ef1e6e2d85edc9",
+              "include": [
+                "&lt;src/sensors/TurnerCyclops.h&gt;",
+                "_turner_cyclops_8h.html"
+              ],
+              "has_details": true,
+              "name": "CYCLOPS_VOLTAGE_UNIT_NAME",
+              "initializer": "\"volt\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;volt&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__cyclops.html",
+              "id": "ga840033613ff0ebc3b64d3f7bd9d7f92d",
+              "include": [
+                "&lt;src/sensors/TurnerCyclops.h&gt;",
+                "_turner_cyclops_8h.html"
+              ],
+              "has_details": true,
+              "name": "CYCLOPS_VOLTAGE_DEFAULT_CODE",
+              "initializer": "\"CyclopsVoltage\"",
+              "brief": "Default variable short code; &quot;CyclopsVoltage&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__cyclops.html",
+              "id": "ga51692ee8946cbd95336e0ca51e71ec38",
+              "include": [
+                "&lt;src/sensors/TurnerCyclops.h&gt;",
+                "_turner_cyclops_8h.html"
+              ],
+              "has_details": true,
+              "name": "CYCLOPS_VOLTAGE_RESOLUTION",
+              "initializer": "4",
+              "brief": "Decimals places in string representation; voltage should have 4.",
+              "description": "<ul><li>Resolution:<ul><li>12-bit ADC (ADS1015, using build flag <code>MS_USE_ADS1015</code>): 2 mV</li></ul></li></ul>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "Analog Sensors via TI ADS1x15",
+        "group__analog__group.html"
+      ],
+      [
+        "Turner Cyclops-7F",
+        "group__sensor__cyclops.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Turner Cyclops-7F",
+        "group__sensor__cyclops.html"
+      ]
+    ]
+  }
+}

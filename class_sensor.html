@@ -1,20 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
 <head>
   <meta charset="UTF-8" />
-  <title>Sensor class | ModularSensors</title>
+  <title>Sensor class | ModularSensors0.36.0</title>
   <link rel="stylesheet" href="m-EnviroDIY+documentation.compiled.css" />
+
+<style id="wp-emoji-styles-inline-css" type="text/css">
+  img.wp-smiley,
+  img.emoji {
+    display: inline !important;
+    border: none !important;
+    box-shadow: none !important;
+    height: 1em !important;
+    width: 1em !important;
+    margin: 0 0.07em !important;
+    vertical-align: -0.1em !important;
+    background: none !important;
+    padding: 0 !important;
+  }
+</style>
 <link
   rel="stylesheet"
   id="gp-parent-style-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/style.css?ver=6.1.1"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/style.css?ver=6.5.4"
   type="text/css"
   media="all"
 />
 <link
   rel="stylesheet"
-  id="ghostpool-style-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize-child/style.css?ver=6.1.1"
+  id="redux-extendify-styles-css"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/framework/redux/assets/css/extendify-utilities.css?ver=4.4.11"
   type="text/css"
   media="all"
 />
@@ -124,31 +139,27 @@
 <link
   rel="stylesheet"
   id="fontawesome-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/fonts/font-awesome/css/font-awesome.min.css?ver=6.1.1"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/fonts/font-awesome/css/font-awesome.min.css?ver=6.5.4"
   type="text/css"
   media="all"
 />
 <link
-  rel="stylesheet"
-  id="prettyphoto-css"
-  href="https://www.envirodiy.org/wp-content/plugins/js_composer/assets/lib/prettyphoto/css/prettyPhoto.min.css?ver=6.10.0"
-  type="text/css"
-  media="all"
+  rel="preload"
+  as="style"
+  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
 />
 <link
   rel="stylesheet"
-  id="gp-bp-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/css/bp.css?ver=6.1.1"
-  type="text/css"
-  media="all"
+  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
+  media="print"
+  onload="this.media='all'"
 />
-<link
-  rel="stylesheet"
-  id="gp-bbp-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/css/bbpress.css?ver=6.1.1"
-  type="text/css"
-  media="all"
-/>
+<noscript
+  ><link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
+/></noscript>
+
 <style type="text/css" id="wp-custom-css">
   /* Print Styles */
   @media print {
@@ -162,12 +173,15 @@
       margin: 0 !important;
       padding: 0;
     }
+
     body:not(.gp-full-page-page-header) .gp-page-header.gp-has-text:before,
     body:not(.gp-full-page-page-header)
       .gp-page-header.gp-has-teaser-video.gp-has-text
       .gp-video-header:before {
       background-image: none !important;
     }
+    /* End print styles */
+
     #gp-main-header,
     #gp-small-header,
     #gp-header-area,
@@ -219,6 +233,7 @@
     img {
       page-break-inside: avoid;
       visibility: visible;
+      float: none;
     }
     blockquote,
     table,
@@ -231,7 +246,7 @@
       page-break-before: avoid;
     }
   }
-  /* End print styles */
+
   /*Gutenberg styles*/
   /*Buttons*/
   a.wp-block-button__link {
@@ -362,10 +377,17 @@
   span.woocommerce-Price-amount.amount {
     text-decoration: none !important;
   }
+  /* Hide additional information tab */
+  div.woocommerce-tabs {
+    display: none !important;
+  }
   /*End WooCommerce styles*/
   /*The Events Calendar*/
   #tribe-events-content a {
     color: #0579bd;
+  }
+  #tribe-events-content .wp-block-button__link {
+    color: #ffffff;
   }
   #gp-sidebar-right
     > div
@@ -451,6 +473,9 @@
   #gp-content p.last-updated {
     display: none;
   }
+  #gp-content ul {
+    margin: 0 0 0 20px !important;
+  }
 </style>
 <style id="socialize-dynamic-css" title="dynamic-css" class="redux-options-output">
   #footer-image img {
@@ -483,7 +508,6 @@
     font-style: normal;
     color: #000;
     font-size: 16px;
-    font-display: swap;
   }
   a {
     color: #0579bd;
@@ -497,7 +521,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 36px;
-    font-display: swap;
   }
   h2 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -505,7 +528,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 28px;
-    font-display: swap;
   }
   h3,
   #tab-description h2,
@@ -519,7 +541,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 24px;
-    font-display: swap;
   }
   h4 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -527,7 +548,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 20px;
-    font-display: swap;
   }
   h5 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -535,7 +555,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 18px;
-    font-display: swap;
   }
   h6 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -543,7 +562,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 16px;
-    font-display: swap;
   }
   .gp-entry-meta .gp-post-meta-row-1,
   .gp-homepage #gp-content .gp-vc-element-3,
@@ -577,7 +595,6 @@
     font-style: normal;
     color: #ababab;
     font-size: 16px;
-    font-display: swap;
   }
   #gp-primary-main-nav .menu > li:hover > a,
   #gp-primary-main-nav .menu > li > a {
@@ -600,7 +617,6 @@
     font-style: normal;
     color: #fff;
     font-size: 14px;
-    font-display: swap;
   }
   #gp-secondary-main-nav .menu > li:hover > a,
   #gp-secondary-main-nav .menu > li > a {
@@ -641,7 +657,6 @@
     font-style: normal;
     color: #000;
     font-size: 14px;
-    font-display: swap;
   }
   .gp-nav .menu > .gp-standard-menu > .sub-menu > li a {
     color: #000;
@@ -745,7 +760,6 @@
     font-style: normal;
     color: #fff;
     font-size: 80px;
-    font-display: swap;
   }
   .gp-page-header .gp-container {
     height: 250px;
@@ -759,7 +773,6 @@
     font-style: normal;
     color: #000;
     font-size: 40px;
-    font-display: swap;
   }
   .gp-subtitle {
     font-family: Roboto;
@@ -768,7 +781,6 @@
     font-style: normal;
     color: #0579bd;
     font-size: 20px;
-    font-display: swap;
   }
   #gp-post-links a,
   .gp-pagination-arrows a.prev,
@@ -811,7 +823,6 @@
     line-height: 24px;
     color: #fff;
     font-size: 14px;
-    font-display: swap;
   }
   .gp-author-info a {
     color: #b1b1b1;
@@ -840,19 +851,16 @@
     font-style: normal;
     color: #fff;
     font-size: 24px;
-    font-display: swap;
   }
   .gp-loop-title {
     line-height: 22px;
     font-weight: 400;
     font-size: 19px;
-    font-display: swap;
   }
   .gp-blog-large .gp-loop-title {
     line-height: 46px;
     font-weight: 200;
     font-size: 40px;
-    font-display: swap;
   }
   .gp-loop-title a,
   .bboss_search_item .entry-title a {
@@ -914,7 +922,6 @@
     font-style: normal;
     color: #000;
     font-size: 14px;
-    font-display: swap;
   }
   .widgettitle a,
   .widget-title a,
@@ -1157,7 +1164,6 @@
     font-style: normal;
     color: #fff;
     font-size: 16px;
-    font-display: swap;
   }
   .gp-footer-widget {
     font-family: Roboto;
@@ -1166,7 +1172,6 @@
     font-style: normal;
     color: #ffffff;
     font-size: 14px;
-    font-display: swap;
   }
   .gp-footer-widget a {
     color: #f9bd16;
@@ -1195,441 +1200,295 @@
   #gp-to-top {
     color: #ffffff;
   }
-  .woocommerce ul.products li.product .price,
-  .woocommerce div.product p.price,
-  .woocommerce div.product span.price {
-    color: #00bee9;
-  }
-  .woocommerce span.onsale {
-    background-color: #e93100;
-  }
-  #buddypress .activity-list .activity-content .activity-header,
-  #buddypress .activity-list .activity-content .comment-header,
-  #buddypress .activity-list .activity-header a,
-  #buddypress .activity-list div.activity-comments div.acomment-meta,
-  #buddypress .activity-list .acomment-meta a,
-  .widget.buddypress .item-title a,
-  .widget.buddypress div.item-options.gp-small-item-options:before,
-  .widget.buddypress div.item-options a,
-  #buddypress ul.item-list li div.item-title a,
-  #buddypress ul.item-list li h4 > a,
-  #buddypress ul.item-list li h5 > a,
-  #buddypress div#item-header div#item-meta {
-    color: #000000;
-  }
-  #buddypress .activity-list .activity-content .activity-inner {
-    color: #aaaaaa;
-  }
-  #buddypress .activity-list a.activity-time-since,
-  .widget_display_replies ul li a + div,
-  .widget_display_topics ul li a + div,
-  #buddypress .activity-list .acomment-meta a.activity-time-since,
-  #buddypress .activity-list div.activity-comments div.acomment-content,
-  .widget.buddypress div.item-meta,
-  #buddypress span.activity,
-  #buddypress ul.item-list li div.meta {
-    color: #545454;
-  }
-  .gp-theme #buddypress .activity-list div.activity-meta a.button,
-  .gp-theme #buddypress .activity .acomment-options a,
-  .gp-theme #buddypress .activity-list li.load-more a,
-  .gp-theme #buddypress .activity-list li.load-newest a,
-  .widget.buddypress div.item-options a.selected {
-    color: #26a9e0;
-  }
-  .gp-theme #buddypress .activity-list div.activity-meta a.button:hover,
-  .gp-theme #buddypress .activity .acomment-options a:hover,
-  .gp-theme #buddypress .activity-list li.load-more a:hover,
-  .gp-theme #buddypress .activity-list li.load-newest a:hover,
-  .widget.buddypress div.item-options a.selected:hover {
-    color: #000;
-  }
-  .gp-theme #buddypress ul.item-list li,
-  .gp-theme #buddypress div.activity-comments ul li:first-child,
-  .widget.buddypress #friends-list li,
-  .widget.buddypress #groups-list li,
-  .widget.buddypress #members-list li {
-    border-top: 1px solid #e0e0e0;
-    border-bottom: 1px solid #e0e0e0;
-  }
-  .gp-theme #buddypress div.item-list-tabs {
-    background-color: #353535;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a span,
-  .gp-theme #buddypress div.item-list-tabs ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs ul li.selected a span {
-    color: #353535;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a span {
-    background-color: #ffffff;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a,
-  .gp-theme #buddypress #gp-bp-tabs-button,
-  .gp-theme #buddypress div.item-list-tabs ul li span {
-    color: #ffffff;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li.current a,
-  .gp-theme #buddypress div.item-list-tabs ul li.selected a,
-  .gp-theme #buddypress div.item-list-tabs ul li a:hover {
-    color: #b1b1b1;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs ul li.selected a span {
-    background: #b1b1b1;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul,
-  .widget.buddypress div.item-options.gp-small-item-options > a {
-    background-color: #f8f8f8;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.selected a span {
-    color: #f8f8f8;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a span {
-    background-color: #000000;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a {
-    color: #000000;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.current a,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.selected a,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a:hover {
-    color: #26a9e0;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.selected a span {
-    background: #26a9e0;
-  }
-  #bbpress-forums
-    .gp-forum-home.bbp-forums
-    .bbp-has-subforums
-    .bbp-forum-info
-    > .bbp-forum-title,
-  #bbpress-forums .bbp-topics .bbp-header,
-  #bbpress-forums .bbp-replies .bbp-header,
-  #bbpress-forums .bbp-search-results .bbp-header {
-    background-color: #353535;
-  }
-  #bbpress-forums
-    .gp-forum-home.bbp-forums
-    .bbp-has-subforums
-    .bbp-forum-info
-    > .bbp-forum-title,
-  #bbpress-forums .bbp-topics .bbp-header,
-  #bbpress-forums .bbp-replies .bbp-header,
-  #bbpress-forums .bbp-search-results .bbp-header {
-    color: #ffffff;
-  }
-  #bbpress-forums .bbp-header div.bbp-reply-content a {
-    color: #ddd;
-  }
-  #bbpress-forums .bbp-header div.bbp-reply-content a:hover {
-    color: #fff;
-  }
-  #bbpress-forums .bbp-forums-list li.odd-forum-row,
-  #bbpress-forums div.odd,
-  #bbpress-forums ul.odd {
-    background-color: #f8f8f8;
-  }
-  #bbpress-forums .bbp-forums-list li.even-forum-row,
-  #bbpress-forums div.even,
-  #bbpress-forums ul.even {
-    background-color: #fff;
-  }
-  #bbpress-forums .gp-forum-home.bbp-forums .bbp-forum-info > .bbp-forum-title,
-  #bbpress-forums div.bbp-forum-header,
-  #bbpress-forums div.bbp-topic-header,
-  #bbpress-forums div.bbp-reply-header,
-  #bbpress-forums .bbp-forums-list,
-  #bbpress-forums li.bbp-body {
-    border-top: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
-    border-left: 1px solid #ddd;
-    border-right: 1px solid #ddd;
-  }
-  #bbpress-forums .bbp-forums-list .bbp-forum .bbp-forum-link,
-  body.forum #bbpress-forums .bbp-forums .bbp-forum-info > .bbp-forum-title,
-  #bbpress-forums .bbp-topics .bbp-topic-permalink,
-  #bbpress-forums .gp-forum-home.bbp-forums .bbp-forum-info > .bbp-forum-title,
-  .gp-theme
-    #bbpress-forums
-    .gp-forum-shortcode
-    ul.forum:not(.status-category)
-    .bbp-forum-info
-    a {
-    color: #000000;
-  }
-  #bbpress-forums div.bbp-forum-author .bbp-author-role,
-  #bbpress-forums div.bbp-topic-author .bbp-author-role,
-  #bbpress-forums div.bbp-reply-author .bbp-author-role {
-    background-color: #92d050;
-  }
-  #bbpress-forums div.bbp-forum-author .bbp-author-role,
-  #bbpress-forums div.bbp-topic-author .bbp-author-role,
-  #bbpress-forums div.bbp-reply-author .bbp-author-role {
-    color: #ffffff;
-  }
 </style>
-    <style id="kadence-blocks-global-variables-inline-css" type="text/css">
-      :root {
-        --global-kb-font-size-sm: clamp(0.8rem, 0.73rem + 0.217vw, 0.9rem);
-        --global-kb-font-size-md: clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem);
-        --global-kb-font-size-lg: clamp(1.75rem, 1.576rem + 0.543vw, 2rem);
-        --global-kb-font-size-xl: clamp(2.25rem, 1.728rem + 1.63vw, 3rem);
-        --global-kb-font-size-xxl: clamp(2.5rem, 1.456rem + 3.26vw, 4rem);
-        --global-kb-font-size-xxxl: clamp(2.75rem, 0.489rem + 7.065vw, 6rem);
-      }
-    </style>
-    <link
-      rel="preload"
-      as="style"
-      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.1.1"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.1.1"
-      media="print"
-      onload="this.media='all'"
-    />
-    <noscript
-      ><link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.1.1"
-    /></noscript>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-includes/js/jquery/jquery.min.js?ver=3.6.1"
-  id="jquery-core-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2"
-  id="jquery-migrate-js"
-></script>  <link rel="icon" href="MS_FavIcon.png" type="image/png" />
+  <link rel="icon" href="MS_FavIcon.png" type="image/png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#cb4b16" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="clipboard.js"></script>
 </head>
 
-<body class="home-page bp-legacy home page-template page-template-homepage-template page-template-homepage-template-php page page-id-977 logged-in admin-bar no-customize-support theme-socialize woocommerce-no-js tribe-no-js page-template-socialize-child gp-theme gp-responsive gp-wide-layout gp-retina gp-normal-scrolling gp-no-back-to-top gp-relative-header gp-header-standard gp-cart-disabled gp-search-all gp-profile-disabled gp-small-header-all gp-standard-page-header gp-no-sidebar gp-homepage wpb-js-composer js-comp-ver-6.10.0 vc_responsive no-js">
+<body
+    class="theme-socialize page-template-socialize-child gp-theme gp-responsive gp-wide-layout gp-retina gp-normal-scrolling gp-no-back-to-top gp-relative-header gp-header-standard gp-cart-disabled gp-search-all gp-profile-disabled gp-small-header-all gp-standard-page-header gp-no-sidebar"
+>
 	<div id="gp-site-wrapper">
 
   <nav id="gp-mobile-nav">
     <div id="gp-mobile-nav-close-button"></div>
     <ul class="menu">
-        <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-            <a class="menu-link main-menu-link" href="index.html">About</a>
-          <ul class="sub-menu menu-odd menu-depth-1">
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#data_receivers">Data Endpoints</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#supported_sensors">Supported Sensors</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#modems">Supported Cellular/Wifi Modules</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#contributing">Contributing</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#license">License</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#acknowledgments">Acknowledgments</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="change_log.html">ChangeLog</a>
-              </li>
-          </ul>
-        </li>
-        <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-            <a class="menu-link main-menu-link" href="page_getting_started.html">Getting Started</a>
-          <ul class="sub-menu menu-odd menu-depth-1">
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>
-              </li>
-          </ul>
-        </li>
-        <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-            <a class="menu-link main-menu-link" href="page_faq.html">FAQs</a>
-          <ul class="sub-menu menu-odd menu-depth-1">
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>
-              </li>
-          </ul>
-        </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="modules.html">Modules</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="annotated.html">Classes</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="files.html">Source Files</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="page_the_examples.html">Examples Using ModularSensors</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="pages.html">More</a>          </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+      >
+<a href="index.html" class="menu-link main-menu-link">About</a>        <ul class="sub-menu menu-odd menu-depth-1">
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#data_receivers">Data Endpoints</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#supported_sensors">Supported Sensors</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#modems">Supported Cellular/Wifi Modules</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#contributing">Contributing</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#license">License</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#acknowledgments">Acknowledgments</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="change_log.html">ChangeLog</a>          </li>
+        </ul>
+      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+      >
+<a href="page_getting_started.html" class="menu-link main-menu-link">Getting Started</a>        <ul class="sub-menu menu-odd menu-depth-1">
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>          </li>
+        </ul>
+      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+      >
+<a href="page_faq.html" class="menu-link main-menu-link">FAQs</a>        <ul class="sub-menu menu-odd menu-depth-1">
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>          </li>
+        </ul>
+      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="topics.html" class="menu-link main-menu-link">Topics</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="annotated.html" class="menu-link main-menu-link">Classes</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="files.html" class="menu-link main-menu-link">Source Files</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="page_the_examples.html" class="menu-link main-menu-link">Examples Using ModularSensors</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="pages.html" class="menu-link main-menu-link">More</a>      </li>
     </ul>
-  </nav><div id="gp-mobile-nav-bg"></div>
+  </nav> <!-- gp-mobile-nav -->
+  <div id="gp-mobile-nav-bg"></div>
 
   <div id="gp-page-wrapper">
 
     <header id="gp-main-header">
       <div class="gp-container">
         <div id="gp-logo">
-          <a href="index.html" title="ModularSensors">
+          <a href="index.html" title="ModularSensors 0.36.0">
             <img
-              src="ModularSensors_ubuntu_264x55.png"
-              alt="ModularSensors"
-                  width="200"
-                  height="42"
+              src="gp-desktop-logo.png"
+              alt="ModularSensors 0.36.0"
+              width="200"
+              height="42"
               class="gp-desktop-logo"
             />
             <img
-              src="ModularSensors_ubuntu_264x55.png"
-              alt="ModularSensors"
+              src="gp-scrolling-logo.png"
+              alt="ModularSensors 0.36.0"
               width="264"
               height="55"
               class="gp-scrolling-logo"
             />
             <img
-              src="ModularSensors_ubuntu_264x55.png"
-              alt="ModularSensors"
+              src="gp-mobile-logo.png"
+              alt="ModularSensors 0.36.0"
               width="132"
               height="28"
               class="gp-mobile-logo"
             />
           </a>
-        </div>
+        </div> <!-- gp-logo -->
 
         <a id="gp-mobile-nav-button"></a>
 
         <nav id="gp-main-nav" class="gp-nav">
           <nav id="gp-primary-main-nav">
-              <ul id="menu-main-menu-1" class="menu">
-                <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-                    <a class="menu-link main-menu-link" href="index.html">About</a>
-                  <ul class="sub-menu menu-odd menu-depth-1">
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#data_receivers">Data Endpoints</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#supported_sensors">Supported Sensors</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#modems">Supported Cellular/Wifi Modules</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#contributing">Contributing</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#license">License</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#acknowledgments">Acknowledgments</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="change_log.html">ChangeLog</a>
-                      </li>
-                  </ul>
-                </li>
-                <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-                    <a class="menu-link main-menu-link" href="page_getting_started.html">Getting Started</a>
-                  <ul class="sub-menu menu-odd menu-depth-1">
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>
-                      </li>
-                  </ul>
-                </li>
-                <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-                    <a class="menu-link main-menu-link" href="page_faq.html">FAQs</a>
-                  <ul class="sub-menu menu-odd menu-depth-1">
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>
-                      </li>
-                  </ul>
-                </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="modules.html">Modules</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="annotated.html">Classes</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="files.html">Source Files</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="page_the_examples.html">Examples Using ModularSensors</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="pages.html">More</a>                  </li>
-              </ul>
-          </nav>
+            <ul id="menu-main-menu-1" class="menu">
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+              >
+<a href="index.html" class="menu-link main-menu-link" >About</a>                <ul class="sub-menu menu-odd menu-depth-1">
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#data_receivers">Data Endpoints</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#supported_sensors">Supported Sensors</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#modems">Supported Cellular/Wifi Modules</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#contributing">Contributing</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#license">License</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#acknowledgments">Acknowledgments</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="change_log.html">ChangeLog</a>                  </li>
+                </ul>
+              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+              >
+<a href="page_getting_started.html" class="menu-link main-menu-link" >Getting Started</a>                <ul class="sub-menu menu-odd menu-depth-1">
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>                  </li>
+                </ul>
+              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+              >
+<a href="page_faq.html" class="menu-link main-menu-link" >FAQs</a>                <ul class="sub-menu menu-odd menu-depth-1">
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>                  </li>
+                </ul>
+              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="topics.html"class="menu-link main-menu-link">Topics</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="annotated.html"class="menu-link main-menu-link">Classes</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="files.html"class="menu-link main-menu-link">Source Files</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="page_the_examples.html"class="menu-link main-menu-link">Examples Using ModularSensors</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="pages.html"class="menu-link main-menu-link">More</a>              </li>
+            </ul>
+          </nav> <!-- gp-primary-main-nav -->
 
           <div id="gp-search">
             <div id="m-search-button" class="m-show-m" onclick="return showSearch()">
-            </div>
-					</div>
-
-
+            </div> <!-- gp-search-box -->
+          </div> <!-- gp-search -->
 
           <nav id="gp-secondary-main-nav"></nav>
-        </nav></div>
-    </header><header id="gp-small-header">
+        </nav> <!-- gp-main-nav -->
+      </div> <!-- gp-container -->
+    </header> <!-- gp-main-header -->
+
+    <header id="gp-small-header">
       <div class="gp-container">
         <div class="gp-left-triangle"></div>
         <div class="gp-right-triangle"></div>
@@ -1656,7 +1515,9 @@
 
         </nav>
       </div>
-    </header><div id="gp-fixed-header-padding"></div>
+    </header> <!-- gp-small-header -->
+
+    <div id="gp-fixed-header-padding"></div>
 
     <div class="m-doc-search" id="search">
       <a href="#!" onclick="return hideSearch()"></a>
@@ -1664,7 +1525,7 @@
         <div class="gp-container">
           <div style="background-color:#fff;padding:20px;">
             <div class="m-doc-search-header m-text m-small">
-              <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+              <div><span class="m-label m-info">Tab</span> / <span class="m-label m-info">T</span> to search, <span class="m-label m-info">Esc</span> to close</div>
               <div id="search-symbolcount">&hellip;</div>
             </div>
             <div class="m-doc-search-content">
@@ -1674,7 +1535,7 @@
               <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
               <div id="search-help" class="m-text m-dim m-text-center">
                 <p class="m-noindent">Search for symbols, directories, files, pages or
-            modules. You can omit any prefix from the symbol or file path; adding a
+            topics. You can omit any prefix from the symbol or file path; adding a
             <code>:</code> or <code>/</code> suffix lists all members of given symbol or
             directory.</p>
             <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
@@ -1699,13 +1560,12 @@
 
     <div id="gp-content-wrapper" class="gp-container">
       <div id="gp-inner-container">
+        <div id="gp-left-column">
           <div id="gp-content">
 
             <main>
               <article>
-                <div class="m-container m-container-inflatable">
-                  <div class="m-row">
-                    <div class="m-col-l-10 m-push-l-1">
+                <div class="breadcrumbs" typeof="BreadcrumbList" vocab="http://schema.org/">
         <span class="m-breadcrumb">
           <a href="index.html">
             ModularSensors
@@ -1719,15 +1579,15 @@
                 <span class="m-breadcrumb">
           Sensor
         </span>
-<br>
+        <br>
         <span class="m-breadcrumb">
           <a href="index.html">
             ModularSensors
           </a>  &gt; <wbr/>
         </span>
         <span class="m-breadcrumb">
-          <a href="modules.html">
-            Modules
+          <a href="topics.html">
+            Topics
           </a>  &gt; <wbr/>
         </span>
                 <span class="m-breadcrumb">
@@ -1736,17 +1596,18 @@
         <span class="m-breadcrumb">
           Sensor
         </span>
-<br>
-        <header class="gp-entry-header">
-          <h1 class="gp-entry-title" itemprop="headline">
+        <br>
+                </div>
+                <header class="gp-entry-header">
+                  <h1 class="gp-entry-title" itemprop="headline">
 
-
-            <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_sensor_base_8h.html">&lt;src/SensorBase.h&gt;</a></div><br>
+            <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_sensor_base_8h.html">&lt;src/SensorBase.h&gt;</a></div>
 
             Sensor
             <span class="m-thin">class</span>
-          </h1>
-        </header>
+
+                </h1>
+                </header>
         <p>The &quot;Sensor&quot; class is used for all sensor-level operations - waking, sleeping, and taking measurements.</p>
         <nav class="m-block m-default">
           <ul>
@@ -1770,8 +1631,6 @@
           </ul>
         </nav>
           <p>A sensor is some sort of device that is capable of taking one or more measurements using some sort of method. Most often we can think of these as probes or other instruments that can give back information about the world around them. Sensors can usually be given power or have that power cut. They may be awoken or activated and then returned to a sleeping/low power use state. The may need to be asked to begin a single reading or they may continuously return data. They <em><strong>must</strong></em> be capable of returning the value of their readings to a logger of some type.</p>
-
-
         <section id="derived-classes">
           <h2>Derived classes</h2>
           <dl class="m-doc">
@@ -1784,9 +1643,13 @@
             </dt>
             <dd>The <a href="class_sensor.html" class="m-doc">Sensor</a> sub-class for the <a href="group__sensor__dht.html" class="m-doc">AOSong digital-output relative humidity and temperature sensor modules</a>.</dd>
                           <dt>
+              class <a href="class_alphasense_c_o2.html" class="m-doc">AlphasenseCO2</a>
+            </dt>
+            <dd>The <a href="class_sensor.html" class="m-doc">Sensor</a> sub-class for the [Alphasense IRC-A1 CO2](<a href="group__sensor__alphasense__co2.html" class="m-doc">Alphasense IRC-A1 CO2</a>) sensor.</dd>
+                          <dt>
               class <a href="class_analog_elec_conductivity.html" class="m-doc">AnalogElecConductivity</a>
             </dt>
-            <dd>Class for the analog Electrical Conductivity monitor.</dd>
+            <dd>Class for the analog [Electrical Conductivity monitor](<a href="group__sensor__analog__cond.html" class="m-doc">Conductivity via Analog Electrical Resistance</a>)</dd>
                           <dt>
               class <a href="class_apogee_s_q212.html" class="m-doc">ApogeeSQ212</a>
             </dt>
@@ -1815,6 +1678,10 @@
               class <a href="class_freescale_m_p_l115_a2.html" class="m-doc">FreescaleMPL115A2</a>
             </dt>
             <dd>The <a href="class_sensor.html" class="m-doc">Sensor</a> sub-class for the <a href="group__sensor__mpl115a2.html" class="m-doc">Freescale Semiconductor MPL115A2 sensor</a>.</dd>
+                          <dt>
+              class <a href="class_gro_point_parent.html" class="m-doc">GroPointParent</a>
+            </dt>
+            <dd>The <a href="class_sensor.html" class="m-doc">Sensor</a> sub-class for all the <a href="group__gropoint__group.html" class="m-doc">GroPoint sensors</a>.</dd>
                           <dt>
               class <a href="class_keller_parent.html" class="m-doc">KellerParent</a>
             </dt>
@@ -1872,16 +1739,16 @@
             </dt>
             <dd>The <a href="class_sensor.html" class="m-doc">Sensor</a> sub-class for the <a href="group__sensor__cyclops.html" class="m-doc">Turner Cyclops-7F submersible fluorometer</a>.</dd>
                           <dt>
+              class <a href="class_turner_turbidity_plus.html" class="m-doc">TurnerTurbidityPlus</a>
+            </dt>
+            <dd>The <a href="class_sensor.html" class="m-doc">Sensor</a> sub-class for the <a href="group__sensor__turbidity__plus.html" class="m-doc">Turner Turbidity Plus turbidity</a>sensor&quot;.</dd>
+                          <dt>
               class <a href="class_yosemitech_parent.html" class="m-doc">YosemitechParent</a>
             </dt>
             <dd>The <a href="class_sensor.html" class="m-doc">Sensor</a> sub-class for all the <a href="group__yosemitech__group.html" class="m-doc">Yosemitech sensors</a>.</dd>
           </dl>
         </section>
         <hr>
-
-
-
-
         <section id="typeless-methods">
           <h2>Constructors, destructors, conversion operators</h2>
           <dl class="m-doc">
@@ -1908,28 +1775,27 @@
           </dl>
         </section>
         <hr>
-
         <section id="pub-methods">
           <h2>Public functions</h2>
           <dl class="m-doc">
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim"><a href="class_sensor.html" class="m-doc">Sensor</a>&amp; </span><a href="#a72254388df3b9673b3cdb8238e58ba49" class="m-doc">operator=</a>(</span><span class="m-doc-wrap"><span class="m-dim">const <a href="class_sensor.html" class="m-doc">Sensor</a>&amp;</span> <span class="m-param">copy_from_me</span>) <span class="m-label m-flat m-danger">deleted</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim"><a href="class_sensor.html" class="m-doc">Sensor</a>&amp; </span><a href="#a72254388df3b9673b3cdb8238e58ba49" class="m-doc">operator=</a>(</span><span class="m-doc-wrap"><span class="m-dim">const <a href="class_sensor.html" class="m-doc">Sensor</a>&amp;</span> <span class="m-param">copy_from_me</span>) -&gt; <a href="class_sensor.html" class="m-doc">Sensor</a>&amp; <span class="m-label m-flat m-danger">deleted</span></span>
             </dt>
             <dd>Dis-allowed assignment of one <a href="class_sensor.html" class="m-doc">Sensor</a> object to another - the deleted assignment operator.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#a43df3388fdab8e70cad18cc9e9b45ac8" class="m-doc">getSensorLocation</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-flat m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#a43df3388fdab8e70cad18cc9e9b45ac8" class="m-doc">getSensorLocation</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>) -&gt; String <span class="m-label m-flat m-warning">virtual</span></span>
             </dt>
             <dd>Get the pin or connection location between the mcu and the sensor.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#aea314a4b9858d1c82739b6d4e5e5c953" class="m-doc">getSensorName</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-flat m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#aea314a4b9858d1c82739b6d4e5e5c953" class="m-doc">getSensorName</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>) -&gt; String <span class="m-label m-flat m-warning">virtual</span></span>
             </dt>
             <dd>Get the name of the sensor.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#a3c8422f4c16216a7aade8578d2cf9b84" class="m-doc">getSensorNameAndLocation</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#a3c8422f4c16216a7aade8578d2cf9b84" class="m-doc">getSensorNameAndLocation</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>) -&gt; String</span>
             </dt>
             <dd>Concatentate and returns the name and location of the sensor.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">int8_t </span><a href="#a9d3dba47143ff7f513c2ebdf93320fff" class="m-doc">getPowerPin</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-flat m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">int8_t </span><a href="#a9d3dba47143ff7f513c2ebdf93320fff" class="m-doc">getPowerPin</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>) -&gt; int8_t <span class="m-label m-flat m-warning">virtual</span></span>
             </dt>
             <dd>Get the pin number controlling sensor power.</dd>
                           <dt>
@@ -1937,43 +1803,43 @@
             </dt>
             <dd>Set the number measurements to average.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">uint8_t </span><a href="#acdd90533e6ace4cf37f9322e86de3f9e" class="m-doc">getNumberMeasurementsToAverage</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">uint8_t </span><a href="#acdd90533e6ace4cf37f9322e86de3f9e" class="m-doc">getNumberMeasurementsToAverage</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>) -&gt; uint8_t</span>
             </dt>
             <dd>Get the number of measurements to average.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">uint8_t </span><a href="#acc7e3a5cb18b87e1b358a58ae5ac2fcc" class="m-doc">getStatus</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">uint8_t </span><a href="#acc7e3a5cb18b87e1b358a58ae5ac2fcc" class="m-doc">getStatus</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>) -&gt; uint8_t</span>
             </dt>
             <dd>Get the 8-bit code for the current status of the sensor.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#af3d829c560800189c3fba2791cc503cc" class="m-doc">setup</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-flat m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#af3d829c560800189c3fba2791cc503cc" class="m-doc">setup</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>) -&gt; bool <span class="m-label m-flat m-warning">virtual</span></span>
             </dt>
             <dd>Do any one-time preparations needed before the sensor will be able to take readings.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a0e0eeaeab9f85c8ac3449048d1343c53" class="m-doc">update</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-flat m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a0e0eeaeab9f85c8ac3449048d1343c53" class="m-doc">update</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>) -&gt; bool <span class="m-label m-flat m-warning">virtual</span></span>
             </dt>
             <dd>Update the sensor&#x27;s values.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#a9b600ee168e47188e1485b6f2d53af78" class="m-doc">powerUp</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-flat m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#a9b600ee168e47188e1485b6f2d53af78" class="m-doc">powerUp</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>) <span class="m-label m-flat m-warning">virtual</span></span>
             </dt>
             <dd>Turn on the sensor power, if applicable.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#a3fca63abb83a6196127d61f2ff8c75bc" class="m-doc">powerDown</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-flat m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#a3fca63abb83a6196127d61f2ff8c75bc" class="m-doc">powerDown</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>) <span class="m-label m-flat m-warning">virtual</span></span>
             </dt>
             <dd>Turn off the sensor power, if applicable.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#af00bdd1d6181b2d92261b227d91feb07" class="m-doc">wake</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-flat m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#af00bdd1d6181b2d92261b227d91feb07" class="m-doc">wake</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>) -&gt; bool <span class="m-label m-flat m-warning">virtual</span></span>
             </dt>
             <dd>Wake the sensor up, if necessary. Do whatever it takes to get a sensor in the proper state to begin a measurement.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#ab557ce2316436c882d4b63c85b6d5911" class="m-doc">sleep</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-flat m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#ab557ce2316436c882d4b63c85b6d5911" class="m-doc">sleep</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>) -&gt; bool <span class="m-label m-flat m-warning">virtual</span></span>
             </dt>
             <dd>Puts the sensor to sleep, if necessary.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#ae300058be829ad04dcc8f8ffc95b526e" class="m-doc">startSingleMeasurement</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-flat m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#ae300058be829ad04dcc8f8ffc95b526e" class="m-doc">startSingleMeasurement</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>) -&gt; bool <span class="m-label m-flat m-warning">virtual</span></span>
             </dt>
             <dd>Tell the sensor to start a single measurement, if needed.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a6d93c4b22b19dae01744195273bb634a" class="m-doc">addSingleMeasurementResult</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-flat m-warning">pure virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a6d93c4b22b19dae01744195273bb634a" class="m-doc">addSingleMeasurementResult</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>) -&gt; bool <span class="m-label m-flat m-warning">pure virtual</span></span>
             </dt>
             <dd>Get the results from a single measurement.</dd>
                           <dt id="ab67561de93032cec408959e6f32b7f9d">
@@ -1990,13 +1856,13 @@
               <span class="m-dim">int16_t</span> <span class="m-param">resultValue</span>)</span>
             </dt>
             <dd>Verify that a measurement is OK (ie, not -9999) before adding it to the result array.</dd>
-                          <dt id="a1f3733f86aae94fa06a4b204b82042cd">
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#a1f3733f86aae94fa06a4b204b82042cd" class="m-doc-self">verifyAndAddMeasurementResult</a>(</span><span class="m-doc-wrap"><span class="m-dim">uint8_t</span> <span class="m-param">resultNumber</span>,
+                          <dt>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#a1f3733f86aae94fa06a4b204b82042cd" class="m-doc">verifyAndAddMeasurementResult</a>(</span><span class="m-doc-wrap"><span class="m-dim">uint8_t</span> <span class="m-param">resultNumber</span>,
               <span class="m-dim">int32_t</span> <span class="m-param">resultValue</span>)</span>
             </dt>
             <dd>Average the results of all measurements by dividing the sum of all measurements by the number of measurements taken.</dd>
                           <dt id="a87e3877dfbfea461e7f174cc299345b9">
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#a87e3877dfbfea461e7f174cc299345b9" class="m-doc-self">averageMeasurements</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#a87e3877dfbfea461e7f174cc299345b9" class="m-doc-self">averageMeasurements</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>)</span>
             </dt>
             <dd>Average the results of all measurements by dividing the sum of all measurements by the number of measurements taken.</dd>
                           <dt>
@@ -2005,59 +1871,50 @@
             </dt>
             <dd>Register a variable object to a sensor.</dd>
                           <dt id="ab9da516a473b44656e3f6b9f6666052a">
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#ab9da516a473b44656e3f6b9f6666052a" class="m-doc-self">notifyVariables</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#ab9da516a473b44656e3f6b9f6666052a" class="m-doc-self">notifyVariables</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>)</span>
             </dt>
             <dd>Notify attached variables of new values.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a0b41726e1fb6fcc966031eebd16a1dfc" class="m-doc">checkPowerOn</a>(</span><span class="m-doc-wrap"><span class="m-dim">bool</span> <span class="m-param">debug</span><span class="m-dim"> = false</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a0b41726e1fb6fcc966031eebd16a1dfc" class="m-doc">checkPowerOn</a>(</span><span class="m-doc-wrap"><span class="m-dim">bool</span> <span class="m-param">debug</span><span class="m-dim"> = false</span>) -&gt; bool</span>
             </dt>
-            <dd>Check if the <a href="class_sensor.html#a60cef6626d7145eda0709980f66df52b" class="m-doc">_<wbr />powerPin</a> is currently high.</dd>
+            <dd>Check if the <a href="#a60cef6626d7145eda0709980f66df52b" class="m-doc">_<wbr />powerPin</a> is currently high.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a48ad8d1337a0c4bbe51d698f6d6594d4" class="m-doc">isWarmedUp</a>(</span><span class="m-doc-wrap"><span class="m-dim">bool</span> <span class="m-param">debug</span><span class="m-dim"> = false</span>) <span class="m-label m-flat m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a48ad8d1337a0c4bbe51d698f6d6594d4" class="m-doc">isWarmedUp</a>(</span><span class="m-doc-wrap"><span class="m-dim">bool</span> <span class="m-param">debug</span><span class="m-dim"> = false</span>) -&gt; bool <span class="m-label m-flat m-warning">virtual</span></span>
             </dt>
             <dd>Check whether or not enough time has passed between the sensor receiving power and being ready to respond to logger commands.</dd>
                           <dt id="a279a1714c0b2eba815f2bbe442615312">
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#a279a1714c0b2eba815f2bbe442615312" class="m-doc-self">waitForWarmUp</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#a279a1714c0b2eba815f2bbe442615312" class="m-doc-self">waitForWarmUp</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>)</span>
             </dt>
             <dd>Hold all further program execution until this sensor is ready to receive commands.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a52520433092e4c86f02f10d0e3426878" class="m-doc">isStable</a>(</span><span class="m-doc-wrap"><span class="m-dim">bool</span> <span class="m-param">debug</span><span class="m-dim"> = false</span>) <span class="m-label m-flat m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a52520433092e4c86f02f10d0e3426878" class="m-doc">isStable</a>(</span><span class="m-doc-wrap"><span class="m-dim">bool</span> <span class="m-param">debug</span><span class="m-dim"> = false</span>) -&gt; bool <span class="m-label m-flat m-warning">virtual</span></span>
             </dt>
             <dd>Check whether or not enough time has passed between the sensor being awoken/activated and being ready to output stable values.</dd>
                           <dt id="a2f6a18031922ed058904da5d7b772dcc">
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#a2f6a18031922ed058904da5d7b772dcc" class="m-doc-self">waitForStability</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#a2f6a18031922ed058904da5d7b772dcc" class="m-doc-self">waitForStability</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>)</span>
             </dt>
             <dd>Hold all further program execution until this sensor is reporting stable values.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a6e5618bb5e7edd38fbbc6f94c0474c2a" class="m-doc">isMeasurementComplete</a>(</span><span class="m-doc-wrap"><span class="m-dim">bool</span> <span class="m-param">debug</span><span class="m-dim"> = false</span>) <span class="m-label m-flat m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a6e5618bb5e7edd38fbbc6f94c0474c2a" class="m-doc">isMeasurementComplete</a>(</span><span class="m-doc-wrap"><span class="m-dim">bool</span> <span class="m-param">debug</span><span class="m-dim"> = false</span>) -&gt; bool <span class="m-label m-flat m-warning">virtual</span></span>
             </dt>
             <dd>Check whether or not enough time has passed between when the sensor was asked to take a single measurement and when that measurement is expected to be complete.</dd>
                           <dt id="aeefdae7a975a1c471aa28368d4797515">
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#aeefdae7a975a1c471aa28368d4797515" class="m-doc-self">waitForMeasurementCompletion</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#aeefdae7a975a1c471aa28368d4797515" class="m-doc-self">waitForMeasurementCompletion</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span class="m-param"></span>)</span>
             </dt>
             <dd>Hold all further program execution until this sensor is has finished the current measurement.</dd>
           </dl>
         </section>
         <hr>
-
-
-
         <section id="pub-attribs">
           <h2>Public variables</h2>
           <dl class="m-doc">
-                          <dt id="a9b06d0977c15771aa0ea36ad5c319099">
-              <span class="m-dim">float</span> <a href="#a9b06d0977c15771aa0ea36ad5c319099" class="m-doc-self">sensorValues</a>
+                          <dt id="afd1e8a111798c69a34b4842784dbfea4">
+              <span class="m-dim">float</span> <a href="#afd1e8a111798c69a34b4842784dbfea4" class="m-doc-self">sensorValues</a>
             </dt>
             <dd>The array of result values for each sensor.</dd>
           </dl>
         </section>
         <hr>
-
-
-
-
-
-
         <section id="pro-attribs">
           <h2>Protected variables</h2>
           <dl class="m-doc">
@@ -2085,8 +1942,8 @@
               <span class="m-dim">uint8_t</span> <a href="#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">_incCalcValues</a>
             </dt>
             <dd>The number of included calculated variables from the sensor, if any.</dd>
-                          <dt id="a166e6bdda1fa458d921ab07efe9bac10">
-              <span class="m-dim">uint8_t</span> <a href="#a166e6bdda1fa458d921ab07efe9bac10" class="m-doc-self">numberGoodMeasurementsMade</a>
+                          <dt id="a6945dbcef38027904a102538a14ab3b7">
+              <span class="m-dim">uint8_t</span> <a href="#a6945dbcef38027904a102538a14ab3b7" class="m-doc-self">numberGoodMeasurementsMade</a>
             </dt>
             <dd>Array with the number of valid measurement values taken by the sensor in the current update cycle.</dd>
                           <dt id="aaaefd7f306f86382a3dac726531756b4">
@@ -2104,7 +1961,7 @@
                           <dt>
               <span class="m-dim">uint32_t</span> <a href="#a86541c88432508d6bc81a8fb41746e2e" class="m-doc">_millisSensorActivated</a>
             </dt>
-            <dd>The processor elapsed time when the sensor was activiated - ie, when the <a href="class_sensor.html#af00bdd1d6181b2d92261b227d91feb07" class="m-doc">wake()</a> function was run.</dd>
+            <dd>The processor elapsed time when the sensor was activiated - ie, when the <a href="#af00bdd1d6181b2d92261b227d91feb07" class="m-doc">wake()</a> function was run.</dd>
                           <dt id="a0327d79459eaf3065c9e84b8c789c4ba">
               <span class="m-dim">uint32_t</span> <a href="#a0327d79459eaf3065c9e84b8c789c4ba" class="m-doc-self">_measurementTime_ms</a>
             </dt>
@@ -2112,39 +1969,43 @@
                           <dt>
               <span class="m-dim">uint32_t</span> <a href="#a4853c30b71ad2efc09bd6f73530155e3" class="m-doc">_millisMeasurementRequested</a>
             </dt>
-            <dd>The processor elapsed time when a measuremnt was started - ie, when the <a href="class_sensor.html#ae300058be829ad04dcc8f8ffc95b526e" class="m-doc">startSingleMeasurement()</a> function was run.</dd>
+            <dd>The processor elapsed time when a measuremnt was started - ie, when the <a href="#ae300058be829ad04dcc8f8ffc95b526e" class="m-doc">startSingleMeasurement()</a> function was run.</dd>
                           <dt id="a1fde72c3ddd07d892dcbfe4a09bcae49">
               <span class="m-dim">uint8_t</span> <a href="#a1fde72c3ddd07d892dcbfe4a09bcae49" class="m-doc-self">_sensorStatus</a>
             </dt>
             <dd>An 8-bit code for the sensor status.</dd>
-                          <dt id="a26f14a91eb85da25f7b9f19b8297dff7">
-              <span class="m-dim"><a href="class_variable.html" class="m-doc">Variable</a>*</span> <a href="#a26f14a91eb85da25f7b9f19b8297dff7" class="m-doc-self">variables</a>
+                          <dt id="aaa0844343621ffbfcb5ad5b30225d10e">
+              <span class="m-dim"><a href="class_variable.html" class="m-doc">Variable</a>*</span> <a href="#aaa0844343621ffbfcb5ad5b30225d10e" class="m-doc-self">variables</a>
             </dt>
-            <dd>An array for each sensor containing the variable objects tied to that sensor. The <a href="_sensor_base_8h.html#a489012644f58dc86180ebb32d7891600" class="m-doc">MAX_<wbr />NUMBER_<wbr />VARS</a> cannot be determined on a per-sensor basis, because of the way memory is used on an Arduino. It must be defined once for the whole class.</dd>
+            <dd>An array for each sensor containing pointers to the variable objects tied to that sensor. The <a href="_sensor_base_8h.html#a489012644f58dc86180ebb32d7891600" class="m-doc">MAX_<wbr />NUMBER_<wbr />VARS</a> cannot be determined on a per-sensor basis, because of the way memory is used on an Arduino. It must be defined once for the whole class.</dd>
           </dl>
         </section>
         <hr>
-
-
-
-
-
-
 
 
         <section id="function-details">
           <h2>Function documentation</h2>
                       <section class="m-doc-details" id="a1ec181748b9ff0d22c56c2b899434949"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim"></span><a href="#a1ec181748b9ff0d22c56c2b899434949" class="m-doc-self">Sensor</a>(</span><span class="m-doc-wrap"><span class="m-dim">const char*</span> <span class="m-param">sensorName</span><span class="m-dim"> = &quot;Unknown&quot;</span>,
-              <span class="m-dim">const uint8_t</span> <span class="m-param">totalReturnedValues</span><span class="m-dim"> = 1</span>,
-              <span class="m-dim">uint32_t</span> <span class="m-param">warmUpTime_ms</span><span class="m-dim"> = 0</span>,
-              <span class="m-dim">uint32_t</span> <span class="m-param">stabilizationTime_ms</span><span class="m-dim"> = 0</span>,
-              <span class="m-dim">uint32_t</span> <span class="m-param">measurementTime_ms</span><span class="m-dim"> = 0</span>,
-              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span><span class="m-dim"> = -1</span>,
-              <span class="m-dim">int8_t</span> <span class="m-param">dataPin</span><span class="m-dim"> = -1</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">incCalcValues</span><span class="m-dim"> = 0</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim"> Sensor::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a1ec181748b9ff0d22c56c2b899434949" class="m-doc-self">Sensor</a>(</span><span class="m-doc-wrap"><span class="m-dim">const char*</span> <span
+                    class="m-param">sensorName</span><span class="m-dim"> = &quot;Unknown&quot;</span>,
+              <span class="m-dim">const uint8_t</span> <span
+                    class="m-param">totalReturnedValues</span><span class="m-dim"> = 1</span>,
+              <span class="m-dim">uint32_t</span> <span
+                    class="m-param">warmUpTime_ms</span><span class="m-dim"> = 0</span>,
+              <span class="m-dim">uint32_t</span> <span
+                    class="m-param">stabilizationTime_ms</span><span class="m-dim"> = 0</span>,
+              <span class="m-dim">uint32_t</span> <span
+                    class="m-param">measurementTime_ms</span><span class="m-dim"> = 0</span>,
+              <span class="m-dim">int8_t</span> <span
+                    class="m-param">powerPin</span><span class="m-dim"> = -1</span>,
+              <span class="m-dim">int8_t</span> <span
+                    class="m-param">dataPin</span><span class="m-dim"> = -1</span>,
+              <span class="m-dim">uint8_t</span> <span
+                    class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>,
+              <span class="m-dim">uint8_t</span> <span
+                    class="m-param">incCalcValues</span><span class="m-dim"> = 0</span>)</span></span>
             </h3>
             <p>Construct a new <a href="class_sensor.html" class="m-doc">Sensor</a> object.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -2196,7 +2057,9 @@
         </section>
                       <section class="m-doc-details" id="a47c0e16c1f727d31242678514e9e16b1"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim"></span><a href="#a47c0e16c1f727d31242678514e9e16b1" class="m-doc-self">Sensor</a>(</span><span class="m-doc-wrap"><span class="m-dim">const <a href="class_sensor.html" class="m-doc">Sensor</a>&amp;</span> <span class="m-param">copy_from_me</span>) <span class="m-label m-danger">deleted</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim"> Sensor::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a47c0e16c1f727d31242678514e9e16b1" class="m-doc-self">Sensor</a>(</span><span class="m-doc-wrap"><span class="m-dim">const <a href="class_sensor.html" class="m-doc">Sensor</a>&amp;</span> <span
+                    class="m-param">copy_from_me</span>) <span class="m-label m-danger">deleted</span></span></span>
             </h3>
             <p>Dis-allowed constructor for a new <a href="class_sensor.html" class="m-doc">Sensor</a> object from a copy of another <a href="class_sensor.html" class="m-doc">Sensor</a> object - the deleted copy constructor.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -2217,7 +2080,9 @@
         </section>
                       <section class="m-doc-details" id="a72254388df3b9673b3cdb8238e58ba49"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim"><a href="class_sensor.html" class="m-doc">Sensor</a>&amp; </span><a href="#a72254388df3b9673b3cdb8238e58ba49" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap"><span class="m-dim">const <a href="class_sensor.html" class="m-doc">Sensor</a>&amp;</span> <span class="m-param">copy_from_me</span>) <span class="m-label m-danger">deleted</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim"><a href="class_sensor.html" class="m-doc">Sensor</a>&amp;  Sensor::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a72254388df3b9673b3cdb8238e58ba49" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap"><span class="m-dim">const <a href="class_sensor.html" class="m-doc">Sensor</a>&amp;</span> <span
+                    class="m-param">copy_from_me</span>) <span class="m-label m-danger">deleted</span></span></span>
             </h3>
             <p>Dis-allowed assignment of one <a href="class_sensor.html" class="m-doc">Sensor</a> object to another - the deleted assignment operator.</p>
             <p>The assignment operator is explicitly deleted. <a href="class_sensor.html" class="m-doc">Sensor</a> objects should not (and here cannot) be assigned to each other to avoid confusion over which sensor object specific variables are tied to.</p>
@@ -2227,14 +2092,16 @@
         </section>
                       <section class="m-doc-details" id="a43df3388fdab8e70cad18cc9e9b45ac8"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#a43df3388fdab8e70cad18cc9e9b45ac8" class="m-doc-self">getSensorLocation</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">String  Sensor::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a43df3388fdab8e70cad18cc9e9b45ac8" class="m-doc-self">getSensorLocation</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span
+                    class="m-param"></span>) <span class="m-label m-warning">virtual</span></span></span>
             </h3>
             <p>Get the pin or connection location between the mcu and the sensor.</p>
             <table class="m-table m-fullwidth m-flat">
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td><strong>String</strong> Text describing how the sensor is attached to the mcu.</td>
+                  <td><span class="m-dim">String</span> Text describing how the sensor is attached to the mcu.</td>
                 </tr>
               </tfoot>
             </table>
@@ -2245,14 +2112,16 @@
         </section>
                       <section class="m-doc-details" id="aea314a4b9858d1c82739b6d4e5e5c953"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#aea314a4b9858d1c82739b6d4e5e5c953" class="m-doc-self">getSensorName</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">String  Sensor::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#aea314a4b9858d1c82739b6d4e5e5c953" class="m-doc-self">getSensorName</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span
+                    class="m-param"></span>) <span class="m-label m-warning">virtual</span></span></span>
             </h3>
             <p>Get the name of the sensor.</p>
             <table class="m-table m-fullwidth m-flat">
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td><strong>String</strong> The sensor name as given in the constructor.</td>
+                  <td><span class="m-dim">String</span> The sensor name as given in the constructor.</td>
                 </tr>
               </tfoot>
             </table>
@@ -2262,14 +2131,16 @@
         </section>
                       <section class="m-doc-details" id="a3c8422f4c16216a7aade8578d2cf9b84"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">String </span><a href="#a3c8422f4c16216a7aade8578d2cf9b84" class="m-doc-self">getSensorNameAndLocation</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">String  Sensor::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a3c8422f4c16216a7aade8578d2cf9b84" class="m-doc-self">getSensorNameAndLocation</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span
+                    class="m-param"></span>)</span></span>
             </h3>
             <p>Concatentate and returns the name and location of the sensor.</p>
             <table class="m-table m-fullwidth m-flat">
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td><p><strong>String</strong> A concatenation of the sensor name and its &quot;location&quot;</p><ul><li>how it is connected to the mcu.</li></ul></td>
+                  <td><span class="m-dim">String</span> <p>A concatenation of the sensor name and its &quot;location&quot;</p><ul><li>how it is connected to the mcu.</li></ul></td>
                 </tr>
               </tfoot>
             </table>
@@ -2279,14 +2150,16 @@
         </section>
                       <section class="m-doc-details" id="a9d3dba47143ff7f513c2ebdf93320fff"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">int8_t </span><a href="#a9d3dba47143ff7f513c2ebdf93320fff" class="m-doc-self">getPowerPin</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">int8_t  Sensor::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a9d3dba47143ff7f513c2ebdf93320fff" class="m-doc-self">getPowerPin</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span
+                    class="m-param"></span>) <span class="m-label m-warning">virtual</span></span></span>
             </h3>
             <p>Get the pin number controlling sensor power.</p>
             <table class="m-table m-fullwidth m-flat">
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td><strong>int8_t</strong> The pin on the mcu controlling power to the sensor.</td>
+                  <td><span class="m-dim">int8_t</span> The pin on the mcu controlling power to the sensor.</td>
                 </tr>
               </tfoot>
             </table>
@@ -2296,7 +2169,9 @@
         </section>
                       <section class="m-doc-details" id="ac38596062b88391bfe7652be23fffa8a"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#ac38596062b88391bfe7652be23fffa8a" class="m-doc-self">setNumberMeasurementsToAverage</a>(</span><span class="m-doc-wrap"><span class="m-dim">uint8_t</span> <span class="m-param">nReadings</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void  Sensor::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#ac38596062b88391bfe7652be23fffa8a" class="m-doc-self">setNumberMeasurementsToAverage</a>(</span><span class="m-doc-wrap"><span class="m-dim">uint8_t</span> <span
+                    class="m-param">nReadings</span>)</span></span>
             </h3>
             <p>Set the number measurements to average.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -2317,14 +2192,16 @@
         </section>
                       <section class="m-doc-details" id="acdd90533e6ace4cf37f9322e86de3f9e"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">uint8_t </span><a href="#acdd90533e6ace4cf37f9322e86de3f9e" class="m-doc-self">getNumberMeasurementsToAverage</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">uint8_t  Sensor::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#acdd90533e6ace4cf37f9322e86de3f9e" class="m-doc-self">getNumberMeasurementsToAverage</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span
+                    class="m-param"></span>)</span></span>
             </h3>
             <p>Get the number of measurements to average.</p>
             <table class="m-table m-fullwidth m-flat">
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td><strong>uint8_t</strong> The number of readings to take and average to create a result from the sensor.</td>
+                  <td><span class="m-dim">uint8_t</span> The number of readings to take and average to create a result from the sensor.</td>
                 </tr>
               </tfoot>
             </table>
@@ -2335,50 +2212,56 @@
         </section>
                       <section class="m-doc-details" id="acc7e3a5cb18b87e1b358a58ae5ac2fcc"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">uint8_t </span><a href="#acc7e3a5cb18b87e1b358a58ae5ac2fcc" class="m-doc-self">getStatus</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">uint8_t  Sensor::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#acc7e3a5cb18b87e1b358a58ae5ac2fcc" class="m-doc-self">getStatus</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span
+                    class="m-param"></span>)</span></span>
             </h3>
             <p>Get the 8-bit code for the current status of the sensor.</p>
             <table class="m-table m-fullwidth m-flat">
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td>The status as a uint8_t.</td>
+                  <td><span class="m-dim">uint8_t</span> The status as a uint8_t.</td>
                 </tr>
               </tfoot>
             </table>
-            <p>Bit 0</p><ul><li>0 =&gt; Has NOT been successfully set up</li><li>1 =&gt; Has been setup</li></ul><p>Bit 1</p><ul><li>0 =&gt; No attempt made to power sensor</li><li>1 =&gt; Attempt made to power sensor</li></ul><p>Bit 2</p><ul><li>0 =&gt; Power up attampt failed</li><li>1 =&gt; Power up attempt succeeded</li><li>Use the <a href="class_sensor.html#a48ad8d1337a0c4bbe51d698f6d6594d4" class="m-doc">isWarmedUp()</a> function to check if enough time has passed to be ready for sensor communication.</li></ul><p>Bit 3</p><ul><li>0 =&gt; Activation/wake attempt made</li><li>1 =&gt; No activation/wake attempt made</li><li>check _millisSensorActivated or bit 4 to see if <a href="class_sensor.html#af00bdd1d6181b2d92261b227d91feb07" class="m-doc">wake()</a> attempt was successful</li><li>a failed activation attempt will give _millisSensorActivated = 0</li></ul><p>Bit 4</p><ul><li>0 =&gt; Wake/Activate failed</li><li>1 =&gt; Is awake/actively measuring</li><li>Use the <a href="class_sensor.html#a52520433092e4c86f02f10d0e3426878" class="m-doc">isStable()</a> function to check if enough time has passed to begin a measurement.</li></ul><p>Bit 5</p><ul><li>0 =&gt; Start measurement requested attempt made</li><li>1 =&gt; No measurements have been requested</li><li>check _millisMeasurementRequested or bit 6 to see if <a href="class_sensor.html#ae300058be829ad04dcc8f8ffc95b526e" class="m-doc">startSingleMeasurement()</a> attempt was successful</li><li>a failed request attempt will give _millisMeasurementRequested = 0</li></ul><p>Bit 6</p><ul><li>0 =&gt; Measurement start failed</li><li>1 =&gt; Measurement attempt succeeded</li><li>Use the <a href="class_sensor.html#a6e5618bb5e7edd38fbbc6f94c0474c2a" class="m-doc">isMeasurementComplete()</a> to check if enough time has passed for a measurement to have been completed.</li></ul><p>Bit 7</p><ul><li>0 =&gt; No known errors</li><li>1 =&gt; Some sort of error has occurred</li></ul>
+            <p>Bit 0</p><ul><li>0 =&gt; Has NOT been successfully set up</li><li>1 =&gt; Has been setup</li></ul><p>Bit 1</p><ul><li>0 =&gt; No attempt made to power sensor</li><li>1 =&gt; Attempt made to power sensor</li></ul><p>Bit 2</p><ul><li>0 =&gt; Power up attampt failed</li><li>1 =&gt; Power up attempt succeeded</li><li>Use the <a href="#a48ad8d1337a0c4bbe51d698f6d6594d4" class="m-doc">isWarmedUp()</a> function to check if enough time has passed to be ready for sensor communication.</li></ul><p>Bit 3</p><ul><li>0 =&gt; Activation/wake attempt made</li><li>1 =&gt; No activation/wake attempt made</li><li>check _millisSensorActivated or bit 4 to see if <a href="#af00bdd1d6181b2d92261b227d91feb07" class="m-doc">wake()</a> attempt was successful</li><li>a failed activation attempt will give _millisSensorActivated = 0</li></ul><p>Bit 4</p><ul><li>0 =&gt; Wake/Activate failed</li><li>1 =&gt; Is awake/actively measuring</li><li>Use the <a href="#a52520433092e4c86f02f10d0e3426878" class="m-doc">isStable()</a> function to check if enough time has passed to begin a measurement.</li></ul><p>Bit 5</p><ul><li>0 =&gt; Start measurement requested attempt made</li><li>1 =&gt; No measurements have been requested</li><li>check _millisMeasurementRequested or bit 6 to see if <a href="#ae300058be829ad04dcc8f8ffc95b526e" class="m-doc">startSingleMeasurement()</a> attempt was successful</li><li>a failed request attempt will give _millisMeasurementRequested = 0</li></ul><p>Bit 6</p><ul><li>0 =&gt; Measurement start failed</li><li>1 =&gt; Measurement attempt succeeded</li><li>Use the <a href="#a6e5618bb5e7edd38fbbc6f94c0474c2a" class="m-doc">isMeasurementComplete()</a> to check if enough time has passed for a measurement to have been completed.</li></ul><p>Bit 7</p><ul><li>0 =&gt; No known errors</li><li>1 =&gt; Some sort of error has occurred</li></ul>
 
             <hr>
           </div>
         </section>
                       <section class="m-doc-details" id="af3d829c560800189c3fba2791cc503cc"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#af3d829c560800189c3fba2791cc503cc" class="m-doc-self">setup</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool  Sensor::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#af3d829c560800189c3fba2791cc503cc" class="m-doc-self">setup</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span
+                    class="m-param"></span>) <span class="m-label m-warning">virtual</span></span></span>
             </h3>
             <p>Do any one-time preparations needed before the sensor will be able to take readings.</p>
             <table class="m-table m-fullwidth m-flat">
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td><strong>bool</strong> True if the setup was successful.</td>
+                  <td><span class="m-dim">bool</span> True if the setup was successful.</td>
                 </tr>
               </tfoot>
             </table>
-            <p>This sets the pin modes of the _powerPin and _dataPin, updates <a href="class_sensor.html#a1fde72c3ddd07d892dcbfe4a09bcae49" class="m-doc">_<wbr />sensorStatus</a>, and returns true.</p>
+            <p>This sets the pin modes of the _powerPin and _dataPin, updates <a href="#a1fde72c3ddd07d892dcbfe4a09bcae49" class="m-doc">_<wbr />sensorStatus</a>, and returns true.</p>
 
             <hr>
           </div>
         </section>
                       <section class="m-doc-details" id="a0e0eeaeab9f85c8ac3449048d1343c53"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a0e0eeaeab9f85c8ac3449048d1343c53" class="m-doc-self">update</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool  Sensor::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a0e0eeaeab9f85c8ac3449048d1343c53" class="m-doc-self">update</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span
+                    class="m-param"></span>) <span class="m-label m-warning">virtual</span></span></span>
             </h3>
             <p>Update the sensor&#x27;s values.</p>
             <table class="m-table m-fullwidth m-flat">
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td><strong>bool</strong> True if all steps of the sensor update completed successfully.</td>
+                  <td><span class="m-dim">bool</span> True if all steps of the sensor update completed successfully.</td>
                 </tr>
               </tfoot>
             </table>
@@ -2389,52 +2272,60 @@
         </section>
                       <section class="m-doc-details" id="a9b600ee168e47188e1485b6f2d53af78"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#a9b600ee168e47188e1485b6f2d53af78" class="m-doc-self">powerUp</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void  Sensor::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a9b600ee168e47188e1485b6f2d53af78" class="m-doc-self">powerUp</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span
+                    class="m-param"></span>) <span class="m-label m-warning">virtual</span></span></span>
             </h3>
             <p>Turn on the sensor power, if applicable.</p>
-            <p>Generally this is done by setting the <a href="class_sensor.html#a60cef6626d7145eda0709980f66df52b" class="m-doc">_<wbr />powerPin</a> <code>HIGH</code>. Also sets the <a href="class_sensor.html#aa820f5e6c900f07d39750a77dc851a8f" class="m-doc">_<wbr />millisPowerOn</a> timestamp and updates the <a href="class_sensor.html#a1fde72c3ddd07d892dcbfe4a09bcae49" class="m-doc">_<wbr />sensorStatus</a>.</p>
+            <p>Generally this is done by setting the <a href="#a60cef6626d7145eda0709980f66df52b" class="m-doc">_<wbr />powerPin</a> <code>HIGH</code>. Also sets the <a href="#aa820f5e6c900f07d39750a77dc851a8f" class="m-doc">_<wbr />millisPowerOn</a> timestamp and updates the <a href="#a1fde72c3ddd07d892dcbfe4a09bcae49" class="m-doc">_<wbr />sensorStatus</a>.</p>
 
             <hr>
           </div>
         </section>
                       <section class="m-doc-details" id="a3fca63abb83a6196127d61f2ff8c75bc"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#a3fca63abb83a6196127d61f2ff8c75bc" class="m-doc-self">powerDown</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void  Sensor::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a3fca63abb83a6196127d61f2ff8c75bc" class="m-doc-self">powerDown</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span
+                    class="m-param"></span>) <span class="m-label m-warning">virtual</span></span></span>
             </h3>
             <p>Turn off the sensor power, if applicable.</p>
-            <p>Generally this is done by setting the <a href="class_sensor.html#a60cef6626d7145eda0709980f66df52b" class="m-doc">_<wbr />powerPin</a> <code>LOW</code>. Also un-sets the <a href="class_sensor.html#aa820f5e6c900f07d39750a77dc851a8f" class="m-doc">_<wbr />millisPowerOn</a> timestamp (sets <a href="class_sensor.html#aa820f5e6c900f07d39750a77dc851a8f" class="m-doc">_<wbr />millisPowerOn</a> to 0) and updates the <a href="class_sensor.html#a1fde72c3ddd07d892dcbfe4a09bcae49" class="m-doc">_<wbr />sensorStatus</a>.</p>
+            <p>Generally this is done by setting the <a href="#a60cef6626d7145eda0709980f66df52b" class="m-doc">_<wbr />powerPin</a> <code>LOW</code>. Also un-sets the <a href="#aa820f5e6c900f07d39750a77dc851a8f" class="m-doc">_<wbr />millisPowerOn</a> timestamp (sets <a href="#aa820f5e6c900f07d39750a77dc851a8f" class="m-doc">_<wbr />millisPowerOn</a> to 0) and updates the <a href="#a1fde72c3ddd07d892dcbfe4a09bcae49" class="m-doc">_<wbr />sensorStatus</a>.</p>
 
             <hr>
           </div>
         </section>
                       <section class="m-doc-details" id="af00bdd1d6181b2d92261b227d91feb07"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#af00bdd1d6181b2d92261b227d91feb07" class="m-doc-self">wake</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool  Sensor::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#af00bdd1d6181b2d92261b227d91feb07" class="m-doc-self">wake</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span
+                    class="m-param"></span>) <span class="m-label m-warning">virtual</span></span></span>
             </h3>
             <p>Wake the sensor up, if necessary. Do whatever it takes to get a sensor in the proper state to begin a measurement.</p>
             <table class="m-table m-fullwidth m-flat">
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td><strong>bool</strong> True if the wake function completed successfully.</td>
+                  <td><span class="m-dim">bool</span> True if the wake function completed successfully.</td>
                 </tr>
               </tfoot>
             </table>
-            <p>Verifies that the power is on and updates the <a href="class_sensor.html#a1fde72c3ddd07d892dcbfe4a09bcae49" class="m-doc">_<wbr />sensorStatus</a>. This also sets the <a href="class_sensor.html#a86541c88432508d6bc81a8fb41746e2e" class="m-doc">_<wbr />millisSensorActivated</a> timestamp.</p><aside class="m-note m-info"><h4>Note</h4><p>This does NOT include any wait for sensor readiness.</p></aside>
+            <p>Verifies that the power is on and updates the <a href="#a1fde72c3ddd07d892dcbfe4a09bcae49" class="m-doc">_<wbr />sensorStatus</a>. This also sets the <a href="#a86541c88432508d6bc81a8fb41746e2e" class="m-doc">_<wbr />millisSensorActivated</a> timestamp.</p><aside class="m-note m-info"><h4>Note</h4><p>This does NOT include any wait for sensor readiness.</p></aside>
 
             <hr>
           </div>
         </section>
                       <section class="m-doc-details" id="ab557ce2316436c882d4b63c85b6d5911"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#ab557ce2316436c882d4b63c85b6d5911" class="m-doc-self">sleep</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool  Sensor::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#ab557ce2316436c882d4b63c85b6d5911" class="m-doc-self">sleep</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span
+                    class="m-param"></span>) <span class="m-label m-warning">virtual</span></span></span>
             </h3>
             <p>Puts the sensor to sleep, if necessary.</p>
             <table class="m-table m-fullwidth m-flat">
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td><strong>bool</strong> True if the sleep function completed successfully.</td>
+                  <td><span class="m-dim">bool</span> True if the sleep function completed successfully.</td>
                 </tr>
               </tfoot>
             </table>
@@ -2445,44 +2336,52 @@
         </section>
                       <section class="m-doc-details" id="ae300058be829ad04dcc8f8ffc95b526e"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#ae300058be829ad04dcc8f8ffc95b526e" class="m-doc-self">startSingleMeasurement</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool  Sensor::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#ae300058be829ad04dcc8f8ffc95b526e" class="m-doc-self">startSingleMeasurement</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span
+                    class="m-param"></span>) <span class="m-label m-warning">virtual</span></span></span>
             </h3>
             <p>Tell the sensor to start a single measurement, if needed.</p>
             <table class="m-table m-fullwidth m-flat">
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td><strong>bool</strong> True if the start measurement function completed successfully.</td>
+                  <td><span class="m-dim">bool</span> True if the start measurement function completed successfully.</td>
                 </tr>
               </tfoot>
             </table>
-            <p>This also sets the <a href="class_sensor.html#a4853c30b71ad2efc09bd6f73530155e3" class="m-doc">_<wbr />millisMeasurementRequested</a> timestamp and updates the <a href="class_sensor.html#a1fde72c3ddd07d892dcbfe4a09bcae49" class="m-doc">_<wbr />sensorStatus</a>.</p><aside class="m-note m-info"><h4>Note</h4><p>This function does NOT include any waiting for the sensor to be warmed up or stable!</p></aside>
+            <p>This also sets the <a href="#a4853c30b71ad2efc09bd6f73530155e3" class="m-doc">_<wbr />millisMeasurementRequested</a> timestamp and updates the <a href="#a1fde72c3ddd07d892dcbfe4a09bcae49" class="m-doc">_<wbr />sensorStatus</a>.</p><aside class="m-note m-info"><h4>Note</h4><p>This function does NOT include any waiting for the sensor to be warmed up or stable!</p></aside>
 
             <hr>
           </div>
         </section>
                       <section class="m-doc-details" id="a6d93c4b22b19dae01744195273bb634a"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a6d93c4b22b19dae01744195273bb634a" class="m-doc-self">addSingleMeasurementResult</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-warning">pure virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool  Sensor::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a6d93c4b22b19dae01744195273bb634a" class="m-doc-self">addSingleMeasurementResult</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span><span
+                    class="m-param"></span>) <span class="m-label m-warning">pure
+                    virtual</span></span></span>
             </h3>
             <p>Get the results from a single measurement.</p>
             <table class="m-table m-fullwidth m-flat">
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td><strong>bool</strong> True if the function completed successfully.</td>
+                  <td><span class="m-dim">bool</span> True if the function completed successfully.</td>
                 </tr>
               </tfoot>
             </table>
-            <p>This asks the sensor for a new result, verifies that it passes sanity range checks, and then adds the value to the result array.</p><p>This also un-sets the <a href="class_sensor.html#a4853c30b71ad2efc09bd6f73530155e3" class="m-doc">_<wbr />millisMeasurementRequested</a> timestamp (sets <a href="class_sensor.html#a4853c30b71ad2efc09bd6f73530155e3" class="m-doc">_<wbr />millisMeasurementRequested</a> to 0) and updates the <a href="class_sensor.html#a1fde72c3ddd07d892dcbfe4a09bcae49" class="m-doc">_<wbr />sensorStatus</a>.</p><aside class="m-note m-info"><h4>Note</h4><p>This function does NOT include any waiting for the sensor complete a measurement.</p></aside>
+            <p>This asks the sensor for a new result, verifies that it passes sanity range checks, and then adds the value to the result array.</p><p>This also un-sets the <a href="#a4853c30b71ad2efc09bd6f73530155e3" class="m-doc">_<wbr />millisMeasurementRequested</a> timestamp (sets <a href="#a4853c30b71ad2efc09bd6f73530155e3" class="m-doc">_<wbr />millisMeasurementRequested</a> to 0) and updates the <a href="#a1fde72c3ddd07d892dcbfe4a09bcae49" class="m-doc">_<wbr />sensorStatus</a>.</p><aside class="m-note m-info"><h4>Note</h4><p>This function does NOT include any waiting for the sensor complete a measurement.</p></aside>
 
             <hr>
           </div>
         </section>
                       <section class="m-doc-details" id="ad6f7285ebb0c9612657ddfd99664989b"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#ad6f7285ebb0c9612657ddfd99664989b" class="m-doc-self">verifyAndAddMeasurementResult</a>(</span><span class="m-doc-wrap"><span class="m-dim">uint8_t</span> <span class="m-param">resultNumber</span>,
-              <span class="m-dim">float</span> <span class="m-param">resultValue</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void  Sensor::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#ad6f7285ebb0c9612657ddfd99664989b" class="m-doc-self">verifyAndAddMeasurementResult</a>(</span><span class="m-doc-wrap"><span class="m-dim">uint8_t</span> <span
+                    class="m-param">resultNumber</span>,
+              <span class="m-dim">float</span> <span
+                    class="m-param">resultValue</span>)</span></span>
             </h3>
             <p>Verify that a measurement is OK (ie, not -9999) before adding it to the result array.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -2506,8 +2405,11 @@
         </section>
                       <section class="m-doc-details" id="a3d9686113cdeb9a3baea98b873f62d38"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#a3d9686113cdeb9a3baea98b873f62d38" class="m-doc-self">verifyAndAddMeasurementResult</a>(</span><span class="m-doc-wrap"><span class="m-dim">uint8_t</span> <span class="m-param">resultNumber</span>,
-              <span class="m-dim">int16_t</span> <span class="m-param">resultValue</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void  Sensor::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a3d9686113cdeb9a3baea98b873f62d38" class="m-doc-self">verifyAndAddMeasurementResult</a>(</span><span class="m-doc-wrap"><span class="m-dim">uint8_t</span> <span
+                    class="m-param">resultNumber</span>,
+              <span class="m-dim">int16_t</span> <span
+                    class="m-param">resultValue</span>)</span></span>
             </h3>
             <p>Verify that a measurement is OK (ie, not -9999) before adding it to the result array.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -2529,10 +2431,41 @@
             <hr>
           </div>
         </section>
+                      <section class="m-doc-details" id="a1f3733f86aae94fa06a4b204b82042cd"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void  Sensor::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a1f3733f86aae94fa06a4b204b82042cd" class="m-doc-self">verifyAndAddMeasurementResult</a>(</span><span class="m-doc-wrap"><span class="m-dim">uint8_t</span> <span
+                    class="m-param">resultNumber</span>,
+              <span class="m-dim">int32_t</span> <span
+                    class="m-param">resultValue</span>)</span></span>
+            </h3>
+            <p>Average the results of all measurements by dividing the sum of all measurements by the number of measurements taken.</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="m-param"  style="width: 1%"><span class="m-param">resultNumber</span></td>
+                  <td>The position of the result within the result array.</td>
+                </tr>
+                <tr>
+                  <td class="m-param" ><span class="m-param">resultValue</span></td>
+                  <td>The value of the result.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <hr>
+          </div>
+        </section>
                       <section class="m-doc-details" id="a0c0670800b68e7e85d9d265023408e92"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void </span><a href="#a0c0670800b68e7e85d9d265023408e92" class="m-doc-self">registerVariable</a>(</span><span class="m-doc-wrap"><span class="m-dim">int</span> <span class="m-param">sensorVarNum</span>,
-              <span class="m-dim"><a href="class_variable.html" class="m-doc">Variable</a>*</span> <span class="m-param">var</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void  Sensor::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a0c0670800b68e7e85d9d265023408e92" class="m-doc-self">registerVariable</a>(</span><span class="m-doc-wrap"><span class="m-dim">int</span> <span
+                    class="m-param">sensorVarNum</span>,
+              <span class="m-dim"><a href="class_variable.html" class="m-doc">Variable</a>*</span> <span
+                    class="m-param">var</span>)</span></span>
             </h3>
             <p>Register a variable object to a sensor.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -2557,9 +2490,11 @@
         </section>
                       <section class="m-doc-details" id="a0b41726e1fb6fcc966031eebd16a1dfc"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a0b41726e1fb6fcc966031eebd16a1dfc" class="m-doc-self">checkPowerOn</a>(</span><span class="m-doc-wrap"><span class="m-dim">bool</span> <span class="m-param">debug</span><span class="m-dim"> = false</span>)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool  Sensor::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a0b41726e1fb6fcc966031eebd16a1dfc" class="m-doc-self">checkPowerOn</a>(</span><span class="m-doc-wrap"><span class="m-dim">bool</span> <span
+                    class="m-param">debug</span><span class="m-dim"> = false</span>)</span></span>
             </h3>
-            <p>Check if the <a href="class_sensor.html#a60cef6626d7145eda0709980f66df52b" class="m-doc">_<wbr />powerPin</a> is currently high.</p>
+            <p>Check if the <a href="#a60cef6626d7145eda0709980f66df52b" class="m-doc">_<wbr />powerPin</a> is currently high.</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Parameters</th></tr>
@@ -2573,7 +2508,7 @@
               <tfoot>
                 <tr>
                   <th>Returns</th>
-                  <td><strong>bool</strong> True indicates the <a href="class_sensor.html#a60cef6626d7145eda0709980f66df52b" class="m-doc">_<wbr />powerPin</a> is currently <code>HIGH</code>.</td>
+                  <td><span class="m-dim">bool</span> True indicates the <a href="#a60cef6626d7145eda0709980f66df52b" class="m-doc">_<wbr />powerPin</a> is currently <code>HIGH</code>.</td>
                 </tr>
               </tfoot>
             </table>
@@ -2583,7 +2518,9 @@
         </section>
                       <section class="m-doc-details" id="a48ad8d1337a0c4bbe51d698f6d6594d4"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a48ad8d1337a0c4bbe51d698f6d6594d4" class="m-doc-self">isWarmedUp</a>(</span><span class="m-doc-wrap"><span class="m-dim">bool</span> <span class="m-param">debug</span><span class="m-dim"> = false</span>) <span class="m-label m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool  Sensor::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a48ad8d1337a0c4bbe51d698f6d6594d4" class="m-doc-self">isWarmedUp</a>(</span><span class="m-doc-wrap"><span class="m-dim">bool</span> <span
+                    class="m-param">debug</span><span class="m-dim"> = false</span>) <span class="m-label m-warning">virtual</span></span></span>
             </h3>
             <p>Check whether or not enough time has passed between the sensor receiving power and being ready to respond to logger commands.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -2599,7 +2536,7 @@
               <tfoot>
                 <tr>
                   <th>Returns</th>
-                  <td><strong>bool</strong> True indicates that enough time has passed that the sensor should be ready to respond to commands.</td>
+                  <td><span class="m-dim">bool</span> True indicates that enough time has passed that the sensor should be ready to respond to commands.</td>
                 </tr>
               </tfoot>
             </table>
@@ -2610,7 +2547,9 @@
         </section>
                       <section class="m-doc-details" id="a52520433092e4c86f02f10d0e3426878"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a52520433092e4c86f02f10d0e3426878" class="m-doc-self">isStable</a>(</span><span class="m-doc-wrap"><span class="m-dim">bool</span> <span class="m-param">debug</span><span class="m-dim"> = false</span>) <span class="m-label m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool  Sensor::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a52520433092e4c86f02f10d0e3426878" class="m-doc-self">isStable</a>(</span><span class="m-doc-wrap"><span class="m-dim">bool</span> <span
+                    class="m-param">debug</span><span class="m-dim"> = false</span>) <span class="m-label m-warning">virtual</span></span></span>
             </h3>
             <p>Check whether or not enough time has passed between the sensor being awoken/activated and being ready to output stable values.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -2626,7 +2565,7 @@
               <tfoot>
                 <tr>
                   <th>Returns</th>
-                  <td><strong>bool</strong> True indicates that enough time has passed that the sensor should have stabilized.</td>
+                  <td><span class="m-dim">bool</span> True indicates that enough time has passed that the sensor should have stabilized.</td>
                 </tr>
               </tfoot>
             </table>
@@ -2637,7 +2576,9 @@
         </section>
                       <section class="m-doc-details" id="a6e5618bb5e7edd38fbbc6f94c0474c2a"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool </span><a href="#a6e5618bb5e7edd38fbbc6f94c0474c2a" class="m-doc-self">isMeasurementComplete</a>(</span><span class="m-doc-wrap"><span class="m-dim">bool</span> <span class="m-param">debug</span><span class="m-dim"> = false</span>) <span class="m-label m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool  Sensor::<wbr /></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a
+                    href="#a6e5618bb5e7edd38fbbc6f94c0474c2a" class="m-doc-self">isMeasurementComplete</a>(</span><span class="m-doc-wrap"><span class="m-dim">bool</span> <span
+                    class="m-param">debug</span><span class="m-dim"> = false</span>) <span class="m-label m-warning">virtual</span></span></span>
             </h3>
             <p>Check whether or not enough time has passed between when the sensor was asked to take a single measurement and when that measurement is expected to be complete.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -2653,7 +2594,7 @@
               <tfoot>
                 <tr>
                   <th>Returns</th>
-                  <td><strong>bool</strong> True indicates that enough time has passed the measurement should have completed</td>
+                  <td><span class="m-dim">bool</span> True indicates that enough time has passed the measurement should have completed</td>
                 </tr>
               </tfoot>
             </table>
@@ -2664,7 +2605,6 @@
         </section>
         </section>
         <hr>
-
         <section id="variable-details">
           <h2>Variable documentation</h2>
                       <section class="m-doc-details" id="af00ad754616d27c65e626888da972f1a"><div>
@@ -2692,7 +2632,7 @@
               <span class="m-dim">const uint8_t</span> Sensor::<wbr /><a href="#af26786329fd01b44cf31410d046fc8f3" class="m-doc-self">_numReturnedValues</a> <span class="m-label m-warning">protected</span>
             </h3>
             <p>The number of values the sensor is capable of reporting.</p>
-            <p>This includes raw values from the sensor and any values that are always calculated within the library for the sensor. The <a href="class_sensor.html#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">_<wbr />incCalcValues</a> are <em>included</em> in this total.</p>
+            <p>This includes raw values from the sensor and any values that are always calculated within the library for the sensor. The <a href="#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">_<wbr />incCalcValues</a> are <em>included</em> in this total.</p>
 
             <hr>
           </div>
@@ -2722,7 +2662,7 @@
               <span class="m-dim">uint32_t</span> Sensor::<wbr /><a href="#aa820f5e6c900f07d39750a77dc851a8f" class="m-doc-self">_millisPowerOn</a> <span class="m-label m-warning">protected</span>
             </h3>
             <p>The processor elapsed time when the power was turned on for the sensor.</p>
-            <p>The <a href="class_sensor.html#aa820f5e6c900f07d39750a77dc851a8f" class="m-doc">_<wbr />millisPowerOn</a> value is set in the <a href="class_sensor.html#a9b600ee168e47188e1485b6f2d53af78" class="m-doc">powerUp()</a> function. It is un-set in the <a href="class_sensor.html#a3fca63abb83a6196127d61f2ff8c75bc" class="m-doc">powerDown()</a> function.</p>
+            <p>The <a href="#aa820f5e6c900f07d39750a77dc851a8f" class="m-doc">_<wbr />millisPowerOn</a> value is set in the <a href="#a9b600ee168e47188e1485b6f2d53af78" class="m-doc">powerUp()</a> function. It is un-set in the <a href="#a3fca63abb83a6196127d61f2ff8c75bc" class="m-doc">powerDown()</a> function.</p>
 
             <hr>
           </div>
@@ -2731,8 +2671,8 @@
             <h3>
               <span class="m-dim">uint32_t</span> Sensor::<wbr /><a href="#a86541c88432508d6bc81a8fb41746e2e" class="m-doc-self">_millisSensorActivated</a> <span class="m-label m-warning">protected</span>
             </h3>
-            <p>The processor elapsed time when the sensor was activiated - ie, when the <a href="class_sensor.html#af00bdd1d6181b2d92261b227d91feb07" class="m-doc">wake()</a> function was run.</p>
-            <p>The <a href="class_sensor.html#a86541c88432508d6bc81a8fb41746e2e" class="m-doc">_<wbr />millisSensorActivated</a> value is <em>usually</em> set in the <a href="class_sensor.html#af00bdd1d6181b2d92261b227d91feb07" class="m-doc">wake()</a> function, but may also be set in the <a href="class_sensor.html#ae300058be829ad04dcc8f8ffc95b526e" class="m-doc">startSingleMeasurement()</a> function. It is generally un-set in the <a href="class_sensor.html#ab557ce2316436c882d4b63c85b6d5911" class="m-doc">sleep()</a> function.</p>
+            <p>The processor elapsed time when the sensor was activiated - ie, when the <a href="#af00bdd1d6181b2d92261b227d91feb07" class="m-doc">wake()</a> function was run.</p>
+            <p>The <a href="#a86541c88432508d6bc81a8fb41746e2e" class="m-doc">_<wbr />millisSensorActivated</a> value is <em>usually</em> set in the <a href="#af00bdd1d6181b2d92261b227d91feb07" class="m-doc">wake()</a> function, but may also be set in the <a href="#ae300058be829ad04dcc8f8ffc95b526e" class="m-doc">startSingleMeasurement()</a> function. It is generally un-set in the <a href="#ab557ce2316436c882d4b63c85b6d5911" class="m-doc">sleep()</a> function.</p>
 
             <hr>
           </div>
@@ -2741,8 +2681,8 @@
             <h3>
               <span class="m-dim">uint32_t</span> Sensor::<wbr /><a href="#a4853c30b71ad2efc09bd6f73530155e3" class="m-doc-self">_millisMeasurementRequested</a> <span class="m-label m-warning">protected</span>
             </h3>
-            <p>The processor elapsed time when a measuremnt was started - ie, when the <a href="class_sensor.html#ae300058be829ad04dcc8f8ffc95b526e" class="m-doc">startSingleMeasurement()</a> function was run.</p>
-            <p>The <a href="class_sensor.html#a4853c30b71ad2efc09bd6f73530155e3" class="m-doc">_<wbr />millisMeasurementRequested</a> value is set in the <a href="class_sensor.html#ae300058be829ad04dcc8f8ffc95b526e" class="m-doc">startSingleMeasurement()</a> function. It <em>may</em> be unset in the <a href="class_sensor.html#a6d93c4b22b19dae01744195273bb634a" class="m-doc">addSingleMeasurementResult()</a> function.</p>
+            <p>The processor elapsed time when a measuremnt was started - ie, when the <a href="#ae300058be829ad04dcc8f8ffc95b526e" class="m-doc">startSingleMeasurement()</a> function was run.</p>
+            <p>The <a href="#a4853c30b71ad2efc09bd6f73530155e3" class="m-doc">_<wbr />millisMeasurementRequested</a> value is set in the <a href="#ae300058be829ad04dcc8f8ffc95b526e" class="m-doc">startSingleMeasurement()</a> function. It <em>may</em> be unset in the <a href="#a6d93c4b22b19dae01744195273bb634a" class="m-doc">addSingleMeasurementResult()</a> function.</p>
 
             <hr>
           </div>
@@ -2750,61 +2690,73 @@
         </section>
         <hr>
 
-
-
-                    </div>
-                  </div>
-                </div>
               </article>
             </main>
 
-          </div>      </div></div><div id="footer-image">
-          <div class="gp-container">
-            <img
-              src="https://www.envirodiy.org/wp-content/uploads/2016/05/EnviroDIY_LogoMaster_Square_V5_TwoTree_Trans_notext-e1462820115833.png"
-              width="99"
-              height="22"
-              alt=""
-            />
-          </div>
-        </div>
+          </div> <!-- gp-content -->
+        </div> <!-- gp-left-column -->
+      </div> <!-- gp-inner-container -->
+    </div> <!-- gp-content-wrapper -->
+
+    <div id="footer-image">
+      <div class="gp-container">
+        <img
+          src="https://www.envirodiy.org/wp-content/uploads/2016/05/EnviroDIY_LogoMaster_Square_V5_TwoTree_Trans_notext-e1462820115833.png"
+          width="99"
+          height="22"
+          alt=""
+        />
+      </div>
+    </div>
 
     <footer id="gp-footer">
       <div id="gp-copyright">
         <div class="gp-container">
           <div id="gp-copyright-text">
             <p>
-              <a href="http://www.stroudcenter.org/" target="_blank"
-                ><img
-                  style="float: left; margin-right: 20px;"
-                  src="https://www.envirodiy.org/wp-content/uploads/2017/01/stroud-white-white-165px.png"
-                  alt=""
-                  width="165"
-                  height="70" /></a
-              >EnviroDIY™ is a community for do-it-yourself ideas for
-              environmental science and monitoring. EnviroDIY is an
-              initiative of
-              <a href="http://www.stroudcenter.org/" target="_blank"
-                >Stroud™ Water Research Center</a
-              >, which seeks to advance knowledge and stewardship of
-              freshwater systems through global research, education, and
-              watershed restoration.
+              <a href="https://stroudcenter.org/" target="_blank"
+                >EnviroDIY™ is a community for do-it-yourself ideas for environmental
+                science and monitoring. EnviroDIY is an initiative of
+                <a
+                  style="text-decoration: underline"
+                  href="https://stroudcenter.org/"
+                  target="_blank"
+                  >Stroud Water Research Center</a
+                >, which advances knowledge and stewardship of freshwater systems through
+                global research, education, and watershed restoration.
+              </a>
             </p>
             <p>
               All content on EnviroDIY is licensed as Creative Commons
-              Attribution-ShareAlike 4.0 International (CC-BY-SA). Hardware
-              designs on this website are released under the CERN Open
-              Hardware License 1.2.
-              <a href="https://envirodiy.org/licenses/"
-                >Alternative licenses are available.</a
+              Attribution-ShareAlike 4.0 International (CC-BY-SA). Hardware designs on this
+              website are released under the CERN Open Hardware License 1.2.
+              <a style="text-decoration: underline" href="https://envirodiy.org/licenses/"
+                >See all licenses.</a
               >
-              <a href="https://envirodiy.org/terms/">Terms of Use</a> |
-              <a href="https://envirodiy.org/privacy/">Privacy Policy</a> |
-              <a href="https://envirodiy.org/cookies/">Cookie Policy</a> |
-              <a href="https://envirodiy.org/contact/">Contact</a>
+              <a style="text-decoration: underline" href="https://envirodiy.org/terms/"
+                >Terms of Use</a
+              >
+              |
+              <a style="text-decoration: underline" href="https://envirodiy.org/privacy/"
+                >Privacy Policy</a
+              >
+              |
+              <a style="text-decoration: underline" href="https://envirodiy.org/cookies/"
+                >Cookie Policy</a
+              >
+              |
+              <a
+                style="text-decoration: underline"
+                href="https://envirodiy.org/shop-policies/"
+                >Shop Policies</a
+              >
+              |
+              <a style="text-decoration: underline" href="https://envirodiy.org/contact/"
+                >Contact</a
+              >
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.6 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.12.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>
@@ -2813,69 +2765,8 @@
 
     <div class="gp-clear"></div>
 
-    </div></div><script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/modernizr.js?ver=6.1.1"
-  id="modernizr-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-includes/js/imagesloaded.min.js?ver=4.1.4"
-  id="imagesloaded-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/selectivizr.min.js?ver=6.1.1"
-  id="selectivizr-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/placeholders.min.js?ver=6.1.1"
-  id="placeholder-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/jquery.ui.totop.min.js.js?ver=6.1.1"
-  id="jquery-totop-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/jquery.flexslider-min.js?ver=6.1.1"
-  id="jquery-flexslider-js"
-></script>
-<script type="text/javascript" id="ghostpool-custom-js-js-extra">
-  /* <![CDATA[ */
-  var ghostpool_script = {
-    lightbox: 'separate_images',
-    url: 'https:\/\/www.envirodiy.org\/',
-    related_items_in_view: '',
-  };
-  /* ]]> */
-</script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/jquery.stellar.min.js?ver=6.1.1"
-  id="jquery-stellar-js"
-></script>
+    </div> <!-- gp-site-wrapper -->
+  </div> <!-- gp-site-wrapper -->
 
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/custom.js?ver=6.1.1"
-  id="ghostpool-custom-js-js"
-></script>
-<script type="text/javascript" id="ghostpool-ajax-loop-js-extra">
-  /* <![CDATA[ */
-  var ghostpoolAjax = {
-    ajaxurl: 'https:\/\/www.envirodiy.org\/wp-admin\/admin-ajax.php',
-    ajaxnonce: 'e2424257d3',
-    querystring: '',
-  };
-  /* ]]> */
-</script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/ajax-loop.js?ver=6.1.1"
-  id="ghostpool-ajax-loop-js"
-></script>
 </body>
 </html>

@@ -1,0 +1,125 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__atlas__group",
+    "name": "Atlas Scientific EZO Circuits",
+    "url_base": "group__atlas__group",
+    "url": "group__atlas__group.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> and <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> objects for all Atlas EZO circuits.</p><p>This library currently supports the following Atlas Scientific sensors:</p><ul><li><a href=\"https://www.atlas-scientific.com/probes/ezo-co2-carbon-dioxide-sensor/\">EZO-CO2 Embedded NDIR CO2 Sensor</a><ul><li><a href=\"https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EZO_CO2_Datasheet.pdf\">Circuit Datasheet</a></li><li><a href=\"group__sensor__atlas__co2.html\" class=\"m-doc\">Class Documentation</a></li></ul></li><li><a href=\"https://www.atlas-scientific.com/dissolved-oxygen.html\">EZO-DO Dissolved Oxygen Circuit and Probe</a><ul><li><a href=\"https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_DO_EZO_Datasheet.pdf\">Circuit Datasheet</a></li><li><a href=\"https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_DO_probe.pdf\">Probe Datasheet</a></li><li><a href=\"group__sensor__atlas__do.html\" class=\"m-doc\">Class Documentation</a></li></ul></li><li><a href=\"https://www.atlas-scientific.com/conductivity.html\">EZO-EC Conductivity Circuit and Probes</a><ul><li><a href=\"https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_EZO_Datasheet.pdf\">Circuit Datasheet</a></li><li><a href=\"https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_0.1_probe.pdf\">K0.1 Probe Datasheet</a></li><li><a href=\"https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_1.0_probe.pdf\">K1.0 Probe Datasheet</a></li><li><a href=\"https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_10_probe.pdf\">K10 Probe Datasheet</a></li><li><a href=\"group__sensor__atlas__cond.html\" class=\"m-doc\">Class Documentation</a></li></ul></li><li><a href=\"https://www.atlas-scientific.com/orp.html\">EZO-ORP Oxidation/Reduction Potential Circuit and Probes</a><ul><li><a href=\"https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_ORP_EZO_datasheet.pdf\">Circuit Datasheet</a></li><li><a href=\"group__sensor__atlas__orp.html\" class=\"m-doc\">Class Documentation</a></li></ul></li><li><a href=\"https://www.atlas-scientific.com/ph.html\">EZO-pH Circuit and Probe</a><ul><li><a href=\"https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_pH_EZO_Datasheet.pdf\">Circuit Datasheet</a></li><li><a href=\"group__sensor__atlas__ph.html\" class=\"m-doc\">Class Documentation</a></li></ul></li><li><a href=\"https://www.atlas-scientific.com/temperature.html\">EZO-RTD Temperature Circuit and Probes</a><ul><li><a href=\"https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EZO_RTD_Datasheet.pdf\">Circuit Datasheet</a></li><li><a href=\"https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_PT-1000-probe.pdf\">Probe Datasheet</a></li><li><a href=\"group__sensor__atlas__rtd.html\" class=\"m-doc\">Class Documentation</a></li></ul></li></ul><p>The chips have operating voltages between 3.3V and 5V; power can be stopped between measurements. The probes and sensors can (and should) be calibrated using sketches provided by Atlas Scientific on their website. Atlas Scientific recommends that you integrate their sensor chips into a board, so you can buy one from them or make your own (example: <a href=\"https://github.com/acgold/Atlas-Scientific-Carrier-Board\">https:/<wbr />/<wbr />github.com/<wbr />acgold/<wbr />Atlas-Scientific-Carrier-Board</a>).</p><p>The code in ModularSensors <em><strong>requires the Atlas Sensors to communicate over I2C</strong></em>. Atlas scientific sensors are shipped with probes and sensor chips that communicate using UART by default. Data sheets, found on the Atlas Scientific website, show how to manually switch the chips to I2C. Before deploying your Atlas chip chip and sensor, I recommend locking the protocol (plock) to I2C so the sensors do not accidentally switch back to UART mode. Legacy chips and EZO chips that do not support I2C are not supported.</p><aside class=\"m-note m-danger\"><h4>Warning</h4><p><strong>You must isolate the data lines of all Atlas circuits from the main I2C bus if you wish to turn off their power!</strong> If you do not isolate them from your main I2C bus and you turn off power to the circuits between measurements the I2C lines will be pulled down to ground causing the I2C bus (and thus your logger) to crash.</p></aside>",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [
+      {
+        "url": "group__sensor__atlas__co2.html",
+        "name": "Atlas EZO-CO2",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "group__sensor__atlas__do.html",
+        "name": "Atlas EZO-DO",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "group__sensor__atlas__cond.html",
+        "name": "Atlas EZO-EC",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "group__sensor__atlas__orp.html",
+        "name": "Atlas EZO-ORP",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "group__sensor__atlas__ph.html",
+        "name": "Atlas EZO-pH",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "group__sensor__atlas__rtd.html",
+        "name": "Atlas EZO-RTD",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      }
+    ],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_atlas_parent.html",
+        "name": "AtlasParent",
+        "brief": "A parent class for Atlas EZO circuits and sensors.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "Atlas Scientific EZO Circuits",
+        "group__atlas__group.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Atlas Scientific EZO Circuits",
+        "group__atlas__group.html"
+      ]
+    ]
+  }
+}

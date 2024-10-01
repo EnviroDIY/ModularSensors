@@ -1,0 +1,372 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__sensor__tally",
+    "name": "Tally Counter I2C",
+    "url_base": "group__sensor__tally",
+    "url": "group__sensor__tally.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>Classes for the Tally Counter I2C external event counter.</p><section id=\"sensor_tally_intro\"><h2>Introduction</h2><p>Northern Widget&#x27;s Tally is</p><blockquote><p>a minimal ultra low power digital event counter, designed to be a counterpart to a traditional data logger to measure and average rapid events like an anemometer reading. It communicates over I2C at either 3.3 or 5V.</p></blockquote><p>The [Tally_Library] (<a href=\"https://github.com/EnviroDIY/Tally_Library/tree/Dev_I2C\">https://github.com/EnviroDIY/Tally_<wbr />Library/tree/Dev_<wbr />I2C</a>) is used internally for communication with the Tally.</p><aside class=\"m-note m-danger\"><h4>Warning</h4><p>Northern Widget considers this sensor to be one of their &quot;bleeding edge&quot; sensors. As such, it is subject to change at any time. This library may not be updated immediately to reflect changes on the part of Northern Widget.</p><p>As an event counter, the Tally should be continuously powered (at 3.3V or 5V). It does have a large on-board capacitor which can act as a battery to ride out power shortages, but that shouldn&#x27;t be expected to perform as a long-term solution. If you do chose to switch the power for the Tally counter, be very conscious of the fact that the library is designed to run power this (and all other) sensors for the very minimum amount of time possible to get a reading. This means the capacitor will be running at a very low duty cycle; likely less than 1% if the sensors are only powered a few seconds every few minutes. A super-capacitor is <em>NOT</em> an instantly charged battery and will not keep the counter powered at too low a duty cycle.</p></aside></section><section id=\"sensor_tally_datasheet\"><h2>Sensor Datasheet</h2><p>Documentation for the sensor can be found at:</p><ul><li><a href=\"https://github.com/EnviroDIY/Project-Tally\u200b\">https:/<wbr />/<wbr />github.com/<wbr />EnviroDIY/<wbr />Project-Tally\u200b</a></li><li><a href=\"https://github.com/EnviroDIY/Tally_Library/tree/Dev_I2C\">https://github.com/EnviroDIY/Tally_<wbr />Library/tree/Dev_<wbr />I2C</a></li></ul></section><section id=\"sensor_tally_ctor\"><h2>Sensor Constructor</h2><p>{{ <a href=\"class_tally_counter_i2_c.html#afa7df7f823b29d5db09172335d5a7fba\" class=\"m-doc\">TallyCounterI2C::<wbr />TallyCounterI2C</a> }}</p><hr/></section><section id=\"sensor_tally_examples\"><h2>Example Code</h2><p>The Tally countetr is used in the <a href=\"example_menu.html#menu_walk_tally\" class=\"m-doc\">menu a la carte</a> example.</p></section>",
+    "sections": [
+      [
+        "sensor_tally_intro",
+        "Introduction",
+        []
+      ],
+      [
+        "sensor_tally_datasheet",
+        "Sensor Datasheet",
+        []
+      ],
+      [
+        "sensor_tally_ctor",
+        "Sensor Constructor",
+        []
+      ],
+      [
+        "sensor_tally_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_tally_counter_i2_c.html",
+        "name": "TallyCounterI2C",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__tally.html\" class=\"m-doc\">Tally Counter I2C</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_tally_counter_i2_c___events.html",
+        "name": "TallyCounterI2C_Events",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__tally.html#sensor_tally_events\" class=\"m-doc\">events output</a> from a <a href=\"group__sensor__tally.html\" class=\"m-doc\">Tally Counter I2C</a> - shows the number of events since last read.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Sensor Variable Counts",
+        "id": "sensor-variable-counts",
+        "description": "<p><a name=\"sensor_tally_var_counts\"></a> The number of variables that can be returned by the Tally event counter</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__tally.html",
+              "id": "ga4e70e295375272beb8481315f513fa45",
+              "include": [
+                "&lt;src/sensors/TallyCounterI2C.h&gt;",
+                "_tally_counter_i2_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "TALLY_NUM_VARIABLES",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html#af26786329fd01b44cf31410d046fc8f3\" class=\"m-doc\">Sensor::<wbr />_numReturnedValues</a>; the Tally can report 1 value.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__tally.html",
+              "id": "gad7eee93016cb809fe22f5bf8f957bf29",
+              "include": [
+                "&lt;src/sensors/TallyCounterI2C.h&gt;",
+                "_tally_counter_i2_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "TALLY_INC_CALC_VARIABLES",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#a2f3f93a9205efb134cef1216d65077d2\" class=\"m-doc\">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Configuration Defines",
+        "id": "configuration-defines",
+        "description": "<p><a name=\"sensor_tally_config\"></a> Defines to set the address of the Tally event counter.</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__tally.html",
+              "id": "ga19873c57a9082a3265946e43b49a1ca2",
+              "include": [
+                "&lt;src/sensors/TallyCounterI2C.h&gt;",
+                "_tally_counter_i2_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "TALLY_ADDRESS_BASE",
+              "initializer": "0x33",
+              "brief": "The default address of the Tally.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Sensor Timing",
+        "id": "sensor-timing",
+        "description": "<p><a name=\"sensor_tally_timing\"></a> The sensor timing for a Northern Widget Tally event counter</p><ul><li>Readings transferred from the reed-switch counting device (i.e. anemometer or tipping bucket) to the logger are from past events, so there is no need to wait for stability or measuring.</li></ul>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__tally.html",
+              "id": "ga0c2698a2f21809569088faef4795d828",
+              "include": [
+                "&lt;src/sensors/TallyCounterI2C.h&gt;",
+                "_tally_counter_i2_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "TALLY_WARM_UP_TIME_MS",
+              "initializer": "10",
+              "brief": "<a href=\"class_sensor.html#aaaefd7f306f86382a3dac726531756b4\" class=\"m-doc\">Sensor::<wbr />_warmUpTime_ms</a>; Tally warms up in &lt;10 ms.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__tally.html",
+              "id": "ga8635b63a2734725137a1097ba155abf7",
+              "include": [
+                "&lt;src/sensors/TallyCounterI2C.h&gt;",
+                "_tally_counter_i2_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "TALLY_STABILIZATION_TIME_MS",
+              "initializer": "10",
+              "brief": "<a href=\"class_sensor.html#ad6822ad09fb64658c911ce86820db79c\" class=\"m-doc\">Sensor::<wbr />_stabilizationTime_ms</a>; Tally is stable after &lt;10ms.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__tally.html",
+              "id": "ga9ac915b287589271f699bdd97f481b81",
+              "include": [
+                "&lt;src/sensors/TallyCounterI2C.h&gt;",
+                "_tally_counter_i2_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "TALLY_MEASUREMENT_TIME_MS",
+              "initializer": "10",
+              "brief": "<a href=\"class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba\" class=\"m-doc\">Sensor::<wbr />_measurementTime_ms</a>; Tally takes &lt;10ms to complete a measurement.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Events",
+        "id": "events",
+        "description": "<p><a name=\"sensor_tally_events\"></a> The events variable from a Northern Widget Tally event counter</p><ul><li>Range and accuracy depend on the sensor used<ul><li>For wind, we often use [Inspeed WS2R Version II Reed Switch Anemometer] (<a href=\"https://www.store.inspeed.com/Inspeed-Version-II-Reed-Switch-Anemometer-Sensor-Only-WS2R.htm\">https:/<wbr />/<wbr />www.store.inspeed.com/<wbr />Inspeed-Version-II-Reed-Switch-Anemometer-Sensor-Only-WS2R.htm</a>)</li></ul></li></ul><p>{{ <a href=\"class_tally_counter_i2_c___events.html#a8de952ef8e58635ad548e5b3f9107fa5\" class=\"m-doc\">TallyCounterI2C_Events::<wbr />TallyCounterI2C_Events</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__tally.html",
+              "id": "ga74883c34e9977c8ae3068ef772f29ade",
+              "include": [
+                "&lt;src/sensors/TallyCounterI2C.h&gt;",
+                "_tally_counter_i2_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "TALLY_EVENTS_RESOLUTION",
+              "initializer": "0",
+              "brief": "Decimals places in string representation; events are an integer should be 0 - resolution is 1 event.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__tally.html",
+              "id": "ga53f6e442b0a58a050981423f017e2f5c",
+              "include": [
+                "&lt;src/sensors/TallyCounterI2C.h&gt;",
+                "_tally_counter_i2_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "TALLY_EVENTS_VAR_NUM",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; events is stored in sensorValues[0].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__tally.html",
+              "id": "ga5aa1e95c8cbe8d8883e8a569335f5331",
+              "include": [
+                "&lt;src/sensors/TallyCounterI2C.h&gt;",
+                "_tally_counter_i2_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "TALLY_EVENTS_VAR_NAME",
+              "initializer": "\"counter\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;counter&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__tally.html",
+              "id": "gaa8d96dd420a10fe70d3575747aa56409",
+              "include": [
+                "&lt;src/sensors/TallyCounterI2C.h&gt;",
+                "_tally_counter_i2_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "TALLY_EVENTS_UNIT_NAME",
+              "initializer": "\"event\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;event&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__tally.html",
+              "id": "ga4e039e655402c0a7c5602d3e631157df",
+              "include": [
+                "&lt;src/sensors/TallyCounterI2C.h&gt;",
+                "_tally_counter_i2_c_8h.html"
+              ],
+              "has_details": true,
+              "name": "TALLY_EVENTS_DEFAULT_CODE",
+              "initializer": "\"TallyCounterI2CEvents\"",
+              "brief": "Default variable short code; &quot;TallyCounterI2CEvents&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "Tally Counter I2C",
+        "group__sensor__tally.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Tally Counter I2C",
+        "group__sensor__tally.html"
+      ]
+    ]
+  }
+}

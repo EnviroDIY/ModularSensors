@@ -1,0 +1,304 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__modem__ubee__3g",
+    "name": "Sodaq UBee 2G, 3G, and other u-blox 2G and 3G Modules",
+    "url_base": "group__modem__ubee__3g",
+    "url": "group__modem__ubee__3g.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<section id=\"modem_ubee_3g_notes\"><h2>Introduction</h2><p>There are a several of boards available that feature a variant of the u-blox 2G and 3G modules, including a Sodaq UBee based on the SARA U201 and another based on the SARA G3.</p><p>The default baud rate for the SARA U201 is 9600.</p><p>Power draw for most 2G and 3G modules is up to 2A. The Sodaq UBee&#x27;s provide extra battery sockets to supply the additional power. These <em>MUST</em> be used.</p></section><section id=\"modem_ubee_3g_docs\"><h2>Manufacturer Documentation</h2><p>The module datasheet and AT commands for the SARA U2 series are available here: <a href=\"https://www.u-blox.com/en/product/sara-u2-series\">https:/<wbr />/<wbr />www.u-blox.com/<wbr />en/<wbr />product/<wbr />sara-u2-series</a> The schematics for the UBee are available here: <a href=\"https://support.sodaq.com/Shields_and_Bees/ubee/\">https://support.sodaq.com/Shields_<wbr />and_<wbr />Bees/ubee/</a></p></section><section id=\"modem_ubee_3g_ctor\"><h2>Modem Constructor</h2><p>{{ <a href=\"class_sodaq_u_bee_u201.html#afb4d609c4e6784c36a95cb811770bcd5\" class=\"m-doc\">SodaqUBeeU201::<wbr />SodaqUBeeU201</a> }}</p><hr/></section><section id=\"modem_ubee_3g_examples\"><h2>Example Code</h2><p>The SARA U201 based UBee is used in the <a href=\"example_menu.html#menu_walk_sodaq_ubee_u201\" class=\"m-doc\">menu a la carte</a> example.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"c1\">// For the Sodaq UBee based on the 3G u-blox SARA U201</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;modems/SodaqUBeeU201.h&gt;</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"c1\">// NOTE: Extra hardware and software serial ports are created in the &quot;Settings</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span><span class=\"c1\">// for Additional Serial Ports&quot; section</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int32_t</span><span class=\"w\"> </span><span class=\"n\">modemBaud</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"w\">    </span><span class=\"mi\">9600</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">//  SARA U2xx module does auto-bauding by default</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span><span class=\"c1\">// Modem Pins - Describe the physical pin connection of your modem to your board</span>\n</div><div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span><span class=\"c1\">// NOTE:  Use -1 for pins that do not apply</span>\n</div><div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span><span class=\"c1\">// Example pins are for a Sodaq uBee U201 with a Mayfly 0.x</span>\n</div><div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemVccPin</span><span class=\"w\">     </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">23</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// MCU pin controlling modem power</span>\n</div><div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemStatusPin</span><span class=\"w\">  </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">19</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// MCU pin used to read modem status</span>\n</div><div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemResetPin</span><span class=\"w\">   </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">-1</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// MCU pin connected to modem reset pin</span>\n</div><div class=\"line\"><a id=\"l-15\" name=\"l-15\"></a><span class=\"linenos\">15</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemSleepRqPin</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">20</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// MCU pin for modem sleep/wake request</span>\n</div><div class=\"line\"><a id=\"l-16\" name=\"l-16\"></a><span class=\"linenos\">16</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemLEDPin</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">redLED</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// MCU pin connected an LED to show modem</span>\n</div><div class=\"line\"><a id=\"l-17\" name=\"l-17\"></a><span class=\"linenos\">17</span><span class=\"w\">                                    </span><span class=\"c1\">// status</span>\n</div><div class=\"line\"><a id=\"l-18\" name=\"l-18\"></a><span class=\"linenos\">18</span>\n</div><div class=\"line\"><a id=\"l-19\" name=\"l-19\"></a><span class=\"linenos\">19</span><span class=\"c1\">// Network connection information</span>\n</div><div class=\"line\"><a id=\"l-20\" name=\"l-20\"></a><span class=\"linenos\">20</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">char</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">apn</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"s\">&quot;xxxxx&quot;</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// APN for GPRS connection</span>\n</div><div class=\"line\"><a id=\"l-21\" name=\"l-21\"></a><span class=\"linenos\">21</span>\n</div><div class=\"line\"><a id=\"l-22\" name=\"l-22\"></a><span class=\"linenos\">22</span><span class=\"c1\">// Create the modem object</span>\n</div><div class=\"line\"><a id=\"l-23\" name=\"l-23\"></a><span class=\"linenos\">23</span><span class=\"n\">SodaqUBeeU201</span><span class=\"w\"> </span><span class=\"nf\">modemU201</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">modemSerial</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">modemVccPin</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">modemStatusPin</span><span class=\"p\">,</span>\n</div><div class=\"line\"><a id=\"l-24\" name=\"l-24\"></a><span class=\"linenos\">24</span><span class=\"w\">                        </span><span class=\"n\">modemResetPin</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">modemSleepRqPin</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">apn</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-25\" name=\"l-25\"></a><span class=\"linenos\">25</span><span class=\"c1\">// Create an extra reference to the modem by a generic name</span>\n</div><div class=\"line\"><a id=\"l-26\" name=\"l-26\"></a><span class=\"linenos\">26</span><span class=\"n\">SodaqUBeeU201</span><span class=\"w\"> </span><span class=\"n\">modem</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">modemU201</span><span class=\"p\">;</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "modem_ubee_3g_notes",
+        "Introduction",
+        []
+      ],
+      [
+        "modem_ubee_3g_docs",
+        "Manufacturer Documentation",
+        []
+      ],
+      [
+        "modem_ubee_3g_ctor",
+        "Modem Constructor",
+        []
+      ],
+      [
+        "modem_ubee_3g_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_sodaq_u_bee_u201.html",
+        "name": "SodaqUBeeU201",
+        "brief": "The <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> subclass for the <a href=\"group__modem__ubee__3g.html\" class=\"m-doc\">2G/<wbr />3G</a> <a href=\"group__modem__ublox.html\" class=\"m-doc\">Sodaq UBee</a> based on the u-blox SARA U201 2G/3G cellular module.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Modem Pin Settings and Timing",
+        "id": "modem-pin-settings-and-timing",
+        "description": "<p><a name=\"modem_ubee_3g_pins_timing\"></a> The timing and pin level settings for a Sodaq UBee U201</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__modem__ubee__3g.html",
+              "id": "gaba27379d644f32f9399b4336fa394c88",
+              "include": [
+                "&lt;src/modems/SodaqUBeeU201.h&gt;",
+                "_sodaq_u_bee_u201_8h.html"
+              ],
+              "has_details": true,
+              "name": "U201_STATUS_LEVEL",
+              "initializer": "HIGH",
+              "brief": "The <a href=\"classlogger_modem.html#af44caee8dd6acf7c72cd1271441a41cb\" class=\"m-doc\">loggerModem::<wbr />_statusLevel</a>.",
+              "description": "<p>Status of the U201 should be monitored on the <code>V_INT</code> pin. The time after end of wake pulse until <code>V_INT</code> becomes active is unspecified in documentation; we use the value from the Lisa U2, which is 100ms.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__ubee__3g.html",
+              "id": "ga6ee0ad7a082c3b14af77a51aa27665f8",
+              "include": [
+                "&lt;src/modems/SodaqUBeeU201.h&gt;",
+                "_sodaq_u_bee_u201_8h.html"
+              ],
+              "has_details": true,
+              "name": "U201_STATUS_TIME_MS",
+              "initializer": "100",
+              "brief": "The <a href=\"classlogger_modem.html#a755d93cb67e9184a7cdfeae17448667b\" class=\"m-doc\">loggerModem::<wbr />_statusTime_ms</a>.",
+              "description": "<p>Status of the U201 should be monitored on the <code>V_INT</code> pin. The time after end of wake pulse until <code>V_INT</code> becomes active is unspecified in documentation; we use the value from the Lisa U2, which is 100ms.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__ubee__3g.html",
+              "id": "gaa7c09ee961ee0c720aa1133b46367a08",
+              "include": [
+                "&lt;src/modems/SodaqUBeeU201.h&gt;",
+                "_sodaq_u_bee_u201_8h.html"
+              ],
+              "has_details": true,
+              "name": "U201_RESET_LEVEL",
+              "initializer": "LOW",
+              "brief": "The <a href=\"classlogger_modem.html#a4832f4560020f57bfb2e11ddade73d0a\" class=\"m-doc\">loggerModem::<wbr />_resetLevel</a>.",
+              "description": "<p>U201 is reset with a &gt;50ms low pulse on the <code>RESET_N</code> pin</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__ubee__3g.html",
+              "id": "ga7ff37c79e65a8458f990e3901611f713",
+              "include": [
+                "&lt;src/modems/SodaqUBeeU201.h&gt;",
+                "_sodaq_u_bee_u201_8h.html"
+              ],
+              "has_details": true,
+              "name": "U201_RESET_PULSE_MS",
+              "initializer": "75",
+              "brief": "The <a href=\"classlogger_modem.html#a9ee81f2d0dd9e5cdf89e8e469147c38c\" class=\"m-doc\">loggerModem::<wbr />_resetPulse_ms</a>.",
+              "description": "<p>U201 is reset with a &gt;50ms low pulse on the <code>RESET_N</code> pin</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__ubee__3g.html",
+              "id": "ga8beb76750d69285e7c61142ffb7902b5",
+              "include": [
+                "&lt;src/modems/SodaqUBeeU201.h&gt;",
+                "_sodaq_u_bee_u201_8h.html"
+              ],
+              "has_details": true,
+              "name": "U201_WAKE_LEVEL",
+              "initializer": "LOW",
+              "brief": "The <a href=\"classlogger_modem.html#a71c42d58d22d8481e6e6f7e5b7d8f0bf\" class=\"m-doc\">loggerModem::<wbr />_wakeLevel</a>.",
+              "description": "<p>The SARA U201 is switched on by a 50-80 MICRO second <code>LOW</code> pulse on the <code>PWR_ON</code> pin.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__ubee__3g.html",
+              "id": "ga220455fe26f594c6207927cba890ea17",
+              "include": [
+                "&lt;src/modems/SodaqUBeeU201.h&gt;",
+                "_sodaq_u_bee_u201_8h.html"
+              ],
+              "has_details": true,
+              "name": "U201_WAKE_PULSE_MS",
+              "initializer": "1",
+              "brief": "The <a href=\"classlogger_modem.html#a1b4e78a1e0963fb1cc970ce6273c124d\" class=\"m-doc\">loggerModem::<wbr />_wakePulse_ms</a>.",
+              "description": "<p>The SARA U201 is switched on by a 50-80 MICRO second <code>LOW</code> pulse on the <code>PWR_ON</code> pin.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__ubee__3g.html",
+              "id": "ga3a27f552f3e36d58160cabd401261a37",
+              "include": [
+                "&lt;src/modems/SodaqUBeeU201.h&gt;",
+                "_sodaq_u_bee_u201_8h.html"
+              ],
+              "has_details": true,
+              "name": "U201_WAKE_DELAY_MS",
+              "initializer": "0",
+              "brief": "The <a href=\"classlogger_modem.html#a68051ed68b85195bf188a1914c71a9c8\" class=\"m-doc\">loggerModem::<wbr />_wakeDelayTime_ms</a>.",
+              "description": "<p>The SARA U201 turns on when power is applied - the level of <code>PWR_ON</code> then is irrelevant. No separate pulse or other wake is needed.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__ubee__3g.html",
+              "id": "ga3dc3425047f23a6352e5be645d5599c1",
+              "include": [
+                "&lt;src/modems/SodaqUBeeU201.h&gt;",
+                "_sodaq_u_bee_u201_8h.html"
+              ],
+              "has_details": true,
+              "name": "U201_ATRESPONSE_TIME_MS",
+              "initializer": "6000L",
+              "brief": "The <a href=\"classlogger_modem.html#aa9bf26acfae6ec2611b4d7a806dd2489\" class=\"m-doc\">loggerModem::<wbr />_max_atresponse_time_ms</a>.",
+              "description": "<p>Time until system and digital pins are operational is 6 sec typical for SARA U201.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__ubee__3g.html",
+              "id": "gac1cd78fd9476026d47a9c729dae1dc9d",
+              "include": [
+                "&lt;src/modems/SodaqUBeeU201.h&gt;",
+                "_sodaq_u_bee_u201_8h.html"
+              ],
+              "has_details": true,
+              "name": "U201_DISCONNECT_TIME_MS",
+              "initializer": "15000L",
+              "brief": "The <a href=\"classlogger_modem.html#a32496b2b79dc9317639900a3c385405d\" class=\"m-doc\">loggerModem::<wbr />_disconnetTime_ms</a>.",
+              "description": "<p>Power down time for u-blox modules <em>&quot;can largely vary depending on the\napplication / network settings and the concurrent module activities.&quot;</em> The <code>V_INT</code> pin should be monitored and power not withdrawn until that pin reads low. We allow up to 15 seconds for shutdown in case it is not monitored.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Modems and Communication Modules",
+        "group__the__modems.html"
+      ],
+      [
+        "Sodaq UBee&#x27;s and other u-blox modules",
+        "group__modem__ublox.html"
+      ],
+      [
+        "Sodaq UBee 2G, 3G, and other u-blox 2G and 3G Modules",
+        "group__modem__ubee__3g.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Sodaq UBee 2G, 3G, and other u-blox 2G and 3G Modules",
+        "group__modem__ubee__3g.html"
+      ]
+    ]
+  }
+}

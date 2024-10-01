@@ -1,0 +1,76 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "page",
+    "id": "page_code_debugging",
+    "name": "In-Library Debugging",
+    "url_base": "page_code_debugging",
+    "url": "page_code_debugging.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p><a name=\"md_docs_2_f_a_q_2_code-_debugging\"></a></p><p>For intense <em>code</em> debugging for any individual component of the library (sensor communication, modem communication, variable array functions, etc), open the source file header (*.h), for that component. Find the line <code>// #define DEBUGGING_SERIAL_OUTPUT xxxxx</code>, where xxxxx is the name of a serial output (ie, Serial or USBSerial). Remove the two comment slashes from that line. Then recompile and upload your code. This will (sometimes dramatically) increase the number of statements going out to the debugging serial port. A few sensors also the line <code>// #define DEEP_DEBUGGING_SERIAL_OUTPUT xxxxx</code>, un-commenting of which will send even more information to the defined port. Note that this type of debugging is intended to help find errors in the code of this library, not problems with the results given by any sensors!</p>",
+    "sections": [],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "ModularSensors",
+        "index.html"
+      ],
+      [
+        "FAQs",
+        "page_faq.html"
+      ],
+      [
+        "In-Library Debugging",
+        "page_code_debugging.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "In-Library Debugging",
+        "page_code_debugging.html"
+      ]
+    ]
+  }
+}

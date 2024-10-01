@@ -1,0 +1,492 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__sensor__atlas__do",
+    "name": "Atlas EZO-DO",
+    "url_base": "group__sensor__atlas__do",
+    "url": "group__sensor__atlas__do.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>Classes for the Atlas Scientific EZO-DO dissolved oxygen circuit and probe.</p><p>The Atlas Scientifc DO sensor outputs DO in both mg/L and percent saturation.</p><section id=\"sensor_atlas_do_datasheet\"><h2>Sensor Datasheet</h2><p>Documentation on the probe is found here: <a href=\"https://www.atlas-scientific.com/probes/dissolved-oxygen-probe/\">https:/<wbr />/<wbr />www.atlas-scientific.com/<wbr />probes/<wbr />dissolved-oxygen-probe/<wbr /></a></p><p>Documentation on the measurement circuit is found here: <a href=\"https://www.atlas-scientific.com/circuits/ezo-dissolved-oxygen-circuit/\">https:/<wbr />/<wbr />www.atlas-scientific.com/<wbr />circuits/<wbr />ezo-dissolved-oxygen-circuit/<wbr /></a></p></section><section id=\"sensor_atlas_do_ctor\"><h2>Sensor Constructors</h2><p>{{ <a href=\"class_atlas_scientific_d_o.html#ac33881f59502253f1d1ca771968715cc\" class=\"m-doc\">AtlasScientificDO::<wbr />AtlasScientificDO(int8_t, uint8_t, uint8_t)</a> }} {{ <a href=\"class_atlas_scientific_d_o.html#adb202d9de35640fbd5fa0490b4efffa2\" class=\"m-doc\">AtlasScientificDO::<wbr />AtlasScientificDO(TwoWire*, int8_t, uint8_t, uint8_t)</a> }}</p><hr/></section><section id=\"sensor_atlas_do_examples\"><h2>Example Code</h2><p>The Atlas DO sensor is used in the <a href=\"example_menu.html#menu_walk_atlas_scientific_do\" class=\"m-doc\">menu a la carte</a> example.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;sensors/AtlasScientificDO.h&gt;</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"c1\">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">AtlasDOPower</span><span class=\"w\">    </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">sensorPowerPin</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// Power pin</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span><span class=\"kr\">uint8_t</span><span class=\"w\">      </span><span class=\"n\">AtlasDOi2c_addr</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mh\">0x61</span><span class=\"p\">;</span><span class=\"w\">            </span><span class=\"c1\">// Default for DO is 0x61 (97)</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span><span class=\"c1\">// All Atlas sensors have different default I2C addresses, but any of them can</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"c1\">// be re-addressed to any 8 bit number.  If using the default address for any</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span><span class=\"c1\">// Atlas Scientific sensor, you may omit this argument.</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span>\n</div><div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span><span class=\"c1\">// Create an Atlas Scientific DO sensor object</span>\n</div><div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span><span class=\"c1\">// AtlasScientificDO atlasDO(AtlasDOPower, AtlasDOi2c_addr);</span>\n</div><div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"n\">AtlasScientificDO</span><span class=\"w\"> </span><span class=\"nf\">atlasDO</span><span class=\"p\">(</span><span class=\"n\">AtlasDOPower</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span>\n</div><div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span><span class=\"c1\">// Create concentration and percent saturation variable pointers for the EZO-DO</span>\n</div><div class=\"line\"><a id=\"l-15\" name=\"l-15\"></a><span class=\"linenos\">15</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">atlasDOconc</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">AtlasScientificDO_DOmgL</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-16\" name=\"l-16\"></a><span class=\"linenos\">16</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">atlasDO</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-17\" name=\"l-17\"></a><span class=\"linenos\">17</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">atlasDOpct</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">AtlasScientificDO_DOpct</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-18\" name=\"l-18\"></a><span class=\"linenos\">18</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">atlasDO</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "sensor_atlas_do_datasheet",
+        "Sensor Datasheet",
+        []
+      ],
+      [
+        "sensor_atlas_do_ctor",
+        "Sensor Constructors",
+        []
+      ],
+      [
+        "sensor_atlas_do_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_atlas_scientific_d_o.html",
+        "name": "AtlasScientificDO",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__atlas__do.html\" class=\"m-doc\">Atlas Scientific EZO dissolved oxygen circuit</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_atlas_scientific_d_o___d_omg_l.html",
+        "name": "AtlasScientificDO_DOmgL",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__atlas__do.html#sensor_atlas_do_concentration\" class=\"m-doc\">dissolved oxygen concentration output</a> from an <a href=\"group__sensor__atlas__do.html\" class=\"m-doc\">Atlas Scientific EZO dissolved oxygen circuit</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_atlas_scientific_d_o___d_opct.html",
+        "name": "AtlasScientificDO_DOpct",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__atlas__do.html#sensor_atlas_do_percent\" class=\"m-doc\">dissolved oxygen percent of saturation output</a> from an <a href=\"group__sensor__atlas__do.html\" class=\"m-doc\">Atlas Scientific EZO dissolved oxygen circuit</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Sensor Variable Counts",
+        "id": "sensor-variable-counts",
+        "description": "<p><a name=\"sensor_atlas_do_var_counts\"></a> The number of variables that can be returned by the Atlas DO sensor</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__do.html",
+              "id": "ga86ce29406b90f0b80f1f2005fa1fdaf0",
+              "include": [
+                "&lt;src/sensors/AtlasScientificDO.h&gt;",
+                "_atlas_scientific_d_o_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_DO_NUM_VARIABLES",
+              "initializer": "2",
+              "brief": "<a href=\"class_sensor.html#af26786329fd01b44cf31410d046fc8f3\" class=\"m-doc\">Sensor::<wbr />_numReturnedValues</a>; the Atlas EZO DO circuit can report 2 values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__do.html",
+              "id": "ga326444686a8c85021ef78c917a9ef669",
+              "include": [
+                "&lt;src/sensors/AtlasScientificDO.h&gt;",
+                "_atlas_scientific_d_o_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_DO_INC_CALC_VARIABLES",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#a2f3f93a9205efb134cef1216d65077d2\" class=\"m-doc\">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Configuration Defines",
+        "id": "configuration-defines",
+        "description": "<p><a name=\"sensor_atlas_do_config\"></a> Defines to configure and set the address of the Atlas DO sensor</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__do.html",
+              "id": "ga84a99bcf95ae4aeabe852f64c5ace301",
+              "include": [
+                "&lt;src/sensors/AtlasScientificDO.h&gt;",
+                "_atlas_scientific_d_o_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_DO_I2C_ADDR",
+              "initializer": "0x61",
+              "brief": "The default I2C address of the Atlas DO sensor is 0x61 (97)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Sensor Timing",
+        "id": "sensor-timing",
+        "description": "<p><a name=\"sensor_atlas_do_timing\"></a> The sensor timing for an Atlas DO sensor</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__do.html",
+              "id": "gae6c79699d2cd8607c3b96562dc7bb922",
+              "include": [
+                "&lt;src/sensors/AtlasScientificDO.h&gt;",
+                "_atlas_scientific_d_o_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_DO_WARM_UP_TIME_MS",
+              "initializer": "745",
+              "brief": "<a href=\"class_sensor.html#aaaefd7f306f86382a3dac726531756b4\" class=\"m-doc\">Sensor::<wbr />_warmUpTime_ms</a>; the Atlas DO sensor warms up in 745ms.",
+              "description": "<p>737-739 in tests</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__do.html",
+              "id": "ga480df0db04669afee943f54dd87a1616",
+              "include": [
+                "&lt;src/sensors/AtlasScientificDO.h&gt;",
+                "_atlas_scientific_d_o_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_DO_STABILIZATION_TIME_MS",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#ad6822ad09fb64658c911ce86820db79c\" class=\"m-doc\">Sensor::<wbr />_stabilizationTime_ms</a>; the Atlas DO sensor is stable at completion of warm up (0ms after warm-up).",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__do.html",
+              "id": "gae939e9ec79bf298f283319e81937e307",
+              "include": [
+                "&lt;src/sensors/AtlasScientificDO.h&gt;",
+                "_atlas_scientific_d_o_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_DO_MEASUREMENT_TIME_MS",
+              "initializer": "600",
+              "brief": "<a href=\"class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba\" class=\"m-doc\">Sensor::<wbr />_measurementTime_ms</a>; the Atlas DO sensor takes 600ms to complete a measurement.",
+              "description": "<p>only ~555 measurement time in tests, but keep the 600 recommended by manual</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "DO Concentration",
+        "id": "do-concentration",
+        "description": "<p><a name=\"sensor_atlas_do_concentration\"></a> The dissolved oxygen concentration from an Atlas DO sensor</p><ul><li>Accuracy is \u00b1 0.05 mg/L</li><li>Range is 0.01 \u2212 100+ mg/L</li></ul><p>{{ <a href=\"class_atlas_scientific_d_o___d_omg_l.html#a86c13715afe434456306f9df24fbe07f\" class=\"m-doc\">AtlasScientificDO_DOmgL::<wbr />AtlasScientificDO_DOmgL</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__do.html",
+              "id": "ga4017a716245f53a5bd9d3bfda22254e5",
+              "include": [
+                "&lt;src/sensors/AtlasScientificDO.h&gt;",
+                "_atlas_scientific_d_o_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_DOMGL_RESOLUTION",
+              "initializer": "2",
+              "brief": "Decimals places in string representation; dissolved oxygen concentration should have 2 - resolution is 0.01 mg/L.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__do.html",
+              "id": "ga4cf0f1a9dd77d149c3f2b9ac0968e7fe",
+              "include": [
+                "&lt;src/sensors/AtlasScientificDO.h&gt;",
+                "_atlas_scientific_d_o_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_DOMGL_VAR_NUM",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; dissolved oxygen concentration is stored in sensorValues[0].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__do.html",
+              "id": "ga51035f4c39adc73a13a505e059c3aa86",
+              "include": [
+                "&lt;src/sensors/AtlasScientificDO.h&gt;",
+                "_atlas_scientific_d_o_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_DOMGL_VAR_NAME",
+              "initializer": "\"oxygenDissolved\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;oxygenDissolved&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__do.html",
+              "id": "gab55131d80e482bf017a8ca68ae66ec0b",
+              "include": [
+                "&lt;src/sensors/AtlasScientificDO.h&gt;",
+                "_atlas_scientific_d_o_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_DOMGL_UNIT_NAME",
+              "initializer": "\"milligramPerLiter\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;milligramPerLiter&quot; (mg/L)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__do.html",
+              "id": "ga60219e7dd76db5e13f65b13c79febe2e",
+              "include": [
+                "&lt;src/sensors/AtlasScientificDO.h&gt;",
+                "_atlas_scientific_d_o_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_DOMGL_DEFAULT_CODE",
+              "initializer": "\"AtlasDOmgL\"",
+              "brief": "Default variable short code; &quot;AtlasDOmgL&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "DO Percent Saturation",
+        "id": "do-percent-saturation",
+        "description": "<p><a name=\"sensor_atlas_do_percent\"></a> The dissolved oxygen percent saturation for an Atlas DO sensor</p><ul><li>Accuracy is \u00b1 0.05 mg/L</li><li>Range is 0.1 \u2212 400+ % saturation</li></ul><p>{{ <a href=\"class_atlas_scientific_d_o___d_opct.html#a440300f177ef4b3abc0599e00da807d8\" class=\"m-doc\">AtlasScientificDO_DOpct::<wbr />AtlasScientificDO_DOpct</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__do.html",
+              "id": "gade348fa85aaa242e38efc7425eacb2be",
+              "include": [
+                "&lt;src/sensors/AtlasScientificDO.h&gt;",
+                "_atlas_scientific_d_o_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_DOPCT_RESOLUTION",
+              "initializer": "1",
+              "brief": "Decimals places in string representation; dissolved oxygen percent should have 1 - resolution is 0.1 % saturation.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__do.html",
+              "id": "ga96f32a9633a031c0e4ff9b978b37c5f0",
+              "include": [
+                "&lt;src/sensors/AtlasScientificDO.h&gt;",
+                "_atlas_scientific_d_o_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_DOPCT_VAR_NUM",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; dissolved oxygen percent is stored in sensorValues[1].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__do.html",
+              "id": "gae42615a8ec230619d45bc13557d8761d",
+              "include": [
+                "&lt;src/sensors/AtlasScientificDO.h&gt;",
+                "_atlas_scientific_d_o_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_DOPCT_VAR_NAME",
+              "initializer": "\"oxygenDissolvedPercentOfSaturation\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;oxygenDissolvedPercentOfSaturation&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__do.html",
+              "id": "gab3252b6a1a8515cac909f8d520e7f2e4",
+              "include": [
+                "&lt;src/sensors/AtlasScientificDO.h&gt;",
+                "_atlas_scientific_d_o_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_DOPCT_UNIT_NAME",
+              "initializer": "\"percent\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;percent&quot; (percent saturation)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__atlas__do.html",
+              "id": "ga3180d2cd70bf02cb1e1297837adb20e9",
+              "include": [
+                "&lt;src/sensors/AtlasScientificDO.h&gt;",
+                "_atlas_scientific_d_o_8h.html"
+              ],
+              "has_details": true,
+              "name": "ATLAS_DOPCT_DEFAULT_CODE",
+              "initializer": "\"AtlasDOpct\"",
+              "brief": "Default variable short code; &quot;AtlasDOpct&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "Atlas Scientific EZO Circuits",
+        "group__atlas__group.html"
+      ],
+      [
+        "Atlas EZO-DO",
+        "group__sensor__atlas__do.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Atlas EZO-DO",
+        "group__sensor__atlas__do.html"
+      ]
+    ]
+  }
+}

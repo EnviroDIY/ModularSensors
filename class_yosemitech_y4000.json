@@ -1,0 +1,304 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "class",
+    "id": "class_yosemitech_y4000",
+    "name": "YosemitechY4000",
+    "url_base": "class_yosemitech_y4000",
+    "url": "class_yosemitech_y4000.html",
+    "include": [
+      "&lt;src/sensors/YosemitechY4000.h&gt;",
+      "_yosemitech_y4000_8h.html"
+    ],
+    "has_template_details": false,
+    "templates": null,
+    "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__y4000.html\" class=\"m-doc\">Yosemitech Y4000 multiparameter sonde</a>.",
+    "description": "",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [],
+    "base_classes": [
+      {
+        "kind": "class",
+        "url": "class_yosemitech_parent.html",
+        "name": "YosemitechParent",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for all the <a href=\"group__yosemitech__group.html\" class=\"m-doc\">Yosemitech sensors</a>.",
+        "templates": null,
+        "deprecated": null,
+        "since": null,
+        "is_protected": false,
+        "is_virtual": false
+      }
+    ],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [
+      {
+        "base_url": "class_yosemitech_y4000.html",
+        "id": "a0bbc51132590575c15324be42b6651cb",
+        "include": null,
+        "has_details": true,
+        "type": "",
+        "name": "YosemitechY4000",
+        "brief": "Construct a new Yosemitech Y4000 object.",
+        "description": "<aside class=\"m-note m-info\"><h4>Note</h4><p>An RS485 adapter with integrated flow control is strongly recommended.</p></aside>",
+        "return_value": null,
+        "return_values": [],
+        "exceptions": [],
+        "deprecated": null,
+        "since": null,
+        "is_constexpr": false,
+        "is_consteval": false,
+        "is_explicit": false,
+        "is_virtual": false,
+        "prefix": "",
+        "is_defaulted": false,
+        "is_deleted": false,
+        "is_pure_virtual": false,
+        "is_final": false,
+        "is_override": false,
+        "is_noexcept": false,
+        "is_conditional_noexcept": false,
+        "suffix": "",
+        "is_protected": false,
+        "is_private": false,
+        "is_signal": false,
+        "is_slot": false,
+        "has_template_details": false,
+        "templates": null,
+        "has_param_details": true,
+        "params": [
+          {
+            "name": "modbusAddress",
+            "type": "byte",
+            "type_name": "byte modbusAddress",
+            "default": null,
+            "description": "The modbus address of the sensor.",
+            "direction": ""
+          },
+          {
+            "name": "stream",
+            "type": "Stream*",
+            "type_name": "Stream* stream",
+            "default": null,
+            "description": "An Arduino data stream for modbus communication. See <a href=\"page_arduino_streams.html\" class=\"m-doc\">notes</a> for more information on what streams can be used.",
+            "direction": ""
+          },
+          {
+            "name": "powerPin",
+            "type": "int8_t",
+            "type_name": "int8_t powerPin",
+            "default": null,
+            "description": "The pin on the mcu controlling power to the Y4000. Use -1 if it is continuously powered.",
+            "direction": ""
+          },
+          {
+            "name": "powerPin2",
+            "type": "int8_t",
+            "type_name": "int8_t powerPin2",
+            "default": "-1",
+            "description": "The pin on the mcu controlling power to the RS485 adapter, if it is different from that used to power the sensor. Use -1 or omit if not applicable.",
+            "direction": ""
+          },
+          {
+            "name": "enablePin",
+            "type": "int8_t",
+            "type_name": "int8_t enablePin",
+            "default": "-1",
+            "description": "The pin on the mcu controlling the direction enable on the RS485 adapter, if necessary; use -1 or omit if not applicable.",
+            "direction": ""
+          },
+          {
+            "name": "measurementsToAverage",
+            "type": "uint8_t",
+            "type_name": "uint8_t measurementsToAverage",
+            "default": "1",
+            "description": "The number of measurements to take and average before giving a &quot;final&quot; result from the sensor; optional with a default value of 1.",
+            "direction": ""
+          }
+        ]
+      },
+      {
+        "base_url": "class_yosemitech_y4000.html",
+        "id": "ac5a08cc333703862b4b4784e513e74f9",
+        "include": null,
+        "has_details": true,
+        "type": "",
+        "name": "YosemitechY4000",
+        "brief": "Construct a new Yosemitech Y4000 object.",
+        "description": "<aside class=\"m-note m-info\"><h4>Note</h4><p>An RS485 adapter with integrated flow control is strongly recommended.</p></aside>",
+        "return_value": null,
+        "return_values": [],
+        "exceptions": [],
+        "deprecated": null,
+        "since": null,
+        "is_constexpr": false,
+        "is_consteval": false,
+        "is_explicit": false,
+        "is_virtual": false,
+        "prefix": "",
+        "is_defaulted": false,
+        "is_deleted": false,
+        "is_pure_virtual": false,
+        "is_final": false,
+        "is_override": false,
+        "is_noexcept": false,
+        "is_conditional_noexcept": false,
+        "suffix": "",
+        "is_protected": false,
+        "is_private": false,
+        "is_signal": false,
+        "is_slot": false,
+        "has_template_details": false,
+        "templates": null,
+        "has_param_details": true,
+        "params": [
+          {
+            "name": "modbusAddress",
+            "type": "byte",
+            "type_name": "byte modbusAddress",
+            "default": null,
+            "description": "The modbus address of the sensor.",
+            "direction": ""
+          },
+          {
+            "name": "stream",
+            "type": "Stream&amp;",
+            "type_name": "Stream&amp; stream",
+            "default": null,
+            "description": "An Arduino data stream for modbus communication. See <a href=\"page_arduino_streams.html\" class=\"m-doc\">notes</a> for more information on what streams can be used.",
+            "direction": ""
+          },
+          {
+            "name": "powerPin",
+            "type": "int8_t",
+            "type_name": "int8_t powerPin",
+            "default": null,
+            "description": "The pin on the mcu controlling power to the Y4000. Use -1 if it is continuously powered.",
+            "direction": ""
+          },
+          {
+            "name": "powerPin2",
+            "type": "int8_t",
+            "type_name": "int8_t powerPin2",
+            "default": "-1",
+            "description": "The pin on the mcu controlling power to the RS485 adapter, if it is different from that used to power the sensor. Use -1 or omit if not applicable.",
+            "direction": ""
+          },
+          {
+            "name": "enablePin",
+            "type": "int8_t",
+            "type_name": "int8_t enablePin",
+            "default": "-1",
+            "description": "The pin on the mcu controlling the direction enable on the RS485 adapter, if necessary; use -1 or omit if not applicable.",
+            "direction": ""
+          },
+          {
+            "name": "measurementsToAverage",
+            "type": "uint8_t",
+            "type_name": "uint8_t measurementsToAverage",
+            "default": "1",
+            "description": "The number of measurements to take and average before giving a &quot;final&quot; result from the sensor; optional with a default value of 1.",
+            "direction": ""
+          }
+        ]
+      },
+      {
+        "base_url": "class_yosemitech_y4000.html",
+        "id": "ad03a9a40580adcf06b88c209b52c37a2",
+        "include": null,
+        "has_details": false,
+        "type": "",
+        "name": "~YosemitechY4000",
+        "brief": "Destroy the Yosemitech Y4000 object.",
+        "description": "",
+        "return_value": null,
+        "return_values": [],
+        "exceptions": [],
+        "deprecated": null,
+        "since": null,
+        "is_constexpr": false,
+        "is_consteval": false,
+        "is_explicit": false,
+        "is_virtual": false,
+        "prefix": "",
+        "is_defaulted": false,
+        "is_deleted": false,
+        "is_pure_virtual": false,
+        "is_final": false,
+        "is_override": false,
+        "is_noexcept": false,
+        "is_conditional_noexcept": false,
+        "suffix": "",
+        "is_protected": false,
+        "is_private": false,
+        "is_signal": false,
+        "is_slot": false,
+        "has_template_details": false,
+        "templates": null,
+        "has_param_details": false,
+        "params": []
+      }
+    ],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": true,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "Sensor",
+        "class_sensor.html"
+      ],
+      [
+        "YosemitechParent",
+        "class_yosemitech_parent.html"
+      ],
+      [
+        "YosemitechY4000",
+        "class_yosemitech_y4000.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Yosemitech Y4000 Multi-Parameter Sonde",
+        "group__sensor__y4000.html"
+      ],
+      [
+        "YosemitechY4000",
+        "class_yosemitech_y4000.html"
+      ]
+    ],
+    "is_final": false,
+    "prefix_wbr": "YosemitechY4000::<wbr />"
+  }
+}

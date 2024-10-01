@@ -1,0 +1,118 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__modem__digi__lte__bypass",
+    "name": "Digi XBee\u00ae Cellular LTE-M/NB-IoT",
+    "url_base": "group__modem__digi__lte__bypass",
+    "url": "group__modem__digi__lte__bypass.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<section id=\"modem_digi_lte_bypass_notes\"><h2>Introduction</h2><aside class=\"m-note m-danger\"><h4>Warning</h4><p>Digi strongly recommends against this, but it actually seems to be more stable in our tests. Your milage may vary.</p></aside><p>When operated in Digi&#x27;s &quot;bypass&quot; mode, the u-blox SARA R410M based XBee3 can be implented as a <a href=\"class_digi_x_bee_l_t_e_bypass.html\" class=\"m-doc\">DigiXBeeLTEBypass</a> object - a subclass of <a href=\"class_digi_x_bee.html\" class=\"m-doc\">DigiXBee</a> and <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a>. Bypass refers to the fact that XBee3&#x27;s main processor is bypassed - acting only as a pass-through to the u-blox cellular component.</p><p>This LTE-M module can just about almost get by with only 500mA power supplied, but it definitely not ideal.</p></section><section id=\"modem_digi_lte_bypass_docs\"><h2>Manufacturer Documentation</h2><p>The Digi product page for the LTE-M module is here: <a href=\"https://www.digi.com/products/embedded-systems/digi-xbee/cellular-modems/xbee3-cellular-lte-m-nb-iot\">https:/<wbr />/<wbr />www.digi.com/<wbr />products/<wbr />embedded-systems/<wbr />digi-xbee/<wbr />cellular-modems/<wbr />xbee3-cellular-lte-m-nb-iot</a></p></section><section id=\"modem_digi_lte_bypass_ctor\"><h2>Modem Constructor</h2><p>{{ <a href=\"class_digi_x_bee_l_t_e_bypass.html#aa16d639d8f0ee66fef640ed4e7856fdf\" class=\"m-doc\">DigiXBeeLTEBypass::<wbr />DigiXBeeLTEBypass</a> }}</p><hr/></section><section id=\"modem_digi_lte_bypass_examples\"><h2>Example Code</h2><section id=\"modem_digi_lte_bypass_modem_obj\"><h3>Creating the Modem Object</h3><p>The digi_cellular is used in the <a href=\"example_menu.html#menu_walk_digi_xbee_lte_bypass\" class=\"m-doc\">menu a la carte</a> example.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"c1\">// For the u-blox SARA R410M based Digi LTE-M XBee3</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span><span class=\"c1\">// NOTE:  According to the manual, this should be less stable than transparent</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"c1\">// mode, but my experience is the complete reverse.</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;modems/DigiXBeeLTEBypass.h&gt;</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span><span class=\"c1\">// NOTE: Extra hardware and software serial ports are created in the &quot;Settings</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"c1\">// for Additional Serial Ports&quot; section</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int32_t</span><span class=\"w\"> </span><span class=\"n\">modemBaud</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">9600</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// All XBee&#39;s use 9600 by default</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span>\n</div><div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span><span class=\"c1\">// Modem Pins - Describe the physical pin connection of your modem to your board</span>\n</div><div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span><span class=\"c1\">// NOTE:  Use -1 for pins that do not apply</span>\n</div><div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"c1\">// The pin numbers here are for a Digi XBee with a Mayfly 0.x and LTE adapter</span>\n</div><div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemVccPin</span><span class=\"w\">    </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">A5</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// MCU pin controlling modem power</span>\n</div><div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemStatusPin</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">19</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// MCU pin used to read modem status</span>\n</div><div class=\"line\"><a id=\"l-15\" name=\"l-15\"></a><span class=\"linenos\">15</span><span class=\"c1\">// NOTE:  If possible, use the `STATUS/SLEEP_not` (XBee pin 13) for status, but</span>\n</div><div class=\"line\"><a id=\"l-16\" name=\"l-16\"></a><span class=\"linenos\">16</span><span class=\"c1\">// the CTS pin can also be used if necessary</span>\n</div><div class=\"line\"><a id=\"l-17\" name=\"l-17\"></a><span class=\"linenos\">17</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">bool</span><span class=\"w\">   </span><span class=\"n\">useCTSforStatus</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"kr\">false</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// Flag to use the CTS pin for status</span>\n</div><div class=\"line\"><a id=\"l-18\" name=\"l-18\"></a><span class=\"linenos\">18</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemResetPin</span><span class=\"w\">   </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">20</span><span class=\"p\">;</span><span class=\"w\">     </span><span class=\"c1\">// MCU pin connected to modem reset pin</span>\n</div><div class=\"line\"><a id=\"l-19\" name=\"l-19\"></a><span class=\"linenos\">19</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemSleepRqPin</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">23</span><span class=\"p\">;</span><span class=\"w\">     </span><span class=\"c1\">// MCU pin for modem sleep/wake request</span>\n</div><div class=\"line\"><a id=\"l-20\" name=\"l-20\"></a><span class=\"linenos\">20</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">modemLEDPin</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">redLED</span><span class=\"p\">;</span><span class=\"w\">     </span><span class=\"c1\">// MCU pin connected an LED to show modem</span>\n</div><div class=\"line\"><a id=\"l-21\" name=\"l-21\"></a><span class=\"linenos\">21</span><span class=\"w\">                                       </span><span class=\"c1\">// status</span>\n</div><div class=\"line\"><a id=\"l-22\" name=\"l-22\"></a><span class=\"linenos\">22</span>\n</div><div class=\"line\"><a id=\"l-23\" name=\"l-23\"></a><span class=\"linenos\">23</span><span class=\"c1\">// Network connection information</span>\n</div><div class=\"line\"><a id=\"l-24\" name=\"l-24\"></a><span class=\"linenos\">24</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">char</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">apn</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"s\">&quot;xxxxx&quot;</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// APN for GPRS connection</span>\n</div><div class=\"line\"><a id=\"l-25\" name=\"l-25\"></a><span class=\"linenos\">25</span>\n</div><div class=\"line\"><a id=\"l-26\" name=\"l-26\"></a><span class=\"linenos\">26</span><span class=\"c1\">// Create the modem object</span>\n</div><div class=\"line\"><a id=\"l-27\" name=\"l-27\"></a><span class=\"linenos\">27</span><span class=\"n\">DigiXBeeLTEBypass</span><span class=\"w\"> </span><span class=\"nf\">modemXBLTEB</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">modemSerial</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">modemVccPin</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">modemStatusPin</span><span class=\"p\">,</span>\n</div><div class=\"line\"><a id=\"l-28\" name=\"l-28\"></a><span class=\"linenos\">28</span><span class=\"w\">                              </span><span class=\"n\">useCTSforStatus</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">modemResetPin</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">modemSleepRqPin</span><span class=\"p\">,</span>\n</div><div class=\"line\"><a id=\"l-29\" name=\"l-29\"></a><span class=\"linenos\">29</span><span class=\"w\">                              </span><span class=\"n\">apn</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-30\" name=\"l-30\"></a><span class=\"linenos\">30</span><span class=\"c1\">// Create an extra reference to the modem by a generic name</span>\n</div><div class=\"line\"><a id=\"l-31\" name=\"l-31\"></a><span class=\"linenos\">31</span><span class=\"n\">DigiXBeeLTEBypass</span><span class=\"w\"> </span><span class=\"n\">modem</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">modemXBLTEB</span><span class=\"p\">;</span>\n</div></div></div></section></section><section id=\"modem_digi_lte_bypass_network\"><h2>LTE Network Selection</h2><p>It is good practice to select which network you&#x27;ll be connecting to based on your SIM card and signal availability. Example code for this can also be found in the <a href=\"example_menu.html#setup_r4_carrrier\" class=\"m-doc\">menu a la carte example</a>.</p><aside class=\"m-note m-info\"><h4>Note</h4><p>The network selection for an LTE-M XBee in bypass mode is identical to that for a Sodaq LTE-M UBee or any other module based on the u-blox SARA R4 series.</p></aside><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"w\">    </span><span class=\"c1\">// Extra modem set-up</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span><span class=\"w\">    </span><span class=\"nf\">Serial</span><span class=\"p\">.</span><span class=\"nf\">println</span><span class=\"p\">(</span><span class=\"n\">F</span><span class=\"p\">(</span><span class=\"s\">&quot;Waking modem and setting Cellular Carrier Options...&quot;</span><span class=\"p\">));</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"w\">    </span><span class=\"n\">modem</span><span class=\"p\">.</span><span class=\"n\">modemWake</span><span class=\"p\">();</span><span class=\"w\">  </span><span class=\"c1\">// NOTE:  This will also set up the modem</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"w\">    </span><span class=\"c1\">// Turn off the cellular radio while making network changes</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span><span class=\"w\">    </span><span class=\"n\">modem</span><span class=\"p\">.</span><span class=\"n\">gsmModem</span><span class=\"p\">.</span><span class=\"n\">sendAT</span><span class=\"p\">(</span><span class=\"n\">GF</span><span class=\"p\">(</span><span class=\"s\">&quot;+CFUN=0&quot;</span><span class=\"p\">));</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span><span class=\"w\">    </span><span class=\"n\">modem</span><span class=\"p\">.</span><span class=\"n\">gsmModem</span><span class=\"p\">.</span><span class=\"n\">waitResponse</span><span class=\"p\">();</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"w\">    </span><span class=\"c1\">// Mobile Network Operator Profile - 0 = SW default</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span><span class=\"w\">    </span><span class=\"c1\">//                                 - 1 = SIM ICCID selected</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span><span class=\"w\">    </span><span class=\"c1\">//                                 - 2: ATT</span>\n</div><div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span><span class=\"w\">    </span><span class=\"c1\">//                                 - 6: China Telecom</span>\n</div><div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span><span class=\"w\">    </span><span class=\"c1\">//                                 - 100: Standard Europe</span>\n</div><div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"w\">    </span><span class=\"c1\">//                                 - 4: Telstra</span>\n</div><div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span><span class=\"w\">    </span><span class=\"c1\">//                                 - 5: T-Mobile US</span>\n</div><div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span><span class=\"w\">    </span><span class=\"c1\">//                                 - 19: Vodafone</span>\n</div><div class=\"line\"><a id=\"l-15\" name=\"l-15\"></a><span class=\"linenos\">15</span><span class=\"w\">    </span><span class=\"c1\">//                                 - 3: Verizon</span>\n</div><div class=\"line\"><a id=\"l-16\" name=\"l-16\"></a><span class=\"linenos\">16</span><span class=\"w\">    </span><span class=\"c1\">//                                 - 31: Deutsche Telekom</span>\n</div><div class=\"line\"><a id=\"l-17\" name=\"l-17\"></a><span class=\"linenos\">17</span><span class=\"w\">    </span><span class=\"n\">modem</span><span class=\"p\">.</span><span class=\"n\">gsmModem</span><span class=\"p\">.</span><span class=\"n\">sendAT</span><span class=\"p\">(</span><span class=\"n\">GF</span><span class=\"p\">(</span><span class=\"s\">&quot;+UMNOPROF=&quot;</span><span class=\"p\">),</span><span class=\"w\"> </span><span class=\"mi\">2</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-18\" name=\"l-18\"></a><span class=\"linenos\">18</span><span class=\"w\">    </span><span class=\"n\">modem</span><span class=\"p\">.</span><span class=\"n\">gsmModem</span><span class=\"p\">.</span><span class=\"n\">waitResponse</span><span class=\"p\">();</span>\n</div><div class=\"line\"><a id=\"l-19\" name=\"l-19\"></a><span class=\"linenos\">19</span><span class=\"w\">    </span><span class=\"c1\">// Selected network technology - 7: LTE Cat.M1</span>\n</div><div class=\"line\"><a id=\"l-20\" name=\"l-20\"></a><span class=\"linenos\">20</span><span class=\"w\">    </span><span class=\"c1\">//                             - 8: LTE Cat.NB1</span>\n</div><div class=\"line\"><a id=\"l-21\" name=\"l-21\"></a><span class=\"linenos\">21</span><span class=\"w\">    </span><span class=\"c1\">// Fallback network technology - 7: LTE Cat.M1</span>\n</div><div class=\"line\"><a id=\"l-22\" name=\"l-22\"></a><span class=\"linenos\">22</span><span class=\"w\">    </span><span class=\"c1\">//                              - 8: LTE Cat.NB1</span>\n</div><div class=\"line\"><a id=\"l-23\" name=\"l-23\"></a><span class=\"linenos\">23</span><span class=\"w\">    </span><span class=\"c1\">// NOTE:  As of 2020 in the USA, AT&amp;T and Verizon only use LTE-M</span>\n</div><div class=\"line\"><a id=\"l-24\" name=\"l-24\"></a><span class=\"linenos\">24</span><span class=\"w\">    </span><span class=\"c1\">// T-Mobile uses NB-IOT</span>\n</div><div class=\"line\"><a id=\"l-25\" name=\"l-25\"></a><span class=\"linenos\">25</span><span class=\"w\">    </span><span class=\"n\">modem</span><span class=\"p\">.</span><span class=\"n\">gsmModem</span><span class=\"p\">.</span><span class=\"n\">sendAT</span><span class=\"p\">(</span><span class=\"n\">GF</span><span class=\"p\">(</span><span class=\"s\">&quot;+URAT=&quot;</span><span class=\"p\">),</span><span class=\"w\"> </span><span class=\"mi\">7</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"sc\">&#39;,&#39;</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"mi\">8</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-26\" name=\"l-26\"></a><span class=\"linenos\">26</span><span class=\"w\">    </span><span class=\"n\">modem</span><span class=\"p\">.</span><span class=\"n\">gsmModem</span><span class=\"p\">.</span><span class=\"n\">waitResponse</span><span class=\"p\">();</span>\n</div><div class=\"line\"><a id=\"l-27\" name=\"l-27\"></a><span class=\"linenos\">27</span><span class=\"w\">    </span><span class=\"c1\">// Restart the module to apply changes</span>\n</div><div class=\"line\"><a id=\"l-28\" name=\"l-28\"></a><span class=\"linenos\">28</span><span class=\"w\">    </span><span class=\"n\">modem</span><span class=\"p\">.</span><span class=\"n\">gsmModem</span><span class=\"p\">.</span><span class=\"n\">sendAT</span><span class=\"p\">(</span><span class=\"n\">GF</span><span class=\"p\">(</span><span class=\"s\">&quot;+CFUN=1,1&quot;</span><span class=\"p\">));</span>\n</div><div class=\"line\"><a id=\"l-29\" name=\"l-29\"></a><span class=\"linenos\">29</span><span class=\"w\">    </span><span class=\"n\">modem</span><span class=\"p\">.</span><span class=\"n\">gsmModem</span><span class=\"p\">.</span><span class=\"n\">waitResponse</span><span class=\"p\">(</span><span class=\"mf\">10000L</span><span class=\"p\">);</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "modem_digi_lte_bypass_notes",
+        "Introduction",
+        []
+      ],
+      [
+        "modem_digi_lte_bypass_docs",
+        "Manufacturer Documentation",
+        []
+      ],
+      [
+        "modem_digi_lte_bypass_ctor",
+        "Modem Constructor",
+        []
+      ],
+      [
+        "modem_digi_lte_bypass_examples",
+        "Example Code",
+        [
+          [
+            "modem_digi_lte_bypass_modem_obj",
+            "Creating the Modem Object",
+            []
+          ]
+        ]
+      ],
+      [
+        "modem_digi_lte_bypass_network",
+        "LTE Network Selection",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_digi_x_bee_l_t_e_bypass.html",
+        "name": "DigiXBeeLTEBypass",
+        "brief": "The class for any of Digi&#x27;s cellular LTE-M <a href=\"group__modem__digi.html\" class=\"m-doc\">XBee3</a> modules operating in <a href=\"group__modem__digi__lte__bypass.html\" class=\"m-doc\">Digi&#x27;s &quot;bypass&quot; mode</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "Supported Modems and Communication Modules",
+        "group__the__modems.html"
+      ],
+      [
+        "Digi XBee&#x27;s",
+        "group__modem__digi.html"
+      ],
+      [
+        "Digi XBee\u00ae Cellular LTE-M/NB-IoT",
+        "group__modem__digi__lte__bypass.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Digi XBee\u00ae Cellular LTE-M/NB-IoT",
+        "group__modem__digi__lte__bypass.html"
+      ]
+    ]
+  }
+}

@@ -1,0 +1,191 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "class",
+    "id": "class_modem___battery_percent",
+    "name": "Modem_BatteryPercent",
+    "url_base": "class_modem___battery_percent",
+    "url": "class_modem___battery_percent.html",
+    "include": [
+      "&lt;src/LoggerModem.h&gt;",
+      "_logger_modem_8h.html"
+    ],
+    "has_template_details": false,
+    "templates": null,
+    "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the battery charge percent measured by a modem.",
+    "description": "<p>Whether or not this value is meaningful depends on the specific modem subclass and the wiring of the logger setup.</p><p>The value is has units of percent and has a resolution of 1%.</p>",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [],
+    "base_classes": [
+      {
+        "kind": "class",
+        "url": "class_variable.html",
+        "name": "Variable",
+        "brief": "The variable class for a value and related metadata.",
+        "templates": null,
+        "deprecated": null,
+        "since": null,
+        "is_protected": false,
+        "is_virtual": false
+      }
+    ],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [
+      {
+        "base_url": "class_modem___battery_percent.html",
+        "id": "acd736e4d02be3fea88c17611814e5a9e",
+        "include": null,
+        "has_details": true,
+        "type": "",
+        "name": "Modem_BatteryPercent",
+        "brief": "Construct a new <a href=\"class_modem___battery_percent.html\" class=\"m-doc\">Modem_<wbr />BatteryPercent</a> object.",
+        "description": "",
+        "return_value": null,
+        "return_values": [],
+        "exceptions": [],
+        "deprecated": null,
+        "since": null,
+        "is_constexpr": false,
+        "is_consteval": false,
+        "is_explicit": true,
+        "is_virtual": false,
+        "prefix": "",
+        "is_defaulted": false,
+        "is_deleted": false,
+        "is_pure_virtual": false,
+        "is_final": false,
+        "is_override": false,
+        "is_noexcept": false,
+        "is_conditional_noexcept": false,
+        "suffix": "",
+        "is_protected": false,
+        "is_private": false,
+        "is_signal": false,
+        "is_slot": false,
+        "has_template_details": false,
+        "templates": null,
+        "has_param_details": true,
+        "params": [
+          {
+            "name": "parentModem",
+            "type": "<a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a>*",
+            "type_name": "<a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a>* parentModem",
+            "default": null,
+            "description": "The parent modem providing the result values.",
+            "direction": ""
+          },
+          {
+            "name": "uuid",
+            "type": "const char*",
+            "type_name": "const char* uuid",
+            "default": "&quot;&quot;",
+            "description": "A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.",
+            "direction": ""
+          },
+          {
+            "name": "varCode",
+            "type": "const char*",
+            "type_name": "const char* varCode",
+            "default": "&quot;modemBatteryPct&quot;",
+            "description": "A short code to help identify the variable in files; optional with a default value of &quot;modemBatteryPct&quot;.",
+            "direction": ""
+          }
+        ]
+      },
+      {
+        "base_url": "class_modem___battery_percent.html",
+        "id": "a8cf2dd9153d1e01d03cc494ee1c0ec07",
+        "include": null,
+        "has_details": false,
+        "type": "",
+        "name": "~Modem_BatteryPercent",
+        "brief": "Destroy the <a href=\"class_modem___battery_percent.html\" class=\"m-doc\">Modem_<wbr />BatteryPercent</a> object - no action needed.",
+        "description": "",
+        "return_value": null,
+        "return_values": [],
+        "exceptions": [],
+        "deprecated": null,
+        "since": null,
+        "is_constexpr": false,
+        "is_consteval": false,
+        "is_explicit": false,
+        "is_virtual": false,
+        "prefix": "",
+        "is_defaulted": false,
+        "is_deleted": false,
+        "is_pure_virtual": false,
+        "is_final": false,
+        "is_override": false,
+        "is_noexcept": false,
+        "is_conditional_noexcept": false,
+        "suffix": "",
+        "is_protected": false,
+        "is_private": false,
+        "is_signal": false,
+        "is_slot": false,
+        "has_template_details": false,
+        "templates": null,
+        "has_param_details": false,
+        "params": []
+      }
+    ],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": true,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "Variable",
+        "class_variable.html"
+      ],
+      [
+        "Modem_BatteryPercent",
+        "class_modem___battery_percent.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Modem Variables",
+        "group__modem__measured__variables.html"
+      ],
+      [
+        "Modem_BatteryPercent",
+        "class_modem___battery_percent.html"
+      ]
+    ],
+    "is_final": false,
+    "prefix_wbr": "Modem_<wbr />BatteryPercent::<wbr />"
+  }
+}

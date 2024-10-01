@@ -1,0 +1,95 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "file",
+    "id": "_atlas_scientific_o_r_p_8h",
+    "name": "AtlasScientificORP.h",
+    "url_base": "_atlas_scientific_o_r_p_8h",
+    "url": "_atlas_scientific_o_r_p_8h.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "Contains the <a href=\"class_atlas_scientific_r_t_d.html\" class=\"m-doc\">AtlasScientificRTD</a> subclass of the <a href=\"class_atlas_parent.html\" class=\"m-doc\">AtlasParent</a> sensor class along with the variable subclass <a href=\"class_atlas_scientific_o_r_p___potential.html\" class=\"m-doc\">AtlasScientificORP_<wbr />Potential</a>.",
+    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Initial developement for Atlas Sensors was done by Adam Gold Files were edited by Sara Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside><p>These are used for any sensor attached to an Atlas EZO ORP circuit.</p>",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_atlas_scientific_o_r_p.html",
+        "name": "AtlasScientificORP",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__atlas__orp.html\" class=\"m-doc\">Atlas Scientific ORP (oxidation/reduction potential) sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_atlas_scientific_o_r_p___potential.html",
+        "name": "AtlasScientificORP_Potential",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__atlas__orp.html#sensor_atlas_orp_orp\" class=\"m-doc\">oxidation/reduction potential output</a> from an <a href=\"group__sensor__atlas__orp.html\" class=\"m-doc\">Atlas Scientific EZO-ORP circuit</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "src",
+        "dir_68267d1309a1af8e8297ef4c3efbcdba.html"
+      ],
+      [
+        "sensors",
+        "dir_7349e89ef19c117195f8e371603e1b1f.html"
+      ],
+      [
+        "AtlasScientificORP.h",
+        "_atlas_scientific_o_r_p_8h.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "AtlasScientificORP.h",
+        "_atlas_scientific_o_r_p_8h.html"
+      ]
+    ]
+  }
+}

@@ -1,0 +1,422 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__sensor__ads1x15",
+    "name": "TI ADS1x15 External Voltage Sensor",
+    "url_base": "group__sensor__ads1x15",
+    "url": "group__sensor__ads1x15.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>Classes for simple external analog voltage measurements.</p><section id=\"sensor_ads1x15_intro\"><h2>Introduction</h2><p>Analog data output is supported in ModularSensors by way of the Texas Instruments ADS1115.</p><p>The External Voltage module is used for any case where the voltage itself is the desired value (as for an external battery). It can also be used in combination with a calculated variable to support any other analog sensor not explicity supported by ModularSensors. To increase the range available for voltage measurements, this module supports the use of a voltage divider.</p><p>If you are working with an EnviroDIY Mayfly, the easiest voltage divider to connect is the Grove voltage divider sold by seeed studio. The grove voltage divider is a simple voltage divider designed to measure high external voltages on a low voltage ADC. This module employs a variable gain via two pairs of voltage dividers, and a unity gain amplification to reduce output impedance of the module.</p></section><section id=\"sensor_ads1x15_datasheet\"><h2>Sensor Datasheet</h2><p>Technical specifications for the Grove Voltage Divider can be found at: <a href=\"http://wiki.seeedstudio.com/Grove-Voltage_Divider\">http://wiki.seeedstudio.com/Grove-Voltage_<wbr />Divider</a></p></section><section id=\"sensor_ads1x15_flags\"><h2>Build flags</h2><ul><li><code>-D MS_USE_ADS1015</code><ul><li>switches from the 16-bit ADS1115 to the 12 bit ADS1015</li></ul></li></ul></section><section id=\"sensor_ads1x15_ctor\"><h2>Sensor Constructor</h2><p>{{ <a href=\"class_t_i_a_d_s1x15.html#a713a91f192dc9e5f10fc653e1562ed13\" class=\"m-doc\">TIADS1x15::<wbr />TIADS1x15</a> }}</p><hr/></section><section id=\"sensor_ads1x15_examples\"><h2>Example Code</h2><p>The TI ADS1X15 external voltage sensor is used in the <a href=\"example_menu.html#menu_walk_tiads1x15\" class=\"m-doc\">menu a la carte</a> example.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;sensors/TIADS1x15.h&gt;</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"c1\">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">ADSPower</span><span class=\"w\">       </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">sensorPowerPin</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// Power pin</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">ADSChannel</span><span class=\"w\">     </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">2</span><span class=\"p\">;</span><span class=\"w\">               </span><span class=\"c1\">// The ADS channel of interest</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">float</span><span class=\"w\">   </span><span class=\"n\">dividerGain</span><span class=\"w\">    </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">10</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">//  Gain setting if using a voltage divider</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">uint8_t</span><span class=\"w\"> </span><span class=\"n\">evADSi2c_addr</span><span class=\"w\">  </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mh\">0x48</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// The I2C address of the ADS1115 ADC</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">uint8_t</span><span class=\"w\"> </span><span class=\"n\">VoltReadsToAvg</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">1</span><span class=\"p\">;</span><span class=\"w\">     </span><span class=\"c1\">// Only read one sample</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span>\n</div><div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span><span class=\"c1\">// Create an External Voltage sensor object</span>\n</div><div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span><span class=\"n\">TIADS1x15</span><span class=\"w\"> </span><span class=\"nf\">ads1x15</span><span class=\"p\">(</span><span class=\"n\">ADSPower</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">ADSChannel</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">dividerGain</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">evADSi2c_addr</span><span class=\"p\">,</span>\n</div><div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"w\">                  </span><span class=\"n\">VoltReadsToAvg</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span>\n</div><div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span><span class=\"c1\">// Create a voltage variable pointer</span>\n</div><div class=\"line\"><a id=\"l-15\" name=\"l-15\"></a><span class=\"linenos\">15</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">ads1x15Volt</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-16\" name=\"l-16\"></a><span class=\"linenos\">16</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">TIADS1x15_Voltage</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">ads1x15</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "sensor_ads1x15_intro",
+        "Introduction",
+        []
+      ],
+      [
+        "sensor_ads1x15_datasheet",
+        "Sensor Datasheet",
+        []
+      ],
+      [
+        "sensor_ads1x15_flags",
+        "Build flags",
+        []
+      ],
+      [
+        "sensor_ads1x15_ctor",
+        "Sensor Constructor",
+        []
+      ],
+      [
+        "sensor_ads1x15_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_t_i_a_d_s1x15.html",
+        "name": "TIADS1x15",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__ads1x15.html\" class=\"m-doc\">external votlage as measured by TI ADS1115 or ADS1015</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_t_i_a_d_s1x15___voltage.html",
+        "name": "TIADS1x15_Voltage",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__ads1x15.html#sensor_ads1x15_volt\" class=\"m-doc\">voltage output</a> from a <a href=\"group__sensor__ads1x15.html\" class=\"m-doc\">TI ADS1115 or ADS1015</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [
+      {
+        "base_url": "group__sensor__ads1x15.html",
+        "id": "ga08fe5cefcbcfcdb855517f52d4f30b30",
+        "include": [
+          "&lt;src/sensors/TIADS1x15.h&gt;",
+          "_t_i_a_d_s1x15_8h.html"
+        ],
+        "has_details": true,
+        "is_using": false,
+        "type": "<a href=\"class_t_i_a_d_s1x15.html\" class=\"m-doc\">TIADS1x15</a>",
+        "args": "",
+        "name": "ExternalVoltage",
+        "brief": "typedef for backwards compatibility; use the <a href=\"class_t_i_a_d_s1x15.html\" class=\"m-doc\">TIADS1x15</a> class in new code",
+        "description": "<aside class=\"m-note m-danger\"><h4><a href=\"deprecated.html#_deprecated000013\" class=\"m-doc\">Deprecated in v0.33.0</a></h4></aside>",
+        "deprecated": "deprecated in v0.33.0",
+        "since": null,
+        "is_protected": false,
+        "has_template_details": false,
+        "templates": null
+      },
+      {
+        "base_url": "group__sensor__ads1x15.html",
+        "id": "gac0422f8071543bd20bf5900ac82e4d3e",
+        "include": [
+          "&lt;src/sensors/TIADS1x15.h&gt;",
+          "_t_i_a_d_s1x15_8h.html"
+        ],
+        "has_details": true,
+        "is_using": false,
+        "type": "<a href=\"class_t_i_a_d_s1x15___voltage.html\" class=\"m-doc\">TIADS1x15_<wbr />Voltage</a>",
+        "args": "",
+        "name": "ExternalVoltage_Volt",
+        "brief": "typedef for backwards compatibility; use the <a href=\"class_t_i_a_d_s1x15___voltage.html\" class=\"m-doc\">TIADS1x15_<wbr />Voltage</a> class in new code",
+        "description": "<aside class=\"m-note m-danger\"><h4><a href=\"deprecated.html#_deprecated000014\" class=\"m-doc\">Deprecated in v0.33.0</a></h4></aside>",
+        "deprecated": "deprecated in v0.33.0",
+        "since": null,
+        "is_protected": false,
+        "has_template_details": false,
+        "templates": null
+      }
+    ],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Sensor Variable Counts",
+        "id": "sensor-variable-counts",
+        "description": "<p><a name=\"sensor_ads1x15_var_counts\"></a> The number of variables that can be returned by ADS1x15</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ads1x15.html",
+              "id": "gae5b721a4ecc274205025ce3fcb799b23",
+              "include": [
+                "&lt;src/sensors/TIADS1x15.h&gt;",
+                "_t_i_a_d_s1x15_8h.html"
+              ],
+              "has_details": true,
+              "name": "TIADS1X15_NUM_VARIABLES",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html#af26786329fd01b44cf31410d046fc8f3\" class=\"m-doc\">Sensor::<wbr />_numReturnedValues</a>; the ADS1115 can report 1 value.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ads1x15.html",
+              "id": "ga54ea488ad7cc23eb6e5e997ba912e41f",
+              "include": [
+                "&lt;src/sensors/TIADS1x15.h&gt;",
+                "_t_i_a_d_s1x15_8h.html"
+              ],
+              "has_details": true,
+              "name": "TIADS1X15_INC_CALC_VARIABLES",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#a2f3f93a9205efb134cef1216d65077d2\" class=\"m-doc\">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Configuration Defines",
+        "id": "configuration-defines",
+        "description": "<p><a name=\"sensor_ads1x15_config\"></a> Defines to help configure the address of the ADD</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ads1x15.html",
+              "id": "gaf5e311c48b7a1778d4ce4b13ea0be68d",
+              "include": [
+                "&lt;src/sensors/TIADS1x15.h&gt;",
+                "_t_i_a_d_s1x15_8h.html"
+              ],
+              "has_details": true,
+              "name": "ADS1115_ADDRESS",
+              "initializer": "0x48",
+              "brief": "The assumed address of the ADS1115, 1001 000 (ADDR = GND)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Sensor Timing",
+        "id": "sensor-timing",
+        "description": "<p><a name=\"sensor_ads1x15_timing\"></a> The sensor timing for a TI ADS1x15 analog-to-digital converter (ADC) The timing used for simple external voltage measurements is that of the ADS1x15.</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ads1x15.html",
+              "id": "gaa9e97c8aef7c8cca62a5eda6d5634a00",
+              "include": [
+                "&lt;src/sensors/TIADS1x15.h&gt;",
+                "_t_i_a_d_s1x15_8h.html"
+              ],
+              "has_details": true,
+              "name": "TIADS1X15_WARM_UP_TIME_MS",
+              "initializer": "2",
+              "brief": "<a href=\"class_sensor.html#aaaefd7f306f86382a3dac726531756b4\" class=\"m-doc\">Sensor::<wbr />_warmUpTime_ms</a>; the ADS1115 warms up in 2ms.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ads1x15.html",
+              "id": "ga5cd3d771da3b429008ad33a19863538f",
+              "include": [
+                "&lt;src/sensors/TIADS1x15.h&gt;",
+                "_t_i_a_d_s1x15_8h.html"
+              ],
+              "has_details": true,
+              "name": "TIADS1X15_STABILIZATION_TIME_MS",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#ad6822ad09fb64658c911ce86820db79c\" class=\"m-doc\">Sensor::<wbr />_stabilizationTime_ms</a>; the ADS1115 is stable 0ms after warm-up.",
+              "description": "<p>We assume a voltage is instantly ready.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ads1x15.html",
+              "id": "gae6eed955fd1eac0ddfca44886c750a32",
+              "include": [
+                "&lt;src/sensors/TIADS1x15.h&gt;",
+                "_t_i_a_d_s1x15_8h.html"
+              ],
+              "has_details": true,
+              "name": "TIADS1X15_MEASUREMENT_TIME_MS",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba\" class=\"m-doc\">Sensor::<wbr />_measurementTime_ms</a>; the ADS1115 completes 860 conversions per second, but the wait for the conversion to complete is built into the underlying library, so we do not need to wait further here.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Voltage",
+        "id": "voltage",
+        "description": "<p><a name=\"sensor_ads1x15_volt\"></a> The volt variable from a TI ADS1x15 analog-to-digital converter (ADC)</p><ul><li>Range:<ul><li>without voltage divider: 0 - 3.6V [when ADC is powered at 3.3V]</li><li>1/gain = 3x: 0.3 ~ 12.9V</li><li>1/gain = 10x: 1 ~ 43V</li></ul></li><li>Accuracy:<ul><li>16-bit ADC (ADS1115): &lt; 0.25% (gain error), &lt;0.25 LSB (offset errror)</li><li>12-bit ADC (ADS1015, using build flag <code>MS_USE_ADS1015</code>): &lt; 0.15% (gain error), &lt;3 LSB (offset errror)</li></ul></li><li>Resolution:<ul><li>16-bit ADC (ADS1115):<ul><li><span class=\"m-dim\"><a href=\"#ga48041ecf41892742bd18103ce4c732ce\" class=\"m-doc\">TIADS1X15_<wbr />RESOLUTION</a> = 4</span></li><li>without voltage divider: 0.125 mV</li><li>1/gain = 3x: 0.375 mV</li><li>1/gain = 10x: 1.25 mV</li></ul></li><li>12-bit ADC (ADS1015, using build flag <code>MS_USE_ADS1015</code>):<ul><li><span class=\"m-dim\"><a href=\"#ga48041ecf41892742bd18103ce4c732ce\" class=\"m-doc\">TIADS1X15_<wbr />RESOLUTION</a> = 1</span></li><li>without voltage divider: 2 mV</li><li>1/gain = 3x: 6 mV</li><li>1/gain = 10x: 20 mV *</li></ul></li></ul></li></ul><p>{{ <a href=\"class_t_i_a_d_s1x15___voltage.html#ad02df33756116e73203e2d8e43f0cebe\" class=\"m-doc\">TIADS1x15_Voltage::<wbr />TIADS1x15_Voltage</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ads1x15.html",
+              "id": "ga87236eb12e53400b068aadd850436c39",
+              "include": [
+                "&lt;src/sensors/TIADS1x15.h&gt;",
+                "_t_i_a_d_s1x15_8h.html"
+              ],
+              "has_details": true,
+              "name": "TIADS1X15_VAR_NUM",
+              "initializer": "0",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> number; voltage is stored in sensorValues[0].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ads1x15.html",
+              "id": "gaaeba9c1997183d9b6e712fa562f17710",
+              "include": [
+                "&lt;src/sensors/TIADS1x15.h&gt;",
+                "_t_i_a_d_s1x15_8h.html"
+              ],
+              "has_details": true,
+              "name": "TIADS1X15_VAR_NAME",
+              "initializer": "\"voltage\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;voltage&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ads1x15.html",
+              "id": "ga4a2d3441135e64c8d01f73055a327759",
+              "include": [
+                "&lt;src/sensors/TIADS1x15.h&gt;",
+                "_t_i_a_d_s1x15_8h.html"
+              ],
+              "has_details": true,
+              "name": "TIADS1X15_UNIT_NAME",
+              "initializer": "\"volt\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;volt&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ads1x15.html",
+              "id": "gaeeb58659aa98ec750305b3e0bbe0cead",
+              "include": [
+                "&lt;src/sensors/TIADS1x15.h&gt;",
+                "_t_i_a_d_s1x15_8h.html"
+              ],
+              "has_details": true,
+              "name": "TIADS1X15_DEFAULT_CODE",
+              "initializer": "\"extVoltage\"",
+              "brief": "Default variable short code; &quot;extVoltage&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ads1x15.html",
+              "id": "ga48041ecf41892742bd18103ce4c732ce",
+              "include": [
+                "&lt;src/sensors/TIADS1x15.h&gt;",
+                "_t_i_a_d_s1x15_8h.html"
+              ],
+              "has_details": true,
+              "name": "TIADS1X15_RESOLUTION",
+              "initializer": "4",
+              "brief": "Decimals places in string representation; voltage should have 4.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": true,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "Analog Sensors via TI ADS1x15",
+        "group__analog__group.html"
+      ],
+      [
+        "TI ADS1x15 External Voltage Sensor",
+        "group__sensor__ads1x15.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "TI ADS1x15 External Voltage Sensor",
+        "group__sensor__ads1x15.html"
+      ]
+    ]
+  }
+}

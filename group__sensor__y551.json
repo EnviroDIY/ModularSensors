@@ -1,0 +1,585 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__sensor__y551",
+    "name": "Yosemitech Y551 UV245/COD Sensor",
+    "url_base": "group__sensor__y551",
+    "url": "group__sensor__y551.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>Classes for the Yosemitech Y551 UV245/COD sensor with wiper.</p><section id=\"sensor_Y551_datasheet\"><h2>Sensor Datasheet</h2><ul><li><a href=\"https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y551-UV254-COD_Modbus_v2020-05-11.pdf\">Modbus Instructions</a></li></ul><aside class=\"m-note m-info\"><h4>Note</h4><p>The reported resolution (32 bit) gives far more precision than is significant based on the specified accuracy of the sensor, so the resolutions kept in the string representation of the variable values is based on the accuracy not the maximum reported resolution of the sensor.</p></aside></section><section id=\"sensor_y551_ctor\"><h2>Sensor Constructor</h2><p>{{ <a href=\"class_yosemitech_y551.html#aaf48a5fab6aa38e55610c68e1acc5d20\" class=\"m-doc\">YosemitechY551::<wbr />YosemitechY551</a> }}</p><hr/></section><section id=\"sensor_y551_examples\"><h2>Example Code</h2><p>The Yosemitech Y551 UV245/COD sensor is used in the <a href=\"example_menu.html#menu_walk_yosemitech_y551\" class=\"m-doc\">menu a la carte</a> example.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;sensors/YosemitechY551.h&gt;</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"c1\">// NOTE: Extra hardware and software serial ports are created in the &quot;Settings</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"c1\">// for Additional Serial Ports&quot; section</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span><span class=\"c1\">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"kr\">byte</span><span class=\"w\">          </span><span class=\"n\">y551ModbusAddress</span><span class=\"w\">  </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mh\">0x50</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// The modbus address of the Y551</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">y551AdapterPower</span><span class=\"w\">   </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">sensorPowerPin</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// RS485 adapter power pin</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">y551SensorPower</span><span class=\"w\">    </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">A3</span><span class=\"p\">;</span><span class=\"w\">              </span><span class=\"c1\">// Sensor power pin</span>\n</div><div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">y551EnablePin</span><span class=\"w\">      </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">-1</span><span class=\"p\">;</span><span class=\"w\">              </span><span class=\"c1\">// Adapter RE/DE pin</span>\n</div><div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">uint8_t</span><span class=\"w\"> </span><span class=\"n\">y551NumberReadings</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">5</span><span class=\"p\">;</span>\n</div><div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"c1\">// The manufacturer recommends averaging 10 readings, but we take 5 to minimize</span>\n</div><div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span><span class=\"c1\">// power consumption</span>\n</div><div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span>\n</div><div class=\"line\"><a id=\"l-15\" name=\"l-15\"></a><span class=\"linenos\">15</span><span class=\"c1\">// Create a Y551 chemical oxygen demand sensor object</span>\n</div><div class=\"line\"><a id=\"l-16\" name=\"l-16\"></a><span class=\"linenos\">16</span><span class=\"n\">YosemitechY551</span><span class=\"w\"> </span><span class=\"nf\">y551</span><span class=\"p\">(</span><span class=\"n\">y551ModbusAddress</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">modbusSerial</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">y551AdapterPower</span><span class=\"p\">,</span>\n</div><div class=\"line\"><a id=\"l-17\" name=\"l-17\"></a><span class=\"linenos\">17</span><span class=\"w\">                    </span><span class=\"n\">y551SensorPower</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">y551EnablePin</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">y551NumberReadings</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-18\" name=\"l-18\"></a><span class=\"linenos\">18</span>\n</div><div class=\"line\"><a id=\"l-19\" name=\"l-19\"></a><span class=\"linenos\">19</span><span class=\"c1\">// Create COD, turbidity, and temperature variable pointers for the Y551</span>\n</div><div class=\"line\"><a id=\"l-20\" name=\"l-20\"></a><span class=\"linenos\">20</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">y551COD</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-21\" name=\"l-21\"></a><span class=\"linenos\">21</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">YosemitechY551_COD</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">y551</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-22\" name=\"l-22\"></a><span class=\"linenos\">22</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">y551Turbid</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-23\" name=\"l-23\"></a><span class=\"linenos\">23</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">YosemitechY551_Turbidity</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">y551</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-24\" name=\"l-24\"></a><span class=\"linenos\">24</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">y551Temp</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-25\" name=\"l-25\"></a><span class=\"linenos\">25</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">YosemitechY551_Temp</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">y551</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "sensor_Y551_datasheet",
+        "Sensor Datasheet",
+        []
+      ],
+      [
+        "sensor_y551_ctor",
+        "Sensor Constructor",
+        []
+      ],
+      [
+        "sensor_y551_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_yosemitech_y551.html",
+        "name": "YosemitechY551",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__y551.html\" class=\"m-doc\">Yosemitech Y551-B UV254/COD sensor with wiper</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_yosemitech_y551___c_o_d.html",
+        "name": "YosemitechY551_COD",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__y551.html#sensor_y551_cod\" class=\"m-doc\">carbon oxygen demand (COD) output</a> from a <a href=\"group__sensor__y551.html\" class=\"m-doc\">Yosemitech Y551-B UV254/COD sensor with wiper</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_yosemitech_y551___temp.html",
+        "name": "YosemitechY551_Temp",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__y551.html#sensor_y551_temp\" class=\"m-doc\">temperature output</a> from a <a href=\"group__sensor__y551.html\" class=\"m-doc\">Yosemitech Y551-B UV254/COD sensor with wiper</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_yosemitech_y551___turbidity.html",
+        "name": "YosemitechY551_Turbidity",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__y551.html#sensor_y551_turb\" class=\"m-doc\">turbidity output</a> from a <a href=\"group__sensor__y551.html\" class=\"m-doc\">Yosemitech Y551-B UV254/COD sensor with wiper</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Sensor Variable Counts",
+        "id": "sensor-variable-counts",
+        "description": "<p><a name=\"sensor_y551_var_counts\"></a> The number of variables that can be returned by a Yosemitch Y551</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y551.html",
+              "id": "ga1dc11153dfc2c6f46ec0e68461f64289",
+              "include": [
+                "&lt;src/sensors/YosemitechY551.h&gt;",
+                "_yosemitech_y551_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y551_NUM_VARIABLES",
+              "initializer": "3",
+              "brief": "<a href=\"class_sensor.html#af26786329fd01b44cf31410d046fc8f3\" class=\"m-doc\">Sensor::<wbr />_numReturnedValues</a>; the Y551 can report 2 values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y551.html",
+              "id": "ga572b8a339cac5fbe1fcef707289f22b2",
+              "include": [
+                "&lt;src/sensors/YosemitechY551.h&gt;",
+                "_yosemitech_y551_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y551_INC_CALC_VARIABLES",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#a2f3f93a9205efb134cef1216d65077d2\" class=\"m-doc\">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Sensor Timing",
+        "id": "sensor-timing",
+        "description": "<p><a name=\"sensor_y551_timing\"></a> The sensor timing for a Yosemitch Y551</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y551.html",
+              "id": "gaf3e8a080b0ae3fcb31dd7c9764d87fc3",
+              "include": [
+                "&lt;src/sensors/YosemitechY551.h&gt;",
+                "_yosemitech_y551_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y551_WARM_UP_TIME_MS",
+              "initializer": "1000",
+              "brief": "<a href=\"class_sensor.html#aaaefd7f306f86382a3dac726531756b4\" class=\"m-doc\">Sensor::<wbr />_warmUpTime_ms</a>; time before sensor responds after power - &lt;500ms for response, but need &gt;1000ms to load capcitors for brush &amp; measure.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y551.html",
+              "id": "gac2bceac7fdfc7ba9daa7a40b3394a1e4",
+              "include": [
+                "&lt;src/sensors/YosemitechY551.h&gt;",
+                "_yosemitech_y551_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y551_STABILIZATION_TIME_MS",
+              "initializer": "2000",
+              "brief": "<a href=\"class_sensor.html#ad6822ad09fb64658c911ce86820db79c\" class=\"m-doc\">Sensor::<wbr />_stabilizationTime_ms</a>; time between &quot;StartMeasurement&quot; command and stable reading - 2sec in manual &amp; confirmed by testing.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y551.html",
+              "id": "ga3090f89ebf3aff9e8ba8bdab249f840a",
+              "include": [
+                "&lt;src/sensors/YosemitechY551.h&gt;",
+                "_yosemitech_y551_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y551_MEASUREMENT_TIME_MS",
+              "initializer": "4000",
+              "brief": "<a href=\"class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba\" class=\"m-doc\">Sensor::<wbr />_measurementTime_ms</a>; the Y551 takes ~2000ms to complete a measurement according to manual, but testing shows ~1s for a new number but 4-12s to elimniate memory effects, potentially from internal averaging.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Carbon Oxygen Demand",
+        "id": "carbon-oxygen-demand",
+        "description": "<p><a name=\"sensor_y551_cod\"></a> The COD variable from a Yosemitch Y551</p><ul><li>Range is:<ul><li>0.75 to 370 mg/L COD (equiv. KHP)</li><li>0.2 to 150 mg/L TOC (equiv. KHP)</li></ul></li><li>Accuracy is not reported on sensor datasheet</li></ul><p>{{ <a href=\"class_yosemitech_y551___c_o_d.html#a8cd158284a4f7d8d06385ef87bfda4ca\" class=\"m-doc\">YosemitechY551_COD::<wbr />YosemitechY551_COD</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y551.html",
+              "id": "ga2b8483e0265d1e9dbdb2bae93720decf",
+              "include": [
+                "&lt;src/sensors/YosemitechY551.h&gt;",
+                "_yosemitech_y551_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y551_COD_RESOLUTION",
+              "initializer": "2",
+              "brief": "Decimals places in string representation; cod should have 2 - resolution is 0.01 mg/L COD.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y551.html",
+              "id": "ga18f7ff8a3c6209bf2efaa091abbfa43a",
+              "include": [
+                "&lt;src/sensors/YosemitechY551.h&gt;",
+                "_yosemitech_y551_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y551_COD_VAR_NUM",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; COD is stored in sensorValues[0].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y551.html",
+              "id": "ga36e16e05477253a2aa85f7adf574d12c",
+              "include": [
+                "&lt;src/sensors/YosemitechY551.h&gt;",
+                "_yosemitech_y551_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y551_COD_VAR_NAME",
+              "initializer": "\"COD\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;COD&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y551.html",
+              "id": "ga756ba6968ca607b505653043236eb89f",
+              "include": [
+                "&lt;src/sensors/YosemitechY551.h&gt;",
+                "_yosemitech_y551_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y551_COD_UNIT_NAME",
+              "initializer": "\"milligramPerLiter\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;milligramPerLiter&quot; (mg/L)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y551.html",
+              "id": "gaf5f1647f2bcaae85f7fc44f8a138e0e6",
+              "include": [
+                "&lt;src/sensors/YosemitechY551.h&gt;",
+                "_yosemitech_y551_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y551_COD_DEFAULT_CODE",
+              "initializer": "\"Y551COD\"",
+              "brief": "Default variable short code; &quot;Y551COD&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Temperature",
+        "id": "temperature",
+        "description": "<p><a name=\"sensor_y551_temp\"></a> The temperature variable from a Yosemitch Y551</p><ul><li>Range is 5\u00b0C to + 45\u00b0C</li><li>Accuracy is \u00b1 0.2\u00b0C</li></ul><p>{{ <a href=\"class_yosemitech_y551___temp.html#a8e98f51663fb9f3125780f16420b851d\" class=\"m-doc\">YosemitechY551_Temp::<wbr />YosemitechY551_Temp</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y551.html",
+              "id": "gafa57ddcbce92a2801ca630c67b26c899",
+              "include": [
+                "&lt;src/sensors/YosemitechY551.h&gt;",
+                "_yosemitech_y551_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y551_TEMP_RESOLUTION",
+              "initializer": "2",
+              "brief": "Decimals places in string representation; temperature should have 2 - resolution is 0.01\u00b0C.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y551.html",
+              "id": "gaf0498d8a85f75de220f1130da1440ba5",
+              "include": [
+                "&lt;src/sensors/YosemitechY551.h&gt;",
+                "_yosemitech_y551_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y551_TEMP_VAR_NUM",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; temperature is stored in sensorValues[1].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y551.html",
+              "id": "gaac85eaf27c1a970c6836292e5f45f867",
+              "include": [
+                "&lt;src/sensors/YosemitechY551.h&gt;",
+                "_yosemitech_y551_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y551_TEMP_VAR_NAME",
+              "initializer": "\"temperature\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;temperature&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y551.html",
+              "id": "ga0864e6e6a6a14b630db300e30e503e74",
+              "include": [
+                "&lt;src/sensors/YosemitechY551.h&gt;",
+                "_yosemitech_y551_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y551_TEMP_UNIT_NAME",
+              "initializer": "\"degreeCelsius\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;degreeCelsius&quot; (\u00b0C)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y551.html",
+              "id": "gae6083e825a6bf73c8dbeccc842277774",
+              "include": [
+                "&lt;src/sensors/YosemitechY551.h&gt;",
+                "_yosemitech_y551_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y551_TEMP_DEFAULT_CODE",
+              "initializer": "\"Y551Temp\"",
+              "brief": "Default variable short code; &quot;Y551Temp&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Turbidity",
+        "id": "turbidity",
+        "description": "<p><a name=\"sensor_y551_turb\"></a> The turbidity variable from a Yosemitch Y551</p><ul><li>Range is 0.1~1000 NTU</li><li>Accuracy is \uff1c5% or 0.3NTU</li></ul><p>{{ <a href=\"class_yosemitech_y551___turbidity.html#add86f2fa4e76a154e2fa3051789b7265\" class=\"m-doc\">YosemitechY551_Turbidity::<wbr />YosemitechY551_Turbidity</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y551.html",
+              "id": "gaace8f54674af14509246544521ce75fe",
+              "include": [
+                "&lt;src/sensors/YosemitechY551.h&gt;",
+                "_yosemitech_y551_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y551_TURB_RESOLUTION",
+              "initializer": "2",
+              "brief": "Decimals places in string representation; turbidity should have 2 - resolution is 0.01 NTU.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y551.html",
+              "id": "ga3f464208a22b1fb839d3ced54499a624",
+              "include": [
+                "&lt;src/sensors/YosemitechY551.h&gt;",
+                "_yosemitech_y551_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y551_TURB_VAR_NUM",
+              "initializer": "2",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; turbidity is stored in sensorValues[2].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y551.html",
+              "id": "ga072461308d5b7f2c36b0b77b94bb84ca",
+              "include": [
+                "&lt;src/sensors/YosemitechY551.h&gt;",
+                "_yosemitech_y551_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y551_TURB_VAR_NAME",
+              "initializer": "\"turbidity\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;turbidity&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y551.html",
+              "id": "gaeac3cb42d828382b1dc497beed4140c9",
+              "include": [
+                "&lt;src/sensors/YosemitechY551.h&gt;",
+                "_yosemitech_y551_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y551_TURB_UNIT_NAME",
+              "initializer": "\"nephelometricTurbidityUnit\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;nephelometricTurbidityUnit&quot; (NTU)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__y551.html",
+              "id": "ga671734da65e3d59ddd353f0acab11882",
+              "include": [
+                "&lt;src/sensors/YosemitechY551.h&gt;",
+                "_yosemitech_y551_8h.html"
+              ],
+              "has_details": true,
+              "name": "Y551_TURB_DEFAULT_CODE",
+              "initializer": "\"Y551Turbidity\"",
+              "brief": "Default variable short code; &quot;Y551Turbidity&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "Yosemitech Sensors",
+        "group__yosemitech__group.html"
+      ],
+      [
+        "Yosemitech Y551 UV245/COD Sensor",
+        "group__sensor__y551.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Yosemitech Y551 UV245/COD Sensor",
+        "group__sensor__y551.html"
+      ]
+    ]
+  }
+}

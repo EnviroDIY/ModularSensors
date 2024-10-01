@@ -1,0 +1,88 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "file",
+    "id": "_modular_sensors_8h",
+    "name": "ModularSensors.h",
+    "url_base": "_modular_sensors_8h",
+    "url": "_modular_sensors_8h.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "A simple include file for the Arduino command line interface (CLI).",
+    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside>",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [
+      {
+        "base_url": "_modular_sensors_8h.html",
+        "id": "a12856b9645572fd93bb84b245ea6a78f",
+        "include": null,
+        "has_details": false,
+        "name": "MODULAR_SENSORS_VERSION",
+        "initializer": "\"0.36.0\"",
+        "brief": "The current library version number <a href=\"https://semver.org/\">https:/<wbr />/<wbr />semver.org/<wbr /></a> Add hypen &#x27;-&#x27; and alpha number for a branches unique tracking number A pre-release version will always be indicated as slightly ahead of the EnviroDIY branch that it is based on.",
+        "description": "",
+        "return_value": null,
+        "deprecated": null,
+        "since": null,
+        "has_param_details": false,
+        "params": null
+      }
+    ],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "src",
+        "dir_68267d1309a1af8e8297ef4c3efbcdba.html"
+      ],
+      [
+        "ModularSensors.h",
+        "_modular_sensors_8h.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "ModularSensors.h",
+        "_modular_sensors_8h.html"
+      ]
+    ]
+  }
+}

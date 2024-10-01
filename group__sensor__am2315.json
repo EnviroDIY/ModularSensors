@@ -1,0 +1,465 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__sensor__am2315",
+    "name": "AOSong AM2315",
+    "url_base": "group__sensor__am2315",
+    "url": "group__sensor__am2315.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>Classes for the AOSong AM2315 encased I2C capacitive humidity and temperature sensor.</p><section id=\"sensor_am2315_notes\"><h2>Quick Notes</h2><ul><li>Applies to both the AOSong AM2315 and CM2311 capacitive relative humidity and temperature sensors</li><li>Depends on the <a href=\"https://github.com/adafruit/Adafruit_AM2315\">Adafruit AM2315 Library</a>.</li><li>Communicates via I2C<ul><li>only one address possible, 0xB8</li></ul></li><li><strong>Only 1 can be connected to a single I2C bus at a time</strong></li><li>Requires a 3.3 - 5.5V power source</li></ul><aside class=\"m-note m-info\"><h4>Note</h4><p>Software I2C is <em>not</em> supported for the AM2315. A secondary hardware I2C on a SAMD board is supported.</p></aside></section><section id=\"sensor_am2315_datasheet\"><h2>Sensor Datasheet</h2><p><a href=\"https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AOSong-AM2315-Product-Manual.pdf\">Datasheet</a></p></section><section id=\"sensor_am2315_ctor\"><h2>Sensor Constructors</h2><p>{{ <a href=\"class_a_o_song_a_m2315.html#a96ab3634bf862d5ebb3cdfee5ebb8067\" class=\"m-doc\">AOSongAM2315::<wbr />AOSongAM2315(int8_t, uint8_t)</a> }} {{ <a href=\"class_a_o_song_a_m2315.html#aaaf5386ff0132199f8121a24674f253e\" class=\"m-doc\">AOSongAM2315::<wbr />AOSongAM2315(TwoWire*, int8_t, uint8_t)</a> }}</p></section><section id=\"sensor_am2315_examples\"><h2>Example Code</h2><p>The AM2315 is used in the <a href=\"double_logger_8ino-example.html\" class=\"m-doc\">double logger</a> and <a href=\"example_menu.html#menu_walk_ao_song_am2315\" class=\"m-doc\">menu a la carte</a> example</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;sensors/AOSongAM2315.h&gt;</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"c1\">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">AM2315Power</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">sensorPowerPin</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// Power pin</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span><span class=\"c1\">// Create an AOSong AM2315 sensor object</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"n\">AOSongAM2315</span><span class=\"w\"> </span><span class=\"nf\">am2315</span><span class=\"p\">(</span><span class=\"n\">AM2315Power</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span><span class=\"c1\">// Create humidity and temperature variable pointers for the AM2315</span>\n</div><div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">am2315Humid</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">AOSongAM2315_Humidity</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">am2315</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">am2315Temp</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">AOSongAM2315_Temp</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">am2315</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "sensor_am2315_notes",
+        "Quick Notes",
+        []
+      ],
+      [
+        "sensor_am2315_datasheet",
+        "Sensor Datasheet",
+        []
+      ],
+      [
+        "sensor_am2315_ctor",
+        "Sensor Constructors",
+        []
+      ],
+      [
+        "sensor_am2315_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_a_o_song_a_m2315.html",
+        "name": "AOSongAM2315",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__am2315.html\" class=\"m-doc\">AOSong AM2315</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_a_o_song_a_m2315___humidity.html",
+        "name": "AOSongAM2315_Humidity",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__am2315.html#sensor_am2315_humidity\" class=\"m-doc\">relative humidity output</a> from an <a href=\"group__sensor__am2315.html\" class=\"m-doc\">AOSong AM2315</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_a_o_song_a_m2315___temp.html",
+        "name": "AOSongAM2315_Temp",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__am2315.html#sensor_am2315_temperature\" class=\"m-doc\">temperature output</a> from an <a href=\"group__sensor__am2315.html\" class=\"m-doc\">AOSong AM2315</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Sensor Variable Counts",
+        "id": "sensor-variable-counts",
+        "description": "<p><a name=\"sensor_am2315_var_counts\"></a> The number of variables that can be returned by an AOSong AM2315</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__am2315.html",
+              "id": "ga4e8f4fdf7075e9dd260394d28612c4e9",
+              "include": [
+                "&lt;src/sensors/AOSongAM2315.h&gt;",
+                "_a_o_song_a_m2315_8h.html"
+              ],
+              "has_details": true,
+              "name": "AM2315_NUM_VARIABLES",
+              "initializer": "2",
+              "brief": "<a href=\"class_sensor.html#af26786329fd01b44cf31410d046fc8f3\" class=\"m-doc\">Sensor::<wbr />_numReturnedValues</a>; the AM2315 can report 2 values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__am2315.html",
+              "id": "gacec572e8437ace9a546384312a817747",
+              "include": [
+                "&lt;src/sensors/AOSongAM2315.h&gt;",
+                "_a_o_song_a_m2315_8h.html"
+              ],
+              "has_details": true,
+              "name": "AM2315_INC_CALC_VARIABLES",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#a2f3f93a9205efb134cef1216d65077d2\" class=\"m-doc\">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Sensor Timing",
+        "id": "sensor-timing",
+        "description": "<p><a name=\"sensor_am2315_timing\"></a> The sensor timing for an AOSong AM2315</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__am2315.html",
+              "id": "ga5a362125268d8c7ddb0b82937cf72a67",
+              "include": [
+                "&lt;src/sensors/AOSongAM2315.h&gt;",
+                "_a_o_song_a_m2315_8h.html"
+              ],
+              "has_details": true,
+              "name": "AM2315_WARM_UP_TIME_MS",
+              "initializer": "500",
+              "brief": "<a href=\"class_sensor.html#aaaefd7f306f86382a3dac726531756b4\" class=\"m-doc\">Sensor::<wbr />_warmUpTime_ms</a>; the AM2315 warms up in 500ms (estimated).",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__am2315.html",
+              "id": "gafc52cb30b5ba6637fff0e37614c3d3d9",
+              "include": [
+                "&lt;src/sensors/AOSongAM2315.h&gt;",
+                "_a_o_song_a_m2315_8h.html"
+              ],
+              "has_details": true,
+              "name": "AM2315_STABILIZATION_TIME_MS",
+              "initializer": "500",
+              "brief": "<a href=\"class_sensor.html#ad6822ad09fb64658c911ce86820db79c\" class=\"m-doc\">Sensor::<wbr />_stabilizationTime_ms</a>; the AM2315 is stable after 500ms (estimated).",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__am2315.html",
+              "id": "ga1bed7070aa1eb8be4fae9ee17edea5bc",
+              "include": [
+                "&lt;src/sensors/AOSongAM2315.h&gt;",
+                "_a_o_song_a_m2315_8h.html"
+              ],
+              "has_details": true,
+              "name": "AM2315_MEASUREMENT_TIME_MS",
+              "initializer": "2000",
+              "brief": "<a href=\"class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba\" class=\"m-doc\">Sensor::<wbr />_measurementTime_ms</a>; the AM2315 takes 2000ms (2s) to complete a measurement.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Humidity",
+        "id": "humidity",
+        "description": "<p><a name=\"sensor_am2315_humidity\"></a> The humidity variable from an AOSong AM2315</p><ul><li>Range is 0 to 100% RH</li><li>Accuracy is \u00b1 2 % RH at 25\u00b0C</li></ul><p>{{ <a href=\"class_a_o_song_a_m2315___humidity.html#aac60886c0d8d3e81b3cdc874603d9a9b\" class=\"m-doc\">AOSongAM2315_Humidity::<wbr />AOSongAM2315_Humidity</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__am2315.html",
+              "id": "ga12933fdd8706863a89a505a35ae1f9e6",
+              "include": [
+                "&lt;src/sensors/AOSongAM2315.h&gt;",
+                "_a_o_song_a_m2315_8h.html"
+              ],
+              "has_details": true,
+              "name": "AM2315_HUMIDITY_RESOLUTION",
+              "initializer": "1",
+              "brief": "Decimals places in string representation; humidity should have 1 (0.1 % RH for the 16 bit sensor).",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__am2315.html",
+              "id": "ga812ae035f94ba12d656183c32b42ab51",
+              "include": [
+                "&lt;src/sensors/AOSongAM2315.h&gt;",
+                "_a_o_song_a_m2315_8h.html"
+              ],
+              "has_details": true,
+              "name": "AM2315_HUMIDITY_VAR_NUM",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; humidity is stored in sensorValues[0].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__am2315.html",
+              "id": "gafce773220080aaa8bd7e3efc9f7723fc",
+              "include": [
+                "&lt;src/sensors/AOSongAM2315.h&gt;",
+                "_a_o_song_a_m2315_8h.html"
+              ],
+              "has_details": true,
+              "name": "AM2315_HUMIDITY_VAR_NAME",
+              "initializer": "\"relativeHumidity\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;relativeHumidity&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__am2315.html",
+              "id": "ga1061fdb67f7026eb4f117a4b7538da69",
+              "include": [
+                "&lt;src/sensors/AOSongAM2315.h&gt;",
+                "_a_o_song_a_m2315_8h.html"
+              ],
+              "has_details": true,
+              "name": "AM2315_HUMIDITY_UNIT_NAME",
+              "initializer": "\"percent\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;percent&quot; (percent relative humidity)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__am2315.html",
+              "id": "ga57418a8c65d28420c8258c3adafb4a9c",
+              "include": [
+                "&lt;src/sensors/AOSongAM2315.h&gt;",
+                "_a_o_song_a_m2315_8h.html"
+              ],
+              "has_details": true,
+              "name": "AM2315_HUMIDITY_DEFAULT_CODE",
+              "initializer": "\"AM2315Humidity\"",
+              "brief": "Default variable short code; &quot;AM2315Humidity&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Temperature",
+        "id": "temperature",
+        "description": "<p><a name=\"sensor_am2315_temperature\"></a> The temperature variable from an AOSong AM2315</p><ul><li>Range is -40\u00b0C to +125\u00b0C</li><li>Accuracy is \u00b10.1\u00b0C</li></ul><p>{{ <a href=\"class_a_o_song_a_m2315___temp.html#aa57baa63204b894f1c1f80feed7cb1bb\" class=\"m-doc\">AOSongAM2315_Temp::<wbr />AOSongAM2315_Temp</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__am2315.html",
+              "id": "ga0a5ff17473c4b0a27e279c50f2fcb12e",
+              "include": [
+                "&lt;src/sensors/AOSongAM2315.h&gt;",
+                "_a_o_song_a_m2315_8h.html"
+              ],
+              "has_details": true,
+              "name": "AM2315_TEMP_RESOLUTION",
+              "initializer": "1",
+              "brief": "Decimals places in string representation; temperature should have 1. (0.1\u00b0C for the 16 bit sensor)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__am2315.html",
+              "id": "gabc6a9512b9eedcde828c545638b334e7",
+              "include": [
+                "&lt;src/sensors/AOSongAM2315.h&gt;",
+                "_a_o_song_a_m2315_8h.html"
+              ],
+              "has_details": true,
+              "name": "AM2315_TEMP_VAR_NUM",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; temperature is stored in sensorValues[1].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__am2315.html",
+              "id": "gaebbbf0c593a6e1249c5ca21e18b9481d",
+              "include": [
+                "&lt;src/sensors/AOSongAM2315.h&gt;",
+                "_a_o_song_a_m2315_8h.html"
+              ],
+              "has_details": true,
+              "name": "AM2315_TEMP_VAR_NAME",
+              "initializer": "\"temperature\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;temperature&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__am2315.html",
+              "id": "ga14fea634f6606e06ab1314f4f2f4aa66",
+              "include": [
+                "&lt;src/sensors/AOSongAM2315.h&gt;",
+                "_a_o_song_a_m2315_8h.html"
+              ],
+              "has_details": true,
+              "name": "AM2315_TEMP_UNIT_NAME",
+              "initializer": "\"degreeCelsius\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;degreeCelsius&quot; (\u00b0C)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__am2315.html",
+              "id": "ga340c2c99fd2d110449d7512bd89a7737",
+              "include": [
+                "&lt;src/sensors/AOSongAM2315.h&gt;",
+                "_a_o_song_a_m2315_8h.html"
+              ],
+              "has_details": true,
+              "name": "AM2315_TEMP_DEFAULT_CODE",
+              "initializer": "\"AM2315Temp\"",
+              "brief": "Default variable short code; &quot;AM2315Temp&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "AOSong AM2315",
+        "group__sensor__am2315.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "AOSong AM2315",
+        "group__sensor__am2315.html"
+      ]
+    ]
+  }
+}

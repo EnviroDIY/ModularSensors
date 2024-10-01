@@ -1,0 +1,635 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__sensor__ina219",
+    "name": "TI INA219",
+    "url_base": "group__sensor__ina219",
+    "url": "group__sensor__ina219.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>Classes for the TI INA219 current and voltage sensor.</p><section id=\"sensor_ina219_intro\"><h2>Intruduction</h2><p>The <a href=\"http://www.ti.com/product/INA219\">TI INA219</a> is a bi-directional, high-side, current/power monitor that communicates with the board via I2C. The I2C address of INA219 can be any number between 0x40 and 0x4F, depending on the settings of pins A0 and A1. See the datasheet for the possible configurations. The INA219 requires an input voltage of 3.0-5.5V. The gain of this sensor can be increased to increase sensitivity (at the expense of range) but this library assumes the maximum range.</p><p>Commuincation between the INA219 and the mcu is managed by the <a href=\"https://github.com/adafruit/Adafruit_INA219\">Adafruit INA219 Library</a></p><aside class=\"m-note m-info\"><h4>Note</h4><p>Software I2C is <em>not</em> supported for the INA219. A secondary hardware I2C on a SAMD board is supported.</p></aside></section><section id=\"sensor_ina219_datasheet\"><h2>Sensor Datasheet</h2><p>Documentation for the sensor can be found at: <a href=\"https://learn.adafruit.com/adafruit-ina219-current-sensor-breakout\">https:/<wbr />/<wbr />learn.adafruit.com/<wbr />adafruit-ina219-current-sensor-breakout</a> and <a href=\"http://www.ti.com/product/INA219\">http:/<wbr />/<wbr />www.ti.com/<wbr />product/<wbr />INA219</a></p></section><section id=\"sensor_ina219_ctor\"><h2>Sensor Constructor</h2><p>{{ <a href=\"class_t_i_i_n_a219.html#a633a4b1d3bfbcf997d84dba3a79877f3\" class=\"m-doc\">TIINA219::<wbr />TIINA219(int8_t, uint8_t, uint8_t)</a> }} {{ <a href=\"class_t_i_i_n_a219.html#a3a3d4970565873941eb82ed71fc136f0\" class=\"m-doc\">TIINA219::<wbr />TIINA219(TwoWire*, int8_t, uint8_t, uint8_t)</a> }}</p><hr/></section><section id=\"sensor_ina219_examples\"><h2>Example Code</h2><p>The TI INA219 is used in the <a href=\"example_menu.html#menu_walk_ti_ina219\" class=\"m-doc\">menu a la carte</a> example.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;sensors/TIINA219.h&gt;</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"c1\">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">INA219Power</span><span class=\"w\">    </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">sensorPowerPin</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// Power pin</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span><span class=\"kr\">uint8_t</span><span class=\"w\">      </span><span class=\"n\">INA219i2c_addr</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mh\">0x40</span><span class=\"p\">;</span><span class=\"w\">            </span><span class=\"c1\">// 1000000 (Board A0+A1=GND)</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span><span class=\"c1\">// The INA219 can have one of 16 addresses, depending on the connections of A0</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"c1\">// and A1</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">uint8_t</span><span class=\"w\"> </span><span class=\"n\">INA219ReadingsToAvg</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">1</span><span class=\"p\">;</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span>\n</div><div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span><span class=\"c1\">// Create an INA219 sensor object</span>\n</div><div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span><span class=\"n\">TIINA219</span><span class=\"w\"> </span><span class=\"nf\">ina219</span><span class=\"p\">(</span><span class=\"n\">INA219Power</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">INA219i2c_addr</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">INA219ReadingsToAvg</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span>\n</div><div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span><span class=\"c1\">// Create current, voltage, and power variable pointers for the INA219</span>\n</div><div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">inaCurrent</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-15\" name=\"l-15\"></a><span class=\"linenos\">15</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">TIINA219_Current</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">ina219</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-16\" name=\"l-16\"></a><span class=\"linenos\">16</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">inaVolt</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-17\" name=\"l-17\"></a><span class=\"linenos\">17</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">TIINA219_Voltage</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">ina219</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-18\" name=\"l-18\"></a><span class=\"linenos\">18</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">inaPower</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">TIINA219_Power</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">ina219</span><span class=\"p\">,</span>\n</div><div class=\"line\"><a id=\"l-19\" name=\"l-19\"></a><span class=\"linenos\">19</span><span class=\"w\">                                        </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "sensor_ina219_intro",
+        "Intruduction",
+        []
+      ],
+      [
+        "sensor_ina219_datasheet",
+        "Sensor Datasheet",
+        []
+      ],
+      [
+        "sensor_ina219_ctor",
+        "Sensor Constructor",
+        []
+      ],
+      [
+        "sensor_ina219_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_t_i_i_n_a219.html",
+        "name": "TIINA219",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__ina219.html\" class=\"m-doc\">TexasInstruments INA219 sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_t_i_i_n_a219___current.html",
+        "name": "TIINA219_Current",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__ina219.html#sensor_ina219_current\" class=\"m-doc\">current output</a> from a <a href=\"group__sensor__ina219.html\" class=\"m-doc\">TI INA219 power and current monitor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_t_i_i_n_a219___voltage.html",
+        "name": "TIINA219_Voltage",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__ina219.html#sensor_ina219_volt\" class=\"m-doc\">bus voltage output</a> from a <a href=\"group__sensor__ina219.html\" class=\"m-doc\">TI INA219 power and current monitor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_t_i_i_n_a219___power.html",
+        "name": "TIINA219_Power",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__ina219.html#sensor_ina219_power\" class=\"m-doc\">power use output</a> calculated from the voltage and current measured by a <a href=\"group__sensor__ina219.html\" class=\"m-doc\">TI INA219 power and current monitor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [
+      {
+        "base_url": "group__sensor__ina219.html",
+        "id": "gaada1ed79b142638e7575a462ba4dcc5e",
+        "include": [
+          "&lt;src/sensors/TIINA219.h&gt;",
+          "_t_i_i_n_a219_8h.html"
+        ],
+        "has_details": true,
+        "is_using": false,
+        "type": "<a href=\"class_t_i_i_n_a219___voltage.html\" class=\"m-doc\">TIINA219_<wbr />Voltage</a>",
+        "args": "",
+        "name": "TIINA219_Volt",
+        "brief": "typedef for backwards compatibility; use the <a href=\"class_t_i_i_n_a219___voltage.html\" class=\"m-doc\">TIINA219_<wbr />Voltage</a> class in new code",
+        "description": "<aside class=\"m-note m-danger\"><h4><a href=\"deprecated.html#_deprecated000015\" class=\"m-doc\">Deprecated in v0.33.0</a></h4></aside>",
+        "deprecated": "deprecated in v0.33.0",
+        "since": null,
+        "is_protected": false,
+        "has_template_details": false,
+        "templates": null
+      }
+    ],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Sensor Variable Counts",
+        "id": "sensor-variable-counts",
+        "description": "<p><a name=\"sensor_ina219_var_counts\"></a> The number of variables that can be returned by the INA219</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ina219.html",
+              "id": "gae657102d4f426f1ba498f0cfa2f032c8",
+              "include": [
+                "&lt;src/sensors/TIINA219.h&gt;",
+                "_t_i_i_n_a219_8h.html"
+              ],
+              "has_details": true,
+              "name": "INA219_NUM_VARIABLES",
+              "initializer": "3",
+              "brief": "<a href=\"class_sensor.html#af26786329fd01b44cf31410d046fc8f3\" class=\"m-doc\">Sensor::<wbr />_numReturnedValues</a>; the INA219 can report 3 values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ina219.html",
+              "id": "gaae83a395a3afa4c84ea908605e6910a3",
+              "include": [
+                "&lt;src/sensors/TIINA219.h&gt;",
+                "_t_i_i_n_a219_8h.html"
+              ],
+              "has_details": true,
+              "name": "INA219_INC_CALC_VARIABLES",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#a2f3f93a9205efb134cef1216d65077d2\" class=\"m-doc\">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Configuration Defines",
+        "id": "configuration-defines",
+        "description": "<p><a name=\"sensor_ina219_config\"></a> Defines to set the address of the INA219.</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ina219.html",
+              "id": "ga914e9eb0442c3a30e5bc4d2dd9d6fd6e",
+              "include": [
+                "&lt;src/sensors/TIINA219.h&gt;",
+                "_t_i_i_n_a219_8h.html"
+              ],
+              "has_details": true,
+              "name": "INA219_ADDRESS_BASE",
+              "initializer": "0x40",
+              "brief": "The default address of the INA219.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Sensor Timing",
+        "id": "sensor-timing",
+        "description": "<p><a name=\"sensor_ina219_timing\"></a> The sensor timing for a TI INA219</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ina219.html",
+              "id": "ga6277cd4a8181a9864ccd02d3666083c5",
+              "include": [
+                "&lt;src/sensors/TIINA219.h&gt;",
+                "_t_i_i_n_a219_8h.html"
+              ],
+              "has_details": true,
+              "name": "INA219_WARM_UP_TIME_MS",
+              "initializer": "100",
+              "brief": "<a href=\"class_sensor.html#aaaefd7f306f86382a3dac726531756b4\" class=\"m-doc\">Sensor::<wbr />_warmUpTime_ms</a>; the INA219 warms up in 100ms.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ina219.html",
+              "id": "ga9f79186f724bf8ab6bcb1efc440120bb",
+              "include": [
+                "&lt;src/sensors/TIINA219.h&gt;",
+                "_t_i_i_n_a219_8h.html"
+              ],
+              "has_details": true,
+              "name": "INA219_STABILIZATION_TIME_MS",
+              "initializer": "4000",
+              "brief": "<a href=\"class_sensor.html#ad6822ad09fb64658c911ce86820db79c\" class=\"m-doc\">Sensor::<wbr />_stabilizationTime_ms</a>; the INA219 is stable after 4000ms.",
+              "description": "<p>Stable numbers can be acheived after 500ms, but waiting up to 4s gave more consistent numbers based on tests using INA219timingTest.ino</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ina219.html",
+              "id": "ga2bf1af354a440531bd4e78ac2cb4b701",
+              "include": [
+                "&lt;src/sensors/TIINA219.h&gt;",
+                "_t_i_i_n_a219_8h.html"
+              ],
+              "has_details": true,
+              "name": "INA219_MEASUREMENT_TIME_MS",
+              "initializer": "1100",
+              "brief": "<a href=\"class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba\" class=\"m-doc\">Sensor::<wbr />_measurementTime_ms</a>; the INA219 takes 1100ms to complete a measurement.",
+              "description": "<p>A single ADC conversion takes &gt;532 \u00b5s (586 \u00b5s typical) at 12 bit resolution, but in tests waiting closer to 1.1s gave data with a slightly better standard deviation.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Current",
+        "id": "current",
+        "description": "<p><a name=\"sensor_ina219_current\"></a> The current variable from a TI INA219</p><ul><li>Range is between +/-0.4 Amps and +/-3.2 Amps</li><li>Absolute accuracy is range dependent, and approx 2LSB (R accuracy unknown)</li></ul><p>{{ <a href=\"class_t_i_i_n_a219___current.html#a5193c4d0974ccbb776bdc75195aad37e\" class=\"m-doc\">TIINA219_Current::<wbr />TIINA219_Current</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ina219.html",
+              "id": "gae992d9e948a81c27c050c819d2ee6ae2",
+              "include": [
+                "&lt;src/sensors/TIINA219.h&gt;",
+                "_t_i_i_n_a219_8h.html"
+              ],
+              "has_details": true,
+              "name": "INA219_CURRENT_MA_RESOLUTION",
+              "initializer": "1",
+              "brief": "Decimals places in string representation; current should have 1.",
+              "description": "<ul><li>resolution is 12-bit<ul><li>0.8mA using +/-3.2 Amp range</li><li>0.1mA using +/-0.4 Amp range</li></ul></li></ul>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ina219.html",
+              "id": "gaa65d688bdef44acd905afdcbaad2fb60",
+              "include": [
+                "&lt;src/sensors/TIINA219.h&gt;",
+                "_t_i_i_n_a219_8h.html"
+              ],
+              "has_details": true,
+              "name": "INA219_CURRENT_MA_VAR_NUM",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; current is stored in sensorValues[0].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ina219.html",
+              "id": "ga378f2b0a51b1b93eedaa65d0b249a47a",
+              "include": [
+                "&lt;src/sensors/TIINA219.h&gt;",
+                "_t_i_i_n_a219_8h.html"
+              ],
+              "has_details": true,
+              "name": "INA219_CURRENT_MA_VAR_NAME",
+              "initializer": "\"electricCurrent\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;electricCurrent&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ina219.html",
+              "id": "ga0bff4522a781e8ace0517a6d789874c1",
+              "include": [
+                "&lt;src/sensors/TIINA219.h&gt;",
+                "_t_i_i_n_a219_8h.html"
+              ],
+              "has_details": true,
+              "name": "INA219_CURRENT_MA_UNIT_NAME",
+              "initializer": "\"milliamp\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;milliamp&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ina219.html",
+              "id": "ga6899d4e90cf5defb9b4b569008283a2d",
+              "include": [
+                "&lt;src/sensors/TIINA219.h&gt;",
+                "_t_i_i_n_a219_8h.html"
+              ],
+              "has_details": true,
+              "name": "INA219_CURRENT_MA_DEFAULT_CODE",
+              "initializer": "\"TIINA219Amp\"",
+              "brief": "Default variable short code; &quot;TIINA219Amp&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Bus Voltage",
+        "id": "bus-voltage",
+        "description": "<p><a name=\"sensor_ina219_volt\"></a> The bus voltage variable from a TI INA219</p><ul><li>Range is 0 to 26V</li><li>Accuracy is \u00b14mV (1 LSB step size)</li></ul><p>{{ <a href=\"class_t_i_i_n_a219___voltage.html#a6608822d77b0b08fde810e6d32db7f6d\" class=\"m-doc\">TIINA219_Voltage::<wbr />TIINA219_Voltage</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ina219.html",
+              "id": "ga9abf9259877b68e4e4d6acff128238fe",
+              "include": [
+                "&lt;src/sensors/TIINA219.h&gt;",
+                "_t_i_i_n_a219_8h.html"
+              ],
+              "has_details": true,
+              "name": "INA219_BUS_VOLTAGE_RESOLUTION",
+              "initializer": "3",
+              "brief": "Decimals places in string representation; bus voltage should have 4 - resolution is 0.001V.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ina219.html",
+              "id": "ga1b5721175ae35e620bf65b55a06e24ed",
+              "include": [
+                "&lt;src/sensors/TIINA219.h&gt;",
+                "_t_i_i_n_a219_8h.html"
+              ],
+              "has_details": true,
+              "name": "INA219_BUS_VOLTAGE_VAR_NUM",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; bus voltage is stored in sensorValues[1].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ina219.html",
+              "id": "ga3ff995e1a8c3325c71ddc160d5999b5d",
+              "include": [
+                "&lt;src/sensors/TIINA219.h&gt;",
+                "_t_i_i_n_a219_8h.html"
+              ],
+              "has_details": true,
+              "name": "INA219_BUS_VOLTAGE_VAR_NAME",
+              "initializer": "\"voltage\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;voltage&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ina219.html",
+              "id": "ga2ffb06670be111b009ec70b31f20ca5f",
+              "include": [
+                "&lt;src/sensors/TIINA219.h&gt;",
+                "_t_i_i_n_a219_8h.html"
+              ],
+              "has_details": true,
+              "name": "INA219_BUS_VOLTAGE_UNIT_NAME",
+              "initializer": "\"volt\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;volt&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ina219.html",
+              "id": "gad076e3257eb16da6929468cbfbfe08f1",
+              "include": [
+                "&lt;src/sensors/TIINA219.h&gt;",
+                "_t_i_i_n_a219_8h.html"
+              ],
+              "has_details": true,
+              "name": "INA219_BUS_VOLTAGE_DEFAULT_CODE",
+              "initializer": "\"TIINA219Volt\"",
+              "brief": "Default variable short code; &quot;TIINA219Volt&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Power",
+        "id": "power",
+        "description": "<p><a name=\"sensor_ina219_power\"></a> The power variable from a TI INA219</p><p>{{ <a href=\"class_t_i_i_n_a219___power.html#a4b32a1605288704c2bc5f425d8621251\" class=\"m-doc\">TIINA219_Power::<wbr />TIINA219_Power</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ina219.html",
+              "id": "gaace45edbbf103dd1f5c27937fe00b4c4",
+              "include": [
+                "&lt;src/sensors/TIINA219.h&gt;",
+                "_t_i_i_n_a219_8h.html"
+              ],
+              "has_details": true,
+              "name": "INA219_POWER_MW_RESOLUTION",
+              "initializer": "2",
+              "brief": "Decimals places in string representation; power draw should have 2 - resolution is 0.01mW.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ina219.html",
+              "id": "gaf1e627a71a024cec334c6fe0700a453f",
+              "include": [
+                "&lt;src/sensors/TIINA219.h&gt;",
+                "_t_i_i_n_a219_8h.html"
+              ],
+              "has_details": true,
+              "name": "INA219_POWER_MW_VAR_NUM",
+              "initializer": "2",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; power draw is stored in sensorValues[2].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ina219.html",
+              "id": "ga251f2b45a5f7db32d51c9b5f2a3f2e96",
+              "include": [
+                "&lt;src/sensors/TIINA219.h&gt;",
+                "_t_i_i_n_a219_8h.html"
+              ],
+              "has_details": true,
+              "name": "INA219_POWER_MW_VAR_NAME",
+              "initializer": "\"electricPower\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;electricPower&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ina219.html",
+              "id": "gab56c1e390fad894c644fd8c83444fa32",
+              "include": [
+                "&lt;src/sensors/TIINA219.h&gt;",
+                "_t_i_i_n_a219_8h.html"
+              ],
+              "has_details": true,
+              "name": "INA219_POWER_MW_UNIT_NAME",
+              "initializer": "\"milliwatt\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;milliwatt&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ina219.html",
+              "id": "ga08969a6e8aae12bf2af7f80363e12cc9",
+              "include": [
+                "&lt;src/sensors/TIINA219.h&gt;",
+                "_t_i_i_n_a219_8h.html"
+              ],
+              "has_details": true,
+              "name": "INA219_POWER_MW_DEFAULT_CODE",
+              "initializer": "\"TIINA219Power\"",
+              "brief": "Default variable short code; &quot;TIINA219Power&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": true,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "TI INA219",
+        "group__sensor__ina219.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "TI INA219",
+        "group__sensor__ina219.html"
+      ]
+    ]
+  }
+}

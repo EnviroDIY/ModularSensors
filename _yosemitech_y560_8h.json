@@ -1,0 +1,113 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "file",
+    "id": "_yosemitech_y560_8h",
+    "name": "YosemitechY560.h",
+    "url_base": "_yosemitech_y560_8h",
+    "url": "_yosemitech_y560_8h.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "Contains the <a href=\"class_yosemitech_y560.html\" class=\"m-doc\">YosemitechY560</a> sensor subclass and the variable subclasses <a href=\"class_yosemitech_y560___n_h4___n.html\" class=\"m-doc\">YosemitechY560_<wbr />NH4_<wbr />N</a>, <a href=\"class_yosemitech_y560___temp.html\" class=\"m-doc\">YosemitechY560_<wbr />Temp</a>, and <a href=\"class_yosemitech_y560__p_h.html\" class=\"m-doc\">YosemitechY560_<wbr />pH</a>.",
+    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside><p>These are for the Yosemitech Y560 Ammonium sensor.</p><p>This depends on the <a href=\"class_yosemitech_parent.html\" class=\"m-doc\">YosemitechParent</a> super class.</p><p>Documentation for the Modbus Protocol commands and responses can be found within the documentation in the YosemitechModbus library at: <a href=\"https://github.com/EnviroDIY/YosemitechModbus\">https:/<wbr />/<wbr />github.com/<wbr />EnviroDIY/<wbr />YosemitechModbus</a></p>",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_yosemitech_y560.html",
+        "name": "YosemitechY560",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__y560.html\" class=\"m-doc\">Yosemitech Y560-A digital pH sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_yosemitech_y560___n_h4___n.html",
+        "name": "YosemitechY560_NH4_N",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__y560.html#sensor_y560_nh4\" class=\"m-doc\">NH4_<wbr />N output</a> from a <a href=\"group__sensor__y560.html\" class=\"m-doc\">Yosemitech Y560-Ammonium sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_yosemitech_y560___temp.html",
+        "name": "YosemitechY560_Temp",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__y560.html#sensor_y560_temp\" class=\"m-doc\">temperature output</a> from a <a href=\"group__sensor__y560.html\" class=\"m-doc\">Yosemitech Y560-Ammonium sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_yosemitech_y560__p_h.html",
+        "name": "YosemitechY560_pH",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__y560.html#sensor_y560_pH\" class=\"m-doc\">pH output</a> from a <a href=\"group__sensor__y560.html\" class=\"m-doc\">Yosemitech Y560-Ammonium sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "src",
+        "dir_68267d1309a1af8e8297ef4c3efbcdba.html"
+      ],
+      [
+        "sensors",
+        "dir_7349e89ef19c117195f8e371603e1b1f.html"
+      ],
+      [
+        "YosemitechY560.h",
+        "_yosemitech_y560_8h.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "YosemitechY560.h",
+        "_yosemitech_y560_8h.html"
+      ]
+    ]
+  }
+}

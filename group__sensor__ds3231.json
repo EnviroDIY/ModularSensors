@@ -1,0 +1,344 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__sensor__ds3231",
+    "name": "Maxim DS3231 RTC",
+    "url_base": "group__sensor__ds3231",
+    "url": "group__sensor__ds3231.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>Classes for the Maxim DS3231 high-precision, temperature-corrected real-time clock.</p><section id=\"sensor_ds3231_intro\"><h2>Introduction</h2><p>The I2C <a href=\"https://www.maximintegrated.com/en/products/digital/real-time-clocks/DS3231.html\">Maxim DS3231</a> real time clock (RTC) is absolutely required for time-keeping on all AVR boards. This library also makes use of of the DS3231 for its on-board temperature sensor. This temperature is <em>not</em> equivalent to an environmental temperature measurement and should only be used to as a diagnostic. Internally, the DS3231 uses the temperature it measures to compensate for temperature variation in the crystal speed. This improves the timekeeping accuracy and reduces time drift.</p><p>The DS3231 requires a 3.3V power supply and most breakouts or boards that integrate the DS3231 (including the Mayfly) use a coin battery to supply the clock. Using separate power supply for the clock prevents the time from resetting if the main board loses power.</p></section><section id=\"sensor_ds3231_datasheet\"><h2>Sensor Datasheet</h2><p><a href=\"https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxim-DS3231-Real-Time-Clock.pdf\">Datasheet</a></p></section><section id=\"sensor_ds3231_ctor\"><h2>Sensor Constructor</h2><p>{{ <a href=\"class_maxim_d_s3231.html#ad9c1c1c0c9758084de56cf9ea586d96e\" class=\"m-doc\">MaximDS3231::<wbr />MaximDS3231</a> }}</p><hr/></section><section id=\"sensor_ds3231_examples\"><h2>Example Code</h2><p>The Maxim DS3231 RTC is used in nearly all of the examples, including the <a href=\"example_menu.html#menu_walk_maxim_ds3231\" class=\"m-doc\">menu a la carte</a> example.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\">1</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;sensors/MaximDS3231.h&gt;</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\">2</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\">3</span><span class=\"c1\">// Create a DS3231 sensor object</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\">4</span><span class=\"n\">MaximDS3231</span><span class=\"w\"> </span><span class=\"nf\">ds3231</span><span class=\"p\">(</span><span class=\"mi\">1</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\">5</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\">6</span><span class=\"c1\">// Create a temperature variable pointer for the DS3231</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\">7</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">ds3231Temp</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\">8</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">MaximDS3231_Temp</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">ds3231</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "sensor_ds3231_intro",
+        "Introduction",
+        []
+      ],
+      [
+        "sensor_ds3231_datasheet",
+        "Sensor Datasheet",
+        []
+      ],
+      [
+        "sensor_ds3231_ctor",
+        "Sensor Constructor",
+        []
+      ],
+      [
+        "sensor_ds3231_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_maxim_d_s3231.html",
+        "name": "MaximDS3231",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__ds3231.html\" class=\"m-doc\">Maxim DS3231</a> when used as a low-accuracy temperature sensor.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_maxim_d_s3231___temp.html",
+        "name": "MaximDS3231_Temp",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__ds3231.html#sensor_ds3231_temp\" class=\"m-doc\">temperature output</a> from a <a href=\"group__sensor__ds3231.html\" class=\"m-doc\">DS3231</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Sensor Variable Counts",
+        "id": "sensor-variable-counts",
+        "description": "<p><a name=\"sensor_ds3231_var_counts\"></a> The number of variables that can be returned by the DS3231</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ds3231.html",
+              "id": "gad7bfe64c0991236aa8e2fa852c978bca",
+              "include": [
+                "&lt;src/sensors/MaximDS3231.h&gt;",
+                "_maxim_d_s3231_8h.html"
+              ],
+              "has_details": true,
+              "name": "DS3231_NUM_VARIABLES",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html#af26786329fd01b44cf31410d046fc8f3\" class=\"m-doc\">Sensor::<wbr />_numReturnedValues</a>; the DS3231 can report 1 value.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ds3231.html",
+              "id": "ga46c451a0083c72b83051e1d0fccd7b78",
+              "include": [
+                "&lt;src/sensors/MaximDS3231.h&gt;",
+                "_maxim_d_s3231_8h.html"
+              ],
+              "has_details": true,
+              "name": "DS3231_INC_CALC_VARIABLES",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#a2f3f93a9205efb134cef1216d65077d2\" class=\"m-doc\">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Sensor Timing",
+        "id": "sensor-timing",
+        "description": "<p><a name=\"sensor_ds3231_timing\"></a> The sensor timing for a Maxim DS18 RTC</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ds3231.html",
+              "id": "ga63ac5da35b03d85d557267558760fc36",
+              "include": [
+                "&lt;src/sensors/MaximDS3231.h&gt;",
+                "_maxim_d_s3231_8h.html"
+              ],
+              "has_details": true,
+              "name": "DS3231_WARM_UP_TIME_MS",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#aaaefd7f306f86382a3dac726531756b4\" class=\"m-doc\">Sensor::<wbr />_warmUpTime_ms</a>; the DS3231 should never be powered off so there is no warm-up time.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ds3231.html",
+              "id": "ga489aba2c38ec193928bb7c2d2926d51d",
+              "include": [
+                "&lt;src/sensors/MaximDS3231.h&gt;",
+                "_maxim_d_s3231_8h.html"
+              ],
+              "has_details": true,
+              "name": "DS3231_STABILIZATION_TIME_MS",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#ad6822ad09fb64658c911ce86820db79c\" class=\"m-doc\">Sensor::<wbr />_stabilizationTime_ms</a>; the DS3231 should never be powered off so there is no stabilization time.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ds3231.html",
+              "id": "gabed6b65da5bdc2b70641178206469fdc",
+              "include": [
+                "&lt;src/sensors/MaximDS3231.h&gt;",
+                "_maxim_d_s3231_8h.html"
+              ],
+              "has_details": true,
+              "name": "DS3231_MEASUREMENT_TIME_MS",
+              "initializer": "200",
+              "brief": "<a href=\"class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba\" class=\"m-doc\">Sensor::<wbr />_measurementTime_ms</a>; the DS3231 takes 200ms to complete a measurement - A single temperature conversion takes 200ms.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Temperature",
+        "id": "temperature",
+        "description": "<p><a name=\"sensor_ds3231_temp\"></a> The temperature variable from a Maxim DS18 RTC</p><ul><li>Range is -55\u00b0C to 125\u00b0C</li><li>Accuracy: \u00b1 3\u00b0C</li></ul><p>{{ <a href=\"class_maxim_d_s3231___temp.html#ab5aa386f23e4e6d497ab469b29d52643\" class=\"m-doc\">MaximDS3231_Temp::<wbr />MaximDS3231_Temp</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ds3231.html",
+              "id": "ga1d972798d6e5d4b066036a0eac7e2ac5",
+              "include": [
+                "&lt;src/sensors/MaximDS3231.h&gt;",
+                "_maxim_d_s3231_8h.html"
+              ],
+              "has_details": true,
+              "name": "DS3231_TEMP_RESOLUTION",
+              "initializer": "2",
+              "brief": "Decimals places in string representation; temperature should have 2 - resolution is -0.25\u00b0C (10 bit).",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ds3231.html",
+              "id": "ga1a145b91bb65c488ef1a909b9c97406f",
+              "include": [
+                "&lt;src/sensors/MaximDS3231.h&gt;",
+                "_maxim_d_s3231_8h.html"
+              ],
+              "has_details": true,
+              "name": "DS3231_TEMP_VAR_NUM",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; temperature is stored in sensorValues[0].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ds3231.html",
+              "id": "gabaaf4d1d3b1a03ee2a63eb82c52706d1",
+              "include": [
+                "&lt;src/sensors/MaximDS3231.h&gt;",
+                "_maxim_d_s3231_8h.html"
+              ],
+              "has_details": true,
+              "name": "DS3231_TEMP_VAR_NAME",
+              "initializer": "\"temperatureDatalogger\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;temperatureDatalogger&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ds3231.html",
+              "id": "ga562d4471c8d8b3c6784282398d9c61e2",
+              "include": [
+                "&lt;src/sensors/MaximDS3231.h&gt;",
+                "_maxim_d_s3231_8h.html"
+              ],
+              "has_details": true,
+              "name": "DS3231_TEMP_UNIT_NAME",
+              "initializer": "\"degreeCelsius\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;degreeCelsius&quot; (\u00b0C)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__ds3231.html",
+              "id": "ga95e679cfe79e465248cb8463dedd7b5b",
+              "include": [
+                "&lt;src/sensors/MaximDS3231.h&gt;",
+                "_maxim_d_s3231_8h.html"
+              ],
+              "has_details": true,
+              "name": "DS3231_TEMP_DEFAULT_CODE",
+              "initializer": "\"BoardTemp\"",
+              "brief": "Default variable short code; &quot;BoardTemp&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "Maxim DS3231 RTC",
+        "group__sensor__ds3231.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Maxim DS3231 RTC",
+        "group__sensor__ds3231.html"
+      ]
+    ]
+  }
+}

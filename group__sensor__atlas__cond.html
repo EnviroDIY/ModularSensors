@@ -1,20 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
 <head>
   <meta charset="UTF-8" />
-  <title>Supported Sensors &raquo; Atlas Scientific EZO Circuits &raquo; Atlas EZO-EC module | ModularSensors</title>
+  <title>Supported Sensors &raquo; Atlas Scientific EZO Circuits &raquo; Atlas EZO-EC topic | ModularSensors0.36.0</title>
   <link rel="stylesheet" href="m-EnviroDIY+documentation.compiled.css" />
+
+<style id="wp-emoji-styles-inline-css" type="text/css">
+  img.wp-smiley,
+  img.emoji {
+    display: inline !important;
+    border: none !important;
+    box-shadow: none !important;
+    height: 1em !important;
+    width: 1em !important;
+    margin: 0 0.07em !important;
+    vertical-align: -0.1em !important;
+    background: none !important;
+    padding: 0 !important;
+  }
+</style>
 <link
   rel="stylesheet"
   id="gp-parent-style-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/style.css?ver=6.1.1"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/style.css?ver=6.5.4"
   type="text/css"
   media="all"
 />
 <link
   rel="stylesheet"
-  id="ghostpool-style-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize-child/style.css?ver=6.1.1"
+  id="redux-extendify-styles-css"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/framework/redux/assets/css/extendify-utilities.css?ver=4.4.11"
   type="text/css"
   media="all"
 />
@@ -124,31 +139,27 @@
 <link
   rel="stylesheet"
   id="fontawesome-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/fonts/font-awesome/css/font-awesome.min.css?ver=6.1.1"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/fonts/font-awesome/css/font-awesome.min.css?ver=6.5.4"
   type="text/css"
   media="all"
 />
 <link
-  rel="stylesheet"
-  id="prettyphoto-css"
-  href="https://www.envirodiy.org/wp-content/plugins/js_composer/assets/lib/prettyphoto/css/prettyPhoto.min.css?ver=6.10.0"
-  type="text/css"
-  media="all"
+  rel="preload"
+  as="style"
+  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
 />
 <link
   rel="stylesheet"
-  id="gp-bp-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/css/bp.css?ver=6.1.1"
-  type="text/css"
-  media="all"
+  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
+  media="print"
+  onload="this.media='all'"
 />
-<link
-  rel="stylesheet"
-  id="gp-bbp-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/css/bbpress.css?ver=6.1.1"
-  type="text/css"
-  media="all"
-/>
+<noscript
+  ><link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
+/></noscript>
+
 <style type="text/css" id="wp-custom-css">
   /* Print Styles */
   @media print {
@@ -162,12 +173,15 @@
       margin: 0 !important;
       padding: 0;
     }
+
     body:not(.gp-full-page-page-header) .gp-page-header.gp-has-text:before,
     body:not(.gp-full-page-page-header)
       .gp-page-header.gp-has-teaser-video.gp-has-text
       .gp-video-header:before {
       background-image: none !important;
     }
+    /* End print styles */
+
     #gp-main-header,
     #gp-small-header,
     #gp-header-area,
@@ -219,6 +233,7 @@
     img {
       page-break-inside: avoid;
       visibility: visible;
+      float: none;
     }
     blockquote,
     table,
@@ -231,7 +246,7 @@
       page-break-before: avoid;
     }
   }
-  /* End print styles */
+
   /*Gutenberg styles*/
   /*Buttons*/
   a.wp-block-button__link {
@@ -362,10 +377,17 @@
   span.woocommerce-Price-amount.amount {
     text-decoration: none !important;
   }
+  /* Hide additional information tab */
+  div.woocommerce-tabs {
+    display: none !important;
+  }
   /*End WooCommerce styles*/
   /*The Events Calendar*/
   #tribe-events-content a {
     color: #0579bd;
+  }
+  #tribe-events-content .wp-block-button__link {
+    color: #ffffff;
   }
   #gp-sidebar-right
     > div
@@ -451,6 +473,9 @@
   #gp-content p.last-updated {
     display: none;
   }
+  #gp-content ul {
+    margin: 0 0 0 20px !important;
+  }
 </style>
 <style id="socialize-dynamic-css" title="dynamic-css" class="redux-options-output">
   #footer-image img {
@@ -483,7 +508,6 @@
     font-style: normal;
     color: #000;
     font-size: 16px;
-    font-display: swap;
   }
   a {
     color: #0579bd;
@@ -497,7 +521,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 36px;
-    font-display: swap;
   }
   h2 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -505,7 +528,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 28px;
-    font-display: swap;
   }
   h3,
   #tab-description h2,
@@ -519,7 +541,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 24px;
-    font-display: swap;
   }
   h4 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -527,7 +548,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 20px;
-    font-display: swap;
   }
   h5 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -535,7 +555,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 18px;
-    font-display: swap;
   }
   h6 {
     font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -543,7 +562,6 @@
     font-weight: 400;
     font-style: normal;
     font-size: 16px;
-    font-display: swap;
   }
   .gp-entry-meta .gp-post-meta-row-1,
   .gp-homepage #gp-content .gp-vc-element-3,
@@ -577,7 +595,6 @@
     font-style: normal;
     color: #ababab;
     font-size: 16px;
-    font-display: swap;
   }
   #gp-primary-main-nav .menu > li:hover > a,
   #gp-primary-main-nav .menu > li > a {
@@ -600,7 +617,6 @@
     font-style: normal;
     color: #fff;
     font-size: 14px;
-    font-display: swap;
   }
   #gp-secondary-main-nav .menu > li:hover > a,
   #gp-secondary-main-nav .menu > li > a {
@@ -641,7 +657,6 @@
     font-style: normal;
     color: #000;
     font-size: 14px;
-    font-display: swap;
   }
   .gp-nav .menu > .gp-standard-menu > .sub-menu > li a {
     color: #000;
@@ -745,7 +760,6 @@
     font-style: normal;
     color: #fff;
     font-size: 80px;
-    font-display: swap;
   }
   .gp-page-header .gp-container {
     height: 250px;
@@ -759,7 +773,6 @@
     font-style: normal;
     color: #000;
     font-size: 40px;
-    font-display: swap;
   }
   .gp-subtitle {
     font-family: Roboto;
@@ -768,7 +781,6 @@
     font-style: normal;
     color: #0579bd;
     font-size: 20px;
-    font-display: swap;
   }
   #gp-post-links a,
   .gp-pagination-arrows a.prev,
@@ -811,7 +823,6 @@
     line-height: 24px;
     color: #fff;
     font-size: 14px;
-    font-display: swap;
   }
   .gp-author-info a {
     color: #b1b1b1;
@@ -840,19 +851,16 @@
     font-style: normal;
     color: #fff;
     font-size: 24px;
-    font-display: swap;
   }
   .gp-loop-title {
     line-height: 22px;
     font-weight: 400;
     font-size: 19px;
-    font-display: swap;
   }
   .gp-blog-large .gp-loop-title {
     line-height: 46px;
     font-weight: 200;
     font-size: 40px;
-    font-display: swap;
   }
   .gp-loop-title a,
   .bboss_search_item .entry-title a {
@@ -914,7 +922,6 @@
     font-style: normal;
     color: #000;
     font-size: 14px;
-    font-display: swap;
   }
   .widgettitle a,
   .widget-title a,
@@ -1157,7 +1164,6 @@
     font-style: normal;
     color: #fff;
     font-size: 16px;
-    font-display: swap;
   }
   .gp-footer-widget {
     font-family: Roboto;
@@ -1166,7 +1172,6 @@
     font-style: normal;
     color: #ffffff;
     font-size: 14px;
-    font-display: swap;
   }
   .gp-footer-widget a {
     color: #f9bd16;
@@ -1195,441 +1200,295 @@
   #gp-to-top {
     color: #ffffff;
   }
-  .woocommerce ul.products li.product .price,
-  .woocommerce div.product p.price,
-  .woocommerce div.product span.price {
-    color: #00bee9;
-  }
-  .woocommerce span.onsale {
-    background-color: #e93100;
-  }
-  #buddypress .activity-list .activity-content .activity-header,
-  #buddypress .activity-list .activity-content .comment-header,
-  #buddypress .activity-list .activity-header a,
-  #buddypress .activity-list div.activity-comments div.acomment-meta,
-  #buddypress .activity-list .acomment-meta a,
-  .widget.buddypress .item-title a,
-  .widget.buddypress div.item-options.gp-small-item-options:before,
-  .widget.buddypress div.item-options a,
-  #buddypress ul.item-list li div.item-title a,
-  #buddypress ul.item-list li h4 > a,
-  #buddypress ul.item-list li h5 > a,
-  #buddypress div#item-header div#item-meta {
-    color: #000000;
-  }
-  #buddypress .activity-list .activity-content .activity-inner {
-    color: #aaaaaa;
-  }
-  #buddypress .activity-list a.activity-time-since,
-  .widget_display_replies ul li a + div,
-  .widget_display_topics ul li a + div,
-  #buddypress .activity-list .acomment-meta a.activity-time-since,
-  #buddypress .activity-list div.activity-comments div.acomment-content,
-  .widget.buddypress div.item-meta,
-  #buddypress span.activity,
-  #buddypress ul.item-list li div.meta {
-    color: #545454;
-  }
-  .gp-theme #buddypress .activity-list div.activity-meta a.button,
-  .gp-theme #buddypress .activity .acomment-options a,
-  .gp-theme #buddypress .activity-list li.load-more a,
-  .gp-theme #buddypress .activity-list li.load-newest a,
-  .widget.buddypress div.item-options a.selected {
-    color: #26a9e0;
-  }
-  .gp-theme #buddypress .activity-list div.activity-meta a.button:hover,
-  .gp-theme #buddypress .activity .acomment-options a:hover,
-  .gp-theme #buddypress .activity-list li.load-more a:hover,
-  .gp-theme #buddypress .activity-list li.load-newest a:hover,
-  .widget.buddypress div.item-options a.selected:hover {
-    color: #000;
-  }
-  .gp-theme #buddypress ul.item-list li,
-  .gp-theme #buddypress div.activity-comments ul li:first-child,
-  .widget.buddypress #friends-list li,
-  .widget.buddypress #groups-list li,
-  .widget.buddypress #members-list li {
-    border-top: 1px solid #e0e0e0;
-    border-bottom: 1px solid #e0e0e0;
-  }
-  .gp-theme #buddypress div.item-list-tabs {
-    background-color: #353535;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a span,
-  .gp-theme #buddypress div.item-list-tabs ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs ul li.selected a span {
-    color: #353535;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a span {
-    background-color: #ffffff;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a,
-  .gp-theme #buddypress #gp-bp-tabs-button,
-  .gp-theme #buddypress div.item-list-tabs ul li span {
-    color: #ffffff;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li.current a,
-  .gp-theme #buddypress div.item-list-tabs ul li.selected a,
-  .gp-theme #buddypress div.item-list-tabs ul li a:hover {
-    color: #b1b1b1;
-  }
-  .gp-theme #buddypress div.item-list-tabs ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs ul li.selected a span {
-    background: #b1b1b1;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul,
-  .widget.buddypress div.item-options.gp-small-item-options > a {
-    background-color: #f8f8f8;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.selected a span {
-    color: #f8f8f8;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a span {
-    background-color: #000000;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a {
-    color: #000000;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.current a,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.selected a,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a:hover {
-    color: #26a9e0;
-  }
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li a:hover span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.current a span,
-  .gp-theme #buddypress div.item-list-tabs#subnav ul li.selected a span {
-    background: #26a9e0;
-  }
-  #bbpress-forums
-    .gp-forum-home.bbp-forums
-    .bbp-has-subforums
-    .bbp-forum-info
-    > .bbp-forum-title,
-  #bbpress-forums .bbp-topics .bbp-header,
-  #bbpress-forums .bbp-replies .bbp-header,
-  #bbpress-forums .bbp-search-results .bbp-header {
-    background-color: #353535;
-  }
-  #bbpress-forums
-    .gp-forum-home.bbp-forums
-    .bbp-has-subforums
-    .bbp-forum-info
-    > .bbp-forum-title,
-  #bbpress-forums .bbp-topics .bbp-header,
-  #bbpress-forums .bbp-replies .bbp-header,
-  #bbpress-forums .bbp-search-results .bbp-header {
-    color: #ffffff;
-  }
-  #bbpress-forums .bbp-header div.bbp-reply-content a {
-    color: #ddd;
-  }
-  #bbpress-forums .bbp-header div.bbp-reply-content a:hover {
-    color: #fff;
-  }
-  #bbpress-forums .bbp-forums-list li.odd-forum-row,
-  #bbpress-forums div.odd,
-  #bbpress-forums ul.odd {
-    background-color: #f8f8f8;
-  }
-  #bbpress-forums .bbp-forums-list li.even-forum-row,
-  #bbpress-forums div.even,
-  #bbpress-forums ul.even {
-    background-color: #fff;
-  }
-  #bbpress-forums .gp-forum-home.bbp-forums .bbp-forum-info > .bbp-forum-title,
-  #bbpress-forums div.bbp-forum-header,
-  #bbpress-forums div.bbp-topic-header,
-  #bbpress-forums div.bbp-reply-header,
-  #bbpress-forums .bbp-forums-list,
-  #bbpress-forums li.bbp-body {
-    border-top: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
-    border-left: 1px solid #ddd;
-    border-right: 1px solid #ddd;
-  }
-  #bbpress-forums .bbp-forums-list .bbp-forum .bbp-forum-link,
-  body.forum #bbpress-forums .bbp-forums .bbp-forum-info > .bbp-forum-title,
-  #bbpress-forums .bbp-topics .bbp-topic-permalink,
-  #bbpress-forums .gp-forum-home.bbp-forums .bbp-forum-info > .bbp-forum-title,
-  .gp-theme
-    #bbpress-forums
-    .gp-forum-shortcode
-    ul.forum:not(.status-category)
-    .bbp-forum-info
-    a {
-    color: #000000;
-  }
-  #bbpress-forums div.bbp-forum-author .bbp-author-role,
-  #bbpress-forums div.bbp-topic-author .bbp-author-role,
-  #bbpress-forums div.bbp-reply-author .bbp-author-role {
-    background-color: #92d050;
-  }
-  #bbpress-forums div.bbp-forum-author .bbp-author-role,
-  #bbpress-forums div.bbp-topic-author .bbp-author-role,
-  #bbpress-forums div.bbp-reply-author .bbp-author-role {
-    color: #ffffff;
-  }
 </style>
-    <style id="kadence-blocks-global-variables-inline-css" type="text/css">
-      :root {
-        --global-kb-font-size-sm: clamp(0.8rem, 0.73rem + 0.217vw, 0.9rem);
-        --global-kb-font-size-md: clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem);
-        --global-kb-font-size-lg: clamp(1.75rem, 1.576rem + 0.543vw, 2rem);
-        --global-kb-font-size-xl: clamp(2.25rem, 1.728rem + 1.63vw, 3rem);
-        --global-kb-font-size-xxl: clamp(2.5rem, 1.456rem + 3.26vw, 4rem);
-        --global-kb-font-size-xxxl: clamp(2.75rem, 0.489rem + 7.065vw, 6rem);
-      }
-    </style>
-    <link
-      rel="preload"
-      as="style"
-      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.1.1"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.1.1"
-      media="print"
-      onload="this.media='all'"
-    />
-    <noscript
-      ><link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.1.1"
-    /></noscript>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-includes/js/jquery/jquery.min.js?ver=3.6.1"
-  id="jquery-core-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2"
-  id="jquery-migrate-js"
-></script>  <link rel="icon" href="MS_FavIcon.png" type="image/png" />
+  <link rel="icon" href="MS_FavIcon.png" type="image/png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#cb4b16" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="clipboard.js"></script>
 </head>
 
-<body class="home-page bp-legacy home page-template page-template-homepage-template page-template-homepage-template-php page page-id-977 logged-in admin-bar no-customize-support theme-socialize woocommerce-no-js tribe-no-js page-template-socialize-child gp-theme gp-responsive gp-wide-layout gp-retina gp-normal-scrolling gp-no-back-to-top gp-relative-header gp-header-standard gp-cart-disabled gp-search-all gp-profile-disabled gp-small-header-all gp-standard-page-header gp-no-sidebar gp-homepage wpb-js-composer js-comp-ver-6.10.0 vc_responsive no-js">
+<body
+    class="theme-socialize page-template-socialize-child gp-theme gp-responsive gp-wide-layout gp-retina gp-normal-scrolling gp-no-back-to-top gp-relative-header gp-header-standard gp-cart-disabled gp-search-all gp-profile-disabled gp-small-header-all gp-standard-page-header gp-no-sidebar"
+>
 	<div id="gp-site-wrapper">
 
   <nav id="gp-mobile-nav">
     <div id="gp-mobile-nav-close-button"></div>
     <ul class="menu">
-        <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-            <a class="menu-link main-menu-link" href="index.html">About</a>
-          <ul class="sub-menu menu-odd menu-depth-1">
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#data_receivers">Data Endpoints</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#supported_sensors">Supported Sensors</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#modems">Supported Cellular/Wifi Modules</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#contributing">Contributing</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#license">License</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="index.html#acknowledgments">Acknowledgments</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a href="change_log.html">ChangeLog</a>
-              </li>
-          </ul>
-        </li>
-        <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-            <a class="menu-link main-menu-link" href="page_getting_started.html">Getting Started</a>
-          <ul class="sub-menu menu-odd menu-depth-1">
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>
-              </li>
-          </ul>
-        </li>
-        <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-            <a class="menu-link main-menu-link" href="page_faq.html">FAQs</a>
-          <ul class="sub-menu menu-odd menu-depth-1">
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>
-              </li>
-              <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                <a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>
-              </li>
-          </ul>
-        </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="modules.html">Modules</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="annotated.html">Classes</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="files.html">Source Files</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="page_the_examples.html">Examples Using ModularSensors</a>          </li>
-          <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="pages.html">More</a>          </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+      >
+<a href="index.html" class="menu-link main-menu-link">About</a>        <ul class="sub-menu menu-odd menu-depth-1">
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#data_receivers">Data Endpoints</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#supported_sensors">Supported Sensors</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#modems">Supported Cellular/Wifi Modules</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#contributing">Contributing</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#license">License</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="index.html#acknowledgments">Acknowledgments</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a href="change_log.html">ChangeLog</a>          </li>
+        </ul>
+      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+      >
+<a href="page_getting_started.html" class="menu-link main-menu-link">Getting Started</a>        <ul class="sub-menu menu-odd menu-depth-1">
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>          </li>
+        </ul>
+      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+      >
+<a href="page_faq.html" class="menu-link main-menu-link">FAQs</a>        <ul class="sub-menu menu-odd menu-depth-1">
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>          </li>
+          <li
+            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+          >
+<a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>          </li>
+        </ul>
+      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="topics.html" class="menu-link main-menu-link">Topics</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="annotated.html" class="menu-link main-menu-link">Classes</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="files.html" class="menu-link main-menu-link">Source Files</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="page_the_examples.html" class="menu-link main-menu-link">Examples Using ModularSensors</a>      </li>
+      <li
+        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+      >
+<a href="pages.html" class="menu-link main-menu-link">More</a>      </li>
     </ul>
-  </nav><div id="gp-mobile-nav-bg"></div>
+  </nav> <!-- gp-mobile-nav -->
+  <div id="gp-mobile-nav-bg"></div>
 
   <div id="gp-page-wrapper">
 
     <header id="gp-main-header">
       <div class="gp-container">
         <div id="gp-logo">
-          <a href="index.html" title="ModularSensors">
+          <a href="index.html" title="ModularSensors 0.36.0">
             <img
-              src="ModularSensors_ubuntu_264x55.png"
-              alt="ModularSensors"
-                  width="200"
-                  height="42"
+              src="gp-desktop-logo.png"
+              alt="ModularSensors 0.36.0"
+              width="200"
+              height="42"
               class="gp-desktop-logo"
             />
             <img
-              src="ModularSensors_ubuntu_264x55.png"
-              alt="ModularSensors"
+              src="gp-scrolling-logo.png"
+              alt="ModularSensors 0.36.0"
               width="264"
               height="55"
               class="gp-scrolling-logo"
             />
             <img
-              src="ModularSensors_ubuntu_264x55.png"
-              alt="ModularSensors"
+              src="gp-mobile-logo.png"
+              alt="ModularSensors 0.36.0"
               width="132"
               height="28"
               class="gp-mobile-logo"
             />
           </a>
-        </div>
+        </div> <!-- gp-logo -->
 
         <a id="gp-mobile-nav-button"></a>
 
         <nav id="gp-main-nav" class="gp-nav">
           <nav id="gp-primary-main-nav">
-              <ul id="menu-main-menu-1" class="menu">
-                <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-                    <a class="menu-link main-menu-link" href="index.html">About</a>
-                  <ul class="sub-menu menu-odd menu-depth-1">
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#data_receivers">Data Endpoints</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#supported_sensors">Supported Sensors</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#modems">Supported Cellular/Wifi Modules</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#contributing">Contributing</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#license">License</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="index.html#acknowledgments">Acknowledgments</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a href="change_log.html">ChangeLog</a>
-                      </li>
-                  </ul>
-                </li>
-                <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-                    <a class="menu-link main-menu-link" href="page_getting_started.html">Getting Started</a>
-                  <ul class="sub-menu menu-odd menu-depth-1">
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>
-                      </li>
-                  </ul>
-                </li>
-                <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-custom menu-item-object-custom menu-item-has-children">
-                    <a class="menu-link main-menu-link" href="page_faq.html">FAQs</a>
-                  <ul class="sub-menu menu-odd menu-depth-1">
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>
-                      </li>
-                      <li class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-param-post_type menu-item-object-page">
-                        <a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>
-                      </li>
-                  </ul>
-                </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="modules.html">Modules</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="annotated.html">Classes</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="files.html">Source Files</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="page_the_examples.html">Examples Using ModularSensors</a>                  </li>
-                  <li class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-param-post_type menu-item-object-page">
-<a class="menu-link main-menu-link" href="pages.html">More</a>                  </li>
-              </ul>
-          </nav>
+            <ul id="menu-main-menu-1" class="menu">
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+              >
+<a href="index.html" class="menu-link main-menu-link" >About</a>                <ul class="sub-menu menu-odd menu-depth-1">
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#data_receivers">Data Endpoints</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#supported_sensors">Supported Sensors</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#modems">Supported Cellular/Wifi Modules</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#contributing">Contributing</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#license">License</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="index.html#acknowledgments">Acknowledgments</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a href="change_log.html">ChangeLog</a>                  </li>
+                </ul>
+              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+              >
+<a href="page_getting_started.html" class="menu-link main-menu-link" >Getting Started</a>                <ul class="sub-menu menu-odd menu-depth-1">
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_getting_started.html">Getting Started</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_library_dependencies.html">Library Dependencies</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_physical_dependencies.html">Physical Dependencies</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_library_terminology.html">Library Terminology</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_other_notes.html">Other Sensor and Modem Notes</a>                  </li>
+                </ul>
+              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
+              >
+<a href="page_faq.html" class="menu-link main-menu-link" >FAQs</a>                <ul class="sub-menu menu-odd menu-depth-1">
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>                  </li>
+                  <li
+                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
+                  >
+<a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>                  </li>
+                </ul>
+              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="topics.html"class="menu-link main-menu-link">Topics</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="annotated.html"class="menu-link main-menu-link">Classes</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="files.html"class="menu-link main-menu-link">Source Files</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="page_the_examples.html"class="menu-link main-menu-link">Examples Using ModularSensors</a>              </li>
+              <li
+                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
+              >
+<a href="pages.html"class="menu-link main-menu-link">More</a>              </li>
+            </ul>
+          </nav> <!-- gp-primary-main-nav -->
 
           <div id="gp-search">
             <div id="m-search-button" class="m-show-m" onclick="return showSearch()">
-            </div>
-					</div>
-
-
+            </div> <!-- gp-search-box -->
+          </div> <!-- gp-search -->
 
           <nav id="gp-secondary-main-nav"></nav>
-        </nav></div>
-    </header><header id="gp-small-header">
+        </nav> <!-- gp-main-nav -->
+      </div> <!-- gp-container -->
+    </header> <!-- gp-main-header -->
+
+    <header id="gp-small-header">
       <div class="gp-container">
         <div class="gp-left-triangle"></div>
         <div class="gp-right-triangle"></div>
@@ -1656,7 +1515,9 @@
 
         </nav>
       </div>
-    </header><div id="gp-fixed-header-padding"></div>
+    </header> <!-- gp-small-header -->
+
+    <div id="gp-fixed-header-padding"></div>
 
     <div class="m-doc-search" id="search">
       <a href="#!" onclick="return hideSearch()"></a>
@@ -1664,7 +1525,7 @@
         <div class="gp-container">
           <div style="background-color:#fff;padding:20px;">
             <div class="m-doc-search-header m-text m-small">
-              <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+              <div><span class="m-label m-info">Tab</span> / <span class="m-label m-info">T</span> to search, <span class="m-label m-info">Esc</span> to close</div>
               <div id="search-symbolcount">&hellip;</div>
             </div>
             <div class="m-doc-search-content">
@@ -1674,7 +1535,7 @@
               <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
               <div id="search-help" class="m-text m-dim m-text-center">
                 <p class="m-noindent">Search for symbols, directories, files, pages or
-            modules. You can omit any prefix from the symbol or file path; adding a
+            topics. You can omit any prefix from the symbol or file path; adding a
             <code>:</code> or <code>/</code> suffix lists all members of given symbol or
             directory.</p>
             <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
@@ -1699,58 +1560,77 @@
 
     <div id="gp-content-wrapper" class="gp-container">
       <div id="gp-inner-container">
+        <div id="gp-left-column">
           <div id="gp-content">
 
             <main>
               <article>
-                <div class="m-container m-container-inflatable">
-                  <div class="m-row">
-                    <div class="m-col-l-10 m-push-l-1">
+                <div class="breadcrumbs" typeof="BreadcrumbList" vocab="http://schema.org/">
           <span class="m-breadcrumb">
             <a href="index.html">
               ModularSensors
             </a>  &gt; <wbr/>
           </span>
           <span class="m-breadcrumb">
-            <a href="modules.html">
-              Modules
+            <a href="topics.html">
+              Topics
             </a>  &gt; <wbr/>
           </span>
                     <span class="m-breadcrumb">
-          <a href="group__the__sensors.html">Supported Sensors</a> &gt; <wbr/>
+          <a href="group__the__sensors.html">
+            Supported Sensors
+          </a> &gt; <wbr/>
           </span>
           <span class="m-breadcrumb">
-          <a href="group__atlas__group.html">Atlas Scientific EZO Circuits</a> &gt; <wbr/>
+          <a href="group__atlas__group.html">
+            Atlas Scientific EZO Circuits
+          </a> &gt; <wbr/>
           </span>
           <span class="m-breadcrumb">
             Atlas EZO-EC
           </span>
+                </div>
+                <header class="gp-entry-header">
+                  <h1 class="gp-entry-title" itemprop="headline">
+          Atlas EZO-EC
+          <span class="m-thin">
+            topic
+          </span>
 
-        <header class="gp-entry-header">
-          <h1 class="gp-entry-title" itemprop="headline">
 
-          Atlas EZO-EC <span class="m-thin">module</span>
-          </h1>
-        </header>
-        <div class="m-block m-default">
+                </h1>
+                </header>
+        <nav class="m-block m-default">
           <ul>
             <li><a href="#sensor_atlas_cond_datasheet">Sensor Datasheet</a></li>
             <li><a href="#sensor_atlas_cond_ctor">Sensor Constructors</a></li>
             <li><a href="#sensor_atlas_cond_examples">Example Code</a></li>
+            <li>
+              Reference
+              <ul>
                 <li><a href="#nested-classes">Classes</a></li>
-                <li><a href="#define-members">Defines</a></li>
+                <li><a href="#sensor-variable-counts">Sensor Variable Counts</a></li>
+                <li><a href="#configuration-defines">Configuration Defines</a></li>
                 <li><a href="#sensor-timing">Sensor Timing</a></li>
                 <li><a href="#conductivity">Conductivity</a></li>
                 <li><a href="#total-dissolved-solids">Total Dissolved Solids</a></li>
                 <li><a href="#salinity">Salinity</a></li>
                 <li><a href="#specific-gravity">Specific Gravity</a></li>
+              </ul>
+            </li>
+            <li>
+              Detailed Descriptions
+              <ul>
+                <li><a href="#define-details">Defines</a></li>
+              </ul>
+            </li>
           </ul>
-        </div>
-          <p>Classes for the Atlas Scientific EZO-EC conductivity circuit and probes.</p><p>The Atlas Scientifc Conductivity sensor outputs raw conductivity, TDS, salinity, and specific gravity</p><ul><li>Accuracy is ± 2%</li><li>Range is 0.07 − 500,000+ μS/cm</li><li>Resolution is 3 decimal places</li></ul><aside class="m-note m-info"><h4>Note</h4><p>This library <em>DOES NOT</em> support using the built-in temperature compensation for conductivity. The returned result is conductivity, not the more typically reported specific. If you need specific conductance, you should calculate it separately, as shown in the example code below.</p></aside><section id="sensor_atlas_cond_datasheet"><h2>Sensor Datasheet</h2><ul><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_EZO_Datasheet.pdf">Circuit Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_0.1_probe.pdf">K0.1 Probe Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_1.0_probe.pdf">K1.0 Probe Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_10_probe.pdf">K10 Probe Datasheet</a></li></ul></section><section id="sensor_atlas_cond_ctor"><h2>Sensor Constructors</h2><p><section class="m-doc-details" id="a748569772bd9404f2d75cb7606e4c023"><div>
+        </nav>
+          <p>Classes for the Atlas Scientific EZO-EC conductivity circuit and probes.</p><p>The Atlas Scientifc Conductivity sensor outputs raw conductivity, TDS, salinity, and specific gravity</p><ul><li>Accuracy is ± 2%</li><li>Range is 0.07 − 500,000+ μS/cm</li><li>Resolution is 3 decimal places</li></ul><aside class="m-note m-info"><h4>Note</h4><p>This library <em>DOES NOT</em> support using the built-in temperature compensation for conductivity. The returned result is conductivity, not the more typically reported specific. If you need specific conductance, you should calculate it separately, as shown in the example code below.</p></aside><section id="sensor_atlas_cond_datasheet"><h2>Sensor Datasheet</h2><ul><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_EZO_Datasheet.pdf">Circuit Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_0.1_probe.pdf">K0.1 Probe Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_1.0_probe.pdf">K1.0 Probe Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_10_probe.pdf">K10 Probe Datasheet</a></li></ul></section><section id="sensor_atlas_cond_ctor"><h2>Sensor Constructors</h2><p><section class="m-doc-details" id="ac6755ba4cd3de3c492c0aba8ee2aa4fd"><div>
 <h3>
-<span class="m-doc-wrap-bumper"><span class="m-dim"></span><a class="m-doc-self" href="class_atlas_scientific_e_c.html#a748569772bd9404f2d75cb7606e4c023">AtlasScientificEC</a>(</span><span class="m-doc-wrap"><span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__atlas__cond.html#ga8272843bc785fe53f11877b9f2e2992d">ATLAS_<wbr/>COND_<wbr/>I2C_<wbr/>ADDR</a></span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>) <span class="m-label m-info">explicit</span> </span>
+<span class="m-doc-wrap-bumper"><span class="m-dim"> AtlasScientificEC::<wbr/></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_atlas_scientific_e_c.html#ac6755ba4cd3de3c492c0aba8ee2aa4fd">AtlasScientificEC</a>(</span><span class="m-doc-wrap"><span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span><span class="m-dim"> = 0x64</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>) <span class="m-label m-info">explicit</span> </span></span>
 </h3>
 <p>Construct a new Atlas Scientific EC object using the primary hardware I2C instance.</p>
 <table class="m-table m-fullwidth m-flat">
@@ -1775,12 +1655,12 @@
 <aside class="m-note m-danger"><h4>Warning</h4><p><strong>You must isolate the data lines of all Atlas circuits from the main I2C bus if you wish to turn off their power!</strong> If you do not isolate them from your main I2C bus and you turn off power to the circuits between measurements the I2C lines will be pulled down to ground causing the I2C bus (and thus your logger) to crash.</p></aside>
 <hr/>
 </div>
-</section> <section class="m-doc-details" id="a90c2aa33b807042cfbbc1249518eba7c"><div>
+</section> <section class="m-doc-details" id="a9b1691863ebf8b1521f16965e1462043"><div>
 <h3>
-<span class="m-doc-wrap-bumper"><span class="m-dim"></span><a class="m-doc-self" href="class_atlas_scientific_e_c.html#a90c2aa33b807042cfbbc1249518eba7c">AtlasScientificEC</a>(</span><span class="m-doc-wrap"><span class="m-dim">TwoWire*</span> <span class="m-param">theI2C</span>,
+<span class="m-doc-wrap-bumper"><span class="m-dim"> AtlasScientificEC::<wbr/></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_atlas_scientific_e_c.html#a9b1691863ebf8b1521f16965e1462043">AtlasScientificEC</a>(</span><span class="m-doc-wrap"><span class="m-dim">TwoWire*</span> <span class="m-param">theI2C</span>,
               <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__atlas__cond.html#ga8272843bc785fe53f11877b9f2e2992d">ATLAS_<wbr/>COND_<wbr/>I2C_<wbr/>ADDR</a></span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span>
+              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span><span class="m-dim"> = 0x64</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
 </h3>
 <p>Construct a new Atlas Scientific EC object using a secondary <em>hardware</em> I2C instance.</p>
 <table class="m-table m-fullwidth m-flat">
@@ -1809,69 +1689,70 @@
 <aside class="m-note m-danger"><h4>Warning</h4><p><strong>You must isolate the data lines of all Atlas circuits from the main I2C bus if you wish to turn off their power!</strong> If you do not isolate them from your main I2C bus and you turn off power to the circuits between measurements the I2C lines will be pulled down to ground causing the I2C bus (and thus your logger) to crash.</p></aside>
 <hr/>
 </div>
-</section></p><hr/></section><section id="sensor_atlas_cond_examples"><h2>Example Code</h2><p>The Atlas conductivity sensor is used in the <a href="example_menu.html#menu_walk_atlas_scientific_ec" class="m-doc">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensors/AtlasScientificEC.h&gt;</span>
-
-<span class="c1">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>
-<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">AtlasECPower</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">sensorPowerPin</span><span class="p">;</span><span class="w">  </span><span class="c1">// Power pin</span>
-<span class="kr">uint8_t</span><span class="w">      </span><span class="n">AtlasECi2c_addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x64</span><span class="p">;</span><span class="w">            </span><span class="c1">// Default for EC is 0x64 (100)</span>
-<span class="c1">// All Atlas sensors have different default I2C addresses, but any of them can</span>
-<span class="c1">// be re-addressed to any 8 bit number.  If using the default address for any</span>
-<span class="c1">// Atlas Scientific sensor, you may omit this argument.</span>
-
-<span class="c1">// Create an Atlas Scientific Conductivity sensor object</span>
-<span class="c1">// AtlasScientificEC atlasEC(AtlasECPower, AtlasECi2c_addr);</span>
-<span class="n">AtlasScientificEC</span><span class="w"> </span><span class="nf">atlasEC</span><span class="p">(</span><span class="n">AtlasECPower</span><span class="p">);</span>
-
-<span class="c1">// Create four variable pointers for the EZO-ES</span>
-<span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">atlasCond</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">AtlasScientificEC_Cond</span><span class="p">(</span>
-<span class="w">    </span><span class="o">&amp;</span><span class="n">atlasEC</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
-<span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">atlasTDS</span><span class="w"> </span><span class="o">=</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">AtlasScientificEC_TDS</span><span class="p">(</span><span class="o">&amp;</span><span class="n">atlasEC</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
-<span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">atlasSal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">AtlasScientificEC_Salinity</span><span class="p">(</span>
-<span class="w">    </span><span class="o">&amp;</span><span class="n">atlasEC</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
-<span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">atlasGrav</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">AtlasScientificEC_SpecificGravity</span><span class="p">(</span>
-<span class="w">    </span><span class="o">&amp;</span><span class="n">atlasEC</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
-
-<span class="c1">// Create a calculated variable for the temperature compensated conductivity</span>
-<span class="c1">// (that is, the specific conductance).  For this example, we will use the</span>
-<span class="c1">// temperature measured by the Atlas RTD above this.  You could use the</span>
-<span class="c1">// temperature returned by any other water temperature sensor if desired.</span>
-<span class="c1">// **DO NOT** use your logger board temperature (ie, from the DS3231) to</span>
-<span class="c1">// calculate specific conductance!</span>
-<span class="kr">float</span><span class="w"> </span><span class="nf">calculateAtlasSpCond</span><span class="p">(</span><span class="kr">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="n">spCond</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">-9999</span><span class="p">;</span><span class="w">  </span><span class="c1">// Always safest to start with a bad value</span>
-<span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="n">waterTemp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">atlasTemp</span><span class="o">-&gt;</span><span class="n">getValue</span><span class="p">();</span>
-<span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="n">rawCond</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">atlasCond</span><span class="o">-&gt;</span><span class="n">getValue</span><span class="p">();</span>
-<span class="w">    </span><span class="c1">// ^^ Linearized temperature correction coefficient per degrees Celsius.</span>
-<span class="w">    </span><span class="c1">// The value of 0.019 comes from measurements reported here:</span>
-<span class="w">    </span><span class="c1">// Hayashi M. Temperature-electrical conductivity relation of water for</span>
-<span class="w">    </span><span class="c1">// environmental monitoring and geophysical data inversion. Environ Monit</span>
-<span class="w">    </span><span class="c1">// Assess. 2004 Aug-Sep;96(1-3):119-28.</span>
-<span class="w">    </span><span class="c1">// doi: 10.1023/b:emas.0000031719.83065.68. PMID: 15327152.</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">waterTemp</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">-9999</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">rawCond</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">-9999</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="c1">// make sure both inputs are good</span>
-<span class="w">        </span><span class="kr">float</span><span class="w"> </span><span class="n">temperatureCoef</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.019</span><span class="p">;</span>
-<span class="w">        </span><span class="n">spCond</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rawCond</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">temperatureCoef</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">waterTemp</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">25.0</span><span class="p">));</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">spCond</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="c1">// Properties of the calculated variable</span>
-<span class="c1">// The number of digits after the decimal place</span>
-<span class="kr">const</span><span class="w"> </span><span class="kr">uint8_t</span><span class="w"> </span><span class="n">atlasSpCondResolution</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
-<span class="c1">// This must be a value from http://vocabulary.odm2.org/variablename/</span>
-<span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w"> </span><span class="n">atlasSpCondName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;specificConductance&quot;</span><span class="p">;</span>
-<span class="c1">// This must be a value from http://vocabulary.odm2.org/units/</span>
-<span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w"> </span><span class="n">atlasSpCondUnit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;microsiemenPerCentimeter&quot;</span><span class="p">;</span>
-<span class="c1">// A short code for the variable</span>
-<span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w"> </span><span class="n">atlasSpCondCode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;atlasSpCond&quot;</span><span class="p">;</span>
-<span class="c1">// The (optional) universallly unique identifier</span>
-<span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w"> </span><span class="n">atlasSpCondUUID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">;</span>
-
-<span class="c1">// Finally, create the specific conductance variable and return a pointer to it</span>
-<span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">atlasSpCond</span><span class="w"> </span><span class="o">=</span>
-<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">Variable</span><span class="p">(</span><span class="n">calculateAtlasSpCond</span><span class="p">,</span><span class="w"> </span><span class="n">atlasSpCondResolution</span><span class="p">,</span><span class="w"> </span><span class="n">atlasSpCondName</span><span class="p">,</span>
-<span class="w">                 </span><span class="n">atlasSpCondUnit</span><span class="p">,</span><span class="w"> </span><span class="n">atlasSpCondCode</span><span class="p">,</span><span class="w"> </span><span class="n">atlasSpCondUUID</span><span class="p">);</span></pre></section>
+</section></p><hr/></section><section id="sensor_atlas_cond_examples"><h2>Example Code</h2><p>The Atlas conductivity sensor is used in the <a href="example_menu.html#menu_walk_atlas_scientific_ec" class="m-doc">menu a la carte</a> example.</p><div class="m-code-arduino"><div class="highlight"><div class="line"><a id="l-1" name="l-1"></a><span class="linenos"> 1</span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensors/AtlasScientificEC.h&gt;</span>
+</div><div class="line"><a id="l-2" name="l-2"></a><span class="linenos"> 2</span>
+</div><div class="line"><a id="l-3" name="l-3"></a><span class="linenos"> 3</span><span class="c1">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>
+</div><div class="line"><a id="l-4" name="l-4"></a><span class="linenos"> 4</span><span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">AtlasECPower</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">sensorPowerPin</span><span class="p">;</span><span class="w">  </span><span class="c1">// Power pin</span>
+</div><div class="line"><a id="l-5" name="l-5"></a><span class="linenos"> 5</span><span class="kr">uint8_t</span><span class="w">      </span><span class="n">AtlasECi2c_addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x64</span><span class="p">;</span><span class="w">            </span><span class="c1">// Default for EC is 0x64 (100)</span>
+</div><div class="line"><a id="l-6" name="l-6"></a><span class="linenos"> 6</span><span class="c1">// All Atlas sensors have different default I2C addresses, but any of them can</span>
+</div><div class="line"><a id="l-7" name="l-7"></a><span class="linenos"> 7</span><span class="c1">// be re-addressed to any 8 bit number.  If using the default address for any</span>
+</div><div class="line"><a id="l-8" name="l-8"></a><span class="linenos"> 8</span><span class="c1">// Atlas Scientific sensor, you may omit this argument.</span>
+</div><div class="line"><a id="l-9" name="l-9"></a><span class="linenos"> 9</span>
+</div><div class="line"><a id="l-10" name="l-10"></a><span class="linenos">10</span><span class="c1">// Create an Atlas Scientific Conductivity sensor object</span>
+</div><div class="line"><a id="l-11" name="l-11"></a><span class="linenos">11</span><span class="c1">// AtlasScientificEC atlasEC(AtlasECPower, AtlasECi2c_addr);</span>
+</div><div class="line"><a id="l-12" name="l-12"></a><span class="linenos">12</span><span class="n">AtlasScientificEC</span><span class="w"> </span><span class="nf">atlasEC</span><span class="p">(</span><span class="n">AtlasECPower</span><span class="p">);</span>
+</div><div class="line"><a id="l-13" name="l-13"></a><span class="linenos">13</span>
+</div><div class="line"><a id="l-14" name="l-14"></a><span class="linenos">14</span><span class="c1">// Create four variable pointers for the EZO-ES</span>
+</div><div class="line"><a id="l-15" name="l-15"></a><span class="linenos">15</span><span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">atlasCond</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">AtlasScientificEC_Cond</span><span class="p">(</span>
+</div><div class="line"><a id="l-16" name="l-16"></a><span class="linenos">16</span><span class="w">    </span><span class="o">&amp;</span><span class="n">atlasEC</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
+</div><div class="line"><a id="l-17" name="l-17"></a><span class="linenos">17</span><span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">atlasTDS</span><span class="w"> </span><span class="o">=</span>
+</div><div class="line"><a id="l-18" name="l-18"></a><span class="linenos">18</span><span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">AtlasScientificEC_TDS</span><span class="p">(</span><span class="o">&amp;</span><span class="n">atlasEC</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
+</div><div class="line"><a id="l-19" name="l-19"></a><span class="linenos">19</span><span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">atlasSal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">AtlasScientificEC_Salinity</span><span class="p">(</span>
+</div><div class="line"><a id="l-20" name="l-20"></a><span class="linenos">20</span><span class="w">    </span><span class="o">&amp;</span><span class="n">atlasEC</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
+</div><div class="line"><a id="l-21" name="l-21"></a><span class="linenos">21</span><span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">atlasGrav</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">AtlasScientificEC_SpecificGravity</span><span class="p">(</span>
+</div><div class="line"><a id="l-22" name="l-22"></a><span class="linenos">22</span><span class="w">    </span><span class="o">&amp;</span><span class="n">atlasEC</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
+</div><div class="line"><a id="l-23" name="l-23"></a><span class="linenos">23</span>
+</div><div class="line"><a id="l-24" name="l-24"></a><span class="linenos">24</span><span class="c1">// Create a calculated variable for the temperature compensated conductivity</span>
+</div><div class="line"><a id="l-25" name="l-25"></a><span class="linenos">25</span><span class="c1">// (that is, the specific conductance).  For this example, we will use the</span>
+</div><div class="line"><a id="l-26" name="l-26"></a><span class="linenos">26</span><span class="c1">// temperature measured by the Atlas RTD above this.  You could use the</span>
+</div><div class="line"><a id="l-27" name="l-27"></a><span class="linenos">27</span><span class="c1">// temperature returned by any other water temperature sensor if desired.</span>
+</div><div class="line"><a id="l-28" name="l-28"></a><span class="linenos">28</span><span class="c1">// **DO NOT** use your logger board temperature (ie, from the DS3231) to</span>
+</div><div class="line"><a id="l-29" name="l-29"></a><span class="linenos">29</span><span class="c1">// calculate specific conductance!</span>
+</div><div class="line"><a id="l-30" name="l-30"></a><span class="linenos">30</span><span class="kr">float</span><span class="w"> </span><span class="nf">calculateAtlasSpCond</span><span class="p">(</span><span class="kr">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</div><div class="line"><a id="l-31" name="l-31"></a><span class="linenos">31</span><span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="n">spCond</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">-9999</span><span class="p">;</span><span class="w">  </span><span class="c1">// Always safest to start with a bad value</span>
+</div><div class="line"><a id="l-32" name="l-32"></a><span class="linenos">32</span><span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="n">waterTemp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">atlasTemp</span><span class="o">-&gt;</span><span class="n">getValue</span><span class="p">();</span>
+</div><div class="line"><a id="l-33" name="l-33"></a><span class="linenos">33</span><span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="n">rawCond</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">atlasCond</span><span class="o">-&gt;</span><span class="n">getValue</span><span class="p">();</span>
+</div><div class="line"><a id="l-34" name="l-34"></a><span class="linenos">34</span><span class="w">    </span><span class="c1">// ^^ Linearized temperature correction coefficient per degrees Celsius.</span>
+</div><div class="line"><a id="l-35" name="l-35"></a><span class="linenos">35</span><span class="w">    </span><span class="c1">// The value of 0.019 comes from measurements reported here:</span>
+</div><div class="line"><a id="l-36" name="l-36"></a><span class="linenos">36</span><span class="w">    </span><span class="c1">// Hayashi M. Temperature-electrical conductivity relation of water for</span>
+</div><div class="line"><a id="l-37" name="l-37"></a><span class="linenos">37</span><span class="w">    </span><span class="c1">// environmental monitoring and geophysical data inversion. Environ Monit</span>
+</div><div class="line"><a id="l-38" name="l-38"></a><span class="linenos">38</span><span class="w">    </span><span class="c1">// Assess. 2004 Aug-Sep;96(1-3):119-28.</span>
+</div><div class="line"><a id="l-39" name="l-39"></a><span class="linenos">39</span><span class="w">    </span><span class="c1">// doi: 10.1023/b:emas.0000031719.83065.68. PMID: 15327152.</span>
+</div><div class="line"><a id="l-40" name="l-40"></a><span class="linenos">40</span><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">waterTemp</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">-9999</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">rawCond</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">-9999</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</div><div class="line"><a id="l-41" name="l-41"></a><span class="linenos">41</span><span class="w">        </span><span class="c1">// make sure both inputs are good</span>
+</div><div class="line"><a id="l-42" name="l-42"></a><span class="linenos">42</span><span class="w">        </span><span class="kr">float</span><span class="w"> </span><span class="n">temperatureCoef</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.019</span><span class="p">;</span>
+</div><div class="line"><a id="l-43" name="l-43"></a><span class="linenos">43</span><span class="w">        </span><span class="n">spCond</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rawCond</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">temperatureCoef</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">waterTemp</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">25.0</span><span class="p">));</span>
+</div><div class="line"><a id="l-44" name="l-44"></a><span class="linenos">44</span><span class="w">    </span><span class="p">}</span>
+</div><div class="line"><a id="l-45" name="l-45"></a><span class="linenos">45</span><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">spCond</span><span class="p">;</span>
+</div><div class="line"><a id="l-46" name="l-46"></a><span class="linenos">46</span><span class="p">}</span>
+</div><div class="line"><a id="l-47" name="l-47"></a><span class="linenos">47</span>
+</div><div class="line"><a id="l-48" name="l-48"></a><span class="linenos">48</span><span class="c1">// Properties of the calculated variable</span>
+</div><div class="line"><a id="l-49" name="l-49"></a><span class="linenos">49</span><span class="c1">// The number of digits after the decimal place</span>
+</div><div class="line"><a id="l-50" name="l-50"></a><span class="linenos">50</span><span class="kr">const</span><span class="w"> </span><span class="kr">uint8_t</span><span class="w"> </span><span class="n">atlasSpCondResolution</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</div><div class="line"><a id="l-51" name="l-51"></a><span class="linenos">51</span><span class="c1">// This must be a value from http://vocabulary.odm2.org/variablename/</span>
+</div><div class="line"><a id="l-52" name="l-52"></a><span class="linenos">52</span><span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w"> </span><span class="n">atlasSpCondName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;specificConductance&quot;</span><span class="p">;</span>
+</div><div class="line"><a id="l-53" name="l-53"></a><span class="linenos">53</span><span class="c1">// This must be a value from http://vocabulary.odm2.org/units/</span>
+</div><div class="line"><a id="l-54" name="l-54"></a><span class="linenos">54</span><span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w"> </span><span class="n">atlasSpCondUnit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;microsiemenPerCentimeter&quot;</span><span class="p">;</span>
+</div><div class="line"><a id="l-55" name="l-55"></a><span class="linenos">55</span><span class="c1">// A short code for the variable</span>
+</div><div class="line"><a id="l-56" name="l-56"></a><span class="linenos">56</span><span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w"> </span><span class="n">atlasSpCondCode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;atlasSpCond&quot;</span><span class="p">;</span>
+</div><div class="line"><a id="l-57" name="l-57"></a><span class="linenos">57</span><span class="c1">// The (optional) universallly unique identifier</span>
+</div><div class="line"><a id="l-58" name="l-58"></a><span class="linenos">58</span><span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w"> </span><span class="n">atlasSpCondUUID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">;</span>
+</div><div class="line"><a id="l-59" name="l-59"></a><span class="linenos">59</span>
+</div><div class="line"><a id="l-60" name="l-60"></a><span class="linenos">60</span><span class="c1">// Finally, create the specific conductance variable and return a pointer to it</span>
+</div><div class="line"><a id="l-61" name="l-61"></a><span class="linenos">61</span><span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">atlasSpCond</span><span class="w"> </span><span class="o">=</span>
+</div><div class="line"><a id="l-62" name="l-62"></a><span class="linenos">62</span><span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">Variable</span><span class="p">(</span><span class="n">calculateAtlasSpCond</span><span class="p">,</span><span class="w"> </span><span class="n">atlasSpCondResolution</span><span class="p">,</span><span class="w"> </span><span class="n">atlasSpCondName</span><span class="p">,</span>
+</div><div class="line"><a id="l-63" name="l-63"></a><span class="linenos">63</span><span class="w">                 </span><span class="n">atlasSpCondUnit</span><span class="p">,</span><span class="w"> </span><span class="n">atlasSpCondCode</span><span class="p">,</span><span class="w"> </span><span class="n">atlasSpCondUUID</span><span class="p">);</span>
+</div></div></div></section>
         <section id="nested-classes">
           <h2>Classes</h2>
           <dl class="m-doc">
@@ -1897,27 +1778,28 @@
             <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__atlas__cond.html#sensor_atlas_cond_sg" class="m-doc">specific gravity output</a> from an <a href="group__sensor__atlas__cond.html" class="m-doc">Atlas Scientific EC EZO circuit</a>.</dd>
           </dl>
         </section>
-        <section id="define-members">
-          <h2>Defines</h2>
+        <section id="sensor-variable-counts">
+          <h2>Sensor Variable Counts</h2>
+<p><a name="sensor_atlas_cond_var_counts"></a> The number of variables that can be returned by the Atlas conductivity sensor</p>
           <dl class="m-doc">
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#ga8272843bc785fe53f11877b9f2e2992d" class="m-doc">ATLAS_COND_I2C_ADDR</a><span class="m-dim m-right-m m-text-right"> = 0x64</span></span>
-            </dt>
-            <dd>Default I2C address is 0x64 (100)</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gac5b2498205ccb1b303a2b4f1d62141ea" class="m-doc">ATLAS_COND_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 4</span></span>
             </dt>
             <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; Atlas EZO conductivity circuit can report 4 values.</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga68d60167de1bde39229e69a4277b3091" class="m-doc">ATLAS_COND_INC_CALC_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
             </dt>
             <dd><a href="class_sensor.html#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values - though we recommend users include a temperature sensor and calculate specific conductance in their own program.</dd>
-
-
+          </dl>
+        </section>
+        <section id="configuration-defines">
+          <h2>Configuration Defines</h2>
+<p><a name="sensor_atlas_cond_config"></a> Defines to configure and set the address of the Atlas conductivity sensor</p>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga8272843bc785fe53f11877b9f2e2992d" class="m-doc">ATLAS_COND_I2C_ADDR</a><span class="m-dim m-right-m m-text-right"> = 0x64</span></span>
+            </dt>
+            <dd>The default I2C address of the Atlas conductivity sensor is 0x64 (100)</dd>
           </dl>
         </section>
         <section id="sensor-timing">
@@ -1928,31 +1810,23 @@
               <span class="m-doc-wrap-bumper">#define <a href="#gad9bf87c5271874f53d760c53c01c71a0" class="m-doc">ATLAS_COND_WARM_UP_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 745</span></span>
             </dt>
             <dd><a href="class_sensor.html#aaaefd7f306f86382a3dac726531756b4" class="m-doc">Sensor::<wbr />_warmUpTime_ms</a>; Atlas EZO conductivity circuit warms up in 745ms.</dd>
-
-              <dd><p>739-740 in tests</p></dd>
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga378c222a48288eda317251cb6dd1241a" class="m-doc">ATLAS_COND_STABILIZATION_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
             </dt>
             <dd><a href="class_sensor.html#ad6822ad09fb64658c911ce86820db79c" class="m-doc">Sensor::<wbr />_stabilizationTime_ms</a>; Atlas EZO conductivity circuit is stable 0ms after warm-up. (stable at completion of warm up)</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gaa25a650e6fd94d5fc408c8e66b380f99" class="m-doc">ATLAS_COND_MEASUREMENT_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 600</span></span>
             </dt>
             <dd><a href="class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba" class="m-doc">Sensor::<wbr />_measurementTime_ms</a>; Atlas EZO conductivity circuit takes 600ms to complete a measurement.</dd>
-
-              <dd><p>only ~555 measurement time in tests, but keep the 600 recommended by manual</p></dd>
-
           </dl>
         </section>
         <section id="conductivity">
           <h2>Conductivity</h2>
-<p><a name="sensor_atlas_cond_cond"></a> The conductivity variable from an Atlas EC (conducticity) sensor</p><ul><li>Accuracy is ± 2%</li><li>Range is 0.07 − 500,000+ μS/cm</li></ul><p><section class="m-doc-details" id="a8ef1ff51c7d9239a8c2744df22ea4cea"><div>
+<p><a name="sensor_atlas_cond_cond"></a> The conductivity variable from an Atlas EC (conducticity) sensor</p><ul><li>Accuracy is ± 2%</li><li>Range is 0.07 − 500,000+ μS/cm</li></ul><p><section class="m-doc-details" id="ad44468aea10b4bcfd57606c59ff61b2a"><div>
 <h3>
-<span class="m-doc-wrap-bumper"><span class="m-dim"></span><a class="m-doc-self" href="class_atlas_scientific_e_c___cond.html#a8ef1ff51c7d9239a8c2744df22ea4cea">AtlasScientificEC_Cond</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_atlas_scientific_e_c.html">AtlasScientificEC</a>*</span> <span class="m-param">parentSense</span>,
+<span class="m-doc-wrap-bumper"><span class="m-dim"> AtlasScientificEC_<wbr/>Cond::<wbr/></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_atlas_scientific_e_c___cond.html#ad44468aea10b4bcfd57606c59ff61b2a">AtlasScientificEC_Cond</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_atlas_scientific_e_c.html">AtlasScientificEC</a>*</span> <span class="m-param">parentSense</span>,
               <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__atlas__cond.html#ga1eb91d3bd7b6f36c3ecd2fafca558de7">ATLAS_<wbr/>COND_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span>
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = "AtlasCond"</span>) <span class="m-label m-info">explicit</span> </span></span>
 </h3>
 <p>Construct a new <a class="m-doc" href="class_atlas_scientific_e_c___cond.html">AtlasScientificEC_<wbr/>Cond</a> object.</p>
 <table class="m-table m-fullwidth m-flat">
@@ -1982,41 +1856,31 @@
               <span class="m-doc-wrap-bumper">#define <a href="#ga667ce2a5b9713eb00613e59c47714fce" class="m-doc">ATLAS_COND_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
             </dt>
             <dd>Decimals places in string representation; conductivity should have 3.</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gad450e4b015fecba1418b69265cd6e8ef" class="m-doc">ATLAS_COND_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
             </dt>
             <dd><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; conductivity is stored in sensorValues[0].</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga70c0b0c45917497df5aa7c596a6b79b4" class="m-doc">ATLAS_COND_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "electricalConductivity"</span></span>
             </dt>
             <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;electricalConductivity&quot;.</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga4bdfba031ca8cac4a784ccfeabcf8100" class="m-doc">ATLAS_COND_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "microsiemenPerCentimeter"</span></span>
             </dt>
             <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;microsiemenPerCentimeter&quot; (µS/cm)</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga1eb91d3bd7b6f36c3ecd2fafca558de7" class="m-doc">ATLAS_COND_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "AtlasCond"</span></span>
             </dt>
             <dd>Default variable short code; &quot;AtlasCond&quot;.</dd>
-
-
           </dl>
         </section>
         <section id="total-dissolved-solids">
           <h2>Total Dissolved Solids</h2>
-<p><a name="sensor_atlas_cond_tds"></a> The TDS variable from an Atlas EC (conducticity) sensor</p><ul><li>Accuracy is ± 2%</li><li>Range is 0.07 − 500,000+ μS/cm</li></ul><p><section class="m-doc-details" id="ac4335dfd31141b6cf5689a42f4138efe"><div>
+<p><a name="sensor_atlas_cond_tds"></a> The TDS variable from an Atlas EC (conducticity) sensor</p><ul><li>Accuracy is ± 2%</li><li>Range is 0.07 − 500,000+ μS/cm</li></ul><p><section class="m-doc-details" id="ae00712f12d460890b79b37c1d9e2a2e9"><div>
 <h3>
-<span class="m-doc-wrap-bumper"><span class="m-dim"></span><a class="m-doc-self" href="class_atlas_scientific_e_c___t_d_s.html#ac4335dfd31141b6cf5689a42f4138efe">AtlasScientificEC_TDS</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_atlas_scientific_e_c.html">AtlasScientificEC</a>*</span> <span class="m-param">parentSense</span>,
+<span class="m-doc-wrap-bumper"><span class="m-dim"> AtlasScientificEC_<wbr/>TDS::<wbr/></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_atlas_scientific_e_c___t_d_s.html#ae00712f12d460890b79b37c1d9e2a2e9">AtlasScientificEC_TDS</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_atlas_scientific_e_c.html">AtlasScientificEC</a>*</span> <span class="m-param">parentSense</span>,
               <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__atlas__cond.html#ga29904b0c40fdf493c961e9fc7dc2cc4a">ATLAS_<wbr/>TDS_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span>
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = "AtlasTDS"</span>) <span class="m-label m-info">explicit</span> </span></span>
 </h3>
 <p>Construct a new <a class="m-doc" href="class_atlas_scientific_e_c___t_d_s.html">AtlasScientificEC_<wbr/>TDS</a> object.</p>
 <table class="m-table m-fullwidth m-flat">
@@ -2046,41 +1910,31 @@
               <span class="m-doc-wrap-bumper">#define <a href="#gafdadeac70a9dbc8afab6b09ba2a5c2dc" class="m-doc">ATLAS_TDS_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
             </dt>
             <dd>Decimals places in string representation; TDS should have 3.</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gab2b9a23982fd9f3617fc3a0774ffc77a" class="m-doc">ATLAS_TDS_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
             </dt>
             <dd><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; TDS is stored in sensorValues[1].</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gaff8dfd7cb4f153df0048fd5b857ffa9b" class="m-doc">ATLAS_TDS_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "solidsTotalDissolved"</span></span>
             </dt>
             <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;solidsTotalDissolved&quot;.</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga8eab74eb415a847976aef7e400a92efa" class="m-doc">ATLAS_TDS_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "partPerMillion"</span></span>
             </dt>
             <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;partPerMillion&quot; (ppm)</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga29904b0c40fdf493c961e9fc7dc2cc4a" class="m-doc">ATLAS_TDS_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "AtlasTDS"</span></span>
             </dt>
             <dd>Default variable short code; &quot;AtlasTDS&quot;.</dd>
-
-
           </dl>
         </section>
         <section id="salinity">
           <h2>Salinity</h2>
-<p><a name="sensor_atlas_cond_salinity"></a> The salinity variable from an Atlas EC (conducticity) sensor</p><ul><li>Accuracy is ± 2%</li><li>Range is 0.07 − 500,000+ μS/cm</li></ul><p><section class="m-doc-details" id="a8ea4665f642c4bd3cc507a78313d620c"><div>
+<p><a name="sensor_atlas_cond_salinity"></a> The salinity variable from an Atlas EC (conducticity) sensor</p><ul><li>Accuracy is ± 2%</li><li>Range is 0.07 − 500,000+ μS/cm</li></ul><p><section class="m-doc-details" id="a363fc16327ec6523c320bedf0c8a0086"><div>
 <h3>
-<span class="m-doc-wrap-bumper"><span class="m-dim"></span><a class="m-doc-self" href="class_atlas_scientific_e_c___salinity.html#a8ea4665f642c4bd3cc507a78313d620c">AtlasScientificEC_Salinity</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_atlas_scientific_e_c.html">AtlasScientificEC</a>*</span> <span class="m-param">parentSense</span>,
+<span class="m-doc-wrap-bumper"><span class="m-dim"> AtlasScientificEC_<wbr/>Salinity::<wbr/></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_atlas_scientific_e_c___salinity.html#a363fc16327ec6523c320bedf0c8a0086">AtlasScientificEC_Salinity</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_atlas_scientific_e_c.html">AtlasScientificEC</a>*</span> <span class="m-param">parentSense</span>,
               <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__atlas__cond.html#ga33b9c284aa1436f2519ddca2152008fe">ATLAS_<wbr/>SALINITY_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span>
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = "AtlasSalinity"</span>) <span class="m-label m-info">explicit</span> </span></span>
 </h3>
 <p>Construct a new <a class="m-doc" href="class_atlas_scientific_e_c___salinity.html">AtlasScientificEC_<wbr/>Salinity</a> object.</p>
 <table class="m-table m-fullwidth m-flat">
@@ -2110,41 +1964,31 @@
               <span class="m-doc-wrap-bumper">#define <a href="#gafb1070f49103c831022c0431a6f21555" class="m-doc">ATLAS_SALINITY_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
             </dt>
             <dd>Decimals places in string representation; salinity should have 3.</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga4424feebeefe760b6d2fcb5585c7648a" class="m-doc">ATLAS_SALINITY_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
             </dt>
             <dd><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; salinity is stored in sensorValues[2].</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga9c36420f1a285f78772377445d4f69af" class="m-doc">ATLAS_SALINITY_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "salinity"</span></span>
             </dt>
             <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;salinity&quot;.</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga464e2231239bf530b56348e979cc5482" class="m-doc">ATLAS_SALINITY_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "practicalSalinityUnit"</span></span>
             </dt>
             <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;practicalSalinityUnit&quot;.</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga33b9c284aa1436f2519ddca2152008fe" class="m-doc">ATLAS_SALINITY_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "AtlasSalinity"</span></span>
             </dt>
             <dd>Default variable short code; &quot;AtlasSalinity&quot;.</dd>
-
-
           </dl>
         </section>
         <section id="specific-gravity">
           <h2>Specific Gravity</h2>
-<p><a name="sensor_atlas_cond_sg"></a> The specific gravity variable from an Atlas EC (conducticity) sensor</p><ul><li>Accuracy is ± 2%</li><li>Range is 0.07 − 500,000+ μS/cm</li></ul><p><section class="m-doc-details" id="a8f4830728ac3fcfdbcd32c15e9d08e7d"><div>
+<p><a name="sensor_atlas_cond_sg"></a> The specific gravity variable from an Atlas EC (conducticity) sensor</p><ul><li>Accuracy is ± 2%</li><li>Range is 0.07 − 500,000+ μS/cm</li></ul><p><section class="m-doc-details" id="a06cdb977b6ecafc892ec5b79c5e29b85"><div>
 <h3>
-<span class="m-doc-wrap-bumper"><span class="m-dim"></span><a class="m-doc-self" href="class_atlas_scientific_e_c___specific_gravity.html#a8f4830728ac3fcfdbcd32c15e9d08e7d">AtlasScientificEC_SpecificGravity</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_atlas_scientific_e_c.html">AtlasScientificEC</a>*</span> <span class="m-param">parentSense</span>,
+<span class="m-doc-wrap-bumper"><span class="m-dim"> AtlasScientificEC_<wbr/>SpecificGravity::<wbr/></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_atlas_scientific_e_c___specific_gravity.html#a06cdb977b6ecafc892ec5b79c5e29b85">AtlasScientificEC_SpecificGravity</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_atlas_scientific_e_c.html">AtlasScientificEC</a>*</span> <span class="m-param">parentSense</span>,
               <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__atlas__cond.html#ga689108b0e9e2df4491f0708fd874ae68">ATLAS_<wbr/>SG_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span>
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = "AtlasSpecGravity"</span>) <span class="m-label m-info">explicit</span> </span></span>
 </h3>
 <p>Construct a new <a class="m-doc" href="class_atlas_scientific_e_c___specific_gravity.html">AtlasScientificEC_<wbr/>SpecificGravity</a> object.</p>
 <table class="m-table m-fullwidth m-flat">
@@ -2174,88 +2018,487 @@
               <span class="m-doc-wrap-bumper">#define <a href="#ga62f76255364b3519f394680cbaab42a5" class="m-doc">ATLAS_SG_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
             </dt>
             <dd>Decimals places in string representation; specific gravity should have 3.</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga1a5705e4154ff5a7df8c2bb2f433e88a" class="m-doc">ATLAS_SG_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
             </dt>
             <dd><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; specific gravity is stored in sensorValues[3].</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga071f4f1d9fc1d245bd471265d460c076" class="m-doc">ATLAS_SG_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "specificGravity"</span></span>
             </dt>
             <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;specificGravity&quot;.</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga0df18a00ead4ed4a863b2792b447a043" class="m-doc">ATLAS_SG_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "dimensionless"</span></span>
             </dt>
             <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;dimensionless&quot;.</dd>
-
-
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga689108b0e9e2df4491f0708fd874ae68" class="m-doc">ATLAS_SG_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "AtlasSpecGravity"</span></span>
             </dt>
             <dd>Default variable short code; &quot;AtlasSpecGravity&quot;.</dd>
-
-
           </dl>
         </section>
 
-                    </div>
-                  </div>
-                </div>
+        <section id="define-details">
+          <h2>Define documentation</h2>
+        <section class="m-doc-details" id="gac5b2498205ccb1b303a2b4f1d62141ea">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gac5b2498205ccb1b303a2b4f1d62141ea" class="m-doc-self">ATLAS_COND_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 4</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_atlas_scientific_e_c_8h.html">&lt;src/sensors/AtlasScientificEC.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; Atlas EZO conductivity circuit can report 4 values.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga68d60167de1bde39229e69a4277b3091">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga68d60167de1bde39229e69a4277b3091" class="m-doc-self">ATLAS_COND_INC_CALC_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_atlas_scientific_e_c_8h.html">&lt;src/sensors/AtlasScientificEC.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_sensor.html#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values - though we recommend users include a temperature sensor and calculate specific conductance in their own program.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga8272843bc785fe53f11877b9f2e2992d">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga8272843bc785fe53f11877b9f2e2992d" class="m-doc-self">ATLAS_COND_I2C_ADDR</a><span class="m-dim m-right-m m-text-right"> = 0x64</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_atlas_scientific_e_c_8h.html">&lt;src/sensors/AtlasScientificEC.h&gt;</a></div>
+            </h3>
+
+            <p>The default I2C address of the Atlas conductivity sensor is 0x64 (100)</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gad9bf87c5271874f53d760c53c01c71a0">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gad9bf87c5271874f53d760c53c01c71a0" class="m-doc-self">ATLAS_COND_WARM_UP_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 745</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_atlas_scientific_e_c_8h.html">&lt;src/sensors/AtlasScientificEC.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_sensor.html#aaaefd7f306f86382a3dac726531756b4" class="m-doc">Sensor::<wbr />_warmUpTime_ms</a>; Atlas EZO conductivity circuit warms up in 745ms.</p>
+
+
+              <p>739-740 in tests</p>
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga378c222a48288eda317251cb6dd1241a">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga378c222a48288eda317251cb6dd1241a" class="m-doc-self">ATLAS_COND_STABILIZATION_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_atlas_scientific_e_c_8h.html">&lt;src/sensors/AtlasScientificEC.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_sensor.html#ad6822ad09fb64658c911ce86820db79c" class="m-doc">Sensor::<wbr />_stabilizationTime_ms</a>; Atlas EZO conductivity circuit is stable 0ms after warm-up. (stable at completion of warm up)</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gaa25a650e6fd94d5fc408c8e66b380f99">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaa25a650e6fd94d5fc408c8e66b380f99" class="m-doc-self">ATLAS_COND_MEASUREMENT_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 600</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_atlas_scientific_e_c_8h.html">&lt;src/sensors/AtlasScientificEC.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba" class="m-doc">Sensor::<wbr />_measurementTime_ms</a>; Atlas EZO conductivity circuit takes 600ms to complete a measurement.</p>
+
+
+              <p>only ~555 measurement time in tests, but keep the 600 recommended by manual</p>
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga667ce2a5b9713eb00613e59c47714fce">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga667ce2a5b9713eb00613e59c47714fce" class="m-doc-self">ATLAS_COND_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_atlas_scientific_e_c_8h.html">&lt;src/sensors/AtlasScientificEC.h&gt;</a></div>
+            </h3>
+
+            <p>Decimals places in string representation; conductivity should have 3.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gad450e4b015fecba1418b69265cd6e8ef">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gad450e4b015fecba1418b69265cd6e8ef" class="m-doc-self">ATLAS_COND_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_atlas_scientific_e_c_8h.html">&lt;src/sensors/AtlasScientificEC.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; conductivity is stored in sensorValues[0].</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga70c0b0c45917497df5aa7c596a6b79b4">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga70c0b0c45917497df5aa7c596a6b79b4" class="m-doc-self">ATLAS_COND_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "electricalConductivity"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_atlas_scientific_e_c_8h.html">&lt;src/sensors/AtlasScientificEC.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;electricalConductivity&quot;.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga4bdfba031ca8cac4a784ccfeabcf8100">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga4bdfba031ca8cac4a784ccfeabcf8100" class="m-doc-self">ATLAS_COND_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "microsiemenPerCentimeter"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_atlas_scientific_e_c_8h.html">&lt;src/sensors/AtlasScientificEC.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;microsiemenPerCentimeter&quot; (µS/cm)</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga1eb91d3bd7b6f36c3ecd2fafca558de7">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga1eb91d3bd7b6f36c3ecd2fafca558de7" class="m-doc-self">ATLAS_COND_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "AtlasCond"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_atlas_scientific_e_c_8h.html">&lt;src/sensors/AtlasScientificEC.h&gt;</a></div>
+            </h3>
+
+            <p>Default variable short code; &quot;AtlasCond&quot;.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gafdadeac70a9dbc8afab6b09ba2a5c2dc">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gafdadeac70a9dbc8afab6b09ba2a5c2dc" class="m-doc-self">ATLAS_TDS_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_atlas_scientific_e_c_8h.html">&lt;src/sensors/AtlasScientificEC.h&gt;</a></div>
+            </h3>
+
+            <p>Decimals places in string representation; TDS should have 3.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gab2b9a23982fd9f3617fc3a0774ffc77a">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gab2b9a23982fd9f3617fc3a0774ffc77a" class="m-doc-self">ATLAS_TDS_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_atlas_scientific_e_c_8h.html">&lt;src/sensors/AtlasScientificEC.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; TDS is stored in sensorValues[1].</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gaff8dfd7cb4f153df0048fd5b857ffa9b">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaff8dfd7cb4f153df0048fd5b857ffa9b" class="m-doc-self">ATLAS_TDS_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "solidsTotalDissolved"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_atlas_scientific_e_c_8h.html">&lt;src/sensors/AtlasScientificEC.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;solidsTotalDissolved&quot;.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga8eab74eb415a847976aef7e400a92efa">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga8eab74eb415a847976aef7e400a92efa" class="m-doc-self">ATLAS_TDS_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "partPerMillion"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_atlas_scientific_e_c_8h.html">&lt;src/sensors/AtlasScientificEC.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;partPerMillion&quot; (ppm)</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga29904b0c40fdf493c961e9fc7dc2cc4a">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga29904b0c40fdf493c961e9fc7dc2cc4a" class="m-doc-self">ATLAS_TDS_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "AtlasTDS"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_atlas_scientific_e_c_8h.html">&lt;src/sensors/AtlasScientificEC.h&gt;</a></div>
+            </h3>
+
+            <p>Default variable short code; &quot;AtlasTDS&quot;.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="gafb1070f49103c831022c0431a6f21555">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#gafb1070f49103c831022c0431a6f21555" class="m-doc-self">ATLAS_SALINITY_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_atlas_scientific_e_c_8h.html">&lt;src/sensors/AtlasScientificEC.h&gt;</a></div>
+            </h3>
+
+            <p>Decimals places in string representation; salinity should have 3.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga4424feebeefe760b6d2fcb5585c7648a">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga4424feebeefe760b6d2fcb5585c7648a" class="m-doc-self">ATLAS_SALINITY_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_atlas_scientific_e_c_8h.html">&lt;src/sensors/AtlasScientificEC.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; salinity is stored in sensorValues[2].</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga9c36420f1a285f78772377445d4f69af">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga9c36420f1a285f78772377445d4f69af" class="m-doc-self">ATLAS_SALINITY_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "salinity"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_atlas_scientific_e_c_8h.html">&lt;src/sensors/AtlasScientificEC.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;salinity&quot;.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga464e2231239bf530b56348e979cc5482">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga464e2231239bf530b56348e979cc5482" class="m-doc-self">ATLAS_SALINITY_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "practicalSalinityUnit"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_atlas_scientific_e_c_8h.html">&lt;src/sensors/AtlasScientificEC.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;practicalSalinityUnit&quot;.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga33b9c284aa1436f2519ddca2152008fe">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga33b9c284aa1436f2519ddca2152008fe" class="m-doc-self">ATLAS_SALINITY_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "AtlasSalinity"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_atlas_scientific_e_c_8h.html">&lt;src/sensors/AtlasScientificEC.h&gt;</a></div>
+            </h3>
+
+            <p>Default variable short code; &quot;AtlasSalinity&quot;.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga62f76255364b3519f394680cbaab42a5">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga62f76255364b3519f394680cbaab42a5" class="m-doc-self">ATLAS_SG_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_atlas_scientific_e_c_8h.html">&lt;src/sensors/AtlasScientificEC.h&gt;</a></div>
+            </h3>
+
+            <p>Decimals places in string representation; specific gravity should have 3.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga1a5705e4154ff5a7df8c2bb2f433e88a">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga1a5705e4154ff5a7df8c2bb2f433e88a" class="m-doc-self">ATLAS_SG_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_atlas_scientific_e_c_8h.html">&lt;src/sensors/AtlasScientificEC.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; specific gravity is stored in sensorValues[3].</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga071f4f1d9fc1d245bd471265d460c076">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga071f4f1d9fc1d245bd471265d460c076" class="m-doc-self">ATLAS_SG_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "specificGravity"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_atlas_scientific_e_c_8h.html">&lt;src/sensors/AtlasScientificEC.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;specificGravity&quot;.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga0df18a00ead4ed4a863b2792b447a043">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga0df18a00ead4ed4a863b2792b447a043" class="m-doc-self">ATLAS_SG_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "dimensionless"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_atlas_scientific_e_c_8h.html">&lt;src/sensors/AtlasScientificEC.h&gt;</a></div>
+            </h3>
+
+            <p><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;dimensionless&quot;.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        <section class="m-doc-details" id="ga689108b0e9e2df4491f0708fd874ae68">
+          <div>
+
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga689108b0e9e2df4491f0708fd874ae68" class="m-doc-self">ATLAS_SG_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "AtlasSpecGravity"</span></span>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_atlas_scientific_e_c_8h.html">&lt;src/sensors/AtlasScientificEC.h&gt;</a></div>
+            </h3>
+
+            <p>Default variable short code; &quot;AtlasSpecGravity&quot;.</p>
+
+
+
+            <hr>
+          </div>
+        </section>
+        </section>
               </article>
             </main>
 
-          </div>      </div></div><div id="footer-image">
-          <div class="gp-container">
-            <img
-              src="https://www.envirodiy.org/wp-content/uploads/2016/05/EnviroDIY_LogoMaster_Square_V5_TwoTree_Trans_notext-e1462820115833.png"
-              width="99"
-              height="22"
-              alt=""
-            />
-          </div>
-        </div>
+          </div> <!-- gp-content -->
+        </div> <!-- gp-left-column -->
+      </div> <!-- gp-inner-container -->
+    </div> <!-- gp-content-wrapper -->
+
+    <div id="footer-image">
+      <div class="gp-container">
+        <img
+          src="https://www.envirodiy.org/wp-content/uploads/2016/05/EnviroDIY_LogoMaster_Square_V5_TwoTree_Trans_notext-e1462820115833.png"
+          width="99"
+          height="22"
+          alt=""
+        />
+      </div>
+    </div>
 
     <footer id="gp-footer">
       <div id="gp-copyright">
         <div class="gp-container">
           <div id="gp-copyright-text">
             <p>
-              <a href="http://www.stroudcenter.org/" target="_blank"
-                ><img
-                  style="float: left; margin-right: 20px;"
-                  src="https://www.envirodiy.org/wp-content/uploads/2017/01/stroud-white-white-165px.png"
-                  alt=""
-                  width="165"
-                  height="70" /></a
-              >EnviroDIY™ is a community for do-it-yourself ideas for
-              environmental science and monitoring. EnviroDIY is an
-              initiative of
-              <a href="http://www.stroudcenter.org/" target="_blank"
-                >Stroud™ Water Research Center</a
-              >, which seeks to advance knowledge and stewardship of
-              freshwater systems through global research, education, and
-              watershed restoration.
+              <a href="https://stroudcenter.org/" target="_blank"
+                >EnviroDIY™ is a community for do-it-yourself ideas for environmental
+                science and monitoring. EnviroDIY is an initiative of
+                <a
+                  style="text-decoration: underline"
+                  href="https://stroudcenter.org/"
+                  target="_blank"
+                  >Stroud Water Research Center</a
+                >, which advances knowledge and stewardship of freshwater systems through
+                global research, education, and watershed restoration.
+              </a>
             </p>
             <p>
               All content on EnviroDIY is licensed as Creative Commons
-              Attribution-ShareAlike 4.0 International (CC-BY-SA). Hardware
-              designs on this website are released under the CERN Open
-              Hardware License 1.2.
-              <a href="https://envirodiy.org/licenses/"
-                >Alternative licenses are available.</a
+              Attribution-ShareAlike 4.0 International (CC-BY-SA). Hardware designs on this
+              website are released under the CERN Open Hardware License 1.2.
+              <a style="text-decoration: underline" href="https://envirodiy.org/licenses/"
+                >See all licenses.</a
               >
-              <a href="https://envirodiy.org/terms/">Terms of Use</a> |
-              <a href="https://envirodiy.org/privacy/">Privacy Policy</a> |
-              <a href="https://envirodiy.org/cookies/">Cookie Policy</a> |
-              <a href="https://envirodiy.org/contact/">Contact</a>
+              <a style="text-decoration: underline" href="https://envirodiy.org/terms/"
+                >Terms of Use</a
+              >
+              |
+              <a style="text-decoration: underline" href="https://envirodiy.org/privacy/"
+                >Privacy Policy</a
+              >
+              |
+              <a style="text-decoration: underline" href="https://envirodiy.org/cookies/"
+                >Cookie Policy</a
+              >
+              |
+              <a
+                style="text-decoration: underline"
+                href="https://envirodiy.org/shop-policies/"
+                >Shop Policies</a
+              >
+              |
+              <a style="text-decoration: underline" href="https://envirodiy.org/contact/"
+                >Contact</a
+              >
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.6 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.12.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>
@@ -2264,69 +2507,8 @@
 
     <div class="gp-clear"></div>
 
-    </div></div><script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/modernizr.js?ver=6.1.1"
-  id="modernizr-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-includes/js/imagesloaded.min.js?ver=4.1.4"
-  id="imagesloaded-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/selectivizr.min.js?ver=6.1.1"
-  id="selectivizr-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/placeholders.min.js?ver=6.1.1"
-  id="placeholder-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/jquery.ui.totop.min.js.js?ver=6.1.1"
-  id="jquery-totop-js"
-></script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/jquery.flexslider-min.js?ver=6.1.1"
-  id="jquery-flexslider-js"
-></script>
-<script type="text/javascript" id="ghostpool-custom-js-js-extra">
-  /* <![CDATA[ */
-  var ghostpool_script = {
-    lightbox: 'separate_images',
-    url: 'https:\/\/www.envirodiy.org\/',
-    related_items_in_view: '',
-  };
-  /* ]]> */
-</script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/jquery.stellar.min.js?ver=6.1.1"
-  id="jquery-stellar-js"
-></script>
+    </div> <!-- gp-site-wrapper -->
+  </div> <!-- gp-site-wrapper -->
 
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/custom.js?ver=6.1.1"
-  id="ghostpool-custom-js-js"
-></script>
-<script type="text/javascript" id="ghostpool-ajax-loop-js-extra">
-  /* <![CDATA[ */
-  var ghostpoolAjax = {
-    ajaxurl: 'https:\/\/www.envirodiy.org\/wp-admin\/admin-ajax.php',
-    ajaxnonce: 'e2424257d3',
-    querystring: '',
-  };
-  /* ]]> */
-</script>
-<script
-  type="text/javascript"
-  src="https://www.envirodiy.org/wp-content/themes/socialize/lib/scripts/ajax-loop.js?ver=6.1.1"
-  id="ghostpool-ajax-loop-js"
-></script>
 </body>
 </html>

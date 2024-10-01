@@ -1,0 +1,76 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "page",
+    "id": "page_physical_dependencies",
+    "name": "Physical Dependencies",
+    "url_base": "page_physical_dependencies",
+    "url": "page_physical_dependencies.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p><a name=\"md_docs_2_getting-_started_2_physical-_dependencies\"></a></p><p>This library is designed for wireless, solar-powered environmental data logging applications, that is, to log data from many physical sensors and to put the processor and all peripherals to sleep to conserver power between readings. The most banal functions of the library require only an AVR or SAMD processor, but making real use of this library requires:</p><ul><li>A sufficiently powerful AVR or SAMD processor mounted on some sort of circuit board. (See <a href=\"https://envirodiy.github.io/ModularSensors/page_processor_compatibility.html\">Processor/Board Compatibility</a> for more details on specific processors and boards that are supported.)<ul><li>For all AVR processors, you must also have a <a href=\"https://www.maximintegrated.com/en/products/digital/real-time-clocks/DS3231.html\">Maxim DS3231</a> high precision I2C real-time clock with the SQE/INT pin connected to a pin on your processor which supports either external or pin-change interrupts.</li><li>For SAMD boards, this library makes use of their on-board (though less accurate) real-time clock.</li></ul></li><li>A SD card reader attached to the processor via SPI.</li><li>Environmental sensors</li><li>A battery to power the system</li><li>A solar charging circuit</li><li>A modem-type unit to communicate remote data (Optional for logging data, but required for sending data directly to the internet.<ul><li>The list of supported modems is available here: <a href=\"https://envirodiy.github.io/ModularSensors/index.html#mainpage_modems\">https://envirodiy.github.io/ModularSensors/index.html#mainpage_<wbr />modems</a></li></ul></li><li>Protected water-proof enclosures and mountings for all of the above</li><li>An OTG cable to connect serial output from the board to a cell phone (Optional, but very helpful for debugging.)</li></ul>",
+    "sections": [],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "ModularSensors",
+        "index.html"
+      ],
+      [
+        "Getting Started",
+        "page_getting_started.html"
+      ],
+      [
+        "Physical Dependencies",
+        "page_physical_dependencies.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Physical Dependencies",
+        "page_physical_dependencies.html"
+      ]
+    ]
+  }
+}

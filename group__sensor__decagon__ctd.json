@@ -1,0 +1,616 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__sensor__decagon__ctd",
+    "name": "Decagon CTD-10",
+    "url_base": "group__sensor__decagon__ctd",
+    "url": "group__sensor__decagon__ctd.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>Classes for the Decagon CTD-10 conductivity, temperature, and depth sensor.</p><section id=\"sensor_decagon_ctd_intro\"><h2>Introduction</h2><p>The Decagon CTD is implemented as a sub-classes of the <a href=\"class_s_d_i12_sensors.html\" class=\"m-doc\">SDI12Sensors</a> class. It requires a 3.5-12V power supply, which can be turned off between measurements. While contrary to the manual, they will run with power as low as 3.3V.</p><aside class=\"m-note m-info\"><h4>Note</h4><p>This is identical to Meter Hydros 21 in everything but the names.</p></aside><aside class=\"m-note m-danger\"><h4>Warning</h4><p>Coming from the factory, METER sensors are set at SDI-12 address &#x27;0&#x27;. They also output a &quot;DDI&quot; serial protocol string on each power up. This library <em>disables the DDI output string</em> on all newer METER sensors that support disabling it. After using a METER sensor with ModularSensors, you will need to manually re-enable the DDI output if you wish to use it.</p></aside></section><section id=\"sensor_decagon_ctd_datasheet\"><h2>Sensor Datasheet</h2><p>Documentation for the SDI-12 Protocol commands and responses for the Decagon CTD are archived in the ModularSensors wiki.</p></section><section id=\"sensor_decagon_ctd_flags\"><h2>Build flags</h2><aside class=\"m-note m-default\"><h4>See also</h4><p><a href=\"group__sdi12__group.html#sdi12_group_flags\" class=\"m-doc\">Build flags</a></p></aside></section><section id=\"sensor_decagon_ctd_ctor\"><h2>Sensor Constructor</h2><p>{{ <a href=\"class_decagon_c_t_d.html#ab55f821e5b9ac2080f6421e80feba6bc\" class=\"m-doc\">DecagonCTD::<wbr />DecagonCTD</a> }}</p><hr/></section><section id=\"sensor_decagon_ctd_examples\"><h2>Example Code</h2><p>The Decagon CTD-10 is used in the <a href=\"example_menu.html#menu_walk_decagon_ctd\" class=\"m-doc\">menu a la carte</a> example.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;sensors/DecagonCTD.h&gt;</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"c1\">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">char</span><span class=\"o\">*</span><span class=\"w\">   </span><span class=\"n\">CTDSDI12address</span><span class=\"w\">   </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"s\">&quot;1&quot;</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// The SDI-12 Address of the CTD</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">uint8_t</span><span class=\"w\"> </span><span class=\"n\">CTDNumberReadings</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">6</span><span class=\"p\">;</span><span class=\"w\">    </span><span class=\"c1\">// The number of readings to average</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">CTDPower</span><span class=\"w\">          </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">sensorPowerPin</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// Power pin</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">CTDData</span><span class=\"w\">           </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">7</span><span class=\"p\">;</span><span class=\"w\">               </span><span class=\"c1\">// The SDI-12 data pin</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span><span class=\"c1\">// Create a Decagon CTD sensor object</span>\n</div><div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span><span class=\"n\">DecagonCTD</span><span class=\"w\"> </span><span class=\"nf\">ctd</span><span class=\"p\">(</span><span class=\"o\">*</span><span class=\"n\">CTDSDI12address</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">CTDPower</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">CTDData</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">CTDNumberReadings</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span>\n</div><div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"c1\">// Create conductivity, temperature, and depth variable pointers for the CTD</span>\n</div><div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">ctdCond</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">DecagonCTD_Cond</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">ctd</span><span class=\"p\">,</span>\n</div><div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span><span class=\"w\">                                        </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-15\" name=\"l-15\"></a><span class=\"linenos\">15</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">ctdTemp</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">DecagonCTD_Temp</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">ctd</span><span class=\"p\">,</span>\n</div><div class=\"line\"><a id=\"l-16\" name=\"l-16\"></a><span class=\"linenos\">16</span><span class=\"w\">                                        </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-17\" name=\"l-17\"></a><span class=\"linenos\">17</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">ctdDepth</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-18\" name=\"l-18\"></a><span class=\"linenos\">18</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">DecagonCTD_Depth</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">ctd</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "sensor_decagon_ctd_intro",
+        "Introduction",
+        []
+      ],
+      [
+        "sensor_decagon_ctd_datasheet",
+        "Sensor Datasheet",
+        []
+      ],
+      [
+        "sensor_decagon_ctd_flags",
+        "Build flags",
+        []
+      ],
+      [
+        "sensor_decagon_ctd_ctor",
+        "Sensor Constructor",
+        []
+      ],
+      [
+        "sensor_decagon_ctd_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_decagon_c_t_d.html",
+        "name": "DecagonCTD",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__decagon__ctd.html\" class=\"m-doc\">Decagon CTD-10 conductivity, temperature, and depth sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_decagon_c_t_d___cond.html",
+        "name": "DecagonCTD_Cond",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__decagon__ctd.html#sensor_decagon_ctd_cond\" class=\"m-doc\">conductivity output</a> from a <a href=\"group__sensor__decagon__ctd.html\" class=\"m-doc\">Decagon CTD-10 3-in-1 water level sensor.</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_decagon_c_t_d___temp.html",
+        "name": "DecagonCTD_Temp",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__decagon__ctd.html#sensor_decagon_ctd_temp\" class=\"m-doc\">temperature output</a> from a <a href=\"group__sensor__decagon__ctd.html\" class=\"m-doc\">Decagon CTD-10 3-in-1 water level sensor.</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_decagon_c_t_d___depth.html",
+        "name": "DecagonCTD_Depth",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__decagon__ctd.html#sensor_decagon_ctd_depth\" class=\"m-doc\">depth output</a> from a <a href=\"group__sensor__decagon__ctd.html\" class=\"m-doc\">Decagon CTD-10 3-in-1 water level sensor.</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Sensor Variable Counts",
+        "id": "sensor-variable-counts",
+        "description": "<p><a name=\"sensor_decagon_ctd_var_counts\"></a> The number of variables that can be returned by Decagon CTD</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__decagon__ctd.html",
+              "id": "gad740d01155fd66ee816c50a290efb14a",
+              "include": [
+                "&lt;src/sensors/DecagonCTD.h&gt;",
+                "_decagon_c_t_d_8h.html"
+              ],
+              "has_details": true,
+              "name": "CTD_NUM_VARIABLES",
+              "initializer": "3",
+              "brief": "<a href=\"class_sensor.html#af26786329fd01b44cf31410d046fc8f3\" class=\"m-doc\">Sensor::<wbr />_numReturnedValues</a>; the CTD can report 3 values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__decagon__ctd.html",
+              "id": "gad382550a90c982c9c5251bd06c97fcc1",
+              "include": [
+                "&lt;src/sensors/DecagonCTD.h&gt;",
+                "_decagon_c_t_d_8h.html"
+              ],
+              "has_details": true,
+              "name": "CTD_INC_CALC_VARIABLES",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#a2f3f93a9205efb134cef1216d65077d2\" class=\"m-doc\">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Sensor Timing",
+        "id": "sensor-timing",
+        "description": "<p><a name=\"sensor_decagon_ctd_timing\"></a> The sensor timing for a Decagon CTD-10</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__decagon__ctd.html",
+              "id": "gaf28df8318435afcd50155d03755b44c0",
+              "include": [
+                "&lt;src/sensors/DecagonCTD.h&gt;",
+                "_decagon_c_t_d_8h.html"
+              ],
+              "has_details": true,
+              "name": "CTD_WARM_UP_TIME_MS",
+              "initializer": "500",
+              "brief": "<a href=\"class_sensor.html#aaaefd7f306f86382a3dac726531756b4\" class=\"m-doc\">Sensor::<wbr />_warmUpTime_ms</a>; maximum warm-up time in SDI-12 mode: 500ms.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__decagon__ctd.html",
+              "id": "gafe4fd5873da45c6aa8b99b7dfae275dc",
+              "include": [
+                "&lt;src/sensors/DecagonCTD.h&gt;",
+                "_decagon_c_t_d_8h.html"
+              ],
+              "has_details": true,
+              "name": "CTD_STABILIZATION_TIME_MS",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#ad6822ad09fb64658c911ce86820db79c\" class=\"m-doc\">Sensor::<wbr />_stabilizationTime_ms</a>; the CTD is stable as soon as it warms up (0ms stabilization).",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__decagon__ctd.html",
+              "id": "ga813862ea1da0977bc56fc15821826593",
+              "include": [
+                "&lt;src/sensors/DecagonCTD.h&gt;",
+                "_decagon_c_t_d_8h.html"
+              ],
+              "has_details": true,
+              "name": "CTD_MEASUREMENT_TIME_MS",
+              "initializer": "500",
+              "brief": "<a href=\"class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba\" class=\"m-doc\">Sensor::<wbr />_measurementTime_ms</a>; maximum measurement duration: 500ms.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__decagon__ctd.html",
+              "id": "ga87f7e4ff93d02481f60d5a7795ede7f3",
+              "include": [
+                "&lt;src/sensors/DecagonCTD.h&gt;",
+                "_decagon_c_t_d_8h.html"
+              ],
+              "has_details": true,
+              "name": "CTD_EXTRA_WAKE_TIME_MS",
+              "initializer": "0",
+              "brief": "Extra wake time required for an SDI-12 sensor between the &quot;break&quot; and the time the command is sent. The CTD requires no extra time.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Conductivity",
+        "id": "conductivity",
+        "description": "<p><a name=\"sensor_decagon_ctd_cond\"></a> The conductivity variable from a Decagon CTD-10</p><ul><li>Range is 0 \u2013 120 mS/cm (bulk)</li><li>Accuracy is \u00b10.01mS/cm or \u00b110% (whichever is greater)</li></ul><p>{{ <a href=\"class_decagon_c_t_d___cond.html#a9760d49fbfe1f05885ca774c7399b57f\" class=\"m-doc\">DecagonCTD_Cond::<wbr />DecagonCTD_Cond</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__decagon__ctd.html",
+              "id": "gad508dc979b24dc03448fb3cd25e9ac7b",
+              "include": [
+                "&lt;src/sensors/DecagonCTD.h&gt;",
+                "_decagon_c_t_d_8h.html"
+              ],
+              "has_details": true,
+              "name": "CTD_COND_RESOLUTION",
+              "initializer": "1",
+              "brief": "Decimals places in string representation; conductivity should have 1.",
+              "description": "<p>0 are reported, adding extra digit to resolution to allow the proper number of significant figures for averaging - resolution is 0.001 mS/cm = 1 \u00b5S/cm</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__decagon__ctd.html",
+              "id": "ga7aa38c8ea5c1785ba1fb5b2d5d79ca51",
+              "include": [
+                "&lt;src/sensors/DecagonCTD.h&gt;",
+                "_decagon_c_t_d_8h.html"
+              ],
+              "has_details": true,
+              "name": "CTD_COND_VAR_NUM",
+              "initializer": "2",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; conductivity is stored in sensorValues[2].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__decagon__ctd.html",
+              "id": "gab08175316ecc1856542b50b5492e4ded",
+              "include": [
+                "&lt;src/sensors/DecagonCTD.h&gt;",
+                "_decagon_c_t_d_8h.html"
+              ],
+              "has_details": true,
+              "name": "CTD_COND_VAR_NAME",
+              "initializer": "\"specificConductance\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;specificConductance&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__decagon__ctd.html",
+              "id": "ga85c16c7e0479dd6d024dc3665c818c65",
+              "include": [
+                "&lt;src/sensors/DecagonCTD.h&gt;",
+                "_decagon_c_t_d_8h.html"
+              ],
+              "has_details": true,
+              "name": "CTD_COND_UNIT_NAME",
+              "initializer": "\"microsiemenPerCentimeter\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;microsiemenPerCentimeter&quot; (\u00b5S/cm)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__decagon__ctd.html",
+              "id": "ga0cce3faca135d7275a14f0590e19d7ab",
+              "include": [
+                "&lt;src/sensors/DecagonCTD.h&gt;",
+                "_decagon_c_t_d_8h.html"
+              ],
+              "has_details": true,
+              "name": "CTD_COND_DEFAULT_CODE",
+              "initializer": "\"CTDcond\"",
+              "brief": "Default variable short code; &quot;CTDcond&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Temperature",
+        "id": "temperature",
+        "description": "<p><a name=\"sensor_decagon_ctd_temp\"></a> The temperature variable from a Decagon CTD-10</p><ul><li>Range is -11\u00b0C to +49\u00b0C</li><li>Accuracy is \u00b11\u00b0C</li></ul><p>{{ <a href=\"class_decagon_c_t_d___temp.html#a3f69ca1ead163d5e9fb70843e5681cfa\" class=\"m-doc\">DecagonCTD_Temp::<wbr />DecagonCTD_Temp</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__decagon__ctd.html",
+              "id": "gae4e7f9eeb94ca4f70997188d71c7bb81",
+              "include": [
+                "&lt;src/sensors/DecagonCTD.h&gt;",
+                "_decagon_c_t_d_8h.html"
+              ],
+              "has_details": true,
+              "name": "CTD_TEMP_RESOLUTION",
+              "initializer": "2",
+              "brief": "Decimals places in string representation; temperature should have 2.",
+              "description": "<p>1 is reported, adding extra digit to resolution to allow the proper number of significant figures for averaging - resolution is 0.1\u00b0C</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__decagon__ctd.html",
+              "id": "gaca4fe53cc0e723e5147b5d1f442ff33d",
+              "include": [
+                "&lt;src/sensors/DecagonCTD.h&gt;",
+                "_decagon_c_t_d_8h.html"
+              ],
+              "has_details": true,
+              "name": "CTD_TEMP_VAR_NUM",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; temperature is stored in sensorValues[1].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__decagon__ctd.html",
+              "id": "ga59152bd4c72a31c9a2122ac2416cb58d",
+              "include": [
+                "&lt;src/sensors/DecagonCTD.h&gt;",
+                "_decagon_c_t_d_8h.html"
+              ],
+              "has_details": true,
+              "name": "CTD_TEMP_VAR_NAME",
+              "initializer": "\"temperature\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;temperature&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__decagon__ctd.html",
+              "id": "ga3ceba34fb18f1cb6595656b565e7ae22",
+              "include": [
+                "&lt;src/sensors/DecagonCTD.h&gt;",
+                "_decagon_c_t_d_8h.html"
+              ],
+              "has_details": true,
+              "name": "CTD_TEMP_UNIT_NAME",
+              "initializer": "\"degreeCelsius\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;degreeCelsius&quot; (\u00b0C)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__decagon__ctd.html",
+              "id": "ga304532b2a7ddc48785b0c41920cd710a",
+              "include": [
+                "&lt;src/sensors/DecagonCTD.h&gt;",
+                "_decagon_c_t_d_8h.html"
+              ],
+              "has_details": true,
+              "name": "CTD_TEMP_DEFAULT_CODE",
+              "initializer": "\"CTDtemp\"",
+              "brief": "Default variable short code; &quot;CTDtemp&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Water Depth",
+        "id": "water-depth",
+        "description": "<p><a name=\"sensor_decagon_ctd_depth\"></a> The water depth variable from a Decagon CTD-10</p><ul><li>Range is 0 to 5 m or 0 to 10 m, depending on model</li><li>Accuracy is \u00b10.05% of full scale</li></ul><p>{{ <a href=\"class_decagon_c_t_d___depth.html#a1bef3217cd602baa46b848a44f542b13\" class=\"m-doc\">DecagonCTD_Depth::<wbr />DecagonCTD_Depth</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__decagon__ctd.html",
+              "id": "gaa091732fd2bb6e5210a7f7ab18b45b48",
+              "include": [
+                "&lt;src/sensors/DecagonCTD.h&gt;",
+                "_decagon_c_t_d_8h.html"
+              ],
+              "has_details": true,
+              "name": "CTD_DEPTH_RESOLUTION",
+              "initializer": "1",
+              "brief": "Decimals places in string representation; depth should have 1.",
+              "description": "<p>0 are reported, adding extra digit to resolution to allow the proper number of significant figures for averaging - resolution is 2 mm</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__decagon__ctd.html",
+              "id": "ga98b8b1dd352aba0165a754ef3b3bcd7c",
+              "include": [
+                "&lt;src/sensors/DecagonCTD.h&gt;",
+                "_decagon_c_t_d_8h.html"
+              ],
+              "has_details": true,
+              "name": "CTD_DEPTH_VAR_NUM",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; depth is stored in sensorValues[0].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__decagon__ctd.html",
+              "id": "ga2b33ca48fcdb7a7c293145937d0916bb",
+              "include": [
+                "&lt;src/sensors/DecagonCTD.h&gt;",
+                "_decagon_c_t_d_8h.html"
+              ],
+              "has_details": true,
+              "name": "CTD_DEPTH_VAR_NAME",
+              "initializer": "\"waterDepth\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;waterDepth&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__decagon__ctd.html",
+              "id": "ga7aa2b1d051657fdb4155870ff70cf866",
+              "include": [
+                "&lt;src/sensors/DecagonCTD.h&gt;",
+                "_decagon_c_t_d_8h.html"
+              ],
+              "has_details": true,
+              "name": "CTD_DEPTH_UNIT_NAME",
+              "initializer": "\"millimeter\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;millimeter&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__decagon__ctd.html",
+              "id": "ga2bca19636712fe88ad179178e9138939",
+              "include": [
+                "&lt;src/sensors/DecagonCTD.h&gt;",
+                "_decagon_c_t_d_8h.html"
+              ],
+              "has_details": true,
+              "name": "CTD_DEPTH_DEFAULT_CODE",
+              "initializer": "\"CTDdepth\"",
+              "brief": "Default variable short code; &quot;CTDdepth&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "SDI-12 Sensors",
+        "group__sdi12__group.html"
+      ],
+      [
+        "Decagon CTD-10",
+        "group__sensor__decagon__ctd.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Decagon CTD-10",
+        "group__sensor__decagon__ctd.html"
+      ]
+    ]
+  }
+}

@@ -1,0 +1,526 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__sensor__dht",
+    "name": "AOSong DHT",
+    "url_base": "group__sensor__dht",
+    "url": "group__sensor__dht.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>Classes for the AOSong DHT digital-output relative humidity and temperature sensor.</p><section id=\"sensor_dht_notes\"><h2>Quick Notes</h2><ul><li>Applies to AOSong modules:<ul><li><a href=\"http://www.aosong.com/en/products/details.asp?id=109\">DHT11/<wbr />CHT11</a>,</li><li>DHT21/AM2301, and</li><li><a href=\"http://www.aosong.com/en/products/details.asp?id=117\">DHT22/<wbr />AM2302/<wbr />CM2302</a></li></ul></li><li>Depends on the <a href=\"https://github.com/adafruit/DHT-sensor-library\">Adafruit DHT library</a></li><li>Communicate with a single-bus single wire digital signaling protocol<ul><li>Can be connected to any digital pin on a Arduino</li><li>The communication with these sensors is slow and <em>interrupts are turned off during communication</em>.</li><li>See the Adafruit DHT library&#x27;s DHT.cpp for details.</li><li>Could possibly cause issues if used in combination with other interrupt-driven sensors.</li></ul></li><li>Only 1 can be connected to a system at a time</li><li>Requires a 3.3 - 6V power source</li><li>Sensors should not be polled more frequently than once every 2 seconds</li><li>Uses a Maxim DS18 sensor internally</li></ul></section><section id=\"sensor_dht_datasheet\"><h2>Sensor Datasheet</h2><p><a href=\"https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AOSong-DHT22-Datasheet.pdf\">Datasheet</a></p></section><section id=\"sensor_dht_ctor\"><h2>Sensor Constructor</h2><p>{{ <a href=\"class_a_o_song_d_h_t.html#a4f0fed39d4a6b4d81dead0fc5d8f7749\" class=\"m-doc\">AOSongDHT::<wbr />AOSongDHT</a> }}</p><hr/></section><section id=\"sensor_dht_examples\"><h2>Example Code</h2><p>The DHT is used in the <a href=\"example_menu.html#menu_walk_ao_song_dht\" class=\"m-doc\">menu a la carte</a> example.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;sensors/AOSongDHT.h&gt;</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"c1\">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">DHTPower</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">sensorPowerPin</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// Power pin</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">DHTPin</span><span class=\"w\">   </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">10</span><span class=\"p\">;</span><span class=\"w\">              </span><span class=\"c1\">// DHT data pin</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">dhtType</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"w\">    </span><span class=\"n\">DHT11</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// DHT type, one of DHT11, DHT12, DHT21, DHT22, or AM2301</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span><span class=\"c1\">// Create an AOSong DHT sensor object</span>\n</div><div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span><span class=\"n\">AOSongDHT</span><span class=\"w\"> </span><span class=\"nf\">dht</span><span class=\"p\">(</span><span class=\"n\">DHTPower</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">DHTPin</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">dhtType</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span>\n</div><div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"c1\">// Create humidity, temperature, and heat index variable pointers for the DHT</span>\n</div><div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">dhtHumid</span><span class=\"w\"> </span><span class=\"o\">=</span>\n</div><div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">AOSongDHT_Humidity</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">dht</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-15\" name=\"l-15\"></a><span class=\"linenos\">15</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">dhtTemp</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">AOSongDHT_Temp</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">dht</span><span class=\"p\">,</span>\n</div><div class=\"line\"><a id=\"l-16\" name=\"l-16\"></a><span class=\"linenos\">16</span><span class=\"w\">                                       </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-17\" name=\"l-17\"></a><span class=\"linenos\">17</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">dhtHI</span><span class=\"w\">   </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">AOSongDHT_HI</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">dht</span><span class=\"p\">,</span>\n</div><div class=\"line\"><a id=\"l-18\" name=\"l-18\"></a><span class=\"linenos\">18</span><span class=\"w\">                                     </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "sensor_dht_notes",
+        "Quick Notes",
+        []
+      ],
+      [
+        "sensor_dht_datasheet",
+        "Sensor Datasheet",
+        []
+      ],
+      [
+        "sensor_dht_ctor",
+        "Sensor Constructor",
+        []
+      ],
+      [
+        "sensor_dht_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_a_o_song_d_h_t.html",
+        "name": "AOSongDHT",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__dht.html\" class=\"m-doc\">AOSong digital-output relative humidity and temperature sensor modules</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_a_o_song_d_h_t___humidity.html",
+        "name": "AOSongDHT_Humidity",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__dht.html#sensor_dht_humidity\" class=\"m-doc\">humidity output</a> from an <a href=\"group__sensor__dht.html\" class=\"m-doc\">AOSong DHT</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_a_o_song_d_h_t___temp.html",
+        "name": "AOSongDHT_Temp",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__dht.html#sensor_dht_temperature\" class=\"m-doc\">temperature output</a> from an <a href=\"group__sensor__dht.html\" class=\"m-doc\">AOSong DHT</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_a_o_song_d_h_t___h_i.html",
+        "name": "AOSongDHT_HI",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__dht.html#sensor_dht_hi\" class=\"m-doc\">heat index output</a> calculated from measurements made by an <a href=\"group__sensor__dht.html\" class=\"m-doc\">AOSong DHT</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Sensor Variable Counts",
+        "id": "sensor-variable-counts",
+        "description": "<p><a name=\"sensor_dht_var_counts\"></a> The number of variables that can be returned by an AOSong DHT</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dht.html",
+              "id": "gaf1e521618506220f7a5c06d49a1033b0",
+              "include": null,
+              "has_details": false,
+              "name": "DHT_NUM_VARIABLES",
+              "initializer": "3",
+              "brief": "<a href=\"class_sensor.html#af26786329fd01b44cf31410d046fc8f3\" class=\"m-doc\">Sensor::<wbr />_numReturnedValues</a>; the DHT can report 3 values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dht.html",
+              "id": "ga4011d0e28fd6d73937114e9a90eae072",
+              "include": null,
+              "has_details": false,
+              "name": "DHT_INC_CALC_VARIABLES",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#a2f3f93a9205efb134cef1216d65077d2\" class=\"m-doc\">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Sensor Timing",
+        "id": "sensor-timing",
+        "description": "<p><a name=\"sensor_dht_timing\"></a> The sensor timing for an AOSong DHT</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dht.html",
+              "id": "ga03642dd1074bb0ac742e2bc864c70a59",
+              "include": null,
+              "has_details": false,
+              "name": "DHT_WARM_UP_TIME_MS",
+              "initializer": "1700",
+              "brief": "<a href=\"class_sensor.html#aaaefd7f306f86382a3dac726531756b4\" class=\"m-doc\">Sensor::<wbr />_warmUpTime_ms</a>; DHT warms up in 1700ms (1.7sec).",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dht.html",
+              "id": "ga765d434271f5b95dda9089b345c99eea",
+              "include": null,
+              "has_details": false,
+              "name": "DHT_STABILIZATION_TIME_MS",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#ad6822ad09fb64658c911ce86820db79c\" class=\"m-doc\">Sensor::<wbr />_stabilizationTime_ms</a>; We assume the sensor is stable immediately after warm-up.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dht.html",
+              "id": "gad00ec424da9a3a1fb79a10f380affc7c",
+              "include": null,
+              "has_details": false,
+              "name": "DHT_MEASUREMENT_TIME_MS",
+              "initializer": "2000",
+              "brief": "<a href=\"class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba\" class=\"m-doc\">Sensor::<wbr />_measurementTime_ms</a>; DHT takes 2000ms (2s) to complete a measurement.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Humidity",
+        "id": "humidity",
+        "description": "<p><a name=\"sensor_dht_humidity\"></a> The humidity variable from an AOSong DHT</p><ul><li>Accuracy is \u00b1 2 % RH for DHT22 and \u00b1 5 % RH for DHT11</li><li>Range is 0 to 100 % RH</li></ul><p>{{ <a href=\"class_a_o_song_d_h_t___humidity.html#a5301e446b821a88100f90d04dbb188f7\" class=\"m-doc\">AOSongDHT_Humidity::<wbr />AOSongDHT_Humidity</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dht.html",
+              "id": "gaefd2841c3b26ff1286bfa8e07642fc47",
+              "include": null,
+              "has_details": false,
+              "name": "DHT_HUMIDITY_RESOLUTION",
+              "initializer": "1",
+              "brief": "Decimals places in string representation; humidity should have 1 (0.1 % RH for DHT22 and 1 % RH for DHT11)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dht.html",
+              "id": "gac0971d57b892c8663c9ae63b3069ed44",
+              "include": null,
+              "has_details": false,
+              "name": "DHT_HUMIDITY_VAR_NUM",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; humidity is stored in sensorValues[0].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dht.html",
+              "id": "gaa1948a02eae7e4eef65d479e82df6a60",
+              "include": null,
+              "has_details": false,
+              "name": "DHT_HUMIDITY_VAR_NAME",
+              "initializer": "\"relativeHumidity\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;relativeHumidity&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dht.html",
+              "id": "gaef48b9793dee59c894d6f4c4920b208a",
+              "include": null,
+              "has_details": false,
+              "name": "DHT_HUMIDITY_UNIT_NAME",
+              "initializer": "\"percent\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;percent&quot; (percent relative humidity or % RH)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dht.html",
+              "id": "gaa300f24f581cfa257caf9246d9fa68ce",
+              "include": null,
+              "has_details": false,
+              "name": "DHT_HUMIDITY_DEFAULT_CODE",
+              "initializer": "\"DHTHumidity\"",
+              "brief": "Default variable short code; &quot;DHTHumidity&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Temperature",
+        "id": "temperature",
+        "description": "<p><a name=\"sensor_dht_temperature\"></a> The temperature variable from an AOSong DHT</p><ul><li>Accuracy is \u00b10.5\u00b0C for DHT22 and \u00b1 \u00b12\u00b0C for DHT11</li><li>Range is -40\u00b0C to +80\u00b0C</li></ul><p>{{ <a href=\"class_a_o_song_d_h_t___temp.html#adbd140156f5b1ace65b7a813ccd5ba11\" class=\"m-doc\">AOSongDHT_Temp::<wbr />AOSongDHT_Temp</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dht.html",
+              "id": "gacb812db915a440fd77538df18b3b2243",
+              "include": null,
+              "has_details": false,
+              "name": "DHT_TEMP_RESOLUTION",
+              "initializer": "1",
+              "brief": "Decimals places in string representation; temperature should have 1 - resolution is 0.1\u00b0C.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dht.html",
+              "id": "ga82ddf98ea43db9e38c0d507edb7ba911",
+              "include": null,
+              "has_details": false,
+              "name": "DHT_TEMP_VAR_NUM",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; temperature is stored in sensorValues[1].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dht.html",
+              "id": "ga28f87e5d5963f61a87428757e43ab1fa",
+              "include": null,
+              "has_details": false,
+              "name": "DHT_TEMP_VAR_NAME",
+              "initializer": "\"temperature\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;temperature&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dht.html",
+              "id": "ga538af3fa4e7a67cf1f80170fbc22ceea",
+              "include": null,
+              "has_details": false,
+              "name": "DHT_TEMP_UNIT_NAME",
+              "initializer": "\"degreeCelsius\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;degreeCelsius&quot; (degrees Celsius, \u00b0C)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dht.html",
+              "id": "gaf0ebbfdd3e3d90723c25ba1b39618796",
+              "include": null,
+              "has_details": false,
+              "name": "DHT_TEMP_DEFAULT_CODE",
+              "initializer": "\"DHTTemp\"",
+              "brief": "Default variable short code; &quot;DHTTemp&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Heat Index",
+        "id": "heat-index",
+        "description": "<p><a name=\"sensor_dht_hi\"></a> The heat index variable from an AOSong DHT</p><ul><li>Heat index is calculated within the Adafruit library from the measured temperature and humidity.</li></ul><p>{{ <a href=\"class_a_o_song_d_h_t___h_i.html#abff3d68cc157169b5454c52f2609a230\" class=\"m-doc\">AOSongDHT_HI::<wbr />AOSongDHT_HI</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dht.html",
+              "id": "ga5d22842292a20f291765d2a0dd97eb25",
+              "include": null,
+              "has_details": false,
+              "name": "DHT_HI_RESOLUTION",
+              "initializer": "1",
+              "brief": "Decimals places in string representation; heat index should have 1 - resolution is 0.1\u00b0C.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dht.html",
+              "id": "gab6a8fe721585d4cf5bf925834b2e3e0e",
+              "include": null,
+              "has_details": false,
+              "name": "DHT_HI_VAR_NUM",
+              "initializer": "2",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; HI is stored in sensorValues[2].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dht.html",
+              "id": "gab3e01e9ed6e6db1686ae100058ad2147",
+              "include": null,
+              "has_details": false,
+              "name": "DHT_HI_VAR_NAME",
+              "initializer": "\"heatIndex\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;heatIndex&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dht.html",
+              "id": "ga034d53e07c1524803ed0d76cb52eaa03",
+              "include": null,
+              "has_details": false,
+              "name": "DHT_HI_UNIT_NAME",
+              "initializer": "\"degreeCelsius\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;degreeCelsius&quot; (\u00b0C)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__dht.html",
+              "id": "ga6a36da5cfa2b862f1d312d7b9bd8696f",
+              "include": null,
+              "has_details": false,
+              "name": "DHT_HI_DEFAULT_CODE",
+              "initializer": "\"DHTHI\"",
+              "brief": "Default variable short code; &quot;DHTHI&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "AOSong DHT",
+        "group__sensor__dht.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "AOSong DHT",
+        "group__sensor__dht.html"
+      ]
+    ]
+  }
+}

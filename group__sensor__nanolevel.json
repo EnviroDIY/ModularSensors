@@ -1,0 +1,347 @@
+{
+  "version": "1.12.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__sensor__nanolevel",
+    "name": "Keller Nanolevel",
+    "url_base": "group__sensor__nanolevel",
+    "url": "group__sensor__nanolevel.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>Classes for the Keller Nanolevel capacitive level sensor.</p><p>These are for Keller Nanolevel capacitive level sensors.</p><section id=\"sensor_nanolevel_datasheet\"><h2>Sensor Datasheet</h2><ul><li><a href=\"https://www.kelleramerica.com/manuals-and-software/manuals/Keller_America_Users_Guide.pdf\">Manual</a></li><li><a href=\"https://www.kelleramerica.com/pdf-library/Very%20Low%20Range%20Submersible%20Transmitter%20Nanolevel.pdf\">Datasheet</a></li></ul></section><section id=\"sensor_nanolevel_ctor\"><h2>Sensor Constructor</h2><p>{{ <a href=\"class_keller_nanolevel.html#a0f155091be9a5baa6e8092ef844f9307\" class=\"m-doc\">KellerNanolevel::<wbr />KellerNanolevel</a> }}</p><hr/></section><section id=\"sensor_nanolevel_examples\"><h2>Example Code</h2><p>The Keller Nanolevel is used in the <a href=\"example_menu.html#menu_walk_keller_nanolevel\" class=\"m-doc\">menu a la carte</a> example.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;sensors/KellerNanolevel.h&gt;</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"c1\">// NOTE: Extra hardware and software serial ports are created in the &quot;Settings</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"c1\">// for Additional Serial Ports&quot; section</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span><span class=\"c1\">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"kr\">byte</span><span class=\"w\"> </span><span class=\"n\">nanolevelModbusAddress</span><span class=\"w\">  </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mh\">0x01</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// The modbus address of KellerNanolevel</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">nlAdapterPower</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">sensorPowerPin</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// RS485 adapter power pin</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">nanolevelPower</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">A3</span><span class=\"p\">;</span><span class=\"w\">              </span><span class=\"c1\">// Sensor power pin</span>\n</div><div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">nl485EnablePin</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">-1</span><span class=\"p\">;</span><span class=\"w\">              </span><span class=\"c1\">// Adapter RE/DE pin</span>\n</div><div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">uint8_t</span><span class=\"w\"> </span><span class=\"n\">nanolevelNumberReadings</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">5</span><span class=\"p\">;</span>\n</div><div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"c1\">// The manufacturer recommends taking and averaging a few readings</span>\n</div><div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span>\n</div><div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span><span class=\"c1\">// Create a Keller Nanolevel sensor object</span>\n</div><div class=\"line\"><a id=\"l-15\" name=\"l-15\"></a><span class=\"linenos\">15</span><span class=\"n\">KellerNanolevel</span><span class=\"w\"> </span><span class=\"nf\">nanolevel</span><span class=\"p\">(</span><span class=\"n\">nanolevelModbusAddress</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">modbusSerial</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">nlAdapterPower</span><span class=\"p\">,</span>\n</div><div class=\"line\"><a id=\"l-16\" name=\"l-16\"></a><span class=\"linenos\">16</span><span class=\"w\">                          </span><span class=\"n\">nanolevelPower</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">nl485EnablePin</span><span class=\"p\">,</span>\n</div><div class=\"line\"><a id=\"l-17\" name=\"l-17\"></a><span class=\"linenos\">17</span><span class=\"w\">                          </span><span class=\"n\">nanolevelNumberReadings</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-18\" name=\"l-18\"></a><span class=\"linenos\">18</span>\n</div><div class=\"line\"><a id=\"l-19\" name=\"l-19\"></a><span class=\"linenos\">19</span><span class=\"c1\">// Create pressure, temperature, and height variable pointers for the Nanolevel</span>\n</div><div class=\"line\"><a id=\"l-20\" name=\"l-20\"></a><span class=\"linenos\">20</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">nanolevPress</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">KellerNanolevel_Pressure</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-21\" name=\"l-21\"></a><span class=\"linenos\">21</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">nanolevel</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-22\" name=\"l-22\"></a><span class=\"linenos\">22</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">nanolevTemp</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">KellerNanolevel_Temp</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-23\" name=\"l-23\"></a><span class=\"linenos\">23</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">nanolevel</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-24\" name=\"l-24\"></a><span class=\"linenos\">24</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">nanolevHeight</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">KellerNanolevel_Height</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-25\" name=\"l-25\"></a><span class=\"linenos\">25</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">nanolevel</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "sensor_nanolevel_datasheet",
+        "Sensor Datasheet",
+        []
+      ],
+      [
+        "sensor_nanolevel_ctor",
+        "Sensor Constructor",
+        []
+      ],
+      [
+        "sensor_nanolevel_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_keller_nanolevel.html",
+        "name": "KellerNanolevel",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__nanolevel.html\" class=\"m-doc\">Keller nanolevel sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_keller_nanolevel___pressure.html",
+        "name": "KellerNanolevel_Pressure",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__nanolevel.html#sensor_nanolevel_pressure\" class=\"m-doc\">gauge pressure (vented and barometric pressure corrected) output</a> from a <a href=\"group__sensor__nanolevel.html\" class=\"m-doc\">Keller Nanolevel ceramic capacitive level transmitter</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_keller_nanolevel___temp.html",
+        "name": "KellerNanolevel_Temp",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__nanolevel.html#sensor_nanolevel_temp\" class=\"m-doc\">temperature output</a> from a <a href=\"group__sensor__nanolevel.html\" class=\"m-doc\">Keller Nanolevel ceramic capacitive level transmitter</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_keller_nanolevel___height.html",
+        "name": "KellerNanolevel_Height",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__nanolevel.html#sensor_nanolevel_height\" class=\"m-doc\">gauge height (water level with regard to an arbitrary gage datum) output</a> from a <a href=\"group__sensor__nanolevel.html\" class=\"m-doc\">Keller Nanolevel ceramic capacitive level transmitter</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Sensor Timing",
+        "id": "sensor-timing",
+        "description": "<p><a name=\"sensor_nanolevel_timing\"></a> The sensor timing for a Keller Nanolevel</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__nanolevel.html",
+              "id": "ga2b21815ef3efd37849547a296c26eaee",
+              "include": [
+                "&lt;src/sensors/KellerNanolevel.h&gt;",
+                "_keller_nanolevel_8h.html"
+              ],
+              "has_details": true,
+              "name": "NANOLEVEL_WARM_UP_TIME_MS",
+              "initializer": "500",
+              "brief": "<a href=\"class_sensor.html#aaaefd7f306f86382a3dac726531756b4\" class=\"m-doc\">Sensor::<wbr />_warmUpTime_ms</a>; the Nanolevel warms up in 500ms.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__nanolevel.html",
+              "id": "gad8283717e5d2d24c20297fda974c8054",
+              "include": [
+                "&lt;src/sensors/KellerNanolevel.h&gt;",
+                "_keller_nanolevel_8h.html"
+              ],
+              "has_details": true,
+              "name": "NANOLEVEL_STABILIZATION_TIME_MS",
+              "initializer": "5000",
+              "brief": "<a href=\"class_sensor.html#ad6822ad09fb64658c911ce86820db79c\" class=\"m-doc\">Sensor::<wbr />_stabilizationTime_ms</a>; the Nanolevel stabilization takes about 5s (5000ms).",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__nanolevel.html",
+              "id": "gae412363ce7f047e4e2061bae7e3e5a57",
+              "include": [
+                "&lt;src/sensors/KellerNanolevel.h&gt;",
+                "_keller_nanolevel_8h.html"
+              ],
+              "has_details": true,
+              "name": "NANOLEVEL_MEASUREMENT_TIME_MS",
+              "initializer": "1500",
+              "brief": "<a href=\"class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba\" class=\"m-doc\">Sensor::<wbr />_measurementTime_ms</a>; the Nanolevel takes 1500ms to complete a measurement.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Pressure",
+        "id": "pressure",
+        "description": "<p><a name=\"sensor_nanolevel_pressure\"></a> The pressure variable from a Keller Nanolevel</p><ul><li>Range is 0 to 300mbar</li><li>Accuracy is Standard \u00b10.1% FS, Optional \u00b10.05% FS</li></ul><p>{{ <a href=\"class_keller_nanolevel___pressure.html#ae168a477068ebfd9d6285e3e08761b6b\" class=\"m-doc\">KellerNanolevel_Pressure::<wbr />KellerNanolevel_Pressure</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__nanolevel.html",
+              "id": "ga0743f6759fc3e43490e39212e04b5504",
+              "include": [
+                "&lt;src/sensors/KellerNanolevel.h&gt;",
+                "_keller_nanolevel_8h.html"
+              ],
+              "has_details": true,
+              "name": "NANOLEVEL_PRESSURE_RESOLUTION",
+              "initializer": "5",
+              "brief": "Decimals places in string representation; pressure should have 5 - resolution is 0.002%.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__nanolevel.html",
+              "id": "ga040b01970bd1f0e668a683dfa42dc00f",
+              "include": [
+                "&lt;src/sensors/KellerNanolevel.h&gt;",
+                "_keller_nanolevel_8h.html"
+              ],
+              "has_details": true,
+              "name": "NANOLEVEL_PRESSURE_DEFAULT_CODE",
+              "initializer": "\"kellerNanoPress\"",
+              "brief": "Default variable short code; &quot;kellerNanoPress&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Temperature",
+        "id": "temperature",
+        "description": "<p><a name=\"sensor_nanolevel_temp\"></a> The temperature variable from a Keller Nanolevel</p><ul><li>Range is 10\u00b0C to 50\u00b0C</li><li>Accuracy is not specified in the sensor datasheet</li></ul><p>{{ <a href=\"class_keller_nanolevel___temp.html#ab5baded02eb34fa24a542004f36e9221\" class=\"m-doc\">KellerNanolevel_Temp::<wbr />KellerNanolevel_Temp</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__nanolevel.html",
+              "id": "gaa63199b459ba5613e1307f2260029a00",
+              "include": [
+                "&lt;src/sensors/KellerNanolevel.h&gt;",
+                "_keller_nanolevel_8h.html"
+              ],
+              "has_details": true,
+              "name": "NANOLEVEL_TEMP_RESOLUTION",
+              "initializer": "2",
+              "brief": "Decimals places in string representation; temperature should have 2 - resolution is 0.01\u00b0C.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__nanolevel.html",
+              "id": "ga54165dff71aff71b5d518b7da59e4738",
+              "include": [
+                "&lt;src/sensors/KellerNanolevel.h&gt;",
+                "_keller_nanolevel_8h.html"
+              ],
+              "has_details": true,
+              "name": "NANOLEVEL_TEMP_DEFAULT_CODE",
+              "initializer": "\"kellerNanoTemp\"",
+              "brief": "Default variable short code; &quot;kellerNanoTemp&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Height",
+        "id": "height",
+        "description": "<p><a name=\"sensor_nanolevel_height\"></a> The height variable from a Keller Nanolevel</p><ul><li>Range is 0 to 120 inches</li><li>Accuracy is Standard \u00b10.1% FS, Optional \u00b10.05% FS</li></ul><p>{{ <a href=\"class_keller_nanolevel___height.html#a990251b3e651798e32370f6f741cb24b\" class=\"m-doc\">KellerNanolevel_Height::<wbr />KellerNanolevel_Height</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__nanolevel.html",
+              "id": "ga275be815cfc096245c92315963b83aa4",
+              "include": [
+                "&lt;src/sensors/KellerNanolevel.h&gt;",
+                "_keller_nanolevel_8h.html"
+              ],
+              "has_details": true,
+              "name": "NANOLEVEL_HEIGHT_RESOLUTION",
+              "initializer": "4",
+              "brief": "Decimals places in string representation; height should have 4 - resolution is 0.002%.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__nanolevel.html",
+              "id": "gadf1f143a7a0f840310529e963e640f2e",
+              "include": [
+                "&lt;src/sensors/KellerNanolevel.h&gt;",
+                "_keller_nanolevel_8h.html"
+              ],
+              "has_details": true,
+              "name": "NANOLEVEL_HEIGHT_DEFAULT_CODE",
+              "initializer": "\"kellerNanoHeight\"",
+              "brief": "Default variable short code; &quot;kellerNanoHeight&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "Keller Water Level Sensors",
+        "group__keller__group.html"
+      ],
+      [
+        "Keller Nanolevel",
+        "group__sensor__nanolevel.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Keller Nanolevel",
+        "group__sensor__nanolevel.html"
+      ]
+    ]
+  }
+}
