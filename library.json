@@ -85,6 +85,15 @@
       "platforms": "atmelsam"
     },
     {
+      "name": "SparkFun Qwiic RTC RV8803 Arduino Library",
+      "owner": "sparkfun",
+      "url": "https://github.com/sparkfun/SparkFun_RV-8803_Arduino_Library.git",
+      "version": "~1.2.9",
+      "note": "For the RV-8803 RTC",
+      "frameworks": "arduino",
+      "platforms": "atmelavr, atmelsam"
+    },
+    {
       "name": "EnableInterrupt",
       "owner": "greygnome",
       "library id": "311",
