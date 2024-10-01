@@ -350,7 +350,7 @@ class TurnerTurbidityPlus_Voltage : public Variable {
     explicit TurnerTurbidityPlus_Voltage(
         TurnerTurbidityPlus* parentSense, const char* uuid = "",
         const char* varCode = TURBIDITY_PLUS_VOLTAGE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)TURBIDITY_PLUS_VOLTAGE_VAR_NUM,
+        : Variable(parentSense, (uint8_t)TURBIDITY_PLUS_VOLTAGE_VAR_NUM,
                    (uint8_t)TURBIDITY_PLUS_VOLTAGE_RESOLUTION,
                    TURBIDITY_PLUS_VOLTAGE_VAR_NAME,
                    TURBIDITY_PLUS_VOLTAGE_UNIT_NAME, varCode, uuid) {}
@@ -361,7 +361,7 @@ class TurnerTurbidityPlus_Voltage : public Variable {
      * be used.
      */
     TurnerTurbidityPlus_Voltage()
-        : Variable((const uint8_t)TURBIDITY_PLUS_VOLTAGE_VAR_NUM,
+        : Variable((uint8_t)TURBIDITY_PLUS_VOLTAGE_VAR_NUM,
                    (uint8_t)TURBIDITY_PLUS_VOLTAGE_RESOLUTION,
                    TURBIDITY_PLUS_VOLTAGE_VAR_NAME,
                    TURBIDITY_PLUS_VOLTAGE_UNIT_NAME,
@@ -399,7 +399,7 @@ class TurnerTurbidityPlus_Turbidity : public Variable {
     explicit TurnerTurbidityPlus_Turbidity(
         TurnerTurbidityPlus* parentSense, const char* uuid = "",
         const char* varCode = TURBIDITY_PLUS_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)TURBIDITY_PLUS_VAR_NUM,
+        : Variable(parentSense, (uint8_t)TURBIDITY_PLUS_VAR_NUM,
                    (uint8_t)TURBIDITY_PLUS_RESOLUTION, TURBIDITY_PLUS_VAR_NAME,
                    TURBIDITY_PLUS_UNIT_NAME, varCode, uuid) {}
     /**
@@ -409,7 +409,7 @@ class TurnerTurbidityPlus_Turbidity : public Variable {
      * be used.
      */
     TurnerTurbidityPlus_Turbidity()
-        : Variable((const uint8_t)TURBIDITY_PLUS_VAR_NUM,
+        : Variable((uint8_t)TURBIDITY_PLUS_VAR_NUM,
                    (uint8_t)TURBIDITY_PLUS_RESOLUTION, TURBIDITY_PLUS_VAR_NAME,
                    TURBIDITY_PLUS_UNIT_NAME, TURBIDITY_PLUS_DEFAULT_CODE) {}
     /**

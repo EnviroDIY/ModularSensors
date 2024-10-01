@@ -324,7 +324,7 @@ class AlphasenseCO2_CO2 : public Variable {
     explicit AlphasenseCO2_CO2(
         AlphasenseCO2* parentSense, const char* uuid = "",
         const char* varCode = ALPHASENSE_CO2_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ALPHASENSE_CO2_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ALPHASENSE_CO2_VAR_NUM,
                    (uint8_t)ALPHASENSE_CO2_RESOLUTION, ALPHASENSE_CO2_VAR_NAME,
                    ALPHASENSE_CO2_UNIT_NAME, varCode, uuid) {}
     /**
@@ -334,7 +334,7 @@ class AlphasenseCO2_CO2 : public Variable {
      * used.
      */
     AlphasenseCO2_CO2()
-        : Variable((const uint8_t)ALPHASENSE_CO2_VAR_NUM,
+        : Variable((uint8_t)ALPHASENSE_CO2_VAR_NUM,
                    (uint8_t)ALPHASENSE_CO2_RESOLUTION, ALPHASENSE_CO2_VAR_NAME,
                    ALPHASENSE_CO2_UNIT_NAME, ALPHASENSE_CO2_DEFAULT_CODE) {}
     /**
@@ -366,7 +366,7 @@ class AlphasenseCO2_Voltage : public Variable {
     explicit AlphasenseCO2_Voltage(
         AlphasenseCO2* parentSense, const char* uuid = "",
         const char* varCode = ALPHASENSE_CO2_VOLTAGE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ALPHASENSE_CO2_VOLTAGE_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ALPHASENSE_CO2_VOLTAGE_VAR_NUM,
                    (uint8_t)ALPHASENSE_CO2_VOLTAGE_RESOLUTION,
                    ALPHASENSE_CO2_VOLTAGE_VAR_NAME,
                    ALPHASENSE_CO2_VOLTAGE_UNIT_NAME, varCode, uuid) {}
@@ -377,7 +377,7 @@ class AlphasenseCO2_Voltage : public Variable {
      * used.
      */
     AlphasenseCO2_Voltage()
-        : Variable((const uint8_t)ALPHASENSE_CO2_VOLTAGE_VAR_NUM,
+        : Variable((uint8_t)ALPHASENSE_CO2_VOLTAGE_VAR_NUM,
                    (uint8_t)ALPHASENSE_CO2_VOLTAGE_RESOLUTION,
                    ALPHASENSE_CO2_VOLTAGE_VAR_NAME,
                    ALPHASENSE_CO2_VOLTAGE_UNIT_NAME,

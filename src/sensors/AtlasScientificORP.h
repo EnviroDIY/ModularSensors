@@ -225,7 +225,7 @@ class AtlasScientificORP_Potential : public Variable {
     explicit AtlasScientificORP_Potential(
         AtlasScientificORP* parentSense, const char* uuid = "",
         const char* varCode = ATLAS_ORP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ATLAS_ORP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ATLAS_ORP_VAR_NUM,
                    (uint8_t)ATLAS_ORP_RESOLUTION, ATLAS_ORP_VAR_NAME,
                    ATLAS_ORP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -235,9 +235,9 @@ class AtlasScientificORP_Potential : public Variable {
      * used.
      */
     AtlasScientificORP_Potential()
-        : Variable((const uint8_t)ATLAS_ORP_VAR_NUM,
-                   (uint8_t)ATLAS_ORP_RESOLUTION, ATLAS_ORP_VAR_NAME,
-                   ATLAS_ORP_UNIT_NAME, ATLAS_ORP_DEFAULT_CODE) {}
+        : Variable((uint8_t)ATLAS_ORP_VAR_NUM, (uint8_t)ATLAS_ORP_RESOLUTION,
+                   ATLAS_ORP_VAR_NAME, ATLAS_ORP_UNIT_NAME,
+                   ATLAS_ORP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AtlasScientificORP_Potential() object - no action
      * needed.

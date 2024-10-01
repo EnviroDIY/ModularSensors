@@ -235,7 +235,7 @@ class YosemitechY511_Turbidity : public Variable {
     explicit YosemitechY511_Turbidity(
         YosemitechY511* parentSense, const char* uuid = "",
         const char* varCode = Y511_TURB_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)Y511_TURB_VAR_NUM,
+        : Variable(parentSense, (uint8_t)Y511_TURB_VAR_NUM,
                    (uint8_t)Y511_TURB_RESOLUTION, Y511_TURB_VAR_NAME,
                    Y511_TURB_UNIT_NAME, varCode, uuid) {}
     /**
@@ -245,9 +245,9 @@ class YosemitechY511_Turbidity : public Variable {
      * used.
      */
     YosemitechY511_Turbidity()
-        : Variable((const uint8_t)Y511_TURB_VAR_NUM,
-                   (uint8_t)Y511_TURB_RESOLUTION, Y511_TURB_VAR_NAME,
-                   Y511_TURB_UNIT_NAME, Y511_TURB_DEFAULT_CODE) {}
+        : Variable((uint8_t)Y511_TURB_VAR_NUM, (uint8_t)Y511_TURB_RESOLUTION,
+                   Y511_TURB_VAR_NAME, Y511_TURB_UNIT_NAME,
+                   Y511_TURB_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY511_Turbidity object - no action needed.
      */
@@ -279,7 +279,7 @@ class YosemitechY511_Temp : public Variable {
     explicit YosemitechY511_Temp(YosemitechY511* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = Y511_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)Y511_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)Y511_TEMP_VAR_NUM,
                    (uint8_t)Y511_TEMP_RESOLUTION, Y511_TEMP_VAR_NAME,
                    Y511_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -289,9 +289,9 @@ class YosemitechY511_Temp : public Variable {
      * used.
      */
     YosemitechY511_Temp()
-        : Variable((const uint8_t)Y511_TEMP_VAR_NUM,
-                   (uint8_t)Y511_TEMP_RESOLUTION, Y511_TEMP_VAR_NAME,
-                   Y511_TEMP_UNIT_NAME, Y511_TEMP_DEFAULT_CODE) {}
+        : Variable((uint8_t)Y511_TEMP_VAR_NUM, (uint8_t)Y511_TEMP_RESOLUTION,
+                   Y511_TEMP_VAR_NAME, Y511_TEMP_UNIT_NAME,
+                   Y511_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY511_Temp object - no action needed.
      */

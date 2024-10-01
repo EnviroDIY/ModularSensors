@@ -318,7 +318,7 @@ class SensirionSHT4x_Humidity : public Variable {
     explicit SensirionSHT4x_Humidity(
         SensirionSHT4x* parentSense, const char* uuid = "",
         const char* varCode = SHT4X_HUMIDITY_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)SHT4X_HUMIDITY_VAR_NUM,
+        : Variable(parentSense, (uint8_t)SHT4X_HUMIDITY_VAR_NUM,
                    (uint8_t)SHT4X_HUMIDITY_RESOLUTION, SHT4X_HUMIDITY_VAR_NAME,
                    SHT4X_HUMIDITY_UNIT_NAME, varCode, uuid) {}
     /**
@@ -328,7 +328,7 @@ class SensirionSHT4x_Humidity : public Variable {
      * used.
      */
     SensirionSHT4x_Humidity()
-        : Variable((const uint8_t)SHT4X_HUMIDITY_VAR_NUM,
+        : Variable((uint8_t)SHT4X_HUMIDITY_VAR_NUM,
                    (uint8_t)SHT4X_HUMIDITY_RESOLUTION, SHT4X_HUMIDITY_VAR_NAME,
                    SHT4X_HUMIDITY_UNIT_NAME, SHT4X_HUMIDITY_DEFAULT_CODE) {}
     /**
@@ -360,7 +360,7 @@ class SensirionSHT4x_Temp : public Variable {
     explicit SensirionSHT4x_Temp(SensirionSHT4x* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = SHT4X_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)SHT4X_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)SHT4X_TEMP_VAR_NUM,
                    (uint8_t)SHT4X_TEMP_RESOLUTION, SHT4X_TEMP_VAR_NAME,
                    SHT4X_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -370,9 +370,9 @@ class SensirionSHT4x_Temp : public Variable {
      * used.
      */
     SensirionSHT4x_Temp()
-        : Variable((const uint8_t)SHT4X_TEMP_VAR_NUM,
-                   (uint8_t)SHT4X_TEMP_RESOLUTION, SHT4X_TEMP_VAR_NAME,
-                   SHT4X_TEMP_UNIT_NAME, SHT4X_TEMP_DEFAULT_CODE) {}
+        : Variable((uint8_t)SHT4X_TEMP_VAR_NUM, (uint8_t)SHT4X_TEMP_RESOLUTION,
+                   SHT4X_TEMP_VAR_NAME, SHT4X_TEMP_UNIT_NAME,
+                   SHT4X_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the SensirionSHT4x_Temp object - no action needed.
      */

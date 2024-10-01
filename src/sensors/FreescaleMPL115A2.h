@@ -281,7 +281,7 @@ class FreescaleMPL115A2_Temp : public Variable {
     explicit FreescaleMPL115A2_Temp(
         FreescaleMPL115A2* parentSense, const char* uuid = "",
         const char* varCode = MPL115A2_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)MPL115A2_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)MPL115A2_TEMP_VAR_NUM,
                    (uint8_t)MPL115A2_TEMP_RESOLUTION, MPL115A2_TEMP_VAR_NAME,
                    MPL115A2_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -291,7 +291,7 @@ class FreescaleMPL115A2_Temp : public Variable {
      * used.
      */
     FreescaleMPL115A2_Temp()
-        : Variable((const uint8_t)MPL115A2_TEMP_VAR_NUM,
+        : Variable((uint8_t)MPL115A2_TEMP_VAR_NUM,
                    (uint8_t)MPL115A2_TEMP_RESOLUTION, MPL115A2_TEMP_VAR_NAME,
                    MPL115A2_TEMP_UNIT_NAME, MPL115A2_TEMP_DEFAULT_CODE) {}
     /**
@@ -333,7 +333,7 @@ class FreescaleMPL115A2_Pressure : public Variable {
     explicit FreescaleMPL115A2_Pressure(
         FreescaleMPL115A2* parentSense, const char* uuid = "",
         const char* varCode = MPL115A2_PRESSURE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)MPL115A2_PRESSURE_VAR_NUM,
+        : Variable(parentSense, (uint8_t)MPL115A2_PRESSURE_VAR_NUM,
                    (uint8_t)MPL115A2_PRESSURE_RESOLUTION,
                    MPL115A2_PRESSURE_VAR_NAME, MPL115A2_PRESSURE_UNIT_NAME,
                    varCode, uuid) {}
@@ -344,7 +344,7 @@ class FreescaleMPL115A2_Pressure : public Variable {
      * used.
      */
     FreescaleMPL115A2_Pressure()
-        : Variable((const uint8_t)MPL115A2_PRESSURE_VAR_NUM,
+        : Variable((uint8_t)MPL115A2_PRESSURE_VAR_NUM,
                    (uint8_t)MPL115A2_PRESSURE_RESOLUTION,
                    MPL115A2_PRESSURE_VAR_NAME, MPL115A2_PRESSURE_UNIT_NAME,
                    MPL115A2_PRESSURE_DEFAULT_CODE) {}

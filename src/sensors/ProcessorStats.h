@@ -352,7 +352,7 @@ class ProcessorStats_Battery : public Variable {
     explicit ProcessorStats_Battery(
         ProcessorStats* parentSense, const char* uuid = "",
         const char* varCode = PROCESSOR_BATTERY_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)PROCESSOR_BATTERY_VAR_NUM,
+        : Variable(parentSense, (uint8_t)PROCESSOR_BATTERY_VAR_NUM,
                    (uint8_t)PROCESSOR_BATTERY_RESOLUTION,
                    PROCESSOR_BATTERY_VAR_NAME, PROCESSOR_BATTERY_UNIT_NAME,
                    varCode, uuid) {}
@@ -363,7 +363,7 @@ class ProcessorStats_Battery : public Variable {
      * used.
      */
     ProcessorStats_Battery()
-        : Variable((const uint8_t)PROCESSOR_BATTERY_VAR_NUM,
+        : Variable((uint8_t)PROCESSOR_BATTERY_VAR_NUM,
                    (uint8_t)PROCESSOR_BATTERY_RESOLUTION,
                    PROCESSOR_BATTERY_VAR_NAME, PROCESSOR_BATTERY_UNIT_NAME,
                    PROCESSOR_BATTERY_DEFAULT_CODE) {}
@@ -403,7 +403,7 @@ class ProcessorStats_FreeRam : public Variable {
     explicit ProcessorStats_FreeRam(
         ProcessorStats* parentSense, const char* uuid = "",
         const char* varCode = PROCESSOR_RAM_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)PROCESSOR_RAM_VAR_NUM,
+        : Variable(parentSense, (uint8_t)PROCESSOR_RAM_VAR_NUM,
                    (uint8_t)PROCESSOR_RAM_RESOLUTION, PROCESSOR_RAM_VAR_NAME,
                    PROCESSOR_RAM_UNIT_NAME, varCode, uuid) {}
     /**
@@ -413,7 +413,7 @@ class ProcessorStats_FreeRam : public Variable {
      * used.
      */
     ProcessorStats_FreeRam()
-        : Variable((const uint8_t)PROCESSOR_RAM_VAR_NUM,
+        : Variable((uint8_t)PROCESSOR_RAM_VAR_NUM,
                    (uint8_t)PROCESSOR_RAM_RESOLUTION, PROCESSOR_RAM_VAR_NAME,
                    PROCESSOR_RAM_UNIT_NAME, PROCESSOR_RAM_DEFAULT_CODE) {}
     /**
@@ -450,7 +450,7 @@ class ProcessorStats_SampleNumber : public Variable {
     explicit ProcessorStats_SampleNumber(
         ProcessorStats* parentSense, const char* uuid = "",
         const char* varCode = PROCESSOR_SAMPNUM_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)PROCESSOR_SAMPNUM_VAR_NUM,
+        : Variable(parentSense, (uint8_t)PROCESSOR_SAMPNUM_VAR_NUM,
                    (uint8_t)PROCESSOR_SAMPNUM_RESOLUTION,
                    PROCESSOR_SAMPNUM_VAR_NAME, PROCESSOR_SAMPNUM_UNIT_NAME,
                    varCode, uuid) {}
@@ -461,7 +461,7 @@ class ProcessorStats_SampleNumber : public Variable {
      * used.
      */
     ProcessorStats_SampleNumber()
-        : Variable((const uint8_t)PROCESSOR_SAMPNUM_VAR_NUM,
+        : Variable((uint8_t)PROCESSOR_SAMPNUM_VAR_NUM,
                    (uint8_t)PROCESSOR_SAMPNUM_RESOLUTION,
                    PROCESSOR_SAMPNUM_VAR_NAME, PROCESSOR_SAMPNUM_UNIT_NAME,
                    PROCESSOR_SAMPNUM_DEFAULT_CODE) {}

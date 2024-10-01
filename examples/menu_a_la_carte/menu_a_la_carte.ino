@@ -119,7 +119,7 @@ SoftwareWire softI2C(softwareSDA, softwareSCL);
 
 #endif  // End software serial for avr boards
 
-#if defined(ARDUINO_ARCH_SAMD)
+#if defined(ARDUINO_ARCH_SAMD) && !defined(__SAMD51__)
 /** Start [serial_ports_SAMD] */
 // The SAMD21 has 6 "SERCOM" ports, any of which can be used for UART
 // communication.  The "core" code for most boards defines one or more UART
@@ -3156,7 +3156,7 @@ void setup() {
 // Assign pins SERCOM functionality for SAMD boards
 // NOTE:  This must happen *after* the various serial.begin statements
 /** Start [setup_samd_pins] */
-#if defined(ARDUINO_ARCH_SAMD)
+#if defined(ARDUINO_ARCH_SAMD) && !defined(__SAMD51__)
 #ifndef ENABLE_SERIAL2
     pinPeripheral(10, PIO_SERCOM);  // Serial2 Tx/Dout = SERCOM1 Pad #2
     pinPeripheral(11, PIO_SERCOM);  // Serial2 Rx/Din = SERCOM1 Pad #0

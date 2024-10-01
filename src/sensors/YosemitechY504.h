@@ -255,7 +255,7 @@ class YosemitechY504_DOpct : public Variable {
     explicit YosemitechY504_DOpct(YosemitechY504* parentSense,
                                   const char*     uuid = "",
                                   const char* varCode = Y504_DOPCT_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)Y504_DOPCT_VAR_NUM,
+        : Variable(parentSense, (uint8_t)Y504_DOPCT_VAR_NUM,
                    (uint8_t)Y504_DOPCT_RESOLUTION, Y504_DOPCT_VAR_NAME,
                    Y504_DOPCT_UNIT_NAME, varCode, uuid) {}
     /**
@@ -265,9 +265,9 @@ class YosemitechY504_DOpct : public Variable {
      * used.
      */
     YosemitechY504_DOpct()
-        : Variable((const uint8_t)Y504_DOPCT_VAR_NUM,
-                   (uint8_t)Y504_DOPCT_RESOLUTION, Y504_DOPCT_VAR_NAME,
-                   Y504_DOPCT_UNIT_NAME, Y504_DOPCT_DEFAULT_CODE) {}
+        : Variable((uint8_t)Y504_DOPCT_VAR_NUM, (uint8_t)Y504_DOPCT_RESOLUTION,
+                   Y504_DOPCT_VAR_NAME, Y504_DOPCT_UNIT_NAME,
+                   Y504_DOPCT_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY504_DOpct object - no action needed.
      */
@@ -299,7 +299,7 @@ class YosemitechY504_Temp : public Variable {
     explicit YosemitechY504_Temp(YosemitechY504* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = Y504_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)Y504_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)Y504_TEMP_VAR_NUM,
                    (uint8_t)Y504_TEMP_RESOLUTION, Y504_TEMP_VAR_NAME,
                    Y504_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -309,9 +309,9 @@ class YosemitechY504_Temp : public Variable {
      * used.
      */
     YosemitechY504_Temp()
-        : Variable((const uint8_t)Y504_TEMP_VAR_NUM,
-                   (uint8_t)Y504_TEMP_RESOLUTION, Y504_TEMP_VAR_NAME,
-                   Y504_TEMP_UNIT_NAME, Y504_TEMP_DEFAULT_CODE) {}
+        : Variable((uint8_t)Y504_TEMP_VAR_NUM, (uint8_t)Y504_TEMP_RESOLUTION,
+                   Y504_TEMP_VAR_NAME, Y504_TEMP_UNIT_NAME,
+                   Y504_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY504_Temp object - no action needed.
      */
@@ -343,7 +343,7 @@ class YosemitechY504_DOmgL : public Variable {
     explicit YosemitechY504_DOmgL(YosemitechY504* parentSense,
                                   const char*     uuid = "",
                                   const char* varCode = Y504_DOMGL_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)Y504_DOMGL_VAR_NUM,
+        : Variable(parentSense, (uint8_t)Y504_DOMGL_VAR_NUM,
                    (uint8_t)Y504_DOMGL_RESOLUTION, Y504_DOMGL_VAR_NAME,
                    Y504_DOMGL_UNIT_NAME, varCode, uuid) {}
     /**
@@ -353,9 +353,9 @@ class YosemitechY504_DOmgL : public Variable {
      * used.
      */
     YosemitechY504_DOmgL()
-        : Variable((const uint8_t)Y504_DOMGL_VAR_NUM,
-                   (uint8_t)Y504_DOMGL_RESOLUTION, Y504_DOMGL_VAR_NAME,
-                   Y504_DOMGL_UNIT_NAME, Y504_DOMGL_DEFAULT_CODE) {}
+        : Variable((uint8_t)Y504_DOMGL_VAR_NUM, (uint8_t)Y504_DOMGL_RESOLUTION,
+                   Y504_DOMGL_VAR_NAME, Y504_DOMGL_UNIT_NAME,
+                   Y504_DOMGL_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY504_DOmgL object - no action needed.
      */

@@ -293,7 +293,7 @@ class MeaSpecMS5803_Temp : public Variable {
     explicit MeaSpecMS5803_Temp(MeaSpecMS5803* parentSense,
                                 const char*    uuid = "",
                                 const char* varCode = MS5803_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)MS5803_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)MS5803_TEMP_VAR_NUM,
                    (uint8_t)MS5803_TEMP_RESOLUTION, MS5803_TEMP_VAR_NAME,
                    MS5803_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -303,7 +303,7 @@ class MeaSpecMS5803_Temp : public Variable {
      * used.
      */
     MeaSpecMS5803_Temp()
-        : Variable((const uint8_t)MS5803_TEMP_VAR_NUM,
+        : Variable((uint8_t)MS5803_TEMP_VAR_NUM,
                    (uint8_t)MS5803_TEMP_RESOLUTION, MS5803_TEMP_VAR_NAME,
                    MS5803_TEMP_UNIT_NAME, MS5803_TEMP_DEFAULT_CODE) {}
     /**
@@ -338,7 +338,7 @@ class MeaSpecMS5803_Pressure : public Variable {
     explicit MeaSpecMS5803_Pressure(
         MeaSpecMS5803* parentSense, const char* uuid = "",
         const char* varCode = MS5803_PRESSURE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)MS5803_PRESSURE_VAR_NUM,
+        : Variable(parentSense, (uint8_t)MS5803_PRESSURE_VAR_NUM,
                    (uint8_t)MS5803_PRESSURE_RESOLUTION,
                    MS5803_PRESSURE_VAR_NAME, MS5803_PRESSURE_UNIT_NAME, varCode,
                    uuid) {}
@@ -349,7 +349,7 @@ class MeaSpecMS5803_Pressure : public Variable {
      * used.
      */
     MeaSpecMS5803_Pressure()
-        : Variable((const uint8_t)MS5803_PRESSURE_VAR_NUM,
+        : Variable((uint8_t)MS5803_PRESSURE_VAR_NUM,
                    (uint8_t)MS5803_PRESSURE_RESOLUTION,
                    MS5803_PRESSURE_VAR_NAME, MS5803_PRESSURE_UNIT_NAME,
                    MS5803_PRESSURE_DEFAULT_CODE) {}

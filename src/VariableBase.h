@@ -75,7 +75,7 @@ class Variable {
      * text helping to identify the variable in files.
      * @param uuid A universally unique identifier for the variable.
      */
-    Variable(Sensor* parentSense, const uint8_t sensorVarNum,
+    Variable(Sensor* parentSense, uint8_t sensorVarNum,
              uint8_t decimalResolution, const char* varName,
              const char* varUnit, const char* varCode, const char* uuid);
     /**
@@ -97,7 +97,7 @@ class Variable {
      * @param varCode A custom code for the variable.  This can be any short
      * text helping to identify the variable in files.
      */
-    Variable(const uint8_t sensorVarNum, uint8_t decimalResolution,
+    Variable(uint8_t sensorVarNum, uint8_t decimalResolution,
              const char* varName, const char* varUnit, const char* varCode);
 
     /**
@@ -395,7 +395,7 @@ class Variable {
     /**
      * @brief The position in the sensor's value array of this variable's value.
      */
-    const uint8_t _sensorVarNum = 0;
+    uint8_t _sensorVarNum = 0;
     /**
      * @brief The resolution (in decimal places) of the value.
      */
