@@ -35,7 +35,8 @@
  *
  * ___
  * @section sensor_turbidity_plus_examples Example Code
- * The Alphasense CO2 sensor is used in the @menulink{turner_turbidity_plus} example.
+ * The Alphasense CO2 sensor is used in the @menulink{turner_turbidity_plus}
+ * example.
  *
  * @menusnip{turner_turbidity_plus}
  */

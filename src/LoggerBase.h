@@ -28,9 +28,10 @@
  * @brief Select RV-8803 as the RTC
  */
 #define MS_USE_DS3231
-#elif (defined(ARDUINO_ARCH_SAMD) && !defined(__SAMD51__) || \
-       defined(ARDUINO_SAMD_ZERO)) &&                        \
-    not defined(MS_USE_DS3231) && not defined(MS_USE_RV8803)
+#elif (defined(ARDUINO_ARCH_SAMD) && !defined(__SAMD51__) ||    \
+       defined(ARDUINO_SAMD_ZERO)) &&                           \
+    not defined(MS_USE_DS3231) && not defined(MS_USE_RV8803) && \
+    not defined(MS_USE_RTC_ZERO)
 /**
  * @brief Select the SAMD21's internal clock (via RTC Zero)
  */
@@ -56,6 +57,7 @@
 #undef MS_DEBUGGING_DEEP
 #include "VariableArray.h"
 #include "LoggerModem.h"
+#include <Wire.h>
 
 // Bring in the libraries to handle the processor sleep/standby modes
 // The SAMD library can also the built-in clock on those modules
@@ -77,15 +79,45 @@
 #include <RTCZero.h>
 #endif
 
-#ifndef EPOCH_TIME_OFF
 /**
- * @brief January 1, 2000 00:00:00 in "epoch" time
- *
- * Need this b/c the date/time class in Sodaq_DS3231 treats a 32-bit long
- * timestamp as time from 2000-jan-01 00:00:00 instead of the standard (unix)
- * epoch beginning 1970-jan-01 00:00:00.
+ * @brief Set the epoch start value.
  */
-#define EPOCH_TIME_OFF 946684800
+enum MS_EpochStart {
+    UNIX = 0,  ///< Use a Unix epoch, starting 1/1/1970 (946684800s behind of
+               ///< Y2K epoch, 315878400ss behind of GPS epoch)
+    Y2K =
+        1,  ///< Use an epoch starting 1/1/2000, as some RTC's and Arduinos do
+            ///< (946684800s ahead of UNIX epoch, 630806400s ahead of GPS epoch)
+    GPS = 2  ///< Use the GPS epoch starting Jan 5, 1980 (315878400s ahead of
+             ///< UNIX epoch, 630806400s behind of Y2K epoch)
+};
+
+#ifndef EPOCH_UNIX_TO_Y2K
+/**
+ * @brief Difference between January 1, 1970 (UNIX) and January 1, 2000 (used by
+ * Arduino and some other real time clocks).
+ */
+#define EPOCH_UNIX_TO_Y2K 946684800
+#endif
+
+#ifndef EPOCH_UNIX_TO_GPS
+/**
+ * @brief Difference between January 1, 1970 (UNIX) and January 5, 1980 (GPST,
+ * used by some GPS and GNSS devices)
+ *
+ * @see
+ * https://www.gps.gov/technical/icwg/meetings/2019/09/clarifying-continuous-GPS-time.pdf#:~:text=GPS%20time%20%28GPST%29%20is%20established%20by%20the%20Control,of%20January%205%2C%201980%2Fmorning%20of%20January%206%2C%201980.
+ */
+#define EPOCH_UNIX_TO_GPS 315878400
+#endif
+
+
+#ifndef EPOCH_GPS_TO_Y2K
+/**
+ * @brief Difference between January 5, 1980 (GPST) and January 1, 2000 (used by
+ * Arduino and some other real time clocks).
+ */
+#define EPOCH_GPS_TO_Y2K 630806400
 #endif
 
 #include <SdFat.h>  // To communicate with the SD card
@@ -769,44 +801,54 @@ class Logger {
     static uint32_t getNowEpoch(void);
 
     /**
-     * @brief Get the current epoch time from the RTC (unix time, ie, the
-     * number of seconds from January 1, 1970 00:00:00) and correct it to the
+     * @brief Get the current epoch time from the RTC and correct it to the
      * logging time zone.
      *
-     * @return  The number of seconds from January 1, 1970 in the
-     * logging time zone.
+     * @param epoch The type of epoch to use (ie, the standard for the start of
+     * the epoch).
+     *
+     * @return  The number of seconds from the start of the given epoch in
+     * the logging time zone.
      */
-    static uint32_t getNowLocalEpoch(void);
+    static uint32_t getNowLocalEpoch(MS_EpochStart epoch = UNIX);
 
     /**
      * @brief Get the current Universal Coordinated Time (UTC) epoch time from
-     * the RTC (unix time, ie, the number of seconds from January 1, 1970
-     * 00:00:00 UTC)
+     * the RTC.
      *
-     * @return  The number of seconds from 1970-01-01T00:00:00Z0000
+     * @param epoch The type of epoch to use (ie, the standard for the start of
+     * the epoch).
+     *
+     * @return  The number of seconds from the start of the given epoch.
      */
-    static uint32_t getNowUTCEpoch(void);
+    static uint32_t getNowUTCEpoch(MS_EpochStart epoch = UNIX);
     /**
-     * @brief Set the real time clock to the given number of seconds from
-     * January 1, 1970.
+     * @brief Set the real time clock to the given number of seconds from the
+     * start of the given epoch.
      *
      * The validity of the timestamp is not checked in any way!  In practice,
-     * setRTClock(ts) should be used to avoid setting the clock to an obviously
-     * invalid value.  The input value should be *in the timezone of the RTC.*
+     * setRTClock(ts, epoch) should be used to avoid setting the clock to an
+     * obviously invalid value.  The input value should be *in the timezone of
+     * the RTC.*
      *
-     * @param ts The number of seconds since 1970.
+     * @param ts The number of seconds since the start of the given epoch.
+     * @param epoch The type of epoch to use (ie, the standard for the start of
+     * the epoch).
      */
-    static void setNowUTCEpoch(uint32_t ts);
+    static void setNowUTCEpoch(uint32_t ts, MS_EpochStart epoch = UNIX);
 
+#if 0
 #if !defined(MS_USE_RV8803)
     /**
-     * @brief Convert the number of seconds from January 1, 1970 to a DateTime
+     * @brief Convert the number of seconds from the start of the given epoch to a DateTime
      * object instance.
      *
-     * @param epochTime The number of seconds since 1970.
+     * @param epochTime The number of seconds since the start of the given epoch.
+     * @param epoch The type of epoch to use (ie, the standard for the start of
+     * the epoch).
      * @return The equivalent DateTime
      */
-    static DateTime dtFromEpoch(uint32_t epochTime);
+    static DateTime dtFromEpoch(uint32_t epochTime, MS_EpochStart epoch = UNIX);
 
     /**
      * @brief Convert a date-time object into a ISO8601 formatted string.
@@ -819,32 +861,40 @@ class Logger {
      */
     static String formatDateTime_ISO8601(DateTime& dt);
 #endif
+#endif
 
     /**
-     * @brief Convert an epoch time (unix time) into a ISO8601 formatted string.
+     * @brief Convert an epoch time into a ISO8601 formatted string.
      *
      * This assumes the supplied date/time is in the LOGGER's timezone and adds
      * the LOGGER's offset as the time zone offset in the string.
      *
-     * @param epochTime The number of seconds since 1970.
+     * @param epochTime The number of seconds since the start of the given
+     * epoch n the LOGGER's time zone.
+     * @param epoch The type of epoch to use (ie, the standard for the start of
+     * the epoch).
      * @return An ISO8601 formatted String.
      */
-    static String formatDateTime_ISO8601(uint32_t epochTime);
+    static String formatDateTime_ISO8601(uint32_t      epochTime,
+                                         MS_EpochStart epoch = UNIX);
 
     /**
      * @brief Veify that the input value is sane and if so sets the real time
      * clock to the given time.
      *
-     * @param UTCEpochSeconds The number of seconds since 1970 in UTC.
+     * @param UTCEpochSeconds The number of seconds since the start of the given
+     * epoch in UTC.
+     * @param epoch The type of epoch to use (ie, the standard for the start of
+     * the epoch).
      * @return True if the input timestamp passes sanity checks **and**
      * the clock has been successfully set.
      */
-    bool setRTClock(uint32_t UTCEpochSeconds);
+    bool setRTClock(uint32_t UTCEpochSeconds, MS_EpochStart epoch = UNIX);
 
     /**
      * @brief Check that the current time on the RTC is within a "sane" range.
      *
-     * To be sane the clock  must be between 2020 and 2030.
+     * To be sane the clock  must be between 2023 and 2030.
      *
      * @return True if the current time on the RTC passes sanity range
      * checking
@@ -854,12 +904,14 @@ class Logger {
      * @brief Check that a given epoch time (seconds since 1970) is within a
      * "sane" range.
      *
-     * To be sane the clock  must be between 2020 and 2025.
+     * To be sane, the clock must be between 2023 and 2030.
      *
      * @param epochTime The epoch time to be checked.
+     * @param epoch The type of epoch to use (ie, the standard for the start of
+     * the epoch).
      * @return True if the given time passes sanity range checking.
      */
-    static bool isRTCSane(uint32_t epochTime);
+    static bool isRTCSane(uint32_t epochTime, MS_EpochStart epoch = UNIX);
 
     /**
      * @brief Set static variables for the date/time
@@ -883,7 +935,7 @@ class Logger {
 
     /**
      * @brief Check if the MARKED time is an even interval of the logging rate -
-     * That is the value saved in the static variable markedLocalEpochTime.
+     * That is the value saved in the static variable markedLocalUnixTime.
      *
      * This should be used in conjunction with markTime() to ensure that all
      * data outputs from a single data update session (SD, EnviroDIY, serial
@@ -1324,12 +1376,12 @@ class Logger {
     /**
      * @brief The static "marked" epoch time for the local timezone.
      */
-    static uint32_t markedLocalEpochTime;
+    static uint32_t markedLocalUnixTime;
 
     /**
      * @brief The static "marked" epoch time for UTC.
      */
-    static uint32_t markedUTCEpochTime;
+    static uint32_t markedUTCUnixTime;
 
     // These are flag fariables noting the current state (logging/testing)
     // NOTE:  if the logger isn't currently logging or testing or in the middle

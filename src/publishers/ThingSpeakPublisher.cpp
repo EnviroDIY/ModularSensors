@@ -134,7 +134,8 @@ int16_t ThingSpeakPublisher::publishData(Client* outClient) {
 
     txBufferAppend("created_at=");
     txBufferAppend(
-        Logger::formatDateTime_ISO8601(Logger::markedLocalEpochTime).c_str());
+        Logger::formatDateTime_ISO8601(Logger::markedLocalUnixTime, UNIX)
+            .c_str());
 
     for (uint8_t i = 0; i < numChannels; i++) {
         txBufferAppend("&field");

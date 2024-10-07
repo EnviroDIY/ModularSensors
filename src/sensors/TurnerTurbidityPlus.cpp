@@ -47,15 +47,16 @@ String TurnerTurbidityPlus::getSensorLocation(void) {
 }
 
 void TurnerTurbidityPlus::runWiper() {
-    // Turner Tubidity Plus wiper requires a 50ms LOW signal pulse to trigger one wiper rotation.
-    // Also note: I was unable to trigger multiple rotations without pausing for ~540ms between them.
+    // Turner Tubidity Plus wiper requires a 50ms LOW signal pulse to trigger
+    // one wiper rotation. Also note: I was unable to trigger multiple rotations
+    // without pausing for ~540ms between them.
     MS_DBG(F("Initate TurbidityPlus wiper on"), getSensorLocation());
     digitalWrite(_wiperTriggerPin, LOW);
     delay(50);
     digitalWrite(_wiperTriggerPin, HIGH);
-    // It takes ~7.5 sec for a rotation to complete. Wait for that to finish before continuing,
-    // otherwise the sensor will get powered off before wipe completes, and any reading taken
-    // during wiper cycle is invalid.
+    // It takes ~7.5 sec for a rotation to complete. Wait for that to finish
+    // before continuing, otherwise the sensor will get powered off before wipe
+    // completes, and any reading taken during wiper cycle is invalid.
     delay(8000);
     MS_DBG(F("TurbidityPlus wiper cycle should be finished"));
 }
@@ -88,8 +89,8 @@ void TurnerTurbidityPlus::powerUp(void) {
 bool TurnerTurbidityPlus::addSingleMeasurementResult(void) {
     // Variables to store the results in
     int16_t adcCounts   = -9999;
-    float adcVoltage  = -9999;
-    float calibResult = -9999;
+    float   adcVoltage  = -9999;
+    float   calibResult = -9999;
 
     // Check a measurement was *successfully* started (status bit 6 set)
     // Only go on to get a result if it was

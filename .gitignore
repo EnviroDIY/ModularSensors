@@ -111,3 +111,4 @@ output_deep.txt
 output_deep+.txt
 envDump.txt
 act.log
+compile_commands.json

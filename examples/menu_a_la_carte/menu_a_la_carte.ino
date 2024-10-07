@@ -119,7 +119,7 @@ SoftwareWire softI2C(softwareSDA, softwareSCL);
 
 #endif  // End software serial for avr boards
 
-#if defined(ARDUINO_ARCH_SAMD) && !defined(__SAMD51__)
+#if defined(ARDUINO_SAMD_FEATHER_M0) || defined(ARDUINO_SAMD_ZERO)
 /** Start [serial_ports_SAMD] */
 // The SAMD21 has 6 "SERCOM" ports, any of which can be used for UART
 // communication.  The "core" code for most boards defines one or more UART
@@ -127,37 +127,30 @@ SoftwareWire softI2C(softwareSDA, softwareSCL);
 // create new UART ports on any available SERCOM.  The table below shows
 // definitions for select boards.
 
-// Board =>   Arduino Zero       Adafruit Feather    Sodaq Boards
-// -------    ---------------    ----------------    ----------------
-// SERCOM0    Serial1 (D0/D1)    Serial1 (D0/D1)     Serial (D0/D1)
-// SERCOM1    Available          Available           Serial3 (D12/D13)
-// SERCOM2    Available          Available           I2C (A4/A5)
-// SERCOM3    I2C (D20/D21)      I2C (D20/D21)       SPI (D11/12/13)
-// SERCOM4    SPI (D21/22/23)    SPI (D21/22/23)     SPI1/Serial2
-// SERCOM5    EDBG/Serial        Available           Serial1
-
-// If using a Sodaq board, do not define the new sercoms, instead:
-// #define ENABLE_SERIAL2
-// #define ENABLE_SERIAL3
+// Board =>   Arduino Zero       Adafruit Feather M0
+// -------    ---------------    ----------------
+// SERCOM0    Serial1 (D0/D1)    Serial1 (D0/D1)
+// SERCOM1    Available          Available
+// SERCOM2    Available          Available
+// SERCOM3    I2C (D20/D21)      I2C (D20/D21)
+// SERCOM4    SPI (D21/22/23)    SPI (D21/22/23)
+// SERCOM5    EDBG/Serial        Available
 
 #include <wiring_private.h>  // Needed for SAMD pinPeripheral() function
 
-#ifndef ENABLE_SERIAL2
 // Set up a 'new' UART using SERCOM1
 // The Rx will be on digital pin 11, which is SERCOM1's Pad #0
 // The Tx will be on digital pin 10, which is SERCOM1's Pad #2
 // NOTE:  SERCOM1 is undefinied on a "standard" Arduino Zero and many clones,
 //        but not all!  Please check the variant.cpp file for you individual
-//        board! Sodaq Autonomo's and Sodaq One's do NOT follow the 'standard'
-//        SERCOM definitions!
+//        board!
 Uart Serial2(&sercom1, 11, 10, SERCOM_RX_PAD_0, UART_TX_PAD_2);
 // Hand over the interrupts to the sercom port
 void SERCOM1_Handler() {
     Serial2.IrqHandler();
 }
-#endif
+#define ENABLE_SERIAL2
 
-#ifndef ENABLE_SERIAL3
 // Set up a 'new' UART using SERCOM2
 // The Rx will be on digital pin 5, which is SERCOM2's Pad #3
 // The Tx will be on digital pin 2, which is SERCOM2's Pad #2
@@ -170,7 +163,7 @@ Uart Serial3(&sercom2, 5, 2, SERCOM_RX_PAD_3, UART_TX_PAD_2);
 void SERCOM2_Handler() {
     Serial3.IrqHandler();
 }
-#endif
+#define ENABLE_SERIAL3
 
 /** End [serial_ports_SAMD] */
 #endif  // End hardware serial on SAMD21 boards
@@ -179,8 +172,9 @@ void SERCOM2_Handler() {
 // ==========================================================================
 //  Assigning Serial Port Functionality
 // ==========================================================================
-#if defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAMD_ZERO) || \
-    defined(ATMEGA2560) || defined(ARDUINO_AVR_MEGA2560)
+#if (defined(ENABLE_SERIAL2) && defined(ENABLE_SERIAL3)) ||  \
+    defined(ENVIRODIY_STONEFLY_M4) || defined(ATMEGA2560) || \
+    defined(ARDUINO_AVR_MEGA2560)
 /** Start [assign_ports_hw] */
 // If there are additional hardware Serial ports possible - use them!
 
@@ -246,7 +240,7 @@ void SERCOM2_Handler() {
 // The name of this program file
 const char* sketchName = "menu_a_la_carte.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char* LoggerID = "XXXXX";
+const char* LoggerID = "your_logger_id";
 // How frequently (in minutes) to log data
 const uint8_t loggingInterval = 15;
 // Your logger's timezone.
@@ -266,6 +260,7 @@ const int8_t  wakePin    = 31;  // MCU interrupt/alarm pin to wake from sleep
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
 const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
+const int8_t relayPowerPin = A3;  // MCU pin controlling an optional power relay
 /** End [logging_options] */
 
 
@@ -274,6 +269,12 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 //    NOTE:  DON'T USE MORE THAN ONE MODEM OBJECT!
 //           Delete the sections you are not using!
 // ==========================================================================
+
+// Network connection information
+#define MY_APN "add_your_cellular_apn"  // APN for cellular connection
+
+#define WIFI_ID "your_wifi_ssid"          // WiFi access point name
+#define WIFI_PASSWD "your_wifi_password"  // WiFi password (WPA2)
 
 #if defined(BUILD_MODEM_DIGI_XBEE_CELLULAR_TRANSPARENT)
 /** Start [digi_xbee_cellular_transparent] */
@@ -304,7 +305,7 @@ const int8_t modemLEDPin =
     redLED;  // MCU pin connected an LED to show modem status
 
 // Network connection information
-const char* apn = "xxxxx";  // APN for GPRS connection
+const char* apn = CELLULAR_APN;  // APN for GPRS connection
 
 // Create the modem object
 DigiXBeeCellularTransparent modemXBCT(&modemSerial, modemVccPin, modemStatusPin,
@@ -341,7 +342,7 @@ const int8_t modemLEDPin = redLED;     // MCU pin connected an LED to show modem
                                        // status
 
 // Network connection information
-const char* apn = "xxxxx";  // APN for GPRS connection
+const char* apn = CELLULAR_APN;  // APN for GPRS connection
 
 // Create the modem object
 DigiXBeeLTEBypass modemXBLTEB(&modemSerial, modemVccPin, modemStatusPin,
@@ -378,7 +379,7 @@ const int8_t modemLEDPin = redLED;     // MCU pin connected an LED to show modem
                                        // status
 
 // Network connection information
-const char* apn = "xxxxx";  // APN for GPRS connection
+const char* apn = CELLULAR_APN;  // APN for GPRS connection
 
 // Create the modem object
 DigiXBee3GBypass modemXB3GB(&modemSerial, modemVccPin, modemStatusPin,
@@ -413,8 +414,8 @@ const int8_t modemLEDPin = redLED;    // MCU pin connected an LED to show modem
                                       // status
 
 // Network connection information
-const char* wifiId  = "xxxxx";  // WiFi access point name
-const char* wifiPwd = "xxxxx";  // WiFi password (WPA2)
+const char* wifiId  = WIFI_ID;      // WiFi access point name
+const char* wifiPwd = WIFI_PASSWD;  // WiFi password (WPA2)
 
 // Create the modem object
 DigiXBeeWifi modemXBWF(&modemSerial, modemVccPin, modemStatusPin,
@@ -449,8 +450,8 @@ const int8_t modemLEDPin   = redLED;  // MCU pin connected an LED to show modem
                                       // status
 
 // Network connection information
-const char* wifiId  = "xxxxx";  // WiFi access point name
-const char* wifiPwd = "xxxxx";  // WiFi password (WPA2)
+const char* wifiId  = WIFI_ID;      // WiFi access point name
+const char* wifiPwd = WIFI_PASSWD;  // WiFi password (WPA2)
 
 // Create the modem object
 EspressifESP8266 modemESP(&modemSerial, modemVccPin, modemResetPin, wifiId,
@@ -484,8 +485,8 @@ const int8_t modemLEDPin   = redLED;  // MCU pin connected an LED to show modem
                                       // status
 
 // Network connection information
-const char* wifiId  = "xxxxx";  // WiFi access point name
-const char* wifiPwd = "xxxxx";  // WiFi password (WPA2)
+const char* wifiId  = WIFI_ID;      // WiFi access point name
+const char* wifiPwd = WIFI_PASSWD;  // WiFi password (WPA2)
 
 // Create the modem object
 EspressifESP32 modemESP(&modemSerial, modemVccPin, modemResetPin, wifiId,
@@ -519,7 +520,7 @@ const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status
 
 // Network connection information
-const char* apn = "xxxxx";  // APN for GPRS connection
+const char* apn = CELLULAR_APN;  // APN for GPRS connection
 
 // Create the modem object
 QuectelBG96 modemBG96(&modemSerial, modemVccPin, modemStatusPin, modemResetPin,
@@ -554,7 +555,7 @@ const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status
 
 // Network connection information
-const char* apn = "xxxxx";  // APN for GPRS connection
+const char* apn = CELLULAR_APN;  // APN for GPRS connection
 
 // Create the modem object
 SequansMonarch modemSVZM(&modemSerial, modemVccPin, modemStatusPin,
@@ -586,7 +587,7 @@ const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status
 
 // Network connection information
-const char* apn = "xxxxx";  // APN for GPRS connection
+const char* apn = CELLULAR_APN;  // APN for GPRS connection
 
 // Create the modem object
 SIMComSIM800 modemS800(&modemSerial, modemVccPin, modemStatusPin, modemResetPin,
@@ -616,7 +617,7 @@ const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status
 
 // Network connection information
-const char* apn = "xxxxx";  // APN for GPRS connection
+const char* apn = CELLULAR_APN;  // APN for GPRS connection
 
 // Create the modem object
 SIMComSIM7000 modem7000(&modemSerial, modemVccPin, modemStatusPin,
@@ -647,7 +648,7 @@ const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status
 
 // Network connection information
-const char* apn = "xxxxx";  // APN for GPRS connection
+const char* apn = CELLULAR_APN;  // APN for GPRS connection
 
 // Create the modem object
 SIMComSIM7080 modem7080(&modemSerial, modemVccPin, modemStatusPin,
@@ -679,7 +680,7 @@ const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status
 
 // Network connection information
-const char* apn = "xxxxx";  // APN for GPRS connection
+const char* apn = CELLULAR_APN;  // APN for GPRS connection
 
 // Create the modem object
 Sodaq2GBeeR6 modem2GB(&modemSerial, modemVccPin, modemStatusPin, apn);
@@ -716,7 +717,7 @@ const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status
 
 // Network connection information
-const char* apn = "xxxxx";  // APN for GPRS connection
+const char* apn = CELLULAR_APN;  // APN for GPRS connection
 
 // Create the modem object
 SodaqUBeeR410M modemR410(&modemSerial, modemVccPin, modemStatusPin,
@@ -748,7 +749,7 @@ const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status
 
 // Network connection information
-const char* apn = "xxxxx";  // APN for GPRS connection
+const char* apn = CELLULAR_APN;  // APN for GPRS connection
 
 // Create the modem object
 SodaqUBeeU201 modemU201(&modemSerial, modemVccPin, modemStatusPin,
@@ -823,13 +824,15 @@ Variable* ds3231Temp =
 #include <sensors/AlphasenseCO2.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-const int8_t  AlphasenseCO2Power = sensorPowerPin;  // Power pin
-aco2_adsDiffMux_t  AlphasenseDiffMux = DIFF_MUX_2_3; // Differential voltage config
+const int8_t      AlphasenseCO2Power = sensorPowerPin;  // Power pin
+aco2_adsDiffMux_t AlphasenseDiffMux =
+    DIFF_MUX_2_3;  // Differential voltage config
 const uint8_t AlphasenseCO2ADSi2c_addr =
     0x48;  // The I2C address of the ADS1115 ADC
 
 // Create an Alphasense CO2 sensor object
-AlphasenseCO2 alphasenseCO2(AlphasenseCO2Power, AlphasenseDiffMux,AlphasenseCO2ADSi2c_addr);
+AlphasenseCO2 alphasenseCO2(AlphasenseCO2Power, AlphasenseDiffMux,
+                            AlphasenseCO2ADSi2c_addr);
 
 // Create PAR and raw voltage variable pointers for the CO2
 Variable* asCO2        = new AlphasenseCO2_CO2(&alphasenseCO2,
@@ -1077,7 +1080,7 @@ Variable* atlasGrav = new AtlasScientificEC_SpecificGravity(
 // temperature returned by any other water temperature sensor if desired.
 // **DO NOT** use your logger board temperature (ie, from the DS3231) to
 // calculate specific conductance!
-float calculateAtlasSpCond(void) {
+float calculateAtlasSpCond() {
     float spCond    = -9999;  // Always safest to start with a bad value
     float waterTemp = atlasTemp->getValue();
     float rawCond   = atlasCond->getValue();
@@ -1429,7 +1432,7 @@ Variable* mplTemp = new FreescaleMPL115A2_Temp(
 byte gplp8ModbusAddress = 0x19;  // The modbus address of the gplp8
 // Raw Request >>> {0x19, 0x03, 0x00, 0xC8, 0x00, 0x01, 0x06, 0x2C}
 const int8_t  gplp8AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  gplp8SensorPower    = A3;              // Sensor power pin
+const int8_t  gplp8SensorPower    = relayPowerPin;   // Sensor power pin
 const int8_t  gplp8EnablePin      = -1;              // Adapter RE/DE pin
 const uint8_t gplp8NumberReadings = 1;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
@@ -1560,7 +1563,7 @@ Variable* trollDepth = new InSituTrollSdi12a_Depth(
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 byte acculevelModbusAddress  = 0x01;  // The modbus address of KellerAcculevel
-const int8_t  acculevelPower = A3;    // Acculevel Sensor power pin
+const int8_t  acculevelPower = relayPowerPin;   // Acculevel Sensor power pin
 const int8_t  alAdapterPower = sensorPowerPin;  // RS485 adapter power pin
 const int8_t  al485EnablePin = -1;              // Adapter RE/DE pin
 const uint8_t acculevelNumberReadings = 5;
@@ -1595,7 +1598,7 @@ Variable* acculevHeight = new KellerAcculevel_Height(
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 byte nanolevelModbusAddress  = 0x01;  // The modbus address of KellerNanolevel
 const int8_t  nlAdapterPower = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  nanolevelPower = A3;              // Sensor power pin
+const int8_t  nanolevelPower = relayPowerPin;   // Sensor power pin
 const int8_t  nl485EnablePin = -1;              // Adapter RE/DE pin
 const uint8_t nanolevelNumberReadings = 5;
 // The manufacturer recommends taking and averaging a few readings
@@ -2003,30 +2006,35 @@ Variable* cyclopsRedChloro = new TurnerCyclops_RedChlorophyll(
 #include <sensors/TurnerTurbidityPlus.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-const int8_t  turbidityPlusPower          = sensorPowerPin;  // Power pin
-const int8_t  turbidityPlusWiper          = A3;  // Wiper pin
-ttp_adsDiffMux_t  turbidityPlusDiffMux = DIFF_MUX_2_3; // Differential voltage config
+const int8_t     turbidityPlusPower = sensorPowerPin;  // Power pin
+const int8_t     turbidityPlusWiper = relayPowerPin;   // Wiper pin
+ttp_adsDiffMux_t turbidityPlusDiffMux =
+    DIFF_MUX_2_3;  // Differential voltage config
 const uint8_t turbidityPlusNumberReadings = 10;
-const uint8_t turbidityPlusADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
-adsGain_t turbidityPlusGain = GAIN_ONE;// The gain of the ADS
-float     tpVoltageDividerFactor  = 1; // The factor for a voltage divider, if any
+const uint8_t turbidityPlusADSi2c_addr =
+    0x48;                                 // The I2C address of the ADS1115 ADC
+adsGain_t turbidityPlusGain  = GAIN_ONE;  // The gain of the ADS
+float tpVoltageDividerFactor = 1;  // The factor for a voltage divider, if any
 
 // Turbidity Plus calibration information
 const float turbidityPlusStdConc = 1.000;  // Concentration of the standard used
-                                     // for a 1-point sensor calibration.
+                                           // for a 1-point sensor calibration.
 const float turbidityPlusStdVolt =
     1.000;  // The voltage (in volts) measured for the conc_std.
 const float turbidityPlusBlankVolt =
     0.000;  // The voltage (in volts) measured for a blank.
 
 // Create a Turner Turbidity Plus sensor object
-TurnerTurbidityPlus turbidityPlus(turbidityPlusPower, turbidityPlusWiper, turbidityPlusDiffMux,turbidityPlusStdConc,
-                      turbidityPlusStdVolt, turbidityPlusBlankVolt, turbidityPlusADSi2c_addr,turbidityPlusGain,
-                      turbidityPlusNumberReadings,tpVoltageDividerFactor);
+TurnerTurbidityPlus turbidityPlus(turbidityPlusPower, turbidityPlusWiper,
+                                  turbidityPlusDiffMux, turbidityPlusStdConc,
+                                  turbidityPlusStdVolt, turbidityPlusBlankVolt,
+                                  turbidityPlusADSi2c_addr, turbidityPlusGain,
+                                  turbidityPlusNumberReadings,
+                                  tpVoltageDividerFactor);
 
 // Create the variable pointers
-Variable* turbidityPlusVoltage =
-    new TurnerTurbidityPlus_Voltage(&turbidityPlus, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* turbidityPlusVoltage = new TurnerTurbidityPlus_Voltage(
+    &turbidityPlus, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* turbidityPlusTurbidity = new TurnerTurbidityPlus_Turbidity(
     &turbidityPlus, "12345678-abcd-1234-ef00-1234567890ab");
 /** End [turner_turbidity_plus] */
@@ -2140,7 +2148,7 @@ Variable* VegaPulsError =
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 byte          y504ModbusAddress  = 0x04;  // The modbus address of the Y504
 const int8_t  y504AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  y504SensorPower    = A3;              // Sensor power pin
+const int8_t  y504SensorPower    = relayPowerPin;   // Sensor power pin
 const int8_t  y504EnablePin      = -1;              // Adapter RE/DE pin
 const uint8_t y504NumberReadings = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
@@ -2175,7 +2183,7 @@ Variable* y504Temp =
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 byte          y510ModbusAddress  = 0x0B;  // The modbus address of the Y510
 const int8_t  y510AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  y510SensorPower    = A3;              // Sensor power pin
+const int8_t  y510SensorPower    = relayPowerPin;   // Sensor power pin
 const int8_t  y510EnablePin      = -1;              // Adapter RE/DE pin
 const uint8_t y510NumberReadings = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
@@ -2207,7 +2215,7 @@ Variable* y510Temp =
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 byte          y511ModbusAddress  = 0x1A;  // The modbus address of the Y511
 const int8_t  y511AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  y511SensorPower    = A3;              // Sensor power pin
+const int8_t  y511SensorPower    = relayPowerPin;   // Sensor power pin
 const int8_t  y511EnablePin      = -1;              // Adapter RE/DE pin
 const uint8_t y511NumberReadings = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
@@ -2239,8 +2247,8 @@ Variable* y511Temp =
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 byte          y513ModbusAddress  = 0x13;  // The modbus address of the Y513
 const int8_t  y513AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  y513SensorPower    = A3;  // Sensor power pin
-const int8_t  y513EnablePin      = -1;                    // Adapter RE/DE pin
+const int8_t  y513SensorPower    = relayPowerPin;   // Sensor power pin
+const int8_t  y513EnablePin      = -1;              // Adapter RE/DE pin
 const uint8_t y513NumberReadings = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
 // power consumption
@@ -2271,7 +2279,7 @@ Variable* y513Temp =
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 byte          y514ModbusAddress  = 0x14;  // The modbus address of the Y514
 const int8_t  y514AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  y514SensorPower    = A3;              // Sensor power pin
+const int8_t  y514SensorPower    = relayPowerPin;   // Sensor power pin
 const int8_t  y514EnablePin      = -1;              // Adapter RE/DE pin
 const uint8_t y514NumberReadings = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
@@ -2304,7 +2312,7 @@ Variable* y514Temp =
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 byte          y520ModbusAddress  = 0x20;  // The modbus address of the Y520
 const int8_t  y520AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  y520SensorPower    = A3;              // Sensor power pin
+const int8_t  y520SensorPower    = relayPowerPin;   // Sensor power pin
 const int8_t  y520EnablePin      = -1;              // Adapter RE/DE pin
 const uint8_t y520NumberReadings = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
@@ -2336,7 +2344,7 @@ Variable* y520Temp =
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 byte          y532ModbusAddress  = 0x32;  // The modbus address of the Y532
 const int8_t  y532AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  y532SensorPower    = A3;              // Sensor power pin
+const int8_t  y532SensorPower    = relayPowerPin;   // Sensor power pin
 const int8_t  y532EnablePin      = 4;               // Adapter RE/DE pin
 const uint8_t y532NumberReadings = 1;
 // The manufacturer actually doesn't mention averaging for this one
@@ -2370,7 +2378,7 @@ Variable* y532Temp =
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 byte          y533ModbusAddress  = 0x32;  // The modbus address of the Y533
 const int8_t  y533AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  y533SensorPower    = A3;              // Sensor power pin
+const int8_t  y533SensorPower    = relayPowerPin;   // Sensor power pin
 const int8_t  y533EnablePin      = 4;               // Adapter RE/DE pin
 const uint8_t y533NumberReadings = 1;
 // The manufacturer actually doesn't mention averaging for this one
@@ -2401,7 +2409,7 @@ Variable* y533Temp =
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 byte          y551ModbusAddress  = 0x50;  // The modbus address of the Y551
 const int8_t  y551AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  y551SensorPower    = A3;              // Sensor power pin
+const int8_t  y551SensorPower    = relayPowerPin;   // Sensor power pin
 const int8_t  y551EnablePin      = -1;              // Adapter RE/DE pin
 const uint8_t y551NumberReadings = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
@@ -2437,7 +2445,7 @@ byte y560ModbusAddress =
     0x60;  // The modbus address of the Y560.
            // NOTE: Hexidecimal 0x60 = 96 decimal used by Yosemitech SmartPC
 const int8_t  y560AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  y560SensorPower    = A3;              // Sensor power pin
+const int8_t  y560SensorPower    = relayPowerPin;   // Sensor power pin
 const int8_t  y560EnablePin      = -1;              // Adapter RE/DE pin
 const uint8_t y560NumberReadings = 3;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
@@ -2471,7 +2479,7 @@ Variable* y560Temp =
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 byte          y700ModbusAddress  = 0x70;  // The modbus address of the Y700
 const int8_t  y700AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  y700SensorPower    = A3;              // Sensor power pin
+const int8_t  y700SensorPower    = relayPowerPin;   // Sensor power pin
 const int8_t  y700EnablePin      = -1;              // Adapter RE/DE pin
 const uint8_t y700NumberReadings = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
@@ -2504,7 +2512,7 @@ Variable* y700Temp =
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 byte          y4000ModbusAddress  = 0x05;  // The modbus address of the Y4000
 const int8_t  y4000AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  y4000SensorPower    = A3;              // Sensor power pin
+const int8_t  y4000SensorPower    = relayPowerPin;   // Sensor power pin
 const int8_t  y4000EnablePin      = -1;              // Adapter RE/DE pin
 const uint8_t y4000NumberReadings = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
@@ -2571,7 +2579,7 @@ Variable* dOptoTemp =
 // You can use any named variable pointers to access values by way of
 // variable->getValue()
 
-float calculateVariableValue(void) {
+float calculateVariableValue() {
     float calculatedResult = -9999;  // Always safest to start with a bad value
     // float inputVar1 = variable1->getValue();
     // float inputVar2 = variable2->getValue();
@@ -2617,7 +2625,6 @@ Variable* variableList[] = {
                                "12345678-abcd-1234-ef00-1234567890ab"),
     new ProcessorStats_Battery(&mcuBoard,
                                "12345678-abcd-1234-ef00-1234567890ab"),
-    // new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab"),
     //  ... Add more variables as needed!
     new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
     new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
@@ -2877,7 +2884,8 @@ Variable* variableList[] = {
     cyclopsRedChloro,
 #endif
 #if defined(BUILD_SENSOR_TURNER_TURBIDITY_PLUS)
-turbidityPlusVoltage,turbidityPlusTurbidity,
+    turbidityPlusVoltage,
+    turbidityPlusTurbidity,
 #endif
 #if defined(BUILD_SENSOR_ANALOG_ELEC_CONDUCTIVITY)
     analogEc_cond,
@@ -3140,6 +3148,9 @@ void setup() {
 
     /** Start [setup_serial_begins] */
     // Start the serial connection with the modem
+    Serial.print(F("Starting modem connection at "));
+    Serial.print(modemBaud);
+    Serial.println(F(" baud"));
     modemSerial.begin(modemBaud);
 
     // Start the stream for the modbus sensors;
@@ -3156,15 +3167,13 @@ void setup() {
 // Assign pins SERCOM functionality for SAMD boards
 // NOTE:  This must happen *after* the various serial.begin statements
 /** Start [setup_samd_pins] */
-#if defined(ARDUINO_ARCH_SAMD) && !defined(__SAMD51__)
-#ifndef ENABLE_SERIAL2
+#if defined(ARDUINO_SAMD_FEATHER_M0) || defined(ARDUINO_SAMD_ZERO)
+    // Serial2
     pinPeripheral(10, PIO_SERCOM);  // Serial2 Tx/Dout = SERCOM1 Pad #2
     pinPeripheral(11, PIO_SERCOM);  // Serial2 Rx/Din = SERCOM1 Pad #0
-#endif
-#ifndef ENABLE_SERIAL3
+    // Serial 3
     pinPeripheral(2, PIO_SERCOM);  // Serial3 Tx/Dout = SERCOM2 Pad #2
     pinPeripheral(5, PIO_SERCOM);  // Serial3 Rx/Din = SERCOM2 Pad #3
-#endif
 #endif
     /** End [setup_samd_pins] */
 
@@ -3212,12 +3221,19 @@ void setup() {
     F_CPU == 8000000L
     /** Start [setup_esp] */
     if (modemBaud > 57600) {
+        Serial.println(F("Waking the modem.."));
         modem.modemWake();  // NOTE:  This will also set up the modem
+        Serial.print(F("Attempting to begin modem communication at "));
+        Serial.print(modemBaud);
+        Serial.println(F(" baud.  This will fail if the baud is mismatched.."));
         modemSerial.begin(modemBaud);
-        modem.gsmModem.sendAT(GF("+UART_DEF=9600,8,1,0,0"));
+        Serial.println(
+            F("Firing an attempt to change the baud rate to 57600 baud"));
+        modem.gsmModem.sendAT(GF("+UART_DEF=57600,8,1,0,0"));
         modem.gsmModem.waitResponse();
         modemSerial.end();
-        modemSerial.begin(9600);
+        Serial.print(F("Reattempting to begin the modem at 57600 baud"));
+        modemSerial.begin(57600);
     }
 /** End [setup_esp] */
 #endif
@@ -3363,12 +3379,21 @@ void loop() {
     // Note:  Please change these battery voltages to match your battery
     // At very low battery, just go back to sleep
     if (getBatteryVoltage() < 3.4) {
+        Serial.print(F("Battery too low, ("));
+        Serial.print(mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM]);
+        Serial.println(F("V) going back to sleep."));
         dataLogger.systemSleep();
     } else if (getBatteryVoltage() < 3.55) {
         // At moderate voltage, log data but don't send it over the modem
+        Serial.print(F("Battery at "));
+        Serial.print(mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM]);
+        Serial.println(F("V; high enough to log, but will not publish!"));
         dataLogger.logData();
     } else {
         // If the battery is good, send the data to the world
+        Serial.print(F("Battery at "));
+        Serial.print(mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM]);
+        Serial.println(F("V; high enough to log and publish data"));
         dataLogger.logDataAndPublish();
     }
 }
@@ -3454,10 +3479,11 @@ void loop() {
 
                 // Sync the clock at noon
                 dataLogger.watchDogTimer.resetWatchDog();
-                if (Logger::markedLocalEpochTime != 0 &&
-                    Logger::markedLocalEpochTime % 86400 == 43200) {
+                if ((Logger::markedLocalUnixTime != 0 &&
+                     Logger::markedLocalUnixTime % 86400 == 43200) ||
+                    !dataLogger.isRTCSane()) {
                     Serial.println(F("Running a daily clock sync..."));
-                    dataLogger.setRTClock(modem.getNISTTime());
+                    dataLogger.setRTClock(modem.getNISTTime(), UNIX);
                     dataLogger.watchDogTimer.resetWatchDog();
                     modem.updateModemMetadata();
                     dataLogger.watchDogTimer.resetWatchDog();

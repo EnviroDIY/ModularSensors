@@ -38,7 +38,7 @@
 
 
 // ==========================================================================
-//  Settings for Additional Serial Ports
+//  Creating Additional Serial Ports
 // ==========================================================================
 /** Start [serial_ports] */
 // The modem and a number of sensors communicate over UART/TTL - often called
@@ -60,24 +60,21 @@
 AltSoftSerial altSoftSerial;
 #endif  // End software serial for avr boards
 
-
-#if defined(ARDUINO_ARCH_SAMD)
+#if defined(ARDUINO_SAMD_FEATHER_M0) || defined(ARDUINO_SAMD_ZERO)
 #include <wiring_private.h>  // Needed for SAMD pinPeripheral() function
 
-#ifndef ENABLE_SERIAL2
 // Set up a 'new' UART using SERCOM1
 // The Rx will be on digital pin 11, which is SERCOM1's Pad #0
 // The Tx will be on digital pin 10, which is SERCOM1's Pad #2
 // NOTE:  SERCOM1 is undefinied on a "standard" Arduino Zero and many clones,
 //        but not all!  Please check the variant.cpp file for you individual
-//        board! Sodaq Autonomo's and Sodaq One's do NOT follow the 'standard'
-//        SERCOM definitions!
+//        board!
 Uart Serial2(&sercom1, 11, 10, SERCOM_RX_PAD_0, UART_TX_PAD_2);
 // Hand over the interrupts to the sercom port
 void SERCOM1_Handler() {
     Serial2.IrqHandler();
 }
-#endif
+#define ENABLE_SERIAL2
 
 #endif  // End hardware serial on SAMD21 boards
 /** End [serial_ports] */
@@ -104,7 +101,7 @@ const int8_t  greenLED   = 8;       // Pin for the green LED
 const int8_t  redLED     = 9;       // Pin for the red LED
 const int8_t  buttonPin  = 21;      // Pin for debugging mode (ie, button pin)
 const int8_t  wakePin    = 31;  // MCU interrupt/alarm pin to wake from sleep
-// Mayfly 0.x D31 = A7
+// Mayfly 0.x, 1.x D31 = A7
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
@@ -187,8 +184,8 @@ Variable* ds3231Temp =
 // ==========================================================================
 /** Start [modbus_shared] */
 // Create a reference to the serial port for modbus
-#if defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAMD_ZERO) || \
-    defined(ATMEGA2560)
+#if defined(ENABLE_SERIAL2) || defined(ENVIRODIY_STONEFLY_M4) || \
+    defined(ATMEGA2560) || defined(ARDUINO_AVR_MEGA2560)
 HardwareSerial& modbusSerial = Serial2;  // Use hardware serial if possible
 #else
 AltSoftSerial& modbusSerial = altSoftSerial;  // For software serial
@@ -423,11 +420,10 @@ void setup() {
 
 // Assign pins SERCOM functionality for SAMD boards
 // NOTE:  This must happen *after* the various serial.begin statements
-#if defined(ARDUINO_ARCH_SAMD)
-#ifndef ENABLE_SERIAL2
+#if defined(ARDUINO_SAMD_FEATHER_M0) || defined(ARDUINO_SAMD_ZERO)
+    // Serial2
     pinPeripheral(10, PIO_SERCOM);  // Serial2 Tx/Dout = SERCOM1 Pad #2
     pinPeripheral(11, PIO_SERCOM);  // Serial2 Rx/Din = SERCOM1 Pad #0
-#endif
 #endif
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
@@ -576,10 +572,10 @@ void loop() {
                     loggerAllVars.watchDogTimer.resetWatchDog();
                     // Sync the clock at noon
                     // NOTE:  All loggers have the same clock, pick one
-                    if (Logger::markedLocalEpochTime != 0 &&
-                        Logger::markedLocalEpochTime % 86400 == 43200) {
+                    if (Logger::markedLocalUnixTime != 0 &&
+                        Logger::markedLocalUnixTime % 86400 == 43200) {
                         Serial.println(F("Running a daily clock sync..."));
-                        loggerAllVars.setRTClock(modem.getNISTTime());
+                        loggerAllVars.setRTClock(modem.getNISTTime(), UNIX);
                     }
 
                     // Disconnect from the network

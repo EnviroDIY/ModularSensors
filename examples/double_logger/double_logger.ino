@@ -249,13 +249,15 @@ void setup() {
 
     // Print out the current time
     Serial.print(F("Current RTC time is: "));
-    Serial.println(Logger::formatDateTime_ISO8601(Logger::getNowUTCEpoch()));
+    Serial.println(
+        Logger::formatDateTime_ISO8601(Logger::getNowUTCEpoch(UNIX), UNIX));
     Serial.print(F("Current localized logger time is: "));
-    Serial.println(Logger::formatDateTime_ISO8601(Logger::getNowLocalEpoch()));
+    Serial.println(
+        Logger::formatDateTime_ISO8601(Logger::getNowLocalEpoch(UNIX), UNIX));
     // Connect to the network
     if (modem.connectInternet()) {
         // Synchronize the RTC
-        logger1min.setRTClock(modem.getNISTTime());
+        logger1min.setRTClock(modem.getNISTTime(), UNIX);
         modem.updateModemMetadata();
         // Disconnect from the network
         modem.disconnectInternet();
@@ -389,13 +391,13 @@ void loop() {
         Serial.println(F("--------------------<555>---------------------\n"));
     }
     // Once a day, at noon, sync the clock
-    if (Logger::markedLocalEpochTime % 86400 == 43200) {
+    if (Logger::markedLocalUnixTime % 86400 == 43200) {
         // Turn on the modem
         modem.modemWake();
         // Connect to the network
         if (modem.connectInternet()) {
             // Synchronize the RTC
-            logger1min.setRTClock(modem.getNISTTime());
+            logger1min.setRTClock(modem.getNISTTime(), UNIX);
             // Disconnect from the network
             modem.disconnectInternet();
         }
