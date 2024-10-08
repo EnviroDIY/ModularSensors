@@ -491,11 +491,14 @@ uint32_t Logger::getNowUTCEpoch(MS_EpochStart epoch) {
     // Setting use1970sEpoch to true returns the seconds from Jan 1, 1970.
     // Get the epoch - with the time zone subtracted (i.e. return UTC epoch)
     rtc.updateTime();
+    uint32_t ret_val;
     switch (epoch) {
-        case UNIX: return rtc.getEpoch(true);
-        case Y2K: return rtc.getEpoch();
-        case GPS: return rtc.getEpoch() - EPOCH_GPS_TO_Y2K;
+        default:
+        case UNIX: ret_val = rtc.getEpoch(true); break;
+        case Y2K: ret_val = rtc.getEpoch(); break;
+        case GPS: ret_val = rtc.getEpoch() - EPOCH_GPS_TO_Y2K; break;
     }
+    return ret_val;
 }
 void Logger::setNowUTCEpoch(uint32_t ts, MS_EpochStart epoch) {
     // bool setEpoch(uint32_t value, bool use1970sEpoch = false, int8_t
@@ -504,15 +507,17 @@ void Logger::setNowUTCEpoch(uint32_t ts, MS_EpochStart epoch) {
     // the epoch before setting
     rtc.setEpoch(ts);
     switch (epoch) {
+        default:
         case UNIX: rtc.setEpoch(ts, true); break;
         case Y2K: rtc.setEpoch(ts, false); break;
-        case GPS: return rtc.setEpoch(ts + EPOCH_GPS_TO_Y2K, false);
+        case GPS: rtc.setEpoch(ts + EPOCH_GPS_TO_Y2K, false); break;
     }
 }
 
 #elif defined(MS_USE_DS3231)
 uint32_t Logger::getNowUTCEpoch(MS_EpochStart epoch) {
     switch (epoch) {
+        default:
         case UNIX: return rtc.now().getEpoch();
         case Y2K: return rtc.now().getEpoch() + EPOCH_UNIX_TO_Y2K;
         case GPS: return rtc.now().getEpoch() + EPOCH_UNIX_TO_GPS;
@@ -520,6 +525,7 @@ uint32_t Logger::getNowUTCEpoch(MS_EpochStart epoch) {
 }
 void Logger::setNowUTCEpoch(uint32_t ts, MS_EpochStart epoch) {
     switch (epoch) {
+        default:
         case UNIX: return rtc.setEpoch(ts);
         case Y2K: return rtc.setEpoch(ts + EPOCH_UNIX_TO_Y2K);
         case GPS: return rtc.setEpoch(ts + EPOCH_UNIX_TO_GPS);
@@ -530,6 +536,7 @@ void Logger::setNowUTCEpoch(uint32_t ts, MS_EpochStart epoch) {
 
 uint32_t Logger::getNowUTCEpoch(MS_EpochStart epoch) {
     switch (epoch) {
+        default:
         case UNIX: return zero_sleep_rtc.getEpoch();
         case Y2K: return zero_sleep_rtc.getEpoch() + EPOCH_UNIX_TO_Y2K;
         case GPS: return zero_sleep_rtc.getEpoch() + EPOCH_UNIX_TO_GPS;
@@ -537,6 +544,7 @@ uint32_t Logger::getNowUTCEpoch(MS_EpochStart epoch) {
 }
 void Logger::setNowUTCEpoch(uint32_t ts, MS_EpochStart epoch) {
     switch (epoch) {
+        default:
         case UNIX: return zero_sleep_rtc.setEpoch(ts);
         case Y2K: return zero_sleep_rtc.setEpoch(ts + EPOCH_UNIX_TO_Y2K);
         case GPS: return zero_sleep_rtc.setEpoch(ts + EPOCH_UNIX_TO_GPS);
@@ -554,6 +562,7 @@ void Logger::setNowUTCEpoch(uint32_t ts, MS_EpochStart epoch) {
 // January 1, 2000 (NOT 1970) as input, so we need to subtract.
 DateTime Logger::dtFromEpoch(uint32_t epochTime, MS_EpochStart epoch) {
     switch (epoch) {
+        default:
         case UNIX: DateTime dt(epochTime - EPOCH_UNIX_TO_Y2K);break;
         case Y2K:  DateTime dt(epochTime);break;
         case GPS:  DateTime dt(epochTime-EPOCH_UNIX_TO_GPS);break;
@@ -599,6 +608,7 @@ String Logger::formatDateTime_ISO8601(uint32_t epochTime, MS_EpochStart epoch) {
     // NOTE: time_t is a typedef for unit32_t, defined in time.h
     time_t t = epochTime;
     switch (epoch) {
+        default:
         case UNIX: t -= EPOCH_UNIX_TO_Y2K; break;
         case Y2K: break;
         case GPS: t -= EPOCH_UNIX_TO_GPS; break;
@@ -689,6 +699,7 @@ bool Logger::isRTCSane(void) {
 bool Logger::isRTCSane(uint32_t epochTime, MS_EpochStart epoch) {
     uint32_t epochTime2 = epochTime;
     switch (epoch) {
+        default:
         case UNIX: break;
         case Y2K: epochTime2 -= EPOCH_UNIX_TO_Y2K; break;
         case GPS: epochTime2 -= EPOCH_UNIX_TO_GPS; break;
