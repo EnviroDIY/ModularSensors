@@ -389,12 +389,6 @@ void Logger::sendDataToRemotes(void) {
 // Sets the static timezone that the data will be logged in - this must be set
 void Logger::setLoggerTimeZone(int8_t timeZone) {
     _loggerTimeZone = timeZone;
-#if defined(MS_USE_RV8803)
-    // void setTimeZoneQuarterHours(int8_t quarterHours);
-    // Write the time zone to RV8803_RAM as int8_t (signed) in 15 minute
-    // increments
-    rtc.setTimeZoneQuarterHours(timeZone * 4);
-#endif
 // Some helpful prints for debugging
 #ifdef STANDARD_SERIAL_OUTPUT
     const char* prtout1 = "Logger timezone is set to UTC";
@@ -1680,6 +1674,14 @@ void Logger::begin() {
     MS_DBG(F("Beginning RV-8803 real time clock"));
     rtc.begin();
     rtc.set24Hour();
+    // void setTimeZoneQuarterHours(int8_t quarterHours);
+    // Write the time zone to RV8803_RAM as int8_t (signed) in 15 minute
+    // increments
+    // This must happen here in the begin, not when setting the internal
+    // timezone variable because this requires communication with the RTC which
+    // can only happen during the run, not during compilation.
+    rtc.setTimeZoneQuarterHours(
+        (Logger::_loggerTimeZone - Logger::_loggerRTCOffset) * 4);
 #elif defined(MS_USE_DS3231)
     MS_DBG(F("Beginning DS3231 real time clock"));
     rtc.begin();
