@@ -202,6 +202,8 @@
 /// @brief Pretty text for the board name derived from the board's compiler
 /// define.
 #define LOGGER_BOARD "EnviroDIY Mayfly"
+#elif defined(ENVIRODIY_STONEFLY_M4)
+#define LOGGER_BOARD "EnviroDIY Stonefly"
 
 // Sodaq boards
 #elif defined(ARDUINO_SODAQ_EXPLORER)
@@ -222,6 +224,8 @@
 #define LOGGER_BOARD "SODAQ Moja"
 
 // Adafruit boards
+#elif defined(ARDUINO_AVR_FEATHER328P)
+#define LOGGER_BOARD "Feather 328p"
 #elif defined(ARDUINO_AVR_FEATHER32U4)
 #define LOGGER_BOARD "Feather 32u4"
 #elif defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS) || \
@@ -229,6 +233,12 @@
 #define LOGGER_BOARD "Feather M0 Express"
 #elif defined(ARDUINO_SAMD_FEATHER_M0) || defined(ADAFRUIT_FEATHER_M0)
 #define LOGGER_BOARD "Feather M0"
+#elif defined(ADAFRUIT_FEATHER_M4_ADALOGGER)
+#define LOGGER_BOARD "Feather M4 Adalogger"
+#elif defined(ARDUINO_FEATHER_M4_CAN) || defined(ADAFRUIT_FEATHER_M4_CAN)
+#define LOGGER_BOARD "Feather M4 CAN"
+#elif defined(ARDUINO_FEATHER_M4) || defined(ADAFRUIT_FEATHER_M4_EXPRESS)
+#define LOGGER_BOARD "Feather M4"
 
 // Arduino boards
 #elif defined(ARDUINO_AVR_ADK)
@@ -292,20 +302,72 @@
 class ProcessorStats : public Sensor {
  public:
     /**
-     * @brief Construct a new Processor Stats object.
+     * @brief Construct a new Processor Stats object for a **known, unmodified
+     * development board** using the standard manufacturer core for that board.
      *
-     * Need to know the Mayfly version because the battery resistor depends on
-     * it
+     * Boards that can be used with this constructor:
+     * - EnviroDIY
+     *   - Mayfly
+     *     - the version must be one of "v0.3", "v0.4", "v0.5", "v0.5b", "v1.0",
+     * or "v1.1"
+     *   - Stonefly
+     *     - the version must be "v0.1"
+     * - Adafruit
+     *   - Feather M0 variants (M0, M0 Express, M0 Adalogger, etc)
+     *   - Feather M4 variants
+     *   - Feather 328p variants
+     *     - WARNING: The processor isn't powerful enough for this library. To
+     * use it, you would have to strip the library down.
+     *   - Feather 32U4 variants (Basic proto, RadioFruit, BlueFruit, etc)
+     *     - WARNING: The processor isn't powerful enough for this library. To
+     * use it, you would have to strip the library down.
+     * - Sodaq
+     *   - Mbili
+     *   - Ndogo
+     *   - One
+     *     - the version must be "v0.1" or "v0.2"
+     *   - Autonomo
+     *     - the version must be "v0.1"
      *
-     * @param version The version of the MCU, if applicable.
-     * - For an EnviroDIY Mayfly, the version should be one of "v0.3", "v0.4",
-     * "v0.5", "v0.5b", "v1.0", or "v1.1".  There *is* a difference between some
-     * of the versions!
+     * @param version The version of the MCU, if applicable. This is used to
+     * fill in the correct battery connection information.
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
      *
-     * @note It is not possible to average more than one measurement for
-     * processor variables - it just doesn't make sense for them.
+     * @note The measurements to average will only be applied to the battery
+     * voltage measurement!
      */
-    explicit ProcessorStats(const char* version);
+    ProcessorStats(const char* version, uint8_t measurementsToAverage = 1);
+    /**
+     * @brief Construct a new Processor Stats object for any processor type
+     *
+     * @param boardName The name of the board. For many boards, you can use the
+     * defined LOGGER_BOARD value. Whatever you type here will be printed out as
+     * part of the location for the processor. It has no other effect.
+     * @param version The version of the MCU, if applicable. Whatever you type
+     * here will be printed out as part of the location for the processor. It
+     * has no other effect.
+     * @param batteryPin The analog pin on the processor connected to the
+     * battery.
+     * @param batteryMultiplier Any multiplier needed to convert raw battery
+     * readings from `analogRead()` into true battery values based on any
+     * resistors or voltage dividors
+     * @param analogResolution The analog read resolution of the processor in
+     * bits
+     * @param operatingVoltage The processor's operating voltage; most
+     * likely 3.3 or 5.
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
+     *
+     * @note The measurements to average will only be applied to the battery
+     * voltage measurement!
+     */
+    ProcessorStats(const char* boardName, const char* version,
+                   int8_t batteryPin, float batteryMultiplier,
+                   int8_t analogResolution, float operatingVoltage,
+                   uint8_t measurementsToAverage = 1);
     /**
      * @brief Destroy the Processor Stats object
      */
@@ -324,9 +386,18 @@ class ProcessorStats : public Sensor {
     bool addSingleMeasurementResult(void) override;
 
  private:
-    const char* _version;     ///< Internal reference to the board version
-    int8_t      _batteryPin;  ///< Internal reference to the battery pin
-    int16_t     sampNum = 0;  ///< The current sample number
+    const char* _version;      ///< Internal reference to the board version
+    const char* _boardName;    ///< Internal reference to the board name
+    int8_t      _batteryPin;   ///< Internal reference to the battery pin
+    float _batteryMultiplier;  ///< Internal reference to any multiplier needed
+                               ///< to convert raw battery readings into true
+                               ///< battery values based on any resistors or
+                               ///< voltage dividors
+    int8_t _analogResolution;  ///< Internal reference to the analog read
+                               ///< resolution of the processor in bits
+    float _operatingVoltage;   ///< Internal reference to processor's operating
+                               ///< voltage
+    int16_t sampNum = 0;       ///< The current sample number
 };
 
 
