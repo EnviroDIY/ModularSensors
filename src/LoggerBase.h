@@ -85,13 +85,14 @@
 enum MS_EpochStart {
     UNIX = 0,  ///< Use a Unix epoch, starting 1/1/1970. This is the default for
                ///< this library
-    Y2K,  ///< Use an epoch starting 1/1/2000, as some RTC's and Arduinos do
-          ///< (946684800s ahead of UNIX epoch)
-    GPS,  ///< Use the GPS epoch starting Jan 5, 1980 (315878400s ahead of
-          ///< UNIX epoch)
-    NIST  ///< Use the epoch starting Jan 1, 1900 as returned by the NIST
-          ///< Network Time Protocol (RFC-1305 and later versions) and Time
-          ///< Protocol (RFC-868) (2208988800 behind the UNIX epoch)
+    Y2K = 946684800,    ///< Use an epoch starting 1/1/2000, as some RTC's and
+                        ///< Arduinos do (946684800s ahead of UNIX epoch)
+    GPS = 315878400,    ///< Use the GPS epoch starting Jan 5, 1980 (315878400s
+                        ///< ahead of UNIX epoch)
+    NIST = -2208988800  ///< Use the epoch starting Jan 1, 1900 as returned by
+                        ///< the NIST Network Time Protocol (RFC-1305 and later
+                        ///< versions) and Time Protocol (RFC-868) (2208988800
+                        ///< behind the UNIX epoch)
 };
 
 #ifndef EPOCH_UNIX_TO_Y2K
@@ -985,6 +986,21 @@ class Logger {
      * same offset.
      */
     static int8_t _loggerRTCOffset;
+    /**
+     * @brief Figure out where the epoch starts for the processor.
+     *
+     * The real time clock libraries mostly document this, but the cores for the
+     * various Arduino processors don't. The time.h file is not much more than a
+     * stub.
+     *
+     * @return The start of the epoch
+     */
+    static MS_EpochStart getProcessorEpochStart();
+    /**
+     * @brief The start of the epoch for the processor's internal time.h
+     * library.
+     */
+    static MS_EpochStart _processor_epoch;
     /**@}*/
 
     // ===================================================================== //
@@ -1059,8 +1075,8 @@ class Logger {
      *
      * @note For the SAMD51, hibernate, backup, and off modes cause a full
      * system reset on wake. Because we don't want to fully reset the device
-     * (and go back to the setup) on wake, the lowest power mode we can use is
-     * standby.
+     * (and go back to the setup) on wake, the lowest power mode we can use
+     * is standby.
      */
     /**@{*/
     // ===================================================================== //

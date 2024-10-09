@@ -43,6 +43,8 @@ int8_t Logger::_loggerRTCOffset = 0;
 // Initialize the static timestamps
 uint32_t Logger::markedLocalUnixTime = 0;
 uint32_t Logger::markedUTCUnixTime   = 0;
+// Initialize the processor epoch
+MS_EpochStart Logger::_processor_epoch = Y2K;
 // Initialize the testing/logging flags
 volatile bool Logger::isLoggingNow = false;
 volatile bool Logger::isTestingNow = false;
@@ -69,6 +71,8 @@ Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
     setLoggingInterval(loggingIntervalMinutes);
     setVariableArray(inputArray);
 
+    _processor_epoch = getProcessorEpochStart();
+
     // Set the testing/logging flags to false
     isLoggingNow = false;
     isTestingNow = false;
@@ -86,6 +90,8 @@ Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
     setLoggingInterval(loggingIntervalMinutes);
     setVariableArray(inputArray);
 
+    _processor_epoch = getProcessorEpochStart();
+
     // Set the testing/logging flags to false
     isLoggingNow = false;
     isTestingNow = false;
@@ -101,6 +107,8 @@ Logger::Logger() {
     isLoggingNow = false;
     isTestingNow = false;
     startTesting = false;
+
+    _processor_epoch = getProcessorEpochStart();
 
     // Clear arrays
     for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
@@ -485,70 +493,31 @@ uint32_t Logger::getNowUTCEpoch(MS_EpochStart epoch) {
     // Setting use1970sEpoch to true returns the seconds from Jan 1, 1970.
     // Get the epoch - with the time zone subtracted (i.e. return UTC epoch)
     rtc.updateTime();
-    uint32_t ret_val;
-    switch (epoch) {
-        default:
-        case UNIX: ret_val = rtc.getEpoch(true); break;
-        case Y2K: ret_val = rtc.getEpoch(); break;
-        case GPS: ret_val = rtc.getEpoch(true) - EPOCH_UNIX_TO_GPS; break;
-        case NIST: ret_val = rtc.getEpoch(true) - EPOCH_UNIX_TO_NIST; break;
-    }
-    return ret_val;
+    return rtc.getEpoch(true) + epoch;
 }
 void Logger::setNowUTCEpoch(uint32_t ts, MS_EpochStart epoch) {
     // bool setEpoch(uint32_t value, bool use1970sEpoch = false, int8_t
     // timeZoneQuarterHours = 0);
     // If timeZoneQuarterHours is non-zero, update RV8803_RAM. Add the zone to
     // the epoch before setting
-    rtc.setEpoch(ts);
-    switch (epoch) {
-        default:
-        case UNIX: rtc.setEpoch(ts, true); break;
-        case Y2K: rtc.setEpoch(ts, false); break;
-        case GPS: rtc.setEpoch(ts - EPOCH_UNIX_TO_GPS, true); break;
-        case NIST: rtc.setEpoch(ts - EPOCH_UNIX_TO_NIST, true); break;
-    }
+    rtc.setEpoch(ts - epoch, true);
 }
 
 #elif defined(MS_USE_DS3231)
 uint32_t Logger::getNowUTCEpoch(MS_EpochStart epoch) {
-    switch (epoch) {
-        default:
-        case UNIX: return rtc.now().getEpoch();
-        case Y2K: return rtc.now().getEpoch() + EPOCH_UNIX_TO_Y2K;
-        case GPS: return rtc.now().getEpoch() + EPOCH_UNIX_TO_GPS;
-        case NIST: return rtc.now().getEpoch() + EPOCH_UNIX_TO_NIST;
-    }
+    return rtc.now().getEpoch() + epoch;
 }
 void Logger::setNowUTCEpoch(uint32_t ts, MS_EpochStart epoch) {
-    switch (epoch) {
-        default:
-        case UNIX: return rtc.setEpoch(ts);
-        case Y2K: return rtc.setEpoch(ts + EPOCH_UNIX_TO_Y2K);
-        case GPS: return rtc.setEpoch(ts + EPOCH_UNIX_TO_GPS);
-        case NIST: return rtc.setEpoch(ts + EPOCH_UNIX_TO_NIST);
-    }
+    rtc.setEpoch(ts + epoch);
 }
 
 #elif defined(MS_USE_RTC_ZERO)
 
 uint32_t Logger::getNowUTCEpoch(MS_EpochStart epoch) {
-    switch (epoch) {
-        default:
-        case UNIX: return zero_sleep_rtc.getEpoch();
-        case Y2K: return zero_sleep_rtc.getEpoch() + EPOCH_UNIX_TO_Y2K;
-        case GPS: return zero_sleep_rtc.getEpoch() + EPOCH_UNIX_TO_GPS;
-        case NIST: return zero_sleep_rtc.getEpoch() + EPOCH_UNIX_TO_NIST;
-    }
+    return zero_sleep_rtc.getEpoch() + epoch;
 }
 void Logger::setNowUTCEpoch(uint32_t ts, MS_EpochStart epoch) {
-    switch (epoch) {
-        default:
-        case UNIX: return zero_sleep_rtc.setEpoch(ts);
-        case Y2K: return zero_sleep_rtc.setEpoch(ts + EPOCH_UNIX_TO_Y2K);
-        case GPS: return zero_sleep_rtc.setEpoch(ts + EPOCH_UNIX_TO_GPS);
-        case NIST: return zero_sleep_rtc.setEpoch(ts + EPOCH_UNIX_TO_NIST);
-    }
+    zero_sleep_rtc.setEpoch(ts + epoch);
 }
 
 #endif
@@ -561,13 +530,7 @@ void Logger::setNowUTCEpoch(uint32_t ts, MS_EpochStart epoch) {
 // The DateTime object constructor requires the number of seconds from
 // January 1, 2000 (NOT 1970) as input, so we need to subtract.
 DateTime Logger::dtFromEpoch(uint32_t epochTime, MS_EpochStart epoch) {
-    switch (epoch) {
-        default:
-        case UNIX: DateTime dt(epochTime - EPOCH_UNIX_TO_Y2K);break;
-        case Y2K:  DateTime dt(epochTime);break;
-        case GPS:  DateTime dt(epochTime-EPOCH_UNIX_TO_GPS);break;
-        case NIST:  DateTime dt(epochTime-EPOCH_UNIX_TO_NIST);break;
-    }
+    DateTime dt(epochTime+epoch - Y2K);
     return dt;
 }
 
@@ -605,23 +568,83 @@ String Logger::formatDateTime_ISO8601(DateTime& dt) {
 // LOGGER's offset as the time zone offset in the string.
 // code modified from parts of the SparkFun RV-8803 library
 String Logger::formatDateTime_ISO8601(uint32_t epochTime, MS_EpochStart epoch) {
+    MS_DEEP_DBG(F("Input epoch time:"), epochTime, F("; input epoch:"), epoch);
     // Create a temporary variable for the epoch time
-    // NOTE: time_t is a typedef for unit32_t, defined in time.h
-    time_t t = epochTime;
-    switch (epoch) {
-        default:
-        case UNIX: t -= EPOCH_UNIX_TO_Y2K; break;
-        case Y2K: break;
-        case GPS: t -= EPOCH_UNIX_TO_GPS; break;
-        case NIST: t -= EPOCH_UNIX_TO_NIST; break;
+    // NOTE: for AVR boards time_t is a typedef for unit32_t, defined in time.h
+    // For SAMD time_t is a typedef for __int_least64_t _timeval.h
+    if (sizeof(time_t) != sizeof(uint32_t)) {
+        MS_DEEP_DBG(F("THE TIME FORMAT IS NOT THE SAME SIZE AS A uint32_t!"),
+                    sizeof(time_t), sizeof(uint32_t));
     }
+    bool is_signed = (((time_t)(-1)) < 0);
+    MS_DEEP_DBG(F("THE TIME FORMAT IS"),
+                is_signed ? F("SIGNED") : F("UNSIGNED"));
+
+    // implicit cast to time_t
+    time_t t = epochTime;
+
+
+    time_t     epoch_zero    = 0;
+    struct tm* epoch_zero_tm = gmtime(&epoch_zero);
+    // create a temporary buffer to put the timestamp into
+    char epoch_zero_year[5];  // Max of yyyy with \0 terminator
+    // use strftime (from time.h) to format the time
+    strftime(epoch_zero_year, 5, "%Y", epoch_zero_tm);
+    MS_DEEP_DBG(F("epoch_zero_year:"), epoch_zero_year);
+    int zero_year = atoi(epoch_zero_year);
+    MS_DEEP_DBG(F("zero_year:"), zero_year);
+
+    MS_EpochStart ret_val;
+    switch (zero_year) {
+        default:
+        case 1970: ret_val = UNIX; break;
+        case 2000: ret_val = Y2K; break;
+        case 1980: ret_val = GPS; break;
+        case 1900: ret_val = NIST; break;
+    }
+    MS_DEEP_DBG(F("ret_val:"), ret_val);
+
+
+    // create a temporary time struct
+    // tm is a struct for time parts, defined in time.h
+    struct tm* tmp2 = gmtime(&t);
+    MS_DEEP_DBG(F("Time components without adjustment: year:"), tmp2->tm_year,
+                F("month:"), tmp2->tm_mon + 1, F("day:"), tmp2->tm_mday,
+                F("hour:"), tmp2->tm_hour, F("minute:"), tmp2->tm_min,
+                F("second:"), tmp2->tm_sec);
+    // create a temporary buffer to put the timestamp into
+    static char
+        time8601tz2[20];  // Max of yyyy-mm-ddThh:mm:ss with \0 terminator
+    // use strftime (from time.h) to format the time
+    strftime(time8601tz2, 20, "%Y-%m-%dT%H:%M:%S", tmp2);
+    MS_DEEP_DBG(F("Formatted time string:"), time8601tz2);
+
+
+    MS_DEEP_DBG(F("Converted epoch time:"), t);
+    if (epoch != _processor_epoch) {
+        t += epoch;             // convert to to unix
+        t -= _processor_epoch;  // convert to processor epoch (used by gmtime)
+    }
+    MS_DEEP_DBG(F("Adjusted epoch time:"), t);
     // create a temporary time struct
     // tm is a struct for time parts, defined in time.h
     struct tm* tmp = gmtime(&t);
+    MS_DEEP_DBG(F("Time components: year:"), tmp->tm_year, F("month:"),
+                tmp->tm_mon + 1, F("day:"), tmp->tm_mday, F("hour:"),
+                tmp->tm_hour, F("minute:"), tmp->tm_min, F("second:"),
+                tmp->tm_sec);
 
     // create a temporary buffer to put the timestamp into
     static char
-        time8601tz[27];  // Max of yyyy-mm-ddThh:mm:ss+hh:mm with \0 terminator
+        time8601tz[20];  // Max of yyyy-mm-ddThh:mm:ss with \0 terminator
+    // use strftime (from time.h) to format the time
+    strftime(time8601tz, 20, "%Y-%m-%dT%H:%M:%S", tmp);
+    MS_DEEP_DBG(F("Formatted time string:"), time8601tz);
+
+    // get the corrected timezone format
+    // NOTE: the %z format from strftime formats the timezone as +hhmm, but we
+    // need +hh:mm
+    char   isotz[8];
     int8_t quarterHours = _loggerTimeZone * 4;
     char   plusMinus    = '+';
     if (quarterHours < 0) {
@@ -631,11 +654,12 @@ String Logger::formatDateTime_ISO8601(uint32_t epochTime, MS_EpochStart epoch) {
     uint16_t tz_mins = quarterHours * 15;
     uint8_t  tzh     = tz_mins / 60;
     uint8_t  tzm     = tz_mins % 60;
-    snprintf(time8601tz, sizeof(time8601tz),
-             "20%02d-%02d-%02dT%02d:%02d:%02d%c%02d:%02d", tmp->tm_year - 100,
-             tmp->tm_mon + 1, tmp->tm_mday, tmp->tm_hour, tmp->tm_min,
-             tmp->tm_sec, plusMinus, tzh, tzm);
-    return String(time8601tz);
+    MS_DEEP_DBG(F("Time zone: plusMinus:"), plusMinus, F("tzh:"), tzh,
+                F("tzm:"), tzm);
+    snprintf(isotz, sizeof(isotz), "%c%02d:%02d", plusMinus, tzh, tzm);
+    MS_DEEP_DBG(F("Formatted time zone string:"), isotz);
+
+    return String(time8601tz) + String(isotz);
 #if 0
 #if defined(MS_USE_RV8803)
     // char* stringTime8601TZ();
@@ -699,14 +723,7 @@ bool Logger::isRTCSane(void) {
     return isRTCSane(curRTC, UNIX);
 }
 bool Logger::isRTCSane(uint32_t epochTime, MS_EpochStart epoch) {
-    uint32_t epochTime2 = epochTime;
-    switch (epoch) {
-        default:
-        case UNIX: break;
-        case Y2K: epochTime2 -= EPOCH_UNIX_TO_Y2K; break;
-        case GPS: epochTime2 -= EPOCH_UNIX_TO_GPS; break;
-        case NIST: epochTime2 -= EPOCH_UNIX_TO_NIST; break;
-    }
+    uint32_t epochTime2 = epochTime - epoch;
     if (epochTime2 < EARLIEST_SANE_UNIX_TIMESTAMP ||
         epochTime2 > LATEST_SANE_UNIX_TIMESTAMP) {
         return false;
@@ -826,6 +843,33 @@ bool Logger::checkMarkedInterval(void) {
         retval = false;
     }
     return retval;
+}
+
+
+// figure out where the epoch starts for the processor
+// This is awkward, but I'm struggling to find any documentation on
+// what the year component input should be for mktime  - and I'm pretty sure
+// it varies across processors.  If both gmtime and strftime are time.h for
+// the processor then this should work regardless of how the year is
+// represented within the tm structs.
+MS_EpochStart Logger::getProcessorEpochStart() {
+    time_t     epoch_zero    = 0;
+    struct tm* epoch_zero_tm = gmtime(&epoch_zero);
+    // create a temporary buffer to put the timestamp into
+    char epoch_zero_year[5];  // Max of yyyy with \0 terminator
+    // use strftime (from time.h) to format the time
+    strftime(epoch_zero_year, 5, "%Y", epoch_zero_tm);
+    int zero_year = atoi(epoch_zero_year);
+
+    MS_EpochStart ret_val;
+    switch (zero_year) {
+        default:
+        case 1970: ret_val = UNIX; break;
+        case 2000: ret_val = Y2K; break;
+        case 1980: ret_val = GPS; break;
+        case 1900: ret_val = NIST; break;
+    }
+    return ret_val;
 }
 
 
@@ -1310,8 +1354,7 @@ bool Logger::initializeSDCard(void) {
 
 
     SdSpiConfig customSdConfig(static_cast<SdCsPin_t>(_SDCardSSPin),
-                               (uint8_t)(DEDICATED_SPI | USER_SPI_BEGIN),
-                               SPI_FULL_SPEED, &SPI);
+                               (uint8_t)(DEDICATED_SPI), SPI_FULL_SPEED, &SPI);
 
     if (!sd.begin(customSdConfig)) {
         PRINTOUT(F("Error: SD card failed to initialize or is missing."));
@@ -1335,7 +1378,7 @@ void Logger::setFileTimestamp(File& fileToStamp, uint8_t stampFlag) {
     // create a temporary time struct
     // tm is a struct for time parts, defined in time.h
     struct tm* tmp = gmtime(&t);
-    fileToStamp.timestamp(stampFlag, tmp->tm_year - 100, tmp->tm_mon + 1,
+    fileToStamp.timestamp(stampFlag, tmp->tm_year, tmp->tm_mon + 1,
                           tmp->tm_mday, tmp->tm_hour, tmp->tm_min, tmp->tm_sec);
 #if 0
 #if defined(MS_USE_RV8803)
@@ -1703,6 +1746,8 @@ void Logger::begin() {
              formatDateTime_ISO8601(getNowUTCEpoch(UNIX), UNIX));
     PRINTOUT(F("Current localized logger time is:"),
              formatDateTime_ISO8601(getNowLocalEpoch(UNIX), UNIX));
+    MS_DEEP_DBG(F("The processor is using a UNIX offset of"), _processor_epoch,
+                F("internally"));
 
     // Reset the watchdog
     watchDogTimer.resetWatchDog();

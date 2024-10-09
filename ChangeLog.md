@@ -11,6 +11,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## [Unreleased]
 
 ### Changed
+
 - **BREAKING** Renamed `markedLocalEpochTime` to `markedLocalUnixTime` to clarify the start of the epoch that we're marking down.
 - **BREAKING** Renamed `markedUTCEpochTime` to `markedUTCUnixTime` to clarify the start of the epoch that we're marking down.
 - **Potentially BREAKING** Changed the requirements for a "sane" timestamp to between 2023 and 2030.
@@ -20,13 +21,15 @@ This should only make a difference for my compilation tests, real users should p
 - Changed some fill-in-the-blank spots in the menu example to only set the value in a single spot in the code.
 
 ### Added
+
 - Added support for the Micro Crystal RV-8803-C7 high accuracy, ultra low power Real-Time-Clock Module.
 - Added support for multiple 'epoch' types starting at January 1, 1970 (UNIX), January 1, 2000 (Arduino and others), January 5, 1980 (GPST), and January 1, 1900 (NIST time and NTP protocols).
-    - This allows you to input the epoch you're using in every single function that deals with a uint32_t or epoch type timestamp.
+  - This allows you to input the epoch you're using in every single function that deals with a uint32_t or epoch type timestamp.
 If no epoch start is given, it is assumed to be UNIX (January 1, 1970).
-    - The supported epochs are given in the enum MS_EpochStart
+  - The supported epochs are given in the enum MS_EpochStart
 
 ### Removed
+
 - Removed support for any functions using the Sodaq "DateTime" class.
 
 ### Fixed
