@@ -1449,7 +1449,7 @@ This is very helpful in keeping the clock from drifting or resetting it if it lo
 Like the sensor setup, we also apply a battery voltage voltage condition before attempting the clock sync.
 (All of the supported modems are large power eaters.)
 Unlike the sensor setup, we have an additional check for "sanity" of the clock time.
-To be considered "sane" the clock has to set somewhere between 2023 and 2030.
+To be considered "sane" the clock has to set somewhere between #EARLIEST_SANE_UNIX_TIMESTAMP (currently January 1, 2023) and #LATEST_SANE_UNIX_TIMESTAMP (currently January 1, 2030).
 It's a broad range, but it will automatically flag values like Jan 1, 2000 - which are the default start value of the clock on power up.
 
 [//]: # ( @menusnip{setup_clock} )

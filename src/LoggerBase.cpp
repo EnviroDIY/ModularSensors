@@ -490,7 +490,8 @@ uint32_t Logger::getNowUTCEpoch(MS_EpochStart epoch) {
         default:
         case UNIX: ret_val = rtc.getEpoch(true); break;
         case Y2K: ret_val = rtc.getEpoch(); break;
-        case GPS: ret_val = rtc.getEpoch() - EPOCH_GPS_TO_Y2K; break;
+        case GPS: ret_val = rtc.getEpoch(true) - EPOCH_UNIX_TO_GPS; break;
+        case NIST: ret_val = rtc.getEpoch(true) - EPOCH_UNIX_TO_NIST; break;
     }
     return ret_val;
 }
@@ -504,7 +505,8 @@ void Logger::setNowUTCEpoch(uint32_t ts, MS_EpochStart epoch) {
         default:
         case UNIX: rtc.setEpoch(ts, true); break;
         case Y2K: rtc.setEpoch(ts, false); break;
-        case GPS: rtc.setEpoch(ts + EPOCH_GPS_TO_Y2K, false); break;
+        case GPS: rtc.setEpoch(ts - EPOCH_UNIX_TO_GPS, true); break;
+        case NIST: rtc.setEpoch(ts - EPOCH_UNIX_TO_NIST, true); break;
     }
 }
 
@@ -515,6 +517,7 @@ uint32_t Logger::getNowUTCEpoch(MS_EpochStart epoch) {
         case UNIX: return rtc.now().getEpoch();
         case Y2K: return rtc.now().getEpoch() + EPOCH_UNIX_TO_Y2K;
         case GPS: return rtc.now().getEpoch() + EPOCH_UNIX_TO_GPS;
+        case NIST: return rtc.now().getEpoch() + EPOCH_UNIX_TO_NIST;
     }
 }
 void Logger::setNowUTCEpoch(uint32_t ts, MS_EpochStart epoch) {
@@ -523,6 +526,7 @@ void Logger::setNowUTCEpoch(uint32_t ts, MS_EpochStart epoch) {
         case UNIX: return rtc.setEpoch(ts);
         case Y2K: return rtc.setEpoch(ts + EPOCH_UNIX_TO_Y2K);
         case GPS: return rtc.setEpoch(ts + EPOCH_UNIX_TO_GPS);
+        case NIST: return rtc.setEpoch(ts + EPOCH_UNIX_TO_NIST);
     }
 }
 
@@ -534,6 +538,7 @@ uint32_t Logger::getNowUTCEpoch(MS_EpochStart epoch) {
         case UNIX: return zero_sleep_rtc.getEpoch();
         case Y2K: return zero_sleep_rtc.getEpoch() + EPOCH_UNIX_TO_Y2K;
         case GPS: return zero_sleep_rtc.getEpoch() + EPOCH_UNIX_TO_GPS;
+        case NIST: return zero_sleep_rtc.getEpoch() + EPOCH_UNIX_TO_NIST;
     }
 }
 void Logger::setNowUTCEpoch(uint32_t ts, MS_EpochStart epoch) {
@@ -542,6 +547,7 @@ void Logger::setNowUTCEpoch(uint32_t ts, MS_EpochStart epoch) {
         case UNIX: return zero_sleep_rtc.setEpoch(ts);
         case Y2K: return zero_sleep_rtc.setEpoch(ts + EPOCH_UNIX_TO_Y2K);
         case GPS: return zero_sleep_rtc.setEpoch(ts + EPOCH_UNIX_TO_GPS);
+        case NIST: return zero_sleep_rtc.setEpoch(ts + EPOCH_UNIX_TO_NIST);
     }
 }
 
@@ -560,6 +566,7 @@ DateTime Logger::dtFromEpoch(uint32_t epochTime, MS_EpochStart epoch) {
         case UNIX: DateTime dt(epochTime - EPOCH_UNIX_TO_Y2K);break;
         case Y2K:  DateTime dt(epochTime);break;
         case GPS:  DateTime dt(epochTime-EPOCH_UNIX_TO_GPS);break;
+        case NIST:  DateTime dt(epochTime-EPOCH_UNIX_TO_NIST);break;
     }
     return dt;
 }
@@ -606,6 +613,7 @@ String Logger::formatDateTime_ISO8601(uint32_t epochTime, MS_EpochStart epoch) {
         case UNIX: t -= EPOCH_UNIX_TO_Y2K; break;
         case Y2K: break;
         case GPS: t -= EPOCH_UNIX_TO_GPS; break;
+        case NIST: t -= EPOCH_UNIX_TO_NIST; break;
     }
     // create a temporary time struct
     // tm is a struct for time parts, defined in time.h
@@ -697,9 +705,10 @@ bool Logger::isRTCSane(uint32_t epochTime, MS_EpochStart epoch) {
         case UNIX: break;
         case Y2K: epochTime2 -= EPOCH_UNIX_TO_Y2K; break;
         case GPS: epochTime2 -= EPOCH_UNIX_TO_GPS; break;
+        case NIST: epochTime2 -= EPOCH_UNIX_TO_NIST; break;
     }
-    // Before January 1, 2023 or After January 1, 2030
-    if (epochTime2 < 1672531200 || epochTime2 > 1893456000) {
+    if (epochTime2 < EARLIEST_SANE_UNIX_TIMESTAMP ||
+        epochTime2 > LATEST_SANE_UNIX_TIMESTAMP) {
         return false;
     } else {
         return true;

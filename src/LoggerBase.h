@@ -83,13 +83,15 @@
  * @brief Set the epoch start value.
  */
 enum MS_EpochStart {
-    UNIX = 0,  ///< Use a Unix epoch, starting 1/1/1970 (946684800s behind of
-               ///< Y2K epoch, 315878400ss behind of GPS epoch)
-    Y2K =
-        1,  ///< Use an epoch starting 1/1/2000, as some RTC's and Arduinos do
-            ///< (946684800s ahead of UNIX epoch, 630806400s ahead of GPS epoch)
-    GPS = 2  ///< Use the GPS epoch starting Jan 5, 1980 (315878400s ahead of
-             ///< UNIX epoch, 630806400s behind of Y2K epoch)
+    UNIX = 0,  ///< Use a Unix epoch, starting 1/1/1970. This is the default for
+               ///< this library
+    Y2K,  ///< Use an epoch starting 1/1/2000, as some RTC's and Arduinos do
+          ///< (946684800s ahead of UNIX epoch)
+    GPS,  ///< Use the GPS epoch starting Jan 5, 1980 (315878400s ahead of
+          ///< UNIX epoch)
+    NIST  ///< Use the epoch starting Jan 1, 1900 as returned by the NIST
+          ///< Network Time Protocol (RFC-1305 and later versions) and Time
+          ///< Protocol (RFC-868) (2208988800 behind the UNIX epoch)
 };
 
 #ifndef EPOCH_UNIX_TO_Y2K
@@ -112,12 +114,30 @@ enum MS_EpochStart {
 #endif
 
 
-#ifndef EPOCH_GPS_TO_Y2K
+#ifndef EPOCH_UNIX_TO_NIST
 /**
- * @brief Difference between January 5, 1980 (GPST) and January 1, 2000 (used by
- * Arduino and some other real time clocks).
+ * @brief Difference between January 1, 1970 (UNIX) and January 1, 1900
+ * (returned by NIST time protocols).
  */
-#define EPOCH_GPS_TO_Y2K 630806400
+#define EPOCH_UNIX_TO_NIST -2208988800
+#endif
+
+#ifndef EARLIEST_SANE_UNIX_TIMESTAMP
+/**
+ * @brief The earliest unix timestamp that can be considered sane.
+ *
+ * January 1, 2023
+ */
+#define EARLIEST_SANE_UNIX_TIMESTAMP 1672531200
+#endif
+
+#ifndef LATEST_SANE_UNIX_TIMESTAMP
+/**
+ * @brief The latest unix timestamp that can be considered sane.
+ *
+ * January 1, 2030
+ */
+#define LATEST_SANE_UNIX_TIMESTAMP 1893456000
 #endif
 
 #include <SdFat.h>  // To communicate with the SD card
@@ -782,8 +802,8 @@ class Logger {
     /**
      * @brief The RTC object.
      *
-     * @note Only one RTC may be used.  Either the built-in RTC of a SAMD board
-     * *OR* a DS3231
+     * @note Only one RTC may be used.  Either the built-in RTC of a SAMD board,
+     * a DS3231, or a RV-8803.
      */
     static RTCZero zero_sleep_rtc;
 #endif
@@ -894,7 +914,8 @@ class Logger {
     /**
      * @brief Check that the current time on the RTC is within a "sane" range.
      *
-     * To be sane the clock  must be between 2023 and 2030.
+     * To be sane the clock  must be between #EARLIEST_SANE_UNIX_TIMESTAMP and
+     * #LATEST_SANE_UNIX_TIMESTAMP.
      *
      * @return True if the current time on the RTC passes sanity range
      * checking
@@ -904,7 +925,8 @@ class Logger {
      * @brief Check that a given epoch time (seconds since 1970) is within a
      * "sane" range.
      *
-     * To be sane, the clock must be between 2023 and 2030.
+     * To be sane, the clock must be between #EARLIEST_SANE_UNIX_TIMESTAMP and
+     * #LATEST_SANE_UNIX_TIMESTAMP.
      *
      * @param epochTime The epoch time to be checked.
      * @param epoch The type of epoch to use (ie, the standard for the start of
