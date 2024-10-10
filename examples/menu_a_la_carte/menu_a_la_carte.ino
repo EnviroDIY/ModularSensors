@@ -11,6 +11,12 @@
  * @m_examplenavigation{example_menu,}
  * ======================================================================= */
 
+// Defines to help me print strings
+// this converts to string
+#define STR_(X) #X
+// this makes sure the argument is expanded before converting to string
+#define STR(X) STR_(X)
+
 // ==========================================================================
 //  Defines for TinyGSM
 // ==========================================================================
@@ -180,7 +186,11 @@ void SERCOM2_Handler() {
 
 // We give the modem first priority and assign it to hardware serial
 // All of the supported processors have a hardware port available named Serial1
+#if defined(ENVIRODIY_STONEFLY_M4)
+#define modemSerial SerialBee
+#else
 #define modemSerial Serial1
+#endif
 
 // Define the serial port for modbus
 // Modbus (at 9600 8N1) is used by the Keller level loggers and Yosemitech
@@ -253,12 +263,15 @@ const int32_t serialBaud = 115200;  // Baud rate for debugging
 const int8_t  greenLED   = 8;       // Pin for the green LED
 const int8_t  redLED     = 9;       // Pin for the red LED
 const int8_t  buttonPin  = 21;      // Pin for debugging mode (ie, button pin)
+uint8_t       buttonPinMode = INPUT_PULLUP;  // mode for debugging pin
 const int8_t  wakePin    = 31;  // MCU interrupt/alarm pin to wake from sleep
+uint8_t       wakePinMode   = INPUT_PULLUP;  // mode for wake pin
 // Mayfly 0.x, 1.x D31 = A7
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
 const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
+const int8_t flashSSPin     = 20;  // onboard flash chip select/slave select pin
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 const int8_t relayPowerPin = A3;  // MCU pin controlling an optional power relay
 /** End [logging_options] */
@@ -760,7 +773,7 @@ SodaqUBeeU201 modem = modemU201;
 // ==========================================================================
 #endif
 
-
+#if !defined(BUILD_MODEM_NO_MODEM)
 /** Start [modem_variables] */
 // Create RSSI and signal strength variable pointers for the modem
 Variable* modemRSSI =
@@ -776,6 +789,7 @@ Variable* modemBatteryVoltage = new Modem_BatteryVoltage(
 Variable* modemTemperature =
     new Modem_Temp(&modem, "12345678-abcd-1234-ef00-1234567890ab", "modemTemp");
 /** End [modem_variables] */
+#endif
 
 
 // ==========================================================================
@@ -2064,7 +2078,7 @@ Variable* analogEc_cond = new AnalogElecConductivity_EC(
 // above this.  You could use the temperature returned by any other water
 // temperature sensor if desired.  **DO NOT** use your logger board temperature
 // (ie, from the DS3231) to calculate specific conductance!
-float calculateAnalogSpCond(void) {
+float calculateAnalogSpCond() {
     float spCond          = -9999;  // Always safest to start with a bad value
     float waterTemp       = ds18Temp->getValue();
     float rawCond         = analogEc_cond->getValue();
@@ -2961,8 +2975,10 @@ Variable* variableList[] = {
     dOptoDOmgL,
     dOptoTemp,
 #endif
+#if !defined(BUILD_MODEM_NO_MODEM)
     modemRSSI,
     modemSignalPct,
+#endif
 #ifdef TINY_GSM_MODEM_HAS_BATTERY
     modemBatteryState,
     modemBatteryPct,
@@ -2989,7 +3005,7 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 /** End [loggers] */
 
 
-#if defined(BUILD_PUB_ENVIRO_DIY_PUBLISHER)
+#if defined(BUILD_PUB_ENVIRO_DIY_PUBLISHER) && !defined(BUILD_MODEM_NO_MODEM)
 // ==========================================================================
 //  A Publisher to Monitor My Watershed / EnviroDIY Data Sharing Portal
 // ==========================================================================
@@ -3009,7 +3025,7 @@ EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modem.gsmClient,
 #endif
 
 
-#if defined(BUILD_PUB_DREAM_HOST_PUBLISHER)
+#if defined(BUILD_PUB_DREAM_HOST_PUBLISHER) && !defined(BUILD_MODEM_NO_MODEM)
 // ==========================================================================
 //  A Publisher to DreamHost
 // ==========================================================================
@@ -3027,7 +3043,7 @@ DreamHostPublisher DreamHostGET(dataLogger, &modem.gsmClient,
 #endif
 
 
-#if defined(BUILD_PUB_THING_SPEAK_PUBLISHER)
+#if defined(BUILD_PUB_THING_SPEAK_PUBLISHER) && !defined(BUILD_MODEM_NO_MODEM)
 // ==========================================================================
 //  ThingSpeak Data Publisher
 // ==========================================================================
@@ -3052,7 +3068,7 @@ ThingSpeakPublisher TsMqtt(dataLogger, &modem.gsmClient, thingSpeakMQTTKey,
 #endif
 
 
-#if defined(BUILD_PUB_UBIDOTS_PUBLISHER)
+#if defined(BUILD_PUB_UBIDOTS_PUBLISHER) && !defined(BUILD_MODEM_NO_MODEM)
 // ==========================================================================
 //  Ubidots Data Publisher
 // ==========================================================================
@@ -3106,6 +3122,17 @@ float getBatteryVoltage() {
 //  Arduino Setup Function
 // ==========================================================================
 void setup() {
+    /** Start [setup_flashing_led] */
+    // Set up pins for the LED's
+    Serial.println(F("Setting LED pin modes"));
+    pinMode(greenLED, OUTPUT);
+    digitalWrite(greenLED, LOW);
+    pinMode(redLED, OUTPUT);
+    digitalWrite(redLED, LOW);
+    // Blink the LEDs to show the board is on and starting up
+    greenredflash();
+    /** End [setup_flashing_led] */
+
 /** Start [setup_wait] */
 // Wait for USB connection to be established by PC
 // NOTE:  Only use this when debugging - if not connected to a PC, this
@@ -3130,28 +3157,38 @@ void setup() {
 
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
+#if !defined(BUILD_MODEM_NO_MODEM)
     Serial.print(F("TinyGSM Library version "));
     Serial.println(TINYGSM_VERSION);
+#endif
+    Serial.print(F("Processor: "));
+    Serial.println(mcuBoard.getSensorLocation());
     Serial.println();
     /** End [setup_prints] */
 
 /** Start [setup_softserial] */
 // Allow interrupts for software serial
 #if defined(BUILD_TEST_SOFTSERIAL)
+    Serial.println(F("Enabling interrupts for SoftwareSerial"));
     enableInterrupt(softSerialRx, SoftwareSerial_ExtInts::handle_interrupt,
                     CHANGE);
 #endif
 #if defined(BUILD_TEST_NEOSWSERIAL)
+    Serial.println(F("Enabling interrupts for NeoSoftSerial"));
     enableInterrupt(neoSSerial1Rx, neoSSerial1ISR, CHANGE);
 #endif
-    /** End [setup_softserial] */
+/** End [setup_softserial] */
 
-    /** Start [setup_serial_begins] */
-    // Start the serial connection with the modem
-    Serial.print(F("Starting modem connection at "));
+/** Start [setup_serial_begins] */
+// Start the serial connection with the modem
+#if !defined(BUILD_MODEM_NO_MODEM)
+    Serial.print(F("Starting modem connection on "));
+    Serial.print(STR(modemSerial));
+    Serial.print(F(" at "));
     Serial.print(modemBaud);
     Serial.println(F(" baud"));
     modemSerial.begin(modemBaud);
+#endif
 
     // Start the stream for the modbus sensors;
     // all currently supported modbus sensors use 9600 baud
@@ -3168,6 +3205,7 @@ void setup() {
 // NOTE:  This must happen *after* the various serial.begin statements
 /** Start [setup_samd_pins] */
 #if defined(ARDUINO_SAMD_FEATHER_M0) || defined(ARDUINO_SAMD_ZERO)
+    Serial.println(F("Setting SAMD21 SERCOM pin peripherals"));
     // Serial2
     pinPeripheral(10, PIO_SERCOM);  // Serial2 Tx/Dout = SERCOM1 Pad #2
     pinPeripheral(11, PIO_SERCOM);  // Serial2 Rx/Din = SERCOM1 Pad #0
@@ -3177,33 +3215,46 @@ void setup() {
 #endif
     /** End [setup_samd_pins] */
 
-    /** Start [setup_flashing_led] */
-    // Set up pins for the LED's
-    pinMode(greenLED, OUTPUT);
-    digitalWrite(greenLED, LOW);
-    pinMode(redLED, OUTPUT);
-    digitalWrite(redLED, LOW);
-    // Blink the LEDs to show the board is on and starting up
-    greenredflash();
-    /** End [setup_flashing_led] */
+    // Start the SPI library
+    Serial.println(F("Starting SPI"));
+    SPI.begin();
 
-    pinMode(20, OUTPUT);  // for proper operation of the onboard flash memory
-                          // chip's ChipSelect (Mayfly v1.0 and later)
+    Serial.println(F("Setting onboard flash pin modes"));
+    pinMode(flashSSPin,
+            OUTPUT);  // for proper operation of the onboard flash memory
+
+    Serial.println(F("Starting I2C (Wire)"));
+    Wire.begin();
 
     /** Start [setup_logger] */
+    Serial.print(F("Setting logger pins"));
+    dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin,
+                             greenLED, wakePinMode, buttonPinMode);
+
+#if defined(ARDUINO_ARCH_SAMD)
+    Serial.println(
+        F("Setting analog read resolution for onboard ADC to 12 bit"));
+    analogReadResolution(12);
+#endif
+
     // Set the timezones for the logger/data and the RTC
     // Logging in the given time zone
+    Serial.println(F("Setting logger time zone"));
     Logger::setLoggerTimeZone(timeZone);
     // It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)
+    Serial.println(F("Setting RTC time zone"));
     Logger::setRTCTimeZone(0);
 
+#if !defined(BUILD_MODEM_NO_MODEM)
     // Attach the modem and information pins to the logger
+    Serial.print(F("Attaching the modem"));
     dataLogger.attachModem(modem);
+    Serial.print(F("Setting modem LEDs"));
     modem.setModemLED(modemLEDPin);
-    dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin,
-                             greenLED);
+#endif
 
     // Begin the logger
+    Serial.print(F("Beginning the logger"));
     dataLogger.begin();
     /** End [setup_logger] */
 
@@ -3220,7 +3271,7 @@ void setup() {
      defined BUILD_MODEM_ESPRESSIF_ESP32) &&  \
     F_CPU == 8000000L
     /** Start [setup_esp] */
-    if (modemBaud > 57600) {
+    if (modemBaud != 57600) {
         Serial.println(F("Waking the modem.."));
         modem.modemWake();  // NOTE:  This will also set up the modem
         Serial.print(F("Attempting to begin modem communication at "));
@@ -3436,7 +3487,7 @@ void loop() {
         // completeUpdate
         // function is run, the modem will not be powered and will not
         // return a signal strength reading.
-        if (getBatteryVoltage() > 3.6) modem.modemPowerUp();
+        if (getBatteryVoltage() > 3.55) modem.modemPowerUp();
 
 #ifdef BUILD_TEST_ALTSOFTSERIAL
         // Start the stream for the modbus sensors, if your RS485 adapter bleeds
@@ -3483,7 +3534,7 @@ void loop() {
                      Logger::markedLocalUnixTime % 86400 == 43200) ||
                     !dataLogger.isRTCSane()) {
                     Serial.println(F("Running a daily clock sync..."));
-                    dataLogger.setRTClock(modem.getNISTTime(), UNIX_EPOCH);
+                    dataLogger.setRTClock(modem.getNISTTime(), unix_epoch);
                     dataLogger.watchDogTimer.resetWatchDog();
                     modem.updateModemMetadata();
                     dataLogger.watchDogTimer.resetWatchDog();
