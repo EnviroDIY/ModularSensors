@@ -26,7 +26,7 @@ This should only make a difference for my compilation tests, real users should p
 - Added support for multiple 'epoch' types starting at January 1, 1970 (UNIX), January 1, 2000 (Arduino and others), January 5, 1980 (GPST), and January 1, 1900 (NIST time and NTP protocols).
   - This allows you to input the epoch you're using in every single function that deals with a uint32_t or epoch type timestamp.
 If no epoch start is given, it is assumed to be UNIX (January 1, 1970).
-  - The supported epochs are given in the enum MS_EpochStart
+  - The supported epochs are given in the enum epochStart
 
 ### Removed
 

@@ -25,7 +25,7 @@
 #define MS_USE_RV8803
 #elif defined(ARDUINO_AVR_ENVIRODIY_MAYFLY) && not defined(MS_USE_RV8803)
 /**
- * @brief Select RV-8803 as the RTC
+ * @brief Select DS3231 as the RTC
  */
 #define MS_USE_DS3231
 #elif (defined(ARDUINO_ARCH_SAMD) && !defined(__SAMD51__) ||    \
@@ -81,47 +81,79 @@
 
 /**
  * @brief Set the epoch start value.
- */
-enum MS_EpochStart {
-    UNIX = 0,  ///< Use a Unix epoch, starting 1/1/1970. This is the default for
-               ///< this library
-    Y2K = 946684800,    ///< Use an epoch starting 1/1/2000, as some RTC's and
-                        ///< Arduinos do (946684800s ahead of UNIX epoch)
-    GPS = 315878400,    ///< Use the GPS epoch starting Jan 5, 1980 (315878400s
-                        ///< ahead of UNIX epoch)
-    NIST = -2208988800  ///< Use the epoch starting Jan 1, 1900 as returned by
-                        ///< the NIST Network Time Protocol (RFC-1305 and later
-                        ///< versions) and Time Protocol (RFC-868) (2208988800
-                        ///< behind the UNIX epoch)
-};
-
-#ifndef EPOCH_UNIX_TO_Y2K
-/**
- * @brief Difference between January 1, 1970 (UNIX) and January 1, 2000 (used by
- * Arduino and some other real time clocks).
- */
-#define EPOCH_UNIX_TO_Y2K 946684800
-#endif
-
-#ifndef EPOCH_UNIX_TO_GPS
-/**
- * @brief Difference between January 1, 1970 (UNIX) and January 5, 1980 (GPST,
- * used by some GPS and GNSS devices)
  *
- * @see
- * https://www.gps.gov/technical/icwg/meetings/2019/09/clarifying-continuous-GPS-time.pdf#:~:text=GPS%20time%20%28GPST%29%20is%20established%20by%20the%20Control,of%20January%205%2C%201980%2Fmorning%20of%20January%206%2C%201980.
+ * @warning 8-bit AVR processors use a unit32_t for time_t. Given the start of
+ * the first epoch here is 1900, this will roll over and cease to work for
+ * processors with a uint32_t time_t on February 7, 2036 6:28:15 AM
  */
-#define EPOCH_UNIX_TO_GPS 315878400
-#endif
-
-
-#ifndef EPOCH_UNIX_TO_NIST
+enum class epochStart : time_t {
+    unix_epoch = 0,  ///< Use a Unix epoch, starting Jan 1, 1970. This
+                     ///< is the default for this library
+    y2k_epoch = unix_epoch +
+        946684800,  ///< Use an epoch starting Jan 1, 2000, as some RTC's and
+                    ///< Arduinos do (946684800s ahead of UNIX epoch)
+    gps_epoch = unix_epoch +
+        315878400,  ///< Use the GPS epoch starting Jan 5, 1980 (315878400s
+                    ///< ahead of UNIX epoch)
+    nist_epoch =
+        -2208988800  ///< Use the epoch starting Jan 1, 1900 as returned by
+                     ///< the NIST Network Time Protocol (RFC-1305 and later
+                     ///< versions) and Time Protocol (RFC-868) (2208988800
+                     ///< behind the UNIX epoch)
+};
+// helpers to define math operations between epoch starts and time_t types or
+// uint32_t types
 /**
- * @brief Difference between January 1, 1970 (UNIX) and January 1, 1900
- * (returned by NIST time protocols).
+ * @brief Specifies how to perform addition on a value from the epochStart enum.
+ *
+ * @tparam T An int type
+ * @param b The first number to add
+ * @param a The enum value to add
+ * @return The result of the addition
  */
-#define EPOCH_UNIX_TO_NIST -2208988800
-#endif
+template <typename T>
+constexpr T operator+(T b, epochStart a) noexcept {
+    return b + static_cast<time_t>(a);
+}
+/**
+ * @brief Specifies how to perform += addition on a value from the epochStart
+ * enum.
+ *
+ * @tparam T An int type
+ * @param b The first number to add
+ * @param a The enum value to add
+ * @return The result of the addition
+ */
+template <typename T>
+constexpr T operator+=(T b, epochStart a) noexcept {
+    return b + static_cast<time_t>(a);
+}
+/**
+ * @brief Specifies how to perform subtraction on a value from the epochStart
+ * enum.
+ *
+ * @tparam T An int type
+ * @param b The first number to subtract
+ * @param a The enum value to subtract
+ * @return The result of the subtraction
+ */
+template <typename T>
+constexpr T operator-(T b, epochStart a) noexcept {
+    return b - static_cast<time_t>(a);
+}
+/**
+ * @brief Specifies how to perform -= subtraction on a value from the epochStart
+ * enum.
+ *
+ * @tparam T An int type
+ * @param b The first number to subtract
+ * @param a The enum value to subtract
+ * @return The result of the subtraction
+ */
+template <typename T>
+constexpr T operator-=(T b, epochStart a) noexcept {
+    return b - static_cast<time_t>(a);
+}
 
 #ifndef EARLIEST_SANE_UNIX_TIMESTAMP
 /**
@@ -831,7 +863,7 @@ class Logger {
      * @return  The number of seconds from the start of the given epoch in
      * the logging time zone.
      */
-    static uint32_t getNowLocalEpoch(MS_EpochStart epoch = UNIX);
+    static uint32_t getNowLocalEpoch(epochStart epoch = epochStart::unix_epoch);
 
     /**
      * @brief Get the current Universal Coordinated Time (UTC) epoch time from
@@ -842,7 +874,7 @@ class Logger {
      *
      * @return  The number of seconds from the start of the given epoch.
      */
-    static uint32_t getNowUTCEpoch(MS_EpochStart epoch = UNIX);
+    static uint32_t getNowUTCEpoch(epochStart epoch = epochStart::unix_epoch);
     /**
      * @brief Set the real time clock to the given number of seconds from the
      * start of the given epoch.
@@ -856,7 +888,8 @@ class Logger {
      * @param epoch The type of epoch to use (ie, the standard for the start of
      * the epoch).
      */
-    static void setNowUTCEpoch(uint32_t ts, MS_EpochStart epoch = UNIX);
+    static void setNowUTCEpoch(uint32_t   ts,
+                               epochStart epoch = epochStart::unix_epoch);
 
 #if 0
 #if !defined(MS_USE_RV8803)
@@ -869,7 +902,7 @@ class Logger {
      * the epoch).
      * @return The equivalent DateTime
      */
-    static DateTime dtFromEpoch(uint32_t epochTime, MS_EpochStart epoch = UNIX);
+    static DateTime dtFromEpoch(uint32_t epochTime, epochStart epoch = unix_epoch);
 
     /**
      * @brief Convert a date-time object into a ISO8601 formatted string.
@@ -896,8 +929,9 @@ class Logger {
      * the epoch).
      * @return An ISO8601 formatted String.
      */
-    static String formatDateTime_ISO8601(uint32_t      epochTime,
-                                         MS_EpochStart epoch = UNIX);
+    static String
+    formatDateTime_ISO8601(uint32_t   epochTime,
+                           epochStart epoch = epochStart::unix_epoch);
 
     /**
      * @brief Veify that the input value is sane and if so sets the real time
@@ -910,7 +944,8 @@ class Logger {
      * @return True if the input timestamp passes sanity checks **and**
      * the clock has been successfully set.
      */
-    bool setRTClock(uint32_t UTCEpochSeconds, MS_EpochStart epoch = UNIX);
+    bool setRTClock(uint32_t   UTCEpochSeconds,
+                    epochStart epoch = epochStart::unix_epoch);
 
     /**
      * @brief Check that the current time on the RTC is within a "sane" range.
@@ -934,7 +969,8 @@ class Logger {
      * the epoch).
      * @return True if the given time passes sanity range checking.
      */
-    static bool isRTCSane(uint32_t epochTime, MS_EpochStart epoch = UNIX);
+    static bool isRTCSane(uint32_t   epochTime,
+                          epochStart epoch = epochStart::unix_epoch);
 
     /**
      * @brief Set static variables for the date/time
@@ -995,12 +1031,30 @@ class Logger {
      *
      * @return The start of the epoch
      */
-    static MS_EpochStart getProcessorEpochStart();
+    static epochStart getProcessorEpochStart();
+
+#ifdef MS_LOGGERBASE_DEBUG
+    // helper functions to convert between epoch starts
+    /**
+     * @brief Gets a string name for the epoch
+     *
+     * @param epoch The epoch to get the name of
+     * @return The name for the epoch
+     */
+    String printEpochName(epochStart epoch);
+    /**
+     * @brief Gets a string for the start date of the epoch
+     *
+     * @param epoch The epoch to get the starting date of
+     * @return The starting date, in ISO8601
+     */
+    String printEpochStart(epochStart epoch);
+#endif
     /**
      * @brief The start of the epoch for the processor's internal time.h
      * library.
      */
-    static MS_EpochStart _processor_epoch;
+    static epochStart _processor_epoch;
     /**@}*/
 
     // ===================================================================== //

@@ -186,9 +186,9 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient) {
         txBufferAppend(_baseLogger->getSamplingFeatureUUID());
 
         txBufferAppend(timestampTag);
-        txBufferAppend(
-            Logger::formatDateTime_ISO8601(Logger::markedLocalUnixTime, UNIX)
-                .c_str());
+        txBufferAppend(Logger::formatDateTime_ISO8601(
+                           Logger::markedLocalUnixTime, epochStart::unix_epoch)
+                           .c_str());
         txBufferAppend('"');
         txBufferAppend(',');
 
