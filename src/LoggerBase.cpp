@@ -239,6 +239,8 @@ void Logger::setTestingModePin(int8_t buttonPin, uint8_t buttonPinMode) {
         MS_DBG(F("Button on pin"), _buttonPin,
                F("can be used to enter sensor testing mode."));
     }
+    // reset the testing value, just in case
+    Logger::startTesting = false;
 }
 
 
@@ -605,7 +607,7 @@ void Logger::systemSleep(void) {
     // Set the pin mode, although this shouldn't really need to be re-set here
     pinMode(_mcuWakePin, _wakePinMode);
     // attach the interrupt
-    enableInterrupt(_mcuWakePin, wakeISR, CHANGE);
+    enableInterrupt(_mcuWakePin, wakeISR, RISING);
 
 #if defined(ARDUINO_ARCH_SAMD) && !defined(__SAMD51__)
     // Reconfigure the external interrupt controller (EIC) clock after attaching
@@ -1450,7 +1452,7 @@ void Logger::logData(bool sleepBeforeReturning) {
     }
 
     // Check if it was instead the testing interrupt that woke us up
-    if (Logger::startTesting) testingMode();
+    if (Logger::startTesting) testingMode(sleepBeforeReturning);
 
     if (sleepBeforeReturning) {
         // Sleep
