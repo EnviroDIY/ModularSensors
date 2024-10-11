@@ -284,7 +284,7 @@ const int8_t relayPowerPin = A3;  // MCU pin controlling an optional power relay
 // ==========================================================================
 
 // Network connection information
-#define MY_APN "add_your_cellular_apn"  // APN for cellular connection
+#define CELLULAR_APN "add_your_cellular_apn"  // APN for cellular connection
 
 #define WIFI_ID "your_wifi_ssid"          // WiFi access point name
 #define WIFI_PASSWD "your_wifi_password"  // WiFi password (WPA2)

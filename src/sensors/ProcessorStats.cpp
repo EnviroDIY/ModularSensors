@@ -84,7 +84,7 @@ ProcessorStats::ProcessorStats(const char* version,
         _batteryPin = 33;
 #else
     _batteryPin        = -1;
-    _batteryMultiplier = -1
+    _batteryMultiplier = -1;
 #endif
 }
 
