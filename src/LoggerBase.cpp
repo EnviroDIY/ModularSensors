@@ -1493,9 +1493,9 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
 
 // Print out the sensor data
 #if defined(STANDARD_SERIAL_OUTPUT)
-        MS_DBG('\n');
+        STANDARD_SERIAL_OUTPUT.println();
         _internalArray->printSensorData(&STANDARD_SERIAL_OUTPUT);
-        MS_DBG('\n');
+        STANDARD_SERIAL_OUTPUT.println();
 #endif
 
         // Create a csv data record and save it to the log file
