@@ -124,63 +124,6 @@ class epochStart {
     // Prevent usage: if(epochStart)
     explicit operator bool() const = delete;
 
-#if 0
-    // helpers to define math operations between epoch starts and time_t types
-    // or uint32_t types
-    /**
-     * @brief Specifies how to perform addition on a value from the epochStart
-     * enum.
-     *
-     * @tparam T An int type
-     * @param b The number to add to the enum value
-     * @return The result of the addition
-     */
-    template <typename T>
-    constexpr T operator+(T b) noexcept {
-        return static_cast<T>(static_cast<time_t>(b) +
-                              static_cast<time_t>(this->_unixOffset));
-    }
-    /**
-     * @brief Specifies how to perform += addition on a value from the
-     * epochStart enum.
-     *
-     * @tparam T An int type
-     * @param b The number to add to the enum value
-     * @return The result of the addition
-     */
-    template <typename T>
-    constexpr T operator+=(T b) noexcept {
-        return static_cast<T>(static_cast<time_t>(b) +
-                              static_cast<time_t>(this->_unixOffset));
-    }
-    /**
-     * @brief Specifies how to perform subtraction on a value from the
-     * epochStart enum.
-     *
-     * @tparam T An int type
-     * @param b The number to subtract from the enum value
-     * @return The result of the subtraction
-     */
-    template <typename T>
-    constexpr T operator-(T b) noexcept {
-        return static_cast<T>(static_cast<time_t>(b) -
-                              static_cast<time_t>(this->_unixOffset));
-    }
-    /**
-     * @brief Specifies how to perform -= subtraction on a value from the
-     * epochStart enum.
-     *
-     * @tparam T An int type
-     * @param b The number to subtract from the enum value
-     * @return The result of the subtraction
-     */
-    template <typename T>
-    constexpr T operator-=(T b) noexcept {
-        return static_cast<T>(static_cast<time_t>(b) -
-                              static_cast<time_t>(this->_unixOffset));
-    }
-#endif
-
 #ifdef MS_CLOCKSUPPORT_DEBUG
     // helper functions to convert between epoch starts
     /**

@@ -18,33 +18,6 @@
 // Debugging Statement
 // #define MS_LOGGERBASE_DEBUG
 
-#if 0
-#if defined(ENVIRODIY_STONEFLY_M4) && not defined(MS_USE_DS3231)
-/**
- * @brief Select RV-8803 as the RTC
- */
-#define MS_USE_RV8803
-#elif defined(ARDUINO_AVR_ENVIRODIY_MAYFLY) && not defined(MS_USE_RV8803)
-/**
- * @brief Select DS3231 as the RTC
- */
-#define MS_USE_DS3231
-#elif (defined(ARDUINO_ARCH_SAMD) && !defined(__SAMD51__) ||    \
-       defined(ARDUINO_SAMD_ZERO)) &&                           \
-    not defined(MS_USE_DS3231) && not defined(MS_USE_RV8803) && \
-    not defined(MS_USE_RTC_ZERO)
-/**
- * @brief Select the SAMD21's internal clock (via RTC Zero)
- */
-#define MS_USE_RTC_ZERO
-#endif
-
-#if !defined(MS_USE_RV8803) && !defined(MS_USE_DS3231) && \
-    !defined(MS_USE_RTC_ZERO)
-#error Define a clock to use for the RTC for Modular Sensors!
-#endif
-#endif
-
 #ifdef MS_LOGGERBASE_DEBUG
 #define MS_DEBUGGING_STD "LoggerBase"
 #endif
@@ -72,164 +45,6 @@
 #include <avr/power.h>
 #include <avr/sleep.h>
 #include "WatchDogs/WatchDogAVR.h"
-#endif
-
-#if 0
-// Bring in the library to communicate with an external high-precision real time
-// clock.
-#if defined(MS_USE_RV8803)
-#include <SparkFun_RV8803.h>
-#elif defined(MS_USE_DS3231)
-#include <Sodaq_DS3231.h>
-#elif defined(MS_USE_RTC_ZERO)
-#include <RTCZero.h>
-#endif
-
-
-/**
- * @brief Set the epoch start value.
- *
- * @warning For compatibility with 8-bit AVR Arduino cores, this is a uint32_t.
- * (AVR cores use use a uint32_t for time_t.) Given the start of the first epoch
- * here is 1900, this will roll over and cease to work for processors with a
- * uint32_t time_t on February 7, 2036 6:28:15 AM
- */
-enum class epochStart : uint32_t {
-    unix_epoch = 2208988800,  ///< Use a Unix epoch, starting Jan 1, 1970. This
-                              ///< is the default for this library
-    y2k_epoch = unix_epoch +
-        946684800,  ///< Use an epoch starting Jan 1, 2000, as some RTC's and
-                    ///< Arduinos do (946684800s ahead of UNIX epoch)
-    gps_epoch = unix_epoch +
-        315878400,  ///< Use the GPS epoch starting Jan 5, 1980 (315878400s
-                    ///< ahead of UNIX epoch)
-    nist_epoch = 0  ///< Use the epoch starting Jan 1, 1900 as returned by
-                    ///< the NIST Network Time Protocol (RFC-1305 and later
-                    ///< versions) and Time Protocol (RFC-868) (2208988800
-                    ///< behind the UNIX epoch)
-};
-// helpers to define math operations between epoch starts and time_t types or
-// uint32_t types
-/**
- * @brief Specifies how to perform addition on a value from the epochStart enum.
- *
- * @tparam T An int type
- * @param b The first number to add
- * @param a The enum value to add
- * @return The result of the addition
- */
-template <typename T>
-constexpr T operator+(T b, epochStart a) noexcept {
-    return b + static_cast<uint32_t>(a);
-}
-/**
- * @brief Specifies how to perform += addition on a value from the epochStart
- * enum.
- *
- * @tparam T An int type
- * @param b The first number to add
- * @param a The enum value to add
- * @return The result of the addition
- */
-template <typename T>
-constexpr T operator+=(T b, epochStart a) noexcept {
-    return b + static_cast<uint32_t>(a);
-}
-/**
- * @brief Specifies how to perform subtraction on a value from the epochStart
- * enum.
- *
- * @tparam T An int type
- * @param b The first number to subtract
- * @param a The enum value to subtract
- * @return The result of the subtraction
- */
-template <typename T>
-constexpr T operator-(T b, epochStart a) noexcept {
-    return b - static_cast<uint32_t>(a);
-}
-/**
- * @brief Specifies how to perform -= subtraction on a value from the epochStart
- * enum.
- *
- * @tparam T An int type
- * @param b The first number to subtract
- * @param a The enum value to subtract
- * @return The result of the subtraction
- */
-template <typename T>
-constexpr T operator-=(T b, epochStart a) noexcept {
-    return b - static_cast<uint32_t>(a);
-}
-/**
- * @brief Specifies how to perform addition on a value from the epochStart enum.
- *
- * @tparam T An int type
- * @param b The first number to add
- * @param a The enum value to add
- * @return The result of the addition
- */
-template <typename T>
-constexpr T operator+(epochStart a, T b) noexcept {
-    return b + static_cast<uint32_t>(a);
-}
-/**
- * @brief Specifies how to perform += addition on a value from the epochStart
- * enum.
- *
- * @tparam T An int type
- * @param b The first number to add
- * @param a The enum value to add
- * @return The result of the addition
- */
-template <typename T>
-constexpr T operator+=(epochStart a, T b) noexcept {
-    return b + static_cast<uint32_t>(a);
-}
-/**
- * @brief Specifies how to perform subtraction on a value from the epochStart
- * enum.
- *
- * @tparam T An int type
- * @param b The first number to subtract
- * @param a The enum value to subtract
- * @return The result of the subtraction
- */
-template <typename T>
-constexpr T operator-(epochStart a, T b) noexcept {
-    return b - static_cast<uint32_t>(a);
-}
-/**
- * @brief Specifies how to perform -= subtraction on a value from the epochStart
- * enum.
- *
- * @tparam T An int type
- * @param b The first number to subtract
- * @param a The enum value to subtract
- * @return The result of the subtraction
- */
-template <typename T>
-constexpr T operator-=(epochStart a, T b) noexcept {
-    return b - static_cast<uint32_t>(a);
-}
-
-#ifndef EARLIEST_SANE_UNIX_TIMESTAMP
-/**
- * @brief The earliest unix timestamp that can be considered sane.
- *
- * January 1, 2023
- */
-#define EARLIEST_SANE_UNIX_TIMESTAMP 1672531200
-#endif
-
-#ifndef LATEST_SANE_UNIX_TIMESTAMP
-/**
- * @brief The latest unix timestamp that can be considered sane.
- *
- * January 1, 2030
- */
-#define LATEST_SANE_UNIX_TIMESTAMP 1893456000
-#endif
 #endif
 
 #include <SdFat.h>  // To communicate with the SD card
@@ -825,28 +640,6 @@ class Logger {
      * is not be the same as the timezone of the real time clock.
      */
     static int8_t getLoggerTimeZone(void);
-#if 0
-    /**
-     * @brief Retained for backwards compatibility; use setLoggerTimeZone(int8_t
-     * timeZone) in new code.
-     *
-     * @m_deprecated_since{0,22,4}
-     *
-     * @param timeZone The timezone data shold be saved to the SD card in.  This
-     * need not be the same as the timezone of the real time clock.
-     */
-    static void setTimeZone(int8_t timeZone);
-    /**
-     * @brief Retained for backwards compatibility; use getLoggerTimeZone() in
-     * new code.
-     *
-     * @m_deprecated_since{0,22,4}
-     *
-     * @return The timezone data is be saved to the SD card in.  This
-     * is not be the same as the timezone of the real time clock.
-     */
-    static int8_t getTimeZone(void);
-#endif
 
     /**
      * @brief Set the static timezone that the RTC is programmed in.
@@ -882,38 +675,6 @@ class Logger {
      * zone where the data is being recorded.
      */
     static int8_t getTZOffset(void);
-
-#if 0
-#if defined(MS_USE_RV8803)
-    /**
-     * @brief The RTC object.
-     *
-     * @note Only one RTC may be used.  Either the built-in RTC of a SAMD board,
-     * a DS3231, or a RV-8803.
-     */
-    static RV8803 rtc;
-#elif defined(MS_USE_RTC_ZERO)
-    /**
-     * @brief The RTC object.
-     *
-     * @note Only one RTC may be used.  Either the built-in RTC of a SAMD board,
-     * a DS3231, or a RV-8803.
-     */
-    static RTCZero zero_sleep_rtc;
-#endif
-
-    /**
-     * @brief Get the current epoch time from the RTC (unix time, ie, the
-     * number of seconds from January 1, 1970 00:00:00) and correct it to the
-     * logging time zone.
-     *
-     * @return  The number of seconds from January 1, 1970 in the
-     * logging time zone.
-     *
-     * @m_deprecated_since{0,33,0}
-     */
-    static uint32_t getNowEpoch(void);
-#endif
 
     /**
      * @brief Get the current epoch time from the RTC and correct it to the
@@ -953,32 +714,6 @@ class Logger {
     static void setNowUTCEpoch(uint32_t   ts,
                                epochStart epoch = epochStart::unix_epoch);
 
-#if 0
-#if !defined(MS_USE_RV8803)
-    /**
-     * @brief Convert the number of seconds from the start of the given epoch to a DateTime
-     * object instance.
-     *
-     * @param epochTime The number of seconds since the start of the given epoch.
-     * @param epoch The type of epoch to use (ie, the standard for the start of
-     * the epoch).
-     * @return The equivalent DateTime
-     */
-    static DateTime dtFromEpoch(uint32_t epochTime, epochStart epoch = unix_epoch);
-
-    /**
-     * @brief Convert a date-time object into a ISO8601 formatted string.
-     *
-     * This assumes the supplied date/time is in the LOGGER's timezone and adds
-     * the LOGGER's offset as the time zone offset in the string.
-     *
-     * @param dt A DateTime object to convert
-     * @return An ISO8601 formatted String.
-     */
-    static String formatDateTime_ISO8601(DateTime& dt);
-#endif
-#endif
-
     /**
      * @brief Convert an epoch time into a ISO8601 formatted string.
      *
@@ -994,21 +729,7 @@ class Logger {
     static String
     formatDateTime_ISO8601(uint32_t   epochTime,
                            epochStart epoch = epochStart::unix_epoch);
-#if 0
-    /**
-     * @brief Veify that the input value is sane and if so sets the real time
-     * clock to the given time.
-     *
-     * @param UTCEpochSeconds The number of seconds since the start of the given
-     * epoch in UTC.
-     * @param epoch The type of epoch to use (ie, the standard for the start of
-     * the epoch).
-     * @return True if the input timestamp passes sanity checks **and**
-     * the clock has been successfully set.
-     */
-    bool setRTClock(uint32_t   UTCEpochSeconds,
-                    epochStart epoch = epochStart::unix_epoch);
-#endif
+
     /**
      * @brief Check that the current time on the RTC is within a "sane" range.
      *
@@ -1019,22 +740,7 @@ class Logger {
      * checking
      */
     static bool isRTCSane(void);
-#if 0
-    /**
-     * @brief Check that a given epoch time (seconds since 1970) is within a
-     * "sane" range.
-     *
-     * To be sane, the clock must be between #EARLIEST_SANE_UNIX_TIMESTAMP and
-     * #LATEST_SANE_UNIX_TIMESTAMP.
-     *
-     * @param epochTime The epoch time to be checked.
-     * @param epoch The type of epoch to use (ie, the standard for the start of
-     * the epoch).
-     * @return True if the given time passes sanity range checking.
-     */
-    static bool isRTCSane(uint32_t   epochTime,
-                          epochStart epoch = epochStart::unix_epoch);
-#endif
+
     /**
      * @brief Set static variables for the date/time
      *
@@ -1091,43 +797,6 @@ class Logger {
      * @brief A pointer to the internal logger clock
      */
     static loggerClock _loggerClock;
-
-#if 0
-    /**
-     * @brief Figure out where the epoch starts for the processor.
-     *
-     * The real time clock libraries mostly document this, but the cores for the
-     * various Arduino processors don't. The time.h file is not much more than a
-     * stub.
-     *
-     * @return The start of the epoch
-     */
-    static epochStart getProcessorEpochStart();
-
-#ifdef MS_LOGGERBASE_DEBUG
-    // helper functions to convert between epoch starts
-    /**
-     * @brief Gets a string name for the epoch
-     *
-     * @param epoch The epoch to get the name of
-     * @return The name for the epoch
-     */
-    String printEpochName(epochStart epoch);
-    /**
-     * @brief Gets a string for the start date of the epoch
-     *
-     * @param epoch The epoch to get the starting date of
-     * @return The starting date, in ISO8601
-     */
-    String printEpochStart(epochStart epoch);
-#endif
-    /**
-     * @brief The start of the epoch for the processor's internal time.h
-     * library.
-     */
-    static epochStart _core_epoch;
-    /**@}*/
-#endif
 
     // ===================================================================== //
     /**
