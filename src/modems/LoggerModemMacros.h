@@ -523,7 +523,7 @@
                     uint32_t nistParsed = parseNISTBytes(response);          \
                     if (nistParsed != 0) {                                   \
                         MS_DBG(F("Got non-zero NIST timestamp"));            \
-                        return parseNISTBytes(response);                     \
+                        return nistParsed;                                   \
                     } else {                                                 \
                         MS_DBG(F("Invalid/Zero NIST timestamp"));            \
                     }                                                        \

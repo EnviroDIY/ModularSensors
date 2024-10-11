@@ -259,12 +259,12 @@ const int8_t timeZone = -5;  // Eastern Standard Time
 
 // Set the input and output pins for the logger
 // NOTE:  Use -1 for pins that do not apply
-const int32_t serialBaud = 115200;  // Baud rate for debugging
-const int8_t  greenLED   = 8;       // Pin for the green LED
-const int8_t  redLED     = 9;       // Pin for the red LED
-const int8_t  buttonPin  = 21;      // Pin for debugging mode (ie, button pin)
+const int32_t serialBaud    = 115200;  // Baud rate for debugging
+const int8_t  greenLED      = 8;       // Pin for the green LED
+const int8_t  redLED        = 9;       // Pin for the red LED
+const int8_t  buttonPin     = 21;  // Pin for debugging mode (ie, button pin)
 uint8_t       buttonPinMode = INPUT_PULLUP;  // mode for debugging pin
-const int8_t  wakePin    = 31;  // MCU interrupt/alarm pin to wake from sleep
+const int8_t  wakePin       = 31;  // MCU interrupt/alarm pin to wake from sleep
 uint8_t       wakePinMode   = INPUT_PULLUP;  // mode for wake pin
 // Mayfly 0.x, 1.x D31 = A7
 // Set the wake pin to -1 if you do not want the main processor to sleep.
@@ -3534,7 +3534,8 @@ void loop() {
                      Logger::markedLocalUnixTime % 86400 == 43200) ||
                     !dataLogger.isRTCSane()) {
                     Serial.println(F("Running a daily clock sync..."));
-                    dataLogger.setRTClock(modem.getNISTTime(), unix_epoch);
+                    dataLogger.setRTClock(modem.getNISTTime(),
+                                          epochStart::unix_epoch);
                     dataLogger.watchDogTimer.resetWatchDog();
                     modem.updateModemMetadata();
                     dataLogger.watchDogTimer.resetWatchDog();
