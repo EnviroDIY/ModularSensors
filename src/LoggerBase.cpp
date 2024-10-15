@@ -61,8 +61,6 @@ Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
     setLoggingInterval(loggingIntervalMinutes);
     setVariableArray(inputArray);
 
-    // _core_epoch = getProcessorEpochStart();
-
     // Set the testing/logging flags to false
     isLoggingNow = false;
     isTestingNow = false;
@@ -80,8 +78,6 @@ Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
     setLoggingInterval(loggingIntervalMinutes);
     setVariableArray(inputArray);
 
-    // _core_epoch = getProcessorEpochStart();
-
     // Set the testing/logging flags to false
     isLoggingNow = false;
     isTestingNow = false;
@@ -97,8 +93,6 @@ Logger::Logger() {
     isLoggingNow = false;
     isTestingNow = false;
     startTesting = false;
-
-    // _core_epoch = getProcessorEpochStart();
 
     // Clear arrays
     for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
@@ -409,15 +403,6 @@ void Logger::setLoggerTimeZone(int8_t timeZone) {
 int8_t Logger::getLoggerTimeZone(void) {
     return Logger::_loggerTimeZone;
 }
-#if 0
-// Duplicates for backwards compatibility
-void Logger::setTimeZone(int8_t timeZone) {
-    setLoggerTimeZone(timeZone);
-}
-int8_t Logger::getTimeZone(void) {
-    return getLoggerTimeZone();
-}
-#endif
 // Sets the static timezone that the RTC is programmed in
 // I VERY VERY STRONGLY RECOMMEND SETTING THE RTC IN UTC
 // You can either set the RTC offset directly or set the offset between the
@@ -601,7 +586,7 @@ void Logger::systemSleep(void) {
     rtc.clearINTStatus();
 #endif
 
-#if defined(MS_USE_RV8803) || defined(MS_USE_DS3231)
+#if !defined(MS_USE_RTC_ZERO)
     // Set up a pin to hear clock interrupt and attach the wake ISR to it
     MS_DBG(F("Enabling interrupts on pin"), _mcuWakePin);
     // Set the pin mode, although this shouldn't really need to be re-set here
@@ -611,25 +596,25 @@ void Logger::systemSleep(void) {
 
 #if defined(ARDUINO_ARCH_SAMD) && !defined(__SAMD51__)
     // Reconfigure the external interrupt controller (EIC) clock after attaching
-    // the interrupt This is needed because the attachInterrupt function will
-    // reconfigure the clock source for the EIC to GCLK0 every time a new
-    // interrupt is attached
+    // the interrupt. This is needed because the __initialize function called
+    // the first time the attachInterrupt function is run will reconfigure the
+    // clock source for the EIC to GCLK0 every time a new interrupt is attached
     // - and after being detached, reattaching the same interrupt is just like a
     // new one). We need to switch the EIC source back to our configured GCLK2.
     MS_DEEP_DBG(F("Re-attaching the EIC to GCLK2"));
-    GCLK->CLKCTRL.reg = GCLK_CLKCTRL_GEN(2) |  // Select generic clock 2
-        GCLK_CLKCTRL_CLKEN |       // Enable the generic clock clontrol
-        GCLK_CLKCTRL_ID(GCM_EIC);  // Feed the GCLK to the EIC
-    while (GCLK->STATUS.bit.SYNCBUSY) {
-        // Wait for synchronization
-    }
+    GCLK->CLKCTRL.reg =
+        (uint16_t)(GCLK_CLKCTRL_GEN(2) |  // Select generic clock 2
+                   GCLK_CLKCTRL_CLKEN |   // Enable the generic clock clontrol
+                   GCLK_CLKCTRL_ID(GCM_EIC));  // Feed the GCLK to the EIC
+    while (GCLK->STATUS.bit.SYNCBUSY)
+        ;  // Wait for synchronization
 
     // get the interrupt number associated with the pin
     EExt_Interrupts in = g_APinDescription[_mcuWakePin].ulExtInt;
     // Enable wakeup capability on pin in case being used during sleep
     EIC->WAKEUP.reg |= (1 << in);
 #endif  // #if defined(ARDUINO_ARCH_SAMD) && ! defined(__SAMD51__)
-#endif  //#if defined(MS_USE_RV8803) || defined(MS_USE_DS3231)
+#endif  //#if !defined(MS_USE_RTC_ZERO)
 
 #if defined(MS_USE_RTC_ZERO)
 
@@ -655,7 +640,7 @@ void Logger::systemSleep(void) {
 
 // Wait until the serial ports have finished transmitting
 // This does not clear their buffers, it just waits until they are finished
-// TODO(SRGDamia1):  Make sure can find all serial ports
+// TODO(SRGDamia1):  Make sure we can find all serial ports
 #if defined(STANDARD_SERIAL_OUTPUT)
     STANDARD_SERIAL_OUTPUT.flush();  // for debugging
 #endif
@@ -687,7 +672,7 @@ void Logger::systemSleep(void) {
 
 // Wait until the serial ports have finished transmitting
 // This does not clear their buffers, it just waits until they are finished
-// TODO(SRGDamia1):  Make sure can find all serial ports
+// TODO(SRGDamia1):  Make sure we can find all serial ports
 #if defined(STANDARD_SERIAL_OUTPUT)
     STANDARD_SERIAL_OUTPUT.flush();  // for debugging
 #endif
@@ -723,7 +708,7 @@ void Logger::systemSleep(void) {
     // Don't fully power down flash when in sleep
     // Adafruit SleepDog and ArduinoLowPower both do this.
     // TODO: Figure out if this is really necessary
-    // NVMCTRL->CTRLB.bit.SLEEPPRM = NVMCTRL_CTRLB_SLEEPPRM_DISABLED_Val;
+    NVMCTRL->CTRLB.bit.SLEEPPRM = NVMCTRL_CTRLB_SLEEPPRM_DISABLED_Val;
 
     // Disable systick interrupt:  See
     // https://www.avrfreaks.net/forum/samd21-samd21e16b-sporadically-locks-and-does-not-wake-standby-sleep-mode
@@ -873,12 +858,11 @@ void Logger::systemSleep(void) {
     rtc.disableInterrupts();
 #endif
 
-#if defined(MS_USE_RV8803) || defined(MS_USE_DS3231)
+#if !defined(MS_USE_RTC_ZERO)
+    MS_DEEP_DBG(F("Detaching wake interrupt from wake pin"));
     // Detach the from the pin
     disableInterrupt(_mcuWakePin);
-#endif
-
-#if defined(MS_USE_RTC_ZERO)
+#else
     MS_DEEP_DBG(F("Unsetting the alarm on the built in RTC"));
     zero_sleep_rtc.disableAlarm();
 #endif

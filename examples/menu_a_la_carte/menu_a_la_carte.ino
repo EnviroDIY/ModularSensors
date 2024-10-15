@@ -3247,14 +3247,14 @@ void setup() {
 
 #if !defined(BUILD_MODEM_NO_MODEM)
     // Attach the modem and information pins to the logger
-    Serial.print(F("Attaching the modem"));
+    Serial.println(F("Attaching the modem"));
     dataLogger.attachModem(modem);
-    Serial.print(F("Setting modem LEDs"));
+    Serial.println(F("Setting modem LEDs"));
     modem.setModemLED(modemLEDPin);
 #endif
 
     // Begin the logger
-    Serial.print(F("Beginning the logger"));
+    Serial.println(F("Beginning the logger"));
     dataLogger.begin();
     /** End [setup_logger] */
 

@@ -17,6 +17,7 @@
 
 // Debugging Statement
 // #define MS_LOGGERBASE_DEBUG
+// #define MS_LOGGERBASE_DEBUG_DEEP
 
 #ifdef MS_LOGGERBASE_DEBUG
 #define MS_DEBUGGING_STD "LoggerBase"
