@@ -18,9 +18,14 @@
 
 // Debugging Statement
 // #define MS_WATCHDOGSAMD_DEBUG
+// #define MS_WATCHDOGSAMD_DEBUG_DEEP
 
 #ifdef MS_WATCHDOGSAMD_DEBUG
 #define MS_DEBUGGING_STD "WatchDogSAMD"
+#endif
+
+#ifdef MS_WATCHDOGSAMD_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP "WatchDogSAMD"
 #endif
 
 // Included Dependencies
@@ -83,6 +88,14 @@ class extendedWatchDogSAMD {
     static volatile uint32_t _barksUntilReset;
 
  private:
+    /**
+     * @brief Configure the 32768 Hz Oscillator
+     */
+    void config32kOSC();
+    /**
+     * @brief Attach peripheral clock to 32k oscillator
+     */
+    void configureWDTClockSource();
     /**
      * @brief Wait for the SAMD processor bit sync to finish.+
      */
