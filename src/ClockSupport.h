@@ -283,6 +283,15 @@ class loggerClock {
                           epochStart epoch = epochStart::unix_epoch);
 
     /**
+     * @brief Enable 1 minute interrupts on the RTC
+     */
+    static void enableRTCInterrupts();
+    /**
+     * @brief Disable interrupts on the RTC
+     */
+    static void disableRTCInterrupts();
+
+    /**
      * @brief Start up the real-time clock.
      *
      * This is used for operations that cannot happen in the constructor - they

@@ -559,32 +559,7 @@ void Logger::systemSleep(void) {
 
     // Send a message that we're getting ready
     MS_DBG(F("Preparing clock interrupts to wake processor"));
-
-#if defined(MS_USE_RV8803)
-    // Disable any previous interrupts
-    rtc.disableAllInterrupts();
-    // Clear all flags in case any interrupts have occurred.
-    rtc.clearAllInterruptFlags();
-    // Enable a periodic update for every minute
-    rtc.setPeriodicTimeUpdateFrequency(TIME_UPDATE_1_MINUTE);
-    // Enable the hardware interrupt
-    rtc.enableHardwareInterrupt(UPDATE_INTERRUPT);
-
-#elif defined(MS_USE_DS3231)
-
-    // Unfortunately, because of the way the alarm on the DS3231 is set up, it
-    // cannot interrupt on any frequencies other than every second, minute,
-    // hour, day, or date.  We could set it to alarm hourly every 5 minutes past
-    // the hour, but not every 5 minutes.  This is why we set the alarm for
-    // every minute and use the checkInterval function.  This is a hardware
-    // limitation of the DS3231; it is not due to the libraries or software.
-    MS_DBG(F("Setting alarm on DS3231 RTC for every minute."));
-    rtc.enableInterrupts(EveryMinute);
-
-    // Clear the last interrupt flag in the RTC status register
-    // The next timed interrupt will not be sent until this is cleared
-    rtc.clearINTStatus();
-#endif
+    loggerClock::enableRTCInterrupts();
 
 #if !defined(MS_USE_RTC_ZERO)
     // Set up a pin to hear clock interrupt and attach the wake ISR to it
@@ -615,24 +590,6 @@ void Logger::systemSleep(void) {
     EIC->WAKEUP.reg |= (1 << in);
 #endif  // #if defined(ARDUINO_ARCH_SAMD) && ! defined(__SAMD51__)
 #endif  //#if !defined(MS_USE_RTC_ZERO)
-
-#if defined(MS_USE_RTC_ZERO)
-
-    // Make sure interrupts are enabled for the clock
-    NVIC_EnableIRQ(RTC_IRQn);       // enable RTC interrupt
-    NVIC_SetPriority(RTC_IRQn, 0);  // highest priority
-
-    // Alarms on the RTC built into the SAMD21 appear to be identical to those
-    // in the DS3231.  See more notes below.
-    // We're setting the alarm seconds to 59 and then seting it to go off
-    // whenever the seconds match the 59.  I'm using 59 instead of 00
-    // because there seems to be a bit of a wake-up delay
-    MS_DBG(F("Setting alarm on SAMD built-in RTC for every minute."));
-    zero_sleep_rtc.attachInterrupt(wakeISR);
-    zero_sleep_rtc.setAlarmSeconds(59);
-    zero_sleep_rtc.enableAlarm(zero_sleep_rtc.MATCH_SS);
-
-#endif  // defined(MS_USE_RTC_ZERO)
 
 
     // Send one last message before shutting down serial ports
@@ -847,24 +804,13 @@ void Logger::systemSleep(void) {
     // the timeout period is a useless delay.
     Wire.setTimeout(0);
 
-    // Stop the clock from sending out any interrupts while we're awake.
-    // There's no reason to waste thought on the clock interrupt if it
-    // happens while the processor is awake and doing other things.
-#if defined(MS_USE_RV8803)
-    MS_DEEP_DBG(F("Unsetting the alarm on the RV-8803"));
-    rtc.disableHardwareInterrupt(UPDATE_INTERRUPT);
-#elif defined(MS_USE_DS3231)
-    MS_DEEP_DBG(F("Unsetting the alarm on the DS2321"));
-    rtc.disableInterrupts();
-#endif
+    MS_DEEP_DBG(F("Dissabling RTC interupts"));
+    loggerClock::disableRTCInterrupts();
 
 #if !defined(MS_USE_RTC_ZERO)
     MS_DEEP_DBG(F("Detaching wake interrupt from wake pin"));
     // Detach the from the pin
     disableInterrupt(_mcuWakePin);
-#else
-    MS_DEEP_DBG(F("Unsetting the alarm on the built in RTC"));
-    zero_sleep_rtc.disableAlarm();
 #endif
 
     // The logger will now start the next function after the systemSleep
