@@ -32,8 +32,13 @@
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 
+
+/// The clock generator number to use for the watchdog timer and the external
+/// interrupt controller
+#define GENERIC_CLOCK_GENERATOR_MS (2u)
+
 /**
- * @brief ISR handler for watchdog timer early warning (WDT EW ) interrupt
+ * @brief ISR handler for watchdog timer early warning (WDT EW) interrupt
  */
 void WDT_Handler(void);
 
@@ -79,6 +84,14 @@ class extendedWatchDogSAMD {
      * @brief Reset the watchdog's clock to prevent the board from resetting.
      */
     void resetWatchDog();
+    /**
+     * @brief Configure the 32768 Hz Oscillator
+     */
+    void config32kOSC();
+    /**
+     * @brief Attach peripheral clock to 32k oscillator
+     */
+    void configureWDTClockSource();
 
 
     /**
@@ -89,20 +102,16 @@ class extendedWatchDogSAMD {
 
  private:
     /**
-     * @brief Configure the 32768 Hz Oscillator
-     */
-    void config32kOSC();
-    /**
-     * @brief Attach peripheral clock to 32k oscillator
-     */
-    void configureWDTClockSource();
-    /**
-     * @brief Wait for the SAMD processor bit sync to finish.+
+     * @brief Wait for the WDT config bit sync to finish.+
      */
     void inline waitForWDTBitSync();
     /**
-     * @brief Internal reference to the number of seconds of silence before the
-     * module is reset.
+     * @brief Wait for the GCLK config bit sync to finish.+
+     */
+    void inline waitForGCLKBitSync();
+    /**
+     * @brief Internal reference to the number of seconds of silence before
+     * the module is reset.
      */
     uint32_t _resetTime_s;
 };

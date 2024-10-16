@@ -256,24 +256,28 @@ void extendedWatchDogSAMD::config32kOSC() {
     // internal oscillator (OSCULP32K). The only things that can be configured
     // are the write lock and over-writing the factory calibration. We don't
     // want to do either of those.
+#endif
 }
 
 void extendedWatchDogSAMD::configureWDTClockSource() {
 #if !defined(__SAMD51__)
-    // Configure the generic clock generator divisor for generator 2
+    // Configure the generic clock generator divisor for the clock generator
     // The divisor register must be configured before generator control register
-    // Generic clock generator 2, divisor = 32 (2^(DIV+1))  = 4
-    GCLK->GENDIV.reg = GCLK_GENDIV_ID(2) |  // Select Generic Clock Generator 2
-        GCLK_GENDIV_DIV(4);                 // Divide the clock source by 32
-    while (GCLK->STATUS.bit.SYNCBUSY)
-        ;  // Wait for synchronization
+    // divisor = 32 (2^(DIV+1))  = 4
+    GCLK->GENDIV.reg =
+        GCLK_GENDIV_ID(
+            GENERIC_CLOCK_GENERATOR_MS) |  // Select Generic Clock Generator
+        GCLK_GENDIV_DIV(4);                // Divide the clock source by 32
+    waitForGCLKBitSync();
 
 
 #if !defined(CRYSTALLESS)
     // source GCLK2 from the external oscillator
     MS_DEEP_DBG(F("Setting the external 32k oscillator as the clock source for "
-                  "the generic clock generator 2."));
-    GCLK->GENCTRL.reg = GCLK_GENCTRL_ID(2) |  // Select GCLK2
+                  "generic clock generator"),
+                GENERIC_CLOCK_GENERATOR_MS, '.');
+    GCLK->GENCTRL.reg =
+        GCLK_GENCTRL_ID(GENERIC_CLOCK_GENERATOR_MS) |  // Select GCLK
         GCLK_GENCTRL_GENEN |        // Enable the generic clock clontrol
         GCLK_GENCTRL_SRC_XOSC32K |  // Select the external crystal
         GCLK_GENCTRL_RUNSTDBY |     // DO run in standby
@@ -283,10 +287,12 @@ void extendedWatchDogSAMD::configureWDTClockSource() {
     // If there isn't an external crystal, use the built-in ultra-low power
     // internal 32.768kHz oscillator.
 
-    // source GCLK2 from the external oscillator
+    // source GCLK from the external oscillator
     MS_DEEP_DBG(F("Setting the ultra-low power internal 32k oscillator as the "
-                  "clock source for the generic clock generator 2."));
-    GCLK->GENCTRL.reg = GCLK_GENCTRL_ID(2) |  // Select GCLK2
+                  "clock source for generic clock generator"),
+                GENERIC_CLOCK_GENERATOR_MS, '.');
+    GCLK->GENCTRL.reg =
+        GCLK_GENCTRL_ID(GENERIC_CLOCK_GENERATOR_MS) |  // Select GCLK
         GCLK_GENCTRL_GENEN |          // Enable the generic clock clontrol
         GCLK_GENCTRL_SRC_OSCULP32K |  // Select the built-in ultra-low power
                                       // internal oscillator
@@ -294,20 +300,20 @@ void extendedWatchDogSAMD::configureWDTClockSource() {
         GCLK_GENCTRL_DIVSEL;          // Select to divide clock by
                                       // the prescaler above
 #endif
-    while (GCLK->STATUS.bit.SYNCBUSY)
-        ;  // Wait for synchronization
-#endif
+    waitForGCLKBitSync();
 
-    // Feed configured GCLK2 to WDT (Watchdog Timer) **AND** the EIC (external
+    // Feed configured GCLK to WDT (Watchdog Timer) **AND** the EIC (external
     // interrupt controller)
-    MS_DEEP_DBG(F("Feeding configured GCLK2 to WDT and EIC"));
+    MS_DEEP_DBG(F("Feeding configured GCLK"), GENERIC_CLOCK_GENERATOR_MS,
+                F("to WDT and EIC"));
     GCLK->CLKCTRL.reg =
-        GCLK_CLKCTRL_GEN(2) |       // Select generic clock generator 2
-        GCLK_CLKCTRL_CLKEN |        // Enable the generic clock clontrol
-        GCLK_CLKCTRL_ID(GCM_WDT) |  // Feed the GCLK to the WDT
-        GCLK_CLKCTRL_ID(GCM_EIC);   // Feed the GCLK to the EIC
-    while (GCLK->STATUS.bit.SYNCBUSY)
-        ;  // Wait for synchronization
+        (uint16_t)(GCLK_CLKCTRL_GEN(
+                       GENERIC_CLOCK_GENERATOR_MS) |  // Select generic clock
+                                                      // generator
+                   GCLK_CLKCTRL_CLKEN |  // Enable the generic clock clontrol
+                   GCLK_CLKCTRL_ID(GCM_WDT) |  // Feed the GCLK to the WDT
+                   GCLK_CLKCTRL_ID(GCM_EIC));  // Feed the GCLK to the EIC
+    waitForGCLKBitSync();
 
 #endif
 }
@@ -321,6 +327,17 @@ void extendedWatchDogSAMD::waitForWDTBitSync() {
     while (WDT->STATUS.bit.SYNCBUSY) {
         // Wait for synchronization
     }
+#endif
+}
+
+void extendedWatchDogSAMD::waitForGCLKBitSync() {
+#if defined(__SAMD51__)
+    while (GCLK->SYNCBUSY.reg &
+           GCLK_SYNCBUSY_GENCTRL(GENERIC_CLOCK_GENERATOR_MS))
+        ;  // Wait for the clock generator sync busy bit to clear
+#else
+    while (GCLK->STATUS.bit.SYNCBUSY)
+        ;  // Wait for synchronization
 #endif
 }
 
@@ -355,5 +372,4 @@ void WDT_Handler(void) {
         WDT->INTFLAG.bit.EW = 1;
     }
 }
-
 #endif
