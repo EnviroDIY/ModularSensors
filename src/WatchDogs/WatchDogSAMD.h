@@ -35,7 +35,7 @@
 
 /// The clock generator number to use for the watchdog timer and the external
 /// interrupt controller
-#define GENERIC_CLOCK_GENERATOR_MS (2u)
+#define GENERIC_CLOCK_GENERATOR_MS (5u)
 
 /**
  * @brief ISR handler for watchdog timer early warning (WDT EW) interrupt

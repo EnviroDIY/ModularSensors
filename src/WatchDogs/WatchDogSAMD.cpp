@@ -184,11 +184,8 @@ void extendedWatchDogSAMD::config32kOSC() {
      * WDT: GCLK2
      * Anything else: GCLK0
      *
-     * We're going to configure generic clock generator 2, which is the default
-     * for the watchdog. RTCZero uses the same clock for the RTC. Because we're
-     * using identical divisors and prescalers, we can share the clock
-     * generator. We will also use the very same generator for the external
-     * interrupt controller (EIC).
+     * We're going to configure a new generic clock generator for the watchdog
+     * (WDT) and the external interrupt controller (EIC).
      *
      * The watchdog must be attached to a clock source so it can tell how much
      * time has passed and whether it needs to bite.
@@ -201,56 +198,7 @@ void extendedWatchDogSAMD::config32kOSC() {
      * to wake the device. In WInterrupts.c in the Adafruit SAMD core, generic
      * clock generator 0 (ie GCLK_MAIN) is used for the EIC peripheral. See:
      * https://github.com/adafruit/ArduinoCore-samd/blob/ce20340620bfd9c545649ee5c4873888ee0475d0/cores/arduino/WInterrupts.c#L56
-     *
-     * We'll shift the interrupts to clock 2, configured to our liking.
      */
-
-// Configure the generic clock generator 2 to use the 32.768kHz external or
-// internal oscillator and the divisor above.
-// With /32 divisor above, this yields 1024Hz clock.
-// By default, the XOSC32K is stopped in standby, while the default for the
-// OSCULP32K is to run in standby.
-// NOTE: there is also a generic XOSC which can be attached to crystal of any
-// frequency from 0.4-32MHz, but we're only supporting a 32.768kHz crystal.
-#if !defined(CRYSTALLESS)
-    // If there is an external 32.768 kHz crystal, use it
-
-    // configure the settings for the oscillator
-    MS_DEEP_DBG(F("Modifiying configuration for the external 32k oscillator."));
-    // disable for configuration, see 15.6.3 in datasheet
-    SYSCTRL->XOSC32K.bit.ENABLE = 0;
-    SYSCTRL->XOSC32K.reg        = SYSCTRL_XOSC32K_ONDEMAND |
-        // ^^ run only when demanded by a peripheral
-        SYSCTRL_XOSC32K_RUNSTDBY |
-        // ^^ run the external oscillator in standby (iff demanded by
-        // peripheral)
-        SYSCTRL_XOSC32K_EN32K |
-        // ^^ enable the 32kHz output
-        SYSCTRL_XOSC32K_XTALEN |
-        // ^^ specify that the crystal is connected between XIN32/XOUT32
-        SYSCTRL_XOSC32K_STARTUP(6);
-    // ^^ set the start up time for the external oscillator to 0x6 -
-    // re-enable the clock after config
-    SYSCTRL->XOSC32K.bit.ENABLE = 1;
-
-// Regarding the startup time, the datasheet says:
-//>> After a hard reset, or when waking up from a sleep mode where the
-// XOSC was disabled, the XOSC will need a certain amount of time to
-// stabilize on the correct frequency. This start-up time can be
-// configured by changing the Oscillator Start-Up Time bit group
-// (XOSC.STARTUP) in the External Multipurpose Crystal Oscillator
-// Control register. During the start-up time, the oscillator output is
-// masked to ensure that no unstable clock propagates to the digital
-// logic. The External Multipurpose Crystal Oscillator Ready bit in the
-// Power and Clock Status register (PCLKSR.XOSCRDY) is set when the
-// user-selected start-up time is over. An interrupt is generated on a
-// zero-to-one transition on PCLKSR.XOSCRDY if the External Multipurpose
-// Crystal Oscillator Ready bit in the Interrupt Enable Set register
-// (INTENSET.XOSCRDY) is set.
-//>> Note: Do not enter standby mode when an oscillator is in start-up:
-//>> Wait for the OSCxRDY bit in SYSCTRL.PCLKSR register to be set
-// before going into standby mode.
-#endif
 
     // NOTE: There are no settings we need to configure for ultra-low power
     // internal oscillator (OSCULP32K). The only things that can be configured
@@ -270,27 +218,16 @@ void extendedWatchDogSAMD::configureWDTClockSource() {
         GCLK_GENDIV_DIV(4);                // Divide the clock source by 32
     waitForGCLKBitSync();
 
-
-#if !defined(CRYSTALLESS)
-    // source GCLK2 from the external oscillator
-    MS_DEEP_DBG(F("Setting the external 32k oscillator as the clock source for "
-                  "generic clock generator"),
-                GENERIC_CLOCK_GENERATOR_MS, '.');
-    GCLK->GENCTRL.reg =
-        GCLK_GENCTRL_ID(GENERIC_CLOCK_GENERATOR_MS) |  // Select GCLK
-        GCLK_GENCTRL_GENEN |        // Enable the generic clock clontrol
-        GCLK_GENCTRL_SRC_XOSC32K |  // Select the external crystal
-        GCLK_GENCTRL_RUNSTDBY |     // DO run in standby
-        GCLK_GENCTRL_DIVSEL;  // Select to divide clock by the prescaler above
-
-#else
-    // If there isn't an external crystal, use the built-in ultra-low power
-    // internal 32.768kHz oscillator.
+    // Use the built-in ultra-low power internal 32.768kHz oscillator for the
+    // watchdog and the external interrupt controller. This is less accurate
+    // than the 32k crystal, but uses less power. For the watchdog and the
+    // external interrupts, we don't need very high accuracy, so lower power is
+    // better.
 
     // source GCLK from the external oscillator
     MS_DEEP_DBG(F("Setting the ultra-low power internal 32k oscillator as the "
                   "clock source for generic clock generator"),
-                GENERIC_CLOCK_GENERATOR_MS, '.');
+                GENERIC_CLOCK_GENERATOR_MS);
     GCLK->GENCTRL.reg =
         GCLK_GENCTRL_ID(GENERIC_CLOCK_GENERATOR_MS) |  // Select GCLK
         GCLK_GENCTRL_GENEN |          // Enable the generic clock clontrol
@@ -299,21 +236,35 @@ void extendedWatchDogSAMD::configureWDTClockSource() {
         GCLK_GENCTRL_RUNSTDBY |       // DO run in standby
         GCLK_GENCTRL_DIVSEL;          // Select to divide clock by
                                       // the prescaler above
-#endif
     waitForGCLKBitSync();
 
     // Feed configured GCLK to WDT (Watchdog Timer) **AND** the EIC (external
     // interrupt controller)
+    // NOTE: This must be done in two steps, only one clock control id can be
+    // set at one time! See
+    // https://stackoverflow.com/questions/70303177/atsamd-gclkx-for-more-peripherals
     MS_DEEP_DBG(F("Feeding configured GCLK"), GENERIC_CLOCK_GENERATOR_MS,
-                F("to WDT and EIC"));
+                F("to WDT"));
     GCLK->CLKCTRL.reg =
         (uint16_t)(GCLK_CLKCTRL_GEN(
                        GENERIC_CLOCK_GENERATOR_MS) |  // Select generic clock
                                                       // generator
                    GCLK_CLKCTRL_CLKEN |  // Enable the generic clock clontrol
-                   GCLK_CLKCTRL_ID(GCM_WDT) |  // Feed the GCLK to the WDT
+                   GCLK_CLKCTRL_ID(GCM_WDT));  // Feed the GCLK to the WDT
+    waitForGCLKBitSync();
+    MS_DEEP_DBG(F("Feeding configured GCLK"), GENERIC_CLOCK_GENERATOR_MS,
+                F("to EIC"));
+    GCLK->CLKCTRL.reg =
+        (uint16_t)(GCLK_CLKCTRL_GEN(
+                       GENERIC_CLOCK_GENERATOR_MS) |  // Select generic clock
+                                                      // generator
+                   GCLK_CLKCTRL_CLKEN |  // Enable the generic clock clontrol
                    GCLK_CLKCTRL_ID(GCM_EIC));  // Feed the GCLK to the EIC
     waitForGCLKBitSync();
+
+    // Enable EIC after configuring its clock
+    EIC->CTRL.bit.ENABLE = 1;
+    while (EIC->STATUS.bit.SYNCBUSY == 1) {}
 
 #endif
 }
