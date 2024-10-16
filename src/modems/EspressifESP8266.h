@@ -74,7 +74,7 @@
 // #define MS_ESPRESSIFESP8266_DEBUG
 // #define MS_ESPRESSIFESP8266_DEBUG_DEEP
 
-#ifdef MS_ESPRESSIFESP8266_DEBUG
+#if defined(MS_ESPRESSIFESP8266_DEBUG) || defined(MS_ESPRESSIFESP32_DEBUG)
 #define MS_DEBUGGING_STD "EspressifESP8266"
 #endif
 
@@ -95,7 +95,8 @@
 #include "TinyGsmClient.h"
 #include "LoggerModem.h"
 
-#ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
+#if defined(MS_ESPRESSIFESP8266_DEBUG_DEEP) || \
+    defined(MS_ESPRESSIFESP32_DEBUG_DEEP)
 #include <StreamDebugger.h>
 #endif
 
