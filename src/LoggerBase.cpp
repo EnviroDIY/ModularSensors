@@ -568,30 +568,6 @@ void Logger::systemSleep(void) {
     pinMode(_mcuWakePin, _wakePinMode);
     // attach the interrupt
     enableInterrupt(_mcuWakePin, wakeISR, RISING);
-
-// #if defined(ARDUINO_ARCH_SAMD) && !defined(__SAMD51__)
-//     // Reconfigure the external interrupt controller (EIC) clock after
-//     attaching
-//     // the interrupt. This is needed because the __initialize function called
-//     // the first time the attachInterrupt function is run will reconfigure
-//     the
-//     // clock source for the EIC to GCLK0 every time a new interrupt is
-//     attached
-//     // - and after being detached, reattaching the same interrupt is just
-//     like a
-//     // new one). We need to switch the EIC source back to our configured
-//     GCLK2. MS_DEEP_DBG(F("Re-configuring WDT and EIC clock"));
-//     watchDogTimer.configureWDTClockSource();
-
-//     // get the interrupt number associated with the pin
-//     // From ArduinoLowPower.cpp
-//     EExt_Interrupts in = g_APinDescription[_mcuWakePin].ulExtInt;
-//     // Make sure the wakeup capability is enabled on the pin
-//     // From ArduinoLowPower.cpp
-//     EIC->WAKEUP.reg |= (1 << in);
-//     // enable the voltage regulator in standby mode
-//     SYSCTRL->VREG.bit.RUNSTDBY = 1;
-// #endif  // #if defined(ARDUINO_ARCH_SAMD) && ! defined(__SAMD51__)
 #endif  //#if !defined(MS_USE_RTC_ZERO)
 
 
@@ -1275,15 +1251,10 @@ void Logger::begin() {
     USB->DEVICE.CTRLA.bit.ENABLE   = 1;  // Enable the USB peripheral
     while (USB->DEVICE.SYNCBUSY.bit.ENABLE)
         ;  // Wait for synchronization
-    MS_DEEP_DBG(
-        F("Attaching an empty interrupt to force interrupt configuration"));
-    if (_mcuWakePin >= 0) {
-        attachInterrupt(_mcuWakePin, nullptr, CHANGE);
-    } else if (_buttonPin >= 0) {
-        attachInterrupt(_buttonPin, nullptr, CHANGE);
-    } else {
-        attachInterrupt(1, nullptr, CHANGE);
-    }
+#if !defined(__SAMD51__)
+        // Keep the voltage regulator running in standby
+        // SYSCTRL->VREG.bit.RUNSTDBY = 1;
+#endif
 #endif
 
     MS_DBG(F("Setting up a watch-dog timer to fire after 15 minutes of "
@@ -1291,6 +1262,29 @@ void Logger::begin() {
     watchDogTimer.setupWatchDog((uint32_t)(5 * 60 * 3));
     // Enable the watchdog
     watchDogTimer.enableWatchDog();
+
+#if defined(ARDUINO_ARCH_SAMD)
+    MS_DEEP_DBG(
+        F("Attaching an empty interrupt to force interrupt configuration"));
+    if (_mcuWakePin >= 0) {
+        attachInterrupt(_mcuWakePin, nullptr, CHANGE);
+        detachInterrupt(_mcuWakePin);
+    } else if (_buttonPin >= 0) {
+        attachInterrupt(_buttonPin, nullptr, CHANGE);
+        detachInterrupt(_buttonPin);
+    } else {
+        // if we don't know of a pin we can
+        attachInterrupt(1, nullptr, CHANGE);
+        detachInterrupt(1);
+    }
+    // NOTE: This has to be done AFTER setupWatchDog, because setupWatchDog
+    // calls config32kOSC() and configureClockGenerator(), both of which are
+    // needed before we can call configureEICClock(). This also should happen
+    // after the fake interrupt is set to force a call to __initialize() in
+    // WInterrupts.c
+    MS_DEEP_DBG(F("Configuring the EIC clock"));
+    watchDogTimer.configureEICClock();
+#endif
 
     // Set the pins for I2C
     MS_DBG(F("Setting I2C Pins to INPUT_PULLUP"));

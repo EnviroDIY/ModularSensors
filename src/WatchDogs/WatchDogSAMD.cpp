@@ -43,7 +43,8 @@ void extendedWatchDogSAMD::setupWatchDog(uint32_t resetTime_s) {
     waitForWDTBitSync();
 
     config32kOSC();
-    configureWDTClockSource();
+    configureClockGenerator();
+    configureWDTClock();
 
     // Enable WDT early-warning interrupt
     NVIC_DisableIRQ(WDT_IRQn);
@@ -97,7 +98,7 @@ void extendedWatchDogSAMD::enableWatchDog() {
     // Set the enable bit
 #if defined(__SAMD51__)
     WDT->CTRLA.bit.ENABLE = 1;
-#else
+#else  // SAMD21
     WDT->CTRL.bit.ENABLE   = 1;
 #endif
     waitForWDTBitSync();
@@ -107,7 +108,7 @@ void extendedWatchDogSAMD::enableWatchDog() {
 void extendedWatchDogSAMD::disableWatchDog() {
 #if defined(__SAMD51__)
     WDT->CTRLA.bit.ENABLE = 0;
-#else
+#else  // SAMD21
     WDT->CTRL.bit.ENABLE   = 0;
 #endif
     waitForWDTBitSync();
@@ -128,7 +129,7 @@ void extendedWatchDogSAMD::resetWatchDog() {
 
 void extendedWatchDogSAMD::config32kOSC() {
 #if defined(__SAMD51__)
-    // SAMD51 WDT uses OSCULP32k as input clock now
+    // SAMD51 WDT uses OSCULP32k as input clock, make sure it's enabled
     // section: 20.5.3
     MS_DEEP_DBG(F("Configuring the output of the ultra-low power internal 32k "
                   "oscillator for the watchdog."));
@@ -145,65 +146,144 @@ void extendedWatchDogSAMD::config32kOSC() {
 #endif
 }
 
-void extendedWatchDogSAMD::configureWDTClockSource() {
-#if !defined(__SAMD51__)
-    // Configure the generic clock generator divisor for the clock generator
-    // The divisor register must be configured before generator control register
-    // divisor = 32 (2^(DIV+1))  = 4
+void extendedWatchDogSAMD::configureClockGenerator() {
+#if defined(__SAMD51__)
+    // Do nothing
+    // The SAMD51 WDT always uses OSCULP32k directly; no separate clock
+    // generator is needed as long as OSCULP32k is enabled.
+    // The SAMD51 can also use OSCULP32k directly for the EIC.
+#else  // SAMD21
+    // Per datasheet 15.6.2.6, the source for the generic clock generator can be
+    // changed on the fly, so we don't need to disable it for configuration.
+
+    // Configure the generic clock generator **divisor** for the clock
+    // generator.
+    // The divisor determines the relationship between the generic clock's tick
+    // speed and the clock source's tick speed.
+    // The divisor register must be configured before the generator control
+    // register.
+    // divisor = 32(2 ^ (DIV + 1)) = 4
+    // With 32 divisor the actual clock speed is ~1024Hz clock.
+    MS_DEEP_DBG(F("Configuring the divisor for generic clock generator"),
+                GENERIC_CLOCK_GENERATOR_MS);
     GCLK->GENDIV.reg =
         GCLK_GENDIV_ID(
             GENERIC_CLOCK_GENERATOR_MS) |  // Select Generic Clock Generator
         GCLK_GENDIV_DIV(4);                // Divide the clock source by 32
     waitForGCLKBitSync();
 
+    // Configure the generic clock **generator**
     // Use the built-in ultra-low power internal 32.768kHz oscillator for the
     // watchdog and the external interrupt controller. This is less accurate
     // than the 32k crystal, but uses less power. For the watchdog and the
     // external interrupts, we don't need very high accuracy, so lower power is
     // better.
-
-    // source GCLK from the external oscillator
-    MS_DEEP_DBG(F("Setting the ultra-low power internal 32k oscillator as the "
-                  "clock source for generic clock generator"),
+    // NOTE: The generic clock generator must be enabled by performing a single
+    // 32-bit write to the Generic Clock Generator Control register (GENCTRL) -
+    // ie, do this all in one step
+    MS_DEEP_DBG(F("Configuring generic clock generator"),
                 GENERIC_CLOCK_GENERATOR_MS);
-    GCLK->GENCTRL.reg =
+    GCLK->GENCTRL.reg = static_cast<uint32_t>(
         GCLK_GENCTRL_ID(GENERIC_CLOCK_GENERATOR_MS) |  // Select GCLK
         GCLK_GENCTRL_GENEN |          // Enable the generic clock clontrol
         GCLK_GENCTRL_SRC_OSCULP32K |  // Select the built-in ultra-low power
                                       // internal oscillator
-        GCLK_GENCTRL_RUNSTDBY |       // DO run in standby
-        GCLK_GENCTRL_DIVSEL;          // Select to divide clock by
-                                      // the prescaler above
+        GCLK_GENCTRL_DIVSEL);  // Select to divide clock by 2^(GENDIV.DIV+1).
+    waitForGCLKBitSync();
+#endif
+}
+
+void extendedWatchDogSAMD::configureWDTClock() {
+#if defined(__SAMD51__)
+    // Do nothing
+#else  // SAMD21
+    // Per datasheet 16.6.3.3 the generic clock must be disabled before being
+    // re-enabled with a new clock source setting.
+    MS_DEEP_DBG(F("Disabling WDT peripeheral clock for configuration"));
+    GCLK->CLKCTRL.bit.ID    = GCM_WDT;  // select the WDT's clock
+    GCLK->CLKCTRL.bit.CLKEN = 0;        // Disable the clock
     waitForGCLKBitSync();
 
-    // Feed configured GCLK to WDT (Watchdog Timer) **AND** the EIC (external
-    // interrupt controller)
-    // NOTE: This must be done in two steps, only one clock control id can be
-    // set at one time! See
+    // Feed configured GCLK to WDT (Watchdog Timer)
+    // NOTE: Only one clock control id can be set at one time! See
     // https://stackoverflow.com/questions/70303177/atsamd-gclkx-for-more-peripherals
-    MS_DEEP_DBG(F("Feeding configured GCLK"), GENERIC_CLOCK_GENERATOR_MS,
-                F("to WDT"));
-    GCLK->CLKCTRL.reg =
-        (uint16_t)(GCLK_CLKCTRL_GEN(
-                       GENERIC_CLOCK_GENERATOR_MS) |  // Select generic clock
-                                                      // generator
-                   GCLK_CLKCTRL_CLKEN |  // Enable the generic clock clontrol
-                   GCLK_CLKCTRL_ID(GCM_WDT));  // Feed the GCLK to the WDT
+    MS_DEEP_DBG(F("Configuring and enabling peripheral clock for WDT"));
+    GCLK->CLKCTRL.reg = static_cast<uint16_t>(
+        GCLK_CLKCTRL_GEN(GENERIC_CLOCK_GENERATOR_MS) |  // Select generic clock
+                                                        // generator
+        GCLK_CLKCTRL_CLKEN |        // Enable the generic clock clontrol
+        GCLK_CLKCTRL_ID(GCM_WDT));  // Feed the GCLK to the WDT
     waitForGCLKBitSync();
-    MS_DEEP_DBG(F("Feeding configured GCLK"), GENERIC_CLOCK_GENERATOR_MS,
-                F("to EIC"));
-    GCLK->CLKCTRL.reg =
-        (uint16_t)(GCLK_CLKCTRL_GEN(
-                       GENERIC_CLOCK_GENERATOR_MS) |  // Select generic clock
-                                                      // generator
-                   GCLK_CLKCTRL_CLKEN |  // Enable the generic clock clontrol
-                   GCLK_CLKCTRL_ID(GCM_EIC));  // Feed the GCLK to the EIC
+#endif
+}
+
+void extendedWatchDogSAMD::configureEICClock() {
+#if defined(__SAMD51__)
+    // Enable the power management mask for the EIC clock
+    // NOTE: this is the default setting at power on and is not changed by the
+    // Arduino core.
+    MCLK->APBAMASK.reg |= PM_APBAMASK_EIC;
+
+    // Enable EIC interrupts (copied and repeated from WInterrutps.c)
+    for (uint32_t i = 0; i <= 15; i++)  // EIC_0_IRQn = 12 ... EIC_15_IRQn = 27
+    {
+        uint8_t irqn = EIC_0_IRQn + i;
+        NVIC_DisableIRQ(irqn);
+        NVIC_ClearPendingIRQ(irqn);
+        NVIC_SetPriority(irqn, 0);
+        NVIC_EnableIRQ(irqn);
+    }
+
+    MS_DEEP_DBG(F("Disabling EIC controller configuration"));
+    EIC->CTRLA.bit.ENABLE = 0;
+    while (EIC->SYNCBUSY.bit.ENABLE == 1) {}
+
+    MS_DEEP_DBG(F("Selecting the ULP32K clock as the source for the EIC"));
+    // NOTE: this is the default
+    // The EIC can be clocked either by GCLK_EIC (when a frequency higher
+    // than 32.768 KHz is required for filtering) or by CLK_ULP32K (when power
+    // consumption is the priority).
+    // Since we're interested in power consumption, stick to the CLK_ULP32K.
+    // Using the ULP32K also saves us the trouble of configuring a generic clock
+    // for the EIC. This bit is not Write-Synchronized.
+    EIC->CTRLA.bit.CKSEL = 1;  // 0 for GCLK_EIC, 1 for CLK_ULP32K
+
+    MS_DEEP_DBG(F("Re-enabling the EIC"));
+    EIC->CTRLA.bit.ENABLE = 1;
+    while (EIC->SYNCBUSY.bit.ENABLE == 1) {}
+#else  // SAMD21
+    // Enable the power management mask for the EIC clock
+    // NOTE: this is the default setting at power on and is not changed by the
+    // Arduino core.
+    PM->APBAMASK.reg |= PM_APBAMASK_EIC;
+
+    // Enable EIC interrupts (copied and repeated from WInterrutps.c)
+    NVIC_DisableIRQ(EIC_IRQn);
+    NVIC_ClearPendingIRQ(EIC_IRQn);
+    NVIC_SetPriority(EIC_IRQn, 0);
+    NVIC_EnableIRQ(EIC_IRQn);
+
+    // Per datasheet 16.6.3.3 the generic clock must be disabled before being
+    // re-enabled with a new clock source setting.
+    MS_DEEP_DBG(F("Disabling EIC peripeheral clock for configuration"));
+    GCLK->CLKCTRL.bit.ID    = GCM_EIC;  // select the WDT's clock
+    GCLK->CLKCTRL.bit.CLKEN = 0;        // Disable the clock
     waitForGCLKBitSync();
 
-    // Enable EIC after configuring its clock
+    // Feed configured GCLK to EIC (external interrupt controller)
+    // NOTE: Only one clock control id can be set at one time! See
+    // https://stackoverflow.com/questions/70303177/atsamd-gclkx-for-more-peripherals
+    MS_DEEP_DBG(F("Configuring and enabling peripheral clock for EIC"));
+    GCLK->CLKCTRL.reg = static_cast<uint16_t>(
+        GCLK_CLKCTRL_GEN(GENERIC_CLOCK_GENERATOR_MS) |  // Select generic clock
+                                                        // generator
+        GCLK_CLKCTRL_CLKEN |        // Enable the generic clock clontrol
+        GCLK_CLKCTRL_ID(GCM_EIC));  // Feed the GCLK to the EIC
+    waitForGCLKBitSync();
+
+    // Re-enable EIC after configuring its clock
     EIC->CTRL.bit.ENABLE = 1;
     while (EIC->STATUS.bit.SYNCBUSY == 1) {}
-
 #endif
 }
 
@@ -212,7 +292,7 @@ void extendedWatchDogSAMD::waitForWDTBitSync() {
     while (WDT->SYNCBUSY.reg) {
         // Wait for synchronization
     }
-#else
+#else  // SAMD21
     while (WDT->STATUS.bit.SYNCBUSY) {
         // Wait for synchronization
     }
@@ -224,7 +304,7 @@ void extendedWatchDogSAMD::waitForGCLKBitSync() {
     while (GCLK->SYNCBUSY.reg &
            GCLK_SYNCBUSY_GENCTRL(GENERIC_CLOCK_GENERATOR_MS))
         ;  // Wait for the clock generator sync busy bit to clear
-#else
+#else      // SAMD21
     while (GCLK->STATUS.bit.SYNCBUSY)
         ;  // Wait for synchronization
 #endif
@@ -252,7 +332,7 @@ void WDT_Handler(void) {
         while (WDT->SYNCBUSY.reg) {
             // wait
         }
-#else
+#else  // SAMD21
         while (WDT->STATUS.bit.SYNCBUSY) {
             // wait
         }

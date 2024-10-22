@@ -89,9 +89,20 @@ class extendedWatchDogSAMD {
      */
     void config32kOSC();
     /**
-     * @brief Attach peripheral clock to 32k oscillator
+     * @brief Configure the generic clock generator - sourced from the 32k
+     * oscillator
      */
-    void configureWDTClockSource();
+    void configureClockGenerator();
+    /**
+     * @brief Configure the peripheral clock for the WDT sourced from the
+     * generic clock generator
+     */
+    void configureWDTClock();
+    /**
+     * @brief Configure the peripheral clock for the external interrupt
+     * congtroller (EIC) - sourced from the generic clock generator
+     */
+    void configureEICClock();
 
 
     /**
