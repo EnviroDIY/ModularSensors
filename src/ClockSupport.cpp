@@ -54,7 +54,16 @@ String epochStart::printEpochStart() {
 // Initialize the processor epoch
 epochStart loggerClock::_core_epoch = epochStart::y2k_epoch;
 // Initialize the static timezone
-int8_t loggerClock::_rtcTimeZone = 0;
+int8_t loggerClock::_rtcUTCOffset = 0;
+
+
+#if defined(MS_USE_RV8803)
+epochStart loggerClock::_rtcEpoch = epochStart::unix_epoch;
+#elif defined(MS_USE_DS3231)
+epochStart loggerClock::_rtcEpoch = epochStart::unix_epoch;
+#elif defined(MS_USE_RTC_ZERO)
+epochStart loggerClock::_rtcEpoch = epochStart::unix_epoch;
+#endif
 
 
 // Initialize the RTC
@@ -64,175 +73,81 @@ int8_t loggerClock::_rtcTimeZone = 0;
 #if defined(MS_USE_RV8803)
 RV8803 loggerClock::rtc;
 #elif defined(MS_USE_RTC_ZERO)
-RTCZero  loggerClock::zero_sleep_rtc;
+RTCZero    loggerClock::zero_sleep_rtc;
 #endif
 
 
-// Constructor
-loggerClock::loggerClock() {
-    _core_epoch = getProcessorEpochStart();
-}
-// Destructor
-loggerClock::~loggerClock() {}
-
-// Sets the static timezone that the RTC is programmed in
-// I VERY VERY STRONGLY RECOMMEND SETTING THE RTC IN UTC
+// Sets the static offset from UTC that the RTC is programmed in
+// I VERY VERY STRONGLY RECOMMEND SETTING THE RTC IN UTC (ie, offset = 0)
 // You can either set the RTC offset directly or set the offset between the
 // RTC and the logger
-void loggerClock::setRTCTimeZone(int8_t timeZone) {
-    _rtcTimeZone = timeZone;
+void loggerClock::setRTCOffset(int8_t offsetHours) {
+    _rtcUTCOffset = offsetHours;
 // Some helpful prints for debugging
 #ifdef STANDARD_SERIAL_OUTPUT
-    const char* prtout1 = "RTC timezone is set to UTC";
-    if (_rtcTimeZone == 0) {
+    const char* prtout1 = "RTC is set to UTC";
+    if (_rtcUTCOffset == 0) {
         PRINTOUT(prtout1);
-    } else if (_rtcTimeZone > 0) {
-        PRINTOUT(prtout1, '+', _rtcTimeZone);
+    } else if (_rtcUTCOffset > 0) {
+        PRINTOUT(prtout1, '+', _rtcUTCOffset);
     } else {
-        PRINTOUT(prtout1, _rtcTimeZone);
+        PRINTOUT(prtout1, _rtcUTCOffset);
     }
 #endif
 }
-int8_t loggerClock::getRTCTimeZone(void) {
-    return loggerClock::_rtcTimeZone;
+int8_t loggerClock::getRTCOffset(void) {
+    return loggerClock::_rtcUTCOffset;
 }
 
-#if defined(MS_USE_RV8803)
-uint32_t loggerClock::getNowUTCEpoch(epochStart epoch) {
-    // uint32_t getEpoch(bool use1970sEpoch = false);
-    // The use1970sEpoch works properly ONLY on AVR/8-bit boards!!
-    //   - Setting use1970sEpoch to false returns the seconds from Jan 1, 2000.
-    //   - Setting use1970sEpoch to true returns the seconds from Jan 1, 1970.
-    // For 32-bit boards, you must set use1970sEpoch to FALSE to get the 1970's
-    // epoch. See:
-    // https://github.com/sparkfun/SparkFun_RV-8803_Arduino_Library/issues/29
+uint32_t loggerClock::getNowAsEpoch(int8_t returnUTCOffset, epochStart epoch) {
+    uint32_t rtc_return = loggerClock::getRawRTCNow();
+    MS_DEEP_DBG(F("Raw returned timestamp:"), rtc_return);
 
-    // Get the epoch - with the time zone subtracted (i.e. return UTC epoch)
-    rtc.updateTime();
-    MS_DEEP_DBG(F("Set use1970sEpoch to"), _core_epoch == epochStart::y2k_epoch,
-                F("because the processor epoch is"),
-                static_cast<uint32_t>(epoch));
-    MS_DEEP_DBG(F("Raw returned timestamp:"),
-                rtc.getEpoch(_core_epoch == epochStart::y2k_epoch));
-    MS_DEEP_DBG(F("Returned timestamp adjusted by"),
-                static_cast<uint32_t>(epoch), (":"),
-                rtc.getEpoch(_core_epoch == epochStart::y2k_epoch) +
-                    (epoch - epochStart::unix_epoch));
-    return rtc.getEpoch(_core_epoch == epochStart::y2k_epoch) +
-        (epoch - epochStart::unix_epoch);
-}
-void loggerClock::setNowUTCEpoch(uint32_t ts, epochStart epoch) {
-    // bool setEpoch(uint32_t value, bool use1970sEpoch = false, int8_t
-    // timeZoneQuarterHours = 0);
-    // If timeZoneQuarterHours is non-zero, update RV8803_RAM. Add the zone to
-    // the epoch before setting
-    MS_DEEP_DBG(F("Raw input timestamp:"), ts);
-    MS_DEEP_DBG(F("Input timestamp adjusted by"), static_cast<uint32_t>(epoch),
-                (":"), ts + (epoch - epochStart::unix_epoch));
-    rtc.setEpoch(ts + (epoch - epochStart::unix_epoch),
-                 _core_epoch == epochStart::y2k_epoch);
+    uint32_t epoch_change = epoch - loggerClock::_rtcEpoch;
+    MS_DEEP_DBG(F("Adding"), epoch_change,
+                F("to the timestamp to convert to the requested epoch."));
+
+    // Do NOT apply an offset if the timestamp is obviously bad
+    uint32_t tz_change = 0;
+    if (!isEpochTimeSane(rtc_return, _rtcUTCOffset, _rtcEpoch)) {
+        tz_change = static_cast<uint32_t>(loggerClock::_rtcUTCOffset -
+                                          returnUTCOffset) *
+            3600;
+        MS_DEEP_DBG(
+            F("Adding"), tz_change,
+            F("to the timestamp to convert to the requested timezone."));
+    }
+
+    return rtc_return + tz_change + epoch_change;
 }
 
-#elif defined(MS_USE_DS3231)
-uint32_t loggerClock::getNowUTCEpoch(epochStart epoch) {
-    MS_DEEP_DBG(F("Raw returned timestamp:"), rtc.now().getEpoch());
-    MS_DEEP_DBG(F("Returned timestamp adjusted by"),
-                static_cast<uint32_t>(epoch), (":"),
-                rtc.now().getEpoch() + (epoch - epochStart::unix_epoch));
-    return rtc.now().getEpoch() + (epoch - epochStart::unix_epoch);
-}
-void loggerClock::setNowUTCEpoch(uint32_t ts, epochStart epoch) {
-    MS_DEEP_DBG(F("Raw input timestamp:"), ts);
-    MS_DEEP_DBG(F("Input timestamp adjusted by"), static_cast<uint32_t>(epoch),
-                (":"), ts + (epoch - epochStart::unix_epoch));
-    rtc.setEpoch(ts + (epoch - epochStart::unix_epoch));
-}
-
-#elif defined(MS_USE_RTC_ZERO)
-
-uint32_t loggerClock::getNowUTCEpoch(epochStart epoch) {
-    MS_DEEP_DBG(F("Raw returned timestamp:"), rtc.getEpoch());
-    MS_DEEP_DBG(F("Returned timestamp adjusted by"),
-                static_cast<uint32_t>(epoch), (":"),
-                rtc.getEpoch() + (epoch - epochStart::unix_epoch));
-    return zero_sleep_rtc.getEpoch() + (epoch - epochStart::unix_epoch);
-}
-void loggerClock::setNowUTCEpoch(uint32_t ts, epochStart epoch) {
-    MS_DEEP_DBG(F("Raw input timestamp:"), ts);
-    MS_DEEP_DBG(F("Input timestamp adjusted by"), static_cast<uint32_t>(epoch),
-                (":"), ts + (epoch - epochStart::unix_epoch));
-    zero_sleep_rtc.setEpoch(ts + (epoch - epochStart::unix_epoch));
-}
-
-#endif
-
-// This converts an epoch time (unix time) into a ISO8601 formatted string.
-// It assumes the supplied date/time is in the LOGGER's timezone and adds the
-// LOGGER's offset as the time zone offset in the string.
-// code modified from parts of the SparkFun RV-8803 library
+// This converts an epoch time (seconds since a fixed epoch start) into a
+// ISO8601 formatted string. It assumes the supplied date/time is in the
+// LOGGER's timezone and adds the LOGGER's offset as the time zone offset in the
+// string. code modified from parts of the SparkFun RV-8803 library
 String loggerClock::formatDateTime_ISO8601(uint32_t   epochTime,
-                                           int8_t     loggerTimeZone,
+                                           int8_t     epochTimeUTCOffset,
                                            epochStart epoch) {
     MS_DEEP_DBG(F("Input epoch time:"), epochTime, F("; input epoch:"),
-                (uint32_t)epoch);
-    // Create a temporary variable for the epoch time
-    // NOTE: for AVR boards time_t is a typedef for uint32_t, defined in time.h
-    // For SAMD time_t is a typedef for __int_least64_t _timeval.h
-    if (sizeof(time_t) != sizeof(uint32_t)) {
-        MS_DEEP_DBG(F("THE TIME FORMAT IS NOT THE SAME SIZE AS A uint32_t!"),
-                    sizeof(time_t), sizeof(uint32_t));
-    }
-    MS_DEEP_DBG(F("THE TIME FORMAT IS"),
-                (((time_t)(-1)) < 0) ? F("SIGNED") : F("UNSIGNED"));
+                static_cast<uint32_t>(epoch));
 
+    // NOTE: for AVR boards time_t is a typedef for uint32_t, defined in
+    // time.h For SAMD time_t is a typedef for __int_least64_t _timeval.h
     // implicit cast to time_t
+
+    // Create a temporary variable for the epoch time
     time_t t = epochTime;
+    MS_DEEP_DBG(F("Input time as a time_t:"), t);
 
-
-    time_t     epoch_zero    = 0;
-    struct tm* epoch_zero_tm = gmtime(&epoch_zero);
-    // create a temporary buffer to put the timestamp into
-    char epoch_zero_year[5];  // Max of yyyy with \0 terminator
-    // use strftime (from time.h) to format the time
-    strftime(epoch_zero_year, 5, "%Y", epoch_zero_tm);
-    MS_DEEP_DBG(F("epoch_zero_year:"), epoch_zero_year);
-    int zero_year = atoi(epoch_zero_year);
-    MS_DEEP_DBG(F("zero_year:"), zero_year);
-
-    epochStart ret_val;
-    switch (zero_year) {
-        default:
-        case 1970: ret_val = epochStart::unix_epoch; break;
-        case 2000: ret_val = epochStart::y2k_epoch; break;
-        case 1980: ret_val = epochStart::gps_epoch; break;
-        case 1900: ret_val = epochStart::nist_epoch; break;
-    }
-    MS_DEEP_DBG(F("ret_val:"), (uint32_t)ret_val);
-
-
-    // create a temporary time struct
-    // tm is a struct for time parts, defined in time.h
-    struct tm* tmp2 = gmtime(&t);
-    MS_DEEP_DBG(F("Time components without adjustment: year:"), tmp2->tm_year,
-                F("month:"), tmp2->tm_mon + 1, F("day:"), tmp2->tm_mday,
-                F("hour:"), tmp2->tm_hour, F("minute:"), tmp2->tm_min,
-                F("second:"), tmp2->tm_sec);
-    // create a temporary buffer to put the timestamp into
-    static char
-        time8601tz2[20];  // Max of yyyy-mm-ddThh:mm:ss with \0 terminator
-    // use strftime (from time.h) to format the time
-    strftime(time8601tz2, 20, "%Y-%m-%dT%H:%M:%S", tmp2);
-    MS_DEEP_DBG(F("Formatted time string:"), time8601tz2);
-
-
-    MS_DEEP_DBG(F("Converted epoch time:"), t);
+    // Convert the time to the processor epoch.
+    // This is only needed so the gmtime function will work - this is not
+    // converting between offsets.
     if (epoch != _core_epoch) {
         t += epoch;        // convert to to unix
         t -= _core_epoch;  // convert to processor epoch (used by gmtime)
     }
+    MS_DEEP_DBG(F("Input time converted to processor epoch:"), t);
 
-    MS_DEEP_DBG(F("Adjusted epoch by"), static_cast<uint32_t>(epoch), (":"), t);
-    MS_DEEP_DBG(F(" time:"), t);
     // create a temporary time struct
     // tm is a struct for time parts, defined in time.h
     struct tm* tmp = gmtime(&t);
@@ -248,11 +163,11 @@ String loggerClock::formatDateTime_ISO8601(uint32_t   epochTime,
     strftime(time8601tz, 20, "%Y-%m-%dT%H:%M:%S", tmp);
     MS_DEEP_DBG(F("Formatted time string:"), time8601tz);
 
-    // get the corrected timezone format
+    // Correct the timezone format
     // NOTE: the %z format from strftime formats the timezone as +hhmm, but we
     // need +hh:mm
     char   isotz[8];
-    int8_t quarterHours = loggerTimeZone * 4;
+    int8_t quarterHours = epochTimeUTCOffset * 4;
     char   plusMinus    = '+';
     if (quarterHours < 0) {
         plusMinus = '-';
@@ -269,51 +184,62 @@ String loggerClock::formatDateTime_ISO8601(uint32_t   epochTime,
     return String(time8601tz) + String(isotz);
 }
 
-
 // This sets the real time clock to the given time
-bool loggerClock::setRTClock(uint32_t UTCEpochSeconds, epochStart epoch) {
-    // If the timestamp is zero, just exit
-    if (UTCEpochSeconds == 0) {
+bool loggerClock::setRTClock(uint32_t ts, int8_t utcOffset, epochStart epoch) {
+    MS_DEEP_DBG(F("Raw input timestamp:"), ts);
+
+    // If the timestamp is not in the valid range, just exit
+    if (!isEpochTimeSane(ts, utcOffset, epoch)) {
         PRINTOUT(F("Bad timestamp, not setting clock."));
         return false;
     }
 
-    // The "setTime" is the number of seconds since the start of the input epoch
-    // We're interested in the setTime in the logger's and RTC's timezone
-    // The RTC's timezone is equal to the logger's timezone minus the offset
-    // between the logger and the RTC.
-    uint32_t new_rtc_value = UTCEpochSeconds;
+    // The "setTime" is the number of seconds since the start of the input
+    // epoch We're interested in the setTime in the logger's and RTC's
+    // timezone The RTC's timezone is equal to the logger's timezone minus
+    // the offset between the logger and the RTC.
+    uint32_t new_rtc_value = ts;
 
     // Check the current RTC time
-    uint32_t prev_rtc_value = getNowUTCEpoch(epoch);
+    uint32_t prev_rtc_value = getNowAsEpoch(utcOffset, epoch);
     MS_DBG(F("    Current Time on RTC:"), prev_rtc_value, F("->"),
-           formatDateTime_ISO8601(prev_rtc_value, epoch));
+           formatDateTime_ISO8601(prev_rtc_value, utcOffset, epoch));
     MS_DBG(F("    Offset between input and RTC:"),
            abs(new_rtc_value - prev_rtc_value));
 
     // NOTE:  Because we take the time to do some UTC/Local conversions and
     // print stuff out, the clock might end up being set up to a few
-    // milliseconds behind the input time.  Given the clock is only accurate to
-    // seconds (not milliseconds or less), I don't think this is a problem.
+    // milliseconds behind the input time.  Given some of the supported clocks
+    // are only accurate to seconds (not milliseconds or less), I don't think
+    // this is a problem.
 
-    // If the RTC and NIST disagree by more than 5 seconds, set the clock
-    if (abs(new_rtc_value - prev_rtc_value) > 5) {
-        setNowUTCEpoch(new_rtc_value, epoch);
-        PRINTOUT(F("Clock set!"));
-        return true;
-    } else {
+    // If the RTC is alredy within 5 seconds of the input time, just quit
+    if (abs(new_rtc_value - prev_rtc_value) < 5) {
         PRINTOUT(F("Clock already within 5 seconds of time."));
         return false;
     }
+
+    uint32_t tz_change =
+        static_cast<uint32_t>(loggerClock::_rtcUTCOffset - utcOffset) * 3600;
+    MS_DEEP_DBG(F("Subtracting"), tz_change,
+                F("from the timestamp to convert to the RTC's UTC offset."));
+    uint32_t epoch_change = epoch - loggerClock::_rtcEpoch;
+    MS_DEEP_DBG(F("Subtracting"), epoch_change,
+                F("from the timestamp to convert to the RTC epoch."));
+    MS_DEEP_DBG(F("Setting raw RTC value to:"), ts - tz_change - epoch_change);
+    loggerClock::setRawRTCNow(ts - tz_change - epoch_change);
+    PRINTOUT(F("Clock set!"));
+    return true;
 }
 
 // This checks that the logger time is within a "sane" range
 bool loggerClock::isRTCSane(void) {
-    uint32_t curRTC = getNowUTCEpoch(epochStart::unix_epoch);
-    return isRTCSane(curRTC, epochStart::unix_epoch);
+    uint32_t curRTC = getNowAsEpoch(0, epochStart::unix_epoch);
+    return isEpochTimeSane(curRTC, 0, epochStart::unix_epoch);
 }
-bool loggerClock::isRTCSane(uint32_t epochTime, epochStart epoch) {
-    uint32_t epochTime2 = epochTime - (epoch - epochStart::unix_epoch);
+bool loggerClock::isEpochTimeSane(uint32_t ts, int8_t utcOffset,
+                                  epochStart epoch) {
+    uint32_t epochTime2 = ts - utcOffset - (epoch - epochStart::unix_epoch);
     if (epochTime2 < EARLIEST_SANE_UNIX_TIMESTAMP ||
         epochTime2 > LATEST_SANE_UNIX_TIMESTAMP) {
         PRINTOUT(F("----- WARNING ----- !!!!!!!!!!!!!!!!!!!!"));
@@ -391,6 +317,8 @@ void loggerClock::disableRTCInterrupts() {
 }
 
 void loggerClock::begin() {
+    MS_DBG(F("Getting the epoch the processor uses for gmtime"));
+    _core_epoch = getProcessorEpochStart();
 #if defined(MS_USE_RTC_ZERO)
     MS_DBG(F("Beginning internal real time clock"));
     zero_sleep_rtc.begin();
@@ -406,19 +334,24 @@ void loggerClock::begin() {
     // timezone variable because this requires communication with the RTC which
     // can only happen during the run, not during compilation.
     rtc.setTimeZoneQuarterHours(
-        (Logger::_loggerTimeZone - Logger::_loggerRTCOffset) * 4);
+        (Logger::_loggerUTCOffset - Logger::_loggerRTCOffset) * 4);
 #elif defined(MS_USE_DS3231)
     MS_DBG(F("Beginning DS3231 real time clock"));
     rtc.begin();
 #endif
     // Print out the current time
     PRINTOUT(F("Current RTC time is:"),
-             formatDateTime_ISO8601(getNowUTCEpoch(epochStart::unix_epoch),
-                                    _rtcTimeZone, epochStart::unix_epoch));
+             formatDateTime_ISO8601(getNowAsEpoch(_rtcUTCOffset, _rtcEpoch),
+                                    _rtcUTCOffset, _rtcEpoch));
     MS_DBG(F("The processor is uses a"), _core_epoch.printEpochName(),
            F("epoch internally, which starts"), _core_epoch.printEpochStart(),
            F("and is offset from the Unix epoch by"),
            static_cast<uint32_t>(_core_epoch - epochStart::unix_epoch),
+           F("seconds"));
+    MS_DBG(F("The attached RTC uses a"), _rtcEpoch.printEpochName(),
+           F("epoch internally, which starts"), _rtcEpoch.printEpochStart(),
+           F("and is offset from the Unix epoch by"),
+           static_cast<uint32_t>(_rtcEpoch - epochStart::unix_epoch),
            F("seconds"));
 }
 
@@ -447,3 +380,48 @@ epochStart loggerClock::getProcessorEpochStart() {
     }
     return ret_val;
 }
+
+
+#if defined(MS_USE_RV8803)
+uint32_t loggerClock::getRawRTCNow() {
+    // uint32_t getEpoch(bool use1970sEpoch = false);
+    // The use1970sEpoch works properly ONLY on AVR/8-bit boards!!
+    //   - Setting use1970sEpoch to false returns the seconds from Jan 1, 2000.
+    //   - Setting use1970sEpoch to true returns the seconds from Jan 1, 1970.
+    // For 32-bit boards, you must set use1970sEpoch to FALSE to get the 1970's
+    // epoch. See:
+    // https://github.com/sparkfun/SparkFun_RV-8803_Arduino_Library/issues/29
+
+    // Get the epoch - with the time zone subtracted (i.e. return UTC epoch)
+    rtc.updateTime();
+    MS_DEEP_DBG(F("Set use1970sEpoch to"), _core_epoch == epochStart::y2k_epoch,
+                F("because the processor epoch is"),
+                static_cast<uint32_t>(epoch));
+    return rtc.getEpoch(_core_epoch == epochStart::y2k_epoch);
+}
+void loggerClock::setRawRTCNow(uint32_t ts) {
+    // bool setEpoch(uint32_t value, bool use1970sEpoch = false, int8_t
+    // timeZoneQuarterHours = 0);
+    // If timeZoneQuarterHours is non-zero, update RV8803_RAM. Add the zone to
+    // the epoch before setting
+    rtc.setEpoch(ts, _core_epoch == epochStart::y2k_epoch);
+}
+
+#elif defined(MS_USE_DS3231)
+uint32_t loggerClock::getRawRTCNow() {
+    return rtc.now().getEpoch();
+}
+void loggerClock::setRawRTCNow(uint32_t ts) {
+    rtc.setEpoch(ts);
+}
+
+#elif defined(MS_USE_RTC_ZERO)
+
+uint32_t loggerClock::getRawRTCNow() {
+    return zero_sleep_rtc.getEpoch();
+}
+void loggerClock::setRawRTCNow(uint32_t ts) {
+    zero_sleep_rtc.setEpoch(ts);
+}
+
+#endif

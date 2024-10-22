@@ -35,7 +35,9 @@
 
 
 // Initialize the static timezone
-int8_t Logger::_loggerTimeZone = 0;
+int8_t Logger::_loggerUTCOffset = 0;
+// Initialize the static epoch
+epochStart Logger ::_loggerEpoch = MS_LOGGER_EPOCH;
 // Initialize the static time adjustment
 int8_t Logger::_loggerRTCOffset = 0;
 // Initialize the static timestamps
@@ -45,10 +47,6 @@ uint32_t Logger::markedUTCUnixTime   = 0;
 volatile bool Logger::isLoggingNow = false;
 volatile bool Logger::isTestingNow = false;
 volatile bool Logger::startTesting = false;
-
-
-// Initialize the internal logger clock
-loggerClock Logger::_loggerClock;
 
 
 // Constructors
@@ -322,12 +320,10 @@ bool Logger::syncRTC() {
         PRINTOUT(F("This may take up to two minutes!"));
         if (_logModem->modemWake()) {
             if (_logModem->connectInternet(120000L)) {
-                _loggerClock.setRTClock(_logModem->getNISTTime(),
+                loggerClock::setRTClock(_logModem->getNISTTime(), 0,
                                         epochStart::unix_epoch);
                 MS_DBG(F("Current logger time after sync is"),
-                       formatDateTime_ISO8601(
-                           getNowLocalEpoch(epochStart::unix_epoch),
-                           epochStart::unix_epoch));
+                       formatDateTime_ISO8601(getNowLocalEpoch()));
                 success = true;
                 _logModem->updateModemMetadata();
             } else {
@@ -387,31 +383,31 @@ void Logger::sendDataToRemotes(void) {
 
 // Sets the static timezone that the data will be logged in - this must be set
 void Logger::setLoggerTimeZone(int8_t timeZone) {
-    _loggerTimeZone = timeZone;
+    _loggerUTCOffset = timeZone;
 // Some helpful prints for debugging
 #ifdef STANDARD_SERIAL_OUTPUT
     const char* prtout1 = "Logger timezone is set to UTC";
-    if (_loggerTimeZone == 0) {
+    if (_loggerUTCOffset == 0) {
         PRINTOUT(prtout1);
-    } else if (_loggerTimeZone > 0) {
-        PRINTOUT(prtout1, '+', _loggerTimeZone);
+    } else if (_loggerUTCOffset > 0) {
+        PRINTOUT(prtout1, '+', _loggerUTCOffset);
     } else {
-        PRINTOUT(prtout1, _loggerTimeZone);
+        PRINTOUT(prtout1, _loggerUTCOffset);
     }
 #endif
 }
 int8_t Logger::getLoggerTimeZone(void) {
-    return Logger::_loggerTimeZone;
+    return Logger::_loggerUTCOffset;
 }
 // Sets the static timezone that the RTC is programmed in
 // I VERY VERY STRONGLY RECOMMEND SETTING THE RTC IN UTC
 // You can either set the RTC offset directly or set the offset between the
 // RTC and the logger
 void Logger::setRTCTimeZone(int8_t timeZone) {
-    _loggerClock.setRTCTimeZone(timeZone);
+    loggerClock::setRTCOffset(timeZone);
 }
 int8_t Logger::getRTCTimeZone(void) {
-    return _loggerClock.getRTCTimeZone();
+    return loggerClock::getRTCOffset();
 }
 
 
@@ -423,8 +419,8 @@ int8_t Logger::getRTCTimeZone(void) {
 // RTC and the logger
 void Logger::setTZOffset(int8_t offset) {
     _loggerRTCOffset = offset;
-    _loggerClock.setRTCTimeZone(Logger::_loggerTimeZone +
-                                Logger::_loggerRTCOffset);
+    loggerClock::setRTCOffset(Logger::_loggerUTCOffset +
+                              Logger::_loggerRTCOffset);
     // Some helpful prints for debugging
     if (_loggerRTCOffset == 0) {
         PRINTOUT(F("RTC and Logger are set in the same timezone."));
@@ -439,32 +435,26 @@ void Logger::setTZOffset(int8_t offset) {
 int8_t Logger::getTZOffset(void) {
     return Logger::_loggerRTCOffset;
 }
-uint32_t Logger::getNowLocalEpoch(epochStart epoch) {
-    uint32_t currentEpochTime = _loggerClock.getNowUTCEpoch(epoch);
-    // Do NOT apply an offset if the timestamp is obviously bad
-    if (_loggerClock.isRTCSane(currentEpochTime, epoch))
-        currentEpochTime += ((uint32_t)_loggerRTCOffset) * 3600;
-    return currentEpochTime;
+uint32_t Logger::getNowLocalEpoch() {
+    return loggerClock::getNowAsEpoch(Logger::_loggerUTCOffset,
+                                      Logger::_loggerEpoch);
 }
-uint32_t Logger::getNowUTCEpoch(epochStart epoch) {
-    return _loggerClock.getNowUTCEpoch(epoch);
-}
-void Logger::setNowUTCEpoch(uint32_t ts, epochStart epoch) {
-    return _loggerClock.setNowUTCEpoch(ts, epoch);
+uint32_t Logger::getNowUTCEpoch() {
+    return loggerClock::getNowAsEpoch(0, Logger::_loggerEpoch);
 }
 
 // This converts an epoch time (unix time) into a ISO8601 formatted string.
 // It assumes the supplied date/time is in the LOGGER's timezone and adds
 // the LOGGER's offset as the time zone offset in the string. code modified
 // from parts of the SparkFun RV-8803 library
-String Logger::formatDateTime_ISO8601(uint32_t epochTime, epochStart epoch) {
-    return _loggerClock.formatDateTime_ISO8601(epochTime, _loggerTimeZone,
-                                               epoch);
+String Logger::formatDateTime_ISO8601(uint32_t epochTime) {
+    return loggerClock::formatDateTime_ISO8601(
+        epochTime, Logger::_loggerUTCOffset, Logger::_loggerEpoch);
 }
 
 // This checks that the logger time is within a "sane" range
 bool Logger::isRTCSane(void) {
-    return _loggerClock.isRTCSane();
+    return loggerClock::isRTCSane();
 }
 
 
@@ -476,8 +466,7 @@ bool Logger::isRTCSane(void) {
 // sensor was updated, just a single marked time.  By custom, this should be
 // called before updating the sensors, not after.
 void Logger::markTime(void) {
-    Logger::markedUTCUnixTime =
-        _loggerClock.getNowUTCEpoch(epochStart::unix_epoch);
+    Logger::markedUTCUnixTime   = getNowUTCEpoch();
     Logger::markedLocalUnixTime = markedUTCUnixTime +
         ((uint32_t)_loggerRTCOffset) * 3600;
 }
@@ -487,7 +476,7 @@ void Logger::markTime(void) {
 // rate
 bool Logger::checkInterval(void) {
     bool     retval;
-    uint32_t checkTime = getNowLocalEpoch(epochStart::unix_epoch);
+    uint32_t checkTime = getNowLocalEpoch();
     uint16_t interval  = _loggingIntervalMinutes;
     if (_initialShortIntervals > 0) {
         // log the first few samples at an interval of 1 minute so that
@@ -497,7 +486,7 @@ bool Logger::checkInterval(void) {
     }
 
     MS_DBG(F("Current Unix Timestamp:"), checkTime, F("->"),
-           formatDateTime_ISO8601(checkTime, epochStart::unix_epoch));
+           formatDateTime_ISO8601(checkTime));
     MS_DBG(F("Logging interval in seconds:"), (interval * 60));
     MS_DBG(F("Mod of Logging Interval:"), checkTime % (interval * 60));
 
@@ -819,9 +808,7 @@ void Logger::generateAutoFileName(void) {
     // Generate the file name from logger ID and date
     auto fileName = String(_loggerID);
     fileName += "_";
-    fileName += formatDateTime_ISO8601(getNowLocalEpoch(epochStart::unix_epoch),
-                                       epochStart::unix_epoch)
-                    .substring(0, 10);
+    fileName += formatDateTime_ISO8601(getNowLocalEpoch()).substring(0, 10);
     fileName += ".csv";
     setFileName(fileName);
     _fileName = fileName;
@@ -876,10 +863,10 @@ void Logger::printFileHeader(Stream* stream) {
 
     // We'll finish up the the custom variable codes
     String dtRowHeader = F("Date and Time in UTC");
-    if (_loggerTimeZone > 0) {
-        dtRowHeader += '+' + _loggerTimeZone;
-    } else if (_loggerTimeZone < 0) {
-        dtRowHeader += _loggerTimeZone;
+    if (_loggerUTCOffset > 0) {
+        dtRowHeader += '+' + _loggerUTCOffset;
+    } else if (_loggerUTCOffset < 0) {
+        dtRowHeader += _loggerUTCOffset;
     }
     STREAM_CSV_ROW(dtRowHeader, getVarCodeAtI(i))
 }
@@ -889,8 +876,7 @@ void Logger::printFileHeader(Stream* stream) {
 // time -  out over an Arduino stream
 void Logger::printSensorDataCSV(Stream* stream) {
     String csvString = "";
-    String iso8601   = formatDateTime_ISO8601(Logger::markedLocalUnixTime,
-                                              epochStart::unix_epoch);
+    String iso8601   = formatDateTime_ISO8601(Logger::markedLocalUnixTime);
     iso8601.replace("T", " ");
     csvString += iso8601.substring(0, 19);
     csvString += ',';
@@ -953,7 +939,7 @@ bool Logger::initializeSDCard(void) {
 void Logger::setFileTimestamp(File& fileToStamp, uint8_t stampFlag) {
     // Create a temporary variable for the epoch time
     // NOTE: time_t is a typedef for uint32_t, defined in time.h
-    time_t t = getNowLocalEpoch(epochStart::unix_epoch);
+    time_t t = getNowLocalEpoch();
     // create a temporary time struct
     // tm is a struct for time parts, defined in time.h
     struct tm* tmp = gmtime(&t);
@@ -1180,10 +1166,8 @@ void Logger::testingMode(bool sleepBeforeReturning) {
         // left on between iterations in testing mode.
         _internalArray->updateAllSensors();
         // Print out the current logger time
-        PRINTOUT(
-            F("Current logger time is"),
-            formatDateTime_ISO8601(getNowLocalEpoch(epochStart::unix_epoch),
-                                   epochStart::unix_epoch));
+        PRINTOUT(F("Current logger time is"),
+                 formatDateTime_ISO8601(getNowLocalEpoch()));
         PRINTOUT(F("-----------------------"));
 // Print out the sensor data
 #if defined(STANDARD_SERIAL_OUTPUT)
@@ -1313,10 +1297,9 @@ void Logger::begin() {
                   _ledPin);
 
     MS_DEEP_DBG(F("Beginning the internal logger clock"));
-    _loggerClock.begin();
+    loggerClock::begin();
     PRINTOUT(F("Current localized logger time is:"),
-             formatDateTime_ISO8601(getNowLocalEpoch(epochStart::unix_epoch),
-                                    epochStart::unix_epoch));
+             formatDateTime_ISO8601(getNowLocalEpoch()));
     // Reset the watchdog
     watchDogTimer.resetWatchDog();
 
@@ -1451,15 +1434,15 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
 
                     if ((Logger::markedLocalUnixTime != 0 &&
                          Logger::markedLocalUnixTime % 86400 == 43200) ||
-                        !_loggerClock.isRTCSane(Logger::markedLocalUnixTime)) {
+                        !loggerClock::isEpochTimeSane(
+                            Logger::markedLocalUnixTime,
+                            Logger::_loggerUTCOffset, Logger::_loggerEpoch)) {
                         // Sync the clock at noon
                         MS_DBG(F("Running a daily clock sync..."));
-                        _loggerClock.setRTClock(_logModem->getNISTTime(),
+                        loggerClock::setRTClock(_logModem->getNISTTime(), 0,
                                                 epochStart::unix_epoch);
                         MS_DBG(F("Current logger time after sync is"),
-                               formatDateTime_ISO8601(
-                                   getNowLocalEpoch(epochStart::unix_epoch),
-                                   epochStart::unix_epoch));
+                               formatDateTime_ISO8601(getNowLocalEpoch()));
                         watchDogTimer.resetWatchDog();
                     }
 

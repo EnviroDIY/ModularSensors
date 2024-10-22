@@ -14,7 +14,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - **BREAKING** Renamed `markedLocalEpochTime` to `markedLocalUnixTime` to clarify the start of the epoch that we're marking down.
 - **BREAKING** Renamed `markedUTCEpochTime` to `markedUTCUnixTime` to clarify the start of the epoch that we're marking down.
-- **Potentially BREAKING** Changed the requirements for a "sane" timestamp to between 2023 and 2030.
+- **Potentially BREAKING:** Changed the requirements for a "sane" timestamp to between 2023 and 2030.
   - Moved the value for the sane range into two defines: `EARLIEST_SANE_UNIX_TIMESTAMP` and `LATEST_SANE_UNIX_TIMESTAMP` so they can be more easily modified and tracked.
 - Modified all examples which define a sercom serial port for SAMD21 processors to require the defines for the supported processors.
 This should only make a difference for my compilation tests, real users should pick out only the chunks of code they want rather than leave conditional code in place.
@@ -30,7 +30,9 @@ If no epoch start is given, it is assumed to be UNIX (January 1, 1970).
 
 ### Removed
 
-- Removed support for any functions using the Sodaq "DateTime" class.
+- **Breaking:** Removed the function `setNowUTCEpoch(uint32_t)`.
+  - Although public, this was never intended to be used externally.
+- **Potentially BREAKING:** Removed support for any functions using the Sodaq "DateTime" class.
 
 ### Fixed
 

@@ -158,28 +158,26 @@ class epochStart {
 
 class loggerClock {
  public:
+    // Since there can only be one logger clock and all of it's methods are
+    // static, disallow creating of this class.
+    loggerClock() = delete;
     /**
-     * @brief Construct a new logger clock object.
-     */
-    loggerClock();
-    /**
-     * @brief Destroy the logger clock - takes no action.
-     */
-    virtual ~loggerClock();
-    /**
-     * @brief Set the static timezone that the RTC is programmed in.
+     * @brief Set the static offset in hours from UTC that the RTC is programmed
+     * in.
      *
-     * @note I VERY, VERY STRONGLY RECOMMEND SETTING THE RTC IN UTC
+     * @note I VERY, VERY STRONGLY RECOMMEND SETTING THE RTC IN UTC(ie, offset =
+     * 0)
      *
-     * @param timeZone The timezone of the real-time clock (RTC)
+     * @param offsetHours The offset of the real-time clock (RTC) from UTC in
+     * hours
      */
-    static void setRTCTimeZone(int8_t timeZone);
+    static void setRTCOffset(int8_t offsetHours);
     /**
-     * @brief Get the timezone of the real-time clock (RTC).
+     * @brief Get the of the real-time clock (RTC) from UTC in hours.
      *
-     * @return The timezone of the real-time clock (RTC)
+     * @return The offset of the real-time clock (RTC) from UTC in hours
      */
-    static int8_t getRTCTimeZone(void);
+    static int8_t getRTCOffset(void);
 
 #if defined(MS_USE_RV8803)
     /**
@@ -203,27 +201,13 @@ class loggerClock {
      * @brief Get the current Universal Coordinated Time (UTC) epoch time from
      * the RTC.
      *
+     * @param returnUTCOffset The offset from UTC to return the epoch time in.
      * @param epoch The type of epoch to use (ie, the standard for the start of
      * the epoch).
      *
-     * @return  The number of seconds from the start of the given epoch.
+     * @return The number of seconds from the start of the given epoch.
      */
-    static uint32_t getNowUTCEpoch(epochStart epoch = epochStart::unix_epoch);
-    /**
-     * @brief Set the real time clock to the given number of seconds from the
-     * start of the given epoch.
-     *
-     * The validity of the timestamp is not checked in any way!  In practice,
-     * setRTClock(ts, epoch) should be used to avoid setting the clock to an
-     * obviously invalid value.  The input value should be *in the timezone of
-     * the RTC.*
-     *
-     * @param ts The number of seconds since the start of the given epoch.
-     * @param epoch The type of epoch to use (ie, the standard for the start of
-     * the epoch).
-     */
-    static void setNowUTCEpoch(uint32_t   ts,
-                               epochStart epoch = epochStart::unix_epoch);
+    static uint32_t getNowAsEpoch(int8_t returnUTCOffset, epochStart epoch);
 
     /**
      * @brief Convert an epoch time into a ISO8601 formatted string.
@@ -232,30 +216,31 @@ class loggerClock {
      * the LOGGER's offset as the time zone offset in the string.
      *
      * @param epochTime The number of seconds since the start of the given
-     * epoch n the LOGGER's time zone.
-     * @param epoch The type of epoch to use (ie, the standard for the start of
-     * the epoch).
+     * epoch in the given offset from UTC.
+     * @param epochTimeUTCOffset The offset of the input epoch time from UTC in
+     * hours.
+     * @param epoch The epoch of the input epoch time.
      * @return An ISO8601 formatted String.
      */
-    static String
-    formatDateTime_ISO8601(uint32_t epochTime, int8_t loggerTimeZone,
-                           epochStart epoch = epochStart::unix_epoch);
+    static String formatDateTime_ISO8601(uint32_t   epochTime,
+                                         int8_t     epochTimeUTCOffset,
+                                         epochStart epoch);
 
     /**
      * @brief Veify that the input value is sane and if so sets the real time
      * clock to the given time.
      *
-     * @param UTCEpochSeconds The number of seconds since the start of the given
-     * epoch in UTC.
+     * @param ts The number of seconds since the start of the given epoch.
+     * @param utcOffset The offset of the epoch time from UTC.
      * @param epoch The type of epoch to use (ie, the standard for the start of
      * the epoch).
+     *
      * @return True if the input timestamp passes sanity checks **and**
      * the clock has been successfully set.
      *
      * @note There is no timezone correction in this function
      */
-    bool setRTClock(uint32_t   UTCEpochSeconds,
-                    epochStart epoch = epochStart::unix_epoch);
+    static bool setRTClock(uint32_t ts, int8_t utcOffset, epochStart epoch);
 
     /**
      * @brief Check that the current time on the RTC is within a "sane" range.
@@ -274,13 +259,15 @@ class loggerClock {
      * To be sane, the clock must be between #EARLIEST_SANE_UNIX_TIMESTAMP and
      * #LATEST_SANE_UNIX_TIMESTAMP.
      *
-     * @param epochTime The epoch time to be checked.
+     * @param ts The epoch time to be checked.
+     * @param utcOffset The offset of the epoch time from UTC in hours. Optional
+     * with a default value of 0.
      * @param epoch The type of epoch to use (ie, the standard for the start of
-     * the epoch).
+     * the epoch). Optional with a default value of epochStart::unix_epoch.
      * @return True if the given time passes sanity range checking.
      */
-    static bool isRTCSane(uint32_t   epochTime,
-                          epochStart epoch = epochStart::unix_epoch);
+    static bool isEpochTimeSane(uint32_t ts, int8_t utcOffset,
+                                epochStart epoch);
 
     /**
      * @brief Enable 1 minute interrupts on the RTC
@@ -297,7 +284,7 @@ class loggerClock {
      * This is used for operations that cannot happen in the constructor - they
      * must happen at run time, not at compile time.
      */
-    virtual void begin();
+    static void begin();
 
     /**
      * @brief Figure out where the epoch starts for the processor.
@@ -317,9 +304,21 @@ class loggerClock {
     static epochStart _core_epoch;
  protected:
     /**
-     * @brief The static timezone data of the real time clock
+     * @brief The static offset data of the real time clock from UTC in hours
      */
-    static int8_t _rtcTimeZone;
+    static int8_t _rtcUTCOffset;
+    /**
+     * @brief The start of the epoch for the RTC (or the RTC's library).
+     */
+    static epochStart _rtcEpoch;
+    /**
+     * @brief Get a raw epoch time from the RTC
+     */
+    static uint32_t getRawRTCNow();
+    /**
+     * @brief Sets the RTC to exactly the epoch time provided
+     */
+    static void setRawRTCNow(uint32_t ts);
 };
 
 #endif
