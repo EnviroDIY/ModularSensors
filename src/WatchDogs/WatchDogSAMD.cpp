@@ -42,18 +42,6 @@ void extendedWatchDogSAMD::setupWatchDog(uint32_t resetTime_s) {
 #endif
     waitForWDTBitSync();
 
-#if defined(__SAMD51__)
-    MS_DEEP_DBG(F("Making sure the the USB will be disabled on standby."));
-    USB->DEVICE.CTRLA.bit.ENABLE = 0;  // Disable the USB peripheral for config
-    while (USB->DEVICE.SYNCBUSY.bit.ENABLE) {
-        // Wait for synchronization
-    }
-    USB->DEVICE.CTRLA.bit.RUNSTDBY = 0;  // Deactivate run on standby
-    USB->DEVICE.CTRLA.bit.ENABLE   = 1;  // Re-enable the USB peripheral
-    while (USB->DEVICE.SYNCBUSY.bit.ENABLE) {
-        // Wait for synchronization
-    }
-#endif
     config32kOSC();
     configureWDTClockSource();
 
