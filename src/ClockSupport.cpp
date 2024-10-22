@@ -182,9 +182,8 @@ String loggerClock::formatDateTime_ISO8601(uint32_t   epochTime,
         MS_DEEP_DBG(F("THE TIME FORMAT IS NOT THE SAME SIZE AS A uint32_t!"),
                     sizeof(time_t), sizeof(uint32_t));
     }
-    bool is_signed = (((time_t)(-1)) < 0);
     MS_DEEP_DBG(F("THE TIME FORMAT IS"),
-                is_signed ? F("SIGNED") : F("UNSIGNED"));
+                (((time_t)(-1)) < 0) ? F("SIGNED") : F("UNSIGNED"));
 
     // implicit cast to time_t
     time_t t = epochTime;
