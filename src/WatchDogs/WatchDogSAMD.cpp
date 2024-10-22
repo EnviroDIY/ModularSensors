@@ -149,61 +149,11 @@ void extendedWatchDogSAMD::config32kOSC() {
     waitForWDTBitSync();
 
 #else  // SAMD21
-
-    /** Within the SAMD core for the SAMD21
-     * SystemInit() in startup.c configures these clocks:
-     * 1) Enable XOSC32K clock (external on-board 32.768Hz oscillator) or
-     *    OSC32K (if crystalless).
-     *     - This will be used as DFLL48M reference.
-     *     - SRGD NOTE: The SystemInit() function **blocks** while waiting for
-     *       oscillator stabilization.  It uses a default start-up configuration
-     *       of 0x6 for the (X)OSC (65536 OSCULP32K clock cycles + 3 (X)OSC32K
-     *       clock cycles = 2000092μs ~= 2s before PCLKSR.XOSC32KRDY is set.)
-     * 2) Put XOSC32K as source of Generic Clock Generator 1
-     * 3) Put Generic Clock Generator 1 as source for Generic Clock Multiplexer
-     *    0 (DFLL48M reference)
-     * 4) Enable DFLL48M clock
-     * 5) Switch Generic Clock Generator 0 to DFLL48M. CPU will run at 48MHz.
-     * 6) Modify PRESCaler value of OSCM to have 8MHz
-     * 7) Put OSC8M as source for Generic Clock Generator 3
-     * See:
-     * https://github.com/adafruit/ArduinoCore-samd/blob/ce20340620bfd9c545649ee5c4873888ee0475d0/cores/arduino/startup.c#L311
-     *
-     * The ZeroPowerManager library changes clocks (including the main clock
-     * source, GCLK_MAIN, which is always sourced from GCLKGEN[0]) to reduce
-     * power draw. Changing the GCLK_MAIN configuration will cause some
-     * functions like delay() to operate incorrectly. See:
-     * https://github.com/ee-quipment/ZeroPowerManager/blob/master/ZeroPowerManager.c#L170
-     * To avoid any confusing with delay(), we're not going to change anything
-     * with GCLK0. This means we won't be in the lowest power state like that
-     * offered by ZeroPowerManager
-     * TODO: Revisit this decision
-     *
-     * After a power-on reset, the clock generators for peripherals default to:
-     * RTC: GCLK0
-     * WDT: GCLK2
-     * Anything else: GCLK0
-     *
-     * We're going to configure a new generic clock generator for the watchdog
-     * (WDT) and the external interrupt controller (EIC).
-     *
-     * The watchdog must be attached to a clock source so it can tell how much
-     * time has passed and whether it needs to bite.
-     *
-     * The external interrupt controller must be attached to a currently-on
-     * clock to tell the difference between rising and HIGH or falling and LOW
-     * interrupts. If the external interupt controller is not attached to a
-     * running clock, then interrupts will not work! Thus, if the clock source
-     * for interrupts is not running in standby, the interrupts will not be able
-     * to wake the device. In WInterrupts.c in the Adafruit SAMD core, generic
-     * clock generator 0 (ie GCLK_MAIN) is used for the EIC peripheral. See:
-     * https://github.com/adafruit/ArduinoCore-samd/blob/ce20340620bfd9c545649ee5c4873888ee0475d0/cores/arduino/WInterrupts.c#L56
-     */
-
     // NOTE: There are no settings we need to configure for ultra-low power
     // internal oscillator (OSCULP32K). The only things that can be configured
     // are the write lock and over-writing the factory calibration. We don't
-    // want to do either of those.
+    // want to do either of those. The OSCULP32K is *always* running, no matter
+    // what sleep mode is in use.
 #endif
 }
 
