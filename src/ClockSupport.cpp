@@ -155,10 +155,9 @@ String loggerClock::formatDateTime_ISO8601(uint32_t   epochTime,
     // create a temporary time struct
     // tm is a struct for time parts, defined in time.h
     struct tm* tmp = gmtime(&t);
-    MS_DEEP_DBG(F("Time components: year:"), tmp->tm_year, F("month:"),
-                tmp->tm_mon + 1, F("day:"), tmp->tm_mday, F("hour:"),
-                tmp->tm_hour, F("minute:"), tmp->tm_min, F("second:"),
-                tmp->tm_sec);
+    MS_DEEP_DBG(F("Time components: "), tmp->tm_year, F(" - "), tmp->tm_mon + 1,
+                F(" - "), tmp->tm_mday, F("    "), tmp->tm_hour, F(" : "),
+                tmp->tm_min, F(" : "), tmp->tm_sec);
 
     // create a temporary buffer to put the timestamp into
     static char

@@ -469,7 +469,7 @@ bool Logger::isRTCSane(void) {
 void Logger::markTime(void) {
     Logger::markedUTCUnixTime   = getNowUTCEpoch();
     Logger::markedLocalUnixTime = markedUTCUnixTime +
-        ((uint32_t)_loggerRTCOffset) * 3600;
+        ((uint32_t)Logger::_loggerUTCOffset) * 3600;
 }
 
 
@@ -624,6 +624,7 @@ void Logger::systemSleep(void) {
     while (PM->SLEEPCFG.bit.SLEEPMODE != 0x4)
         ;  // Wait for it to take
 #else
+
     // Don't fully power down flash when in sleep
     // Adafruit SleepDog and ArduinoLowPower both do this.
     // TODO: Figure out if this is really necessary
@@ -943,7 +944,10 @@ void Logger::setFileTimestamp(File& fileToStamp, uint8_t stampFlag) {
     // create a temporary time struct
     // tm is a struct for time parts, defined in time.h
     struct tm* tmp = gmtime(&t);
-    fileToStamp.timestamp(stampFlag, tmp->tm_year, tmp->tm_mon + 1,
+    MS_DEEP_DBG(F("Time components: "), tmp->tm_year, F(" - "), tmp->tm_mon + 1,
+                F(" - "), tmp->tm_mday, F("    "), tmp->tm_hour, F(" : "),
+                tmp->tm_min, F(" : "), tmp->tm_sec);
+    fileToStamp.timestamp(stampFlag, tmp->tm_year + 1900, tmp->tm_mon + 1,
                           tmp->tm_mday, tmp->tm_hour, tmp->tm_min, tmp->tm_sec);
 }
 
