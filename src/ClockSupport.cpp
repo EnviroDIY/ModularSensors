@@ -340,8 +340,7 @@ void loggerClock::begin() {
     // This must happen here in the begin, not when setting the internal
     // timezone variable because this requires communication with the RTC which
     // can only happen during the run, not during compilation.
-    rtc.setTimeZoneQuarterHours(
-        (Logger::_loggerUTCOffset - Logger::_loggerRTCOffset) * 4);
+    rtc.setTimeZoneQuarterHours(loggerClock::_rtcUTCOffset * 4);
 #elif defined(MS_USE_DS3231)
     MS_DBG(F("Beginning DS3231 real time clock"));
     rtc.begin();

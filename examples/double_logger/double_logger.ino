@@ -255,7 +255,7 @@ void setup() {
     // Connect to the network
     if (modem.connectInternet()) {
         // Synchronize the RTC
-        logger1min.setRTClock(modem.getNISTTime());
+        loggerClock::setRTClock(modem.getNISTTime(), 0, epochStart::unix_epoch);
         modem.updateModemMetadata();
         // Disconnect from the network
         modem.disconnectInternet();

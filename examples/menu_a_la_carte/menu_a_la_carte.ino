@@ -3534,8 +3534,8 @@ void loop() {
                      Logger::markedLocalUnixTime % 86400 == 43200) ||
                     !loggerClock::isRTCSane()) {
                     Serial.println(F("Running a daily clock sync..."));
-                    dataLogger.setRTClock(modem.getNISTTime(),
-                                          epochStart::unix_epoch);
+                    loggerClock::setRTClock(modem.getNISTTime(), 0,
+                                                epochStart::unix_epoch);
                     dataLogger.watchDogTimer.resetWatchDog();
                     modem.updateModemMetadata();
                     dataLogger.watchDogTimer.resetWatchDog();
