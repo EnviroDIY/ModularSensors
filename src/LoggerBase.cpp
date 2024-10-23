@@ -194,10 +194,9 @@ void Logger::setRTCWakePin(int8_t mcuWakePin, uint8_t wakePinMode) {
     _mcuWakePin  = mcuWakePin;
     _wakePinMode = wakePinMode;
     if (_mcuWakePin >= 0) {
-        pinMode(_mcuWakePin, wakePinMode);
+        pinMode(_mcuWakePin, _wakePinMode);
+        enableInterrupt(_mcuWakePin, wakeISR, RISING);
         MS_DBG(F("Pin"), _mcuWakePin, F("set as RTC wake up pin"));
-    } else {
-        MS_DBG(F("Logger mcu will not sleep between readings!"));
     }
 }
 
@@ -220,13 +219,14 @@ void Logger::alertOff() {
 
 // Sets up a pin for an interrupt to enter testing mode
 void Logger::setTestingModePin(int8_t buttonPin, uint8_t buttonPinMode) {
-    _buttonPin = buttonPin;
+    _buttonPin     = buttonPin;
+    _buttonPinMode = buttonPinMode;
 
     // Set up the interrupt to be able to enter sensor testing mode
     // NOTE:  Entering testing mode before the sensors have been set-up may
     // give unexpected results.
     if (_buttonPin >= 0) {
-        pinMode(_buttonPin, buttonPinMode);
+        pinMode(_buttonPin, _buttonPinMode);
         enableInterrupt(_buttonPin, Logger::testingISR, CHANGE);
         MS_DBG(F("Button on pin"), _buttonPin,
                F("can be used to enter sensor testing mode."));
@@ -550,15 +550,6 @@ void Logger::systemSleep(void) {
     MS_DBG(F("Preparing clock interrupts to wake processor"));
     loggerClock::enableRTCInterrupts();
 
-#if !defined(MS_USE_RTC_ZERO)
-    // Set up a pin to hear clock interrupt and attach the wake ISR to it
-    MS_DBG(F("Enabling interrupts on pin"), _mcuWakePin);
-    // Set the pin mode, although this shouldn't really need to be re-set here
-    pinMode(_mcuWakePin, _wakePinMode);
-    // attach the interrupt
-    enableInterrupt(_mcuWakePin, wakeISR, RISING);
-#endif  //#if !defined(MS_USE_RTC_ZERO)
-
 
     // Send one last message before shutting down serial ports
     MS_DBG(F("Putting processor to sleep.  ZZzzz..."));
@@ -774,13 +765,6 @@ void Logger::systemSleep(void) {
 
     MS_DEEP_DBG(F("Dissabling RTC interupts"));
     loggerClock::disableRTCInterrupts();
-
-#if !defined(MS_USE_RTC_ZERO)
-    MS_DEEP_DBG(F("Detaching wake interrupt from wake pin"));
-    // Detach the from the pin
-    disableInterrupt(_mcuWakePin);
-#endif
-
     // The logger will now start the next function after the systemSleep
     // function in either the loop or setup
 }
@@ -1226,6 +1210,12 @@ void Logger::begin() {
     MS_DBG(F("Logger is set to record at"), _loggingIntervalMinutes,
            F("minute intervals."));
 
+    // Set all of the pin modes
+    // NOTE:  This must be done here at run time not at compile time
+    // Do this before configuing clocks?
+    setLoggerPins(_mcuWakePin, _SDCardSSPin, _SDCardPowerPin, _buttonPin,
+                  _ledPin);
+
 #if defined(ARDUINO_ARCH_SAMD)
     MS_DBG(F("Disabling the USB on standby to lower sleep current"));
     USB->DEVICE.CTRLA.bit.ENABLE = 0;  // Disable the USB peripheral
@@ -1236,8 +1226,10 @@ void Logger::begin() {
     while (USB->DEVICE.SYNCBUSY.bit.ENABLE)
         ;  // Wait for synchronization
 #if !defined(__SAMD51__)
-        // Keep the voltage regulator running in standby
-        // SYSCTRL->VREG.bit.RUNSTDBY = 1;
+    // Keep the voltage regulator running in standby
+    // doing this just in case the various periperals try to suck too much power
+    // while the board is asleep.
+    SYSCTRL->VREG.bit.RUNSTDBY = 1;
 #endif
 #endif
 
@@ -1248,34 +1240,29 @@ void Logger::begin() {
     watchDogTimer.enableWatchDog();
 
 #if defined(ARDUINO_ARCH_SAMD)
-    MS_DEEP_DBG(
-        F("Attaching an empty interrupt to force interrupt configuration"));
-    if (_mcuWakePin >= 0) {
-        attachInterrupt(_mcuWakePin, nullptr, CHANGE);
-        detachInterrupt(_mcuWakePin);
-    } else if (_buttonPin >= 0) {
-        attachInterrupt(_buttonPin, nullptr, CHANGE);
-        detachInterrupt(_buttonPin);
-    } else {
-        // if we don't know of a pin we can
-        attachInterrupt(1, nullptr, CHANGE);
-        detachInterrupt(1);
+    if (_mcuWakePin >= 0 || _buttonPin >= 0) {
+        // NOTE: This has to be done AFTER setupWatchDog, because setupWatchDog
+        // calls config32kOSC() and configureClockGenerator(), both of which are
+        // needed before we can call configureEICClock(). This also should
+        // happen after *both* the wake pin and testing mode pin have been set
+        // to ensure that all clock changes WInterrupts.c have already been
+        // applied. If `attachInterrupt` within WInterrupts.c is called again,
+        // the `watchDogTimer.configureEICClock()` function must be rerun on the
+        // SAMD21. If `__initialize()` within WInterrupts.c is called again the
+        // `watchDogTimer.configureEICClock()` function must be run again for
+        // both the SAMD51 and the SAMD21.
+        MS_DEEP_DBG(F("Configuring the EIC clock"));
+        watchDogTimer.configureEICClock();
     }
-    // NOTE: This has to be done AFTER setupWatchDog, because setupWatchDog
-    // calls config32kOSC() and configureClockGenerator(), both of which are
-    // needed before we can call configureEICClock(). This also should happen
-    // after the fake interrupt is set to force a call to __initialize() in
-    // WInterrupts.c
-    MS_DEEP_DBG(F("Configuring the EIC clock"));
-    watchDogTimer.configureEICClock();
 #endif
 
-    // Set the pins for I2C
-    MS_DBG(F("Setting I2C Pins to INPUT_PULLUP"));
+// Set the pins for I2C
 #ifdef SDA
+    MS_DBG(F("Setting SDA pin"), SDA, F("to INPUT_PULLUP"));
     pinMode(SDA, INPUT_PULLUP);  // set as input with the pull-up on
 #endif
 #ifdef SCL
+    MS_DBG(F("Setting SCL pin"), SCL, F("to INPUT_PULLUP"));
     pinMode(SCL, INPUT_PULLUP);
 #endif
     MS_DBG(F("Beginning wire (I2C)"));
@@ -1291,12 +1278,7 @@ void Logger::begin() {
     // the timeout period is a useless delay.
     Wire.setTimeout(0);
 
-    // Set all of the pin modes
-    // NOTE:  This must be done here at run time not at compile time
-    setLoggerPins(_mcuWakePin, _SDCardSSPin, _SDCardPowerPin, _buttonPin,
-                  _ledPin);
-
-    MS_DEEP_DBG(F("Beginning the internal logger clock"));
+    MS_DEEP_DBG(F("Beginning the logger clock"));
     loggerClock::begin();
     PRINTOUT(F("Current localized logger time is:"),
              formatDateTime_ISO8601(getNowLocalEpoch()));

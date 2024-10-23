@@ -274,7 +274,9 @@ class Logger {
      * Because this sets the pin mode, this function should only be called
      * during the `setup()` or `loop()` portion of an Arduino program.
      *
-     * @note  This sets the pin mode but does NOT enable the interrupt!
+     * @warning In version 0.37.0 this function was modified to both set the pin
+     * mode and attach the interrupt. In versions 0.36.x and prior, this
+     * function only set the pin mode without attaching the interrupt.
      *
      * @param mcuWakePin The pin on the mcu to be used to wake the mcu from deep
      * sleep.
@@ -432,6 +434,14 @@ class Logger {
      * Expected to be connected to a user button.
      */
     int8_t _buttonPin = -1;
+    /**
+     * @brief The pin mode used for interrupts on the testing (button) pin.
+     *
+     * Must be either `INPUT` OR `INPUT_PULLUP` with an AVR board.  On a SAM/D
+     * board `INPUT_PULLDOWN` is also an option.  Optional with a default value
+     * of `INPUT_PULLUP`.
+     */
+    uint8_t _buttonPinMode = INPUT_PULLUP;
 
     /**
      * @brief The sampling feature UUID
