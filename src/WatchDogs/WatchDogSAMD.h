@@ -84,6 +84,12 @@ class extendedWatchDogSAMD {
      * @brief Reset the watchdog's clock to prevent the board from resetting.
      */
     void resetWatchDog();
+
+    /**
+     * @brief One-time initialization of external interrupt controller.
+     */
+    void setupEIC();
+
     /**
      * @brief Configure the 32768 Hz Oscillator
      */

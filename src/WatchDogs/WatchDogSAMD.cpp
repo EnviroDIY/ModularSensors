@@ -126,6 +126,11 @@ void extendedWatchDogSAMD::resetWatchDog() {
     WDT->INTFLAG.bit.EW = 1;
 }
 
+void extendedWatchDogSAMD::setupEIC() {
+    config32kOSC();
+    configureClockGenerator();
+    configureEICClock();
+}
 
 void extendedWatchDogSAMD::config32kOSC() {
 #if defined(__SAMD51__)
