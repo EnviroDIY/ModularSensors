@@ -154,9 +154,10 @@ void extendedWatchDogSAMD::config32kOSC() {
 void extendedWatchDogSAMD::configureClockGenerator() {
 #if defined(__SAMD51__)
     // Do nothing
-    // The SAMD51 WDT always uses OSCULP32k directly; no separate clock
-    // generator is needed as long as OSCULP32k is enabled.
-    // The SAMD51 can also use OSCULP32k directly for the EIC.
+    // The SAMD51 WDT always uses OSCULP32k directly. The SAMD51 can also use
+    // OSCULP32k directly for the EIC. If we use the OSCULP32k directly for both
+    // peripherals, no separate clock generator is needed as long as OSCULP32k
+    // is enabled.
 #else  // SAMD21
     // Per datasheet 15.6.2.6, the source for the generic clock generator can be
     // changed on the fly, so we don't need to disable it for configuration.
@@ -171,10 +172,10 @@ void extendedWatchDogSAMD::configureClockGenerator() {
     // With 32 divisor the actual clock speed is ~1024Hz clock.
     MS_DEEP_DBG(F("Configuring the divisor for generic clock generator"),
                 GENERIC_CLOCK_GENERATOR_MS);
-    GCLK->GENDIV.reg =
+    GCLK->GENDIV.reg = static_cast<uint32_t>(
         GCLK_GENDIV_ID(
             GENERIC_CLOCK_GENERATOR_MS) |  // Select Generic Clock Generator
-        GCLK_GENDIV_DIV(4);                // Divide the clock source by 32
+        GCLK_GENDIV_DIV(4));               // Divide the clock source by 32
     waitForGCLKBitSync();
 
     // Configure the generic clock **generator**
@@ -193,7 +194,9 @@ void extendedWatchDogSAMD::configureClockGenerator() {
         GCLK_GENCTRL_GENEN |          // Enable the generic clock clontrol
         GCLK_GENCTRL_SRC_OSCULP32K |  // Select the built-in ultra-low power
                                       // internal oscillator
-        GCLK_GENCTRL_DIVSEL);  // Select to divide clock by 2^(GENDIV.DIV+1).
+        GCLK_GENCTRL_IDC |            // improve duty cycle
+        GCLK_GENCTRL_DIVSEL);         // Select to divide clock by
+                                      // 2^(GENDIV.DIV+1).
     waitForGCLKBitSync();
 #endif
 }
@@ -205,8 +208,9 @@ void extendedWatchDogSAMD::configureWDTClock() {
     // Per datasheet 16.6.3.3 the generic clock must be disabled before being
     // re-enabled with a new clock source setting.
     MS_DEEP_DBG(F("Disabling WDT peripeheral clock for configuration"));
-    GCLK->CLKCTRL.bit.ID    = GCM_WDT;  // select the WDT's clock
-    GCLK->CLKCTRL.bit.CLKEN = 0;        // Disable the clock
+    // this will set all bits but the ID to 0, disabling everything
+    // See https://github.com/arduino-libraries/ArduinoLowPower/issues/30
+    GCLK->CLKCTRL.reg = static_cast<uint16_t>(GCLK_CLKCTRL_ID(GCM_WDT));
     waitForGCLKBitSync();
 
     // Feed configured GCLK to WDT (Watchdog Timer)
@@ -271,8 +275,9 @@ void extendedWatchDogSAMD::configureEICClock() {
     // Per datasheet 16.6.3.3 the generic clock must be disabled before being
     // re-enabled with a new clock source setting.
     MS_DEEP_DBG(F("Disabling EIC peripeheral clock for configuration"));
-    GCLK->CLKCTRL.bit.ID    = GCM_EIC;  // select the WDT's clock
-    GCLK->CLKCTRL.bit.CLKEN = 0;        // Disable the clock
+    // this will set all bits but the ID to 0, disabling everything
+    // See https://github.com/arduino-libraries/ArduinoLowPower/issues/30
+    GCLK->CLKCTRL.reg = static_cast<uint16_t>(GCLK_CLKCTRL_ID(GCM_EIC));
     waitForGCLKBitSync();
 
     // Feed configured GCLK to EIC (external interrupt controller)
@@ -286,9 +291,14 @@ void extendedWatchDogSAMD::configureEICClock() {
         GCLK_CLKCTRL_ID(GCM_EIC));  // Feed the GCLK to the EIC
     waitForGCLKBitSync();
 
+    // Enable the power management mask for the EIC clock
+    // NOTE: this is the default setting at power on and is not changed by the
+    // Arduino core.
+    PM->APBAMASK.reg |= PM_APBAMASK_EIC;
+
     // Re-enable EIC after configuring its clock
-    EIC->CTRL.bit.ENABLE = 1;
-    while (EIC->STATUS.bit.SYNCBUSY == 1) {}
+    // EIC->CTRL.bit.ENABLE = 1;
+    // while (EIC->STATUS.bit.SYNCBUSY == 1) {}
 #endif
 }
 
