@@ -233,16 +233,6 @@ void extendedWatchDogSAMD::configureEICClock() {
     // Arduino core.
     MCLK->APBAMASK.reg |= PM_APBAMASK_EIC;
 
-    // Enable EIC interrupts (copied and repeated from WInterrutps.c)
-    for (uint32_t i = 0; i <= 15; i++)  // EIC_0_IRQn = 12 ... EIC_15_IRQn = 27
-    {
-        uint8_t irqn = EIC_0_IRQn + i;
-        NVIC_DisableIRQ(irqn);
-        NVIC_ClearPendingIRQ(irqn);
-        NVIC_SetPriority(irqn, 0);
-        NVIC_EnableIRQ(irqn);
-    }
-
     MS_DEEP_DBG(F("Disabling EIC controller configuration"));
     EIC->CTRLA.bit.ENABLE = 0;
     while (EIC->SYNCBUSY.bit.ENABLE == 1) {}
@@ -261,17 +251,6 @@ void extendedWatchDogSAMD::configureEICClock() {
     EIC->CTRLA.bit.ENABLE = 1;
     while (EIC->SYNCBUSY.bit.ENABLE == 1) {}
 #else  // SAMD21
-    // Enable the power management mask for the EIC clock
-    // NOTE: this is the default setting at power on and is not changed by the
-    // Arduino core.
-    PM->APBAMASK.reg |= PM_APBAMASK_EIC;
-
-    // Enable EIC interrupts (copied and repeated from WInterrutps.c)
-    NVIC_DisableIRQ(EIC_IRQn);
-    NVIC_ClearPendingIRQ(EIC_IRQn);
-    NVIC_SetPriority(EIC_IRQn, 0);
-    NVIC_EnableIRQ(EIC_IRQn);
-
     // Per datasheet 16.6.3.3 the generic clock must be disabled before being
     // re-enabled with a new clock source setting.
     MS_DEEP_DBG(F("Disabling EIC peripeheral clock for configuration"));
@@ -291,7 +270,7 @@ void extendedWatchDogSAMD::configureEICClock() {
         GCLK_CLKCTRL_ID(GCM_EIC));  // Feed the GCLK to the EIC
     waitForGCLKBitSync();
 
-    // Enable the power management mask for the EIC clock
+    // Enable the EIC clock within the power management configuration
     // NOTE: this is the default setting at power on and is not changed by the
     // Arduino core.
     PM->APBAMASK.reg |= PM_APBAMASK_EIC;

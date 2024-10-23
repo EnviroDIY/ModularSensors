@@ -741,7 +741,7 @@ class Logger {
      *
      * @m_deprecated_since{0,37,0}
      *
-     * Call setRTClock(uint32_t ts, int8_t utcOffset , epochStart epoch)
+     * Call loggerClock::setRTClock(uint32_t ts, int8_t utcOffset , epochStart epoch)
      * directly in new programs.
      *
      * @param UTCEpochSeconds The number of seconds since 1970 in UTC.
