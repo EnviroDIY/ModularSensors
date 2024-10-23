@@ -176,6 +176,7 @@ void Logger::setSDCardSS(int8_t SDCardSSPin) {
     _SDCardSSPin = SDCardSSPin;
     if (_SDCardSSPin >= 0) {
         pinMode(_SDCardSSPin, OUTPUT);
+        digitalWrite(_SDCardSSPin, HIGH);
         MS_DBG(F("Pin"), _SDCardSSPin, F("set as SD Card Slave/Chip Select"));
     }
 }
@@ -540,11 +541,13 @@ void Logger::wakeISR(void) {
 // Puts the system to sleep to conserve battery life.
 // This DOES NOT sleep or wake the sensors!!
 void Logger::systemSleep(void) {
+#if !defined(MS_USE_RTC_ZERO)
     // Don't go to sleep unless there's a wake pin!
     if (_mcuWakePin < 0) {
         MS_DBG(F("Use a non-negative wake pin to request sleep!"));
         return;
     }
+#endif
 
     // Send a message that we're getting ready
     MS_DBG(F("Preparing clock interrupts to wake processor"));
@@ -901,9 +904,22 @@ bool Logger::initializeSDCard(void) {
     // sd.begin(SdSpiConfig(_SDCardSSPin, DEDICATED_SPI | USER_SPI_BEGIN,
     // SPI_FULL_SPEED));
 
-
+#if (defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAMD_ZERO)) && \
+    !defined(__SAMD51__)
+    // Dispite the 48MHz clock speed, the max SPI speed of a SAMD21 is 12 MHz
+    // see https://github.com/arduino/ArduinoCore-samd/pull/292
+    // The Adafruit SAMD core does NOT automatically manage the SPI speed, so
+    // this needs to be set.
+    SdSpiConfig customSdConfig(static_cast<SdCsPin_t>(_SDCardSSPin),
+                               (uint8_t)(DEDICATED_SPI), SD_SCK_MHZ(12), &SPI);
+#else
+    // The SAMD51 is fast enough to handle SPI_FULL_SPEED=SD_SCK_MHZ(50).
+    // The SPI library of the Adafruit/Arduino AVR core will automatically
+    // adjust the full speed of the SPI clock down to whatever the board can
+    // handle.
     SdSpiConfig customSdConfig(static_cast<SdCsPin_t>(_SDCardSSPin),
                                (uint8_t)(DEDICATED_SPI), SPI_FULL_SPEED, &SPI);
+#endif
 
     if (!sd.begin(customSdConfig)) {
         PRINTOUT(F("Error: SD card failed to initialize or is missing."));
