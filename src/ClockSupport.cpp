@@ -109,13 +109,17 @@ uint32_t loggerClock::getNowAsEpoch(int8_t returnUTCOffset, epochStart epoch) {
 
     // Do NOT apply an offset if the timestamp is obviously bad
     uint32_t tz_change = 0;
-    if (!isEpochTimeSane(rtc_return, _rtcUTCOffset, _rtcEpoch)) {
-        tz_change = static_cast<uint32_t>(loggerClock::_rtcUTCOffset -
+    if (isEpochTimeSane(rtc_return, _rtcUTCOffset, _rtcEpoch)) {
+        tz_change = static_cast<uint32_t>(loggerClock::_rtcUTCOffset +
                                           returnUTCOffset) *
             3600;
         MS_DEEP_DBG(
             F("Adding"), tz_change,
             F("to the timestamp to convert to the requested timezone."));
+    } else {
+        MS_DEEP_DBG(
+            F("Not converting timestamp to requested UTC offset because"),
+            rtc_return, F("doesn't appear to be a valid timestamp"));
     }
 
     return rtc_return + tz_change + epoch_change;
@@ -204,7 +208,7 @@ bool loggerClock::setRTClock(uint32_t ts, int8_t utcOffset, epochStart epoch) {
     uint32_t prev_rtc_value = getNowAsEpoch(utcOffset, epoch);
     MS_DBG(F("    Current Time on RTC:"), prev_rtc_value, F("->"),
            formatDateTime_ISO8601(prev_rtc_value, utcOffset, epoch));
-    MS_DBG(F("    Offset between input and RTC:"),
+    MS_DBG(F("    Offset between input and RTC (seconds):"),
            abs(new_rtc_value - prev_rtc_value));
 
     // NOTE:  Because we take the time to do some UTC/Local conversions and
@@ -235,13 +239,8 @@ bool loggerClock::setRTClock(uint32_t ts, int8_t utcOffset, epochStart epoch) {
 // This checks that the logger time is within a "sane" range
 bool loggerClock::isRTCSane(void) {
     uint32_t curRTC = getNowAsEpoch(0, epochStart::unix_epoch);
-    return isEpochTimeSane(curRTC, 0, epochStart::unix_epoch);
-}
-bool loggerClock::isEpochTimeSane(uint32_t ts, int8_t utcOffset,
-                                  epochStart epoch) {
-    uint32_t epochTime2 = ts - utcOffset - (epoch - epochStart::unix_epoch);
-    if (epochTime2 < EARLIEST_SANE_UNIX_TIMESTAMP ||
-        epochTime2 > LATEST_SANE_UNIX_TIMESTAMP) {
+    bool     is_sane = isEpochTimeSane(curRTC, 0, epochStart::unix_epoch);
+    if (!is_sane) {
         PRINTOUT(F("----- WARNING ----- !!!!!!!!!!!!!!!!!!!!"));
         PRINTOUT(F("!!!!!!!!!! ----- WARNING ----- !!!!!!!!!!"));
         PRINTOUT(F("!!!!!!!!!!!!!!!!!!!! ----- WARNING ----- \n"));
@@ -249,6 +248,14 @@ bool loggerClock::isEpochTimeSane(uint32_t ts, int8_t utcOffset,
         PRINTOUT(F("\n----- WARNING ----- !!!!!!!!!!!!!!!!!!!!"));
         PRINTOUT(F("!!!!!!!!!! ----- WARNING ----- !!!!!!!!!!"));
         PRINTOUT(F("!!!!!!!!!!!!!!!!!!!! ----- WARNING ----- "));
+    }
+    return is_sane;
+}
+bool loggerClock::isEpochTimeSane(uint32_t ts, int8_t utcOffset,
+                                  epochStart epoch) {
+    uint32_t epochTime2 = ts - utcOffset - (epoch - epochStart::unix_epoch);
+    if (epochTime2 < EARLIEST_SANE_UNIX_TIMESTAMP ||
+        epochTime2 > LATEST_SANE_UNIX_TIMESTAMP) {
         return false;
     } else {
         return true;
