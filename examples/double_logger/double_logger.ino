@@ -228,7 +228,7 @@ void setup() {
     // Logging in the given time zone
     Logger::setLoggerTimeZone(timeZone);
     // It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)
-    Logger::setRTCTimeZone(0);
+    loggerClock::setRTCOffset(0);
 
     // Begin the variable array[s], logger[s], and publisher[s]
     array1min.begin(variableCount1min, variableList_at1min);
@@ -249,15 +249,13 @@ void setup() {
 
     // Print out the current time
     Serial.print(F("Current RTC time is: "));
-    Serial.println(
-        Logger::formatDateTime_ISO8601(Logger::getNowUTCEpoch(UNIX), UNIX));
+    Serial.println(Logger::formatDateTime_ISO8601(Logger::getNowUTCEpoch()));
     Serial.print(F("Current localized logger time is: "));
-    Serial.println(
-        Logger::formatDateTime_ISO8601(Logger::getNowLocalEpoch(UNIX), UNIX));
+    Serial.println(Logger::formatDateTime_ISO8601(Logger::getNowLocalEpoch()));
     // Connect to the network
     if (modem.connectInternet()) {
         // Synchronize the RTC
-        logger1min.setRTClock(modem.getNISTTime(), UNIX);
+        logger1min.setRTClock(modem.getNISTTime());
         modem.updateModemMetadata();
         // Disconnect from the network
         modem.disconnectInternet();
@@ -397,7 +395,8 @@ void loop() {
         // Connect to the network
         if (modem.connectInternet()) {
             // Synchronize the RTC
-            logger1min.setRTClock(modem.getNISTTime(), UNIX);
+            loggerClock::setRTClock(modem.getNISTTime(), 0,
+                                    epochStart::unix_epoch);
             // Disconnect from the network
             modem.disconnectInternet();
         }

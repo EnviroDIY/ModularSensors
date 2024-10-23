@@ -3243,7 +3243,7 @@ void setup() {
     Logger::setLoggerTimeZone(timeZone);
     // It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)
     Serial.println(F("Setting RTC time zone"));
-    Logger::setRTCTimeZone(0);
+    loggerClock::setRTCOffset(0);
 
 #if !defined(BUILD_MODEM_NO_MODEM)
     // Attach the modem and information pins to the logger
@@ -3389,7 +3389,7 @@ void setup() {
 
     /** Start [setup_clock] */
     // Sync the clock if it isn't valid or we have battery to spare
-    if (getBatteryVoltage() > 3.55 || !dataLogger.isRTCSane()) {
+    if (getBatteryVoltage() > 3.55 || !loggerClock::isRTCSane()) {
         // Synchronize the RTC with NIST
         // This will also set up the modem
         dataLogger.syncRTC();
@@ -3532,7 +3532,7 @@ void loop() {
                 dataLogger.watchDogTimer.resetWatchDog();
                 if ((Logger::markedLocalUnixTime != 0 &&
                      Logger::markedLocalUnixTime % 86400 == 43200) ||
-                    !dataLogger.isRTCSane()) {
+                    !loggerClock::isRTCSane()) {
                     Serial.println(F("Running a daily clock sync..."));
                     dataLogger.setRTClock(modem.getNISTTime(),
                                           epochStart::unix_epoch);

@@ -437,7 +437,7 @@ void setup() {
     // Logging in the given time zone
     Logger::setLoggerTimeZone(timeZone);
     // It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)
-    Logger::setRTCTimeZone(0);
+    loggerClock::setRTCOffset(0);
 
     // Attach the same modem to both loggers
     // It is only needed for the logger that will be sending out data, but
@@ -465,7 +465,7 @@ void setup() {
     }
 
     // Sync the clock if it isn't valid or we have battery to spare
-    if (getBatteryVoltage() > 3.55 || !loggerAllVars.isRTCSane()) {
+    if (getBatteryVoltage() > 3.55 || !loggerClock::isRTCSane()) {
         // Synchronize the RTC with NIST
         // This will also set up the modem
         loggerAllVars.syncRTC();
@@ -575,7 +575,8 @@ void loop() {
                     if (Logger::markedLocalUnixTime != 0 &&
                         Logger::markedLocalUnixTime % 86400 == 43200) {
                         Serial.println(F("Running a daily clock sync..."));
-                        loggerAllVars.setRTClock(modem.getNISTTime(), UNIX);
+                        loggerClock::setRTClock(modem.getNISTTime(), 0,
+                                                epochStart::unix_epoch);
                     }
 
                     // Disconnect from the network
