@@ -81,7 +81,13 @@ bool EspressifESP8266::ESPwaitForBoot(void) {
 bool EspressifESP8266::modemWakeFxn(void) {
     bool success = true;
     if (_powerPin >= 0) {  // Turns on when power is applied
+        MS_DEEP_DBG(
+            F("Power pin"), _powerPin,
+            F("takes priority over reset pin,  modem wakes on power on"));
         digitalWrite(_modemSleepRqPin, !_wakeLevel);
+        if (_modemSleepRqPin >= 0) {
+            digitalWrite(_modemSleepRqPin, !_wakeLevel);
+        }
         success &= ESPwaitForBoot();
         if (_modemSleepRqPin >= 0) {
             digitalWrite(_modemSleepRqPin, _wakeLevel);
@@ -106,6 +112,8 @@ bool EspressifESP8266::modemWakeFxn(void) {
         digitalWrite(_modemSleepRqPin, _wakeLevel);
         return success;
     } else {
+        MS_DEEP_DBG(F("No pins for waking the ESP8266. Hopefully it's in the "
+                      "state you want."));
         return true;
     }
 }
@@ -121,6 +129,8 @@ bool EspressifESP8266::modemSleepFxn(void) {
         }
         return retVal;
     } else {  // DON'T go to sleep if we can't wake up!
+        MS_DEEP_DBG(F("No pins for sleeping the ESP8266. Hopefully it's in the "
+                      "state you want."));
         return true;
     }
 }

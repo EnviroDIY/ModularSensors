@@ -78,6 +78,11 @@
 #define MS_DEBUGGING_STD "EspressifESP8266"
 #endif
 
+#if defined(MS_ESPRESSIFESP8266_DEBUG_DEEP) || \
+    defined(MS_ESPRESSIFESP32_DEBUG_DEEP)
+#define MS_DEBUGGING_DEEP "EspressifESP8266"
+#endif
+
 /**
  * @brief The modem type for the underlying TinyGSM library.
  */
@@ -92,6 +97,7 @@
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
+#undef MS_DEBUGGING_DEEP
 #include "TinyGsmClient.h"
 #include "LoggerModem.h"
 

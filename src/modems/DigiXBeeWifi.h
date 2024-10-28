@@ -69,6 +69,8 @@
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
+#undef MS_DEBUGGING_DEEP
+
 #include "TinyGsmClient.h"
 #undef TINY_GSM_MODEM_HAS_GPRS
 #include "DigiXBee.h"
