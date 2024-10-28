@@ -17,14 +17,20 @@
 
 // Debugging Statement
 // #define MS_WATCHDOGAVR_DEBUG
+// #define MS_WATCHDOGAVR_DEBUG_DEEP
 
 #ifdef MS_WATCHDOGAVR_DEBUG
 #define MS_DEBUGGING_STD "WatchDogAVR"
 #endif
 
+#ifdef MS_WATCHDOGAVR_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP "WatchDogAVR"
+#endif
+
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
+#undef MS_DEBUGGING_DEEP
 
 /**
  * @brief The extendedWatchDogAVR class uses the pre-reset interrupt to of the
@@ -41,14 +47,9 @@
  */
 class extendedWatchDogAVR {
  public:
-    /**
-     * @brief Construct a new extended watch dog object for AVR processors.
-     */
-    extendedWatchDogAVR();
-    /**
-     * @brief Destroy the extended watch dog object for AVR processors.
-     */
-    ~extendedWatchDogAVR();
+    // Since there can only be one watchdog and all of it's methods are
+    // static, disallow the creation of this class.
+    extendedWatchDogAVR() = delete;
 
     /**
      * @brief One-time initialization of watchdog timer.
@@ -56,21 +57,20 @@ class extendedWatchDogAVR {
      * @param resetTime_s The length of time in seconds between resets of the
      * watchdog before the entire board is reset.
      */
-    void setupWatchDog(uint32_t resetTime_s);
+    static void setupWatchDog(uint32_t resetTime_s);
     /**
      * @brief Enable the watchdog.
      */
-    void enableWatchDog();
+    static void enableWatchDog();
     /**
      * @brief Disable the watchdog.
      */
-    void disableWatchDog();
+    static void disableWatchDog();
 
     /**
      * @brief Reset the watchdog's clock to prevent the board from resetting.
      */
-    void resetWatchDog();
-
+    static void resetWatchDog();
 
     /**
      * @brief The number of times the pre-reset interrupt is allowed to fire
@@ -78,12 +78,11 @@ class extendedWatchDogAVR {
      */
     static volatile uint32_t _barksUntilReset;
 
- private:
     /**
      * @brief Internal reference to the number of seconds of silence before the
      * module is reset.
      */
-    uint32_t _resetTime_s;
+    static uint32_t _resetTime_s;
 };
 
 #endif  // SRC_WATCHDOGS_WATCHDOGAVR_H_

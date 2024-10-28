@@ -3352,7 +3352,6 @@ void setup() {
 /** End [setup_xbeec_carrier] */
 #endif
 
-
 #if defined(BUILD_MODEM_DIGI_XBEE_LTE_BYPASS)
     /** Start [setup_r4_carrrier] */
     // Extra modem set-up
@@ -3462,7 +3461,7 @@ void loop() {
 // sensors update, testing mode starts, or it goes back to sleep.
 void loop() {
     // Reset the watchdog
-    dataLogger.watchDogTimer.resetWatchDog();
+    extendedWatchDog::resetWatchDog();
 
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval
@@ -3470,7 +3469,7 @@ void loop() {
     if (dataLogger.checkInterval() && getBatteryVoltage() > 3.4) {
         // Flag to notify that we're in already awake and logging a point
         Logger::isLoggingNow = true;
-        dataLogger.watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
 
         // Print a line to show new reading
         Serial.println(F("------------------------------------------"));
@@ -3478,7 +3477,7 @@ void loop() {
         dataLogger.alertOn();
         // Power up the SD Card, but skip any waits after power up
         dataLogger.turnOnSDcard(false);
-        dataLogger.watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
 
         // Turn on the modem to let it start searching for the network
         // Only turn the modem on if the battery at the last interval was high
@@ -3504,7 +3503,7 @@ void loop() {
         // to run if the sensor was not previously set up.
         varArray.completeUpdate();
 
-        dataLogger.watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
 
 #ifdef BUILD_TEST_ALTSOFTSERIAL
         // Reset modbus serial pins to LOW, if your RS485 adapter bleeds power
@@ -3516,43 +3515,43 @@ void loop() {
 
         // Create a csv data record and save it to the log file
         dataLogger.logToSD();
-        dataLogger.watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
 
         // Connect to the network
         // Again, we're only doing this if the battery is doing well
         if (getBatteryVoltage() > 3.55) {
-            dataLogger.watchDogTimer.resetWatchDog();
+            extendedWatchDog::resetWatchDog();
             if (modem.connectInternet()) {
-                dataLogger.watchDogTimer.resetWatchDog();
+                extendedWatchDog::resetWatchDog();
                 // Publish data to remotes
                 Serial.println(F("Modem connected to internet."));
                 dataLogger.publishDataToRemotes();
 
                 // Sync the clock at noon
-                dataLogger.watchDogTimer.resetWatchDog();
+                extendedWatchDog::resetWatchDog();
                 if ((Logger::markedLocalUnixTime != 0 &&
                      Logger::markedLocalUnixTime % 86400 == 43200) ||
                     !loggerClock::isRTCSane()) {
                     Serial.println(F("Running a daily clock sync..."));
                     loggerClock::setRTClock(modem.getNISTTime(), 0,
                                                 epochStart::unix_epoch);
-                    dataLogger.watchDogTimer.resetWatchDog();
+                    extendedWatchDog::resetWatchDog();
                     modem.updateModemMetadata();
-                    dataLogger.watchDogTimer.resetWatchDog();
+                    extendedWatchDog::resetWatchDog();
                 }
 
                 // Disconnect from the network
                 modem.disconnectInternet();
-                dataLogger.watchDogTimer.resetWatchDog();
+                extendedWatchDog::resetWatchDog();
             }
             // Turn the modem off
             modem.modemSleepPowerDown();
-            dataLogger.watchDogTimer.resetWatchDog();
+            extendedWatchDog::resetWatchDog();
         }
 
         // Cut power from the SD card - without additional housekeeping wait
         dataLogger.turnOffSDcard(false);
-        dataLogger.watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
         // Turn off the LED
         dataLogger.alertOff();
         // Print a line to show reading ended

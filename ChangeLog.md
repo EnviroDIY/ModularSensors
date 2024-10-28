@@ -12,10 +12,14 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- **BREAKING** Converted the watch-dog classes in to static classes with all static fuction and a **deleted constructior**.
+  - Any code that attepted to interact with the watchdog (ie, with a "complex loop") must now call the extendedWatchDog class directly, ie: `extendedWatchDog::resetWatchDog();` rather than `dataLogger.watchDogTimer.resetWatchDog();`
 - **BREAKING** Renamed `markedLocalEpochTime` to `markedLocalUnixTime` to clarify the start of the epoch that we're marking down.
 - **BREAKING** Renamed `markedUTCEpochTime` to `markedUTCUnixTime` to clarify the start of the epoch that we're marking down.
 - **Potentially BREAKING:** Changed the requirements for a "sane" timestamp to between 2023 and 2030.
   - Moved the value for the sane range into two defines: `EARLIEST_SANE_UNIX_TIMESTAMP` and `LATEST_SANE_UNIX_TIMESTAMP` so they can be more easily modified and tracked.
+- Modified `setRTCWakePin(mcuWakePin, wakePinMode)` to attach the wake interrupt to the pin in addition to setting the pin mode for the wake pin.
+- Removed the enable/disable wake pin interrupt at every sleep interval in favor of a single attachment as mentioned above.
 - Modified all examples which define a sercom serial port for SAMD21 processors to require the defines for the supported processors.
 This should only make a difference for my compilation tests, real users should pick out only the chunks of code they want rather than leave conditional code in place.
 - Changed some fill-in-the-blank spots in the menu example to only set the value in a single spot in the code.
@@ -26,7 +30,8 @@ This should only make a difference for my compilation tests, real users should p
 - Added support for multiple 'epoch' types starting at January 1, 1970 (UNIX), January 1, 2000 (Arduino and others), January 5, 1980 (GPST), and January 1, 1900 (NIST time and NTP protocols).
   - This allows you to input the epoch you're using in every single function that deals with a uint32_t or epoch type timestamp.
 If no epoch start is given, it is assumed to be UNIX (January 1, 1970).
-  - The supported epochs are given in the enum epochStart
+  - The supported epochs are given in the enum epochStart.
+- Storing _buttonPinMode internally.
 
 ### Removed
 

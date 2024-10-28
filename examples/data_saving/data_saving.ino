@@ -504,7 +504,7 @@ void setup() {
 // sensors update, testing mode starts, or it goes back to sleep.
 void loop() {
     // Reset the watchdog
-    loggerAllVars.watchDogTimer.resetWatchDog();
+    extendedWatchDog::resetWatchDog();
 
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval
@@ -512,7 +512,7 @@ void loop() {
     if (loggerAllVars.checkInterval() && getBatteryVoltage() > 3.4) {
         // Flag to notify that we're in already awake and logging a point
         Logger::isLoggingNow = true;
-        loggerAllVars.watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
 
         // Print a line to show new reading
         Serial.println(F("------------------------------------------"));
@@ -520,7 +520,7 @@ void loop() {
         loggerAllVars.alertOn();
         // Power up the SD Card, but skip any waits after power up
         loggerAllVars.turnOnSDcard(false);
-        loggerAllVars.watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
 
         // Start the stream for the modbus sensors
         // Because RS485 adapters tend to "steal" current from the data pins
@@ -533,7 +533,7 @@ void loop() {
         // NOTE:  The wake function for each sensor should force sensor setup
         // to run if the sensor was not previously set up.
         arrayComplete.completeUpdate();
-        loggerAllVars.watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
 
         // End the stream for the modbus sensors
         // Because RS485 adapters tend to "steal" current from the data pins
@@ -556,20 +556,20 @@ void loop() {
 
         // Create a csv data record and save it to the log file
         loggerAllVars.logToSD();
-        loggerAllVars.watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
 
         // Connect to the network
         // Again, we're only doing this if the battery is doing well
         if (getBatteryVoltage() > 3.55) {
             if (modem.modemWake()) {
-                loggerAllVars.watchDogTimer.resetWatchDog();
+                extendedWatchDog::resetWatchDog();
                 if (modem.connectInternet()) {
-                    loggerAllVars.watchDogTimer.resetWatchDog();
+                    extendedWatchDog::resetWatchDog();
                     // Publish data to remotes
                     loggerToGo.publishDataToRemotes();
                     modem.updateModemMetadata();
 
-                    loggerAllVars.watchDogTimer.resetWatchDog();
+                    extendedWatchDog::resetWatchDog();
                     // Sync the clock at noon
                     // NOTE:  All loggers have the same clock, pick one
                     if (Logger::markedLocalUnixTime != 0 &&
@@ -580,18 +580,18 @@ void loop() {
                     }
 
                     // Disconnect from the network
-                    loggerAllVars.watchDogTimer.resetWatchDog();
+                    extendedWatchDog::resetWatchDog();
                     modem.disconnectInternet();
                 }
             }
             // Turn the modem off
-            loggerAllVars.watchDogTimer.resetWatchDog();
+            extendedWatchDog::resetWatchDog();
             modem.modemSleepPowerDown();
         }
 
         // Cut power from the SD card - without additional housekeeping wait
         loggerAllVars.turnOffSDcard(false);
-        loggerAllVars.watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
         // Turn off the LED
         loggerAllVars.alertOff();
         // Print a line to show reading ended

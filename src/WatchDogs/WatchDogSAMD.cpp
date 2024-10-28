@@ -16,11 +16,8 @@
 #if defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAMD_ZERO)
 
 volatile uint32_t extendedWatchDogSAMD::_barksUntilReset = 0;
+uint32_t          extendedWatchDogSAMD::_resetTime_s     = 900;
 
-extendedWatchDogSAMD::extendedWatchDogSAMD() {}
-extendedWatchDogSAMD::~extendedWatchDogSAMD() {
-    disableWatchDog();
-}
 
 // One-time initialization of watchdog timer.
 void extendedWatchDogSAMD::setupWatchDog(uint32_t resetTime_s) {
@@ -307,12 +304,12 @@ void extendedWatchDogSAMD::waitForGCLKBitSync() {
 
 // ISR for watchdog early warning
 void WDT_Handler(void) {
+    MS_DEEP_DBG(F("\nWatchdog early warning interrupt!"));
     // Increament down the counter, makes multi cycle WDT possible
     extendedWatchDogSAMD::_barksUntilReset--;
-    // MS_DBG(F("\nWatchdog interrupt!"),
-    // extendedWatchDogSAMD::_barksUntilReset);
-    if (extendedWatchDogSAMD::_barksUntilReset <=
-        0) {  // Clear Early Warning (EW) Interrupt Flag
+    if (extendedWatchDogSAMD::_barksUntilReset <= 0) {
+        MS_DEEP_DBG(F("The dog has barked enough; resetting the board."));
+        // Clear Early Warning (EW) Interrupt Flag
         WDT->INTFLAG.bit.EW = 1;
         // Writing a value different than WDT_CLEAR_CLEAR_KEY causes reset
         WDT->CLEAR.reg = 0xFF;
@@ -320,6 +317,9 @@ void WDT_Handler(void) {
             // wait
         }
     } else {
+        MS_DEEP_DBG(F("There will be"), extendedWatchDogSAMD::_barksUntilReset,
+                    F("more barks until total time is"),
+                    extendedWatchDogSAMD::_resetTime_s, F("and board resets"));
         // Write the clear key
         WDT->CLEAR.reg = WDT_CLEAR_CLEAR_KEY;
 #if defined(__SAMD51__)

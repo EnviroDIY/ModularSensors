@@ -333,14 +333,14 @@ bool Logger::syncRTC() {
         } else {
             PRINTOUT(F("Could not wake modem for clock sync."));
         }
-        watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
 
         // Power down the modem now that we are done with it
         MS_DBG(F("Powering down modem after clock sync."));
         _logModem->disconnectInternet();
         _logModem->modemSleepPowerDown();
     }
-    watchDogTimer.resetWatchDog();
+    extendedWatchDog::resetWatchDog();
     return success;
 }
 
@@ -369,7 +369,7 @@ void Logger::publishDataToRemotes(void) {
             PRINTOUT(F("\nSending data to ["), i, F("]"),
                      dataPublishers[i]->getEndpoint());
             dataPublishers[i]->publishData();
-            watchDogTimer.resetWatchDog();
+            extendedWatchDog::resetWatchDog();
         }
     }
 }
@@ -587,7 +587,7 @@ void Logger::systemSleep(void) {
 
     // Disable the watch-dog timer
     MS_DEEP_DBG(F("Disabling the watchdog"));
-    watchDogTimer.disableWatchDog();
+    extendedWatchDog::disableWatchDog();
 
 // Wait until the serial ports have finished transmitting
 // This does not clear their buffers, it just waits until they are finished
@@ -747,7 +747,7 @@ void Logger::systemSleep(void) {
 
     // Re-enable the watch-dog timer
     MS_DEEP_DBG(F("Re-enabling the watchdog"));
-    watchDogTimer.enableWatchDog();
+    extendedWatchDog::enableWatchDog();
 
     // Re-start the I2C interface
     MS_DEEP_DBG(F("Restarting I2C"));
@@ -1141,12 +1141,12 @@ void Logger::testingMode(bool sleepBeforeReturning) {
         MS_DBG(F("Waking up"), _logModem->getModemName(), F("..."));
         if (_logModem->modemWake()) {
             // Connect to the network
-            watchDogTimer.resetWatchDog();
+            extendedWatchDog::resetWatchDog();
             MS_DBG(F("Connecting to the Internet..."));
             if (_logModem->connectInternet()) {
                 gotInternetConnection = true;
                 // Publish data to remotes
-                watchDogTimer.resetWatchDog();
+                extendedWatchDog::resetWatchDog();
             }
         }
     }
@@ -1164,7 +1164,7 @@ void Logger::testingMode(bool sleepBeforeReturning) {
         // Update the modem metadata
         if (gotInternetConnection) { _logModem->updateModemMetadata(); }
 
-        watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
         // Update the values from all attached sensors
         // NOTE:  NOT using complete update because we want the sensors to be
         // left on between iterations in testing mode.
@@ -1178,10 +1178,10 @@ void Logger::testingMode(bool sleepBeforeReturning) {
         _internalArray->printSensorData(&STANDARD_SERIAL_OUTPUT);
 #endif
         PRINTOUT(F("-----------------------"));
-        watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
 
         delay(5000);
-        watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
     }
 
     // Put sensors to sleep
@@ -1196,7 +1196,7 @@ void Logger::testingMode(bool sleepBeforeReturning) {
 
     PRINTOUT(F("Exiting testing mode"));
     PRINTOUT(F("------------------------------------------"));
-    watchDogTimer.resetWatchDog();
+    extendedWatchDog::resetWatchDog();
 
     // Unset testing mode flag
     Logger::isTestingNow = false;
@@ -1255,9 +1255,9 @@ void Logger::begin() {
 
     MS_DBG(F("Setting up a watch-dog timer to fire after 15 minutes of "
              "inactivity"));
-    watchDogTimer.setupWatchDog((uint32_t)(5 * 60 * 3));
+    extendedWatchDog::setupWatchDog((uint32_t)(5 * 60 * 3));
     // Enable the watchdog
-    watchDogTimer.enableWatchDog();
+    extendedWatchDog::enableWatchDog();
 
 #if defined(ARDUINO_ARCH_SAMD)
     if (_mcuWakePin >= 0 || _buttonPin >= 0) {
@@ -1267,12 +1267,12 @@ void Logger::begin() {
         // happen after *both* the wake pin and testing mode pin have been set
         // to ensure that all clock changes WInterrupts.c have already been
         // applied. If `attachInterrupt` within WInterrupts.c is called again,
-        // the `watchDogTimer.configureEICClock()` function must be rerun on the
-        // SAMD21. If `__initialize()` within WInterrupts.c is called again the
-        // `watchDogTimer.configureEICClock()` function must be run again for
-        // both the SAMD51 and the SAMD21.
+        // the `extendedWatchDog::configureEICClock()` function must be rerun on
+        // the SAMD21. If `__initialize()` within WInterrupts.c is called again
+        // the `extendedWatchDog::configureEICClock()` function must be run
+        // again for both the SAMD51 and the SAMD21.
         MS_DEEP_DBG(F("Configuring the EIC clock"));
-        watchDogTimer.configureEICClock();
+        extendedWatchDog::configureEICClock();
     }
 #endif
 
@@ -1287,7 +1287,7 @@ void Logger::begin() {
 #endif
     MS_DBG(F("Beginning wire (I2C)"));
     Wire.begin();
-    watchDogTimer.resetWatchDog();
+    extendedWatchDog::resetWatchDog();
 
     // Eliminate any potential extra waits in the wire library
     // These waits would be caused by a readBytes or parseX being called
@@ -1303,7 +1303,7 @@ void Logger::begin() {
     PRINTOUT(F("Current localized logger time is:"),
              formatDateTime_ISO8601(getNowLocalEpoch()));
     // Reset the watchdog
-    watchDogTimer.resetWatchDog();
+    extendedWatchDog::resetWatchDog();
 
     // Begin the internal array
     _internalArray->begin();
@@ -1333,7 +1333,7 @@ void Logger::begin() {
 // This is a one-and-done to log data
 void Logger::logData(bool sleepBeforeReturning) {
     // Reset the watchdog
-    watchDogTimer.resetWatchDog();
+    extendedWatchDog::resetWatchDog();
 
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval
@@ -1341,7 +1341,7 @@ void Logger::logData(bool sleepBeforeReturning) {
         // Flag to notify that we're in already awake and logging a point
         Logger::isLoggingNow = true;
         // Reset the watchdog
-        watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
 
         // Print a line to show new reading
         PRINTOUT(F("------------------------------------------"));
@@ -1354,9 +1354,9 @@ void Logger::logData(bool sleepBeforeReturning) {
 
         // Do a complete sensor update
         MS_DBG(F("    Running a complete sensor update..."));
-        watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
         _internalArray->completeUpdate();
-        watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
 
         // Create a csv data record and save it to the log file
         logToSD();
@@ -1383,7 +1383,7 @@ void Logger::logData(bool sleepBeforeReturning) {
 // This is a one-and-done to log data
 void Logger::logDataAndPublish(bool sleepBeforeReturning) {
     // Reset the watchdog
-    watchDogTimer.resetWatchDog();
+    extendedWatchDog::resetWatchDog();
 
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval
@@ -1391,7 +1391,7 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
         // Flag to notify that we're in already awake and logging a point
         Logger::isLoggingNow = true;
         // Reset the watchdog
-        watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
 
         // Print a line to show new reading
         PRINTOUT(F("------------------------------------------"));
@@ -1408,9 +1408,9 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
         // NOTE:  The wake function for each sensor should force sensor setup to
         // run if the sensor was not previously set up.
         MS_DBG(F("Running a complete sensor update..."));
-        watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
         _internalArray->completeUpdate();
-        watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
 
 // Print out the sensor data
 #if defined(STANDARD_SERIAL_OUTPUT)
@@ -1426,13 +1426,13 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
             MS_DBG(F("Waking up"), _logModem->getModemName(), F("..."));
             if (_logModem->modemWake()) {
                 // Connect to the network
-                watchDogTimer.resetWatchDog();
+                extendedWatchDog::resetWatchDog();
                 MS_DBG(F("Connecting to the Internet..."));
                 if (_logModem->connectInternet(240000L)) {
                     // Publish data to remotes
-                    watchDogTimer.resetWatchDog();
+                    extendedWatchDog::resetWatchDog();
                     publishDataToRemotes();
-                    watchDogTimer.resetWatchDog();
+                    extendedWatchDog::resetWatchDog();
 
                     if ((Logger::markedLocalUnixTime != 0 &&
                          Logger::markedLocalUnixTime % 86400 == 43200) ||
@@ -1445,7 +1445,7 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
                                                 epochStart::unix_epoch);
                         MS_DBG(F("Current logger time after sync is"),
                                formatDateTime_ISO8601(getNowLocalEpoch()));
-                        watchDogTimer.resetWatchDog();
+                        extendedWatchDog::resetWatchDog();
                     }
 
                     // Update the modem metadata
@@ -1457,7 +1457,7 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
                     _logModem->disconnectInternet();
                 } else {
                     MS_DBG(F("Could not connect to the internet!"));
-                    watchDogTimer.resetWatchDog();
+                    extendedWatchDog::resetWatchDog();
                 }
             }
             // Turn the modem off

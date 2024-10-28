@@ -19,11 +19,7 @@
 #include <avr/wdt.h>
 
 volatile uint32_t extendedWatchDogAVR::_barksUntilReset = 0;
-
-extendedWatchDogAVR::extendedWatchDogAVR() {}
-extendedWatchDogAVR::~extendedWatchDogAVR() {
-    disableWatchDog();
-}
+uint32_t          extendedWatchDogAVR::_resetTime_s     = 900;
 
 
 // One-time initialization of watchdog timer.
@@ -97,11 +93,11 @@ void extendedWatchDogAVR::resetWatchDog() {
  * @brief ISR for watchdog early warning
  */
 ISR(WDT_vect) {
+    MS_DEEP_DBG(F("\nWatchdog interrupt!"));
     extendedWatchDogAVR::_barksUntilReset--;  // Increament down the counter,
                                               // makes multi cycle WDT possible
-    // MS_DBG(F("\nWatchdog interrupt!"),
-    // extendedWatchDogAVR::_barksUntilReset);
     if (extendedWatchDogAVR::_barksUntilReset <= 0) {
+        MS_DEEP_DBG(F("The dog has barked enough; resetting the board."));
         MCUSR = 0;  // reset flags
 
         // Put timer in reset-only mode:
@@ -114,6 +110,9 @@ ISR(WDT_vect) {
 
         // wdt_reset();  // not needed
     } else {
+        MS_DEEP_DBG(F("There will be"), extendedWatchDogAVR::_barksUntilReset,
+                    F("more barks until total time is"),
+                    extendedWatchDogAVR::_resetTime_s, F("and board resets"));
         wdt_reset();  // start timer again (still in interrupt-only mode)
     }
 }

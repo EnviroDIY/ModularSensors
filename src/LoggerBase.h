@@ -42,10 +42,12 @@
 // The SAMD library can also the built-in clock on those modules
 #if defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAMD_ZERO)
 #include "WatchDogs/WatchDogSAMD.h"
+#define extendedWatchDog extendedWatchDogSAMD
 #elif defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
 #include <avr/power.h>
 #include <avr/sleep.h>
 #include "WatchDogs/WatchDogAVR.h"
+#define extendedWatchDog extendedWatchDogAVR
 #endif
 
 #include <SdFat.h>  // To communicate with the SD card
@@ -918,20 +920,6 @@ class Logger {
      * @note This DOES NOT sleep or wake the sensors!!
      */
     void systemSleep(void);
-
-#if defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAMD_ZERO)
-    /**
-     * @brief A watch-dog implementation to use to reboot the system in case of
-     * lock-ups
-     */
-    extendedWatchDogSAMD watchDogTimer;
-#else
-    /**
-     * @brief A watch-dog implementation to use to reboot the system in case of
-     * lock-ups
-     */
-    extendedWatchDogAVR watchDogTimer;
-#endif
     /**@}*/
 
     // ===================================================================== //
