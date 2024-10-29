@@ -114,6 +114,7 @@ void extendedWatchDogSAMD::disableWatchDog() {
 
 
 void extendedWatchDogSAMD::resetWatchDog() {
+    MS_DEEP_DBG(F("Feeding the watch-dog!"));
     extendedWatchDogSAMD::_barksUntilReset = _resetTime_s / 8;
     // Write the watchdog clear key value (0xA5) to the watchdog
     // clear register to clear the watchdog timer and reset it.
@@ -183,7 +184,15 @@ void extendedWatchDogSAMD::configureClockGenerator() {
     // better.
     // NOTE: The generic clock generator must be enabled by performing a single
     // 32-bit write to the Generic Clock Generator Control register (GENCTRL) -
-    // ie, do this all in one step
+    // ie, do this all in one step.
+    // NOTE: Per the manual 15.8.4, the run in standby setting
+    // (GCLK_GENCTRL_RUNSTDBY) for the generic clock generator control only
+    // applies if the generic clock generator has been configured to be output
+    // to its dedicated GCLK_IO pin. "If GENCTRL.OE is zero, this bit has no
+    // effect."
+    // To keep a generic clock generator available for a generic clock, the
+    // clock **source** needs to be configured to run in standby via the SYSCTRL
+    // registers for that source.
     MS_DEEP_DBG(F("Configuring generic clock generator"),
                 GENERIC_CLOCK_GENERATOR_MS);
     GCLK->GENCTRL.reg = static_cast<uint32_t>(
@@ -228,7 +237,7 @@ void extendedWatchDogSAMD::configureEICClock() {
     // Enable the power management mask for the EIC clock
     // NOTE: this is the default setting at power on and is not changed by the
     // Arduino core.
-    MCLK->APBAMASK.reg |= PM_APBAMASK_EIC;
+    MCLK->APBAMASK.reg |= MCLK_APBAMASK_EIC;
 
     MS_DEEP_DBG(F("Disabling EIC controller configuration"));
     EIC->CTRLA.bit.ENABLE = 0;

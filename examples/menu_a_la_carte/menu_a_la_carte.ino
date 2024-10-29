@@ -3227,7 +3227,7 @@ void setup() {
     Wire.begin();
 
     /** Start [setup_logger] */
-    Serial.print(F("Setting logger pins"));
+    Serial.println(F("Setting logger pins"));
     dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin,
                              greenLED, wakePinMode, buttonPinMode);
 

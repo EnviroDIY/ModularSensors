@@ -83,6 +83,7 @@ void extendedWatchDogAVR::disableWatchDog() {
 
 
 void extendedWatchDogAVR::resetWatchDog() {
+    MS_DEEP_DBG(F("Feeding the watch-dog!"));
     extendedWatchDogAVR::_barksUntilReset = _resetTime_s / 8;
     // Reset the watchdog.
     wdt_reset();
