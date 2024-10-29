@@ -276,9 +276,9 @@ class Logger {
      * Because this sets the pin mode, this function should only be called
      * during the `setup()` or `loop()` portion of an Arduino program.
      *
-     * @warning In version 0.37.0 this function was modified to both set the pin
-     * mode and attach the interrupt. In versions 0.36.x and prior, this
-     * function only set the pin mode without attaching the interrupt.
+     * @note This sets the pin mode but does NOT enable the interrupt! The
+     * interrupt is enabled with Logger::enableLoggerInterrupts(), called
+     * internally during Logger::begin().
      *
      * @param mcuWakePin The pin on the mcu to be used to wake the mcu from deep
      * sleep.
@@ -329,6 +329,10 @@ class Logger {
      * to the main output destination (ie, Serial).  Testing mode cannot be
      * entered while the logger is taking a scheduled measureemnt.  No data is
      * written to the SD card in testing mode.
+     *
+     * @note This sets the pin mode but does NOT enable the interrupt! The
+     * interrupt is enabled with Logger::enableLoggerInterrupts(), called
+     * internally during Logger::begin().
      *
      * @param buttonPin The pin on the mcu to listen to for a value-change
      * interrupt.
@@ -450,6 +454,29 @@ class Logger {
      */
     const char* _samplingFeatureUUID = nullptr;
     // ^^ Start with no feature UUID
+
+    /**
+     * @brief Attaches the RTC ISR to the wake pin.
+     *
+     * @warning The RTC ISR **CANNOT** be attached to the wake pin before the
+     * RTC is begun! Initializing/resetting the RTC can trigger an interrupt on
+     * the wake pin. That triggered interrupt will attempt to change the RTC's
+     * interrupt flag before the RTC is fully initialized, causing a crash or
+     * confused behavior.  This function is protected to protect users from
+     * calling it in the wrong order.
+     *
+     */
+    void enableRTCISR();
+
+    /**
+     * @brief Attaches the testing ISR to the button pin.
+     *
+     * @warning The testing ISR shouldn't be attached before the sensors have
+     * been begun.  Doing so may cause strange results.  This function is
+     * protected to protect users from calling it in the wrong order.
+     *
+     */
+    void enableTestingISR();
     /**@}*/
 
     // ===================================================================== //
@@ -910,6 +937,10 @@ class Logger {
      * In this case, we're doing nothing, we just want the processor to wake.
      * This must be a static function (which means it can only call other static
      * functions.)
+     *
+     * @m_deprecated_since{0,37,0}
+     *
+     * Use loggerClock::RTCISR() in new code!
      */
     static void wakeISR(void);
 
@@ -918,6 +949,11 @@ class Logger {
      * post-interrupt wake actions
      *
      * @note This DOES NOT sleep or wake the sensors!!
+     *
+     * @warning During sleep, the I2C/Wire interface is disabled and the SCL and
+     * SDA pins are forced low to save power. Any attempt to communicate with an
+     * I2C device during sleep (ie, thorough an interrupt) will cause the board
+     * to hang indefinitely.
      */
     void systemSleep(void);
     /**@}*/

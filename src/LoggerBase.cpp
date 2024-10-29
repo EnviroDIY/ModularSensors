@@ -196,8 +196,8 @@ void Logger::setRTCWakePin(int8_t mcuWakePin, uint8_t wakePinMode) {
     _wakePinMode = wakePinMode;
     if (_mcuWakePin >= 0) {
         pinMode(_mcuWakePin, _wakePinMode);
-        enableInterrupt(_mcuWakePin, wakeISR, RISING);
-        MS_DBG(F("Pin"), _mcuWakePin, F("set as RTC wake up pin"));
+        MS_DBG(F("Pin"), _mcuWakePin, F("set as RTC wake up pin with pin mode"),
+               _wakePinMode);
     }
 }
 
@@ -219,21 +219,15 @@ void Logger::alertOff() {
 
 
 // Sets up a pin for an interrupt to enter testing mode
+// NOTE:  This sets the pin mode but does NOT enable the interrupt!
 void Logger::setTestingModePin(int8_t buttonPin, uint8_t buttonPinMode) {
     _buttonPin     = buttonPin;
     _buttonPinMode = buttonPinMode;
-
-    // Set up the interrupt to be able to enter sensor testing mode
-    // NOTE:  Entering testing mode before the sensors have been set-up may
-    // give unexpected results.
     if (_buttonPin >= 0) {
         pinMode(_buttonPin, _buttonPinMode);
-        enableInterrupt(_buttonPin, Logger::testingISR, CHANGE);
-        MS_DBG(F("Button on pin"), _buttonPin,
-               F("can be used to enter sensor testing mode."));
+        MS_DBG(F("Pin"), _buttonPin, F("set as button pin with pin mode"),
+               _buttonPinMode);
     }
-    // reset the testing value, just in case
-    Logger::startTesting = false;
 }
 
 
@@ -242,11 +236,41 @@ void Logger::setLoggerPins(int8_t mcuWakePin, int8_t SDCardSSPin,
                            int8_t SDCardPowerPin, int8_t buttonPin,
                            int8_t ledPin, uint8_t wakePinMode,
                            uint8_t buttonPinMode) {
-    setRTCWakePin(mcuWakePin, wakePinMode);
+    MS_DEEP_DBG("Setting all logger pins");
     setSDCardSS(SDCardSSPin);
     setSDCardPwr(SDCardPowerPin);
     setTestingModePin(buttonPin, buttonPinMode);
+    setRTCWakePin(mcuWakePin, wakePinMode);
     setAlertPin(ledPin);
+}
+
+void Logger::enableRTCISR() {
+    // Set up the interrupts on the wake pin
+    // WARNING: This MUST be done AFTER beginning the RTC.
+    if (_mcuWakePin >= 0) {
+        disableInterrupt(_mcuWakePin);
+        MS_DEEP_DBG(F("Disabled any previous interrupts attached to"),
+                    _mcuWakePin);
+        enableInterrupt(_mcuWakePin, loggerClock::rtcISR, CLOCK_INTERRUPT_MODE);
+        MS_DEEP_DBG(F("Interrupt loggerClock::rtcISR attached to"), _mcuWakePin,
+                    F("with interrupt mode"), CLOCK_INTERRUPT_MODE);
+    }
+}
+
+void Logger::enableTestingISR() {
+    // Set up the interrupt to be able to enter sensor testing mode
+    // NOTE:  Entering testing mode before the sensors have been set-up may
+    // give unexpected results.
+    if (_buttonPin >= 0) {
+        disableInterrupt(_buttonPin);
+        MS_DEEP_DBG(F("Disabled any previous interrupts attached to"),
+                    _buttonPin);
+        enableInterrupt(_buttonPin, Logger::testingISR, CHANGE);
+        MS_DEEP_DBG(F("Interrupt Logger::testingISR attached to"), _buttonPin,
+                    F("with interrupt mode"), CHANGE);
+    }
+    // reset the testing value, just in case
+    Logger::startTesting = false;
 }
 
 
@@ -553,7 +577,6 @@ void Logger::systemSleep(void) {
     MS_DBG(F("Preparing clock interrupts to wake processor"));
     loggerClock::enableRTCInterrupts();
 
-
     // Send one last message before shutting down serial ports
     MS_DBG(F("Putting processor to sleep.  ZZzzz..."));
 
@@ -568,14 +591,22 @@ void Logger::systemSleep(void) {
 #endif
 
     // Stop any I2C connections
+    // WARNING: After stopping I2C, we can no longer communicate with the RTC!
+    // Any calls to get the current time, change the alarm settings, reset the
+    // alarm flags, or any other event that involves communication with the RTC
+    // will fail!
     MS_DEEP_DBG(F("Ending I2C"));
-    // This function actually disables the two-wire pin functionality and
-    // turns off the internal pull-up resistors.
+    // For an AVR board, this function disables the two-wire pin functionality
+    // and turns off the internal pull-up resistors.
+    // For a SAMD board, this only disables the I2C sercom and does nothing with
+    // the pins. The Wire.end() function does **NOT** force the pins low.
     Wire.end();
 
 // Now force the I2C pins to LOW
 // I2C devices have a nasty habit of stealing power from the SCL and SDA pins...
 // This will only work for the "main" I2C/TWI interface
+// WARNING: Any calls to the I2C/Wire library when pins are forced low will
+// cause an endless board hang.
 #ifdef SDA
     pinMode(SDA, OUTPUT);
     digitalWrite(SDA, LOW);
@@ -751,12 +782,9 @@ void Logger::systemSleep(void) {
 
     // Re-start the I2C interface
     MS_DEEP_DBG(F("Restarting I2C"));
-#ifdef SDA
-    pinMode(SDA, INPUT_PULLUP);  // set as input with the pull-up on
-#endif
-#ifdef SCL
-    pinMode(SCL, INPUT_PULLUP);
-#endif
+    // The Wire.begin() function will set the propper pin modes for SCL and SDA
+    // (to INPUT_PULLUP on AVR and SERCOM for SAMD); we don't need to change the
+    // pin mode or turn on any resistors..
     Wire.begin();
     // Eliminate any potential extra waits in the wire library
     // These waits would be caused by a readBytes or parseX being called
@@ -1305,6 +1333,10 @@ void Logger::begin() {
     // Reset the watchdog
     extendedWatchDog::resetWatchDog();
 
+    // Enable the RTC ISR
+    // NOTE:  This must be done AFTER beginning the RTC!
+    enableRTCISR();
+
     // Begin the internal array
     _internalArray->begin();
     PRINTOUT(F("This logger has a variable array with"), getArrayVarCount(),
@@ -1325,6 +1357,8 @@ void Logger::begin() {
                      dataPublishers[i]->getEndpoint());
         }
     }
+    // Enable the testing ISR
+    enableTestingISR();
 
     PRINTOUT(F("Logger portion of setup finished.\n"));
 }
