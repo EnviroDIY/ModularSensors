@@ -76,10 +76,24 @@
 
 // Bring in the library to communicate with an external high-precision real time
 // clock.
+
+/**
+ * @def CLOCK_INTERRUPT_MODE
+ * @brief The mode for the interrupt on the wake/RTC pin; must be one of HIGH,
+ * LOW, FALLING, RISING, or CHANGE
+ *
+ * Using HIGH or LOW could trigger multiple interrupts when the clock interrut
+ * fires. It's best to catch the first edge of the clock interrupt. So for an
+ * RTC with an active low interrupt, use "FALLING."
+ */
 #if defined(MS_USE_RV8803)
 #include <SparkFun_RV8803.h>
+// Interrupt is active low on the RV8803
+#define CLOCK_INTERRUPT_MODE FALLING
 #elif defined(MS_USE_DS3231)
 #include <Sodaq_DS3231.h>
+// Interrupt is active low on the DS3231
+#define CLOCK_INTERRUPT_MODE FALLING
 #elif defined(MS_USE_RTC_ZERO)
 #include <RTCZero.h>
 #endif
@@ -159,7 +173,7 @@ class epochStart {
 class loggerClock {
  public:
     // Since there can only be one logger clock and all of it's methods are
-    // static, disallow creating of this class.
+    // static, disallow the creation of this class.
     loggerClock() = delete;
     /**
      * @brief Set the static offset in hours from UTC that the RTC is programmed
@@ -277,6 +291,23 @@ class loggerClock {
      * @brief Disable interrupts on the RTC
      */
     static void disableRTCInterrupts();
+    /**
+     * @brief Reset the clock interrupt status.
+     *
+     * Some RTC's will not fire a new interrupt until the previous interrupt
+     * flag has been cleared.
+     *
+     * @note Wire/I2C must be active for this function!
+     *
+     */
+    static void resetClockInterruptStatus();
+    /**
+     * @brief An ISR to run when the clock interrupt fires
+     *
+     * For some clocks, we need to reset the clock's interrupt flag so the next
+     * interrupt will fire.
+     */
+    static void rtcISR(void);
 
     /**
      * @brief Start up the real-time clock.

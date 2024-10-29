@@ -237,7 +237,7 @@ bool loggerClock::setRTClock(uint32_t ts, int8_t utcOffset, epochStart epoch) {
 
 // This checks that the logger time is within a "sane" range
 bool loggerClock::isRTCSane(void) {
-    uint32_t curRTC = getNowAsEpoch(0, epochStart::unix_epoch);
+    uint32_t curRTC  = getNowAsEpoch(0, epochStart::unix_epoch);
     bool     is_sane = isEpochTimeSane(curRTC, 0, epochStart::unix_epoch);
     if (!is_sane) {
         PRINTOUT(F("----- WARNING ----- !!!!!!!!!!!!!!!!!!!!"));
@@ -263,11 +263,11 @@ bool loggerClock::isEpochTimeSane(uint32_t ts, int8_t utcOffset,
 
 
 void loggerClock::enableRTCInterrupts() {
-#if defined(MS_USE_RV8803)
     // Disable any previous interrupts
-    rtc.disableAllInterrupts();
-    // Clear all flags in case any interrupts have occurred.
-    rtc.clearAllInterruptFlags();
+    disableRTCInterrupts();
+    resetClockInterruptStatus();
+#if defined(MS_USE_RV8803)
+    MS_DBG(F("Setting alarm on RV-8803 RTC for every minute."));
     // Enable a periodic update for every minute
     rtc.setPeriodicTimeUpdateFrequency(TIME_UPDATE_1_MINUTE);
     // Enable the hardware interrupt
@@ -284,35 +284,34 @@ void loggerClock::enableRTCInterrupts() {
     MS_DBG(F("Setting alarm on DS3231 RTC for every minute."));
     rtc.enableInterrupts(EveryMinute);
 
-    // Clear the last interrupt flag in the RTC status register
-    // The next timed interrupt will not be sent until this is cleared
-    rtc.clearINTStatus();
-
 #elif defined(MS_USE_RTC_ZERO)
 
     // Make sure interrupts are enabled for the clock
     NVIC_EnableIRQ(RTC_IRQn);       // enable RTC interrupt
     NVIC_SetPriority(RTC_IRQn, 0);  // highest priority
 
-    // Alarms on the RTC built into the SAMD21 appear to be identical to those
-    // in the DS3231.  See more notes below.
-    // We're setting the alarm seconds to 59 and then seting it to go off
-    // whenever the seconds match the 59.  I'm using 59 instead of 00
-    // because there seems to be a bit of a wake-up delay
+    // We need to set this to 59, because the wake actually occurs 1 second
+    // later; see datasheet 19.6.3:
+    // > When an alarm match occurs, the Alarm 0 Interrupt flag in the Interrupt
+    // Flag Status and Clear registers (INTFLAG.ALARMn0) is set on the next
+    // 0-to-1 transition of CLK_RTC_CNT. E.g. For a 1Hz clock counter, it means
+    // the Alarm 0 Interrupt flag is set with a delay of 1s after the occurrence
+    // of alarm match. A valid alarm match depends on the setting of the Alarm
+    // Mask Selection bits in the Alarm
     MS_DBG(F("Setting alarm on SAMD built-in RTC for every minute."));
-    zero_sleep_rtc.attachInterrupt(Logger::wakeISR);
+    zero_sleep_rtc.attachInterrupt(loggerClock::rtcISR);
     zero_sleep_rtc.setAlarmSeconds(59);
     zero_sleep_rtc.enableAlarm(zero_sleep_rtc.MATCH_SS);
 
 #endif  // defined(MS_USE_RTC_ZERO)
 }
 void loggerClock::disableRTCInterrupts() {
-    // Stop the clock from sending out any interrupts while we're awake.
-    // There's no reason to waste thought on the clock interrupt if it
-    // happens while the processor is awake and doing other things.
 #if defined(MS_USE_RV8803)
-    MS_DEEP_DBG(F("Unsetting the alarm on the RV-8803"));
-    rtc.disableHardwareInterrupt(UPDATE_INTERRUPT);
+    MS_DEEP_DBG(F("Unsetting all alarms on the RV-8803"));
+    rtc.disableAllInterrupts();
+    // NOTE: This disables all clock. If we only wanted to disable the periodic
+    // hardware interrupt (the one we set), we could instead use
+    // rtc.disableHardwareInterrupt(UPDATE_INTERRUPT);
 #elif defined(MS_USE_DS3231)
     MS_DEEP_DBG(F("Unsetting the alarm on the DS2321"));
     rtc.disableInterrupts();
@@ -322,14 +321,46 @@ void loggerClock::disableRTCInterrupts() {
 #endif
 }
 
+void loggerClock::resetClockInterruptStatus(void) {
+#if defined(MS_USE_RV8803)
+    // NOTE: We're not going to bother to call getInterruptFlag(x) to see which
+    // alarm caused the interrup, because we're already using
+    // disableAllInterrupts() and clearAllInterruptFlags() which prevent any
+    // other interrupts from outside code from working
+    MS_DEEP_DBG(F("Clearing all interrupt flags on the RV-8803"));
+    // Clear all flags in case any interrupts have occurred.
+    rtc.clearAllInterruptFlags();
+    // NOTE: This clears all interrupt flags. If we only wanted to clear the
+    // UPDATE_INTERRUPT flag (the only one we set), we could instead use
+    // rtc.clearInterruptFlag(FLAG_UPDATE);
+#elif defined(MS_USE_DS3231)
+    MS_DEEP_DBG(F("Clearing the interrupt flag on the DS2321"));
+    rtc.clearINTStatus();
+
+#elif defined(MS_USE_RTC_ZERO)
+    // We do NOT need to clear any flags here because the RTC_Handler in the
+    // RTCZero library takes care of it for us.
+    // If it wasn't handled there, we would need this:
+    // RTC->MODE2.INTFLAG.reg =
+    //     RTC_MODE2_INTFLAG_ALARM0;  // must clear flag at end
+#endif
+}
+
+void loggerClock::rtcISR(void) {
+    MS_DEEP_DBG(F("\nClock interrupt!"));
+}
+
 void loggerClock::begin() {
     MS_DBG(F("Getting the epoch the processor uses for gmtime"));
     _core_epoch = getProcessorEpochStart();
 #if defined(MS_USE_RTC_ZERO)
+    PRINTOUT(
+        F("The built-in SAMD 32bit RTC will be used as the real time clock"));
     MS_DBG(F("Beginning internal real time clock"));
     zero_sleep_rtc.begin();
 #endif
 #if defined(MS_USE_RV8803)
+    PRINTOUT(F("An I2C RV-8803 will be used as the real time clock"));
     MS_DBG(F("Beginning RV-8803 real time clock"));
     rtc.begin();
     rtc.set24Hour();
@@ -341,6 +372,7 @@ void loggerClock::begin() {
     // can only happen during the run, not during compilation.
     rtc.setTimeZoneQuarterHours(loggerClock::_rtcUTCOffset * 4);
 #elif defined(MS_USE_DS3231)
+    PRINTOUT(F("An I2C DS3231 will be used as the real time clock"));
     MS_DBG(F("Beginning DS3231 real time clock"));
     rtc.begin();
 #endif
@@ -401,7 +433,7 @@ uint32_t loggerClock::getRawRTCNow() {
     rtc.updateTime();
     MS_DEEP_DBG(F("Set use1970sEpoch to"), _core_epoch == epochStart::y2k_epoch,
                 F("because the processor epoch is"),
-                static_cast<uint32_t>(epoch));
+                static_cast<uint32_t>(_core_epoch));
     return rtc.getEpoch(_core_epoch == epochStart::y2k_epoch);
 }
 void loggerClock::setRawRTCNow(uint32_t ts) {
