@@ -1281,9 +1281,11 @@ void Logger::begin() {
 #endif
 #endif
 
-    MS_DBG(F("Setting up a watch-dog timer to fire after 15 minutes of "
-             "inactivity"));
-    extendedWatchDog::setupWatchDog((uint32_t)(5 * 60 * 3));
+    uint16_t realWatchDogTime = max(_loggingIntervalMinutes * 2, 5);
+    MS_DBG(F("Setting up a watch-dog timer to restart the board after"),
+           realWatchDogTime,
+           F("minutes without being fed (2x logging interval)"));
+    extendedWatchDog::setupWatchDog((uint32_t)(realWatchDogTime * 60));
     // Enable the watchdog
     extendedWatchDog::enableWatchDog();
 

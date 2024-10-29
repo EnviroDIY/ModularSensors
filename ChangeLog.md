@@ -18,14 +18,22 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **BREAKING** Renamed `markedUTCEpochTime` to `markedUTCUnixTime` to clarify the start of the epoch that we're marking down.
 - **Potentially BREAKING:** Changed the requirements for a "sane" timestamp to between 2023 and 2030.
   - Moved the value for the sane range into two defines: `EARLIEST_SANE_UNIX_TIMESTAMP` and `LATEST_SANE_UNIX_TIMESTAMP` so they can be more easily modified and tracked.
-- Modified `setRTCWakePin(mcuWakePin, wakePinMode)` to attach the wake interrupt to the pin in addition to setting the pin mode for the wake pin.
-- Removed the enable/disable wake pin interrupt at every sleep interval in favor of a single attachment as mentioned above.
+- Removed the enable/disable wake pin interrupt at every sleep interval in favor of a single attachment druing the begin.
+- Moved all code for communication with the RTC into the new static class loggerClock().
 - Modified all examples which define a sercom serial port for SAMD21 processors to require the defines for the supported processors.
 This should only make a difference for my compilation tests, real users should pick out only the chunks of code they want rather than leave conditional code in place.
 - Changed some fill-in-the-blank spots in the menu example to only set the value in a single spot in the code.
+- Deprecated functions, to be removed in a future version:
+  - Logger::setRTCTimeZone(timeZone); use loggerClock::setRTCOffset(_offsetHours) in new code.
+  - Logger::getRTCTimeZone(); use loggerClock::getRTCOffset() in new code.
+  - Logger::setRTClock(UTCEpochSeconds); use loggerClock::setRTClock(ts, utcOffset, epoch) in new code.
+  - Logger::isRTCSane(); use loggerClock::isRTCSane() in new code.
+  - Logger::wakeISR(); use loggerClock::RTCISR() in new code.
+- Changed the watchdog from a fix 15 minute reset timer to 2x the logging interval (or at least 5 minutes).
 
 ### Added
 
+- Created a new ClockSupport module with the loggerClock and epochStart static classes.
 - Added support for the Micro Crystal RV-8803-C7 high accuracy, ultra low power Real-Time-Clock Module.
 - Added support for multiple 'epoch' types starting at January 1, 1970 (UNIX), January 1, 2000 (Arduino and others), January 5, 1980 (GPST), and January 1, 1900 (NIST time and NTP protocols).
   - This allows you to input the epoch you're using in every single function that deals with a uint32_t or epoch type timestamp.
