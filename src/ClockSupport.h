@@ -47,18 +47,20 @@
 #define LATEST_SANE_UNIX_TIMESTAMP 1893456000
 #endif
 
-#if defined(ENVIRODIY_STONEFLY_M4) && not defined(MS_USE_DS3231) && \
-    not defined(MS_USE_RV8803)
+#if defined(ENVIRODIY_STONEFLY_M4) && not defined(MS_USE_RV8803)
 /**
  * @brief Select RV-8803 as the RTC
  */
 #define MS_USE_RV8803
-#elif defined(ARDUINO_AVR_ENVIRODIY_MAYFLY) && not defined(MS_USE_RV8803) && \
-    not defined(MS_USE_DS3231)
+#undef MS_USE_DS3231
+#undef MS_USE_RTC_ZERO
+#elif defined(ARDUINO_AVR_ENVIRODIY_MAYFLY) && not defined(MS_USE_DS3231)
 /**
  * @brief Select DS3231 as the RTC
  */
 #define MS_USE_DS3231
+#undef MS_USE_RV8803
+#undef MS_USE_RTC_ZERO
 #elif (defined(ARDUINO_ARCH_SAMD) && !defined(__SAMD51__) ||    \
        defined(ARDUINO_SAMD_ZERO)) &&                           \
     not defined(MS_USE_DS3231) && not defined(MS_USE_RV8803) && \
