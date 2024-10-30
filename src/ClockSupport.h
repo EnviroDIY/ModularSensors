@@ -89,14 +89,17 @@
  * RTC with an active low interrupt, use "FALLING."
  */
 #if defined(MS_USE_RV8803)
+#define MS_CLOCK_NAME "RV-8803"
 #include <SparkFun_RV8803.h>
 // Interrupt is active low on the RV8803
 #define CLOCK_INTERRUPT_MODE FALLING
 #elif defined(MS_USE_DS3231)
+#define MS_CLOCK_NAME "DS3231"
 #include <Sodaq_DS3231.h>
 // Interrupt is active low on the DS3231
 #define CLOCK_INTERRUPT_MODE FALLING
 #elif defined(MS_USE_RTC_ZERO)
+#define MS_CLOCK_NAME "SAMD 32-bit RTC"
 #include <RTCZero.h>
 #endif
 
@@ -217,13 +220,13 @@ class loggerClock {
      * @brief Get the current Universal Coordinated Time (UTC) epoch time from
      * the RTC.
      *
-     * @param returnUTCOffset The offset from UTC to return the epoch time in.
+     * @param utcOffset The offset from UTC to return the epoch time in.
      * @param epoch The type of epoch to use (ie, the standard for the start of
      * the epoch).
      *
      * @return The number of seconds from the start of the given epoch.
      */
-    static uint32_t getNowAsEpoch(int8_t returnUTCOffset, epochStart epoch);
+    static uint32_t getNowAsEpoch(int8_t utcOffset, epochStart epoch);
 
     /**
      * @brief Convert an epoch time into a ISO8601 formatted string.
@@ -276,19 +279,23 @@ class loggerClock {
      * #LATEST_SANE_UNIX_TIMESTAMP.
      *
      * @param ts The epoch time to be checked.
-     * @param utcOffset The offset of the epoch time from UTC in hours. Optional
-     * with a default value of 0.
+     * @param utcOffset The offset of the epoch time from UTC in hours.
      * @param epoch The type of epoch to use (ie, the standard for the start of
-     * the epoch). Optional with a default value of epochStart::unix_epoch.
+     * the epoch).
      * @return True if the given time passes sanity range checking.
      */
     static bool isEpochTimeSane(uint32_t ts, int8_t utcOffset,
                                 epochStart epoch);
 
     /**
+     * @brief Set an alarm to fire a clock inetrrupt at a specific epoch time
+     */
+    static void setNextRTCInterrupt(uint32_t ts, int8_t utcOffset,
+                                    epochStart epoch);
+    /**
      * @brief Enable 1 minute interrupts on the RTC
      */
-    static void enableRTCInterrupts();
+    static void enablePeriodicRTCInterrupts();
     /**
      * @brief Disable interrupts on the RTC
      */
@@ -319,6 +326,8 @@ class loggerClock {
      */
     static void begin();
 
+ protected:
+
     /**
      * @brief Figure out where the epoch starts for the processor.
      *
@@ -335,7 +344,7 @@ class loggerClock {
      * library.
      */
     static epochStart _core_epoch;
- protected:
+
     /**
      * @brief The static offset data of the real time clock from UTC in hours
      */
@@ -350,8 +359,42 @@ class loggerClock {
     static uint32_t getRawRTCNow();
     /**
      * @brief Sets the RTC to exactly the epoch time provided
+     *
+     * @param ts A timestamp already in the epoch and timezone used internally
+     * by the RTC
      */
     static void setRawRTCNow(uint32_t ts);
+    /**
+     * @brief Begins the underlying RTC
+     */
+    static void rtcBegin();
+
+    /**
+     * @brief Convert a timestamp with the given offset and epoch to the RTC
+     * internal epoch and UTC offset.
+     *
+     * @param ts The input epoch time.
+     * @param utcOffset The offset of the input epoch time from UTC in hours.
+     * @param epoch The type of epoch of the input timestamp
+     * @return A timestamp converted to the epoch and timezone used internally
+     * by the RTC
+     */
+    static inline uint32_t tsToRawRTC(uint32_t ts, int8_t utcOffset,
+                                      epochStart epoch);
+    /**
+     * @brief Convert a timestamp from the RTC's internal epoch and UTC offset
+     * to the requested offset and epoch.
+     *
+     * @param ts The timestamp in the epoch and timezone used internally by the
+     * RTC.
+     * @param utcOffset The offset of the desired output epoch time from UTC in
+     * hours.
+     * @param epoch The type of epoch of the output timestamp
+     * @return A timestamp converted from the epoch and timezone used internally
+     * by the RTC to the requested epoch and offset
+     */
+    static inline uint32_t tsFromRawRTC(uint32_t ts, int8_t utcOffset,
+                                        epochStart epoch);
 };
 
 #endif

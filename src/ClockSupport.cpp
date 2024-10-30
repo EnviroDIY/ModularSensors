@@ -57,6 +57,9 @@ epochStart loggerClock::_core_epoch = epochStart::y2k_epoch;
 int8_t loggerClock::_rtcUTCOffset = 0;
 
 
+// Configure the epoch used internally by the RTC
+// This depends on **the underlying RTC library**, not necessarily what is in
+// the RTC's datasheet.
 #if defined(MS_USE_RV8803)
 epochStart loggerClock::_rtcEpoch = epochStart::unix_epoch;
 #elif defined(MS_USE_DS3231)
@@ -99,30 +102,10 @@ int8_t loggerClock::getRTCOffset(void) {
     return loggerClock::_rtcUTCOffset;
 }
 
-uint32_t loggerClock::getNowAsEpoch(int8_t returnUTCOffset, epochStart epoch) {
-    uint32_t rtc_return = loggerClock::getRawRTCNow();
+uint32_t loggerClock::getNowAsEpoch(int8_t utcOffset, epochStart epoch) {
+    uint32_t rtc_return = getRawRTCNow();
     MS_DEEP_DBG(F("Raw returned timestamp:"), rtc_return);
-
-    uint32_t epoch_change = epoch - loggerClock::_rtcEpoch;
-    MS_DEEP_DBG(F("Adding"), epoch_change,
-                F("to the timestamp to convert to the requested epoch."));
-
-    // Do NOT apply an offset if the timestamp is obviously bad
-    uint32_t tz_change = 0;
-    if (isEpochTimeSane(rtc_return, _rtcUTCOffset, _rtcEpoch)) {
-        tz_change = static_cast<uint32_t>(loggerClock::_rtcUTCOffset +
-                                          returnUTCOffset) *
-            3600;
-        MS_DEEP_DBG(
-            F("Adding"), tz_change,
-            F("to the timestamp to convert to the requested timezone."));
-    } else {
-        MS_DEEP_DBG(
-            F("Not converting timestamp to requested UTC offset because"),
-            rtc_return, F("doesn't appear to be a valid timestamp"));
-    }
-
-    return rtc_return + tz_change + epoch_change;
+    return tsFromRawRTC(rtc_return, utcOffset, epoch);
 }
 
 // This converts an epoch time (seconds since a fixed epoch start) into a
@@ -222,15 +205,9 @@ bool loggerClock::setRTClock(uint32_t ts, int8_t utcOffset, epochStart epoch) {
         return false;
     }
 
-    uint32_t tz_change =
-        static_cast<uint32_t>(loggerClock::_rtcUTCOffset - utcOffset) * 3600;
-    MS_DEEP_DBG(F("Subtracting"), tz_change,
-                F("from the timestamp to convert to the RTC's UTC offset."));
-    uint32_t epoch_change = epoch - loggerClock::_rtcEpoch;
-    MS_DEEP_DBG(F("Subtracting"), epoch_change,
-                F("from the timestamp to convert to the RTC epoch."));
-    MS_DEEP_DBG(F("Setting raw RTC value to:"), ts - tz_change - epoch_change);
-    loggerClock::setRawRTCNow(ts - tz_change - epoch_change);
+    uint32_t converted_ts = tsToRawRTC(ts, utcOffset, epoch);
+    MS_DEEP_DBG(F("Setting raw RTC value to:"), converted_ts);
+    setRawRTCNow(converted_ts);
     PRINTOUT(F("Clock set!"));
     return true;
 }
@@ -262,34 +239,23 @@ bool loggerClock::isEpochTimeSane(uint32_t ts, int8_t utcOffset,
 }
 
 
-void loggerClock::enableRTCInterrupts() {
+// Unfortunately, most RTC's do not seem to follow anything like a cron
+// schedule. Recurring/Periodic alarms can generally be only on single
+// seconds/minutes/hours/days not on custom intervals.
+void loggerClock::enablePeriodicRTCInterrupts() {
     // Disable any previous interrupts
     disableRTCInterrupts();
     resetClockInterruptStatus();
+    MS_DBG(F("Setting periodic alarm on"), MS_CLOCK_NAME,
+           F("for every minute."));
 #if defined(MS_USE_RV8803)
-    MS_DBG(F("Setting alarm on RV-8803 RTC for every minute."));
     // Enable a periodic update for every minute
     rtc.setPeriodicTimeUpdateFrequency(TIME_UPDATE_1_MINUTE);
     // Enable the hardware interrupt
     rtc.enableHardwareInterrupt(UPDATE_INTERRUPT);
-
 #elif defined(MS_USE_DS3231)
-
-    // Unfortunately, because of the way the alarm on the DS3231 is set up, it
-    // cannot interrupt on any frequencies other than every second, minute,
-    // hour, day, or date.  We could set it to alarm hourly every 5 minutes past
-    // the hour, but not every 5 minutes.  This is why we set the alarm for
-    // every minute and use the checkInterval function.  This is a hardware
-    // limitation of the DS3231; it is not due to the libraries or software.
-    MS_DBG(F("Setting alarm on DS3231 RTC for every minute."));
     rtc.enableInterrupts(EveryMinute);
-
 #elif defined(MS_USE_RTC_ZERO)
-
-    // Make sure interrupts are enabled for the clock
-    NVIC_EnableIRQ(RTC_IRQn);       // enable RTC interrupt
-    NVIC_SetPriority(RTC_IRQn, 0);  // highest priority
-
     // We need to set this to 59, because the wake actually occurs 1 second
     // later; see datasheet 19.6.3:
     // > When an alarm match occurs, the Alarm 0 Interrupt flag in the Interrupt
@@ -298,45 +264,98 @@ void loggerClock::enableRTCInterrupts() {
     // the Alarm 0 Interrupt flag is set with a delay of 1s after the occurrence
     // of alarm match. A valid alarm match depends on the setting of the Alarm
     // Mask Selection bits in the Alarm
-    MS_DBG(F("Setting alarm on SAMD built-in RTC for every minute."));
     zero_sleep_rtc.attachInterrupt(loggerClock::rtcISR);
     zero_sleep_rtc.setAlarmSeconds(59);
     zero_sleep_rtc.enableAlarm(zero_sleep_rtc.MATCH_SS);
 
 #endif  // defined(MS_USE_RTC_ZERO)
 }
-void loggerClock::disableRTCInterrupts() {
+void loggerClock::setNextRTCInterrupt(uint32_t ts, int8_t utcOffset,
+                                      epochStart epoch) {
+    // Disable any previous interrupts
+    disableRTCInterrupts();
+    resetClockInterruptStatus();
+    MS_DBG(F("Setting the next alarms on the"), MS_CLOCK_NAME, F("to"), ts);
+    uint32_t converted_ts = tsToRawRTC(ts, utcOffset, epoch);
+
+    // Create a temporary variable for the epoch time
+    time_t t = converted_ts;
+
+    // Convert the time to the processor epoch.
+    // This is only needed so the gmtime function will work - this is not
+    // converting between offsets.
+    if (_rtcEpoch != _core_epoch) {
+        t += _rtcEpoch;    // convert to to the core epoch
+        t -= _core_epoch;  // convert to processor epoch (used by gmtime)
+    }
+
+    // create a temporary time struct
+    // tm is a struct for time parts, defined in time.h
+    struct tm* tmp = gmtime(&t);
+    MS_DEEP_DBG(F("Alarm will fire at: "), tmp->tm_hour, ':', tmp->tm_min, ':',
+                tmp->tm_sec);
+
 #if defined(MS_USE_RV8803)
-    MS_DEEP_DBG(F("Unsetting all alarms on the RV-8803"));
+    // NOTE: The RV-8803 hardware does **NOT** support alarms at finer frequency
+    // than minutes! The alarm will fire when the minute turns (ie, at
+    // hh:mm:00). To set an alarm at a specific second interval, you would have
+    // to use a periodic countdown timer interrupt and start the interrupt timer
+    // carefully on the second you want to match.
+    rtc.setItemsToMatchForAlarm(
+        true, true, false,
+        false);  // Match hours and minute so the alarm will got off 1x per day
+                 // at set hh:mm:ss
+    if (tmp->tm_sec != 0) {
+        tmp->tm_sec = 0;
+        tmp->tm_min = tmp->tm_min + 1;
+        MS_DBG(F("The RV-8803 does not support alarms at specified seconds! "
+                 "Rounding alarm to"),
+               tmp->tm_hour, ':', tmp->tm_min, ':', tmp->tm_sec);
+    }
+    rtc.setAlarmMinutes(tmp->tm_min);
+    rtc.setAlarmHours(tmp->tm_hour);
+    rtc.enableHardwareInterrupt(ALARM_INTERRUPT);
+
+#elif defined(MS_USE_DS3231)
+    // MATCH_HOURS = match hours *and* minutes, seconds, ie 1x per day at set
+    // hh:mm:ss
+    rtc.enableInterrupts(MATCH_HOURS, dateAlarmValue, tmp->tm_hour, tmp->tm_min,
+                         tmp->tm_sec);  // interrupt at (h,m,s)
+#elif defined(MS_USE_RTC_ZERO)
+    // NOTE: The interrupt is fired 1s after the match, so we set the alarm 1
+    // second early.
+    rtc.setAlarmTime(tmp->tm_hour, tmp->tm_min, tmp->tm_sec - 1);
+    rtc.enableAlarm(rtc.MATCH_HHMMSS);  // Every day at the matched time
+#endif
+}
+void loggerClock::disableRTCInterrupts() {
+    MS_DBG(F("Unsetting all alarms on the"), MS_CLOCK_NAME);
+#if defined(MS_USE_RV8803)
     rtc.disableAllInterrupts();
-    // NOTE: This disables all clock. If we only wanted to disable the periodic
-    // hardware interrupt (the one we set), we could instead use
+    // NOTE: This disables all clock. If we only wanted to disable the
+    // periodic hardware interrupt (the one we set), we could instead use
     // rtc.disableHardwareInterrupt(UPDATE_INTERRUPT);
 #elif defined(MS_USE_DS3231)
-    MS_DEEP_DBG(F("Unsetting the alarm on the DS2321"));
     rtc.disableInterrupts();
 #elif defined(MS_USE_RTC_ZERO)
-    MS_DEEP_DBG(F("Unsetting the alarm on the built in RTC"));
     zero_sleep_rtc.disableAlarm();
 #endif
 }
 
 void loggerClock::resetClockInterruptStatus(void) {
+    MS_DBG(F("Clearing all interrupt flags on the"), MS_CLOCK_NAME);
 #if defined(MS_USE_RV8803)
     // NOTE: We're not going to bother to call getInterruptFlag(x) to see which
     // alarm caused the interrup, because we're already using
     // disableAllInterrupts() and clearAllInterruptFlags() which prevent any
     // other interrupts from outside code from working
-    MS_DEEP_DBG(F("Clearing all interrupt flags on the RV-8803"));
     // Clear all flags in case any interrupts have occurred.
     rtc.clearAllInterruptFlags();
     // NOTE: This clears all interrupt flags. If we only wanted to clear the
     // UPDATE_INTERRUPT flag (the only one we set), we could instead use
     // rtc.clearInterruptFlag(FLAG_UPDATE);
 #elif defined(MS_USE_DS3231)
-    MS_DEEP_DBG(F("Clearing the interrupt flag on the DS2321"));
     rtc.clearINTStatus();
-
 #elif defined(MS_USE_RTC_ZERO)
     // We do NOT need to clear any flags here because the RTC_Handler in the
     // RTCZero library takes care of it for us.
@@ -353,31 +372,11 @@ void loggerClock::rtcISR(void) {
 void loggerClock::begin() {
     MS_DBG(F("Getting the epoch the processor uses for gmtime"));
     _core_epoch = getProcessorEpochStart();
-#if defined(MS_USE_RTC_ZERO)
-    PRINTOUT(
-        F("The built-in SAMD 32bit RTC will be used as the real time clock"));
-    MS_DBG(F("Beginning internal real time clock"));
-    zero_sleep_rtc.begin();
-#endif
-#if defined(MS_USE_RV8803)
-    PRINTOUT(F("An I2C RV-8803 will be used as the real time clock"));
-    MS_DBG(F("Beginning RV-8803 real time clock"));
-    rtc.begin();
-    rtc.set24Hour();
-    // void setTimeZoneQuarterHours(int8_t quarterHours);
-    // Write the time zone to RV8803_RAM as int8_t (signed) in 15 minute
-    // increments
-    // This must happen here in the begin, not when setting the internal
-    // timezone variable because this requires communication with the RTC which
-    // can only happen during the run, not during compilation.
-    rtc.setTimeZoneQuarterHours(loggerClock::_rtcUTCOffset * 4);
-#elif defined(MS_USE_DS3231)
-    PRINTOUT(F("An I2C DS3231 will be used as the real time clock"));
-    MS_DBG(F("Beginning DS3231 real time clock"));
-    rtc.begin();
-#endif
+    PRINTOUT(F("An"), MS_CLOCK_NAME, F("will be used as the real time clock"));
+    MS_DBG(F("Beginning"), MS_CLOCK_NAME, F("real time clock"));
+    rtcBegin();
     // Print out the current time
-    PRINTOUT(F("Current RTC time is:"),
+    PRINTOUT(F("Current"), MS_CLOCK_NAME, F("time is:"),
              formatDateTime_ISO8601(getNowAsEpoch(_rtcUTCOffset, _rtcEpoch),
                                     _rtcUTCOffset, _rtcEpoch));
     MS_DBG(F("The processor is uses a"), _core_epoch.printEpochName(),
@@ -385,8 +384,9 @@ void loggerClock::begin() {
            F("and is offset from the Unix epoch by"),
            static_cast<uint32_t>(_core_epoch - epochStart::unix_epoch),
            F("seconds"));
-    MS_DBG(F("The attached RTC uses a"), _rtcEpoch.printEpochName(),
-           F("epoch internally, which starts"), _rtcEpoch.printEpochStart(),
+    MS_DBG(F("The attached"), MS_CLOCK_NAME, F("uses a"),
+           _rtcEpoch.printEpochName(), F("epoch internally, which starts"),
+           _rtcEpoch.printEpochStart(),
            F("and is offset from the Unix epoch by"),
            static_cast<uint32_t>(_rtcEpoch - epochStart::unix_epoch),
            F("seconds"));
@@ -418,8 +418,55 @@ epochStart loggerClock::getProcessorEpochStart() {
     return ret_val;
 }
 
+inline uint32_t loggerClock::tsToRawRTC(uint32_t ts, int8_t utcOffset,
+                                        epochStart epoch) {
+    uint32_t tz_change =
+        static_cast<uint32_t>(loggerClock::_rtcUTCOffset - utcOffset) * 3600;
+    MS_DEEP_DBG(F("Subtracting"), tz_change,
+                F("from the timestamp to convert to the RTC's UTC offset."));
+    uint32_t epoch_change = epoch - loggerClock::_rtcEpoch;
+    MS_DEEP_DBG(F("Subtracting"), epoch_change,
+                F("from the timestamp to convert to the RTC epoch."));
+    MS_DEEP_DBG(F("Setting raw RTC value to:"), ts - tz_change - epoch_change);
+    return ts - tz_change - epoch_change;
+}
+inline uint32_t loggerClock::tsFromRawRTC(uint32_t ts, int8_t utcOffset,
+                                          epochStart epoch) {
+    uint32_t epoch_change = epoch - loggerClock::_rtcEpoch;
+    MS_DEEP_DBG(F("Adding"), epoch_change,
+                F("to the timestamp to convert to the requested epoch."));
+
+    // Do NOT apply an offset if the timestamp is obviously bad
+    uint32_t tz_change = 0;
+    if (isEpochTimeSane(ts, utcOffset, epoch)) {
+        tz_change =
+            static_cast<uint32_t>(loggerClock::_rtcUTCOffset + utcOffset) *
+            3600;
+        MS_DEEP_DBG(
+            F("Adding"), tz_change,
+            F("to the timestamp to convert to the requested timezone."));
+    } else {
+        MS_DEEP_DBG(
+            F("Not converting timestamp to requested UTC offset because"), ts,
+            F("doesn't appear to be a valid timestamp"));
+    }
+
+    return ts + tz_change + epoch_change;
+}
+
 
 #if defined(MS_USE_RV8803)
+void loggerClock::rtcBegin() {
+    rtc.begin();
+    rtc.set24Hour();
+    // void setTimeZoneQuarterHours(int8_t quarterHours);
+    // Write the time zone to RV8803_RAM as int8_t (signed) in 15 minute
+    // increments
+    // This must happen here in the begin, not when setting the internal
+    // timezone variable because this requires communication with the RTC which
+    // can only happen during the run, not during compilation.
+    rtc.setTimeZoneQuarterHours(loggerClock::_rtcUTCOffset * 4);
+}
 uint32_t loggerClock::getRawRTCNow() {
     // uint32_t getEpoch(bool use1970sEpoch = false);
     // The use1970sEpoch works properly ONLY on AVR/8-bit boards!!
@@ -445,6 +492,9 @@ void loggerClock::setRawRTCNow(uint32_t ts) {
 }
 
 #elif defined(MS_USE_DS3231)
+void loggerClock::rtcBegin() {
+    rtc.begin();
+}
 uint32_t loggerClock::getRawRTCNow() {
     return rtc.now().getEpoch();
 }
@@ -453,7 +503,12 @@ void loggerClock::setRawRTCNow(uint32_t ts) {
 }
 
 #elif defined(MS_USE_RTC_ZERO)
-
+void loggerClock::rtcBegin() {
+    zero_sleep_rtc.begin();
+    // Make sure interrupts are enabled for the clock
+    NVIC_EnableIRQ(RTC_IRQn);       // enable RTC interrupt
+    NVIC_SetPriority(RTC_IRQn, 0);  // highest priority
+}
 uint32_t loggerClock::getRawRTCNow() {
     return zero_sleep_rtc.getEpoch();
 }
