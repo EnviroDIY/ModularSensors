@@ -770,8 +770,8 @@ class Logger {
      *
      * @m_deprecated_since{0,37,0}
      *
-     * Call loggerClock::setRTClock(uint32_t ts, int8_t utcOffset , epochStart epoch)
-     * directly in new programs.
+     * Call loggerClock::setRTClock(uint32_t ts, int8_t utcOffset , epochStart
+     * epoch) directly in new programs.
      *
      * @param UTCEpochSeconds The number of seconds since 1970 in UTC.
      * @return True if the input timestamp passes sanity checks **and**
@@ -1280,7 +1280,7 @@ class Logger {
      */
     static volatile bool isTestingNow;
     /**
-     * @brief Internal flag set to true with then logger should begin the
+     * @brief Internal flag set to true when the logger should begin the
      * "testing mode" routine when it finishes other operations.
      */
     static volatile bool startTesting;

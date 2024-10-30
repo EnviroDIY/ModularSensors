@@ -3124,7 +3124,6 @@ float getBatteryVoltage() {
 void setup() {
     /** Start [setup_flashing_led] */
     // Set up pins for the LED's
-    Serial.println(F("Setting LED pin modes"));
     pinMode(greenLED, OUTPUT);
     digitalWrite(greenLED, LOW);
     pinMode(redLED, OUTPUT);
@@ -3219,9 +3218,11 @@ void setup() {
     Serial.println(F("Starting SPI"));
     SPI.begin();
 
+#if defined(EXTERNAL_FLASH_DEVICES)
     Serial.println(F("Setting onboard flash pin modes"));
     pinMode(flashSSPin,
             OUTPUT);  // for proper operation of the onboard flash memory
+#endif
 
     Serial.println(F("Starting I2C (Wire)"));
     Wire.begin();
@@ -3534,7 +3535,7 @@ void loop() {
                     !loggerClock::isRTCSane()) {
                     Serial.println(F("Running a daily clock sync..."));
                     loggerClock::setRTClock(modem.getNISTTime(), 0,
-                                                epochStart::unix_epoch);
+                                            epochStart::unix_epoch);
                     extendedWatchDog::resetWatchDog();
                     modem.updateModemMetadata();
                     extendedWatchDog::resetWatchDog();

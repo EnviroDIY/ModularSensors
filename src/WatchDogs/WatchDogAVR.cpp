@@ -95,7 +95,7 @@ void extendedWatchDogAVR::resetWatchDog() {
  */
 ISR(WDT_vect) {
     MS_DEEP_DBG(F("\nWatchdog interrupt!"));
-    extendedWatchDogAVR::_barksUntilReset--;  // Increament down the counter,
+    extendedWatchDogAVR::_barksUntilReset--;  // Increment down the counter,
                                               // makes multi cycle WDT possible
     if (extendedWatchDogAVR::_barksUntilReset <= 0) {
         MS_DEEP_DBG(F("The dog has barked enough; resetting the board."));

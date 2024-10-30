@@ -314,7 +314,7 @@ void extendedWatchDogSAMD::waitForGCLKBitSync() {
 // ISR for watchdog early warning
 void WDT_Handler(void) {
     MS_DEEP_DBG(F("\nWatchdog early warning interrupt!"));
-    // Increament down the counter, makes multi cycle WDT possible
+    // Increment down the counter, makes multi cycle WDT possible
     extendedWatchDogSAMD::_barksUntilReset--;
     if (extendedWatchDogSAMD::_barksUntilReset <= 0) {
         MS_DEEP_DBG(F("The dog has barked enough; resetting the board."));

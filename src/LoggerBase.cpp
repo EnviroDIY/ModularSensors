@@ -558,7 +558,7 @@ bool Logger::checkMarkedInterval(void) {
 // This must be a static function (which means it can only call other static
 // functions.)
 void Logger::wakeISR(void) {
-    MS_DEEP_DBG(F("\nClock interrupt!"));
+    MS_DEEP_DBG(F("\nInterrupt on wake pin!"));
 }
 
 
@@ -634,7 +634,7 @@ void Logger::systemSleep(void) {
 
 #if !defined(USE_TINYUSB) && defined(USBCON)
     // Detach the USB, iff not using TinyUSB
-    MS_DEEP_DBG(F("Detaching USB"));
+    MS_DEEP_DBG(F("Detaching USBDevice"));
     Serial.flush();  // wait for any outgoing messages on Serial = USB
     USBDevice.detach();
     USBDevice.end();
