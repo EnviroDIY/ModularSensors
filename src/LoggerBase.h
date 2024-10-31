@@ -466,7 +466,7 @@ class Logger {
      * calling it in the wrong order.
      *
      */
-    void enableRTCISR();
+    void enableRTCPinInterrupt();
 
     /**
      * @brief Attaches the testing ISR to the button pin.

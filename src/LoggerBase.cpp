@@ -244,7 +244,7 @@ void Logger::setLoggerPins(int8_t mcuWakePin, int8_t SDCardSSPin,
     setAlertPin(ledPin);
 }
 
-void Logger::enableRTCISR() {
+void Logger::enableRTCPinInterrupt() {
     // Set up the interrupts on the wake pin
     // WARNING: This MUST be done AFTER beginning the RTC.
     if (_mcuWakePin >= 0) {
@@ -575,7 +575,15 @@ void Logger::systemSleep(void) {
 
     // Send a message that we're getting ready
     MS_DBG(F("Preparing clock interrupts to wake processor"));
-    loggerClock::enableRTCInterrupts();
+    loggerClock::enablePeriodicRTCInterrupts();
+
+    // Enable the RTC ISR
+    // NOTE: It seems to work better if we enable this interrupt **AFTER** we've
+    // told the clock to fire interrupts. Otherwise the interrupt sometimes
+    // fires instantly after the clock interrupts.
+#if !defined(MS_USE_RTC_ZERO)
+    enableRTCPinInterrupt();
+#endif
 
     // Send one last message before shutting down serial ports
     MS_DBG(F("Putting processor to sleep.  ZZzzz..."));
@@ -636,9 +644,10 @@ void Logger::systemSleep(void) {
     // Detach the USB, iff not using TinyUSB
     MS_DEEP_DBG(F("Detaching USBDevice"));
     Serial.flush();  // wait for any outgoing messages on Serial = USB
-    USBDevice.detach();
-    USBDevice.end();
-    USBDevice.standby();
+    USBDevice.detach();   // USB->DEVICE.CTRLB.bit.DETACH = 1;
+    USBDevice.end();      // USB->DEVICE.CTRLA.bit.ENABLE = 0; wait for sync;
+    USBDevice.standby();  // USB->DEVICE.CTRLA.bit.RUNSTDBY = 0;
+
 #endif
 
     // Copied from Adafruit SleepDog
@@ -650,10 +659,27 @@ void Logger::systemSleep(void) {
 
 #if defined(__SAMD51__)
     // Set the sleep config
-    // PM_SLEEPCFG_SLEEPMODE_BACKUP = 0x4
-    PM->SLEEPCFG.bit.SLEEPMODE = 0x4;
-    while (PM->SLEEPCFG.bit.SLEEPMODE != 0x4)
-        ;  // Wait for it to take
+    // The STANDBY mode is the lowest power configuration while keeping the
+    // state of the logic and the content of the RAM.
+    // The HIBERNATE, BACKUP, and OFF modes do not retain RAM and a full reset
+    // occurs on wake.
+    MS_DEEP_DBG(F("Setting sleep config"));
+    // PM_SLEEPCFG_SLEEPMODE_STANDBY_Val = 0x4
+    PM->SLEEPCFG.bit.SLEEPMODE = PM_SLEEPCFG_SLEEPMODE_STANDBY_Val;
+    // From datasheet 18.6.3.3: A small latency happens between the store
+    // instruction and actual writing of the SLEEPCFG register due to bridges
+    // .Software must ensure that the SLEEPCFG register reads the desired value
+    // before executing a WFI instruction.
+    while (PM->SLEEPCFG.bit.SLEEPMODE != PM_SLEEPCFG_SLEEPMODE_STANDBY_Val)
+        ;
+    // From datasheet 18.6.3.3: After power-up, the MAINVREG low power mode
+    // takes some time to stabilize. Once stabilized, the INTFLAG.SLEEPRDY
+    // bit is set. Before entering Standby, Hibernate or Backup mode,
+    // software must ensure that the INTFLAG.SLEEPRDY bit is set.
+    // SRGD Note: I believe this only applies at power-on, but it's probably not
+    // a bad idea to check that the flag has been set.
+    while (!PM->INTFLAG.bit.SLEEPRDY)
+        ;
 #else
 
     // Don't fully power down flash when in sleep
@@ -794,6 +820,12 @@ void Logger::systemSleep(void) {
     // buffer.  In the case of the Wire library, that will never happen and
     // the timeout period is a useless delay.
     Wire.setTimeout(0);
+
+#if !defined(MS_USE_RTC_ZERO)
+    // Detach RTC interrupt the from the wake pin
+    MS_DEEP_DBG(F("Disabled interrupts on pin"), _mcuWakePin);
+    disableInterrupt(_mcuWakePin);
+#endif
 
     MS_DEEP_DBG(F("Dissabling RTC interupts"));
     loggerClock::disableRTCInterrupts();
@@ -1260,9 +1292,16 @@ void Logger::begin() {
 
     // Set all of the pin modes
     // NOTE:  This must be done here at run time not at compile time
-    // Do this before configuing clocks?
     setLoggerPins(_mcuWakePin, _SDCardSSPin, _SDCardPowerPin, _buttonPin,
-                  _ledPin);
+                  _ledPin, _wakePinMode, _buttonPinMode);
+
+    uint16_t realWatchDogTime = max(_loggingIntervalMinutes * 2, 5);
+    MS_DBG(F("Setting up a watch-dog timer to restart the board after"),
+           realWatchDogTime,
+           F("minutes without being fed (2x logging interval)"));
+    extendedWatchDog::setupWatchDog((uint32_t)(realWatchDogTime * 60));
+    // Enable the watchdog
+    extendedWatchDog::enableWatchDog();
 
 #if defined(ARDUINO_ARCH_SAMD)
     MS_DBG(F("Disabling the USB on standby to lower sleep current"));
@@ -1280,14 +1319,6 @@ void Logger::begin() {
     SYSCTRL->VREG.bit.RUNSTDBY = 1;
 #endif
 #endif
-
-    uint16_t realWatchDogTime = max(_loggingIntervalMinutes * 2, 5);
-    MS_DBG(F("Setting up a watch-dog timer to restart the board after"),
-           realWatchDogTime,
-           F("minutes without being fed (2x logging interval)"));
-    extendedWatchDog::setupWatchDog((uint32_t)(realWatchDogTime * 60));
-    // Enable the watchdog
-    extendedWatchDog::enableWatchDog();
 
 #if defined(ARDUINO_ARCH_SAMD)
     if (_mcuWakePin >= 0 || _buttonPin >= 0) {
@@ -1334,10 +1365,6 @@ void Logger::begin() {
              formatDateTime_ISO8601(getNowLocalEpoch()));
     // Reset the watchdog
     extendedWatchDog::resetWatchDog();
-
-    // Enable the RTC ISR
-    // NOTE:  This must be done AFTER beginning the RTC!
-    enableRTCISR();
 
     // Begin the internal array
     _internalArray->begin();

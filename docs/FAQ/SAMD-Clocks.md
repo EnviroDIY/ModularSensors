@@ -168,7 +168,8 @@ The Arduino core does *NOT* configure the generic clock generator 0 (ie GCLK_MAI
 
 ### SAMD51 Arduino Core Watch Dog and External Interrupt Clock Configuration<!-- {#samd51_clock_wdt_eic} -->
 
-The SAMD51 WDT uses OSCULP32k directly; no separate clock generator or peripheral clock configuration is needed.
+The SAMD51 WDT uses the 1K output from the OSCULP32k; there are no other possible clock sources for the WDT.
+No separate clock generator or peripheral clock configuration is needed.
 
 The external interrupt controller must be attached to a currently-on clock to tell the difference between rising and HIGH or falling and LOW interrupts.
 If the external interupt controller is not attached to a running clock, then interrupts will not work!
