@@ -33,6 +33,15 @@
 #undef MS_DEBUGGING_DEEP
 
 /**
+ * @brief The longest possible time between watchdog interrupts in seconds.
+ *
+ * For an AVR board, there is one possible watchdog period and the watchdog can
+ * be configured to either fire an interrupt at that time or to reset at that
+ * time.
+ */
+#define MAXIMUM_WATCHDOG_PERIOD static_cast<uint32_t>(F_CPU / 1048576)
+
+/**
  * @brief The extendedWatchDogAVR class uses the pre-reset interrupt to of the
  * built in AVR watchdog to extend the allowable time between resets of the
  * watchdog's clock up to multiple minute timescales.
@@ -68,9 +77,18 @@ class extendedWatchDogAVR {
     static void disableWatchDog();
 
     /**
-     * @brief Reset the watchdog's clock to prevent the board from resetting.
+     * @brief Reset the number of barks left before the watchdog bites and the
+     * board resets.
+     *
+     * @note This does NOT reset the processor's WDT; that happens in
+     * clearWDTInterrupt() called by the ISR.
      */
     static void resetWatchDog();
+
+    /**
+     * @brief Reset the processor watchdog flag.
+     */
+    static void clearWDTInterrupt();
 
     /**
      * @brief The number of times the pre-reset interrupt is allowed to fire

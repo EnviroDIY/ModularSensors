@@ -34,8 +34,39 @@
 #undef MS_DEBUGGING_DEEP
 
 
-/// The clock generator number to use for the watchdog timer and the external
-/// interrupt controller
+/**
+ * @brief The longest possible time between watchdog interrupts in seconds.
+ *
+ * For a SAMD board, we can get the longest possible time between interrupts by
+ * using the maximum closed window period in "windowed" mode and setting the
+ * early warning interrupt that opens the window to occur at the mimimum
+ * possible time before a reset fires. The maximum number of clock cycles for
+ * the closed window period is 16384 cycles on both a SAMD21 and SAM(D/E)51.
+ *
+ * On a SAM(D/E)51 the only clock available for the watch dog is the 1.024kHz
+ * CLK_WDT_OSC clock sourced from the ULP32KOSC.
+ *
+ * On a SAMD21 the WDT can be clocked from any clock source with the maximum
+ * dividor depending on the selected clock generator. To save power, we force
+ * the SAMD21 to use the ULP32KOSC for the WDT and EIC. For simplicity of code,
+ * we use a 32x divisor on the ULP32KOSC to match the SAM(D/E)51 1.024kHz
+ * CLK_WDT_OSC.
+ *
+ * 16384 clock cycles at 1.024kHz = 16s
+ */
+#define MAXIMUM_WATCHDOG_PERIOD 16UL
+
+
+///
+///
+
+/**
+ * @brief The clock generator number to use for the watchdog timer and the
+ * external interrupt controller.
+ *
+ * This only applies to a SAMD21 device. Neither the WDT nor the EIC require a
+ * dedicated clock generator on the SAM(D/E)51.
+ */
 #define GENERIC_CLOCK_GENERATOR_MS (5u)
 
 /**
@@ -77,7 +108,11 @@ class extendedWatchDogSAMD {
     static void disableWatchDog();
 
     /**
-     * @brief Reset the watchdog's clock to prevent the board from resetting.
+     * @brief Reset the number of barks left before the watchdog bites and the
+     * board resets.
+     *
+     * @note This does NOT reset the processor's WDT; that happens in
+     * clearWDTInterrupt() called by the ISR.
      */
     static void resetWatchDog();
 
@@ -107,6 +142,11 @@ class extendedWatchDogSAMD {
     static void configureEICClock();
 
     /**
+     * @brief Reset the processor watchdog flag.
+     */
+    static void clearWDTInterrupt();
+
+    /**
      * @brief Wait for the WDT config bit sync to finish.+
      */
     static void inline waitForWDTBitSync();
@@ -120,6 +160,7 @@ class extendedWatchDogSAMD {
      * before the watchdog reset is allowed.
      */
     static volatile uint32_t _barksUntilReset;
+
     /**
      * @brief Internal reference to the number of seconds of silence before the
      * module is reset.
