@@ -20,7 +20,7 @@
 // Included Dependencies
 #include <Arduino.h>
 
-#ifndef STANDARD_SERIAL_OUTPUT
+#if !defined(STANDARD_SERIAL_OUTPUT) && !defined(MS_SILENT)
 // #if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
 #if defined(SERIAL_PORT_USBVIRTUAL)
 // #define Serial SERIAL_PORT_USBVIRTUAL
@@ -30,7 +30,7 @@
 #endif
 #endif  // ifndef STANDARD_SERIAL_OUTPUT
 
-#ifdef STANDARD_SERIAL_OUTPUT
+#if defined(STANDARD_SERIAL_OUTPUT) && !defined(MS_SILENT)
 // namespace {
 /**
  * @brief Prints text to the "debugging" serial port.  This is intended for text
@@ -42,10 +42,11 @@
 template <typename T>
 static void PRINTOUT(T last) {
     STANDARD_SERIAL_OUTPUT.println(last);
+    STANDARD_SERIAL_OUTPUT.flush();
 }
 
 /**
- * @brief Prints text to the "debugging" serial port.  This is intended for text
+ * @brief Prints text to the "standard" serial port.  This is intended for text
  * that should *always* be printed, even in field operation.
  *
  * @tparam T Any type that can be printed
@@ -60,10 +61,16 @@ static void PRINTOUT(T head, Args... tail) {
     PRINTOUT(tail...);
 }
 // }  // namespace
+#else
+/**
+ * @brief Prints text to the "standard" serial port.  This is intended for text
+ * that should *always* be printed, even in field operation.
+ */
+#define PRINTOUT(...)
 #endif  // STANDARD_SERIAL_OUTPUT
 
 
-#ifndef DEBUGGING_SERIAL_OUTPUT
+#if !defined(DEBUGGING_SERIAL_OUTPUT) && !defined(MS_SILENT)
 // #if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
 #if defined(SERIAL_PORT_USBVIRTUAL)
 // #define Serial SERIAL_PORT_USBVIRTUAL
@@ -73,7 +80,8 @@ static void PRINTOUT(T head, Args... tail) {
 #endif
 #endif  // ifndef DEBUGGING_SERIAL_OUTPUT
 
-#if defined(DEBUGGING_SERIAL_OUTPUT) && defined(MS_DEBUGGING_STD)
+#if defined(DEBUGGING_SERIAL_OUTPUT) && defined(MS_DEBUGGING_STD) && \
+    !defined(MS_SILENT)
 // namespace {
 /**
  * @brief Prints text to the "debugging" serial port.  This is intended for
@@ -90,6 +98,7 @@ static void MS_DBG(T last) {
     DEBUGGING_SERIAL_OUTPUT.print(last);
     DEBUGGING_SERIAL_OUTPUT.print(" <--");
     DEBUGGING_SERIAL_OUTPUT.println(MS_DEBUGGING_STD);
+    DEBUGGING_SERIAL_OUTPUT.flush();
 }
 
 /**
@@ -161,7 +170,7 @@ static void MS_DBG(T head, Args... tail) {
 #endif  // DEBUGGING_SERIAL_OUTPUT
 
 
-#ifndef DEEP_DEBUGGING_SERIAL_OUTPUT
+#if !defined(DEEP_DEBUGGING_SERIAL_OUTPUT) && !defined(MS_SILENT)
 // #if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
 #if defined(SERIAL_PORT_USBVIRTUAL)
 // #define Serial SERIAL_PORT_USBVIRTUAL
@@ -171,7 +180,8 @@ static void MS_DBG(T head, Args... tail) {
 #endif
 #endif  // ifndef DEEP_DEBUGGING_SERIAL_OUTPUT
 
-#if defined(DEEP_DEBUGGING_SERIAL_OUTPUT) && defined(MS_DEBUGGING_DEEP)
+#if defined(DEEP_DEBUGGING_SERIAL_OUTPUT) && defined(MS_DEBUGGING_DEEP) && \
+    !defined(MS_SILENT)
 // namespace {
 /**
  * @brief Prints text to the "debugging" serial port.  This is intended for
@@ -188,6 +198,7 @@ static void MS_DEEP_DBG(T last) {
     DEEP_DEBUGGING_SERIAL_OUTPUT.print(last);
     DEEP_DEBUGGING_SERIAL_OUTPUT.print(" <--");
     DEEP_DEBUGGING_SERIAL_OUTPUT.println(MS_DEBUGGING_DEEP);
+    DEEP_DEBUGGING_SERIAL_OUTPUT.flush();
 }
 /**
  * @brief Prints text to the "debugging" serial port.  This is intended for
