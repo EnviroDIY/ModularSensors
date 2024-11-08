@@ -144,7 +144,7 @@ float ProcessorStats::getBatteryVoltage(void) {
 #if defined(__SAMD51__)
 
 uint8_t ProcessorStats::getLastResetCode() {
-    uint8_t lastResetCause = RSTC->RCAUSE.reg;
+    return RSTC->RCAUSE.reg;
 }
 String ProcessorStats::getLastResetCause() {
     uint8_t lastResetCause = getLastResetCode();
@@ -171,7 +171,7 @@ int16_t FreeRam() {
 }
 
 uint8_t ProcessorStats::getLastResetCode(void) {
-    uint8_t lastResetCause = PM->RCAUSE.reg;
+    return PM->RCAUSE.reg;
 }
 String ProcessorStats::getLastResetCause() {
     uint8_t lastResetCause = getLastResetCode();
@@ -197,7 +197,7 @@ int16_t FreeRam() {
 }
 
 uint8_t ProcessorStats::getLastResetCode(void) {
-    uint8_t lastResetCause = MCUSR;
+    return MCUSR;
 }
 String ProcessorStats::getLastResetCause() {
     uint8_t lastResetCause = getLastResetCode();
