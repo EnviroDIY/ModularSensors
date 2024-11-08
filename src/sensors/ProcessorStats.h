@@ -197,6 +197,36 @@
 /**@}*/
 
 
+/**
+ * @anchor sensor_processor_reset
+ * @name Cause of last processor reset.
+ * The reset cause code variable from the processor/mcu.
+ * This value only changes when the board is reset.
+ * You must look up the meaning of the code in the processor datasheet.
+ *
+ * @warning Not provided by all processors.
+ *
+ * {{ @ref ProcessorStats_ResetCode::ProcessorStats_ResetCode }}
+ */
+/**@{*/
+/// @brief Decimals places in string representation; ram should have 0 -
+/// it's just a code
+#define PROCESSOR_RESET_RESOLUTION 0
+/// @brief Free RAM is stored in sensorValues[1]
+#define PROCESSOR_RESET_VAR_NUM 3
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "instrumentStatusCode"
+#define PROCESSOR_RESET_VAR_NAME "instrumentStatusCode"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "dimensionless"
+#define PROCESSOR_RESET_UNIT_NAME "dimensionless"
+/// @brief Default variable short code; "ResetCode"
+#define PROCESSOR_RESET_DEFAULT_CODE "ResetCode"
+/**@}*/
+
+
 // EnviroDIY boards
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
 /// @brief Pretty text for the board name derived from the board's compiler
@@ -385,6 +415,27 @@ class ProcessorStats : public Sensor {
      */
     bool addSingleMeasurementResult(void) override;
 
+    /**
+     * @brief A helper to get battery voltage as measured by a direct connection
+     * between the battery and a processor analog pin.
+     *
+     * @return The battery voltage in volts
+     */
+    float getBatteryVoltage(void);
+
+    /**
+     * @brief Get the processor code for the last reset cause
+     *
+     * @return The processor code for the last reset cause
+     */
+    uint8_t getLastResetCode(void);
+    /**
+     * @brief Get the cause of the last reset as a string description.
+     *
+     * @return A string describing the last reset cause
+     */
+    String getLastResetCause(void);
+
  private:
     const char* _version;      ///< Internal reference to the board version
     const char* _boardName;    ///< Internal reference to the board name
@@ -453,6 +504,8 @@ class ProcessorStats_Battery : public Variable {
  * This is just a diagnostic value.  This number _**should always remain the
  * same for a single logger program**_.  If this number is not constant over
  * time, there is a memory leak and something wrong with your logging program.
+ * There is almost never a reason to store or transmit this value, but it is
+ * helpful to check for debugging.
  *
  * @ingroup sensor_processor
  */
@@ -541,6 +594,56 @@ class ProcessorStats_SampleNumber : public Variable {
      * needed.
      */
     ~ProcessorStats_SampleNumber() {}
+};
+
+
+/**
+ * @brief The Variable sub-class used for the
+ * [reset cause](@ref sensor_processor_reset) recorded by the MCU.
+ *
+ * This is a code for the last processor reset cause.  This number _**only
+ * changes when the processor resets**_.  There is almost never a reason to
+ * store or transmit this value, but it is helpful to check for debugging.
+ *
+ * @ingroup sensor_processor
+ */
+class ProcessorStats_ResetCode : public Variable {
+ public:
+    /**
+     * @brief Construct a new ProcessorStats_ResetCode object.
+     *
+     * @param parentSense The parent ProcessorStats providing the result
+     * values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of "ResetCode".
+     * @note While this variable is included, the value of it should never
+     * change.  If it does change, that's a sign of a memory leak in your
+     * program which will eventually cause your board to crash.
+     */
+    explicit ProcessorStats_ResetCode(
+        ProcessorStats* parentSense, const char* uuid = "",
+        const char* varCode = PROCESSOR_RESET_DEFAULT_CODE)
+        : Variable(parentSense, (uint8_t)PROCESSOR_RESET_VAR_NUM,
+                   (uint8_t)PROCESSOR_RESET_RESOLUTION,
+                   PROCESSOR_RESET_VAR_NAME, PROCESSOR_RESET_UNIT_NAME, varCode,
+                   uuid) {}
+    /**
+     * @brief Construct a new ProcessorStats_ResetCode object.
+     *
+     * @note This must be tied with a parent ProcessorStats before it can be
+     * used.
+     */
+    ProcessorStats_ResetCode()
+        : Variable((uint8_t)PROCESSOR_RESET_VAR_NUM,
+                   (uint8_t)PROCESSOR_RESET_RESOLUTION,
+                   PROCESSOR_RESET_VAR_NAME, PROCESSOR_RESET_UNIT_NAME,
+                   PROCESSOR_RESET_DEFAULT_CODE) {}
+    /**
+     * @brief Destroy the ProcessorStats_ResetCode object - no action needed.
+     */
+    ~ProcessorStats_ResetCode() {}
 };
 /**@}*/
 #endif  // SRC_SENSORS_PROCESSORSTATS_H_

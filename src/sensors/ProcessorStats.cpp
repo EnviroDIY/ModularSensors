@@ -112,19 +112,7 @@ String ProcessorStats::getSensorLocation(void) {
     return String(_boardName) + " " + String(_version);
 }
 
-
-#if defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAMD_ZERO) || \
-    defined(__SAMD51__)
-extern "C" char* sbrk(int i);
-
-int16_t FreeRam() {
-    char stack_dummy = 0;
-    return &stack_dummy - sbrk(0);
-}
-#endif
-
-
-bool ProcessorStats::addSingleMeasurementResult(void) {
+float ProcessorStats::getBatteryVoltage(void) {
 #if defined(ARDUINO_ARCH_SAMD)
     MS_DBG(F("Setting SAMD analog read resolution to"), _analogResolution,
            F("bits"));
@@ -150,7 +138,89 @@ bool ProcessorStats::addSingleMeasurementResult(void) {
     } else {
         MS_DBG(F("No battery pin specified!"));
     }
+    return sensorValue_battery;
+}
 
+#if defined(__SAMD51__)
+
+uint8_t ProcessorStats::getLastResetCode() {
+    uint8_t lastResetCause = RSTC->RCAUSE.reg;
+}
+String ProcessorStats::getLastResetCause() {
+    uint8_t lastResetCause = getLastResetCode();
+    switch (lastResetCause) {
+        case RSTC_RCAUSE_POR: return "Power On Reset";
+        case RSTC_RCAUSE_BODCORE: return "Brown Out CORE Detector Reset";
+        case RSTC_RCAUSE_BODVDD: return "Brown Out VDD Detector Reset";
+        case RSTC_RCAUSE_NVM: return "NVM Reset";
+        case RSTC_RCAUSE_EXT: return "External Reset";
+        case RSTC_RCAUSE_WDT: return "Watchdog Reset";
+        case RSTC_RCAUSE_SYST: return "System Reset Request";
+        case RSTC_RCAUSE_BACKUP: return "Backup Reset";
+        default: return "unknown";
+    }
+}
+
+#elif defined(ARDUINO_ARCH_SAMD)  // SAMD21
+
+extern "C" char* sbrk(int i);
+
+int16_t FreeRam() {
+    char stack_dummy = 0;
+    return &stack_dummy - sbrk(0);
+}
+
+uint8_t ProcessorStats::getLastResetCode(void) {
+    uint8_t lastResetCause = PM->RCAUSE.reg;
+}
+String ProcessorStats::getLastResetCause() {
+    uint8_t lastResetCause = getLastResetCode();
+    switch (lastResetCause) {
+        case PM_RCAUSE_POR: return "Power On Reset";
+        case PM_RCAUSE_BOD12: return "Brown Out 12 Detector Reset";
+        case PM_RCAUSE_BOD33: return "Brown Out 33 Detector Reset";
+        case PM_RCAUSE_EXT: return "External Reset";
+        case PM_RCAUSE_WDT: return "Watchdog Reset";
+        case PM_RCAUSE_SYST: return "System Reset Request";
+        default: return "unknown";
+    }
+}
+
+#elif defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
+
+int16_t FreeRam() {
+    extern int16_t __heap_start, *__brkval;
+    int16_t v;
+    float sensorValue_freeRam = (int)&v -
+        (__brkval == 0 ? (int)&__heap_start : (int)__brkval);
+    return sensorValue_freeRam;
+}
+
+uint8_t ProcessorStats::getLastResetCode(void) {
+    uint8_t lastResetCause = MCUSR;
+}
+String ProcessorStats::getLastResetCause() {
+    uint8_t lastResetCause = getLastResetCode();
+    switch (lastResetCause) {
+        case PORF: return "Power On Reset";
+        case EXTRF: return "External Reset";
+        case BORF: return "Brown Out Detector Reset";
+        case WDRF: return "Watchdog Reset";
+        case JTRF: return "JTAG Reset Request";
+        default: return "unknown";
+    }
+}
+#endif
+
+
+bool ProcessorStats::addSingleMeasurementResult(void) {
+#if defined(ARDUINO_ARCH_SAMD)
+    MS_DBG(F("Setting SAMD analog read resolution to"), _analogResolution,
+           F("bits"));
+    analogReadResolution(_analogResolution);
+#endif
+
+    float sensorValue_battery = getBatteryVoltage();
     verifyAndAddMeasurementResult(PROCESSOR_BATTERY_VAR_NUM,
                                   sensorValue_battery);
 
@@ -160,16 +230,8 @@ bool ProcessorStats::addSingleMeasurementResult(void) {
         // Used only for debugging - can be removed
         MS_DBG(F("Getting Free RAM"));
 
-#if defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
-        extern int16_t __heap_start, *__brkval;
-        int16_t        v;
-        float          sensorValue_freeRam = (int)&v -
-            (__brkval == 0 ? (int)&__heap_start : (int)__brkval);
-
-#elif (defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAMD_ZERO)) && \
-    !defined(__SAMD51__)
+#if !defined(__SAMD51__)
         float sensorValue_freeRam = FreeRam();
-
 #else
         float sensorValue_freeRam = -9999;
 #endif
@@ -192,6 +254,21 @@ bool ProcessorStats::addSingleMeasurementResult(void) {
         verifyAndAddMeasurementResult(PROCESSOR_SAMPNUM_VAR_NUM, sampNum);
     } else {
         MS_DBG(F("Not bumping sample number on reps"));
+    }
+
+    // NOTE: Only running this section if there are no measurements already for
+    // the reset cause!
+    if (numberGoodMeasurementsMade[PROCESSOR_RESET_VAR_NUM] == 0) {
+        // Used only for debugging - can be removed
+        MS_DBG(F("Getting last reset cause"));
+
+        float sensorValue_resetCode = getLastResetCode();
+        MS_DBG(F("The most recent reset cause was"), sensorValue_resetCode, '(',
+               getLastResetCause(), ')');
+        verifyAndAddMeasurementResult(PROCESSOR_RESET_VAR_NUM,
+                                      sensorValue_resetCode);
+    } else {
+        MS_DBG(F("Skipping reset cause check on reps"));
     }
 
     // Unset the time stamp for the beginning of this measurement
