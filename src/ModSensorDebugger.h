@@ -21,9 +21,7 @@
 #include <Arduino.h>
 
 #if !defined(STANDARD_SERIAL_OUTPUT) && !defined(MS_SILENT)
-// #if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
 #if defined(SERIAL_PORT_USBVIRTUAL)
-// #define Serial SERIAL_PORT_USBVIRTUAL
 #define STANDARD_SERIAL_OUTPUT SERIAL_PORT_USBVIRTUAL
 #elif defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
 #define STANDARD_SERIAL_OUTPUT Serial
@@ -71,9 +69,7 @@ static void PRINTOUT(T head, Args... tail) {
 
 
 #if !defined(DEBUGGING_SERIAL_OUTPUT) && !defined(MS_SILENT)
-// #if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
 #if defined(SERIAL_PORT_USBVIRTUAL)
-// #define Serial SERIAL_PORT_USBVIRTUAL
 #define DEBUGGING_SERIAL_OUTPUT SERIAL_PORT_USBVIRTUAL
 #elif defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
 #define DEBUGGING_SERIAL_OUTPUT Serial
@@ -171,9 +167,7 @@ static void MS_DBG(T head, Args... tail) {
 
 
 #if !defined(DEEP_DEBUGGING_SERIAL_OUTPUT) && !defined(MS_SILENT)
-// #if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
 #if defined(SERIAL_PORT_USBVIRTUAL)
-// #define Serial SERIAL_PORT_USBVIRTUAL
 #define DEEP_DEBUGGING_SERIAL_OUTPUT SERIAL_PORT_USBVIRTUAL
 #elif defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
 #define DEEP_DEBUGGING_SERIAL_OUTPUT Serial
