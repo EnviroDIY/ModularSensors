@@ -61,14 +61,15 @@
 #define MS_USE_DS3231
 #undef MS_USE_RV8803
 #undef MS_USE_RTC_ZERO
-#elif (defined(ARDUINO_ARCH_SAMD) && !defined(__SAMD51__) ||    \
-       defined(ARDUINO_SAMD_ZERO)) &&                           \
-    not defined(MS_USE_DS3231) && not defined(MS_USE_RV8803) && \
-    not defined(MS_USE_RTC_ZERO)
+#elif (defined(ARDUINO_ARCH_SAMD) && !defined(__SAMD51__)) && \
+    !defined(MS_USE_DS3231) && !defined(MS_USE_RV8803) &&     \
+    !defined(MS_USE_RTC_ZERO)
 /**
  * @brief Select the SAMD21's internal clock (via RTC Zero)
  */
 #define MS_USE_RTC_ZERO
+#undef MS_USE_RV8803
+#undef MS_USE_DS3231
 #endif
 
 #if !defined(MS_USE_RV8803) && !defined(MS_USE_DS3231) && \

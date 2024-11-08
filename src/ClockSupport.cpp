@@ -75,6 +75,8 @@ epochStart loggerClock::_rtcEpoch = epochStart::unix_epoch;
 // here.
 #if defined(MS_USE_RV8803)
 RV8803 loggerClock::rtc;
+#elif defined(MS_USE_DS3231)
+// pass
 #elif defined(MS_USE_RTC_ZERO)
 RTCZero    loggerClock::zero_sleep_rtc;
 #endif
