@@ -214,12 +214,6 @@ String ProcessorStats::getLastResetCause() {
 
 
 bool ProcessorStats::addSingleMeasurementResult(void) {
-#if defined(ARDUINO_ARCH_SAMD)
-    MS_DBG(F("Setting SAMD analog read resolution to"), _analogResolution,
-           F("bits"));
-    analogReadResolution(_analogResolution);
-#endif
-
     float sensorValue_battery = getBatteryVoltage();
     verifyAndAddMeasurementResult(PROCESSOR_BATTERY_VAR_NUM,
                                   sensorValue_battery);
