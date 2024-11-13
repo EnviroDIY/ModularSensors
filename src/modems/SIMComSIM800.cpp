@@ -22,7 +22,7 @@ SIMComSIM800::SIMComSIM800(Stream* modemStream, int8_t powerPin,
                   SIM800_STATUS_TIME_MS, SIM800_DISCONNECT_TIME_MS,
                   SIM800_WAKE_DELAY_MS, SIM800_ATRESPONSE_TIME_MS),
 #ifdef MS_SIMCOMSIM800_DEBUG_DEEP
-      _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
+      _modemATDebugger(*modemStream, _MS_SERIAL_OUTPUT),
       gsmModem(_modemATDebugger),
 #else
       gsmModem(*modemStream),

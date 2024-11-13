@@ -21,7 +21,7 @@ DigiXBeeCellularTransparent::DigiXBeeCellularTransparent(
     : DigiXBee(powerPin, statusPin, useCTSStatus, modemResetPin,
                modemSleepRqPin),
 #ifdef MS_DIGIXBEECELLULARTRANSPARENT_DEBUG_DEEP
-      _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
+      _modemATDebugger(*modemStream, _MS_SERIAL_OUTPUT),
       gsmModem(_modemATDebugger, modemResetPin),
 #else
       gsmModem(*modemStream, modemResetPin),

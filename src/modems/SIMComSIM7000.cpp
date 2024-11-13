@@ -22,7 +22,7 @@ SIMComSIM7000::SIMComSIM7000(Stream* modemStream, int8_t powerPin,
                   SIM7000_STATUS_TIME_MS, SIM7000_DISCONNECT_TIME_MS,
                   SIM7000_WAKE_DELAY_MS, SIM7000_ATRESPONSE_TIME_MS),
 #ifdef MS_SIMCOMSIM7000_DEBUG_DEEP
-      _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
+      _modemATDebugger(*modemStream, _MS_SERIAL_OUTPUT),
       gsmModem(_modemATDebugger),
 #else
       gsmModem(*modemStream),
