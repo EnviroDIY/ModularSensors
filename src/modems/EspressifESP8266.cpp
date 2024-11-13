@@ -23,7 +23,7 @@ EspressifESP8266::EspressifESP8266(Stream* modemStream, int8_t powerPin,
                   ESP8266_WAKE_DELAY_MS, ESP8266_ATRESPONSE_TIME_MS),
 #if defined(MS_ESPRESSIFESP8266_DEBUG_DEEP) || \
     defined(MS_ESPRESSIFESP32_DEBUG_DEEP)
-      _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
+      _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
       gsmModem(_modemATDebugger),
 #else
       gsmModem(*modemStream),

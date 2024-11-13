@@ -40,12 +40,16 @@ This should only make a difference for my compilation tests, real users should p
 If no epoch start is given, it is assumed to be UNIX (January 1, 1970).
   - The supported epochs are given in the enum epochStart.
 - Storing _buttonPinMode internally.
+- Added a single define (`MS_SERIAL_OUTPUT`) to use for all outputs from ModularSensors.
+- Added support for sending printouts and debugging to two different serial ports.  This is useful for devices (like SAMD) that use a built in USB serial port which is turned off when the device sleeps.  If `MS_DUAL_OUTPUT` is defined, output will go to *both* `MS_DUAL_OUTPUT` and to `MS_SERIAL_OUTPUT`.
 
 ### Removed
 
 - **Breaking:** Removed the function `setNowUTCEpoch(uint32_t)`.
   - Although public, this was never intended to be used externally.
 - **Potentially BREAKING:** Removed support for any functions using the Sodaq "DateTime" class.
+- **Potentially BREAKING:** Removed ability to have `PRINTOUT`, `MS_DBG`, and `MS_DEEP_DBG` output going to different serial ports
+  - Defines for `STANDARD_SERIAL_OUTPUT`, `DEBUGGING_SERIAL_OUTPUT`, and `DEEP_DEBUGGING_SERIAL_OUTPUT` are all ignored. Use the single define `MS_SERIAL_OUTPUT` for all outputs.  If `MS_SERIAL_OUTPUT` is not defined, a default will be used (generally Serial or USBSerial).
 
 ### Fixed
 

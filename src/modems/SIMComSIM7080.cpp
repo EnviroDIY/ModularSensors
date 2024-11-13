@@ -22,7 +22,7 @@ SIMComSIM7080::SIMComSIM7080(Stream* modemStream, int8_t powerPin,
                   SIM7080_STATUS_TIME_MS, SIM7080_DISCONNECT_TIME_MS,
                   SIM7080_WAKE_DELAY_MS, SIM7080_ATRESPONSE_TIME_MS),
 #ifdef MS_SIMCOMSIM7080_DEBUG_DEEP
-      _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
+      _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
       gsmModem(_modemATDebugger),
 #else
       gsmModem(*modemStream),

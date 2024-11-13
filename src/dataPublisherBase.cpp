@@ -110,10 +110,10 @@ void dataPublisher::txBufferAppend(char c) {
 }
 
 void dataPublisher::txBufferFlush() {
-#if defined(STANDARD_SERIAL_OUTPUT)
+#if defined(MS_SERIAL_OUTPUT)
     // write out to the printout stream
-    STANDARD_SERIAL_OUTPUT.write((const uint8_t*)txBuffer, txBufferLen);
-    STANDARD_SERIAL_OUTPUT.flush();
+    MS_SERIAL_OUTPUT.write((const uint8_t*)txBuffer, txBufferLen);
+    MS_SERIAL_OUTPUT.flush();
 #endif
     // write out to the client
     txBufferOutClient->write((const uint8_t*)txBuffer, txBufferLen);

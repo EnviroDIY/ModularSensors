@@ -410,7 +410,7 @@ void Logger::sendDataToRemotes(void) {
 void Logger::setLoggerTimeZone(int8_t timeZone) {
     _loggerUTCOffset = timeZone;
 // Some helpful prints for debugging
-#ifdef STANDARD_SERIAL_OUTPUT
+#ifdef MS_SERIAL_OUTPUT
     const char* prtout1 = "Logger timezone is set to UTC";
     if (_loggerUTCOffset == 0) {
         PRINTOUT(prtout1);
@@ -588,16 +588,6 @@ void Logger::systemSleep(void) {
     // Send one last message before shutting down serial ports
     MS_DBG(F("Putting processor to sleep.  ZZzzz..."));
 
-// Wait until the serial ports have finished transmitting
-// This does not clear their buffers, it just waits until they are finished
-// TODO(SRGDamia1):  Make sure we can find all serial ports
-#if defined(STANDARD_SERIAL_OUTPUT)
-    STANDARD_SERIAL_OUTPUT.flush();  // for debugging
-#endif
-#if defined DEBUGGING_SERIAL_OUTPUT
-    DEBUGGING_SERIAL_OUTPUT.flush();  // for debugging
-#endif
-
     // Stop any I2C connections
     // WARNING: After stopping I2C, we can no longer communicate with the RTC!
     // Any calls to get the current time, change the alarm settings, reset the
@@ -631,11 +621,11 @@ void Logger::systemSleep(void) {
 // Wait until the serial ports have finished transmitting
 // This does not clear their buffers, it just waits until they are finished
 // TODO(SRGDamia1):  Make sure we can find all serial ports
-#if defined(STANDARD_SERIAL_OUTPUT)
-    STANDARD_SERIAL_OUTPUT.flush();  // for debugging
+#if defined(MS_SERIAL_OUTPUT)
+    MS_SERIAL_OUTPUT.flush();
 #endif
-#if defined(DEBUGGING_SERIAL_OUTPUT)
-    DEBUGGING_SERIAL_OUTPUT.flush();  // for debugging
+#if defined(MS_DUAL_OUTPUT)
+    MS_DUAL_OUTPUT.flush();
 #endif
 
 #if defined(ARDUINO_ARCH_SAMD)
@@ -1045,9 +1035,9 @@ bool Logger::openFile(String& filename, bool createFile,
                 // Add header information
                 printFileHeader(&logFile);
 // Print out the header for debugging
-#if defined(DEBUGGING_SERIAL_OUTPUT) && defined(MS_DEBUGGING_STD)
+#if defined(MS_SERIAL_OUTPUT) && defined(MS_DEBUGGING_STD)
                 MS_DBG(F("\n \\/---- File Header ----\\/"));
-                printFileHeader(&DEBUGGING_SERIAL_OUTPUT);
+                printFileHeader(&MS_SERIAL_OUTPUT);
                 MS_DBG('\n');
 #endif
                 // Set write/modification date time
@@ -1154,9 +1144,9 @@ bool Logger::logToSD(void) {
     // Write the data
     printSensorDataCSV(&logFile);
 // Echo the line to the serial port
-#if defined(STANDARD_SERIAL_OUTPUT)
+#if defined(MS_SERIAL_OUTPUT)
     PRINTOUT(F("\n \\/---- Line Saved to SD Card ----\\/"));
-    printSensorDataCSV(&STANDARD_SERIAL_OUTPUT);
+    printSensorDataCSV(&MS_SERIAL_OUTPUT);
     PRINTOUT('\n');
 #endif
 
@@ -1234,8 +1224,8 @@ void Logger::testingMode(bool sleepBeforeReturning) {
                  formatDateTime_ISO8601(getNowLocalEpoch()));
         PRINTOUT(F("-----------------------"));
 // Print out the sensor data
-#if defined(STANDARD_SERIAL_OUTPUT)
-        _internalArray->printSensorData(&STANDARD_SERIAL_OUTPUT);
+#if defined(MS_SERIAL_OUTPUT)
+        _internalArray->printSensorData(&MS_SERIAL_OUTPUT);
 #endif
         PRINTOUT(F("-----------------------"));
         extendedWatchDog::resetWatchDog();
@@ -1476,10 +1466,10 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
         extendedWatchDog::resetWatchDog();
 
 // Print out the sensor data
-#if defined(STANDARD_SERIAL_OUTPUT)
-        STANDARD_SERIAL_OUTPUT.println();
-        _internalArray->printSensorData(&STANDARD_SERIAL_OUTPUT);
-        STANDARD_SERIAL_OUTPUT.println();
+#if defined(MS_SERIAL_OUTPUT)
+        MS_SERIAL_OUTPUT.println();
+        _internalArray->printSensorData(&MS_SERIAL_OUTPUT);
+        MS_SERIAL_OUTPUT.println();
 #endif
 
         // Create a csv data record and save it to the log file

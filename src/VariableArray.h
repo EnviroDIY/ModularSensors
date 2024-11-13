@@ -322,12 +322,12 @@ class VariableArray {
      */
     template <typename T>
     void prettyPrintArray(T arrayToPrint[]) {
-        DEEP_DEBUGGING_SERIAL_OUTPUT.print("[,\t");
+        MS_SERIAL_OUTPUT.print("[,\t");
         for (uint8_t i = 0; i < _variableCount; i++) {
-            DEEP_DEBUGGING_SERIAL_OUTPUT.print(arrayToPrint[i]);
-            DEEP_DEBUGGING_SERIAL_OUTPUT.print(",\t");
+            MS_SERIAL_OUTPUT.print(arrayToPrint[i]);
+            MS_SERIAL_OUTPUT.print(",\t");
         }
-        DEEP_DEBUGGING_SERIAL_OUTPUT.println("]");
+        MS_SERIAL_OUTPUT.println("]");
     }
 #else
 /**
@@ -335,7 +335,7 @@ class VariableArray {
  * between the members
  */
 #define prettyPrintArray(...)
-#endif  // DEEP_DEBUGGING_SERIAL_OUTPUT
+#endif  // MS_SERIAL_OUTPUT
 };
 
 #endif  // SRC_VARIABLEARRAY_H_

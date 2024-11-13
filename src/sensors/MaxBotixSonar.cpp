@@ -93,13 +93,13 @@ bool MaxBotixSonar::wake(void) {
                F("characters from MaxBotix stream buffer"));
         for (uint8_t i = 0; i < junkChars; i++) {
 #ifdef MS_MAXBOTIXSONAR_DEBUG
-            DEBUGGING_SERIAL_OUTPUT.print(_stream->read());
+            MS_SERIAL_OUTPUT.print(_stream->read());
 #else
             _stream->read();
 #endif
         }
 #ifdef MS_MAXBOTIXSONAR_DEBUG
-        DEBUGGING_SERIAL_OUTPUT.println();
+        MS_SERIAL_OUTPUT.println();
 #endif
     }
 
@@ -119,13 +119,13 @@ bool MaxBotixSonar::addSingleMeasurementResult(void) {
                F("characters from MaxBotix stream buffer:"));
         for (uint8_t i = 0; i < junkChars; i++) {
 #ifdef MS_MAXBOTIXSONAR_DEBUG
-            DEBUGGING_SERIAL_OUTPUT.print(_stream->read());
+            MS_SERIAL_OUTPUT.print(_stream->read());
 #else
             _stream->read();
 #endif
         }
 #ifdef MS_MAXBOTIXSONAR_DEBUG
-        DEBUGGING_SERIAL_OUTPUT.println();
+        MS_SERIAL_OUTPUT.println();
 #endif
     }
 

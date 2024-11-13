@@ -20,7 +20,7 @@ DigiXBee3GBypass::DigiXBee3GBypass(Stream* modemStream, int8_t powerPin,
     : DigiXBee(powerPin, statusPin, useCTSStatus, modemResetPin,
                modemSleepRqPin),
 #ifdef MS_DIGIXBEE3GBYPASS_DEBUG_DEEP
-      _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
+      _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
       gsmModem(_modemATDebugger),
 #else
       gsmModem(*modemStream),
