@@ -60,7 +60,7 @@
 AltSoftSerial altSoftSerial;
 #endif  // End software serial for avr boards
 
-#if defined(ARDUINO_SAMD_FEATHER_M0) || defined(ARDUINO_SAMD_ZERO)
+#if defined(ARDUINO_SAMD_FEATHER_M0)
 #include <wiring_private.h>  // Needed for SAMD pinPeripheral() function
 
 // Set up a 'new' UART using SERCOM1
@@ -420,7 +420,7 @@ void setup() {
 
 // Assign pins SERCOM functionality for SAMD boards
 // NOTE:  This must happen *after* the various serial.begin statements
-#if defined(ARDUINO_SAMD_FEATHER_M0) || defined(ARDUINO_SAMD_ZERO)
+#if defined(ARDUINO_SAMD_FEATHER_M0)
     // Serial2
     pinPeripheral(10, PIO_SERCOM);  // Serial2 Tx/Dout = SERCOM1 Pad #2
     pinPeripheral(11, PIO_SERCOM);  // Serial2 Rx/Din = SERCOM1 Pad #0
@@ -549,7 +549,7 @@ void loop() {
         digitalWrite(6, LOW);
 #endif
 
-#if defined(ARDUINO_SAMD_ZERO)
+#if defined(ARDUINO_SAMD_FEATHER_M0)
         digitalWrite(10, LOW);
         digitalWrite(11, LOW);
 #endif

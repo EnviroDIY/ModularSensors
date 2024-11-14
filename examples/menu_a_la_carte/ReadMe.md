@@ -260,7 +260,7 @@ But, the Arduino core doesn't make use of all of them, so we have to assign them
 This section of code assigns SERCOM's 1 and 2 to act as Serial2 and Serial3 on pins 10/11 and 5/2 respectively.
 These pin selections are based on the Adafruit Feather M0.
 
-[//]: # ( @menusnip{serial_ports_SAMD} )
+[//]: # ( @menusnip{serial_ports_feather_m0} )
 
 In addition to creating the extra SERCOM ports here, the pins must be set up as the proper pin peripherals after the serial ports are begun.
 This is shown in the [SAMD Pin Peripherals section](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_setup_pin_periph) of the setup function.
