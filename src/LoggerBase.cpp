@@ -618,43 +618,45 @@ void Logger::systemSleep(void) {
     MS_DEEP_DBG(F("Disabling the watchdog"));
     extendedWatchDog::disableWatchDog();
 
-// Wait until the serial ports have finished transmitting
-// This does not clear their buffers, it just waits until they are finished
-// TODO(SRGDamia1):  Make sure we can find all serial ports
-#if defined(MS_SERIAL_OUTPUT)
-    MS_SERIAL_OUTPUT.flush();
-#endif
-#if defined(MS_DUAL_OUTPUT)
-    MS_DUAL_OUTPUT.flush();
-#endif
-
 #if defined(ARDUINO_ARCH_SAMD)
 
 #if !defined(USE_TINYUSB) && defined(USBCON)
     // Detach the USB, iff not using TinyUSB
     MS_DEEP_DBG(F("Detaching USBDevice"));
-    Serial.flush();  // wait for any outgoing messages on Serial = USB
     USBDevice.detach();   // USB->DEVICE.CTRLB.bit.DETACH = 1;
     USBDevice.end();      // USB->DEVICE.CTRLA.bit.ENABLE = 0; wait for sync;
     USBDevice.standby();  // USB->DEVICE.CTRLA.bit.RUNSTDBY = 0;
 
 #endif
 
-    // Copied from Adafruit SleepDog
-    // Enable standby sleep mode (deepest sleep) and activate.
-    // Insights from Atmel ASF library.
-
-    // NOTE: The macros SAMD20_SERIES and SAMD21_SERIES capture all of the MCU
-    // defines for all processors in that series.
-
 #if defined(__SAMD51__)
+
+    // Clear the FPU interrupt because it can prevent us from sleeping.
+    // From Circuit Python:
+    // https://github.com/maholli/circuitpython/blob/210ce1d1dc9b1c6c615ff2d3201dde89cb75c555/ports/atmel-samd/supervisor/port.c#L654
+    if (__get_FPSCR() & ~(0x9f)) {
+        __set_FPSCR(__get_FPSCR() & ~(0x9f));
+        (void)__get_FPSCR();
+    }
+
     // Set the sleep config
     // The STANDBY mode is the lowest power configuration while keeping the
     // state of the logic and the content of the RAM.
     // The HIBERNATE, BACKUP, and OFF modes do not retain RAM and a full reset
-    // occurs on wake.
+    // occurs on wake. The watchdog timer also does not run in any sleep setting
+    // deeper than STANDBY.
+    // In hibernate and backup modes, the only pins that can be used for an
+    // external wake up are the reset pin and dedicated RTC tamper detect pins.
+    // The datasheet is a bit misleading in this.  See:
+    // https://microchip.my.site.com/s/article/SAM-E5x-D5x--Wakeup-from-Hibernate-Backup-sleep-modes-using-External-Interrupt
     MS_DEEP_DBG(F("Setting sleep config"));
     // PM_SLEEPCFG_SLEEPMODE_STANDBY_Val = 0x4
+    // PM_SLEEPCFG_SLEEPMODE_HIBERNATE_Val = 0x5
+    // PM_SLEEPCFG_SLEEPMODE_STANDBY_Val = 0x4 - All Clocks are OFF
+    // PM_SLEEPCFG_SLEEPMODE_HIBERNATE_Val = 0x5 - Backup domain is ON as well
+    // as some PDRAMs
+    // PM_SLEEPCFG_SLEEPMODE_BACKUP_Val = 0x6 - Only Backup domain is powered ON
+    // PM_SLEEPCFG_SLEEPMODE_OFF_Val = 0x7 - All power domains are powered OFF
     PM->SLEEPCFG.bit.SLEEPMODE = PM_SLEEPCFG_SLEEPMODE_STANDBY_Val;
     // From datasheet 18.6.3.3: A small latency happens between the store
     // instruction and actual writing of the SLEEPCFG register due to bridges
@@ -662,19 +664,29 @@ void Logger::systemSleep(void) {
     // before executing a WFI instruction.
     while (PM->SLEEPCFG.bit.SLEEPMODE != PM_SLEEPCFG_SLEEPMODE_STANDBY_Val)
         ;
-    // From datasheet 18.6.3.3: After power-up, the MAINVREG low power mode
-    // takes some time to stabilize. Once stabilized, the INTFLAG.SLEEPRDY
-    // bit is set. Before entering Standby, Hibernate or Backup mode,
-    // software must ensure that the INTFLAG.SLEEPRDY bit is set.
-    // SRGD Note: I believe this only applies at power-on, but it's probably not
-    // a bad idea to check that the flag has been set.
+
+    // Configure standby mode
+    // PM->STDBYCFG.reg = PM_STDBYCFG_RAMCFG(0x0) | PM_STDBYCFG_FASTWKUP(0x0);
+    // PM_STDBYCFG_RAMCFG(0x0) = In standby mode, all the system RAM is retained
+    // PM_STDBYCFG_FASTWKUP(0x0) = Fast wakeup is disabled.
+
+    // Configure hibernate mode
+    // PM->HIBCFG.reg = PM_HIBCFG_RAMCFG(0x0) | PM_HIBCFG_BRAMCFG(0x0);
+    // 0x0 = In hibernate mode, all the system RAM is retained
+    // 0x0 = In hibernate mode, all the backup RAM is retained.
+
+    //  From datasheet 18.6.3.3: After power-up, the MAINVREG low power mode
+    //  takes some time to stabilize. Once stabilized, the INTFLAG.SLEEPRDY
+    //  bit is set. Before entering Standby, Hibernate or Backup mode,
+    //  software must ensure that the INTFLAG.SLEEPRDY bit is set.
+    //  SRGD Note: I believe this only applies at power-on, but it's probably
+    //  not a bad idea to check that the flag has been set.
     while (!PM->INTFLAG.bit.SLEEPRDY)
         ;
-#else
+#else  // SAMD21
 
     // Don't fully power down flash when in sleep
-    // Adafruit SleepDog and ArduinoLowPower both do this.
-    // TODO: Figure out if this is really necessary
+    // Datasheet Eratta 1.14.2 says this is required.
     NVMCTRL->CTRLB.bit.SLEEPPRM = NVMCTRL_CTRLB_SLEEPPRM_DISABLED_Val;
 
     // Disable systick interrupt:  See
@@ -692,9 +704,25 @@ void Logger::systemSleep(void) {
     SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
 #endif
 
-    // Actually sleep
-    __DSB();  // Data sync to ensure outgoing memory accesses complete
-    __WFI();  // Wait for interrupt (places device in sleep mode)
+// Wait until the serial ports have finished transmitting
+// This is crucial for the SAMD boards that will continuously wake if they have
+// data remaining in the buffer.
+#if defined(SERIAL_PORT_USBVIRTUAL)
+    SERIAL_PORT_USBVIRTUAL.flush();
+#endif
+#if defined(MS_OUTPUT)
+    MS_OUTPUT.flush();
+#endif
+#if defined(MS_2ND_OUTPUT)
+    MS_2ND_OUTPUT.flush();
+#endif
+
+    __DSB();  // Data sync barrier - to ensure outgoing memory accesses
+              // complete
+
+    // For tips on failing to sleep, see:
+    // https://www.eevblog.com/forum/microcontrollers/crashing-through-__wfi/
+    __WFI();
 
 #elif defined(ARDUINO_ARCH_AVR)
 
@@ -743,6 +771,17 @@ void Logger::systemSleep(void) {
 
     // Re-enables interrupts so we can wake up again
     interrupts();
+// Wait until the serial ports have finished transmitting
+// This isn't very important on AVR boards
+#if defined(SERIAL_PORT_USBVIRTUAL)
+    SERIAL_PORT_USBVIRTUAL.flush();
+#endif
+#if defined(MS_OUTPUT)
+    MS_OUTPUT.flush();
+#endif
+#if defined(MS_2ND_OUTPUT)
+    MS_2ND_OUTPUT.flush();
+#endif
 
     // Actually put the processor into sleep mode.
     // This must happen after the SE bit is set.
@@ -762,8 +801,11 @@ void Logger::systemSleep(void) {
 #endif
     // Reattach the USB
 #if !defined(USE_TINYUSB) && defined(USBCON)
+    MS_DEEP_DBG(F("Reattaching USBDevice"));
     USBDevice.init();
+    // ^^ Restarts the bus, including re-attaching the NVIC interrupts
     USBDevice.attach();
+    // ^^ USB->DEVICE.CTRLB.bit.DETACH = 0; enables USB interrupts
 #endif
 #endif
 
@@ -955,21 +997,26 @@ bool Logger::initializeSDCard(void) {
     // sd.begin(SdSpiConfig(_SDCardSSPin, DEDICATED_SPI | USER_SPI_BEGIN,
     // SPI_FULL_SPEED));
 
-#if (defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAMD_ZERO)) && \
-    !defined(__SAMD51__)
+#if !defined(SDCARD_SPI)
+#define SDCARD_SPI SPI
+#endif
+
+#if (defined(ARDUINO_ARCH_SAMD)) && !defined(__SAMD51__)
     // Dispite the 48MHz clock speed, the max SPI speed of a SAMD21 is 12 MHz
     // see https://github.com/arduino/ArduinoCore-samd/pull/292
     // The Adafruit SAMD core does NOT automatically manage the SPI speed, so
     // this needs to be set.
     SdSpiConfig customSdConfig(static_cast<SdCsPin_t>(_SDCardSSPin),
-                               (uint8_t)(DEDICATED_SPI), SD_SCK_MHZ(12), &SPI);
+                               (uint8_t)(DEDICATED_SPI), SD_SCK_MHZ(12),
+                               &SDCARD_SPI);
 #else
     // The SAMD51 is fast enough to handle SPI_FULL_SPEED=SD_SCK_MHZ(50).
     // The SPI library of the Adafruit/Arduino AVR core will automatically
     // adjust the full speed of the SPI clock down to whatever the board can
     // handle.
     SdSpiConfig customSdConfig(static_cast<SdCsPin_t>(_SDCardSSPin),
-                               (uint8_t)(DEDICATED_SPI), SPI_FULL_SPEED, &SPI);
+                               (uint8_t)(DEDICATED_SPI), SPI_FULL_SPEED,
+                               &SDCARD_SPI);
 #endif
 
     if (!sd.begin(customSdConfig)) {
