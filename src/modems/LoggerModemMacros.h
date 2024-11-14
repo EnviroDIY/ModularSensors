@@ -73,6 +73,9 @@
         } else {                                                               \
             /** If we can't determine status by pin level, try checking if the \
              * modem responds to AT commands. */                               \
+            MS_DEEP_DBG(                                                       \
+                F("No modem status pins, checking if modem is awake by "       \
+                  "testing AT response"));                                     \
             int8_t i   = 5;                                                    \
             bool   res = false;                                                \
             while (i && !res) {                                                \

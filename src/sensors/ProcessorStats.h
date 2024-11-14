@@ -226,11 +226,14 @@
 #define PROCESSOR_RESET_DEFAULT_CODE "ResetCode"
 /**@}*/
 
+/**
+ * @def LOGGER_BOARD
+ * @brief Pretty text for the board name derived from the board's compiler
+ * define.
+ */
 
 // EnviroDIY boards
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
-/// @brief Pretty text for the board name derived from the board's compiler
-/// define.
 #define LOGGER_BOARD "EnviroDIY Mayfly"
 #elif defined(ENVIRODIY_STONEFLY_M4)
 #define LOGGER_BOARD "EnviroDIY Stonefly"
@@ -263,6 +266,8 @@
 #define LOGGER_BOARD "Feather M0 Express"
 #elif defined(ARDUINO_SAMD_FEATHER_M0) || defined(ADAFRUIT_FEATHER_M0)
 #define LOGGER_BOARD "Feather M0"
+#elif defined(ADAFRUIT_GRAND_CENTRAL_M4)
+#define LOGGER_BOARD "Grand Central"
 #elif defined(ADAFRUIT_FEATHER_M4_ADALOGGER)
 #define LOGGER_BOARD "Feather M4 Adalogger"
 #elif defined(ARDUINO_FEATHER_M4_CAN) || defined(ADAFRUIT_FEATHER_M4_CAN)
