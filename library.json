@@ -348,6 +348,11 @@
       "authors": ["Anthony Aufdenkampe"],
       "frameworks": "arduino",
       "platforms": "atmelavr, atmelsam"
+    },
+    {
+      "name": "StreamDebugger",
+      "version": "https://github.com/EnviroDIY/StreamDebugger.git",
+      "note": "Used for debugging modem streams and duplicating primary output stream"
     }
   ]
 }

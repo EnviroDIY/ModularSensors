@@ -1,5 +1,5 @@
 {
-  "action_cache_version": 23,
+  "action_cache_version": 24,
   "dependencies": [
     {
       "name": "EnviroDIY_DS3231",
@@ -94,7 +94,9 @@
       "url": "https://github.com/adafruit/Adafruit_BusIO",
       "version": "~1.16.2",
       "note": "Adafruit BusIO, a dependency of other Adafruit libraries",
-      "authors": ["Adafruit"],
+      "authors": [
+        "Adafruit"
+      ],
       "frameworks": "arduino",
       "platforms": "atmelavr, atmelsam"
     },
@@ -341,6 +343,11 @@
       ],
       "frameworks": "arduino",
       "platforms": "atmelavr, atmelsam"
+    },
+    {
+      "name": "StreamDebugger",
+      "version": "https://github.com/EnviroDIY/StreamDebugger.git",
+      "note": "Used for debugging modem streams and duplicating primary output stream"
     }
   ]
 }

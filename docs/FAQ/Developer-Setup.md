@@ -87,7 +87,7 @@ lib_deps =
     envirodiy/SensorModbusMaster
     envirodiy/KellerModbus
     envirodiy/YosemitechModbus
-    vshymanskyy/StreamDebugger
+    https://github.com/EnviroDIY/StreamDebugger.git
 ; The directories for the ModularSensors library source code
 src_filter =
     +<*>

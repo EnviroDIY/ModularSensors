@@ -2,11 +2,6 @@
   "action_cache_version": 1,
   "dependencies": [
     {
-      "name": "StreamDebugger",
-      "owner": "vshymanskyy",
-      "version": "~1.0.1"
-    },
-    {
       "name": "NeoSWSerial",
       "version": "https://github.com/SRGDamia1/NeoSWSerial.git"
     },
