@@ -321,7 +321,7 @@ void loggerClock::setNextRTCInterrupt(uint32_t ts, int8_t utcOffset,
 #elif defined(MS_USE_DS3231)
     // MATCH_HOURS = match hours *and* minutes, seconds, ie 1x per day at set
     // hh:mm:ss
-    rtc.enableInterrupts(MATCH_HOURS, dateAlarmValue, tmp->tm_hour, tmp->tm_min,
+    rtc.enableInterrupts(MATCH_HOURS, 0, tmp->tm_hour, tmp->tm_min,
                          tmp->tm_sec);  // interrupt at (h,m,s)
 #elif defined(MS_USE_RTC_ZERO)
     // NOTE: The interrupt is fired 1s after the match, so we set the alarm 1
