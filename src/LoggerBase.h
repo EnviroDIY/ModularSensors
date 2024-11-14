@@ -40,7 +40,7 @@
 
 // Bring in the libraries to handle the processor sleep/standby modes
 // The SAMD library can also the built-in clock on those modules
-#if defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAMD_ZERO)
+#if defined(ARDUINO_ARCH_SAMD)
 #include "WatchDogs/WatchDogSAMD.h"
 #define extendedWatchDog extendedWatchDogSAMD
 #elif defined(__AVR__) || defined(ARDUINO_ARCH_AVR)

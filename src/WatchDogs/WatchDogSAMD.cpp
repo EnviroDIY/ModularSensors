@@ -13,7 +13,7 @@
 // Be careful to use a platform-specific conditional include to only make the
 // code visible for the appropriate platform.  Arduino will try to compile and
 // link all .cpp files regardless of platform.
-#if defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAMD_ZERO)
+#if defined(ARDUINO_ARCH_SAMD)
 
 volatile uint32_t extendedWatchDogSAMD::_barksUntilReset = 0;
 uint32_t          extendedWatchDogSAMD::_resetTime_s     = 900;
