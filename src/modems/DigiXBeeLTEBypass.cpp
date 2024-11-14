@@ -20,7 +20,7 @@ DigiXBeeLTEBypass::DigiXBeeLTEBypass(Stream* modemStream, int8_t powerPin,
     : DigiXBee(powerPin, statusPin, useCTSStatus, modemResetPin,
                modemSleepRqPin),
 #ifdef MS_DIGIXBEELTEBYPASS_DEBUG_DEEP
-      _modemATDebugger(*modemStream, _MS_SERIAL_OUTPUT),
+      _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
       gsmModem(_modemATDebugger),
 #else
       gsmModem(*modemStream),

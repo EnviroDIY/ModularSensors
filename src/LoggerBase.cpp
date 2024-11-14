@@ -410,7 +410,7 @@ void Logger::sendDataToRemotes(void) {
 void Logger::setLoggerTimeZone(int8_t timeZone) {
     _loggerUTCOffset = timeZone;
 // Some helpful prints for debugging
-#ifdef MS_SERIAL_OUTPUT
+#if defined(MS_SERIAL_OUTPUT)
     const char* prtout1 = "Logger timezone is set to UTC";
     if (_loggerUTCOffset == 0) {
         PRINTOUT(prtout1);

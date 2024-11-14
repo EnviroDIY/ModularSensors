@@ -312,7 +312,7 @@ void extendedWatchDogSAMD::waitForGCLKBitSync() {
 void WDT_Handler(void) {
     MS_DEEP_DBG(F("\nWatchdog early warning interrupt!"));
 #if defined(MS_WATCHDOGSAMD_DEBUG_DEEP)
-    _MS_SERIAL_OUTPUT.println();
+    MS_SERIAL_OUTPUT.println();
 #endif
     // Increment down the counter, makes multi cycle WDT possible
     extendedWatchDogSAMD::_barksUntilReset--;

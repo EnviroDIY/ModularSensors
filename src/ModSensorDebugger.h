@@ -21,21 +21,21 @@
 #include <Arduino.h>
 
 #if defined(SERIAL_PORT_USBVIRTUAL)
-#define MS_DEFAULT_SERIAL_OUTPUT SERIAL_PORT_USBVIRTUAL
+#define MS_DEFAULT_OUTPUT SERIAL_PORT_USBVIRTUAL
 #elif defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
-#define MS_DEFAULT_SERIAL_OUTPUT Serial
+#define MS_DEFAULT_OUTPUT Serial
 #endif
 
-#if !defined(MS_SERIAL_OUTPUT) && !defined(MS_SILENT)
-#define MS_SERIAL_OUTPUT MS_DEFAULT_SERIAL_OUTPUT
-#endif  // ifndef MS_SERIAL_OUTPUT
+#if !defined(MS_OUTPUT) && !defined(MS_SILENT)
+#define MS_OUTPUT MS_DEFAULT_OUTPUT
+#endif  // ifndef MS_OUTPUT
 
-#if defined(MS_DUAL_OUTPUT) && !defined(_MS_SERIAL_OUTPUT)
+#if defined(MS_2ND_OUTPUT) && !defined(MS_SERIAL_OUTPUT)
 #include <StreamDebugger.h>
-static StreamDebugger _MS_DUAL_OUTPUT(MS_SERIAL_OUTPUT, MS_DUAL_OUTPUT);
-#define _MS_SERIAL_OUTPUT _MS_DUAL_OUTPUT
-#elif !defined(_MS_SERIAL_OUTPUT)
-#define _MS_SERIAL_OUTPUT MS_SERIAL_OUTPUT
+static StreamDebugger MS_LINKED_OUTPUT(MS_OUTPUT, MS_2ND_OUTPUT);
+#define MS_SERIAL_OUTPUT MS_LINKED_OUTPUT
+#elif !defined(MS_SERIAL_OUTPUT)
+#define MS_SERIAL_OUTPUT MS_OUTPUT
 #endif
 
 
@@ -49,8 +49,8 @@ static StreamDebugger _MS_DUAL_OUTPUT(MS_SERIAL_OUTPUT, MS_DUAL_OUTPUT);
  */
 template <typename T>
 static void PRINTOUT(T last) {
-    _MS_SERIAL_OUTPUT.println(last);
-    _MS_SERIAL_OUTPUT.flush();
+    MS_SERIAL_OUTPUT.println(last);
+    MS_SERIAL_OUTPUT.flush();
 }
 /**
  * @brief Helper to print text to MS_SERIAL_OUTPUT that should *always* be
@@ -63,8 +63,8 @@ static void PRINTOUT(T last) {
  */
 template <typename T, typename... Args>
 static void PRINTOUT(T head, Args... tail) {
-    _MS_SERIAL_OUTPUT.print(head);
-    _MS_SERIAL_OUTPUT.print(' ');
+    MS_SERIAL_OUTPUT.print(head);
+    MS_SERIAL_OUTPUT.print(' ');
     PRINTOUT(tail...);
 }
 
@@ -89,10 +89,10 @@ static void PRINTOUT(T head, Args... tail) {
  */
 template <typename T>
 static void MS_DBG(T last) {
-    _MS_SERIAL_OUTPUT.print(last);
-    _MS_SERIAL_OUTPUT.print(" <--");
-    _MS_SERIAL_OUTPUT.println(MS_DEBUGGING_STD);
-    _MS_SERIAL_OUTPUT.flush();
+    MS_SERIAL_OUTPUT.print(last);
+    MS_SERIAL_OUTPUT.print(" <--");
+    MS_SERIAL_OUTPUT.println(MS_DEBUGGING_STD);
+    MS_SERIAL_OUTPUT.flush();
 }
 /**
  * @brief Helper to print debugging text to MS_SERIAL_OUTPUT.
@@ -107,8 +107,8 @@ static void MS_DBG(T last) {
  */
 template <typename T, typename... Args>
 static void MS_DBG(T head, Args... tail) {
-    _MS_SERIAL_OUTPUT.print(head);
-    _MS_SERIAL_OUTPUT.print(' ');
+    MS_SERIAL_OUTPUT.print(head);
+    MS_SERIAL_OUTPUT.print(' ');
     MS_DBG(tail...);
 }
 /**
@@ -171,10 +171,10 @@ static void MS_DBG(T head, Args... tail) {
  */
 template <typename T>
 static void MS_DEEP_DBG(T last) {
-    _MS_SERIAL_OUTPUT.print(last);
-    _MS_SERIAL_OUTPUT.print(" <--");
-    _MS_SERIAL_OUTPUT.println(MS_DEBUGGING_DEEP);
-    _MS_SERIAL_OUTPUT.flush();
+    MS_SERIAL_OUTPUT.print(last);
+    MS_SERIAL_OUTPUT.print(" <--");
+    MS_SERIAL_OUTPUT.println(MS_DEBUGGING_DEEP);
+    MS_SERIAL_OUTPUT.flush();
 }
 /**
  * @brief Helper to print debugging text to MS_SERIAL_OUTPUT.  This is intended
@@ -190,8 +190,8 @@ static void MS_DEEP_DBG(T last) {
  */
 template <typename T, typename... Args>
 static void MS_DEEP_DBG(T head, Args... tail) {
-    _MS_SERIAL_OUTPUT.print(head);
-    _MS_SERIAL_OUTPUT.print(' ');
+    MS_SERIAL_OUTPUT.print(head);
+    MS_SERIAL_OUTPUT.print(' ');
     MS_DEEP_DBG(tail...);
 }
 

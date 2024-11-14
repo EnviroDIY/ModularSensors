@@ -89,7 +89,7 @@ RTCZero    loggerClock::zero_sleep_rtc;
 void loggerClock::setRTCOffset(int8_t offsetHours) {
     _rtcUTCOffset = offsetHours;
 // Some helpful prints for debugging
-#ifdef MS_SERIAL_OUTPUT
+#if defined(MS_SERIAL_OUTPUT)
     const char* prtout1 = "RTC is set to UTC";
     if (_rtcUTCOffset == 0) {
         PRINTOUT(prtout1);
@@ -370,7 +370,7 @@ void loggerClock::resetClockInterruptStatus(void) {
 void loggerClock::rtcISR(void) {
     MS_DEEP_DBG(F("\nClock interrupt!"));
 #if defined(MS_CLOCKSUPPORT_DEBUG_DEEP)
-    _MS_SERIAL_OUTPUT.println();
+    MS_SERIAL_OUTPUT.println();
 #endif
 }
 
