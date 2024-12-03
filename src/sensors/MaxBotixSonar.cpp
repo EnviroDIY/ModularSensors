@@ -99,7 +99,7 @@ bool MaxBotixSonar::wake(void) {
 #endif
         }
 #ifdef MS_MAXBOTIXSONAR_DEBUG
-        MS_SERIAL_OUTPUT.println();
+        PRINTOUT(" ");
 #endif
     }
 
@@ -125,7 +125,7 @@ bool MaxBotixSonar::addSingleMeasurementResult(void) {
 #endif
         }
 #ifdef MS_MAXBOTIXSONAR_DEBUG
-        MS_SERIAL_OUTPUT.println();
+        PRINTOUT(" ");
 #endif
     }
 

@@ -335,7 +335,7 @@ class VariableArray {
  * between the members
  */
 #define prettyPrintArray(...)
-#endif  // MS_SERIAL_OUTPUT
+#endif  // MS_VARIABLEARRAY_DEBUG_DEEP
 };
 
 #endif  // SRC_VARIABLEARRAY_H_

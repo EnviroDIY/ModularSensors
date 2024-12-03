@@ -653,7 +653,6 @@ const int32_t modemBaud =
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
-// and-global breakout bk-7080a
 const int8_t modemVccPin     = 18;  // MCU pin controlling modem power
 const int8_t modemStatusPin  = 19;  // MCU pin used to read modem status
 const int8_t modemSleepRqPin = 23;  // MCU pin for modem sleep/wake request
