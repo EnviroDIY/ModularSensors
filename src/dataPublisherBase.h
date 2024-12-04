@@ -23,9 +23,14 @@
 
 // Debugging Statement
 // #define MS_DATAPUBLISHERBASE_DEBUG
+// #define MS_DATAPUBLISHERBASE_DEBUG_DEEP
 
 #ifdef MS_DATAPUBLISHERBASE_DEBUG
 #define MS_DEBUGGING_STD "dataPublisherBase"
+#endif
+
+#ifdef MS_DATAPUBLISHERBASE_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP "dataPublisherBase"
 #endif
 
 
