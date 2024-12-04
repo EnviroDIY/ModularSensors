@@ -198,6 +198,11 @@ void Logger::setRTCWakePin(int8_t mcuWakePin, uint8_t wakePinMode) {
         pinMode(_mcuWakePin, _wakePinMode);
         MS_DBG(F("Pin"), _mcuWakePin, F("set as RTC wake up pin with pin mode"),
                _wakePinMode);
+    } else {
+#if !defined(MS_USE_RTC_ZERO)
+        MS_DBG(F("External clock but no wake pin; logger mcu will not sleep "
+                 "between readings!"));
+#endif
     }
 }
 
@@ -410,7 +415,7 @@ void Logger::sendDataToRemotes(void) {
 void Logger::setLoggerTimeZone(int8_t timeZone) {
     _loggerUTCOffset = timeZone;
 // Some helpful prints for debugging
-#if defined(MS_SERIAL_OUTPUT)
+#if !defined(MS_SILENT)
     const char* prtout1 = "Logger timezone is set to UTC";
     if (_loggerUTCOffset == 0) {
         PRINTOUT(prtout1);
@@ -1082,10 +1087,13 @@ bool Logger::openFile(String& filename, bool createFile,
                 // Add header information
                 printFileHeader(&logFile);
 // Print out the header for debugging
-#if defined(MS_SERIAL_OUTPUT) && defined(MS_DEBUGGING_STD)
+#if defined(MS_DEBUGGING_STD)
                 MS_DBG(F("\n \\/---- File Header ----\\/"));
-                printFileHeader(&MS_SERIAL_OUTPUT);
-                MS_DBG('\n');
+                printFileHeader(&MS_OUTPUT);
+#if defined(MS_2ND_OUTPUT)
+                printFileHeader(&MS_2ND_OUTPUT);
+#endif
+                PRINTOUT('\n');
 #endif
                 // Set write/modification date time
                 setFileTimestamp(logFile, T_WRITE);
@@ -1191,9 +1199,12 @@ bool Logger::logToSD(void) {
     // Write the data
     printSensorDataCSV(&logFile);
 // Echo the line to the serial port
-#if defined(MS_SERIAL_OUTPUT)
+#if !defined(MS_SILENT)
     PRINTOUT(F("\n \\/---- Line Saved to SD Card ----\\/"));
-    printSensorDataCSV(&MS_SERIAL_OUTPUT);
+    printSensorDataCSV(&MS_OUTPUT);
+#if defined(MS_2ND_OUTPUT)
+    printSensorDataCSV(&MS_2ND_OUTPUT);
+#endif
     PRINTOUT('\n');
 #endif
 
@@ -1271,8 +1282,11 @@ void Logger::testingMode(bool sleepBeforeReturning) {
                  formatDateTime_ISO8601(getNowLocalEpoch()));
         PRINTOUT(F("-----------------------"));
 // Print out the sensor data
-#if defined(MS_SERIAL_OUTPUT)
-        _internalArray->printSensorData(&MS_SERIAL_OUTPUT);
+#if !defined(MS_SILENT)
+        _internalArray->printSensorData(&MS_OUTPUT);
+#if defined(MS_2ND_OUTPUT)
+        _internalArray->printSensorData(&MS_2ND_OUTPUT);
+#endif
 #endif
         PRINTOUT(F("-----------------------"));
         extendedWatchDog::resetWatchDog();
@@ -1338,6 +1352,7 @@ void Logger::begin() {
            F("minutes without being fed (2x logging interval)"));
     extendedWatchDog::setupWatchDog((uint32_t)(realWatchDogTime * 60));
     // Enable the watchdog
+    MS_DEEP_DBG(F("Enabling the watchdog"));
     extendedWatchDog::enableWatchDog();
 
 #if defined(ARDUINO_ARCH_SAMD)
@@ -1513,10 +1528,13 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
         extendedWatchDog::resetWatchDog();
 
 // Print out the sensor data
-#if defined(MS_SERIAL_OUTPUT)
-        MS_SERIAL_OUTPUT.println();
-        _internalArray->printSensorData(&MS_SERIAL_OUTPUT);
-        MS_SERIAL_OUTPUT.println();
+#if !defined(MS_SILENT)
+        PRINTOUT(" ");
+        _internalArray->printSensorData(&MS_OUTPUT);
+#if defined(MS_2ND_OUTPUT)
+        _internalArray->printSensorData(&MS_2ND_OUTPUT);
+#endif
+        PRINTOUT(" ");
 #endif
 
         // Create a csv data record and save it to the log file

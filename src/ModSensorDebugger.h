@@ -20,6 +20,20 @@
 // Included Dependencies
 #include <Arduino.h>
 
+/// Helper for strings stored in flash
+/***
+#if defined(__AVR__) || defined (ARDUINO_ARCH_AVR)
+  typedef const __FlashStringHelper* GsmConstStr;
+  #define GFP(x) (reinterpret_cast<GsmConstStr>(x))
+  #define GF(x)  F(x)
+#else
+  typedef const char* GsmConstStr;
+  #define GFP(x) x
+  #define GF(x)  x
+#endif
+typedef const __FlashStringHelper* FlashString;
+***/
+
 #if defined(SERIAL_PORT_USBVIRTUAL)
 #define MS_DEFAULT_OUTPUT SERIAL_PORT_USBVIRTUAL
 #elif defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
@@ -205,19 +219,6 @@ static void MS_DEEP_DBG(T head, Args... tail) {
  */
 #define MS_DEEP_DBG(...)
 #endif
-
-
-/***
-#if defined(__AVR__) || defined (ARDUINO_ARCH_AVR)
-  typedef const __FlashStringHelper* GsmConstStr;
-  #define GFP(x) (reinterpret_cast<GsmConstStr>(x))
-  #define GF(x)  F(x)
-#else
-  typedef const char* GsmConstStr;
-  #define GFP(x) x
-  #define GF(x)  x
-#endif
-***/
 
 
 #endif  // SRC_MODSENSORDEBUGGER_H_
