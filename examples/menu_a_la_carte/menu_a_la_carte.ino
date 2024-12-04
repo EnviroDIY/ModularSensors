@@ -3095,8 +3095,39 @@ UbidotsPublisher ubidots(dataLogger, &modem.gsmClient, ubidotsToken,
 //  Working Functions
 // ==========================================================================
 /** Start [working_functions] */
+
+#if defined(PIN_NEOPIXEL)
+#include <Adafruit_NeoPixel.h>
+// Declare our NeoPixel strip object:
+Adafruit_NeoPixel pixels(1, PIN_NEOPIXEL);
 // Flashes the LED's on the primary board
-void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
+void greenRedFlash(uint8_t numFlash = 4, uint8_t rate = 75) {
+#if defined(PIN_NEOPIXEL_POWER)
+    pinMode(PIN_NEOPIXEL_POWER, OUTPUT);
+    digitalWrite(PIN_NEOPIXEL_POWER, HIGH);
+#endif
+    for (uint8_t i = 0; i < numFlash; i++) {
+        pixels.setPixelColor(i, pixels.Color(0, 255, 0));  // set to green
+        pixels.show();  // Send the updated pixel colors to the hardware.
+        delay(rate);
+        pixels.setPixelColor(i, pixels.Color(255, 0, 0));  // set to red
+        pixels.show();  // Send the updated pixel colors to the hardware.
+        delay(rate);
+    }
+    pixels.clear();  // Set all pixel colors to 'off'
+#if defined(PIN_NEOPIXEL_POWER)
+    digitalWrite(PIN_NEOPIXEL_POWER, LOW);
+#endif
+}
+#else
+// Flashes the LED's on the primary board
+void greenRedFlash(uint8_t numFlash = 4, uint8_t rate = 75) {
+    // Set up pins for the LED's
+    pinMode(greenLED, OUTPUT);
+    digitalWrite(greenLED, LOW);
+    pinMode(redLED, OUTPUT);
+    digitalWrite(redLED, LOW);
+    // Flash the lights
     for (uint8_t i = 0; i < numFlash; i++) {
         digitalWrite(greenLED, HIGH);
         digitalWrite(redLED, LOW);
@@ -3107,6 +3138,7 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
     }
     digitalWrite(redLED, LOW);
 }
+#endif
 
 // Uses the processor sensor object to read the battery voltage
 // NOTE: This will actually return the battery level from the previous update!
@@ -3125,13 +3157,8 @@ float getBatteryVoltage() {
 // ==========================================================================
 void setup() {
     /** Start [setup_flashing_led] */
-    // Set up pins for the LED's
-    pinMode(greenLED, OUTPUT);
-    digitalWrite(greenLED, LOW);
-    pinMode(redLED, OUTPUT);
-    digitalWrite(redLED, LOW);
     // Blink the LEDs to show the board is on and starting up
-    greenredflash();
+    greenRedFlash(3, 35);
     /** End [setup_flashing_led] */
 
 /** Start [setup_wait] */
