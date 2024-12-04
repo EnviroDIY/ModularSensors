@@ -3052,17 +3052,20 @@ DreamHostPublisher DreamHostGET(dataLogger, &modem.gsmClient,
 // Any custom name or identifier given to the field on ThingSpeak is irrelevant.
 // No more than 8 fields of data can go to any one channel.  Any fields beyond
 // the eighth in the array will be ignored.
-const char* thingSpeakMQTTKey =
-    "XXXXXXXXXXXXXXXX";  // Your MQTT API Key from Account > MyProfile.
+const char* thingSpeakClientName =
+    "XXXXXXXXXXXXXXXX";  // The client name for your MQTT device
+const char* thingSpeakMQTTUser =
+    "XXXXXXXXXXXXXXXX";  // The user name for your MQTT device.
+const char* thingSpeakMQTTPassword =
+    "XXXXXXXXXXXXXXXX";  // The password for your MQTT device
 const char* thingSpeakChannelID =
     "######";  // The numeric channel id for your channel
-const char* thingSpeakChannelKey =
-    "XXXXXXXXXXXXXXXX";  // The Write API Key for your channel
 
 // Create a data publisher for ThingSpeak
 #include <publishers/ThingSpeakPublisher.h>
-ThingSpeakPublisher TsMqtt(dataLogger, &modem.gsmClient, thingSpeakMQTTKey,
-                           thingSpeakChannelID, thingSpeakChannelKey);
+ThingSpeakPublisher TsMqtt(dataLogger, &modem.gsmClient, thingSpeakClientName,
+                           thingSpeakMQTTUser, thingSpeakMQTTPassword,
+                           thingSpeakChannelID);
 /** End [thing_speak_publisher] */
 #endif
 
@@ -3133,8 +3136,8 @@ void setup() {
 
 /** Start [setup_wait] */
 // Wait for USB connection to be established by PC
-// NOTE:  Only use this when debugging - if not connected to a PC, this
-// could prevent the script from starting
+// NOTE:  Only use this when debugging - if not connected to a PC, this adds an
+// unnecesary startup delay
 #if defined(SERIAL_PORT_USBVIRTUAL)
     while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000L)) {
         // wait
@@ -3145,34 +3148,36 @@ void setup() {
     /** Start [setup_prints] */
     // Start the primary serial connection
     Serial.begin(serialBaud);
+#if defined(MS_2ND_OUTPUT)
+    MS_2ND_OUTPUT.begin(serialBaud);
+#endif
+    greenRedFlash(5, 50);
 
     // Print a start-up note to the first serial port
-    Serial.print(F("\n\nNow running "));
-    Serial.print(sketchName);
-    Serial.print(F(" on Logger "));
-    Serial.println(LoggerID);
-    Serial.println();
+    PRINTOUT("\n\n\n=============================");
+    PRINTOUT("=============================");
+    PRINTOUT("=============================");
+    PRINTOUT(F("\n\nNow running"), sketchName, F(" on Logger"), LoggerID, '\n');
 
-    Serial.print(F("Using ModularSensors Library version "));
-    Serial.println(MODULAR_SENSORS_VERSION);
+    PRINTOUT(F("Using ModularSensors Library version"),
+             MODULAR_SENSORS_VERSION);
 #if !defined(BUILD_MODEM_NO_MODEM)
-    Serial.print(F("TinyGSM Library version "));
-    Serial.println(TINYGSM_VERSION);
+    PRINTOUT(F("TinyGSM Library version"), TINYGSM_VERSION);
 #endif
-    Serial.print(F("Processor: "));
-    Serial.println(mcuBoard.getSensorLocation());
-    Serial.println();
+    PRINTOUT(F("Processor:"), mcuBoard.getSensorLocation());
+    PRINTOUT(F("The most recent reset cause was"), mcuBoard.getLastResetCode(),
+             '(', mcuBoard.getLastResetCause(), ')');
     /** End [setup_prints] */
 
 /** Start [setup_softserial] */
 // Allow interrupts for software serial
 #if defined(BUILD_TEST_SOFTSERIAL)
-    Serial.println(F("Enabling interrupts for SoftwareSerial"));
+    PRINTOUT(F("Enabling interrupts for SoftwareSerial"));
     enableInterrupt(softSerialRx, SoftwareSerial_ExtInts::handle_interrupt,
                     CHANGE);
 #endif
 #if defined(BUILD_TEST_NEOSWSERIAL)
-    Serial.println(F("Enabling interrupts for NeoSoftSerial"));
+    PRINTOUT(F("Enabling interrupts for NeoSoftSerial"));
     enableInterrupt(neoSSerial1Rx, neoSSerial1ISR, CHANGE);
 #endif
 /** End [setup_softserial] */
@@ -3180,11 +3185,8 @@ void setup() {
 /** Start [setup_serial_begins] */
 // Start the serial connection with the modem
 #if !defined(BUILD_MODEM_NO_MODEM)
-    Serial.print(F("Starting modem connection on "));
-    Serial.print(STR(modemSerial));
-    Serial.print(F(" at "));
-    Serial.print(modemBaud);
-    Serial.println(F(" baud"));
+    PRINTOUT(F("Starting modem connection on"), STR(modemSerial), F(" at"),
+             modemBaud, F(" baud"));
     modemSerial.begin(modemBaud);
 #endif
 
@@ -3203,7 +3205,7 @@ void setup() {
 // NOTE:  This must happen *after* the various serial.begin statements
 /** Start [setup_samd_pins] */
 #if defined(ARDUINO_SAMD_FEATHER_M0)
-    Serial.println(F("Setting SAMD21 SERCOM pin peripherals"));
+    PRINTOUT(F("Setting SAMD21 SERCOM pin peripherals"));
     // Serial2
     pinPeripheral(10, PIO_SERCOM);  // Serial2 Tx/Dout = SERCOM1 Pad #2
     pinPeripheral(11, PIO_SERCOM);  // Serial2 Rx/Din = SERCOM1 Pad #0
@@ -3214,47 +3216,46 @@ void setup() {
     /** End [setup_samd_pins] */
 
     // Start the SPI library
-    Serial.println(F("Starting SPI"));
+    PRINTOUT(F("Starting SPI"));
     SPI.begin();
 
 #if defined(EXTERNAL_FLASH_DEVICES)
-    Serial.println(F("Setting onboard flash pin modes"));
+    PRINTOUT(F("Setting onboard flash pin modes"));
     pinMode(flashSSPin,
             OUTPUT);  // for proper operation of the onboard flash memory
 #endif
 
-    Serial.println(F("Starting I2C (Wire)"));
+    PRINTOUT(F("Starting I2C (Wire)"));
     Wire.begin();
 
     /** Start [setup_logger] */
-    Serial.println(F("Setting logger pins"));
+    PRINTOUT(F("Setting logger pins"));
     dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin,
                              greenLED, wakePinMode, buttonPinMode);
 
 #if defined(ARDUINO_ARCH_SAMD)
-    Serial.println(
-        F("Setting analog read resolution for onboard ADC to 12 bit"));
+    PRINTOUT(F("Setting analog read resolution for onboard ADC to 12 bit"));
     analogReadResolution(12);
 #endif
 
     // Set the timezones for the logger/data and the RTC
     // Logging in the given time zone
-    Serial.println(F("Setting logger time zone"));
+    PRINTOUT(F("Setting logger time zone"));
     Logger::setLoggerTimeZone(timeZone);
     // It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)
-    Serial.println(F("Setting RTC time zone"));
+    PRINTOUT(F("Setting RTC time zone"));
     loggerClock::setRTCOffset(0);
 
 #if !defined(BUILD_MODEM_NO_MODEM)
     // Attach the modem and information pins to the logger
-    Serial.println(F("Attaching the modem"));
+    PRINTOUT(F("Attaching the modem"));
     dataLogger.attachModem(modem);
-    Serial.println(F("Setting modem LEDs"));
+    PRINTOUT(F("Setting modem LEDs"));
     modem.setModemLED(modemLEDPin);
 #endif
 
     // Begin the logger
-    Serial.println(F("Beginning the logger"));
+    PRINTOUT(F("Beginning the logger"));
     dataLogger.begin();
     /** End [setup_logger] */
 
@@ -3262,29 +3263,31 @@ void setup() {
     // Note:  Please change these battery voltages to match your battery
     // Set up the sensors, except at lowest battery level
     if (getBatteryVoltage() > 3.4) {
-        Serial.println(F("Setting up sensors..."));
+        PRINTOUT(F("Setting up sensors..."));
         varArray.setupSensors();
     }
     /** End [setup_sensors] */
 
 #if (defined BUILD_MODEM_ESPRESSIF_ESP8266 || \
-     defined BUILD_MODEM_ESPRESSIF_ESP32) &&  \
-    F_CPU == 8000000L
+     defined BUILD_MODEM_ESPRESSIF_ESP32)
     /** Start [setup_esp] */
-    if (modemBaud != 57600) {
-        Serial.println(F("Waking the modem.."));
-        modem.modemWake();  // NOTE:  This will also set up the modem
-        Serial.print(F("Attempting to begin modem communication at "));
-        Serial.print(modemBaud);
-        Serial.println(F(" baud.  This will fail if the baud is mismatched.."));
-        modemSerial.begin(modemBaud);
-        Serial.println(
-            F("Firing an attempt to change the baud rate to 57600 baud"));
-        modem.gsmModem.sendAT(GF("+UART_DEF=57600,8,1,0,0"));
-        modem.gsmModem.waitResponse();
-        modemSerial.end();
-        Serial.print(F("Reattempting to begin the modem at 57600 baud"));
-        modemSerial.begin(57600);
+    PRINTOUT(F("Waking the modem.."));
+    PRINTOUT(F("Attempting to begin modem communication at"), modemBaud,
+             F(" baud.  This will fail if the baud is mismatched.."));
+    modemSerial.begin(modemBaud);
+    modem.modemWake();  // NOTE:  This will also set up the modem
+    if (!modem.gsmModem.testAT()) {
+        PRINTOUT(F("Attempting autobauding.."));
+        uint32_t foundBaud = TinyGsmAutoBaud(modemSerial);
+        if (foundBaud != 0 || F_CPU == 8000000L) {
+            PRINTOUT(F("Got modem response at baud of"), foundBaud,
+                     F("Firing an attempt to change the baud rate to"),
+                     modemBaud);
+            modem.gsmModem.sendAT(GF("+UART_DEF="), modemBaud, F(",8,1,0,0"));
+            modem.gsmModem.waitResponse();
+            modemSerial.end();
+            modemSerial.begin(modemBaud);
+        }
     }
 /** End [setup_esp] */
 #endif
@@ -3301,7 +3304,7 @@ void setup() {
     /** Start [setup_sim7080] */
     modem.setModemWakeLevel(HIGH);   // ModuleFun Bee inverts the signal
     modem.setModemResetLevel(HIGH);  // ModuleFun Bee inverts the signal
-    Serial.println(F("Waking modem and setting Cellular Carrier Options..."));
+    PRINTOUT(F("Waking modem and setting Cellular Carrier Options..."));
     modem.modemWake();  // NOTE:  This will also set up the modem
     modem.gsmModem.setBaud(modemBaud);   // Make sure we're *NOT* auto-bauding!
     modem.gsmModem.setNetworkMode(38);   // set to LTE only
@@ -3319,7 +3322,7 @@ void setup() {
 #if defined(BUILD_MODEM_DIGI_XBEE_CELLULAR_TRANSPARENT)
     /** Start [setup_xbeec_carrier] */
     // Extra modem set-up
-    Serial.println(F("Waking modem and setting Cellular Carrier Options..."));
+    PRINTOUT(F("Waking modem and setting Cellular Carrier Options..."));
     modem.modemWake();  // NOTE:  This will also set up the modem
     // Go back to command mode to set carrier options
     modem.gsmModem.commandMode();
@@ -3339,7 +3342,7 @@ void setup() {
     modem.gsmModem.sendAT(GF("N#"), 2);
     modem.gsmModem.waitResponse();
     // Write changes to flash and apply them
-    Serial.println(F("Wait while applying changes..."));
+    PRINTOUT(F("Wait while applying changes..."));
     // Write changes to flash
     modem.gsmModem.writeChanges();
     // Reset the cellular component to ensure network settings are changed
@@ -3355,7 +3358,7 @@ void setup() {
 #if defined(BUILD_MODEM_DIGI_XBEE_LTE_BYPASS)
     /** Start [setup_r4_carrrier] */
     // Extra modem set-up
-    Serial.println(F("Waking modem and setting Cellular Carrier Options..."));
+    PRINTOUT(F("Waking modem and setting Cellular Carrier Options..."));
     modem.modemWake();  // NOTE:  This will also set up the modem
     // Turn off the cellular radio while making network changes
     modem.gsmModem.sendAT(GF("+CFUN=0"));
@@ -3402,7 +3405,7 @@ void setup() {
     // Writing to the SD card can be power intensive, so if we're skipping
     // the sensor setup we'll skip this too.
     if (getBatteryVoltage() > 3.4) {
-        Serial.println(F("Setting up file on SD card"));
+        PRINTOUT(F("Setting up file on SD card"));
         dataLogger.turnOnSDcard(true);
         // true = wait for card to settle after power up
         dataLogger.createLogFile(true);  // true = write a new header
@@ -3413,7 +3416,7 @@ void setup() {
 
     /** Start [setup_sleep] */
     // Call the processor sleep
-    Serial.println(F("Putting processor to sleep\n"));
+    PRINTOUT(F("Putting processor to sleep\n"));
     dataLogger.systemSleep();
     /** End [setup_sleep] */
 }
@@ -3429,21 +3432,21 @@ void loop() {
     // Note:  Please change these battery voltages to match your battery
     // At very low battery, just go back to sleep
     if (getBatteryVoltage() < 3.4) {
-        Serial.print(F("Battery too low, ("));
-        Serial.print(mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM]);
-        Serial.println(F("V) going back to sleep."));
+        PRINTOUT(F("Battery too low, ("),
+                 mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM],
+                 F("V) going back to sleep."));
         dataLogger.systemSleep();
     } else if (getBatteryVoltage() < 3.55) {
         // At moderate voltage, log data but don't send it over the modem
-        Serial.print(F("Battery at "));
-        Serial.print(mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM]);
-        Serial.println(F("V; high enough to log, but will not publish!"));
+        PRINTOUT(F("Battery at"),
+                 mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM],
+                 F("V; high enough to log, but will not publish!"));
         dataLogger.logData();
     } else {
         // If the battery is good, send the data to the world
-        Serial.print(F("Battery at "));
-        Serial.print(mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM]);
-        Serial.println(F("V; high enough to log and publish data"));
+        PRINTOUT(F("Battery at"),
+                 mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM],
+                 F("V; high enough to log and publish data"));
         dataLogger.logDataAndPublish();
     }
 }
@@ -3472,7 +3475,7 @@ void loop() {
         extendedWatchDog::resetWatchDog();
 
         // Print a line to show new reading
-        Serial.println(F("------------------------------------------"));
+        PRINTOUT(F("------------------------------------------"));
         // Turn on the LED to show we're taking a reading
         dataLogger.alertOn();
         // Power up the SD Card, but skip any waits after power up
@@ -3524,7 +3527,7 @@ void loop() {
             if (modem.connectInternet()) {
                 extendedWatchDog::resetWatchDog();
                 // Publish data to remotes
-                Serial.println(F("Modem connected to internet."));
+                PRINTOUT(F("Modem connected to internet."));
                 dataLogger.publishDataToRemotes();
 
                 // Sync the clock at noon
@@ -3532,7 +3535,7 @@ void loop() {
                 if ((Logger::markedLocalUnixTime != 0 &&
                      Logger::markedLocalUnixTime % 86400 == 43200) ||
                     !loggerClock::isRTCSane()) {
-                    Serial.println(F("Running a daily clock sync..."));
+                    PRINTOUT(F("Running a daily clock sync..."));
                     loggerClock::setRTClock(modem.getNISTTime(), 0,
                                             epochStart::unix_epoch);
                     extendedWatchDog::resetWatchDog();
@@ -3555,7 +3558,7 @@ void loop() {
         // Turn off the LED
         dataLogger.alertOff();
         // Print a line to show reading ended
-        Serial.println(F("------------------------------------------\n"));
+        PRINTOUT(F("------------------------------------------\n"));
 
         // Unset flag
         Logger::isLoggingNow = false;

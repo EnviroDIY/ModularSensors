@@ -215,12 +215,14 @@ Logger dataLogger;
 // Any custom name or identifier given to the field on ThingSpeak is irrelevant.
 // No more than 8 fields of data can go to any one channel.  Any fields beyond
 // the eighth in the array will be ignored.
-const char* thingSpeakMQTTKey =
+const char* thingSpeakClientName =
     "XXXXXXXXXXXXXXXX";  // Your MQTT API Key from Account > MyProfile.
+const char* thingSpeakMQTTUser =
+    "XXXXXXXXXXXXXXXX";  // The Write API Key for your channel
+const char* thingSpeakMQTTPassword =
+    "XXXXXXXXXXXXXXXX";  // The numeric channel id for your channel
 const char* thingSpeakChannelID =
     "######";  // The numeric channel id for your channel
-const char* thingSpeakChannelKey =
-    "XXXXXXXXXXXXXXXX";  // The Write API Key for your channel
 
 // Create a data publisher for ThingSpeak
 #include <publishers/ThingSpeakPublisher.h>
@@ -301,8 +303,9 @@ void setup() {
     // Begin the variable array[s], logger[s], and publisher[s]
     varArray.begin(variableCount, variableList);
     dataLogger.begin(LoggerID, loggingInterval, &varArray);
-    TsMqtt.begin(dataLogger, &modem.gsmClient, thingSpeakMQTTKey,
-                 thingSpeakChannelID, thingSpeakChannelKey);
+    TsMqtt.begin(dataLogger, &modem.gsmClient, thingSpeakClientName,
+                 thingSpeakMQTTUser, thingSpeakMQTTPassword,
+                 thingSpeakChannelID);
 
     // Note:  Please change these battery voltages to match your battery
     // Set up the sensors, except at lowest battery level

@@ -1277,7 +1277,7 @@ ___
 
 #### ThingSpeak<!-- {#menu_walk_thing_speak_publisher} -->
 
-After you have set up channels on ThingSpeak, you can use this code to publish your data to it.
+After you have set up a channel and MQTT device on ThingSpeak, you can use this code to publish your data to it.
 
 Keep in mind that the order of variables in the VariableArray is **crucial** when publishing to ThingSpeak.
 

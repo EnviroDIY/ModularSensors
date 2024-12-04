@@ -14,6 +14,7 @@ _______
 - [Sending data to ThingSpeak](#sending-data-to-thingspeak)
   - [Unique Features of the ThingSpeak Example](#unique-features-of-the-thingspeak-example)
   - [To Use this Example](#to-use-this-example)
+    - [Get ThingSpeak Credentials](#get-thingspeak-credentials)
     - [Prepare and set up PlatformIO](#prepare-and-set-up-platformio)
     - [Modify the Example](#modify-the-example)
     - [Upload!](#upload)
@@ -29,9 +30,17 @@ _______
 
 ## To Use this Example<!-- {#example_thingspeak_using} -->
 
+### Get ThingSpeak Credentials<!-- {#example_thingspeak_creds} -->
+
+- Log in or create an account on ThingSpeak
+  - NOTE: There is no free tier on ThingSpeak for organizational or commercial use and the personal free tier is very limited!
+- Create a channel on ThingSpeak with fields to receive your data.
+  - Note the channel number, this is needed in the code!
+- Add a new MQTT device to publish to.
+  - Copy or save the MQTT client id, user name, and password!
+
 ### Prepare and set up PlatformIO<!-- {#example_thingspeak_pio} -->
 
-- Create a channel on ThingSpeak with fields to receive your data.
 - Create a new PlatformIO project
 - Replace the contents of the platformio.ini for your new project with the [platformio.ini](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/logging_to_ThingSpeak/platformio.ini) file in the examples/logging_to_ThingSpeak folder on GitHub.
   - It is important that your PlatformIO configuration has the lib_ldf_mode and build flags set as they are in the example.
@@ -62,9 +71,11 @@ They will only appear in the header of your file on the SD card.
 - Find this information for your ThingSpeak account and channel and put it into logging_to_ThingSpeak.ino:
 
 ```cpp
-const char *thingSpeakMQTTKey = "XXXXXXXXXXXXXXXX";  // Your MQTT API Key from Account > MyProfile.
-const char *thingSpeakChannelID = "######";  // The numeric channel id for your channel
-const char *thingSpeakChannelKey = "XXXXXXXXXXXXXXXX";  // The Write API Key for your channel
+
+const char* thingSpeakClientName = "XXXXXXXXXXXXXXXX";  // Your MQTT API Key from Account > MyProfile.
+const char* thingSpeakMQTTUser = "XXXXXXXXXXXXXXXX";  // The Write API Key for your channel
+const char* thingSpeakMQTTPassword = "XXXXXXXXXXXXXXXX";  // The numeric channel id for your channel
+const char* thingSpeakChannelID = "######";  // The numeric channel id for your channel
 ```
 
 ### Upload!<!-- {#example_thingspeak_upload} -->
