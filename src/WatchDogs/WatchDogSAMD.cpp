@@ -25,68 +25,118 @@ void extendedWatchDogSAMD::setupWatchDog(uint32_t resetTime_s) {
     // Longest interrupt is 16s, so we loop that as many times as needed
     extendedWatchDogSAMD::_barksUntilReset = _resetTime_s /
         MAXIMUM_WATCHDOG_PERIOD;
-    MS_DBG(F("Watch-dog configured to reset the board after"), _resetTime_s,
-           F("sec with an early warning interrupt firing after"),
-           MAXIMUM_WATCHDOG_PERIOD, F("sec and a total of"),
-           extendedWatchDogSAMD::_barksUntilReset,
-           F("warnings before the reset."));
+    MS_DEEP_DBG(F("WDT Reset time:"), _resetTime_s,
+                F(" Maximim time between barks"), MAXIMUM_WATCHDOG_PERIOD,
+                F(" Barks until reset:"), _barksUntilReset);
+
+    // Steps:
+    // - Disable watchdog for config
+    // - Clear any pending interrupt flags
+    // - Enable the early warning interrupt
+    // - Set the watchdog window mode closed-window time-out period to the
+    // maximum value
+    //   - The WDT **cannot** be cleared until after the end of the
+    //   closed-window period.  Attempting a clear during the closed window
+    //   causes a reset.
+    //   - 0xB - 16384 clockcycles @ 1024hz = 16 seconds
+    // - Set the watchdog time-out period to the maximum value
+    //   - In windowed mode, the time-out period (or open window) starts at
+    //   the end of the closed window period
+    //   - The watchdog must be cleared before the end of the open window or
+    //   the system will reset.
+    //   - For our purposes, we don't really care how long the open window
+    //   is, because we're going to clear the watchdog or issue a reset as
+    //   soon as the early warning interrupt fires to tell us that the open
+    //   window has started.
+    //   - 0xB - 16384 clockcycles @ 1024hz = 16 seconds
+    // - Set the watchdog early warning offset value to the minimum value.
+    //   - 0x0 - 8 clockcycles @ 1024hz ~= 7.8ms
+    //   - The early warning offset isn't relevant in windowed mode.
+    // - Enable windowed mode
+
+    // Disable watchdog for config
+    MS_DEEP_DBG(F("Disabling the watchdog for configuration."));
+#if defined(__SAMD51__)
+    WDT->CTRLA.reg = 0;
+#else
+    WDT->CTRL.reg        = 0;
+#endif
+    waitForWDTBitSync();
 
     // configure the watch-dog source clock
     config32kOSC();
     configureClockGenerator();
     configureWDTClock();
 
+    // https://developerhelp.microchip.com/xwiki/bin/view/products/mcu-mpu/32bit-mcu/sam/samd21-mcu-overview/samd21-processor-overview/samd21-nvic-overview/
     // Enable WDT early-warning interrupt
-    NVIC_DisableIRQ(WDT_IRQn);
-    NVIC_ClearPendingIRQ(WDT_IRQn);
-    NVIC_SetPriority(WDT_IRQn,
-                     1);  // Priority behind RTC, just in case we're using it!
-    NVIC_EnableIRQ(WDT_IRQn);
-    waitForWDTBitSync();
+    MS_DEEP_DBG(F("Enabling the WDT early warning interrupt in NVIC"));
+    NVIC_DisableIRQ(WDT_IRQn);       // Disable for config
+    NVIC_ClearPendingIRQ(WDT_IRQn);  // Clear old flags
+    NVIC_SetPriority(WDT_IRQn, 1);   // Set priority
+    // ^^ Priority behind RTC, just in case we're using it!
+    NVIC_EnableIRQ(WDT_IRQn);  // re-enable
+
+    waitForWDTBitSync();  // not sure if this is needed here
+
+    // Set up the watch dog control parameters
+
+    MS_DBG(F("Watch-dog configured to reset the board after"), _resetTime_s,
+           F("sec with an early warning interrupt firing after"),
+           MAXIMUM_WATCHDOG_PERIOD, F("sec and a total of"),
+           extendedWatchDogSAMD::_barksUntilReset,
+           F("warnings before the reset."));
 }
 
 
 void extendedWatchDogSAMD::enableWatchDog() {
-    // Steps:
-    // - Disable watchdog for config
-    // - Clear any pending interrupt flags
-    // - Enable the early warning interrupt
-    // - Set the watchdog time-out period to the maximum value
-    //   - 0xB - 16384 clockcycles @ 1024hz = 16 seconds
-    // - Set the watchdog window mode closed-window time-out period to the
-    // maximum value
-    //   - 0xB - 16384 clockcycles @ 1024hz = 16 seconds
-    // - Set the watchdog early warning offset value to the minimum value.
-    //   - 0x0 - 8 clockcycles @ 1024hz ~= 7.8ms
-    //   - This gives us a very short window in which to clear the watchdog, but
-    //   simplifies timing since we don't have to worry about extra time between
-    //   the close of the window and the reset firing if the interrupt isn't
-    //   cleared.
-    // - Enable windowed mode
     MS_DEEP_DBG(F("Configuring the watchdog"));
+    // reset the WDT control register (disable for config)
 #if defined(__SAMD51__)
     WDT->CTRLA.reg = 0;
 #else
-    WDT->CTRL.reg          = 0;
+    WDT->CTRL.reg        = 0;
 #endif
     waitForWDTBitSync();
 
-    WDT->INTFLAG.bit.EW      = 1;    // Clear interrupt flag
-    WDT->INTENSET.bit.EW     = 1;    // Enable early warning interrupt
-    WDT->CONFIG.bit.PER      = 0xB;  // Max time out period
-    WDT->CONFIG.bit.WINDOW   = 0xB;  // Max closed window period
-    WDT->EWCTRL.bit.EWOFFSET = 0x0;  // Minimum open-window period after warning
-    WDT->CTRLA.bit.WEN       = 1;    // Enable window mode
+// Enable window mode
+#if defined(__SAMD51__)
+    WDT->CTRLA.bit.WEN = 1;
+#else  // SAMD21
+    WDT->CTRL.bit.WEN    = 1;
+#endif
     waitForWDTBitSync();
 
+    WDT->CONFIG.bit.PER = 0xB;  // Period/Open window period
+    // ^^ Use the maximum period for both windowed and normal mode
+    // 0xB = 16384 clockcycles @ 1024hz = 16 seconds
+    WDT->CONFIG.bit.WINDOW = 0xB;  // Closed window period
+    // ^^ Use the maximum closed window period for windowed mode
+    // This is irrelevant for normal mode
+    // 0xB = 16384 clockcycles @ 1024hz = 16 seconds
+    WDT->EWCTRL.bit.EWOFFSET = 0xA;  // Early Warning Offset
+    // ^^ The Early Warning Offset bits define the number of GCLK_WDT clocks
+    // before the interrupt is generated, relative to the start of the watchdog
+    // time-out period. This must be less than the size of the watchdog period
+    // or the interrupt will not be generated.
+    // Use the maximum offset for the longest time before the interrut in normal
+    // mode.
+    // This is irrelevant in windowed mode.
+    // 0xA = 8192 clockcycles @ 1024hz = 8 seconds
+
+    // WDT->INTFLAG.bit.EW  = 1;  // Clear any pending interrupt flags
+    WDT->INTENSET.bit.EW = 1;  // Enable early warning interrupt
+
+
     MS_DBG(F("Enabling watch dog..."));
-    resetWatchDog();
+    resetWatchDog();      // reset the barks to bite
+    clearWDTInterrupt();  // sent a clear flag
 
     // Set the enable bit
 #if defined(__SAMD51__)
     WDT->CTRLA.bit.ENABLE = 1;
 #else  // SAMD21
-    WDT->CTRL.bit.ENABLE   = 1;
+    WDT->CTRL.bit.ENABLE = 1;
 #endif
     waitForWDTBitSync();
 }
@@ -96,7 +146,7 @@ void extendedWatchDogSAMD::disableWatchDog() {
 #if defined(__SAMD51__)
     WDT->CTRLA.bit.ENABLE = 0;
 #else  // SAMD21
-    WDT->CTRL.bit.ENABLE   = 0;
+    WDT->CTRL.bit.ENABLE = 0;
 #endif
     waitForWDTBitSync();
     MS_DBG(F("Watch dog disabled."));
@@ -104,7 +154,8 @@ void extendedWatchDogSAMD::disableWatchDog() {
 
 
 void extendedWatchDogSAMD::resetWatchDog() {
-    MS_DEEP_DBG(F("Feeding the watch-dog!"));
+    MS_DEEP_DBG(
+        F("Resetting the number of warning barks until the watchdog bites"));
     extendedWatchDogSAMD::_barksUntilReset = _resetTime_s /
         MAXIMUM_WATCHDOG_PERIOD;
 }
@@ -196,7 +247,7 @@ void extendedWatchDogSAMD::configureWDTClock() {
     // Enable the WDT bus clock in the main clock module.
     // NOTE: this is the default setting at power on and is not changed by the
     // Arduino core so it's not really necessary.
-    MCLK->APBAMASK.reg |= MCLK_APBAMASK_WDT;
+    // MCLK->APBAMASK.reg |= MCLK_APBAMASK_WDT;
 #else  // SAMD21
     // Per datasheet 16.6.3.3 the generic clock must be disabled before being
     // re-enabled with a new clock source setting.
@@ -226,6 +277,16 @@ void extendedWatchDogSAMD::configureEICClock() {
     // Arduino core so it's not really necessary.
     MCLK->APBAMASK.reg |= MCLK_APBAMASK_EIC;
 
+    // loop through all of the external interrupt vectors and reset them
+    for (uint32_t i = 0; i <= 15; i++)  // EIC_0_IRQn = 12 ... EIC_15_IRQn = 27
+    {
+        uint8_t irqn = EIC_0_IRQn + i;
+        NVIC_DisableIRQ((IRQn_Type)(irqn));       // Disable for config
+        NVIC_ClearPendingIRQ((IRQn_Type)(irqn));  // Clear old flags
+        NVIC_SetPriority((IRQn_Type)(irqn), 0);   // Set priority
+        NVIC_EnableIRQ((IRQn_Type)(irqn));        // re-enable
+    }
+
     MS_DEEP_DBG(F("Disabling EIC controller for configuration"));
     EIC->CTRLA.bit.ENABLE = 0;
     while (EIC->SYNCBUSY.bit.ENABLE == 1) {}
@@ -237,13 +298,21 @@ void extendedWatchDogSAMD::configureEICClock() {
     // consumption is the priority).
     // Since we're interested in power consumption, stick to the CLK_ULP32K.
     // Using the ULP32K also saves us the trouble of configuring a generic clock
-    // for the EIC. This bit is not Write-Synchronized.
+    // for the EIC. This bit is enable protected (the EIC must be disabled to
+    // change it). This bit is not Write-Synchronized.
     EIC->CTRLA.bit.CKSEL = 1;  // 0 for GCLK_EIC, 1 for CLK_ULP32K
 
     MS_DEEP_DBG(F("Re-enabling the EIC"));
     EIC->CTRLA.bit.ENABLE = 1;
     while (EIC->SYNCBUSY.bit.ENABLE == 1) {}
+
 #else  // SAMD21
+
+    NVIC_DisableIRQ(EIC_IRQn);       // Disable for config
+    NVIC_ClearPendingIRQ(EIC_IRQn);  // Clear old flags
+    NVIC_SetPriority(EIC_IRQn, 0);   // Set priority
+    NVIC_EnableIRQ(EIC_IRQn);        // re-enable
+
     // Per datasheet 16.6.3.3 the generic clock must be disabled before being
     // re-enabled with a new clock source setting.
     MS_DEEP_DBG(F("Disabling EIC peripeheral clock for configuration"));
@@ -277,17 +346,19 @@ void extendedWatchDogSAMD::configureEICClock() {
 
 void extendedWatchDogSAMD::clearWDTInterrupt() {
     MS_DEEP_DBG(F("Clearing the processor watchdog interrupt"));
-    // Write the clear key
-    WDT->CLEAR.reg = WDT_CLEAR_CLEAR_KEY;
-    waitForWDTBitSync();
     // Clear Early Warning (EW) Interrupt Flag
     WDT->INTFLAG.bit.EW = 1;
+    // Write the clear key
+    waitForWDTBitSync();
+    WDT->CLEAR.reg = WDT_CLEAR_CLEAR_KEY;
+    waitForWDTBitSync();
 }
 
 void extendedWatchDogSAMD::waitForWDTBitSync() {
 #if defined(__SAMD51__)
     while (WDT->SYNCBUSY.reg) {
         // Wait for synchronization
+        // NOTE: this will wait for all of the sync registers to clear
     }
 #else  // SAMD21
     while (WDT->STATUS.bit.SYNCBUSY) {
@@ -310,26 +381,37 @@ void extendedWatchDogSAMD::waitForGCLKBitSync() {
 
 // ISR for watchdog early warning
 void WDT_Handler(void) {
+    extendedWatchDogSAMD::clearWDTInterrupt();
     MS_DEEP_DBG(F("\nWatchdog early warning interrupt!"));
 #if defined(MS_WATCHDOGSAMD_DEBUG_DEEP)
-    MS_SERIAL_OUTPUT.println();
+    PRINTOUT(" ");
 #endif
     // Increment down the counter, makes multi cycle WDT possible
     extendedWatchDogSAMD::_barksUntilReset--;
     if (extendedWatchDogSAMD::_barksUntilReset <= 0) {
         MS_DEEP_DBG(F("The dog has barked enough; resetting the board."));
-        // Clear Early Warning (EW) Interrupt Flag
-        WDT->INTFLAG.bit.EW = 1;
-        // Writing a value different than WDT_CLEAR_CLEAR_KEY causes reset
+        // Writing any value different than WDT_CLEAR_CLEAR_KEY causes
+        // immediate reset
         WDT->CLEAR.reg = 0xFF;
         while (true) {
-            // wait
+            // do nothing until the reset fires (should be very quickly)
         }
     } else {
+#if defined(MS_WATCHDOGSAMD_DEBUG_DEEP)
+        uint32_t barks_so_far =
+            (extendedWatchDogSAMD::_resetTime_s / MAXIMUM_WATCHDOG_PERIOD) -
+            extendedWatchDogSAMD::_barksUntilReset;
+        uint32_t time_so_far = barks_so_far * MAXIMUM_WATCHDOG_PERIOD;
+#endif
+        MS_DEEP_DBG(F("There have been"), barks_so_far, F("barks - roughly"),
+                    time_so_far,
+                    F("seconds since the last full watch dog clear."));
         MS_DEEP_DBG(F("There will be"), extendedWatchDogSAMD::_barksUntilReset,
                     F("more barks until total time is"),
-                    extendedWatchDogSAMD::_resetTime_s, F("and board resets"));
+                    extendedWatchDogSAMD::_resetTime_s,
+                    F("seconds and board resets"));
     }
-    extendedWatchDogSAMD::clearWDTInterrupt();
 }
+
+
 #endif
