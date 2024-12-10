@@ -435,15 +435,7 @@ class BoschBMP3xx : public Sensor {
     ~BoschBMP3xx();
 
     /**
-     * @brief Wake the sensor up, if necessary.  Do whatever it takes to get a
-     * sensor in the proper state to begin a measurement.
-     *
-     * Verifies that the power is on and updates the #_sensorStatus.  This also
-     * sets the #_millisSensorActivated timestamp.
-     *
-     * @note This does NOT include any wait for sensor readiness.
-     *
-     * @return True if the wake function completed successfully.
+     * @copydoc Sensor::wake()
      */
     bool wake(void) override;
     /**

@@ -245,6 +245,10 @@ class KellerParent : public Sensor {
      * @return True if the setup was successful.
      */
     bool setup(void) override;
+    /**
+     * @copydoc Sensor::wake()
+     */
+    bool wake(void) override;
 
     // Override these to use two power pins
     void powerUp(void) override;

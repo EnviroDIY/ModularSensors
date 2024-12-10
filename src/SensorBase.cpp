@@ -150,9 +150,12 @@ bool Sensor::setup(void) {
     MS_DBG(_measurementsToAverage,
            F("individual measurements will be averaged for each reading."));
 
-    if (_powerPin >= 0) pinMode(_powerPin, OUTPUT);  // NOTE:  Not setting value
-    if (_dataPin >= 0)
-        pinMode(_dataPin, INPUT);  // NOTE:  Not turning on pull-up!
+    if (_powerPin >= 0) {
+        pinMode(_powerPin, OUTPUT);
+    }  // NOTE:  Not setting value
+    if (_dataPin >= 0) {
+        pinMode(_dataPin, INPUT);
+    }  // NOTE:  Not turning on pull-up!
 
     // Set the status bit marking that the sensor has been set up (bit 0)
     _sensorStatus |= 0b00000001;
@@ -178,6 +181,11 @@ bool Sensor::wake(void) {
         _sensorStatus &= 0b11101111;
         return false;
     }
+    // Set the data pin mode.
+    // Reset this on every wake because pins are set to tri-state on sleep
+    if (_dataPin >= 0) {
+        pinMode(_dataPin, INPUT);
+    }  // NOTE:  Not turning on pull-up!
 
     // Mark the time that the sensor was activated
     _millisSensorActivated = millis();

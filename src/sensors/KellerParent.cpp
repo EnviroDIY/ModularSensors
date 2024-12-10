@@ -59,8 +59,8 @@ String KellerParent::getSensorLocation(void) {
 bool KellerParent::setup(void) {
     bool retVal =
         Sensor::setup();  // this will set pin modes and the setup status bit
-    if (_RS485EnablePin >= 0) pinMode(_RS485EnablePin, OUTPUT);
-    if (_powerPin2 >= 0) pinMode(_powerPin2, OUTPUT);
+    if (_RS485EnablePin >= 0) { pinMode(_RS485EnablePin, OUTPUT); }
+    if (_powerPin2 >= 0) { pinMode(_powerPin2, OUTPUT); }
 
 #ifdef MS_KELLERPARENT_DEBUG_DEEP
     _ksensor.setDebugStream(&MS_SERIAL_OUTPUT);
@@ -72,6 +72,20 @@ bool KellerParent::setup(void) {
     retVal &= _ksensor.begin(_model, _modbusAddress, _stream, _RS485EnablePin);
 
     return retVal;
+}
+
+
+// The function to wake up a sensor
+// Set pin modes for secondary pins
+bool KellerParent::wake(void) {
+    // Set the extra pin modes.
+    // Reset this on every wake because pins are set to tri-state on sleep
+    if (_RS485EnablePin >= 0) { pinMode(_RS485EnablePin, OUTPUT); }
+    if (_powerPin2 >= 0) { pinMode(_powerPin2, OUTPUT); }
+
+    // Sensor::wake() checks if the power pin is on and sets the wake timestamp
+    // and status bits.
+    return Sensor::wake();
 }
 
 

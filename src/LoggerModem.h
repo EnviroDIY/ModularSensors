@@ -1000,11 +1000,6 @@ class loggerModem {
      * completed setup.
      */
     bool _hasBeenSetup = false;
-    /**
-     * @brief Flag.  True indicates that the pins on the mcu attached to the
-     * modem are set to the correct mode (ie, input vs output).
-     */
-    bool _pinModesSet = false;
     /**@}*/
 
     // NOTE:  These must be static so that the modem variables can call the

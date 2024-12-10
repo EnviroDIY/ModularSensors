@@ -60,9 +60,8 @@ String GroPointParent::getSensorLocation(void) {
 bool GroPointParent::setup(void) {
     bool retVal =
         Sensor::setup();  // this will set pin modes and the setup status bit
-    if (_RS485EnablePin >= 0) pinMode(_RS485EnablePin, OUTPUT);
-    if (_powerPin2 >= 0) pinMode(_powerPin2, OUTPUT);
-
+    if (_RS485EnablePin >= 0) { pinMode(_RS485EnablePin, OUTPUT); }
+    if (_powerPin2 >= 0) { pinMode(_powerPin2, OUTPUT); }
 #ifdef MS_GROPOINTPARENT_DEBUG_DEEP
     _gsensor.setDebugStream(&MS_SERIAL_OUTPUT);
 #endif
@@ -83,6 +82,11 @@ bool GroPointParent::wake(void) {
     // Sensor::wake() checks if the power pin is on and sets the wake timestamp
     // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
+
+    // Set the extra pin modes.
+    // Reset this on every wake because pins are set to tri-state on sleep
+    if (_RS485EnablePin >= 0) { pinMode(_RS485EnablePin, OUTPUT); }
+    if (_powerPin2 >= 0) { pinMode(_powerPin2, OUTPUT); }
 
     // Send the command to begin taking readings, trying up to 5 times
     bool    success = false;

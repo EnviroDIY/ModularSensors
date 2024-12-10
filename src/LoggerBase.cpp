@@ -709,6 +709,39 @@ void Logger::systemSleep(void) {
     SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
 #endif
 
+// force all pins to minimum power draw levels
+// Set direction (DIR) to 0 (input)
+// Set input enable (PINCFG.INEN) to 0 (disable input buffer)
+// Set pullup enable (PINCFG.PULLEN) to 0 (disable pull up/down)
+#if 1
+    for (uint32_t ulPin = 0; ulPin < PINS_COUNT; ulPin++) {
+        // Handle the case the pin isn't usable as PIO
+        if (g_APinDescription[ulPin].ulPinType != PIO_NOT_A_PIN) {
+            if (ulPin != _mcuWakePin && ulPin != _buttonPin) {
+                EPortType port    = g_APinDescription[ulPin].ulPort;
+                uint32_t  pin     = g_APinDescription[ulPin].ulPin;
+                uint32_t  pinMask = (1ul << pin);
+                MS_DEEP_DBG(F("Pin"), ulPin,
+                            bitRead(PORT->Group[port].DIR.reg, pin),
+                            PORT->Group[port].PINCFG[pin].bit.INEN,
+                            PORT->Group[port].PINCFG[pin].bit.PULLEN);
+                PORT->Group[port].DIRCLR.reg             = pinMask;
+                PORT->Group[port].PINCFG[pin].bit.INEN   = 0;
+                PORT->Group[port].PINCFG[pin].bit.PULLEN = 0;
+                MS_DEEP_DBG(F("Pin"), ulPin,
+                            bitRead(PORT->Group[port].DIR.reg, pin),
+                            PORT->Group[port].PINCFG[pin].bit.INEN,
+                            PORT->Group[port].PINCFG[pin].bit.PULLEN);
+                MS_DEEP_DBG(F("Pin"), ulPin, "forced into tri-state");
+            } else {
+                MS_DEEP_DBG(F("Pin"), ulPin, "pin settings retained");
+            }
+        } else {
+            MS_DEEP_DBG(F("Pin"), ulPin, "isn't a real pin");
+        }
+    }
+#endif
+
 // Wait until the serial ports have finished transmitting
 // This is crucial for the SAMD boards that will continuously wake if they have
 // data remaining in the buffer.
@@ -812,6 +845,12 @@ void Logger::systemSleep(void) {
     USBDevice.attach();
     // ^^ USB->DEVICE.CTRLB.bit.DETACH = 0; enables USB interrupts
 #endif
+
+    // Re-set the various pin modes - the pins were all set to tri-state to save
+    // power above
+    setLoggerPins(_mcuWakePin, _SDCardSSPin, _SDCardPowerPin, _buttonPin,
+                  _ledPin, _wakePinMode, _buttonPinMode);
+
 #endif
 
 #if defined(ARDUINO_ARCH_AVR)

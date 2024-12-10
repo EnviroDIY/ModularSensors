@@ -55,7 +55,10 @@ void loggerModem::setModemLED(int8_t modemLEDPin) {
     }
 }
 void loggerModem::modemLEDOn(void) {
-    if (_modemLEDPin >= 0) { digitalWrite(_modemLEDPin, HIGH); }
+    if (_modemLEDPin >= 0) {
+        pinMode(_modemLEDPin, OUTPUT);
+        digitalWrite(_modemLEDPin, HIGH);
+    }
 }
 void loggerModem::modemLEDOff(void) {
     if (_modemLEDPin >= 0) { digitalWrite(_modemLEDPin, LOW); }
@@ -279,36 +282,31 @@ void loggerModem::setModemResetLevel(bool level) {
 
 void loggerModem::setModemPinModes(void) {
     // Set-up pin modes
-    if (!_pinModesSet) {
-        // NOTE:  We're going to set the power pin mode every time in power up,
-        // just to be safe
-        if (_statusPin >= 0) {
-            MS_DBG(F("Initializing pin"), _statusPin,
-                   F("for modem status with on level expected to be"),
-                   _statusLevel ? F("HIGH") : F("LOW"));
-            pinMode(_statusPin, INPUT);
-        }
-        if (_modemSleepRqPin >= 0) {
-            MS_DBG(F("Initializing pin"), _modemSleepRqPin,
-                   F("for modem sleep with starting value"),
-                   !_wakeLevel ? F("HIGH") : F("LOW"));
-            pinMode(_modemSleepRqPin, OUTPUT);
-            digitalWrite(_modemSleepRqPin, !_wakeLevel);
-        }
-        if (_modemResetPin >= 0) {
-            MS_DBG(F("Initializing pin"), _modemResetPin,
-                   F("for modem reset with starting value"),
-                   !_resetLevel ? F("HIGH") : F("LOW"));
-            pinMode(_modemResetPin, OUTPUT);
-            digitalWrite(_modemResetPin, !_resetLevel);
-        }
-        if (_modemLEDPin >= 0) {
-            MS_DBG(F("Initializing pin"), _modemLEDPin,
-                   F("for modem status LED with starting value 0"));
-            pinMode(_modemLEDPin, OUTPUT);
-            digitalWrite(_modemLEDPin, LOW);
-        }
-        _pinModesSet = true;
+    if (_statusPin >= 0) {
+        MS_DEEP_DBG(F("Initializing pin"), _statusPin,
+                    F("for modem status with on level expected to be"),
+                    _statusLevel ? F("HIGH") : F("LOW"));
+        pinMode(_statusPin, INPUT);
+    }
+    if (_modemSleepRqPin >= 0) {
+        MS_DEEP_DBG(F("Initializing pin"), _modemSleepRqPin,
+                    F("for modem sleep with starting value"),
+                    !_wakeLevel ? F("HIGH") : F("LOW"));
+        pinMode(_modemSleepRqPin, OUTPUT);
+        digitalWrite(_modemSleepRqPin, !_wakeLevel);
+    }
+    if (_modemResetPin >= 0) {
+        MS_DEEP_DBG(F("Initializing pin"), _modemResetPin,
+                    F("for modem reset with starting value"),
+                    !_resetLevel ? F("HIGH") : F("LOW"));
+        pinMode(_modemResetPin, OUTPUT);
+        digitalWrite(_modemResetPin, !_resetLevel);
+    }
+    if (_modemLEDPin >= 0) {
+        MS_DEEP_DBG(F("Initializing pin"), _modemLEDPin,
+                    F("for modem status LED with starting value 0"));
+        pinMode(_modemLEDPin, OUTPUT);
+        digitalWrite(_modemLEDPin, LOW);
     }
 }
 

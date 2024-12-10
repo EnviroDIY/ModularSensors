@@ -66,6 +66,12 @@ bool MaxBotixSonar::wake(void) {
     // Sensor::wake() checks if the power pin is on and sets the wake timestamp
     // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
+    // Set the trigger pin mode.
+    // Reset this on every wake because pins are set to tri-state on sleep
+    if (_triggerPin >= 0) {
+        pinMode(_triggerPin, OUTPUT);
+        digitalWrite(_triggerPin, LOW);
+    }
 
     // NOTE: After the power is turned on to the MaxBotix, it sends several
     // lines of header to the serial port, beginning at ~65ms and finising at

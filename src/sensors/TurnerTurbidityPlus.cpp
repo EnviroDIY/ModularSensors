@@ -68,6 +68,9 @@ bool TurnerTurbidityPlus::setup(void) {
 }
 
 bool TurnerTurbidityPlus::wake(void) {
+    // Set the wiper trigger pin mode.
+    // Reset this on every wake because pins are set to tri-state on sleep
+    pinMode(_wiperTriggerPin, OUTPUT);
     // Run the wiper before taking a reading
     runWiper();
 
