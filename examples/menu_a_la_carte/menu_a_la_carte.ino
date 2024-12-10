@@ -174,13 +174,55 @@ void SERCOM2_Handler() {
 /** End [serial_ports_feather_m0] */
 #endif  // End hardware serial on SAMD21 boards
 
+#if defined(ADAFRUIT_GRAND_CENTRAL_M4)
+/** Start [serial_ports_grand_central] */
+// The Grand Central nominally sets up four serial ports in Variant.h, but
+// doesn't initialize them in Variant.cpp.  Doing that here.
+
+Uart Serial2(&sercom4, PIN_SERIAL2_RX, PIN_SERIAL2_TX, PAD_SERIAL2_RX,
+             PAD_SERIAL2_TX);
+
+void SERCOM4_0_Handler() {
+    Serial2.IrqHandler();
+}
+void SERCOM4_1_Handler() {
+    Serial2.IrqHandler();
+}
+void SERCOM4_2_Handler() {
+    Serial2.IrqHandler();
+}
+void SERCOM4_3_Handler() {
+    Serial2.IrqHandler();
+}
+#define ENABLE_SERIAL2
+
+Uart Serial3(&sercom1, PIN_SERIAL3_RX, PIN_SERIAL3_TX, PAD_SERIAL3_RX,
+             PAD_SERIAL3_TX);
+
+void SERCOM1_0_Handler() {
+    Serial3.IrqHandler();
+}
+void SERCOM1_1_Handler() {
+    Serial3.IrqHandler();
+}
+void SERCOM1_2_Handler() {
+    Serial3.IrqHandler();
+}
+void SERCOM1_3_Handler() {
+    Serial3.IrqHandler();
+}
+#define ENABLE_SERIAL3
+
+/** End [serial_ports_grand_central] */
+#endif  // End hardware serial on Grand Central
+
 
 // ==========================================================================
 //  Assigning Serial Port Functionality
 // ==========================================================================
-#if (defined(ENABLE_SERIAL2) && defined(ENABLE_SERIAL3)) ||  \
-    defined(ENVIRODIY_STONEFLY_M4) || defined(ATMEGA2560) || \
-    defined(ARDUINO_AVR_MEGA2560)
+#if (defined(ENABLE_SERIAL2) && defined(ENABLE_SERIAL3)) ||                 \
+    defined(ENVIRODIY_STONEFLY_M4) || defined(ADAFRUIT_GRAND_CENTRAL_M4) || \
+    defined(ATMEGA2560) || defined(ARDUINO_AVR_MEGA2560)
 /** Start [assign_ports_hw] */
 // If there are additional hardware Serial ports possible - use them!
 
@@ -188,6 +230,10 @@ void SERCOM2_Handler() {
 // All of the supported processors have a hardware port available named Serial1
 #if defined(ENVIRODIY_STONEFLY_M4)
 #define modemSerial SerialBee
+// Helper for alternate print out
+// useful for SAMD boards which are a PITA to debug over USB when sleeping
+#elif defined(ARDUINO_ARCH_SAMD) && defined(MS_2ND_OUTPUT)
+#define modemSerial Serial2
 #else
 #define modemSerial Serial1
 #endif
@@ -455,10 +501,8 @@ const int32_t modemBaud = 115200;  // Communication speed of the modem
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
-// Example pins here are for a EnviroDIY ESP32 Bluetooth/Wifi Bee with
-// Mayfly 1.1
-const int8_t modemVccPin   = 18;      // MCU pin controlling modem power
-const int8_t modemResetPin = A5;      // MCU pin connected to modem reset pin
+const int8_t modemVccPin   = -1;      // MCU pin controlling modem power
+const int8_t modemResetPin = -1;      // MCU pin connected to modem reset pin
 const int8_t modemLEDPin   = redLED;  // MCU pin connected an LED to show modem
                                       // status
 
@@ -493,7 +537,7 @@ const int32_t modemBaud = 57600;  // Communication speed of the modem
 // Example pins here are for a EnviroDIY ESP32 Bluetooth/Wifi Bee with
 // Mayfly 1.1
 const int8_t modemVccPin   = 18;      // MCU pin controlling modem power
-const int8_t modemResetPin = -1;      // MCU pin connected to modem reset pin
+const int8_t modemResetPin = A5;      // MCU pin connected to modem reset pin
 const int8_t modemLEDPin   = redLED;  // MCU pin connected an LED to show modem
                                       // status
 
@@ -801,13 +845,15 @@ Variable* modemTemperature =
 const char*    mcuBoardVersion = "v1.1";
 ProcessorStats mcuBoard(mcuBoardVersion);
 
-// Create sample number, battery voltage, and free RAM variable pointers for the
-// processor
+// Create sample number, battery voltage, free RAM, and reset cause variable
+// pointers for the processor
 Variable* mcuBoardBatt = new ProcessorStats_Battery(
     &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* mcuBoardAvailableRAM = new ProcessorStats_FreeRam(
     &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* mcuBoardSampNo = new ProcessorStats_SampleNumber(
+    &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* mcuBoardReset = new ProcessorStats_ResetCode(
     &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
 /** End [processor_stats] */
 
@@ -2695,8 +2741,11 @@ VariableArray varArray(variableCount, variableList, UUIDs);
 // Version 3: Fill array with already created and named variable pointers
 Variable* variableList[] = {
     mcuBoardSampNo,
+#if !defined(__SAMD51__)
     mcuBoardAvailableRAM,
+#endif
     mcuBoardBatt,
+    mcuBoardReset,
     calculatedVar,
 #if defined(MS_USE_DS3231)
     ds3231Temp,
@@ -3189,11 +3238,11 @@ void setup() {
     PRINTOUT(F("Using ModularSensors Library version"),
              MODULAR_SENSORS_VERSION);
 #if !defined(BUILD_MODEM_NO_MODEM)
-    PRINTOUT(F("TinyGSM Library version"), TINYGSM_VERSION);
+    PRINTOUT(F("TinyGSM Library version"), TINYGSM_VERSION, '\n');
 #endif
     PRINTOUT(F("Processor:"), mcuBoard.getSensorLocation());
     PRINTOUT(F("The most recent reset cause was"), mcuBoard.getLastResetCode(),
-             '(', mcuBoard.getLastResetCause(), ')');
+             '(', mcuBoard.getLastResetCause(), ")\n");
     /** End [setup_prints] */
 
 /** Start [setup_softserial] */
