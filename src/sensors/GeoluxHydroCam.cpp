@@ -91,10 +91,6 @@ bool GeoluxHydroCam::wake(void) {
     // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
 
-    // Set the extra pin modes.
-    // Reset this on every wake because pins are set to tri-state on sleep
-    if (_powerPin2 >= 0) { pinMode(_powerPin2, OUTPUT); }
-
     if (_alwaysAutoFocus) {
         return _camera->runAutofocus() == GeoluxCamera::OK;
     }
@@ -204,6 +200,9 @@ bool GeoluxHydroCam::addSingleMeasurementResult(void) {
 // This turns on sensor power
 void GeoluxHydroCam::powerUp(void) {
     if (_powerPin >= 0) {
+        // Reset power pin mode every power up because pins are set to tri-state
+        // on sleep
+        pinMode(_powerPin, OUTPUT);
         MS_DBG(F("Powering"), getSensorNameAndLocation(), F("with pin"),
                _powerPin);
         digitalWrite(_powerPin, HIGH);
@@ -211,6 +210,9 @@ void GeoluxHydroCam::powerUp(void) {
         _millisPowerOn = millis();
     }
     if (_powerPin2 >= 0) {
+        // Reset power pin mode every power up because pins are set to tri-state
+        // on sleep
+        pinMode(_powerPin2, OUTPUT);
         MS_DBG(F("Applying secondary power to"), getSensorNameAndLocation(),
                F("with pin"), _powerPin2);
         digitalWrite(_powerPin2, HIGH);

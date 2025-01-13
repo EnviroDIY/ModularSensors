@@ -75,23 +75,12 @@ bool KellerParent::setup(void) {
 }
 
 
-// The function to wake up a sensor
-// Set pin modes for secondary pins
-bool KellerParent::wake(void) {
-    // Set the extra pin modes.
-    // Reset this on every wake because pins are set to tri-state on sleep
-    if (_RS485EnablePin >= 0) { pinMode(_RS485EnablePin, OUTPUT); }
-    if (_powerPin2 >= 0) { pinMode(_powerPin2, OUTPUT); }
-
-    // Sensor::wake() checks if the power pin is on and sets the wake timestamp
-    // and status bits.
-    return Sensor::wake();
-}
-
-
 // This turns on sensor power
 void KellerParent::powerUp(void) {
     if (_powerPin >= 0) {
+        // Reset power pin mode every power up because pins are set to tri-state
+        // on sleep
+        pinMode(_powerPin, OUTPUT);
         MS_DBG(F("Powering"), getSensorNameAndLocation(), F("with pin"),
                _powerPin);
         digitalWrite(_powerPin, HIGH);
@@ -99,6 +88,9 @@ void KellerParent::powerUp(void) {
         _millisPowerOn = millis();
     }
     if (_powerPin2 >= 0) {
+        // Reset power pin mode every power up because pins are set to tri-state
+        // on sleep
+        pinMode(_powerPin2, OUTPUT);
         MS_DBG(F("Applying secondary power to"), getSensorNameAndLocation(),
                F("with pin"), _powerPin2);
         digitalWrite(_powerPin2, HIGH);
@@ -107,6 +99,8 @@ void KellerParent::powerUp(void) {
         MS_DBG(F("Power to"), getSensorNameAndLocation(),
                F("is not controlled by this library."));
     }
+    // Reset enable pin because pins are set to tri-state on sleep
+    if (_RS485EnablePin >= 0) { pinMode(_RS485EnablePin, OUTPUT); }
     // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
     _sensorStatus |= 0b00000110;
 }
