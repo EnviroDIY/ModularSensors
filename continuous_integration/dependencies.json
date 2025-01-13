@@ -1,5 +1,5 @@
 {
-  "action_cache_version": 24,
+  "action_cache_version": 25,
   "dependencies": [
     {
       "name": "EnviroDIY_DS3231",
@@ -55,7 +55,7 @@
       "owner": "greiman",
       "library id": "322",
       "url": "https://github.com/greiman/SdFat",
-      "version": "~2.2.3",
+      "version": "~2.3.0",
       "note": "SdFat - FAT16/FAT32 file system for SD cards.",
       "authors": [
         "Bill Greiman"
@@ -92,7 +92,7 @@
       "owner": "adafruit",
       "library id": "6214",
       "url": "https://github.com/adafruit/Adafruit_BusIO",
-      "version": "~1.16.2",
+      "version": "~1.17.0",
       "note": "Adafruit BusIO, a dependency of other Adafruit libraries",
       "authors": [
         "Adafruit"
@@ -105,7 +105,7 @@
       "owner": "adafruit",
       "library id": "31",
       "url": "https://github.com/adafruit/Adafruit_Sensor",
-      "version": "~1.1.14",
+      "version": "~1.1.15",
       "note": "Adafruit's unified sensor library is used by their other libraries",
       "authors": [
         "Adafruit"
@@ -335,11 +335,23 @@
     {
       "name": "GroPointModbus",
       "owner": "envirodiy",
-      "url": "https://github.com/EnviroDIY/GroPointModbus.git",
+      "url": "https://github.com/EnviroDIY/GroPointModbus",
       "version": "~0.1.1",
-      "note": "A library to use an Arduino as a master to control and communicate via modbus with GroPoint soil moisture sensors. ",
+      "note": "A library to use an Arduino as a master to control and communicate via modbus with GroPoint soil moisture sensors.",
       "authors": [
         "Anthony Aufdenkampe"
+      ],
+      "frameworks": "arduino",
+      "platforms": "atmelavr, atmelsam"
+    },
+    {
+      "name": "GeoluxCamera",
+      "owner": "envirodiy",
+      "url": "https://github.com/EnviroDIY/GeoluxCamera",
+      "version": "~0.1.0",
+      "note": "Arduino library for communication with Geolux serial camera.",
+      "authors": [
+        "Sara Damiano"
       ],
       "frameworks": "arduino",
       "platforms": "atmelavr, atmelsam"
