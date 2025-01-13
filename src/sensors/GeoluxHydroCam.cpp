@@ -12,26 +12,26 @@
 
 
 GeoluxHydroCam::GeoluxHydroCam(Stream* stream, int8_t powerPin,
-                               int8_t triggerPin, int16_t maxRange,
-                               uint8_t measurementsToAverage, bool convertCm)
+                               const char* imageResolution,
+                               const char* filePrefix, bool alwaysAutoFocus)
     : Sensor("GeoluxHydroCam", HYDROCAM_NUM_VARIABLES, HYDROCAM_WARM_UP_TIME_MS,
              HYDROCAM_STABILIZATION_TIME_MS, HYDROCAM_MEASUREMENT_TIME_MS,
-             powerPin, -1, measurementsToAverage),
-      _maxRange(maxRange),
-      _triggerPin(triggerPin),
-      _convertCm(convertCm),
+             powerPin, -1, 1),
+      _imageResolution(imageResolution),
+      _filePrefix(filePrefix),
+      _alwaysAutoFocus(alwaysAutoFocus),
       _stream(stream) {}
 
 
 GeoluxHydroCam::GeoluxHydroCam(Stream& stream, int8_t powerPin,
-                               int8_t triggerPin, int16_t maxRange,
-                               uint8_t measurementsToAverage, bool convertCm)
+                               const char* imageResolution,
+                               const char* filePrefix, bool alwaysAutoFocus)
     : Sensor("GeoluxHydroCam", HYDROCAM_NUM_VARIABLES, HYDROCAM_WARM_UP_TIME_MS,
              HYDROCAM_STABILIZATION_TIME_MS, HYDROCAM_MEASUREMENT_TIME_MS,
-             powerPin, -1, measurementsToAverage, HYDROCAM_INC_CALC_VARIABLES),
-      _maxRange(maxRange),
-      _triggerPin(triggerPin),
-      _convertCm(convertCm),
+             powerPin, -1, 1, HYDROCAM_INC_CALC_VARIABLES),
+      _imageResolution(imageResolution),
+      _filePrefix(filePrefix),
+      _alwaysAutoFocus(alwaysAutoFocus),
       _stream(&stream) {}
 
 // Destructor
@@ -41,21 +41,14 @@ GeoluxHydroCam::~GeoluxHydroCam() {}
 // unfortunately, we really cannot know where the stream is attached.
 String GeoluxHydroCam::getSensorLocation(void) {
     // attach the trigger pin to the stream number
-    String loc = "sonarStream_trigger" + String(_triggerPin);
+    String loc = "sonarStream_trigger" + String(_imageResolution);
     return loc;
 }
 
 
 bool GeoluxHydroCam::setup(void) {
-    // Set up the trigger, if applicable
-    if (_triggerPin >= 0) {
-        pinMode(_triggerPin, OUTPUT);
-        digitalWrite(_triggerPin, LOW);
-    }
-
-    // Set the stream timeout
-    // Even the slowest sensors should respond at a rate of 4Hz (250ms).
-    _stream->setTimeout(250);
+    MS_DBG(F("Setting camera image resolution to"), _imageResolution);
+    _camera.setResolution(_imageResolution);
 
     return Sensor::setup();  // this will set pin modes and the setup status bit
 }
@@ -68,9 +61,9 @@ bool GeoluxHydroCam::wake(void) {
     if (!Sensor::wake()) return false;
     // Set the trigger pin mode.
     // Reset this on every wake because pins are set to tri-state on sleep
-    if (_triggerPin >= 0) {
-        pinMode(_triggerPin, OUTPUT);
-        digitalWrite(_triggerPin, LOW);
+    if (_imageResolution >= 0) {
+        pinMode(_imageResolution, OUTPUT);
+        digitalWrite(_imageResolution, LOW);
     }
 
     // NOTE: After the power is turned on to the MaxBotix, it sends several
@@ -148,11 +141,11 @@ bool GeoluxHydroCam::addSingleMeasurementResult(void) {
             // for each "single measurement" until a valid value is returned
             // and the measurement time is <166ms, we'll actually activate
             // the trigger here.
-            if (_triggerPin >= 0) {
-                MS_DBG(F("  Triggering Sonar with"), _triggerPin);
-                digitalWrite(_triggerPin, HIGH);
+            if (_imageResolution >= 0) {
+                MS_DBG(F("  Triggering Sonar with"), _imageResolution);
+                digitalWrite(_imageResolution, HIGH);
                 delayMicroseconds(30);  // Trigger must be held high for >20 µs
-                digitalWrite(_triggerPin, LOW);
+                digitalWrite(_imageResolution, LOW);
             }
 
             // Immediately ask for a result and let the stream timeout be our
@@ -167,14 +160,15 @@ bool GeoluxHydroCam::addSingleMeasurementResult(void) {
             // the sonar is disconnected, the parseInt function returns 0.
             // Luckily, these sensors are not capable of reading 0, so we also
             // know the 0 value is bad.
-            if (result <= 0 || result >= _maxRange) {
+            if (result <= 0 || result >= _filePrefix) {
                 MS_DBG(F("  Bad or Suspicious Result, Retry Attempt #"),
                        rangeAttempts);
                 result = -9999;
             } else {
                 MS_DBG(F("  Good result found"));
-                // convert result from cm to mm if convertCm is set to true
-                if (_convertCm == true) { result *= 10; }
+                // convert result from cm to mm if alwaysAutoFocus is set to
+                // true
+                if (_alwaysAutoFocus == true) { result *= 10; }
                 success = true;
             }
         }
@@ -182,7 +176,7 @@ bool GeoluxHydroCam::addSingleMeasurementResult(void) {
         MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
     }
 
-    verifyAndAddMeasurementResult(HRXL_VAR_NUM, result);
+    verifyAndAddMeasurementResult(HYDROCAM_SIZE_VAR_NUM, result);
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;

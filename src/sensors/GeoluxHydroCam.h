@@ -31,6 +31,9 @@
  * > withstand wide temperature ranges and operation in almost any environmental
  * > monitoring application.
  *
+ * The Geolux HydroCam is supported using **RS232** communication. You **must**
+ * have an RS232-to-TTL adapter to be able to communicate with the HydroCam.
+ *
  * Please see the section
  * "[Notes on Arduino Streams and Software Serial](@ref page_arduino_streams)"
  * for more information about what streams can be used along with this library.
@@ -75,10 +78,10 @@
 /**
  * @anchor sensor_hydrocam_var_counts
  * @name Sensor Variable Counts
- * The number of variables that can be returned by Maxbotix sonar
+ * The number of variables that can be returned by Geolux HydroCam
  */
 /**@{*/
-/// @brief Sensor::_numReturnedValues; the HRXL can report 1 value.
+/// @brief Sensor::_numReturnedValues; the HydroCam can report 1 value.
 #define HYDROCAM_NUM_VARIABLES 1
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define HYDROCAM_INC_CALC_VARIABLES 0
@@ -90,14 +93,16 @@
  * The sensor timing for a Geolux HydroCam
  */
 /**@{*/
-/// @brief Sensor::_warmUpTime_ms; warm up time to completion of header:  160ms.
-#define HYDROCAM_WARM_UP_TIME_MS 250
-/// @brief Sensor::_stabilizationTime_ms; the HRXL is stable as soon as it warms
-/// up (0ms stabilization).
+/// @brief Sensor::_warmUpTime_ms; warm up time to completion of header: ~340ms.
+#define HYDROCAM_WARM_UP_TIME_MS 400
+/// @brief Sensor::_stabilizationTime_ms; the HydroCam stabilization time
+/// depends on what wake commands we set and whether or not we autofocus. It
+/// could be 30+ seconds.
 #define HYDROCAM_STABILIZATION_TIME_MS 0
-/// @brief Sensor::_measurementTime_ms; the HRXL takes 166ms to complete a
+/// @brief Sensor::_measurementTime_ms; the HydroCam takes up to a minute (or
+/// maybe even more) to take an image and transfer the data from it.
 /// measurement.
-#define HYDROCAM_MEASUREMENT_TIME_MS 250
+#define HYDROCAM_MEASUREMENT_TIME_MS 60000
 /**@}*/
 
 /**
@@ -110,26 +115,26 @@
 /**@{*/
 /// @brief Decimals places in string representation; image size should have 0 -
 /// resolution is 1 byte.
-#define HRXL_RESOLUTION 0
+#define HYDROCAM_SIZE_RESOLUTION 0
 /// @brief Sensor variable number; image size is stored in sensorValues[0].
-#define HRXL_VAR_NUM 0
+#define HYDROCAM_SIZE_VAR_NUM 0
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
-/// "distance"
-#define HRXL_VAR_NAME "distance"
+/// "imageSize"
+/// @TODO Request a new variable name for image size.
+#define HYDROCAM_SIZE_VAR_NAME "imageSize"
 /// @brief Variable unit name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
-/// "millimeter"
-#define HRXL_UNIT_NAME "millimeter"
+/// "byte"
+#define HYDROCAM_SIZE_UNIT_NAME "byte"
 /// @brief Default variable short code; "HydroCamImageSize"
-#define HRXL_DEFAULT_CODE "SonarRange"
+#define HYDROCAM_SIZE_DEFAULT_CODE "HydroCamImageSize"
 /**@}*/
 
 
 /* clang-format off */
 /**
- * @brief The Sensor sub-class for the
- * [MaxBotix cameras](@ref sensor_hydrocam).
+ * @brief The Sensor sub-class for the [Geolux HydroCam cameras](@ref sensor_hydrocam).
  *
  * @ingroup sensor_hydrocam
  */
@@ -137,38 +142,54 @@
 class GeoluxHydroCam : public Sensor {
  public:
     /**
-     * @brief Construct a new MaxBotix Sonar object
+     * @brief Construct a new Geolux HydroCam object
      *
-     * @note You CANNOT specify a number of measurements to average for the
+     * @note You **CANNOT** specify a number of measurements to average for the
      * camera. Only one image is taken; averaging does not make sense at all.
+     *
+     * The RESOLUTION parameter must be one of the following:
+     *     - "160x120" (4:3, 0.019 megapixel, Quarter-QVGA, QQVGA)
+     *     - "320x240" (4:3, 0.077 megapixel, Quarter VGA , QVGA)
+     *     - "640x480" (4:3, 0.307 megapixel, VGA)
+     *     - "800x600" (4:3, 0.48 megapixel, Super VGA, SVGA)
+     *     - "1024x768" (4:3, 0.79 megapixel, XGA)
+     *     - "1280x960" (4:3, 1.23 megapixel, QuadVGA)
+     *     - "1600x1200" (4:3, 1.92 megapixel, Ultra-XGA, UXGA)
+     *     - "1920x1080" (16:9, 2.07 megapixel, 1080p, Full HD, FHD)
+     *     - "2048x1536" (4:3, 3.15 megapixel, Quad-XGA, QXGA)
+     *     - "2592x1944" (4:3, 5.04 megapixel, 1944p)
      *
      * @param stream An Arduino data stream for RS232 communication.  See
      * [notes](@ref page_arduino_streams) for more information on what streams
      * can be used.
-     * @param powerPin The pin on the mcu controlling power to the MaxSonar.
-     * Use -1 if it is continuously powered.
-     * - The MaxSonar requires a 9V - 27V DC power supply.
-     * @param triggerPin The pin on the mcu controlling the "trigger" for the
-     * MaxSonar.  Use -1 or omit for continuous ranging.
-     * @param maxRange Maximum valid measurement reported by the specific sensor
-     * model (e.g. 5000 or 9999 or 765).
-     * @param measurementsToAverage The number of measurements to take and
-     * average before giving a "final" result from the sensor; optional with a
-     * default value of 1.
-     * @param convertCm Convert centimeter image size data from certain models
-     * to millimeters. Default false.
+     * @param powerPin The pin on the mcu controlling power to the Geolux
+     * HydroCam. Use -1 if it is continuously powered.
+     * - The Geolux HydroCam requires a 9V - 27V DC power supply.
+     * @param imageResolution The image resolution to use. Optional with a
+     * default value of "1600x1200".
+     * @param filePrefix The start of the file name for saved files. The date
+     * and time will be appended to the filename. Optional with a default value
+     * of "HydroCam_". If you want only the date/time as the file name specify
+     * "" as the filename prefix. Otherwise, I strongly recommend ending the
+     * prefix with an "_".
+     * @param alwaysAutoFocus True to autofocus before every image. This may be
+     * necessary if the camera is power cycled between images. If you are not
+     * power cycling or moving the camera, I recommend not autofocusing often
+     * because the autofocus takes about 30s. Default false.
      */
-    GeoluxHydroCam(Stream* stream, int8_t powerPin, int8_t triggerPin = -1,
-                   int16_t maxRange = 9999, uint8_t measurementsToAverage = 1,
-                   bool convertCm = false);
+    GeoluxHydroCam(Stream* stream, int8_t powerPin,
+                   const char* imageResolution = "1600x1200",
+                   const char* filePrefix      = "HydroCam",
+                   bool        alwaysAutoFocus = false);
     /**
      * @copydoc GeoluxHydroCam::GeoluxHydroCam
      */
-    GeoluxHydroCam(Stream& stream, int8_t powerPin, int8_t triggerPin = -1,
-                   int16_t maxRange = 9999, uint8_t measurementsToAverage = 1,
-                   bool convertCm = false);
+    GeoluxHydroCam(Stream& stream, int8_t powerPin,
+                   const char* imageResolution = "1600x1200",
+                   const char* filePrefix      = "HydroCam",
+                   bool        alwaysAutoFocus = false);
     /**
-     * @brief Destroy the MaxBotix Sonar object
+     * @brief Destroy the Geolux HydroCam object
      */
     ~GeoluxHydroCam();
 
@@ -181,9 +202,11 @@ class GeoluxHydroCam : public Sensor {
      * @brief Do any one-time preparations needed before the sensor will be able
      * to take readings.
      *
-     * This sets pin mode on the trigger pin.  It also sets the expected stream
-     * timeout for modbus and updates the #_sensorStatus.  No sensor power is
-     * required.  This will always return true.
+     * This sets the image resolution and runs an autofocus.
+     *
+     * @NOTE Autofocus takes approximately 30s to complete.  Unless you plan to
+     * move your device betwen readings, I recommend only running the autofocus
+     * at setup, not at every power-up.
      *
      * @return True if the setup was successful.
      */
@@ -195,8 +218,8 @@ class GeoluxHydroCam : public Sensor {
      * Verifies that the power is on and updates the #_sensorStatus.  This also
      * sets the #_millisSensorActivated timestamp.
      *
-     * For the MaxSonar, this also reads and dumps any returned "header" lines
-     * from the sensor.
+     * For the Geolux HydroCam, this also reads and dumps any returned "header"
+     * lines from the sensor.
      *
      * @note This does NOT include any wait for sensor readiness.
      *
@@ -209,19 +232,51 @@ class GeoluxHydroCam : public Sensor {
      */
     bool addSingleMeasurementResult(void) override;
 
- private:
-    int16_t _maxRange;    ///< The maximum image size of the Maxbotix sonar
-    int8_t  _triggerPin;  ///< The pin to trigger the Maxbotix sonar
     /**
-     * @brief True to convert the output from the Maxbotix from centimeters to
-     * millimeters.
+     * @brief Check whether or not enough time has passed between the camera
+     * wake and being ready to image.
+     *
+     * @param debug True to output the result to the debugging Serial
+     * @return True indicates that enough time has passed that the camera is
+     * ready to take an image.
+     *
+     * @note We override the default fuction because the amount of time required
+     * for imaging depends on the camera's mood and whether or not you autofocus
+     * on every reading.
      */
-    bool _convertCm;
+    bool isStable(bool debug = false) override;
+
+    /**
+     * @brief Check whether or not the camera has completed imaging.
+     *
+     * @param debug True to output the result to the debugging Serial
+     * @return True indicates that the camera is now reporting ready after an
+     * image was started.
+     *
+     * @note We override the default fuction because the amount of time required
+     * for imaging depends on the resolution.
+     */
+    bool isMeasurementComplete(bool debug = false) override;
+
+ private:
+    const char* _imageResolution;  ///< The pin to trigger the Geolux HydroCam
+    const char* _filePrefix;  ///< The maximum image size of the Geolux HydroCam
+    /**
+     * @brief True to autofocus before every image. This may be necessary if the
+     * camera is power cycled between images. If you are not power cycling or
+     * moving the camera, I recommend not autofocusing often because the
+     * autofocus takes about 30s.
+     */
+    bool _alwaysAutoFocus;
     /**
      * @brief Private reference to the stream for communciation with the
-     * Maxbotix sensor.
+     * Geolux HydroCam sensor.
      */
     Stream* _stream;
+    /**
+     * @brief Private reference to the underlieing GeoluxCamera Instance
+     */
+    GeoluxCamera* _camera;
 };
 
 
@@ -244,13 +299,14 @@ class GeoluxHydroCam_ImageSize : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of "SonarRange".
+     * optional with a default value of "HydroCamImageSize".
      */
-    explicit GeoluxHydroCam_ImageSize(GeoluxHydroCam* parentSense,
-                                      const char*     uuid = "",
-                                      const char* varCode  = HRXL_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)HRXL_VAR_NUM, (uint8_t)HRXL_RESOLUTION,
-                   HRXL_VAR_NAME, HRXL_UNIT_NAME, varCode, uuid) {}
+    explicit GeoluxHydroCam_ImageSize(
+        GeoluxHydroCam* parentSense, const char* uuid = "",
+        const char* varCode = HYDROCAM_SIZE_DEFAULT_CODE)
+        : Variable(parentSense, (uint8_t)HYDROCAM_SIZE_VAR_NUM,
+                   (uint8_t)HYDROCAM_SIZE_RESOLUTION, HYDROCAM_SIZE_VAR_NAME,
+                   HYDROCAM_SIZE_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new GeoluxHydroCam_ImageSize object.
      *
@@ -258,8 +314,9 @@ class GeoluxHydroCam_ImageSize : public Variable {
      * used.
      */
     GeoluxHydroCam_ImageSize()
-        : Variable((uint8_t)HRXL_VAR_NUM, (uint8_t)HRXL_RESOLUTION,
-                   HRXL_VAR_NAME, HRXL_UNIT_NAME, HRXL_DEFAULT_CODE) {}
+        : Variable((uint8_t)HYDROCAM_SIZE_VAR_NUM,
+                   (uint8_t)HYDROCAM_SIZE_RESOLUTION, HYDROCAM_SIZE_VAR_NAME,
+                   HYDROCAM_SIZE_UNIT_NAME, HYDROCAM_SIZE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the GeoluxHydroCam_ImageSize object - no action needed.
      */
