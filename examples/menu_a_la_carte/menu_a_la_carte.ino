@@ -338,6 +338,18 @@ const int8_t relayPowerPin = A3;  // MCU pin controlling an optional power relay
 
 
 // ==========================================================================
+//  The Logger Object[s]
+// ==========================================================================
+/** Start [loggers] */
+// Create a new logger instance
+// NOTE: This is an empty instance! We will need to call setLoggerID,
+// setLoggingInterval, setVariableArray, and the various pin assignment
+// functions in the setup!
+Logger dataLogger;
+/** End [loggers] */
+
+
+// ==========================================================================
 //  Wifi/Cellular Modem Options
 //    NOTE:  DON'T USE MORE THAN ONE MODEM OBJECT!
 //           Delete the sections you are not using!
@@ -3089,15 +3101,6 @@ VariableArray varArray(variableCount, variableList);
 #endif
 
 
-// ==========================================================================
-//  The Logger Object[s]
-// ==========================================================================
-/** Start [loggers] */
-// Create a new logger instance
-Logger dataLogger(LoggerID, loggingInterval, &varArray);
-/** End [loggers] */
-
-
 #if defined(BUILD_PUB_ENVIRO_DIY_PUBLISHER) && !defined(BUILD_MODEM_NO_MODEM)
 // ==========================================================================
 //  A Publisher to Monitor My Watershed / EnviroDIY Data Sharing Portal
@@ -3354,6 +3357,17 @@ void setup() {
     Wire.begin();
 
     /** Start [setup_logger] */
+
+    // set the logger ID
+    PRINTOUT(F("Setting logger id to"), LoggerID);
+    dataLogger.setLoggerID(LoggerID);
+    // set the logging interval
+    PRINTOUT(F("Setting logging interval to"), loggingInterval, F("minutes"));
+    dataLogger.setLoggingInterval(loggingInterval);
+    // Attach the variable array to the logger
+    PRINTOUT(F("Attaching the variable array"));
+    dataLogger.setVariableArray(&varArray);
+    // set logger pins
     PRINTOUT(F("Setting logger pins"));
     dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin,
                              greenLED, wakePinMode, buttonPinMode);
