@@ -481,7 +481,9 @@ String Logger::formatDateTime_ISO8601(uint32_t epochTime) {
     return loggerClock::formatDateTime_ISO8601(
         epochTime, Logger::_loggerUTCOffset, Logger::_loggerEpoch);
 }
-
+void Logger::formatDateTime(char* buffer, const char* fmt, uint32_t epochTime) {
+    loggerClock::formatDateTime(buffer, fmt, epochTime, Logger::_loggerEpoch);
+}
 // This checks that the logger time is within a "sane" range
 bool Logger::isRTCSane(void) {
     return loggerClock::isRTCSane();

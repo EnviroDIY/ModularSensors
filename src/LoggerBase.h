@@ -764,6 +764,32 @@ class Logger {
     static String formatDateTime_ISO8601(uint32_t epochTime);
 
     /**
+     * @brief Convert an epoch time into a character string based on the input
+     * strftime format string and put it into the given buffer.
+     *
+     * This assumes the supplied date/time is in the LOGGER's timezone and adds
+     * the LOGGER's offset as the time zone offset in the string.
+     *
+     * @see https://en.cppreference.com/w/cpp/chrono/c/strftime for possible
+     * formatting strings.
+     *
+     * @note This function DOES NOTE SUPPORT TIMEZONES. Do not use the %z or %Z
+     * inputs!
+     *
+     * @param buffer A buffer to put the finished string into. Make sure that
+     * the buffer is big enough to hold all of the characters!
+     * @param fmt The strftime format string.
+     * @param epochTime The number of seconds since the start of the given
+     * epoch in the given offset from UTC.
+     * @param epochTimeUTCOffset The offset of the input epoch time from UTC in
+     * hours.
+     * @param epoch The epoch of the input epoch time.
+     * @return An ISO8601 formatted String.
+     */
+    static void formatDateTime(char* buffer, const char* fmt,
+                               uint32_t epochTime);
+
+    /**
      * @brief Pass-through to loggerClock::setRTClock(uint32_t
      * UTCEpochSeconds,0, epochStart::unix_epoch) Veify that the input value is
      * sane and if so set the real time clock to the given time.
