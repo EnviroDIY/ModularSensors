@@ -19,9 +19,11 @@
     - [The SAMD51 clock system](#the-samd51-clock-system)
     - [SAMD51 Clock Requirements Relevant to ModularSensors](#samd51-clock-requirements-relevant-to-modularsensors)
     - [SAMD51 Settings at Power On](#samd51-settings-at-power-on)
-  - [SAMD51 Arduino Core Setup Clock Generator Configuration](#samd51-arduino-core-setup-clock-generator-configuration)
-    - [SAMD51 Arduino Core Library Clock Configuration](#samd51-arduino-core-library-clock-configuration)
+    - [SAMD51 Arduino Core Setup Clock Generator Configuration](#samd51-arduino-core-setup-clock-generator-configuration)
+      - [Resulting generic clock speeds](#resulting-generic-clock-speeds)
+    - [SAMD51 Arduino Core Library Clock and Peripheral Configuration](#samd51-arduino-core-library-clock-and-peripheral-configuration)
     - [Clocks Used by Non-Core Libraries for the SAMD51](#clocks-used-by-non-core-libraries-for-the-samd51)
+    - [Summary of Peripheral Clock Assignments](#summary-of-peripheral-clock-assignments)
 - [The Non-Volatile Interrupt Controller (NVIC)](#the-non-volatile-interrupt-controller-nvic)
   - [NVIC Overview](#nvic-overview)
   - [Priority Levels](#priority-levels)
@@ -226,7 +228,7 @@ The path from a clock source to the EIC on the SAMD51 is very similar to that of
 
 [See section 13.7 of the datasheet.](https://onlinedocs.microchip.com/oxy/GUID-F5813793-E016-46F5-A9E2-718D8BCED496-en-US-13/GUID-4F945BA9-D138-4F79-AA1A-5CFF0E67A977.html)
 
-## SAMD51 Arduino Core Setup Clock Generator Configuration<!-- {#samd51_clock_core_setup} -->
+### SAMD51 Arduino Core Setup Clock Generator Configuration<!-- {#samd51_clock_core_setup} -->
 
 [Within the SAMD core](https://github.com/adafruit/ArduinoCore-samd/blob/ce20340620bfd9c545649ee5c4873888ee0475d0/cores/arduino/startup.c#L57) SystemInit() in startup.c configures clocks with these steps:
 
@@ -257,14 +259,15 @@ The path from a clock source to the EIC on the SAMD51 is very similar to that of
   - `GENERIC_CLOCK_GENERATOR_MAIN` = 0
   - This is resetting the source of generic clock generator 0 to be the DPLL0 at 120MHz, it previously had been set to the OSCULP32K.
 
-Resulting generic clock speeds:
+#### Resulting generic clock speeds
+
 - GCLK0 = F_CPU (likely 120MHz, but could be different depending on variant.h); sourced from DLPP0, which does not run in standby.
 - GCLK1 = 48 MHz; sourced from DFLL48M, which does not run in standby.
 - GCLK2 = 100 MHz; sourced from DLPP1, which does not run in standby.
 - GCLK3 = 32 kHz; sourced from XOSC32K, which does run in standby if requested by peripheral (I think?)
 - GCLK4 = 12 MHz; sourced from DFLL48M, which does not run in standby.
 
-### SAMD51 Arduino Core Library Clock Configuration<!-- {#samd21_clock_core_configs} -->
+### SAMD51 Arduino Core Library Clock and Peripheral Configuration<!-- {#samd21_clock_core_configs} -->
 
 - [WInterrupts.c](https://github.com/adafruit/ArduinoCore-samd/blob/ce20340620bfd9c545649ee5c4873888ee0475d0/cores/arduino/WInterrupts.c#L48)
   - Configures the external interrupt controller (EIC) clock (`EIC_GCLK_ID`) to use GCLKGEN2 at 100 MHz
@@ -273,7 +276,7 @@ Resulting generic clock speeds:
   - Configures timer counter clocks (specific clock depending on the analog pin) to use GCLKGEN0 at 120 MHz
   - Does not change the source or other configuration for GCLKGEN0
 - [wiring.c](https://github.com/adafruit/ArduinoCore-samd/blob/bb552819ba79fbda21d868dd1c838d52bce383ba/cores/arduino/wiring.c#L119)
-  - Configures the ADC (`ADC0_GCLK_ID` and `ADC1_GCLK_ID`) and DAC (`GCM_DAC`) to use GCLKGEN1 at 48 MHz
+  - Configures the ADC (`ADC0_GCLK_ID` and `ADC1_GCLK_ID`) to use GCLKGEN1 at 48 MHz
   - Does not change the source or other configuration for GCLKGEN1
   - Configures the DAC (`DAC_GCLK_ID`) to use GCLKGEN4 at 12 MHz
   - Does not change the source or other configuration for GCLKGEN4
@@ -295,7 +298,6 @@ Resulting generic clock speeds:
   - Does not change the source or other configuration for GCLKGEN0
 
 
-
 Thus, if the clock source for interrupts is not running in standby, the interrupts will not be able to wake the device.
 In [WInterrupts.c](https://github.com/adafruit/ArduinoCore-samd/blob/ce20340620bfd9c545649ee5c4873888ee0475d0/cores/arduino/WInterrupts.c#L48) in the Adafruit SAMD core, generic clock generator 2 (from the PLL1 at 100MHz with no divisor) is used for the EIC peripheral.
 The Arduino core does *NOT* configure the generic clock generator 0 (ie GCLK_MAIN = DFLL48M) to stay awake in standby!
@@ -313,7 +315,66 @@ The Arduino core does *NOT* configure the generic clock generator 0 (ie GCLK_MAI
   - Sets the source for GCKL6 as the DPLL0 at 120MHz
   - Uses a 15x divisor between the DPLL0 and GCKL6.
 - [Modular Sensors (this library)](https://github.com/EnviroDIY/ModularSensors)
-  - This library only ensures that the OSCULP32K is used to source the EIC, it does not change any clocks.
+  - This library sets OSCULP32K as the source for the EIC and *disables* GCLK_EIC.
+  - This library also resets GCLK7 so it is disconnected from any source.
+  - This library disables the following peripeheral timers and ties them to the disabled GCLK7:
+    - 4 - GCLK_EIC
+    - 5 - GCLK_FREQM_MSR
+    - 6 - GCLK_FREQM_REF
+    - 9 - GCLK_TC0/GCLK_TC1
+    - 11 - GCLK_EVSYS0
+    - 12 - GCLK_EVSYS1
+    - 13 - GCLK_EVSYS2
+    - 14 - GCLK_EVSYS3
+    - 15 - GCLK_EVSYS4
+    - 16 - GCLK_EVSYS5
+    - 17 - GCLK_EVSYS6
+    - 18 - GCLK_EVSYS7
+    - 19 - GCLK_EVSYS8
+    - 20 - GCLK_EVSYS9
+    - 21 - GCLK_EVSYS10
+    - 22 - GCLK_EVSYS11
+    - 25 - GCLK_TCC0/GCLK_TCC1
+    - 26 - GCLK_TC2/GCLK_TC3
+    - 27 - GCLK_CAN0
+    - 28 - GCLK_CAN1
+    - 29 - GCLK_TCC2/GCLK_TCC3
+    - 30 - GCLK_TC4/GCLK_TC5
+    - 31 - GCLK_PDEC
+    - 32 - GCLK_AC
+    - 33 - GCLK_CCL
+    - 38 - GCLK_TCC4
+    - 39 - GCLK_TC6/GCLK_TC7
+    - 42 - GCLK_DAC
+    - 43 - GCLK_I2S
+    - 44 - GCLK_I2S
+    - 45 - GCLK_SDHC0
+    - 46 - GCLK_SDHC1
+    - 47 - GCLK_CM4_TRACE
+
+
+### Summary of Peripheral Clock Assignments
+
+- GCLK_SERCOM[0..7]_SLOW/GCLK_SDHC0_SLOW/GCLK_SDHC0_SLOW (3) - potentially any of GCLK0-GCLK4 - SERCOM.cpp
+- GCLK_EIC (4) - GCLKGEN0 (F_CPU; sourced from DLPP0) - WInterrupts.c
+  - *This is disabled by Modular Sensors!*
+- GCLK_TC0/GCLK_TC1 (9) - GCLKGEN0 (F_CPU; sourced from DLPP0) - Tone.cpp, Servo.cpp, wiring_analog.c
+- GCLK_USB (10) - GCLKGEN0 (F_CPU; sourced from DLPP0) - samd21_host.c, USBCore.cpp, Adafruit_TinyUSB_samd.cpp
+- GCLK_SERCOM2_CORE (23) - potentially any of GCLK0-GCLK4 - SERCOM.cpp
+- GCLK_SERCOM3_CORE (24) - potentially any of GCLK0-GCLK4 - SERCOM.cpp
+- GCLK_TC2/GCLK_TC3 (26) - GCLKGEN0 (F_CPU; sourced from DLPP0) - Servo.cpp, wiring_analog.c *potential conflict with SDI-12, be cautious*
+- GCLK_TC2/GCLK_TC3 (26) - GCLKGEN6 (F_CPU; sourced from DLPP0) - SDI12_boards.cpp *potential conflict with servo, be cautious*
+- GCLK_TC4/GCLK_TC5 (30) - GCLKGEN0 (F_CPU; sourced from DLPP0) - Servo.cpp, wiring_analog.c
+- GCLK_SERCOM4_CORE (34) - potentially any of GCLK0-GCLK4 - SERCOM.cpp
+- GCLK_SERCOM5_CORE (35) - potentially any of GCLK0-GCLK4 - SERCOM.cpp
+- GCLK_SERCOM6_CORE (36) - potentially any of GCLK0-GCLK4 - SERCOM.cpp
+- GCLK_SERCOM7_CORE (37) - potentially any of GCLK0-GCLK4 - SERCOM.cpp
+- GCLK_TC6/GCLK_TC7 (39) - GCLKGEN0 (F_CPU; sourced from DLPP0) - Servo.cpp, wiring_analog.c
+- GCLK_ADC0 (40) - GCLKGEN1 (48 MHz; sourced from DFLL48M) - wiring.c
+- GCLK_ADC12 (41) - GCLKGEN1 (48 MHz; sourced from DFLL48M) - wiring.c
+- GCLK_DAC (42) - GCLKGEN4 (12 MHz; sourced from DFLL48M) - wiring.c
+- GCLK_I2S[0] (43) - GCLKGEN3 (32 kHz; sourced from XOSC32K) *most likely* - I2S.cpp
+- GCLK_I2S[1] (44) - GCLKGEN3 (32 kHz; sourced from XOSC32K) *most likely* - I2S.cpp
 
 # The Non-Volatile Interrupt Controller (NVIC)
 

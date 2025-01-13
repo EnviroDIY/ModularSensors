@@ -2508,7 +2508,7 @@ INCLUDE_FILE_PATTERNS  = *.c \
 
 PREDEFINED             = DOXYGEN=1 \
                          __attribute__((__progmem__))= \
-                         PLATFORMIO=40304 \
+                         PLATFORMIO=60116 \
                          ARDUINO_AVR_ENVIRODIY_MAYFLY \
                          F_CPU=8000000L \
                          ARDUINO_ARCH_AVR \
