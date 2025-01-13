@@ -45,6 +45,8 @@ If no epoch start is given, it is assumed to be UNIX (January 1, 1970).
 - Added a single define (`MS_OUTPUT`) to use for all outputs from ModularSensors.
 - Added support for sending printouts and debugging to two different serial ports.  This is useful for devices (like SAMD) that use a built in USB serial port which is turned off when the device sleeps.  If `MS_2ND_OUTPUT` is defined, output will go to *both* `MS_2ND_OUTPUT` and to `MS_OUTPUT`.
 - Added example code for flashing neopixel in the menu example.
+- Added support for Geolux HydroCam
+- Added a generic time formatting function.
 
 ### Removed
 
