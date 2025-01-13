@@ -56,10 +56,6 @@
  */
 #define MAXIMUM_WATCHDOG_PERIOD 16UL
 
-
-///
-///
-
 /**
  * @brief The clock generator number to use for the watchdog timer and the
  * external interrupt controller.

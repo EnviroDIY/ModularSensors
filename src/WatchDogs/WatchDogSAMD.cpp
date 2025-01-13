@@ -302,6 +302,9 @@ void extendedWatchDogSAMD::configureEICClock() {
     // change it). This bit is not Write-Synchronized.
     EIC->CTRLA.bit.CKSEL = 1;  // 0 for GCLK_EIC, 1 for CLK_ULP32K
 
+    MS_DEEP_DBG(F("Disabling GCLK_EIC"));
+    GCLK->PCHCTRL[EIC_GCLK_ID].reg = GCLK_PCHCTRL_RESETVALUE;
+
     MS_DEEP_DBG(F("Re-enabling the EIC"));
     EIC->CTRLA.bit.ENABLE = 1;
     while (EIC->SYNCBUSY.bit.ENABLE == 1) {}
