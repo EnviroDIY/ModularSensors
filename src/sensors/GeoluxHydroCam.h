@@ -38,6 +38,9 @@
  * "[Notes on Arduino Streams and Software Serial](@ref page_arduino_streams)"
  * for more information about what streams can be used along with this library.
  *
+ * This library currently only supports using the same SD card for saving images
+ * as is used for writing data files.
+ *
  * @section sensor_hydrocam_datasheet Sensor Datasheet
  * - [Datasheet](https://www.geolux-radars.com/_files/ugd/8a15d8_d65c3618247b40ed94886dcb09bb4c33.pdf)
  * - [User Manual v1.2.3](https://www.geolux-radars.com/_files/ugd/e39b2a_35dcbb6cb9974bd59647b20487ca1511.pdf)
@@ -71,6 +74,8 @@
 #undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "SensorBase.h"
+#include "LoggerBase.h"
+#include <GeoluxCamera.h>
 
 /** @ingroup sensor_hydrocam */
 /**@{*/
@@ -165,6 +170,10 @@ class GeoluxHydroCam : public Sensor {
      * @param powerPin The pin on the mcu controlling power to the Geolux
      * HydroCam. Use -1 if it is continuously powered.
      * - The Geolux HydroCam requires a 9V - 27V DC power supply.
+     * @param baseLogger The logger instance with an attached SD card.
+     * @param powerPin2 The pin on the mcu controlling power to the RS232
+     * adapter, if it is different from that used to power the sensor.  Use -1
+     * or omit if not applicable.
      * @param imageResolution The image resolution to use. Optional with a
      * default value of "1600x1200".
      * @param filePrefix The start of the file name for saved files. The date
@@ -177,26 +186,21 @@ class GeoluxHydroCam : public Sensor {
      * power cycling or moving the camera, I recommend not autofocusing often
      * because the autofocus takes about 30s. Default false.
      */
-    GeoluxHydroCam(Stream* stream, int8_t powerPin,
-                   const char* imageResolution = "1600x1200",
+    GeoluxHydroCam(Stream* stream, int8_t powerPin, Logger& baseLogger,
+                   int8_t powerPin2, const char* imageResolution = "1600x1200",
                    const char* filePrefix      = "HydroCam",
                    bool        alwaysAutoFocus = false);
     /**
      * @copydoc GeoluxHydroCam::GeoluxHydroCam
      */
-    GeoluxHydroCam(Stream& stream, int8_t powerPin,
-                   const char* imageResolution = "1600x1200",
+    GeoluxHydroCam(Stream& stream, int8_t powerPin, Logger& baseLogger,
+                   int8_t powerPin2, const char* imageResolution = "1600x1200",
                    const char* filePrefix      = "HydroCam",
                    bool        alwaysAutoFocus = false);
     /**
      * @brief Destroy the Geolux HydroCam object
      */
     ~GeoluxHydroCam();
-
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
-    String getSensorLocation(void) override;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -218,8 +222,7 @@ class GeoluxHydroCam : public Sensor {
      * Verifies that the power is on and updates the #_sensorStatus.  This also
      * sets the #_millisSensorActivated timestamp.
      *
-     * For the Geolux HydroCam, this also reads and dumps any returned "header"
-     * lines from the sensor.
+     * For the Geolux HydroCam, this also sets the image resolution.
      *
      * @note This does NOT include any wait for sensor readiness.
      *
@@ -227,10 +230,28 @@ class GeoluxHydroCam : public Sensor {
      */
     bool wake(void) override;
 
+
+    /**
+     * @copydoc Sensor::startSingleMeasurement()
+     */
+    bool startSingleMeasurement(void) override;
+
     /**
      * @copydoc Sensor::addSingleMeasurementResult()
      */
     bool addSingleMeasurementResult(void) override;
+
+    // Override these to use two power pins
+    void powerUp(void) override;
+    void powerDown(void) override;
+
+    /**
+     * @copydoc Sensor::isWarmedUp(bool debug)
+     *
+     * For the Geolux camera, this waits for both the power-on warm up and for
+     * an affirmative from the camera that it is ready to accept commands.
+     */
+    virtual bool isWarmedUp(bool debug = false);
 
     /**
      * @brief Check whether or not enough time has passed between the camera
@@ -259,6 +280,10 @@ class GeoluxHydroCam : public Sensor {
     bool isMeasurementComplete(bool debug = false) override;
 
  private:
+    /**
+     * @brief Private reference to the power pin fro the RS-485 adapter.
+     */
+    int8_t      _powerPin2;
     const char* _imageResolution;  ///< The pin to trigger the Geolux HydroCam
     const char* _filePrefix;  ///< The maximum image size of the Geolux HydroCam
     /**
@@ -268,6 +293,14 @@ class GeoluxHydroCam : public Sensor {
      * autofocus takes about 30s.
      */
     bool _alwaysAutoFocus;
+    /**
+     * @brief An internal reference to an SdFat file instance
+     */
+    File imgFile;
+    /**
+     * @brief The internal pointer to the logger instance to be used.
+     */
+    Logger* _baseLogger = nullptr;
     /**
      * @brief Private reference to the stream for communciation with the
      * Geolux HydroCam sensor.

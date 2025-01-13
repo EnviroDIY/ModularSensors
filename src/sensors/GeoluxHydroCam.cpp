@@ -12,45 +12,76 @@
 
 
 GeoluxHydroCam::GeoluxHydroCam(Stream* stream, int8_t powerPin,
+                               Logger& baseLogger, int8_t powerPin2,
                                const char* imageResolution,
                                const char* filePrefix, bool alwaysAutoFocus)
     : Sensor("GeoluxHydroCam", HYDROCAM_NUM_VARIABLES, HYDROCAM_WARM_UP_TIME_MS,
              HYDROCAM_STABILIZATION_TIME_MS, HYDROCAM_MEASUREMENT_TIME_MS,
              powerPin, -1, 1),
+      _powerPin2(powerPin2),
       _imageResolution(imageResolution),
       _filePrefix(filePrefix),
       _alwaysAutoFocus(alwaysAutoFocus),
+      _baseLogger(&baseLogger),
       _stream(stream) {}
 
 
 GeoluxHydroCam::GeoluxHydroCam(Stream& stream, int8_t powerPin,
+                               Logger& baseLogger, int8_t powerPin2,
                                const char* imageResolution,
                                const char* filePrefix, bool alwaysAutoFocus)
     : Sensor("GeoluxHydroCam", HYDROCAM_NUM_VARIABLES, HYDROCAM_WARM_UP_TIME_MS,
              HYDROCAM_STABILIZATION_TIME_MS, HYDROCAM_MEASUREMENT_TIME_MS,
              powerPin, -1, 1, HYDROCAM_INC_CALC_VARIABLES),
+      _powerPin2(powerPin2),
       _imageResolution(imageResolution),
       _filePrefix(filePrefix),
       _alwaysAutoFocus(alwaysAutoFocus),
+      _baseLogger(&baseLogger),
       _stream(&stream) {}
 
 // Destructor
 GeoluxHydroCam::~GeoluxHydroCam() {}
 
 
-// unfortunately, we really cannot know where the stream is attached.
-String GeoluxHydroCam::getSensorLocation(void) {
-    // attach the trigger pin to the stream number
-    String loc = "sonarStream_trigger" + String(_imageResolution);
-    return loc;
-}
-
-
 bool GeoluxHydroCam::setup(void) {
-    MS_DBG(F("Setting camera image resolution to"), _imageResolution);
-    _camera.setResolution(_imageResolution);
+    bool success =
+        Sensor::setup();  // this will set pin modes and the setup status bit
 
-    return Sensor::setup();  // this will set pin modes and the setup status bit
+    // This sensor needs power for setup!
+    // We want to turn on all possible measurement parameters
+    bool wasOn = checkPowerOn();
+    if (!wasOn) { powerUp(); }
+    waitForWarmUp();
+
+    _camera->begin(_stream);
+    MS_DBG(F("Setting camera image resolution to"), _imageResolution);
+    success &= _camera->setResolution(_imageResolution);
+    _camera->waitForReady(50L, 15000L);
+
+#ifdef MS_GEOLUXHYDROCAM_DEBUG&& defined(MS_DEBUGGING_STD) && \
+    !defined(MS_SILENT)
+    MS_DBG(F("Printing all camera info"));
+    _camera->printCameraInfo(MS_DEBUGGING_STD);
+
+    MS_DBG(F("Camera is serial number:"), _camera->getCameraSerialNumber());
+    MS_DBG(F("Current camera firmware is:"), _camera->getCameraFirmware());
+    MS_DBG(F("Current image resolution is:"), _camera->getResolution());
+    MS_DBG(F("Current jpg compression quality is:"), _camera->getQuality());
+    MS_DBG(F("Current maximum jpg size is:"), _camera->getJPEGMaximumSize());
+#endif
+
+    if (!success) {
+        // Set the status error bit (bit 7)
+        _sensorStatus |= 0b10000000;
+        // UN-set the set-up bit (bit 0) since setup failed!
+        _sensorStatus &= 0b11111110;
+    }
+
+    // Turn the power back off it it had been turned on
+    if (!wasOn) { powerDown(); }
+
+    return success;
 }
 
 
@@ -59,47 +90,43 @@ bool GeoluxHydroCam::wake(void) {
     // Sensor::wake() checks if the power pin is on and sets the wake timestamp
     // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
-    // Set the trigger pin mode.
+
+    // Set the extra pin modes.
     // Reset this on every wake because pins are set to tri-state on sleep
-    if (_imageResolution >= 0) {
-        pinMode(_imageResolution, OUTPUT);
-        digitalWrite(_imageResolution, LOW);
+    if (_powerPin2 >= 0) { pinMode(_powerPin2, OUTPUT); }
+
+    if (_alwaysAutoFocus) {
+        return _camera->runAutofocus() == GeoluxCamera::OK;
     }
 
-    // NOTE: After the power is turned on to the MaxBotix, it sends several
-    // lines of header to the serial port, beginning at ~65ms and finising at
-    // ~160ms. Although we are waiting for them to complete in the
-    // "waitForWarmUp" function, the values will still be in the serial buffer
-    // and need to be read to be cleared out For an HRXL without temperature
-    // compensation, the headers are:
-    // HRXL-MaxSonar-WRL
-    // PN:MB7386
-    // Copyright 2011-2013 MaxBotix Inc.
-    // RoHS 1.8b090
-    // 0713 TempI
+    return true;
+}
 
-    // NOTE ALSO:  Depending on what type of serial stream you are using, there
-    // may also be a bunch of junk in the buffer that this will clear out.
-    MS_DBG(F("Dumping Header Lines from MaxBotix on"), getSensorLocation());
-    for (int i = 0; i < 6; i++) {
-        String headerLine = _stream->readStringUntil('\r');
-        MS_DBG(i, '-', headerLine);
+bool GeoluxHydroCam::startSingleMeasurement(void) {
+    // Sensor::startSingleMeasurement() checks that if it's awake/active and
+    // sets the timestamp and status bits.  If it returns false, there's no
+    // reason to go on.
+    if (!Sensor::startSingleMeasurement()) return false;
+
+    bool success = true;
+    MS_DBG(F("Requesting that the camera take a picture ... "));
+    if (_camera->takeSnapshot() == GeoluxCamera::OK) {
+        MS_DBG(F("picture started successfully!"));
+    } else {
+        MS_DBG(F("Snapshot failed!"));
+        success = false;
     }
-    // Clear anything else out of the stream buffer
-    auto junkChars = static_cast<uint8_t>(_stream->available());
-    if (junkChars) {
-        MS_DBG(F("Dumping"), junkChars,
-               F("characters from MaxBotix stream buffer"));
-        for (uint8_t i = 0; i < junkChars; i++) {
-#ifdef MS_GEOLUXHYDROCAM_DEBUG
-            MS_SERIAL_OUTPUT.print(_stream->read());
-#else
-            _stream->read();
-#endif
-        }
-#ifdef MS_GEOLUXHYDROCAM_DEBUG
-        PRINTOUT(" ");
-#endif
+
+    if (success) {
+        // Update the time that a measurement was requested
+        _millisMeasurementRequested = millis();
+    } else {
+        // Otherwise, make sure that the measurement start time and success bit
+        // (bit 6) are unset
+        MS_DBG(getSensorNameAndLocation(),
+               F("did not successfully start a measurement."));
+        _millisMeasurementRequested = 0;
+        _sensorStatus &= 0b10111111;
     }
 
     return true;
@@ -111,66 +138,52 @@ bool GeoluxHydroCam::addSingleMeasurementResult(void) {
     bool    success = false;
     int16_t result  = -9999;
 
-    // Clear anything out of the stream buffer
-    auto junkChars = static_cast<uint8_t>(_stream->available());
-    if (junkChars) {
-        MS_DBG(F("Dumping"), junkChars,
-               F("characters from MaxBotix stream buffer:"));
-        for (uint8_t i = 0; i < junkChars; i++) {
-#ifdef MS_GEOLUXHYDROCAM_DEBUG
-            MS_SERIAL_OUTPUT.print(_stream->read());
-#else
-            _stream->read();
-#endif
-        }
-#ifdef MS_GEOLUXHYDROCAM_DEBUG
-        PRINTOUT(" ");
-#endif
-    }
-
     // Check a measurement was *successfully* started (status bit 6 set)
     // Only go on to get a result if it was
     if (bitRead(_sensorStatus, 6)) {
-        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+        // set a new filename based on the current RTC time
+        char filename[strlen(_filePrefix) + 15 + 3 + 1] = {'\0'};
+        char time_buff[15 + 1]                          = {'\0'};
+        _baseLogger->formatDateTime(time_buff, "%Y%m%d_%H%M%S",
+                                    _baseLogger->getNowLocalEpoch());
+        strcat(filename, time_buff);
+        strcat(filename, ".jpg");
+        MS_DBG(F("Attempting to create the file: "));
+        MS_DBG(filename);
 
-        uint8_t rangeAttempts = 0;
-        while (success == false && rangeAttempts < 25) {
-            // If the sonar is running on a trigger, activating the trigger
-            // should in theory happen within the startSingleMeasurement
-            // function.  Because we're really taking up to 25 measurements
-            // for each "single measurement" until a valid value is returned
-            // and the measurement time is <166ms, we'll actually activate
-            // the trigger here.
-            if (_imageResolution >= 0) {
-                MS_DBG(F("  Triggering Sonar with"), _imageResolution);
-                digitalWrite(_imageResolution, HIGH);
-                delayMicroseconds(30);  // Trigger must be held high for >20 µs
-                digitalWrite(_imageResolution, LOW);
-            }
+        // Create and then open the file in write mode
+        if (imgFile.open(filename, O_CREAT | O_WRITE | O_AT_END)) {
+            MS_DBG(F("Created new file:"), filename);
+            success = true;
+        } else {
+            MS_DBG(F("Failed to create the image file"), filename);
+            success = false;
+        }
 
-            // Immediately ask for a result and let the stream timeout be our
-            // "wait" for the measurement.
-            result = static_cast<uint16_t>(_stream->parseInt());
-            _stream->read();  // To throw away the carriage return
-            MS_DBG(F("  Sonar Range:"), result);
-            rangeAttempts++;
+        int32_t image_size = _camera->getImageSize();
+        MS_DBG(F("Completed image is "), image_size, F(" bytes."));
+        success &= image_size != 0;
 
-            // If it cannot obtain a result, the sonar is supposed to send a
-            // value just above its max range. If the result becomes garbled or
-            // the sonar is disconnected, the parseInt function returns 0.
-            // Luckily, these sensors are not capable of reading 0, so we also
-            // know the 0 value is bad.
-            if (result <= 0 || result >= _filePrefix) {
-                MS_DBG(F("  Bad or Suspicious Result, Retry Attempt #"),
-                       rangeAttempts);
-                result = -9999;
-            } else {
-                MS_DBG(F("  Good result found"));
-                // convert result from cm to mm if alwaysAutoFocus is set to
-                // true
-                if (_alwaysAutoFocus == true) { result *= 10; }
-                success = true;
-            }
+        if (success) {
+            // dump anything in the camera stream, just in case
+            while (_stream->available()) { _stream->read(); }
+
+            // transfer the image from the camera to a file on the SD card
+            MS_START_DEBUG_TIMER
+            uint32_t bytes_transferred = _camera->transferImage(imgFile,
+                                                                image_size);
+            // Close the image file
+            imgFile.close();
+
+            // See how long it took us
+            MS_DBG(F("Wrote"), bytes_transferred, F("of expected"), image_size,
+                   F("bytes to the SD card - a difference of"),
+                   bytes_transferred - image_size, F("bytes"));
+            MS_DBG(F("Total read/write time was"), MS_PRINT_DEBUG_TIMER,
+                   F("ms"));
+
+            success = bytes_transferred == image_size;
+            result  = success ? bytes_transferred : -9999;
         }
     } else {
         MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
@@ -185,4 +198,174 @@ bool GeoluxHydroCam::addSingleMeasurementResult(void) {
 
     // Return values shows if we got a not-obviously-bad reading
     return success;
+}
+
+
+// This turns on sensor power
+void GeoluxHydroCam::powerUp(void) {
+    if (_powerPin >= 0) {
+        MS_DBG(F("Powering"), getSensorNameAndLocation(), F("with pin"),
+               _powerPin);
+        digitalWrite(_powerPin, HIGH);
+        // Mark the time that the sensor was powered
+        _millisPowerOn = millis();
+    }
+    if (_powerPin2 >= 0) {
+        MS_DBG(F("Applying secondary power to"), getSensorNameAndLocation(),
+               F("with pin"), _powerPin2);
+        digitalWrite(_powerPin2, HIGH);
+    }
+    if (_powerPin < 0 && _powerPin2 < 0) {
+        MS_DBG(F("Power to"), getSensorNameAndLocation(),
+               F("is not controlled by this library."));
+    }
+    // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
+    _sensorStatus |= 0b00000110;
+}
+
+
+// This turns off sensor power
+void GeoluxHydroCam::powerDown(void) {
+    if (_powerPin >= 0) {
+        MS_DBG(F("Turning off power to"), getSensorNameAndLocation(),
+               F("with pin"), _powerPin);
+        digitalWrite(_powerPin, LOW);
+        // Unset the power-on time
+        _millisPowerOn = 0;
+        // Unset the activation time
+        _millisSensorActivated = 0;
+        // Unset the measurement request time
+        _millisMeasurementRequested = 0;
+        // Unset the status bits for sensor power (bits 1 & 2),
+        // activation (bits 3 & 4), and measurement request (bits 5 & 6)
+        _sensorStatus &= 0b10000001;
+    }
+    if (_powerPin2 >= 0) {
+        MS_DBG(F("Turning off secondary power to"), getSensorNameAndLocation(),
+               F("with pin"), _powerPin2);
+        digitalWrite(_powerPin2, LOW);
+    }
+    if (_powerPin < 0 && _powerPin2 < 0) {
+        MS_DBG(F("Power to"), getSensorNameAndLocation(),
+               F("is not controlled by this library."));
+        // Do NOT unset any status bits or timestamps if we didn't really power
+        // down!
+    }
+}
+
+
+// This checks to see if enough time has passed for warm-up
+bool GeoluxHydroCam::isWarmedUp(bool debug) {
+    // If the sensor doesn't have power, then it will never be warmed up,
+    // so the warm up time is essentially already passed.
+    if (!bitRead(_sensorStatus, 2)) {
+        if (debug) {
+            MS_DBG(getSensorNameAndLocation(),
+                   F("does not have power and cannot warm up!"));
+        }
+        return true;
+    }
+
+    uint32_t elapsed_since_power_on = millis() - _millisPowerOn;
+    // If the sensor has power and enough time has elapsed, it's warmed up
+    if (elapsed_since_power_on > _warmUpTime_ms) {
+        if (debug) {
+            MS_DBG(F("It's been"), elapsed_since_power_on, F("ms, and"),
+                   getSensorNameAndLocation(), F("might be warmed up!"));
+            MS_DBG(F("Checking if the camera is ready..."));
+        }
+        GeoluxCamera::geolux_status camera_status = _camera->getStatus();
+        bool is_ready = camera_status == GeoluxCamera::OK ||
+            camera_status == GeoluxCamera::NONE;
+        if (debug) {
+            if (is_ready) {
+                MS_DBG(F("It's been"), elapsed_since_power_on, F("ms, and"),
+                       getSensorNameAndLocation(), F("says it's ready."));
+            } else {
+                MS_DBG(F("It's been"), elapsed_since_power_on, F("ms, and"),
+                       getSensorNameAndLocation(),
+                       F("says it's not ready yet."));
+            }
+        }
+        return is_ready;
+    } else {
+        // If the sensor has power but the time hasn't passed, we still need to
+        // wait
+        return false;
+    }
+}
+
+
+// This checks to see if enough time has passed for stability
+bool GeoluxHydroCam::isStable(bool debug) {
+    // If the sensor failed to activate, it will never stabilize, so the
+    // stabilization time is essentially already passed
+    if (!bitRead(_sensorStatus, 4)) {
+        if (debug) {
+            MS_DBG(getSensorNameAndLocation(),
+                   F("is not active and cannot stabilize!"));
+        }
+        return true;
+    }
+
+    uint32_t elapsed_since_wake_up = millis() - _millisSensorActivated;
+    // If the sensor has been activated and enough time has elapsed, it's stable
+    if (elapsed_since_wake_up > _stabilizationTime_ms + _alwaysAutoFocus
+            ? 10000L
+            : 0) {
+        if (debug) {
+            MS_DBG(F("It's been"), elapsed_since_wake_up, F("ms, and"),
+                   getSensorNameAndLocation(),
+                   F("might be ready to take an image."));
+            MS_DBG(F("Checking if the camera is ready..."));
+        }
+        GeoluxCamera::geolux_status camera_status = _camera->getStatus();
+        bool is_ready = camera_status == GeoluxCamera::OK ||
+            camera_status == GeoluxCamera::NONE;
+        if (debug) {
+            if (is_ready) {
+                MS_DBG(F("It's been"), elapsed_since_power_on, F("ms, and"),
+                       getSensorNameAndLocation(),
+                       F("says it's ready to take an image."));
+            } else {
+                MS_DBG(F("It's been"), elapsed_since_power_on, F("ms, and"),
+                       getSensorNameAndLocation(),
+                       F("says it's not ready to image yet."));
+            }
+        }
+        return is_ready;
+    } else {
+        // If the sensor has been activated but the time hasn't passed, we still
+        // need to wait
+        return false;
+    }
+}
+
+
+// This checks to see if enough time has passed for measurement completion
+bool GeoluxHydroCam::isMeasurementComplete(bool debug) {
+    // If a measurement failed to start, the sensor will never return a result,
+    // so the measurement time is essentially already passed
+    if (!bitRead(_sensorStatus, 6)) {
+        if (debug) {
+            MS_DBG(getSensorNameAndLocation(),
+                   F("is not measuring and will not return a value!"));
+        }
+        return true;
+    }
+    GeoluxCamera::geolux_status camera_status = _camera->getStatus();
+    bool                        is_ready = camera_status == GeoluxCamera::OK ||
+        camera_status == GeoluxCamera::NONE;
+    if (debug) {
+        if (is_ready) {
+            MS_DBG(F("It's been"), elapsed_since_power_on, F("ms, and"),
+                   getSensorNameAndLocation(),
+                   F("says it's finished with an image."));
+        } else {
+            MS_DBG(F("It's been"), elapsed_since_power_on, F("ms, and"),
+                   getSensorNameAndLocation(),
+                   F("says it's not finished yet."));
+        }
+    }
+    return is_ready;
 }
