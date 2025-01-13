@@ -205,6 +205,11 @@ class GeoluxHydroCam : public Sensor {
     ~GeoluxHydroCam();
 
     /**
+     * @copydoc Sensor::getSensorLocation()
+     */
+    String getSensorLocation(void) override;
+
+    /**
      * @brief Do any one-time preparations needed before the sensor will be able
      * to take readings.
      *
@@ -304,14 +309,9 @@ class GeoluxHydroCam : public Sensor {
      */
     Logger* _baseLogger = nullptr;
     /**
-     * @brief Private reference to the stream for communciation with the
-     * Geolux HydroCam sensor.
-     */
-    Stream* _stream;
-    /**
      * @brief Private reference to the underlieing GeoluxCamera Instance
      */
-    GeoluxCamera* _camera;
+    GeoluxCamera _camera;
 };
 
 

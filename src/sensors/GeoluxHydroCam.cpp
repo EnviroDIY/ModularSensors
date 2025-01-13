@@ -17,13 +17,13 @@ GeoluxHydroCam::GeoluxHydroCam(Stream* stream, int8_t powerPin,
                                const char* filePrefix, bool alwaysAutoFocus)
     : Sensor("GeoluxHydroCam", HYDROCAM_NUM_VARIABLES, HYDROCAM_WARM_UP_TIME_MS,
              HYDROCAM_STABILIZATION_TIME_MS, HYDROCAM_MEASUREMENT_TIME_MS,
-             powerPin, -1, 1),
+             powerPin, -1, 1, HYDROCAM_INC_CALC_VARIABLES),
       _powerPin2(powerPin2),
       _imageResolution(imageResolution),
       _filePrefix(filePrefix),
       _alwaysAutoFocus(alwaysAutoFocus),
       _baseLogger(&baseLogger),
-      _stream(stream) {}
+      _camera(stream) {}
 
 
 GeoluxHydroCam::GeoluxHydroCam(Stream& stream, int8_t powerPin,
@@ -38,10 +38,15 @@ GeoluxHydroCam::GeoluxHydroCam(Stream& stream, int8_t powerPin,
       _filePrefix(filePrefix),
       _alwaysAutoFocus(alwaysAutoFocus),
       _baseLogger(&baseLogger),
-      _stream(&stream) {}
+      _camera(&stream) {}
 
 // Destructor
 GeoluxHydroCam::~GeoluxHydroCam() {}
+
+
+String GeoluxHydroCam::getSensorLocation(void) {
+    return F("cameraSerial");
+}
 
 
 bool GeoluxHydroCam::setup(void) {
@@ -52,23 +57,27 @@ bool GeoluxHydroCam::setup(void) {
     // We want to turn on all possible measurement parameters
     bool wasOn = checkPowerOn();
     if (!wasOn) { powerUp(); }
+
     waitForWarmUp();
 
-    _camera->begin(_stream);
     MS_DBG(F("Setting camera image resolution to"), _imageResolution);
-    success &= _camera->setResolution(_imageResolution);
-    _camera->waitForReady(50L, 15000L);
+    success &= _camera.setResolution(_imageResolution);
+    _camera.waitForReady(50L, 15000L);
 
-#ifdef MS_GEOLUXHYDROCAM_DEBUG&& defined(MS_DEBUGGING_STD) && \
+#if defined(MS_GEOLUXHYDROCAM_DEBUG) && defined(MS_OUTPUT) && \
     !defined(MS_SILENT)
     MS_DBG(F("Printing all camera info"));
-    _camera->printCameraInfo(MS_DEBUGGING_STD);
+    _camera.printCameraInfo(MS_OUTPUT);
 
-    MS_DBG(F("Camera is serial number:"), _camera->getCameraSerialNumber());
-    MS_DBG(F("Current camera firmware is:"), _camera->getCameraFirmware());
-    MS_DBG(F("Current image resolution is:"), _camera->getResolution());
-    MS_DBG(F("Current jpg compression quality is:"), _camera->getQuality());
-    MS_DBG(F("Current maximum jpg size is:"), _camera->getJPEGMaximumSize());
+#if defined(MS_2ND_OUTPUT)
+    _camera.printCameraInfo(MS_2ND_OUTPUT);
+#endif
+
+    MS_DBG(F("Camera is serial number:"), _camera.getCameraSerialNumber());
+    MS_DBG(F("Current camera firmware is:"), _camera.getCameraFirmware());
+    MS_DBG(F("Current image resolution is:"), _camera.getResolution());
+    MS_DBG(F("Current jpg compression quality is:"), _camera.getQuality());
+    MS_DBG(F("Current maximum jpg size is:"), _camera.getJPEGMaximumSize());
 #endif
 
     if (!success) {
@@ -91,9 +100,7 @@ bool GeoluxHydroCam::wake(void) {
     // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
 
-    if (_alwaysAutoFocus) {
-        return _camera->runAutofocus() == GeoluxCamera::OK;
-    }
+    if (_alwaysAutoFocus) { return _camera.runAutofocus() == GeoluxCamera::OK; }
 
     return true;
 }
@@ -106,7 +113,7 @@ bool GeoluxHydroCam::startSingleMeasurement(void) {
 
     bool success = true;
     MS_DBG(F("Requesting that the camera take a picture ... "));
-    if (_camera->takeSnapshot() == GeoluxCamera::OK) {
+    if (_camera.takeSnapshot() == GeoluxCamera::OK) {
         MS_DBG(F("picture started successfully!"));
     } else {
         MS_DBG(F("Snapshot failed!"));
@@ -156,18 +163,17 @@ bool GeoluxHydroCam::addSingleMeasurementResult(void) {
             success = false;
         }
 
-        int32_t image_size = _camera->getImageSize();
+        int32_t image_size = _camera.getImageSize();
         MS_DBG(F("Completed image is "), image_size, F(" bytes."));
         success &= image_size != 0;
 
         if (success) {
             // dump anything in the camera stream, just in case
-            while (_stream->available()) { _stream->read(); }
+            _camera.streamDump();
 
             // transfer the image from the camera to a file on the SD card
-            MS_START_DEBUG_TIMER
-            uint32_t bytes_transferred = _camera->transferImage(imgFile,
-                                                                image_size);
+            MS_START_DEBUG_TIMER int32_t bytes_transferred =
+                _camera.transferImage(imgFile, image_size);
             // Close the image file
             imgFile.close();
 
@@ -311,26 +317,25 @@ bool GeoluxHydroCam::isStable(bool debug) {
     }
 
     uint32_t elapsed_since_wake_up = millis() - _millisSensorActivated;
+    uint32_t autofocus_time        = _alwaysAutoFocus ? 10000L : 0L;
     // If the sensor has been activated and enough time has elapsed, it's stable
-    if (elapsed_since_wake_up > _stabilizationTime_ms + _alwaysAutoFocus
-            ? 10000L
-            : 0) {
+    if (elapsed_since_wake_up > _stabilizationTime_ms + autofocus_time) {
         if (debug) {
             MS_DBG(F("It's been"), elapsed_since_wake_up, F("ms, and"),
                    getSensorNameAndLocation(),
                    F("might be ready to take an image."));
             MS_DBG(F("Checking if the camera is ready..."));
         }
-        GeoluxCamera::geolux_status camera_status = _camera->getStatus();
+        GeoluxCamera::geolux_status camera_status = _camera.getStatus();
         bool is_ready = camera_status == GeoluxCamera::OK ||
             camera_status == GeoluxCamera::NONE;
         if (debug) {
             if (is_ready) {
-                MS_DBG(F("It's been"), elapsed_since_power_on, F("ms, and"),
+                MS_DBG(F("It's been"), elapsed_since_wake_up, F("ms, and"),
                        getSensorNameAndLocation(),
                        F("says it's ready to take an image."));
             } else {
-                MS_DBG(F("It's been"), elapsed_since_power_on, F("ms, and"),
+                MS_DBG(F("It's been"), elapsed_since_wake_up, F("ms, and"),
                        getSensorNameAndLocation(),
                        F("says it's not ready to image yet."));
             }
@@ -351,23 +356,26 @@ bool GeoluxHydroCam::isMeasurementComplete(bool debug) {
     if (!bitRead(_sensorStatus, 6)) {
         if (debug) {
             MS_DBG(getSensorNameAndLocation(),
-                   F("is not measuring and will not return a value!"));
+                   F("is not taking an image and will not return a value!"));
         }
         return true;
     }
-    GeoluxCamera::geolux_status camera_status = _camera->getStatus();
+    GeoluxCamera::geolux_status camera_status = _camera.getStatus();
     bool                        is_ready = camera_status == GeoluxCamera::OK ||
         camera_status == GeoluxCamera::NONE;
+#if defined(MS_GEOLUXHYDROCAM_DEBUG)
+    uint32_t elapsed_since_meas_start = millis() - _millisMeasurementRequested;
     if (debug) {
         if (is_ready) {
-            MS_DBG(F("It's been"), elapsed_since_power_on, F("ms, and"),
+            MS_DBG(F("It's been"), elapsed_since_meas_start, F("ms, and"),
                    getSensorNameAndLocation(),
                    F("says it's finished with an image."));
         } else {
-            MS_DBG(F("It's been"), elapsed_since_power_on, F("ms, and"),
+            MS_DBG(F("It's been"), elapsed_since_meas_start, F("ms, and"),
                    getSensorNameAndLocation(),
                    F("says it's not finished yet."));
         }
     }
+#endif
     return is_ready;
 }
