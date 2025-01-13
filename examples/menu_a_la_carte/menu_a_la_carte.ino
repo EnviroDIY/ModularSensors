@@ -243,9 +243,13 @@ void SERCOM1_3_Handler() {
 // sensors
 #define modbusSerial Serial2
 
-// The Maxbotix sonar is the only sensor that communicates over a serial port
-// but does not use modbus
+#if defined(BUILD_SENSOR_MAX_BOTIX_SONAR)
 #define sonarSerial Serial3
+#endif
+
+#if defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
+#define cameraSerial Serial1
+#endif
 
 /** End [assign_ports_hw] */
 #else
@@ -271,17 +275,27 @@ void SERCOM1_3_Handler() {
 #define modbusSerial Serial1  // Hardware serial
 #endif
 
-// The Maxbotix sonar is the only sensor that communicates over a serial port
-// but does not use modbus
 // Since the Maxbotix only needs one-way communication and sends a simple text
 // string repeatedly, almost any software serial port will do for it.
-#ifdef BUILD_TEST_ALTSOFTSERIAL
+#ifdef BUILD_TEST_ALTSOFTSERIAL&& defined(BUILD_SENSOR_MAX_BOTIX_SONAR)
 #define sonarSerial altSoftSerial  // For AltSoftSerial
-#elif defined(BUILD_TEST_NEOSWSERIAL)
+#elif defined(BUILD_TEST_NEOSWSERIAL) && defined(BUILD_SENSOR_MAX_BOTIX_SONAR)
 #define sonarSerial neoSSerial1  // For Neo software serial
-#elif defined(BUILD_TEST_SOFTSERIAL)
+#elif defined(BUILD_TEST_SOFTSERIAL) && defined(BUILD_SENSOR_MAX_BOTIX_SONAR)
 #define sonarSerial softSerial1  // For software serial
-#else
+#elif defined(BUILD_SENSOR_MAX_BOTIX_SONAR)
+#define sonarSerial Serial1  // Hardware serial
+#endif
+
+// I **REALLY** don't recommend using a software serial for the camera, but oh
+// well
+#ifdef BUILD_TEST_ALTSOFTSERIAL&& defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
+#define sonarSerial altSoftSerial  // For AltSoftSerial
+#elif defined(BUILD_TEST_NEOSWSERIAL) && defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
+#define sonarSerial neoSSerial1  // For Neo software serial
+#elif defined(BUILD_TEST_SOFTSERIAL) && defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
+#define sonarSerial softSerial1  // For software serial
+#elif defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
 #define sonarSerial Serial1  // Hardware serial
 #endif
 
@@ -1476,6 +1490,34 @@ Variable* mplTemp = new FreescaleMPL115A2_Temp(
     &mpl115a2, "12345678-abcd-1234-ef00-1234567890ab");
 /** End [freescale_mpl115a2] */
 #endif
+
+
+#if defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
+// ==========================================================================
+//  Geolux HydroCam camera
+// ==========================================================================
+/** Start [geolux_hydro_cam] */
+#include <sensors/GeoluxHydroCam.h>
+
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+const int8_t  cameraPower           = sensorPowerPin;  // Power pin
+const int8_t  cameraAdapterPower    = sensorPowerPin;  // Power pin
+const uint8_t MPL115A2ReadingsToAvg = 1;
+const char*   imageResolution       = "1600x1200";
+const char*   filePrefix            = "HydroCam";
+bool          alwaysAutoFocus       = false;
+
+// Create a GeoluxHydroCam sensor object
+GeoluxHydroCam hydrocam(cameraSerial, cameraPower, dataLogger,
+                        cameraAdapterPower, imageResolution, filePrefix,
+                        alwaysAutoFocus);
+
+// Create an image size variable for the Geolux HydroCam
+Variable* hydrocamImageSize = new GeoluxHydroCam_ImageSize(
+    &hydrocam, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [geolux_hydro_cam] */
+#endif
+
 
 #if defined(BUILD_SENSOR_GRO_POINT_GPLP8)
 // ==========================================================================
@@ -2840,6 +2882,9 @@ Variable* variableList[] = {
     mplTemp,
     mplPress,
 #endif
+#if defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
+    hydrocamImageSize,
+#endif
 #if defined(BUILD_SENSOR_GRO_POINT_GPLP8)
     gplp8Moist1,
     gplp8Moist2,
@@ -3271,9 +3316,13 @@ void setup() {
     modbusSerial.begin(9600);
 
 #if defined(BUILD_SENSOR_MAX_BOTIX_SONAR)
-    // Start the SoftwareSerial stream for the sonar; it will always be at 9600
-    // baud
+    // Start the stream for the sonar; it will always be at 9600 baud
     sonarSerial.begin(9600);
+#endif
+
+#if defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
+    // Start the stream for the camera; it will always be at 115200 baud
+    cameraSerial.begin(115200);
 #endif
 /** End [setup_serial_begins] */
 

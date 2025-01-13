@@ -33,6 +33,8 @@
  *
  * The Geolux HydroCam is supported using **RS232** communication. You **must**
  * have an RS232-to-TTL adapter to be able to communicate with the HydroCam.
+ * The only possible speed for communication is 115200. *This is too fast for an
+ * 8MHz board like the EnviroDIY Mayfly.*
  *
  * Please see the section
  * "[Notes on Arduino Streams and Software Serial](@ref page_arduino_streams)"
