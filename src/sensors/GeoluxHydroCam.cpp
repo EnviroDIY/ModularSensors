@@ -282,7 +282,7 @@ bool GeoluxHydroCam::isWarmedUp(bool debug) {
                    getSensorNameAndLocation(), F("might be warmed up!"));
             MS_DBG(F("Checking if the camera is ready..."));
         }
-        GeoluxCamera::geolux_status camera_status = _camera->getStatus();
+        GeoluxCamera::geolux_status camera_status = _camera.getStatus();
         bool is_ready = camera_status == GeoluxCamera::OK ||
             camera_status == GeoluxCamera::NONE;
         if (debug) {
