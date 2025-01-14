@@ -139,7 +139,8 @@ bool GeoluxHydroCam::startSingleMeasurement(void) {
 bool GeoluxHydroCam::addSingleMeasurementResult(void) {
     // Initialize values
     bool    success = false;
-    int16_t result  = -9999;
+    int32_t bytes_transferred = -9999;
+    int32_t byte_error        = -9999;
 
     // Check a measurement was *successfully* started (status bit 6 set)
     // Only go on to get a result if it was
@@ -197,13 +198,14 @@ bool GeoluxHydroCam::addSingleMeasurementResult(void) {
             extendedWatchDog::enableWatchDog();
 
             success = bytes_transferred == image_size;
-            result  = success ? bytes_transferred : -9999;
+            byte_error = abs(bytes_transferred - image_size);
         }
     } else {
         MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
     }
 
-    verifyAndAddMeasurementResult(HYDROCAM_SIZE_VAR_NUM, result);
+    verifyAndAddMeasurementResult(HYDROCAM_SIZE_VAR_NUM, bytes_transferred);
+    verifyAndAddMeasurementResult(HYDROCAM_ERROR_VAR_NUM, byte_error);
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;

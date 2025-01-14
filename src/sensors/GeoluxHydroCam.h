@@ -117,6 +117,10 @@
  * @name Image Size
  * The image size variable from a Geolux HydroCam
  *
+ * This variable represents the number of bytes transferred to the
+ * SD card, not necessarily (but hopefully) the size of the image
+ * as reported by the camera
+ *
  * {{ @ref GeoluxHydroCam_ImageSize::GeoluxHydroCam_ImageSize }}
  */
 /**@{*/
@@ -136,6 +140,31 @@
 #define HYDROCAM_SIZE_UNIT_NAME "byte"
 /// @brief Default variable short code; "HydroCamImageSize"
 #define HYDROCAM_SIZE_DEFAULT_CODE "HydroCamImageSize"
+/**@}*/
+
+/**
+ * @anchor sensor_hydrocam_byte_error
+ * @name Byte Error
+ * The byte error variable from a Geolux HydroCam
+ *
+ * {{ @ref GeoluxHydroCam_ByteError::GeoluxHydroCam_ByteError }}
+ */
+/**@{*/
+/// @brief Decimals places in string representation; byte error should have
+/// 0 - resolution is 1 byte.
+#define HYDROCAM_ERROR_RESOLUTION 0
+/// @brief Sensor variable number; byte error is stored in sensorValues[1].
+#define HYDROCAM_ERROR_VAR_NUM 1
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "flashMemoryErrorCount"
+#define HYDROCAM_ERROR_VAR_NAME "flashMemoryErrorCount"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "byte"
+#define HYDROCAM_ERROR_UNIT_NAME "byte"
+/// @brief Default variable short code; "HydroCamByteError"
+#define HYDROCAM_ERROR_DEFAULT_CODE "HydroCamByteError"
 /**@}*/
 
 
@@ -321,6 +350,10 @@ class GeoluxHydroCam : public Sensor {
  * [image size output](@ref sensor_hydrocam_image_size) from a
  * [Geolux HydroCam camera](@ref sensor_hydrocam).
  *
+ * This variable represents the difference between the number of bytes expected
+ * to recieve from the camera and the number actually transferred to the SD
+ * card.
+ *
  * @ingroup sensor_hydrocam
  */
 /* clang-format on */
@@ -356,6 +389,51 @@ class GeoluxHydroCam_ImageSize : public Variable {
      * @brief Destroy the GeoluxHydroCam_ImageSize object - no action needed.
      */
     ~GeoluxHydroCam_ImageSize() {}
+};
+
+
+/* clang-format off */
+/**
+ * @brief The Variable sub-class used for the
+ * [byte error output](@ref sensor_hydrocam_byte_error) from a
+ * [Geolux HydroCam camera](@ref sensor_hydrocam).
+ *
+ * @ingroup sensor_hydrocam
+ */
+/* clang-format on */
+class GeoluxHydroCam_ByteError : public Variable {
+ public:
+    /**
+     * @brief Construct a new GeoluxHydroCam_ByteError object.
+     *
+     * @param parentSense The parent GeoluxHydroCam providing the result
+     * values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of "HydroCamByteError".
+     */
+    explicit GeoluxHydroCam_ByteError(
+        GeoluxHydroCam* parentSense, const char* uuid = "",
+        const char* varCode = HYDROCAM_ERROR_DEFAULT_CODE)
+        : Variable(parentSense, (uint8_t)HYDROCAM_ERROR_VAR_NUM,
+                   (uint8_t)HYDROCAM_ERROR_RESOLUTION, HYDROCAM_ERROR_VAR_NAME,
+                   HYDROCAM_ERROR_UNIT_NAME, varCode, uuid) {}
+    /**
+     * @brief Construct a new GeoluxHydroCam_ByteError object.
+     *
+     * @note This must be tied with a parent GeoluxHydroCam before it can be
+     * used.
+     */
+    GeoluxHydroCam_ByteError()
+        : Variable((uint8_t)HYDROCAM_ERROR_VAR_NUM,
+                   (uint8_t)HYDROCAM_ERROR_RESOLUTION, HYDROCAM_ERROR_VAR_NAME,
+                   HYDROCAM_ERROR_UNIT_NAME, HYDROCAM_ERROR_DEFAULT_CODE) {}
+    /**
+     * @brief Destroy the GeoluxHydroCam_ByteError object - no action
+     * needed.
+     */
+    ~GeoluxHydroCam_ByteError() {}
 };
 /**@}*/
 #endif  // SRC_SENSORS_GEOLUXHYDROCAM_H_
