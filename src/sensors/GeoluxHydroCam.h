@@ -101,7 +101,7 @@
  */
 /**@{*/
 /// @brief Sensor::_numReturnedValues; the HydroCam can report 1 value.
-#define HYDROCAM_NUM_VARIABLES 1
+#define HYDROCAM_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define HYDROCAM_INC_CALC_VARIABLES 0
 /**@}*/

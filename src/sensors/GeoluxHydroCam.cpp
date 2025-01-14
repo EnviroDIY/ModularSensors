@@ -181,8 +181,7 @@ bool GeoluxHydroCam::addSingleMeasurementResult(void) {
 
             // transfer the image from the camera to a file on the SD card
             MS_START_DEBUG_TIMER;
-            int32_t bytes_transferred = _camera.transferImage(imgFile,
-                                                              image_size);
+            bytes_transferred = _camera.transferImage(imgFile, image_size);
             byte_error                = abs(bytes_transferred - image_size);
             // Close the image file
             imgFile.close();
@@ -199,6 +198,8 @@ bool GeoluxHydroCam::addSingleMeasurementResult(void) {
             extendedWatchDog::enableWatchDog();
 
             success = bytes_transferred == image_size;
+            MS_DBG(F("Image transfer was a"),
+                   success ? F("success") : F("failure"));
         }
     } else {
         MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
@@ -294,7 +295,6 @@ bool GeoluxHydroCam::isWarmedUp(bool debug) {
         if (debug) {
             MS_DBG(F("It's been"), elapsed_since_power_on, F("ms, and"),
                    getSensorNameAndLocation(), F("might be warmed up!"));
-            MS_DBG(F("Checking if the camera is ready..."));
         }
         GeoluxCamera::geolux_status camera_status = _camera.getStatus();
         bool is_ready = camera_status == GeoluxCamera::OK ||
@@ -337,7 +337,6 @@ bool GeoluxHydroCam::isStable(bool debug) {
             MS_DBG(F("It's been"), elapsed_since_wake_up, F("ms, and"),
                    getSensorNameAndLocation(),
                    F("might be ready to take an image."));
-            MS_DBG(F("Checking if the camera is ready..."));
         }
         GeoluxCamera::geolux_status camera_status = _camera.getStatus();
         bool is_ready = camera_status == GeoluxCamera::OK ||
@@ -378,8 +377,7 @@ bool GeoluxHydroCam::isMeasurementComplete(bool debug) {
         if (debug) {
             MS_DBG(F("It's been"), elapsed_since_meas_start, F("ms, and"),
                    getSensorNameAndLocation(),
-                   F("might be have finished an image."));
-            MS_DBG(F("Checking if the image is ready..."));
+                   F("might have finished an image."));
         }
         GeoluxCamera::geolux_status camera_status = _camera.getStatus();
         bool is_ready = camera_status == GeoluxCamera::OK ||
