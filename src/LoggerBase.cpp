@@ -258,7 +258,7 @@ void Logger::setLoggerPins(int8_t mcuWakePin, int8_t SDCardSSPin,
     setAlertPin(ledPin);
 }
 
-void Logger::enableRTCPinInterrupt() {
+void Logger::enableRTCPinISR() {
     // Set up the interrupts on the wake pin
     // WARNING: This MUST be done AFTER beginning the RTC.
     if (_mcuWakePin >= 0) {
@@ -598,7 +598,7 @@ void Logger::systemSleep(void) {
     // told the clock to fire interrupts. Otherwise the interrupt sometimes
     // fires instantly after the clock interrupts.
 #if !defined(MS_USE_RTC_ZERO)
-    enableRTCPinInterrupt();
+    enableRTCPinISR();
 #endif
 
     // Send one last message before shutting down serial ports
