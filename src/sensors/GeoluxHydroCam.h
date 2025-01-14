@@ -43,6 +43,18 @@
  * This library currently only supports using the same SD card for saving images
  * as is used for writing data files.
  *
+ * Keep in mind when using the HydroCam that transferring images from the camera
+ * to the SD card is a slow process.  For the smallest images (160x120) the
+ * transfer time can be as little as 850ms, but the largest images (2592x1944) can
+ * take 70 seconds (over a minute) to transfer.
+ *
+ * If you choose to autofocus on every image, the autofocusd takes 25-30s.
+ *
+ * Changing settings takes up to 7s.
+ *
+ * Taking an image (but not transferring the data) takes ~6.2s for the smallest
+ * images and over 16s for the largest.
+ *
  * @section sensor_hydrocam_datasheet Sensor Datasheet
  * - [Datasheet](https://www.geolux-radars.com/_files/ugd/8a15d8_d65c3618247b40ed94886dcb09bb4c33.pdf)
  * - [User Manual v1.2.3](https://www.geolux-radars.com/_files/ugd/e39b2a_35dcbb6cb9974bd59647b20487ca1511.pdf)
@@ -100,16 +112,17 @@
  * The sensor timing for a Geolux HydroCam
  */
 /**@{*/
-/// @brief Sensor::_warmUpTime_ms; warm up time to completion of header: ~340ms.
-#define HYDROCAM_WARM_UP_TIME_MS 400
-/// @brief Sensor::_stabilizationTime_ms; the HydroCam stabilization time
-/// depends on what wake commands we set and whether or not we autofocus. It
-/// could be 30+ seconds.
-#define HYDROCAM_STABILIZATION_TIME_MS 0
-/// @brief Sensor::_measurementTime_ms; the HydroCam takes up to a minute (or
-/// maybe even more) to take an image and transfer the data from it.
-/// measurement.
-#define HYDROCAM_MEASUREMENT_TIME_MS 60000
+/// @brief Sensor::_warmUpTime_ms; warm up time from power on until boot message
+/// finishes is nearly exactly 340ms.
+#define HYDROCAM_WARM_UP_TIME_MS 350
+/// @brief Sensor::_stabilizationTime_ms; the HydroCam is ready after a minimum
+/// of about 11ms after the end of the boot up message. Changing settings takes
+/// up to 7s. Running an autofocus takes about 25-30s.
+#define HYDROCAM_STABILIZATION_TIME_MS 11
+/// @brief Sensor::_measurementTime_ms; the HydroCam imaging time is variable
+/// depending on the image size, but the typical minimum I've seen for the
+/// smallest image (160x120) is ~6.2s.
+#define HYDROCAM_MEASUREMENT_TIME_MS 6200
 /**@}*/
 
 /**

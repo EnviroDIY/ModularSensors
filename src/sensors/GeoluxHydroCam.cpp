@@ -138,7 +138,7 @@ bool GeoluxHydroCam::startSingleMeasurement(void) {
 
 bool GeoluxHydroCam::addSingleMeasurementResult(void) {
     // Initialize values
-    bool    success = false;
+    bool    success           = false;
     int32_t bytes_transferred = -9999;
     int32_t byte_error        = -9999;
 
@@ -183,13 +183,14 @@ bool GeoluxHydroCam::addSingleMeasurementResult(void) {
             MS_START_DEBUG_TIMER;
             int32_t bytes_transferred = _camera.transferImage(imgFile,
                                                               image_size);
+            byte_error                = abs(bytes_transferred - image_size);
             // Close the image file
             imgFile.close();
 
             // See how long it took us
             MS_DBG(F("Wrote"), bytes_transferred, F("of expected"), image_size,
-                   F("bytes to the SD card - a difference of"),
-                   bytes_transferred - image_size, F("bytes"));
+                   F("bytes to the SD card - a difference of"), byte_error,
+                   F("bytes"));
             MS_DBG(F("Total read/write time was"), MS_PRINT_DEBUG_TIMER,
                    F("ms"));
 
@@ -198,7 +199,6 @@ bool GeoluxHydroCam::addSingleMeasurementResult(void) {
             extendedWatchDog::enableWatchDog();
 
             success = bytes_transferred == image_size;
-            byte_error = abs(bytes_transferred - image_size);
         }
     } else {
         MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
@@ -311,8 +311,7 @@ bool GeoluxHydroCam::isWarmedUp(bool debug) {
         }
         return is_ready;
     } else {
-        // If the sensor has power but the time hasn't passed, we still need to
-        // wait
+        // wait at least the minimum warm-up time
         return false;
     }
 }
@@ -356,8 +355,7 @@ bool GeoluxHydroCam::isStable(bool debug) {
         }
         return is_ready;
     } else {
-        // If the sensor has been activated but the time hasn't passed, we still
-        // need to wait
+        // Wait at least the minimum readiness time
         return false;
     }
 }
@@ -374,22 +372,33 @@ bool GeoluxHydroCam::isMeasurementComplete(bool debug) {
         }
         return true;
     }
-    GeoluxCamera::geolux_status camera_status = _camera.getStatus();
-    bool                        is_ready = camera_status == GeoluxCamera::OK ||
-        camera_status == GeoluxCamera::NONE;
-#if defined(MS_GEOLUXHYDROCAM_DEBUG)
+
     uint32_t elapsed_since_meas_start = millis() - _millisMeasurementRequested;
-    if (debug) {
-        if (is_ready) {
+    if (elapsed_since_meas_start > _measurementTime_ms) {
+        if (debug) {
             MS_DBG(F("It's been"), elapsed_since_meas_start, F("ms, and"),
                    getSensorNameAndLocation(),
-                   F("says it's finished with an image."));
-        } else {
-            MS_DBG(F("It's been"), elapsed_since_meas_start, F("ms, and"),
-                   getSensorNameAndLocation(),
-                   F("says it's not finished yet."));
+                   F("might be have finished an image."));
+            MS_DBG(F("Checking if the image is ready..."));
         }
+        GeoluxCamera::geolux_status camera_status = _camera.getStatus();
+        bool is_ready = camera_status == GeoluxCamera::OK ||
+            camera_status == GeoluxCamera::NONE;
+        if (debug) {
+            if (is_ready) {
+                MS_DBG(F("It's been"), elapsed_since_meas_start, F("ms, and"),
+                       getSensorNameAndLocation(),
+                       F("says it's finished with an image."));
+            } else {
+                MS_DBG(F("It's been"), elapsed_since_meas_start, F("ms, and"),
+                       getSensorNameAndLocation(),
+                       F("says it's not finished yet."));
+            }
+        }
+        return is_ready;
+    } else {
+        // If an image has started by the minimum imaging time hasn't passed, we
+        // need to wait
+        return false;
     }
-#endif
-    return is_ready;
 }
