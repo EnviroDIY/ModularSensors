@@ -333,6 +333,7 @@ const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
 const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
 const int8_t flashSSPin     = 20;  // onboard flash chip select/slave select pin
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
+const int8_t sdi12DataPin   = 7;
 const int8_t relayPowerPin = A3;  // MCU pin controlling an optional power relay
 /** End [logging_options] */
 
@@ -1275,7 +1276,7 @@ Variable* bmp3xxAlt =
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const char* ClariVUESDI12address = "0";  // The SDI-12 Address of the ClariVUE10
 const int8_t ClariVUEPower       = sensorPowerPin;  // Power pin
-const int8_t ClariVUEData        = 7;               // The SDI-12 data pin
+const int8_t ClariVUEData        = sdi12DataPin;    // The SDI-12 data pin
 // NOTE:  you should NOT take more than one readings.  THe sensor already takes
 // and averages 8 by default.
 
@@ -1383,7 +1384,7 @@ Variable* rainvueRainRateMax = new CampbellRainVUE10_RainRateMax(
 const char*   CTDSDI12address   = "1";  // The SDI-12 Address of the CTD
 const uint8_t CTDNumberReadings = 6;    // The number of readings to average
 const int8_t  CTDPower          = sensorPowerPin;  // Power pin
-const int8_t  CTDData           = 7;               // The SDI-12 data pin
+const int8_t  CTDData           = sdi12DataPin;    // The SDI-12 data pin
 
 // Create a Decagon CTD sensor object
 DecagonCTD ctd(*CTDSDI12address, CTDPower, CTDData, CTDNumberReadings);
@@ -1409,7 +1410,7 @@ Variable* ctdDepth =
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const char*   ES2SDI12address   = "3";  // The SDI-12 Address of the ES2
 const int8_t  ES2Power          = sensorPowerPin;  // Power pin
-const int8_t  ES2Data           = 7;               // The SDI-12 data pin
+const int8_t  ES2Data           = sdi12DataPin;    // The SDI-12 data pin
 const uint8_t ES2NumberReadings = 5;
 
 // Create a Decagon ES2 sensor object
@@ -1524,8 +1525,10 @@ GeoluxHydroCam hydrocam(cameraSerial, cameraPower, dataLogger,
                         cameraAdapterPower, imageResolution, filePrefix,
                         alwaysAutoFocus);
 
-// Create an image size variable for the Geolux HydroCam
+// Create image size and byte error variables for the Geolux HydroCam
 Variable* hydrocamImageSize = new GeoluxHydroCam_ImageSize(
+    &hydrocam, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* hydrocamByteError = new GeoluxHydroCam_ByteError(
     &hydrocam, "12345678-abcd-1234-ef00-1234567890ab");
 /** End [geolux_hydro_cam] */
 #endif
@@ -1614,7 +1617,7 @@ Variable* gplp8Temp13 = new GroPointGPLP8_Temp(
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const char*   RDOSDI12address   = "5";  // The SDI-12 Address of the RDO PRO-X
 const int8_t  RDOPower          = sensorPowerPin;  // Power pin
-const int8_t  RDOData           = 7;               // The SDI-12 data pin
+const int8_t  RDOData           = sdi12DataPin;    // The SDI-12 data pin
 const uint8_t RDONumberReadings = 3;
 
 // Create an In-Situ RDO PRO-X dissolved oxygen sensor object
@@ -1646,7 +1649,7 @@ const char* TROLLSDI12address =
     "1";  // The SDI-12 Address of the Aqua/Level TROLL
 const int8_t TROLLPower =
     sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t  TROLLData           = 7;  // The SDI-12 data pin
+const int8_t  TROLLData           = sdi12DataPin;  // The SDI-12 data pin
 const uint8_t TROLLNumberReadings = 2;  // The number of readings to average
 
 // Create an In-Situ TROLL sensor object
@@ -1832,7 +1835,7 @@ Variable* ms5803Temp =
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const char*  TMSDI12address = "2";             // The SDI-12 Address of the 5-TM
 const int8_t TMPower        = sensorPowerPin;  // Power pin
-const int8_t TMData         = 7;               // The SDI-12 data pin
+const int8_t TMData         = sdi12DataPin;    // The SDI-12 data pin
 
 // Create a Decagon 5TM sensor object
 Decagon5TM fivetm(*TMSDI12address, TMPower, TMData);
@@ -1860,7 +1863,7 @@ Variable* fivetmTemp =
 const char*   hydros21SDI12address = "1";  // The SDI-12 Address of the Hydros21
 const uint8_t hydros21NumberReadings = 6;  // The number of readings to average
 const int8_t  hydros21Power          = sensorPowerPin;  // Power pin
-const int8_t  hydros21Data           = 7;               // The SDI-12 data pin
+const int8_t  hydros21Data           = sdi12DataPin;    // The SDI-12 data pin
 
 // Create a Decagon Hydros21 sensor object
 MeterHydros21 hydros21(*hydros21SDI12address, hydros21Power, hydros21Data,
@@ -1888,7 +1891,7 @@ Variable* hydros21Depth =
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const char*   teros11SDI12address = "4";  // The SDI-12 Address of the Teros 11
 const int8_t  terosPower          = sensorPowerPin;  // Power pin
-const int8_t  terosData           = 7;               // The SDI-12 data pin
+const int8_t  terosData           = sdi12DataPin;    // The SDI-12 data pin
 const uint8_t teros11NumberReadings = 3;  // The number of readings to average
 
 // Create a METER TEROS 11 sensor object
@@ -2225,7 +2228,7 @@ Variable* analogEc_spcond = new Variable(
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const char* VegaPulsSDI12address = "0";  // The SDI-12 Address of the VegaPuls10
 const int8_t VegaPulsPower       = sensorPowerPin;  // Power pin
-const int8_t VegaPulsData        = 7;               // The SDI-12 data pin
+const int8_t VegaPulsData        = sdi12DataPin;    // The SDI-12 data pin
 // NOTE:  you should NOT take more than one readings.  THe sensor already takes
 // and averages 8 by default.
 
@@ -2666,7 +2669,7 @@ Variable* y4000BGA =
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const char*  DOptoSDI12address = "5";  // The SDI-12 Address of the D-Opto
 const int8_t ZTPower           = sensorPowerPin;  // Power pin
-const int8_t ZTData            = 7;               // The SDI-12 data pin
+const int8_t ZTData            = sdi12DataPin;    // The SDI-12 data pin
 
 // Create a Zebra Tech DOpto dissolved oxygen sensor object
 ZebraTechDOpto dopto(*DOptoSDI12address, ZTPower, ZTData);
@@ -2794,13 +2797,6 @@ VariableArray varArray(variableCount, variableList, UUIDs);
 /** Start [variables_pre_named] */
 // Version 3: Fill array with already created and named variable pointers
 Variable* variableList[] = {
-    mcuBoardSampNo,
-#if !defined(__SAMD51__)
-    mcuBoardAvailableRAM,
-#endif
-    mcuBoardBatt,
-    mcuBoardReset,
-    calculatedVar,
 #if defined(MS_USE_DS3231)
     ds3231Temp,
 #endif
@@ -2896,6 +2892,7 @@ Variable* variableList[] = {
 #endif
 #if defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
     hydrocamImageSize,
+    hydrocamByteError,
 #endif
 #if defined(BUILD_SENSOR_GRO_POINT_GPLP8)
     gplp8Moist1,
@@ -3092,6 +3089,13 @@ Variable* variableList[] = {
 #ifdef TINY_GSM_MODEM_HAS_TEMPERATURE
     modemTemperature,
 #endif
+    mcuBoardSampNo,
+#if !defined(__SAMD51__)
+    mcuBoardAvailableRAM,
+#endif
+    mcuBoardBatt,
+    mcuBoardReset,
+    calculatedVar,
 };
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
@@ -3412,7 +3416,7 @@ void setup() {
     /** Start [setup_esp] */
     PRINTOUT(F("Waking the modem.."));
     PRINTOUT(F("Attempting to begin modem communication at"), modemBaud,
-             F(" baud.  This will fail if the baud is mismatched.."));
+             F("baud.  This will fail if the baud is mismatched.."));
     modemSerial.begin(modemBaud);
     modem.modemWake();  // NOTE:  This will also set up the modem
     if (!modem.gsmModem.testAT()) {
