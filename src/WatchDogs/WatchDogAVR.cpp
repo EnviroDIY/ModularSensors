@@ -120,7 +120,7 @@ ISR(WDT_vect) {
         MS_DEEP_DBG(F("There will be"), extendedWatchDogAVR::_barksUntilReset,
                     F("more barks until total time is"),
                     extendedWatchDogAVR::_resetTime_s, F("and board resets"));
-        clearWDTInterrupt();  // start timer again
+        extendedWatchDogAVR::clearWDTInterrupt();  // start timer again
     }
 }
 
