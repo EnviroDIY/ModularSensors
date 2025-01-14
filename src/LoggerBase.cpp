@@ -937,7 +937,6 @@ void Logger::generateAutoFileName(void) {
     fileName += formatDateTime_ISO8601(getNowLocalEpoch()).substring(0, 10);
     fileName += ".csv";
     setFileName(fileName);
-    _fileName = fileName;
 }
 
 

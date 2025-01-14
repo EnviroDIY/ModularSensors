@@ -619,7 +619,7 @@ class Logger {
      */
     void attachModem(loggerModem& modem);
     /**
-     * @brief Use the attahed loggerModem to synchronize the real-time clock
+     * @brief Use the attached loggerModem to synchronize the real-time clock
      * with NIST time servers.
      *
      * @return True if clock synchronization was successful
@@ -1047,6 +1047,16 @@ class Logger {
     void printSensorDataCSV(Stream* stream);
 
     /**
+     * @brief Check if the SD card is available and ready to write to.
+     *
+     * We run this check before every communication with the SD card to prevent
+     * hanging.
+     *
+     * @return True if the SD card is ready
+     */
+    bool initializeSDCard(void);
+
+    /**
      * @brief Create a file on the SD card and set the created, modified, and
      * accessed timestamps in that file.
      *
@@ -1132,16 +1142,6 @@ class Logger {
      */
     String _fileName = "";
     // ^^ Initialize with no file name
-
-    /**
-     * @brief Check if the SD card is available and ready to write to.
-     *
-     * We run this check before every communication with the SD card to prevent
-     * hanging.
-     *
-     * @return True if the SD card is ready
-     */
-    bool initializeSDCard(void);
 
     /**
      * @brief Generate a file name from the logger id and the current date.
