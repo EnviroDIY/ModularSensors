@@ -68,6 +68,9 @@ Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
     for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
         dataPublishers[i] = nullptr;
     }
+
+    // Set a datetime callback for automatic timestamping of files by SdFat
+    SdFile::dateTimeCallback(fileDateTimeCallback);
 }
 Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
                VariableArray* inputArray) {
@@ -85,6 +88,9 @@ Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
     for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
         dataPublishers[i] = nullptr;
     }
+
+    // Set a datetime callback for automatic timestamping of files by SdFat
+    SdFile::dateTimeCallback(fileDateTimeCallback);
 }
 Logger::Logger() {
     // Set the testing/logging flags to false
@@ -96,6 +102,9 @@ Logger::Logger() {
     for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
         dataPublishers[i] = nullptr;
     }
+
+    // Set a datetime callback for automatic timestamping of files by SdFat
+    SdFile::dateTimeCallback(fileDateTimeCallback);
 }
 // Destructor
 Logger::~Logger() {}
@@ -719,7 +728,8 @@ void Logger::systemSleep(void) {
     for (uint32_t ulPin = 0; ulPin < PINS_COUNT; ulPin++) {
         // Handle the case the pin isn't usable as PIO
         if (g_APinDescription[ulPin].ulPinType != PIO_NOT_A_PIN) {
-            if (ulPin != _mcuWakePin && ulPin != _buttonPin) {
+            if (ulPin != static_cast<uint32_t>(_mcuWakePin) &&
+                ulPin != static_cast<uint32_t>(_buttonPin)) {
                 EPortType port    = g_APinDescription[ulPin].ulPort;
                 uint32_t  pin     = g_APinDescription[ulPin].ulPin;
                 uint32_t  pinMask = (1ul << pin);
@@ -1077,6 +1087,28 @@ bool Logger::initializeSDCard(void) {
     }
 }
 
+// This function is used to automatically mark files as
+// created/accessed/modified when operations are done by the SdFat library. User
+// provided date time callback function. See SdFile::dateTimeCallback() for
+// usage.
+void Logger::fileDateTimeCallback(uint16_t* date, uint16_t* time) {
+    // Create a temporary variable for the epoch time
+    // NOTE: time_t is a typedef for uint32_t, defined in time.h
+    time_t t = getNowLocalEpoch();
+    // create a temporary time struct
+    // tm is a struct for time parts, defined in time.h
+    struct tm* tmp = gmtime(&t);
+    MS_DEEP_DBG(F("Time components: "), tmp->tm_year, F(" - "), tmp->tm_mon + 1,
+                F(" - "), tmp->tm_mday, F("    "), tmp->tm_hour, F(" : "),
+                tmp->tm_min, F(" : "), tmp->tm_sec);
+
+    // return date using FAT_DATE macro to format fields
+    *date = FAT_DATE(tmp->tm_year + 1900, tmp->tm_mon + 1, tmp->tm_mday);
+
+    // return time using FAT_TIME macro to format fields
+    *time = FAT_TIME(tmp->tm_hour, tmp->tm_min, tmp->tm_sec);
+}
+
 
 // Protected helper function - This sets a timestamp on a file
 void Logger::setFileTimestamp(File& fileToStamp, uint8_t stampFlag) {
@@ -1113,15 +1145,11 @@ bool Logger::openFile(String& filename, bool createFile,
     // in the file.
     if (logFile.open(charFileName, O_WRITE | O_AT_END)) {
         MS_DBG(F("Opened existing file:"), filename);
-        // Set access date time
-        setFileTimestamp(logFile, T_ACCESS);
         return true;
     } else if (createFile) {
         // Create and then open the file in write mode
         if (logFile.open(charFileName, O_CREAT | O_WRITE | O_AT_END)) {
             MS_DBG(F("Created new file:"), filename);
-            // Set creation date time
-            setFileTimestamp(logFile, T_CREATE);
             // Write out a header, if requested
             if (writeDefaultHeader) {
                 // Add header information
@@ -1135,11 +1163,7 @@ bool Logger::openFile(String& filename, bool createFile,
 #endif
                 PRINTOUT('\n');
 #endif
-                // Set write/modification date time
-                setFileTimestamp(logFile, T_WRITE);
             }
-            // Set access date time
-            setFileTimestamp(logFile, T_ACCESS);
             return true;
         } else {
             // Return false if we couldn't create the file
@@ -1205,10 +1229,6 @@ bool Logger::logToSD(String& filename, String& rec) {
     PRINTOUT(F("\n \\/---- Line Saved to SD Card ----\\/"));
     PRINTOUT(rec);
 
-    // Set write/modification date time
-    setFileTimestamp(logFile, T_WRITE);
-    // Set access date time
-    setFileTimestamp(logFile, T_ACCESS);
     // Close the file to save it
     logFile.close();
     return true;
@@ -1248,10 +1268,6 @@ bool Logger::logToSD(void) {
     PRINTOUT('\n');
 #endif
 
-    // Set write/modification date time
-    setFileTimestamp(logFile, T_WRITE);
-    // Set access date time
-    setFileTimestamp(logFile, T_ACCESS);
     // Close the file to save it
     logFile.close();
     return true;
@@ -1263,7 +1279,10 @@ bool Logger::logToSD(void) {
 // ===================================================================== //
 // A static function if you'd prefer to enter testing based on an interrupt
 void Logger::testingISR() {
-    MS_DEEP_DBG(F("Testing interrupt!"));
+    MS_DEEP_DBG(F("\nTesting interrupt!"));
+#if defined(MS_LOGGERBASE_DEBUG_DEEP)
+    PRINTOUT(" ");
+#endif
     if (!Logger::isTestingNow && !Logger::isLoggingNow) {
         Logger::startTesting = true;
         MS_DEEP_DBG(F("Testing flag has been set."));

@@ -1151,6 +1151,18 @@ class Logger {
     void generateAutoFileName(void);
 
     /**
+     * @brief This function is used to automatically mark files as
+     * created/accessed/modified when operations are done by the SdFat library.
+     *
+     * This function will be called automatically by SdFat, but is not intended
+     * to be used at any other time.
+     *
+     * @param date Pointer to a uint16_t to store the date
+     * @param time Pointer to a uint16_t to store the time
+     */
+    static void fileDateTimeCallback(uint16_t* date, uint16_t* time);
+
+    /**
      * @brief Set a timestamp on a file.
      *
      * @param fileToStamp The filename to change the timestamp of
