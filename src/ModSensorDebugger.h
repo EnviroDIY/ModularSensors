@@ -34,6 +34,15 @@
 typedef const __FlashStringHelper* FlashString;
 ***/
 
+/**
+ * @def MS_DEFAULT_OUTPUT
+ * @brief The "default" serial output based on defines within the board
+ * framework.
+ *
+ * @def MS_OUTPUT
+ * @brief The serial output for debugging
+ *
+ */
 #if defined(SERIAL_PORT_USBVIRTUAL)
 #define MS_DEFAULT_OUTPUT SERIAL_PORT_USBVIRTUAL
 #elif defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
@@ -46,6 +55,9 @@ typedef const __FlashStringHelper* FlashString;
 
 #if defined(MS_2ND_OUTPUT) && !defined(MS_SERIAL_OUTPUT)
 #include <StreamDebugger.h>
+/**
+ * @brief A StreamDebugger instance to link the two outputs.
+ */
 static StreamDebugger MS_LINKED_OUTPUT(MS_OUTPUT, MS_2ND_OUTPUT);
 #define MS_SERIAL_OUTPUT MS_LINKED_OUTPUT
 #elif !defined(MS_SERIAL_OUTPUT)

@@ -165,6 +165,11 @@ String ProcessorStats::getLastResetCause() {
 
 extern "C" char* sbrk(int i);
 
+/**
+ * @brief Function to get the available free RAM on a SAMD board
+ *
+ * @return The available RAM
+ */
 int16_t FreeRam() {
     char stack_dummy = 0;
     return &stack_dummy - sbrk(0);
@@ -188,6 +193,11 @@ String ProcessorStats::getLastResetCause() {
 
 #elif defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
 
+/**
+ * @brief Function to get the available free RAM on an AVR board
+ *
+ * @return The available RAM
+ */
 int16_t FreeRam() {
     extern int16_t __heap_start, *__brkval;
     int16_t v;

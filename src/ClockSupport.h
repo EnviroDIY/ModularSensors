@@ -88,6 +88,9 @@
  * Using HIGH or LOW could trigger multiple interrupts when the clock interrut
  * fires. It's best to catch the first edge of the clock interrupt. So for an
  * RTC with an active low interrupt, use "FALLING."
+ *
+ * @def MS_CLOCK_NAME
+ * @brief A text description of the clock
  */
 #if defined(MS_USE_RV8803)
 #define MS_CLOCK_NAME "RV-8803"
@@ -107,6 +110,10 @@
 // https://stackoverflow.com/questions/21295935/can-a-c-enum-class-have-methods
 
 
+/**
+ * @brief A class for dealing with different definitions of the start of the
+ * epoch.
+ */
 class epochStart {
  public:
     /**
@@ -167,15 +174,12 @@ class epochStart {
 };
 
 
-// ===================================================================== //
 /**
- * @anchor logger_time
- * @name Clock and Timezones
- * Public functions to access the clock in proper format and time zone
+ * @brief A class for the clock attached to the logger.
+ *
+ * @note This is effectively a static class, with all static functions and a
+ * deleted constructor.
  */
-/**@{*/
-// ===================================================================== //
-
 class loggerClock {
  public:
     // Since there can only be one logger clock and all of it's methods are

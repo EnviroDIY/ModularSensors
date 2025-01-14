@@ -145,7 +145,7 @@
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
 /// "imageSize"
-/// @TODO Request a new variable name for image size.
+/// @todo Request a new variable name for image size.
 #define HYDROCAM_SIZE_VAR_NAME "imageSize"
 /// @brief Variable unit name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
