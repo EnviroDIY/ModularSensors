@@ -1,5 +1,5 @@
 {
-  "action_cache_version": 25,
+  "action_cache_version": 26,
   "dependencies": [
     {
       "name": "EnviroDIY_DS3231",
@@ -348,7 +348,7 @@
       "name": "GeoluxCamera",
       "owner": "envirodiy",
       "url": "https://github.com/EnviroDIY/GeoluxCamera",
-      "version": "~0.1.0",
+      "version": "~0.1.2",
       "note": "Arduino library for communication with Geolux serial camera.",
       "authors": [
         "Sara Damiano"

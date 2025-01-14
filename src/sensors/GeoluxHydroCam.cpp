@@ -151,8 +151,11 @@ bool GeoluxHydroCam::addSingleMeasurementResult(void) {
                                     _baseLogger->getNowLocalEpoch());
         strcat(filename, time_buff);
         strcat(filename, ".jpg");
-        MS_DBG(F("Attempting to create the file: "));
-        MS_DBG(filename);
+        MS_DBG(F("Attempting to create the file: "), filename);
+
+        // Initialise the SD card
+        // skip everything else if there's no SD card, otherwise it might hang
+        if (!_baseLogger->initializeSDCard()) return false;
 
         // Create and then open the file in write mode
         if (imgFile.open(filename, O_CREAT | O_WRITE | O_AT_END)) {
@@ -171,9 +174,14 @@ bool GeoluxHydroCam::addSingleMeasurementResult(void) {
             // dump anything in the camera stream, just in case
             _camera.streamDump();
 
+            // Disable the watch-dog timer to reduce interrupts during transfer
+            MS_DBG(F("Disabling the watchdog during file transfer"));
+            extendedWatchDog::disableWatchDog();
+
             // transfer the image from the camera to a file on the SD card
-            MS_START_DEBUG_TIMER int32_t bytes_transferred =
-                _camera.transferImage(imgFile, image_size);
+            MS_START_DEBUG_TIMER;
+            int32_t bytes_transferred = _camera.transferImage(imgFile,
+                                                              image_size);
             // Close the image file
             imgFile.close();
 
@@ -183,6 +191,10 @@ bool GeoluxHydroCam::addSingleMeasurementResult(void) {
                    bytes_transferred - image_size, F("bytes"));
             MS_DBG(F("Total read/write time was"), MS_PRINT_DEBUG_TIMER,
                    F("ms"));
+
+            // Re-enable the watchdog
+            MS_DBG(F("Re-enabling the watchdog after file transfer"));
+            extendedWatchDog::enableWatchDog();
 
             success = bytes_transferred == image_size;
             result  = success ? bytes_transferred : -9999;
