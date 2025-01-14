@@ -699,7 +699,8 @@ void Logger::systemSleep(void) {
     //  not a bad idea to check that the flag has been set.
     while (!PM->INTFLAG.bit.SLEEPRDY)
         ;
-#else  // SAMD21
+#else
+    //^^ SAMD21
 
     // Don't fully power down flash when in sleep
     // Datasheet Eratta 1.14.2 says this is required.
@@ -1052,6 +1053,11 @@ bool Logger::initializeSDCard(void) {
     // sd.begin(SdSpiConfig(_SDCardSSPin, DEDICATED_SPI | USER_SPI_BEGIN,
     // SPI_FULL_SPEED));
 
+/**
+ * @def SDCARD_SPI
+ * @brief The SPI to use for the SD card - frequently defined in the variants
+ * file.
+ */
 #if !defined(SDCARD_SPI)
 #define SDCARD_SPI SPI
 #endif

@@ -161,7 +161,8 @@ String ProcessorStats::getLastResetCause() {
     }
 }
 
-#elif defined(ARDUINO_ARCH_SAMD)  // SAMD21
+// SAMD21
+#elif defined(ARDUINO_ARCH_SAMD)
 
 extern "C" char* sbrk(int i);
 

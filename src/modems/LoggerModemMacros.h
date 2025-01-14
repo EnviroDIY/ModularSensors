@@ -218,7 +218,8 @@
     MS_DBG(F("... Registered after"), MS_PRINT_DEBUG_TIMER, \
            F("milliseconds.  Connecting to GPRS..."));      \
     gsmModem.gprsConnect(_apn, "", "");
-#else  // #ifndef TINY_GSM_MODEM_XBEE
+#else
+//^^ #ifndef TINY_GSM_MODEM_XBEE
 /**
  * @brief Creates a text string of the functions to call for a specific modem to
  * set the APN and connect to GPRS during the internet connection sequence.
@@ -324,7 +325,8 @@
                MS_PRINT_DEBUG_TIMER, F("milliseconds."));     \
     }
 
-#else  // from #if defined(TINY_GSM_MODEM_HAS_GPRS) (ie, this is wifi)
+#else
+//^^ from #if defined(TINY_GSM_MODEM_HAS_GPRS) (ie, this is wifi)
 
 /**
  * @brief Creates an isInternetAvailable() function for a specific

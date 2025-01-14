@@ -54,7 +54,8 @@
 // peripherals as possible.  In some cases (ie, modbus communication) many
 // sensors can share the same serial port.
 
-#if defined(__AVR__) || defined(ARDUINO_ARCH_AVR)  // For AVR boards
+// For AVR boards
+#if defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
 // Unfortunately, most AVR boards have only one or two hardware serial ports,
 // so we'll set up three types of extra software serial ports to use
 
@@ -266,37 +267,49 @@ void SERCOM1_3_Handler() {
 // If AltSoftSerial (or its pins) aren't avaiable, use NeoSWSerial
 // SoftwareSerial **WILL NOT** work for modbus!
 #ifdef BUILD_TEST_ALTSOFTSERIAL
-#define modbusSerial altSoftSerial  // For AltSoftSerial
+// For AltSoftSerial
+#define modbusSerial altSoftSerial
 #elif defined(BUILD_TEST_NEOSWSERIAL)
-#define modbusSerial neoSSerial1  // For Neo software serial
+// For Neo software serial
+#define modbusSerial neoSSerial1
 #elif defined(BUILD_TEST_SOFTSERIAL)
-#define modbusSerial softSerial1  // For software serial
+// For software serial
+#define modbusSerial softSerial1
 #else
-#define modbusSerial Serial1  // Hardware serial
+// Hardware serial
+#define modbusSerial Serial1
 #endif
 
 // Since the Maxbotix only needs one-way communication and sends a simple text
 // string repeatedly, almost any software serial port will do for it.
 #ifdef BUILD_TEST_ALTSOFTSERIAL&& defined(BUILD_SENSOR_MAX_BOTIX_SONAR)
-#define sonarSerial altSoftSerial  // For AltSoftSerial
+// For AltSoftSerial
+#define sonarSerial altSoftSerial
 #elif defined(BUILD_TEST_NEOSWSERIAL) && defined(BUILD_SENSOR_MAX_BOTIX_SONAR)
-#define sonarSerial neoSSerial1  // For Neo software serial
+// For Neo software serial
+#define sonarSerial neoSSerial1
 #elif defined(BUILD_TEST_SOFTSERIAL) && defined(BUILD_SENSOR_MAX_BOTIX_SONAR)
-#define sonarSerial softSerial1  // For software serial
+// For software serial
+#define sonarSerial softSerial1
 #elif defined(BUILD_SENSOR_MAX_BOTIX_SONAR)
-#define sonarSerial Serial1  // Hardware serial
+// Hardware serial
+#define sonarSerial Serial1
 #endif
 
 // I **REALLY** don't recommend using a software serial for the camera, but oh
 // well
 #ifdef BUILD_TEST_ALTSOFTSERIAL&& defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
-#define sonarSerial altSoftSerial  // For AltSoftSerial
+// For AltSoftSerial
+#define sonarSerial altSoftSerial
 #elif defined(BUILD_TEST_NEOSWSERIAL) && defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
-#define sonarSerial neoSSerial1  // For Neo software serial
+// For Neo software serial
+#define sonarSerial neoSSerial1
 #elif defined(BUILD_TEST_SOFTSERIAL) && defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
-#define sonarSerial softSerial1  // For software serial
+// For software serial
+#define sonarSerial softSerial1
 #elif defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
-#define sonarSerial Serial1  // Hardware serial
+// Hardware serial
+#define sonarSerial Serial1
 #endif
 
 /** End [assign_ports_sw] */
@@ -357,10 +370,12 @@ Logger dataLogger;
 // ==========================================================================
 
 // Network connection information
-#define CELLULAR_APN "add_your_cellular_apn"  // APN for cellular connection
-
-#define WIFI_ID "your_wifi_ssid"          // WiFi access point name
-#define WIFI_PASSWD "your_wifi_password"  // WiFi password (WPA2)
+// APN for cellular connection
+#define CELLULAR_APN "add_your_cellular_apn"
+// WiFi access point name
+#define WIFI_ID "your_wifi_ssid"
+// WiFi password (WPA2)
+#define WIFI_PASSWD "your_wifi_password"
 
 #if defined(BUILD_MODEM_DIGI_XBEE_CELLULAR_TRANSPARENT)
 /** Start [digi_xbee_cellular_transparent] */
@@ -2793,7 +2808,8 @@ VariableArray varArray(variableCount, variableList, UUIDs);
 // ==========================================================================
 
 
-#else  // BUILD_TEST_PRE_NAMED_VARS
+#else
+//^^ BUILD_TEST_PRE_NAMED_VARS
 /** Start [variables_pre_named] */
 // Version 3: Fill array with already created and named variable pointers
 Variable* variableList[] = {
