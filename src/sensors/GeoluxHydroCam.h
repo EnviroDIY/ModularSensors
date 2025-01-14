@@ -257,7 +257,7 @@ class GeoluxHydroCam : public Sensor {
      *
      * This sets the image resolution and runs an autofocus.
      *
-     * @NOTE Autofocus takes approximately 30s to complete.  Unless you plan to
+     * @note Autofocus takes approximately 30s to complete.  Unless you plan to
      * move your device betwen readings, I recommend only running the autofocus
      * at setup, not at every power-up.
      *

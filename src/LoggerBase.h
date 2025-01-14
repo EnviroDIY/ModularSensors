@@ -786,10 +786,6 @@ class Logger {
      * @param fmt The strftime format string.
      * @param epochTime The number of seconds since the start of the given
      * epoch in the given offset from UTC.
-     * @param epochTimeUTCOffset The offset of the input epoch time from UTC in
-     * hours.
-     * @param epoch The epoch of the input epoch time.
-     * @return An ISO8601 formatted String.
      */
     static void formatDateTime(char* buffer, const char* fmt,
                                uint32_t epochTime);

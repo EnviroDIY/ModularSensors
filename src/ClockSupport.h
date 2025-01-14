@@ -378,6 +378,8 @@ class loggerClock {
     static epochStart _rtcEpoch;
     /**
      * @brief Get a raw epoch time from the RTC
+     *
+     * @return The raw epoch time from the RTC
      */
     static uint32_t getRawRTCNow();
     /**
