@@ -73,6 +73,7 @@ bool SDI12Sensors::setup(void) {
         Sensor::setup();  // this will set pin modes and the setup status bit
 
     // This sensor needs power for setup!
+    delay(10);
     bool wasOn = checkPowerOn();
     if (!wasOn) { powerUp(); }
     waitForWarmUp();

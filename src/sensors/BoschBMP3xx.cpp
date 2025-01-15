@@ -42,6 +42,7 @@ bool BoschBMP3xx::setup(void) {
 
     // This sensor needs power for setup!
     // The BMP3XX's begin() reads required calibration data from the sensor.
+    delay(10);
     bool wasOn = checkPowerOn();
     if (!wasOn) { powerUp(); }
     waitForWarmUp();

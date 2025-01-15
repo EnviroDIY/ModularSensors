@@ -42,6 +42,7 @@ bool FreescaleMPL115A2::setup(void) {
 
     // This sensor needs power for setup!
     // The MPL115A2's begin() reads required coefficients from the sensor.
+    delay(10);
     bool wasOn = checkPowerOn();
     if (!wasOn) { powerUp(); }
     waitForWarmUp();

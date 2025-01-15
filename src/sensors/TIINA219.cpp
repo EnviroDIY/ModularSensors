@@ -42,6 +42,7 @@ bool TIINA219::setup(void) {
     Sensor::setup();  // this will set pin modes and the setup status bit
 
     // This sensor needs power for setup!
+    delay(10);
     wasOn = checkPowerOn();
     if (!wasOn) {
         powerUp();
