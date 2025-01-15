@@ -58,7 +58,9 @@ bool GeoluxHydroCam::setup(void) {
     bool wasOn = checkPowerOn();
     if (!wasOn) { powerUp(); }
 
-    waitForWarmUp();
+    while (!isWarmedUp()) {
+        // wait
+    };
 
     MS_DBG(F("Setting camera image resolution to"), _imageResolution);
     success &= _camera.setResolution(_imageResolution);
