@@ -119,9 +119,15 @@ void Logger::setLoggerID(const char* loggerID) {
     _loggerID = loggerID;
 }
 
-// Sets/Gets the logging interval
+// Sets the logging interval
 void Logger::setLoggingInterval(uint16_t loggingIntervalMinutes) {
     _loggingIntervalMinutes = loggingIntervalMinutes;
+}
+
+
+// Sets the initial short intervals
+void Logger::setinitialShortIntervals(uint16_t initialShortIntervals) {
+    _initialShortIntervals = initialShortIntervals;
 }
 
 

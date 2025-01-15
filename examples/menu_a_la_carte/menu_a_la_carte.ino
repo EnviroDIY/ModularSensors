@@ -3384,6 +3384,8 @@ void setup() {
     // set the logging interval
     PRINTOUT(F("Setting logging interval to"), loggingInterval, F("minutes"));
     dataLogger.setLoggingInterval(loggingInterval);
+    PRINTOUT(F("Setting number of initial 1 minute intervals to 10"));
+    dataLogger.setinitialShortIntervals(10);
     // Attach the variable array to the logger
     PRINTOUT(F("Attaching the variable array"));
     dataLogger.setVariableArray(&varArray);

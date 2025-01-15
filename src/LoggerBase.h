@@ -186,6 +186,25 @@ class Logger {
     }
 
     /**
+     * @brief Set the number of 1-minute intervals at the start before logging
+     * on the regular logging interval.
+     *
+     * @param initialShortIntervals The number of 1-minute intervals at
+     * the start before logging on the regular logging interval
+     */
+    void setinitialShortIntervals(uint16_t initialShortIntervals);
+    /**
+     * @brief Get the number of 1-minute intervals at the start before logging
+     * on the regular logging interval
+     *
+     * @return The number of 1-minute intervals at the start before logging
+     * on the regular logging interval
+     */
+    uint16_t getinitialShortIntervals() {
+        return _initialShortIntervals;
+    }
+
+    /**
      * @brief Set the universally unique identifier (UUID or GUID) of the
      * sampling feature.
      *
