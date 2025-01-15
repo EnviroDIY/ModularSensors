@@ -110,9 +110,16 @@ bool GroPointParent::wake(void) {
 
 
 // The function to put the sensor to sleep
-// Different from the standard in that it stops measurements
+// Different from the standard in that it stops measurements and empties and
+// flushes the stream.
 bool GroPointParent::sleep(void) {
+    // empty then flush the buffer
+    while (_stream->available()) { _stream->read(); }
+    _stream->flush();
+
+    // if it's not powered, it's asleep
     if (!checkPowerOn()) { return true; }
+    // if it was never awake, it's probabaly asleep
     if (_millisSensorActivated == 0) {
         MS_DBG(getSensorNameAndLocation(), F("was not measuring!"));
         return true;
@@ -139,6 +146,10 @@ bool GroPointParent::sleep(void) {
     } else {
         MS_DBG(F("Measurements NOT stopped!"));
     }
+
+    // empty then flush the buffer
+    while (_stream->available()) { _stream->read(); }
+    _stream->flush();
 
     return success;
 }

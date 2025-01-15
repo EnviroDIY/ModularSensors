@@ -112,6 +112,15 @@ bool MaxBotixSonar::wake(void) {
     return true;
 }
 
+// The function to put the sensor to sleep
+// Different from the standard in that empties and flushes the stream.
+bool MaxBotixSonar::sleep(void) {
+    // empty then flush the buffer
+    while (_stream->available()) { _stream->read(); }
+    _stream->flush();
+    return Sensor::sleep();
+};
+
 
 bool MaxBotixSonar::addSingleMeasurementResult(void) {
     // Initialize values

@@ -288,6 +288,7 @@ class GeoluxHydroCam : public Sensor {
      * @return True if the wake function completed successfully.
      */
     bool wake(void) override;
+    bool sleep(void) override;
 
 
     /**
@@ -360,6 +361,11 @@ class GeoluxHydroCam : public Sensor {
      * @brief The internal pointer to the logger instance to be used.
      */
     Logger* _baseLogger = nullptr;
+    /**
+     * @brief Private reference to the stream for communciation with the
+     * Geolux Camera.
+     */
+    Stream* _stream;
     /**
      * @brief Private reference to the underlieing GeoluxCamera Instance
      */

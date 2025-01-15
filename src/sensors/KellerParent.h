@@ -246,6 +246,9 @@ class KellerParent : public Sensor {
      */
     bool setup(void) override;
 
+    // override to empty and flush the stream
+    bool sleep(void) override;
+
     // Override these to use two power pins
     void powerUp(void) override;
     void powerDown(void) override;

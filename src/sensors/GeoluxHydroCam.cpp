@@ -23,6 +23,7 @@ GeoluxHydroCam::GeoluxHydroCam(Stream* stream, int8_t powerPin,
       _filePrefix(filePrefix),
       _alwaysAutoFocus(alwaysAutoFocus),
       _baseLogger(&baseLogger),
+      _stream(stream),
       _camera(stream) {}
 
 
@@ -38,6 +39,7 @@ GeoluxHydroCam::GeoluxHydroCam(Stream& stream, int8_t powerPin,
       _filePrefix(filePrefix),
       _alwaysAutoFocus(alwaysAutoFocus),
       _baseLogger(&baseLogger),
+      _stream(&stream),
       _camera(&stream) {}
 
 // Destructor
@@ -107,6 +109,15 @@ bool GeoluxHydroCam::wake(void) {
 
     return true;
 }
+
+// The function to put the sensor to sleep
+// Different from the standard in that empties and flushes the stream.
+bool GeoluxHydroCam::sleep(void) {
+    // empty then flush the buffer
+    while (_stream->available()) { _stream->read(); }
+    _stream->flush();
+    return Sensor::sleep();
+};
 
 bool GeoluxHydroCam::startSingleMeasurement(void) {
     // Sensor::startSingleMeasurement() checks that if it's awake/active and

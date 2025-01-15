@@ -246,6 +246,8 @@ class MaxBotixSonar : public Sensor {
      * @return True if the wake function completed successfully.
      */
     bool wake(void) override;
+    // override to empty and flush the stream
+    bool sleep(void) override;
 
     /**
      * @copydoc Sensor::addSingleMeasurementResult()

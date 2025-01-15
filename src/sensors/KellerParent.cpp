@@ -75,6 +75,16 @@ bool KellerParent::setup(void) {
 }
 
 
+// The function to put the sensor to sleep
+// Different from the standard in that empties and flushes the stream.
+bool KellerParent::sleep(void) {
+    // empty then flush the buffer
+    while (_stream->available()) { _stream->read(); }
+    _stream->flush();
+    return Sensor::sleep();
+};
+
+
 // This turns on sensor power
 void KellerParent::powerUp(void) {
     if (_powerPin >= 0) {
