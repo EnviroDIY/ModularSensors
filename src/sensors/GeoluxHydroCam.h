@@ -300,7 +300,7 @@ class GeoluxHydroCam : public Sensor {
      * For the Geolux camera, this waits for both the power-on warm up and for
      * an affirmative from the camera that it is ready to accept commands.
      */
-    virtual bool isWarmedUp(bool debug = false);
+    bool isWarmedUp(bool debug = false) override;
 
     /**
      * @brief Check whether or not enough time has passed between the camera
