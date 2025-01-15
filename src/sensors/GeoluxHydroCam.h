@@ -119,10 +119,20 @@
 /// of about 11ms after the end of the boot up message. Changing settings takes
 /// up to 7s. Running an autofocus takes about 25-30s.
 #define HYDROCAM_STABILIZATION_TIME_MS 11
+/// @brief The maximum time to wait for boot + settings.
+#define HYDROCAM_STABILIZATION_TIME_MAX 16000L
+/// @brief Minimum time to wait for an autofocus. Running an autofocus takes
+/// about 25-30s.
+#define HYDROCAM_AUTOFOCUS_TIME_MS 25000L
+/// @brief The maximum time to wait for autofocus. This is combined with the
+/// stabilization time.
+#define HYDROCAM_AUTOFOCUS_TIME_MAX 35000L
 /// @brief Sensor::_measurementTime_ms; the HydroCam imaging time is variable
 /// depending on the image size, but the typical minimum I've seen for the
-/// smallest image (160x120) is ~6.2s.
-#define HYDROCAM_MEASUREMENT_TIME_MS 6200
+/// smallest image (160x120) is ~6.2s.  The largest image takes over 16s.
+#define HYDROCAM_MEASUREMENT_TIME_MS 6200L
+/// @brief The maximum time to wait for an image.
+#define HYDROCAM_MEASUREMENT_TIME_MAX 18000L
 /**@}*/
 
 /**

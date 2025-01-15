@@ -313,6 +313,8 @@ bool GeoluxHydroCam::isWarmedUp(bool debug) {
             }
         }
         return is_ready;
+    } else if (elapsed_since_power_on > HYDROCAM_STABILIZATION_TIME_MAX) {
+        return true;  // timeout
     } else {
         // wait at least the minimum warm-up time
         return false;
@@ -333,9 +335,14 @@ bool GeoluxHydroCam::isStable(bool debug) {
     }
 
     uint32_t elapsed_since_wake_up = millis() - _millisSensorActivated;
-    uint32_t autofocus_time        = _alwaysAutoFocus ? 10000L : 0L;
+    uint32_t minTime               = _stabilizationTime_ms + _alwaysAutoFocus
+                      ? HYDROCAM_AUTOFOCUS_TIME_MS
+                      : 0L;
+    uint32_t maxTime = HYDROCAM_STABILIZATION_TIME_MAX + _alwaysAutoFocus
+        ? HYDROCAM_AUTOFOCUS_TIME_MAX
+        : 0L;
     // If the sensor has been activated and enough time has elapsed, it's stable
-    if (elapsed_since_wake_up > _stabilizationTime_ms + autofocus_time) {
+    if (elapsed_since_wake_up > minTime) {
         if (debug) {
             MS_DBG(F("It's been"), elapsed_since_wake_up, F("ms, and"),
                    getSensorNameAndLocation(),
@@ -356,6 +363,8 @@ bool GeoluxHydroCam::isStable(bool debug) {
             }
         }
         return is_ready;
+    } else if (elapsed_since_wake_up > maxTime) {
+        return true;  // timeout
     } else {
         // Wait at least the minimum readiness time
         return false;
@@ -397,6 +406,8 @@ bool GeoluxHydroCam::isMeasurementComplete(bool debug) {
             }
         }
         return is_ready;
+    } else if (elapsed_since_meas_start > HYDROCAM_MEASUREMENT_TIME_MAX) {
+        return true;  // timeout
     } else {
         // If an image has started by the minimum imaging time hasn't passed, we
         // need to wait
