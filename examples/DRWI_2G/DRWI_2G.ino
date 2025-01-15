@@ -310,7 +310,9 @@ void setup() {
     // Set up the sensors, except at lowest battery level
     if (getBatteryVoltage() > 3.4) {
         Serial.println(F("Setting up sensors..."));
+        varArray.sensorsPowerUp();
         varArray.setupSensors();
+        varArray.sensorsPowerDown();
     }
 
     // Sync the clock if it isn't valid or we have battery to spare

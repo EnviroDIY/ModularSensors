@@ -332,7 +332,9 @@ void setup() {
     // Set up the sensors, except at lowest battery level
     if (getBatteryVoltage() > 3.4) {
         Serial.println(F("Setting up sensors..."));
+        varArray.sensorsPowerUp();
         varArray.setupSensors();
+        varArray.sensorsPowerDown();
     }
 
     // Extra modem set-up - selecting AT&T as the carrier and LTE-M only

@@ -3423,7 +3423,11 @@ void setup() {
     // Set up the sensors, except at lowest battery level
     if (getBatteryVoltage() > 3.4) {
         PRINTOUT(F("Setting up sensors..."));
+        varArray.sensorsPowerUp();  // only needed if you have sensors that need
+                                    // power for setups
         varArray.setupSensors();
+        varArray.sensorsPowerDown();  // only needed if you have sensors that
+                                      // need power for setups
     }
     /** End [setup_sensors] */
 
