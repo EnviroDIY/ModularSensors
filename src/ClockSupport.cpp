@@ -249,6 +249,9 @@ bool loggerClock::setRTClock(uint32_t ts, int8_t utcOffset, epochStart epoch) {
     MS_DEEP_DBG(F("Setting raw RTC value to:"), converted_ts);
     setRawRTCNow(converted_ts);
     PRINTOUT(F("Clock set!"));
+    PRINTOUT(F("Current RTC time is now"),
+             formatDateTime_ISO8601(getNowAsEpoch(utcOffset, epoch), utcOffset,
+                                    epoch));
     return true;
 }
 
