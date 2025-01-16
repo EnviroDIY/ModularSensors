@@ -59,7 +59,7 @@ void extendedWatchDogSAMD::setupWatchDog(uint32_t resetTime_s) {
 #if defined(__SAMD51__)
     WDT->CTRLA.reg = 0;
 #else
-    WDT->CTRL.reg        = 0;
+    WDT->CTRL.reg = 0;
 #endif
     waitForWDTBitSync();
 
@@ -95,15 +95,16 @@ void extendedWatchDogSAMD::enableWatchDog() {
 #if defined(__SAMD51__)
     WDT->CTRLA.reg = 0;
 #else
-    WDT->CTRL.reg        = 0;
+    WDT->CTRL.reg = 0;
 #endif
     waitForWDTBitSync();
 
 // Enable window mode
 #if defined(__SAMD51__)
     WDT->CTRLA.bit.WEN = 1;
-#else  // SAMD21
-    WDT->CTRL.bit.WEN    = 1;
+#else
+    //^^ SAMD21
+    WDT->CTRL.bit.WEN = 1;
 #endif
     waitForWDTBitSync();
 
@@ -135,7 +136,8 @@ void extendedWatchDogSAMD::enableWatchDog() {
     // Set the enable bit
 #if defined(__SAMD51__)
     WDT->CTRLA.bit.ENABLE = 1;
-#else  // SAMD21
+#else
+    //^^ SAMD21
     WDT->CTRL.bit.ENABLE = 1;
 #endif
     waitForWDTBitSync();
@@ -145,7 +147,8 @@ void extendedWatchDogSAMD::enableWatchDog() {
 void extendedWatchDogSAMD::disableWatchDog() {
 #if defined(__SAMD51__)
     WDT->CTRLA.bit.ENABLE = 0;
-#else  // SAMD21
+#else
+    //^^ SAMD21
     WDT->CTRL.bit.ENABLE = 0;
 #endif
     waitForWDTBitSync();
@@ -176,12 +179,13 @@ void extendedWatchDogSAMD::config32kOSC() {
     OSC32KCTRL->OSCULP32K.bit.EN32K = 1;  // Enable out 32K (for EIC)
     waitForWDTBitSync();
 
-#else  // SAMD21
-    // NOTE: There are no settings we need to configure for ultra-low power
-    // internal oscillator (OSCULP32K). The only things that can be configured
-    // are the write lock and over-writing the factory calibration. We don't
-    // want to do either of those. The OSCULP32K is *always* running, no matter
-    // what sleep mode is in use.
+#else
+//^^ SAMD21
+// NOTE: There are no settings we need to configure for ultra-low power
+// internal oscillator (OSCULP32K). The only things that can be configured
+// are the write lock and over-writing the factory calibration. We don't
+// want to do either of those. The OSCULP32K is *always* running, no matter
+// what sleep mode is in use.
 #endif
 }
 
@@ -191,7 +195,8 @@ void extendedWatchDogSAMD::configureClockGenerator() {
     // The SAMD51 WDT always uses the 1.024kHz CLK_WDT_OSC clock sourced from
     // the ULP32KOSC.  The SAMD51 can also use OSCULP32k directly for the EIC.
     // No separate clock generator is needed.
-#else  // SAMD21
+#else
+    //^^ SAMD21
     // Per datasheet 15.6.2.6, the source for the generic clock generator can be
     // changed on the fly, so we don't need to disable it for configuration.
 
@@ -248,7 +253,8 @@ void extendedWatchDogSAMD::configureWDTClock() {
     // NOTE: this is the default setting at power on and is not changed by the
     // Arduino core so it's not really necessary.
     // MCLK->APBAMASK.reg |= MCLK_APBAMASK_WDT;
-#else  // SAMD21
+#else
+    //^^ SAMD21
     // Per datasheet 16.6.3.3 the generic clock must be disabled before being
     // re-enabled with a new clock source setting.
     MS_DEEP_DBG(F("Disabling WDT peripeheral clock for configuration"));
@@ -309,7 +315,8 @@ void extendedWatchDogSAMD::configureEICClock() {
     EIC->CTRLA.bit.ENABLE = 1;
     while (EIC->SYNCBUSY.bit.ENABLE == 1) {}
 
-#else  // SAMD21
+#else
+    //^^ SAMD21
 
     NVIC_DisableIRQ(EIC_IRQn);       // Disable for config
     NVIC_ClearPendingIRQ(EIC_IRQn);  // Clear old flags
@@ -363,7 +370,8 @@ void extendedWatchDogSAMD::waitForWDTBitSync() {
         // Wait for synchronization
         // NOTE: this will wait for all of the sync registers to clear
     }
-#else  // SAMD21
+#else
+    //^^ SAMD21
     while (WDT->STATUS.bit.SYNCBUSY) {
         // Wait for synchronization
     }
@@ -375,7 +383,8 @@ void extendedWatchDogSAMD::waitForGCLKBitSync() {
     while (GCLK->SYNCBUSY.reg &
            GCLK_SYNCBUSY_GENCTRL(GENERIC_CLOCK_GENERATOR_MS))
         ;  // Wait for the clock generator sync busy bit to clear
-#else      // SAMD21
+#else
+    //^^ SAMD21
     while (GCLK->STATUS.bit.SYNCBUSY)
         ;  // Wait for synchronization
 #endif

@@ -54,7 +54,8 @@
 // peripherals as possible.  In some cases (ie, modbus communication) many
 // sensors can share the same serial port.
 
-#if defined(__AVR__) || defined(ARDUINO_ARCH_AVR)  // For AVR boards
+// For AVR boards
+#if defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
 // Unfortunately, most AVR boards have only one or two hardware serial ports,
 // so we'll set up three types of extra software serial ports to use
 
@@ -243,9 +244,13 @@ void SERCOM1_3_Handler() {
 // sensors
 #define modbusSerial Serial2
 
-// The Maxbotix sonar is the only sensor that communicates over a serial port
-// but does not use modbus
+#if defined(BUILD_SENSOR_MAX_BOTIX_SONAR)
 #define sonarSerial Serial3
+#endif
+
+#if defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
+#define cameraSerial Serial1
+#endif
 
 /** End [assign_ports_hw] */
 #else
@@ -262,27 +267,49 @@ void SERCOM1_3_Handler() {
 // If AltSoftSerial (or its pins) aren't avaiable, use NeoSWSerial
 // SoftwareSerial **WILL NOT** work for modbus!
 #ifdef BUILD_TEST_ALTSOFTSERIAL
-#define modbusSerial altSoftSerial  // For AltSoftSerial
+// For AltSoftSerial
+#define modbusSerial altSoftSerial
 #elif defined(BUILD_TEST_NEOSWSERIAL)
-#define modbusSerial neoSSerial1  // For Neo software serial
+// For Neo software serial
+#define modbusSerial neoSSerial1
 #elif defined(BUILD_TEST_SOFTSERIAL)
-#define modbusSerial softSerial1  // For software serial
+// For software serial
+#define modbusSerial softSerial1
 #else
-#define modbusSerial Serial1  // Hardware serial
+// Hardware serial
+#define modbusSerial Serial1
 #endif
 
-// The Maxbotix sonar is the only sensor that communicates over a serial port
-// but does not use modbus
 // Since the Maxbotix only needs one-way communication and sends a simple text
 // string repeatedly, almost any software serial port will do for it.
-#ifdef BUILD_TEST_ALTSOFTSERIAL
-#define sonarSerial altSoftSerial  // For AltSoftSerial
-#elif defined(BUILD_TEST_NEOSWSERIAL)
-#define sonarSerial neoSSerial1  // For Neo software serial
-#elif defined(BUILD_TEST_SOFTSERIAL)
-#define sonarSerial softSerial1  // For software serial
-#else
-#define sonarSerial Serial1  // Hardware serial
+#ifdef BUILD_TEST_ALTSOFTSERIAL&& defined(BUILD_SENSOR_MAX_BOTIX_SONAR)
+// For AltSoftSerial
+#define sonarSerial altSoftSerial
+#elif defined(BUILD_TEST_NEOSWSERIAL) && defined(BUILD_SENSOR_MAX_BOTIX_SONAR)
+// For Neo software serial
+#define sonarSerial neoSSerial1
+#elif defined(BUILD_TEST_SOFTSERIAL) && defined(BUILD_SENSOR_MAX_BOTIX_SONAR)
+// For software serial
+#define sonarSerial softSerial1
+#elif defined(BUILD_SENSOR_MAX_BOTIX_SONAR)
+// Hardware serial
+#define sonarSerial Serial1
+#endif
+
+// I **REALLY** don't recommend using a software serial for the camera, but oh
+// well
+#ifdef BUILD_TEST_ALTSOFTSERIAL&& defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
+// For AltSoftSerial
+#define sonarSerial altSoftSerial
+#elif defined(BUILD_TEST_NEOSWSERIAL) && defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
+// For Neo software serial
+#define sonarSerial neoSSerial1
+#elif defined(BUILD_TEST_SOFTSERIAL) && defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
+// For software serial
+#define sonarSerial softSerial1
+#elif defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
+// Hardware serial
+#define sonarSerial Serial1
 #endif
 
 /** End [assign_ports_sw] */
@@ -319,8 +346,21 @@ const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
 const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
 const int8_t flashSSPin     = 20;  // onboard flash chip select/slave select pin
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
+const int8_t sdi12DataPin   = 7;
 const int8_t relayPowerPin = A3;  // MCU pin controlling an optional power relay
 /** End [logging_options] */
+
+
+// ==========================================================================
+//  The Logger Object[s]
+// ==========================================================================
+/** Start [loggers] */
+// Create a new logger instance
+// NOTE: This is an empty instance! We will need to call setLoggerID,
+// setLoggingInterval, setVariableArray, and the various pin assignment
+// functions in the setup!
+Logger dataLogger;
+/** End [loggers] */
 
 
 // ==========================================================================
@@ -330,10 +370,12 @@ const int8_t relayPowerPin = A3;  // MCU pin controlling an optional power relay
 // ==========================================================================
 
 // Network connection information
-#define CELLULAR_APN "add_your_cellular_apn"  // APN for cellular connection
-
-#define WIFI_ID "your_wifi_ssid"          // WiFi access point name
-#define WIFI_PASSWD "your_wifi_password"  // WiFi password (WPA2)
+// APN for cellular connection
+#define CELLULAR_APN "add_your_cellular_apn"
+// WiFi access point name
+#define WIFI_ID "your_wifi_ssid"
+// WiFi password (WPA2)
+#define WIFI_PASSWD "your_wifi_password"
 
 #if defined(BUILD_MODEM_DIGI_XBEE_CELLULAR_TRANSPARENT)
 /** Start [digi_xbee_cellular_transparent] */
@@ -1249,7 +1291,7 @@ Variable* bmp3xxAlt =
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const char* ClariVUESDI12address = "0";  // The SDI-12 Address of the ClariVUE10
 const int8_t ClariVUEPower       = sensorPowerPin;  // Power pin
-const int8_t ClariVUEData        = 7;               // The SDI-12 data pin
+const int8_t ClariVUEData        = sdi12DataPin;    // The SDI-12 data pin
 // NOTE:  you should NOT take more than one readings.  THe sensor already takes
 // and averages 8 by default.
 
@@ -1357,7 +1399,7 @@ Variable* rainvueRainRateMax = new CampbellRainVUE10_RainRateMax(
 const char*   CTDSDI12address   = "1";  // The SDI-12 Address of the CTD
 const uint8_t CTDNumberReadings = 6;    // The number of readings to average
 const int8_t  CTDPower          = sensorPowerPin;  // Power pin
-const int8_t  CTDData           = 7;               // The SDI-12 data pin
+const int8_t  CTDData           = sdi12DataPin;    // The SDI-12 data pin
 
 // Create a Decagon CTD sensor object
 DecagonCTD ctd(*CTDSDI12address, CTDPower, CTDData, CTDNumberReadings);
@@ -1383,7 +1425,7 @@ Variable* ctdDepth =
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const char*   ES2SDI12address   = "3";  // The SDI-12 Address of the ES2
 const int8_t  ES2Power          = sensorPowerPin;  // Power pin
-const int8_t  ES2Data           = 7;               // The SDI-12 data pin
+const int8_t  ES2Data           = sdi12DataPin;    // The SDI-12 data pin
 const uint8_t ES2NumberReadings = 5;
 
 // Create a Decagon ES2 sensor object
@@ -1477,6 +1519,36 @@ Variable* mplTemp = new FreescaleMPL115A2_Temp(
 /** End [freescale_mpl115a2] */
 #endif
 
+
+#if defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
+// ==========================================================================
+//  Geolux HydroCam camera
+// ==========================================================================
+/** Start [geolux_hydro_cam] */
+#include <sensors/GeoluxHydroCam.h>
+
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+const int8_t  cameraPower           = sensorPowerPin;  // Power pin
+const int8_t  cameraAdapterPower    = sensorPowerPin;  // Power pin
+const uint8_t MPL115A2ReadingsToAvg = 1;
+const char*   imageResolution       = "1600x1200";
+const char*   filePrefix            = "HydroCam";
+bool          alwaysAutoFocus       = false;
+
+// Create a GeoluxHydroCam sensor object
+GeoluxHydroCam hydrocam(cameraSerial, cameraPower, dataLogger,
+                        cameraAdapterPower, imageResolution, filePrefix,
+                        alwaysAutoFocus);
+
+// Create image size and byte error variables for the Geolux HydroCam
+Variable* hydrocamImageSize = new GeoluxHydroCam_ImageSize(
+    &hydrocam, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* hydrocamByteError = new GeoluxHydroCam_ByteError(
+    &hydrocam, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [geolux_hydro_cam] */
+#endif
+
+
 #if defined(BUILD_SENSOR_GRO_POINT_GPLP8)
 // ==========================================================================
 //  GroPoint Profile GPLP-8 Soil Moisture and Temperature Sensor
@@ -1560,7 +1632,7 @@ Variable* gplp8Temp13 = new GroPointGPLP8_Temp(
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const char*   RDOSDI12address   = "5";  // The SDI-12 Address of the RDO PRO-X
 const int8_t  RDOPower          = sensorPowerPin;  // Power pin
-const int8_t  RDOData           = 7;               // The SDI-12 data pin
+const int8_t  RDOData           = sdi12DataPin;    // The SDI-12 data pin
 const uint8_t RDONumberReadings = 3;
 
 // Create an In-Situ RDO PRO-X dissolved oxygen sensor object
@@ -1592,7 +1664,7 @@ const char* TROLLSDI12address =
     "1";  // The SDI-12 Address of the Aqua/Level TROLL
 const int8_t TROLLPower =
     sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t  TROLLData           = 7;  // The SDI-12 data pin
+const int8_t  TROLLData           = sdi12DataPin;  // The SDI-12 data pin
 const uint8_t TROLLNumberReadings = 2;  // The number of readings to average
 
 // Create an In-Situ TROLL sensor object
@@ -1778,7 +1850,7 @@ Variable* ms5803Temp =
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const char*  TMSDI12address = "2";             // The SDI-12 Address of the 5-TM
 const int8_t TMPower        = sensorPowerPin;  // Power pin
-const int8_t TMData         = 7;               // The SDI-12 data pin
+const int8_t TMData         = sdi12DataPin;    // The SDI-12 data pin
 
 // Create a Decagon 5TM sensor object
 Decagon5TM fivetm(*TMSDI12address, TMPower, TMData);
@@ -1806,7 +1878,7 @@ Variable* fivetmTemp =
 const char*   hydros21SDI12address = "1";  // The SDI-12 Address of the Hydros21
 const uint8_t hydros21NumberReadings = 6;  // The number of readings to average
 const int8_t  hydros21Power          = sensorPowerPin;  // Power pin
-const int8_t  hydros21Data           = 7;               // The SDI-12 data pin
+const int8_t  hydros21Data           = sdi12DataPin;    // The SDI-12 data pin
 
 // Create a Decagon Hydros21 sensor object
 MeterHydros21 hydros21(*hydros21SDI12address, hydros21Power, hydros21Data,
@@ -1834,7 +1906,7 @@ Variable* hydros21Depth =
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const char*   teros11SDI12address = "4";  // The SDI-12 Address of the Teros 11
 const int8_t  terosPower          = sensorPowerPin;  // Power pin
-const int8_t  terosData           = 7;               // The SDI-12 data pin
+const int8_t  terosData           = sdi12DataPin;    // The SDI-12 data pin
 const uint8_t teros11NumberReadings = 3;  // The number of readings to average
 
 // Create a METER TEROS 11 sensor object
@@ -2171,7 +2243,7 @@ Variable* analogEc_spcond = new Variable(
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const char* VegaPulsSDI12address = "0";  // The SDI-12 Address of the VegaPuls10
 const int8_t VegaPulsPower       = sensorPowerPin;  // Power pin
-const int8_t VegaPulsData        = 7;               // The SDI-12 data pin
+const int8_t VegaPulsData        = sdi12DataPin;    // The SDI-12 data pin
 // NOTE:  you should NOT take more than one readings.  THe sensor already takes
 // and averages 8 by default.
 
@@ -2612,7 +2684,7 @@ Variable* y4000BGA =
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const char*  DOptoSDI12address = "5";  // The SDI-12 Address of the D-Opto
 const int8_t ZTPower           = sensorPowerPin;  // Power pin
-const int8_t ZTData            = 7;               // The SDI-12 data pin
+const int8_t ZTData            = sdi12DataPin;    // The SDI-12 data pin
 
 // Create a Zebra Tech DOpto dissolved oxygen sensor object
 ZebraTechDOpto dopto(*DOptoSDI12address, ZTPower, ZTData);
@@ -2736,17 +2808,11 @@ VariableArray varArray(variableCount, variableList, UUIDs);
 // ==========================================================================
 
 
-#else  // BUILD_TEST_PRE_NAMED_VARS
+#else
+//^^ BUILD_TEST_PRE_NAMED_VARS
 /** Start [variables_pre_named] */
 // Version 3: Fill array with already created and named variable pointers
 Variable* variableList[] = {
-    mcuBoardSampNo,
-#if !defined(__SAMD51__)
-    mcuBoardAvailableRAM,
-#endif
-    mcuBoardBatt,
-    mcuBoardReset,
-    calculatedVar,
 #if defined(MS_USE_DS3231)
     ds3231Temp,
 #endif
@@ -2839,6 +2905,10 @@ Variable* variableList[] = {
 #if defined(BUILD_SENSOR_FREESCALE_MPL115A2)
     mplTemp,
     mplPress,
+#endif
+#if defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
+    hydrocamImageSize,
+    hydrocamByteError,
 #endif
 #if defined(BUILD_SENSOR_GRO_POINT_GPLP8)
     gplp8Moist1,
@@ -3035,6 +3105,13 @@ Variable* variableList[] = {
 #ifdef TINY_GSM_MODEM_HAS_TEMPERATURE
     modemTemperature,
 #endif
+    mcuBoardSampNo,
+#if !defined(__SAMD51__)
+    mcuBoardAvailableRAM,
+#endif
+    mcuBoardBatt,
+    mcuBoardReset,
+    calculatedVar,
 };
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
@@ -3042,15 +3119,6 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 VariableArray varArray(variableCount, variableList);
 /** End [variables_pre_named] */
 #endif
-
-
-// ==========================================================================
-//  The Logger Object[s]
-// ==========================================================================
-/** Start [loggers] */
-// Create a new logger instance
-Logger dataLogger(LoggerID, loggingInterval, &varArray);
-/** End [loggers] */
 
 
 #if defined(BUILD_PUB_ENVIRO_DIY_PUBLISHER) && !defined(BUILD_MODEM_NO_MODEM)
@@ -3271,9 +3339,13 @@ void setup() {
     modbusSerial.begin(9600);
 
 #if defined(BUILD_SENSOR_MAX_BOTIX_SONAR)
-    // Start the SoftwareSerial stream for the sonar; it will always be at 9600
-    // baud
+    // Start the stream for the sonar; it will always be at 9600 baud
     sonarSerial.begin(9600);
+#endif
+
+#if defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
+    // Start the stream for the camera; it will always be at 115200 baud
+    cameraSerial.begin(115200);
 #endif
 /** End [setup_serial_begins] */
 
@@ -3305,6 +3377,19 @@ void setup() {
     Wire.begin();
 
     /** Start [setup_logger] */
+
+    // set the logger ID
+    PRINTOUT(F("Setting logger id to"), LoggerID);
+    dataLogger.setLoggerID(LoggerID);
+    // set the logging interval
+    PRINTOUT(F("Setting logging interval to"), loggingInterval, F("minutes"));
+    dataLogger.setLoggingInterval(loggingInterval);
+    PRINTOUT(F("Setting number of initial 1 minute intervals to 10"));
+    dataLogger.setinitialShortIntervals(10);
+    // Attach the variable array to the logger
+    PRINTOUT(F("Attaching the variable array"));
+    dataLogger.setVariableArray(&varArray);
+    // set logger pins
     PRINTOUT(F("Setting logger pins"));
     dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin,
                              greenLED, wakePinMode, buttonPinMode);
@@ -3340,7 +3425,11 @@ void setup() {
     // Set up the sensors, except at lowest battery level
     if (getBatteryVoltage() > 3.4) {
         PRINTOUT(F("Setting up sensors..."));
+        varArray.sensorsPowerUp();  // only needed if you have sensors that need
+                                    // power for setups
         varArray.setupSensors();
+        varArray.sensorsPowerDown();  // only needed if you have sensors that
+                                      // need power for setups
     }
     /** End [setup_sensors] */
 
@@ -3349,7 +3438,7 @@ void setup() {
     /** Start [setup_esp] */
     PRINTOUT(F("Waking the modem.."));
     PRINTOUT(F("Attempting to begin modem communication at"), modemBaud,
-             F(" baud.  This will fail if the baud is mismatched.."));
+             F("baud.  This will fail if the baud is mismatched.."));
     modemSerial.begin(modemBaud);
     modem.modemWake();  // NOTE:  This will also set up the modem
     if (!modem.gsmModem.testAT()) {

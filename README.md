@@ -66,6 +66,7 @@ For some generalized information about attaching sensors to an Arduino style boa
 - [Everlight ALS-PT19 Analog Light Sensor (via processor ADC)](https://envirodiy.github.io/ModularSensors/group__sensor__alspt19.html)
 - [External Arduino I2C Rain Tipping Bucket Counter: rainfall totals](https://envirodiy.github.io/ModularSensors/group__sensor__i2c__rain.html)
 - [Freescale Semiconductor MPL115A2: barometric pressure and temperature](https://envirodiy.github.io/ModularSensors/group__sensor__mpl115a2.html)
+- [Geolux HydroCam](https://envirodiy.github.io/ModularSensors/group__sensor__hydrocam.html)
 - [GroPoint Profile GPLP-8 Eight-Segment Soil Moisture and Temperature Profiling Probe](https://envirodiy.github.io/ModularSensors/group__sensor__gplp8.html)
 - [In-Situ RDO PRO-X: dissolved oxygen](https://envirodiy.github.io/ModularSensors/group__sensor__insitu__rdo.html)
 - [In-Situ SDI-12 TROLLs: pressure, temperature, and depth](https://envirodiy.github.io/ModularSensors/group__sensor__insitu__troll.html)

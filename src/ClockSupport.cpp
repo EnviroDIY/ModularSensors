@@ -172,6 +172,44 @@ String loggerClock::formatDateTime_ISO8601(uint32_t   epochTime,
     return String(time8601tz) + String(isotz);
 }
 
+// This converts an epoch time (seconds since a fixed epoch start) into a
+// ISO8601 formatted string. It assumes the supplied date/time is in the
+// LOGGER's timezone and adds the LOGGER's offset as the time zone offset in the
+// string. code modified from parts of the SparkFun RV-8803 library
+void loggerClock::formatDateTime(char* buffer, const char* fmt,
+                                 uint32_t epochTime, epochStart epoch) {
+    MS_DEEP_DBG(F("Input epoch time:"), epochTime, F("; input epoch:"),
+                static_cast<uint32_t>(epoch));
+
+    // NOTE: for AVR boards time_t is a typedef for uint32_t, defined in
+    // time.h For SAMD time_t is a typedef for __int_least64_t _timeval.h
+    // implicit cast to time_t
+
+    // Create a temporary variable for the epoch time
+    time_t t = epochTime;
+    MS_DEEP_DBG(F("Input time as a time_t:"), t);
+
+    // Convert the time to the processor epoch.
+    // This is only needed so the gmtime function will work - this is not
+    // converting between offsets.
+    if (epoch != _core_epoch) {
+        t += epoch;        // convert to to unix
+        t -= _core_epoch;  // convert to processor epoch (used by gmtime)
+    }
+    MS_DEEP_DBG(F("Input time converted to processor epoch:"), t);
+
+    // create a temporary time struct
+    // tm is a struct for time parts, defined in time.h
+    struct tm* tmp = gmtime(&t);
+    MS_DEEP_DBG(F("Time components: "), tmp->tm_year, F(" - "), tmp->tm_mon + 1,
+                F(" - "), tmp->tm_mday, F("    "), tmp->tm_hour, F(" : "),
+                tmp->tm_min, F(" : "), tmp->tm_sec);
+
+    // use strftime (from time.h) to format the time
+    strftime(buffer, 20, fmt, tmp);
+    MS_DEEP_DBG(F("Formatted time string:"), buffer);
+}
+
 // This sets the real time clock to the given time
 bool loggerClock::setRTClock(uint32_t ts, int8_t utcOffset, epochStart epoch) {
     MS_DEEP_DBG(F("Raw input timestamp:"), ts);
@@ -211,6 +249,9 @@ bool loggerClock::setRTClock(uint32_t ts, int8_t utcOffset, epochStart epoch) {
     MS_DEEP_DBG(F("Setting raw RTC value to:"), converted_ts);
     setRawRTCNow(converted_ts);
     PRINTOUT(F("Clock set!"));
+    PRINTOUT(F("Current RTC time is now"),
+             formatDateTime_ISO8601(getNowAsEpoch(utcOffset, epoch), utcOffset,
+                                    epoch));
     return true;
 }
 

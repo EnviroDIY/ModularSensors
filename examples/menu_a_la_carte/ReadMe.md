@@ -10,13 +10,13 @@ ___
 
 # Walking Through the Code<!-- {#example_menu_walk} -->
 
-[//]: # ( @note )
-*NOTE:  This walkthrough is intended to be viewed on GitHub pages at <https://envirodiy.github.io/ModularSensors/example_menu.html>*
+> [!NOTE]
+> This walkthrough is intended to be viewed on GitHub pages at <https://envirodiy.github.io/ModularSensors/example_menu.html>*
 
-[//]: # ( @warning )
-WARNING:  This example is long.
-This walk-through is really, really long.
-Make use of the table of contents to skip to the parts you need.
+> [!WARNING]
+> This example is long.
+> This walk-through is really, really long.
+> Make use of the table of contents to skip to the parts you need.
 ___
 
 [//]: # ( @tableofcontents )
@@ -79,6 +79,7 @@ ___
       - [Everlight ALS-PT19 Ambient Light Sensor](#everlight-als-pt19-ambient-light-sensor)
     - [External Voltage via TI ADS1x15](#external-voltage-via-ti-ads1x15)
     - [Freescale Semiconductor MPL115A2 Miniature I2C Digital Barometer](#freescale-semiconductor-mpl115a2-miniature-i2c-digital-barometer)
+    - [Geolux HydroCam Camera](#geolux-hydrocam-camera)
     - [GroPoint Profile GPLP-8 Eight-Segment Soil Moisture and Temperature Profiling Probe](#gropoint-profile-gplp-8-eight-segment-soil-moisture-and-temperature-profiling-probe)
       - [In-Situ Aqua/Level TROLL Pressure, Temperature, and Depth Sensor](#in-situ-aqualevel-troll-pressure-temperature-and-depth-sensor)
       - [In-Situ RDO PRO-X Rugged Dissolved Oxygen Probe](#in-situ-rdo-pro-x-rugged-dissolved-oxygen-probe)
@@ -329,8 +330,8 @@ To create a DigiXBeeCellularTransparent object we need to know
 Pins that do not apply should be set as -1.
 A helpful table detailing the pins to use with the EnviroDIY Mayfly is available on the [Modem Notes](@ref page_modem_notes) page.
 
-@note  The u-blox based Digi XBee's (3G global and LTE-M global) may be more stable used in bypass mode (below).
-The Telit based Digi XBees (LTE Cat1 both Verizon and AT&T) can only use this mode.
+> [!NOTE] The u-blox based Digi XBee's (3G global and LTE-M global) may be more stable used in bypass mode (below).
+> The Telit based Digi XBees (LTE Cat1 both Verizon and AT&T) can only use this mode.
 
 [//]: # ( @menusnip{digi_xbee_cellular_transparent} )
 
@@ -658,8 +659,9 @@ The next several sections are for Atlas Scientific EZO circuts and sensors.
 The sensor class constructors for each are nearly identical, except for the class name.
 In the most common setup, with hardware I2C, the only required argument for the constructor is the Arduino pin controlling power on/off; the i2cAddressHex is optional as is the number of readings to average.
 
-@warning **You must isolate the data lines of all Atlas circuits from the main I2C bus if you wish to turn off their power!**
-If you do not isolate them from your main I2C bus and you turn off power to the circuits between measurements the I2C lines will be pulled down to ground causing the I2C bus (and thus your logger) to crash.
+> [!WARNING]
+> **You must isolate the data lines of all Atlas circuits from the main I2C bus if you wish to turn off their power!**
+> If you do not isolate them from your main I2C bus and you turn off power to the circuits between measurements the I2C lines will be pulled down to ground causing the I2C bus (and thus your logger) to crash.
 
 The default I2C addresses for the circuits are:
 
@@ -826,6 +828,23 @@ Because this sensor can have only one I2C address (0x60), it is only possible to
 
 ___
 
+### Geolux HydroCam Camera<!-- {#menu_walk_geolux_hydro_cam} -->
+
+> [!NOTE]
+> Use hardware serial if at all possible!
+
+> [!WARNING]
+> The camera only communicates at 115200 baud.
+> This is too fast for an 8MHz board like the EnviroDIY Mayfly.
+
+@see @ref sensor_hydrocam
+
+
+
+[//]: # ( @menusnip{geolux_hydro_cam} )
+
+___
+
 ### GroPoint Profile GPLP-8 Eight-Segment Soil Moisture and Temperature Profiling Probe<!-- {#menu_walk_gro_point_gplp8} -->
 
 @see @ref sensor_gplp8
@@ -969,8 +988,9 @@ A number of readings to average can also be given.
 
 ___
 
-@warning Either all or none of your attached redox probes may use software I2C.
-Using some with software I2C and others with hardware I2C is not supported.
+> [!WARNING]
+> Either all or none of your attached redox probes may use software I2C.
+> Using some with software I2C and others with hardware I2C is not supported.
 
 @see @ref sensor_pt_redox
 
@@ -1004,9 +1024,10 @@ ___
 
 This is for use with Northern Widget's Tally event counter
 
-@warning Northern Widget considers this sensor to be one of their "bleeding edge" sensors.
-As such, it is subject to change at any time.
-This library may not be updated immediately to reflect changes on the part of Northern Widget.
+> [!CAUTION]
+>  Northern Widget considers this sensor to be one of their "bleeding edge" sensors.
+> As such, it is subject to change at any time.
+> This library may not be updated immediately to reflect changes on the part of Northern Widget.
 
 The only option for the constructor is an optional setting for the I2C address, if the counter is not set at the default of 0x33.
 The counter should be continuously powered.

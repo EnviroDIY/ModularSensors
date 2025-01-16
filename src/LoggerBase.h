@@ -40,6 +40,11 @@
 
 // Bring in the libraries to handle the processor sleep/standby modes
 // The SAMD library can also the built-in clock on those modules
+/**
+ * @def extendedWatchDog
+ *
+ * A define to simplify inclusing of either a AVR or SAMD based watchdog
+ */
 #if defined(ARDUINO_ARCH_SAMD)
 #include "WatchDogs/WatchDogSAMD.h"
 #define extendedWatchDog extendedWatchDogSAMD
@@ -178,6 +183,25 @@ class Logger {
      */
     uint16_t getLoggingInterval() {
         return _loggingIntervalMinutes;
+    }
+
+    /**
+     * @brief Set the number of 1-minute intervals at the start before logging
+     * on the regular logging interval.
+     *
+     * @param initialShortIntervals The number of 1-minute intervals at
+     * the start before logging on the regular logging interval
+     */
+    void setinitialShortIntervals(uint16_t initialShortIntervals);
+    /**
+     * @brief Get the number of 1-minute intervals at the start before logging
+     * on the regular logging interval
+     *
+     * @return The number of 1-minute intervals at the start before logging
+     * on the regular logging interval
+     */
+    uint16_t getinitialShortIntervals() {
+        return _initialShortIntervals;
     }
 
     /**
@@ -466,7 +490,7 @@ class Logger {
      * calling it in the wrong order.
      *
      */
-    void enableRTCPinInterrupt();
+    void enableRTCPinISR();
 
     /**
      * @brief Attaches the testing ISR to the button pin.
@@ -619,7 +643,7 @@ class Logger {
      */
     void attachModem(loggerModem& modem);
     /**
-     * @brief Use the attahed loggerModem to synchronize the real-time clock
+     * @brief Use the attached loggerModem to synchronize the real-time clock
      * with NIST time servers.
      *
      * @return True if clock synchronization was successful
@@ -762,6 +786,28 @@ class Logger {
      * @return An ISO8601 formatted String.
      */
     static String formatDateTime_ISO8601(uint32_t epochTime);
+
+    /**
+     * @brief Convert an epoch time into a character string based on the input
+     * strftime format string and put it into the given buffer.
+     *
+     * This assumes the supplied date/time is in the LOGGER's timezone and adds
+     * the LOGGER's offset as the time zone offset in the string.
+     *
+     * @see https://en.cppreference.com/w/cpp/chrono/c/strftime for possible
+     * formatting strings.
+     *
+     * @note This function DOES NOTE SUPPORT TIMEZONES. Do not use the %z or %Z
+     * inputs!
+     *
+     * @param buffer A buffer to put the finished string into. Make sure that
+     * the buffer is big enough to hold all of the characters!
+     * @param fmt The strftime format string.
+     * @param epochTime The number of seconds since the start of the given
+     * epoch in the given offset from UTC.
+     */
+    static void formatDateTime(char* buffer, const char* fmt,
+                               uint32_t epochTime);
 
     /**
      * @brief Pass-through to loggerClock::setRTClock(uint32_t
@@ -1021,6 +1067,16 @@ class Logger {
     void printSensorDataCSV(Stream* stream);
 
     /**
+     * @brief Check if the SD card is available and ready to write to.
+     *
+     * We run this check before every communication with the SD card to prevent
+     * hanging.
+     *
+     * @return True if the SD card is ready
+     */
+    bool initializeSDCard(void);
+
+    /**
      * @brief Create a file on the SD card and set the created, modified, and
      * accessed timestamps in that file.
      *
@@ -1108,21 +1164,23 @@ class Logger {
     // ^^ Initialize with no file name
 
     /**
-     * @brief Check if the SD card is available and ready to write to.
-     *
-     * We run this check before every communication with the SD card to prevent
-     * hanging.
-     *
-     * @return True if the SD card is ready
-     */
-    bool initializeSDCard(void);
-
-    /**
      * @brief Generate a file name from the logger id and the current date.
      *
      * @note This cannot be called until *after* the RTC is started
      */
     void generateAutoFileName(void);
+
+    /**
+     * @brief This function is used to automatically mark files as
+     * created/accessed/modified when operations are done by the SdFat library.
+     *
+     * This function will be called automatically by SdFat, but is not intended
+     * to be used at any other time.
+     *
+     * @param date Pointer to a uint16_t to store the date
+     * @param time Pointer to a uint16_t to store the time
+     */
+    static void fileDateTimeCallback(uint16_t* date, uint16_t* time);
 
     /**
      * @brief Set a timestamp on a file.

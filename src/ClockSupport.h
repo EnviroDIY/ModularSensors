@@ -88,6 +88,9 @@
  * Using HIGH or LOW could trigger multiple interrupts when the clock interrut
  * fires. It's best to catch the first edge of the clock interrupt. So for an
  * RTC with an active low interrupt, use "FALLING."
+ *
+ * @def MS_CLOCK_NAME
+ * @brief A text description of the clock
  */
 #if defined(MS_USE_RV8803)
 #define MS_CLOCK_NAME "RV-8803"
@@ -107,6 +110,10 @@
 // https://stackoverflow.com/questions/21295935/can-a-c-enum-class-have-methods
 
 
+/**
+ * @brief A class for dealing with different definitions of the start of the
+ * epoch.
+ */
 class epochStart {
  public:
     /**
@@ -167,15 +174,12 @@ class epochStart {
 };
 
 
-// ===================================================================== //
 /**
- * @anchor logger_time
- * @name Clock and Timezones
- * Public functions to access the clock in proper format and time zone
+ * @brief A class for the clock attached to the logger.
+ *
+ * @note This is effectively a static class, with all static functions and a
+ * deleted constructor.
  */
-/**@{*/
-// ===================================================================== //
-
 class loggerClock {
  public:
     // Since there can only be one logger clock and all of it's methods are
@@ -232,9 +236,6 @@ class loggerClock {
     /**
      * @brief Convert an epoch time into a ISO8601 formatted string.
      *
-     * This assumes the supplied date/time is in the LOGGER's timezone and adds
-     * the LOGGER's offset as the time zone offset in the string.
-     *
      * @param epochTime The number of seconds since the start of the given
      * epoch in the given offset from UTC.
      * @param epochTimeUTCOffset The offset of the input epoch time from UTC in
@@ -245,6 +246,27 @@ class loggerClock {
     static String formatDateTime_ISO8601(uint32_t   epochTime,
                                          int8_t     epochTimeUTCOffset,
                                          epochStart epoch);
+
+    /**
+     * @brief Convert an epoch time into a character string based on the input
+     * strftime format string and put it into the given buffer.
+     *
+     * @note This function DOES NOTE SUPPORT TIMEZONES. Do not use the %z or %Z
+     * inputs!
+     *
+     * @see https://en.cppreference.com/w/cpp/chrono/c/strftime for possible
+     * formatting strings.
+     *
+     * @param buffer A buffer to put the finished string into. Make sure that
+     * the buffer is big enough to hold all of the characters!
+     * @param fmt The strftime format string.
+     * @param epochTime The number of seconds since the start of the given
+     * epoch in the given offset from UTC.
+     * @param epoch The epoch of the input epoch time.
+     * @return An ISO8601 formatted String.
+     */
+    static void formatDateTime(char* buffer, const char* fmt,
+                               uint32_t epochTime, epochStart epoch);
 
     /**
      * @brief Veify that the input value is sane and if so sets the real time
@@ -356,6 +378,8 @@ class loggerClock {
     static epochStart _rtcEpoch;
     /**
      * @brief Get a raw epoch time from the RTC
+     *
+     * @return The raw epoch time from the RTC
      */
     static uint32_t getRawRTCNow();
     /**

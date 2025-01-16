@@ -47,7 +47,8 @@
 // peripherals as possible.  In some cases (ie, modbus communication) many
 // sensors can share the same serial port.
 
-#if !defined(ARDUINO_ARCH_SAMD) && !defined(ATMEGA2560)  // For AVR boards
+// For AVR boards
+#if !defined(ARDUINO_ARCH_SAMD) && !defined(ATMEGA2560)
 // Unfortunately, most AVR boards have only one or two hardware serial ports,
 // so we'll set up three types of extra software serial ports to use
 

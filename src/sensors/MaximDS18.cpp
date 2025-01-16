@@ -70,6 +70,7 @@ bool MaximDS18::setup(void) {
         Sensor::setup();  // this will set pin modes and the setup status bit
 
     // Need to power up for setup
+    delay(10);
     bool wasOn = checkPowerOn();
     if (!wasOn) { powerUp(); }
     waitForWarmUp();

@@ -278,7 +278,8 @@
 // Arduino boards
 #elif defined(ARDUINO_AVR_ADK)
 #define LOGGER_BOARD "Mega Adk"
-#elif defined(ARDUINO_AVR_BT)  // Bluetooth
+// Bluetooth
+#elif defined(ARDUINO_AVR_BT)
 #define LOGGER_BOARD "Bt"
 #elif defined(ARDUINO_AVR_DUEMILANOVE)
 #define LOGGER_BOARD "Duemilanove"

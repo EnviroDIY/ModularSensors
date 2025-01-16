@@ -185,7 +185,7 @@ Resulting generic clock generator speeds:
 > Changing the GCLK_MAIN configuration will cause some functions like delay() to operate incorrectly.
 > To avoid any confusing with delay(), we're not going to change anything with GCLK0.
 > This means we won't be in the lowest power state like that offered by ZeroPowerManager
-> @TODO: Revisit this decision
+> @todo: Revisit this decision
 
 - [EnviroDIY SDI-12](https://github.com/EnviroDIY/Arduino-SDI-12)
   - Configures the TCC2/TC3 clock (GCM_TCC2_TC3) to use generic clock generator 4 (`GENERIC_CLOCK_GENERATOR_SDI12` = 4)

@@ -1067,7 +1067,7 @@ class loggerModem {
     // modemType gsmModem;
     // modemClientType gsmClient;
 
-    // @TODO: Implement these for all modems; most support it.
+    // @todo: Implement these for all modems; most support it.
 
     /**
      * @brief The modem hardware version.
