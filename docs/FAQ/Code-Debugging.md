@@ -14,7 +14,7 @@ When using PlatformIO or other build systems that allow you to define build flag
 There is also a debugging - and sometimes deep debugging - define for each component.
 The debugging flags are generally named as MS_xxx_DEBUG`, where xxxxx is the name of the header file to debug - in all caps with spaces removed.
 
-## Arduino IDE<!-- {#code_debugging_pio} -->
+## Arduino IDE<!-- {#code_debugging_arduino} -->
 
 For intense _code_ debugging for any individual component of the library (sensor communication, modem communication, variable array functions, etc), open the source file header (\*.h), for that component.
 Find the line `// #define MS_xxx_DEBUG`, where xxxxx is the name of the header file to debug - in all caps with spaces removed.

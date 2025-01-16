@@ -42,6 +42,9 @@ typedef const __FlashStringHelper* FlashString;
  * @def MS_OUTPUT
  * @brief The serial output for debugging
  *
+ * @def MS_SERIAL_OUTPUT
+ * @brief The serial output for debugging
+ *
  */
 #if defined(SERIAL_PORT_USBVIRTUAL)
 #define MS_DEFAULT_OUTPUT SERIAL_PORT_USBVIRTUAL

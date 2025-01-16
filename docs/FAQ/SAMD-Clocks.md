@@ -267,7 +267,7 @@ The path from a clock source to the EIC on the SAMD51 is very similar to that of
 - GCLK3 = 32 kHz; sourced from XOSC32K, which does run in standby if requested by peripheral (I think?)
 - GCLK4 = 12 MHz; sourced from DFLL48M, which does not run in standby.
 
-### SAMD51 Arduino Core Library Clock and Peripheral Configuration<!-- {#samd21_clock_core_configs} -->
+### SAMD51 Arduino Core Library Clock and Peripheral Configuration<!-- {#samd51_clock_core_configs} -->
 
 - [WInterrupts.c](https://github.com/adafruit/ArduinoCore-samd/blob/ce20340620bfd9c545649ee5c4873888ee0475d0/cores/arduino/WInterrupts.c#L48)
   - Configures the external interrupt controller (EIC) clock (`EIC_GCLK_ID`) to use GCLKGEN2 at 100 MHz

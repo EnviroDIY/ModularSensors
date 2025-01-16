@@ -140,15 +140,32 @@ class epochStart {
 
     // https://stackoverflow.com/questions/21295935/can-a-c-enum-class-have-methods
     epochStart() = default;
+    /**
+     * @brief Constructor
+     *
+     * @param epoch The unix offfset from the unixOffset enum.
+     */
     constexpr epochStart(unixOffset epoch) : _unixOffset(epoch) {}
 
 
     // Allow switch and comparisons.
+    /**
+     * @brief Operator for comparison
+     *
+     * @return The seconds from January 1, 1900
+     */
     constexpr operator unixOffset() const {
         return _unixOffset;
     }
 
-    // Prevent usage: if(epochStart)
+    /**
+     * @brief Deleted bool conversion operator
+     *
+     * Deleting this prevents anyone from calling `if(epochStart)`
+     *
+     * @see
+     * https://stackoverflow.com/questions/4600295/what-is-the-meaning-of-operator-bool-const
+     */
     explicit operator bool() const = delete;
 
 #ifdef MS_CLOCKSUPPORT_DEBUG
@@ -163,13 +180,15 @@ class epochStart {
     /**
      * @brief Gets a string for the start date of the epoch
      *
-     * @param epoch The epoch to get the starting date of
      * @return The starting date, in ISO8601
      */
     String printEpochStart();
 #endif
 
  private:
+    /**
+     * @brief Internal reference to the number of seconds from Jan 1, 1900.
+     */
     unixOffset _unixOffset;
 };
 
@@ -263,7 +282,6 @@ class loggerClock {
      * @param epochTime The number of seconds since the start of the given
      * epoch in the given offset from UTC.
      * @param epoch The epoch of the input epoch time.
-     * @return An ISO8601 formatted String.
      */
     static void formatDateTime(char* buffer, const char* fmt,
                                uint32_t epochTime, epochStart epoch);
@@ -312,6 +330,11 @@ class loggerClock {
 
     /**
      * @brief Set an alarm to fire a clock inetrrupt at a specific epoch time
+     *
+     * @param ts The timestamp for the next interrupt
+     * @param utcOffset The offset of the epoch time from UTC in hours.
+     * @param epoch The type of epoch to use (ie, the standard for the start of
+     * the epoch).
      */
     static void setNextRTCInterrupt(uint32_t ts, int8_t utcOffset,
                                     epochStart epoch);
