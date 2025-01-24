@@ -59,7 +59,7 @@
 // Unfortunately, most AVR boards have only one or two hardware serial ports,
 // so we'll set up three types of extra software serial ports to use
 
-#ifdef BUILD_TEST_ALTSOFTSERIAL
+#if defined(BUILD_TEST_ALTSOFTSERIAL)
 // AltSoftSerial by Paul Stoffregen
 // (https://github.com/PaulStoffregen/AltSoftSerial) is the most accurate
 // software serial port for AVR boards. AltSoftSerial can only be used on one
@@ -69,9 +69,9 @@
 #include <AltSoftSerial.h>
 AltSoftSerial altSoftSerial;
 /** End [altsoftserial] */
-#endif  // #ifdef BUILD_TEST_ALTSOFTSERIAL
+#endif  // #if defined (BUILD_TEST_ALTSOFTSERIAL)
 
-#ifdef BUILD_TEST_NEOSWSERIAL
+#if defined(BUILD_TEST_NEOSWSERIAL)
 // NeoSWSerial (https://github.com/SRGDamia1/NeoSWSerial) is the best software
 // serial that can be used on any pin supporting interrupts.
 // You can use as many instances of NeoSWSerial as you need.
@@ -87,9 +87,9 @@ void neoSSerial1ISR() {
     NeoSWSerial::rxISR(*portInputRegister(digitalPinToPort(neoSSerial1Rx)));
 }
 /** End [neoswserial] */
-#endif  // #ifdef BUILD_TEST_NEOSWSERIAL
+#endif  // #if defined (BUILD_TEST_NEOSWSERIAL)
 
-#ifdef BUILD_TEST_SOFTSERIAL
+#if defined(BUILD_TEST_SOFTSERIAL)
 // The "standard" software serial library uses interrupts that conflict
 // with several other libraries used within this program.  I've created a
 // [version of software serial that has been stripped of
@@ -104,7 +104,7 @@ const int8_t softSerialTx = A4;  // data out pin
 #include <SoftwareSerial_ExtInts.h>  // for the stream communication
 SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
 /** End [softwareserial] */
-#endif  // #ifdef BUILD_TEST_SOFTSERIAL
+#endif  // #if defined (BUILD_TEST_SOFTSERIAL)
 
 
 #if defined(MS_PALEOTERRA_SOFTWAREWIRE) || defined(MS_RAIN_SOFTWAREWIRE)
@@ -266,7 +266,7 @@ void SERCOM1_3_Handler() {
 // Since AltSoftSerial is the best software option, we use it for modbus
 // If AltSoftSerial (or its pins) aren't avaiable, use NeoSWSerial
 // SoftwareSerial **WILL NOT** work for modbus!
-#ifdef BUILD_TEST_ALTSOFTSERIAL
+#if defined(BUILD_TEST_ALTSOFTSERIAL)
 // For AltSoftSerial
 #define modbusSerial altSoftSerial
 #elif defined(BUILD_TEST_NEOSWSERIAL)
@@ -282,7 +282,7 @@ void SERCOM1_3_Handler() {
 
 // Since the Maxbotix only needs one-way communication and sends a simple text
 // string repeatedly, almost any software serial port will do for it.
-#ifdef BUILD_TEST_ALTSOFTSERIAL&& defined(BUILD_SENSOR_MAX_BOTIX_SONAR)
+#if defined(BUILD_TEST_ALTSOFTSERIAL) && defined(BUILD_SENSOR_MAX_BOTIX_SONAR)
 // For AltSoftSerial
 #define sonarSerial altSoftSerial
 #elif defined(BUILD_TEST_NEOSWSERIAL) && defined(BUILD_SENSOR_MAX_BOTIX_SONAR)
@@ -298,7 +298,7 @@ void SERCOM1_3_Handler() {
 
 // I **REALLY** don't recommend using a software serial for the camera, but oh
 // well
-#ifdef BUILD_TEST_ALTSOFTSERIAL&& defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
+#if defined(BUILD_TEST_ALTSOFTSERIAL) && defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
 // For AltSoftSerial
 #define sonarSerial altSoftSerial
 #elif defined(BUILD_TEST_NEOSWSERIAL) && defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
@@ -1939,7 +1939,7 @@ int8_t  paleoTerraPower = sensorPowerPin;  // Power pin
 uint8_t paleoI2CAddress = 0x68;  // the I2C address of the redox sensor
 
 // Create the PaleoTerra sensor object
-#ifdef MS_PALEOTERRA_SOFTWAREWIRE
+#if defined(MS_PALEOTERRA_SOFTWAREWIRE)
 PaleoTerraRedox ptRedox(&softI2C, paleoTerraPower, paleoI2CAddress);
 // PaleoTerraRedox ptRedox(paleoTerraPower, softwareSDA, softwareSCL,
 // paleoI2CAddress);
@@ -1966,7 +1966,7 @@ const uint8_t RainCounterI2CAddress = 0x08;
 const float depthPerTipEvent = 0.2;  // rain depth in mm per tip event
 
 // Create a Rain Counter sensor object
-#ifdef MS_RAIN_SOFTWAREWIRE
+#if defined(MS_RAIN_SOFTWAREWIRE)
 RainCounterI2C tbi2c(&softI2C, RainCounterI2CAddress, depthPerTipEvent);
 // RainCounterI2C tbi2c(softwareSDA, softwareSCL, RainCounterI2CAddress,
 //                      depthPerTipEvent);
@@ -3097,12 +3097,12 @@ Variable* variableList[] = {
     modemRSSI,
     modemSignalPct,
 #endif
-#ifdef TINY_GSM_MODEM_HAS_BATTERY
+#if defined(TINY_GSM_MODEM_HAS_BATTERY)
     modemBatteryState,
     modemBatteryPct,
     modemBatteryVoltage,
 #endif
-#ifdef TINY_GSM_MODEM_HAS_TEMPERATURE
+#if defined(TINY_GSM_MODEM_HAS_TEMPERATURE)
     modemTemperature,
 #endif
     mcuBoardSampNo,
@@ -3656,7 +3656,7 @@ void loop() {
         // return a signal strength reading.
         if (getBatteryVoltage() > 3.55) modem.modemPowerUp();
 
-#ifdef BUILD_TEST_ALTSOFTSERIAL
+#if defined(BUILD_TEST_ALTSOFTSERIAL)
         // Start the stream for the modbus sensors, if your RS485 adapter bleeds
         // current from data pins when powered off & you stop modbus serial
         // connection with digitalWrite(5, LOW), below.
@@ -3673,7 +3673,7 @@ void loop() {
 
         extendedWatchDog::resetWatchDog();
 
-#ifdef BUILD_TEST_ALTSOFTSERIAL
+#if defined(BUILD_TEST_ALTSOFTSERIAL)
         // Reset modbus serial pins to LOW, if your RS485 adapter bleeds power
         // on sleep, because Modbus Stop bit leaves these pins HIGH.
         // https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
@@ -3731,7 +3731,7 @@ void loop() {
 
     // Check if it was instead the testing interrupt that woke us up
     if (Logger::startTesting) {
-#ifdef BUILD_TEST_ALTSOFTSERIAL
+#if defined(BUILD_TEST_ALTSOFTSERIAL)
         // Start the stream for the modbus sensors, if your RS485 adapter bleeds
         // current from data pins when powered off & you stop modbus serial
         // connection with digitalWrite(5, LOW), below.
@@ -3742,7 +3742,7 @@ void loop() {
         dataLogger.testingMode();
     }
 
-#ifdef BUILD_TEST_ALTSOFTSERIAL
+#if defined(BUILD_TEST_ALTSOFTSERIAL)
     // Reset modbus serial pins to LOW, if your RS485 adapter bleeds power
     // on sleep, because Modbus Stop bit leaves these pins HIGH.
     // https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833

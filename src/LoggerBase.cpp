@@ -1059,15 +1059,6 @@ bool Logger::initializeSDCard(void) {
     // sd.begin(SdSpiConfig(_SDCardSSPin, DEDICATED_SPI | USER_SPI_BEGIN,
     // SPI_FULL_SPEED));
 
-/**
- * @def SDCARD_SPI
- * @brief The SPI to use for the SD card - frequently defined in the variants
- * file.
- */
-#if !defined(SDCARD_SPI)
-#define SDCARD_SPI SPI
-#endif
-
 #if (defined(ARDUINO_ARCH_SAMD)) && !defined(__SAMD51__)
     // Dispite the 48MHz clock speed, the max SPI speed of a SAMD21 is 12 MHz
     // see https://github.com/arduino/ArduinoCore-samd/pull/292
