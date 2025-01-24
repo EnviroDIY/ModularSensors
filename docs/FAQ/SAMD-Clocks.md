@@ -1,10 +1,10 @@
-# The SAMD clock system<!-- {#page_samd_clocks} -->
+# The SAMD clock system<!--! {#page_samd_clocks} -->
 
-[//]: # ( @tableofcontents )
+<!--! @tableofcontents -->
 
-[//]: # ( @m_footernavigation )
+<!--! @m_footernavigation -->
 
-[//]: # ( Start GitHub Only )
+<!--! @if GITHUB -->
 
 - [The SAMD clock system](#the-samd-clock-system)
   - [Terms](#terms)
@@ -34,7 +34,7 @@
   - [NVIC Interrupts Defined in the Adafruit SAMD U2F Bootloader and Arduino Core](#nvic-interrupts-defined-in-the-adafruit-samd-u2f-bootloader-and-arduino-core)
   - [NVIC Interrupts Defined in Other Popular Libraries](#nvic-interrupts-defined-in-other-popular-libraries)
 
-[//]: # ( End GitHub Only )
+<!--! @endif -->
 
 
 ## Terms
@@ -57,9 +57,9 @@ There can also be a 'divisor' between the ticking source and the counter - that 
 
 See also: https://blog.thea.codes/understanding-the-sam-d21-clocks/
 
-## SAMD21<!-- {#samd21_clocks} -->
+## SAMD21<!--! {#samd21_clocks} -->
 
-### The SAMD21 clock system<!-- {#samd21_clock_system} -->
+### The SAMD21 clock system<!--! {#samd21_clock_system} -->
 
 From the SAMD21 Datasheet 14.1:
 
@@ -77,7 +77,7 @@ From the SAMD21 Datasheet 14.1:
 >   - The PM generates and controls the synchronous clocks on the system.
 > This includes the CPU, bus clocks (APB, AHB) as well as the synchronous (to the CPU) user interfaces of the peripherals.  It contains clock masks that can turn on/off the user interface of a peripheral as well as prescalers for the CPU and bus clocks
 
-### SAMD21 Clock Requirements Relevant to ModularSensors<!-- {#samd21_clock_reqs} -->
+### SAMD21 Clock Requirements Relevant to ModularSensors<!--! {#samd21_clock_reqs} -->
 
 The watchdog's peripheral clock must be attached to a currently-on clock source so it can tell how much time has passed and whether it needs to bite.
 The watchdog peripheral clock is not configured by the core.
@@ -94,7 +94,7 @@ If the external interupt controller is not attached to a running clock, then int
 Thus, if the clock source for interrupts is not running in standby, the interrupts will not be able to wake the device.
 The flow from a clock source to the EIC is the same as that for the WDT.
 
-### SAMD21 Settings at Power On<!-- {#samd21_clock_power_on} -->
+### SAMD21 Settings at Power On<!--! {#samd21_clock_power_on} -->
 
 After a power-on reset, the clock generators for peripherals default to:
 
@@ -105,7 +105,7 @@ After a power-on reset, the clock generators for peripherals default to:
 
 See [section 13.7 of the datasheet](https://onlinedocs.microchip.com/oxy/GUID-F5813793-E016-46F5-A9E2-718D8BCED496-en-US-13/GUID-4F945BA9-D138-4F79-AA1A-5CFF0E67A977.html)
 
-### SAMD21 Arduino Core Setup Clock Generator Configuration<!-- {#samd21_clock_core_setup} -->
+### SAMD21 Arduino Core Setup Clock Generator Configuration<!--! {#samd21_clock_core_setup} -->
 
 [Within the SAMD core](https://github.com/adafruit/ArduinoCore-samd/blob/ce20340620bfd9c545649ee5c4873888ee0475d0/cores/arduino/startup.c#L311) SystemInit() in startup.c configures clocks with these steps:
 
@@ -130,7 +130,7 @@ Resulting generic clock generator speeds:
 - GCLKGEN3 = 8 MHz; sourced from OSC8M, which does not run in standby.
 - GCLKGEN4-GCLKGEN8 = *not configured*
 
-### SAMD21 Arduino Core Library Clock Configuration<!-- {#samd21_clock_core_configs} -->
+### SAMD21 Arduino Core Library Clock Configuration<!--! {#samd21_clock_core_configs} -->
 
 - [WInterrupts.c](https://github.com/adafruit/ArduinoCore-samd/blob/ce20340620bfd9c545649ee5c4873888ee0475d0/cores/arduino/WInterrupts.c#L56)
   - Configures the external interrupt controller (EIC) clock (`GCM_EIC`) to use GCLKGEN0 at 48 MHz
@@ -159,7 +159,7 @@ Resulting generic clock generator speeds:
   - Configures timer counter clocks (specific clock depending on the analog pin) to use GCLKGEN0 at 48 MHz
   - Does not change the source or other configuration for GCLKGEN0
 
-### Clocks Used by Non-Core Libraries for the SAMD21<!-- {#samd21_clock_other_libraries} -->
+### Clocks Used by Non-Core Libraries for the SAMD21<!--! {#samd21_clock_other_libraries} -->
 
 - [RTCZero](https://github.com/arduino-libraries/RTCZero/)
   - Configures the RTC's generic clock (GCM_RTC) to use generic clock generator 2
@@ -196,9 +196,9 @@ Resulting generic clock generator speeds:
   - Sets the source for GCKLGEN5 as the internal ultra-low power 32k oscillator.
   - Uses a 32x divisor to get a 1024Hz(ish) clock to manage the watchdog and EIC.
 
-## SAMD51 and SAME51<!-- {#samd51_clocks} -->
+## SAMD51 and SAME51<!--! {#samd51_clocks} -->
 
-### The SAMD51 clock system<!-- {#samd51_clock_system} -->
+### The SAMD51 clock system<!--! {#samd51_clock_system} -->
 
 [From 13.1 of the SAMD51 Datasheet](https://onlinedocs.microchip.com/oxy/GUID-F5813793-E016-46F5-A9E2-718D8BCED496-en-US-13/GUID-FC6F58EC-FCDA-4478-AE60-45F2E160FF94.html))
 
@@ -212,7 +212,7 @@ Resulting generic clock generator speeds:
 > - *Main Clock Controller (MCLK)*
 >   - The MCLK generates and controls the synchronous clocks on the system. This includes the CPU, bus clocks (APB, AHB) as well as the synchronous (to the CPU) user interfaces of the peripherals. It contains clock masks that can turn on/off the user interface of a peripheral as well as prescalers for the CPU and bus clocks.
 
-### SAMD51 Clock Requirements Relevant to ModularSensors<!-- {#samd51_clock_reqs} -->
+### SAMD51 Clock Requirements Relevant to ModularSensors<!--! {#samd51_clock_reqs} -->
 
 The SAMD51 WDT uses the 1K output from the OSCULP32k; there are no other possible clock sources for the WDT.
 No separate clock generator or peripheral clock configuration is needed.
@@ -224,11 +224,11 @@ One the SAMD51, the EIC *can* be configured to work directly with the OSCULP32k 
 If the EIC is not configured to connect directly to the OSCULP32k, the GCLK it is configured to must be set to run in standby.
 The path from a clock source to the EIC on the SAMD51 is very similar to that of the SAMD21.
 
-### SAMD51 Settings at Power On<!-- {#samd51_clock_power_on} -->
+### SAMD51 Settings at Power On<!--! {#samd51_clock_power_on} -->
 
 [See section 13.7 of the datasheet.](https://onlinedocs.microchip.com/oxy/GUID-F5813793-E016-46F5-A9E2-718D8BCED496-en-US-13/GUID-4F945BA9-D138-4F79-AA1A-5CFF0E67A977.html)
 
-### SAMD51 Arduino Core Setup Clock Generator Configuration<!-- {#samd51_clock_core_setup} -->
+### SAMD51 Arduino Core Setup Clock Generator Configuration<!--! {#samd51_clock_core_setup} -->
 
 [Within the SAMD core](https://github.com/adafruit/ArduinoCore-samd/blob/ce20340620bfd9c545649ee5c4873888ee0475d0/cores/arduino/startup.c#L57) SystemInit() in startup.c configures clocks with these steps:
 
@@ -267,7 +267,7 @@ The path from a clock source to the EIC on the SAMD51 is very similar to that of
 - GCLK3 = 32 kHz; sourced from XOSC32K, which does run in standby if requested by peripheral (I think?)
 - GCLK4 = 12 MHz; sourced from DFLL48M, which does not run in standby.
 
-### SAMD51 Arduino Core Library Clock and Peripheral Configuration<!-- {#samd51_clock_core_configs} -->
+### SAMD51 Arduino Core Library Clock and Peripheral Configuration<!--! {#samd51_clock_core_configs} -->
 
 - [WInterrupts.c](https://github.com/adafruit/ArduinoCore-samd/blob/ce20340620bfd9c545649ee5c4873888ee0475d0/cores/arduino/WInterrupts.c#L48)
   - Configures the external interrupt controller (EIC) clock (`EIC_GCLK_ID`) to use GCLKGEN2 at 100 MHz
@@ -302,7 +302,7 @@ Thus, if the clock source for interrupts is not running in standby, the interrup
 In [WInterrupts.c](https://github.com/adafruit/ArduinoCore-samd/blob/ce20340620bfd9c545649ee5c4873888ee0475d0/cores/arduino/WInterrupts.c#L48) in the Adafruit SAMD core, generic clock generator 2 (from the PLL1 at 100MHz with no divisor) is used for the EIC peripheral.
 The Arduino core does *NOT* configure the generic clock generator 0 (ie GCLK_MAIN = DFLL48M) to stay awake in standby!
 
-### Clocks Used by Non-Core Libraries for the SAMD51<!-- {#samd51_clock_other_libraries} -->
+### Clocks Used by Non-Core Libraries for the SAMD51<!--! {#samd51_clock_other_libraries} -->
 
 - [RTCZero](https://github.com/arduino-libraries/RTCZero/)
   - The RTC of the SAMD51 is sourced directly from an oscillator, not via the generic clock generator system. This library only configures the RTC oscillator on the SAMD51.
@@ -378,9 +378,9 @@ The Arduino core does *NOT* configure the generic clock generator 0 (ie GCLK_MAI
 
 # The Non-Volatile Interrupt Controller (NVIC)
 
-This section is copyied selections from Microchip's developer help on the NVIC.
+This section is copyied selections from [Microchip's developer help on the NVIC](https://developerhelp.microchip.com/xwiki/bin/view/products/mcu-mpu/32bit-mcu/sam/samd21-mcu-overview/samd21-processor-overview/samd21-nvic-overview/).
 
-## [NVIC Overview](https://developerhelp.microchip.com/xwiki/bin/view/products/mcu-mpu/32bit-mcu/sam/samd21-mcu-overview/samd21-processor-overview/samd21-nvic-overview/)
+## NVIC Overview
 
 ## Priority Levels
 Cortex-M0+ processors support three fixed highest priority levels for three of the system exceptions, and four programmable levels for all other exceptions, including interrupts.

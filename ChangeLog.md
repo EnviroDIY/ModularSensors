@@ -1,4 +1,4 @@
-# ChangeLog
+# ChangeLog<!--! {#change_log} -->
 
 All notable changes to this project will be documented in this file.
 
@@ -1050,6 +1050,6 @@ Our first release of the modular sensors library to support easily logging data 
 [0.6.9]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.6.9
 [0.5.4-beta]: https://github.com/EnviroDIY/ModularSensors/releases/tag/0.5.4-beta
 
-[//]: # ( @tableofcontents{XML:1} )
+<!--! @tableofcontents{HTML:1} -->
 
-[//]: # ( @m_footernavigation )
+<!--! @m_footernavigation -->

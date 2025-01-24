@@ -1,4 +1,4 @@
-# Library Dependencies<!-- {#page_library_dependencies} -->
+# Library Dependencies<!--! {#page_library_dependencies} -->
 
 > [!WARNING]
 > This page is frequently out of date. Please see the library.json or dependencies.json and example_dependencies.json for the most up-to-date library references!

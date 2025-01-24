@@ -1,4 +1,4 @@
-# Extra scripts for Continuous Integration Using GitHub Actions<!-- {#page_continuous_intetration} -->
+# Extra scripts for Continuous Integration Using GitHub Actions<!--! {#page_continuous_intetration} -->
 
 - check_component_inclusion.py
   - A python script to check that all sensor, modem, and publisher classes are included in the massive menu a la carte example.

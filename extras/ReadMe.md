@@ -1,4 +1,4 @@
-# Extra Helper Sketches<!-- {#page_extra_helper_sketches} -->
+# Extra Helper Sketches<!--! {#page_extra_helper_sketches} -->
 
 A collection of helper sketches to test individual sensor timing and configurations.
 

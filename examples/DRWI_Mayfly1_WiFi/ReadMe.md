@@ -1,4 +1,4 @@
-# DRWI Sites with a Mayfly 1.x and EnviroDIY ESP32 WiFi Bee<!-- {#example_drwi_mayfly1_wifi} -->
+# DRWI Sites with a Mayfly 1.x and EnviroDIY ESP32 WiFi Bee<!--! {#example_drwi_mayfly1_wifi} -->
 
 Example sketch for using the EnviroDIY ESP32 WiFi cellular module with an EnviroDIY Mayfly Data Logger.
 
@@ -18,28 +18,28 @@ Be sure to edit lines 101 and 102 to enter your Wifi access point name and passw
 
 _______
 
-[//]: # ( @tableofcontents )
+<!--! @tableofcontents -->
 
-[//]: # ( @m_footernavigation )
+<!--! @m_footernavigation -->
 
-[//]: # ( Start GitHub Only )
+<!--! @if GITHUB -->
 
 - [DRWI Sites with a Mayfly 1.x and EnviroDIY ESP32 WiFi Bee](#drwi-sites-with-a-mayfly-1x-and-envirodiy-esp32-wifi-bee)
   - [Unique Features of the DRWI Mayfly 1.x WiFi Example](#unique-features-of-the-drwi-mayfly-1x-wifi-example)
 
-[//]: # ( End GitHub Only )
+<!--! @endif -->
 
 _______
 
-## Unique Features of the DRWI Mayfly 1.x WiFi Example<!-- {#example_drwi_mayfly1_wifi_unique} -->
+## Unique Features of the DRWI Mayfly 1.x WiFi Example<!--! {#example_drwi_mayfly1_wifi_unique} -->
 
 - Specifically for sites within the Delaware River Watershed Initiative.
 - Uses a EnviroDIY WiFi Bee based on the Espressif ESP32-WROOM-32
 
-[//]: # ( @section example_drwi_mayfly1_wifi_pio_config PlatformIO Configuration )
+<!--! @section example_drwi_mayfly1_wifi_pio_config PlatformIO Configuration -->
 
-[//]: # ( @include{lineno} DRWI_Mayfly1_WiFi/platformio.ini )
+<!--! @include{lineno} DRWI_Mayfly1_WiFi/platformio.ini -->
 
-[//]: # ( @section example_drwi_mayfly1_wifi_code The Complete Code )
+<!--! @section example_drwi_mayfly1_wifi_code The Complete Code -->
 
-[//]: # ( @include{lineno} DRWI_Mayfly1_WiFi/DRWI_Mayfly1_WiFi.ino )
+<!--! @include{lineno} DRWI_Mayfly1_WiFi/DRWI_Mayfly1_WiFi.ino -->

@@ -1,4 +1,4 @@
-# Learn EnviroDIY Course<!-- {#example_learn_envirodiy} -->
+# Learn EnviroDIY Course<!--! {#example_learn_envirodiy} -->
 
 This shows the simplest use of a "logger" object.
 That is, creating an array of variable objects and then creating a logger object that utilizes those variables to update all of the variable results together and save the data to a SD card.
@@ -10,11 +10,11 @@ This is the example you should use to deploy a logger somewhere where you don't 
 
 _______
 
-[//]: # ( @tableofcontents )
+<!--! @tableofcontents -->
 
-[//]: # ( @m_footernavigation )
+<!--! @m_footernavigation -->
 
-[//]: # ( Start GitHub Only )
+<!--! @if GITHUB -->
 
 - [Learn EnviroDIY Course](#learn-envirodiy-course)
   - [Unique Features of the Learn EnviroDIY Example](#unique-features-of-the-learn-envirodiy-example)
@@ -23,18 +23,18 @@ _______
     - [Set the logger ID](#set-the-logger-id)
     - [Upload!](#upload)
 
-[//]: # ( End GitHub Only )
+<!--! @endif -->
 
 _______
 
-## Unique Features of the Learn EnviroDIY Example<!-- {#example_learn_envirodiy_unique} -->
+## Unique Features of the Learn EnviroDIY Example<!--! {#example_learn_envirodiy_unique} -->
 
 - Only logs data to an SD card.
 - Uses a few more sensors than the other simple logging example
 
-## To Use this Example<!-- {#example_learn_envirodiy_using} -->
+## To Use this Example<!--! {#example_learn_envirodiy_using} -->
 
-### Prepare and set up PlatformIO<!-- {#example_learn_envirodiy_pio} -->
+### Prepare and set up PlatformIO<!--! {#example_learn_envirodiy_pio} -->
 
 - Create a new PlatformIO project
 - Replace the contents of the platformio.ini for your new project with the [platformio.ini](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/simple_logging_LearnEnviroDIY/platformio.ini) file in the examples/simple_logging_LearnEnviroDIY folder on GitHub.
@@ -43,7 +43,7 @@ _______
 - Open [simple_logging_LearnEnviroDIY.ino](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/simple_logging_LearnEnviroDIY/simple_logging_LearnEnviroDIY.ino) and save it to your computer.  Put it into the src directory of your project.
   - Delete main.cpp in that folder.
 
-### Set the logger ID<!-- {#example_learn_envirodiy_logger_id} -->
+### Set the logger ID<!--! {#example_learn_envirodiy_logger_id} -->
 
 - Change the "XXXX" in this section of code to the loggerID assigned by Stroud:
 
@@ -52,16 +52,16 @@ _______
 const char *LoggerID = "XXXX";
 ```
 
-### Upload!<!-- {#example_learn_envirodiy_upload} -->
+### Upload!<!--! {#example_learn_envirodiy_upload} -->
 
 - Test everything at home **before** deploying out in the wild!
 
 _______
 
-[//]: # ( @section example_learn_envirodiy_pio_config PlatformIO Configuration )
+<!--! @section example_learn_envirodiy_pio_config PlatformIO Configuration -->
 
-[//]: # ( @include{lineno} simple_logging_LearnEnviroDIY/platformio.ini )
+<!--! @include{lineno} simple_logging_LearnEnviroDIY/platformio.ini -->
 
-[//]: # ( @section example_learn_envirodiy_code The Complete Code )
+<!--! @section example_learn_envirodiy_code The Complete Code -->
 
-[//]: # ( @include{lineno} simple_logging_LearnEnviroDIY/simple_logging_LearnEnviroDIY.ino )
+<!--! @include{lineno} simple_logging_LearnEnviroDIY/simple_logging_LearnEnviroDIY.ino -->
