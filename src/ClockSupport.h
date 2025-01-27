@@ -49,14 +49,14 @@
 
 #if defined(ENVIRODIY_STONEFLY_M4) && not defined(MS_USE_RV8803)
 /**
- * @brief Select RV-8803 as the RTC
+ * @brief Select RV-8803 as the RTC for the EnviroDIY Stonefly.
  */
 #define MS_USE_RV8803
 #undef MS_USE_DS3231
 #undef MS_USE_RTC_ZERO
 #elif defined(ARDUINO_AVR_ENVIRODIY_MAYFLY) && not defined(MS_USE_DS3231)
 /**
- * @brief Select DS3231 as the RTC
+ * @brief Select DS3231 as the RTC for the EnviroDIY Mayfly.
  */
 #define MS_USE_DS3231
 #undef MS_USE_RV8803
@@ -65,7 +65,8 @@
     !defined(MS_USE_DS3231) && !defined(MS_USE_RV8803) &&     \
     !defined(MS_USE_RTC_ZERO)
 /**
- * @brief Select the SAMD21's internal clock (via RTC Zero)
+ * @brief Select the SAMD21's internal clock (via RTC Zero) if no other RTC is
+ * specified.
  */
 #define MS_USE_RTC_ZERO
 #undef MS_USE_RV8803
@@ -204,23 +205,6 @@ class loggerClock {
     // Since there can only be one logger clock and all of it's methods are
     // static, disallow the creation of this class.
     loggerClock() = delete;
-    /**
-     * @brief Set the static offset in hours from UTC that the RTC is programmed
-     * in.
-     *
-     * @note I VERY, VERY STRONGLY RECOMMEND SETTING THE RTC IN UTC(ie, offset =
-     * 0)
-     *
-     * @param offsetHours The offset of the real-time clock (RTC) from UTC in
-     * hours
-     */
-    static void setRTCOffset(int8_t offsetHours);
-    /**
-     * @brief Get the of the real-time clock (RTC) from UTC in hours.
-     *
-     * @return The offset of the real-time clock (RTC) from UTC in hours
-     */
-    static int8_t getRTCOffset(void);
 
 #if defined(MS_USE_RV8803)
     /**
@@ -239,6 +223,23 @@ class loggerClock {
      */
     static RTCZero zero_sleep_rtc;
 #endif
+    /**
+     * @brief Set the static offset in hours from UTC that the RTC is programmed
+     * in.
+     *
+     * @note I VERY, VERY STRONGLY RECOMMEND SETTING THE RTC IN UTC(ie, offset =
+     * 0)
+     *
+     * @param offsetHours The offset of the real-time clock (RTC) from UTC in
+     * hours
+     */
+    static void setRTCOffset(int8_t offsetHours);
+    /**
+     * @brief Get the of the real-time clock (RTC) from UTC in hours.
+     *
+     * @return The offset of the real-time clock (RTC) from UTC in hours
+     */
+    static int8_t getRTCOffset(void);
 
     /**
      * @brief Get the current Universal Coordinated Time (UTC) epoch time from
@@ -253,7 +254,10 @@ class loggerClock {
     static uint32_t getNowAsEpoch(int8_t utcOffset, epochStart epoch);
 
     /**
-     * @brief Convert an epoch time into a ISO8601 formatted string.
+     * @brief Convert an epoch time (seconds since a fixed epoch start) into a
+     * ISO8601 formatted string.
+     *
+     * Code modified from parts of the SparkFun RV-8803 library.
      *
      * @param epochTime The number of seconds since the start of the given
      * epoch in the given offset from UTC.
@@ -340,6 +344,10 @@ class loggerClock {
                                     epochStart epoch);
     /**
      * @brief Enable 1 minute interrupts on the RTC
+     *
+     * Unfortunately, most RTC's do not seem to follow anything like a cron
+     * schedule. Recurring/Periodic alarms can generally be only on single
+     * seconds/minutes/hours/days not on custom intervals.
      */
     static void enablePeriodicRTCInterrupts();
     /**
@@ -399,23 +407,6 @@ class loggerClock {
      * @brief The start of the epoch for the RTC (or the RTC's library).
      */
     static epochStart _rtcEpoch;
-    /**
-     * @brief Get a raw epoch time from the RTC
-     *
-     * @return The raw epoch time from the RTC
-     */
-    static uint32_t getRawRTCNow();
-    /**
-     * @brief Sets the RTC to exactly the epoch time provided
-     *
-     * @param ts A timestamp already in the epoch and timezone used internally
-     * by the RTC
-     */
-    static void setRawRTCNow(uint32_t ts);
-    /**
-     * @brief Begins the underlying RTC
-     */
-    static void rtcBegin();
 
     /**
      * @brief Convert a timestamp with the given offset and epoch to the RTC
@@ -443,6 +434,24 @@ class loggerClock {
      */
     static inline uint32_t tsFromRawRTC(uint32_t ts, int8_t utcOffset,
                                         epochStart epoch);
+
+    /**
+     * @brief Get a raw epoch time from the RTC
+     *
+     * @return The raw epoch time from the RTC
+     */
+    static uint32_t getRawRTCNow();
+    /**
+     * @brief Sets the RTC to exactly the epoch time provided
+     *
+     * @param ts A timestamp already in the epoch and timezone used internally
+     * by the RTC
+     */
+    static void setRawRTCNow(uint32_t ts);
+    /**
+     * @brief Begins the underlying RTC
+     */
+    static void rtcBegin();
 };
 
 #endif

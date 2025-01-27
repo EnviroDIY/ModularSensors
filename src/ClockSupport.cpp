@@ -12,13 +12,7 @@
 #include "LoggerBase.h"
 
 #ifdef MS_CLOCKSUPPORT_DEBUG
-// helper functions to convert between epoch starts
-/**
- * @brief Gets a string name for the epoch
- *
- * @param epoch The epoch to get the name of
- * @return The name for the epoch
- */
+
 String epochStart::printEpochName() {
     switch (_unixOffset) {
         case epochStart::unix_epoch: return "Unix";
@@ -28,12 +22,7 @@ String epochStart::printEpochName() {
         default: return "???";
     }
 }
-/**
- * @brief Gets a string for the start date of the epoch
- *
- * @param epoch The epoch to get the starting date of
- * @return The starting date, in ISO8601
- */
+
 String epochStart::printEpochStart() {
     switch (_unixOffset) {
         case epochStart::unix_epoch: return "1970-01-01T00:00:00Z";
@@ -44,11 +33,6 @@ String epochStart::printEpochStart() {
     }
 }
 #endif
-
-
-// ===================================================================== //
-// Public functions to access the clock in proper format and time zone
-// ===================================================================== //
 
 
 // Initialize the processor epoch
@@ -71,12 +55,11 @@ epochStart loggerClock::_rtcEpoch = epochStart::unix_epoch;
 
 // Initialize the RTC
 // Needed for static instances
-// NOTE: The Sodaq DS3231 library externs the clock instance, so it's not needed
-// here.
 #if defined(MS_USE_RV8803)
 RV8803 loggerClock::rtc;
 #elif defined(MS_USE_DS3231)
 // pass
+// The Sodaq DS3231 library externs the clock instance, so it's not needed here
 #elif defined(MS_USE_RTC_ZERO)
 RTCZero    loggerClock::zero_sleep_rtc;
 #endif
@@ -111,9 +94,8 @@ uint32_t loggerClock::getNowAsEpoch(int8_t utcOffset, epochStart epoch) {
 }
 
 // This converts an epoch time (seconds since a fixed epoch start) into a
-// ISO8601 formatted string. It assumes the supplied date/time is in the
-// LOGGER's timezone and adds the LOGGER's offset as the time zone offset in the
-// string. code modified from parts of the SparkFun RV-8803 library
+// ISO8601 formatted string. Code modified from parts of the SparkFun RV-8803
+// library
 String loggerClock::formatDateTime_ISO8601(uint32_t   epochTime,
                                            int8_t     epochTimeUTCOffset,
                                            epochStart epoch) {
@@ -172,10 +154,6 @@ String loggerClock::formatDateTime_ISO8601(uint32_t   epochTime,
     return String(time8601tz) + String(isotz);
 }
 
-// This converts an epoch time (seconds since a fixed epoch start) into a
-// ISO8601 formatted string. It assumes the supplied date/time is in the
-// LOGGER's timezone and adds the LOGGER's offset as the time zone offset in the
-// string. code modified from parts of the SparkFun RV-8803 library
 void loggerClock::formatDateTime(char* buffer, const char* fmt,
                                  uint32_t epochTime, epochStart epoch) {
     MS_DEEP_DBG(F("Input epoch time:"), epochTime, F("; input epoch:"),
@@ -281,38 +259,6 @@ bool loggerClock::isEpochTimeSane(uint32_t ts, int8_t utcOffset,
     }
 }
 
-
-// Unfortunately, most RTC's do not seem to follow anything like a cron
-// schedule. Recurring/Periodic alarms can generally be only on single
-// seconds/minutes/hours/days not on custom intervals.
-void loggerClock::enablePeriodicRTCInterrupts() {
-    // Disable any previous interrupts
-    disableRTCInterrupts();
-    resetClockInterruptStatus();
-    MS_DBG(F("Setting periodic alarm on"), MS_CLOCK_NAME,
-           F("for every minute."));
-#if defined(MS_USE_RV8803)
-    // Enable a periodic update for every minute
-    rtc.setPeriodicTimeUpdateFrequency(TIME_UPDATE_1_MINUTE);
-    // Enable the hardware interrupt
-    rtc.enableHardwareInterrupt(UPDATE_INTERRUPT);
-#elif defined(MS_USE_DS3231)
-    rtc.enableInterrupts(EveryMinute);
-#elif defined(MS_USE_RTC_ZERO)
-    // We need to set this to 59, because the wake actually occurs 1 second
-    // later; see datasheet 19.6.3:
-    // > When an alarm match occurs, the Alarm 0 Interrupt flag in the Interrupt
-    // Flag Status and Clear registers (INTFLAG.ALARMn0) is set on the next
-    // 0-to-1 transition of CLK_RTC_CNT. E.g. For a 1Hz clock counter, it means
-    // the Alarm 0 Interrupt flag is set with a delay of 1s after the occurrence
-    // of alarm match. A valid alarm match depends on the setting of the Alarm
-    // Mask Selection bits in the Alarm
-    zero_sleep_rtc.attachInterrupt(loggerClock::rtcISR);
-    zero_sleep_rtc.setAlarmSeconds(59);
-    zero_sleep_rtc.enableAlarm(zero_sleep_rtc.MATCH_SS);
-
-#endif  // defined(MS_USE_RTC_ZERO)
-}
 void loggerClock::setNextRTCInterrupt(uint32_t ts, int8_t utcOffset,
                                       epochStart epoch) {
     // Disable any previous interrupts
@@ -370,6 +316,38 @@ void loggerClock::setNextRTCInterrupt(uint32_t ts, int8_t utcOffset,
     rtc.setAlarmTime(tmp->tm_hour, tmp->tm_min, tmp->tm_sec - 1);
     rtc.enableAlarm(rtc.MATCH_HHMMSS);  // Every day at the matched time
 #endif
+}
+
+// Unfortunately, most RTC's do not seem to follow anything like a cron
+// schedule. Recurring/Periodic alarms can generally be only on single
+// seconds/minutes/hours/days not on custom intervals.
+void loggerClock::enablePeriodicRTCInterrupts() {
+    // Disable any previous interrupts
+    disableRTCInterrupts();
+    resetClockInterruptStatus();
+    MS_DBG(F("Setting periodic alarm on"), MS_CLOCK_NAME,
+           F("for every minute."));
+#if defined(MS_USE_RV8803)
+    // Enable a periodic update for every minute
+    rtc.setPeriodicTimeUpdateFrequency(TIME_UPDATE_1_MINUTE);
+    // Enable the hardware interrupt
+    rtc.enableHardwareInterrupt(UPDATE_INTERRUPT);
+#elif defined(MS_USE_DS3231)
+    rtc.enableInterrupts(EveryMinute);
+#elif defined(MS_USE_RTC_ZERO)
+    // We need to set this to 59, because the wake actually occurs 1 second
+    // later; see datasheet 19.6.3:
+    // > When an alarm match occurs, the Alarm 0 Interrupt flag in the Interrupt
+    // Flag Status and Clear registers (INTFLAG.ALARMn0) is set on the next
+    // 0-to-1 transition of CLK_RTC_CNT. E.g. For a 1Hz clock counter, it means
+    // the Alarm 0 Interrupt flag is set with a delay of 1s after the occurrence
+    // of alarm match. A valid alarm match depends on the setting of the Alarm
+    // Mask Selection bits in the Alarm
+    zero_sleep_rtc.attachInterrupt(loggerClock::rtcISR);
+    zero_sleep_rtc.setAlarmSeconds(59);
+    zero_sleep_rtc.enableAlarm(zero_sleep_rtc.MATCH_SS);
+
+#endif  // defined(MS_USE_RTC_ZERO)
 }
 void loggerClock::disableRTCInterrupts() {
     MS_DBG(F("Unsetting all alarms on the"), MS_CLOCK_NAME);
