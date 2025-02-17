@@ -148,7 +148,7 @@ bool SDI12Sensors::requestSensorAcknowledgement(void) {
             didAcknowledge = true;
         } else if (sdiResponse.startsWith(String(_SDI12address))) {
             MS_DBG(F("   "), getSensorNameAndLocation(),
-                   F("replied, unexpectedly"));
+                   F("replied, strangely"));
             didAcknowledge = true;
         } else {
             MS_DBG(F("   "), getSensorNameAndLocation(), F("did not reply!"));
@@ -272,13 +272,14 @@ String SDI12Sensors::getSensorLocation(void) {
 int8_t SDI12Sensors::startSDI12Measurement(bool isConcurrent) {
     String startCommand;
     String sdiResponse;
+    String returnedAddress;
 
-    // Try up to 3 times to start a measurement
-    uint8_t numVariables = 0;
-    uint8_t ntries       = 0;
-    int8_t  wait         = -1;  // NOTE: The wait time can be 0!
-    while (numVariables != (_numReturnedValues - _incCalcValues) &&
-           ntries < 5) {
+    // Try up to 5 times to start a measurement
+    uint8_t numVariables   = 0;
+    uint8_t ntries         = 0;
+    bool    didAcknowledge = false;
+    int8_t  wait           = -1;  // NOTE: The wait time can be 0!
+    while (!didAcknowledge && ntries < 5) {
         if (isConcurrent) {
             MS_DBG(F("  Beginning concurrent measurement on"),
                    getSensorNameAndLocation());
@@ -310,21 +311,37 @@ int8_t SDI12Sensors::startSDI12Measurement(bool isConcurrent) {
 
         // find out how long we have to wait (in seconds).
         if (sdiResponse.length() > 3) {
+            returnedAddress = sdiResponse.substring(0, 1);
             wait = static_cast<uint8_t>(sdiResponse.substring(1, 4).toInt());
             numVariables =
                 static_cast<uint8_t>(sdiResponse.substring(4).toInt());
+        }
+        MS_DEEP_DBG(F("   Responding address:"), returnedAddress,
+                    F("wait time:"), wait, F("result count:"), numVariables);
+        // Only require that the responding address be correct to consider the
+        // result to have been started
+        if (returnedAddress == String(_SDI12address)) {
+            didAcknowledge = true;
+        } else {
+            // print a warning if the responding address is wrong (and try
+            // again)
+            MS_DBG(F("   Wrong address replied, got"), returnedAddress,
+                   F("instead of"), _SDI12address);
+        }
+        // Print a warning if the wait is going to be longer than we expect
+        if (wait > ceil(_measurementTime_ms / 1000)) {
+            MS_DBG(F("   Wait time is too long"), wait * 1000, F("instead of"),
+                   _measurementTime_ms);
+        }
+        // Print a warning if the number of returned results is wrong
+        if (numVariables != _numReturnedValues) {
+            MS_DBG(F("   Wrong number of results expected"), wait * 1000,
+                   F("instead of"), (_numReturnedValues - _incCalcValues));
         }
 
         // Empty the buffer again
         _SDI12Internal.clearBuffer();
         ntries++;
-    }
-
-    // Verify the number of results the sensor will send
-    if (numVariables != (_numReturnedValues - _incCalcValues)) {
-        PRINTOUT(numVariables, F("results expected"),
-                 F("This differs from the sensor's standard design of"),
-                 (_numReturnedValues - _incCalcValues), F("measurements!!"));
     }
 
     // Return how long we're expecting to wait for a measurement
@@ -428,7 +445,7 @@ bool SDI12Sensors::getResults(void) {
         auto returnedAddress = static_cast<char>(_SDI12Internal.read());
         // print out a warning if the address doesn't match up
         if (returnedAddress != _SDI12address) {
-            MS_DBG(F("Warning, expecting data from"), _SDI12address,
+            MS_DBG(F("WARNING: expecting data from"), _SDI12address,
                    F("but got data from"), returnedAddress);
         }
         // Start printing out the returned data
