@@ -100,7 +100,7 @@
  * The number of variables that can be returned by Geolux HydroCam
  */
 /**@{*/
-/// @brief Sensor::_numReturnedValues; the HydroCam can report 1 value.
+/// @brief Sensor::_numReturnedValues; the HydroCam can report 2 values.
 #define HYDROCAM_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define HYDROCAM_INC_CALC_VARIABLES 0
@@ -344,8 +344,10 @@ class GeoluxHydroCam : public Sensor {
      * @brief Private reference to the power pin fro the RS-485 adapter.
      */
     int8_t      _powerPin2;
-    const char* _imageResolution;  ///< The pin to trigger the Geolux HydroCam
-    const char* _filePrefix;  ///< The maximum image size of the Geolux HydroCam
+    const char*
+        _imageResolution;  ///< The image resolution from the Geolux HydroCam
+    const char*
+        _filePrefix;  ///< The prefix to add to files from the Geolux HydroCam
     /**
      * @brief True to autofocus before every image. This may be necessary if the
      * camera is power cycled between images. If you are not power cycling or

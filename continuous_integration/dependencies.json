@@ -1,5 +1,5 @@
 {
-  "action_cache_version": 26,
+  "action_cache_version": 27,
   "dependencies": [
     {
       "name": "EnviroDIY_DS3231",
@@ -355,6 +355,16 @@
       ],
       "frameworks": "arduino",
       "platforms": "atmelavr, atmelsam"
+    },
+    {
+      "name": "Adafruit VC0706 Serial Camera Library",
+      "owner": "adafruit",
+      "url": "https://github.com/adafruit/Adafruit-VC0706-Serial-Camera-Library",
+      "version": "~1.2.2",
+      "note": "Library for VC0706-based Serial JPEG Cameras",
+      "authors": [
+        "Adafruit"
+      ]
     },
     {
       "name": "StreamDebugger",
