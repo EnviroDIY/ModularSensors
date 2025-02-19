@@ -413,6 +413,7 @@ bool SDI12Sensors::getResults(void) {
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
     uint8_t resultsReceived = 0;
     uint8_t cmd_number      = 0;
+    uint8_t cmd_retries     = 0;
 
     // When requesting data, the sensor sends back up to ~80 characters at a
     // time to each data request.  If it needs to return more results than can
@@ -421,8 +422,9 @@ bool SDI12Sensors::getResults(void) {
     // requesting data until we either get as many results as we expect or no
     // more data is returned.
     while (resultsReceived < (_numReturnedValues - _incCalcValues) &&
-           cmd_number <= 9) {
-        bool gotResults = false;
+           cmd_number <= 9 && cmd_retries < 5) {
+        bool    gotResults  = false;
+        uint8_t cmd_results = 0;
         // Assemble the command based on how many commands we've already sent,
         // starting with D0 and ending with D9
         // SDI-12 command to get data [address][D][dataOption][!]
@@ -441,6 +443,23 @@ bool SDI12Sensors::getResults(void) {
         while (_SDI12Internal.available() < 3 && (millis() - start) < 1500) {
             // wait
         }
+
+        // the result is structured <addr><values><CR><LF> or
+        // <addr><values><CRC><CR><LF>
+        // the value portion must be structred as pd.d
+        // - p - the polarity sign (+ or -)
+        // - d - numeric digits before the decimal place
+        // - . - the decimal point (optional)
+        // - d - numeric digits after the decimal point
+        // - the maximum number of digits for a data value is 7, even without a
+        // decimal point
+        // - the minimum number of digits for a data value (excluding the
+        // decimal point) is 1
+        // - the maximum number of characters in a data value is 9 (the
+        // (polarity sign + 7 digits + the decimal point))
+        // - The polarity symbol (+ or -) acts as a delimeter between the
+        // numeric values
+
         // read the returned address to remove it from the buffer
         auto returnedAddress = static_cast<char>(_SDI12Internal.read());
         // print out a warning if the address doesn't match up
@@ -451,57 +470,80 @@ bool SDI12Sensors::getResults(void) {
         // Start printing out the returned data
         MS_DEEP_DBG(F("    <<<"), returnedAddress);
 
+        // create a temporary rx buffer for incoming values
+        // this buffer will have a maximum size of the number of measured values
+        // of the sensor
+        float cmd_rx[_numReturnedValues - _incCalcValues];
+        bool  bad_read = false;
         // While there is any data left in the buffer
         while (_SDI12Internal.available() && (millis() - start) < 3000) {
             // First peek to see if the next character in the buffer is a number
             int c = _SDI12Internal.peek();
-            // if there's a number, a decimal, or a negative sign next in the
+            // if there's a polarity sign, a number, or a decimal next in the
             // buffer, start reading it as a float.
-            if (c == '-' || (c >= '0' && c <= '9') || c == '.') {
-                // Read the float without skipping any in-valid characters.
-                // We don't want to skip anything because we want to be able to
-                // debug and see exactly which characters the sensor sent over
-                // if they weren't numbers.
-                // Reading the numbers as a float will remove them from the
-                // buffer.
-                float result = _SDI12Internal.parseFloat(SKIP_NONE);
-                // The SDI-12 library should return -9999 on timeout
+            if (c == '-' || c == '+' || (c >= '0' && c <= '9') || c == '.') {
+                // Read the float only skipping the '+' if it's included as the
+                // polarity.  Reading the numbers as a float will remove them
+                // from the buffer.
+                float result = _SDI12Internal.parseFloat();
+                // The SDI-12 library should return our set timeout value of
+                // -9999 on timeout
                 if (result == -9999 || isnan(result)) result = -9999;
                 // Print out what we got
-                MS_DBG(F("    <<<"), String(result, 10));
-                // Verify that the number is valid and add it to the result
-                // array. After each result is read, tick up the number of
-                // results received so that the next one goes in the next spot
-                // in the variable array.
-                verifyAndAddMeasurementResult(resultsReceived, result);
+                MS_DBG(F("    <<<"), String(result, 7));
+                // Put the read value into the temporary buffer. After each
+                // result is read, tick up the number of results received so
+                // that the next one goes in the next spot in the holding
+                // buffer.
+                cmd_rx[cmd_results] = result;
                 if (result != -9999) {
                     gotResults = true;
-                    resultsReceived++;
+                    cmd_results++;
                 }
-                // if the next spot in the buffer isn't a number, we don't want
-                // to try and parse it, but we do want to print it out to the
-                // debugging port
-            } else {
-// if we're debugging print out the non-numeric character
-#ifdef MS_SDI12SENSORS_DEBUG_DEEP
-                MS_DEEP_DBG(F("    <<<"),
-                            static_cast<char>(_SDI12Internal.read()));
-#else
-                // if we're not debugging, just read the character to make sure
-                // it's removed from the buffer
+                // if we get to a new line, we've made it to the end of the
+                // response
+            } else if (c == '\r' || c == '\n') {
+                MS_DBG(c);
+                // Read the character to make sure it's removed from the buffer
                 _SDI12Internal.read();
-#endif
+                // if the next spot in the buffer isn't a a polarity sign, a
+                // number, or a decimal, then it's a mistake - the protocol
+                // doesn't allow anything else as part of the data string
+            } else {
+                MS_DBG(F("    <<< INVALID CHARACTER IN RESPONSE:"),
+                       static_cast<char>(c));
+                // Read the character to make sure it's removed from the buffer
+                _SDI12Internal.read();
+                bad_read = true;
             }
             delay(10);  // 1 character ~ 7.5ms
         }
+        // bust out if we didn't get any results at all
         if (!gotResults) {
             MS_DBG(F("  No results received, will not continue requests!"));
             break;  // don't do another loop if we got nothing
         }
-        MS_DBG(F("  Total Results Received: "), resultsReceived,
-               F(", Remaining: "),
-               (_numReturnedValues - _incCalcValues) - resultsReceived);
-        cmd_number++;
+        // if we got results and none of them are bad, transfer from the
+        // temporary buffer to the sensor's variable array
+        if (gotResults && !bad_read) {
+            for (uint8_t cr = 0; cr < cmd_results; cr++) {
+                MS_DEEP_DBG(F("Moving result #"), cr, '(', cmd_rx[cr],
+                            F(") to result"), resultsReceived,
+                            F("of the sensor value array"));
+                verifyAndAddMeasurementResult(resultsReceived, cmd_rx[cr]);
+                resultsReceived++;
+            }
+            MS_DBG(F("  Total Results Received: "), resultsReceived,
+                   F(", Remaining: "),
+                   (_numReturnedValues - _incCalcValues) - resultsReceived);
+            cmd_number++;
+        } else {
+            // if we got a bad charater in the response, add one to the retry
+            // attempts but do not bump up the command number or transfer any
+            // results because we want to retry the same data command to try get
+            // a valid response
+            cmd_retries++;
+        }
     }
 
     // Empty the buffer again
