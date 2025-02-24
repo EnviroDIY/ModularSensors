@@ -13,6 +13,10 @@
 #ifndef SRC_CLOCKSUPPORT_H_
 #define SRC_CLOCKSUPPORT_H_
 
+// Debugging Statement
+// #define MS_CLOCKSUPPORT_DEBUG
+// #define MS_CLOCKSUPPORT_DEBUG_DEEP
+
 #ifdef MS_CLOCKSUPPORT_DEBUG
 #define MS_DEBUGGING_STD "ClockSupport"
 #endif
@@ -22,6 +26,7 @@
 #endif
 
 // Included Dependencies
+#include "ModSensorConfig.h"
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 #undef MS_DEBUGGING_DEEP
@@ -214,6 +219,10 @@ class loggerClock {
      * a DS3231, or a RV-8803.
      */
     static RV8803 rtc;
+#elif defined(MS_USE_DS3231)
+// pass
+// The Sodaq DS3231 library creates and externs the clock instance, so it's not
+// needed here
 #elif defined(MS_USE_RTC_ZERO)
     /**
      * @brief The RTC object.
@@ -274,7 +283,7 @@ class loggerClock {
      * @brief Convert an epoch time into a character string based on the input
      * strftime format string and put it into the given buffer.
      *
-     * @note This function DOES NOTE SUPPORT TIMEZONES. Do not use the %z or %Z
+     * @note This function DOES NOT SUPPORT TIMEZONES. Do not use the %z or %Z
      * inputs!
      *
      * @see https://en.cppreference.com/w/cpp/chrono/c/strftime for possible

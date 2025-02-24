@@ -55,6 +55,12 @@ if not os.path.exists(artifact_dir):
     os.makedirs(artifact_dir)
 
 compilers = ["Arduino CLI", "PlatformIO"]
+non_acli_build_flag = [
+    "-Wall",
+    "-Wextra",
+    "-D SDI12_EXTERNAL_PCINT",
+    "-D NEOSWSERIAL_EXTERNAL_PCINT",
+]
 
 
 # %%
@@ -152,6 +158,14 @@ def create_arduino_cli_command(pio_env_name: str, code_subfolder: str) -> str:
         "text",
         "--fqbn",
         pio_to_acli[pio_config.get("env:{}".format(pio_env_name), "board")]["fqbn"],
+    ]
+    for pio_build_flag in pio_config.get("env:{}".format(pio_env_name), "build_flags"):
+        if pio_build_flag not in non_acli_build_flag:
+            arduino_command_args += [
+                "--build-property",
+                f'"build.extra_flags=\\"{pio_build_flag}\\""',
+            ]
+    arduino_command_args += [
         f'"{os.path.join(examples_path, code_subfolder)}"',
     ]
     return " ".join(arduino_command_args)
@@ -761,9 +775,10 @@ json_out.close()
 
 # %%
 # different attempt to save output
-with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
-    print("arduino_job_matrix={}".format(json.dumps(arduino_job_matrix)), file=fh)
-    print("pio_job_matrix={}".format(json.dumps(pio_job_matrix)), file=fh)
+if "GITHUB_WORKSPACE" in os.environ.keys():
+    with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
+        print("arduino_job_matrix={}".format(json.dumps(arduino_job_matrix)), file=fh)
+        print("pio_job_matrix={}".format(json.dumps(pio_job_matrix)), file=fh)
 
 
 # %%

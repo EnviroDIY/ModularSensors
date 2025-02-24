@@ -15,7 +15,7 @@
 #define SRC_PUBLISHERS_UBIDOTSPUBLISHER_H_
 
 // Debugging Statement
-// #define UBIDOTSPUBLISHER_DEBUG
+// #define MS_UBIDOTSPUBLISHER_DEBUG
 
 #ifdef MS_UBIDOTSPUBLISHER_DEBUG
 #define MS_DEBUGGING_STD "UbidotsPublisher"

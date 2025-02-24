@@ -74,7 +74,7 @@
 #define SRC_SENSORS_METERTEROS11_H_
 
 // Debugging Statement
-// #define MS_MeterTeros11_DEBUG
+// #define MS_METERTEROS11_DEBUG
 
 #ifdef MS_METERTEROS11_DEBUG
 #define MS_DEBUGGING_STD "MeterTeros11"

@@ -19,6 +19,7 @@
 
 // Included Dependencies
 #include <Arduino.h>
+#include "ModSensorConfig.h"
 
 /// Helper for strings stored in flash
 /***
