@@ -121,16 +121,6 @@ pio_extra_config_file = os.path.join(ci_path, "platformio_extra_flags.ini")
 pio_config = ProjectConfig(pio_config_file)
 pio_extra_config = ProjectConfig(pio_extra_config_file)
 
-# Translation between board names on PlatformIO and the Arduino CLI
-pio_to_acli = {
-    "mayfly": {"fqbn": "EnviroDIY:avr:envirodiy_mayfly"},
-    "megaatmega2560": {"fqbn": "arduino:avr:mega"},
-    "zeroUSB": {"fqbn": "arduino:samd:mzero_bl"},
-    "adafruit_feather_m0": {"fqbn": "adafruit:samd:adafruit_feather_m0"},
-    "adafruit_feather_m4": {"fqbn": "adafruit:samd:adafruit_feather_m4"},
-    "adafruit_grandcentral_m4": {"fqbn": "adafruit:samd:adafruit_grandcentral_m4"},
-}
-
 
 def get_example_folder(subfolder_name):
     return os.path.join(examples_path, subfolder_name)
