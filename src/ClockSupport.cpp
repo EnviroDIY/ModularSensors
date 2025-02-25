@@ -6,13 +6,39 @@
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Contains the epochStart class, which is a helper to convert between
- * various time types used by different processors.
+ * various time types used by different processors and the loggerClock class.
  */
 #include "ClockSupport.h"
 #include "LoggerBase.h"
 
-#ifdef MS_CLOCKSUPPORT_DEBUG
 
+// Convert Unix Time to GPS Time
+uint32_t epochStart::unix2gps(uint32_t unixTime) {
+    // Add offset in seconds
+    bool isLeap;
+    if (fmod(unixTime, 1) != 0) {
+        unixTime = unixTime - 0.5;
+        isLeap   = 1;
+    } else {
+        isLeap = 0;
+    }
+    uint32_t gpsTime = unixTime - 315964800;
+    int8_t   nLeaps  = countLeaps(gpsTime, true);
+    gpsTime          = gpsTime + nLeaps + isLeap;
+    return gpsTime;
+}
+
+// Convert GPS Time to Unix Time
+uint32_t epochStart::gps2unix(uint32_t gpsTime) {
+    // Add offset in seconds
+    uint32_t unixTime = gpsTime + 315964800;
+    int8_t   nLeaps   = countLeaps(gpsTime, false);
+    unixTime          = unixTime - nLeaps;
+    if (isLeap(gpsTime)) { unixTime = unixTime + 0.5; }
+    return unixTime;
+}
+
+#ifdef MS_CLOCKSUPPORT_DEBUG
 String epochStart::printEpochName() {
     switch (_unixOffset) {
         case epochStart::unix_epoch: return "Unix";
@@ -27,13 +53,37 @@ String epochStart::printEpochStart() {
     switch (_unixOffset) {
         case epochStart::unix_epoch: return "1970-01-01T00:00:00Z";
         case epochStart::y2k_epoch: return "2000-01-01T00:00:00Z";
-        case epochStart::gps_epoch: return "1970-01-01T00:00:00Z";
+        case epochStart::gps_epoch: return "1980-01-05T00:00:00Z";
         case epochStart::nist_epoch: return "1900-01-01T00:00:00Z";
         default: return "???";
     }
 }
 #endif
 
+// Test to see if a GPS second is a leap second
+bool epochStart::isLeap(uint32_t gpsTime) {
+    bool isLeap = false;
+    for (int8_t i = 0; i < NUMBER_LEAP_SECONDS; i++) {
+        if (gpsTime == leapSeconds[i]) { isLeap = true; }
+    }
+    return isLeap;
+}
+
+// Count number of leap seconds that have passed
+int8_t epochStart::countLeaps(uint32_t gpsTime, bool unix2gps) {
+    int8_t nLeaps = 0;  // number of leap seconds prior to gpsTime
+    for (int8_t i = 0; i < NUMBER_LEAP_SECONDS; i++) {
+        if (unix2gps) {
+            if (gpsTime >= leapSeconds[i] - i) { nLeaps++; }
+        } else {
+            if (gpsTime >= leapSeconds[i]) { nLeaps++; }
+        }
+    }
+    return nLeaps;
+}
+
+// Initialize the array for the leap seconds - taken from the defines
+const uint32_t epochStart::leapSeconds[NUMBER_LEAP_SECONDS] = LEAP_SECONDS;
 
 // Initialize the processor epoch
 epochStart loggerClock::_core_epoch = epochStart::y2k_epoch;

@@ -6,7 +6,7 @@
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Contains the epochStart class, which is a helper to convert between
- * various time types used by different processors.
+ * various time types used by different processors and the loggerClock class.
  */
 
 // Header Guards
@@ -113,12 +113,73 @@
 #include <RTCZero.h>
 #endif
 
-// https://stackoverflow.com/questions/21295935/can-a-c-enum-class-have-methods
+#ifndef EPOCH_NIST_TO_UNIX
+/**
+ * @brief The difference in seconds between the epoch value returned by the NIST
+ * Network Time Protocol and the Unix epoch
+ *
+ * The NIST Network Time Protocol (RFC-1305 and later versions) and Time
+ * Protocol (RFC-868) both return a uint32_t which is the number of seconds from
+ * January 1, 1900.  This is 2208988800 seconds behind the UNIX epoch.
+ *
+ * The NIST epoch will roll over and cease to work for processors with a
+ * uint32_t time_t on February 7, 2036 6:28:15 AM.
+ */
+#define EPOCH_NIST_TO_UNIX 2208988800
+#endif
+#ifndef EPOCH_Y2K_TO_UNIX
+/**
+ * @brief The epoch starting Jan 1, 2000, as some RTC's and Arduinos do
+ * (946684800s ahead of UNIX epoch)
+ */
+#define EPOCH_Y2K_TO_UNIX 946684800
+#endif
+#ifndef EPOCH_GPS_TO_UNIX
+/**
+ * @brief The GPS epoch starting Jan 5, 1980 (was 315964800s ahead of UNIX epoch
+ * at founding, has drifted farther apart due to leap seconds)
+ */
+#define EPOCH_GPS_TO_UNIX 315964800
+#endif
+#ifndef NUMBER_LEAP_SECONDS
+/**
+ * @brief The number of announced leap seconds as of February 24, 2025
+ */
+#define NUMBER_LEAP_SECONDS 18
+#endif
+#ifndef LEAP_SECONDS
+/**
+ * @brief The GPS epoch equivalent for each of the announced leap seconds as of
+ * February 24, 2025
+ */
+#define LEAP_SECONDS                                                          \
+    {                                                                         \
+        46828800, 78364801, 109900802, 173059203, 252028804, 315187205,       \
+            346723206, 393984007, 425520008, 457056009, 504489610, 551750411, \
+            599184012, 820108813, 914803214, 1025136015, 1119744016,          \
+            1167264017                                                        \
+    }
+#endif
 
 
 /**
  * @brief A class for dealing with different definitions of the start of the
  * epoch.
+ *
+ * This class is made to be equivalent to a "static" class in java. Do not
+ * create objects of this class; call its static functions as necessary.
+ *
+ * https://stackoverflow.com/questions/21295935/can-a-c-enum-class-have-methods
+ *
+ * The functions for converting between GSP and Unix epoch - taking leap
+ * seconds into account - were converted from the php functions available at
+ * https://www.andrews.edu/~tzs/timeconv/timealgorithm.html. From that site:
+ *
+ * > [W]hile there was an offset of 315964800 seconds between Unix and GPS
+ * > time when GPS time began, that offset changes each time there is a leap
+ * > second. GPS time labels each second uniquely including leap seconds while
+ * > Unix time does not, preferring to count a constant number of seconds a
+ * > day including those containing leap seconds.
  */
 class epochStart {
  public:
@@ -136,18 +197,21 @@ class epochStart {
             946684800,  ///< Use an epoch starting Jan 1, 2000, as some RTC's
                         ///< and Arduinos do (946684800s ahead of UNIX epoch)
         gps_epoch = unix_epoch +
-            315878400,  ///< Use the GPS epoch starting Jan 5, 1980 (315878400s
-                        ///< ahead of UNIX epoch)
+            315964800,  ///< Use the GPS epoch starting Jan 5, 1980 (was
+                        ///< 315964800s ahead of UNIX epoch at founding, has
+                        ///< drifted farther apart due to leap seconds)
         nist_epoch = 0  ///< Use the epoch starting Jan 1, 1900 as returned by
                         ///< the NIST Network Time Protocol (RFC-1305 and later
                         ///< versions) and Time Protocol (RFC-868) (2208988800
                         ///< behind the UNIX epoch)
     };
 
-    // https://stackoverflow.com/questions/21295935/can-a-c-enum-class-have-methods
+    /**
+     * @brief Empty constructor, defaulted
+     */
     epochStart() = default;
     /**
-     * @brief Constructor
+     * @brief Constructor, requires the unix offset value as input.
      *
      * @param epoch The unix offfset from the unixOffset enum.
      */
@@ -156,7 +220,8 @@ class epochStart {
 
     // Allow switch and comparisons.
     /**
-     * @brief Operator for comparison
+     * @brief Implicit conversion operator - this is needed to use the class
+     * within a switch/case statement
      *
      * @return The seconds from January 1, 1900
      */
@@ -167,28 +232,63 @@ class epochStart {
     /**
      * @brief Deleted bool conversion operator
      *
-     * Deleting this prevents anyone from calling `if(epochStart)`
+     * The bool conversion operator allows an object of this class to be
+     * converted into a boolean. Deleting this prevents anyone from calling
+     * `if(epochStart)`
      *
      * @see
      * https://stackoverflow.com/questions/4600295/what-is-the-meaning-of-operator-bool-const
      */
     explicit operator bool() const = delete;
 
+    /**
+     * @brief Equality comparison operator
+     *
+     * @param a Another epochStart object
+     * @return True if the objects have the same epoch start
+     */
+    constexpr bool operator==(epochStart a) const {
+        return _unixOffset == a._unixOffset;
+    }
+    /**
+     * @brief In-equality comparison operator
+     *
+     * @param a Another epochStart object
+     * @return True if the objects have the a different epoch start
+     */
+    constexpr bool operator!=(epochStart a) const {
+        return _unixOffset != a._unixOffset;
+    }
+
+    /**
+     * @brief Convert Unix Time to GPS Time
+     *
+     * @param unixTime A unix epoch timestamp
+     * @return The equivlant GPS epoch timestamp
+     */
+    static uint32_t unix2gps(uint32_t unixTime);
+    /**
+     * @brief Convert GPS Time to Unix Time
+     *
+     * @param gpsTime A GPS epoch timestamp
+     * @return The equivlant Unix epoch timestamp
+     */
+    static uint32_t gps2unix(uint32_t gpsTime);
+
 #ifdef MS_CLOCKSUPPORT_DEBUG
-    // helper functions to convert between epoch starts
     /**
      * @brief Gets a string name for the epoch
      *
      * @param epoch The epoch to get the name of
      * @return The name for the epoch
      */
-    String printEpochName();
+    static String printEpochName();
     /**
      * @brief Gets a string for the start date of the epoch
      *
      * @return The starting date, in ISO8601
      */
-    String printEpochStart();
+    static String printEpochStart();
 #endif
 
  private:
@@ -196,6 +296,16 @@ class epochStart {
      * @brief Internal reference to the number of seconds from Jan 1, 1900.
      */
     unixOffset _unixOffset;
+
+ private:
+    // Define GPS leap seconds
+    static const uint32_t leapSeconds[NUMBER_LEAP_SECONDS];
+
+    // Test to see if a GPS second is a leap second
+    static bool isLeap(uint32_t gpsTime);
+
+    // Count number of leap seconds that have passed
+    static int8_t countLeaps(uint32_t gpsTime, bool unix2gps);
 };
 
 
