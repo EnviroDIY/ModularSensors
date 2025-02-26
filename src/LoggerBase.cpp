@@ -729,11 +729,10 @@ void Logger::systemSleep(void) {
     SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
 #endif
 
-// force all pins to minimum power draw levels
-// Set direction (DIR) to 0 (input)
-// Set input enable (PINCFG.INEN) to 0 (disable input buffer)
-// Set pullup enable (PINCFG.PULLEN) to 0 (disable pull up/down)
-#if 1
+    // force all pins to minimum power draw levels
+    // Set direction (DIR) to 0 (input)
+    // Set input enable (PINCFG.INEN) to 0 (disable input buffer)
+    // Set pullup enable (PINCFG.PULLEN) to 0 (disable pull up/down)
     for (uint32_t ulPin = 0; ulPin < PINS_COUNT; ulPin++) {
         // Handle the case the pin isn't usable as PIO
         if (g_APinDescription[ulPin].ulPinType != PIO_NOT_A_PIN) {
@@ -742,24 +741,51 @@ void Logger::systemSleep(void) {
                 EPortType port    = g_APinDescription[ulPin].ulPort;
                 uint32_t  pin     = g_APinDescription[ulPin].ulPin;
                 uint32_t  pinMask = (1ul << pin);
-                MS_DEEP_DBG(F("Pin"), ulPin,
-                            bitRead(PORT->Group[port].DIR.reg, pin),
-                            PORT->Group[port].PINCFG[pin].bit.INEN,
-                            PORT->Group[port].PINCFG[pin].bit.PULLEN);
                 PORT->Group[port].DIRCLR.reg             = pinMask;
                 PORT->Group[port].PINCFG[pin].bit.INEN   = 0;
                 PORT->Group[port].PINCFG[pin].bit.PULLEN = 0;
-                MS_DEEP_DBG(F("Pin"), ulPin,
-                            bitRead(PORT->Group[port].DIR.reg, pin),
-                            PORT->Group[port].PINCFG[pin].bit.INEN,
-                            PORT->Group[port].PINCFG[pin].bit.PULLEN);
-                MS_DEEP_DBG(F("Pin"), ulPin, "forced into tri-state");
             } else {
                 MS_DEEP_DBG(F("Pin"), ulPin, "pin settings retained");
             }
-        } else {
-            MS_DEEP_DBG(F("Pin"), ulPin, "isn't a real pin");
         }
+    }
+
+#if defined(__SAMD51__)
+    // Disable generic clock generator 7 by disconnecting it from any oscillator
+    // source. Then tie as all peripheral timer that are safe to shut down to
+    // the disabled generator. This reduces power draw in sleep.
+
+    // NOTE: We CAN disable the EIC controller timer (4) because the controller
+    // clock source is set to OSCULP32K
+
+    // NOTE: Cannot disable the SERCOM peripheral timers for sleep because
+    // they're only reset with a begin(speed, config), which we do not call in
+    // this library. We force users to call the begin in their sketch so they
+    // can choose both the exact type of stream and the baud rate.
+
+    // NOTE: Cannot disable to ADC peripheral timers because they're only set in
+    // the init for the ADC at startup.
+
+    // NOTE: We CAN disable all of the timer clocks because they're reset every
+    // time they're used by SDI-12 (and others)
+
+    // @see #samd51_clock_other_libraries for a list of which peripherals each
+    // of these numbers pertain to
+    uint8_t unused_peripherals[] = {4,  5,  6,  9,  11, 12, 13, 14, 15, 16, 17,
+                                    18, 19, 20, 21, 22, 25, 26, 27, 28, 29, 30,
+                                    31, 32, 33, 38, 39, 42, 43, 44, 45, 46, 47};
+    MS_DEEP_DBG(
+        F("Configuring GCLK7 to be disconnected from an oscillator source"));
+    GCLK->GENCTRL[7].reg =
+        0;  // The reset value is 0x00000106 for Generator n=0, else 0x00000000
+    for (uint8_t upn = 0;
+         upn < sizeof(unused_peripherals) / sizeof(unused_peripherals[0]);
+         upn++) {
+        MS_DEEP_DBG(F("Setting peripheral clock"), unused_peripherals[upn],
+                    F("to be disabled and attached to GCLK7 with no oscillator "
+                      "source"));
+        GCLK->PCHCTRL[unused_peripherals[upn]].reg =
+            GCLK_PCHCTRL_GEN_GCLK7_Val & ~(1 << GCLK_PCHCTRL_CHEN_Pos);
     }
 #endif
 

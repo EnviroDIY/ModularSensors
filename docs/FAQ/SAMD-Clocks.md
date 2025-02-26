@@ -36,7 +36,6 @@
 
 <!--! @endif -->
 
-
 ## Terms
 
 Essentially every microprocess or computer needs a consistent way of their own speed of operation so they can communicate with internal components and external devices.
@@ -46,6 +45,7 @@ The oscillator works like a metronome.
 An oscillator alone does not keep track of time; it ticks, but it doesn't count how many ticks have passed.
 
 SAMD processors use these types of oscillators:
+
 - [crystal oscillators](https://en.wikipedia.org/wiki/Crystal_oscillator) - which are tiny pieces of quartz that vibrate under current.
 This is just like the crystals in a quartz watch.
 - Digital frequency locked loops (DFLL) and fractional digital phase locked loops (FDPLL) - these [phase locked loops (PLL)](https://wirelesspi.com/how-a-frequency-locked-loop-fll-works/) use a reference clock (like the external crystal) to create a consistent (faster) output frequency.
@@ -55,7 +55,7 @@ For any of the oscillors to be useful in keeping track of time, they need to be 
 The oscillator acts as the source for the clock/counter.
 There can also be a 'divisor' between the ticking source and the counter - that is, the counter can record every 'x' ticks instead of every single tick.
 
-See also: https://blog.thea.codes/understanding-the-sam-d21-clocks/
+See also: <https://blog.thea.codes/understanding-the-sam-d21-clocks/>
 
 ## SAMD21<!--! {#samd21_clocks} -->
 
@@ -124,6 +124,7 @@ See [section 13.7 of the datasheet](https://onlinedocs.microchip.com/oxy/GUID-F5
 - Put OSC8M as source for Generic Clock Generator 3
 
 Resulting generic clock generator speeds:
+
 - GCLKGEN0 = 48 MHz; sourced from DFLL48M, which does not run in standby.
 - GCLKGEN1 = 32kHz; sourced from XOSC32K or OSC32K, which does not run in standby.
 - GCLKGEN2 = *not configured*
@@ -297,7 +298,6 @@ The path from a clock source to the EIC on the SAMD51 is very similar to that of
   - Configures timer counter clocks (specific clock depending on the analog pin) to use GCLKGEN0 at 120 MHz
   - Does not change the source or other configuration for GCLKGEN0
 
-
 Thus, if the clock source for interrupts is not running in standby, the interrupts will not be able to wake the device.
 In [WInterrupts.c](https://github.com/adafruit/ArduinoCore-samd/blob/ce20340620bfd9c545649ee5c4873888ee0475d0/cores/arduino/WInterrupts.c#L48) in the Adafruit SAMD core, generic clock generator 2 (from the PLL1 at 100MHz with no divisor) is used for the EIC peripheral.
 The Arduino core does *NOT* configure the generic clock generator 0 (ie GCLK_MAIN = DFLL48M) to stay awake in standby!
@@ -352,7 +352,6 @@ The Arduino core does *NOT* configure the generic clock generator 0 (ie GCLK_MAI
     - 46 - GCLK_SDHC1
     - 47 - GCLK_CM4_TRACE
 
-
 ### Summary of Peripheral Clock Assignments
 
 - GCLK_SERCOM[0..7]_SLOW/GCLK_SDHC0_SLOW/GCLK_SDHC0_SLOW (3) - potentially any of GCLK0-GCLK4 - SERCOM.cpp
@@ -383,6 +382,7 @@ This section is copyied selections from [Microchip's developer help on the NVIC]
 ## NVIC Overview
 
 ## Priority Levels
+
 Cortex-M0+ processors support three fixed highest priority levels for three of the system exceptions, and four programmable levels for all other exceptions, including interrupts.
 The four possible programmable priority levels are 0x00 (highest urgency), 0x40, 0x80, and 0xC0 (lowest urgency).
 
@@ -435,6 +435,7 @@ They're defined as “weak” functions, so you can override the default impleme
 ## NVIC Interrupts Defined in the Adafruit SAMD U2F Bootloader and Arduino Core
 
 SAMD51:
+
 - SERCOMs - sercom.cpp - priority of 3
   - `SERCOM0_0_IRQn` -> `SERCOM5_3_IRQn`
   - `SERCOM6_0_IRQn` -> `SERCOM6_3_IRQn`, iff variant defines `SERCOM6`
@@ -453,6 +454,7 @@ SAMD51:
   - `DMAC_0_IRQn` -> `DMAC_4_IRQn` - priority of 3
 
 SAMD21
+
 - SERCOMs - sercom.cpp - priority of 3
   - `SERCOM0_IRQn` -> `SERCOM3_IRQn`
   - `SERCOM4_IRQn`, iff variant defines `SERCOM4`
@@ -468,6 +470,5 @@ SAMD21
   - `USB_IRQn`
 - DMAC - Adafruit_ZeroDMA.cpp or I2S/../DMA.cpp
   - `DMAC_IRQn` - priority of 3
-
 
 ## NVIC Interrupts Defined in Other Popular Libraries
