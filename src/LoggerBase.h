@@ -27,18 +27,8 @@
 #define MS_DEBUGGING_DEEP "LoggerBase"
 #endif
 
-/**
- * @def SDCARD_SPI
- * @brief The SPI to use for the SD card - frequently defined in the variants
- * file.
- *
- * Use the default SPI if SDCARD_SPI is not defined with the variants.
- */
-#if !defined(SDCARD_SPI)
-#define SDCARD_SPI SPI
-#endif
-
 // Included Dependencies
+#include "ModSensorConfig.h"
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 #undef MS_DEBUGGING_DEEP

@@ -15,6 +15,9 @@
 #ifndef SRC_MODSENSORCONFIG_H_
 #define SRC_MODSENSORCONFIG_H_
 
+// Include Arduino.h to ensure variants file is pulled first
+#include <Arduino.h>
+
 //==============================================================
 // Select the Real Time Clock to use by uncommenting one of the options below.
 // NOTE: This is optional for a EnviroDIY Mayfly or Stonefly
@@ -131,6 +134,14 @@
 // #define MS_YOSEMITECHPARENT_DEBUG_DEEP
 
 
+//==============================================================
+
+
+//==============================================================
+// SPI Configuration, iff needed
+#if !defined(SDCARD_SPI)
+#define SDCARD_SPI SPI
+#endif
 //==============================================================
 
 
