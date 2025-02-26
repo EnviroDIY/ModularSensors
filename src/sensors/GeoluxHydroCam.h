@@ -343,7 +343,7 @@ class GeoluxHydroCam : public Sensor {
     /**
      * @brief Private reference to the power pin fro the RS-485 adapter.
      */
-    int8_t      _powerPin2;
+    int8_t _powerPin2;
     const char*
         _imageResolution;  ///< The image resolution from the Geolux HydroCam
     const char*
