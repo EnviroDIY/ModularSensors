@@ -114,3 +114,5 @@ act.log
 compile_commands.json
 src/WatchDogs/SAMD51_NVIC_Interrupts.archive
 src/ClockSupport.h_combined
+continuous_integration/arduino_cli_cmd.bat
+sync.ffs_db

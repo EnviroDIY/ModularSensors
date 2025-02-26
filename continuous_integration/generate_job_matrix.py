@@ -25,6 +25,8 @@ if "GITHUB_WORKSPACE" in os.environ.keys():
     workspace_dir = os.environ.get("GITHUB_WORKSPACE")
 else:
     workspace_dir = os.getcwd()
+if "\\continuous_integration" in workspace_dir:
+    workspace_dir = workspace_dir.replace("\\continuous_integration", "")
 workspace_path = os.path.abspath(os.path.realpath(workspace_dir))
 print(f"Workspace Path: {workspace_path}")
 
@@ -53,6 +55,12 @@ print(f"Artifact Path: {artifact_path}")
 if not os.path.exists(artifact_dir):
     print(f"Creating the directory for artifacts: {artifact_path}")
     os.makedirs(artifact_dir)
+
+# The library config file
+ms_config_file = "./src/ModSensorConfig.h"
+ms_config_path = os.path.join(workspace_dir, ms_config_file)
+ms_config_path = os.path.abspath(os.path.realpath(ms_config_path))
+print(f"Modular Sensors Config Path: {ms_config_path}")
 
 compilers = ["Arduino CLI", "PlatformIO"]
 non_acli_build_flag = [
@@ -149,12 +157,6 @@ def create_arduino_cli_command(pio_env_name: str, code_subfolder: str) -> str:
         "--fqbn",
         pio_to_acli[pio_config.get("env:{}".format(pio_env_name), "board")]["fqbn"],
     ]
-    for pio_build_flag in pio_config.get("env:{}".format(pio_env_name), "build_flags"):
-        if pio_build_flag not in non_acli_build_flag:
-            arduino_command_args += [
-                "--build-property",
-                f'"build.extra_flags=\\"{pio_build_flag}\\""',
-            ]
     arduino_command_args += [
         f'"{os.path.join(examples_path, code_subfolder)}"',
     ]
@@ -212,7 +214,13 @@ def create_logged_command(
     if lower_compiler == "platformio":
         build_command = create_pio_ci_command(pio_env_file, pio_env, code_subfolder)
     elif lower_compiler == "arduinocli":
-        build_command = create_arduino_cli_command(pio_env, code_subfolder)
+        build_command = ""
+        for pio_build_flag in pio_config.get("env:{}".format(pio_env), "build_flags"):
+            if pio_build_flag not in non_acli_build_flag:
+                build_command += f"echo '#define {pio_build_flag}' > temp_config.h\n"
+                build_command += f"cat {ms_config_path} >> temp_config.h\n"
+                build_command += f"mv temp_config.h {ms_config_path}\n"
+        build_command += create_arduino_cli_command(pio_env, code_subfolder)
     else:
         build_command = ""
 
