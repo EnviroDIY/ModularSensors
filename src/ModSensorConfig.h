@@ -1,5 +1,5 @@
 /**
- * @file ModSendorConfig.h
+ * @file ModSensorConfig.h
  * @copyright Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino.
  * This library is published under the BSD-3 license.
@@ -140,6 +140,11 @@
 //==============================================================
 // SPI Configuration, iff needed
 #if !defined(SDCARD_SPI)
+/**
+ * @brief The SPI port to use for the SD card.
+ *
+ * This is typically defined in the board variant file.
+ */
 #define SDCARD_SPI SPI
 #endif
 //==============================================================

@@ -261,6 +261,7 @@ class epochTime {
      * @brief Get the timestamp of an epochTime object in a different epoch
      *
      * @param in_time The input epochTime object
+     * @param end_offset The ending epoch
      * @return The equivalant timestamp relative to the requested epoch
      */
     static time_t convert_epoch(epochTime in_time, epochStart end_offset);
@@ -308,13 +309,29 @@ class epochTime {
     time_t _unixTimestamp;
 
  private:
-    // Define GPS leap seconds
+    /**
+     * @brief Array of leap seconds as of February 24, 2025
+     */
     static const uint32_t leapSeconds[NUMBER_LEAP_SECONDS];
 
-    // Test to see if a GPS second is a leap second
+    /**
+     * @brief Test to see if a GPS second is a leap second
+     *
+     * @param gpsTime A timestamp in the GPS epoch
+     * @return True if the time is a leap second
+     */
     static bool isLeap(uint32_t gpsTime);
 
-    // Count number of leap seconds that have passed
+    /**
+     * @brief Count number of leap seconds that have passed between the start of
+     * the GPS epoch and the given time
+     *
+     * @param gpsTime A timestamp in the GPS epoch
+     * @param unix2gps True if the input time is in Unix epoch, false if it is
+     * GPS epoch
+     * @return The number of leap seconds that have passed between the start of
+     * the GPS epoch and the given time
+     */
     static int8_t countLeaps(uint32_t gpsTime, bool unix2gps);
 };
 
@@ -401,7 +418,7 @@ class loggerClock {
     /**
      * @brief Convert an epochTime object into a ISO8601 formatted string.
      *
-     * @param epochTime An epochTime object
+     * @param in_time An epochTime object
      * @param epochSecondsUTCOffset The offset of the input epoch time from
      * UTC in hours.
      * @return An ISO8601 formatted String.
@@ -438,10 +455,10 @@ class loggerClock {
      * @see https://en.cppreference.com/w/cpp/chrono/c/strftime for possible
      * formatting strings.
      *
-     * @param epochTime An epochTime object
-     * @param epochSecondsUTCOffset The offset of the input epoch time from
-     * UTC in hours.
-     * @return An ISO8601 formatted String.
+     * @param buffer A buffer to put the finished string into. Make sure that
+     * the buffer is big enough to hold all of the characters!
+     * @param fmt The strftime format string.
+     * @param in_time An epochTime object
      */
     static void formatDateTime(char* buffer, const char* fmt,
                                epochTime in_time);
@@ -465,7 +482,7 @@ class loggerClock {
      * @brief Veify that the input value is sane and if so sets the real time
      * clock to the given time.
      *
-     * @param epochTime An epochTime object
+     * @param in_time An epochTime object
      * @param utcOffset The offset of the epoch time from UTC.
      *
      * @return True if the input timestamp passes sanity checks **and**
@@ -507,7 +524,7 @@ class loggerClock {
      * To be sane, the clock must be between #EARLIEST_SANE_UNIX_TIMESTAMP and
      * #LATEST_SANE_UNIX_TIMESTAMP.
      *
-     * @param epochTime An epochTime object
+     * @param in_time An epochTime object
      * @param utcOffset The offset of the epoch time from UTC in hours.
      * @return True if the given time passes sanity range checking.
      */
@@ -526,7 +543,7 @@ class loggerClock {
     /**
      * @brief Set an alarm to fire a clock inetrrupt at a specific epoch time
      *
-     * @param epochTime An epochTime object
+     * @param in_time An epochTime object
      * @param utcOffset The offset of the epoch time from UTC in hours.
      */
     static void setNextRTCInterrupt(epochTime in_time, int8_t utcOffset);
