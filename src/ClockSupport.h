@@ -33,25 +33,7 @@
 #include <Arduino.h>
 #include <time.h>
 
-
-#ifndef EARLIEST_SANE_UNIX_TIMESTAMP
-/**
- * @brief The earliest unix timestamp that can be considered sane.
- *
- * January 1, 2023
- */
-#define EARLIEST_SANE_UNIX_TIMESTAMP 1672531200
-#endif
-
-#ifndef LATEST_SANE_UNIX_TIMESTAMP
-/**
- * @brief The latest unix timestamp that can be considered sane.
- *
- * January 1, 2030
- */
-#define LATEST_SANE_UNIX_TIMESTAMP 1893456000
-#endif
-
+// Where possible, use the board's built in clock
 #if defined(ENVIRODIY_STONEFLY_M4) && not defined(MS_USE_RV8803)
 /**
  * @brief Select RV-8803 as the RTC for the EnviroDIY Stonefly.
@@ -82,9 +64,6 @@
     !defined(MS_USE_RTC_ZERO)
 #error Define a clock to use for the RTC for Modular Sensors!
 #endif
-
-// Bring in the library to communicate with an external high-precision real time
-// clock.
 
 /**
  * @def CLOCK_INTERRUPT_MODE

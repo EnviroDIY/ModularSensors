@@ -26,6 +26,29 @@
 // #define MS_USE_RTC_ZERO
 //==============================================================
 
+//==============================================================
+// Select ADS1015 instead of the ADS1115, if desired
+// #define MS_USE_ADS1015
+//==============================================================
+
+//==============================================================
+// Disable concurrent polling of SDI-12 sensors, if needed
+// This may be necessary if using older or fussy sensors
+// #define MS_SDI12_NON_CONCURRENT
+//==============================================================
+
+//==============================================================
+// Configure the output streams for debugging
+// If these are not defined, most output will go to either "Serial" or
+// "SerialUSB" and there will be no secondary output.
+// #define MS_OUTPUT Serial
+// #define MS_2ND_OUTPUT Serial2
+// #define TINY_GSM_DEBUG Serial2
+// #define TINY_GSM_DEBUG_DEEP Serial1
+// Or use this to turn of *ALL* output
+// #define MS_SILENT
+//==============================================================
+
 
 //==============================================================
 // Uncomment any debbugging options you might want to use
@@ -99,7 +122,10 @@
 // #define MS_CAMPBELLOBS3_DEBUG
 // #define MS_EVERLIGHTALSPT19_DEBUG
 // #define MS_FREESCALEMPL115A2_DEBUG
+
 // #define MS_GEOLUXHYDROCAM_DEBUG
+// #define GEOLUX_DEBUG Serial2
+
 // #define MS_MAXBOTIXSONAR_DEBUG
 // #define MS_MAXIMDS18_DEBUG
 // #define MS_MAXIMDS3231_DEBUG
@@ -146,6 +172,73 @@
  * This is typically defined in the board variant file.
  */
 #define SDCARD_SPI SPI
+#endif
+//==============================================================
+
+
+//==============================================================
+// Other library configuration
+
+#ifndef MS_LOGGER_EPOCH
+/**
+ * @brief The epoch start to use for the logger
+ */
+#define MS_LOGGER_EPOCH epochStart::unix_epoch
+#endif
+
+#ifndef EARLIEST_SANE_UNIX_TIMESTAMP
+/**
+ * @brief The earliest unix timestamp that can be considered sane.
+ *
+ * January 1, 2023
+ */
+#define EARLIEST_SANE_UNIX_TIMESTAMP 1672531200
+#endif
+
+#ifndef LATEST_SANE_UNIX_TIMESTAMP
+/**
+ * @brief The latest unix timestamp that can be considered sane.
+ *
+ * January 1, 2030
+ */
+#define LATEST_SANE_UNIX_TIMESTAMP 1893456000
+#endif
+
+#ifndef MAX_NUMBER_VARS
+/**
+ * @brief The largest number of variables from a single sensor
+ */
+#define MAX_NUMBER_VARS 21
+// GroPoint Profile GPLP-8 has 8 Moisture and 13 Temperature values
+#endif
+
+#ifndef MAX_NUMBER_SENDERS
+/**
+ * @brief The largest number of publishers that can be attached to a logger
+ */
+#define MAX_NUMBER_SENDERS 4
+#endif
+
+#ifndef MS_SEND_BUFFER_SIZE
+/**
+ * @brief Send Buffer
+ *
+ * This determines how many characters to set out at once over the TCP
+ * connection. Increasing this may decrease data use by a logger, while
+ * decreasing it will save memory. Do not make it smaller than 32 or bigger
+ * than 1500 (a typical TCP Maximum Transmission Unit).
+ *
+ * This can be changed by setting the build flag MS_SEND_BUFFER_SIZE when
+ * compiling.
+ */
+#define MS_SEND_BUFFER_SIZE 750
+#endif
+
+#ifndef TINY_GSM_RX_BUFFER
+/**
+ * @brief The size of the buffer for incoming data.
+ */
+#define TINY_GSM_RX_BUFFER 64
 #endif
 //==============================================================
 

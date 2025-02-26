@@ -58,18 +58,6 @@
 
 #include <SdFat.h>  // To communicate with the SD card
 
-/**
- * @brief The largest number of variables from a single sensor
- */
-#define MAX_NUMBER_SENDERS 4
-
-#ifndef MS_LOGGER_EPOCH
-/**
- * @brief The epoch start to use for the logger
- */
-#define MS_LOGGER_EPOCH epochStart::unix_epoch
-#endif
-
 
 class dataPublisher;  // Forward declaration
 

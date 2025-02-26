@@ -74,14 +74,9 @@
  * @brief The modem type for the underlying TinyGSM library.
  */
 #define TINY_GSM_MODEM_BG96
-#ifndef TINY_GSM_RX_BUFFER
-/**
- * @brief The size of the buffer for incoming data.
- */
-#define TINY_GSM_RX_BUFFER 64
-#endif
 
 // Included Dependencies
+#include "ModSensorConfig.h"
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 #include "TinyGsmClient.h"

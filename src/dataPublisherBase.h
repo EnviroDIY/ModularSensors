@@ -33,23 +33,8 @@
 #define MS_DEBUGGING_DEEP "dataPublisherBase"
 #endif
 
-
-#ifndef MS_SEND_BUFFER_SIZE
-/**
- * @brief Send Buffer
- *
- * This determines how many characters to set out at once over the TCP
- * connection. Increasing this may decrease data use by a logger, while
- * decreasing it will save memory. Do not make it smaller than 32 or bigger
- * than 1500 (a typical TCP Maximum Transmission Unit).
- *
- * This can be changed by setting the build flag MS_SEND_BUFFER_SIZE when
- * compiling.
- */
-#define MS_SEND_BUFFER_SIZE 750
-#endif
-
 // Included Dependencies
+#include "ModSensorConfig.h"
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 #undef MS_DEBUGGING_DEEP
