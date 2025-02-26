@@ -264,6 +264,7 @@ void Logger::setLoggerPins(int8_t mcuWakePin, int8_t SDCardSSPin,
     setAlertPin(ledPin);
 }
 
+#if !defined(MS_USE_RTC_ZERO)
 void Logger::enableRTCPinISR() {
     // Set up the interrupts on the wake pin
     // WARNING: This MUST be done AFTER beginning the RTC.
@@ -276,6 +277,7 @@ void Logger::enableRTCPinISR() {
                     F("with interrupt mode"), CLOCK_INTERRUPT_MODE);
     }
 }
+#endif
 
 void Logger::enableTestingISR() {
     // Set up the interrupt to be able to enter sensor testing mode

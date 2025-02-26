@@ -490,6 +490,7 @@ class Logger {
     const char* _samplingFeatureUUID = nullptr;
     // ^^ Start with no feature UUID
 
+#if !defined(MS_USE_RTC_ZERO)
     /**
      * @brief Attaches the RTC ISR to the wake pin.
      *
@@ -500,8 +501,11 @@ class Logger {
      * confused behavior.  This function is protected to protect users from
      * calling it in the wrong order.
      *
+     * @note This function is excluded when using the built in RTC on the SAMD21
+     * (ie `#define MS_USE_RTC_ZERO`) because there is no pin involved
      */
     void enableRTCPinISR();
+#endif
 
     /**
      * @brief Attaches the testing ISR to the button pin.

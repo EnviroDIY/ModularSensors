@@ -12,8 +12,102 @@
 #include "LoggerBase.h"
 
 
+epochTime::epochTime(time_t timestamp, epochStart epoch) : _unixOffset(epoch) {
+    _unixTimestamp = convert_epoch(timestamp, epoch, epochStart::unix_epoch);
+}
+
+
+time_t epochTime::convert_epoch(time_t raw_timestamp, epochStart start_offset,
+                                epochStart end_offset) {
+    switch (start_offset) {
+        case epochStart::unix_epoch: {
+            switch (end_offset) {
+                case epochStart::y2k_epoch: {
+                    return raw_timestamp - EPOCH_UNIX_TO_Y2K;
+                }
+                case epochStart::gps_epoch: {
+                    return epochTime::unix2gps(raw_timestamp);
+                }
+                case epochStart::nist_epoch: {
+                    return raw_timestamp + EPOCH_NIST_TO_UNIX;
+                }
+                case epochStart::unix_epoch:
+                default: {
+                    return raw_timestamp;
+                }
+            }
+        }
+        case epochStart::y2k_epoch: {
+            switch (end_offset) {
+                case epochStart::unix_epoch: {
+                    return raw_timestamp + EPOCH_UNIX_TO_Y2K;
+                }
+                case epochStart::gps_epoch: {
+                    return epochTime::unix2gps(raw_timestamp +
+                                               EPOCH_UNIX_TO_Y2K);
+                }
+                case epochStart::nist_epoch: {
+                    return raw_timestamp + EPOCH_NIST_TO_UNIX +
+                        EPOCH_UNIX_TO_Y2K;
+                }
+                case epochStart::y2k_epoch:
+                default: {
+                    return raw_timestamp;
+                }
+            }
+        }
+        case epochStart::gps_epoch: {
+            switch (end_offset) {
+                case epochStart::unix_epoch: {
+                    return epochTime::gps2unix(raw_timestamp);
+                }
+                case epochStart::y2k_epoch: {
+                    return epochTime::gps2unix(raw_timestamp) -
+                        EPOCH_UNIX_TO_Y2K;
+                }
+                case epochStart::nist_epoch: {
+                    return epochTime::gps2unix(raw_timestamp) +
+                        EPOCH_NIST_TO_UNIX;
+                }
+                case epochStart::gps_epoch:
+                default: {
+                    return raw_timestamp;
+                }
+            }
+        }
+        case epochStart::nist_epoch: {
+            switch (end_offset) {
+                case epochStart::unix_epoch: {
+                    return raw_timestamp - EPOCH_NIST_TO_UNIX;
+                }
+                case epochStart::y2k_epoch: {
+                    return raw_timestamp - EPOCH_NIST_TO_UNIX -
+                        EPOCH_UNIX_TO_Y2K;
+                }
+                case epochStart::gps_epoch: {
+                    return epochTime::gps2unix(raw_timestamp -
+                                               EPOCH_NIST_TO_UNIX);
+                }
+                case epochStart::nist_epoch:
+                default: {
+                    return raw_timestamp;
+                }
+            }
+        }
+        default: {
+            return raw_timestamp;
+        }
+    }
+}
+
+
+time_t epochTime::convert_epoch(epochTime in_time, epochStart end_offset) {
+    return convert_epoch(in_time._unixTimestamp, in_time._unixOffset,
+                         end_offset);
+}
+
 // Convert Unix Time to GPS Time
-uint32_t epochStart::unix2gps(uint32_t unixTime) {
+time_t epochTime::unix2gps(time_t unixTime) {
     // Add offset in seconds
     bool isLeap;
     if (fmod(unixTime, 1) != 0) {
@@ -22,25 +116,25 @@ uint32_t epochStart::unix2gps(uint32_t unixTime) {
     } else {
         isLeap = 0;
     }
-    uint32_t gpsTime = unixTime - 315964800;
-    int8_t   nLeaps  = countLeaps(gpsTime, true);
-    gpsTime          = gpsTime + nLeaps + isLeap;
+    time_t gpsTime = unixTime - EPOCH_UNIX_TO_GPS;
+    int8_t nLeaps  = countLeaps(gpsTime, true);
+    gpsTime        = gpsTime + nLeaps + isLeap;
     return gpsTime;
 }
 
 // Convert GPS Time to Unix Time
-uint32_t epochStart::gps2unix(uint32_t gpsTime) {
+time_t epochTime::gps2unix(time_t gpsTime) {
     // Add offset in seconds
-    uint32_t unixTime = gpsTime + 315964800;
-    int8_t   nLeaps   = countLeaps(gpsTime, false);
-    unixTime          = unixTime - nLeaps;
+    time_t unixTime = gpsTime + EPOCH_UNIX_TO_GPS;
+    int8_t nLeaps   = countLeaps(gpsTime, false);
+    unixTime        = unixTime - nLeaps;
     if (isLeap(gpsTime)) { unixTime = unixTime + 0.5; }
     return unixTime;
 }
 
 #ifdef MS_CLOCKSUPPORT_DEBUG
-String epochStart::printEpochName() {
-    switch (_unixOffset) {
+String epochTime::printEpochName(epochStart in_offset) {
+    switch (in_offset) {
         case epochStart::unix_epoch: return "Unix";
         case epochStart::y2k_epoch: return "Y2K";
         case epochStart::gps_epoch: return "GPS";
@@ -49,8 +143,8 @@ String epochStart::printEpochName() {
     }
 }
 
-String epochStart::printEpochStart() {
-    switch (_unixOffset) {
+String epochTime::printEpochStart(epochStart in_offset) {
+    switch (in_offset) {
         case epochStart::unix_epoch: return "1970-01-01T00:00:00Z";
         case epochStart::y2k_epoch: return "2000-01-01T00:00:00Z";
         case epochStart::gps_epoch: return "1980-01-05T00:00:00Z";
@@ -61,7 +155,7 @@ String epochStart::printEpochStart() {
 #endif
 
 // Test to see if a GPS second is a leap second
-bool epochStart::isLeap(uint32_t gpsTime) {
+bool epochTime::isLeap(uint32_t gpsTime) {
     bool isLeap = false;
     for (int8_t i = 0; i < NUMBER_LEAP_SECONDS; i++) {
         if (gpsTime == leapSeconds[i]) { isLeap = true; }
@@ -70,7 +164,7 @@ bool epochStart::isLeap(uint32_t gpsTime) {
 }
 
 // Count number of leap seconds that have passed
-int8_t epochStart::countLeaps(uint32_t gpsTime, bool unix2gps) {
+int8_t epochTime::countLeaps(uint32_t gpsTime, bool unix2gps) {
     int8_t nLeaps = 0;  // number of leap seconds prior to gpsTime
     for (int8_t i = 0; i < NUMBER_LEAP_SECONDS; i++) {
         if (unix2gps) {
@@ -83,7 +177,7 @@ int8_t epochStart::countLeaps(uint32_t gpsTime, bool unix2gps) {
 }
 
 // Initialize the array for the leap seconds - taken from the defines
-const uint32_t epochStart::leapSeconds[NUMBER_LEAP_SECONDS] = LEAP_SECONDS;
+const uint32_t epochTime::leapSeconds[NUMBER_LEAP_SECONDS] = LEAP_SECONDS;
 
 // Initialize the processor epoch
 epochStart loggerClock::_core_epoch = epochStart::y2k_epoch;
@@ -146,27 +240,20 @@ uint32_t loggerClock::getNowAsEpoch(int8_t utcOffset, epochStart epoch) {
 // This converts an epoch time (seconds since a fixed epoch start) into a
 // ISO8601 formatted string. Code modified from parts of the SparkFun RV-8803
 // library
-String loggerClock::formatDateTime_ISO8601(uint32_t   epochTime,
-                                           int8_t     epochTimeUTCOffset,
+String loggerClock::formatDateTime_ISO8601(uint32_t   epochSeconds,
+                                           int8_t     epochSecondsUTCOffset,
                                            epochStart epoch) {
-    MS_DEEP_DBG(F("Input epoch time:"), epochTime, F("; input epoch:"),
+    MS_DEEP_DBG(F("Input epoch time:"), epochSeconds, F("; input epoch:"),
                 static_cast<uint32_t>(epoch));
 
-    // NOTE: for AVR boards time_t is a typedef for uint32_t, defined in
-    // time.h For SAMD time_t is a typedef for __int_least64_t _timeval.h
-    // implicit cast to time_t
-
-    // Create a temporary variable for the epoch time
-    time_t t = epochTime;
-    MS_DEEP_DBG(F("Input time as a time_t:"), t);
-
-    // Convert the time to the processor epoch.
-    // This is only needed so the gmtime function will work - this is not
-    // converting between offsets.
-    if (epoch != _core_epoch) {
-        t += epoch;        // convert to to unix
-        t -= _core_epoch;  // convert to processor epoch (used by gmtime)
-    }
+    return formatDateTime_ISO8601(epochTime(epochSeconds, epoch),
+                                  epochSecondsUTCOffset);
+}
+String loggerClock::formatDateTime_ISO8601(epochTime in_time,
+                                           int8_t    epochSecondsUTCOffset) {
+    // Use the conversion function to get a temporary variable for the epoch
+    // time in the epoch used by the processor core (ie, used by gmtime).
+    time_t t = epochTime::convert_epoch(in_time, _core_epoch);
     MS_DEEP_DBG(F("Input time converted to processor epoch:"), t);
 
     // create a temporary time struct
@@ -187,7 +274,7 @@ String loggerClock::formatDateTime_ISO8601(uint32_t   epochTime,
     // NOTE: the %z format from strftime formats the timezone as +hhmm, but we
     // need +hh:mm
     char   isotz[8];
-    int8_t quarterHours = epochTimeUTCOffset * 4;
+    int8_t quarterHours = epochSecondsUTCOffset * 4;
     char   plusMinus    = '+';
     if (quarterHours < 0) {
         plusMinus = '-';
@@ -205,25 +292,17 @@ String loggerClock::formatDateTime_ISO8601(uint32_t   epochTime,
 }
 
 void loggerClock::formatDateTime(char* buffer, const char* fmt,
-                                 uint32_t epochTime, epochStart epoch) {
-    MS_DEEP_DBG(F("Input epoch time:"), epochTime, F("; input epoch:"),
+                                 uint32_t epochSeconds, epochStart epoch) {
+    MS_DEEP_DBG(F("Input epoch time:"), epochSeconds, F("; input epoch:"),
                 static_cast<uint32_t>(epoch));
 
-    // NOTE: for AVR boards time_t is a typedef for uint32_t, defined in
-    // time.h For SAMD time_t is a typedef for __int_least64_t _timeval.h
-    // implicit cast to time_t
-
-    // Create a temporary variable for the epoch time
-    time_t t = epochTime;
-    MS_DEEP_DBG(F("Input time as a time_t:"), t);
-
-    // Convert the time to the processor epoch.
-    // This is only needed so the gmtime function will work - this is not
-    // converting between offsets.
-    if (epoch != _core_epoch) {
-        t += epoch;        // convert to to unix
-        t -= _core_epoch;  // convert to processor epoch (used by gmtime)
-    }
+    formatDateTime(buffer, fmt, epochTime(epochSeconds, epoch));
+}
+void loggerClock::formatDateTime(char* buffer, const char* fmt,
+                                 epochTime in_time) {
+    // Use the conversion function to get a temporary variable for the epoch
+    // time in the epoch used by the processor core (ie, used by gmtime).
+    time_t t = epochTime::convert_epoch(in_time, _core_epoch);
     MS_DEEP_DBG(F("Input time converted to processor epoch:"), t);
 
     // create a temporary time struct
@@ -241,9 +320,11 @@ void loggerClock::formatDateTime(char* buffer, const char* fmt,
 // This sets the real time clock to the given time
 bool loggerClock::setRTClock(uint32_t ts, int8_t utcOffset, epochStart epoch) {
     MS_DEEP_DBG(F("Raw input timestamp:"), ts);
-
+    return setRTClock(epochTime(ts, epoch), utcOffset);
+}
+bool loggerClock::setRTClock(epochTime in_time, int8_t utcOffset) {
     // If the timestamp is not in the valid range, just exit
-    if (!isEpochTimeSane(ts, utcOffset, epoch)) {
+    if (!isEpochTimeSane(in_time, utcOffset)) {
         PRINTOUT(F("Bad timestamp, not setting clock."));
         return false;
     }
@@ -252,12 +333,13 @@ bool loggerClock::setRTClock(uint32_t ts, int8_t utcOffset, epochStart epoch) {
     // epoch We're interested in the setTime in the logger's and RTC's
     // timezone The RTC's timezone is equal to the logger's timezone minus
     // the offset between the logger and the RTC.
-    uint32_t new_rtc_value = ts;
+    uint32_t new_rtc_value = epochTime::convert_epoch(in_time, _rtcEpoch);
 
     // Check the current RTC time
-    uint32_t prev_rtc_value = getNowAsEpoch(utcOffset, epoch);
-    MS_DBG(F("    Current Time on RTC:"), prev_rtc_value, F("->"),
-           formatDateTime_ISO8601(prev_rtc_value, utcOffset, epoch));
+    uint32_t prev_rtc_value = getNowAsEpoch(utcOffset, _rtcEpoch);
+    MS_DBG(F("    Current Time on RTC (in RTC's epoch):"), prev_rtc_value,
+           F("->"),
+           formatDateTime_ISO8601(prev_rtc_value, utcOffset, _rtcEpoch));
     MS_DBG(F("    Offset between input and RTC (seconds):"),
            abs(new_rtc_value - prev_rtc_value));
 
@@ -273,13 +355,12 @@ bool loggerClock::setRTClock(uint32_t ts, int8_t utcOffset, epochStart epoch) {
         return false;
     }
 
-    uint32_t converted_ts = tsToRawRTC(ts, utcOffset, epoch);
-    MS_DEEP_DBG(F("Setting raw RTC value to:"), converted_ts);
-    setRawRTCNow(converted_ts);
+    MS_DEEP_DBG(F("Setting raw RTC value to:"), new_rtc_value);
+    setRawRTCNow(new_rtc_value);
     PRINTOUT(F("Clock set!"));
     PRINTOUT(F("Current RTC time is now"),
-             formatDateTime_ISO8601(getNowAsEpoch(utcOffset, epoch), utcOffset,
-                                    epoch));
+             formatDateTime_ISO8601(getNowAsEpoch(utcOffset, _rtcEpoch),
+                                    utcOffset, _rtcEpoch));
     return true;
 }
 
@@ -300,9 +381,14 @@ bool loggerClock::isRTCSane(void) {
 }
 bool loggerClock::isEpochTimeSane(uint32_t ts, int8_t utcOffset,
                                   epochStart epoch) {
-    uint32_t epochTime2 = ts - utcOffset - (epoch - epochStart::unix_epoch);
-    if (epochTime2 < EARLIEST_SANE_UNIX_TIMESTAMP ||
-        epochTime2 > LATEST_SANE_UNIX_TIMESTAMP) {
+    return isEpochTimeSane(epochTime(ts, epoch), utcOffset);
+}
+bool loggerClock::isEpochTimeSane(epochTime in_time, int8_t utcOffset) {
+    uint32_t epochSeconds = epochTime::convert_epoch(in_time,
+                                                     epochStart::unix_epoch) -
+        static_cast<uint32_t>(utcOffset * 3600);
+    if (epochSeconds < EARLIEST_SANE_UNIX_TIMESTAMP ||
+        epochSeconds > LATEST_SANE_UNIX_TIMESTAMP) {
         return false;
     } else {
         return true;
@@ -311,22 +397,19 @@ bool loggerClock::isEpochTimeSane(uint32_t ts, int8_t utcOffset,
 
 void loggerClock::setNextRTCInterrupt(uint32_t ts, int8_t utcOffset,
                                       epochStart epoch) {
+    MS_DEEP_DBG(F("Raw input alarm timestamp:"), ts);
+    setNextRTCInterrupt(epochTime(ts, epoch), utcOffset);
+}
+void loggerClock::setNextRTCInterrupt(epochTime in_time, int8_t utcOffset) {
     // Disable any previous interrupts
     disableRTCInterrupts();
     resetClockInterruptStatus();
-    MS_DBG(F("Setting the next alarms on the"), MS_CLOCK_NAME, F("to"), ts);
-    uint32_t converted_ts = tsToRawRTC(ts, utcOffset, epoch);
 
-    // Create a temporary variable for the epoch time
-    time_t t = converted_ts;
-
-    // Convert the time to the processor epoch.
-    // This is only needed so the gmtime function will work - this is not
-    // converting between offsets.
-    if (_rtcEpoch != _core_epoch) {
-        t += _rtcEpoch;    // convert to to the core epoch
-        t -= _core_epoch;  // convert to processor epoch (used by gmtime)
-    }
+    // Use the conversion function to get a temporary variable for the epoch
+    // time in the epoch used by the processor core (ie, used by gmtime).
+    time_t t = epochTime::convert_epoch(in_time, _rtcEpoch) -
+        static_cast<uint32_t>(utcOffset * 3600);
+    MS_DBG(F("Setting the next alarms on the"), MS_CLOCK_NAME, F("to"), t);
 
     // create a temporary time struct
     // tm is a struct for time parts, defined in time.h
@@ -363,8 +446,9 @@ void loggerClock::setNextRTCInterrupt(uint32_t ts, int8_t utcOffset,
 #elif defined(MS_USE_RTC_ZERO)
     // NOTE: The interrupt is fired 1s after the match, so we set the alarm 1
     // second early.
-    rtc.setAlarmTime(tmp->tm_hour, tmp->tm_min, tmp->tm_sec - 1);
-    rtc.enableAlarm(rtc.MATCH_HHMMSS);  // Every day at the matched time
+    zero_sleep_rtc.setAlarmTime(tmp->tm_hour, tmp->tm_min, tmp->tm_sec - 1);
+    zero_sleep_rtc.enableAlarm(
+           zero_sleep_rtc.MATCH_HHMMSS);  // Every day at the matched time
 #endif
 }
 
@@ -453,16 +537,20 @@ void loggerClock::begin() {
     PRINTOUT(F("Current"), MS_CLOCK_NAME, F("time is:"),
              formatDateTime_ISO8601(getNowAsEpoch(_rtcUTCOffset, _rtcEpoch),
                                     _rtcUTCOffset, _rtcEpoch));
-    MS_DBG(F("The processor is uses a"), _core_epoch.printEpochName(),
-           F("epoch internally, which starts"), _core_epoch.printEpochStart(),
+    MS_DBG(F("The processor is uses a"), epochTime::printEpochName(_core_epoch),
+           F("epoch internally, which starts"),
+           epochTime::printEpochStart(_core_epoch),
            F("and is offset from the Unix epoch by"),
-           static_cast<uint32_t>(_core_epoch - epochStart::unix_epoch),
+           static_cast<uint32_t>(static_cast<uint32_t>(_core_epoch) -
+                                 static_cast<uint32_t>(epochStart::unix_epoch)),
            F("seconds"));
     MS_DBG(F("The attached"), MS_CLOCK_NAME, F("uses a"),
-           _rtcEpoch.printEpochName(), F("epoch internally, which starts"),
-           _rtcEpoch.printEpochStart(),
+           epochTime::printEpochName(_rtcEpoch),
+           F("epoch internally, which starts"),
+           epochTime::printEpochStart(_rtcEpoch),
            F("and is offset from the Unix epoch by"),
-           static_cast<uint32_t>(_rtcEpoch - epochStart::unix_epoch),
+           static_cast<uint32_t>(static_cast<uint32_t>(_rtcEpoch) -
+                                 static_cast<uint32_t>(epochStart::unix_epoch)),
            F("seconds"));
 }
 
@@ -498,17 +586,16 @@ inline uint32_t loggerClock::tsToRawRTC(uint32_t ts, int8_t utcOffset,
         static_cast<uint32_t>(loggerClock::_rtcUTCOffset - utcOffset) * 3600;
     MS_DEEP_DBG(F("Subtracting"), tz_change,
                 F("from the timestamp to convert to the RTC's UTC offset."));
-    uint32_t epoch_change = epoch - loggerClock::_rtcEpoch;
-    MS_DEEP_DBG(F("Subtracting"), epoch_change,
-                F("from the timestamp to convert to the RTC epoch."));
-    MS_DEEP_DBG(F("Setting raw RTC value to:"), ts - tz_change - epoch_change);
-    return ts - tz_change - epoch_change;
+    uint32_t ts_conv = epochTime::convert_epoch(ts - tz_change, epoch,
+                                                loggerClock::_rtcEpoch);
+    MS_DEEP_DBG(F("Equivalent raw RTC value is:"), ts_conv);
+    return ts_conv;
 }
 inline uint32_t loggerClock::tsFromRawRTC(uint32_t ts, int8_t utcOffset,
                                           epochStart epoch) {
-    uint32_t epoch_change = epoch - loggerClock::_rtcEpoch;
-    MS_DEEP_DBG(F("Adding"), epoch_change,
-                F("to the timestamp to convert to the requested epoch."));
+    uint32_t ts_conv = epochTime::convert_epoch(ts, loggerClock::_rtcEpoch,
+                                                epoch);
+    MS_DEEP_DBG(F("Equivalent requested epoch RTC value is:"), ts_conv);
 
     // Do NOT apply an offset if the timestamp is obviously bad
     uint32_t tz_change = 0;
@@ -525,7 +612,7 @@ inline uint32_t loggerClock::tsFromRawRTC(uint32_t ts, int8_t utcOffset,
             F("doesn't appear to be a valid timestamp"));
     }
 
-    return ts + tz_change + epoch_change;
+    return ts_conv + tz_change;
 }
 
 
