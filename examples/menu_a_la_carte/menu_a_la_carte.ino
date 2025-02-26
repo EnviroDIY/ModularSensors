@@ -378,6 +378,7 @@ Logger dataLogger;
 #define WIFI_PASSWD "your_wifi_password"
 
 #if defined(BUILD_MODEM_DIGI_XBEE_CELLULAR_TRANSPARENT)
+#define BUILD_HAS_MODEM
 /** Start [digi_xbee_cellular_transparent] */
 // For any Digi Cellular XBee's
 // NOTE:  The u-blox based Digi XBee's (3G global and LTE-M global) can be used
@@ -419,6 +420,7 @@ DigiXBeeCellularTransparent modem = modemXBCT;
 
 
 #elif defined(BUILD_MODEM_DIGI_XBEE_LTE_BYPASS)
+#define BUILD_HAS_MODEM
 /** Start [digi_xbee_lte_bypass] */
 // For the u-blox SARA R410M based Digi LTE-M XBee3
 // NOTE:  According to the manual, this should be less stable than transparent
@@ -456,6 +458,7 @@ DigiXBeeLTEBypass modem = modemXBLTEB;
 
 
 #elif defined(BUILD_MODEM_DIGI_XBEE_3G_BYPASS)
+#define BUILD_HAS_MODEM
 /** Start [digi_xbee_3g_bypass] */
 // For the u-blox SARA U201 based Digi 3G XBee with 2G fallback
 // NOTE:  According to the manual, this should be less stable than transparent
@@ -493,6 +496,7 @@ DigiXBee3GBypass modem = modemXB3GB;
 
 
 #elif defined(BUILD_MODEM_DIGI_XBEE_WIFI)
+#define BUILD_HAS_MODEM
 /** Start [digi_xbee_wifi] */
 // For the Digi Wifi XBee (S6B)
 #include <modems/DigiXBeeWifi.h>
@@ -529,6 +533,7 @@ DigiXBeeWifi modem = modemXBWF;
 
 
 #elif defined(BUILD_MODEM_ESPRESSIF_ESP8266)
+#define BUILD_HAS_MODEM
 /** Start [espressif_esp8266] */
 // For almost anything based on the Espressif ESP8266 using the
 // AT command firmware
@@ -562,6 +567,7 @@ EspressifESP8266 modem = modemESP;
 
 
 #elif defined(BUILD_MODEM_ESPRESSIF_ESP32)
+#define BUILD_HAS_MODEM
 /** Start [espressif_esp32] */
 // For almost anything based on the Espressif ESP8266 using the
 // AT command firmware
@@ -597,6 +603,7 @@ EspressifESP32 modem = modemESP;
 
 
 #elif defined(BUILD_MODEM_QUECTEL_BG96)
+#define BUILD_HAS_MODEM
 /** Start [quectel_bg96] */
 // For the Dragino, Nimbelink or other boards based on the Quectel BG96
 #include <modems/QuectelBG96.h>
@@ -631,6 +638,7 @@ QuectelBG96 modem = modemBG96;
 
 
 #elif defined(BUILD_MODEM_SEQUANS_MONARCH)
+#define BUILD_HAS_MODEM
 /** Start [sequans_monarch] */
 // For the Nimbelink LTE-M Verizon/Sequans or other boards based on the Sequans
 // Monarch series
@@ -666,6 +674,7 @@ SequansMonarch modem = modemSVZM;
 
 
 #elif defined(BUILD_MODEM_SIM_COM_SIM800)
+#define BUILD_HAS_MODEM
 /** Start [sim_com_sim800] */
 // For almost anything based on the SIMCom SIM800 EXCEPT the Sodaq 2GBee R6 and
 // higher
@@ -698,6 +707,7 @@ SIMComSIM800 modem = modemS800;
 
 
 #elif defined(BUILD_MODEM_SIM_COM_SIM7000)
+#define BUILD_HAS_MODEM
 /** Start [sim_com_sim7000] */
 // For almost anything based on the SIMCom SIM7000
 #include <modems/SIMComSIM7000.h>
@@ -728,6 +738,7 @@ SIMComSIM7000 modem = modem7000;
 
 
 #elif defined(BUILD_MODEM_SIM_COM_SIM7080)
+#define BUILD_HAS_MODEM
 /** Start [sim_com_sim7080] */
 // For almost anything based on the SIMCom SIM7080G
 #include <modems/SIMComSIM7080.h>
@@ -758,6 +769,7 @@ SIMComSIM7080 modem = modem7080;
 
 
 #elif defined(BUILD_MODEM_SODAQ_2G_BEE_R6)
+#define BUILD_HAS_MODEM
 /** Start [sodaq_2g_bee_r6] */
 // For the Sodaq 2GBee R6 and R7 based on the SIMCom SIM800
 // NOTE:  The Sodaq GPRSBee doesn't expose the SIM800's reset pin
@@ -789,6 +801,7 @@ Sodaq2GBeeR6 modem = modem2GB;
 
 
 #elif defined(BUILD_MODEM_SODAQ_UBEE_R410M)
+#define BUILD_HAS_MODEM
 /** Start [sodaq_ubee_r410m] */
 // For the Sodaq UBee based on the 4G LTE-M u-blox SARA R410M
 #include <modems/SodaqUBeeR410M.h>
@@ -827,6 +840,7 @@ SodaqUBeeR410M modem = modemR410;
 
 
 #elif defined(BUILD_MODEM_SODAQ_UBEE_U201)
+#define BUILD_HAS_MODEM
 /** Start [sodaq_ubee_u201] */
 // For the Sodaq UBee based on the 3G u-blox SARA U201
 #include <modems/SodaqUBeeU201.h>
@@ -858,7 +872,7 @@ SodaqUBeeU201 modem = modemU201;
 // ==========================================================================
 #endif
 
-#if !defined(BUILD_MODEM_NO_MODEM)
+#if !defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM)
 /** Start [modem_variables] */
 // Create RSSI and signal strength variable pointers for the modem
 Variable* modemRSSI =
@@ -3093,10 +3107,9 @@ Variable* variableList[] = {
     dOptoDOmgL,
     dOptoTemp,
 #endif
-#if !defined(BUILD_MODEM_NO_MODEM)
+#if !defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM)
     modemRSSI,
     modemSignalPct,
-#endif
 #if defined(TINY_GSM_MODEM_HAS_BATTERY)
     modemBatteryState,
     modemBatteryPct,
@@ -3104,6 +3117,7 @@ Variable* variableList[] = {
 #endif
 #if defined(TINY_GSM_MODEM_HAS_TEMPERATURE)
     modemTemperature,
+#endif
 #endif
     mcuBoardSampNo,
 #if !defined(__SAMD51__)
@@ -3121,7 +3135,8 @@ VariableArray varArray(variableCount, variableList);
 #endif
 
 
-#if defined(BUILD_PUB_ENVIRO_DIY_PUBLISHER) && !defined(BUILD_MODEM_NO_MODEM)
+#if defined(BUILD_PUB_ENVIRO_DIY_PUBLISHER) && \
+    (!defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM))
 // ==========================================================================
 //  A Publisher to Monitor My Watershed / EnviroDIY Data Sharing Portal
 // ==========================================================================
@@ -3141,7 +3156,8 @@ EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modem.gsmClient,
 #endif
 
 
-#if defined(BUILD_PUB_DREAM_HOST_PUBLISHER) && !defined(BUILD_MODEM_NO_MODEM)
+#if defined(BUILD_PUB_DREAM_HOST_PUBLISHER) && \
+    (!defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM))
 // ==========================================================================
 //  A Publisher to DreamHost
 // ==========================================================================
@@ -3159,7 +3175,8 @@ DreamHostPublisher DreamHostGET(dataLogger, &modem.gsmClient,
 #endif
 
 
-#if defined(BUILD_PUB_THING_SPEAK_PUBLISHER) && !defined(BUILD_MODEM_NO_MODEM)
+#if defined(BUILD_PUB_THING_SPEAK_PUBLISHER) && \
+    (!defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM))
 // ==========================================================================
 //  ThingSpeak Data Publisher
 // ==========================================================================
@@ -3187,7 +3204,8 @@ ThingSpeakPublisher TsMqtt(dataLogger, &modem.gsmClient, thingSpeakClientName,
 #endif
 
 
-#if defined(BUILD_PUB_UBIDOTS_PUBLISHER) && !defined(BUILD_MODEM_NO_MODEM)
+#if defined(BUILD_PUB_UBIDOTS_PUBLISHER) && \
+    (!defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM))
 // ==========================================================================
 //  Ubidots Data Publisher
 // ==========================================================================
@@ -3305,7 +3323,7 @@ void setup() {
 
     PRINTOUT(F("Using ModularSensors Library version"),
              MODULAR_SENSORS_VERSION);
-#if !defined(BUILD_MODEM_NO_MODEM)
+#if !defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM)
     PRINTOUT(F("TinyGSM Library version"), TINYGSM_VERSION, '\n');
 #endif
     PRINTOUT(F("Processor:"), mcuBoard.getSensorLocation());
@@ -3328,7 +3346,7 @@ void setup() {
 
 /** Start [setup_serial_begins] */
 // Start the serial connection with the modem
-#if !defined(BUILD_MODEM_NO_MODEM)
+#if !defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM)
     PRINTOUT(F("Starting modem connection on"), STR(modemSerial), F(" at"),
              modemBaud, F(" baud"));
     modemSerial.begin(modemBaud);
@@ -3407,7 +3425,7 @@ void setup() {
     PRINTOUT(F("Setting RTC time zone"));
     loggerClock::setRTCOffset(0);
 
-#if !defined(BUILD_MODEM_NO_MODEM)
+#if !defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM)
     // Attach the modem and information pins to the logger
     PRINTOUT(F("Attaching the modem"));
     dataLogger.attachModem(modem);
