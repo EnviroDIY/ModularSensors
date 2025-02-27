@@ -55,6 +55,9 @@
 #ifndef SRC_MODEMS_SIMCOMSIM800_H_
 #define SRC_MODEMS_SIMCOMSIM800_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_SIMCOMSIM800_DEBUG
 // #define MS_SIMCOMSIM800_DEBUG_DEEP
@@ -69,7 +72,6 @@
 #define TINY_GSM_MODEM_SIM800
 
 // Included Dependencies
-#include "ModSensorConfig.h"
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 #include "TinyGsmClient.h"

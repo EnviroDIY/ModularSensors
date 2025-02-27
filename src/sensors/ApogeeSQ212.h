@@ -76,6 +76,9 @@
 #ifndef SRC_SENSORS_APOGEESQ212_H_
 #define SRC_SENSORS_APOGEESQ212_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_APOGEESQ212_DEBUG
 

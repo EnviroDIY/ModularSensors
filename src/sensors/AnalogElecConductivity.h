@@ -134,6 +134,9 @@
 #ifndef SRC_SENSORS_ANALOGELECCONDUCTIVITY_H_
 #define SRC_SENSORS_ANALOGELECCONDUCTIVITY_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_ANALOGELECCONDUCTIVITY_DEBUG
 // #define MS_ANALOGELECCONDUCTIVITY_DEBUG_DEEP

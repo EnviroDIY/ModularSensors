@@ -65,6 +65,9 @@
 #ifndef SRC_SENSORS_SENSIRIONSHT4X_H_
 #define SRC_SENSORS_SENSIRIONSHT4X_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_SENSIRION_SHT4X_DEBUG
 

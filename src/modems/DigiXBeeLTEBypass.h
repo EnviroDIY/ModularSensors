@@ -66,6 +66,9 @@
 #ifndef SRC_MODEMS_DIGIXBEELTEBYPASS_H_
 #define SRC_MODEMS_DIGIXBEELTEBYPASS_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_DIGIXBEELTEBYPASS_DEBUG
 // #define MS_DIGIXBEELTEBYPASS_DEBUG_DEEP
@@ -80,7 +83,6 @@
 #define TINY_GSM_MODEM_SARAR4
 
 // Included Dependencies
-#include "ModSensorConfig.h"
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 #include "TinyGsmClient.h"

@@ -61,6 +61,9 @@
 #ifndef SRC_MODEMS_SODAQ2GBEER6_H_
 #define SRC_MODEMS_SODAQ2GBEER6_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_SODAQ2GBEER6_DEBUG
 // #define MS_SODAQ2GBEER6_DEBUG_DEEP

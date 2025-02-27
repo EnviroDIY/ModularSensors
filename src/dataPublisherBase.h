@@ -21,6 +21,9 @@
 #ifndef SRC_DATAPUBLISHERBASE_H_
 #define SRC_DATAPUBLISHERBASE_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_DATAPUBLISHERBASE_DEBUG
 // #define MS_DATAPUBLISHERBASE_DEBUG_DEEP
@@ -34,7 +37,6 @@
 #endif
 
 // Included Dependencies
-#include "ModSensorConfig.h"
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 #undef MS_DEBUGGING_DEEP

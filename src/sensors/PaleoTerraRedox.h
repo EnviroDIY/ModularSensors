@@ -61,6 +61,9 @@
 #ifndef SRC_SENSORS_PALEOTERRAREDOX_H_
 #define SRC_SENSORS_PALEOTERRAREDOX_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_PALEOTERRAREDOX_DEBUG
 

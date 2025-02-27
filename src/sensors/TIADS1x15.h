@@ -140,6 +140,9 @@
 #ifndef SRC_SENSORS_TIADS1X15_H_
 #define SRC_SENSORS_TIADS1X15_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_TIADS1X15_DEBUG
 

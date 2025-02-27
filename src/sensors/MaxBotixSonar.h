@@ -100,6 +100,9 @@
 #ifndef SRC_SENSORS_MAXBOTIXSONAR_H_
 #define SRC_SENSORS_MAXBOTIXSONAR_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_MAXBOTIXSONAR_DEBUG
 

@@ -62,6 +62,9 @@
 #ifndef SRC_MODEMS_QUECTELBG96_H_
 #define SRC_MODEMS_QUECTELBG96_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_QUECTELBG96_DEBUG
 // #define MS_QUECTELBG96_DEBUG_DEEP
@@ -76,7 +79,6 @@
 #define TINY_GSM_MODEM_BG96
 
 // Included Dependencies
-#include "ModSensorConfig.h"
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 #include "TinyGsmClient.h"

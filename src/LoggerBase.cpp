@@ -738,10 +738,10 @@ void Logger::systemSleep(void) {
         if (g_APinDescription[ulPin].ulPinType != PIO_NOT_A_PIN) {
             if (ulPin != static_cast<uint32_t>(_mcuWakePin) &&
                 ulPin != static_cast<uint32_t>(_buttonPin)) {
-                EPortType port    = g_APinDescription[ulPin].ulPort;
-                uint32_t  pin     = g_APinDescription[ulPin].ulPin;
-                uint32_t  pinMask = (1ul << pin);
-                PORT->Group[port].DIRCLR.reg             = pinMask;
+                EPortType port               = g_APinDescription[ulPin].ulPort;
+                uint32_t  pin                = g_APinDescription[ulPin].ulPin;
+                uint32_t  pinMask            = (1ul << pin);
+                PORT->Group[port].DIRCLR.reg = pinMask;
                 PORT->Group[port].PINCFG[pin].bit.INEN   = 0;
                 PORT->Group[port].PINCFG[pin].bit.PULLEN = 0;
             } else {

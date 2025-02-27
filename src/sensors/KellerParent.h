@@ -79,6 +79,9 @@
 #ifndef SRC_SENSORS_KELLERPARENT_H_
 #define SRC_SENSORS_KELLERPARENT_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_KELLERPARENT_DEBUG
 // #define MS_KELLERPARENT_DEBUG_DEEP

@@ -14,6 +14,9 @@
 #ifndef SRC_VARIABLEBASE_H_
 #define SRC_VARIABLEBASE_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_VARIABLEBASE_DEBUG
 

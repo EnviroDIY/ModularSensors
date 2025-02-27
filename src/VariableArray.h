@@ -14,6 +14,9 @@
 #ifndef SRC_VARIABLEARRAY_H_
 #define SRC_VARIABLEARRAY_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_VARIABLEARRAY_DEBUG
 // #define MS_VARIABLEARRAY_DEBUG_DEEP

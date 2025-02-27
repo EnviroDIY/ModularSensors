@@ -15,6 +15,9 @@
 #ifndef SRC_LOGGERBASE_H_
 #define SRC_LOGGERBASE_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_LOGGERBASE_DEBUG
 // #define MS_LOGGERBASE_DEBUG_DEEP
@@ -28,7 +31,6 @@
 #endif
 
 // Included Dependencies
-#include "ModSensorConfig.h"
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 #undef MS_DEBUGGING_DEEP

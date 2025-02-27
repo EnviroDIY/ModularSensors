@@ -114,6 +114,9 @@
 #ifndef SRC_SENSORS_YOSEMITECHPARENT_H_
 #define SRC_SENSORS_YOSEMITECHPARENT_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_YOSEMITECHPARENT_DEBUG
 // #define MS_YOSEMITECHPARENT_DEBUG_DEEP

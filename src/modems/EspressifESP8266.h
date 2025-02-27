@@ -70,6 +70,9 @@
 #ifndef SRC_MODEMS_ESPRESSIFESP8266_H_
 #define SRC_MODEMS_ESPRESSIFESP8266_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_ESPRESSIFESP8266_DEBUG
 // #define MS_ESPRESSIFESP8266_DEBUG_DEEP
@@ -89,7 +92,6 @@
 #define TINY_GSM_MODEM_ESP8266
 
 // Included Dependencies
-#include "ModSensorConfig.h"
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 #undef MS_DEBUGGING_DEEP

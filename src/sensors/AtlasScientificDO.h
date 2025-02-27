@@ -49,6 +49,9 @@
 #ifndef SRC_SENSORS_ATLASSCIENTIFICDO_H_
 #define SRC_SENSORS_ATLASSCIENTIFICDO_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_ATLASSCIENTIFICDO_DEBUG
 

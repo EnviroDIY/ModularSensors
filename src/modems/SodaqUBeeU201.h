@@ -52,6 +52,9 @@
 #ifndef SRC_MODEMS_SODAQUBEEU201_H_
 #define SRC_MODEMS_SODAQUBEEU201_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_SODAQUBEEU201_DEBUG
 // #define MS_SODAQUBEEU201_DEBUG_DEEP
@@ -66,7 +69,6 @@
 #define TINY_GSM_MODEM_UBLOX
 
 // Included Dependencies
-#include "ModSensorConfig.h"
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 #include "TinyGsmClient.h"

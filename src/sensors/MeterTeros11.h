@@ -73,6 +73,9 @@
 #ifndef SRC_SENSORS_METERTEROS11_H_
 #define SRC_SENSORS_METERTEROS11_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_METERTEROS11_DEBUG
 

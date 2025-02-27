@@ -69,6 +69,9 @@
 #ifndef SRC_SENSORS_CAMPBELLOBS3_H_
 #define SRC_SENSORS_CAMPBELLOBS3_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_CAMPBELLOBS3_DEBUG
 

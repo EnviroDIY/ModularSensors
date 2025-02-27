@@ -129,6 +129,9 @@
 #ifndef SRC_SENSORS_TURNERCYCLOPS_H_
 #define SRC_SENSORS_TURNERCYCLOPS_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_TURNERCYCLOPS_DEBUG
 

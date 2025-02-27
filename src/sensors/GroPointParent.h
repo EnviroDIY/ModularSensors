@@ -61,6 +61,9 @@
 #ifndef SRC_SENSORS_GROPOINTPARENT_H_
 #define SRC_SENSORS_GROPOINTPARENT_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_GROPOINTPARENT_DEBUG
 // #define MS_GROPOINTPARENT_DEBUG_DEEP

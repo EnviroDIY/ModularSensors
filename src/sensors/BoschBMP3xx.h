@@ -132,6 +132,9 @@
 #ifndef SRC_SENSORS_BOSCHBMP3XX_H_
 #define SRC_SENSORS_BOSCHBMP3XX_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_BOSCHBMP3XX_DEBUG
 

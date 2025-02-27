@@ -13,6 +13,9 @@
 #ifndef SRC_CLOCKSUPPORT_H_
 #define SRC_CLOCKSUPPORT_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_CLOCKSUPPORT_DEBUG
 // #define MS_CLOCKSUPPORT_DEBUG_DEEP
@@ -26,7 +29,6 @@
 #endif
 
 // Included Dependencies
-#include "ModSensorConfig.h"
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 #undef MS_DEBUGGING_DEEP

@@ -24,6 +24,9 @@
 #ifndef SRC_SENSORBASE_H_
 #define SRC_SENSORBASE_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_SENSORBASE_DEBUG
 
@@ -32,7 +35,6 @@
 #endif
 
 // Included Dependencies
-#include "ModSensorConfig.h"
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 #include <pins_arduino.h>

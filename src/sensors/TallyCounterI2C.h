@@ -71,6 +71,9 @@
 #ifndef SRC_SENSORS_TallyCounterI2C_H_
 #define SRC_SENSORS_TallyCounterI2C_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_TALLYCOUNTERI2C_DEBUG
 

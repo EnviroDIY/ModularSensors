@@ -17,9 +17,11 @@
 #ifndef SRC_MODSENSORDEBUGGER_H_
 #define SRC_MODSENSORDEBUGGER_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Included Dependencies
 #include <Arduino.h>
-#include "ModSensorConfig.h"
 
 /// Helper for strings stored in flash
 /***

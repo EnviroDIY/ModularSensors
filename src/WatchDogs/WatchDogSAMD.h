@@ -16,6 +16,9 @@
 #ifndef SRC_WATCHDOGS_WATCHDOGSAMD_H_
 #define SRC_WATCHDOGS_WATCHDOGSAMD_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_WATCHDOGSAMD_DEBUG
 // #define MS_WATCHDOGSAMD_DEBUG_DEEP

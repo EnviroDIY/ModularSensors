@@ -63,6 +63,9 @@
 #ifndef SRC_SENSORS_FREESCALEMPL115A2_H_
 #define SRC_SENSORS_FREESCALEMPL115A2_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_FREESCALEMPL115A2_DEBUG
 
