@@ -97,7 +97,7 @@ non_menu_examples = [
     f
     for f in os.listdir(examples_path)
     if os.path.isdir(os.path.join(examples_path, f))
-    and f not in [".history", "logger_test", menu_example_name]
+    and f not in [".history", "logger_test", "archive", "tests", menu_example_name]
 ]
 
 # %%
@@ -212,12 +212,25 @@ def create_logged_command(
     output_commands = []
     lower_compiler = compiler.lower().replace(" ", "").strip()
     if lower_compiler == "platformio":
-        build_command = create_pio_ci_command(pio_env_file, pio_env, code_subfolder)
+        build_command = ""
+        # https://stackoverflow.com/questions/67703736/how-to-use-wildcard-in-renaming-multiple-files-in-a-directory-in-python
+        for filename in (
+            os.listdir(f"{examples_path}\\{code_subfolder}")
+            if workspace_dir.lower() not in code_subfolder.lower()
+            else os.listdir(f"{code_subfolder}")
+        ):
+            if ".ino" not in filename:
+                continue
+            sf_name = filename.replace(".ino", "")
+            my_dest = filename.replace(".ino", ".cpp")
+            my_source = filename
+            build_command += f'mv "{artifact_path}\\{sf_name}\\{my_source}" "{artifact_path}\\{sf_name}\\{my_dest}"\n'
+        build_command += create_pio_ci_command(pio_env_file, pio_env, code_subfolder)
     elif lower_compiler == "arduinocli":
         build_command = ""
         for pio_build_flag in pio_config.get("env:{}".format(pio_env), "build_flags"):
             if pio_build_flag not in non_acli_build_flag:
-                build_command += f"echo '#define {pio_build_flag}' > temp_config.h\n"
+                build_command += f"echo '#define {pio_build_flag.replace("-D","").replace("="," ")}' > temp_config.h\n"
                 build_command += f"cat {ms_config_path} >> temp_config.h\n"
                 build_command += f"mv temp_config.h {ms_config_path}\n"
         build_command += create_arduino_cli_command(pio_env, code_subfolder)
@@ -783,6 +796,7 @@ if "GITHUB_WORKSPACE" in os.environ.keys():
 if "GITHUB_WORKSPACE" not in os.environ.keys():
     try:
         shutil.rmtree(artifact_dir)
+        os.remove(os.path.join(ci_path, "platformio_to_arduino_boards.json"))
     except:
         pass
 
