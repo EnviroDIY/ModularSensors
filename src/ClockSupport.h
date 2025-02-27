@@ -280,11 +280,6 @@ class epochTime {
 
  private:
     /**
-     * @brief Internal reference to the number of seconds the timestamp's
-     * reference is from Jan 1, 1900.
-     */
-    epochStart _unixOffset;
-    /**
      * @brief Internal reference to the timestamp IN UNIX EPOCH
      */
     time_t _unixTimestamp;

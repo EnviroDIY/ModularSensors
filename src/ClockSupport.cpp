@@ -12,7 +12,7 @@
 #include "LoggerBase.h"
 
 
-epochTime::epochTime(time_t timestamp, epochStart epoch) : _unixOffset(epoch) {
+epochTime::epochTime(time_t timestamp, epochStart epoch) {
     _unixTimestamp = convert_epoch(timestamp, epoch, epochStart::unix_epoch);
 }
 
@@ -85,7 +85,7 @@ time_t epochTime::convert_epoch(time_t raw_timestamp, epochStart start_offset,
                         EPOCH_UNIX_TO_Y2K;
                 }
                 case epochStart::gps_epoch: {
-                    return epochTime::gps2unix(raw_timestamp -
+                    return epochTime::unix2gps(raw_timestamp -
                                                EPOCH_NIST_TO_UNIX);
                 }
                 case epochStart::nist_epoch:
@@ -102,7 +102,7 @@ time_t epochTime::convert_epoch(time_t raw_timestamp, epochStart start_offset,
 
 
 time_t epochTime::convert_epoch(epochTime in_time, epochStart end_offset) {
-    return convert_epoch(in_time._unixTimestamp, in_time._unixOffset,
+    return convert_epoch(in_time._unixTimestamp, epochStart::unix_epoch,
                          end_offset);
 }
 
@@ -641,7 +641,8 @@ uint32_t loggerClock::getRawRTCNow() {
     rtc.updateTime();
     MS_DEEP_DBG(F("Set use1970sEpoch to"), _core_epoch == epochStart::y2k_epoch,
                 F("because the processor epoch is"),
-                static_cast<uint32_t>(_core_epoch));
+                epochTime::printEpochName(_core_epoch), '(',
+                static_cast<uint32_t>(_core_epoch), ')');
     return rtc.getEpoch(_core_epoch == epochStart::y2k_epoch);
 }
 void loggerClock::setRawRTCNow(uint32_t ts) {
