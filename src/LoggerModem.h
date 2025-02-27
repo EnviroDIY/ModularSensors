@@ -23,7 +23,10 @@
 #ifndef SRC_LOGGERMODEM_H_
 #define SRC_LOGGERMODEM_H_
 
-// FOR DEBUGGING
+// Include config before anything else
+#include "ModSensorConfig.h"
+
+// Debugging Statement
 // #define MS_LOGGERMODEM_DEBUG
 // #define MS_LOGGERMODEM_DEBUG_DEEP
 
