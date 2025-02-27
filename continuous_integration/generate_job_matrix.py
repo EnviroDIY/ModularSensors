@@ -222,15 +222,20 @@ def create_logged_command(
             if ".ino" not in filename:
                 continue
             sf_name = filename.replace(".ino", "")
-            my_dest = filename.replace(".ino", ".cpp")
-            my_source = filename
-            build_command += f'mv "{artifact_path}\\{sf_name}\\{my_source}" "{artifact_path}\\{sf_name}\\{my_dest}"\n'
+            sf_path = os.path.join(
+                os.path.join(workspace_dir, "continuous_integration_artifacts", sf_name)
+            )
+            my_dest = os.path.abspath(
+                os.path.join(sf_path, filename.replace(".ino", ".cpp"))
+            )
+            my_source = os.path.abspath(os.path.join(sf_path, filename))
+            build_command += f'mv "{my_source}" "{my_dest}"\n'
         build_command += create_pio_ci_command(pio_env_file, pio_env, code_subfolder)
     elif lower_compiler == "arduinocli":
         build_command = ""
         for pio_build_flag in pio_config.get("env:{}".format(pio_env), "build_flags"):
             if pio_build_flag not in non_acli_build_flag:
-                build_command += f"echo '#define {pio_build_flag.replace("-D","").replace("="," ")}' > temp_config.h\n"
+                build_command += f"echo '#define {pio_build_flag.replace('-D','').replace('=',' ')}' > temp_config.h\n"
                 build_command += f"cat {ms_config_path} >> temp_config.h\n"
                 build_command += f"mv temp_config.h {ms_config_path}\n"
         build_command += create_arduino_cli_command(pio_env, code_subfolder)
