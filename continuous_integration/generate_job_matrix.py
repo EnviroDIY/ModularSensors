@@ -215,7 +215,7 @@ def create_logged_command(
         build_command = ""
         # https://stackoverflow.com/questions/67703736/how-to-use-wildcard-in-renaming-multiple-files-in-a-directory-in-python
         for filename in (
-            os.listdir(f"{examples_path}\\{code_subfolder}")
+            os.listdir(os.path.join(workspace_dir, examples_dir, code_subfolder))
             if workspace_dir.lower() not in code_subfolder.lower()
             else os.listdir(f"{code_subfolder}")
         ):
@@ -223,7 +223,7 @@ def create_logged_command(
                 continue
             sf_name = filename.replace(".ino", "")
             sf_path = os.path.join(
-                os.path.join(workspace_dir, "continuous_integration_artifacts", sf_name)
+                workspace_dir, "continuous_integration_artifacts", sf_name
             )
             my_dest = os.path.abspath(
                 os.path.join(sf_path, filename.replace(".ino", ".cpp"))
