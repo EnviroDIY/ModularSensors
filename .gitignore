@@ -116,3 +116,6 @@ src/WatchDogs/SAMD51_NVIC_Interrupts.archive
 src/ClockSupport.h_combined
 continuous_integration/arduino_cli_cmd.bat
 sync.ffs_db
+.github/workflows/compile_arduino_cli.yaml
+.github/workflows/compile_platformio.yaml
+.github/workflows/determine_library_source.yaml

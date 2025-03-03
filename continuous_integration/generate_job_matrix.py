@@ -238,7 +238,7 @@ def create_logged_command(
                 os.path.join(sf_path, filename.replace(".ino", ".cpp"))
             )
             my_source = os.path.abspath(os.path.join(sf_path, filename))
-            build_command += f'mv "{my_source}" "{my_dest}"\n'
+            build_command += f'mv "{my_source}" "{my_dest}" || true\n'
         build_command += create_pio_ci_command(pio_env_file, pio_env, code_subfolder)
     elif lower_compiler == "arduinocli":
         build_command = ""
