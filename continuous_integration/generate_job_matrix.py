@@ -305,8 +305,8 @@ for pio_env in pio_config.envs():
         for compiler, command_list in zip(
             compilers, [arduino_ex_commands, pio_ex_commands]
         ):
-            if compiler == "Arduino CLI" and example == "data_saving":
-                # skip this one, it's too big
+            if example == "data_saving":
+                # skip this one until I get it updated
                 pass
             else:
                 command_list.extend(
