@@ -57,8 +57,17 @@ if not os.path.exists(artifact_dir):
     os.makedirs(artifact_dir)
 
 # The library config file
-ms_config_file = "./src/ModSensorConfig.h"
-ms_config_path = os.path.join(workspace_dir, ms_config_file)
+ms_config_file = "ModSensorConfig.h"
+ms_config_path = os.path.join(
+    workspace_dir,
+    "home",
+    "arduino",
+    "user",
+    "libraries",
+    "ModularSensors",
+    "src",
+    ms_config_file,
+)
 ms_config_path = os.path.abspath(os.path.realpath(ms_config_path))
 print(f"Modular Sensors Config Path: {ms_config_path}")
 
@@ -311,13 +320,13 @@ for pio_env in pio_config.envs():
 
     arduino_job_matrix.append(
         {
-            "job_name": "{} - Arduino - Other Examples".format(pio_env),
+            "job_name": "Arduino - {} - Other Examples".format(pio_env),
             "command": "\n".join(arduino_ex_commands + [end_job_commands]),
         }
     )
     pio_job_matrix.append(
         {
-            "job_name": "{} - Platformio - Other Examples".format(pio_env),
+            "job_name": "Platformio - {} - Other Examples".format(pio_env),
             "command": "\n".join(pio_ex_commands + [end_job_commands]),
         }
     )
@@ -474,13 +483,13 @@ for pio_env in pio_config.envs():
 
     arduino_job_matrix.append(
         {
-            "job_name": "{} - Arduino - Modems".format(pio_env),
+            "job_name": "Arduino - {} - Modems".format(pio_env),
             "command": "\n".join(arduino_modem_commands + [end_job_commands]),
         }
     )
     pio_job_matrix.append(
         {
-            "job_name": "{} - PlatformIO - Modems".format(pio_env),
+            "job_name": "PlatformIO - {} - Modems".format(pio_env),
             "command": "\n".join(pio_modem_commands + [end_job_commands]),
         }
     )
@@ -520,13 +529,13 @@ for pio_env in pio_config.envs():
 
     arduino_job_matrix.append(
         {
-            "job_name": "{} - Arduino - Publishers".format(pio_env),
+            "job_name": "Arduino - {} - Publishers".format(pio_env),
             "command": "\n".join(arduino_pub_commands + [end_job_commands]),
         }
     )
     pio_job_matrix.append(
         {
-            "job_name": "{} - PlatformIO - Publishers".format(pio_env),
+            "job_name": "PlatformIO - {} - Publishers".format(pio_env),
             "command": "\n".join(pio_pub_commands + [end_job_commands]),
         }
     )
@@ -618,13 +627,13 @@ for pio_env in pio_config.envs():
 
     arduino_job_matrix.append(
         {
-            "job_name": "{} - Arduino - Sensors".format(pio_env),
+            "job_name": "Arduino - {} - Sensors".format(pio_env),
             "command": "\n".join(arduino_sensor_commands + [end_job_commands]),
         }
     )
     pio_job_matrix.append(
         {
-            "job_name": "{} - PlatformIO - Sensors".format(pio_env),
+            "job_name": "PlatformIO - {} - Sensors".format(pio_env),
             "command": "\n".join(pio_sensor_commands + [end_job_commands]),
         }
     )
@@ -674,13 +683,13 @@ for pio_env in pio_config.envs():
 
     arduino_job_matrix.append(
         {
-            "job_name": "{} - Arduino - Loops".format(pio_env),
+            "job_name": "Arduino - {} - Loops".format(pio_env),
             "command": "\n".join(arduino_loop_commands + [end_job_commands]),
         }
     )
     pio_job_matrix.append(
         {
-            "job_name": "{} - PlatformIO - Loops".format(pio_env),
+            "job_name": "PlatformIO - {} - Loops".format(pio_env),
             "command": "\n".join(pio_loop_commands + [end_job_commands]),
         }
     )
@@ -731,13 +740,13 @@ for pio_env in ["mayfly"]:
 
     arduino_job_matrix.append(
         {
-            "job_name": "{} - Arduino - Serials".format(pio_env),
+            "job_name": "Arduino - {} - Serials".format(pio_env),
             "command": "\n".join(arduino_serial_commands + [end_job_commands]),
         }
     )
     pio_job_matrix.append(
         {
-            "job_name": "{} - PlatformIO - Serials".format(pio_env),
+            "job_name": "PlatformIO - {} - Serials".format(pio_env),
             "command": "\n".join(pio_serial_commands + [end_job_commands]),
         }
     )
