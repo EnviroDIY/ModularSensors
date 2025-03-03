@@ -300,16 +300,16 @@ void SERCOM1_3_Handler() {
 // well
 #if defined(BUILD_TEST_ALTSOFTSERIAL) && defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
 // For AltSoftSerial
-#define sonarSerial altSoftSerial
+#define cameraSerial altSoftSerial
 #elif defined(BUILD_TEST_NEOSWSERIAL) && defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
 // For Neo software serial
-#define sonarSerial neoSSerial1
+#define cameraSerial neoSSerial1
 #elif defined(BUILD_TEST_SOFTSERIAL) && defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
 // For software serial
-#define sonarSerial softSerial1
+#define cameraSerial softSerial1
 #elif defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
 // Hardware serial
-#define sonarSerial Serial1
+#define cameraSerial Serial1
 #endif
 
 /** End [assign_ports_sw] */

@@ -228,7 +228,7 @@ def create_logged_command(
             if workspace_dir.lower() not in code_subfolder.lower()
             else os.listdir(f"{code_subfolder}")
         ):
-            if ".ino" not in filename:
+            if ".ino" not in filename or "menu" not in filename:
                 continue
             sf_name = filename.replace(".ino", "")
             sf_path = os.path.join(
@@ -326,7 +326,7 @@ for pio_env in pio_config.envs():
     )
     pio_job_matrix.append(
         {
-            "job_name": "Platformio - {} - Other Examples".format(pio_env),
+            "job_name": "PlatformIO - {} - Other Examples".format(pio_env),
             "command": "\n".join(pio_ex_commands + [end_job_commands]),
         }
     )
