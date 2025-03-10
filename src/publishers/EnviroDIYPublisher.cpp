@@ -169,6 +169,13 @@ void EnviroDIYPublisher::begin(Logger&     baseLogger,
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
     _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
 }
+void EnviroDIYPublisher::begin() {
+    // NOTE: This doesn't have to happen after boot, but it does have to happen
+    // after the variable array is fully constructed.  If the variable array is
+    // constructed after the publisher, the number of variables will be
+    // incorrect in the variable array when this is called in its constructor.
+    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
+}
 
 bool EnviroDIYPublisher::connectionNeeded(void) {
     // compute the send interval, reducing it as the buffer gets more full so we
@@ -219,6 +226,19 @@ bool EnviroDIYPublisher::connectionNeeded(void) {
 // connection.
 // The return is the http status code of the response.
 int16_t EnviroDIYPublisher::publishData(Client* outClient, bool forceFlush) {
+    // work around for strange construction order: make sure the number of
+    // variables listed in the log buffer matches the number of variables in the
+    // logger
+    if (_logBuffer.getNumVariables() != _baseLogger->getArrayVarCount()) {
+        MS_DBG(F("Number of variables in log buffer does not match number of "
+                 "variables in logger:"),
+               _logBuffer.getNumVariables(), F("vs"),
+               _baseLogger->getArrayVarCount());
+        MS_DBG(F("Setting number of variables in log buffer to match number of "
+                 "variables in logger"));
+        _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
+    }
+
     // Do we intend to flush this call? If so, we have just returned true from
     // connectionNeeded() and the internet is connected and waiting. Check what
     // that function said so we know to do it after we record this data point.

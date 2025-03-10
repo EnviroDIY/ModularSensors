@@ -150,6 +150,10 @@ class dataPublisher {
      * @param baseLogger The logger supplying the data to be published
      */
     void begin(Logger& baseLogger);
+    /**
+     * @brief Begin the publisher by doing the minimum that is needed after boot
+     */
+    virtual void begin();
 
 
     /**

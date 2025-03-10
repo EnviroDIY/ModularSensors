@@ -68,6 +68,7 @@ void dataPublisher::begin(Logger& baseLogger, Client* inClient) {
 void dataPublisher::begin(Logger& baseLogger) {
     attachToLogger(baseLogger);
 }
+void dataPublisher::begin() {}
 
 
 void dataPublisher::txBufferInit(Client* outClient) {
