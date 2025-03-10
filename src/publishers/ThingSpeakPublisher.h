@@ -31,7 +31,7 @@
 
 
 // ============================================================================
-//  Functions for the EnviroDIY data portal receivers.
+//  Functions for ThingSpeak.
 // ============================================================================
 /**
  * @brief The ThingSpeakPublisher subclass of dataPublisher for publishing data
@@ -204,8 +204,19 @@ class ThingSpeakPublisher : public dataPublisher {
                const char* thingSpeakMQTTPassword,
                const char* thingSpeakChannelID);
 
-    // This sends the data to ThingSpeak
-    // bool mqttThingSpeak(void);
+    /**
+     * @brief Utilize an attached modem to open a TCP connection to ThingSpeak
+     * and publish data over that connection.
+     *
+     * This depends on an internet connection already having been made and a
+     * client being available.
+     *
+     * @param outClient An Arduino client instance to use to print data to.
+     * Allows the use of any type of client and multiple clients tied to a
+     * single TinyGSM modem instance
+     * @param forceFlush Ask the publisher to flush buffered data immediately.
+     * @return The PubSubClient status code of the response.
+     */
     int16_t publishData(Client* outClient, bool forceFlush = false) override;
 
  protected:
