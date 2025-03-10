@@ -529,7 +529,7 @@
         }                                                                    \
                                                                              \
         /** Try up to 12 times to get a timestamp from NIST. */              \
-        for (uint8_t i = 0; i < 12; i++) {                                   \
+        for (uint8_t i = 0; i < NIST_SERVER_RETRYS; i++) {                   \
             while (millis() < _lastNISTrequest + 4000) { /* wait */          \
             }                                                                \
                                                                              \
@@ -543,7 +543,7 @@
             if (connectionMade) {                                            \
                 uint32_t start = millis();                                   \
                 while (gsmClient &&                                          \
-                       gsmClient.available() < NIST_SERVER_RETRYS &&         \
+                       gsmClient.available() < NIST_RESPONSE_BYTES &&        \
                        millis() - start < 5000L) {}                          \
                                                                              \
                 if (gsmClient.available() >= NIST_RESPONSE_BYTES) {          \
