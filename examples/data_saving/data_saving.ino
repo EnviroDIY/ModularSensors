@@ -354,8 +354,8 @@ const char* samplingFeature =
 // Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
 // This is only attached to the logger with the shorter variable array
 #include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPOST(loggerToGo, &modem.gsmClient,
-                                 registrationToken, samplingFeature);
+EnviroDIYPublisher EnviroDIYPOST(loggerToGo, registrationToken,
+                                 samplingFeature);
 /** End [publishers] */
 
 

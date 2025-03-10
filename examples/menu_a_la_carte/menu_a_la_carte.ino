@@ -3150,8 +3150,8 @@ const char* samplingFeature =
 
 // Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modem.gsmClient,
-                                 registrationToken, samplingFeature);
+EnviroDIYPublisher EnviroDIYPOST(dataLogger, registrationToken,
+                                 samplingFeature);
 /** End [enviro_diy_publisher] */
 #endif
 
@@ -3169,8 +3169,7 @@ const char* DreamHostPortalRX = "xxxx";
 
 // Create a data publisher to DreamHost
 #include <publishers/DreamHostPublisher.h>
-DreamHostPublisher DreamHostGET(dataLogger, &modem.gsmClient,
-                                DreamHostPortalRX);
+DreamHostPublisher DreamHostGET(dataLogger, DreamHostPortalRX);
 /** End [dream_host_publisher] */
 #endif
 
@@ -3197,9 +3196,8 @@ const char* thingSpeakChannelID =
 
 // Create a data publisher for ThingSpeak
 #include <publishers/ThingSpeakPublisher.h>
-ThingSpeakPublisher TsMqtt(dataLogger, &modem.gsmClient, thingSpeakClientName,
-                           thingSpeakMQTTUser, thingSpeakMQTTPassword,
-                           thingSpeakChannelID);
+ThingSpeakPublisher TsMqtt(dataLogger, thingSpeakClientName, thingSpeakMQTTUser,
+                           thingSpeakMQTTPassword, thingSpeakChannelID);
 /** End [thing_speak_publisher] */
 #endif
 
@@ -3220,8 +3218,7 @@ const char* ubidotsDeviceID = "######";
 
 // Create a data publisher for ThingSpeak
 #include <publishers/UbidotsPublisher.h>
-UbidotsPublisher ubidots(dataLogger, &modem.gsmClient, ubidotsToken,
-                         ubidotsDeviceID);
+UbidotsPublisher ubidots(dataLogger, ubidotsToken, ubidotsDeviceID);
 /** End [ubidots_publisher] */
 #endif
 
