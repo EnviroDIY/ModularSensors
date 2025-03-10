@@ -15,7 +15,7 @@
 
 #ifndef MS_LOG_DATA_BUFFER_SIZE
 #ifdef ARDUINO_AVR_MEGA2560
-#define MS_LOG_DATA_BUFFER_SIZE 2048
+#define MS_LOG_DATA_BUFFER_SIZE 512
 #else
 /**
  * @brief Log Data Buffer
