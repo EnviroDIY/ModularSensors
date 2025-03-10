@@ -177,13 +177,6 @@ void EnviroDIYPublisher::begin(Logger&     baseLogger,
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
     _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
 }
-void EnviroDIYPublisher::begin() {
-    // NOTE: This doesn't have to happen after boot, but it does have to happen
-    // after the variable array is fully constructed.  If the variable array is
-    // constructed after the publisher, the number of variables will be
-    // incorrect in the variable array when this is called in its constructor.
-    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
-}
 
 bool EnviroDIYPublisher::connectionNeeded(void) {
     // compute the send interval, reducing it as the buffer gets more full so we

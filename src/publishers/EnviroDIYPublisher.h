@@ -188,10 +188,6 @@ class EnviroDIYPublisher : public dataPublisher {
      */
     void begin(Logger& baseLogger, const char* registrationToken,
                const char* samplingFeatureUUID);
-    /**
-     * @brief Begin the publisher by doing the minimum that is needed after boot
-     */
-    void begin() override;
 
     /**
      * @brief Checks if the publisher needs an Internet connection for the next
