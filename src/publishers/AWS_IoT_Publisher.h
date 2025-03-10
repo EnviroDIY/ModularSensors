@@ -14,6 +14,16 @@
  * more documentation on how to set up an AWS IoT Core instance to receive data
  * from this publisher.
  *
+ * Your loggerID will be used as your Thing Name, primary topic, and client name
+ * for connection. This publisher expects that you use a connection/publish
+ * policy that is tied to your thing name. An example policy is in the
+ * extras/AWS_IoT_SetCertificates folder.
+ *
+ * @warning You cannot connect more than one device with the same ClientID to
+ * AWS IoT at the same time. This means you should NEVER program two loggers
+ * with the same loggerID with the same sketch. They will not both be able to
+ * connect.
+ *
  * @note At this time, this library **only supports publishing data.** It does
  * _**NOT**_ support subscribing to topics or receiving data. It also does
  * _**NOT**_ support **ANY** device shadow functionality.  All topics are
@@ -90,7 +100,6 @@ class AWS_IoT_Publisher : public dataPublisher {
      * @brief Construct a new AWS IoT Core Publisher object
      *
      * @param baseLogger The logger supplying the data to be published
-     * @param thingName Your "Thing Name" on AWS IoT Core
      * @param awsIoTEndpoint The endpoint for your AWS IoT instance
      * @param caCertName The name of your certificate authority certificate
      * file
@@ -101,9 +110,9 @@ class AWS_IoT_Publisher : public dataPublisher {
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions. NOTE: not implemented by this publisher!
      */
-    AWS_IoT_Publisher(Logger& baseLogger, const char* thingName,
-                      const char* awsIoTEndpoint, const char* caCertName,
-                      const char* clientCertName, const char* clientKeyName,
+    AWS_IoT_Publisher(Logger& baseLogger, const char* awsIoTEndpoint,
+                      const char* caCertName, const char* clientCertName,
+                      const char* clientKeyName,
                       const char* samplingFeatureUUID, int sendEveryX = 1);
     /**
      * @brief Construct a new AWS IoT Core Publisher object
@@ -112,7 +121,6 @@ class AWS_IoT_Publisher : public dataPublisher {
      * @param inClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
-     * @param thingName Your "Thing Name" on AWS IoT Core
      * @param awsIoTEndpoint The endpoint for your AWS IoT instance
      * @param caCertName The name of your certificate authority certificate
      * file
@@ -124,9 +132,8 @@ class AWS_IoT_Publisher : public dataPublisher {
      * attempted data transmissions. NOTE: not implemented by this publisher!
      */
     AWS_IoT_Publisher(Logger& baseLogger, Client* inClient,
-                      const char* thingName, const char* awsIoTEndpoint,
-                      const char* caCertName, const char* clientCertName,
-                      const char* clientKeyName,
+                      const char* awsIoTEndpoint, const char* caCertName,
+                      const char* clientCertName, const char* clientKeyName,
                       const char* samplingFeatureUUID, int sendEveryX = 1);
     /**
      * @brief Destroy the AWS IoT Core Publisher object
@@ -140,14 +147,9 @@ class AWS_IoT_Publisher : public dataPublisher {
 
     /**
      * @brief Set your "Thing Name" on AWS IoT Core.
-     *
-     * This will be used as your client name for connection. This publisher
-     * expects that you use a connection/publish policy that is tied to your
-     * thing name.
-     *
-     * @param thingName Your "Thing Name" on AWS IoT Core.
+     *.
      */
-    void setThingName(const char* thingName);
+    // void setThingName(const char* thingName);
 
     /**
      * @brief Set the endpoint for your AWS IoT instance.
@@ -200,44 +202,38 @@ class AWS_IoT_Publisher : public dataPublisher {
     /**
      * @brief Sets all 5 AWS IoT Core parameters
      *
-     * @param thingName Your "Thing Name" on AWS IoT Core
      * @param awsIoTEndpoint The endpoint for your AWS IoT instance
      * @param caCertName The name of your certificate authority certificate
      * file
      * @param clientCertName The name of your client certificate file
      * @param clientKeyName The name of your client private key file
      */
-    void setAWSIoTParams(const char* thingName, const char* awsIoTEndpoint,
-                         const char* caCertName, const char* clientCertName,
-                         const char* clientKeyName);
+    void setAWSIoTParams(const char* awsIoTEndpoint, const char* caCertName,
+                         const char* clientCertName, const char* clientKeyName);
 
     // A way to begin with everything already set
     /**
      * @copydoc dataPublisher::begin(Logger& baseLogger, Client* inClient)
-     * @param thingName Your "Thing Name" on AWS IoT Core
      * @param awsIoTEndpoint The endpoint for your AWS IoT instance
      * @param caCertName The name of your certificate authority certificate
      * file
      * @param clientCertName The name of your client certificate file
      * @param clientKeyName The name of your client private key file
      */
-    void begin(Logger& baseLogger, Client* inClient, const char* thingName,
-               const char* awsIoTEndpoint, const char* caCertName,
-               const char* clientCertName, const char* clientKeyName,
-               const char* samplingFeatureUUID);
+    void begin(Logger& baseLogger, Client* inClient, const char* awsIoTEndpoint,
+               const char* caCertName, const char* clientCertName,
+               const char* clientKeyName, const char* samplingFeatureUUID);
     /**
      * @copydoc dataPublisher::begin(Logger& baseLogger)
-     * @param thingName Your "Thing Name" on AWS IoT Core
      * @param awsIoTEndpoint The endpoint for your AWS IoT instance
      * @param caCertName The name of your certificate authority certificate
      * file
      * @param clientCertName The name of your client certificate file
      * @param clientKeyName The name of your client private key file
      */
-    void begin(Logger& baseLogger, const char* thingName,
-               const char* awsIoTEndpoint, const char* caCertName,
-               const char* clientCertName, const char* clientKeyName,
-               const char* samplingFeatureUUID);
+    void begin(Logger& baseLogger, const char* awsIoTEndpoint,
+               const char* caCertName, const char* clientCertName,
+               const char* clientKeyName, const char* samplingFeatureUUID);
 
     /**
      * @brief Utilize an attached modem to open a SSL connection to AWS IoT Core
@@ -265,10 +261,6 @@ class AWS_IoT_Publisher : public dataPublisher {
 
  private:
     // Keys for AWS IoT Core
-    /**
-     * @brief Your "Thing Name" on AWS IoT Core
-     */
-    const char* _thingName = nullptr;
     /**
      * @brief The endpoint for your AWS IoT instance
      */

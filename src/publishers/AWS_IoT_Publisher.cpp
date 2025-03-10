@@ -31,11 +31,10 @@ AWS_IoT_Publisher::AWS_IoT_Publisher(Logger& baseLogger, Client* inClient,
                                      int sendEveryX)
     : dataPublisher(baseLogger, inClient, sendEveryX) {}
 AWS_IoT_Publisher::AWS_IoT_Publisher(
-    Logger& baseLogger, const char* thingName, const char* awsIoTEndpoint,
-    const char* caCertName, const char* clientCertName,
-    const char* clientKeyName, const char* samplingFeatureUUID, int sendEveryX)
+    Logger& baseLogger, const char* awsIoTEndpoint, const char* caCertName,
+    const char* clientCertName, const char* clientKeyName,
+    const char* samplingFeatureUUID, int sendEveryX)
     : dataPublisher(baseLogger, true, sendEveryX) {
-    setThingName(thingName);
     setEndpoint(awsIoTEndpoint);
     setCACertName(caCertName);
     setClientCertName(clientCertName);
@@ -43,10 +42,9 @@ AWS_IoT_Publisher::AWS_IoT_Publisher(
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
 }
 AWS_IoT_Publisher::AWS_IoT_Publisher(
-    Logger& baseLogger, Client* inClient, const char* thingName,
-    const char* awsIoTEndpoint, const char* caCertName,
-    const char* clientCertName, const char* clientKeyName,
-    const char* samplingFeatureUUID, int sendEveryX)
+    Logger& baseLogger, Client* inClient, const char* awsIoTEndpoint,
+    const char* caCertName, const char* clientCertName,
+    const char* clientKeyName, const char* samplingFeatureUUID, int sendEveryX)
     : dataPublisher(baseLogger, inClient, sendEveryX) {
     setEndpoint(awsIoTEndpoint);
     setCACertName(caCertName);
@@ -56,11 +54,6 @@ AWS_IoT_Publisher::AWS_IoT_Publisher(
 }
 // Destructor
 AWS_IoT_Publisher::~AWS_IoT_Publisher() {}
-
-
-void AWS_IoT_Publisher::setThingName(const char* thingName) {
-    _thingName = thingName;
-}
 
 
 void AWS_IoT_Publisher::setEndpoint(const char* awsIoTEndpoint) {
@@ -83,12 +76,10 @@ void AWS_IoT_Publisher::setClientKeyName(const char* clientKeyName) {
 }
 
 // Sets all AWS IoT Core parameters
-void AWS_IoT_Publisher::setAWSIoTParams(const char* thingName,
-                                        const char* awsIoTEndpoint,
+void AWS_IoT_Publisher::setAWSIoTParams(const char* awsIoTEndpoint,
                                         const char* caCertName,
                                         const char* clientCertName,
                                         const char* clientKeyName) {
-    setThingName(thingName);
     setEndpoint(awsIoTEndpoint);
     setCACertName(caCertName);
     setClientCertName(clientCertName);
@@ -98,12 +89,11 @@ void AWS_IoT_Publisher::setAWSIoTParams(const char* thingName,
 
 // A way to begin with everything already set
 void AWS_IoT_Publisher::begin(Logger& baseLogger, Client* inClient,
-                              const char* thingName, const char* awsIoTEndpoint,
+                              const char* awsIoTEndpoint,
                               const char* caCertName,
                               const char* clientCertName,
                               const char* clientKeyName,
                               const char* samplingFeatureUUID) {
-    setThingName(thingName);
     setEndpoint(awsIoTEndpoint);
     setCACertName(caCertName);
     setClientCertName(clientCertName);
@@ -111,13 +101,11 @@ void AWS_IoT_Publisher::begin(Logger& baseLogger, Client* inClient,
     dataPublisher::begin(baseLogger, inClient);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
 }
-void AWS_IoT_Publisher::begin(Logger& baseLogger, const char* thingName,
-                              const char* awsIoTEndpoint,
+void AWS_IoT_Publisher::begin(Logger& baseLogger, const char* awsIoTEndpoint,
                               const char* caCertName,
                               const char* clientCertName,
                               const char* clientKeyName,
                               const char* samplingFeatureUUID) {
-    setThingName(thingName);
     setEndpoint(awsIoTEndpoint);
     setCACertName(caCertName);
     setClientCertName(clientCertName);
@@ -132,9 +120,9 @@ int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
     bool retVal = false;
 
     // Create a new buffer for the **topic**
-    char topicBuffer[strlen(_thingName) + 38] = "";
-    snprintf(topicBuffer, sizeof(topicBuffer), "%s/%s", _thingName,
-             _baseLogger->getSamplingFeatureUUID());
+    char topicBuffer[strlen(_baseLogger->getLoggerID()) + 38] = "";
+    snprintf(topicBuffer, sizeof(topicBuffer), "%s/%s",
+             _baseLogger->getLoggerID(), _baseLogger->getSamplingFeatureUUID());
     MS_DBG(F("Topic ["), strlen(topicBuffer), F("]:"), String(topicBuffer));
 
     // The txBuffer is used for the **payload** only
@@ -172,13 +160,12 @@ int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
     // long as the client is connected, it must be connected to the right place.
     // Closing any stray client sockets here ensures that a new client socket
     // is opened to the right place.
-    // client is connected when a different socket is open
     if (outClient->connected()) { outClient->stop(); }
 
     // Make the MQTT connection
     MS_DBG(F("Opening MQTT Connection to IoT Core"));
     MS_START_DEBUG_TIMER;
-    if (_mqttClient.connect(_thingName)) {
+    if (_mqttClient.connect(_baseLogger->getLoggerID())) {
         MS_DBG(F("MQTT connected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
 
         if (_mqttClient.beginPublish(topicBuffer, txBufferLen, false)) {
