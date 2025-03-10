@@ -60,6 +60,9 @@
 #ifndef SRC_SENSORS_AOSONGDHT_H_
 #define SRC_SENSORS_AOSONGDHT_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_AOSONGDHT_DEBUG
 
@@ -279,7 +282,7 @@ class AOSongDHT_Humidity : public Variable {
      */
     explicit AOSongDHT_Humidity(AOSongDHT* parentSense, const char* uuid = "",
                                 const char* varCode = DHT_HUMIDITY_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)DHT_HUMIDITY_VAR_NUM,
+        : Variable(parentSense, (uint8_t)DHT_HUMIDITY_VAR_NUM,
                    (uint8_t)DHT_HUMIDITY_RESOLUTION, DHT_HUMIDITY_VAR_NAME,
                    DHT_HUMIDITY_UNIT_NAME, varCode, uuid) {}
     /**
@@ -288,7 +291,7 @@ class AOSongDHT_Humidity : public Variable {
      * @note This must be tied with a parent AOSongDHT before it can be used.
      */
     AOSongDHT_Humidity()
-        : Variable((const uint8_t)DHT_HUMIDITY_VAR_NUM,
+        : Variable((uint8_t)DHT_HUMIDITY_VAR_NUM,
                    (uint8_t)DHT_HUMIDITY_RESOLUTION, DHT_HUMIDITY_VAR_NAME,
                    DHT_HUMIDITY_UNIT_NAME, DHT_HUMIDITY_DEFAULT_CODE) {}
     /**
@@ -320,7 +323,7 @@ class AOSongDHT_Temp : public Variable {
      */
     explicit AOSongDHT_Temp(AOSongDHT* parentSense, const char* uuid = "",
                             const char* varCode = DHT_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)DHT_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)DHT_TEMP_VAR_NUM,
                    (uint8_t)DHT_TEMP_RESOLUTION, DHT_TEMP_VAR_NAME,
                    DHT_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -329,9 +332,9 @@ class AOSongDHT_Temp : public Variable {
      * @note This must be tied with a parent AOSongDHT before it can be used.
      */
     AOSongDHT_Temp()
-        : Variable((const uint8_t)DHT_TEMP_VAR_NUM,
-                   (uint8_t)DHT_TEMP_RESOLUTION, DHT_TEMP_VAR_NAME,
-                   DHT_TEMP_UNIT_NAME, DHT_TEMP_DEFAULT_CODE) {}
+        : Variable((uint8_t)DHT_TEMP_VAR_NUM, (uint8_t)DHT_TEMP_RESOLUTION,
+                   DHT_TEMP_VAR_NAME, DHT_TEMP_UNIT_NAME,
+                   DHT_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AOSongDHT_Temp object - no action needed.
      */
@@ -361,7 +364,7 @@ class AOSongDHT_HI : public Variable {
      */
     explicit AOSongDHT_HI(AOSongDHT* parentSense, const char* uuid = "",
                           const char* varCode = DHT_HI_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)DHT_HI_VAR_NUM,
+        : Variable(parentSense, (uint8_t)DHT_HI_VAR_NUM,
                    (uint8_t)DHT_HI_RESOLUTION, DHT_HI_VAR_NAME,
                    DHT_HI_UNIT_NAME, varCode, uuid) {}
     /**
@@ -370,7 +373,7 @@ class AOSongDHT_HI : public Variable {
      * @note This must be tied with a parent AOSongDHT before it can be used.
      */
     AOSongDHT_HI()
-        : Variable((const uint8_t)DHT_HI_VAR_NUM, (uint8_t)DHT_HI_RESOLUTION,
+        : Variable((uint8_t)DHT_HI_VAR_NUM, (uint8_t)DHT_HI_RESOLUTION,
                    DHT_HI_VAR_NAME, DHT_HI_UNIT_NAME, DHT_HI_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AOSongDHT_HI object - no action needed.

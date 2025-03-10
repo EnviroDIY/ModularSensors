@@ -14,8 +14,11 @@
 #ifndef SRC_PUBLISHERS_UBIDOTSPUBLISHER_H_
 #define SRC_PUBLISHERS_UBIDOTSPUBLISHER_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
-// #define UBIDOTSPUBLISHER_DEBUG
+// #define MS_UBIDOTSPUBLISHER_DEBUG
 
 #ifdef MS_UBIDOTSPUBLISHER_DEBUG
 #define MS_DEBUGGING_STD "UbidotsPublisher"

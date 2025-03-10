@@ -43,6 +43,9 @@
 #ifndef SRC_SENSORS_EVERLIGHTALSPT19_H_
 #define SRC_SENSORS_EVERLIGHTALSPT19_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_EVERLIGHTALSPT19_DEBUG
 
@@ -364,7 +367,7 @@ class EverlightALSPT19_Voltage : public Variable {
     explicit EverlightALSPT19_Voltage(
         EverlightALSPT19* parentSense, const char* uuid = "",
         const char* varCode = ALSPT19_VOLTAGE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ALSPT19_VOLTAGE_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ALSPT19_VOLTAGE_VAR_NUM,
                    (uint8_t)ALSPT19_VOLTAGE_RESOLUTION,
                    ALSPT19_VOLTAGE_VAR_NAME, ALSPT19_VOLTAGE_UNIT_NAME, varCode,
                    uuid) {}
@@ -375,7 +378,7 @@ class EverlightALSPT19_Voltage : public Variable {
      * used.
      */
     EverlightALSPT19_Voltage()
-        : Variable((const uint8_t)ALSPT19_VOLTAGE_VAR_NUM,
+        : Variable((uint8_t)ALSPT19_VOLTAGE_VAR_NUM,
                    (uint8_t)ALSPT19_VOLTAGE_RESOLUTION,
                    ALSPT19_VOLTAGE_VAR_NAME, ALSPT19_VOLTAGE_UNIT_NAME,
                    ALSPT19_VOLTAGE_DEFAULT_CODE) {}
@@ -408,7 +411,7 @@ class EverlightALSPT19_Current : public Variable {
     explicit EverlightALSPT19_Current(
         EverlightALSPT19* parentSense, const char* uuid = "",
         const char* varCode = ALSPT19_CURRENT_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ALSPT19_CURRENT_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ALSPT19_CURRENT_VAR_NUM,
                    (uint8_t)ALSPT19_CURRENT_RESOLUTION,
                    ALSPT19_CURRENT_VAR_NAME, ALSPT19_CURRENT_UNIT_NAME, varCode,
                    uuid) {}
@@ -419,7 +422,7 @@ class EverlightALSPT19_Current : public Variable {
      * used.
      */
     EverlightALSPT19_Current()
-        : Variable((const uint8_t)ALSPT19_CURRENT_VAR_NUM,
+        : Variable((uint8_t)ALSPT19_CURRENT_VAR_NUM,
                    (uint8_t)ALSPT19_CURRENT_RESOLUTION,
                    ALSPT19_CURRENT_VAR_NAME, ALSPT19_CURRENT_UNIT_NAME,
                    ALSPT19_CURRENT_DEFAULT_CODE) {}
@@ -452,7 +455,7 @@ class EverlightALSPT19_Illuminance : public Variable {
     explicit EverlightALSPT19_Illuminance(
         EverlightALSPT19* parentSense, const char* uuid = "",
         const char* varCode = ALSPT19_ILLUMINANCE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ALSPT19_ILLUMINANCE_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ALSPT19_ILLUMINANCE_VAR_NUM,
                    (uint8_t)ALSPT19_ILLUMINANCE_RESOLUTION,
                    ALSPT19_ILLUMINANCE_VAR_NAME, ALSPT19_ILLUMINANCE_UNIT_NAME,
                    varCode, uuid) {}
@@ -463,7 +466,7 @@ class EverlightALSPT19_Illuminance : public Variable {
      * used.
      */
     EverlightALSPT19_Illuminance()
-        : Variable((const uint8_t)ALSPT19_ILLUMINANCE_VAR_NUM,
+        : Variable((uint8_t)ALSPT19_ILLUMINANCE_VAR_NUM,
                    (uint8_t)ALSPT19_ILLUMINANCE_RESOLUTION,
                    ALSPT19_ILLUMINANCE_VAR_NAME, ALSPT19_ILLUMINANCE_UNIT_NAME,
                    ALSPT19_ILLUMINANCE_DEFAULT_CODE) {}

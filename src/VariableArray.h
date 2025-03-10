@@ -14,6 +14,9 @@
 #ifndef SRC_VARIABLEARRAY_H_
 #define SRC_VARIABLEARRAY_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_VARIABLEARRAY_DEBUG
 // #define MS_VARIABLEARRAY_DEBUG_DEEP
@@ -322,12 +325,12 @@ class VariableArray {
      */
     template <typename T>
     void prettyPrintArray(T arrayToPrint[]) {
-        DEEP_DEBUGGING_SERIAL_OUTPUT.print("[,\t");
+        MS_SERIAL_OUTPUT.print("[,\t");
         for (uint8_t i = 0; i < _variableCount; i++) {
-            DEEP_DEBUGGING_SERIAL_OUTPUT.print(arrayToPrint[i]);
-            DEEP_DEBUGGING_SERIAL_OUTPUT.print(",\t");
+            MS_SERIAL_OUTPUT.print(arrayToPrint[i]);
+            MS_SERIAL_OUTPUT.print(",\t");
         }
-        DEEP_DEBUGGING_SERIAL_OUTPUT.println("]");
+        MS_SERIAL_OUTPUT.println("]");
     }
 #else
 /**
@@ -335,7 +338,7 @@ class VariableArray {
  * between the members
  */
 #define prettyPrintArray(...)
-#endif  // DEEP_DEBUGGING_SERIAL_OUTPUT
+#endif  // MS_VARIABLEARRAY_DEBUG_DEEP
 };
 
 #endif  // SRC_VARIABLEARRAY_H_

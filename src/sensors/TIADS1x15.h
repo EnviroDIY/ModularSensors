@@ -140,6 +140,9 @@
 #ifndef SRC_SENSORS_TIADS1X15_H_
 #define SRC_SENSORS_TIADS1X15_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_TIADS1X15_DEBUG
 
@@ -348,7 +351,7 @@ class TIADS1x15_Voltage : public Variable {
      */
     explicit TIADS1x15_Voltage(TIADS1x15* parentSense, const char* uuid = "",
                                const char* varCode = TIADS1X15_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)TIADS1X15_VAR_NUM,
+        : Variable(parentSense, (uint8_t)TIADS1X15_VAR_NUM,
                    (uint8_t)TIADS1X15_RESOLUTION, TIADS1X15_VAR_NAME,
                    TIADS1X15_UNIT_NAME, varCode, uuid) {}
     /**
@@ -358,9 +361,9 @@ class TIADS1x15_Voltage : public Variable {
      * used.
      */
     TIADS1x15_Voltage()
-        : Variable((const uint8_t)TIADS1X15_VAR_NUM,
-                   (uint8_t)TIADS1X15_RESOLUTION, TIADS1X15_VAR_NAME,
-                   TIADS1X15_UNIT_NAME, TIADS1X15_DEFAULT_CODE) {}
+        : Variable((uint8_t)TIADS1X15_VAR_NUM, (uint8_t)TIADS1X15_RESOLUTION,
+                   TIADS1X15_VAR_NAME, TIADS1X15_UNIT_NAME,
+                   TIADS1X15_DEFAULT_CODE) {}
     /**
      * @brief Destroy the TIADS1x15_Voltage object - no action needed.
      */

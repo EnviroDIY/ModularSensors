@@ -228,7 +228,7 @@ void setup() {
     // Logging in the given time zone
     Logger::setLoggerTimeZone(timeZone);
     // It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)
-    Logger::setRTCTimeZone(0);
+    loggerClock::setRTCOffset(0);
 
     // Begin the variable array[s], logger[s], and publisher[s]
     array1min.begin(variableCount1min, variableList_at1min);
@@ -255,7 +255,7 @@ void setup() {
     // Connect to the network
     if (modem.connectInternet()) {
         // Synchronize the RTC
-        logger1min.setRTClock(modem.getNISTTime());
+        loggerClock::setRTClock(modem.getNISTTime(), 0, epochStart::unix_epoch);
         modem.updateModemMetadata();
         // Disconnect from the network
         modem.disconnectInternet();
@@ -315,30 +315,30 @@ void loop() {
         // VariableArray)
         Serial.print(F("Powering sensors...\n"));
         array1min.sensorsPowerUp();
-        logger1min.watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
         // Wake up all of the sensors (do this directly on the VariableArray)
         Serial.print(F("Waking sensors...\n"));
         array1min.sensorsWake();
-        logger1min.watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
         // Update the values from all attached sensors (do this directly on the
         // VariableArray)
         Serial.print(F("Updating sensor values...\n"));
         array1min.updateAllSensors();
-        logger1min.watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
         // Put sensors to sleep (do this directly on the VariableArray)
         Serial.print(F("Putting sensors back to sleep...\n"));
         array1min.sensorsSleep();
-        logger1min.watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
         // Cut sensor power (do this directly on the VariableArray)
         Serial.print(F("Cutting sensor power...\n"));
         array1min.sensorsPowerDown();
-        logger1min.watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
 
         // Stream the csv data to the SD card
         logger1min.turnOnSDcard(true);
         logger1min.logToSD();
         logger1min.turnOffSDcard(true);
-        logger1min.watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
 
         // Turn off the LED
         digitalWrite(greenLED, LOW);
@@ -358,30 +358,30 @@ void loop() {
         // VariableArray)
         Serial.print(F("Powering sensors...\n"));
         array5min.sensorsPowerUp();
-        logger1min.watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
         // Wake up all of the sensors (do this directly on the VariableArray)
         Serial.print(F("Waking sensors...\n"));
         array5min.sensorsWake();
-        logger1min.watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
         // Update the values from all attached sensors (do this directly on the
         // VariableArray)
         Serial.print(F("Updating sensor values...\n"));
         array5min.updateAllSensors();
-        logger1min.watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
         // Put sensors to sleep (do this directly on the VariableArray)
         Serial.print(F("Putting sensors back to sleep...\n"));
         array5min.sensorsSleep();
-        logger1min.watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
         // Cut sensor power (do this directly on the VariableArray)
         Serial.print(F("Cutting sensor power...\n"));
         array5min.sensorsPowerDown();
-        logger1min.watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
 
         // Stream the csv data to the SD card
         logger5min.turnOnSDcard(true);
         logger5min.logToSD();
         logger5min.turnOffSDcard(true);
-        logger1min.watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
 
         // Turn off the LED
         digitalWrite(redLED, LOW);
@@ -389,13 +389,14 @@ void loop() {
         Serial.println(F("--------------------<555>---------------------\n"));
     }
     // Once a day, at noon, sync the clock
-    if (Logger::markedLocalEpochTime % 86400 == 43200) {
+    if (Logger::markedLocalUnixTime % 86400 == 43200) {
         // Turn on the modem
         modem.modemWake();
         // Connect to the network
         if (modem.connectInternet()) {
             // Synchronize the RTC
-            logger1min.setRTClock(modem.getNISTTime());
+            loggerClock::setRTClock(modem.getNISTTime(), 0,
+                                    epochStart::unix_epoch);
             // Disconnect from the network
             modem.disconnectInternet();
         }

@@ -1,4 +1,4 @@
-# Developer Setup<!-- {#page_for_developers} -->
+# Developer Setup<!--! {#page_for_developers} -->
 
 If you want to fork this repository and work with it, you'll need to set PlatformIO up a bit differently than you would to merely use this library.
 
@@ -87,7 +87,7 @@ lib_deps =
     envirodiy/SensorModbusMaster
     envirodiy/KellerModbus
     envirodiy/YosemitechModbus
-    vshymanskyy/StreamDebugger
+    https://github.com/EnviroDIY/StreamDebugger.git
 ; The directories for the ModularSensors library source code
 src_filter =
     +<*>

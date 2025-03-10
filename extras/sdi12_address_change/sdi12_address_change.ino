@@ -17,9 +17,12 @@
 #include <EnableInterrupt.h>
 #include <SDI12.h>
 
-#define SERIAL_BAUD 115200  // The baud rate for the output serial port
-#define DATA_PIN 7          // The pin of the SDI-12 data bus
-#define POWER_PIN 22  // The // Sensor power pin (or -1 if not switching power)
+// The baud rate for the output serial port
+#define SERIAL_BAUD 115200
+// The pin of the SDI-12 data bus
+#define DATA_PIN 7
+// The // Sensor power pin (or -1 if not switching power)
+#define POWER_PIN 22
 
 // Define the SDI-12 bus
 SDI12 mySDI12(DATA_PIN);

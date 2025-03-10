@@ -236,7 +236,7 @@ void setup() {
     // Logging in the given time zone
     Logger::setLoggerTimeZone(timeZone);
     // It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)
-    Logger::setRTCTimeZone(0);
+    loggerClock::setRTCOffset(0);
 
     // Attach information pins to the logger
     dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin,
@@ -250,7 +250,9 @@ void setup() {
     // Set up the sensors, except at lowest battery level
     if (getBatteryVoltage() > 3.4) {
         Serial.println(F("Setting up sensors..."));
+        varArray.sensorsPowerUp();
         varArray.setupSensors();
+        varArray.sensorsPowerDown();
     }
 
     // Create the log file, adding the default header to it

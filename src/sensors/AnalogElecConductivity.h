@@ -134,6 +134,9 @@
 #ifndef SRC_SENSORS_ANALOGELECCONDUCTIVITY_H_
 #define SRC_SENSORS_ANALOGELECCONDUCTIVITY_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_ANALOGELECCONDUCTIVITY_DEBUG
 // #define MS_ANALOGELECCONDUCTIVITY_DEBUG_DEEP
@@ -427,8 +430,7 @@ class AnalogElecConductivity_EC : public Variable {
     AnalogElecConductivity_EC(
         AnalogElecConductivity* parentSense, const char* uuid = "",
         const char* varCode = ANALOGELECCONDUCTIVITY_EC_DEFAULT_CODE)
-        : Variable(parentSense,
-                   (const uint8_t)ANALOGELECCONDUCTIVITY_EC_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ANALOGELECCONDUCTIVITY_EC_VAR_NUM,
                    (uint8_t)ANALOGELECCONDUCTIVITY_EC_RESOLUTION,
                    ANALOGELECCONDUCTIVITY_EC_VAR_NAME,
                    ANALOGELECCONDUCTIVITY_EC_UNIT_NAME, varCode, uuid) {}
@@ -440,7 +442,7 @@ class AnalogElecConductivity_EC : public Variable {
      * can be used.
      */
     AnalogElecConductivity_EC()
-        : Variable((const uint8_t)ANALOGELECCONDUCTIVITY_EC_VAR_NUM,
+        : Variable((uint8_t)ANALOGELECCONDUCTIVITY_EC_VAR_NUM,
                    (uint8_t)ANALOGELECCONDUCTIVITY_EC_RESOLUTION,
                    ANALOGELECCONDUCTIVITY_EC_VAR_NAME,
                    ANALOGELECCONDUCTIVITY_EC_UNIT_NAME,

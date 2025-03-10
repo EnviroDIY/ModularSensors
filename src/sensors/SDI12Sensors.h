@@ -66,8 +66,12 @@
 #ifndef SRC_SENSORS_SDI12SENSORS_H_
 #define SRC_SENSORS_SDI12SENSORS_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_SDI12SENSORS_DEBUG
+// #define MS_SDI12SENSORS_DEBUG_DEEP
 
 #ifdef MS_SDI12SENSORS_DEBUG
 #define MS_DEBUGGING_STD "SDI12Sensors"

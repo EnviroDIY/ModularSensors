@@ -93,10 +93,11 @@ uint8_t Sensor::getStatus(void) {
 // This turns on sensor power
 void Sensor::powerUp(void) {
     if (_powerPin >= 0) {
+        // Reset power pin mode every power up because pins are set to tri-state
+        // on sleep
+        pinMode(_powerPin, OUTPUT);
         MS_DBG(F("Powering"), getSensorNameAndLocation(), F("with pin"),
                _powerPin);
-        // Set the pin mode, just in case
-        pinMode(_powerPin, OUTPUT);
         digitalWrite(_powerPin, HIGH);
         // Mark the time that the sensor was powered
         _millisPowerOn = millis();
@@ -150,9 +151,12 @@ bool Sensor::setup(void) {
     MS_DBG(_measurementsToAverage,
            F("individual measurements will be averaged for each reading."));
 
-    if (_powerPin >= 0) pinMode(_powerPin, OUTPUT);  // NOTE:  Not setting value
-    if (_dataPin >= 0)
-        pinMode(_dataPin, INPUT);  // NOTE:  Not turning on pull-up!
+    if (_powerPin >= 0) {
+        pinMode(_powerPin, OUTPUT);
+    }  // NOTE:  Not setting value
+    if (_dataPin >= 0) {
+        pinMode(_dataPin, INPUT);
+    }  // NOTE:  Not turning on pull-up!
 
     // Set the status bit marking that the sensor has been set up (bit 0)
     _sensorStatus |= 0b00000001;
@@ -178,6 +182,11 @@ bool Sensor::wake(void) {
         _sensorStatus &= 0b11101111;
         return false;
     }
+    // Set the data pin mode on every wake because pins are set to tri-state on
+    // sleep
+    if (_dataPin >= 0) {
+        pinMode(_dataPin, INPUT);
+    }  // NOTE:  Not turning on pull-up!
 
     // Mark the time that the sensor was activated
     _millisSensorActivated = millis();

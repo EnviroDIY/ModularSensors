@@ -43,6 +43,9 @@
 #ifndef SRC_MODEMS_DIGIXBEEWIFI_H_
 #define SRC_MODEMS_DIGIXBEEWIFI_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_DIGIXBEEWIFI_DEBUG
 // #define MS_DIGIXBEEWIFI_DEBUG_DEEP
@@ -59,16 +62,12 @@
  * @brief The modem type for the underlying TinyGSM library.
  */
 #define TINY_GSM_MODEM_XBEE
-#ifndef TINY_GSM_RX_BUFFER
-/**
- * @brief The size of the buffer for incoming data.
- */
-#define TINY_GSM_RX_BUFFER 64
-#endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
+#undef MS_DEBUGGING_DEEP
+
 #include "TinyGsmClient.h"
 #undef TINY_GSM_MODEM_HAS_GPRS
 #include "DigiXBee.h"

@@ -23,7 +23,7 @@ SodaqUBeeR410M::SodaqUBeeR410M(HardwareSerial* modemStream, int8_t powerPin,
                   R410M_DISCONNECT_TIME_MS, R410M_WAKE_DELAY_MS,
                   R410M_ATRESPONSE_TIME_MS),
 #ifdef MS_SODAQUBEER410M_DEBUG_DEEP
-      _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
+      _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
       gsmModem(_modemATDebugger),
 #else
       gsmModem(*modemStream),
@@ -42,7 +42,7 @@ SodaqUBeeR410M::SodaqUBeeR410M(Stream* modemStream, int8_t powerPin,
                   R410M_DISCONNECT_TIME_MS, R410M_WAKE_DELAY_MS,
                   R410M_ATRESPONSE_TIME_MS),
 #ifdef MS_SODAQUBEER410M_DEBUG_DEEP
-      _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
+      _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
       gsmModem(_modemATDebugger),
 #else
       gsmModem(*modemStream),

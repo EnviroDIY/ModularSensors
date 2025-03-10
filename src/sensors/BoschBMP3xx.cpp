@@ -42,6 +42,7 @@ bool BoschBMP3xx::setup(void) {
 
     // This sensor needs power for setup!
     // The BMP3XX's begin() reads required calibration data from the sensor.
+    delay(10);
     bool wasOn = checkPowerOn();
     if (!wasOn) { powerUp(); }
     waitForWarmUp();
@@ -123,7 +124,7 @@ bool BoschBMP3xx::setup(void) {
                max_measurementTime_us / 1000) {
             _standbyEnum =
                 static_cast<TimeStandby>(static_cast<int>(_standbyEnum) + 1);
-#if defined(DEBUGGING_SERIAL_OUTPUT) && defined(MS_DEBUGGING_STD)
+#if defined(MS_DEBUGGING_STD)
             _timeStandby_ms = 5.0f * pow(2, static_cast<int>(_standbyEnum));
 #endif
             MS_DBG(_standbyEnum, _timeStandby_ms,
@@ -250,9 +251,6 @@ bool BoschBMP3xx::wake(void) {
 }
 
 
-// To start a measurement we write the command "R" to the sensor
-// NOTE:  documentation says to use a capital "R" but the examples provided
-// by Atlas use a lower case "r".
 bool BoschBMP3xx::startSingleMeasurement(void) {
     // Sensor::startSingleMeasurement() checks that if it's awake/active and
     // sets the timestamp and status bits.  If it returns false, there's no

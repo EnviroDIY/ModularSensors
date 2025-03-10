@@ -304,7 +304,7 @@ class MeterHydros21_Cond : public Variable {
     explicit MeterHydros21_Cond(
         MeterHydros21* parentSense, const char* uuid = "",
         const char* varCode = HYDROS21_COND_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)HYDROS21_COND_VAR_NUM,
+        : Variable(parentSense, (uint8_t)HYDROS21_COND_VAR_NUM,
                    (uint8_t)HYDROS21_COND_RESOLUTION, HYDROS21_COND_VAR_NAME,
                    HYDROS21_COND_UNIT_NAME, varCode, uuid) {}
     /**
@@ -314,7 +314,7 @@ class MeterHydros21_Cond : public Variable {
      * used.
      */
     MeterHydros21_Cond()
-        : Variable((const uint8_t)HYDROS21_COND_VAR_NUM,
+        : Variable((uint8_t)HYDROS21_COND_VAR_NUM,
                    (uint8_t)HYDROS21_COND_RESOLUTION, HYDROS21_COND_VAR_NAME,
                    HYDROS21_COND_UNIT_NAME, HYDROS21_COND_DEFAULT_CODE) {}
     /**
@@ -347,7 +347,7 @@ class MeterHydros21_Temp : public Variable {
     explicit MeterHydros21_Temp(
         MeterHydros21* parentSense, const char* uuid = "",
         const char* varCode = HYDROS21_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)HYDROS21_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)HYDROS21_TEMP_VAR_NUM,
                    (uint8_t)HYDROS21_TEMP_RESOLUTION, HYDROS21_TEMP_VAR_NAME,
                    HYDROS21_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -357,7 +357,7 @@ class MeterHydros21_Temp : public Variable {
      * used.
      */
     MeterHydros21_Temp()
-        : Variable((const uint8_t)HYDROS21_TEMP_VAR_NUM,
+        : Variable((uint8_t)HYDROS21_TEMP_VAR_NUM,
                    (uint8_t)HYDROS21_TEMP_RESOLUTION, HYDROS21_TEMP_VAR_NAME,
                    HYDROS21_TEMP_UNIT_NAME, HYDROS21_TEMP_DEFAULT_CODE) {}
     /**
@@ -390,7 +390,7 @@ class MeterHydros21_Depth : public Variable {
     explicit MeterHydros21_Depth(
         MeterHydros21* parentSense, const char* uuid = "",
         const char* varCode = HYDROS21_DEPTH_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)HYDROS21_DEPTH_VAR_NUM,
+        : Variable(parentSense, (uint8_t)HYDROS21_DEPTH_VAR_NUM,
                    (uint8_t)HYDROS21_DEPTH_RESOLUTION, HYDROS21_DEPTH_VAR_NAME,
                    HYDROS21_DEPTH_UNIT_NAME, varCode, uuid) {}
     /**
@@ -400,7 +400,7 @@ class MeterHydros21_Depth : public Variable {
      * used.
      */
     MeterHydros21_Depth()
-        : Variable((const uint8_t)HYDROS21_DEPTH_VAR_NUM,
+        : Variable((uint8_t)HYDROS21_DEPTH_VAR_NUM,
                    (uint8_t)HYDROS21_DEPTH_RESOLUTION, HYDROS21_DEPTH_VAR_NAME,
                    HYDROS21_DEPTH_UNIT_NAME, HYDROS21_DEPTH_DEFAULT_CODE) {}
     /**

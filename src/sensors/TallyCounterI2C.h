@@ -71,6 +71,9 @@
 #ifndef SRC_SENSORS_TallyCounterI2C_H_
 #define SRC_SENSORS_TallyCounterI2C_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_TALLYCOUNTERI2C_DEBUG
 
@@ -257,7 +260,7 @@ class TallyCounterI2C_Events : public Variable {
     explicit TallyCounterI2C_Events(
         TallyCounterI2C* parentSense, const char* uuid = "",
         const char* varCode = TALLY_EVENTS_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)TALLY_EVENTS_VAR_NUM,
+        : Variable(parentSense, (uint8_t)TALLY_EVENTS_VAR_NUM,
                    (uint8_t)TALLY_EVENTS_RESOLUTION, TALLY_EVENTS_VAR_NAME,
                    TALLY_EVENTS_UNIT_NAME, varCode, uuid) {}
     /**
@@ -267,7 +270,7 @@ class TallyCounterI2C_Events : public Variable {
      * used.
      */
     TallyCounterI2C_Events()
-        : Variable((const uint8_t)TALLY_EVENTS_VAR_NUM,
+        : Variable((uint8_t)TALLY_EVENTS_VAR_NUM,
                    (uint8_t)TALLY_EVENTS_RESOLUTION, TALLY_EVENTS_VAR_NAME,
                    TALLY_EVENTS_UNIT_NAME, TALLY_EVENTS_DEFAULT_CODE) {}
     /**

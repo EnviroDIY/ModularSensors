@@ -132,6 +132,9 @@
 #ifndef SRC_SENSORS_BOSCHBMP3XX_H_
 #define SRC_SENSORS_BOSCHBMP3XX_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_BOSCHBMP3XX_DEBUG
 
@@ -435,15 +438,7 @@ class BoschBMP3xx : public Sensor {
     ~BoschBMP3xx();
 
     /**
-     * @brief Wake the sensor up, if necessary.  Do whatever it takes to get a
-     * sensor in the proper state to begin a measurement.
-     *
-     * Verifies that the power is on and updates the #_sensorStatus.  This also
-     * sets the #_millisSensorActivated timestamp.
-     *
-     * @note This does NOT include any wait for sensor readiness.
-     *
-     * @return True if the wake function completed successfully.
+     * @copydoc Sensor::wake()
      */
     bool wake(void) override;
     /**
@@ -607,7 +602,7 @@ class BoschBMP3xx_Temp : public Variable {
      */
     explicit BoschBMP3xx_Temp(BoschBMP3xx* parentSense, const char* uuid = "",
                               const char* varCode = BMP3XX_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)BMP3XX_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)BMP3XX_TEMP_VAR_NUM,
                    (uint8_t)BMP3XX_TEMP_RESOLUTION, BMP3XX_TEMP_VAR_NAME,
                    BMP3XX_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -616,7 +611,7 @@ class BoschBMP3xx_Temp : public Variable {
      * @note This must be tied with a parent BoschBMP3xx before it can be used.
      */
     BoschBMP3xx_Temp()
-        : Variable((const uint8_t)BMP3XX_TEMP_VAR_NUM,
+        : Variable((uint8_t)BMP3XX_TEMP_VAR_NUM,
                    (uint8_t)BMP3XX_TEMP_RESOLUTION, BMP3XX_TEMP_VAR_NAME,
                    BMP3XX_TEMP_UNIT_NAME, BMP3XX_TEMP_DEFAULT_CODE) {}
     /**
@@ -650,7 +645,7 @@ class BoschBMP3xx_Pressure : public Variable {
     explicit BoschBMP3xx_Pressure(
         BoschBMP3xx* parentSense, const char* uuid = "",
         const char* varCode = BMP3XX_PRESSURE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)BMP3XX_PRESSURE_VAR_NUM,
+        : Variable(parentSense, (uint8_t)BMP3XX_PRESSURE_VAR_NUM,
                    (uint8_t)BMP3XX_PRESSURE_RESOLUTION,
                    BMP3XX_PRESSURE_VAR_NAME, BMP3XX_PRESSURE_UNIT_NAME, varCode,
                    uuid) {}
@@ -660,7 +655,7 @@ class BoschBMP3xx_Pressure : public Variable {
      * @note This must be tied with a parent BoschBMP3xx before it can be used.
      */
     BoschBMP3xx_Pressure()
-        : Variable((const uint8_t)BMP3XX_PRESSURE_VAR_NUM,
+        : Variable((uint8_t)BMP3XX_PRESSURE_VAR_NUM,
                    (uint8_t)BMP3XX_PRESSURE_RESOLUTION,
                    BMP3XX_PRESSURE_VAR_NAME, BMP3XX_PRESSURE_UNIT_NAME,
                    BMP3XX_PRESSURE_DEFAULT_CODE) {}
@@ -691,7 +686,7 @@ class BoschBMP3xx_Altitude : public Variable {
     explicit BoschBMP3xx_Altitude(
         BoschBMP3xx* parentSense, const char* uuid = "",
         const char* varCode = BMP3XX_ALTITUDE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)BMP3XX_ALTITUDE_VAR_NUM,
+        : Variable(parentSense, (uint8_t)BMP3XX_ALTITUDE_VAR_NUM,
                    (uint8_t)BMP3XX_ALTITUDE_RESOLUTION,
                    BMP3XX_ALTITUDE_VAR_NAME, BMP3XX_ALTITUDE_UNIT_NAME, varCode,
                    uuid) {}
@@ -701,7 +696,7 @@ class BoschBMP3xx_Altitude : public Variable {
      * @note This must be tied with a parent BoschBMP3xx before it can be used.
      */
     BoschBMP3xx_Altitude()
-        : Variable((const uint8_t)BMP3XX_ALTITUDE_VAR_NUM,
+        : Variable((uint8_t)BMP3XX_ALTITUDE_VAR_NUM,
                    (uint8_t)BMP3XX_ALTITUDE_RESOLUTION,
                    BMP3XX_ALTITUDE_VAR_NAME, BMP3XX_ALTITUDE_UNIT_NAME,
                    BMP3XX_ALTITUDE_DEFAULT_CODE) {}

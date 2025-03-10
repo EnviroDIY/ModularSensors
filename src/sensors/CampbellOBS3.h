@@ -69,6 +69,9 @@
 #ifndef SRC_SENSORS_CAMPBELLOBS3_H_
 #define SRC_SENSORS_CAMPBELLOBS3_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_CAMPBELLOBS3_DEBUG
 
@@ -326,7 +329,7 @@ class CampbellOBS3_Turbidity : public Variable {
     explicit CampbellOBS3_Turbidity(
         CampbellOBS3* parentSense, const char* uuid = "",
         const char* varCode = OBS3_TURB_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)OBS3_TURB_VAR_NUM,
+        : Variable(parentSense, (uint8_t)OBS3_TURB_VAR_NUM,
                    (uint8_t)OBS3_RESOLUTION, OBS3_TURB_VAR_NAME,
                    OBS3_TURB_UNIT_NAME, varCode, uuid) {}
     /**
@@ -335,7 +338,7 @@ class CampbellOBS3_Turbidity : public Variable {
      * @note This must be tied with a parent CampbellOBS3 before it can be used.
      */
     CampbellOBS3_Turbidity()
-        : Variable((const uint8_t)OBS3_TURB_VAR_NUM, (uint8_t)OBS3_RESOLUTION,
+        : Variable((uint8_t)OBS3_TURB_VAR_NUM, (uint8_t)OBS3_RESOLUTION,
                    OBS3_TURB_VAR_NAME, OBS3_TURB_UNIT_NAME,
                    OBS3_TURB_DEFAULT_CODE) {}
     /**
@@ -371,7 +374,7 @@ class CampbellOBS3_Voltage : public Variable {
     explicit CampbellOBS3_Voltage(
         CampbellOBS3* parentSense, const char* uuid = "",
         const char* varCode = OBS3_VOLTAGE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)OBS3_VOLTAGE_VAR_NUM,
+        : Variable(parentSense, (uint8_t)OBS3_VOLTAGE_VAR_NUM,
                    (uint8_t)OBS3_VOLTAGE_RESOLUTION, OBS3_VOLTAGE_VAR_NAME,
                    OBS3_VOLTAGE_UNIT_NAME, varCode, uuid) {}
     /**
@@ -380,7 +383,7 @@ class CampbellOBS3_Voltage : public Variable {
      * @note This must be tied with a parent CampbellOBS3 before it can be used.
      */
     CampbellOBS3_Voltage()
-        : Variable((const uint8_t)OBS3_VOLTAGE_VAR_NUM,
+        : Variable((uint8_t)OBS3_VOLTAGE_VAR_NUM,
                    (uint8_t)OBS3_VOLTAGE_RESOLUTION, OBS3_VOLTAGE_VAR_NAME,
                    OBS3_VOLTAGE_UNIT_NAME, OBS3_VOLTAGE_DEFAULT_CODE) {}
     /**

@@ -88,6 +88,9 @@
 #ifndef SRC_SENSORS_BOSCHBME280_H_
 #define SRC_SENSORS_BOSCHBME280_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_BOSCHBME280_DEBUG
 
@@ -314,15 +317,7 @@ class BoschBME280 : public Sensor {
     ~BoschBME280();
 
     /**
-     * @brief Wake the sensor up, if necessary.  Do whatever it takes to get a
-     * sensor in the proper state to begin a measurement.
-     *
-     * Verifies that the power is on and updates the #_sensorStatus.  This also
-     * sets the #_millisSensorActivated timestamp.
-     *
-     * @note This does NOT include any wait for sensor readiness.
-     *
-     * @return True if the wake function completed successfully.
+     * @copydoc Sensor::wake()
      */
     bool wake(void) override;
     /**
@@ -386,7 +381,7 @@ class BoschBME280_Temp : public Variable {
      */
     explicit BoschBME280_Temp(BoschBME280* parentSense, const char* uuid = "",
                               const char* varCode = BME280_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)BME280_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)BME280_TEMP_VAR_NUM,
                    (uint8_t)BME280_TEMP_RESOLUTION, BME280_TEMP_VAR_NAME,
                    BME280_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -395,7 +390,7 @@ class BoschBME280_Temp : public Variable {
      * @note This must be tied with a parent BoschBME280 before it can be used.
      */
     BoschBME280_Temp()
-        : Variable((const uint8_t)BME280_TEMP_VAR_NUM,
+        : Variable((uint8_t)BME280_TEMP_VAR_NUM,
                    (uint8_t)BME280_TEMP_RESOLUTION, BME280_TEMP_VAR_NAME,
                    BME280_TEMP_UNIT_NAME, BME280_TEMP_DEFAULT_CODE) {}
     /**
@@ -429,7 +424,7 @@ class BoschBME280_Humidity : public Variable {
     explicit BoschBME280_Humidity(
         BoschBME280* parentSense, const char* uuid = "",
         const char* varCode = BME280_HUMIDITY_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)BME280_HUMIDITY_VAR_NUM,
+        : Variable(parentSense, (uint8_t)BME280_HUMIDITY_VAR_NUM,
                    (uint8_t)BME280_HUMIDITY_RESOLUTION,
                    BME280_HUMIDITY_VAR_NAME, BME280_HUMIDITY_UNIT_NAME, varCode,
                    uuid) {}
@@ -439,7 +434,7 @@ class BoschBME280_Humidity : public Variable {
      * @note This must be tied with a parent BoschBME280 before it can be used.
      */
     BoschBME280_Humidity()
-        : Variable((const uint8_t)BME280_HUMIDITY_VAR_NUM,
+        : Variable((uint8_t)BME280_HUMIDITY_VAR_NUM,
                    (uint8_t)BME280_HUMIDITY_RESOLUTION,
                    BME280_HUMIDITY_VAR_NAME, BME280_HUMIDITY_UNIT_NAME,
                    BME280_HUMIDITY_DEFAULT_CODE) {}
@@ -474,7 +469,7 @@ class BoschBME280_Pressure : public Variable {
     explicit BoschBME280_Pressure(
         BoschBME280* parentSense, const char* uuid = "",
         const char* varCode = BME280_PRESSURE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)BME280_PRESSURE_VAR_NUM,
+        : Variable(parentSense, (uint8_t)BME280_PRESSURE_VAR_NUM,
                    (uint8_t)BME280_PRESSURE_RESOLUTION,
                    BME280_PRESSURE_VAR_NAME, BME280_PRESSURE_UNIT_NAME, varCode,
                    uuid) {}
@@ -484,7 +479,7 @@ class BoschBME280_Pressure : public Variable {
      * @note This must be tied with a parent BoschBME280 before it can be used.
      */
     BoschBME280_Pressure()
-        : Variable((const uint8_t)BME280_PRESSURE_VAR_NUM,
+        : Variable((uint8_t)BME280_PRESSURE_VAR_NUM,
                    (uint8_t)BME280_PRESSURE_RESOLUTION,
                    BME280_PRESSURE_VAR_NAME, BME280_PRESSURE_UNIT_NAME,
                    BME280_PRESSURE_DEFAULT_CODE) {}
@@ -515,7 +510,7 @@ class BoschBME280_Altitude : public Variable {
     explicit BoschBME280_Altitude(
         BoschBME280* parentSense, const char* uuid = "",
         const char* varCode = BME280_ALTITUDE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)BME280_ALTITUDE_VAR_NUM,
+        : Variable(parentSense, (uint8_t)BME280_ALTITUDE_VAR_NUM,
                    (uint8_t)BME280_ALTITUDE_RESOLUTION,
                    BME280_ALTITUDE_VAR_NAME, BME280_ALTITUDE_UNIT_NAME, varCode,
                    uuid) {}
@@ -525,7 +520,7 @@ class BoschBME280_Altitude : public Variable {
      * @note This must be tied with a parent BoschBME280 before it can be used.
      */
     BoschBME280_Altitude()
-        : Variable((const uint8_t)BME280_ALTITUDE_VAR_NUM,
+        : Variable((uint8_t)BME280_ALTITUDE_VAR_NUM,
                    (uint8_t)BME280_ALTITUDE_RESOLUTION,
                    BME280_ALTITUDE_VAR_NAME, BME280_ALTITUDE_UNIT_NAME,
                    BME280_ALTITUDE_DEFAULT_CODE) {}

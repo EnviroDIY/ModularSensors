@@ -9,6 +9,7 @@
  */
 
 #include "LoggerModem.h"
+#include "ClockSupport.h"
 
 // Initialize the static members
 int16_t loggerModem::_priorRSSI           = -9999;
@@ -54,7 +55,10 @@ void loggerModem::setModemLED(int8_t modemLEDPin) {
     }
 }
 void loggerModem::modemLEDOn(void) {
-    if (_modemLEDPin >= 0) { digitalWrite(_modemLEDPin, HIGH); }
+    if (_modemLEDPin >= 0) {
+        pinMode(_modemLEDPin, OUTPUT);
+        digitalWrite(_modemLEDPin, HIGH);
+    }
 }
 void loggerModem::modemLEDOff(void) {
     if (_modemLEDPin >= 0) { digitalWrite(_modemLEDPin, LOW); }
@@ -64,7 +68,7 @@ String loggerModem::getModemName(void) {
     return _modemName;
 }
 
-// @TODO Implement this for all modems
+// @todo Implement this for all modems
 String loggerModem::getModemDevId(void) {
     return _modemName + F(" Sn ") + _modemSerialNumber + F(" HwVer ") +
         _modemHwVersion + F(" FwVer ") + _modemFwVersion;
@@ -278,36 +282,31 @@ void loggerModem::setModemResetLevel(bool level) {
 
 void loggerModem::setModemPinModes(void) {
     // Set-up pin modes
-    if (!_pinModesSet) {
-        // NOTE:  We're going to set the power pin mode every time in power up,
-        // just to be safe
-        if (_statusPin >= 0) {
-            MS_DBG(F("Initializing pin"), _statusPin,
-                   F("for modem status with on level expected to be"),
-                   _statusLevel ? F("HIGH") : F("LOW"));
-            pinMode(_statusPin, INPUT);
-        }
-        if (_modemSleepRqPin >= 0) {
-            MS_DBG(F("Initializing pin"), _modemSleepRqPin,
-                   F("for modem sleep with starting value"),
-                   !_wakeLevel ? F("HIGH") : F("LOW"));
-            pinMode(_modemSleepRqPin, OUTPUT);
-            digitalWrite(_modemSleepRqPin, !_wakeLevel);
-        }
-        if (_modemResetPin >= 0) {
-            MS_DBG(F("Initializing pin"), _modemResetPin,
-                   F("for modem reset with starting value"),
-                   !_resetLevel ? F("HIGH") : F("LOW"));
-            pinMode(_modemResetPin, OUTPUT);
-            digitalWrite(_modemResetPin, !_resetLevel);
-        }
-        if (_modemLEDPin >= 0) {
-            MS_DBG(F("Initializing pin"), _modemLEDPin,
-                   F("for modem status LED with starting value 0"));
-            pinMode(_modemLEDPin, OUTPUT);
-            digitalWrite(_modemLEDPin, LOW);
-        }
-        _pinModesSet = true;
+    if (_statusPin >= 0) {
+        MS_DEEP_DBG(F("Initializing pin"), _statusPin,
+                    F("for modem status with on level expected to be"),
+                    _statusLevel ? F("HIGH") : F("LOW"));
+        pinMode(_statusPin, INPUT);
+    }
+    if (_modemSleepRqPin >= 0) {
+        MS_DEEP_DBG(F("Initializing pin"), _modemSleepRqPin,
+                    F("for modem sleep with starting value"),
+                    !_wakeLevel ? F("HIGH") : F("LOW"));
+        pinMode(_modemSleepRqPin, OUTPUT);
+        digitalWrite(_modemSleepRqPin, !_wakeLevel);
+    }
+    if (_modemResetPin >= 0) {
+        MS_DEEP_DBG(F("Initializing pin"), _modemResetPin,
+                    F("for modem reset with starting value"),
+                    !_resetLevel ? F("HIGH") : F("LOW"));
+        pinMode(_modemResetPin, OUTPUT);
+        digitalWrite(_modemResetPin, !_resetLevel);
+    }
+    if (_modemLEDPin >= 0) {
+        MS_DEEP_DBG(F("Initializing pin"), _modemLEDPin,
+                    F("for modem status LED with starting value 0"));
+        pinMode(_modemLEDPin, OUTPUT);
+        digitalWrite(_modemLEDPin, LOW);
     }
 }
 
@@ -463,7 +462,8 @@ uint32_t loggerModem::parseNISTBytes(byte nistBytes[4]) {
     uint32_t secFrom1900 = 0;
     for (uint8_t i = 0; i < 4; i++) {
         MS_DBG(F("Response Byte"), i, ':', static_cast<char>(nistBytes[i]), '=',
-               nistBytes[i], '=', String(nistBytes[i], BIN));
+               static_cast<uint8_t>(nistBytes[i]), '=',
+               String(nistBytes[i], BIN));
         secFrom1900 += 0x000000FF & nistBytes[i];
         if (i + 1 < 4) { secFrom1900 = secFrom1900 << 8; }
     }
@@ -471,12 +471,12 @@ uint32_t loggerModem::parseNISTBytes(byte nistBytes[4]) {
            '=', String(secFrom1900, BIN));
 
     // Return the timestamp
-    uint32_t unixTimeStamp = secFrom1900 - 2208988800;
+    uint32_t unixTimeStamp = secFrom1900 - EPOCH_NIST_TO_UNIX;
     MS_DBG(F("Unix Timestamp returned by NIST (UTC):"), unixTimeStamp);
     // If before Jan 1, 2019 or after Jan 1, 2030, most likely an error
-    if (unixTimeStamp < 1546300800) {
+    if (unixTimeStamp < EARLIEST_SANE_UNIX_TIMESTAMP) {
         return 0;
-    } else if (unixTimeStamp > 1893456000) {
+    } else if (unixTimeStamp > LATEST_SANE_UNIX_TIMESTAMP) {
         return 0;
     } else {
         return unixTimeStamp;

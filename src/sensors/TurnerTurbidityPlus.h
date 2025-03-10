@@ -35,7 +35,8 @@
  *
  * ___
  * @section sensor_turbidity_plus_examples Example Code
- * The Alphasense CO2 sensor is used in the @menulink{turner_turbidity_plus} example.
+ * The Alphasense CO2 sensor is used in the @menulink{turner_turbidity_plus}
+ * example.
  *
  * @menusnip{turner_turbidity_plus}
  */
@@ -43,6 +44,9 @@
 // Header Guards
 #ifndef SRC_SENSORS_TURNERTURBIDITYPLUS_H_
 #define SRC_SENSORS_TURNERTURBIDITYPLUS_H_
+
+// Include config before anything else
+#include "ModSensorConfig.h"
 
 // Debugging Statement
 // #define MS_TURNERTURBIDITYPLUS_DEBUG
@@ -350,7 +354,7 @@ class TurnerTurbidityPlus_Voltage : public Variable {
     explicit TurnerTurbidityPlus_Voltage(
         TurnerTurbidityPlus* parentSense, const char* uuid = "",
         const char* varCode = TURBIDITY_PLUS_VOLTAGE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)TURBIDITY_PLUS_VOLTAGE_VAR_NUM,
+        : Variable(parentSense, (uint8_t)TURBIDITY_PLUS_VOLTAGE_VAR_NUM,
                    (uint8_t)TURBIDITY_PLUS_VOLTAGE_RESOLUTION,
                    TURBIDITY_PLUS_VOLTAGE_VAR_NAME,
                    TURBIDITY_PLUS_VOLTAGE_UNIT_NAME, varCode, uuid) {}
@@ -361,7 +365,7 @@ class TurnerTurbidityPlus_Voltage : public Variable {
      * be used.
      */
     TurnerTurbidityPlus_Voltage()
-        : Variable((const uint8_t)TURBIDITY_PLUS_VOLTAGE_VAR_NUM,
+        : Variable((uint8_t)TURBIDITY_PLUS_VOLTAGE_VAR_NUM,
                    (uint8_t)TURBIDITY_PLUS_VOLTAGE_RESOLUTION,
                    TURBIDITY_PLUS_VOLTAGE_VAR_NAME,
                    TURBIDITY_PLUS_VOLTAGE_UNIT_NAME,
@@ -399,7 +403,7 @@ class TurnerTurbidityPlus_Turbidity : public Variable {
     explicit TurnerTurbidityPlus_Turbidity(
         TurnerTurbidityPlus* parentSense, const char* uuid = "",
         const char* varCode = TURBIDITY_PLUS_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)TURBIDITY_PLUS_VAR_NUM,
+        : Variable(parentSense, (uint8_t)TURBIDITY_PLUS_VAR_NUM,
                    (uint8_t)TURBIDITY_PLUS_RESOLUTION, TURBIDITY_PLUS_VAR_NAME,
                    TURBIDITY_PLUS_UNIT_NAME, varCode, uuid) {}
     /**
@@ -409,7 +413,7 @@ class TurnerTurbidityPlus_Turbidity : public Variable {
      * be used.
      */
     TurnerTurbidityPlus_Turbidity()
-        : Variable((const uint8_t)TURBIDITY_PLUS_VAR_NUM,
+        : Variable((uint8_t)TURBIDITY_PLUS_VAR_NUM,
                    (uint8_t)TURBIDITY_PLUS_RESOLUTION, TURBIDITY_PLUS_VAR_NAME,
                    TURBIDITY_PLUS_UNIT_NAME, TURBIDITY_PLUS_DEFAULT_CODE) {}
     /**

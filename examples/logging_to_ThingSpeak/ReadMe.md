@@ -1,37 +1,46 @@
-# Sending data to ThingSpeak<!-- {#example_thingspeak} -->
+# Sending data to ThingSpeak<!--! {#example_thingspeak} -->
 
 This shows the use of a "ThingSpeak logger" object.
 Data is sent to [ThingSpeak](https://thingspeak.com) using MQTT.
 
 _______
 
-[//]: # ( @tableofcontents )
+<!--! @tableofcontents -->
 
-[//]: # ( @m_footernavigation )
+<!--! @m_footernavigation -->
 
-[//]: # ( Start GitHub Only )
+<!--! @if GITHUB -->
 
 - [Sending data to ThingSpeak](#sending-data-to-thingspeak)
   - [Unique Features of the ThingSpeak Example](#unique-features-of-the-thingspeak-example)
   - [To Use this Example](#to-use-this-example)
+    - [Get ThingSpeak Credentials](#get-thingspeak-credentials)
     - [Prepare and set up PlatformIO](#prepare-and-set-up-platformio)
     - [Modify the Example](#modify-the-example)
     - [Upload!](#upload)
 
-[//]: # ( End GitHub Only )
+<!--! @endif -->
 
 _______
 
-## Unique Features of the ThingSpeak Example<!-- {#example_thingspeak_unique} -->
+## Unique Features of the ThingSpeak Example<!--! {#example_thingspeak_unique} -->
 
 - A single logger publishes data to ThingSpeak.
 - Uses an Espressif ESP8266 to publish data.
 
-## To Use this Example<!-- {#example_thingspeak_using} -->
+## To Use this Example<!--! {#example_thingspeak_using} -->
 
-### Prepare and set up PlatformIO<!-- {#example_thingspeak_pio} -->
+### Get ThingSpeak Credentials<!--! {#example_thingspeak_creds} -->
 
+- Log in or create an account on ThingSpeak
+  - NOTE: There is no free tier on ThingSpeak for organizational or commercial use and the personal free tier is very limited!
 - Create a channel on ThingSpeak with fields to receive your data.
+  - Note the channel number, this is needed in the code!
+- Add a new MQTT device to publish to.
+  - Copy or save the MQTT client id, user name, and password!
+
+### Prepare and set up PlatformIO<!--! {#example_thingspeak_pio} -->
+
 - Create a new PlatformIO project
 - Replace the contents of the platformio.ini for your new project with the [platformio.ini](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/logging_to_ThingSpeak/platformio.ini) file in the examples/logging_to_ThingSpeak folder on GitHub.
   - It is important that your PlatformIO configuration has the lib_ldf_mode and build flags set as they are in the example.
@@ -41,7 +50,7 @@ _______
   - Move it into the src directory of your project.
   - Delete main.cpp in that folder.
 
-### Modify the Example<!-- {#example_thingspeak_modify} -->
+### Modify the Example<!--! {#example_thingspeak_modify} -->
 
 - Modify logging_to_ThingSpeak.ino to have the modem, sensor, and variable objects that you are interested in.
   - This example is written for an _ESP8266 (wifi)_ modem.
@@ -62,21 +71,23 @@ They will only appear in the header of your file on the SD card.
 - Find this information for your ThingSpeak account and channel and put it into logging_to_ThingSpeak.ino:
 
 ```cpp
-const char *thingSpeakMQTTKey = "XXXXXXXXXXXXXXXX";  // Your MQTT API Key from Account > MyProfile.
-const char *thingSpeakChannelID = "######";  // The numeric channel id for your channel
-const char *thingSpeakChannelKey = "XXXXXXXXXXXXXXXX";  // The Write API Key for your channel
+
+const char* thingSpeakClientName = "XXXXXXXXXXXXXXXX";  // Your MQTT API Key from Account > MyProfile.
+const char* thingSpeakMQTTUser = "XXXXXXXXXXXXXXXX";  // The Write API Key for your channel
+const char* thingSpeakMQTTPassword = "XXXXXXXXXXXXXXXX";  // The numeric channel id for your channel
+const char* thingSpeakChannelID = "######";  // The numeric channel id for your channel
 ```
 
-### Upload!<!-- {#example_thingspeak_upload} -->
+### Upload!<!--! {#example_thingspeak_upload} -->
 
 - Test everything at home **before** deploying out in the wild!
 
 _______
 
-[//]: # ( @section example_thingspeak_pio_config PlatformIO Configuration )
+<!--! @section example_thingspeak_pio_config PlatformIO Configuration -->
 
-[//]: # ( @include{lineno} logging_to_ThingSpeak/platformio.ini )
+<!--! @include{lineno} logging_to_ThingSpeak/platformio.ini -->
 
-[//]: # ( @section example_thingspeak_code The Complete Code )
+<!--! @section example_thingspeak_code The Complete Code -->
 
-[//]: # ( @include{lineno} logging_to_ThingSpeak/logging_to_ThingSpeak.ino )
+<!--! @include{lineno} logging_to_ThingSpeak/logging_to_ThingSpeak.ino -->

@@ -79,6 +79,9 @@
 #ifndef SRC_SENSORS_KELLERPARENT_H_
 #define SRC_SENSORS_KELLERPARENT_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_KELLERPARENT_DEBUG
 // #define MS_KELLERPARENT_DEBUG_DEEP
@@ -245,6 +248,9 @@ class KellerParent : public Sensor {
      * @return True if the setup was successful.
      */
     bool setup(void) override;
+
+    // override to empty and flush the stream
+    bool sleep(void) override;
 
     // Override these to use two power pins
     void powerUp(void) override;

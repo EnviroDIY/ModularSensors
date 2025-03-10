@@ -1,4 +1,4 @@
-# DRWI Sites with a Mayfly 1.x and EnviroDIY LTE Bee<!-- {#example_drwi_mayfly1} -->
+# DRWI Sites with a Mayfly 1.x and EnviroDIY LTE Bee<!--! {#example_drwi_mayfly1} -->
 
 Example sketch for using the EnviroDIY SIM7080G LTE cellular module with an EnviroDIY Mayfly Data Logger.
 
@@ -22,28 +22,28 @@ from PulseLarsen (Digikey 1837-1003-ND or Mouser 673-W3907B0100)
 Users purchasing a new Hydros21 CTD sensor will need to change the SDI-12 address of the sensor in order to use this sketch.  Full instructions for using this sketch as part of a monitoring station can be found in the EnviroDIY Monitoring Station Manual.
 _______
 
-[//]: # ( @tableofcontents )
+<!--! @tableofcontents -->
 
-[//]: # ( @m_footernavigation )
+<!--! @m_footernavigation -->
 
-[//]: # ( Start GitHub Only )
+<!--! @if GITHUB -->
 
 - [DRWI Sites with a Mayfly 1.x and EnviroDIY LTE Bee](#drwi-sites-with-a-mayfly-1x-and-envirodiy-lte-bee)
   - [Unique Features of the DRWI Mayfly 1.x LTE Example](#unique-features-of-the-drwi-mayfly-1x-lte-example)
 
-[//]: # ( End GitHub Only )
+<!--! @endif -->
 
 _______
 
-## Unique Features of the DRWI Mayfly 1.x LTE Example<!-- {#example_drwi_mayfly1_unique} -->
+## Unique Features of the DRWI Mayfly 1.x LTE Example<!--! {#example_drwi_mayfly1_unique} -->
 
 - Specifically for sites within the Delaware River Watershed Initiative.
 - Uses a EnviroDIY LTE Bee based on the SIMCom SIM7080G
 
-[//]: # ( @section example_drwi_mayfly1_pio_config PlatformIO Configuration )
+<!--! @section example_drwi_mayfly1_pio_config PlatformIO Configuration -->
 
-[//]: # ( @include{lineno} DRWI_Mayfly1/platformio.ini )
+<!--! @include{lineno} DRWI_Mayfly1/platformio.ini -->
 
-[//]: # ( @section example_drwi_mayfly1_code The Complete Code )
+<!--! @section example_drwi_mayfly1_code The Complete Code -->
 
-[//]: # ( @include{lineno} DRWI_Mayfly1/DRWI_Mayfly1.ino )
+<!--! @include{lineno} DRWI_Mayfly1/DRWI_Mayfly1.ino -->

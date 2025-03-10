@@ -24,6 +24,9 @@
 #ifndef SRC_SENSORBASE_H_
 #define SRC_SENSORBASE_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_SENSORBASE_DEBUG
 
@@ -35,14 +38,6 @@
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 #include <pins_arduino.h>
-
-#ifndef MAX_NUMBER_VARS
-/**
- * @brief The largest number of variables from a single sensor
- */
-#define MAX_NUMBER_VARS 21
-// GroPoint Profile GPLP-8 has 8 Moisture and 13 Temperature values
-#endif
 
 class Variable;  // Forward declaration
 

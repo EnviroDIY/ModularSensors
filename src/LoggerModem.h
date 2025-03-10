@@ -23,7 +23,10 @@
 #ifndef SRC_LOGGERMODEM_H_
 #define SRC_LOGGERMODEM_H_
 
-// FOR DEBUGGING
+// Include config before anything else
+#include "ModSensorConfig.h"
+
+// Debugging Statement
 // #define MS_LOGGERMODEM_DEBUG
 // #define MS_LOGGERMODEM_DEBUG_DEEP
 
@@ -1000,11 +1003,6 @@ class loggerModem {
      * completed setup.
      */
     bool _hasBeenSetup = false;
-    /**
-     * @brief Flag.  True indicates that the pins on the mcu attached to the
-     * modem are set to the correct mode (ie, input vs output).
-     */
-    bool _pinModesSet = false;
     /**@}*/
 
     // NOTE:  These must be static so that the modem variables can call the
@@ -1072,7 +1070,7 @@ class loggerModem {
     // modemType gsmModem;
     // modemClientType gsmClient;
 
-    // @TODO: Implement these for all modems; most support it.
+    // @todo: Implement these for all modems; most support it.
 
     /**
      * @brief The modem hardware version.

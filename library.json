@@ -85,6 +85,15 @@
       "platforms": "atmelsam"
     },
     {
+      "name": "SparkFun Qwiic RTC RV8803 Arduino Library",
+      "owner": "sparkfun",
+      "url": "https://github.com/sparkfun/SparkFun_RV-8803_Arduino_Library.git",
+      "version": "~1.2.9",
+      "note": "For the RV-8803 RTC",
+      "frameworks": "arduino",
+      "platforms": "atmelavr, atmelsam"
+    },
+    {
       "name": "EnableInterrupt",
       "owner": "greygnome",
       "library id": "311",
@@ -100,7 +109,7 @@
       "owner": "greiman",
       "library id": "322",
       "url": "https://github.com/greiman/SdFat",
-      "version": "~2.2.3",
+      "version": "~2.3.0",
       "note": "SdFat - FAT16/FAT32 file system for SD cards.",
       "authors": ["Bill Greiman"],
       "frameworks": "arduino",
@@ -130,7 +139,7 @@
       "owner": "adafruit",
       "library id": "6214",
       "url": "https://github.com/adafruit/Adafruit_BusIO",
-      "version": "~1.16.1",
+      "version": "~1.17.0",
       "note": "Adafruit BusIO, a dependency of other Adafruit libraries",
       "authors": ["Adafruit"],
       "frameworks": "arduino",
@@ -141,7 +150,7 @@
       "owner": "adafruit",
       "library id": "31",
       "url": "https://github.com/adafruit/Adafruit_Sensor",
-      "version": "~1.1.14",
+      "version": "~1.1.15",
       "note": "Adafruit's unified sensor library is used by their other libraries",
       "authors": ["Adafruit"],
       "frameworks": "arduino",
@@ -259,7 +268,7 @@
       "owner": "milesburton",
       "library id": "54",
       "url": "https://github.com/milesburton/Arduino-Temperature-Control-Library",
-      "version": "~3.11.0",
+      "version": "~4.0.3",
       "note": "DallasTemperature - Arduino Library for Dallas Temperature ICs (DS18B20, DS18S20, DS1822, DS1820)",
       "authors": ["Guil Barros", "Miles Burton", "Rob Tillart", "Tim Nuewsome"],
       "frameworks": "arduino",
@@ -269,7 +278,7 @@
       "name": "SDI-12",
       "owner": "envirodiy",
       "library id": "1486",
-      "version": "~2.2.0",
+      "version": "~2.2.1",
       "url": "https://github.com/EnviroDIY/Arduino-SDI-12",
       "note": "EnviroDIY SDI-12 Library for Arduino",
       "author_notes": [
@@ -333,12 +342,27 @@
     {
       "name": "GroPointModbus",
       "owner": "envirodiy",
-      "url": "https://github.com/EnviroDIY/GroPointModbus.git",
+      "url": "https://github.com/EnviroDIY/GroPointModbus",
       "version": "~0.1.1",
-      "note": "A library to use an Arduino as a master to control and communicate via modbus with GroPoint soil moisture sensors. ",
+      "note": "A library to use an Arduino as a master to control and communicate via modbus with GroPoint soil moisture sensors.",
       "authors": ["Anthony Aufdenkampe"],
       "frameworks": "arduino",
       "platforms": "atmelavr, atmelsam"
+    },
+    {
+      "name": "GeoluxCamera",
+      "owner": "envirodiy",
+      "url": "https://github.com/EnviroDIY/GeoluxCamera",
+      "version": "~0.1.2",
+      "note": "Arduino library for communication with Geolux serial camera.",
+      "authors": ["Sara Damiano"],
+      "frameworks": "arduino",
+      "platforms": "atmelavr, atmelsam"
+    },
+    {
+      "name": "StreamDebugger",
+      "version": "https://github.com/EnviroDIY/StreamDebugger.git",
+      "note": "Used for debugging modem streams and duplicating primary output stream"
     }
   ]
 }

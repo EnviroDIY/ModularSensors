@@ -1,4 +1,4 @@
-# ChangeLog
+# ChangeLog<!--! {#change_log} -->
 
 All notable changes to this project will be documented in this file.
 
@@ -12,9 +12,49 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- **BREAKING** Converted the watch-dog classes in to static classes with all static fuction and a **deleted constructior**.
+  - Any code that attepted to interact with the watchdog (ie, with a "complex loop") must now call the extendedWatchDog class directly, ie: `extendedWatchDog::resetWatchDog();` rather than `dataLogger.watchDogTimer.resetWatchDog();`
+- **BREAKING** Renamed `markedLocalEpochTime` to `markedLocalUnixTime` to clarify the start of the epoch that we're marking down.
+- **BREAKING** Renamed `markedUTCEpochTime` to `markedUTCUnixTime` to clarify the start of the epoch that we're marking down.
+- **Potentially BREAKING:** Changed the requirements for a "sane" timestamp to between 2023 and 2030.
+  - Moved the value for the sane range into two defines: `EARLIEST_SANE_UNIX_TIMESTAMP` and `LATEST_SANE_UNIX_TIMESTAMP` so they can be more easily modified and tracked.
+- **BREAKING** Updated the ThingSpeak publisher to the current ThingSpeak MQTT protocol. The older protocol was deprecated and non-functional.
+  - This requires a user name, password, and client ID for the MQTT connection in addition to the channel number. The MQTT key and channel key are no longer used.
+- Removed the enable/disable wake pin interrupt at every sleep interval in favor of a single attachment druing the begin.
+- Moved all code for communication with the RTC into the new static class loggerClock().
+- Modified all examples which define a sercom serial port for SAMD21 processors to require the defines for the supported processors.
+This should only make a difference for my compilation tests, real users should pick out only the chunks of code they want rather than leave conditional code in place.
+- Changed some fill-in-the-blank spots in the menu example to only set the value in a single spot in the code.
+- Deprecated functions, to be removed in a future version:
+  - Logger::setRTCTimeZone(timeZone); use loggerClock::setRTCOffset(_offsetHours) in new code.
+  - Logger::getRTCTimeZone(); use loggerClock::getRTCOffset() in new code.
+  - Logger::setRTClock(UTCEpochSeconds); use loggerClock::setRTClock(ts, utcOffset, epoch) in new code.
+  - Logger::isRTCSane(); use loggerClock::isRTCSane() in new code.
+  - Logger::wakeISR(); use loggerClock::RTCISR() in new code.
+- Changed the watchdog from a fix 15 minute reset timer to 2x the logging interval (or at least 5 minutes).
+
 ### Added
 
+- Created a new ClockSupport module with the loggerClock and epochStart static classes.
+- Added support for the Micro Crystal RV-8803-C7 high accuracy, ultra low power Real-Time-Clock Module.
+- Added support for multiple 'epoch' types starting at January 1, 1970 (UNIX), January 1, 2000 (Arduino and others), January 5, 1980 (GPST), and January 1, 1900 (NIST time and NTP protocols).
+  - This allows you to input the epoch you're using in every single function that deals with a uint32_t or epoch type timestamp.
+If no epoch start is given, it is assumed to be UNIX (January 1, 1970).
+  - The supported epochs are given in the enum epochStart.
+- Storing _buttonPinMode internally.
+- Added a single define (`MS_OUTPUT`) to use for all outputs from ModularSensors.
+- Added support for sending printouts and debugging to two different serial ports.  This is useful for devices (like SAMD) that use a built in USB serial port which is turned off when the device sleeps.  If `MS_2ND_OUTPUT` is defined, output will go to *both* `MS_2ND_OUTPUT` and to `MS_OUTPUT`.
+- Added example code for flashing neopixel in the menu example.
+- Added support for Geolux HydroCam
+- Added a generic time formatting function.
+
 ### Removed
+
+- **Breaking:** Removed the function `setNowUTCEpoch(uint32_t)`.
+  - Although public, this was never intended to be used externally.
+- **Potentially BREAKING:** Removed support for any functions using the Sodaq "DateTime" class.
+- **Potentially BREAKING:** Removed ability to have `PRINTOUT`, `MS_DBG`, and `MS_DEEP_DBG` output going to different serial ports
+  - Defines for `STANDARD_SERIAL_OUTPUT`, `DEBUGGING_SERIAL_OUTPUT`, and `DEEP_DEBUGGING_SERIAL_OUTPUT` are all ignored. Use the single define `MS_OUTPUT` for all outputs.  If `MS_OUTPUT` is not defined, a default will be used (generally Serial or USBSerial).
 
 ### Fixed
 
@@ -1010,6 +1050,6 @@ Our first release of the modular sensors library to support easily logging data 
 [0.6.9]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.6.9
 [0.5.4-beta]: https://github.com/EnviroDIY/ModularSensors/releases/tag/0.5.4-beta
 
-[//]: # ( @tableofcontents{XML:1} )
+<!--! @tableofcontents{HTML:1} -->
 
-[//]: # ( @m_footernavigation )
+<!--! @m_footernavigation -->

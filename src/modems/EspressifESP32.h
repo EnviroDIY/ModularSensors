@@ -14,6 +14,9 @@
 #ifndef SRC_MODEMS_ESPRESSIFESP32_H_
 #define SRC_MODEMS_ESPRESSIFESP32_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Included the ESP8266
 #include "EspressifESP8266.h"
 

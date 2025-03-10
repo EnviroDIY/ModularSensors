@@ -45,6 +45,7 @@ bool BoschBME280::setup(void) {
 
     // This sensor needs power for setup!
     // The BME280's begin() reads required calibration data from the sensor.
+    delay(10);
     bool wasOn = checkPowerOn();
     if (!wasOn) { powerUp(); }
     waitForWarmUp();

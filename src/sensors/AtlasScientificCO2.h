@@ -50,6 +50,9 @@
 #ifndef SRC_SENSORS_ATLASSCIENTIFICCO2_H_
 #define SRC_SENSORS_ATLASSCIENTIFICCO2_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_ATLASSCIENTIFICCO2_DEBUG
 
@@ -263,7 +266,7 @@ class AtlasScientificCO2_CO2 : public Variable {
     explicit AtlasScientificCO2_CO2(
         AtlasScientificCO2* parentSense, const char* uuid = "",
         const char* varCode = ATLAS_CO2_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ATLAS_CO2_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ATLAS_CO2_VAR_NUM,
                    (uint8_t)ATLAS_CO2_RESOLUTION, ATLAS_CO2_VAR_NAME,
                    ATLAS_CO2_UNIT_NAME, varCode, uuid) {}
     /**
@@ -273,9 +276,9 @@ class AtlasScientificCO2_CO2 : public Variable {
      * used.
      */
     AtlasScientificCO2_CO2()
-        : Variable((const uint8_t)ATLAS_CO2_VAR_NUM,
-                   (uint8_t)ATLAS_CO2_RESOLUTION, ATLAS_CO2_VAR_NAME,
-                   ATLAS_CO2_UNIT_NAME, ATLAS_CO2_DEFAULT_CODE) {}
+        : Variable((uint8_t)ATLAS_CO2_VAR_NUM, (uint8_t)ATLAS_CO2_RESOLUTION,
+                   ATLAS_CO2_VAR_NAME, ATLAS_CO2_UNIT_NAME,
+                   ATLAS_CO2_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AtlasScientificCO2_CO2 object - no action needed.
      */
@@ -306,7 +309,7 @@ class AtlasScientificCO2_Temp : public Variable {
     explicit AtlasScientificCO2_Temp(
         AtlasScientificCO2* parentSense, const char* uuid = "",
         const char* varCode = ATLAS_CO2TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ATLAS_CO2TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ATLAS_CO2TEMP_VAR_NUM,
                    (uint8_t)ATLAS_CO2TEMP_RESOLUTION, ATLAS_CO2TEMP_VAR_NAME,
                    ATLAS_CO2TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -316,7 +319,7 @@ class AtlasScientificCO2_Temp : public Variable {
      * used.
      */
     AtlasScientificCO2_Temp()
-        : Variable((const uint8_t)ATLAS_CO2TEMP_VAR_NUM,
+        : Variable((uint8_t)ATLAS_CO2TEMP_VAR_NUM,
                    (uint8_t)ATLAS_CO2TEMP_RESOLUTION, ATLAS_CO2TEMP_VAR_NAME,
                    ATLAS_CO2TEMP_UNIT_NAME, ATLAS_CO2TEMP_DEFAULT_CODE) {}
     /**

@@ -221,7 +221,7 @@ class YosemitechY700_Pressure : public Variable {
     explicit YosemitechY700_Pressure(
         YosemitechY700* parentSense, const char* uuid = "",
         const char* varCode = Y700_PRES_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)Y700_PRES_VAR_NUM,
+        : Variable(parentSense, (uint8_t)Y700_PRES_VAR_NUM,
                    (uint8_t)Y700_PRES_RESOLUTION, Y700_PRES_VAR_NAME,
                    Y700_PRES_UNIT_NAME, varCode, uuid) {}
     /**
@@ -231,9 +231,9 @@ class YosemitechY700_Pressure : public Variable {
      * used.
      */
     YosemitechY700_Pressure()
-        : Variable((const uint8_t)Y700_PRES_VAR_NUM,
-                   (uint8_t)Y700_PRES_RESOLUTION, Y700_PRES_VAR_NAME,
-                   Y700_PRES_UNIT_NAME, Y700_PRES_DEFAULT_CODE) {}
+        : Variable((uint8_t)Y700_PRES_VAR_NUM, (uint8_t)Y700_PRES_RESOLUTION,
+                   Y700_PRES_VAR_NAME, Y700_PRES_UNIT_NAME,
+                   Y700_PRES_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY700_Pressure object - no action needed.
      */
@@ -265,7 +265,7 @@ class YosemitechY700_Temp : public Variable {
     explicit YosemitechY700_Temp(YosemitechY700* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = Y700_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)Y700_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)Y700_TEMP_VAR_NUM,
                    (uint8_t)Y700_TEMP_RESOLUTION, Y700_TEMP_VAR_NAME,
                    Y700_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -275,9 +275,9 @@ class YosemitechY700_Temp : public Variable {
      * used.
      */
     YosemitechY700_Temp()
-        : Variable((const uint8_t)Y700_TEMP_VAR_NUM,
-                   (uint8_t)Y700_TEMP_RESOLUTION, Y700_TEMP_VAR_NAME,
-                   Y700_TEMP_UNIT_NAME, Y700_TEMP_DEFAULT_CODE) {}
+        : Variable((uint8_t)Y700_TEMP_VAR_NUM, (uint8_t)Y700_TEMP_RESOLUTION,
+                   Y700_TEMP_VAR_NAME, Y700_TEMP_UNIT_NAME,
+                   Y700_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY700_Temp object - no action needed.
      */

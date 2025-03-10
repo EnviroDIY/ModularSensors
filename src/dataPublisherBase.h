@@ -21,32 +21,25 @@
 #ifndef SRC_DATAPUBLISHERBASE_H_
 #define SRC_DATAPUBLISHERBASE_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_DATAPUBLISHERBASE_DEBUG
+// #define MS_DATAPUBLISHERBASE_DEBUG_DEEP
 
 #ifdef MS_DATAPUBLISHERBASE_DEBUG
 #define MS_DEBUGGING_STD "dataPublisherBase"
 #endif
 
-
-#ifndef MS_SEND_BUFFER_SIZE
-/**
- * @brief Send Buffer
- *
- * This determines how many characters to set out at once over the TCP
- * connection. Increasing this may decrease data use by a logger, while
- * decreasing it will save memory. Do not make it smaller than 32 or bigger
- * than 1500 (a typical TCP Maximum Transmission Unit).
- *
- * This can be changed by setting the build flag MS_SEND_BUFFER_SIZE when
- * compiling.
- */
-#define MS_SEND_BUFFER_SIZE 750
+#ifdef MS_DATAPUBLISHERBASE_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP "dataPublisherBase"
 #endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
+#undef MS_DEBUGGING_DEEP
 #include "LoggerBase.h"
 #include "Client.h"
 

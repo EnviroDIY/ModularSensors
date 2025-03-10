@@ -100,6 +100,9 @@
 #ifndef SRC_SENSORS_MAXBOTIXSONAR_H_
 #define SRC_SENSORS_MAXBOTIXSONAR_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_MAXBOTIXSONAR_DEBUG
 
@@ -246,6 +249,8 @@ class MaxBotixSonar : public Sensor {
      * @return True if the wake function completed successfully.
      */
     bool wake(void) override;
+    // override to empty and flush the stream
+    bool sleep(void) override;
 
     /**
      * @copydoc Sensor::addSingleMeasurementResult()
@@ -292,9 +297,8 @@ class MaxBotixSonar_Range : public Variable {
     explicit MaxBotixSonar_Range(MaxBotixSonar* parentSense,
                                  const char*    uuid    = "",
                                  const char*    varCode = HRXL_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)HRXL_VAR_NUM,
-                   (uint8_t)HRXL_RESOLUTION, HRXL_VAR_NAME, HRXL_UNIT_NAME,
-                   varCode, uuid) {}
+        : Variable(parentSense, (uint8_t)HRXL_VAR_NUM, (uint8_t)HRXL_RESOLUTION,
+                   HRXL_VAR_NAME, HRXL_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new MaxBotixSonar_Range object.
      *
@@ -302,7 +306,7 @@ class MaxBotixSonar_Range : public Variable {
      * used.
      */
     MaxBotixSonar_Range()
-        : Variable((const uint8_t)HRXL_VAR_NUM, (uint8_t)HRXL_RESOLUTION,
+        : Variable((uint8_t)HRXL_VAR_NUM, (uint8_t)HRXL_RESOLUTION,
                    HRXL_VAR_NAME, HRXL_UNIT_NAME, HRXL_DEFAULT_CODE) {}
     /**
      * @brief Destroy the MaxBotixSonar_Range object - no action needed.
