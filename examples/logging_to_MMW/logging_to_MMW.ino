@@ -253,7 +253,7 @@ void setup() {
 // Wait for USB connection to be established by PC
 // NOTE:  Only use this when debugging - if not connected to a PC, this
 // could prevent the script from starting
-#if defined SERIAL_PORT_USBVIRTUAL
+#if defined(SERIAL_PORT_USBVIRTUAL)
     while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000)) {
         // wait
     }
@@ -276,11 +276,11 @@ void setup() {
     Serial.println();
 
 // Allow interrupts for software serial
-#if defined SoftwareSerial_ExtInts_h
+#if defined(SoftwareSerial_ExtInts_h)
     enableInterrupt(softSerialRx, SoftwareSerial_ExtInts::handle_interrupt,
                     CHANGE);
 #endif
-#if defined NeoSWSerial_h
+#if defined(NeoSWSerial_h)
     enableInterrupt(neoSSerial1Rx, neoSSerial1ISR, CHANGE);
 #endif
 
@@ -299,7 +299,7 @@ void setup() {
     // Logging in the given time zone
     Logger::setLoggerTimeZone(timeZone);
     // It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)
-    Logger::setRTCTimeZone(0);
+    loggerClock::setRTCOffset(0);
 
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modem);
@@ -318,7 +318,7 @@ void setup() {
     }
 
     // Sync the clock if it isn't valid or we have battery to spare
-    if (getBatteryVoltage() > 3.55 || !dataLogger.isRTCSane()) {
+    if (getBatteryVoltage() > 3.55 || !loggerClock::isRTCSane()) {
         // Synchronize the RTC with NIST
         // This will also set up the modem
         dataLogger.syncRTC();

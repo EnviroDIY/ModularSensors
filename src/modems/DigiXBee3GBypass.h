@@ -50,6 +50,9 @@
 #ifndef SRC_MODEMS_DIGIXBEE3GBYPASS_H_
 #define SRC_MODEMS_DIGIXBEE3GBYPASS_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_DIGIXBEE3GBYPASS_DEBUG
 // #define MS_DIGIXBEE3GBYPASS_DEBUG_DEEP
@@ -58,19 +61,10 @@
 #define MS_DEBUGGING_STD "DigiXBee3GBypass"
 #endif
 
-/** @ingroup modem_digi_3g_bypass */
-/**@{*/
-
 /**
  * @brief The modem type for the underlying TinyGSM library.
  */
 #define TINY_GSM_MODEM_UBLOX
-#ifndef TINY_GSM_RX_BUFFER
-/**
- * @brief The size of the buffer for incoming data.
- */
-#define TINY_GSM_RX_BUFFER 64
-#endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
@@ -83,6 +77,8 @@
 #include <StreamDebugger.h>
 #endif
 
+/** @ingroup modem_digi_3g_bypass */
+/**@{*/
 
 /**
  * @brief The loggerModem subclass for [Digi Cellular XBee's](@ref modem_digi)
@@ -135,8 +131,8 @@ class DigiXBee3GBypass : public DigiXBee {
     uint32_t getNISTTime(void) override;
 
     bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
-    bool  getModemBatteryStats(uint8_t& chargeState, int8_t& percent,
-                               uint16_t& milliVolts) override;
+    bool  getModemBatteryStats(int8_t& chargeState, int8_t& percent,
+                               int16_t& milliVolts) override;
     float getModemChipTemperature(void) override;
 
     bool modemHardReset(void) override;
@@ -163,13 +159,13 @@ class DigiXBee3GBypass : public DigiXBee {
      * bypass), enables pin sleep, sets the DIO pins to the expected functions,
      * and reboots the modem to ensure all settings are applied.
      *
-     * @return **bool** True if the extra setup succeeded.
+     * @return True if the extra setup succeeded.
      */
     bool extraModemSetup(void) override;
     bool isModemAwake(void) override;
 
  private:
-    const char* _apn;
+    const char* _apn;  ///< Internal reference to the cellular APN
 };
 /**@}*/
 #endif  // SRC_MODEMS_DIGIXBEE3GBYPASS_H_

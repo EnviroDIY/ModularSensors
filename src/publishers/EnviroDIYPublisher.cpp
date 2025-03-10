@@ -228,7 +228,7 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient, bool forceFlush) {
     MS_DBG(F("Publishing record to buffer.  Will flush:"), willFlush);
 
     // create record to hold timestamp and variable values in the log buffer
-    int record = _logBuffer.addRecord(Logger::markedLocalEpochTime);
+    int record = _logBuffer.addRecord(Logger::markedLocalUnixTime);
 
     // write record data if the record was successfully created
     if (record >= 0) {
@@ -323,9 +323,9 @@ int16_t EnviroDIYPublisher::flushDataBuffer(Client* outClient) {
         // Write out the complete request
         txBufferFlush();
 
-        // Wait 10 seconds for a response from the server
+        // Wait 30 seconds for a response from the server
         uint32_t start = millis();
-        while ((millis() - start) < 10000L && outClient->available() < 12) {
+        while ((millis() - start) < 30000L && outClient->available() < 12) {
             delay(10);
         }
 

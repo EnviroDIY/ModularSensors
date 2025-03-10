@@ -55,6 +55,9 @@
 #ifndef SRC_MODEMS_SIMCOMSIM800_H_
 #define SRC_MODEMS_SIMCOMSIM800_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_SIMCOMSIM800_DEBUG
 // #define MS_SIMCOMSIM800_DEBUG_DEEP
@@ -63,21 +66,30 @@
 #define MS_DEBUGGING_STD "SIMComSIM800"
 #endif
 
-/** @ingroup modem_sim800 */
-/**@{*/
-
 /**
  * @brief The modem type for the underlying TinyGSM library.
  */
 #define TINY_GSM_MODEM_SIM800
-#ifndef TINY_GSM_RX_BUFFER
-/**
- * @brief The size of the buffer for incoming data.
- */
-#define TINY_GSM_RX_BUFFER 64
+
+// Included Dependencies
+#include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
+#include "TinyGsmClient.h"
+#include "LoggerModem.h"
+
+#ifdef MS_SIMCOMSIM800_DEBUG_DEEP
+#include <StreamDebugger.h>
 #endif
 
+/** @ingroup modem_sim800 */
+/**@{*/
 
+/**
+ * @anchor modem_sim800_pins_timing
+ * @name Modem Pin Settings and Timing
+ * The timing and pin level settings for a SIMCom SIM800
+ */
+/**@{*/
 /**
  * @brief The loggerModem::_statusLevel.
  *
@@ -141,17 +153,7 @@
  * shutdown in case it is not monitored.
  */
 #define SIM800_DISCONNECT_TIME_MS 15000L
-
-// Included Dependencies
-#include "ModSensorDebugger.h"
-#undef MS_DEBUGGING_STD
-#include "TinyGsmClient.h"
-#include "LoggerModem.h"
-
-#ifdef MS_SIMCOMSIM800_DEBUG_DEEP
-#include <StreamDebugger.h>
-#endif
-
+/**@}*/
 
 /**
  * @brief The loggerModem subclass for the Adafruit Fona 2G, the Sodaq GPRSBeeR4
@@ -194,8 +196,8 @@ class SIMComSIM800 : public loggerModem {
     uint32_t getNISTTime(void) override;
 
     bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
-    bool  getModemBatteryStats(uint8_t& chargeState, int8_t& percent,
-                               uint16_t& milliVolts) override;
+    bool  getModemBatteryStats(int8_t& chargeState, int8_t& percent,
+                               int16_t& milliVolts) override;
     float getModemChipTemperature(void) override;
 
 #ifdef MS_SIMCOMSIM800_DEBUG_DEEP
@@ -219,7 +221,7 @@ class SIMComSIM800 : public loggerModem {
     bool isModemAwake(void) override;
 
  private:
-    const char* _apn;
+    const char* _apn;  ///< Internal reference to the cellular APN
 };
 /**@}*/
 #endif  // SRC_MODEMS_SIMCOMSIM800_H_

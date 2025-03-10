@@ -155,7 +155,7 @@ int16_t UbidotsPublisher::publishData(Client* outClient, bool) {
             txBufferAppend("\":{\"value\":");
             txBufferAppend(_baseLogger->getValueStringAtI(i).c_str());
             txBufferAppend(",\"timestamp\":");
-            ltoa(Logger::markedUTCEpochTime, tempBuffer, 10);  // BASE 10
+            ltoa(Logger::markedUTCUnixTime, tempBuffer, 10);  // BASE 10
             txBufferAppend(tempBuffer);
             txBufferAppend("000}");
             if (i + 1 != _baseLogger->getArrayVarCount()) {

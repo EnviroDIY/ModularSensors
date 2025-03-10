@@ -46,19 +46,31 @@
 // Included Dependencies
 #include "sensors/AtlasParent.h"
 
-
-// Sensor Specific Defines
 /** @ingroup sensor_atlas_orp */
 /**@{*/
 
-/// @brief Default I2C address is 0x62 (98)
-#define ATLAS_ORP_I2C_ADDR 0x62
-
+/**
+ * @anchor sensor_atlas_orp_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the Atlas ORP sensor
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the Atlas EZO ORP circuit can report 1
 /// value.
 #define ATLAS_ORP_NUM_VARIABLES 1
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define ATLAS_ORP_INC_CALC_VARIABLES 0
+/**@}*/
+
+/**
+ * @anchor sensor_atlas_orp_config
+ * @name Configuration Defines
+ * Defines to configure and set the address of the Atlas ORP sensor
+ */
+/**@{*/
+/// @brief The default I2C address of the Atlas ORP sensor is 0x62 (98)
+#define ATLAS_ORP_I2C_ADDR 0x62
+/**@}*/
 
 /**
  * @anchor sensor_atlas_orp_timing
@@ -213,7 +225,7 @@ class AtlasScientificORP_Potential : public Variable {
     explicit AtlasScientificORP_Potential(
         AtlasScientificORP* parentSense, const char* uuid = "",
         const char* varCode = ATLAS_ORP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ATLAS_ORP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ATLAS_ORP_VAR_NUM,
                    (uint8_t)ATLAS_ORP_RESOLUTION, ATLAS_ORP_VAR_NAME,
                    ATLAS_ORP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -223,9 +235,9 @@ class AtlasScientificORP_Potential : public Variable {
      * used.
      */
     AtlasScientificORP_Potential()
-        : Variable((const uint8_t)ATLAS_ORP_VAR_NUM,
-                   (uint8_t)ATLAS_ORP_RESOLUTION, ATLAS_ORP_VAR_NAME,
-                   ATLAS_ORP_UNIT_NAME, ATLAS_ORP_DEFAULT_CODE) {}
+        : Variable((uint8_t)ATLAS_ORP_VAR_NUM, (uint8_t)ATLAS_ORP_RESOLUTION,
+                   ATLAS_ORP_VAR_NAME, ATLAS_ORP_UNIT_NAME,
+                   ATLAS_ORP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AtlasScientificORP_Potential() object - no action
      * needed.

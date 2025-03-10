@@ -22,7 +22,7 @@ SodaqUBeeU201::SodaqUBeeU201(Stream* modemStream, int8_t powerPin,
                   U201_DISCONNECT_TIME_MS, U201_WAKE_DELAY_MS,
                   U201_ATRESPONSE_TIME_MS),
 #ifdef MS_SODAQUBEEU201_DEBUG_DEEP
-      _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
+      _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
       gsmModem(_modemATDebugger),
 #else
       gsmModem(*modemStream),

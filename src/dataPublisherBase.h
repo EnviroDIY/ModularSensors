@@ -21,35 +21,25 @@
 #ifndef SRC_DATAPUBLISHERBASE_H_
 #define SRC_DATAPUBLISHERBASE_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_DATAPUBLISHERBASE_DEBUG
+// #define MS_DATAPUBLISHERBASE_DEBUG_DEEP
 
 #ifdef MS_DATAPUBLISHERBASE_DEBUG
 #define MS_DEBUGGING_STD "dataPublisherBase"
 #endif
 
-
-/**
- * @def MS_SEND_BUFFER_SIZE
- * @brief Send Buffer
- *
- * This determines how many characters to set out at once over the TCP
- * connection. Increasing this may decrease data use by a logger, while
- * decreasing it will save memory. Do not make it smaller than 32 or bigger
- * than 1500 (a typical TCP Maximum Transmission Unit).
- *
- * This can be changed by setting the build flag MS_SEND_BUFFER_SIZE when
- * compiling.
- *
- * @ingroup the_publishers
- */
-#ifndef MS_SEND_BUFFER_SIZE
-#define MS_SEND_BUFFER_SIZE 750
+#ifdef MS_DATAPUBLISHERBASE_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP "dataPublisherBase"
 #endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
+#undef MS_DEBUGGING_DEEP
 #include "LoggerBase.h"
 #include "Client.h"
 
@@ -166,7 +156,7 @@ class dataPublisher {
      * @brief Get the destination for published data - generally the host name
      * of the data receiver.
      *
-     * @return **String** The URL or HOST to receive published data
+     * @return The URL or HOST to receive published data
      */
     virtual String getEndpoint(void) = 0;
 
@@ -190,7 +180,7 @@ class dataPublisher {
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
      * @param forceFlush Ask the publisher to flush buffered data immediately.
-     * @return **int16_t** The result of publishing data.  May be an http
+     * @return The result of publishing data.  May be an http
      * response code or a result code from PubSubClient.
      */
     virtual int16_t publishData(Client* outClient, bool forceFlush = false) = 0;
@@ -204,7 +194,7 @@ class dataPublisher {
      *
      * @param forceFlush Ask the publisher to flush buffered data immediately.
      *
-     * @return **int16_t** The result of publishing data.  May be an http
+     * @return The result of publishing data.  May be an http
      * response code or a result code from PubSubClient.
      */
     virtual int16_t publishData(bool forceFlush = false);
@@ -218,7 +208,7 @@ class dataPublisher {
      * @param outClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
-     * @return **int16_t** The result of publishing data.  May be an http
+     * @return The result of publishing data.  May be an http
      * response code or a result code from PubSubClient.
      */
     virtual int16_t sendData(Client* outClient);
@@ -228,7 +218,7 @@ class dataPublisher {
      *
      * @m_deprecated_since{0,22,5}
      *
-     * @return **int16_t** The result of publishing data.  May be an http
+     * @return The result of publishing data.  May be an http
      * response code or a result code from PubSubClient.
      */
     virtual int16_t sendData();
@@ -238,7 +228,7 @@ class dataPublisher {
      * explanation.
      *
      * @param state A result code returned by a PubSubClient action
-     * @return **String** The meaning of the code
+     * @return The meaning of the code
      */
     String parseMQTTState(int state);
 

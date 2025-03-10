@@ -61,11 +61,17 @@
 /** @ingroup sensor_vega_puls21 */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_vega_puls21_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the VEGA PULS 21
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the VEGA PULS 21 can report 5 values
 #define VEGAPULS21_NUM_VARIABLES 5
 /// @brief Sensor::_incCalcValues;
 #define VEGAPULS21_INC_CALC_VARIABLES 0
+/**@}*/
 
 /**
  * @anchor sensor_vega_puls21_timing
@@ -320,7 +326,7 @@ class VegaPuls21_Stage : public Variable {
     explicit VegaPuls21_Stage(
         VegaPuls21* parentSense, const char* uuid = "",
         const char* varCode = VEGAPULS21_STAGE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)VEGAPULS21_STAGE_VAR_NUM,
+        : Variable(parentSense, (uint8_t)VEGAPULS21_STAGE_VAR_NUM,
                    (uint8_t)VEGAPULS21_STAGE_RESOLUTION,
                    VEGAPULS21_STAGE_VAR_NAME, VEGAPULS21_STAGE_UNIT_NAME,
                    varCode, uuid) {}
@@ -331,7 +337,7 @@ class VegaPuls21_Stage : public Variable {
      * used.
      */
     VegaPuls21_Stage()
-        : Variable((const uint8_t)VEGAPULS21_STAGE_VAR_NUM,
+        : Variable((uint8_t)VEGAPULS21_STAGE_VAR_NUM,
                    (uint8_t)VEGAPULS21_STAGE_RESOLUTION,
                    VEGAPULS21_STAGE_VAR_NAME, VEGAPULS21_STAGE_UNIT_NAME,
                    VEGAPULS21_STAGE_DEFAULT_CODE) {}
@@ -366,7 +372,7 @@ class VegaPuls21_Distance : public Variable {
     explicit VegaPuls21_Distance(
         VegaPuls21* parentSense, const char* uuid = "",
         const char* varCode = VEGAPULS21_DISTANCE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)VEGAPULS21_DISTANCE_VAR_NUM,
+        : Variable(parentSense, (uint8_t)VEGAPULS21_DISTANCE_VAR_NUM,
                    (uint8_t)VEGAPULS21_DISTANCE_RESOLUTION,
                    VEGAPULS21_DISTANCE_VAR_NAME, VEGAPULS21_DISTANCE_UNIT_NAME,
                    varCode, uuid) {}
@@ -377,7 +383,7 @@ class VegaPuls21_Distance : public Variable {
      * used.
      */
     VegaPuls21_Distance()
-        : Variable((const uint8_t)VEGAPULS21_DISTANCE_VAR_NUM,
+        : Variable((uint8_t)VEGAPULS21_DISTANCE_VAR_NUM,
                    (uint8_t)VEGAPULS21_DISTANCE_RESOLUTION,
                    VEGAPULS21_DISTANCE_VAR_NAME, VEGAPULS21_DISTANCE_UNIT_NAME,
                    VEGAPULS21_DISTANCE_DEFAULT_CODE) {}
@@ -411,7 +417,7 @@ class VegaPuls21_Temp : public Variable {
      */
     explicit VegaPuls21_Temp(VegaPuls21* parentSense, const char* uuid = "",
                              const char* varCode = VEGAPULS21_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)VEGAPULS21_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)VEGAPULS21_TEMP_VAR_NUM,
                    (uint8_t)VEGAPULS21_TEMP_RESOLUTION,
                    VEGAPULS21_TEMP_VAR_NAME, VEGAPULS21_TEMP_UNIT_NAME, varCode,
                    uuid) {}
@@ -422,7 +428,7 @@ class VegaPuls21_Temp : public Variable {
      * used.
      */
     VegaPuls21_Temp()
-        : Variable((const uint8_t)VEGAPULS21_TEMP_VAR_NUM,
+        : Variable((uint8_t)VEGAPULS21_TEMP_VAR_NUM,
                    (uint8_t)VEGAPULS21_TEMP_RESOLUTION,
                    VEGAPULS21_TEMP_VAR_NAME, VEGAPULS21_TEMP_UNIT_NAME,
                    VEGAPULS21_TEMP_DEFAULT_CODE) {}
@@ -457,7 +463,7 @@ class VegaPuls21_Reliability : public Variable {
     explicit VegaPuls21_Reliability(
         VegaPuls21* parentSense, const char* uuid = "",
         const char* varCode = VEGAPULS21_RELIABILITY_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)VEGAPULS21_RELIABILITY_VAR_NUM,
+        : Variable(parentSense, (uint8_t)VEGAPULS21_RELIABILITY_VAR_NUM,
                    (uint8_t)VEGAPULS21_RELIABILITY_RESOLUTION,
                    VEGAPULS21_RELIABILITY_VAR_NAME,
                    VEGAPULS21_RELIABILITY_UNIT_NAME, varCode, uuid) {}
@@ -468,7 +474,7 @@ class VegaPuls21_Reliability : public Variable {
      * used.
      */
     VegaPuls21_Reliability()
-        : Variable((const uint8_t)VEGAPULS21_RELIABILITY_VAR_NUM,
+        : Variable((uint8_t)VEGAPULS21_RELIABILITY_VAR_NUM,
                    (uint8_t)VEGAPULS21_RELIABILITY_RESOLUTION,
                    VEGAPULS21_RELIABILITY_VAR_NAME,
                    VEGAPULS21_RELIABILITY_UNIT_NAME,
@@ -505,7 +511,7 @@ class VegaPuls21_ErrorCode : public Variable {
     explicit VegaPuls21_ErrorCode(
         VegaPuls21* parentSense, const char* uuid = "",
         const char* varCode = VEGAPULS21_ERRORCODE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)VEGAPULS21_ERRORCODE_VAR_NUM,
+        : Variable(parentSense, (uint8_t)VEGAPULS21_ERRORCODE_VAR_NUM,
                    (uint8_t)VEGAPULS21_ERRORCODE_RESOLUTION,
                    VEGAPULS21_ERRORCODE_VAR_NAME,
                    VEGAPULS21_ERRORCODE_UNIT_NAME, varCode, uuid) {}
@@ -516,7 +522,7 @@ class VegaPuls21_ErrorCode : public Variable {
      * used.
      */
     VegaPuls21_ErrorCode()
-        : Variable((const uint8_t)VEGAPULS21_ERRORCODE_VAR_NUM,
+        : Variable((uint8_t)VEGAPULS21_ERRORCODE_VAR_NUM,
                    (uint8_t)VEGAPULS21_ERRORCODE_RESOLUTION,
                    VEGAPULS21_ERRORCODE_VAR_NAME,
                    VEGAPULS21_ERRORCODE_UNIT_NAME,

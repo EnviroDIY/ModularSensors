@@ -78,6 +78,9 @@
 #ifndef SRC_SENSORS_MEASPECMS5803_H_
 #define SRC_SENSORS_MEASPECMS5803_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_MEASPECMS5803_DEBUG
 
@@ -95,11 +98,17 @@
 /** @ingroup sensor_ms5803 */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_ms5803_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the MS5803
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the MS5803 can report 2 values.
 #define MS5803_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define MS5803_INC_CALC_VARIABLES 0
+/**@}*/
 
 /**
  * @anchor sensor_ms5803_timing
@@ -234,7 +243,7 @@ class MeaSpecMS5803 : public Sensor {
      * return anything to indicate failure or success, we just have to hope it
      * succeeded.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     bool setup(void) override;
     /**
@@ -287,7 +296,7 @@ class MeaSpecMS5803_Temp : public Variable {
     explicit MeaSpecMS5803_Temp(MeaSpecMS5803* parentSense,
                                 const char*    uuid = "",
                                 const char* varCode = MS5803_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)MS5803_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)MS5803_TEMP_VAR_NUM,
                    (uint8_t)MS5803_TEMP_RESOLUTION, MS5803_TEMP_VAR_NAME,
                    MS5803_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -297,7 +306,7 @@ class MeaSpecMS5803_Temp : public Variable {
      * used.
      */
     MeaSpecMS5803_Temp()
-        : Variable((const uint8_t)MS5803_TEMP_VAR_NUM,
+        : Variable((uint8_t)MS5803_TEMP_VAR_NUM,
                    (uint8_t)MS5803_TEMP_RESOLUTION, MS5803_TEMP_VAR_NAME,
                    MS5803_TEMP_UNIT_NAME, MS5803_TEMP_DEFAULT_CODE) {}
     /**
@@ -332,7 +341,7 @@ class MeaSpecMS5803_Pressure : public Variable {
     explicit MeaSpecMS5803_Pressure(
         MeaSpecMS5803* parentSense, const char* uuid = "",
         const char* varCode = MS5803_PRESSURE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)MS5803_PRESSURE_VAR_NUM,
+        : Variable(parentSense, (uint8_t)MS5803_PRESSURE_VAR_NUM,
                    (uint8_t)MS5803_PRESSURE_RESOLUTION,
                    MS5803_PRESSURE_VAR_NAME, MS5803_PRESSURE_UNIT_NAME, varCode,
                    uuid) {}
@@ -343,7 +352,7 @@ class MeaSpecMS5803_Pressure : public Variable {
      * used.
      */
     MeaSpecMS5803_Pressure()
-        : Variable((const uint8_t)MS5803_PRESSURE_VAR_NUM,
+        : Variable((uint8_t)MS5803_PRESSURE_VAR_NUM,
                    (uint8_t)MS5803_PRESSURE_RESOLUTION,
                    MS5803_PRESSURE_VAR_NAME, MS5803_PRESSURE_UNIT_NAME,
                    MS5803_PRESSURE_DEFAULT_CODE) {}

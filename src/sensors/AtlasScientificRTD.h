@@ -51,23 +51,33 @@
 // Included Dependencies
 #include "sensors/AtlasParent.h"
 
-
-/**
- * @brief Default I2C address is 0x66 (102)
- */
-#define ATLAS_RTD_I2C_ADDR 0x66
-
-// Sensor Specific Defines
 /** @ingroup sensor_atlas_rtd */
 /**@{*/
+
 /**
- * @brief Sensor::_numReturnedValues; the Atlas EZO temperature circuit can
- * report 1 value.
+ * @anchor sensor_atlas_rtd_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the Atlas RTD (temperature)
+ * sensor
  */
+/**@{*/
+/// @brief Sensor::_numReturnedValues; the Atlas EZO temperature circuit can
+/// report 1 value.
 #define ATLAS_RTD_NUM_VARIABLES 1
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define ATLAS_RTD_INC_CALC_VARIABLES 0
+/**@}*/
 
+/**
+ * @anchor sensor_atlas_rtd_config
+ * @name Configuration Defines
+ * Defines to configure and set the address of the Atlas RTD (temperature)
+ * sensor
+ */
+/**@{*/
+/// @brief The default I2C address of the Atlas RTD sensor is 0x66 (102)
+#define ATLAS_RTD_I2C_ADDR 0x66
+/**@}*/
 
 /**
  * @anchor sensor_atlas_rtd_timing
@@ -222,7 +232,7 @@ class AtlasScientificRTD_Temp : public Variable {
     explicit AtlasScientificRTD_Temp(
         AtlasScientificRTD* parentSense, const char* uuid = "",
         const char* varCode = ATLAS_RTD_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ATLAS_RTD_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ATLAS_RTD_VAR_NUM,
                    (uint8_t)ATLAS_RTD_RESOLUTION, ATLAS_RTD_VAR_NAME,
                    ATLAS_RTD_UNIT_NAME, varCode, uuid) {}
     /**
@@ -232,9 +242,9 @@ class AtlasScientificRTD_Temp : public Variable {
      * used.
      */
     AtlasScientificRTD_Temp()
-        : Variable((const uint8_t)ATLAS_RTD_VAR_NUM,
-                   (uint8_t)ATLAS_RTD_RESOLUTION, ATLAS_RTD_VAR_NAME,
-                   ATLAS_RTD_UNIT_NAME, ATLAS_RTD_DEFAULT_CODE) {}
+        : Variable((uint8_t)ATLAS_RTD_VAR_NUM, (uint8_t)ATLAS_RTD_RESOLUTION,
+                   ATLAS_RTD_VAR_NAME, ATLAS_RTD_UNIT_NAME,
+                   ATLAS_RTD_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AtlasScientificRTD_Temp object - no action needed.
      */

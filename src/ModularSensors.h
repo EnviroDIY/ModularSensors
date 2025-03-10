@@ -19,7 +19,10 @@
  * A pre-release version will always be indicated as slightly ahead of the
  * EnviroDIY branch that it is based on.
  */
-#define MODULAR_SENSORS_VERSION "0.35.1"
+#define MODULAR_SENSORS_VERSION "0.36.0"
+
+// Include config before anything else
+#include "ModSensorConfig.h"
 
 // To support interrupts
 #include "ModSensorInterrupts.h"

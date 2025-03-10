@@ -59,11 +59,11 @@ String KellerParent::getSensorLocation(void) {
 bool KellerParent::setup(void) {
     bool retVal =
         Sensor::setup();  // this will set pin modes and the setup status bit
-    if (_RS485EnablePin >= 0) pinMode(_RS485EnablePin, OUTPUT);
-    if (_powerPin2 >= 0) pinMode(_powerPin2, OUTPUT);
+    if (_RS485EnablePin >= 0) { pinMode(_RS485EnablePin, OUTPUT); }
+    if (_powerPin2 >= 0) { pinMode(_powerPin2, OUTPUT); }
 
 #ifdef MS_KELLERPARENT_DEBUG_DEEP
-    _ksensor.setDebugStream(&DEEP_DEBUGGING_SERIAL_OUTPUT);
+    _ksensor.setDebugStream(&MS_SERIAL_OUTPUT);
 #endif
 
     // This sensor begin is just setting more pin modes, etc, no sensor power
@@ -75,9 +75,22 @@ bool KellerParent::setup(void) {
 }
 
 
+// The function to put the sensor to sleep
+// Different from the standard in that empties and flushes the stream.
+bool KellerParent::sleep(void) {
+    // empty then flush the buffer
+    while (_stream->available()) { _stream->read(); }
+    _stream->flush();
+    return Sensor::sleep();
+};
+
+
 // This turns on sensor power
 void KellerParent::powerUp(void) {
     if (_powerPin >= 0) {
+        // Reset power pin mode every power up because pins are set to tri-state
+        // on sleep
+        pinMode(_powerPin, OUTPUT);
         MS_DBG(F("Powering"), getSensorNameAndLocation(), F("with pin"),
                _powerPin);
         digitalWrite(_powerPin, HIGH);
@@ -85,6 +98,9 @@ void KellerParent::powerUp(void) {
         _millisPowerOn = millis();
     }
     if (_powerPin2 >= 0) {
+        // Reset power pin mode every power up because pins are set to tri-state
+        // on sleep
+        pinMode(_powerPin2, OUTPUT);
         MS_DBG(F("Applying secondary power to"), getSensorNameAndLocation(),
                F("with pin"), _powerPin2);
         digitalWrite(_powerPin2, HIGH);
@@ -93,6 +109,8 @@ void KellerParent::powerUp(void) {
         MS_DBG(F("Power to"), getSensorNameAndLocation(),
                F("is not controlled by this library."));
     }
+    // Reset enable pin because pins are set to tri-state on sleep
+    if (_RS485EnablePin >= 0) { pinMode(_RS485EnablePin, OUTPUT); }
     // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
     _sensorStatus |= 0b00000110;
 }

@@ -1,0 +1,5 @@
+--platform ubuntu-latest=ghcr.io/catthehacker/ubuntu:full-latest
+--pull=false
+--detect-event
+--env RUNNER_DEBUG=1           # Enable debug logging
+# --env NODE_DEBUG=<module>    # Might be useful in few cases

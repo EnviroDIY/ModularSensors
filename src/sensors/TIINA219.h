@@ -62,6 +62,9 @@
 #ifndef SRC_SENSORS_TIINA219_H_
 #define SRC_SENSORS_TIINA219_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_TIINA219_DEBUG
 
@@ -79,11 +82,27 @@
 /** @ingroup sensor_ina219 */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_ina219_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the INA219
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the INA219 can report 3 values.
 #define INA219_NUM_VARIABLES 3
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define INA219_INC_CALC_VARIABLES 0
+/**@}*/
+
+/**
+ * @anchor sensor_ina219_config
+ * @name Configuration Defines
+ * Defines to set the address of the INA219.
+ */
+/**@{*/
+/// @brief The default address of the INA219
+#define INA219_ADDRESS_BASE 0x40
+/**@}*/
 
 /**
  * @anchor sensor_ina219_timing
@@ -192,9 +211,6 @@
 #define INA219_POWER_MW_DEFAULT_CODE "TIINA219Power"
 /**@}*/
 
-/// @brief The default address of the INA219
-#define INA219_ADDRESS_BASE 0x40
-
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
@@ -257,7 +273,7 @@ class TIINA219 : public Sensor {
      *
      * @note This does NOT include any wait for sensor readiness.
      *
-     * @return **bool** True if the wake function completed successfully.
+     * @return True if the wake function completed successfully.
      */
     bool wake(void) override;
     /**
@@ -268,7 +284,7 @@ class TIINA219 : public Sensor {
      * and modes for I2C).  This also sets the calibration range of the INA219,
      * and updates the #_sensorStatus.  The INA219 must be powered for setup.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     bool setup(void) override;
     /**
@@ -319,7 +335,7 @@ class TIINA219_Current : public Variable {
     explicit TIINA219_Current(
         TIINA219* parentSense, const char* uuid = "",
         const char* varCode = INA219_CURRENT_MA_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)INA219_CURRENT_MA_VAR_NUM,
+        : Variable(parentSense, (uint8_t)INA219_CURRENT_MA_VAR_NUM,
                    (uint8_t)INA219_CURRENT_MA_RESOLUTION,
                    INA219_CURRENT_MA_VAR_NAME, INA219_CURRENT_MA_UNIT_NAME,
                    varCode, uuid) {}
@@ -329,7 +345,7 @@ class TIINA219_Current : public Variable {
      * @note This must be tied with a parent TIINA219 before it can be used.
      */
     TIINA219_Current()
-        : Variable((const uint8_t)INA219_CURRENT_MA_VAR_NUM,
+        : Variable((uint8_t)INA219_CURRENT_MA_VAR_NUM,
                    (uint8_t)INA219_CURRENT_MA_RESOLUTION,
                    INA219_CURRENT_MA_VAR_NAME, INA219_CURRENT_MA_UNIT_NAME,
                    INA219_CURRENT_MA_DEFAULT_CODE) {}
@@ -362,7 +378,7 @@ class TIINA219_Voltage : public Variable {
     explicit TIINA219_Voltage(
         TIINA219* parentSense, const char* uuid = "",
         const char* varCode = INA219_BUS_VOLTAGE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)INA219_BUS_VOLTAGE_VAR_NUM,
+        : Variable(parentSense, (uint8_t)INA219_BUS_VOLTAGE_VAR_NUM,
                    (uint8_t)INA219_BUS_VOLTAGE_RESOLUTION,
                    INA219_BUS_VOLTAGE_VAR_NAME, INA219_BUS_VOLTAGE_UNIT_NAME,
                    varCode, uuid) {}
@@ -372,7 +388,7 @@ class TIINA219_Voltage : public Variable {
      * @note This must be tied with a parent TIINA219 before it can be used.
      */
     TIINA219_Voltage()
-        : Variable((const uint8_t)INA219_BUS_VOLTAGE_VAR_NUM,
+        : Variable((uint8_t)INA219_BUS_VOLTAGE_VAR_NUM,
                    (uint8_t)INA219_BUS_VOLTAGE_RESOLUTION,
                    INA219_BUS_VOLTAGE_VAR_NAME, INA219_BUS_VOLTAGE_UNIT_NAME,
                    INA219_BUS_VOLTAGE_DEFAULT_CODE) {}
@@ -413,7 +429,7 @@ class TIINA219_Power : public Variable {
      */
     explicit TIINA219_Power(TIINA219* parentSense, const char* uuid = "",
                             const char* varCode = INA219_POWER_MW_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)INA219_POWER_MW_VAR_NUM,
+        : Variable(parentSense, (uint8_t)INA219_POWER_MW_VAR_NUM,
                    (uint8_t)INA219_POWER_MW_RESOLUTION,
                    INA219_POWER_MW_VAR_NAME, INA219_POWER_MW_UNIT_NAME, varCode,
                    uuid) {}
@@ -423,7 +439,7 @@ class TIINA219_Power : public Variable {
      * @note This must be tied with a parent TIINA219 before it can be used.
      */
     TIINA219_Power()
-        : Variable((const uint8_t)INA219_POWER_MW_VAR_NUM,
+        : Variable((uint8_t)INA219_POWER_MW_VAR_NUM,
                    (uint8_t)INA219_POWER_MW_RESOLUTION,
                    INA219_POWER_MW_VAR_NAME, INA219_POWER_MW_UNIT_NAME,
                    INA219_POWER_MW_DEFAULT_CODE) {}

@@ -54,7 +54,6 @@
 // Included Dependencies
 #include "sensors/KellerParent.h"
 
-// Sensor Specific Defines
 /** @ingroup sensor_acculevel */
 /**@{*/
 
@@ -177,7 +176,9 @@ class KellerAcculevel : public KellerParent {
               measurementsToAverage, Acculevel_kellerModel, "KellerAcculevel",
               KELLER_NUM_VARIABLES, ACCULEVEL_WARM_UP_TIME_MS,
               ACCULEVEL_STABILIZATION_TIME_MS, ACCULEVEL_MEASUREMENT_TIME_MS) {}
-    // Destructor
+    /**
+     * @brief Destroy the Keller Acculevel object
+     */
     ~KellerAcculevel() {}
 };
 
@@ -206,7 +207,7 @@ class KellerAcculevel_Pressure : public Variable {
     explicit KellerAcculevel_Pressure(
         KellerAcculevel* parentSense, const char* uuid = "",
         const char* varCode = ACCULEVEL_PRESSURE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)KELLER_PRESSURE_VAR_NUM,
+        : Variable(parentSense, (uint8_t)KELLER_PRESSURE_VAR_NUM,
                    (uint8_t)ACCULEVEL_PRESSURE_RESOLUTION,
                    KELLER_PRESSURE_VAR_NAME, KELLER_PRESSURE_UNIT_NAME, varCode,
                    uuid) {}
@@ -217,7 +218,7 @@ class KellerAcculevel_Pressure : public Variable {
      * used.
      */
     KellerAcculevel_Pressure()
-        : Variable((const uint8_t)KELLER_PRESSURE_VAR_NUM,
+        : Variable((uint8_t)KELLER_PRESSURE_VAR_NUM,
                    (uint8_t)ACCULEVEL_PRESSURE_RESOLUTION,
                    KELLER_PRESSURE_VAR_NAME, KELLER_PRESSURE_UNIT_NAME,
                    ACCULEVEL_PRESSURE_DEFAULT_CODE) {}
@@ -252,7 +253,7 @@ class KellerAcculevel_Temp : public Variable {
     explicit KellerAcculevel_Temp(
         KellerAcculevel* parentSense, const char* uuid = "",
         const char* varCode = ACCULEVEL_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)KELLER_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)KELLER_TEMP_VAR_NUM,
                    (uint8_t)ACCULEVEL_TEMP_RESOLUTION, KELLER_TEMP_VAR_NAME,
                    KELLER_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -262,7 +263,7 @@ class KellerAcculevel_Temp : public Variable {
      * used.
      */
     KellerAcculevel_Temp()
-        : Variable((const uint8_t)KELLER_TEMP_VAR_NUM,
+        : Variable((uint8_t)KELLER_TEMP_VAR_NUM,
                    (uint8_t)ACCULEVEL_TEMP_RESOLUTION, KELLER_TEMP_VAR_NAME,
                    KELLER_TEMP_UNIT_NAME, ACCULEVEL_TEMP_DEFAULT_CODE) {}
     /**
@@ -296,7 +297,7 @@ class KellerAcculevel_Height : public Variable {
     explicit KellerAcculevel_Height(
         KellerAcculevel* parentSense, const char* uuid = "",
         const char* varCode = ACCULEVEL_HEIGHT_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)KELLER_HEIGHT_VAR_NUM,
+        : Variable(parentSense, (uint8_t)KELLER_HEIGHT_VAR_NUM,
                    (uint8_t)ACCULEVEL_HEIGHT_RESOLUTION, KELLER_HEIGHT_VAR_NAME,
                    KELLER_HEIGHT_UNIT_NAME, varCode, uuid) {}
     /**
@@ -306,7 +307,7 @@ class KellerAcculevel_Height : public Variable {
      * used.
      */
     KellerAcculevel_Height()
-        : Variable((const uint8_t)KELLER_HEIGHT_VAR_NUM,
+        : Variable((uint8_t)KELLER_HEIGHT_VAR_NUM,
                    (uint8_t)ACCULEVEL_HEIGHT_RESOLUTION, KELLER_HEIGHT_VAR_NAME,
                    KELLER_HEIGHT_UNIT_NAME, ACCULEVEL_HEIGHT_DEFAULT_CODE) {}
     /**

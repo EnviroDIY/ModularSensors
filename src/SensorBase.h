@@ -24,6 +24,9 @@
 #ifndef SRC_SENSORBASE_H_
 #define SRC_SENSORBASE_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_SENSORBASE_DEBUG
 
@@ -35,14 +38,6 @@
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 #include <pins_arduino.h>
-
-#ifndef MAX_NUMBER_VARS
-/**
- * @brief The largest number of variables from a single sensor
- */
-#define MAX_NUMBER_VARS 21
-// GroPoint Profile GPLP-8 has 8 Moisture and 13 Temperature values
-#endif
 
 class Variable;  // Forward declaration
 
@@ -126,26 +121,26 @@ class Sensor {
      * @note This is NOT the position of the sensor in the environment, merely
      * how it is attached to the mcu.
      *
-     * @return **String** Text describing how the sensor is attached to the mcu.
+     * @return Text describing how the sensor is attached to the mcu.
      */
     virtual String getSensorLocation(void);
     /**
      * @brief Get the name of the sensor.
      *
-     * @return **String** The sensor name as given in the constructor.
+     * @return The sensor name as given in the constructor.
      */
     virtual String getSensorName(void);
     /**
      * @brief Concatentate and returns the name and location of the sensor.
      *
-     * @return **String** A concatenation of the sensor name and its "location"
+     * @return A concatenation of the sensor name and its "location"
      * - how it is connected to the mcu.
      */
     String getSensorNameAndLocation(void);
     /**
      * @brief Get the pin number controlling sensor power.
      *
-     * @return **int8_t** The pin on the mcu controlling power to the sensor.
+     * @return The pin on the mcu controlling power to the sensor.
      */
     virtual int8_t getPowerPin(void);
 
@@ -161,7 +156,7 @@ class Sensor {
     /**
      * @brief Get the number of measurements to average.
      *
-     * @return **uint8_t** The number of readings to take and average to create
+     * @return The number of readings to take and average to create
      * a result from the sensor.
      *
      * @copydetails _measurementsToAverage
@@ -226,7 +221,7 @@ class Sensor {
      * This sets the pin modes of the _powerPin and _dataPin, updates
      * #_sensorStatus, and returns true.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     virtual bool setup(void);
 
@@ -247,7 +242,7 @@ class Sensor {
      * used.  To work with many sensors together, use the VariableArray class
      * which optimizes the timing and waits for many sensors working together.
      *
-     * @return **bool** True if all steps of the sensor update completed
+     * @return True if all steps of the sensor update completed
      * successfully.
      */
     virtual bool update(void);
@@ -277,7 +272,7 @@ class Sensor {
      *
      * @note This does NOT include any wait for sensor readiness.
      *
-     * @return **bool** True if the wake function completed successfully.
+     * @return True if the wake function completed successfully.
      */
     virtual bool wake(void);
     /**
@@ -287,7 +282,7 @@ class Sensor {
      *
      * @note This does NOT power down the sensor!
      *
-     * @return **bool** True if the sleep function completed successfully.
+     * @return True if the sleep function completed successfully.
      */
     virtual bool sleep(void);
 
@@ -300,7 +295,7 @@ class Sensor {
      * @note This function does NOT include any waiting for the sensor to be
      * warmed up or stable!
      *
-     * @return **bool** True if the start measurement function completed
+     * @return True if the start measurement function completed
      * successfully.
      */
     virtual bool startSingleMeasurement(void);
@@ -317,7 +312,7 @@ class Sensor {
      * @note This function does NOT include any waiting for the sensor complete
      * a measurement.
      *
-     * @return **bool** True if the function completed successfully.
+     * @return True if the function completed successfully.
      */
     virtual bool addSingleMeasurementResult(void) = 0;
 
@@ -350,6 +345,9 @@ class Sensor {
     /**
      * @brief Average the results of all measurements by dividing the sum of
      * all measurements by the number of measurements taken.
+     *
+     * @param resultNumber The position of the result within the result array.
+     * @param resultValue The value of the result.
      */
     void verifyAndAddMeasurementResult(uint8_t resultNumber,
                                        int32_t resultValue);
@@ -379,7 +377,7 @@ class Sensor {
      * @brief Check if the #_powerPin is currently high.
      *
      * @param debug True to output the result to the debugging Serial
-     * @return **bool** True indicates the #_powerPin is currently `HIGH`.
+     * @return True indicates the #_powerPin is currently `HIGH`.
      */
     bool checkPowerOn(bool debug = false);
     /**
@@ -387,7 +385,7 @@ class Sensor {
      * receiving power and being ready to respond to logger commands.
      *
      * @param debug True to output the result to the debugging Serial
-     * @return **bool** True indicates that enough time has passed that the
+     * @return True indicates that enough time has passed that the
      * sensor should be ready to respond to commands.
      *
      * @note A true response does _NOT_ indicate that the sensor will respond to
@@ -405,7 +403,7 @@ class Sensor {
      * being awoken/activated and being ready to output stable values.
      *
      * @param debug True to output the result to the debugging Serial
-     * @return **bool** True indicates that enough time has passed that the
+     * @return True indicates that enough time has passed that the
      * sensor should have stabilized.
      *
      * @note A true response does _NOT_ indicate that the sensor is now giving
@@ -425,7 +423,7 @@ class Sensor {
      * is expected to be complete.
      *
      * @param debug True to output the result to the debugging Serial
-     * @return **bool** True indicates that enough time has passed the
+     * @return True indicates that enough time has passed the
      * measurement should have completed
      *
      * @note A true response does _NOT_ indicate that the sensor will now
@@ -541,10 +539,10 @@ class Sensor {
     uint8_t _sensorStatus = 0;
 
     /**
-     * @brief An array for each sensor containing the variable objects tied to
-     * that sensor.  The #MAX_NUMBER_VARS cannot be determined on a per-sensor
-     * basis, because of the way memory is used on an Arduino.  It must be
-     * defined once for the whole class.
+     * @brief An array for each sensor containing pointers to the variable
+     * objects tied to that sensor.  The #MAX_NUMBER_VARS cannot be determined
+     * on a per-sensor basis, because of the way memory is used on an Arduino.
+     * It must be defined once for the whole class.
      */
     Variable* variables[MAX_NUMBER_VARS];
 };

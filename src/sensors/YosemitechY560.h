@@ -57,11 +57,17 @@
 /** @ingroup sensor_y560 */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_y560_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by a Yosemitch Y560
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the Y560 can report 3 values.
 #define Y560_NUM_VARIABLES 3
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define Y560_INC_CALC_VARIABLES 0
+/**@}*/
 
 /**
  * @anchor sensor_y560_timing
@@ -243,7 +249,7 @@ class YosemitechY560_NH4_N : public Variable {
     explicit YosemitechY560_NH4_N(YosemitechY560* parentSense,
                                   const char*     uuid = "",
                                   const char* varCode = Y560_NH4_N_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)Y560_NH4_N_VAR_NUM,
+        : Variable(parentSense, (uint8_t)Y560_NH4_N_VAR_NUM,
                    (const uint8_t)Y560_NH4_N_RESOLUTION, Y560_NH4_N_VAR_NAME,
                    Y560_NH4_N_UNIT_NAME, varCode, uuid) {}
     /**
@@ -253,7 +259,7 @@ class YosemitechY560_NH4_N : public Variable {
      * used.
      */
     YosemitechY560_NH4_N()
-        : Variable((const uint8_t)Y560_NH4_N_VAR_NUM,
+        : Variable((uint8_t)Y560_NH4_N_VAR_NUM,
                    (const uint8_t)Y560_NH4_N_RESOLUTION, Y560_NH4_N_VAR_NAME,
                    Y560_NH4_N_UNIT_NAME, Y560_NH4_N_DEFAULT_CODE) {}
     /**
@@ -287,7 +293,7 @@ class YosemitechY560_Temp : public Variable {
     explicit YosemitechY560_Temp(YosemitechY560* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = Y560_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)Y560_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)Y560_TEMP_VAR_NUM,
                    (uint8_t)Y560_TEMP_RESOLUTION, Y560_TEMP_VAR_NAME,
                    Y560_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -297,9 +303,9 @@ class YosemitechY560_Temp : public Variable {
      * used.
      */
     YosemitechY560_Temp()
-        : Variable((const uint8_t)Y560_TEMP_VAR_NUM,
-                   (uint8_t)Y560_TEMP_RESOLUTION, Y560_TEMP_VAR_NAME,
-                   Y560_TEMP_UNIT_NAME, Y560_TEMP_DEFAULT_CODE) {}
+        : Variable((uint8_t)Y560_TEMP_VAR_NUM, (uint8_t)Y560_TEMP_RESOLUTION,
+                   Y560_TEMP_VAR_NAME, Y560_TEMP_UNIT_NAME,
+                   Y560_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY560_Temp object - no action needed.
      */
@@ -331,7 +337,7 @@ class YosemitechY560_pH : public Variable {
     explicit YosemitechY560_pH(YosemitechY560* parentSense,
                                const char*     uuid    = "",
                                const char*     varCode = Y560_PH_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)Y560_PH_VAR_NUM,
+        : Variable(parentSense, (uint8_t)Y560_PH_VAR_NUM,
                    (uint8_t)Y560_PH_RESOLUTION, Y560_PH_VAR_NAME,
                    Y560_PH_UNIT_NAME, varCode, uuid) {}
     /**
@@ -341,7 +347,7 @@ class YosemitechY560_pH : public Variable {
      * used.
      */
     YosemitechY560_pH()
-        : Variable((const uint8_t)Y560_PH_VAR_NUM, (uint8_t)Y560_PH_RESOLUTION,
+        : Variable((uint8_t)Y560_PH_VAR_NUM, (uint8_t)Y560_PH_RESOLUTION,
                    Y560_PH_VAR_NAME, Y560_PH_UNIT_NAME, Y560_PH_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY560_pH object - no action needed.

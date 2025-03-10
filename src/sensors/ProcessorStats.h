@@ -56,6 +56,9 @@
 #ifndef SRC_SENSORS_PROCESSORSTATS_H_
 #define SRC_SENSORS_PROCESSORSTATS_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_PROCESSORSTATS_DEBUG
 
@@ -72,12 +75,17 @@
 /** @ingroup sensor_processor */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_processor_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the main processor
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the processor can report 3 values.
 #define PROCESSOR_NUM_VARIABLES 3
 /// @brief Sensor::_incCalcValues; sample number is (sort-of) calculated.
 #define PROCESSOR_INC_CALC_VARIABLES 1
-
+/**@}*/
 
 /**
  * @anchor sensor_processor_sensor_timing
@@ -192,11 +200,46 @@
 /**@}*/
 
 
+/**
+ * @anchor sensor_processor_reset
+ * @name Cause of last processor reset.
+ * The reset cause code variable from the processor/mcu.
+ * This value only changes when the board is reset.
+ * You must look up the meaning of the code in the processor datasheet.
+ *
+ * @warning Not provided by all processors.
+ *
+ * {{ @ref ProcessorStats_ResetCode::ProcessorStats_ResetCode }}
+ */
+/**@{*/
+/// @brief Decimals places in string representation; ram should have 0 -
+/// it's just a code
+#define PROCESSOR_RESET_RESOLUTION 0
+/// @brief Free RAM is stored in sensorValues[1]
+#define PROCESSOR_RESET_VAR_NUM 3
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "instrumentStatusCode"
+#define PROCESSOR_RESET_VAR_NAME "instrumentStatusCode"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "dimensionless"
+#define PROCESSOR_RESET_UNIT_NAME "dimensionless"
+/// @brief Default variable short code; "ResetCode"
+#define PROCESSOR_RESET_DEFAULT_CODE "ResetCode"
+/**@}*/
+
+/**
+ * @def LOGGER_BOARD
+ * @brief Pretty text for the board name derived from the board's compiler
+ * define.
+ */
+
 // EnviroDIY boards
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
-/// @brief Pretty text for the board name derived from the board's compiler
-/// define.
 #define LOGGER_BOARD "EnviroDIY Mayfly"
+#elif defined(ENVIRODIY_STONEFLY_M4)
+#define LOGGER_BOARD "EnviroDIY Stonefly"
 
 // Sodaq boards
 #elif defined(ARDUINO_SODAQ_EXPLORER)
@@ -217,6 +260,8 @@
 #define LOGGER_BOARD "SODAQ Moja"
 
 // Adafruit boards
+#elif defined(ARDUINO_AVR_FEATHER328P)
+#define LOGGER_BOARD "Feather 328p"
 #elif defined(ARDUINO_AVR_FEATHER32U4)
 #define LOGGER_BOARD "Feather 32u4"
 #elif defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS) || \
@@ -224,11 +269,20 @@
 #define LOGGER_BOARD "Feather M0 Express"
 #elif defined(ARDUINO_SAMD_FEATHER_M0) || defined(ADAFRUIT_FEATHER_M0)
 #define LOGGER_BOARD "Feather M0"
+#elif defined(ADAFRUIT_GRAND_CENTRAL_M4)
+#define LOGGER_BOARD "Grand Central"
+#elif defined(ADAFRUIT_FEATHER_M4_ADALOGGER)
+#define LOGGER_BOARD "Feather M4 Adalogger"
+#elif defined(ARDUINO_FEATHER_M4_CAN) || defined(ADAFRUIT_FEATHER_M4_CAN)
+#define LOGGER_BOARD "Feather M4 CAN"
+#elif defined(ARDUINO_FEATHER_M4) || defined(ADAFRUIT_FEATHER_M4_EXPRESS)
+#define LOGGER_BOARD "Feather M4"
 
 // Arduino boards
 #elif defined(ARDUINO_AVR_ADK)
 #define LOGGER_BOARD "Mega Adk"
-#elif defined(ARDUINO_AVR_BT)  // Bluetooth
+// Bluetooth
+#elif defined(ARDUINO_AVR_BT)
 #define LOGGER_BOARD "Bt"
 #elif defined(ARDUINO_AVR_DUEMILANOVE)
 #define LOGGER_BOARD "Duemilanove"
@@ -287,20 +341,72 @@
 class ProcessorStats : public Sensor {
  public:
     /**
-     * @brief Construct a new Processor Stats object.
+     * @brief Construct a new Processor Stats object for a **known, unmodified
+     * development board** using the standard manufacturer core for that board.
      *
-     * Need to know the Mayfly version because the battery resistor depends on
-     * it
+     * Boards that can be used with this constructor:
+     * - EnviroDIY
+     *   - Mayfly
+     *     - the version must be one of "v0.3", "v0.4", "v0.5", "v0.5b", "v1.0",
+     * or "v1.1"
+     *   - Stonefly
+     *     - the version must be "v0.1"
+     * - Adafruit
+     *   - Feather M0 variants (M0, M0 Express, M0 Adalogger, etc)
+     *   - Feather M4 variants
+     *   - Feather 328p variants
+     *     - WARNING: The processor isn't powerful enough for this library. To
+     * use it, you would have to strip the library down.
+     *   - Feather 32U4 variants (Basic proto, RadioFruit, BlueFruit, etc)
+     *     - WARNING: The processor isn't powerful enough for this library. To
+     * use it, you would have to strip the library down.
+     * - Sodaq
+     *   - Mbili
+     *   - Ndogo
+     *   - One
+     *     - the version must be "v0.1" or "v0.2"
+     *   - Autonomo
+     *     - the version must be "v0.1"
      *
-     * @param version The version of the MCU, if applicable.
-     * - For an EnviroDIY Mayfly, the version should be one of "v0.3", "v0.4",
-     * "v0.5", "v0.5b", "v1.0", or "v1.1".  There *is* a difference between some
-     * of the versions!
+     * @param version The version of the MCU, if applicable. This is used to
+     * fill in the correct battery connection information.
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
      *
-     * @note It is not possible to average more than one measurement for
-     * processor variables - it just doesn't make sense for them.
+     * @note The measurements to average will only be applied to the battery
+     * voltage measurement!
      */
-    explicit ProcessorStats(const char* version);
+    ProcessorStats(const char* version, uint8_t measurementsToAverage = 1);
+    /**
+     * @brief Construct a new Processor Stats object for any processor type
+     *
+     * @param boardName The name of the board. For many boards, you can use the
+     * defined LOGGER_BOARD value. Whatever you type here will be printed out as
+     * part of the location for the processor. It has no other effect.
+     * @param version The version of the MCU, if applicable. Whatever you type
+     * here will be printed out as part of the location for the processor. It
+     * has no other effect.
+     * @param batteryPin The analog pin on the processor connected to the
+     * battery.
+     * @param batteryMultiplier Any multiplier needed to convert raw battery
+     * readings from `analogRead()` into true battery values based on any
+     * resistors or voltage dividors
+     * @param analogResolution The analog read resolution of the processor in
+     * bits
+     * @param operatingVoltage The processor's operating voltage; most
+     * likely 3.3 or 5.
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
+     *
+     * @note The measurements to average will only be applied to the battery
+     * voltage measurement!
+     */
+    ProcessorStats(const char* boardName, const char* version,
+                   int8_t batteryPin, float batteryMultiplier,
+                   int8_t analogResolution, float operatingVoltage,
+                   uint8_t measurementsToAverage = 1);
     /**
      * @brief Destroy the Processor Stats object
      */
@@ -318,10 +424,40 @@ class ProcessorStats : public Sensor {
      */
     bool addSingleMeasurementResult(void) override;
 
+    /**
+     * @brief A helper to get battery voltage as measured by a direct connection
+     * between the battery and a processor analog pin.
+     *
+     * @return The battery voltage in volts
+     */
+    float getBatteryVoltage(void);
+
+    /**
+     * @brief Get the processor code for the last reset cause
+     *
+     * @return The processor code for the last reset cause
+     */
+    uint8_t getLastResetCode(void);
+    /**
+     * @brief Get the cause of the last reset as a string description.
+     *
+     * @return A string describing the last reset cause
+     */
+    String getLastResetCause(void);
+
  private:
-    const char* _version;
-    int8_t      _batteryPin;
-    int16_t     sampNum = 0;
+    const char* _version;      ///< Internal reference to the board version
+    const char* _boardName;    ///< Internal reference to the board name
+    int8_t      _batteryPin;   ///< Internal reference to the battery pin
+    float _batteryMultiplier;  ///< Internal reference to any multiplier needed
+                               ///< to convert raw battery readings into true
+                               ///< battery values based on any resistors or
+                               ///< voltage dividors
+    int8_t _analogResolution;  ///< Internal reference to the analog read
+                               ///< resolution of the processor in bits
+    float _operatingVoltage;   ///< Internal reference to processor's operating
+                               ///< voltage
+    int16_t sampNum = 0;       ///< The current sample number
 };
 
 
@@ -347,7 +483,7 @@ class ProcessorStats_Battery : public Variable {
     explicit ProcessorStats_Battery(
         ProcessorStats* parentSense, const char* uuid = "",
         const char* varCode = PROCESSOR_BATTERY_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)PROCESSOR_BATTERY_VAR_NUM,
+        : Variable(parentSense, (uint8_t)PROCESSOR_BATTERY_VAR_NUM,
                    (uint8_t)PROCESSOR_BATTERY_RESOLUTION,
                    PROCESSOR_BATTERY_VAR_NAME, PROCESSOR_BATTERY_UNIT_NAME,
                    varCode, uuid) {}
@@ -358,7 +494,7 @@ class ProcessorStats_Battery : public Variable {
      * used.
      */
     ProcessorStats_Battery()
-        : Variable((const uint8_t)PROCESSOR_BATTERY_VAR_NUM,
+        : Variable((uint8_t)PROCESSOR_BATTERY_VAR_NUM,
                    (uint8_t)PROCESSOR_BATTERY_RESOLUTION,
                    PROCESSOR_BATTERY_VAR_NAME, PROCESSOR_BATTERY_UNIT_NAME,
                    PROCESSOR_BATTERY_DEFAULT_CODE) {}
@@ -377,6 +513,8 @@ class ProcessorStats_Battery : public Variable {
  * This is just a diagnostic value.  This number _**should always remain the
  * same for a single logger program**_.  If this number is not constant over
  * time, there is a memory leak and something wrong with your logging program.
+ * There is almost never a reason to store or transmit this value, but it is
+ * helpful to check for debugging.
  *
  * @ingroup sensor_processor
  */
@@ -398,7 +536,7 @@ class ProcessorStats_FreeRam : public Variable {
     explicit ProcessorStats_FreeRam(
         ProcessorStats* parentSense, const char* uuid = "",
         const char* varCode = PROCESSOR_RAM_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)PROCESSOR_RAM_VAR_NUM,
+        : Variable(parentSense, (uint8_t)PROCESSOR_RAM_VAR_NUM,
                    (uint8_t)PROCESSOR_RAM_RESOLUTION, PROCESSOR_RAM_VAR_NAME,
                    PROCESSOR_RAM_UNIT_NAME, varCode, uuid) {}
     /**
@@ -408,7 +546,7 @@ class ProcessorStats_FreeRam : public Variable {
      * used.
      */
     ProcessorStats_FreeRam()
-        : Variable((const uint8_t)PROCESSOR_RAM_VAR_NUM,
+        : Variable((uint8_t)PROCESSOR_RAM_VAR_NUM,
                    (uint8_t)PROCESSOR_RAM_RESOLUTION, PROCESSOR_RAM_VAR_NAME,
                    PROCESSOR_RAM_UNIT_NAME, PROCESSOR_RAM_DEFAULT_CODE) {}
     /**
@@ -445,7 +583,7 @@ class ProcessorStats_SampleNumber : public Variable {
     explicit ProcessorStats_SampleNumber(
         ProcessorStats* parentSense, const char* uuid = "",
         const char* varCode = PROCESSOR_SAMPNUM_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)PROCESSOR_SAMPNUM_VAR_NUM,
+        : Variable(parentSense, (uint8_t)PROCESSOR_SAMPNUM_VAR_NUM,
                    (uint8_t)PROCESSOR_SAMPNUM_RESOLUTION,
                    PROCESSOR_SAMPNUM_VAR_NAME, PROCESSOR_SAMPNUM_UNIT_NAME,
                    varCode, uuid) {}
@@ -456,7 +594,7 @@ class ProcessorStats_SampleNumber : public Variable {
      * used.
      */
     ProcessorStats_SampleNumber()
-        : Variable((const uint8_t)PROCESSOR_SAMPNUM_VAR_NUM,
+        : Variable((uint8_t)PROCESSOR_SAMPNUM_VAR_NUM,
                    (uint8_t)PROCESSOR_SAMPNUM_RESOLUTION,
                    PROCESSOR_SAMPNUM_VAR_NAME, PROCESSOR_SAMPNUM_UNIT_NAME,
                    PROCESSOR_SAMPNUM_DEFAULT_CODE) {}
@@ -465,6 +603,56 @@ class ProcessorStats_SampleNumber : public Variable {
      * needed.
      */
     ~ProcessorStats_SampleNumber() {}
+};
+
+
+/**
+ * @brief The Variable sub-class used for the
+ * [reset cause](@ref sensor_processor_reset) recorded by the MCU.
+ *
+ * This is a code for the last processor reset cause.  This number _**only
+ * changes when the processor resets**_.  There is almost never a reason to
+ * store or transmit this value, but it is helpful to check for debugging.
+ *
+ * @ingroup sensor_processor
+ */
+class ProcessorStats_ResetCode : public Variable {
+ public:
+    /**
+     * @brief Construct a new ProcessorStats_ResetCode object.
+     *
+     * @param parentSense The parent ProcessorStats providing the result
+     * values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of "ResetCode".
+     * @note While this variable is included, the value of it should never
+     * change.  If it does change, that's a sign of a memory leak in your
+     * program which will eventually cause your board to crash.
+     */
+    explicit ProcessorStats_ResetCode(
+        ProcessorStats* parentSense, const char* uuid = "",
+        const char* varCode = PROCESSOR_RESET_DEFAULT_CODE)
+        : Variable(parentSense, (uint8_t)PROCESSOR_RESET_VAR_NUM,
+                   (uint8_t)PROCESSOR_RESET_RESOLUTION,
+                   PROCESSOR_RESET_VAR_NAME, PROCESSOR_RESET_UNIT_NAME, varCode,
+                   uuid) {}
+    /**
+     * @brief Construct a new ProcessorStats_ResetCode object.
+     *
+     * @note This must be tied with a parent ProcessorStats before it can be
+     * used.
+     */
+    ProcessorStats_ResetCode()
+        : Variable((uint8_t)PROCESSOR_RESET_VAR_NUM,
+                   (uint8_t)PROCESSOR_RESET_RESOLUTION,
+                   PROCESSOR_RESET_VAR_NAME, PROCESSOR_RESET_UNIT_NAME,
+                   PROCESSOR_RESET_DEFAULT_CODE) {}
+    /**
+     * @brief Destroy the ProcessorStats_ResetCode object - no action needed.
+     */
+    ~ProcessorStats_ResetCode() {}
 };
 /**@}*/
 #endif  // SRC_SENSORS_PROCESSORSTATS_H_

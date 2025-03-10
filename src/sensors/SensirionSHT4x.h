@@ -65,6 +65,9 @@
 #ifndef SRC_SENSORS_SENSIRIONSHT4X_H_
 #define SRC_SENSORS_SENSIRIONSHT4X_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_SENSIRION_SHT4X_DEBUG
 
@@ -82,11 +85,17 @@
 /** @ingroup sensor_sht4x */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_sht4x_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the SHT4x
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the SHT4x can report 2 values.
 #define SHT4X_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define SHT4X_INC_CALC_VARIABLES 0
+/**@}*/
 
 /**
  * @anchor sensor_sht4x_timing
@@ -245,7 +254,7 @@ class SensirionSHT4x : public Sensor {
     /**
      * @brief Report the I2C address of the SHT4x - which is always 0x44.
      *
-     * @return **String** Text describing how the sensor is attached to the mcu.
+     * @return Text describing how the sensor is attached to the mcu.
      */
     String getSensorLocation(void) override;
 
@@ -257,7 +266,7 @@ class SensirionSHT4x : public Sensor {
      * and modes for I2C), and updates the #_sensorStatus.  No sensor power is
      * required.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     bool setup(void) override;
 
@@ -312,7 +321,7 @@ class SensirionSHT4x_Humidity : public Variable {
     explicit SensirionSHT4x_Humidity(
         SensirionSHT4x* parentSense, const char* uuid = "",
         const char* varCode = SHT4X_HUMIDITY_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)SHT4X_HUMIDITY_VAR_NUM,
+        : Variable(parentSense, (uint8_t)SHT4X_HUMIDITY_VAR_NUM,
                    (uint8_t)SHT4X_HUMIDITY_RESOLUTION, SHT4X_HUMIDITY_VAR_NAME,
                    SHT4X_HUMIDITY_UNIT_NAME, varCode, uuid) {}
     /**
@@ -322,7 +331,7 @@ class SensirionSHT4x_Humidity : public Variable {
      * used.
      */
     SensirionSHT4x_Humidity()
-        : Variable((const uint8_t)SHT4X_HUMIDITY_VAR_NUM,
+        : Variable((uint8_t)SHT4X_HUMIDITY_VAR_NUM,
                    (uint8_t)SHT4X_HUMIDITY_RESOLUTION, SHT4X_HUMIDITY_VAR_NAME,
                    SHT4X_HUMIDITY_UNIT_NAME, SHT4X_HUMIDITY_DEFAULT_CODE) {}
     /**
@@ -354,7 +363,7 @@ class SensirionSHT4x_Temp : public Variable {
     explicit SensirionSHT4x_Temp(SensirionSHT4x* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = SHT4X_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)SHT4X_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)SHT4X_TEMP_VAR_NUM,
                    (uint8_t)SHT4X_TEMP_RESOLUTION, SHT4X_TEMP_VAR_NAME,
                    SHT4X_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -364,9 +373,9 @@ class SensirionSHT4x_Temp : public Variable {
      * used.
      */
     SensirionSHT4x_Temp()
-        : Variable((const uint8_t)SHT4X_TEMP_VAR_NUM,
-                   (uint8_t)SHT4X_TEMP_RESOLUTION, SHT4X_TEMP_VAR_NAME,
-                   SHT4X_TEMP_UNIT_NAME, SHT4X_TEMP_DEFAULT_CODE) {}
+        : Variable((uint8_t)SHT4X_TEMP_VAR_NUM, (uint8_t)SHT4X_TEMP_RESOLUTION,
+                   SHT4X_TEMP_VAR_NAME, SHT4X_TEMP_UNIT_NAME,
+                   SHT4X_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the SensirionSHT4x_Temp object - no action needed.
      */

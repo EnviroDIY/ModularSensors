@@ -76,11 +76,17 @@
 /** @ingroup sensor_hydros21 */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_hydros21_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the Meter Hydros 21
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the Hydros 21 can report 3 values.
 #define HYDROS21_NUM_VARIABLES 3
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define HYDROS21_INC_CALC_VARIABLES 0
+/**@}*/
 
 /**
  * @anchor sensor_hydros21_timing
@@ -298,7 +304,7 @@ class MeterHydros21_Cond : public Variable {
     explicit MeterHydros21_Cond(
         MeterHydros21* parentSense, const char* uuid = "",
         const char* varCode = HYDROS21_COND_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)HYDROS21_COND_VAR_NUM,
+        : Variable(parentSense, (uint8_t)HYDROS21_COND_VAR_NUM,
                    (uint8_t)HYDROS21_COND_RESOLUTION, HYDROS21_COND_VAR_NAME,
                    HYDROS21_COND_UNIT_NAME, varCode, uuid) {}
     /**
@@ -308,7 +314,7 @@ class MeterHydros21_Cond : public Variable {
      * used.
      */
     MeterHydros21_Cond()
-        : Variable((const uint8_t)HYDROS21_COND_VAR_NUM,
+        : Variable((uint8_t)HYDROS21_COND_VAR_NUM,
                    (uint8_t)HYDROS21_COND_RESOLUTION, HYDROS21_COND_VAR_NAME,
                    HYDROS21_COND_UNIT_NAME, HYDROS21_COND_DEFAULT_CODE) {}
     /**
@@ -341,7 +347,7 @@ class MeterHydros21_Temp : public Variable {
     explicit MeterHydros21_Temp(
         MeterHydros21* parentSense, const char* uuid = "",
         const char* varCode = HYDROS21_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)HYDROS21_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)HYDROS21_TEMP_VAR_NUM,
                    (uint8_t)HYDROS21_TEMP_RESOLUTION, HYDROS21_TEMP_VAR_NAME,
                    HYDROS21_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -351,7 +357,7 @@ class MeterHydros21_Temp : public Variable {
      * used.
      */
     MeterHydros21_Temp()
-        : Variable((const uint8_t)HYDROS21_TEMP_VAR_NUM,
+        : Variable((uint8_t)HYDROS21_TEMP_VAR_NUM,
                    (uint8_t)HYDROS21_TEMP_RESOLUTION, HYDROS21_TEMP_VAR_NAME,
                    HYDROS21_TEMP_UNIT_NAME, HYDROS21_TEMP_DEFAULT_CODE) {}
     /**
@@ -384,7 +390,7 @@ class MeterHydros21_Depth : public Variable {
     explicit MeterHydros21_Depth(
         MeterHydros21* parentSense, const char* uuid = "",
         const char* varCode = HYDROS21_DEPTH_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)HYDROS21_DEPTH_VAR_NUM,
+        : Variable(parentSense, (uint8_t)HYDROS21_DEPTH_VAR_NUM,
                    (uint8_t)HYDROS21_DEPTH_RESOLUTION, HYDROS21_DEPTH_VAR_NAME,
                    HYDROS21_DEPTH_UNIT_NAME, varCode, uuid) {}
     /**
@@ -394,7 +400,7 @@ class MeterHydros21_Depth : public Variable {
      * used.
      */
     MeterHydros21_Depth()
-        : Variable((const uint8_t)HYDROS21_DEPTH_VAR_NUM,
+        : Variable((uint8_t)HYDROS21_DEPTH_VAR_NUM,
                    (uint8_t)HYDROS21_DEPTH_RESOLUTION, HYDROS21_DEPTH_VAR_NAME,
                    HYDROS21_DEPTH_UNIT_NAME, HYDROS21_DEPTH_DEFAULT_CODE) {}
     /**

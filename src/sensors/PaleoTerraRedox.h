@@ -61,6 +61,9 @@
 #ifndef SRC_SENSORS_PALEOTERRAREDOX_H_
 #define SRC_SENSORS_PALEOTERRAREDOX_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_PALEOTERRAREDOX_DEBUG
 
@@ -75,19 +78,35 @@
 #include "SensorBase.h"
 #include <Wire.h>
 
-#if defined MS_PALEOTERRA_SOFTWAREWIRE
+#if defined(MS_PALEOTERRA_SOFTWAREWIRE)
 #include <SoftwareWire.h>  // Testato's SoftwareWire
 #endif
 
 /** @ingroup sensor_pt_redox */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_pt_redox_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by PaleoTerra redox sensor
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the PaleoTerra redox sensor can report 1
 /// value.
 #define PTR_NUM_VARIABLES 1
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define PTR_INC_CALC_VARIABLES 0
+/**@}*/
+
+/**
+ * @anchor sensor_pt_redox_config
+ * @name Configuration Defines
+ * Defines to set the address of the PaleoTerra redox sensor.
+ */
+/**@{*/
+/// @brief The default I2C address of the PaleoTerra redox sensor
+#define MCP3421_ADR 0x68
+/**@}*/
 
 /**
  * @anchor sensor_pt_redox_timing
@@ -134,9 +153,6 @@
 /// @brief Default variable short code; "PTRVoltage"
 #define PTR_VOLTAGE_DEFAULT_CODE "PTRVoltage"
 /**@}*/
-
-/// @brief The default I2C address of the PaleoTerra redox sensor
-#define MCP3421_ADR 0x68
 
 // The main class for the PaleoTerra Redox Sensor
 /* clang-format off */
@@ -241,7 +257,7 @@ class PaleoTerraRedox : public Sensor {
      * This begins the Wire library (sets pin levels and modes for I2C) and
      * updates the #_sensorStatus.  No sensor power is required.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     bool setup(void) override;
     /**
@@ -259,7 +275,7 @@ class PaleoTerraRedox : public Sensor {
      * @brief The I2C address of the redox sensor.
      */
     uint8_t _i2cAddressHex;
-#if defined MS_PALEOTERRA_SOFTWAREWIRE
+#if defined(MS_PALEOTERRA_SOFTWAREWIRE)
     /**
      * @brief An internal reference to the SoftwareWire instance.
      */
@@ -301,7 +317,7 @@ class PaleoTerraRedox_Voltage : public Variable {
     explicit PaleoTerraRedox_Voltage(
         Sensor* parentSense, const char* uuid = "",
         const char* varCode = PTR_VOLTAGE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)PTR_VOLTAGE_VAR_NUM,
+        : Variable(parentSense, (uint8_t)PTR_VOLTAGE_VAR_NUM,
                    (uint8_t)PTR_VOLTAGE_RESOLUTION, PTR_VOLTAGE_VAR_NAME,
                    PTR_VOLTAGE_UNIT_NAME, varCode, uuid) {}
     /**
@@ -311,7 +327,7 @@ class PaleoTerraRedox_Voltage : public Variable {
      * used.
      */
     PaleoTerraRedox_Voltage()
-        : Variable((const uint8_t)PTR_VOLTAGE_VAR_NUM,
+        : Variable((uint8_t)PTR_VOLTAGE_VAR_NUM,
                    (uint8_t)PTR_VOLTAGE_RESOLUTION, PTR_VOLTAGE_VAR_NAME,
                    PTR_VOLTAGE_UNIT_NAME, PTR_VOLTAGE_DEFAULT_CODE) {}
     /**

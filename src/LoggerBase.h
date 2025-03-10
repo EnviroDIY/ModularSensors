@@ -15,11 +15,12 @@
 #ifndef SRC_LOGGERBASE_H_
 #define SRC_LOGGERBASE_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_LOGGERBASE_DEBUG
-
-// Set default clock for SAMD21 as DS3231 instead of built-in RTC
-#define MS_SAMD_DS3231
+// #define MS_LOGGERBASE_DEBUG_DEEP
 
 #ifdef MS_LOGGERBASE_DEBUG
 #define MS_DEBUGGING_STD "LoggerBase"
@@ -35,41 +36,29 @@
 #undef MS_DEBUGGING_DEEP
 #include "VariableArray.h"
 #include "LoggerModem.h"
+#include "ClockSupport.h"
+#include <Wire.h>
+// // For time
+// #include <time.h>
 
 // Bring in the libraries to handle the processor sleep/standby modes
 // The SAMD library can also the built-in clock on those modules
-#if defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAMD_ZERO)
-#if not defined(MS_SAMD_DS3231)
-#include <RTCZero.h>
-#endif
+/**
+ * @def extendedWatchDog
+ *
+ * A define to simplify inclusing of either a AVR or SAMD based watchdog
+ */
+#if defined(ARDUINO_ARCH_SAMD)
 #include "WatchDogs/WatchDogSAMD.h"
+#define extendedWatchDog extendedWatchDogSAMD
 #elif defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
 #include <avr/power.h>
 #include <avr/sleep.h>
 #include "WatchDogs/WatchDogAVR.h"
-#endif
-
-// Bring in the library to communicate with an external high-precision real time
-// clock This also implements a needed date/time class
-#include <Sodaq_DS3231.h>
-
-#ifndef EPOCH_TIME_OFF
-/**
- * @brief January 1, 2000 00:00:00 in "epoch" time
- *
- * Need this b/c the date/time class in Sodaq_DS3231 treats a 32-bit long
- * timestamp as time from 2000-jan-01 00:00:00 instead of the standard (unix)
- * epoch beginning 1970-jan-01 00:00:00.
- */
-#define EPOCH_TIME_OFF 946684800
+#define extendedWatchDog extendedWatchDogAVR
 #endif
 
 #include <SdFat.h>  // To communicate with the SD card
-
-/**
- * @brief The largest number of variables from a single sensor
- */
-#define MAX_NUMBER_SENDERS 4
 
 
 class dataPublisher;  // Forward declaration
@@ -113,9 +102,9 @@ class Logger {
      * @param mcuWakePin The pin used to wake the logger from deep sleep -
      * expected to be attached to an alarm pin of the real-time clock.  Use a
      * value of -1 to prevent the board from sleeping.
-     * @param inputArray A variableArray object instance providing data to be
-     * logged.  This is NOT an array of variables, but an object of the variable
-     * array class.
+     * @param inputArray A pointer to a variableArray object instance providing
+     * data to be logged.  This is NOT an array of variables, but an object of
+     * the variable array class.
      */
     Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
            int8_t SDCardSSPin, int8_t mcuWakePin, VariableArray* inputArray);
@@ -165,7 +154,7 @@ class Logger {
     /**
      * @brief Get the Logger ID.
      *
-     * @return **const char\*** A pointer to the logger ID
+     * @return A pointer to the logger ID
      */
     const char* getLoggerID() {
         return _loggerID;
@@ -181,10 +170,29 @@ class Logger {
     /**
      * @brief Get the Logging Interval.
      *
-     * @return **uint16_t** The logging interval in minutes
+     * @return The logging interval in minutes
      */
     uint16_t getLoggingInterval() {
         return _loggingIntervalMinutes;
+    }
+
+    /**
+     * @brief Set the number of 1-minute intervals at the start before logging
+     * on the regular logging interval.
+     *
+     * @param initialShortIntervals The number of 1-minute intervals at
+     * the start before logging on the regular logging interval
+     */
+    void setinitialShortIntervals(uint16_t initialShortIntervals);
+    /**
+     * @brief Get the number of 1-minute intervals at the start before logging
+     * on the regular logging interval
+     *
+     * @return The number of 1-minute intervals at the start before logging
+     * on the regular logging interval
+     */
+    uint16_t getinitialShortIntervals() {
+        return _initialShortIntervals;
     }
 
     /**
@@ -197,7 +205,7 @@ class Logger {
     /**
      * @brief Get the Sampling Feature UUID.
      *
-     * @return **const char\*** The sampling feature UUID
+     * @return The sampling feature UUID
      */
     const char* getSamplingFeatureUUID() {
         return _samplingFeatureUUID;
@@ -283,7 +291,9 @@ class Logger {
      * Because this sets the pin mode, this function should only be called
      * during the `setup()` or `loop()` portion of an Arduino program.
      *
-     * @note  This sets the pin mode but does NOT enable the interrupt!
+     * @note This sets the pin mode but does NOT enable the interrupt! The
+     * interrupt is enabled with Logger::enableLoggerInterrupts(), called
+     * internally during Logger::begin().
      *
      * @param mcuWakePin The pin on the mcu to be used to wake the mcu from deep
      * sleep.
@@ -334,6 +344,10 @@ class Logger {
      * to the main output destination (ie, Serial).  Testing mode cannot be
      * entered while the logger is taking a scheduled measureemnt.  No data is
      * written to the SD card in testing mode.
+     *
+     * @note This sets the pin mode but does NOT enable the interrupt! The
+     * interrupt is enabled with Logger::enableLoggerInterrupts(), called
+     * internally during Logger::begin().
      *
      * @param buttonPin The pin on the mcu to listen to for a value-change
      * interrupt.
@@ -403,7 +417,7 @@ class Logger {
      * @brief The initial number of samples to log at an interval of 1 minute
      * for fast field verification
      */
-    uint8_t _initialShortIntervals = 0;
+    uint8_t _initialShortIntervals = 5;
     /**
      * @brief Digital pin number on the mcu controlling the SD card slave
      * select.
@@ -441,12 +455,47 @@ class Logger {
      * Expected to be connected to a user button.
      */
     int8_t _buttonPin = -1;
+    /**
+     * @brief The pin mode used for interrupts on the testing (button) pin.
+     *
+     * Must be either `INPUT` OR `INPUT_PULLUP` with an AVR board.  On a SAM/D
+     * board `INPUT_PULLDOWN` is also an option.  Optional with a default value
+     * of `INPUT_PULLUP`.
+     */
+    uint8_t _buttonPinMode = INPUT_PULLUP;
 
     /**
      * @brief The sampling feature UUID
      */
     const char* _samplingFeatureUUID = nullptr;
     // ^^ Start with no feature UUID
+
+#if !defined(MS_USE_RTC_ZERO)
+    /**
+     * @brief Attaches the RTC ISR to the wake pin.
+     *
+     * @warning The RTC ISR **CANNOT** be attached to the wake pin before the
+     * RTC is begun! Initializing/resetting the RTC can trigger an interrupt on
+     * the wake pin. That triggered interrupt will attempt to change the RTC's
+     * interrupt flag before the RTC is fully initialized, causing a crash or
+     * confused behavior.  This function is protected to protect users from
+     * calling it in the wrong order.
+     *
+     * @note This function is excluded when using the built in RTC on the SAMD21
+     * (ie `#define MS_USE_RTC_ZERO`) because there is no pin involved
+     */
+    void enableRTCPinISR();
+#endif
+
+    /**
+     * @brief Attaches the testing ISR to the button pin.
+     *
+     * @warning The testing ISR shouldn't be attached before the sensors have
+     * been begun.  Doing so may cause strange results.  This function is
+     * protected to protect users from calling it in the wrong order.
+     *
+     */
+    void enableTestingISR();
     /**@}*/
 
     // ===================================================================== //
@@ -462,15 +511,15 @@ class Logger {
     /**
      * @brief Set the variable array object.
      *
-     * @param inputArray A variable array object instance.  This is NOT an array
-     * of variables, but an object of the variable array class.
+     * @param inputArray A pointer to a variable array object instance.  This is
+     * NOT an array of variables, but an object of the variable array class.
      */
     void setVariableArray(VariableArray* inputArray);
 
     /**
      * @brief Get the number of variables in the internal variable array object.
      *
-     * @return **uint8_t** The number of variables in the internal variable
+     * @return The number of variables in the internal variable
      * array object
      */
     uint8_t getArrayVarCount();
@@ -480,7 +529,7 @@ class Logger {
      * position in the internal variable array object.
      *
      * @param position_i The position of the variable in the array.
-     * @return **String** The name of the parent sensor of that variable, if
+     * @return The name of the parent sensor of that variable, if
      * applicable.
      */
     String getParentSensorNameAtI(uint8_t position_i);
@@ -489,7 +538,7 @@ class Logger {
      * at the given position in the internal variable array object.
      *
      * @param position_i The position of the variable in the array.
-     * @return **String** The concatenated name and pin location of the parent
+     * @return The concatenated name and pin location of the parent
      * sensor of that variable, if applicable.
      */
     String getParentSensorNameAndLocationAtI(uint8_t position_i);
@@ -501,7 +550,7 @@ class Logger {
      * http://vocabulary.odm2.org/variablename/
      *
      * @param position_i The position of the variable in the array.
-     * @return **String** The variable name
+     * @return The variable name
      */
     String getVarNameAtI(uint8_t position_i);
     /**
@@ -512,7 +561,7 @@ class Logger {
      * http://vocabulary.odm2.org/units/
      *
      * @param position_i The position of the variable in the array.
-     * @return **String** The variable unit
+     * @return The variable unit
      */
     String getVarUnitAtI(uint8_t position_i);
     /**
@@ -520,7 +569,7 @@ class Logger {
      * the internal variable array object.
      *
      * @param position_i The position of the variable in the array.
-     * @return **String** The variable code
+     * @return The variable code
      */
     String getVarCodeAtI(uint8_t position_i);
     /**
@@ -528,7 +577,7 @@ class Logger {
      * variable array object.
      *
      * @param position_i The position of the variable in the array.
-     * @return **String** The variable UUID
+     * @return The variable UUID
      */
     String getVarUUIDAtI(uint8_t position_i);
     /**
@@ -536,7 +585,7 @@ class Logger {
      * the internal variable array object.
      *
      * @param position_i The position of the variable in the array.
-     * @return **float** The value of the variable as a float.
+     * @return The value of the variable as a float.
      */
     float getValueAtI(uint8_t position_i);
     /**
@@ -544,7 +593,7 @@ class Logger {
      * the internal variable array object.
      *
      * @param position_i The position of the variable in the array.
-     * @return **String** The value of the variable as a string with the correct
+     * @return The value of the variable as a string with the correct
      * number of significant figures.
      */
     String getValueStringAtI(uint8_t position_i);
@@ -554,7 +603,7 @@ class Logger {
      *
      * @param position_i The position of the variable in the array.
      * @param value The value to format.
-     * @return **String** The given value as a string with the correct number of
+     * @return The given value as a string with the correct number of
      *  significant figures.
      */
     String formatValueStringAtI(uint8_t position_i, float value);
@@ -589,10 +638,10 @@ class Logger {
      */
     void attachModem(loggerModem& modem);
     /**
-     * @brief Use the attahed loggerModem to synchronize the real-time clock
+     * @brief Use the attached loggerModem to synchronize the real-time clock
      * with NIST time servers.
      *
-     * @return **bool** True if clock synchronization was successful
+     * @return True if clock synchronization was successful
      */
     bool syncRTC();
 
@@ -662,46 +711,35 @@ class Logger {
     /**
      * @brief Get the Logger Time Zone.
      *
-     * @return **int8_t** The timezone data is be saved to the SD card in.  This
+     * @return The timezone data is be saved to the SD card in.  This
      * is not be the same as the timezone of the real time clock.
      */
     static int8_t getLoggerTimeZone(void);
-    /**
-     * @brief Retained for backwards compatibility; use setLoggerTimeZone(int8_t
-     * timeZone) in new code.
-     *
-     * @m_deprecated_since{0,22,4}
-     *
-     * @param timeZone The timezone data shold be saved to the SD card in.  This
-     * need not be the same as the timezone of the real time clock.
-     */
-    static void setTimeZone(int8_t timeZone);
-    /**
-     * @brief Retained for backwards compatibility; use getLoggerTimeZone() in
-     * new code.
-     *
-     * @m_deprecated_since{0,22,4}
-     *
-     * @return **int8_t** The timezone data is be saved to the SD card in.  This
-     * is not be the same as the timezone of the real time clock.
-     */
-    static int8_t getTimeZone(void);
 
     /**
-     * @brief Set the static timezone that the RTC is programmed in.
+     * @brief A passthrough to loggerClock::setRTCOffset(int8_t offsetHours);
+     * set the static timezone that the RTC is programmed in.
+     *
+     * @m_deprecated_since{0,37,0}
+     *
+     * Use loggerClock::setRTCOffset(_offsetHours) in new code!
      *
      * @note I VERY, VERY STRONGLY RECOMMEND SETTING THE RTC IN UTC
      *
-     * @param timeZone The timezone of the real-time clock (RTC)
+     * @param timeZone The offset of the real-time clock (RTC) from UTC in hours
      */
     static void setRTCTimeZone(int8_t timeZone);
     /**
-     * @brief Get the timezone of the real-time clock (RTC).
+     * @brief A passthrough to loggerClock::getRTCOffset(); get the timezone of
+     * the real-time clock (RTC).
      *
-     * @return **int8_t** The timezone of the real-time clock (RTC)
+     * @m_deprecated_since{0,37,0}
+     *
+     * Use loggerClock::getRTCOffset() in new code!
+     *
+     * @return The offset of the real-time clock (RTC) from UTC in hours
      */
     static int8_t getRTCTimeZone(void);
-
     /**
      * @brief Set the offset between the built-in clock and the time zone
      * where the data is being recorded.
@@ -718,124 +756,94 @@ class Logger {
      * @brief Get the offset between the built-in clock and the time zone
      * where the data is being recorded.
      *
-     * @return **int8_t** The offset between the built-in clock and the time
+     * @return The offset between the built-in clock and the time
      * zone where the data is being recorded.
      */
     static int8_t getTZOffset(void);
 
-#if (defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAMD_ZERO)) && \
-    not defined(MS_SAMD_DS3231)
     /**
-     * @brief The RTC object.
+     * @brief Get the current epoch time from the RTC and correct it to the
+     * logging time zone.
      *
-     * @note Only one RTC may be used.  Either the built-in RTC of a SAMD board
-     * *OR* a DS3231
+     * @return The number of seconds from the start of the given epoch in
+     * the logging time zone.
      */
-    static RTCZero zero_sleep_rtc;
-#endif
-
-    /**
-     * @brief Get the current epoch time from the RTC (unix time, ie, the
-     * number of seconds from January 1, 1970 00:00:00) and correct it to the
-     * logging time zone.
-     *
-     * @return **uint32_t**  The number of seconds from January 1, 1970 in the
-     * logging time zone.
-     *
-     * @m_deprecated_since{0,33,0}
-     */
-    static uint32_t getNowEpoch(void);
-
-    /**
-     * @brief Get the current epoch time from the RTC (unix time, ie, the
-     * number of seconds from January 1, 1970 00:00:00) and correct it to the
-     * logging time zone.
-     *
-     * @return **uint32_t**  The number of seconds from January 1, 1970 in the
-     * logging time zone.
-     */
-    static uint32_t getNowLocalEpoch(void);
+    static uint32_t getNowLocalEpoch();
 
     /**
      * @brief Get the current Universal Coordinated Time (UTC) epoch time from
-     * the RTC (unix time, ie, the number of seconds from January 1, 1970
-     * 00:00:00 UTC)
+     * the RTC.
      *
-     * @return **uint32_t**  The number of seconds from 1970-01-01T00:00:00Z0000
+     * @return The number of seconds from the start of the given epoch.
      */
-    static uint32_t getNowUTCEpoch(void);
-    /**
-     * @brief Set the real time clock to the given number of seconds from
-     * January 1, 1970.
-     *
-     * The validity of the timestamp is not checked in any way!  In practice,
-     * setRTClock(ts) should be used to avoid setting the clock to an obviously
-     * invalid value.  The input value should be *in the timezone of the RTC.*
-     *
-     * @param ts The number of seconds since 1970.
-     */
-    static void setNowUTCEpoch(uint32_t ts);
+    static uint32_t getNowUTCEpoch();
 
     /**
-     * @brief Convert the number of seconds from January 1, 1970 to a DateTime
-     * object instance.
+     * @brief Convert an epoch time into a ISO8601 formatted string.
      *
-     * @param epochTime The number of seconds since 1970.
-     * @return **DateTime** The equivalent DateTime
-     */
-    static DateTime dtFromEpoch(uint32_t epochTime);
-
-    /**
-     * @brief Convert a date-time object into a ISO8601 formatted string.
+     * This assumes the supplied date/time is in the LOGGER's timezone and the
+     * LOGGER's epoch start. It adds the LOGGER's offset as the time zone offset
+     * in the string.
      *
-     * This assumes the supplied date/time is in the LOGGER's timezone and adds
-     * the LOGGER's offset as the time zone offset in the string.
-     *
-     * @param dt A DateTime object to convert
-     * @return **String** An ISO8601 formatted String.
-     */
-    static String formatDateTime_ISO8601(DateTime& dt);
-
-    /**
-     * @brief Convert an epoch time (unix time) into a ISO8601 formatted string.
-     *
-     * This assumes the supplied date/time is in the LOGGER's timezone and adds
-     * the LOGGER's offset as the time zone offset in the string.
-     *
-     * @param epochTime The number of seconds since 1970.
-     * @return **String** An ISO8601 formatted String.
+     * @param epochTime The number of seconds since the start of the logger's
+     * epoch (#MS_LOGGER_EPOCH).
+     * @return An ISO8601 formatted String.
      */
     static String formatDateTime_ISO8601(uint32_t epochTime);
 
     /**
-     * @brief Veify that the input value is sane and if so sets the real time
-     * clock to the given time.
+     * @brief Convert an epoch time into a character string based on the input
+     * strftime format string and put it into the given buffer.
+     *
+     * This assumes the supplied date/time is in the LOGGER's timezone and adds
+     * the LOGGER's offset as the time zone offset in the string.
+     *
+     * @see https://en.cppreference.com/w/cpp/chrono/c/strftime for possible
+     * formatting strings.
+     *
+     * @note This function DOES NOTE SUPPORT TIMEZONES. Do not use the %z or %Z
+     * inputs!
+     *
+     * @param buffer A buffer to put the finished string into. Make sure that
+     * the buffer is big enough to hold all of the characters!
+     * @param fmt The strftime format string.
+     * @param epochTime The number of seconds since the start of the given
+     * epoch in the given offset from UTC.
+     */
+    static void formatDateTime(char* buffer, const char* fmt,
+                               uint32_t epochTime);
+
+    /**
+     * @brief Pass-through to loggerClock::setRTClock(uint32_t
+     * UTCEpochSeconds,0, epochStart::unix_epoch) Veify that the input value is
+     * sane and if so set the real time clock to the given time.
+     *
+     * @m_deprecated_since{0,37,0}
+     *
+     * Call loggerClock::setRTClock(uint32_t ts, int8_t utcOffset , epochStart
+     * epoch) directly in new programs.
      *
      * @param UTCEpochSeconds The number of seconds since 1970 in UTC.
-     * @return **bool** True if the input timestamp passes sanity checks **and**
+     * @return True if the input timestamp passes sanity checks **and**
      * the clock has been successfully set.
      */
     bool setRTClock(uint32_t UTCEpochSeconds);
 
     /**
-     * @brief Check that the current time on the RTC is within a "sane" range.
+     * @brief Passthrough to loggerClock::isRTCSane(); check that the current
+     * time on the RTC is within a "sane" range.
      *
-     * To be sane the clock  must be between 2020 and 2030.
+     * @m_deprecated_since{0,37,0}
      *
-     * @return **bool** True if the current time on the RTC passes sanity range
+     * Use loggerClock::isRTCSane() directly in new code!
+     *
+     * To be sane the clock must be between #EARLIEST_SANE_UNIX_TIMESTAMP and
+     * #LATEST_SANE_UNIX_TIMESTAMP.
+     *
+     * @return True if the current time on the RTC passes sanity range
      * checking
      */
     static bool isRTCSane(void);
-    /**
-     * @brief Check that a given epoch time (seconds since 1970) is within a
-     * "sane" range.
-     *
-     * To be sane the clock  must be between 2020 and 2025.
-     *
-     * @param epochTime The epoch time to be checked.
-     * @return **bool** True if the given time passes sanity range checking.
-     */
-    static bool isRTCSane(uint32_t epochTime);
 
     /**
      * @brief Set static variables for the date/time
@@ -852,21 +860,21 @@ class Logger {
     /**
      * @brief Check if the CURRENT time is an even interval of the logging rate
      *
-     * @return **bool** True if the current time on the RTC is an even interval
+     * @return True if the current time on the RTC is an even interval
      * of the logging rate.
      */
     bool checkInterval(void);
 
     /**
      * @brief Check if the MARKED time is an even interval of the logging rate -
-     * That is the value saved in the static variable markedLocalEpochTime.
+     * That is the value saved in the static variable markedLocalUnixTime.
      *
      * This should be used in conjunction with markTime() to ensure that all
      * data outputs from a single data update session (SD, EnviroDIY, serial
      * printing, etc) have the same timestamp even though the update routine may
      * take several (or many) seconds.
      *
-     * @return **bool** True if the marked time is an even interval of the
+     * @return True if the marked time is an even interval of the
      * logging rate.
      */
     bool checkMarkedInterval(void);
@@ -878,7 +886,13 @@ class Logger {
      * @note All logger objects, if multiple are used, will be in the same
      * timezone.
      */
-    static int8_t _loggerTimeZone;
+    static int8_t _loggerUTCOffset;
+    /**
+     * @brief The start of the epoch for the logger.
+     *
+     * @note This is fixed as #MS_LOGGER_EPOCH
+     */
+    static epochStart _loggerEpoch;
     /**
      * @brief The static difference between the timezone of the RTC and the
      * timezone data is being logged in.
@@ -887,12 +901,11 @@ class Logger {
      * same offset.
      */
     static int8_t _loggerRTCOffset;
-    /**@}*/
 
     // ===================================================================== //
     /**
      * @anchor logger_sleep
-     * @name Clock and Timezones
+     * @name Sleep and Power Saving
      * Public Functions for sleeping the logger
      *
      * # AVR Sleep modes
@@ -961,8 +974,8 @@ class Logger {
      *
      * @note For the SAMD51, hibernate, backup, and off modes cause a full
      * system reset on wake. Because we don't want to fully reset the device
-     * (and go back to the setup) on wake, the lowest power mode we can use is
-     * standby.
+     * (and go back to the setup) on wake, the lowest power mode we can use
+     * is standby.
      */
     /**@{*/
     // ===================================================================== //
@@ -973,7 +986,11 @@ class Logger {
      *
      * In this case, we're doing nothing, we just want the processor to wake.
      * This must be a static function (which means it can only call other static
-     * funcions.)
+     * functions.)
+     *
+     * @m_deprecated_since{0,37,0}
+     *
+     * Use loggerClock::RTCISR() in new code!
      */
     static void wakeISR(void);
 
@@ -982,22 +999,13 @@ class Logger {
      * post-interrupt wake actions
      *
      * @note This DOES NOT sleep or wake the sensors!!
+     *
+     * @warning During sleep, the I2C/Wire interface is disabled and the SCL and
+     * SDA pins are forced low to save power. Any attempt to communicate with an
+     * I2C device during sleep (ie, thorough an interrupt) will cause the board
+     * to hang indefinitely.
      */
     void systemSleep(void);
-
-#if defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAMD_ZERO)
-    /**
-     * @brief A watch-dog implementation to use to reboot the system in case of
-     * lock-ups
-     */
-    extendedWatchDogSAMD watchDogTimer;
-#else
-    /**
-     * @brief A watch-dog implementation to use to reboot the system in case of
-     * lock-ups
-     */
-    extendedWatchDogAVR watchDogTimer;
-#endif
     /**@}*/
 
     // ===================================================================== //
@@ -1036,7 +1044,7 @@ class Logger {
      * an auto-generated filename which is a concatenation of the logger id and
      * the date when the file was started.
      *
-     * @return **String** The name of the file data is currently being saved to.
+     * @return The name of the file data is currently being saved to.
      */
     String getFileName(void) {
         return _fileName;
@@ -1063,6 +1071,16 @@ class Logger {
     void printSensorDataCSV(Stream* stream);
 
     /**
+     * @brief Check if the SD card is available and ready to write to.
+     *
+     * We run this check before every communication with the SD card to prevent
+     * hanging.
+     *
+     * @return True if the SD card is ready
+     */
+    bool initializeSDCard(void);
+
+    /**
      * @brief Create a file on the SD card and set the created, modified, and
      * accessed timestamps in that file.
      *
@@ -1074,7 +1092,7 @@ class Logger {
      * @param filename The name of the file to create
      * @param writeDefaultHeader True to write a header to the file, default is
      * false
-     * @return **bool** True if the file was successfully created.
+     * @return True if the file was successfully created.
      */
     bool createLogFile(String& filename, bool writeDefaultHeader = false);
     /**
@@ -1088,7 +1106,7 @@ class Logger {
      *
      * @param writeDefaultHeader True to write a header to the file, default is
      * false
-     * @return **bool** True if the file was successfully created.
+     * @return True if the file was successfully created.
      */
     bool createLogFile(bool writeDefaultHeader = false);
 
@@ -1102,7 +1120,7 @@ class Logger {
      *
      * @param filename The name of the file to write to
      * @param rec The line to be written to the file
-     * @return **bool** True if the file was successfully accessed or created
+     * @return True if the file was successfully accessed or created
      * _and_ data appended to it.
      */
     bool logToSD(String& filename, String& rec);
@@ -1115,7 +1133,7 @@ class Logger {
      * modified and accessed timestamps of the file to the current time.
      *
      * @param rec The line to be written to the file
-     * @return **bool** True if the file was successfully accessed or created
+     * @return True if the file was successfully accessed or created
      * _and_ data appended to it.
      */
     bool logToSD(String& rec);
@@ -1128,7 +1146,7 @@ class Logger {
      * attempt to create the file and add a header to it.  Set the modified and
      * accessed timestamps of the file to the current time.
      *
-     * @return **bool** True if the file was successfully accessed or created
+     * @return True if the file was successfully accessed or created
      * _and_ data appended to it.
      */
     bool logToSD(void);
@@ -1150,21 +1168,23 @@ class Logger {
     // ^^ Initialize with no file name
 
     /**
-     * @brief Check if the SD card is available and ready to write to.
-     *
-     * We run this check before every communication with the SD card to prevent
-     * hanging.
-     *
-     * @return **bool** True if the SD card is ready
-     */
-    bool initializeSDCard(void);
-
-    /**
      * @brief Generate a file name from the logger id and the current date.
      *
      * @note This cannot be called until *after* the RTC is started
      */
     void generateAutoFileName(void);
+
+    /**
+     * @brief This function is used to automatically mark files as
+     * created/accessed/modified when operations are done by the SdFat library.
+     *
+     * This function will be called automatically by SdFat, but is not intended
+     * to be used at any other time.
+     *
+     * @param date Pointer to a uint16_t to store the date
+     * @param time Pointer to a uint16_t to store the time
+     */
+    static void fileDateTimeCallback(uint16_t* date, uint16_t* time);
 
     /**
      * @brief Set a timestamp on a file.
@@ -1183,7 +1203,7 @@ class Logger {
      * @param createFile True to create the file if it did not already exist
      * @param writeDefaultHeader True to add a header to the file if it is
      * created
-     * @return **bool** True if a file was successfully opened or created.
+     * @return True if a file was successfully opened or created.
      */
     bool openFile(String& filename, bool createFile, bool writeDefaultHeader);
     /**@}*/
@@ -1218,8 +1238,11 @@ class Logger {
      * to the "main" output - ie Serial - and NOT to the SD card.  After 25
      * measurements, the sensors are put to sleep, the modem is disconnected
      * from the internet, and the logger goes back to sleep.
+     *
+     * @param sleepBeforeReturning True to put the logger to sleep before
+     * returning from the function; optional with a default value of true.
      */
-    virtual void testingMode();
+    virtual void testingMode(bool sleepBeforeReturning = true);
     /**@}*/
 
     // ===================================================================== //
@@ -1275,24 +1298,34 @@ class Logger {
 
     /**
      * @brief This is a one-and-done to log data
+     *
+     * @param sleepBeforeReturning True to put the logger to sleep before
+     * returning from the function; optional with a default value of true.
+     * @note If sleepBeforeReturning is set to false, the logger WILL NOT sleep
+     * between readings.
      */
     virtual void logData(bool sleepBeforeReturning = true);
 
     /**
      * @brief This is a one-and-done to log data and publish the results to any
      * associated publishers.
+     *
+     * @param sleepBeforeReturning True to put the logger to sleep before
+     * returning from the function; optional with a default value of true.
+     * @note If sleepBeforeReturning is set to false, the logger WILL NOT sleep
+     * between readings.
      */
     void logDataAndPublish(bool sleepBeforeReturning = true);
 
     /**
      * @brief The static "marked" epoch time for the local timezone.
      */
-    static uint32_t markedLocalEpochTime;
+    static uint32_t markedLocalUnixTime;
 
     /**
      * @brief The static "marked" epoch time for UTC.
      */
-    static uint32_t markedUTCEpochTime;
+    static uint32_t markedUTCUnixTime;
 
     // These are flag fariables noting the current state (logging/testing)
     // NOTE:  if the logger isn't currently logging or testing or in the middle
@@ -1309,7 +1342,7 @@ class Logger {
      */
     static volatile bool isTestingNow;
     /**
-     * @brief Internal flag set to true with then logger should begin the
+     * @brief Internal flag set to true when the logger should begin the
      * "testing mode" routine when it finishes other operations.
      */
     static volatile bool startTesting;

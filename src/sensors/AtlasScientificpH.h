@@ -48,18 +48,31 @@
 // Included Dependencies
 #include "sensors/AtlasParent.h"
 
-
-// Sensor Specific Defines
 /** @ingroup sensor_atlas_ph */
 /**@{*/
 
-/// @brief Default I2C address is 0x63 (99)
-#define ATLAS_PH_I2C_ADDR 0x63
+/**
+ * @anchor sensor_atlas_ph_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the Atlas pH sensor
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the Atlas EZO pH circuit can report 1
 /// value.
 #define ATLAS_PH_NUM_VARIABLES 1
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define ATLAS_PH_INC_CALC_VARIABLES 0
+/**@}*/
+
+/**
+ * @anchor sensor_atlas_ph_config
+ * @name Configuration Defines
+ * Defines to configure and set the address of the Atlas pH sensor
+ */
+/**@{*/
+/// @brief The default I2C address of the Atlas pH sensor is 0x63 (99)
+#define ATLAS_PH_I2C_ADDR 0x63
+/**@}*/
 
 /**
  * @anchor sensor_atlas_ph_timing
@@ -220,7 +233,7 @@ class AtlasScientificpH_pH : public Variable {
     explicit AtlasScientificpH_pH(AtlasScientificpH* parentSense,
                                   const char*        uuid = "",
                                   const char* varCode = ATLAS_PH_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ATLAS_PH_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ATLAS_PH_VAR_NUM,
                    (uint8_t)ATLAS_PH_RESOLUTION, ATLAS_PH_VAR_NAME,
                    ATLAS_PH_UNIT_NAME, varCode, uuid) {}
     /**
@@ -230,9 +243,9 @@ class AtlasScientificpH_pH : public Variable {
      * used.
      */
     AtlasScientificpH_pH()
-        : Variable((const uint8_t)ATLAS_PH_VAR_NUM,
-                   (uint8_t)ATLAS_PH_RESOLUTION, ATLAS_PH_VAR_NAME,
-                   ATLAS_PH_UNIT_NAME, ATLAS_PH_DEFAULT_CODE) {}
+        : Variable((uint8_t)ATLAS_PH_VAR_NUM, (uint8_t)ATLAS_PH_RESOLUTION,
+                   ATLAS_PH_VAR_NAME, ATLAS_PH_UNIT_NAME,
+                   ATLAS_PH_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AtlasScientificpH_pH object - no action needed.
      */

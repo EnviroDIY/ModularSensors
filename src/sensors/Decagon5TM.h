@@ -63,6 +63,9 @@
 #ifndef SRC_SENSORS_DECAGON5TM_H_
 #define SRC_SENSORS_DECAGON5TM_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_DECAGON5TM_DEBUG
 
@@ -84,12 +87,18 @@
 /** @ingroup sensor_fivetm */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_fivetm_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the Decagon 5TM
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the 5TM can report 3 values.
 #define TM_NUM_VARIABLES 3
 /// @brief Sensor::_incCalcValues; volumetric water content is calculated from
 /// the permittivity and the temperature.
 #define TM_INC_CALC_VARIABLES 1
+/**@}*/
 
 /**
  * @anchor sensor_fivetm_timing
@@ -303,7 +312,7 @@ class Decagon5TM_Ea : public Variable {
      */
     explicit Decagon5TM_Ea(Decagon5TM* parentSense, const char* uuid = "",
                            const char* varCode = TM_EA_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)TM_EA_VAR_NUM,
+        : Variable(parentSense, (uint8_t)TM_EA_VAR_NUM,
                    (uint8_t)TM_EA_RESOLUTION, TM_EA_VAR_NAME, TM_EA_UNIT_NAME,
                    varCode, uuid) {}
     /**
@@ -312,7 +321,7 @@ class Decagon5TM_Ea : public Variable {
      * @note This must be tied with a parent Decagon5TM before it can be used.
      */
     Decagon5TM_Ea()
-        : Variable((const uint8_t)TM_EA_VAR_NUM, (uint8_t)TM_EA_RESOLUTION,
+        : Variable((uint8_t)TM_EA_VAR_NUM, (uint8_t)TM_EA_RESOLUTION,
                    TM_EA_VAR_NAME, TM_EA_UNIT_NAME, TM_EA_DEFAULT_CODE) {}
     /**
      * @brief Destroy the Decagon5TM_Ea object - no action needed.
@@ -343,7 +352,7 @@ class Decagon5TM_Temp : public Variable {
      */
     explicit Decagon5TM_Temp(Decagon5TM* parentSense, const char* uuid = "",
                              const char* varCode = TM_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)TM_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)TM_TEMP_VAR_NUM,
                    (uint8_t)TM_TEMP_RESOLUTION, TM_TEMP_VAR_NAME,
                    TM_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -352,7 +361,7 @@ class Decagon5TM_Temp : public Variable {
      * @note This must be tied with a parent Decagon5TM before it can be used.
      */
     Decagon5TM_Temp()
-        : Variable((const uint8_t)TM_TEMP_VAR_NUM, (uint8_t)TM_TEMP_RESOLUTION,
+        : Variable((uint8_t)TM_TEMP_VAR_NUM, (uint8_t)TM_TEMP_RESOLUTION,
                    TM_TEMP_VAR_NAME, TM_TEMP_UNIT_NAME, TM_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the Decagon5TM_Temp object - no action needed.
@@ -383,7 +392,7 @@ class Decagon5TM_VWC : public Variable {
      */
     explicit Decagon5TM_VWC(Decagon5TM* parentSense, const char* uuid = "",
                             const char* varCode = TM_VWC_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)TM_VWC_VAR_NUM,
+        : Variable(parentSense, (uint8_t)TM_VWC_VAR_NUM,
                    (uint8_t)TM_VWC_RESOLUTION, TM_VWC_VAR_NAME,
                    TM_VWC_UNIT_NAME, varCode, uuid) {}
     /**
@@ -392,7 +401,7 @@ class Decagon5TM_VWC : public Variable {
      * @note This must be tied with a parent Decagon5TM before it can be used.
      */
     Decagon5TM_VWC()
-        : Variable((const uint8_t)TM_VWC_VAR_NUM, (uint8_t)TM_VWC_RESOLUTION,
+        : Variable((uint8_t)TM_VWC_VAR_NUM, (uint8_t)TM_VWC_RESOLUTION,
                    TM_VWC_VAR_NAME, TM_VWC_UNIT_NAME, TM_VWC_DEFAULT_CODE) {}
     /**
      * @brief Destroy the Decagon5TM_VWC object - no action needed.

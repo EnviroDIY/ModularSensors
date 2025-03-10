@@ -73,8 +73,11 @@
 #ifndef SRC_SENSORS_METERTEROS11_H_
 #define SRC_SENSORS_METERTEROS11_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
-// #define MS_MeterTeros11_DEBUG
+// #define MS_METERTEROS11_DEBUG
 
 #ifdef MS_METERTEROS11_DEBUG
 #define MS_DEBUGGING_STD "MeterTeros11"
@@ -94,13 +97,19 @@
 /** @ingroup sensor_teros11 */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_teros11_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by Meter Teros 11
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the Teros 11 can report 2 raw values -
 /// counts and temperature.
 #define TEROS11_NUM_VARIABLES 4
 /// @brief Sensor::_incCalcValues; We calculate permittivity and water content
 /// from the raw counts and temperature reported by the Teros 11.
 #define TEROS11_INC_CALC_VARIABLES 2
+/**@}*/
 
 /**
  * @anchor sensor_teros11_timing
@@ -352,7 +361,7 @@ class MeterTeros11_Count : public Variable {
     explicit MeterTeros11_Count(
         MeterTeros11* parentSense, const char* uuid = "",
         const char* varCode = TEROS11_COUNT_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)TEROS11_COUNT_VAR_NUM,
+        : Variable(parentSense, (uint8_t)TEROS11_COUNT_VAR_NUM,
                    (uint8_t)TEROS11_COUNT_RESOLUTION, TEROS11_COUNT_VAR_NAME,
                    TEROS11_COUNT_UNIT_NAME, varCode, uuid) {}
     /**
@@ -361,7 +370,7 @@ class MeterTeros11_Count : public Variable {
      * @note This must be tied with a parent MeterTeros11 before it can be used.
      */
     MeterTeros11_Count()
-        : Variable((const uint8_t)TEROS11_COUNT_VAR_NUM,
+        : Variable((uint8_t)TEROS11_COUNT_VAR_NUM,
                    (uint8_t)TEROS11_COUNT_RESOLUTION, TEROS11_COUNT_VAR_NAME,
                    TEROS11_COUNT_UNIT_NAME, TEROS11_COUNT_DEFAULT_CODE) {}
     /**
@@ -394,7 +403,7 @@ class MeterTeros11_Temp : public Variable {
      */
     explicit MeterTeros11_Temp(MeterTeros11* parentSense, const char* uuid = "",
                                const char* varCode = TEROS11_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)TEROS11_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)TEROS11_TEMP_VAR_NUM,
                    (uint8_t)TEROS11_TEMP_RESOLUTION, TEROS11_TEMP_VAR_NAME,
                    TEROS11_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -403,7 +412,7 @@ class MeterTeros11_Temp : public Variable {
      * @note This must be tied with a parent MeterTeros11 before it can be used.
      */
     MeterTeros11_Temp()
-        : Variable((const uint8_t)TEROS11_TEMP_VAR_NUM,
+        : Variable((uint8_t)TEROS11_TEMP_VAR_NUM,
                    (uint8_t)TEROS11_TEMP_RESOLUTION, TEROS11_TEMP_VAR_NAME,
                    TEROS11_TEMP_UNIT_NAME, TEROS11_TEMP_DEFAULT_CODE) {}
     /**
@@ -437,7 +446,7 @@ class MeterTeros11_Ea : public Variable {
      */
     explicit MeterTeros11_Ea(MeterTeros11* parentSense, const char* uuid = "",
                              const char* varCode = TEROS11_EA_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)TEROS11_EA_VAR_NUM,
+        : Variable(parentSense, (uint8_t)TEROS11_EA_VAR_NUM,
                    (uint8_t)TEROS11_EA_RESOLUTION, TEROS11_EA_VAR_NAME,
                    TEROS11_EA_UNIT_NAME, varCode, uuid) {}
     /**
@@ -446,9 +455,9 @@ class MeterTeros11_Ea : public Variable {
      * @note This must be tied with a parent MeterTeros11 before it can be used.
      */
     MeterTeros11_Ea()
-        : Variable((const uint8_t)TEROS11_EA_VAR_NUM,
-                   (uint8_t)TEROS11_EA_RESOLUTION, TEROS11_EA_VAR_NAME,
-                   TEROS11_EA_UNIT_NAME, TEROS11_EA_DEFAULT_CODE) {}
+        : Variable((uint8_t)TEROS11_EA_VAR_NUM, (uint8_t)TEROS11_EA_RESOLUTION,
+                   TEROS11_EA_VAR_NAME, TEROS11_EA_UNIT_NAME,
+                   TEROS11_EA_DEFAULT_CODE) {}
     /**
      * @brief Destroy the MeterTeros11_Ea object - no action needed.
      */
@@ -479,7 +488,7 @@ class MeterTeros11_VWC : public Variable {
      */
     explicit MeterTeros11_VWC(MeterTeros11* parentSense, const char* uuid = "",
                               const char* varCode = TEROS11_VWC_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)TEROS11_VWC_VAR_NUM,
+        : Variable(parentSense, (uint8_t)TEROS11_VWC_VAR_NUM,
                    (uint8_t)TEROS11_VWC_RESOLUTION, TEROS11_VWC_VAR_NAME,
                    TEROS11_VWC_UNIT_NAME, varCode, uuid) {}
     /**
@@ -488,7 +497,7 @@ class MeterTeros11_VWC : public Variable {
      * @note This must be tied with a parent MeterTeros11 before it can be used.
      */
     MeterTeros11_VWC()
-        : Variable((const uint8_t)TEROS11_VWC_VAR_NUM,
+        : Variable((uint8_t)TEROS11_VWC_VAR_NUM,
                    (uint8_t)TEROS11_VWC_RESOLUTION, TEROS11_VWC_VAR_NAME,
                    TEROS11_VWC_UNIT_NAME, TEROS11_VWC_DEFAULT_CODE) {}
     /**

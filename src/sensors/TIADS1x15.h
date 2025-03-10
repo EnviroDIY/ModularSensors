@@ -15,7 +15,7 @@
  * is a multiplier allowed for a voltage divider between the raw voltage and the
  * ADS.
  *
- * This depends on the soligen2010 fork of the Adafruit ADS1015 library.
+ * This depends on the Adafruit ADS1X15 v2.x library
  */
 /* clang-format off */
 /**
@@ -140,6 +140,9 @@
 #ifndef SRC_SENSORS_TIADS1X15_H_
 #define SRC_SENSORS_TIADS1X15_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_TIADS1X15_DEBUG
 
@@ -156,11 +159,27 @@
 /** @ingroup sensor_ads1x15 */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_ads1x15_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by ADS1x15
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the ADS1115 can report 1 value.
 #define TIADS1X15_NUM_VARIABLES 1
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define TIADS1X15_INC_CALC_VARIABLES 0
+/**@}*/
+
+/**
+ * @anchor sensor_ads1x15_config
+ * @name Configuration Defines
+ * Defines to help configure the address of the ADD
+ */
+/**@{*/
+/// @brief The assumed address of the ADS1115, 1001 000 (ADDR = GND)
+#define ADS1115_ADDRESS 0x48
+/**@}*/
 
 /**
  * @anchor sensor_ads1x15_timing
@@ -234,9 +253,6 @@
 #endif
 /**@}*/
 
-/// @brief The assumed address of the ADS1115, 1001 000 (ADDR = GND)
-#define ADS1115_ADDRESS 0x48
-
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
@@ -287,8 +303,18 @@ class TIADS1x15 : public Sensor {
     bool addSingleMeasurementResult(void) override;
 
  private:
+    /**
+     * @brief Internal reference to the ADS channel number of the device
+     * attached to the TI-ADS1x15
+     */
     uint8_t _adsChannel;
-    float   _gain;
+    /**
+     * @brief Internal reference to the gain setting for the TI-ADS1x15
+     */
+    float _gain;
+    /**
+     * @brief Internal reference to the I2C address of the TI-ADS1x15
+     */
     uint8_t _i2cAddress;
 };
 
@@ -325,7 +351,7 @@ class TIADS1x15_Voltage : public Variable {
      */
     explicit TIADS1x15_Voltage(TIADS1x15* parentSense, const char* uuid = "",
                                const char* varCode = TIADS1X15_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)TIADS1X15_VAR_NUM,
+        : Variable(parentSense, (uint8_t)TIADS1X15_VAR_NUM,
                    (uint8_t)TIADS1X15_RESOLUTION, TIADS1X15_VAR_NAME,
                    TIADS1X15_UNIT_NAME, varCode, uuid) {}
     /**
@@ -335,9 +361,9 @@ class TIADS1x15_Voltage : public Variable {
      * used.
      */
     TIADS1x15_Voltage()
-        : Variable((const uint8_t)TIADS1X15_VAR_NUM,
-                   (uint8_t)TIADS1X15_RESOLUTION, TIADS1X15_VAR_NAME,
-                   TIADS1X15_UNIT_NAME, TIADS1X15_DEFAULT_CODE) {}
+        : Variable((uint8_t)TIADS1X15_VAR_NUM, (uint8_t)TIADS1X15_RESOLUTION,
+                   TIADS1X15_VAR_NAME, TIADS1X15_UNIT_NAME,
+                   TIADS1X15_DEFAULT_CODE) {}
     /**
      * @brief Destroy the TIADS1x15_Voltage object - no action needed.
      */

@@ -14,8 +14,11 @@
 #ifndef SRC_PUBLISHERS_UBIDOTSPUBLISHER_H_
 #define SRC_PUBLISHERS_UBIDOTSPUBLISHER_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
-// #define UBIDOTSPUBLISHER_DEBUG
+// #define MS_UBIDOTSPUBLISHER_DEBUG
 
 #ifdef MS_UBIDOTSPUBLISHER_DEBUG
 #define MS_DEBUGGING_STD "UbidotsPublisher"
@@ -106,6 +109,12 @@ class UbidotsPublisher : public dataPublisher {
     virtual ~UbidotsPublisher();
 
     // Returns the data destination
+    /**
+     * @brief Get the destination for published data - generally the host name
+     * of the data receiver.
+     *
+     * @return The URL or HOST to receive published data
+     */
     String getEndpoint(void) override {
         return String(ubidotsHost);
     }
@@ -124,7 +133,7 @@ class UbidotsPublisher : public dataPublisher {
     /**
      * @brief Calculates how long the outgoing JSON will be
      *
-     * @return uint16_t The number of characters in the JSON object.
+     * @return The number of characters in the JSON object.
      */
     uint16_t calculateJsonSize();
 
@@ -165,7 +174,7 @@ class UbidotsPublisher : public dataPublisher {
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
      * @param forceFlush Ask the publisher to flush buffered data immediately.
-     * @return **int16_t** The http status code of the response.
+     * @return The http status code of the response.
      */
     int16_t publishData(Client* outClient, bool forceFlush) override;
 
@@ -195,6 +204,12 @@ class UbidotsPublisher : public dataPublisher {
 
  private:
     // Tokens for Ubidots
+    /**
+     * @brief The authentication token from Ubdots, either the Organization's
+     * Integration Token (under Users > Organization menu, visible by Admin
+     * only) OR the STEM User's Device Token (under the specific device's setup
+     * panel).
+     */
     const char* _authentificationToken = nullptr;
 };
 

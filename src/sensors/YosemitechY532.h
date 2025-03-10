@@ -57,11 +57,17 @@
 /** @ingroup sensor_y532 */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_y532_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by a Yosemitch Y532
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the Y532 can report 3 values.
 #define Y532_NUM_VARIABLES 3
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define Y532_INC_CALC_VARIABLES 0
+/**@}*/
 
 /**
  * @anchor sensor_y532_timing
@@ -242,7 +248,7 @@ class YosemitechY532_pH : public Variable {
     explicit YosemitechY532_pH(YosemitechY532* parentSense,
                                const char*     uuid    = "",
                                const char*     varCode = Y532_PH_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)Y532_PH_VAR_NUM,
+        : Variable(parentSense, (uint8_t)Y532_PH_VAR_NUM,
                    (uint8_t)Y532_PH_RESOLUTION, Y532_PH_VAR_NAME,
                    Y532_PH_UNIT_NAME, varCode, uuid) {}
     /**
@@ -252,7 +258,7 @@ class YosemitechY532_pH : public Variable {
      * used.
      */
     YosemitechY532_pH()
-        : Variable((const uint8_t)Y532_PH_VAR_NUM, (uint8_t)Y532_PH_RESOLUTION,
+        : Variable((uint8_t)Y532_PH_VAR_NUM, (uint8_t)Y532_PH_RESOLUTION,
                    Y532_PH_VAR_NAME, Y532_PH_UNIT_NAME, Y532_PH_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY532_pH object - no action needed.
@@ -285,7 +291,7 @@ class YosemitechY532_Temp : public Variable {
     explicit YosemitechY532_Temp(YosemitechY532* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = Y532_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)Y532_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)Y532_TEMP_VAR_NUM,
                    (uint8_t)Y532_TEMP_RESOLUTION, Y532_TEMP_VAR_NAME,
                    Y532_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -295,9 +301,9 @@ class YosemitechY532_Temp : public Variable {
      * used.
      */
     YosemitechY532_Temp()
-        : Variable((const uint8_t)Y532_TEMP_VAR_NUM,
-                   (uint8_t)Y532_TEMP_RESOLUTION, Y532_TEMP_VAR_NAME,
-                   Y532_TEMP_UNIT_NAME, Y532_TEMP_DEFAULT_CODE) {}
+        : Variable((uint8_t)Y532_TEMP_VAR_NUM, (uint8_t)Y532_TEMP_RESOLUTION,
+                   Y532_TEMP_VAR_NAME, Y532_TEMP_UNIT_NAME,
+                   Y532_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY532_Temp object - no action needed.
      */
@@ -329,7 +335,7 @@ class YosemitechY532_Voltage : public Variable {
     explicit YosemitechY532_Voltage(
         YosemitechY532* parentSense, const char* uuid = "",
         const char* varCode = Y532_VOLTAGE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)Y532_VOLTAGE_VAR_NUM,
+        : Variable(parentSense, (uint8_t)Y532_VOLTAGE_VAR_NUM,
                    (uint8_t)Y532_VOLTAGE_RESOLUTION, Y532_VOLTAGE_VAR_NAME,
                    Y532_VOLTAGE_UNIT_NAME, varCode, uuid) {}
     /**
@@ -339,7 +345,7 @@ class YosemitechY532_Voltage : public Variable {
      * used.
      */
     YosemitechY532_Voltage()
-        : Variable((const uint8_t)Y532_VOLTAGE_VAR_NUM,
+        : Variable((uint8_t)Y532_VOLTAGE_VAR_NUM,
                    (uint8_t)Y532_VOLTAGE_RESOLUTION, Y532_VOLTAGE_VAR_NAME,
                    Y532_VOLTAGE_UNIT_NAME, Y532_VOLTAGE_DEFAULT_CODE) {}
     /**

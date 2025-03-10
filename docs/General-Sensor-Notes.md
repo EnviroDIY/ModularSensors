@@ -1,4 +1,4 @@
-# Notes about Sensors <!-- {#page_sensor_notes} -->
+# Notes about Sensors<!--! {#page_sensor_notes} -->
 
 There are a number of sensors supported by this library.
 Depending on the sensor, it may communicate with the Arduino board using as a serial peripheral interface (SPI), inter-integrated circuit (I2C, also called "Wire," "Two Wire", or "TWI"), or some type of universal synchronous/asynchronous receiver/transmitter (UART/USART, or simply "serial") protocol.

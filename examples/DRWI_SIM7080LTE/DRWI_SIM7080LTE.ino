@@ -324,7 +324,7 @@ void setup() {
     // Logging in the given time zone
     Logger::setLoggerTimeZone(timeZone);
     // It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)
-    Logger::setRTCTimeZone(0);
+    loggerClock::setRTCOffset(0);
 
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modem);
@@ -339,7 +339,9 @@ void setup() {
     // Set up the sensors, except at lowest battery level
     if (getBatteryVoltage() > 3.4) {
         Serial.println(F("Setting up sensors..."));
+        varArray.sensorsPowerUp();
         varArray.setupSensors();
+        varArray.sensorsPowerDown();
     }
 
     /** Start [setup_sim7080] */
@@ -361,7 +363,7 @@ void setup() {
 
 
     // Sync the clock if it isn't valid or we have battery to spare
-    if (getBatteryVoltage() > 3.55 || !dataLogger.isRTCSane()) {
+    if (getBatteryVoltage() > 3.55 || !loggerClock::isRTCSane()) {
         // Synchronize the RTC with NIST
         // This will also set up the modem
         dataLogger.syncRTC();

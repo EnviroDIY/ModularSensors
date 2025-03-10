@@ -59,16 +59,22 @@
 /** @ingroup sensor_dopto */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_dopto_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by a ZebraTech D-Opto
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the D-Opto can report 3 values.
 #define DOPTO_NUM_VARIABLES 3
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define DOPTO_INC_CALC_VARIABLES 0
+/**@}*/
 
 /**
  * @anchor sensor_dopto_timing
  * @name Sensor Timing
- * The sensor timing for an ZebraTech D-Opto
+ * The sensor timing for a ZebraTech D-Opto
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; the D-Opto warms up in 275ms.  Maximum
@@ -100,7 +106,7 @@
 /**
  * @anchor sensor_dopto_temp
  * @name Temperature
- * The temperature variable from an ZebraTech D-Opto
+ * The temperature variable from a ZebraTech D-Opto
  * - Range is not specified in sensor datasheet
  * - Accuracy is ± 0.1°C
  *
@@ -127,7 +133,7 @@
 /**
  * @anchor sensor_dopto_dopercent
  * @name Dissolved Oxygen Percent Saturation
- * The percent saturation variable from an ZebraTech D-Opto
+ * The percent saturation variable from a ZebraTech D-Opto
  * - Range is not specified in sensor datasheet
  * - Accuracy is 1 % of reading or 0.02PPM, whichever is greater
  *
@@ -155,7 +161,7 @@
 /**
  * @anchor sensor_dopto_domgl
  * @name Dissolved Oxygen Concentration
- * The DO concentration variable from an ZebraTech D-Opto
+ * The DO concentration variable from a ZebraTech D-Opto
  * - Range is not specified in sensor datasheet
  * - Accuracy is 1 % of reading or 0.02PPM, whichever is greater
  *
@@ -271,7 +277,7 @@ class ZebraTechDOpto_Temp : public Variable {
     explicit ZebraTechDOpto_Temp(ZebraTechDOpto* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = DOPTO_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)DOPTO_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)DOPTO_TEMP_VAR_NUM,
                    (uint8_t)DOPTO_TEMP_RESOLUTION, DOPTO_TEMP_VAR_NAME,
                    DOPTO_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -281,9 +287,9 @@ class ZebraTechDOpto_Temp : public Variable {
      * used.
      */
     ZebraTechDOpto_Temp()
-        : Variable((const uint8_t)DOPTO_TEMP_VAR_NUM,
-                   (uint8_t)DOPTO_TEMP_RESOLUTION, DOPTO_TEMP_VAR_NAME,
-                   DOPTO_TEMP_UNIT_NAME, DOPTO_TEMP_DEFAULT_CODE) {}
+        : Variable((uint8_t)DOPTO_TEMP_VAR_NUM, (uint8_t)DOPTO_TEMP_RESOLUTION,
+                   DOPTO_TEMP_VAR_NAME, DOPTO_TEMP_UNIT_NAME,
+                   DOPTO_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the ZebraTechDOpto_Temp object - no action needed.
      */
@@ -315,7 +321,7 @@ class ZebraTechDOpto_DOpct : public Variable {
     explicit ZebraTechDOpto_DOpct(
         ZebraTechDOpto* parentSense, const char* uuid = "",
         const char* varCode = DOPTO_DOPCT_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)DOPTO_DOPCT_VAR_NUM,
+        : Variable(parentSense, (uint8_t)DOPTO_DOPCT_VAR_NUM,
                    (uint8_t)DOPTO_DOPCT_RESOLUTION, DOPTO_DOPCT_VAR_NAME,
                    DOPTO_DOPCT_UNIT_NAME, varCode, uuid) {}
     /**
@@ -325,7 +331,7 @@ class ZebraTechDOpto_DOpct : public Variable {
      * used.
      */
     ZebraTechDOpto_DOpct()
-        : Variable((const uint8_t)DOPTO_DOPCT_VAR_NUM,
+        : Variable((uint8_t)DOPTO_DOPCT_VAR_NUM,
                    (uint8_t)DOPTO_DOPCT_RESOLUTION, DOPTO_DOPCT_VAR_NAME,
                    DOPTO_DOPCT_UNIT_NAME, DOPTO_DOPCT_DEFAULT_CODE) {}
     /**
@@ -359,7 +365,7 @@ class ZebraTechDOpto_DOmgL : public Variable {
     explicit ZebraTechDOpto_DOmgL(
         ZebraTechDOpto* parentSense, const char* uuid = "",
         const char* varCode = DOPTO_DOMGL_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)DOPTO_DOMGL_VAR_NUM,
+        : Variable(parentSense, (uint8_t)DOPTO_DOMGL_VAR_NUM,
                    (uint8_t)DOPTO_DOMGL_RESOLUTION, DOPTO_DOMGL_VAR_NAME,
                    DOPTO_DOMGL_UNIT_NAME, varCode, uuid) {}
     /**
@@ -369,7 +375,7 @@ class ZebraTechDOpto_DOmgL : public Variable {
      * used.
      */
     ZebraTechDOpto_DOmgL()
-        : Variable((const uint8_t)DOPTO_DOMGL_VAR_NUM,
+        : Variable((uint8_t)DOPTO_DOMGL_VAR_NUM,
                    (uint8_t)DOPTO_DOMGL_RESOLUTION, DOPTO_DOMGL_VAR_NAME,
                    DOPTO_DOMGL_UNIT_NAME, DOPTO_DOMGL_DEFAULT_CODE) {}
     /**

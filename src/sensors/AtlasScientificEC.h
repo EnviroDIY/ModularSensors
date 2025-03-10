@@ -57,6 +57,9 @@
 #ifndef SRC_SENSORS_ATLASSCIENTIFICEC_H_
 #define SRC_SENSORS_ATLASSCIENTIFICEC_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_ATLASSCIENTIFICEC_DEBUG
 
@@ -70,13 +73,15 @@
 #include "VariableBase.h"
 #include "sensors/AtlasParent.h"
 
-
-// Sensor Specific Defines
 /** @ingroup sensor_atlas_cond */
 /**@{*/
 
-/// @brief Default I2C address is 0x64 (100)
-#define ATLAS_COND_I2C_ADDR 0x64
+/**
+ * @anchor sensor_atlas_cond_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the Atlas conductivity sensor
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; Atlas EZO conductivity circuit can report
 /// 4 values.
 #define ATLAS_COND_NUM_VARIABLES 4
@@ -84,7 +89,19 @@
 /// though we recommend users include a temperature sensor and calculate
 /// specific conductance in their own program.
 #define ATLAS_COND_INC_CALC_VARIABLES 0
+/**@}*/
 
+/**
+ * @anchor sensor_atlas_cond_config
+ * @name Configuration Defines
+ * Defines to configure and set the address of the Atlas conductivity
+ * sensor
+ */
+/**@{*/
+/// @brief The default I2C address of the Atlas conductivity sensor is 0x64
+/// (100)
+#define ATLAS_COND_I2C_ADDR 0x64
+/**@}*/
 
 /**
  * @anchor sensor_atlas_cond_timing
@@ -291,7 +308,7 @@ class AtlasScientificEC : public AtlasParent {
      * circuit to report all possible measurement parameters, and sets the
      * status bit if successful.  The circuit must be powered for setup.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     bool setup(void) override;
 };
@@ -320,7 +337,7 @@ class AtlasScientificEC_Cond : public Variable {
     explicit AtlasScientificEC_Cond(
         AtlasScientificEC* parentSense, const char* uuid = "",
         const char* varCode = ATLAS_COND_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ATLAS_COND_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ATLAS_COND_VAR_NUM,
                    (uint8_t)ATLAS_COND_RESOLUTION, ATLAS_COND_VAR_NAME,
                    ATLAS_COND_UNIT_NAME, varCode, uuid) {}
     /**
@@ -330,9 +347,9 @@ class AtlasScientificEC_Cond : public Variable {
      * used.
      */
     AtlasScientificEC_Cond()
-        : Variable((const uint8_t)ATLAS_COND_VAR_NUM,
-                   (uint8_t)ATLAS_COND_RESOLUTION, ATLAS_COND_VAR_NAME,
-                   ATLAS_COND_UNIT_NAME, ATLAS_COND_DEFAULT_CODE) {}
+        : Variable((uint8_t)ATLAS_COND_VAR_NUM, (uint8_t)ATLAS_COND_RESOLUTION,
+                   ATLAS_COND_VAR_NAME, ATLAS_COND_UNIT_NAME,
+                   ATLAS_COND_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AtlasScientificEC_Cond object - no action needed.
      */
@@ -363,7 +380,7 @@ class AtlasScientificEC_TDS : public Variable {
     explicit AtlasScientificEC_TDS(AtlasScientificEC* parentSense,
                                    const char*        uuid = "",
                                    const char* varCode = ATLAS_TDS_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ATLAS_TDS_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ATLAS_TDS_VAR_NUM,
                    (uint8_t)ATLAS_TDS_RESOLUTION, ATLAS_TDS_VAR_NAME,
                    ATLAS_TDS_UNIT_NAME, varCode, uuid) {}
     /**
@@ -373,9 +390,9 @@ class AtlasScientificEC_TDS : public Variable {
      * used.
      */
     AtlasScientificEC_TDS()
-        : Variable((const uint8_t)ATLAS_TDS_VAR_NUM,
-                   (uint8_t)ATLAS_TDS_RESOLUTION, ATLAS_TDS_VAR_NAME,
-                   ATLAS_TDS_UNIT_NAME, ATLAS_TDS_DEFAULT_CODE) {}
+        : Variable((uint8_t)ATLAS_TDS_VAR_NUM, (uint8_t)ATLAS_TDS_RESOLUTION,
+                   ATLAS_TDS_VAR_NAME, ATLAS_TDS_UNIT_NAME,
+                   ATLAS_TDS_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AtlasScientificEC_TDS object - no action needed.
      */
@@ -406,7 +423,7 @@ class AtlasScientificEC_Salinity : public Variable {
     explicit AtlasScientificEC_Salinity(
         AtlasScientificEC* parentSense, const char* uuid = "",
         const char* varCode = ATLAS_SALINITY_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ATLAS_SALINITY_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ATLAS_SALINITY_VAR_NUM,
                    (uint8_t)ATLAS_SALINITY_RESOLUTION, ATLAS_SALINITY_VAR_NAME,
                    ATLAS_SALINITY_UNIT_NAME, varCode, uuid) {}
     /**
@@ -416,7 +433,7 @@ class AtlasScientificEC_Salinity : public Variable {
      * used.
      */
     AtlasScientificEC_Salinity()
-        : Variable((const uint8_t)ATLAS_SALINITY_VAR_NUM,
+        : Variable((uint8_t)ATLAS_SALINITY_VAR_NUM,
                    (uint8_t)ATLAS_SALINITY_RESOLUTION, ATLAS_SALINITY_VAR_NAME,
                    ATLAS_SALINITY_UNIT_NAME, ATLAS_SALINITY_DEFAULT_CODE) {}
     /**
@@ -450,7 +467,7 @@ class AtlasScientificEC_SpecificGravity : public Variable {
     explicit AtlasScientificEC_SpecificGravity(
         AtlasScientificEC* parentSense, const char* uuid = "",
         const char* varCode = ATLAS_SG_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ATLAS_SG_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ATLAS_SG_VAR_NUM,
                    (uint8_t)ATLAS_SG_RESOLUTION, ATLAS_SG_VAR_NAME,
                    ATLAS_SG_UNIT_NAME, varCode, uuid) {}
     /**
@@ -460,9 +477,9 @@ class AtlasScientificEC_SpecificGravity : public Variable {
      * used.
      */
     AtlasScientificEC_SpecificGravity()
-        : Variable((const uint8_t)ATLAS_SG_VAR_NUM,
-                   (uint8_t)ATLAS_SG_RESOLUTION, ATLAS_SG_VAR_NAME,
-                   ATLAS_SG_UNIT_NAME, ATLAS_SG_DEFAULT_CODE) {}
+        : Variable((uint8_t)ATLAS_SG_VAR_NUM, (uint8_t)ATLAS_SG_RESOLUTION,
+                   ATLAS_SG_VAR_NAME, ATLAS_SG_UNIT_NAME,
+                   ATLAS_SG_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AtlasScientificEC_SpecificGravity() object - no action
      * needed.

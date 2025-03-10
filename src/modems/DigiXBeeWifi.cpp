@@ -21,7 +21,7 @@ DigiXBeeWifi::DigiXBeeWifi(Stream* modemStream, int8_t powerPin,
     : DigiXBee(powerPin, statusPin, useCTSStatus, modemResetPin,
                modemSleepRqPin),
 #ifdef MS_DIGIXBEEWIFI_DEBUG_DEEP
-      _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
+      _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
       gsmModem(_modemATDebugger, modemResetPin),
 #else
       gsmModem(*modemStream, modemResetPin),
@@ -368,11 +368,6 @@ uint32_t DigiXBeeWifi::getNISTTime(void) {
 
     gsmClient.stop();
 
-    // Try up to 4 NIST IP addresses attempting to get a timestamp from NIST
-#if !defined NIST_SERVER_RETRYS
-#define NIST_SERVER_RETRYS 4
-#endif  // NIST_SERVER_RETRYS
-
     for (uint8_t i = 0; i < NIST_SERVER_RETRYS; i++) {
         // Must ensure that we do not ping the daylight servers more than once
         // every 4 seconds.  NIST clearly specifies here that this is a
@@ -394,36 +389,31 @@ uint32_t DigiXBeeWifi::getNISTTime(void) {
         // These are is the IP address of time-[a,b,c,d]-wwv.nist.gov
         // XBee's address lookup falters on time.nist.gov
 
-#define TIME_PROTOCOL_PORT 37
-#define IP_STR_LEN 18
-        const char ipAddr[NIST_SERVER_RETRYS][IP_STR_LEN] = {
-            {"132, 163, 97, 1"},
-            {"132, 163, 97, 2"},
-            {"132, 163, 97, 3"},
-            {"132, 163, 97, 4"}};
-        IPAddress ip1(132, 163, 97, 1);  // Initialize
-        ip1.fromString(ipAddr[i]);
-        MS_DBG(F("NIST lookup mdmIP["), i, "/", NIST_SERVER_RETRYS,
-               F("] with "), ip1);
+        IPAddress nistIPs[] = {
+            IPAddress(132, 163, 97, 1), IPAddress(132, 163, 97, 2),
+            IPAddress(132, 163, 97, 3), IPAddress(132, 163, 97, 4),
+            IPAddress(132, 163, 97, 6), IPAddress(132, 163, 97, 8)};
+        MS_DBG(F("\nConnecting to NIST daytime Server at ip"), nistIPs[i],
+               F("attempt"), i, F("of"), NIST_SERVER_RETRYS);
 
         // NOTE:  This "connect" only sets up the connection parameters, the TCP
         // socket isn't actually opened until we first send data (the '!' below)
-        connectionMade = gsmClient.connect(ip1, TIME_PROTOCOL_PORT);
+        connectionMade = gsmClient.connect(nistIPs[i], TIME_PROTOCOL_PORT);
         // Need to send something before connection is made
         gsmClient.println('!');
 
         // Wait up to 5 seconds for a response
         if (connectionMade) {
             uint32_t start = millis();
-            while (gsmClient && gsmClient.available() < 4 &&
+            while (gsmClient && gsmClient.available() < NIST_RESPONSE_BYTES &&
                    millis() - start < 5000L) {
                 // wait
             }
 
             if (gsmClient.available() >= 4) {
                 MS_DBG(F("NIST responded after"), millis() - start, F("ms"));
-                byte response[4] = {0};
-                gsmClient.read(response, 4);
+                byte response[NIST_RESPONSE_BYTES] = {0};
+                gsmClient.read(response, NIST_RESPONSE_BYTES);
                 gsmClient.stop();
                 return parseNISTBytes(response);
             } else {
@@ -585,79 +575,4 @@ bool DigiXBeeWifi::updateModemMetadata(void) {
     }
 
     return success;
-}
-
-
-// Az extensions
-void DigiXBeeWifi::setWiFiId(const char* newSsid, bool copyId) {
-    uint8_t newSsid_sz = strlen(newSsid);
-    _ssid              = newSsid;
-    if (copyId) {
-/* Do size checks, allocate memory for the LoggerID, copy it there
- *  then set assignment.
- */
-#define WIFI_SSID_MAX_sz 32
-        if (newSsid_sz > WIFI_SSID_MAX_sz) {
-            char* WiFiId2 = (char*)newSsid;
-            PRINTOUT(F("\n\r   LoggerModem:setWiFiId too long: Trimmed to "),
-                     newSsid_sz);
-            WiFiId2[newSsid_sz] = 0;  // Trim max size
-            newSsid_sz          = WIFI_SSID_MAX_sz;
-        }
-        if (NULL == _ssid_buf) {
-            _ssid_buf = new char[newSsid_sz + 2];  // Allow for trailing 0
-        } else {
-            PRINTOUT(F("\nLoggerModem::setWiFiId error - expected NULL ptr"));
-        }
-        if (NULL == _ssid_buf) {
-            // Major problem
-            PRINTOUT(F("\nLoggerModem::setWiFiId error -no buffer "),
-                     _ssid_buf);
-        } else {
-            strcpy(_ssid_buf, newSsid);
-            _ssid = _ssid_buf;
-            //_ssid2 =  _ssid_buf;
-        }
-        MS_DBG(F("\nsetWiFiId cp "), _ssid, " sz: ", newSsid_sz);
-    }
-}
-
-void DigiXBeeWifi::setWiFiPwd(const char* newPwd, bool copyId) {
-    uint8_t newPwd_sz = strlen(newPwd);
-    _pwd              = newPwd;
-
-    if (copyId) {
-/* Do size checks, allocate memory for the LoggerID, copy it there
- *  then set assignment.
- */
-#define WIFI_PWD_MAX_sz 63  // Len 63 printable chars + 0
-        if (newPwd_sz > WIFI_PWD_MAX_sz) {
-            char* pwd2 = (char*)newPwd;
-            PRINTOUT(F("\n\r   LoggerModem:setWiFiPwd too long: Trimmed to "),
-                     newPwd_sz);
-            pwd2[newPwd_sz] = 0;  // Trim max size
-            newPwd_sz       = WIFI_PWD_MAX_sz;
-        }
-        if (NULL == _pwd_buf) {
-            _pwd_buf = new char[newPwd_sz + 2];  // Allow for trailing 0
-        } else {
-            PRINTOUT(F("\nLoggerModem::setWiFiPwd error - expected NULL ptr"));
-        }
-        if (NULL == _pwd_buf) {
-            // Major problem
-            PRINTOUT(F("\nLoggerModem::setWiFiPwd error -no buffer "),
-                     _pwd_buf);
-        } else {
-            strcpy(_pwd_buf, newPwd);
-            _pwd = _pwd_buf;
-        }
-        MS_DEEP_DBG(F("\nsetWiFiPwd cp "), _ssid, " sz: ", newPwd_sz);
-    }
-}
-
-String DigiXBeeWifi::getWiFiId(void) {
-    return _ssid;
-}
-String DigiXBeeWifi::getWiFiPwd(void) {
-    return _pwd;
 }

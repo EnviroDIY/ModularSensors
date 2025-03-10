@@ -49,6 +49,9 @@
 #ifndef SRC_SENSORS_ATLASSCIENTIFICDO_H_
 #define SRC_SENSORS_ATLASSCIENTIFICDO_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_ATLASSCIENTIFICDO_DEBUG
 
@@ -62,20 +65,31 @@
 #include "VariableBase.h"
 #include "sensors/AtlasParent.h"
 
-/**
- * @brief Default I2C address is 0x61 (97)
- */
-#define ATLAS_DO_I2C_ADDR 0x61
-
 /** @ingroup sensor_atlas_do */
 /**@{*/
 
-// Sensor Specific Defines
-/// @brief Sensor::_numReturnedValues; the Atlas DO sensor can report 2 values.
+/**
+ * @anchor sensor_atlas_do_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the Atlas DO sensor
+ */
+/**@{*/
+/// @brief Sensor::_numReturnedValues; the Atlas EZO DO circuit can report 2
+/// values.
 #define ATLAS_DO_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define ATLAS_DO_INC_CALC_VARIABLES 0
+/**@}*/
 
+/**
+ * @anchor sensor_atlas_do_config
+ * @name Configuration Defines
+ * Defines to configure and set the address of the Atlas DO sensor
+ */
+/**@{*/
+/// @brief The default I2C address of the Atlas DO sensor is 0x61 (97)
+#define ATLAS_DO_I2C_ADDR 0x61
+/**@}*/
 
 /**
  * @anchor sensor_atlas_do_timing
@@ -231,7 +245,7 @@ class AtlasScientificDO : public AtlasParent {
      * circuit to report all possible measurement parameters, and sets the
      * status bit if successful.  The circuit must be powered for setup.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     bool setup(void) override;
 };
@@ -260,7 +274,7 @@ class AtlasScientificDO_DOmgL : public Variable {
     explicit AtlasScientificDO_DOmgL(
         AtlasScientificDO* parentSense, const char* uuid = "",
         const char* varCode = ATLAS_DOMGL_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ATLAS_DOMGL_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ATLAS_DOMGL_VAR_NUM,
                    (uint8_t)ATLAS_DOMGL_RESOLUTION, ATLAS_DOMGL_VAR_NAME,
                    ATLAS_DOMGL_UNIT_NAME, varCode, uuid) {}
     /**
@@ -270,7 +284,7 @@ class AtlasScientificDO_DOmgL : public Variable {
      * used.
      */
     AtlasScientificDO_DOmgL()
-        : Variable((const uint8_t)ATLAS_DOMGL_VAR_NUM,
+        : Variable((uint8_t)ATLAS_DOMGL_VAR_NUM,
                    (uint8_t)ATLAS_DOMGL_RESOLUTION, ATLAS_DOMGL_VAR_NAME,
                    ATLAS_DOMGL_UNIT_NAME, ATLAS_DOMGL_DEFAULT_CODE) {}
     /**
@@ -303,7 +317,7 @@ class AtlasScientificDO_DOpct : public Variable {
     explicit AtlasScientificDO_DOpct(
         AtlasScientificDO* parentSense, const char* uuid = "",
         const char* varCode = ATLAS_DOPCT_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ATLAS_DOPCT_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ATLAS_DOPCT_VAR_NUM,
                    (uint8_t)ATLAS_DOPCT_RESOLUTION, ATLAS_DOPCT_VAR_NAME,
                    ATLAS_DOPCT_UNIT_NAME, varCode, uuid) {}
     /**
@@ -313,7 +327,7 @@ class AtlasScientificDO_DOpct : public Variable {
      * used.
      */
     AtlasScientificDO_DOpct()
-        : Variable((const uint8_t)ATLAS_DOPCT_VAR_NUM,
+        : Variable((uint8_t)ATLAS_DOPCT_VAR_NUM,
                    (uint8_t)ATLAS_DOPCT_RESOLUTION, ATLAS_DOPCT_VAR_NAME,
                    ATLAS_DOPCT_UNIT_NAME, ATLAS_DOPCT_DEFAULT_CODE) {}
     /**

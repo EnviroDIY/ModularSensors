@@ -61,6 +61,9 @@
 #ifndef SRC_MODEMS_SODAQ2GBEER6_H_
 #define SRC_MODEMS_SODAQ2GBEER6_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_SODAQ2GBEER6_DEBUG
 // #define MS_SODAQ2GBEER6_DEBUG_DEEP
@@ -68,17 +71,6 @@
 #ifdef MS_SODAQ2GBEER6_DEBUG
 #define MS_DEBUGGING_STD "Sodaq2GBeeR6"
 #endif
-
-/** @ingroup modem_gprsbee */
-/**@{*/
-
-/**
- * @brief The loggerModem::_wakeDelayTime_ms.
- *
- * The GPRSBee R6+ has the `PWR_KEY` tied to the input voltage, so there is no
- * warm-up time needed
- */
-#define S2GBR6_WAKE_DELAY_MS 0
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
@@ -89,6 +81,23 @@
 #include <StreamDebugger.h>
 #endif
 
+/** @ingroup modem_gprsbee */
+/**@{*/
+
+/**
+ * @anchor modem_gprsbee_pins_timing
+ * @name Modem Pin Settings and Timing
+ * The timing and pin level settings for a GPRSBee
+ */
+/**@{*/
+/**
+ * @brief The loggerModem::_wakeDelayTime_ms.
+ *
+ * The GPRSBee R6+ has the `PWR_KEY` tied to the input voltage, so there is no
+ * warm-up time needed
+ */
+#define S2GBR6_WAKE_DELAY_MS 0
+/**@}*/
 
 /**
  * @brief The loggerModem subclass for the [Sodaq 2GBee](@ref modem_gprsbee)
@@ -166,6 +175,10 @@ class Sodaq2GBeeR6 : public SIMComSIM800 {
     bool extraModemSetup(void) override;
 
  private:
+    /**
+     * @brief The digital pin number of a pin on the mcu controlling the voltage
+     * reference (pin 1) for the GPRSBee.
+     */
     int8_t _vRefPin;
 };
 /**@}*/

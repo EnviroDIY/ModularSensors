@@ -60,6 +60,9 @@
 #ifndef SRC_SENSORS_AOSONGDHT_H_
 #define SRC_SENSORS_AOSONGDHT_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_AOSONGDHT_DEBUG
 
@@ -95,11 +98,17 @@ static const uint8_t AM2301{21}; /**< AM2301 */
 /** @ingroup sensor_dht */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_dht_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by an AOSong DHT
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the DHT can report 3 values.
 #define DHT_NUM_VARIABLES 3
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define DHT_INC_CALC_VARIABLES 0
+/**@}*/
 
 /**
  * @anchor sensor_dht_timing
@@ -247,8 +256,8 @@ class AOSongDHT : public Sensor {
     bool addSingleMeasurementResult(void) override;
 
  private:
-    DHT     dht_internal;
-    uint8_t _dhtType;
+    DHT     dht_internal;  ///< Internal reference to the Adafruit DHT object
+    uint8_t _dhtType;      ///< Internal reference to the DHT type
 };
 
 
@@ -273,7 +282,7 @@ class AOSongDHT_Humidity : public Variable {
      */
     explicit AOSongDHT_Humidity(AOSongDHT* parentSense, const char* uuid = "",
                                 const char* varCode = DHT_HUMIDITY_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)DHT_HUMIDITY_VAR_NUM,
+        : Variable(parentSense, (uint8_t)DHT_HUMIDITY_VAR_NUM,
                    (uint8_t)DHT_HUMIDITY_RESOLUTION, DHT_HUMIDITY_VAR_NAME,
                    DHT_HUMIDITY_UNIT_NAME, varCode, uuid) {}
     /**
@@ -282,7 +291,7 @@ class AOSongDHT_Humidity : public Variable {
      * @note This must be tied with a parent AOSongDHT before it can be used.
      */
     AOSongDHT_Humidity()
-        : Variable((const uint8_t)DHT_HUMIDITY_VAR_NUM,
+        : Variable((uint8_t)DHT_HUMIDITY_VAR_NUM,
                    (uint8_t)DHT_HUMIDITY_RESOLUTION, DHT_HUMIDITY_VAR_NAME,
                    DHT_HUMIDITY_UNIT_NAME, DHT_HUMIDITY_DEFAULT_CODE) {}
     /**
@@ -314,7 +323,7 @@ class AOSongDHT_Temp : public Variable {
      */
     explicit AOSongDHT_Temp(AOSongDHT* parentSense, const char* uuid = "",
                             const char* varCode = DHT_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)DHT_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)DHT_TEMP_VAR_NUM,
                    (uint8_t)DHT_TEMP_RESOLUTION, DHT_TEMP_VAR_NAME,
                    DHT_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -323,9 +332,9 @@ class AOSongDHT_Temp : public Variable {
      * @note This must be tied with a parent AOSongDHT before it can be used.
      */
     AOSongDHT_Temp()
-        : Variable((const uint8_t)DHT_TEMP_VAR_NUM,
-                   (uint8_t)DHT_TEMP_RESOLUTION, DHT_TEMP_VAR_NAME,
-                   DHT_TEMP_UNIT_NAME, DHT_TEMP_DEFAULT_CODE) {}
+        : Variable((uint8_t)DHT_TEMP_VAR_NUM, (uint8_t)DHT_TEMP_RESOLUTION,
+                   DHT_TEMP_VAR_NAME, DHT_TEMP_UNIT_NAME,
+                   DHT_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AOSongDHT_Temp object - no action needed.
      */
@@ -355,7 +364,7 @@ class AOSongDHT_HI : public Variable {
      */
     explicit AOSongDHT_HI(AOSongDHT* parentSense, const char* uuid = "",
                           const char* varCode = DHT_HI_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)DHT_HI_VAR_NUM,
+        : Variable(parentSense, (uint8_t)DHT_HI_VAR_NUM,
                    (uint8_t)DHT_HI_RESOLUTION, DHT_HI_VAR_NAME,
                    DHT_HI_UNIT_NAME, varCode, uuid) {}
     /**
@@ -364,7 +373,7 @@ class AOSongDHT_HI : public Variable {
      * @note This must be tied with a parent AOSongDHT before it can be used.
      */
     AOSongDHT_HI()
-        : Variable((const uint8_t)DHT_HI_VAR_NUM, (uint8_t)DHT_HI_RESOLUTION,
+        : Variable((uint8_t)DHT_HI_VAR_NUM, (uint8_t)DHT_HI_RESOLUTION,
                    DHT_HI_VAR_NAME, DHT_HI_UNIT_NAME, DHT_HI_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AOSongDHT_HI object - no action needed.

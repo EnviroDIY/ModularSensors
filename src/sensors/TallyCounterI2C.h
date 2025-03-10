@@ -71,6 +71,9 @@
 #ifndef SRC_SENSORS_TallyCounterI2C_H_
 #define SRC_SENSORS_TallyCounterI2C_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_TALLYCOUNTERI2C_DEBUG
 
@@ -89,11 +92,27 @@
 /** @ingroup sensor_tally */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_tally_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the Tally event counter
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the Tally can report 1 value.
 #define TALLY_NUM_VARIABLES 1
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define TALLY_INC_CALC_VARIABLES 0
+/**@}*/
+
+/**
+ * @anchor sensor_tally_config
+ * @name Configuration Defines
+ * Defines to set the address of the Tally event counter.
+ */
+/**@{*/
+/// @brief The default address of the Tally
+#define TALLY_ADDRESS_BASE 0x33
+/**@}*/
 
 /**
  * @anchor sensor_tally_timing
@@ -139,9 +158,6 @@
 /// @brief Default variable short code; "TallyCounterI2CEvents"
 #define TALLY_EVENTS_DEFAULT_CODE "TallyCounterI2CEvents"
 /**@}*/
-
-/// @brief The default address of the Tally
-#define TALLY_ADDRESS_BASE 0x33
 
 /* clang-format off */
 /**
@@ -193,7 +209,7 @@ class TallyCounterI2C : public Sensor {
      * #_sensorStatus. It also engages sleep mode on the Tally counter and
      * clears the counter memory. The Tally must be powered for setup.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     bool setup(void) override;
     /**
@@ -244,7 +260,7 @@ class TallyCounterI2C_Events : public Variable {
     explicit TallyCounterI2C_Events(
         TallyCounterI2C* parentSense, const char* uuid = "",
         const char* varCode = TALLY_EVENTS_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)TALLY_EVENTS_VAR_NUM,
+        : Variable(parentSense, (uint8_t)TALLY_EVENTS_VAR_NUM,
                    (uint8_t)TALLY_EVENTS_RESOLUTION, TALLY_EVENTS_VAR_NAME,
                    TALLY_EVENTS_UNIT_NAME, varCode, uuid) {}
     /**
@@ -254,7 +270,7 @@ class TallyCounterI2C_Events : public Variable {
      * used.
      */
     TallyCounterI2C_Events()
-        : Variable((const uint8_t)TALLY_EVENTS_VAR_NUM,
+        : Variable((uint8_t)TALLY_EVENTS_VAR_NUM,
                    (uint8_t)TALLY_EVENTS_RESOLUTION, TALLY_EVENTS_VAR_NAME,
                    TALLY_EVENTS_UNIT_NAME, TALLY_EVENTS_DEFAULT_CODE) {}
     /**

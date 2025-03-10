@@ -70,29 +70,48 @@
 #ifndef SRC_MODEMS_ESPRESSIFESP8266_H_
 #define SRC_MODEMS_ESPRESSIFESP8266_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_ESPRESSIFESP8266_DEBUG
 // #define MS_ESPRESSIFESP8266_DEBUG_DEEP
 
-#ifdef MS_ESPRESSIFESP8266_DEBUG
+#if defined(MS_ESPRESSIFESP8266_DEBUG) || defined(MS_ESPRESSIFESP32_DEBUG)
 #define MS_DEBUGGING_STD "EspressifESP8266"
+#endif
+
+#if defined(MS_ESPRESSIFESP8266_DEBUG_DEEP) || \
+    defined(MS_ESPRESSIFESP32_DEBUG_DEEP)
+#define MS_DEBUGGING_DEEP "EspressifESP8266"
+#endif
+
+/**
+ * @brief The modem type for the underlying TinyGSM library.
+ */
+#define TINY_GSM_MODEM_ESP8266
+
+// Included Dependencies
+#include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
+#undef MS_DEBUGGING_DEEP
+#include "TinyGsmClient.h"
+#include "LoggerModem.h"
+
+#if defined(MS_ESPRESSIFESP8266_DEBUG_DEEP) || \
+    defined(MS_ESPRESSIFESP32_DEBUG_DEEP)
+#include <StreamDebugger.h>
 #endif
 
 /** @ingroup modem_esp8266 */
 /**@{*/
 
 /**
- * @brief The modem type for the underlying TinyGSM library.
+ * @anchor modem_esp8266_pins_timing
+ * @name Modem Pin Settings and Timing
+ * The timing and pin level settings for an ESP8266 (or ESP32)
  */
-#define TINY_GSM_MODEM_ESP8266
-#ifndef TINY_GSM_RX_BUFFER
-/**
- * @brief The size of the buffer for incoming data.
- */
-#define TINY_GSM_RX_BUFFER 64
-#endif
-
-
+/**@{*/
 /**
  * @brief The loggerModem::_statusLevel.
  *
@@ -179,16 +198,7 @@
  * credentials.
  */
 #define ESP8266_RECONNECT_TIME_MS 2500
-
-// Included Dependencies
-#include "ModSensorDebugger.h"
-#undef MS_DEBUGGING_STD
-#include "TinyGsmClient.h"
-#include "LoggerModem.h"
-
-#ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
-#include <StreamDebugger.h>
-#endif
+/**@}*/
 
 /**
  * @brief The loggerModem subclass for any breakout of the
@@ -233,8 +243,8 @@ class EspressifESP8266 : public loggerModem {
     uint32_t getNISTTime(void) override;
 
     bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
-    bool  getModemBatteryStats(uint8_t& chargeState, int8_t& percent,
-                               uint16_t& milliVolts) override;
+    bool  getModemBatteryStats(int8_t& chargeState, int8_t& percent,
+                               int16_t& milliVolts) override;
     float getModemChipTemperature(void) override;
 
 #ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
@@ -266,15 +276,23 @@ class EspressifESP8266 : public loggerModem {
     bool isModemAwake(void) override;
 
  private:
+    /**
+     * @brief Waits for the Espressif module to reboot and print out it's boot
+     * up string. Because the boot up string is at a different baud rate (74880
+     * baud), it usually comes out as junk.
+     *
+     * @return True if text (assumed to be the start message) was received;
+     * false if text was received after boot.
+     */
     bool        ESPwaitForBoot(void);
-    const char* _ssid;
-    const char* _pwd;
+    const char* _ssid;  ///< Internal reference to the WiFi SSID
+    const char* _pwd;   ///< Internal reference to the WiFi password
 };
+/**@}*/
 
 /**
- * @brief typedef to avoid confusion for users
+ * @brief Assign EspressifESP32 as type EspressifESP8266 to avoid user confusion
  */
 typedef EspressifESP8266 EspressifESP32;
 
-/**@}*/
 #endif  // SRC_MODEMS_ESPRESSIFESP8266_H_

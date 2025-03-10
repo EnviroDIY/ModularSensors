@@ -71,6 +71,9 @@
 #ifndef SRC_SENSORS_RAINCOUNTERI2C_H_
 #define SRC_SENSORS_RAINCOUNTERI2C_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_RAINCOUNTERI2C_DEBUG
 
@@ -85,20 +88,26 @@
 #include "SensorBase.h"
 #include <Wire.h>
 
-#if defined MS_RAIN_SOFTWAREWIRE
+#if defined(MS_RAIN_SOFTWAREWIRE)
 #include <SoftwareWire.h>  // Testato's SoftwareWire
 #endif
 
 /** @ingroup sensor_i2c_rain */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_i2c_rain_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the tipping bucket counter
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the tipping bucket counter can report 2
 /// values.
 #define BUCKET_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; we calculate rain depth from the number of
 /// tips, assuming either English or metric calibration.
 #define BUCKET_INC_CALC_VARIABLES 1
+/**@}*/
 
 /**
  * @anchor sensor_i2c_rain_timing
@@ -267,7 +276,7 @@ class RainCounterI2C : public Sensor {
      * This begins the Wire library (sets pin levels and modes for I2C) and
      * updates the #_sensorStatus.  No sensor power is required.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     bool setup(void) override;
     /**
@@ -333,7 +342,7 @@ class RainCounterI2C_Tips : public Variable {
     explicit RainCounterI2C_Tips(RainCounterI2C* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode = BUCKET_TIPS_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)BUCKET_TIPS_VAR_NUM,
+        : Variable(parentSense, (uint8_t)BUCKET_TIPS_VAR_NUM,
                    (uint8_t)BUCKET_TIPS_RESOLUTION, BUCKET_TIPS_VAR_NAME,
                    BUCKET_TIPS_UNIT_NAME, varCode, uuid) {}
     /**
@@ -343,7 +352,7 @@ class RainCounterI2C_Tips : public Variable {
      * used.
      */
     RainCounterI2C_Tips()
-        : Variable((const uint8_t)BUCKET_TIPS_VAR_NUM,
+        : Variable((uint8_t)BUCKET_TIPS_VAR_NUM,
                    (uint8_t)BUCKET_TIPS_RESOLUTION, BUCKET_TIPS_VAR_NAME,
                    BUCKET_TIPS_UNIT_NAME, BUCKET_TIPS_DEFAULT_CODE) {}
     /**
@@ -375,7 +384,7 @@ class RainCounterI2C_Depth : public Variable {
     explicit RainCounterI2C_Depth(
         RainCounterI2C* parentSense, const char* uuid = "",
         const char* varCode = BUCKET_RAIN_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)BUCKET_RAIN_VAR_NUM,
+        : Variable(parentSense, (uint8_t)BUCKET_RAIN_VAR_NUM,
                    (uint8_t)BUCKET_RAIN_RESOLUTION, BUCKET_RAIN_VAR_NAME,
                    BUCKET_RAIN_UNIT_NAME, varCode, uuid) {}
     /**
@@ -385,7 +394,7 @@ class RainCounterI2C_Depth : public Variable {
      * used.
      */
     RainCounterI2C_Depth()
-        : Variable((const uint8_t)BUCKET_RAIN_VAR_NUM,
+        : Variable((uint8_t)BUCKET_RAIN_VAR_NUM,
                    (uint8_t)BUCKET_RAIN_RESOLUTION, BUCKET_RAIN_VAR_NAME,
                    BUCKET_RAIN_UNIT_NAME, BUCKET_RAIN_DEFAULT_CODE) {}
     /**

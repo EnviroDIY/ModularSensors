@@ -40,6 +40,7 @@ bool AtlasScientificCO2::setup() {
 
     // This sensor needs power for setup!
     // We want to turn on all possible measurement parameters
+    delay(10);
     bool wasOn = checkPowerOn();
     if (!wasOn) { powerUp(); }
     waitForWarmUp();

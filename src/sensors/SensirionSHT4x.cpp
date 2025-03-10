@@ -51,6 +51,7 @@ bool SensirionSHT4x::setup(void) {
 
     // This sensor needs power for setup!
     // The SHT4x's begin() does a soft reset to check for sensor communication.
+    delay(10);
     bool wasOn = checkPowerOn();
     if (!wasOn) { powerUp(); }
     waitForWarmUp();

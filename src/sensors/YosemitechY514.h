@@ -58,11 +58,17 @@
 /** @ingroup sensor_y514 */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_y514_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by a Yosemitch Y514
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the Y514 can report 2 values.
 #define Y514_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define Y514_INC_CALC_VARIABLES 0
+/**@}*/
 
 /**
  * @anchor sensor_y514_timing
@@ -218,7 +224,7 @@ class YosemitechY514_Chlorophyll : public Variable {
     explicit YosemitechY514_Chlorophyll(
         YosemitechY514* parentSense, const char* uuid = "",
         const char* varCode = Y514_CHLORO_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)Y514_CHLORO_VAR_NUM,
+        : Variable(parentSense, (uint8_t)Y514_CHLORO_VAR_NUM,
                    (uint8_t)Y514_CHLORO_RESOLUTION, Y514_CHLORO_VAR_NAME,
                    Y514_CHLORO_UNIT_NAME, varCode, uuid) {}
     /**
@@ -228,7 +234,7 @@ class YosemitechY514_Chlorophyll : public Variable {
      * used.
      */
     YosemitechY514_Chlorophyll()
-        : Variable((const uint8_t)Y514_CHLORO_VAR_NUM,
+        : Variable((uint8_t)Y514_CHLORO_VAR_NUM,
                    (uint8_t)Y514_CHLORO_RESOLUTION, Y514_CHLORO_VAR_NAME,
                    Y514_CHLORO_UNIT_NAME, Y514_CHLORO_DEFAULT_CODE) {}
     /**
@@ -263,7 +269,7 @@ class YosemitechY514_Temp : public Variable {
     explicit YosemitechY514_Temp(YosemitechY514* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = Y514_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)Y514_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)Y514_TEMP_VAR_NUM,
                    (uint8_t)Y514_TEMP_RESOLUTION, Y514_TEMP_VAR_NAME,
                    Y514_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -273,9 +279,9 @@ class YosemitechY514_Temp : public Variable {
      * used.
      */
     YosemitechY514_Temp()
-        : Variable((const uint8_t)Y514_TEMP_VAR_NUM,
-                   (uint8_t)Y514_TEMP_RESOLUTION, Y514_TEMP_VAR_NAME,
-                   Y514_TEMP_UNIT_NAME, Y514_TEMP_DEFAULT_CODE) {}
+        : Variable((uint8_t)Y514_TEMP_VAR_NUM, (uint8_t)Y514_TEMP_RESOLUTION,
+                   Y514_TEMP_VAR_NAME, Y514_TEMP_UNIT_NAME,
+                   Y514_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY514_Temp object - no action needed.
      */

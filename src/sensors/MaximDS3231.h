@@ -59,6 +59,9 @@
 #ifndef SRC_SENSORS_MAXIMDS3231_H_
 #define SRC_SENSORS_MAXIMDS3231_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_MAXIMDS3231_DEBUG
 
@@ -75,11 +78,17 @@
 /** @ingroup sensor_ds3231 */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_ds3231_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the DS3231
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the DS3231 can report 1 value.
 #define DS3231_NUM_VARIABLES 1
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define DS3231_INC_CALC_VARIABLES 0
+/**@}*/
 
 /**
  * @anchor sensor_ds3231_timing
@@ -169,7 +178,7 @@ class MaximDS3231 : public Sensor {
      * the RTC.  The clock should be continuously powered, so we never need to
      * worry about power up.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     bool setup(void) override;
 
@@ -181,7 +190,7 @@ class MaximDS3231 : public Sensor {
      * @note This function does NOT include any waiting for the sensor to be
      * warmed up or stable!
      *
-     * @return **bool** True if the start measurement function completed
+     * @return True if the start measurement function completed
      * successfully. successfully.
      */
     bool startSingleMeasurement(void) override;
@@ -214,7 +223,7 @@ class MaximDS3231_Temp : public Variable {
      */
     explicit MaximDS3231_Temp(MaximDS3231* parentSense, const char* uuid = "",
                               const char* varCode = DS3231_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)DS3231_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)DS3231_TEMP_VAR_NUM,
                    (uint8_t)DS3231_TEMP_RESOLUTION, DS3231_TEMP_VAR_NAME,
                    DS3231_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -223,7 +232,7 @@ class MaximDS3231_Temp : public Variable {
      * @note This must be tied with a parent MaximDS3231 before it can be used.
      */
     MaximDS3231_Temp()
-        : Variable((const uint8_t)DS3231_TEMP_VAR_NUM,
+        : Variable((uint8_t)DS3231_TEMP_VAR_NUM,
                    (uint8_t)DS3231_TEMP_RESOLUTION, DS3231_TEMP_VAR_NAME,
                    DS3231_TEMP_UNIT_NAME, DS3231_TEMP_DEFAULT_CODE) {}
     /**

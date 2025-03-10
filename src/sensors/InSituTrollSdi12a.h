@@ -80,11 +80,20 @@
 // Included Dependencies
 #include "sensors/SDI12Sensors.h"
 
-// Sensor Specific Defines
 /** @ingroup sensor_insitu_troll */
+/**@{*/
+
+/**
+ * @anchor sensor_insitu_troll_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the TROLL 500
+ */
 /**@{*/
 /// @brief Sensor::_numReturnedValues; the TROLL 500 can report 3 values.
 #define ITROLLA_NUM_VARIABLES 3
+/// @brief Sensor::_incCalcValues; we don't calculate any additional values.
+#define ITROLLA_INC_CALC_VARIABLES 0
+/**@}*/
 
 /**
  * @anchor sensor_insitu_troll_timing
@@ -240,12 +249,18 @@ class InSituTrollSdi12a : public SDI12Sensors {
                        "InSituTrollSdi12a", ITROLLA_NUM_VARIABLES,
                        ITROLLA_WARM_UP_TIME_MS, ITROLLA_STABILIZATION_TIME_MS,
                        ITROLLA_MEASUREMENT_TIME_MS) {}
+    /**
+     * @copydoc InSituTrollSdi12a::InSituTrollSdi12a
+     */
     InSituTrollSdi12a(char* SDI12address, int8_t powerPin, int8_t dataPin,
                       uint8_t measurementsToAverage = 1)
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "InSituTrollSdi12a", ITROLLA_NUM_VARIABLES,
                        ITROLLA_WARM_UP_TIME_MS, ITROLLA_STABILIZATION_TIME_MS,
                        ITROLLA_MEASUREMENT_TIME_MS) {}
+    /**
+     * @copydoc InSituTrollSdi12a::InSituTrollSdi12a
+     */
     InSituTrollSdi12a(int SDI12address, int8_t powerPin, int8_t dataPin,
                       uint8_t measurementsToAverage = 1)
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
@@ -282,7 +297,7 @@ class InSituTrollSdi12a_Pressure : public Variable {
     InSituTrollSdi12a_Pressure(
         Sensor* parentSense, const char* uuid = "",
         const char* varCode = ITROLLA_PRESSURE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ITROLLA_PRESSURE_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ITROLLA_PRESSURE_VAR_NUM,
                    (uint8_t)ITROLLA_PRESSURE_RESOLUTION,
                    ITROLLA_PRESSURE_VAR_NAME, ITROLLA_PRESSURE_UNIT_NAME,
                    varCode, uuid) {}
@@ -293,7 +308,7 @@ class InSituTrollSdi12a_Pressure : public Variable {
      * used.
      */
     InSituTrollSdi12a_Pressure()
-        : Variable((const uint8_t)ITROLLA_PRESSURE_VAR_NUM,
+        : Variable((uint8_t)ITROLLA_PRESSURE_VAR_NUM,
                    (uint8_t)ITROLLA_PRESSURE_RESOLUTION,
                    ITROLLA_PRESSURE_VAR_NAME, ITROLLA_PRESSURE_UNIT_NAME,
                    ITROLLA_PRESSURE_DEFAULT_CODE) {}
@@ -326,7 +341,7 @@ class InSituTrollSdi12a_Temp : public Variable {
      */
     InSituTrollSdi12a_Temp(Sensor* parentSense, const char* uuid = "",
                            const char* varCode = ITROLLA_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ITROLLA_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ITROLLA_TEMP_VAR_NUM,
                    (uint8_t)ITROLLA_TEMP_RESOLUTION, ITROLLA_TEMP_TEMP_VAR_NAME,
                    ITROLLA_TEMP_TEMP_UNIT_NAME, varCode, uuid) {}
 
@@ -337,7 +352,7 @@ class InSituTrollSdi12a_Temp : public Variable {
      * used.
      */
     InSituTrollSdi12a_Temp()
-        : Variable((const uint8_t)ITROLLA_TEMP_VAR_NUM,
+        : Variable((uint8_t)ITROLLA_TEMP_VAR_NUM,
                    (uint8_t)ITROLLA_TEMP_RESOLUTION, ITROLLA_TEMP_TEMP_VAR_NAME,
                    ITROLLA_TEMP_TEMP_UNIT_NAME, ITROLLA_TEMP_DEFAULT_CODE) {}
     /**
@@ -369,7 +384,7 @@ class InSituTrollSdi12a_Depth : public Variable {
      */
     InSituTrollSdi12a_Depth(Sensor* parentSense, const char* uuid = "",
                             const char* varCode = ITROLLA_DEPTH_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ITROLLA_DEPTH_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ITROLLA_DEPTH_VAR_NUM,
                    (uint8_t)ITROLLA_DEPTH_RESOLUTION, ITROLLA_DEPTH_VAR_NAME,
                    ITROLLA_DEPTH_UNIT_NAME, varCode, uuid) {}
     /**
@@ -379,7 +394,7 @@ class InSituTrollSdi12a_Depth : public Variable {
      * used.
      */
     InSituTrollSdi12a_Depth()
-        : Variable((const uint8_t)ITROLLA_DEPTH_VAR_NUM,
+        : Variable((uint8_t)ITROLLA_DEPTH_VAR_NUM,
                    (uint8_t)ITROLLA_DEPTH_RESOLUTION, ITROLLA_DEPTH_VAR_NAME,
                    ITROLLA_DEPTH_UNIT_NAME, ITROLLA_DEPTH_DEFAULT_CODE) {}
     /**

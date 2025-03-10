@@ -31,7 +31,7 @@
  * accurate precipitation and intensity measurements.
  *
  * The sensor is implemented as a sub-classes of the SDI12Sensors class.
- * It requires a continuous 6 to 18 Vdc power supply. As backup, ann internal
+ * It requires a continuous 6 to 18 Vdc power supply. As backup, an internal
  * 240 mAh lithium battery (3V Coin Cell CR2032) provides up to 15 days of
  * continual operation after power loss.
  * It draws < 80 µA when inactive and 1 mA while measuring.
@@ -67,13 +67,19 @@
 /** @ingroup sensor_rainvue */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_rainvue_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by RainVUE10
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the RainVUE10 can report 5 values
 /// (although we only keep 4).
 #define RAINVUE10_NUM_VARIABLES 5
 /// @brief Sensor::_incCalcValues; The RainVUE calculates averages and other
 /// stats on board, but we don't calculate any additional values.
 #define RAINVUE10_INC_CALC_VARIABLES 0
+/**@}*/
 
 /**
  * @anchor sensor_rainvue_timing
@@ -316,7 +322,7 @@ class CampbellRainVUE10_Precipitation : public Variable {
     explicit CampbellRainVUE10_Precipitation(
         CampbellRainVUE10* parentSense, const char* uuid = "",
         const char* varCode = RAINVUE10_PRECIPITATION_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)RAINVUE10_PRECIPITATION_VAR_NUM,
+        : Variable(parentSense, (uint8_t)RAINVUE10_PRECIPITATION_VAR_NUM,
                    (uint8_t)RAINVUE10_PRECIPITATION_RESOLUTION,
                    RAINVUE10_PRECIPITATION_VAR_NAME,
                    RAINVUE10_PRECIPITATION_UNIT_NAME, varCode, uuid) {}
@@ -327,7 +333,7 @@ class CampbellRainVUE10_Precipitation : public Variable {
      * used.
      */
     CampbellRainVUE10_Precipitation()
-        : Variable((const uint8_t)RAINVUE10_PRECIPITATION_VAR_NUM,
+        : Variable((uint8_t)RAINVUE10_PRECIPITATION_VAR_NUM,
                    (uint8_t)RAINVUE10_PRECIPITATION_RESOLUTION,
                    RAINVUE10_PRECIPITATION_VAR_NAME,
                    RAINVUE10_PRECIPITATION_UNIT_NAME,
@@ -364,7 +370,7 @@ class CampbellRainVUE10_Tips : public Variable {
     explicit CampbellRainVUE10_Tips(
         CampbellRainVUE10* parentSense, const char* uuid = "",
         const char* varCode = RAINVUE10_TIPS_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)RAINVUE10_TIPS_VAR_NUM,
+        : Variable(parentSense, (uint8_t)RAINVUE10_TIPS_VAR_NUM,
                    (uint8_t)RAINVUE10_TIPS_RESOLUTION, RAINVUE10_TIPS_VAR_NAME,
                    RAINVUE10_TIPS_UNIT_NAME, varCode, uuid) {}
     /**
@@ -374,7 +380,7 @@ class CampbellRainVUE10_Tips : public Variable {
      * used.
      */
     CampbellRainVUE10_Tips()
-        : Variable((const uint8_t)RAINVUE10_TIPS_VAR_NUM,
+        : Variable((uint8_t)RAINVUE10_TIPS_VAR_NUM,
                    (uint8_t)RAINVUE10_TIPS_RESOLUTION, RAINVUE10_TIPS_VAR_NAME,
                    RAINVUE10_TIPS_UNIT_NAME, RAINVUE10_TIPS_DEFAULT_CODE) {}
     /**
@@ -408,7 +414,7 @@ class CampbellRainVUE10_RainRateAve : public Variable {
     explicit CampbellRainVUE10_RainRateAve(
         CampbellRainVUE10* parentSense, const char* uuid = "",
         const char* varCode = RAINVUE10_RAINRATEAVE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)RAINVUE10_RAINRATEAVE_VAR_NUM,
+        : Variable(parentSense, (uint8_t)RAINVUE10_RAINRATEAVE_VAR_NUM,
                    (uint8_t)RAINVUE10_RAINRATEAVE_RESOLUTION,
                    RAINVUE10_RAINRATEAVE_VAR_NAME,
                    RAINVUE10_RAINRATEAVE_UNIT_NAME, varCode, uuid) {}
@@ -419,7 +425,7 @@ class CampbellRainVUE10_RainRateAve : public Variable {
      * used.
      */
     CampbellRainVUE10_RainRateAve()
-        : Variable((const uint8_t)RAINVUE10_RAINRATEAVE_VAR_NUM,
+        : Variable((uint8_t)RAINVUE10_RAINRATEAVE_VAR_NUM,
                    (uint8_t)RAINVUE10_RAINRATEAVE_RESOLUTION,
                    RAINVUE10_RAINRATEAVE_VAR_NAME,
                    RAINVUE10_RAINRATEAVE_UNIT_NAME,
@@ -457,7 +463,7 @@ class CampbellRainVUE10_RainRateMax : public Variable {
     explicit CampbellRainVUE10_RainRateMax(
         CampbellRainVUE10* parentSense, const char* uuid = "",
         const char* varCode = RAINVUE10_RAINRATEMAX_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)RAINVUE10_RAINRATEMAX_VAR_NUM,
+        : Variable(parentSense, (uint8_t)RAINVUE10_RAINRATEMAX_VAR_NUM,
                    (uint8_t)RAINVUE10_RAINRATEMAX_RESOLUTION,
                    RAINVUE10_RAINRATEMAX_VAR_NAME,
                    RAINVUE10_RAINRATEMAX_UNIT_NAME, varCode, uuid) {}
@@ -468,7 +474,7 @@ class CampbellRainVUE10_RainRateMax : public Variable {
      * used.
      */
     CampbellRainVUE10_RainRateMax()
-        : Variable((const uint8_t)RAINVUE10_RAINRATEMAX_VAR_NUM,
+        : Variable((uint8_t)RAINVUE10_RAINRATEMAX_VAR_NUM,
                    (uint8_t)RAINVUE10_RAINRATEMAX_RESOLUTION,
                    RAINVUE10_RAINRATEMAX_VAR_NAME,
                    RAINVUE10_RAINRATEMAX_UNIT_NAME,

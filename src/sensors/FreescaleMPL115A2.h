@@ -63,6 +63,9 @@
 #ifndef SRC_SENSORS_FREESCALEMPL115A2_H_
 #define SRC_SENSORS_FREESCALEMPL115A2_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_FREESCALEMPL115A2_DEBUG
 
@@ -80,11 +83,17 @@
 /** @ingroup sensor_mpl115a2 */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_mpl115a2_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the MPL115A2
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the MPL115A2 can report 2 values.
 #define MPL115A2_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define MPL115A2_INC_CALC_VARIABLES 0
+/**@}*/
 
 /**
  * @anchor sensor_mpl115a2_timing
@@ -218,7 +227,7 @@ class FreescaleMPL115A2 : public Sensor {
      * powered for setup.  This doesn't return anything to indicate failure or
      * success, we just have to hope it worked.
      *
-     * @return **bool** True if the setup was successful.
+     * @return True if the setup was successful.
      */
     bool setup(void) override;
     /**
@@ -275,7 +284,7 @@ class FreescaleMPL115A2_Temp : public Variable {
     explicit FreescaleMPL115A2_Temp(
         FreescaleMPL115A2* parentSense, const char* uuid = "",
         const char* varCode = MPL115A2_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)MPL115A2_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)MPL115A2_TEMP_VAR_NUM,
                    (uint8_t)MPL115A2_TEMP_RESOLUTION, MPL115A2_TEMP_VAR_NAME,
                    MPL115A2_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -285,7 +294,7 @@ class FreescaleMPL115A2_Temp : public Variable {
      * used.
      */
     FreescaleMPL115A2_Temp()
-        : Variable((const uint8_t)MPL115A2_TEMP_VAR_NUM,
+        : Variable((uint8_t)MPL115A2_TEMP_VAR_NUM,
                    (uint8_t)MPL115A2_TEMP_RESOLUTION, MPL115A2_TEMP_VAR_NAME,
                    MPL115A2_TEMP_UNIT_NAME, MPL115A2_TEMP_DEFAULT_CODE) {}
     /**
@@ -327,7 +336,7 @@ class FreescaleMPL115A2_Pressure : public Variable {
     explicit FreescaleMPL115A2_Pressure(
         FreescaleMPL115A2* parentSense, const char* uuid = "",
         const char* varCode = MPL115A2_PRESSURE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)MPL115A2_PRESSURE_VAR_NUM,
+        : Variable(parentSense, (uint8_t)MPL115A2_PRESSURE_VAR_NUM,
                    (uint8_t)MPL115A2_PRESSURE_RESOLUTION,
                    MPL115A2_PRESSURE_VAR_NAME, MPL115A2_PRESSURE_UNIT_NAME,
                    varCode, uuid) {}
@@ -338,7 +347,7 @@ class FreescaleMPL115A2_Pressure : public Variable {
      * used.
      */
     FreescaleMPL115A2_Pressure()
-        : Variable((const uint8_t)MPL115A2_PRESSURE_VAR_NUM,
+        : Variable((uint8_t)MPL115A2_PRESSURE_VAR_NUM,
                    (uint8_t)MPL115A2_PRESSURE_RESOLUTION,
                    MPL115A2_PRESSURE_VAR_NAME, MPL115A2_PRESSURE_UNIT_NAME,
                    MPL115A2_PRESSURE_DEFAULT_CODE) {}

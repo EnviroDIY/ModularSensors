@@ -13,7 +13,7 @@
  *
  * These are used for the Apogee SQ-212 quantum light sensor.
  *
- * This depends on the soligen2010 fork of the Adafruit ADS1015 library.
+ * This depends on the Adafruit ADS1X15 v2.x library.
  */
 /* clang-format off */
 /**
@@ -76,6 +76,9 @@
 #ifndef SRC_SENSORS_APOGEESQ212_H_
 #define SRC_SENSORS_APOGEESQ212_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_APOGEESQ212_DEBUG
 
@@ -92,12 +95,37 @@
 /** @ingroup sensor_sq212 */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_sq212_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the Apogee SQ-212
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the SQ212 can report 2 values, raw
 /// voltage and calculated PAR.
 #define SQ212_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; PAR is calculated from the raw voltage.
 #define SQ212_INC_CALC_VARIABLES 1
+/**@}*/
+
+/**
+ * @anchor sensor_sq212_config
+ * @name Configuration Defines
+ * Defines to set the calibration of the SQ-212 and the address of the ADD.
+ */
+/**@{*/
+#if !defined(SQ212_CALIBRATION_FACTOR) || defined(DOXYGEN)
+/**
+ * @brief The calibration factor between output in volts and PAR
+ * (microeinsteinPerSquareMeterPerSecond) 1 µmol mˉ² sˉ¹ per mV (reciprocal of
+ * sensitivity)
+ */
+#define SQ212_CALIBRATION_FACTOR 1
+#endif
+
+/// The assumed address of the ADS1115, 1001 000 (ADDR = GND)
+#define ADS1115_ADDRESS 0x48
+/**@}*/
 
 /**
  * @anchor sensor_sq212_timing
@@ -141,6 +169,15 @@
  * {{ @ref ApogeeSQ212_PAR }}
  */
 /**@{*/
+#ifdef MS_USE_ADS1015
+/// @brief Decimals places in string representation; PAR should have 0 when
+/// using an ADS1015.
+#define SQ212_PAR_RESOLUTION 0
+#else
+/// @brief Decimals places in string representation; PAR should have 4 when
+/// using an ADS1115.
+#define SQ212_PAR_RESOLUTION 4
+#endif
 /// Variable number; PAR is stored in sensorValues[0].
 #define SQ212_PAR_VAR_NUM 0
 /// @brief Variable name in [ODM2 controlled
@@ -153,15 +190,6 @@
 #define SQ212_PAR_UNIT_NAME "microeinsteinPerSquareMeterPerSecond"
 /// @brief Default variable short code; "photosyntheticallyActiveRadiation"
 #define SQ212_PAR_DEFAULT_CODE "photosyntheticallyActiveRadiation"
-#ifdef MS_USE_ADS1015
-/// @brief Decimals places in string representation; PAR should have 0 when
-/// using an ADS1015.
-#define SQ212_PAR_RESOLUTION 0
-#else
-/// @brief Decimals places in string representation; PAR should have 4 when
-/// using an ADS1115.
-#define SQ212_PAR_RESOLUTION 4
-#endif
 /**@}*/
 
 /**
@@ -202,18 +230,6 @@
 #define SQ212_VOLTAGE_RESOLUTION 4
 #endif
 /**@}*/
-
-/**
- * @brief The calibration factor between output in volts and PAR
- * (microeinsteinPerSquareMeterPerSecond) 1 µmol mˉ² sˉ¹ per mV (reciprocal of
- * sensitivity)
- */
-#ifndef SQ212_CALIBRATION_FACTOR
-#define SQ212_CALIBRATION_FACTOR 1
-#endif
-
-/// The assumed address of the ADS1115, 1001 000 (ADDR = GND)
-#define ADS1115_ADDRESS 0x48
 
 /**
  * @brief The Sensor sub-class for the [Apogee SQ-212](@ref sensor_sq212) sensor
@@ -257,7 +273,7 @@ class ApogeeSQ212 : public Sensor {
      * @brief Report the I1C address of the ADS and the channel that the SQ-212
      * is attached to.
      *
-     * @return **String** Text describing how the sensor is attached to the mcu.
+     * @return Text describing how the sensor is attached to the mcu.
      */
     String getSensorLocation(void) override;
 
@@ -267,7 +283,13 @@ class ApogeeSQ212 : public Sensor {
     bool addSingleMeasurementResult(void) override;
 
  private:
+    /**
+     * @brief Internal reference to the ADS channel number of the Apogee SQ-212
+     */
     uint8_t _adsChannel;
+    /**
+     * @brief Internal reference to the I2C address of the TI-ADS1x15
+     */
     uint8_t _i2cAddress;
 };
 
@@ -295,7 +317,7 @@ class ApogeeSQ212_PAR : public Variable {
      */
     explicit ApogeeSQ212_PAR(ApogeeSQ212* parentSense, const char* uuid = "",
                              const char* varCode = SQ212_PAR_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)SQ212_PAR_VAR_NUM,
+        : Variable(parentSense, (uint8_t)SQ212_PAR_VAR_NUM,
                    (uint8_t)SQ212_PAR_RESOLUTION, SQ212_PAR_VAR_NAME,
                    SQ212_PAR_UNIT_NAME, varCode, uuid) {}
     /**
@@ -304,9 +326,9 @@ class ApogeeSQ212_PAR : public Variable {
      * @note This must be tied with a parent ApogeeSQ212 before it can be used.
      */
     ApogeeSQ212_PAR()
-        : Variable((const uint8_t)SQ212_PAR_VAR_NUM,
-                   (uint8_t)SQ212_PAR_RESOLUTION, SQ212_PAR_VAR_NAME,
-                   SQ212_PAR_UNIT_NAME, SQ212_PAR_DEFAULT_CODE) {}
+        : Variable((uint8_t)SQ212_PAR_VAR_NUM, (uint8_t)SQ212_PAR_RESOLUTION,
+                   SQ212_PAR_VAR_NAME, SQ212_PAR_UNIT_NAME,
+                   SQ212_PAR_DEFAULT_CODE) {}
     /**
      * @brief Destroy the ApogeeSQ212_PAR object - no action needed.
      */
@@ -338,7 +360,7 @@ class ApogeeSQ212_Voltage : public Variable {
     explicit ApogeeSQ212_Voltage(
         ApogeeSQ212* parentSense, const char* uuid = "",
         const char* varCode = SQ212_VOLTAGE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)SQ212_VOLTAGE_VAR_NUM,
+        : Variable(parentSense, (uint8_t)SQ212_VOLTAGE_VAR_NUM,
                    (uint8_t)SQ212_VOLTAGE_RESOLUTION, SQ212_VOLTAGE_VAR_NAME,
                    SQ212_VOLTAGE_UNIT_NAME, varCode, uuid) {}
     /**
@@ -347,7 +369,7 @@ class ApogeeSQ212_Voltage : public Variable {
      * @note This must be tied with a parent ApogeeSQ212 before it can be used.
      */
     ApogeeSQ212_Voltage()
-        : Variable((const uint8_t)SQ212_VOLTAGE_VAR_NUM,
+        : Variable((uint8_t)SQ212_VOLTAGE_VAR_NUM,
                    (uint8_t)SQ212_VOLTAGE_RESOLUTION, SQ212_VOLTAGE_VAR_NAME,
                    SQ212_VOLTAGE_UNIT_NAME, SQ212_VOLTAGE_DEFAULT_CODE) {}
     /**

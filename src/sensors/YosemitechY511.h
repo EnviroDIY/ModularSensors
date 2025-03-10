@@ -57,11 +57,17 @@
 /** @ingroup sensor_y511 */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_y511_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by a Yosemitch Y511
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the Y511 can report 2 values.
 #define Y511_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define Y511_INC_CALC_VARIABLES 0
+/**@}*/
 
 /**
  * @anchor sensor_y511_timing
@@ -229,7 +235,7 @@ class YosemitechY511_Turbidity : public Variable {
     explicit YosemitechY511_Turbidity(
         YosemitechY511* parentSense, const char* uuid = "",
         const char* varCode = Y511_TURB_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)Y511_TURB_VAR_NUM,
+        : Variable(parentSense, (uint8_t)Y511_TURB_VAR_NUM,
                    (uint8_t)Y511_TURB_RESOLUTION, Y511_TURB_VAR_NAME,
                    Y511_TURB_UNIT_NAME, varCode, uuid) {}
     /**
@@ -239,9 +245,9 @@ class YosemitechY511_Turbidity : public Variable {
      * used.
      */
     YosemitechY511_Turbidity()
-        : Variable((const uint8_t)Y511_TURB_VAR_NUM,
-                   (uint8_t)Y511_TURB_RESOLUTION, Y511_TURB_VAR_NAME,
-                   Y511_TURB_UNIT_NAME, Y511_TURB_DEFAULT_CODE) {}
+        : Variable((uint8_t)Y511_TURB_VAR_NUM, (uint8_t)Y511_TURB_RESOLUTION,
+                   Y511_TURB_VAR_NAME, Y511_TURB_UNIT_NAME,
+                   Y511_TURB_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY511_Turbidity object - no action needed.
      */
@@ -273,7 +279,7 @@ class YosemitechY511_Temp : public Variable {
     explicit YosemitechY511_Temp(YosemitechY511* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = Y511_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)Y511_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)Y511_TEMP_VAR_NUM,
                    (uint8_t)Y511_TEMP_RESOLUTION, Y511_TEMP_VAR_NAME,
                    Y511_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -283,9 +289,9 @@ class YosemitechY511_Temp : public Variable {
      * used.
      */
     YosemitechY511_Temp()
-        : Variable((const uint8_t)Y511_TEMP_VAR_NUM,
-                   (uint8_t)Y511_TEMP_RESOLUTION, Y511_TEMP_VAR_NAME,
-                   Y511_TEMP_UNIT_NAME, Y511_TEMP_DEFAULT_CODE) {}
+        : Variable((uint8_t)Y511_TEMP_VAR_NUM, (uint8_t)Y511_TEMP_RESOLUTION,
+                   Y511_TEMP_VAR_NAME, Y511_TEMP_UNIT_NAME,
+                   Y511_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY511_Temp object - no action needed.
      */

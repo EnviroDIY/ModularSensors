@@ -56,6 +56,9 @@
 #ifndef SRC_SENSORS_AOSONGAM2315_H_
 #define SRC_SENSORS_AOSONGAM2315_H_
 
+// Include config before anything else
+#include "ModSensorConfig.h"
+
 // Debugging Statement
 // #define MS_AOSONGAM2315_DEBUG
 
@@ -73,11 +76,17 @@
 /** @ingroup sensor_am2315 */
 /**@{*/
 
-// Sensor Specific Defines
+/**
+ * @anchor sensor_am2315_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by an AOSong AM2315
+ */
+/**@{*/
 /// @brief Sensor::_numReturnedValues; the AM2315 can report 2 values.
 #define AM2315_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define AM2315_INC_CALC_VARIABLES 0
+/**@}*/
 
 /**
  * @anchor sensor_am2315_timing
@@ -207,7 +216,7 @@ class AOSongAM2315 : public Sensor {
     /**
      * @brief Report the I2C address of the AM2315 - which is always 0xB8.
      *
-     * @return **String** Text describing how the sensor is attached to the mcu.
+     * @return Text describing how the sensor is attached to the mcu.
      */
     String getSensorLocation(void) override;
 
@@ -219,7 +228,7 @@ class AOSongAM2315 : public Sensor {
      * and modes for I2C), and updates the #_sensorStatus.  No sensor power is
      * required.
      *
-     * @return **bool** True if the setup was successful.  For the AOSong AM2315
+     * @return True if the setup was successful.  For the AOSong AM2315
      * the result will always be true.
      */
     bool setup(void) override;
@@ -233,8 +242,11 @@ class AOSongAM2315 : public Sensor {
     /**
      * @brief An internal reference to the hardware Wire instance.
      */
-    TwoWire*         _i2c;
-    Adafruit_AM2315* am2315ptr;  // create a sensor object
+    TwoWire* _i2c;
+    /**
+     * @brief Internal reference to the Adafruit sensor class
+     */
+    Adafruit_AM2315* am2315ptr;
 };
 
 
@@ -260,7 +272,7 @@ class AOSongAM2315_Humidity : public Variable {
     explicit AOSongAM2315_Humidity(
         AOSongAM2315* parentSense, const char* uuid = "",
         const char* varCode = AM2315_HUMIDITY_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)AM2315_HUMIDITY_VAR_NUM,
+        : Variable(parentSense, (uint8_t)AM2315_HUMIDITY_VAR_NUM,
                    (uint8_t)AM2315_HUMIDITY_RESOLUTION,
                    AM2315_HUMIDITY_VAR_NAME, AM2315_HUMIDITY_UNIT_NAME, varCode,
                    uuid) {}
@@ -270,7 +282,7 @@ class AOSongAM2315_Humidity : public Variable {
      * @note This must be tied with a parent AOSongAM2315 before it can be used.
      */
     AOSongAM2315_Humidity()
-        : Variable((const uint8_t)AM2315_HUMIDITY_VAR_NUM,
+        : Variable((uint8_t)AM2315_HUMIDITY_VAR_NUM,
                    (uint8_t)AM2315_HUMIDITY_RESOLUTION,
                    AM2315_HUMIDITY_VAR_NAME, AM2315_HUMIDITY_UNIT_NAME,
                    AM2315_HUMIDITY_DEFAULT_CODE) {}
@@ -302,7 +314,7 @@ class AOSongAM2315_Temp : public Variable {
      */
     explicit AOSongAM2315_Temp(AOSongAM2315* parentSense, const char* uuid = "",
                                const char* varCode = AM2315_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)AM2315_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)AM2315_TEMP_VAR_NUM,
                    (uint8_t)AM2315_TEMP_RESOLUTION, AM2315_TEMP_VAR_NAME,
                    AM2315_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -311,7 +323,7 @@ class AOSongAM2315_Temp : public Variable {
      * @note This must be tied with a parent AOSongAM2315 before it can be used.
      */
     AOSongAM2315_Temp()
-        : Variable((const uint8_t)AM2315_TEMP_VAR_NUM,
+        : Variable((uint8_t)AM2315_TEMP_VAR_NUM,
                    (uint8_t)AM2315_TEMP_RESOLUTION, AM2315_TEMP_VAR_NAME,
                    AM2315_TEMP_UNIT_NAME, AM2315_TEMP_DEFAULT_CODE) {}
     /**

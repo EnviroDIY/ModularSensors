@@ -17,7 +17,7 @@
 
 // The constructor for a measured variable - that is, one whose values are
 // updated by a sensor.
-Variable::Variable(Sensor* parentSense, const uint8_t sensorVarNum,
+Variable::Variable(Sensor* parentSense, uint8_t sensorVarNum,
                    uint8_t decimalResolution, const char* varName,
                    const char* varUnit, const char* varCode, const char* uuid)
     : _sensorVarNum(sensorVarNum) {
@@ -29,7 +29,7 @@ Variable::Variable(Sensor* parentSense, const uint8_t sensorVarNum,
 
     attachSensor(parentSense);
 }
-Variable::Variable(const uint8_t sensorVarNum, uint8_t decimalResolution,
+Variable::Variable(uint8_t sensorVarNum, uint8_t decimalResolution,
                    const char* varName, const char* varUnit,
                    const char* varCode)
     : _sensorVarNum(sensorVarNum) {
@@ -264,7 +264,7 @@ String Variable::getValueString(bool updateValue) {
 String Variable::formatValueString(float value) {
     // Need this because otherwise get extra spaces in strings from int
     if (_decimalResolution == 0) {
-        auto val = static_cast<int16_t>(value);
+        auto val = static_cast<int32_t>(value);
         return String(val);
     } else {
         return String(value, _decimalResolution);

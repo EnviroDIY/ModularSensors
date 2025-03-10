@@ -1,6 +1,6 @@
 {
   "name": "EnviroDIY_ModularSensors",
-  "version": "0.35.1",
+  "version": "0.36.0",
   "description": "A library that allows access to multiple sensors through a unified interface.  This allows the user to simply access many sensors to log the data or send the data to data repositories like the EnviroDIY data portal.",
   "keywords": "modular, sensor, sensors, datalogger, logger, low power, sleeping, EnviroDIY, ModularSensors, Mayfly, WikiWatershed, Monitor My Watershed, ThingSpeak",
   "platforms": "atmelavr, atmelsam",
@@ -67,7 +67,7 @@
       "owner": "envirodiy",
       "library id": "2079",
       "url": "https://github.com/EnviroDIY/Sodaq_DS3231",
-      "version": "~1.3.5",
+      "version": "~1.3.6",
       "note": "An Arduino library for the DS3231 RTC (Real Time Clock), based off of the Sodaq_DS3231 library.",
       "authors": ["Kees Bakker", "Sara Damiano"],
       "frameworks": "arduino",
@@ -85,6 +85,15 @@
       "platforms": "atmelsam"
     },
     {
+      "name": "SparkFun Qwiic RTC RV8803 Arduino Library",
+      "owner": "sparkfun",
+      "url": "https://github.com/sparkfun/SparkFun_RV-8803_Arduino_Library.git",
+      "version": "~1.2.9",
+      "note": "For the RV-8803 RTC",
+      "frameworks": "arduino",
+      "platforms": "atmelavr, atmelsam"
+    },
+    {
       "name": "EnableInterrupt",
       "owner": "greygnome",
       "library id": "311",
@@ -100,7 +109,7 @@
       "owner": "greiman",
       "library id": "322",
       "url": "https://github.com/greiman/SdFat",
-      "version": "~2.2.3",
+      "version": "~2.3.0",
       "note": "SdFat - FAT16/FAT32 file system for SD cards.",
       "authors": ["Bill Greiman"],
       "frameworks": "arduino",
@@ -109,7 +118,8 @@
     {
       "name": "TinyGSM",
       "owner": "vshymanskyy",
-      "version": "~0.11.7",
+      "url": "https://github.com/vshymanskyy/TinyGSM",
+      "version": "~0.12.0",
       "note": "A small Arduino library for GPRS modules.",
       "authors": ["Volodymyr Shymanskyy", "Sara Damiano"],
       "frameworks": "arduino",
@@ -129,7 +139,7 @@
       "owner": "adafruit",
       "library id": "6214",
       "url": "https://github.com/adafruit/Adafruit_BusIO",
-      "version": "~1.16.0",
+      "version": "~1.17.0",
       "note": "Adafruit BusIO, a dependency of other Adafruit libraries",
       "authors": ["Adafruit"],
       "frameworks": "arduino",
@@ -140,7 +150,7 @@
       "owner": "adafruit",
       "library id": "31",
       "url": "https://github.com/adafruit/Adafruit_Sensor",
-      "version": "~1.1.14",
+      "version": "~1.1.15",
       "note": "Adafruit's unified sensor library is used by their other libraries",
       "authors": ["Adafruit"],
       "frameworks": "arduino",
@@ -148,13 +158,13 @@
     },
     {
       "name": "Adafruit ADS1X15",
-      "library id": "344",
-      "version_note": "=1.2.0",
-      "version": "https://github.com/soligen2010/Adafruit_ADS1X15.git#7d67b451f739e9a63f40f2d6d139ab582258572b",
-      "note": "Driver for TI's ADS1015: 12-bit Differential or Single-Ended ADC with PGA and Comparator.  This fork removes bugs in the Adafruit original library.",
-      "authors_note": ["soligen2010"],
-      "frameworks_note": "arduino",
-      "platforms_note": "*"
+      "owner": "adafruit",
+      "url": "https://github.com/adafruit/Adafruit_ADS1X15",
+      "version": "~2.5.0",
+      "note": "Driver for TI's ADS1X15: 12 and 16-bit Differential or Single-Ended ADC with PGA and Comparator.",
+      "authors": ["Adafruit"],
+      "frameworks": "arduino",
+      "platforms": "atmelavr, atmelsam"
     },
     {
       "name": "Adafruit AM2315",
@@ -224,7 +234,7 @@
       "owner": "adafruit",
       "library id": "11710",
       "url": "https://github.com/adafruit/Adafruit_SHT4X",
-      "version": "~1.0.4",
+      "version": "~1.0.5",
       "note": "Sensirion SHT4x Library by Adafruit",
       "authors": ["Adafruit"],
       "frameworks": "arduino"
@@ -258,7 +268,7 @@
       "owner": "milesburton",
       "library id": "54",
       "url": "https://github.com/milesburton/Arduino-Temperature-Control-Library",
-      "version": "~3.11.0",
+      "version": "~4.0.3",
       "note": "DallasTemperature - Arduino Library for Dallas Temperature ICs (DS18B20, DS18S20, DS1822, DS1820)",
       "authors": ["Guil Barros", "Miles Burton", "Rob Tillart", "Tim Nuewsome"],
       "frameworks": "arduino",
@@ -268,7 +278,7 @@
       "name": "SDI-12",
       "owner": "envirodiy",
       "library id": "1486",
-      "version": "~2.1.4",
+      "version": "~2.2.1",
       "url": "https://github.com/EnviroDIY/Arduino-SDI-12",
       "note": "EnviroDIY SDI-12 Library for Arduino",
       "author_notes": [
@@ -303,7 +313,7 @@
       "owner": "envirodiy",
       "library id": "1824",
       "url": "https://github.com/EnviroDIY/SensorModbusMaster",
-      "version": "~0.6.8",
+      "version": "~0.7.3",
       "note": "EnviroDIY SensorModbusMaster - Arduino library for communicating via modbus with the Arduino acting as the modbus master.",
       "authors": ["Sara Damiano"],
       "frameworks": "arduino",
@@ -323,7 +333,7 @@
       "owner": "envirodiy",
       "library id": "2078",
       "url": "https://github.com/EnviroDIY/YosemitechModbus",
-      "version": "~0.4.1",
+      "version": "~0.5.0",
       "note": "Arduino library for communication with Yosemitech sensors via Modbus.",
       "authors": ["Sara Damiano", "Anthony Aufdenkampe"],
       "frameworks": "arduino",
@@ -332,12 +342,27 @@
     {
       "name": "GroPointModbus",
       "owner": "envirodiy",
-      "url": "https://github.com/EnviroDIY/GroPointModbus.git",
-      "version": "~0.1.0",
-      "note": "A library to use an Arduino as a master to control and communicate via modbus with GroPoint soil moisture sensors. ",
+      "url": "https://github.com/EnviroDIY/GroPointModbus",
+      "version": "~0.1.1",
+      "note": "A library to use an Arduino as a master to control and communicate via modbus with GroPoint soil moisture sensors.",
       "authors": ["Anthony Aufdenkampe"],
       "frameworks": "arduino",
       "platforms": "atmelavr, atmelsam"
+    },
+    {
+      "name": "GeoluxCamera",
+      "owner": "envirodiy",
+      "url": "https://github.com/EnviroDIY/GeoluxCamera",
+      "version": "~0.1.2",
+      "note": "Arduino library for communication with Geolux serial camera.",
+      "authors": ["Sara Damiano"],
+      "frameworks": "arduino",
+      "platforms": "atmelavr, atmelsam"
+    },
+    {
+      "name": "StreamDebugger",
+      "version": "https://github.com/EnviroDIY/StreamDebugger.git",
+      "note": "Used for debugging modem streams and duplicating primary output stream"
     }
   ]
 }

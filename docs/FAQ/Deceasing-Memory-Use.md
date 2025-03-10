@@ -1,4 +1,4 @@
-# Decreasing Memory Footprint <!-- {#page_memory_use} -->
+# Decreasing Memory Footprint<!--! {#page_memory_use} -->
 
 There are things you could do to decrease memory use.
 

@@ -86,6 +86,8 @@ void dataPublisher::txBufferAppend(const char* data, size_t length) {
         // this will be the lesser of the length desired and the space left in
         // the buffer
         size_t amount = remaining < length ? remaining : length;
+        MS_DEEP_DBG(F("Ready to append to txBuffer -> filled:"), txBufferLen,
+                    F("available:"), remaining, F("to append:"), amount);
 
         // copy as much as possible into the buffer
         memcpy(&txBuffer[txBufferLen], data, amount);
@@ -95,6 +97,8 @@ void dataPublisher::txBufferAppend(const char* data, size_t length) {
         data += amount;
         // bump up the current length of the buffer
         txBufferLen += amount;
+        MS_DEEP_DBG(F("Size of txBuffer after append:"), txBufferLen,
+                    F("remainging to append:"), length);
 
         // write out the buffer if it fills
         if (txBufferLen == MS_SEND_BUFFER_SIZE) { txBufferFlush(); }
@@ -110,17 +114,26 @@ void dataPublisher::txBufferAppend(char c) {
 }
 
 void dataPublisher::txBufferFlush() {
+    MS_DEEP_DBG(F("Flushing Tx buffer:"));
     if ((txBufferOutClient == nullptr) || (txBufferLen == 0)) {
         // sending into the void...
         txBufferLen = 0;
         return;
     }
 
-#if defined(STANDARD_SERIAL_OUTPUT)
+#if defined(MS_OUTPUT)
     // write out to the printout stream
-    STANDARD_SERIAL_OUTPUT.write((const uint8_t*)txBuffer, txBufferLen);
-    STANDARD_SERIAL_OUTPUT.flush();
+    MS_OUTPUT.write((const uint8_t*)txBuffer, txBufferLen);
+    MS_OUTPUT.flush();
 #endif
+#if defined(MS_2ND_OUTPUT)
+    // write out to the printout stream
+    MS_2ND_OUTPUT.write((const uint8_t*)txBuffer, txBufferLen);
+    MS_2ND_OUTPUT.flush();
+#endif
+    // write out to the client
+    txBufferOutClient->write((const uint8_t*)txBuffer, txBufferLen);
+    txBufferOutClient->flush();
 
     uint8_t        tries = 10;
     const uint8_t* ptr   = (const uint8_t*)txBuffer;

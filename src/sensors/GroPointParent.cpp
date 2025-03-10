@@ -60,11 +60,10 @@ String GroPointParent::getSensorLocation(void) {
 bool GroPointParent::setup(void) {
     bool retVal =
         Sensor::setup();  // this will set pin modes and the setup status bit
-    if (_RS485EnablePin >= 0) pinMode(_RS485EnablePin, OUTPUT);
-    if (_powerPin2 >= 0) pinMode(_powerPin2, OUTPUT);
-
+    if (_RS485EnablePin >= 0) { pinMode(_RS485EnablePin, OUTPUT); }
+    if (_powerPin2 >= 0) { pinMode(_powerPin2, OUTPUT); }
 #ifdef MS_GROPOINTPARENT_DEBUG_DEEP
-    _gsensor.setDebugStream(&DEEP_DEBUGGING_SERIAL_OUTPUT);
+    _gsensor.setDebugStream(&MS_SERIAL_OUTPUT);
 #endif
 
     // This sensor begin is just setting more pin modes, etc, no sensor power
@@ -111,9 +110,16 @@ bool GroPointParent::wake(void) {
 
 
 // The function to put the sensor to sleep
-// Different from the standard in that it stops measurements
+// Different from the standard in that it stops measurements and empties and
+// flushes the stream.
 bool GroPointParent::sleep(void) {
+    // empty then flush the buffer
+    while (_stream->available()) { _stream->read(); }
+    _stream->flush();
+
+    // if it's not powered, it's asleep
     if (!checkPowerOn()) { return true; }
+    // if it was never awake, it's probabaly asleep
     if (_millisSensorActivated == 0) {
         MS_DBG(getSensorNameAndLocation(), F("was not measuring!"));
         return true;
@@ -141,6 +147,10 @@ bool GroPointParent::sleep(void) {
         MS_DBG(F("Measurements NOT stopped!"));
     }
 
+    // empty then flush the buffer
+    while (_stream->available()) { _stream->read(); }
+    _stream->flush();
+
     return success;
 }
 
@@ -148,6 +158,9 @@ bool GroPointParent::sleep(void) {
 // This turns on sensor power
 void GroPointParent::powerUp(void) {
     if (_powerPin >= 0) {
+        // Reset power pin mode every power up because pins are set to tri-state
+        // on sleep
+        pinMode(_powerPin, OUTPUT);
         MS_DBG(F("Powering"), getSensorNameAndLocation(), F("with pin"),
                _powerPin);
         digitalWrite(_powerPin, HIGH);
@@ -155,6 +168,9 @@ void GroPointParent::powerUp(void) {
         _millisPowerOn = millis();
     }
     if (_powerPin2 >= 0) {
+        // Reset power pin mode every power up because pins are set to tri-state
+        // on sleep
+        pinMode(_powerPin2, OUTPUT);
         MS_DBG(F("Applying secondary power to"), getSensorNameAndLocation(),
                F("with pin"), _powerPin2);
         digitalWrite(_powerPin2, HIGH);
@@ -163,6 +179,8 @@ void GroPointParent::powerUp(void) {
         MS_DBG(F("Power to"), getSensorNameAndLocation(),
                F("is not controlled by this library."));
     }
+    // Reset enable pin because pins are set to tri-state on sleep
+    if (_RS485EnablePin >= 0) { pinMode(_RS485EnablePin, OUTPUT); }
     // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
     _sensorStatus |= 0b00000110;
 }
