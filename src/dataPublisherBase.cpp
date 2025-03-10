@@ -208,7 +208,7 @@ int16_t dataPublisher::publishData(bool forceFlush) {
             newClient = _baseLogger->_logModem->createSecureClient(_clientMux);
         } else if (_requiresSSL) {
             MS_DBG(F("Creating new secure client with default socket number."));
-            newClient = _baseLogger->_logModem->createClient();
+            newClient = _baseLogger->_logModem->createSecureClient();
         } else if (_clientMux != -1) {
             MS_DBG(F("Creating new client on socket"), _clientMux);
             newClient = _baseLogger->_logModem->createClient(_clientMux);
