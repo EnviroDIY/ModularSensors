@@ -35,7 +35,7 @@ EnviroDIYPublisher::EnviroDIYPublisher() : dataPublisher() {
     setPort(80);
 }
 EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, int sendEveryX)
-    : dataPublisher(baseLogger, sendEveryX) {
+    : dataPublisher(baseLogger, false, sendEveryX) {
     _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
     setHost("monitormywatershed.org");
     setPath("/api/data-stream/");
@@ -53,7 +53,7 @@ EnviroDIYPublisher::EnviroDIYPublisher(Logger&     baseLogger,
                                        const char* registrationToken,
                                        const char* samplingFeatureUUID,
                                        int         sendEveryX)
-    : dataPublisher(baseLogger, sendEveryX) {
+    : dataPublisher(baseLogger, false, sendEveryX) {
     setToken(registrationToken);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
     _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());

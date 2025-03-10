@@ -24,8 +24,21 @@ const char* dataPublisher::hostHeader = "\r\nHost: ";
 // Constructors
 dataPublisher::dataPublisher() {}
 
-dataPublisher::dataPublisher(Logger& baseLogger, int sendEveryX)
+dataPublisher::dataPublisher(Logger& baseLogger, bool requiresSSL,
+                             int sendEveryX)
     : _baseLogger(&baseLogger),
+      _inClient(nullptr),
+      _clientMux(-1),
+      _requiresSSL(requiresSSL),
+      _sendEveryX(sendEveryX) {
+    _baseLogger->registerDataPublisher(this);  // register self with logger
+}
+dataPublisher::dataPublisher(Logger& baseLogger, int8_t mux, bool requiresSSL,
+                             int sendEveryX)
+    : _baseLogger(&baseLogger),
+      _inClient(nullptr),
+      _clientMux(mux),
+      _requiresSSL(requiresSSL),
       _sendEveryX(sendEveryX) {
     _baseLogger->registerDataPublisher(this);  // register self with logger
 }
@@ -33,6 +46,8 @@ dataPublisher::dataPublisher(Logger& baseLogger, Client* inClient,
                              int sendEveryX)
     : _baseLogger(&baseLogger),
       _inClient(inClient),
+      _clientMux(-1),       // not relevant if we have a client
+      _requiresSSL(false),  // not relevant if we have a client
       _sendEveryX(sendEveryX) {
     _baseLogger->registerDataPublisher(this);  // register self with logger
 }
@@ -43,6 +58,9 @@ dataPublisher::~dataPublisher() {}
 // Sets the client
 void dataPublisher::setClient(Client* inClient) {
     _inClient = inClient;
+}
+void dataPublisher::setSocketNumber(int8_t mux) {
+    _clientMux = mux;
 }
 
 
@@ -68,7 +86,6 @@ void dataPublisher::begin(Logger& baseLogger, Client* inClient) {
 void dataPublisher::begin(Logger& baseLogger) {
     attachToLogger(baseLogger);
 }
-void dataPublisher::begin() {}
 
 
 void dataPublisher::txBufferInit(Client* outClient) {
@@ -174,9 +191,40 @@ bool dataPublisher::connectionNeeded(void) {
 // This sends data on the "default" client of the modem
 int16_t dataPublisher::publishData(bool forceFlush) {
     if (_inClient == nullptr) {
-        PRINTOUT(F("ERROR! No web client assigned to publish data!"));
-        return 0;
+        if (_baseLogger == nullptr) {
+            PRINTOUT(F("ERROR! No web client assigned and cannot access a base "
+                       "logger to create one!"));
+            return -2;
+        }
+        if (_baseLogger->_logModem == nullptr) {
+            PRINTOUT(F("ERROR! No web client assigned and cannot access a "
+                       "logger modem to create one!"));
+            return -2;
+        }
+        Client* newClient;
+        int16_t retVal = -2;
+        if (_clientMux != -1 && _requiresSSL) {
+            MS_DBG(F("Creating new secure client on socket"), _clientMux);
+            newClient = _baseLogger->_logModem->createSecureClient(_clientMux);
+        } else if (_requiresSSL) {
+            MS_DBG(F("Creating new secure client with default socket number."));
+            newClient = _baseLogger->_logModem->createClient();
+        } else if (_clientMux != -1) {
+            MS_DBG(F("Creating new client on socket"), _clientMux);
+            newClient = _baseLogger->_logModem->createClient(_clientMux);
+        } else {
+            MS_DBG(F("Creating new client with default socket number."));
+            newClient = _baseLogger->_logModem->createClient();
+        }
+        if (newClient != nullptr) {
+            retVal = publishData(newClient, forceFlush);
+            delete newClient;  // need to delete to free memory!
+        } else {
+            PRINTOUT(F("ERROR! Failed to create new client to publish data!"));
+        }
+        return retVal;
     } else {
+        MS_DBG(F("Publishing data with provided client."));
         return publishData(_inClient, forceFlush);
     }
 }

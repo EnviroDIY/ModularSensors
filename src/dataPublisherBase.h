@@ -56,7 +56,7 @@
 class dataPublisher {
  public:
     /**
-     * @brief Construct a new data Publisher object untied to any logger or
+     * @brief Construct a new data publisher object untied to any logger or
      * client.
      *
      * @note Using the default empty constructor requires you to use a the
@@ -68,7 +68,7 @@ class dataPublisher {
      */
     dataPublisher();
     /**
-     * @brief Construct a new data Publisher object using a single client
+     * @brief Construct a new data publisher object using a single client
      * created on the TinyGSM based logger modem.
      *
      * @note If a client is never specified, the publisher will attempt to
@@ -76,12 +76,37 @@ class dataPublisher {
      * logger.
      *
      * @param baseLogger The logger supplying the data to be published
+     * @param requiresSSL True if the publisher requires a secure (SSL/TLS)
+     * connection.
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions. Not respected by all publishers.
      */
-    explicit dataPublisher(Logger& baseLogger, int sendEveryX = 1);
+    explicit dataPublisher(Logger& baseLogger, bool requiresSSL,
+                           int sendEveryX = 1);
     /**
-     * @brief Construct a new data Publisher object.
+     * @brief Construct a new data publisher object using a single client
+     * created on the TinyGSM based logger modem.
+     *
+     * @note If a client is never specified, the publisher will attempt to
+     * create and use a client on a LoggerModem instance tied to the attached
+     * logger.
+     *
+     * @param baseLogger The logger supplying the data to be published
+     * @param mux The mux/socket number of the client within the modem's socket
+     * array to attempt to use.
+     * @param requiresSSL True if the publisher requires a secure (SSL/TLS)
+     * connection.
+     * @param sendEveryX Interval (in units of the logging interval) between
+     * attempted data transmissions. Not respected by all publishers.
+     */
+    explicit dataPublisher(Logger& baseLogger, int8_t mux, bool requiresSSL,
+                           int sendEveryX = 1);
+    /**
+     * @brief Construct a new data publisher object.
+     *
+     * @note When creating a data publisher with a pre-exisiting client object,
+     * you must ensure that your client supports SSL/TLS if the publisher
+     * requires it.
      *
      * @param baseLogger The logger supplying the data to be published
      * @param inClient An Arduino client instance to use to print data to.
@@ -92,7 +117,7 @@ class dataPublisher {
      */
     dataPublisher(Logger& baseLogger, Client* inClient, int sendEveryX = 1);
     /**
-     * @brief Destroy the data Publisher object - no action is taken.
+     * @brief Destroy the data publisher object - no action is taken.
      */
     virtual ~dataPublisher();
 
@@ -109,6 +134,14 @@ class dataPublisher {
     void setClient(Client* inClient);
 
     /**
+     * @brief Set a mux/socket number for a new client created within a TinyGSM
+     * based modem.
+     *
+     * @param mux AThe socket number to use
+     */
+    void setSocketNumber(int8_t mux);
+
+    /**
      * @brief Attach the publisher to a logger.
      *
      * The publisher must be tied to a data loger to provide it with the data to
@@ -116,6 +149,7 @@ class dataPublisher {
      *
      * @param baseLogger A reference to the ModularSensors logger instance
      */
+
     void attachToLogger(Logger& baseLogger);
     /**
      * @brief Sets the interval (in units of the logging interval) between
@@ -153,10 +187,6 @@ class dataPublisher {
      * @param baseLogger The logger supplying the data to be published
      */
     void begin(Logger& baseLogger);
-    /**
-     * @brief Begin the publisher by doing the minimum that is needed after boot
-     */
-    virtual void begin();
 
 
     /**
@@ -249,6 +279,21 @@ class dataPublisher {
      * @brief The internal pointer to the client instance to be used.
      */
     Client* _inClient = nullptr;
+    /**
+     * @brief The mux/socket number of the client within the modem's socket
+     * array to attempt to use.
+     *
+     * @note For SSL connections, you should manually set the mux number so that
+     * you can properly tie certificates to it.
+     *
+     * @warning This is a **requested** socket number, the modem may assign you
+     * a different one.
+     */
+    int8_t _clientMux = -1;
+    /**
+     * @brief Internal flag to note whether SSL is required for the connection.
+     */
+    bool _requiresSSL;
 
     /**
      * @brief The buffer for outgoing data.
