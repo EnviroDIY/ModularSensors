@@ -68,6 +68,7 @@ void dataPublisher::begin(Logger& baseLogger, Client* inClient) {
 void dataPublisher::begin(Logger& baseLogger) {
     attachToLogger(baseLogger);
 }
+void dataPublisher::begin() {}
 
 
 void dataPublisher::txBufferInit(Client* outClient) {
@@ -115,6 +116,12 @@ void dataPublisher::txBufferAppend(char c) {
 
 void dataPublisher::txBufferFlush() {
     MS_DEEP_DBG(F("Flushing Tx buffer:"));
+    if ((txBufferOutClient == nullptr) || (txBufferLen == 0)) {
+        // sending into the void...
+        txBufferLen = 0;
+        return;
+    }
+
 #if defined(MS_OUTPUT)
     // write out to the printout stream
     MS_OUTPUT.write((const uint8_t*)txBuffer, txBufferLen);
@@ -129,17 +136,48 @@ void dataPublisher::txBufferFlush() {
     txBufferOutClient->write((const uint8_t*)txBuffer, txBufferLen);
     txBufferOutClient->flush();
 
-    txBufferLen = 0;
+    uint8_t        tries = 10;
+    const uint8_t* ptr   = (const uint8_t*)txBuffer;
+    while (true) {
+        size_t sent = txBufferOutClient->write(ptr, txBufferLen);
+        txBufferLen -= sent;
+        ptr += sent;
+        if (txBufferLen == 0) {
+            // whole message is successfully sent, we are done
+            txBufferOutClient->flush();
+            return;
+        }
+
+#if defined(STANDARD_SERIAL_OUTPUT)
+        // warn that we only partially sent the buffer
+        STANDARD_SERIAL_OUTPUT.write('!');
+#endif
+        if (--tries == 0) {
+            // can't convince the modem to send the whole message. just break
+            // the connection now so it will get reset and we can try to
+            // transmit the data again later
+            txBufferOutClient = nullptr;
+            txBufferLen       = 0;
+            return;
+        }
+
+        // give the modem a chance to transmit buffered data
+        delay(1000);
+    }
 }
 
+bool dataPublisher::connectionNeeded(void) {
+    // connection is always needed unless publisher has special logic
+    return true;
+}
 
 // This sends data on the "default" client of the modem
-int16_t dataPublisher::publishData() {
+int16_t dataPublisher::publishData(bool forceFlush) {
     if (_inClient == nullptr) {
         PRINTOUT(F("ERROR! No web client assigned to publish data!"));
         return 0;
     } else {
-        return publishData(_inClient);
+        return publishData(_inClient, forceFlush);
     }
 }
 // Duplicates for backwards compatibility

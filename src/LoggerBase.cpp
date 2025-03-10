@@ -338,10 +338,19 @@ String Logger::getVarCodeAtI(uint8_t position_i) {
 String Logger::getVarUUIDAtI(uint8_t position_i) {
     return _internalArray->arrayOfVars[position_i]->getVarUUID();
 }
+// This returns the current value of the variable as a float
+float Logger::getValueAtI(uint8_t position_i) {
+    return _internalArray->arrayOfVars[position_i]->getValue();
+}
 // This returns the current value of the variable as a string with the
 // correct number of significant figures
 String Logger::getValueStringAtI(uint8_t position_i) {
     return _internalArray->arrayOfVars[position_i]->getValueString();
+}
+// This returns a particular value of the variable as a string with the
+// correct number of significant figures
+String Logger::formatValueStringAtI(uint8_t position_i, float value) {
+    return _internalArray->arrayOfVars[position_i]->formatValueString(value);
 }
 
 
@@ -406,15 +415,27 @@ void Logger::registerDataPublisher(dataPublisher* publisher) {
     dataPublishers[i] = publisher;
 }
 
+bool Logger::checkRemotesConnectionNeeded(void) {
+    MS_DBG(F("Asking publishers if they need a connection."));
 
-void Logger::publishDataToRemotes(void) {
+    bool needed = false;
+    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
+        if (dataPublishers[i] != nullptr) {
+            needed = needed || dataPublishers[i]->connectionNeeded();
+        }
+    }
+
+    return needed;
+}
+
+void Logger::publishDataToRemotes(bool forceFlush) {
     MS_DBG(F("Sending out remote data."));
 
     for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
         if (dataPublishers[i] != nullptr) {
             PRINTOUT(F("\nSending data to ["), i, F("]"),
                      dataPublishers[i]->getEndpoint());
-            dataPublishers[i]->publishData();
+            dataPublishers[i]->publishData(forceFlush);
             extendedWatchDog::resetWatchDog();
         }
     }
@@ -1575,6 +1596,8 @@ void Logger::logData(bool sleepBeforeReturning) {
 
         // Unset flag
         Logger::isLoggingNow = false;
+        // Acknowledge testing button if pressed
+        Logger::startTesting = false;
     }
 
     // Check if it was instead the testing interrupt that woke us up
@@ -1591,7 +1614,8 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
     extendedWatchDog::resetWatchDog();
 
     // Assuming we were woken up by the clock, check if the current time is an
-    // even interval of the logging interval
+    // even interval of the logging interval or that we have been specifically
+    // requested to log by pushbutton
     if (checkInterval()) {
         // Flag to notify that we're in already awake and logging a point
         Logger::isLoggingNow = true;
@@ -1630,7 +1654,18 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
         // Create a csv data record and save it to the log file
         logToSD();
 
-        if (_logModem != nullptr) {
+        // flush the publisher buffers (if any) if we have been invoked by the
+        // testing button
+        bool forceFlush = Logger::startTesting;
+
+        // Sync the clock at noon
+        bool clockSyncNeeded = (Logger::markedLocalUnixTime != 0 &&
+                                Logger::markedLocalUnixTime % 86400 == 43200) ||
+            !isRTCSane();
+        bool connectionNeeded = checkRemotesConnectionNeeded() ||
+            clockSyncNeeded || forceFlush;
+
+        if (_logModem != nullptr && connectionNeeded) {
             MS_DBG(F("Waking up"), _logModem->getModemName(), F("..."));
             if (_logModem->modemWake()) {
                 // Connect to the network
@@ -1639,15 +1674,10 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
                 if (_logModem->connectInternet(240000L)) {
                     // Publish data to remotes
                     extendedWatchDog::resetWatchDog();
-                    publishDataToRemotes();
+                    publishDataToRemotes(forceFlush);
                     extendedWatchDog::resetWatchDog();
 
-                    if ((Logger::markedLocalUnixTime != 0 &&
-                         Logger::markedLocalUnixTime % 86400 == 43200) ||
-                        !loggerClock::isEpochTimeSane(
-                            Logger::markedLocalUnixTime,
-                            Logger::_loggerUTCOffset, Logger::_loggerEpoch)) {
-                        // Sync the clock at noon
+                    if (clockSyncNeeded) {
                         MS_DBG(F("Running a daily clock sync..."));
                         loggerClock::setRTClock(_logModem->getNISTTime(), 0,
                                                 epochStart::unix_epoch);
@@ -1670,6 +1700,12 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
             }
             // Turn the modem off
             _logModem->modemSleepPowerDown();
+        } else if (_logModem != nullptr) {
+            MS_DBG(F("Nobody needs it so publishing without connecting..."));
+            // Call publish function without connection
+            extendedWatchDog::resetWatchDog();
+            publishDataToRemotes(false);  // can't flush without a connection
+            extendedWatchDog::resetWatchDog();
         }
 
 
@@ -1693,7 +1729,7 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
     if (Logger::startTesting) testingMode(sleepBeforeReturning);
 
     if (sleepBeforeReturning) {
-        // Sleep
+        // Call the processor sleep
         systemSleep();
     }
 }

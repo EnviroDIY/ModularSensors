@@ -76,7 +76,7 @@ void ThingSpeakPublisher::setChannelID(const char* thingSpeakChannelID) {
     _thingSpeakChannelID = thingSpeakChannelID;
 }
 
-// Sets all 3 ThingSpeak parameters
+// Sets all ThingSpeak parameters
 void ThingSpeakPublisher::setThingSpeakParams(
     const char* thingSpeakClientName, const char* thingSpeakMQTTUser,
     const char* thingSpeakMQTTPassword, const char* thingSpeakChannelID) {
@@ -113,8 +113,7 @@ void ThingSpeakPublisher::begin(Logger&     baseLogger,
 
 
 // This sends the data to ThingSpeak
-// bool ThingSpeakPublisher::mqttThingSpeak(void)
-int16_t ThingSpeakPublisher::publishData(Client* outClient) {
+int16_t ThingSpeakPublisher::publishData(Client* outClient, bool) {
     bool retVal = false;
 
     // Make sure we don't have too many fields
@@ -151,7 +150,7 @@ int16_t ThingSpeakPublisher::publishData(Client* outClient) {
         txBufferAppend('=');
         txBufferAppend(_baseLogger->getValueStringAtI(i).c_str());
     }
-    MS_DBG(F("Message ["), txBufferLen, F("]:"), String(txBuffer));
+    MS_DBG(F("Message length:"), txBufferLen);
 
     // Set the client connection parameters
     _mqttClient.setClient(*outClient);

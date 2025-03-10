@@ -4,6 +4,7 @@
  * Part of the EnviroDIY ModularSensors library for Arduino.
  * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ * @author Thomas Watson <twatson52@icloud.com>
  *
  * @brief Contains the EnviroDIYPublisher subclass of dataPublisher for
  * publishing data to the Monitor My Watershed/EnviroDIY data portal at
@@ -28,6 +29,7 @@
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 #include "dataPublisherBase.h"
+#include "LogBuffer.h"
 
 
 // ============================================================================
@@ -187,6 +189,18 @@ class EnviroDIYPublisher : public dataPublisher {
      */
     void begin(Logger& baseLogger, const char* registrationToken,
                const char* samplingFeatureUUID);
+    /**
+     * @brief Begin the publisher by doing the minimum that is needed after boot
+     */
+    void begin() override;
+
+    /**
+     * @brief Checks if the publisher needs an Internet connection for the next
+     * publishData call (as opposed to just buffering data internally).
+     *
+     * @return True if an internet connection is needed for the next publish.
+     */
+    bool connectionNeeded(void) override;
 
     /**
      * @brief Utilize an attached modem to open a a TCP connection to the
@@ -199,9 +213,10 @@ class EnviroDIYPublisher : public dataPublisher {
      * @param outClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
+     * @param forceFlush Ask the publisher to flush buffered data immediately.
      * @return The http status code of the response.
      */
-    int16_t publishData(Client* outClient) override;
+    int16_t publishData(Client* outClient, bool forceFlush = false) override;
 
  protected:
     /**
@@ -228,6 +243,29 @@ class EnviroDIYPublisher : public dataPublisher {
     static const char* timestampTag;        ///< The JSON feature timestamp tag
 
     /**@}*/
+
+
+    LogBuffer _logBuffer;  ///< Internal reference to the logger buffer
+
+    // actually transmit rather than just buffer data
+    /**
+     * @brief Transmit data from the data buffer to an external site
+     *
+     * @param outClient The client to publish the data over
+     * @return The HTTP response code from the publish attempt
+     *
+     * @note A 504 will be returned automatically if the server does not
+     * respond within 30 seconds.
+     */
+    int16_t flushDataBuffer(Client* outClient);
+
+    /**
+     * @brief The number of transmissions remaing at the single minute intervals
+     *
+     * We send every one of the first five data points at only one minute
+     * intervals for faster in-field validation.
+     */
+    uint8_t _initialTransmissionsRemaining = 5;
 
  private:
     /**

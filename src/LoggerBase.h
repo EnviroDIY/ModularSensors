@@ -652,9 +652,18 @@ class Logger {
      */
     void registerDataPublisher(dataPublisher* publisher);
     /**
-     * @brief Publish data to all registered data publishers.
+     * @brief Check if any data publishers need an Internet connection for the
+     * next publish call.
+     *
+     * @return True if any remotes need a connection.
      */
-    void publishDataToRemotes(void);
+    bool checkRemotesConnectionNeeded(void);
+    /**
+     * @brief Publish data to all registered data publishers.
+     *
+     * @param forceFlush Ask the publishers to flush buffered data immediately.
+     */
+    void publishDataToRemotes(bool forceFlush = false);
     /**
      * @brief Retained for backwards compatibility, use publishDataToRemotes()
      * in new code.
