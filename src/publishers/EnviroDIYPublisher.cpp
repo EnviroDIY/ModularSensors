@@ -124,7 +124,6 @@ uint16_t EnviroDIYPublisher::calculateJsonSize() {
 
     uint16_t jsonLength = strlen(samplingFeatureTag);
     jsonLength += 36;  // sampling feature UUID
-    jsonLength += 36;  // sampling feature UUID
     jsonLength += strlen(timestampTag);
     // markedISO8601Time + quotes and commas
     jsonLength += records * (25 + 2) + records - 1;
@@ -208,20 +207,20 @@ bool EnviroDIYPublisher::connectionNeeded(void) {
         }
     }
 
-    // the initial log transmissions have not completed (we send every one
-    // of the first five data points immediately for field validation)
+    // the initial log transmissions have not completed (we send every one of
+    // the first five data points immediately for field validation)
     bool initialTransmission = _initialTransmissionsRemaining > 0;
 
     return atSendInterval || initialTransmission;
 }
 
 // This utilizes an attached modem to make a TCP connection to the
-// EnviroDIY/ODM2DataSharingPortal and then streams out a post request
-// over that connection.
+// EnviroDIY/ODM2DataSharingPortal and then streams out a post request over that
+// connection.
 // The return is the http status code of the response.
 int16_t EnviroDIYPublisher::publishData(Client* outClient, bool forceFlush) {
-    // do we intend to flush this call? if so, we have just returned true from
-    // connectionNeeded() and the internet is connected and waiting. check what
+    // Do we intend to flush this call? If so, we have just returned true from
+    // connectionNeeded() and the internet is connected and waiting. Check what
     // that function said so we know to do it after we record this data point.
     // we also flush if requested (in which case the internet is connected too)
     bool willFlush = connectionNeeded() || forceFlush;
@@ -320,7 +319,7 @@ int16_t EnviroDIYPublisher::flushDataBuffer(Client* outClient) {
             }
         }
 
-        // Write out the complete request
+        // Flush the complete request
         txBufferFlush();
 
         // Wait 30 seconds for a response from the server
@@ -329,9 +328,9 @@ int16_t EnviroDIYPublisher::flushDataBuffer(Client* outClient) {
             delay(10);
         }
 
-        // Read only the first 12 characters of the response
-        // We're only reading as far as the http code, anything beyond that
-        // we don't care about.
+        // Read only the first 12 characters of the response.
+        // We're only reading as far as the http code, anything beyond that we
+        // don't care about.
         did_respond = outClient->readBytes(tempBuffer, 12);
 
         // Close the TCP/IP connection
