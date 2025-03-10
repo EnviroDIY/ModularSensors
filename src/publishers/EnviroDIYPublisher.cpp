@@ -25,7 +25,7 @@ const char* EnviroDIYPublisher::contentTypeHeader =
     "\r\nContent-Type: application/json\r\n\r\n";
 
 const char* EnviroDIYPublisher::samplingFeatureTag = "{\"sampling_feature\":\"";
-const char* EnviroDIYPublisher::timestampTag       = "\",\"timestamp\":[";
+const char* EnviroDIYPublisher::timestampTag       = "\",\"timestamp\":";
 
 
 // Constructors
@@ -127,11 +127,19 @@ uint16_t EnviroDIYPublisher::calculateJsonSize() {
     jsonLength += strlen(timestampTag);
     // markedISO8601Time + quotes and commas
     jsonLength += records * (25 + 2) + records - 1;
-    jsonLength += 2;  // ],
+    if (records > 1) {
+        jsonLength += 3;  // [],
+    } else {
+        jsonLength += 1;  // ,
+    }
     for (uint8_t var = 0; var < variables; var++) {
         jsonLength += 1;   //  "
         jsonLength += 36;  // variable UUID
-        jsonLength += 4;   //  ":[]
+        if (records > 1) {
+            jsonLength += 4;  //  ":[]
+        } else {
+            jsonLength += 2;  //  ":
+        }
 
         for (int rec = 0; rec < records; rec++) {
             float value = _logBuffer.getRecordValue(rec, var);
@@ -305,6 +313,7 @@ int16_t EnviroDIYPublisher::flushDataBuffer(Client* outClient) {
 
         // write out list of timestamps
         int records = _logBuffer.getNumRecords();
+        if (records > 1) { txBufferAppend('['); }
         for (int rec = 0; rec < records; rec++) {
             txBufferAppend('"');
             uint32_t timestamp = _logBuffer.getRecordTimestamp(rec);
@@ -312,7 +321,7 @@ int16_t EnviroDIYPublisher::flushDataBuffer(Client* outClient) {
             txBufferAppend('"');
             if (rec + 1 != records) { txBufferAppend(','); }
         }
-        txBufferAppend(']');
+        if (records > 1) { txBufferAppend(']'); }
         txBufferAppend(',');
 
         // write out a list of the values of each variable
@@ -322,7 +331,7 @@ int16_t EnviroDIYPublisher::flushDataBuffer(Client* outClient) {
             txBufferAppend(_baseLogger->getVarUUIDAtI(var).c_str());
             txBufferAppend('"');
             txBufferAppend(':');
-            txBufferAppend('[');
+            if (records > 1) { txBufferAppend('['); }
 
             for (int rec = 0; rec < records; rec++) {
                 float value = _logBuffer.getRecordValue(rec, var);
@@ -330,7 +339,7 @@ int16_t EnviroDIYPublisher::flushDataBuffer(Client* outClient) {
                     _baseLogger->formatValueStringAtI(var, value).c_str());
                 if (rec + 1 != records) { txBufferAppend(','); }
             }
-            txBufferAppend(']');
+            if (records > 1) { txBufferAppend(']'); }
 
             if (var + 1 != variables) {
                 txBufferAppend(',');
