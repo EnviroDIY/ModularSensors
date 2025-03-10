@@ -26,7 +26,7 @@ DigiXBeeWifi::DigiXBeeWifi(Stream* modemStream, int8_t powerPin,
 #else
       gsmModem(*modemStream, modemResetPin),
 #endif
-      gsmClient(gsmModem),
+
       _ssid(ssid),
       _pwd(pwd),
       _maintainAssociation(maintainAssociation) {
@@ -87,6 +87,10 @@ bool DigiXBeeWifi::connectInternet(uint32_t maxConnectionTime) {
 }
 MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeWifi);
 
+MS_MODEM_CREATE_CLIENTS(DigiXBeeWifi);
+MS_MODEM_CREATE_SECURE_CLIENTS(DigiXBeeWifi);
+
+MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBeeWifi);
 MS_MODEM_GET_MODEM_BATTERY_DATA(DigiXBeeWifi);
 MS_MODEM_GET_MODEM_TEMPERATURE_DATA(DigiXBeeWifi);
 
@@ -96,7 +100,6 @@ bool DigiXBeeWifi::extraModemSetup(void) {
     MS_DBG(F("Initializing the XBee..."));
     success &= gsmModem.init();
     if (!success) { MS_DBG(F("Failed TinyGSM init")); }
-    gsmClient.init(&gsmModem);
     _modemName = gsmModem.getModemName();
     /** Then enter command mode to set pin outputs. */
     MS_DBG(F("Putting XBee into command mode..."));
@@ -347,7 +350,7 @@ bool DigiXBeeWifi::extraModemSetup(void) {
 void DigiXBeeWifi::disconnectInternet(void) {
     // Ensure Wifi XBee IP socket torn down by forcing connection to
     // localhost IP For A XBee S6B bug, then force restart.
-
+    TinyGsmClient gsmClient(gsmModem);  // need to create again to force close
     String    oldRemoteIp = gsmClient.remoteIP();
     IPAddress newHostIp   = IPAddress(127, 0, 0, 1);  // localhost
     gsmClient.connect(newHostIp, 80);
@@ -365,8 +368,6 @@ uint32_t DigiXBeeWifi::getNISTTime(void) {
         MS_DBG(F("No internet connection, cannot connect to NIST."));
         return 0;
     }
-
-    gsmClient.stop();
 
     for (uint8_t i = 0; i < NIST_SERVER_RETRYS; i++) {
         // Must ensure that we do not ping the daylight servers more than once
@@ -398,6 +399,7 @@ uint32_t DigiXBeeWifi::getNISTTime(void) {
 
         // NOTE:  This "connect" only sets up the connection parameters, the TCP
         // socket isn't actually opened until we first send data (the '!' below)
+        TinyGsmClient gsmClient(gsmModem);
         connectionMade = gsmClient.connect(nistIPs[i], TIME_PROTOCOL_PORT);
         // Need to send something before connection is made
         gsmClient.println('!');
@@ -425,38 +427,6 @@ uint32_t DigiXBeeWifi::getNISTTime(void) {
         }
     }
     return 0;
-}
-
-
-bool DigiXBeeWifi::getModemSignalQuality(int16_t& rssi, int16_t& percent) {
-    bool success = true;
-
-    // Initialize float variable
-    int16_t signalQual = -9999;
-    percent            = -9999;
-    rssi               = -9999;
-
-
-    // Assume measurement from previous connection
-    // Get signal quality
-    // NOTE:  We can't actually distinguish between a bad modem response, no
-    // modem response, and a real response from the modem of no service/signal.
-    // The TinyGSM getSignalQuality function returns the same "no signal" value
-    // (99 CSQ or 0 RSSI) in all 3 cases.
-    MS_DBG(F("Getting signal quality:"));
-    signalQual = gsmModem.getSignalQuality();
-    MS_DBG(F("Raw signal quality:"), signalQual);
-
-    if (gsmClient.connected()) { gsmClient.stop(); }
-
-    // Convert signal quality to RSSI
-    rssi    = signalQual;
-    percent = getPctFromRSSI(signalQual);
-
-    MS_DBG(F("RSSI:"), rssi);
-    MS_DBG(F("Percent signal strength:"), percent);
-
-    return success;
 }
 
 

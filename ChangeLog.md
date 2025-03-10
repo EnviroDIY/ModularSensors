@@ -37,7 +37,6 @@ This should only make a difference for my compilation tests, real users should p
 - Added support for caching readings in RAM and sending in batches.
 This currently only works on the EnviroDIY/Monitor My Watershed Publisher.
 Thank you to [Thomas Watson](https://github.com/tpwrules) for this work.
-
 - Created a new ClockSupport module with the loggerClock and epochStart static classes.
 - Added support for the Micro Crystal RV-8803-C7 high accuracy, ultra low power Real-Time-Clock Module.
 - Added support for multiple 'epoch' types starting at January 1, 1970 (UNIX), January 1, 2000 (Arduino and others), January 5, 1980 (GPST), and January 1, 1900 (NIST time and NTP protocols).
@@ -50,10 +49,14 @@ If no epoch start is given, it is assumed to be UNIX (January 1, 1970).
 - Added example code for flashing neopixel in the menu example.
 - Added support for Geolux HydroCam
 - Added a generic time formatting function.
+- Added a new publisher to AWS IoT Core over MQTT
 
 ### Removed
 
-- **Breaking:** Removed the function `setNowUTCEpoch(uint32_t)`.
+- **BREAKING:** Removed the "built-in" GsmClient within the LoggerModem objects.
+  - This means you cannot access a client with `&modem.gsmClient`.
+  - *Most of the examples used the `&modem.gsmClient` pattern!* This means many people will need to change their code!
+- **BREAKING:** Removed the function `setNowUTCEpoch(uint32_t)`.
   - Although public, this was never intended to be used externally.
 - **Potentially BREAKING:** Removed support for any functions using the Sodaq "DateTime" class.
 - **Potentially BREAKING:** Removed ability to have `PRINTOUT`, `MS_DBG`, and `MS_DEEP_DBG` output going to different serial ports

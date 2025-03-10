@@ -27,7 +27,6 @@ SodaqUBeeU201::SodaqUBeeU201(Stream* modemStream, int8_t powerPin,
 #else
       gsmModem(*modemStream),
 #endif
-      gsmClient(gsmModem),
       _apn(apn) {
 }
 
@@ -40,6 +39,9 @@ MS_MODEM_WAKE(SodaqUBeeU201);
 MS_MODEM_CONNECT_INTERNET(SodaqUBeeU201);
 MS_MODEM_DISCONNECT_INTERNET(SodaqUBeeU201);
 MS_MODEM_IS_INTERNET_AVAILABLE(SodaqUBeeU201);
+
+MS_MODEM_CREATE_CLIENTS(SodaqUBeeU201);
+MS_MODEM_CREATE_SECURE_CLIENTS(SodaqUBeeU201);
 
 MS_MODEM_GET_NIST_TIME(SodaqUBeeU201);
 
@@ -82,8 +84,7 @@ bool SodaqUBeeU201::modemSleepFxn(void) {
 
 bool SodaqUBeeU201::extraModemSetup(void) {
     bool success = gsmModem.init();
-    gsmClient.init(&gsmModem);
-    _modemName = gsmModem.getModemName();
+    _modemName   = gsmModem.getModemName();
     // Turn on network indicator light
     // Pin 16 = GPIO1, function 2 = network status indication
     gsmModem.sendAT(GF("+UGPIOC=16,2"));

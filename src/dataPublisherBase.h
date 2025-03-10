@@ -101,6 +101,9 @@ class dataPublisher {
      *
      * Gives the publisher a client instance to use to "print" data.
      *
+     * @note This can be used to set a client that is not tied to a logger
+     * modem or to TinyGSM!
+     *
      * @param inClient A pointer to an Arduino client instance
      */
     void setClient(Client* inClient);

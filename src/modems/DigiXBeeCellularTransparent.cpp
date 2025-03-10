@@ -26,7 +26,6 @@ DigiXBeeCellularTransparent::DigiXBeeCellularTransparent(
 #else
       gsmModem(*modemStream, modemResetPin),
 #endif
-      gsmClient(gsmModem),
       _apn(apn),
       _user(user),
       _pwd(pwd) {
@@ -41,6 +40,9 @@ MS_MODEM_WAKE(DigiXBeeCellularTransparent);
 MS_MODEM_CONNECT_INTERNET(DigiXBeeCellularTransparent);
 MS_MODEM_DISCONNECT_INTERNET(DigiXBeeCellularTransparent);
 MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeCellularTransparent);
+
+MS_MODEM_CREATE_CLIENTS(DigiXBeeCellularTransparent);
+MS_MODEM_CREATE_SECURE_CLIENTS(DigiXBeeCellularTransparent);
 
 MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBeeCellularTransparent);
 MS_MODEM_GET_MODEM_BATTERY_DATA(DigiXBeeCellularTransparent);
@@ -97,7 +99,6 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void) {
     /** First run the TinyGSM init() function for the XBee. */
     MS_DBG(F("Initializing the XBee..."));
     success &= gsmModem.init();
-    gsmClient.init(&gsmModem);
     _modemName = gsmModem.getModemName();
     /** Then enter command mode to set pin outputs. */
     MS_DBG(F("Putting XBee into command mode..."));
@@ -213,7 +214,8 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime(void) {
 
         /* This is the IP address of time-e-wwv.nist.gov  */
         /* XBee's address lookup falters on time.nist.gov */
-        IPAddress ip(132, 163, 97, 6);
+        IPAddress     ip(132, 163, 97, 6);
+        TinyGsmClient gsmClient(gsmModem); /*create client, default mux*/
         connectionMade = gsmClient.connect(ip, 37, 15);
         /* Wait again so NIST doesn't refuse us! */
         delay(4000L);

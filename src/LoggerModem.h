@@ -39,6 +39,7 @@
 #undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include <Arduino.h>
+#include <Client.h>
 
 
 /**
@@ -547,6 +548,32 @@ class loggerModem {
      * the cellular network.
      */
     virtual void disconnectInternet(void) = 0;
+
+    /**
+     * @brief Create a new client object with a specified socket number
+     *
+     * @param mux The socket number to use
+     */
+    virtual Client* createClient(int8_t mux) = 0;
+    /**
+     * @brief Create a new client object using the default socket number
+     *
+     * @param mux The socket number to use
+     */
+    virtual Client* createClient() = 0;
+
+    /**
+     * @brief Create a new secure client object with a specified socket number
+     *
+     * @param mux The socket number to use
+     */
+    virtual Client* createSecureClient(int8_t mux) = 0;
+    /**
+     * @brief Create a new secure client object using the default socket number
+     *
+     * @param mux The socket number to use
+     */
+    virtual Client* createSecureClient() = 0;
 
 
     /**

@@ -27,7 +27,6 @@ SIMComSIM7080::SIMComSIM7080(Stream* modemStream, int8_t powerPin,
 #else
       gsmModem(*modemStream),
 #endif
-      gsmClient(gsmModem),
       _apn(apn) {
 }
 
@@ -36,8 +35,7 @@ SIMComSIM7080::~SIMComSIM7080() {}
 
 bool SIMComSIM7080::extraModemSetup(void) {
     bool success = gsmModem.init();
-    gsmClient.init(&gsmModem);
-    _modemName = gsmModem.getModemName();
+    _modemName   = gsmModem.getModemName();
 
     // The modem is liable to crash if the send buffer overflows and TinyGSM
     // offers no way to know when that might happen. Reduce the chance of
@@ -69,6 +67,9 @@ MS_MODEM_WAKE(SIMComSIM7080);
 MS_MODEM_CONNECT_INTERNET(SIMComSIM7080);
 MS_MODEM_DISCONNECT_INTERNET(SIMComSIM7080);
 MS_MODEM_IS_INTERNET_AVAILABLE(SIMComSIM7080);
+
+MS_MODEM_CREATE_CLIENTS(SIMComSIM7080);
+MS_MODEM_CREATE_SECURE_CLIENTS(SIMComSIM7080);
 
 MS_MODEM_GET_NIST_TIME(SIMComSIM7080);
 

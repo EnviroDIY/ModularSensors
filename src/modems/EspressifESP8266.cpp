@@ -28,7 +28,7 @@ EspressifESP8266::EspressifESP8266(Stream* modemStream, int8_t powerPin,
 #else
       gsmModem(*modemStream),
 #endif
-      gsmClient(gsmModem),
+
       _modemStream(modemStream),
       _ssid(ssid),
       _pwd(pwd) {
@@ -43,6 +43,9 @@ MS_MODEM_WAKE(EspressifESP8266);
 MS_MODEM_CONNECT_INTERNET(EspressifESP8266, ESP8266_RECONNECT_TIME_MS);
 MS_MODEM_DISCONNECT_INTERNET(EspressifESP8266);
 MS_MODEM_IS_INTERNET_AVAILABLE(EspressifESP8266);
+
+MS_MODEM_CREATE_CLIENTS(EspressifESP8266);
+MS_MODEM_CREATE_SECURE_CLIENTS(EspressifESP8266);
 
 MS_MODEM_GET_NIST_TIME(EspressifESP8266);
 
@@ -139,7 +142,6 @@ bool EspressifESP8266::modemSleepFxn(void) {
 bool EspressifESP8266::extraModemSetup(void) {
     if (_modemSleepRqPin >= 0) { digitalWrite(_modemSleepRqPin, !_wakeLevel); }
     gsmModem.init();
-    gsmClient.init(&gsmModem);
     _modemName = gsmModem.getModemName();
     return true;
 }
