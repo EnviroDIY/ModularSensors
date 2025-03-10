@@ -363,6 +363,7 @@ String Logger::formatValueStringAtI(uint8_t position_i, float value) {
 // loggerModem = TinyGSM modem + TinyGSM client + Modem On Off
 void Logger::attachModem(loggerModem& modem) {
     _logModem = &modem;
+    _logModem->setModemTimeZone(_loggerUTCOffset);
 }
 
 

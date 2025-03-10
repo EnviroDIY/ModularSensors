@@ -74,6 +74,10 @@ String loggerModem::getModemDevId(void) {
         _modemHwVersion + F(" FwVer ") + _modemFwVersion;
 }
 
+void loggerModem::setModemTimeZone(int8_t timeZone) {
+    _modemUTCOffset = timeZone;
+}
+
 void loggerModem::modemPowerUp(void) {
     if (_powerPin >= 0) {
         if (_modemSleepRqPin >= 0) {

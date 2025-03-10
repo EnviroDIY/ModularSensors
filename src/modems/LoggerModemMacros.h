@@ -17,6 +17,20 @@
 
 
 /**
+ * @def MS_MODEM_NTP_SYNC
+ * @brief A macro to add the line to sync the modem with NTP after it wakes.
+ *
+ * This needs to be called at wake because many modules forget their time when
+ * they are powered down.
+ */
+#if defined(TINY_GSM_MODEM_HAS_NTP)
+#define MS_MODEM_NTP_SYNC \
+    gsmModem.NTPServerSync("pool.ntp.org", _modemUTCOffset);
+#else
+#define MS_MODEM_NTP_SYNC
+#endif
+
+/**
  * @brief Creates an extraModemSetup() function for a specific modem subclass.
  *
  * This is a passthrough to the TinyGSM init() and getModemName() for a specific
@@ -31,6 +45,7 @@
     bool specificModem::extraModemSetup(void) { \
         bool success = gsmModem.init();         \
         _modemName   = gsmModem.getModemName(); \
+        MS_MODEM_NTP_SYNC                       \
         return success;                         \
     }
 
@@ -168,6 +183,7 @@
             success = modemSetup();                                            \
         } else {                                                               \
             success &= gsmModem.init();                                        \
+            MS_MODEM_NTP_SYNC                                                  \
         }                                                                      \
                                                                                \
         if (success) {                                                         \

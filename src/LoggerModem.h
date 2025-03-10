@@ -380,6 +380,21 @@ class loggerModem {
      * @todo Implement this for modems other than the XBee WiFi
      */
     String getModemDevId(void);
+    /**
+     * @brief Set the timezone that the modem will attempt to sync itself to.
+     *
+     * This doesn't *have* to be the same as the RTC or logger timezone, but
+     * you'd be stupid to make it different.
+     *
+     * @note This must be set for SSL connections to work! If the modem does not
+     * have an accurate internal time when attempting an SSL connection, the
+     * connection will fail because the certificates will not be within their
+     * specified valid time ranges.
+     *
+     * @param timeZone The timezone that the modem will attempt to sync itself
+     * to.
+     */
+    void setModemTimeZone(int8_t timeZone);
 
     /**
      * @brief Set up the modem before first use.
@@ -570,7 +585,6 @@ class loggerModem {
      * @brief Create a new secure client object using the default socket number
      */
     virtual Client* createSecureClient() = 0;
-
 
     /**
      * @brief Get the time from NIST via TIME protocol (rfc868).
@@ -1122,6 +1136,19 @@ class loggerModem {
      * @todo Implement this for modems other than the XBee WiFi
      */
     String _modemSerialNumber;
+
+    /**
+     * @brief The timezone that the modem will attempt to sync itself to.
+     *
+     * This doesn't *have* to be the same as the RTC or logger timezone, but
+     * you'd be stupid to make it different.
+     *
+     * @note This must be set for SSL connections to work! If the modem does not
+     * have an accurate internal time when attempting an SSL connection, the
+     * connection will fail because the certificates will not be within their
+     * specified valid time ranges.
+     */
+    int8_t _modemUTCOffset = 0;
 
     /**
      * @brief An 8-bit code for the enabled modem polling variables
