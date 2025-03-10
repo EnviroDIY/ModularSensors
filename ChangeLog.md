@@ -34,6 +34,7 @@ This should only make a difference for my compilation tests, real users should p
 - Changed the watchdog from a fix 15 minute reset timer to 2x the logging interval (or at least 5 minutes).
 
 ### Added
+
 - Added support for caching readings in RAM and sending in batches.
 This currently only works on the EnviroDIY/Monitor My Watershed Publisher.
 Thank you to [Thomas Watson](https://github.com/tpwrules) for this work.

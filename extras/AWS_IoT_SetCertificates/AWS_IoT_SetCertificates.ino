@@ -1,22 +1,33 @@
 /**************************************************************
+ * @example{lineno} AWS_IoT_SetCertificates.ino
+ * @copyright Stroud Water Research Center
+ * @license This example is published under the BSD-3 license.
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * For this example, you need to install PubSubClient library:
- *   https://github.com/knolleary/pubsubclient
- *   or from http://librarymanager/all#PubSubClient
+ * @brief An program to load certificates for AWS IoT Core on to your modem to
+ * use for later connection.
  *
- * NOTE: This example only works for modules that have support for writing
- * certificates. Modules that support SSL in this library, but not writing
- * certificates, cannot use this example!
+ * You should run this program once to load your certificates and confirm that
+ * you can connect to AWS IoT Core over MQTT.  Once you have confirmed your
+ * certificates are loaded and working, there is no reason to rerun this program
+ * unless you have a new modom, reset your modem, or your certificates change.
+ * Most modules store the certificates in flash, which has a limited number of
+ * read/write cycles. To avoid wearing out the flash unnecessarily, you should
+ * only run this program when necessarily, don't re-write the certificates every
+ * time you want to connect to AWS IoT Core.
  *
- **************************************************************
- * This example connects to AWS IoT Core using MQTT over SSL.
+ * @note This only works for modules that have support for both using and
+ * **loading** certificates in TinyGSM. Modules that support SSL, but not
+ *writing certificates, cannot use this example!
+ *
+ * @m_examplenavigation{extra_aws_certificates,}
  **************************************************************/
 
 // Select your modem:
 // #define TINY_GSM_MODEM_SIM7000SSL
 // #define TINY_GSM_MODEM_SIM7080
 // #define TINY_GSM_MODEM_A7672X
-// #define TINY_GSM_MODEM_ESP32
+#define TINY_GSM_MODEM_ESP32
 // #define TINY_GSM_MODEM_SEQUANS_MONARCH
 
 #define TINY_GSM_KEEPALIVE 180
@@ -69,10 +80,8 @@ const char gprsUser[] = "";
 const char gprsPass[] = "";
 
 // Your WiFi connection credentials, if applicable
-// const char wifiSSID[] = "Stroud-Mobile";
-// const char wifiPass[] = "phone970";
-const char wifiSSID[] = "4DsAndCounting";
-const char wifiPass[] = "W4171n843";
+const char wifiSSID[] = "YourWiFiSSID";
+const char wifiPass[] = "YourWiFiPassword";
 
 // MQTT details
 // get the broker host/endpoint from AWS IoT Core / Connect / Domain
@@ -83,9 +92,7 @@ uint16_t port = 8883;
 // the client ID should be the name of your "thing" in AWS IoT Core
 const char* clientId = THING_NAME;
 
-static const char topicLed[] TINY_GSM_PROGMEM       = THING_NAME "/led";
-static const char topicInit[] TINY_GSM_PROGMEM      = THING_NAME "/init";
-static const char topicLedStatus[] TINY_GSM_PROGMEM = THING_NAME "/ledStatus";
+static const char topicInit[] TINY_GSM_PROGMEM = THING_NAME "/init";
 
 // Just in case someone defined the wrong thing..
 #if TINY_GSM_USE_GPRS && not defined TINY_GSM_MODEM_HAS_GPRS
@@ -117,25 +124,6 @@ int ledStatus = LOW;
 
 uint32_t lastReconnectAttempt = 0;
 
-void mqttCallback(char* topic, byte* payload, unsigned int len) {
-    SerialMon.print("Message arrived [");
-    SerialMon.print(topic);
-    SerialMon.print("]: ");
-    SerialMon.write(payload, len);
-    SerialMon.println();
-
-    // Only proceed if incoming message's topic matches
-    if (String(topic) == topicLed) {
-        ledStatus = !ledStatus;
-        digitalWrite(LED_PIN, ledStatus);
-        if (ledStatus) {
-            mqtt.publish(topicLedStatus, "{\"LED status\":\"1\"}");
-        } else {
-            mqtt.publish(topicLedStatus, "{\"LED status\":\"0\"}");
-        }
-    }
-}
-
 boolean mqttConnect() {
     SerialMon.print("Connecting to ");
     SerialMon.print(broker);
@@ -154,9 +142,6 @@ boolean mqttConnect() {
     SerialMon.print("Publishing a message to ");
     SerialMon.println(topicInit);
     mqtt.publish(topicInit, "{\"" THING_NAME "\":\"connected\"}");
-    SerialMon.print("Subscribing to ");
-    SerialMon.println(topicLed);
-    mqtt.subscribe(topicLed);
 
     return mqtt.connected();
 }
@@ -274,13 +259,13 @@ void setup() {
     // certificates must be named "client_ca.{0|1}", "client_cert.{0|1}", or
     // "client_key.{0|1}"
 #ifdef TINY_GSM_MODEM_ESP32
-    const char* root_ca_name     = "client_ca.1";
-    const char* client_cert_name = "client_cert.1";
-    const char* client_key_name  = "client_key.1";
+    const char* root_ca_name     = "client_ca.0";
+    const char* client_cert_name = "client_cert.0";
+    const char* client_key_name  = "client_key.0";
 #else
-    const char* root_ca_name     = "root_ca_1.crt";
-    const char* client_cert_name = "client_cert_1.crt";
-    const char* client_key_name  = "client_key_1.key";
+    const char* root_ca_name     = "root_ca_0.crt";
+    const char* client_cert_name = "client_cert_0.crt";
+    const char* client_key_name  = "client_key_0.key";
 #endif
 
     // ======================== CA CERTIFICATE LOADING ========================
@@ -377,7 +362,6 @@ void setup() {
 
     // MQTT Broker setup
     mqtt.setServer(broker, port);
-    mqtt.setCallback(mqttCallback);
 
     delay(500);
     DBG("Finished setup");
