@@ -351,8 +351,8 @@ void DigiXBeeWifi::disconnectInternet(void) {
     // Ensure Wifi XBee IP socket torn down by forcing connection to
     // localhost IP For A XBee S6B bug, then force restart.
     TinyGsmClient gsmClient(gsmModem);  // need to create again to force close
-    String    oldRemoteIp = gsmClient.remoteIP();
-    IPAddress newHostIp   = IPAddress(127, 0, 0, 1);  // localhost
+    String        oldRemoteIp = gsmClient.remoteIP();
+    IPAddress     newHostIp   = IPAddress(127, 0, 0, 1);  // localhost
     gsmClient.connect(newHostIp, 80);
     MS_DBG(gsmModem.getBeeName(), oldRemoteIp, F("disconnectInternet set to"),
            gsmClient.remoteIP());

@@ -160,7 +160,7 @@ uint16_t EnviroDIYPublisher::calculateJsonSize() {
 }
 
 
-// A way to begin with everything already set
+// A way to set members in the begin to use with a bare constructor
 void EnviroDIYPublisher::begin(Logger& baseLogger, Client* inClient,
                                const char* registrationToken,
                                const char* samplingFeatureUUID) {

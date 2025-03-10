@@ -137,7 +137,6 @@ class UbidotsPublisher : public dataPublisher {
      */
     uint16_t calculateJsonSize();
 
-    // A way to begin with everything already set
     /**
      * @copydoc dataPublisher::begin(Logger& baseLogger, Client* inClient)
      * @param authentificationToken The authentication token from Ubdots, either

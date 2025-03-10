@@ -51,7 +51,7 @@ void DreamHostPublisher::setDreamHostPortalRX(const char* dhUrl) {
 }
 
 
-// A way to begin with everything already set
+// A way to set members in the begin to use with a bare constructor
 void DreamHostPublisher::begin(Logger& baseLogger, Client* inClient,
                                const char* dhUrl) {
     setDreamHostPortalRX(dhUrl);

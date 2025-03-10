@@ -55,7 +55,7 @@ void AWS_IoT_Publisher::setEndpoint(const char* awsIoTEndpoint) {
 }
 
 
-// A way to begin with everything already set
+// A way to set members in the begin to use with a bare constructor
 void AWS_IoT_Publisher::begin(Logger& baseLogger, Client* inClient,
                               const char* awsIoTEndpoint,
                               const char* samplingFeatureUUID) {

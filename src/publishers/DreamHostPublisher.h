@@ -112,7 +112,6 @@ class DreamHostPublisher : public dataPublisher {
      */
     void setDreamHostPortalRX(const char* dhUrl);
 
-    // A way to begin with everything already set
     /**
      * @copydoc dataPublisher::begin(Logger& baseLogger, Client* inClient)
      * @param dhUrl The URL for sending data to DreamHost

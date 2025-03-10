@@ -145,7 +145,6 @@ class AWS_IoT_Publisher : public dataPublisher {
      */
     void setEndpoint(const char* awsIoTEndpoint);
 
-    // A way to begin with everything already set
     /**
      * @copydoc dataPublisher::begin(Logger& baseLogger, Client* inClient)
      * @param awsIoTEndpoint The endpoint for your AWS IoT instance

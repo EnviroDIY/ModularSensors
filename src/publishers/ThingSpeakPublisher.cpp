@@ -87,7 +87,7 @@ void ThingSpeakPublisher::setThingSpeakParams(
 }
 
 
-// A way to begin with everything already set
+// A way to set members in the begin to use with a bare constructor
 void ThingSpeakPublisher::begin(Logger& baseLogger, Client* inClient,
                                 const char* thingSpeakClientName,
                                 const char* thingSpeakMQTTUser,

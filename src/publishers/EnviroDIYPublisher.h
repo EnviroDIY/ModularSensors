@@ -170,7 +170,6 @@ class EnviroDIYPublisher : public dataPublisher {
     uint16_t calculateJsonSize();
 
 
-    // A way to begin with everything already set
     /**
      * @copydoc dataPublisher::begin(Logger& baseLogger, Client* inClient)
      * @param registrationToken The registration token for the site on the

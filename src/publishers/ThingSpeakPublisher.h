@@ -176,7 +176,6 @@ class ThingSpeakPublisher : public dataPublisher {
                              const char* thingSpeakMQTTPassword,
                              const char* thingSpeakChannelID);
 
-    // A way to begin with everything already set
     /**
      * @copydoc dataPublisher::begin(Logger& baseLogger, Client* inClient)
      * @param thingSpeakClientName The client name for your MQTT device. This is
