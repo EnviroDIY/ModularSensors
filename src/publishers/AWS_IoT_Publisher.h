@@ -101,12 +101,18 @@ class AWS_IoT_Publisher : public dataPublisher {
      *
      * @param baseLogger The logger supplying the data to be published
      * @param awsIoTEndpoint The endpoint for your AWS IoT instance
+     * @param caCertName The name of your certificate authority certificate
+     * file
+     * @param clientCertName The name of your client certificate file
+     * @param clientKeyName The name of your client private key file
      * @param samplingFeatureUUID The sampling feature UUID for the site on the
      * Monitor My Watershed data portal.
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions. NOTE: not implemented by this publisher!
      */
     AWS_IoT_Publisher(Logger& baseLogger, const char* awsIoTEndpoint,
+                      const char* caCertName, const char* clientCertName,
+                      const char* clientKeyName,
                       const char* samplingFeatureUUID, int sendEveryX = 1);
     /**
      * @brief Construct a new AWS IoT Core Publisher object
@@ -146,6 +152,56 @@ class AWS_IoT_Publisher : public dataPublisher {
     void setEndpoint(const char* awsIoTEndpoint);
 
     /**
+     * @brief Set the name of your certificate authority certificate file.
+     *
+     * You MUST have already uploaded your certificate to your modem. This will
+     * most likely be the Amazon Root CA 1 (RSA 2048 bit key) certificate. You
+     * can find Amazon's current CA certificates here:
+     * https://docs.aws.amazon.com/iot/latest/developerguide/server-authentication.html
+     *
+     * @param caCertName The name of your certificate authority certificate
+     * file.
+     */
+    void setCACertName(const char* caCertName);
+
+    /**
+     * @brief Set the name of your client certificate file.
+     *
+     * You MUST have already uploaded your certificate to your modem. You must
+     * download the certificate when you create it. Your certificate should be
+     * tied to a security policy that allows connection, publishing, and
+     * subscribing by thing name.
+     *
+     * @param clientCertName The name of your client certificate file.
+     */
+    void setClientCertName(const char* clientCertName);
+
+    /**
+     * @brief Set the name of your client private key file
+     *
+     * You MUST have have already uploaded your certificate to your modem. You
+     * must download the certificate when you create it. Your certificate should
+     * be tied to a security policy that allows connection, publishing, and
+     * subscribing by thing name.
+     *
+     * @param clientKeyName The name of your client private key file.
+     */
+    void setClientKeyName(const char* clientKeyName);
+
+    /**
+     * @brief Sets all 5 AWS IoT Core parameters
+     *
+     * @param awsIoTEndpoint The endpoint for your AWS IoT instance
+     * @param caCertName The name of your certificate authority certificate
+     * file
+     * @param clientCertName The name of your client certificate file
+     * @param clientKeyName The name of your client private key file
+     */
+    void setAWSIoTParams(const char* awsIoTEndpoint, const char* caCertName,
+                         const char* clientCertName, const char* clientKeyName);
+
+    // A way to begin with everything already set
+    /**
      * @copydoc dataPublisher::begin(Logger& baseLogger, Client* inClient)
      * @param awsIoTEndpoint The endpoint for your AWS IoT instance
      */
@@ -154,9 +210,14 @@ class AWS_IoT_Publisher : public dataPublisher {
     /**
      * @copydoc dataPublisher::begin(Logger& baseLogger)
      * @param awsIoTEndpoint The endpoint for your AWS IoT instance
+     * @param caCertName The name of your certificate authority certificate
+     * file
+     * @param clientCertName The name of your client certificate file
+     * @param clientKeyName The name of your client private key file
      */
     void begin(Logger& baseLogger, const char* awsIoTEndpoint,
-               const char* samplingFeatureUUID);
+               const char* caCertName, const char* clientCertName,
+               const char* clientKeyName, const char* samplingFeatureUUID);
 
     /**
      * @brief Utilize an attached modem to open a SSL connection to AWS IoT Core
@@ -188,6 +249,18 @@ class AWS_IoT_Publisher : public dataPublisher {
      * @brief The endpoint for your AWS IoT instance
      */
     const char* _awsIoTEndpoint = nullptr;
+    /**
+     * @brief The name of your certificate authority certificate file
+     */
+    const char* _caCertName = nullptr;
+    /**
+     * @brief The name of your client certificate file
+     */
+    const char* _clientCertName = nullptr;
+    /**
+     * @brief The name of your client private key file
+     */
+    const char* _clientKeyName = nullptr;
     /**
      * @brief Internal reference to the PubSubClient instance for MQTT
      * communication.

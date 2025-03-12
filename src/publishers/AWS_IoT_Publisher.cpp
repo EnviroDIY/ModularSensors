@@ -30,12 +30,15 @@ AWS_IoT_Publisher::AWS_IoT_Publisher(Logger& baseLogger, int sendEveryX)
 AWS_IoT_Publisher::AWS_IoT_Publisher(Logger& baseLogger, Client* inClient,
                                      int sendEveryX)
     : dataPublisher(baseLogger, inClient, sendEveryX) {}
-AWS_IoT_Publisher::AWS_IoT_Publisher(Logger&     baseLogger,
-                                     const char* awsIoTEndpoint,
-                                     const char* samplingFeatureUUID,
-                                     int         sendEveryX)
+AWS_IoT_Publisher::AWS_IoT_Publisher(
+    Logger& baseLogger, const char* awsIoTEndpoint, const char* caCertName,
+    const char* clientCertName, const char* clientKeyName,
+    const char* samplingFeatureUUID, int sendEveryX)
     : dataPublisher(baseLogger, true, sendEveryX) {
     setEndpoint(awsIoTEndpoint);
+    setCACertName(caCertName);
+    setClientCertName(clientCertName);
+    setClientKeyName(clientKeyName);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
 }
 AWS_IoT_Publisher::AWS_IoT_Publisher(Logger& baseLogger, Client* inClient,
@@ -55,6 +58,32 @@ void AWS_IoT_Publisher::setEndpoint(const char* awsIoTEndpoint) {
 }
 
 
+void AWS_IoT_Publisher::setCACertName(const char* caCertName) {
+    _caCertName = caCertName;
+}
+
+
+void AWS_IoT_Publisher::setClientCertName(const char* clientCertName) {
+    _clientCertName = clientCertName;
+}
+
+
+void AWS_IoT_Publisher::setClientKeyName(const char* clientKeyName) {
+    _clientKeyName = clientKeyName;
+}
+
+// Sets all AWS IoT Core parameters
+void AWS_IoT_Publisher::setAWSIoTParams(const char* awsIoTEndpoint,
+                                        const char* caCertName,
+                                        const char* clientCertName,
+                                        const char* clientKeyName) {
+    setEndpoint(awsIoTEndpoint);
+    setCACertName(caCertName);
+    setClientCertName(clientCertName);
+    setClientKeyName(clientKeyName);
+}
+
+
 // A way to set members in the begin to use with a bare constructor
 void AWS_IoT_Publisher::begin(Logger& baseLogger, Client* inClient,
                               const char* awsIoTEndpoint,
@@ -64,8 +93,14 @@ void AWS_IoT_Publisher::begin(Logger& baseLogger, Client* inClient,
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
 }
 void AWS_IoT_Publisher::begin(Logger& baseLogger, const char* awsIoTEndpoint,
+                              const char* caCertName,
+                              const char* clientCertName,
+                              const char* clientKeyName,
                               const char* samplingFeatureUUID) {
     setEndpoint(awsIoTEndpoint);
+    setCACertName(caCertName);
+    setClientCertName(clientCertName);
+    setClientKeyName(clientKeyName);
     dataPublisher::begin(baseLogger);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
 }
