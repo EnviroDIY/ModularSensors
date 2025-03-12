@@ -134,14 +134,6 @@ class dataPublisher {
     void setClient(Client* inClient);
 
     /**
-     * @brief Set a mux/socket number for a new client created within a TinyGSM
-     * based modem.
-     *
-     * @param mux AThe socket number to use
-     */
-    void setSocketNumber(int8_t mux);
-
-    /**
      * @brief Attach the publisher to a logger.
      *
      * The publisher must be tied to a data loger to provide it with the data to
@@ -279,17 +271,6 @@ class dataPublisher {
      * @brief The internal pointer to the client instance to be used.
      */
     Client* _inClient = nullptr;
-    /**
-     * @brief The mux/socket number of the client within the modem's socket
-     * array to attempt to use.
-     *
-     * @note For SSL connections, you should manually set the mux number so that
-     * you can properly tie certificates to it.
-     *
-     * @warning This is a **requested** socket number, the modem may assign you
-     * a different one.
-     */
-    int8_t _clientMux = -1;
     /**
      * @brief Internal flag to note whether SSL is required for the connection.
      */

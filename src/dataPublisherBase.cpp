@@ -28,7 +28,6 @@ dataPublisher::dataPublisher(Logger& baseLogger, bool requiresSSL,
                              int sendEveryX)
     : _baseLogger(&baseLogger),
       _inClient(nullptr),
-      _clientMux(-1),
       _requiresSSL(requiresSSL),
       _sendEveryX(sendEveryX) {
     _baseLogger->registerDataPublisher(this);  // register self with logger
@@ -37,7 +36,6 @@ dataPublisher::dataPublisher(Logger& baseLogger, int8_t mux, bool requiresSSL,
                              int sendEveryX)
     : _baseLogger(&baseLogger),
       _inClient(nullptr),
-      _clientMux(mux),
       _requiresSSL(requiresSSL),
       _sendEveryX(sendEveryX) {
     _baseLogger->registerDataPublisher(this);  // register self with logger
@@ -46,7 +44,6 @@ dataPublisher::dataPublisher(Logger& baseLogger, Client* inClient,
                              int sendEveryX)
     : _baseLogger(&baseLogger),
       _inClient(inClient),
-      _clientMux(-1),       // not relevant if we have a client
       _requiresSSL(false),  // not relevant if we have a client
       _sendEveryX(sendEveryX) {
     _baseLogger->registerDataPublisher(this);  // register self with logger
@@ -58,9 +55,6 @@ dataPublisher::~dataPublisher() {}
 // Sets the client
 void dataPublisher::setClient(Client* inClient) {
     _inClient = inClient;
-}
-void dataPublisher::setSocketNumber(int8_t mux) {
-    _clientMux = mux;
 }
 
 
@@ -203,15 +197,9 @@ int16_t dataPublisher::publishData(bool forceFlush) {
         }
         Client* newClient;
         int16_t retVal = -2;
-        if (_clientMux != -1 && _requiresSSL) {
-            MS_DBG(F("Creating new secure client on socket"), _clientMux);
-            newClient = _baseLogger->_logModem->createSecureClient(_clientMux);
-        } else if (_requiresSSL) {
+        if (_requiresSSL) {
             MS_DBG(F("Creating new secure client with default socket number."));
             newClient = _baseLogger->_logModem->createSecureClient();
-        } else if (_clientMux != -1) {
-            MS_DBG(F("Creating new client on socket"), _clientMux);
-            newClient = _baseLogger->_logModem->createClient(_clientMux);
         } else {
             MS_DBG(F("Creating new client with default socket number."));
             newClient = _baseLogger->_logModem->createClient();
