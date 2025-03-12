@@ -436,13 +436,7 @@
  * @return The text of createClient functions specific to a single
  * modem subclass.
  */
-#define MS_MODEM_CREATE_CLIENTS(specificModem)                              \
-    Client* specificModem::createClient(int8_t mux) {                       \
-        /* Use the new keyword to create a new client on the **heap** */    \
-        /* NOTE: Be sure to delete this object when you're done with it! */ \
-        Client* newClient = new TinyGsmClient(gsmModem, mux);               \
-        return newClient;                                                   \
-    }                                                                       \
+#define MS_MODEM_CREATE_CLIENT(specificModem)                               \
     Client* specificModem::createClient() {                                 \
         /* Use the new keyword to create a new client on the **heap** */    \
         /* NOTE: Be sure to delete this object when you're done with it! */ \
@@ -451,7 +445,7 @@
     }
 
 /**
- * @def MS_MODEM_CREATE_SECURE_CLIENTS
+ * @def MS_MODEM_CREATE_SECURE_CLIENT
  * @brief Creates createSecureClient functions for a specific modem subclass.
  *
  * For modems that don't support SSL, this returns a nullptr.
@@ -462,13 +456,7 @@
  * modem subclass.
  */
 #if defined(TINY_GSM_MODEM_HAS_SSL)
-#define MS_MODEM_CREATE_SECURE_CLIENTS(specificModem)                       \
-    Client* specificModem::createSecureClient(int8_t mux) {                 \
-        /* Use the new keyword to create a new client on the **heap** */    \
-        /* NOTE: Be sure to delete this object when you're done with it! */ \
-        Client* newClient = new TinyGsmClient(gsmModem, mux);               \
-        return newClient;                                                   \
-    }                                                                       \
+#define MS_MODEM_CREATE_SECURE_CLIENT(specificModem)                        \
     Client* specificModem::createSecureClient() {                           \
         /* Use the new keyword to create a new client on the **heap** */    \
         /* NOTE: Be sure to delete this object when you're done with it! */ \
@@ -476,12 +464,9 @@
         return newClient;                                                   \
     }
 #else
-#define MS_MODEM_CREATE_SECURE_CLIENTS(specificModem)   \
-    Client* specificModem::createSecureClient(int8_t) { \
-        return nullptr;                                 \
-    }                                                   \
-    Client* specificModem::createSecureClient() {       \
-        return nullptr;                                 \
+#define MS_MODEM_CREATE_SECURE_CLIENT(specificModem) \
+    Client* specificModem::createSecureClient() {    \
+        return nullptr;                              \
     }
 #endif
 

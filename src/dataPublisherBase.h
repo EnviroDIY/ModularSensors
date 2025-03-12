@@ -84,24 +84,6 @@ class dataPublisher {
     explicit dataPublisher(Logger& baseLogger, bool requiresSSL,
                            int sendEveryX = 1);
     /**
-     * @brief Construct a new data publisher object using a single client
-     * created on the TinyGSM based logger modem.
-     *
-     * @note If a client is never specified, the publisher will attempt to
-     * create and use a client on a LoggerModem instance tied to the attached
-     * logger.
-     *
-     * @param baseLogger The logger supplying the data to be published
-     * @param mux The mux/socket number of the client within the modem's socket
-     * array to attempt to use.
-     * @param requiresSSL True if the publisher requires a secure (SSL/TLS)
-     * connection.
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. Not respected by all publishers.
-     */
-    explicit dataPublisher(Logger& baseLogger, int8_t mux, bool requiresSSL,
-                           int sendEveryX = 1);
-    /**
      * @brief Construct a new data publisher object.
      *
      * @note When creating a data publisher with a pre-exisiting client object,

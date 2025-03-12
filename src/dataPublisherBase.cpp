@@ -32,14 +32,6 @@ dataPublisher::dataPublisher(Logger& baseLogger, bool requiresSSL,
       _sendEveryX(sendEveryX) {
     _baseLogger->registerDataPublisher(this);  // register self with logger
 }
-dataPublisher::dataPublisher(Logger& baseLogger, int8_t mux, bool requiresSSL,
-                             int sendEveryX)
-    : _baseLogger(&baseLogger),
-      _inClient(nullptr),
-      _requiresSSL(requiresSSL),
-      _sendEveryX(sendEveryX) {
-    _baseLogger->registerDataPublisher(this);  // register self with logger
-}
 dataPublisher::dataPublisher(Logger& baseLogger, Client* inClient,
                              int sendEveryX)
     : _baseLogger(&baseLogger),

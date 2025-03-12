@@ -193,9 +193,7 @@ class SIMComSIM800 : public loggerModem {
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
     void disconnectInternet(void) override;
 
-    virtual Client* createClient(int8_t mux) override;
     virtual Client* createClient() override;
-    virtual Client* createSecureClient(int8_t mux) override;
     virtual Client* createSecureClient() override;
 
     uint32_t getNISTTime(void) override;
