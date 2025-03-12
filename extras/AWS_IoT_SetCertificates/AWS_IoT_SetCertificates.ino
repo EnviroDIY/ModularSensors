@@ -357,7 +357,7 @@ void setup() {
 
     // enable/force time sync with NTP server
     // This is **REQUIRED** for validated SSL connections
-    DBG("Enabling time sync with Nto server");
+    DBG("Enabling time sync with NTP server");
     modem.NTPServerSync("pool.ntp.org", -5);
 
     // MQTT Broker setup
