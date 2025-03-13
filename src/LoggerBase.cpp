@@ -50,6 +50,30 @@ volatile bool Logger::startTesting = false;
 
 
 // Constructors
+Logger::Logger(const char* loggerID, const char* samplingFeatureUUID,
+               uint16_t loggingIntervalMinutes, int8_t SDCardSSPin,
+               int8_t mcuWakePin, VariableArray* inputArray)
+    : _SDCardSSPin(SDCardSSPin),
+      _mcuWakePin(mcuWakePin) {
+    // Set parameters from constructor
+    setLoggerID(loggerID);
+    setSamplingFeatureUUID(samplingFeatureUUID);
+    setLoggingInterval(loggingIntervalMinutes);
+    setVariableArray(inputArray);
+
+    // Set the testing/logging flags to false
+    isLoggingNow = false;
+    isTestingNow = false;
+    startTesting = false;
+
+    // Clear arrays
+    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
+        dataPublishers[i] = nullptr;
+    }
+
+    // Set a datetime callback for automatic timestamping of files by SdFat
+    SdFile::dateTimeCallback(fileDateTimeCallback);
+}
 Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
                int8_t SDCardSSPin, int8_t mcuWakePin, VariableArray* inputArray)
     : _SDCardSSPin(SDCardSSPin),
@@ -58,6 +82,47 @@ Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
     setLoggerID(loggerID);
     setLoggingInterval(loggingIntervalMinutes);
     setVariableArray(inputArray);
+
+    // Set the testing/logging flags to false
+    isLoggingNow = false;
+    isTestingNow = false;
+    startTesting = false;
+
+    // Clear arrays
+    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
+        dataPublishers[i] = nullptr;
+    }
+
+    // Set a datetime callback for automatic timestamping of files by SdFat
+    SdFile::dateTimeCallback(fileDateTimeCallback);
+}
+Logger::Logger(const char* loggerID, const char* samplingFeatureUUID,
+               uint16_t loggingIntervalMinutes, VariableArray* inputArray) {
+    // Set parameters from constructor
+    setLoggerID(loggerID);
+    setSamplingFeatureUUID(samplingFeatureUUID);
+    setLoggingInterval(loggingIntervalMinutes);
+    setVariableArray(inputArray);
+
+    // Set the testing/logging flags to false
+    isLoggingNow = false;
+    isTestingNow = false;
+    startTesting = false;
+
+    // Clear arrays
+    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
+        dataPublishers[i] = nullptr;
+    }
+
+    // Set a datetime callback for automatic timestamping of files by SdFat
+    SdFile::dateTimeCallback(fileDateTimeCallback);
+}
+Logger::Logger(const char* loggerID, const char* samplingFeatureUUID,
+               uint16_t loggingIntervalMinutes) {
+    // Set parameters from constructor
+    setLoggerID(loggerID);
+    setSamplingFeatureUUID(samplingFeatureUUID);
+    setLoggingInterval(loggingIntervalMinutes);
 
     // Set the testing/logging flags to false
     isLoggingNow = false;
@@ -407,7 +472,7 @@ loggerModem* Logger::registerDataPublisher(dataPublisher* publisher) {
     for (; i < MAX_NUMBER_SENDERS; i++) {
         if (dataPublishers[i] == publisher) {
             MS_DBG(F("dataPublisher already registered."));
-            return;
+            return nullptr;
         }
         if (dataPublishers[i] == nullptr) break;
     }

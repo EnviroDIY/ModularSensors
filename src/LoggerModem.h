@@ -40,7 +40,7 @@
 #include "VariableBase.h"
 #include <Arduino.h>
 #include <Client.h>
-#include <TinyGsmSSL.tpp>
+#include <TinyGsmEnums.h>
 
 
 /**
@@ -1393,5 +1393,4 @@ class Modem_Temp : public Variable {
     ~Modem_Temp() {}
 };
 
-// #include <LoggerModem.tpp>
 #endif  // SRC_LOGGERMODEM_H_

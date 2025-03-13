@@ -9,6 +9,7 @@
  */
 
 #include "AWS_IoT_Publisher.h"
+#include <TinyGsmEnums.h>
 
 
 // ============================================================================
@@ -40,6 +41,17 @@ AWS_IoT_Publisher::AWS_IoT_Publisher(
     setClientCertName(clientCertName);
     setClientKeyName(clientKeyName);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
+}
+AWS_IoT_Publisher::AWS_IoT_Publisher(Logger&     baseLogger,
+                                     const char* awsIoTEndpoint,
+                                     const char* caCertName,
+                                     const char* clientCertName,
+                                     const char* clientKeyName, int sendEveryX)
+    : dataPublisher(baseLogger, sendEveryX) {
+    setEndpoint(awsIoTEndpoint);
+    setCACertName(caCertName);
+    setClientCertName(clientCertName);
+    setClientKeyName(clientKeyName);
 }
 AWS_IoT_Publisher::AWS_IoT_Publisher(Logger& baseLogger, Client* inClient,
                                      const char* awsIoTEndpoint,

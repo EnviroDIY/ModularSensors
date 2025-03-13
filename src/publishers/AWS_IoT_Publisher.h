@@ -118,6 +118,21 @@ class AWS_IoT_Publisher : public dataPublisher {
      * @brief Construct a new AWS IoT Core Publisher object
      *
      * @param baseLogger The logger supplying the data to be published
+     * @param awsIoTEndpoint The endpoint for your AWS IoT instance
+     * @param caCertName The name of your certificate authority certificate
+     * file
+     * @param clientCertName The name of your client certificate file
+     * @param clientKeyName The name of your client private key file
+     * @param sendEveryX Interval (in units of the logging interval) between
+     * attempted data transmissions. NOTE: not implemented by this publisher!
+     */
+    AWS_IoT_Publisher(Logger& baseLogger, const char* awsIoTEndpoint,
+                      const char* caCertName, const char* clientCertName,
+                      const char* clientKeyName, int sendEveryX = 1);
+    /**
+     * @brief Construct a new AWS IoT Core Publisher object
+     *
+     * @param baseLogger The logger supplying the data to be published
      * @param inClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
@@ -200,13 +215,18 @@ class AWS_IoT_Publisher : public dataPublisher {
     void setAWSIoTParams(const char* awsIoTEndpoint, const char* caCertName,
                          const char* clientCertName, const char* clientKeyName);
 
-    // A way to begin with everything already set
     /**
      * @copydoc dataPublisher::begin(Logger& baseLogger, Client* inClient)
      * @param awsIoTEndpoint The endpoint for your AWS IoT instance
      */
     void begin(Logger& baseLogger, Client* inClient, const char* awsIoTEndpoint,
                const char* samplingFeatureUUID);
+    /**
+     * @copydoc dataPublisher::begin(Logger& baseLogger, Client* inClient)
+     * @param awsIoTEndpoint The endpoint for your AWS IoT instance
+     */
+    void begin(Logger& baseLogger, Client* inClient,
+               const char* awsIoTEndpoint);
     /**
      * @copydoc dataPublisher::begin(Logger& baseLogger)
      * @param awsIoTEndpoint The endpoint for your AWS IoT instance
@@ -218,6 +238,17 @@ class AWS_IoT_Publisher : public dataPublisher {
     void begin(Logger& baseLogger, const char* awsIoTEndpoint,
                const char* caCertName, const char* clientCertName,
                const char* clientKeyName, const char* samplingFeatureUUID);
+    /**
+     * @copydoc dataPublisher::begin(Logger& baseLogger)
+     * @param awsIoTEndpoint The endpoint for your AWS IoT instance
+     * @param caCertName The name of your certificate authority certificate
+     * file
+     * @param clientCertName The name of your client certificate file
+     * @param clientKeyName The name of your client private key file
+     */
+    void begin(Logger& baseLogger, const char* awsIoTEndpoint,
+               const char* caCertName, const char* clientCertName,
+               const char* clientKeyName);
 
     /**
      * @brief Utilize an attached modem to open a SSL connection to AWS IoT Core

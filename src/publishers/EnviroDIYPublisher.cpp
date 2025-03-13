@@ -61,6 +61,16 @@ EnviroDIYPublisher::EnviroDIYPublisher(Logger&     baseLogger,
     setPath("/api/data-stream/");
     setPort(80);
 }
+EnviroDIYPublisher::EnviroDIYPublisher(Logger&     baseLogger,
+                                       const char* registrationToken,
+                                       int         sendEveryX)
+    : dataPublisher(baseLogger, sendEveryX) {
+    setToken(registrationToken);
+    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
+    setHost("monitormywatershed.org");
+    setPath("/api/data-stream/");
+    setPort(80);
+}
 EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
                                        const char* registrationToken,
                                        const char* samplingFeatureUUID,
@@ -68,6 +78,16 @@ EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
     : dataPublisher(baseLogger, inClient, sendEveryX) {
     setToken(registrationToken);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
+    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
+    setHost("monitormywatershed.org");
+    setPath("/api/data-stream/");
+    setPort(80);
+}
+EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
+                                       const char* registrationToken,
+                                       int         sendEveryX)
+    : dataPublisher(baseLogger, inClient, sendEveryX) {
+    setToken(registrationToken);
     _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
     setHost("monitormywatershed.org");
     setPath("/api/data-stream/");
@@ -175,6 +195,12 @@ void EnviroDIYPublisher::begin(Logger&     baseLogger,
     setToken(registrationToken);
     dataPublisher::begin(baseLogger);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
+    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
+}
+void EnviroDIYPublisher::begin(Logger&     baseLogger,
+                               const char* registrationToken) {
+    setToken(registrationToken);
+    dataPublisher::begin(baseLogger);
     _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
 }
 

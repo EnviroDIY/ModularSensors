@@ -90,6 +90,17 @@ class EnviroDIYPublisher : public dataPublisher {
      * @brief Construct a new EnviroDIY Publisher object
      *
      * @param baseLogger The logger supplying the data to be published
+     * @param registrationToken The registration token for the site on the
+     * Monitor My Watershed data portal.
+     * @param sendEveryX Interval (in units of the logging interval) between
+     * attempted data transmissions. NOTE: not implemented by this publisher!
+     */
+    EnviroDIYPublisher(Logger& baseLogger, const char* registrationToken,
+                       int sendEveryX = 1);
+    /**
+     * @brief Construct a new EnviroDIY Publisher object
+     *
+     * @param baseLogger The logger supplying the data to be published
      * @param inClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
@@ -103,6 +114,20 @@ class EnviroDIYPublisher : public dataPublisher {
     EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
                        const char* registrationToken,
                        const char* samplingFeatureUUID, int sendEveryX = 1);
+    /**
+     * @brief Construct a new EnviroDIY Publisher object
+     *
+     * @param baseLogger The logger supplying the data to be published
+     * @param inClient An Arduino client instance to use to print data to.
+     * Allows the use of any type of client and multiple clients tied to a
+     * single TinyGSM modem instance
+     * @param registrationToken The registration token for the site on the
+     * Monitor My Watershed data portal.
+     * @param sendEveryX Interval (in units of the logging interval) between
+     * attempted data transmissions. NOTE: not implemented by this publisher!
+     */
+    EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
+                       const char* registrationToken, int sendEveryX = 1);
     /**
      * @brief Destroy the EnviroDIY Publisher object
      */
@@ -188,6 +213,12 @@ class EnviroDIYPublisher : public dataPublisher {
      */
     void begin(Logger& baseLogger, const char* registrationToken,
                const char* samplingFeatureUUID);
+    /**
+     * @copydoc dataPublisher::begin(Logger& baseLogger)
+     * @param registrationToken The registration token for the site on the
+     * Monitor My Watershed data portal.
+     */
+    void begin(Logger& baseLogger, const char* registrationToken);
 
     /**
      * @brief Checks if the publisher needs an Internet connection for the next
