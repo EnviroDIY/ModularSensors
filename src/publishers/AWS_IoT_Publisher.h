@@ -242,6 +242,7 @@ class AWS_IoT_Publisher : public dataPublisher {
     static const int   mqttPort;
     static const char* samplingFeatureTag;  ///< The JSON feature UUID tag
     static const char* timestampTag;        ///< The JSON feature timestamp tag
+    virtual Client*    createClient() override;
 
  private:
     // Keys for AWS IoT Core

@@ -105,6 +105,29 @@ void AWS_IoT_Publisher::begin(Logger& baseLogger, const char* awsIoTEndpoint,
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
 }
 
+Client* AWS_IoT_Publisher::createClient() {
+    if (_baseModem == nullptr) {
+        PRINTOUT(F("ERROR! No web client assigned and cannot access a "
+                   "logger modem to create one!"));
+        return nullptr;
+    }
+    if (_caCertName == nullptr || _clientCertName == nullptr ||
+        _clientKeyName == nullptr) {
+        PRINTOUT(F("Cannot create a new AWS secure client without certificate "
+                   "names!"));
+        return nullptr;
+    }
+    MS_DBG(F("Creating new secure client with default socket number."));
+    Client* newClient = _baseModem->createSecureClient(
+        SSLAuthMode::NO_VALIDATION, SSLVersion::TLS1_2, _caCertName,
+        _clientCertName, _clientKeyName);
+    if (newClient == nullptr) {
+        PRINTOUT(F("Failed to create a new secure client!"));
+        return nullptr;
+    }
+    return newClient;
+}
+
 
 // This sends the data to AWS IoT Core
 int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
