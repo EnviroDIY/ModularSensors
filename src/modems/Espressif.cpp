@@ -94,29 +94,3 @@ bool Espressif::modemWakeFxn(void) {
         return true;
     }
 }
-
-bool Espressif::modemSleepFxn(void) {
-    // Use this if you have an MCU pin connected to the ESP's reset pin to wake
-    // from deep sleep.  We'll also put it in deep sleep before yanking power.
-    if (_modemResetPin >= 0 || _powerPin >= 0) {
-        MS_DBG(F("Requesting deep sleep for Espressif module"));
-        bool retVal = gsmModem.poweroff();
-        if (_modemSleepRqPin >= 0) {
-            digitalWrite(_modemSleepRqPin, !_wakeLevel);
-        }
-        return retVal;
-    } else {  // DON'T go to sleep if we can't wake up!
-        MS_DEEP_DBG(F(
-            "No pins for sleeping the Espressif module. Hopefully it's in the "
-            "state you want."));
-        return true;
-    }
-}
-
-// Set up the light-sleep status pin, if applicable
-bool Espressif::extraModemSetup(void) {
-    if (_modemSleepRqPin >= 0) { digitalWrite(_modemSleepRqPin, !_wakeLevel); }
-    gsmModem.init();
-    _modemName = gsmModem.getModemName();
-    return true;
-}
