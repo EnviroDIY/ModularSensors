@@ -445,19 +445,17 @@
     }
 
 
-#define MS_MODEM_CREATE_NULL_SECURE_CLIENTS(specificModem)                   \
-    Client* specificModem::createSecureClient(                               \
-        SSLAuthMode, SSLVersion = SSLVersion::TLS1_2, const char* = nullptr, \
-        const char* = nullptr, const char* = nullptr) {                      \
-        return nullptr;                                                      \
-    }                                                                        \
-    Client* specificModem::createSecureClient(                               \
-        const char*, const char*, SSLVersion = SSLVersion::TLS1_2) {         \
-        return nullptr;                                                      \
-    }                                                                        \
-    Client* specificModem::createSecureClient(                               \
-        const char*, SSLVersion = SSLVersion::TLS1_2) {                      \
-        return nullptr;                                                      \
+#define MS_MODEM_CREATE_NULL_SECURE_CLIENTS(specificModem)                \
+    Client* specificModem::createSecureClient(                            \
+        SSLAuthMode, SSLVersion, const char*, const char*, const char*) { \
+        return nullptr;                                                   \
+    }                                                                     \
+    Client* specificModem::createSecureClient(const char*, const char*,   \
+                                              SSLVersion) {               \
+        return nullptr;                                                   \
+    }                                                                     \
+    Client* specificModem::createSecureClient(const char*, SSLVersion) {  \
+        return nullptr;                                                   \
     }
 /**
  * @def MS_MODEM_CREATE_SECURE_CLIENT
@@ -479,25 +477,22 @@
         return newClient;                                                      \
     }                                                                          \
     Client* specificModem::createSecureClient(                                 \
-        SSLAuthMode sslAuthMode, SSLVersion sslVersion = SSLVersion::TLS1_2,   \
-        const char* CAcertName     = nullptr,                                  \
-        const char* clientCertName = nullptr,                                  \
-        const char* clientKeyName  = nullptr) {                                 \
+        SSLAuthMode sslAuthMode, SSLVersion sslVersion,                        \
+        const char* CAcertName, const char* clientCertName,                    \
+        const char* clientKeyName) {                                           \
         Client* newClient = new TinyGsmClientSecure(                           \
             gsmModem, sslAuthMode, sslVersion, CAcertName, clientCertName,     \
             clientKeyName);                                                    \
         return newClient;                                                      \
     }                                                                          \
     Client* specificModem::createSecureClient(                                 \
-        const char* pskIdent, const char* psKey,                               \
-        SSLVersion sslVersion = SSLVersion::TLS1_2) {                          \
+        const char* pskIdent, const char* psKey, SSLVersion sslVersion) {      \
         Client* newClient = new TinyGsmClientSecure(gsmModem, pskIdent, psKey, \
                                                     sslVersion);               \
         return newClient;                                                      \
     }                                                                          \
-    Client* specificModem::createSecureClient(                                 \
-        const char* pskTableName,                                              \
-        SSLVersion  sslVersion = SSLVersion::TLS1_2) {                          \
+    Client* specificModem::createSecureClient(const char* pskTableName,        \
+                                              SSLVersion  sslVersion) {         \
         Client* newClient = new TinyGsmClientSecure(gsmModem, pskTableName,    \
                                                     sslVersion);               \
         return newClient;                                                      \
