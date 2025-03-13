@@ -471,43 +471,43 @@
  * modem subclass.
  */
 #if defined(TINY_GSM_MODEM_HAS_SSL) && defined(TINY_GSM_MODEM_CAN_SPECIFY_CERTS)
-#define MS_MODEM_CREATE_SECURE_CLIENT(specificModem)                          \
-    Client* specificModem::createSecureClient() {                             \
-        /* Use the new keyword to create a new client on the **heap** */      \
-        /* NOTE: Be sure to delete this object when you're done with it! */   \
-        Client* newClient = new TinyGsmClient(gsmModem);                      \
-        return newClient;                                                     \
-    }                                                                         \
-    Client* specificModem::createSecureClient(                                \
-        SSLAuthMode sslAuthMode, SSLVersion sslVersion = SSLVersion::TLS1_2,  \
-        const char* CAcertName     = nullptr,                                 \
-        const char* clientCertName = nullptr,                                 \
-        const char* clientKeyName  = nullptr) {                                \
-        Client* newClient = new TinyGsmClient(gsmModem, sslAuthMode,          \
-                                              sslVersion, CAcertName,         \
-                                              clientCertName, clientKeyName); \
-        return newClient;                                                     \
-    }                                                                         \
-    Client* specificModem::createSecureClient(                                \
-        const char* pskIdent, const char* psKey,                              \
-        SSLVersion sslVersion = SSLVersion::TLS1_2) {                         \
-        Client* newClient = new TinyGsmClient(gsmModem, pskIdent, psKey,      \
-                                              sslVersion);                    \
-        return newClient;                                                     \
-    }                                                                         \
-    Client* specificModem::createSecureClient(                                \
-        const char* pskTableName,                                             \
-        SSLVersion  sslVersion = SSLVersion::TLS1_2) {                         \
-        Client* newClient = new TinyGsmClient(gsmModem, pskTableName,         \
-                                              sslVersion);                    \
-        return newClient;                                                     \
+#define MS_MODEM_CREATE_SECURE_CLIENT(specificModem)                           \
+    Client* specificModem::createSecureClient() {                              \
+        /* Use the new keyword to create a new client on the **heap** */       \
+        /* NOTE: Be sure to delete this object when you're done with it! */    \
+        Client* newClient = new TinyGsmClientSecure(gsmModem);                 \
+        return newClient;                                                      \
+    }                                                                          \
+    Client* specificModem::createSecureClient(                                 \
+        SSLAuthMode sslAuthMode, SSLVersion sslVersion = SSLVersion::TLS1_2,   \
+        const char* CAcertName     = nullptr,                                  \
+        const char* clientCertName = nullptr,                                  \
+        const char* clientKeyName  = nullptr) {                                 \
+        Client* newClient = new TinyGsmClientSecure(                           \
+            gsmModem, sslAuthMode, sslVersion, CAcertName, clientCertName,     \
+            clientKeyName);                                                    \
+        return newClient;                                                      \
+    }                                                                          \
+    Client* specificModem::createSecureClient(                                 \
+        const char* pskIdent, const char* psKey,                               \
+        SSLVersion sslVersion = SSLVersion::TLS1_2) {                          \
+        Client* newClient = new TinyGsmClientSecure(gsmModem, pskIdent, psKey, \
+                                                    sslVersion);               \
+        return newClient;                                                      \
+    }                                                                          \
+    Client* specificModem::createSecureClient(                                 \
+        const char* pskTableName,                                              \
+        SSLVersion  sslVersion = SSLVersion::TLS1_2) {                          \
+        Client* newClient = new TinyGsmClientSecure(gsmModem, pskTableName,    \
+                                                    sslVersion);               \
+        return newClient;                                                      \
     }
 #elif defined(TINY_GSM_MODEM_HAS_SSL)
 #define MS_MODEM_CREATE_SECURE_CLIENT(specificModem)                        \
     Client* specificModem::createSecureClient() {                           \
         /* Use the new keyword to create a new client on the **heap** */    \
         /* NOTE: Be sure to delete this object when you're done with it! */ \
-        Client* newClient = new TinyGsmClient(gsmModem);                    \
+        Client* newClient = new TinyGsmClientSecure(gsmModem);              \
         return newClient;                                                   \
     }                                                                       \
     MS_MODEM_CREATE_NULL_SECURE_CLIENTS(specificModem)
