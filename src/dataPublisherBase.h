@@ -76,13 +76,10 @@ class dataPublisher {
      * logger.
      *
      * @param baseLogger The logger supplying the data to be published
-     * @param requiresSSL True if the publisher requires a secure (SSL/TLS)
-     * connection.
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions. Not respected by all publishers.
      */
-    explicit dataPublisher(Logger& baseLogger, bool requiresSSL,
-                           int sendEveryX = 1);
+    explicit dataPublisher(Logger& baseLogger, int sendEveryX = 1);
     /**
      * @brief Construct a new data publisher object.
      *
@@ -173,7 +170,7 @@ class dataPublisher {
 
 
     /**
-     * @brief Checks if the publisher needs an Internet connection for the next
+     * @brief Checks if the publisher needs an internet connection for the next
      * publishData call (as opposed to just buffering data internally).
      *
      * @return True if an internet connection is needed for the next publish.
@@ -191,8 +188,8 @@ class dataPublisher {
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
      * @param forceFlush Ask the publisher to flush buffered data immediately.
-     * @return The result of publishing data.  May be an http
-     * response code or a result code from PubSubClient.
+     * @return The result of publishing data.  May be an http response code or a
+     * result code from PubSubClient.
      */
     virtual int16_t publishData(Client* outClient, bool forceFlush = false) = 0;
     /**
@@ -205,8 +202,9 @@ class dataPublisher {
      *
      * @param forceFlush Ask the publisher to flush buffered data immediately.
      *
-     * @return The result of publishing data.  May be an http
-     * response code or a result code from PubSubClient.
+     * @return The result of publishing data.  May be an http response code or a
+     * result code from PubSubClient. Defaults to -2 if the publisher fails to
+     * create a client.
      */
     virtual int16_t publishData(bool forceFlush = false);
 
@@ -219,8 +217,8 @@ class dataPublisher {
      * @param outClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
-     * @return The result of publishing data.  May be an http
-     * response code or a result code from PubSubClient.
+     * @return The result of publishing data.  May be an http response code or a
+     * result code from PubSubClient.
      */
     virtual int16_t sendData(Client* outClient);
     /**
@@ -229,8 +227,8 @@ class dataPublisher {
      *
      * @m_deprecated_since{0,22,5}
      *
-     * @return The result of publishing data.  May be an http
-     * response code or a result code from PubSubClient.
+     * @return The result of publishing data.  May be an http response code or a
+     * result code from PubSubClient.
      */
     virtual int16_t sendData();
 
@@ -253,10 +251,6 @@ class dataPublisher {
      * @brief The internal pointer to the client instance to be used.
      */
     Client* _inClient = nullptr;
-    /**
-     * @brief Internal flag to note whether SSL is required for the connection.
-     */
-    bool _requiresSSL;
 
     /**
      * @brief The buffer for outgoing data.
@@ -301,6 +295,22 @@ class dataPublisher {
      * the debugging port.
      */
     static void txBufferFlush();
+
+    /**
+     * @brief Use the connected base logger's logger modem and underlieing
+     * TinyGSM instance to create a new client for the publisher.
+     *
+     * @note This does *NOT* override any client set by the
+     * constructor/begin/setClient functions. If you set an external client by
+     * any of those methods, this function should not be called. It is protected
+     * to prevent being called by external code.
+     *
+     * @note The defuault implimentation of this function creates an insecure
+     * client. Publishers that require SSL must re-implement this function.
+     *
+     * @param return A pointer to an Arduino client instance
+     */
+    virtual Client* createClient();
 
     /**
      * @brief Interval (in units of the logging interval) between

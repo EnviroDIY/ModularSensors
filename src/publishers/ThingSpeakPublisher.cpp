@@ -25,7 +25,7 @@ const int   ThingSpeakPublisher::mqttPort   = 1883;
 // Constructors
 ThingSpeakPublisher::ThingSpeakPublisher() : dataPublisher() {}
 ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, int sendEveryX)
-    : dataPublisher(baseLogger, false, sendEveryX) {}
+    : dataPublisher(baseLogger, sendEveryX) {}
 ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
                                          int sendEveryX)
     : dataPublisher(baseLogger, inClient, sendEveryX) {}
@@ -35,7 +35,7 @@ ThingSpeakPublisher::ThingSpeakPublisher(Logger&     baseLogger,
                                          const char* thingSpeakMQTTPassword,
                                          const char* thingSpeakChannelID,
                                          int         sendEveryX)
-    : dataPublisher(baseLogger, false, sendEveryX) {
+    : dataPublisher(baseLogger, sendEveryX) {
     setMQTTClient(thingSpeakClientName);
     setUserName(thingSpeakMQTTUser);
     setPassword(thingSpeakMQTTPassword);

@@ -24,11 +24,9 @@ const char* dataPublisher::hostHeader = "\r\nHost: ";
 // Constructors
 dataPublisher::dataPublisher() {}
 
-dataPublisher::dataPublisher(Logger& baseLogger, bool requiresSSL,
-                             int sendEveryX)
+dataPublisher::dataPublisher(Logger& baseLogger, int sendEveryX)
     : _baseLogger(&baseLogger),
       _inClient(nullptr),
-      _requiresSSL(requiresSSL),
       _sendEveryX(sendEveryX) {
     _baseLogger->registerDataPublisher(this);  // register self with logger
 }
@@ -36,7 +34,6 @@ dataPublisher::dataPublisher(Logger& baseLogger, Client* inClient,
                              int sendEveryX)
     : _baseLogger(&baseLogger),
       _inClient(inClient),
-      _requiresSSL(false),  // not relevant if we have a client
       _sendEveryX(sendEveryX) {
     _baseLogger->registerDataPublisher(this);  // register self with logger
 }
@@ -174,28 +171,26 @@ bool dataPublisher::connectionNeeded(void) {
     return true;
 }
 
+Client* dataPublisher::createClient() {
+    if (_baseLogger == nullptr) {
+        PRINTOUT(F("ERROR! No web client assigned and cannot access a base "
+                   "logger to create one!"));
+        return nullptr;
+    }
+    if (_baseLogger->_logModem == nullptr) {
+        PRINTOUT(F("ERROR! No web client assigned and cannot access a "
+                   "logger modem to create one!"));
+        return nullptr;
+    }
+    MS_DBG(F("Creating new client with default socket number."));
+    return _baseLogger->_logModem->createClient();
+}
+
 // This sends data on the "default" client of the modem
 int16_t dataPublisher::publishData(bool forceFlush) {
     if (_inClient == nullptr) {
-        if (_baseLogger == nullptr) {
-            PRINTOUT(F("ERROR! No web client assigned and cannot access a base "
-                       "logger to create one!"));
-            return -2;
-        }
-        if (_baseLogger->_logModem == nullptr) {
-            PRINTOUT(F("ERROR! No web client assigned and cannot access a "
-                       "logger modem to create one!"));
-            return -2;
-        }
-        Client* newClient;
-        int16_t retVal = -2;
-        if (_requiresSSL) {
-            MS_DBG(F("Creating new secure client with default socket number."));
-            newClient = _baseLogger->_logModem->createSecureClient();
-        } else {
-            MS_DBG(F("Creating new client with default socket number."));
-            newClient = _baseLogger->_logModem->createClient();
-        }
+        int16_t retVal    = -2;  // -2 is connection failed in MQTT
+        Client* newClient = createClient();
         if (newClient != nullptr) {
             retVal = publishData(newClient, forceFlush);
             delete newClient;  // need to delete to free memory!

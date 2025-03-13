@@ -25,7 +25,7 @@ const char* DreamHostPublisher::timestampTagDH = "&Loggertime=";
 DreamHostPublisher::DreamHostPublisher() : dataPublisher() {}
 
 DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, int sendEveryX)
-    : dataPublisher(baseLogger, false, sendEveryX) {}
+    : dataPublisher(baseLogger, sendEveryX) {}
 
 DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client* inClient,
                                        int sendEveryX)
@@ -33,7 +33,7 @@ DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client* inClient,
 
 DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, const char* dhUrl,
                                        int sendEveryX)
-    : dataPublisher(baseLogger, false, sendEveryX) {
+    : dataPublisher(baseLogger, sendEveryX) {
     setDreamHostPortalRX(dhUrl);
 }
 DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client* inClient,

@@ -26,7 +26,7 @@ const char* AWS_IoT_Publisher::timestampTag       = "\",\"timestamp\":\"";
 // Constructors
 AWS_IoT_Publisher::AWS_IoT_Publisher() : dataPublisher() {}
 AWS_IoT_Publisher::AWS_IoT_Publisher(Logger& baseLogger, int sendEveryX)
-    : dataPublisher(baseLogger, true, sendEveryX) {}
+    : dataPublisher(baseLogger, sendEveryX) {}
 AWS_IoT_Publisher::AWS_IoT_Publisher(Logger& baseLogger, Client* inClient,
                                      int sendEveryX)
     : dataPublisher(baseLogger, inClient, sendEveryX) {}
@@ -34,7 +34,7 @@ AWS_IoT_Publisher::AWS_IoT_Publisher(
     Logger& baseLogger, const char* awsIoTEndpoint, const char* caCertName,
     const char* clientCertName, const char* clientKeyName,
     const char* samplingFeatureUUID, int sendEveryX)
-    : dataPublisher(baseLogger, true, sendEveryX) {
+    : dataPublisher(baseLogger, sendEveryX) {
     setEndpoint(awsIoTEndpoint);
     setCACertName(caCertName);
     setClientCertName(clientCertName);

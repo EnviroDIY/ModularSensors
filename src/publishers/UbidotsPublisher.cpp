@@ -36,14 +36,14 @@ const char* UbidotsPublisher::payload = "{";
 // Constructors
 UbidotsPublisher::UbidotsPublisher() : dataPublisher() {}
 UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, int sendEveryX)
-    : dataPublisher(baseLogger, false, sendEveryX) {}
+    : dataPublisher(baseLogger, sendEveryX) {}
 UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, Client* inClient,
                                    int sendEveryX)
     : dataPublisher(baseLogger, inClient, sendEveryX) {}
 UbidotsPublisher::UbidotsPublisher(Logger&     baseLogger,
                                    const char* authentificationToken,
                                    const char* deviceID, int sendEveryX)
-    : dataPublisher(baseLogger, false, sendEveryX) {
+    : dataPublisher(baseLogger, sendEveryX) {
     setToken(authentificationToken);
     _baseLogger->setSamplingFeatureUUID(deviceID);
     MS_DBG(F("dataPublisher object created"));
