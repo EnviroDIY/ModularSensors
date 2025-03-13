@@ -650,7 +650,7 @@ class Logger {
      *
      * @param publisher A dataPublisher object
      */
-    void registerDataPublisher(dataPublisher* publisher);
+    loggerModem* registerDataPublisher(dataPublisher* publisher);
     /**
      * @brief Check if any data publishers need an Internet connection for the
      * next publish call.

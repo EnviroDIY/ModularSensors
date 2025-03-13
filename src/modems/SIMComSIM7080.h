@@ -189,6 +189,16 @@ class SIMComSIM7080 : public loggerModem {
 
     virtual Client* createClient() override;
     virtual Client* createSecureClient() override;
+    virtual Client* createSecureClient(
+        SSLAuthMode sslAuthMode, SSLVersion sslVersion = SSLVersion::TLS1_2,
+        const char* CAcertName = nullptr, const char* clientCertName = nullptr,
+        const char* clientKeyName = nullptr) override;
+    virtual Client*
+    createSecureClient(const char* pskIdent, const char* psKey,
+                       SSLVersion sslVersion = SSLVersion::TLS1_2) override;
+    virtual Client*
+    createSecureClient(const char* pskTableName,
+                       SSLVersion  sslVersion = SSLVersion::TLS1_2) override;
 
     uint32_t getNISTTime(void) override;
 

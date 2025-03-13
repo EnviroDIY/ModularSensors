@@ -401,7 +401,7 @@ bool Logger::syncRTC() {
 }
 
 
-void Logger::registerDataPublisher(dataPublisher* publisher) {
+loggerModem* Logger::registerDataPublisher(dataPublisher* publisher) {
     // find the next empty spot in the publisher array
     uint8_t i = 0;
     for (; i < MAX_NUMBER_SENDERS; i++) {
@@ -411,9 +411,10 @@ void Logger::registerDataPublisher(dataPublisher* publisher) {
         }
         if (dataPublishers[i] == nullptr) break;
     }
-
-    // register the publisher there
+    // register the publisher to the empty spot
     dataPublishers[i] = publisher;
+    // return a pointer to the modem for the publisher to use
+    return _logModem;
 }
 
 bool Logger::checkRemotesConnectionNeeded(void) {

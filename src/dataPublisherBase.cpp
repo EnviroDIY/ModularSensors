@@ -28,14 +28,16 @@ dataPublisher::dataPublisher(Logger& baseLogger, int sendEveryX)
     : _baseLogger(&baseLogger),
       _inClient(nullptr),
       _sendEveryX(sendEveryX) {
-    _baseLogger->registerDataPublisher(this);  // register self with logger
+    _baseModem =
+        _baseLogger->registerDataPublisher(this);  // register self with logger
 }
 dataPublisher::dataPublisher(Logger& baseLogger, Client* inClient,
                              int sendEveryX)
     : _baseLogger(&baseLogger),
       _inClient(inClient),
       _sendEveryX(sendEveryX) {
-    _baseLogger->registerDataPublisher(this);  // register self with logger
+    _baseModem =
+        _baseLogger->registerDataPublisher(this);  // register self with logger
 }
 // Destructor
 dataPublisher::~dataPublisher() {}
@@ -50,7 +52,8 @@ void dataPublisher::setClient(Client* inClient) {
 // Attaches to a logger
 void dataPublisher::attachToLogger(Logger& baseLogger) {
     _baseLogger = &baseLogger;
-    _baseLogger->registerDataPublisher(this);  // register self with logger
+    _baseModem =
+        _baseLogger->registerDataPublisher(this);  // register self with logger
 }
 
 
@@ -172,18 +175,13 @@ bool dataPublisher::connectionNeeded(void) {
 }
 
 Client* dataPublisher::createClient() {
-    if (_baseLogger == nullptr) {
-        PRINTOUT(F("ERROR! No web client assigned and cannot access a base "
-                   "logger to create one!"));
-        return nullptr;
-    }
-    if (_baseLogger->_logModem == nullptr) {
+    if (_baseModem == nullptr) {
         PRINTOUT(F("ERROR! No web client assigned and cannot access a "
                    "logger modem to create one!"));
         return nullptr;
     }
     MS_DBG(F("Creating new client with default socket number."));
-    return _baseLogger->_logModem->createClient();
+    return _baseModem->createClient();
 }
 
 // This sends data on the "default" client of the modem

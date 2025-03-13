@@ -113,16 +113,6 @@ class dataPublisher {
     void setClient(Client* inClient);
 
     /**
-     * @brief Attach the publisher to a logger.
-     *
-     * The publisher must be tied to a data loger to provide it with the data to
-     * be published.
-     *
-     * @param baseLogger A reference to the ModularSensors logger instance
-     */
-
-    void attachToLogger(Logger& baseLogger);
-    /**
      * @brief Sets the interval (in units of the logging interval) between
      * attempted data transmissions
      *
@@ -130,6 +120,23 @@ class dataPublisher {
      * attempted data transmissions. Not respected by all publishers.
      */
     void setSendInterval(int sendEveryX);
+
+    /**
+     * @brief Attach the publisher to a logger.
+     *
+     * The publisher must be tied to a data loger to provide it with the data to
+     * be published.
+     *
+     * @param baseLogger A reference to the ModularSensors logger instance
+     */
+    void attachToLogger(Logger& baseLogger);
+
+    /**
+     * @brief Set the pointer to a loggerModem instance.
+     *
+     * @param loggerModem A reference to the ModularSensors loggerModem instance
+     */
+    void setModemPointer(loggerModem& loggerModem);
 
     /**
      * @brief Begin the publisher - linking it to the client and logger.
@@ -247,6 +254,11 @@ class dataPublisher {
      * @brief The internal pointer to the logger instance to be used.
      */
     Logger* _baseLogger = nullptr;
+    /**
+     * @brief The internal pointer to the base logger's modem instance to be
+     * used.
+     */
+    loggerModem* _baseModem = nullptr;
     /**
      * @brief The internal pointer to the client instance to be used.
      */

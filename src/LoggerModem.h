@@ -40,6 +40,7 @@
 #include "VariableBase.h"
 #include <Arduino.h>
 #include <Client.h>
+#include <TinyGsmSSL.tpp>
 
 
 /**
@@ -573,6 +574,16 @@ class loggerModem {
      * @brief Create a new secure client object using the default socket number
      */
     virtual Client* createSecureClient() = 0;
+    virtual Client* createSecureClient(
+        SSLAuthMode sslAuthMode, SSLVersion sslVersion = SSLVersion::TLS1_2,
+        const char* CAcertName = nullptr, const char* clientCertName = nullptr,
+        const char* clientKeyName = nullptr) = 0;
+    virtual Client*
+    createSecureClient(const char* pskIdent, const char* psKey,
+                       SSLVersion sslVersion = SSLVersion::TLS1_2) = 0;
+    virtual Client*
+    createSecureClient(const char* pskTableName,
+                       SSLVersion  sslVersion = SSLVersion::TLS1_2) = 0;
 
     /**
      * @brief Get the time from NIST via TIME protocol (rfc868).
