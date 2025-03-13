@@ -207,11 +207,7 @@ class Espressif : public loggerModem {
     Stream* _modemStream;
 
  protected:
-    bool isInternetAvailable(void) override;
-    bool modemSleepFxn(void) override;
     bool modemWakeFxn(void) override;
-    bool extraModemSetup(void) override;
-    bool isModemAwake(void) override;
 
  protected:
     /**
