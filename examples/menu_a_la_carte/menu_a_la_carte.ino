@@ -323,7 +323,13 @@ void SERCOM1_3_Handler() {
 // The name of this program file
 const char* sketchName = "menu_a_la_carte.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
+// This is also used as the Thing Name, MQTT Client ID, and topic for AWS IOT
+// Core
 const char* LoggerID = "your_logger_id";
+// Sampling feature UUID
+// This is used as the UUID for the sampling feature on Monitor My Watershed and
+// the sub-topic for AWS IOT Core
+const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";
 // How frequently (in minutes) to log data
 const uint8_t loggingInterval = 15;
 // Your logger's timezone.
@@ -356,10 +362,9 @@ const int8_t relayPowerPin = A3;  // MCU pin controlling an optional power relay
 // ==========================================================================
 /** Start [loggers] */
 // Create a new logger instance
-// NOTE: This is an empty instance! We will need to call setLoggerID,
-// setLoggingInterval, setVariableArray, and the various pin assignment
-// functions in the setup!
-Logger dataLogger;
+// NOTE: We haven't set the pins or variable array here! We will need to call
+// setVariableArray and the various pin assignment functions in the setup!
+Logger dataLogger(LoggerID, samplingFeature, loggingInterval);
 /** End [loggers] */
 
 
@@ -3145,13 +3150,14 @@ VariableArray varArray(variableCount, variableList);
 // registration at https://monitormywatershed.org or https://data.envirodiy.org
 const char* registrationToken =
     "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
-const char* samplingFeature =
-    "12345678-abcd-1234-ef00-1234567890ab";  // Sampling feature UUID
+// NOTE: Because we already set the sampling feature with the logger
+// constructor, don't do it here. const char* samplingFeature =
+//     "12345678-abcd-1234-ef00-1234567890ab";  // Sampling feature UUID
+
 
 // Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPOST(dataLogger, registrationToken,
-                                 samplingFeature);
+EnviroDIYPublisher EnviroDIYPOST(dataLogger, registrationToken);
 /** End [enviro_diy_publisher] */
 #endif
 
@@ -3220,6 +3226,42 @@ const char* ubidotsDeviceID = "######";
 #include <publishers/UbidotsPublisher.h>
 UbidotsPublisher ubidots(dataLogger, ubidotsToken, ubidotsDeviceID);
 /** End [ubidots_publisher] */
+#endif
+
+
+#if defined(BUILD_PUB_ASW_IOT_PUBLISHER) && \
+    (!defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM))
+// ==========================================================================
+//  AWS IoT Core MQTT Publisher
+// ==========================================================================
+/** Start [aws_iot_publisher] */
+// The endpoint for your AWS IoT instance
+const char* awsIoTEndpoint = "xxx-ats.iot.xxx.amazonaws.com";
+// Sampling feature UUID, this will be the sub-topic for your data
+// NOTE: Because we already set the sampling feature with the logger
+// constructor, don't do it here. const char* samplingFeature =
+// "12345678-abcd-1234-ef00-1234567890ab";
+#ifdef BUILD_MODEM_ESPRESSIF_ESP32
+// For Espressif modules, only two certificate sets are supported and the
+// certificates must be named "client_ca.{0|1}", "client_cert.{0|1}", or
+// "client_key.{0|1}"
+const char* caCertName     = "client_ca.0";
+const char* clientCertName = "client_cert.0";
+const char* clientKeyName  = "client_key.0";
+#else
+// The name of your certificate authority certificate file
+const char* caCertName = "root_ca_0.crt";
+// The name of your client certificate file
+const char* clientCertName = "client_cert_0.crt";
+// The name of your client private key file
+const char* clientKeyName = "client_key_0.key";
+#endif
+
+// Create a data publisher for AWS IoT Core
+#include <publishers/AWS_IoT_Publisher.h>
+AWS_IoT_Publisher awsIoTPub(dataLogger, awsIoTEndpoint, caCertName,
+                            clientCertName, clientKeyName);
+/** End [aws_iot_publisher] */
 #endif
 
 
@@ -3396,6 +3438,8 @@ void setup() {
     // set the logger ID
     PRINTOUT(F("Setting logger id to"), LoggerID);
     dataLogger.setLoggerID(LoggerID);
+    PRINTOUT(F("Setting the sampling feature UUID to"), LoggerID);
+    dataLogger.setSamplingFeatureUUID(samplingFeature);
     // set the logging interval
     PRINTOUT(F("Setting logging interval to"), loggingInterval, F("minutes"));
     dataLogger.setLoggingInterval(loggingInterval);
