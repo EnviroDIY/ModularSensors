@@ -608,13 +608,14 @@
  * using getRSSIFromCSQ(int16_t csq) and a the percent strength is calculated
  * using getPctFromCSQ(int16_t csq).
  *
- * XBee and ESP8266 modules return RSSI in dBm and the percent strength is
+ * XBee and Espressif modules return RSSI in dBm and the percent strength is
  * calculated using getPctFromRSSI(int16_t rssi).
  *
  * @return Text string containing the functions to put signal strength in the
  * correct units.
  */
-#if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
+#if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266) || \
+    defined(TINY_GSM_MODEM_ESP32)
 #define MS_MODEM_CALC_SIGNAL_QUALITY                            \
     rssi = signalQual;                                          \
     MS_DBG(F("Raw signal is already in units of RSSI:"), rssi); \
