@@ -115,8 +115,8 @@ TinyGsm        modem(debugger);
 #else
 TinyGsm        modem(SerialAT);
 #endif
-// NOTE: you should manually set the socket number (here 0)
-TinyGsmClientSecure secureClient(modem, 0);
+
+TinyGsmClientSecure secureClient(modem);
 PubSubClient        mqtt(secureClient);
 
 #define LED_PIN 13
@@ -280,7 +280,7 @@ void setup() {
     modem.printCertificate(root_ca_name, SerialMon);
     // convert the certificate to the modem's format
     SerialMon.println("Converting Certificate Authority Certificate");
-    cert_success &= modem.convertCACert(root_ca_name);
+    cert_success &= modem.convertCACertificate(root_ca_name);
 // NOTE: some modems suggest that you delete the certificate file from the
 // file system after converting the certificate.  Do NOT do this with an
 // ESP32!  The certificate must be in the file system to be used. On Espressif
@@ -315,14 +315,14 @@ void setup() {
     // =================== SET CERTIFICATES FOR THE CONNECTION
     // =================== AWS IoT Core requires mutual authentication
     DBG("Requiring mutual authentication on socket");
-    secureClient.setSSLAuthMode(MUTUAL_AUTHENTICATION);
+    secureClient.setSSLAuthMode(SSLAuthMode::MUTUAL_AUTHENTICATION);
     // attach the uploaded certificates to the secure client
     DBG("Assigning", root_ca_name, "as certificate authority on socket");
-    secureClient.setCACert(root_ca_name);
+    secureClient.setCACertName(root_ca_name);
     DBG("Assigning", client_cert_name, "as client certificate on socket");
-    secureClient.setClientCert(client_cert_name);
+    secureClient.setClientCertName(client_cert_name);
     DBG("Assigning", client_key_name, "as client key on socket");
-    secureClient.setPrivateKey(client_key_name);
+    secureClient.setPrivateKeyName(client_key_name);
 
     // =================== WAIT FOR NETWORK REGISTRATION ===================
 #if TINY_GSM_USE_GPRS && defined TINY_GSM_MODEM_XBEE
