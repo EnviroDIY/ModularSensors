@@ -56,6 +56,11 @@ void dataPublisher::attachToLogger(Logger& baseLogger) {
         _baseLogger->registerDataPublisher(this);  // register self with logger
 }
 
+// Set the pointer to a loggerModem instance.
+void dataPublisher::setModemPointer(loggerModem& loggerModem) {
+    _baseModem = &loggerModem;
+}
+
 
 // Sets the interval (in units of the logging interval) between attempted
 // data transmissions
