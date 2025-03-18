@@ -340,6 +340,10 @@ class dataPublisher {
      */
     static const char* postHeader;
     /**
+     * @brief the text "PUT "
+     */
+    static const char* putHeader;
+    /**
      * @brief the text " HTTP/1.1"
      */
     static const char* HTTPtag;

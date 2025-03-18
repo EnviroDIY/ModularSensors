@@ -18,6 +18,7 @@ size_t  dataPublisher::txBufferLen;
 // Basic chunks of HTTP
 const char* dataPublisher::getHeader  = "GET ";
 const char* dataPublisher::postHeader = "POST ";
+const char* dataPublisher::putHeader  = "PUT ";
 const char* dataPublisher::HTTPtag    = " HTTP/1.1";
 const char* dataPublisher::hostHeader = "\r\nHost: ";
 
