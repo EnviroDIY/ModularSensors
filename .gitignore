@@ -124,3 +124,6 @@ aws_iot_config.h
 *.pem.crt
 *.pem.cert
 *.pem.key
+*.crt
+*.cert
+*.key
