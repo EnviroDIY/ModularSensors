@@ -23,9 +23,7 @@ const char* UbidotsPublisher::postEndpoint = "/api/v1.6/devices/";
 const char* UbidotsPublisher::ubidotsHost  = "industrial.api.ubidots.com";
 const int   UbidotsPublisher::ubidotsPort  = 80;
 const char* UbidotsPublisher::tokenHeader  = "\r\nX-Auth-Token: ";
-//
-//
-//
+
 const char* UbidotsPublisher::contentLengthHeader = "\r\nContent-Length: ";
 const char* UbidotsPublisher::contentTypeHeader =
     "\r\nContent-Type: application/json\r\n\r\n";
