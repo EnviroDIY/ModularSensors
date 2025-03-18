@@ -109,6 +109,10 @@ class AWS_IoT_Publisher : public dataPublisher {
      * Monitor My Watershed data portal.
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions. NOTE: not implemented by this publisher!
+     *
+     * @note The inputs to this are the **NAMES** of the certificate **files**
+     * as they are stored on you modem module, not the content of the
+     * certificates.
      */
     AWS_IoT_Publisher(Logger& baseLogger, const char* awsIoTEndpoint,
                       const char* caCertName, const char* clientCertName,
@@ -125,6 +129,10 @@ class AWS_IoT_Publisher : public dataPublisher {
      * @param clientKeyName The name of your client private key file
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions. NOTE: not implemented by this publisher!
+     *
+     * @note The inputs to this are the **NAMES** of the certificate **files**
+     * as they are stored on you modem module, not the content of the
+     * certificates.
      */
     AWS_IoT_Publisher(Logger& baseLogger, const char* awsIoTEndpoint,
                       const char* caCertName, const char* clientCertName,
@@ -264,6 +272,8 @@ class AWS_IoT_Publisher : public dataPublisher {
      * @return The PubSubClient status code of the response.
      */
     int16_t publishData(Client* outClient, bool forceFlush = false) override;
+
+    int16_t publishImage(Client* outClient, bool forceFlush = false);
 
  protected:
     /**

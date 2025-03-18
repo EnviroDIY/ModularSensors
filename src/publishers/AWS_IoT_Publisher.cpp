@@ -131,7 +131,7 @@ Client* AWS_IoT_Publisher::createClient() {
     }
     MS_DBG(F("Creating new secure client with default socket number."));
     Client* newClient = _baseModem->createSecureClient(
-        SSLAuthMode::MUTUAL_AUTHENTICATION, SSLVersion::TLS1_2, _caCertName,
+        SSLAuthMode::MUTUAL_AUTHENTICATION, SSLVersion::TLS1_3, _caCertName,
         _clientCertName, _clientKeyName);
     if (newClient == nullptr) {
         PRINTOUT(F("Failed to create a new secure client!"));
