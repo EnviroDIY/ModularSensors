@@ -160,12 +160,8 @@ bool GeoluxHydroCam::addSingleMeasurementResult(void) {
     // Only go on to get a result if it was
     if (bitRead(_sensorStatus, 6)) {
         // set a new filename based on the current RTC time
-        char filename[strlen(_filePrefix) + 15 + 3 + 1] = {'\0'};
-        char time_buff[15 + 1]                          = {'\0'};
-        _baseLogger->formatDateTime(time_buff, "%Y%m%d_%H%M%S",
-                                    _baseLogger->getNowLocalEpoch());
-        strcat(filename, time_buff);
-        strcat(filename, ".jpg");
+        char* filename = _baseLogger->generateFileName(
+            true, HYDROCAM_FILE_EXTENSION, _filePrefix);
         MS_DBG(F("Attempting to create the file: "), filename);
 
         // Initialise the SD card

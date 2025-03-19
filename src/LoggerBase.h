@@ -1193,6 +1193,20 @@ class Logger {
      */
     bool logToSD(void);
 
+    /**
+     * @brief Generate a file name with the current date and time appended to
+     * it.
+     *
+     * @param include_time True to include the time in the filename
+     * @param extension The file extension to use
+     * @param filePrefix The prefix to use for the file name, optional, with an
+     * default value of nullptr. If not provided, the logger ID will be used.
+     *
+     * @note This cannot be called until *after* the RTC is started
+     */
+    char* generateFileName(bool include_time, const char* extension,
+                           const char* filePrefix = nullptr);
+
  protected:
     // The SD card and file
     /**
