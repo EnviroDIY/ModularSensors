@@ -27,45 +27,50 @@ S3PresignedPublisher::S3PresignedPublisher(Logger& baseLogger, Client* inClient,
                                            int sendEveryX)
     : dataPublisher(baseLogger, inClient, sendEveryX) {}
 
-S3PresignedPublisher::S3PresignedPublisher(
-    Logger&     baseLogger, const char* (*getUrlFxn)(const char*),
-    const char* filename, int sendEveryX)
+S3PresignedPublisher::S3PresignedPublisher(Logger& baseLogger,
+                                           char* (*getUrlFxn)(char*),
+                                           int sendEveryX)
     : dataPublisher(baseLogger, sendEveryX) {
     setURLUpdateFunction(getUrlFxn);
-    setFilename(filename);
 }
-S3PresignedPublisher::S3PresignedPublisher(
-    Logger&     baseLogger, const char* (*getUrlFxn)(const char*),
-    const char* filename, const char* caCertName, int sendEveryX = 1)
+S3PresignedPublisher::S3PresignedPublisher(Logger& baseLogger,
+                                           char* (*getUrlFxn)(char*),
+                                           const char* caCertName,
+                                           int         sendEveryX)
     : dataPublisher(baseLogger, sendEveryX) {
     setURLUpdateFunction(getUrlFxn);
-    setFilename(filename);
     setCACertName(caCertName);
 }
-S3PresignedPublisher::S3PresignedPublisher(
-    Logger& baseLogger, Client* inClient, const char* (*getUrlFxn)(const char*),
-    const char* filename, int sendEveryX)
+S3PresignedPublisher::S3PresignedPublisher(Logger& baseLogger, Client* inClient,
+                                           char* (*getUrlFxn)(char*),
+                                           int sendEveryX)
     : dataPublisher(baseLogger, inClient, sendEveryX) {
     setURLUpdateFunction(getUrlFxn);
-    setFilename(filename);
 }
 // Destructor
 S3PresignedPublisher::~S3PresignedPublisher() {}
 
 
-// Functions for private SWRC server
-void S3PresignedPublisher::setURLUpdateFunction(
-    const char* (*getUrlFxn)(const char*)) {
+void S3PresignedPublisher::setURLUpdateFunction(char* (*getUrlFxn)(char*)) {
     _getUrlFxn = getUrlFxn;
 }
+void S3PresignedPublisher::setFileUpdateFunction(
+    char* (*getFileNameFxn)(void)) {
+    _getFileNameFxn = getFileNameFxn;
+}
 
-void S3PresignedPublisher::setPreSignedURL(const char* s3Url) {
+void S3PresignedPublisher::setPreSignedURL(char* s3Url) {
     _PreSignedURL = s3Url;
 }
 
 
-void S3PresignedPublisher::setFilename(const char* filename) {
+void S3PresignedPublisher::setFileName(char* filename) {
     _filename = filename;
+}
+void S3PresignedPublisher::setFileParams(const char* extension,
+                                         const char* filePrefix) {
+    _fileExtension = extension;
+    _filePrefix    = filePrefix;
 }
 
 
@@ -76,17 +81,13 @@ void S3PresignedPublisher::setCACertName(const char* caCertName) {
 
 // A way to set members in the begin to use with a bare constructor
 void S3PresignedPublisher::begin(Logger& baseLogger, Client* inClient,
-                                 const char* (*getUrlFxn)(const char*),
-                                 const char* filename) {
+                                 char* (*getUrlFxn)(char*)) {
     setURLUpdateFunction(getUrlFxn);
-    setFilename(filename);
     dataPublisher::begin(baseLogger, inClient);
 }
-void S3PresignedPublisher::begin(Logger& baseLogger,
-                                 const char* (*getUrlFxn)(const char*),
-                                 const char* filename, const char* caCertName) {
+void S3PresignedPublisher::begin(Logger& baseLogger, char* (*getUrlFxn)(char*),
+                                 const char* caCertName) {
     setURLUpdateFunction(getUrlFxn);
-    setFilename(filename);
     setCACertName(caCertName);
     dataPublisher::begin(baseLogger);
 }
@@ -112,27 +113,70 @@ Client* S3PresignedPublisher::createClient() {
     return newClient;
 }
 
-
 // Post the data to S3.
 int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
-    // Initialise the SD card
-    // skip everything else if there's no SD card, otherwise it might hang
-    if (!_baseLogger->initializeSDCard()) return -2;
+    // if no-one gave us a filename, assume it's a jpg and generate one based on
+    // loggername + timestamp
+    if (_getFileNameFxn != nullptr) { _filename = _getFileNameFxn(); }
+    if (_filename == nullptr) {
+        _filename = _baseLogger->generateFileName(
+            true,
+            _fileExtension != nullptr ? _fileExtension
+                                      : S3_DEFAULT_FILE_EXTENSION,
+            _filePrefix);
+    }
 
-    // Open the file in read mode, bail if it doesn't open
+    // Initialise the SD card and make sure we can get to the file
+    if (!_baseLogger->initializeSDCard()) return -2;
+    // Test opening the file in read mode, bail if it doesn't open
     if (putFile.open(_filename, O_READ)) {
         MS_DBG(F("Opened file on SD card:"), filename);
     } else {
         MS_DBG(F("Failed to open the file to put on S3"), filename);
         return -2;
     }
+    // close the file again so we're not leaving it hanging open while we we
+    // fetch the pre-signed URL
+    // I'm worried about the file becoming corrupted if we leave it open and
+    // something bad happens while we're waiting for the URL.
+    putFile.close();
+
+    // Run whatever function we need to get a new URL
+    // Run the function any time the pre-signed URL pointer has become null
+    // (after use) or if the current filename isn't in the URL (which means it's
+    // not valid).
+    if (strstr(_PreSignedURL, _filename) == nullptr) {
+        PRINTOUT(F("The provided S3 URL is not valid for the current file!"));
+        _PreSignedURL = nullptr;
+    }
+    if (_PreSignedURL == nullptr) {
+        if (_getUrlFxn != nullptr) {
+            PRINTOUT(F("No valid URL and no function to get one!"));
+            return -2;
+        }
+        setPreSignedURL(_getUrlFxn(_filename));
+        if (_PreSignedURL == nullptr) {
+            PRINTOUT(F("No URL returned to post to!"));
+            return -2;
+        }
+    }
+
+    // Now that we have a URL, re-itialise the SD card and re-open the file
+    if (!_baseLogger->initializeSDCard()) return -2;
+    if (putFile.open(_filename, O_READ)) {
+        MS_DBG(F("Opened file on SD card:"), filename);
+    } else {
+        MS_DBG(F("Failed to open the file to put on S3"), filename);
+        return -2;
+    }
+    // check the file size
     uint32_t file_size = static_cast<uint32_t>(putFile.size());
 
     // Create a buffer for the portions of the request and response
     char     tempBuffer[37] = "";
     uint16_t did_respond    = 0;
 
-    // https://YOUR-BUCKET-NAME.s3.amazonaws.com/file.jpg
+    // https://YOUR-BUCKET-NAME.s3.amazonaws.com/file_name.extension
     //  ?AWSAccessKeyId=ACCESS-KEY-ID
     //  &Signature=SIGNATURE-VALUE
     //  &content-type=image%2Fjpeg
@@ -225,6 +269,16 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
 
     PRINTOUT(F("\n-- Response Code --"));
     PRINTOUT(responseCode);
+
+    // After any attempt, clear the filename to force the user to set a new
+    // filename before trying again
+    _filename = nullptr;
+
+    // After a successful post or an error response, clear the URL so it's not
+    // used again S3 pre-signed URL's are only valid for the post of a single
+    // file. If you call the same URL repeatedly, it will overwrite the file
+    // each time.
+    if (responseCode == 201) { _PreSignedURL = nullptr; }
 
     return responseCode;
 }
