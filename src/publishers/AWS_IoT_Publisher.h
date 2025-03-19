@@ -180,7 +180,15 @@ class AWS_IoT_Publisher : public dataPublisher {
      * You MUST have already uploaded your certificate to your modem. This will
      * most likely be the Amazon Root CA 1 (RSA 2048 bit key) certificate. You
      * can find Amazon's current CA certificates here:
-     * https://docs.aws.amazon.com/iot/latest/developerguide/server-authentication.html
+     * https://docs.aws.amazon.com/iot/latest/developerguide/server-authentication.html.
+     * Depending on your module, you may instead need a certificate chain file
+     * or to use Amazon's older top-chain certificate (Starfield Services Root
+     * Certificate Authority - G2).
+     *
+     * This is exactly the same CA certificate as you would use to upload to S3
+     * (ie, the S3 Presigned Publisher). For supported modules you can use the
+     * AWS_IOT_SetCertificates sketch in the extras folder to upload your
+     * certificate.
      *
      * @param caCertName The name of your certificate authority certificate
      * file.
@@ -195,6 +203,9 @@ class AWS_IoT_Publisher : public dataPublisher {
      * tied to a security policy that allows connection, publishing, and
      * subscribing by thing name.
      *
+     * For supported modules you can use the AWS_IOT_SetCertificates sketch in
+     * the extras folder to upload your certificate.
+     *
      * @param clientCertName The name of your client certificate file.
      */
     void setClientCertName(const char* clientCertName);
@@ -206,6 +217,9 @@ class AWS_IoT_Publisher : public dataPublisher {
      * must download the certificate when you create it. Your certificate should
      * be tied to a security policy that allows connection, publishing, and
      * subscribing by thing name.
+     *
+     * For supported modules you can use the AWS_IOT_SetCertificates sketch in
+     * the extras folder to upload your certificate.
      *
      * @param clientKeyName The name of your client private key file.
      */
