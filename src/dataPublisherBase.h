@@ -185,7 +185,7 @@ class dataPublisher {
     virtual bool connectionNeeded(void);
 
     /**
-     * @brief Open a socket to the correct receiver and sends out the formatted
+     * @brief Opens a socket to the correct receiver and sends out the formatted
      * data.
      *
      * This depends on an internet connection already having been made and a
@@ -214,6 +214,37 @@ class dataPublisher {
      * create a client.
      */
     virtual int16_t publishData(bool forceFlush = false);
+
+
+    /**
+     * @brief Open a socket to the correct receiver and send out *metadata*
+     * about the current logger setup.
+     *
+     * This is to be used only when the logger is starting up!  As the metadata
+     * doesn't generally change after start up, there's no reason to call this
+     * function any other time.  There is no sensor data included in this
+     * metadata!  If there is metadata that has to be included with each data
+     * post, that should be included in the publishData function.  Because there
+     * is no sensor data included in this metadata and it's only to be called at
+     * boot, there's no `forceFlush` option for this function.
+     *
+     * This depends on an internet connection already having been made and a
+     * client being available.
+     *
+     * @note This does *not* have to be implemented for each publisher! If it is
+     * not implemented, it will return 0.
+     *
+     * @param outClient An Arduino client instance to use to print data to.
+     * Allows the use of any type of client and multiple clients tied to a
+     * single TinyGSM modem instance
+     * @return The result of publishing data.  May be an http response code or a
+     * result code from PubSubClient.
+     */
+    virtual int16_t publishMetadata(Client* outClient);
+    /**
+     * @copydoc publishMetadata(Client* outClient)
+     */
+    virtual int16_t publishMetadata();
 
     /**
      * @brief Retained for backwards compatibility; use publishData(Client*

@@ -516,6 +516,18 @@ void Logger::publishDataToRemotes(bool forceFlush) {
 void Logger::sendDataToRemotes(void) {
     publishDataToRemotes();
 }
+void Logger::publishMetadataToRemotes() {
+    MS_DBG(F("Sending out remote metadata."));
+
+    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
+        if (dataPublishers[i] != nullptr) {
+            PRINTOUT(F("\nSending metadata to ["), i, F("]"),
+                     dataPublishers[i]->getEndpoint());
+            dataPublishers[i]->publishMetadata();
+            extendedWatchDog::resetWatchDog();
+        }
+    }
+}
 
 
 // ===================================================================== //

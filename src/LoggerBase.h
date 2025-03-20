@@ -713,6 +713,14 @@ class Logger {
      * @m_deprecated_since{0,22,5}
      */
     void sendDataToRemotes(void);
+    /**
+     * @brief Publish **metadata** to all registered data publishers.
+     *
+     * This should only be called at startup.
+     *
+     * @see dataPublisherBase::publishMetadata()
+     */
+    void publishMetadataToRemotes();
 
  protected:
     /**

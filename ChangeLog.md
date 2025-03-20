@@ -51,6 +51,8 @@ If no epoch start is given, it is assumed to be UNIX (January 1, 1970).
 - Added support for Geolux HydroCam
 - Added a generic time formatting function.
 - Added a new publisher to AWS IoT Core over MQTT
+- Added a new publisher to AWS S3 buckets using pre-signed URLs
+- Added structure to publish *metadata* to publishers - intended to be used only at startup.
 
 ### Removed
 

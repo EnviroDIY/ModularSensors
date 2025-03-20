@@ -214,6 +214,26 @@ int16_t dataPublisher::sendData(Client* outClient) {
 int16_t dataPublisher::sendData() {
     return publishData();
 }
+int16_t dataPublisher::publishMetadata(Client* outClient) {
+    // does nothing by default
+    return 0;
+}
+int16_t dataPublisher::publishMetadata() {
+    if (_inClient == nullptr) {
+        int16_t retVal    = -2;  // -2 is connection failed in MQTT
+        Client* newClient = createClient();
+        if (newClient != nullptr) {
+            retVal = publishMetadata(newClient);
+            delete newClient;  // need to delete to free memory!
+        } else {
+            PRINTOUT(F("ERROR! Failed to create new client to publish data!"));
+        }
+        return retVal;
+    } else {
+        MS_DBG(F("Publishing data with provided client."));
+        return publishMetadata(_inClient);
+    }
+}
 
 
 // This spits out a string description of the PubSubClient codes
