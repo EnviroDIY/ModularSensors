@@ -174,11 +174,11 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
     //  &x-amz-security-token=A-REALLY-REALLY-REALLY-LONG-STRING
     //  &Expires=unix_timestamp
 
-    char* start_file    = strstr(_PreSignedURL, _filename);
-    char* start_content = strstr(start_file, "&content-type=");
-    char* end_content   = strstr(start_content, "&");
-    char* s3host        = {'\0'};
-    char* content_type  = {'\0'};
+    char* start_file        = strstr(_PreSignedURL, _filename);
+    char* start_content     = strstr(start_file, "&content-type=");
+    char* end_content       = strstr(start_content, "&");
+    char  s3host[150]       = {'\0'};
+    char  content_type[100] = {'\0'};
     // add 8 for 'https://'
     memcpy(s3host, _PreSignedURL + 8, start_file - _PreSignedURL - 8);
     MS_DBG(F("S3 Host: "), s3host);
