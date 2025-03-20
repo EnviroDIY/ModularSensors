@@ -354,6 +354,12 @@ class dataPublisher {
      * @param return A pointer to an Arduino client instance
      */
     virtual Client* createClient();
+    /**
+     * @brief Delete a created client. We need to pass this through to avoid a
+     * memory leak because we cannot delete from the pointer because the
+     * destructor for a client in the Arduino core isn't virtual.
+     */
+    virtual void deleteClient(Client* _client);
 
     /**
      * @brief Interval (in units of the logging interval) between

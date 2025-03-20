@@ -195,7 +195,9 @@ class SIMComSIM800 : public loggerModem {
     void disconnectInternet(void) override;
 
     virtual Client* createClient() override;
+    virtual void    deleteClient(Client* _client);
     virtual Client* createSecureClient() override;
+    virtual void    deleteSecureClient(Client* _client);
     virtual Client* createSecureClient(
         SSLAuthMode sslAuthMode, SSLVersion sslVersion = SSLVersion::TLS1_2,
         const char* CAcertName = nullptr, const char* clientCertName = nullptr,

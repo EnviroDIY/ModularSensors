@@ -42,7 +42,9 @@ MS_MODEM_DISCONNECT_INTERNET(DigiXBeeCellularTransparent);
 MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeCellularTransparent);
 
 MS_MODEM_CREATE_CLIENT(DigiXBeeCellularTransparent);
+MS_MODEM_DELETE_CLIENT(DigiXBeeCellularTransparent);
 MS_MODEM_CREATE_SECURE_CLIENT(DigiXBeeCellularTransparent);
+MS_MODEM_DELETE_SECURE_CLIENT(DigiXBeeCellularTransparent);
 
 MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBeeCellularTransparent);
 MS_MODEM_GET_MODEM_BATTERY_DATA(DigiXBeeCellularTransparent);

@@ -189,6 +189,12 @@ Client* dataPublisher::createClient() {
     MS_DBG(F("Creating new client with default socket number."));
     return _baseModem->createClient();
 }
+void dataPublisher::deleteClient(Client* _client) {
+    if (_baseModem != nullptr) {
+        MS_DBG(F("Attempting to delete the client"));
+        return _baseModem->deleteClient(_client);
+    }
+}
 
 // This sends data on the "default" client of the modem
 int16_t dataPublisher::publishData(bool forceFlush) {
@@ -197,7 +203,7 @@ int16_t dataPublisher::publishData(bool forceFlush) {
         Client* newClient = createClient();
         if (newClient != nullptr) {
             retVal = publishData(newClient, forceFlush);
-            delete newClient;  // need to delete to free memory!
+            deleteClient(newClient);  // need to delete to free memory!
         } else {
             PRINTOUT(F("ERROR! Failed to create new client to publish data!"));
         }
@@ -214,7 +220,7 @@ int16_t dataPublisher::sendData(Client* outClient) {
 int16_t dataPublisher::sendData() {
     return publishData();
 }
-int16_t dataPublisher::publishMetadata(Client* outClient) {
+int16_t dataPublisher::publishMetadata(Client*) {
     // does nothing by default
     return 0;
 }
@@ -224,7 +230,7 @@ int16_t dataPublisher::publishMetadata() {
         Client* newClient = createClient();
         if (newClient != nullptr) {
             retVal = publishMetadata(newClient);
-            delete newClient;  // need to delete to free memory!
+            deleteClient(newClient);  // need to delete to free memory!
         } else {
             PRINTOUT(F("ERROR! Failed to create new client to publish data!"));
         }

@@ -513,6 +513,44 @@
     }                                                \
     MS_MODEM_CREATE_NULL_SECURE_CLIENTS(specificModem)
 #endif
+/**
+ * @brief Creates a deleteClient function for a specific modem subclass.
+ *
+ * @param specificModem The modem subclass
+ *
+ * @return The text of deleteClient function specific to a single modem
+ * subclass.
+ */
+#define MS_MODEM_DELETE_CLIENT(specificModem)           \
+    void specificModem::deleteClient(Client* _client) { \
+        if (_client != nullptr) {                       \
+            TinyGsmClient* cast_pointer =               \
+                static_cast<TinyGsmClient*>(_client);   \
+            delete cast_pointer;                        \
+        }                                               \
+    }
+/**
+ * @def MS_MODEM_DELETE_SECURE_CLIENT
+ * @brief Creates a deleteClient function for a specific modem subclass.
+ *
+ * @param specificModem The modem subclass
+ *
+ * @return The text of deleteSecureClient function specific to a single modem
+ * subclass.
+ */
+#if defined(TINY_GSM_MODEM_HAS_SSL)
+#define MS_MODEM_DELETE_SECURE_CLIENT(specificModem)          \
+    void specificModem::deleteSecureClient(Client* _client) { \
+        if (_client != nullptr) {                             \
+            TinyGsmClientSecure* cast_pointer =               \
+                static_cast<TinyGsmClientSecure*>(_client);   \
+            delete cast_pointer;                              \
+        }                                                     \
+    }
+#else
+#define MS_MODEM_DELETE_SECURE_CLIENT(specificModem) \
+    void specificModem::deleteSecureClient(Client*) {}
+#endif
 
 /**
  * @brief The port hosting the NIST "time" protocol (37)
