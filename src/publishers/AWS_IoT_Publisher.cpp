@@ -154,29 +154,6 @@ int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
     // The txBuffer is used for the **payload** only
     txBufferInit(outClient);
 
-    // put the start of the JSON into the outgoing response_buffer
-    txBufferAppend(samplingFeatureTag);
-    txBufferAppend(_baseLogger->getSamplingFeatureUUID());
-
-    txBufferAppend(timestampTag);
-    txBufferAppend(
-        Logger::formatDateTime_ISO8601(Logger::markedLocalUnixTime).c_str());
-    txBufferAppend('"');
-    txBufferAppend(',');
-
-    for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
-        txBufferAppend('"');
-        txBufferAppend(_baseLogger->getVarUUIDAtI(i).c_str());
-        txBufferAppend('"');
-        txBufferAppend(':');
-        txBufferAppend(_baseLogger->getValueStringAtI(i).c_str());
-        if (i + 1 != _baseLogger->getArrayVarCount()) {
-            txBufferAppend(',');
-        } else {
-            txBufferAppend('}');
-        }
-    }
-
     // Set the client connection parameters
     _mqttClient.setClient(*outClient);
     _mqttClient.setServer(_awsIoTEndpoint, mqttPort);
@@ -197,6 +174,30 @@ int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
         if (_mqttClient.beginPublish(topicBuffer, txBufferLen, false)) {
             MS_DBG(F("Successfully started publish to topic"),
                    String(topicBuffer));
+
+            // put the start of the JSON into the outgoing response_buffer
+            txBufferAppend(samplingFeatureTag);
+            txBufferAppend(_baseLogger->getSamplingFeatureUUID());
+
+            txBufferAppend(timestampTag);
+            txBufferAppend(
+                Logger::formatDateTime_ISO8601(Logger::markedLocalUnixTime)
+                    .c_str());
+            txBufferAppend('"');
+            txBufferAppend(',');
+
+            for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
+                txBufferAppend('"');
+                txBufferAppend(_baseLogger->getVarUUIDAtI(i).c_str());
+                txBufferAppend('"');
+                txBufferAppend(':');
+                txBufferAppend(_baseLogger->getValueStringAtI(i).c_str());
+                if (i + 1 != _baseLogger->getArrayVarCount()) {
+                    txBufferAppend(',');
+                } else {
+                    txBufferAppend('}');
+                }
+            }
             txBufferFlush();  // NOTE: the PubSubClient library has a write
                               // method, which is call to the underlying
                               // client's write method. This flush does the same

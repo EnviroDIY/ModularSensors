@@ -138,20 +138,6 @@ int16_t ThingSpeakPublisher::publishData(Client* outClient, bool) {
     // The txBuffer is used for the **payload** only
     txBufferInit(outClient);
 
-    txBufferAppend("created_at=");
-    txBufferAppend(
-        Logger::formatDateTime_ISO8601(Logger::markedLocalUnixTime).c_str());
-
-    char tempBuffer[2] = "";  // for the channel number
-    for (uint8_t i = 0; i < numChannels; i++) {
-        txBufferAppend("&field");
-        itoa(i + 1, tempBuffer, 10);  // BASE 10
-        txBufferAppend(tempBuffer);
-        txBufferAppend('=');
-        txBufferAppend(_baseLogger->getValueStringAtI(i).c_str());
-    }
-    MS_DBG(F("Message length:"), txBufferLen);
-
     // Set the client connection parameters
     _mqttClient.setClient(*outClient);
     _mqttClient.setServer(mqttServer, mqttPort);
@@ -176,6 +162,21 @@ int16_t ThingSpeakPublisher::publishData(Client* outClient, bool) {
         if (_mqttClient.beginPublish(topicBuffer, txBufferLen, false)) {
             MS_DBG(F("Successfully started publish to topic"),
                    String(topicBuffer));
+
+            txBufferAppend("created_at=");
+            txBufferAppend(
+                Logger::formatDateTime_ISO8601(Logger::markedLocalUnixTime)
+                    .c_str());
+
+            char tempBuffer[2] = "";  // for the channel number
+            for (uint8_t i = 0; i < numChannels; i++) {
+                txBufferAppend("&field");
+                itoa(i + 1, tempBuffer, 10);  // BASE 10
+                txBufferAppend(tempBuffer);
+                txBufferAppend('=');
+                txBufferAppend(_baseLogger->getValueStringAtI(i).c_str());
+            }
+            MS_DBG(F("Message length:"), txBufferLen);
             txBufferFlush();  // NOTE: the PubSubClient library has a write
                               // method, which is call to the underlying
                               // client's write method. This flush does the same
