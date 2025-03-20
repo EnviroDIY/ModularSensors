@@ -226,7 +226,7 @@ class AWS_IoT_Publisher : public dataPublisher {
     void setClientKeyName(const char* clientKeyName);
 
     /**
-     * @brief Sets all 5 AWS IoT Core parameters
+     * @brief Sets all of the AWS IoT Core parameters
      *
      * @param awsIoTEndpoint The endpoint for your AWS IoT instance
      * @param caCertName The name of your certificate authority certificate
@@ -286,8 +286,7 @@ class AWS_IoT_Publisher : public dataPublisher {
      * @return The PubSubClient status code of the response.
      */
     int16_t publishData(Client* outClient, bool forceFlush = false) override;
-
-    int16_t publishImage(Client* outClient, bool forceFlush = false);
+    int16_t publishMetadata(Client* outClient) override;
 
  protected:
     /**

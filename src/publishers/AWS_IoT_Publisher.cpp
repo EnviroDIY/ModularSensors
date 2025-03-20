@@ -225,3 +225,101 @@ int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
     MS_DBG(F("Disconnected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
     return retVal;
 }
+
+
+// This sends the data to AWS IoT Core
+int16_t AWS_IoT_Publisher::publishMetadata(Client* outClient) {
+    bool retVal = false;
+
+    // Create a new buffer for the **topic**
+    char topicBuffer[strlen(_baseLogger->getLoggerID()) + 38 + 9] = "";
+    snprintf(topicBuffer, sizeof(topicBuffer), "%s/%s/%s",
+             _baseLogger->getLoggerID(), _baseLogger->getSamplingFeatureUUID(),
+             '/metadata');
+    MS_DBG(F("Topic ["), strlen(topicBuffer), F("]:"), String(topicBuffer));
+
+    // The txBuffer is used for the **payload** only
+    txBufferInit(outClient);
+
+    // Set the client connection parameters
+    _mqttClient.setClient(*outClient);
+    _mqttClient.setServer(_awsIoTEndpoint, mqttPort);
+
+    // Make sure any previous TCP connections are closed
+    // NOTE:  The PubSubClient library used for MQTT connect assumes that as
+    // long as the client is connected, it must be connected to the right place.
+    // Closing any stray client sockets here ensures that a new client socket
+    // is opened to the right place.
+    if (outClient->connected()) { outClient->stop(); }
+
+    // Make the MQTT connection
+    MS_DBG(F("Opening MQTT Connection to IoT Core"));
+    MS_START_DEBUG_TIMER;
+    if (_mqttClient.connect(_baseLogger->getLoggerID())) {
+        MS_DBG(F("MQTT connected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
+
+        if (_mqttClient.beginPublish(topicBuffer, txBufferLen, false)) {
+            MS_DBG(F("Successfully started publish to topic"),
+                   String(topicBuffer));
+
+            // put the start of the JSON into the outgoing response_buffer
+            txBufferAppend("{\"logger_id\":\"");
+            txBufferAppend(_baseLogger->getLoggerID());
+            txBufferAppend("\",\"sampling_feature\":\"");
+            txBufferAppend(_baseLogger->getSamplingFeatureUUID());
+            txBufferAppend("\",\"logging_interval\":");
+            txBufferAppend(_baseLogger->getLoggingInterval());
+            txBufferAppend(",\"current_file_name\":\"");
+            txBufferAppend(_baseLogger->getFileName().c_str());
+            txBufferAppend("\",\"time_zone\":\"");
+            txBufferAppend(_baseLogger->getLoggerTimeZone());
+            txBufferAppend(",\"number_variables\":");
+            txBufferAppend(_baseLogger->getArrayVarCount());
+            txBufferAppend(",\"variables\":{");
+
+            for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
+                txBufferAppend("\"variable_number\":");
+                txBufferAppend(i);
+                txBufferAppend(",\"variable_name\":\"");
+                txBufferAppend(_baseLogger->getVarNameAtI(i).c_str());
+                txBufferAppend("\",\"variable_unit\":\"");
+                txBufferAppend(_baseLogger->getVarUnitAtI(i).c_str());
+                txBufferAppend("\",\"variable_resolution\":\"");
+                txBufferAppend(_baseLogger->getVarResolutionAtI(i));
+                txBufferAppend("\",\"variable_code\":\"");
+                txBufferAppend(_baseLogger->getVarCodeAtI(i).c_str());
+                txBufferAppend("\",\"variable_uuid\":\"");
+                txBufferAppend(_baseLogger->getVarUUIDAtI(i).c_str());
+                if (i + 1 != _baseLogger->getArrayVarCount()) {
+                    txBufferAppend("},");
+                } else {
+                    txBufferAppend("}}");
+                }
+            }
+            txBufferFlush();  // NOTE: the PubSubClient library has a write
+                              // method, which is call to the underlying
+                              // client's write method. This flush does the same
+                              // thing.
+            _mqttClient.endPublish();
+            PRINTOUT(F("AWS IoT Core topic published!  Current state:"),
+                     parseMQTTState(_mqttClient.state()));
+            retVal = true;
+        } else {
+            PRINTOUT(F("AWS IoT Core MQTT publish failed with state:"),
+                     parseMQTTState(_mqttClient.state()));
+            retVal = false;
+        }
+    } else {
+        PRINTOUT(F("AWS IoT Core MQTT connection failed with state:"),
+                 parseMQTTState(_mqttClient.state()));
+        delay(1000);
+        retVal = false;
+    }
+
+    // Disconnect from MQTT
+    MS_DBG(F("Disconnecting from MQTT"));
+    MS_RESET_DEBUG_TIMER
+    _mqttClient.disconnect();
+    MS_DBG(F("Disconnected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
+    return retVal;
+}
