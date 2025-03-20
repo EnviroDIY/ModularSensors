@@ -65,7 +65,7 @@
 /**
  * @brief The modem type for the underlying TinyGSM library.
  */
-#define TINY_GSM_MODEM_SIM7000
+#define TINY_GSM_MODEM_SIM7000SSL
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
