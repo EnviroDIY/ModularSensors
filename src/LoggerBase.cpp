@@ -403,6 +403,10 @@ String Logger::getVarCodeAtI(uint8_t position_i) {
 String Logger::getVarUUIDAtI(uint8_t position_i) {
     return _internalArray->arrayOfVars[position_i]->getVarUUID();
 }
+// This returns the variable resolution
+uint8_t Logger::getVarResolutionAtI(uint8_t position_i) {
+    return _internalArray->arrayOfVars[position_i]->getResolution();
+}
 // This returns the current value of the variable as a float
 float Logger::getValueAtI(uint8_t position_i) {
     return _internalArray->arrayOfVars[position_i]->getValue();

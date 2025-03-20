@@ -623,6 +623,14 @@ class Logger {
      */
     String getVarUUIDAtI(uint8_t position_i);
     /**
+     * @brief Get the resolution (number of decimal places) of the variable at
+     * the given position in the internal variable array object.
+     *
+     * @param position_i The position of the variable in the array.
+     * @return The variable resolution
+     */
+    uint8_t getVarResolutionAtI(uint8_t position_i);
+    /**
      * @brief Get the most recent value of the variable at the given position in
      * the internal variable array object.
      *
