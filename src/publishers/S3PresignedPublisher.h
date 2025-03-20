@@ -146,57 +146,22 @@ class S3PresignedPublisher : public dataPublisher {
     /**
      * @brief Construct a new S3 Publisher object
      *
-     * @note If a client is never specified, the publisher will attempt to
-     * create and use a client on a LoggerModem instance tied to the attached
-     * logger.
-     *
      * @param baseLogger The logger supplying the data to be published
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. NOTE: not implemented by this publisher!
-     */
-    explicit S3PresignedPublisher(Logger& baseLogger, int sendEveryX = 1);
-    /**
-     * @brief Construct a new S3 Publisher object
-     *
-     * @param baseLogger The logger supplying the data to be published
-     * @param getUrlFxn A function to call to get a new pre-signed URL
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. NOTE: not implemented by this publisher!
-     */
-    S3PresignedPublisher(Logger& baseLogger, char* (*getUrlFxn)(char*),
-                         int     sendEveryX = 1);
-    /**
-     * @brief Construct a new S3 Publisher object
-     *
-     * @param baseLogger The logger supplying the data to be published
-     * @param getUrlFxn A function to call to get a new pre-signed URL
      * @param caCertName The name of your certificate authority certificate
      * file - used to validate the server's certificate when connecting to S3
      * with SSL. @see setCACertName()
+     * @param getUrlFxn A function to call to get a new pre-signed URL
+     * @param getFileNameFxn A function to call to get a new filename
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions. NOTE: not implemented by this publisher!
      *
      * @note The inputs to this is the **NAME** of the certificate **file** as
      * it is stored on you modem module, not the actual certificate content.
      */
-    S3PresignedPublisher(Logger&     baseLogger, char* (*getUrlFxn)(char*),
-                         const char* caCertName, int sendEveryX = 1);
-    /**
-     * @brief Construct a new S3 Publisher object
-     *
-     * @param baseLogger The logger supplying the data to be published
-     * @param getUrlFxn A function to call to get a new pre-signed URL
-     * @param caCertName The name of your certificate authority certificate
-     * file - used to validate the server's certificate when connecting to S3
-     * with SSL. @see setCACertName()
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. NOTE: not implemented by this publisher!
-     *
-     * @note The inputs to this is the **NAME** of the certificate **file** as
-     * it is stored on you modem module, not the actual certificate content.
-     */
-    S3PresignedPublisher(Logger&     baseLogger, char* (*getUrlFxn)(char*),
-                         const char* caCertName, int sendEveryX = 1);
+    S3PresignedPublisher(Logger& baseLogger, const char* caCertName,
+                         char* (*getUrlFxn)(char*)     = nullptr,
+                         char* (*getFileNameFxn)(void) = nullptr,
+                         int sendEveryX                = 1);
     /**
      * @brief Construct a new S3 Publisher object
      *
@@ -208,20 +173,9 @@ class S3PresignedPublisher : public dataPublisher {
      * attempted data transmissions. NOTE: not implemented by this publisher!
      */
     S3PresignedPublisher(Logger& baseLogger, Client* inClient,
-                         int sendEveryX = 1);
-    /**
-     * @brief Construct a new S3 Publisher object
-     *
-     * @param baseLogger The logger supplying the data to be published
-     * @param inClient An Arduino client instance to use to print data to.
-     * Allows the use of any type of client and multiple clients tied to a
-     * single TinyGSM modem instance
-     * @param getUrlFxn A function to call to get a new pre-signed URL
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. NOTE: not implemented by this publisher!
-     */
-    S3PresignedPublisher(Logger& baseLogger, Client*    inClient,
-                         char* (*getUrlFxn)(char*), int sendEveryX = 1);
+                         char* (*getUrlFxn)(char*)     = nullptr,
+                         char* (*getFileNameFxn)(void) = nullptr,
+                         int sendEveryX                = 1);
     /**
      * @brief Destroy the S3 Publisher object
      */

@@ -19,33 +19,23 @@ const char* S3PresignedPublisher::contentTypeHeader   = "\r\nContent-Type: ";
 
 // Constructors
 S3PresignedPublisher::S3PresignedPublisher() : dataPublisher() {}
-
-S3PresignedPublisher::S3PresignedPublisher(Logger& baseLogger, int sendEveryX)
-    : dataPublisher(baseLogger, sendEveryX) {}
-
-S3PresignedPublisher::S3PresignedPublisher(Logger& baseLogger, Client* inClient,
-                                           int sendEveryX)
-    : dataPublisher(baseLogger, inClient, sendEveryX) {}
-
-S3PresignedPublisher::S3PresignedPublisher(Logger& baseLogger,
-                                           char* (*getUrlFxn)(char*),
-                                           int sendEveryX)
-    : dataPublisher(baseLogger, sendEveryX) {
-    setURLUpdateFunction(getUrlFxn);
-}
-S3PresignedPublisher::S3PresignedPublisher(Logger& baseLogger,
-                                           char* (*getUrlFxn)(char*),
+S3PresignedPublisher::S3PresignedPublisher(Logger&     baseLogger,
                                            const char* caCertName,
-                                           int         sendEveryX)
+                                           char* (*getUrlFxn)(char*),
+                                           char* (*getFileNameFxn)(void),
+                                           int sendEveryX)
     : dataPublisher(baseLogger, sendEveryX) {
-    setURLUpdateFunction(getUrlFxn);
     setCACertName(caCertName);
+    setURLUpdateFunction(getUrlFxn);
+    setFileUpdateFunction(getFileNameFxn);
 }
 S3PresignedPublisher::S3PresignedPublisher(Logger& baseLogger, Client* inClient,
                                            char* (*getUrlFxn)(char*),
+                                           char* (*getFileNameFxn)(void),
                                            int sendEveryX)
     : dataPublisher(baseLogger, inClient, sendEveryX) {
     setURLUpdateFunction(getUrlFxn);
+    setFileUpdateFunction(getFileNameFxn);
 }
 // Destructor
 S3PresignedPublisher::~S3PresignedPublisher() {}
@@ -117,9 +107,10 @@ Client* S3PresignedPublisher::createClient() {
 int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
     // if no-one gave us a filename, assume it's a jpg and generate one based on
     // loggername + timestamp
-    if (_getFileNameFxn != nullptr) { _filename = _getFileNameFxn(); }
-    if (_filename == nullptr) {
-        _filename = _baseLogger->generateFileName(
+    char* filename = _filename;
+    if (_getFileNameFxn != nullptr) { filename = _getFileNameFxn(); }
+    if (filename == nullptr) {
+        filename = _baseLogger->generateFileName(
             true,
             _fileExtension != nullptr ? _fileExtension
                                       : S3_DEFAULT_FILE_EXTENSION,
@@ -129,7 +120,7 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
     // Initialise the SD card and make sure we can get to the file
     if (!_baseLogger->initializeSDCard()) return -2;
     // Test opening the file in read mode, bail if it doesn't open
-    if (putFile.open(_filename, O_READ)) {
+    if (putFile.open(filename, O_READ)) {
         MS_DBG(F("Opened file on SD card:"), filename);
     } else {
         MS_DBG(F("Failed to open the file to put on S3"), filename);
@@ -163,7 +154,7 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
 
     // Now that we have a URL, re-itialise the SD card and re-open the file
     if (!_baseLogger->initializeSDCard()) return -2;
-    if (putFile.open(_filename, O_READ)) {
+    if (putFile.open(filename, O_READ)) {
         MS_DBG(F("Opened file on SD card:"), filename);
     } else {
         MS_DBG(F("Failed to open the file to put on S3"), filename);
