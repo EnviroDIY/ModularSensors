@@ -133,10 +133,7 @@ int16_t ThingSpeakPublisher::publishData(Client* outClient, bool) {
              _thingSpeakChannelID);
     snprintf(topicBuffer + strlen(topicBuffer),
              sizeof(topicBuffer) - strlen(topicBuffer), "%s", "/publish");
-    MS_DBG(F("Topic ["), strlen(topicBuffer), F("]:"), String(topicBuffer));
-
-    // The txBuffer is used for the **payload** only
-    txBufferInit(outClient);
+    MS_DBG(F("Topic ["), strlen(topicBuffer), F("]:"), topicBuffer);
 
     // Set the client connection parameters
     _mqttClient.setClient(*outClient);
@@ -159,37 +156,29 @@ int16_t ThingSpeakPublisher::publishData(Client* outClient, bool) {
                             _thingSpeakMQTTPassword)) {
         MS_DBG(F("MQTT connected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
 
-        if (_mqttClient.beginPublish(topicBuffer, txBufferLen, false)) {
-            MS_DBG(F("Successfully started publish to topic"),
-                   String(topicBuffer));
+        // The txBuffer is used for the **payload** only
+        txBufferInit(outClient);
+        txBufferAppend("created_at=");
+        txBufferAppend(
+            Logger::formatDateTime_ISO8601(Logger::markedLocalUnixTime)
+                .c_str());
 
-            txBufferAppend("created_at=");
-            txBufferAppend(
-                Logger::formatDateTime_ISO8601(Logger::markedLocalUnixTime)
-                    .c_str());
-
-            char tempBuffer[2] = "";  // for the channel number
-            for (uint8_t i = 0; i < numChannels; i++) {
-                txBufferAppend("&field");
-                itoa(i + 1, tempBuffer, 10);  // BASE 10
-                txBufferAppend(tempBuffer);
-                txBufferAppend('=');
-                txBufferAppend(_baseLogger->getValueStringAtI(i).c_str());
-            }
-            MS_DBG(F("Message length:"), txBufferLen);
-            txBufferFlush();  // NOTE: the PubSubClient library has a write
-                              // method, which is call to the underlying
-                              // client's write method. This flush does the same
-                              // thing.
-            _mqttClient.endPublish();
-            PRINTOUT(F("ThingSpeak topic published!  Current state:"),
-                     parseMQTTState(_mqttClient.state()));
-            retVal = true;
-        } else {
-            PRINTOUT(F("MQTT publish failed with state:"),
-                     parseMQTTState(_mqttClient.state()));
-            retVal = false;
+        char tempBuffer[2] = "";  // for the channel number
+        for (uint8_t i = 0; i < numChannels; i++) {
+            txBufferAppend("&field");
+            itoa(i + 1, tempBuffer, 10);  // BASE 10
+            txBufferAppend(tempBuffer);
+            txBufferAppend('=');
+            txBufferAppend(_baseLogger->getValueStringAtI(i).c_str());
         }
+        txBufferAppend("\0");  // null terminate!
+        MS_DBG(F("Message length:"), txBufferLen);
+
+        // Do the whole publish at once
+        retVal = _mqttClient.publish(topicBuffer, txBuffer, false);
+
+        PRINTOUT(F("ThingSpeak topic published!  Current state:"),
+                 parseMQTTState(_mqttClient.state()));
     } else {
         PRINTOUT(F("MQTT connection failed with state:"),
                  parseMQTTState(_mqttClient.state()));

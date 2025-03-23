@@ -129,7 +129,7 @@ Client* AWS_IoT_Publisher::createClient() {
                    "names!"));
         return nullptr;
     }
-    MS_DBG(F("Creating new secure client with default socket number."));
+    MS_DBG(F("Creating a new TinyGsmSecureClient with default socket number."));
     Client* newClient = _baseModem->createSecureClient(
         SSLAuthMode::MUTUAL_AUTHENTICATION, SSLVersion::TLS1_3, _caCertName,
         _clientCertName, _clientKeyName);
@@ -151,18 +151,60 @@ void AWS_IoT_Publisher::deleteClient(Client* _client) {
 int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
     bool retVal = false;
 
-    // Create a new buffer for the **topic**
-    char topicBuffer[strlen(_baseLogger->getLoggerID()) + 38] = "";
-    snprintf(topicBuffer, sizeof(topicBuffer), "%s/%s",
-             _baseLogger->getLoggerID(), _baseLogger->getSamplingFeatureUUID());
-    MS_DBG(F("Topic ["), strlen(topicBuffer), F("]:"), String(topicBuffer));
+    MS_DBG(F("Preparing to publish to AWS IoT endpoint"), getEndpoint());
+    const char* use_topic = _dataTopic;
+    if (_dataTopic == nullptr) {
+        // Create a new data topic
+        size_t topic_len = strlen(_baseLogger->getLoggerID()) +
+            strlen(_baseLogger->getSamplingFeatureUUID()) + 2;
+        char* topicBuffer = new char[topic_len]();
+        snprintf(topicBuffer, topic_len, "%s/%s", _baseLogger->getLoggerID(),
+                 _baseLogger->getSamplingFeatureUUID());
+        use_topic = topicBuffer;
+    }
+    MS_DBG(F("Topic ["), strlen(use_topic), F("]:"), use_topic);
 
+    // We're going to use the existing txBuffer to build the JSON, but then
+    // we're going to give PubSubClient the address of the txBuffer to send it
+    // as a char*.
     // The txBuffer is used for the **payload** only
     txBufferInit(outClient);
+
+    // put the start of the JSON into the outgoing response_buffer
+    txBufferAppend(samplingFeatureTag);
+    txBufferAppend(_baseLogger->getSamplingFeatureUUID());
+
+    txBufferAppend(timestampTag);
+    txBufferAppend(
+        Logger::formatDateTime_ISO8601(Logger::markedLocalUnixTime).c_str());
+    txBufferAppend('"');
+    txBufferAppend(',');
+
+
+    char num_buf[6];
+    for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
+        itoa(i, num_buf, 10);
+        txBufferAppend(num_buf);
+        txBufferAppend(':');
+        txBufferAppend(_baseLogger->getValueStringAtI(i).c_str());
+        if (i + 1 != _baseLogger->getArrayVarCount()) {
+            txBufferAppend(',');
+        } else {
+            txBufferAppend('}');
+        }
+    }
+    // null terminate the buffer!
+    txBufferAppend('\0');
+    MS_DBG(F("Message length:"), txBufferLen);
+    MS_DBG(F("strlen on buffer:"), strnlen(txBuffer, MS_SEND_BUFFER_SIZE));
 
     // Set the client connection parameters
     _mqttClient.setClient(*outClient);
     _mqttClient.setServer(_awsIoTEndpoint, mqttPort);
+    // NOTE: The MS_MQTT_MAX_PACKET_SIZE must be bigger than the maximum
+    // expected incoming *or* outgoing message size. Incoming pre-signed S3 URLs
+    // are >1200 bytes.
+    _mqttClient.setBufferSize(MS_MQTT_MAX_PACKET_SIZE);
 
     // Make sure any previous TCP connections are closed
     // NOTE:  The PubSubClient library used for MQTT connect assumes that as
@@ -177,38 +219,8 @@ int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
     if (_mqttClient.connect(_baseLogger->getLoggerID())) {
         MS_DBG(F("MQTT connected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
 
-        if (_mqttClient.beginPublish(topicBuffer, txBufferLen, false)) {
-            MS_DBG(F("Successfully started publish to topic"),
-                   String(topicBuffer));
-
-            // put the start of the JSON into the outgoing response_buffer
-            txBufferAppend(samplingFeatureTag);
-            txBufferAppend(_baseLogger->getSamplingFeatureUUID());
-
-            txBufferAppend(timestampTag);
-            txBufferAppend(
-                Logger::formatDateTime_ISO8601(Logger::markedLocalUnixTime)
-                    .c_str());
-            txBufferAppend('"');
-            txBufferAppend(',');
-
-            for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
-                txBufferAppend('"');
-                txBufferAppend(_baseLogger->getVarUUIDAtI(i).c_str());
-                txBufferAppend('"');
-                txBufferAppend(':');
-                txBufferAppend(_baseLogger->getValueStringAtI(i).c_str());
-                if (i + 1 != _baseLogger->getArrayVarCount()) {
-                    txBufferAppend(',');
-                } else {
-                    txBufferAppend('}');
-                }
-            }
-            txBufferFlush();  // NOTE: the PubSubClient library has a write
-                              // method, which is call to the underlying
-                              // client's write method. This flush does the same
-                              // thing.
-            _mqttClient.endPublish();
+        // Publish the data
+        if (_mqttClient.publish(use_topic, txBuffer, false)) {
             PRINTOUT(F("AWS IoT Core topic published!  Current state:"),
                      parseMQTTState(_mqttClient.state()));
             retVal = true;
@@ -217,18 +229,18 @@ int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
                      parseMQTTState(_mqttClient.state()));
             retVal = false;
         }
+
+        // Disconnect from MQTT
+        MS_DBG(F("Disconnecting from MQTT"));
+        MS_RESET_DEBUG_TIMER
+        _mqttClient.disconnect();
+        MS_DBG(F("Disconnected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
     } else {
         PRINTOUT(F("AWS IoT Core MQTT connection failed with state:"),
                  parseMQTTState(_mqttClient.state()));
         delay(1000);
         retVal = false;
     }
-
-    // Disconnect from MQTT
-    MS_DBG(F("Disconnecting from MQTT"));
-    MS_RESET_DEBUG_TIMER
-    _mqttClient.disconnect();
-    MS_DBG(F("Disconnected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
     return retVal;
 }
 
@@ -237,12 +249,16 @@ int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
 int16_t AWS_IoT_Publisher::publishMetadata(Client* outClient) {
     bool retVal = false;
 
-    // Create a new buffer for the **topic**
-    char topicBuffer[strlen(_baseLogger->getLoggerID()) + 38 + 9] = "";
-    snprintf(topicBuffer, sizeof(topicBuffer), "%s/%s/%s",
-             _baseLogger->getLoggerID(), _baseLogger->getSamplingFeatureUUID(),
-             '/metadata');
-    MS_DBG(F("Topic ["), strlen(topicBuffer), F("]:"), String(topicBuffer));
+    const char* use_topic = _metadataTopic;
+    if (_metadataTopic == nullptr) {
+        // Create a default metadata topic
+        size_t topic_len   = strlen(_baseLogger->getLoggerID()) + 10;
+        char*  topicBuffer = new char[topic_len]();
+        snprintf(topicBuffer, topic_len, "%s/metadata",
+                 _baseLogger->getLoggerID());
+        use_topic = topicBuffer;
+    }
+    MS_DBG(F("Topic ["), strlen(use_topic), F("]:"), use_topic);
 
     // The txBuffer is used for the **payload** only
     txBufferInit(outClient);
@@ -264,62 +280,65 @@ int16_t AWS_IoT_Publisher::publishMetadata(Client* outClient) {
     if (_mqttClient.connect(_baseLogger->getLoggerID())) {
         MS_DBG(F("MQTT connected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
 
-        if (_mqttClient.beginPublish(topicBuffer, txBufferLen, false)) {
-            MS_DBG(F("Successfully started publish to topic"),
-                   String(topicBuffer));
+        char num_buf[6];
 
-            // put the start of the JSON into the outgoing response_buffer
-            txBufferAppend("{\"logger_id\":\"");
-            txBufferAppend(_baseLogger->getLoggerID());
-            txBufferAppend("\",\"sampling_feature\":\"");
-            txBufferAppend(_baseLogger->getSamplingFeatureUUID());
-            txBufferAppend("\",\"logging_interval\":");
-            txBufferAppend(_baseLogger->getLoggingInterval());
-            txBufferAppend(",\"current_file_name\":\"");
-            txBufferAppend(_baseLogger->getFileName().c_str());
-            txBufferAppend("\",\"time_zone\":\"");
-            txBufferAppend(_baseLogger->getLoggerTimeZone());
-            txBufferAppend(",\"number_variables\":");
-            txBufferAppend(_baseLogger->getArrayVarCount());
-            txBufferAppend(",\"variables\":{");
+        // put the start of the JSON into the outgoing response_buffer
+        txBufferAppend("{\"logger_id\":\"");
+        txBufferAppend(_baseLogger->getLoggerID());
+        txBufferAppend("\",\"sampling_feature\":\"");
+        txBufferAppend(_baseLogger->getSamplingFeatureUUID());
+        txBufferAppend("\",\"logging_interval\":");
+        itoa(_baseLogger->getLoggingInterval(), num_buf, 10);
+        txBufferAppend(num_buf);
+        txBufferAppend(",\"current_file_name\":\"");
+        txBufferAppend(_baseLogger->getFileName().c_str());
+        txBufferAppend("\",\"time_zone\":\"");
+        itoa(_baseLogger->getLoggerTimeZone(), num_buf, 10);
+        txBufferAppend(num_buf);
+        txBufferAppend(",\"number_variables\":");
+        itoa(_baseLogger->getArrayVarCount(), num_buf, 10);
+        txBufferAppend(num_buf);
+        txBufferAppend("}");
+        txBufferAppend('\0');  // null terminate!
+        MS_DBG(F("Logger metadata message length:"), txBufferLen);
+        retVal = _mqttClient.publish(use_topic, txBuffer, false);
 
-            for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
-                txBufferAppend("\"variable_number\":");
-                txBufferAppend(i);
-                txBufferAppend(",\"variable_name\":\"");
-                txBufferAppend(_baseLogger->getVarNameAtI(i).c_str());
-                txBufferAppend("\",\"variable_unit\":\"");
-                txBufferAppend(_baseLogger->getVarUnitAtI(i).c_str());
-                txBufferAppend("\",\"variable_resolution\":\"");
-                txBufferAppend(_baseLogger->getVarResolutionAtI(i));
-                txBufferAppend("\",\"variable_code\":\"");
-                txBufferAppend(_baseLogger->getVarCodeAtI(i).c_str());
-                txBufferAppend("\",\"variable_uuid\":\"");
-                txBufferAppend(_baseLogger->getVarUUIDAtI(i).c_str());
-                if (i + 1 != _baseLogger->getArrayVarCount()) {
-                    txBufferAppend("},");
-                } else {
-                    txBufferAppend("}}");
-                }
-            }
-            txBufferFlush();  // NOTE: the PubSubClient library has a write
-                              // method, which is call to the underlying
-                              // client's write method. This flush does the same
-                              // thing.
-            _mqttClient.endPublish();
-            PRINTOUT(F("AWS IoT Core topic published!  Current state:"),
-                     parseMQTTState(_mqttClient.state()));
-            retVal = true;
-        } else {
-            PRINTOUT(F("AWS IoT Core MQTT publish failed with state:"),
-                     parseMQTTState(_mqttClient.state()));
-            retVal = false;
+        for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
+            // Create a default metadata topic
+            char varTopicBuffer[strlen(use_topic) + 12] = {0};
+            snprintf(varTopicBuffer, strlen(use_topic) + 12, "%s/variable%.2u",
+                     use_topic, i);
+
+            txBufferInit(outClient);
+            txBufferAppend("{\"variable_number\":");
+            itoa(i, num_buf, 10);
+            txBufferAppend(num_buf);
+            txBufferAppend(",\"variable_name\":\"");
+            txBufferAppend(_baseLogger->getVarNameAtI(i).c_str());
+            txBufferAppend("\",\"variable_unit\":\"");
+            txBufferAppend(_baseLogger->getVarUnitAtI(i).c_str());
+            txBufferAppend("\",\"variable_resolution\":\"");
+            itoa(_baseLogger->getVarResolutionAtI(i), num_buf, 10);
+            txBufferAppend(num_buf);
+            txBufferAppend("\",\"variable_code\":\"");
+            txBufferAppend(_baseLogger->getVarCodeAtI(i).c_str());
+            txBufferAppend("\",\"variable_uuid\":\"");
+            txBufferAppend(_baseLogger->getVarUUIDAtI(i).c_str());
+            txBufferAppend("}");
+            txBufferAppend("\0");  // null terminate!
+            MS_DBG(F("Variable"), i, F("metadata message length:"),
+                   txBufferLen);
+            _mqttClient.publish(varTopicBuffer, txBuffer, false);
         }
+
+        PRINTOUT(F("AWS IoT Core topic published!  Current state:"),
+                 parseMQTTState(_mqttClient.state()));
+        retVal = true;
     } else {
         PRINTOUT(F("AWS IoT Core MQTT connection failed with state:"),
                  parseMQTTState(_mqttClient.state()));
         delay(1000);
-        retVal = false;
+        retVal = _mqttClient.state();
     }
 
     // Disconnect from MQTT
