@@ -83,9 +83,10 @@ void dataPublisher::begin(Logger& baseLogger) {
 void dataPublisher::txBufferInit(Client* outClient) {
     // remember client we are sending to
     txBufferOutClient = outClient;
-
     // reset buffer length to be empty
     txBufferLen = 0;
+    // clear the buffer
+    memset(txBuffer, '\0', MS_SEND_BUFFER_SIZE);
 }
 
 void dataPublisher::txBufferAppend(const char* data, size_t length) {
@@ -127,6 +128,7 @@ void dataPublisher::txBufferFlush() {
     MS_DEEP_DBG(F("Flushing Tx buffer:"));
     // If there's nothing to send or nowhere to send it to, just return
     if ((txBufferOutClient == nullptr) || (txBufferLen == 0)) {
+        MS_DEEP_DBG(F("No client, obliterating buffer content!"));
         // forget that data existed...
         txBufferLen = 0;
         return;
@@ -150,19 +152,22 @@ void dataPublisher::txBufferFlush() {
     const uint8_t* ptr   = (const uint8_t*)txBuffer;
     while (true) {
         size_t sent = txBufferOutClient->write(ptr, txBufferLen);
+        txBufferOutClient->flush();
+        if (!sent) {
+            MS_DBG(F("Buffer chunk transmission failed!"));
+            tries--;
+        }
+        MS_DBG(F("Sent"), sent, F("bytes"), txBufferLen - sent, F("left"));
+
         txBufferLen -= sent;
         ptr += sent;
         if (txBufferLen == 0) {
             // whole message is successfully sent, we are done
-            txBufferOutClient->flush();
             return;
         }
 
-#if defined(STANDARD_SERIAL_OUTPUT)
-        // warn that we only partially sent the buffer
-        STANDARD_SERIAL_OUTPUT.write('!');
-#endif
         if (--tries == 0) {
+            MS_DBG(F("Buffer transmission failed!"));
             // can't convince the modem to send the whole message. just break
             // the connection now so it will get reset and we can try to
             // transmit the data again later
@@ -170,9 +175,6 @@ void dataPublisher::txBufferFlush() {
             txBufferLen       = 0;
             return;
         }
-
-        // give the modem a chance to transmit buffered data
-        // delay(1000);
     }
 }
 
