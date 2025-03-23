@@ -151,7 +151,7 @@ void AWS_IoT_Publisher::removeSubTopic(const char* topic) {
             any_subs_left = true;
         }
     }
-    if (any_subs_left) {
+    if (!any_subs_left) {
         _waitForSubs = false;
         // MS_DBG(F("No topics left to subscribe to!"));
     }
