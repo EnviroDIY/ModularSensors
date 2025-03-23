@@ -171,7 +171,7 @@ class S3PresignedPublisher : public dataPublisher {
 
     // Returns the data destination
     String getEndpoint(void) override {
-        return String("S3");
+        return String(s3_parent_host);
     }
 
     /**
@@ -270,6 +270,7 @@ class S3PresignedPublisher : public dataPublisher {
  protected:
     virtual Client*    createClient() override;
     virtual void       deleteClient(Client* _client) override;
+    static const char* s3_parent_host;       ///< The host name
     static const char* contentLengthHeader;  ///< The content length header text
     static const char* contentTypeHeader;    ///< The content type header text
 

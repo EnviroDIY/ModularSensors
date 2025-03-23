@@ -14,6 +14,7 @@
 //  Functions for the S3 by way of a pre-signed URL.
 // ============================================================================
 // Constant values for put requests
+const char* S3PresignedPublisher::s3_parent_host      = "s3.amazonaws.com";
 const char* S3PresignedPublisher::contentLengthHeader = "\r\nContent-Length: ";
 const char* S3PresignedPublisher::contentTypeHeader   = "\r\nContent-Type: ";
 
@@ -193,6 +194,10 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
     const char* url_str = _PreSignedURL.c_str();
     MS_DBG(F("Parsing S3 URL"));
     MS_DBG(F("Full S3 URL:"), _PreSignedURL);
+    char* start_bucket = const_cast<char*>(url_str) + 8;
+    MS_DBG(F("From start of bucket name:"), start_bucket);
+    char* end_bucket = strstr(url_str, s3_parent_host) - 1;
+    MS_DBG(F("From end of bucket name:"), end_bucket);
     char* start_file = strstr(url_str + 8, "/") + 1;
     MS_DBG(F("From start of object name:"), start_file);
     char* end_file = strstr(start_file, "?");
@@ -208,7 +213,7 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
     uint32_t expiration = atoll(start_expiration + 9);
     MS_DBG(F("Expiration:"), expiration);
     if (expiration < _baseLogger->getNowUTCEpoch()) {
-        PRINTOUT(F("The S3 URL has expired"), expiration,
+        PRINTOUT(F("The S3 URL has expired:"), expiration,
                  F("is less than the current time"),
                  _baseLogger->getNowUTCEpoch());
         return -2;
@@ -243,7 +248,7 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
     MS_DBG(F("Connecting client"));
     MS_START_DEBUG_TIMER;
     // NOTE: always use port 443 for SSL connections to S3
-    if (outClient->connect(s3host, 443)) {
+    if (outClient->connect(s3_parent_host, 443)) {
         MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms\n"));
         txBufferInit(outClient);
 
