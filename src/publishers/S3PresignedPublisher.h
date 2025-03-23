@@ -159,9 +159,9 @@ class S3PresignedPublisher : public dataPublisher {
      * it is stored on you modem module, not the actual certificate content.
      */
     S3PresignedPublisher(Logger& baseLogger, const char* caCertName,
-                         char* (*getUrlFxn)(char*)     = nullptr,
-                         char* (*getFileNameFxn)(void) = nullptr,
-                         int sendEveryX                = 1);
+                         String (*getUrlFxn)(String)    = nullptr,
+                         String (*getFileNameFxn)(void) = nullptr,
+                         int sendEveryX                 = 1);
     /**
      * @brief Construct a new S3 Publisher object
      *
@@ -173,9 +173,9 @@ class S3PresignedPublisher : public dataPublisher {
      * attempted data transmissions. NOTE: not implemented by this publisher!
      */
     S3PresignedPublisher(Logger& baseLogger, Client* inClient,
-                         char* (*getUrlFxn)(char*)     = nullptr,
-                         char* (*getFileNameFxn)(void) = nullptr,
-                         int sendEveryX                = 1);
+                         String (*getUrlFxn)(String)    = nullptr,
+                         String (*getFileNameFxn)(void) = nullptr,
+                         int sendEveryX                 = 1);
     /**
      * @brief Destroy the S3 Publisher object
      */
@@ -191,14 +191,14 @@ class S3PresignedPublisher : public dataPublisher {
      *
      * @param getUrlFxn A function to call to get a new pre-signed URL
      */
-    void setURLUpdateFunction(char* (*getUrlFxn)(char*));
+    void setURLUpdateFunction(String (*getUrlFxn)(String));
 
     /**
      * @brief Set the pre-signed S3 url
      *
      * @param s3Url The pre-signed URL to use to put into an S3 bucket
      */
-    void setPreSignedURL(char* s3Url);
+    void setPreSignedURL(String s3Url);
 
     /**
      * @brief Set the filename to upload. If the filename is set, this exact
@@ -206,7 +206,7 @@ class S3PresignedPublisher : public dataPublisher {
      *
      * @param filename The name of the file to be uploaded
      */
-    void setFileName(char* filename);
+    void setFileName(String filename);
 
     /**
      * @brief Set the filename parameters to use to auto-generate the filename
@@ -224,7 +224,7 @@ class S3PresignedPublisher : public dataPublisher {
      *
      * @param getFileNameFxn A function to call to get a new filename
      */
-    void setFileUpdateFunction(char* (*getFileNameFxn)(void));
+    void setFileUpdateFunction(String (*getFileNameFxn)(void));
 
     /**
      * @brief Set the name of your certificate authority certificate file.
@@ -254,12 +254,13 @@ class S3PresignedPublisher : public dataPublisher {
      * @copydoc dataPublisher::begin(Logger& baseLogger, Client* inClient)
      * @param s3Url The pre-signed URL to use to put into an S3 bucket
      */
-    void begin(Logger& baseLogger, Client* inClient, char* (*getUrlFxn)(char*));
+    void begin(Logger& baseLogger, Client* inClient,
+               String (*getUrlFxn)(String));
     /**
      * @copydoc dataPublisher::begin(Logger& baseLogger)
      * @param s3Url The pre-signed URL to use to put into an S3 bucket
      */
-    void begin(Logger&     baseLogger, char* (*getUrlFxn)(char*),
+    void begin(Logger&     baseLogger, String (*getUrlFxn)(String),
                const char* caCertName = nullptr);
 
     /**
@@ -288,15 +289,15 @@ class S3PresignedPublisher : public dataPublisher {
     /**
      * @brief Private reference to function used fetch a new S3 URL.
      */
-    char* (*_getUrlFxn)(char*) = nullptr;
+    String (*_getUrlFxn)(String) = nullptr;
     /**
      * @brief A pointer to the S3 pre-signed URL
      */
-    char* _PreSignedURL = nullptr;
+    String _PreSignedURL;
     /**
      * @brief The name of the file you want to upload to S3
      */
-    char* _filename = nullptr;
+    String _filename;
     /**
      * @brief  The prefix to add to files, if generating a filename based on the
      * date/time.
@@ -316,7 +317,7 @@ class S3PresignedPublisher : public dataPublisher {
     /**
      * @brief Private reference to function used fetch a new file name.
      */
-    char* (*_getFileNameFxn)(void);
+    String (*_getFileNameFxn)(void);
     /**
      * @brief The name of your certificate authority certificate file
      */

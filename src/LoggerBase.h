@@ -1217,11 +1217,12 @@ class Logger {
      * @param extension The file extension to use
      * @param filePrefix The prefix to use for the file name, optional, with an
      * default value of nullptr. If not provided, the logger ID will be used.
+     * @returns The generated file name
      *
      * @note This cannot be called until *after* the RTC is started
      */
-    char* generateFileName(bool include_time, const char* extension,
-                           const char* filePrefix = nullptr);
+    String generateFileName(bool include_time, const char* extension,
+                            const char* filePrefix = nullptr);
 
  protected:
     // The SD card and file

@@ -160,7 +160,7 @@ bool GeoluxHydroCam::addSingleMeasurementResult(void) {
     // Only go on to get a result if it was
     if (bitRead(_sensorStatus, 6)) {
         // set a new filename based on the current RTC time
-        char* filename = _baseLogger->generateFileName(
+        String filename = _baseLogger->generateFileName(
             true, HYDROCAM_FILE_EXTENSION, _filePrefix);
         MS_DBG(F("Attempting to create the file: "), filename);
 
@@ -169,7 +169,7 @@ bool GeoluxHydroCam::addSingleMeasurementResult(void) {
         if (!_baseLogger->initializeSDCard()) return false;
 
         // Create and then open the file in write mode
-        if (imgFile.open(filename, O_CREAT | O_WRITE | O_AT_END)) {
+        if (imgFile.open(filename.c_str(), O_CREAT | O_WRITE | O_AT_END)) {
             MS_DBG(F("Created new file:"), filename);
             success = true;
         } else {

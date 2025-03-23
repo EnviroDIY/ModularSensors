@@ -1081,27 +1081,21 @@ void Logger::setFileName(const char* fileName) {
     setFileName(StrName);
 }
 
-char* Logger::generateFileName(bool include_time, const char* extension,
-                               const char* filePrefix) {
+String Logger::generateFileName(bool include_time, const char* extension,
+                                const char* filePrefix) {
     const char* use_prefix = filePrefix != nullptr ? filePrefix : getLoggerID();
-    uint8_t     len_prefix = strlen(use_prefix);
     uint8_t     len_underscore = strlen(use_prefix) > 0 ? 1 : 0;
     uint8_t     len_time       = include_time ? 15 : 8;
-    uint8_t     len_extension  = strlen(extension);
-    // the total length of the new char array is prefix + {1|0} ('_') + time +
-    // extension +1 )('\0')
-    char* filename =
-        new char[len_prefix + len_underscore + len_time + len_extension + 1]();
-    char time_buff[len_time] = {'\0'};
+    char        time_buff[len_time] = {'\0'};
     if (include_time) {
         formatDateTime(time_buff, "%Y%m%d_%H%M%S", Logger::markedLocalUnixTime);
     } else {
         formatDateTime(time_buff, "%Y%m%d", Logger::markedLocalUnixTime);
     }
-    strcat(filename, use_prefix);
-    if (len_underscore) { strcat(filename, "_"); }
-    strcat(filename, time_buff);
-    strcat(filename, extension);
+    String filename = String(use_prefix);
+    if (len_underscore) { filename += String("_"); }
+    filename += String(time_buff);
+    filename += String(extension);
     MS_DBG(F("Generated filename: "), filename);
     return filename;
 }
@@ -1112,7 +1106,7 @@ char* Logger::generateFileName(bool include_time, const char* extension,
 // begin() function is called.
 void Logger::generateAutoFileName(void) {
     // Generate the file name from logger ID and date
-    auto fileName = String(generateFileName(false, ".csv"));
+    auto fileName = generateFileName(false, ".csv");
     setFileName(fileName);
 }
 

@@ -166,6 +166,7 @@
 
 //==============================================================
 // SPI Configuration, iff needed
+//==============================================================
 #if !defined(SDCARD_SPI)
 /**
  * @brief The SPI port to use for the SD card.
@@ -178,8 +179,8 @@
 
 
 //==============================================================
-// Other library configuration
-
+// Time-stamp configurations
+//==============================================================
 #ifndef MS_LOGGER_EPOCH
 /**
  * @brief The epoch start to use for the logger
@@ -204,15 +205,28 @@
  */
 #define LATEST_SANE_UNIX_TIMESTAMP 1893456000
 #endif
+//==============================================================
 
+
+//==============================================================
+// Variable configurations
+//==============================================================
 #ifndef MAX_NUMBER_VARS
 /**
- * @brief The largest number of variables from a single sensor
+ * @brief The largest number of variables from a single sensor.
+ *
+ * Every sensor will create a buffer of this length for holding variable values.
+ * Decrease this value to save a memory.
  */
 #define MAX_NUMBER_VARS 21
 // GroPoint Profile GPLP-8 has 8 Moisture and 13 Temperature values
 #endif
+//==============================================================
 
+
+//==============================================================
+// Publisher configuration
+//==============================================================
 #ifndef MAX_NUMBER_SENDERS
 /**
  * @brief The largest number of publishers that can be attached to a logger
@@ -229,6 +243,8 @@
  * decreasing it will save memory. Do not make it smaller than 32 or bigger
  * than 1500 (a typical TCP Maximum Transmission Unit).
  *
+ * When using the ThingSpeak publisher, make sure this is at least 240 bytes.
+ *
  * This can be changed by setting the build flag MS_SEND_BUFFER_SIZE when
  * compiling.
  */
@@ -238,6 +254,10 @@
 #ifndef TINY_GSM_RX_BUFFER
 /**
  * @brief The size of the buffer for incoming data.
+ *
+ * If using a module that buffers data internally, this can be 64 or lower.  If
+ * using a module that doesn't buffer data, this as large as your largest
+ * expected incoming message; up to ~1500.
  */
 #define TINY_GSM_RX_BUFFER 64
 #endif
