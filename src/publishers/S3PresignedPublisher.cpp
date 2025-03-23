@@ -258,12 +258,15 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
         // add in the file/query portion of the URL
         txBufferAppend(start_file);
 
+        char file_size_str[10] = {0};
+        itoa(file_size, file_size_str, 10);
+
         // add the rest of the HTTP GET headers to the outgoing buffer
         txBufferAppend(HTTPtag);
         txBufferAppend(hostHeader);
         txBufferAppend(s3host);
         txBufferAppend(contentLengthHeader);
-        txBufferAppend(file_size);
+        txBufferAppend(file_size_str);
         txBufferAppend("\r\n");
         txBufferAppend(contentTypeHeader);
         txBufferAppend(ct_str.c_str());
