@@ -149,10 +149,10 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
     // Run the function any time the pre-signed URL pointer has become null
     // (after use) or if the current filename isn't in the URL (which means it's
     // not valid).
-    if (_PreSignedURL.length() > 0 && _PreSignedURL.indexOf(filename) > 0) {
+    if (_PreSignedURL.length() > 0 && _PreSignedURL.indexOf(filename) == 0) {
         PRINTOUT(F("The provided S3 URL is not valid for the current file!"));
-        PRINTOUT(F("Current URL: "), _PreSignedURL);
-        PRINTOUT(F("Current Filename: "), _filename);
+        PRINTOUT(F("Current URL:"), _PreSignedURL);
+        PRINTOUT(F("Current Filename:"), _filename);
         _PreSignedURL = "";
     }
     if (_PreSignedURL.length() == 0) {
@@ -202,6 +202,17 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
     MS_DBG(F("From start of content type:"), start_content);
     char* end_content = strstr(start_content, "&");
     MS_DBG(F("From end of content type:"), end_content);
+    char* start_expiration = strstr(start_file, "&Expires=");
+    MS_DBG(F("From start of expiration tag:"), start_expiration);
+
+    uint32_t expiration = atoll(start_expiration + 9);
+    MS_DBG(F("Expiration:"), expiration);
+    if (expiration < _baseLogger->getNowUTCEpoch()) {
+        PRINTOUT(F("The S3 URL has expired"), expiration,
+                 F("is less than the current time"),
+                 _baseLogger->getNowUTCEpoch());
+        return -2;
+    }
 
     char s3host[81] = {'\0'};
     /// ^^ Bucket names can be 3-63 characters long; the '.s3.amazonaws.com'
