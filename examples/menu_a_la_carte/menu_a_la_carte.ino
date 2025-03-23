@@ -27,9 +27,6 @@
 #ifndef TINY_GSM_YIELD_MS
 #define TINY_GSM_YIELD_MS 2
 #endif
-#ifndef MQTT_MAX_PACKET_SIZE
-#define MQTT_MAX_PACKET_SIZE 240
-#endif
 /** End [defines] */
 
 
@@ -1552,6 +1549,8 @@ const int8_t  cameraAdapterPower    = sensorPowerPin;  // Power pin
 const uint8_t MPL115A2ReadingsToAvg = 1;
 const char*   imageResolution       = "1600x1200";
 const char*   filePrefix            = "HydroCam";
+// ^^ use nullptr or omit to use the logger ID, specify "" if you want only the
+// date
 bool          alwaysAutoFocus       = false;
 
 // Create a GeoluxHydroCam sensor object
