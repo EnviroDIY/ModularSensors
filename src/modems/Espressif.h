@@ -141,12 +141,12 @@
  * The serial response time after boot (via power on or reset) is undocumented
  * for the ESP8266.  Other users online estimate about 350ms.
  *
- * In my fiddling, the ESP32 running AT firmware takes a bit longer; 700ms may
+ * In my fiddling, the ESP32 running AT firmware takes a bit longer; 850ms may
  * be safe.
  *
  * The serial response time on waking from light sleep is 5ms.
  */
-#define ESPRESSIF_ATRESPONSE_TIME_MS 700
+#define ESPRESSIF_ATRESPONSE_TIME_MS 850
 
 /**
  * @brief The loggerModem::_disconnetTime_ms.
