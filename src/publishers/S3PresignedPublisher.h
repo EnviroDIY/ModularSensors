@@ -269,6 +269,7 @@ class S3PresignedPublisher : public dataPublisher {
 
  protected:
     virtual Client*    createClient() override;
+    virtual void       deleteClient(Client* _client) override;
     static const char* contentLengthHeader;  ///< The content length header text
     static const char* contentTypeHeader;    ///< The content type header text
 
