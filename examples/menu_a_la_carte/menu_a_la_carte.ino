@@ -317,7 +317,8 @@ void SERCOM1_3_Handler() {
 //  Data Logging Options
 // ==========================================================================
 /** Start [logging_options] */
-// The name of this program file
+// The name of this program file - this is used only for console printouts at
+// start-up
 const char* sketchName = "menu_a_la_carte.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 // This is also used as the Thing Name, MQTT Client ID, and topic for AWS IOT
@@ -1544,14 +1545,13 @@ Variable* mplTemp = new FreescaleMPL115A2_Temp(
 #include <sensors/GeoluxHydroCam.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-const int8_t  cameraPower           = sensorPowerPin;  // Power pin
-const int8_t  cameraAdapterPower    = sensorPowerPin;  // Power pin
+const int8_t  cameraPower        = sensorPowerPin;  // Power pin
+const int8_t  cameraAdapterPower = sensorPowerPin;  // RS232 adapter power pin
 const uint8_t MPL115A2ReadingsToAvg = 1;
-const char*   imageResolution       = "1600x1200";
-const char*   filePrefix            = "HydroCam";
-// ^^ use nullptr or omit to use the logger ID, specify "" if you want only the
-// date
-bool          alwaysAutoFocus       = false;
+const char*   imageResolution       = "800x600";
+const char*   filePrefix            = LoggerID;
+//^^ To publish to S3 with a pre-signed URL, this MUST be the logger ID
+bool alwaysAutoFocus = false;
 
 // Create a GeoluxHydroCam sensor object
 GeoluxHydroCam hydrocam(cameraSerial, cameraPower, dataLogger,
@@ -3228,6 +3228,46 @@ UbidotsPublisher ubidots(dataLogger, ubidotsToken, ubidotsDeviceID);
 #endif
 
 
+#if defined(BUILD_PUB_S3_PRESIGNED_PUBLISHER) && \
+    (!defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM))
+// ==========================================================================
+//  AWS S3 Pre-signed URL Publisher
+// ==========================================================================
+/** Start [s3_presigned_publisher] */
+#ifdef BUILD_MODEM_ESPRESSIF_ESP32
+// For Espressif modules, only two certificate sets are supported and the
+// certificates must be named "client_ca.{0|1}", "client_cert.{0|1}", or
+// "client_key.{0|1}"
+const char* caCertName = "client_ca.0";
+#else
+// The name of your certificate authority certificate file
+const char* caCertName = "root_ca_0.crt";
+#endif
+
+// Expand the expected S3 publish topic into a buffer
+String s3URLPubTopic = "$aws/rules/GetUploadURL/" + String(LoggerID);
+// Expand the expected S3 subscribe topic into a buffer
+String s3URLSubTopic = String(LoggerID) + "/upload_url";
+// A function for the IoT core publisher to call to get the message content for
+// a new URL request
+#if defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
+String s3URLMsgGetter() {
+    return String("{\"file\": \"") + hydrocam.getLastSavedImageName() +
+        String("\"}");
+}
+#else
+String      s3URLMsgGetter() {
+         return String("{\"file\": \"image.jpg\"}");
+}
+#endif
+
+// Create a data publisher for AWS IoT Core
+#include <publishers/S3PresignedPublisher.h>
+S3PresignedPublisher s3pub;
+/** End [s3_presigned_publisher] */
+#endif
+
+
 #if defined(BUILD_PUB_ASW_IOT_PUBLISHER) && \
     (!defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM))
 // ==========================================================================
@@ -3244,12 +3284,16 @@ const char* awsIoTEndpoint = "xxx-ats.iot.xxx.amazonaws.com";
 // For Espressif modules, only two certificate sets are supported and the
 // certificates must be named "client_ca.{0|1}", "client_cert.{0|1}", or
 // "client_key.{0|1}"
-const char* caCertName     = "client_ca.0";
+#if !defined(BUILD_PUB_S3_PRESIGNED_PUBLISHER)
+const char* caCertName = "client_ca.0";
+#endif
 const char* clientCertName = "client_cert.0";
 const char* clientKeyName  = "client_key.0";
 #else
+#if !defined(BUILD_PUB_S3_PRESIGNED_PUBLISHER)
 // The name of your certificate authority certificate file
 const char* caCertName = "root_ca_0.crt";
+#endif
 // The name of your client certificate file
 const char* clientCertName = "client_cert_0.crt";
 // The name of your client private key file
@@ -3260,6 +3304,27 @@ const char* clientKeyName = "client_key_0.key";
 #include <publishers/AWS_IoT_Publisher.h>
 AWS_IoT_Publisher awsIoTPub(dataLogger, awsIoTEndpoint, caCertName,
                             clientCertName, clientKeyName);
+
+// Callback function
+void IoTCallback(char* topic, byte* payload, unsigned int length) {
+    if (String(topic) == s3URLSubTopic) {
+        MS_DBG(F("Received data on pre-signed URL topic from AWS IoT Core"));
+        MS_DBG(F("Got message of length"), length, F("on topic"), topic);
+        // Allocate the correct amount of memory for the payload copy
+        char* rx_url = (char*)malloc(length + 1);
+        // Copy the payload to the new buffer
+        memcpy(rx_url, payload, length);
+        // Null terminate the string
+        memset(rx_url + length, '\0', 1);
+        MS_DBG(F("Setting S3 URL to:"), rx_url);
+        s3pub.setPreSignedURL(rx_url);
+        // // Free the memory
+        // free(rx_url);
+        // let the publisher know we got what we expected and it can stop
+        // waiting
+        awsIoTPub.closeConnection();
+    }
+}
 /** End [aws_iot_publisher] */
 #endif
 
@@ -3471,6 +3536,21 @@ void setup() {
     dataLogger.attachModem(modem);
     PRINTOUT(F("Setting modem LEDs"));
     modem.setModemLED(modemLEDPin);
+#endif
+
+#if defined(BUILD_PUB_S3_PRESIGNED_PUBLISHER)
+    // s3pub.setFileName(String("image.jpg"));
+    s3pub.setCACertName(caCertName);
+    s3pub.attachToLogger(dataLogger);
+#endif
+
+#if defined(BUILD_PUB_ASW_IOT_PUBLISHER) &&      \
+    defined(BUILD_PUB_S3_PRESIGNED_PUBLISHER) && \
+    (!defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM))
+    // Set the callback function for the AWS IoT Core MQTT connection
+    awsIoTPub.setCallback(IoTCallback);
+    awsIoTPub.addSubTopic(s3URLSubTopic.c_str());
+    awsIoTPub.addPublishRequest(s3URLPubTopic.c_str(), s3URLMsgGetter);
 #endif
 
     // Begin the logger
