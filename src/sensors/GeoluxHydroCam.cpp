@@ -45,6 +45,10 @@ GeoluxHydroCam::GeoluxHydroCam(Stream& stream, int8_t powerPin,
 // Destructor
 GeoluxHydroCam::~GeoluxHydroCam() {}
 
+String GeoluxHydroCam::getLastSavedImageName() {
+    return _filename;
+}
+
 
 String GeoluxHydroCam::getSensorLocation(void) {
     return F("cameraSerial");
@@ -206,6 +210,9 @@ bool GeoluxHydroCam::addSingleMeasurementResult(void) {
             // Re-enable the watchdog
             MS_DBG(F("Re-enabling the watchdog after file transfer"));
             extendedWatchDog::enableWatchDog();
+
+            // Store the last image name
+            _filename = filename;
 
             success = bytes_transferred == image_size;
             MS_DBG(F("Image transfer was a"),

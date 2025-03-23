@@ -267,6 +267,13 @@ class GeoluxHydroCam : public Sensor {
     ~GeoluxHydroCam();
 
     /**
+     * @brief Extra unique function to retreive the name of the last saved image
+     *
+     * @return The name of the last saved image
+     */
+    String getLastSavedImageName();
+
+    /**
      * @copydoc Sensor::getSensorLocation()
      */
     String getSensorLocation(void) override;
@@ -357,7 +364,9 @@ class GeoluxHydroCam : public Sensor {
     const char*
         _imageResolution;  ///< The image resolution from the Geolux HydroCam
     const char*
-        _filePrefix;  ///< The prefix to add to files from the Geolux HydroCam
+        _filePrefix;   ///< The prefix to add to files from the Geolux HydroCam
+    String _filename;  ///< The filename of the last saved file from the Geolux
+                       ///< HydroCam
     /**
      * @brief True to autofocus before every image. This may be necessary if the
      * camera is power cycled between images. If you are not power cycling or
