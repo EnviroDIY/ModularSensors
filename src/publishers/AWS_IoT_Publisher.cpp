@@ -132,12 +132,13 @@ void AWS_IoT_Publisher::addSubTopic(const char* topic) {
             sub_topics[i] = topic;
             found_space   = true;
             _waitForSubs  = true;
-            MS_DBG(F("Will now subscribe to topic:"), topic,
-                   F("at connection."));
+            // MS_DBG(F("Will now subscribe to topic:"), topic,
+            //        F("at connection."));
             break;
         }
     }
-    if (!found_space) { PRINTOUT(F("No space for new topic subscription!")); }
+    // if (!found_space) { PRINTOUT(F("No space for new topic subscription!"));
+    // }
 }
 
 void AWS_IoT_Publisher::removeSubTopic(const char* topic) {
@@ -152,27 +153,27 @@ void AWS_IoT_Publisher::removeSubTopic(const char* topic) {
     }
     if (any_subs_left) {
         _waitForSubs = false;
-        MS_DBG(F("No topics left to subscribe to!"));
+        // MS_DBG(F("No topics left to subscribe to!"));
     }
 }
 
 void AWS_IoT_Publisher::addPublishRequest(const char* topic,
-                                          char* (*contentGetrFxn)(void)) {
+                                          String (*contentGetrFxn)(void)) {
     bool found_space = false;
     for (uint8_t i = 0; i < MS_AWS_IOT_PUBLISHER_PUB_COUNT; i++) {
         if (pub_topics[i] == nullptr) {
             pub_topics[i]      = topic;
             contentGetrFxns[i] = contentGetrFxn;
-            MS_DBG(F("Will now publish to topic:"), topic, F("at connection."));
+            // MS_DBG(F("Will now publish to topic:"), topic, F("at
+            // connection."));
             break;
         }
     }
-    if (!found_space) { PRINTOUT(F("No space for new publish topic!")); }
+    // if (!found_space) { PRINTOUT(F("No space for new publish topic!")); }
 }
 
 void AWS_IoT_Publisher::removePublishRequest(const char* topic) {
     // find and remove
-    bool any_pubs_left = false;
     for (uint8_t i = 0; i < MS_AWS_IOT_PUBLISHER_PUB_COUNT; i++) {
         if (pub_topics[i] != nullptr and strcmp(pub_topics[i], topic) == 0) {
             pub_topics[i]      = nullptr;
@@ -316,11 +317,15 @@ int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
         // immediately subscribe to any requested topics
         // NOTE: Subscribe to topics before publishing data so we don't miss
         // anything
+        uint8_t subs_added = 0;
         for (uint8_t i = 0; i < MS_AWS_IOT_PUBLISHER_SUB_COUNT; i++) {
             if (sub_topics[i] != nullptr) {
+                MS_DBG(F("Subscribing to topic:"), sub_topics[i]);
                 _mqttClient.subscribe(sub_topics[i]);
+                subs_added++;
             }
         }
+        MS_DBG(F("Subscribed to"), subs_added, F("topics"));
 
         // Publish the data
         if (_mqttClient.publish(use_topic, txBuffer, false)) {
@@ -334,13 +339,23 @@ int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
         }
 
         // publish any other messages
+        uint8_t pubs_done = 0;
         for (uint8_t i = 0; i < MS_AWS_IOT_PUBLISHER_PUB_COUNT; i++) {
             if (pub_topics[i] != nullptr) {
-                char* pub_content = contentGetrFxns[i]();
-                _mqttClient.publish(pub_topics[i], pub_content);
+                MS_DBG(F("Publishing to topic:"), pub_topics[i]);
+                String pub_content = contentGetrFxns[i]();
+                _mqttClient.publish(pub_topics[i], pub_content.c_str());
+                pubs_done++;
             }
         }
+        MS_DBG(F("Published to"), pubs_done, F("topics"));
 
+        if (_waitForSubs) {
+            MS_DBG(F("Waiting"), MS_AWS_IOT_MAX_CONNECTION_TIME,
+                   F("for incoming messages"));
+        } else {
+            MS_DBG(F("Not waiting for incoming messages"));
+        }
         uint32_t start_wait = millis();
         while (_mqttClient.connected() && _waitForSubs &&
                (millis() - start_wait) < MS_AWS_IOT_MAX_CONNECTION_TIME) {

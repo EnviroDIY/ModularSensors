@@ -341,7 +341,7 @@ class AWS_IoT_Publisher : public dataPublisher {
      * @param contentGetrFxn A function to call to get the content to publish.
      * The function should return a pointer to a char array.
      */
-    void addPublishRequest(const char* topic, char* (*contentGetrFxn)(void));
+    void addPublishRequest(const char* topic, String (*contentGetrFxn)(void));
     /**
      * @brief Removes a topic from the publish list.
      *
@@ -443,25 +443,25 @@ class AWS_IoT_Publisher : public dataPublisher {
     /**
      * @brief The endpoint for your AWS IoT instance
      */
-    const char* _awsIoTEndpoint = nullptr;
+    const char* _awsIoTEndpoint;
     /**
      * @brief The name of your certificate authority certificate file
      */
-    const char* _caCertName = nullptr;
+    const char* _caCertName;
     /**
      * @brief The name of your client certificate file
      */
-    const char* _clientCertName = nullptr;
+    const char* _clientCertName;
     /**
      * @brief The name of your client private key file
      */
-    const char* _clientKeyName = nullptr;
-    const char* _dataTopic     = nullptr;  ///< The topic for data
-    const char* _metadataTopic = nullptr;  ///< The topic for metadata
+    const char* _clientKeyName;
+    const char* _dataTopic;      ///< The topic for data
+    const char* _metadataTopic;  ///< The topic for metadata
     /**
      * @brief True to continue waiting for subscriptions after publishing data
      */
-    bool _waitForSubs = false;
+    bool _waitForSubs;
     /**
      * @brief Internal reference to the PubSubClient instance for MQTT
      * communication.
@@ -478,7 +478,7 @@ class AWS_IoT_Publisher : public dataPublisher {
     /**
      * @brief An array of functions to call to get publish content
      */
-    char* (*contentGetrFxns[MS_AWS_IOT_PUBLISHER_PUB_COUNT])(void);
+    String (*contentGetrFxns[MS_AWS_IOT_PUBLISHER_PUB_COUNT])(void);
     /// constructor helper
     void init();
 };
