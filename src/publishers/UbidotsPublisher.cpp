@@ -168,7 +168,8 @@ int16_t UbidotsPublisher::publishData(Client* outClient, bool) {
 
         // Wait 10 seconds for a response from the server
         uint32_t start = millis();
-        while ((millis() - start) < 10000L && outClient->available() < 12) {
+        while ((millis() - start) < 10000L && outClient->connected() &&
+               outClient->available() < 12) {
             delay(10);
         }
 
@@ -176,6 +177,16 @@ int16_t UbidotsPublisher::publishData(Client* outClient, bool) {
         // We're only reading as far as the http code, anything beyond that
         // we don't care about.
         did_respond = outClient->readBytes(tempBuffer, 12);
+#if defined(MS_OUTPUT) || defined(MS_2ND_OUTPUT)
+        // throw the rest of the response into the tx buffer so we can debug it
+        txBufferInit(nullptr);
+        txBufferAppend(tempBuffer, 12, true);
+        while (outClient->available()) {
+            char c = outClient->read();
+            txBufferAppend(c);
+        }
+        txBufferFlush();
+#endif
 
         // Close the TCP/IP connection
         MS_DBG(F("Stopping client"));

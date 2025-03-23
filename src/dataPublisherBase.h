@@ -320,24 +320,25 @@ class dataPublisher {
      * @param data The data start pointer.
      * @param length The number of bytes to add.
      */
-    static void txBufferAppend(const char* data, size_t length);
+    static void txBufferAppend(const char* data, size_t length,
+                               bool debug_flush = true);
     /**
      * @brief Append the given string to the TX buffer, flushing if necessary.
      *
      * @param s The null-terminated string to append.
      */
-    static void txBufferAppend(const char* s);
+    static void txBufferAppend(const char* s, bool debug_flush = true);
     /**
      * @brief Append the given char to the TX buffer, flushing if necessary.
      *
      * @param c The char to append.
      */
-    static void txBufferAppend(char c);
+    static void txBufferAppend(char c, bool debug_flush = true);
     /**
      * @brief Write the TX buffer contents to the initialized stream and also to
      * the debugging port.
      */
-    static void txBufferFlush();
+    static void txBufferFlush(bool debug_flush = true);
 
     /**
      * @brief Use the connected base logger's logger modem and underlieing

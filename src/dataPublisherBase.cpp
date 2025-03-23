@@ -89,7 +89,8 @@ void dataPublisher::txBufferInit(Client* outClient) {
     memset(txBuffer, '\0', MS_SEND_BUFFER_SIZE);
 }
 
-void dataPublisher::txBufferAppend(const char* data, size_t length) {
+void dataPublisher::txBufferAppend(const char* data, size_t length,
+                                   bool debug_flush) {
     while (length > 0) {
         // space left in the buffer
         size_t remaining = MS_SEND_BUFFER_SIZE - txBufferLen;
@@ -112,40 +113,43 @@ void dataPublisher::txBufferAppend(const char* data, size_t length) {
                     F("remainging to append:"), length);
 
         // write out the buffer if it fills
-        if (txBufferLen == MS_SEND_BUFFER_SIZE) { txBufferFlush(); }
+        if (txBufferLen == MS_SEND_BUFFER_SIZE) { txBufferFlush(debug_flush); }
     }
 }
 
-void dataPublisher::txBufferAppend(const char* s) {
-    txBufferAppend(s, strlen(s));
+void dataPublisher::txBufferAppend(const char* s, bool debug_flush) {
+    txBufferAppend(s, strlen(s), debug_flush);
 }
 
-void dataPublisher::txBufferAppend(char c) {
-    txBufferAppend(&c, 1);
+void dataPublisher::txBufferAppend(char c, bool debug_flush) {
+    txBufferAppend(&c, 1, debug_flush);
 }
 
-void dataPublisher::txBufferFlush() {
-    MS_DEEP_DBG(F("Flushing Tx buffer:"));
+void dataPublisher::txBufferFlush(bool debug_flush) {
+    MS_DBG(F("Flushing Tx buffer:"));
+
+    if (debug_flush) {
+#if defined(MS_OUTPUT)
+        // write out to the printout stream for debugging
+        MS_OUTPUT.write((const uint8_t*)txBuffer, txBufferLen);
+        MS_OUTPUT.println();
+        MS_OUTPUT.flush();
+#endif
+#if defined(MS_2ND_OUTPUT)
+        // write out to the secondary printout stream for debugging
+        MS_2ND_OUTPUT.write((const uint8_t*)txBuffer, txBufferLen);
+        MS_2ND_OUTPUT.println();
+        MS_2ND_OUTPUT.flush();
+#endif
+    }
+
     // If there's nothing to send or nowhere to send it to, just return
     if ((txBufferOutClient == nullptr) || (txBufferLen == 0)) {
-        MS_DEEP_DBG(F("No client, obliterating buffer content!"));
+        MS_DBG(F("No client, obliterating buffer content!"));
         // forget that data existed...
         txBufferLen = 0;
         return;
     }
-
-#if defined(MS_OUTPUT)
-    // write out to the printout stream for debugging
-    MS_OUTPUT.write((const uint8_t*)txBuffer, txBufferLen);
-    MS_OUTPUT.println();
-    MS_OUTPUT.flush();
-#endif
-#if defined(MS_2ND_OUTPUT)
-    // write out to the secondary printout stream for debugging
-    MS_2ND_OUTPUT.write((const uint8_t*)txBuffer, txBufferLen);
-    MS_2ND_OUTPUT.println();
-    MS_2ND_OUTPUT.flush();
-#endif
 
     // write out to the client, attempting 10x to send the whole buffer
     uint8_t        tries = 10;

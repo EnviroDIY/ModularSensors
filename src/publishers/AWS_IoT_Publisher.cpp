@@ -315,6 +315,9 @@ int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
         MS_DBG(F("Subscribed to"), subs_added, F("topics"));
 
         // Publish the data
+        MS_DBG(F("Publishing primary data to AWS IoT Core"));
+        MS_DBG(F("Topic:"), use_topic);
+        MS_DBG(F("Message:"), txBuffer);
         if (_mqttClient.publish(use_topic, txBuffer, false)) {
             PRINTOUT(F("AWS IoT Core topic published!  Current state:"),
                      parseMQTTState(_mqttClient.state()));
@@ -327,10 +330,12 @@ int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
 
         // publish any other messages
         uint8_t pubs_done = 0;
+        MS_DBG(F("Publishing to other requested topics"));
         for (uint8_t i = 0; i < MS_AWS_IOT_PUBLISHER_PUB_COUNT; i++) {
             if (pub_topics[i] != nullptr) {
-                MS_DBG(F("Publishing to topic:"), pub_topics[i]);
+                MS_DBG(F("Topic:"), pub_topics[i]);
                 String pub_content = contentGetrFxns[i]();
+                MS_DBG(F("Message:"), pub_content);
                 _mqttClient.publish(pub_topics[i], pub_content.c_str());
                 pubs_done++;
             }
