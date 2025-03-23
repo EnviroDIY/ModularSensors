@@ -18,14 +18,20 @@
 
 // Debugging Statement
 // #define MS_S3PRESIGNEDPUBLISHER_DEBUG
+// #define MS_S3PRESIGNEDPUBLISHER_DEBUG_DEEP
 
 #ifdef MS_S3PRESIGNEDPUBLISHER_DEBUG
 #define MS_DEBUGGING_STD "S3PresignedPublisher"
 #endif
 
+#ifdef MS_S3PRESIGNEDPUBLISHER_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP "dataPublisherBase"
+#endif
+
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
+#undef MS_DEBUGGING_DEEP
 #include "dataPublisherBase.h"
 
 
@@ -271,6 +277,7 @@ class S3PresignedPublisher : public dataPublisher {
     virtual Client*    createClient() override;
     virtual void       deleteClient(Client* _client) override;
     static const char* s3_parent_host;       ///< The host name
+    static const int   s3Port;               ///< The host port
     static const char* contentLengthHeader;  ///< The content length header text
     static const char* contentTypeHeader;    ///< The content type header text
 

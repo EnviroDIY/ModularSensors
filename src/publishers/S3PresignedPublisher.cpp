@@ -15,6 +15,7 @@
 // ============================================================================
 // Constant values for put requests
 const char* S3PresignedPublisher::s3_parent_host      = "s3.amazonaws.com";
+const int   S3PresignedPublisher::s3Port              = 443;
 const char* S3PresignedPublisher::contentLengthHeader = "\r\nContent-Length: ";
 const char* S3PresignedPublisher::contentTypeHeader   = "\r\nContent-Type: ";
 
@@ -192,23 +193,25 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
     //  &Expires=unix_timestamp
 
     const char* url_str = _PreSignedURL.c_str();
-    MS_DBG(F("Parsing S3 URL"));
+    MS_DEEP_DBG(F("Parsing S3 URL"));
     MS_DBG(F("Full S3 URL:"), _PreSignedURL);
     char* start_bucket = const_cast<char*>(url_str) + 8;
-    MS_DBG(F("From start of bucket name:"), start_bucket);
+    MS_DEEP_DBG(F("From start of bucket name:"), start_bucket);
     char* end_bucket = strstr(url_str, s3_parent_host) - 1;
-    MS_DBG(F("From end of bucket name:"), end_bucket);
+    MS_DEEP_DBG(F("From end of bucket name:"), end_bucket);
     char* start_file = strstr(url_str + 8, "/") + 1;
-    MS_DBG(F("From start of object name:"), start_file);
+    MS_DEEP_DBG(F("From start of object name:"), start_file);
     char* end_file = strstr(start_file, "?");
-    MS_DBG(F("From end of object name:"), end_file);
-    char* start_content = strstr(start_file, "&content-type=") + 1;
-    // ^^ Add 1 to start at the character after the '&' so we don't include it
-    MS_DBG(F("From start of content type:"), start_content);
-    char* end_content = strstr(start_content, "&");
-    MS_DBG(F("From end of content type:"), end_content);
+    MS_DEEP_DBG(F("From end of object name:"), end_file);
+    char* start_content = strstr(start_file, "&content-type=");
+    MS_DEEP_DBG(F("From start of content param:"), start_content);
+    char* start_content_type = strstr(start_content, "=") + 1;
+    // ^^ Add 1 to start at the character after the '=' so we don't include it
+    MS_DEEP_DBG(F("From start of content type:"), start_content_type);
+    char* end_content = strstr(start_content_type, "&");
+    MS_DEEP_DBG(F("From end of content type:"), end_content);
     char* start_expiration = strstr(start_file, "&Expires=");
-    MS_DBG(F("From start of expiration tag:"), start_expiration);
+    MS_DEEP_DBG(F("From start of expiration tag:"), start_expiration);
 
     uint32_t expiration = atoll(start_expiration + 9);
     MS_DBG(F("Expiration:"), expiration);
@@ -236,9 +239,9 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
     // ^^ Fill the rest of the buffer with null terminators
     MS_DBG(F("S3 Host: "), s3host);
 
-    memcpy(content_type, start_content, end_content - start_content);
-    memset(content_type + (end_content - start_content), '\0',
-           100 - (end_content - start_content));
+    memcpy(content_type, start_content_type, end_content - start_content_type);
+    memset(content_type + (end_content - start_content_type), '\0',
+           128 - (end_content - start_content_type));
     MS_DBG(F("Content Type: "), content_type);
     String ct_str = String(content_type);
     ct_str.replace("%2F", "/");
@@ -248,7 +251,7 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
     MS_DBG(F("Connecting client"));
     MS_START_DEBUG_TIMER;
     // NOTE: always use port 443 for SSL connections to S3
-    if (outClient->connect(s3_parent_host, 443)) {
+    if (outClient->connect(s3_parent_host, s3Port)) {
         MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms\n"));
         txBufferInit(outClient);
 
@@ -256,6 +259,7 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
         txBufferAppend(putHeader);
 
         // add in the file/query portion of the URL
+        txBufferAppend('/');
         txBufferAppend(start_file);
 
         char file_size_str[10] = {0};
@@ -265,11 +269,10 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
         txBufferAppend(HTTPtag);
         txBufferAppend(hostHeader);
         txBufferAppend(s3host);
-        txBufferAppend(contentLengthHeader);
-        txBufferAppend(file_size_str);
-        txBufferAppend("\r\n");
         txBufferAppend(contentTypeHeader);
         txBufferAppend(ct_str.c_str());
+        txBufferAppend(contentLengthHeader);
+        txBufferAppend(file_size_str);
         txBufferAppend("\r\n\r\n");
 
         // Flush the complete header
@@ -279,13 +282,15 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
         // Take advantage of the txBuffer's flush logic to prevent typewritter
         // style writes from the modem-send command deep in TinyGSM
         for (uint32_t i = 0; i < file_size; i++) {
-            txBufferAppend(putFile.read());
+            txBufferAppend(putFile.read(), false);
         }
+        txBufferFlush(false);
         putFile.close();
 
-        // Wait 10 seconds for a response from the server
+        // Wait 60 seconds for a response from the server
         uint32_t start = millis();
-        while ((millis() - start) < 10000L && outClient->available() < 12) {
+        while ((millis() - start) < 60000L && outClient->connected() &&
+               outClient->available() < 12) {
             delay(10);
         }
 
@@ -293,6 +298,16 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
         // We're only reading as far as the http code, anything beyond that
         // we don't care about.
         did_respond = outClient->readBytes(tempBuffer, 12);
+#if defined(MS_OUTPUT) || defined(MS_2ND_OUTPUT)
+        // throw the rest of the response into the tx buffer so we can debug it
+        txBufferInit(nullptr);
+        txBufferAppend(tempBuffer, 12, true);
+        while (outClient->available()) {
+            char c = outClient->read();
+            txBufferAppend(c);
+        }
+        txBufferFlush();
+#endif
 
         // Close the TCP/IP connection
         MS_DBG(F("Stopping client"));
@@ -319,6 +334,7 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
     PRINTOUT(F("\n-- Response Code --"));
     PRINTOUT(responseCode);
 
+#if defined(MS_S3PRESIGNED_PREVENT_REUSE)
     // After any attempt, clear the filename to force the user to set a new
     // filename before trying again
     _filename = "";
@@ -327,7 +343,8 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
     // used again S3 pre-signed URL's are only valid for the post of a single
     // file. If you call the same URL repeatedly, it will overwrite the file
     // each time.
-    if (responseCode == 201) { _PreSignedURL = ""; }
+    if (responseCode == 200) { _PreSignedURL = ""; }
+#endif
 
     return responseCode;
 }
