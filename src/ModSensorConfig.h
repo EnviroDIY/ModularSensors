@@ -241,14 +241,15 @@
  * This determines how many characters to set out at once over the TCP
  * connection. Increasing this may decrease data use by a logger, while
  * decreasing it will save memory. Do not make it smaller than 32 or bigger
- * than 1500 (a typical TCP Maximum Transmission Unit).
+ * than TINY_GSM_SEND_MAX_SIZE for you module if using TinyGSM or 1500 (a
+ * typical TCP Maximum Transmission Unit) if you aren't using TinyGSM.
  *
  * When using the ThingSpeak publisher, make sure this is at least 240 bytes.
  *
  * This can be changed by setting the build flag MS_SEND_BUFFER_SIZE when
  * compiling.
  */
-#define MS_SEND_BUFFER_SIZE 750
+#define MS_SEND_BUFFER_SIZE 1460
 #endif
 
 #ifndef TINY_GSM_RX_BUFFER
