@@ -25,12 +25,18 @@ const char* AWS_IoT_Publisher::timestampTag       = "\",\"timestamp\":\"";
 
 
 // Constructors
-AWS_IoT_Publisher::AWS_IoT_Publisher() : dataPublisher() {}
+AWS_IoT_Publisher::AWS_IoT_Publisher() : dataPublisher() {
+    init();
+}
 AWS_IoT_Publisher::AWS_IoT_Publisher(Logger& baseLogger, int sendEveryX)
-    : dataPublisher(baseLogger, sendEveryX) {}
+    : dataPublisher(baseLogger, sendEveryX) {
+    init();
+}
 AWS_IoT_Publisher::AWS_IoT_Publisher(Logger& baseLogger, Client* inClient,
                                      int sendEveryX)
-    : dataPublisher(baseLogger, inClient, sendEveryX) {}
+    : dataPublisher(baseLogger, inClient, sendEveryX) {
+    init();
+}
 AWS_IoT_Publisher::AWS_IoT_Publisher(
     Logger& baseLogger, const char* awsIoTEndpoint, const char* caCertName,
     const char* clientCertName, const char* clientKeyName,
@@ -41,6 +47,7 @@ AWS_IoT_Publisher::AWS_IoT_Publisher(
     setClientCertName(clientCertName);
     setClientKeyName(clientKeyName);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
+    init();
 }
 AWS_IoT_Publisher::AWS_IoT_Publisher(Logger&     baseLogger,
                                      const char* awsIoTEndpoint,
@@ -52,6 +59,7 @@ AWS_IoT_Publisher::AWS_IoT_Publisher(Logger&     baseLogger,
     setCACertName(caCertName);
     setClientCertName(clientCertName);
     setClientKeyName(clientKeyName);
+    init();
 }
 AWS_IoT_Publisher::AWS_IoT_Publisher(Logger& baseLogger, Client* inClient,
                                      const char* awsIoTEndpoint,
@@ -60,6 +68,21 @@ AWS_IoT_Publisher::AWS_IoT_Publisher(Logger& baseLogger, Client* inClient,
     : dataPublisher(baseLogger, inClient, sendEveryX) {
     setEndpoint(awsIoTEndpoint);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
+    init();
+}
+void AWS_IoT_Publisher::init() {
+    // Initialize the sub topics as null pointers
+    for (uint8_t i = 0; i < MS_AWS_IOT_PUBLISHER_SUB_COUNT; i++) {
+        sub_topics[i] = nullptr;
+    }
+    // Initialize the pub topics as null pointers
+    for (uint8_t i = 0; i < MS_AWS_IOT_PUBLISHER_PUB_COUNT; i++) {
+        pub_topics[i] = nullptr;
+    }
+    // Initialize the pub functions as null pointers
+    for (uint8_t i = 0; i < MS_AWS_IOT_PUBLISHER_PUB_COUNT; i++) {
+        contentGetrFxns[i] = nullptr;
+    }
 }
 // Destructor
 AWS_IoT_Publisher::~AWS_IoT_Publisher() {}
@@ -93,6 +116,77 @@ void AWS_IoT_Publisher::setAWSIoTParams(const char* awsIoTEndpoint,
     setCACertName(caCertName);
     setClientCertName(clientCertName);
     setClientKeyName(clientKeyName);
+}
+
+void AWS_IoT_Publisher::setDataPublishTopic(const char* topic) {
+    _dataTopic = topic;
+}
+void AWS_IoT_Publisher::setMetadataPublishTopic(const char* topic) {
+    _metadataTopic = topic;
+}
+
+void AWS_IoT_Publisher::addSubTopic(const char* topic) {
+    bool found_space = false;
+    for (uint8_t i = 0; i < MS_AWS_IOT_PUBLISHER_SUB_COUNT; i++) {
+        if (sub_topics[i] == nullptr) {
+            sub_topics[i] = topic;
+            found_space   = true;
+            _waitForSubs  = true;
+            MS_DBG(F("Will now subscribe to topic:"), topic,
+                   F("at connection."));
+            break;
+        }
+    }
+    if (!found_space) { PRINTOUT(F("No space for new topic subscription!")); }
+}
+
+void AWS_IoT_Publisher::removeSubTopic(const char* topic) {
+    // find and remove
+    bool any_subs_left = false;
+    for (uint8_t i = 0; i < MS_AWS_IOT_PUBLISHER_SUB_COUNT; i++) {
+        if (sub_topics[i] != nullptr and strcmp(sub_topics[i], topic) == 0) {
+            sub_topics[i] = nullptr;
+        } else if (sub_topics[i] != nullptr) {
+            any_subs_left = true;
+        }
+    }
+    if (any_subs_left) {
+        _waitForSubs = false;
+        MS_DBG(F("No topics left to subscribe to!"));
+    }
+}
+
+void AWS_IoT_Publisher::addPublishRequest(const char* topic,
+                                          char* (*contentGetrFxn)(void)) {
+    bool found_space = false;
+    for (uint8_t i = 0; i < MS_AWS_IOT_PUBLISHER_PUB_COUNT; i++) {
+        if (pub_topics[i] == nullptr) {
+            pub_topics[i]      = topic;
+            contentGetrFxns[i] = contentGetrFxn;
+            MS_DBG(F("Will now publish to topic:"), topic, F("at connection."));
+            break;
+        }
+    }
+    if (!found_space) { PRINTOUT(F("No space for new publish topic!")); }
+}
+
+void AWS_IoT_Publisher::removePublishRequest(const char* topic) {
+    // find and remove
+    bool any_pubs_left = false;
+    for (uint8_t i = 0; i < MS_AWS_IOT_PUBLISHER_PUB_COUNT; i++) {
+        if (pub_topics[i] != nullptr and strcmp(pub_topics[i], topic) == 0) {
+            pub_topics[i]      = nullptr;
+            contentGetrFxns[i] = nullptr;
+        }
+    }
+}
+
+PubSubClient& AWS_IoT_Publisher::setCallback(MQTT_CALLBACK_SIGNATURE) {
+    return _mqttClient.setCallback(callback);
+}
+
+void AWS_IoT_Publisher::closeConnection() {
+    _waitForSubs = false;
 }
 
 
@@ -219,6 +313,15 @@ int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
     if (_mqttClient.connect(_baseLogger->getLoggerID())) {
         MS_DBG(F("MQTT connected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
 
+        // immediately subscribe to any requested topics
+        // NOTE: Subscribe to topics before publishing data so we don't miss
+        // anything
+        for (uint8_t i = 0; i < MS_AWS_IOT_PUBLISHER_SUB_COUNT; i++) {
+            if (sub_topics[i] != nullptr) {
+                _mqttClient.subscribe(sub_topics[i]);
+            }
+        }
+
         // Publish the data
         if (_mqttClient.publish(use_topic, txBuffer, false)) {
             PRINTOUT(F("AWS IoT Core topic published!  Current state:"),
@@ -228,6 +331,20 @@ int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
             PRINTOUT(F("AWS IoT Core MQTT publish failed with state:"),
                      parseMQTTState(_mqttClient.state()));
             retVal = false;
+        }
+
+        // publish any other messages
+        for (uint8_t i = 0; i < MS_AWS_IOT_PUBLISHER_PUB_COUNT; i++) {
+            if (pub_topics[i] != nullptr) {
+                char* pub_content = contentGetrFxns[i]();
+                _mqttClient.publish(pub_topics[i], pub_content);
+            }
+        }
+
+        uint32_t start_wait = millis();
+        while (_mqttClient.connected() && _waitForSubs &&
+               (millis() - start_wait) < MS_AWS_IOT_MAX_CONNECTION_TIME) {
+            _mqttClient.loop();
         }
 
         // Disconnect from MQTT

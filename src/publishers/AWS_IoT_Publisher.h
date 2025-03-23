@@ -19,15 +19,30 @@
  * policy that is tied to your thing name. An example policy is in the
  * extras/AWS_IoT_SetCertificates folder.
  *
+ * All messages are published with QoS 0 and no messages are retained.  All
+ * connections are made with a clean session.
+ *
  * @warning You cannot connect more than one device with the same ClientID to
  * AWS IoT at the same time. This means you should NEVER program two loggers
  * with the same loggerID with the same sketch. They will not both be able to
  * connect.
  *
- * @note At this time, this library **only supports publishing data.** It does
- * _**NOT**_ support subscribing to topics or receiving data. It also does
- * _**NOT**_ support **ANY** device shadow functionality.  All topics are
- * published with QoS 0 and no topics are retained.
+ * @note At this time, this library has only very rudimentary support for
+ * subscriptions and and data reception.  You can subscribe to up to
+ * #MS_AWS_IOT_PUBLISHER_SUB_COUNT topics and set a callback function for
+ * incoming messages that will be passed to the underlieing PubSubClient
+ * instance.  This is **ABSOLUTELY NOT** intended for handling any messages
+ * except those received over a very brief connection. The MQTT client only
+ * stays open briefly while publishing messages! (Until you call
+ * AWS_IoT_Publisher::closeConnection() or until the time has exceeded
+ * #MS_AWS_IOT_MAX_CONNECTION_TIME, whichever comes first).  This publisher
+ * will completely **BLOCK** all further action while waiting for messages.
+ * The connection is closed at all other times and the board is in deep
+ * sleep. This will only be good for receiving *retained* messages on topics
+ * (that would come through immediately after subscribing) or for receiving
+ * messages that are published as an immediate reaction to publishing data.  The
+ * only tested use case for this is requesting a new S3 presigned URL for image
+ * uploads.
  *
  * @warning AWS IoT Core is only available on the AWS free tier within the first
  * 12 months after initial sign up. After the first 12 months, you will be
@@ -236,6 +251,130 @@ class AWS_IoT_Publisher : public dataPublisher {
      */
     void setAWSIoTParams(const char* awsIoTEndpoint, const char* caCertName,
                          const char* clientCertName, const char* clientKeyName);
+    /**
+     * @brief Set the topic to use for publishing data.
+     *
+     * If not specified, the topic "{LoggerID}/{SamplingFeatureUUID}" will be
+     * used.
+     *
+     * Make sure you have IAM policies set up to allow your device to publish to
+     * the specified topic!
+     *
+     * @param topic The topic
+     */
+    void setDataPublishTopic(const char* topic);
+    /**
+     * @brief Set the topic to use for publishing metadata.
+     *
+     * If not specified, the topic "{LoggerID}/metadata" will be used for the
+     * main logger metadata. For each variable, the variable number will be
+     * appended to the topic (ie, "{LoggerID}/metadata/variable01").
+     *
+     * Make sure you have IAM policies set up to allow your device to publish to
+     * the specified topics!
+     *
+     * @param topic The topic
+     */
+    void setMetadataPublishTopic(const char* topic);
+
+    /**
+     * @brief Adds a topic to subscribe to.
+     *
+     * When publishing data, the publisher will subscribe to the topic.
+     *
+     * @warning This is **ABSOLUTELY NOT** intended for handling any messages
+     * except those received over a very brief connection. The MQTT client only
+     * stays open briefly while publishing messages! (Until you call
+     * AWS_IoT_Publisher::closeConnection() or until the time has exceeded
+     * #MS_AWS_IOT_MAX_CONNECTION_TIME, whichever comes first).  This publisher
+     * will completely **BLOCK** all further action while waiting for messages.
+     * The connection is closed at all other times and the board is in deep
+     * sleep. This will only be good for receiving *retained* messages on topics
+     * (that would come through immediately after subscribing) or for receiving
+     * messages that are published as an immediate reaction to publishing data.
+     *
+     * @note The publisher will only subscribe to up to
+     * #MS_AWS_IOT_PUBLISHER_SUB_COUNT topics.
+     *
+     * @note The publisher will not directly unsubscribe from topics, but all
+     * subscriptions are cleared at disconnect because we use a clean session.
+     *
+     * @param topic The topic to subscribe to
+     */
+    void addSubTopic(const char* topic);
+    /**
+     * @brief Removes a topic from the subscription list.
+     *
+     * I don't expect this to be used, but I'm adding it just in case.
+     *
+     * @note The publisher will not directly unsubscribe from topics, but all
+     * subscriptions are cleared at disconnect because we use a clean session.
+     *
+     * @param topic The topic to remove from the subscription list
+     */
+    void removeSubTopic(const char* topic);
+
+    /**
+     * @brief Adds a topic to subscribe to.
+     *
+     * When publishing data, the publisher will subscribe to the topic.
+     *
+     * @warning This is **ABSOLUTELY NOT** intended for handling any messages
+     * except those received over a very brief connection. The MQTT client only
+     * stays open briefly while publishing messages! (Until you call
+     * AWS_IoT_Publisher::closeConnection() or until the time has exceeded
+     * #MS_AWS_IOT_MAX_CONNECTION_TIME, whichever comes first).  This publisher
+     * will completely **BLOCK** all further action while waiting for messages.
+     * The connection is closed at all other times and the board is in deep
+     * sleep. This will only be good for receiving *retained* messages on topics
+     * (that would come through immediately after subscribing) or for receiving
+     * messages that are published as an immediate reaction to publishing data.
+     *
+     * @note The publisher will only subscribe to up to
+     * #MS_AWS_IOT_PUBLISHER_SUB_COUNT topics.
+     *
+     * @note The publisher will not directly unsubscribe from topics, but all
+     * subscriptions are cleared at disconnect because we use a clean session.
+     *
+     * @param topic The topic to publish to. This should be a static value. If
+     * you wish to change the topic, remove the old topic and add a new one.
+     * @param contentGetrFxn A function to call to get the content to publish.
+     * The function should return a pointer to a char array.
+     */
+    void addPublishRequest(const char* topic, char* (*contentGetrFxn)(void));
+    /**
+     * @brief Removes a topic from the publish list.
+     *
+     * @param topic The topic to remove from the publish list
+     */
+    void removePublishRequest(const char* topic);
+
+    /**
+     * @brief A passthrough to the PubSubClient setCallback function; sets a
+     * function to call back when data is received on any of the subscribed
+     * topics.
+     *
+     * This must be a static or main level function! It **cannot** be a member
+     * function of a class!  Your callback function should call this publishers
+     * AWS_IoT_Publisher::closeConnection() method immedialy after getting your
+     * desired response to stop the publisher from waiting for more messages.
+     *
+     * @warning This is **ABSOLUTELY NOT** intended for handling any messages
+     * except those received over a very brief connection. The MQTT client only
+     * stays open briefly while publishing messages! (Until you call
+     * AWS_IoT_Publisher::closeConnection() or until the time has exceeded
+     * #MS_AWS_IOT_MAX_CONNECTION_TIME, whichever comes first).  This publisher
+     * will completely **BLOCK** all further action while waiting for messages.
+     * The connection is closed at all other times and the board is in deep
+     * sleep. This will only be good for receiving *retained* messages on topics
+     * (that would come through immediately after subscribing) or for receiving
+     * messages that are published as an immediate reaction to publishing data.
+     *
+     * @param mqtt_callback The function to call when any message is received
+     */
+    PubSubClient& setCallback(MQTT_CALLBACK_SIGNATURE);
+
+    void closeConnection();
 
     /**
      * @copydoc dataPublisher::begin(Logger& baseLogger, Client* inClient)
@@ -317,11 +456,31 @@ class AWS_IoT_Publisher : public dataPublisher {
      * @brief The name of your client private key file
      */
     const char* _clientKeyName = nullptr;
+    const char* _dataTopic     = nullptr;  ///< The topic for data
+    const char* _metadataTopic = nullptr;  ///< The topic for metadata
+    /**
+     * @brief True to continue waiting for subscriptions after publishing data
+     */
+    bool _waitForSubs = false;
     /**
      * @brief Internal reference to the PubSubClient instance for MQTT
      * communication.
      */
     PubSubClient _mqttClient;
+    /**
+     * @brief An array of topics to subscribe to
+     */
+    const char* sub_topics[MS_AWS_IOT_PUBLISHER_SUB_COUNT];
+    /**
+     * @brief An array of topics to publish to
+     */
+    const char* pub_topics[MS_AWS_IOT_PUBLISHER_PUB_COUNT];
+    /**
+     * @brief An array of functions to call to get publish content
+     */
+    char* (*contentGetrFxns[MS_AWS_IOT_PUBLISHER_PUB_COUNT])(void);
+    /// constructor helper
+    void init();
 };
 
 #endif  // SRC_PUBLISHERS_AWS_IOT_PUBLISHER_H_

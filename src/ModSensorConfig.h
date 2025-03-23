@@ -261,6 +261,52 @@
  */
 #define TINY_GSM_RX_BUFFER 64
 #endif
+
+#ifndef MS_MQTT_MAX_PACKET_SIZE
+/**
+ * @brief Configure the size of the PubSubClient buffer for MQTT publishers.
+ *
+ * This is the maximum size of any single MQTT message - incoming or outgoing.
+ * The same value applies to all MQTT publishers. The default within
+ * PubSubClient is 256 bytes, but to receive long S3 URLs from AWS IoT Core, we
+ * need to jack this way up. Incoming pre-signed S3 URLs are >1200 bytes.  If
+ * you're not using both AWS IoT Core and S3, you should drop this down. When
+ * using the ThingSpeak publisher, ~240 bytes should suffice.  If you're not
+ * using any MQTT publishers, you can ignore this.
+ */
+#define MS_MQTT_MAX_PACKET_SIZE 1280
+#endif
+//==============================================================
+
+
+//==============================================================
+// Special configurations for the AWS IoT Core publisher
+//==============================================================
+#ifndef MS_AWS_IOT_PUBLISHER_SUB_COUNT
+/**
+ * @brief The maximum number of extra subscriptions that can be added to the AWS
+ * IoT Core publisher.
+ *
+ * @note AWS sets a hard maximum of 8 subscriptions by one client at a time.
+ */
+#define MS_AWS_IOT_PUBLISHER_SUB_COUNT 4
+#endif
+#ifndef MS_AWS_IOT_PUBLISHER_PUB_COUNT
+/**
+ * @brief The maximum number of extra publish messages that can be added to the
+ * AWS IoT Core publisher.
+ */
+#define MS_AWS_IOT_PUBLISHER_PUB_COUNT 4
+#endif
+#ifndef MS_AWS_IOT_MAX_CONNECTION_TIME
+/**
+ * @brief The maximum time to wait for subscriptions after publishing data to
+ * AWS IoT Core.
+ *
+ * @note This is only used if the publisher is set to wait for subscriptions.
+ */
+#define MS_AWS_IOT_MAX_CONNECTION_TIME 30000L
+#endif
 //==============================================================
 
 
