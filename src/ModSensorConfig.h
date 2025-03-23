@@ -264,4 +264,20 @@
 //==============================================================
 
 
+//==============================================================
+// Special configurations for the S3 publisher
+//==============================================================
+#ifndef S3_DEFAULT_FILE_EXTENSION
+/**
+ * @brief The default file extension to use to send to S3: ".jpg"
+ *
+ * This assumes you are using S3 to send images. If you want to put your basic
+ * numeric data into S3, you should use the IoT publisher and create a rule and
+ * corresponding lambda function to transfer the json data from IoT Core to S3.
+ */
+#define S3_DEFAULT_FILE_EXTENSION ".jpg"
+#endif
+//==============================================================
+
+
 #endif  // SRC_MODSENSORCONFIG_H_

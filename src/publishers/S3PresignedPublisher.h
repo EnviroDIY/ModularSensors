@@ -29,18 +29,6 @@
 #include "dataPublisherBase.h"
 
 
-/**
- * @brief The default file extension to use to send to S3: ".jpg"
- *
- * This assumes you are using S3 to send images. If you want to put your basic
- * numeric data into S3, you should use the IoT publisher and create a rule and
- * corresponding lambda function to transfer the json data from IoT Core to S3.
- */
-#ifndef S3_DEFAULT_FILE_EXTENSION
-#define S3_DEFAULT_FILE_EXTENSION ".jpg"
-#endif
-
-
 // ============================================================================
 //  Functions for the S3 by way of a pre-signed URL.
 // ============================================================================
