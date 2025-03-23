@@ -125,26 +125,27 @@ void dataPublisher::txBufferAppend(char c) {
 
 void dataPublisher::txBufferFlush() {
     MS_DEEP_DBG(F("Flushing Tx buffer:"));
+    // If there's nothing to send or nowhere to send it to, just return
     if ((txBufferOutClient == nullptr) || (txBufferLen == 0)) {
-        // sending into the void...
+        // forget that data existed...
         txBufferLen = 0;
         return;
     }
 
 #if defined(MS_OUTPUT)
-    // write out to the printout stream
+    // write out to the printout stream for debugging
     MS_OUTPUT.write((const uint8_t*)txBuffer, txBufferLen);
+    MS_OUTPUT.println();
     MS_OUTPUT.flush();
 #endif
 #if defined(MS_2ND_OUTPUT)
-    // write out to the printout stream
+    // write out to the secondary printout stream for debugging
     MS_2ND_OUTPUT.write((const uint8_t*)txBuffer, txBufferLen);
+    MS_2ND_OUTPUT.println();
     MS_2ND_OUTPUT.flush();
 #endif
-    // write out to the client
-    txBufferOutClient->write((const uint8_t*)txBuffer, txBufferLen);
-    txBufferOutClient->flush();
 
+    // write out to the client, attempting 10x to send the whole buffer
     uint8_t        tries = 10;
     const uint8_t* ptr   = (const uint8_t*)txBuffer;
     while (true) {
@@ -171,7 +172,7 @@ void dataPublisher::txBufferFlush() {
         }
 
         // give the modem a chance to transmit buffered data
-        delay(1000);
+        // delay(1000);
     }
 }
 
@@ -186,7 +187,7 @@ Client* dataPublisher::createClient() {
                    "logger modem to create one!"));
         return nullptr;
     }
-    MS_DBG(F("Creating new client with default socket number."));
+    MS_DBG(F("Creating new TinyGSMClient with default socket number."));
     return _baseModem->createClient();
 }
 void dataPublisher::deleteClient(Client* _client) {
@@ -199,7 +200,8 @@ void dataPublisher::deleteClient(Client* _client) {
 // This sends data on the "default" client of the modem
 int16_t dataPublisher::publishData(bool forceFlush) {
     if (_inClient == nullptr) {
-        int16_t retVal    = -2;  // -2 is connection failed in MQTT
+        int16_t retVal = -2;  // -2 is connection failed in MQTT
+        MS_DBG(F("Creating new client to publish data."));
         Client* newClient = createClient();
         if (newClient != nullptr) {
             retVal = publishData(newClient, forceFlush);

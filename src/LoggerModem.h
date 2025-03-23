@@ -584,6 +584,24 @@ class loggerModem {
     virtual Client*
     createSecureClient(const char* pskTableName,
                        SSLVersion  sslVersion = SSLVersion::TLS1_2) = 0;
+    /**
+     * @brief Attempts to delete a created TinyGsmClient object. We need to do
+     * this to close memory leaks from the create client because we can't delete
+     * the created client from a pointer to the parent because the Arduino
+     * core's client class doesn't have a virtual destructor.
+     *
+     * @param _client The client to delete
+     */
+    virtual void deleteClient(Client* _client) = 0;
+    /**
+     * @brief Attempts to delete a created TinyGsmSecureClient object. We need
+     * to do this to close memory leaks from the create client because we can't
+     * delete the created client from a pointer to the parent because the
+     * Arduino core's client class doesn't have a virtual destructor.
+     *
+     * @param _client The client to delete
+     */
+    virtual void deleteSecureClient(Client* _client) = 0;
 
     /**
      * @brief Get the time from NIST via TIME protocol (rfc868).

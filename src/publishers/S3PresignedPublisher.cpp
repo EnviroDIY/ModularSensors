@@ -96,7 +96,7 @@ Client* S3PresignedPublisher::createClient() {
                    "certificate name!"));
         return nullptr;
     }
-    MS_DBG(F("Creating new secure client with default socket number."));
+    MS_DBG(F("Creating a new TinyGsmSecureClient with default socket number."));
     Client* newClient = _baseModem->createSecureClient(
         SSLAuthMode::CA_VALIDATION, SSLVersion::TLS1_3, _caCertName);
     if (newClient == nullptr) {
@@ -104,6 +104,12 @@ Client* S3PresignedPublisher::createClient() {
         return nullptr;
     }
     return newClient;
+}
+void S3PresignedPublisher::deleteClient(Client* _client) {
+    if (_baseModem != nullptr) {
+        MS_DBG(F("Attempting to delete the client"));
+        return _baseModem->deleteSecureClient(_client);
+    }
 }
 
 // Post the data to S3.
