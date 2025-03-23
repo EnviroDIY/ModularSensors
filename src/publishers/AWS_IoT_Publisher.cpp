@@ -126,50 +126,32 @@ void AWS_IoT_Publisher::setMetadataPublishTopic(const char* topic) {
 }
 
 void AWS_IoT_Publisher::addSubTopic(const char* topic) {
-    bool found_space = false;
     for (uint8_t i = 0; i < MS_AWS_IOT_PUBLISHER_SUB_COUNT; i++) {
         if (sub_topics[i] == nullptr) {
             sub_topics[i] = topic;
-            found_space   = true;
-            _waitForSubs  = true;
-            // MS_DBG(F("Will now subscribe to topic:"), topic,
-            //        F("at connection."));
             break;
         }
     }
-    // if (!found_space) { PRINTOUT(F("No space for new topic subscription!"));
-    // }
 }
 
 void AWS_IoT_Publisher::removeSubTopic(const char* topic) {
     // find and remove
-    bool any_subs_left = false;
     for (uint8_t i = 0; i < MS_AWS_IOT_PUBLISHER_SUB_COUNT; i++) {
         if (sub_topics[i] != nullptr and strcmp(sub_topics[i], topic) == 0) {
             sub_topics[i] = nullptr;
-        } else if (sub_topics[i] != nullptr) {
-            any_subs_left = true;
         }
-    }
-    if (!any_subs_left) {
-        _waitForSubs = false;
-        // MS_DBG(F("No topics left to subscribe to!"));
     }
 }
 
 void AWS_IoT_Publisher::addPublishRequest(const char* topic,
                                           String (*contentGetrFxn)(void)) {
-    bool found_space = false;
     for (uint8_t i = 0; i < MS_AWS_IOT_PUBLISHER_PUB_COUNT; i++) {
         if (pub_topics[i] == nullptr) {
             pub_topics[i]      = topic;
             contentGetrFxns[i] = contentGetrFxn;
-            // MS_DBG(F("Will now publish to topic:"), topic, F("at
-            // connection."));
             break;
         }
     }
-    // if (!found_space) { PRINTOUT(F("No space for new publish topic!")); }
 }
 
 void AWS_IoT_Publisher::removePublishRequest(const char* topic) {
@@ -324,6 +306,11 @@ int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
                 _mqttClient.subscribe(sub_topics[i]);
                 subs_added++;
             }
+        }
+        if (subs_added > 0) {
+            _waitForSubs = true;
+        } else {
+            _waitForSubs = false;
         }
         MS_DBG(F("Subscribed to"), subs_added, F("topics"));
 
