@@ -324,6 +324,11 @@
  */
 #define S3_DEFAULT_FILE_EXTENSION ".jpg"
 #endif
+/**
+ * @brief Define this to tell the S3 publisher to prevent reuse of pre-signed
+ * URLs or upload filenames.
+ */
+// #define MS_S3PRESIGNED_PREVENT_REUSE
 //==============================================================
 
 
