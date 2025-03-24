@@ -263,9 +263,9 @@ void setup() {
     const char* client_cert_name = "client_cert.0";
     const char* client_key_name  = "client_key.0";
 #else
-    const char* root_ca_name     = "root_ca_0.crt";
-    const char* client_cert_name = "client_cert_0.crt";
-    const char* client_key_name  = "client_key_0.key";
+    const char* root_ca_name     = "AmazonRootCA1.pem";
+    const char* client_cert_name = "thing-certificate.pem.crt";
+    const char* client_key_name  = "thing-private.pem.key";
 #endif
 
     // ======================== CA CERTIFICATE LOADING ========================

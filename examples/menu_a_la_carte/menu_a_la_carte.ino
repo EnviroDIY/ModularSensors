@@ -1545,13 +1545,11 @@ Variable* mplTemp = new FreescaleMPL115A2_Temp(
 #include <sensors/GeoluxHydroCam.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-const int8_t  cameraPower        = sensorPowerPin;  // Power pin
-const int8_t  cameraAdapterPower = sensorPowerPin;  // RS232 adapter power pin
-const uint8_t MPL115A2ReadingsToAvg = 1;
-const char*   imageResolution       = "800x600";
-const char*   filePrefix            = LoggerID;
-//^^ To publish to S3 with a pre-signed URL, this MUST be the logger ID
-bool alwaysAutoFocus = false;
+const int8_t cameraPower        = sensorPowerPin;  // Power pin
+const int8_t cameraAdapterPower = sensorPowerPin;  // RS232 adapter power pin
+const char*  imageResolution    = "800x600";
+const char*  filePrefix         = LoggerID;
+bool         alwaysAutoFocus    = false;
 
 // Create a GeoluxHydroCam sensor object
 GeoluxHydroCam hydrocam(cameraSerial, cameraPower, dataLogger,
@@ -3289,7 +3287,7 @@ UbidotsPublisher ubidots(dataLogger, ubidotsToken, ubidotsDeviceID);
 const char* caCertName = "client_ca.0";
 #else
 // The name of your certificate authority certificate file
-const char* caCertName = "root_ca_0.crt";
+const char* caCertName = "AmazonRootCA1.pem";
 #endif
 
 // Expand the expected S3 publish topic into a buffer
@@ -3326,8 +3324,8 @@ S3PresignedPublisher s3pub;
 const char* awsIoTEndpoint = "xxx-ats.iot.xxx.amazonaws.com";
 // Sampling feature UUID, this will be the sub-topic for your data
 // NOTE: Because we already set the sampling feature with the logger
-// constructor, don't do it here. const char* samplingFeature =
-// "12345678-abcd-1234-ef00-1234567890ab";
+// constructor, don't do it here.
+// const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";
 #ifdef BUILD_MODEM_ESPRESSIF_ESP32
 // For Espressif modules, only two certificate sets are supported and the
 // certificates must be named "client_ca.{0|1}", "client_cert.{0|1}", or
@@ -3340,12 +3338,12 @@ const char* clientKeyName  = "client_key.0";
 #else
 #if !defined(BUILD_PUB_S3_PRESIGNED_PUBLISHER)
 // The name of your certificate authority certificate file
-const char* caCertName = "root_ca_0.crt";
+const char* caCertName = "AmazonRootCA1.pem";
 #endif
 // The name of your client certificate file
-const char* clientCertName = "client_cert_0.crt";
+const char* clientCertName = "thing-certificate.pem.crt";
 // The name of your client private key file
-const char* clientKeyName = "client_key_0.key";
+const char* clientKeyName = "thing-private.pem.key";
 #endif
 
 // Create a data publisher for AWS IoT Core
@@ -3355,19 +3353,23 @@ AWS_IoT_Publisher awsIoTPub(dataLogger, awsIoTEndpoint, caCertName,
 
 // Callback function
 void IoTCallback(char* topic, byte* payload, unsigned int length) {
+    // the topic is a char and garaunteed to be null-terminated, so we can
+    // directly convert to a String
     if (String(topic) == s3URLSubTopic) {
         MS_DBG(F("Received data on pre-signed URL topic from AWS IoT Core"));
         MS_DBG(F("Got message of length"), length, F("on topic"), topic);
         // Allocate the correct amount of memory for the payload copy
+        // We CANNOT directly convert it to a string because it's not garaunteed
+        // to be null-terminated
         char* rx_url = (char*)malloc(length + 1);
         // Copy the payload to the new buffer
         memcpy(rx_url, payload, length);
         // Null terminate the string
         memset(rx_url + length, '\0', 1);
         MS_DBG(F("Setting S3 URL to:"), rx_url);
-        s3pub.setPreSignedURL(rx_url);
-        // // Free the memory
-        // free(rx_url);
+        s3pub.setPreSignedURL(String(rx_url));
+        // Free the memory now that the URL has been copied into a new String
+        free(rx_url);
         // let the publisher know we got what we expected and it can stop
         // waiting
         awsIoTPub.closeConnection();

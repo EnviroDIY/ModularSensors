@@ -241,11 +241,11 @@ const char* awsIoTEndpoint = "xxx-ats.iot.XXX.amazonaws.com";
 // Sampling feature UUID, this will be the sub-topic for your data
 const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";
 // The name of your certificate authority certificate file
-const char* caCertName = "root_ca_0.crt";
+const char* caCertName = "AmazonRootCA1.pem";
 // The name of your client certificate file
-const char* clientCertName = "client_cert_0.crt";
+const char* clientCertName = "thing-certificate.pem.crt";
 // The name of your client private key file
-const char* clientKeyName = "client_key_0.key";
+const char* clientKeyName = "thing-private.pem.key";
 
 // Create a data publisher for AWS IoT Core
 #include <publishers/AWS_IoT_Publisher.h>

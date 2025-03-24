@@ -114,8 +114,96 @@ void S3PresignedPublisher::deleteClient(Client* _client) {
     }
 }
 
+bool S3PresignedPublisher::validateS3URL(String& s3url, char* s3host,
+                                         char* s3resource, char* content_type) {
+    // S3 pre-signed URL's follow the "virtual-hosted style" and have the form:
+    // https://YOUR-BUCKET-NAME.s3.amazonaws.com/file_name.extension
+    //  ?AWSAccessKeyId=ACCESS-KEY-ID
+    //  &Signature=SIGNATURE-VALUE
+    //  &content-type=image%2Fjpeg
+    //  &x-amz-security-token=A-REALLY-REALLY-REALLY-LONG-STRING
+    //  &Expires=unix_timestamp
+
+    const char* url_str = s3url.c_str();  // should be null terminated!
+    int         len_url = s3url.length();
+
+    MS_DBG(F("Full S3 URL:"), url_str);
+
+    if (strstr(url_str, s3_parent_host) == nullptr) {
+        PRINTOUT(F("The S3 URL does not contain the S3 host name:"),
+                 s3_parent_host);
+        return false;
+    }
+
+    char* start_bucket       = const_cast<char*>(url_str) + 8;
+    char* end_bucket         = strstr(url_str, s3_parent_host) - 1;
+    char* start_file         = strstr(url_str + 8, "/") + 1;
+    char* end_file           = strstr(start_file, "?");
+    char* start_content      = strstr(start_file, "&content-type=");
+    char* start_content_type = strstr(start_content, "=") + 1;
+    // ^^ Add 1 to start at the character after the '=' so we don't include it
+    char* end_content      = strstr(start_content_type, "&");
+    char* start_expiration = strstr(start_file, "&Expires=");
+
+#if defined MS_S3PRESIGNEDPUBLISHER_DEBUG
+    MS_SERIAL_OUTPUT.print(F("Virtual Host Name:"));
+    MS_SERIAL_OUTPUT.write(url_str + 8, start_file - url_str - 9);
+    MS_SERIAL_OUTPUT.print(F("Bucket Name: "));
+    MS_SERIAL_OUTPUT.write(start_bucket, end_bucket - start_bucket);
+    MS_SERIAL_OUTPUT.print(F("Object Name: "));
+    MS_SERIAL_OUTPUT.write(start_file, end_file - start_file);
+    MS_SERIAL_OUTPUT.print(F("Content Type: "));
+    MS_SERIAL_OUTPUT.write(start_content_type,
+                           end_content - start_content_type);
+    MS_SERIAL_OUTPUT.print(F("Expiration Timestamp: "));
+    MS_SERIAL_OUTPUT.write(start_expiration);
+#endif
+
+    uint32_t expiration = atoll(start_expiration + 9);
+    // Check basic validity of the timestamp
+    if (expiration < EARLIEST_SANE_UNIX_TIMESTAMP ||
+        expiration > LATEST_SANE_UNIX_TIMESTAMP) {
+        PRINTOUT(F("The S3 URL timestamp outside of sane ranges:"), expiration);
+        return false;
+    }
+    // If expiration is in the past, it's not valid
+    if (expiration < _baseLogger->getNowUTCEpoch()) {
+        PRINTOUT(F("The S3 URL has expired:"), expiration,
+                 F("is less than the current time"),
+                 _baseLogger->getNowUTCEpoch());
+        return false;
+    }
+
+    // Put the full virtual host into the provided buffer
+    memcpy(s3host, url_str + 8, start_file - url_str - 9);
+    // ^^ add 8 to the start for 'https://'
+    // Subtract 8+1=9 from the length for the 'https://' at the beginning and
+    // the final '/' before the filename
+    memset(s3host + (start_file - url_str - 9), '\0', 1);
+    // ^^ Null terminate, just in case
+
+    // Put rest of the URL into the provided resource buffer
+    strcpy(s3resource, start_file - 1);
+    // ^^ subtract 1 for the '/'
+    // I hope the buffer they gave was big enough!
+
+    // make a temporary buffer for the de-escaping the content type
+    char   ct_str[128] = {'\0'};
+    String ct_esc_str  = String(ct_str);
+    ct_esc_str.replace("%2F", "/");
+    uint8_t ct_str_len = ct_esc_str.length();
+
+    memcpy(content_type, ct_esc_str.c_str(), ct_str_len);
+    memset(content_type + (ct_str_len), '\0', 1);
+    // ^^ Null terminate, just in case
+}
+
 // Post the data to S3.
 int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
+    // Create a buffer for the portions of the request and response
+    char     tempBuffer[37] = "";
+    uint16_t did_respond    = 0;
+
     // if no-one gave us a filename, assume it's a jpg and generate one based on
     // loggername + timestamp
     String filename = _filename;
@@ -147,16 +235,15 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
     // something bad happens while we're waiting for the URL.
     putFile.close();
 
-    // Run whatever function we need to get a new URL
-    // Run the function any time the pre-signed URL pointer has become null
-    // (after use) or if the current filename isn't in the URL (which means it's
-    // not valid).
+#if defined(MS_S3PRESIGNED_VALIDATE_URL_FILENAME)
     if (_PreSignedURL.length() > 0 && _PreSignedURL.indexOf(filename) == 0) {
         PRINTOUT(F("The provided S3 URL is not valid for the current file!"));
         PRINTOUT(F("Current URL:"), _PreSignedURL);
         PRINTOUT(F("Current Filename:"), _filename);
         _PreSignedURL = "";
     }
+#endif
+
     if (_PreSignedURL.length() == 0) {
         if (_getUrlFxn == nullptr) {
             PRINTOUT(F("No valid URL and no function to get one!"));
@@ -180,72 +267,20 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
     // check the file size
     uint32_t file_size = static_cast<uint32_t>(putFile.size());
 
-    // Create a buffer for the portions of the request and response
-    char     tempBuffer[37] = "";
-    uint16_t did_respond    = 0;
-
-    // S3 pre-signed URL's follow the "virtual-hosted style" and have the form:
-    // https://YOUR-BUCKET-NAME.s3.amazonaws.com/file_name.extension
-    //  ?AWSAccessKeyId=ACCESS-KEY-ID
-    //  &Signature=SIGNATURE-VALUE
-    //  &content-type=image%2Fjpeg
-    //  &x-amz-security-token=A-REALLY-REALLY-REALLY-LONG-STRING
-    //  &Expires=unix_timestamp
-
-    const char* url_str = _PreSignedURL.c_str();
-    MS_DEEP_DBG(F("Parsing S3 URL"));
-    MS_DBG(F("Full S3 URL:"), _PreSignedURL);
-    char* start_bucket = const_cast<char*>(url_str) + 8;
-    MS_DEEP_DBG(F("From start of bucket name:"), start_bucket);
-    char* end_bucket = strstr(url_str, s3_parent_host) - 1;
-    MS_DEEP_DBG(F("From end of bucket name:"), end_bucket);
-    char* start_file = strstr(url_str + 8, "/") + 1;
-    MS_DEEP_DBG(F("From start of object name:"), start_file);
-    char* end_file = strstr(start_file, "?");
-    MS_DEEP_DBG(F("From end of object name:"), end_file);
-    char* start_content = strstr(start_file, "&content-type=");
-    MS_DEEP_DBG(F("From start of content param:"), start_content);
-    char* start_content_type = strstr(start_content, "=") + 1;
-    // ^^ Add 1 to start at the character after the '=' so we don't include it
-    MS_DEEP_DBG(F("From start of content type:"), start_content_type);
-    char* end_content = strstr(start_content_type, "&");
-    MS_DEEP_DBG(F("From end of content type:"), end_content);
-    char* start_expiration = strstr(start_file, "&Expires=");
-    MS_DEEP_DBG(F("From start of expiration tag:"), start_expiration);
-
-    uint32_t expiration = atoll(start_expiration + 9);
-    MS_DBG(F("Expiration:"), expiration);
-    if (expiration < _baseLogger->getNowUTCEpoch()) {
-        PRINTOUT(F("The S3 URL has expired:"), expiration,
-                 F("is less than the current time"),
-                 _baseLogger->getNowUTCEpoch());
-        return -2;
-    }
 
     char s3host[81] = {'\0'};
     /// ^^ Bucket names can be 3-63 characters long; the '.s3.amazonaws.com'
     /// adds 17 characters and we add 1 more for the null terminator. This gives
     /// a total maximum length of 63 + 17 + 1 = 81
+    char s3resource[_PreSignedURL.length()] = {'\0'};
+    /// ^^ Allow up to the full length of the URL for the resource
     char content_type[128] = {'\0'};
     /// ^^ Content types can be up to 128 characters long (from
     /// https://stackoverflow.com/questions/19852/maximum-length-of-a-mime-content-type-header-field)
 
-    memcpy(s3host, url_str + 8, start_file - url_str - 9);
-    // ^^ add 8 to the start for 'https://'
-    // Subtract 8+1=9 from the length for the 'https://' at the beginning and
-    // the final '/' before the filename
-    memset(s3host + (start_file - url_str - 9), '\0',
-           81 - (start_file - url_str - 9));
-    // ^^ Fill the rest of the buffer with null terminators
-    MS_DBG(F("S3 Host: "), s3host);
-
-    memcpy(content_type, start_content_type, end_content - start_content_type);
-    memset(content_type + (end_content - start_content_type), '\0',
-           128 - (end_content - start_content_type));
-    MS_DBG(F("Content Type: "), content_type);
-    String ct_str = String(content_type);
-    ct_str.replace("%2F", "/");
-    MS_DBG(F("Content Type (STR): "), ct_str);
+    if (!validateS3URL(_PreSignedURL, s3host, s3resource, content_type)) {
+        return -2;
+    }
 
     // Open a TLS/TCP/IP connection to S3
     MS_DBG(F("Connecting client"));
@@ -259,8 +294,7 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
         txBufferAppend(putHeader);
 
         // add in the file/query portion of the URL
-        txBufferAppend('/');
-        txBufferAppend(start_file);
+        txBufferAppend(s3resource);
 
         char file_size_str[10] = {0};
         itoa(file_size, file_size_str, 10);
@@ -270,7 +304,7 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
         txBufferAppend(hostHeader);
         txBufferAppend(s3host);
         txBufferAppend(contentTypeHeader);
-        txBufferAppend(ct_str.c_str());
+        txBufferAppend(content_type);
         txBufferAppend(contentLengthHeader);
         txBufferAppend(file_size_str);
         txBufferAppend("\r\n\r\n");

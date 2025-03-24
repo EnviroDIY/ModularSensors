@@ -77,6 +77,7 @@
 // #define MS_UBIDOTSPUBLISHER_DEBUG
 // #define MS_DREAMHOSTPUBLISHER_DEBUG
 // #define MS_AWS_IOT_PUBLISHER_DEBUG
+// #define MS_S3PRESIGNEDPUBLISHER_DEBUG
 
 // #define MS_LOGGERMODEM_DEBUG
 // #define MS_LOGGERMODEM_DEBUG_DEEP
@@ -324,6 +325,11 @@
  */
 #define S3_DEFAULT_FILE_EXTENSION ".jpg"
 #endif
+/**
+ * @brief Define this to tell the S3 publisher verify that the expected filename
+ * is contained in the S3 URL.
+ */
+// #define MS_S3PRESIGNED_VALIDATE_URL_FILENAME
 /**
  * @brief Define this to tell the S3 publisher to prevent reuse of pre-signed
  * URLs or upload filenames.

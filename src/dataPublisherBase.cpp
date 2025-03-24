@@ -128,20 +128,14 @@ void dataPublisher::txBufferAppend(char c, bool debug_flush) {
 void dataPublisher::txBufferFlush(bool debug_flush) {
     MS_DBG(F("Flushing Tx buffer:"));
 
+#if !defined(MS_SILENT)
     if (debug_flush) {
-#if defined(MS_OUTPUT)
         // write out to the printout stream for debugging
-        MS_OUTPUT.write((const uint8_t*)txBuffer, txBufferLen);
-        MS_OUTPUT.println();
-        MS_OUTPUT.flush();
-#endif
-#if defined(MS_2ND_OUTPUT)
-        // write out to the secondary printout stream for debugging
-        MS_2ND_OUTPUT.write((const uint8_t*)txBuffer, txBufferLen);
-        MS_2ND_OUTPUT.println();
-        MS_2ND_OUTPUT.flush();
-#endif
+        MS_SERIAL_OUTPUT.write((const uint8_t*)txBuffer, txBufferLen);
+        MS_SERIAL_OUTPUT.println();
+        MS_SERIAL_OUTPUT.flush();
     }
+#endif
 
     // If there's nothing to send or nowhere to send it to, just return
     if ((txBufferOutClient == nullptr) || (txBufferLen == 0)) {

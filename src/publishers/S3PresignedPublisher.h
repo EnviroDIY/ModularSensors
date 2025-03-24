@@ -18,20 +18,14 @@
 
 // Debugging Statement
 // #define MS_S3PRESIGNEDPUBLISHER_DEBUG
-// #define MS_S3PRESIGNEDPUBLISHER_DEBUG_DEEP
 
 #ifdef MS_S3PRESIGNEDPUBLISHER_DEBUG
 #define MS_DEBUGGING_STD "S3PresignedPublisher"
 #endif
 
-#ifdef MS_S3PRESIGNEDPUBLISHER_DEBUG_DEEP
-#define MS_DEBUGGING_DEEP "dataPublisherBase"
-#endif
-
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
-#undef MS_DEBUGGING_DEEP
 #include "dataPublisherBase.h"
 
 
@@ -281,8 +275,6 @@ class S3PresignedPublisher : public dataPublisher {
     static const char* contentLengthHeader;  ///< The content length header text
     static const char* contentTypeHeader;    ///< The content type header text
 
-
- private:
     /**
      * @brief Private reference to function used fetch a new S3 URL.
      */
@@ -323,6 +315,26 @@ class S3PresignedPublisher : public dataPublisher {
      * @brief An internal reference to an SdFat file instance
      */
     File putFile;
+
+    /**
+     * @brief Parses the S3 URL to validate that it is an un-expired S3 URL and
+     * fills the provided buffers with the parsed host, resource name, and
+     * content type from the URL.
+     *
+     * Do *not* use the values in the buffers before checking the return type!
+     *
+     * @param s3url The S3 URL to parse
+     * @param s3host A buffer for the parsed host name.  Must be at least 81
+     * characters long.
+     * @param s3resource A buffer for the parsed resource. Should be long enough
+     * for the whole URL less the host.
+     * @param content_type A buffer for the parsed *and de-escapted* content
+     * type. Must be at least 128 characters long
+     * @return True if the URL is valid and the provided buffers have been
+     * filled.
+     */
+    bool validateS3URL(String& s3url, char* s3host, char* s3resource,
+                       char* content_type);
 };
 
 #endif  // SRC_PUBLISHERS_S3PRESIGNEDPUBLISHER_H_
