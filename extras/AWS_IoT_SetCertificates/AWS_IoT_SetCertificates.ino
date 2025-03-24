@@ -113,7 +113,7 @@ static const char topicInit[] TINY_GSM_PROGMEM = THING_NAME "/init";
 StreamDebugger debugger(SerialAT, SerialMon);
 TinyGsm        modem(debugger);
 #else
-TinyGsm        modem(SerialAT);
+TinyGsm modem(SerialAT);
 #endif
 
 TinyGsmClientSecure secureClient(modem);

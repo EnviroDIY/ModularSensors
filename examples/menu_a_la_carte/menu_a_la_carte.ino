@@ -1568,6 +1568,9 @@ Variable* hydrocamByteError = new GeoluxHydroCam_ByteError(
 
 
 #if defined(BUILD_SENSOR_GRO_POINT_GPLP8)
+#ifndef BUILD_MODBUS_SENSOR
+#define BUILD_MODBUS_SENSOR
+#endif
 // ==========================================================================
 //  GroPoint Profile GPLP-8 Soil Moisture and Temperature Sensor
 // ==========================================================================
@@ -1701,6 +1704,9 @@ Variable* trollDepth = new InSituTrollSdi12a_Depth(
 
 
 #if defined(BUILD_SENSOR_KELLER_ACCULEVEL)
+#ifndef BUILD_MODBUS_SENSOR
+#define BUILD_MODBUS_SENSOR
+#endif
 // ==========================================================================
 //  Keller Acculevel High Accuracy Submersible Level Transmitter
 // ==========================================================================
@@ -1735,6 +1741,9 @@ Variable* acculevHeight = new KellerAcculevel_Height(
 
 
 #if defined(BUILD_SENSOR_KELLER_NANOLEVEL)
+#ifndef BUILD_MODBUS_SENSOR
+#define BUILD_MODBUS_SENSOR
+#endif
 // ==========================================================================
 //  Keller Nanolevel High Accuracy Submersible Level Transmitter
 // ==========================================================================
@@ -1989,7 +1998,7 @@ RainCounterI2C tbi2c(&softI2C, RainCounterI2CAddress, depthPerTipEvent);
 // RainCounterI2C tbi2c(softwareSDA, softwareSCL, RainCounterI2CAddress,
 //                      depthPerTipEvent);
 #else
-RainCounterI2C  tbi2c(RainCounterI2CAddress, depthPerTipEvent);
+RainCounterI2C tbi2c(RainCounterI2CAddress, depthPerTipEvent);
 #endif
 
 // Create number of tips and rain depth variable pointers for the tipping bucket
@@ -2285,6 +2294,9 @@ Variable* VegaPulsError =
 
 
 #if defined(BUILD_SENSOR_YOSEMITECH_Y504)
+#ifndef BUILD_MODBUS_SENSOR
+#define BUILD_MODBUS_SENSOR
+#endif
 // ==========================================================================
 //  Yosemitech Y504 Dissolved Oxygen Sensor
 // ==========================================================================
@@ -2320,6 +2332,9 @@ Variable* y504Temp =
 
 
 #if defined(BUILD_SENSOR_YOSEMITECH_Y510)
+#ifndef BUILD_MODBUS_SENSOR
+#define BUILD_MODBUS_SENSOR
+#endif
 // ==========================================================================
 //  Yosemitech Y510 Turbidity Sensor
 // ==========================================================================
@@ -2352,6 +2367,9 @@ Variable* y510Temp =
 
 
 #if defined(BUILD_SENSOR_YOSEMITECH_Y511)
+#ifndef BUILD_MODBUS_SENSOR
+#define BUILD_MODBUS_SENSOR
+#endif
 // ==========================================================================
 //  Yosemitech Y511 Turbidity Sensor with Wiper
 // ==========================================================================
@@ -2384,6 +2402,9 @@ Variable* y511Temp =
 
 
 #if defined(BUILD_SENSOR_YOSEMITECH_Y513)
+#ifndef BUILD_MODBUS_SENSOR
+#define BUILD_MODBUS_SENSOR
+#endif
 // ==========================================================================
 //  Yosemitech Y513 Blue Green Algae (BGA) Sensor
 // ==========================================================================
@@ -2416,6 +2437,9 @@ Variable* y513Temp =
 #endif
 
 #if defined(BUILD_SENSOR_YOSEMITECH_Y514)
+#ifndef BUILD_MODBUS_SENSOR
+#define BUILD_MODBUS_SENSOR
+#endif
 // ==========================================================================
 //  Yosemitech Y514 Chlorophyll Sensor
 // ==========================================================================
@@ -2449,6 +2473,9 @@ Variable* y514Temp =
 
 
 #if defined(BUILD_SENSOR_YOSEMITECH_Y520)
+#ifndef BUILD_MODBUS_SENSOR
+#define BUILD_MODBUS_SENSOR
+#endif
 // ==========================================================================
 //  Yosemitech Y520 Conductivity Sensor
 // ==========================================================================
@@ -2481,6 +2508,9 @@ Variable* y520Temp =
 
 
 #if defined(BUILD_SENSOR_YOSEMITECH_Y532)
+#ifndef BUILD_MODBUS_SENSOR
+#define BUILD_MODBUS_SENSOR
+#endif
 // ==========================================================================
 //  Yosemitech Y532 pH
 // ==========================================================================
@@ -2515,6 +2545,9 @@ Variable* y532Temp =
 
 
 #if defined(BUILD_SENSOR_YOSEMITECH_Y533)
+#ifndef BUILD_MODBUS_SENSOR
+#define BUILD_MODBUS_SENSOR
+#endif
 // ==========================================================================
 //  Yosemitech Y533 Oxidation Reduction Potential (ORP)
 // ==========================================================================
@@ -2546,6 +2579,9 @@ Variable* y533Temp =
 
 
 #if defined(BUILD_SENSOR_YOSEMITECH_Y551)
+#ifndef BUILD_MODBUS_SENSOR
+#define BUILD_MODBUS_SENSOR
+#endif
 // ==========================================================================
 //  Yosemitech Y551 COD Sensor with Wiper
 // ==========================================================================
@@ -2580,6 +2616,9 @@ Variable* y551Temp =
 
 
 #if defined(BUILD_SENSOR_YOSEMITECH_Y560)
+#ifndef BUILD_MODBUS_SENSOR
+#define BUILD_MODBUS_SENSOR
+#endif
 // ==========================================================================
 //  Yosemitech Y560 Ammonium Probe with Wiper
 // ==========================================================================
@@ -2616,6 +2655,9 @@ Variable* y560Temp =
 
 
 #if defined(BUILD_SENSOR_YOSEMITECH_Y700)
+#ifndef BUILD_MODBUS_SENSOR
+#define BUILD_MODBUS_SENSOR
+#endif
 // ==========================================================================
 //  Yosemitech Y700 Pressure Sensor
 // ==========================================================================
@@ -2648,6 +2690,9 @@ Variable* y700Temp =
 
 
 #if defined(BUILD_SENSOR_YOSEMITECH_Y4000)
+#ifndef BUILD_MODBUS_SENSOR
+#define BUILD_MODBUS_SENSOR
+#endif
 // ==========================================================================
 //  Yosemitech Y4000 Multiparameter Sonde (DOmgL, Turbidity, Cond, pH, Temp,
 //    ORP, Chlorophyll, BGA)
@@ -2693,6 +2738,9 @@ Variable* y4000BGA =
 
 
 #if defined(BUILD_SENSOR_ZEBRA_TECH_D_OPTO)
+#ifndef BUILD_MODBUS_SENSOR
+#define BUILD_MODBUS_SENSOR
+#endif
 // ==========================================================================
 //  Zebra Tech D-Opto Dissolved Oxygen Sensor
 // ==========================================================================
@@ -3256,8 +3304,8 @@ String s3URLMsgGetter() {
         String("\"}");
 }
 #else
-String      s3URLMsgGetter() {
-         return String("{\"file\": \"image.jpg\"}");
+String s3URLMsgGetter() {
+    return String("{\"file\": \"image.jpg\"}");
 }
 #endif
 
@@ -3455,9 +3503,11 @@ void setup() {
     modemSerial.begin(modemBaud);
 #endif
 
+#if BUILD_MODBUS_SENSOR
     // Start the stream for the modbus sensors;
     // all currently supported modbus sensors use 9600 baud
     modbusSerial.begin(9600);
+#endif
 
 #if defined(BUILD_SENSOR_MAX_BOTIX_SONAR)
     // Start the stream for the sonar; it will always be at 9600 baud
@@ -3539,7 +3589,6 @@ void setup() {
 #endif
 
 #if defined(BUILD_PUB_S3_PRESIGNED_PUBLISHER)
-    // s3pub.setFileName(String("image.jpg"));
     s3pub.setCACertName(caCertName);
     s3pub.attachToLogger(dataLogger);
 #endif

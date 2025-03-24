@@ -132,7 +132,7 @@ EspressifESP32 modem = modemESP;
 #if defined(ENVIRODIY_STONEFLY_M4)
 const char* mcuBoardVersion = "v0.1";
 #elif defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
-const char*  mcuBoardVersion = "v1.1";
+const char* mcuBoardVersion = "v1.1";
 #else
 const char* mcuBoardVersion = "unknown";
 #endif
@@ -151,7 +151,7 @@ const int8_t alsPower = sensorPowerPin;  // Power pin
 #if defined(ENVIRODIY_STONEFLY_M4)
 const int8_t alsData = A8;  // The ALS PT-19 data pin
 #else
-const int8_t alsData         = A4;  // The ALS PT-19 data pin
+const int8_t alsData = A4;  // The ALS PT-19 data pin
 #endif
 const int8_t  alsSupply     = 3.3;  // The ALS PT-19 supply power voltage
 const int8_t  alsResistance = 10;   // The ALS PT-19 loading resistance (in kΩ)

@@ -796,8 +796,7 @@ void Logger::systemSleep(void) {
     // instruction and actual writing of the SLEEPCFG register due to bridges
     // .Software must ensure that the SLEEPCFG register reads the desired value
     // before executing a WFI instruction.
-    while (PM->SLEEPCFG.bit.SLEEPMODE != PM_SLEEPCFG_SLEEPMODE_STANDBY_Val)
-        ;
+    while (PM->SLEEPCFG.bit.SLEEPMODE != PM_SLEEPCFG_SLEEPMODE_STANDBY_Val);
 
     // Configure standby mode
     // PM->STDBYCFG.reg = PM_STDBYCFG_RAMCFG(0x0) | PM_STDBYCFG_FASTWKUP(0x0);
@@ -815,8 +814,7 @@ void Logger::systemSleep(void) {
     //  software must ensure that the INTFLAG.SLEEPRDY bit is set.
     //  SRGD Note: I believe this only applies at power-on, but it's probably
     //  not a bad idea to check that the flag has been set.
-    while (!PM->INTFLAG.bit.SLEEPRDY)
-        ;
+    while (!PM->INTFLAG.bit.SLEEPRDY);
 #else
     //^^ SAMD21
 
@@ -1084,8 +1082,8 @@ void Logger::setFileName(const char* fileName) {
 String Logger::generateFileName(bool include_time, const char* extension,
                                 const char* filePrefix) {
     const char* use_prefix = filePrefix != nullptr ? filePrefix : getLoggerID();
-    uint8_t     len_underscore = strlen(use_prefix) > 0 ? 1 : 0;
-    uint8_t     len_time       = include_time ? 15 : 8;
+    uint8_t     len_underscore      = strlen(use_prefix) > 0 ? 1 : 0;
+    uint8_t     len_time            = include_time ? 15 : 8;
     char        time_buff[len_time] = {'\0'};
     if (include_time) {
         formatDateTime(time_buff, "%Y%m%d_%H%M%S", Logger::markedLocalUnixTime);
@@ -1573,13 +1571,11 @@ void Logger::begin() {
 
 #if defined(ARDUINO_ARCH_SAMD)
     MS_DBG(F("Disabling the USB on standby to lower sleep current"));
-    USB->DEVICE.CTRLA.bit.ENABLE = 0;  // Disable the USB peripheral
-    while (USB->DEVICE.SYNCBUSY.bit.ENABLE)
-        ;                                // Wait for synchronization
-    USB->DEVICE.CTRLA.bit.RUNSTDBY = 0;  // Deactivate run on standby
-    USB->DEVICE.CTRLA.bit.ENABLE   = 1;  // Enable the USB peripheral
-    while (USB->DEVICE.SYNCBUSY.bit.ENABLE)
-        ;  // Wait for synchronization
+    USB->DEVICE.CTRLA.bit.ENABLE = 0;         // Disable the USB peripheral
+    while (USB->DEVICE.SYNCBUSY.bit.ENABLE);  // Wait for synchronization
+    USB->DEVICE.CTRLA.bit.RUNSTDBY = 0;       // Deactivate run on standby
+    USB->DEVICE.CTRLA.bit.ENABLE   = 1;       // Enable the USB peripheral
+    while (USB->DEVICE.SYNCBUSY.bit.ENABLE);  // Wait for synchronization
 #if !defined(__SAMD51__)
     // Keep the voltage regulator running in standby
     // doing this just in case the various periperals try to suck too much power

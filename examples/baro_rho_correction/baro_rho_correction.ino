@@ -223,7 +223,7 @@ float calculateWaterPressure(void) {
     float totalPressureFromMS5803 = ms5803Press->getValue();
     float baroPressureFromBME280  = bme280Press->getValue();
     float waterPressure           = totalPressureFromMS5803 -
-        (baroPressureFromBME280)*0.01;
+        (baroPressureFromBME280) * 0.01;
     if (totalPressureFromMS5803 == -9999 || baroPressureFromBME280 == -9999) {
         waterPressure = -9999;
     }

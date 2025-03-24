@@ -205,7 +205,7 @@ RV8803 loggerClock::rtc;
 // pass
 // The Sodaq DS3231 library externs the clock instance, so it's not needed here
 #elif defined(MS_USE_RTC_ZERO)
-RTCZero    loggerClock::zero_sleep_rtc;
+RTCZero loggerClock::zero_sleep_rtc;
 #endif
 
 
@@ -448,7 +448,7 @@ void loggerClock::setNextRTCInterrupt(epochTime in_time, int8_t utcOffset) {
     // second early.
     zero_sleep_rtc.setAlarmTime(tmp->tm_hour, tmp->tm_min, tmp->tm_sec - 1);
     zero_sleep_rtc.enableAlarm(
-           zero_sleep_rtc.MATCH_HHMMSS);  // Every day at the matched time
+        zero_sleep_rtc.MATCH_HHMMSS);  // Every day at the matched time
 #endif
 }
 

@@ -201,8 +201,8 @@ String ProcessorStats::getLastResetCause() {
  */
 int16_t FreeRam() {
     extern int16_t __heap_start, *__brkval;
-    int16_t v;
-    float sensorValue_freeRam = (int)&v -
+    int16_t        v;
+    float          sensorValue_freeRam = (int)&v -
         (__brkval == 0 ? (int)&__heap_start : (int)__brkval);
     return sensorValue_freeRam;
 }
