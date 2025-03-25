@@ -129,6 +129,8 @@ ___
       - [DreamHost](#dreamhost)
       - [ThingSpeak](#thingspeak)
       - [Ubidots](#ubidots)
+      - [AWS S3](#aws-s3)
+      - [AWS IoT Core](#aws-iot-core)
   - [Extra Working Functions](#extra-working-functions)
   - [Arduino Setup Function](#arduino-setup-function)
     - [Starting the Function](#starting-the-function)
@@ -1316,6 +1318,7 @@ ___
 After you have set up a channel and MQTT device on ThingSpeak, you can use this code to publish your data to it.
 
 Keep in mind that the order of variables in the VariableArray is **crucial** when publishing to ThingSpeak.
+If you set a user API key, this library will attempt to update your channel name and your field names with the logger ID and the variable names at bootup.
 
 <!--! @menusnip{thing_speak_publisher} -->
 
@@ -1326,6 +1329,30 @@ ___
 Use this to publish data to Ubidots.
 
 <!--! @menusnip{ubidots_publisher} -->
+
+___
+
+#### AWS S3<!--! {#menu_walk_s3_presigned_publisher} -->
+
+Use this to publish data S3 using a pre-signed URL.
+Getting this to work requires you to set up an endpoint and parse an incoming S3 URL to publish to.
+Unlike the other publishers, this S3 publisher is **not** meant to be used to publish numeric sensor data.
+This is intended to send image data from the Geolux HydroCam or any future sensors that generate image or other large binary data.
+See the separate AWS examples for how to use this.
+
+
+<!--! @menusnip{s3_presigned_publisher} -->
+
+___
+
+#### AWS IoT Core<!--! {#menu_walk_aws_io_t_publisher} -->
+
+Use this to publish data to AWS IoT Core.
+This can also be used to fetch a pre-signed URL to publish to S3 - if you have the proper IoT Core rules and a lambda function set up.
+See the separate AWS examples for how to use this.
+
+
+<!--! @menusnip{aws_io_t_publisher} -->
 
 ___
 

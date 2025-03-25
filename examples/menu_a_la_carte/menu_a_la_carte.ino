@@ -3316,12 +3316,12 @@ S3PresignedPublisher s3pub;
 #endif
 
 
-#if defined(BUILD_PUB_ASW_IOT_PUBLISHER) && \
+#if defined(BUILD_PUB_AWS_IO_T_PUBLISHER) && \
     (!defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM))
 // ==========================================================================
 //  AWS IoT Core MQTT Publisher
 // ==========================================================================
-/** Start [aws_iot_publisher] */
+/** Start [aws_io_t_publisher] */
 // The endpoint for your AWS IoT instance
 const char* awsIoTEndpoint = "xxx-ats.iot.xxx.amazonaws.com";
 // Sampling feature UUID, this will be the sub-topic for your data
@@ -3379,7 +3379,7 @@ void IoTCallback(char* topic, byte* payload, unsigned int length) {
     }
 }
 #endif
-/** End [aws_iot_publisher] */
+/** End [aws_io_t_publisher] */
 #endif
 
 
@@ -3605,7 +3605,7 @@ void setup() {
     s3pub.attachToLogger(dataLogger);
 #endif
 
-#if defined(BUILD_PUB_ASW_IOT_PUBLISHER) &&      \
+#if defined(BUILD_PUB_AWS_IO_T_PUBLISHER) &&     \
     defined(BUILD_PUB_S3_PRESIGNED_PUBLISHER) && \
     (!defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM))
     // Set the callback function for the AWS IoT Core MQTT connection

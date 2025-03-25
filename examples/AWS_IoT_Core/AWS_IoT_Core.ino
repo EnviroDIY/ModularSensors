@@ -235,7 +235,7 @@ Logger dataLogger;
 // ==========================================================================
 //  AWS IoT Core MQTT Publisher
 // ==========================================================================
-/** Start [aws_iot_publisher] */
+/** Start [aws_io_t_publisher] */
 // The endpoint for your AWS IoT instance
 const char* awsIoTEndpoint = "xxx-ats.iot.XXX.amazonaws.com";
 // Sampling feature UUID, this will be the sub-topic for your data
@@ -251,7 +251,7 @@ const char* clientKeyName = "thing-private.pem.key";
 #include <publishers/AWS_IoT_Publisher.h>
 AWS_IoT_Publisher awsIoTPub(dataLogger, awsIoTEndpoint, caCertName,
                             clientCertName, clientKeyName, samplingFeature);
-/** End [aws_iot_publisher] */
+/** End [aws_io_t_publisher] */
 
 
 // ==========================================================================
