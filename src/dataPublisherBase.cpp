@@ -87,6 +87,10 @@ void dataPublisher::txBufferInit(Client* outClient) {
     txBufferLen = 0;
     // clear the buffer
     memset(txBuffer, '\0', MS_SEND_BUFFER_SIZE);
+
+#if !defined(MS_SILENT)
+    MS_SERIAL_OUTPUT.println();
+#endif
 }
 
 void dataPublisher::txBufferAppend(const char* data, size_t length,

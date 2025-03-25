@@ -122,7 +122,7 @@ int16_t UbidotsPublisher::publishData(Client* outClient, bool) {
     MS_DBG(F("Connecting client"));
     MS_START_DEBUG_TIMER;
     if (outClient->connect(ubidotsHost, ubidotsPort)) {
-        MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms\n"));
+        MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
         txBufferInit(outClient);
 
         // copy the initial post header into the tx buffer

@@ -299,10 +299,11 @@ int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
         // immediately subscribe to any requested topics
         // NOTE: Subscribe to topics before publishing data so we don't miss
         // anything
+        PRINTOUT(F("\nSubscribing to requested topics"));
         uint8_t subs_added = 0;
         for (uint8_t i = 0; i < MS_AWS_IOT_PUBLISHER_SUB_COUNT; i++) {
             if (sub_topics[i] != nullptr) {
-                MS_DBG(F("Subscribing to topic:"), sub_topics[i]);
+                PRINTOUT(F("Subscribing to topic:"), sub_topics[i]);
                 _mqttClient.subscribe(sub_topics[i]);
                 subs_added++;
             }
@@ -316,8 +317,8 @@ int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
 
         // Publish the data
         MS_DBG(F("Publishing primary data to AWS IoT Core"));
-        MS_DBG(F("Topic:"), use_topic);
-        MS_DBG(F("Message:"), txBuffer);
+        PRINTOUT(F("\nTopic ["), strlen(use_topic), F("]:"), use_topic);
+        PRINTOUT(F("Message ["), strlen(txBuffer), F("]:"), txBuffer);
         if (_mqttClient.publish(use_topic, txBuffer, false)) {
             PRINTOUT(F("AWS IoT Core topic published!  Current state:"),
                      parseMQTTState(_mqttClient.state()));
@@ -330,12 +331,14 @@ int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
 
         // publish any other messages
         uint8_t pubs_done = 0;
-        MS_DBG(F("Publishing to other requested topics"));
+        PRINTOUT(F("\nPublishing to other requested topics"));
         for (uint8_t i = 0; i < MS_AWS_IOT_PUBLISHER_PUB_COUNT; i++) {
             if (pub_topics[i] != nullptr) {
-                MS_DBG(F("Topic:"), pub_topics[i]);
                 String pub_content = contentGetrFxns[i]();
-                MS_DBG(F("Message:"), pub_content);
+                PRINTOUT(F("Topic ["), strlen(pub_topics[i]), F("]:"),
+                         pub_topics[i]);
+                PRINTOUT(F("Message ["), pub_content.length(), F("]:"),
+                         pub_content);
                 _mqttClient.publish(pub_topics[i], pub_content.c_str());
                 pubs_done++;
             }
@@ -425,6 +428,8 @@ int16_t AWS_IoT_Publisher::publishMetadata(Client* outClient) {
         txBufferAppend("}");
         txBufferAppend('\0');  // null terminate!
         MS_DBG(F("Logger metadata message length:"), txBufferLen);
+        PRINTOUT(F("\nTopic ["), strlen(use_topic), F("]:"), use_topic);
+        PRINTOUT(F("Message ["), strlen(txBuffer), F("]:"), txBuffer);
         retVal = _mqttClient.publish(use_topic, txBuffer, false);
 
         for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
@@ -452,6 +457,8 @@ int16_t AWS_IoT_Publisher::publishMetadata(Client* outClient) {
             txBufferAppend("\0");  // null terminate!
             MS_DBG(F("Variable"), i, F("metadata message length:"),
                    txBufferLen);
+            PRINTOUT(F("\nTopic ["), strlen(use_topic), F("]:"), use_topic);
+            PRINTOUT(F("Message ["), strlen(txBuffer), F("]:"), txBuffer);
             _mqttClient.publish(varTopicBuffer, txBuffer, false);
         }
 

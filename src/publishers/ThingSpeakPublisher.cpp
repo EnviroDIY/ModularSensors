@@ -176,8 +176,8 @@ int16_t ThingSpeakPublisher::publishData(Client* outClient, bool) {
 
         // Do the whole publish at once
         MS_DBG(F("Publishing to ThingSpeak"));
-        MS_DBG(F("Topic:"), topicBuffer);
-        MS_DBG(F("Message:"), txBuffer);
+        PRINTOUT(F("\nTopic ["), strlen(topicBuffer), F("]:"), topicBuffer);
+        PRINTOUT(F("Message ["), strlen(txBuffer), F("]:"), txBuffer);
         retVal = _mqttClient.publish(topicBuffer, txBuffer, false);
 
         PRINTOUT(F("ThingSpeak topic published!  Current state:"),

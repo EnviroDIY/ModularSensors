@@ -125,7 +125,6 @@ bool S3PresignedPublisher::validateS3URL(String& s3url, char* s3host,
     //  &Expires=unix_timestamp
 
     const char* url_str = s3url.c_str();  // should be null terminated!
-    int         len_url = s3url.length();
 
     MS_DBG(F("Full S3 URL:"), url_str);
 
@@ -143,23 +142,24 @@ bool S3PresignedPublisher::validateS3URL(String& s3url, char* s3host,
     char* start_content_type = strstr(start_content, "=") + 1;
     // ^^ Add 1 to start at the character after the '=' so we don't include it
     char* end_content      = strstr(start_content_type, "&");
-    char* start_expiration = strstr(start_file, "&Expires=");
+    char* start_expiration = strstr(start_file, "&Expires=") + 9;
 
 #if defined MS_S3PRESIGNEDPUBLISHER_DEBUG
     MS_SERIAL_OUTPUT.print(F("Virtual Host Name:"));
     MS_SERIAL_OUTPUT.write(url_str + 8, start_file - url_str - 9);
-    MS_SERIAL_OUTPUT.print(F("Bucket Name: "));
+    MS_SERIAL_OUTPUT.print(F("\nBucket Name: "));
     MS_SERIAL_OUTPUT.write(start_bucket, end_bucket - start_bucket);
-    MS_SERIAL_OUTPUT.print(F("Object Name: "));
+    MS_SERIAL_OUTPUT.print(F("\nObject Name: "));
     MS_SERIAL_OUTPUT.write(start_file, end_file - start_file);
-    MS_SERIAL_OUTPUT.print(F("Content Type: "));
+    MS_SERIAL_OUTPUT.print(F("\nContent Type: "));
     MS_SERIAL_OUTPUT.write(start_content_type,
                            end_content - start_content_type);
-    MS_SERIAL_OUTPUT.print(F("Expiration Timestamp: "));
+    MS_SERIAL_OUTPUT.print(F("\nExpiration Timestamp: "));
     MS_SERIAL_OUTPUT.write(start_expiration);
+    MS_SERIAL_OUTPUT.println();
 #endif
 
-    uint32_t expiration = atoll(start_expiration + 9);
+    uint32_t expiration = atoll(start_expiration);
     // Check basic validity of the timestamp
     if (expiration < EARLIEST_SANE_UNIX_TIMESTAMP ||
         expiration > LATEST_SANE_UNIX_TIMESTAMP) {
@@ -188,10 +188,13 @@ bool S3PresignedPublisher::validateS3URL(String& s3url, char* s3host,
     // I hope the buffer they gave was big enough!
 
     // make a temporary buffer for the de-escaping the content type
-    char   ct_str[128] = {'\0'};
-    String ct_esc_str  = String(ct_str);
+    char ct_str[128] = {'\0'};
+    memcpy(ct_str, start_content_type, end_content - start_content_type);
+    memset(ct_str + (end_content - start_content_type), '\0', 1);
+    String ct_esc_str = String(ct_str);
     ct_esc_str.replace("%2F", "/");
     uint8_t ct_str_len = ct_esc_str.length();
+    MS_DBG(F("De-Escaped Content Type:"), ct_esc_str);
 
     memcpy(content_type, ct_esc_str.c_str(), ct_str_len);
     memset(content_type + (ct_str_len), '\0', 1);
@@ -287,7 +290,7 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
     MS_START_DEBUG_TIMER;
     // NOTE: always use port 443 for SSL connections to S3
     if (outClient->connect(s3_parent_host, s3Port)) {
-        MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms\n"));
+        MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
         txBufferInit(outClient);
 
         // copy the initial post header into the tx buffer
