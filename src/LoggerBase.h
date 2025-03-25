@@ -713,7 +713,7 @@ class Logger {
      *
      * @param forceFlush Ask the publishers to flush buffered data immediately.
      */
-    void publishDataToRemotes(bool forceFlush = false);
+    void publishDataToRemotes(bool forceFlush = MS_ALWAYS_FLUSH_PUBLISHERS);
     /**
      * @brief Retained for backwards compatibility, use publishDataToRemotes()
      * in new code.

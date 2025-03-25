@@ -1756,9 +1756,10 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
         // Create a csv data record and save it to the log file
         logToSD();
 
-        // flush the publisher buffers (if any) if we have been invoked by the
-        // testing button
-        bool forceFlush = Logger::startTesting;
+        // Flush the publisher buffers (if any) if we have been invoked by the
+        // testing button, otherwise follow settings from
+        // MS_ALWAYS_FLUSH_PUBLISHERS
+        bool forceFlush = Logger::startTesting || MS_ALWAYS_FLUSH_PUBLISHERS;
 
         // Sync the clock at noon
         bool clockSyncNeeded = (Logger::markedLocalUnixTime != 0 &&

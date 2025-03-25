@@ -235,6 +235,15 @@
 #define MAX_NUMBER_SENDERS 4
 #endif
 
+#ifndef MS_ALWAYS_FLUSH_PUBLISHERS
+/**
+ * @brief Set this to true to always force publishers to attempt to transmit
+ * data.  If false, publishers will only transmit data at the sendEveryX
+ * interval or when the buffer fills.
+ */
+#define MS_ALWAYS_FLUSH_PUBLISHERS true
+#endif
+
 #ifndef MS_SEND_BUFFER_SIZE
 /**
  * @brief Send Buffer

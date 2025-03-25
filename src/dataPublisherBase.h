@@ -198,7 +198,9 @@ class dataPublisher {
      * @return The result of publishing data.  May be an http response code or a
      * result code from PubSubClient.
      */
-    virtual int16_t publishData(Client* outClient, bool forceFlush = false) = 0;
+    virtual int16_t
+    publishData(Client* outClient,
+                bool    forceFlush = MS_ALWAYS_FLUSH_PUBLISHERS) = 0;
     /**
      * @brief Open a socket to the correct receiver and send out the formatted
      * data.
@@ -213,7 +215,7 @@ class dataPublisher {
      * result code from PubSubClient. Defaults to -2 if the publisher fails to
      * create a client.
      */
-    virtual int16_t publishData(bool forceFlush = false);
+    virtual int16_t publishData(bool forceFlush = MS_ALWAYS_FLUSH_PUBLISHERS);
 
 
     /**

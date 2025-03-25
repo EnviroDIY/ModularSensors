@@ -265,7 +265,8 @@ class S3PresignedPublisher : public dataPublisher {
      *
      * @return The http status code of the response.
      */
-    int16_t publishData(Client* outClient, bool forceFlush = false) override;
+    int16_t publishData(Client* outClient,
+                        bool forceFlush = MS_ALWAYS_FLUSH_PUBLISHERS) override;
 
  protected:
     virtual Client*    createClient() override;
