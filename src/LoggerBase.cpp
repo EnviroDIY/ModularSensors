@@ -1081,6 +1081,7 @@ void Logger::setFileName(const char* fileName) {
 
 String Logger::generateFileName(bool include_time, const char* extension,
                                 const char* filePrefix) {
+    if (Logger::markedLocalUnixTime == 0) { markTime(); }
     const char* use_prefix = filePrefix != nullptr ? filePrefix : getLoggerID();
     uint8_t     len_underscore      = strlen(use_prefix) > 0 ? 1 : 0;
     uint8_t     len_time            = include_time ? 15 : 8;
