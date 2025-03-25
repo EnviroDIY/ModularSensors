@@ -216,10 +216,10 @@ Client* AWS_IoT_Publisher::createClient() {
     }
     return newClient;
 }
-void AWS_IoT_Publisher::deleteClient(Client* _client) {
+void AWS_IoT_Publisher::deleteClient(Client* client) {
     if (_baseModem != nullptr) {
         MS_DBG(F("Attempting to delete the client"));
-        return _baseModem->deleteSecureClient(_client);
+        return _baseModem->deleteSecureClient(client);
     }
 }
 

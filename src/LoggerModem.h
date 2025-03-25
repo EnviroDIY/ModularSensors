@@ -567,20 +567,53 @@ class loggerModem {
 
     /**
      * @brief Create a new client object using the default socket number
+     *
+     * @return A new client object
      */
     virtual Client* createClient() = 0;
 
     /**
      * @brief Create a new secure client object using the default socket number
+     *
+     * @return A new secure client object
      */
     virtual Client* createSecureClient() = 0;
+    /**
+     * @brief Create a new secure client object using the default socket number
+     *
+     * @param sslAuthMode The SSL authentication mode to use
+     * @param sslVersion The SSL version to use
+     * @param CAcertName The name of the CA certificate to use
+     * @param clientCertName The name of the client certificate to use
+     * @param clientKeyName The name of the client key to use
+     *
+     * @return A new secure client object
+     */
     virtual Client* createSecureClient(
         SSLAuthMode sslAuthMode, SSLVersion sslVersion = SSLVersion::TLS1_2,
         const char* CAcertName = nullptr, const char* clientCertName = nullptr,
         const char* clientKeyName = nullptr) = 0;
+    /**
+     * @brief Create a new secure client object using the default socket number
+     *
+     * @param pskIdent The pre-shared key identity
+     * @param psKey The pre-shared key
+     * @param sslVersion The SSL version to use
+     *
+     * @return A new secure client object
+     */
     virtual Client*
     createSecureClient(const char* pskIdent, const char* psKey,
                        SSLVersion sslVersion = SSLVersion::TLS1_2) = 0;
+    /**
+     * @brief Create a new secure client object using the default socket number
+     *
+     * @param pskTableName The pre-shared key table name - for modems that
+     * require PSK's in a "table" format
+     * @param sslVersion The SSL version to use
+     *
+     * @return A new secure client object
+     */
     virtual Client*
     createSecureClient(const char* pskTableName,
                        SSLVersion  sslVersion = SSLVersion::TLS1_2) = 0;
@@ -590,18 +623,18 @@ class loggerModem {
      * the created client from a pointer to the parent because the Arduino
      * core's client class doesn't have a virtual destructor.
      *
-     * @param _client The client to delete
+     * @param client The client to delete
      */
-    virtual void deleteClient(Client* _client) = 0;
+    virtual void deleteClient(Client* client) = 0;
     /**
      * @brief Attempts to delete a created TinyGsmSecureClient object. We need
      * to do this to close memory leaks from the create client because we can't
      * delete the created client from a pointer to the parent because the
      * Arduino core's client class doesn't have a virtual destructor.
      *
-     * @param _client The client to delete
+     * @param client The client to delete
      */
-    virtual void deleteSecureClient(Client* _client) = 0;
+    virtual void deleteSecureClient(Client* client) = 0;
 
     /**
      * @brief Get the time from NIST via TIME protocol (rfc868).

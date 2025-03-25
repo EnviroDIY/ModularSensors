@@ -107,10 +107,10 @@ Client* S3PresignedPublisher::createClient() {
     }
     return newClient;
 }
-void S3PresignedPublisher::deleteClient(Client* _client) {
+void S3PresignedPublisher::deleteClient(Client* client) {
     if (_baseModem != nullptr) {
         MS_DBG(F("Attempting to delete the client"));
-        return _baseModem->deleteSecureClient(_client);
+        return _baseModem->deleteSecureClient(client);
     }
 }
 

@@ -229,15 +229,14 @@
  */
 /**
  * @def MS_MODEM_CONNECT_INTERNET(specificModem)
- * @brief Creates a connectInternet(uint32_t maxConnectionTime) function for a
- * specific modem subclass.
+ * @brief Creates a connectInternet() function for a specific modem subclass.
  *
  * For cellular modems, this uses the TinyGSM waitForNetwork() function for the
  * specific modem and then connects to GPRS using #MS_MODEM_SET_APN.
  *
  * For WiFi modems, this first checks for pre-existing internet connection and
  * if that isn't present uses the specific modem's networkConnect(ssid, pwd)
- * function followed by waitForNetwork(uint32_t maxConnectionTime).
+ * function followed by waitForNetwork().
  *
  * @note The order of credentials and waiting is reversed between cellular and
  * WiFi modems.  WiFi modems must send first credentials and then wait for the
@@ -247,25 +246,8 @@
  *
  * @param specificModem The modem subclass
  *
- * @return The text of a connectInternet(uint32_t maxConnectionTime) function
- * specific to a single modem subclass.
- */
-/**
- * @def MS_MODEM_CONNECT_INTERNET(specificModem, maxConnectionTime)
- * @brief Creates a connectInternet(uint32_t maxConnectionTime) function for a
- * specific modem subclass.
- *
- * @copydetails MS_MODEM_CONNECT_INTERNET(specificModem
- *
- * @note WiFi modems can frequently reconnect with saved credentials instead of
- * sending new credentials each time.  This function waits for an automatic
- * connection to be made, if possible.
- *
- * @param auto_reconnect_time The amount of time, in milliseconds, to allow the
- * modem to attempt to connect automatically from saved credentials.
- *
- * @return The text of a connectInternet(uint32_t maxConnectionTime) function
- * specific to a single modem subclass.
+ * @return The text of a connectInternet() function specific to a single modem
+ * subclass.
  */
 
 #if defined(TINY_GSM_MODEM_HAS_GPRS)
@@ -359,6 +341,24 @@
         return gsmModem.isNetworkConnected();         \
     }
 
+/**
+ * @def MS_MODEM_CONNECT_INTERNET(specificModem, auto_reconnect_time)
+ * @brief Creates a connectInternet(uint32_t maxConnectionTime) function for a
+ * specific modem subclass.
+ *
+ * @see #MS_MODEM_CONNECT_INTERNET(specificModem)
+ *
+ * @note WiFi modems can frequently reconnect with saved credentials instead of
+ * sending new credentials each time.  This function waits for an automatic
+ * connection to be made, if possible.
+ *
+ * @param specificModem The modem subclass
+ * @param auto_reconnect_time The amount of time, in milliseconds, to allow the
+ * modem to attempt to connect automatically from saved credentials.
+ *
+ * @return The text of a connectInternet(uint32_t maxConnectionTime) function
+ * specific to a single modem subclass.
+ */
 #define MS_MODEM_CONNECT_INTERNET(specificModem, auto_reconnect_time)        \
     bool specificModem::connectInternet(uint32_t maxConnectionTime) {        \
         bool success = true;                                                 \
@@ -444,7 +444,15 @@
         return newClient;                                                   \
     }
 
-
+/**
+ * @brief Helper to create null functions for modems that do not support secure
+ * clients.
+ *
+ * @param specificModem The modem subclass
+ *
+ * @return The text of createSecureClient functions specific to a single
+ * modem subclass.
+ */
 #define MS_MODEM_CREATE_NULL_SECURE_CLIENTS(specificModem)                \
     Client* specificModem::createSecureClient(                            \
         SSLAuthMode, SSLVersion, const char*, const char*, const char*) { \
@@ -521,13 +529,12 @@
  * @return The text of deleteClient function specific to a single modem
  * subclass.
  */
-#define MS_MODEM_DELETE_CLIENT(specificModem)           \
-    void specificModem::deleteClient(Client* _client) { \
-        if (_client != nullptr) {                       \
-            TinyGsmClient* cast_pointer =               \
-                static_cast<TinyGsmClient*>(_client);   \
-            delete cast_pointer;                        \
-        }                                               \
+#define MS_MODEM_DELETE_CLIENT(specificModem)                                  \
+    void specificModem::deleteClient(Client* client) {                         \
+        if (client != nullptr) {                                               \
+            TinyGsmClient* cast_pointer = static_cast<TinyGsmClient*>(client); \
+            delete cast_pointer;                                               \
+        }                                                                      \
     }
 /**
  * @def MS_MODEM_DELETE_SECURE_CLIENT
@@ -539,13 +546,13 @@
  * subclass.
  */
 #if defined(TINY_GSM_MODEM_HAS_SSL)
-#define MS_MODEM_DELETE_SECURE_CLIENT(specificModem)          \
-    void specificModem::deleteSecureClient(Client* _client) { \
-        if (_client != nullptr) {                             \
-            TinyGsmClientSecure* cast_pointer =               \
-                static_cast<TinyGsmClientSecure*>(_client);   \
-            delete cast_pointer;                              \
-        }                                                     \
+#define MS_MODEM_DELETE_SECURE_CLIENT(specificModem)         \
+    void specificModem::deleteSecureClient(Client* client) { \
+        if (client != nullptr) {                             \
+            TinyGsmClientSecure* cast_pointer =              \
+                static_cast<TinyGsmClientSecure*>(client);   \
+            delete cast_pointer;                             \
+        }                                                    \
     }
 #else
 #define MS_MODEM_DELETE_SECURE_CLIENT(specificModem) \

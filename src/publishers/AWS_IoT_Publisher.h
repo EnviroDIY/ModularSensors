@@ -370,15 +370,22 @@ class AWS_IoT_Publisher : public dataPublisher {
      * (that would come through immediately after subscribing) or for receiving
      * messages that are published as an immediate reaction to publishing data.
      *
-     * @param mqtt_callback The function to call when any message is received
+     * @return A reference to the underlying pubsubclient instance; can be used
+     * to chain actions.
      */
     PubSubClient& setCallback(MQTT_CALLBACK_SIGNATURE);
 
+    /**
+     * @brief Calling this function tells the AWS IoT Publisher to immediately
+     * close its connection.
+     */
     void closeConnection();
 
     /**
      * @copydoc dataPublisher::begin(Logger& baseLogger, Client* inClient)
      * @param awsIoTEndpoint The endpoint for your AWS IoT instance
+     * @param samplingFeatureUUID The sampling feature UUID for the site on the
+     * Monitor My Watershed data portal.
      */
     void begin(Logger& baseLogger, Client* inClient, const char* awsIoTEndpoint,
                const char* samplingFeatureUUID);
@@ -395,6 +402,8 @@ class AWS_IoT_Publisher : public dataPublisher {
      * file
      * @param clientCertName The name of your client certificate file
      * @param clientKeyName The name of your client private key file
+     * @param samplingFeatureUUID The sampling feature UUID for the site on the
+     * Monitor My Watershed data portal.
      */
     void begin(Logger& baseLogger, const char* awsIoTEndpoint,
                const char* caCertName, const char* clientCertName,
@@ -437,7 +446,7 @@ class AWS_IoT_Publisher : public dataPublisher {
     static const char* samplingFeatureTag;  ///< The JSON feature UUID tag
     static const char* timestampTag;        ///< The JSON feature timestamp tag
     virtual Client*    createClient() override;
-    virtual void       deleteClient(Client* _client) override;
+    virtual void       deleteClient(Client* client) override;
 
  private:
     // Keys for AWS IoT Core

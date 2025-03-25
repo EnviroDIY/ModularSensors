@@ -217,7 +217,14 @@ class dataPublisher {
      */
     virtual int16_t publishData(bool forceFlush = MS_ALWAYS_FLUSH_PUBLISHERS);
 
-
+    /**
+     * @copydoc publishMetadata()
+     *
+     * @param outClient An Arduino client instance to use to print data to.
+     * Allows the use of any type of client and multiple clients tied to a
+     * single TinyGSM modem instance
+     */
+    virtual int16_t publishMetadata(Client* outClient);
     /**
      * @brief Open a socket to the correct receiver and send out *metadata*
      * about the current logger setup.
@@ -236,15 +243,8 @@ class dataPublisher {
      * @note This does *not* have to be implemented for each publisher! If it is
      * not implemented, it will return 0.
      *
-     * @param outClient An Arduino client instance to use to print data to.
-     * Allows the use of any type of client and multiple clients tied to a
-     * single TinyGSM modem instance
      * @return The result of publishing data.  May be an http response code or a
      * result code from PubSubClient.
-     */
-    virtual int16_t publishMetadata(Client* outClient);
-    /**
-     * @copydoc publishMetadata(Client* outClient)
      */
     virtual int16_t publishMetadata();
 
@@ -321,6 +321,7 @@ class dataPublisher {
      *
      * @param data The data start pointer.
      * @param length The number of bytes to add.
+     * @param debug_flush If true, flush the TX buffer to the debugging port.
      */
     static void txBufferAppend(const char* data, size_t length,
                                bool debug_flush = true);
@@ -328,17 +329,20 @@ class dataPublisher {
      * @brief Append the given string to the TX buffer, flushing if necessary.
      *
      * @param s The null-terminated string to append.
+     * @param debug_flush If true, flush the TX buffer to the debugging port.
      */
     static void txBufferAppend(const char* s, bool debug_flush = true);
     /**
      * @brief Append the given char to the TX buffer, flushing if necessary.
      *
      * @param c The char to append.
+     * @param debug_flush If true, flush the TX buffer to the debugging port.
      */
     static void txBufferAppend(char c, bool debug_flush = true);
     /**
      * @brief Write the TX buffer contents to the initialized stream and also to
      * the debugging port.
+     * @param debug_flush If true, flush the TX buffer to the debugging port.
      */
     static void txBufferFlush(bool debug_flush = true);
 
@@ -354,15 +358,17 @@ class dataPublisher {
      * @note The defuault implimentation of this function creates an insecure
      * client. Publishers that require SSL must re-implement this function.
      *
-     * @param return A pointer to an Arduino client instance
+     * @return A pointer to an Arduino client instance
      */
     virtual Client* createClient();
     /**
      * @brief Delete a created client. We need to pass this through to avoid a
      * memory leak because we cannot delete from the pointer because the
      * destructor for a client in the Arduino core isn't virtual.
+     *
+     * @param client The client to delete
      */
-    virtual void deleteClient(Client* _client);
+    virtual void deleteClient(Client* client);
 
     /**
      * @brief Interval (in units of the logging interval) between

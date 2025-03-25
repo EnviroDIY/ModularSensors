@@ -157,6 +157,8 @@ class S3PresignedPublisher : public dataPublisher {
      * @param inClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
+     * @param getUrlFxn A function to call to get a new pre-signed URL
+     * @param getFileNameFxn A function to call to get a new filename
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions. NOTE: not implemented by this publisher!
      */
@@ -240,13 +242,14 @@ class S3PresignedPublisher : public dataPublisher {
 
     /**
      * @copydoc dataPublisher::begin(Logger& baseLogger, Client* inClient)
-     * @param s3Url The pre-signed URL to use to put into an S3 bucket
+     * @param getUrlFxn A function to call to get a new pre-signed URL
      */
     void begin(Logger& baseLogger, Client* inClient,
                String (*getUrlFxn)(String));
     /**
      * @copydoc dataPublisher::begin(Logger& baseLogger)
-     * @param s3Url The pre-signed URL to use to put into an S3 bucket
+     * @param getUrlFxn A function to call to get a new pre-signed URL
+     * @param caCertName The name of your certificate authority certificate file
      */
     void begin(Logger&     baseLogger, String (*getUrlFxn)(String),
                const char* caCertName = nullptr);
@@ -270,7 +273,7 @@ class S3PresignedPublisher : public dataPublisher {
 
  protected:
     virtual Client*    createClient() override;
-    virtual void       deleteClient(Client* _client) override;
+    virtual void       deleteClient(Client* client) override;
     static const char* s3_parent_host;       ///< The host name
     static const int   s3Port;               ///< The host port
     static const char* contentLengthHeader;  ///< The content length header text

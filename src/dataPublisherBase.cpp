@@ -194,10 +194,10 @@ Client* dataPublisher::createClient() {
     MS_DBG(F("Creating new TinyGSMClient with default socket number."));
     return _baseModem->createClient();
 }
-void dataPublisher::deleteClient(Client* _client) {
+void dataPublisher::deleteClient(Client* client) {
     if (_baseModem != nullptr) {
         MS_DBG(F("Attempting to delete the client"));
-        return _baseModem->deleteClient(_client);
+        return _baseModem->deleteClient(client);
     }
 }
 
