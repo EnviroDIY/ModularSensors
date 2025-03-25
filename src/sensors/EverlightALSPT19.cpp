@@ -42,15 +42,6 @@ bool EverlightALSPT19::addSingleMeasurementResult(void) {
     // Check a measurement was *successfully* started (status bit 6 set)
     // Only go on to get a result if it was
     if (bitRead(_sensorStatus, 6)) {
-        // Set the resolution for the processor ADC, only applies to SAMD
-        // boards.
-#if defined(ARDUINO_ARCH_SAMD)
-        analogReadResolution(ALSPT19_ADC_RESOLUTION);
-#endif  // ARDUINO_ARCH_AVR
-        // Set the analog reference mode for the voltage measurement.
-        // If possible, to get the best results, an external reference should be
-        // used.
-        analogReference(ALSPT19_ADC_REFERENCE_MODE);
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
         // First measure the analog voltage.

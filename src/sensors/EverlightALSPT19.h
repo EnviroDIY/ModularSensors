@@ -6,7 +6,8 @@
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Contains the EverlightALSPT19 sensor subclass and the variable
- * subclasses EverlightALSPT19_Current and EverlightALSPT19_Illuminance.
+ * subclasses EverlightALSPT19_Voltage, EverlightALSPT19_Current, and
+ * EverlightALSPT19_Illuminance.
  *
  * These are used for the Everlight ALS-PT19 ambient light sensor.
  */
@@ -104,73 +105,13 @@
  * on the processor and ADC in use.
  */
 /**@{*/
-#if !defined(ALSPT19_ADC_RESOLUTION) || defined(DOXYGEN)
-/**
- * @brief Default resolution (in bits) of the voltage measurement
- *
- * The default for all boards is 10, use a build flag to change this, if
- * necessary.
- */
-#define ALSPT19_ADC_RESOLUTION 10
-#endif  // ALSPT19_ADC_RESOLUTION
 /// @brief The maximum possible value of the ADC - one less than the resolution
 /// shifted up one bit.
-#define ALSPT19_ADC_MAX ((1 << ALSPT19_ADC_RESOLUTION) - 1)
+#define ALSPT19_ADC_MAX ((1 << MS_PROCESSOR_ADC_RESOLUTION) - 1)
 /// @brief The maximum possible range of the ADC - the resolution shifted up one
 /// bit.
-#define ALSPT19_ADC_RANGE (1 << ALSPT19_ADC_RESOLUTION)
-
-/* clang-format off */
-#if ! defined (ALSPT19_ADC_REFERENCE_MODE) || defined (DOXYGEN)
-#if defined(ARDUINO_ARCH_AVR) || defined (DOXYGEN)
-/**
- * @brief The voltage reference mode for the processor's ADC.
- *
- * For an AVR board, this must be one of:
- * - `DEFAULT`: the default built-in analog reference of 5 volts (on 5V Arduino
- * boards) or 3.3 volts (on 3.3V Arduino boards)
- * - `INTERNAL`: a built-in reference, equal to 1.1 volts on the ATmega168 or
- * ATmega328P and 2.56 volts on the ATmega32U4 and ATmega8 (not available on the
- * Arduino Mega)
- * - `INTERNAL1V1`: a built-in 1.1V reference (Arduino Mega only)
- * - `INTERNAL2V56`: a built-in 2.56V reference (Arduino Mega only)
- * - `EXTERNAL`: the voltage applied to the AREF pin (0 to 5V only) is used as the
- * reference.
- *
- * If not set on an AVR board `DEFAULT` is used.
- *
- * For the best accuracy, use an `EXTERNAL` reference with the AREF pin
- * connected to the power supply for the EC sensor.
- */
-#define ALSPT19_ADC_REFERENCE_MODE DEFAULT
-#endif
-#if defined(ARDUINO_ARCH_SAMD) || defined (DOXYGEN)
-/**
- * @brief The voltage reference mode for the processor's ADC.
- *
- * For a SAMD board, this must be one of:
- * - `AR_DEFAULT`: the default built-in analog reference of 3.3V
- * - `AR_INTERNAL`: a built-in 2.23V reference
- * - `AR_INTERNAL1V0`: a built-in 1.0V reference
- * - `AR_INTERNAL1V65`: a built-in 1.65V reference
- * - `AR_INTERNAL2V23`: a built-in 2.23V reference
- * - `AR_EXTERNAL`: the voltage applied to the AREF pin is used as the reference
- *
- * If not set on an SAMD board `AR_DEFAULT` is used.
- *
- * For the best accuracy, use an `EXTERNAL` reference with the AREF pin
- * connected to the power supply for the EC sensor.
- *
- * @see https://www.arduino.cc/reference/en/language/functions/analog-io/analogreference/
- */
-#define ALSPT19_ADC_REFERENCE_MODE AR_DEFAULT
-#endif
-#if ! defined (ALSPT19_ADC_REFERENCE_MODE)
-#error The processor ADC reference type must be defined!
-#endif  // ALSPT19_ADC_REFERENCE_MODE
-#endif  // ARDUINO_ARCH_SAMD
+#define ALSPT19_ADC_RANGE (1 << MS_PROCESSOR_ADC_RESOLUTION)
 /**@}*/
-/* clang-format on */
 
 /**
  * @anchor sensor_alspt19_timing

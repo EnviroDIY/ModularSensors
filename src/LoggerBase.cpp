@@ -1571,6 +1571,20 @@ void Logger::begin() {
     extendedWatchDog::enableWatchDog();
 
 #if defined(ARDUINO_ARCH_SAMD)
+    // Set the resolution for the processor ADC, only applies to SAMD
+    // boards.
+    MS_DBG(F("Setting analog read resolution for onboard ADC to"),
+           MS_PROCESSOR_ADC_RESOLUTION, F("bit"));
+    analogReadResolution(MS_PROCESSOR_ADC_RESOLUTION);
+#endif
+    // Set the analog reference mode for processor ADC voltage measurements.
+    // If possible, to get the best results, an external reference should be
+    // used.
+    MS_DBG(F("Setting analog read reference mode for onboard ADC to mode"),
+           MS_PROCESSOR_ADC_REFERENCE_MODE);
+    analogReference(MS_PROCESSOR_ADC_REFERENCE_MODE);
+
+#if defined(ARDUINO_ARCH_SAMD)
     MS_DBG(F("Disabling the USB on standby to lower sleep current"));
     USB->DEVICE.CTRLA.bit.ENABLE = 0;         // Disable the USB peripheral
     while (USB->DEVICE.SYNCBUSY.bit.ENABLE);  // Wait for synchronization

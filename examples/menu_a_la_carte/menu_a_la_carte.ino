@@ -3356,11 +3356,11 @@ AWS_IoT_Publisher awsIoTPub(dataLogger, awsIoTEndpoint, caCertName,
 #if defined(BUILD_PUB_S3_PRESIGNED_PUBLISHER)
 // Callback function
 void IoTCallback(char* topic, byte* payload, unsigned int length) {
+    PRINTOUT(F("Got message of length"), length, F("on topic"), topic);
     // the topic is a char and garaunteed to be null-terminated, so we can
     // directly convert to a String
     if (String(topic) == s3URLSubTopic) {
         PRINTOUT(F("Received data on pre-signed URL topic from AWS IoT Core"));
-        PRINTOUT(F("Got message of length"), length, F("on topic"), topic);
         // Allocate the correct amount of memory for the payload copy
         // We CANNOT directly convert it to a string because it's not garaunteed
         // to be null-terminated
@@ -3572,11 +3572,6 @@ void setup() {
     PRINTOUT(F("Setting logger pins"));
     dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin,
                              greenLED, wakePinMode, buttonPinMode);
-
-#if defined(ARDUINO_ARCH_SAMD)
-    PRINTOUT(F("Setting analog read resolution for onboard ADC to 12 bit"));
-    analogReadResolution(12);
-#endif
 
     // Set the timezones for the logger/data and the RTC
     // Logging in the given time zone

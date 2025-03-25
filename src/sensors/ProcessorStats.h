@@ -392,8 +392,6 @@ class ProcessorStats : public Sensor {
      * @param batteryMultiplier Any multiplier needed to convert raw battery
      * readings from `analogRead()` into true battery values based on any
      * resistors or voltage dividors
-     * @param analogResolution The analog read resolution of the processor in
-     * bits
      * @param operatingVoltage The processor's operating voltage; most
      * likely 3.3 or 5.
      * @param measurementsToAverage The number of measurements to take and
@@ -405,8 +403,7 @@ class ProcessorStats : public Sensor {
      */
     ProcessorStats(const char* boardName, const char* version,
                    int8_t batteryPin, float batteryMultiplier,
-                   int8_t analogResolution, float operatingVoltage,
-                   uint8_t measurementsToAverage = 1);
+                   float operatingVoltage, uint8_t measurementsToAverage = 1);
     /**
      * @brief Destroy the Processor Stats object
      */
@@ -453,8 +450,6 @@ class ProcessorStats : public Sensor {
                                ///< to convert raw battery readings into true
                                ///< battery values based on any resistors or
                                ///< voltage dividors
-    int8_t _analogResolution;  ///< Internal reference to the analog read
-                               ///< resolution of the processor in bits
     float _operatingVoltage;   ///< Internal reference to processor's operating
                                ///< voltage
     int16_t sampNum = 0;       ///< The current sample number

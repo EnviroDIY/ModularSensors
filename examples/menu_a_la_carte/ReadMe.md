@@ -1101,8 +1101,7 @@ This is the code for the measuring electrical conductivity using the processor's
 The Arduino pin controlling power on/off and the sensing pin are required for the constuctor.
 The power supply for the sensor *absolutely must be switched on and off between readings*!
 The resistance of your in-circuit resistor, the cell constant for your power cord, and the number of measurements to average are the optional third, fourth, and fifth arguments.
-If your processor has an ADS with resolution greater or less than 10-bit, compile with the build flag `-D ANALOG_EC_ADC_RESOLUTION=##`.
-For best results, you should also connect the AREF pin of your processors ADC to the power supply for the and compile with the build flag `-D ANALOG_EC_ADC_REFERENCE_MODE=EXTERNAL`.
+For best results, you should also connect the AREF pin of your processors ADC to the power supply for the and compile with the build flag `-D MS_PROCESSOR_ADC_REFERENCE_MODE=EXTERNAL`.
 
 @see @ref sensor_analog_cond
 
