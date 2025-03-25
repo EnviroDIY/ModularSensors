@@ -1834,3 +1834,39 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
         systemSleep();
     }
 }
+
+
+void Logger::makeInitialConnections() {
+    // Reset the watchdog
+    extendedWatchDog::resetWatchDog();
+
+    if (_logModem != nullptr) {
+        // Synchronize the RTC with NIST
+        PRINTOUT(F("Attempting to connect to the internet, synchronize RTC "
+                   "with NIST, and publish metadata to remotes."));
+        PRINTOUT(F("This may take up to two minutes!"));
+        if (_logModem->modemWake()) {
+            if (_logModem->connectInternet(120000L)) {
+                loggerClock::setRTClock(_logModem->getNISTTime(), 0,
+                                        epochStart::unix_epoch);
+                MS_DBG(F("Current logger time after sync is"),
+                       formatDateTime_ISO8601(getNowLocalEpoch()));
+                _logModem->updateModemMetadata();
+
+                MS_DBG(F("Publishing configuration metadata to remotes"));
+                publishMetadataToRemotes();
+            } else {
+                MS_DBG(F("Could not make initial internet connection!"));
+            }
+        } else {
+            MS_DBG(F("Could not wake modem for initial internet connection."));
+        }
+        extendedWatchDog::resetWatchDog();
+
+        // Power down the modem now that we are done with it
+        MS_DBG(F("Powering down modem after clock sync."));
+        _logModem->disconnectInternet();
+        _logModem->modemSleepPowerDown();
+    }
+    extendedWatchDog::resetWatchDog();
+}

@@ -1388,7 +1388,16 @@ class Logger {
      * @note If sleepBeforeReturning is set to false, the logger WILL NOT sleep
      * between readings.
      */
-    void logDataAndPublish(bool sleepBeforeReturning = true);
+    virtual void logDataAndPublish(bool sleepBeforeReturning = true);
+
+    /**
+     * @brief Wakes and sets up the modem, connects to the internet, syncs the
+     * RTC with NIST, and publishes meatadata for all attached publishers.
+     *
+     * This is only to be run at startup. It should be run after beginning the
+     * logger and attaching the modem and sensors.
+     */
+    virtual void makeInitialConnections();
 
     /**
      * @brief The static "marked" epoch time for the local timezone.

@@ -3356,8 +3356,8 @@ void IoTCallback(char* topic, byte* payload, unsigned int length) {
     // the topic is a char and garaunteed to be null-terminated, so we can
     // directly convert to a String
     if (String(topic) == s3URLSubTopic) {
-        MS_DBG(F("Received data on pre-signed URL topic from AWS IoT Core"));
-        MS_DBG(F("Got message of length"), length, F("on topic"), topic);
+        PRINTOUT(F("Received data on pre-signed URL topic from AWS IoT Core"));
+        PRINTOUT(F("Got message of length"), length, F("on topic"), topic);
         // Allocate the correct amount of memory for the payload copy
         // We CANNOT directly convert it to a string because it's not garaunteed
         // to be null-terminated
@@ -3366,7 +3366,7 @@ void IoTCallback(char* topic, byte* payload, unsigned int length) {
         memcpy(rx_url, payload, length);
         // Null terminate the string
         memset(rx_url + length, '\0', 1);
-        MS_DBG(F("Setting S3 URL to:"), rx_url);
+        PRINTOUT(F("Setting S3 URL to:"), rx_url);
         s3pub.setPreSignedURL(String(rx_url));
         // Free the memory now that the URL has been copied into a new String
         free(rx_url);
@@ -3746,9 +3746,9 @@ void setup() {
     /** Start [setup_clock] */
     // Sync the clock if it isn't valid or we have battery to spare
     if (getBatteryVoltage() > 3.55 || !loggerClock::isRTCSane()) {
-        // Synchronize the RTC with NIST
-        // This will also set up the modem
-        dataLogger.syncRTC();
+        // Set up the modem, synchronize the RTC with NIST, and publish
+        // configuration information to publishers that support it.
+        dataLogger.makeInitialConnections();
     }
     /** End [setup_clock] */
 
