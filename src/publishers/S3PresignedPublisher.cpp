@@ -159,7 +159,7 @@ bool S3PresignedPublisher::validateS3URL(String& s3url, char* s3host,
     MS_SERIAL_OUTPUT.println();
 #endif
 
-    uint32_t expiration = atoll(start_expiration);
+    uint32_t expiration = atol(start_expiration);
     // Check basic validity of the timestamp
     if (expiration < EARLIEST_SANE_UNIX_TIMESTAMP ||
         expiration > LATEST_SANE_UNIX_TIMESTAMP) {
