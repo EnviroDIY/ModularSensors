@@ -162,6 +162,19 @@ class ThingSpeakPublisher : public dataPublisher {
     void setChannelID(const char* thingSpeakChannelID);
 
     /**
+     * @brief Set the ThingSpeak user REST API key
+     *
+     * This is only used to update the field names on the ThingSpeak channel
+     * during the updateMetadata call at boot up. The *user* REST API key is
+     * **NOT** the same as your *channel* API keys or your MQTT connection
+     * credentials.  Find this key in your ThingSpeak account under Account > My
+     * Profile.
+     *
+     * @param thingSpeakAPIKey The ThingSpeak user REST API key
+     */
+    void setRESTAPIKey(const char* thingSpeakAPIKey);
+
+    /**
      * @brief Sets all 4 ThingSpeak parameters
      *
      * @param thingSpeakClientName The client name for your MQTT device. This is
@@ -217,6 +230,7 @@ class ThingSpeakPublisher : public dataPublisher {
      * @return The PubSubClient status code of the response.
      */
     int16_t publishData(Client* outClient, bool forceFlush = false) override;
+    int16_t publishMetadata(Client* outClient) override;
 
  protected:
     /**
@@ -225,6 +239,10 @@ class ThingSpeakPublisher : public dataPublisher {
      *
      * @{
      */
+    static const char* apiHost;  ///< The REST API host
+    static const int   apiPort;  ///< The REST API port
+    static const char*
+        channelMetaResource;  ///< The REST API resource to put metadata to
     static const char* mqttServer;  ///< The MQTT server
     static const int   mqttPort;    ///< The MQTT port
                                     /**@}*/
@@ -249,6 +267,10 @@ class ThingSpeakPublisher : public dataPublisher {
      * @brief The channel ID for ThingSpeak
      */
     const char* _thingSpeakChannelID = nullptr;
+    /**
+     * @brief The ThingSpeak REST API key
+     */
+    const char* _thingSpeakAPIKey = nullptr;
     /**
      * @brief Internal reference to the PubSubClient instance for MQTT
      * communication.
