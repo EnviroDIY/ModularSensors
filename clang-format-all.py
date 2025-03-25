@@ -93,7 +93,13 @@ def format_all_walk_recursive(root_dir: str, exclude_files=None, file_extensions
             if path.suffix in file_extensions:
                 if (
                     subprocess.run(
-                        ["clang-format", "-style=file", "-i", path], capture_output=True
+                        [
+                            "C:\\Program Files\\LLVM\\bin\\clang-format.exe",
+                            "-style=file",
+                            "-i",
+                            path,
+                        ],
+                        capture_output=True,
                     ).returncode
                     != 0
                 ):

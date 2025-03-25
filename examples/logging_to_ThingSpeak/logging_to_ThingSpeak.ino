@@ -213,13 +213,15 @@ Logger dataLogger;
 // No more than 8 fields of data can go to any one channel.  Any fields beyond
 // the eighth in the array will be ignored.
 const char* thingSpeakClientName =
-    "XXXXXXXXXXXXXXXX";  // Your MQTT API Key from Account > MyProfile.
+    "XXXXXXXXXXXXXXXX";  // The client name for your MQTT device
 const char* thingSpeakMQTTUser =
-    "XXXXXXXXXXXXXXXX";  // The Write API Key for your channel
+    "XXXXXXXXXXXXXXXX";  // The user name for your MQTT device.
 const char* thingSpeakMQTTPassword =
-    "XXXXXXXXXXXXXXXX";  // The numeric channel id for your channel
+    "XXXXXXXXXXXXXXXX";  // The password for your MQTT device
 const char* thingSpeakChannelID =
     "######";  // The numeric channel id for your channel
+const char* thingSpeakAPIKey =
+    "XXXXXXXXXXXXXXXX";  // The ThingSpeak user REST API key
 
 // Create a data publisher for ThingSpeak
 #include <publishers/ThingSpeakPublisher.h>
@@ -302,6 +304,7 @@ void setup() {
     dataLogger.begin(LoggerID, loggingInterval, &varArray);
     TsMqtt.begin(dataLogger, thingSpeakClientName, thingSpeakMQTTUser,
                  thingSpeakMQTTPassword, thingSpeakChannelID);
+    TsMqtt.setRESTAPIKey(thingSpeakAPIKey);
 
     // Note:  Please change these battery voltages to match your battery
     // Set up the sensors, except at lowest battery level
@@ -312,23 +315,23 @@ void setup() {
 
     // Sync the clock if it isn't valid or we have battery to spare
     if (getBatteryVoltage() > 3.55 || !loggerClock::isRTCSane()) {
-        // Synchronize the RTC with NIST
-        // This will also set up the modem
-        dataLogger.syncRTC();
+        // Set up the modem, synchronize the RTC with NIST, and publish
+        // configuration information to rename the channel and fields.
+        dataLogger.makeInitialConnections();
     }
 
     // Create the log file, adding the default header to it
     // Do this last so we have the best chance of getting the time correct and
-    // all sensor names correct
-    // Writing to the SD card can be power intensive, so if we're skipping
-    // the sensor setup we'll skip this too.
+    // all sensor names correct.
+    // Writing to the SD card can be power intensive, so if we're skipping the
+    // sensor setup we'll skip this too.
     if (getBatteryVoltage() > 3.4) {
         Serial.println(F("Setting up file on SD card"));
-        dataLogger.turnOnSDcard(
-            true);  // true = wait for card to settle after power up
+        dataLogger.turnOnSDcard(true);
+        // true = wait for card to settle after power up
         dataLogger.createLogFile(true);  // true = write a new header
-        dataLogger.turnOffSDcard(
-            true);  // true = wait for internal housekeeping after write
+        dataLogger.turnOffSDcard(true);
+        // true = wait for internal housekeeping after write
     }
 
     // Call the processor sleep

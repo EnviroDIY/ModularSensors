@@ -3196,9 +3196,9 @@ VariableArray varArray(variableCount, variableList);
 const char* registrationToken =
     "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
 // NOTE: Because we already set the sampling feature with the logger
-// constructor, don't do it here. const char* samplingFeature =
-//     "12345678-abcd-1234-ef00-1234567890ab";  // Sampling feature UUID
-
+// constructor, don't do it here.
+// const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  //
+// Sampling feature UUID
 
 // Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
@@ -3244,6 +3244,8 @@ const char* thingSpeakMQTTPassword =
     "XXXXXXXXXXXXXXXX";  // The password for your MQTT device
 const char* thingSpeakChannelID =
     "######";  // The numeric channel id for your channel
+const char* thingSpeakAPIKey =
+    "XXXXXXXXXXXXXXXX";  // The ThingSpeak user REST API key
 
 // Create a data publisher for ThingSpeak
 #include <publishers/ThingSpeakPublisher.h>
@@ -3259,7 +3261,7 @@ ThingSpeakPublisher TsMqtt(dataLogger, thingSpeakClientName, thingSpeakMQTTUser,
 //  Ubidots Data Publisher
 // ==========================================================================
 /** Start [ubidots_publisher] */
-// The authentication token from Ubdots, either the Organization's Integration
+// The authentication token from Ubidots, either the Organization's Integration
 // Token (under Users > Organization menu,visible by Admin only) OR the STEM
 // User's Device Token (under the specific evice's setup panel).
 const char* ubidotsToken = "XXXXXXXXXXXXXXXX";
@@ -3267,7 +3269,7 @@ const char* ubidotsToken = "XXXXXXXXXXXXXXXX";
 // name.
 const char* ubidotsDeviceID = "######";
 
-// Create a data publisher for ThingSpeak
+// Create a data publisher for Ubidots
 #include <publishers/UbidotsPublisher.h>
 UbidotsPublisher ubidots(dataLogger, ubidotsToken, ubidotsDeviceID);
 /** End [ubidots_publisher] */
@@ -3351,6 +3353,7 @@ const char* clientKeyName = "thing-private.pem.key";
 AWS_IoT_Publisher awsIoTPub(dataLogger, awsIoTEndpoint, caCertName,
                             clientCertName, clientKeyName);
 
+#if defined(BUILD_PUB_S3_PRESIGNED_PUBLISHER)
 // Callback function
 void IoTCallback(char* topic, byte* payload, unsigned int length) {
     // the topic is a char and garaunteed to be null-terminated, so we can
@@ -3375,6 +3378,7 @@ void IoTCallback(char* topic, byte* payload, unsigned int length) {
         awsIoTPub.closeConnection();
     }
 }
+#endif
 /** End [aws_iot_publisher] */
 #endif
 
@@ -3505,7 +3509,7 @@ void setup() {
     modemSerial.begin(modemBaud);
 #endif
 
-#if BUILD_MODBUS_SENSOR
+#if defined(BUILD_MODBUS_SENSOR)
     // Start the stream for the modbus sensors;
     // all currently supported modbus sensors use 9600 baud
     modbusSerial.begin(9600);
@@ -3588,6 +3592,12 @@ void setup() {
     dataLogger.attachModem(modem);
     PRINTOUT(F("Setting modem LEDs"));
     modem.setModemLED(modemLEDPin);
+#endif
+
+#if defined(BUILD_PUB_THING_SPEAK_PUBLISHER) && \
+    (!defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM))
+    // Set the ThingSpeak MQTT client name
+    TsMqtt.setRESTAPIKey(thingSpeakAPIKey);
 #endif
 
 #if defined(BUILD_PUB_S3_PRESIGNED_PUBLISHER)
@@ -3755,9 +3765,9 @@ void setup() {
     /** Start [setup_file] */
     // Create the log file, adding the default header to it
     // Do this last so we have the best chance of getting the time correct and
-    // all sensor names correct
-    // Writing to the SD card can be power intensive, so if we're skipping
-    // the sensor setup we'll skip this too.
+    // all sensor names correct.
+    // Writing to the SD card can be power intensive, so if we're skipping the
+    // sensor setup we'll skip this too.
     if (getBatteryVoltage() > 3.4) {
         PRINTOUT(F("Setting up file on SD card"));
         dataLogger.turnOnSDcard(true);
