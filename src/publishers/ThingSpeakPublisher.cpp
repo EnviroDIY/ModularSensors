@@ -19,7 +19,7 @@
 // I want to refer to these more than once while ensuring there is only one copy
 // in memory
 const char* ThingSpeakPublisher::apiHost             = "api.thingspeak.com";
-const int   ThingSpeakPublisher::apiPort             = 443;
+const int   ThingSpeakPublisher::apiPort             = 80;
 const char* ThingSpeakPublisher::channelMetaResource = "/channels/";
 const char* ThingSpeakPublisher::mqttServer          = "mqtt3.thingspeak.com";
 const int   ThingSpeakPublisher::mqttPort            = 1883;
@@ -207,6 +207,10 @@ int16_t ThingSpeakPublisher::publishData(Client* outClient, bool) {
 
 // This upddates your channel field names on ThingSpeak
 int16_t ThingSpeakPublisher::publishMetadata(Client* outClient) {
+    if (!_thingSpeakAPIKey) {
+        PRINTOUT(F("No ThingSpeak REST API key set!"));
+        return -2;
+    }
     // Create a buffer for the portions of the request and response
     char     tempBuffer[37] = "";
     uint16_t did_respond    = 0;
