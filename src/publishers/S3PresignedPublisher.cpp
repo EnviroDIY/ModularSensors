@@ -199,6 +199,8 @@ bool S3PresignedPublisher::validateS3URL(String& s3url, char* s3host,
     memcpy(content_type, ct_esc_str.c_str(), ct_str_len);
     memset(content_type + (ct_str_len), '\0', 1);
     // ^^ Null terminate, just in case
+
+    return true;
 }
 
 // Post the data to S3.
@@ -318,10 +320,17 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
         // Send the file
         // Take advantage of the txBuffer's flush logic to prevent typewritter
         // style writes from the modem-send command deep in TinyGSM
+        // Disable the watch-dog timer to reduce interrupts during transfer
+        // MS_DBG(F("Disabling the watchdog during file transfer"));
+        extendedWatchDog::disableWatchDog();
         for (uint32_t i = 0; i < file_size; i++) {
             txBufferAppend(putFile.read(), false);
         }
         txBufferFlush(false);
+        // Re-enable the watchdog
+        // MS_DBG(F("Re-enabling the watchdog after file transfer"));
+        extendedWatchDog::enableWatchDog();
+        // close the file now that we're done with it
         putFile.close();
 
         // Wait 60 seconds for a response from the server
