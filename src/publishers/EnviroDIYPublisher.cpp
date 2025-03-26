@@ -272,7 +272,10 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient, bool forceFlush) {
     if (willFlush) {
         return flushDataBuffer(outClient);
     } else {
-        return 201;  // pretend everything went okay?
+        // HTTP Accepted: data has been accepted for processing but might or
+        // might not eventually be acted upon (i.e. if something causes data in
+        // the buffer to be lost)
+        return 202;
     }
 }
 

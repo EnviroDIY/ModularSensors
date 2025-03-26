@@ -125,9 +125,9 @@ void Logger::setLoggingInterval(uint16_t loggingIntervalMinutes) {
 }
 
 
-// Sets the initial short intervals
+// Sets the number of initial short intervals
 void Logger::setinitialShortIntervals(uint16_t initialShortIntervals) {
-    _initialShortIntervals = initialShortIntervals;
+    _remainingShortIntervals = initialShortIntervals;
 }
 
 
@@ -283,6 +283,7 @@ void Logger::enableTestingISR() {
     // Set up the interrupt to be able to enter sensor testing mode
     // NOTE:  Entering testing mode before the sensors have been set-up may
     // give unexpected results.
+    // NOTE: The testing ISR itself only wakes the board and sets a flag.
     if (_buttonPin >= 0) {
         disableInterrupt(_buttonPin);
         MS_DEEP_DBG(F("Disabled any previous interrupts attached to"),
@@ -548,10 +549,9 @@ bool Logger::checkInterval(void) {
     bool     retval;
     uint32_t checkTime = getNowLocalEpoch();
     uint16_t interval  = _loggingIntervalMinutes;
-    if (_initialShortIntervals > 0) {
+    if (_remainingShortIntervals > 0) {
         // log the first few samples at an interval of 1 minute so that
         // operation can be quickly verified in the field
-        _initialShortIntervals -= 1;
         interval = 1;
     }
 
@@ -560,11 +560,31 @@ bool Logger::checkInterval(void) {
     MS_DBG(F("Logging interval in seconds:"), (interval * 60));
     MS_DBG(F("Mod of Logging Interval:"), checkTime % (interval * 60));
 
+#if MS_LOGGERBASE_BUTTON_BENCH_TEST == 0
+    // If the person has set the button pin **NOT** to be used for "bench
+    // testing" (ie, immediate rapid logging) then we instead read this button
+    // testing flag to mean "log now." To make that happen, we mark the time
+    // here and return true if the flag is set.
+    bool testing = Logger::startTesting;
+    if ((checkTime % (interval * 60) == 0) || testing) {
+#else
+    // If the testing mode the button calls **is** set to "bench testing" then
+    // we only return true here if it actually is an even interval.
     if (checkTime % (interval * 60) == 0) {
+#endif
         // Update the time variables with the current time
         markTime();
         MS_DBG(F("Time marked at (unix):"), Logger::markedLocalUnixTime);
         MS_DBG(F("Time to log!"));
+#if MS_LOGGERBASE_BUTTON_BENCH_TEST == 0
+        if ((_remainingShortIntervals > 0) && (!testing)) {
+#else
+        if ((_remainingShortIntervals > 0)) {
+#endif
+            // once we've marked the time, we need to decrement the remaining
+            // short intervals by one. (IFF not in "log now" testing mode.)
+            _remainingShortIntervals -= 1;
+        }
         retval = true;
     } else {
         MS_DBG(F("Not time yet."));
@@ -576,15 +596,22 @@ bool Logger::checkInterval(void) {
 
 // This checks to see if the MARKED time is an even interval of the logging rate
 bool Logger::checkMarkedInterval(void) {
+    uint16_t interval = _loggingIntervalMinutes;
+    // If we're within the range of our initial short intervals, we're logging,
+    // then set the interval to 1.
+    if (_remainingShortIntervals > 0) { interval = 1; }
+
     bool retval;
     MS_DBG(F("Marked Time:"), Logger::markedLocalUnixTime,
-           F("Logging interval in seconds:"), (_loggingIntervalMinutes * 60),
+           F("Logging interval in seconds:"), (interval * 60),
            F("Mod of Logging Interval:"),
-           Logger::markedLocalUnixTime % (_loggingIntervalMinutes * 60));
+           Logger::markedLocalUnixTime % (interval * 60));
 
     if (Logger::markedLocalUnixTime != 0 &&
-        (Logger::markedLocalUnixTime % (_loggingIntervalMinutes * 60) == 0)) {
+        (Logger::markedLocalUnixTime % (interval * 60) == 0)) {
         MS_DBG(F("Time to log!"));
+        // De-increment the number of short intervals after marking
+        if (_remainingShortIntervals > 0) { _remainingShortIntervals -= 1; }
         retval = true;
     } else {
         MS_DBG(F("Not time yet."));
@@ -1342,15 +1369,18 @@ void Logger::testingISR() {
 }
 
 
-// This defines what to do in the testing mode
-void Logger::testingMode(bool sleepBeforeReturning) {
+// This defines what to do in the bench testing mode
+void Logger::benchTestingMode(bool sleepBeforeReturning) {
+    // If bench testing is not enabled, return now. Allows the function body to
+    // be compiled out if this functionality is disabled.
+    if (!(MS_LOGGERBASE_BUTTON_BENCH_TEST)) return;
     // Flag to notify that we're in testing mode
     Logger::isTestingNow = true;
     // Unset the startTesting flag
     Logger::startTesting = false;
 
     PRINTOUT(F("------------------------------------------"));
-    PRINTOUT(F("Entering sensor testing mode"));
+    PRINTOUT(F("Entering bench testing mode"));
     delay(100);  // This seems to prevent crashes, no clue why ....
 
     // Get the modem ready
@@ -1561,9 +1591,13 @@ void Logger::logData(bool sleepBeforeReturning) {
     // Reset the watchdog
     extendedWatchDog::resetWatchDog();
 
-    // Assuming we were woken up by the clock, check if the current time is an
-    // even interval of the logging interval
-    if (checkInterval()) {
+    // If bench testing is enabled and button was pressed, do the bench test
+    if ((MS_LOGGERBASE_BUTTON_BENCH_TEST) && Logger::startTesting) {
+        benchTestingMode();
+    } else if (checkInterval()) {
+        // We've checked that the current time is an even interval of the
+        // logging interval or we were requested to log by the button
+
         // Flag to notify that we're in already awake and logging a point
         Logger::isLoggingNow = true;
         // Reset the watchdog
@@ -1600,23 +1634,24 @@ void Logger::logData(bool sleepBeforeReturning) {
         Logger::startTesting = false;
     }
 
-    // Check if it was instead the testing interrupt that woke us up
-    if (Logger::startTesting) testingMode(sleepBeforeReturning);
-
     if (sleepBeforeReturning) {
         // Sleep
         systemSleep();
     }
 }
+
 // This is a one-and-done to log data
 void Logger::logDataAndPublish(bool sleepBeforeReturning) {
     // Reset the watchdog
     extendedWatchDog::resetWatchDog();
 
-    // Assuming we were woken up by the clock, check if the current time is an
-    // even interval of the logging interval or that we have been specifically
-    // requested to log by pushbutton
-    if (checkInterval()) {
+    // If bench testing is enabled and button was pressed, do the bench test
+    if ((MS_LOGGERBASE_BUTTON_BENCH_TEST) && Logger::startTesting) {
+        benchTestingMode();
+    } else if (checkInterval()) {
+        // We've checked that the current time is an even interval of the
+        // logging interval or we were requested to log by the button
+
         // Flag to notify that we're in already awake and logging a point
         Logger::isLoggingNow = true;
         // Reset the watchdog
@@ -1723,10 +1758,9 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
 
         // Unset flag
         Logger::isLoggingNow = false;
+        // Acknowledge testing button if pressed
+        Logger::startTesting = false;
     }
-
-    // Check if it was instead the testing interrupt that woke us up
-    if (Logger::startTesting) testingMode(sleepBeforeReturning);
 
     if (sleepBeforeReturning) {
         // Call the processor sleep
