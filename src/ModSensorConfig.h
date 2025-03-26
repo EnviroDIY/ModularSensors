@@ -328,7 +328,7 @@
  * data.  If false, publishers will only transmit data at the sendEveryX
  * interval or when the buffer fills.
  */
-#define MS_ALWAYS_FLUSH_PUBLISHERS true
+#define MS_ALWAYS_FLUSH_PUBLISHERS false
 #endif
 
 #ifndef MS_SEND_BUFFER_SIZE

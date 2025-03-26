@@ -262,7 +262,7 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient, bool forceFlush) {
                _logBuffer.getNumVariables(), F("vs"),
                _baseLogger->getArrayVarCount());
         MS_DBG(F("Setting number of variables in log buffer to match number of "
-                 "variables in logger"));
+                 "variables in logger. This will erase the buffer."));
         _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
     }
 
@@ -418,10 +418,18 @@ int16_t EnviroDIYPublisher::flushDataBuffer(Client* outClient) {
     PRINTOUT(F("\n-- Response Code --"));
     PRINTOUT(responseCode);
 
+#if defined(MONITOR_MY_WATERSHED_MATCHES_MODULAR_SENSORS)
     if (responseCode == 201) {
         // data was successfully transmitted, we can discard it from the buffer
         _logBuffer.clear();
     }
+#else
+    // clear the buffer anyway, because Monitor My Watershed cannot accept
+    // mutiple records in one post yet
+    MS_DBG("Clearing the buffer even though the post failed because Monitor My "
+           "Watershed cannot yet accept multi-record posts.");
+    _logBuffer.clear();
+#endif
 
     return responseCode;
 }
