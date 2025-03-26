@@ -20,7 +20,8 @@
 
 //==============================================================
 // Select the Real Time Clock to use by uncommenting one of the options below.
-// NOTE: This is optional for a EnviroDIY Mayfly or Stonefly
+// NOTE: This is optional for a EnviroDIY Mayfly or Stonefly but **REQUIRED**
+// for all other boards!
 // #define MS_USE_RV8803
 // #define MS_USE_DS3231
 // #define MS_USE_RTC_ZERO
@@ -28,6 +29,8 @@
 
 //==============================================================
 // Select ADS1015 instead of the ADS1115, if desired
+// This is for sensors that use the external ADC for analog voltage
+// measurements.
 // #define MS_USE_ADS1015
 //==============================================================
 
@@ -94,6 +97,9 @@
 
 // #define MS_ESPRESSIFESP8266_DEBUG
 // #define MS_ESPRESSIFESP8266_DEBUG_DEEP
+
+// #define MS_ESPRESSIFESP32_DEBUG
+// #define MS_ESPRESSIFESP32_DEBUG_DEEP
 
 // #define MS_SIMCOMSIM7080_DEBUG
 // #define MS_SIMCOMSIM7080_DEBUG_DEEP
@@ -222,6 +228,87 @@
 #define MAX_NUMBER_VARS 21
 // GroPoint Profile GPLP-8 has 8 Moisture and 13 Temperature values
 #endif
+
+#ifndef MS_PROCESSOR_ADC_RESOLUTION
+/**
+ * @brief Select or adjust the processor analog resolution.
+ *
+ * This is the resolution of the **built-in** processor ADC and it cannot be set
+ * higher than what your processor actually supports. This does **not** apply to
+ * the TI ADS1115 or ADS1015 external ADCS.
+ *
+ * The default for AVR boards is 10 and for other boards is 12.
+ *
+ * Future note: The ESP32 has a 12 bit ADC and the ESP8266 has a 10 bit ADC.
+ */
+#if defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
+#define MS_PROCESSOR_ADC_RESOLUTION 10
+#else
+#define MS_PROCESSOR_ADC_RESOLUTION 12
+#endif
+#if !defined(MS_PROCESSOR_ADC_RESOLUTION)
+#error The processor ADC resolution must be defined!
+#endif  // MS_PROCESSOR_ADC_RESOLUTION
+#endif
+
+
+#if !defined(MS_PROCESSOR_ADC_REFERENCE_MODE) || defined(DOXYGEN)
+#if defined(ARDUINO_ARCH_AVR) || defined(DOXYGEN)
+/**
+ * @brief The voltage reference mode for the processor's ADC.
+ *
+ * For an AVR board, this must be one of:
+ * - `DEFAULT`: the default built-in analog reference of 5 volts (on 5V Arduino
+ * boards) or 3.3 volts (on 3.3V Arduino boards)
+ * - `INTERNAL`: a built-in reference, equal to 1.1 volts on the ATmega168 or
+ * ATmega328P and 2.56 volts on the ATmega32U4 and ATmega8 (not available on the
+ * Arduino Mega)
+ * - `INTERNAL1V1`: a built-in 1.1V reference (Arduino Mega only)
+ * - `INTERNAL2V56`: a built-in 2.56V reference (Arduino Mega only)
+ * - `EXTERNAL`: the voltage applied to the AREF pin (0 to 5V only) is used as
+ * the reference.
+ *
+ * If not set on an AVR board `DEFAULT` is used.
+ *
+ * For the best accuracy, use an `EXTERNAL` reference with the AREF pin
+ * connected to the power supply for the EC sensor.
+ */
+#define MS_PROCESSOR_ADC_REFERENCE_MODE DEFAULT
+#endif
+#if defined(ARDUINO_ARCH_SAMD) || defined(DOXYGEN)
+/**
+ * @brief The voltage reference mode for the processor's ADC.
+ *
+ * For a SAMD board, this must be one of:
+ * - `AR_DEFAULT`: the default built-in analog reference of 3.3V
+ * - `AR_INTERNAL`: a built-in 2.23V reference
+ * - `AR_INTERNAL1V0`: a built-in 1.0V reference
+ * - `AR_INTERNAL1V65`: a built-in 1.65V reference
+ * - `AR_INTERNAL2V23`: a built-in 2.23V reference
+ * - `AR_EXTERNAL`: the voltage applied to the AREF pin is used as the reference
+ *
+ * If not set on an SAMD board `AR_DEFAULT` is used.
+ *
+ * For the best accuracy, use an `AR_EXTERNAL` reference with the AREF pin
+ * connected to the power supply for the EC sensor.  On most Adafruit SAMD51
+ * boards, there is an optional solder jumper to connect the AREF pin to
+ * the 3.3V supply. I suggest you close the jumper! On an EnviroDIY Stonefly,
+ * there is also a solder jumper, but on the Stonefly the jumper is *closed by
+ * default.*
+ *
+ * @see
+ * https://www.arduino.cc/reference/en/language/functions/analog-io/analogreference/
+ */
+#if defined(ENVIRODIY_STONEFLY_M4)
+#define MS_PROCESSOR_ADC_REFERENCE_MODE AR_EXTERNAL
+#else
+#define MS_PROCESSOR_ADC_REFERENCE_MODE AR_DEFAULT
+#endif
+#endif
+#if !defined(MS_PROCESSOR_ADC_REFERENCE_MODE)
+#error The processor ADC reference type must be defined!
+#endif  // MS_PROCESSOR_ADC_REFERENCE_MODE
+#endif  // ARDUINO_ARCH_SAMD
 //==============================================================
 
 
