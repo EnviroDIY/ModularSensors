@@ -330,9 +330,9 @@ class MeterTeros11 : public SDI12Sensors {
     ~MeterTeros11() {}
 
     /**
-     * @copydoc SDI12Sensors::getResults()
+     * @copydoc SDI12Sensors::getResults(bool verify_crc)
      */
-    bool getResults(void) override;
+    bool getResults(bool verify_crc) override;
 };
 
 

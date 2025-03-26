@@ -10,92 +10,16 @@
 
 #include "Decagon5TM.h"
 
-bool Decagon5TM::getResults(void) {
-    // Set up the float variables for receiving data
-    float ea   = -9999;
-    float temp = -9999;
+bool Decagon5TM::getResults(bool verify_crc) {
+    // run the parent getResults method
+    bool success = SDI12Sensors::getResults(verify_crc);
 
-    // Check if this the currently active SDI-12 Object
-    bool wasActive = _SDI12Internal.isActive();
-    // If it wasn't active, activate it now.
-    // Use begin() instead of just setActive() to ensure timer is set
-    // correctly.
-    if (!wasActive) _SDI12Internal.begin();
-    // Empty the buffer
-    _SDI12Internal.clearBuffer();
-
-    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
-    String getDataCommand = "";
-    getDataCommand += _SDI12address;
-    // SDI-12 command to get data [address][D][dataOption][!]
-    getDataCommand += "D0!";
-    _SDI12Internal.sendCommand(getDataCommand, _extraWakeTime);
-    delay(30);  // It just needs this little delay
-    MS_DEEP_DBG(F("    >>>"), getDataCommand);
-
-    // Wait for the first few charaters to arrive.  The response from a data
-    // request should always have more than three characters
-    uint32_t start = millis();
-    while (_SDI12Internal.available() < 3 && (millis() - start) < 1500) {
-        // wait
-    }
-    // read the returned address to remove it from the buffer
-    auto returnedAddress = static_cast<char>(_SDI12Internal.read());
-    // print out a warning if the address doesn't match up
-    if (returnedAddress != _SDI12address) {
-        MS_DBG(F("Warning, expecting data from"), _SDI12address,
-               F("but got data from"), returnedAddress);
-    }
-    // Start printing out the returned data
-    MS_DEEP_DBG(F("    <<<"), returnedAddress);
-
-    // read the '+' out of the buffer, and print it if we're debugging
-#ifdef MS_SDI12SENSORS_DEBUG_DEEP
-    MS_DEEP_DBG(F("    <<<"), static_cast<char>(_SDI12Internal.read()));
-#else
-    // if we're not debugging, just read the character to make sure
-    // it's removed from the buffer
-    _SDI12Internal.read();
-#endif
-
-    // First variable returned is the Dialectric E
-    ea = _SDI12Internal.parseFloat(SKIP_NONE);
-    MS_DEEP_DBG(F("    <<<"), String(ea, 10));
-
-    // read the next '+' out of the buffer
-#ifdef MS_SDI12SENSORS_DEBUG_DEEP
-    MS_DEEP_DBG(F("    <<<"), static_cast<char>(_SDI12Internal.read()));
-#else
-    _SDI12Internal.read();
-#endif
-
-    // Now read the temperature
-    temp = _SDI12Internal.parseFloat(SKIP_NONE);
-    MS_DEEP_DBG(F("    <<<"), String(temp, 10));
-
-    // read and dump anything else
-    while (_SDI12Internal.available()) {
-#ifdef MS_SDI12SENSORS_DEBUG_DEEP
-        MS_DEEP_DBG(F("    <<<"), static_cast<char>(_SDI12Internal.read()));
-#else
-        _SDI12Internal.read();
-#endif
-    }
-
-    // Empty the buffer again
-    _SDI12Internal.clearBuffer();
-
-    // De-activate the SDI-12 Object
-    // Use end() instead of just forceHold to un-set the timers
-    if (!wasActive) _SDI12Internal.end();
-
-    MS_DBG(F("Raw dielectric permittivity:"), ea);
-    MS_DBG(F("Raw Temperature Value:"), temp);
-
+    // pull the ea and temperature values from the buffer that getResults filled
+    float ea   = sensorValues[TM_EA_VAR_NUM];
+    float temp = sensorValues[TM_TEMP_VAR_NUM];
 
     // Set up the float variables for calculated variable
     float VWC = -9999;
-
 
     // Calculate the VWC from EA using the Topp equation
     // range check
@@ -128,9 +52,10 @@ bool Decagon5TM::getResults(void) {
         MS_DBG(F("WARNING:  temperature results out of range (-50-60)!"));
     }
 
+    // re-add to the buffer after calculation/validation
     verifyAndAddMeasurementResult(TM_TEMP_VAR_NUM, temp);
     verifyAndAddMeasurementResult(TM_EA_VAR_NUM, ea);
     verifyAndAddMeasurementResult(TM_VWC_VAR_NUM, VWC);
 
-    return temp != -9999;
+    return success && temp != -9999;
 }

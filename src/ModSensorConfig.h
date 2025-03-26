@@ -36,8 +36,19 @@
 
 //==============================================================
 // Disable concurrent polling of SDI-12 sensors, if needed
-// This may be necessary if using older or fussy sensors
+// Concurrent measurement support was introduced in version 1.2 (April 12, 1996)
+// of the specification and all sensors that claim to use version 1.2 or higher
+// must support it.
+// That being said.. some new sensors are fussy and will incorrectly abort
+// concurrent measurements due to noise or other sensors on the bus.
+// NOTE:  By default, concurrent measurements are used!
 // #define MS_SDI12_NON_CONCURRENT
+
+// Disable CRC checking for SDI-12 sensors, if needed
+// This may be necessary if using older or fussy sensors
+// CRC support in SDI-12 was implemenented with version 1.3 (April 7, 2000) and
+// all sensors that claim to use version 1.3 or higher must support it.
+// #define MS_SDI12_NO_CRC_CHECK
 //==============================================================
 
 //==============================================================

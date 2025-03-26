@@ -19,6 +19,12 @@
 
 #include "SDI12Sensors.h"
 
+#ifdef MS_SDI12_NO_CRC_CHECK
+#define MS_SDI12_USE_CRC false
+#else
+#define MS_SDI12_USE_CRC true
+#endif
+
 
 // The constructor - need the number of measurements the sensor will return,
 // SDI-12 address, the power pin, and the data pin
@@ -290,12 +296,14 @@ int8_t SDI12Sensors::startSDI12Measurement(bool isConcurrent) {
         startCommand = "";
         startCommand += _SDI12address;
         if (isConcurrent) {
-            startCommand += "C!";  // Start concurrent measurement - format
-                                   // [address]['C'][!]
+            startCommand += "C";  // Start concurrent measurement - 'C'
         } else {
-            startCommand += "M!";  // Start standard measurement - format
-            // [address]['M'][!]
+            startCommand += "M";  // Start standard measurement - 'M'
         }
+        if (MS_SDI12_USE_CRC) {
+            startCommand += "C";  // Add C to request a CRC
+        }
+        startCommand += "!";  // All commands end with '!'
         _SDI12Internal.clearBuffer();
         _SDI12Internal.sendCommand(startCommand, _extraWakeTime);
         delay(30);  // It just needs this little delay
@@ -400,7 +408,7 @@ bool SDI12Sensors::startSingleMeasurement(void) {
 }
 #endif
 
-bool SDI12Sensors::getResults(void) {
+bool SDI12Sensors::getResults(bool verify_crc) {
     // Check if this the currently active SDI-12 Object
     bool wasActive = _SDI12Internal.isActive();
     // If it wasn't active, activate it now.
@@ -415,6 +423,38 @@ bool SDI12Sensors::getResults(void) {
     uint8_t cmd_number      = 0;
     uint8_t cmd_retries     = 0;
 
+    // the result is structured <addr><values><CR><LF> or
+    // <addr><values><CRC><CR><LF>
+    // the value portion must be structred as pd.d
+    // - p - the polarity sign (+ or -)
+    // - d - numeric digits before the decimal place
+    // - . - the decimal point (optional)
+    // - d - numeric digits after the decimal point
+
+    // From SDI-12 Protocol v1.4, Section 4.4 SDI-12 Commands and Responses:
+    // The maximum number of characters that can be returned in the <values>
+    // part of the response to a D command is either 35 or 75. If the D command
+    // is issued to retrieve data in response to a concurrent measurement
+    // command, or in response to a high-volume ASCII measurement command, the
+    // maximum is 75. The maximum is also 75 in response to a continuous
+    // measurement command. Otherwise, the maximum is 35.
+    int max_sdi_response = 76;
+    // From SDI-12 Protocol v1.4, Table 11 The send data command (aD0!, aD1! . .
+    // . aD9!):
+    // - the maximum number of digits for a data value is 7, even without a
+    // decimal point
+    // - the minimum number of digits for a data value (excluding the decimal
+    // point) is 1
+    // - the maximum number of characters in a data value is 9 (the (polarity
+    // sign + 7 digits + the decimal point))
+    // - SRGD Note: The polarity symbol (+ or -) acts as a delimeter between the
+    // numeric values
+    int max_sdi_digits = 10;
+
+    String compiled_response = "";
+
+    bool success = true;
+
     // When requesting data, the sensor sends back up to ~80 characters at a
     // time to each data request.  If it needs to return more results than can
     // fit in the first data request (D0), we need to make additional requests
@@ -428,6 +468,7 @@ bool SDI12Sensors::getResults(void) {
         // Assemble the command based on how many commands we've already sent,
         // starting with D0 and ending with D9
         // SDI-12 command to get data [address][D][dataOption][!]
+        _SDI12Internal.clearBuffer();
         String getDataCommand = "";
         getDataCommand += _SDI12address;
         getDataCommand += "D";
@@ -439,90 +480,180 @@ bool SDI12Sensors::getResults(void) {
 
         // Wait for the first few charaters to arrive.  The response from a data
         // request should always have more than three characters
+        // TODO: Is this needed? The readBytesUntil() function uses the timeout
+        // for every byte it attempts to read
         uint32_t start = millis();
         while (_SDI12Internal.available() < 3 && (millis() - start) < 1500) {
             // wait
         }
 
-        // the result is structured <addr><values><CR><LF> or
-        // <addr><values><CRC><CR><LF>
-        // the value portion must be structred as pd.d
-        // - p - the polarity sign (+ or -)
-        // - d - numeric digits before the decimal place
-        // - . - the decimal point (optional)
-        // - d - numeric digits after the decimal point
-        // - the maximum number of digits for a data value is 7, even without a
-        // decimal point
-        // - the minimum number of digits for a data value (excluding the
-        // decimal point) is 1
-        // - the maximum number of characters in a data value is 9 (the
-        // (polarity sign + 7 digits + the decimal point))
-        // - The polarity symbol (+ or -) acts as a delimeter between the
-        // numeric values
+        // create a temporary buffer for incoming values
+        char resp_buffer[max_sdi_response] = {'\0'};
 
-        // read the returned address to remove it from the buffer
-        auto returnedAddress = static_cast<char>(_SDI12Internal.read());
-        // print out a warning if the address doesn't match up
-        if (returnedAddress != _SDI12address) {
-            MS_DBG(F("WARNING: expecting data from"), _SDI12address,
-                   F("but got data from"), returnedAddress);
+        // read bytes into the char array until we get to a new line (\r\n)
+        size_t bytes_read = _SDI12Internal.readBytesUntil('\n', resp_buffer,
+                                                          max_sdi_response);
+        MS_DEEP_DBG(F("Received"), bytes_read, F(" characters"));
+
+        size_t data_bytes_read = bytes_read -
+            1;  // subtract one for the /r before the /n
+        String sdiResponse = String(resp_buffer);
+        compiled_response += sdiResponse;
+        sdiResponse.trim();
+        MS_DEEP_DBG(F("    <<<"), sdiResponse);
+
+        // read and clear anything else from the buffer
+        int extra_chars = 0;
+        while (_SDI12Internal.available()) {
+#if defined(MS_SDI12SENSORS_DEBUG_DEEP) && !defined(MS_SILENT)
+            // read and print
+            MS_SERIAL_OUTPUT.write(_SDI12Internal.read());
+#else
+            // just read
+            _SDI12Internal.read();
+#endif
+            extra_chars++;
         }
-        // Start printing out the returned data
-        MS_DEEP_DBG(F("    <<<"), returnedAddress);
+        if (extra_chars > 0) {
+            MS_DEEP_DBG(extra_chars, F("additional characters received."));
+        }
+        _SDI12Internal.clearBuffer();
+
+        // check the crc, break if it's incorrect
+        if (verify_crc) {
+            bool crcMatch = _SDI12Internal.verifyCRC(sdiResponse);
+            // subtract the 3 characters of the CRC from the total number of
+            // data values
+            data_bytes_read = data_bytes_read - 3;
+            if (crcMatch) {
+                MS_DEEP_DBG(F("CRC valid"));
+            } else {
+                MS_DBG(F("CRC check failed!"));
+                success = false;
+                // if we failed CRC in the response, add one to the retry
+                // attempts but do not bump up the command number or transfer
+                // any results because we want to retry the same data command to
+                // try get a valid response
+                cmd_retries++;
+                // stop processing; no reason to read the numbers when we
+                // already know something's wrong
+                continue;
+            }
+        }
+
+        // check the address, break if it's incorrect
+        // NOTE: If the address is wrong because the response is garbled, the
+        // CRC check above should fail. But we still verify the address in case
+        // we're not checking the CRC or we got a well formed response from the
+        // wrong sensor.
+        char returnedAddress = resp_buffer[0];
+        if (returnedAddress != _SDI12address) {
+            MS_DBG(F("Wrong address returned!"));
+            MS_DBG(F("Expected"), String(_SDI12address), F("Got"),
+                   String(returnedAddress));
+            MS_DEEP_DBG(String(resp_buffer));
+            success = false;
+            // if we didn't get the correct address, add one to the retry
+            // attempts but do not bump up the command number or transfer any
+            // results because we want to retry the same data command to try get
+            // a valid response
+            cmd_retries++;
+            // stop processing; no reason to read the numbers when we already
+            // know something's wrong
+            continue;
+        }
 
         // create a temporary rx buffer for incoming values
         // this buffer will have a maximum size of the number of measured values
         // of the sensor
         float cmd_rx[_numReturnedValues - _incCalcValues];
-        bool  bad_read = false;
-        // While there is any data left in the buffer
-        while (_SDI12Internal.available() && (millis() - start) < 3000) {
-            // First peek to see if the next character in the buffer is a number
-            int c = _SDI12Internal.peek();
-            // if there's a polarity sign, a number, or a decimal next in the
-            // buffer, start reading it as a float.
-            if (c == '-' || c == '+' || (c >= '0' && c <= '9') || c == '.') {
+        // flag to mark a bad numeric value within the response
+        bool bad_read = false;
+        // another small buffer to hold the float values for atof
+        char float_buffer[max_sdi_digits] = {'\0'};
+        // flag to mark if we've gotten a decimal point in the float buffer, so
+        // we can check for bad repeated decimals
+        bool got_decimal = false;
+        // mark to keep track of the decimal point in the float buffer, just
+        // used for pretty printing
+        char* dec_pl = float_buffer;
+        // a pointer to our place in the float buffer - start at start of buffer
+        uint8_t fb_pos = 0;
+        // iterate through the char array and to check results
+        // NOTE: start at 1 since we already looked at the address!
+        for (size_t i = 1; i <= data_bytes_read; i++) {
+            // Get the character at position
+            char c = resp_buffer[i];
+            // if we get a polarity sign (+ or -) that is not the first
+            // character after the address, or we've reached the end of the
+            // buffer, then we're at the end of the previous number and can
+            // parse the float buffer
+            if ((((c == '-' || c == '+') && i != 1) || i == data_bytes_read) &&
+                strnlen(float_buffer, max_sdi_digits) > 0) {
                 // Read the float only skipping the '+' if it's included as the
                 // polarity.  Reading the numbers as a float will remove them
                 // from the buffer.
-                float result = _SDI12Internal.parseFloat();
+                float result = atof(float_buffer);
+#if defined(MS_SDI12SENSORS_DEBUG) && !defined(MS_SILENT)
+                // NOTE: This bit below is just for pretty-printing
+                dec_pl              = strchr(float_buffer, '.');
+                size_t len_post_dec = 0;
+                if (dec_pl != nullptr) {
+                    len_post_dec = strnlen(dec_pl, max_sdi_digits) - 1;
+                }
+                MS_DBG(F("Result"), resultsReceived, F("Raw value:"),
+                       float_buffer, F("Len after decimal:"), len_post_dec,
+                       F("Parsed value:"), String(result, len_post_dec));
+#endif
                 // The SDI-12 library should return our set timeout value of
                 // -9999 on timeout
                 if (result == -9999 || isnan(result)) result = -9999;
-                // Print out what we got
-                MS_DBG(F("    <<<"), String(result, 7));
                 // Put the read value into the temporary buffer. After each
                 // result is read, tick up the number of results received so
                 // that the next one goes in the next spot in the holding
                 // buffer.
                 cmd_rx[cmd_results] = result;
+                // add how many results we have
                 if (result != -9999) {
                     gotResults = true;
-                    cmd_results++;
+                    resultsReceived++;
                 }
-                // if we get to a new line, we've made it to the end of the
-                // response
-            } else if (c == '\r' || c == '\n') {
-                MS_DBG(c);
-                // Read the character to make sure it's removed from the buffer
-                _SDI12Internal.read();
-                // if the next spot in the buffer isn't a a polarity sign, a
-                // number, or a decimal, then it's a mistake - the protocol
-                // doesn't allow anything else as part of the data string
-            } else {
-                MS_DBG(F("    <<< INVALID CHARACTER IN RESPONSE:"),
-                       static_cast<char>(c));
-                // Read the character to make sure it's removed from the buffer
-                _SDI12Internal.read();
+                // empty the float buffer so it's ready for the next number
+                float_buffer[0] = '\0';
+                fb_pos          = 0;
+                got_decimal     = false;
+            }
+            // if we just read the last byte, continue to the next iteration
+            // which will parse the float out of it
+            if (i == data_bytes_read) { continue; }
+            // if we're mid-number and there's a digit, a decimal, or a negative
+            // sign in the sdi12 response buffer, add it to the current float
+            // buffer
+            if (c == '-' || (c >= '0' && c <= '9') ||
+                (c == '.' && !got_decimal)) {
+                float_buffer[fb_pos] = c;
+                fb_pos++;
+                float_buffer[fb_pos] = '\0';  // null terminate the buffer
+            } else if (c == '+') {
+                // if we get a "+", it's a valid SDI-12 polarity indicator, but
+                // not something accepted by atof in parsing the float, so we
+                // just ignore it NOTE: A mis-read like this should also cause
+                // the CRC to be wrong, but still check here in case we're not
+                // using a CRC.
+            } else {  //(c != '-' && c != '+' && (c < '0' || c > '9') && c !=
+                      //'.')
+#if defined(MS_SDI12SENSORS_DEBUG_DEEP) && !defined(MS_SILENT)
+                MS_SERIAL_OUTPUT.print("Invalid data response character: ");
+                MS_SERIAL_OUTPUT.write(c);
+                MS_SERIAL_OUTPUT.println();
+#endif
                 bad_read = true;
             }
-            delay(10);  // 1 character ~ 7.5ms
+            // if we get a decimal, mark it so we can verify we don't get
+            // repeated decimals
+            if (c == '.') { got_decimal = true; }
         }
-        // bust out if we didn't get any results at all
-        if (!gotResults) {
-            MS_DBG(F("  No results received, will not continue requests!"));
-            break;  // don't do another loop if we got nothing
-        }
+
         // if we got results and none of them are bad, transfer from the
         // temporary buffer to the sensor's variable array
         if (gotResults && !bad_read) {
@@ -533,8 +664,8 @@ bool SDI12Sensors::getResults(void) {
                 verifyAndAddMeasurementResult(resultsReceived, cmd_rx[cr]);
                 resultsReceived++;
             }
-            MS_DBG(F("  Total Results Received: "), resultsReceived,
-                   F(", Remaining: "),
+            MS_DBG(F("  Total Results Received:"), resultsReceived,
+                   F("Remaining:"),
                    (_numReturnedValues - _incCalcValues) - resultsReceived);
             cmd_number++;
         } else {
@@ -548,6 +679,13 @@ bool SDI12Sensors::getResults(void) {
 
     // Empty the buffer again
     _SDI12Internal.clearBuffer();
+
+    MS_DEEP_DBG(F("After"), cmd_number, F("data commands got"), resultsReceived,
+                F("results of the expected"),
+                _numReturnedValues - _incCalcValues, F("expected. This is a"),
+                resultsReceived == _numReturnedValues - _incCalcValues
+                    ? F("success.")
+                    : F("failure."));
 
     // De-activate the SDI-12 Object
     // Use end() instead of just forceHold to un-set the timers
@@ -564,7 +702,7 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
     // Check a measurement was *successfully* started (status bit 6 set)
     // Only go on to get a result if it was
     if (bitRead(_sensorStatus, 6)) {
-        success = getResults();
+        success = getResults(MS_SDI12_USE_CRC);
     } else {
         // If there's no measurement, need to make sure we send over all
         // of the "failed" result values
@@ -640,7 +778,7 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
             _SDI12Internal.clearBuffer();
 
             // get the results
-            success = getResults();
+            success = getResults(MS_SDI12_USE_CRC);
         } else {
             // If there's no measurement, need to make sure we send over all
             // of the "failed" result values

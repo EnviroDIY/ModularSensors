@@ -283,9 +283,9 @@ class Decagon5TM : public SDI12Sensors {
     ~Decagon5TM() {}
 
     /**
-     * @copydoc SDI12Sensors::getResults()
+     * @copydoc SDI12Sensors::getResults(bool verify_crc)
      */
-    bool getResults(void) override;
+    bool getResults(bool verify_crc) override;
 };
 
 

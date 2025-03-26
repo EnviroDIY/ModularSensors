@@ -278,7 +278,7 @@ class SDI12Sensors : public Sensor {
      * @return True if the full number of expected results was
      * returned.
      */
-    virtual bool getResults(void);
+    virtual bool getResults(bool verify_crc);
     /**
      * @brief Internal reference to the SDI-12 object.
      */
