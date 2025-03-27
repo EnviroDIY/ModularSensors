@@ -463,6 +463,8 @@ bool SDI12Sensors::getResults(bool verify_crc) {
     // more data is returned.
     while (resultsReceived < (_numReturnedValues - _incCalcValues) &&
            cmd_number <= 9 && cmd_retries < 5) {
+        MS_DEEP_DBG(F("Attempt"), cmd_retries, F("to get data number"),
+                    cmd_number);
         bool    gotResults  = false;
         uint8_t cmd_results = 0;
         // Assemble the command based on how many commands we've already sent,
@@ -601,13 +603,15 @@ bool SDI12Sensors::getResults(bool verify_crc) {
                 if (dec_pl != nullptr) {
                     len_post_dec = strnlen(dec_pl, max_sdi_digits) - 1;
                 }
-                MS_DBG(F("Result"), resultsReceived, F("Raw value:"),
-                       float_buffer, F("Len after decimal:"), len_post_dec,
+                MS_DBG(F("Result"), cmd_results, F("Raw value:"), float_buffer,
                        F("Parsed value:"), String(result, len_post_dec));
 #endif
                 // The SDI-12 library should return our set timeout value of
                 // -9999 on timeout
-                if (result == -9999 || isnan(result)) result = -9999;
+                if (result == -9999 || isnan(result)) {
+                    MS_DBG(F("Result is not valid!"));
+                    result = -9999;
+                }
                 // Put the read value into the temporary buffer. After each
                 // result is read, tick up the number of results received so
                 // that the next one goes in the next spot in the holding
@@ -616,7 +620,7 @@ bool SDI12Sensors::getResults(bool verify_crc) {
                 // add how many results we have
                 if (result != -9999) {
                     gotResults = true;
-                    resultsReceived++;
+                    cmd_results++;
                 }
                 // empty the float buffer so it's ready for the next number
                 float_buffer[0] = '\0';
@@ -673,6 +677,7 @@ bool SDI12Sensors::getResults(bool verify_crc) {
             // attempts but do not bump up the command number or transfer any
             // results because we want to retry the same data command to try get
             // a valid response
+            MS_DBG(F("No good results!  Will retry!"));
             cmd_retries++;
         }
     }
@@ -691,7 +696,7 @@ bool SDI12Sensors::getResults(bool verify_crc) {
     // Use end() instead of just forceHold to un-set the timers
     if (!wasActive) _SDI12Internal.end();
 
-    return (_numReturnedValues - _incCalcValues) == resultsReceived;
+    return success && (_numReturnedValues - _incCalcValues) == resultsReceived;
 }
 
 
