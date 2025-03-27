@@ -426,8 +426,10 @@ int16_t EnviroDIYPublisher::flushDataBuffer(Client* outClient) {
 #else
     // clear the buffer anyway, because Monitor My Watershed cannot accept
     // mutiple records in one post yet
-    MS_DBG("Clearing the buffer even though the post failed because Monitor My "
-           "Watershed cannot yet accept multi-record posts.");
+    if (responseCode != 201) {
+        MS_DBG("Clearing the buffer even though the post failed because "
+               "Monitor My Watershed cannot yet accept multi-record posts.");
+    }
     _logBuffer.clear();
 #endif
 

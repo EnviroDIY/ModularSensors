@@ -41,6 +41,9 @@ bool SIMComSIM7080::extraModemSetup(void) {
     // offers no way to know when that might happen. Reduce the chance of
     // problems by maxing out the send buffer size. This size should accommodate
     // a completely full 8K LogBuffer and a crappy connection.
+    /// TODO: Settings applied via CACFG are meant for *transparent*
+    /// transmission mode, not the "normal" transmission mode used by TinyGSM.
+    /// This may not be necessary (or evey functional).
     gsmModem.sendAT(F("+CACFG=\"SNDBUF\",29200"));
     gsmModem.waitResponse();
 

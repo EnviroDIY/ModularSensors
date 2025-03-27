@@ -362,7 +362,7 @@
  * This can be changed by setting the build flag MS_SEND_BUFFER_SIZE when
  * compiling.
  */
-#define MS_SEND_BUFFER_SIZE 1460
+#define MS_SEND_BUFFER_SIZE 1360
 #endif
 
 #ifndef TINY_GSM_RX_BUFFER

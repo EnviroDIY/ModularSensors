@@ -182,7 +182,7 @@ bool GeoluxHydroCam::addSingleMeasurementResult(void) {
         }
 
         int32_t image_size = _camera.getImageSize();
-        MS_DBG(F("Completed image is "), image_size, F(" bytes."));
+        MS_DBG(F("Completed image is"), image_size, F("bytes."));
         success &= image_size != 0;
 
         if (success) {
