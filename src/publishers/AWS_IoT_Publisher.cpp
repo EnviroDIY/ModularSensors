@@ -261,7 +261,9 @@ int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
     char num_buf[6];
     for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
         itoa(i, num_buf, 10);
+        txBufferAppend('"');
         txBufferAppend(num_buf);
+        txBufferAppend('"');
         txBufferAppend(':');
         txBufferAppend(_baseLogger->getValueStringAtI(i).c_str());
         if (i + 1 != _baseLogger->getArrayVarCount()) {
