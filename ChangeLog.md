@@ -40,6 +40,10 @@ This should only make a difference for my compilation tests, real users should p
   - Logger::isRTCSane(); use loggerClock::isRTCSane() in new code.
   - Logger::wakeISR(); use loggerClock::RTCISR() in new code.
 - Changed the watchdog from a fix 15 minute reset timer to 2x the logging interval (or at least 5 minutes).
+- Unified all defines related to the resolution of the processor ADC and moved them to the new configuration file.
+  - Applies only to sensors using the built-in processor ADC:
+    - Internal battery, analog light sensor, and analog electrical conductivity
+  - You can no-longer set a separate processor resolution for each sensor.
 
 ### Added
 

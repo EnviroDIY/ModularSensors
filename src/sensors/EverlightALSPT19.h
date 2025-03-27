@@ -99,21 +99,6 @@
 /**@}*/
 
 /**
- * @anchor sensor_alspt19_config
- * @name Configuration Defines
- * Defines to help configure the range and resolution of the ALS-PT119 depending
- * on the processor and ADC in use.
- */
-/**@{*/
-/// @brief The maximum possible value of the ADC - one less than the resolution
-/// shifted up one bit.
-#define ALSPT19_ADC_MAX ((1 << MS_PROCESSOR_ADC_RESOLUTION) - 1)
-/// @brief The maximum possible range of the ADC - the resolution shifted up one
-/// bit.
-#define ALSPT19_ADC_RANGE (1 << MS_PROCESSOR_ADC_RESOLUTION)
-/**@}*/
-
-/**
  * @anchor sensor_alspt19_timing
  * @name Sensor Timing
  * The sensor timing for an Everlight ALS-PT19

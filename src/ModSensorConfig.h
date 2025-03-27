@@ -267,6 +267,12 @@
 #endif  // MS_PROCESSOR_ADC_RESOLUTION
 #endif
 
+/// @brief The maximum possible value of the ADC - one less than the resolution
+/// shifted up one bit.
+#define PROCESSOR_ADC_MAX ((1 << MS_PROCESSOR_ADC_RESOLUTION) - 1)
+/// @brief The maximum possible range of the ADC - the resolution shifted up one
+/// bit.
+#define PROCESSOR_ADC_RANGE (1 << MS_PROCESSOR_ADC_RESOLUTION)
 
 #if !defined(MS_PROCESSOR_ADC_REFERENCE_MODE) || defined(DOXYGEN)
 #if defined(ARDUINO_ARCH_AVR) || defined(DOXYGEN)

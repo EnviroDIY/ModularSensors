@@ -54,11 +54,11 @@ bool EverlightALSPT19::addSingleMeasurementResult(void) {
         MS_DEEP_DBG("  ADC Bits:", sensor_adc);
 
         if (0 == sensor_adc) {
-            // Prevent underflow, can never be ALSPT19_ADC_RANGE
+            // Prevent underflow, can never be outside of PROCESSOR_ADC_RANGE
             sensor_adc = 1;
         }
         // convert bits to volts
-        volt_val = (_supplyVoltage / static_cast<float>(ALSPT19_ADC_MAX)) *
+        volt_val = (_supplyVoltage / static_cast<float>(PROCESSOR_ADC_MAX)) *
             static_cast<float>(sensor_adc);
         // convert volts to current
         // resistance is entered in kΩ and we want µA

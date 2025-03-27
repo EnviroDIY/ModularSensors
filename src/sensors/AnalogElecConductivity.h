@@ -182,13 +182,6 @@
  * conductivity sensor depending on the processor and ADC in use.
  */
 /**@{*/
-/// @brief The maximum possible value of the ADC - one less than the resolution
-/// shifted up one bit.
-#define ANALOG_EC_ADC_MAX ((1 << MS_PROCESSOR_ADC_RESOLUTION) - 1)
-/// @brief The maximum possible range of the ADC - the resolution shifted up one
-/// bit.
-#define ANALOG_EC_ADC_RANGE (1 << MS_PROCESSOR_ADC_RESOLUTION)
-
 #if !defined(RSERIES_OHMS_DEF) || defined(DOXYGEN)
 /**
  * @brief The default resistance (in ohms) of the measuring resistor.

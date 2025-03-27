@@ -117,8 +117,7 @@ float ProcessorStats::getBatteryVoltage(void) {
         MS_DBG(F("Raw battery pin reading in bits:"), rawBattery);
         // convert bits to volts
         sensorValue_battery =
-            (_operatingVoltage /
-             static_cast<float>((1 << MS_PROCESSOR_ADC_RESOLUTION) - 1)) *
+            (_operatingVoltage / static_cast<float>(PROCESSOR_ADC_MAX)) *
             _batteryMultiplier * rawBattery;
         MS_DBG(F("Battery in Volts:"), sensorValue_battery);
     } else {
