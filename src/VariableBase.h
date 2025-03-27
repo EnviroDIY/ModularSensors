@@ -345,8 +345,9 @@ class Variable {
     /**
      * @brief Get current value of the variable as a float
      *
-     * @param updateValue True to ask the parent sensor to measure and return a
-     * new value.  Default is false.
+     * @param updateValue True to ask the parent sensor to take a measurement
+     * and return a new value or to re-run the calculation function for a
+     * calculated value.  Default is false.
      * @return The current value of the variable
      */
     float getValue(bool updateValue = false);
@@ -354,8 +355,9 @@ class Variable {
      * @brief Get current value of the variable as a string with the correct
      * decimal resolution
      *
-     * @param updateValue True to ask the parent sensor to measure and return a
-     * new value.  Default is false.
+     * @param updateValue True to ask the parent sensor to take a measurement
+     * and return a new value or to re-run the calculation function for a
+     * calculated value.  Default is false.
      * @return The current value of the variable
      */
     String getValueString(bool updateValue = false);

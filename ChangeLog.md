@@ -12,12 +12,20 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- **Potentially BREAKING:** For calculated variables, the calculation function will only be called if `getValue(true)` or `getValueString(true)` is called - that is, the boolean for 'update value' must explicitly be set to true to rerun the calculation function.
+  - Previously, the calculation function was re-run every time `getValue()` or `getValueString()` was called, regardless of the update value parameter.
+For calculations that were based on the results of other variables that didn't change, this was fine.
+But, for calculations based on new raw readings (ie, calling `analogRead()`) a new value would be returned each time the function was called.
+I realized this was a problem for analog values I tried to read that reported correctly in the first round, but were saved as junk in the csv and publishers because a new analog reading was being attempted when the thing I was attempting to read was now powered down.
+  - The variable array update functions have been modified accordingly.
+  - Verify you have the functionalilty you expect if you use calculated variables.
 - **BREAKING** Converted the watch-dog classes in to static classes with all static fuction and a **deleted constructior**.
   - Any code that attepted to interact with the watchdog (ie, with a "complex loop") must now call the extendedWatchDog class directly, ie: `extendedWatchDog::resetWatchDog();` rather than `dataLogger.watchDogTimer.resetWatchDog();`
 - **BREAKING** Renamed `markedLocalEpochTime` to `markedLocalUnixTime` to clarify the start of the epoch that we're marking down.
 - **BREAKING** Renamed `markedUTCEpochTime` to `markedUTCUnixTime` to clarify the start of the epoch that we're marking down.
 - **Potentially BREAKING:** Changed the requirements for a "sane" timestamp to between 2023 and 2030.
   - Moved the value for the sane range into two defines: `EARLIEST_SANE_UNIX_TIMESTAMP` and `LATEST_SANE_UNIX_TIMESTAMP` so they can be more easily modified and tracked.
+These defines can be set in the ModSensorConfig.h file.
 - **BREAKING** Updated the ThingSpeak publisher to the current ThingSpeak MQTT protocol. The older protocol was deprecated and non-functional.
   - This requires a user name, password, and client ID for the MQTT connection in addition to the channel number. The MQTT key and channel key are no longer used.
 - Removed the enable/disable wake pin interrupt at every sleep interval in favor of a single attachment druing the begin.
@@ -35,6 +43,8 @@ This should only make a difference for my compilation tests, real users should p
 
 ### Added
 
+- Added a single configuration file (ModSensorConfig.h) that all files read from to check for configuation-related defines.
+This allows Arduino IDE users who are unable to use build flags to more easily configure the library or enable debugging.
 - Added support for caching readings in RAM and sending in batches.
 This currently only works on the EnviroDIY/Monitor My Watershed Publisher.
 Thank you to [Thomas Watson](https://github.com/tpwrules) for this work.
@@ -49,11 +59,14 @@ If no epoch start is given, it is assumed to be UNIX (January 1, 1970).
 - Added support for sending printouts and debugging to two different serial ports.  This is useful for devices (like SAMD) that use a built in USB serial port which is turned off when the device sleeps.  If `MS_2ND_OUTPUT` is defined, output will go to *both* `MS_2ND_OUTPUT` and to `MS_OUTPUT`.
 - Added example code for flashing neopixel in the menu example.
 - Added support for Geolux HydroCam
-- Added a generic time formatting function.
-- Added a new publisher to AWS IoT Core over MQTT
-- Added a new publisher to AWS S3 buckets using pre-signed URLs
+- **NEW SENSOR** Added a generic time formatting function.
+- **NEW PUBLISHER** Added a new publisher to AWS IoT Core over MQTT
+  - An intreguing note: Unlike every other publisher, the AWS IoT Core publisher supports two-way communication with a settable callback on received messages.
+- **NEW PUBLISHER** Added a new publisher to AWS S3 buckets using pre-signed URLs
 - Added structure to publish *metadata* to publishers - intended to be used only at startup.
 - Added function `getVarResolutionAtI(uint8_t)`
+- Added support for full CRC checking for SDI-12 sensors.
+  - This includes simplistic retries, but does *not* fully implement the SDI-12 protocols triple inner and outer loop retry requirements.
 
 ### Removed
 
@@ -64,7 +77,10 @@ If no epoch start is given, it is assumed to be UNIX (January 1, 1970).
   - Although public, this was never intended to be used externally.
 - **Potentially BREAKING:** Removed support for any functions using the Sodaq "DateTime" class.
 - **Potentially BREAKING:** Removed ability to have `PRINTOUT`, `MS_DBG`, and `MS_DEEP_DBG` output going to different serial ports
-  - Defines for `STANDARD_SERIAL_OUTPUT`, `DEBUGGING_SERIAL_OUTPUT`, and `DEEP_DEBUGGING_SERIAL_OUTPUT` are all ignored. Use the single define `MS_OUTPUT` for all outputs.  If `MS_OUTPUT` is not defined, a default will be used (generally Serial or USBSerial).
+  - Defines for `STANDARD_SERIAL_OUTPUT`, `DEBUGGING_SERIAL_OUTPUT`, and `DEEP_DEBUGGING_SERIAL_OUTPUT` are all ignored.
+Use the single define `MS_OUTPUT` for all outputs.
+If `MS_OUTPUT` is not defined, a default will be used (generally Serial or USBSerial).
+If you do not want any output, define `MS_SILENT`.
 
 ### Fixed
 

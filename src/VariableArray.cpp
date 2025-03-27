@@ -483,6 +483,11 @@ bool VariableArray::updateAllSensors(void) {
     }
     MS_DBG(F("... Complete. <<-----"));
 
+    MS_DBG(F("Updating calculated variables. ..."));
+    for (uint8_t i = 0; i < _variableCount; i++) {
+        if (arrayOfVars[i]->isCalculated) { arrayOfVars[i]->getValue(true); }
+    }
+
     return success;
 }
 
@@ -833,6 +838,11 @@ bool VariableArray::completeUpdate(void) {
         }
     }
     MS_DBG(F("... Complete. <<-----"));
+
+    MS_DBG(F("Updating calculated variables. ..."));
+    for (uint8_t i = 0; i < _variableCount; i++) {
+        if (arrayOfVars[i]->isCalculated) { arrayOfVars[i]->getValue(true); }
+    }
 
     return success;
 }

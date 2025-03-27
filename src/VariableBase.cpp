@@ -244,7 +244,14 @@ float Variable::getValue(bool updateValue) {
         // the calculation because we don't know which sensors those are.
         // Make sure you update the parent sensors manually for a calculated
         // variable!!
-        return _calcFxn();
+        // NOTE: Only run the calculation function if update value is called,
+        // otherwise return the last value. If we run the calculation function
+        // every time we call getValue() or getValueString(), we will get
+        // different values each time - ie, the data on the CSV and each
+        // pubisher will report a different value. That is **NOT** the desired
+        // behavior.  Thus, we stash the value.
+        if (updateValue) _currentValue = _calcFxn();
+        return _currentValue;
     } else {
         if (updateValue) parentSensor->update();
         return _currentValue;

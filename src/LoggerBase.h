@@ -634,6 +634,10 @@ class Logger {
      * @brief Get the most recent value of the variable at the given position in
      * the internal variable array object.
      *
+     * @note This does **not** trigger a new reading from the sensor for sensor
+     * reported variables or a new call of the calculation function for
+     * calculated variables.
+     *
      * @param position_i The position of the variable in the array.
      * @return The value of the variable as a float.
      */
@@ -641,6 +645,10 @@ class Logger {
     /**
      * @brief Get the most recent value of the variable at the given position in
      * the internal variable array object.
+     *
+     * @note This does **not** trigger a new reading from the sensor for sensor
+     * reported variables or a new call of the calculation function for
+     * calculated variables.
      *
      * @param position_i The position of the variable in the array.
      * @return The value of the variable as a string with the correct
