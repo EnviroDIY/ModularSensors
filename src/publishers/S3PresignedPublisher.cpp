@@ -134,10 +134,14 @@ bool S3PresignedPublisher::validateS3URL(String& s3url, char* s3host,
         return false;
     }
 
+#if defined MS_S3PRESIGNEDPUBLISHER_DEBUG
     char* start_bucket       = const_cast<char*>(url_str) + 8;
     char* end_bucket         = strstr(url_str, s3_parent_host) - 1;
+#endif
     char* start_file         = strstr(url_str + 8, "/") + 1;
-    char* end_file           = strstr(start_file, "?");
+#if defined MS_S3PRESIGNEDPUBLISHER_DEBUG
+    char* end_file = strstr(start_file, "?");
+#endif
     char* start_content      = strstr(start_file, "&content-type=");
     char* start_content_type = strstr(start_content, "=") + 1;
     // ^^ Add 1 to start at the character after the '=' so we don't include it

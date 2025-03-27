@@ -3476,7 +3476,7 @@ void setup() {
     PRINTOUT("\n\n\n=============================");
     PRINTOUT("=============================");
     PRINTOUT("=============================");
-    PRINTOUT(F("\n\nNow running"), sketchName, F(" on Logger"), LoggerID, '\n');
+    PRINTOUT(F("\n\nNow running"), sketchName, F("on Logger"), LoggerID, '\n');
 
     PRINTOUT(F("Using ModularSensors Library version"),
              MODULAR_SENSORS_VERSION);

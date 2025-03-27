@@ -576,9 +576,11 @@ bool SDI12Sensors::getResults(bool verify_crc) {
         // flag to mark if we've gotten a decimal point in the float buffer, so
         // we can check for bad repeated decimals
         bool got_decimal = false;
+#if defined(MS_SDI12SENSORS_DEBUG) && !defined(MS_SILENT)
         // mark to keep track of the decimal point in the float buffer, just
         // used for pretty printing
         char* dec_pl = float_buffer;
+#endif
         // a pointer to our place in the float buffer - start at start of buffer
         uint8_t fb_pos = 0;
         // iterate through the char array and to check results
