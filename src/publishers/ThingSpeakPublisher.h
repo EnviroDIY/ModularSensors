@@ -13,19 +13,23 @@
 #ifndef SRC_PUBLISHERS_THINGSPEAKPUBLISHER_H_
 #define SRC_PUBLISHERS_THINGSPEAKPUBLISHER_H_
 
-// Include config before anything else
+// Include the library config before anything else
 #include "ModSensorConfig.h"
 
-// Debugging Statement
-// #define MS_THINGSPEAKPUBLISHER_DEBUG
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
 
+// Define the print label[s] for the debugger
 #ifdef MS_THINGSPEAKPUBLISHER_DEBUG
 #define MS_DEBUGGING_STD "ThingSpeakPublisher"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+
+// Include other in-library and external dependencies
 #include "dataPublisherBase.h"
 #include "PubSubClient.h"
 

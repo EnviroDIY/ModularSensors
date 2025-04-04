@@ -16,23 +16,23 @@
 #ifndef SRC_WATCHDOGS_WATCHDOGSAMD_H_
 #define SRC_WATCHDOGS_WATCHDOGSAMD_H_
 
-// Include config before anything else
+// Include the library config before anything else
 #include "ModSensorConfig.h"
 
-// Debugging Statement
-// #define MS_WATCHDOGSAMD_DEBUG
-// #define MS_WATCHDOGSAMD_DEBUG_DEEP
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
 
+// Define the print label[s] for the debugger
 #ifdef MS_WATCHDOGSAMD_DEBUG
 #define MS_DEBUGGING_STD "WatchDogSAMD"
 #endif
-
 #ifdef MS_WATCHDOGSAMD_DEBUG_DEEP
 #define MS_DEBUGGING_DEEP "WatchDogSAMD"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
 #undef MS_DEBUGGING_DEEP
 

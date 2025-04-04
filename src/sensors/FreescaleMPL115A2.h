@@ -63,19 +63,23 @@
 #ifndef SRC_SENSORS_FREESCALEMPL115A2_H_
 #define SRC_SENSORS_FREESCALEMPL115A2_H_
 
-// Include config before anything else
+// Include the library config before anything else
 #include "ModSensorConfig.h"
 
-// Debugging Statement
-// #define MS_FREESCALEMPL115A2_DEBUG
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
 
+// Define the print label[s] for the debugger
 #ifdef MS_FREESCALEMPL115A2_DEBUG
 #define MS_DEBUGGING_STD "FreescaleMPL115A2"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+
+// Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include <Adafruit_MPL115A2.h>

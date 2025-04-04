@@ -61,20 +61,23 @@
 #ifndef SRC_MODEMS_SODAQ2GBEER6_H_
 #define SRC_MODEMS_SODAQ2GBEER6_H_
 
-// Include config before anything else
+// Include the library config before anything else
 #include "ModSensorConfig.h"
 
-// Debugging Statement
-// #define MS_SODAQ2GBEER6_DEBUG
-// #define MS_SODAQ2GBEER6_DEBUG_DEEP
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
 
+// Define the print label[s] for the debugger
 #ifdef MS_SODAQ2GBEER6_DEBUG
 #define MS_DEBUGGING_STD "Sodaq2GBeeR6"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+
+// Include other in-library and external dependencies
 #include "SIMComSIM800.h"
 
 #ifdef MS_SODAQ2GBEER6_DEBUG_DEEP

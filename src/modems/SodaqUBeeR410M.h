@@ -112,13 +112,13 @@
 #ifndef SRC_MODEMS_SODAQUBEER410M_H_
 #define SRC_MODEMS_SODAQUBEER410M_H_
 
-// Include config before anything else
+// Include the library config before anything else
 #include "ModSensorConfig.h"
 
-// Debugging Statement
-// #define MS_SODAQUBEER410M_DEBUG
-// #define MS_SODAQUBEER410M_DEBUG_DEEP
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
 
+// Define the print label[s] for the debugger
 #ifdef MS_SODAQUBEER410M_DEBUG
 #define MS_DEBUGGING_STD "SodaqUBeeR410M"
 #endif
@@ -128,10 +128,13 @@
  */
 #define TINY_GSM_MODEM_SARAR4
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
 #undef MS_DEBUGGING_DEEP
+
+// Include other in-library and external dependencies
 #include "TinyGsmClient.h"
 #include "LoggerModem.h"
 

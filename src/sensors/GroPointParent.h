@@ -61,25 +61,27 @@
 #ifndef SRC_SENSORS_GROPOINTPARENT_H_
 #define SRC_SENSORS_GROPOINTPARENT_H_
 
-// Include config before anything else
+// Include the library config before anything else
 #include "ModSensorConfig.h"
 
-// Debugging Statement
-// #define MS_GROPOINTPARENT_DEBUG
-// #define MS_GROPOINTPARENT_DEBUG_DEEP
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
 
+// Define the print label[s] for the debugger
 #ifdef MS_GROPOINTPARENT_DEBUG
 #define MS_DEBUGGING_STD "GroPointParent"
 #endif
-
 #ifdef MS_GROPOINTPARENT_DEBUG_DEEP
 #define MS_DEBUGGING_DEEP "GroPointParent"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
 #undef MS_DEBUGGING_DEEP
+
+// Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include "GroPointModbus.h"

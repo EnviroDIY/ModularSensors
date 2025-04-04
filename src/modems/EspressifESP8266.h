@@ -53,18 +53,17 @@
 #ifndef SRC_MODEMS_ESPRESSIFESP8266_H_
 #define SRC_MODEMS_ESPRESSIFESP8266_H_
 
-// Include config before anything else
+// Include the library config before anything else
 #include "ModSensorConfig.h"
 
-// Debugging Statement
-// #define MS_ESPRESSIFESP8266_DEBUG
-// #define MS_ESPRESSIFESP8266_DEBUG_DEEP
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
 
-#if defined(MS_ESPRESSIFESP8266_DEBUG)
+// Define the print label[s] for the debugger
+#ifdef MS_ESPRESSIFESP8266_DEBUG
 #define MS_DEBUGGING_STD "EspressifESP8266"
 #endif
-
-#if defined(MS_ESPRESSIFESP8266_DEBUG_DEEP)
+#ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
 #define MS_DEBUGGING_DEEP "EspressifESP8266"
 #endif
 
@@ -73,14 +72,17 @@
  */
 #define TINY_GSM_MODEM_ESP8266
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
 #undef MS_DEBUGGING_DEEP
+
+// Include other in-library and external dependencies
 #include "TinyGsmClient.h"
 #include "Espressif.h"
 
-#if defined(MS_ESPRESSIFESP8266_DEBUG_DEEP)
+#ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
 #include <StreamDebugger.h>
 #endif
 

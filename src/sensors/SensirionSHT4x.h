@@ -65,19 +65,23 @@
 #ifndef SRC_SENSORS_SENSIRIONSHT4X_H_
 #define SRC_SENSORS_SENSIRIONSHT4X_H_
 
-// Include config before anything else
+// Include the library config before anything else
 #include "ModSensorConfig.h"
 
-// Debugging Statement
-// #define MS_SENSIRION_SHT4X_DEBUG
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
 
+// Define the print label[s] for the debugger
 #ifdef MS_SENSIRION_SHT4X_DEBUG
 #define MS_DEBUGGING_STD "SensirionSHT4x"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+
+// Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include <Adafruit_SHT4x.h>
