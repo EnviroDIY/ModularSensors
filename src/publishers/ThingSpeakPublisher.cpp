@@ -294,7 +294,7 @@ int16_t ThingSpeakPublisher::publishMetadata(Client* outClient) {
             responseCode_char[i] = tempBuffer[i + 9];
         }
         responseCode_char[3] = '\0';
-        responseCode = atoi(responseCode_char);
+        responseCode         = atoi(responseCode_char);
         PRINTOUT(F("\n-- Response Code --"));
         PRINTOUT(responseCode);
     } else {

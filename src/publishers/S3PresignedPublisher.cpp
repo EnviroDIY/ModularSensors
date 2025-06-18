@@ -135,10 +135,10 @@ bool S3PresignedPublisher::validateS3URL(String& s3url, char* s3host,
     }
 
 #if defined MS_S3PRESIGNEDPUBLISHER_DEBUG
-    char* start_bucket       = const_cast<char*>(url_str) + 8;
-    char* end_bucket         = strstr(url_str, s3_parent_host) - 1;
+    char* start_bucket = const_cast<char*>(url_str) + 8;
+    char* end_bucket   = strstr(url_str, s3_parent_host) - 1;
 #endif
-    char* start_file         = strstr(url_str + 8, "/") + 1;
+    char* start_file = strstr(url_str + 8, "/") + 1;
 #if defined MS_S3PRESIGNEDPUBLISHER_DEBUG
     char* end_file = strstr(start_file, "?");
 #endif
@@ -376,7 +376,7 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
             responseCode_char[i] = tempBuffer[i + 9];
         }
         responseCode_char[3] = '\0';
-        responseCode = atoi(responseCode_char);
+        responseCode         = atoi(responseCode_char);
         PRINTOUT(F("\n-- Response Code --"));
         PRINTOUT(responseCode);
     } else {
