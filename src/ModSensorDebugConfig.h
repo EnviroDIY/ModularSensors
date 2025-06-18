@@ -27,6 +27,7 @@
 // Configure the output streams for debugging
 // If these are not defined, most output will go to either "Serial" or
 // "SerialUSB" and there will be no secondary output.
+/// The primary output stream for printouts.
 #define MS_OUTPUT Serial
 // #define MS_2ND_OUTPUT Serial2
 // #define TINY_GSM_DEBUG Serial

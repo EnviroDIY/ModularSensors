@@ -277,6 +277,8 @@ class SDI12Sensors : public Sensor {
     /**
      * @brief Gets the results of either a standard or a concurrent measurement
      *
+     * @param verify_crc True to verify the CRC of the results
+     *
      * @return True if the full number of expected results was
      * returned.
      */

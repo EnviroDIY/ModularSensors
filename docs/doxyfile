@@ -1089,6 +1089,7 @@ EXCLUDE                = ../src/ReadMe.md \
                          ../examples/DRWI_Mayfly1_Wifi_5tm_ds18b20_1 \
                          ../ex_one_offs \
                          ../tests \
+                         ../sensor_tests \
                          ../src/sensors/table.md \
                          ../lib \
                          ../boards \

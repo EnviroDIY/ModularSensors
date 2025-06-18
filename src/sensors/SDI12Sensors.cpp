@@ -19,6 +19,12 @@
 
 #include "SDI12Sensors.h"
 
+/**
+ * @def MS_SDI12_USE_CRC
+ * @brief Whether or not to use CRC checking on the SDI-12 data.
+ * @note If this is defined, the SDI-12 library will check the CRC for all
+ * sensors!  This cannot be set on a per-sensor basis.
+ */
 #ifdef MS_SDI12_NO_CRC_CHECK
 #define MS_SDI12_USE_CRC false
 #else
