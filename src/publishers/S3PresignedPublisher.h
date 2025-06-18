@@ -123,6 +123,9 @@
  *
  * Further documentation on how to set up the AWS IoT rule and lambda function
  * and all of the proper permissions are forthcoming.
+ * Some documentation and an examples program using this library is available in
+ * the [USGS NGWOS development
+ * repository](https://github.com/EnviroDIY/USGS_NGWOS).
  *
  * @todo Generate documentation on the AWS architecture for IoT Core to S3.
  *
