@@ -105,25 +105,37 @@ For some generalized information about attaching sensors to an Arduino style boa
 ## Data Endpoints<!--! {#mainpage_data_receivers} -->
 
 Within ModularSensors, the "dataPublisher" objects add the functionality to send data to remote web services.
-The currently supported services are the [Monitor My Watershed data portal](http://data.envirodiy.org/), [ThingSpeak](https://thingspeak.com/), and the [Ubidots IoT platform](https://ubidots.com).
+The currently supported services are the [Monitor My Watershed data portal](http://data.envirodiy.org/), [ThingSpeak](https://thingspeak.com/), the [Ubidots IoT platform](https://ubidots.com), [Amazon Web Services IoT Core](https://aws.amazon.com/iot-core/), and [Amazon Web Services Simple Storage Service (S3)](https://aws.amazon.com/s3/).
 
 - [Monitor My Watershed/EnviroDIY Data Portal](https://envirodiy.github.io/ModularSensors/class_enviro_d_i_y_publisher.html)
 - [ThingSpeak](https://envirodiy.github.io/ModularSensors/class_thing_speak_publisher.html)
 - [Ubidots IoT platform](https://envirodiy.github.io/ModularSensors/class_ubidots_publisher.html)
+- [AWS IoT Core](https://envirodiy.github.io/ModularSensors/class_a_w_s___io_t___publisher.html)
+  - Unlike all other publishers, the connection to IoT Core supports a callback on received data and functions to publish custom messages and subscribe to custom topics.
+- [AWS S3](https://envirodiy.github.io/ModularSensors/class_s3_presigned_publisher.html)
+  - The S3 publiisher requires you to provide a function that will return an updated pre-signed URL to publish to.
+  - The S3 publisher does **NOT** publish any sensor data by default.
+It is intended for publishing images.
 
 <!--! @todo Page on Data Endpoints -->
 
 ## Supported Cellular/Wifi Modules:<!--! {#mainpage_modems} -->
 
+All cellular and wifi support is through the [TinyGSM](https://github.com/vshymanskyy/TinyGSM) library.
 For information common to all modems and for tables of the proper class, baud rate, and pins to uses, see the [Modem Notes page](https://envirodiy.github.io/ModularSensors/page_modem_notes.html).
 
 - [Digi XBee](https://envirodiy.github.io/ModularSensors/group__modem__digi.html)
-  - Digi XBee® 3 Cellular LTE-M/NB-IoT
-  - Digi XBee® 3 Cellular LTE Cat 1 (AT&T or Verizon)
-  - Digi XBee® Cellular 3G
-  - Digi XBee® Cellular LTE Cat 1 (Verizon)
-  - Digi XBee® Wi-Fi (S6B)
-- [ESP8266](https://envirodiy.github.io/ModularSensors/group__modem__esp8266.html)
+  - [Digi XBee® 3 Cellular LTE-M/NB-IoT - Telit based](https://hub.digi.com/support/products/digi-xbee/digi-xbee-3-global-lte-mnb-iot/)
+    - NOTE: As of 2025-03-27, the Digi XBee 3 Global LTE-M/NB-IoT low power variant does *not* work with AWS IoT Core.
+  - [Digi XBee 3 Cellular LTE-M/NB-IoT - u-Blox based](https://hub.digi.com/support/products/digi-xbee/digi-xbee-3-cellular-lte-mnb-iot-modem/) [*obsolete*]
+  - [Digi XBee® 3 Cellular LTE Cat 1 (AT&T or Verizon)](https://hub.digi.com/support/products/digi-xbee/digi-xbee-3-cellular-lte-cat-1-modem/) [*obsolete*]
+  - [Digi XBee® Cellular 3G](https://hub.digi.com/support/products/digi-xbee/digi-xbee-cellular-3g/) [*obsolete*]
+  - [Digi XBee® Cellular LTE Cat 1 (Verizon)](https://hub.digi.com/support/products/digi-xbee/digi-xbee-cellular-lte-cat-1/) [*obsolete*]
+  - [Digi XBee® Wi-Fi (S6B)](https://hub.digi.com/support/products/digi-xbee/digi-xbee-wi-fi/) [*obsolete*]
+- [Espressif Wifi SoC Modules](https://envirodiy.github.io/ModularSensors/group__modem__espressif.html)
+  - Includes the [ESP8266](https://envirodiy.github.io/ModularSensors/group__modem__esp8266.html), [ESP32, ESP32-C3, ESP32-C2, ESP32-C6, and ESP32-S2](https://envirodiy.github.io/ModularSensors/group__modem__esp32.html)
+  - Requires Espressif modules to be programmed with the [latest AT firmware provided by Espressif](https://github.com/espressif/esp-at).
+  - These Espressif modules are **not** supported as primary processors, only as external communication modules.
 - [QuectelBG96](https://envirodiy.github.io/ModularSensors/group__modem__bg96.html)
 - [Sequans Monarch](https://envirodiy.github.io/ModularSensors/group__modem__monarch.html)
 - [SIM7080](https://envirodiy.github.io/ModularSensors/group__modem__sim7080.html)
@@ -138,9 +150,9 @@ Open an [issue](https://github.com/EnviroDIY/ModularSensors/issues) to suggest a
 Feel free to open issues about any bugs you find or any sensors you would like to have added.
 
 If you would like to directly help with the coding development of the library, there are some [tips here](https://envirodiy.github.io/ModularSensors/page_for_developers.html) on how to set up PlatformIO so you can fork the library and test programs while in the library repo.
-Please _take time to familiarize yourself with the [terminology, classes and data structures](https://envirodiy.github.io/ModularSensors/page_library_terminology.html) this library uses_.
+Please *take time to familiarize yourself with the [terminology, classes and data structures](https://envirodiy.github.io/ModularSensors/page_library_terminology.html) this library uses*.
 This library is built to fully take advantage of Objecting Oriented Programing (OOP) approaches and is larger and more complicated than many Arduino libraries.
-There is _extensive_ documentation on our [github pages](https://envirodiy.github.io/ModularSensors/index.html) and an _enormous_ number of comments and debugging printouts in the code itself to help you get going.
+There is doxygen-created documentation on our [github pages](https://envirodiy.github.io/ModularSensors/index.html) and an *enormous* number of comments and debugging printouts in the code itself to help you get going.
 
 ## License<!--! {#mainpage_license} -->
 
