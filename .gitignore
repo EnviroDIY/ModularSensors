@@ -119,7 +119,6 @@ sync.ffs_db
 .github/workflows/compile_arduino_cli.yaml
 .github/workflows/compile_platformio.yaml
 .github/workflows/determine_library_source.yaml
-aws_iot_config.h
 *.pem
 *.pem.crt
 *.pem.cert

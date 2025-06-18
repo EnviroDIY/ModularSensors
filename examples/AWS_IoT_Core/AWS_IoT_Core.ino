@@ -57,12 +57,19 @@
 //  Data Logging Options
 // ==========================================================================
 /** Start [logging_options] */
-// The name of this program file
+static const char AWS_IOT_ENDPOINT[] TINY_GSM_PROGMEM =
+    "YOUR_ENDPOINT-ats.iot.YOUR_REGION.amazonaws.com";
+#define THING_NAME "YOUR_THING_NAME"
+// The name of this program file - this is used only for console printouts at
+// start-up
 const char* sketchName = "AWS_IoT_Core.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 // NOTE: Your LoggerID will be used as your Thing Name, primary topic, and
 // client name when connecting to AWS IoT Core. _**Make sure it is unique!**_
-const char* LoggerID = "XXXXX";
+const char* LoggerID = THING_NAME;
+// Sampling feature UUID
+// This is used as the sub-topic for AWS IOT Core
+const char* samplingFeature = "YOUR_SAMPLING_FEATURE_ID";
 // How frequently (in minutes) to log data
 const uint8_t loggingInterval = 5;
 // Your logger's timezone.
@@ -237,15 +244,13 @@ Logger dataLogger;
 // ==========================================================================
 /** Start [aws_io_t_publisher] */
 // The endpoint for your AWS IoT instance
-const char* awsIoTEndpoint = "xxx-ats.iot.XXX.amazonaws.com";
-// Sampling feature UUID, this will be the sub-topic for your data
-const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";
+const char* awsIoTEndpoint = AWS_IOT_ENDPOINT;
 // The name of your certificate authority certificate file
 const char* caCertName = "AmazonRootCA1.pem";
 // The name of your client certificate file
-const char* clientCertName = "thing-certificate.pem.crt";
+const char* clientCertName = THING_NAME "-certificate.pem.crt";
 // The name of your client private key file
-const char* clientKeyName = "thing-private.pem.key";
+const char* clientKeyName = THING_NAME "-private-key.pem.key";
 
 // Create a data publisher for AWS IoT Core
 #include <publishers/AWS_IoT_Publisher.h>
