@@ -60,6 +60,20 @@
 // #define MS_SDI12_NO_CRC_CHECK
 //==============================================================
 
+//==============================================================
+#ifndef MS_LOGGERBASE_BUTTON_BENCH_TEST
+/**
+ * @brief Enable bench testing mode for the testing button.
+ *
+ * When enabled, the testing button uses the benchTestingMode() function to
+ * repeatedly read and print out sensor data. When disabled (default), the
+ * testing button causes a reading to be taken and transmitted immediately
+ * using the normal procedure.
+ */
+#define MS_LOGGERBASE_BUTTON_BENCH_TEST false
+#endif
+//==============================================================
+
 
 //==============================================================
 // SPI Configuration, iff needed

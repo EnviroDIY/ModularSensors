@@ -221,11 +221,14 @@ class Logger {
     }
 
     /**
-     * @brief Set the number of 1-minute intervals at the start before logging
-     * on the regular logging interval.
+     * @brief Set the number of initial datapoints to log (and publish) at
+     * 1-minute intervals before beginning logging on the regular logging
+     * interval.
      *
-     * @param initialShortIntervals The number of 1-minute intervals at
-     * the start before logging on the regular logging interval
+     * @param initialShortIntervals The number of 1-minute intervals. This
+     * number of transmissions will be performed with an interval of 1 minute
+     * regardless of the programmed interval. Useful for fast field
+     * verification.
      */
     void setinitialShortIntervals(uint16_t initialShortIntervals);
     /**
@@ -236,7 +239,7 @@ class Logger {
      * on the regular logging interval
      */
     uint16_t getinitialShortIntervals() {
-        return _initialShortIntervals;
+        return _remainingShortIntervals;
     }
 
     /**
@@ -461,7 +464,7 @@ class Logger {
      * @brief The initial number of samples to log at an interval of 1 minute
      * for fast field verification
      */
-    uint8_t _initialShortIntervals = 5;
+    uint8_t _remainingShortIntervals = 5;
     /**
      * @brief Digital pin number on the mcu controlling the SD card slave
      * select.
@@ -538,6 +541,10 @@ class Logger {
      * been begun.  Doing so may cause strange results.  This function is
      * protected to protect users from calling it in the wrong order.
      *
+     * @note The testing ISR itself only wakes the board and sets a flag. The
+     * flag is then checked and acted on in the checkInterval /
+     * checkMarkedInterval functions and the logData / logDataAndPublish
+     * functions.
      */
     void enableTestingISR();
     /**@}*/
@@ -1314,7 +1321,10 @@ class Logger {
     static void testingISR(void);
 
     /**
-     * @brief Execute testing mode.
+     * @brief Execute bench testing mode if enabled.
+     *
+     * @note Does nothing unless MS_LOGGERBASE_BUTTON_BENCH_TEST is defined true
+     * in either the configuration file or a build flag.
      *
      * In testing mode, the logger uses the loggerModem, if attached, to connect
      * to the internet.  It then powers up all sensors tied to variable in the
@@ -1327,7 +1337,7 @@ class Logger {
      * @param sleepBeforeReturning True to put the logger to sleep before
      * returning from the function; optional with a default value of true.
      */
-    virtual void testingMode(bool sleepBeforeReturning = true);
+    virtual void benchTestingMode(bool sleepBeforeReturning = true);
     /**@}*/
 
     // ===================================================================== //
