@@ -862,11 +862,11 @@ class Logger {
      * LOGGER's epoch start. It adds the LOGGER's offset as the time zone offset
      * in the string.
      *
-     * @param epochTime The number of seconds since the start of the logger's
+     * @param epochSeconds The number of seconds since the start of the logger's
      * epoch (#MS_LOGGER_EPOCH).
      * @return An ISO8601 formatted String.
      */
-    static String formatDateTime_ISO8601(uint32_t epochTime);
+    static String formatDateTime_ISO8601(uint32_t epochSeconds);
 
     /**
      * @brief Convert an epoch time into a character string based on the input
@@ -884,11 +884,11 @@ class Logger {
      * @param buffer A buffer to put the finished string into. Make sure that
      * the buffer is big enough to hold all of the characters!
      * @param fmt The strftime format string.
-     * @param epochTime The number of seconds since the start of the given
+     * @param epochSeconds The number of seconds since the start of the given
      * epoch in the given offset from UTC.
      */
     static void formatDateTime(char* buffer, const char* fmt,
-                               uint32_t epochTime);
+                               uint32_t epochSeconds);
 
     /**
      * @brief Pass-through to loggerClock::setRTClock(uint32_t

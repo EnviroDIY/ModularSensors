@@ -136,9 +136,10 @@ class dataPublisher {
     /**
      * @brief Set the pointer to a loggerModem instance.
      *
-     * @param loggerModem A reference to the ModularSensors loggerModem instance
+     * @param modemPointer A reference to the ModularSensors loggerModem
+     * instance
      */
-    void setModemPointer(loggerModem& loggerModem);
+    void setModemPointer(loggerModem& modemPointer);
 
     /**
      * @brief Begin the publisher - linking it to the client and logger.

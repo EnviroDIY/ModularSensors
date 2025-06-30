@@ -58,8 +58,8 @@ void dataPublisher::attachToLogger(Logger& baseLogger) {
 }
 
 // Set the pointer to a loggerModem instance.
-void dataPublisher::setModemPointer(loggerModem& loggerModem) {
-    _baseModem = &loggerModem;
+void dataPublisher::setModemPointer(loggerModem& modemPointer) {
+    _baseModem = &modemPointer;
 }
 
 

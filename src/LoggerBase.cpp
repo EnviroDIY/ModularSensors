@@ -605,12 +605,14 @@ uint32_t Logger::getNowUTCEpoch() {
 // It assumes the supplied date/time is in the LOGGER's timezone and adds
 // the LOGGER's offset as the time zone offset in the string. code modified
 // from parts of the SparkFun RV-8803 library
-String Logger::formatDateTime_ISO8601(uint32_t epochTime) {
+String Logger::formatDateTime_ISO8601(uint32_t epochSeconds) {
     return loggerClock::formatDateTime_ISO8601(
-        epochTime, Logger::_loggerUTCOffset, Logger::_loggerEpoch);
+        epochSeconds, Logger::_loggerUTCOffset, Logger::_loggerEpoch);
 }
-void Logger::formatDateTime(char* buffer, const char* fmt, uint32_t epochTime) {
-    loggerClock::formatDateTime(buffer, fmt, epochTime, Logger::_loggerEpoch);
+void Logger::formatDateTime(char* buffer, const char* fmt,
+                            uint32_t epochSeconds) {
+    loggerClock::formatDateTime(buffer, fmt, epochSeconds,
+                                Logger::_loggerEpoch);
 }
 // This checks that the logger time is within a "sane" range
 bool Logger::isRTCSane(void) {
