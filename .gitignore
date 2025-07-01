@@ -127,3 +127,7 @@ sync.ffs_db
 *.cert
 *.key
 run_mcss.bat
+docs/customdoxygen.css
+docs/footer.html
+docs/header.html
+installWorkingDependencies.bat
