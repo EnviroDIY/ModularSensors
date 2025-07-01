@@ -54,7 +54,7 @@
  *                                  ground
  * @endcode
  *
- * The above diagram and the calculations assume the reistance of the analog
+ * The above diagram and the calculations assume the resistance of the analog
  * pins themselves on the Arduino is negligible.
  *
  * @section sensor_analog_cond_calcs Calculating the Conductivity
@@ -71,7 +71,7 @@
  *
  * @note The Vcc going to the circuit (~3.3V) can and will vary, as battery
  * level gets low.  If possible, you should use setup the processor to use an
- * external reference (`-D MS_PROCESSOR_ADC_REFERENCE_MODE=EXTEERNAL`) and tie
+ * external reference (`-D MS_PROCESSOR_ADC_REFERENCE_MODE=EXTERNAL`) and tie
  * the Aref pin to the sensor power pin.
  *
  * @note The analog reference of the Mayfly is not broken out (and is tied to
