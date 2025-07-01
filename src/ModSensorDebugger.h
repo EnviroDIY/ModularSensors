@@ -44,9 +44,9 @@
  * other boards that don't support it.
  * @param x The string to store in flash memory
  */
-#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR)) &&                    \
-    !defined(__AVR_ATmega4809__) && !defined(PROGMEM) && !defined(GFP) && \
-    !defined(GF)
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR)) &&            \
+    !defined(__AVR_ATmega4809__) && !defined(TINY_GSM_PROGMEM) && \
+    !defined(GFP) && !defined(GF)
 #define TINY_GSM_PROGMEM PROGMEM
 typedef const __FlashStringHelper* GsmConstStr;
 #define GFP(x) (reinterpret_cast<GsmConstStr>(x))
