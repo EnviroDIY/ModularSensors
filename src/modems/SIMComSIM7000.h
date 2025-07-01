@@ -51,13 +51,13 @@
 #ifndef SRC_MODEMS_SIMCOMSIM7000_H_
 #define SRC_MODEMS_SIMCOMSIM7000_H_
 
-// Include config before anything else
+// Include the library config before anything else
 #include "ModSensorConfig.h"
 
-// Debugging Statement
-// #define MS_SIMCOMSIM7000_DEBUG
-// #define MS_SIMCOMSIM7000_DEBUG_DEEP
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
 
+// Define the print label[s] for the debugger
 #ifdef MS_SIMCOMSIM7000_DEBUG
 #define MS_DEBUGGING_STD "SIMComSIM7000"
 #endif
@@ -65,11 +65,15 @@
 /**
  * @brief The modem type for the underlying TinyGSM library.
  */
-#define TINY_GSM_MODEM_SIM7000
+#define TINY_GSM_MODEM_SIM7000SSL
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+#undef MS_DEBUGGING_DEEP
+
+// Include other in-library and external dependencies
 #include "TinyGsmClient.h"
 #include "LoggerModem.h"
 
@@ -191,6 +195,21 @@ class SIMComSIM7000 : public loggerModem {
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
     void disconnectInternet(void) override;
 
+    virtual Client* createClient() override;
+    virtual void    deleteClient(Client* client);
+    virtual Client* createSecureClient() override;
+    virtual void    deleteSecureClient(Client* client);
+    virtual Client* createSecureClient(
+        SSLAuthMode sslAuthMode, SSLVersion sslVersion = SSLVersion::TLS1_2,
+        const char* CAcertName = nullptr, const char* clientCertName = nullptr,
+        const char* clientKeyName = nullptr) override;
+    virtual Client*
+    createSecureClient(const char* pskIdent, const char* psKey,
+                       SSLVersion sslVersion = SSLVersion::TLS1_2) override;
+    virtual Client*
+    createSecureClient(const char* pskTableName,
+                       SSLVersion  sslVersion = SSLVersion::TLS1_2) override;
+
     uint32_t getNISTTime(void) override;
 
     bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
@@ -206,10 +225,6 @@ class SIMComSIM7000 : public loggerModem {
      * @brief Public reference to the TinyGSM modem.
      */
     TinyGsm gsmModem;
-    /**
-     * @brief Public reference to the TinyGSM Client.
-     */
-    TinyGsmClient gsmClient;
 
  protected:
     bool isInternetAvailable(void) override;

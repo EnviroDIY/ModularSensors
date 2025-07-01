@@ -21,7 +21,7 @@
  */
 #define MODULAR_SENSORS_VERSION "0.36.0"
 
-// Include config before anything else
+// Include the library config before anything else
 #include "ModSensorConfig.h"
 
 // To support interrupts

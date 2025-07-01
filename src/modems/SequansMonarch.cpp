@@ -27,7 +27,6 @@ SequansMonarch::SequansMonarch(Stream* modemStream, int8_t powerPin,
 #else
       gsmModem(*modemStream),
 #endif
-      gsmClient(gsmModem),
       _apn(apn) {
 }
 
@@ -40,6 +39,11 @@ MS_MODEM_WAKE(SequansMonarch);
 MS_MODEM_CONNECT_INTERNET(SequansMonarch);
 MS_MODEM_DISCONNECT_INTERNET(SequansMonarch);
 MS_MODEM_IS_INTERNET_AVAILABLE(SequansMonarch);
+
+MS_MODEM_CREATE_CLIENT(SequansMonarch);
+MS_MODEM_DELETE_CLIENT(SequansMonarch);
+MS_MODEM_CREATE_SECURE_CLIENT(SequansMonarch);
+MS_MODEM_DELETE_SECURE_CLIENT(SequansMonarch);
 
 MS_MODEM_GET_NIST_TIME(SequansMonarch);
 
@@ -116,8 +120,7 @@ bool SequansMonarch::modemSleepFxn(void) {
 
 bool SequansMonarch::extraModemSetup(void) {
     bool success = gsmModem.init();
-    gsmClient.init(&gsmModem);
-    _modemName = gsmModem.getModemName();
+    _modemName   = gsmModem.getModemName();
     // Turn on the LED
     gsmModem.sendAT(GF("+SQNLED=1"));
     success &= static_cast<bool>(gsmModem.waitResponse());

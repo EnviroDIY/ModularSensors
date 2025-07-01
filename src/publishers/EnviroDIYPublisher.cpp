@@ -61,6 +61,16 @@ EnviroDIYPublisher::EnviroDIYPublisher(Logger&     baseLogger,
     setPath("/api/data-stream/");
     setPort(80);
 }
+EnviroDIYPublisher::EnviroDIYPublisher(Logger&     baseLogger,
+                                       const char* registrationToken,
+                                       int         sendEveryX)
+    : dataPublisher(baseLogger, sendEveryX) {
+    setToken(registrationToken);
+    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
+    setHost("monitormywatershed.org");
+    setPath("/api/data-stream/");
+    setPort(80);
+}
 EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
                                        const char* registrationToken,
                                        const char* samplingFeatureUUID,
@@ -68,6 +78,16 @@ EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
     : dataPublisher(baseLogger, inClient, sendEveryX) {
     setToken(registrationToken);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
+    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
+    setHost("monitormywatershed.org");
+    setPath("/api/data-stream/");
+    setPort(80);
+}
+EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
+                                       const char* registrationToken,
+                                       int         sendEveryX)
+    : dataPublisher(baseLogger, inClient, sendEveryX) {
+    setToken(registrationToken);
     _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
     setHost("monitormywatershed.org");
     setPath("/api/data-stream/");
@@ -160,7 +180,7 @@ uint16_t EnviroDIYPublisher::calculateJsonSize() {
 }
 
 
-// A way to begin with everything already set
+// A way to set members in the begin to use with a bare constructor
 void EnviroDIYPublisher::begin(Logger& baseLogger, Client* inClient,
                                const char* registrationToken,
                                const char* samplingFeatureUUID) {
@@ -177,11 +197,10 @@ void EnviroDIYPublisher::begin(Logger&     baseLogger,
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
     _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
 }
-void EnviroDIYPublisher::begin() {
-    // NOTE: This doesn't have to happen after boot, but it does have to happen
-    // after the variable array is fully constructed.  If the variable array is
-    // constructed after the publisher, the number of variables will be
-    // incorrect in the variable array when this is called in its constructor.
+void EnviroDIYPublisher::begin(Logger&     baseLogger,
+                               const char* registrationToken) {
+    setToken(registrationToken);
+    dataPublisher::begin(baseLogger);
     _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
 }
 
@@ -243,7 +262,7 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient, bool forceFlush) {
                _logBuffer.getNumVariables(), F("vs"),
                _baseLogger->getArrayVarCount());
         MS_DBG(F("Setting number of variables in log buffer to match number of "
-                 "variables in logger"));
+                 "variables in logger. This will erase the buffer."));
         _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
     }
 
@@ -356,7 +375,8 @@ int16_t EnviroDIYPublisher::flushDataBuffer(Client* outClient) {
 
         // Wait 30 seconds for a response from the server
         uint32_t start = millis();
-        while ((millis() - start) < 30000L && outClient->available() < 12) {
+        while ((millis() - start) < 30000L && outClient->connected() &&
+               outClient->available() < 12) {
             delay(10);
         }
 
@@ -364,6 +384,16 @@ int16_t EnviroDIYPublisher::flushDataBuffer(Client* outClient) {
         // We're only reading as far as the http code, anything beyond that we
         // don't care about.
         did_respond = outClient->readBytes(tempBuffer, 12);
+#if defined(MS_OUTPUT) || defined(MS_2ND_OUTPUT)
+        // throw the rest of the response into the tx buffer so we can debug it
+        txBufferInit(nullptr);
+        txBufferAppend(tempBuffer, 12, true);
+        while (outClient->available()) {
+            char c = outClient->read();
+            txBufferAppend(c);
+        }
+        txBufferFlush();
+#endif
 
         // Close the TCP/IP connection
         MS_DBG(F("Stopping client"));
@@ -379,22 +409,32 @@ int16_t EnviroDIYPublisher::flushDataBuffer(Client* outClient) {
     int16_t responseCode = 0;
     if (did_respond > 0) {
         char responseCode_char[4];
-        responseCode_char[3] = 0;
         for (uint8_t i = 0; i < 3; i++) {
             responseCode_char[i] = tempBuffer[i + 9];
         }
-        responseCode = atoi(responseCode_char);
+        responseCode_char[3] = '\0';
+        responseCode         = atoi(responseCode_char);
+        PRINTOUT(F("\n-- Response Code --"));
+        PRINTOUT(responseCode);
     } else {
         responseCode = 504;
+        PRINTOUT(F("\n-- NO RESPONSE FROM SERVER --"));
     }
 
-    PRINTOUT(F("\n-- Response Code --"));
-    PRINTOUT(responseCode);
-
+#if defined(MONITOR_MY_WATERSHED_MATCHES_MODULAR_SENSORS)
     if (responseCode == 201) {
         // data was successfully transmitted, we can discard it from the buffer
         _logBuffer.clear();
     }
+#else
+    // clear the buffer anyway, because Monitor My Watershed cannot accept
+    // mutiple records in one post yet
+    if (responseCode != 201) {
+        MS_DBG("Clearing the buffer even though the post failed because "
+               "Monitor My Watershed cannot yet accept multi-record posts.");
+    }
+    _logBuffer.clear();
+#endif
 
     return responseCode;
 }

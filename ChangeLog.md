@@ -18,26 +18,49 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **BREAKING** Renamed `markedUTCEpochTime` to `markedUTCUnixTime` to clarify the start of the epoch that we're marking down.
 - **Potentially BREAKING:** Changed the requirements for a "sane" timestamp to between 2023 and 2030.
   - Moved the value for the sane range into two defines: `EARLIEST_SANE_UNIX_TIMESTAMP` and `LATEST_SANE_UNIX_TIMESTAMP` so they can be more easily modified and tracked.
-- **BREAKING** Updated the ThingSpeak publisher to the current ThingSpeak MQTT protocol. The older protocol was deprecated and non-functional.
-  - This requires a user name, password, and client ID for the MQTT connection in addition to the channel number. The MQTT key and channel key are no longer used.
+These defines can be set in the ModSensorConfig.h file.
+- **Potentially BREAKING:** For calculated variables, the calculation function will only be called if `getValue(true)` or `getValueString(true)` is called - that is, the boolean for 'update value' must explicitly be set to true to rerun the calculation function.
+  - Previously, the calculation function was re-run every time `getValue()` or `getValueString()` was called, regardless of the update value parameter.
+For calculations that were based on the results of other variables that didn't change, this was fine.
+But, for calculations based on new raw readings (ie, calling `analogRead()`) a new value would be returned each time the function was called.
+I realized this was a problem for analog values I tried to read that reported correctly in the first round, but were saved as junk in the csv and publishers because a new analog reading was being attempted when the thing I was attempting to read was now powered down.
+  - The variable array update functions have been modified accordingly.
+  - Verify you have the functionalilty you expect if you use calculated variables.
 - Removed the enable/disable wake pin interrupt at every sleep interval in favor of a single attachment druing the begin.
 - Moved all code for communication with the RTC into the new static class loggerClock().
+- Deprecated functions, to be removed in a future version:
+  - `Logger::setRTCTimeZone(timeZone)`; use `loggerClock::setRTCOffset(_offsetHours)` in new code.
+  - `Logger::getRTCTimeZone()`; use `loggerClock::getRTCOffset()` in new code.
+  - `Logger::setRTClock(UTCEpochSeconds)`; use `loggerClock::setRTClock(ts, utcOffset, epoch)` in new code.
+  - `Logger::isRTCSane()`; use `loggerClock::isRTCSane()` in new code.
+  - `Logger::wakeISR()`; use `loggerClock::RTCISR()` in new code.
+- Changed the watchdog from a fix 15 minute reset timer to 2x the logging interval (or at least 5 minutes).
 - Modified all examples which define a sercom serial port for SAMD21 processors to require the defines for the supported processors.
 This should only make a difference for my compilation tests, real users should pick out only the chunks of code they want rather than leave conditional code in place.
 - Changed some fill-in-the-blank spots in the menu example to only set the value in a single spot in the code.
-- Deprecated functions, to be removed in a future version:
-  - Logger::setRTCTimeZone(timeZone); use loggerClock::setRTCOffset(_offsetHours) in new code.
-  - Logger::getRTCTimeZone(); use loggerClock::getRTCOffset() in new code.
-  - Logger::setRTClock(UTCEpochSeconds); use loggerClock::setRTClock(ts, utcOffset, epoch) in new code.
-  - Logger::isRTCSane(); use loggerClock::isRTCSane() in new code.
-  - Logger::wakeISR(); use loggerClock::RTCISR() in new code.
-- Changed the watchdog from a fix 15 minute reset timer to 2x the logging interval (or at least 5 minutes).
+- Unified all defines related to the resolution of the processor ADC and moved them to the new configuration file.
+  - Applies only to sensors using the built-in processor ADC:
+    - Internal battery, analog light sensor, and analog electrical conductivity
+  - *You can no-longer set a separate processor resolution for each sensor.*
+- You no longer need to input a client object into the constructor for any of the publishers if you are using a loggerModem object.
+  - For best results, input a client object to the constructor only if you are **NOT** using a loggerModem object.
+- Split functionality for the ESP8266 and the ESP32.
+  - If you are using an EnviroDIY wifi bee, you should update your code to correctly select the ESP32, which is more feature rich than the ESP8266.
+- Changed the way debugging printouts are generated in the publishers.
+- Changed the default functionality of the "testing" mode.
+  - When the button pin is changed to activate testing mode, a single sample will be taken and published immediately.
+  - To restore the previous functionality (beginning a loop of 25 measurements) use the configuration/build flag `MS_LOGGERBASE_BUTTON_BENCH_TEST`.
+  - The function for the original testing mode has been renamed to `benchTestingMode()`.
 
 ### Added
+
+- Added a two configuration files (ModSensorConfig.h and ModSensorDebugConfig.h) that all files read from to check for configuation-related defines.
+This allows Arduino IDE users who are unable to use build flags to more easily configure the library or enable debugging.
+It also allows PlatformIO users to avoid the time-consuming re-compile of all their libraries required when chaning build flags.
+  - **ALL** library configuration build flags previously in any other header file for the library have been moved into the ModSensorConfig.h file, including ADC, SDI-12, and variable array options.
 - Added support for caching readings in RAM and sending in batches.
 This currently only works on the EnviroDIY/Monitor My Watershed Publisher.
 Thank you to [Thomas Watson](https://github.com/tpwrules) for this work.
-
 - Created a new ClockSupport module with the loggerClock and epochStart static classes.
 - Added support for the Micro Crystal RV-8803-C7 high accuracy, ultra low power Real-Time-Clock Module.
 - Added support for multiple 'epoch' types starting at January 1, 1970 (UNIX), January 1, 2000 (Arduino and others), January 5, 1980 (GPST), and January 1, 1900 (NIST time and NTP protocols).
@@ -48,18 +71,44 @@ If no epoch start is given, it is assumed to be UNIX (January 1, 1970).
 - Added a single define (`MS_OUTPUT`) to use for all outputs from ModularSensors.
 - Added support for sending printouts and debugging to two different serial ports.  This is useful for devices (like SAMD) that use a built in USB serial port which is turned off when the device sleeps.  If `MS_2ND_OUTPUT` is defined, output will go to *both* `MS_2ND_OUTPUT` and to `MS_OUTPUT`.
 - Added example code for flashing neopixel in the menu example.
-- Added support for Geolux HydroCam
+- **NEW SENSOR** Added support for [Geolux HydroCam](https://www.geolux-radars.com/hydrocam)
 - Added a generic time formatting function.
+- **NEW PUBLISHER** Added a new publisher to AWS IoT Core over MQTT
+  - A doorway to new possibilities: Unlike every other publisher, the AWS IoT Core publisher supports two-way communication with a settable callback on received messages.
+- **NEW PUBLISHER** Added a new publisher to AWS S3 buckets using pre-signed URLs
+- Added structure to publish *metadata* to publishers - intended to be used only at startup.
+- Added start-up helper function `makeInitialConnections()` to publish metadata and sync the clock.
+- Added function `getVarResolutionAtI(uint8_t)`
+- Added support for full CRC checking for SDI-12 sensors.
+  - This includes simplistic retries, but does *not* fully implement the SDI-12 protocols triple inner and outer loop retry requirements.
+- Added the ability for publishers to make an initial connection to publish metadata.
+  - At present this is implemented in the IoT Core publisher - which sends all the metadata for each variable - and the ThingSpeak publisher - which changes channel and field names to match the logger configuration.
+- Added a generic `generateFileName(bool include_time, const char* extension, const char* filePrefix)` function to the logger which can be used to assemble a prefix, timestamp, and extension into a new filename.
+- Added more options to some of the logger and publisher begin functions.
+- Added helper functions to create and delete clients using TinyGSM.
 
 ### Removed
 
-- **Breaking:** Removed the function `setNowUTCEpoch(uint32_t)`.
+- **BREAKING:** Removed the "built-in" GsmClient within the LoggerModem objects.
+  - This means you cannot access a client with `&modem.gsmClient`.
+  - *Most of the examples used the `&modem.gsmClient` pattern!* This means many people will need to change their code!
+- **BREAKING:** Removed the function `setNowUTCEpoch(uint32_t)`.
   - Although public, this was never intended to be used externally.
 - **Potentially BREAKING:** Removed support for any functions using the Sodaq "DateTime" class.
 - **Potentially BREAKING:** Removed ability to have `PRINTOUT`, `MS_DBG`, and `MS_DEEP_DBG` output going to different serial ports
-  - Defines for `STANDARD_SERIAL_OUTPUT`, `DEBUGGING_SERIAL_OUTPUT`, and `DEEP_DEBUGGING_SERIAL_OUTPUT` are all ignored. Use the single define `MS_OUTPUT` for all outputs.  If `MS_OUTPUT` is not defined, a default will be used (generally Serial or USBSerial).
+  - Defines for `STANDARD_SERIAL_OUTPUT`, `DEBUGGING_SERIAL_OUTPUT`, and `DEEP_DEBUGGING_SERIAL_OUTPUT` are all ignored.
+Use the single define `MS_OUTPUT` for all outputs.
+If `MS_OUTPUT` is not defined, a default will be used (generally Serial or USBSerial).
+If you do not want any output, define `MS_SILENT`.
+- Removed internal functions for setting file times; replaced with SdFat's dateTimeCallback.
+- Added python script to run clang-format on all source files.
 
 ### Fixed
+
+- Tested and brought the SAMD51 processor to full functionality.
+  - While the SAMD51 was nominally supported previously, it was not functional with the latest bootloaders and core for the SAMD51.
+- Updated the ThingSpeak publisher to the current ThingSpeak MQTT protocol. The older protocol was deprecated and non-functional.
+  - This requires a user name, password, and client ID for the MQTT connection in addition to the channel number. The MQTT key and channel key are no longer used.
 
 ***
 

@@ -56,19 +56,23 @@
 #ifndef SRC_SENSORS_PROCESSORSTATS_H_
 #define SRC_SENSORS_PROCESSORSTATS_H_
 
-// Include config before anything else
+// Include the library config before anything else
 #include "ModSensorConfig.h"
 
-// Debugging Statement
-// #define MS_PROCESSORSTATS_DEBUG
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
 
+// Define the print label[s] for the debugger
 #ifdef MS_PROCESSORSTATS_DEBUG
 #define MS_DEBUGGING_STD "ProcessorStats"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+
+// Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
 
@@ -392,8 +396,6 @@ class ProcessorStats : public Sensor {
      * @param batteryMultiplier Any multiplier needed to convert raw battery
      * readings from `analogRead()` into true battery values based on any
      * resistors or voltage dividors
-     * @param analogResolution The analog read resolution of the processor in
-     * bits
      * @param operatingVoltage The processor's operating voltage; most
      * likely 3.3 or 5.
      * @param measurementsToAverage The number of measurements to take and
@@ -405,8 +407,7 @@ class ProcessorStats : public Sensor {
      */
     ProcessorStats(const char* boardName, const char* version,
                    int8_t batteryPin, float batteryMultiplier,
-                   int8_t analogResolution, float operatingVoltage,
-                   uint8_t measurementsToAverage = 1);
+                   float operatingVoltage, uint8_t measurementsToAverage = 1);
     /**
      * @brief Destroy the Processor Stats object
      */
@@ -453,8 +454,6 @@ class ProcessorStats : public Sensor {
                                ///< to convert raw battery readings into true
                                ///< battery values based on any resistors or
                                ///< voltage dividors
-    int8_t _analogResolution;  ///< Internal reference to the analog read
-                               ///< resolution of the processor in bits
     float _operatingVoltage;   ///< Internal reference to processor's operating
                                ///< voltage
     int16_t sampNum = 0;       ///< The current sample number

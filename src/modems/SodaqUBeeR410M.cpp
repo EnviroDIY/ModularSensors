@@ -24,11 +24,11 @@ SodaqUBeeR410M::SodaqUBeeR410M(HardwareSerial* modemStream, int8_t powerPin,
                   R410M_ATRESPONSE_TIME_MS),
 #ifdef MS_SODAQUBEER410M_DEBUG_DEEP
       _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
-      gsmModem(_modemATDebugger),
+      gsmModem(_modemATDebugger)
 #else
-      gsmModem(*modemStream),
+      gsmModem(*modemStream)
 #endif
-      gsmClient(gsmModem) {
+{
     _apn         = apn;
     _modemSerial = modemStream;
 }
@@ -47,7 +47,6 @@ SodaqUBeeR410M::SodaqUBeeR410M(Stream* modemStream, int8_t powerPin,
 #else
       gsmModem(*modemStream),
 #endif
-      gsmClient(gsmModem),
       _apn(apn) {
 }
 #endif
@@ -61,6 +60,11 @@ MS_MODEM_WAKE(SodaqUBeeR410M);
 MS_MODEM_CONNECT_INTERNET(SodaqUBeeR410M);
 MS_MODEM_DISCONNECT_INTERNET(SodaqUBeeR410M);
 MS_MODEM_IS_INTERNET_AVAILABLE(SodaqUBeeR410M);
+
+MS_MODEM_CREATE_CLIENT(SodaqUBeeR410M);
+MS_MODEM_DELETE_CLIENT(SodaqUBeeR410M);
+MS_MODEM_CREATE_SECURE_CLIENT(SodaqUBeeR410M);
+MS_MODEM_DELETE_SECURE_CLIENT(SodaqUBeeR410M);
 
 MS_MODEM_GET_NIST_TIME(SodaqUBeeR410M);
 
@@ -175,8 +179,7 @@ bool SodaqUBeeR410M::modemHardReset(void) {
 
 bool SodaqUBeeR410M::extraModemSetup(void) {
     bool success = gsmModem.init();
-    gsmClient.init(&gsmModem);
-    _modemName = gsmModem.getModemName();
+    _modemName   = gsmModem.getModemName();
     // Turn on network indicator light
     // Pin 16 = GPIO1, function 2 = network status indication
     gsmModem.sendAT(GF("+UGPIOC=16,2"));

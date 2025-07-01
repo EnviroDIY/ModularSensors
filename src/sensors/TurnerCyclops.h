@@ -129,19 +129,23 @@
 #ifndef SRC_SENSORS_TURNERCYCLOPS_H_
 #define SRC_SENSORS_TURNERCYCLOPS_H_
 
-// Include config before anything else
+// Include the library config before anything else
 #include "ModSensorConfig.h"
 
-// Debugging Statement
-// #define MS_TURNERCYCLOPS_DEBUG
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
 
+// Define the print label[s] for the debugger
 #ifdef MS_TURNERCYCLOPS_DEBUG
 #define MS_DEBUGGING_STD "TurnerCyclops"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+
+// Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
 

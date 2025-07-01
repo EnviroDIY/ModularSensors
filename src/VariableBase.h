@@ -14,12 +14,13 @@
 #ifndef SRC_VARIABLEBASE_H_
 #define SRC_VARIABLEBASE_H_
 
-// Include config before anything else
+// Include the library config before anything else
 #include "ModSensorConfig.h"
 
-// Debugging Statement
-// #define MS_VARIABLEBASE_DEBUG
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
 
+// Define the print label[s] for the debugger
 #ifdef MS_VARIABLEBASE_DEBUG
 #define MS_DEBUGGING_STD "VariableBase"
 #endif
@@ -27,8 +28,9 @@
 // Forward Declared Dependences
 class Sensor;
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
 
 /**
@@ -345,8 +347,9 @@ class Variable {
     /**
      * @brief Get current value of the variable as a float
      *
-     * @param updateValue True to ask the parent sensor to measure and return a
-     * new value.  Default is false.
+     * @param updateValue True to ask the parent sensor to take a measurement
+     * and return a new value or to re-run the calculation function for a
+     * calculated value.  Default is false.
      * @return The current value of the variable
      */
     float getValue(bool updateValue = false);
@@ -354,8 +357,9 @@ class Variable {
      * @brief Get current value of the variable as a string with the correct
      * decimal resolution
      *
-     * @param updateValue True to ask the parent sensor to measure and return a
-     * new value.  Default is false.
+     * @param updateValue True to ask the parent sensor to take a measurement
+     * and return a new value or to re-run the calculation function for a
+     * calculated value.  Default is false.
      * @return The current value of the variable
      */
     String getValueString(bool updateValue = false);

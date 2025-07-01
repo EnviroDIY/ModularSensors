@@ -25,7 +25,6 @@ DigiXBee3GBypass::DigiXBee3GBypass(Stream* modemStream, int8_t powerPin,
 #else
       gsmModem(*modemStream),
 #endif
-      gsmClient(gsmModem),
       _apn(apn) {
 }
 
@@ -38,6 +37,11 @@ MS_MODEM_WAKE(DigiXBee3GBypass);
 MS_MODEM_CONNECT_INTERNET(DigiXBee3GBypass);
 MS_MODEM_DISCONNECT_INTERNET(DigiXBee3GBypass);
 MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBee3GBypass);
+
+MS_MODEM_CREATE_CLIENT(DigiXBee3GBypass);
+MS_MODEM_DELETE_CLIENT(DigiXBee3GBypass);
+MS_MODEM_CREATE_SECURE_CLIENT(DigiXBee3GBypass);
+MS_MODEM_DELETE_SECURE_CLIENT(DigiXBee3GBypass);
 
 MS_MODEM_GET_NIST_TIME(DigiXBee3GBypass);
 
@@ -131,7 +135,6 @@ bool DigiXBee3GBypass::extraModemSetup(void) {
         MS_DBG(F("Attempting to reconnect to the u-blox SARA U201 module..."));
         success &= gsmModem.testAT(15000L);
         success &= gsmModem.init();
-        gsmClient.init(&gsmModem);
         _modemName = gsmModem.getModemName();
     } else {
         success = false;

@@ -63,34 +63,30 @@ LINKS_NAVBAR1 = [
             ),
         ],
     ),
-    (
-        "FAQs",
-        "page_faq",
-        [
-            (
-                "Processor Compatibility",
-                "page_processor_compatibility",
-            ),
-            (
-                "Arduino Streams and Software Serial",
-                "page_arduino_streams",
-            ),
-            (
-                "Power Draw over Data Lines",
-                "page_power_parasites",
-            ),
-            ("Decreasing Memory Footprint", "page_memory_use"),
-            (
-                "In-Library Debugging",
-                "page_code_debugging",
-            ),
-            (
-                "For Developers",
-                "page_for_developers",
-            ),
-        ],
-    ),
-    ("Topics", "topics", []),
+    # (
+    #     "FAQs",
+    #     "page_faq",
+    #     [
+    #         (
+    #             "Processor Compatibility",
+    #             "page_processor_compatibility",
+    #         ),
+    #         (
+    #             "Arduino Streams and Software Serial",
+    #             "page_arduino_streams",
+    #         ),
+    #         (
+    #             "Power Draw over Data Lines",
+    #             "page_power_parasites",
+    #         ),
+    #         ("Decreasing Memory Footprint", "page_memory_use"),
+    #         (
+    #             "In-Library Debugging",
+    #             "page_code_debugging",
+    #         ),
+    #     ],
+    # ),
+    ("Modules", "topics", []),
     (
         "Classes",
         "annotated",

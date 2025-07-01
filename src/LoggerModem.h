@@ -23,22 +23,27 @@
 #ifndef SRC_LOGGERMODEM_H_
 #define SRC_LOGGERMODEM_H_
 
-// Include config before anything else
+// Include the library config before anything else
 #include "ModSensorConfig.h"
 
-// Debugging Statement
-// #define MS_LOGGERMODEM_DEBUG
-// #define MS_LOGGERMODEM_DEBUG_DEEP
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
 
+// Define the print label[s] for the debugger
 #ifdef MS_LOGGERMODEM_DEBUG
 #define MS_DEBUGGING_STD "LoggerModem"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+
+// Include other in-library and external dependencies
 #include "VariableBase.h"
 #include <Arduino.h>
+#include <Client.h>
+#include <TinyGsmEnums.h>
 
 
 /**
@@ -379,6 +384,21 @@ class loggerModem {
      * @todo Implement this for modems other than the XBee WiFi
      */
     String getModemDevId(void);
+    /**
+     * @brief Set the timezone that the modem will attempt to sync itself to.
+     *
+     * This doesn't *have* to be the same as the RTC or logger timezone, but
+     * you'd be stupid to make it different.
+     *
+     * @note This must be set for SSL connections to work! If the modem does not
+     * have an accurate internal time when attempting an SSL connection, the
+     * connection will fail because the certificates will not be within their
+     * specified valid time ranges.
+     *
+     * @param timeZone The timezone that the modem will attempt to sync itself
+     * to.
+     */
+    void setModemTimeZone(int8_t timeZone);
 
     /**
      * @brief Set up the modem before first use.
@@ -548,6 +568,76 @@ class loggerModem {
      */
     virtual void disconnectInternet(void) = 0;
 
+    /**
+     * @brief Create a new client object using the default socket number
+     *
+     * @return A new client object
+     */
+    virtual Client* createClient() = 0;
+
+    /**
+     * @brief Create a new secure client object using the default socket number
+     *
+     * @return A new secure client object
+     */
+    virtual Client* createSecureClient() = 0;
+    /**
+     * @brief Create a new secure client object using the default socket number
+     *
+     * @param sslAuthMode The SSL authentication mode to use
+     * @param sslVersion The SSL version to use
+     * @param CAcertName The name of the CA certificate to use
+     * @param clientCertName The name of the client certificate to use
+     * @param clientKeyName The name of the client key to use
+     *
+     * @return A new secure client object
+     */
+    virtual Client* createSecureClient(
+        SSLAuthMode sslAuthMode, SSLVersion sslVersion = SSLVersion::TLS1_2,
+        const char* CAcertName = nullptr, const char* clientCertName = nullptr,
+        const char* clientKeyName = nullptr) = 0;
+    /**
+     * @brief Create a new secure client object using the default socket number
+     *
+     * @param pskIdent The pre-shared key identity
+     * @param psKey The pre-shared key
+     * @param sslVersion The SSL version to use
+     *
+     * @return A new secure client object
+     */
+    virtual Client*
+    createSecureClient(const char* pskIdent, const char* psKey,
+                       SSLVersion sslVersion = SSLVersion::TLS1_2) = 0;
+    /**
+     * @brief Create a new secure client object using the default socket number
+     *
+     * @param pskTableName The pre-shared key table name - for modems that
+     * require PSK's in a "table" format
+     * @param sslVersion The SSL version to use
+     *
+     * @return A new secure client object
+     */
+    virtual Client*
+    createSecureClient(const char* pskTableName,
+                       SSLVersion  sslVersion = SSLVersion::TLS1_2) = 0;
+    /**
+     * @brief Attempts to delete a created TinyGsmClient object. We need to do
+     * this to close memory leaks from the create client because we can't delete
+     * the created client from a pointer to the parent because the Arduino
+     * core's client class doesn't have a virtual destructor.
+     *
+     * @param client The client to delete
+     */
+    virtual void deleteClient(Client* client) = 0;
+    /**
+     * @brief Attempts to delete a created TinyGsmSecureClient object. We need
+     * to do this to close memory leaks from the create client because we can't
+     * delete the created client from a pointer to the parent because the
+     * Arduino core's client class doesn't have a virtual destructor.
+     *
+     * @param client The client to delete
+     */
+    virtual void deleteSecureClient(Client* client) = 0;
 
     /**
      * @brief Get the time from NIST via TIME protocol (rfc868).
@@ -1101,6 +1191,19 @@ class loggerModem {
     String _modemSerialNumber;
 
     /**
+     * @brief The timezone that the modem will attempt to sync itself to.
+     *
+     * This doesn't *have* to be the same as the RTC or logger timezone, but
+     * you'd be stupid to make it different.
+     *
+     * @note This must be set for SSL connections to work! If the modem does not
+     * have an accurate internal time when attempting an SSL connection, the
+     * connection will fail because the certificates will not be within their
+     * specified valid time ranges.
+     */
+    int8_t _modemUTCOffset = 0;
+
+    /**
      * @brief An 8-bit code for the enabled modem polling variables
      *
      * Setting a bit to 0 will disable polling, to 1 will enable it.  By default
@@ -1344,5 +1447,4 @@ class Modem_Temp : public Variable {
     ~Modem_Temp() {}
 };
 
-// #include <LoggerModem.tpp>
 #endif  // SRC_LOGGERMODEM_H_

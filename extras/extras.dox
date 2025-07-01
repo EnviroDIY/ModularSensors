@@ -1,5 +1,13 @@
 /**
- * @dir extras
- *
- * @brief Contains extra sketches for testing and configuring new sensors.
- */
+@dir extras
+
+@brief Contains extra sketches for testing and configuring new sensors.
+*/
+
+
+/**
+@page page_extra_helper_sketches
+
+@subpage extra_aws_certificates "DELETE THIS LINK"
+
+*/

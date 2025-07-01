@@ -229,8 +229,8 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 /** Start [publishers] */
 // Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modem.gsmClient,
-                                 registrationToken, samplingFeature);
+EnviroDIYPublisher EnviroDIYPOST(dataLogger, registrationToken,
+                                 samplingFeature);
 /** End [publishers] */
 
 
@@ -308,8 +308,7 @@ void setup() {
 
     // Begin the logger
     dataLogger.begin();
-    EnviroDIYPOST.begin(dataLogger, &modem.gsmClient, registrationToken,
-                        samplingFeature);
+    EnviroDIYPOST.begin(dataLogger, registrationToken, samplingFeature);
 
     // Note:  Please change these battery voltages to match your battery
     // Set up the sensors, except at lowest battery level

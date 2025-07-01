@@ -14,19 +14,23 @@
 #ifndef SRC_PUBLISHERS_UBIDOTSPUBLISHER_H_
 #define SRC_PUBLISHERS_UBIDOTSPUBLISHER_H_
 
-// Include config before anything else
+// Include the library config before anything else
 #include "ModSensorConfig.h"
 
-// Debugging Statement
-// #define MS_UBIDOTSPUBLISHER_DEBUG
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
 
+// Define the print label[s] for the debugger
 #ifdef MS_UBIDOTSPUBLISHER_DEBUG
 #define MS_DEBUGGING_STD "UbidotsPublisher"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+
+// Include other in-library and external dependencies
 #include "dataPublisherBase.h"
 
 
@@ -137,7 +141,6 @@ class UbidotsPublisher : public dataPublisher {
      */
     uint16_t calculateJsonSize();
 
-    // A way to begin with everything already set
     /**
      * @copydoc dataPublisher::begin(Logger& baseLogger, Client* inClient)
      * @param authentificationToken The authentication token from Ubdots, either

@@ -27,9 +27,6 @@
 #ifndef TINY_GSM_YIELD_MS
 #define TINY_GSM_YIELD_MS 2
 #endif
-#ifndef MQTT_MAX_PACKET_SIZE
-#define MQTT_MAX_PACKET_SIZE 240
-#endif
 /** End [defines] */
 
 
@@ -320,10 +317,17 @@ void SERCOM1_3_Handler() {
 //  Data Logging Options
 // ==========================================================================
 /** Start [logging_options] */
-// The name of this program file
+// The name of this program file - this is used only for console printouts at
+// start-up
 const char* sketchName = "menu_a_la_carte.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
+// This is also used as the Thing Name, MQTT Client ID, and topic for AWS IOT
+// Core
 const char* LoggerID = "your_logger_id";
+// Sampling feature UUID
+// This is used as the UUID for the sampling feature on Monitor My Watershed and
+// the sub-topic for AWS IOT Core
+const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";
 // How frequently (in minutes) to log data
 const uint8_t loggingInterval = 15;
 // Your logger's timezone.
@@ -356,10 +360,9 @@ const int8_t relayPowerPin = A3;  // MCU pin controlling an optional power relay
 // ==========================================================================
 /** Start [loggers] */
 // Create a new logger instance
-// NOTE: This is an empty instance! We will need to call setLoggerID,
-// setLoggingInterval, setVariableArray, and the various pin assignment
-// functions in the setup!
-Logger dataLogger;
+// NOTE: We haven't set the pins or variable array here! We will need to call
+// setVariableArray and the various pin assignment functions in the setup!
+Logger dataLogger(LoggerID, samplingFeature, loggingInterval);
 /** End [loggers] */
 
 
@@ -1542,12 +1545,11 @@ Variable* mplTemp = new FreescaleMPL115A2_Temp(
 #include <sensors/GeoluxHydroCam.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-const int8_t  cameraPower           = sensorPowerPin;  // Power pin
-const int8_t  cameraAdapterPower    = sensorPowerPin;  // Power pin
-const uint8_t MPL115A2ReadingsToAvg = 1;
-const char*   imageResolution       = "1600x1200";
-const char*   filePrefix            = "HydroCam";
-bool          alwaysAutoFocus       = false;
+const int8_t cameraPower        = sensorPowerPin;  // Power pin
+const int8_t cameraAdapterPower = sensorPowerPin;  // RS232 adapter power pin
+const char*  imageResolution    = "800x600";
+const char*  filePrefix         = LoggerID;
+bool         alwaysAutoFocus    = false;
 
 // Create a GeoluxHydroCam sensor object
 GeoluxHydroCam hydrocam(cameraSerial, cameraPower, dataLogger,
@@ -1564,6 +1566,9 @@ Variable* hydrocamByteError = new GeoluxHydroCam_ByteError(
 
 
 #if defined(BUILD_SENSOR_GRO_POINT_GPLP8)
+#ifndef BUILD_MODBUS_SENSOR
+#define BUILD_MODBUS_SENSOR
+#endif
 // ==========================================================================
 //  GroPoint Profile GPLP-8 Soil Moisture and Temperature Sensor
 // ==========================================================================
@@ -1697,6 +1702,9 @@ Variable* trollDepth = new InSituTrollSdi12a_Depth(
 
 
 #if defined(BUILD_SENSOR_KELLER_ACCULEVEL)
+#ifndef BUILD_MODBUS_SENSOR
+#define BUILD_MODBUS_SENSOR
+#endif
 // ==========================================================================
 //  Keller Acculevel High Accuracy Submersible Level Transmitter
 // ==========================================================================
@@ -1731,6 +1739,9 @@ Variable* acculevHeight = new KellerAcculevel_Height(
 
 
 #if defined(BUILD_SENSOR_KELLER_NANOLEVEL)
+#ifndef BUILD_MODBUS_SENSOR
+#define BUILD_MODBUS_SENSOR
+#endif
 // ==========================================================================
 //  Keller Nanolevel High Accuracy Submersible Level Transmitter
 // ==========================================================================
@@ -1985,7 +1996,7 @@ RainCounterI2C tbi2c(&softI2C, RainCounterI2CAddress, depthPerTipEvent);
 // RainCounterI2C tbi2c(softwareSDA, softwareSCL, RainCounterI2CAddress,
 //                      depthPerTipEvent);
 #else
-RainCounterI2C  tbi2c(RainCounterI2CAddress, depthPerTipEvent);
+RainCounterI2C tbi2c(RainCounterI2CAddress, depthPerTipEvent);
 #endif
 
 // Create number of tips and rain depth variable pointers for the tipping bucket
@@ -2281,6 +2292,9 @@ Variable* VegaPulsError =
 
 
 #if defined(BUILD_SENSOR_YOSEMITECH_Y504)
+#ifndef BUILD_MODBUS_SENSOR
+#define BUILD_MODBUS_SENSOR
+#endif
 // ==========================================================================
 //  Yosemitech Y504 Dissolved Oxygen Sensor
 // ==========================================================================
@@ -2316,6 +2330,9 @@ Variable* y504Temp =
 
 
 #if defined(BUILD_SENSOR_YOSEMITECH_Y510)
+#ifndef BUILD_MODBUS_SENSOR
+#define BUILD_MODBUS_SENSOR
+#endif
 // ==========================================================================
 //  Yosemitech Y510 Turbidity Sensor
 // ==========================================================================
@@ -2348,6 +2365,9 @@ Variable* y510Temp =
 
 
 #if defined(BUILD_SENSOR_YOSEMITECH_Y511)
+#ifndef BUILD_MODBUS_SENSOR
+#define BUILD_MODBUS_SENSOR
+#endif
 // ==========================================================================
 //  Yosemitech Y511 Turbidity Sensor with Wiper
 // ==========================================================================
@@ -2380,6 +2400,9 @@ Variable* y511Temp =
 
 
 #if defined(BUILD_SENSOR_YOSEMITECH_Y513)
+#ifndef BUILD_MODBUS_SENSOR
+#define BUILD_MODBUS_SENSOR
+#endif
 // ==========================================================================
 //  Yosemitech Y513 Blue Green Algae (BGA) Sensor
 // ==========================================================================
@@ -2412,6 +2435,9 @@ Variable* y513Temp =
 #endif
 
 #if defined(BUILD_SENSOR_YOSEMITECH_Y514)
+#ifndef BUILD_MODBUS_SENSOR
+#define BUILD_MODBUS_SENSOR
+#endif
 // ==========================================================================
 //  Yosemitech Y514 Chlorophyll Sensor
 // ==========================================================================
@@ -2445,6 +2471,9 @@ Variable* y514Temp =
 
 
 #if defined(BUILD_SENSOR_YOSEMITECH_Y520)
+#ifndef BUILD_MODBUS_SENSOR
+#define BUILD_MODBUS_SENSOR
+#endif
 // ==========================================================================
 //  Yosemitech Y520 Conductivity Sensor
 // ==========================================================================
@@ -2477,6 +2506,9 @@ Variable* y520Temp =
 
 
 #if defined(BUILD_SENSOR_YOSEMITECH_Y532)
+#ifndef BUILD_MODBUS_SENSOR
+#define BUILD_MODBUS_SENSOR
+#endif
 // ==========================================================================
 //  Yosemitech Y532 pH
 // ==========================================================================
@@ -2511,6 +2543,9 @@ Variable* y532Temp =
 
 
 #if defined(BUILD_SENSOR_YOSEMITECH_Y533)
+#ifndef BUILD_MODBUS_SENSOR
+#define BUILD_MODBUS_SENSOR
+#endif
 // ==========================================================================
 //  Yosemitech Y533 Oxidation Reduction Potential (ORP)
 // ==========================================================================
@@ -2542,6 +2577,9 @@ Variable* y533Temp =
 
 
 #if defined(BUILD_SENSOR_YOSEMITECH_Y551)
+#ifndef BUILD_MODBUS_SENSOR
+#define BUILD_MODBUS_SENSOR
+#endif
 // ==========================================================================
 //  Yosemitech Y551 COD Sensor with Wiper
 // ==========================================================================
@@ -2576,6 +2614,9 @@ Variable* y551Temp =
 
 
 #if defined(BUILD_SENSOR_YOSEMITECH_Y560)
+#ifndef BUILD_MODBUS_SENSOR
+#define BUILD_MODBUS_SENSOR
+#endif
 // ==========================================================================
 //  Yosemitech Y560 Ammonium Probe with Wiper
 // ==========================================================================
@@ -2612,6 +2653,9 @@ Variable* y560Temp =
 
 
 #if defined(BUILD_SENSOR_YOSEMITECH_Y700)
+#ifndef BUILD_MODBUS_SENSOR
+#define BUILD_MODBUS_SENSOR
+#endif
 // ==========================================================================
 //  Yosemitech Y700 Pressure Sensor
 // ==========================================================================
@@ -2644,6 +2688,9 @@ Variable* y700Temp =
 
 
 #if defined(BUILD_SENSOR_YOSEMITECH_Y4000)
+#ifndef BUILD_MODBUS_SENSOR
+#define BUILD_MODBUS_SENSOR
+#endif
 // ==========================================================================
 //  Yosemitech Y4000 Multiparameter Sonde (DOmgL, Turbidity, Cond, pH, Temp,
 //    ORP, Chlorophyll, BGA)
@@ -2689,6 +2736,9 @@ Variable* y4000BGA =
 
 
 #if defined(BUILD_SENSOR_ZEBRA_TECH_D_OPTO)
+#ifndef BUILD_MODBUS_SENSOR
+#define BUILD_MODBUS_SENSOR
+#endif
 // ==========================================================================
 //  Zebra Tech D-Opto Dissolved Oxygen Sensor
 // ==========================================================================
@@ -3145,13 +3195,14 @@ VariableArray varArray(variableCount, variableList);
 // registration at https://monitormywatershed.org or https://data.envirodiy.org
 const char* registrationToken =
     "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
-const char* samplingFeature =
-    "12345678-abcd-1234-ef00-1234567890ab";  // Sampling feature UUID
+// NOTE: Because we already set the sampling feature with the logger
+// constructor, don't do it here.
+// const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  //
+// Sampling feature UUID
 
 // Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modem.gsmClient,
-                                 registrationToken, samplingFeature);
+EnviroDIYPublisher EnviroDIYPOST(dataLogger, registrationToken);
 /** End [enviro_diy_publisher] */
 #endif
 
@@ -3169,8 +3220,7 @@ const char* DreamHostPortalRX = "xxxx";
 
 // Create a data publisher to DreamHost
 #include <publishers/DreamHostPublisher.h>
-DreamHostPublisher DreamHostGET(dataLogger, &modem.gsmClient,
-                                DreamHostPortalRX);
+DreamHostPublisher DreamHostGET(dataLogger, DreamHostPortalRX);
 /** End [dream_host_publisher] */
 #endif
 
@@ -3194,12 +3244,13 @@ const char* thingSpeakMQTTPassword =
     "XXXXXXXXXXXXXXXX";  // The password for your MQTT device
 const char* thingSpeakChannelID =
     "######";  // The numeric channel id for your channel
+const char* thingSpeakAPIKey =
+    "XXXXXXXXXXXXXXXX";  // The ThingSpeak user REST API key
 
 // Create a data publisher for ThingSpeak
 #include <publishers/ThingSpeakPublisher.h>
-ThingSpeakPublisher TsMqtt(dataLogger, &modem.gsmClient, thingSpeakClientName,
-                           thingSpeakMQTTUser, thingSpeakMQTTPassword,
-                           thingSpeakChannelID);
+ThingSpeakPublisher TsMqtt(dataLogger, thingSpeakClientName, thingSpeakMQTTUser,
+                           thingSpeakMQTTPassword, thingSpeakChannelID);
 /** End [thing_speak_publisher] */
 #endif
 
@@ -3210,7 +3261,7 @@ ThingSpeakPublisher TsMqtt(dataLogger, &modem.gsmClient, thingSpeakClientName,
 //  Ubidots Data Publisher
 // ==========================================================================
 /** Start [ubidots_publisher] */
-// The authentication token from Ubdots, either the Organization's Integration
+// The authentication token from Ubidots, either the Organization's Integration
 // Token (under Users > Organization menu,visible by Admin only) OR the STEM
 // User's Device Token (under the specific evice's setup panel).
 const char* ubidotsToken = "XXXXXXXXXXXXXXXX";
@@ -3218,11 +3269,117 @@ const char* ubidotsToken = "XXXXXXXXXXXXXXXX";
 // name.
 const char* ubidotsDeviceID = "######";
 
-// Create a data publisher for ThingSpeak
+// Create a data publisher for Ubidots
 #include <publishers/UbidotsPublisher.h>
-UbidotsPublisher ubidots(dataLogger, &modem.gsmClient, ubidotsToken,
-                         ubidotsDeviceID);
+UbidotsPublisher ubidots(dataLogger, ubidotsToken, ubidotsDeviceID);
 /** End [ubidots_publisher] */
+#endif
+
+
+#if defined(BUILD_PUB_S3_PRESIGNED_PUBLISHER) && \
+    (!defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM))
+// ==========================================================================
+//  AWS S3 Pre-signed URL Publisher
+// ==========================================================================
+/** Start [s3_presigned_publisher] */
+#ifdef BUILD_MODEM_ESPRESSIF_ESP32
+// For Espressif modules, only two certificate sets are supported and the
+// certificates must be named "client_ca.{0|1}", "client_cert.{0|1}", or
+// "client_key.{0|1}"
+const char* caCertName = "client_ca.0";
+#else
+// The name of your certificate authority certificate file
+const char* caCertName = "AmazonRootCA1.pem";
+#endif
+
+// Expand the expected S3 publish topic into a buffer
+String s3URLPubTopic = "$aws/rules/GetUploadURL/" + String(LoggerID);
+// Expand the expected S3 subscribe topic into a buffer
+String s3URLSubTopic = String(LoggerID) + "/upload_url";
+// A function for the IoT core publisher to call to get the message content for
+// a new URL request
+#if defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
+String s3URLMsgGetter() {
+    return String("{\"file\": \"") + hydrocam.getLastSavedImageName() +
+        String("\"}");
+}
+#else
+String s3URLMsgGetter() {
+    return String("{\"file\": \"image.jpg\"}");
+}
+#endif
+
+// Create a data publisher for AWS IoT Core
+#include <publishers/S3PresignedPublisher.h>
+S3PresignedPublisher s3pub;
+/** End [s3_presigned_publisher] */
+#endif
+
+
+#if defined(BUILD_PUB_AWS_IO_T_PUBLISHER) && \
+    (!defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM))
+// ==========================================================================
+//  AWS IoT Core MQTT Publisher
+// ==========================================================================
+/** Start [aws_io_t_publisher] */
+// The endpoint for your AWS IoT instance
+const char* awsIoTEndpoint = "xxx-ats.iot.xxx.amazonaws.com";
+// Sampling feature UUID, this will be the sub-topic for your data
+// NOTE: Because we already set the sampling feature with the logger
+// constructor, don't do it here.
+// const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";
+#ifdef BUILD_MODEM_ESPRESSIF_ESP32
+// For Espressif modules, only two certificate sets are supported and the
+// certificates must be named "client_ca.{0|1}", "client_cert.{0|1}", or
+// "client_key.{0|1}"
+#if !defined(BUILD_PUB_S3_PRESIGNED_PUBLISHER)
+const char* caCertName = "client_ca.0";
+#endif
+const char* clientCertName = "client_cert.0";
+const char* clientKeyName  = "client_key.0";
+#else
+#if !defined(BUILD_PUB_S3_PRESIGNED_PUBLISHER)
+// The name of your certificate authority certificate file
+const char* caCertName = "AmazonRootCA1.pem";
+#endif
+// The name of your client certificate file
+const char* clientCertName = "thing-certificate.pem.crt";
+// The name of your client private key file
+const char* clientKeyName = "thing-private.pem.key";
+#endif
+
+// Create a data publisher for AWS IoT Core
+#include <publishers/AWS_IoT_Publisher.h>
+AWS_IoT_Publisher awsIoTPub(dataLogger, awsIoTEndpoint, caCertName,
+                            clientCertName, clientKeyName);
+
+#if defined(BUILD_PUB_S3_PRESIGNED_PUBLISHER)
+// Callback function
+void IoTCallback(char* topic, byte* payload, unsigned int length) {
+    PRINTOUT(F("Got message of length"), length, F("on topic"), topic);
+    // the topic is a char and garaunteed to be null-terminated, so we can
+    // directly convert to a String
+    if (String(topic) == s3URLSubTopic) {
+        PRINTOUT(F("Received data on pre-signed URL topic from AWS IoT Core"));
+        // Allocate the correct amount of memory for the payload copy
+        // We CANNOT directly convert it to a string because it's not garaunteed
+        // to be null-terminated
+        char* rx_url = (char*)malloc(length + 1);
+        // Copy the payload to the new buffer
+        memcpy(rx_url, payload, length);
+        // Null terminate the string
+        memset(rx_url + length, '\0', 1);
+        PRINTOUT(F("Setting S3 URL to:"), rx_url);
+        s3pub.setPreSignedURL(String(rx_url));
+        // Free the memory now that the URL has been copied into a new String
+        free(rx_url);
+        // let the publisher know we got what we expected and it can stop
+        // waiting
+        awsIoTPub.closeConnection();
+    }
+}
+#endif
+/** End [aws_io_t_publisher] */
 #endif
 
 
@@ -3319,7 +3476,7 @@ void setup() {
     PRINTOUT("\n\n\n=============================");
     PRINTOUT("=============================");
     PRINTOUT("=============================");
-    PRINTOUT(F("\n\nNow running"), sketchName, F(" on Logger"), LoggerID, '\n');
+    PRINTOUT(F("\n\nNow running"), sketchName, F("on Logger"), LoggerID, '\n');
 
     PRINTOUT(F("Using ModularSensors Library version"),
              MODULAR_SENSORS_VERSION);
@@ -3352,9 +3509,11 @@ void setup() {
     modemSerial.begin(modemBaud);
 #endif
 
+#if defined(BUILD_MODBUS_SENSOR)
     // Start the stream for the modbus sensors;
     // all currently supported modbus sensors use 9600 baud
     modbusSerial.begin(9600);
+#endif
 
 #if defined(BUILD_SENSOR_MAX_BOTIX_SONAR)
     // Start the stream for the sonar; it will always be at 9600 baud
@@ -3399,6 +3558,8 @@ void setup() {
     // set the logger ID
     PRINTOUT(F("Setting logger id to"), LoggerID);
     dataLogger.setLoggerID(LoggerID);
+    PRINTOUT(F("Setting the sampling feature UUID to"), LoggerID);
+    dataLogger.setSamplingFeatureUUID(samplingFeature);
     // set the logging interval
     PRINTOUT(F("Setting logging interval to"), loggingInterval, F("minutes"));
     dataLogger.setLoggingInterval(loggingInterval);
@@ -3411,11 +3572,6 @@ void setup() {
     PRINTOUT(F("Setting logger pins"));
     dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin,
                              greenLED, wakePinMode, buttonPinMode);
-
-#if defined(ARDUINO_ARCH_SAMD)
-    PRINTOUT(F("Setting analog read resolution for onboard ADC to 12 bit"));
-    analogReadResolution(12);
-#endif
 
     // Set the timezones for the logger/data and the RTC
     // Logging in the given time zone
@@ -3431,6 +3587,26 @@ void setup() {
     dataLogger.attachModem(modem);
     PRINTOUT(F("Setting modem LEDs"));
     modem.setModemLED(modemLEDPin);
+#endif
+
+#if defined(BUILD_PUB_THING_SPEAK_PUBLISHER) && \
+    (!defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM))
+    // Set the ThingSpeak MQTT client name
+    TsMqtt.setRESTAPIKey(thingSpeakAPIKey);
+#endif
+
+#if defined(BUILD_PUB_S3_PRESIGNED_PUBLISHER)
+    s3pub.setCACertName(caCertName);
+    s3pub.attachToLogger(dataLogger);
+#endif
+
+#if defined(BUILD_PUB_AWS_IO_T_PUBLISHER) &&     \
+    defined(BUILD_PUB_S3_PRESIGNED_PUBLISHER) && \
+    (!defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM))
+    // Set the callback function for the AWS IoT Core MQTT connection
+    awsIoTPub.setCallback(IoTCallback);
+    awsIoTPub.addSubTopic(s3URLSubTopic.c_str());
+    awsIoTPub.addPublishRequest(s3URLPubTopic.c_str(), s3URLMsgGetter);
 #endif
 
     // Begin the logger
@@ -3575,18 +3751,18 @@ void setup() {
     /** Start [setup_clock] */
     // Sync the clock if it isn't valid or we have battery to spare
     if (getBatteryVoltage() > 3.55 || !loggerClock::isRTCSane()) {
-        // Synchronize the RTC with NIST
-        // This will also set up the modem
-        dataLogger.syncRTC();
+        // Set up the modem, synchronize the RTC with NIST, and publish
+        // configuration information to publishers that support it.
+        dataLogger.makeInitialConnections();
     }
     /** End [setup_clock] */
 
     /** Start [setup_file] */
     // Create the log file, adding the default header to it
     // Do this last so we have the best chance of getting the time correct and
-    // all sensor names correct
-    // Writing to the SD card can be power intensive, so if we're skipping
-    // the sensor setup we'll skip this too.
+    // all sensor names correct.
+    // Writing to the SD card can be power intensive, so if we're skipping the
+    // sensor setup we'll skip this too.
     if (getBatteryVoltage() > 3.4) {
         PRINTOUT(F("Setting up file on SD card"));
         dataLogger.turnOnSDcard(true);

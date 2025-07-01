@@ -76,19 +76,23 @@
 #ifndef SRC_SENSORS_GEOLUXHYDROCAM_H_
 #define SRC_SENSORS_GEOLUXHYDROCAM_H_
 
-// Include config before anything else
+// Include the library config before anything else
 #include "ModSensorConfig.h"
 
-// Debugging Statement
-// #define MS_GEOLUXHYDROCAM_DEBUG
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
 
+// Define the print label[s] for the debugger
 #ifdef MS_GEOLUXHYDROCAM_DEBUG
 #define MS_DEBUGGING_STD "GeoluxHydroCam"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+
+// Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include "LoggerBase.h"
@@ -96,6 +100,11 @@
 
 /** @ingroup sensor_hydrocam */
 /**@{*/
+
+/**
+ * @brief The file extension for images from the Geolux HydroCam: ".jpg"
+ */
+#define HYDROCAM_FILE_EXTENSION ".jpg"
 
 /**
  * @anchor sensor_hydrocam_var_counts
@@ -233,11 +242,13 @@ class GeoluxHydroCam : public Sensor {
      * or omit if not applicable.
      * @param imageResolution The image resolution to use. Optional with a
      * default value of "1600x1200".
-     * @param filePrefix The start of the file name for saved files. The date
-     * and time will be appended to the filename. Optional with a default value
-     * of "HydroCam_". If you want only the date/time as the file name specify
-     * "" as the filename prefix. Otherwise, I strongly recommend ending the
-     * prefix with an "_".
+     * @param filePrefix The start of the file name for saved files. **An
+     * underscore** and then the date and time will be appended to the prefix to
+     * create the filename. The extension will always be
+     * `#HYDROCAM_FILE_EXTENSION` (.jpg). Optional with a default value of
+     * nullptr. If you want only the date/time as the file name specify
+     * "" as the filename prefix. If you do not specify any file prefix, the
+     * logger ID will be used
      * @param alwaysAutoFocus True to autofocus before every image. This may be
      * necessary if the camera is power cycled between images. If you are not
      * power cycling or moving the camera, I recommend not autofocusing often
@@ -245,19 +256,26 @@ class GeoluxHydroCam : public Sensor {
      */
     GeoluxHydroCam(Stream* stream, int8_t powerPin, Logger& baseLogger,
                    int8_t powerPin2, const char* imageResolution = "1600x1200",
-                   const char* filePrefix      = "HydroCam",
+                   const char* filePrefix      = nullptr,
                    bool        alwaysAutoFocus = false);
     /**
      * @copydoc GeoluxHydroCam::GeoluxHydroCam
      */
     GeoluxHydroCam(Stream& stream, int8_t powerPin, Logger& baseLogger,
                    int8_t powerPin2, const char* imageResolution = "1600x1200",
-                   const char* filePrefix      = "HydroCam",
+                   const char* filePrefix      = nullptr,
                    bool        alwaysAutoFocus = false);
     /**
      * @brief Destroy the Geolux HydroCam object
      */
     ~GeoluxHydroCam();
+
+    /**
+     * @brief Extra unique function to retreive the name of the last saved image
+     *
+     * @return The name of the last saved image
+     */
+    String getLastSavedImageName();
 
     /**
      * @copydoc Sensor::getSensorLocation()
@@ -350,7 +368,9 @@ class GeoluxHydroCam : public Sensor {
     const char*
         _imageResolution;  ///< The image resolution from the Geolux HydroCam
     const char*
-        _filePrefix;  ///< The prefix to add to files from the Geolux HydroCam
+        _filePrefix;   ///< The prefix to add to files from the Geolux HydroCam
+    String _filename;  ///< The filename of the last saved file from the Geolux
+                       ///< HydroCam
     /**
      * @brief True to autofocus before every image. This may be necessary if the
      * camera is power cycled between images. If you are not power cycling or

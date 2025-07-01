@@ -46,6 +46,7 @@ ___
     - [Digi XBee 3G - Bypass Mode](#digi-xbee-3g---bypass-mode)
     - [Digi XBee S6B Wifi](#digi-xbee-s6b-wifi)
     - [Espressif ESP8266](#espressif-esp8266)
+    - [Espressif ESP32](#espressif-esp32)
     - [Quectel BG96](#quectel-bg96)
     - [Sequans Monarch](#sequans-monarch)
     - [SIMCom SIM800](#simcom-sim800)
@@ -128,6 +129,8 @@ ___
       - [DreamHost](#dreamhost)
       - [ThingSpeak](#thingspeak)
       - [Ubidots](#ubidots)
+      - [AWS S3](#aws-s3)
+      - [AWS IoT Core](#aws-iot-core)
   - [Extra Working Functions](#extra-working-functions)
   - [Arduino Setup Function](#arduino-setup-function)
     - [Starting the Function](#starting-the-function)
@@ -400,7 +403,7 @@ A helpful table detailing the pins to use with the EnviroDIY Mayfly is available
 
 ### Espressif ESP8266<!--! {#menu_walk_espressif_esp8266} -->
 
-This code is for the Espressif ESP8266 or ESP32 operating with "AT" firmware.
+This code is for the Espressif ESP8266 operating with "AT" firmware.
 To create a EspressifESP8266 object we need to know
 
 - the serial object name,
@@ -413,8 +416,24 @@ Pins that do not apply should be set as -1.
 
 <!--! @menusnip{espressif_esp8266} -->
 
-Because the ESP8266's default baud rate is too fast for an 8MHz board like the Mayfly, to use it you need to drop the baud rate down for sucessful communication.
+### Espressif ESP32<!--! {#menu_walk_espressif_esp32} -->
+
+This code is for the Espressif ESP32 operating with "AT" firmware.
+To create a EspressifESP32 object we need to know
+
+- the serial object name,
+- the MCU pin controlling modem power,
+- the reset pin (MCU pin connected to the ESP's `RSTB/DIO16`),
+- the wifi access point name,
+- and the wifi WPA2 password.
+
+Pins that do not apply should be set as -1.
+
+<!--! @menusnip{espressif_esp32} -->
+
+Because the ESP32's default baud rate is too fast for an 8MHz board like the Mayfly, to use it you need to drop the baud rate down for sucessful communication.
 You can set the slower baud rate using some external method, or useing the code from the ESP8266 Baud Rate(<https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_setup_esp>) part of the setup function below.
+For a Stonefly or other faster board, I recommend setting the modem baud rate as fast as possible.
 
 ### Quectel BG96<!--! {#menu_walk_quectel_bg96} -->
 
@@ -839,8 +858,6 @@ ___
 
 @see @ref sensor_hydrocam
 
-
-
 <!--! @menusnip{geolux_hydro_cam} -->
 
 ___
@@ -1025,7 +1042,7 @@ ___
 This is for use with Northern Widget's Tally event counter
 
 > [!CAUTION]
->  Northern Widget considers this sensor to be one of their "bleeding edge" sensors.
+> Northern Widget considers this sensor to be one of their "bleeding edge" sensors.
 > As such, it is subject to change at any time.
 > This library may not be updated immediately to reflect changes on the part of Northern Widget.
 
@@ -1084,8 +1101,7 @@ This is the code for the measuring electrical conductivity using the processor's
 The Arduino pin controlling power on/off and the sensing pin are required for the constuctor.
 The power supply for the sensor *absolutely must be switched on and off between readings*!
 The resistance of your in-circuit resistor, the cell constant for your power cord, and the number of measurements to average are the optional third, fourth, and fifth arguments.
-If your processor has an ADS with resolution greater or less than 10-bit, compile with the build flag `-D ANALOG_EC_ADC_RESOLUTION=##`.
-For best results, you should also connect the AREF pin of your processors ADC to the power supply for the and compile with the build flag `-D ANALOG_EC_ADC_REFERENCE_MODE=EXTERNAL`.
+For best results, you should also connect the AREF pin of your processors ADC to the power supply for the and compile with the build flag `-D MS_PROCESSOR_ADC_REFERENCE_MODE=EXTERNAL`.
 
 @see @ref sensor_analog_cond
 
@@ -1301,6 +1317,7 @@ ___
 After you have set up a channel and MQTT device on ThingSpeak, you can use this code to publish your data to it.
 
 Keep in mind that the order of variables in the VariableArray is **crucial** when publishing to ThingSpeak.
+If you set a user API key, this library will attempt to update your channel name and your field names with the logger ID and the variable names at bootup.
 
 <!--! @menusnip{thing_speak_publisher} -->
 
@@ -1311,6 +1328,30 @@ ___
 Use this to publish data to Ubidots.
 
 <!--! @menusnip{ubidots_publisher} -->
+
+___
+
+#### AWS S3<!--! {#menu_walk_s3_presigned_publisher} -->
+
+Use this to publish data S3 using a pre-signed URL.
+Getting this to work requires you to set up an endpoint and parse an incoming S3 URL to publish to.
+Unlike the other publishers, this S3 publisher is **not** meant to be used to publish numeric sensor data.
+This is intended to send image data from the Geolux HydroCam or any future sensors that generate image or other large binary data.
+See the separate AWS examples for how to use this.
+
+
+<!--! @menusnip{s3_presigned_publisher} -->
+
+___
+
+#### AWS IoT Core<!--! {#menu_walk_aws_io_t_publisher} -->
+
+Use this to publish data to AWS IoT Core.
+This can also be used to fetch a pre-signed URL to publish to S3 - if you have the proper IoT Core rules and a lambda function set up.
+See the separate AWS examples for how to use this.
+
+
+<!--! @menusnip{aws_io_t_publisher} -->
 
 ___
 

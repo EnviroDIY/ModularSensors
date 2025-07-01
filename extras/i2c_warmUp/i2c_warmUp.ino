@@ -37,8 +37,7 @@ void setup() {
     Wire.begin();
 
     Serial.begin(115200);
-    while (!Serial)
-        ;
+    while (!Serial);
     Serial.println("I2C Warm Up Timing Test");
 }
 

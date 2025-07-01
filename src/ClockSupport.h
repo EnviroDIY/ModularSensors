@@ -13,25 +13,27 @@
 #ifndef SRC_CLOCKSUPPORT_H_
 #define SRC_CLOCKSUPPORT_H_
 
-// Include config before anything else
+// Include the library config before anything else
 #include "ModSensorConfig.h"
 
-// Debugging Statement
-// #define MS_CLOCKSUPPORT_DEBUG
-// #define MS_CLOCKSUPPORT_DEBUG_DEEP
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
 
+// Define the print label[s] for the debugger
 #ifdef MS_CLOCKSUPPORT_DEBUG
 #define MS_DEBUGGING_STD "ClockSupport"
 #endif
-
 #ifdef MS_CLOCKSUPPORT_DEBUG_DEEP
 #define MS_DEBUGGING_DEEP "ClockSupport"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
 #undef MS_DEBUGGING_DEEP
+
+// Include other in-library and external dependencies
 #include <Arduino.h>
 #include <time.h>
 
@@ -133,13 +135,10 @@
  * @brief The GPS epoch equivalent for each of the announced leap seconds as of
  * February 24, 2025
  */
-#define LEAP_SECONDS                                                          \
-    {                                                                         \
-        46828800, 78364801, 109900802, 173059203, 252028804, 315187205,       \
-            346723206, 393984007, 425520008, 457056009, 504489610, 551750411, \
-            599184012, 820108813, 914803214, 1025136015, 1119744016,          \
-            1167264017                                                        \
-    }
+#define LEAP_SECONDS                                                     \
+    {46828800,  78364801,  109900802, 173059203,  252028804,  315187205, \
+     346723206, 393984007, 425520008, 457056009,  504489610,  551750411, \
+     599184012, 820108813, 914803214, 1025136015, 1119744016, 1167264017}
 #endif
 
 

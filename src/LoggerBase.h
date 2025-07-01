@@ -15,25 +15,27 @@
 #ifndef SRC_LOGGERBASE_H_
 #define SRC_LOGGERBASE_H_
 
-// Include config before anything else
+// Include the library config before anything else
 #include "ModSensorConfig.h"
 
-// Debugging Statement
-// #define MS_LOGGERBASE_DEBUG
-// #define MS_LOGGERBASE_DEBUG_DEEP
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
 
+// Define the print label[s] for the debugger
 #ifdef MS_LOGGERBASE_DEBUG
 #define MS_DEBUGGING_STD "LoggerBase"
 #endif
-
 #ifdef MS_LOGGERBASE_DEBUG_DEEP
 #define MS_DEBUGGING_DEEP "LoggerBase"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
 #undef MS_DEBUGGING_DEEP
+
+// Include other in-library and external dependencies
 #include "VariableArray.h"
 #include "LoggerModem.h"
 #include "ClockSupport.h"
@@ -82,13 +84,28 @@ class dataPublisher;  // Forward declaration
  * @ingroup base_classes
  */
 class Logger {
-    /**
-     * @brief The dataPublisher class contains endpoints for logged data and the
-     * proper formats for sending it.
-     */
-    friend class dataPublisher;
-
  public:
+    /**
+     * @brief Construct a new Logger object.
+     *
+     * @param loggerID A name for the logger - unless otherwise specified, files
+     * saved to the SD card will be named with the logger id and the date the
+     * file was started.
+     * @param samplingFeatureUUID The sampling feature UUID.
+     * @param loggingIntervalMinutes The frequency in minutes at which data
+     * should be logged
+     * @param SDCardSSPin The pin of the chip select/slave select for the SPI
+     * connection to the SD card
+     * @param mcuWakePin The pin used to wake the logger from deep sleep -
+     * expected to be attached to an alarm pin of the real-time clock.  Use a
+     * value of -1 to prevent the board from sleeping.
+     * @param inputArray A pointer to a variableArray object instance providing
+     * data to be logged.  This is NOT an array of variables, but an object of
+     * the variable array class.
+     */
+    Logger(const char* loggerID, const char* samplingFeatureUUID,
+           uint16_t loggingIntervalMinutes, int8_t SDCardSSPin,
+           int8_t mcuWakePin, VariableArray* inputArray);
     /**
      * @brief Construct a new Logger object.
      *
@@ -108,6 +125,33 @@ class Logger {
      */
     Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
            int8_t SDCardSSPin, int8_t mcuWakePin, VariableArray* inputArray);
+    /**
+     * @brief Construct a new Logger object.
+     *
+     * @param loggerID A name for the logger - unless otherwise specified, files
+     * saved to the SD card will be named with the logger id and the date the
+     * file was started.
+     * @param samplingFeatureUUID The sampling feature UUID.
+     * @param loggingIntervalMinutes The frequency in minutes at which data
+     * should be logged
+     * @param inputArray A variableArray object instance providing data to be
+     * logged.  This is NOT an array of variables, but an object of the variable
+     * array class.
+     */
+    Logger(const char* loggerID, const char* samplingFeatureUUID,
+           uint16_t loggingIntervalMinutes, VariableArray* inputArray);
+    /**
+     * @brief Construct a new Logger object.
+     *
+     * @param loggerID A name for the logger - unless otherwise specified, files
+     * saved to the SD card will be named with the logger id and the date the
+     * file was started.
+     * @param samplingFeatureUUID The sampling feature UUID.
+     * @param loggingIntervalMinutes The frequency in minutes at which data
+     * should be logged
+     */
+    Logger(const char* loggerID, const char* samplingFeatureUUID,
+           uint16_t loggingIntervalMinutes);
     /**
      * @brief Construct a new Logger object.
      *
@@ -588,8 +632,20 @@ class Logger {
      */
     String getVarUUIDAtI(uint8_t position_i);
     /**
+     * @brief Get the resolution (number of decimal places) of the variable at
+     * the given position in the internal variable array object.
+     *
+     * @param position_i The position of the variable in the array.
+     * @return The variable resolution
+     */
+    uint8_t getVarResolutionAtI(uint8_t position_i);
+    /**
      * @brief Get the most recent value of the variable at the given position in
      * the internal variable array object.
+     *
+     * @note This does **not** trigger a new reading from the sensor for sensor
+     * reported variables or a new call of the calculation function for
+     * calculated variables.
      *
      * @param position_i The position of the variable in the array.
      * @return The value of the variable as a float.
@@ -598,6 +654,10 @@ class Logger {
     /**
      * @brief Get the most recent value of the variable at the given position in
      * the internal variable array object.
+     *
+     * @note This does **not** trigger a new reading from the sensor for sensor
+     * reported variables or a new call of the calculation function for
+     * calculated variables.
      *
      * @param position_i The position of the variable in the array.
      * @return The value of the variable as a string with the correct
@@ -656,8 +716,10 @@ class Logger {
      * @brief Register a data publisher object to receive data from the logger.
      *
      * @param publisher A dataPublisher object
+     * @return A pointer to the underlying logger's loggerModem to use for
+     * chaining
      */
-    void registerDataPublisher(dataPublisher* publisher);
+    loggerModem* registerDataPublisher(dataPublisher* publisher);
     /**
      * @brief Check if any data publishers need an Internet connection for the
      * next publish call.
@@ -670,7 +732,7 @@ class Logger {
      *
      * @param forceFlush Ask the publishers to flush buffered data immediately.
      */
-    void publishDataToRemotes(bool forceFlush = false);
+    void publishDataToRemotes(bool forceFlush = MS_ALWAYS_FLUSH_PUBLISHERS);
     /**
      * @brief Retained for backwards compatibility, use publishDataToRemotes()
      * in new code.
@@ -678,6 +740,14 @@ class Logger {
      * @m_deprecated_since{0,22,5}
      */
     void sendDataToRemotes(void);
+    /**
+     * @brief Publish **metadata** to all registered data publishers.
+     *
+     * This should only be called at startup.
+     *
+     * @see dataPublisherBase::publishMetadata()
+     */
+    void publishMetadataToRemotes();
 
  protected:
     /**
@@ -792,11 +862,11 @@ class Logger {
      * LOGGER's epoch start. It adds the LOGGER's offset as the time zone offset
      * in the string.
      *
-     * @param epochTime The number of seconds since the start of the logger's
+     * @param epochSeconds The number of seconds since the start of the logger's
      * epoch (#MS_LOGGER_EPOCH).
      * @return An ISO8601 formatted String.
      */
-    static String formatDateTime_ISO8601(uint32_t epochTime);
+    static String formatDateTime_ISO8601(uint32_t epochSeconds);
 
     /**
      * @brief Convert an epoch time into a character string based on the input
@@ -814,11 +884,11 @@ class Logger {
      * @param buffer A buffer to put the finished string into. Make sure that
      * the buffer is big enough to hold all of the characters!
      * @param fmt The strftime format string.
-     * @param epochTime The number of seconds since the start of the given
+     * @param epochSeconds The number of seconds since the start of the given
      * epoch in the given offset from UTC.
      */
     static void formatDateTime(char* buffer, const char* fmt,
-                               uint32_t epochTime);
+                               uint32_t epochSeconds);
 
     /**
      * @brief Pass-through to loggerClock::setRTClock(uint32_t
@@ -1158,6 +1228,21 @@ class Logger {
      */
     bool logToSD(void);
 
+    /**
+     * @brief Generate a file name with the current date and time appended to
+     * it.
+     *
+     * @param include_time True to include the time in the filename
+     * @param extension The file extension to use
+     * @param filePrefix The prefix to use for the file name, optional, with an
+     * default value of nullptr. If not provided, the logger ID will be used.
+     * @returns The generated file name
+     *
+     * @note This cannot be called until *after* the RTC is started
+     */
+    String generateFileName(bool include_time, const char* extension,
+                            const char* filePrefix = nullptr);
+
  protected:
     // The SD card and file
     /**
@@ -1325,7 +1410,16 @@ class Logger {
      * @note If sleepBeforeReturning is set to false, the logger WILL NOT sleep
      * between readings.
      */
-    void logDataAndPublish(bool sleepBeforeReturning = true);
+    virtual void logDataAndPublish(bool sleepBeforeReturning = true);
+
+    /**
+     * @brief Wakes and sets up the modem, connects to the internet, syncs the
+     * RTC with NIST, and publishes meatadata for all attached publishers.
+     *
+     * This is only to be run at startup. It should be run after beginning the
+     * logger and attaching the modem and sensors.
+     */
+    virtual void makeInitialConnections();
 
     /**
      * @brief The static "marked" epoch time for the local timezone.

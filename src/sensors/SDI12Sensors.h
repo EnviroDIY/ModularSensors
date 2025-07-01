@@ -66,25 +66,27 @@
 #ifndef SRC_SENSORS_SDI12SENSORS_H_
 #define SRC_SENSORS_SDI12SENSORS_H_
 
-// Include config before anything else
+// Include the library config before anything else
 #include "ModSensorConfig.h"
 
-// Debugging Statement
-// #define MS_SDI12SENSORS_DEBUG
-// #define MS_SDI12SENSORS_DEBUG_DEEP
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
 
+// Define the print label[s] for the debugger
 #ifdef MS_SDI12SENSORS_DEBUG
 #define MS_DEBUGGING_STD "SDI12Sensors"
 #endif
-
 #ifdef MS_SDI12SENSORS_DEBUG_DEEP
 #define MS_DEBUGGING_DEEP "SDI12Sensors"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
 #undef MS_DEBUGGING_DEEP
+
+// Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
 #ifdef SDI12_EXTERNAL_PCINT
@@ -275,10 +277,12 @@ class SDI12Sensors : public Sensor {
     /**
      * @brief Gets the results of either a standard or a concurrent measurement
      *
+     * @param verify_crc True to verify the CRC of the results
+     *
      * @return True if the full number of expected results was
      * returned.
      */
-    virtual bool getResults(void);
+    virtual bool getResults(bool verify_crc);
     /**
      * @brief Internal reference to the SDI-12 object.
      */

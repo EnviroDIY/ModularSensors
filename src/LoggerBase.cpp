@@ -50,6 +50,30 @@ volatile bool Logger::startTesting = false;
 
 
 // Constructors
+Logger::Logger(const char* loggerID, const char* samplingFeatureUUID,
+               uint16_t loggingIntervalMinutes, int8_t SDCardSSPin,
+               int8_t mcuWakePin, VariableArray* inputArray)
+    : _SDCardSSPin(SDCardSSPin),
+      _mcuWakePin(mcuWakePin) {
+    // Set parameters from constructor
+    setLoggerID(loggerID);
+    setSamplingFeatureUUID(samplingFeatureUUID);
+    setLoggingInterval(loggingIntervalMinutes);
+    setVariableArray(inputArray);
+
+    // Set the testing/logging flags to false
+    isLoggingNow = false;
+    isTestingNow = false;
+    startTesting = false;
+
+    // Clear arrays
+    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
+        dataPublishers[i] = nullptr;
+    }
+
+    // Set a datetime callback for automatic timestamping of files by SdFat
+    SdFile::dateTimeCallback(fileDateTimeCallback);
+}
 Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
                int8_t SDCardSSPin, int8_t mcuWakePin, VariableArray* inputArray)
     : _SDCardSSPin(SDCardSSPin),
@@ -58,6 +82,47 @@ Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
     setLoggerID(loggerID);
     setLoggingInterval(loggingIntervalMinutes);
     setVariableArray(inputArray);
+
+    // Set the testing/logging flags to false
+    isLoggingNow = false;
+    isTestingNow = false;
+    startTesting = false;
+
+    // Clear arrays
+    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
+        dataPublishers[i] = nullptr;
+    }
+
+    // Set a datetime callback for automatic timestamping of files by SdFat
+    SdFile::dateTimeCallback(fileDateTimeCallback);
+}
+Logger::Logger(const char* loggerID, const char* samplingFeatureUUID,
+               uint16_t loggingIntervalMinutes, VariableArray* inputArray) {
+    // Set parameters from constructor
+    setLoggerID(loggerID);
+    setSamplingFeatureUUID(samplingFeatureUUID);
+    setLoggingInterval(loggingIntervalMinutes);
+    setVariableArray(inputArray);
+
+    // Set the testing/logging flags to false
+    isLoggingNow = false;
+    isTestingNow = false;
+    startTesting = false;
+
+    // Clear arrays
+    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
+        dataPublishers[i] = nullptr;
+    }
+
+    // Set a datetime callback for automatic timestamping of files by SdFat
+    SdFile::dateTimeCallback(fileDateTimeCallback);
+}
+Logger::Logger(const char* loggerID, const char* samplingFeatureUUID,
+               uint16_t loggingIntervalMinutes) {
+    // Set parameters from constructor
+    setLoggerID(loggerID);
+    setSamplingFeatureUUID(samplingFeatureUUID);
+    setLoggingInterval(loggingIntervalMinutes);
 
     // Set the testing/logging flags to false
     isLoggingNow = false;
@@ -339,6 +404,10 @@ String Logger::getVarCodeAtI(uint8_t position_i) {
 String Logger::getVarUUIDAtI(uint8_t position_i) {
     return _internalArray->arrayOfVars[position_i]->getVarUUID();
 }
+// This returns the variable resolution
+uint8_t Logger::getVarResolutionAtI(uint8_t position_i) {
+    return _internalArray->arrayOfVars[position_i]->getResolution();
+}
 // This returns the current value of the variable as a float
 float Logger::getValueAtI(uint8_t position_i) {
     return _internalArray->arrayOfVars[position_i]->getValue();
@@ -364,6 +433,13 @@ String Logger::formatValueStringAtI(uint8_t position_i, float value) {
 // loggerModem = TinyGSM modem + TinyGSM client + Modem On Off
 void Logger::attachModem(loggerModem& modem) {
     _logModem = &modem;
+    _logModem->setModemTimeZone(_loggerUTCOffset);
+    // update the modem pointer for all of the publishers
+    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
+        if (dataPublishers[i] != nullptr) {
+            dataPublishers[i]->setModemPointer(modem);
+        }
+    }
 }
 
 
@@ -401,19 +477,20 @@ bool Logger::syncRTC() {
 }
 
 
-void Logger::registerDataPublisher(dataPublisher* publisher) {
+loggerModem* Logger::registerDataPublisher(dataPublisher* publisher) {
     // find the next empty spot in the publisher array
     uint8_t i = 0;
     for (; i < MAX_NUMBER_SENDERS; i++) {
         if (dataPublishers[i] == publisher) {
             MS_DBG(F("dataPublisher already registered."));
-            return;
+            return nullptr;
         }
         if (dataPublishers[i] == nullptr) break;
     }
-
-    // register the publisher there
+    // register the publisher to the empty spot
     dataPublishers[i] = publisher;
+    // return a pointer to the modem for the publisher to use
+    return _logModem;
 }
 
 bool Logger::checkRemotesConnectionNeeded(void) {
@@ -443,6 +520,18 @@ void Logger::publishDataToRemotes(bool forceFlush) {
 }
 void Logger::sendDataToRemotes(void) {
     publishDataToRemotes();
+}
+void Logger::publishMetadataToRemotes() {
+    MS_DBG(F("Sending out remote metadata."));
+
+    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
+        if (dataPublishers[i] != nullptr) {
+            PRINTOUT(F("\nSending metadata to ["), i, F("]"),
+                     dataPublishers[i]->getEndpoint());
+            dataPublishers[i]->publishMetadata();
+            extendedWatchDog::resetWatchDog();
+        }
+    }
 }
 
 
@@ -516,12 +605,14 @@ uint32_t Logger::getNowUTCEpoch() {
 // It assumes the supplied date/time is in the LOGGER's timezone and adds
 // the LOGGER's offset as the time zone offset in the string. code modified
 // from parts of the SparkFun RV-8803 library
-String Logger::formatDateTime_ISO8601(uint32_t epochTime) {
+String Logger::formatDateTime_ISO8601(uint32_t epochSeconds) {
     return loggerClock::formatDateTime_ISO8601(
-        epochTime, Logger::_loggerUTCOffset, Logger::_loggerEpoch);
+        epochSeconds, Logger::_loggerUTCOffset, Logger::_loggerEpoch);
 }
-void Logger::formatDateTime(char* buffer, const char* fmt, uint32_t epochTime) {
-    loggerClock::formatDateTime(buffer, fmt, epochTime, Logger::_loggerEpoch);
+void Logger::formatDateTime(char* buffer, const char* fmt,
+                            uint32_t epochSeconds) {
+    loggerClock::formatDateTime(buffer, fmt, epochSeconds,
+                                Logger::_loggerEpoch);
 }
 // This checks that the logger time is within a "sane" range
 bool Logger::isRTCSane(void) {
@@ -734,8 +825,7 @@ void Logger::systemSleep(void) {
     // instruction and actual writing of the SLEEPCFG register due to bridges
     // .Software must ensure that the SLEEPCFG register reads the desired value
     // before executing a WFI instruction.
-    while (PM->SLEEPCFG.bit.SLEEPMODE != PM_SLEEPCFG_SLEEPMODE_STANDBY_Val)
-        ;
+    while (PM->SLEEPCFG.bit.SLEEPMODE != PM_SLEEPCFG_SLEEPMODE_STANDBY_Val);
 
     // Configure standby mode
     // PM->STDBYCFG.reg = PM_STDBYCFG_RAMCFG(0x0) | PM_STDBYCFG_FASTWKUP(0x0);
@@ -753,8 +843,7 @@ void Logger::systemSleep(void) {
     //  software must ensure that the INTFLAG.SLEEPRDY bit is set.
     //  SRGD Note: I believe this only applies at power-on, but it's probably
     //  not a bad idea to check that the flag has been set.
-    while (!PM->INTFLAG.bit.SLEEPRDY)
-        ;
+    while (!PM->INTFLAG.bit.SLEEPRDY);
 #else
     //^^ SAMD21
 
@@ -1019,16 +1108,33 @@ void Logger::setFileName(const char* fileName) {
     setFileName(StrName);
 }
 
+String Logger::generateFileName(bool include_time, const char* extension,
+                                const char* filePrefix) {
+    if (Logger::markedLocalUnixTime == 0) { markTime(); }
+    const char* use_prefix = filePrefix != nullptr ? filePrefix : getLoggerID();
+    uint8_t     len_underscore      = strlen(use_prefix) > 0 ? 1 : 0;
+    uint8_t     len_time            = include_time ? 15 : 8;
+    char        time_buff[len_time] = {'\0'};
+    if (include_time) {
+        formatDateTime(time_buff, "%Y%m%d_%H%M%S", Logger::markedLocalUnixTime);
+    } else {
+        formatDateTime(time_buff, "%Y%m%d", Logger::markedLocalUnixTime);
+    }
+    String filename = String(use_prefix);
+    if (len_underscore) { filename += String("_"); }
+    filename += String(time_buff);
+    filename += String(extension);
+    MS_DBG(F("Generated filename: "), filename);
+    return filename;
+}
+
 
 // This generates a file name from the logger id and the current date
-// This will be used if the setFileName function is not called before
-// the begin() function is called.
+// This will be used if the setFileName function is not called before the
+// begin() function is called.
 void Logger::generateAutoFileName(void) {
     // Generate the file name from logger ID and date
-    auto fileName = String(_loggerID);
-    fileName += "_";
-    fileName += formatDateTime_ISO8601(getNowLocalEpoch()).substring(0, 10);
-    fileName += ".csv";
+    auto fileName = generateFileName(false, ".csv");
     setFileName(fileName);
 }
 
@@ -1497,14 +1603,26 @@ void Logger::begin() {
     extendedWatchDog::enableWatchDog();
 
 #if defined(ARDUINO_ARCH_SAMD)
+    // Set the resolution for the processor ADC, only applies to SAMD
+    // boards.
+    MS_DBG(F("Setting analog read resolution for onboard ADC to"),
+           MS_PROCESSOR_ADC_RESOLUTION, F("bit"));
+    analogReadResolution(MS_PROCESSOR_ADC_RESOLUTION);
+#endif
+    // Set the analog reference mode for processor ADC voltage measurements.
+    // If possible, to get the best results, an external reference should be
+    // used.
+    MS_DBG(F("Setting analog read reference mode for onboard ADC to mode"),
+           MS_PROCESSOR_ADC_REFERENCE_MODE);
+    analogReference(MS_PROCESSOR_ADC_REFERENCE_MODE);
+
+#if defined(ARDUINO_ARCH_SAMD)
     MS_DBG(F("Disabling the USB on standby to lower sleep current"));
-    USB->DEVICE.CTRLA.bit.ENABLE = 0;  // Disable the USB peripheral
-    while (USB->DEVICE.SYNCBUSY.bit.ENABLE)
-        ;                                // Wait for synchronization
-    USB->DEVICE.CTRLA.bit.RUNSTDBY = 0;  // Deactivate run on standby
-    USB->DEVICE.CTRLA.bit.ENABLE   = 1;  // Enable the USB peripheral
-    while (USB->DEVICE.SYNCBUSY.bit.ENABLE)
-        ;  // Wait for synchronization
+    USB->DEVICE.CTRLA.bit.ENABLE = 0;         // Disable the USB peripheral
+    while (USB->DEVICE.SYNCBUSY.bit.ENABLE);  // Wait for synchronization
+    USB->DEVICE.CTRLA.bit.RUNSTDBY = 0;       // Deactivate run on standby
+    USB->DEVICE.CTRLA.bit.ENABLE   = 1;       // Enable the USB peripheral
+    while (USB->DEVICE.SYNCBUSY.bit.ENABLE);  // Wait for synchronization
 #if !defined(__SAMD51__)
     // Keep the voltage regulator running in standby
     // doing this just in case the various periperals try to suck too much power
@@ -1689,9 +1807,10 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
         // Create a csv data record and save it to the log file
         logToSD();
 
-        // flush the publisher buffers (if any) if we have been invoked by the
-        // testing button
-        bool forceFlush = Logger::startTesting;
+        // Flush the publisher buffers (if any) if we have been invoked by the
+        // testing button, otherwise follow settings from
+        // MS_ALWAYS_FLUSH_PUBLISHERS
+        bool forceFlush = Logger::startTesting || MS_ALWAYS_FLUSH_PUBLISHERS;
 
         // Sync the clock at noon
         bool clockSyncNeeded = (Logger::markedLocalUnixTime != 0 &&
@@ -1766,4 +1885,40 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
         // Call the processor sleep
         systemSleep();
     }
+}
+
+
+void Logger::makeInitialConnections() {
+    // Reset the watchdog
+    extendedWatchDog::resetWatchDog();
+
+    if (_logModem != nullptr) {
+        // Synchronize the RTC with NIST
+        PRINTOUT(F("Attempting to connect to the internet, synchronize RTC "
+                   "with NIST, and publish metadata to remotes."));
+        PRINTOUT(F("This may take up to two minutes!"));
+        if (_logModem->modemWake()) {
+            if (_logModem->connectInternet(120000L)) {
+                loggerClock::setRTClock(_logModem->getNISTTime(), 0,
+                                        epochStart::unix_epoch);
+                MS_DBG(F("Current logger time after sync is"),
+                       formatDateTime_ISO8601(getNowLocalEpoch()));
+                _logModem->updateModemMetadata();
+
+                MS_DBG(F("Publishing configuration metadata to remotes"));
+                publishMetadataToRemotes();
+            } else {
+                MS_DBG(F("Could not make initial internet connection!"));
+            }
+        } else {
+            MS_DBG(F("Could not wake modem for initial internet connection."));
+        }
+        extendedWatchDog::resetWatchDog();
+
+        // Power down the modem now that we are done with it
+        MS_DBG(F("Powering down modem after clock sync."));
+        _logModem->disconnectInternet();
+        _logModem->modemSleepPowerDown();
+    }
+    extendedWatchDog::resetWatchDog();
 }

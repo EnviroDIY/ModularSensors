@@ -13,19 +13,23 @@
 #ifndef SRC_PUBLISHERS_THINGSPEAKPUBLISHER_H_
 #define SRC_PUBLISHERS_THINGSPEAKPUBLISHER_H_
 
-// Include config before anything else
+// Include the library config before anything else
 #include "ModSensorConfig.h"
 
-// Debugging Statement
-// #define MS_THINGSPEAKPUBLISHER_DEBUG
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
 
+// Define the print label[s] for the debugger
 #ifdef MS_THINGSPEAKPUBLISHER_DEBUG
 #define MS_DEBUGGING_STD "ThingSpeakPublisher"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+
+// Include other in-library and external dependencies
 #include "dataPublisherBase.h"
 #include "PubSubClient.h"
 
@@ -162,6 +166,19 @@ class ThingSpeakPublisher : public dataPublisher {
     void setChannelID(const char* thingSpeakChannelID);
 
     /**
+     * @brief Set the ThingSpeak user REST API key
+     *
+     * This is only used to update the field names on the ThingSpeak channel
+     * during the updateMetadata call at boot up. The *user* REST API key is
+     * **NOT** the same as your *channel* API keys or your MQTT connection
+     * credentials.  Find this key in your ThingSpeak account under Account > My
+     * Profile.
+     *
+     * @param thingSpeakAPIKey The ThingSpeak user REST API key
+     */
+    void setRESTAPIKey(const char* thingSpeakAPIKey);
+
+    /**
      * @brief Sets all 4 ThingSpeak parameters
      *
      * @param thingSpeakClientName The client name for your MQTT device. This is
@@ -176,7 +193,6 @@ class ThingSpeakPublisher : public dataPublisher {
                              const char* thingSpeakMQTTPassword,
                              const char* thingSpeakChannelID);
 
-    // A way to begin with everything already set
     /**
      * @copydoc dataPublisher::begin(Logger& baseLogger, Client* inClient)
      * @param thingSpeakClientName The client name for your MQTT device. This is
@@ -217,7 +233,9 @@ class ThingSpeakPublisher : public dataPublisher {
      * @param forceFlush Ask the publisher to flush buffered data immediately.
      * @return The PubSubClient status code of the response.
      */
-    int16_t publishData(Client* outClient, bool forceFlush = false) override;
+    int16_t publishData(Client* outClient,
+                        bool forceFlush = MS_ALWAYS_FLUSH_PUBLISHERS) override;
+    int16_t publishMetadata(Client* outClient) override;
 
  protected:
     /**
@@ -226,6 +244,10 @@ class ThingSpeakPublisher : public dataPublisher {
      *
      * @{
      */
+    static const char* apiHost;  ///< The REST API host
+    static const int   apiPort;  ///< The REST API port
+    static const char*
+        channelMetaResource;  ///< The REST API resource to put metadata to
     static const char* mqttServer;  ///< The MQTT server
     static const int   mqttPort;    ///< The MQTT port
                                     /**@}*/
@@ -250,6 +272,10 @@ class ThingSpeakPublisher : public dataPublisher {
      * @brief The channel ID for ThingSpeak
      */
     const char* _thingSpeakChannelID = nullptr;
+    /**
+     * @brief The ThingSpeak REST API key
+     */
+    const char* _thingSpeakAPIKey = nullptr;
     /**
      * @brief Internal reference to the PubSubClient instance for MQTT
      * communication.

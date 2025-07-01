@@ -27,7 +27,6 @@ QuectelBG96::QuectelBG96(Stream* modemStream, int8_t powerPin, int8_t statusPin,
 #else
       gsmModem(*modemStream),
 #endif
-      gsmClient(gsmModem),
       _apn(apn) {
 }
 
@@ -41,6 +40,11 @@ MS_MODEM_WAKE(QuectelBG96);
 MS_MODEM_CONNECT_INTERNET(QuectelBG96);
 MS_MODEM_DISCONNECT_INTERNET(QuectelBG96);
 MS_MODEM_IS_INTERNET_AVAILABLE(QuectelBG96);
+
+MS_MODEM_CREATE_CLIENT(QuectelBG96);
+MS_MODEM_DELETE_CLIENT(QuectelBG96);
+MS_MODEM_CREATE_SECURE_CLIENT(QuectelBG96);
+MS_MODEM_DELETE_SECURE_CLIENT(QuectelBG96);
 
 MS_MODEM_GET_NIST_TIME(QuectelBG96);
 

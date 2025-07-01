@@ -25,7 +25,6 @@ DigiXBeeLTEBypass::DigiXBeeLTEBypass(Stream* modemStream, int8_t powerPin,
 #else
       gsmModem(*modemStream),
 #endif
-      gsmClient(gsmModem),
       _apn(apn) {
 }
 
@@ -38,6 +37,11 @@ MS_MODEM_WAKE(DigiXBeeLTEBypass);
 MS_MODEM_CONNECT_INTERNET(DigiXBeeLTEBypass);
 MS_MODEM_DISCONNECT_INTERNET(DigiXBeeLTEBypass);
 MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeLTEBypass);
+
+MS_MODEM_CREATE_CLIENT(DigiXBeeLTEBypass);
+MS_MODEM_DELETE_CLIENT(DigiXBeeLTEBypass);
+MS_MODEM_CREATE_SECURE_CLIENT(DigiXBeeLTEBypass);
+MS_MODEM_DELETE_SECURE_CLIENT(DigiXBeeLTEBypass);
 
 MS_MODEM_GET_NIST_TIME(DigiXBeeLTEBypass);
 
@@ -133,7 +137,6 @@ bool DigiXBeeLTEBypass::extraModemSetup(void) {
         /** Re-initialize the TinyGSM SARA R4 instance. */
         MS_DBG(F("Attempting to reconnect to the u-blox SARA R410M module..."));
         success &= gsmModem.init();
-        gsmClient.init(&gsmModem);
         _modemName = gsmModem.getModemName();
     } else {
         success = false;

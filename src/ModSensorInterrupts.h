@@ -14,7 +14,7 @@
 #ifndef SRC_MODSENSORINTERRUPTS_H_
 #define SRC_MODSENSORINTERRUPTS_H_
 
-// Include config before anything else
+// Include the library config before anything else
 #include "ModSensorConfig.h"
 
 #include <Arduino.h>

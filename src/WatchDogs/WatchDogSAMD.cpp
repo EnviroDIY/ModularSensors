@@ -381,12 +381,12 @@ void extendedWatchDogSAMD::waitForWDTBitSync() {
 void extendedWatchDogSAMD::waitForGCLKBitSync() {
 #if defined(__SAMD51__)
     while (GCLK->SYNCBUSY.reg &
-           GCLK_SYNCBUSY_GENCTRL(GENERIC_CLOCK_GENERATOR_MS))
-        ;  // Wait for the clock generator sync busy bit to clear
+           GCLK_SYNCBUSY_GENCTRL(
+               GENERIC_CLOCK_GENERATOR_MS));  // Wait for the clock generator
+                                              // sync busy bit to clear
 #else
     //^^ SAMD21
-    while (GCLK->STATUS.bit.SYNCBUSY)
-        ;  // Wait for synchronization
+    while (GCLK->STATUS.bit.SYNCBUSY);  // Wait for synchronization
 #endif
 }
 

@@ -14,19 +14,23 @@
 #ifndef SRC_PUBLISHERS_DREAMHOSTPUBLISHER_H_
 #define SRC_PUBLISHERS_DREAMHOSTPUBLISHER_H_
 
-// Include config before anything else
+// Include the library config before anything else
 #include "ModSensorConfig.h"
 
-// Debugging Statement
-// #define MS_DREAMHOSTPUBLISHER_DEBUG
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
 
+// Define the print label[s] for the debugger
 #ifdef MS_DREAMHOSTPUBLISHER_DEBUG
 #define MS_DEBUGGING_STD "DreamHostPublisher"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+
+// Include other in-library and external dependencies
 #include "dataPublisherBase.h"
 
 
@@ -112,7 +116,6 @@ class DreamHostPublisher : public dataPublisher {
      */
     void setDreamHostPortalRX(const char* dhUrl);
 
-    // A way to begin with everything already set
     /**
      * @copydoc dataPublisher::begin(Logger& baseLogger, Client* inClient)
      * @param dhUrl The URL for sending data to DreamHost
@@ -138,7 +141,8 @@ class DreamHostPublisher : public dataPublisher {
      *
      * @return The http status code of the response.
      */
-    int16_t publishData(Client* outClient, bool forceFlush = false) override;
+    int16_t publishData(Client* outClient,
+                        bool forceFlush = MS_ALWAYS_FLUSH_PUBLISHERS) override;
 
  protected:
     // portions of the GET request

@@ -21,7 +21,6 @@ ProcessorStats::ProcessorStats(const char* version,
       _boardName(LOGGER_BOARD) {
     // change the battery related settings for known boards
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
-    _analogResolution = 10;
     _operatingVoltage = 3.3;
     _batteryPin       = A6;
     if (strcmp(_version, "v0.3") == 0 || strcmp(_version, "v0.4") == 0) {
@@ -35,7 +34,6 @@ ProcessorStats::ProcessorStats(const char* version,
     }
 #elif defined(ENVIRODIY_STONEFLY_M4)
     if (strcmp(_version, "v0.1") == 0) {
-        _analogResolution  = 12;
         _operatingVoltage  = 3.3;
         _batteryPin        = A9;  // aka 75
         _batteryMultiplier = 4.7;
@@ -49,22 +47,18 @@ ProcessorStats::ProcessorStats(const char* version,
     defined(SAMD_FEATHER_M0_EXPRESS) || defined(ARDUINO_FEATHER_M4) ||         \
     defined(ADAFRUIT_FEATHER_M4_EXPRESS) || defined(ARDUINO_FEATHER_M4_CAN) || \
     defined(ADAFRUIT_FEATHER_M4_CAN) || defined(ADAFRUIT_FEATHER_M4_ADALOGGER)
-    _analogResolution  = 10;
     _operatingVoltage  = 3.3;
     _batteryPin        = 9;
     _batteryMultiplier = 2;
 #elif defined(ARDUINO_AVR_SODAQ_MBILI)
-    _analogResolution  = 10;
     _operatingVoltage  = 3.3;
     _batteryPin        = A6;
     _batteryMultiplier = 1.47;
 #elif defined(ARDUINO_AVR_SODAQ_NDOGO)
-    _analogResolution  = 10;
     _operatingVoltage  = 3.3;
     _batteryPin        = 10;
     _batteryMultiplier = 1.47;
 #elif defined(ARDUINO_SODAQ_ONE) || defined(ARDUINO_SODAQ_ONE_BETA)
-    _analogResolution = 10;
     _operatingVoltage = 3.3;
     _batteryPin       = 10;
     if (strcmp(_version, "v0.1") == 0) {
@@ -75,7 +69,6 @@ ProcessorStats::ProcessorStats(const char* version,
         _batteryMultiplier = -1
     }
 #elif defined(ARDUINO_SODAQ_AUTONOMO)
-    _analogResolution  = 10;
     _operatingVoltage  = 3.3;
     _batteryMultiplier = 1.47;
     if (strcmp(_version, "v0.1") == 0)
@@ -92,7 +85,7 @@ ProcessorStats::ProcessorStats(const char* version,
 // need to do anything
 ProcessorStats::ProcessorStats(const char* boardName, const char* version,
                                int8_t batteryPin, float batteryMultiplier,
-                               int8_t analogResolution, float operatingVoltage,
+                               float   operatingVoltage,
                                uint8_t measurementsToAverage)
     : Sensor(LOGGER_BOARD, PROCESSOR_NUM_VARIABLES, PROCESSOR_WARM_UP_TIME_MS,
              PROCESSOR_STABILIZATION_TIME_MS, PROCESSOR_MEASUREMENT_TIME_MS, -1,
@@ -101,7 +94,6 @@ ProcessorStats::ProcessorStats(const char* boardName, const char* version,
       _boardName(boardName),
       _batteryPin(batteryPin),
       _batteryMultiplier(batteryMultiplier),
-      _analogResolution(analogResolution),
       _operatingVoltage(operatingVoltage) {}
 
 // Destructor
@@ -113,12 +105,6 @@ String ProcessorStats::getSensorLocation(void) {
 }
 
 float ProcessorStats::getBatteryVoltage(void) {
-#if defined(ARDUINO_ARCH_SAMD)
-    MS_DBG(F("Setting SAMD analog read resolution to"), _analogResolution,
-           F("bits"));
-    analogReadResolution(_analogResolution);
-#endif
-
     float sensorValue_battery = -9999;
     if (_batteryPin >= 0 && _batteryMultiplier > 0) {
         // Get the battery voltage
@@ -131,8 +117,7 @@ float ProcessorStats::getBatteryVoltage(void) {
         MS_DBG(F("Raw battery pin reading in bits:"), rawBattery);
         // convert bits to volts
         sensorValue_battery =
-            (_operatingVoltage /
-             static_cast<float>((1 << _analogResolution) - 1)) *
+            (_operatingVoltage / static_cast<float>(PROCESSOR_ADC_MAX)) *
             _batteryMultiplier * rawBattery;
         MS_DBG(F("Battery in Volts:"), sensorValue_battery);
     } else {
@@ -201,8 +186,8 @@ String ProcessorStats::getLastResetCause() {
  */
 int16_t FreeRam() {
     extern int16_t __heap_start, *__brkval;
-    int16_t v;
-    float sensorValue_freeRam = (int)&v -
+    int16_t        v;
+    float          sensorValue_freeRam = (int)&v -
         (__brkval == 0 ? (int)&__heap_start : (int)__brkval);
     return sensorValue_freeRam;
 }

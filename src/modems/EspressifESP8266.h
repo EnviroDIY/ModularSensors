@@ -6,35 +6,22 @@
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Contains the EspressifESP8266 subclass of loggerModem which _SHOULD_
- * work for essentially any breakout of the Espressif ESP8266 wifi chip or ESP32
- * wifi/bluetooth chip that has been flashed with Espressif's AT command
- * firmware.
+ * work for essentially any breakout of the Espressif ESP8266 wifi chip that has
+ * been flashed with Espressif's AT command firmware.
  */
-/* clang-format off */
 /**
- * @defgroup modem_esp8266 Espressif ESP8266 and ESP32
+ * @defgroup modem_esp8266 Espressif ESP8266
  *
- * @ingroup the_modems
+ * @ingroup modem_espressif
  *
  * @tableofcontents
  * @m_footernavigation
  *
  * @section modem_esp8266_notes Introduction
  *
- * These are handy, cheap, and very widely available WiFi and
- * WiFi/Bluetooth modules.
- * They use relatively little power amd can be put in a deep sleep mode to
- * greatly reduce power draw.
- * The types of sleep they can use are dependent on the breakout you have.
- * If you're shopping for boards, I strongly recommend getting a breakout that
- * exposes the deep sleep wake up (RSTB/DIO16) pin so that you can put the chip
- * in its lowest power mode.
- * When using the AT command firmware, it is not possible to purposefully enter
- * light sleep mode.
- * The module will enter light sleep on its own after some (undocumented) idle
- * period.
- * In my testing, I've never seen the module drop to the documented light sleep
- * power levels regardless of the length of time idle.
+ * The ESP8266 is an older Espressif module, but still widely and cheaply
+ * available. This library does not support the "NON-OS" based AT commands.
+ * Update to the final realease for the ESP8266.
  *
  * @section modem_esp8266_dfrobot DFRobot ESPBee
  *
@@ -50,8 +37,6 @@
  * @section modem_esp8266_docs Manufacturer Documentation
  * More information on the ESP8266 is here:
  * https://www.espressif.com/en/products/socs/esp8266
- * And the page for the ESP32 is here:
- * https://www.espressif.com/en/products/socs/esp32
  *
  * @section modem_esp8266_ctor Modem Constructor
  * {{ @ref EspressifESP8266::EspressifESP8266 }}
@@ -63,26 +48,22 @@
  *
  * @menusnip{espressif_esp8266}
  */
-/* clang-format on */
-
 
 // Header Guards
 #ifndef SRC_MODEMS_ESPRESSIFESP8266_H_
 #define SRC_MODEMS_ESPRESSIFESP8266_H_
 
-// Include config before anything else
+// Include the library config before anything else
 #include "ModSensorConfig.h"
 
-// Debugging Statement
-// #define MS_ESPRESSIFESP8266_DEBUG
-// #define MS_ESPRESSIFESP8266_DEBUG_DEEP
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
 
-#if defined(MS_ESPRESSIFESP8266_DEBUG) || defined(MS_ESPRESSIFESP32_DEBUG)
+// Define the print label[s] for the debugger
+#ifdef MS_ESPRESSIFESP8266_DEBUG
 #define MS_DEBUGGING_STD "EspressifESP8266"
 #endif
-
-#if defined(MS_ESPRESSIFESP8266_DEBUG_DEEP) || \
-    defined(MS_ESPRESSIFESP32_DEBUG_DEEP)
+#ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
 #define MS_DEBUGGING_DEEP "EspressifESP8266"
 #endif
 
@@ -91,114 +72,22 @@
  */
 #define TINY_GSM_MODEM_ESP8266
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
 #undef MS_DEBUGGING_DEEP
-#include "TinyGsmClient.h"
-#include "LoggerModem.h"
 
-#if defined(MS_ESPRESSIFESP8266_DEBUG_DEEP) || \
-    defined(MS_ESPRESSIFESP32_DEBUG_DEEP)
+// Include other in-library and external dependencies
+#include "TinyGsmClient.h"
+#include "Espressif.h"
+
+#ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
 #include <StreamDebugger.h>
 #endif
 
 /** @ingroup modem_esp8266 */
 /**@{*/
-
-/**
- * @anchor modem_esp8266_pins_timing
- * @name Modem Pin Settings and Timing
- * The timing and pin level settings for an ESP8266 (or ESP32)
- */
-/**@{*/
-/**
- * @brief The loggerModem::_statusLevel.
- *
- * It is not possible to get status from the ESP8266 in deep sleep mode - during
- * deep sleep the pin state is undefined.
- *
- * For cases where a pin is defined for light sleep mode, the Espressif
- * documentation states:
- * > since the system needs some time to wake up from light sleep, it is
- * > suggested that wait at least 5ms before sending next AT command.
- * The documentation doesn't say anything about the time before the pin reaches
- * the expected level.  The status level during light sleep is user selectable,
- * this library sets it low for wake and high for sleep.  Of course, despite
- * being able to configure light sleep mode for the module, it's not actually
- * possible to purposefully enter light sleep via AT commands, so we are
- * dependent on the module deciding it's been idle long enough and entering
- * sleep on its own.  It is a terrible system.  **Use a deep-sleep with reset if
- * possible.**
- */
-#define ESP8266_STATUS_LEVEL HIGH
-/**
- * @brief The loggerModem::_statusTime_ms.
- * @copydetails #ESP8266_STATUS_LEVEL
- */
-#define ESP8266_STATUS_TIME_MS 350
-
-/**
- * @brief The loggerModem::_resetLevel.
- *
- * The ESP8266 is reset with a low pulse on pin 32.  The reset time is
- * undocumented but very fast - 1ms seems to be sufficient
- */
-#define ESP8266_RESET_LEVEL LOW
-/**
- * @brief The loggerModem::_resetPulse_ms.
- * @copydetails #ESP8266_RESET_LEVEL
- */
-#define ESP8266_RESET_PULSE_MS 1
-
-// See notes above.. this is user configurable, but useless
-/**
- * @brief The loggerModem::_wakeLevel.
- *
- * This light sleep wake level is user configurable on the ESP8266.  This
- * library uses a `LOW` level for wake.
- */
-#define ESP8266_WAKE_LEVEL LOW
-/**
- * @brief The loggerModem::_wakePulse_ms.
- * @copydetails #ESP8266_WAKE_LEVEL
- */
-#define ESP8266_WAKE_PULSE_MS 0
-
-/**
- * @brief The loggerModem::_wakeDelayTime_ms.
- *
- * The ESP8266 turns on when power is applied regardless of pin states.  No
- * further wake command is needed.
- */
-#define ESP8266_WAKE_DELAY_MS 0
-/**
- * @brief The loggerModem::_max_atresponse_time_ms.
- *
- * The serial response time after boot (via power on or reset) is undocumented
- * for the ESP8266.  Other users online estimate about 350ms.
- *
- * In my fiddling, the ESP32 running AT firmware takes a bit longer; 700ms may
- * be safe.
- *
- * The serial response time on waking from light sleep is 5ms.
- */
-#define ESP8266_ATRESPONSE_TIME_MS 700
-
-/**
- * @brief The loggerModem::_disconnetTime_ms.
- *
- * The disconnect time for the ESP8266 is not documented (and the status pin
- * isn't valid) so this time is just an estimate.
- */
-#define ESP8266_DISCONNECT_TIME_MS 500
-
-/**
- * @brief The amount of time in ms it takes the ESP8266 to reconnect using saved
- * credentials.
- */
-#define ESP8266_RECONNECT_TIME_MS 2500
-/**@}*/
 
 /**
  * @brief The loggerModem subclass for any breakout of the
@@ -208,7 +97,7 @@
  * @warning Light sleep modes on the ESP8266 may not function as expected (or at
  * all).
  */
-class EspressifESP8266 : public loggerModem {
+class EspressifESP8266 : public Espressif {
  public:
     // Constructors/Destructor
     /**
@@ -240,6 +129,21 @@ class EspressifESP8266 : public loggerModem {
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
     void disconnectInternet(void) override;
 
+    virtual Client* createClient() override;
+    virtual void    deleteClient(Client* client);
+    virtual Client* createSecureClient() override;
+    virtual void    deleteSecureClient(Client* client);
+    virtual Client* createSecureClient(
+        SSLAuthMode sslAuthMode, SSLVersion sslVersion = SSLVersion::TLS1_2,
+        const char* CAcertName = nullptr, const char* clientCertName = nullptr,
+        const char* clientKeyName = nullptr) override;
+    virtual Client*
+    createSecureClient(const char* pskIdent, const char* psKey,
+                       SSLVersion sslVersion = SSLVersion::TLS1_2) override;
+    virtual Client*
+    createSecureClient(const char* pskTableName,
+                       SSLVersion  sslVersion = SSLVersion::TLS1_2) override;
+
     uint32_t getNISTTime(void) override;
 
     bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
@@ -255,44 +159,12 @@ class EspressifESP8266 : public loggerModem {
      * @brief Public reference to the TinyGSM modem.
      */
     TinyGsm gsmModem;
-    /**
-     * @brief Public reference to the TinyGSM Client.
-     */
-    TinyGsmClient gsmClient;
-
-    /**
-     * @brief A pointer to the Arduino serial Stream used for communication
-     * between the MCU and the ESP8266.
-     *
-     * We need to keep the pointer to the stream for tossing junk on boot.
-     */
-    Stream* _modemStream;
 
  protected:
     bool isInternetAvailable(void) override;
     bool modemSleepFxn(void) override;
-    bool modemWakeFxn(void) override;
     bool extraModemSetup(void) override;
     bool isModemAwake(void) override;
-
- private:
-    /**
-     * @brief Waits for the Espressif module to reboot and print out it's boot
-     * up string. Because the boot up string is at a different baud rate (74880
-     * baud), it usually comes out as junk.
-     *
-     * @return True if text (assumed to be the start message) was received;
-     * false if text was received after boot.
-     */
-    bool        ESPwaitForBoot(void);
-    const char* _ssid;  ///< Internal reference to the WiFi SSID
-    const char* _pwd;   ///< Internal reference to the WiFi password
 };
 /**@}*/
-
-/**
- * @brief Assign EspressifESP32 as type EspressifESP8266 to avoid user confusion
- */
-typedef EspressifESP8266 EspressifESP32;
-
 #endif  // SRC_MODEMS_ESPRESSIFESP8266_H_

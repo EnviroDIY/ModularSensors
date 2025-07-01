@@ -15,19 +15,23 @@
 #ifndef SRC_PUBLISHERS_ENVIRODIYPUBLISHER_H_
 #define SRC_PUBLISHERS_ENVIRODIYPUBLISHER_H_
 
-// Include config before anything else
+// Include the library config before anything else
 #include "ModSensorConfig.h"
 
-// Debugging Statement
-// #define MS_ENVIRODIYPUBLISHER_DEBUG
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
 
+// Define the print label[s] for the debugger
 #ifdef MS_ENVIRODIYPUBLISHER_DEBUG
 #define MS_DEBUGGING_STD "EnviroDIYPublisher"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+
+// Include other in-library and external dependencies
 #include "dataPublisherBase.h"
 #include "LogBuffer.h"
 
@@ -58,7 +62,7 @@ class EnviroDIYPublisher : public dataPublisher {
      *
      * @param baseLogger The logger supplying the data to be published
      * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. NOTE: not implemented by this publisher!
+     * attempted data transmissions.
      */
     explicit EnviroDIYPublisher(Logger& baseLogger, int sendEveryX = 1);
     /**
@@ -69,7 +73,7 @@ class EnviroDIYPublisher : public dataPublisher {
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
      * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. NOTE: not implemented by this publisher!
+     * attempted data transmissions.
      */
     EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
                        int sendEveryX = 1);
@@ -82,10 +86,21 @@ class EnviroDIYPublisher : public dataPublisher {
      * @param samplingFeatureUUID The sampling feature UUID for the site on the
      * Monitor My Watershed data portal.
      * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. NOTE: not implemented by this publisher!
+     * attempted data transmissions.
      */
     EnviroDIYPublisher(Logger& baseLogger, const char* registrationToken,
                        const char* samplingFeatureUUID, int sendEveryX = 1);
+    /**
+     * @brief Construct a new EnviroDIY Publisher object
+     *
+     * @param baseLogger The logger supplying the data to be published
+     * @param registrationToken The registration token for the site on the
+     * Monitor My Watershed data portal.
+     * @param sendEveryX Interval (in units of the logging interval) between
+     * attempted data transmissions.
+     */
+    EnviroDIYPublisher(Logger& baseLogger, const char* registrationToken,
+                       int sendEveryX = 1);
     /**
      * @brief Construct a new EnviroDIY Publisher object
      *
@@ -98,11 +113,25 @@ class EnviroDIYPublisher : public dataPublisher {
      * @param samplingFeatureUUID The sampling feature UUID for the site on the
      * Monitor My Watershed data portal.
      * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. NOTE: not implemented by this publisher!
+     * attempted data transmissions.
      */
     EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
                        const char* registrationToken,
                        const char* samplingFeatureUUID, int sendEveryX = 1);
+    /**
+     * @brief Construct a new EnviroDIY Publisher object
+     *
+     * @param baseLogger The logger supplying the data to be published
+     * @param inClient An Arduino client instance to use to print data to.
+     * Allows the use of any type of client and multiple clients tied to a
+     * single TinyGSM modem instance
+     * @param registrationToken The registration token for the site on the
+     * Monitor My Watershed data portal.
+     * @param sendEveryX Interval (in units of the logging interval) between
+     * attempted data transmissions.
+     */
+    EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
+                       const char* registrationToken, int sendEveryX = 1);
     /**
      * @brief Destroy the EnviroDIY Publisher object
      */
@@ -170,7 +199,6 @@ class EnviroDIYPublisher : public dataPublisher {
     uint16_t calculateJsonSize();
 
 
-    // A way to begin with everything already set
     /**
      * @copydoc dataPublisher::begin(Logger& baseLogger, Client* inClient)
      * @param registrationToken The registration token for the site on the
@@ -190,9 +218,11 @@ class EnviroDIYPublisher : public dataPublisher {
     void begin(Logger& baseLogger, const char* registrationToken,
                const char* samplingFeatureUUID);
     /**
-     * @brief Begin the publisher by doing the minimum that is needed after boot
+     * @copydoc dataPublisher::begin(Logger& baseLogger)
+     * @param registrationToken The registration token for the site on the
+     * Monitor My Watershed data portal.
      */
-    void begin() override;
+    void begin(Logger& baseLogger, const char* registrationToken);
 
     /**
      * @brief Checks if the publisher needs an Internet connection for the next
@@ -216,7 +246,8 @@ class EnviroDIYPublisher : public dataPublisher {
      * @param forceFlush Ask the publisher to flush buffered data immediately.
      * @return The http status code of the response.
      */
-    int16_t publishData(Client* outClient, bool forceFlush = false) override;
+    int16_t publishData(Client* outClient,
+                        bool forceFlush = MS_ALWAYS_FLUSH_PUBLISHERS) override;
 
  protected:
     /**
@@ -264,6 +295,8 @@ class EnviroDIYPublisher : public dataPublisher {
      *
      * We send every one of the first five data points at only one minute
      * intervals for faster in-field validation.
+     *
+     * @todo This should be a user-settable parameter.
      */
     uint8_t _initialTransmissionsRemaining = 5;
 

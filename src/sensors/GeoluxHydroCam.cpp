@@ -45,6 +45,10 @@ GeoluxHydroCam::GeoluxHydroCam(Stream& stream, int8_t powerPin,
 // Destructor
 GeoluxHydroCam::~GeoluxHydroCam() {}
 
+String GeoluxHydroCam::getLastSavedImageName() {
+    return _filename;
+}
+
 
 String GeoluxHydroCam::getSensorLocation(void) {
     return F("cameraSerial");
@@ -160,12 +164,8 @@ bool GeoluxHydroCam::addSingleMeasurementResult(void) {
     // Only go on to get a result if it was
     if (bitRead(_sensorStatus, 6)) {
         // set a new filename based on the current RTC time
-        char filename[strlen(_filePrefix) + 15 + 3 + 1] = {'\0'};
-        char time_buff[15 + 1]                          = {'\0'};
-        _baseLogger->formatDateTime(time_buff, "%Y%m%d_%H%M%S",
-                                    _baseLogger->getNowLocalEpoch());
-        strcat(filename, time_buff);
-        strcat(filename, ".jpg");
+        String filename = _baseLogger->generateFileName(
+            true, HYDROCAM_FILE_EXTENSION, _filePrefix);
         MS_DBG(F("Attempting to create the file: "), filename);
 
         // Initialise the SD card
@@ -173,7 +173,7 @@ bool GeoluxHydroCam::addSingleMeasurementResult(void) {
         if (!_baseLogger->initializeSDCard()) return false;
 
         // Create and then open the file in write mode
-        if (imgFile.open(filename, O_CREAT | O_WRITE | O_AT_END)) {
+        if (imgFile.open(filename.c_str(), O_CREAT | O_WRITE | O_AT_END)) {
             MS_DBG(F("Created new file:"), filename);
             success = true;
         } else {
@@ -182,7 +182,7 @@ bool GeoluxHydroCam::addSingleMeasurementResult(void) {
         }
 
         int32_t image_size = _camera.getImageSize();
-        MS_DBG(F("Completed image is "), image_size, F(" bytes."));
+        MS_DBG(F("Completed image is"), image_size, F("bytes."));
         success &= image_size != 0;
 
         if (success) {
@@ -210,6 +210,9 @@ bool GeoluxHydroCam::addSingleMeasurementResult(void) {
             // Re-enable the watchdog
             MS_DBG(F("Re-enabling the watchdog after file transfer"));
             extendedWatchDog::enableWatchDog();
+
+            // Store the last image name
+            _filename = filename;
 
             success = bytes_transferred == image_size;
             MS_DBG(F("Image transfer was a"),

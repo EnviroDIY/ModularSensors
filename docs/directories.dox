@@ -1,15 +1,33 @@
 /**
- * @dir docs
- *
- * @brief Contains extra documentation and files to help build the documentation
- */
+@dir docs
+
+@brief Contains extra documentation and files to help build the documentation
+*/
+
+
 /**
- * @dir docs/FAQ
- *
- * @brief Contains documentation on frequently asked questions
- */
+@dir docs/Getting-Started
+
+@brief Contains documentation for new users
+*/
+
+
 /**
- * @dir docs/Getting-Started
- *
- * @brief Contains documentation for new users
- */
+@dir docs/FAQ
+
+@brief Contains documentation on frequently asked questions
+*/
+
+
+/**
+@dir docs/For-Developers
+
+@brief Contains help for developers
+*/
+
+
+/**
+@dir docs/Further-Reading
+
+@brief Contains detailed documentation on specific topics
+*/

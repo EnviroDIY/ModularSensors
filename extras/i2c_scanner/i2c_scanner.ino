@@ -94,8 +94,7 @@ void setup() {
     pinMode(22, OUTPUT);
 
     Serial.begin(115200);
-    while (!Serial)
-        ;  // Leonardo: wait for serial monitor
+    while (!Serial);  // Leonardo: wait for serial monitor
     Serial.println("\nI2C Scanner");
     digitalWrite(22, HIGH);
 }

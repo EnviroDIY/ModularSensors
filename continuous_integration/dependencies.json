@@ -1,5 +1,5 @@
 {
-  "action_cache_version": 28,
+  "action_cache_version": 30,
   "dependencies": [
     {
       "name": "EnviroDIY_DS3231",
@@ -66,8 +66,8 @@
     {
       "name": "TinyGSM",
       "owner": "vshymanskyy",
-      "url": "https://github.com/vshymanskyy/TinyGSM",
-      "version": "~0.12.0",
+      "version": "https://github.com/EnviroDIY/TinyGSM",
+      "version_note": "~0.13.0",
       "note": "A small Arduino library for GPRS modules.",
       "authors": [
         "Volodymyr Shymanskyy",
@@ -92,7 +92,7 @@
       "owner": "adafruit",
       "library id": "6214",
       "url": "https://github.com/adafruit/Adafruit_BusIO",
-      "version": "~1.17.0",
+      "version": "~1.17.2",
       "note": "Adafruit BusIO, a dependency of other Adafruit libraries",
       "authors": [
         "Adafruit"
@@ -143,7 +143,7 @@
       "owner": "adafruit",
       "library id": "166",
       "url": "https://github.com/adafruit/Adafruit_BME280_Library",
-      "version": "~2.2.4",
+      "version": "~2.3.0",
       "note": "Bosch BME280 Temp/Humidity/Pressure Sensor Library by Adafruit",
       "authors": [
         "Adafruit"
@@ -243,7 +243,12 @@
       "url": "https://github.com/milesburton/Arduino-Temperature-Control-Library",
       "version": "~4.0.3",
       "note": "DallasTemperature - Arduino Library for Dallas Temperature ICs (DS18B20, DS18S20, DS1822, DS1820)",
-      "authors": ["Guil Barros", "Miles Burton", "Rob Tillart", "Tim Nuewsome"],
+      "authors": [
+        "Guil Barros",
+        "Miles Burton",
+        "Rob Tillart",
+        "Tim Nuewsome"
+      ],
       "frameworks": "arduino",
       "platforms": "atmelavr, atmelsam"
     },
@@ -251,7 +256,7 @@
       "name": "SDI-12",
       "owner": "envirodiy",
       "library id": "1486",
-      "version": "~2.2.1",
+      "version": "~2.3.0",
       "url": "https://github.com/EnviroDIY/Arduino-SDI-12",
       "note": "EnviroDIY SDI-12 Library for Arduino",
       "author_notes": [
@@ -343,7 +348,7 @@
       "name": "GeoluxCamera",
       "owner": "envirodiy",
       "url": "https://github.com/EnviroDIY/GeoluxCamera",
-      "version": "~0.1.2",
+      "version": "~0.1.3",
       "note": "Arduino library for communication with Geolux serial camera.",
       "authors": [
         "Sara Damiano"
