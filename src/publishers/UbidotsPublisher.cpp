@@ -113,8 +113,9 @@ void UbidotsPublisher::begin(Logger&     baseLogger,
 // int16_t EnviroDIYPublisher::postDataEnviroDIY(void)
 int16_t UbidotsPublisher::publishData(Client* outClient, bool) {
     // Create a buffer for the portions of the request and response
-    char     tempBuffer[37] = "";
+    char     tempBuffer[12] = "";
     uint16_t did_respond    = 0;
+    int16_t  responseCode   = 0;
 
     MS_DBG(F("Outgoing JSON size:"), calculateJsonSize());
 
@@ -177,6 +178,21 @@ int16_t UbidotsPublisher::publishData(Client* outClient, bool) {
         // We're only reading as far as the http code, anything beyond that
         // we don't care about.
         did_respond = outClient->readBytes(tempBuffer, 12);
+        // Process the HTTP response code
+        // The first 9 characters should be "HTTP/1.1 "
+        if (did_respond > 0) {
+            char responseCode_char[4];
+            memcpy(responseCode_char, tempBuffer + 9, 3);
+            // Null terminate the string
+            memset(responseCode_char + 3, '\0', 1);
+            responseCode = atoi(responseCode_char);
+            PRINTOUT(F("\n-- Response Code --"));
+            PRINTOUT(responseCode);
+        } else {
+            responseCode = 504;
+            PRINTOUT(F("\n-- NO RESPONSE FROM SERVER --"));
+        }
+
 #if defined(MS_OUTPUT) || defined(MS_2ND_OUTPUT)
         // throw the rest of the response into the tx buffer so we can debug it
         txBufferInit(nullptr);
@@ -195,22 +211,6 @@ int16_t UbidotsPublisher::publishData(Client* outClient, bool) {
         MS_DBG(F("Client stopped after"), MS_PRINT_DEBUG_TIMER, F("ms"));
     } else {
         PRINTOUT(F("\n -- Unable to Establish Connection to Ubiots --"));
-    }
-
-    // Process the HTTP response
-    int16_t responseCode = 0;
-    if (did_respond > 0) {
-        char responseCode_char[4];
-        for (uint8_t i = 0; i < 3; i++) {
-            responseCode_char[i] = tempBuffer[i + 9];
-        }
-        responseCode_char[3] = '\0';
-        responseCode         = atoi(responseCode_char);
-        PRINTOUT(F("\n-- Response Code --"));
-        PRINTOUT(responseCode);
-    } else {
-        responseCode = 504;
-        PRINTOUT(F("\n-- NO RESPONSE FROM SERVER --"));
     }
 
     return responseCode;

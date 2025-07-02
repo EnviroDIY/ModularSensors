@@ -228,6 +228,7 @@ int16_t dataPublisher::sendData() {
 }
 int16_t dataPublisher::publishMetadata(Client*) {
     // does nothing by default
+    PRINTOUT(F("--- No metadata is sent to this publisher!"));
     return 0;
 }
 int16_t dataPublisher::publishMetadata() {

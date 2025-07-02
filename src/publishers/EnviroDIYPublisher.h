@@ -42,7 +42,7 @@
 /**
  * @brief The EnviroDIYPublisher subclass of dataPublisher for publishing data
  * to the Monitor My Watershed/EnviroDIY data portal at
- * http://data.enviroDIY.org
+ * https://monitormywatershed.org/ (formerly at http://data.enviroDIY.org).
  *
  * @ingroup the_publishers
  */
