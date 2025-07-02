@@ -73,6 +73,15 @@ boards/*
 .vscode
 .history
 
+# Certificates
+*.pem
+*.pem.crt
+*.pem.cert
+*.pem.key
+*.crt
+*.cert
+*.key
+
 # Other
 compile_tests/
 logger_test*/
@@ -119,15 +128,9 @@ sync.ffs_db
 .github/workflows/compile_arduino_cli.yaml
 .github/workflows/compile_platformio.yaml
 .github/workflows/determine_library_source.yaml
-*.pem
-*.pem.crt
-*.pem.cert
-*.pem.key
-*.crt
-*.cert
-*.key
 run_mcss.bat
 docs/customdoxygen.css
 docs/footer.html
 docs/header.html
 installWorkingDependencies.bat
+tests/SL099_certificates/*
