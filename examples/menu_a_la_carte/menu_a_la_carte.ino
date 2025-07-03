@@ -1225,7 +1225,7 @@ const char* atlasSpCondName = "specificConductance";
 const char* atlasSpCondUnit = "microsiemenPerCentimeter";
 // A short code for the variable
 const char* atlasSpCondCode = "atlasSpCond";
-// The (optional) universallly unique identifier
+// The (optional) universally unique identifier
 const char* atlasSpCondUUID = "12345678-abcd-1234-ef00-1234567890ab";
 
 // Finally, create the specific conductance variable and return a pointer to it
@@ -2247,7 +2247,7 @@ const char* analogSpCondName = "specificConductance";
 const char* analogSpCondUnit = "microsiemenPerCentimeter";
 // A short code for the variable
 const char* analogSpCondCode = "anlgSpCond";
-// The (optional) universallly unique identifier
+// The (optional) universally unique identifier
 const char* analogSpCondUUID = "12345678-abcd-1234-ef00-1234567890ab";
 
 // Finally, Create the specific conductance variable and return a pointer to it
@@ -2266,13 +2266,13 @@ Variable* analogEc_spcond = new Variable(
 #include <sensors/VegaPuls21.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-const char* VegaPulsSDI12address = "0";  // The SDI-12 Address of the VegaPuls10
+const char* VegaPulsSDI12address = "0";  // The SDI-12 Address of the VegaPuls21
 const int8_t VegaPulsPower       = sensorPowerPin;  // Power pin
 const int8_t VegaPulsData        = sdi12DataPin;    // The SDI-12 data pin
 // NOTE:  you should NOT take more than one readings.  THe sensor already takes
 // and averages 8 by default.
 
-// Create a Campbell VegaPusl21 sensor object
+// Create a Vega Puls21 sensor object
 VegaPuls21 VegaPuls(*VegaPulsSDI12address, VegaPulsPower, VegaPulsData);
 
 // Create stage, distance, temperature, reliability, and error variable pointers
@@ -2794,7 +2794,7 @@ const char* calculatedVarName = "varName";
 const char* calculatedVarUnit = "varUnit";
 // A short code for the variable
 const char* calculatedVarCode = "calcVar";
-// The (optional) universallly unique identifier
+// The (optional) universally unique identifier
 const char* calculatedVarUUID = "12345678-abcd-1234-ef00-1234567890ab";
 
 // Finally, Create a calculated variable and return a variable pointer to it
