@@ -84,7 +84,7 @@ class Variable {
              uint8_t decimalResolution, const char* varName,
              const char* varUnit, const char* varCode, const char* uuid);
     /**
-     * @brief Construct a new Variable objectfor a measured variable - that is,
+     * @brief Construct a new Variable object for a measured variable - that is,
      * one whose values are updated by a sensor - but do not tie it to a
      * specific sensor.
      *
@@ -118,6 +118,10 @@ class Variable {
      * @param varCode A custom code for the variable.  This can be any short
      * text helping to identify the variable in files.
      * @param uuid A universally unique identifier for the variable.
+     *
+     * @warning The `calcFxn` absolutely must return a float value.  If it
+     * returns a value of any other type (ie, some type of integer), your
+     * program will compile but immediately hang.
      */
     Variable(float (*calcFxn)(), uint8_t decimalResolution, const char* varName,
              const char* varUnit, const char* varCode, const char* uuid);
@@ -133,6 +137,10 @@ class Variable {
      * vocabulary](http://vocabulary.odm2.org/units/)
      * @param varCode A custom code for the variable.  This can be any short
      * text helping to identify the variable in files.
+     *
+     * @warning The `calcFxn` absolutely must return a float value.  If it
+     * returns a value of any other type (ie, some type of integer), your
+     * program will compile but immediately hang.
      */
     Variable(float (*calcFxn)(), uint8_t decimalResolution, const char* varName,
              const char* varUnit, const char* varCode);
@@ -194,6 +202,10 @@ class Variable {
      * @param uuid A universally unique identifier for the variable.
      * Supercedes any value supplied in the constructor.
      * @return A pointer to the variable object
+     *
+     * @warning The `calcFxn` absolutely must return a float value.  If it
+     * returns a value of any other type (ie, some type of integer), your
+     * program will compile but immediately hang.
      */
     Variable* begin(float (*calcFxn)(), uint8_t decimalResolution,
                     const char* varName, const char* varUnit,
@@ -212,6 +224,10 @@ class Variable {
      * @param varCode A custom code for the variable.  Supercedes any value
      * supplied in the constructor.
      * @return A pointer to the variable object
+     *
+     * @warning The `calcFxn` absolutely must return a float value.  If it
+     * returns a value of any other type (ie, some type of integer), your
+     * program will compile but immediately hang.
      */
     Variable* begin(float (*calcFxn)(), uint8_t decimalResolution,
                     const char* varName, const char* varUnit,
