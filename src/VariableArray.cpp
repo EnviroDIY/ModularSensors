@@ -935,13 +935,17 @@ bool VariableArray::checkVariableUUIDs(void) {
             PRINTOUT(arrayOfVars[i]->getVarCode(), F("has an invalid UUID!"));
             success = false;
         }
-        for (uint8_t j = i + 1; j < _variableCount; j++) {
-            if (arrayOfVars[i]->getVarUUID() == arrayOfVars[j]->getVarUUID()) {
-                PRINTOUT(arrayOfVars[i]->getVarCode(),
-                         F("has a non-unique UUID!"));
-                success = false;
-                // don't keep looping
-                j = _variableCount;
+        if (arrayOfVars[i]->getVarUUID().length() > 0) {
+            for (uint8_t j = i + 1; j < _variableCount; j++) {
+                if (arrayOfVars[i]->getVarUUID() ==
+                        arrayOfVars[j]->getVarUUID() &&
+                    arrayOfVars[j]->getVarUUID().length() > 0) {
+                    PRINTOUT(arrayOfVars[i]->getVarCode(),
+                             F("has a non-unique UUID!"));
+                    success = false;
+                    // don't keep looping
+                    j = _variableCount;
+                }
             }
         }
     }
