@@ -127,9 +127,6 @@ SAMD51 boards have multiple sleep configurations.
 
 The STANDBY mode is the lowest power configuration while keeping the state of the logic and the content of the RAM.
 The HIBERNATE, BACKUP, and OFF modes do not retain RAM and a full reset occurs on wake. The watchdog timer also does not run in any sleep setting deeper than STANDBY.
-In hibernate and backup modes, the only pins that can be used for an external wake up are the reset pin and dedicated RTC tamper detect pins.
-The datasheet is a bit misleading in this.
-[See this Microchip FAQ article for details](https://microchip.my.site.com/s/article/SAM-E5x-D5x--Wakeup-from-Hibernate-Backup-sleep-modes-using-External-Interrupt)
 
 - Idle
   - PM_SLEEPCFG_SLEEPMODE_IDLE_Val = 0x2
@@ -151,21 +148,34 @@ The backup power domain is kept powered to allow few features to run (RTC, 32KHz
 The PDSYSRAM power domain can be retained according to software configuration.
   - Wake-Up Sources:
     - Hibernate reset detected by the RSTC
-  - NOTE: "wake-up from external pins", refers **only** to the reset pin and dedicated RTC tamper detect pins.
-Therefore you can use the reset pin or RTC tamper detect pin to wake up from Hibernate/Backup sleep modes.
 - Backup
   - PM_SLEEPCFG_SLEEPMODE_BACKUP_Val = 0x6
   - Only the backup domain is kept powered to allow few features to run (RTC, 32KHz clock sources, and wake-up from external pins).
 The PDBKUPRAM power domain can be retained according to software configuration.
   - Wake-Up Sources:
     - Backup reset detected by the RSTC
-  - NOTE: "wake-up from external pins", refers **only** to the reset pin and dedicated RTC tamper detect pins.
-Therefore you can use the reset pin or RTC tamper detect pin to wake up from Hibernate/Backup sleep modes.
 - Off
   - PM_SLEEPCFG_SLEEPMODE_OFF_Val = 0x7
   - The entire device is powered off.
   - Wake-Up Sources:
     - External Reset
+
+In hibernate and backup modes, "wake-up from external pins", refers **only** to the reset pin (`RESETN`) and dedicated RTC tamper detect pins (RTC INn [n=0..4]).
+The datasheet is a bit misleading in this.
+[See this Microchip FAQ article for details](https://microchip.my.site.com/s/article/SAM-E5x-D5x--Wakeup-from-Hibernate-Backup-sleep-modes-using-External-Interrupt)
+
+RESETN is a dedicated pin.
+
+[From Table 6-7 in the datasheet](https://onlinedocs.microchip.com/oxy/GUID-F5813793-E016-46F5-A9E2-718D8BCED496-en-US-14/GUID-6DC09BF1-A273-45E0-AB75-4E4181A06FC2.html?hl=tamper) the tamper detection pins are:
+
+| RTC Signal | I/O Pin | VQFN 48 | TQFP/VQFN/WLCSP 64 | TQFP 100 | TFBGA 120 | TQFP 128 |
+| :--------: | :-----: | :-----: | :----------------: | :------: | :-------: | :------: |
+|    IN0     |  PB00   |    x    |       61/A7        |    97    |    A3     |   125    |
+|    IN1     |  PB02   |   47    |       63/A8        |    99    |    A2     |   127    |
+|    IN2     |  PA02   |    1    |       01/B8        |    1     |    A1     |    1     |
+|    IN3     |  PC00   |    x    |         x          |    3     |    C1     |    3     |
+|    IN4     |  PC01   |    x    |         x          |    4     |    C2     |    4     |
+|    OUT     |  PB01   |    x    |       62/B7        |    98    |    B3     |   126    |
 
 ### SAMD51 Pin Configuration During Sleep<!--! {#sleep_pins_samd51} -->
 
