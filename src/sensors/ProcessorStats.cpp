@@ -168,6 +168,7 @@ String ProcessorStats::getLastResetCause() {
             } else {
                 resetCauseString += "Unknown Exit Source)";
             }
+            return resetCauseString;
         }
         default: return "unknown";
     }
