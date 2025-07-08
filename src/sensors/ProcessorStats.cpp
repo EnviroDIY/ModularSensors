@@ -128,12 +128,20 @@ float ProcessorStats::getBatteryVoltage(void) {
 
 #if defined(__SAMD51__)
 
-uint8_t ProcessorStats::getLastResetCode() {
-    return RSTC->RCAUSE.reg;
+uint16_t ProcessorStats::getLastResetCode() {
+    uint8_t reset_cause = RSTC->RCAUSE.reg;
+    switch (reset_cause) {
+        case RSTC_RCAUSE_BACKUP: {
+            uint8_t backup_exit_source = RSTC->BKUPEXIT.reg;
+            return reset_cause | backup_exit_source << 8;
+        }
+        default: return static_cast<uint16_t>(reset_cause);
+    }
 }
 String ProcessorStats::getLastResetCause() {
-    uint8_t lastResetCause = getLastResetCode();
-    switch (lastResetCause) {
+    uint16_t lastResetCause = getLastResetCode();
+    uint8_t  reset_cause    = static_cast<uint8_t>(lastResetCause);
+    switch (reset_cause) {
         case RSTC_RCAUSE_POR: return "Power On Reset";
         case RSTC_RCAUSE_BODCORE: return "Brown Out CORE Detector Reset";
         case RSTC_RCAUSE_BODVDD: return "Brown Out VDD Detector Reset";
@@ -141,7 +149,26 @@ String ProcessorStats::getLastResetCause() {
         case RSTC_RCAUSE_EXT: return "External Reset";
         case RSTC_RCAUSE_WDT: return "Watchdog Reset";
         case RSTC_RCAUSE_SYST: return "System Reset Request";
-        case RSTC_RCAUSE_BACKUP: return "Backup Reset";
+        case RSTC_RCAUSE_BACKUP: {
+            uint8_t backupExitSource =
+                static_cast<uint8_t>(lastResetCause >> 8);
+            String resetCauseString = bitRead(lastResetCause,
+                                              RSTC_BKUPEXIT_HIB_Pos)
+                ? "Hibernate Reset ("
+                : "Backup Reset (";
+            if (bitRead(backupExitSource, RSTC_BKUPEXIT_HIB_Pos)) {
+                resetCauseString += "External Wakeup)";
+            } else if (bitRead(backupExitSource, RSTC_BKUPEXIT_RTC_Pos) &&
+                       bitRead(backupExitSource, RSTC_BKUPEXIT_BBPS_Pos)) {
+                resetCauseString += "BBPS & RTC Wakeup)";
+            } else if (bitRead(backupExitSource, RSTC_BKUPEXIT_RTC_Pos)) {
+                resetCauseString += "RTC Wakeup)";
+            } else if (bitRead(backupExitSource, RSTC_BKUPEXIT_BBPS_Pos)) {
+                resetCauseString += "Battery Backup Power Switch)";
+            } else {
+                resetCauseString += "Unknown Exit Source)";
+            }
+        }
         default: return "unknown";
     }
 }

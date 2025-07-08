@@ -433,12 +433,16 @@ class ProcessorStats : public Sensor {
      */
     float getBatteryVoltage(void);
 
-    /**
-     * @brief Get the processor code for the last reset cause
-     *
-     * @return The processor code for the last reset cause
-     */
+/**
+ * @brief Get the processor code for the last reset cause
+ *
+ * @return The processor code for the last reset cause
+ */
+#if !defined(__SAMD51__)
     uint8_t getLastResetCode(void);
+#else
+    uint16_t getLastResetCode(void);
+#endif
     /**
      * @brief Get the cause of the last reset as a string description.
      *
