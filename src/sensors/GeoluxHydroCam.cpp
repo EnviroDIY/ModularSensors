@@ -69,25 +69,32 @@ bool GeoluxHydroCam::setup(void) {
         // wait
     };
 
-    MS_DBG(F("Setting camera image resolution to"), _imageResolution);
-    success &= _camera.setResolution(_imageResolution);
-    _camera.waitForReady(50L, 15000L);
+    GeoluxCamera::geolux_status camera_status = _camera.getStatus();
+    bool                        is_ready = camera_status == GeoluxCamera::OK ||
+        camera_status == GeoluxCamera::NONE;
+    if (!is_ready) { success = false; }
+
+    if (success) {
+        MS_DBG(F("Setting camera image resolution to"), _imageResolution);
+        success &= _camera.setResolution(_imageResolution);
+        _camera.waitForReady(50L, 15000L);
 
 #if defined(MS_GEOLUXHYDROCAM_DEBUG) && defined(MS_OUTPUT) && \
     !defined(MS_SILENT)
-    MS_DBG(F("Printing all camera info"));
-    _camera.printCameraInfo(MS_OUTPUT);
+        MS_DBG(F("Printing all camera info"));
+        _camera.printCameraInfo(MS_OUTPUT);
 
 #if defined(MS_2ND_OUTPUT)
-    _camera.printCameraInfo(MS_2ND_OUTPUT);
+        _camera.printCameraInfo(MS_2ND_OUTPUT);
 #endif
 
-    MS_DBG(F("Camera is serial number:"), _camera.getCameraSerialNumber());
-    MS_DBG(F("Current camera firmware is:"), _camera.getCameraFirmware());
-    MS_DBG(F("Current image resolution is:"), _camera.getResolution());
-    MS_DBG(F("Current jpg compression quality is:"), _camera.getQuality());
-    MS_DBG(F("Current maximum jpg size is:"), _camera.getJPEGMaximumSize());
+        MS_DBG(F("Camera is serial number:"), _camera.getCameraSerialNumber());
+        MS_DBG(F("Current camera firmware is:"), _camera.getCameraFirmware());
+        MS_DBG(F("Current image resolution is:"), _camera.getResolution());
+        MS_DBG(F("Current jpg compression quality is:"), _camera.getQuality());
+        MS_DBG(F("Current maximum jpg size is:"), _camera.getJPEGMaximumSize());
 #endif
+    }
 
     if (!success) {
         // Set the status error bit (bit 7)
