@@ -109,6 +109,16 @@ bool GeoluxHydroCam::wake(void) {
     // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
 
+    GeoluxCamera::geolux_status camera_status = _camera.getStatus();
+    bool                        is_ready = camera_status == GeoluxCamera::OK ||
+        camera_status == GeoluxCamera::NONE;
+    if (!is_ready) {
+        // Make sure that the wake time and wake success bit (bit 4) are unset
+        _millisSensorActivated = 0;
+        _sensorStatus &= 0b11101111;
+        return false;
+    }
+
     if (_alwaysAutoFocus) { return _camera.runAutofocus() == GeoluxCamera::OK; }
 
     return true;
@@ -128,6 +138,17 @@ bool GeoluxHydroCam::startSingleMeasurement(void) {
     // sets the timestamp and status bits.  If it returns false, there's no
     // reason to go on.
     if (!Sensor::startSingleMeasurement()) return false;
+
+    GeoluxCamera::geolux_status camera_status = _camera.getStatus();
+    bool                        is_ready = camera_status == GeoluxCamera::OK ||
+        camera_status == GeoluxCamera::NONE;
+    if (!is_ready) {
+        // Make sure that the measurement start time and success bit (bit 6) are
+        // unset
+        _millisMeasurementRequested = 0;
+        _sensorStatus &= 0b10111111;
+        return false;
+    }
 
     bool success = true;
     MS_DBG(F("Requesting that the camera take a picture ... "));
