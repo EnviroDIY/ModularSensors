@@ -32,6 +32,8 @@
   - [NVIC-Specific Functions](#nvic-specific-functions)
   - [Exception and Interrupt Handlers](#exception-and-interrupt-handlers)
   - [NVIC Interrupts Defined in the Adafruit SAMD U2F Bootloader and Arduino Core](#nvic-interrupts-defined-in-the-adafruit-samd-u2f-bootloader-and-arduino-core)
+    - [SAMD51 NVIC](#samd51-nvic)
+    - [SAMD21 NVIC](#samd21-nvic)
   - [NVIC Interrupts Defined in Other Popular Libraries](#nvic-interrupts-defined-in-other-popular-libraries)
 
 <!--! @endif -->
@@ -352,7 +354,7 @@ The Arduino core does *NOT* configure the generic clock generator 0 (ie GCLK_MAI
     - 46 - GCLK_SDHC1
     - 47 - GCLK_CM4_TRACE
 
-### Summary of Peripheral Clock Assignments
+### Summary of Peripheral Clock Assignments<!--! {#samd51_clock_summary} -->
 
 - GCLK_SERCOM[0..7]_SLOW/GCLK_SDHC0_SLOW/GCLK_SDHC0_SLOW (3) - potentially any of GCLK0-GCLK4 - SERCOM.cpp
 - GCLK_EIC (4) - GCLKGEN0 (F_CPU; sourced from DLPP0) - WInterrupts.c
@@ -377,7 +379,7 @@ The Arduino core does *NOT* configure the generic clock generator 0 (ie GCLK_MAI
 
 # The Non-Volatile Interrupt Controller (NVIC)
 
-This section is copyied selections from [Microchip's developer help on the NVIC](https://developerhelp.microchip.com/xwiki/bin/view/products/mcu-mpu/32bit-mcu/sam/samd21-mcu-overview/samd21-processor-overview/samd21-nvic-overview/).
+This entire section is copyied selections from [Microchip's developer help on the NVIC](https://developerhelp.microchip.com/xwiki/bin/view/products/mcu-mpu/32bit-mcu/sam/samd21-mcu-overview/samd21-processor-overview/samd21-nvic-overview/).
 
 ## NVIC Overview
 
@@ -434,7 +436,7 @@ They're defined as “weak” functions, so you can override the default impleme
 
 ## NVIC Interrupts Defined in the Adafruit SAMD U2F Bootloader and Arduino Core
 
-SAMD51:
+### SAMD51 NVIC
 
 - SERCOMs - sercom.cpp - priority of 3
   - `SERCOM0_0_IRQn` -> `SERCOM5_3_IRQn`
@@ -453,7 +455,7 @@ SAMD51:
 - DMAC - Adafruit_ZeroDMA.cpp or I2S/../DMA.cpp
   - `DMAC_0_IRQn` -> `DMAC_4_IRQn` - priority of 3
 
-SAMD21
+### SAMD21 NVIC
 
 - SERCOMs - sercom.cpp - priority of 3
   - `SERCOM0_IRQn` -> `SERCOM3_IRQn`

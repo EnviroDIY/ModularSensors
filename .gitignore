@@ -134,3 +134,4 @@ docs/footer.html
 docs/header.html
 installWorkingDependencies.bat
 tests/SL099_certificates/*
+tests/test_certificates/*

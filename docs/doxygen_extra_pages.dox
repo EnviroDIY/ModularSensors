@@ -38,4 +38,6 @@ Here are links to detailed information about the various supported sensors and m
 
 @subpage page_samd_clocks
 
+@subpage page_sleep_config
+
 */

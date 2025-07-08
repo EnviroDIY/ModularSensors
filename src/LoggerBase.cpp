@@ -47,6 +47,13 @@ uint32_t Logger::markedUTCUnixTime   = 0;
 volatile bool Logger::isLoggingNow = false;
 volatile bool Logger::isTestingNow = false;
 volatile bool Logger::startTesting = false;
+// Initialize flags for sleep settings for SAMD boards
+#if defined(ARDUINO_ARCH_SAMD)
+bool Logger::_tristatePins = true;
+#if defined(__SAMD51__)
+bool Logger::_peripheralShutdown = true;
+#endif
+#endif
 
 
 // Constructors
@@ -764,7 +771,7 @@ void Logger::systemSleep(void) {
     Wire.end();
 
 // Now force the I2C pins to LOW
-// I2C devices have a nasty habit of stealing power from the SCL and SDA pins...
+// I2C devices have a nasty habit of stealing power from the SCL and SDA pins.
 // This will only work for the "main" I2C/TWI interface
 // WARNING: Any calls to the I2C/Wire library when pins are forced low will
 // cause an endless board hang.
@@ -803,27 +810,12 @@ void Logger::systemSleep(void) {
     }
 
     // Set the sleep config
-    // The STANDBY mode is the lowest power configuration while keeping the
-    // state of the logic and the content of the RAM.
-    // The HIBERNATE, BACKUP, and OFF modes do not retain RAM and a full reset
-    // occurs on wake. The watchdog timer also does not run in any sleep setting
-    // deeper than STANDBY.
-    // In hibernate and backup modes, the only pins that can be used for an
-    // external wake up are the reset pin and dedicated RTC tamper detect pins.
-    // The datasheet is a bit misleading in this.  See:
-    // https://microchip.my.site.com/s/article/SAM-E5x-D5x--Wakeup-from-Hibernate-Backup-sleep-modes-using-External-Interrupt
+    // @see #sleep_config_samd51
     MS_DEEP_DBG(F("Setting sleep config"));
-    // PM_SLEEPCFG_SLEEPMODE_STANDBY_Val = 0x4
-    // PM_SLEEPCFG_SLEEPMODE_HIBERNATE_Val = 0x5
-    // PM_SLEEPCFG_SLEEPMODE_STANDBY_Val = 0x4 - All Clocks are OFF
-    // PM_SLEEPCFG_SLEEPMODE_HIBERNATE_Val = 0x5 - Backup domain is ON as well
-    // as some PDRAMs
-    // PM_SLEEPCFG_SLEEPMODE_BACKUP_Val = 0x6 - Only Backup domain is powered ON
-    // PM_SLEEPCFG_SLEEPMODE_OFF_Val = 0x7 - All power domains are powered OFF
     PM->SLEEPCFG.bit.SLEEPMODE = PM_SLEEPCFG_SLEEPMODE_STANDBY_Val;
     // From datasheet 18.6.3.3: A small latency happens between the store
-    // instruction and actual writing of the SLEEPCFG register due to bridges
-    // .Software must ensure that the SLEEPCFG register reads the desired value
+    // instruction and actual writing of the SLEEPCFG register due to bridges.
+    // Software must ensure that the SLEEPCFG register reads the desired value
     // before executing a WFI instruction.
     while (PM->SLEEPCFG.bit.SLEEPMODE != PM_SLEEPCFG_SLEEPMODE_STANDBY_Val);
 
@@ -866,63 +858,53 @@ void Logger::systemSleep(void) {
     SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
 #endif
 
-    // force all pins to minimum power draw levels
+    // force all pins to minimum power draw levels (tri-state)
     // Set direction (DIR) to 0 (input)
     // Set input enable (PINCFG.INEN) to 0 (disable input buffer)
     // Set pullup enable (PINCFG.PULLEN) to 0 (disable pull up/down)
-    for (uint32_t ulPin = 0; ulPin < PINS_COUNT; ulPin++) {
-        // Handle the case the pin isn't usable as PIO
-        if (g_APinDescription[ulPin].ulPinType != PIO_NOT_A_PIN) {
-            if (ulPin != static_cast<uint32_t>(_mcuWakePin) &&
-                ulPin != static_cast<uint32_t>(_buttonPin)) {
-                EPortType port               = g_APinDescription[ulPin].ulPort;
-                uint32_t  pin                = g_APinDescription[ulPin].ulPin;
-                uint32_t  pinMask            = (1ul << pin);
-                PORT->Group[port].DIRCLR.reg = pinMask;
-                PORT->Group[port].PINCFG[pin].bit.INEN   = 0;
-                PORT->Group[port].PINCFG[pin].bit.PULLEN = 0;
-            } else {
-                MS_DEEP_DBG(F("Pin"), ulPin, "pin settings retained");
+    if (_tristatePins) {
+        for (uint32_t ulPin = 0; ulPin < PINS_COUNT; ulPin++) {
+            // Handle the case the pin isn't usable as PIO
+            if (g_APinDescription[ulPin].ulPinType != PIO_NOT_A_PIN) {
+                if (ulPin != static_cast<uint32_t>(_mcuWakePin) &&
+                    ulPin != static_cast<uint32_t>(_buttonPin)) {
+                    EPortType port    = g_APinDescription[ulPin].ulPort;
+                    uint32_t  pin     = g_APinDescription[ulPin].ulPin;
+                    uint32_t  pinMask = (1ul << pin);
+                    PORT->Group[port].DIRCLR.reg             = pinMask;
+                    PORT->Group[port].PINCFG[pin].bit.INEN   = 0;
+                    PORT->Group[port].PINCFG[pin].bit.PULLEN = 0;
+                } else {
+                    MS_DEEP_DBG(F("Pin"), ulPin, "pin settings retained");
+                }
             }
         }
     }
 
 #if defined(__SAMD51__)
-    // Disable generic clock generator 7 by disconnecting it from any oscillator
-    // source. Then tie as all peripheral timer that are safe to shut down to
-    // the disabled generator. This reduces power draw in sleep.
-
-    // NOTE: We CAN disable the EIC controller timer (4) because the controller
-    // clock source is set to OSCULP32K
-
-    // NOTE: Cannot disable the SERCOM peripheral timers for sleep because
-    // they're only reset with a begin(speed, config), which we do not call in
-    // this library. We force users to call the begin in their sketch so they
-    // can choose both the exact type of stream and the baud rate.
-
-    // NOTE: Cannot disable to ADC peripheral timers because they're only set in
-    // the init for the ADC at startup.
-
-    // NOTE: We CAN disable all of the timer clocks because they're reset every
-    // time they're used by SDI-12 (and others)
-
-    // @see #samd51_clock_other_libraries for a list of which peripherals each
-    // of these numbers pertain to
-    uint8_t unused_peripherals[] = {4,  5,  6,  9,  11, 12, 13, 14, 15, 16, 17,
-                                    18, 19, 20, 21, 22, 25, 26, 27, 28, 29, 30,
-                                    31, 32, 33, 38, 39, 42, 43, 44, 45, 46, 47};
-    MS_DEEP_DBG(
-        F("Configuring GCLK7 to be disconnected from an oscillator source"));
-    GCLK->GENCTRL[7].reg =
-        0;  // The reset value is 0x00000106 for Generator n=0, else 0x00000000
-    for (uint8_t upn = 0;
-         upn < sizeof(unused_peripherals) / sizeof(unused_peripherals[0]);
-         upn++) {
-        MS_DEEP_DBG(F("Setting peripheral clock"), unused_peripherals[upn],
-                    F("to be disabled and attached to GCLK7 with no oscillator "
-                      "source"));
-        GCLK->PCHCTRL[unused_peripherals[upn]].reg =
-            GCLK_PCHCTRL_GEN_GCLK7_Val & ~(1 << GCLK_PCHCTRL_CHEN_Pos);
+    if (_peripheralShutdown) {
+        // Disable all unused peripheral clocks and peripheral clocks/timers to
+        // reduce power draw during sleep.
+        // @see #sleep_peripherals_samd51n for details
+        // @see #samd51_clock_other_libraries for a list of which peripherals
+        // each of these numbers pertain to
+        uint8_t unused_peripherals[] = {
+            4,  5,  6,  9,  11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 25,
+            26, 27, 28, 29, 30, 31, 32, 33, 38, 39, 42, 43, 44, 45, 46, 47};
+        MS_DEEP_DBG(F(
+            "Configuring GCLK7 to be disconnected from an oscillator source"));
+        GCLK->GENCTRL[7].reg = 0;  // The reset value is 0x00000106 for
+                                   // Generator n=0, else 0x00000000
+        for (uint8_t upn = 0;
+             upn < sizeof(unused_peripherals) / sizeof(unused_peripherals[0]);
+             upn++) {
+            MS_DEEP_DBG(
+                F("Setting peripheral clock"), unused_peripherals[upn],
+                F("to be disabled and attached to GCLK7 with no oscillator "
+                  "source"));
+            GCLK->PCHCTRL[unused_peripherals[upn]].reg =
+                GCLK_PCHCTRL_GEN_GCLK7_Val & ~(1 << GCLK_PCHCTRL_CHEN_Pos);
+        }
     }
 #endif
 
@@ -968,7 +950,8 @@ void Logger::systemSleep(void) {
     // to the processor registers
     noInterrupts();
 
-    // Disable the processor ADC (must be disabled before it will power down)
+    // Disable the processor ADC (This must be disabled before the board will
+    // power down.)
     // ADCSRA = ADC Control and Status Register A
     // ADEN = ADC Enable
     ADCSRA &= ~_BV(ADEN);
@@ -1032,6 +1015,9 @@ void Logger::systemSleep(void) {
 
     // Re-set the various pin modes - the pins were all set to tri-state to save
     // power above
+    // NOTE: Do this whether or not _tristatePins is set because it takes almost
+    // no time, won't hurt to reset the pins to the state they're already in,
+    // and ensures the pins work after wake.
     setLoggerPins(_mcuWakePin, _SDCardSSPin, _SDCardPowerPin, _buttonPin,
                   _ledPin, _wakePinMode, _buttonPinMode);
 

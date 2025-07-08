@@ -1083,6 +1083,66 @@ class Logger {
      * to hang indefinitely.
      */
     void systemSleep(void);
+
+#if defined(ARDUINO_ARCH_SAMD)
+ public:
+    /**
+     * @brief Disable the pin tristate feature.
+     *
+     * Do not allow this library to set all pins to tri-state during sleep.
+     * This is useful (and may be needed) if you want to use the pins for other
+     * purposes and retain the pins modes during sleep.
+     *
+     * @warning If you do not disable this feature, the library will set all
+     * pins to tri-state (input mode with all resistors disabled) during sleep.
+     * The pins will not function properly upon wake until you call the
+     * `pinMode(pin_number, state);` and `digitalWrite(pin_number, value);`
+     * functions.
+     *
+     * @note No pin modes are changed by this function; the pin modes are
+     * changed by the systemSleep() function if this function is not called in
+     * advance.
+     *
+     * @see #sleep_pins_samd51
+     *
+     * @param disable If true, disable the tristate feature.
+     *
+     * @todo Allow per-pin tristate control.
+     */
+    static void disablePinTristate(bool disable = true) {
+        _tristatePins = disable;
+    }
+ private:
+    /// Internal flag for whether to use the pin tri-state feature.
+    static bool _tristatePins;
+#if defined(__SAMD51__)
+ public:
+    /**
+     * @brief Disable the peripheral shutdown feature.
+     * @param disable If true, disable the peripheral shutdown feature.
+     *
+     * @warning If you do not disable this feature, the library will attach most
+     * peripherals to a disabled clock source during sleep. This is unlikely to
+     * be a problem if you're not using custom code for the peripherals that
+     * does not re-enable them on every call, but it is something to be aware
+     * of.
+     *
+     * @note No peripheral settings are changed by this function. They are
+     * changed by the systemSleep() function if this function is not called in
+     * advance.
+     *
+     * @see #sleep_peripherals_samd51
+     *
+     * @todo Allow per-peripheral clock-detachment control.
+     */
+    static void disablePeripheralShutdown(bool disable = true) {
+        _peripheralShutdown = disable;
+    }
+ private:
+    /// Internal flag for whether to use the peripheral shutdown feature.
+    static bool _peripheralShutdown;
+#endif
+#endif
     /**@}*/
 
     // ===================================================================== //
