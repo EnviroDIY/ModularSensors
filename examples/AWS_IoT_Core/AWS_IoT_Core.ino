@@ -15,7 +15,7 @@
  * AWS_IoT_SetCertificates program in the extras folder to load your
  * certificates. Once you have confirmed your certificates are loaded and
  * working, there is no reason to rerun that program unless you have a new
- * modom, reset your modem, or your certificates change. Most modules store the
+ * modem, reset your modem, or your certificates change. Most modules store the
  * certificates in flash, which has a limited number of read/write cycles. To
  * avoid wearing out the flash unnecessarily, you should only run load/write the
  * certificates when necessarily, instead of every time you re-start your board.

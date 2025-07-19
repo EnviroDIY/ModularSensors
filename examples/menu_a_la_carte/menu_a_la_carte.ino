@@ -3456,7 +3456,7 @@ void setup() {
 /** Start [setup_wait] */
 // Wait for USB connection to be established by PC
 // NOTE:  Only use this when debugging - if not connected to a PC, this adds an
-// unnecesary startup delay
+// unnecessary startup delay
 #if defined(SERIAL_PORT_USBVIRTUAL)
     while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000L)) {
         // wait
