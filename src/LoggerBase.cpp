@@ -679,6 +679,9 @@ bool Logger::checkInterval(void) {
 #else
         if ((_remainingShortIntervals > 0)) {
 #endif
+            MS_DBG(F("Within"), initialShortIntervals,
+                   F("initial 1-minute intervals. There are "),
+                   _remainingShortIntervals, F("left."));
             // once we've marked the time, we need to decrement the remaining
             // short intervals by one. (IFF not in "log now" testing mode.)
             _remainingShortIntervals -= 1;
@@ -709,7 +712,12 @@ bool Logger::checkMarkedInterval(void) {
         (Logger::markedLocalUnixTime % (interval * 60) == 0)) {
         MS_DBG(F("Time to log!"));
         // De-increment the number of short intervals after marking
-        if (_remainingShortIntervals > 0) { _remainingShortIntervals -= 1; }
+        if (_remainingShortIntervals > 0) {
+            MS_DBG(F("Within"), initialShortIntervals,
+                   F("initial 1-minute intervals. There are "),
+                   _remainingShortIntervals, F("left."));
+            _remainingShortIntervals -= 1;
+        }
         retval = true;
     } else {
         MS_DBG(F("Not time yet."));
