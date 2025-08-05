@@ -58,7 +58,7 @@ bool Logger::_peripheralShutdown = true;
 
 // Constructors
 Logger::Logger(const char* loggerID, const char* samplingFeatureUUID,
-               uint16_t loggingIntervalMinutes, int8_t SDCardSSPin,
+               int16_t loggingIntervalMinutes, int8_t SDCardSSPin,
                int8_t mcuWakePin, VariableArray* inputArray)
     : _SDCardSSPin(SDCardSSPin),
       _mcuWakePin(mcuWakePin) {
@@ -81,7 +81,7 @@ Logger::Logger(const char* loggerID, const char* samplingFeatureUUID,
     // Set a datetime callback for automatic timestamping of files by SdFat
     SdFile::dateTimeCallback(fileDateTimeCallback);
 }
-Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
+Logger::Logger(const char* loggerID, int16_t loggingIntervalMinutes,
                int8_t SDCardSSPin, int8_t mcuWakePin, VariableArray* inputArray)
     : _SDCardSSPin(SDCardSSPin),
       _mcuWakePin(mcuWakePin) {
@@ -104,7 +104,7 @@ Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
     SdFile::dateTimeCallback(fileDateTimeCallback);
 }
 Logger::Logger(const char* loggerID, const char* samplingFeatureUUID,
-               uint16_t loggingIntervalMinutes, VariableArray* inputArray) {
+               int16_t loggingIntervalMinutes, VariableArray* inputArray) {
     // Set parameters from constructor
     setLoggerID(loggerID);
     setSamplingFeatureUUID(samplingFeatureUUID);
@@ -125,7 +125,7 @@ Logger::Logger(const char* loggerID, const char* samplingFeatureUUID,
     SdFile::dateTimeCallback(fileDateTimeCallback);
 }
 Logger::Logger(const char* loggerID, const char* samplingFeatureUUID,
-               uint16_t loggingIntervalMinutes) {
+               int16_t loggingIntervalMinutes) {
     // Set parameters from constructor
     setLoggerID(loggerID);
     setSamplingFeatureUUID(samplingFeatureUUID);
@@ -144,7 +144,7 @@ Logger::Logger(const char* loggerID, const char* samplingFeatureUUID,
     // Set a datetime callback for automatic timestamping of files by SdFat
     SdFile::dateTimeCallback(fileDateTimeCallback);
 }
-Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
+Logger::Logger(const char* loggerID, int16_t loggingIntervalMinutes,
                VariableArray* inputArray) {
     // Set parameters from constructor
     setLoggerID(loggerID);
@@ -192,13 +192,13 @@ void Logger::setLoggerID(const char* loggerID) {
 }
 
 // Sets the logging interval
-void Logger::setLoggingInterval(uint16_t loggingIntervalMinutes) {
+void Logger::setLoggingInterval(int16_t loggingIntervalMinutes) {
     _loggingIntervalMinutes = loggingIntervalMinutes;
 }
 
 
 // Sets the number of initial short intervals
-void Logger::setinitialShortIntervals(uint16_t initialShortIntervals) {
+void Logger::setinitialShortIntervals(int16_t initialShortIntervals) {
     _remainingShortIntervals = initialShortIntervals;
 }
 
@@ -646,7 +646,7 @@ void Logger::markTime(void) {
 bool Logger::checkInterval(void) {
     bool     retval;
     uint32_t checkTime = getNowLocalEpoch();
-    uint16_t interval  = _loggingIntervalMinutes;
+    int16_t  interval  = _loggingIntervalMinutes;
     if (_remainingShortIntervals > 0) {
         // log the first few samples at an interval of 1 minute so that
         // operation can be quickly verified in the field
@@ -665,6 +665,9 @@ bool Logger::checkInterval(void) {
     // here and return true if the flag is set.
     bool testing = Logger::startTesting;
     if ((checkTime % (interval * 60) == 0) || testing) {
+        if (testing) {
+            MS_DBG(F("Interval irrelevant: This was a button press!"));
+        }
 #else
     // If the testing mode the button calls **is** set to "bench testing" then
     // we only return true here if it actually is an even interval.
@@ -679,8 +682,7 @@ bool Logger::checkInterval(void) {
 #else
         if ((_remainingShortIntervals > 0)) {
 #endif
-            MS_DBG(F("Within"), initialShortIntervals,
-                   F("initial 1-minute intervals. There are "),
+            MS_DBG(F("Within initial 1-minute intervals; "),
                    _remainingShortIntervals, F("left."));
             // once we've marked the time, we need to decrement the remaining
             // short intervals by one. (IFF not in "log now" testing mode.)
@@ -697,7 +699,7 @@ bool Logger::checkInterval(void) {
 
 // This checks to see if the MARKED time is an even interval of the logging rate
 bool Logger::checkMarkedInterval(void) {
-    uint16_t interval = _loggingIntervalMinutes;
+    int16_t interval = _loggingIntervalMinutes;
     // If we're within the range of our initial short intervals, we're logging,
     // then set the interval to 1.
     if (_remainingShortIntervals > 0) { interval = 1; }
@@ -713,8 +715,7 @@ bool Logger::checkMarkedInterval(void) {
         MS_DBG(F("Time to log!"));
         // De-increment the number of short intervals after marking
         if (_remainingShortIntervals > 0) {
-            MS_DBG(F("Within"), initialShortIntervals,
-                   F("initial 1-minute intervals. There are "),
+            MS_DBG(F("Within initial 1-minute intervals. There are "),
                    _remainingShortIntervals, F("left."));
             _remainingShortIntervals -= 1;
         }
@@ -1081,7 +1082,7 @@ void Logger::systemSleep(void) {
     disableInterrupt(_mcuWakePin);
 #endif
 
-    MS_DEEP_DBG(F("Dissabling RTC interupts"));
+    MS_DEEP_DBG(F("Disabling RTC interrupts"));
     loggerClock::disableRTCInterrupts();
     // The logger will now start the next function after the systemSleep
     // function in either the loop or setup
@@ -1567,7 +1568,7 @@ void Logger::benchTestingMode(bool sleepBeforeReturning) {
 // This does all of the setup that can't happen in the constructors
 // That is, things that require the actual processor/MCU to do something
 // rather than the compiler to do something.
-void Logger::begin(const char* loggerID, uint16_t loggingIntervalMinutes,
+void Logger::begin(const char* loggerID, int16_t loggingIntervalMinutes,
                    VariableArray* inputArray) {
     setLoggerID(loggerID);
     setLoggingInterval(loggingIntervalMinutes);

@@ -329,7 +329,7 @@ const char* LoggerID = "your_logger_id";
 // the sub-topic for AWS IOT Core
 const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";
 // How frequently (in minutes) to log data
-const uint8_t loggingInterval = 15;
+const int8_t loggingInterval = 15;
 // Your logger's timezone.
 const int8_t timeZone = -5;  // Eastern Standard Time
 // NOTE:  Daylight savings time will not be applied!  Please use standard time!

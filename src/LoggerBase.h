@@ -104,7 +104,7 @@ class Logger {
      * the variable array class.
      */
     Logger(const char* loggerID, const char* samplingFeatureUUID,
-           uint16_t loggingIntervalMinutes, int8_t SDCardSSPin,
+           int16_t loggingIntervalMinutes, int8_t SDCardSSPin,
            int8_t mcuWakePin, VariableArray* inputArray);
     /**
      * @brief Construct a new Logger object.
@@ -123,7 +123,7 @@ class Logger {
      * data to be logged.  This is NOT an array of variables, but an object of
      * the variable array class.
      */
-    Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
+    Logger(const char* loggerID, int16_t loggingIntervalMinutes,
            int8_t SDCardSSPin, int8_t mcuWakePin, VariableArray* inputArray);
     /**
      * @brief Construct a new Logger object.
@@ -139,7 +139,7 @@ class Logger {
      * array class.
      */
     Logger(const char* loggerID, const char* samplingFeatureUUID,
-           uint16_t loggingIntervalMinutes, VariableArray* inputArray);
+           int16_t loggingIntervalMinutes, VariableArray* inputArray);
     /**
      * @brief Construct a new Logger object.
      *
@@ -151,7 +151,7 @@ class Logger {
      * should be logged
      */
     Logger(const char* loggerID, const char* samplingFeatureUUID,
-           uint16_t loggingIntervalMinutes);
+           int16_t loggingIntervalMinutes);
     /**
      * @brief Construct a new Logger object.
      *
@@ -164,7 +164,7 @@ class Logger {
      * logged.  This is NOT an array of variables, but an object of the variable
      * array class.
      */
-    Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
+    Logger(const char* loggerID, int16_t loggingIntervalMinutes,
            VariableArray* inputArray);
     /**
      * @brief Construct a new Logger object.
@@ -210,13 +210,13 @@ class Logger {
      * @param loggingIntervalMinutes The frequency with which to update sensor
      * values and write data to the SD card.
      */
-    void setLoggingInterval(uint16_t loggingIntervalMinutes);
+    void setLoggingInterval(int16_t loggingIntervalMinutes);
     /**
      * @brief Get the Logging Interval.
      *
      * @return The logging interval in minutes
      */
-    uint16_t getLoggingInterval() {
+    int16_t getLoggingInterval() {
         return _loggingIntervalMinutes;
     }
 
@@ -230,7 +230,7 @@ class Logger {
      * regardless of the programmed interval. Useful for fast field
      * verification.
      */
-    void setinitialShortIntervals(uint16_t initialShortIntervals);
+    void setinitialShortIntervals(int16_t initialShortIntervals);
     /**
      * @brief Get the number of 1-minute intervals at the start before logging
      * on the regular logging interval
@@ -238,7 +238,7 @@ class Logger {
      * @return The number of 1-minute intervals at the start before logging
      * on the regular logging interval
      */
-    uint16_t getinitialShortIntervals() {
+    int16_t getinitialShortIntervals() {
         return _remainingShortIntervals;
     }
 
@@ -459,12 +459,12 @@ class Logger {
     /**
      * @brief The logging interval in minutes
      */
-    uint16_t _loggingIntervalMinutes = 5;
+    int16_t _loggingIntervalMinutes = 5;
     /**
      * @brief The initial number of samples to log at an interval of 1 minute
      * for fast field verification
      */
-    uint8_t _remainingShortIntervals = 5;
+    int8_t _remainingShortIntervals = 5;
     /**
      * @brief Digital pin number on the mcu controlling the SD card slave
      * select.
@@ -1427,7 +1427,7 @@ class Logger {
      * array class.  Supplying a variableArray object here will override any
      * value given in the constructor.
      */
-    virtual void begin(const char* loggerID, uint16_t loggingIntervalMinutes,
+    virtual void begin(const char* loggerID, int16_t loggingIntervalMinutes,
                        VariableArray* inputArray);
     /**
      * @brief Set all pin levels and does initial communication with the
