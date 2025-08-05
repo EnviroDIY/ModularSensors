@@ -808,6 +808,84 @@ void Logger::systemSleep(void) {
 
 #endif
 
+
+    // force all pins to minimum power draw levels (tri-state)
+    // Set direction (DIR) to 0 (input)
+    // Set input enable (PINCFG.INEN) to 0 (disable input buffer)
+    // Set pullup enable (PINCFG.PULLEN) to 0 (disable pull up/down)
+    if (_tristatePins) {
+        for (uint32_t ulPin = 0; ulPin < PINS_COUNT; ulPin++) {
+            // Handle the case the pin isn't usable as PIO
+            if (g_APinDescription[ulPin].ulPinType != PIO_NOT_A_PIN) {
+                if (ulPin != static_cast<uint32_t>(_mcuWakePin) &&
+                    ulPin != static_cast<uint32_t>(_buttonPin)) {
+                    EPortType port    = g_APinDescription[ulPin].ulPort;
+                    uint32_t  pin     = g_APinDescription[ulPin].ulPin;
+                    uint32_t  pinMask = (1ul << pin);
+                    PORT->Group[port].DIRCLR.reg             = pinMask;
+                    PORT->Group[port].PINCFG[pin].bit.INEN   = 0;
+                    PORT->Group[port].PINCFG[pin].bit.PULLEN = 0;
+                } else {
+                    MS_DEEP_DBG(F("Pin"), ulPin, "pin settings retained");
+                }
+            }
+        }
+    }
+
+#if defined(__SAMD51__)
+    if (_peripheralShutdown) {
+        // Disable all unused peripheral clocks and peripheral clocks/timers to
+        // reduce power draw during sleep.
+        // @see #sleep_peripherals_samd51n for details
+        // @see #samd51_clock_other_libraries for a list of which peripherals
+        // each of these numbers pertain to
+        uint8_t unused_peripherals[] = {
+            4,  5,  6,  9,  11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 25,
+            26, 27, 28, 29, 30, 31, 32, 33, 38, 39, 42, 43, 44, 45, 46, 47};
+        MS_DEEP_DBG(F(
+            "Configuring GCLK7 to be disconnected from an oscillator source"));
+        GCLK->GENCTRL[7].reg = 0;  // The reset value is 0x00000106 for
+                                   // Generator n=0, else 0x00000000
+
+#ifdef MS_LOGGERBASE_DEBUG_DEEP
+        MS_SERIAL_OUTPUT.print(
+            F("Attaching peripheral clocks to disconnected GCLK7 generator:"));
+#endif
+        for (uint8_t upn = 0;
+             upn < sizeof(unused_peripherals) / sizeof(unused_peripherals[0]);
+             upn++) {
+#ifdef MS_LOGGERBASE_DEBUG_DEEP
+            MS_SERIAL_OUTPUT.print(unused_peripherals[upn]);
+            MS_SERIAL_OUTPUT.print(F(" "));
+#endif
+            GCLK->PCHCTRL[unused_peripherals[upn]].reg =
+                GCLK_PCHCTRL_GEN_GCLK7_Val & ~(1 << GCLK_PCHCTRL_CHEN_Pos);
+        }
+#ifdef MS_LOGGERBASE_DEBUG_DEEP
+        MS_SERIAL_OUTPUT.println();
+#endif
+    }
+#endif
+
+    MS_DEEP_DBG(F("This is the final message before sleep!"));
+    MS_DEEP_DBG(F("---------------------------------------"));
+#ifdef MS_LOGGERBASE_DEBUG_DEEP
+    MS_SERIAL_OUTPUT.println();
+#endif
+
+// Wait until the serial ports have finished transmitting
+// This is crucial for the SAMD boards that will continuously wake if they have
+// data remaining in the buffer.
+#if defined(SERIAL_PORT_USBVIRTUAL)
+    SERIAL_PORT_USBVIRTUAL.flush();
+#endif
+#if defined(MS_OUTPUT)
+    MS_OUTPUT.flush();
+#endif
+#if defined(MS_2ND_OUTPUT)
+    MS_2ND_OUTPUT.flush();
+#endif
+
 #if defined(__SAMD51__)
 
     // Clear the FPU interrupt because it can prevent us from sleeping.
@@ -820,7 +898,6 @@ void Logger::systemSleep(void) {
 
     // Set the sleep config
     // @see #sleep_config_samd51
-    MS_DEEP_DBG(F("Setting sleep config"));
     PM->SLEEPCFG.bit.SLEEPMODE = PM_SLEEPCFG_SLEEPMODE_STANDBY_Val;
     // From datasheet 18.6.3.3: A small latency happens between the store
     // instruction and actual writing of the SLEEPCFG register due to bridges.
@@ -865,69 +942,6 @@ void Logger::systemSleep(void) {
     // SCB_SCR_SLEEPDEEP_Msk = (1UL << 2U), the position of the deep sleep bit
     // in the system control register
     SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
-#endif
-
-    // force all pins to minimum power draw levels (tri-state)
-    // Set direction (DIR) to 0 (input)
-    // Set input enable (PINCFG.INEN) to 0 (disable input buffer)
-    // Set pullup enable (PINCFG.PULLEN) to 0 (disable pull up/down)
-    if (_tristatePins) {
-        for (uint32_t ulPin = 0; ulPin < PINS_COUNT; ulPin++) {
-            // Handle the case the pin isn't usable as PIO
-            if (g_APinDescription[ulPin].ulPinType != PIO_NOT_A_PIN) {
-                if (ulPin != static_cast<uint32_t>(_mcuWakePin) &&
-                    ulPin != static_cast<uint32_t>(_buttonPin)) {
-                    EPortType port    = g_APinDescription[ulPin].ulPort;
-                    uint32_t  pin     = g_APinDescription[ulPin].ulPin;
-                    uint32_t  pinMask = (1ul << pin);
-                    PORT->Group[port].DIRCLR.reg             = pinMask;
-                    PORT->Group[port].PINCFG[pin].bit.INEN   = 0;
-                    PORT->Group[port].PINCFG[pin].bit.PULLEN = 0;
-                } else {
-                    MS_DEEP_DBG(F("Pin"), ulPin, "pin settings retained");
-                }
-            }
-        }
-    }
-
-#if defined(__SAMD51__)
-    if (_peripheralShutdown) {
-        // Disable all unused peripheral clocks and peripheral clocks/timers to
-        // reduce power draw during sleep.
-        // @see #sleep_peripherals_samd51n for details
-        // @see #samd51_clock_other_libraries for a list of which peripherals
-        // each of these numbers pertain to
-        uint8_t unused_peripherals[] = {
-            4,  5,  6,  9,  11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 25,
-            26, 27, 28, 29, 30, 31, 32, 33, 38, 39, 42, 43, 44, 45, 46, 47};
-        MS_DEEP_DBG(F(
-            "Configuring GCLK7 to be disconnected from an oscillator source"));
-        GCLK->GENCTRL[7].reg = 0;  // The reset value is 0x00000106 for
-                                   // Generator n=0, else 0x00000000
-        for (uint8_t upn = 0;
-             upn < sizeof(unused_peripherals) / sizeof(unused_peripherals[0]);
-             upn++) {
-            MS_DEEP_DBG(
-                F("Setting peripheral clock"), unused_peripherals[upn],
-                F("to be disabled and attached to GCLK7 with no oscillator "
-                  "source"));
-            GCLK->PCHCTRL[unused_peripherals[upn]].reg =
-                GCLK_PCHCTRL_GEN_GCLK7_Val & ~(1 << GCLK_PCHCTRL_CHEN_Pos);
-        }
-    }
-#endif
-
-// Wait until the serial ports have finished transmitting
-// This is crucial for the SAMD boards that will continuously wake if they have
-// data remaining in the buffer.
-#if defined(SERIAL_PORT_USBVIRTUAL)
-    SERIAL_PORT_USBVIRTUAL.flush();
-#endif
-#if defined(MS_OUTPUT)
-    MS_OUTPUT.flush();
-#endif
-#if defined(MS_2ND_OUTPUT)
-    MS_2ND_OUTPUT.flush();
 #endif
 
     __DSB();  // Data sync barrier - to ensure outgoing memory accesses
@@ -985,6 +999,13 @@ void Logger::systemSleep(void) {
 
     // Re-enables interrupts so we can wake up again
     interrupts();
+
+    MS_DEEP_DBG(F("This is the final message before sleep!"));
+    MS_DEEP_DBG(F("---------------------------------------"));
+#ifdef MS_LOGGERBASE_DEBUG_DEEP
+    MS_SERIAL_OUTPUT.println();
+#endif
+
 // Wait until the serial ports have finished transmitting
 // This isn't very important on AVR boards
 #if defined(SERIAL_PORT_USBVIRTUAL)
@@ -1007,6 +1028,9 @@ void Logger::systemSleep(void) {
 
     // ---------------------------------------------------------------------
     // -- The portion below this happens on wake up, after any wake ISR's --
+
+    MS_DEEP_DBG(F("\n---------------------------------------"));
+    MS_DEEP_DBG(F("This is the first message after sleep!"));
 
 #if defined(ARDUINO_ARCH_SAMD)
 #if !defined(__SAMD51__)

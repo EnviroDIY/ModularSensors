@@ -238,6 +238,11 @@ After completing the [steps for putting all boards to sleep](#steps-for-putting-
 
 - Detach any USB devices (ie, the built in USB drivers for communication with a PC)
   - This is skipped if the TinyUSB library is called for some reason.
+- Force all pins except the RTC wake and button pins to go to minimum power draw levels (tri-state)
+- Configure GCLK7 to be disconnected from an oscillator source.
+- Connect all unused periperals to the source-less GCLK7.
+- Wait for all serial ports to finish transmitting
+  - This is crucial for the SAMD boards that will continuously wake if they have data remaining in the buffer.
 - Clear the FPU interrupt because it can prevent us from sleeping.
   - [See this reference in the Circuit Python code.](https://github.com/maholli/circuitpython/blob/210ce1d1dc9b1c6c615ff2d3201dde89cb75c555/ports/atmel-samd/supervisor/port.c#L654)
 - Set the sleep mode configuration to use STANDBY mode.
@@ -250,11 +255,6 @@ Software must ensure that the SLEEPCFG register reads the desired value before e
 Once stabilized, the INTFLAG.SLEEPRDY bit is set.
 Before entering Standby, Hibernate or Backup mode, software must ensure that the INTFLAG.SLEEPRDY bit is set.
 SRGD Note: I believe this only applies at power-on, but it's probably not a bad idea to check that the flag has been set.
-- Force all pins except the RTC wake and button pins to go to minimum power draw levels (tri-state)
-- Configure GCLK7 to be disconnected from an oscillator source.
-- Connect all unused periperals to the source-less GCLK7.
-- Wait for all serial ports to finish transmitting
-  - This is crucial for the SAMD boards that will continuously wake if they have data remaining in the buffer.
 - Call the data sync barrier (`__DSB();`) function to ensure outgoing memory accesses compelete.
 - Call wait for interrupts (`__WFI();`) to begin sleeping.
   - [See this link for tips on failing to sleep.](https://www.eevblog.com/forum/microcontrollers/crashing-through-__wfi/)
@@ -287,6 +287,9 @@ After completing the [steps for putting all boards to sleep](#steps-for-putting-
 
 - Detach any USB devices (ie, the built in USB drivers for communication with a PC)
   - This is skipped if the TinyUSB library is called for some reason.
+- Force all pins except the RTC wake and button pins to go to minimum power draw levels (tri-state)
+- Wait for all serial ports to finish transmitting
+  - This is crucial for the SAMD boards that will continuously wake if they have data remaining in the buffer.
 - Configure flash to **not** power down when in sleep.
   - Datasheet Eratta 1.14.2 says this is required.
 - Disable the systick interrupt.
@@ -294,9 +297,6 @@ After completing the [steps for putting all boards to sleep](#steps-for-putting-
   - Due to a hardware bug on the SAMD21, the SysTick interrupts become active before the flash has powered up from sleep, causing a hard  fault.
 To prevent this the SysTick interrupts are disabled before entering sleep mode.
 - Set the sleep mode configuration to use STANDBY mode.
-- Force all pins except the RTC wake and button pins to go to minimum power draw levels (tri-state)
-- Wait for all serial ports to finish transmitting
-  - This is crucial for the SAMD boards that will continuously wake if they have data remaining in the buffer.
 - Call the data sync barrier (`__DSB();`) function to ensure outgoing memory accesses compelete.
 - Call wait for interrupts (`__WFI();`) to begin sleeping.
   - [See this link for tips on failing to sleep.](https://www.eevblog.com/forum/microcontrollers/crashing-through-__wfi/)
