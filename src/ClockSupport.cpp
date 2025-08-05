@@ -521,9 +521,8 @@ void loggerClock::resetClockInterruptStatus(void) {
 }
 
 void loggerClock::rtcISR(void) {
-    MS_DBG(F("\nClock interrupt!"));
-#if defined(MS_CLOCKSUPPORT_DEBUG)
-    PRINTOUT(" ");
+#if defined(MS_CLOCKSUPPORT_DEBUG) || defined(MS_LOGGERBASE_DEBUG_DEEP)
+    PRINTOUT("\nClock interrupt!\n");
 #endif
 }
 
