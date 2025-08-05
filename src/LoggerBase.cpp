@@ -808,7 +808,6 @@ void Logger::systemSleep(void) {
 
 #endif
 
-
     // force all pins to minimum power draw levels (tri-state)
     // Set direction (DIR) to 0 (input)
     // Set input enable (PINCFG.INEN) to 0 (disable input buffer)

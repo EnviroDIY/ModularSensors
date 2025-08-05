@@ -145,7 +145,6 @@ void extendedWatchDogSAMD::enableWatchDog() {
 
 
 void extendedWatchDogSAMD::disableWatchDog() {
-    clearWDTInterrupt();  // sent a clear flag
 #if defined(__SAMD51__)
     WDT->CTRLA.bit.ENABLE = 0;
 #else
