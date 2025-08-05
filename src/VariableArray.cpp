@@ -953,8 +953,10 @@ bool VariableArray::checkVariableUUIDs(void) {
         PRINTOUT(F("All variable UUID's appear to be correctly formed.\n"));
     // Print out all UUID's to check
     for (uint8_t i = 0; i < _variableCount; i++) {
-        PRINTOUT(arrayOfVars[i]->getVarUUID(), F("->"),
-                 arrayOfVars[i]->getVarCode());
+        if (arrayOfVars[i]->getVarUUID().length() > 0) {
+            PRINTOUT(arrayOfVars[i]->getVarUUID(), F("->"),
+                     arrayOfVars[i]->getVarCode());
+        }
     }
     PRINTOUT(' ');
     return success;
