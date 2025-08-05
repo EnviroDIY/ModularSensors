@@ -56,10 +56,12 @@ bool EspressifESP32::modemSleepFxn(void) {
         if (_modemSleepRqPin >= 0) {
             digitalWrite(_modemSleepRqPin, !_wakeLevel);
         }
+        _modemStream->flush();
         return retVal;
     } else {  // DON'T go to sleep if we can't wake up!
         MS_DEEP_DBG(F("No pins for sleeping the ESP32. Hopefully it's in the "
                       "state you want."));
+        _modemStream->flush();
         return true;
     }
 }

@@ -116,8 +116,11 @@ bool SIMComSIM7080::modemSleepFxn(void) {
         // Easiest to just go to sleep with the AT command rather than using
         // pins
         MS_DBG(F("Asking SIM7080 to power down"));
-        return gsmModem.poweroff();
+        bool res = gsmModem.poweroff();
+        gsmModem.stream.flush();
+        return res;
     } else {  // DON'T go to sleep if we can't wake up!
+        gsmModem.stream.flush();
         return true;
     }
 }

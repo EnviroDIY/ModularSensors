@@ -104,6 +104,7 @@ bool SequansMonarch::modemSleepFxn(void) {
         if (_modemSleepRqPin >= 0) {
             digitalWrite(_modemSleepRqPin, !_wakeLevel);
         }
+        gsmModem.stream.flush();
         return retVal;
     } else if (_modemSleepRqPin >= 0) {
         // RTS for power save mode

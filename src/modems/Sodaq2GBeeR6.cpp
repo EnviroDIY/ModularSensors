@@ -50,6 +50,7 @@ bool Sodaq2GBeeR6::modemSleepFxn(void) {
         MS_DBG(F("Disabling voltage reference for GPRSBeeR6 on pin"), _vRefPin);
         digitalWrite(_vRefPin, LOW);
     }
+    gsmModem.stream.flush();
     return success;
 }
 

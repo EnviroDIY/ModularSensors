@@ -89,8 +89,10 @@ bool DigiXBeeCellularTransparent::modemSleepFxn(void) {
                !_wakeLevel ? F("HIGH") : F("LOW"), F("to put"), _modemName,
                F("to sleep"));
         digitalWrite(_modemSleepRqPin, !_wakeLevel);
+        gsmModem.stream.flush();
         return true;
     } else {
+        gsmModem.stream.flush();
         return true;
     }
 }
