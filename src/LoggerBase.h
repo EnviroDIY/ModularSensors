@@ -1110,7 +1110,7 @@ class Logger {
      * @todo Allow per-pin tristate control.
      */
     static void disablePinTristate(bool disable = true) {
-        _tristatePins = disable;
+        _tristatePins = !disable;
     }
  private:
     /// Internal flag for whether to use the pin tri-state feature.
