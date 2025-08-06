@@ -847,28 +847,28 @@ void Logger::systemSleep(void) {
 #ifdef MS_LOGGERBASE_DEBUG_DEEP
         MS_SERIAL_OUTPUT.print(
             F("Attaching peripheral clocks to disconnected GCLK7 generator:"));
-#endif
+#endif  // MS_LOGGERBASE_DEBUG_DEEP
         for (uint8_t upn = 0;
              upn < sizeof(unused_peripherals) / sizeof(unused_peripherals[0]);
              upn++) {
 #ifdef MS_LOGGERBASE_DEBUG_DEEP
             MS_SERIAL_OUTPUT.print(unused_peripherals[upn]);
             MS_SERIAL_OUTPUT.print(F(" "));
-#endif
+#endif  // MS_LOGGERBASE_DEBUG_DEEP
             GCLK->PCHCTRL[unused_peripherals[upn]].reg =
                 GCLK_PCHCTRL_GEN_GCLK7_Val & ~(1 << GCLK_PCHCTRL_CHEN_Pos);
         }
 #ifdef MS_LOGGERBASE_DEBUG_DEEP
         MS_SERIAL_OUTPUT.println();
-#endif
+#endif  // MS_LOGGERBASE_DEBUG_DEEP
     }
-#endif
+#endif  // __SAMD51__
 
     MS_DEEP_DBG(F("This is the final message before sleep!"));
     MS_DEEP_DBG(F("---------------------------------------"));
 #ifdef MS_LOGGERBASE_DEBUG_DEEP
     MS_SERIAL_OUTPUT.println();
-#endif
+#endif  // MS_LOGGERBASE_DEBUG_DEEP
 
 // Wait until the serial ports have finished transmitting
 // This is crucial for the SAMD boards that will continuously wake if they have
