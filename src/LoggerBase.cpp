@@ -1656,6 +1656,10 @@ void Logger::begin() {
     USB->DEVICE.CTRLA.bit.RUNSTDBY = 0;       // Deactivate run on standby
     USB->DEVICE.CTRLA.bit.ENABLE   = 1;       // Enable the USB peripheral
     while (USB->DEVICE.SYNCBUSY.bit.ENABLE);  // Wait for synchronization
+    // NOTE: All SERCOM have USART, SPI, and I2C disabled on standby by default,
+    // so we don't need to do anything here to disable them.
+    // NOTE: None of the generic clocks have any output enabled by default, so
+    // the RUNSTBY bit has no effect for those clocks.
 #if !defined(__SAMD51__)
     // Keep the voltage regulator running in standby
     // doing this just in case the various periperals try to suck too much power
