@@ -1051,14 +1051,6 @@ void Logger::systemSleep(void) {
     // ^^ USB->DEVICE.CTRLB.bit.DETACH = 0; enables USB interrupts
 #endif
 
-    // Re-set the various pin modes - the pins were all set to tri-state to save
-    // power above
-    // NOTE: Do this whether or not _tristatePins is set because it takes almost
-    // no time, won't hurt to reset the pins to the state they're already in,
-    // and ensures the pins work after wake.
-    setLoggerPins(_mcuWakePin, _SDCardSSPin, _SDCardPowerPin, _buttonPin,
-                  _ledPin, _wakePinMode, _buttonPinMode);
-
 #endif
 
 #if defined(ARDUINO_ARCH_AVR)
@@ -1110,6 +1102,18 @@ void Logger::systemSleep(void) {
 
     MS_DEEP_DBG(F("Disabling RTC interrupts"));
     loggerClock::disableRTCInterrupts();
+
+    // Re-set the pin modes for the LED and SD card pins if those were set to
+    // tri-state
+    // NOTE: We do NOT reset the pin modes for the RTC wake pin or the button
+    // pin because those pins states are always kept even when other pins
+    // tri-state.  Resetting the pin mode of a pin with an enabled interrupt
+    // causes the interrupt to be called immediately - which we don't want.
+    if (_tristatePins) {
+        setSDCardSS(_SDCardSSPin);
+        setSDCardPwr(_SDCardPowerPin);
+        setAlertPin(_ledPin);
+    }
 
     // Wake-up message
     MS_DBG(F("... zzzZZ Exiting system sleep function!"));
@@ -1664,14 +1668,17 @@ void Logger::begin() {
     if (_mcuWakePin >= 0 || _buttonPin >= 0) {
         // NOTE: This has to be done AFTER setupWatchDog, because setupWatchDog
         // calls config32kOSC() and configureClockGenerator(), both of which are
-        // needed before we can call configureEICClock(). This also should
-        // happen after *both* the wake pin and testing mode pin have been set
-        // to ensure that all clock changes WInterrupts.c have already been
-        // applied. If `attachInterrupt` within WInterrupts.c is called again,
-        // the `extendedWatchDog::configureEICClock()` function must be rerun on
-        // the SAMD21. If `__initialize()` within WInterrupts.c is called again
-        // the `extendedWatchDog::configureEICClock()` function must be run
-        // again for both the SAMD51 and the SAMD21.
+        // needed before we can call configureEICClock().
+        // This also should happen after *both* the wake pin and testing mode
+        // pin have been set to ensure that all clock changes in WInterrupts.c
+        // have already been applied.
+        // If `attachInterrupt` within WInterrupts.c is called again, the
+        // `extendedWatchDog::configureEICClock()` function must be rerun on the
+        // SAMD21.
+        // If `__initialize()` within WInterrupts.c is called again the
+        // `extendedWatchDog::configureEICClock()` function must be run again
+        // for both the SAMD51 and the SAMD21. The __initialize() function will
+        // be called any time an interrupt is attached *on a new pin*.
         MS_DEEP_DBG(F("Configuring the EIC clock"));
         extendedWatchDog::configureEICClock();
     }
