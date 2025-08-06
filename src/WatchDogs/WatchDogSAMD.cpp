@@ -287,10 +287,12 @@ void extendedWatchDogSAMD::configureEICClock() {
     for (uint32_t i = 0; i <= 15; i++)  // EIC_0_IRQn = 12 ... EIC_15_IRQn = 27
     {
         uint8_t irqn = EIC_0_IRQn + i;
-        NVIC_DisableIRQ((IRQn_Type)(irqn));       // Disable for config
-        NVIC_ClearPendingIRQ((IRQn_Type)(irqn));  // Clear old flags
-        NVIC_SetPriority((IRQn_Type)(irqn), 0);   // Set priority
-        NVIC_EnableIRQ((IRQn_Type)(irqn));        // re-enable
+        if (NVIC_GetEnableIRQ((IRQn_Type)(irqn))) {   // if enabled
+            NVIC_DisableIRQ((IRQn_Type)(irqn));       // Disable for config
+            NVIC_ClearPendingIRQ((IRQn_Type)(irqn));  // Clear old flags
+            NVIC_SetPriority((IRQn_Type)(irqn), 0);   // Set priority
+            NVIC_EnableIRQ((IRQn_Type)(irqn));        // re-enable
+        }
     }
 
     MS_DEEP_DBG(F("Disabling EIC controller for configuration"));
