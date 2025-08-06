@@ -744,6 +744,8 @@ void Logger::wakeISR(void) {
 // Puts the system to sleep to conserve battery life.
 // This DOES NOT sleep or wake the sensors!!
 void Logger::systemSleep(void) {
+    MS_DBG(F("\n\nEntering system sleep function.  ZZzzz..."));
+
 #if !defined(MS_USE_RTC_ZERO)
     // Don't go to sleep unless there's a wake pin!
     if (_mcuWakePin < 0) {
@@ -763,9 +765,6 @@ void Logger::systemSleep(void) {
 #if !defined(MS_USE_RTC_ZERO)
     enableRTCPinISR();
 #endif
-
-    // Send one last message before shutting down serial ports
-    MS_DBG(F("Putting processor to sleep.  ZZzzz..."));
 
     // Stop any I2C connections
     // WARNING: After stopping I2C, we can no longer communicate with the RTC!
@@ -805,7 +804,6 @@ void Logger::systemSleep(void) {
     USBDevice.detach();   // USB->DEVICE.CTRLB.bit.DETACH = 1;
     USBDevice.end();      // USB->DEVICE.CTRLA.bit.ENABLE = 0; wait for sync;
     USBDevice.standby();  // USB->DEVICE.CTRLA.bit.RUNSTDBY = 0;
-
 #endif
 
     // force all pins to minimum power draw levels (tri-state)
@@ -949,6 +947,14 @@ void Logger::systemSleep(void) {
     // For tips on failing to sleep, see:
     // https://www.eevblog.com/forum/microcontrollers/crashing-through-__wfi/
     __WFI();
+    // https://stackoverflow.com/questions/46934649/arm-wfi-wont-sleep
+    // There are three conditions that cause the processor to wake up from a WFI
+    // instruction:
+    // - a non-masked interrupt occurs and its priority is greater than the
+    // current execution priority (i.e. the interrupt is taken)
+    // - an interrupt masked by PRIMASK becomes pending
+    // - a Debug Entry request.
+
 
 #elif defined(ARDUINO_ARCH_AVR)
 
@@ -1077,9 +1083,6 @@ void Logger::systemSleep(void) {
 
 #endif
 
-    // Wake-up message
-    MS_DBG(F("\n\n\n... zzzZZ Processor is now awake!"));
-
     // Re-enable the watch-dog timer
     MS_DEEP_DBG(F("Re-enabling the watchdog"));
     extendedWatchDog::enableWatchDog();
@@ -1107,6 +1110,14 @@ void Logger::systemSleep(void) {
 
     MS_DEEP_DBG(F("Disabling RTC interrupts"));
     loggerClock::disableRTCInterrupts();
+
+    // Wake-up message
+    MS_DBG(F("... zzzZZ Exiting system sleep function!"));
+#ifdef MS_LOGGERBASE_DEBUG
+    MS_SERIAL_OUTPUT.println();
+    MS_SERIAL_OUTPUT.println();
+#endif
+
     // The logger will now start the next function after the systemSleep
     // function in either the loop or setup
 }
