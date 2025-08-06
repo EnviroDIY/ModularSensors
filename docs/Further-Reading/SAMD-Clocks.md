@@ -30,6 +30,7 @@
   - [Configuring Interrupt Priority](#configuring-interrupt-priority)
   - [Enabling IRQs Globally](#enabling-irqs-globally)
   - [NVIC-Specific Functions](#nvic-specific-functions)
+    - [Datasheet Table 10-1. Interrupt Line Mapping](#datasheet-table-10-1interrupt-line-mapping)
   - [Exception and Interrupt Handlers](#exception-and-interrupt-handlers)
   - [NVIC Interrupts Defined in the Adafruit SAMD U2F Bootloader and Arduino Core](#nvic-interrupts-defined-in-the-adafruit-samd-u2f-bootloader-and-arduino-core)
     - [SAMD51 NVIC](#samd51-nvic)
@@ -428,6 +429,471 @@ void NVIC_DisableIRQ (IRQn_Type IRQn)
 
 [CMSIS functions](https://arm-software.github.io/CMSIS_5/Core/html/group__NVIC__gr.html) associated with NVIC are located in the core_cm0plus.h header file.
 Functions are implemented as inline code.
+
+From the SAMD51 datasheet, here are the interrupt line mapping numbers for interrupts in the NVIC
+### [Datasheet Table 10-1. Interrupt Line Mapping](https://onlinedocs.microchip.com/oxy/GUID-F5813793-E016-46F5-A9E2-718D8BCED496-en-US-14/GUID-DA8CB38A-18D7-4512-965B-BB439142B281.html?hl=icpr#GUID-DA8CB38A-18D7-4512-965B-BB439142B281__TABLE_CYS_KLX_S5)
+
+<table data-ofb data-cols="3">
+  <caption data-caption-side="top" data-is-repeated="true">
+    <span><span>Table 10-1. </span></span
+    ><span>Interrupt Line Mapping</span>
+  </caption>
+  <colgroup>
+    <col />
+    <col />
+    <col />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Module</th>
+      <th>Source</th>
+      <th>Line</th>
+      <th>Enabled?</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>EIC NMI - External Interrupt Control</td><td>NMI</td><td>NMI</td><td>enabled</td></tr>
+    <tr><td>PM - Power Manager</td><td>SLEEPRDY</td><td>0</td><td>disabled</td></tr>
+    <tr><td>MCLK - Main Clock</td><td>CKRDY</td><td>1</td><td>disabled</td></tr>
+    <tr>
+      <td rowspan="17">OSCCTRL - Oscillators Control</td><td>XOSCFAIL0</td>
+      <td rowspan="2">2</td><td rowspan="2">disabled</td></tr>
+    <tr><td>XOSCRDY0</td></tr>
+    <tr><td>XOSCFAIL1</td>
+      <td rowspan="2">3</td><td rowspan="2">disabled</td></tr>
+    <tr><td>XOSCRDY1</td></tr>
+    <tr><td>DFLLLCKC</td>
+      <td rowspan="5">4</td><td rowspan="5">disabled</td></tr>
+    <tr><td>DFLLLCKF</td></tr>
+    <tr><td>DFLLOOB</td></tr>
+    <tr><td>DFLLRCS</td></tr>
+    <tr><td>DFLLRDY</td></tr>
+    <tr><td>DPLL00LCKF</td>
+      <td rowspan="4">5</td><td rowspan="4">disabled</td></tr>
+    <tr><td>DPLL0LCKR</td></tr>
+    <tr><td>DPLL0LDRTO</td></tr>
+    <tr><td>DPLL0LTO</td></tr>
+    <tr><td>DPLL1LCKF</td>
+      <td rowspan="4">6</td><td rowspan="4">disabled</td></tr>
+    <tr><td>DPLL1LCKR</td></tr>
+    <tr><td>DPLL1LDRTO</td></tr>
+    <tr><td>DPLL1LTO</td></tr>
+    <tr>
+      <td rowspan="2">OSC32KCTRL - 32 kHz Oscillators Control</td><td>XOSC32KFAIL</td>
+      <td rowspan="2">7</td><td rowspan="2">disabled</td></tr>
+    <tr><td>XOSC32KRDY</td></tr>
+    <tr>
+      <td rowspan="5">SUPC - Supply Controller</td><td>BOD33RDY</td>
+      <td rowspan="4">8</td><td rowspan="4">disabled</td></tr>
+    <tr><td>B33SRDY</td></tr>
+    <tr><td>VCORERDY</td></tr>
+    <tr><td>VREGRDY</td></tr>
+    <tr><td>BOD33DET</td><td>9</td><td>disabled</td></tr>
+    <tr><td>WDT - Watchdog Timer</td><td>EW</td><td>10</td><td><b>enabled</b></td></tr>
+    <tr>
+      <td rowspan="16">RTC - Real-Time Counter</td><td>CMP0</td>
+      <td rowspan="16">11</td><td rowspan="16">disabled</td></tr>
+    <tr><td>CMP1</td></tr>
+    <tr><td>CMP2</td></tr>
+    <tr><td>CMP3</td></tr>
+    <tr><td>OVF</td></tr>
+    <tr><td>PER0</td></tr>
+    <tr><td>PER1</td></tr>
+    <tr><td>PER2</td></tr>
+    <tr><td>PER3</td></tr>
+    <tr><td>PER4</td></tr>
+    <tr><td>PER5</td></tr>
+    <tr><td>PER6</td></tr>
+    <tr><td>PER7</td></tr>
+    <tr><td>TAMPER</td></tr>
+    <tr><td>ALARM0</td></tr>
+    <tr><td>ALARM1</td></tr>
+    <tr>
+      <td rowspan="16">EIC - External Interrupt Controller</td><td>EXTINT 0</td><td>12</td><td><b>enabled</b></td></tr>
+    <tr><td>EXTINT 1</td><td>13</td><td><b>enabled</b></td></tr>
+    <tr><td>EXTINT 2</td><td>14</td><td><b>enabled</b></td></tr>
+    <tr><td>EXTINT 3</td><td>15</td><td><b>enabled</b></td></tr>
+    <tr><td>EXTINT 4</td><td>16</td><td><b>enabled</b></td></tr>
+    <tr><td>EXTINT 5</td><td>17</td><td><b>enabled</b></td></tr>
+    <tr><td>EXTINT 6</td><td>18</td><td><b>enabled</b></td></tr>
+    <tr><td>EXTINT 7</td><td>19</td><td><b>enabled</b></td></tr>
+    <tr><td>EXTINT 8</td><td>20</td><td><b>enabled</b></td></tr>
+    <tr><td>EXTINT 9</td><td>21</td><td><b>enabled</b></td></tr>
+    <tr><td>EXTINT 10</td><td>22</td><td><b>enabled</b></td></tr>
+    <tr><td>EXTINT 11</td><td>23</td><td><b>enabled</b></td></tr>
+    <tr><td>EXTINT 12</td><td>24</td><td><b>enabled</b></td></tr>
+    <tr><td>EXTINT 13</td><td>25</td><td><b>enabled</b></td></tr>
+    <tr><td>EXTINT 14</td><td>26</td><td><b>enabled</b></td></tr>
+    <tr><td>EXTINT 15</td><td>27</td><td><b>enabled</b></td></tr>
+    <tr><td>FREQM - Frequency Meter</td><td>DONE</td><td>28</td><td>disabled</td></tr>
+    <tr>
+      <td rowspan="11">
+        NVMCTRL - Non-Volatile Memory Controller
+      </td><td>DONE</td>
+      <td rowspan="8">29</td><td rowspan="8">disabled</td></tr>
+    <tr><td>ADDRE</td></tr>
+    <tr><td>PROGE</td></tr>
+    <tr><td>LOCKE</td></tr>
+    <tr><td>ECCSE</td></tr>
+    <tr><td>ECCDE</td></tr>
+    <tr><td>NVME</td></tr>
+    <tr><td>SUSPE</td></tr>
+    <tr><td>SEESFULL</td>
+      <td rowspan="3">30</td><td rowspan="3">disabled</td></tr>
+    <tr><td>SEESOVF</td></tr>
+    <tr><td>SEEWRC</td></tr>
+    <tr>
+      <td rowspan="15">DMAC - Direct Memory Access Controller</td><td>SUSP 0</td>
+      <td rowspan="3">31</td><td rowspan="3">enabled</td></tr>
+    <tr><td>TCMPL 0</td></tr>
+    <tr><td>TERR 0</td></tr>
+    <tr><td>SUSP 1</td>
+      <td rowspan="3">32</td><td rowspan="3">enabled</td></tr>
+    <tr><td>TCMPL 1</td></tr>
+    <tr><td>TERR 1</td></tr>
+    <tr><td>SUSP 2</td>
+      <td rowspan="3">33</td><td rowspan="3">enabled</td></tr>
+    <tr><td>TCMPL 2</td></tr>
+    <tr><td>TERR 2</td></tr>
+    <tr><td>SUSP 3</td>
+      <td rowspan="3">34</td><td rowspan="3">enabled</td></tr>
+    <tr><td>TCMPL 3</td></tr>
+    <tr><td>TERR 3</td></tr>
+    <tr><td>SUSP 4..31</td>
+      <td rowspan="3">35</td><td rowspan="3">enabled</td></tr>
+    <tr><td>TCMPL 4..31</td></tr>
+    <tr><td>TERR 4..31</td></tr>
+    <tr>
+      <td rowspan="10">EVSYS - Event System Interface</td><td>EVD 0</td>
+      <td rowspan="2">36</td><td rowspan="2">disabled</td></tr>
+    <tr><td>OVR 0</td></tr>
+    <tr><td>EVD 1</td>
+      <td rowspan="2">37</td><td rowspan="2">disabled</td></tr>
+    <tr><td>OVR 1</td></tr>
+    <tr><td>EVD 2</td>
+      <td rowspan="2">38</td><td rowspan="2">disabled</td></tr>
+    <tr><td>OVR 2</td></tr>
+    <tr><td>EVD 3</td>
+      <td rowspan="2">39</td><td rowspan="2">disabled</td></tr>
+    <tr><td>OVR 3</td></tr>
+    <tr><td>EVD 4..11</td>
+      <td rowspan="2">40</td><td rowspan="2">disabled</td></tr>
+    <tr><td>OVR 4..11</td></tr>
+    <tr><td>PAC - Peripheral Access Controller</td><td>ERR</td><td>41</td><td>disabled</td></tr>
+    <tr>
+      <td rowspan="2">RAM ECC</td><td>SINGLEE</td>
+      <td rowspan="2">45</td><td rowspan="2">disabled</td></tr>
+    <tr><td>DUALE</td></tr>
+    <tr>
+      <td rowspan="7">
+        SERCOM0 - Serial Communication Interface 0
+      </td><td>0</td><td>46</td><td>disabled</td></tr>
+    <tr><td>1</td><td>47</td><td>disabled</td></tr>
+    <tr><td>2</td><td>48</td><td>disabled</td></tr>
+    <tr><td>3</td>
+      <td rowspan="4">49</td><td rowspan="4">disabled</td></tr>
+    <tr><td>4</td></tr>
+    <tr><td>5</td></tr>
+    <tr><td>7</td></tr>
+    <tr>
+      <td rowspan="7">
+        SERCOM1 - Serial Communication Interface 1
+      </td><td>0</td><td>50</td><td>disabled</td></tr>
+    <tr><td>1</td><td>51</td><td>disabled</td></tr>
+    <tr><td>2</td><td>52</td><td>disabled</td></tr>
+    <tr><td>3</td>
+      <td rowspan="4">53</td><td rowspan="4">disabled</td></tr>
+    <tr><td>4</td></tr>
+    <tr><td>5</td></tr>
+    <tr><td>7</td></tr>
+    <tr>
+      <td rowspan="7">
+        SERCOM2 - Serial Communication Interface 2
+      </td><td>0</td><td>54</td><td>enabled</td></tr>
+    <tr><td>1</td><td>55</td><td>enabled</td></tr>
+    <tr><td>2</td><td>56</td><td>enabled</td></tr>
+    <tr><td>3</td>
+      <td rowspan="4">57</td><td rowspan="4">enabled</td></tr>
+    <tr><td>4</td></tr>
+    <tr><td>5</td></tr>
+    <tr><td>7</td></tr>
+    <tr>
+      <td rowspan="7">
+        SERCOM3 - Serial Communication Interface 3
+      </td><td>0</td><td>58</td><td>enabled</td></tr>
+    <tr><td>1</td><td>59</td><td>enabled</td></tr>
+    <tr><td>2</td><td>60</td><td>enabled</td></tr>
+    <tr><td>3</td>
+      <td rowspan="4">61</td><td rowspan="4">enabled</td></tr>
+    <tr><td>4</td></tr>
+    <tr><td>5</td></tr>
+    <tr><td>7</td></tr>
+    <tr>
+      <td rowspan="7">
+        SERCOM4 - Serial Communication Interface 4
+      </td><td>0</td><td>62</td><td>enabled</td></tr>
+    <tr><td>1</td><td>63</td><td>enabled</td></tr>
+    <tr><td>2</td><td>64</td><td>enabled</td></tr>
+    <tr><td>3</td>
+      <td rowspan="4">65</td><td rowspan="4">enabled</td></tr>
+    <tr><td>4</td></tr>
+    <tr><td>5</td></tr>
+    <tr><td>7</td></tr>
+    <tr>
+      <td rowspan="7">
+        SERCOM5 - Serial Communication Interface 5
+      </td><td>0</td><td>66</td><td>enabled</td></tr>
+    <tr><td>1</td><td>67</td><td>enabled</td></tr>
+    <tr><td>2</td><td>68</td><td>enabled</td></tr>
+    <tr><td>3</td>
+      <td rowspan="4">69</td><td rowspan="4">enabled</td></tr>
+    <tr><td>4</td></tr>
+    <tr><td>5</td></tr>
+    <tr><td>7</td></tr>
+    <tr>
+      <td rowspan="7">
+        SERCOM6 - Serial Communication Interface 6
+      </td><td>0</td><td>70</td><td>enabled</td></tr>
+    <tr><td>1</td><td>71</td><td>enabled</td></tr>
+    <tr><td>2</td><td>72</td><td>enabled</td></tr>
+    <tr><td>3</td>
+      <td rowspan="4">73</td><td rowspan="4">enabled</td></tr>
+    <tr><td>4</td></tr>
+    <tr><td>5</td></tr>
+    <tr><td>7</td></tr>
+    <tr>
+      <td rowspan="7">
+        SERCOM7 - Serial Communication Interface 7
+      </td><td>0</td><td>74</td><td>disabled</td></tr>
+    <tr><td>1</td><td>75</td><td>disabled</td></tr>
+    <tr><td>2</td><td>76</td><td>disabled</td></tr>
+    <tr><td>3</td>
+      <td rowspan="4">77</td><td rowspan="4">disabled</td></tr>
+    <tr><td>4</td></tr>
+    <tr><td>5</td></tr>
+    <tr><td>7</td></tr>
+    <tr>
+      <td rowspan="2">CAN0 - Control Area Network 0</td><td>LINE 0</td>
+      <td rowspan="2">78</td><td rowspan="2">disabled</td></tr>
+    <tr><td>LINE 1</td></tr>
+    <tr>
+      <td rowspan="2">CAN1 - Control Area Network 1</td><td>LINE 0</td>
+      <td rowspan="2">79</td><td rowspan="2">disabled</td></tr>
+    <tr><td>LINE 1</td></tr>
+    <tr>
+      <td rowspan="16">USB - Universal Serial Bus</td><td>EORSM/DNRSM</td>
+      <td rowspan="13">80</td><td rowspan="13">enabled</td></tr>
+    <tr><td>EORST/RST</td></tr>
+    <tr><td>LPM/DCONN</td></tr>
+    <tr><td>LPMSUSP/DDISC</td></tr>
+    <tr><td>RAMACER</td></tr>
+    <tr><td>RXSTP/TXSTP 0..7</td></tr>
+    <tr><td>STALL0/STALL 0..7</td></tr>
+    <tr><td>STALL1 0..7</td></tr>
+    <tr><td>SUSPEND</td></tr>
+    <tr><td>TRFAIL0/TRFAIL 0..7</td></tr>
+    <tr><td>TRFAIL1/PERR 0..7</td></tr>
+    <tr><td>UPRSM</td></tr>
+    <tr><td>WAKEUP</td></tr>
+    <tr><td>SOF/HSOF</td><td>81</td><td>enabled</td></tr>
+    <tr><td>TRCPT0 0..7</td><td>82</td><td>enabled</td></tr>
+    <tr><td>TRCPT1 0..7</td><td>83</td><td>enabled</td></tr>
+    <tr>
+      <td rowspan="2">GMAC - Ethernet MAC</td><td>GMAC</td>
+      <td rowspan="2">84</td><td rowspan="2">disabled</td></tr>
+    <tr><td>WOL</td></tr>
+    <tr>
+      <td rowspan="16">TCC0 - Timer Counter Control 0</td><td>CNT</td>
+      <td rowspan="10">85</td><td rowspan="10">disabled</td></tr>
+    <tr><td>DFS</td></tr>
+    <tr><td>ERR</td></tr>
+    <tr><td>FAULTA</td></tr>
+    <tr><td>FAULTB</td></tr>
+    <tr><td>FAULT0</td></tr>
+    <tr><td>FAULT1</td></tr>
+    <tr><td>OVF</td></tr>
+    <tr><td>TRG</td></tr>
+    <tr><td>UFS</td></tr>
+    <tr><td>MC0</td><td>86</td><td>disabled</td></tr>
+    <tr><td>MC1</td><td>87</td><td>disabled</td></tr>
+    <tr><td>MC2</td><td>88</td><td>disabled</td></tr>
+    <tr><td>MC3</td><td>89</td><td>disabled</td></tr>
+    <tr><td>MC4</td><td>90</td><td>disabled</td></tr>
+    <tr><td>MC5</td><td>91</td><td>disabled</td></tr>
+    <tr>
+      <td rowspan="14">TCC1 - Timer Counter Control 1</td><td>CNT</td>
+      <td rowspan="10">92</td><td rowspan="10">disabled</td></tr>
+    <tr><td>DFS</td></tr>
+    <tr><td>ERR</td></tr>
+    <tr><td>FAULTA</td></tr>
+    <tr><td>FAULTB</td></tr>
+    <tr><td>FAULT0</td></tr>
+    <tr><td>FAULT1</td></tr>
+    <tr><td>OVF</td></tr>
+    <tr><td>TRG</td></tr>
+    <tr><td>UFS</td></tr>
+    <tr><td>MC0</td><td>93</td><td>disabled</td></tr>
+    <tr><td>MC1</td><td>94</td><td>disabled</td></tr>
+    <tr><td>MC2</td><td>95</td><td>disabled</td></tr>
+    <tr><td>MC3</td><td>96</td><td>disabled</td></tr>
+    <tr>
+      <td rowspan="13">TCC2 - Timer Counter Control 2</td><td>CNT</td>
+      <td rowspan="10">97</td><td rowspan="10">disabled</td></tr>
+    <tr><td>DFS</td></tr>
+    <tr><td>ERR</td></tr>
+    <tr><td>FAULTA</td></tr>
+    <tr><td>FAULTB</td></tr>
+    <tr><td>FAULT0</td></tr>
+    <tr><td>FAULT1</td></tr>
+    <tr><td>OVF</td></tr>
+    <tr><td>TRG</td></tr>
+    <tr><td>UFS</td></tr>
+    <tr><td>MC0</td><td>98</td><td>disabled</td></tr>
+    <tr><td>MC1</td><td>99</td><td>disabled</td></tr>
+    <tr><td>MC2</td><td>100</td><td>disabled</td></tr>
+    <tr>
+      <td rowspan="12">TCC3 - Timer Counter Control 3</td><td>CNT</td>
+      <td rowspan="10">101</td><td rowspan="10">disabled</td></tr>
+    <tr><td>DFS</td></tr>
+    <tr><td>ERR</td></tr>
+    <tr><td>FAULTA</td></tr>
+    <tr><td>FAULTB</td></tr>
+    <tr><td>FAULT0</td></tr>
+    <tr><td>FAULT1</td></tr>
+    <tr><td>OVF</td></tr>
+    <tr><td>TRG</td></tr>
+    <tr><td>UFS</td></tr>
+    <tr><td>MC0</td><td>102</td><td>disabled</td></tr>
+    <tr><td>MC1</td><td>103</td><td>disabled</td></tr>
+    <tr>
+      <td rowspan="12">TCC4 - Timer Counter Control 4</td><td>CNT</td>
+      <td rowspan="10">104</td><td rowspan="10">disabled</td></tr>
+    <tr><td>DFS</td></tr>
+    <tr><td>ERR</td></tr>
+    <tr><td>FAULTA</td></tr>
+    <tr><td>FAULTB</td></tr>
+    <tr><td>FAULT0</td></tr>
+    <tr><td>FAULT1</td></tr>
+    <tr><td>OVF</td></tr>
+    <tr><td>TRG</td></tr>
+    <tr><td>UFS</td></tr>
+    <tr><td>MC0</td><td>105</td><td>disabled</td></tr>
+    <tr><td>MC1</td><td>106</td><td>disabled</td></tr>
+    <tr>
+      <td rowspan="4">TC0 - Basic Timer Counter 0</td><td>ERR</td>
+      <td rowspan="4">107</td><td rowspan="4">disabled</td></tr>
+    <tr><td>MC0</td></tr>
+    <tr><td>MC1</td></tr>
+    <tr><td>OVF</td></tr>
+    <tr>
+      <td rowspan="4">TC1 - Basic Timer Counter 1</td><td>ERR</td>
+      <td rowspan="4">108</td><td rowspan="4">disabled</td></tr>
+    <tr><td>MC0</td></tr>
+    <tr><td>MC1</td></tr>
+    <tr><td>OVF</td></tr>
+    <tr>
+      <td rowspan="4">TC2 - Basic Timer Counter 2</td><td>ERR</td>
+      <td rowspan="4">109</td><td rowspan="4">disabled</td></tr>
+    <tr><td>MC0</td></tr>
+    <tr><td>MC1</td></tr>
+    <tr><td>OVF</td></tr>
+    <tr>
+      <td rowspan="4">TC3 - Basic Timer Counter 3</td><td>ERR</td>
+      <td rowspan="4">110</td><td rowspan="4">disabled</td></tr>
+    <tr><td>MC0</td></tr>
+    <tr><td>MC1</td></tr>
+    <tr><td>OVF</td></tr>
+    <tr>
+      <td rowspan="4">TC4 - Basic Timer Counter 4</td><td>ERR</td>
+      <td rowspan="4">111</td><td rowspan="4">disabled</td></tr>
+    <tr><td>MC0</td></tr>
+    <tr><td>MC1</td></tr>
+    <tr><td>OVF</td></tr>
+    <tr>
+      <td rowspan="4">TC5 - Basic Timer Counter 5</td><td>ERR</td>
+      <td rowspan="4">112</td><td rowspan="4">disabled</td></tr>
+    <tr><td>MC0</td></tr>
+    <tr><td>MC1</td></tr>
+    <tr><td>OVF</td></tr>
+    <tr>
+      <td rowspan="4">TC6 - Basic Timer Counter 6</td><td>ERR</td>
+      <td rowspan="4">113</td><td rowspan="4">disabled</td></tr>
+    <tr><td>MC0</td></tr>
+    <tr><td>MC1</td></tr>
+    <tr><td>OVF</td></tr>
+    <tr>
+      <td rowspan="4">TC7 - Basic Timer Counter 7</td><td>ERR</td>
+      <td rowspan="4">114</td><td rowspan="4">disabled</td></tr>
+    <tr><td>MC0</td></tr>
+    <tr><td>MC1</td></tr>
+    <tr><td>OVF</td></tr>
+    <tr>
+      <td rowspan="6">PDEC - Position Decoder</td><td>DIR</td>
+      <td rowspan="4">115</td><td rowspan="4">disabled</td></tr>
+    <tr><td>ERR</td></tr>
+    <tr><td>OVF</td></tr>
+    <tr><td>VLC</td></tr>
+    <tr><td>MC0</td><td>116</td><td>disabled</td></tr>
+    <tr><td>MC1</td><td>117</td><td>disabled</td></tr>
+    <tr>
+      <td rowspan="3">ADC0 - Analog Digital Converter 0</td><td>OVERRUN</td>
+      <td rowspan="2">118</td><td rowspan="2">disabled</td></tr>
+    <tr><td>WINMON</td></tr>
+    <tr><td>RESRDY</td><td>119</td><td>disabled</td></tr>
+    <tr>
+      <td rowspan="3">ADC1 - Analog Digital Converter 1</td><td>OVERRUN</td>
+      <td rowspan="2">120</td><td rowspan="2">disabled</td></tr>
+    <tr><td>WINMON</td></tr>
+    <tr><td>RESRDY</td><td>121</td><td>disabled</td></tr>
+    <tr>
+      <td rowspan="3">AC - Analog Comparators</td><td>COMP0</td>
+      <td rowspan="3">122</td><td rowspan="3">disabled</td></tr>
+    <tr><td>COMP1</td></tr>
+    <tr><td>WIN0</td></tr>
+    <tr>
+      <td rowspan="8">DAC - Digital-to-Analog Converter</td><td>OVERRUN0</td>
+      <td rowspan="4">123</td><td rowspan="4">disabled</td></tr>
+    <tr><td>OVERRUN1</td></tr>
+    <tr><td>UNDERRUN0</td></tr>
+    <tr><td>UNDERRUN1</td></tr>
+    <tr><td>EMPTY0</td><td>124</td><td>disabled</td></tr>
+    <tr><td>EMPTY1</td><td>125</td><td>disabled</td></tr>
+    <tr><td>RESRDY0</td><td>126</td><td>disabled</td></tr>
+    <tr><td>RESRDY1</td><td>127</td><td>disabled</td></tr>
+    <tr>
+      <td rowspan="8">I2S - Inter-IC Sound Interface</td><td>RXOR0</td>
+      <td rowspan="8">128</td><td rowspan="8">disabled</td></tr>
+    <tr><td>RXOR1</td></tr>
+    <tr><td>RXRDY0</td></tr>
+    <tr><td>RXRDY1</td></tr>
+    <tr><td>TXRDY0</td></tr>
+    <tr><td>TXRDY1</td></tr>
+    <tr><td>TXUR0</td></tr>
+    <tr><td>TXUR1</td></tr>
+    <tr>
+      <td rowspan="2">PCC - Parallel Capture Controller</td><td>DRDY</td>
+      <td rowspan="2">129</td><td rowspan="2">disabled</td></tr>
+    <tr><td>OVRE</td></tr>
+    <tr>
+      <td rowspan="2">AES - Advanced Encryption Standard</td><td>ENCCMP</td>
+      <td rowspan="2">130</td><td rowspan="2">disabled</td></tr>
+    <tr><td>GFMCMP</td></tr>
+    <tr><td>TRNG - True Random Generator</td><td>DATARDY</td><td>131</td><td>disabled</td></tr>
+    <tr><td>ICM - Integrity Check Monitor</td><td>All ICM Interrupts</td><td>132</td><td>disabled</td></tr>
+    <tr><td>Reserved</td><td>Reserved</td><td>133</td><td>disabled</td></tr>
+    <tr>
+      <td rowspan="6">QSPI - Quad SPI interface</td><td>RXC</td>
+      <td rowspan="6">134</td><td rowspan="6">disabled</td></tr>
+    <tr><td>DRE</td></tr>
+    <tr><td>TXC</td></tr>
+    <tr><td>ERROR</td></tr>
+    <tr><td>CSRISE</td></tr>
+    <tr><td>INSTREND</td></tr>
+    <tr><td>SDHC0 - SD/MMC Host Controller 0</td><td>All SDHC0 Interrupts</td><td>135</td><td>disabled</td></tr>
+    <tr><td>SDHC1 - SD/MMC Host Controller 1</td><td>All SDHC1 Interrupts</td><td>136</td><td>disabled</td></tr>
+  </tbody>
+</table>
+
 
 ## Exception and Interrupt Handlers
 
