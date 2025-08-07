@@ -98,9 +98,9 @@ bool GeoluxHydroCam::setup(void) {
 
     if (!success) {
         // Set the status error bit (bit 7)
-        _sensorStatus |= 0b10000000;
+        setStatusBit(ERROR_OCCURRED);
         // UN-set the set-up bit (bit 0) since setup failed!
-        _sensorStatus &= 0b11111110;
+        clearStatusBit(SETUP_SUCCESSFUL);
     }
 
     // Turn the power back off it it had been turned on
@@ -122,7 +122,7 @@ bool GeoluxHydroCam::wake(void) {
     if (!is_ready) {
         // Make sure that the wake time and wake success bit (bit 4) are unset
         _millisSensorActivated = 0;
-        _sensorStatus &= 0b11101111;
+        clearStatusBit(WAKE_SUCCESSFUL);
         return false;
     }
 
@@ -153,7 +153,7 @@ bool GeoluxHydroCam::startSingleMeasurement(void) {
         // Make sure that the measurement start time and success bit (bit 6) are
         // unset
         _millisMeasurementRequested = 0;
-        _sensorStatus &= 0b10111111;
+        clearStatusBit(MEASUREMENT_SUCCESSFUL);
         return false;
     }
 
@@ -175,7 +175,7 @@ bool GeoluxHydroCam::startSingleMeasurement(void) {
         MS_DBG(getSensorNameAndLocation(),
                F("did not successfully start a measurement."));
         _millisMeasurementRequested = 0;
-        _sensorStatus &= 0b10111111;
+        clearStatusBit(MEASUREMENT_SUCCESSFUL);
     }
 
     return true;
@@ -190,7 +190,7 @@ bool GeoluxHydroCam::addSingleMeasurementResult(void) {
 
     // Check a measurement was *successfully* started (status bit 6 set)
     // Only go on to get a result if it was
-    if (bitRead(_sensorStatus, 6)) {
+    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         // set a new filename based on the current RTC time
         String filename = _baseLogger->generateFileName(
             true, HYDROCAM_FILE_EXTENSION, _filePrefix);
@@ -256,7 +256,7 @@ bool GeoluxHydroCam::addSingleMeasurementResult(void) {
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)
-    _sensorStatus &= 0b10011111;
+    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
 
     // Return values shows if we got a not-obviously-bad reading
     return success;
@@ -288,7 +288,7 @@ void GeoluxHydroCam::powerUp(void) {
                F("is not controlled by this library."));
     }
     // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
-    _sensorStatus |= 0b00000110;
+    setStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL);
 }
 
 
@@ -306,7 +306,9 @@ void GeoluxHydroCam::powerDown(void) {
         _millisMeasurementRequested = 0;
         // Unset the status bits for sensor power (bits 1 & 2),
         // activation (bits 3 & 4), and measurement request (bits 5 & 6)
-        _sensorStatus &= 0b10000001;
+        clearStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL, WAKE_ATTEMPTED,
+                        WAKE_SUCCESSFUL, MEASUREMENT_ATTEMPTED,
+                        MEASUREMENT_SUCCESSFUL);
     }
     if (_powerPin2 >= 0) {
         MS_DBG(F("Turning off secondary power to"), getSensorNameAndLocation(),
@@ -326,7 +328,7 @@ void GeoluxHydroCam::powerDown(void) {
 bool GeoluxHydroCam::isWarmedUp(bool debug) {
     // If the sensor doesn't have power, then it will never be warmed up,
     // so the warm up time is essentially already passed.
-    if (!bitRead(_sensorStatus, 2)) {
+    if (!getStatusBit(POWER_SUCCESSFUL)) {
         if (debug) {
             MS_DBG(getSensorNameAndLocation(),
                    F("does not have power and cannot warm up!"));
@@ -370,7 +372,7 @@ bool GeoluxHydroCam::isWarmedUp(bool debug) {
 bool GeoluxHydroCam::isStable(bool debug) {
     // If the sensor failed to activate, it will never stabilize, so the
     // stabilization time is essentially already passed
-    if (!bitRead(_sensorStatus, 4)) {
+    if (!getStatusBit(WAKE_SUCCESSFUL)) {
         if (debug) {
             MS_DBG(getSensorNameAndLocation(),
                    F("is not active and cannot stabilize!"));
@@ -423,7 +425,7 @@ bool GeoluxHydroCam::isStable(bool debug) {
 bool GeoluxHydroCam::isMeasurementComplete(bool debug) {
     // If a measurement failed to start, the sensor will never return a result,
     // so the measurement time is essentially already passed
-    if (!bitRead(_sensorStatus, 6)) {
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         if (debug) {
             MS_DBG(getSensorNameAndLocation(),
                    F("is not taking an image and will not return a value!"));

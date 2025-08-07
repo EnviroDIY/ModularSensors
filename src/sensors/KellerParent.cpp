@@ -112,7 +112,7 @@ void KellerParent::powerUp(void) {
     // Reset enable pin because pins are set to tri-state on sleep
     if (_RS485EnablePin >= 0) { pinMode(_RS485EnablePin, OUTPUT); }
     // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
-    _sensorStatus |= 0b00000110;
+    setStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL);
 }
 
 
@@ -130,7 +130,9 @@ void KellerParent::powerDown(void) {
         _millisMeasurementRequested = 0;
         // Unset the status bits for sensor power (bits 1 & 2),
         // activation (bits 3 & 4), and measurement request (bits 5 & 6)
-        _sensorStatus &= 0b10000001;
+        clearStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL, WAKE_ATTEMPTED,
+                        WAKE_SUCCESSFUL, MEASUREMENT_ATTEMPTED,
+                        MEASUREMENT_SUCCESSFUL);
     }
     if (_powerPin2 >= 0) {
         MS_DBG(F("Turning off secondary power to"), getSensorNameAndLocation(),
@@ -157,7 +159,7 @@ bool KellerParent::addSingleMeasurementResult(void) {
 
     // Check a measurement was *successfully* started (status bit 6 set)
     // Only go on to get a result if it was
-    if (bitRead(_sensorStatus, 6)) {
+    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
         // Get Values
@@ -191,7 +193,7 @@ bool KellerParent::addSingleMeasurementResult(void) {
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)
-    _sensorStatus &= 0b10011111;
+    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
 
     // Return true when finished
     return success;

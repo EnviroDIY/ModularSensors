@@ -153,7 +153,7 @@ bool RainCounterI2C::addSingleMeasurementResult(void) {
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)
-    _sensorStatus &= 0b10011111;
+    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
 
     // Return true when finished
     return true;

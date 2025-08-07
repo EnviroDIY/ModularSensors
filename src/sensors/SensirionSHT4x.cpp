@@ -74,9 +74,9 @@ bool SensirionSHT4x::setup(void) {
     // Set status bits
     if (!success) {
         // Set the status error bit (bit 7)
-        _sensorStatus |= 0b10000000;
+        setStatusBit(ERROR_OCCURRED);
         // UN-set the set-up bit (bit 0) since setup failed!
-        _sensorStatus &= 0b11111110;
+        clearStatusBit(SETUP_SUCCESSFUL);
     }
     retVal &= success;
 
@@ -95,7 +95,7 @@ bool SensirionSHT4x::addSingleMeasurementResult(void) {
 
     // Check a measurement was *successfully* started (status bit 6 set)
     // Only go on to get a result if it was
-    if (bitRead(_sensorStatus, 6)) {
+    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
         // Make sure the heater is *not* going to run.  We want the ambient
@@ -126,7 +126,7 @@ bool SensirionSHT4x::addSingleMeasurementResult(void) {
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)
-    _sensorStatus &= 0b10011111;
+    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
 
     return ret_val;
 }
@@ -175,7 +175,8 @@ bool SensirionSHT4x::sleep(void) {
         _millisMeasurementRequested = 0;
         // Unset the status bits for sensor activation (bits 3 & 4) and
         // measurement request (bits 5 & 6)
-        _sensorStatus &= 0b10000111;
+        clearStatusBits(WAKE_ATTEMPTED, WAKE_SUCCESSFUL, MEASUREMENT_ATTEMPTED,
+                        MEASUREMENT_SUCCESSFUL);
         MS_DBG(F("Done"));
     } else {
         MS_DBG(getSensorNameAndLocation(),

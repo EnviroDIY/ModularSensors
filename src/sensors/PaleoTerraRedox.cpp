@@ -152,9 +152,9 @@ bool PaleoTerraRedox::addSingleMeasurementResult(void) {
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
     // Unset the status bit for a measurement having been requested (bit 5)
-    _sensorStatus &= 0b11011111;
+    clearStatusBit(MEASUREMENT_ATTEMPTED);
     // Set the status bit for measurement completion (bit 6)
-    _sensorStatus |= 0b01000000;
+    setStatusBit(MEASUREMENT_SUCCESSFUL);
 
     return success;
 }

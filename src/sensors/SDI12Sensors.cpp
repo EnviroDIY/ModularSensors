@@ -120,9 +120,9 @@ bool SDI12Sensors::setup(void) {
 
     if (!retVal) {  // if set-up failed
         // Set the status error bit (bit 7)
-        _sensorStatus |= 0b10000000;
+        setStatusBit(ERROR_OCCURRED);
         // UN-set the set-up bit (bit 0) since setup failed!
-        _sensorStatus &= 0b11111110;
+        clearStatusBit(SETUP_SUCCESSFUL);
     }
 
     return retVal;
@@ -384,8 +384,7 @@ bool SDI12Sensors::startSingleMeasurement(void) {
     // Check that the sensor is there and responding
     if (!requestSensorAcknowledgement()) {
         _millisMeasurementRequested = 0;
-        _sensorStatus &= 0b10111111;
-        return false;
+        clearStatusBit(MEASUREMENT_SUCCESSFUL) return false;
     }
 
     // send the commands to start the measurement; true = concurrent
@@ -402,14 +401,13 @@ bool SDI12Sensors::startSingleMeasurement(void) {
         // Update the time that a measurement was requested
         _millisMeasurementRequested = millis();
         // Set the status bit for measurement start success (bit 6)
-        _sensorStatus |= 0b01000000;
+        setStatusBit(MEASUREMENT_SUCCESSFUL);
         return true;
     } else {
         MS_DBG(getSensorNameAndLocation(),
                F("did not respond to measurement request!"));
         _millisMeasurementRequested = 0;
-        _sensorStatus &= 0b10111111;
-        return false;
+        clearStatusBit(MEASUREMENT_SUCCESSFUL) return false;
     }
 }
 #endif
@@ -714,7 +712,7 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
 
     // Check a measurement was *successfully* started (status bit 6 set)
     // Only go on to get a result if it was
-    if (bitRead(_sensorStatus, 6)) {
+    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         success = getResults(MS_SDI12_USE_CRC);
     } else {
         // If there's no measurement, need to make sure we send over all
@@ -728,7 +726,7 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)
-    _sensorStatus &= 0b10011111;
+    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
 
     return success;
 }
@@ -760,7 +758,7 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
             // Update the time that a measurement was requested
             _millisMeasurementRequested = millis();
             // Set the status bit for measurement start success (bit 6)
-            _sensorStatus |= 0b01000000;
+            setStatusBit(MEASUREMENT_SUCCESSFUL);
 
             // Since this is not a concurrent measurement, we must sit around
             // and wait for the sensor to issue a service request telling us
@@ -819,7 +817,7 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)
-    _sensorStatus &= 0b10011111;
+    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
 
     return success;
 }

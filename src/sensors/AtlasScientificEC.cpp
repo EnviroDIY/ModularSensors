@@ -78,9 +78,9 @@ bool AtlasScientificEC::setup() {
 
     if (!success) {
         // Set the status error bit (bit 7)
-        _sensorStatus |= 0b10000000;
+        setStatusBit(ERROR_OCCURRED);
         // UN-set the set-up bit (bit 0) since setup failed!
-        _sensorStatus &= 0b11111110;
+        clearStatusBit(SETUP_SUCCESSFUL);
     }
 
     // Turn the power back off it it had been turned on

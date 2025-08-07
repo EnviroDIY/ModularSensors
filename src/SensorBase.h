@@ -167,6 +167,19 @@ class Sensor {
      */
     uint8_t getNumberMeasurementsToAverage(void);
 
+
+    /// @brief The significance of the various status bits
+    typedef enum {
+        SETUP_SUCCESSFUL       = 0,  ///< Whether setup was successful
+        POWER_ATTEMPTED        = 1,  ///< Whether power up was attempted
+        POWER_SUCCESSFUL       = 2,  ///< Whether power up was successful
+        WAKE_ATTEMPTED         = 3,  ///< Whether wake up was attempted
+        WAKE_SUCCESSFUL        = 4,  ///< Whether wake up was successful
+        MEASUREMENT_ATTEMPTED  = 5,  ///< Whether measurement was attempted
+        MEASUREMENT_SUCCESSFUL = 6,  ///< Whether measurement was successful
+        ERROR_OCCURRED         = 7   ///< Whether an error has occurred
+    } sensor_status_bits;
+
     /**
      * @brief Get the 8-bit code for the current status of the sensor.
      *
@@ -217,6 +230,21 @@ class Sensor {
      * @return The status as a uint8_t.
      */
     uint8_t getStatus(void);
+
+    bool getStatusBit(sensor_status_bits bitToGet);
+
+    void setStatusBit(sensor_status_bits bitToSet);
+    template <typename sensor_status_bits, typename... bitsToSet>
+    void setStatusBits(sensor_status_bits firstBit, bitsToSet... bitsToSet) {
+        setStatusBit(bitsToSet, ...);
+    }
+
+    void clearStatusBit(sensor_status_bits bitToClear);
+    template <typename sensor_status_bits, typename... bitsToClear>
+    void clearStatusBits(sensor_status_bits firstBit,
+                         bitsToClear... bitsToClear) {
+        clearStatusBit(bitsToClear, ...);
+    }
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able

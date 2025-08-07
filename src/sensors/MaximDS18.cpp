@@ -137,9 +137,9 @@ bool MaximDS18::setup(void) {
 
     if (!retVal) {  // if set-up failed
         // Set the status error bit (bit 7)
-        _sensorStatus |= 0b10000000;
+        setStatusBit(ERROR_OCCURRED);
         // UN-set the set-up bit (bit 0) since setup failed!
-        _sensorStatus &= 0b11111110;
+        clearStatusBit(SETUP_SUCCESSFUL);
     }
 
     return retVal;
@@ -169,7 +169,7 @@ bool MaximDS18::startSingleMeasurement(void) {
         MS_DBG(getSensorNameAndLocation(),
                F("did not successfully start a measurement."));
         _millisMeasurementRequested = 0;
-        _sensorStatus &= 0b10111111;
+        clearStatusBit(MEASUREMENT_SUCCESSFUL);
     }
 
     return success;
@@ -184,7 +184,7 @@ bool MaximDS18::addSingleMeasurementResult(void) {
 
     // Check a measurement was *successfully* started (status bit 6 set)
     // Only go on to get a result if it was
-    if (bitRead(_sensorStatus, 6)) {
+    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
         result = _internalDallasTemp.getTempC(_OneWireAddress);
         MS_DBG(F("  Received"), result, F("°C"));
@@ -207,7 +207,7 @@ bool MaximDS18::addSingleMeasurementResult(void) {
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)
-    _sensorStatus &= 0b10011111;
+    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
 
     return success;
 }
