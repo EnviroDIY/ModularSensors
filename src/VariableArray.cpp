@@ -108,7 +108,7 @@ bool VariableArray::setupSensors(void) {
     uint8_t nSensorsSetup = 0;
     for (uint8_t i = 0; i < _variableCount; i++) {
         if (isLastVarFromSensor(i)  // Skip non-unique sensors
-            && bitRead(arrayOfVars[i]->parentSensor->getStatus(), 0) ==
+            && getSensorStatusBit(i, Sensor::SETUP_SUCCESSFUL) ==
                 1  // already set up
         ) {
             MS_DBG(F("   "), arrayOfVars[i]->getParentSensorNameAndLocation(),
@@ -125,7 +125,7 @@ bool VariableArray::setupSensors(void) {
     while (nSensorsSetup < _sensorCount) {
         for (uint8_t i = 0; i < _variableCount; i++) {
             if (isLastVarFromSensor(i)  // Skip non-unique sensors
-                && bitRead(arrayOfVars[i]->parentSensor->getStatus(), 0) ==
+                && getSensorStatusBit(i, Sensor::SETUP_SUCCESSFUL) ==
                     0  // only set up if it has not yet been set up
             ) {
                 MS_DBG(F("    Set up of"),
@@ -190,7 +190,7 @@ bool VariableArray::sensorsWake(void) {
     // command
     for (uint8_t i = 0; i < _variableCount; i++) {
         if (isLastVarFromSensor(i)  // Skip non-unique sensors
-            && bitRead(arrayOfVars[i]->parentSensor->getStatus(), 3) ==
+            && getSensorStatusBit(i, Sensor::WAKE_ATTEMPTED) ==
                 1  // already attempted to wake
         ) {
             MS_DBG(F("    Wake up of"),
@@ -207,7 +207,7 @@ bool VariableArray::sensorsWake(void) {
     while (nSensorsAwake < _sensorCount) {
         for (uint8_t i = 0; i < _variableCount; i++) {
             if (isLastVarFromSensor(i)  // Skip non-unique sensors
-                && bitRead(arrayOfVars[i]->parentSensor->getStatus(), 3) ==
+                && getSensorStatusBit(i, Sensor::WAKE_ATTEMPTED) ==
                     0  // If no attempts yet made to wake the sensor up
                 && arrayOfVars[i]->parentSensor->isWarmedUp(
                        deepDebugTiming)  // and if it is already warmed up
@@ -342,9 +342,9 @@ bool VariableArray::updateAllSensors(void) {
     // they will be skipped in further looping.
     for (uint8_t i = 0; i < _variableCount; i++) {
         if (lastSensorVariable[i]  // Skip non-unique sensors
-            && (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 3) ==
+            && (getSensorStatusBit(i, Sensor::WAKE_ATTEMPTED) ==
                     0  // No attempt made to wake the sensor up
-                || bitRead(arrayOfVars[i]->parentSensor->getStatus(), 4) ==
+                || getSensorStatusBit(i, Sensor::WAKE_SUCCESSFUL) ==
                     0  // OR Wake up failed
                 )) {
             MS_DBG(i, F("--->>"),
@@ -369,20 +369,19 @@ bool VariableArray::updateAllSensors(void) {
             // Leave this whole section commented out unless you want excessive
             // printouts (ie, thousands of lines) of the timing information!!
             if (lastSensorVariable[i] and
-                nMeasurementsToAverage[i] > nMeasurementsCompleted[i])
-            {
-                MS_DEEP_DBG(i), '-',
-            arrayOfVars[i]->getParentSensorNameAndLocation(), F("- millis:"),
-            millis(), F("- status: 0b"),
-                           bitRead(arrayOfVars[i]->parentSensor->getStatus(),
-            7), bitRead(arrayOfVars[i]->parentSensor->getStatus(), 6),
-                           bitRead(arrayOfVars[i]->parentSensor->getStatus(),
-            5), bitRead(arrayOfVars[i]->parentSensor->getStatus(), 4),
-                           bitRead(arrayOfVars[i]->parentSensor->getStatus(),
-            3), bitRead(arrayOfVars[i]->parentSensor->getStatus(), 2),
-                           bitRead(arrayOfVars[i]->parentSensor->getStatus(),
-            1), bitRead(arrayOfVars[i]->parentSensor->getStatus(), 0), F("-
-            measurement #"), (nMeasurementsCompleted[i] + 1);
+                nMeasurementsToAverage[i] > nMeasurementsCompleted[i]) {
+                MS_DEEP_DBG(
+                    i, '-', arrayOfVars[i]->getParentSensorNameAndLocation(),
+                    F("- millis:"), millis(), F("- status: 0b"),
+                    getSensorStatusBit(i, Sensor::ERROR_OCCURRED),
+                    getSensorStatusBit(i, Sensor::MEASUREMENT_SUCCESSFUL),
+                    getSensorStatusBit(i, Sensor::MEASUREMENT_ATTEMPTED),
+                    getSensorStatusBit(i, Sensor::WAKE_SUCCESSFUL),
+                    getSensorStatusBit(i, Sensor::WAKE_ATTEMPTED),
+                    getSensorStatusBit(i, Sensor::POWER_SUCCESSFUL),
+                    getSensorStatusBit(i, Sensor::POWER_ATTEMPTED),
+                    getSensorStatusBit(i, Sensor::SETUP_SUCCESSFUL),
+                    F("-measurement #"), nMeasurementsCompleted[i] + 1);
             }
             // END CHUNK FOR DEBUGGING!
             ***/
@@ -393,7 +392,7 @@ bool VariableArray::updateAllSensors(void) {
                 // first, make sure the sensor is stable
                 if (arrayOfVars[i]->parentSensor->isStable(deepDebugTiming)) {
                     // now, if the sensor is not currently measuring...
-                    if (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 5) ==
+                    if (getSensorStatusBit(i, Sensor::MEASUREMENT_ATTEMPTED) ==
                         0) {  // NO attempt yet to start a measurement
                         // Start a reading
                         MS_DBG(i, '.', nMeasurementsCompleted[i] + 1,
@@ -646,14 +645,14 @@ bool VariableArray::completeUpdate(void) {
                 MS_DEEP_DBG(
                     i, '-', arrayOfVars[i]->getParentSensorNameAndLocation(),
                     F("- millis:"), millis(), F("- status: 0b"),
-                    bitRead(arrayOfVars[i]->parentSensor->getStatus(), 7),
-                    bitRead(arrayOfVars[i]->parentSensor->getStatus(), 6),
-                    bitRead(arrayOfVars[i]->parentSensor->getStatus(), 5),
-                    bitRead(arrayOfVars[i]->parentSensor->getStatus(), 4),
-                    bitRead(arrayOfVars[i]->parentSensor->getStatus(), 3),
-                    bitRead(arrayOfVars[i]->parentSensor->getStatus(), 2),
-                    bitRead(arrayOfVars[i]->parentSensor->getStatus(), 1),
-                    bitRead(arrayOfVars[i]->parentSensor->getStatus(), 0),
+                    getSensorStatusBit(i,7),
+                    getSensorStatusBit(i,6),
+                    getSensorStatusBit(i,5),
+                    getSensorStatusBit(i,4),
+                    getSensorStatusBit(i,3),
+                    getSensorStatusBit(i,2),
+                    getSensorStatusBit(i,1),
+                    getSensorStatusBit(i,0),
                     F("- measurement #"), (nMeasurementsCompleted[i] + 1));
             }
             MS_DEEP_DBG(F("----------------------------------"));
@@ -671,7 +670,7 @@ bool VariableArray::completeUpdate(void) {
             // Only do checks on sensors that still have measurements to finish
             if (lastSensorVariable[i] &&
                 nMeasurementsToAverage[i] > nMeasurementsCompleted[i]) {
-                if (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 3) ==
+                if (getSensorStatusBit(i, Sensor::WAKE_ATTEMPTED) ==
                         0  // If no attempts yet made to wake the sensor up
                     && arrayOfVars[i]->parentSensor->isWarmedUp(
                            deepDebugTiming)  // and if it is already warmed up
@@ -696,10 +695,8 @@ bool VariableArray::completeUpdate(void) {
                 // If attempts were made to wake the sensor, but they failed
                 // then we're just bumping up the number of measurements to
                 // completion
-                if (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 3) ==
-                        1 &&
-                    bitRead(arrayOfVars[i]->parentSensor->getStatus(), 4) ==
-                        0) {
+                if (getSensorStatusBit(i, Sensor::WAKE_ATTEMPTED) == 1 &&
+                    getSensorStatusBit(i, Sensor::WAKE_SUCCESSFUL) == 0) {
                     MS_DBG(i, F("--->>"),
                            arrayOfVars[i]->getParentSensorNameAndLocation(),
                            F("did not wake up! No measurements will be taken! "
@@ -717,12 +714,11 @@ bool VariableArray::completeUpdate(void) {
 
                 // If the sensor was successfully awoken/activated...
                 // .. make sure the sensor is stable
-                if (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 4) ==
-                        1 &&
+                if (getSensorStatusBit(i, Sensor::WAKE_SUCCESSFUL) == 1 &&
                     arrayOfVars[i]->parentSensor->isStable(deepDebugTiming)) {
                     // If no attempt has yet been made to start a measurement,
                     // start one
-                    if (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 5) ==
+                    if (getSensorStatusBit(i, Sensor::MEASUREMENT_ATTEMPTED) ==
                         0) {
                         // Start a reading
                         MS_DBG(i, '.', nMeasurementsCompleted[i] + 1,
@@ -862,22 +858,14 @@ void VariableArray::printSensorData(Stream* stream) {
         } else {
             stream->print(arrayOfVars[i]->getParentSensorNameAndLocation());
             // stream->print(F(" with status 0b"));
-            // stream->print(
-            //     bitRead(arrayOfVars[i]->parentSensor->getStatus(), 7));
-            // stream->print(
-            //     bitRead(arrayOfVars[i]->parentSensor->getStatus(), 6));
-            // stream->print(
-            //     bitRead(arrayOfVars[i]->parentSensor->getStatus(), 5));
-            // stream->print(
-            //     bitRead(arrayOfVars[i]->parentSensor->getStatus(), 4));
-            // stream->print(
-            //     bitRead(arrayOfVars[i]->parentSensor->getStatus(), 3));
-            // stream->print(
-            //     bitRead(arrayOfVars[i]->parentSensor->getStatus(), 2));
-            // stream->print(
-            //     bitRead(arrayOfVars[i]->parentSensor->getStatus(), 1));
-            // stream->print(
-            //     bitRead(arrayOfVars[i]->parentSensor->getStatus(), 0));
+            // stream->print(getSensorStatusBit(i, 7));
+            // stream->print(getSensorStatusBit(i, 6));
+            // stream->print(getSensorStatusBit(i, 5));
+            // stream->print(getSensorStatusBit(i, 4));
+            // stream->print(getSensorStatusBit(i, 3));
+            // stream->print(getSensorStatusBit(i, 2));
+            // stream->print(getSensorStatusBit(i, 1));
+            // stream->print(getSensorStatusBit(i, 0));
             stream->print(F(" reports "));
             stream->print(arrayOfVars[i]->getVarName());
             stream->print(F(" is "));
@@ -911,6 +899,12 @@ bool VariableArray::isLastVarFromSensor(int arrayIndex) {
     }
 }
 
+
+bool VariableArray::getSensorStatusBit(int                        arrayIndex,
+                                       Sensor::sensor_status_bits bitToGet) {
+    if (arrayIndex < 0 || arrayIndex >= _variableCount) { return false; }
+    return arrayOfVars[arrayIndex]->parentSensor->getStatusBit(bitToGet);
+}
 
 // Count the maximum number of measurements needed from a single sensor for the
 // requested averaging

@@ -317,6 +317,9 @@ class VariableArray {
      */
     bool checkVariableUUIDs(void);
 
+    bool getSensorStatusBit(int                        arrayIndex,
+                            Sensor::sensor_status_bits bitToGet);
+
 #ifdef MS_VARIABLEARRAY_DEBUG_DEEP
     /**
      * @brief Prints out the contents of an array with even spaces and commas
