@@ -384,7 +384,8 @@ bool SDI12Sensors::startSingleMeasurement(void) {
     // Check that the sensor is there and responding
     if (!requestSensorAcknowledgement()) {
         _millisMeasurementRequested = 0;
-        clearStatusBit(MEASUREMENT_SUCCESSFUL) return false;
+        clearStatusBit(MEASUREMENT_SUCCESSFUL);
+        return false;
     }
 
     // send the commands to start the measurement; true = concurrent
@@ -407,7 +408,8 @@ bool SDI12Sensors::startSingleMeasurement(void) {
         MS_DBG(getSensorNameAndLocation(),
                F("did not respond to measurement request!"));
         _millisMeasurementRequested = 0;
-        clearStatusBit(MEASUREMENT_SUCCESSFUL) return false;
+        clearStatusBit(MEASUREMENT_SUCCESSFUL);
+        return false;
     }
 }
 #endif
