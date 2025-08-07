@@ -919,6 +919,12 @@ void Logger::systemSleep(void) {
     //  SRGD Note: I believe this only applies at power-on, but it's probably
     //  not a bad idea to check that the flag has been set.
     while (!PM->INTFLAG.bit.SLEEPRDY);
+
+#if defined(ENVIRODIY_STONEFLY_M4)
+    pinMode(LED_BUILTIN, OUTPUT);
+    digitalWrite(LED_BUILTIN,
+                 LOW);  // turn off the built-in LED if using a Stonefly M4
+#endif
 #else
     //^^ SAMD21
 
@@ -1034,16 +1040,24 @@ void Logger::systemSleep(void) {
     // ---------------------------------------------------------------------
     // -- The portion below this happens on wake up, after any wake ISR's --
 
+#if defined(ENVIRODIY_STONEFLY_M4)
+    pinMode(LED_BUILTIN, OUTPUT);
+    digitalWrite(LED_BUILTIN,
+                 HIGH);  // turn off the built-in LED if using a Stonefly M4
+#endif
+
     MS_DEEP_DBG(F("\n---------------------------------------"));
     MS_DEEP_DBG(F("This is the first message after sleep!"));
 
 #if defined(ARDUINO_ARCH_SAMD)
+
 #if !defined(__SAMD51__)
     // Enable systick interrupt
     SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;
 #endif
-    // Reattach the USB
+
 #if !defined(USE_TINYUSB) && defined(USBCON)
+    // Reattach the USB
     MS_DEEP_DBG(F("Reattaching USBDevice"));
     USBDevice.init();
     // ^^ Restarts the bus, including re-attaching the NVIC interrupts
@@ -1115,7 +1129,7 @@ void Logger::systemSleep(void) {
         setAlertPin(_ledPin);
     }
 
-    // Wake-up message
+    // Last wake-up message
     MS_DBG(F("... zzzZZ Exiting system sleep function!"));
 #ifdef MS_LOGGERBASE_DEBUG
     MS_SERIAL_OUTPUT.println();
