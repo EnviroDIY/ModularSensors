@@ -359,7 +359,7 @@ bool Sensor::update(void) {
     if (!wasOn) { powerUp(); }
 
     // Check if it's awake/active, activate it if not
-    bool wasActive = getStatusBit(WAKE_ATTEMPTED);
+    bool wasActive = getStatusBit(WAKE_SUCCESSFUL);
     if (!wasActive) {
         // NOT yet awake
         // wait for the sensor to have been powered for long enough to respond
