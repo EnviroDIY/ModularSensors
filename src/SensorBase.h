@@ -234,16 +234,25 @@ class Sensor {
     bool getStatusBit(sensor_status_bits bitToGet);
 
     void setStatusBit(sensor_status_bits bitToSet);
-    template <typename sensor_status_bits, typename... bitsToSet>
-    void setStatusBits(sensor_status_bits firstBit, bitsToSet... bitsToSet) {
-        setStatusBit(bitsToSet, ...);
+    template <typename T>
+    void setStatusBits(T bitToSet) {
+        setStatusBit(bitToSet);
+    }
+    template <typename T, typename... Args>
+    void setStatusBits(T firstBit, Args... otherBits) {
+        setStatusBit(firstBit);
+        setStatusBits(otherBits...);
     }
 
     void clearStatusBit(sensor_status_bits bitToClear);
-    template <typename sensor_status_bits, typename... bitsToClear>
-    void clearStatusBits(sensor_status_bits firstBit,
-                         bitsToClear... bitsToClear) {
-        clearStatusBit(bitsToClear, ...);
+    template <typename T>
+    void clearStatusBits(T bitToClear) {
+        clearStatusBit(bitToClear);
+    }
+    template <typename T, typename... Args>
+    void clearStatusBits(T firstBit, Args... otherBits) {
+        clearStatusBit(firstBit);
+        clearStatusBits(otherBits...);
     }
 
     /**
