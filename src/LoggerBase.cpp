@@ -1803,6 +1803,16 @@ void Logger::logData(bool sleepBeforeReturning) {
         // Cut power from the SD card, waiting for housekeeping
         turnOffSDcard(true);
 
+// Print out the sensor data
+#if !defined(MS_SILENT)
+        PRINTOUT(" ");
+        _internalArray->printSensorData(&MS_OUTPUT);
+#if defined(MS_2ND_OUTPUT)
+        _internalArray->printSensorData(&MS_2ND_OUTPUT);
+#endif
+        PRINTOUT(" ");
+#endif
+
         // Turn off the LED
         alertOff();
         // Print a line to show reading ended
