@@ -712,14 +712,15 @@ bool VariableArray::completeUpdate(void) {
                         nMeasurementsToAverage[i];
                 }
 
-                // If the sensor was successfully awoken/activated...
-                // .. make sure the sensor is stable
+                // If the sensor was successfully awoken/activated, but no
+                // measurement was either started or finished ...
                 if (getSensorStatusBit(i, Sensor::WAKE_SUCCESSFUL) == 1 &&
-                    arrayOfVars[i]->parentSensor->isStable(deepDebugTiming)) {
-                    // If no attempt has yet been made to start a measurement,
-                    // start one
-                    if (getSensorStatusBit(i, Sensor::MEASUREMENT_ATTEMPTED) ==
+                    getSensorStatusBit(i, Sensor::MEASUREMENT_ATTEMPTED) == 0 &&
+                    getSensorStatusBit(i, Sensor::MEASUREMENT_SUCCESSFUL) ==
                         0) {
+                    // .. check if it's stable
+                    if (arrayOfVars[i]->parentSensor->isStable(
+                            deepDebugTiming)) {
                         // Start a reading
                         MS_DBG(i, '.', nMeasurementsCompleted[i] + 1,
                                F("--->> Starting reading"),
@@ -740,13 +741,17 @@ bool VariableArray::completeUpdate(void) {
                                    '.', nMeasurementsCompleted[i] + 1);
                         }
                     }
+                }
 
+                // if measurements have been started, whether or not
+                // successfully...
+                // We aren't checking if the measurement start was successful;
+                // isMeasurementComplete(deepDebugTiming) will do that.
+                // We want the addSingleMeasurementResult() function to fill in
+                // the -9999 results for a failed measurement.
+                if (getSensorStatusBit(i, Sensor::MEASUREMENT_ATTEMPTED) == 1) {
                     // If a measurement is finished, get the result and tick up
-                    // the number of finished measurements.  We aren't bothering
-                    // to check if the measurement start was successful,
-                    // isMeasurementComplete(deepDebugTiming) will do that and
-                    // we stil want the addSingleMeasurementResult() function to
-                    // fill in the -9999 results for a failed measurement.
+                    // the number of finished measurements.
                     if (arrayOfVars[i]->parentSensor->isMeasurementComplete(
                             deepDebugTiming)) {
                         // Get the value
