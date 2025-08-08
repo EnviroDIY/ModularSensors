@@ -522,7 +522,11 @@ void loggerClock::resetClockInterruptStatus(void) {
 
 void loggerClock::rtcISR(void) {
 #if defined(MS_CLOCKSUPPORT_DEBUG) || defined(MS_LOGGERBASE_DEBUG_DEEP)
-    PRINTOUT("\nClock interrupt!\n");
+    // This is bad practice - calling a Serial.print from an ISR
+    // But.. it's so helpful for debugging!
+    // Turn off MS_CLOCKSUPPORT_DEBUG and MS_LOGGERBASE_DEBUG_DEEP in production
+    // code!
+    PRINTOUT(F("\nClock interrupt!\n"));
 #endif
 }
 

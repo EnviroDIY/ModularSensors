@@ -894,9 +894,10 @@ void Logger::systemSleep(void) {
 
 #if defined(__SAMD51__)
 
-    // Clear the FPU interrupt because it can prevent us from sleeping.
+    // Clear the FPU (floating point unit) interrupt because it can prevent us
+    // from sleeping.
     // From Circuit Python:
-    // https://github.com/maholli/circuitpython/blob/210ce1d1dc9b1c6c615ff2d3201dde89cb75c555/ports/atmel-samd/supervisor/port.c#L654
+    // https://github.com/adafruit/circuitpython/blob/65cfcb83f279869c7b38eb5891ddac557dba155b/ports/atmel-samd/common-hal/alarm/__init__.c#L146
     if (__get_FPSCR() & ~(0x9f)) {
         __set_FPSCR(__get_FPSCR() & ~(0x9f));
         (void)__get_FPSCR();
@@ -958,17 +959,16 @@ void Logger::systemSleep(void) {
 
     __DSB();  // Data sync barrier - to ensure outgoing memory accesses
               // complete
-
-    // For tips on failing to sleep, see:
-    // https://www.eevblog.com/forum/microcontrollers/crashing-through-__wfi/
-    __WFI();
-    // https://stackoverflow.com/questions/46934649/arm-wfi-wont-sleep
+    __WFI();  // wait for interrupt
+              // https://stackoverflow.com/questions/46934649/arm-wfi-wont-sleep
     // There are three conditions that cause the processor to wake up from a WFI
     // instruction:
     // - a non-masked interrupt occurs and its priority is greater than the
     // current execution priority (i.e. the interrupt is taken)
     // - an interrupt masked by PRIMASK becomes pending
     // - a Debug Entry request.
+    // For tips on failing to sleep, see:
+    // https://www.eevblog.com/forum/microcontrollers/crashing-through-__wfi/
 
 
 #elif defined(ARDUINO_ARCH_AVR)
