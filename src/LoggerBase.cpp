@@ -1856,6 +1856,9 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
         _internalArray->completeUpdate();
         extendedWatchDog::resetWatchDog();
 
+        // Create a csv data record and save it to the log file
+        logToSD();
+
 // Print out the sensor data
 #if !defined(MS_SILENT)
         PRINTOUT(" ");
@@ -1865,9 +1868,6 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
 #endif
         PRINTOUT(" ");
 #endif
-
-        // Create a csv data record and save it to the log file
-        logToSD();
 
         // Flush the publisher buffers (if any) if we have been invoked by the
         // testing button, otherwise follow settings from
