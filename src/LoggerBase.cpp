@@ -303,10 +303,16 @@ void Logger::setAlertPin(int8_t ledPin) {
     }
 }
 void Logger::alertOn() {
-    if (_ledPin >= 0) { digitalWrite(_ledPin, HIGH); }
+    if (_ledPin >= 0) {
+        pinMode(_ledPin, OUTPUT);
+        digitalWrite(_ledPin, HIGH);
+    }
 }
 void Logger::alertOff() {
-    if (_ledPin >= 0) { digitalWrite(_ledPin, LOW); }
+    if (_ledPin >= 0) {
+        pinMode(_ledPin, OUTPUT);
+        digitalWrite(_ledPin, LOW);
+    }
 }
 
 
