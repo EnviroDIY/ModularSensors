@@ -798,14 +798,6 @@ void Logger::systemSleep(void) {
 
 #if defined(ARDUINO_ARCH_SAMD)
 
-#if !defined(USE_TINYUSB) && defined(USBCON)
-    // Detach the USB, iff not using TinyUSB
-    MS_DEEP_DBG(F("Detaching USBDevice"));
-    USBDevice.detach();   // USB->DEVICE.CTRLB.bit.DETACH = 1;
-    USBDevice.end();      // USB->DEVICE.CTRLA.bit.ENABLE = 0; wait for sync;
-    USBDevice.standby();  // USB->DEVICE.CTRLA.bit.RUNSTDBY = 0;
-#endif
-
     // force all pins to minimum power draw levels (tri-state)
     // Set direction (DIR) to 0 (input)
     // Set input enable (PINCFG.INEN) to 0 (disable input buffer)
@@ -873,14 +865,24 @@ void Logger::systemSleep(void) {
 // Wait until the serial ports have finished transmitting
 // This is crucial for the SAMD boards that will continuously wake if they have
 // data remaining in the buffer.
-#if defined(SERIAL_PORT_USBVIRTUAL)
-    SERIAL_PORT_USBVIRTUAL.flush();
+#if defined(MS_2ND_OUTPUT)
+    MS_2ND_OUTPUT.flush();
 #endif
 #if defined(MS_OUTPUT)
     MS_OUTPUT.flush();
 #endif
-#if defined(MS_2ND_OUTPUT)
-    MS_2ND_OUTPUT.flush();
+#if defined(SERIAL_PORT_USBVIRTUAL)
+    SERIAL_PORT_USBVIRTUAL.flush();
+#endif
+
+#if !defined(USE_TINYUSB) && defined(USBCON)
+    // Detach the USB, iff not using TinyUSB
+    // MS_DEEP_DBG(F("Detaching USBDevice"));
+    delay(10);
+    USBDevice.detach();  // USB->DEVICE.CTRLB.bit.DETACH = 1;
+    USBDevice.end();     // USB->DEVICE.CTRLA.bit.ENABLE = 0; wait for sync;
+    // USBDevice.standby();  // USB->DEVICE.CTRLA.bit.RUNSTDBY = 0;
+    delay(10);
 #endif
 
 #if defined(__SAMD51__)
