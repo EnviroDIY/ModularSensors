@@ -1126,6 +1126,7 @@ void Logger::systemSleep(void) {
     MS_DEEP_DBG(F("Disabling RTC interrupts"));
     loggerClock::disableRTCInterrupts();
 
+#if defined(ARDUINO_ARCH_SAMD)
     // Re-set the pin modes for the LED and SD card pins if those were set to
     // tri-state
     // NOTE: We do NOT reset the pin modes for the RTC wake pin or the button
@@ -1137,6 +1138,7 @@ void Logger::systemSleep(void) {
         setSDCardPwr(_SDCardPowerPin);
         setAlertPin(_ledPin);
     }
+#endif
 
     // Last wake-up message
     MS_DBG(F("... zzzZZ Exiting system sleep function!"));
