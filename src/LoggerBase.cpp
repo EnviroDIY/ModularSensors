@@ -641,6 +641,7 @@ bool Logger::isRTCSane(void) {
 // sensor was updated, just a single marked time.  By custom, this should be
 // called before updating the sensors, not after.
 void Logger::markTime(void) {
+    MS_DEEP_DBG(F("Marking time..."));
     Logger::markedUTCUnixTime   = getNowUTCEpoch();
     Logger::markedLocalUnixTime = markedUTCUnixTime +
         ((uint32_t)Logger::_loggerUTCOffset) * 3600;
@@ -1615,6 +1616,8 @@ void Logger::benchTestingMode(bool sleepBeforeReturning) {
     Logger::isTestingNow = false;
 
     if (sleepBeforeReturning) {
+        MS_DEEP_DBG(
+            F("Requested sleep before returning, calling systemSleep()"));
         // Sleep
         systemSleep();
     }
@@ -1688,6 +1691,7 @@ void Logger::begin() {
     // while the board is asleep.
     SYSCTRL->VREG.bit.RUNSTDBY = 1;
 #endif
+
 #endif
 
 #if defined(ARDUINO_ARCH_SAMD)
@@ -1822,15 +1826,21 @@ void Logger::logData(bool sleepBeforeReturning) {
         Logger::isLoggingNow = false;
         // Acknowledge testing button if pressed
         Logger::startTesting = false;
+    } else {
+        // Reset the watchdog
+        extendedWatchDog::resetWatchDog();
+        MS_DEEP_DBG(F("No action taken, not logging."));
     }
 
     if (sleepBeforeReturning) {
+        MS_DEEP_DBG(
+            F("Requested sleep before returning, calling systemSleep()"));
         // Sleep
         systemSleep();
     }
 }
 
-// This is a one-and-done to log data
+// This is a one-and-done to log data and publish it to various endpoints
 void Logger::logDataAndPublish(bool sleepBeforeReturning) {
     // Reset the watchdog
     extendedWatchDog::resetWatchDog();
@@ -1951,10 +1961,14 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
         Logger::isLoggingNow = false;
         // Acknowledge testing button if pressed
         Logger::startTesting = false;
+    } else {
+        MS_DEEP_DBG(F("No action taken, not logging."));
     }
 
     if (sleepBeforeReturning) {
         // Call the processor sleep
+        MS_DEEP_DBG(
+            F("Requested sleep before returning, calling systemSleep()"));
         systemSleep();
     }
 }
