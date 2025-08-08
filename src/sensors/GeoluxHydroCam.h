@@ -86,11 +86,15 @@
 #ifdef MS_GEOLUXHYDROCAM_DEBUG
 #define MS_DEBUGGING_STD "GeoluxHydroCam"
 #endif
+#ifdef MS_GEOLUXHYDROCAM_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP "GeoluxHydroCam"
+#endif
 
 // Include the debugger
 #include "ModSensorDebugger.h"
 // Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+#undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
 #include "VariableBase.h"
@@ -105,6 +109,12 @@
  * @brief The file extension for images from the Geolux HydroCam: ".jpg"
  */
 #define HYDROCAM_FILE_EXTENSION ".jpg"
+
+/**
+ * @brief The minimum spacing between requesting status messages from the
+ * HydroCam.
+ */
+#define HYDROCAM_MINIMUM_STATUS_SPACING 250
 
 /**
  * @anchor sensor_hydrocam_var_counts
@@ -125,7 +135,8 @@
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; warm up time from power on until boot message
-/// finishes is nearly exactly 340ms.
+/// finishes is nearly exactly 340ms on firmware 1.3.6 and about 490ms on
+/// firmware 2.0.5.
 #define HYDROCAM_WARM_UP_TIME_MS 350
 /// @brief Sensor::_stabilizationTime_ms; the HydroCam is ready after a minimum
 /// of about 11ms after the end of the boot up message. Changing settings takes
@@ -134,15 +145,16 @@
 /// @brief The maximum time to wait for boot + settings.
 #define HYDROCAM_STABILIZATION_TIME_MAX 16000L
 /// @brief Minimum time to wait for an autofocus. Running an autofocus takes
-/// about 25-30s.
-#define HYDROCAM_AUTOFOCUS_TIME_MS 25000L
+/// about 25-30s on firmwares <2.0.1, but only ~7.5s on firmwares >=2.0.1.
+#define HYDROCAM_AUTOFOCUS_TIME_MS 7250L
 /// @brief The maximum time to wait for autofocus. This is combined with the
 /// stabilization time.
 #define HYDROCAM_AUTOFOCUS_TIME_MAX 35000L
 /// @brief Sensor::_measurementTime_ms; the HydroCam imaging time is variable
 /// depending on the image size, but the typical minimum I've seen for the
-/// smallest image (160x120) is ~6.2s.  The largest image takes over 16s.
-#define HYDROCAM_MEASUREMENT_TIME_MS 6200L
+/// smallest image (160x120) is ~3.8s on firmware >2.0.1.
+/// The largest image takes over 16s on firmwares <2.0.1.
+#define HYDROCAM_MEASUREMENT_TIME_MS 3800L
 /// @brief The maximum time to wait for an image.
 #define HYDROCAM_MEASUREMENT_TIME_MAX 18000L
 /**@}*/
@@ -332,7 +344,13 @@ class GeoluxHydroCam : public Sensor {
      * For the Geolux camera, this waits for both the power-on warm up and for
      * an affirmative from the camera that it is ready to accept commands.
      */
-    bool isWarmedUp(bool debug = false) override;
+    bool isWarmedUp(bool debug =
+#if defined(MS_GEOLUXHYDROCAM_DEBUG_DEEP)
+                        true
+#else
+                        false
+#endif
+                    ) override;
 
     /**
      * @brief Check whether or not enough time has passed between the camera
@@ -346,7 +364,13 @@ class GeoluxHydroCam : public Sensor {
      * for imaging depends on the camera's mood and whether or not you autofocus
      * on every reading.
      */
-    bool isStable(bool debug = false) override;
+    bool isStable(bool debug =
+#if defined(MS_GEOLUXHYDROCAM_DEBUG_DEEP)
+                      true
+#else
+                      false
+#endif
+                  ) override;
 
     /**
      * @brief Check whether or not the camera has completed imaging.
@@ -358,7 +382,13 @@ class GeoluxHydroCam : public Sensor {
      * @note We override the default fuction because the amount of time required
      * for imaging depends on the resolution.
      */
-    bool isMeasurementComplete(bool debug = false) override;
+    bool isMeasurementComplete(bool debug =
+#if defined(MS_GEOLUXHYDROCAM_DEBUG_DEEP)
+                                   true
+#else
+                                   false
+#endif
+                               ) override;
 
  private:
     /**
@@ -395,6 +425,23 @@ class GeoluxHydroCam : public Sensor {
      * @brief Private reference to the underlieing GeoluxCamera Instance
      */
     GeoluxCamera _camera;
+    /**
+     * @brief Private reference to the last time the camera status was checked
+     */
+    uint32_t _last_status_check;
+    /**
+     * @brief Check whether the camera is ready.
+     *
+     * The camera is ready if the status is either GeoluxCamera::OK or
+     * GeoluxCamera::NONE.
+     *
+     * Before checking the status, this function will ensure that enough time
+     * has passed between messages so we don't hammer the camera too hard with
+     * requests. This function will also update the #_last_status_check
+     *
+     * @return True if the camera is ready, false otherwise.
+     */
+    bool isCameraReady();
 };
 
 
