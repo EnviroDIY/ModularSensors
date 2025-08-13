@@ -366,9 +366,9 @@ void Logger::enableTestingISR() {
         disableInterrupt(_buttonPin);
         MS_DEEP_DBG(F("Disabled any previous interrupts attached to"),
                     _buttonPin);
-        enableInterrupt(_buttonPin, Logger::testingISR, CHANGE);
+        enableInterrupt(_buttonPin, Logger::testingISR, FALLING);
         MS_DEEP_DBG(F("Interrupt Logger::testingISR attached to"), _buttonPin,
-                    F("with interrupt mode"), CHANGE);
+                    F("with interrupt mode"), FALLING);
     }
     // reset the testing value, just in case
     Logger::startTesting = false;
@@ -768,7 +768,7 @@ void Logger::systemSleep(void) {
     // Enable the RTC ISR
     // NOTE: It seems to work better if we enable this interrupt **AFTER** we've
     // told the clock to fire interrupts. Otherwise the interrupt sometimes
-    // fires instantly after the clock interrupts.
+    // fires instantly after the clock interrupts are enabled.
 #if !defined(MS_USE_RTC_ZERO)
     enableRTCPinISR();
 #endif
