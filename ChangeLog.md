@@ -109,6 +109,7 @@ If you do not want any output, define `MS_SILENT`.
   - While the SAMD51 was nominally supported previously, it was not functional with the latest bootloaders and core for the SAMD51.
 - Updated the ThingSpeak publisher to the current ThingSpeak MQTT protocol. The older protocol was deprecated and non-functional.
   - This requires a user name, password, and client ID for the MQTT connection in addition to the channel number. The MQTT key and channel key are no longer used.
+- Ensure that the SDI-12 object is always ended.
 
 ***
 

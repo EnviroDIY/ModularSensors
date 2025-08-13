@@ -207,6 +207,19 @@ class SDI12Sensors : public Sensor {
     String getSensorLocation(void) override;
 
     /**
+     * @brief Calls the begin for the SDI-12 object to set all of the
+     * pre-scalers and timers.
+     */
+    void activate(void);
+
+    /**
+     * @brief Empties the SDI-12 object buffer and then ends it. The end
+     * function unsets all timer pre-scalers and **--crucially--** disables the
+     * interrupts on the SDI-12 data pin.
+     */
+    void deactivate(void);
+
+    /**
      * @brief Do any one-time preparations needed before the sensor will be able
      * to take readings.
      *

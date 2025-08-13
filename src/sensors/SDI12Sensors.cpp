@@ -89,9 +89,11 @@ bool SDI12Sensors::setup(void) {
     bool wasOn = checkPowerOn();
     if (!wasOn) { powerUp(); }
     waitForWarmUp();
+    activate();
 
-    // Begin the SDI-12 interface
-    _SDI12Internal.begin();
+    // Set some SDI-12 object parameters
+    // NOTE: These are **not** set/or unset by the begin/end functions, so
+    // calling them once here in setup is fine.
 
     // Library default timeout should be 150ms, which is 10 times that specified
     // by the SDI-12 protocol for a sensor response.
@@ -108,12 +110,7 @@ bool SDI12Sensors::setup(void) {
 
     retVal &= getSensorInfo();
 
-    // Empty the SDI-12 buffer
-    _SDI12Internal.clearBuffer();
-
-    // De-activate the SDI-12 Object
-    // Use end() instead of just forceHold to un-set the timers
-    _SDI12Internal.end();
+    deactivate();
 
     // Turn the power back off it it had been turned on
     if (!wasOn) { powerDown(); }
@@ -129,11 +126,29 @@ bool SDI12Sensors::setup(void) {
 }
 
 
+void SDI12Sensors::activate(void) {
+    // Begin the SDI-12 interface
+    _SDI12Internal.begin();
+
+    // Empty the buffer
+    _SDI12Internal.clearBuffer();
+}
+
+void SDI12Sensors::deactivate(void) {
+    // Empty the SDI-12 buffer
+    _SDI12Internal.clearBuffer();
+
+    // De-activate the SDI-12 Object
+    // Use end() instead of just forceHold to un-set the timers
+    _SDI12Internal.end();
+}
+
+
 bool SDI12Sensors::requestSensorAcknowledgement(void) {
     // Empty the buffer
     _SDI12Internal.clearBuffer();
 
-    MS_DBG(F("  Asking for sensor acknowlegement"));
+    MS_DBG(F("  Asking for sensor acknowledgement"));
     String myCommand = "";
     myCommand += _SDI12address;
     myCommand += "!";  // sends 'acknowledge active' command [address][!]
@@ -145,7 +160,7 @@ bool SDI12Sensors::requestSensorAcknowledgement(void) {
         MS_DEEP_DBG(F("    >>>"), myCommand);
         delay(30);
 
-        // wait for acknowlegement with format:
+        // wait for acknowledgement with format:
         // [address]<CR><LF>
         String sdiResponse = _SDI12Internal.readStringUntil('\n');
         sdiResponse.trim();
@@ -176,16 +191,13 @@ bool SDI12Sensors::requestSensorAcknowledgement(void) {
 
 // A helper function to run the "sensor info" SDI12 command
 bool SDI12Sensors::getSensorInfo(void) {
-    // Check if this the currently active SDI-12 Object
-    bool wasActive = _SDI12Internal.isActive();
-    // If it wasn't active, activate it now.
-    // Use begin() instead of just setActive() to ensure timer is set correctly.
-    if (!wasActive) _SDI12Internal.begin();
-    // Empty the buffer
-    _SDI12Internal.clearBuffer();
+    activate();
 
     // Check that the sensor is there and responding
-    if (!requestSensorAcknowledgement()) return false;
+    if (!requestSensorAcknowledgement()) {
+        deactivate();
+        return false;
+    }
 
     MS_DBG(F("  Getting sensor info"));
     String myCommand = "";
@@ -195,19 +207,15 @@ bool SDI12Sensors::getSensorInfo(void) {
     MS_DEEP_DBG(F("    >>>"), myCommand);
     delay(30);
 
-    // wait for acknowlegement with format:
+    // wait for acknowledgement with format:
     // [address][SDI12 version supported (2 char)][vendor (8 char)][model (6
     // char)][version (3 char)][serial number (<14 char)]<CR><LF>
     String sdiResponse = _SDI12Internal.readStringUntil('\n');
     sdiResponse.trim();
     MS_DEEP_DBG(F("    <<<"), sdiResponse);
 
-    // Empty the buffer again
-    _SDI12Internal.clearBuffer();
-
-    // De-activate the SDI-12 Object
-    // Use end() instead of just forceHold to un-set the timers
-    if (!wasActive) _SDI12Internal.end();
+    // Empty the buffer and de-activate the SDI-12 Object
+    deactivate();
 
     if (sdiResponse.length() > 1) {
         String sdi12Address = sdiResponse.substring(0, 1);
@@ -241,9 +249,9 @@ bool SDI12Sensors::getSensorInfo(void) {
             _SDI12Internal.sendCommand(myCommand, _extraWakeTime);
             MS_DEEP_DBG(F("    >>>"), myCommand);
             delay(30);
-            String supressionResponse = _SDI12Internal.readStringUntil('\n');
-            supressionResponse.trim();
-            MS_DEEP_DBG(F("    <<<"), supressionResponse);
+            String suppressionResponse = _SDI12Internal.readStringUntil('\n');
+            suppressionResponse.trim();
+            MS_DEEP_DBG(F("    <<<"), suppressionResponse);
         }
         return true;
     } else {
@@ -315,7 +323,7 @@ int8_t SDI12Sensors::startSDI12Measurement(bool isConcurrent) {
         delay(30);  // It just needs this little delay
         MS_DEEP_DBG(F("    >>>"), startCommand);
 
-        // wait for acknowlegement with format
+        // wait for acknowledgement with format
         // [address][ttt (3 char, seconds)][number of values to be returned,
         // 0-9]<CR><LF>
         sdiResponse = _SDI12Internal.readStringUntil('\n');
@@ -373,18 +381,14 @@ bool SDI12Sensors::startSingleMeasurement(void) {
     // reason to go on.
     if (!Sensor::startSingleMeasurement()) return false;
 
-    // Check if this the currently active SDI-12 Object
-    bool wasActive = _SDI12Internal.isActive();
-    // If it wasn't active, activate it now.
-    // Use begin() instead of just setActive() to ensure timer is set correctly.
-    if (!wasActive) _SDI12Internal.begin();
-    // Empty the buffer
-    _SDI12Internal.clearBuffer();
+    // activate the SDI-12 object
+    activate();
 
     // Check that the sensor is there and responding
     if (!requestSensorAcknowledgement()) {
         _millisMeasurementRequested = 0;
         clearStatusBit(MEASUREMENT_SUCCESSFUL);
+        deactivate();
         return false;
     }
 
@@ -392,9 +396,8 @@ bool SDI12Sensors::startSingleMeasurement(void) {
     // the returned wait time should always be non-zero
     int8_t wait = startSDI12Measurement(true);
 
-    // De-activate the SDI-12 Object
-    // Use end() instead of just forceHold to un-set the timers
-    if (!wasActive) _SDI12Internal.end();
+    // Empty the buffer and de-activate the SDI-12 Object
+    deactivate();
 
     // Set the times we've activated the sensor and asked for a measurement
     if (wait >= 0) {
@@ -415,14 +418,8 @@ bool SDI12Sensors::startSingleMeasurement(void) {
 #endif
 
 bool SDI12Sensors::getResults(bool verify_crc) {
-    // Check if this the currently active SDI-12 Object
-    bool wasActive = _SDI12Internal.isActive();
-    // If it wasn't active, activate it now.
-    // Use begin() instead of just setActive() to ensure timer is set
-    // correctly.
-    if (!wasActive) _SDI12Internal.begin();
-    // Empty the buffer
-    _SDI12Internal.clearBuffer();
+    // activate the SDI-12 object
+    activate();
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
     uint8_t resultsReceived = 0;
@@ -486,8 +483,8 @@ bool SDI12Sensors::getResults(bool verify_crc) {
         delay(30);  // It just needs this little delay
         MS_DEEP_DBG(F("    >>>"), getDataCommand);
 
-        // Wait for the first few charaters to arrive.  The response from a data
-        // request should always have more than three characters
+        // Wait for the first few characters to arrive.  The response from a
+        // data request should always have more than three characters
         // TODO: Is this needed? The readBytesUntil() function uses the timeout
         // for every byte it attempts to read
         uint32_t start = millis();
@@ -700,9 +697,8 @@ bool SDI12Sensors::getResults(bool verify_crc) {
                     ? F("success.")
                     : F("failure."));
 
-    // De-activate the SDI-12 Object
-    // Use end() instead of just forceHold to un-set the timers
-    if (!wasActive) _SDI12Internal.end();
+    // Empty the buffer and de-activate the SDI-12 Object
+    deactivate();
 
     return success && (_numReturnedValues - _incCalcValues) == resultsReceived;
 }
@@ -739,14 +735,8 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
     String startCommand;
     String sdiResponse;
 
-    // Check if this the currently active SDI-12 Object
-    bool wasActive = _SDI12Internal.isActive();
-    // If it wasn't active, activate it now.
-    // Use begin() instead of just setActive() to ensure timer is set
-    // correctly.
-    if (!wasActive) _SDI12Internal.begin();
-    // Empty the buffer
-    _SDI12Internal.clearBuffer();
+    // activate the SDI-12 object
+    activate();
 
     // Check that the sensor is there and responding
     if (requestSensorAcknowledgement()) {
@@ -809,12 +799,8 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
         }
     }
 
-    // Empty the buffer again
-    _SDI12Internal.clearBuffer();
-
-    // De-activate the SDI-12 Object
-    // Use end() instead of just forceHold to un-set the timers
-    if (!wasActive) _SDI12Internal.end();
+    // Empty the buffer and de-activate the SDI-12 Object
+    deactivate();
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
