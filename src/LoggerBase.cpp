@@ -1934,6 +1934,10 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
                         MS_DBG(F("Current logger time after sync is"),
                                formatDateTime_ISO8601(getNowLocalEpoch()));
                         extendedWatchDog::resetWatchDog();
+                        MS_DBG(
+                            F("Publishing configuration metadata to remotes"));
+                        publishMetadataToRemotes();
+                        extendedWatchDog::resetWatchDog();
                     }
 
                     // Update the modem metadata
