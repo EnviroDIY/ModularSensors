@@ -274,8 +274,6 @@ void GeoluxHydroCam::powerUp(void) {
         MS_DBG(F("Powering"), getSensorNameAndLocation(), F("with pin"),
                _powerPin);
         digitalWrite(_powerPin, HIGH);
-        // Mark the time that the sensor was powered
-        _millisPowerOn = millis();
     }
     if (_powerPin2 >= 0) {
         // Reset power pin mode every power up because pins are set to tri-state
@@ -288,6 +286,11 @@ void GeoluxHydroCam::powerUp(void) {
     if (_powerPin < 0 && _powerPin2 < 0) {
         MS_DBG(F("Power to"), getSensorNameAndLocation(),
                F("is not controlled by this library."));
+        // Mark the power-on time, just in case it  had not been marked
+        if (_millisPowerOn == 0) _millisPowerOn = millis();
+    } else {
+        // Mark the time that the sensor was powered
+        _millisPowerOn = millis();
     }
     // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
     setStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL);
