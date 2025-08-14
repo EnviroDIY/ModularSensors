@@ -257,7 +257,7 @@ int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
     txBufferAppend('"');
     txBufferAppend(',');
 
-
+    // add values for each variable
     char num_buf[6];
     for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
         itoa(i, num_buf, 10);
@@ -274,7 +274,7 @@ int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
     }
     // null terminate the buffer!
     txBufferAppend('\0');
-    MS_DBG(F("Message length:"), txBufferLen);
+    MS_DBG(F("Data message length:"), txBufferLen);
     MS_DBG(F("strlen on buffer:"), strnlen(txBuffer, MS_SEND_BUFFER_SIZE));
 
     // Set the client connection parameters
