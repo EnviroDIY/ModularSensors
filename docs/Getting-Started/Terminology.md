@@ -53,7 +53,7 @@ The VariableArray class documentation is here:  <https://envirodiy.github.io/Mod
 
 ### Logger<!--! {#library_terminology_logger} -->
 
-A logger is a circuit board with a processor or microcontroller unit (MCU) that can control all functions of the modem and sensors that are attached to it and save the values of all variables measured by those sensors to an attached SD card.
+A logger is a circuit board with a processor or micro-controller unit (MCU) that can control all functions of the modem and sensors that are attached to it and save the values of all variables measured by those sensors to an attached SD card.
 In this library, all loggers are Arduino-style small processor circuit boards.
 
 The Logger class documentation is here:  <https://envirodiy.github.io/ModularSensors/class_logger.html>
@@ -66,7 +66,7 @@ A modem is a [system on a chip](https://en.wikipedia.org/wiki/System_on_a_chip) 
 This doesn't mean something that makes [beeps and bloops](https://en.wikipedia.org/wiki/Modem#/media/File:Analogue_modem_-_acoustic_coupler.jpg) on the phone line.
 The modem SoC or SOM handles all the intricacies and [lower layers](https://www.softwaretestinghelp.com/osi-model-layers/) of internet communication allowing the logger to operate at the top application layer.
 A cellular SoC may actually have a much more powerful processor than the logger MCU.
-The two communcicate via serial lines.
+The two communicate via serial lines.
 Within this library, the modem is represented as a loggerModem object.
 All loggerModem functions are heavily dependent on the [TinyGSM](https://github.com/EnviroDIY/TinyGSM) library.
 
@@ -82,7 +82,7 @@ The dataPublisher class documentation is available here:  <https://envirodiy.git
 
 ## Library Structure<!--! {#library_terminology_structure} -->
 
-This library is built to fully take advantage of Objecting Oriented Programing (OOP) approaches.
+This library is built to fully take advantage of Objecting Oriented Programming (OOP) approaches.
 This means there are a number of base abstract classes with virtual functions and then many more daughter classes which inherit the functions of their parents and implement others themselves.
 
 The main classes are implemented in the src directory of the library.

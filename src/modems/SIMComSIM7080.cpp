@@ -20,7 +20,7 @@ SIMComSIM7080::SIMComSIM7080(Stream* modemStream, int8_t powerPin,
                   SIM7080_RESET_LEVEL, SIM7080_RESET_PULSE_MS, modemSleepRqPin,
                   SIM7080_WAKE_LEVEL, SIM7080_WAKE_PULSE_MS,
                   SIM7080_STATUS_TIME_MS, SIM7080_DISCONNECT_TIME_MS,
-                  SIM7080_WAKE_DELAY_MS, SIM7080_ATRESPONSE_TIME_MS),
+                  SIM7080_WAKE_DELAY_MS, SIM7080_AT_RESPONSE_TIME_MS),
 #ifdef MS_SIMCOMSIM7080_DEBUG_DEEP
       _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
       gsmModem(_modemATDebugger),
@@ -43,7 +43,7 @@ bool SIMComSIM7080::extraModemSetup(void) {
     // a completely full 8K LogBuffer and a crappy connection.
     /// TODO: Settings applied via CACFG are meant for *transparent*
     /// transmission mode, not the "normal" transmission mode used by TinyGSM.
-    /// This may not be necessary (or evey functional).
+    /// This may not be necessary (or even functional).
     gsmModem.sendAT(F("+CACFG=\"SNDBUF\",29200"));
     gsmModem.waitResponse();
 
@@ -124,3 +124,5 @@ bool SIMComSIM7080::modemSleepFxn(void) {
         return true;
     }
 }
+
+// cSpell:ignore CACFG netlight CNETLIGHT CBATCHK CPIN

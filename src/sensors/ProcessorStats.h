@@ -395,7 +395,7 @@ class ProcessorStats : public Sensor {
      * battery.
      * @param batteryMultiplier Any multiplier needed to convert raw battery
      * readings from `analogRead()` into true battery values based on any
-     * resistors or voltage dividors
+     * resistors or voltage dividers
      * @param operatingVoltage The processor's operating voltage; most
      * likely 3.3 or 5.
      * @param measurementsToAverage The number of measurements to take and
@@ -457,7 +457,7 @@ class ProcessorStats : public Sensor {
     float _batteryMultiplier;  ///< Internal reference to any multiplier needed
                                ///< to convert raw battery readings into true
                                ///< battery values based on any resistors or
-                               ///< voltage dividors
+                               ///< voltage dividers
     float _operatingVoltage;   ///< Internal reference to processor's operating
                                ///< voltage
     int16_t sampNum = 0;       ///< The current sample number
@@ -659,3 +659,5 @@ class ProcessorStats_ResetCode : public Variable {
 };
 /**@}*/
 #endif  // SRC_SENSORS_PROCESSORSTATS_H_
+
+// cSpell:ignore SAMPNUM sampno Tatu Moja Adalogger Duemilanove Esplora Lilypad

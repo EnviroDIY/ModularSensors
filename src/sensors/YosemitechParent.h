@@ -57,7 +57,7 @@
  *     - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y551-UV254-COD_UserManual_v1.0.pdf)
  *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y551-UV254-COD_Modbus_v2020-05-11.pdf)
  *     - [Class Documentation](@ref sensor_y551)
- * - [Y560 Ammoinum Probe with Wiper](http://en.yosemitech.com/aspcms/product/2020-4-23/61.html)
+ * - [Y560 Ammonium Probe with Wiper](http://en.yosemitech.com/aspcms/product/2020-4-23/61.html)
  *     - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y560-NH4_UserManual_v1.0.pdf)
  *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y560-NH4_Modbus_v2020-05-11.pdf)
  *     - [Class Documentation](@ref sensor_y560)
@@ -68,7 +68,7 @@
  *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y4000-Sonde-1.6-ModbusInstruction-en.pdf)
  *     - [Class Documentation](@ref sensor_y4000)
  *
- * Most of these sensors require a 9-12V power supply, but some can opperate as
+ * Most of these sensors require a 9-12V power supply, but some can operate as
  * low as 5V and sondes (Y560 & Y4000) require 12V. The power supply can be stopped between measurements for all.
  * (_Note that any user settings (such as brushing frequency) will be lost if the sensor loses power._)
  * They communicate via [Modbus RTU](https://en.wikipedia.org/wiki/Modbus) over [RS-485](https://en.wikipedia.org/wiki/RS-485).
@@ -264,7 +264,7 @@ class YosemitechParent : public Sensor {
      */
     byte _modbusAddress;
     /**
-     * @brief Private reference to the stream for communciation with the
+     * @brief Private reference to the stream for communication with the
      * Yosemitech sensor.
      */
     Stream* _stream;
@@ -280,3 +280,5 @@ class YosemitechParent : public Sensor {
 };
 
 #endif  // SRC_SENSORS_YOSEMITECHPARENT_H_
+
+// cSpell:ignore ysensor

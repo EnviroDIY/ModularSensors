@@ -262,8 +262,8 @@ bool ProcessorStats::addSingleMeasurementResult(void) {
 
     // NOTE: Only running this section if there are no measurements already for
     // the sample number! We do not want to bump up the sample number for each
-    // averageable measurment, only for new measurements. This is a workaround
-    // in case someone wants to average more than one mesurement of the battery
+    // average-able measurement, only for new measurements. This is a workaround
+    // in case someone wants to average more than one measurement of the battery
     // voltage.
     if (numberGoodMeasurementsMade[PROCESSOR_SAMPNUM_VAR_NUM] == 0) {
         // bump up the sample number
@@ -297,3 +297,6 @@ bool ProcessorStats::addSingleMeasurementResult(void) {
     // Return true when finished
     return true;
 }
+
+// cSpell:ignore ADALOGGER RSTC RCAUSE BKUPEXIT BODCORE BODVDD BBPS brkval MCUSR
+// cSpell:ignore PORF EXTRF BORF WDRF JTRF JTAG SAMPNUM

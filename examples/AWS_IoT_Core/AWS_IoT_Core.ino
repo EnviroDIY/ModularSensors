@@ -7,7 +7,7 @@
  * @brief Example logging data and publishing to AWS IoT Core.
  *
  * Before using this example, you **MUST** obtain the certificates from AWS IoT
- * and upload them to your modem. This library does NOT support SSL connetions
+ * and upload them to your modem. This library does NOT support SSL connections
  * natively - it offload the SSL connection process onto the modem.  This means
  * that the modem must be able to handle the SSL connection and must have the
  * certificates loaded onto it. Make sure you know the certificate file name as
@@ -264,7 +264,7 @@ AWS_IoT_Publisher awsIoTPub(dataLogger, awsIoTEndpoint, caCertName,
 // ==========================================================================
 /** Start [working_functions] */
 // Flashes the LED's on the primary board
-void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
+void greenRedFlash(uint8_t numFlash = 4, uint8_t rate = 75) {
     for (uint8_t i = 0; i < numFlash; i++) {
         digitalWrite(greenLED, HIGH);
         digitalWrite(redLED, LOW);
@@ -315,7 +315,7 @@ void setup() {
     pinMode(redLED, OUTPUT);
     digitalWrite(redLED, LOW);
     // Blink the LEDs to show the board is on and starting up
-    greenredflash();
+    greenRedFlash();
 
     // Set the timezones for the logger/data and the RTC
     // Logging in the given time zone
@@ -389,3 +389,5 @@ void loop() {
     }
 }
 /** End [loop] */
+
+// cSpell:ignore modemBatterymV

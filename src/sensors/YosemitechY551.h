@@ -59,7 +59,7 @@
 /**
  * @anchor sensor_y551_var_counts
  * @name Sensor Variable Counts
- * The number of variables that can be returned by a Yosemitch Y551
+ * The number of variables that can be returned by a Yosemitech Y551
  */
 /**@{*/
 /// @brief Sensor::_numReturnedValues; the Y551 can report 2 values.
@@ -71,25 +71,26 @@
 /**
  * @anchor sensor_y551_timing
  * @name Sensor Timing
- * The sensor timing for a Yosemitch Y551
+ * The sensor timing for a Yosemitech Y551
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; time before sensor responds after power -
-/// <500ms for response, but need >1000ms to load capcitors for brush & measure.
+/// <500ms for response, but need >1000ms to load capacitors for brush &
+/// measure.
 #define Y551_WARM_UP_TIME_MS 1000
 /// @brief Sensor::_stabilizationTime_ms; time between "StartMeasurement"
 /// command and stable reading - 2sec in manual & confirmed by testing.
 #define Y551_STABILIZATION_TIME_MS 2000
 /// @brief Sensor::_measurementTime_ms; the Y551 takes ~2000ms to complete a
 /// measurement according to manual, but testing shows ~1s for a new number
-/// but 4-12s to elimniate memory effects, potentially from internal averaging.
+/// but 4-12s to eliminate memory effects, potentially from internal averaging.
 #define Y551_MEASUREMENT_TIME_MS 4000
 /**@}*/
 
 /**
  * @anchor sensor_y551_cod
  * @name Carbon Oxygen Demand
- * The COD variable from a Yosemitch Y551
+ * The COD variable from a Yosemitech Y551
  * - Range is:
  *     - 0.75 to 370 mg/L COD (equiv. KHP)
  *     - 0.2 to 150 mg/L TOC (equiv. KHP)
@@ -118,7 +119,7 @@
 /**
  * @anchor sensor_y551_temp
  * @name Temperature
- * The temperature variable from a Yosemitch Y551
+ * The temperature variable from a Yosemitech Y551
  * - Range is 5°C to + 45°C
  * - Accuracy is ± 0.2°C
  *
@@ -145,7 +146,7 @@
 /**
  * @anchor sensor_y551_turb
  * @name Turbidity
- * The turbidity variable from a Yosemitch Y551
+ * The turbidity variable from a Yosemitech Y551
  * - Range is 0.1~1000 NTU
  * - Accuracy is ＜5% or 0.3NTU
  *

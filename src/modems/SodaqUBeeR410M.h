@@ -98,13 +98,13 @@
  * It is good practice to select which network you'll be connecting to based on
  * your SIM card and signal availability.
  * Example code for this can also be found in the
- * [menu a la carte example](@ref setup_r4_carrrier).
+ * [menu a la carte example](@ref setup_r4_carrier).
  *
  * @note The network selection for a Sodaq LTE-M UBee is identical to that for
  * an LTE-M XBee in bypass mode or any other module based on the u-blox SARA
  * R4 series.
  *
- * @menusnip{setup_r4_carrrier}
+ * @menusnip{setup_r4_carrier}
  */
 /* clang-format on */
 
@@ -198,14 +198,14 @@
  */
 #define R410M_WAKE_DELAY_MS 250
 /**
- * @brief The loggerModem::_max_atresponse_time_ms.
+ * @brief The loggerModem::_max_at_response_time_ms.
  *
  * Time until system and digital pins on SARA R4 are operational is ~4.5s.
  */
-#define R410M_ATRESPONSE_TIME_MS 4500L
+#define R410M_AT_RESPONSE_TIME_MS 4500L
 
 /**
- * @brief The loggerModem::_disconnetTime_ms.
+ * @brief The loggerModem::_disconnectTime_ms.
  *
  * Power down time for u-blox modules _"can largely vary depending on the
  * application / network settings and the concurrent module activities."_  The
@@ -229,7 +229,7 @@ class SodaqUBeeR410M : public loggerModem {
     /**
      * @brief Construct a new Sodaq UBee R410M object
      *
-     * The constuctor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables,
      * constructs a loggerModem parent class with the appropriate timing for the
      * module, calls the constructor for a TinyGSM modem on the provided
      * modemStream, and creates a TinyGSM Client linked to the modem.
@@ -268,7 +268,7 @@ class SodaqUBeeR410M : public loggerModem {
     /**
      * @brief Construct a new Sodaq UBee R410M object
      *
-     * The constuctor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables,
      * constructs a loggerModem parent class with the appropriate timing for the
      * module, calls the constructor for a TinyGSM modem on the provided
      * modemStream, and creates a TinyGSM Client linked to the modem.
@@ -359,3 +359,5 @@ class SodaqUBeeR410M : public loggerModem {
 };
 /**@}*/
 #endif  // SRC_MODEMS_SODAQUBEER410M_H_
+
+// cSpell:ignore _ltem

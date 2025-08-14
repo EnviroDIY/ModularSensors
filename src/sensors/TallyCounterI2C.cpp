@@ -97,7 +97,7 @@ bool TallyCounterI2C::addSingleMeasurementResult(void) {
         counter_internal.Clear();
 
         if (events < 0)
-            events = -9999;  // If negetive value results, return failure
+            events = -9999;  // If negative value results, return failure
 
         MS_DBG(F("  Events:"), events);
 

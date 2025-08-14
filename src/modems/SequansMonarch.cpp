@@ -20,7 +20,7 @@ SequansMonarch::SequansMonarch(Stream* modemStream, int8_t powerPin,
                   VZM20Q_RESET_LEVEL, VZM20Q_RESET_PULSE_MS, modemSleepRqPin,
                   VZM20Q_WAKE_LEVEL, VZM20Q_WAKE_PULSE_MS,
                   VZM20Q_STATUS_TIME_MS, VZM20Q_DISCONNECT_TIME_MS,
-                  VZM20Q_WAKE_DELAY_MS, VZM20Q_ATRESPONSE_TIME_MS),
+                  VZM20Q_WAKE_DELAY_MS, VZM20Q_AT_RESPONSE_TIME_MS),
 #ifdef MS_SEQUANSMONARCH_DEBUG_DEEP
       _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
       gsmModem(_modemATDebugger),
@@ -153,3 +153,5 @@ bool SequansMonarch::extraModemSetup(void) {
 
     return success;
 }
+
+// cSpell:ignore SQNLED CPSMS CFUN SQNAUTOCONNECT sqnmm SQNAUTOINTERNET

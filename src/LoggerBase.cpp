@@ -78,7 +78,7 @@ Logger::Logger(const char* loggerID, const char* samplingFeatureUUID,
         dataPublishers[i] = nullptr;
     }
 
-    // Set a datetime callback for automatic timestamping of files by SdFat
+    // Set a datetime callback for automatic time-stamping of files by SdFat
     SdFile::dateTimeCallback(fileDateTimeCallback);
 }
 Logger::Logger(const char* loggerID, int16_t loggingIntervalMinutes,
@@ -100,7 +100,7 @@ Logger::Logger(const char* loggerID, int16_t loggingIntervalMinutes,
         dataPublishers[i] = nullptr;
     }
 
-    // Set a datetime callback for automatic timestamping of files by SdFat
+    // Set a datetime callback for automatic time-stamping of files by SdFat
     SdFile::dateTimeCallback(fileDateTimeCallback);
 }
 Logger::Logger(const char* loggerID, const char* samplingFeatureUUID,
@@ -121,7 +121,7 @@ Logger::Logger(const char* loggerID, const char* samplingFeatureUUID,
         dataPublishers[i] = nullptr;
     }
 
-    // Set a datetime callback for automatic timestamping of files by SdFat
+    // Set a datetime callback for automatic time-stamping of files by SdFat
     SdFile::dateTimeCallback(fileDateTimeCallback);
 }
 Logger::Logger(const char* loggerID, const char* samplingFeatureUUID,
@@ -141,7 +141,7 @@ Logger::Logger(const char* loggerID, const char* samplingFeatureUUID,
         dataPublishers[i] = nullptr;
     }
 
-    // Set a datetime callback for automatic timestamping of files by SdFat
+    // Set a datetime callback for automatic time-stamping of files by SdFat
     SdFile::dateTimeCallback(fileDateTimeCallback);
 }
 Logger::Logger(const char* loggerID, int16_t loggingIntervalMinutes,
@@ -161,7 +161,7 @@ Logger::Logger(const char* loggerID, int16_t loggingIntervalMinutes,
         dataPublishers[i] = nullptr;
     }
 
-    // Set a datetime callback for automatic timestamping of files by SdFat
+    // Set a datetime callback for automatic time-stamping of files by SdFat
     SdFile::dateTimeCallback(fileDateTimeCallback);
 }
 Logger::Logger() {
@@ -175,7 +175,7 @@ Logger::Logger() {
         dataPublishers[i] = nullptr;
     }
 
-    // Set a datetime callback for automatic timestamping of files by SdFat
+    // Set a datetime callback for automatic time-stamping of files by SdFat
     SdFile::dateTimeCallback(fileDateTimeCallback);
 }
 // Destructor
@@ -183,7 +183,7 @@ Logger::~Logger() {}
 
 
 // ===================================================================== //
-// Public functions to get and set basic logging paramters
+// Public functions to get and set basic logging parameters
 // ===================================================================== //
 
 // Sets the logger ID
@@ -920,7 +920,7 @@ void Logger::systemSleep(void) {
     // Configure hibernate mode
     // PM->HIBCFG.reg = PM_HIBCFG_RAMCFG(0x0) | PM_HIBCFG_BRAMCFG(0x0);
     // 0x0 = In hibernate mode, all the system RAM is retained
-    // 0x0 = In hibernate mode, all the backup RAM is retained.
+    // 0x0 = In hibernate mode, all the backup RAM is retained
 
     //  From datasheet 18.6.3.3: After power-up, the MAINVREG low power mode
     //  takes some time to stabilize. Once stabilized, the INTFLAG.SLEEPRDY
@@ -939,7 +939,7 @@ void Logger::systemSleep(void) {
     //^^ SAMD21
 
     // Don't fully power down flash when in sleep
-    // Datasheet Eratta 1.14.2 says this is required.
+    // Datasheet Errata 1.14.2 says this is required.
     NVMCTRL->CTRLB.bit.SLEEPPRM = NVMCTRL_CTRLB_SLEEPPRM_DISABLED_Val;
 
     // Disable systick interrupt:  See
@@ -1254,7 +1254,7 @@ void Logger::printFileHeader(Stream* stream) {
 }
 
 
-// This prints a comma separated list of volues of sensor data - including the
+// This prints a comma separated list of values of sensor data - including the
 // time -  out over an Arduino stream
 void Logger::printSensorDataCSV(Stream* stream) {
     String csvString = "";
@@ -1279,7 +1279,7 @@ bool Logger::initializeSDCard(void) {
         return false;
     }
     // Initialise the SD card
-    // If you have a dedicated SPI for the SD card, you can overrride the
+    // If you have a dedicated SPI for the SD card, you can override the
     // default shared SPI using this:
 
     // SdSpiConfig(SdCsPin_t cs, uint8_t opt, uint32_t maxSpeed, SpiPort_t*
@@ -1300,7 +1300,7 @@ bool Logger::initializeSDCard(void) {
     // SPI_FULL_SPEED));
 
 #if (defined(ARDUINO_ARCH_SAMD)) && !defined(__SAMD51__)
-    // Dispite the 48MHz clock speed, the max SPI speed of a SAMD21 is 12 MHz
+    // Despite the 48MHz clock speed, the max SPI speed of a SAMD21 is 12 MHz
     // see https://github.com/arduino/ArduinoCore-samd/pull/292
     // The Adafruit SAMD core does NOT automatically manage the SPI speed, so
     // this needs to be set.
@@ -1689,8 +1689,8 @@ void Logger::begin() {
     // the RUNSTBY bit has no effect for those clocks.
 #if !defined(__SAMD51__)
     // Keep the voltage regulator running in standby
-    // doing this just in case the various periperals try to suck too much power
-    // while the board is asleep.
+    // doing this just in case the various peripherals try to suck too much
+    // power while the board is asleep.
     SYSCTRL->VREG.bit.RUNSTDBY = 1;
 #endif
 
@@ -1870,7 +1870,7 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
 
         // Do a complete update on the variable array.
         // This this includes powering all of the sensors, getting updated
-        // values, and turing them back off.
+        // values, and turning them back off.
         // NOTE:  The wake function for each sensor should force sensor setup to
         // run if the sensor was not previously set up.
         MS_DBG(F("Running a complete sensor update..."));
@@ -2010,3 +2010,6 @@ void Logger::makeInitialConnections() {
     }
     extendedWatchDog::resetWatchDog();
 }
+
+// cSpell:ignore prtout1 DFLLVAL DFLLSYNC
+// cspell: ignore DIRCLR INEN PULLEN HIBCFG BRAMCFG MAINVREG FRZCLK BODSE

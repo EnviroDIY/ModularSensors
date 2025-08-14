@@ -55,7 +55,7 @@ _______
 - Modify logging_to_ThingSpeak.ino to have the modem, sensor, and variable objects that you are interested in.
   - This example is written for an _ESP8266 (wifi)_ modem.
 Change this to whatever modem you are using.
-Pastable chunks of code for each modem are available in the individual sensor documentation or in the menu a la carte example.
+Paste-able chunks of code for each modem are available in the individual sensor documentation or in the menu a la carte example.
   - Don't forget to put in your wifi username/password or cellular APN!
   - This example is written for a Campbell OBS3+ and a Meter Hydros 21.
 Remove those sensors if you are not using them and add code for all of your sensors.

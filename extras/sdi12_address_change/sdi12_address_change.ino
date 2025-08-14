@@ -66,7 +66,7 @@ void setup() {
         // wait
     }
 
-    // Enable interrupts for the recieve pin
+    // Enable interrupts for the receive pin
     pinMode(DATA_PIN, INPUT_PULLUP);
     enableInterrupt(DATA_PIN, SDI12::handleInterrupt, CHANGE);
 
@@ -157,6 +157,6 @@ void loop() {
         delay(300);
         mySDI12.clearBuffer();
 
-        Serial.println("Success. Rescanning for verification.");
+        Serial.println("Success. Re-scanning for verification.");
     }
 }

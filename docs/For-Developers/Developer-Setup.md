@@ -39,7 +39,7 @@ check_patterns =
 check_flags =
     cppcheck: --enable=all, --inline-suppr
     clangtidy: --checks=-*
-; deep search for dependencies, evalulating preprocessor conditionals
+; deep search for dependencies, evaluating preprocessor conditionals
 lib_ldf_mode = deep+
 ; look for the library directory
 lib_extra_dirs = .

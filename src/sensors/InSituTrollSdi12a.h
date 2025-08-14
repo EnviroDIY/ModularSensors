@@ -30,7 +30,7 @@
  * @section sensor_insitu_troll_intro Introduction
  *
  * > A slim 1.8 cm diameter sensor,
- * > depth measuremente temperature compensated to 0.1% (0.05%) across Full Scale depth range and across temperature range.
+ * > depth measurement temperature compensated to 0.1% (0.05%) across Full Scale depth range and across temperature range.
  * >
  * > Has an internal logger for reliable data collection.
  * >
@@ -46,8 +46,8 @@
  *
  * Parameters are very flexible and need to be aligned used WinSitu with this module.
  *
- * The depth sensor third paramter may need to be created. The expected
- * paramters and order are Pressure (PSI),  Temperature (C),  Depth (ft).
+ * The depth sensor third parameter may need to be created. The expected
+ * parameters and order are Pressure (PSI),  Temperature (C),  Depth (ft).
  *
  * Tested with Level TROLL 500.
  *
@@ -116,7 +116,7 @@
 /**
  * @anchor sensor_insitu_troll_pressure
  * @name Pressure
- * The pressue variable from a In-Situ TROLL
+ * The pressure variable from a In-Situ TROLL
  * - Range is 0 – x (depends on range eg 5psig)
 
  *
@@ -268,7 +268,7 @@ class InSituTrollSdi12a : public SDI12Sensors {
                        ITROLLA_WARM_UP_TIME_MS, ITROLLA_STABILIZATION_TIME_MS,
                        ITROLLA_MEASUREMENT_TIME_MS) {}
     /**
-     * @brief Destroy the ITROL object
+     * @brief Destroy the ITROLL object
      */
     ~InSituTrollSdi12a() {}
 };
@@ -411,3 +411,5 @@ typedef InSituTrollSdi12a_Temp     InsituTrollSdi12a_Temp;
 typedef InSituTrollSdi12a_Depth    InsituTrollSdi12a_Depth;
 
 #endif  // SRC_SENSORS_INSITUTROLLSDI12_H_
+
+// cSpell:ignore ITROLL ITROLLA

@@ -74,7 +74,7 @@ bool MaxBotixSonar::wake(void) {
     }
 
     // NOTE: After the power is turned on to the MaxBotix, it sends several
-    // lines of header to the serial port, beginning at ~65ms and finising at
+    // lines of header to the serial port, beginning at ~65ms and finishing at
     // ~160ms. Although we are waiting for them to complete in the
     // "waitForWarmUp" function, the values will still be in the serial buffer
     // and need to be read to be cleared out For an HRXL without temperature

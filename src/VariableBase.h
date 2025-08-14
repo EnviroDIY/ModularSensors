@@ -25,7 +25,7 @@
 #define MS_DEBUGGING_STD "VariableBase"
 #endif
 
-// Forward Declared Dependences
+// Forward Declared Dependencies
 class Sensor;
 
 // Include the debugger
@@ -64,7 +64,7 @@ class Variable {
      * @brief Construct a new Variable objectfor a measured variable - that is,
      * one whose values are updated by a sensor.
      *
-     * @note This constructor is NOT inteneded to be used outside of this
+     * @note This constructor is NOT intended to be used outside of this
      * libraries.  It is intended to be used internally with sensors defined in
      * this library.
      *
@@ -88,7 +88,7 @@ class Variable {
      * one whose values are updated by a sensor - but do not tie it to a
      * specific sensor.
      *
-     * @note This constructor is NOT inteneded to be used outside of this
+     * @note This constructor is NOT intended to be used outside of this
      * libraries.  It is intended to be used internally with sensors defined in
      * this library.
      *
@@ -157,11 +157,11 @@ class Variable {
     /**
      * @brief Begin for the Variable object
      *
-     * @param parentSense The Sensor object supplying values.  Supercedes any
+     * @param parentSense The Sensor object supplying values.  Supersedes any
      * Sensor supplied in the constructor.
      * @param uuid A universally unique identifier for the variable.
-     * Supercedes any value supplied in the constructor.
-     * @param customVarCode A custom code for the variable.  Supercedes
+     * Supersedes any value supplied in the constructor.
+     * @param customVarCode A custom code for the variable.  Supersedes
      * any value supplied in the constructor.
      * @return A pointer to the variable object
      */
@@ -170,17 +170,17 @@ class Variable {
     /**
      * @brief Begin for the Variable object
      *
-     * @param parentSense The Sensor object supplying values.  Supercedes any
+     * @param parentSense The Sensor object supplying values.  Supersedes any
      * Sensor supplied in the constructor.
      * @param uuid A universally unique identifier for the variable.
-     * Supercedes any value supplied in the constructor.
+     * Supersedes any value supplied in the constructor.
      * @return A pointer to the variable object
      */
     Variable* begin(Sensor* parentSense, const char* uuid);
     /**
      * @brief Begin for the Variable object
      *
-     * @param parentSense The Sensor object supplying values.  Supercedes any
+     * @param parentSense The Sensor object supplying values.  Supersedes any
      * Sensor supplied in the constructor.
      * @return A pointer to the variable object
      */
@@ -189,18 +189,18 @@ class Variable {
     /**
      * @brief Begin for the Variable object
      *
-     * @param calcFxn Any function returning a float value.  Supercedes any
+     * @param calcFxn Any function returning a float value.  Supersedes any
      * function supplied in the constructor.
      * @param decimalResolution The resolution (in decimal places) of the value.
-     * Supercedes any value supplied in the constructor.
+     * Supersedes any value supplied in the constructor.
      * @param varName The name of the variable per the ODM2 variable name
-     * controlled vocabulary.  Supercedes any value supplied in the constructor.
+     * controlled vocabulary.  Supersedes any value supplied in the constructor.
      * @param varUnit The unit of the variable per the ODM2 unit controlled
-     * vocabulary.  Supercedes any value supplied in the constructor.
-     * @param varCode A custom code for the variable.  Supercedes any value
+     * vocabulary.  Supersedes any value supplied in the constructor.
+     * @param varCode A custom code for the variable.  Supersedes any value
      * supplied in the constructor.
      * @param uuid A universally unique identifier for the variable.
-     * Supercedes any value supplied in the constructor.
+     * Supersedes any value supplied in the constructor.
      * @return A pointer to the variable object
      *
      * @warning The `calcFxn` absolutely must return a float value.  If it
@@ -213,15 +213,15 @@ class Variable {
     /**
      * @brief Begin for the Variable object
      *
-     * @param calcFxn Any function returning a float value.  Supercedes any
+     * @param calcFxn Any function returning a float value.  Supersedes any
      * function supplied in the constructor.
      * @param decimalResolution The resolution (in decimal places) of the value.
-     * Supercedes any value supplied in the constructor.
+     * Supersedes any value supplied in the constructor.
      * @param varName The name of the variable per the ODM2 variable name
-     * controlled vocabulary.  Supercedes any value supplied in the constructor.
+     * controlled vocabulary.  Supersedes any value supplied in the constructor.
      * @param varUnit The unit of the variable per the ODM2 unit controlled
-     * vocabulary.  Supercedes any value supplied in the constructor.
-     * @param varCode A custom code for the variable.  Supercedes any value
+     * vocabulary.  Supersedes any value supplied in the constructor.
+     * @param varCode A custom code for the variable.  Supersedes any value
      * supplied in the constructor.
      * @return A pointer to the variable object
      *
@@ -245,7 +245,7 @@ class Variable {
      */
     void attachSensor(Sensor* parentSense);
     /**
-     * @brief Updates the interally stored data value
+     * @brief Updates the internally stored data value
      *
      * This is the function called by the parent sensor's notifyVariables
      * function
@@ -268,12 +268,12 @@ class Variable {
      *
      * This is a helper needed for dealing with variables in arrays
      *
-     * @return The parent sensor's concatentated name and location.
+     * @return The parent sensor's concatenated name and location.
      */
     String getParentSensorNameAndLocation(void);
 
     /**
-     * @brief Set the calculation function for a calculted variable
+     * @brief Set the calculation function for a calculated variable
      *
      * @param calcFxn Any function returning a float value.
      */

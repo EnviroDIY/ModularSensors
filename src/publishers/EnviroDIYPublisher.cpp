@@ -304,7 +304,7 @@ int16_t EnviroDIYPublisher::flushDataBuffer(Client* outClient) {
     uint16_t did_respond    = 0;
     int16_t  responseCode   = 0;
 
-    // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
+    // Open a TCP/IP connection to the EnviroDIY Data Portal (WebSDL)
     MS_DBG(F("Connecting client"));
     MS_START_DEBUG_TIMER;
     if (outClient->connect(enviroDIYHost, enviroDIYPort)) {
@@ -438,3 +438,5 @@ int16_t EnviroDIYPublisher::flushDataBuffer(Client* outClient) {
 
     return responseCode;
 }
+
+// cSpell:ignore monitormywatershed

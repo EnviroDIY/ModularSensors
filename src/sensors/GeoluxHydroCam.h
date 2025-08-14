@@ -48,7 +48,8 @@
  * transfer time can be as little as 850ms, but the largest images (2592x1944) can
  * take 70 seconds (over a minute) to transfer.
  *
- * If you choose to autofocus on every image, the autofocusd takes 25-30s.
+ * If you choose to autofocus on every image, the autofocus takes 25-30s on firmware
+ * prior to version 2, and about 7s on version 2.0.5.
  *
  * Changing settings takes up to 7s.
  *
@@ -283,7 +284,7 @@ class GeoluxHydroCam : public Sensor {
     ~GeoluxHydroCam();
 
     /**
-     * @brief Extra unique function to retreive the name of the last saved image
+     * @brief Extra unique function to retrieve the name of the last saved image
      *
      * @return The name of the last saved image
      */
@@ -301,7 +302,7 @@ class GeoluxHydroCam : public Sensor {
      * This sets the image resolution and runs an autofocus.
      *
      * @note Autofocus takes approximately 30s to complete.  Unless you plan to
-     * move your device betwen readings, I recommend only running the autofocus
+     * move your device between readings, I recommend only running the autofocus
      * at setup, not at every power-up.
      *
      * @return True if the setup was successful.
@@ -360,9 +361,9 @@ class GeoluxHydroCam : public Sensor {
      * @return True indicates that enough time has passed that the camera is
      * ready to take an image.
      *
-     * @note We override the default fuction because the amount of time required
-     * for imaging depends on the camera's mood and whether or not you autofocus
-     * on every reading.
+     * @note We override the default function because the amount of time
+     * required for imaging depends on the camera's mood and whether or not you
+     * autofocus on every reading.
      */
     bool isStable(bool debug =
 #if defined(MS_GEOLUXHYDROCAM_DEBUG_DEEP)
@@ -379,8 +380,8 @@ class GeoluxHydroCam : public Sensor {
      * @return True indicates that the camera is now reporting ready after an
      * image was started.
      *
-     * @note We override the default fuction because the amount of time required
-     * for imaging depends on the resolution.
+     * @note We override the default function because the amount of time
+     * required for imaging depends on the resolution.
      */
     bool isMeasurementComplete(bool debug =
 #if defined(MS_GEOLUXHYDROCAM_DEBUG_DEEP)
@@ -417,12 +418,12 @@ class GeoluxHydroCam : public Sensor {
      */
     Logger* _baseLogger = nullptr;
     /**
-     * @brief Private reference to the stream for communciation with the
+     * @brief Private reference to the stream for communication with the
      * Geolux Camera.
      */
     Stream* _stream;
     /**
-     * @brief Private reference to the underlieing GeoluxCamera Instance
+     * @brief Private reference to the underlying GeoluxCamera Instance
      */
     GeoluxCamera _camera;
     /**
@@ -452,7 +453,7 @@ class GeoluxHydroCam : public Sensor {
  * [Geolux HydroCam camera](@ref sensor_hydrocam).
  *
  * This variable represents the difference between the number of bytes expected
- * to recieve from the camera and the number actually transferred to the SD
+ * to receive from the camera and the number actually transferred to the SD
  * card.
  *
  * @ingroup sensor_hydrocam
@@ -538,3 +539,5 @@ class GeoluxHydroCam_ByteError : public Variable {
 };
 /**@}*/
 #endif  // SRC_SENSORS_GEOLUXHYDROCAM_H_
+
+// cSpell:ignore dataloggers QQVGA QVGA QXGA UXGA autofocusing

@@ -67,7 +67,7 @@ AltSoftSerial altSoftSerial;
 // Set up a 'new' UART using SERCOM1
 // The Rx will be on digital pin 11, which is SERCOM1's Pad #0
 // The Tx will be on digital pin 10, which is SERCOM1's Pad #2
-// NOTE:  SERCOM1 is undefinied on a "standard" Arduino Zero and many clones,
+// NOTE:  SERCOM1 is undefined on a "standard" Arduino Zero and many clones,
 //        but not all!  Please check the variant.cpp file for you individual
 //        board!
 Uart Serial2(&sercom1, 11, 10, SERCOM_RX_PAD_0, UART_TX_PAD_2);
@@ -354,7 +354,7 @@ const char* samplingFeature =
 // Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
 // This is only attached to the logger with the shorter variable array
 #include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPOST(loggerToGo, registrationToken,
+EnviroDIYPublisher EnviroDIYPost(loggerToGo, registrationToken,
                                  samplingFeature);
 /** End [publishers] */
 
@@ -364,7 +364,7 @@ EnviroDIYPublisher EnviroDIYPOST(loggerToGo, registrationToken,
 // ==========================================================================
 /** Start [working_functions] */
 // Flashes the LED's on the primary board
-void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
+void greenRedFlash(uint8_t numFlash = 4, uint8_t rate = 75) {
     for (uint8_t i = 0; i < numFlash; i++) {
         digitalWrite(greenLED, HIGH);
         digitalWrite(redLED, LOW);
@@ -432,7 +432,7 @@ void setup() {
     pinMode(redLED, OUTPUT);
     digitalWrite(redLED, LOW);
     // Blink the LEDs to show the board is on and starting up
-    greenredflash();
+    greenRedFlash();
 
     // Set the timezones for the logger/data and the RTC
     // Logging in the given time zone

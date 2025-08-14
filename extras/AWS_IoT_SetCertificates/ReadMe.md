@@ -5,7 +5,7 @@ This program loads the required certificates for communication with AWS IoT Core
 > [!WARNING]
 > Even among modems that have SSL support, not all firmwares have support for the mutual authentication required by IOT core.
 > You may need to update your firmware.
-> Updating firmware requires obtaining the firmware update files - which can be difficult to find - and may require soldring to access the programming pins of your module.
+> Updating firmware requires obtaining the firmware update files - which can be difficult to find - and may require soldering to access the programming pins of your module.
 > The firmware the EnviroDIY LTE Bee's ship with from the factory is *too old* to work correctly with AWS's mutual authentication!
 > You should be running firmware version 1951B**17**SIM7080 or later.
 > The modems provided with your Stonefly should already have been upgraded to this version.
@@ -144,7 +144,7 @@ These are the messages you should see on the serial monitor as your program runs
 
 - First there will be a several second delay and wait for the modem to wake.
 - After warm up, the modem will initialize and you should see the message `Initializing modem` &hellip; &hellip; `success`.
-- Next you will see a print out of the modem info; `Modem Info:` followed by the serial number and other info about your modem. This is just for your imformation.
+- Next you will see a print out of the modem info; `Modem Info:` followed by the serial number and other info about your modem. This is just for your information.
 - The Stonefly will then load the CA certificate, client certificate, and key onto the modem, convert them to the modem's internal file format, and print back the loaded text so you can confirm it matches later if there are problems.
 - After the certificates are loaded, the modem waits for a network connection.  If the connection succeeds, you'll see the message `Waiting for network` &hellip; &hellip; `success`
 
@@ -217,7 +217,7 @@ Two devices with the same client id may not connect at the same time.
 In this case, we use the thing name as the client id.
 
 Scroll up in the serial monitor output and look for the `Modem Revision:` output.
-Confirm that the firmware verson you have supports mutual authentication.
+Confirm that the firmware version you have supports mutual authentication.
 If the firmware revision is not 1951B**17**SIM7080 or later, your modem firmware must be upgraded!
 Upgrading the firmware on the LTE Bee requires solder connections and special firmware files; contact Stroud for this.
 

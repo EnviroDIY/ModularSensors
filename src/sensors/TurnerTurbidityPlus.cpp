@@ -47,10 +47,10 @@ String TurnerTurbidityPlus::getSensorLocation(void) {
 }
 
 void TurnerTurbidityPlus::runWiper() {
-    // Turner Tubidity Plus wiper requires a 50ms LOW signal pulse to trigger
+    // Turner Turbidity Plus wiper requires a 50ms LOW signal pulse to trigger
     // one wiper rotation. Also note: I was unable to trigger multiple rotations
     // without pausing for ~540ms between them.
-    MS_DBG(F("Initate TurbidityPlus wiper on"), getSensorLocation());
+    MS_DBG(F("Turn TurbidityPlus wiper on"), getSensorLocation());
     digitalWrite(_wiperTriggerPin, LOW);
     delay(50);
     digitalWrite(_wiperTriggerPin, HIGH);
@@ -100,7 +100,7 @@ bool TurnerTurbidityPlus::addSingleMeasurementResult(void) {
     if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-// Create an Auxillary ADD object
+// Create an auxiliary ADD object
 // We create and set up the ADC object here so that each sensor using
 // the ADC may set the gain appropriately without effecting others.
 #ifndef MS_USE_ADS1015

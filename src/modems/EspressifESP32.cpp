@@ -87,3 +87,5 @@ bool EspressifESP32::extraModemSetup(void) {
     gsmModem.waitResponse();
     return true;
 }
+
+// cSpell:ignore CWCOUNTRY

@@ -12,8 +12,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
-- **BREAKING** Converted the watch-dog classes in to static classes with all static fuction and a **deleted constructior**.
-  - Any code that attepted to interact with the watchdog (ie, with a "complex loop") must now call the extendedWatchDog class directly, ie: `extendedWatchDog::resetWatchDog();` rather than `dataLogger.watchDogTimer.resetWatchDog();`
+- **BREAKING** Converted the watch-dog classes in to static classes with all static function and a **deleted constructor**.
+  - Any code that attempted to interact with the watchdog (ie, with a "complex loop") must now call the extendedWatchDog class directly, ie: `extendedWatchDog::resetWatchDog();` rather than `dataLogger.watchDogTimer.resetWatchDog();`
 - **BREAKING** Renamed `markedLocalEpochTime` to `markedLocalUnixTime` to clarify the start of the epoch that we're marking down.
 - **BREAKING** Renamed `markedUTCEpochTime` to `markedUTCUnixTime` to clarify the start of the epoch that we're marking down.
 - **Potentially BREAKING:** Changed the requirements for a "sane" timestamp to between 2023 and 2030.
@@ -25,15 +25,15 @@ For calculations that were based on the results of other variables that didn't c
 But, for calculations based on new raw readings (ie, calling `analogRead()`) a new value would be returned each time the function was called.
 I realized this was a problem for analog values I tried to read that reported correctly in the first round, but were saved as junk in the csv and publishers because a new analog reading was being attempted when the thing I was attempting to read was now powered down.
   - The variable array update functions have been modified accordingly.
-  - Verify you have the functionalilty you expect if you use calculated variables.
-- Removed the enable/disable wake pin interrupt at every sleep interval in favor of a single attachment druing the begin.
+  - Verify you have the functionality you expect if you use calculated variables.
+- Removed the enable/disable wake pin interrupt at every sleep interval in favor of a single attachment during the begin.
 - Moved all code for communication with the RTC into the new static class loggerClock().
 - Deprecated functions, to be removed in a future version:
   - `Logger::setRTCTimeZone(timeZone)`; use `loggerClock::setRTCOffset(_offsetHours)` in new code.
   - `Logger::getRTCTimeZone()`; use `loggerClock::getRTCOffset()` in new code.
   - `Logger::setRTClock(UTCEpochSeconds)`; use `loggerClock::setRTClock(ts, utcOffset, epoch)` in new code.
   - `Logger::isRTCSane()`; use `loggerClock::isRTCSane()` in new code.
-  - `Logger::wakeISR()`; use `loggerClock::RTCISR()` in new code.
+  - `Logger::wakeISR()`; use `loggerClock::rtcISR()` in new code.
 - Changed the watchdog from a fix 15 minute reset timer to 2x the logging interval (or at least 5 minutes).
 - Modified all examples which define a sercom serial port for SAMD21 processors to require the defines for the supported processors.
 This should only make a difference for my compilation tests, real users should pick out only the chunks of code they want rather than leave conditional code in place.
@@ -54,9 +54,9 @@ This should only make a difference for my compilation tests, real users should p
 
 ### Added
 
-- Added a two configuration files (ModSensorConfig.h and ModSensorDebugConfig.h) that all files read from to check for configuation-related defines.
+- Added a two configuration files (ModSensorConfig.h and ModSensorDebugConfig.h) that all files read from to check for configuration-related defines.
 This allows Arduino IDE users who are unable to use build flags to more easily configure the library or enable debugging.
-It also allows PlatformIO users to avoid the time-consuming re-compile of all their libraries required when chaning build flags.
+It also allows PlatformIO users to avoid the time-consuming re-compile of all their libraries required when changing build flags.
   - **ALL** library configuration build flags previously in any other header file for the library have been moved into the ModSensorConfig.h file, including ADC, SDI-12, and variable array options.
 - Added support for caching readings in RAM and sending in batches.
 This currently only works on the EnviroDIY/Monitor My Watershed Publisher.
@@ -70,7 +70,7 @@ If no epoch start is given, it is assumed to be UNIX (January 1, 1970).
 - Storing _buttonPinMode internally.
 - Added a single define (`MS_OUTPUT`) to use for all outputs from ModularSensors.
 - Added support for sending printouts and debugging to two different serial ports.  This is useful for devices (like SAMD) that use a built in USB serial port which is turned off when the device sleeps.  If `MS_2ND_OUTPUT` is defined, output will go to *both* `MS_2ND_OUTPUT` and to `MS_OUTPUT`.
-- Added example code for flashing neopixel in the menu example.
+- Added example code for flashing boards with a neo-pixel in the menu example.
 - **NEW SENSOR** Added support for [Geolux HydroCam](https://www.geolux-radars.com/hydrocam)
 - Added a generic time formatting function.
 - **NEW PUBLISHER** Added a new publisher to AWS IoT Core over MQTT
@@ -106,7 +106,7 @@ If you do not want any output, define `MS_SILENT`.
 ### Fixed
 
 - Tested and brought the SAMD51 processor to full functionality.
-  - While the SAMD51 was nominally supported previously, it was not functional with the latest bootloaders and core for the SAMD51.
+  - While the SAMD51 was nominally supported previously, it was not functional with the latest boot loaders and core for the SAMD51.
 - Updated the ThingSpeak publisher to the current ThingSpeak MQTT protocol. The older protocol was deprecated and non-functional.
   - This requires a user name, password, and client ID for the MQTT connection in addition to the channel number. The MQTT key and channel key are no longer used.
 - Ensure that the SDI-12 object is always ended.
@@ -119,14 +119,14 @@ If you do not want any output, define `MS_SILENT`.
 
 - Applied markdown lint to markdown files
 - Bumped TinyGSM dependency
-  - Changed datatypes for modem voltage outputs.
+  - Changed data types for modem voltage outputs.
 - Switched from Soligen fork of ADS1115 library to the standard Adafruit version.
-- Rearranged documation of examples
+- Rearranged documentation of examples
 - Consistently apply all pre-processor `defined` checks with function-like syntax
 - Consistently check for both `__AVR__` and `ARDUINO_ARCH_AVR` in all cases.
-  - Not all AVR boards defin `__AVR__` within the PlatformIO system, which was confusing the SCons preprocessor.
+  - Not all AVR boards define `__AVR__` within the PlatformIO system, which was confusing the SCons preprocessor.
 - Modified implementation of initial short logging intervals.
-- Allow non-sleep before returing from testing or logging functions.
+- Allow non-sleep before returning from testing or logging functions.
 - Modified returns of modem variables from uint's to int's for consistency with the latest version of TinyGSM.
 - Add pre-processor macro for number of times to attempt to update the clock.
 
@@ -135,7 +135,7 @@ If you do not want any output, define `MS_SILENT`.
 - Added support for Yosemitech Y513 Blue Green Algae Sensor thanks to @aufdenkampe
 - Added support for Alphasense CO2 Sensor thanks to @aufdenkampe
 - Added support for Turner Turbidity Plus thanks to @mbarneytu
-- Added complete paramter documentation where it was missing.
+- Added complete parameter documentation where it was missing.
 
 ***
 
@@ -174,7 +174,7 @@ If you are not using the GroPoint sensors which require many variables, I recomm
 
 - Support [GroPoint Profile GPLP-8 Eight-Segment Soil Moisture and Temperature Profiling Probe](https://www.gropoint.com/products/soil-sensors/gropoint-profile)
 - Support [Vega Puls 21 Radar](https://www.vega.com/en-us/products/product-catalog/level/radar/vegapuls-21)
-- Functions to enable and disable modem metadata polling by bitmask
+- Functions to enable and disable modem metadata polling by bit mask
 
 ### Removed
 
@@ -196,13 +196,13 @@ If you are not using the GroPoint sensors which require many variables, I recomm
 ### Changed
 
 - Incorporated improvements to the XBee Wifi - from [neilh10](https://github.com/EnviroDIY/ModularSensors/commits?author=neilh10)
-  - #347 -WiFi S6B stability - tears dwon TCP/IP before going to sleep, doesn't automatically poll for meta data
+  - #347 -WiFi S6B stability - tears down TCP/IP before going to sleep, doesn't automatically poll for meta data
 
 ### Added
 
 - Added the ability to enable or disable polling of modem attached variables.
 By default, all polling is off, but polling is enabled for a modem sensor when a sensor is created and attached to a modem.
-This functionailty is inspired from [neilh10](https://github.com/EnviroDIY/ModularSensors/commits?author=neilh10).
+This functionality is inspired from [neilh10](https://github.com/EnviroDIY/ModularSensors/commits?author=neilh10).
 
 ### Fixed
 
@@ -215,7 +215,7 @@ This functionailty is inspired from [neilh10](https://github.com/EnviroDIY/Modul
 - **BREAKING** - Removed support for light sleep on Espressif modules.
 **This changes the order of the constructor for the ESP32 and ESP8266!**
   - The light sleep mode is non-functional anyway, and confusion over the sleep request pin was putting the board in a position not to sleep at all.
-- Minor tweek to clang-format
+- Minor tweak to clang-format
 - Moved all variable initialization to default header values and initializer lists
 - Converted all "c-style" casts to static casts
 - Switched cases of strcat and strcpy to snprintf
@@ -294,7 +294,7 @@ We recommend a logger's real time clock always be set in UTC and then localized 
 The Mayfly has an external pull *down* on the button pin with the button being active high.
 This means having the pull-up resistors on negates the button signal.
 The pin mode had been set as `INPUT_PULLUP` for the button, backwards for the Mayfly, since  [July of 2017](https://github.com/EnviroDIY/ModularSensors/commit/6bafb0fd149589f71ca6f46b761fe72b1f9523a6).
-By some electrical luck, with the 0.x versions of the Mayfly, the external pull-down on the button pin was strong enough to out-weigh the incorretly activated pull-up resistors and an interrupt was still registered when the button was pressed.
+By some electrical luck, with the 0.x versions of the Mayfly, the external pull-down on the button pin was strong enough to out-weigh the incorrectly activated pull-up resistors and an interrupt was still registered when the button was pressed.
 With a different pull-down resistor on the Mayfly 1.x, the button no longer registers with the pull-up resistors active.
 So, for most of our users with Mayflies, this will be a ***fix***.
 But for anyone using a different board/processor/button configuration that depended on the processor pull-up resistors, this will be a breaking change and they will need to specify the button mode in the `setTestingModePin` or `setLoggerPins` function to return to the previous behavior.
@@ -335,7 +335,7 @@ These are *not* breaking changes at this time; the old class names are still usa
 ### Changed
 
 - Restructured SDI-12 slightly to break out the start measurement functionality into a new function.
-- Modified Decagon 5-TM and Meter Teros 11 to use the SDI-12 get results function rather than addSingleMeasurmentResult.
+- Modified Decagon 5-TM and Meter Teros 11 to use the SDI-12 get results function rather than addSingleMeasurementResult.
 This will allow both sensors to honor the 'non-concurrent' flag, if that is set.
 Previously, they would not have.
 - **Documentation:** Migrated to latest version of Doxygen (1.9.2).
@@ -441,7 +441,7 @@ Create a ModularSensors.h
 ### Added
 
 - Created a ModularSensors.h file to include.
-This makes it much easiler to install and use the library from the Arduino CLI.
+This makes it much easier to install and use the library from the Arduino CLI.
   - Modified examples to include the ModularSensors.h file
 - Added continuous integration testing with the Arduino CLI
 
@@ -457,7 +457,7 @@ Duplicate and Rename Hydros 21
 This is exactly identical to the Decagon CTD in everything but the name.
 The Decagon CTD module still exists and can be used.
 No old code needs to be adjusted for this change.
-Moving forward, the two can be used interchangably.
+Moving forward, the two can be used interchangeably.
 The addition was only made to stop complaints about typing in an older name.
 
 ***
@@ -555,7 +555,7 @@ Multiple new Sensors and Workflows
 ### Changed
 
 - Complete re-styling of the Doxygen output to be similar to envirodiy.org
-- Add enourmous amounts of documentation
+- Add enormous amounts of documentation
 - Improved explanations and added walkthrough of menu a la carte example
 - Added example calculating specific conductance where applicable
 - For SDI-12 sensors, added calls to additional data commands (D1-D9) if full number of expected results are not returned by D0.
@@ -626,7 +626,7 @@ Modem Restructuring
 
 ## [0.23.13] - 2019-09-19
 
-More agressive attempts to set clock
+More aggressive attempts to set clock
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3451413.svg)](https://doi.org/10.5281/zenodo.3451413)
 
@@ -657,7 +657,7 @@ Watchdogs and More
 
 - A watch-dog timer has been implemented for both the AVR and SAMD21 (and 51) boards to restart the boards in case of failure during logging
   - The watch-dog is turned off during sleep to save power, so recovery is only possible if the failure is while the processor is awake.
-- Added support for Meter Terros 11 soil moisture and temperature sensor
+- Added support for Meter Teros 11 soil moisture and temperature sensor
 - Implemented a function to verify that UUID's are at least correctly formed and unique - though it does not verify that they are valid.
 - Pushing to the master branch of this repo will now also cause a re-run of the travis script that updates the EnviroDIY "Libraries" repository.
 - Added debugging variables to modems to track how long they are powered/active.
@@ -756,7 +756,7 @@ Fix write to SD card
 
 ### Fixed
 
-- Fixed bug intoduced in 0.21.0 preventing writing to SD card - file must be closed (not sync'ed)
+- Fixed bug introduced in 0.21.0 preventing writing to SD card - file must be closed (not sync'ed)
 
 ***
 
@@ -779,7 +779,7 @@ Support for all Atlas Scientific I2C sensors, compiler-safe begin functions
 
 ### Added
 
-- **Sensor:** Added full support for all Atlas Scientific EZO curcuits and sensors that support I2C
+- **Sensor:** Added full support for all Atlas Scientific EZO circuits and sensors that support I2C
   - CO2
   - DO (dissolved oxygen)
   - EC (conductivity)
@@ -917,7 +917,7 @@ Added sensors and fixed timing bugs
 
 ### Changed
 
-- Tweeked code generating csv's and json outputs to allow a modified csv or json to be written to the SD card or posted to data.EnviroDIY.org
+- Tweaked code generating csv's and json outputs to allow a modified csv or json to be written to the SD card or posted to data.EnviroDIY.org
 
 ### Added
 
@@ -1021,7 +1021,7 @@ Beta Release
 
 ## [0.2.5]-beta - 2017-05-31
 
-Impoved setup functions
+Improved setup functions
 
 ### Changed
 

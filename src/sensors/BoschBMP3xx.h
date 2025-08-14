@@ -86,7 +86,7 @@
  * @subsection sensor_bmp3xx_filts_uses Settings by Use Case
  *
  * This is a modified version of Bosch's recommendations for pressure and temperature oversampling,
- * IIR filter coeficients, and output data rates for various applications.
+ * IIR filter coefficients, and output data rates for various applications.
  * This appears as table 10 in the
  * [datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Bosch-BMP390-Datasheet.pdf).
  *
@@ -164,7 +164,7 @@
 /**@{*/
 /// @brief Sensor::_numReturnedValues; the BMP3xx can report 3 values.
 #define BMP3XX_NUM_VARIABLES 3
-/// @brief Sensor::_incCalcValues; altitude is calculted within the Adafruit
+/// @brief Sensor::_incCalcValues; altitude is calculated within the Adafruit
 /// library.
 #define BMP3XX_INC_CALC_VARIABLES 1
 /**@}*/
@@ -355,7 +355,7 @@ class BoschBMP3xx : public Sensor {
      * sensor immediately returns to sleep.  This mode should be used if you are
      * stopping power to the sensor between readings.  You should not use this
      * mode if you wish to use the sensor's on-board IIR filter.
-     * - `NORMAL_MODE` - the sensor alteranates between sampling and sleeping at
+     * - `NORMAL_MODE` - the sensor alternates between sampling and sleeping at
      * intervals set by the sensor output data rate, results can be read
      * whenever needed.  This mode should *not* be used if you will stop power
      * to the sensor between readings.  If you wish to use the sensor's on-board
@@ -484,7 +484,7 @@ class BoschBMP3xx : public Sensor {
      * sensor immediately returns to sleep.  This mode should be used if you are
      * stopping power to the sensor between readings.  You should not use this
      * mode if you wish to use the sensor's on-board IIR filter.
-     * - `NORMAL_MODE` - the sensor alteranates between sampling and sleeping at
+     * - `NORMAL_MODE` - the sensor alternates between sampling and sleeping at
      * intervals set by the sensor output data rate, results can be read
      * whenever needed.  This mode should *not* be used if you will stop power
      * to the sensor between readings.  If you wish to use the sensor's on-board
@@ -707,3 +707,5 @@ class BoschBMP3xx_Altitude : public Variable {
 };
 /**@}*/
 #endif  // SRC_SENSORS_BOSCHBMP3XX_H_
+
+// cSpell:ignore oversample SEALEVELPRESSURE osrs_p DDIO bmp3xxtimingTest

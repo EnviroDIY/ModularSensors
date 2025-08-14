@@ -25,7 +25,7 @@
  *
  * @section sensor_rainvue_intro Introduction
  *
- * The RainVUETM10 is an SDI-12 tipping bucket rain gage in the RainVUE™
+ * The RainVUE10 is an SDI-12 tipping bucket rain gage in the RainVUE™
  * family of products. Advanced algorithms and digital processing within the
  * sensor compensate for errors caused by high-intensity rain and provide
  * accurate precipitation and intensity measurements.
@@ -487,3 +487,5 @@ class CampbellRainVUE10_RainRateMax : public Variable {
 };
 /**@}*/
 #endif  // SRC_SENSORS_CAMPBELLRAINVUE10_H_
+
+// cSpell:ignore RAINRATEAVE RAINRATEMAX

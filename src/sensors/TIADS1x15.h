@@ -11,7 +11,7 @@
  * @brief This file contains the TIADS1x15 sensor subclass and the
  * TIADS1x15_Voltage variable subclass.
  *
- * These are used for any voltage measureable on a TI ADS1115 or ADS1015.  There
+ * These are used for any voltage measurable on a TI ADS1115 or ADS1015.  There
  * is a multiplier allowed for a voltage divider between the raw voltage and the
  * ADS.
  *
@@ -32,8 +32,8 @@
  *
  * Many sensors output simple analog voltages and leave the conversion to a digital
  * signal and final result up to the user.  These types of sensors are supported in
- * Modular sensors by way of a Texas Instruments ADS1115 or ADS1015.  The TI ADS1115 ADD
- * is a precision, low-power, 16-bit, I2C-compatible, analog-to-digitalconverter (ADC).
+ * Modular sensors by way of a Texas Instruments ADS1115 or ADS1015.  The TI ADS1115 ADC
+ * is a precision, low-power, 16-bit, I2C-compatible, analog-to-digital-converter (ADC).
  * It is built into the EnviroDIY Mayfly.  The ADS1015 is a very similar ADC with 12-bit
  * resolution and a slightly lower price point.  Both chips are widely available in
  * Arduino-ready breakouts.
@@ -69,8 +69,8 @@
  *     (whichever is smaller) must be applied to this device.
  *   - 0 - 3.6V [when ADC is powered at 3.3V]
  * - Accuracy:
- *   - 16-bit ADC (ADS1115): < 0.25% (gain error), <0.25 LSB (offset errror)
- *   - 12-bit ADC (ADS1015, using build flag ```MS_USE_ADS1015```): < 0.15% (gain error), <3 LSB (offset errror)
+ *   - 16-bit ADC (ADS1115): < 0.25% (gain error), <0.25 LSB (offset error)
+ *   - 12-bit ADC (ADS1015, using build flag ```MS_USE_ADS1015```): < 0.15% (gain error), <3 LSB (offset error)
  * - Resolution:
  *   - 16-bit ADC (ADS1115):
  *     - without voltage divider:  0.125 mV
@@ -106,7 +106,7 @@
  * The External Voltage module is used for any case where the voltage itself is
  * the desired value (as for an external battery).  It can also be used in
  * combination with a calculated variable to support any other analog sensor not
- * explicity supported by ModularSensors.  To increase the range available for
+ * explicitly supported by ModularSensors.  To increase the range available for
  * voltage measurements, this module supports the use of a voltage divider.
  *
  * If you are working with an EnviroDIY Mayfly, the easiest voltage divider to
@@ -218,9 +218,9 @@
  *     - 1/gain = 3x: 0.3 ~ 12.9V
  *     - 1/gain = 10x: 1 ~ 43V
  *   - Accuracy:
- *     - 16-bit ADC (ADS1115): < 0.25% (gain error), <0.25 LSB (offset errror)
+ *     - 16-bit ADC (ADS1115): < 0.25% (gain error), <0.25 LSB (offset error)
  *     - 12-bit ADC (ADS1015, using build flag ```MS_USE_ADS1015```): < 0.15%
- * (gain error), <3 LSB (offset errror)
+ * (gain error), <3 LSB (offset error)
  *   - Resolution:
  *     - 16-bit ADC (ADS1115):
  *       - @m_span{m-dim}@ref #TIADS1X15_RESOLUTION = 4@m_endspan
@@ -260,7 +260,7 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [external votlage as measured by TI ADS1115 or ADS1015](@ref sensor_ads1x15).
+ * [external voltage as measured by TI ADS1115 or ADS1015](@ref sensor_ads1x15).
  *
  * @ingroup sensor_ads1x15
  */

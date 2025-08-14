@@ -59,7 +59,7 @@
 /**
  * @anchor sensor_y510_var_counts
  * @name Sensor Variable Counts
- * The number of variables that can be returned by a Yosemitch Y510
+ * The number of variables that can be returned by a Yosemitech Y510
  */
 /**@{*/
 /// @brief Sensor::_numReturnedValues; the Y510 can report 2 values.
@@ -71,7 +71,7 @@
 /**
  * @anchor sensor_y510_timing
  * @name Sensor Timing
- * The sensor timing for a Yosemitch Y510
+ * The sensor timing for a Yosemitech Y510
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; time before sensor responds after power -
@@ -88,7 +88,7 @@
 /**
  * @anchor sensor_y510_turb
  * @name Turbidity
- * The turbidity variable from a Yosemitch Y510
+ * The turbidity variable from a Yosemitech Y510
  * - Range is 0.1 to 1000 NTU
  * - Accuracy is ± 5 % or 0.3 NTU
  *
@@ -115,7 +115,7 @@
 /**
  * @anchor sensor_y510_temp
  * @name Temperature
- * The temperature variable from a Yosemitch Y510
+ * The temperature variable from a Yosemitech Y510
  * - Range is 0°C to + 50°C
  * - Accuracy is ± 0.2°C
  *

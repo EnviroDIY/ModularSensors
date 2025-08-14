@@ -6,7 +6,7 @@
  * @author Written By: Neil Hancock <neilh20+aec2008@wLLw.net>; Edited by Sara
  * Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief Encapsulates an Electrical Conductivity sensors using an anlog
+ * @brief Encapsulates an Electrical Conductivity sensors using an analog
  * input and onboard ADC and ADC ref.
  */
 /* clang-format off */
@@ -30,7 +30,7 @@
  * For this to work, the power across the circuit **MUST** be turned off between
  * readings.  If the power to the circuit is left on the water will become
  * polarized and the values will not be valid. The water temperature (if used)
- * must be suplied separately for a calculation.
+ * must be supplied separately for a calculation.
  *
  * @note The return from this "sensor" is conductivity - not the typically
  * reported specific conductance, which is referenced to 25°C.  The temperature
@@ -100,7 +100,7 @@
  *  For one AC Power Cord 12t with male IEC 320-C8 connector the cell constant
  * was 2.88.
  *
- * @note These calulations are for the on-board processor ADC, not an external
+ * @note These calculations are for the on-board processor ADC, not an external
  * ACD like the TI ADS1115 built into the Mayfly!
  *
  * @section sensor_analog_cond_ref References
@@ -337,7 +337,7 @@ class AnalogElecConductivity : public Sensor {
     float readEC(uint8_t analogPinNum);
 
  private:
-    /// @brief The resistance of the circiut resistor plus any series port
+    /// @brief The resistance of the circuit resistor plus any series port
     /// resistance
     float _Rseries_ohms = RSERIES_OHMS_DEF;
 
@@ -390,3 +390,6 @@ class AnalogElecConductivity_EC : public Variable {
 };
 /**@}*/
 #endif  // SRC_SENSORS_ANALOGELECCONDUCTIVITY_H_
+
+// cSpell:ignore AnalogElecConductivity Rseries_ohms sensorEC_Konst Rwater
+// cSpell:ignore _elec_ _Konst anlgEc

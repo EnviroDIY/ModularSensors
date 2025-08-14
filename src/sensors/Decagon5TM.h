@@ -413,3 +413,5 @@ class Decagon5TM_VWC : public Variable {
 };
 /**@}*/
 #endif  // SRC_SENSORS_DECAGON5TM_H_
+
+// cSpell:ignore fivetm matric

@@ -58,7 +58,7 @@
 /**
  * @anchor sensor_y700_var_counts
  * @name Sensor Variable Counts
- * The number of variables that can be returned by a Yosemitch Y700
+ * The number of variables that can be returned by a Yosemitech Y700
  */
 /**@{*/
 /// @brief Sensor::_numReturnedValues; the Y700 can report 2 values.
@@ -70,7 +70,7 @@
 /**
  * @anchor sensor_y700_timing
  * @name Sensor Timing
- * The sensor timing for a Yosemitch Y700
+ * The sensor timing for a Yosemitech Y700
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; time before sensor responds after power -
@@ -81,14 +81,14 @@
 /// but 12 s for <0.1 mm. If highest precision is required, increase to 12000.
 #define Y700_STABILIZATION_TIME_MS 4000
 /// @brief Sensor::_measurementTime_ms; the Y700 takes <1 s for new values.
-///  but >1 s for values that don't seem autocorrelated.
+///  but >1 s for values that don't seem auto-correlated.
 #define Y700_MEASUREMENT_TIME_MS 1000
 /**@}*/
 
 /**
  * @anchor sensor_y700_pres
  * @name Pressure
- * The Pressure variable from a Yosemitch Y700
+ * The Pressure variable from a Yosemitech Y700
  * - Range is 0mH2O, ~2mH2O, or 100mH2O, depending on model
  * - Accuracy is ± 0.1 % Full Scale
  *
@@ -115,7 +115,7 @@
 /**
  * @anchor sensor_y700_temp
  * @name Temperature
- * The temperature variable from a Yosemitch Y700
+ * The temperature variable from a Yosemitech Y700
  * - Range is 0°C to + 50°C
  * - Accuracy is ± 0.2°C
  *

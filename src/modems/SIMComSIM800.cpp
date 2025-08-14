@@ -20,7 +20,7 @@ SIMComSIM800::SIMComSIM800(Stream* modemStream, int8_t powerPin,
                   SIM800_RESET_LEVEL, SIM800_RESET_PULSE_MS, modemSleepRqPin,
                   SIM800_WAKE_LEVEL, SIM800_WAKE_PULSE_MS,
                   SIM800_STATUS_TIME_MS, SIM800_DISCONNECT_TIME_MS,
-                  SIM800_WAKE_DELAY_MS, SIM800_ATRESPONSE_TIME_MS),
+                  SIM800_WAKE_DELAY_MS, SIM800_AT_RESPONSE_TIME_MS),
 #ifdef MS_SIMCOMSIM800_DEBUG_DEEP
       _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
       gsmModem(_modemATDebugger),

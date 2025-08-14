@@ -2,7 +2,7 @@
  *PaleoTerraRedox.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
+ *Initial library development done by Sara Damiano (sdamiano@stroudcenter.org).
  *
  *This file is for the I2C Redox sensors made by Paleo Terra.  Because these
  *sensors all ship with the same I2C address, this module is also dependent on

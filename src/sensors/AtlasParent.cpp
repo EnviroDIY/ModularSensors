@@ -3,7 +3,7 @@
  * @copyright Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino.
  * This library is published under the BSD-3 license.
- * @author Initial developement for Atlas Sensors was done by Adam Gold
+ * @author Initial development for Atlas Sensors was done by Adam Gold
  * Files were edited by Sara Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Implements the AtlasParent class.
@@ -199,7 +199,7 @@ bool AtlasParent::addSingleMeasurementResult(void) {
 // expected except a status code - the response will be "consumed"
 // and become unavailable.
 bool AtlasParent::waitForProcessing(uint32_t timeout) {
-    // Wait for the command to have been processed and implented
+    // Wait for the command to have been processed and implemented
     bool     processed = false;
     uint32_t start     = millis();
     while (!processed && millis() - start < timeout) {

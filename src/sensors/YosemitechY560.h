@@ -60,7 +60,7 @@
 /**
  * @anchor sensor_y560_var_counts
  * @name Sensor Variable Counts
- * The number of variables that can be returned by a Yosemitch Y560
+ * The number of variables that can be returned by a Yosemitech Y560
  */
 /**@{*/
 /// @brief Sensor::_numReturnedValues; the Y560 can report 3 values.
@@ -72,11 +72,11 @@
 /**
  * @anchor sensor_y560_timing
  * @name Sensor Timing
- * The sensor timing for a Yosemitch Y560
+ * The sensor timing for a Yosemitech Y560
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; time before sensor responds after power -
-/// <200ms for response, but need 2-10s to load capcitors for brush & measure.
+/// <200ms for response, but need 2-10s to load capacitors for brush & measure.
 #define Y560_WARM_UP_TIME_MS 7000
 /// @brief Sensor::_stabilizationTime_ms; time between "StartMeasurement"
 /// command and stable reading 20s in manual but this includes 15s for brushing.
@@ -90,7 +90,7 @@
 /**
  * @anchor sensor_y560_nh4
  * @name NH4_N
- * The NH4_N variable from a Yosemitch Y560
+ * The NH4_N variable from a Yosemitech Y560
  * - Range is 0-10 or 0-100 mg/L NH4-N
  * - Accuracy is ±(5% + 0.2 mg/L)
  *
@@ -117,7 +117,7 @@
 /**
  * @anchor sensor_y560_temp
  * @name Temperature
- * The temperature variable from a Yosemitch Y560
+ * The temperature variable from a Yosemitech Y560
  * - Range is 0°C to + 50°C
  * - Accuracy is ± 0.2°C
  *
@@ -144,7 +144,7 @@
 /**
  * @anchor sensor_y560_pH
  * @name pH
- * The pH variable from a Yosemitch Y560
+ * The pH variable from a Yosemitech Y560
  * - Range is 2 to 12 pH units
  * - Accuracy is ± 0.1 pH units
  *

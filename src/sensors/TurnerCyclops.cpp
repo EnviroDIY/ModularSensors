@@ -53,7 +53,7 @@ bool TurnerCyclops::addSingleMeasurementResult(void) {
     if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-// Create an Auxillary ADD object
+// Create an auxiliary ADD object
 // We create and set up the ADC object here so that each sensor using
 // the ADC may set the gain appropriately without effecting others.
 #ifndef MS_USE_ADS1015

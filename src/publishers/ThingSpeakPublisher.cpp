@@ -304,3 +304,5 @@ int16_t ThingSpeakPublisher::publishMetadata(Client* outClient) {
 
     return responseCode;
 }
+
+// cSpell:ignore setRESTAPIKey

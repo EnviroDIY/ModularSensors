@@ -21,7 +21,7 @@
  *
  * The ESP8266 is an older Espressif module, but still widely and cheaply
  * available. This library does not support the "NON-OS" based AT commands.
- * Update to the final realease for the ESP8266.
+ * Update to the final release for the ESP8266.
  *
  * @section modem_esp8266_dfrobot DFRobot ESPBee
  *
@@ -103,7 +103,7 @@ class EspressifESP8266 : public Espressif {
     /**
      * @brief Construct a new Espressif ESP8266 object.
      *
-     * The constuctor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables,
      * constructs a loggerModem parent class with the appropriate timing for the
      * module, calls the constructor for a TinyGSM modem on the provided
      * modemStream, and creates a TinyGSM Client linked to the modem.
@@ -168,3 +168,5 @@ class EspressifESP8266 : public Espressif {
 };
 /**@}*/
 #endif  // SRC_MODEMS_ESPRESSIFESP8266_H_
+
+// cSpell:ignore DFRobot RSTB

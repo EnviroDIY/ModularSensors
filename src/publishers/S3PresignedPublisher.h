@@ -63,7 +63,7 @@
  * create a new one.
  *   - To write to a new file, you need a new URL.
  * - The URL is only valid for a short time, usually only a few minutes.
- *   - The absolute maxiumum time a pre-signed URL could be valid for is 7 days,
+ *   - The absolute maximum time a pre-signed URL could be valid for is 7 days,
  * but they're frequently only valid for a few minutes or hours at most.
  *
  * So, to publish to S3, this publisher provides a few options:
@@ -184,7 +184,7 @@ class S3PresignedPublisher : public dataPublisher {
     }
 
     /**
-     * @brief Set funtion to use to get the new URL
+     * @brief Set function to use to get the new URL
      *
      * @param getUrlFxn A function to call to get a new pre-signed URL
      */
@@ -217,7 +217,7 @@ class S3PresignedPublisher : public dataPublisher {
     void setFileParams(const char* extension, const char* filePrefix = nullptr);
 
     /**
-     * @brief Set funtion to use to get the new URL
+     * @brief Set function to use to get the new URL
      *
      * @param getFileNameFxn A function to call to get a new filename
      */
@@ -339,7 +339,7 @@ class S3PresignedPublisher : public dataPublisher {
      * characters long.
      * @param s3resource A buffer for the parsed resource. Should be long enough
      * for the whole URL less the host.
-     * @param content_type A buffer for the parsed *and de-escapted* content
+     * @param content_type A buffer for the parsed *and de-escaped* content
      * type. Must be at least 128 characters long
      * @return True if the URL is valid and the provided buffers have been
      * filled.

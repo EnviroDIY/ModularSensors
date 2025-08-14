@@ -74,7 +74,7 @@
  * @brief The mode for the interrupt on the wake/RTC pin; must be one of HIGH,
  * LOW, FALLING, RISING, or CHANGE
  *
- * Using HIGH or LOW could trigger multiple interrupts when the clock interrut
+ * Using HIGH or LOW could trigger multiple interrupts when the clock interrupt
  * fires. It's best to catch the first edge of the clock interrupt. So for an
  * RTC with an active low interrupt, use "FALLING."
  *
@@ -193,7 +193,7 @@ class epochTime {
      * @brief Constructor, requires thse unix offset value as input.
      *
      * @param timestamp Your raw timestamp
-     * @param epoch The unix offfset of your timestamp from the unixOffset enum.
+     * @param epoch The unix offset of your timestamp from the unixOffset enum.
      */
     epochTime(time_t timestamp, epochStart epoch = epochStart::unix_epoch);
     /**
@@ -242,7 +242,7 @@ class epochTime {
      *
      * @param in_time The input epochTime object
      * @param end_offset The ending epoch
-     * @return The equivalant timestamp relative to the requested epoch
+     * @return The equivalent timestamp relative to the requested epoch
      */
     static time_t convert_epoch(epochTime in_time, epochStart end_offset);
 
@@ -250,14 +250,14 @@ class epochTime {
      * @brief Convert Unix Time to GPS Time
      *
      * @param unixTime A unix epoch timestamp
-     * @return The equivlant GPS epoch timestamp
+     * @return The equivalent GPS epoch timestamp
      */
     static time_t unix2gps(time_t unixTime);
     /**
      * @brief Convert GPS Time to Unix Time
      *
      * @param gpsTime A GPS epoch timestamp
-     * @return The equivlant Unix epoch timestamp
+     * @return The equivalent Unix epoch timestamp
      */
     static time_t gps2unix(time_t gpsTime);
 
@@ -439,7 +439,7 @@ class loggerClock {
                                epochTime in_time);
 
     /**
-     * @brief Veify that the input value is sane and if so sets the real time
+     * @brief Verify that the input value is sane and if so sets the real time
      * clock to the given time.
      *
      * @param ts The number of seconds since the start of the given epoch.
@@ -454,7 +454,7 @@ class loggerClock {
      */
     static bool setRTClock(uint32_t ts, int8_t utcOffset, epochStart epoch);
     /**
-     * @brief Veify that the input value is sane and if so sets the real time
+     * @brief Verify that the input value is sane and if so sets the real time
      * clock to the given time.
      *
      * @param in_time An epochTime object
@@ -506,7 +506,7 @@ class loggerClock {
     static bool isEpochTimeSane(epochTime in_time, int8_t utcOffset);
 
     /**
-     * @brief Set an alarm to fire a clock inetrrupt at a specific epoch time
+     * @brief Set an alarm to fire a clock interrupt at a specific epoch time
      *
      * @param ts The timestamp for the next interrupt
      * @param utcOffset The offset of the epoch time from UTC in hours.
@@ -516,7 +516,7 @@ class loggerClock {
     static void setNextRTCInterrupt(uint32_t ts, int8_t utcOffset,
                                     epochStart epoch);
     /**
-     * @brief Set an alarm to fire a clock inetrrupt at a specific epoch time
+     * @brief Set an alarm to fire a clock interrupt at a specific epoch time
      *
      * @param in_time An epochTime object
      * @param utcOffset The offset of the epoch time from UTC in hours.
@@ -636,3 +636,5 @@ class loggerClock {
 };
 
 #endif
+
+// cSpell:ignore nist hile

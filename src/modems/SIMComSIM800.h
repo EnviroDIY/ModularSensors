@@ -7,7 +7,7 @@
  *
  * @brief Contains the SIMComSIM800 subclass of loggerModem for Adafruit Fona
  * 2G, the Sodaq GPRSBeeR4 and almost any other module based on the SIMCOM
- * SIM800 or SIM900 modules and thier variants.
+ * SIM800 or SIM900 modules and their variants.
  */
 /* clang-format off */
 /**
@@ -143,15 +143,15 @@
  */
 #define SIM800_WAKE_DELAY_MS 450
 /**
- * @brief The loggerModem::_max_atresponse_time_ms.
+ * @brief The loggerModem::_max_at_response_time_ms.
  *
  * Time after end pulse until serial port becomes active on SIM800 is >3sec from
  * start of 1s pulse.
  */
-#define SIM800_ATRESPONSE_TIME_MS 3000
+#define SIM800_AT_RESPONSE_TIME_MS 3000
 
 /**
- * @brief The loggerModem::_disconnetTime_ms.
+ * @brief The loggerModem::_disconnectTime_ms.
  *
  * SIM800 power down (gracefully) takes >3sec.  We allow up to 15sec for
  * shutdown in case it is not monitored.
@@ -162,13 +162,13 @@
 /**
  * @brief The loggerModem subclass for the Adafruit Fona 2G, the Sodaq GPRSBeeR4
  * and almost any other module based on the [SIMCOM SIM800 or SIM900 modules and
- * thier variants](@ref modem_sim800).
+ * their variants](@ref modem_sim800).
  */
 class SIMComSIM800 : public loggerModem {
  public:
     /**
      * @brief Construct a new SIMComSIM800 object
-     * The constuctor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables,
      * constructs a loggerModem parent class with the appropriate timing for the
      * module, calls the constructor for a TinyGSM modem on the provided
      * modemStream, and creates a TinyGSM Client linked to the modem.

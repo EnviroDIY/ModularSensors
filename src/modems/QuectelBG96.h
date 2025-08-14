@@ -155,14 +155,14 @@
  */
 #define BG96_WAKE_DELAY_MS 100
 /**
- * @brief The loggerModem::_max_atresponse_time_ms.
+ * @brief The loggerModem::_max_at_response_time_ms.
  *
  * The BG96 has USB active at >4.2 sec, status at >4.8 sec, URAT at >4.9
  */
-#define BG96_ATRESPONSE_TIME_MS 10000L
+#define BG96_AT_RESPONSE_TIME_MS 10000L
 
 /**
- * @brief The loggerModem::_disconnetTime_ms.
+ * @brief The loggerModem::_disconnectTime_ms.
  *
  * Documentation for the BG96 says to allow >2s for clean shutdown.
  */
@@ -178,7 +178,7 @@ class QuectelBG96 : public loggerModem {
     /**
      * @brief Construct a new Quectel BG96 object
      *
-     * The constuctor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables,
      * constructs a loggerModem parent class with the appropriate timing for the
      * module, calls the constructor for a TinyGSM modem on the provided
      * modemStream, and creates a TinyGSM Client linked to the modem.
@@ -252,3 +252,5 @@ class QuectelBG96 : public loggerModem {
 };
 /**@}*/
 #endif  // SRC_MODEMS_QUECTELBG96_H_
+
+// cSpell:ignore VBAT URAT

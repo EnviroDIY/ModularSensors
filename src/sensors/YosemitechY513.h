@@ -59,7 +59,7 @@
 /**
  * @anchor sensor_y513_var_counts
  * @name Sensor Variable Counts
- * The number of variables that can be returned by a Yosemitch Y514
+ * The number of variables that can be returned by a Yosemitech Y514
  */
 /**@{*/
 /// @brief Sensor::_numReturnedValues; the Y513 can report 2 values.
@@ -71,7 +71,7 @@
 /**
  * @anchor sensor_y513_timing
  * @name Sensor Timing
- * The sensor timing for a Yosemitch Y513
+ * The sensor timing for a Yosemitech Y513
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; time before sensor responds after power - 1.3
@@ -88,7 +88,7 @@
 /**
  * @anchor sensor_y513_bga
  * @name Chlorophyll Concentration
- * The blue green algae concentration variable from a Yosemitch Y513
+ * The blue green algae concentration variable from a Yosemitech Y513
  * - Range is 0 to 400 µg/L or 0 to 100 RFU
  * - Accuracy is ± 1 %
  *
@@ -116,7 +116,7 @@
 /**
  * @anchor sensor_y513_temp
  * @name Temperature
- * The temperature variable from a Yosemitch Y513
+ * The temperature variable from a Yosemitech Y513
  * - Range is 0°C to + 50°C
  * - Accuracy is ± 0.2°C
  *

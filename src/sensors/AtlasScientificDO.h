@@ -3,7 +3,7 @@
  * @copyright Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino.
  * This library is published under the BSD-3 license.
- * @author Initial developement for Atlas Sensors was done by Adam Gold
+ * @author Initial development for Atlas Sensors was done by Adam Gold
  * Files were edited by Sara Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Contains the AtlasScientificCO2 subclass of the AtlasParent sensor
@@ -23,7 +23,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * The Atlas Scientifc DO sensor outputs DO in both mg/L and percent saturation.
+ * The Atlas Scientific DO sensor outputs DO in both mg/L and percent saturation.
  *
  * @section sensor_atlas_do_datasheet Sensor Datasheet
  *

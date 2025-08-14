@@ -10,10 +10,11 @@
  *
  * For the Arduino IDE, this is the only way to configure these settings. If you
  * are using PlatformIO, you have the option of using this file or changing your
- * configuation using build flags in your platformio.ini. Compile times will be
+ * configuration using build flags in your platformio.ini. Compile times will be
  * shorter if you use this file instead of build flags, but it is much easier to
  * track changes in your platformio.ini file than in this file.
  */
+
 
 // Header Guards
 #ifndef SRC_MODSENSORCONFIG_H_
@@ -52,7 +53,7 @@
 
 // Disable CRC checking for SDI-12 sensors, if needed
 // This may be necessary if using older or fussy sensors
-// CRC support in SDI-12 was implemenented with version 1.3 (April 7, 2000) and
+// CRC support in SDI-12 was implemented with version 1.3 (April 7, 2000) and
 // all sensors that claim to use version 1.3 or higher must support it.
 // NOTE:  By default, CRCs are used for all SDI-12 sensors!
 // NOTE: This single setting applies to all SDI-12 sensors; it cannot be set on
@@ -139,7 +140,7 @@
  *
  * This is the resolution of the **built-in** processor ADC and it cannot be set
  * higher than what your processor actually supports. This does **not** apply to
- * the TI ADS1115 or ADS1015 external ADCS.
+ * the TI ADS1115 or ADS1015 external ADS.
  *
  * The default for AVR boards is 10 and for other boards is 12.
  *

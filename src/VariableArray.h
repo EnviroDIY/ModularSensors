@@ -113,24 +113,24 @@ class VariableArray {
     // actually have been created unless we wait until in the setup or loop
     // function of the main program.
     /**
-     * @brief Begins the VariableArray.  Suppiles a variable array, checks the
+     * @brief Begins the VariableArray.  Supplies a variable array, checks the
      * validity of all UUID and outputs the results.
      *
-     * @param variableCount The number of variables in the array.  Supercedes
+     * @param variableCount The number of variables in the array.  Supersedes
      * any value given in the constructor.
      * @param variableList An array of pointers to variable objects.  The
-     * pointers may be to calculated or measured variable objects.  Supercedes
+     * pointers may be to calculated or measured variable objects.  Supersedes
      * any value given in the constructor.
      */
     void begin(uint8_t variableCount, Variable* variableList[]);
     /**
-     * @brief Begins the VariableArray.  Suppiles a variable array and UUIDs,
+     * @brief Begins the VariableArray.  Supplies a variable array and UUIDs,
      * checks the validity of all UUID and outputs the results.
      *
-     * @param variableCount The number of variables in the array.  Supercedes
+     * @param variableCount The number of variables in the array.  Supersedes
      * any value given in the constructor.
      * @param variableList An array of pointers to variable objects.  The
-     * pointers may be to calculated or measured variable objects.  Supercedes
+     * pointers may be to calculated or measured variable objects.  Supersedes
      * any value given in the constructor.
      * @param uuids An array of UUID's.  These are linked 1-to-1 with the
      * variables by array position.
@@ -286,7 +286,7 @@ class VariableArray {
     /**
      * @brief The maximum number of samples to average of an single sensor.
      */
-    uint8_t _maxSamplestoAverage;
+    uint8_t _maxSamplesToAverage;
 
  private:
     /**

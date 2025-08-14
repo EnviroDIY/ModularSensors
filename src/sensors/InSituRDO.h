@@ -15,7 +15,7 @@
 /* clang-format off */
 /**
  * @defgroup sensor_insitu_rdo In-Situ RDO PRO-X
- * Classes for the InSitue Optical RDO PRO-X process optical dissolved oxygen probe
+ * Classes for the InSitu Optical RDO PRO-X process optical dissolved oxygen probe
  *
  * @ingroup sdi12_group
  *
@@ -59,7 +59,7 @@
  * Win-Situ to change some of the default settings on the sensor.
  *
  * To connect the sensor to Win-Situ, you can use any form of RS485 to USB interface.
- * In-Situ sells one that specifially works with their cables, but any
+ * In-Situ sells one that specifically works with their cables, but any
  * inexpensive converter adapter with automatic flow control should work.
  * The sensor must be powered at a minimum of **12V** (12-36V) to use the
  * RS485/modbus interface.  This is different than the 9.6V - 16V required for
@@ -120,7 +120,7 @@
  *
  * The optical window should only be cleaned when the sensor cap is changed.
  *
- * InSitu recommends using an antifouling guard or airblast adapter to extend deployments and protect your data.
+ * InSitu recommends using an antifouling guard or air blast adapter to extend deployments and protect your data.
  *
  * @section sensor_insitu_rdo_warnings Deployment Notes and Warnings
  * @warning The inside of the controller must be kept free of moisture and humidity.
@@ -218,7 +218,7 @@
  *   - ± 0.2 mg/L of reading from 8-20 mg/L
  *   - ± 10% of reading from 20-50 mg/L
  *
- * @note To acheive maximum accuracy, the sensor must be calibrated using either
+ * @note To achieve maximum accuracy, the sensor must be calibrated using either
  * a one or two point calibration.
  *
  * {{ @ref InSituRDO_DOmgL::InSituRDO_DOmgL }}
@@ -257,7 +257,7 @@
  *   - ± 0.1 mg/L from 0 to 8 mg/L
  *   - ± 0.2 mg/L of reading from 8-20 mg/L
  *   - ± 10% of reading from 20-50 mg/L
- * @note To acheive maximum accuracy, the sensor must be calibrated using either
+ * @note To achieve maximum accuracy, the sensor must be calibrated using either
  * a one or two point calibration.
  *
  * {{ @ref InSituRDO_DOpct::InSituRDO_DOpct }}

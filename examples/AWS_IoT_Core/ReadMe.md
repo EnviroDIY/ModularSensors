@@ -37,8 +37,6 @@ TODO
 
 ## To Use this Example<!--! {#example_aws_iot_core_using} -->
 
-
-
 ### Set your AWS IoT Core Endpoint
 
 In line 60, find and replace the text `YOUR_ENDPOINT-ats.iot.YOUR_REGION.amazonaws.com` with your real endpoint.

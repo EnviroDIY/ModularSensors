@@ -30,7 +30,7 @@
  * @note At this time, this library has only very rudimentary support for
  * subscriptions and and data reception.  You can subscribe to up to
  * #MS_AWS_IOT_PUBLISHER_SUB_COUNT topics and set a callback function for
- * incoming messages that will be passed to the underlieing PubSubClient
+ * incoming messages that will be passed to the underlying PubSubClient
  * instance.  This is **ABSOLUTELY NOT** intended for handling any messages
  * except those received over a very brief connection. The MQTT client only
  * stays open briefly while publishing messages! (Until you call
@@ -360,8 +360,9 @@ class AWS_IoT_Publisher : public dataPublisher {
      *
      * This must be a static or main level function! It **cannot** be a member
      * function of a class!  Your callback function should call this publishers
-     * AWS_IoT_Publisher::closeConnection() method immedialy after getting your
-     * desired response to stop the publisher from waiting for more messages.
+     * AWS_IoT_Publisher::closeConnection() method immediately after getting
+     * your desired response to stop the publisher from waiting for more
+     * messages.
      *
      * @warning This is **ABSOLUTELY NOT** intended for handling any messages
      * except those received over a very brief connection. The MQTT client only
@@ -498,3 +499,5 @@ class AWS_IoT_Publisher : public dataPublisher {
 };
 
 #endif  // SRC_PUBLISHERS_AWS_IOT_PUBLISHER_H_
+
+// cSpell:ignore contentGetrFxn contentGetrFxns

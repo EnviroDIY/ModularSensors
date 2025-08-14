@@ -1,6 +1,6 @@
 # Physical Dependencies<!--! {#page_physical_dependencies} -->
 
-This library is designed for wireless, solar-powered environmental data logging applications, that is, to log data from many physical sensors and to put the processor and all peripherals to sleep to conserver power between readings.
+This library is designed for wireless, solar-powered environmental data logging applications, that is, to log data from many physical sensors and to put the processor and all peripherals to sleep to conserve power between readings.
 The most banal functions of the library require only an AVR or SAMD processor, but making real use of this library requires:
 
 - A sufficiently powerful AVR or SAMD processor mounted on some sort of circuit board.

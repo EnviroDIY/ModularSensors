@@ -284,3 +284,5 @@ class ThingSpeakPublisher : public dataPublisher {
 };
 
 #endif  // SRC_PUBLISHERS_THINGSPEAKPUBLISHER_H_
+
+// cSpell:ignore setRESTAPIKey

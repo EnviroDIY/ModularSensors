@@ -151,7 +151,7 @@ Variable* ds3231Temp =
 const int8_t I2CPower    = sensorPowerPin;  // Power pin (-1 if unconnected)
 uint8_t      BMEi2c_addr = 0x77;
 // The BME280 can be addressed either as 0x77 (Adafruit default) or 0x76 (Grove
-// default) Either can be physically mofidied for the other address
+// default) Either can be physically modified for the other address
 
 // Create a Bosch BME280 sensor object
 BoschBME280 bme280(I2CPower, BMEi2c_addr);
@@ -283,19 +283,19 @@ float calculateWaterDepthTempCorrected(void) {
         9.80665;  // m/s2, meters per second squared
     // First get water pressure in Pa for the calculation: 1 mbar = 100 Pa
     float waterPressurePa  = 100 * calculateWaterPressure();
-    float waterTempertureC = ms5803Temp->getValue();
+    float waterTemperatureC = ms5803Temp->getValue();
     // Converting water depth for the changes of pressure with depth
     // Water density (kg/m3) from equation 6 from
     // JonesHarris1992-NIST-DensityWater.pdf
-    float waterDensity = +999.84847 + 6.337563e-2 * waterTempertureC -
-        8.523829e-3 * pow(waterTempertureC, 2) +
-        6.943248e-5 * pow(waterTempertureC, 3) -
-        3.821216e-7 * pow(waterTempertureC, 4);
+    float waterDensity = +999.84847 + 6.337563e-2 * waterTemperatureC -
+        8.523829e-3 * pow(waterTemperatureC, 2) +
+        6.943248e-5 * pow(waterTemperatureC, 3) -
+        3.821216e-7 * pow(waterTemperatureC, 4);
     // This calculation gives a final result in mm of water
     // from P = rho * g * h
     float rhoDepth = 1000 * waterPressurePa /
         (waterDensity * gravitationalConstant);
-    if (calculateWaterPressure() == -9999 || waterTempertureC == -9999) {
+    if (calculateWaterPressure() == -9999 || waterTemperatureC == -9999) {
         rhoDepth = -9999;
     }
     // Serial.print(F("Temperature corrected water depth is "));  // for
@@ -362,7 +362,7 @@ const char* samplingFeature =
 
 // Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPOST(dataLogger, registrationToken,
+EnviroDIYPublisher EnviroDIYPost(dataLogger, registrationToken,
                                  samplingFeature);
 /** End [publishers] */
 
@@ -372,7 +372,7 @@ EnviroDIYPublisher EnviroDIYPOST(dataLogger, registrationToken,
 // ==========================================================================
 /** Start [working_functions] */
 // Flashes the LED's on the primary board
-void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
+void greenRedFlash(uint8_t numFlash = 4, uint8_t rate = 75) {
     for (uint8_t i = 0; i < numFlash; i++) {
         digitalWrite(greenLED, HIGH);
         digitalWrite(redLED, LOW);
@@ -423,7 +423,7 @@ void setup() {
     pinMode(redLED, OUTPUT);
     digitalWrite(redLED, LOW);
     // Blink the LEDs to show the board is on and starting up
-    greenredflash();
+    greenRedFlash();
 
     // Set the timezones for the logger/data and the RTC
     // Logging in the given time zone

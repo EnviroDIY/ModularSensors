@@ -25,9 +25,9 @@ loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
                          uint32_t resetPulse_ms, int8_t modemSleepRqPin,
                          bool wakeLevel, uint32_t wakePulse_ms,
                          uint32_t max_status_time_ms,
-                         uint32_t max_disconnetTime_ms,
+                         uint32_t max_disconnectTime_ms,
                          uint32_t wakeDelayTime_ms,
-                         uint32_t max_atresponse_time_ms)
+                         uint32_t max_at_response_time_ms)
     : _powerPin(powerPin),
       _statusPin(statusPin),
       _statusLevel(statusLevel),
@@ -38,9 +38,9 @@ loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
       _wakeLevel(wakeLevel),
       _wakePulse_ms(wakePulse_ms),
       _statusTime_ms(max_status_time_ms),
-      _disconnetTime_ms(max_disconnetTime_ms),
+      _disconnectTime_ms(max_disconnectTime_ms),
       _wakeDelayTime_ms(wakeDelayTime_ms),
-      _max_atresponse_time_ms(max_atresponse_time_ms),
+      _max_at_response_time_ms(max_at_response_time_ms),
       _modemName("unspecified modem") {}
 
 // Destructor
@@ -159,8 +159,8 @@ bool loggerModem::modemSetup(void) {
     MS_DBG(_modemName, F("warms up in"), _wakeDelayTime_ms,
            F("ms, indicates status in"), _statusTime_ms,
            F("ms, is responsive to AT commands in less than"),
-           _max_atresponse_time_ms, F("ms, and takes up to"), _disconnetTime_ms,
-           F("ms to close connections and shut down."));
+           _max_at_response_time_ms, F("ms, and takes up to"),
+           _disconnectTime_ms, F("ms to close connections and shut down."));
 
     // Put the modem back to sleep if it was woken up just for setup
     // Only go to sleep if it had been asleep and is now awake
@@ -218,11 +218,11 @@ bool loggerModem::modemSleepPowerDown(void) {
         // If there's a status pin available, wait until modem shows it's ready
         // to be powered off This allows the modem to shut down gracefully.
         if (_statusPin >= 0) {
-            MS_DBG(F("Waiting up to"), _disconnetTime_ms,
+            MS_DBG(F("Waiting up to"), _disconnectTime_ms,
                    F("milliseconds for graceful shutdown as indicated by pin"),
                    _statusPin, F("going"), !_statusLevel ? F("HIGH") : F("LOW"),
                    F("..."));
-            while (millis() - start < _disconnetTime_ms &&
+            while (millis() - start < _disconnectTime_ms &&
                    digitalRead(_statusPin) ==
                        static_cast<int>(_statusLevel)) {  // wait
             }
@@ -233,10 +233,10 @@ bool loggerModem::modemSleepPowerDown(void) {
                 MS_DBG(F("... shutdown complete after"), millis() - start,
                        F("ms."));
             }
-        } else if (_disconnetTime_ms > 0) {
-            MS_DBG(F("Waiting"), _disconnetTime_ms,
+        } else if (_disconnectTime_ms > 0) {
+            MS_DBG(F("Waiting"), _disconnectTime_ms,
                    F("ms for graceful shutdown."));
-            while (millis() - start < _disconnetTime_ms) {
+            while (millis() - start < _disconnectTime_ms) {
                 // wait
             }
         }
@@ -486,3 +486,5 @@ uint32_t loggerModem::parseNISTBytes(byte nistBytes[4]) {
         return unixTimeStamp;
     }
 }
+
+// cSpell:ignore bpercent

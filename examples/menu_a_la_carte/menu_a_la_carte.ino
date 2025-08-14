@@ -145,7 +145,7 @@ SoftwareWire softI2C(softwareSDA, softwareSCL);
 // Set up a 'new' UART using SERCOM1
 // The Rx will be on digital pin 11, which is SERCOM1's Pad #0
 // The Tx will be on digital pin 10, which is SERCOM1's Pad #2
-// NOTE:  SERCOM1 is undefinied on a "standard" Arduino Zero and many clones,
+// NOTE:  SERCOM1 is undefined on a "standard" Arduino Zero and many clones,
 //        but not all!  Please check the variant.cpp file for you individual
 //        board!
 Uart Serial2(&sercom1, 11, 10, SERCOM_RX_PAD_0, UART_TX_PAD_2);
@@ -158,7 +158,7 @@ void SERCOM1_Handler() {
 // Set up a 'new' UART using SERCOM2
 // The Rx will be on digital pin 5, which is SERCOM2's Pad #3
 // The Tx will be on digital pin 2, which is SERCOM2's Pad #2
-// NOTE:  SERCOM2 is undefinied on a "standard" Arduino Zero and many clones,
+// NOTE:  SERCOM2 is undefined on a "standard" Arduino Zero and many clones,
 //        but not all!  Please check the variant.cpp file for you individual
 //        board! Sodaq Autonomo's and Sodaq One's do NOT follow the 'standard'
 //        SERCOM definitions!
@@ -261,7 +261,7 @@ void SERCOM1_3_Handler() {
 // Modbus (at 9600 8N1) is used by the Keller level loggers and Yosemitech
 // sensors
 // Since AltSoftSerial is the best software option, we use it for modbus
-// If AltSoftSerial (or its pins) aren't avaiable, use NeoSWSerial
+// If AltSoftSerial (or its pins) aren't available, use NeoSWSerial
 // SoftwareSerial **WILL NOT** work for modbus!
 #if defined(BUILD_TEST_ALTSOFTSERIAL)
 // For AltSoftSerial
@@ -510,7 +510,7 @@ const int32_t modemBaud = 9600;  // All XBee's use 9600 by default
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
-// The pin numbers here are for a Digi XBee direcly connected to a Mayfly 1.x
+// The pin numbers here are for a Digi XBee directly connected to a Mayfly 1.x
 const int8_t modemVccPin    = 18;  // MCU pin controlling modem power
 const int8_t modemStatusPin = 19;  // MCU pin used to read modem status
 // NOTE:  If possible, use the `STATUS/SLEEP_not` (XBee pin 13) for status, but
@@ -1247,7 +1247,7 @@ Variable* atlasSpCond =
 const int8_t BME280Power = sensorPowerPin;  // Power pin
 uint8_t      BMEi2c_addr = 0x76;
 // The BME280 can be addressed either as 0x77 (Adafruit default) or 0x76 (Grove
-// default) Either can be physically mofidied for the other address
+// default) Either can be physically modified for the other address
 
 // Create a Bosch BME280 sensor object
 BoschBME280 bme280(BME280Power, BMEi2c_addr);
@@ -1384,10 +1384,10 @@ Variable* obs3VoltHigh = new CampbellOBS3_Voltage(
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const char*  RainVUESDI12address = "0";  // The SDI-12 Address of the RainVUE10
-const int8_t RainVUEPower        = -1;   // Power pin, for continous power
+const int8_t RainVUEPower        = -1;   // Power pin, for continuous power
 const int8_t RainVUEData = 5;  // The SDI-12 data pin, for continuous power
 // NOTE:  you should NOT take more than one readings.  THe sensor counts
-// cummulative tips and rain accumulation since the last measurement.
+// commutative tips and rain accumulation since the last measurement.
 
 // Create a Campbell RainVUE10 sensor object
 CampbellRainVUE10 rainvue(*RainVUESDI12address, RainVUEPower, RainVUEData);
@@ -3202,7 +3202,7 @@ const char* registrationToken =
 
 // Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPOST(dataLogger, registrationToken);
+EnviroDIYPublisher EnviroDIYPost(dataLogger, registrationToken);
 /** End [enviro_diy_publisher] */
 #endif
 
@@ -3263,7 +3263,7 @@ ThingSpeakPublisher TsMqtt(dataLogger, thingSpeakClientName, thingSpeakMQTTUser,
 /** Start [ubidots_publisher] */
 // The authentication token from Ubidots, either the Organization's Integration
 // Token (under Users > Organization menu,visible by Admin only) OR the STEM
-// User's Device Token (under the specific evice's setup panel).
+// User's Device Token (under the specific device's setup panel).
 const char* ubidotsToken = "XXXXXXXXXXXXXXXX";
 // The device API Label from Ubidots, derived from the user-specified device
 // name.
@@ -3357,12 +3357,12 @@ AWS_IoT_Publisher awsIoTPub(dataLogger, awsIoTEndpoint, caCertName,
 // Callback function
 void IoTCallback(char* topic, byte* payload, unsigned int length) {
     PRINTOUT(F("Got message of length"), length, F("on topic"), topic);
-    // the topic is a char and garaunteed to be null-terminated, so we can
+    // the topic is a char and guaranteed to be null-terminated, so we can
     // directly convert to a String
     if (String(topic) == s3URLSubTopic) {
         PRINTOUT(F("Received data on pre-signed URL topic from AWS IoT Core"));
         // Allocate the correct amount of memory for the payload copy
-        // We CANNOT directly convert it to a string because it's not garaunteed
+        // We CANNOT directly convert it to a string because it's not guaranteed
         // to be null-terminated
         char* rx_url = (char*)malloc(length + 1);
         // Copy the payload to the new buffer
@@ -3715,7 +3715,7 @@ void setup() {
 #endif
 
 #if defined(BUILD_MODEM_DIGI_XBEE_LTE_BYPASS)
-    /** Start [setup_r4_carrrier] */
+    /** Start [setup_r4_carrier] */
     // Extra modem set-up
     PRINTOUT(F("Waking modem and setting Cellular Carrier Options..."));
     modem.modemWake();  // NOTE:  This will also set up the modem
@@ -3745,7 +3745,7 @@ void setup() {
     // Restart the module to apply changes
     modem.gsmModem.sendAT(GF("+CFUN=1,1"));
     modem.gsmModem.waitResponse(10000L);
-/** End [setup_r4_carrrier] */
+/** End [setup_r4_carrier] */
 #endif
 
     /** Start [setup_clock] */
@@ -3949,3 +3949,12 @@ void loop() {
 }
 #endif
 /** End [complex_loop] */
+
+
+// cspell: ignore EDBG XBCT XBLTEB XBWF SVZM BatterymV Atlasp oversample
+// cspell: ignore asco2voltage atlasGrav Hayashi emas PMID temperatureCoef
+// cspell: ignore ClariVUESDI12address RainVUESDI12address Turb CTDSDI
+// cspell: ignore RDOSDI TROLLSDI acculev nanolev TMSDI ELEC fivetm tallyi
+// cspell: ignore kmph TIINA Chloro Fluoroscein PTSA BTEX ECpwrPin anlg spcond
+// cspell: ignore Relia NEOPIXEL RESTAPI autobauding xbeec
+// cspell: ignore CFUN UMNOPROF URAT

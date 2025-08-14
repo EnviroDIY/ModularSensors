@@ -73,7 +73,7 @@ If you are having trouble, please see the pages for the specific modems and the 
 
 ## Power Requirements of Supported Modems<!--! {#modem_notes_power} -->
 
-> [!NOTE]  Standard USB ports and most Arduino boards (including the Mayfly) are only cabable of supplying **500mA** of power.
+> [!NOTE]  Standard USB ports and most Arduino boards (including the Mayfly) are only capable of supplying **500mA** of power.
 
 Any model that requires a higher level of current (almost all of them) should be given a separate power supply than the main processor.
 **The most common symptom of insufficient power is that the module will not connect to the internet.**

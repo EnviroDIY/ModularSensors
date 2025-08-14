@@ -195,10 +195,10 @@
  * The voltage variable from an OBS3+
  * - Range is 0 to 2.5V
  * - Accuracy:
- *     - 16-bit ADC (ADS1115): < 0.25% (gain error), < 0.25 LSB (offset errror)
+ *     - 16-bit ADC (ADS1115): < 0.25% (gain error), < 0.25 LSB (offset error)
  *       - @m_span{m-dim}@ref #OBS3_VOLTAGE_RESOLUTION = 4@m_endspan
  *     - 12-bit ADC (ADS1015, using build flag ```MS_USE_ADS1015```): < 0.15%
- * (gain error), < 3 LSB (offset errror)
+ * (gain error), < 3 LSB (offset error)
  *       - @m_span{m-dim}@ref #OBS3_VOLTAGE_RESOLUTION = 1@m_endspan
  *
  * {{ @ref CampbellOBS3_Voltage::CampbellOBS3_Voltage }}

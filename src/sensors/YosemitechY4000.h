@@ -19,7 +19,7 @@
  * within the documentation in the YosemitechModbus library at:
  * https://github.com/EnviroDIY/YosemitechModbus
  *
- * More detailed infromation on each variable can be found in the documentation
+ * More detailed information on each variable can be found in the documentation
  * for the individual sensor probes
  */
 /* clang-format off */
@@ -65,7 +65,7 @@
 /**
  * @anchor sensor_y4000_var_counts
  * @name Sensor Variable Counts
- * The number of variables that can be returned by a Yosemitch Y4000
+ * The number of variables that can be returned by a Yosemitech Y4000
  */
 /**@{*/
 /// @brief Sensor::_numReturnedValues; the Y4000 can report 8 values.
@@ -77,7 +77,7 @@
 /**
  * @anchor sensor_y4000_timing
  * @name Sensor Timing
- * The sensor timing for a Yosemitch Y4000 multi-parameter sonde
+ * The sensor timing for a Yosemitech Y4000 multi-parameter sonde
  */
 /**@{*/
 /**
@@ -101,7 +101,7 @@
 /**
  * @anchor sensor_y4000_domgl
  * @name Dissolved Oxygen Concentration
- * The dissolved oxygen concentration variable from a Yosemitch Y4000
+ * The dissolved oxygen concentration variable from a Yosemitech Y4000
  * multi-parameter sonde
  * - Range is 0-20mg/L or 0-200% Air Saturation
  * - Accuracy is ± 0.3 mg/L
@@ -130,7 +130,7 @@
 /**
  * @anchor sensor_y4000_turb
  * @name Turbidity
- * The turbidity variable from a Yosemitch Y4000 multi-parameter sonde
+ * The turbidity variable from a Yosemitech Y4000 multi-parameter sonde
  * - Range is 0.1~1000 NTU
  * - Accuracy is ＜5% or 0.3NTU
  *
@@ -157,7 +157,7 @@
 /**
  * @anchor sensor_y4000_cond
  * @name Conductivity
- * The conductivity variable from a Yosemitch Y4000 multi-parameter sonde
+ * The conductivity variable from a Yosemitech Y4000 multi-parameter sonde
  * - Range is 1 µS/cm to 200 mS/cm
  * - Accuracy is ± 1 % Full Scale
  *
@@ -184,7 +184,7 @@
 /**
  * @anchor sensor_y4000_ph
  * @name pH
- * The pH variable from a Yosemitch Y4000 multi-parameter sonde
+ * The pH variable from a Yosemitech Y4000 multi-parameter sonde
  * - Range is 2 to 12 pH units
  * - Accuracy is ± 0.1 pH units
  *
@@ -210,7 +210,7 @@
 /**
  * @anchor sensor_y4000_temp
  * @name Temperature
- * The temperature variable from a Yosemitch Y4000 multi-parameter sonde
+ * The temperature variable from a Yosemitech Y4000 multi-parameter sonde
  * - Range is 0°C to + 50°C
  * - Accuracy is ± 0.2°C
  *
@@ -237,7 +237,7 @@
 /**
  * @anchor sensor_y4000_orp
  * @name ORP
- * The ORP variable from a Yosemitch Y4000 multi-parameter sonde
+ * The ORP variable from a Yosemitech Y4000 multi-parameter sonde
  * - Range is -999 ~ 999 mV
  * - Accuracy is ± 20 mV
  *
@@ -264,8 +264,8 @@
 /**
  * @anchor sensor_y4000_chloro
  * @name Chlorophyll Concentration
- * The chlorophyll concentration variable from a Yosemitch Y4000 multi-parameter
- * sonde
+ * The chlorophyll concentration variable from a Yosemitech Y4000
+ * multi-parameter sonde
  * - Range is 0 to 400 µg/L or 0 to 100 RFU
  * - Accuracy is ± 1 %
  *
@@ -293,7 +293,7 @@
 /**
  * @anchor sensor_y4000_bga
  * @name Blue Green Algae Concentration
- * The BGA variable from a Yosemitch Y4000 multi-parameter sonde
+ * The BGA variable from a Yosemitech Y4000 multi-parameter sonde
  * - Range is 0 to 100 µg/L or 0 to 100 RFU
  * - Accuracy is ±  0.04ug/L PC
  *
@@ -723,3 +723,5 @@ class YosemitechY4000_BGA : public Variable {
 };
 /**@}*/
 #endif  // SRC_SENSORS_YOSEMITECHY4000_H_
+
+// cSpell:ignore Y4000Chloro

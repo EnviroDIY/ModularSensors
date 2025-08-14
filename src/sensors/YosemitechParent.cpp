@@ -64,7 +64,7 @@ bool YosemitechParent::setup(void) {
 #endif
 
     // This sensor begin is just setting more pin modes, etc, no sensor power
-    // required This realy can't fail so adding the return value is just for
+    // required This really can't fail so adding the return value is just for
     // show
     retVal &= _ysensor.begin(_model, _modbusAddress, _stream, _RS485EnablePin);
 
@@ -128,7 +128,7 @@ bool YosemitechParent::sleep(void) {
 
     // if it's not powered, it's asleep
     if (!checkPowerOn()) { return true; }
-    // if it was never awake, it's probabaly asleep
+    // if it was never awake, it's probably asleep
     if (_millisSensorActivated == 0) {
         MS_DBG(getSensorNameAndLocation(), F("was not measuring!"));
         return true;
@@ -324,3 +324,5 @@ bool YosemitechParent::addSingleMeasurementResult(void) {
     // Return true when finished
     return success;
 }
+
+// cSpell:ignore ysensor

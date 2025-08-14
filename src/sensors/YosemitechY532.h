@@ -60,7 +60,7 @@
 /**
  * @anchor sensor_y532_var_counts
  * @name Sensor Variable Counts
- * The number of variables that can be returned by a Yosemitch Y532
+ * The number of variables that can be returned by a Yosemitech Y532
  */
 /**@{*/
 /// @brief Sensor::_numReturnedValues; the Y532 can report 3 values.
@@ -72,7 +72,7 @@
 /**
  * @anchor sensor_y532_timing
  * @name Sensor Timing
- * The sensor timing for a Yosemitch Y532
+ * The sensor timing for a Yosemitech Y532
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; time before sensor responds after power -
@@ -89,7 +89,7 @@
 /**
  * @anchor sensor_y532_ph
  * @name pH
- * The pH variable from a Yosemitch Y532
+ * The pH variable from a Yosemitech Y532
  * - Range is 2 to 12 pH units
  * - Accuracy is ± 0.1 pH units
  *
@@ -115,7 +115,7 @@
 /**
  * @anchor sensor_y532_temp
  * @name Temperature
- * The temperature variable from a Yosemitch Y532
+ * The temperature variable from a Yosemitech Y532
  * - Range is 0°C to + 50°C
  * - Accuracy is ± 0.2°C
  *
@@ -142,7 +142,7 @@
 /**
  * @anchor sensor_y532_volt
  * @name Voltage
- * The voltage variable from a Yosemitch Y532
+ * The voltage variable from a Yosemitech Y532
  * - Range is -999 ~ 999 mV
  * - Accuracy is ± 20 mV
  *

@@ -9,7 +9,7 @@
  * subclass.
  *
  * These are for the Maxim DS18B20, DS18S20, MAX31820, DS1822, and DS1820
- * vtemperature sensors.
+ * temperature sensors.
  *
  * This depends on Dallas Temperature library, which itself is dependent on the
  * OneWire library.

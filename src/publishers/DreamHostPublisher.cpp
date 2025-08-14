@@ -160,3 +160,5 @@ int16_t DreamHostPublisher::publishData(Client* outClient, bool) {
 
     return responseCode;
 }
+
+// cSpell:ignore swrcsensors dreamhosters loggertime

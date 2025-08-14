@@ -2,7 +2,7 @@
 
 This shows most of the functionality of the library at once.
 It has code in it for every possible sensor and modem and for both AVR and SAMD boards.
-This example should *never* be used directly; it is intended to document all possibilities and to verify compilating.
+This example should *never* be used directly; it is intended to document all possibilities and to verify compilation.
 
 To create your own code, I recommend starting from a much simpler targeted example, like the [Logging to MMW](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/logging_to_MMW) example, and then adding to it based on only the parts of this menu example that apply to you.
 
@@ -40,11 +40,11 @@ ___
       - [SAMD Boards](#samd-boards)
     - [Assigning Serial Port Functionality](#assigning-serial-port-functionality)
     - [Logging Options](#logging-options)
-  - [Wifi/Cellular Modem Options](#wificellular-modem-options)
+  - [WiFi/Cellular Modem Options](#wificellular-modem-options)
     - [Digi XBee Cellular - Transparent Mode](#digi-xbee-cellular---transparent-mode)
     - [Digi XBee3 LTE-M - Bypass Mode](#digi-xbee3-lte-m---bypass-mode)
     - [Digi XBee 3G - Bypass Mode](#digi-xbee-3g---bypass-mode)
-    - [Digi XBee S6B Wifi](#digi-xbee-s6b-wifi)
+    - [Digi XBee S6B WiFi](#digi-xbee-s6b-wifi)
     - [Espressif ESP8266](#espressif-esp8266)
     - [Espressif ESP32](#espressif-esp32)
     - [Quectel BG96](#quectel-bg96)
@@ -122,7 +122,7 @@ ___
     - [The variable array](#the-variable-array)
       - [Creating Variables within an Array](#creating-variables-within-an-array)
       - [Creating Variables and Pasting UUIDs from MonitorMyWatershed](#creating-variables-and-pasting-uuids-from-monitormywatershed)
-      - [Creating Variables within an Array](#creating-variables-within-an-array-1)
+      - [Using Pre-Named Variables within an Array](#using-pre-named-variables-within-an-array)
     - [The Logger Object](#the-logger-object)
     - [Data Publishers](#data-publishers)
       - [Monitor My Watershed](#monitor-my-watershed)
@@ -169,15 +169,15 @@ This is *not* standard behavior for C++ (which is what Arduino code really is) -
 <!--! @menusnip{defines} -->
 
 If you are using PlatformIO, you should instead set these as global build flags in your platformio.ini.
-This is standard behaviour for C++.
+This is standard behavior for C++.
 
 ```ini
 build_flags =
-    -DSDI12_EXTERNAL_PCINT
-    -DNEOSWSERIAL_EXTERNAL_PCINT
-    -DMQTT_MAX_PACKET_SIZE=240
-    -DTINY_GSM_RX_BUFFER=64
-    -DTINY_GSM_YIELD_MS=2
+    -D SDI12_EXTERNAL_PCINT
+    -D NEOSWSERIAL_EXTERNAL_PCINT
+    -D MQTT_MAX_PACKET_SIZE=240
+    -D TINY_GSM_RX_BUFFER=64
+    -D TINY_GSM_YIELD_MS=2
 ```
 
 ___
@@ -269,7 +269,7 @@ These pin selections are based on the Adafruit Feather M0.
 In addition to creating the extra SERCOM ports here, the pins must be set up as the proper pin peripherals after the serial ports are begun.
 This is shown in the [SAMD Pin Peripherals section](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_setup_pin_periph) of the setup function.
 
-NOTE:  The SAMD51 board has an amazing *8* available SERCOM's, but I do not have any exmple code for using them.
+NOTE:  The SAMD51 board has an amazing *8* available SERCOM's, but I do not have any example code for using them.
 
 ___
 
@@ -296,7 +296,7 @@ This includes setting the time zone (daylight savings time is **NOT** applied) a
 
 ___
 
-## Wifi/Cellular Modem Options<!--! {#menu_walk_modem_settings} -->
+## WiFi/Cellular Modem Options<!--! {#menu_walk_modem_settings} -->
 
 This modem section is very lengthy because it contains the code with the constructor for every possible supported modem module.
 Do *NOT* try to use more than one modem at a time - it will *NOT* work.
@@ -319,7 +319,7 @@ For cellular models, you will need the APN assigned to you by the carrier you bo
 ### Digi XBee Cellular - Transparent Mode<!--! {#menu_walk_digi_xbee_cellular_transparent} -->
 
 This is the code to use for *any* of Digi's cellular XBee or XBee3 modules.
-All of them can be implented as a DigiXBeeCellularTransparent object - a subclass of DigiXBee and loggerModem.
+All of them can be implemented as a DigiXBeeCellularTransparent object - a subclass of DigiXBee and loggerModem.
 To create a DigiXBeeCellularTransparent object we need to know
 
 - the serial object name,
@@ -362,7 +362,7 @@ A helpful table detailing the pins to use with the EnviroDIY Mayfly is available
 
 Depending on your cellular carrier, it is best to select the proper carrier profile and network.
 Setting these helps the modem to connect to network faster.
-This is shows in the [SARA R4 Cellular Carrier](@ref setup_r4_carrrier) chunk of the setup function.
+This is shows in the [SARA R4 Cellular Carrier](@ref setup_r4_carrier) chunk of the setup function.
 
 ### Digi XBee 3G - Bypass Mode<!--! {#menu_walk_digi_xbee_3g_bypass} -->
 
@@ -382,10 +382,10 @@ A helpful table detailing the pins to use with the EnviroDIY Mayfly is available
 
 <!--! @menusnip{digi_xbee_3g_bypass} -->
 
-### Digi XBee S6B Wifi<!--! {#menu_walk_digi_xbee_wifi} -->
+### Digi XBee S6B WiFi<!--! {#menu_walk_digi_xbee_wifi} -->
 
 This code is for the Digi's S6B wifi module.
-To create a DigiXBeeWifi object we need to know
+To create a DigiXBeeWiFi object we need to know
 
 - the serial object name,
 - the MCU pin controlling modem power,
@@ -431,8 +431,8 @@ Pins that do not apply should be set as -1.
 
 <!--! @menusnip{espressif_esp32} -->
 
-Because the ESP32's default baud rate is too fast for an 8MHz board like the Mayfly, to use it you need to drop the baud rate down for sucessful communication.
-You can set the slower baud rate using some external method, or useing the code from the ESP8266 Baud Rate(<https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_setup_esp>) part of the setup function below.
+Because the ESP32's default baud rate is too fast for an 8MHz board like the Mayfly, to use it you need to drop the baud rate down for successful communication.
+You can set the slower baud rate using some external method, or using the code from the ESP8266 Baud Rate(<https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_setup_esp>) part of the setup function below.
 For a Stonefly or other faster board, I recommend setting the modem baud rate as fast as possible.
 
 ### Quectel BG96<!--! {#menu_walk_quectel_bg96} -->
@@ -474,7 +474,7 @@ If you are interfacing with a Nimbelink Skywire board via the Skywire developmen
 Code to invert the pin levels is in the [Skywire Pin Inversions](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_setup_skywire) part of the setup function below.
 
 The default baud rate of the SVZM20 is much too fast for almost all Arduino boards.
-*Before* attampting to connect a SVZM20 to an Arduino you should connect it to your computer and use AT commands to decrease the baud rate.
+*Before* attempting to connect a SVZM20 to an Arduino you should connect it to your computer and use AT commands to decrease the baud rate.
 The proper command to decrease the baud rate to 9600 (8N1) is: `AT+IPR=9600`.
 
 ### SIMCom SIM800<!--! {#menu_walk_sim_com_sim800} -->
@@ -565,7 +565,7 @@ A helpful table detailing the pins to use with the UBee R410M and the EnviroDIY 
 
 Depending on your cellular carrier, it is best to select the proper carrier profile and network.
 Setting these helps the modem to connect to network faster.
-This is shows in the [SARA R4 Cellular Carrier](@ref setup_r4_carrrier) chunk of the setup function.
+This is shows in the [SARA R4 Cellular Carrier](@ref setup_r4_carrier) chunk of the setup function.
 
 ### u-blox SARA U201<!--! {#menu_walk_sodaq_ubee_u201} -->
 
@@ -674,7 +674,7 @@ ___
 
 ### Atlas Scientific EZO Circuits<!--! {#menu_walk_atlas_scientific_sensors} -->
 
-The next several sections are for Atlas Scientific EZO circuts and sensors.
+The next several sections are for Atlas Scientific EZO circuits and sensors.
 The sensor class constructors for each are nearly identical, except for the class name.
 In the most common setup, with hardware I2C, the only required argument for the constructor is the Arduino pin controlling power on/off; the i2cAddressHex is optional as is the number of readings to average.
 
@@ -1017,7 +1017,7 @@ ___
 
 ### Trinket-Based Tipping Bucket Rain Gauge<!--! {#menu_walk_rain_counter_i2c} -->
 
-This is for use with a simple external I2C tipping bucket counter based on the [Adafriut Trinket](https://www.adafruit.com/product/1501).
+This is for use with a simple external I2C tipping bucket counter based on the [Adafruit Trinket](https://www.adafruit.com/product/1501).
 All constructor arguments are optional, but the first argument is for the I2C address of the tip counter (if not 0x08) and the second is for the depth of rain (in mm) per tip event (if not 0.2mm).
 Most metric tipping buckets are calibrated to have 1 tip per 0.2mm of rain.
 Most English tipping buckets are calibrated to have 1 tip per 0.01" of rain, which is 0.254mm.
@@ -1098,7 +1098,7 @@ ___
 ### Analog Electrical Conductivity using the Processor's Analog Pins<!--! {#menu_walk_analog_elec_conductivity} -->
 
 This is the code for the measuring electrical conductivity using the processor's internal ADC and analog input pins.
-The Arduino pin controlling power on/off and the sensing pin are required for the constuctor.
+The Arduino pin controlling power on/off and the sensing pin are required for the constructor.
 The power supply for the sensor *absolutely must be switched on and off between readings*!
 The resistance of your in-circuit resistor, the cell constant for your power cord, and the number of measurements to average are the optional third, fourth, and fifth arguments.
 For best results, you should also connect the AREF pin of your processors ADC to the power supply for the and compile with the build flag `-D MS_PROCESSOR_ADC_REFERENCE_MODE=EXTERNAL`.
@@ -1257,12 +1257,12 @@ ___
 
 Create a VariableArray containing all of the Variable objects that we are logging the values of.
 
-This shows three differnt ways of creating the same variable array and filling it with variables.
+This shows three different ways of creating the same variable array and filling it with variables.
 You should only use **ONE** of these in your own code
 
 #### Creating Variables within an Array<!--! {#menu_walk_variables_create_in_array} -->
 
-Here we use the `new` keyword to create multiple variables and get pointers to them all at the same time within the arry.
+Here we use the `new` keyword to create multiple variables and get pointers to them all at the same time within the array.
 
 <!--! @menusnip{variables_create_in_array} -->
 
@@ -1273,7 +1273,7 @@ If using this method, be very, very, very careful to make sure the order of your
 
 <!--! @menusnip{variables_separate_uuids} -->
 
-#### Creating Variables within an Array<!--! {#menu_walk_variables_pre_named} -->
+#### Using Pre-Named Variables within an Array<!--! {#menu_walk_variables_pre_named} -->
 
 You can also create and name variable pointer objects outside of the array (as is demonstrated in all of the code chunks here) and then reference those pointers inside of the array like so:
 
@@ -1291,7 +1291,7 @@ ___
 
 ### Data Publishers<!--! {#menu_walk_data_publisher} -->
 
-Here we set up all three possible data publisers and link all of them to the same Logger object.
+Here we set up all three possible data publishers and link all of them to the same Logger object.
 
 #### Monitor My Watershed<!--! {#menu_walk_enviro_diy_publisher} -->
 
@@ -1305,7 +1305,7 @@ ___
 
 #### DreamHost<!--! {#menu_walk_dream_host_publisher} -->
 
-It is extrmemly unlikely you will use this.
+It is extremely unlikely you will use this.
 You should ignore this section.
 
 <!--! @menusnip{dream_host_publisher} -->
@@ -1317,7 +1317,7 @@ ___
 After you have set up a channel and MQTT device on ThingSpeak, you can use this code to publish your data to it.
 
 Keep in mind that the order of variables in the VariableArray is **crucial** when publishing to ThingSpeak.
-If you set a user API key, this library will attempt to update your channel name and your field names with the logger ID and the variable names at bootup.
+If you set a user API key, this library will attempt to update your channel name and your field names with the logger ID and the variable names at boot-up.
 
 <!--! @menusnip{thing_speak_publisher} -->
 
@@ -1339,7 +1339,6 @@ Unlike the other publishers, this S3 publisher is **not** meant to be used to pu
 This is intended to send image data from the Geolux HydroCam or any future sensors that generate image or other large binary data.
 See the separate AWS examples for how to use this.
 
-
 <!--! @menusnip{s3_presigned_publisher} -->
 
 ___
@@ -1349,7 +1348,6 @@ ___
 Use this to publish data to AWS IoT Core.
 This can also be used to fetch a pre-signed URL to publish to S3 - if you have the proper IoT Core rules and a lambda function set up.
 See the separate AWS examples for how to use this.
-
 
 <!--! @menusnip{aws_io_t_publisher} -->
 
@@ -1440,7 +1438,7 @@ This does not need to be done for an AVR board (like the Mayfly).
 ### Flash the LEDs<!--! {#menu_walk_setup_flash} -->
 
 Like printing debugging information to the serial port, flashing the board LED's is a very helpful indication that the board just restarted.
-Here we set the pin modes for the LED pins and flash them back and forth using the greenredflash() function we created back in the [working functions](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_working) section.
+Here we set the pin modes for the LED pins and flash them back and forth using the greenRedFlash() function we created back in the [working functions](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_working) section.
 
 <!--! @menusnip{setup_flashing_led} -->
 
@@ -1458,7 +1456,7 @@ Then we finally run the logger's begin function.
 ### Setup the Sensors<!--! {#menu_walk_setup_sensors} -->
 
 After beginning the logger, we setup all the sensors.
-Unlike all the previous chuncks of the setup that are preparation steps only requiring the mcu processor, this might involve powering up the sensors.
+Unlike all the previous chunks of the setup that are preparation steps only requiring the mcu processor, this might involve powering up the sensors.
 To prevent a low power restart loop, we put a battery voltage condition on the sensor setup.
 This prevents a solar powered board whose battery has died from continuously restarting as soon as it gains any power on sunrise.
 Without the condition the board would boot with power, try to power hungry sensors, brown out, and restart over and over.
@@ -1497,12 +1495,12 @@ You should change the lines with the `CP` and `N#` commands to the proper number
 
 <!--! @menusnip{setup_xbeec_carrier} -->
 
-#### SARA R4 Cellular Carrier<!--! {#setup_r4_carrrier} -->
+#### SARA R4 Cellular Carrier<!--! {#setup_r4_carrier} -->
 
 This chunk of code sets the carrier profile and network technology for a u-blox SARA R4 or N4 module, including a Sodaq R410 UBee or a Digi XBee3 LTE-M in bypass mode..
 You should change the lines with the `UMNOPROF` and `URAT` commands to the proper number to match your SIM card.
 
-<!--! @menusnip{setup_r4_carrrier} -->
+<!--! @menusnip{setup_r4_carrier} -->
 
 ### Sync the Real Time Clock<!--! {#menu_walk_setup_clock} -->
 
@@ -1571,7 +1569,7 @@ Here are some guidelines for writing a loop function:
 
 - If you want to log on an even interval, use `if (checkInterval())` or `if (checkMarkedInterval())` to verify that the current or marked time is an even interval of the logging interval..
 - Call the `markTime()` function if you want associate with a two iterations of sensor updates with the same timestamp.
-This allows you to use `checkMarkedInterval()` to check if an action should be preformed based on the exact time when the logger woke rather than upto several seconds later when iterating through sensors.
+This allows you to use `checkMarkedInterval()` to check if an action should be preformed based on the exact time when the logger woke rather than up to several seconds later when iterating through sensors.
 - Either:
   - Power up all of your sensors with `sensorsPowerUp()`.
   - Wake up all your sensors with `sensorsWake()`.
@@ -1598,3 +1596,5 @@ The [data_saving example program](https://github.com/EnviroDIY/ModularSensors/tr
 <!--! @section example_menu_code The Complete Code -->
 
 <!--! @include{lineno} menu_a_la_carte/menu_a_la_carte.ino -->
+
+<!-- cspell: ignore PCINT RSTB SVZM AREF RESETN UMNOPROF URAT -->

@@ -26,7 +26,7 @@
  * [Nimbelink](https://nimbelink.com/products/4g-lte-m-verizon-sequans/).
 
  *
- * @section modem_monarch_mayfly Monarchs and Mayflys
+ * @section modem_monarch_mayfly Monarchs and Mayflies
  *
  * To my knowledge, there are not any Sequans modules available that can
  * directly connect to a Mayfly.
@@ -170,15 +170,15 @@
  */
 #define VZM20Q_WAKE_PULSE_MS 0
 /**
- * @brief The loggerModem::_max_atresponse_time_ms.
+ * @brief The loggerModem::_max_at_response_time_ms.
  *
  * Time to UART availability not documented for the VZM20Q; allowing a long 15s
  * buffer.
  */
-#define VZM20Q_ATRESPONSE_TIME_MS 15000L
+#define VZM20Q_AT_RESPONSE_TIME_MS 15000L
 
 /**
- * @brief The loggerModem::_disconnetTime_ms.
+ * @brief The loggerModem::_disconnectTime_ms.
  *
  * Shutdown time for VZM20Q is undocumented.  We allow 15sec in case it is not
  * monitored.
@@ -195,7 +195,7 @@ class SequansMonarch : public loggerModem {
     /**
      * @brief Construct a new Sequans Monarch object
      *
-     * The constuctor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables,
      * constructs a loggerModem parent class with the appropriate timing for the
      * module, calls the constructor for a TinyGSM modem on the provided
      * modemStream, and creates a TinyGSM Client linked to the modem.
@@ -271,3 +271,5 @@ class SequansMonarch : public loggerModem {
 };
 /**@}*/
 #endif  // SRC_MODEMS_SEQUANSMONARCH_H_
+
+// cSpell:ignore RESETN

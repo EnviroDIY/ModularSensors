@@ -92,7 +92,7 @@
  * three possible gain settings, 1x, 10x and 100x.  The gain setting is
  * selected by grounding the appropriate gain wire.  Because the output
  * signal can range up to 5V, if using an ADS1115 or ADS1015 powered at
- * only 3.3V, the gain must be reduced or a voltage devider used to
+ * only 3.3V, the gain must be reduced or a voltage divider used to
  * ensure the output signal does not exceed 3.6V.  This library does *not*
  * support variable gain or any type of auto-gaining for the Cyclops
  * sensors.
@@ -237,10 +237,10 @@
  * - Range is 0 to 3.6V when using an ADS1x15 powered at 3.3V
  *     - Full sensor range is 0-5V
  * - Accuracy:
- *     - 16-bit ADC (ADS1115): < 0.25% (gain error), <0.25 LSB (offset errror)
+ *     - 16-bit ADC (ADS1115): < 0.25% (gain error), <0.25 LSB (offset error)
  *       - @m_span{m-dim}(@ref #CYCLOPS_VOLTAGE_RESOLUTION = 4)@m_endspan
  *     - 12-bit ADC (ADS1015, using build flag ```MS_USE_ADS1015```): < 0.15%
- * (gain error), <3 LSB (offset errror)
+ * (gain error), <3 LSB (offset error)
  *       - @m_span{m-dim}(@ref #CYCLOPS_VOLTAGE_RESOLUTION = 1)@m_endspan
  *
  * {{ @ref TurnerCyclops_Voltage::TurnerCyclops_Voltage }}
@@ -436,17 +436,17 @@ class TurnerCyclops_Voltage : public Variable {
  * [Turner Cyclops-7F](@ref sensor_cyclops).
  *
  * @note _**This can only be used for a Cyclops-7F that is configured for the
- * blue excitiation of chlorophyll!**_  Chlorophyll (blue excitation) models
+ * blue excitation of chlorophyll!**_  Chlorophyll (blue excitation) models
  * will be marked with a **“C”** at the top of the sensor housing near the cable
  * connections.
  *
  * Chlorophyll concentration is measured (and should be calibrated) in
  * micrograms per Liter (µ/L).
  *
- * - Miminum detection limit:  0.03 µg/L
+ * - Minimum detection limit:  0.03 µg/L
  * - Linear range:  0-500 µg/L
  * - LED (CWL):  460 nm
- * - Excitiation wavelength:  465/170 nm
+ * - Excitation wavelength:  465/170 nm
  * - Emission wavelength:  696/44 nm
  * - Power required (mW @12V):  240
  *
@@ -500,10 +500,10 @@ class TurnerCyclops_Chlorophyll : public Variable {
  * Rhodamine WT concentration is measured (and should be calibrated) in parts
  * per billion (ppb).
  *
- * - Miminum detection limit:  0.01 ppb
+ * - Minimum detection limit:  0.01 ppb
  * - Linear range:  0-1000 ppb
  * - LED (CWL):  530 nm
- * - Excitiation wavelength:  535/60 nm
+ * - Excitation wavelength:  535/60 nm
  * - Emission wavelength:  590-715 nm
  * - Power required (mW @12V):  175
  *
@@ -557,10 +557,10 @@ class TurnerCyclops_Rhodamine : public Variable {
  * Fluorescein concentration is measured (and should be calibrated) in parts per
  * billion (ppb).
  *
- * - Miminum detection limit:  0.01 ppb
+ * - Minimum detection limit:  0.01 ppb
  * - Linear range:  0-500 ppb
  * - LED (CWL): 460 nm
- * - Excitiation wavelength:  400/150 nm
+ * - Excitation wavelength:  400/150 nm
  * - Emission wavelength:  545/28 nm
  * - Power required (mW @12V):  145
  *
@@ -613,11 +613,11 @@ class TurnerCyclops_Fluorescein : public Variable {
  * Phycocyanin concentration is measured (and should be calibrated) in parts per
  * billion (ppb).
  *
- * - Miminum detection limit:  2 ppb (Phycocyanin pigment from Prozyme diluted
+ * - Minimum detection limit:  2 ppb (Phycocyanin pigment from Prozyme diluted
  * in Deionized water)
  * - Linear range:  0-4,500 ppb
  * - LED (CWL):  590 nm
- * - Excitiation wavelength:  590/30 nm
+ * - Excitation wavelength:  590/30 nm
  * - Emission wavelength:  >= 645 nm
  * - Power required (mW @12V):  160
  *
@@ -672,11 +672,11 @@ class TurnerCyclops_Phycocyanin : public Variable {
  * Phycoerythrin concentration is measured (and should be calibrated) in parts
  * per billion (ppb).
  *
- * - Miminum detection limit:  0.1 ppb (Phycoerythrin pigment from Prozyme
+ * - Minimum detection limit:  0.1 ppb (Phycoerythrin pigment from Prozyme
  * diluted in Deionized water)
  * - Linear range:  0-750 ppb
  * - LED (CWL):  525 nm
- * - Excitiation wavelength:  515-547 nm
+ * - Excitation wavelength:  515-547 nm
  * - Emission wavelength:  >=590 nm
  * - Power required (mW @12V):  270
  *
@@ -729,14 +729,14 @@ class TurnerCyclops_Phycoerythrin : public Variable {
  * CDOM/fDOM concentration is measured (and should be calibrated) in parts per
  * billion (ppb).
  *
- * - Miminum detection limit:
+ * - Minimum detection limit:
  *   - 0.1 ppb Quinine Sulfate
  *   - 0.5 ppb PTSA (1,3,6,8-Pyrenetetrasulfonic Acid Tetrasodium Salt)
  * - Linear range:
  *   - 0-1,500 ppb Quinine Sulfate
  *   - 0-3,000 ppb PTSA (1,3,6,8-Pyrenetetrasulfonic Acid Tetrasodium Salt)
  * - LED (CWL):  365nm
- * - Excitiation wavelength:  325/120 nm
+ * - Excitation wavelength:  325/120 nm
  * - Emission wavelength:  470/60 nm
  * - Power required (mW @12V):  240
  *
@@ -785,18 +785,18 @@ class TurnerCyclops_CDOM : public Variable {
  * [Turner Cyclops-7F](@ref sensor_cyclops).
  *
  * @note _**This can only be used for a Cyclops-7F that is configured for crude
- * oil!**_  Crude oil / petrolium models will be marked with an **“O”** at the
+ * oil!**_  Crude oil / petroleum models will be marked with an **“O”** at the
  * top of the sensor housing near the cable connections.
  *
- * Crude oil / petrolium concentration is measured (and should be calibrated) in
+ * Crude oil / petroleum concentration is measured (and should be calibrated) in
  * parts per billion (ppb).
  *
- * - Miminum detection limit:  0.2 ppb PTSA (1,3,6,8-Pyrenetetrasulfonic Acid
+ * - Minimum detection limit:  0.2 ppb PTSA (1,3,6,8-Pyrenetetrasulfonic Acid
  * Tetrasodium Salt)
  * - Linear range:  0-1,500 ppb PTSA (1,3,6,8-Pyrenetetrasulfonic Acid
  * Tetrasodium Salt)
  * - LED (CWL):  365 nm
- * - Excitiation wavelength:  325/120 nm
+ * - Excitation wavelength:  325/120 nm
  * - Emission wavelength:  410-600 nm
  * - Power required (mW @12V):  250
  *
@@ -851,12 +851,12 @@ class TurnerCyclops_CrudeOil : public Variable {
  * Optical brightener concentration is measured (and should be calibrated) in
  * parts per billion (ppb).
  *
- * - Miminum detection limit:  0.6 ppb PTSA (1,3,6,8-Pyrenetetrasulfonic Acid
+ * - Minimum detection limit:  0.6 ppb PTSA (1,3,6,8-Pyrenetetrasulfonic Acid
  * Tetrasodium Salt)
  * - Linear range:  0-2,500 ppb PTSA (1,3,6,8-Pyrenetetrasulfonic Acid
  * Tetrasodium Salt)
  * - LED (CWL):  365 nm
- * - Excitiation wavelength:  325/120 nm
+ * - Excitation wavelength:  325/120 nm
  * - Emission wavelength:  445/15 nm
  * - Power required (mW @12V):  200
  *
@@ -909,10 +909,10 @@ class TurnerCyclops_Brighteners : public Variable {
  * Turbidity is measured (and should be calibrated) in nephelometric turbidity
  * units (NTU).
  *
- * - Miminum detection limit:  0.05 NTU
+ * - Minimum detection limit:  0.05 NTU
  * - Linear range:  0-1,500 NTU
  * - LED (CWL):  850 nm
- * - Excitiation wavelength:  850 nm
+ * - Excitation wavelength:  850 nm
  * - Emission wavelength:  850 nm
  * - Power required (mW @12V):  120
  *
@@ -967,10 +967,10 @@ class TurnerCyclops_Turbidity : public Variable {
  * PTSA concentration is measured (and should be calibrated) in parts per
  * billion (ppb).
  *
- * - Miminum detection limit:  0.1 ppb
+ * - Minimum detection limit:  0.1 ppb
  * - Linear range:  0-650 ppb
  * - LED (CWL):  365
- * - Excitiation wavelength:  325/120 nm
+ * - Excitation wavelength:  325/120 nm
  * - Emission wavelength:  405/10 nm
  * - Power required (mW @12V):  320
  *
@@ -1024,10 +1024,10 @@ class TurnerCyclops_PTSA : public Variable {
  * BTEX concentration is measured (and should be calibrated) in parts per
  * million (ppm).
  *
- * - Miminum detection limit:  0.4 ppm
+ * - Minimum detection limit:  0.4 ppm
  * - Linear range:  0-20 ppm
  * - LED (CWL):  255 nm
- * - Excitiation wavelength:  <=290 nm
+ * - Excitation wavelength:  <=290 nm
  * - Emission wavelength:  350/50 nm
  * - Power required (mW @12V):  530
  *
@@ -1080,10 +1080,10 @@ class TurnerCyclops_BTEX : public Variable {
  * Tryptophan concentration is measured (and should be calibrated) in parts per
  * billion (ppb).
  *
- * - Miminum detection limit:  3 ppb
+ * - Minimum detection limit:  3 ppb
  * - Linear range:  0-5,000 ppb
  * - LED (CWL):  275 nm
- * - Excitiation wavelength:  -
+ * - Excitation wavelength:  -
  * - Emission wavelength:  350/55
  * - Power required (mW @12V):  540
  *
@@ -1130,17 +1130,17 @@ class TurnerCyclops_Tryptophan : public Variable {
  * [Turner Cyclops-7F](@ref sensor_cyclops).
  *
  * @note _**This can only be used for a Cyclops-7F that is configured for the
- * red excitiation of chlorophyll!**_  Chlorophyll (red excitation) models will
+ * red excitation of chlorophyll!**_  Chlorophyll (red excitation) models will
  * be marked with a **“D”** at the top of the sensor housing near the cable
  * connections.
  *
  * Chlorophyll concentration is measured (and should be calibrated) in
  * micrograms per Liter (µ/L).
  *
- * - Miminum detection limit:  0.3 µg/L
+ * - Minimum detection limit:  0.3 µg/L
  * - Linear range:  0-500 µg/L
  * - LED (CWL):  635 nm
- * - Excitiation wavelength:  <=635 nm
+ * - Excitation wavelength:  <=635 nm
  * - Emission wavelength:  >=695 nm
  * - Power required (mW @12V):  240
  *
@@ -1182,3 +1182,6 @@ class TurnerCyclops_RedChlorophyll : public Variable {
 };
 /**@}*/
 #endif  // SRC_SENSORS_TURNERCYCLOPS_H_
+
+// cSpell:ignore fluorophores BTEX PTSA Pyrenetetrasulfonic Tetrasodium
+// cSpell:ignore Ethylbenzene Prozyme sensor_cyclops_calib

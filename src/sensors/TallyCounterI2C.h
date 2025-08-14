@@ -6,11 +6,11 @@
  * @author Anthony Aufdenkampe <aaufdenkampe@limno.com>
  * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief Contains the TallyCounterI2C sensor subclass and variable subclasse
+ * @brief Contains the TallyCounterI2C sensor subclass and variable subclasses
  * TallyCounterI2C_Events.
  *
  * This file is for NorthernWidget's Tally external event counter, which is
- * used to measure windspeed or rainfall from reed-switch analog sensors.
+ * used to measure wind speed or rainfall from reed-switch analog sensors.
  *
  * This depends on the [Tally_Library]
  * (https://github.com/EnviroDIY/Tally_Library/tree/Dev_I2C)
@@ -63,7 +63,7 @@
  *
  * ___
  * @section sensor_tally_examples Example Code
- * The Tally countetr is used in the @menulink{tally} example.
+ * The Tally counter is used in the @menulink{tally} example.
  */
 /* clang-format on */
 

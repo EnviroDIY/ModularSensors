@@ -138,14 +138,14 @@
  */
 #define SIM7080_WAKE_DELAY_MS 1000L
 /**
- * @brief The loggerModem::_max_atresponse_time_ms.
+ * @brief The loggerModem::_max_at_response_time_ms.
  *
  * Time after end pulse until serial port on SIM7080 becomes active is >1.8sec.
  */
-#define SIM7080_ATRESPONSE_TIME_MS 1800
+#define SIM7080_AT_RESPONSE_TIME_MS 1800
 
 /**
- * @brief The loggerModem::_disconnetTime_ms.
+ * @brief The loggerModem::_disconnectTime_ms.
  *
  * SIM7080 power down (gracefully) takes 1.8-2 sec.
  */
@@ -160,7 +160,7 @@ class SIMComSIM7080 : public loggerModem {
  public:
     /**
      * @brief Construct a new SIMComSIM7080 object
-     * The constuctor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables,
      * constructs a loggerModem parent class with the appropriate timing for the
      * module, calls the constructor for a TinyGSM modem on the provided
      * modemStream, and creates a TinyGSM Client linked to the modem.

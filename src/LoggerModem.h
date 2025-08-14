@@ -342,17 +342,17 @@ class loggerModem {
      * @param wakeLevel @copybrief loggerModem::_wakeLevel
      * @param wakePulse_ms @copybrief loggerModem::_wakePulse_ms
      * @param max_status_time_ms @copybrief loggerModem::_statusTime_ms
-     * @param max_disconnetTime_ms @copybrief loggerModem::_disconnetTime_ms
+     * @param max_disconnectTime_ms @copybrief loggerModem::_disconnectTime_ms
      * @param wakeDelayTime_ms @copybrief loggerModem::_wakeDelayTime_ms
-     * @param max_atresponse_time_ms @copybrief #_max_atresponse_time_ms
+     * @param max_at_response_time_ms @copybrief #_max_at_response_time_ms
      *
      * @see @ref modem_ctor_variables
      */
     loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
                 int8_t modemResetPin, bool resetLevel, uint32_t resetPulse_ms,
                 int8_t modemSleepRqPin, bool wakeLevel, uint32_t wakePulse_ms,
-                uint32_t max_status_time_ms, uint32_t max_disconnetTime_ms,
-                uint32_t wakeDelayTime_ms, uint32_t max_atresponse_time_ms);
+                uint32_t max_status_time_ms, uint32_t max_disconnectTime_ms,
+                uint32_t wakeDelayTime_ms, uint32_t max_at_response_time_ms);
 
     /**
      * @brief Destroy the logger Modem object - no action taken.
@@ -446,7 +446,7 @@ class loggerModem {
      *
      * @m_deprecated_since{0,24,1}
      *
-     * @return True if wake was sucessful, modem should be ready to
+     * @return True if wake was successful, modem should be ready to
      * communicate
      */
     bool wake(void) {
@@ -468,7 +468,7 @@ class loggerModem {
     /**
      * @brief Request that the modem enter its lowest possible power state.
      *
-     * @return True if the modem has sucessfully entered low power
+     * @return True if the modem has successfully entered low power
      * state
      */
     virtual bool modemSleep(void);
@@ -480,7 +480,7 @@ class loggerModem {
      * This allows the modem to shut down all connections cleanly and do any
      * necessary internal housekeeping before stopping power.
      *
-     * @return True if the modem has sucessfully entered low power
+     * @return True if the modem has successfully entered low power
      * state _and_ then powered off
      */
     virtual bool modemSleepPowerDown(void);
@@ -558,12 +558,13 @@ class loggerModem {
      * wait for network registration and data sconnection.  Defaults to 50,000ms
      * (50s).
      * @return True if EPS or GPRS data connection has been
-     * established.  False if the modem wasunresponsive, unable to register with
-     * the cellular network, or unable to establish a EPS or GPRS connection.
+     * established.  False if the modem was unresponsive, unable to register
+     * with the cellular network, or unable to establish a EPS or GPRS
+     * connection.
      */
     virtual bool connectInternet(uint32_t maxConnectionTime = 50000L) = 0;
     /**
-     * @brief Detatch from EPS or GPRS data connection and then deregister from
+     * @brief Detach from EPS or GPRS data connection and then deregister from
      * the cellular network.
      */
     virtual void disconnectInternet(void) = 0;
@@ -709,7 +710,7 @@ class loggerModem {
      * variables. Setting this to 0b11111111 will enable polling for all modem
      * measured variables.
      *
-     * @param pollingBitmask The bitmask indicating which paramters to poll.
+     * @param pollingBitmask The bitmask indicating which parameters to poll.
      *
      * @see loggerModem::_pollModemMetaData
      *
@@ -723,7 +724,7 @@ class loggerModem {
      * variables.  Setting this to 0b11111111 will disable polling for all modem
      * measured variables.
      *
-     * @param pollingBitmask The bitmask indicating which paramters to poll.
+     * @param pollingBitmask The bitmask indicating which parameters to poll.
      *
      * @see loggerModem::_pollModemMetaData
      *
@@ -741,7 +742,7 @@ class loggerModem {
      * parameters.  Setting it to 256 (0b11111111) will enable polling for all
      * parameters.
      *
-     * @param pollingBitmask The bitmask indicating which paramters to poll.
+     * @param pollingBitmask The bitmask indicating which parameters to poll.
      *
      * @see loggerModem::_pollModemMetaData
      */
@@ -835,7 +836,7 @@ class loggerModem {
      *
      * The RSSI is estimated from a look-up assuming no noise.
      *
-     * @param csq A "CSQ" (0-31) signal qualilty
+     * @param csq A "CSQ" (0-31) signal quality
      * @return An RSSI in dBm, making assumptions about the
      * conversion
      */
@@ -845,7 +846,7 @@ class loggerModem {
      *
      * The percent is grabbed from a look-up.
      *
-     * @param csq A "CSQ" (0-31) signal qualilty
+     * @param csq A "CSQ" (0-31) signal quality
      * @return The percent of maximum signal strength.
      */
     static int16_t getPctFromCSQ(int16_t csq);
@@ -896,7 +897,7 @@ class loggerModem {
      * modem modules.
      *
      * @return True if the unique part of the sleep function ran
-     * sucessfully.
+     * successfully.
      */
     virtual bool modemSleepFxn(void) = 0;
     /**
@@ -905,7 +906,7 @@ class loggerModem {
      * all modem modules.
      *
      * @return True if the unique part of the wake function ran
-     * sucessfully - does _NOT_ indicate that the modem is now responsive.
+     * successfully - does _NOT_ indicate that the modem is now responsive.
      */
     virtual bool modemWakeFxn(void) = 0;
     /**
@@ -925,7 +926,7 @@ class loggerModem {
      * If possible, we always want to check if the modem was awake before
      * attempting to wake it up.  Most cellular modules are woken and put to
      * sleep by identical pulses on a sleep or "power" pin.  We don't want to
-     * accidently pulse an already on modem to off.
+     * accidentally pulse an already on modem to off.
      *
      * For most modules, this function is created by the #MS_IS_MODEM_AWAKE
      * macro.
@@ -1035,7 +1036,7 @@ class loggerModem {
      * is requested to enter lowest power state (#modemSleep()) and when it
      * should have completed necessary steps to shut down.
      */
-    uint32_t _disconnetTime_ms;
+    uint32_t _disconnectTime_ms;
     /**
      * @brief The time in milliseconds between when the modem is powered and
      * when it is able to receive a wake command.
@@ -1053,7 +1054,7 @@ class loggerModem {
      * init().  If the modem does not respond within this time frame (plus a
      * 500ms buffer) a #modemHardReset() will be attempted.
      */
-    uint32_t _max_atresponse_time_ms;
+    uint32_t _max_at_response_time_ms;
     /**@}*/
 
     /**
@@ -1448,3 +1449,5 @@ class Modem_Temp : public Variable {
 };
 
 #endif  // SRC_LOGGERMODEM_H_
+
+// cSpell:ignore modemBatterymV

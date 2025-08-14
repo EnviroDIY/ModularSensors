@@ -39,18 +39,18 @@ UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, Client* inClient,
                                    int sendEveryX)
     : dataPublisher(baseLogger, inClient, sendEveryX) {}
 UbidotsPublisher::UbidotsPublisher(Logger&     baseLogger,
-                                   const char* authentificationToken,
+                                   const char* authenticationToken,
                                    const char* deviceID, int sendEveryX)
     : dataPublisher(baseLogger, sendEveryX) {
-    setToken(authentificationToken);
+    setToken(authenticationToken);
     _baseLogger->setSamplingFeatureUUID(deviceID);
     MS_DBG(F("dataPublisher object created"));
 }
 UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, Client* inClient,
-                                   const char* authentificationToken,
+                                   const char* authenticationToken,
                                    const char* deviceID, int sendEveryX)
     : dataPublisher(baseLogger, inClient, sendEveryX) {
-    setToken(authentificationToken);
+    setToken(authenticationToken);
     _baseLogger->setSamplingFeatureUUID(deviceID);
     MS_DBG(F("dataPublisher object created"));
 }
@@ -58,8 +58,8 @@ UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, Client* inClient,
 UbidotsPublisher::~UbidotsPublisher() {}
 
 
-void UbidotsPublisher::setToken(const char* authentificationToken) {
-    _authentificationToken = authentificationToken;
+void UbidotsPublisher::setToken(const char* authenticationToken) {
+    _authenticationToken = authenticationToken;
     MS_DBG(F("Registration token set!"));
 }
 
@@ -91,16 +91,16 @@ uint16_t UbidotsPublisher::calculateJsonSize() {
 
 // A way to set members in the begin to use with a bare constructor
 void UbidotsPublisher::begin(Logger& baseLogger, Client* inClient,
-                             const char* authentificationToken,
+                             const char* authenticationToken,
                              const char* deviceID) {
-    setToken(authentificationToken);
+    setToken(authenticationToken);
     dataPublisher::begin(baseLogger, inClient);
     _baseLogger->setSamplingFeatureUUID(deviceID);
 }
 void UbidotsPublisher::begin(Logger&     baseLogger,
-                             const char* authentificationToken,
+                             const char* authenticationToken,
                              const char* deviceID) {
-    setToken(authentificationToken);
+    setToken(authenticationToken);
     dataPublisher::begin(baseLogger);
     _baseLogger->setSamplingFeatureUUID(deviceID);
 }
@@ -119,7 +119,7 @@ int16_t UbidotsPublisher::publishData(Client* outClient, bool) {
 
     MS_DBG(F("Outgoing JSON size:"), calculateJsonSize());
 
-    // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
+    // Open a TCP/IP connection to Ubidots
     MS_DBG(F("Connecting client"));
     MS_START_DEBUG_TIMER;
     if (outClient->connect(ubidotsHost, ubidotsPort)) {
@@ -137,7 +137,7 @@ int16_t UbidotsPublisher::publishData(Client* outClient, bool) {
         txBufferAppend(hostHeader);
         txBufferAppend(ubidotsHost);
         txBufferAppend(tokenHeader);
-        txBufferAppend(_authentificationToken);
+        txBufferAppend(_authenticationToken);
 
         txBufferAppend(contentLengthHeader);
         itoa(calculateJsonSize(), tempBuffer, 10);  // BASE 10
@@ -210,7 +210,7 @@ int16_t UbidotsPublisher::publishData(Client* outClient, bool) {
         outClient->stop();
         MS_DBG(F("Client stopped after"), MS_PRINT_DEBUG_TIMER, F("ms"));
     } else {
-        PRINTOUT(F("\n -- Unable to Establish Connection to Ubiots --"));
+        PRINTOUT(F("\n -- Unable to Establish Connection to Ubidots --"));
     }
 
     return responseCode;

@@ -114,7 +114,7 @@ void dataPublisher::txBufferAppend(const char* data, size_t length,
         // bump up the current length of the buffer
         txBufferLen += amount;
         MS_DEEP_DBG(F("Size of txBuffer after append:"), txBufferLen,
-                    F("remainging to append:"), length);
+                    F("remaining to append:"), length);
 
         // write out the buffer if it fills
         if (txBufferLen == MS_SEND_BUFFER_SIZE) { txBufferFlush(debug_flush); }

@@ -5,7 +5,7 @@
  * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief Contains PRE-ROCESSOR MACROS for use with logger modems.
+ * @brief Contains PRE-PROCESSOR MACROS for use with logger modems.
  *
  * @note These are NOT FUNCTIONS; they are pre-processor macros that I am
  * collecting here to avoid writing the same functions multiple times later.
@@ -151,9 +151,10 @@
         while (!success && resets < 2) {                                       \
             /** Check that the modem is responding to AT commands. */          \
             MS_START_DEBUG_TIMER;                                              \
-            MS_DBG(F("\nWaiting up to"), _max_atresponse_time_ms, F("ms for"), \
-                   getModemName(), F("to respond to AT commands..."));         \
-            success = gsmModem.testAT(_max_atresponse_time_ms + 500);          \
+            MS_DBG(F("\nWaiting up to"), _max_at_response_time_ms,             \
+                   F("ms for"), getModemName(),                                \
+                   F("to respond to AT commands..."));                         \
+            success = gsmModem.testAT(_max_at_response_time_ms + 500);         \
             if (success) {                                                     \
                 MS_DBG(F("... AT OK after"), MS_PRINT_DEBUG_TIMER,             \
                        F("milliseconds!"));                                    \
@@ -583,7 +584,7 @@
  * This would be much more efficient if done over UDP, but I'm doing it over TCP
  * because I don't have a UDP library for all the modems.
  *
- * @note We eust ensure that we do not ping the daylight server more than once
+ * @note We must ensure that we do not ping the daylight server more than once
  * every 4 seconds.  NIST clearly specifies here that this is a requirement for
  * all software that accesses its servers:
  * https://tf.nist.gov/tf-cgi/servers.cgi
@@ -665,13 +666,13 @@
     rssi = signalQual;                                          \
     MS_DBG(F("Raw signal is already in units of RSSI:"), rssi); \
     percent = getPctFromRSSI(signalQual);                       \
-    MS_DBG(F("Signal percent calcuated from RSSI:"), percent);
+    MS_DBG(F("Signal percent calculated from RSSI:"), percent);
 #else
 #define MS_MODEM_CALC_SIGNAL_QUALITY             \
     rssi = getRSSIFromCSQ(signalQual);           \
     MS_DBG(F("RSSI Estimated from CSQ:"), rssi); \
     percent = getPctFromCSQ(signalQual);         \
-    MS_DBG(F("Signal percent calcuated from CSQ:"), percent);
+    MS_DBG(F("Signal percent calculated from CSQ:"), percent);
 #endif
 
 /**
@@ -750,7 +751,7 @@
  * subclass.
  *
  * This is a passthrough to the specific modem's getTemperature() for modems
- * where such data is avaialble
+ * where such data is available
  *
  * This returns -9999 for modems that don't return such data.
  *

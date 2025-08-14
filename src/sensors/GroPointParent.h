@@ -211,7 +211,7 @@ class GroPointParent : public Sensor {
      */
     byte _modbusAddress;
     /**
-     * @brief Private reference to the stream for communciation with the
+     * @brief Private reference to the stream for communication with the
      * GroPoint sensor.
      */
     Stream* _stream;
@@ -227,3 +227,5 @@ class GroPointParent : public Sensor {
 };
 
 #endif  // SRC_SENSORS_GROPOINTPARENT_H_
+
+// cSpell:ignore GPLPX gsensor

@@ -59,7 +59,7 @@
 /**
  * @anchor sensor_y533_var_counts
  * @name Sensor Variable Counts
- * The number of variables that can be returned by a Yosemitch Y533
+ * The number of variables that can be returned by a Yosemitech Y533
  */
 /**@{*/
 /// @brief Sensor::_numReturnedValues; the Y533 can report 2 values.
@@ -71,7 +71,7 @@
 /**
  * @anchor sensor_y533_timing
  * @name Sensor Timing
- * The sensor timing for a Yosemitch Y533
+ * The sensor timing for a Yosemitech Y533
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; time before sensor responds after power -
@@ -88,7 +88,7 @@
 /**
  * @anchor sensor_y533_orp
  * @name pH
- * The ORP variable from a Yosemitch Y533
+ * The ORP variable from a Yosemitech Y533
  * - Range is -999 to 999 mV
  * - Accuracy is ±20 mV
  * - Resolution is 1 mV
@@ -118,7 +118,7 @@
 /**
  * @anchor sensor_y533_temp
  * @name Temperature
- * The temperature variable from a Yosemitch Y533
+ * The temperature variable from a Yosemitech Y533
  * - Range is 0°C to + 50°C
  * - Accuracy is ± 0.2°C
  *

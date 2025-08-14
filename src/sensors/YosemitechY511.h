@@ -18,7 +18,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup sensor_y511 Yosemitech Y511 Wipered Turbidty Sensor
+ * @defgroup sensor_y511 Yosemitech Y511 Wipered Turbidity Sensor
  * Classes for the Yosemitech Y511 wipered turbidity sensor.
  *
  * @ingroup yosemitech_group
@@ -60,7 +60,7 @@
 /**
  * @anchor sensor_y511_var_counts
  * @name Sensor Variable Counts
- * The number of variables that can be returned by a Yosemitch Y511
+ * The number of variables that can be returned by a Yosemitech Y511
  */
 /**@{*/
 /// @brief Sensor::_numReturnedValues; the Y511 can report 2 values.
@@ -72,7 +72,7 @@
 /**
  * @anchor sensor_y511_timing
  * @name Sensor Timing
- * The sensor timing for a Yosemitch Y511
+ * The sensor timing for a Yosemitech Y511
  */
 /**@{*/
 /**
@@ -102,7 +102,7 @@
 /**
  * @anchor sensor_y511_turb
  * @name Turbidity
- * The turbidity variable from a Yosemitch Y511
+ * The turbidity variable from a Yosemitech Y511
  * - Range is 0.1 to 1000 NTU
  * - Accuracy is ± 5 % or 0.3 NTU
  *
@@ -129,7 +129,7 @@
 /**
  * @anchor sensor_y511_temp
  * @name Temperature
- * The temperature variable from a Yosemitch Y511
+ * The temperature variable from a Yosemitech Y511
  * - Range is 0°C to + 50°C
  * - Accuracy is ± 0.2°C
  *
@@ -299,3 +299,5 @@ class YosemitechY511_Temp : public Variable {
 };
 /**@}*/
 #endif  // SRC_SENSORS_YOSEMITECHY511_H_
+
+// cSpell:ignore Wipered

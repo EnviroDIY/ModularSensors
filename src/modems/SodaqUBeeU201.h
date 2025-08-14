@@ -138,15 +138,15 @@
  */
 #define U201_WAKE_DELAY_MS 0
 /**
- * @brief The loggerModem::_max_atresponse_time_ms.
+ * @brief The loggerModem::_max_at_response_time_ms.
  *
  * Time until system and digital pins are operational is 6 sec typical for SARA
  * U201.
  */
-#define U201_ATRESPONSE_TIME_MS 6000L
+#define U201_AT_RESPONSE_TIME_MS 6000L
 
 /**
- * @brief The loggerModem::_disconnetTime_ms.
+ * @brief The loggerModem::_disconnectTime_ms.
  *
  * Power down time for u-blox modules _"can largely vary depending on the
  * application / network settings and the concurrent module activities."_  The
@@ -166,7 +166,7 @@ class SodaqUBeeU201 : public loggerModem {
     /**
      * @brief Construct a new Sodaq UBee U201 object
      *
-     * The constuctor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables,
      * constructs a loggerModem parent class with the appropriate timing for the
      * module, calls the constructor for a TinyGSM modem on the provided
      * modemStream, and creates a TinyGSM Client linked to the modem.

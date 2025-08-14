@@ -86,11 +86,11 @@
 /**
  * @brief Sensor::_measurementTime_ms; the D-Opto takes 5335ms to complete a
  * measurement.
- * - Excitiation time before measurement: ~5225ms
+ * - Excitation time before measurement: ~5225ms
  * - Maximum measurement duration: ~110ms
  *
  * Obnoxiously, the sensor will not take a "concurrent" measurement and leave
- * the sensor powered on, so we must wait entire ~5200ms exitation time and the
+ * the sensor powered on, so we must wait entire ~5200ms excitation time and the
  * 110ms measurement time each time.
  * There is the ability to do a non-concurrent measurement and leave the
  * sensor powered on, in which case the re-measurement takes ~110ms, but doing
@@ -385,3 +385,5 @@ class ZebraTechDOpto_DOmgL : public Variable {
 };
 /**@}*/
 #endif  // SRC_SENSORS_ZEBRATECHDOPTO_H_
+
+// cSpell:ignore Pololu

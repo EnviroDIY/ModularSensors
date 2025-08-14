@@ -21,7 +21,7 @@
  *
  * ESP32s are available everywhere. The AT commands are the same for all of
  * them. This library requires AT command firmware versions 3.2 or higher.  To
- * update to firmware 3.2+ from versions prior to 3.2, you must reflash the
+ * update to firmware 3.2+ from versions prior to 3.2, you must re+flash the
  * firmware. You cannot update over-the-air.
  *
  * @section modem_esp32_dfrobot DFRobot ESPBee
@@ -104,7 +104,7 @@ class EspressifESP32 : public Espressif {
     /**
      * @brief Construct a new Espressif ESP32 object.
      *
-     * The constuctor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables,
      * constructs a loggerModem parent class with the appropriate timing for the
      * module, calls the constructor for a TinyGSM modem on the provided
      * modemStream, and creates a TinyGSM Client linked to the modem.
@@ -169,3 +169,5 @@ class EspressifESP32 : public Espressif {
 };
 /**@}*/
 #endif  // SRC_MODEMS_ESPRESSIFESP32_H_
+
+// cSpell:ignore DFRobot RSTB

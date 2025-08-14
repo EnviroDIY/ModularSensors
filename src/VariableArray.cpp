@@ -16,14 +16,14 @@ VariableArray::VariableArray() {}
 VariableArray::VariableArray(uint8_t variableCount, Variable* variableList[])
     : arrayOfVars(variableList),
       _variableCount(variableCount) {
-    _maxSamplestoAverage = countMaxToAverage();
+    _maxSamplesToAverage = countMaxToAverage();
     _sensorCount         = getSensorCount();
 }
 VariableArray::VariableArray(uint8_t variableCount, Variable* variableList[],
                              const char* uuids[])
     : arrayOfVars(variableList),
       _variableCount(variableCount) {
-    _maxSamplestoAverage = countMaxToAverage();
+    _maxSamplesToAverage = countMaxToAverage();
     _sensorCount         = getSensorCount();
     matchUUIDs(uuids);
 }
@@ -36,7 +36,7 @@ void VariableArray::begin(uint8_t variableCount, Variable* variableList[],
     _variableCount = variableCount;
     arrayOfVars    = variableList;
 
-    _maxSamplestoAverage = countMaxToAverage();
+    _maxSamplesToAverage = countMaxToAverage();
     _sensorCount         = getSensorCount();
     matchUUIDs(uuids);
     checkVariableUUIDs();
@@ -45,12 +45,12 @@ void VariableArray::begin(uint8_t variableCount, Variable* variableList[]) {
     _variableCount = variableCount;
     arrayOfVars    = variableList;
 
-    _maxSamplestoAverage = countMaxToAverage();
+    _maxSamplesToAverage = countMaxToAverage();
     _sensorCount         = getSensorCount();
     checkVariableUUIDs();
 }
 void VariableArray::begin() {
-    _maxSamplestoAverage = countMaxToAverage();
+    _maxSamplesToAverage = countMaxToAverage();
     _sensorCount         = getSensorCount();
     checkVariableUUIDs();
 }
@@ -466,7 +466,7 @@ bool VariableArray::updateAllSensors(void) {
         }
     }
 
-    // Average measurements and notify varibles of the updates
+    // Average measurements and notify variables of the updates
     MS_DBG(F("----->> Averaging results and notifying all variables. ..."));
     for (uint8_t i = 0; i < _variableCount; i++) {
         if (lastSensorVariable[i]) {
@@ -826,7 +826,7 @@ bool VariableArray::completeUpdate(void) {
         }
     }
 
-    // Average measurements and notify varibles of the updates
+    // Average measurements and notify variables of the updates
     MS_DBG(F("----->> Averaging results and notifying all variables. ..."));
     for (uint8_t i = 0; i < _variableCount; i++) {
         if (lastSensorVariable[i]) {

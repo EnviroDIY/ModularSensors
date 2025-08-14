@@ -54,7 +54,7 @@ String Sensor::getSensorName(void) {
 }
 
 
-// This concatentates and returns the name and location.
+// This concatenates and returns the name and location.
 String Sensor::getSensorNameAndLocation(void) {
     return getSensorName() + " at " + getSensorLocation();
 }
@@ -79,12 +79,12 @@ uint8_t Sensor::getNumberMeasurementsToAverage(void) {
 // This returns the 8-bit code for the current status of the sensor.
 // Bit 0 - 0=Has NOT been set up, 1=Has been setup
 // Bit 1 - 0=No attempt made to power sensor, 1=Attempt made to power sensor
-// Bit 2 - 0=Power up attampt failed, 1=Power up attempt succeeded
+// Bit 2 - 0=Power up attempt failed, 1=Power up attempt succeeded
 // Bit 3 - 0=Wake/Activate not yet attempted, 1=Attempt made to wake sensor
 // Bit 4 - 0=Wake/Activate failed, 1=Is awake/actively measuring
 // bit 5 - 0=Measurement start attempted, 1=No measurements have been requested
 // bit 6 - 0=Measurement start failed, 1=Measurement attempt succeeded
-// Bit 7 - 0=No known errors, 1=Some sort of error has occured
+// Bit 7 - 0=No known errors, 1=Some sort of error has occurred
 uint8_t Sensor::getStatus(void) {
     return _sensorStatus;
 }

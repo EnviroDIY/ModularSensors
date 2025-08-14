@@ -67,7 +67,7 @@ bool GroPointParent::setup(void) {
 #endif
 
     // This sensor begin is just setting more pin modes, etc, no sensor power
-    // required This realy can't fail so adding the return value is just for
+    // required This really can't fail so adding the return value is just for
     // show
     retVal &= _gsensor.begin(_model, _modbusAddress, _stream, _RS485EnablePin);
 
@@ -119,7 +119,7 @@ bool GroPointParent::sleep(void) {
 
     // if it's not powered, it's asleep
     if (!checkPowerOn()) { return true; }
-    // if it was never awake, it's probabaly asleep
+    // if it was never awake, it's probably asleep
     if (_millisSensorActivated == 0) {
         MS_DBG(getSensorNameAndLocation(), F("was not measuring!"));
         return true;
@@ -222,7 +222,7 @@ void GroPointParent::powerDown(void) {
 bool GroPointParent::addSingleMeasurementResult(void) {
     bool success  = false;
     bool successT = false;
-    // Initialize moisture variables for each probe segement
+    // Initialize moisture variables for each probe segment
     float M1, M2, M3, M4, M5, M6, M7, M8 = -9999;
     // Initialize temperature variables for each probe sensor
     float T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13 = -9999;
@@ -321,3 +321,5 @@ bool GroPointParent::addSingleMeasurementResult(void) {
     // Return true when finished
     return success && successT;
 }
+
+// cSpell:ignore gsensor

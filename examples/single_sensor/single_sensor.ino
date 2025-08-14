@@ -79,7 +79,7 @@ Variable waterDepth(calcDepth, 0, "waterDepth", "millimeter", "sonarDepth",
 // ==========================================================================
 /** Start [working_functions] */
 // Flashes to Mayfly's LED's
-void greenredflash(int numFlash = 4) {
+void greenRedFlash(int numFlash = 4) {
     for (int i = 0; i < numFlash; i++) {
         digitalWrite(greenLED, HIGH);
         digitalWrite(redLED, LOW);
@@ -115,7 +115,7 @@ void setup() {
     pinMode(greenLED, OUTPUT);
     pinMode(redLED, OUTPUT);
     // Blink the LEDs to show the board is on and starting up
-    greenredflash();
+    greenRedFlash();
 
     // Print a start-up note to the first serial port
     Serial.println(F("Single Sensor Example - Sonar Ranging"));

@@ -32,7 +32,7 @@
  * @section sensor_i2c_rain_intro Introduction
  *
  * This module is for use with a simple external I2C tipping bucket counter
- * based on an [Adafriut Trinket](https://www.adafruit.com/product/1501). This
+ * based on an [Adafruit Trinket](https://www.adafruit.com/product/1501). This
  * is *NOT* for direct counting of tips using an interrupt on the main
  * processor.  The construction and programming of the tipping bucket counter is
  * documented on
@@ -41,7 +41,7 @@
  * management.
  *
  * @section sensor_i2c_rain_datasheet Sensor Datasheet
- * - [Adafriut Trinket](https://www.adafruit.com/product/1501)
+ * - [Adafruit Trinket](https://www.adafruit.com/product/1501)
  * - [I2C Tipping Bucket Library](https://github.com/EnviroDIY/TippingBucketRainCounter)
  *
  * @section sensor_i2c_rain_flags Build flags

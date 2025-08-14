@@ -349,7 +349,7 @@ bool loggerClock::setRTClock(epochTime in_time, int8_t utcOffset) {
     // are only accurate to seconds (not milliseconds or less), I don't think
     // this is a problem.
 
-    // If the RTC is alredy within 5 seconds of the input time, just quit
+    // If the RTC is already within 5 seconds of the input time, just quit
     if (abs(new_rtc_value - prev_rtc_value) < 5) {
         PRINTOUT(F("Clock already within 5 seconds of time."));
         return false;
@@ -682,3 +682,5 @@ void loggerClock::setRawRTCNow(uint32_t ts) {
 }
 
 #endif
+
+// cSpell:ignore nist hhmm NVIC prtout1

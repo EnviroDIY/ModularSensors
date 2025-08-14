@@ -223,7 +223,7 @@ bool DigiXBeeWifi::extraModemSetup(void) {
         if (changedP0) {
             MS_DBG(F("DIO10/PWM0 changed to"), 1);
         } else {
-            MS_DEEP_DBG(F("ADIO10/PWM0 not changed"));
+            MS_DEEP_DBG(F("DIO10/PWM0 not changed"));
         }
 
         /** Put the XBee in pin sleep mode in conjuction with D8=1 */

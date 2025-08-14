@@ -8,8 +8,8 @@ When using PlatformIO or other build systems that allow you to define build flag
 
 - `-D MS_SERIAL_OUTPUT=SerialX` to define a serial or other stream to use for all printout, debugging or otherwise
 - `-D MS_2ND_OUTPUT=SerialX` to define a second serial to output identical debugging output to
-  - This is very helpful for boards that use a built-in USB adapter.  Assigning a secondary output that can be attaced to a secondary TTL-to-USB adapter can make debugging much easier.
-- `-D MS_SILENT` to surpress *ALL* output.
+  - This is very helpful for boards that use a built-in USB adapter.  Assigning a secondary output that can be attached to a secondary TTL-to-USB adapter can make debugging much easier.
+- `-D MS_SILENT` to suppress *ALL* output.
 
 There is also a debugging - and sometimes deep debugging - define for each component.
 The debugging flags are generally named as MS_xxx_DEBUG`, where xxxxx is the name of the header file to debug - in all caps with spaces removed.

@@ -63,7 +63,7 @@ bool AOSongDHT::addSingleMeasurementResult(void) {
             // Check if any reads failed
             // If they are NaN (not a number) then something went wrong
             if (!isnan(humid_val) && !isnan(temp_val)) {
-                // Compute heat index in Celsius (isFahreheit = false)
+                // Compute heat index in Celsius (isFahrenheit = false)
                 hi_val = dht_internal.computeHeatIndex(temp_val, humid_val,
                                                        false);
                 MS_DBG(F("  Temp:"), temp_val, F("°C"));

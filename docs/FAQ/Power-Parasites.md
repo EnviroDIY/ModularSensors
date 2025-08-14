@@ -22,4 +22,4 @@ This means I2C parasitic power draw is best solved via hardware, not software.
   - In this future, this library _may_ offer the option of using software I2C, which would allow you to use the same technique as is currently usable to stop serial parasitic draw.
 Until such an update happens, however, hardware solutions are required.
 
-The ["data_saving"](@todo add link to loop of datasaving example) example shows setting ending a serial stream and seeting pins low to prevent an RS485 adapter from drawing power during sleep.
+The ["data_saving"](@todo add link to loop of data saving example) example shows setting ending a serial stream and setting pins low to prevent an RS485 adapter from drawing power during sleep.

@@ -213,7 +213,7 @@ class SensirionSHT4x : public Sensor {
      * which will make the sensor stop responding to air humidity changes - and
      * to allow creep-free operation in high humidity environments.  The longest
      * the internal heater can run at a time is 1s and the maximum duty load is
-     * 5%.  Running only 1s per measurment cycle probably isn't enough to help
+     * 5%.  Running only 1s per measurement cycle probably isn't enough to help
      * with more than very minimal condensation, but it's probably the best we
      * can easily do.
      * @param measurementsToAverage The number of measurements to take and
@@ -241,7 +241,7 @@ class SensirionSHT4x : public Sensor {
      * which will make the sensor stop responding to air humidity changes - and
      * to allow creep-free operation in high humidity environments.  The longest
      * the internal heater can run at a time is 1s and the maximum duty load is
-     * 5%.  Running only 1s per measurment cycle probably isn't enough to help
+     * 5%.  Running only 1s per measurement cycle probably isn't enough to help
      * with more than very minimal condensation, but it's probably the best we
      * can easily do.
      * @param measurementsToAverage The number of measurements to take and
@@ -387,3 +387,5 @@ class SensirionSHT4x_Temp : public Variable {
 };
 /**@}*/
 #endif  // SRC_SENSORS_SENSIRIONSHT4X_H_
+
+// cSpell:ignore preconfigured

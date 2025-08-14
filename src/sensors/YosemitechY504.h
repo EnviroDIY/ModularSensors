@@ -76,7 +76,7 @@
 /**
  * @anchor sensor_y504_timing
  * @name Sensor Timing
- * The sensor timing for a Yosemitch Y504
+ * The sensor timing for a Yosemitech Y504
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; time before sensor responds after power -
@@ -93,7 +93,7 @@
 /**
  * @anchor sensor_y504_dopercent
  * @name Dissolved Oxygen Percent Saturation
- * The dissolved oxygen percent saturation variable from a Yosemitch Y504
+ * The dissolved oxygen percent saturation variable from a Yosemitech Y504
  * - Range is 0-20mg/L or 0-200% Saturation
  * - Accuracy is ± 1 %
  *
@@ -121,7 +121,7 @@
 /**
  * @anchor sensor_y504_temp
  * @name Temperature
- * The temperature variable from a Yosemitch Y504
+ * The temperature variable from a Yosemitech Y504
  * - Range is 0°C to + 50°C
  * - Accuracy is ± 0.2°C
  *
@@ -148,7 +148,7 @@
 /**
  * @anchor sensor_y504_domgl
  * @name Dissolved Oxygen Concentration
- * The dissolved oxygen concentration variable from a Yosemitch Y504
+ * The dissolved oxygen concentration variable from a Yosemitech Y504
  * - Range is 0-20mg/L or 0-200% Saturation
  * - Accuracy is ± 1 %
  *

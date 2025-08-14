@@ -215,7 +215,7 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
     int16_t  responseCode   = 0;
 
     // if no-one gave us a filename, assume it's a jpg and generate one based on
-    // loggername + timestamp
+    // logger name + timestamp
     String filename = _filename;
     if (_getFileNameFxn != nullptr) { filename = _getFileNameFxn(); }
     if (filename.length() == 0) {
@@ -266,7 +266,7 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
         }
     }
 
-    // Now that we have a URL, re-itialise the SD card and re-open the file
+    // Now that we have a URL, re-initialise the SD card and re-open the file
     if (!_baseLogger->initializeSDCard()) return -2;
     if (putFile.open(filename.c_str(), O_READ)) {
         MS_DBG(F("Opened file on SD card:"), filename);
@@ -323,7 +323,7 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
         txBufferFlush();
 
         // Send the file
-        // Take advantage of the txBuffer's flush logic to prevent typewritter
+        // Take advantage of the txBuffer's flush logic to prevent typewriter
         // style writes from the modem-send command deep in TinyGSM
         // Disable the watch-dog timer to reduce interrupts during transfer
         // MS_DBG(F("Disabling the watchdog during file transfer"));

@@ -135,7 +135,7 @@ class Sensor {
      */
     virtual String getSensorName(void);
     /**
-     * @brief Concatentate and returns the name and location of the sensor.
+     * @brief Concatenate and returns the name and location of the sensor.
      *
      * @return A concatenation of the sensor name and its "location"
      * - how it is connected to the mcu.
@@ -192,7 +192,7 @@ class Sensor {
      * - 1 => Attempt made to power sensor
      *
      * Bit 2
-     * - 0 => Power up attampt failed
+     * - 0 => Power up attempt failed
      * - 1 => Power up attempt succeeded
      * - Use the isWarmedUp() function to check if enough time has passed to be
      * ready for sensor communication.
@@ -278,7 +278,7 @@ class Sensor {
      * measurement and get the result, averages all the values, notifies the
      * attached variables that new values are available, puts the sensor back to
      * sleep (if it had been asleep) and powers the sensor down (if it had been
-     * unpowered).   All possible waits are included in this function.  To get
+     * un-powered).   All possible waits are included in this function.  To get
      * new results from a single sensor, this is the function that should be
      * used.  To work with many sensors together, use the VariableArray class
      * which optimizes the timing and waits for many sensors working together.
@@ -403,7 +403,7 @@ class Sensor {
      *
      * @param sensorVarNum The position the variable result holds in the
      * variable result array.
-     * @param var A ponter to the Variable object.
+     * @param var A pointer to the Variable object.
      *
      * @note Only one variable can be assigned to each place in the array!
      */
@@ -468,7 +468,7 @@ class Sensor {
      * measurement should have completed
      *
      * @note A true response does _NOT_ indicate that the sensor will now
-     * sucessfully report a result, merely that the specified time for a
+     * successfully report a result, merely that the specified time for a
      * measurement has passed.
      */
     virtual bool isMeasurementComplete(bool debug = false);
@@ -550,7 +550,7 @@ class Sensor {
      */
     uint32_t _stabilizationTime_ms;
     /**
-     * @brief The processor elapsed time when the sensor was activiated - ie,
+     * @brief The processor elapsed time when the sensor was activated - ie,
      * when the wake() function was run.
      *
      * The #_millisSensorActivated value is *usually* set in the wake()
@@ -565,7 +565,7 @@ class Sensor {
      */
     uint32_t _measurementTime_ms;
     /**
-     * @brief The processor elapsed time when a measuremnt was started - ie,
+     * @brief The processor elapsed time when a measurement was started - ie,
      * when the startSingleMeasurement() function was run.
      *
      * The #_millisMeasurementRequested value is set in the

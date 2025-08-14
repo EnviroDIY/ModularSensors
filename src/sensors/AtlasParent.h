@@ -3,7 +3,7 @@
  * @copyright Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino.
  * This library is published under the BSD-3 license.
- * @author Initial developement for Atlas Sensors was done by Adam Gold
+ * @author Initial development for Atlas Sensors was done by Adam Gold
  * Files were edited by Sara Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Contains the AtlasParent sensor subclass which is itself the
@@ -249,7 +249,7 @@ class AtlasParent : public Sensor {
      * except a status code - the response will be "consumed" and become
      * unavailable.
      *
-     * @param timeout The maximum amout of time to wait in ms.
+     * @param timeout The maximum amount of time to wait in ms.
      * @return True processing completed and a status code was returned
      * within the wait period.
      */

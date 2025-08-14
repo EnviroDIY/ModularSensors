@@ -6,7 +6,7 @@
  * @author Written By: Neil Hancock <neilh20+aec2008@wLLw.net>; Edited by Sara
  * Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief This encapsulates an Electrical Conductivity sensors using an anlog
+ * @brief This encapsulates an Electrical Conductivity sensors using an analog
  * input and onboard ADC and ADC ref.
  */
 
@@ -98,3 +98,6 @@ bool AnalogElecConductivity::addSingleMeasurementResult(void) {
     // Return true when finished
     return true;
 }
+
+// cSpell:ignore AnalogElecConductivity Rseries_ohms sensorEC_Konst Rwater_ohms
+// cSpell:ignore anlgEc

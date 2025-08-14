@@ -14,7 +14,7 @@
  *
  * For the Arduino IDE, this is the only way to configure these settings. If you
  * are using PlatformIO, you have the option of using this file or changing your
- * configuation using build flags in your platformio.ini. Compile times will be
+ * configuration using build flags in your platformio.ini. Compile times will be
  * shorter if you use this file instead of build flags, but it is much easier to
  * track changes in your platformio.ini file than in this file.
  */

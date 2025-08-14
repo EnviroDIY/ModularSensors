@@ -5,9 +5,9 @@
  * This library is published under the BSD-3 license.
  * @author Anthony Aufdenkampe <aaufdenkampe@limno.com> with help from Beth
  * Fisher, Evan Host and Bobby Schulz.
- * Heavliy edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ * Heavily edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief Contains the PaleoTerraRedox semsor subclass and the variable subclass
+ * @brief Contains the PaleoTerraRedox sensor subclass and the variable subclass
  * PaleoTerraRedox_Voltage.
  *
  * These are for the PaleoTerra redox sensors.
@@ -19,7 +19,7 @@
 /* clang-format off */
 /**
  * @defgroup sensor_pt_redox PaleoTerra Redox
- * Classes for the PaleoTerra Redox digital preassure sensor.
+ * Classes for the PaleoTerra Redox sensor.
  *
  * @ingroup the_sensors
  *

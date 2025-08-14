@@ -291,7 +291,8 @@ class EnviroDIYPublisher : public dataPublisher {
     int16_t flushDataBuffer(Client* outClient);
 
     /**
-     * @brief The number of transmissions remaing at the single minute intervals
+     * @brief The number of transmissions remaining at the single minute
+     * intervals
      *
      * We send every one of the first five data points at only one minute
      * intervals for faster in-field validation.

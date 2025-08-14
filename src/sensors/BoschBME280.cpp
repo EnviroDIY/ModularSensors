@@ -170,3 +170,5 @@ bool BoschBME280::addSingleMeasurementResult(void) {
 
     return success;
 }
+
+// cSpell:ignore SEALEVELPRESSURE_HPA

@@ -67,7 +67,7 @@ bool KellerParent::setup(void) {
 #endif
 
     // This sensor begin is just setting more pin modes, etc, no sensor power
-    // required This realy can't fail so adding the return value is just for
+    // required This really can't fail so adding the return value is just for
     // show
     retVal &= _ksensor.begin(_model, _modbusAddress, _stream, _RS485EnablePin);
 
@@ -153,7 +153,7 @@ bool KellerParent::addSingleMeasurementResult(void) {
 
     // Initialize float variables
     float waterPressureBar   = -9999;
-    float waterTempertureC   = -9999;
+    float waterTemperatureC  = -9999;
     float waterDepthM        = -9999;
     float waterPressure_mBar = -9999;
 
@@ -163,15 +163,15 @@ bool KellerParent::addSingleMeasurementResult(void) {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
         // Get Values
-        success     = _ksensor.getValues(waterPressureBar, waterTempertureC);
+        success     = _ksensor.getValues(waterPressureBar, waterTemperatureC);
         waterDepthM = _ksensor.calcWaterDepthM(
             waterPressureBar,
-            waterTempertureC);  // float calcWaterDepthM(float waterPressureBar,
-                                // float waterTempertureC)
+            waterTemperatureC);  // float calcWaterDepthM(float
+                                 // waterPressureBar, float waterTemperatureC)
 
         // Fix not-a-number values
         if (!success || isnan(waterPressureBar)) waterPressureBar = -9999;
-        if (!success || isnan(waterTempertureC)) waterTempertureC = -9999;
+        if (!success || isnan(waterTemperatureC)) waterTemperatureC = -9999;
         if (!success || isnan(waterDepthM)) waterDepthM = -9999;
 
         // For waterPressureBar, convert bar to millibar
@@ -179,7 +179,7 @@ bool KellerParent::addSingleMeasurementResult(void) {
             waterPressure_mBar = 1000 * waterPressureBar;
 
         MS_DBG(F("  Pressure_mbar:"), waterPressure_mBar);
-        MS_DBG(F("  Temp_C:"), waterTempertureC);
+        MS_DBG(F("  Temp_C:"), waterTemperatureC);
         MS_DBG(F("  Height_m:"), waterDepthM);
     } else {
         MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
@@ -187,7 +187,7 @@ bool KellerParent::addSingleMeasurementResult(void) {
 
     // Put values into the array
     verifyAndAddMeasurementResult(KELLER_PRESSURE_VAR_NUM, waterPressure_mBar);
-    verifyAndAddMeasurementResult(KELLER_TEMP_VAR_NUM, waterTempertureC);
+    verifyAndAddMeasurementResult(KELLER_TEMP_VAR_NUM, waterTemperatureC);
     verifyAndAddMeasurementResult(KELLER_HEIGHT_VAR_NUM, waterDepthM);
 
     // Unset the time stamp for the beginning of this measurement
@@ -198,3 +198,5 @@ bool KellerParent::addSingleMeasurementResult(void) {
     // Return true when finished
     return success;
 }
+
+// cSpell:ignore ksensor

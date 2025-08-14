@@ -24,7 +24,7 @@
  * Your milage may vary.
  *
  * When operated in Digi's "bypass" mode, the u-blox SARA U201 based 3G XBee
- * with 2G fallback can be implented as a DigiXBee3GBypass object -
+ * with 2G fallback can be implemented as a DigiXBee3GBypass object -
  * a subclass of DigiXBee and loggerModem.
  * Bypass refers to the fact that XBee3's main processor is bypassed - acting
  * only as a pass-through to the u-blox cellular component.
@@ -97,7 +97,7 @@ class DigiXBee3GBypass : public DigiXBee {
     /**
      * @brief Construct a new Digi XBee 3G Bypass object
      *
-     * The constuctor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables,
      * constructs a loggerModem parent class with the appropriate timing for the
      * module, calls the constructor for a TinyGSM modem on the provided
      * modemStream, and creates a TinyGSM Client linked to the modem.
@@ -111,9 +111,9 @@ class DigiXBee3GBypass : public DigiXBee {
      * status indicator rather than the true status (`ON/SLEEP_N/DIO9`) pin.
      * This inverts the loggerModem::_statusLevel.
      * @param modemResetPin @copydoc loggerModem::_modemResetPin
-     * This shold be the pin called `RESET_N` in Digi's hardware reference.
+     * This should be the pin called `RESET_N` in Digi's hardware reference.
      * @param modemSleepRqPin @copydoc loggerModem::_modemSleepRqPin
-     * This shold be the pin called `DTR_N/SLEEP_RQ/DIO8` in Digi's hardware
+     * This should be the pin called `DTR_N/SLEEP_RQ/DIO8` in Digi's hardware
      * reference.
      * @param apn The Access Point Name (APN) for the SIM card.
      *

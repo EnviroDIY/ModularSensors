@@ -3,7 +3,7 @@
  * @copyright Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino.
  * This library is published under the BSD-3 license.
- * @author Initial developement for Atlas Sensors was done by Adam Gold
+ * @author Initial development for Atlas Sensors was done by Adam Gold
  * Files were edited by Sara Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Contains the AtlasScientificCO2 subclass of the AtlasParent sensor
@@ -25,7 +25,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * The Atlas Scientifc Conductivity sensor outputs raw conductivity, TDS,
+ * The Atlas Scientific Conductivity sensor outputs raw conductivity, TDS,
  * salinity, and specific gravity
  * - Accuracy is ± 2%
  * - Range is 0.07 − 500,000+ μS/cm
@@ -110,7 +110,7 @@
 /**
  * @anchor sensor_atlas_cond_timing
  * @name Sensor Timing
- * The sensor timing for an Atlas EC (conducticity) sensor
+ * The sensor timing for an Atlas EC (conductivity) sensor
  */
 /**@{*/
 /**
@@ -135,7 +135,7 @@
 /**
  * @anchor sensor_atlas_cond_cond
  * @name Conductivity
- * The conductivity variable from an Atlas EC (conducticity) sensor
+ * The conductivity variable from an Atlas EC (conductivity) sensor
  * - Accuracy is ± 2%
  * - Range is 0.07 − 500,000+ μS/cm
  *
@@ -161,7 +161,7 @@
 /**
  * @anchor sensor_atlas_cond_tds
  * @name Total Dissolved Solids
- * The TDS variable from an Atlas EC (conducticity) sensor
+ * The TDS variable from an Atlas EC (conductivity) sensor
  * - Accuracy is ± 2%
  * - Range is 0.07 − 500,000+ μS/cm
  *
@@ -187,7 +187,7 @@
 /**
  * @anchor sensor_atlas_cond_salinity
  * @name Salinity
- * The salinity variable from an Atlas EC (conducticity) sensor
+ * The salinity variable from an Atlas EC (conductivity) sensor
  * - Accuracy is ± 2%
  * - Range is 0.07 − 500,000+ μS/cm
  *
@@ -214,7 +214,7 @@
 /**
  * @anchor sensor_atlas_cond_sg
  * @name Specific Gravity
- * The specific gravity variable from an Atlas EC (conducticity) sensor
+ * The specific gravity variable from an Atlas EC (conductivity) sensor
  * - Accuracy is ± 2%
  * - Range is 0.07 − 500,000+ μS/cm
  *

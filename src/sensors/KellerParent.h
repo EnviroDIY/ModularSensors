@@ -278,7 +278,7 @@ class KellerParent : public Sensor {
      */
     byte _modbusAddress;
     /**
-     * @brief Private reference to the stream for communciation with the
+     * @brief Private reference to the stream for communication with the
      * Keller sensor.
      */
     Stream* _stream;
@@ -294,3 +294,5 @@ class KellerParent : public Sensor {
 };
 /**@}*/
 #endif  // SRC_SENSORS_KELLERPARENT_H_
+
+// cSpell:ignore ksensor

@@ -21,7 +21,7 @@
  *
  * The SIMCom [SIM7000](https://simcom.ee/modules/iot/sim7000e/) Tri-Band
  * LTE-FDD and Dual-Band GPRS/EDGE module solution in a SMT type which
- * supports LTE CAT-M1(eMTC) and NB-IoT up to 375kbps data transfer.
+ * supports LTE CAT-M1(eMTC) and NB-IoT up to 375 kbps data transfer.
  *
  * There are breakouts of several variants made by
  * [AND Technologies](http://www.and-global.com/) or
@@ -109,7 +109,7 @@
  * @brief The loggerModem::_resetLevel.
  *
  * The active low level time impulse on `RESET` pin to reset SIM7000 is
- * miniumum 252ms.
+ * minimum 252ms.
  */
 #define SIM7000_RESET_LEVEL LOW
 /**
@@ -143,14 +143,14 @@
  */
 #define SIM7000_WAKE_DELAY_MS 1000L
 /**
- * @brief The loggerModem::_max_atresponse_time_ms.
+ * @brief The loggerModem::_max_at_response_time_ms.
  *
  * Time after end pulse until serial port on SIM7000 becomes active is >4.5sec.
  */
-#define SIM7000_ATRESPONSE_TIME_MS 4500
+#define SIM7000_AT_RESPONSE_TIME_MS 4500
 
 /**
- * @brief The loggerModem::_disconnetTime_ms.
+ * @brief The loggerModem::_disconnectTime_ms.
  *
  * SIM7000 power down (gracefully) takes 1.8-6.9 sec.
  */
@@ -165,7 +165,7 @@ class SIMComSIM7000 : public loggerModem {
  public:
     /**
      * @brief Construct a new SIMComSIM7000 object
-     * The constuctor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables,
      * constructs a loggerModem parent class with the appropriate timing for the
      * module, calls the constructor for a TinyGSM modem on the provided
      * modemStream, and creates a TinyGSM Client linked to the modem.
@@ -238,3 +238,5 @@ class SIMComSIM7000 : public loggerModem {
 };
 /**@}*/
 #endif  // SRC_MODEMS_SIMCOMSIM7000_H_
+
+// cSpell:ignore kbps

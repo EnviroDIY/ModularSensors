@@ -48,7 +48,7 @@
 /**
  * @def extendedWatchDog
  *
- * A define to simplify inclusing of either a AVR or SAMD based watchdog
+ * A define to simplify including of either a AVR or SAMD based watchdog
  */
 #if defined(ARDUINO_ARCH_SAMD)
 #include "WatchDogs/WatchDogSAMD.h"
@@ -182,7 +182,7 @@ class Logger {
     /**
      * @anchor logger_basic_parameters
      * @name Basic Logging Parameters
-     * Public functions to get and set basic logging paramters
+     * Public functions to get and set basic logging parameters
      */
     /**@{*/
     // ===================================================================== //
@@ -389,7 +389,7 @@ class Logger {
      * Once in testing mode, the logger will attempt to connect the the internet
      * and take 25 measurements spaced at 5 second intervals writing the results
      * to the main output destination (ie, Serial).  Testing mode cannot be
-     * entered while the logger is taking a scheduled measureemnt.  No data is
+     * entered while the logger is taking a scheduled measurement.  No data is
      * written to the SD card in testing mode.
      *
      * @note This sets the pin mode but does NOT enable the interrupt! The
@@ -404,7 +404,7 @@ class Logger {
      * while using `INPUT` will explicitly disable them.  If your pin is
      * externally pulled down or the button is a normally open (NO) switch with
      * common (COM) connected to Vcc, like the EnviroDIY Mayfly), you should use
-     * the `INPUT` pin mode.  Coversely, if your button connect to ground when
+     * the `INPUT` pin mode.  Conversely, if your button connect to ground when
      * activated, you should enable the processor pull-up resistors using
      * `INPUT_PULLUP`.
      */
@@ -441,9 +441,9 @@ class Logger {
      * while using `INPUT` will explicitly disable them.  If your pin is
      * externally pulled down or the button is a normally open (NO) switch with
      * common (COM) connected to Vcc, like the EnviroDIY Mayfly), you should use
-     * the `INPUT` pin mode.  Coversely, if your button is active when connected
-     * to ground, you should enable the processor pull-up resistors using
-     * `INPUT_PULLUP`.
+     * the `INPUT` pin mode.  Conversely, if your button is active when
+     * connected to ground, you should enable the processor pull-up resistors
+     * using `INPUT_PULLUP`.
      */
     void setLoggerPins(int8_t mcuWakePin, int8_t SDCardSSPin,
                        int8_t SDCardPowerPin, int8_t buttonPin, int8_t ledPin,
@@ -781,7 +781,7 @@ class Logger {
      *
      * @note This must be set.
      *
-     * @param timeZone The timezone data shold be saved to the SD card in.  This
+     * @param timeZone The timezone data should be saved to the SD card in. This
      * need not be the same as the timezone of the real time clock.
      */
     static void setLoggerTimeZone(int8_t timeZone);
@@ -892,7 +892,7 @@ class Logger {
 
     /**
      * @brief Pass-through to loggerClock::setRTClock(uint32_t
-     * UTCEpochSeconds,0, epochStart::unix_epoch) Veify that the input value is
+     * UTCEpochSeconds,0, epochStart::unix_epoch) Verify that the input value is
      * sane and if so set the real time clock to the given time.
      *
      * @m_deprecated_since{0,37,0}
@@ -1067,7 +1067,7 @@ class Logger {
      *
      * @m_deprecated_since{0,37,0}
      *
-     * Use loggerClock::RTCISR() in new code!
+     * Use loggerClock::rtcISR() in new code!
      */
     static void wakeISR(void);
 
@@ -1199,7 +1199,7 @@ class Logger {
     virtual void printFileHeader(Stream* stream);
 
     /**
-     * @brief Print a comma separated list of volues of sensor data -
+     * @brief Print a comma separated list of values of sensor data -
      * including the time in the logging timezone -  out over an Arduino stream
      *
      * @param stream An Arduino stream instance - expected to be an SdFat file -
@@ -1265,7 +1265,7 @@ class Logger {
      * @brief Open a file named with the current internal filename value and
      * append the given line to the bottom of it.
      *
-     * If a file with the with the intenal filename does not already exist,
+     * If a file with the with the internal filename does not already exist,
      * attempt to create a file with that name and add a header to it.  Set the
      * modified and accessed timestamps of the file to the current time.
      *
@@ -1279,7 +1279,7 @@ class Logger {
      * append a line to the bottom of it with the most recent values of all
      * variables in the variable array as a comma separated list.
      *
-     * If a file with the with the intenal filename does not already exist,
+     * If a file with the with the internal filename does not already exist,
      * attempt to create the file and add a header to it.  Set the modified and
      * accessed timestamps of the file to the current time.
      *
@@ -1375,7 +1375,7 @@ class Logger {
     // void checkForTestingMode(int8_t buttonPin);
 
     /**
-     * @brief The interrupt sevice routine called when an iterrupt is detected
+     * @brief The interrupt service routine called when an interrupt is detected
      * on the pin assigned for "testing" mode.
      */
     static void testingISR(void);
@@ -1474,7 +1474,7 @@ class Logger {
 
     /**
      * @brief Wakes and sets up the modem, connects to the internet, syncs the
-     * RTC with NIST, and publishes meatadata for all attached publishers.
+     * RTC with NIST, and publishes metadata for all attached publishers.
      *
      * This is only to be run at startup. It should be run after beginning the
      * logger and attaching the modem and sensors.
@@ -1491,7 +1491,7 @@ class Logger {
      */
     static uint32_t markedUTCUnixTime;
 
-    // These are flag fariables noting the current state (logging/testing)
+    // These are flag variables noting the current state (logging/testing)
     // NOTE:  if the logger isn't currently logging or testing or in the middle
     // of set-up, it's probably sleeping
     // Setting these as volatile because the flags can be changed in ISR's

@@ -20,7 +20,7 @@ QuectelBG96::QuectelBG96(Stream* modemStream, int8_t powerPin, int8_t statusPin,
                   BG96_RESET_LEVEL, BG96_RESET_PULSE_MS, modemSleepRqPin,
                   BG96_WAKE_LEVEL, BG96_WAKE_PULSE_MS, BG96_STATUS_TIME_MS,
                   BG96_DISCONNECT_TIME_MS, BG96_WAKE_DELAY_MS,
-                  BG96_ATRESPONSE_TIME_MS),
+                  BG96_AT_RESPONSE_TIME_MS),
 #ifdef MS_QUECTELBG96_DEBUG_DEEP
       _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
       gsmModem(_modemATDebugger),

@@ -22,7 +22,7 @@
  * Digi's wifi XBee is implemented as a DigiXBeeWifi object - a subclass of
  * DigiXBee and loggerModem.
  * The S6B is run in Digi's "transparent" mode.
- * The maxiumum power draw is ~300mA.
+ * The maximum power draw is ~300mA.
  *
  * @section modem_digi_wifi_docs Manufacturer Documentation
  * The Digi product page for the S6B wifi module is here:
@@ -103,7 +103,7 @@ class DigiXBeeWifi : public DigiXBee {
     /**
      * @brief Construct a new Digi XBee Wifi object
      *
-     * The constuctor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables,
      * constructs a loggerModem parent class with the appropriate timing for the
      * module, calls the constructor for a TinyGSM modem on the provided
      * modemStream, and creates a TinyGSM Client linked to the modem.
@@ -117,14 +117,14 @@ class DigiXBeeWifi : public DigiXBee {
      * status indicator rather than the true status (`ON/SLEEP_N/DIO9`) pin.
      * This inverts the loggerModem::_statusLevel.
      * @param modemResetPin @copydoc loggerModem::_modemResetPin
-     * This shold be the pin called `RESET_N` in Digi's hardware reference.
+     * This should be the pin called `RESET_N` in Digi's hardware reference.
      * @param modemSleepRqPin @copydoc loggerModem::_modemSleepRqPin
-     * This shold be the pin called `DTR_N/SLEEP_RQ/DIO8` in Digi's hardware
+     * This should be the pin called `DTR_N/SLEEP_RQ/DIO8` in Digi's hardware
      * reference.
      * @param ssid The wifi network ID.
      * @param pwd The wifi network password, assuming WPA2.
      * @param maintainAssociation Whether to maintain association with the
-     * access point during sleep. Maitaining the association during sleep draws
+     * access point during sleep. Maintaining the association during sleep draws
      * more current (+10mA?), but also allows a faster reconnection on the next
      * wake.
      */

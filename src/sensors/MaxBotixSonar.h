@@ -42,7 +42,7 @@
  * (square) on the MaxSonar.  The white and shield (bare silver) wires from the
  * MaxTemp should both be attached to Pin 7 (GND).  The MaxTemp communicates
  * directly with the MaxSonar and there is no need to make any changes on the
- * Aruduino itself to accomodate it.  It is not possible to read the temperature
+ * Arduino itself to accommodate it.  It is not possible to read the temperature
  * data from the MaxTemp.
  *
  * The MaxBotix sensor have two different modes: free-ranging and triggered.
@@ -270,7 +270,7 @@ class MaxBotixSonar : public Sensor {
      */
     bool _convertCm;
     /**
-     * @brief Private reference to the stream for communciation with the
+     * @brief Private reference to the stream for communication with the
      * Maxbotix sensor.
      */
     Stream* _stream;
@@ -319,3 +319,5 @@ class MaxBotixSonar_Range : public Variable {
 };
 /**@}*/
 #endif  // SRC_SENSORS_MAXBOTIXSONAR_H_
+
+// cSpell:ignore max_botix

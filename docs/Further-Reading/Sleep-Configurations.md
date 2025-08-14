@@ -210,7 +210,7 @@ To prevent power draw by any external pins during sleep, Modular Sensors sets al
 
 To decrease power use during sleep on the SAMD51, Modular Sensors explicitly disconnects all unused peripherals from the various clocks and and clock sources to prevent them from "[sleepwalking](https://onlinedocs.microchip.com/oxy/GUID-F5813793-E016-46F5-A9E2-718D8BCED496-en-US-14/GUID-FA7D618C-0F98-4A2C-9D24-669C4A3E3CA3.html)".
 The SAMD51's standby mode turns off clocks *except those configured to be running sleepwalking tasks*.
-By disconnecting all unused peripherals from a clock souce, we ensure that the clocks aren't woken.
+By disconnecting all unused peripherals from a clock source, we ensure that the clocks aren't woken.
 
 To do this, Modular Sensors disables generic clock generator 7 by disconnecting it from any oscillator source.
 Then it ties all peripheral timer that are safe to shut down to the disabled generator.
@@ -240,7 +240,7 @@ After completing the [steps for putting all boards to sleep](#steps-for-putting-
   - This is skipped if the TinyUSB library is called for some reason.
 - Force all pins except the RTC wake and button pins to go to minimum power draw levels (tri-state)
 - Configure GCLK7 to be disconnected from an oscillator source.
-- Connect all unused periperals to the source-less GCLK7.
+- Connect all unused peripherals to the source-less GCLK7.
 - Wait for all serial ports to finish transmitting
   - This is crucial for the SAMD boards that will continuously wake if they have data remaining in the buffer.
 - Clear the FPU interrupt because it can prevent us from sleeping.
@@ -255,7 +255,7 @@ Software must ensure that the SLEEPCFG register reads the desired value before e
 Once stabilized, the INTFLAG.SLEEPRDY bit is set.
 Before entering Standby, Hibernate or Backup mode, software must ensure that the INTFLAG.SLEEPRDY bit is set.
 SRGD Note: I believe this only applies at power-on, but it's probably not a bad idea to check that the flag has been set.
-- Call the data sync barrier (`__DSB();`) function to ensure outgoing memory accesses compelete.
+- Call the data sync barrier (`__DSB();`) function to ensure outgoing memory accesses complete.
 - Call wait for interrupts (`__WFI();`) to begin sleeping.
   - [See this link for tips on failing to sleep.](https://www.eevblog.com/forum/microcontrollers/crashing-through-__wfi/)
 
@@ -275,7 +275,7 @@ SRGD Note: I believe this only applies at power-on, but it's probably not a bad 
 > Modular Sensors uses **STANDBY** sleep mode for the SAMD21.
 
 The SAMD21 has only two sleep modes, idle and standby, with standby having the most power saving.
-Within the SAMD21 Arduino core and bootloaders, standby mode is refered to as SLEEPDEEP.
+Within the SAMD21 Arduino core and boot loaders, standby mode is referred to as SLEEPDEEP.
 
 ### SAMD21 Pin Configuration During Sleep<!--! {#sleep_pins_samd21} -->
 
@@ -291,13 +291,13 @@ After completing the [steps for putting all boards to sleep](#steps-for-putting-
 - Wait for all serial ports to finish transmitting
   - This is crucial for the SAMD boards that will continuously wake if they have data remaining in the buffer.
 - Configure flash to **not** power down when in sleep.
-  - Datasheet Eratta 1.14.2 says this is required.
+  - Datasheet Errata 1.14.2 says this is required.
 - Disable the systick interrupt.
   - See <https://www.avrfreaks.net/forum/samd21-samd21e16b-sporadically-locks-and-does-not-wake-standby-sleep-mode>.
   - Due to a hardware bug on the SAMD21, the SysTick interrupts become active before the flash has powered up from sleep, causing a hard  fault.
 To prevent this the SysTick interrupts are disabled before entering sleep mode.
 - Set the sleep mode configuration to use STANDBY mode.
-- Call the data sync barrier (`__DSB();`) function to ensure outgoing memory accesses compelete.
+- Call the data sync barrier (`__DSB();`) function to ensure outgoing memory accesses complete.
 - Call wait for interrupts (`__WFI();`) to begin sleeping.
   - [See this link for tips on failing to sleep.](https://www.eevblog.com/forum/microcontrollers/crashing-through-__wfi/)
 
@@ -309,3 +309,5 @@ To prevent this the SysTick interrupts are disabled before entering sleep mode.
 - Re-attach the USB for PC communication
 - Re-set the pin modes for the RTC wake pin, SD card SS pin, SD card power pin, button pin, and LED pin.
   - The pins were all set to tri-state to save power.
+
+<!-- cspell: ignore SLEEPCFG SLEEPMODE INTFLAG RSTC INEN PULLEN RESETN VQFN TQFP WLCSP TFBGA DIRCLR MAINVREG systick -->

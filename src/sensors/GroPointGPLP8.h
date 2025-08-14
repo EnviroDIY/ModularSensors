@@ -17,7 +17,7 @@
  * within the documentation in the GroPointModbus library at:
  * https://github.com/EnviroDIY/GroPointModbus
  *
- * More detailed infromation on each variable can be found in the documentation
+ * More detailed information on each variable can be found in the documentation
  * for the individual sensor probes
  */
 /* clang-format off */

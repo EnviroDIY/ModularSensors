@@ -248,7 +248,7 @@ float Variable::getValue(bool updateValue) {
         // otherwise return the last value. If we run the calculation function
         // every time we call getValue() or getValueString(), we will get
         // different values each time - ie, the data on the CSV and each
-        // pubisher will report a different value. That is **NOT** the desired
+        // publisher will report a different value. That is **NOT** the desired
         // behavior.  Thus, we stash the value.
         if (updateValue) _currentValue = _calcFxn();
         return _currentValue;

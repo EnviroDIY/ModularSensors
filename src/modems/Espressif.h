@@ -76,7 +76,7 @@
 /**
  * @anchor modem_espressif_pins_timing
  * @name Modem Pin Settings and Timing
- * The timing and pin level settings for most Espressifs modules
+ * The timing and pin level settings for most Espressif modules
  */
 /**@{*/
 /**
@@ -140,7 +140,7 @@
  */
 #define ESPRESSIF_WAKE_DELAY_MS 0
 /**
- * @brief The loggerModem::_max_atresponse_time_ms.
+ * @brief The loggerModem::_max_at_response_time_ms.
  *
  * The serial response time after boot (via power on or reset) is undocumented
  * for the ESP8266.  Other users online estimate about 350ms.
@@ -150,10 +150,10 @@
  *
  * The serial response time on waking from light sleep is 5ms.
  */
-#define ESPRESSIF_ATRESPONSE_TIME_MS 850
+#define ESPRESSIF_AT_RESPONSE_TIME_MS 850
 
 /**
- * @brief The loggerModem::_disconnetTime_ms.
+ * @brief The loggerModem::_disconnectTime_ms.
  *
  * The disconnect time for the ESP8266/ESP32 is not documented (and the status
  * pin isn't valid) so this time is just an estimate.
@@ -181,7 +181,7 @@ class Espressif : public loggerModem {
     /**
      * @brief Construct a new Espressif object.
      *
-     * The constuctor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables,
      * constructs a loggerModem parent class with the appropriate timing for the
      * module, calls the constructor for a TinyGSM modem on the provided
      * modemStream, and creates a TinyGSM Client linked to the modem.
@@ -228,3 +228,5 @@ class Espressif : public loggerModem {
 };
 /**@}*/
 #endif  // SRC_MODEMS_ESPRESSIF_H_
+
+// cSpell:ignore RSTB

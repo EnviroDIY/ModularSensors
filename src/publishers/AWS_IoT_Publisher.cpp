@@ -481,3 +481,5 @@ int16_t AWS_IoT_Publisher::publishMetadata(Client* outClient) {
     MS_DBG(F("Disconnected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
     return retVal;
 }
+
+// cSpell:ignore contentGetrFxn contentGetrFxns

@@ -23,7 +23,7 @@
  *
  * @section modem_digi_cellular_notes Introduction
  *
- * **_All_** Digi _cellular_ modems can be implented as a DigiXBeeCellularTransparent
+ * **_All_** Digi _cellular_ modems can be implemented as a DigiXBeeCellularTransparent
  * object - a subclass of DigiXBee and loggerModem.
  * The "transparent" refers to the Digi name for the operating mode of the module.
  * It is transparent in that data received by the module on the serial
@@ -124,7 +124,7 @@ class DigiXBeeCellularTransparent : public DigiXBee {
     /**
      * @brief Construct a new Digi XBee Cellular Transparent object
      *
-     * The constuctor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables,
      * constructs a loggerModem parent class with the appropriate timing for the
      * module, calls the constructor for a TinyGSM modem on the provided
      * modemStream, and creates a TinyGSM Client linked to the modem.
@@ -138,9 +138,9 @@ class DigiXBeeCellularTransparent : public DigiXBee {
      * status indicator rather than the true status (`ON/SLEEP_N/DIO9`) pin.
      * This inverts the loggerModem::_statusLevel.
      * @param modemResetPin @copydoc loggerModem::_modemResetPin
-     * This shold be the pin called `RESET_N` in Digi's hardware reference.
+     * This should be the pin called `RESET_N` in Digi's hardware reference.
      * @param modemSleepRqPin @copydoc loggerModem::_modemSleepRqPin
-     * This shold be the pin called `DTR_N/SLEEP_RQ/DIO8` in Digi's hardware
+     * This should be the pin called `DTR_N/SLEEP_RQ/DIO8` in Digi's hardware
      * reference.
      * @param apn The Access Point Name (APN) for the SIM card.
      * @param user The user name, if required, associated with the APN;
@@ -222,3 +222,5 @@ class DigiXBeeCellularTransparent : public DigiXBee {
 };
 /**@}*/
 #endif  // SRC_MODEMS_DIGIXBEECELLULARTRANSPARENT_H_
+
+// cSpell:ignore xbeec

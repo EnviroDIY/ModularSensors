@@ -21,7 +21,7 @@ SodaqUBeeR410M::SodaqUBeeR410M(HardwareSerial* modemStream, int8_t powerPin,
                   R410M_RESET_LEVEL, R410M_RESET_PULSE_MS, modemSleepRqPin,
                   R410M_WAKE_LEVEL, R410M_WAKE_PULSE_MS, R410M_STATUS_TIME_MS,
                   R410M_DISCONNECT_TIME_MS, R410M_WAKE_DELAY_MS,
-                  R410M_ATRESPONSE_TIME_MS),
+                  R410M_AT_RESPONSE_TIME_MS),
 #ifdef MS_SODAQUBEER410M_DEBUG_DEEP
       _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
       gsmModem(_modemATDebugger)
@@ -40,7 +40,7 @@ SodaqUBeeR410M::SodaqUBeeR410M(Stream* modemStream, int8_t powerPin,
                   R410M_RESET_LEVEL, R410M_RESET_PULSE_MS, modemSleepRqPin,
                   R410M_WAKE_LEVEL, R410M_WAKE_PULSE_MS, R410M_STATUS_TIME_MS,
                   R410M_DISCONNECT_TIME_MS, R410M_WAKE_DELAY_MS,
-                  R410M_ATRESPONSE_TIME_MS),
+                  R410M_AT_RESPONSE_TIME_MS),
 #ifdef MS_SODAQUBEER410M_DEBUG_DEEP
       _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
       gsmModem(_modemATDebugger),
@@ -119,7 +119,7 @@ bool SodaqUBeeR410M::modemWakeFxn(void) {
         if (_powerPin >= 0) {
             MS_DBG(F("Waiting for UART to become active and requesting a "
                      "slower baud rate."));
-            delay(_max_atresponse_time_ms +
+            delay(_max_at_response_time_ms +
                   250);  // Must wait for UART port to become active
             _modemSerial->begin(115200);
             gsmModem.setBaud(9600);
@@ -164,7 +164,7 @@ bool SodaqUBeeR410M::modemHardReset(void) {
 #if F_CPU == 8000000L
         MS_DBG(F("Waiting for UART to become active and requesting a slower "
                  "baud rate."));
-        delay(_max_atresponse_time_ms +
+        delay(_max_at_response_time_ms +
               250);  // Must wait for UART port to become active
         _modemSerial->begin(115200);
         gsmModem.setBaud(9600);
@@ -189,3 +189,5 @@ bool SodaqUBeeR410M::extraModemSetup(void) {
     gsmModem.waitResponse();
     return success;
 }
+
+// cSpell:ignore UGPIOC

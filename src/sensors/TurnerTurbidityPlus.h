@@ -158,10 +158,10 @@ typedef enum : uint16_t {
  * - Range is 0 to 3.6V when using an ADS1x15 powered at 3.3V
  *     - Full sensor range is 0-5V
  * - Accuracy:
- *     - 16-bit ADC (ADS1115): < 0.25% (gain error), <0.25 LSB (offset errror)
+ *     - 16-bit ADC (ADS1115): < 0.25% (gain error), <0.25 LSB (offset error)
  *       - @m_span{m-dim}(@ref #TURBIDITY_PLUS_VOLTAGE_RESOLUTION = 4)@m_endspan
  *     - 12-bit ADC (ADS1015, using build flag ```MS_USE_ADS1015```): < 0.15%
- * (gain error), <3 LSB (offset errror)
+ * (gain error), <3 LSB (offset error)
  *       - @m_span{m-dim}(@ref #TURBIDITY_PLUS_VOLTAGE_RESOLUTION = 1)@m_endspan
  *
  * {{ @ref TurnerTurbidityPlus_Voltage::TurnerTurbidityPlus_Voltage }}
@@ -284,8 +284,8 @@ class TurnerTurbidityPlus : public Sensor {
 
  private:
     /**
-     * @brief Internal referece to the pin on the mcu that triggers the sensor's
-     * wiper.
+     * @brief Internal reference to the pin on the mcu that triggers the
+     * sensor's wiper.
      */
     int8_t _wiperTriggerPin;
     /**

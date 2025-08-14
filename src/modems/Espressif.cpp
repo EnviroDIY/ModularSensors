@@ -18,7 +18,7 @@ Espressif::Espressif(Stream* modemStream, int8_t powerPin, int8_t modemResetPin,
                   ESPRESSIF_RESET_LEVEL, ESPRESSIF_RESET_PULSE_MS, -1,
                   ESPRESSIF_WAKE_LEVEL, ESPRESSIF_WAKE_PULSE_MS,
                   ESPRESSIF_STATUS_TIME_MS, ESPRESSIF_DISCONNECT_TIME_MS,
-                  ESPRESSIF_WAKE_DELAY_MS, ESPRESSIF_ATRESPONSE_TIME_MS),
+                  ESPRESSIF_WAKE_DELAY_MS, ESPRESSIF_AT_RESPONSE_TIME_MS),
       _modemStream(modemStream),
       _ssid(ssid),
       _pwd(pwd) {}

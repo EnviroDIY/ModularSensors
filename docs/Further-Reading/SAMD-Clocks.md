@@ -1,5 +1,4 @@
 # The SAMD clock system<!--! {#page_samd_clocks} -->
-
 <!--! @tableofcontents -->
 
 <!--! @m_footernavigation -->
@@ -41,7 +40,7 @@
 
 ## Terms
 
-Essentially every microprocess or computer needs a consistent way of their own speed of operation so they can communicate with internal components and external devices.
+Essentially every microprocessor or computer needs a consistent way of their own speed of operation so they can communicate with internal components and external devices.
 
 An *[oscillator](https://en.wikipedia.org/wiki/Electronic_oscillator)* is a circuit that makes an oscillating signal - ie, it switches back and forth between to states at a consistent rate.
 The oscillator works like a metronome.
@@ -52,9 +51,9 @@ SAMD processors use these types of oscillators:
 - [crystal oscillators](https://en.wikipedia.org/wiki/Crystal_oscillator) - which are tiny pieces of quartz that vibrate under current.
 This is just like the crystals in a quartz watch.
 - Digital frequency locked loops (DFLL) and fractional digital phase locked loops (FDPLL) - these [phase locked loops (PLL)](https://wirelesspi.com/how-a-frequency-locked-loop-fll-works/) use a reference clock (like the external crystal) to create a consistent (faster) output frequency.
-- Ultra-low-power oscillators - circuits which generate the same frequecency fibrations as a crystal power but using lower power consumption to get a less consistent signal.
+- Ultra-low-power oscillators - circuits which generate the same frequency vibrations as a crystal power but using lower power consumption to get a less consistent signal.
 
-For any of the oscillors to be useful in keeping track of time, they need to be connected to something else that will count the number of ticks.
+For any of the oscillators to be useful in keeping track of time, they need to be connected to something else that will count the number of ticks.
 The oscillator acts as the source for the clock/counter.
 There can also be a 'divisor' between the ticking source and the counter - that is, the counter can record every 'x' ticks instead of every single tick.
 
@@ -86,14 +85,14 @@ The watchdog's peripheral clock must be attached to a currently-on clock source 
 The watchdog peripheral clock is not configured by the core.
 The flow from a clock source to the WDT on the SAMD21 is:
 
-- Enable the clock source and the WDT periperhal in the power management system
+- Enable the clock source and the WDT peripheral in the power management system
 - Configure said a clock source to run in standby
 - Configure a divisor between the above source clock and a generic clock generators
 - Configure a generic clock to tie the watchdog's peripheral clock to the above generic clock generator
 - Configure the watchdog itself.
 
 The external interrupt controller must also be attached to a currently-on clock to tell the difference between rising and HIGH or falling and LOW interrupts.
-If the external interupt controller is not attached to a running clock, then interrupts will not work!
+If the external interrupt controller is not attached to a running clock, then interrupts will not work!
 Thus, if the clock source for interrupts is not running in standby, the interrupts will not be able to wake the device.
 The flow from a clock source to the EIC is the same as that for the WDT.
 
@@ -168,7 +167,7 @@ Resulting generic clock generator speeds:
 - [RTCZero](https://github.com/arduino-libraries/RTCZero/)
   - Configures the RTC's generic clock (GCM_RTC) to use generic clock generator 2
   - Sets the source for GCKL2 as a 32k oscillator
-    - external preferred, internal ultra-low power if cyrstalless
+    - external preferred, internal ultra-low power if crystalless
     - *Forces the external 32K oscillator to remain on in standby*
   - Uses a 32x divisor to get 1024Hz(ish) clock for time keeping.
 - [Adafruit SleepDog](https://github.com/adafruit/Adafruit_SleepyDog)
@@ -223,7 +222,7 @@ No separate clock generator or peripheral clock configuration is needed.
 The OSCULP32k cannot be turned off in standby.
 
 The external interrupt controller must be attached to a currently-on clock to tell the difference between rising and HIGH or falling and LOW interrupts.
-If the external interupt controller is not attached to a running clock, then interrupts will not work!
+If the external interrupt controller is not attached to a running clock, then interrupts will not work!
 One the SAMD51, the EIC *can* be configured to work directly with the OSCULP32k without having to setup a separate clock generator.
 If the EIC is not configured to connect directly to the OSCULP32k, the GCLK it is configured to must be set to run in standby.
 The path from a clock source to the EIC on the SAMD51 is very similar to that of the SAMD21.
@@ -320,7 +319,7 @@ The Arduino core does *NOT* configure the generic clock generator 0 (ie GCLK_MAI
 - [Modular Sensors (this library)](https://github.com/EnviroDIY/ModularSensors)
   - This library sets OSCULP32K as the source for the EIC and *disables* GCLK_EIC.
   - This library also resets GCLK7 so it is disconnected from any source.
-  - This library disables the following peripeheral timers and ties them to the disabled GCLK7:
+  - This library disables the following peripheral timers and ties them to the disabled GCLK7:
     - 4 - GCLK_EIC
     - 5 - GCLK_FREQM_MSR
     - 6 - GCLK_FREQM_REF
@@ -380,7 +379,7 @@ The Arduino core does *NOT* configure the generic clock generator 0 (ie GCLK_MAI
 
 # The Non-Volatile Interrupt Controller (NVIC)
 
-This entire section is copyied selections from [Microchip's developer help on the NVIC](https://developerhelp.microchip.com/xwiki/bin/view/products/mcu-mpu/32bit-mcu/sam/samd21-mcu-overview/samd21-processor-overview/samd21-nvic-overview/).
+This entire section is copied selections from [Microchip's developer help on the NVIC](https://developerhelp.microchip.com/xwiki/bin/view/products/mcu-mpu/32bit-mcu/sam/samd21-mcu-overview/samd21-processor-overview/samd21-nvic-overview/).
 
 ## NVIC Overview
 
@@ -397,7 +396,7 @@ The four possible programmable priority levels are 0x00 (highest urgency), 0x40,
 CMSIS provides a number of functions for NVIC control, including the following for setting priority:
 `void NVIC_SetPriority(IRQn_t IRQn, uint32_t priority);`
 Where priority values (0, 1, 2, 3) correspond to interrupt priority register (IPRx) settings 0x00, 0x40, 0x80, 0xC0.
-The CMSIS IRQ numbers (the peripheral-interrupt-to-CMSIS-IRQ-number mapping) are defined in the processor specifc include files within the bootloader.
+The CMSIS IRQ numbers (the peripheral-interrupt-to-CMSIS-IRQ-number mapping) are defined in the processor specific include files within the bootloader.
 That is [this file](https://github.com/adafruit/uf2-samdx1/blob/master/lib/samd51/include/samd51n19a.h) for the UF2 bootloader for the SAMD51 variant the EnviroDIY Stonefly is based on.
 
 ## Enabling IRQs Globally
@@ -911,12 +910,12 @@ They're defined as “weak” functions, so you can override the default impleme
 - Timers:
   - TC0 (`TC5_IRQn`) - Tone.cpp - priority of 5(?)
   - TC1 (`TC1_IRQn`) - Servo.cpp - priority of 0
-    - NOTE: The sevro library has a to-do flag in it to allow a second timer, but as of November of 2024 only supports one timer for servo in the SAMD core.
+    - NOTE: The servo library has a to-do flag in it to allow a second timer, but as of November of 2024 only supports one timer for servo in the SAMD core.rv
 - External Interrupt Controller - WInterrupts.c - priority of **0**
   - `EIC_0_IRQn` -> `EIC_15_IRQn`
   - A single EIC interrupt for the USB pin is also enabled by Adafruit_USBH_Host.cpp if TinyUSB is used.
 - USB - samd21_host.c and USBCore.cpp - priority 0
-  - NOTE: Dispite the name, samd21_host.c is used for all SAMD boards
+  - NOTE: Despite the name, samd21_host.c is used for all SAMD boards
   - `USB_0_IRQn` -> `USB_3_IRQn`
 - DMAC - Adafruit_ZeroDMA.cpp or I2S/../DMA.cpp
   - `DMAC_0_IRQn` -> `DMAC_4_IRQn` - priority of 3
@@ -930,7 +929,7 @@ They're defined as “weak” functions, so you can override the default impleme
 - Timers:
   - TC5 (`TC5_IRQn`) - Tone.cpp - priority of 5(?)
   - TC4 (`TC4_IRQn`) - Servo.cpp - priority of 0
-    - NOTE: The sevro library has a to-do flag in it to allow a second timer, but as of November of 2024 only supports one timer for servo in the SAMD core.
+    - NOTE: The servo library has a to-do flag in it to allow a second timer, but as of November of 2024 only supports one timer for servo in the SAMD core.
 - External Interrupt Controller - WInterrupts.c - priority of **0**
   - `EIC_IRQn`
   - The EIC interrupts are also enabled by Adafruit_USBH_Host.cpp if TinyUSB is used.
@@ -940,3 +939,11 @@ They're defined as “weak” functions, so you can override the default impleme
   - `DMAC_IRQn` - priority of 3
 
 ## NVIC Interrupts Defined in Other Popular Libraries
+
+
+<!-- cspell: ignore EVSYS CKRDY DFLLCKC DFLLOOB DFLLRCS DFLLCKC DFLLRDY LCKF LCKR DFLLLCKC DFLLLCKF -->
+<!-- cspell: ignore LDRTO DATARDY QSPI KAFIL VCORERDY KFAIL ADDRE ECCSE PROGE ECCDE NVME SUSPE -->
+<!-- cspell: ignore SEESFULL SEESOVF SEEWRC DMAC SUSP TCMPL SINGLEE DUALE EORSM DNRSM EORST -->
+<!-- cspell: ignore DCONN LPMSUSP DDISC RAMACER RXSTP TXSTP TRFAIL PERR UPRSM WAKEUP HSOF -->
+<!-- cspell: ignore TRCPT GMAC FAULTA FAULTB WINMON RESRDY RXOR RXRDY TXRDY TXUR DRDY -->
+<!-- cspell: ignore OVRE ENCCMP GFMCMP TRNG CSRISE INSTREND USBH  -->

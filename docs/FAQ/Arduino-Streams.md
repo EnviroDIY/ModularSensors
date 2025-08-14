@@ -105,7 +105,7 @@ streamName.begin(BAUD_RATE);
 Additionally, for the EnviroDIY modified version of SoftwareSerial, (or NeoSWSerial) you must enable the interrupts in your setup function:
 
 ```cpp
-// Allow enableInterrrupt to control the interrupts for software serial
+// Allow enableInterrupt to control the interrupts for software serial
 enableInterrupt(rx_pin, neoSSerial1ISR, CHANGE);
 ```
 
@@ -131,7 +131,7 @@ streamName.begin(BAUD_RATE);
 Additionally, for the EnviroDIY modified version of SoftwareSerial, you must enable the interrupts in your setup function:
 
 ```cpp
-// Allow enableInterrrupt to control the interrupts for software serial
+// Allow enableInterrupt to control the interrupts for software serial
 enableInterrupt(rx_pin, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
 ```
 

@@ -314,3 +314,5 @@ bool BoschBMP3xx::addSingleMeasurementResult(void) {
 
     return success;
 }
+
+// cSpell:ignore oversample SEALEVELPRESSURE

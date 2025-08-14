@@ -37,7 +37,7 @@
  *
  * Although this sensor has the option of either I2C or SPI communication, this
  * library only supports I2C.  The default I2C address varies by manufacturer
- * and is either 0x77 or 0x76.  The Adafruit and Sparkfun defaults are both 0x77
+ * and is either 0x77 or 0x76.  The Adafruit and SparkFun defaults are both 0x77
  * and Seeed/Grove default is 0x76, though all can be changed by physical
  * modification of the sensor, if necessary (by cutting the board connection for
  * the manufacturer default and soldering the optional address jumpers).  To
@@ -120,7 +120,7 @@
 /**@{*/
 /// @brief Sensor::_numReturnedValues; the BME280 can report 4 values.
 #define BME280_NUM_VARIABLES 4
-/// @brief Sensor::_incCalcValues; altitude is calculted within the Adafruit
+/// @brief Sensor::_incCalcValues; altitude is calculated within the Adafruit
 /// library.
 #define BME280_INC_CALC_VARIABLES 1
 /**@}*/
@@ -157,9 +157,9 @@
  * @brief Sensor::_measurementTime_ms; BME280 takes 1100ms to complete a
  * measurement.
  *
- * 1.0 s according to datasheet, but slightly better stdev when 1.1 s
- * For details on BME280 stabilization time updates, include testing sketch and
- * link to data in Google Sheet, see:
+ * 1.0 s according to datasheet, but slightly better standard deviation when 1.1
+ * s For details on BME280 stabilization time updates, include testing sketch
+ * and link to data in Google Sheet, see:
  * https://github.com/EnviroDIY/ModularSensors/commit/27e3cb531162ed6971a41f3c38f5920d356089e9
  */
 #define BME280_MEASUREMENT_TIME_MS 1100
@@ -531,3 +531,5 @@ class BoschBME280_Altitude : public Variable {
 };
 /**@}*/
 #endif  // SRC_SENSORS_BOSCHBME280_H_
+
+// cSpell:ignore SEALEVELPRESSURE_HPA

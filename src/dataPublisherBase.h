@@ -85,7 +85,7 @@ class dataPublisher {
     /**
      * @brief Construct a new data publisher object.
      *
-     * @note When creating a data publisher with a pre-exisiting client object,
+     * @note When creating a data publisher with a pre-existing client object,
      * you must ensure that your client supports SSL/TLS if the publisher
      * requires it.
      *
@@ -126,8 +126,8 @@ class dataPublisher {
     /**
      * @brief Attach the publisher to a logger.
      *
-     * The publisher must be tied to a data loger to provide it with the data to
-     * be published.
+     * The publisher must be tied to a data logger to provide it with the data
+     * to be published.
      *
      * @param baseLogger A reference to the ModularSensors logger instance
      */
@@ -350,7 +350,7 @@ class dataPublisher {
     static void txBufferFlush(bool debug_flush = true);
 
     /**
-     * @brief Use the connected base logger's logger modem and underlieing
+     * @brief Use the connected base logger's logger modem and underlying
      * TinyGSM instance to create a new client for the publisher.
      *
      * @note This does *NOT* override any client set by the
@@ -358,7 +358,7 @@ class dataPublisher {
      * any of those methods, this function should not be called. It is protected
      * to prevent being called by external code.
      *
-     * @note The defuault implimentation of this function creates an insecure
+     * @note The default implementation of this function creates an insecure
      * client. Publishers that require SSL must re-implement this function.
      *
      * @return A pointer to an Arduino client instance

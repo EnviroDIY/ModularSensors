@@ -168,16 +168,16 @@
  */
 #define XBEE_WAKE_DELAY_MS 100
 /**
- * @brief The loggerModem::_max_atresponse_time_ms.
+ * @brief The loggerModem::_max_at_response_time_ms.
  *
  * The serial response time is not documented for the XBee so we allow a long
  * (15s) buffer.  It is probably much less than this, except possibly in bypass
  * mode.
  */
-#define XBEE_ATRESPONSE_TIME_MS 15000L
+#define XBEE_AT_RESPONSE_TIME_MS 15000L
 
 /**
- * @brief The loggerModem::_disconnetTime_ms.
+ * @brief The loggerModem::_disconnectTime_ms.
  *
  * Power down time for the XBee is dependent on the underlying cellular or wifi
  * component.  We allow 15 seconds in case it is not monitored.  The u-blox SARA
@@ -209,9 +209,9 @@ class DigiXBee : public loggerModem {
      * status indicator rather than the true status (`ON/SLEEP_N/DIO9`) pin.
      * This inverts the loggerModem::_statusLevel.
      * @param modemResetPin @copydoc loggerModem::_modemResetPin
-     * This shold be the pin called `RESET_N` in Digi's hardware reference.
+     * This should be the pin called `RESET_N` in Digi's hardware reference.
      * @param modemSleepRqPin @copydoc loggerModem::_modemSleepRqPin
-     * This shold be the pin called `DTR_N/SLEEP_RQ/DIO8` in Digi's hardware
+     * This should be the pin called `DTR_N/SLEEP_RQ/DIO8` in Digi's hardware
      * reference.
      *
      * @see loggerModem::loggerModem
