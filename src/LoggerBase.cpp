@@ -351,8 +351,10 @@ void Logger::enableRTCPinISR() {
         MS_DEEP_DBG(F("Disabled any previous interrupts attached to"),
                     _mcuWakePin);
         enableInterrupt(_mcuWakePin, loggerClock::rtcISR, CLOCK_INTERRUPT_MODE);
+#if defined(ARDUINO_ARCH_SAMD)
         // reconfigure the EIC clock.. just in case
         extendedWatchDogSAMD::configureEICClock();
+#endif
         MS_DEEP_DBG(F("Interrupt loggerClock::rtcISR attached to"), _mcuWakePin,
                     F("with interrupt mode"), CLOCK_INTERRUPT_MODE);
     }
@@ -369,8 +371,10 @@ void Logger::enableTestingISR() {
         MS_DEEP_DBG(F("Disabled any previous interrupts attached to"),
                     _buttonPin);
         enableInterrupt(_buttonPin, Logger::testingISR, FALLING);
+#if defined(ARDUINO_ARCH_SAMD)
         // reconfigure the EIC clock.. just in case
         extendedWatchDogSAMD::configureEICClock();
+#endif
         MS_DEEP_DBG(F("Interrupt Logger::testingISR attached to"), _buttonPin,
                     F("with interrupt mode"), FALLING);
     }
