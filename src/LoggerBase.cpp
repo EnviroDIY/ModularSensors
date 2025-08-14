@@ -351,6 +351,8 @@ void Logger::enableRTCPinISR() {
         MS_DEEP_DBG(F("Disabled any previous interrupts attached to"),
                     _mcuWakePin);
         enableInterrupt(_mcuWakePin, loggerClock::rtcISR, CLOCK_INTERRUPT_MODE);
+        // reconfigure the EIC clock.. just in case
+        extendedWatchDogSAMD::configureEICClock();
         MS_DEEP_DBG(F("Interrupt loggerClock::rtcISR attached to"), _mcuWakePin,
                     F("with interrupt mode"), CLOCK_INTERRUPT_MODE);
     }
@@ -367,6 +369,8 @@ void Logger::enableTestingISR() {
         MS_DEEP_DBG(F("Disabled any previous interrupts attached to"),
                     _buttonPin);
         enableInterrupt(_buttonPin, Logger::testingISR, FALLING);
+        // reconfigure the EIC clock.. just in case
+        extendedWatchDogSAMD::configureEICClock();
         MS_DEEP_DBG(F("Interrupt Logger::testingISR attached to"), _buttonPin,
                     F("with interrupt mode"), FALLING);
     }
@@ -886,9 +890,9 @@ void Logger::systemSleep(void) {
     // Detach the USB, iff not using TinyUSB
     // MS_DEEP_DBG(F("Detaching USBDevice"));
     delay(10);
-    USBDevice.detach();  // USB->DEVICE.CTRLB.bit.DETACH = 1;
-    USBDevice.end();     // USB->DEVICE.CTRLA.bit.ENABLE = 0; wait for sync;
-    // USBDevice.standby();  // USB->DEVICE.CTRLA.bit.RUNSTDBY = 0;
+    USBDevice.detach();   // USB->DEVICE.CTRLB.bit.DETACH = 1;
+    USBDevice.end();      // USB->DEVICE.CTRLA.bit.ENABLE = 0; wait for sync;
+    USBDevice.standby();  // USB->DEVICE.CTRLA.bit.RUNSTDBY = 0;
     delay(10);
 #endif
 
