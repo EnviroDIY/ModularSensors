@@ -228,7 +228,7 @@ void AWS_IoT_Publisher::deleteClient(Client* client) {
 int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
     bool retVal = false;
 
-    MS_DBG(F("Preparing to publish to AWS IoT endpoint"), getEndpoint());
+    MS_DBG(F("Preparing to publish data to AWS IoT endpoint"), getEndpoint());
     const char* use_topic = _dataTopic;
     if (_dataTopic == nullptr) {
         // Create a new data topic
@@ -378,6 +378,8 @@ int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
 int16_t AWS_IoT_Publisher::publishMetadata(Client* outClient) {
     bool retVal = false;
 
+    MS_DBG(F("Preparing to publish metadata to AWS IoT endpoint"),
+           getEndpoint());
     const char* use_topic = _metadataTopic;
     if (_metadataTopic == nullptr) {
         // Create a default metadata topic
@@ -395,6 +397,9 @@ int16_t AWS_IoT_Publisher::publishMetadata(Client* outClient) {
     // Set the client connection parameters
     _mqttClient.setClient(*outClient);
     _mqttClient.setServer(_awsIoTEndpoint, mqttPort);
+    // NOTE: The MS_MQTT_MAX_PACKET_SIZE must be bigger than the maximum
+    // expected incoming *or* outgoing message size.
+    _mqttClient.setBufferSize(MS_MQTT_MAX_PACKET_SIZE);
 
     // Make sure any previous TCP connections are closed
     // NOTE:  The PubSubClient library used for MQTT connect assumes that as
