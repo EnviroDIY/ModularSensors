@@ -99,6 +99,7 @@ Client* S3PresignedPublisher::createClient() {
         return nullptr;
     }
     MS_DBG(F("Creating a new TinyGsmSecureClient with default socket number."));
+    MS_DBG(F("Using CA cert:"), _caCertName);
     Client* newClient = _baseModem->createSecureClient(
         SSLAuthMode::CA_VALIDATION, SSLVersion::TLS1_3, _caCertName);
     if (newClient == nullptr) {
@@ -159,7 +160,7 @@ bool S3PresignedPublisher::validateS3URL(String& s3url, char* s3host,
     MS_SERIAL_OUTPUT.write(start_content_type,
                            end_content - start_content_type);
     MS_SERIAL_OUTPUT.print(F("\nExpiration Timestamp: "));
-    MS_SERIAL_OUTPUT.write(start_expiration);
+    MS_SERIAL_OUTPUT.print(start_expiration);
     MS_SERIAL_OUTPUT.println();
 #endif
 

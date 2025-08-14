@@ -207,6 +207,9 @@ Client* AWS_IoT_Publisher::createClient() {
         return nullptr;
     }
     MS_DBG(F("Creating a new TinyGsmSecureClient with default socket number."));
+    MS_DBG(F("Using CA cert:"), _caCertName);
+    MS_DBG(F("Using client cert:"), _clientCertName);
+    MS_DBG(F("Using client key:"), _clientKeyName);
     Client* newClient = _baseModem->createSecureClient(
         SSLAuthMode::MUTUAL_AUTHENTICATION, SSLVersion::TLS1_3, _caCertName,
         _clientCertName, _clientKeyName);
