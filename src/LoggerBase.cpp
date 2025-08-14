@@ -1055,16 +1055,25 @@ void Logger::systemSleep(void) {
                  HIGH);  // turn off the built-in LED if using a Stonefly M4
 #endif
 
-    MS_DEEP_DBG(F("\n---------------------------------------"));
-    MS_DEEP_DBG(F("This is the first message after sleep!"));
-
 #if defined(ARDUINO_ARCH_SAMD)
-
 #if !defined(__SAMD51__)
     // Enable systick interrupt
     SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;
 #endif
+#if defined(__SAMD51__)
+    // kickstart the 48MHz DFLL (Digital Frequency Locked Loop) at the correct
+    // frequency
+    // https://ww1.microchip.com/downloads/en/DeviceDoc/SAM_D5x_E5x_Family_Silicon_Errata_DS80000748L.pdf
+    // https://github.com/adafruit/Adafruit_SPIFlash/issues/37
+    OSCCTRL->DFLLVAL.reg = OSCCTRL->DFLLVAL.reg;
+    while (OSCCTRL->DFLLSYNC.bit.DFLLVAL);
+#endif
+#endif
 
+    MS_DEEP_DBG(F("\n---------------------------------------"));
+    MS_DEEP_DBG(F("This is the first message after sleep!"));
+
+#if defined(ARDUINO_ARCH_SAMD)
 #if !defined(USE_TINYUSB) && defined(USBCON)
     // Reattach the USB
     MS_DEEP_DBG(F("Reattaching USBDevice"));
@@ -1072,9 +1081,8 @@ void Logger::systemSleep(void) {
     // ^^ Restarts the bus, including re-attaching the NVIC interrupts
     USBDevice.attach();
     // ^^ USB->DEVICE.CTRLB.bit.DETACH = 0; enables USB interrupts
-#endif
-
-#endif
+#endif  // USE_TINYUSB
+#endif  // ARDUINO_ARCH_SAMD
 
 #if defined(ARDUINO_ARCH_AVR)
 
