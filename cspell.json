@@ -14,15 +14,15 @@
     },
     {
       "name": "debug-defines",
-      "pattern": "/MS_[A-Z0-9]+_DEBUG/g"
+      "pattern": "/MS_[A-Z0-9_]+_DEBUG/g"
     },
     {
       "name": "latex-command",
-      "pattern": "/\\\\\\\\[a-z]+/g"
+      "pattern": "/\\\\\\\\[a-z_]+/g"
     },
     {
       "name": "javadoc-command",
-      "pattern": "/@[a-z]+/g"
+      "pattern": "/@[a-z_]+/g"
     },
     {
       "name": "doxygen-commands",
@@ -219,7 +219,6 @@
     "RAMCFG",
     "RSSI",
     "RUNSTBY",
-    "samd",
     "SAMD",
     "sdamiano",
     "SDCARD",
@@ -227,7 +226,6 @@
     "Seeed",
     "Sensirion",
     "Sequans",
-    "sercom",
     "SERCOM",
     "Shymanskyy",
     "SIMCOM",
@@ -249,7 +247,6 @@
     "SWRC",
     "SYNCBUSY",
     "SYSCTRL",
-    "tableofcontents",
     "Telit",
     "Teros",
     "Testato",
@@ -262,7 +259,6 @@
     "ubee",
     "Ubidots",
     "ublox",
-    "UBLOX",
     "USART",
     "USBCON",
     "USBE",
@@ -282,7 +278,6 @@
     "XOUT",
     "Yosemitech",
     "μmol",
-    "µmol",
     "µsec"
   ],
   "ignoreWords": [],
