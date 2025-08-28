@@ -313,7 +313,7 @@
       "owner": "envirodiy",
       "library id": "1824",
       "url": "https://github.com/EnviroDIY/SensorModbusMaster",
-      "version": "~0.7.3",
+      "version": "~1.4.0",
       "note": "EnviroDIY SensorModbusMaster - Arduino library for communicating via modbus with the Arduino acting as the modbus master.",
       "authors": ["Sara Damiano"],
       "frameworks": "arduino",
@@ -358,6 +358,15 @@
       "authors": ["Sara Damiano"],
       "frameworks": "arduino",
       "platforms": "atmelavr, atmelsam"
+    },
+    {
+      "name": "ANBSensorsModbus",
+      "owner": "envirodiy",
+      "url": "https://github.com/EnviroDIY/ANBSensorsModbus",
+      "version": "~0.1.1",
+      "note": "A library for communicating with pH sensors manufactured by ANB Sensors using Modbus.",
+      "authors": ["Sara Damiano"],
+      "frameworks": "arduino"
     },
     {
       "name": "StreamDebugger",
