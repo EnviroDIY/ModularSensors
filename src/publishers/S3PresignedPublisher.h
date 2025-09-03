@@ -178,6 +178,31 @@ class S3PresignedPublisher : public dataPublisher {
      */
     virtual ~S3PresignedPublisher();
 
+    /**
+     * @brief Set the S3 host name
+     *
+     * This is "s3.<your-region>.amazonaws.com" by default.
+     * If you need to use a host in a specific region (ie, anything but
+     * US-East-1) you should set your own host. The host in that case should be:
+     * "s3.<your-region>.amazonaws.com"
+     *
+     * @note The host name should **not** contain the bucket name. This must
+     * be the "real" host name for the SSL connection, not the "virtual" host
+     * name used in the HTTP request for virtual-host-style S3 URLs.
+     *
+     * @param host The host name to use for S3 connections
+     */
+    void setHost(const char* host);
+    /**
+     * @brief Set the S3 port
+     *
+     * This is 443 by default. You only need to use this if you need a different
+     * port.
+     *
+     * @param port The port number to use for S3 connections
+     */
+    void setPort(int port);
+
     // Returns the data destination
     String getEndpoint(void) override {
         return String(s3_parent_host);
@@ -186,12 +211,18 @@ class S3PresignedPublisher : public dataPublisher {
     /**
      * @brief Set function to use to get the new URL
      *
+     * @remark The function must return a "virtual host style" URL!  Path style
+     * S3 URLs are not supported.
+     *
      * @param getUrlFxn A function to call to get a new pre-signed URL
      */
     void setURLUpdateFunction(String (*getUrlFxn)(String));
 
     /**
      * @brief Set the pre-signed S3 url
+     *
+     * @remark Only "virtual hosted style" pre-signed URLs are supported!  Path
+     * style URLs are not supported.
      *
      * @param s3Url The pre-signed URL to use to put into an S3 bucket
      */
@@ -279,10 +310,12 @@ class S3PresignedPublisher : public dataPublisher {
                         bool forceFlush = MS_ALWAYS_FLUSH_PUBLISHERS) override;
 
  protected:
-    virtual Client*    createClient() override;
-    virtual void       deleteClient(Client* client) override;
-    static const char* s3_parent_host;       ///< The host name
-    static const int   s3Port;               ///< The host port
+    virtual Client* createClient() override;
+    virtual void    deleteClient(Client* client) override;
+
+    const char* s3_parent_host = "s3.amazonaws.com";  ///< The host name
+    int         s3Port         = 443;                 ///< The host port
+
     static const char* contentLengthHeader;  ///< The content length header text
     static const char* contentTypeHeader;    ///< The content type header text
 
@@ -291,7 +324,10 @@ class S3PresignedPublisher : public dataPublisher {
      */
     String (*_getUrlFxn)(String) = nullptr;
     /**
-     * @brief A pointer to the S3 pre-signed URL
+     * @brief A pointer to the current S3 pre-signed URL
+     *
+     * This must be a "virtual host style" URL. Path style URLs are not
+     * supported.
      */
     String _PreSignedURL;
     /**
@@ -334,8 +370,8 @@ class S3PresignedPublisher : public dataPublisher {
      *
      * Do *not* use the values in the buffers before checking the return type!
      *
-     * @param s3url The S3 URL to parse
-     * @param s3host A buffer for the parsed host name.  Must be at least 81
+     * @param s3url The full S3 URL to parse
+     * @param s3host A buffer for the parsed host name.  Must be at least 95
      * characters long.
      * @param s3resource A buffer for the parsed resource. Should be long enough
      * for the whole URL less the host.
