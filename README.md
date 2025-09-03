@@ -46,6 +46,7 @@ For some generalized information about attaching sensors to an Arduino style boa
 - [Processor Metrics: battery voltage, free RAM, sample count](https://envirodiy.github.io/ModularSensors/group__sensor__processor.html)
 - [Maxim DS3231: real time clock](https://envirodiy.github.io/ModularSensors/group__sensor__ds3231.html)
 - [Analog Electrical Conductivity: conductivity](https://envirodiy.github.io/ModularSensors/group__sensor__analog__cond.html)
+- [ANB Sensors pH Sensor: pH](https://envirodiy.github.io/ModularSensors/group__sensor__anbsensors_ph.html)
 - [AOSong AM2315: humidity & temperature](https://envirodiy.github.io/ModularSensors/group__sensor__am2315.html)
 - [AOSong DHT: humidity & temperature](https://envirodiy.github.io/ModularSensors/group__sensor__dht.html)
 - [Apogee SQ-212: quantum light sensor, via TI ADS1115](https://envirodiy.github.io/ModularSensors/group__sensor__sq212.html)
