@@ -109,7 +109,7 @@
       "owner": "greiman",
       "library id": "322",
       "url": "https://github.com/greiman/SdFat",
-      "version": "~2.3.1",
+      "version": "=2.3.0",
       "note": "SdFat - FAT16/FAT32 file system for SD cards.",
       "authors": ["Bill Greiman"],
       "frameworks": "arduino",
