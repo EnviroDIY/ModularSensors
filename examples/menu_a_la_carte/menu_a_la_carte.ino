@@ -3292,6 +3292,8 @@ const char* caCertName = "client_ca.0";
 const char* caCertName = "AmazonRootCA1.pem";
 #endif
 
+// The S3 host (need for region specific requests)
+const char* s3Host = "s3.YOUR-REGION.amazonaws.com";
 // Expand the expected S3 publish topic into a buffer
 String s3URLPubTopic = "$aws/rules/GetUploadURL/" + String(LoggerID);
 // Expand the expected S3 subscribe topic into a buffer
@@ -3596,7 +3598,10 @@ void setup() {
 #endif
 
 #if defined(BUILD_PUB_S3_PRESIGNED_PUBLISHER)
+    // Set the S3 host and certificate authority name
+    s3pub.setHost(s3Host);
     s3pub.setCACertName(caCertName);
+    // Attach to the logger
     s3pub.attachToLogger(dataLogger);
 #endif
 
