@@ -303,6 +303,12 @@ int16_t EnviroDIYPublisher::flushDataBuffer(Client* outClient) {
     char     tempBuffer[37] = "";
     uint16_t did_respond    = 0;
     int16_t  responseCode   = 0;
+    if (_baseLogger->getSamplingFeatureUUID() == nullptr ||
+        strlen(_baseLogger->getSamplingFeatureUUID()) == 0) {
+        PRINTOUT(F("A sampling feature UUID must be set before publishing data "
+                   "to Monitor My Watershed!."));
+        return 0;
+    }
 
     // Open a TCP/IP connection to the EnviroDIY Data Portal (WebSDL)
     MS_DBG(F("Connecting client"));
