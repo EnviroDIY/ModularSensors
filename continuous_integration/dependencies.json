@@ -1,5 +1,5 @@
 {
-  "action_cache_version": 31,
+  "action_cache_version": 32,
   "dependencies": [
     {
       "name": "EnviroDIY_DS3231",
@@ -299,7 +299,7 @@
       "owner": "envirodiy",
       "library id": "1824",
       "url": "https://github.com/EnviroDIY/SensorModbusMaster",
-      "version": "~1.2.0",
+      "version": "~0.7.3",
       "note": "EnviroDIY SensorModbusMaster - Arduino library for communicating via modbus with the Arduino acting as the modbus master.",
       "authors": [
         "Sara Damiano"

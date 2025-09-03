@@ -281,9 +281,9 @@
  * need to jack this way up. Incoming pre-signed S3 URLs are >1200 bytes.  If
  * you're not using both AWS IoT Core and S3, you should drop this down. When
  * using the ThingSpeak publisher, ~240 bytes should suffice.  If you're not
- * using any MQTT publishers, you can ignore this.
+ * using any MQTT publishers, you can ignore this or set it to 256.
  */
-#define MS_MQTT_MAX_PACKET_SIZE 1280
+#define MS_MQTT_MAX_PACKET_SIZE 1536
 #endif
 //==============================================================
 
