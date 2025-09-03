@@ -293,7 +293,7 @@
       "owner": "envirodiy",
       "library id": "1824",
       "url": "https://github.com/EnviroDIY/SensorModbusMaster",
-      "version": "~1.4.0",
+      "version": "~1.5.0",
       "note": "EnviroDIY SensorModbusMaster - Arduino library for communicating via modbus with the Arduino acting as the modbus master.",
       "authors": [
         "Sara Damiano"
