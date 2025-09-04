@@ -704,7 +704,7 @@ class ANBpH_SpCond : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "ANBpHSpCond".
      */
-    explicit ANBpH_SpCond(DecagonCTD* parentSense, const char* uuid = "",
+    explicit ANBpH_SpCond(ANBpH* parentSense, const char* uuid = "",
                           const char* varCode = ANB_PH_SPCOND_DEFAULT_CODE)
         : Variable(parentSense, (uint8_t)ANB_PH_SPCOND_VAR_NUM,
                    (uint8_t)ANB_PH_SPCOND_RESOLUTION, ANB_PH_SPCOND_VAR_NAME,
@@ -784,7 +784,7 @@ class ANBpH_HealthCode : public Variable {
      * optional with a default value of "ANBpHHealth".
      */
     explicit ANBpH_HealthCode(
-        VegaPuls21* parentSense, const char* uuid = "",
+        ANBpH* parentSense, const char* uuid = "",
         const char* varCode = ANB_PH_HEALTH_CODE_DEFAULT_CODE)
         : Variable(parentSense, (uint8_t)ANB_PH_HEALTH_CODE_VAR_NUM,
                    (uint8_t)ANB_PH_HEALTH_CODE_RESOLUTION,
@@ -829,7 +829,7 @@ class ANBpH_DiagnosticCode : public Variable {
      * optional with a default value of "ANBpHDiagnostic".
      */
     explicit ANBpH_DiagnosticCode(
-        VegaPuls21* parentSense, const char* uuid = "",
+        ANBpH* parentSense, const char* uuid = "",
         const char* varCode = ANB_PH_DIAGNOSTIC_CODE_DEFAULT_CODE)
         : Variable(parentSense, (uint8_t)ANB_PH_DIAGNOSTIC_CODE_VAR_NUM,
                    (uint8_t)ANB_PH_DIAGNOSTIC_CODE_RESOLUTION,
@@ -875,7 +875,7 @@ class ANBpH_StatusCode : public Variable {
      * optional with a default value of "ANBpHStatus".
      */
     explicit ANBpH_StatusCode(
-        VegaPuls21* parentSense, const char* uuid = "",
+        ANBpH* parentSense, const char* uuid = "",
         const char* varCode = ANB_PH_STATUS_CODE_DEFAULT_CODE)
         : Variable(parentSense, (uint8_t)ANB_PH_STATUS_CODE_VAR_NUM,
                    (uint8_t)ANB_PH_STATUS_CODE_RESOLUTION,
