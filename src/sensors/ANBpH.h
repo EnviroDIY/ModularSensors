@@ -562,6 +562,20 @@ class ANBpH : public Sensor {
      * @return True if the power style was successfully set, false if not.
      */
     bool setPowerStyle(ANBPowerStyle newPowerStyle);
+    /**
+     * @brief Enable or disable the immersion sensor
+     *
+     * @note The new immersion sensor status (immersion rule) is effective
+     * immediately.  When power cycled, the immersion sensor defaults to enabled
+     * and the sensor goes into a low power mode.
+     *
+     * @remark The immersion sensor is enabled by default.
+     *
+     * @param enable True to enable the immersion sensor, false to disable
+     * @return True if the immersion sensor status was successfully set, false
+     * if not.
+     */
+    bool enableImmersionSensor(bool enable = true);
 
  private:
     /**
@@ -598,6 +612,12 @@ class ANBpH : public Sensor {
      * power pin is provided and "always powered" if not.
      */
     ANBPowerStyle _powerStyle = ANBPowerStyle::ON_MEASUREMENT;
+    /**
+     * @brief Private reference to whether or not the immersion sensor is
+     * enabled.
+     * @remark The immersion sensor is enabled by default.
+     */
+    bool _immersionSensorEnabled = true;
 };
 
 
