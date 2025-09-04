@@ -448,9 +448,7 @@ class ANBpH : public Sensor {
      */
     ANBpH(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2,
           int8_t enablePin = -1, uint8_t measurementsToAverage = 1);
-    /**
-     * @copydoc ANBpH::ANBpH
-     */
+    /// @copydoc ANBpH::ANBpH(byte, Stream*, int8_t, int8_t, int8_t, uint8_t)
     ANBpH(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2,
           int8_t enablePin = -1, uint8_t measurementsToAverage = 1);
     /**
@@ -475,28 +473,65 @@ class ANBpH : public Sensor {
      * @return True if the setup was successful.
      */
     bool setup(void) override;
-    /**
-     * @copydoc Sensor::wake()
-     */
     bool wake(void) override;
-    /**
-     * @brief Puts the sensor to sleep, if necessary.
-     *
-     * This also un-sets the #_millisSensorActivated timestamp (sets it to 0).
-     * This does NOT power down the sensor!
-     *
-     * @return True if the sleep function completed successfully.
-     */
     bool sleep(void) override;
+    bool addSingleMeasurementResult(void) override;
 
     // Override these to use two power pins
     void powerUp(void) override;
     void powerDown(void) override;
 
     /**
-     * @copydoc Sensor::addSingleMeasurementResult()
+     * @copydoc Sensor::isWarmedUp(bool debug)
+     *
+     * For the ANB pH sensor, this waits for both the power-on warm up and for a
+     * valid response from the sensor to a Modbus command.
+     *
+     * @note The timing here is probably not very variable.
      */
-    bool addSingleMeasurementResult(void) override;
+    bool isWarmedUp(bool debug =
+#if defined(MS_ANB_SENSORS_PH_DEBUG_DEEP)
+                        true
+#else
+                        false
+#endif
+                    ) override;
+
+    /**
+     * @brief Check whether or not enough time has passed between the sensor
+     * responding to any modbus command to giving a valid status code - which
+     * indicates that it's ready to take a measurement.
+     *
+     * @param debug True to output the result to the debugging Serial
+     * @return True indicates that enough time has passed that the sensor is
+     * ready to take a measurement.
+     *
+     * @note The timing here is probably not very variable.
+     */
+    bool isStable(bool debug =
+#if defined(MS_ANB_SENSORS_PH_DEBUG_DEEP)
+                      true
+#else
+                      false
+#endif
+                  ) override;
+
+    /**
+     * @brief Check whether or not the pH sensor has completed a measurement.
+     *
+     * @param debug True to output the result to the debugging Serial
+     * @return True indicates that the pH sensor has completed a measurement.
+     *
+     * @note We override the default function because the amount of time
+     * required depends on the salinity, power "style" and the immersion sensor.
+     */
+    bool isMeasurementComplete(bool debug =
+#if defined(MS_ANB_SENSORS_PH_DEBUG_DEEP)
+                                   true
+#else
+                                   false
+#endif
+                               ) override;
 
     /**
      * @brief Set the sensor salinity mode
