@@ -14,7 +14,6 @@
  * EnviroDIY ANB Sensors library at:
  * https://github.com/EnviroDIY/ANBSensorsModbus
  */
-/* clang-format off */
 /**
  * @defgroup sensor_anb_ph ANB pH Sensors
  * The Sensor and Variable classes for all ANB pH sensors.
@@ -24,17 +23,40 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * This library currently supports all known [ANB Sensors](https://www.anbsensors.com) pH sensors.
+ * This library currently supports all known [ANB
+ * Sensors](https://www.anbsensors.com) pH sensors.
  *
- * The lower level details of the communication with the sensors is managed by the
- * [EnviroDIY ANBSensorsModbus library](https://github.com/EnviroDIY/ANBSensorsModbus)
+ * The lower level details of the communication with the sensors is managed by
+ * the [EnviroDIY ANBSensorsModbus
+ * library](https://github.com/EnviroDIY/ANBSensorsModbus)
  *
  * @tableofcontents
  * @m_footernavigation
  *
  * @section sensor_anb_ph_datasheet Sensor Datasheet
- * - [AQ5 and AQ50 Flyer](https://www.anbsensors.com/wp-content/uploads/2025/08/AQ-Flyer-Aug25.pdf)
+ * - [AQ5 and AQ50
+ * Flyer](https://www.anbsensors.com/wp-content/uploads/2025/08/AQ-Flyer-Aug25.pdf)
  * - [User Guide](https://www.anbsensors.com/newdocs/docs/intro/)
+ *
+ * @section  sensor_anb_ph_power Power Requirements
+ *
+ * This sensor is a power hog. It draws ~90mA when measuring and ~60mA when
+ * idle.  This doesn't seem so bad, until you consider that the sensor could
+ * possibly take up to 4.25 **minutes** to take a sample after the first power
+ * on.  For some ideas of how long your battery might last with this sensor, see
+ * the description of the battery housing on the [product
+ * page](https://www.anbsensors.com/products/), which includes a chart.
+ *
+ * Some recommendations:
+ * - Get a beefy 12V battery and 18V solar panel - regardless of your
+ * measurement interval.
+ * - If you want measurements more often than every 5 minutes, leave the sensor
+ * always powered
+ *   - Size your battery and solar panel accordingly - it will be hungry!
+ * - If you want measurements every 15 minutes or more, turn off power between
+ * readings and be aware that the time of the measurement will be offset from
+ * the time the logger woke or other sensors took measurements by the time it
+ * takes the pH sensor to warm up and take a reading.
  *
  * @section sensor_anb_ph_ctor Sensor Constructor
  * {{ @ref ANBpH::ANBpH }}
@@ -45,7 +67,6 @@
  *
  * @menusnip{anb_ph}
  */
-/* clang-format on */
 
 // Header Guards
 #ifndef SRC_SENSORS_ANB_SENSORS_PH_H_
@@ -96,23 +117,31 @@
  * @anchor sensor_anb_ph_timing
  * @name Sensor Timing
  * The sensor timing for an ANB Sensors pH sensor
+ *
+ * More information on the timing can be found in the [sensor output section of
+ * the ANB Sensors User
+ * Guide](https://www.anbsensors.com/newdocs/docs/sensor-output)
  */
 /**@{*/
 /**
- * @brief Sensor::_warmUpTime_ms; time before sensor responds after power - 1.6
- * seconds (1600ms).
+ * @brief Sensor::_warmUpTime_ms; time before sensor responds after power -
+ * roughly 500ms.
  *
  * This is the time for communication to begin.
  */
-#define ANB_PH_WARM_UP_TIME_MS 350
-/// @brief Sensor::_stabilizationTime_ms; the ANB pH sensor is stable after 100
-/// ms.
-
-#define ANB_PH_STABILIZATION_TIME_MS 100
+#define ANB_PH_WARM_UP_TIME_MS 500
+/// @brief Sensor::_stabilizationTime_ms; the ANB pH sensor does not need to
+/// stabilize
+#define ANB_PH_STABILIZATION_TIME_MS 0
 /// @brief Sensor::_measurementTime_ms; the ANB pH sensor takes >3 minutes to
 /// complete the first sample after being turned on, but ~6s to complete a
 /// subsequent measurement.
-#define ANB_PH_MEASUREMENT_TIME_MS 200
+#define ANB_PH_MEASUREMENT_TIME_MS 6500
+/// @brief The maximum time to wait for a measurement.
+/// According to the user guide, the maximum time to the first pH output is at
+/// low salinity with <60 minute interval and is 255 seconds (4 minutes and 15
+/// seconds).
+#define ANB_PH_MEASUREMENT_TIME_MAX 260000L
 /**@}*/
 
 /**
