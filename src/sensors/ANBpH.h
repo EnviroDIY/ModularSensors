@@ -95,10 +95,18 @@
 // Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
+#include "LoggerBase.h"
 #include <ANBSensorsModbus.h>
 
 /** @ingroup sensor_anb_ph */
 /**@{*/
+
+/**
+ * @brief The minimum spacing between requesting responses from the sensor.
+ *
+ * This is used to prevent flooding the sensor with requests.
+ */
+#define ANB_PH_MINIMUM_REQUEST_SPACING 250
 
 /**
  * @anchor sensor_anb_ph_var_counts
@@ -118,6 +126,12 @@
  * @name Sensor Timing
  * The sensor timing for an ANB Sensors pH sensor
  *
+ * The ANB pH sensor takes >3 minutes to complete the first sample after being
+ * turned on, but ~6s to complete a subsequent measurement when in continuous
+ * power and continuous sampling mode.  If the immersion sensor is enabled and a
+ * measurement is requested while the sensor is not immersed, the failure
+ * response can return in <4 seconds.
+ *
  * More information on the timing can be found in the [sensor output section of
  * the ANB Sensors User
  * Guide](https://www.anbsensors.com/newdocs/docs/sensor-output)
@@ -129,19 +143,37 @@
  *
  * This is the time for communication to begin.
  */
-#define ANB_PH_WARM_UP_TIME_MS 500
+#define ANB_PH_WARM_UP_TIME_MS 400
+/// @brief The maximum time to wait for a modbus response.
+#define ANB_PH_WARM_UP_TIME_MAX 1000L
 /// @brief Sensor::_stabilizationTime_ms; the ANB pH sensor does not need to
 /// stabilize
 #define ANB_PH_STABILIZATION_TIME_MS 0
-/// @brief Sensor::_measurementTime_ms; the ANB pH sensor takes >3 minutes to
-/// complete the first sample after being turned on, but ~6s to complete a
-/// subsequent measurement.
-#define ANB_PH_MEASUREMENT_TIME_MS 6500
-/// @brief The maximum time to wait for a measurement.
+/// @brief The maximum time to wait for ready to measure.
+#define ANB_PH_STABILIZATION_TIME_MAX 500L
+/// @brief The minimum time before a failure response is returned when the
+/// immersion sensor is not immersed.
+#define ANB_PH_FAILURE_TIME_MS 4000L
+/// @brief The minimum time before a measurement is complete when the sensor is
+/// in continuous measurement mode and continuously powered.
+/// @note The documentation says the sensor will output a new value every 10.5s
+/// in high salinity mode and every 14s in low salinity mode.
+#define ANB_PH_MEASUREMENT_2_TIME_MS 5000L
+/// @brief The minimum time before a measurement is complete when the sensor is
+/// in continuous measurement mode and continuously powered.
+/// @note The documentation says the sensor will output a new value every 10.5s
+/// in high salinity mode and every 14s in low salinity mode.
+#define ANB_PH_MEASUREMENT_2_TIME_MAX 15000L
+/// @brief The minimum time to wait for the first measurement after power on.
+/// According to the user guide, the minimum time to the first pH output is at
+/// high salinity with <60 minute interval and is 255 seconds (4 minutes and 15
+/// seconds).
+#define ANB_PH_MEASUREMENT_1_TIME_MS 260000L
+/// @brief The maximum time to wait for the first measurement after power on.
 /// According to the user guide, the maximum time to the first pH output is at
 /// low salinity with <60 minute interval and is 255 seconds (4 minutes and 15
 /// seconds).
-#define ANB_PH_MEASUREMENT_TIME_MAX 260000L
+#define ANB_PH_MEASUREMENT_1_TIME_MAX 260000L
 /**@}*/
 
 /**
@@ -473,8 +505,8 @@ class ANBpH : public Sensor {
      * @return True if the setup was successful.
      */
     bool setup(void) override;
-    bool wake(void) override;
     bool sleep(void) override;
+    bool startSingleMeasurement(void) override;
     bool addSingleMeasurementResult(void) override;
 
     // Override these to use two power pins
@@ -618,6 +650,21 @@ class ANBpH : public Sensor {
      * @remark The immersion sensor is enabled by default.
      */
     bool _immersionSensorEnabled = true;
+    /**
+     * @brief The last time a Modbus command was sent.
+     *
+     * This is used to prevent flooding the sensor with requests.
+     */
+    uint32_t _lastModbusCommandTime = 0;
+    /**
+     * @brief Check whether or not enough time has passed between modbus
+     * commands to the sensor to send another command.
+     * @param checkReady A pointer to a function that checks whether or not the
+     * sensor is ready to for whatever you need it to do.
+     * @return True indicates that enough time has passed that another command
+     * can be sent.
+     */
+    bool isSensorReady(bool (anbSensor::*checkReadyFxn)());
 };
 
 
