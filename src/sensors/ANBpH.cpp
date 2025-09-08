@@ -351,7 +351,8 @@ bool ANBpH::addSingleMeasurementResult(void) {
         // Print Moisture Values
         MS_DBG(F("Get Values from"), getSensorNameAndLocation());
         success = _anb_sensor.getValues(pH, temp, sal, spcond, raw_cond, health,
-                                        status, diagnostic);
+                                        diagnostic);
+        status  = _anb_sensor.getStatusCode();
 
         // Print the values for debugging
         MS_DBG(F("  pH:"), pH);
@@ -360,8 +361,8 @@ bool ANBpH::addSingleMeasurementResult(void) {
         MS_DBG(F("  Specific Conductance (µS/cm):"), spcond);
         MS_DBG(F("  Raw Conductance (µS/cm):"), raw_cond);
         MS_DBG(F("  Health Code:"), static_cast<int16_t>(health));
-        MS_DBG(F("  Status Code:"), static_cast<int16_t>(status));
         MS_DBG(F("  Diagnostic Code:"), static_cast<int16_t>(diagnostic));
+        MS_DBG(F("  Status Code:"), static_cast<int16_t>(status));
 
         if (health == ANBHealthCode::NOT_IMMERSED) {
             MS_DBG(F("  WARNING: Sensor is not immersed!"));

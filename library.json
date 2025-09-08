@@ -299,7 +299,7 @@
       "owner": "envirodiy",
       "library id": "1824",
       "url": "https://github.com/EnviroDIY/SensorModbusMaster",
-      "version": "~1.5.0",
+      "version": "~1.6.0",
       "note": "EnviroDIY SensorModbusMaster - Arduino library for communicating via modbus with the Arduino acting as the modbus master.",
       "authors": ["Sara Damiano"],
       "frameworks": "arduino"
@@ -309,7 +309,7 @@
       "owner": "envirodiy",
       "library id": "5439",
       "url": "https://github.com/EnviroDIY/KellerModbus",
-      "version": "~0.2.3",
+      "version": "~0.2.4",
       "note": "Arduino library for communication with Keller pressure and water level sensors via Modbus.",
       "authors": ["Anthony Aufdenkampe"]
     },
@@ -318,7 +318,7 @@
       "owner": "envirodiy",
       "library id": "2078",
       "url": "https://github.com/EnviroDIY/YosemitechModbus",
-      "version": "~0.5.0",
+      "version": "~0.5.1",
       "note": "Arduino library for communication with Yosemitech sensors via Modbus.",
       "authors": ["Sara Damiano", "Anthony Aufdenkampe"],
       "frameworks": "arduino"
@@ -327,7 +327,7 @@
       "name": "GroPointModbus",
       "owner": "envirodiy",
       "url": "https://github.com/EnviroDIY/GroPointModbus",
-      "version": "~0.1.1",
+      "version": "~0.1.2",
       "note": "A library to use an Arduino as a master to control and communicate via modbus with GroPoint soil moisture sensors.",
       "authors": ["Anthony Aufdenkampe"],
       "frameworks": "arduino"
@@ -345,7 +345,7 @@
       "name": "ANBSensorsModbus",
       "owner": "envirodiy",
       "url": "https://github.com/EnviroDIY/ANBSensorsModbus",
-      "version": "~0.1.1",
+      "version": "~0.2.0",
       "note": "A library for communicating with pH sensors manufactured by ANB Sensors using Modbus.",
       "authors": ["Sara Damiano"],
       "frameworks": "arduino"
