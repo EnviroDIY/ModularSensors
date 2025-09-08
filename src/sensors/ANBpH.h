@@ -139,41 +139,41 @@
 /**@{*/
 /**
  * @brief Sensor::_warmUpTime_ms; time before sensor responds after power -
- * roughly 500ms.
+ * roughly 5.3 - 5.6 seconds.
  *
  * This is the time for communication to begin.
  */
-#define ANB_PH_WARM_UP_TIME_MS 400
+#define ANB_PH_WARM_UP_TIME_MS 5400L
 /// @brief The maximum time to wait for a modbus response.
-#define ANB_PH_WARM_UP_TIME_MAX 1000L
+#define ANB_PH_WARM_UP_TIME_MAX 10000L
+
 /// @brief Sensor::_stabilizationTime_ms; the ANB pH sensor does not need to
-/// stabilize
+/// stabilize, but we use this time as the check for ready time.
 #define ANB_PH_STABILIZATION_TIME_MS 0
 /// @brief The maximum time to wait for ready to measure.
-#define ANB_PH_STABILIZATION_TIME_MAX 500L
-/// @brief The minimum time before a failure response is returned when the
-/// immersion sensor is not immersed.
-#define ANB_PH_FAILURE_TIME_MS 4000L
-/// @brief The minimum time before a measurement is complete when the sensor is
-/// in continuous measurement mode and continuously powered.
-/// @note The documentation says the sensor will output a new value every 10.5s
-/// in high salinity mode and every 14s in low salinity mode.
-#define ANB_PH_MEASUREMENT_2_TIME_MS 5000L
-/// @brief The minimum time before a measurement is complete when the sensor is
-/// in continuous measurement mode and continuously powered.
-/// @note The documentation says the sensor will output a new value every 10.5s
-/// in high salinity mode and every 14s in low salinity mode.
-#define ANB_PH_MEASUREMENT_2_TIME_MAX 15000L
-/// @brief The minimum time to wait for the first measurement after power on.
-/// According to the user guide, the minimum time to the first pH output is at
-/// high salinity with <60 minute interval and is 255 seconds (4 minutes and 15
-/// seconds).
-#define ANB_PH_MEASUREMENT_1_TIME_MS 260000L
-/// @brief The maximum time to wait for the first measurement after power on.
-/// According to the user guide, the maximum time to the first pH output is at
-/// low salinity with <60 minute interval and is 255 seconds (4 minutes and 15
-/// seconds).
-#define ANB_PH_MEASUREMENT_1_TIME_MAX 260000L
+#define ANB_PH_STABILIZATION_TIME_MAX 5000L
+
+/// @brief The time before a failure response is returned on the 2nd or
+/// subsequent valuewhen the immersion sensor is not immersed.
+#define ANB_PH_2ND_IMMERSION_ERROR 4000L
+/// @brief The approximate time for the 2nd or subsequent values in high
+/// salinity.
+#define ANB_PH_2ND_VALUE_HIGH_SALT 10500L
+/// @brief The approximate time for the 2nd or subsequent values in low
+/// salinity.
+#define ANB_PH_2ND_VALUE_LOW_SALT 14000L
+
+/// @brief The minimum time before a failure response is returned on the first
+/// measurement when the immersion sensor is not immersed.
+#define ANB_PH_1ST_IMMERSION_ERROR 12000L
+/// @brief The approximate time for the first value in high salinity.
+#define ANB_PH_1ST_VALUE_HIGH_SALT 129000L
+/// @brief The approximate time for the first value in low salinity.
+#define ANB_PH_1ST_VALUE_LOW_SALT 184000L
+
+/// @brief The amount of time around the expected measurement time to wait
+/// before starting querying of timing out
+#define ANB_PH_MEASUREMENT_TIME_BUFFER 10000L
 /**@}*/
 
 /**
@@ -521,13 +521,7 @@ class ANBpH : public Sensor {
      *
      * @note The timing here is probably not very variable.
      */
-    bool isWarmedUp(bool debug =
-#if defined(MS_ANB_SENSORS_PH_DEBUG_DEEP)
-                        true
-#else
-                        false
-#endif
-                    ) override;
+    bool isWarmedUp(bool debug = false) override;
 
     /**
      * @brief Check whether or not enough time has passed between the sensor
@@ -540,13 +534,7 @@ class ANBpH : public Sensor {
      *
      * @note The timing here is probably not very variable.
      */
-    bool isStable(bool debug =
-#if defined(MS_ANB_SENSORS_PH_DEBUG_DEEP)
-                      true
-#else
-                      false
-#endif
-                  ) override;
+    bool isStable(bool debug = false) override;
 
     /**
      * @brief Check whether or not the pH sensor has completed a measurement.
@@ -557,13 +545,7 @@ class ANBpH : public Sensor {
      * @note We override the default function because the amount of time
      * required depends on the salinity, power "style" and the immersion sensor.
      */
-    bool isMeasurementComplete(bool debug =
-#if defined(MS_ANB_SENSORS_PH_DEBUG_DEEP)
-                                   true
-#else
-                                   false
-#endif
-                               ) override;
+    bool isMeasurementComplete(bool debug = false) override;
 
     /**
      * @brief Set the sensor salinity mode
@@ -579,21 +561,6 @@ class ANBpH : public Sensor {
      * @return True if the salinity mode was successfully set, false if not.
      */
     bool setSalinityMode(ANBSalinityMode newSalinityMode);
-    /**
-     * @brief Set the sensor power style
-     *
-     * Change this value to any of the following valid values:
-     * ANBPowerStyle::ALWAYS_POWERED, ANBPowerStyle::ON_MEASUREMENT
-     *
-     * @note Before scanning set the desired power style.
-     *
-     * @remark By default, the power style is set to "on measurement" if a valid
-     * power pin is provided and "always powered" if not.
-     *
-     * @param newPowerStyle The new power style to use
-     * @return True if the power style was successfully set, false if not.
-     */
-    bool setPowerStyle(ANBPowerStyle newPowerStyle);
     /**
      * @brief Enable or disable the immersion sensor
      *
@@ -639,12 +606,6 @@ class ANBpH : public Sensor {
      */
     ANBSalinityMode _salinityMode = ANBSalinityMode::LOW_SALINITY;
     /**
-     * @brief Private reference to the power style for the ANB pH sensor.
-     * @remark By default, the power style is set to "on measurement" if a valid
-     * power pin is provided and "always powered" if not.
-     */
-    ANBPowerStyle _powerStyle = ANBPowerStyle::ON_MEASUREMENT;
-    /**
      * @brief Private reference to whether or not the immersion sensor is
      * enabled.
      * @remark The immersion sensor is enabled by default.
@@ -664,7 +625,35 @@ class ANBpH : public Sensor {
      * @return True indicates that enough time has passed that another command
      * can be sent.
      */
-    bool isSensorReady(bool (anbSensor::*checkReadyFxn)());
+    bool isSensorReady(bool (anbSensor::*checkReadyFxn)(),
+                       uint32_t spacing = ANB_PH_MINIMUM_REQUEST_SPACING);
+
+    /**
+     * @brief Get the estimated time before an immersion error is returned based
+     * on power cycling and the immersion sensor enablement.
+     *
+     * @return The estimated time before an immersion error is returned.
+     */
+    uint32_t getImmersionErrorTime(void);
+    /**
+     * @brief Get the estimated time for a measurement to complete based on
+     * the sensor's current configuration.
+     *
+     * @return The estimated time for a measurement to complete.
+     */
+    uint32_t getMeasurementTime(void);
+    /**
+     * @brief Set the sensor's real time clock (RTC) to the current time.
+     *
+     * @note This requires that the logger has a valid time and that the
+     * ANB pH sensor is powered and communicating.
+     *
+     * @warning The ANB pH sensor's RTC **does not** have an independent battery
+     * backup - the clock will be reset every time the sensor loses power.
+     *
+     * @return True if the RTC was successfully set, false if not.
+     */
+    bool setSensorRTC(void);
 };
 
 
