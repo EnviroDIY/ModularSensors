@@ -38,7 +38,7 @@
 
 
 //==============================================================
-// Uncomment any debbugging options you might want to use
+// Uncomment any debugging options you might want to use
 
 // #define MS_LOGGERBASE_DEBUG
 // #define MS_LOGGERBASE_DEBUG_DEEP
@@ -106,6 +106,8 @@
 // #define MS_ALPHASENSECO2_DEBUG
 // #define MS_ANALOGELECCONDUCTIVITY_DEBUG
 // #define MS_ANALOGELECCONDUCTIVITY_DEBUG_DEEP
+// #define MS_ANB_SENSORS_PH_DEBUG
+// #define MS_ANB_SENSORS_PH_DEBUG_DEEP
 // #define MS_AOSONGAM2315_DEBUG
 // #define MS_AOSONGDHT_DEBUG
 // #define MS_APOGEESQ212_DEBUG
