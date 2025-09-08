@@ -345,13 +345,7 @@ class GeoluxHydroCam : public Sensor {
      * For the Geolux camera, this waits for both the power-on warm up and for
      * an affirmative from the camera that it is ready to accept commands.
      */
-    bool isWarmedUp(bool debug =
-#if defined(MS_GEOLUXHYDROCAM_DEBUG_DEEP)
-                        true
-#else
-                        false
-#endif
-                    ) override;
+    bool isWarmedUp(bool debug = false) override;
 
     /**
      * @brief Check whether or not enough time has passed between the camera
@@ -365,13 +359,7 @@ class GeoluxHydroCam : public Sensor {
      * required for imaging depends on the camera's mood and whether or not you
      * autofocus on every reading.
      */
-    bool isStable(bool debug =
-#if defined(MS_GEOLUXHYDROCAM_DEBUG_DEEP)
-                      true
-#else
-                      false
-#endif
-                  ) override;
+    bool isStable(bool debug = false) override;
 
     /**
      * @brief Check whether or not the camera has completed imaging.
@@ -383,13 +371,7 @@ class GeoluxHydroCam : public Sensor {
      * @note We override the default function because the amount of time
      * required for imaging depends on the resolution.
      */
-    bool isMeasurementComplete(bool debug =
-#if defined(MS_GEOLUXHYDROCAM_DEBUG_DEEP)
-                                   true
-#else
-                                   false
-#endif
-                               ) override;
+    bool isMeasurementComplete(bool debug = false) override;
 
  private:
     /**

@@ -355,6 +355,9 @@ bool GeoluxHydroCam::isCameraReady() {
 
 // This checks to see if enough time has passed for warm-up
 bool GeoluxHydroCam::isWarmedUp(bool debug) {
+#if defined(MS_GEOLUXHYDROCAM_DEBUG_DEEP)
+    debug = true;
+#endif
     // If the sensor doesn't have power, then it will never be warmed up,
     // so the warm up time is essentially already passed.
     if (!getStatusBit(POWER_SUCCESSFUL)) {
@@ -397,6 +400,9 @@ bool GeoluxHydroCam::isWarmedUp(bool debug) {
 
 // This checks to see if enough time has passed for stability
 bool GeoluxHydroCam::isStable(bool debug) {
+#if defined(MS_GEOLUXHYDROCAM_DEBUG_DEEP)
+    debug = true;
+#endif
     // If the sensor failed to activate, it will never stabilize, so the
     // stabilization time is essentially already passed
     if (!getStatusBit(WAKE_SUCCESSFUL)) {
@@ -448,6 +454,9 @@ bool GeoluxHydroCam::isStable(bool debug) {
 
 // This checks to see if enough time has passed for measurement completion
 bool GeoluxHydroCam::isMeasurementComplete(bool debug) {
+#if defined(MS_GEOLUXHYDROCAM_DEBUG_DEEP)
+    debug = true;
+#endif
     // If a measurement failed to start, the sensor will never return a result,
     // so the measurement time is essentially already passed
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
