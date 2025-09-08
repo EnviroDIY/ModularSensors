@@ -359,6 +359,10 @@ class Sensor {
 
     /**
      * @brief The array of result values for each sensor.
+     *
+     * @todo Support int16_t and int32_t directly in the value array so no
+     * casting is needed. This could be done using a template or a union similar
+     * to the modbus library's leFrame union.
      */
     float sensorValues[MAX_NUMBER_VARS];
 
