@@ -300,12 +300,16 @@ void Sensor::verifyAndAddMeasurementResult(uint8_t resultNumber,
                                            float   resultValue) {
     // If the new result is good and there was were only bad results, set the
     // result value as the new result and add 1 to the good result total
-    if (sensorValues[resultNumber] == -9999 && resultValue != -9999) {
+    if ((sensorValues[resultNumber] == -9999 ||
+         isnan(sensorValues[resultNumber])) &&
+        (resultValue != -9999 && !isnan(resultValue))) {
         MS_DBG(F("Putting"), resultValue, F("in result array for variable"),
                resultNumber, F("from"), getSensorNameAndLocation());
         sensorValues[resultNumber] = resultValue;
         numberGoodMeasurementsMade[resultNumber] += 1;
-    } else if (sensorValues[resultNumber] != -9999 && resultValue != -9999) {
+    } else if ((sensorValues[resultNumber] == -9999 ||
+                isnan(sensorValues[resultNumber])) &&
+               (resultValue != -9999 && !isnan(resultValue))) {
         // If the new result is good and there were already good results in
         // place add the new results to the total and add 1 to the good result
         // total
@@ -317,7 +321,9 @@ void Sensor::verifyAndAddMeasurementResult(uint8_t resultNumber,
         // If the new result is bad and there were only bad results, do nothing
         MS_DBG(F("Ignoring bad result for variable"), resultNumber, F("from"),
                getSensorNameAndLocation(), F("; no good results yet."));
-    } else if (sensorValues[resultNumber] != -9999 && resultValue == -9999) {
+    } else if ((sensorValues[resultNumber] == -9999 ||
+                isnan(sensorValues[resultNumber])) &&
+               resultValue == -9999) {
         // If the new result is bad and there were already good results, do
         // nothing
         MS_DBG(F("Ignoring bad result for variable"), resultNumber, F("from"),
@@ -325,6 +331,8 @@ void Sensor::verifyAndAddMeasurementResult(uint8_t resultNumber,
                F("; good results already in array."));
     }
 }
+/// @todo Fix measurement value array to handle int16_t and int32_t directly so
+/// no casting is needed and large values will not be truncated or mashed.
 void Sensor::verifyAndAddMeasurementResult(uint8_t resultNumber,
                                            int16_t resultValue) {
     float float_val = resultValue;  // cast the int16_t to a float
