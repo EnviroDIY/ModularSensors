@@ -391,9 +391,10 @@ bool ANBpH::addSingleMeasurementResult(void) {
 }
 
 // check if the sensor is ready
-bool ANBpH::isSensorReady(bool (anbSensor::*checkReadyFxn)(),
-                          uint32_t spacing) {
+bool ANBpH::isSensorReady(bool (anbSensor::*checkReadyFxn)(), uint32_t spacing,
+                          uint32_t startTime) {
     uint32_t elapsed_since_last_request = millis() - _lastModbusCommandTime;
+    uint32_t elapsed_since_start_time   = millis() - startTime;
     if (elapsed_since_last_request < spacing) {
         // MS_DEEP_DBG(
         //     F("It's only been"), elapsed_since_last_request,
@@ -403,9 +404,13 @@ bool ANBpH::isSensorReady(bool (anbSensor::*checkReadyFxn)(),
     }
     bool ready = (_anb_sensor.*checkReadyFxn)();
     if (ready) {
+        MS_DBG(F("It's been"), elapsed_since_start_time, F("ms, and"),
+               getSensorNameAndLocation(), F("is ready."));
         // if it's ready, then it's ok to ask it again right away
         _lastModbusCommandTime = 0;
     } else {
+        MS_DBG(F("It's been"), elapsed_since_start_time, F("ms, and"),
+               getSensorNameAndLocation(), F("is not ready yet."));
         // if the sensor isn't ready, force a wait before checking again
         _lastModbusCommandTime = millis();
     }
@@ -440,17 +445,13 @@ bool ANBpH::isWarmedUp(bool debug) {
             MS_DBG(F("It's been"), elapsed_since_power_on, F("ms, and"),
                    getSensorNameAndLocation(), F("might be warmed up!"));
         }
-        bool is_ready = isSensorReady(&anbSensor::gotModbusResponse);
+        bool is_ready = isSensorReady(&anbSensor::gotModbusResponse,
+                                      ANB_PH_MINIMUM_REQUEST_SPACING,
+                                      _millisPowerOn);
         if (is_ready) {
             MS_DBG(F("It's been"), elapsed_since_power_on, F("ms, and"),
                    getSensorNameAndLocation(),
                    F("got a valid modbus response."));
-        } else {
-            if (debug) {
-                MS_DBG(F("It's been"), elapsed_since_power_on, F("ms, and"),
-                       getSensorNameAndLocation(),
-                       F("hasn't given a valid modbus response yet."));
-            }
         }
         return is_ready;
     } else {
@@ -490,18 +491,14 @@ bool ANBpH::isStable(bool debug) {
                    getSensorNameAndLocation(),
                    F("might be ready to start a measurement."));
         }
-        bool is_ready = isSensorReady(&anbSensor::isSensorReady);
+        bool is_ready = isSensorReady(&anbSensor::isSensorReady,
+                                      ANB_PH_MINIMUM_REQUEST_SPACING,
+                                      _millisSensorActivated);
         if (is_ready) {
             MS_DBG(F("It's been"), elapsed_since_wake_up, F("ms, and"),
                    getSensorNameAndLocation(),
                    F("gave a valid status code, indicating it's ready to "
                      "start a measurement."));
-        } else {
-            if (debug) {
-                MS_DBG(F("It's been"), elapsed_since_wake_up, F("ms, and"),
-                       getSensorNameAndLocation(),
-                       F("hasn't given a valid status code yet."));
-            }
         }
         return is_ready;
     } else {
@@ -510,12 +507,26 @@ bool ANBpH::isStable(bool debug) {
     }
 }
 
-uint32_t ANBpH::getImmersionErrorTime(void) {
+
+// The minimum time before we start checking for a result depends on whether
+// the immersion sensor is enabled or not and on the power style.
+// If the immersion sensor is enabled, we wait the minimum time that it
+// would return a not-immersed error to start querying. If the immersion
+// sensor is not enabled, we wait the minimum time for a measurement to be
+// ready based on the power style.
+uint32_t ANBpH::getStartImmersionErrorWindow(void) {
+    if (!_immersionSensorEnabled) { return getEndMeasurementWindow(); }
     return _powerPin >= 0 ? ANB_PH_2ND_IMMERSION_ERROR
                           : ANB_PH_1ST_IMMERSION_ERROR;
 }
 
-uint32_t ANBpH::getMeasurementTime(void) {
+uint32_t ANBpH::getEndImmersionErrorWindow(void) {
+    if (!_immersionSensorEnabled) { return getEndMeasurementWindow(); }
+    return _powerPin >= 0 ? ANB_PH_2ND_IMMERSION_ERROR_MAX
+                          : ANB_PH_1ST_IMMERSION_ERROR_MAX;
+}
+
+uint32_t ANBpH::getStartMeasurementWindow(void) {
     if (_powerPin >= 0) {
         if (_salinityMode == ANBSalinityMode::HIGH_SALINITY) {
             return ANB_PH_1ST_VALUE_HIGH_SALT;
@@ -527,6 +538,26 @@ uint32_t ANBpH::getMeasurementTime(void) {
             return ANB_PH_2ND_VALUE_HIGH_SALT;
         } else {
             return ANB_PH_2ND_VALUE_LOW_SALT;
+        }
+    }
+}
+
+// If no pin was provided for power, we assume it's always powered and use
+// the maximum wait time for the second measurement as our maximum wait.
+// If a pin was provided for power, we assume it's on-demand powered and use
+// the maximum wait time for the first measurement as our maximum wait.
+uint32_t ANBpH::getEndMeasurementWindow(void) {
+    if (_powerPin >= 0) {
+        if (_salinityMode == ANBSalinityMode::HIGH_SALINITY) {
+            return ANB_PH_1ST_VALUE_HIGH_SALT_MAX;
+        } else {
+            return ANB_PH_1ST_VALUE_LOW_SALT_MAX;
+        }
+    } else {
+        if (_salinityMode == ANBSalinityMode::HIGH_SALINITY) {
+            return ANB_PH_2ND_VALUE_HIGH_SALT_MAX;
+        } else {
+            return ANB_PH_2ND_VALUE_LOW_SALT_MAX;
         }
     }
 }
@@ -547,78 +578,49 @@ bool ANBpH::isMeasurementComplete(bool debug) {
         return true;
     }
 
-    // If no pin was provided for power, we assume it's always powered and use
-    // the maximum wait time for the second measurement as our maximum wait.
-    // If a pin was provided for power, we assume it's on-demand powered and use
-    // the maximum wait time for the first measurement as our maximum wait.
-    uint32_t maxWait = getMeasurementTime() +
-        ANB_PH_MEASUREMENT_TIME_BUFFER * 2;
-
-    // Since the sensor takes so very long startSlowQuery measure when it's
-    // power cycled, if we know it's going to be a while, we drop the query
-    // frequency to once every 5 seconds because there's no point in asking more
-    // often than that.
-    uint32_t startSlowQuery = getImmersionErrorTime() +
-        ANB_PH_MEASUREMENT_TIME_BUFFER;
-    uint32_t endSlowQuery = getMeasurementTime() -
-        ANB_PH_MEASUREMENT_TIME_BUFFER;
-
-    // The minimum time before we start checking for a result depends on whether
-    // the immersion sensor is enabled or not and on the power style.
-    // If the immersion sensor is enabled, we wait the minimum time that it
-    // would return a not-immersed error to start querying. If the immersion
-    // sensor is not enabled, we wait the minimum time for a measurement to be
-    // ready based on the power style.
-    uint32_t minWait = 0;
-    if (_immersionSensorEnabled) {
-        minWait = getImmersionErrorTime();
-    } else {
-        minWait = getMeasurementTime() - ANB_PH_MEASUREMENT_TIME_BUFFER;
-    }
-
     uint32_t elapsed_since_meas_start = millis() - _millisMeasurementRequested;
-    // if the sensor is always powered and it's past the maximum for the second
-    // measurement or it's on-demand powered and it's past the maximum for the
-    // first measurement, the measurement failed, but our wait is over
-    if (elapsed_since_meas_start > maxWait) {
+    // If we're past the maximum wait time, the measurement failed, but our wait
+    // is over
+    if (elapsed_since_meas_start > getEndMeasurementWindow()) {
         MS_DBG(F("It's been"), elapsed_since_meas_start, F("ms, and"),
                getSensorNameAndLocation(),
                F("timed out waiting for a measurement to complete."));
         return true;  // timeout
-        // If the immersion sensor is on, start querying after the minimum time
-        // that it would return a not-immersed error
-    } else if (elapsed_since_meas_start > minWait) {
-        if (debug) {
-            MS_DBG(F("It's been"), elapsed_since_meas_start, F("ms, and"),
-                   getSensorNameAndLocation(),
-                   F("might have finished a measurement."));
+    }
+    // If we haven't gotten to the minimum response time, we need to wait
+    if (elapsed_since_meas_start < getStartImmersionErrorWindow()) {
+        return false;
         }
+
         bool is_ready = false;
-        if (elapsed_since_meas_start < startSlowQuery) {
-            is_ready = isSensorReady(&anbSensor::isMeasurementComplete, 500L);
-        } else if (elapsed_since_meas_start > startSlowQuery &&
-                   elapsed_since_meas_start < endSlowQuery) {
-            is_ready = isSensorReady(&anbSensor::isMeasurementComplete, 15000L);
-        } else {
-            is_ready = isSensorReady(&anbSensor::isMeasurementComplete, 1000L);
+    // Check every half second if we're in the window where the immersion
+    // sensor might return a not-immersed error
+    if (elapsed_since_meas_start > getStartImmersionErrorWindow() &&
+        elapsed_since_meas_start <= getEndImmersionErrorWindow()) {
+        is_ready = isSensorReady(&anbSensor::isMeasurementComplete, 500L,
+                                 _millisMeasurementRequested);
+    }
+    // Since the sensor takes so very long to measure when it's power cycled, if
+    // we know it's going to be a while, we drop the query frequency to once
+    // every 15 seconds because there's no point in asking more often than that.
+    if (elapsed_since_meas_start > getEndImmersionErrorWindow() &&
+        elapsed_since_meas_start <= getStartMeasurementWindow()) {
+        is_ready = isSensorReady(&anbSensor::isMeasurementComplete, 15000L,
+                                 _millisMeasurementRequested);
+    }
+    // Check every second when we're in the window of when a
+    // measurement might be ready
+    if (elapsed_since_meas_start > getStartMeasurementWindow() &&
+        elapsed_since_meas_start <= getEndMeasurementWindow()) {
+        is_ready = isSensorReady(&anbSensor::isMeasurementComplete, 15000L,
+                                 _millisMeasurementRequested);
         }
         if (is_ready) {
             MS_DBG(F("It's been"), elapsed_since_meas_start, F("ms, and"),
                    getSensorNameAndLocation(),
                    F("says it's finished with a measurement."));
-        } else {
-            if (debug) {
-                MS_DBG(F("It's been"), elapsed_since_meas_start, F("ms, and"),
-                       getSensorNameAndLocation(),
-                       F("says it's not finished measuring yet."));
-            }
         }
         return is_ready;
-    } else {
-        // If it's started but the minimum measurement time hasn't passed, we
-        // need to wait
-        return false;
-    }
 }
 
 

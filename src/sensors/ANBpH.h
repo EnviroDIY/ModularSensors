@@ -149,31 +149,51 @@
 
 /// @brief Sensor::_stabilizationTime_ms; the ANB pH sensor does not need to
 /// stabilize, but we use this time as the check for ready time.
-#define ANB_PH_STABILIZATION_TIME_MS 0
+#define ANB_PH_STABILIZATION_TIME_MS 50
 /// @brief The maximum time to wait for ready to measure.
 #define ANB_PH_STABILIZATION_TIME_MAX 5000L
 
-/// @brief The time before a failure response is returned on the 2nd or
-/// subsequent valuewhen the immersion sensor is not immersed.
+/// @brief The minimum time before a failure response is returned on the 2nd or
+/// subsequent value when the immersion sensor is not immersed.  This is a guess
+/// based on testing.
 #define ANB_PH_2ND_IMMERSION_ERROR 4000L
-/// @brief The approximate time for the 2nd or subsequent values in high
+/// @brief The minimum time before a failure response is returned on the 2nd or
+/// subsequent value when the immersion sensor is not immersed.  This is a guess
+/// based on testing.
+#define ANB_PH_2ND_IMMERSION_ERROR_MAX 12000L
+/// @brief The minimum time for the 2nd or subsequent values in high
+/// salinity (documented new output time of 10.5s)
+#define ANB_PH_2ND_VALUE_HIGH_SALT 5000L
+/// @brief The maximum time for the 2nd or subsequent values in high
 /// salinity.
-#define ANB_PH_2ND_VALUE_HIGH_SALT 10500L
-/// @brief The approximate time for the 2nd or subsequent values in low
-/// salinity.
-#define ANB_PH_2ND_VALUE_LOW_SALT 14000L
+#define ANB_PH_2ND_VALUE_HIGH_SALT_MAX 15000L
+/// @brief The minimum time for the 2nd or subsequent values in low
+/// salinity (documented new output time of 14s).
+#define ANB_PH_2ND_VALUE_LOW_SALT 6000L
+/// @brief The maximum time for the 2nd or subsequent values in low
+/// salinity (documented new output time of 14s).
+#define ANB_PH_2ND_VALUE_LOW_SALT_MAX 18000L
 
 /// @brief The minimum time before a failure response is returned on the first
-/// measurement when the immersion sensor is not immersed.
-#define ANB_PH_1ST_IMMERSION_ERROR 12000L
-/// @brief The approximate time for the first value in high salinity.
-#define ANB_PH_1ST_VALUE_HIGH_SALT 129000L
-/// @brief The approximate time for the first value in low salinity.
-#define ANB_PH_1ST_VALUE_LOW_SALT 184000L
-
-/// @brief The amount of time around the expected measurement time to wait
-/// before starting querying of timing out
-#define ANB_PH_MEASUREMENT_TIME_BUFFER 10000L
+/// measurement when the immersion sensor is not immersed.  This is a guess
+/// based on testing.
+#define ANB_PH_1ST_IMMERSION_ERROR 6000L
+/// @brief The maximum time before a failure response is returned on the first
+/// measurement when the immersion sensor is not immersed.  This is a guess
+/// based on testing.
+#define ANB_PH_1ST_IMMERSION_ERROR_MAX 12000L
+/// @brief The minimum time for the first value in high salinity (documented min
+/// time of 129s - 9s).
+#define ANB_PH_1ST_VALUE_HIGH_SALT 120000L
+/// @brief The maximum time for the first value in high salinity (documented max
+/// time of 238s for a long interval delay + 10s).
+#define ANB_PH_1ST_VALUE_HIGH_SALT_MAX 248000L
+/// @brief The minimum time for the first value in low salinity (documented min
+/// time is 184s, but I got responses at 160s).
+#define ANB_PH_1ST_VALUE_LOW_SALT 155000L
+/// @brief The maximum time for the first value in low salinity (documented max
+/// time of 255s for a long interval delay + 10s).
+#define ANB_PH_1ST_VALUE_LOW_SALT_MAX 265000L
 /**@}*/
 
 /**
@@ -626,7 +646,8 @@ class ANBpH : public Sensor {
      * can be sent.
      */
     bool isSensorReady(bool (anbSensor::*checkReadyFxn)(),
-                       uint32_t spacing = ANB_PH_MINIMUM_REQUEST_SPACING);
+                       uint32_t spacing   = ANB_PH_MINIMUM_REQUEST_SPACING,
+                       uint32_t startTime = 0);
 
     /**
      * @brief Get the estimated time before an immersion error is returned based
@@ -634,14 +655,16 @@ class ANBpH : public Sensor {
      *
      * @return The estimated time before an immersion error is returned.
      */
-    uint32_t getImmersionErrorTime(void);
+    uint32_t getStartImmersionErrorWindow(void);
+    uint32_t getEndImmersionErrorWindow(void);
     /**
      * @brief Get the estimated time for a measurement to complete based on
      * the sensor's current configuration.
      *
      * @return The estimated time for a measurement to complete.
      */
-    uint32_t getMeasurementTime(void);
+    uint32_t getStartMeasurementWindow(void);
+    uint32_t getEndMeasurementWindow(void);
     /**
      * @brief Set the sensor's real time clock (RTC) to the current time.
      *
