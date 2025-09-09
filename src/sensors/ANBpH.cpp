@@ -141,6 +141,16 @@ bool ANBpH::setup(void) {
     MS_DBG(F("..."), powerStyleSet ? F("success") : F("failed"));
     retVal &= powerStyleSet;
 
+    // Set sampling mode to continuous
+    // Since we are using controlled mode, continuous sampling means taking a
+    // measurement when asked, rather than at a set interval.
+    // The first pH measurement is returned significantly faster in continuous
+    // mode.
+    MS_DBG(F("Set sensor sampling mode to continuous..."));
+    bool intervalSet = _anb_sensor.setIntervalTime(0);
+    MS_DBG(F("..."), intervalSet ? F("success") : F("failed"));
+    retVal &= intervalSet;
+
     // Set Sensor Salinity Mode
     MS_DBG(F("Set sensor salinity mode..."));
     bool salinitySet = _anb_sensor.setSalinityMode(_salinityMode);
