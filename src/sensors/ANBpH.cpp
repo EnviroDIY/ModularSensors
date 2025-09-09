@@ -461,7 +461,7 @@ bool ANBpH::isWarmedUp(bool debug) {
         if (is_ready) {
             MS_DBG(F("It's been"), elapsed_since_power_on, F("ms, and"),
                    getSensorNameAndLocation(),
-                   F("got a valid modbus response."));
+                   F("got a valid modbus response meaning it's warmed up."));
         }
         return is_ready;
     } else {
@@ -607,7 +607,7 @@ bool ANBpH::isMeasurementComplete(bool debug) {
     // sensor might return a not-immersed error
     if (elapsed_since_meas_start > getStartImmersionErrorWindow() &&
         elapsed_since_meas_start <= getEndImmersionErrorWindow()) {
-        is_ready = isSensorReady(&anbSensor::isMeasurementComplete, 500L,
+        is_ready = isSensorReady(&anbSensor::isMeasurementComplete, 1000L,
                                  _millisMeasurementRequested);
     }
     // Since the sensor takes so very long to measure when it's power cycled, if
@@ -622,7 +622,7 @@ bool ANBpH::isMeasurementComplete(bool debug) {
     // measurement might be ready
     if (elapsed_since_meas_start > getStartMeasurementWindow() &&
         elapsed_since_meas_start <= getEndMeasurementWindow()) {
-        is_ready = isSensorReady(&anbSensor::isMeasurementComplete, 15000L,
+        is_ready = isSensorReady(&anbSensor::isMeasurementComplete, 1000L,
                                  _millisMeasurementRequested);
         }
         if (is_ready) {
