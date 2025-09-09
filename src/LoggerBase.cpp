@@ -777,7 +777,7 @@ void Logger::systemSleep(void) {
 #endif
 
     // Send a message that we're getting ready
-    MS_DBG(F("Preparing clock interrupts to wake processor"));
+    MS_DEEP_DBG(F("Preparing clock interrupts to wake processor"));
     loggerClock::enablePeriodicRTCInterrupts();
 
     // Enable the RTC ISR
