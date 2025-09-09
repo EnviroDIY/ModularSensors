@@ -230,21 +230,31 @@ class epochTime {
     /**
      * @brief Static function to convert between any two timestamps
      * @param raw_timestamp The timestamp to convert
-     * @param start_offset The starting epoch
-     * @param end_offset The ending epoch
-     * @return
+     * @param in_epoch The starting epoch
+     * @param out_epoch The ending epoch
+     * @return The equivalent timestamp relative to the requested epoch
      */
-    static time_t convert_epoch(time_t raw_timestamp, epochStart start_offset,
-                                epochStart end_offset);
+    static time_t convert_epoch(time_t raw_timestamp, epochStart in_epoch,
+                                epochStart out_epoch);
 
     /**
      * @brief Get the timestamp of an epochTime object in a different epoch
      *
      * @param in_time The input epochTime object
-     * @param end_offset The ending epoch
+     * @param out_epoch The ending epoch
      * @return The equivalent timestamp relative to the requested epoch
      */
-    static time_t convert_epoch(epochTime in_time, epochStart end_offset);
+    static time_t convert_epoch(epochTime in_time, epochStart out_epoch);
+
+#ifndef DOXYGEN
+    // Delete functions to avoid implicit conversions
+    // https://stackoverflow.com/questions/12877546/how-do-i-avoid-implicit-conversions-on-non-constructing-functions
+    template <class T>
+    time_t convert_epoch(T, epochStart in_epoch,
+                         epochStart out_epoch) = delete;  // C++11
+    template <class T>
+    time_t convert_epoch(T, epochStart out_epoch) = delete;  // C++11
+#endif
 
     /**
      * @brief Convert Unix Time to GPS Time
@@ -316,6 +326,8 @@ class epochTime {
  *
  * @note This is effectively a static class, with all static functions and a
  * deleted constructor.
+ *
+ * @todo Support half/quarter hour time zones
  */
 class loggerClock {
  public:
@@ -373,6 +385,27 @@ class loggerClock {
      * @return The number of seconds from the start of the given epoch.
      */
     static uint32_t getNowAsEpoch(int8_t utcOffset, epochStart epoch);
+
+    /**
+     * @brief Get the current epoch time from the RTC and return it as
+     * individual parts.
+     *
+     * @param seconds [out] Reference to a variable where the seconds will be
+     * stored
+     * @param minutes [out] Reference to a variable where the minutes will be
+     * stored
+     * @param hours [out] Reference to a variable where the hours will be stored
+     * @param day [out] Reference to a variable where the day will be stored
+     * @param month [out] Reference to a variable where the month will be stored
+     * @param year [out] Reference to a variable where the year will be stored
+     * @param tz_offset [in] The time zone offset from UTC in hours
+     *
+     * @note The tz_offset is an input parameter - you need to set the timezone
+     * that you want the other parts to be set in!
+     */
+    static void getNowAsParts(int8_t& seconds, int8_t& minutes, int8_t& hours,
+                              int8_t& day, int8_t& month, uint16_t& year,
+                              uint8_t tz_offset);
 
     /**
      * @brief Convert an epoch time (seconds since a fixed epoch start) into a
@@ -560,6 +593,24 @@ class loggerClock {
      * must happen at run time, not at compile time.
      */
     static void begin();
+
+    /**
+     * @brief Get the epoch start for the processor/Arduino core as an
+     * epochStart object
+     *
+     * @return The epoch start for the processor/Arduino core
+     */
+    static epochStart getCoreEpochStart() {
+        return _core_epoch;
+    };
+    /**
+     * @brief Get the epoch start for the RTC as an epochStart object
+     *
+     * @return The epoch start for the RTC
+     */
+    static epochStart getRTCEpochStart() {
+        return _rtcEpoch;
+    };
 
  protected:
 

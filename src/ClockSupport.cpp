@@ -17,11 +17,11 @@ epochTime::epochTime(time_t timestamp, epochStart epoch) {
 }
 
 
-time_t epochTime::convert_epoch(time_t raw_timestamp, epochStart start_offset,
-                                epochStart end_offset) {
-    switch (start_offset) {
+time_t epochTime::convert_epoch(time_t raw_timestamp, epochStart in_epoch,
+                                epochStart out_epoch) {
+    switch (in_epoch) {
         case epochStart::unix_epoch: {
-            switch (end_offset) {
+            switch (out_epoch) {
                 case epochStart::y2k_epoch: {
                     return raw_timestamp - EPOCH_UNIX_TO_Y2K;
                 }
@@ -38,7 +38,7 @@ time_t epochTime::convert_epoch(time_t raw_timestamp, epochStart start_offset,
             }
         }
         case epochStart::y2k_epoch: {
-            switch (end_offset) {
+            switch (out_epoch) {
                 case epochStart::unix_epoch: {
                     return raw_timestamp + EPOCH_UNIX_TO_Y2K;
                 }
@@ -57,7 +57,7 @@ time_t epochTime::convert_epoch(time_t raw_timestamp, epochStart start_offset,
             }
         }
         case epochStart::gps_epoch: {
-            switch (end_offset) {
+            switch (out_epoch) {
                 case epochStart::unix_epoch: {
                     return epochTime::gps2unix(raw_timestamp);
                 }
@@ -76,7 +76,7 @@ time_t epochTime::convert_epoch(time_t raw_timestamp, epochStart start_offset,
             }
         }
         case epochStart::nist_epoch: {
-            switch (end_offset) {
+            switch (out_epoch) {
                 case epochStart::unix_epoch: {
                     return raw_timestamp - EPOCH_NIST_TO_UNIX;
                 }
@@ -101,9 +101,9 @@ time_t epochTime::convert_epoch(time_t raw_timestamp, epochStart start_offset,
 }
 
 
-time_t epochTime::convert_epoch(epochTime in_time, epochStart end_offset) {
+time_t epochTime::convert_epoch(epochTime in_time, epochStart out_epoch) {
     return convert_epoch(in_time._unixTimestamp, epochStart::unix_epoch,
-                         end_offset);
+                         out_epoch);
 }
 
 // Convert Unix Time to GPS Time
@@ -235,6 +235,32 @@ uint32_t loggerClock::getNowAsEpoch(int8_t utcOffset, epochStart epoch) {
     uint32_t rtc_return = getRawRTCNow();
     MS_DEEP_DBG(F("Raw returned timestamp:"), rtc_return);
     return tsFromRawRTC(rtc_return, utcOffset, epoch);
+}
+
+
+void loggerClock::getNowAsParts(int8_t& seconds, int8_t& minutes, int8_t& hours,
+                                int8_t& day, int8_t& month, uint16_t& year,
+                                uint8_t tz_offset) {
+    // Check the current RTC time
+    uint32_t rtc_return = getRawRTCNow();
+    MS_DEEP_DBG(F("Raw returned RTC timestamp:"), rtc_return);
+    // convert to the core epoch and the input timezone offset
+    uint32_t rtc_as_core = tsFromRawRTC(rtc_return, tz_offset, _core_epoch);
+    MS_DEEP_DBG(F("Input time converted to processor epoch:"), rtc_as_core);
+
+    // create a temporary time struct
+    // tm is a struct for time parts, defined in time.h
+    struct tm* tmp = gmtime(&rtc_as_core);
+    MS_DEEP_DBG(F("Populated time components: "), tmp->tm_year + 1900, F(" - "),
+                tmp->tm_mon + 1, F(" - "), tmp->tm_mday, F("    "),
+                tmp->tm_hour, F(" : "), tmp->tm_min, F(" : "), tmp->tm_sec);
+
+    seconds = tmp->tm_sec;
+    minutes = tmp->tm_min;
+    hours   = tmp->tm_hour;
+    day     = tmp->tm_mday;
+    month   = tmp->tm_mon + 1;      // tm_mon is 0-11
+    year    = tmp->tm_year + 1900;  // tm_year is years since 1900
 }
 
 // This converts an epoch time (seconds since a fixed epoch start) into a

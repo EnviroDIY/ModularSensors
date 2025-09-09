@@ -621,6 +621,13 @@ uint32_t Logger::getNowLocalEpoch() {
 uint32_t Logger::getNowUTCEpoch() {
     return loggerClock::getNowAsEpoch(0, Logger::_loggerEpoch);
 }
+void Logger::getNowParts(int8_t& seconds, int8_t& minutes, int8_t& hours,
+                         int8_t& day, int8_t& month, uint16_t& year,
+                         uint8_t& tz_offset) {
+    tz_offset = Logger::_loggerUTCOffset;
+    loggerClock::getNowAsParts(seconds, minutes, hours, day, month, year,
+                               Logger::_loggerUTCOffset);
+}
 
 // This converts an epoch time (unix time) into a ISO8601 formatted string.
 // It assumes the supplied date/time is in the LOGGER's timezone and adds

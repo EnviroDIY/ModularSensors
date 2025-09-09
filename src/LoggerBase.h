@@ -81,6 +81,8 @@ class dataPublisher;  // Forward declaration
  * In this library, all loggers are Arduino-style small processor circuit
  * boards.
  *
+ * @todo Support half/quarter hour time zones
+ *
  * @ingroup base_classes
  */
 class Logger {
@@ -842,16 +844,39 @@ class Logger {
      * @brief Get the current epoch time from the RTC and correct it to the
      * logging time zone.
      *
-     * @return The number of seconds from the start of the given epoch in
+     * @return The number of seconds from the start of the **UNIX** epoch in
      * the logging time zone.
      */
     static uint32_t getNowLocalEpoch();
 
     /**
+     * @brief Get the current epoch time from the RTC and return it as
+     * individual parts.
+     *
+     * @param seconds [out] Reference to a variable where the seconds will be
+     * stored
+     * @param minutes [out] Reference to a variable where the minutes will be
+     * stored
+     * @param hours [out] Reference to a variable where the hours will be stored
+     * @param day [out] Reference to a variable where the day will be stored
+     * @param month [out] Reference to a variable where the month will be stored
+     * @param year [out] Reference to a variable where the year will be stored
+     * @param tz_offset [out] Reference to a variable where the timezone offset
+     * will be stored
+     *
+     * @remark Unlike the near-identical loggerClock::getNowParts(), this
+     * function converts all of the parts to the loggers timezone and writes the
+     * logger timezone to the tz_offset variable.
+     */
+    static void getNowParts(int8_t& seconds, int8_t& minutes, int8_t& hours,
+                            int8_t& day, int8_t& month, uint16_t& year,
+                            uint8_t& tz_offset);
+
+    /**
      * @brief Get the current Universal Coordinated Time (UTC) epoch time from
      * the RTC.
      *
-     * @return The number of seconds from the start of the given epoch.
+     * @return The number of seconds from the start of the **UNIX** epoch.
      */
     static uint32_t getNowUTCEpoch();
 
