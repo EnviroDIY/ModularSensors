@@ -1193,19 +1193,26 @@ String Logger::generateFileName(bool include_time, const char* extension,
                                 const char* filePrefix) {
     if (Logger::markedLocalUnixTime == 0) { markTime(); }
     const char* use_prefix = filePrefix != nullptr ? filePrefix : getLoggerID();
-    uint8_t     len_underscore      = strlen(use_prefix) > 0 ? 1 : 0;
-    uint8_t     len_time            = include_time ? 15 : 8;
-    char        time_buff[len_time] = {'\0'};
+    MS_DEEP_DBG(F("Generating filename with prefix:"), use_prefix);
+    const char* use_ext = extension != nullptr ? extension : ".csv";
+    MS_DEEP_DBG(F("Generating filename with extension:"), use_ext);
+    uint8_t len_underscore = strlen(use_prefix) > 0 ? 1 : 0;
+    // length: YYYYMMDD_HHMMSS = 15 + 1 for null or YYYYMMDD = 8 + 1 for null
+    uint8_t len_time            = include_time ? 16 : 9;
+    char    time_buff[len_time] = {'\0'};
     if (include_time) {
         formatDateTime(time_buff, "%Y%m%d_%H%M%S", Logger::markedLocalUnixTime);
+        time_buff[15] = '\0';  // just to be sure
     } else {
         formatDateTime(time_buff, "%Y%m%d", Logger::markedLocalUnixTime);
+        time_buff[8] = '\0';  // just to be sure
     }
+    MS_DEEP_DBG(F("Generating filename with timestamp string:"), time_buff);
     String filename = String(use_prefix);
     if (len_underscore) { filename += String("_"); }
     filename += String(time_buff);
-    filename += String(extension);
-    MS_DBG(F("Generated filename: "), filename);
+    filename += String(use_ext);
+    MS_DBG(F("Generated filename:"), filename);
     return filename;
 }
 

@@ -1325,7 +1325,7 @@ class Logger {
      *
      * @note This cannot be called until *after* the RTC is started
      */
-    String generateFileName(bool include_time, const char* extension,
+    String generateFileName(bool include_time, const char* extension = nullptr,
                             const char* filePrefix = nullptr);
 
  protected:
