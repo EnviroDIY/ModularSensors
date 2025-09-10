@@ -241,8 +241,10 @@ bool BoschBMP3xx::wake(void) {
         if (!success) {
             // Set the status error bit (bit 7)
             setStatusBit(ERROR_OCCURRED);
-            // UN-set the set-up bit (bit 0) since setup failed!
-            clearStatusBit(SETUP_SUCCESSFUL);
+            // Make sure that the wake time and wake success bit (bit 4) are
+            // unset
+            _millisSensorActivated = 0;
+            clearStatusBit(WAKE_SUCCESSFUL);
         }
         return success;
     }
