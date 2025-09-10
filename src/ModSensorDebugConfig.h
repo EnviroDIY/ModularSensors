@@ -36,7 +36,7 @@
 // #define MS_SILENT
 //==============================================================
 
-
+#ifndef DOXYGEN
 //==============================================================
 // Uncomment any debugging options you might want to use
 
@@ -154,5 +154,6 @@
 // #define MS_YOSEMITECHPARENT_DEBUG_DEEP
 
 //==============================================================
+#endif  // DOXYGEN
 
 #endif  // SRC_MODSENSORDEBUGCONFIG_H_

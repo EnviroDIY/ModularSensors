@@ -230,7 +230,7 @@ The numbers of all disabled peripherals are:
 - 18, 19, 20, 21, 22, 25, 26, 27, 28, 29, 30,
 - 31, 32, 33, 38, 39, 42, 43, 44, 45, 46, 47
 
-@see #samd51_clock_other_libraries for a list of which peripherals each of these numbers pertain to.
+@see [The SAMD clock file](@ref samd51_clock_other_libraries) for a list of which peripherals each of these numbers pertain to.
 
 ### Steps in Putting an SAMD51 board to sleep<!--! {#sleep_fxn_samd51} -->
 

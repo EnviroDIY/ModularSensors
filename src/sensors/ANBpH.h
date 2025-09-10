@@ -640,8 +640,13 @@ class ANBpH : public Sensor {
     /**
      * @brief Check whether or not enough time has passed between modbus
      * commands to the sensor to send another command.
-     * @param checkReady A pointer to a function that checks whether or not the
-     * sensor is ready to for whatever you need it to do.
+     * @param checkReadyFxn A pointer to a function that checks whether or not
+     * the sensor is ready to for whatever you need it to do.
+     * @param spacing The minimum time spacing between commands; defaults to
+     * #ANB_PH_MINIMUM_REQUEST_SPACING.
+     * @param startTime The time to use as the start time to calculate the total
+     * elapsed time in waiting; defaults to 0, which uses the last modbus
+     * command time.  This is only used for debugging output.
      * @return True indicates that enough time has passed that another command
      * can be sent.
      */
@@ -650,20 +655,34 @@ class ANBpH : public Sensor {
                        uint32_t startTime = 0);
 
     /**
-     * @brief Get the estimated time before an immersion error is returned based
-     * on power cycling and the immersion sensor enablement.
-     *
-     * @return The estimated time before an immersion error is returned.
+     * @brief Get the start of the estimated time window before an immersion
+     * error is returned based on power cycling and the immersion sensor
+     * enablement.     *
+     * @return The start of the estimated time window before an immersion error
+     * is returned.
      */
     uint32_t getStartImmersionErrorWindow(void);
+    /**
+     * @brief Get the end of the estimated time window before an immersion
+     * error is returned based on power cycling and the immersion sensor
+     * enablement.
+     * @return The end of the estimated time window before an immersion error
+     * is returned.
+     */
     uint32_t getEndImmersionErrorWindow(void);
     /**
-     * @brief Get the estimated time for a measurement to complete based on
-     * the sensor's current configuration.
-     *
-     * @return The estimated time for a measurement to complete.
+     * @brief Get the start of the estimated time window for a measurement to
+     * complete based on the sensor's current configuration.
+     * @return The start of the estimated time window for a measurement to
+     * complete.
      */
     uint32_t getStartMeasurementWindow(void);
+    /**
+     * @brief Get the end of the estimated time window for a measurement to
+     * complete based on the sensor's current configuration.
+     * @return The end of the estimated time window for a measurement to
+     * complete.
+     */
     uint32_t getEndMeasurementWindow(void);
     /**
      * @brief Set the sensor's real time clock (RTC) to the current time.

@@ -29,7 +29,7 @@
   - [Configuring Interrupt Priority](#configuring-interrupt-priority)
   - [Enabling IRQs Globally](#enabling-irqs-globally)
   - [NVIC-Specific Functions](#nvic-specific-functions)
-    - [Datasheet Table 10-1. Interrupt Line Mapping](#datasheet-table-10-1interrupt-line-mapping)
+    - [Datasheet Table 10-1 Interrupt Line Mapping](#datasheet-table-10-1-interrupt-line-mapping)
   - [Exception and Interrupt Handlers](#exception-and-interrupt-handlers)
   - [NVIC Interrupts Defined in the Adafruit SAMD U2F Bootloader and Arduino Core](#nvic-interrupts-defined-in-the-adafruit-samd-u2f-bootloader-and-arduino-core)
     - [SAMD51 NVIC](#samd51-nvic)
@@ -430,27 +430,18 @@ void NVIC_DisableIRQ (IRQn_Type IRQn)
 Functions are implemented as inline code.
 
 From the SAMD51 datasheet, here are the interrupt line mapping numbers for interrupts in the NVIC
-### [Datasheet Table 10-1. Interrupt Line Mapping](https://onlinedocs.microchip.com/oxy/GUID-F5813793-E016-46F5-A9E2-718D8BCED496-en-US-14/GUID-DA8CB38A-18D7-4512-965B-BB439142B281.html?hl=icpr#GUID-DA8CB38A-18D7-4512-965B-BB439142B281__TABLE_CYS_KLX_S5)
+### [Datasheet Table 10-1 Interrupt Line Mapping](https://onlinedocs.microchip.com/oxy/GUID-F5813793-E016-46F5-A9E2-718D8BCED496-en-US-14/GUID-DA8CB38A-18D7-4512-965B-BB439142B281.html?hl=icpr#GUID-DA8CB38A-18D7-4512-965B-BB439142B281__TABLE_CYS_KLX_S5)
 
 <table data-ofb data-cols="3">
   <caption data-caption-side="top" data-is-repeated="true">
-    <span><span>Table 10-1. </span></span
-    ><span>Interrupt Line Mapping</span>
+    Table 10-1: Interrupt Line Mapping
   </caption>
-  <colgroup>
-    <col />
-    <col />
-    <col />
-  </colgroup>
-  <thead>
     <tr>
       <th>Module</th>
       <th>Source</th>
       <th>Line</th>
       <th>Enabled?</th>
     </tr>
-  </thead>
-  <tbody>
     <tr><td>EIC NMI - External Interrupt Control</td><td>NMI</td><td>NMI</td><td>enabled</td></tr>
     <tr><td>PM - Power Manager</td><td>SLEEPRDY</td><td>0</td><td>disabled</td></tr>
     <tr><td>MCLK - Main Clock</td><td>CKRDY</td><td>1</td><td>disabled</td></tr>
@@ -890,7 +881,6 @@ From the SAMD51 datasheet, here are the interrupt line mapping numbers for inter
     <tr><td>INSTREND</td></tr>
     <tr><td>SDHC0 - SD/MMC Host Controller 0</td><td>All SDHC0 Interrupts</td><td>135</td><td>disabled</td></tr>
     <tr><td>SDHC1 - SD/MMC Host Controller 1</td><td>All SDHC1 Interrupts</td><td>136</td><td>disabled</td></tr>
-  </tbody>
 </table>
 
 
