@@ -1365,37 +1365,26 @@ bool Logger::initializeSDCard(void) {
 // provided date time callback function. See SdFile::dateTimeCallback() for
 // usage.
 void Logger::fileDateTimeCallback(uint16_t* date, uint16_t* time) {
-    // Create a temporary variable for the epoch time
-    // NOTE: time_t is a typedef for uint32_t, defined in time.h
-    time_t t = getNowLocalEpoch();
-    // create a temporary time struct
-    // tm is a struct for time parts, defined in time.h
-    struct tm* tmp = gmtime(&t);
-    MS_DEEP_DBG(F("Time components: "), tmp->tm_year, F(" - "), tmp->tm_mon + 1,
-                F(" - "), tmp->tm_mday, F("    "), tmp->tm_hour, F(" : "),
-                tmp->tm_min, F(" : "), tmp->tm_sec);
+    int8_t   seconds, minutes, hours, day, month;
+    uint16_t year;
+    loggerClock::getNowAsParts(seconds, minutes, hours, day, month, year,
+                               Logger::_loggerUTCOffset);
 
     // return date using FAT_DATE macro to format fields
-    *date = FAT_DATE(tmp->tm_year + 1900, tmp->tm_mon + 1, tmp->tm_mday);
+    *date = FAT_DATE(year, month, day);
 
     // return time using FAT_TIME macro to format fields
-    *time = FAT_TIME(tmp->tm_hour, tmp->tm_min, tmp->tm_sec);
+    *time = FAT_TIME(hours, minutes, seconds);
 }
 
 
 // Protected helper function - This sets a timestamp on a file
 void Logger::setFileTimestamp(File& fileToStamp, uint8_t stampFlag) {
-    // Create a temporary variable for the epoch time
-    // NOTE: time_t is a typedef for uint32_t, defined in time.h
-    time_t t = getNowLocalEpoch();
-    // create a temporary time struct
-    // tm is a struct for time parts, defined in time.h
-    struct tm* tmp = gmtime(&t);
-    MS_DEEP_DBG(F("Time components: "), tmp->tm_year, F(" - "), tmp->tm_mon + 1,
-                F(" - "), tmp->tm_mday, F("    "), tmp->tm_hour, F(" : "),
-                tmp->tm_min, F(" : "), tmp->tm_sec);
-    fileToStamp.timestamp(stampFlag, tmp->tm_year + 1900, tmp->tm_mon + 1,
-                          tmp->tm_mday, tmp->tm_hour, tmp->tm_min, tmp->tm_sec);
+    int8_t   seconds, minutes, hours, day, month;
+    uint16_t year;
+    loggerClock::getNowAsParts(seconds, minutes, hours, day, month, year,
+                               Logger::_loggerUTCOffset);
+    fileToStamp.timestamp(stampFlag, year, month, day, hours, minutes, seconds);
 }
 
 

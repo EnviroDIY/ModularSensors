@@ -392,8 +392,9 @@ bool loggerClock::setRTClock(epochTime in_time, int8_t utcOffset) {
 
 // This checks that the logger time is within a "sane" range
 bool loggerClock::isRTCSane(void) {
-    uint32_t curRTC  = getNowAsEpoch(0, epochStart::unix_epoch);
-    bool     is_sane = isEpochTimeSane(curRTC, 0, epochStart::unix_epoch);
+    uint32_t curRTC  = getRawRTCNow();
+    bool     is_sane = isEpochTimeSane(curRTC, loggerClock::_rtcUTCOffset,
+                                       loggerClock::_rtcEpoch);
     if (!is_sane) {
         PRINTOUT(F("----- WARNING ----- !!!!!!!!!!!!!!!!!!!!"));
         PRINTOUT(F("!!!!!!!!!! ----- WARNING ----- !!!!!!!!!!"));
@@ -624,11 +625,12 @@ inline uint32_t loggerClock::tsFromRawRTC(uint32_t ts, int8_t utcOffset,
                                           epochStart epoch) {
     uint32_t ts_conv = epochTime::convert_epoch(ts, loggerClock::_rtcEpoch,
                                                 epoch);
-    MS_DEEP_DBG(F("Equivalent requested epoch RTC value is:"), ts_conv);
+    MS_DEEP_DBG(F("In"), epochTime::printEpochName(epoch),
+                F("epoch, RTC would be:"), ts_conv);
 
     // Do NOT apply an offset if the timestamp is obviously bad
     uint32_t tz_change = 0;
-    if (isEpochTimeSane(ts, utcOffset, epoch)) {
+    if (isEpochTimeSane(ts_conv, utcOffset, epoch)) {
         tz_change =
             static_cast<uint32_t>(loggerClock::_rtcUTCOffset + utcOffset) *
             3600;
