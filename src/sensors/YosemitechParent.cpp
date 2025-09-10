@@ -96,6 +96,8 @@ bool YosemitechParent::wake(void) {
         MS_DBG(getSensorNameAndLocation(), F("activated and measuring."));
     } else {
         MS_DBG(getSensorNameAndLocation(), F("was NOT activated!"));
+        // Set the status error bit (bit 7)
+        setStatusBit(ERROR_OCCURRED);
         // Make sure the activation time is zero and the wake success bit (bit
         // 4) is unset
         _millisSensorActivated = 0;

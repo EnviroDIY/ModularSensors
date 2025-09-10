@@ -115,7 +115,6 @@ bool GeoluxHydroCam::setup(void) {
 }
 
 
-// Parsing and tossing the header lines in the wake-up
 bool GeoluxHydroCam::wake(void) {
     // Sensor::wake() checks if the power pin is on and sets the wake timestamp
     // and status bits.  If it returns false, there's no reason to go on.
@@ -124,6 +123,8 @@ bool GeoluxHydroCam::wake(void) {
     bool is_ready = isCameraReady();
     if (!is_ready) {
         MS_DEEP_DBG(F("Camera is not ready to wake!"));
+        // Set the status error bit (bit 7)
+        setStatusBit(ERROR_OCCURRED);
         // Make sure that the wake time and wake success bit (bit 4) are unset
         _millisSensorActivated = 0;
         clearStatusBit(WAKE_SUCCESSFUL);
@@ -152,6 +153,8 @@ bool GeoluxHydroCam::startSingleMeasurement(void) {
 
     bool is_ready = isCameraReady();
     if (!is_ready) {
+        // Set the status error bit (bit 7)
+        setStatusBit(ERROR_OCCURRED);
         // Make sure that the measurement start time and success bit (bit 6) are
         // unset
         _millisMeasurementRequested = 0;
