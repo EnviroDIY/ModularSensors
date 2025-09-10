@@ -525,6 +525,7 @@ class ANBpH : public Sensor {
      * @return True if the setup was successful.
      */
     bool setup(void) override;
+    bool wake(void) override;
     bool sleep(void) override;
     bool startSingleMeasurement(void) override;
     bool addSingleMeasurementResult(void) override;

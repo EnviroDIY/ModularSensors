@@ -204,18 +204,46 @@ bool ANBpH::startSingleMeasurement(void) {
     }
 
     if (success) {
-        // Update the time that the sensor was activated
-        _millisSensorActivated = millis();
-        MS_DBG(getSensorNameAndLocation(), F("activated and measuring."));
+        // Update the time that a measurement was requested
+        _millisMeasurementRequested = millis();
     } else {
-        MS_DBG(getSensorNameAndLocation(), F("was NOT activated!"));
-        // Make sure the activation time is zero and the wake success bit (bit
-        // 4) is unset
-        _millisSensorActivated = 0;
-        clearStatusBit(WAKE_SUCCESSFUL);
+        // Set the status error bit (bit 7)
+        setStatusBit(ERROR_OCCURRED);
+        // Otherwise, make sure that the measurement start time and success bit
+        // (bit 6) are unset
+        MS_DBG(getSensorNameAndLocation(),
+               F("did not successfully start a measurement."));
+        _millisMeasurementRequested = 0;
+        clearStatusBit(MEASUREMENT_SUCCESSFUL);
     }
 
     return success;
+}
+
+
+// this confirms that the sensor is really giving modbus responses so nothing
+// further happens if not
+
+bool ANBpH::wake(void) {
+    // Sensor::wake() checks if the power pin is on and sets the wake timestamp
+    // and status bits.  If it returns false, there's no reason to go on.
+    if (!Sensor::wake()) return false;
+
+    bool is_ready = isSensorReady(&anbSensor::gotModbusResponse,
+                                  ANB_PH_MINIMUM_REQUEST_SPACING,
+                                  _millisPowerOn);
+    if (!is_ready) {
+        MS_DEEP_DBG(
+            F("Sensor isn't responding to modbus commands; wake failed!"));
+        // Set the status error bit (bit 7)
+        setStatusBit(ERROR_OCCURRED);
+        // Make sure that the wake time and wake success bit (bit 4) are unset
+        _millisSensorActivated = 0;
+        clearStatusBit(WAKE_SUCCESSFUL);
+        return false;
+    }
+
+    return true;
 }
 
 
@@ -451,10 +479,6 @@ bool ANBpH::isWarmedUp(bool debug) {
                getSensorNameAndLocation(), F("timed out after power up."));
         return true;  // timeout
     } else if (elapsed_since_power_on > _warmUpTime_ms) {
-        if (debug) {
-            MS_DBG(F("It's been"), elapsed_since_power_on, F("ms, and"),
-                   getSensorNameAndLocation(), F("might be warmed up!"));
-        }
         bool is_ready = isSensorReady(&anbSensor::gotModbusResponse,
                                       ANB_PH_MINIMUM_REQUEST_SPACING,
                                       _millisPowerOn);
@@ -496,11 +520,6 @@ bool ANBpH::isStable(bool debug) {
                F("timed out waiting for a valid status code."));
         return true;  // timeout
     } else if (elapsed_since_wake_up > minTime) {
-        if (debug) {
-            MS_DBG(F("It's been"), elapsed_since_wake_up, F("ms, and"),
-                   getSensorNameAndLocation(),
-                   F("might be ready to start a measurement."));
-        }
         bool is_ready = isSensorReady(&anbSensor::isSensorReady,
                                       ANB_PH_MINIMUM_REQUEST_SPACING,
                                       _millisSensorActivated);
