@@ -60,6 +60,7 @@ ___
     - [The processor as a sensor](#the-processor-as-a-sensor)
     - [Maxim DS3231 RTC as a sensor](#maxim-ds3231-rtc-as-a-sensor)
     - [Alphasense CO2](#alphasense-co2)
+    - [ANB Sensors pH Sensor](#anb-sensors-ph-sensor)
     - [AOSong AM2315](#aosong-am2315)
     - [AOSong DHT](#aosong-dht)
     - [Apogee SQ-212 Quantum Light Sensor](#apogee-sq-212-quantum-light-sensor)
@@ -631,6 +632,14 @@ ___
 @see @ref sensor_alphasense_co2
 
 <!--! @menusnip{alphasense_co2} -->
+
+___
+
+### ANB Sensors pH Sensor<!--! {#menu_walk_anb_ph} -->
+
+@see @ref sensor_anb_ph
+
+<!--! @menusnip{anb_ph} -->
 
 ___
 

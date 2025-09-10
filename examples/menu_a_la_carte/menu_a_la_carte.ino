@@ -901,8 +901,14 @@ Variable* modemTemperature =
 #include <sensors/ProcessorStats.h>
 
 // Create the main processor chip "sensor" - for general metadata
-const char*    mcuBoardVersion = "v1.1";
-ProcessorStats mcuBoard(mcuBoardVersion);
+#if defined(ENVIRODIY_STONEFLY_M4)
+const char* mcuBoardVersion = "v0.1";
+#elif defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
+const char* mcuBoardVersion = "v1.1";
+#else
+const char* mcuBoardVersion = "unknown";
+#endif
+ProcessorStats mcuBoard(mcuBoardVersion, 5);
 
 // Create sample number, battery voltage, free RAM, and reset cause variable
 // pointers for the processor
@@ -958,6 +964,52 @@ Variable* asCO2        = new AlphasenseCO2_CO2(&alphasenseCO2,
 Variable* asco2voltage = new AlphasenseCO2_Voltage(
     &alphasenseCO2, "12345678-abcd-1234-ef00-1234567890ab");
 /** End [alphasense_co2] */
+#endif
+
+
+#if defined(BUILD_SENSOR_ANB_PH)
+#ifndef BUILD_MODBUS_SENSOR
+#define BUILD_MODBUS_SENSOR
+#endif
+// ==========================================================================
+//  ANB Sensors pH Sensor
+// ==========================================================================
+/** Start [anb_ph] */
+#include <sensors/ANBpH.h>
+
+// NOTE: Extra hardware and software serial ports are created in the "Settings
+// for Additional Serial Ports" section
+
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+byte anbModbusAddress =
+    0x55;  // The modbus address of ANB pH Sensor (0x55 is the default)
+const int8_t  anbPower          = sensorPowerPin;  // ANB pH Sensor power pin
+const int8_t  alAdapterPower    = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  al485EnablePin    = -1;              // Adapter RE/DE pin
+const uint8_t anbNumberReadings = 5;
+
+// Create an ANB pH sensor object
+ANBpH anbPH(anbModbusAddress, modbusSerial, anbPower, alAdapterPower,
+            al485EnablePin);
+
+// Create all of the variable pointers for the ANB pH sensor
+Variable* anbPHValue = new ANBpH_pH(&anbPH,
+                                    "12345678-abcd-1234-ef00-1234567890ab");
+Variable* anbPHTemp  = new ANBpH_Temp(&anbPH,
+                                      "12345678-abcd-1234-ef00-1234567890ab");
+Variable* anbPHSal   = new ANBpH_Salinity(&anbPH,
+                                          "12345678-abcd-1234-ef00-1234567890ab");
+Variable* anbPHSpCond =
+    new ANBpH_SpCond(&anbPH, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* anbPHEC = new ANBpH_EC(&anbPH,
+                                 "12345678-abcd-1234-ef00-1234567890ab");
+Variable* anbPHHealth =
+    new ANBpH_HealthCode(&anbPH, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* anbPHDiagnostic =
+    new ANBpH_DiagnosticCode(&anbPH, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* anbPHStatus =
+    new ANBpH_StatusCode(&anbPH, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [anb_ph] */
 #endif
 
 
@@ -1386,8 +1438,8 @@ Variable* obs3VoltHigh = new CampbellOBS3_Voltage(
 const char*  RainVUESDI12address = "0";  // The SDI-12 Address of the RainVUE10
 const int8_t RainVUEPower        = -1;   // Power pin, for continuous power
 const int8_t RainVUEData = 5;  // The SDI-12 data pin, for continuous power
-// NOTE:  you should NOT take more than one readings.  THe sensor counts
-// commutative tips and rain accumulation since the last measurement.
+// NOTE:  you should NOT take more than one readings.  The sensor counts
+// cumulative tips and rain accumulation since the last measurement.
 
 // Create a Campbell RainVUE10 sensor object
 CampbellRainVUE10 rainvue(*RainVUESDI12address, RainVUEPower, RainVUEData);
@@ -2884,6 +2936,16 @@ Variable* variableList[] = {
     asCO2,
     asco2voltage,
 #endif
+#if defined(BUILD_SENSOR_ANB_PH)
+    anbPHValue,
+    anbPHTemp,
+    anbPHSal,
+    anbPHSpCond,
+    anbPHEC,
+    anbPHHealth,
+    anbPHDiagnostic,
+    anbPHStatus,
+#endif
 #if defined(BUILD_SENSOR_AO_SONG_AM2315)
     am2315Humid,
     am2315Temp,
@@ -3292,6 +3354,8 @@ const char* caCertName = "client_ca.0";
 const char* caCertName = "AmazonRootCA1.pem";
 #endif
 
+// The S3 host (need for region specific requests)
+const char* s3Host = "s3.amazonaws.com";
 // Expand the expected S3 publish topic into a buffer
 String s3URLPubTopic = "$aws/rules/GetUploadURL/" + String(LoggerID);
 // Expand the expected S3 subscribe topic into a buffer
@@ -3511,7 +3575,6 @@ void setup() {
 
 #if defined(BUILD_MODBUS_SENSOR)
     // Start the stream for the modbus sensors;
-    // all currently supported modbus sensors use 9600 baud
     modbusSerial.begin(9600);
 #endif
 
@@ -3596,7 +3659,10 @@ void setup() {
 #endif
 
 #if defined(BUILD_PUB_S3_PRESIGNED_PUBLISHER)
+    // Set the S3 host and certificate authority name
+    s3pub.setHost(s3Host);
     s3pub.setCACertName(caCertName);
+    // Attach to the logger
     s3pub.attachToLogger(dataLogger);
 #endif
 
@@ -3957,4 +4023,4 @@ void loop() {
 // cspell: ignore RDOSDI TROLLSDI acculev nanolev TMSDI ELEC fivetm tallyi
 // cspell: ignore kmph TIINA Chloro Fluoroscein PTSA BTEX ECpwrPin anlg spcond
 // cspell: ignore Relia NEOPIXEL RESTAPI autobauding xbeec
-// cspell: ignore CFUN UMNOPROF URAT
+// cspell: ignore CFUN UMNOPROF URAT PHEC
