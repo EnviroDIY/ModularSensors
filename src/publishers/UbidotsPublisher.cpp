@@ -74,8 +74,8 @@ uint16_t UbidotsPublisher::calculateJsonSize() {
     for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
         jsonLength += 1;  //  "
         jsonLength +=
-            _baseLogger->getVarUUIDAtI(i).length();  // parameter ID length
-        jsonLength += 11;                            //  ":{"value":
+            strlen(_baseLogger->getVarUUIDAtI(i));  // parameter ID length
+        jsonLength += 11;                           //  ":{"value":
         jsonLength += _baseLogger->getValueStringAtI(i).length();
         jsonLength += 13;  // ,"timestamp":
         jsonLength += 13;  // epoch time in milliseconds
@@ -150,7 +150,7 @@ int16_t UbidotsPublisher::publishData(Client* outClient, bool) {
 
         for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
             txBufferAppend('"');
-            txBufferAppend(_baseLogger->getVarUUIDAtI(i).c_str());
+            txBufferAppend(_baseLogger->getVarUUIDAtI(i));
             txBufferAppend("\":{\"value\":");
             txBufferAppend(_baseLogger->getValueStringAtI(i).c_str());
             txBufferAppend(",\"timestamp\":");

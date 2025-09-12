@@ -632,7 +632,15 @@ class Logger {
      * @param position_i The position of the variable in the array.
      * @return The variable UUID
      */
-    String getVarUUIDAtI(uint8_t position_i);
+    const char* getVarUUIDAtI(uint8_t position_i);
+    /**
+     * @brief Get the UUID of the variable at the given position in the internal
+     * variable array object.
+     *
+     * @param position_i The position of the variable in the array.
+     * @return The variable UUID
+     */
+    String getVarUUIDStringAtI(uint8_t position_i);
     /**
      * @brief Get the resolution (number of decimal places) of the variable at
      * the given position in the internal variable array object.

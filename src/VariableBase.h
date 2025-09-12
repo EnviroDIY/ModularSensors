@@ -343,7 +343,14 @@ class Variable {
      *
      * @return The customized code for the variable
      */
-    String getVarUUID(void);
+    String getVarUUIDString(void);
+    // This gets/sets the variable UUID, if one has been assigned
+    /**
+     * @brief Get the customized code for the variable
+     *
+     * @return The customized code for the variable
+     */
+    const char* getVarUUID(void);
     /**
      * @brief Set a customized code for the variable
      *

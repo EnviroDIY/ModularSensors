@@ -351,7 +351,7 @@ int16_t EnviroDIYPublisher::flushDataBuffer(Client* outClient) {
         uint8_t variables = _logBuffer.getNumVariables();
         for (uint8_t var = 0; var < variables; var++) {
             txBufferAppend('"');
-            txBufferAppend(_baseLogger->getVarUUIDAtI(var).c_str());
+            txBufferAppend(_baseLogger->getVarUUIDAtI(var));
             txBufferAppend('"');
             txBufferAppend(':');
             if (records > 1) { txBufferAppend('['); }

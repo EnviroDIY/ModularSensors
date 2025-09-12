@@ -462,7 +462,7 @@ int16_t AWS_IoT_Publisher::publishMetadata(Client* outClient) {
             txBufferAppend("\",\"variable_code\":\"");
             txBufferAppend(_baseLogger->getVarCodeAtI(i).c_str());
             txBufferAppend("\",\"variable_uuid\":\"");
-            txBufferAppend(_baseLogger->getVarUUIDAtI(i).c_str());
+            txBufferAppend(_baseLogger->getVarUUIDAtI(i));
             txBufferAppend("}");
             txBufferAppend("\0");  // null terminate!
             MS_DBG(F("Variable"), i, F("metadata message length:"),

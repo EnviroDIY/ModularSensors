@@ -422,7 +422,11 @@ String Logger::getVarCodeAtI(uint8_t position_i) {
     return _internalArray->arrayOfVars[position_i]->getVarCode();
 }
 // This returns the variable UUID, if one has been assigned
-String Logger::getVarUUIDAtI(uint8_t position_i) {
+String Logger::getVarUUIDStringAtI(uint8_t position_i) {
+    return _internalArray->arrayOfVars[position_i]->getVarUUIDString();
+}
+// This returns the variable UUID, if one has been assigned
+const char* Logger::getVarUUIDAtI(uint8_t position_i) {
     return _internalArray->arrayOfVars[position_i]->getVarUUID();
 }
 // This returns the variable resolution
@@ -1269,7 +1273,7 @@ void Logger::printFileHeader(Stream* stream) {
     STREAM_CSV_ROW(F("Result Unit:"), getVarUnitAtI(i))
     // Next comes the variable UUIDs
     // We'll only add UUID's if we see a UUID for the first variable
-    if (getVarUUIDAtI(0).length() > 1) {
+    if (getVarUUIDAtI(0) != nullptr && strlen(getVarUUIDAtI(0)) > 1) {
         STREAM_CSV_ROW(F("Result UUID:"), getVarUUIDAtI(i))
     }
 

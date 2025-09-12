@@ -826,6 +826,11 @@ bool VariableArray::completeUpdate(void) {
         }
     }
 
+    // // power down all the sensors again, just in case
+    // MS_DBG(F("----->> Running a final power-down of all the sensors. ..."));
+    // sensorsPowerDown();
+    // MS_DBG(F("   ... Complete. <<-----"));
+
     // Average measurements and notify variables of the updates
     MS_DBG(F("----->> Averaging results and notifying all variables. ..."));
     for (uint8_t i = 0; i < _variableCount; i++) {
@@ -934,11 +939,18 @@ bool VariableArray::checkVariableUUIDs(void) {
             PRINTOUT(arrayOfVars[i]->getVarCode(), F("has an invalid UUID!"));
             success = false;
         }
-        if (arrayOfVars[i]->getVarUUID().length() > 0) {
+        // if (strcmp(arrayOfVars[i]->getVarUUID(),
+        //            "12345678-abcd-1234-ef00-1234567890ab") == 0) {
+        //     PRINTOUT(arrayOfVars[i]->getVarCode(),
+        //              F("has an placeholder UUID!"));
+        //     success = false;
+        // }
+        if (arrayOfVars[i]->getVarUUID() != nullptr &&
+            strlen(arrayOfVars[i]->getVarUUID()) > 0) {
             for (uint8_t j = i + 1; j < _variableCount; j++) {
-                if (arrayOfVars[i]->getVarUUID() ==
-                        arrayOfVars[j]->getVarUUID() &&
-                    arrayOfVars[j]->getVarUUID().length() > 0) {
+                if (strcmp(arrayOfVars[i]->getVarUUID(),
+                           arrayOfVars[j]->getVarUUID()) == 0 &&
+                    strlen(arrayOfVars[j]->getVarUUID()) > 0) {
                     PRINTOUT(arrayOfVars[i]->getVarCode(),
                              F("has a non-unique UUID!"));
                     success = false;
@@ -952,7 +964,8 @@ bool VariableArray::checkVariableUUIDs(void) {
         PRINTOUT(F("All variable UUID's appear to be correctly formed.\n"));
     // Print out all UUID's to check
     for (uint8_t i = 0; i < _variableCount; i++) {
-        if (arrayOfVars[i]->getVarUUID().length() > 0) {
+        if (arrayOfVars[i]->getVarUUID() != nullptr &&
+            strlen(arrayOfVars[i]->getVarUUID()) > 0) {
             PRINTOUT(arrayOfVars[i]->getVarUUID(), F("->"),
                      arrayOfVars[i]->getVarCode());
         }
