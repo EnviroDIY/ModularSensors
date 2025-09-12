@@ -1,5 +1,5 @@
 {
-  "action_cache_version": 33,
+  "action_cache_version": 34,
   "dependencies": [
     {
       "name": "EnviroDIY_DS3231",
@@ -33,7 +33,7 @@
       "name": "SparkFun Qwiic RTC RV8803 Arduino Library",
       "owner": "sparkfun",
       "url": "https://github.com/sparkfun/SparkFun_RV-8803_Arduino_Library.git",
-      "version": "~1.2.9",
+      "version": "~1.2.10",
       "note": "For the RV-8803 RTC",
       "frameworks": "arduino"
     },
@@ -345,6 +345,18 @@
         "Sara Damiano"
       ],
       "frameworks": "arduino"
+    },
+    {
+      "name": "fast_math",
+      "owner": "robtillaart",
+      "url": "https://github.com/RobTillaart/fast_math",
+      "version": "~0.2.4",
+      "note": "Arduino library for fast math algorithms.",
+      "authors": [
+        "Rob Tillaart"
+      ],
+      "frameworks": "*",
+      "platforms": "*"
     },
     {
       "name": "ANBSensorsModbus",
