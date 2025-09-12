@@ -41,8 +41,8 @@ epochStart Logger ::_loggerEpoch = MS_LOGGER_EPOCH;
 // Initialize the static time adjustment
 int8_t Logger::_loggerRTCOffset = 0;
 // Initialize the static timestamps
-uint32_t Logger::markedLocalUnixTime = 0;
-uint32_t Logger::markedUTCUnixTime   = 0;
+time_t Logger::markedLocalUnixTime = 0;
+time_t Logger::markedUTCUnixTime   = 0;
 // Initialize the testing/logging flags
 volatile bool Logger::isLoggingNow = false;
 volatile bool Logger::isTestingNow = false;
@@ -618,11 +618,11 @@ void Logger::setTZOffset(int8_t offset) {
 int8_t Logger::getTZOffset(void) {
     return Logger::_loggerRTCOffset;
 }
-uint32_t Logger::getNowLocalEpoch() {
+time_t Logger::getNowLocalEpoch() {
     return loggerClock::getNowAsEpoch(Logger::_loggerUTCOffset,
                                       Logger::_loggerEpoch);
 }
-uint32_t Logger::getNowUTCEpoch() {
+time_t Logger::getNowUTCEpoch() {
     return loggerClock::getNowAsEpoch(0, Logger::_loggerEpoch);
 }
 void Logger::getNowParts(int8_t& seconds, int8_t& minutes, int8_t& hours,
@@ -637,12 +637,12 @@ void Logger::getNowParts(int8_t& seconds, int8_t& minutes, int8_t& hours,
 // It assumes the supplied date/time is in the LOGGER's timezone and adds
 // the LOGGER's offset as the time zone offset in the string. code modified
 // from parts of the SparkFun RV-8803 library
-String Logger::formatDateTime_ISO8601(uint32_t epochSeconds) {
+String Logger::formatDateTime_ISO8601(time_t epochSeconds) {
     return loggerClock::formatDateTime_ISO8601(
         epochSeconds, Logger::_loggerUTCOffset, Logger::_loggerEpoch);
 }
 void Logger::formatDateTime(char* buffer, const char* fmt,
-                            uint32_t epochSeconds) {
+                            time_t epochSeconds) {
     loggerClock::formatDateTime(buffer, fmt, epochSeconds,
                                 Logger::_loggerEpoch);
 }
@@ -663,7 +663,7 @@ void Logger::markTime(void) {
     MS_DEEP_DBG(F("Marking time..."));
     Logger::markedUTCUnixTime   = getNowUTCEpoch();
     Logger::markedLocalUnixTime = markedUTCUnixTime +
-        ((uint32_t)Logger::_loggerUTCOffset) * 3600;
+        static_cast<time_t>(Logger::_loggerUTCOffset * 3600);
 }
 
 
@@ -671,7 +671,7 @@ void Logger::markTime(void) {
 // rate
 bool Logger::checkInterval(void) {
     bool     retval;
-    uint32_t checkTime = getNowLocalEpoch();
+    uint32_t checkTime = static_cast<uint32_t>(getNowLocalEpoch());
     int16_t  interval  = _loggingIntervalMinutes;
     if (_remainingShortIntervals > 0) {
         // log the first few samples at an interval of 1 minute so that
@@ -701,7 +701,8 @@ bool Logger::checkInterval(void) {
 #endif
         // Update the time variables with the current time
         markTime();
-        MS_DBG(F("Time marked at (unix):"), Logger::markedLocalUnixTime);
+        MS_DBG(F("Time marked at (unix):"),
+               static_cast<uint32_t>(Logger::markedLocalUnixTime));
         MS_DBG(F("Time to log!"));
 #if MS_LOGGERBASE_BUTTON_BENCH_TEST == 0
         if ((_remainingShortIntervals > 0) && (!testing)) {
@@ -731,10 +732,11 @@ bool Logger::checkMarkedInterval(void) {
     if (_remainingShortIntervals > 0) { interval = 1; }
 
     bool retval;
-    MS_DBG(F("Marked Time:"), Logger::markedLocalUnixTime,
+    MS_DBG(
+F("Marked Time:"), static_cast<uint32_t>(Logger::markedLocalUnixTime),
            F("Logging interval in seconds:"), (interval * 60),
            F("Mod of Logging Interval:"),
-           Logger::markedLocalUnixTime % (interval * 60));
+        static_cast<uint32_t>((Logger::markedLocalUnixTime % (interval * 60))));
 
     if (Logger::markedLocalUnixTime != 0 &&
         (Logger::markedLocalUnixTime % (interval * 60) == 0)) {
@@ -1680,7 +1682,8 @@ void Logger::begin() {
     MS_DBG(F("Setting up a watch-dog timer to restart the board after"),
            realWatchDogTime,
            F("minutes without being fed (2x logging interval)"));
-    extendedWatchDog::setupWatchDog((uint32_t)(realWatchDogTime * 60));
+    extendedWatchDog::setupWatchDog(
+        static_cast<uint32_t>(realWatchDogTime * 60));
     // Enable the watchdog
     MS_DEEP_DBG(F("Enabling the watchdog"));
     extendedWatchDog::enableWatchDog();

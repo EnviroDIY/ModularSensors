@@ -282,7 +282,7 @@ float calculateWaterDepthTempCorrected(void) {
     const float gravitationalConstant =
         9.80665;  // m/s2, meters per second squared
     // First get water pressure in Pa for the calculation: 1 mbar = 100 Pa
-    float waterPressurePa  = 100 * calculateWaterPressure();
+    float waterPressurePa   = 100 * calculateWaterPressure();
     float waterTemperatureC = ms5803Temp->getValue();
     // Converting water depth for the changes of pressure with depth
     // Water density (kg/m3) from equation 6 from

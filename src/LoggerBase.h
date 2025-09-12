@@ -855,7 +855,7 @@ class Logger {
      * @return The number of seconds from the start of the **UNIX** epoch in
      * the logging time zone.
      */
-    static uint32_t getNowLocalEpoch();
+    static time_t getNowLocalEpoch();
 
     /**
      * @brief Get the current epoch time from the RTC and return it as
@@ -886,7 +886,7 @@ class Logger {
      *
      * @return The number of seconds from the start of the **UNIX** epoch.
      */
-    static uint32_t getNowUTCEpoch();
+    static time_t getNowUTCEpoch();
 
     /**
      * @brief Convert an epoch time into a ISO8601 formatted string.
@@ -899,7 +899,7 @@ class Logger {
      * epoch (#MS_LOGGER_EPOCH).
      * @return An ISO8601 formatted String.
      */
-    static String formatDateTime_ISO8601(uint32_t epochSeconds);
+    static String formatDateTime_ISO8601(time_t epochSeconds);
 
     /**
      * @brief Convert an epoch time into a character string based on the input
@@ -921,23 +921,23 @@ class Logger {
      * epoch in the given offset from UTC.
      */
     static void formatDateTime(char* buffer, const char* fmt,
-                               uint32_t epochSeconds);
+                               time_t epochSeconds);
 
     /**
-     * @brief Pass-through to loggerClock::setRTClock(uint32_t
+     * @brief Pass-through to loggerClock::setRTClock(time_t
      * UTCEpochSeconds,0, epochStart::unix_epoch) Verify that the input value is
      * sane and if so set the real time clock to the given time.
      *
      * @m_deprecated_since{0,37,0}
      *
-     * Call loggerClock::setRTClock(uint32_t ts, int8_t utcOffset , epochStart
+     * Call loggerClock::setRTClock(time_t ts, int8_t utcOffset , epochStart
      * epoch) directly in new programs.
      *
      * @param UTCEpochSeconds The number of seconds since 1970 in UTC.
      * @return True if the input timestamp passes sanity checks **and**
      * the clock has been successfully set.
      */
-    bool setRTClock(uint32_t UTCEpochSeconds);
+    bool setRTClock(time_t UTCEpochSeconds);
 
     /**
      * @brief Passthrough to loggerClock::isRTCSane(); check that the current
@@ -1517,12 +1517,12 @@ class Logger {
     /**
      * @brief The static "marked" epoch time for the local timezone.
      */
-    static uint32_t markedLocalUnixTime;
+    static time_t markedLocalUnixTime;
 
     /**
      * @brief The static "marked" epoch time for UTC.
      */
-    static uint32_t markedUTCUnixTime;
+    static time_t markedUTCUnixTime;
 
     // These are flag variables noting the current state (logging/testing)
     // NOTE:  if the logger isn't currently logging or testing or in the middle

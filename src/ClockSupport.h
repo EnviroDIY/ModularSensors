@@ -252,10 +252,10 @@ class epochTime {
     // Delete functions to avoid implicit conversions
     // https://stackoverflow.com/questions/12877546/how-do-i-avoid-implicit-conversions-on-non-constructing-functions
     template <class T>
-    time_t convert_epoch(T, epochStart in_epoch,
-                         epochStart out_epoch) = delete;  // C++11
+    static time_t convert_epoch(T, epochStart in_epoch,
+                                epochStart out_epoch) = delete;  // C++11
     template <class T>
-    time_t convert_epoch(T, epochStart out_epoch) = delete;  // C++11
+    static time_t convert_epoch(T, epochStart out_epoch) = delete;  // C++11
 #endif
 
     /**
@@ -386,7 +386,7 @@ class loggerClock {
      *
      * @return The number of seconds from the start of the given epoch.
      */
-    static uint32_t getNowAsEpoch(int8_t utcOffset, epochStart epoch);
+    static time_t getNowAsEpoch(int8_t utcOffset, epochStart epoch);
 
     /**
      * @brief Get the current epoch time from the RTC and return it as
@@ -422,7 +422,7 @@ class loggerClock {
      * @param epoch The epoch of the input epoch time.
      * @return An ISO8601 formatted String.
      */
-    static String formatDateTime_ISO8601(uint32_t   epochSeconds,
+    static String formatDateTime_ISO8601(time_t     epochSeconds,
                                          int8_t     epochSecondsUTCOffset,
                                          epochStart epoch);
     /**
@@ -454,7 +454,7 @@ class loggerClock {
      * @param epoch The epoch of the input epoch time.
      */
     static void formatDateTime(char* buffer, const char* fmt,
-                               uint32_t epochSeconds, epochStart epoch);
+                               time_t epochSeconds, epochStart epoch);
     /**
      * @brief Convert an epoch time into a character string based on the input
      * strftime format string and put it into the given buffer.
@@ -487,7 +487,7 @@ class loggerClock {
      *
      * @note There is no timezone correction in this function
      */
-    static bool setRTClock(uint32_t ts, int8_t utcOffset, epochStart epoch);
+    static bool setRTClock(time_t ts, int8_t utcOffset, epochStart epoch);
     /**
      * @brief Verify that the input value is sane and if so sets the real time
      * clock to the given time.
@@ -526,8 +526,7 @@ class loggerClock {
      * the epoch).
      * @return True if the given time passes sanity range checking.
      */
-    static bool isEpochTimeSane(uint32_t ts, int8_t utcOffset,
-                                epochStart epoch);
+    static bool isEpochTimeSane(time_t ts, int8_t utcOffset, epochStart epoch);
     /**
      * @brief Check that a given epoch time (an epochTime object) is within a
      * "sane" range.
@@ -550,7 +549,7 @@ class loggerClock {
      * @param epoch The type of epoch to use (ie, the standard for the start of
      * the epoch).
      */
-    static void setNextRTCInterrupt(uint32_t ts, int8_t utcOffset,
+    static void setNextRTCInterrupt(time_t ts, int8_t utcOffset,
                                     epochStart epoch);
     /**
      * @brief Set an alarm to fire a clock interrupt at a specific epoch time
@@ -655,8 +654,8 @@ class loggerClock {
      * @return A timestamp converted to the epoch and timezone used internally
      * by the RTC
      */
-    static inline uint32_t tsToRawRTC(uint32_t ts, int8_t utcOffset,
-                                      epochStart epoch);
+    static inline time_t tsToRawRTC(time_t ts, int8_t utcOffset,
+                                    epochStart epoch);
     /**
      * @brief Convert a timestamp from the RTC's internal epoch and UTC offset
      * to the requested offset and epoch.
@@ -669,22 +668,22 @@ class loggerClock {
      * @return A timestamp converted from the epoch and timezone used internally
      * by the RTC to the requested epoch and offset
      */
-    static inline uint32_t tsFromRawRTC(uint32_t ts, int8_t utcOffset,
-                                        epochStart epoch);
+    static inline time_t tsFromRawRTC(time_t ts, int8_t utcOffset,
+                                      epochStart epoch);
 
     /**
      * @brief Get a raw epoch time from the RTC
      *
      * @return The raw epoch time from the RTC
      */
-    static uint32_t getRawRTCNow();
+    static time_t getRawRTCNow();
     /**
      * @brief Sets the RTC to exactly the epoch time provided
      *
      * @param ts A timestamp already in the epoch and timezone used internally
      * by the RTC
      */
-    static void setRawRTCNow(uint32_t ts);
+    static void setRawRTCNow(time_t ts);
     /**
      * @brief Begins the underlying RTC
      */

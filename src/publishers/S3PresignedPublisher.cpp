@@ -172,10 +172,10 @@ bool S3PresignedPublisher::validateS3URL(String& s3url, char* s3host,
         return false;
     }
     // If expiration is in the past, it's not valid
-    if (expiration < _baseLogger->getNowUTCEpoch()) {
+    if (expiration < static_cast<uint32_t>(_baseLogger->getNowUTCEpoch())) {
         PRINTOUT(F("The S3 URL has expired:"), expiration,
                  F("is less than the current time"),
-                 _baseLogger->getNowUTCEpoch());
+                 static_cast<uint32_t>(_baseLogger->getNowUTCEpoch()));
         return false;
     }
 
