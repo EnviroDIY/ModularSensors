@@ -60,6 +60,7 @@ bool ANBpH::setup(void) {
 
     // This sensor needs power for setup!
     delay(10);
+    MS_DEEP_DBG(F("Powering up for setup..."));
     bool wasOn = checkPowerOn();
     if (!wasOn) { powerUp(); }
 
@@ -69,8 +70,10 @@ bool ANBpH::setup(void) {
     MS_DBG(F("- Hexidecimal: "), _modbusAddress < 16 ? F("0x0") : F("0x"),
            String(_modbusAddress, HEX));
 
-    MS_DBG(F("Trying to get any modbus response..."));
+    MS_DEEP_DBG(F("Waiting for warm-up..."));
     waitForWarmUp();
+
+    MS_DBG(F("Trying to get any modbus response..."));
     bool gotModbusResponse = _anb_sensor.gotModbusResponse();
     if (!gotModbusResponse) {
         MS_DBG(F("Did not get a modbus response, trying to force Modbus "
@@ -175,7 +178,10 @@ bool ANBpH::setup(void) {
     }
 
     // Turn the power back off it it had been turned on
-    if (!wasOn) { powerDown(); }
+    if (!wasOn) {
+        MS_DEEP_DBG(F("Powering down after setup"));
+        powerDown();
+    }
 
     return retVal;
 }
@@ -222,9 +228,9 @@ bool ANBpH::startSingleMeasurement(void) {
 }
 
 
-// this confirms that the sensor is really giving modbus responses so nothing
-// further happens if not
-
+// This confirms that the sensor is really giving modbus responses so nothing
+// further happens if not. - It's a "check if it's awake" function rather than a
+// "wake it up" function.
 bool ANBpH::wake(void) {
     // Sensor::wake() checks if the power pin is on and sets the wake timestamp
     // and status bits.  If it returns false, there's no reason to go on.
@@ -474,7 +480,7 @@ bool ANBpH::isSensorReady(bool (anbSensor::*checkReadyFxn)(), uint32_t spacing,
 
 // This checks to see if enough time has passed for warm-up
 bool ANBpH::isWarmedUp(bool debug) {
-#if defined(MS_ANB_SENSORS_PH_DEBUG_DEEP)
+#if defined(MS_ANB_SENSORS_PH_DEBUG_DEEP) || defined(MS_SENSORBASE_DEBUG)
     debug = true;
 #endif
     // If the sensor doesn't have power, then it will never be warmed up,
@@ -513,7 +519,7 @@ bool ANBpH::isWarmedUp(bool debug) {
 
 // This checks to see if enough time has passed for stability
 bool ANBpH::isStable(bool debug) {
-#if defined(MS_ANB_SENSORS_PH_DEBUG_DEEP)
+#if defined(MS_ANB_SENSORS_PH_DEBUG_DEEP) || defined(MS_SENSORBASE_DEBUG)
     debug = true;
 #endif
     // If the sensor failed to activate, it will never stabilize, so the

@@ -422,9 +422,13 @@ class GeoluxHydroCam : public Sensor {
      * has passed between messages so we don't hammer the camera too hard with
      * requests. This function will also update the #_last_status_check
      *
+     * @param startTime The time to use as the start time to calculate the total
+     * elapsed time in waiting; defaults to 0, which uses the last modbus
+     * command time.  This is only used for debugging output.
+     *
      * @return True if the camera is ready, false otherwise.
      */
-    bool isCameraReady();
+    bool isCameraReady(uint32_t startTime);
 };
 
 
