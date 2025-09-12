@@ -198,12 +198,13 @@ bool ANBpH::startSingleMeasurement(void) {
     uint8_t ntries  = 0;
     MS_DBG(F("Start Measurement on"), getSensorNameAndLocation());
     while (!success && ntries < 5) {
-        MS_DBG('(', ntries + 1, F("):"));
+        MS_DEEP_DBG('(', ntries + 1, F("):"));
         success = _anb_sensor.start();
         ntries++;
     }
 
     if (success) {
+        MS_DEEP_DBG(getSensorNameAndLocation(), F("started a scan."));
         // Update the time that a measurement was requested
         _millisMeasurementRequested = millis();
     } else {
@@ -229,12 +230,14 @@ bool ANBpH::wake(void) {
     // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
 
+    MS_DEEP_DBG(F("Checking for modbus response confirming"),
+                getSensorNameAndLocation(), F("is awake"));
     bool is_ready = isSensorReady(&anbSensor::gotModbusResponse,
                                   ANB_PH_MINIMUM_REQUEST_SPACING,
                                   _millisPowerOn);
     if (!is_ready) {
-        MS_DEEP_DBG(
-            F("Sensor isn't responding to modbus commands; wake failed!"));
+        MS_DEEP_DBG(getSensorNameAndLocation(),
+                    F("isn't responding to modbus commands; wake failed!"));
         // Set the status error bit (bit 7)
         setStatusBit(ERROR_OCCURRED);
         // Make sure that the wake time and wake success bit (bit 4) are unset
@@ -243,6 +246,8 @@ bool ANBpH::wake(void) {
         return false;
     }
 
+    MS_DEEP_DBG(getSensorNameAndLocation(),
+                F("responded properly to modbus commands; it must be awake."));
     return true;
 }
 
@@ -370,17 +375,18 @@ bool ANBpH::addSingleMeasurementResult(void) {
 
 #ifdef MS_ANB_SENSORS_PH_DEBUG_DEEP
     // Print the sensor RTC
-    uint16_t seconds = -1;
-    uint16_t minutes = -1;
-    uint16_t hours   = -1;
-    uint16_t day     = -1;
-    uint16_t month   = -1;
-    uint16_t year    = -1;
+    int8_t  seconds = -1;
+    int8_t  minutes = -1;
+    int8_t  hours   = -1;
+    int8_t  day     = -1;
+    int8_t  month   = -1;
+    int16_t year    = -1;
     _anb_sensor.getRTC(seconds, minutes, hours, day, month, year);
-    char time_buff[16] = {'\0'};
-    sprintf(time_buff, "%04d%02d%02d_%02d%02d%02d", year, month, day, hours,
+    char time_buff[20] = {'\0'};
+    sprintf(time_buff, "%04d-%02d-%02d %02d:%02d:%02d", year, month, day, hours,
             minutes, seconds);
-    MS_DBG(F("    Current RTC value on sensor:"), time_buff);
+    MS_DBG(F("    Current internal RTC value on"), getSensorNameAndLocation(),
+           ':', time_buff);
 #endif
 
     // Check a measurement was *successfully* started (status bit 6 set)
@@ -398,12 +404,15 @@ bool ANBpH::addSingleMeasurementResult(void) {
         MS_DBG(F("  Salinity (ppt):"), sal);
         MS_DBG(F("  Specific Conductance (µS/cm):"), spcond);
         MS_DBG(F("  Raw Conductance (µS/cm):"), raw_cond);
-        MS_DBG(F("  Health Code:"), static_cast<int16_t>(health));
-        MS_DBG(F("  Diagnostic Code:"), static_cast<int16_t>(diagnostic));
-        MS_DBG(F("  Status Code:"), static_cast<int16_t>(status));
+        MS_DBG(F("  Health Code:"), static_cast<int16_t>(health), '-',
+               _anb_sensor.getHealthString(health));
+        MS_DBG(F("  Diagnostic Code:"), static_cast<int16_t>(diagnostic), '-',
+               _anb_sensor.getDiagnosticString(diagnostic));
+        MS_DBG(F("  Status Code:"), static_cast<int16_t>(status), '-',
+               _anb_sensor.getStatusString(status));
 
         if (health == ANBHealthCode::NOT_IMMERSED) {
-            MS_DBG(F("  WARNING: Sensor is not immersed!"));
+            PRINTOUT(F("  WARNING: ANB pH sensor is not immersed!"));
         }
 
         // Put values into the array
@@ -430,9 +439,11 @@ bool ANBpH::addSingleMeasurementResult(void) {
 
 // check if the sensor is ready
 bool ANBpH::isSensorReady(bool (anbSensor::*checkReadyFxn)(), uint32_t spacing,
-                          uint32_t startTime) {
+                          uint32_t) {
     uint32_t elapsed_since_last_request = millis() - _lastModbusCommandTime;
-    uint32_t elapsed_since_start_time   = millis() - startTime;
+#if defined(MS_ANB_SENSORS_PH_DEBUG)
+    uint32_t elapsed_since_start_time = millis() - startTime;
+#endif
     if (elapsed_since_last_request < spacing) {
         // MS_DEEP_DBG(
         //     F("It's only been"), elapsed_since_last_request,
@@ -619,9 +630,9 @@ bool ANBpH::isMeasurementComplete(bool debug) {
     // If we haven't gotten to the minimum response time, we need to wait
     if (elapsed_since_meas_start < getStartImmersionErrorWindow()) {
         return false;
-        }
+    }
 
-        bool is_ready = false;
+    bool is_ready = false;
     // Check every half second if we're in the window where the immersion
     // sensor might return a not-immersed error
     if (elapsed_since_meas_start > getStartImmersionErrorWindow() &&
@@ -643,13 +654,13 @@ bool ANBpH::isMeasurementComplete(bool debug) {
         elapsed_since_meas_start <= getEndMeasurementWindow()) {
         is_ready = isSensorReady(&anbSensor::isMeasurementComplete, 1000L,
                                  _millisMeasurementRequested);
-        }
-        if (is_ready) {
-            MS_DBG(F("It's been"), elapsed_since_meas_start, F("ms, and"),
-                   getSensorNameAndLocation(),
-                   F("says it's finished with a measurement."));
-        }
-        return is_ready;
+    }
+    if (is_ready) {
+        MS_DBG(F("It's been"), elapsed_since_meas_start, F("ms, and"),
+               getSensorNameAndLocation(),
+               F("says it's finished with a measurement."));
+    }
+    return is_ready;
 }
 
 
@@ -665,47 +676,54 @@ bool ANBpH::enableImmersionSensor(bool enable) {
 
 bool ANBpH::setSensorRTC() {
     // Set the sensor clock to the current time
-    MS_DEEP_DBG(F("Attempting to set sensor RTC..."));
-    if (loggerClock::isRTCSane()) {
-        // Create a temporary variable for the epoch time
-        // NOTE: time_t is a typedef for uint32_t, defined in time.h
-        time_t t = Logger::getNowLocalEpoch();
-        // create a temporary time struct
-        // tm is a struct for time parts, defined in time.h
-        struct tm* tmp = gmtime(&t);
-        MS_DEEP_DBG(F("Time components: "), tmp->tm_year, F(" - "),
-                    tmp->tm_mon + 1, F(" - "), tmp->tm_mday, F("    "),
-                    tmp->tm_hour, F(" : "), tmp->tm_min, F(" : "), tmp->tm_sec);
-
-        // Set RTC
-        // NOTE: The sensor's RTC resets every time the sensor loses power.
-        MS_DBG(F("Set sensor RTC..."));
-        bool rtcSet = _anb_sensor.setRTC(tmp->tm_sec, tmp->tm_min, tmp->tm_hour,
-                                         tmp->tm_mday, tmp->tm_mon + 1,
-                                         tmp->tm_year + 1900);
-        MS_DBG(F("..."), rtcSet ? F("success") : F("failed"));
-
-        // Print the sensor RTC to cross check
-        uint16_t seconds = -1;
-        uint16_t minutes = -1;
-        uint16_t hours   = -1;
-        uint16_t day     = -1;
-        uint16_t month   = -1;
-        uint16_t year    = -1;
-        _anb_sensor.getRTC(seconds, minutes, hours, day, month, year);
-#if defined(MS_ANB_SENSORS_PH_DEBUG)
-        char time_buff[16] = {'\0'};
-        sprintf(time_buff, "%04d%02d%02d_%02d%02d%02d", year, month, day, hours,
-                minutes, seconds);
-        MS_DBG(F("    RTC after set:"), time_buff);
-#endif
-
-        return rtcSet;
-    } else {
+    MS_DEEP_DBG(F("Attempting to set sensor RTC on"),
+                getSensorNameAndLocation(), F("..."));
+    if (!loggerClock::isRTCSane()) {
         MS_DBG(
             F("Current logger time is not sane, so not setting sensor RTC!"));
         return true;
     }
+
+    int8_t  seconds   = -1;
+    int8_t  minutes   = -1;
+    int8_t  hours     = -1;
+    int8_t  day       = -1;
+    int8_t  month     = -1;
+    int16_t year      = -1;
+    uint8_t tz_offset = -1;
+    Logger::getNowParts(seconds, minutes, hours, day, month, year, tz_offset);
+#if defined(MS_ANB_SENSORS_PH_DEBUG_DEEP)
+    char time_buff_l[20] = {'\0'};
+    sprintf(time_buff_l, "%04d-%02d-%02d %02d:%02d:%02d", year, month, day,
+            hours, minutes, seconds);
+    MS_DEEP_DBG(F("    Logger date/time:"), time_buff_l);
+#endif
+
+    // Set RTC
+    // NOTE: The sensor's RTC resets every time the sensor loses power.
+    MS_DBG(F("Set"), getSensorNameAndLocation(), F("RTC..."));
+    bool rtcSet = _anb_sensor.setRTC(seconds, minutes, hours, day, month, year);
+    MS_DBG(F("..."), rtcSet ? F("success") : F("failed"));
+    // a delay after setting the RTC helps it "take"
+    delay(1000L);
+
+    // Print the sensor RTC to cross check
+    int8_t  seconds2 = -1;
+    int8_t  minutes2 = -1;
+    int8_t  hours2   = -1;
+    int8_t  day2     = -1;
+    int8_t  month2   = -1;
+    int16_t year2    = -1;
+    _anb_sensor.getRTC(seconds2, minutes2, hours2, day2, month2, year2);
+#if defined(MS_ANB_SENSORS_PH_DEBUG)
+    char time_buff[20] = {'\0'};
+    sprintf(time_buff, "%04d-%02d-%02d %02d:%02d:%02d", year2, month2, day2,
+            hours2, minutes2, seconds2);
+    MS_DBG(F("    Internal RTC value on"), getSensorNameAndLocation(),
+           F("after set:"), time_buff);
+#endif
+
+    return rtcSet;
 }
 
 // cSpell:ignore spcond

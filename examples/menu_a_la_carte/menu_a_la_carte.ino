@@ -3568,7 +3568,7 @@ void setup() {
 /** Start [setup_serial_begins] */
 // Start the serial connection with the modem
 #if !defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM)
-    PRINTOUT(F("Starting modem connection on"), STR(modemSerial), F(" at"),
+    PRINTOUT(F("Starting modem connection on"), STR(modemSerial), F("at"),
              modemBaud, F(" baud"));
     modemSerial.begin(modemBaud);
 #endif
