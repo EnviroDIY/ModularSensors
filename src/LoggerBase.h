@@ -872,12 +872,12 @@ class Logger {
      * @param tz_offset [out] Reference to a variable where the timezone offset
      * will be stored
      *
-     * @remark Unlike the near-identical loggerClock::getNowParts(), this
+     * @remark Unlike the near-identical loggerClock::getNowAsParts(), this
      * function converts all of the parts to the loggers timezone and writes the
      * logger timezone to the tz_offset variable.
      */
     static void getNowParts(int8_t& seconds, int8_t& minutes, int8_t& hours,
-                            int8_t& day, int8_t& month, uint16_t& year,
+                            int8_t& day, int8_t& month, int16_t& year,
                             uint8_t& tz_offset);
 
     /**

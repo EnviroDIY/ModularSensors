@@ -626,7 +626,7 @@ uint32_t Logger::getNowUTCEpoch() {
     return loggerClock::getNowAsEpoch(0, Logger::_loggerEpoch);
 }
 void Logger::getNowParts(int8_t& seconds, int8_t& minutes, int8_t& hours,
-                         int8_t& day, int8_t& month, uint16_t& year,
+                         int8_t& day, int8_t& month, int16_t& year,
                          uint8_t& tz_offset) {
     tz_offset = Logger::_loggerUTCOffset;
     loggerClock::getNowAsParts(seconds, minutes, hours, day, month, year,
@@ -1369,8 +1369,8 @@ bool Logger::initializeSDCard(void) {
 // provided date time callback function. See SdFile::dateTimeCallback() for
 // usage.
 void Logger::fileDateTimeCallback(uint16_t* date, uint16_t* time) {
-    int8_t   seconds, minutes, hours, day, month;
-    uint16_t year;
+    int8_t  seconds, minutes, hours, day, month;
+    int16_t year;
     loggerClock::getNowAsParts(seconds, minutes, hours, day, month, year,
                                Logger::_loggerUTCOffset);
 
@@ -1384,8 +1384,8 @@ void Logger::fileDateTimeCallback(uint16_t* date, uint16_t* time) {
 
 // Protected helper function - This sets a timestamp on a file
 void Logger::setFileTimestamp(File& fileToStamp, uint8_t stampFlag) {
-    int8_t   seconds, minutes, hours, day, month;
-    uint16_t year;
+    int8_t  seconds, minutes, hours, day, month;
+    int16_t year;
     loggerClock::getNowAsParts(seconds, minutes, hours, day, month, year,
                                Logger::_loggerUTCOffset);
     fileToStamp.timestamp(stampFlag, year, month, day, hours, minutes, seconds);

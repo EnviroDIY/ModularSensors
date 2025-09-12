@@ -17,85 +17,85 @@ epochTime::epochTime(time_t timestamp, epochStart epoch) {
 }
 
 
-time_t epochTime::convert_epoch(time_t raw_timestamp, epochStart in_epoch,
+time_t epochTime::convert_epoch(time_t in_timestamp, epochStart in_epoch,
                                 epochStart out_epoch) {
     switch (in_epoch) {
         case epochStart::unix_epoch: {
             switch (out_epoch) {
                 case epochStart::y2k_epoch: {
-                    return raw_timestamp - EPOCH_UNIX_TO_Y2K;
+                    return in_timestamp - EPOCH_UNIX_TO_Y2K;
                 }
                 case epochStart::gps_epoch: {
-                    return epochTime::unix2gps(raw_timestamp);
+                    return epochTime::unix2gps(in_timestamp);
                 }
                 case epochStart::nist_epoch: {
-                    return raw_timestamp + EPOCH_NIST_TO_UNIX;
+                    return in_timestamp + EPOCH_NIST_TO_UNIX;
                 }
                 case epochStart::unix_epoch:
                 default: {
-                    return raw_timestamp;
+                    return in_timestamp;
                 }
             }
         }
         case epochStart::y2k_epoch: {
             switch (out_epoch) {
                 case epochStart::unix_epoch: {
-                    return raw_timestamp + EPOCH_UNIX_TO_Y2K;
+                    return in_timestamp + EPOCH_UNIX_TO_Y2K;
                 }
                 case epochStart::gps_epoch: {
-                    return epochTime::unix2gps(raw_timestamp +
+                    return epochTime::unix2gps(in_timestamp +
                                                EPOCH_UNIX_TO_Y2K);
                 }
                 case epochStart::nist_epoch: {
-                    return raw_timestamp + EPOCH_NIST_TO_UNIX +
+                    return in_timestamp + EPOCH_NIST_TO_UNIX +
                         EPOCH_UNIX_TO_Y2K;
                 }
                 case epochStart::y2k_epoch:
                 default: {
-                    return raw_timestamp;
+                    return in_timestamp;
                 }
             }
         }
         case epochStart::gps_epoch: {
             switch (out_epoch) {
                 case epochStart::unix_epoch: {
-                    return epochTime::gps2unix(raw_timestamp);
+                    return epochTime::gps2unix(in_timestamp);
                 }
                 case epochStart::y2k_epoch: {
-                    return epochTime::gps2unix(raw_timestamp) -
+                    return epochTime::gps2unix(in_timestamp) -
                         EPOCH_UNIX_TO_Y2K;
                 }
                 case epochStart::nist_epoch: {
-                    return epochTime::gps2unix(raw_timestamp) +
+                    return epochTime::gps2unix(in_timestamp) +
                         EPOCH_NIST_TO_UNIX;
                 }
                 case epochStart::gps_epoch:
                 default: {
-                    return raw_timestamp;
+                    return in_timestamp;
                 }
             }
         }
         case epochStart::nist_epoch: {
             switch (out_epoch) {
                 case epochStart::unix_epoch: {
-                    return raw_timestamp - EPOCH_NIST_TO_UNIX;
+                    return in_timestamp - EPOCH_NIST_TO_UNIX;
                 }
                 case epochStart::y2k_epoch: {
-                    return raw_timestamp - EPOCH_NIST_TO_UNIX -
+                    return in_timestamp - EPOCH_NIST_TO_UNIX -
                         EPOCH_UNIX_TO_Y2K;
                 }
                 case epochStart::gps_epoch: {
-                    return epochTime::unix2gps(raw_timestamp -
+                    return epochTime::unix2gps(in_timestamp -
                                                EPOCH_NIST_TO_UNIX);
                 }
                 case epochStart::nist_epoch:
                 default: {
-                    return raw_timestamp;
+                    return in_timestamp;
                 }
             }
         }
         default: {
-            return raw_timestamp;
+            return in_timestamp;
         }
     }
 }
@@ -132,24 +132,24 @@ time_t epochTime::gps2unix(time_t gpsTime) {
     return unixTime;
 }
 
-#ifdef MS_CLOCKSUPPORT_DEBUG
-String epochTime::printEpochName(epochStart in_offset) {
-    switch (in_offset) {
+#if defined(MS_CLOCKSUPPORT_DEBUG) || defined(MS_CLOCKSUPPORT_DEBUG_DEEP)
+String epochTime::printEpochName(epochStart epoch) {
+    switch (epoch) {
         case epochStart::unix_epoch: return "Unix";
         case epochStart::y2k_epoch: return "Y2K";
         case epochStart::gps_epoch: return "GPS";
         case epochStart::nist_epoch: return "NIST";
-        default: return "???";
+        default: return "UNKNOWN";
     }
 }
 
-String epochTime::printEpochStart(epochStart in_offset) {
-    switch (in_offset) {
+String epochTime::printEpochStart(epochStart epoch) {
+    switch (epoch) {
         case epochStart::unix_epoch: return "1970-01-01T00:00:00Z";
         case epochStart::y2k_epoch: return "2000-01-01T00:00:00Z";
         case epochStart::gps_epoch: return "1980-01-05T00:00:00Z";
         case epochStart::nist_epoch: return "1900-01-01T00:00:00Z";
-        default: return "???";
+        default: return "UNKNOWN";
     }
 }
 #endif
@@ -233,20 +233,22 @@ int8_t loggerClock::getRTCOffset(void) {
 
 uint32_t loggerClock::getNowAsEpoch(int8_t utcOffset, epochStart epoch) {
     uint32_t rtc_return = getRawRTCNow();
-    MS_DEEP_DBG(F("Raw returned timestamp:"), rtc_return);
+    MS_DEEP_DBG(F("Raw returned RTC timestamp (getNowAsEpoch):"), rtc_return);
     return tsFromRawRTC(rtc_return, utcOffset, epoch);
 }
 
 
 void loggerClock::getNowAsParts(int8_t& seconds, int8_t& minutes, int8_t& hours,
-                                int8_t& day, int8_t& month, uint16_t& year,
+                                int8_t& day, int8_t& month, int16_t& year,
                                 uint8_t tz_offset) {
     // Check the current RTC time
     uint32_t rtc_return = getRawRTCNow();
-    MS_DEEP_DBG(F("Raw returned RTC timestamp:"), rtc_return);
+    MS_DEEP_DBG(F("Raw returned RTC timestamp (getNowAsParts):"), rtc_return);
     // convert to the core epoch and the input timezone offset
-    uint32_t rtc_as_core = tsFromRawRTC(rtc_return, tz_offset, _core_epoch);
-    MS_DEEP_DBG(F("Input time converted to processor epoch:"), rtc_as_core);
+    uint32_t rtc_as_core = tsFromRawRTC(rtc_return, tz_offset,
+                                        loggerClock::_core_epoch);
+    MS_DEEP_DBG(F("Input time converted to processor epoch:"), rtc_as_core, '(',
+                epochTime::printEpochName(loggerClock::_core_epoch), ')');
 
     // create a temporary time struct
     // tm is a struct for time parts, defined in time.h
@@ -270,7 +272,7 @@ String loggerClock::formatDateTime_ISO8601(uint32_t   epochSeconds,
                                            int8_t     epochSecondsUTCOffset,
                                            epochStart epoch) {
     MS_DEEP_DBG(F("Input epoch time:"), epochSeconds, F("; input epoch:"),
-                static_cast<uint32_t>(epoch));
+                epochTime::printEpochName(epoch));
 
     return formatDateTime_ISO8601(epochTime(epochSeconds, epoch),
                                   epochSecondsUTCOffset);
@@ -279,8 +281,9 @@ String loggerClock::formatDateTime_ISO8601(epochTime in_time,
                                            int8_t    epochSecondsUTCOffset) {
     // Use the conversion function to get a temporary variable for the epoch
     // time in the epoch used by the processor core (ie, used by gmtime).
-    time_t t = epochTime::convert_epoch(in_time, _core_epoch);
-    MS_DEEP_DBG(F("Input time converted to processor epoch:"), t);
+    time_t t = epochTime::convert_epoch(in_time, loggerClock::_core_epoch);
+    MS_DEEP_DBG(F("Input time converted to processor epoch:"), t, '(',
+                epochTime::printEpochName(loggerClock::_core_epoch), ')');
 
     // create a temporary time struct
     // tm is a struct for time parts, defined in time.h
@@ -328,8 +331,9 @@ void loggerClock::formatDateTime(char* buffer, const char* fmt,
                                  epochTime in_time) {
     // Use the conversion function to get a temporary variable for the epoch
     // time in the epoch used by the processor core (ie, used by gmtime).
-    time_t t = epochTime::convert_epoch(in_time, _core_epoch);
-    MS_DEEP_DBG(F("Input time converted to processor epoch:"), t);
+    time_t t = epochTime::convert_epoch(in_time, loggerClock::_core_epoch);
+    MS_DEEP_DBG(F("Input time converted to processor epoch:"), t, '(',
+                epochTime::printEpochName(loggerClock::_core_epoch), ')');
 
     // create a temporary time struct
     // tm is a struct for time parts, defined in time.h
@@ -559,7 +563,7 @@ void loggerClock::rtcISR(void) {
 
 void loggerClock::begin() {
     MS_DBG(F("Getting the epoch the processor uses for gmtime"));
-    _core_epoch = getProcessorEpochStart();
+    loggerClock::_core_epoch = getProcessorEpochStart();
     PRINTOUT(F("An"), MS_CLOCK_NAME, F("will be used as the real time clock"));
     MS_DBG(F("Beginning"), MS_CLOCK_NAME, F("real time clock"));
     rtcBegin();
@@ -634,9 +638,9 @@ inline uint32_t loggerClock::tsFromRawRTC(uint32_t ts, int8_t utcOffset,
         tz_change =
             static_cast<uint32_t>(loggerClock::_rtcUTCOffset + utcOffset) *
             3600;
-        MS_DEEP_DBG(
-            F("Adding"), tz_change,
-            F("to the timestamp to convert to the requested timezone."));
+        MS_DEEP_DBG(F("Adding"), tz_change,
+                    F("to the timestamp to convert to UTC"),
+                    (utcOffset >= 0) ? '+' : '-', abs(utcOffset), F("hours"));
     } else {
         MS_DEEP_DBG(
             F("Not converting timestamp to requested UTC offset because"), ts,
@@ -670,18 +674,19 @@ uint32_t loggerClock::getRawRTCNow() {
 
     // Get the epoch - with the time zone subtracted (i.e. return UTC epoch)
     rtc.updateTime();
-    MS_DEEP_DBG(F("Set use1970sEpoch to"), _core_epoch == epochStart::y2k_epoch,
+    MS_DEEP_DBG(F("Set use1970sEpoch to"),
+                loggerClock::_core_epoch == epochStart::y2k_epoch,
                 F("because the processor epoch is"),
-                epochTime::printEpochName(_core_epoch), '(',
-                static_cast<uint32_t>(_core_epoch), ')');
-    return rtc.getEpoch(_core_epoch == epochStart::y2k_epoch);
+                epochTime::printEpochName(loggerClock::_core_epoch), '(',
+                static_cast<uint32_t>(loggerClock::_core_epoch), ')');
+    return rtc.getEpoch(loggerClock::_core_epoch == epochStart::y2k_epoch);
 }
 void loggerClock::setRawRTCNow(uint32_t ts) {
     // bool setEpoch(uint32_t value, bool use1970sEpoch = false, int8_t
     // timeZoneQuarterHours = 0);
     // If timeZoneQuarterHours is non-zero, update RV8803_RAM. Add the zone to
     // the epoch before setting
-    rtc.setEpoch(ts, _core_epoch == epochStart::y2k_epoch);
+    rtc.setEpoch(ts, loggerClock::_core_epoch == epochStart::y2k_epoch);
 }
 
 #elif defined(MS_USE_DS3231)

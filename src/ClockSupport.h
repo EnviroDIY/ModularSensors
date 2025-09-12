@@ -192,8 +192,9 @@ class epochTime {
     /**
      * @brief Constructor, requires thse unix offset value as input.
      *
-     * @param timestamp Your raw timestamp
-     * @param epoch The unix offset of your timestamp from the unixOffset enum.
+     * @param timestamp A timestamp - in seconds since the start of the
+     * given epoch.
+     * @param epoch The start if the epoch for the timestamp.
      */
     epochTime(time_t timestamp, epochStart epoch = epochStart::unix_epoch);
     /**
@@ -229,12 +230,13 @@ class epochTime {
 
     /**
      * @brief Static function to convert between any two timestamps
-     * @param raw_timestamp The timestamp to convert
+     * @param in_timestamp The timestamp to convert - in seconds since the start
+     * of the input epoch.
      * @param in_epoch The starting epoch
      * @param out_epoch The ending epoch
      * @return The equivalent timestamp relative to the requested epoch
      */
-    static time_t convert_epoch(time_t raw_timestamp, epochStart in_epoch,
+    static time_t convert_epoch(time_t in_timestamp, epochStart in_epoch,
                                 epochStart out_epoch);
 
     /**
@@ -271,20 +273,20 @@ class epochTime {
      */
     static time_t gps2unix(time_t gpsTime);
 
-#ifdef MS_CLOCKSUPPORT_DEBUG
+#if defined(MS_CLOCKSUPPORT_DEBUG) || defined(MS_CLOCKSUPPORT_DEBUG_DEEP)
     /**
      * @brief Gets a string name for the epoch
      *
      * @param epoch The epoch to get the name of
      * @return The name for the epoch
      */
-    static String printEpochName(epochStart in_offset);
+    static String printEpochName(epochStart epoch);
     /**
      * @brief Gets a string for the start date of the epoch
      *
      * @return The starting date, in ISO8601
      */
-    static String printEpochStart(epochStart in_offset);
+    static String printEpochStart(epochStart epoch);
 #endif
 
  private:
@@ -404,7 +406,7 @@ class loggerClock {
      * that you want the other parts to be set in!
      */
     static void getNowAsParts(int8_t& seconds, int8_t& minutes, int8_t& hours,
-                              int8_t& day, int8_t& month, uint16_t& year,
+                              int8_t& day, int8_t& month, int16_t& year,
                               uint8_t tz_offset);
 
     /**
@@ -414,7 +416,7 @@ class loggerClock {
      * Code modified from parts of the SparkFun RV-8803 library.
      *
      * @param epochSeconds The number of seconds since the start of the given
-     * epoch in the given offset from UTC.
+     * epoch.
      * @param epochSecondsUTCOffset The offset of the input epoch time from
      * UTC in hours.
      * @param epoch The epoch of the input epoch time.
@@ -517,7 +519,8 @@ class loggerClock {
      * To be sane, the clock must be between #EARLIEST_SANE_UNIX_TIMESTAMP and
      * #LATEST_SANE_UNIX_TIMESTAMP.
      *
-     * @param ts The epoch time to be checked.
+     * @param ts The timestamp to check (in seconds since the start of the given
+     * epoch).
      * @param utcOffset The offset of the epoch time from UTC in hours.
      * @param epoch The type of epoch to use (ie, the standard for the start of
      * the epoch).
@@ -526,7 +529,7 @@ class loggerClock {
     static bool isEpochTimeSane(uint32_t ts, int8_t utcOffset,
                                 epochStart epoch);
     /**
-     * @brief Check that a given epoch time (seconds since 1970) is within a
+     * @brief Check that a given epoch time (an epochTime object) is within a
      * "sane" range.
      *
      * To be sane, the clock must be between #EARLIEST_SANE_UNIX_TIMESTAMP and
@@ -541,7 +544,8 @@ class loggerClock {
     /**
      * @brief Set an alarm to fire a clock interrupt at a specific epoch time
      *
-     * @param ts The timestamp for the next interrupt
+     * @param ts The timestamp for the next interrupt - in seconds from the
+     * start of the input epoch.
      * @param utcOffset The offset of the epoch time from UTC in hours.
      * @param epoch The type of epoch to use (ie, the standard for the start of
      * the epoch).
@@ -601,7 +605,7 @@ class loggerClock {
      * @return The epoch start for the processor/Arduino core
      */
     static epochStart getCoreEpochStart() {
-        return _core_epoch;
+        return loggerClock::_core_epoch;
     };
     /**
      * @brief Get the epoch start for the RTC as an epochStart object
@@ -644,7 +648,8 @@ class loggerClock {
      * @brief Convert a timestamp with the given offset and epoch to the RTC
      * internal epoch and UTC offset.
      *
-     * @param ts The input epoch time.
+     * @param ts The input epoch time - in seconds since the start of the input
+     * epoch.
      * @param utcOffset The offset of the input epoch time from UTC in hours.
      * @param epoch The type of epoch of the input timestamp
      * @return A timestamp converted to the epoch and timezone used internally
