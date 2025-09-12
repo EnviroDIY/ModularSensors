@@ -383,8 +383,9 @@ bool ANBpH::addSingleMeasurementResult(void) {
     int16_t year    = -1;
     _anb_sensor.getRTC(seconds, minutes, hours, day, month, year);
     char time_buff[20] = {'\0'};
-    sprintf(time_buff, "%04d-%02d-%02d %02d:%02d:%02d", year, month, day, hours,
-            minutes, seconds);
+    sprintf(time_buff, "%04d-%02d-%02d %02d:%02d:%02d", year & 0x1FFF,
+            month & 0x3f, day & 0x3f, hours & 0x3f, minutes & 0x3f,
+            seconds & 0x3f);
     MS_DBG(F("    Current internal RTC value on"), getSensorNameAndLocation(),
            ':', time_buff);
 #endif
@@ -439,7 +440,11 @@ bool ANBpH::addSingleMeasurementResult(void) {
 
 // check if the sensor is ready
 bool ANBpH::isSensorReady(bool (anbSensor::*checkReadyFxn)(), uint32_t spacing,
-                          uint32_t) {
+                          uint32_t
+#if defined(MS_ANB_SENSORS_PH_DEBUG)
+                              startTime
+#endif
+) {
     uint32_t elapsed_since_last_request = millis() - _lastModbusCommandTime;
 #if defined(MS_ANB_SENSORS_PH_DEBUG)
     uint32_t elapsed_since_start_time = millis() - startTime;
@@ -694,8 +699,9 @@ bool ANBpH::setSensorRTC() {
     Logger::getNowParts(seconds, minutes, hours, day, month, year, tz_offset);
 #if defined(MS_ANB_SENSORS_PH_DEBUG_DEEP)
     char time_buff_l[20] = {'\0'};
-    sprintf(time_buff_l, "%04d-%02d-%02d %02d:%02d:%02d", year, month, day,
-            hours, minutes, seconds);
+    sprintf(time_buff_l, "%04d-%02d-%02d %02d:%02d:%02d", year & 0x1FFF,
+            month & 0x3f, day & 0x3f, hours & 0x3f, minutes & 0x3f,
+            seconds & 0x3f);
     MS_DEEP_DBG(F("    Logger date/time:"), time_buff_l);
 #endif
 
@@ -717,8 +723,9 @@ bool ANBpH::setSensorRTC() {
     _anb_sensor.getRTC(seconds2, minutes2, hours2, day2, month2, year2);
 #if defined(MS_ANB_SENSORS_PH_DEBUG)
     char time_buff[20] = {'\0'};
-    sprintf(time_buff, "%04d-%02d-%02d %02d:%02d:%02d", year2, month2, day2,
-            hours2, minutes2, seconds2);
+    sprintf(time_buff, "%04d-%02d-%02d %02d:%02d:%02d", year2 & 0x1FFF,
+            month2 & 0x3f, day2 & 0x3f, hours2 & 0x3f, minutes2 & 0x3f,
+            seconds2 & 0x3f);
     MS_DBG(F("    Internal RTC value on"), getSensorNameAndLocation(),
            F("after set:"), time_buff);
 #endif
