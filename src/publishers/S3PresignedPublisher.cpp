@@ -14,8 +14,6 @@
 //  Functions for the S3 by way of a pre-signed URL.
 // ============================================================================
 // Constant values for put requests
-const char* S3PresignedPublisher::s3_parent_host      = "s3.amazonaws.com";
-const int   S3PresignedPublisher::s3Port              = 443;
 const char* S3PresignedPublisher::contentLengthHeader = "\r\nContent-Length: ";
 const char* S3PresignedPublisher::contentTypeHeader   = "\r\nContent-Type: ";
 
@@ -42,6 +40,13 @@ S3PresignedPublisher::S3PresignedPublisher(Logger& baseLogger, Client* inClient,
 // Destructor
 S3PresignedPublisher::~S3PresignedPublisher() {}
 
+
+void S3PresignedPublisher::setPort(int port) {
+    s3Port = port;
+}
+void S3PresignedPublisher::setHost(const char* host) {
+    s3_parent_host = host;
+}
 
 void S3PresignedPublisher::setURLUpdateFunction(String (*getUrlFxn)(String)) {
     _getUrlFxn = getUrlFxn;
@@ -118,20 +123,31 @@ void S3PresignedPublisher::deleteClient(Client* client) {
 bool S3PresignedPublisher::validateS3URL(String& s3url, char* s3host,
                                          char* s3resource, char* content_type) {
     // S3 pre-signed URL's follow the "virtual-hosted style" and have the form:
-    // https://YOUR-BUCKET-NAME.s3.amazonaws.com/file_name.extension
+    // https://YOUR-BUCKET-NAME.s3.YOUR-REGION.amazonaws.com/file_name.extension
     //  ?AWSAccessKeyId=ACCESS-KEY-ID
     //  &Signature=SIGNATURE-VALUE
     //  &content-type=image%2Fjpeg
     //  &x-amz-security-token=A-REALLY-REALLY-REALLY-LONG-STRING
     //  &Expires=unix_timestamp
+    // NOTE: To send an HTTP request to a "virtual-hosted style" URL, the HTTP
+    // HOST header must *end with* ".s3.<region-code>.amazonaws.com" and cannot
+    // be "s3.<region-code>.amazonaws.com".
 
     const char* url_str = s3url.c_str();  // should be null terminated!
 
     MS_DBG(F("Full S3 URL:"), url_str);
 
     if (strstr(url_str, s3_parent_host) == nullptr) {
-        PRINTOUT(F("The S3 URL does not contain the S3 host name:"),
-                 s3_parent_host);
+        PRINTOUT(
+            F("WARNING: The S3 URL does not contain the expected host name:"),
+            s3_parent_host);
+    }
+    if (strstr(url_str, "s3.") == nullptr) {
+        PRINTOUT(F("FAILURE: The S3 URL does not contain 's3'"));
+        return false;
+    }
+    if (strstr(url_str, ".amazonaws.com") == nullptr) {
+        PRINTOUT(F("FAILURE: The S3 URL does not contain '.amazonaws.com'"));
         return false;
     }
 
@@ -279,15 +295,18 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
     uint32_t file_size = static_cast<uint32_t>(putFile.size());
 
 
-    char s3host[81] = {'\0'};
-    /// ^^ Bucket names can be 3-63 characters long; the '.s3.amazonaws.com'
-    /// adds 17 characters and we add 1 more for the null terminator. This gives
-    /// a total maximum length of 63 + 17 + 1 = 81
+    char s3host[95] = {'\0'};
+    // ^^ Bucket names can be 3-63 characters long;
+    // - '.s3' adds 3 characters
+    // - - the region name adds up to 14 characters (ie '.ap-southeast-7')
+    // - '.amazonaws.com' adds 14 characters
+    // -  add 1 more for the null terminator.
+    // This gives a total maximum length of 63 + 3 + 14 + 14 + 1 = 81
     char s3resource[_PreSignedURL.length()] = {'\0'};
-    /// ^^ Allow up to the full length of the URL for the resource
+    // ^^ Allow up to the full length of the URL for the resource
     char content_type[128] = {'\0'};
-    /// ^^ Content types can be up to 128 characters long (from
-    /// https://stackoverflow.com/questions/19852/maximum-length-of-a-mime-content-type-header-field)
+    // ^^ Content types can be up to 128 characters long (from
+    // https://stackoverflow.com/questions/19852/maximum-length-of-a-mime-content-type-header-field)
 
     if (!validateS3URL(_PreSignedURL, s3host, s3resource, content_type)) {
         return -2;

@@ -116,6 +116,12 @@ int16_t UbidotsPublisher::publishData(Client* outClient, bool) {
     char     tempBuffer[12] = "";
     uint16_t did_respond    = 0;
     int16_t  responseCode   = 0;
+    if (_baseLogger->getSamplingFeatureUUID() == nullptr ||
+        strlen(_baseLogger->getSamplingFeatureUUID()) == 0) {
+        PRINTOUT(F("A sampling feature UUID must be set before publishing data "
+                   "to Monitor My Watershed!."));
+        return 0;
+    }
 
     MS_DBG(F("Outgoing JSON size:"), calculateJsonSize());
 

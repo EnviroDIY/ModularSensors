@@ -20,8 +20,8 @@
 // I want to refer to these more than once while ensuring there is only one copy
 // in memory
 const int   AWS_IoT_Publisher::mqttPort           = 8883;
-const char* AWS_IoT_Publisher::samplingFeatureTag = "{\"sampling_feature\":\"";
-const char* AWS_IoT_Publisher::timestampTag       = "\",\"timestamp\":\"";
+const char* AWS_IoT_Publisher::samplingFeatureTag = "\"sampling_feature\":\"";
+const char* AWS_IoT_Publisher::timestampTag       = "\"timestamp\":\"";
 
 
 // Constructors
@@ -233,7 +233,11 @@ int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
 
     MS_DBG(F("Preparing to publish data to AWS IoT endpoint"), getEndpoint());
     const char* use_topic = _dataTopic;
-    if (_dataTopic == nullptr) {
+    if (_dataTopic == nullptr &&
+        _baseLogger->getSamplingFeatureUUID() != nullptr &&
+        strlen(_baseLogger->getSamplingFeatureUUID()) > 0 &&
+        _baseLogger->getLoggerID() != nullptr &&
+        strlen(_baseLogger->getLoggerID()) > 0) {
         // Create a new data topic
         size_t topic_len = strlen(_baseLogger->getLoggerID()) +
             strlen(_baseLogger->getSamplingFeatureUUID()) + 2;
@@ -241,6 +245,17 @@ int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
         snprintf(topicBuffer, topic_len, "%s/%s", _baseLogger->getLoggerID(),
                  _baseLogger->getSamplingFeatureUUID());
         use_topic = topicBuffer;
+    } else if (_dataTopic == nullptr && _baseLogger->getLoggerID() != nullptr &&
+               strlen(_baseLogger->getLoggerID()) > 0) {
+        // Create a new data topic
+        size_t topic_len   = strlen(_baseLogger->getLoggerID()) + 1;
+        char*  topicBuffer = new char[topic_len]();
+        snprintf(topicBuffer, topic_len, "%s", _baseLogger->getLoggerID());
+        use_topic = topicBuffer;
+    } else if (_dataTopic == nullptr) {
+        PRINTOUT(
+            F("No data topic set and cannot create one without logger ID!"));
+        return 0;
     }
     MS_DBG(F("Topic ["), strlen(use_topic), F("]:"), use_topic);
 
@@ -251,9 +266,18 @@ int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
     txBufferInit(outClient);
 
     // put the start of the JSON into the outgoing response_buffer
-    txBufferAppend(samplingFeatureTag);
-    txBufferAppend(_baseLogger->getSamplingFeatureUUID());
+    txBufferAppend('{');
 
+    // add the feature tag, iff it exists
+    if (_baseLogger->getSamplingFeatureUUID() != nullptr &&
+        strlen(_baseLogger->getSamplingFeatureUUID()) > 0) {
+        txBufferAppend(samplingFeatureTag);
+        txBufferAppend(_baseLogger->getSamplingFeatureUUID());
+        txBufferAppend('"');
+        txBufferAppend(',');
+    }
+
+    // add the timestamp tag
     txBufferAppend(timestampTag);
     txBufferAppend(
         Logger::formatDateTime_ISO8601(Logger::markedLocalUnixTime).c_str());

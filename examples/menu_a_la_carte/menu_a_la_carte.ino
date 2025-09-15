@@ -3422,7 +3422,7 @@ const char* caCertName = "AmazonRootCA1.pem";
 #endif
 
 // The S3 host (need for region specific requests)
-const char* s3Host = "s3.amazonaws.com";
+const char* s3Host = "s3.YOUR-REGION.amazonaws.com";
 // Expand the expected S3 publish topic into a buffer
 String s3URLPubTopic = "$aws/rules/GetUploadURL/" + String(LoggerID);
 // Expand the expected S3 subscribe topic into a buffer
