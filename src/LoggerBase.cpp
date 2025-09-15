@@ -635,8 +635,8 @@ void Logger::getNowParts(int8_t& seconds, int8_t& minutes, int8_t& hours,
 
 // This converts an epoch time (unix time) into a ISO8601 formatted string.
 // It assumes the supplied date/time is in the LOGGER's timezone and adds
-// the LOGGER's offset as the time zone offset in the string. code modified
-// from parts of the SparkFun RV-8803 library
+// the LOGGER's offset as the time zone offset in the string.
+// Code modified from parts of the SparkFun RV-8803 library.
 String Logger::formatDateTime_ISO8601(time_t epochSeconds) {
     return loggerClock::formatDateTime_ISO8601(
         epochSeconds, Logger::_loggerUTCOffset, Logger::_loggerEpoch);

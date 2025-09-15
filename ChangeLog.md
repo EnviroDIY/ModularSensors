@@ -10,6 +10,11 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+> [!note]
+> This release has changes to nearly every file in the entire library (ie, hundreds of files).
+> Many of the changes are spelling and typo fixes found by implementing CSpell code spell checking.
+> All header files were also modified to include the new library configuration headers.
+
 ### Changed
 
 - **BREAKING** Converted the watch-dog classes in to static classes with all static function and a **deleted constructor**.
@@ -34,6 +39,8 @@ I realized this was a problem for analog values I tried to read that reported co
   - `Logger::setRTClock(UTCEpochSeconds)`; use `loggerClock::setRTClock(ts, utcOffset, epoch)` in new code.
   - `Logger::isRTCSane()`; use `loggerClock::isRTCSane()` in new code.
   - `Logger::wakeISR()`; use `loggerClock::rtcISR()` in new code.
+- Support timestamps as time_t objects instead of uint32_t where every sensible.
+  - The size of a uint32_t is always 32 bits, but the size of the time_t object varies by processor - for some it is 32 bits, for other 64.
 - Changed the watchdog from a fixed 15 minute reset timer to 2x the logging interval (or at least 5 minutes).
 - Modified all examples which define a sercom serial port for SAMD21 processors to require the defines for the supported processors.
 This should only make a difference for my compilation tests, real users should pick out only the chunks of code they want rather than leave conditional code in place.
@@ -51,10 +58,14 @@ This should only make a difference for my compilation tests, real users should p
   - When the button pin is changed to activate testing mode, a single sample will be taken and published immediately.
   - To restore the previous functionality (beginning a loop of 25 measurements) use the configuration/build flag `MS_LOGGERBASE_BUTTON_BENCH_TEST`.
   - The function for the original testing mode has been renamed to `benchTestingMode()`.
+- Added check for `isnan(...)` to the `Sensor::verifyAndAddMeasurementResult(...)` function.
+- Pass pointers to c-style character strings instead of String objects where easily done.
+- Separated functions for setting button/rtc pin modes and attaching their interrupts.
+- Corrected as many spelling errors as I could find.
 
 ### Added
 
-- Added a two configuration files (ModSensorConfig.h and ModSensorDebugConfig.h) that all files read from to check for configuration-related defines.
+- **CONFIGURATION** Added a two configuration files (ModSensorConfig.h and ModSensorDebugConfig.h) that all files read from to check for configuration-related defines.
 This allows Arduino IDE users who are unable to use build flags to more easily configure the library or enable debugging.
 It also allows PlatformIO users to avoid the time-consuming re-compile of all their libraries required when changing build flags.
   - **ALL** library configuration build flags previously in any other header file for the library have been moved into the ModSensorConfig.h file, including ADC, SDI-12, and variable array options.
@@ -87,6 +98,8 @@ If no epoch start is given, it is assumed to be UNIX (January 1, 1970).
 - Added a generic `generateFileName(bool include_time, const char* extension, const char* filePrefix)` function to the logger which can be used to assemble a prefix, timestamp, and extension into a new filename.
 - Added more options to some of the logger and publisher begin functions.
 - Added helper functions to create and delete clients using TinyGSM.
+- Added more clear functions for checking and setting sensor status bits.
+- Added code spell checking configuration (cspell).
 
 ### Removed
 
@@ -111,6 +124,17 @@ If you do not want any output, define `MS_SILENT`.
 - Updated the ThingSpeak publisher to the current ThingSpeak MQTT protocol. The older protocol was deprecated and non-functional.
   - This requires a user name, password, and client ID for the MQTT connection in addition to the channel number. The MQTT key and channel key are no longer used.
 - Ensure that the SDI-12 object is always ended.
+- Fixed some timing issues discovered when implementing the status bit checking functions.
+
+### Known Bugs
+
+- **SEVERE** Sensors that require two or more power pins are treated as only requiring the first one within the variableArray and if the second or further power pin is a primary power pin with any other sensor, then the secondary pin will be turned off with the other sensor completes even if the sensor where that pin is secondary is not finished.
+  - This is a serious issue for sensors that are both slow and require powered secondary communication adapters or relays - like the Geolux HydroCam or the ANB Sensors pH sensors.
+  - *Possible work-arounds*
+    - Wire required adapters to the same pin as that providing primary power.
+    - Wire required adapters such that they are continuously powered.
+    - If you must switch the power to both the sensor and an adapter and either the sensor power or the adapter power are shared with a pin that provides power to any other sensor, call the shared power pin the "sensor" power and the other the "adapter."
+
 
 ***
 
