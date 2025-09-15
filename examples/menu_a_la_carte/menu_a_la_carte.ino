@@ -263,13 +263,16 @@ void SERCOM1_3_Handler() {
 // Since AltSoftSerial is the best software option, we use it for modbus
 // If AltSoftSerial (or its pins) aren't available, use NeoSWSerial
 // SoftwareSerial **WILL NOT** work for modbus!
-#if defined(BUILD_TEST_ALTSOFTSERIAL)
+#if defined(BUILD_TEST_ALTSOFTSERIAL) && \
+    (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
 // For AltSoftSerial
 #define modbusSerial altSoftSerial
-#elif defined(BUILD_TEST_NEOSWSERIAL)
+#elif defined(BUILD_TEST_NEOSWSERIAL) && \
+    (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
 // For Neo software serial
 #define modbusSerial neoSSerial1
-#elif defined(BUILD_TEST_SOFTSERIAL)
+#elif defined(BUILD_TEST_SOFTSERIAL) && \
+    (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
 // For software serial
 #define modbusSerial softSerial1
 #else
@@ -336,22 +339,82 @@ const int8_t timeZone = -5;  // Eastern Standard Time
 
 // Set the input and output pins for the logger
 // NOTE:  Use -1 for pins that do not apply
+#if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
 const int32_t serialBaud    = 115200;  // Baud rate for debugging
 const int8_t  greenLED      = 8;       // Pin for the green LED
 const int8_t  redLED        = 9;       // Pin for the red LED
-const int8_t  buttonPin     = 21;  // Pin for debugging mode (ie, button pin)
-uint8_t       buttonPinMode = INPUT_PULLUP;  // mode for debugging pin
-const int8_t  wakePin       = 31;  // MCU interrupt/alarm pin to wake from sleep
-uint8_t       wakePinMode   = INPUT_PULLUP;  // mode for wake pin
+const int8_t  buttonPin     = 21;     // Pin for debugging mode (ie, button pin)
+uint8_t       buttonPinMode = INPUT;  // mode for debugging pin
+// NOTE: On the Mayfly (and Stonefly), pin 21 is tied to a button that pulls the
+// pin HIGH when pressed and an external pull-down that keeps the pin LOW when
+// the button is not pressed. We want the pin mode to be INPUT - ie, floating
+// internally and pulled down externally until the button is pressed.  AVR
+// processors like the 1284P on the Mayfly do not have internal pull-down
+// resistors - they do not have an INPUT_PULLDOWN mode like SAMD processors.
+const int8_t wakePin     = 31;  // MCU interrupt/alarm pin to wake from sleep
+uint8_t      wakePinMode = INPUT_PULLUP;  // mode for wake pin
 // Mayfly 0.x, 1.x D31 = A7
+// NOTE: On the Mayfly, pin D31=A7 is tied directly to the RTC INT/SQW pin
+// on the onboard DS3231 RTC.  The interrupt from the DS3231 will pull the pin
+// DOWN, so we want the pin mode to be INPUT_PULLUP - ie, pulled up until the
+// RTC pulls it down.
 // Set the wake pin to -1 if you do not want the main processor to sleep.
-// In a SAMD system where you are using the built-in rtc, set wakePin to 1
+// In a SAMD system where you are using the built-in RTC, set the wakePin to 1.
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
 const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
 const int8_t flashSSPin     = 20;  // onboard flash chip select/slave select pin
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 const int8_t sdi12DataPin   = 7;
 const int8_t relayPowerPin = A3;  // MCU pin controlling an optional power relay
+#elif defined(ENVIRODIY_STONEFLY_M4)
+const int32_t serialBaud    = 921600;  // Baud rate for debugging
+const int8_t  greenLED      = 8;       // Pin for the green LED
+const int8_t  redLED        = 9;       // Pin for the red LED
+const int8_t  buttonPin     = 21;  // Pin for debugging mode (ie, button pin)
+uint8_t       buttonPinMode = INPUT_PULLDOWN;  // mode for debugging pin
+// NOTE: On the Stonefly (and Mayfly), 21 is tied to a button that pulls the pin
+// HIGH when pressed and an external pull-down that keeps the pin LOW when the
+// button is not pressed. We want the pin mode to be INPUT_PULLDOWN - ie, pulled
+// down both internally and externally until the button is pressed.
+const int8_t wakePin     = 38;  // MCU interrupt/alarm pin to wake from sleep
+uint8_t      wakePinMode = INPUT_PULLUP;  // mode for wake pin
+// NOTE: On the Stonefly, pin D38 is tied directly to the RTC INT/SQW pin
+// on the onboard RV-8803 RTC.  The interrupt from the RV-8803 will pull the pin
+// DOWN, so we want the pin mode to be INPUT_PULLUP - ie, pulled up until the
+// RTC pulls it down.
+const int8_t sdCardPwrPin = -1;  // MCU SD card power pin
+// const int8_t sdCardPwrPin   = 32;  // MCU SD card power pin
+const int8_t sdCardSSPin    = 29;  // SD card chip select/slave select pin
+const int8_t flashSSPin     = 20;  // onboard flash chip select/slave select pin
+const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
+const int8_t relayPowerPin = 41;  // MCU pin controlling an optional power relay
+const int8_t sdi12DataPin  = 3;
+#else
+const int32_t serialBaud = 115200;  // Baud rate for debugging
+#if defined(PIN_LED2)
+const int8_t greenLED = PIN_LED2;  // Pin for the green LED
+#else
+const int8_t greenLED = -1;  // Pin for the green LED
+#endif
+const int8_t redLED        = LED_BUILTIN;  // Pin for the red LED
+const int8_t buttonPin     = -1;  // Pin for debugging mode (ie, button pin)
+uint8_t      buttonPinMode = INPUT_PULLUP;  // mode for debugging pin
+const int8_t wakePin       = -1;  // MCU interrupt/alarm pin to wake from sleep
+uint8_t      wakePinMode   = INPUT_PULLUP;  // mode for wake pin
+const int8_t sdCardPwrPin  = -1;            // MCU SD card power pin
+#if defined(SDCARD_SS_PIN)
+const int8_t sdCardSSPin =
+    SDCARD_SS_PIN;  // SD card chip select/slave select pin
+#elif defined(PIN_SPI_SS)
+const int8_t sdCardSSPin = PIN_SPI_SS;  // SD card chip select/slave select pin
+#else
+const int8_t sdCardSSPin = -1;  // SD card chip select/slave select pin
+#endif
+const int8_t flashSSPin     = -1;  // onboard flash chip select/slave select pin
+const int8_t sensorPowerPin = -1;  // MCU pin controlling main sensor power
+const int8_t relayPowerPin = -1;  // MCU pin controlling an optional power relay
+const int8_t sdi12DataPin  = 3;
+#endif
 /** End [logging_options] */
 
 
@@ -1517,8 +1580,12 @@ Variable* es2Temp = new DecagonES2_Temp(&es2,
 #include <sensors/EverlightALSPT19.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-const int8_t  alsPower      = sensorPowerPin;  // Power pin
-const int8_t  alsData       = A4;              // The ALS PT-19 data pin
+const int8_t alsPower = sensorPowerPin;  // Power pin
+#if defined(ENVIRODIY_STONEFLY_M4)
+const int8_t alsData = A8;  // The ALS PT-19 data pin
+#else
+const int8_t alsData = A4;  // The ALS PT-19 data pin
+#endif
 const int8_t  alsSupply     = 3.3;  // The ALS PT-19 supply power voltage
 const int8_t  alsResistance = 10;   // The ALS PT-19 loading resistance (in kΩ)
 const uint8_t alsNumberReadings = 10;
@@ -3575,7 +3642,8 @@ void setup() {
 
 #if defined(BUILD_MODBUS_SENSOR)
     // Start the stream for the modbus sensors;
-    modbusSerial.begin(9600);
+    // modbusSerial.begin(57600);  // 57600 is the default for ANB pH sensors
+    modbusSerial.begin(9600);  // All other modbus sensors use 9600 baud
 #endif
 
 #if defined(BUILD_SENSOR_MAX_BOTIX_SONAR)
@@ -3701,10 +3769,11 @@ void setup() {
              F("baud.  This will fail if the baud is mismatched.."));
     modemSerial.begin(modemBaud);
     modem.modemWake();  // NOTE:  This will also set up the modem
+    // WARNING: PLEASE REMOVE AUTOBAUDING FOR PRODUCTION CODE!
     if (!modem.gsmModem.testAT()) {
         PRINTOUT(F("Attempting autobauding.."));
         uint32_t foundBaud = TinyGsmAutoBaud(modemSerial);
-        if (foundBaud != 0 || F_CPU == 8000000L) {
+        if (foundBaud != 0 || (modemBaud > 57600 && F_CPU == 8000000L)) {
             PRINTOUT(F("Got modem response at baud of"), foundBaud,
                      F("Firing an attempt to change the baud rate to"),
                      modemBaud);
@@ -3731,6 +3800,22 @@ void setup() {
     modem.setModemResetLevel(HIGH);  // ModuleFun Bee inverts the signal
     PRINTOUT(F("Waking modem and setting Cellular Carrier Options..."));
     modem.modemWake();  // NOTE:  This will also set up the modem
+    // WARNING: PLEASE REMOVE AUTOBAUDING FOR PRODUCTION CODE!
+    if (!modem.gsmModem.testAT()) {
+        PRINTOUT(F("Attempting autobauding.."));
+        uint32_t foundBaud = TinyGsmAutoBaud(modemSerial);
+        if (foundBaud != 0 && !(F_CPU <= 8000000L && foundBaud >= 115200) &&
+            !(F_CPU <= 16000000L && foundBaud > 115200)) {
+            PRINTOUT(F("Got modem response at baud of"), foundBaud,
+                     F("Firing an attempt to change the baud rate to"),
+                     modemBaud);
+            modem.gsmModem.setBaud(
+                modemBaud);  // Make sure we're *NOT* auto-bauding!
+            modem.gsmModem.waitResponse();
+            modemSerial.end();
+            modemSerial.begin(modemBaud);
+        }
+    }
     modem.gsmModem.setBaud(modemBaud);   // Make sure we're *NOT* auto-bauding!
     modem.gsmModem.setNetworkMode(38);   // set to LTE only
                                          // 2 Automatic

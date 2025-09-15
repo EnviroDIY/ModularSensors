@@ -733,9 +733,9 @@ bool Logger::checkMarkedInterval(void) {
 
     bool retval;
     MS_DBG(
-F("Marked Time:"), static_cast<uint32_t>(Logger::markedLocalUnixTime),
-           F("Logging interval in seconds:"), (interval * 60),
-           F("Mod of Logging Interval:"),
+        F("Marked Time:"), static_cast<uint32_t>(Logger::markedLocalUnixTime),
+        F("Logging interval in seconds:"), (interval * 60),
+        F("Mod of Logging Interval:"),
         static_cast<uint32_t>((Logger::markedLocalUnixTime % (interval * 60))));
 
     if (Logger::markedLocalUnixTime != 0 &&
