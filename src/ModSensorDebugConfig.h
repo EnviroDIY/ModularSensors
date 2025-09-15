@@ -36,9 +36,9 @@
 // #define MS_SILENT
 //==============================================================
 
-
+#ifndef DOXYGEN
 //==============================================================
-// Uncomment any debbugging options you might want to use
+// Uncomment any debugging options you might want to use
 
 // #define MS_LOGGERBASE_DEBUG
 // #define MS_LOGGERBASE_DEBUG_DEEP
@@ -106,6 +106,8 @@
 // #define MS_ALPHASENSECO2_DEBUG
 // #define MS_ANALOGELECCONDUCTIVITY_DEBUG
 // #define MS_ANALOGELECCONDUCTIVITY_DEBUG_DEEP
+// #define MS_ANB_SENSORS_PH_DEBUG
+// #define MS_ANB_SENSORS_PH_DEBUG_DEEP
 // #define MS_AOSONGAM2315_DEBUG
 // #define MS_AOSONGDHT_DEBUG
 // #define MS_APOGEESQ212_DEBUG
@@ -116,6 +118,7 @@
 // #define MS_FREESCALEMPL115A2_DEBUG
 
 // #define MS_GEOLUXHYDROCAM_DEBUG
+// #define MS_GEOLUXHYDROCAM_DEBUG_DEEP
 // #define GEOLUX_DEBUG Serial2
 
 // #define MS_MAXBOTIXSONAR_DEBUG
@@ -152,5 +155,6 @@
 // #define MS_YOSEMITECHPARENT_DEBUG_DEEP
 
 //==============================================================
+#endif  // DOXYGEN
 
 #endif  // SRC_MODSENSORDEBUGCONFIG_H_

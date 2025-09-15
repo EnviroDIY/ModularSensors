@@ -1,8 +1,6 @@
 /**
  * @file AlphasenseCO2.cpp
- * @copyright 2017-2022 Stroud Water Research Center
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2017-2023 Stroud Water Research Center
+ * @copyright Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Written by Anthony Aufdenkampe <aaufdenkampe@limno.com>
  * and Bella Henkel <bella.henkel@mnsu.edu>

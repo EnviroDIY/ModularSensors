@@ -6,7 +6,7 @@ ___
 
 If you're new to EnviroDIY, I suggest you check out the [Just Getting Started](https://envirodiy.github.io/ModularSensors/page_getting_started.html) section of the documentation!
 
-This Arduino library gives environmental sensors a common interface of functions for use with Arduino-compatible dataloggers, such as the EnviroDIY Mayfly.
+This Arduino library gives environmental sensors a common interface of functions for use with Arduino-compatible data loggers, such as the EnviroDIY Mayfly.
 The ModularSensors library is specifically designed to support wireless, solar-powered environmental data logging applications, that is, to:
 
 - Retrieve data from many physical sensors;
@@ -46,6 +46,7 @@ For some generalized information about attaching sensors to an Arduino style boa
 - [Processor Metrics: battery voltage, free RAM, sample count](https://envirodiy.github.io/ModularSensors/group__sensor__processor.html)
 - [Maxim DS3231: real time clock](https://envirodiy.github.io/ModularSensors/group__sensor__ds3231.html)
 - [Analog Electrical Conductivity: conductivity](https://envirodiy.github.io/ModularSensors/group__sensor__analog__cond.html)
+- [ANB Sensors pH Sensor: pH](https://envirodiy.github.io/ModularSensors/group__sensor__anb__ph.html)
 - [AOSong AM2315: humidity & temperature](https://envirodiy.github.io/ModularSensors/group__sensor__am2315.html)
 - [AOSong DHT: humidity & temperature](https://envirodiy.github.io/ModularSensors/group__sensor__dht.html)
 - [Apogee SQ-212: quantum light sensor, via TI ADS1115](https://envirodiy.github.io/ModularSensors/group__sensor__sq212.html)
@@ -99,7 +100,7 @@ For some generalized information about attaching sensors to an Arduino style boa
   - [Y551: UV254/COD, Turbidity, and Temperature](https://envirodiy.github.io/ModularSensors/group__sensor__y551.html)
   - [Y560: Ammonium, Temperature, and pH](https://envirodiy.github.io/ModularSensors/group__sensor__y560.html)
   - [Y700: Pressure and Temperature](https://envirodiy.github.io/ModularSensors/group__sensor__y700.html)
-  - [Y4000 Multiparameter Sonde](https://envirodiy.github.io/ModularSensors/group__sensor__y4000.html)
+  - [Y4000 Multi-parameter Sonde](https://envirodiy.github.io/ModularSensors/group__sensor__y4000.html)
 - [Zebra-Tech D-Opto: dissolved oxygen](https://envirodiy.github.io/ModularSensors/group__sensor__dopto.html)
 
 ## Data Endpoints<!--! {#mainpage_data_receivers} -->
@@ -113,7 +114,7 @@ The currently supported services are the [Monitor My Watershed data portal](http
 - [AWS IoT Core](https://envirodiy.github.io/ModularSensors/class_a_w_s___io_t___publisher.html)
   - Unlike all other publishers, the connection to IoT Core supports a callback on received data and functions to publish custom messages and subscribe to custom topics.
 - [AWS S3](https://envirodiy.github.io/ModularSensors/class_s3_presigned_publisher.html)
-  - The S3 publiisher requires you to provide a function that will return an updated pre-signed URL to publish to.
+  - The S3 publisher requires you to provide a function that will return an updated pre-signed URL to publish to.
   - The S3 publisher does **NOT** publish any sensor data by default.
 It is intended for publishing images.
 
@@ -168,7 +169,7 @@ Hardware designs shared are released, unless otherwise indicated, under the [CER
 
 [Sara Damiano](https://github.com/SRGDamia1) is the primary developer of the EnviroDIY ModularSensors library, with input from many [other contributors](https://github.com/EnviroDIY/ModularSensors/graphs/contributors).
 
-This project has benefited from the support from the following funders:
+This project has benefited from the support from the following funding sources:
 
 - William Penn Foundation
 - US Environmental Protection Agency (EPA)

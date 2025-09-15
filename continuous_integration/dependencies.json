@@ -1,5 +1,5 @@
 {
-  "action_cache_version": 32,
+  "action_cache_version": 36,
   "dependencies": [
     {
       "name": "EnviroDIY_DS3231",
@@ -12,8 +12,7 @@
         "Kees Bakker",
         "Sara Damiano"
       ],
-      "frameworks": "arduino",
-      "platforms": "atmelavr, atmelsam"
+      "frameworks": "arduino"
     },
     {
       "name": "RTCZero",
@@ -26,16 +25,17 @@
         "Arduino"
       ],
       "frameworks": "arduino",
-      "platforms": "atmelsam"
+      "platforms": [
+        "atmelsam"
+      ]
     },
     {
       "name": "SparkFun Qwiic RTC RV8803 Arduino Library",
       "owner": "sparkfun",
       "url": "https://github.com/sparkfun/SparkFun_RV-8803_Arduino_Library.git",
-      "version": "~1.2.9",
+      "version": "~1.2.10",
       "note": "For the RV-8803 RTC",
-      "frameworks": "arduino",
-      "platforms": "atmelavr, atmelsam"
+      "frameworks": "arduino"
     },
     {
       "name": "EnableInterrupt",
@@ -48,7 +48,10 @@
         "Mike 'GreyGnome' Schwager"
       ],
       "frameworks": "arduino",
-      "platforms": "atmelavr, atmelsam"
+      "platforms": [
+        "atmelavr",
+        "atmelsam"
+      ]
     },
     {
       "name": "SdFat",
@@ -57,9 +60,10 @@
       "url": "https://github.com/greiman/SdFat",
       "version": "=2.3.0",
       "note": "SdFat - FAT16/FAT32 file system for SD cards.",
-      "authors": ["Bill Greiman"],
-      "frameworks": "arduino",
-      "platforms": "atmelavr, atmelsam"
+      "authors": [
+        "Bill Greiman"
+      ],
+      "frameworks": "arduino"
     },
     {
       "name": "TinyGSM",
@@ -71,8 +75,7 @@
         "Volodymyr Shymanskyy",
         "Sara Damiano"
       ],
-      "frameworks": "arduino",
-      "platforms": "atmelavr, atmelsam"
+      "frameworks": "arduino"
     },
     {
       "name": "PubSubClient",
@@ -95,8 +98,7 @@
       "authors": [
         "Adafruit"
       ],
-      "frameworks": "arduino",
-      "platforms": "atmelavr, atmelsam"
+      "frameworks": "arduino"
     },
     {
       "name": "Adafruit Unified Sensor",
@@ -108,8 +110,7 @@
       "authors": [
         "Adafruit"
       ],
-      "frameworks": "arduino",
-      "platforms": "atmelavr, atmelsam"
+      "frameworks": "arduino"
     },
     {
       "name": "Adafruit ADS1X15",
@@ -120,8 +121,7 @@
       "authors": [
         "Adafruit"
       ],
-      "frameworks": "arduino",
-      "platforms": "atmelavr, atmelsam"
+      "frameworks": "arduino"
     },
     {
       "name": "Adafruit AM2315",
@@ -133,8 +133,7 @@
       "authors": [
         "Adafruit"
       ],
-      "frameworks": "arduino",
-      "platforms": "atmelavr, atmelsam"
+      "frameworks": "arduino"
     },
     {
       "name": "Adafruit BME280 Library",
@@ -146,8 +145,7 @@
       "authors": [
         "Adafruit"
       ],
-      "frameworks": "arduino",
-      "platforms": "atmelavr, atmelsam"
+      "frameworks": "arduino"
     },
     {
       "name": "BMP388_DEV",
@@ -157,8 +155,7 @@
       "authors": [
         "Martin Lindupp"
       ],
-      "frameworks": "arduino",
-      "platforms": "atmelavr, atmelsam"
+      "frameworks": "arduino"
     },
     {
       "name": "DHT sensor library",
@@ -170,8 +167,7 @@
       "authors": [
         "Adafruit"
       ],
-      "frameworks": "arduino",
-      "platforms": "atmelavr, atmelsam"
+      "frameworks": "arduino"
     },
     {
       "name": "Adafruit INA219",
@@ -183,8 +179,7 @@
       "authors": [
         "Adafruit"
       ],
-      "frameworks": "arduino",
-      "platforms": "atmelavr, atmelsam"
+      "frameworks": "arduino"
     },
     {
       "name": "Adafruit MPL115A2",
@@ -247,8 +242,7 @@
         "Rob Tillart",
         "Tim Nuewsome"
       ],
-      "frameworks": "arduino",
-      "platforms": "atmelavr, atmelsam"
+      "frameworks": "arduino"
     },
     {
       "name": "SDI-12",
@@ -264,7 +258,10 @@
         "Anthony Aufdenkampe"
       ],
       "frameworks": "arduino",
-      "platforms": "atmelavr, atmelsam"
+      "platforms": [
+        "atmelavr",
+        "atmelsam"
+      ]
     },
     {
       "name": "MS5803",
@@ -289,28 +286,26 @@
         "Bobby Schulz",
         "Anthony Aufdenkampe"
       ],
-      "frameworks": "arduino",
-      "platforms": "atmelavr, atmelsam"
+      "frameworks": "arduino"
     },
     {
       "name": "SensorModbusMaster",
       "owner": "envirodiy",
       "library id": "1824",
       "url": "https://github.com/EnviroDIY/SensorModbusMaster",
-      "version": "~0.7.3",
+      "version": "~1.6.5",
       "note": "EnviroDIY SensorModbusMaster - Arduino library for communicating via modbus with the Arduino acting as the modbus master.",
       "authors": [
         "Sara Damiano"
       ],
-      "frameworks": "arduino",
-      "platforms": "atmelavr, atmelsam"
+      "frameworks": "arduino"
     },
     {
       "name": "KellerModbus",
       "owner": "envirodiy",
       "library id": "5439",
       "url": "https://github.com/EnviroDIY/KellerModbus",
-      "version": "~0.2.3",
+      "version": "~0.2.5",
       "note": "Arduino library for communication with Keller pressure and water level sensors via Modbus.",
       "authors": [
         "Anthony Aufdenkampe"
@@ -321,26 +316,24 @@
       "owner": "envirodiy",
       "library id": "2078",
       "url": "https://github.com/EnviroDIY/YosemitechModbus",
-      "version": "~0.5.0",
+      "version": "~0.5.2",
       "note": "Arduino library for communication with Yosemitech sensors via Modbus.",
       "authors": [
         "Sara Damiano",
         "Anthony Aufdenkampe"
       ],
-      "frameworks": "arduino",
-      "platforms": "atmelavr, atmelsam"
+      "frameworks": "arduino"
     },
     {
       "name": "GroPointModbus",
       "owner": "envirodiy",
       "url": "https://github.com/EnviroDIY/GroPointModbus",
-      "version": "~0.1.1",
+      "version": "~0.1.3",
       "note": "A library to use an Arduino as a master to control and communicate via modbus with GroPoint soil moisture sensors.",
       "authors": [
         "Anthony Aufdenkampe"
       ],
-      "frameworks": "arduino",
-      "platforms": "atmelavr, atmelsam"
+      "frameworks": "arduino"
     },
     {
       "name": "GeoluxCamera",
@@ -351,8 +344,30 @@
       "authors": [
         "Sara Damiano"
       ],
-      "frameworks": "arduino",
-      "platforms": "atmelavr, atmelsam"
+      "frameworks": "arduino"
+    },
+    {
+      "name": "fast_math",
+      "owner": "robtillaart",
+      "url": "https://github.com/RobTillaart/fast_math",
+      "version": "~0.2.4",
+      "note": "Arduino library for fast math algorithms.",
+      "authors": [
+        "Rob Tillaart"
+      ],
+      "frameworks": "*",
+      "platforms": "*"
+    },
+    {
+      "name": "ANBSensorsModbus",
+      "owner": "envirodiy",
+      "url": "https://github.com/EnviroDIY/ANBSensorsModbus",
+      "version": "~0.2.4",
+      "note": "A library for communicating with pH sensors manufactured by ANB Sensors using Modbus.",
+      "authors": [
+        "Sara Damiano"
+      ],
+      "frameworks": "arduino"
     },
     {
       "name": "StreamDebugger",

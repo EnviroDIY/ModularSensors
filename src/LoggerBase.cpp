@@ -41,8 +41,8 @@ epochStart Logger ::_loggerEpoch = MS_LOGGER_EPOCH;
 // Initialize the static time adjustment
 int8_t Logger::_loggerRTCOffset = 0;
 // Initialize the static timestamps
-uint32_t Logger::markedLocalUnixTime = 0;
-uint32_t Logger::markedUTCUnixTime   = 0;
+time_t Logger::markedLocalUnixTime = 0;
+time_t Logger::markedUTCUnixTime   = 0;
 // Initialize the testing/logging flags
 volatile bool Logger::isLoggingNow = false;
 volatile bool Logger::isTestingNow = false;
@@ -422,7 +422,11 @@ String Logger::getVarCodeAtI(uint8_t position_i) {
     return _internalArray->arrayOfVars[position_i]->getVarCode();
 }
 // This returns the variable UUID, if one has been assigned
-String Logger::getVarUUIDAtI(uint8_t position_i) {
+String Logger::getVarUUIDStringAtI(uint8_t position_i) {
+    return _internalArray->arrayOfVars[position_i]->getVarUUIDString();
+}
+// This returns the variable UUID, if one has been assigned
+const char* Logger::getVarUUIDAtI(uint8_t position_i) {
     return _internalArray->arrayOfVars[position_i]->getVarUUID();
 }
 // This returns the variable resolution
@@ -614,24 +618,31 @@ void Logger::setTZOffset(int8_t offset) {
 int8_t Logger::getTZOffset(void) {
     return Logger::_loggerRTCOffset;
 }
-uint32_t Logger::getNowLocalEpoch() {
+time_t Logger::getNowLocalEpoch() {
     return loggerClock::getNowAsEpoch(Logger::_loggerUTCOffset,
                                       Logger::_loggerEpoch);
 }
-uint32_t Logger::getNowUTCEpoch() {
+time_t Logger::getNowUTCEpoch() {
     return loggerClock::getNowAsEpoch(0, Logger::_loggerEpoch);
+}
+void Logger::getNowParts(int8_t& seconds, int8_t& minutes, int8_t& hours,
+                         int8_t& day, int8_t& month, int16_t& year,
+                         uint8_t& tz_offset) {
+    tz_offset = Logger::_loggerUTCOffset;
+    loggerClock::getNowAsParts(seconds, minutes, hours, day, month, year,
+                               Logger::_loggerUTCOffset);
 }
 
 // This converts an epoch time (unix time) into a ISO8601 formatted string.
 // It assumes the supplied date/time is in the LOGGER's timezone and adds
 // the LOGGER's offset as the time zone offset in the string. code modified
 // from parts of the SparkFun RV-8803 library
-String Logger::formatDateTime_ISO8601(uint32_t epochSeconds) {
+String Logger::formatDateTime_ISO8601(time_t epochSeconds) {
     return loggerClock::formatDateTime_ISO8601(
         epochSeconds, Logger::_loggerUTCOffset, Logger::_loggerEpoch);
 }
 void Logger::formatDateTime(char* buffer, const char* fmt,
-                            uint32_t epochSeconds) {
+                            time_t epochSeconds) {
     loggerClock::formatDateTime(buffer, fmt, epochSeconds,
                                 Logger::_loggerEpoch);
 }
@@ -652,7 +663,7 @@ void Logger::markTime(void) {
     MS_DEEP_DBG(F("Marking time..."));
     Logger::markedUTCUnixTime   = getNowUTCEpoch();
     Logger::markedLocalUnixTime = markedUTCUnixTime +
-        ((uint32_t)Logger::_loggerUTCOffset) * 3600;
+        static_cast<time_t>(Logger::_loggerUTCOffset * 3600);
 }
 
 
@@ -660,7 +671,7 @@ void Logger::markTime(void) {
 // rate
 bool Logger::checkInterval(void) {
     bool     retval;
-    uint32_t checkTime = getNowLocalEpoch();
+    uint32_t checkTime = static_cast<uint32_t>(getNowLocalEpoch());
     int16_t  interval  = _loggingIntervalMinutes;
     if (_remainingShortIntervals > 0) {
         // log the first few samples at an interval of 1 minute so that
@@ -690,7 +701,8 @@ bool Logger::checkInterval(void) {
 #endif
         // Update the time variables with the current time
         markTime();
-        MS_DBG(F("Time marked at (unix):"), Logger::markedLocalUnixTime);
+        MS_DBG(F("Time marked at (unix):"),
+               static_cast<uint32_t>(Logger::markedLocalUnixTime));
         MS_DBG(F("Time to log!"));
 #if MS_LOGGERBASE_BUTTON_BENCH_TEST == 0
         if ((_remainingShortIntervals > 0) && (!testing)) {
@@ -720,10 +732,11 @@ bool Logger::checkMarkedInterval(void) {
     if (_remainingShortIntervals > 0) { interval = 1; }
 
     bool retval;
-    MS_DBG(F("Marked Time:"), Logger::markedLocalUnixTime,
-           F("Logging interval in seconds:"), (interval * 60),
-           F("Mod of Logging Interval:"),
-           Logger::markedLocalUnixTime % (interval * 60));
+    MS_DBG(
+        F("Marked Time:"), static_cast<uint32_t>(Logger::markedLocalUnixTime),
+        F("Logging interval in seconds:"), (interval * 60),
+        F("Mod of Logging Interval:"),
+        static_cast<uint32_t>((Logger::markedLocalUnixTime % (interval * 60))));
 
     if (Logger::markedLocalUnixTime != 0 &&
         (Logger::markedLocalUnixTime % (interval * 60) == 0)) {
@@ -770,7 +783,7 @@ void Logger::systemSleep(void) {
 #endif
 
     // Send a message that we're getting ready
-    MS_DBG(F("Preparing clock interrupts to wake processor"));
+    MS_DEEP_DBG(F("Preparing clock interrupts to wake processor"));
     loggerClock::enablePeriodicRTCInterrupts();
 
     // Enable the RTC ISR
@@ -1186,19 +1199,26 @@ String Logger::generateFileName(bool include_time, const char* extension,
                                 const char* filePrefix) {
     if (Logger::markedLocalUnixTime == 0) { markTime(); }
     const char* use_prefix = filePrefix != nullptr ? filePrefix : getLoggerID();
-    uint8_t     len_underscore      = strlen(use_prefix) > 0 ? 1 : 0;
-    uint8_t     len_time            = include_time ? 15 : 8;
-    char        time_buff[len_time] = {'\0'};
+    MS_DEEP_DBG(F("Generating filename with prefix:"), use_prefix);
+    const char* use_ext = extension != nullptr ? extension : ".csv";
+    MS_DEEP_DBG(F("Generating filename with extension:"), use_ext);
+    uint8_t len_underscore = strlen(use_prefix) > 0 ? 1 : 0;
+    // length: YYYYMMDD_HHMMSS = 15 + 1 for null or YYYYMMDD = 8 + 1 for null
+    uint8_t len_time            = include_time ? 16 : 9;
+    char    time_buff[len_time] = {'\0'};
     if (include_time) {
         formatDateTime(time_buff, "%Y%m%d_%H%M%S", Logger::markedLocalUnixTime);
+        time_buff[15] = '\0';  // just to be sure
     } else {
         formatDateTime(time_buff, "%Y%m%d", Logger::markedLocalUnixTime);
+        time_buff[8] = '\0';  // just to be sure
     }
+    MS_DEEP_DBG(F("Generating filename with timestamp string:"), time_buff);
     String filename = String(use_prefix);
     if (len_underscore) { filename += String("_"); }
     filename += String(time_buff);
-    filename += String(extension);
-    MS_DBG(F("Generated filename: "), filename);
+    filename += String(use_ext);
+    MS_DBG(F("Generated filename:"), filename);
     return filename;
 }
 
@@ -1255,7 +1275,7 @@ void Logger::printFileHeader(Stream* stream) {
     STREAM_CSV_ROW(F("Result Unit:"), getVarUnitAtI(i))
     // Next comes the variable UUIDs
     // We'll only add UUID's if we see a UUID for the first variable
-    if (getVarUUIDAtI(0).length() > 1) {
+    if (getVarUUIDAtI(0) != nullptr && strlen(getVarUUIDAtI(0)) > 1) {
         STREAM_CSV_ROW(F("Result UUID:"), getVarUUIDAtI(i))
     }
 
@@ -1351,37 +1371,26 @@ bool Logger::initializeSDCard(void) {
 // provided date time callback function. See SdFile::dateTimeCallback() for
 // usage.
 void Logger::fileDateTimeCallback(uint16_t* date, uint16_t* time) {
-    // Create a temporary variable for the epoch time
-    // NOTE: time_t is a typedef for uint32_t, defined in time.h
-    time_t t = getNowLocalEpoch();
-    // create a temporary time struct
-    // tm is a struct for time parts, defined in time.h
-    struct tm* tmp = gmtime(&t);
-    MS_DEEP_DBG(F("Time components: "), tmp->tm_year, F(" - "), tmp->tm_mon + 1,
-                F(" - "), tmp->tm_mday, F("    "), tmp->tm_hour, F(" : "),
-                tmp->tm_min, F(" : "), tmp->tm_sec);
+    int8_t  seconds, minutes, hours, day, month;
+    int16_t year;
+    loggerClock::getNowAsParts(seconds, minutes, hours, day, month, year,
+                               Logger::_loggerUTCOffset);
 
     // return date using FAT_DATE macro to format fields
-    *date = FAT_DATE(tmp->tm_year + 1900, tmp->tm_mon + 1, tmp->tm_mday);
+    *date = FAT_DATE(year, month, day);
 
     // return time using FAT_TIME macro to format fields
-    *time = FAT_TIME(tmp->tm_hour, tmp->tm_min, tmp->tm_sec);
+    *time = FAT_TIME(hours, minutes, seconds);
 }
 
 
 // Protected helper function - This sets a timestamp on a file
 void Logger::setFileTimestamp(File& fileToStamp, uint8_t stampFlag) {
-    // Create a temporary variable for the epoch time
-    // NOTE: time_t is a typedef for uint32_t, defined in time.h
-    time_t t = getNowLocalEpoch();
-    // create a temporary time struct
-    // tm is a struct for time parts, defined in time.h
-    struct tm* tmp = gmtime(&t);
-    MS_DEEP_DBG(F("Time components: "), tmp->tm_year, F(" - "), tmp->tm_mon + 1,
-                F(" - "), tmp->tm_mday, F("    "), tmp->tm_hour, F(" : "),
-                tmp->tm_min, F(" : "), tmp->tm_sec);
-    fileToStamp.timestamp(stampFlag, tmp->tm_year + 1900, tmp->tm_mon + 1,
-                          tmp->tm_mday, tmp->tm_hour, tmp->tm_min, tmp->tm_sec);
+    int8_t  seconds, minutes, hours, day, month;
+    int16_t year;
+    loggerClock::getNowAsParts(seconds, minutes, hours, day, month, year,
+                               Logger::_loggerUTCOffset);
+    fileToStamp.timestamp(stampFlag, year, month, day, hours, minutes, seconds);
 }
 
 
@@ -1673,7 +1682,8 @@ void Logger::begin() {
     MS_DBG(F("Setting up a watch-dog timer to restart the board after"),
            realWatchDogTime,
            F("minutes without being fed (2x logging interval)"));
-    extendedWatchDog::setupWatchDog((uint32_t)(realWatchDogTime * 60));
+    extendedWatchDog::setupWatchDog(
+        static_cast<uint32_t>(realWatchDogTime * 60));
     // Enable the watchdog
     MS_DEEP_DBG(F("Enabling the watchdog"));
     extendedWatchDog::enableWatchDog();

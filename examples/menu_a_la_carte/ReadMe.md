@@ -60,6 +60,7 @@ ___
     - [The processor as a sensor](#the-processor-as-a-sensor)
     - [Maxim DS3231 RTC as a sensor](#maxim-ds3231-rtc-as-a-sensor)
     - [Alphasense CO2](#alphasense-co2)
+    - [ANB Sensors pH Sensor](#anb-sensors-ph-sensor)
     - [AOSong AM2315](#aosong-am2315)
     - [AOSong DHT](#aosong-dht)
     - [Apogee SQ-212 Quantum Light Sensor](#apogee-sq-212-quantum-light-sensor)
@@ -631,6 +632,14 @@ ___
 @see @ref sensor_alphasense_co2
 
 <!--! @menusnip{alphasense_co2} -->
+
+___
+
+### ANB Sensors pH Sensor<!--! {#menu_walk_anb_ph} -->
+
+@see @ref sensor_anb_ph
+
+<!--! @menusnip{anb_ph} -->
 
 ___
 
@@ -1509,7 +1518,7 @@ This is very helpful in keeping the clock from drifting or resetting it if it lo
 Like the sensor setup, we also apply a battery voltage voltage condition before attempting the clock sync.
 (All of the supported modems are large power eaters.)
 Unlike the sensor setup, we have an additional check for "sanity" of the clock time.
-To be considered "sane" the clock has to set somewhere between #EARLIEST_SANE_UNIX_TIMESTAMP (currently January 1, 2023) and #LATEST_SANE_UNIX_TIMESTAMP (currently January 1, 2030).
+To be considered "sane" the clock has to set somewhere between #EARLIEST_SANE_UNIX_TIMESTAMP (currently January 1, 2025) and #LATEST_SANE_UNIX_TIMESTAMP (currently January 1, 2035).
 It's a broad range, but it will automatically flag values like Jan 1, 2000 - which are the default start value of the clock on power up.
 
 <!--! @menusnip{setup_clock} -->

@@ -81,6 +81,8 @@ class dataPublisher;  // Forward declaration
  * In this library, all loggers are Arduino-style small processor circuit
  * boards.
  *
+ * @todo Support half/quarter hour time zones
+ *
  * @ingroup base_classes
  */
 class Logger {
@@ -630,7 +632,15 @@ class Logger {
      * @param position_i The position of the variable in the array.
      * @return The variable UUID
      */
-    String getVarUUIDAtI(uint8_t position_i);
+    const char* getVarUUIDAtI(uint8_t position_i);
+    /**
+     * @brief Get the UUID of the variable at the given position in the internal
+     * variable array object.
+     *
+     * @param position_i The position of the variable in the array.
+     * @return The variable UUID
+     */
+    String getVarUUIDStringAtI(uint8_t position_i);
     /**
      * @brief Get the resolution (number of decimal places) of the variable at
      * the given position in the internal variable array object.
@@ -842,18 +852,41 @@ class Logger {
      * @brief Get the current epoch time from the RTC and correct it to the
      * logging time zone.
      *
-     * @return The number of seconds from the start of the given epoch in
+     * @return The number of seconds from the start of the **UNIX** epoch in
      * the logging time zone.
      */
-    static uint32_t getNowLocalEpoch();
+    static time_t getNowLocalEpoch();
+
+    /**
+     * @brief Get the current epoch time from the RTC and return it as
+     * individual parts.
+     *
+     * @param seconds [out] Reference to a variable where the seconds will be
+     * stored
+     * @param minutes [out] Reference to a variable where the minutes will be
+     * stored
+     * @param hours [out] Reference to a variable where the hours will be stored
+     * @param day [out] Reference to a variable where the day will be stored
+     * @param month [out] Reference to a variable where the month will be stored
+     * @param year [out] Reference to a variable where the year will be stored
+     * @param tz_offset [out] Reference to a variable where the timezone offset
+     * will be stored
+     *
+     * @remark Unlike the near-identical loggerClock::getNowAsParts(), this
+     * function converts all of the parts to the loggers timezone and writes the
+     * logger timezone to the tz_offset variable.
+     */
+    static void getNowParts(int8_t& seconds, int8_t& minutes, int8_t& hours,
+                            int8_t& day, int8_t& month, int16_t& year,
+                            uint8_t& tz_offset);
 
     /**
      * @brief Get the current Universal Coordinated Time (UTC) epoch time from
      * the RTC.
      *
-     * @return The number of seconds from the start of the given epoch.
+     * @return The number of seconds from the start of the **UNIX** epoch.
      */
-    static uint32_t getNowUTCEpoch();
+    static time_t getNowUTCEpoch();
 
     /**
      * @brief Convert an epoch time into a ISO8601 formatted string.
@@ -866,7 +899,7 @@ class Logger {
      * epoch (#MS_LOGGER_EPOCH).
      * @return An ISO8601 formatted String.
      */
-    static String formatDateTime_ISO8601(uint32_t epochSeconds);
+    static String formatDateTime_ISO8601(time_t epochSeconds);
 
     /**
      * @brief Convert an epoch time into a character string based on the input
@@ -888,23 +921,23 @@ class Logger {
      * epoch in the given offset from UTC.
      */
     static void formatDateTime(char* buffer, const char* fmt,
-                               uint32_t epochSeconds);
+                               time_t epochSeconds);
 
     /**
-     * @brief Pass-through to loggerClock::setRTClock(uint32_t
+     * @brief Pass-through to loggerClock::setRTClock(time_t
      * UTCEpochSeconds,0, epochStart::unix_epoch) Verify that the input value is
      * sane and if so set the real time clock to the given time.
      *
      * @m_deprecated_since{0,37,0}
      *
-     * Call loggerClock::setRTClock(uint32_t ts, int8_t utcOffset , epochStart
+     * Call loggerClock::setRTClock(time_t ts, int8_t utcOffset , epochStart
      * epoch) directly in new programs.
      *
      * @param UTCEpochSeconds The number of seconds since 1970 in UTC.
      * @return True if the input timestamp passes sanity checks **and**
      * the clock has been successfully set.
      */
-    bool setRTClock(uint32_t UTCEpochSeconds);
+    bool setRTClock(time_t UTCEpochSeconds);
 
     /**
      * @brief Passthrough to loggerClock::isRTCSane(); check that the current
@@ -1300,7 +1333,7 @@ class Logger {
      *
      * @note This cannot be called until *after* the RTC is started
      */
-    String generateFileName(bool include_time, const char* extension,
+    String generateFileName(bool include_time, const char* extension = nullptr,
                             const char* filePrefix = nullptr);
 
  protected:
@@ -1484,12 +1517,12 @@ class Logger {
     /**
      * @brief The static "marked" epoch time for the local timezone.
      */
-    static uint32_t markedLocalUnixTime;
+    static time_t markedLocalUnixTime;
 
     /**
      * @brief The static "marked" epoch time for UTC.
      */
-    static uint32_t markedUTCUnixTime;
+    static time_t markedUTCUnixTime;
 
     // These are flag variables noting the current state (logging/testing)
     // NOTE:  if the logger isn't currently logging or testing or in the middle

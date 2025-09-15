@@ -386,6 +386,7 @@ bool SDI12Sensors::startSingleMeasurement(void) {
 
     // Check that the sensor is there and responding
     if (!requestSensorAcknowledgement()) {
+        setStatusBit(ERROR_OCCURRED);
         _millisMeasurementRequested = 0;
         clearStatusBit(MEASUREMENT_SUCCESSFUL);
         deactivate();
@@ -408,6 +409,8 @@ bool SDI12Sensors::startSingleMeasurement(void) {
         setStatusBit(MEASUREMENT_SUCCESSFUL);
         return true;
     } else {
+        // Set the status error bit (bit 7)
+        setStatusBit(ERROR_OCCURRED);
         MS_DBG(getSensorNameAndLocation(),
                F("did not respond to measurement request!"));
         _millisMeasurementRequested = 0;

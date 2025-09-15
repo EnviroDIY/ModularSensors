@@ -274,7 +274,8 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient, bool forceFlush) {
     MS_DBG(F("Publishing record to buffer.  Will flush:"), willFlush);
 
     // create record to hold timestamp and variable values in the log buffer
-    int record = _logBuffer.addRecord(Logger::markedLocalUnixTime);
+    int record = _logBuffer.addRecord(
+        static_cast<uint32_t>(Logger::markedLocalUnixTime));
 
     // write record data if the record was successfully created
     if (record >= 0) {
@@ -357,7 +358,7 @@ int16_t EnviroDIYPublisher::flushDataBuffer(Client* outClient) {
         uint8_t variables = _logBuffer.getNumVariables();
         for (uint8_t var = 0; var < variables; var++) {
             txBufferAppend('"');
-            txBufferAppend(_baseLogger->getVarUUIDAtI(var).c_str());
+            txBufferAppend(_baseLogger->getVarUUIDAtI(var));
             txBufferAppend('"');
             txBufferAppend(':');
             if (records > 1) { txBufferAppend('['); }

@@ -164,6 +164,8 @@ bool MaximDS18::startSingleMeasurement(void) {
         // Update the time that a measurement was requested
         _millisMeasurementRequested = millis();
     } else {
+        // Set the status error bit (bit 7)
+        setStatusBit(ERROR_OCCURRED);
         // Otherwise, make sure that the measurement start time and success bit
         // (bit 6) are unset
         MS_DBG(getSensorNameAndLocation(),

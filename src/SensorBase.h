@@ -231,24 +231,54 @@ class Sensor {
      */
     uint8_t getStatus(void);
 
+    /**
+     * @brief Get the value of a specific status bit.
+     *
+     * @param bitToGet The status bit to retrieve.
+     * @return The value of the specified status bit (0 or 1).
+     */
     bool getStatusBit(sensor_status_bits bitToGet);
 
+    /**
+     * @brief Set a specific status bit to 1.
+     *
+     * @param bitToSet The status bit to set.
+     */
     void setStatusBit(sensor_status_bits bitToSet);
+    /// @brief A helper recursive template to set multiple status bits
+    /// @tparam T The type of the status bit to set - must be a uint8_t
+    /// @param bitToSet The first status bit to set.
     template <typename T>
     void setStatusBits(T bitToSet) {
         setStatusBit(bitToSet);
     }
+    /// @brief A helper recursive template to set multiple status bits
+    /// @tparam T The type of the status bit to set - must be a uint8_t
+    /// @param firstBit The first status bit to set.
+    /// @param otherBits Any additional status bits to set.
     template <typename T, typename... Args>
     void setStatusBits(T firstBit, Args... otherBits) {
         setStatusBit(firstBit);
         setStatusBits(otherBits...);
     }
 
+    /**
+     * @brief Clear a specific status bit (ie, set it to 0).
+     *
+     * @param bitToClear The status bit to clear.
+     */
     void clearStatusBit(sensor_status_bits bitToClear);
+    /// @brief A helper recursive template to clear multiple status bits
+    /// @tparam T The type of the status bit to set - must be a uint8_t
+    /// @param bitToClear The first status bit to clear.
     template <typename T>
     void clearStatusBits(T bitToClear) {
         clearStatusBit(bitToClear);
     }
+    /// @brief A helper recursive template to clear multiple status bits
+    /// @tparam T The type of the status bit to set - must be a uint8_t
+    /// @param firstBit The first status bit to clear.
+    /// @param otherBits Any additional status bits to clear.
     template <typename T, typename... Args>
     void clearStatusBits(T firstBit, Args... otherBits) {
         clearStatusBit(firstBit);
@@ -359,6 +389,10 @@ class Sensor {
 
     /**
      * @brief The array of result values for each sensor.
+     *
+     * @todo Support int16_t and int32_t directly in the value array so no
+     * casting is needed. This could be done using a template or a union similar
+     * to the modbus library's leFrame union.
      */
     float sensorValues[MAX_NUMBER_VARS];
 

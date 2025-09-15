@@ -104,18 +104,18 @@
 /**
  * @brief The earliest unix timestamp that can be considered sane.
  *
- * January 1, 2023
+ * January 1, 2025
  */
-#define EARLIEST_SANE_UNIX_TIMESTAMP 1672531200
+#define EARLIEST_SANE_UNIX_TIMESTAMP 1735689600
 #endif
 
 #ifndef LATEST_SANE_UNIX_TIMESTAMP
 /**
  * @brief The latest unix timestamp that can be considered sane.
  *
- * January 1, 2030
+ * January 1, 2035
  */
-#define LATEST_SANE_UNIX_TIMESTAMP 1893456000
+#define LATEST_SANE_UNIX_TIMESTAMP 2051222400
 #endif
 //==============================================================
 

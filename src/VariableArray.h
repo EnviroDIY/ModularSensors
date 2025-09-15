@@ -317,6 +317,14 @@ class VariableArray {
      */
     bool checkVariableUUIDs(void);
 
+    /**
+     * @brief Get a specific status bit from the sensor tied to a variable in
+     * the array.
+     *
+     * @param arrayIndex The index of the variable in the sensor variable array
+     * @param bitToGet The specific status bit to get.
+     * @return The value of the requested status bit.
+     */
     bool getSensorStatusBit(int                        arrayIndex,
                             Sensor::sensor_status_bits bitToGet);
 

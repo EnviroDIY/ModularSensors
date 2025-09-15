@@ -197,8 +197,13 @@ void Variable::setVarCode(const char* varCode) {
     _varCode = varCode;
 }
 
-// This returns the variable UUID, if one has been assigned
-String Variable::getVarUUID(void) {
+// This returns the variable UUID as a String, if one has been assigned
+String Variable::getVarUUIDString(void) {
+    return String(_uuid);
+}
+// This returns the variable UUID as a pointer to a const char array, if one has
+// been assigned
+const char* Variable::getVarUUID(void) {
     return _uuid;
 }
 // This sets the UUID
@@ -208,7 +213,7 @@ void Variable::setVarUUID(const char* uuid) {
 // This checks that the UUID is properly formatted
 bool Variable::checkUUIDFormat(void) {
     // If no UUID, move on
-    if (strlen(_uuid) == 0) { return true; }
+    if (_uuid == nullptr || strlen(_uuid) == 0) { return true; }
 
     // Should be 36 characters long with dashes
     if (strlen(_uuid) != 36) {

@@ -16,7 +16,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   - Any code that attempted to interact with the watchdog (ie, with a "complex loop") must now call the extendedWatchDog class directly, ie: `extendedWatchDog::resetWatchDog();` rather than `dataLogger.watchDogTimer.resetWatchDog();`
 - **BREAKING** Renamed `markedLocalEpochTime` to `markedLocalUnixTime` to clarify the start of the epoch that we're marking down.
 - **BREAKING** Renamed `markedUTCEpochTime` to `markedUTCUnixTime` to clarify the start of the epoch that we're marking down.
-- **Potentially BREAKING:** Changed the requirements for a "sane" timestamp to between 2023 and 2030.
+- **Potentially BREAKING:** Changed the requirements for a "sane" timestamp to between 2025 and 2035.
   - Moved the value for the sane range into two defines: `EARLIEST_SANE_UNIX_TIMESTAMP` and `LATEST_SANE_UNIX_TIMESTAMP` so they can be more easily modified and tracked.
 These defines can be set in the ModSensorConfig.h file.
 - **Potentially BREAKING:** For calculated variables, the calculation function will only be called if `getValue(true)` or `getValueString(true)` is called - that is, the boolean for 'update value' must explicitly be set to true to rerun the calculation function.
@@ -34,7 +34,7 @@ I realized this was a problem for analog values I tried to read that reported co
   - `Logger::setRTClock(UTCEpochSeconds)`; use `loggerClock::setRTClock(ts, utcOffset, epoch)` in new code.
   - `Logger::isRTCSane()`; use `loggerClock::isRTCSane()` in new code.
   - `Logger::wakeISR()`; use `loggerClock::rtcISR()` in new code.
-- Changed the watchdog from a fix 15 minute reset timer to 2x the logging interval (or at least 5 minutes).
+- Changed the watchdog from a fixed 15 minute reset timer to 2x the logging interval (or at least 5 minutes).
 - Modified all examples which define a sercom serial port for SAMD21 processors to require the defines for the supported processors.
 This should only make a difference for my compilation tests, real users should pick out only the chunks of code they want rather than leave conditional code in place.
 - Changed some fill-in-the-blank spots in the menu example to only set the value in a single spot in the code.
@@ -72,11 +72,12 @@ If no epoch start is given, it is assumed to be UNIX (January 1, 1970).
 - Added support for sending printouts and debugging to two different serial ports.  This is useful for devices (like SAMD) that use a built in USB serial port which is turned off when the device sleeps.  If `MS_2ND_OUTPUT` is defined, output will go to *both* `MS_2ND_OUTPUT` and to `MS_OUTPUT`.
 - Added example code for flashing boards with a neo-pixel in the menu example.
 - **NEW SENSOR** Added support for [Geolux HydroCam](https://www.geolux-radars.com/hydrocam)
+- **NEW SENSOR** Added support for [ANB Sensors pH Sensors](https://www.anbsensors.com/)
 - Added a generic time formatting function.
 - **NEW PUBLISHER** Added a new publisher to AWS IoT Core over MQTT
   - A doorway to new possibilities: Unlike every other publisher, the AWS IoT Core publisher supports two-way communication with a settable callback on received messages.
 - **NEW PUBLISHER** Added a new publisher to AWS S3 buckets using pre-signed URLs
-- Added structure to publish *metadata* to publishers - intended to be used only at startup.
+- Added structure to publish *metadata* to publishers - intended to be used only at startup and once a day at noon.
 - Added start-up helper function `makeInitialConnections()` to publish metadata and sync the clock.
 - Added function `getVarResolutionAtI(uint8_t)`
 - Added support for full CRC checking for SDI-12 sensors.
