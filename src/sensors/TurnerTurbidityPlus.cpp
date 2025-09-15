@@ -1,6 +1,6 @@
 /**
  * @file TurnerTurbidityPlus.cpp
- * @copyright 2020 Stroud Water Research Center
+ * @copyright Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  * Adapted from TurnerCyclops by Matt Barney <mbarney@tu.org>

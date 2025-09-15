@@ -477,7 +477,7 @@ uint32_t loggerModem::parseNISTBytes(byte nistBytes[4]) {
     // Return the timestamp
     uint32_t unixTimeStamp = secFrom1900 - EPOCH_NIST_TO_UNIX;
     MS_DBG(F("Unix Timestamp returned by NIST (UTC):"), unixTimeStamp);
-    // If before Jan 1, 2019 or after Jan 1, 2030, most likely an error
+    // If before Jan 1, 2025 or after Jan 1, 2035, most likely an error
     if (unixTimeStamp < EARLIEST_SANE_UNIX_TIMESTAMP) {
         return 0;
     } else if (unixTimeStamp > LATEST_SANE_UNIX_TIMESTAMP) {
