@@ -87,7 +87,7 @@
       "name": "SparkFun Qwiic RTC RV8803 Arduino Library",
       "owner": "sparkfun",
       "url": "https://github.com/sparkfun/SparkFun_RV-8803_Arduino_Library.git",
-      "version": "~1.2.9",
+      "version": "~1.2.10",
       "note": "For the RV-8803 RTC",
       "frameworks": "arduino"
     },
@@ -107,7 +107,7 @@
       "owner": "greiman",
       "library id": "322",
       "url": "https://github.com/greiman/SdFat",
-      "version": "~2.3.1",
+      "version": "=2.3.0",
       "note": "SdFat - FAT16/FAT32 file system for SD cards.",
       "authors": ["Bill Greiman"],
       "frameworks": "arduino"
@@ -299,7 +299,7 @@
       "owner": "envirodiy",
       "library id": "1824",
       "url": "https://github.com/EnviroDIY/SensorModbusMaster",
-      "version": "~1.6.0",
+      "version": "~1.6.5",
       "note": "EnviroDIY SensorModbusMaster - Arduino library for communicating via modbus with the Arduino acting as the modbus master.",
       "authors": ["Sara Damiano"],
       "frameworks": "arduino"
@@ -309,7 +309,7 @@
       "owner": "envirodiy",
       "library id": "5439",
       "url": "https://github.com/EnviroDIY/KellerModbus",
-      "version": "~0.2.4",
+      "version": "~0.2.5",
       "note": "Arduino library for communication with Keller pressure and water level sensors via Modbus.",
       "authors": ["Anthony Aufdenkampe"]
     },
@@ -318,7 +318,7 @@
       "owner": "envirodiy",
       "library id": "2078",
       "url": "https://github.com/EnviroDIY/YosemitechModbus",
-      "version": "~0.5.1",
+      "version": "~0.5.2",
       "note": "Arduino library for communication with Yosemitech sensors via Modbus.",
       "authors": ["Sara Damiano", "Anthony Aufdenkampe"],
       "frameworks": "arduino"
@@ -327,7 +327,7 @@
       "name": "GroPointModbus",
       "owner": "envirodiy",
       "url": "https://github.com/EnviroDIY/GroPointModbus",
-      "version": "~0.1.2",
+      "version": "~0.1.3",
       "note": "A library to use an Arduino as a master to control and communicate via modbus with GroPoint soil moisture sensors.",
       "authors": ["Anthony Aufdenkampe"],
       "frameworks": "arduino"
@@ -342,10 +342,20 @@
       "frameworks": "arduino"
     },
     {
+      "name": "fast_math",
+      "owner": "robtillaart",
+      "url": "https://github.com/RobTillaart/fast_math",
+      "version": "~0.2.4",
+      "note": "Arduino library for fast math algorithms.",
+      "authors": ["Rob Tillaart"],
+      "frameworks": "*",
+      "platforms": "*"
+    },
+    {
       "name": "ANBSensorsModbus",
       "owner": "envirodiy",
       "url": "https://github.com/EnviroDIY/ANBSensorsModbus",
-      "version": "~0.2.1",
+      "version": "~0.2.4",
       "note": "A library for communicating with pH sensors manufactured by ANB Sensors using Modbus.",
       "authors": ["Sara Damiano"],
       "frameworks": "arduino"
