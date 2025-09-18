@@ -271,7 +271,9 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient, bool forceFlush) {
     // that function said so we know to do it after we record this data point.
     // we also flush if requested (in which case the internet is connected too)
     bool willFlush = connectionNeeded() || forceFlush;
-    MS_DBG(F("Publishing record to buffer.  Will flush:"), willFlush);
+    MS_DBG(F("Adding record to buffer"),
+           willFlush ? F("and then \"flushing\" (publishing)")
+                     : F("without publishing"));
 
     // create record to hold timestamp and variable values in the log buffer
     int record = _logBuffer.addRecord(
