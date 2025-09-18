@@ -89,10 +89,11 @@
 // Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
-#ifdef SDI12_EXTERNAL_PCINT
-#include <SDI12.h>
-#else
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR)) && \
+    !defined(SDI12_EXTERNAL_PCINT)
 #include <SDI12_ExtInts.h>
+#else
+#include <SDI12.h>
 #endif
 // NOTE:  Can use the "regular" sdi-12 library with build flag -D
 // SDI12_EXTERNAL_PCINT Unfortunately, that is not compatible with the Arduino
