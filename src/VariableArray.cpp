@@ -860,6 +860,9 @@ void VariableArray::printSensorData(Stream* stream) {
     for (uint8_t i = 0; i < _variableCount; i++) {
         if (arrayOfVars[i]->isCalculated) {
             stream->print(arrayOfVars[i]->getVarName());
+            stream->print(F(" ("));
+            stream->print(arrayOfVars[i]->getVarCode());
+            stream->print(F(") "));
             stream->print(F(" is calculated to be "));
             stream->print(arrayOfVars[i]->getValueString());
             stream->print(F(" "));
@@ -878,6 +881,9 @@ void VariableArray::printSensorData(Stream* stream) {
             // stream->print(getSensorStatusBit(i, 0));
             stream->print(F(" reports "));
             stream->print(arrayOfVars[i]->getVarName());
+            stream->print(F(" ("));
+            stream->print(arrayOfVars[i]->getVarCode());
+            stream->print(F(") "));
             stream->print(F(" is "));
             stream->print(arrayOfVars[i]->getValueString());
             stream->print(F(" "));
