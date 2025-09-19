@@ -423,14 +423,17 @@ bool ANBpH::addSingleMeasurementResult(void) {
         }
 
         // Put values into the array
-        verifyAndAddMeasurementResult(0, pH);
-        verifyAndAddMeasurementResult(1, temp);
-        verifyAndAddMeasurementResult(2, sal);
-        verifyAndAddMeasurementResult(3, spcond);
-        verifyAndAddMeasurementResult(4, raw_cond);
-        verifyAndAddMeasurementResult(5, static_cast<int16_t>(health));
-        verifyAndAddMeasurementResult(6, static_cast<int16_t>(status));
-        verifyAndAddMeasurementResult(7, static_cast<int16_t>(diagnostic));
+        verifyAndAddMeasurementResult(ANB_PH_PH_VAR_NUM, pH);
+        verifyAndAddMeasurementResult(ANB_PH_TEMP_VAR_NUM, temp);
+        verifyAndAddMeasurementResult(ANB_PH_SALINITY_VAR_NUM, sal);
+        verifyAndAddMeasurementResult(ANB_PH_SPCOND_VAR_NUM, spcond);
+        verifyAndAddMeasurementResult(ANB_PH_EC_VAR_NUM, raw_cond);
+        verifyAndAddMeasurementResult(ANB_PH_HEALTH_CODE_VAR_NUM,
+                                      static_cast<int16_t>(health));
+        verifyAndAddMeasurementResult(ANB_PH_DIAGNOSTIC_CODE_VAR_NUM,
+                                      static_cast<int16_t>(diagnostic));
+        verifyAndAddMeasurementResult(ANB_PH_STATUS_CODE_VAR_NUM,
+                                      static_cast<int16_t>(status));
     } else {
         MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
     }
