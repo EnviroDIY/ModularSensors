@@ -30,7 +30,7 @@ The drivers and installation instructions for them are available on the FTDI web
 Adafruit has a nice grouping of drivers for other boards and installation instructions here:  <https://learn.adafruit.com/adafruit-arduino-ide-setup/windows-driver-installation>.
 
 After the drivers, you should install the IDE.
-Even if you've used the official Arduino IDE before, I _very, **very** strongly_ suggest installing and using [PlatformIO](https://platformio.org/) on either [Visual Studio Code](https://code.visualstudio.com/) or [Atom](https://atom.io/)
+Even if you've used the official Arduino IDE before, I _very, **very** strongly_ suggest installing and using [PlatformIO](https://platformio.org/) on [Visual Studio Code](https://code.visualstudio.com/).
 
 Visual Studio code can be downloaded from <https://code.visualstudio.com/> and installed following the directions on that website.
 You do not need to be an administrator to install it.

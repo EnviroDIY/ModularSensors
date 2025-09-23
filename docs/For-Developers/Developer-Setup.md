@@ -5,7 +5,7 @@ If you want to fork this repository and work with it, you'll need to set Platfor
 First, fork this repository into your own GitHub space.
 Clone it to your local computer.
 
-Open the folder you've cloned this repo into with either VSCode or Atom.
+Open the folder you've cloned this repo into with VSCode.
 Have PlatformIO create a new project for you, but instead of allowing it to create a new folder, select the folder you've already cloned this repo into.
 
 Create a new source program to work with in a new directory.
