@@ -168,7 +168,7 @@ bool Sensor::setup(void) {
     }  // NOTE:  Not setting value
     if (_dataPin >= 0) {
         pinMode(_dataPin, INPUT);
-    }  // NOTE:  Not turning on pull-up!
+    }  // NOTE:  Not turning on processor pull-up or pull-down!
 
     // Set the status bit marking that the sensor has been set up (bit 0)
     setStatusBit(SETUP_SUCCESSFUL);
@@ -179,7 +179,8 @@ bool Sensor::setup(void) {
 
 // The function to wake up a sensor
 bool Sensor::wake(void) {
-    MS_DBG(F("Waking"), getSensorNameAndLocation());
+    MS_DBG(F("Waking"), getSensorNameAndLocation(),
+           F("using default wake of taking no action!"));
     // Set the status bit for sensor activation attempt (bit 3)
     // Setting this bit even if the activation failed, to show the attempt was
     // made
@@ -198,7 +199,7 @@ bool Sensor::wake(void) {
     // sleep
     if (_dataPin >= 0) {
         pinMode(_dataPin, INPUT);
-    }  // NOTE:  Not turning on pull-up!
+    }  // NOTE:  Not turning on processor pull-up or pull-down!
 
     // Mark the time that the sensor was activated
     _millisSensorActivated = millis();
@@ -233,7 +234,8 @@ bool Sensor::startSingleMeasurement(void) {
         setup();
     }
 
-    MS_DBG(F("Starting measurement on"), getSensorNameAndLocation());
+    MS_DBG(F("Starting measurement on"), getSensorNameAndLocation(),
+           F("using default start of taking no action!"));
     // Set the status bits for measurement requested (bit 5)
     // Setting this bit even if we failed to start a measurement to show that an
     // attempt was made.

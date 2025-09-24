@@ -1,5 +1,5 @@
 {
-  "action_cache_version": 36,
+  "action_cache_version": 37,
   "dependencies": [
     {
       "name": "EnviroDIY_DS3231",
@@ -248,7 +248,7 @@
       "name": "SDI-12",
       "owner": "envirodiy",
       "library id": "1486",
-      "version": "~2.3.0",
+      "version": "~2.3.1",
       "url": "https://github.com/EnviroDIY/Arduino-SDI-12",
       "note": "EnviroDIY SDI-12 Library for Arduino",
       "author_notes": [
@@ -364,7 +364,9 @@
       "url": "https://github.com/EnviroDIY/ANBSensorsModbus",
       "version": "~0.2.5",
       "note": "A library for communicating with pH sensors manufactured by ANB Sensors using Modbus.",
-      "authors": ["Sara Damiano"],
+      "authors": [
+        "Sara Damiano"
+      ],
       "frameworks": "arduino"
     },
     {
