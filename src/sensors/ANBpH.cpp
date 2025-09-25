@@ -520,18 +520,20 @@ bool ANBpH::isStable(bool debug) {
 // ready based on the power style.
 uint32_t ANBpH::getStartImmersionErrorWindow(void) {
     if (!_immersionSensorEnabled) { return getEndMeasurementWindow(); }
-    return _powerPin >= 0 ? ANB_PH_2ND_IMMERSION_ERROR
-                          : ANB_PH_1ST_IMMERSION_ERROR;
+    return (_powerPin >= 0 || _retryAttemptsMade > 0)
+        ? ANB_PH_2ND_IMMERSION_ERROR
+        : ANB_PH_1ST_IMMERSION_ERROR;
 }
 
 uint32_t ANBpH::getEndImmersionErrorWindow(void) {
     if (!_immersionSensorEnabled) { return getEndMeasurementWindow(); }
-    return _powerPin >= 0 ? ANB_PH_2ND_IMMERSION_ERROR_MAX
-                          : ANB_PH_1ST_IMMERSION_ERROR_MAX;
+    return (_powerPin >= 0 || _retryAttemptsMade > 0)
+        ? ANB_PH_2ND_IMMERSION_ERROR_MAX
+        : ANB_PH_1ST_IMMERSION_ERROR_MAX;
 }
 
 uint32_t ANBpH::getStartMeasurementWindow(void) {
-    if (_powerPin >= 0) {
+    if (_powerPin >= 0 || _retryAttemptsMade > 0) {
         if (_salinityMode == ANBSalinityMode::HIGH_SALINITY) {
             return ANB_PH_1ST_VALUE_HIGH_SALT;
         } else {
