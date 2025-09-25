@@ -430,20 +430,10 @@ int16_t EnviroDIYPublisher::flushDataBuffer(Client* outClient) {
                    "Portal --"));
     }
 
-#if defined(MONITOR_MY_WATERSHED_MATCHES_MODULAR_SENSORS)
     if (responseCode == 201) {
         // data was successfully transmitted, we can discard it from the buffer
         _logBuffer.clear();
     }
-#else
-    // clear the buffer anyway, because Monitor My Watershed cannot accept
-    // mutiple records in one post yet
-    if (responseCode != 201) {
-        MS_DBG("Clearing the buffer even though the post failed because "
-               "Monitor My Watershed cannot yet accept multi-record posts.");
-    }
-    _logBuffer.clear();
-#endif
 
     return responseCode;
 }
