@@ -132,11 +132,6 @@ bool AtlasParent::startSingleMeasurement(void) {
                F("did not successfully start a measurement."));
         _millisMeasurementRequested = 0;
         clearStatusBit(MEASUREMENT_SUCCESSFUL);
-        // Bump the number of measurement attempts completed - since the start
-        // failed, we now consider the attempt complete.
-        // NOTE: Don't bump the
-        // successful measurements count!
-        _measurementAttemptsCompleted++;
     }
 
     return success;
@@ -199,6 +194,15 @@ bool AtlasParent::addSingleMeasurementResult(void) {
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)
     clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
+    // Bump the number of completed measurement attempts
+    _measurementAttemptsCompleted++;
+
+    if (success) {
+        // Bump the number of successful measurements
+        // NOTE: This is bumped if we got a successful response code,
+        // even if the results were NaN or otherwise invalid!
+        _measurementsSucceeded++;
+    }
 
     return success;
 }

@@ -390,10 +390,6 @@ bool SDI12Sensors::startSingleMeasurement(void) {
         _millisMeasurementRequested = 0;
         clearStatusBit(MEASUREMENT_SUCCESSFUL);
         deactivate();
-        // Bump the number of measurement attempts completed - since the start
-        // failed, we now consider the attempt complete.
-        // NOTE: Don't bump the successful measurements count!
-        _measurementAttemptsCompleted++;
         return false;
     }
 
@@ -419,10 +415,6 @@ bool SDI12Sensors::startSingleMeasurement(void) {
                F("did not respond to measurement request!"));
         _millisMeasurementRequested = 0;
         clearStatusBit(MEASUREMENT_SUCCESSFUL);
-        // Bump the number of measurement attempts completed - since the start
-        // failed, we now consider the attempt complete.
-        // NOTE: Don't bump the successful measurements count!
-        _measurementAttemptsCompleted++;
         return false;
     }
 }
@@ -736,6 +728,13 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)
     clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
+    // Bump the number of completed measurement attempts
+    _measurementAttemptsCompleted++;
+
+    if (success) {
+        // Bump the number of successful measurements
+        _measurementsSucceeded++;
+    }
 
     return success;
 }
@@ -817,6 +816,13 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)
     clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
+    // Bump the number of completed measurement attempts
+    _measurementAttemptsCompleted++;
+
+    if (success) {
+        // Bump the number of successful measurements
+        _measurementsSucceeded++;
+    }
 
     return success;
 }

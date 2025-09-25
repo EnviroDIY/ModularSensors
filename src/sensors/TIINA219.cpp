@@ -110,6 +110,16 @@ bool TIINA219::addSingleMeasurementResult(void) {
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)
     clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
+    // Bump the number of completed measurement attempts
+    _measurementAttemptsCompleted++;
+
+    if (success &&
+        (current_mA != -9999 || busV_V != -9999 || power_mW != -9999)) {
+        // Bump the number of successful measurements
+        // NOTE: Any one of the values being NOT -9999 is not considered a
+        // success!
+        _measurementsSucceeded++;
+    }
 
     return success;
 }

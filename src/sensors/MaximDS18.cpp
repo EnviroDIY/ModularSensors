@@ -172,10 +172,6 @@ bool MaximDS18::startSingleMeasurement(void) {
                F("did not successfully start a measurement."));
         _millisMeasurementRequested = 0;
         clearStatusBit(MEASUREMENT_SUCCESSFUL);
-        // Bump the number of measurement attempts completed - since the start
-        // failed, we now consider the attempt complete.
-        // NOTE: Don't bump the successful measurements count!
-        _measurementAttemptsCompleted++;
     }
 
     return success;
@@ -214,6 +210,13 @@ bool MaximDS18::addSingleMeasurementResult(void) {
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)
     clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
+    // Bump the number of completed measurement attempts
+    _measurementAttemptsCompleted++;
+
+    if (success && result != -9999) {
+        // Bump the number of successful measurements
+        _measurementsSucceeded++;
+    }
 
     return success;
 }

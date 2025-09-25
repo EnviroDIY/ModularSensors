@@ -93,7 +93,14 @@ bool FreescaleMPL115A2::addSingleMeasurementResult(void) {
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)
     clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
+    // Bump the number of completed measurement attempts
+    _measurementAttemptsCompleted++;
 
-    // no way of knowing if successful, just return true
+    if (temp != -9999 && press != -9999) {
+        // Bump the number of successful measurements
+        _measurementsSucceeded++;
+    }
+
+    // no way of knowing if the communication was successful, just return true
     return true;
 }

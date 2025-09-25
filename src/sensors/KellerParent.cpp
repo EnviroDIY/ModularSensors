@@ -200,6 +200,17 @@ bool KellerParent::addSingleMeasurementResult(void) {
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)
     clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
+    // Bump the number of completed measurement attempts
+    _measurementAttemptsCompleted++;
+
+    if (success &&
+        (waterPressureBar != -9999 || waterTemperatureC != -9999 ||
+         waterDepthM != -9999)) {
+        // Bump the number of successful measurements
+        // NOTE: Any one of the values being NOT -9999 is not considered a
+        // success!
+        _measurementsSucceeded++;
+    }
 
     // Return true when finished
     return success;

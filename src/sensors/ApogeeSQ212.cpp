@@ -107,8 +107,13 @@ bool ApogeeSQ212::addSingleMeasurementResult(void) {
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)
     clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
+    // Bump the number of completed measurement attempts
+    _measurementAttemptsCompleted++;
+
 
     if (adcVoltage < 3.6 && adcVoltage > -0.3) {
+        // Bump the number of successful measurements
+        _measurementsSucceeded++;
         return true;
     } else {
         return false;

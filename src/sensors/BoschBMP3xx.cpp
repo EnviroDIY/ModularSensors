@@ -316,6 +316,15 @@ bool BoschBMP3xx::addSingleMeasurementResult(void) {
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)
     clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
+    // Bump the number of completed measurement attempts
+    _measurementAttemptsCompleted++;
+
+    if (success) {
+        // Bump the number of successful measurements
+        // NOTE: This is bumped if we successfully got a response, even if the
+        // results were NaN or otherwise invalid!
+        _measurementsSucceeded++;
+    }
 
     return success;
 }

@@ -151,6 +151,7 @@ bool MaxBotixSonar::addSingleMeasurementResult(void) {
 
         uint8_t rangeAttempts = 0;
         while (success == false && rangeAttempts < 25) {
+            /// @todo unify retries with other sensors?
             // If the sonar is running on a trigger, activating the trigger
             // should in theory happen within the startSingleMeasurement
             // function.  Because we're really taking up to 25 measurements
@@ -197,6 +198,13 @@ bool MaxBotixSonar::addSingleMeasurementResult(void) {
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)
     clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
+    // Bump the number of completed measurement attempts
+    _measurementAttemptsCompleted++;
+
+    if (success) {
+        // Bump the number of successful measurements
+        _measurementsSucceeded++;
+    }
 
     // Return values shows if we got a not-obviously-bad reading
     return success;
