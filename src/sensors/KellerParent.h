@@ -254,10 +254,6 @@ class KellerParent : public Sensor {
     // override to empty and flush the stream
     bool sleep(void) override;
 
-    // Override these to use two power pins
-    void powerUp(void) override;
-    void powerDown(void) override;
-
     /**
      * @copydoc Sensor::addSingleMeasurementResult()
      */
@@ -287,10 +283,6 @@ class KellerParent : public Sensor {
      * pin.
      */
     int8_t _RS485EnablePin;
-    /**
-     * @brief Private reference to the power pin fro the RS-485 adapter.
-     */
-    int8_t _powerPin2;
 };
 /**@}*/
 #endif  // SRC_SENSORS_KELLERPARENT_H_

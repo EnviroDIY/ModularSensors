@@ -22,6 +22,7 @@ Sensor::Sensor(const char* sensorName, const uint8_t totalReturnedValues,
                uint8_t measurementsToAverage, uint8_t incCalcValues)
     : _dataPin(dataPin),
       _powerPin(powerPin),
+      _powerPin2(-1),
       _sensorName(sensorName),
       _numReturnedValues(totalReturnedValues),
       _measurementsToAverage(measurementsToAverage),
@@ -64,6 +65,14 @@ String Sensor::getSensorNameAndLocation(void) {
 int8_t Sensor::getPowerPin(void) {
     return _powerPin;
 }
+// This returns the number of the secondary power pin
+int8_t Sensor::getSecondaryPowerPin(void) {
+    return _powerPin2;
+}
+// This sets the secondary power pin
+void Sensor::setSecondaryPowerPin(int8_t pin) {
+    _powerPin2 = pin;
+}
 
 
 // These functions get and set the number of readings to average for a sensor
@@ -102,13 +111,21 @@ void Sensor::clearStatusBit(sensor_status_bits bitToClear) {
 
 // This turns on sensor power
 void Sensor::powerUp(void) {
-    if (_powerPin >= 0) {
+    if (_powerPin >= 0 || _powerPin2 >= 0) {
         // Reset power pin mode every power up because pins are set to tri-state
         // on sleep
-        pinMode(_powerPin, OUTPUT);
-        MS_DBG(F("Powering"), getSensorNameAndLocation(), F("with pin"),
-               _powerPin);
-        digitalWrite(_powerPin, HIGH);
+        if (_powerPin >= 0) {
+            pinMode(_powerPin, OUTPUT);
+            MS_DBG(F("Powering"), getSensorNameAndLocation(), F("with pin"),
+                   _powerPin);
+            digitalWrite(_powerPin, HIGH);
+        }
+        if (_powerPin2 >= 0) {
+            pinMode(_powerPin2, OUTPUT);
+            MS_DBG(F("Giving secondary power to"), getSensorNameAndLocation(),
+                   F("with pin"), _powerPin2);
+            digitalWrite(_powerPin2, HIGH);
+        }
         // Mark the time that the sensor was powered
         _millisPowerOn = millis();
     } else {
@@ -418,12 +435,16 @@ bool Sensor::checkPowerOn(bool debug) {
         MS_DBG(F("Checking power status:  Power to"),
                getSensorNameAndLocation());
     }
-    if (_powerPin >= 0) {
+    if (_powerPin >= 0 || _powerPin2 >= 0) {
         auto powerBitNumber =
             static_cast<int8_t>(log(digitalPinToBitMask(_powerPin)) / log(2));
+        auto powerBitNumber2 =
+            static_cast<int8_t>(log(digitalPinToBitMask(_powerPin2)) / log(2));
 
         if (bitRead(*portInputRegister(digitalPinToPort(_powerPin)),
-                    powerBitNumber) == LOW) {
+                    powerBitNumber) == LOW ||
+            bitRead(*portInputRegister(digitalPinToPort(_powerPin2)),
+                    powerBitNumber2) == LOW) {
             if (debug) { MS_DBG(F("was off.")); }
             // Reset time of power on, in-case it was set to a value
             _millisPowerOn = 0;

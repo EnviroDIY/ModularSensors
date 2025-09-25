@@ -335,10 +335,6 @@ class GeoluxHydroCam : public Sensor {
      */
     bool addSingleMeasurementResult(void) override;
 
-    // Override these to use two power pins
-    void powerUp(void) override;
-    void powerDown(void) override;
-
     /**
      * @copydoc Sensor::isWarmedUp(bool debug)
      *
@@ -374,10 +370,6 @@ class GeoluxHydroCam : public Sensor {
     bool isMeasurementComplete(bool debug = false) override;
 
  private:
-    /**
-     * @brief Private reference to the power pin fro the RS-485 adapter.
-     */
-    int8_t _powerPin2;
     const char*
         _imageResolution;  ///< The image resolution from the Geolux HydroCam
     const char*

@@ -147,6 +147,26 @@ class Sensor {
      * @return The pin on the mcu controlling power to the sensor.
      */
     virtual int8_t getPowerPin(void);
+    /**
+     * @brief Get the pin number controlling secondary sensor power.
+     *
+     * @return The pin on the mcu controlling secondary power
+     *
+     * This is for a second power needed to communicate with a sensor. Generally
+     * to an adapter or converter needed to talk to the sensor - ie, an RS232
+     * adapter, an RS485 adapter, or an IO multiplexer.
+     */
+    virtual int8_t getSecondaryPowerPin(void);
+    /**
+     * @brief Set the pin number controlling secondary sensor power.
+     *
+     * This is for a second power needed to communicate with a sensor. Generally
+     * to an adapter or converter needed to talk to the sensor - ie, an RS232
+     * adapter, an RS485 adapter, or an IO multiplexer.
+     *
+     * @param pin The pin on the mcu controlling secondary power
+     */
+    virtual void setSecondaryPowerPin(int8_t pin);
 
     /**
      * @brief Set the number measurements to average.
@@ -531,6 +551,16 @@ class Sensor {
      * @note SIGNED int, to allow negative numbers for unused pins
      */
     int8_t _powerPin;
+    /**
+     * @brief Digital pin number on the mcu controlling secondary power
+     *
+     * This is for a second power needed to communicate with a sensor. Generally
+     * to an adapter or converter needed to talk to the sensor - ie, an RS232
+     * adapter, an RS485 adapter, or an IO multiplexer.
+     *
+     * @note SIGNED int, to allow negative numbers for unused pins
+     */
+    int8_t _powerPin2;
     /**
      * @brief The sensor name.
      */

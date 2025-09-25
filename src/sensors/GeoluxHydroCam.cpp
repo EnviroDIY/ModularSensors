@@ -18,13 +18,14 @@ GeoluxHydroCam::GeoluxHydroCam(Stream* stream, int8_t powerPin,
     : Sensor("GeoluxHydroCam", HYDROCAM_NUM_VARIABLES, HYDROCAM_WARM_UP_TIME_MS,
              HYDROCAM_STABILIZATION_TIME_MS, HYDROCAM_MEASUREMENT_TIME_MS,
              powerPin, -1, 1, HYDROCAM_INC_CALC_VARIABLES),
-      _powerPin2(powerPin2),
       _imageResolution(imageResolution),
       _filePrefix(filePrefix),
       _alwaysAutoFocus(alwaysAutoFocus),
       _baseLogger(&baseLogger),
       _stream(stream),
-      _camera(stream) {}
+      _camera(stream) {
+    setSecondaryPowerPin(powerPin2);
+}
 
 
 GeoluxHydroCam::GeoluxHydroCam(Stream& stream, int8_t powerPin,
@@ -34,13 +35,14 @@ GeoluxHydroCam::GeoluxHydroCam(Stream& stream, int8_t powerPin,
     : Sensor("GeoluxHydroCam", HYDROCAM_NUM_VARIABLES, HYDROCAM_WARM_UP_TIME_MS,
              HYDROCAM_STABILIZATION_TIME_MS, HYDROCAM_MEASUREMENT_TIME_MS,
              powerPin, -1, 1, HYDROCAM_INC_CALC_VARIABLES),
-      _powerPin2(powerPin2),
       _imageResolution(imageResolution),
       _filePrefix(filePrefix),
       _alwaysAutoFocus(alwaysAutoFocus),
       _baseLogger(&baseLogger),
       _stream(&stream),
-      _camera(&stream) {}
+      _camera(&stream) {
+    setSecondaryPowerPin(powerPin2);
+}
 
 // Destructor
 GeoluxHydroCam::~GeoluxHydroCam() {}
@@ -271,70 +273,6 @@ bool GeoluxHydroCam::addSingleMeasurementResult(void) {
 
     // Return values shows if we got a not-obviously-bad reading
     return success;
-}
-
-
-// This turns on sensor power
-void GeoluxHydroCam::powerUp(void) {
-    if (_powerPin >= 0) {
-        // Reset power pin mode every power up because pins are set to tri-state
-        // on sleep
-        pinMode(_powerPin, OUTPUT);
-        MS_DBG(F("Powering"), getSensorNameAndLocation(), F("with pin"),
-               _powerPin);
-        digitalWrite(_powerPin, HIGH);
-    }
-    if (_powerPin2 >= 0) {
-        // Reset power pin mode every power up because pins are set to tri-state
-        // on sleep
-        pinMode(_powerPin2, OUTPUT);
-        MS_DBG(F("Applying secondary power to"), getSensorNameAndLocation(),
-               F("with pin"), _powerPin2);
-        digitalWrite(_powerPin2, HIGH);
-    }
-    if (_powerPin < 0 && _powerPin2 < 0) {
-        MS_DBG(F("Power to"), getSensorNameAndLocation(),
-               F("is not controlled by this library."));
-        // Mark the power-on time, just in case it  had not been marked
-        if (_millisPowerOn == 0) _millisPowerOn = millis();
-    } else {
-        // Mark the time that the sensor was powered
-        _millisPowerOn = millis();
-    }
-    // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
-    setStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL);
-}
-
-
-// This turns off sensor power
-void GeoluxHydroCam::powerDown(void) {
-    if (_powerPin >= 0) {
-        MS_DBG(F("Turning off power to"), getSensorNameAndLocation(),
-               F("with pin"), _powerPin);
-        digitalWrite(_powerPin, LOW);
-        // Unset the power-on time
-        _millisPowerOn = 0;
-        // Unset the activation time
-        _millisSensorActivated = 0;
-        // Unset the measurement request time
-        _millisMeasurementRequested = 0;
-        // Unset the status bits for sensor power (bits 1 & 2),
-        // activation (bits 3 & 4), and measurement request (bits 5 & 6)
-        clearStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL, WAKE_ATTEMPTED,
-                        WAKE_SUCCESSFUL, MEASUREMENT_ATTEMPTED,
-                        MEASUREMENT_SUCCESSFUL);
-    }
-    if (_powerPin2 >= 0) {
-        MS_DBG(F("Turning off secondary power to"), getSensorNameAndLocation(),
-               F("with pin"), _powerPin2);
-        digitalWrite(_powerPin2, LOW);
-    }
-    if (_powerPin < 0 && _powerPin2 < 0) {
-        MS_DBG(F("Power to"), getSensorNameAndLocation(),
-               F("is not controlled by this library."));
-        // Do NOT unset any status bits or timestamps if we didn't really power
-        // down!
-    }
 }
 
 // check if the camera is ready
