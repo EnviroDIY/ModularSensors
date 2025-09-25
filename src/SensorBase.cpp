@@ -89,6 +89,9 @@ uint8_t Sensor::getNumberCompleteMeasurementsAttempts(void) {
 uint8_t Sensor::getNumberRetryAttemptsMade(void) {
     return _retryAttemptsMade;
 }
+void Sensor::setAllowedMeasurementRetries(uint8_t allowedMeasurementRetries) {
+    _allowedMeasurementRetries = allowedMeasurementRetries;
+}
 uint8_t Sensor::getAllowedMeasurementRetries(void) {
     return _allowedMeasurementRetries;
 }

@@ -218,6 +218,12 @@ class Sensor {
      * @return The number of allowed retries.
      */
     uint8_t getAllowedMeasurementRetries(void);
+    /**
+     * @brief Set the number of retries if a measurement fails.
+     *
+     * @param allowedMeasurementRetries The number of allowed retries.
+     */
+    void setAllowedMeasurementRetries(uint8_t allowedMeasurementRetries);
 
 
     /// @brief The significance of the various status bits
