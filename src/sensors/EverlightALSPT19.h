@@ -258,9 +258,6 @@ class EverlightALSPT19 : public Sensor {
      */
     ~EverlightALSPT19();
 
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
     bool addSingleMeasurementResult(void) override;
 
  private:

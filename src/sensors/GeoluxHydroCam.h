@@ -290,9 +290,6 @@ class GeoluxHydroCam : public Sensor {
      */
     String getLastSavedImageName();
 
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
     String getSensorLocation(void) override;
 
     /**
@@ -324,15 +321,7 @@ class GeoluxHydroCam : public Sensor {
     bool wake(void) override;
     bool sleep(void) override;
 
-
-    /**
-     * @copydoc Sensor::startSingleMeasurement()
-     */
     bool startSingleMeasurement(void) override;
-
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
     bool addSingleMeasurementResult(void) override;
 
     /**

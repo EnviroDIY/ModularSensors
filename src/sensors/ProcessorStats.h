@@ -421,9 +421,6 @@ class ProcessorStats : public Sensor {
      */
     String getSensorLocation(void) override;
 
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
     bool addSingleMeasurementResult(void) override;
 
     /**

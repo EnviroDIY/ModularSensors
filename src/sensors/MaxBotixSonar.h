@@ -222,9 +222,6 @@ class MaxBotixSonar : public Sensor {
      */
     ~MaxBotixSonar();
 
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
     String getSensorLocation(void) override;
 
     /**
@@ -256,9 +253,6 @@ class MaxBotixSonar : public Sensor {
     // override to empty and flush the stream
     bool sleep(void) override;
 
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
     bool addSingleMeasurementResult(void) override;
 
  private:

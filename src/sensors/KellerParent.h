@@ -233,9 +233,6 @@ class KellerParent : public Sensor {
      */
     virtual ~KellerParent();
 
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
     String getSensorLocation(void) override;
 
     /**
@@ -254,9 +251,6 @@ class KellerParent : public Sensor {
     // override to empty and flush the stream
     bool sleep(void) override;
 
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
     bool addSingleMeasurementResult(void) override;
 
  private:

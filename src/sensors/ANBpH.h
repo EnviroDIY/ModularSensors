@@ -508,9 +508,6 @@ class ANBpH : public Sensor {
      */
     virtual ~ANBpH();
 
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
     String getSensorLocation(void) override;
 
     /**

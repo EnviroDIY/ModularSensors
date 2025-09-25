@@ -209,9 +209,6 @@ class YosemitechParent : public Sensor {
      */
     virtual ~YosemitechParent();
 
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
     String getSensorLocation(void) override;
 
     /**
@@ -226,9 +223,6 @@ class YosemitechParent : public Sensor {
      * @return True if the setup was successful.
      */
     bool setup(void) override;
-    /**
-     * @copydoc Sensor::wake()
-     */
     bool wake(void) override;
     /**
      * @brief Puts the sensor to sleep, if necessary.
@@ -240,9 +234,6 @@ class YosemitechParent : public Sensor {
      */
     bool sleep(void) override;
 
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
     bool addSingleMeasurementResult(void) override;
 
  private:

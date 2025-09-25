@@ -441,9 +441,6 @@ class BoschBMP3xx : public Sensor {
      */
     ~BoschBMP3xx();
 
-    /**
-     * @copydoc Sensor::wake()
-     */
     bool wake(void) override;
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -455,19 +452,10 @@ class BoschBMP3xx : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
+    bool   setup(void) override;
     String getSensorLocation(void) override;
 
-    /**
-     * @copydoc Sensor::startSingleMeasurement()
-     */
     bool startSingleMeasurement(void) override;
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
     bool addSingleMeasurementResult(void) override;
 
  private:

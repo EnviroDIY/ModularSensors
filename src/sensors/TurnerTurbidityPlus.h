@@ -251,9 +251,6 @@ class TurnerTurbidityPlus : public Sensor {
      */
     ~TurnerTurbidityPlus();
 
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
     String getSensorLocation(void) override;
 
     /**
@@ -277,9 +274,6 @@ class TurnerTurbidityPlus : public Sensor {
 
     void powerDown(void) override;
 
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
     bool addSingleMeasurementResult(void) override;
 
  private:
