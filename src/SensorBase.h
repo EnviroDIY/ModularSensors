@@ -393,6 +393,11 @@ class Sensor {
      * @todo Support int16_t and int32_t directly in the value array so no
      * casting is needed. This could be done using a template or a union similar
      * to the modbus library's leFrame union.
+     *
+     * @note The values in this array will not be usable until after the sensor
+     * completes all requested measurements! Prior to that, the values in this
+     * array will be the sum of all good values measured so far (or -9999 if no
+     * good values have been measured yet).
      */
     float sensorValues[MAX_NUMBER_VARS];
 
@@ -539,6 +544,16 @@ class Sensor {
      */
     const uint8_t _numReturnedValues;
     /**
+     * @brief The number of included calculated variables from the sensor, if
+     * any.
+     *
+     * These are used for values that we would always calculate for a sensor and
+     * depend only on the raw results of that single sensor.  This is separate
+     * from any calculated variables that are created on-the-fly and depend on
+     * multiple other sensors.
+     */
+    uint8_t _incCalcValues;
+    /**
      * @brief The number of measurements from the sensor to average.
      *
      * This will become the number of readings actually taken by a sensor prior
@@ -549,18 +564,23 @@ class Sensor {
      */
     uint8_t _measurementsToAverage;
     /**
-     * @brief The number of included calculated variables from the
-     * sensor, if any.
-     *
-     * These are used for values that we would always calculate for a sensor and
-     * depend only on the raw results of that single sensor.  This is separate
-     * from any calculated variables that are created on-the-fly and depend on
-     * multiple other sensors.
+     * @brief The number of measurements attempts by the sensor that have
+     * finished **since last power on**.
      */
-    uint8_t _incCalcValues;
+    uint8_t _measurementAttemptsCompleted = 0;
     /**
-     * @brief Array with the number of valid measurement values taken by the
-     * sensor in the current update cycle.
+     * @brief The number of measurements that have been **successfully**
+     * completed by the sensor **since last power on**.
+     */
+    uint8_t _measurementsSucceeded = 0;
+    /**
+     * @brief Array with the number of valid measurement values per variable by
+     * the sensor in the current update cycle.
+     *
+     * @note The number of good measurements may vary between variables if
+     * some values are more likely to be invalid than others - ie, a pH sensor
+     * may also measure temperature and report a valid temperature when the pH
+     * is junk.
      */
     uint8_t numberGoodMeasurementsMade[MAX_NUMBER_VARS];
 
@@ -615,9 +635,10 @@ class Sensor {
 
     /**
      * @brief An array for each sensor containing pointers to the variable
-     * objects tied to that sensor.  The #MAX_NUMBER_VARS cannot be determined
-     * on a per-sensor basis, because of the way memory is used on an Arduino.
-     * It must be defined once for the whole class.
+     * objects tied to that sensor.
+     *
+     * The #MAX_NUMBER_VARS cannot be determined on a per-sensor basis; it must
+     * be defined at compile time and applied to the entire class.
      */
     Variable* variables[MAX_NUMBER_VARS];
 };

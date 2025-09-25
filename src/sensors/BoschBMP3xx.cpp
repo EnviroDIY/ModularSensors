@@ -270,6 +270,9 @@ bool BoschBMP3xx::startSingleMeasurement(void) {
         _millisMeasurementRequested = millis();
     }
 
+    // NOTE: There's no possibility of failure here - we always return true.
+    // There's no condition where we would need to bump the number of completed
+    // measurement attempts here.
     return true;
 }
 

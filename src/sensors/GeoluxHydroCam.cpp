@@ -156,6 +156,10 @@ bool GeoluxHydroCam::startSingleMeasurement(void) {
         // unset
         _millisMeasurementRequested = 0;
         clearStatusBit(MEASUREMENT_SUCCESSFUL);
+        // Bump the number of measurement attempts completed - since the start
+        // failed, we now consider the attempt complete.
+        // NOTE: Don't bump the successful measurements count!
+        _measurementAttemptsCompleted++;
         return false;
     }
 
@@ -178,6 +182,9 @@ bool GeoluxHydroCam::startSingleMeasurement(void) {
                F("did not successfully start a measurement."));
         _millisMeasurementRequested = 0;
         clearStatusBit(MEASUREMENT_SUCCESSFUL);
+        // Bump the number of measurement attempts completed
+        // NOTE: Don't bump the successful measurements count!
+        _measurementAttemptsCompleted++;
     }
 
     return true;
