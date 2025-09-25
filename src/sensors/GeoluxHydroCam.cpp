@@ -187,7 +187,7 @@ bool GeoluxHydroCam::startSingleMeasurement(void) {
         _measurementAttemptsCompleted++;
     }
 
-    return true;
+    return success;
 }
 
 
@@ -316,6 +316,9 @@ void GeoluxHydroCam::powerDown(void) {
         _millisSensorActivated = 0;
         // Unset the measurement request time
         _millisMeasurementRequested = 0;
+        // Unset the number of measurements attempted and succeeded
+        _measurementAttemptsCompleted = 0;
+        _measurementsSucceeded        = 0;
         // Unset the status bits for sensor power (bits 1 & 2),
         // activation (bits 3 & 4), and measurement request (bits 5 & 6)
         clearStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL, WAKE_ATTEMPTED,
