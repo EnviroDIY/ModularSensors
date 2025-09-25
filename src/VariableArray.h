@@ -283,10 +283,6 @@ class VariableArray {
      * @brief The count of unique sensors tied to variables in the array
      */
     uint8_t _sensorCount;
-    /**
-     * @brief The maximum number of samples to average of an single sensor.
-     */
-    uint8_t _maxSamplesToAverage;
 
  private:
     /**
@@ -300,13 +296,6 @@ class VariableArray {
      * @return True if the variable is the last in the array.
      */
     bool isLastVarFromSensor(int arrayIndex);
-    /**
-     * @brief Count the maximum number of measurements needed from a single
-     * sensor for the requested averaging
-     *
-     * @return The number of measurements needed.
-     */
-    uint8_t countMaxToAverage(void);
     /**
      * @brief Check that all variable have valid UUID's, if they are assigned
      *

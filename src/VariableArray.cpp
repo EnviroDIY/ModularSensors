@@ -16,14 +16,12 @@ VariableArray::VariableArray() {}
 VariableArray::VariableArray(uint8_t variableCount, Variable* variableList[])
     : arrayOfVars(variableList),
       _variableCount(variableCount) {
-    _maxSamplesToAverage = countMaxToAverage();
     _sensorCount         = getSensorCount();
 }
 VariableArray::VariableArray(uint8_t variableCount, Variable* variableList[],
                              const char* uuids[])
     : arrayOfVars(variableList),
       _variableCount(variableCount) {
-    _maxSamplesToAverage = countMaxToAverage();
     _sensorCount         = getSensorCount();
     matchUUIDs(uuids);
 }
@@ -36,7 +34,6 @@ void VariableArray::begin(uint8_t variableCount, Variable* variableList[],
     _variableCount = variableCount;
     arrayOfVars    = variableList;
 
-    _maxSamplesToAverage = countMaxToAverage();
     _sensorCount         = getSensorCount();
     matchUUIDs(uuids);
     checkVariableUUIDs();
@@ -45,12 +42,10 @@ void VariableArray::begin(uint8_t variableCount, Variable* variableList[]) {
     _variableCount = variableCount;
     arrayOfVars    = variableList;
 
-    _maxSamplesToAverage = countMaxToAverage();
     _sensorCount         = getSensorCount();
     checkVariableUUIDs();
 }
 void VariableArray::begin() {
-    _maxSamplesToAverage = countMaxToAverage();
     _sensorCount         = getSensorCount();
     checkVariableUUIDs();
 }
@@ -920,20 +915,6 @@ bool VariableArray::getSensorStatusBit(int                        arrayIndex,
                                        Sensor::sensor_status_bits bitToGet) {
     if (arrayIndex < 0 || arrayIndex >= _variableCount) { return false; }
     return arrayOfVars[arrayIndex]->parentSensor->getStatusBit(bitToGet);
-}
-
-// Count the maximum number of measurements needed from a single sensor for the
-// requested averaging
-uint8_t VariableArray::countMaxToAverage(void) {
-    uint8_t numReps = 0;
-    for (uint8_t i = 0; i < _variableCount; i++) {
-        if (isLastVarFromSensor(i)) {  // Skip non-unique sensors
-            numReps = max(
-                numReps,
-                arrayOfVars[i]->parentSensor->getNumberMeasurementsToAverage());
-        }
-    }
-    return numReps;
 }
 
 
