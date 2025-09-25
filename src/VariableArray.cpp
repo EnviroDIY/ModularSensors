@@ -896,12 +896,10 @@ bool VariableArray::isLastVarFromSensor(int arrayIndex) {
     if (arrayOfVars[arrayIndex]->isCalculated) {
         return false;
     } else {
-        String sensNameLoc =
-            arrayOfVars[arrayIndex]->getParentSensorNameAndLocation();
-        bool unique = true;
+        Sensor* parSens = arrayOfVars[arrayIndex]->parentSensor;
+        bool    unique  = true;
         for (int j = arrayIndex + 1; j < _variableCount; j++) {
-            if (sensNameLoc ==
-                arrayOfVars[j]->getParentSensorNameAndLocation()) {
+            if (parSens == arrayOfVars[j]->parentSensor) {
                 unique = false;
                 break;
             }
