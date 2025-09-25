@@ -16,13 +16,13 @@ VariableArray::VariableArray() {}
 VariableArray::VariableArray(uint8_t variableCount, Variable* variableList[])
     : arrayOfVars(variableList),
       _variableCount(variableCount) {
-    _sensorCount         = getSensorCount();
+    _sensorCount = getSensorCount();
 }
 VariableArray::VariableArray(uint8_t variableCount, Variable* variableList[],
                              const char* uuids[])
     : arrayOfVars(variableList),
       _variableCount(variableCount) {
-    _sensorCount         = getSensorCount();
+    _sensorCount = getSensorCount();
     matchUUIDs(uuids);
 }
 
@@ -34,7 +34,7 @@ void VariableArray::begin(uint8_t variableCount, Variable* variableList[],
     _variableCount = variableCount;
     arrayOfVars    = variableList;
 
-    _sensorCount         = getSensorCount();
+    _sensorCount = getSensorCount();
     matchUUIDs(uuids);
     checkVariableUUIDs();
 }
@@ -42,11 +42,11 @@ void VariableArray::begin(uint8_t variableCount, Variable* variableList[]) {
     _variableCount = variableCount;
     arrayOfVars    = variableList;
 
-    _sensorCount         = getSensorCount();
+    _sensorCount = getSensorCount();
     checkVariableUUIDs();
 }
 void VariableArray::begin() {
-    _sensorCount         = getSensorCount();
+    _sensorCount = getSensorCount();
     checkVariableUUIDs();
 }
 
@@ -498,130 +498,19 @@ bool VariableArray::completeUpdate(void) {
     bool deepDebugTiming = false;
 #endif
 
-    // Create an array with the unique-ness value (so we can skip the function
-    // calls later)
-    MS_DBG(F("Creating a mask array with the uniqueness for each sensor.."));
-    bool lastSensorVariable[_variableCount];
+    MS_DBG(F("Creating an array of pointers to the sensors.."));
+    Sensor* sensorList[_sensorCount];
+    uint8_t addedSensors = 0;
     for (uint8_t i = 0; i < _variableCount; i++) {
-        lastSensorVariable[i] = isLastVarFromSensor(i);
-    }
-
-    // Create an array for the number of measurements already completed and set
-    // all to zero
-    MS_DBG(F("Creating an array for the number of completed measurements.."));
-    uint8_t nMeasurementsCompleted[_variableCount];
-    for (uint8_t i = 0; i < _variableCount; i++) {
-        nMeasurementsCompleted[i] = 0;
-    }
-
-    // Create an array for the number of measurements to average (another short
-    // cut)
-    MS_DBG(F("Creating an array with the number of measurements to average.."));
-    uint8_t nMeasurementsToAverage[_variableCount];
-    for (uint8_t i = 0; i < _variableCount; i++) {
-        if (lastSensorVariable[i]) {
-            nMeasurementsToAverage[i] =
-                arrayOfVars[i]->parentSensor->getNumberMeasurementsToAverage();
-        } else {
-            nMeasurementsToAverage[i] = 0;
+        if (isLastVarFromSensor(i)) {
+            sensorList[addedSensors++] = arrayOfVars[i]->parentSensor;
         }
     }
-
-    // Create an array of the power pins
-    MS_DBG(F("Creating an array of the power pins.."));
-    int8_t powerPins[_variableCount];
-    for (uint8_t i = 0; i < _variableCount; i++) {
-        if (lastSensorVariable[i]) {
-            powerPins[i] = arrayOfVars[i]->parentSensor->getPowerPin();
-        } else {
-            powerPins[i] = 0;
-        }
-    }
-
-    // Create an array of the last variable on each power pin
-    MS_DBG(F("Creating arrays of the power pin locations.."));
-    bool lastPinVariable[_variableCount];
-    for (uint8_t i = 0; i < _variableCount; i++) { lastPinVariable[i] = true; }
-    // Create an array containing the index of the power pin in the powerPins
-    // array
-    int8_t powerPinIndex[_variableCount];
-    for (uint8_t i = 0; i < _variableCount; i++) { powerPinIndex[i] = 0; }
-    // Create an array to tell us how many measurements must be taken
-    // before all the sensors attached to a power pin are done
-    uint8_t nMeasurementsOnPin[_variableCount];
-    for (uint8_t i = 0; i < _variableCount; i++) {
-        nMeasurementsOnPin[i] = nMeasurementsToAverage[i];
-    }
-    // Now correctly populate the previous three arrays
-    for (uint8_t i = 0; i < _variableCount; i++) {
-        for (uint8_t j = i + 1; j < _variableCount; j++) {
-            if (!lastSensorVariable[i]) {
-                lastPinVariable[i] = false;
-            } else if (powerPins[i] == powerPins[j]) {
-                lastPinVariable[i] = false;
-            }
-            i++;
-        }
-    }
-    for (uint8_t i = 0; i < _variableCount; i++) {
-        if (lastPinVariable[i]) {
-            powerPinIndex[i]      = i;
-            nMeasurementsOnPin[i] = nMeasurementsToAverage[i];
-            for (uint8_t j = 0; j < _variableCount; j++) {
-                if (powerPins[j] == powerPins[i] && i != j) {
-                    powerPinIndex[j] = i;
-                    nMeasurementsOnPin[i] += nMeasurementsToAverage[j];
-                    nMeasurementsOnPin[j] = 0;
-                }
-            }
-        }
-    }
-
-// This is just for debugging
-#ifdef MS_VARIABLEARRAY_DEBUG_DEEP
-    uint8_t arrayPositions[_variableCount];
-    for (uint8_t i = 0; i < _variableCount; i++) { arrayPositions[i] = i; }
-    String nameLocation[_variableCount];
-    for (uint8_t i = 0; i < _variableCount; i++) {
-        // nameLocation[i] = arrayOfVars[i]->getParentSensorNameAndLocation();
-        nameLocation[i] = arrayOfVars[i]->getParentSensorName();
-    }
-    MS_DEEP_DBG(F("----------------------------------"));
-    MS_DEEP_DBG(F("arrayPositions:\t\t\t"));
-    prettyPrintArray(arrayPositions);
-    MS_DEEP_DBG(F("sensor:\t\t\t"));
-    prettyPrintArray(nameLocation);
-    MS_DEEP_DBG(F("lastSensorVariable:\t\t"));
-    prettyPrintArray(lastSensorVariable);
-    MS_DEEP_DBG(F("nMeasurementsToAverage:\t\t"));
-    prettyPrintArray(nMeasurementsToAverage);
-    MS_DEEP_DBG(F("nMeasurementsCompleted:\t\t"));
-    prettyPrintArray(nMeasurementsCompleted);
-    MS_DEEP_DBG(F("powerPins:\t\t\t"));
-    prettyPrintArray(powerPins);
-    MS_DEEP_DBG(F("lastPinVariable:\t\t"));
-    prettyPrintArray(lastPinVariable);
-    MS_DEEP_DBG(F("powerPinIndex:\t\t\t"));
-    prettyPrintArray(powerPinIndex);
-    MS_DEEP_DBG(F("nMeasurementsOnPin:\t\t"));
-    prettyPrintArray(nMeasurementsOnPin);
-    MS_DEEP_DBG(F("powerPinIndex:\t\t\t"));
-    prettyPrintArray(powerPinIndex);
-#endif
-
-    // Another array for the number of measurements already completed per power
-    // pin
-    uint8_t nCompletedOnPin[_variableCount];
-    for (uint8_t i = 0; i < _variableCount; i++) { nCompletedOnPin[i] = 0; }
 
     // Clear the initial variable arrays
     MS_DBG(F("----->> Clearing all results arrays before taking new "
              "measurements. ..."));
-    for (uint8_t i = 0; i < _variableCount; i++) {
-        if (lastSensorVariable[i]) {
-            arrayOfVars[i]->parentSensor->clearValues();
-        }
-    }
+    for (uint8_t i = 0; i < _sensorCount; i++) { sensorList[i]->clearValues(); }
     MS_DBG(F("   ... Complete. <<-----"));
 
     // power up all of the sensors together
@@ -630,44 +519,13 @@ bool VariableArray::completeUpdate(void) {
     MS_DBG(F("   ... Complete. <<-----"));
 
     while (nSensorsCompleted < _sensorCount) {
-        for (uint8_t i = 0; i < _variableCount; i++) {
-            /***
-            // THIS IS PURELY FOR DEEP DEBUGGING OF THE TIMING!
-            // Leave this whole section commented out unless you want excessive
-            // printouts (ie, thousands of lines) of the timing information!!
-            if (lastSensorVariable[i] and
-                nMeasurementsToAverage[i] > nMeasurementsCompleted[i]) {
-                MS_DEEP_DBG(
-                    i, '-', arrayOfVars[i]->getParentSensorNameAndLocation(),
-                    F("- millis:"), millis(), F("- status: 0b"),
-                    getSensorStatusBit(i,7),
-                    getSensorStatusBit(i,6),
-                    getSensorStatusBit(i,5),
-                    getSensorStatusBit(i,4),
-                    getSensorStatusBit(i,3),
-                    getSensorStatusBit(i,2),
-                    getSensorStatusBit(i,1),
-                    getSensorStatusBit(i,0),
-                    F("- measurement #"), (nMeasurementsCompleted[i] + 1));
-            }
-            MS_DEEP_DBG(F("----------------------------------"));
-            MS_DEEP_DBG(F("nMeasurementsToAverage:\t\t"));
-            prettyPrintArray(nMeasurementsToAverage);
-            MS_DEEP_DBG(F("nMeasurementsCompleted:\t\t"));
-            prettyPrintArray(nMeasurementsCompleted);
-            MS_DEEP_DBG(F("nMeasurementsOnPin:\t\t"));
-            prettyPrintArray(nMeasurementsOnPin);
-            MS_DEEP_DBG(F("nCompletedOnPin:\t\t\t"));
-            prettyPrintArray(nCompletedOnPin);
-            // END CHUNK FOR DEBUGGING!
-            ***/
-
+        for (uint8_t i = 0; i < _sensorCount; i++) {
             // Only do checks on sensors that still have measurements to finish
-            if (lastSensorVariable[i] &&
-                nMeasurementsToAverage[i] > nMeasurementsCompleted[i]) {
-                if (getSensorStatusBit(i, Sensor::WAKE_ATTEMPTED) ==
+            if (sensorList[i]->getNumberMeasurementsToAverage() >
+                sensorList[i]->getNumberCompleteMeasurementsAttempts()) {
+                if (sensorList[i]->getStatusBit(Sensor::WAKE_ATTEMPTED) ==
                         0  // If no attempts yet made to wake the sensor up
-                    && arrayOfVars[i]->parentSensor->isWarmedUp(
+                    && sensorList[i]->isWarmedUp(
                            deepDebugTiming)  // and if it is already warmed up
                 ) {
                     MS_DBG(i, F("--->> Waking"),
@@ -676,8 +534,7 @@ bool VariableArray::completeUpdate(void) {
 
                     // Make a single attempt to wake the sensor after it is
                     // warmed up
-                    bool sensorSuccess_wake =
-                        arrayOfVars[i]->parentSensor->wake();
+                    bool sensorSuccess_wake = sensorList[i]->wake();
                     success &= sensorSuccess_wake;
 
                     if (sensorSuccess_wake) {
@@ -690,42 +547,38 @@ bool VariableArray::completeUpdate(void) {
                 // If attempts were made to wake the sensor, but they failed
                 // then we're just bumping up the number of measurements to
                 // completion
-                if (getSensorStatusBit(i, Sensor::WAKE_ATTEMPTED) == 1 &&
-                    getSensorStatusBit(i, Sensor::WAKE_SUCCESSFUL) == 0) {
+                if (sensorList[i]->getStatusBit(Sensor::WAKE_ATTEMPTED) == 1 &&
+                    sensorList[i]->getStatusBit(Sensor::WAKE_SUCCESSFUL) == 0) {
                     MS_DBG(i, F("--->>"),
-                           arrayOfVars[i]->getParentSensorNameAndLocation(),
+                           sensorList[i]->getSensorNameAndLocation(),
                            F("did not wake up! No measurements will be taken! "
                              "<<---"),
                            i);
                     // Set the number of measurements already equal to whatever
                     // total number requested to ensure the sensor is skipped in
                     // further loops.
-                    nMeasurementsCompleted[i] = nMeasurementsToAverage[i];
-                    // increment the number of measurements that the power pin
-                    // has completed
-                    nCompletedOnPin[powerPinIndex[i]] +=
-                        nMeasurementsToAverage[i];
+                    sensorList[i]->_measurementAttemptsCompleted =
+                        sensorList[i]->_measurementsToAverage;
                 }
 
                 // If the sensor was successfully awoken/activated, but no
                 // measurement was either started or finished ...
-                if (getSensorStatusBit(i, Sensor::WAKE_SUCCESSFUL) == 1 &&
-                    getSensorStatusBit(i, Sensor::MEASUREMENT_ATTEMPTED) == 0 &&
-                    getSensorStatusBit(i, Sensor::MEASUREMENT_SUCCESSFUL) ==
-                        0) {
+                if (sensorList[i]->getStatusBit(Sensor::WAKE_SUCCESSFUL) == 1 &&
+                    sensorList[i]->getStatusBit(
+                        Sensor::MEASUREMENT_ATTEMPTED) == 0 &&
+                    sensorList[i]->getStatusBit(
+                        Sensor::MEASUREMENT_SUCCESSFUL) == 0) {
                     // .. check if it's stable
-                    if (arrayOfVars[i]->parentSensor->isStable(
-                            deepDebugTiming)) {
+                    if (sensorList[i]->isStable(deepDebugTiming)) {
                         // Start a reading
                         MS_DBG(i, '.', nMeasurementsCompleted[i] + 1,
                                F("--->> Starting reading"),
                                nMeasurementsCompleted[i] + 1, F("on"),
-                               arrayOfVars[i]->getParentSensorNameAndLocation(),
+                               sensorList[i]->getSensorNameAndLocation(),
                                F("..."));
 
                         bool sensorSuccess_start =
-                            arrayOfVars[i]
-                                ->parentSensor->startSingleMeasurement();
+                            sensorList[i]->startSingleMeasurement();
                         success &= sensorSuccess_start;
 
                         if (sensorSuccess_start) {
@@ -744,28 +597,21 @@ bool VariableArray::completeUpdate(void) {
                 // isMeasurementComplete(deepDebugTiming) will do that.
                 // We want the addSingleMeasurementResult() function to fill in
                 // the -9999 results for a failed measurement.
-                if (getSensorStatusBit(i, Sensor::MEASUREMENT_ATTEMPTED) == 1) {
+                if (sensorList[i]->getStatusBit(
+                        Sensor::MEASUREMENT_ATTEMPTED) == 1) {
                     // If a measurement is finished, get the result and tick up
                     // the number of finished measurements.
-                    if (arrayOfVars[i]->parentSensor->isMeasurementComplete(
-                            deepDebugTiming)) {
+                    if (sensorList[i]->isMeasurementComplete(deepDebugTiming)) {
                         // Get the value
                         MS_DBG(i, '.', nMeasurementsCompleted[i] + 1,
                                F("--->> Collected result of reading"),
                                nMeasurementsCompleted[i] + 1, F("from"),
-                               arrayOfVars[i]->getParentSensorNameAndLocation(),
+                               sensorList[i]->getSensorNameAndLocation(),
                                F("..."));
 
                         bool sensorSuccess_result =
-                            arrayOfVars[i]
-                                ->parentSensor->addSingleMeasurementResult();
+                            sensorList[i]->addSingleMeasurementResult();
                         success &= sensorSuccess_result;
-                        nMeasurementsCompleted[i] +=
-                            1;  // increment the number of measurements that
-                                // sensor has completed
-                        nCompletedOnPin[powerPinIndex[i]] +=
-                            1;  // increment the number of measurements that the
-                                // power pin has completed
 
                         if (sensorSuccess_result) {
                             MS_DBG(F("   ... got measurement result. <<---"), i,
@@ -779,14 +625,14 @@ bool VariableArray::completeUpdate(void) {
                 }
 
                 // If all the measurements are done
-                if (nMeasurementsCompleted[i] == nMeasurementsToAverage[i]) {
+                if (sensorList[i]->getNumberCompleteMeasurementsAttempts() >=
+                    sensorList[i]->getNumberMeasurementsToAverage()) {
                     MS_DBG(i, F("--->> Finished all measurements from"),
                            arrayOfVars[i]->getParentSensorNameAndLocation(),
                            F(", putting it to sleep. ..."));
 
                     // Put the completed sensor to sleep
-                    bool sensorSuccess_sleep =
-                        arrayOfVars[i]->parentSensor->sleep();
+                    bool sensorSuccess_sleep = sensorList[i]->sleep();
                     success &= sensorSuccess_sleep;
 
                     if (sensorSuccess_sleep) {
@@ -799,18 +645,44 @@ bool VariableArray::completeUpdate(void) {
 
                     // Now cut the power, if ready, to this sensors and all that
                     // share the pin
-                    if (nCompletedOnPin[powerPinIndex[i]] ==
-                        nMeasurementsOnPin[powerPinIndex[i]]) {
-                        for (uint8_t k = 0; k < _variableCount; k++) {
-                            if (powerPinIndex[k] == powerPinIndex[i] &&
-                                lastSensorVariable[k]) {
-                                arrayOfVars[k]->parentSensor->powerDown();
-                                MS_DBG(k, F("--->>"),
-                                       arrayOfVars[k]
-                                           ->getParentSensorNameAndLocation(),
-                                       F("powered down. <<---"), k);
-                            }
+                    bool canPowerDown = false;
+                    for (uint8_t k = 0; k < _sensorCount; k++) {
+                        if ((sensorList[k]->getPowerPin() ==
+                                 sensorList[i]->getPowerPin() ||
+                             sensorList[k]->getSecondaryPowerPin() ==
+                                 sensorList[i]->getPowerPin() ||
+                             sensorList[k]->getPowerPin() ==
+                                 sensorList[i]->getSecondaryPowerPin() ||
+                             sensorList[k]->getSecondaryPowerPin() ==
+                                 sensorList[i]->getSecondaryPowerPin()) &&
+                            (sensorList[k]
+                                 ->getNumberCompleteMeasurementsAttempts() <
+                             sensorList[k]->getNumberMeasurementsToAverage())) {
+                            canPowerDown = false;  // another sensor on this pin
+                                                   // still needs to take
+                                                   // measurements
+                            break;
+                        } else {
+                            canPowerDown =
+                                true;  // no other sensors on this pin
+                                       // need to take measurements
                         }
+                    }
+                    if (canPowerDown) {
+                        MS_DBG(
+                            i, F("--->> All measurements from"),
+                            arrayOfVars[i]->getParentSensorNameAndLocation(),
+                            F("are complete and no other sensors on the same "
+                              "power pin need to take measurements.  "
+                              "Powering down all sensors on pin"),
+                            sensorList[i]->getPowerPin(), F("..."));
+                    } else {
+                        MS_DBG(i, F("--->> All measurements from"),
+                               arrayOfVars[i]->getParentSensorNameAndLocation(),
+                               F("are complete but other sensors on the same "
+                                 "power pin still need to take measurements.  "
+                                 "Leaving power on pin"),
+                               sensorList[i]->getPowerPin(), F("ON. <<---"));
                     }
 
                     nSensorsCompleted++;  // mark the whole sensor as done
@@ -828,15 +700,13 @@ bool VariableArray::completeUpdate(void) {
 
     // Average measurements and notify variables of the updates
     MS_DBG(F("----->> Averaging results and notifying all variables. ..."));
-    for (uint8_t i = 0; i < _variableCount; i++) {
-        if (lastSensorVariable[i]) {
-            MS_DBG(F("--- Averaging results from"),
-                   arrayOfVars[i]->getParentSensorNameAndLocation(), F("---"));
-            arrayOfVars[i]->parentSensor->averageMeasurements();
-            MS_DBG(F("--- Notifying variables from"),
-                   arrayOfVars[i]->getParentSensorNameAndLocation(), F("---"));
-            arrayOfVars[i]->parentSensor->notifyVariables();
-        }
+    for (uint8_t i = 0; i < _sensorCount; i++) {
+        MS_DBG(F("--- Averaging results from"),
+               sensorList[i]->getSensorNameAndLocation(), F("---"));
+        sensorList[i]->averageMeasurements();
+        MS_DBG(F("--- Notifying variables from"),
+               sensorList[i]->getSensorNameAndLocation(), F("---"));
+        sensorList[i]->notifyVariables();
     }
     MS_DBG(F("... Complete. <<-----"));
 
