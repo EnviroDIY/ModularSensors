@@ -47,7 +47,8 @@
 /// sensor.
 #define NUMBER_SUPPORTED_POWER_PINS 2
 
-class Variable;  // Forward declaration
+class Variable;       // Forward declaration
+class VariableArray;  // Forward declaration
 
 /**
  * @brief The "Sensor" class is used for all sensor-level operations - waking,
@@ -66,6 +67,8 @@ class Variable;  // Forward declaration
  */
 class Sensor {
  public:
+    friend class Variable;
+    friend class VariableArray;
     /**
      * @brief Construct a new Sensor object.
      *
