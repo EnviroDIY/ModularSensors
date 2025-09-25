@@ -228,7 +228,11 @@ bool Sensor::wake(void) {
     }  // NOTE:  Not turning on processor pull-up or pull-down!
 
     // Mark the time that the sensor was activated
-    _millisSensorActivated = millis();
+    // NOTE: If we didn't do anything to wake the sensor, we **don't**
+    // want to mark the time as **now** but as the last time we did do
+    // something.  Since we didn't actively wake the sensor, we assume the
+    // measurement was started at power on.
+    _millisSensorActivated = _millisPowerOn;
     // Set the status bit for sensor wake/activation success (bit 4)
     setStatusBit(WAKE_SUCCESSFUL);
 
