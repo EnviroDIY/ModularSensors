@@ -10,6 +10,18 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed
+
+### Added
+
+### Removed
+
+### Fixed
+
+***
+
+## [0.37.0]
+
 > [!note]
 > This release has changes to nearly every file in the entire library (ie, hundreds of files).
 > Many of the changes are spelling and typo fixes found by implementing CSpell code spell checking.
@@ -1082,7 +1094,8 @@ Our first release of the modular sensors library to support easily logging data 
 
 ***
 
-[Unreleased]: https://github.com/EnviroDIY/ModularSensors/compare/v0.36.0...HEAD
+[Unreleased]: https://github.com/EnviroDIY/ModularSensors/compare/v0.37.0...HEAD
+[0.37.0]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.37.0
 [0.36.0]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.36.0
 [0.35.1]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.35.1
 [0.35.0]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.35.0
