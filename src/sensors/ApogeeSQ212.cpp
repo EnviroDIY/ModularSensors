@@ -103,6 +103,8 @@ bool ApogeeSQ212::addSingleMeasurementResult(void) {
     verifyAndAddMeasurementResult(SQ212_PAR_VAR_NUM, calibResult);
     verifyAndAddMeasurementResult(SQ212_VOLTAGE_VAR_NUM, adcVoltage);
 
+    // Record the time that the measurement was completed
+    _millisMeasurementCompleted = millis();
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)

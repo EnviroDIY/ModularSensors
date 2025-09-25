@@ -312,6 +312,8 @@ bool BoschBMP3xx::addSingleMeasurementResult(void) {
     verifyAndAddMeasurementResult(BMP3XX_PRESSURE_VAR_NUM, press);
     verifyAndAddMeasurementResult(BMP3XX_ALTITUDE_VAR_NUM, alt);
 
+    // Record the time that the measurement was completed
+    _millisMeasurementCompleted = millis();
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)

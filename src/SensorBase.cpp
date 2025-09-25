@@ -275,7 +275,18 @@ bool Sensor::startSingleMeasurement(void) {
     // Only mark the measurement request time if it is
     if (getStatusBit(WAKE_SUCCESSFUL)) {
         // Mark the time that a measurement was requested
-        _millisMeasurementRequested = millis();
+        // NOTE: If we didn't do anything to start a measurement, we **don't**
+        // want to mark the time as **now** but as the last time we did do
+        // something.  Since we didn't actively start the measurement, we assume
+        // the measurement was started either at wake or at the time the last
+        // measurement was finished.
+        if (_millisMeasurementCompleted != 0) {
+            _millisMeasurementRequested =
+                _millisMeasurementCompleted;  // immediately after last
+                                              // measurement
+        } else {
+            _millisMeasurementRequested = _millisSensorActivated;  // at wake
+        }
         // Set the status bit for measurement start success (bit 6)
         setStatusBit(MEASUREMENT_SUCCESSFUL);
     } else {

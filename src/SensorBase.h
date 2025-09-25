@@ -693,6 +693,14 @@ class Sensor {
      * addSingleMeasurementResult() function.
      */
     uint32_t _millisMeasurementRequested = 0;
+    /**
+     * @brief The processor elapsed time when a measurement was completed - ie,
+     * when the addSingleMeasurementResult() function was run.
+     *
+     * The #_millisMeasurementCompleted value is set in the
+     * addSingleMeasurementResult() function.
+     */
+    uint32_t _millisMeasurementCompleted = 0;
 
     /**
      * @brief An 8-bit code for the sensor status

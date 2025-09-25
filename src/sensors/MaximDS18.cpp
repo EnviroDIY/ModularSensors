@@ -206,6 +206,8 @@ bool MaximDS18::addSingleMeasurementResult(void) {
     // Put value into the array
     verifyAndAddMeasurementResult(DS18_TEMP_VAR_NUM, result);
 
+    // Record the time that the measurement was completed
+    _millisMeasurementCompleted = millis();
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)

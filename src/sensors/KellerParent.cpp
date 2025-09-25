@@ -128,6 +128,8 @@ bool KellerParent::addSingleMeasurementResult(void) {
     verifyAndAddMeasurementResult(KELLER_TEMP_VAR_NUM, waterTemperatureC);
     verifyAndAddMeasurementResult(KELLER_HEIGHT_VAR_NUM, waterDepthM);
 
+    // Record the time that the measurement was completed
+    _millisMeasurementCompleted = millis();
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)

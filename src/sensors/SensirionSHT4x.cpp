@@ -123,6 +123,8 @@ bool SensirionSHT4x::addSingleMeasurementResult(void) {
     verifyAndAddMeasurementResult(SHT4X_TEMP_VAR_NUM, temp_val);
     verifyAndAddMeasurementResult(SHT4X_HUMIDITY_VAR_NUM, humid_val);
 
+    // Record the time that the measurement was completed
+    _millisMeasurementCompleted = millis();
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)

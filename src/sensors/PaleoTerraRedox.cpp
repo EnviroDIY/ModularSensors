@@ -149,6 +149,8 @@ bool PaleoTerraRedox::addSingleMeasurementResult(void) {
     // Store the results in the sensorValues array
     verifyAndAddMeasurementResult(PTR_VOLTAGE_VAR_NUM, res);
 
+    // Record the time that the measurement was completed
+    _millisMeasurementCompleted = millis();
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
     // Unset the status bit for a measurement having been requested (bit 5)

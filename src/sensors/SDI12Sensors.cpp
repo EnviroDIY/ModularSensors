@@ -724,6 +724,8 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
         }
     }
 
+    // Record the time that the measurement was completed
+    _millisMeasurementCompleted = millis();
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)
@@ -816,6 +818,8 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
     // Empty the buffer and de-activate the SDI-12 Object
     deactivate();
 
+    // Record the time that the measurement was completed
+    _millisMeasurementCompleted = millis();
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)

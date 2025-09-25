@@ -106,6 +106,8 @@ bool TIINA219::addSingleMeasurementResult(void) {
     verifyAndAddMeasurementResult(INA219_POWER_MW_VAR_NUM, power_mW);
 
 
+    // Record the time that the measurement was completed
+    _millisMeasurementCompleted = millis();
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)

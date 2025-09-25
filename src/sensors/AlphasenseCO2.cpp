@@ -108,6 +108,8 @@ bool AlphasenseCO2::addSingleMeasurementResult(void) {
     verifyAndAddMeasurementResult(ALPHASENSE_CO2_VAR_NUM, calibResult);
     verifyAndAddMeasurementResult(ALPHASENSE_CO2_VOLTAGE_VAR_NUM, adcVoltage);
 
+    // Record the time that the measurement was completed
+    _millisMeasurementCompleted = millis();
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)

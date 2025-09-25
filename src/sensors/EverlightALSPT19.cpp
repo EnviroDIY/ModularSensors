@@ -79,6 +79,8 @@ bool EverlightALSPT19::addSingleMeasurementResult(void) {
     verifyAndAddMeasurementResult(ALSPT19_CURRENT_VAR_NUM, current_val);
     verifyAndAddMeasurementResult(ALSPT19_ILLUMINANCE_VAR_NUM, lux_val);
 
+    // Record the time that the measurement was completed
+    _millisMeasurementCompleted = millis();
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)

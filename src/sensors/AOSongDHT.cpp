@@ -92,6 +92,8 @@ bool AOSongDHT::addSingleMeasurementResult(void) {
     verifyAndAddMeasurementResult(DHT_HUMIDITY_VAR_NUM, humid_val);
     verifyAndAddMeasurementResult(DHT_HI_VAR_NUM, hi_val);
 
+    // Record the time that the measurement was completed
+    _millisMeasurementCompleted = millis();
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)

@@ -257,6 +257,8 @@ bool GeoluxHydroCam::addSingleMeasurementResult(void) {
     verifyAndAddMeasurementResult(HYDROCAM_SIZE_VAR_NUM, bytes_transferred);
     verifyAndAddMeasurementResult(HYDROCAM_ERROR_VAR_NUM, byte_error);
 
+    // Record the time that the measurement was completed
+    _millisMeasurementCompleted = millis();
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)

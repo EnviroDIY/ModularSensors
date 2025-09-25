@@ -99,6 +99,8 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
 
     verifyAndAddMeasurementResult(TIADS1X15_VAR_NUM, calibResult);
 
+    // Record the time that the measurement was completed
+    _millisMeasurementCompleted = millis();
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)

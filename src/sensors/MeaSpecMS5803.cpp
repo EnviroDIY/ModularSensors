@@ -93,6 +93,8 @@ bool MeaSpecMS5803::addSingleMeasurementResult(void) {
     verifyAndAddMeasurementResult(MS5803_TEMP_VAR_NUM, temp);
     verifyAndAddMeasurementResult(MS5803_PRESSURE_VAR_NUM, press);
 
+    // Record the time that the measurement was completed
+    _millisMeasurementCompleted = millis();
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)
