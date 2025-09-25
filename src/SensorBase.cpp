@@ -83,6 +83,15 @@ void Sensor::setNumberMeasurementsToAverage(uint8_t nReadings) {
 uint8_t Sensor::getNumberMeasurementsToAverage(void) {
     return _measurementsToAverage;
 }
+uint8_t Sensor::getNumberCompleteMeasurementsAttempts(void) {
+    return _measurementAttemptsCompleted;
+}
+uint8_t Sensor::getNumberRetryAttemptsMade(void) {
+    return _retryAttemptsMade;
+}
+uint8_t Sensor::getAllowedMeasurementRetries(void) {
+    return _allowedMeasurementRetries;
+}
 
 
 // This returns the 8-bit code for the current status of the sensor.
@@ -311,7 +320,7 @@ void Sensor::clearValues(void) {
         numberGoodMeasurementsMade[i] = 0;
     }
     _measurementAttemptsCompleted = 0;
-    _measurementsSucceeded        = 0;
+    _retryAttemptsMade            = 0;
 }
 
 

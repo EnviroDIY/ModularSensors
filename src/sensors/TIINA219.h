@@ -6,7 +6,7 @@
  * @author Written By: Neil Hancock
  * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief Contains the TIINA219 sensor subclass and the variale subclasses
+ * @brief Contains the TIINA219 sensor subclass and the variable subclasses
  * TIINA219_Current, TIINA219_Voltage, and TIINA219_Power.
  *
  * These are for the Texas Instruments INA219 current/voltage sensor.
@@ -24,7 +24,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section sensor_ina219_intro Intruduction
+ * @section sensor_ina219_intro Introduction
  *
  * The [TI INA219](http://www.ti.com/product/INA219) is a bi-directional,
  * high-side, current/power monitor that communicates with the board via I2C.
@@ -34,7 +34,7 @@
  * of this sensor can be increased to increase sensitivity (at the expense of
  * range) but this library assumes the maximum range.
  *
- * Commuincation between the INA219 and the mcu is managed by the
+ * Communications between the INA219 and the mcu is managed by the
  * [Adafruit INA219 Library](https://github.com/adafruit/Adafruit_INA219)
  *
  * @note Software I2C is *not* supported for the INA219.
@@ -119,7 +119,7 @@
 /**
  * @brief Sensor::_stabilizationTime_ms; the INA219 is stable after 4000ms.
  *
- * Stable numbers can be acheived after 500ms, but waiting up to 4s gave more
+ * Stable numbers can be achieved after 500ms, but waiting up to 4s gave more
  * consistent numbers based on tests using INA219timingTest.ino
  */
 #define INA219_STABILIZATION_TIME_MS 4000
@@ -454,3 +454,5 @@ class TIINA219_Power : public Variable {
 };
 /**@}*/
 #endif  // SRC_SENSORS_TIINA219_H_
+
+// cSpell:ignore TIINA219

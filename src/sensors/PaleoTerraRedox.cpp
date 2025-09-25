@@ -155,12 +155,16 @@ bool PaleoTerraRedox::addSingleMeasurementResult(void) {
     clearStatusBit(MEASUREMENT_ATTEMPTED);
     // Set the status bit for measurement completion (bit 6)
     setStatusBit(MEASUREMENT_SUCCESSFUL);
-    // Bump the number of completed measurement attempts
-    _measurementAttemptsCompleted++;
+    // Bump the number of attempted retries
+    _retryAttemptsMade++;
 
     if (success && (res != -9999)) {
-        // Bump the number of successful measurements
-        _measurementsSucceeded++;
+        // Bump the number of completed measurement attempts
+        _measurementAttemptsCompleted++;
+    } else if (_retryAttemptsMade >= _allowedMeasurementRetries) {
+        // Bump the number of completed measurement attempts - we've failed but
+        // exceeded retries
+        _measurementAttemptsCompleted++;
     }
 
     return success;

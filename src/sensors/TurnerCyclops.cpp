@@ -111,13 +111,18 @@ bool TurnerCyclops::addSingleMeasurementResult(void) {
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)
     clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
-    // Bump the number of completed measurement attempts
-    _measurementAttemptsCompleted++;
+    // Bump the number of attempted retries
+    _retryAttemptsMade++;
 
     if (adcVoltage < 3.6 && adcVoltage > -0.3) {
-        // Bump the number of successful measurements
-        _measurementsSucceeded++;
+        // Bump the number of completed measurement attempts
+        _measurementAttemptsCompleted++;
         return true;
+    } else if (_retryAttemptsMade >= _allowedMeasurementRetries) {
+        // Bump the number of completed measurement attempts - we've failed but
+        // exceeded retries
+        _measurementAttemptsCompleted++;
+        return false;
     } else {
         return false;
     }

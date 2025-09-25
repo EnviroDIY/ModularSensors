@@ -293,12 +293,11 @@ bool ProcessorStats::addSingleMeasurementResult(void) {
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)
     clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
-    // Bump the number of completed measurement attempts
-    _measurementAttemptsCompleted++;
-    // Bump the number of successful measurements
+    // Bump the number of attempted retries
+    _retryAttemptsMade++;
     // NOTE: We don't actually have any criteria for if the reading was any good
-    // or not.
-    _measurementsSucceeded++;
+    // or not, so we mark it as completed no matter what.
+    _measurementAttemptsCompleted++;
 
     // Return true when finished
     return true;

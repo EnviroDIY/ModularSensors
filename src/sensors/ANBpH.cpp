@@ -374,8 +374,8 @@ bool ANBpH::addSingleMeasurementResult(void) {
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)
     clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
-    // Bump the number of completed measurement attempts
-    _measurementAttemptsCompleted++;
+    // Bump the number of attempted retries
+    _retryAttemptsMade++;
 
     // We consider a measurement successful if we got a modbus response and
     // the pH value is in range or the health code says the sensor is not
@@ -384,11 +384,15 @@ bool ANBpH::addSingleMeasurementResult(void) {
     // after an immersion error.
     if (success &&
         ((0.0 < pH && pH < 14.00) || health == ANBHealthCode::NOT_IMMERSED)) {
-        // Bump the number of successful measurements
-        _measurementsSucceeded++;
+        // Bump the number of completed measurement attempts
+        _measurementAttemptsCompleted++;
+    } else if (_retryAttemptsMade >= _allowedMeasurementRetries) {
+        // Bump the number of completed measurement attempts - we've failed but
+        // exceeded retries
+        _measurementAttemptsCompleted++;
     }
 
-    // Return true when finished
+    // Return success value when finished
     return success;
 }
 

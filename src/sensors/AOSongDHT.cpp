@@ -96,12 +96,16 @@ bool AOSongDHT::addSingleMeasurementResult(void) {
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)
     clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
-    // Bump the number of completed measurement attempts
-    _measurementAttemptsCompleted++;
+    // Bump the number of attempted retries
+    _retryAttemptsMade++;
 
     if (success && !isnan(temp_val) && !isnan(humid_val)) {
-        // Bump the number of successful measurements
-        _measurementsSucceeded++;
+        // Bump the number of completed measurement attempts
+        _measurementAttemptsCompleted++;
+    } else if (_retryAttemptsMade >= _allowedMeasurementRetries) {
+        // Bump the number of completed measurement attempts - we've failed but
+        // exceeded retries
+        _measurementAttemptsCompleted++;
     }
 
     return success;

@@ -43,6 +43,10 @@
 // Include other in-library and external dependencies
 #include <pins_arduino.h>
 
+/// @brief The maximum number of power pins the library can support for a single
+/// sensor.
+#define NUMBER_SUPPORTED_POWER_PINS 2
+
 class Variable;  // Forward declaration
 
 /**
@@ -186,6 +190,31 @@ class Sensor {
      * @copydetails _measurementsToAverage
      */
     uint8_t getNumberMeasurementsToAverage(void);
+    /**
+     * @brief Get the number of measurement attempts that have been made and
+     * completed (whether successful or not).
+     *
+     * @return The number of complete measurement attempts.
+     */
+    uint8_t getNumberCompleteMeasurementsAttempts(void);
+    /**
+     * @brief Get the number of retry attempts that have been made for a
+     * measurement
+     *
+     * @return The number of retries that have been made for the current
+     * measurement attempt.
+     *
+     * @note What is "successful" vs what qualifies for a retry varies by
+     * sensor. For some it may be that if any values were returned, for others
+     * that a specific value is in range, etc.
+     */
+    uint8_t getNumberRetryAttemptsMade(void);
+    /**
+     * @brief Get the number of allowed retries if a measurement fails.
+     *
+     * @return The number of allowed retries.
+     */
+    uint8_t getAllowedMeasurementRetries(void);
 
 
     /// @brief The significance of the various status bits
@@ -599,10 +628,14 @@ class Sensor {
      */
     uint8_t _measurementAttemptsCompleted = 0;
     /**
-     * @brief The number of measurements that have been **successfully**
-     * completed by the sensor **since last power on**.
+     * @brief The number of retries that have been attempted so far for a single
+     * measurement.
      */
-    uint8_t _measurementsSucceeded = 0;
+    uint8_t _retryAttemptsMade = 0;
+    /**
+     * @brief The number of allowed retries if a measurement fails.
+     */
+    uint8_t _allowedMeasurementRetries = 1;
     /**
      * @brief Array with the number of valid measurement values per variable by
      * the sensor in the current update cycle.
