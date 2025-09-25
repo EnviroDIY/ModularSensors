@@ -19,11 +19,11 @@ ANBpH::ANBpH(byte modbusAddress, Stream* stream, int8_t powerPin,
              -1, measurementsToAverage, ANB_PH_INC_CALC_VARIABLES),
       _anb_sensor(modbusAddress, stream, enablePin),
       _stream(stream),
-      _RS485EnablePin(enablePin),
-      _powerPin2(powerPin2) {
+      _RS485EnablePin(enablePin) {
 #ifdef MS_ANB_SENSORS_PH_DEBUG_DEEP
     _anb_sensor.setDebugStream(&MS_SERIAL_OUTPUT);
 #endif
+    setSecondaryPowerPin(powerPin2);
 }
 ANBpH::ANBpH(byte modbusAddress, Stream& stream, int8_t powerPin,
              int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage)
@@ -33,11 +33,11 @@ ANBpH::ANBpH(byte modbusAddress, Stream& stream, int8_t powerPin,
       _anb_sensor(modbusAddress, stream, enablePin),
       _modbusAddress(modbusAddress),
       _stream(&stream),
-      _RS485EnablePin(enablePin),
-      _powerPin2(powerPin2) {
+      _RS485EnablePin(enablePin) {
 #ifdef MS_ANB_SENSORS_PH_DEBUG_DEEP
     _anb_sensor.setDebugStream(&MS_SERIAL_OUTPUT);
 #endif
+    setSecondaryPowerPin(powerPin2);
 }
 // Destructor
 ANBpH::~ANBpH() {}
@@ -56,7 +56,6 @@ bool ANBpH::setup(void) {
     bool retVal = Sensor::setup();  // this will set pin modes and the setup
                                     // status bit
     if (_RS485EnablePin >= 0) { pinMode(_RS485EnablePin, OUTPUT); }
-    if (_powerPin2 >= 0) { pinMode(_powerPin2, OUTPUT); }
 
     // This sensor needs power for setup!
     delay(10);
@@ -303,73 +302,6 @@ bool ANBpH::sleep(void) {
 
     return success;
 }
-
-
-// This turns on sensor power
-void ANBpH::powerUp(void) {
-    if (_powerPin >= 0) {
-        // Reset power pin mode every power up because pins are set to tri-state
-        // on sleep
-        pinMode(_powerPin, OUTPUT);
-        MS_DBG(F("Powering"), getSensorNameAndLocation(), F("with pin"),
-               _powerPin);
-        digitalWrite(_powerPin, HIGH);
-    }
-    if (_powerPin2 >= 0) {
-        // Reset power pin mode every power up because pins are set to tri-state
-        // on sleep
-        pinMode(_powerPin2, OUTPUT);
-        MS_DBG(F("Applying secondary power to"), getSensorNameAndLocation(),
-               F("with pin"), _powerPin2);
-        digitalWrite(_powerPin2, HIGH);
-    }
-    if (_powerPin < 0 && _powerPin2 < 0) {
-        MS_DBG(F("Power to"), getSensorNameAndLocation(),
-               F("is not controlled by this library."));
-        // Mark the power-on time, just in case it  had not been marked
-        if (_millisPowerOn == 0) _millisPowerOn = millis();
-    } else {
-        // Mark the time that the sensor was powered
-        _millisPowerOn = millis();
-    }
-    // Reset enable pin because pins are set to tri-state on sleep
-    if (_RS485EnablePin >= 0) { pinMode(_RS485EnablePin, OUTPUT); }
-    // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
-    setStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL);
-}
-
-
-// This turns off sensor power
-void ANBpH::powerDown(void) {
-    if (_powerPin >= 0) {
-        MS_DBG(F("Turning off power to"), getSensorNameAndLocation(),
-               F("with pin"), _powerPin);
-        digitalWrite(_powerPin, LOW);
-        // Unset the power-on time
-        _millisPowerOn = 0;
-        // Unset the activation time
-        _millisSensorActivated = 0;
-        // Unset the measurement request time
-        _millisMeasurementRequested = 0;
-        // Unset the status bits for sensor power (bits 1 & 2),
-        // activation (bits 3 & 4), and measurement request (bits 5 & 6)
-        clearStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL, WAKE_ATTEMPTED,
-                        WAKE_SUCCESSFUL, MEASUREMENT_ATTEMPTED,
-                        MEASUREMENT_SUCCESSFUL);
-    }
-    if (_powerPin2 >= 0) {
-        MS_DBG(F("Turning off secondary power to"), getSensorNameAndLocation(),
-               F("with pin"), _powerPin2);
-        digitalWrite(_powerPin2, LOW);
-    }
-    if (_powerPin < 0 && _powerPin2 < 0) {
-        MS_DBG(F("Power to"), getSensorNameAndLocation(),
-               F("is not controlled by this library."));
-        // Do NOT unset any status bits or timestamps if we didn't really power
-        // down!
-    }
-}
-
 
 bool ANBpH::addSingleMeasurementResult(void) {
     bool success = false;

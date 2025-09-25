@@ -530,10 +530,6 @@ class ANBpH : public Sensor {
     bool startSingleMeasurement(void) override;
     bool addSingleMeasurementResult(void) override;
 
-    // Override these to use two power pins
-    void powerUp(void) override;
-    void powerDown(void) override;
-
     /**
      * @copydoc Sensor::isWarmedUp(bool debug)
      *
@@ -617,10 +613,6 @@ class ANBpH : public Sensor {
      * pin.
      */
     int8_t _RS485EnablePin;
-    /**
-     * @brief Private reference to the power pin fro the RS-485 adapter.
-     */
-    int8_t _powerPin2;
     /**
      * @brief Private reference to the salinity mode for the ANB pH sensor.
      * @remark The salinity mode is set to low salinity by default.
