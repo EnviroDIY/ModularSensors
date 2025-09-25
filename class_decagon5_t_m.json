@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "class",
     "id": "class_decagon5_t_m",
@@ -293,7 +293,7 @@
     "public_funcs": [
       {
         "base_url": "class_decagon5_t_m.html",
-        "id": "a035f59de8ab5f15cbd29f6bfd19ed3c5",
+        "id": "a2a07f0e12cf37ecc3eb8588a5ca66134",
         "include": null,
         "has_details": true,
         "type": "bool",
@@ -324,14 +324,14 @@
         "is_slot": false,
         "has_template_details": false,
         "templates": null,
-        "has_param_details": false,
+        "has_param_details": true,
         "params": [
           {
-            "name": "",
-            "type": "void",
-            "type_name": "void",
+            "name": "verify_crc",
+            "type": "bool",
+            "type_name": "bool verify_crc",
             "default": null,
-            "description": "",
+            "description": "True to verify the CRC of the results",
             "direction": ""
           }
         ]

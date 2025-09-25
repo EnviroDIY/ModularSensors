@@ -1,0 +1,19 @@
+{
+  "is_final": false,
+  "parent": "class_variable",
+  "parentGroup": "group__sensor__insitu__rdo",
+  "id": "class_in_situ_r_d_o___d_omg_l",
+  "kind": "class",
+  "name": "InSituRDO_DOmgL",
+  "url": "class_in_situ_r_d_o___d_omg_l.html",
+  "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__insitu__rdo.html#sensor_insitu_rdo_domgl\" class=\"m-doc\">dissolved oxygen concentration output</a> from a <a href=\"group__sensor__insitu__rdo.html\" class=\"m-doc\">In-Situ RDO PRO-X dissolved oxygen sensor</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null,
+  "leaf_name": "InSituRDO_DOmgL"
+}

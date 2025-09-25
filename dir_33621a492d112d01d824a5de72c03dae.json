@@ -1,0 +1,72 @@
+{
+  "version": "1.14.0",
+  "compound": {
+    "kind": "dir",
+    "id": "dir_33621a492d112d01d824a5de72c03dae",
+    "name": "extras/AWS_IoT_SetCertificates",
+    "url_base": "dir_33621a492d112d01d824a5de72c03dae",
+    "url": "dir_33621a492d112d01d824a5de72c03dae.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "Contains the AWS_IoT_SetCertificates example.",
+    "description": "",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "extras",
+        "dir_1510bd745cd29c20d24c27171ebe5ba5.html"
+      ],
+      [
+        "AWS_IoT_SetCertificates",
+        "dir_33621a492d112d01d824a5de72c03dae.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "AWS_IoT_SetCertificates",
+        "dir_33621a492d112d01d824a5de72c03dae.html"
+      ]
+    ]
+  }
+}

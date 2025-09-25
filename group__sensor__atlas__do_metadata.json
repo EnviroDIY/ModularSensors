@@ -1,0 +1,21 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "group__sensor__atlas__do",
+  "kind": "group",
+  "name": "Atlas EZO-DO",
+  "url": "group__sensor__atlas__do.html",
+  "brief": "",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [
+    "class_atlas_scientific_d_o",
+    "class_atlas_scientific_d_o___d_omg_l",
+    "class_atlas_scientific_d_o___d_opct"
+  ],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

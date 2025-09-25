@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "page",
     "id": "page_continuous_intetration",
@@ -53,6 +53,10 @@
     "has_var_details": false,
     "has_define_details": false,
     "breadcrumb": [
+      [
+        "Help for Developers",
+        "page_for_developers.html"
+      ],
       [
         "Extra scripts for Continuous Integration Using GitHub Actions",
         "page_continuous_intetration.html"

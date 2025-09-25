@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "file",
     "id": "_watch_dog_s_a_m_d_8h",
@@ -43,7 +43,7 @@
         "has_details": false,
         "type": "void",
         "name": "WDT_Handler",
-        "brief": "ISR handler for watchdog timer early warning (WDT EW ) interrupt.",
+        "brief": "ISR handler for watchdog timer early warning (WDT EW) interrupt.",
         "description": "",
         "return_value": null,
         "return_values": [],
@@ -83,7 +83,38 @@
       }
     ],
     "vars": [],
-    "defines": [],
+    "defines": [
+      {
+        "base_url": "_watch_dog_s_a_m_d_8h.html",
+        "id": "a68e33cc91077ff1748f22becf84306bf",
+        "include": null,
+        "has_details": true,
+        "name": "MAXIMUM_WATCHDOG_PERIOD",
+        "initializer": "16UL",
+        "brief": "The longest possible time between watchdog interrupts in seconds.",
+        "description": "<p>For a SAMD board, we can get the longest possible time between interrupts by using the maximum closed window period in &quot;windowed&quot; mode and setting the early warning interrupt that opens the window to occur at the mimimum possible time before a reset fires. The maximum number of clock cycles for the closed window period is 16384 cycles on both a SAMD21 and SAM(D/E)51.</p><p>On a SAM(D/E)51 the only clock available for the watch dog is the 1.024kHz CLK_WDT_OSC clock sourced from the ULP32KOSC.</p><p>On a SAMD21 the WDT can be clocked from any clock source with the maximum dividor depending on the selected clock generator. To save power, we force the SAMD21 to use the ULP32KOSC for the WDT and EIC. For simplicity of code, we use a 32x divisor on the ULP32KOSC to match the SAM(D/E)51 1.024kHz CLK_WDT_OSC.</p><p>16384 clock cycles at 1.024kHz = 16s</p>",
+        "return_value": null,
+        "deprecated": null,
+        "since": null,
+        "has_param_details": false,
+        "params": null
+      },
+      {
+        "base_url": "_watch_dog_s_a_m_d_8h.html",
+        "id": "a907dbd0a06261cf530247abd759efdb0",
+        "include": null,
+        "has_details": true,
+        "name": "GENERIC_CLOCK_GENERATOR_MS",
+        "initializer": "(5u)",
+        "brief": "The clock generator number to use for the watchdog timer and the external interrupt controller.",
+        "description": "<p>This only applies to a SAMD21 device. Neither the WDT nor the EIC require a dedicated clock generator on the SAM(D/E)51.</p>",
+        "return_value": null,
+        "deprecated": null,
+        "since": null,
+        "has_param_details": false,
+        "params": null
+      }
+    ],
     "public_types": [],
     "public_static_funcs": [],
     "typeless_funcs": [],
@@ -107,7 +138,7 @@
     "has_typedef_details": false,
     "has_func_details": false,
     "has_var_details": false,
-    "has_define_details": false,
+    "has_define_details": true,
     "breadcrumb": [
       [
         "src",

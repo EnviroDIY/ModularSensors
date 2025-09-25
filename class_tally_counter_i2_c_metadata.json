@@ -1,0 +1,18 @@
+{
+  "is_final": false,
+  "parent": null,
+  "parentGroup": null,
+  "id": "class_tally_counter_i2_c",
+  "kind": "class",
+  "name": "TallyCounterI2C",
+  "url": "class_tally_counter_i2_c.html",
+  "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__tally.html\" class=\"m-doc\">Tally Counter I2C</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null
+}

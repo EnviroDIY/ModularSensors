@@ -1,0 +1,25 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "group__the__publishers",
+  "kind": "group",
+  "name": "Supported Data Endpoints",
+  "url": "group__the__publishers.html",
+  "brief": "",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [
+    "class_a_w_s___io_t___publisher",
+    "class_dream_host_publisher",
+    "class_enviro_d_i_y_publisher",
+    "class_s3_presigned_publisher",
+    "class_thing_speak_publisher",
+    "class_ubidots_publisher"
+  ],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "Supported Data Endpoints"
+}

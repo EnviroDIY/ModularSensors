@@ -1,0 +1,22 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "_yosemitech_y513_8h",
+  "kind": "file",
+  "name": "YosemitechY513.h",
+  "url": "_yosemitech_y513_8h.html",
+  "brief": "Contains the <a href=\"class_yosemitech_y513.html\" class=\"m-doc\">YosemitechY513</a> sensor subclass and the variable subclasses <a href=\"class_yosemitech_y513___b_g_a.html\" class=\"m-doc\">YosemitechY513_<wbr />BGA</a> and <a href=\"class_yosemitech_y513___temp.html\" class=\"m-doc\">YosemitechY513_<wbr />Temp</a>.",
+  "has_details": true,
+  "children": [
+    "sensor-variable-counts",
+    "sensor-timing",
+    "chlorophyll-concentration",
+    "temperature"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

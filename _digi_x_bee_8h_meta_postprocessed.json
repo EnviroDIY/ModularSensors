@@ -1,0 +1,20 @@
+{
+  "is_final": null,
+  "parent": "dir_d60b8e8795161a141bba4403c07b6046",
+  "parentGroup": null,
+  "id": "_digi_x_bee_8h",
+  "kind": "file",
+  "name": "DigiXBee.h",
+  "url": "_digi_x_bee_8h.html",
+  "brief": "Contains the <a href=\"class_digi_x_bee.html\" class=\"m-doc\">DigiXBee</a> modem subclass of <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a>, which itself is a parent class for all other XBee&#x27;s and XBee3&#x27;s.",
+  "has_details": true,
+  "children": [
+    "modem-pin-settings-and-timing"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "DigiXBee.h"
+}

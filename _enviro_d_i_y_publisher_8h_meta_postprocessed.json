@@ -1,0 +1,18 @@
+{
+  "is_final": null,
+  "parent": "dir_d557642a802d85ded7abaec913ee220c",
+  "parentGroup": null,
+  "id": "_enviro_d_i_y_publisher_8h",
+  "kind": "file",
+  "name": "EnviroDIYPublisher.h",
+  "url": "_enviro_d_i_y_publisher_8h.html",
+  "brief": "Contains the <a href=\"class_enviro_d_i_y_publisher.html\" class=\"m-doc\">EnviroDIYPublisher</a> subclass of <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> for publishing data to the Monitor My Watershed/EnviroDIY data portal at <a href=\"http://data.enviroDIY.org\">http:/<wbr />/<wbr />data.enviroDIY.org</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "EnviroDIYPublisher.h"
+}

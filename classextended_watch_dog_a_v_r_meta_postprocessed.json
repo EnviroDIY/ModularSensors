@@ -1,0 +1,19 @@
+{
+  "is_final": false,
+  "parent": null,
+  "parentGroup": "group__base__classes",
+  "id": "classextended_watch_dog_a_v_r",
+  "kind": "class",
+  "name": "extendedWatchDogAVR",
+  "url": "classextended_watch_dog_a_v_r.html",
+  "brief": "The <a href=\"classextended_watch_dog_a_v_r.html\" class=\"m-doc\">extendedWatchDogAVR</a> class uses the pre-reset interrupt to of the built in AVR watchdog to extend the allowable time between resets of the watchdog&#x27;s clock up to multiple minute timescales.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null,
+  "leaf_name": "extendedWatchDogAVR"
+}

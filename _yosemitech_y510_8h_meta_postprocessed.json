@@ -1,0 +1,23 @@
+{
+  "is_final": null,
+  "parent": "dir_7349e89ef19c117195f8e371603e1b1f",
+  "parentGroup": null,
+  "id": "_yosemitech_y510_8h",
+  "kind": "file",
+  "name": "YosemitechY510.h",
+  "url": "_yosemitech_y510_8h.html",
+  "brief": "Contains the <a href=\"class_yosemitech_y510.html\" class=\"m-doc\">YosemitechY510</a> sensor subclass and the variable subclasses <a href=\"class_yosemitech_y510___turbidity.html\" class=\"m-doc\">YosemitechY510_<wbr />Turbidity</a> and <a href=\"class_yosemitech_y510___temp.html\" class=\"m-doc\">YosemitechY510_<wbr />Temp</a>.",
+  "has_details": true,
+  "children": [
+    "sensor-variable-counts",
+    "sensor-timing",
+    "turbidity",
+    "temperature"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "YosemitechY510.h"
+}

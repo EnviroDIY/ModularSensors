@@ -1,0 +1,22 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "_keller_acculevel_8h",
+  "kind": "file",
+  "name": "KellerAcculevel.h",
+  "url": "_keller_acculevel_8h.html",
+  "brief": "Contains the <a href=\"class_keller_acculevel.html\" class=\"m-doc\">KellerAcculevel</a> sensor subclass and the <a href=\"class_keller_acculevel___pressure.html\" class=\"m-doc\">KellerAcculevel_<wbr />Pressure</a>, <a href=\"class_keller_acculevel___temp.html\" class=\"m-doc\">KellerAcculevel_<wbr />Temp</a>, and <a href=\"class_keller_acculevel___height.html\" class=\"m-doc\">KellerAcculevel_<wbr />Height</a> variable subclasses.",
+  "has_details": true,
+  "children": [
+    "sensor-timing",
+    "pressure",
+    "temperature",
+    "height"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

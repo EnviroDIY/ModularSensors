@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "class",
     "id": "class_ubidots_publisher",
@@ -198,7 +198,7 @@
       },
       {
         "base_url": "class_ubidots_publisher.html",
-        "id": "a082ff380f95723a06fbbb09d412c3def",
+        "id": "a669722cba8030fba5a9259b5ce2bdeda",
         "include": null,
         "has_details": true,
         "type": "",
@@ -240,11 +240,11 @@
             "direction": ""
           },
           {
-            "name": "authentificationToken",
+            "name": "authenticationToken",
             "type": "const char*",
-            "type_name": "const char* authentificationToken",
+            "type_name": "const char* authenticationToken",
             "default": null,
-            "description": "The authentication token from Ubdots, either the Organization&#x27;s Integration Token (under Users &gt; Organization menu, visible by Admin only) OR the STEM User&#x27;s Device Token (under the specific device&#x27;s setup panel).",
+            "description": "The authentication token from Ubidots, either the Organization&#x27;s Integration Token (under Users &gt; Organization menu, visible by Admin only) OR the STEM User&#x27;s Device Token (under the specific device&#x27;s setup panel).",
             "direction": ""
           },
           {
@@ -267,7 +267,7 @@
       },
       {
         "base_url": "class_ubidots_publisher.html",
-        "id": "ae40146f07220af0837d419282339f8b9",
+        "id": "aef4829c621c659ad61325be564260f65",
         "include": null,
         "has_details": true,
         "type": "",
@@ -317,11 +317,11 @@
             "direction": ""
           },
           {
-            "name": "authentificationToken",
+            "name": "authenticationToken",
             "type": "const char*",
-            "type_name": "const char* authentificationToken",
+            "type_name": "const char* authenticationToken",
             "default": null,
-            "description": "The authentication token from Ubdots, either the Organization&#x27;s Integration Token (under Users &gt; Organization menu, visible by Admin only) OR the STEM User&#x27;s Device Token (under the specific device&#x27;s setup panel).",
+            "description": "The authentication token from Ubidots, either the Organization&#x27;s Integration Token (under Users &gt; Organization menu, visible by Admin only) OR the STEM User&#x27;s Device Token (under the specific device&#x27;s setup panel).",
             "direction": ""
           },
           {
@@ -427,7 +427,7 @@
       },
       {
         "base_url": "class_ubidots_publisher.html",
-        "id": "a666e0bead29f856f12775eb3b842ac02",
+        "id": "a17c723013f106984d3560db1169870df",
         "include": null,
         "has_details": true,
         "type": "void",
@@ -461,11 +461,11 @@
         "has_param_details": true,
         "params": [
           {
-            "name": "authentificationToken",
+            "name": "authenticationToken",
             "type": "const char*",
-            "type_name": "const char* authentificationToken",
+            "type_name": "const char* authenticationToken",
             "default": null,
-            "description": "The authentication token from Ubdots, either the Organization&#x27;s Integration Token (under Users &gt; Organization menu, visible by Admin only) OR the STEM User&#x27;s Device Token (under the specific device&#x27;s setup panel).",
+            "description": "The authentication token from Ubidots, either the Organization&#x27;s Integration Token (under Users &gt; Organization menu, visible by Admin only) OR the STEM User&#x27;s Device Token (under the specific device&#x27;s setup panel).",
             "direction": ""
           }
         ]
@@ -508,7 +508,7 @@
       },
       {
         "base_url": "class_ubidots_publisher.html",
-        "id": "afc3802d75a6cf2c22e3d532b2e6bc621",
+        "id": "a1f490528ccb76e6d949488dbde131def",
         "include": null,
         "has_details": true,
         "type": "void",
@@ -558,11 +558,11 @@
             "direction": ""
           },
           {
-            "name": "authentificationToken",
+            "name": "authenticationToken",
             "type": "const char*",
-            "type_name": "const char* authentificationToken",
+            "type_name": "const char* authenticationToken",
             "default": null,
-            "description": "The authentication token from Ubdots, either the Organization&#x27;s Integration Token (under Users &gt; Organization menu, visible by Admin only) OR the STEM User&#x27;s Device Token (under the specific device&#x27;s setup panel).",
+            "description": "The authentication token from Ubidots, either the Organization&#x27;s Integration Token (under Users &gt; Organization menu, visible by Admin only) OR the STEM User&#x27;s Device Token (under the specific device&#x27;s setup panel).",
             "direction": ""
           },
           {
@@ -577,7 +577,7 @@
       },
       {
         "base_url": "class_ubidots_publisher.html",
-        "id": "aeddf29508d66ece914e13fe6e1f7d4e7",
+        "id": "add2764c58e97e4f3447390655c537e24",
         "include": null,
         "has_details": true,
         "type": "void",
@@ -619,11 +619,11 @@
             "direction": ""
           },
           {
-            "name": "authentificationToken",
+            "name": "authenticationToken",
             "type": "const char*",
-            "type_name": "const char* authentificationToken",
+            "type_name": "const char* authenticationToken",
             "default": null,
-            "description": "The authentication token from Ubdots, either the Organization&#x27;s Integration Token (under Users &gt; Organization menu, visible by Admin only) OR the STEM User&#x27;s Device Token (under the specific device&#x27;s setup panel).",
+            "description": "The authentication token from Ubidots, either the Organization&#x27;s Integration Token (under Users &gt; Organization menu, visible by Admin only) OR the STEM User&#x27;s Device Token (under the specific device&#x27;s setup panel).",
             "direction": ""
           },
           {
@@ -638,7 +638,7 @@
       },
       {
         "base_url": "class_ubidots_publisher.html",
-        "id": "a1e12656dea8dbbee7abca2c71f56e648",
+        "id": "afc02d75a80a5e3daf2887131a2e107d0",
         "include": null,
         "has_details": true,
         "type": "int16_t",
@@ -677,6 +677,14 @@
             "type_name": "Client* outClient",
             "default": null,
             "description": "An Arduino client instance to use to print data to. Allows the use of any type of client and multiple clients tied to a single TinyGSM modem instance",
+            "direction": ""
+          },
+          {
+            "name": "forceFlush",
+            "type": "bool",
+            "type_name": "bool forceFlush",
+            "default": null,
+            "description": "Ask the publisher to flush buffered data immediately.",
             "direction": ""
           }
         ]

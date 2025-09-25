@@ -1,0 +1,18 @@
+{
+  "is_final": false,
+  "parent": null,
+  "parentGroup": null,
+  "id": "class_yosemitech_y551___c_o_d",
+  "kind": "class",
+  "name": "YosemitechY551_COD",
+  "url": "class_yosemitech_y551___c_o_d.html",
+  "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__y551.html#sensor_y551_cod\" class=\"m-doc\">carbon oxygen demand (COD) output</a> from a <a href=\"group__sensor__y551.html\" class=\"m-doc\">Yosemitech Y551-B UV254/COD sensor with wiper</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null
+}

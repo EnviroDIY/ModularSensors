@@ -1,0 +1,24 @@
+{
+  "is_final": null,
+  "parent": "dir_7349e89ef19c117195f8e371603e1b1f",
+  "parentGroup": null,
+  "id": "_alphasense_c_o2_8h",
+  "kind": "file",
+  "name": "AlphasenseCO2.h",
+  "url": "_alphasense_c_o2_8h.html",
+  "brief": "Contains the <a href=\"class_alphasense_c_o2.html\" class=\"m-doc\">AlphasenseCO2</a> sensor class and the variable subclasses <a href=\"class_alphasense_c_o2___c_o2.html\" class=\"m-doc\">AlphasenseCO2_<wbr />CO2</a> and <a href=\"class_alphasense_c_o2___voltage.html\" class=\"m-doc\">AlphasenseCO2_<wbr />Voltage</a>.",
+  "has_details": true,
+  "children": [
+    "sensor-variable-counts",
+    "configuration-defines",
+    "sensor-timing",
+    "co2-concentration",
+    "voltage"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "AlphasenseCO2.h"
+}

@@ -1,0 +1,586 @@
+{
+  "version": "1.14.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__sensor__hydrocam",
+    "name": "Geolux HydroCam",
+    "url_base": "group__sensor__hydrocam",
+    "url": "group__sensor__hydrocam.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>Classes for the Geolux HydroCam cameras.</p><section id=\"sensor_hydrocam_intro\"><h2>Introduction</h2><blockquote><p>The <a href=\"https://www.geolux-radars.com/hydrocam\">Geolux HydroCam</a> is a monitoring camera specifically designed for remote visual observation of the hydrological monitoring site. Versatile communication interfaces (RS-232, RS-485, CAN, SDI-12, Ethernet) enable easy integration with Geolux or third-party dataloggers. Integrated switchable day/night filters and a high-quality motorized zoom/focus lens enable the Geolux HydroCam to withstand wide temperature ranges and operation in almost any environmental monitoring application.</p></blockquote><p>The Geolux HydroCam is supported using <strong>RS232</strong> communication. You <strong>must</strong> have an RS232-to-TTL adapter to be able to communicate with the HydroCam. The only possible speed for communication is 115200. <em>This is too fast for an 8MHz board like the EnviroDIY Mayfly.</em></p><p>Please see the section &quot;[Notes on Arduino Streams and Software Serial](@ref page_arduino_streams)&quot; for more information about what streams can be used along with this library.</p><p>This library currently only supports using the same SD card for saving images as is used for writing data files.</p><p>Keep in mind when using the HydroCam that transferring images from the camera to the SD card is a slow process. For the smallest images (160x120) the transfer time can be as little as 850ms, but the largest images (2592x1944) can take 70 seconds (over a minute) to transfer.</p><p>If you choose to autofocus on every image, the autofocus takes 25-30s on firmware prior to version 2, and about 7s on version 2.0.5.</p><p>Changing settings takes up to 7s.</p><p>Taking an image (but not transferring the data) takes ~6.2s for the smallest images and over 16s for the largest.</p></section><section id=\"sensor_hydrocam_datasheet\"><h2>Sensor Datasheet</h2><ul><li><a href=\"https://www.geolux-radars.com/_files/ugd/8a15d8_d65c3618247b40ed94886dcb09bb4c33.pdf\">Datasheet</a></li><li><a href=\"https://www.geolux-radars.com/_files/ugd/e39b2a_35dcbb6cb9974bd59647b20487ca1511.pdf\">User Manual v1.2.3</a></li><li><a href=\"https://www.geolux-radars.com/_files/ugd/e39b2a_3ded96e993d249daa4e4000a3e419342.pdf\">Assembly Guide</a></li><li><a href=\"https://www.geolux-radars.com/_files/archives/e39b2a_f3bd3a20c9dd4df69205263102655af7.zip?dn=Setup-GeoluxInstrumentConfigurator-2.3.2.zip\">Geolux Instrument Configurator Software 2.3.2</a></li></ul></section><section id=\"sensor_hydrocam_ctor\"><h2>Sensor Constructor</h2><p>{{ <a href=\"class_geolux_hydro_cam.html#a70b0bd22a2327fffc114d0e1c181ba22\" class=\"m-doc\">GeoluxHydroCam::<wbr />GeoluxHydroCam</a> }}</p><hr/></section><section id=\"sensor_hydrocam_examples\"><h2>Example Code</h2><p>The Geolux HydroCam is used in the <a href=\"example_menu.html#menu_walk_geolux_hydro_cam\" class=\"m-doc\">menu a la carte</a> example.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;sensors/GeoluxHydroCam.h&gt;</span></div>\n<div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span></div>\n<div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"c1\">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span></div>\n<div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">cameraPower</span><span class=\"w\">        </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">sensorPowerPin</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// Power pin</span></div>\n<div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\"> </span><span class=\"n\">cameraAdapterPower</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">sensorPowerPin</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// RS232 adapter power pin</span></div>\n<div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">char</span><span class=\"o\">*</span><span class=\"w\">  </span><span class=\"n\">imageResolution</span><span class=\"w\">    </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"s\">&quot;800x600&quot;</span><span class=\"p\">;</span></div>\n<div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">char</span><span class=\"o\">*</span><span class=\"w\">  </span><span class=\"n\">filePrefix</span><span class=\"w\">         </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">LoggerID</span><span class=\"p\">;</span></div>\n<div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span><span class=\"kr\">bool</span><span class=\"w\">         </span><span class=\"n\">alwaysAutoFocus</span><span class=\"w\">    </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"kr\">false</span><span class=\"p\">;</span></div>\n<div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span></div>\n<div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span><span class=\"c1\">// Create a GeoluxHydroCam sensor object</span></div>\n<div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span><span class=\"n\">GeoluxHydroCam</span><span class=\"w\"> </span><span class=\"nf\">hydrocam</span><span class=\"p\">(</span><span class=\"n\">cameraSerial</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">cameraPower</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">dataLogger</span><span class=\"p\">,</span></div>\n<div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"w\">                        </span><span class=\"n\">cameraAdapterPower</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">imageResolution</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">filePrefix</span><span class=\"p\">,</span></div>\n<div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span><span class=\"w\">                        </span><span class=\"n\">alwaysAutoFocus</span><span class=\"p\">);</span></div>\n<div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span></div>\n<div class=\"line\"><a id=\"l-15\" name=\"l-15\"></a><span class=\"linenos\">15</span><span class=\"c1\">// Create image size and byte error variables for the Geolux HydroCam</span></div>\n<div class=\"line\"><a id=\"l-16\" name=\"l-16\"></a><span class=\"linenos\">16</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">hydrocamImageSize</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">GeoluxHydroCam_ImageSize</span><span class=\"p\">(</span></div>\n<div class=\"line\"><a id=\"l-17\" name=\"l-17\"></a><span class=\"linenos\">17</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">hydrocam</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span></div>\n<div class=\"line\"><a id=\"l-18\" name=\"l-18\"></a><span class=\"linenos\">18</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">hydrocamByteError</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">GeoluxHydroCam_ByteError</span><span class=\"p\">(</span></div>\n<div class=\"line\"><a id=\"l-19\" name=\"l-19\"></a><span class=\"linenos\">19</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">hydrocam</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "sensor_hydrocam_intro",
+        "Introduction",
+        []
+      ],
+      [
+        "sensor_hydrocam_datasheet",
+        "Sensor Datasheet",
+        []
+      ],
+      [
+        "sensor_hydrocam_ctor",
+        "Sensor Constructor",
+        []
+      ],
+      [
+        "sensor_hydrocam_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_geolux_hydro_cam.html",
+        "name": "GeoluxHydroCam",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__hydrocam.html\" class=\"m-doc\">Geolux HydroCam cameras</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_geolux_hydro_cam___image_size.html",
+        "name": "GeoluxHydroCam_ImageSize",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__hydrocam.html#sensor_hydrocam_image_size\" class=\"m-doc\">image size output</a> from a <a href=\"group__sensor__hydrocam.html\" class=\"m-doc\">Geolux HydroCam camera</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_geolux_hydro_cam___byte_error.html",
+        "name": "GeoluxHydroCam_ByteError",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__hydrocam.html#sensor_hydrocam_byte_error\" class=\"m-doc\">byte error output</a> from a <a href=\"group__sensor__hydrocam.html\" class=\"m-doc\">Geolux HydroCam camera</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [
+      {
+        "base_url": "group__sensor__hydrocam.html",
+        "id": "ga2a5be5e4f867b5bfa6f610c5897f92fa",
+        "include": [
+          "&lt;src/sensors/GeoluxHydroCam.h&gt;",
+          "_geolux_hydro_cam_8h.html"
+        ],
+        "has_details": true,
+        "name": "HYDROCAM_FILE_EXTENSION",
+        "initializer": "\".jpg\"",
+        "brief": "The file extension for images from the Geolux HydroCam: &quot;.jpg&quot;.",
+        "description": "",
+        "return_value": null,
+        "deprecated": null,
+        "since": null,
+        "has_param_details": false,
+        "params": null
+      },
+      {
+        "base_url": "group__sensor__hydrocam.html",
+        "id": "gab41a543e1f62fa95b52bddfe0950129f",
+        "include": [
+          "&lt;src/sensors/GeoluxHydroCam.h&gt;",
+          "_geolux_hydro_cam_8h.html"
+        ],
+        "has_details": true,
+        "name": "HYDROCAM_MINIMUM_STATUS_SPACING",
+        "initializer": "250",
+        "brief": "The minimum spacing between requesting status messages from the HydroCam.",
+        "description": "",
+        "return_value": null,
+        "deprecated": null,
+        "since": null,
+        "has_param_details": false,
+        "params": null
+      }
+    ],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Sensor Variable Counts",
+        "id": "sensor-variable-counts",
+        "description": "<p><a name=\"sensor_hydrocam_var_counts\"></a> The number of variables that can be returned by Geolux HydroCam</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__hydrocam.html",
+              "id": "gac343240b1471ad1cc6ad89eeb703eb24",
+              "include": [
+                "&lt;src/sensors/GeoluxHydroCam.h&gt;",
+                "_geolux_hydro_cam_8h.html"
+              ],
+              "has_details": true,
+              "name": "HYDROCAM_NUM_VARIABLES",
+              "initializer": "2",
+              "brief": "<a href=\"class_sensor.html#af26786329fd01b44cf31410d046fc8f3\" class=\"m-doc\">Sensor::<wbr />_numReturnedValues</a>; the HydroCam can report 2 values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__hydrocam.html",
+              "id": "ga1587e241869b68779e0f779c146e8e85",
+              "include": [
+                "&lt;src/sensors/GeoluxHydroCam.h&gt;",
+                "_geolux_hydro_cam_8h.html"
+              ],
+              "has_details": true,
+              "name": "HYDROCAM_INC_CALC_VARIABLES",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#a2f3f93a9205efb134cef1216d65077d2\" class=\"m-doc\">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Sensor Timing",
+        "id": "sensor-timing",
+        "description": "<p><a name=\"sensor_hydrocam_timing\"></a> The sensor timing for a Geolux HydroCam</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__hydrocam.html",
+              "id": "ga4ba695428b442dc918dea314e8d0c590",
+              "include": [
+                "&lt;src/sensors/GeoluxHydroCam.h&gt;",
+                "_geolux_hydro_cam_8h.html"
+              ],
+              "has_details": true,
+              "name": "HYDROCAM_WARM_UP_TIME_MS",
+              "initializer": "350",
+              "brief": "<a href=\"class_sensor.html#aaaefd7f306f86382a3dac726531756b4\" class=\"m-doc\">Sensor::<wbr />_warmUpTime_ms</a>; warm up time from power on until boot message finishes is nearly exactly 340ms on firmware 1.3.6 and about 490ms on firmware 2.0.5.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__hydrocam.html",
+              "id": "gab73676ad8c664e29e33efedd827cf8f0",
+              "include": [
+                "&lt;src/sensors/GeoluxHydroCam.h&gt;",
+                "_geolux_hydro_cam_8h.html"
+              ],
+              "has_details": true,
+              "name": "HYDROCAM_STABILIZATION_TIME_MS",
+              "initializer": "11",
+              "brief": "<a href=\"class_sensor.html#ad6822ad09fb64658c911ce86820db79c\" class=\"m-doc\">Sensor::<wbr />_stabilizationTime_ms</a>; the HydroCam is ready after a minimum of about 11ms after the end of the boot up message. Changing settings takes up to 7s. Running an autofocus takes about 25-30s.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__hydrocam.html",
+              "id": "gab9a1229291150474d5ee173278bf640d",
+              "include": [
+                "&lt;src/sensors/GeoluxHydroCam.h&gt;",
+                "_geolux_hydro_cam_8h.html"
+              ],
+              "has_details": true,
+              "name": "HYDROCAM_STABILIZATION_TIME_MAX",
+              "initializer": "16000L",
+              "brief": "The maximum time to wait for boot + settings.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__hydrocam.html",
+              "id": "ga362398b01269386dccf276973f540b94",
+              "include": [
+                "&lt;src/sensors/GeoluxHydroCam.h&gt;",
+                "_geolux_hydro_cam_8h.html"
+              ],
+              "has_details": true,
+              "name": "HYDROCAM_AUTOFOCUS_TIME_MS",
+              "initializer": "7250L",
+              "brief": "Minimum time to wait for an autofocus. Running an autofocus takes about 25-30s on firmwares &lt;2.0.1, but only ~7.5s on firmwares &gt;=2.0.1.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__hydrocam.html",
+              "id": "ga547793ceb4dccd4bfed9bfd4d08727df",
+              "include": [
+                "&lt;src/sensors/GeoluxHydroCam.h&gt;",
+                "_geolux_hydro_cam_8h.html"
+              ],
+              "has_details": true,
+              "name": "HYDROCAM_AUTOFOCUS_TIME_MAX",
+              "initializer": "35000L",
+              "brief": "The maximum time to wait for autofocus. This is combined with the stabilization time.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__hydrocam.html",
+              "id": "ga03a1c9e34c2b70aefd2575dfa2aada1d",
+              "include": [
+                "&lt;src/sensors/GeoluxHydroCam.h&gt;",
+                "_geolux_hydro_cam_8h.html"
+              ],
+              "has_details": true,
+              "name": "HYDROCAM_MEASUREMENT_TIME_MS",
+              "initializer": "3800L",
+              "brief": "<a href=\"class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba\" class=\"m-doc\">Sensor::<wbr />_measurementTime_ms</a>; the HydroCam imaging time is variable depending on the image size, but the typical minimum I&#x27;ve seen for the smallest image (160x120) is ~3.8s on firmware &gt;2.0.1. The largest image takes over 16s on firmwares &lt;2.0.1.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__hydrocam.html",
+              "id": "ga8e8d336f4909adb55c9f85f1e1b6d5b1",
+              "include": [
+                "&lt;src/sensors/GeoluxHydroCam.h&gt;",
+                "_geolux_hydro_cam_8h.html"
+              ],
+              "has_details": true,
+              "name": "HYDROCAM_MEASUREMENT_TIME_MAX",
+              "initializer": "18000L",
+              "brief": "The maximum time to wait for an image.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Image Size",
+        "id": "image-size",
+        "description": "<p><a name=\"sensor_hydrocam_image_size\"></a> The image size variable from a Geolux HydroCam</p><p>This variable represents the number of bytes transferred to the SD card, not necessarily (but hopefully) the size of the image as reported by the camera</p><p>{{ <a href=\"class_geolux_hydro_cam___image_size.html#aba36c34e5c8cf433fbe5fd841a2f5948\" class=\"m-doc\">GeoluxHydroCam_ImageSize::<wbr />GeoluxHydroCam_ImageSize</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__hydrocam.html",
+              "id": "ga7b5c3a466f28025488ced90c839dd621",
+              "include": [
+                "&lt;src/sensors/GeoluxHydroCam.h&gt;",
+                "_geolux_hydro_cam_8h.html"
+              ],
+              "has_details": true,
+              "name": "HYDROCAM_SIZE_RESOLUTION",
+              "initializer": "0",
+              "brief": "Decimals places in string representation; image size should have 0 - resolution is 1 byte.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__hydrocam.html",
+              "id": "ga66d138728a0da139765af074f9d2f5d0",
+              "include": [
+                "&lt;src/sensors/GeoluxHydroCam.h&gt;",
+                "_geolux_hydro_cam_8h.html"
+              ],
+              "has_details": true,
+              "name": "HYDROCAM_SIZE_VAR_NUM",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; image size is stored in sensorValues[0].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__hydrocam.html",
+              "id": "gaa3d6d924440c3f2ce8504d9fed0c423e",
+              "include": [
+                "&lt;src/sensors/GeoluxHydroCam.h&gt;",
+                "_geolux_hydro_cam_8h.html"
+              ],
+              "has_details": true,
+              "name": "HYDROCAM_SIZE_VAR_NAME",
+              "initializer": "\"imageSize\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;imageSize&quot;.",
+              "description": "<aside class=\"m-note m-dim\"><h4><a href=\"todo.html#_todo000019\" class=\"m-doc\">Todo</a></h4><p>Request a new variable name for image size.</p></aside>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__hydrocam.html",
+              "id": "ga8d964477b64790746129c9304f7b4be8",
+              "include": [
+                "&lt;src/sensors/GeoluxHydroCam.h&gt;",
+                "_geolux_hydro_cam_8h.html"
+              ],
+              "has_details": true,
+              "name": "HYDROCAM_SIZE_UNIT_NAME",
+              "initializer": "\"byte\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;byte&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__hydrocam.html",
+              "id": "ga60f0039eb56dde5d977fb1d2ead2b015",
+              "include": [
+                "&lt;src/sensors/GeoluxHydroCam.h&gt;",
+                "_geolux_hydro_cam_8h.html"
+              ],
+              "has_details": true,
+              "name": "HYDROCAM_SIZE_DEFAULT_CODE",
+              "initializer": "\"HydroCamImageSize\"",
+              "brief": "Default variable short code; &quot;HydroCamImageSize&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Byte Error",
+        "id": "byte-error",
+        "description": "<p><a name=\"sensor_hydrocam_byte_error\"></a> The byte error variable from a Geolux HydroCam</p><p>{{ <a href=\"class_geolux_hydro_cam___byte_error.html#af15248f298e5cba903238de7470b9ddf\" class=\"m-doc\">GeoluxHydroCam_ByteError::<wbr />GeoluxHydroCam_ByteError</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__hydrocam.html",
+              "id": "ga04869c5f8a7dc22c26bba129e53a64f5",
+              "include": [
+                "&lt;src/sensors/GeoluxHydroCam.h&gt;",
+                "_geolux_hydro_cam_8h.html"
+              ],
+              "has_details": true,
+              "name": "HYDROCAM_ERROR_RESOLUTION",
+              "initializer": "0",
+              "brief": "Decimals places in string representation; byte error should have 0 - resolution is 1 byte.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__hydrocam.html",
+              "id": "ga5684c5f05a4cd22fec821fcfae917336",
+              "include": [
+                "&lt;src/sensors/GeoluxHydroCam.h&gt;",
+                "_geolux_hydro_cam_8h.html"
+              ],
+              "has_details": true,
+              "name": "HYDROCAM_ERROR_VAR_NUM",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; byte error is stored in sensorValues[1].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__hydrocam.html",
+              "id": "gac59ac1b6b9813ab3408ab0780c2e1e41",
+              "include": [
+                "&lt;src/sensors/GeoluxHydroCam.h&gt;",
+                "_geolux_hydro_cam_8h.html"
+              ],
+              "has_details": true,
+              "name": "HYDROCAM_ERROR_VAR_NAME",
+              "initializer": "\"flashMemoryErrorCount\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;flashMemoryErrorCount&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__hydrocam.html",
+              "id": "gaf9862f671f9d35a229d4f725abdbca62",
+              "include": [
+                "&lt;src/sensors/GeoluxHydroCam.h&gt;",
+                "_geolux_hydro_cam_8h.html"
+              ],
+              "has_details": true,
+              "name": "HYDROCAM_ERROR_UNIT_NAME",
+              "initializer": "\"byte\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;byte&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__hydrocam.html",
+              "id": "gaed497557ae4eba5be33fe2ade126a425",
+              "include": [
+                "&lt;src/sensors/GeoluxHydroCam.h&gt;",
+                "_geolux_hydro_cam_8h.html"
+              ],
+              "has_details": true,
+              "name": "HYDROCAM_ERROR_DEFAULT_CODE",
+              "initializer": "\"HydroCamByteError\"",
+              "brief": "Default variable short code; &quot;HydroCamByteError&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "Geolux HydroCam",
+        "group__sensor__hydrocam.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Geolux HydroCam",
+        "group__sensor__hydrocam.html"
+      ]
+    ]
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "is_final": null,
+  "parent": "page_for_developers",
+  "parentGroup": null,
+  "id": "page_developer_setup",
+  "kind": "page",
+  "name": "Developer Setup",
+  "url": "page_developer_setup.html",
+  "brief": "",
+  "has_details": 8,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "Developer Setup"
+}

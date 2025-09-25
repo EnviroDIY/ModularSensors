@@ -1,0 +1,17 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "_digi_x_bee_l_t_e_bypass_8h",
+  "kind": "file",
+  "name": "DigiXBeeLTEBypass.h",
+  "url": "_digi_x_bee_l_t_e_bypass_8h.html",
+  "brief": "Contains the <a href=\"class_digi_x_bee_l_t_e_bypass.html\" class=\"m-doc\">DigiXBeeLTEBypass</a> subclass of the <a href=\"class_digi_x_bee.html\" class=\"m-doc\">DigiXBee</a> class for Digi Cellular XBee3&#x27;s based on u-blox SARA R410M chips and operated in bypass mode.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

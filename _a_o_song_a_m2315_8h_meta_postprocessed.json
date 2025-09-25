@@ -1,0 +1,23 @@
+{
+  "is_final": null,
+  "parent": "dir_7349e89ef19c117195f8e371603e1b1f",
+  "parentGroup": null,
+  "id": "_a_o_song_a_m2315_8h",
+  "kind": "file",
+  "name": "AOSongAM2315.h",
+  "url": "_a_o_song_a_m2315_8h.html",
+  "brief": "Contains the <a href=\"class_a_o_song_a_m2315.html\" class=\"m-doc\">AOSongAM2315</a> sensor subclass and the variable subclasses <a href=\"class_a_o_song_a_m2315___humidity.html\" class=\"m-doc\">AOSongAM2315_<wbr />Humidity</a> and <a href=\"class_a_o_song_a_m2315___temp.html\" class=\"m-doc\">AOSongAM2315_<wbr />Temp</a>.",
+  "has_details": true,
+  "children": [
+    "sensor-variable-counts",
+    "sensor-timing",
+    "humidity",
+    "temperature"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "AOSongAM2315.h"
+}

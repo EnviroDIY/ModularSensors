@@ -1,0 +1,33 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "group__sensor__cyclops",
+  "kind": "group",
+  "name": "Turner Cyclops-7F",
+  "url": "group__sensor__cyclops.html",
+  "brief": "",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [
+    "class_turner_cyclops",
+    "class_turner_cyclops___voltage",
+    "class_turner_cyclops___chlorophyll",
+    "class_turner_cyclops___rhodamine",
+    "class_turner_cyclops___fluorescein",
+    "class_turner_cyclops___phycocyanin",
+    "class_turner_cyclops___phycoerythrin",
+    "class_turner_cyclops___c_d_o_m",
+    "class_turner_cyclops___crude_oil",
+    "class_turner_cyclops___brighteners",
+    "class_turner_cyclops___turbidity",
+    "class_turner_cyclops___p_t_s_a",
+    "class_turner_cyclops___b_t_e_x",
+    "class_turner_cyclops___tryptophan",
+    "class_turner_cyclops___red_chlorophyll"
+  ],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

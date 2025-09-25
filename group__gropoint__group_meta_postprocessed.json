@@ -1,0 +1,22 @@
+{
+  "is_final": null,
+  "parent": "group__the__sensors",
+  "parentGroup": null,
+  "id": "group__gropoint__group",
+  "kind": "group",
+  "name": "GroPoint Sensors",
+  "url": "group__gropoint__group.html",
+  "brief": "",
+  "has_details": true,
+  "children": [
+    "group__sensor__gplp8"
+  ],
+  "childrenClasses": [
+    "class_gro_point_parent"
+  ],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "GroPoint Sensors"
+}

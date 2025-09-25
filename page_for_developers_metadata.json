@@ -1,0 +1,20 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "page_for_developers",
+  "kind": "page",
+  "name": "Help for Developers",
+  "url": "page_for_developers.html",
+  "brief": "",
+  "has_details": 3,
+  "children": [
+    "page_developer_setup",
+    "page_continuous_intetration"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

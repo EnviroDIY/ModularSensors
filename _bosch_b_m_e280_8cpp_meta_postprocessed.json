@@ -1,0 +1,18 @@
+{
+  "is_final": null,
+  "parent": "dir_7349e89ef19c117195f8e371603e1b1f",
+  "parentGroup": null,
+  "id": "_bosch_b_m_e280_8cpp",
+  "kind": "file",
+  "name": "BoschBME280.cpp",
+  "url": "_bosch_b_m_e280_8cpp.html",
+  "brief": "Implements the <a href=\"class_bosch_b_m_e280.html\" class=\"m-doc\">BoschBME280</a> class.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "BoschBME280.cpp"
+}

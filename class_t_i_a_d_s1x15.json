@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "class",
     "id": "class_t_i_a_d_s1x15",
@@ -12,7 +12,7 @@
     ],
     "has_template_details": false,
     "templates": null,
-    "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__ads1x15.html\" class=\"m-doc\">external votlage as measured by TI ADS1115 or ADS1015</a>.",
+    "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__ads1x15.html\" class=\"m-doc\">external voltage as measured by TI ADS1115 or ADS1015</a>.",
     "description": "",
     "sections": "",
     "deprecated": null,

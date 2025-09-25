@@ -1,0 +1,18 @@
+{
+  "is_final": null,
+  "parent": "dir_68267d1309a1af8e8297ef4c3efbcdba",
+  "parentGroup": null,
+  "id": "_variable_array_8h",
+  "kind": "file",
+  "name": "VariableArray.h",
+  "url": "_variable_array_8h.html",
+  "brief": "Contains the <a href=\"class_variable_array.html\" class=\"m-doc\">VariableArray</a> class.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "VariableArray.h"
+}

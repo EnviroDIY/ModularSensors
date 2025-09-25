@@ -1,0 +1,24 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "group__analog__group",
+  "kind": "group",
+  "name": "Analog Sensors via TI ADS1x15",
+  "url": "group__analog__group.html",
+  "brief": "",
+  "has_details": true,
+  "children": [
+    "group__sensor__alphasense__co2",
+    "group__sensor__sq212",
+    "group__sensor__obs3",
+    "group__sensor__ads1x15",
+    "group__sensor__cyclops",
+    "group__sensor__turbidity__plus"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

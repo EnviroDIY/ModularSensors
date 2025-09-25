@@ -1,0 +1,18 @@
+{
+  "is_final": null,
+  "parent": "page_faq",
+  "parentGroup": null,
+  "id": "page_processor_compatibility",
+  "kind": "page",
+  "name": "Processor Compatibility",
+  "url": "page_processor_compatibility.html",
+  "brief": "",
+  "has_details": 9,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "Processor Compatibility"
+}

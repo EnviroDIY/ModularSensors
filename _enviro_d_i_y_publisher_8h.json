@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "file",
     "id": "_enviro_d_i_y_publisher_8h",
@@ -10,7 +10,7 @@
     "has_template_details": false,
     "templates": null,
     "brief": "Contains the <a href=\"class_enviro_d_i_y_publisher.html\" class=\"m-doc\">EnviroDIYPublisher</a> subclass of <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> for publishing data to the Monitor My Watershed/EnviroDIY data portal at <a href=\"http://data.enviroDIY.org\">http:/<wbr />/<wbr />data.enviroDIY.org</a>.",
-    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside>",
+    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p><p>Thomas Watson <a href=\"mailto:twatson52@icloud.com\">twatson52@icloud.com</a></p></aside>",
     "sections": "",
     "deprecated": null,
     "since": null,
@@ -25,7 +25,7 @@
         "kind": "class",
         "url": "class_enviro_d_i_y_publisher.html",
         "name": "EnviroDIYPublisher",
-        "brief": "The <a href=\"class_enviro_d_i_y_publisher.html\" class=\"m-doc\">EnviroDIYPublisher</a> subclass of <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> for publishing data to the Monitor My Watershed/EnviroDIY data portal at <a href=\"http://data.enviroDIY.org\">http:/<wbr />/<wbr />data.enviroDIY.org</a>.",
+        "brief": "The <a href=\"class_enviro_d_i_y_publisher.html\" class=\"m-doc\">EnviroDIYPublisher</a> subclass of <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> for publishing data to the Monitor My Watershed/EnviroDIY data portal at <a href=\"https://monitormywatershed.org/\">https:/<wbr />/<wbr />monitormywatershed.org/<wbr /></a> (formerly at <a href=\"http://data.enviroDIY.org\">http:/<wbr />/<wbr />data.enviroDIY.org</a>).",
         "deprecated": null,
         "since": null,
         "templates": null

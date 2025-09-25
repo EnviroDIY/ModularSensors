@@ -1,0 +1,23 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "_campbell_o_b_s3_8h",
+  "kind": "file",
+  "name": "CampbellOBS3.h",
+  "url": "_campbell_o_b_s3_8h.html",
+  "brief": "Contains the <a href=\"class_campbell_o_b_s3.html\" class=\"m-doc\">CampbellOBS3</a> sensor subclass and the variable subclasses <a href=\"class_campbell_o_b_s3___turbidity.html\" class=\"m-doc\">CampbellOBS3_<wbr />Turbidity</a> and <a href=\"class_campbell_o_b_s3___voltage.html\" class=\"m-doc\">CampbellOBS3_<wbr />Voltage</a>.",
+  "has_details": true,
+  "children": [
+    "sensor-variable-counts",
+    "configuration-defines",
+    "sensor-timing",
+    "turbidity",
+    "voltage"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

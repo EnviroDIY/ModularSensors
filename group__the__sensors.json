@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "group",
     "id": "group__the__sensors",
@@ -20,6 +20,13 @@
       {
         "url": "group__sensor__analog__cond.html",
         "name": "Conductivity via Analog Electrical Resistance",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "group__sensor__anb__ph.html",
+        "name": "ANB pH Sensors",
         "brief": "",
         "deprecated": null,
         "since": null
@@ -69,6 +76,13 @@
       {
         "url": "group__sensor__mpl115a2.html",
         "name": "Freescale Semiconductor MPL115A2",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "group__sensor__hydrocam.html",
+        "name": "Geolux HydroCam",
         "brief": "",
         "deprecated": null,
         "since": null

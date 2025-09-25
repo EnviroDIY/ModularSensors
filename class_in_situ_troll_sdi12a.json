@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "class",
     "id": "class_in_situ_troll_sdi12a",
@@ -257,7 +257,7 @@
         "has_details": false,
         "type": "",
         "name": "~InSituTrollSdi12a",
-        "brief": "Destroy the ITROL object.",
+        "brief": "Destroy the ITROLL object.",
         "description": "",
         "return_value": null,
         "return_values": [],

@@ -1,0 +1,19 @@
+{
+  "is_final": false,
+  "parent": "class_atlas_parent",
+  "parentGroup": "group__sensor__atlas__ph",
+  "id": "class_atlas_scientificp_h",
+  "kind": "class",
+  "name": "AtlasScientificpH",
+  "url": "class_atlas_scientificp_h.html",
+  "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__atlas__ph.html\" class=\"m-doc\">Atlas Scientific pH sensor</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null,
+  "leaf_name": "AtlasScientificpH"
+}

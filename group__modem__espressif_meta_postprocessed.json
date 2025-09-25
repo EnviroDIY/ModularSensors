@@ -1,0 +1,23 @@
+{
+  "is_final": null,
+  "parent": "group__the__modems",
+  "parentGroup": null,
+  "id": "group__modem__espressif",
+  "kind": "group",
+  "name": "Espressif ESP8266, ESP32, and various ESP32 flavors",
+  "url": "group__modem__espressif.html",
+  "brief": "",
+  "has_details": true,
+  "children": [
+    "group__modem__esp32",
+    "group__modem__esp8266"
+  ],
+  "childrenClasses": [
+    "class_espressif"
+  ],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "Espressif ESP8266, ESP32, and various ESP32 flavors"
+}

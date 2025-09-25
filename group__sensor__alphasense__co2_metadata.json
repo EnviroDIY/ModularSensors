@@ -1,0 +1,21 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "group__sensor__alphasense__co2",
+  "kind": "group",
+  "name": "Alphasense IRC-A1 CO2",
+  "url": "group__sensor__alphasense__co2.html",
+  "brief": "",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [
+    "class_alphasense_c_o2",
+    "class_alphasense_c_o2___c_o2",
+    "class_alphasense_c_o2___voltage"
+  ],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

@@ -1,0 +1,18 @@
+{
+  "is_final": null,
+  "parent": "page_getting_started",
+  "parentGroup": null,
+  "id": "page_library_dependencies",
+  "kind": "page",
+  "name": "Library Dependencies",
+  "url": "page_library_dependencies.html",
+  "brief": "",
+  "has_details": 3,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "Library Dependencies"
+}

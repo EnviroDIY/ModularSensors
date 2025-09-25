@@ -1,0 +1,19 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "dir_1510bd745cd29c20d24c27171ebe5ba5",
+  "kind": "dir",
+  "name": "extras",
+  "url": "dir_1510bd745cd29c20d24c27171ebe5ba5.html",
+  "brief": "Contains extra sketches for testing and configuring new sensors.",
+  "has_details": true,
+  "children": [
+    "dir_33621a492d112d01d824a5de72c03dae"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

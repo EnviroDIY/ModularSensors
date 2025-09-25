@@ -1,0 +1,18 @@
+{
+  "is_final": false,
+  "parent": null,
+  "parentGroup": null,
+  "id": "class_modem___battery_state",
+  "kind": "class",
+  "name": "Modem_BatteryState",
+  "url": "class_modem___battery_state.html",
+  "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the battery charge state measured by a modem.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null
+}

@@ -1,0 +1,19 @@
+{
+  "is_final": false,
+  "parent": "class_variable",
+  "parentGroup": "group__sensor__am2315",
+  "id": "class_a_o_song_a_m2315___temp",
+  "kind": "class",
+  "name": "AOSongAM2315_Temp",
+  "url": "class_a_o_song_a_m2315___temp.html",
+  "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__am2315.html#sensor_am2315_temperature\" class=\"m-doc\">temperature output</a> from an <a href=\"group__sensor__am2315.html\" class=\"m-doc\">AOSong AM2315</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null,
+  "leaf_name": "AOSongAM2315_Temp"
+}

@@ -1,0 +1,23 @@
+{
+  "is_final": null,
+  "parent": "dir_7349e89ef19c117195f8e371603e1b1f",
+  "parentGroup": null,
+  "id": "_gro_point_g_p_l_p8_8h",
+  "kind": "file",
+  "name": "GroPointGPLP8.h",
+  "url": "_gro_point_g_p_l_p8_8h.html",
+  "brief": "Contains the <a href=\"class_gro_point_g_p_l_p8.html\" class=\"m-doc\">GroPointGPLP8</a> sensor subclass and the variable subclasses <a href=\"class_gro_point_g_p_l_p8___moist.html\" class=\"m-doc\">GroPointGPLP8_<wbr />Moist</a> and <a href=\"class_gro_point_g_p_l_p8___temp.html\" class=\"m-doc\">GroPointGPLP8_<wbr />Temp</a>.",
+  "has_details": true,
+  "children": [
+    "sensor-variable-counts",
+    "sensor-timing",
+    "moisture",
+    "temperature"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "GroPointGPLP8.h"
+}

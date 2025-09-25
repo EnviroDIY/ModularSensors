@@ -1,0 +1,1483 @@
+{
+  "version": "1.14.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__sensor__anb__ph",
+    "name": "ANB pH Sensors",
+    "url_base": "group__sensor__anb__ph",
+    "url": "group__sensor__anb__ph.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p>The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> and <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> classes for all ANB pH sensors.</p><p>This library currently supports all known <a href=\"https://www.anbsensors.com\">ANB Sensors</a> pH sensors.</p><p>The lower level details of the communication with the sensors is managed by the <a href=\"https://github.com/EnviroDIY/ANBSensorsModbus\">EnviroDIY ANBSensorsModbus library</a></p><section id=\"sensor_anb_ph_datasheet\"><h2>Sensor Datasheet</h2><ul><li><a href=\"https://www.anbsensors.com/wp-content/uploads/2025/08/AQ-Flyer-Aug25.pdf\">AQ5 and AQ50 Flyer</a></li><li><a href=\"https://www.anbsensors.com/newdocs/docs/intro/\">User Guide</a></li></ul></section><section id=\"sensor_anb_ph_power\"><h2>Power Requirements</h2><p>This sensor is a power hog. It draws ~90mA when measuring and ~60mA when idle. This doesn&#x27;t seem so bad, until you consider that the sensor could possibly take up to 4.25 <strong>minutes</strong> to take a sample after the first power on. For some ideas of how long your battery might last with this sensor, see the description of the battery housing on the <a href=\"https://www.anbsensors.com/products/\">product page</a>, which includes a chart.</p><p>Some recommendations:</p><ul><li>Get a beefy 12V battery and 18V solar panel - regardless of your measurement interval.</li><li>If you want measurements more often than every 5 minutes, leave the sensor always powered<ul><li>Size your battery and solar panel accordingly - it will be hungry!</li></ul></li><li>If you want measurements every 15 minutes or more, turn off power between readings and be aware that the time of the measurement will be offset from the time the logger woke or other sensors took measurements by the time it takes the pH sensor to warm up and take a reading.</li></ul></section><section id=\"sensor_anb_ph_ctor\"><h2>Sensor Constructor</h2><p>{{ <a href=\"class_a_n_bp_h.html#a5629ec136ed9fff6576c682a94c2f935\" class=\"m-doc\">ANBpH::<wbr />ANBpH</a> }}</p><hr/></section><section id=\"sensor_anb_ph_examples\"><h2>Example Code</h2><p>An ANB Sensors pH sensor is used in the <a href=\"example_menu.html#menu_walk_anb_ph\" class=\"m-doc\">menu a la carte</a> example.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;sensors/ANBpH.h&gt;</span></div>\n<div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span></div>\n<div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"c1\">// NOTE: Extra hardware and software serial ports are created in the &quot;Settings</span></div>\n<div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"c1\">// for Additional Serial Ports&quot; section</span></div>\n<div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span></div>\n<div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span><span class=\"c1\">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span></div>\n<div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"kr\">byte</span><span class=\"w\"> </span><span class=\"n\">anbModbusAddress</span><span class=\"w\"> </span><span class=\"o\">=</span></div>\n<div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span><span class=\"w\">    </span><span class=\"mh\">0x55</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// The modbus address of ANB pH Sensor (0x55 is the default)</span></div>\n<div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">anbPower</span><span class=\"w\">          </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">sensorPowerPin</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// ANB pH Sensor power pin</span></div>\n<div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">alAdapterPower</span><span class=\"w\">    </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">sensorPowerPin</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// RS485 adapter power pin</span></div>\n<div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">al485EnablePin</span><span class=\"w\">    </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">-1</span><span class=\"p\">;</span><span class=\"w\">              </span><span class=\"c1\">// Adapter RE/DE pin</span></div>\n<div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">uint8_t</span><span class=\"w\"> </span><span class=\"n\">anbNumberReadings</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">1</span><span class=\"p\">;</span></div>\n<div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span></div>\n<div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span><span class=\"c1\">// Create an ANB pH sensor object</span></div>\n<div class=\"line\"><a id=\"l-15\" name=\"l-15\"></a><span class=\"linenos\">15</span><span class=\"n\">ANBpH</span><span class=\"w\"> </span><span class=\"nf\">anbPH</span><span class=\"p\">(</span><span class=\"n\">anbModbusAddress</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">modbusSerial</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">anbPower</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">alAdapterPower</span><span class=\"p\">,</span></div>\n<div class=\"line\"><a id=\"l-16\" name=\"l-16\"></a><span class=\"linenos\">16</span><span class=\"w\">            </span><span class=\"n\">al485EnablePin</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">anbNumberReadings</span><span class=\"p\">);</span></div>\n<div class=\"line\"><a id=\"l-17\" name=\"l-17\"></a><span class=\"linenos\">17</span></div>\n<div class=\"line\"><a id=\"l-18\" name=\"l-18\"></a><span class=\"linenos\">18</span><span class=\"c1\">// Create all of the variable pointers for the ANB pH sensor</span></div>\n<div class=\"line\"><a id=\"l-19\" name=\"l-19\"></a><span class=\"linenos\">19</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">anbPHValue</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">ANBpH_pH</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">anbPH</span><span class=\"p\">,</span></div>\n<div class=\"line\"><a id=\"l-20\" name=\"l-20\"></a><span class=\"linenos\">20</span><span class=\"w\">                                    </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span></div>\n<div class=\"line\"><a id=\"l-21\" name=\"l-21\"></a><span class=\"linenos\">21</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">anbPHTemp</span><span class=\"w\">  </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">ANBpH_Temp</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">anbPH</span><span class=\"p\">,</span></div>\n<div class=\"line\"><a id=\"l-22\" name=\"l-22\"></a><span class=\"linenos\">22</span><span class=\"w\">                                      </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span></div>\n<div class=\"line\"><a id=\"l-23\" name=\"l-23\"></a><span class=\"linenos\">23</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">anbPHSal</span><span class=\"w\">   </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">ANBpH_Salinity</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">anbPH</span><span class=\"p\">,</span></div>\n<div class=\"line\"><a id=\"l-24\" name=\"l-24\"></a><span class=\"linenos\">24</span><span class=\"w\">                                          </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span></div>\n<div class=\"line\"><a id=\"l-25\" name=\"l-25\"></a><span class=\"linenos\">25</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">anbPHSpCond</span><span class=\"w\"> </span><span class=\"o\">=</span></div>\n<div class=\"line\"><a id=\"l-26\" name=\"l-26\"></a><span class=\"linenos\">26</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">ANBpH_SpCond</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">anbPH</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span></div>\n<div class=\"line\"><a id=\"l-27\" name=\"l-27\"></a><span class=\"linenos\">27</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">anbPHEC</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">ANBpH_EC</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">anbPH</span><span class=\"p\">,</span></div>\n<div class=\"line\"><a id=\"l-28\" name=\"l-28\"></a><span class=\"linenos\">28</span><span class=\"w\">                                 </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span></div>\n<div class=\"line\"><a id=\"l-29\" name=\"l-29\"></a><span class=\"linenos\">29</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">anbPHHealth</span><span class=\"w\"> </span><span class=\"o\">=</span></div>\n<div class=\"line\"><a id=\"l-30\" name=\"l-30\"></a><span class=\"linenos\">30</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">ANBpH_HealthCode</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">anbPH</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span></div>\n<div class=\"line\"><a id=\"l-31\" name=\"l-31\"></a><span class=\"linenos\">31</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">anbPHDiagnostic</span><span class=\"w\"> </span><span class=\"o\">=</span></div>\n<div class=\"line\"><a id=\"l-32\" name=\"l-32\"></a><span class=\"linenos\">32</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">ANBpH_DiagnosticCode</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">anbPH</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span></div>\n<div class=\"line\"><a id=\"l-33\" name=\"l-33\"></a><span class=\"linenos\">33</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">anbPHStatus</span><span class=\"w\"> </span><span class=\"o\">=</span></div>\n<div class=\"line\"><a id=\"l-34\" name=\"l-34\"></a><span class=\"linenos\">34</span><span class=\"w\">    </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">ANBpH_StatusCode</span><span class=\"p\">(</span><span class=\"o\">&amp;</span><span class=\"n\">anbPH</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div></div></div></section>",
+    "sections": [
+      [
+        "sensor_anb_ph_datasheet",
+        "Sensor Datasheet",
+        []
+      ],
+      [
+        "sensor_anb_ph_power",
+        "Power Requirements",
+        []
+      ],
+      [
+        "sensor_anb_ph_ctor",
+        "Sensor Constructor",
+        []
+      ],
+      [
+        "sensor_anb_ph_examples",
+        "Example Code",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_a_n_bp_h.html",
+        "name": "ANBpH",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB pH sensors</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_a_n_bp_h__p_h.html",
+        "name": "ANBpH_pH",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__anb__ph.html#sensor_anb_ph_ph\" class=\"m-doc\">pH</a> from an <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB Sensors pH sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_a_n_bp_h___temp.html",
+        "name": "ANBpH_Temp",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__anb__ph.html#sensor_anb_ph_temp\" class=\"m-doc\">temperature output</a> from a <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB Sensors pH sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_a_n_bp_h___salinity.html",
+        "name": "ANBpH_Salinity",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__anb__ph.html#sensor_anb_ph_salinity\" class=\"m-doc\">salinity output</a> from an <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB Sensors pH sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_a_n_bp_h___sp_cond.html",
+        "name": "ANBpH_SpCond",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__anb__ph.html#sensor_anb_ph_spcond\" class=\"m-doc\">specific conductance output</a> from a <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB Sensors pH sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_a_n_bp_h___e_c.html",
+        "name": "ANBpH_EC",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__anb__ph.html#sensor_anb_ph_raw_cond\" class=\"m-doc\">raw electrical conductivity output</a> from an <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB Sensors pH sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_a_n_bp_h___health_code.html",
+        "name": "ANBpH_HealthCode",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__anb__ph.html#sensor_anb_ph_health\" class=\"m-doc\">health code output</a> from a an <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB Sensors pH sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_a_n_bp_h___diagnostic_code.html",
+        "name": "ANBpH_DiagnosticCode",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__anb__ph.html#sensor_anb_ph_diagnostics\" class=\"m-doc\">diagnostic code output</a> from a an <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB Sensors pH sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_a_n_bp_h___status_code.html",
+        "name": "ANBpH_StatusCode",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__anb__ph.html#sensor_anb_ph_status\" class=\"m-doc\">status code output</a> from a an <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB Sensors pH sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [
+      {
+        "base_url": "group__sensor__anb__ph.html",
+        "id": "ga6f5ca022f34345146deffbcc4dc967df",
+        "include": [
+          "&lt;src/sensors/ANBpH.h&gt;",
+          "_a_n_bp_h_8h.html"
+        ],
+        "has_details": true,
+        "name": "ANB_PH_MINIMUM_REQUEST_SPACING",
+        "initializer": "250",
+        "brief": "The minimum spacing between requesting responses from the sensor.",
+        "description": "<p>This is used to prevent flooding the sensor with requests.</p>",
+        "return_value": null,
+        "deprecated": null,
+        "since": null,
+        "has_param_details": false,
+        "params": null
+      }
+    ],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Sensor Variable Counts",
+        "id": "sensor-variable-counts",
+        "description": "<p><a name=\"sensor_anb_ph_var_counts\"></a> The number of variables that can be returned by an ANB Sensors pH sensor</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "gad780435c12357c59845390623fab84a6",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_NUM_VARIABLES",
+              "initializer": "8",
+              "brief": "<a href=\"class_sensor.html#af26786329fd01b44cf31410d046fc8f3\" class=\"m-doc\">Sensor::<wbr />_numReturnedValues</a>; an ANB Sensors pH sensor can report 8 values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "gac80e2c88833e513b3ca11d8b21274e97",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_INC_CALC_VARIABLES",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html#a2f3f93a9205efb134cef1216d65077d2\" class=\"m-doc\">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Sensor Timing",
+        "id": "sensor-timing",
+        "description": "<p><a name=\"sensor_anb_ph_timing\"></a> The sensor timing for an ANB Sensors pH sensor</p><p>The ANB pH sensor takes &gt;3 minutes to complete the first sample after being turned on, but ~6s to complete a subsequent measurement when in continuous power and continuous sampling mode. If the immersion sensor is enabled and a measurement is requested while the sensor is not immersed, the failure response can return in &lt;4 seconds.</p><p>More information on the timing can be found in the [sensor output section of the ANB Sensors User Guide](<a href=\"https://www.anbsensors.com/newdocs/docs/sensor-output\">https:/<wbr />/<wbr />www.anbsensors.com/<wbr />newdocs/<wbr />docs/<wbr />sensor-output</a>)</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga46c573ebd78315d8d56b9339a65c7a21",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_WARM_UP_TIME_MS",
+              "initializer": "5400L",
+              "brief": "<a href=\"class_sensor.html#aaaefd7f306f86382a3dac726531756b4\" class=\"m-doc\">Sensor::<wbr />_warmUpTime_ms</a>; time before sensor responds after power - roughly 5.3 - 5.6 seconds.",
+              "description": "<p>This is the time for communication to begin.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga0ef1ad3cc7a9fbc237fc23bbfe045e7f",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_WARM_UP_TIME_MAX",
+              "initializer": "10000L",
+              "brief": "The maximum time to wait for a modbus response.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga939f77a6072fc4599db79e6a4d2b89da",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_STABILIZATION_TIME_MS",
+              "initializer": "50",
+              "brief": "<a href=\"class_sensor.html#ad6822ad09fb64658c911ce86820db79c\" class=\"m-doc\">Sensor::<wbr />_stabilizationTime_ms</a>; the ANB pH sensor does not need to stabilize, but we use this time as the check for ready time.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "gaaae60649b74beb1362b9d936fcc0b3e2",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_STABILIZATION_TIME_MAX",
+              "initializer": "5000L",
+              "brief": "The maximum time to wait for ready to measure.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga971ba933278b6c3e497d721e3ea63ff1",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_2ND_IMMERSION_ERROR",
+              "initializer": "4000L",
+              "brief": "The minimum time before a failure response is returned on the 2nd or subsequent value when the immersion sensor is not immersed. This is a guess based on testing.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga9b6f9be1a3a04000f75af99376342e18",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_2ND_IMMERSION_ERROR_MAX",
+              "initializer": "12000L",
+              "brief": "The minimum time before a failure response is returned on the 2nd or subsequent value when the immersion sensor is not immersed. This is a guess based on testing.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga0cd08073a9053b0365516e25a96c7cab",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_2ND_VALUE_HIGH_SALT",
+              "initializer": "5000L",
+              "brief": "The minimum time for the 2nd or subsequent values in high salinity (documented new output time of 10.5s)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "gaa1ba80ccc20f4004b0862c1d0a64beef",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_2ND_VALUE_HIGH_SALT_MAX",
+              "initializer": "15000L",
+              "brief": "The maximum time for the 2nd or subsequent values in high salinity.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "gaedf86774604f6d732e08aeff43735747",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_2ND_VALUE_LOW_SALT",
+              "initializer": "6000L",
+              "brief": "The minimum time for the 2nd or subsequent values in low salinity (documented new output time of 14s).",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga630aa1c9144ba4cff6816854a31a065a",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_2ND_VALUE_LOW_SALT_MAX",
+              "initializer": "18000L",
+              "brief": "The maximum time for the 2nd or subsequent values in low salinity (documented new output time of 14s).",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga3ac3c80f5aa170bf5fc8e57beb288605",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_1ST_IMMERSION_ERROR",
+              "initializer": "6000L",
+              "brief": "The minimum time before a failure response is returned on the first measurement when the immersion sensor is not immersed. This is a guess based on testing.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga98084fcd1304f53d2f18aace565596b9",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_1ST_IMMERSION_ERROR_MAX",
+              "initializer": "12000L",
+              "brief": "The maximum time before a failure response is returned on the first measurement when the immersion sensor is not immersed. This is a guess based on testing.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga1bfed6646729bd3f70518b37d58c0adc",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_1ST_VALUE_HIGH_SALT",
+              "initializer": "120000L",
+              "brief": "The minimum time for the first value in high salinity (documented min time of 129s - 9s).",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga0c2994a49b71f80b0103d0de41fce72f",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_1ST_VALUE_HIGH_SALT_MAX",
+              "initializer": "248000L",
+              "brief": "The maximum time for the first value in high salinity (documented max time of 238s for a long interval delay + 10s).",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga8e0273a5ac89e28eb0e0d5e224a1060c",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_1ST_VALUE_LOW_SALT",
+              "initializer": "155000L",
+              "brief": "The minimum time for the first value in low salinity (documented min time is 184s, but I got responses at 160s).",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga2a9117b7689324f9c73e59e4ab2a7f18",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_1ST_VALUE_LOW_SALT_MAX",
+              "initializer": "265000L",
+              "brief": "The maximum time for the first value in low salinity (documented max time of 255s for a long interval delay + 10s).",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "pH",
+        "id": "ph",
+        "description": "<p><a name=\"sensor_anb_ph_ph\"></a> The pH variable from an ANB Sensors pH sensor</p><ul><li>Range is 0 to 14 pH</li><li>Accuracy is \u00b1 0.1 pH in low salinity water, \u00b1 0.2 pH in high salinity water</li></ul><aside class=\"m-note m-info\"><h4>Note</h4><p>If the pH output is 99.99, check the transducer health code for instruction.</p></aside><p>{{ <a href=\"class_a_n_bp_h__p_h.html#a9fe07d6fca6d11b1311dee6b7332871b\" class=\"m-doc\">ANBpH_pH::<wbr />ANBpH_pH</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga16c558531742b2b23955a85212cc1bc3",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_PH_RESOLUTION",
+              "initializer": "2",
+              "brief": "Decimals places in string representation; soil moisture should have 1.",
+              "description": "<ul><li>resolution is 0.01.</li></ul>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "gae1a16b7786dc0c789f0f1450c51c53b9",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_PH_VAR_NUM",
+              "initializer": "0",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; pH is stored in sensorValues[0].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga2bf7ec4c03966a36062eee65374430e2",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_PH_VAR_NAME",
+              "initializer": "\"pH\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga53e1b60732a3e4c0a41345d7be76addf",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_PH_UNIT_NAME",
+              "initializer": "\"pH\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga41e237cccbc8bf502629ad0a1f4c829b",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_PH_DEFAULT_CODE",
+              "initializer": "\"ANBpHpH\"",
+              "brief": "Default variable short code; &quot;ANBpHpH&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Temperature",
+        "id": "temperature",
+        "description": "<p><a name=\"sensor_anb_ph_temp\"></a> The temperature variable from an ANB Sensors pH sensor</p><ul><li>Range is -5\u00b0C to +40\u00b0C</li></ul><p>{{ <a href=\"class_a_n_bp_h___temp.html#ab3b74fb2298ba6d54a23eb25a511c11e\" class=\"m-doc\">ANBpH_Temp::<wbr />ANBpH_Temp</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga19a5a8045903be6c09e75f4f3a2ea062",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_TEMP_RESOLUTION",
+              "initializer": "2",
+              "brief": "Decimals places in string representation; temperature should have 1 - resolution is 0.01\u00b0C.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga2ccea8c0ab1943df9245376df0d56346",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_TEMP_VAR_NUM",
+              "initializer": "1",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; temperature is stored in sensorValues[1].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "gabf92eba45f36cfe36411af84ce2ddd8f",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_TEMP_VAR_NAME",
+              "initializer": "\"temperature\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;temperature&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga3c842265a1b6f9fbc128cc56539379aa",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_TEMP_UNIT_NAME",
+              "initializer": "\"degreeCelsius\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;degreeCelsius&quot; (\u00b0C)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "gaebcb40776cb0a7caa8b359c103a1f179",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_TEMP_DEFAULT_CODE",
+              "initializer": "\"ANBpHTemp\"",
+              "brief": "Default variable short code; &quot;ANBpHTemp&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Salinity",
+        "id": "salinity",
+        "description": "<p><a name=\"sensor_anb_ph_salinity\"></a> The salinity variable from an ANB pH sensor</p><aside class=\"m-note m-info\"><h4>Note</h4><p>If the salinity output is 99.99 but the pH output is OK, the salinity is out of range.</p><ul><li>Try changing your salinity setting</li><li>If expected salinity is &gt; 7ppt no salinity output is given</li></ul><p>If both the pH and salinity output is 99.99, check the transducer health code for instruction.</p></aside><p>{{ <a href=\"class_a_n_bp_h___salinity.html#a2f51a929e0d0751e9d7d2749851ca9a2\" class=\"m-doc\">ANBpH_Salinity::<wbr />ANBpH_Salinity</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga5561330a8e059689a467b1108eabe9f9",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_SALINITY_RESOLUTION",
+              "initializer": "2",
+              "brief": "Decimals places in string representation; salinity should have 2.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga19258c309055471edf6d6db29c035f64",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_SALINITY_VAR_NUM",
+              "initializer": "2",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; salinity is stored in sensorValues[2].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga5a02b014be07e9129402843ce6515b2e",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_SALINITY_VAR_NAME",
+              "initializer": "\"salinity\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;salinity&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "gab0f0634301d871c6a8ccb0d901377c5f",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_SALINITY_UNIT_NAME",
+              "initializer": "\"partPerThousand\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;partPerThousand&quot; (ppt or ppth)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "gaf4c9aeb94c5000fe56293d237fb79dfd",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_SALINITY_DEFAULT_CODE",
+              "initializer": "\"ANBpHSalinity\"",
+              "brief": "Default variable short code; &quot;ANBpHSalinity&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Specific Conductivity",
+        "id": "specific-conductivity",
+        "description": "<p><a name=\"sensor_anb_ph_spcond\"></a> The specific conductance variable from an ANB pH sensor</p><aside class=\"m-note m-info\"><h4>Note</h4><p>The ANB pH sensor reports specific conductance in mS/cm not \u00b5S/cm.</p><p>If the specific conductance output is 99.99 but the pH output is OK, the salinity is out of range.</p><ul><li>Try changing your salinity setting</li><li>If expected salinity is &gt; 7ppt no salinity output is given</li></ul><p>If both the pH and specific conductance output is 99.99, check the transducer health code for instruction.</p></aside><p>{{ <a href=\"class_a_n_bp_h___sp_cond.html#afd98609c3542f247fb50a300b84838a6\" class=\"m-doc\">ANBpH_SpCond::<wbr />ANBpH_SpCond</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga0611983f21cc6bd903f9e4d070ed019b",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_SPCOND_RESOLUTION",
+              "initializer": "2",
+              "brief": "Decimals places in string representation; specific conductance should have 2.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga923566fc44417fabe3b4dcf9c3ace099",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_SPCOND_VAR_NUM",
+              "initializer": "3",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; specific conductance is stored in sensorValues[3].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga6384116005dbe1b313043067fca512d9",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_SPCOND_VAR_NAME",
+              "initializer": "\"specificConductance\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;specificConductance&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "gaee114b547a9cdfba24cc48fd2ca90c9d",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_SPCOND_UNIT_NAME",
+              "initializer": "\"millisiemenPerCentimeter\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;millisiemenPerCentimeter&quot; (mS/cm)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga2b8d8ddf2a744f4d2cc5ee8890f4c9f1",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_SPCOND_DEFAULT_CODE",
+              "initializer": "\"ANBpHSpCond\"",
+              "brief": "Default variable short code; &quot;ANBpHSpCond&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Electrical Conductivity",
+        "id": "electrical-conductivity",
+        "description": "<p><a name=\"sensor_anb_ph_raw_cond\"></a> The raw electrical conductivity variable from an ANB pH sensor</p><aside class=\"m-note m-info\"><h4>Note</h4><p>In their documentation ANB Sensors refers to this as &quot;actual\nconductivity.&quot;</p><p>If the raw conductivity output is 99.99 but the pH output is OK, the salinity is out of range.</p><ul><li>Try changing your salinity setting</li><li>If expected salinity is &gt; 7ppt no salinity output is given</li></ul><p>If both the pH and raw conductivity output is 99.99, check the transducer health code for instruction.</p></aside><p>{{ <a href=\"class_a_n_bp_h___e_c.html#aea8e22e17efb88ff653beeb066e3a06f\" class=\"m-doc\">ANBpH_EC::<wbr />ANBpH_EC</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "gaa531725d6ef171ca678d54c54f12c510",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_EC_RESOLUTION",
+              "initializer": "3",
+              "brief": "Decimals places in string representation; raw electrical conductivity should have 2.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga64674df837cec3bac94a0ba94807d3ac",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_EC_VAR_NUM",
+              "initializer": "4",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; conductivity is stored in sensorValues[4].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga87dfc0d814fbcdfcb6d2631eb268d2e5",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_EC_VAR_NAME",
+              "initializer": "\"electricalConductivity\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;electricalConductivity&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga862ab1e532f6c7af861a354e7520af3c",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_EC_UNIT_NAME",
+              "initializer": "\"millisiemenPerCentimeter\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;millisiemenPerCentimeter&quot; (mS/cm)",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga8747376c5617a97c1b66cca408d78fab",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_EC_DEFAULT_CODE",
+              "initializer": "\"ANBpHEC\"",
+              "brief": "Default variable short code; &quot;ANBpHEC&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Transducer Health Code",
+        "id": "transducer-health-code",
+        "description": "<p><a name=\"sensor_anb_ph_health\"></a> The health code variable from a ANB Sensors pH sensor</p><p>These codes indicate the health status of the sensor&#x27;s transducer.</p><table class=\"m-table m-fullwidth m-flat\"><thead><tr><th>ANBHealthCode</th><th>Value</th><th>Explanation</th><th>Action</th></tr></thead><tbody><tr><td>OK</td><td>0</td><td>Healthy Transducer</td><td>No action required</td></tr><tr><td>ABRADE_SOON</td><td>1</td><td>Transducer will need abrading soon</td><td>- Ensure salinity setting is correct<br />- Abrade the transducer based on scanning profile and access frequency;<br />if accessed daily, wait until the health number reaches 2 before abrading,<br />otherwise, abrade now for sensors not accessed for weeks/months</td></tr><tr><td>ABRADE_NOW</td><td>2</td><td>Transducer needs abrading now</td><td>- Ensure salinity setting is correct<br />- Abrade the transducer</td></tr><tr><td>REPLACE</td><td>3</td><td>Transducer needs replacing</td><td>- Ensure salinity setting is correct<br />- Replace the transducer (or transducer not immersed for sensors with serial numbers less than 300200)</td></tr><tr><td>NOT_IMMERSED</td><td>4</td><td>Transducer is not immersed</td><td>Immerse the sensor</td></tr><tr><td>NO_REFERENCE</td><td>5</td><td>No valid reference tracker measurement</td><td>Please wait for the next measurement</td></tr><tr><td>NO_PH</td><td>6</td><td>No valid pH measurement</td><td>Please wait for the next measurement</td></tr><tr><td>UNKNOWN</td><td>255</td><td>Unknown status</td><td>Reconnect with the sensor</td></tr></tbody></table><p><a href=\"https://www.anbsensors.com/newdocs/docs/sensor-output#transducer-health\">Transducer health details can be found here.</a></p><p><a href=\"https://www.anbsensors.com/newdocs/docs/transducer-maintenance/\">Detailed maintenance guidelines including how to abrade the sensor can be found here.</a></p><p>{{ <a href=\"class_a_n_bp_h___health_code.html#a6d3f07ae43e51d465f83bb509193fcc3\" class=\"m-doc\">ANBpH_HealthCode::<wbr />ANBpH_HealthCode</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "gab7d3f6be17493e614f1c50efd8029d4a",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_HEALTH_CODE_RESOLUTION",
+              "initializer": "0",
+              "brief": "Decimals places in string representation; the health code has 0.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "gac6b1abe5718da3b96b6e7e403a76fabc",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_HEALTH_CODE_VAR_NUM",
+              "initializer": "5",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; health code is stored in sensorValues[4].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga847240fb2d0cf8fd1bd1dcf74e340b28",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_HEALTH_CODE_VAR_NAME",
+              "initializer": "\"instrumentStatusCode\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;instrumentStatusCode&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga9094029fe184907737764f620f8f6b9e",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_HEALTH_CODE_UNIT_NAME",
+              "initializer": "\"dimensionless\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;dimensionless&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga222e9220c197439815cc2e5f59295741",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_HEALTH_CODE_DEFAULT_CODE",
+              "initializer": "\"ANBpHHealth\"",
+              "brief": "Default variable short code; &quot;ANBpHHealth&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Diagnostics Code",
+        "id": "diagnostics-code",
+        "description": "<p><a name=\"sensor_anb_ph_diagnostics\"></a> The diagnostics code variable from a ANB Sensors pH sensor</p><table class=\"m-table m-fullwidth m-flat\"><thead><tr><th>ANBDiagnosticCode</th><th>Value</th><th>Explanation</th><th>Action</th></tr></thead><tbody><tr><td>OK</td><td>0</td><td>Healthy <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a></td><td>None</td></tr><tr><td>BATTERY_ERROR</td><td>1</td><td>Clock Battery Error</td><td>If there is no external power to the sensor the real time clock will not hold the programmed time<br />- If the sensor is powered, the time set and data streamed, this failure is not an issue<br />- If the sensor is in autonomous mode the clock will fail if disconnected from the power when it was programmed and placed on an external battery<br />-Users can record when the sensor was first switched on (where the sensor&#x27;s time will be set to 0) and calculate the times externally, or, if this is not viable, contact <a href=\"mailto:support@anbsensors.com\">support@anbsensors.com</a></td></tr><tr><td>SD_ERROR</td><td>2</td><td>SD Card Error</td><td>Either SD Card has been disabled or<br />A failing in the internal data save has occurred and no new data can be saved to the internal memory<br />- If the sensor is connected to an external communications system the sensor will continue to stream data, however no data will be saved in autonomous mode<br />- Please contact <a href=\"mailto:support@anbsensors.com\">support@anbsensors.com</a></td></tr><tr><td>SYSTEM_ERROR</td><td>3</td><td>System Error</td><td>Contact <a href=\"mailto:support@anbsensors.com\">support@anbsensors.com</a></td></tr><tr><td>UNKNOWN</td><td>255</td><td>Unknown status</td><td>Reconnect with the sensor</td></tr></tbody></table><p><a href=\"https://www.anbsensors.com/newdocs/docs/sensor-output#sensor-diagnostics\">Sensor diagnostic output details can be found here.</a></p><p>{{ <a href=\"class_a_n_bp_h___diagnostic_code.html#ab387bd5f2704b19784ed4b022ed7c8ae\" class=\"m-doc\">ANBpH_DiagnosticCode::<wbr />ANBpH_DiagnosticCode</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "gaf9cadd0e0a520010c1b3016dc62952e8",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_DIAGNOSTIC_CODE_RESOLUTION",
+              "initializer": "0",
+              "brief": "Decimals places in string representation; the diagnostic code has 0.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga06f4a073fc525896afdfeb32418de46b",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_DIAGNOSTIC_CODE_VAR_NUM",
+              "initializer": "6",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; diagnostic code is stored in sensorValues[4].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga2d9c449a49620a4fd62f341dc5552a63",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_DIAGNOSTIC_CODE_VAR_NAME",
+              "initializer": "\"instrumentStatusCode\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;instrumentStatusCode&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "gaed2dfd4be3bfb2b3c9258331cfdeedd7",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_DIAGNOSTIC_CODE_UNIT_NAME",
+              "initializer": "\"dimensionless\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;dimensionless&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "gadfbf88530884c4c690e76da220c7c998",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_DIAGNOSTIC_CODE_DEFAULT_CODE",
+              "initializer": "\"ANBpHDiagnostic\"",
+              "brief": "Default variable short code; &quot;ANBpHDiagnostic&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      },
+      {
+        "name": "Status Code",
+        "id": "status-code",
+        "description": "<p><a name=\"sensor_anb_ph_status\"></a> The status code variable from a ANB Sensors pH sensor</p><p>These codes indicate the current operational status of the sensor.</p><table class=\"m-table m-fullwidth m-flat\"><thead><tr><th>ANBStatusCode</th><th>Value</th><th>Explanation</th></tr></thead><tbody><tr><td>SLEEPING</td><td>0</td><td><a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> is idle and/or following its pre-set interval routine</td></tr><tr><td>INTERVAL_SCANNING</td><td>1</td><td>pH will be updated when measurement completes</td></tr><tr><td>CONTINUOUS_SCANNING</td><td>2</td><td>pH will be automatically updated as per our continuous sequence</td></tr><tr><td>UNKNOWN</td><td>255</td><td>Unknown status; no response from the sensor</td></tr></tbody></table><p><a href=\"https://www.anbsensors.com/newdocs/docs/modbus#sensor-diagnostics\">Sensor status code documentation is available here.</a></p><p>{{ <a href=\"class_a_n_bp_h___status_code.html#a2177b7c87500a97fc4dfe494135c903f\" class=\"m-doc\">ANBpH_StatusCode::<wbr />ANBpH_StatusCode</a> }}</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga14e9ef636c1841b897435cb874a8c8c5",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_STATUS_CODE_RESOLUTION",
+              "initializer": "0",
+              "brief": "Decimals places in string representation; the error code has 0.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga7ad937f6c7fb40033c06d000d5e3d207",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_STATUS_CODE_VAR_NUM",
+              "initializer": "7",
+              "brief": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> variable number; error code is stored in sensorValues[4].",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga58d5ee011cb07fe871cc83d227015598",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_STATUS_CODE_VAR_NAME",
+              "initializer": "\"instrumentStatusCode\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> name in <a href=\"http://vocabulary.odm2.org/variablename/\">ODM2 controlled vocabulary</a>; &quot;instrumentStatusCode&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "gad745d51b4600ff11fdd5853daf5fa32c",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_STATUS_CODE_UNIT_NAME",
+              "initializer": "\"dimensionless\"",
+              "brief": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a> unit name in <a href=\"http://vocabulary.odm2.org/units/\">ODM2 controlled vocabulary</a>; &quot;dimensionless&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__sensor__anb__ph.html",
+              "id": "ga32636de068fe05a857f38bcca435ece3",
+              "include": [
+                "&lt;src/sensors/ANBpH.h&gt;",
+                "_a_n_bp_h_8h.html"
+              ],
+              "has_details": true,
+              "name": "ANB_PH_STATUS_CODE_DEFAULT_CODE",
+              "initializer": "\"ANBpHStatus\"",
+              "brief": "Default variable short code; &quot;ANBpHStatus&quot;.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Sensors",
+        "group__the__sensors.html"
+      ],
+      [
+        "ANB pH Sensors",
+        "group__sensor__anb__ph.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "ANB pH Sensors",
+        "group__sensor__anb__ph.html"
+      ]
+    ]
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "is_final": false,
+  "parent": null,
+  "parentGroup": null,
+  "id": "class_yosemitech_y560___n_h4___n",
+  "kind": "class",
+  "name": "YosemitechY560_NH4_N",
+  "url": "class_yosemitech_y560___n_h4___n.html",
+  "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__y560.html#sensor_y560_nh4\" class=\"m-doc\">NH4_<wbr />N output</a> from a <a href=\"group__sensor__y560.html\" class=\"m-doc\">Yosemitech Y560-Ammonium sensor</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null
+}

@@ -1,0 +1,18 @@
+{
+  "is_final": null,
+  "parent": "dir_d28a4824dc47e487b107a5db32ef43c4",
+  "parentGroup": null,
+  "id": "dir_f36f488b5c2052dce48b4c71fbc05991",
+  "kind": "dir",
+  "name": "examples/menu_a_la_carte",
+  "url": "dir_f36f488b5c2052dce48b4c71fbc05991.html",
+  "brief": "",
+  "has_details": false,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "menu_a_la_carte"
+}

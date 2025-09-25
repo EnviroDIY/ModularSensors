@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "file",
     "id": "_maxim_d_s18_8h",
@@ -10,7 +10,7 @@
     "has_template_details": false,
     "templates": null,
     "brief": "Contains the <a href=\"class_maxim_d_s18.html\" class=\"m-doc\">MaximDS18</a> sensor subclass and the <a href=\"class_maxim_d_s18___temp.html\" class=\"m-doc\">MaximDS18_<wbr />Temp</a> variable subclass.",
-    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside><p>These are for the Maxim DS18B20, DS18S20, MAX31820, DS1822, and DS1820 vtemperature sensors.</p><p>This depends on Dallas Temperature library, which itself is dependent on the OneWire library.</p>",
+    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside><p>These are for the Maxim DS18B20, DS18S20, MAX31820, DS1822, and DS1820 temperature sensors.</p><p>This depends on Dallas Temperature library, which itself is dependent on the OneWire library.</p>",
     "sections": "",
     "deprecated": null,
     "since": null,

@@ -1,0 +1,19 @@
+{
+  "is_final": false,
+  "parent": "class_variable",
+  "parentGroup": "group__sensor__acculevel",
+  "id": "class_keller_acculevel___height",
+  "kind": "class",
+  "name": "KellerAcculevel_Height",
+  "url": "class_keller_acculevel___height.html",
+  "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__acculevel.html#sensor_acculevel_height\" class=\"m-doc\">gauge height (water level with regard to an arbitrary gage datum) output</a> from a <a href=\"group__sensor__acculevel.html\" class=\"m-doc\">Keller Acculevel</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null,
+  "leaf_name": "KellerAcculevel_Height"
+}

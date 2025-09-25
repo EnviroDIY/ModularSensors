@@ -1,0 +1,22 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "_yosemitech_y520_8h",
+  "kind": "file",
+  "name": "YosemitechY520.h",
+  "url": "_yosemitech_y520_8h.html",
+  "brief": "Contains the <a href=\"class_yosemitech_y520.html\" class=\"m-doc\">YosemitechY520</a> sensor subclass and the variable subclasses <a href=\"class_yosemitech_y520___cond.html\" class=\"m-doc\">YosemitechY520_<wbr />Cond</a> and <a href=\"class_yosemitech_y520___temp.html\" class=\"m-doc\">YosemitechY520_<wbr />Temp</a>.",
+  "has_details": true,
+  "children": [
+    "sensor-variable-counts",
+    "sensor-timing",
+    "conductivity",
+    "temperature"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

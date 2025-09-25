@@ -1,0 +1,17 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "_mod_sensor_config_8h",
+  "kind": "file",
+  "name": "ModSensorConfig.h",
+  "url": "_mod_sensor_config_8h.html",
+  "brief": "This file is used to configure the clock and other library settings/preferences for the Modular Sensors Library.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

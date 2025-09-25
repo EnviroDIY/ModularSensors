@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "file",
     "id": "_sensor_base_8h",
@@ -37,23 +37,7 @@
     "typedefs": [],
     "funcs": [],
     "vars": [],
-    "defines": [
-      {
-        "base_url": "_sensor_base_8h.html",
-        "id": "a489012644f58dc86180ebb32d7891600",
-        "include": null,
-        "has_details": false,
-        "name": "MAX_NUMBER_VARS",
-        "initializer": "21",
-        "brief": "The largest number of variables from a single sensor.",
-        "description": "",
-        "return_value": null,
-        "deprecated": null,
-        "since": null,
-        "has_param_details": false,
-        "params": null
-      }
-    ],
+    "defines": [],
     "public_types": [],
     "public_static_funcs": [],
     "typeless_funcs": [],

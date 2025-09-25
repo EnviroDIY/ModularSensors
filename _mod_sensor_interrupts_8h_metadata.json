@@ -1,0 +1,17 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "_mod_sensor_interrupts_8h",
+  "kind": "file",
+  "name": "ModSensorInterrupts.h",
+  "url": "_mod_sensor_interrupts_8h.html",
+  "brief": "A work-around for the AVR interrupt library not supporting SAMD boards. That libary isn&#x27;t necessary for them.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

@@ -1,0 +1,18 @@
+{
+  "is_final": null,
+  "parent": "dir_d60b8e8795161a141bba4403c07b6046",
+  "parentGroup": null,
+  "id": "_espressif_8cpp",
+  "kind": "file",
+  "name": "Espressif.cpp",
+  "url": "_espressif_8cpp.html",
+  "brief": "Implements the <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a> class.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "Espressif.cpp"
+}

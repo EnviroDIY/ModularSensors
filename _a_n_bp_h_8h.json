@@ -1,0 +1,158 @@
+{
+  "version": "1.14.0",
+  "compound": {
+    "kind": "file",
+    "id": "_a_n_bp_h_8h",
+    "name": "ANBpH.h",
+    "url_base": "_a_n_bp_h_8h",
+    "url": "_a_n_bp_h_8h.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "Contains the <a href=\"class_a_n_bp_h.html\" class=\"m-doc\">ANBpH</a> sensor subclass for all ANB Sensors pH sensors and the variable subclasses <a href=\"class_a_n_bp_h__p_h.html\" class=\"m-doc\">ANBpH_<wbr />pH</a>, <a href=\"class_a_n_bp_h___temp.html\" class=\"m-doc\">ANBpH_<wbr />Temp</a>, <a href=\"class_a_n_bp_h___salinity.html\" class=\"m-doc\">ANBpH_<wbr />Salinity</a>, <a href=\"class_a_n_bp_h___sp_cond.html\" class=\"m-doc\">ANBpH_<wbr />SpCond</a> and <a href=\"class_a_n_bp_h___e_c.html\" class=\"m-doc\">ANBpH_<wbr />EC</a>.",
+    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside><p>Documentation for the ANB Sensors Modbus Protocol commands and responses, along with information about the various variables, can be found in the EnviroDIY ANB Sensors library at: <a href=\"https://github.com/EnviroDIY/ANBSensorsModbus\">https:/<wbr />/<wbr />github.com/<wbr />EnviroDIY/<wbr />ANBSensorsModbus</a></p>",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_a_n_bp_h.html",
+        "name": "ANBpH",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB pH sensors</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_a_n_bp_h__p_h.html",
+        "name": "ANBpH_pH",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__anb__ph.html#sensor_anb_ph_ph\" class=\"m-doc\">pH</a> from an <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB Sensors pH sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_a_n_bp_h___temp.html",
+        "name": "ANBpH_Temp",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__anb__ph.html#sensor_anb_ph_temp\" class=\"m-doc\">temperature output</a> from a <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB Sensors pH sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_a_n_bp_h___salinity.html",
+        "name": "ANBpH_Salinity",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__anb__ph.html#sensor_anb_ph_salinity\" class=\"m-doc\">salinity output</a> from an <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB Sensors pH sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_a_n_bp_h___sp_cond.html",
+        "name": "ANBpH_SpCond",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__anb__ph.html#sensor_anb_ph_spcond\" class=\"m-doc\">specific conductance output</a> from a <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB Sensors pH sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_a_n_bp_h___e_c.html",
+        "name": "ANBpH_EC",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__anb__ph.html#sensor_anb_ph_raw_cond\" class=\"m-doc\">raw electrical conductivity output</a> from an <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB Sensors pH sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_a_n_bp_h___health_code.html",
+        "name": "ANBpH_HealthCode",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__anb__ph.html#sensor_anb_ph_health\" class=\"m-doc\">health code output</a> from a an <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB Sensors pH sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_a_n_bp_h___diagnostic_code.html",
+        "name": "ANBpH_DiagnosticCode",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__anb__ph.html#sensor_anb_ph_diagnostics\" class=\"m-doc\">diagnostic code output</a> from a an <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB Sensors pH sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_a_n_bp_h___status_code.html",
+        "name": "ANBpH_StatusCode",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__anb__ph.html#sensor_anb_ph_status\" class=\"m-doc\">status code output</a> from a an <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB Sensors pH sensor</a>.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "src",
+        "dir_68267d1309a1af8e8297ef4c3efbcdba.html"
+      ],
+      [
+        "sensors",
+        "dir_7349e89ef19c117195f8e371603e1b1f.html"
+      ],
+      [
+        "ANBpH.h",
+        "_a_n_bp_h_8h.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "ANBpH.h",
+        "_a_n_bp_h_8h.html"
+      ]
+    ]
+  }
+}

@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "dir",
     "id": "dir_d28a4824dc47e487b107a5db32ef43c4",
@@ -17,7 +17,113 @@
     "example_navigation": null,
     "footer_navigation": null,
     "topics": [],
-    "dirs": [],
+    "dirs": [
+      {
+        "url": "dir_1da665868b00a08760245263764589dd.html",
+        "name": "AWS_IoT_Core",
+        "brief": "Contains the AWS_IoT_Core example.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "dir_559fd0b69d19314f6899905aab4d528d.html",
+        "name": "baro_rho_correction",
+        "brief": "Contains the baro_rho_correction example.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "dir_c4053f8fd4b5ada20952740a20c79977.html",
+        "name": "data_saving",
+        "brief": "Contains the data_saving example.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "dir_8bd528b2245da02a4aa0d16357e044ed.html",
+        "name": "double_logger",
+        "brief": "Contains the double_logger example.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "dir_326967dfeb1e67b32ef68fed2c0e0820.html",
+        "name": "DRWI_2G",
+        "brief": "Contains the DRWI_2G example.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "dir_8c83b04f7c9bd03d0ea6355c3dd775f4.html",
+        "name": "DRWI_DigiLTE",
+        "brief": "Contains the DRWI_DigiLTE example.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "dir_18c8977bcc782aa64a524338d76aa995.html",
+        "name": "DRWI_Mayfly1",
+        "brief": "Contains the DRWI_Mayfly1 example.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "dir_c9cb08a8346f1cf2f1e5adf5f90706d3.html",
+        "name": "DRWI_Mayfly1_WiFi",
+        "brief": "Contains the DRWI_Mayfly1_WiFi example.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "dir_445b65392178fa7863d0c6d77e63d5bc.html",
+        "name": "DRWI_NoCellular",
+        "brief": "Contains the DRWI_NoCellular example.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "dir_ec086e34cdc148a395b8cab3ef455ef7.html",
+        "name": "DRWI_SIM7080LTE",
+        "brief": "Contains the DRWI_SIM7080LTE example.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "dir_8252dda727501a4b719d627f9b569c5e.html",
+        "name": "logging_to_MMW",
+        "brief": "Contains the logging_to_MMW example.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "dir_1d3d7a4b63fe8a5aa5cb3b2b861f4900.html",
+        "name": "logging_to_ThingSpeak",
+        "brief": "Contains the logging_to_ThingSpeak example.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "dir_b0a167a91af7ff36804e5b492334c798.html",
+        "name": "simple_logging",
+        "brief": "Contains the simple_logging example.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "dir_1f0d976cf68efe45ecce86c6e39bb57d.html",
+        "name": "simple_logging_LearnEnviroDIY",
+        "brief": "Contains the simple_logging_LearnEnviroDIY example.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "dir_7630917be59102bd05d24d147bcb3aa4.html",
+        "name": "single_sensor",
+        "brief": "Contains the single_sensor example.",
+        "deprecated": null,
+        "since": null
+      }
+    ],
     "files": [],
     "namespaces": [],
     "classes": [],

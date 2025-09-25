@@ -1,0 +1,18 @@
+{
+  "is_final": false,
+  "parent": null,
+  "parentGroup": null,
+  "id": "class_t_i_a_d_s1x15",
+  "kind": "class",
+  "name": "TIADS1x15",
+  "url": "class_t_i_a_d_s1x15.html",
+  "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__ads1x15.html\" class=\"m-doc\">external voltage as measured by TI ADS1115 or ADS1015</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null
+}

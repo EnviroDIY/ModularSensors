@@ -1,0 +1,22 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "_t_i_a_d_s1x15_8h",
+  "kind": "file",
+  "name": "TIADS1x15.h",
+  "url": "_t_i_a_d_s1x15_8h.html",
+  "brief": "This file contains the <a href=\"class_t_i_a_d_s1x15.html\" class=\"m-doc\">TIADS1x15</a> sensor subclass and the <a href=\"class_t_i_a_d_s1x15___voltage.html\" class=\"m-doc\">TIADS1x15_<wbr />Voltage</a> variable subclass.",
+  "has_details": true,
+  "children": [
+    "sensor-variable-counts",
+    "configuration-defines",
+    "sensor-timing",
+    "voltage"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

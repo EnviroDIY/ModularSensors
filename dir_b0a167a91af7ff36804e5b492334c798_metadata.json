@@ -1,0 +1,17 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "dir_b0a167a91af7ff36804e5b492334c798",
+  "kind": "dir",
+  "name": "examples/simple_logging",
+  "url": "dir_b0a167a91af7ff36804e5b492334c798.html",
+  "brief": "Contains the simple_logging example.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

@@ -1,0 +1,18 @@
+{
+  "is_final": null,
+  "parent": "dir_d60b8e8795161a141bba4403c07b6046",
+  "parentGroup": null,
+  "id": "_espressif_e_s_p32_8h",
+  "kind": "file",
+  "name": "EspressifESP32.h",
+  "url": "_espressif_e_s_p32_8h.html",
+  "brief": "Contains the <a href=\"class_espressif_e_s_p32.html\" class=\"m-doc\">EspressifESP32</a> subclass of <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> which <em>SHOULD</em> work for essentially any breakout or variant of the ESP32 wifi/bluetooth chip that has been flashed with <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a>&#x27;s AT command firmware.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "EspressifESP32.h"
+}

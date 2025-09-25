@@ -1,0 +1,19 @@
+{
+  "is_final": false,
+  "parent": "class_variable",
+  "parentGroup": "group__sensor__atlas__orp",
+  "id": "class_atlas_scientific_o_r_p___potential",
+  "kind": "class",
+  "name": "AtlasScientificORP_Potential",
+  "url": "class_atlas_scientific_o_r_p___potential.html",
+  "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__atlas__orp.html#sensor_atlas_orp_orp\" class=\"m-doc\">oxidation/reduction potential output</a> from an <a href=\"group__sensor__atlas__orp.html\" class=\"m-doc\">Atlas Scientific EZO-ORP circuit</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null,
+  "leaf_name": "AtlasScientificORP_Potential"
+}

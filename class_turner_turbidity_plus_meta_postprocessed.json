@@ -1,0 +1,19 @@
+{
+  "is_final": false,
+  "parent": "class_sensor",
+  "parentGroup": "group__sensor__turbidity__plus",
+  "id": "class_turner_turbidity_plus",
+  "kind": "class",
+  "name": "TurnerTurbidityPlus",
+  "url": "class_turner_turbidity_plus.html",
+  "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__turbidity__plus.html\" class=\"m-doc\">Turner Turbidity Plus turbidity</a>sensor&quot;.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null,
+  "leaf_name": "TurnerTurbidityPlus"
+}

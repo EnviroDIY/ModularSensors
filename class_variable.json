@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "class",
     "id": "class_variable",
@@ -26,6 +26,94 @@
     "classes": [],
     "base_classes": [],
     "derived_classes": [
+      {
+        "kind": "class",
+        "url": "class_a_n_bp_h___diagnostic_code.html",
+        "name": "ANBpH_DiagnosticCode",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__anb__ph.html#sensor_anb_ph_diagnostics\" class=\"m-doc\">diagnostic code output</a> from a an <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB Sensors pH sensor</a>.",
+        "templates": null,
+        "deprecated": null,
+        "since": null,
+        "is_virtual": false,
+        "is_final": false
+      },
+      {
+        "kind": "class",
+        "url": "class_a_n_bp_h___e_c.html",
+        "name": "ANBpH_EC",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__anb__ph.html#sensor_anb_ph_raw_cond\" class=\"m-doc\">raw electrical conductivity output</a> from an <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB Sensors pH sensor</a>.",
+        "templates": null,
+        "deprecated": null,
+        "since": null,
+        "is_virtual": false,
+        "is_final": false
+      },
+      {
+        "kind": "class",
+        "url": "class_a_n_bp_h___health_code.html",
+        "name": "ANBpH_HealthCode",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__anb__ph.html#sensor_anb_ph_health\" class=\"m-doc\">health code output</a> from a an <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB Sensors pH sensor</a>.",
+        "templates": null,
+        "deprecated": null,
+        "since": null,
+        "is_virtual": false,
+        "is_final": false
+      },
+      {
+        "kind": "class",
+        "url": "class_a_n_bp_h___salinity.html",
+        "name": "ANBpH_Salinity",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__anb__ph.html#sensor_anb_ph_salinity\" class=\"m-doc\">salinity output</a> from an <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB Sensors pH sensor</a>.",
+        "templates": null,
+        "deprecated": null,
+        "since": null,
+        "is_virtual": false,
+        "is_final": false
+      },
+      {
+        "kind": "class",
+        "url": "class_a_n_bp_h___sp_cond.html",
+        "name": "ANBpH_SpCond",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__anb__ph.html#sensor_anb_ph_spcond\" class=\"m-doc\">specific conductance output</a> from a <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB Sensors pH sensor</a>.",
+        "templates": null,
+        "deprecated": null,
+        "since": null,
+        "is_virtual": false,
+        "is_final": false
+      },
+      {
+        "kind": "class",
+        "url": "class_a_n_bp_h___status_code.html",
+        "name": "ANBpH_StatusCode",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__anb__ph.html#sensor_anb_ph_status\" class=\"m-doc\">status code output</a> from a an <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB Sensors pH sensor</a>.",
+        "templates": null,
+        "deprecated": null,
+        "since": null,
+        "is_virtual": false,
+        "is_final": false
+      },
+      {
+        "kind": "class",
+        "url": "class_a_n_bp_h___temp.html",
+        "name": "ANBpH_Temp",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__anb__ph.html#sensor_anb_ph_temp\" class=\"m-doc\">temperature output</a> from a <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB Sensors pH sensor</a>.",
+        "templates": null,
+        "deprecated": null,
+        "since": null,
+        "is_virtual": false,
+        "is_final": false
+      },
+      {
+        "kind": "class",
+        "url": "class_a_n_bp_h__p_h.html",
+        "name": "ANBpH_pH",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__anb__ph.html#sensor_anb_ph_ph\" class=\"m-doc\">pH</a> from an <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB Sensors pH sensor</a>.",
+        "templates": null,
+        "deprecated": null,
+        "since": null,
+        "is_virtual": false,
+        "is_final": false
+      },
       {
         "kind": "class",
         "url": "class_a_o_song_a_m2315___humidity.html",
@@ -578,6 +666,28 @@
       },
       {
         "kind": "class",
+        "url": "class_geolux_hydro_cam___byte_error.html",
+        "name": "GeoluxHydroCam_ByteError",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__hydrocam.html#sensor_hydrocam_byte_error\" class=\"m-doc\">byte error output</a> from a <a href=\"group__sensor__hydrocam.html\" class=\"m-doc\">Geolux HydroCam camera</a>.",
+        "templates": null,
+        "deprecated": null,
+        "since": null,
+        "is_virtual": false,
+        "is_final": false
+      },
+      {
+        "kind": "class",
+        "url": "class_geolux_hydro_cam___image_size.html",
+        "name": "GeoluxHydroCam_ImageSize",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__hydrocam.html#sensor_hydrocam_image_size\" class=\"m-doc\">image size output</a> from a <a href=\"group__sensor__hydrocam.html\" class=\"m-doc\">Geolux HydroCam camera</a>.",
+        "templates": null,
+        "deprecated": null,
+        "since": null,
+        "is_virtual": false,
+        "is_final": false
+      },
+      {
+        "kind": "class",
         "url": "class_gro_point_g_p_l_p8___moist.html",
         "name": "GroPointGPLP8_Moist",
         "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__gplp8.html#sensor_gplp8_moist\" class=\"m-doc\">soil moisture output</a> from a <a href=\"group__sensor__gplp8.html\" class=\"m-doc\">GroPoint Profile GPLP8 probe</a>.",
@@ -966,6 +1076,17 @@
         "url": "class_processor_stats___free_ram.html",
         "name": "ProcessorStats_FreeRam",
         "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__processor.html#sensor_processor_ram\" class=\"m-doc\">free RAM</a> measured by the MCU.",
+        "templates": null,
+        "deprecated": null,
+        "since": null,
+        "is_virtual": false,
+        "is_final": false
+      },
+      {
+        "kind": "class",
+        "url": "class_processor_stats___reset_code.html",
+        "name": "ProcessorStats_ResetCode",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__processor.html#sensor_processor_reset\" class=\"m-doc\">reset cause</a> recorded by the MCU.",
         "templates": null,
         "deprecated": null,
         "since": null,
@@ -1731,13 +1852,13 @@
     "typeless_funcs": [
       {
         "base_url": "class_variable.html",
-        "id": "aeb3bfd6481c087b181b25a354871e6ee",
+        "id": "a9d497cf831b0e172b80a0ebd651dc71d",
         "include": null,
         "has_details": true,
         "type": "",
         "name": "Variable",
         "brief": "Construct a new <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> objectfor a measured variable - that is, one whose values are updated by a sensor.",
-        "description": "<aside class=\"m-note m-info\"><h4>Note</h4><p>This constructor is NOT inteneded to be used outside of this libraries. It is intended to be used internally with sensors defined in this library.</p></aside>",
+        "description": "<aside class=\"m-note m-info\"><h4>Note</h4><p>This constructor is NOT intended to be used outside of this libraries. It is intended to be used internally with sensors defined in this library.</p></aside>",
         "return_value": null,
         "return_values": [],
         "exceptions": [],
@@ -1774,8 +1895,8 @@
           },
           {
             "name": "sensorVarNum",
-            "type": "const uint8_t",
-            "type_name": "const uint8_t sensorVarNum",
+            "type": "uint8_t",
+            "type_name": "uint8_t sensorVarNum",
             "default": null,
             "description": "The position in the sensor&#x27;s value array of this variable&#x27;s value.",
             "direction": ""
@@ -1824,13 +1945,13 @@
       },
       {
         "base_url": "class_variable.html",
-        "id": "ae1c2dace55e6c3f4b349a4b46951dd68",
+        "id": "a4f7a66cd8c66d87eaaf7f01c2532e903",
         "include": null,
         "has_details": true,
         "type": "",
         "name": "Variable",
-        "brief": "Construct a new <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> objectfor a measured variable - that is, one whose values are updated by a sensor - but do not tie it to a specific sensor.",
-        "description": "<aside class=\"m-note m-info\"><h4>Note</h4><p>This constructor is NOT inteneded to be used outside of this libraries. It is intended to be used internally with sensors defined in this library.</p></aside>",
+        "brief": "Construct a new <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> object for a measured variable - that is, one whose values are updated by a sensor - but do not tie it to a specific sensor.",
+        "description": "<aside class=\"m-note m-info\"><h4>Note</h4><p>This constructor is NOT intended to be used outside of this libraries. It is intended to be used internally with sensors defined in this library.</p></aside>",
         "return_value": null,
         "return_values": [],
         "exceptions": [],
@@ -1859,8 +1980,8 @@
         "params": [
           {
             "name": "sensorVarNum",
-            "type": "const uint8_t",
-            "type_name": "const uint8_t sensorVarNum",
+            "type": "uint8_t",
+            "type_name": "uint8_t sensorVarNum",
             "default": null,
             "description": "The position in the sensor&#x27;s value array of this variable&#x27;s value.",
             "direction": ""
@@ -1907,7 +2028,7 @@
         "type": "",
         "name": "Variable",
         "brief": "Construct a new <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> object for a calculated variable - that is, one whose value is calculated by the calcFxn which returns a float.",
-        "description": "",
+        "description": "<aside class=\"m-note m-danger\"><h4>Warning</h4><p>The <code>calcFxn</code> absolutely must return a float value. If it returns a value of any other type (ie, some type of integer), your program will compile but immediately hang.</p></aside>",
         "return_value": null,
         "return_values": [],
         "exceptions": [],
@@ -1992,7 +2113,7 @@
         "type": "",
         "name": "Variable",
         "brief": "Construct a new <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> object for a calculated variable - that is, one whose value is calculated by the calcFxn which returns a float.",
-        "description": "",
+        "description": "<aside class=\"m-note m-danger\"><h4>Warning</h4><p>The <code>calcFxn</code> absolutely must return a float value. If it returns a value of any other type (ie, some type of integer), your program will compile but immediately hang.</p></aside>",
         "return_value": null,
         "return_values": [],
         "exceptions": [],
@@ -2175,7 +2296,7 @@
             "type": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a>*",
             "type_name": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a>* parentSense",
             "default": null,
-            "description": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> object supplying values. Supercedes any <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> supplied in the constructor.",
+            "description": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> object supplying values. Supersedes any <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> supplied in the constructor.",
             "direction": ""
           },
           {
@@ -2183,7 +2304,7 @@
             "type": "const char*",
             "type_name": "const char* uuid",
             "default": null,
-            "description": "A universally unique identifier for the variable. Supercedes any value supplied in the constructor.",
+            "description": "A universally unique identifier for the variable. Supersedes any value supplied in the constructor.",
             "direction": ""
           },
           {
@@ -2191,7 +2312,7 @@
             "type": "const char*",
             "type_name": "const char* customVarCode",
             "default": null,
-            "description": "A custom code for the variable. Supercedes any value supplied in the constructor.",
+            "description": "A custom code for the variable. Supersedes any value supplied in the constructor.",
             "direction": ""
           }
         ]
@@ -2236,7 +2357,7 @@
             "type": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a>*",
             "type_name": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a>* parentSense",
             "default": null,
-            "description": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> object supplying values. Supercedes any <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> supplied in the constructor.",
+            "description": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> object supplying values. Supersedes any <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> supplied in the constructor.",
             "direction": ""
           },
           {
@@ -2244,7 +2365,7 @@
             "type": "const char*",
             "type_name": "const char* uuid",
             "default": null,
-            "description": "A universally unique identifier for the variable. Supercedes any value supplied in the constructor.",
+            "description": "A universally unique identifier for the variable. Supersedes any value supplied in the constructor.",
             "direction": ""
           }
         ]
@@ -2289,7 +2410,7 @@
             "type": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a>*",
             "type_name": "<a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a>* parentSense",
             "default": null,
-            "description": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> object supplying values. Supercedes any <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> supplied in the constructor.",
+            "description": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> object supplying values. Supersedes any <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> supplied in the constructor.",
             "direction": ""
           }
         ]
@@ -2302,7 +2423,7 @@
         "type": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a>*",
         "name": "begin",
         "brief": "Begin for the <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> object.",
-        "description": "",
+        "description": "<aside class=\"m-note m-danger\"><h4>Warning</h4><p>The <code>calcFxn</code> absolutely must return a float value. If it returns a value of any other type (ie, some type of integer), your program will compile but immediately hang.</p></aside>",
         "return_value": "A pointer to the variable object",
         "return_values": [],
         "exceptions": [],
@@ -2334,7 +2455,7 @@
             "type": "float(*)()",
             "type_name": "float(*)() calcFxn",
             "default": null,
-            "description": "Any function returning a float value. Supercedes any function supplied in the constructor.",
+            "description": "Any function returning a float value. Supersedes any function supplied in the constructor.",
             "direction": ""
           },
           {
@@ -2342,7 +2463,7 @@
             "type": "uint8_t",
             "type_name": "uint8_t decimalResolution",
             "default": null,
-            "description": "The resolution (in decimal places) of the value. Supercedes any value supplied in the constructor.",
+            "description": "The resolution (in decimal places) of the value. Supersedes any value supplied in the constructor.",
             "direction": ""
           },
           {
@@ -2350,7 +2471,7 @@
             "type": "const char*",
             "type_name": "const char* varName",
             "default": null,
-            "description": "The name of the variable per the ODM2 variable name controlled vocabulary. Supercedes any value supplied in the constructor.",
+            "description": "The name of the variable per the ODM2 variable name controlled vocabulary. Supersedes any value supplied in the constructor.",
             "direction": ""
           },
           {
@@ -2358,7 +2479,7 @@
             "type": "const char*",
             "type_name": "const char* varUnit",
             "default": null,
-            "description": "The unit of the variable per the ODM2 unit controlled vocabulary. Supercedes any value supplied in the constructor.",
+            "description": "The unit of the variable per the ODM2 unit controlled vocabulary. Supersedes any value supplied in the constructor.",
             "direction": ""
           },
           {
@@ -2366,7 +2487,7 @@
             "type": "const char*",
             "type_name": "const char* varCode",
             "default": null,
-            "description": "A custom code for the variable. Supercedes any value supplied in the constructor.",
+            "description": "A custom code for the variable. Supersedes any value supplied in the constructor.",
             "direction": ""
           },
           {
@@ -2374,7 +2495,7 @@
             "type": "const char*",
             "type_name": "const char* uuid",
             "default": null,
-            "description": "A universally unique identifier for the variable. Supercedes any value supplied in the constructor.",
+            "description": "A universally unique identifier for the variable. Supersedes any value supplied in the constructor.",
             "direction": ""
           }
         ]
@@ -2387,7 +2508,7 @@
         "type": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a>*",
         "name": "begin",
         "brief": "Begin for the <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> object.",
-        "description": "",
+        "description": "<aside class=\"m-note m-danger\"><h4>Warning</h4><p>The <code>calcFxn</code> absolutely must return a float value. If it returns a value of any other type (ie, some type of integer), your program will compile but immediately hang.</p></aside>",
         "return_value": "A pointer to the variable object",
         "return_values": [],
         "exceptions": [],
@@ -2419,7 +2540,7 @@
             "type": "float(*)()",
             "type_name": "float(*)() calcFxn",
             "default": null,
-            "description": "Any function returning a float value. Supercedes any function supplied in the constructor.",
+            "description": "Any function returning a float value. Supersedes any function supplied in the constructor.",
             "direction": ""
           },
           {
@@ -2427,7 +2548,7 @@
             "type": "uint8_t",
             "type_name": "uint8_t decimalResolution",
             "default": null,
-            "description": "The resolution (in decimal places) of the value. Supercedes any value supplied in the constructor.",
+            "description": "The resolution (in decimal places) of the value. Supersedes any value supplied in the constructor.",
             "direction": ""
           },
           {
@@ -2435,7 +2556,7 @@
             "type": "const char*",
             "type_name": "const char* varName",
             "default": null,
-            "description": "The name of the variable per the ODM2 variable name controlled vocabulary. Supercedes any value supplied in the constructor.",
+            "description": "The name of the variable per the ODM2 variable name controlled vocabulary. Supersedes any value supplied in the constructor.",
             "direction": ""
           },
           {
@@ -2443,7 +2564,7 @@
             "type": "const char*",
             "type_name": "const char* varUnit",
             "default": null,
-            "description": "The unit of the variable per the ODM2 unit controlled vocabulary. Supercedes any value supplied in the constructor.",
+            "description": "The unit of the variable per the ODM2 unit controlled vocabulary. Supersedes any value supplied in the constructor.",
             "direction": ""
           },
           {
@@ -2451,7 +2572,7 @@
             "type": "const char*",
             "type_name": "const char* varCode",
             "default": null,
-            "description": "A custom code for the variable. Supercedes any value supplied in the constructor.",
+            "description": "A custom code for the variable. Supersedes any value supplied in the constructor.",
             "direction": ""
           }
         ]
@@ -2508,7 +2629,7 @@
         "has_details": true,
         "type": "void",
         "name": "onSensorUpdate",
-        "brief": "Updates the interally stored data value.",
+        "brief": "Updates the internally stored data value.",
         "description": "<p>This is the function called by the parent sensor&#x27;s notifyVariables function</p><aside class=\"m-note m-info\"><h4>Note</h4><p>This should never be called for a calculated variable.</p></aside>",
         "return_value": null,
         "return_values": [],
@@ -2600,7 +2721,7 @@
         "name": "getParentSensorNameAndLocation",
         "brief": "Get the parent sensor name and location, if applicable.",
         "description": "<p>This is a helper needed for dealing with variables in arrays</p>",
-        "return_value": "The parent sensor&#x27;s concatentated name and location.",
+        "return_value": "The parent sensor&#x27;s concatenated name and location.",
         "return_values": [],
         "exceptions": [],
         "deprecated": null,
@@ -2643,7 +2764,7 @@
         "has_details": true,
         "type": "void",
         "name": "setCalculation",
-        "brief": "Set the calculation function for a calculted variable.",
+        "brief": "Set the calculation function for a calculated variable.",
         "description": "",
         "return_value": null,
         "return_values": [],
@@ -3043,10 +3164,55 @@
       },
       {
         "base_url": "class_variable.html",
-        "id": "a6e58b13fa6fa8ad50ccb56ff5dfb54dc",
+        "id": "a9c2a7ec287a9e7e08ad1587275ea5f46",
         "include": null,
         "has_details": true,
         "type": "String",
+        "name": "getVarUUIDString",
+        "brief": "Get the customized code for the variable.",
+        "description": "",
+        "return_value": "The customized code for the variable",
+        "return_values": [],
+        "exceptions": [],
+        "deprecated": null,
+        "since": null,
+        "is_constexpr": false,
+        "is_consteval": false,
+        "is_explicit": false,
+        "is_virtual": false,
+        "prefix": "",
+        "is_defaulted": false,
+        "is_deleted": false,
+        "is_pure_virtual": false,
+        "is_final": false,
+        "is_override": false,
+        "is_noexcept": false,
+        "is_conditional_noexcept": false,
+        "suffix": "",
+        "is_protected": false,
+        "is_private": false,
+        "is_signal": false,
+        "is_slot": false,
+        "has_template_details": false,
+        "templates": null,
+        "has_param_details": false,
+        "params": [
+          {
+            "name": "",
+            "type": "void",
+            "type_name": "void",
+            "default": null,
+            "description": "",
+            "direction": ""
+          }
+        ]
+      },
+      {
+        "base_url": "class_variable.html",
+        "id": "a98c35f78b7ad96d93ae2a2547faedf7e",
+        "include": null,
+        "has_details": true,
+        "type": "const char*",
         "name": "getVarUUID",
         "brief": "Get the customized code for the variable.",
         "description": "",
@@ -3216,7 +3382,7 @@
             "type": "bool",
             "type_name": "bool updateValue",
             "default": "false",
-            "description": "True to ask the parent sensor to measure and return a new value. Default is false.",
+            "description": "True to ask the parent sensor to take a measurement and return a new value or to re-run the calculation function for a calculated value. Default is false.",
             "direction": ""
           }
         ]
@@ -3261,7 +3427,7 @@
             "type": "bool",
             "type_name": "bool updateValue",
             "default": "false",
-            "description": "True to ask the parent sensor to measure and return a new value. Default is false.",
+            "description": "True to ask the parent sensor to take a measurement and return a new value or to re-run the calculation function for a calculated value. Default is false.",
             "direction": ""
           }
         ]

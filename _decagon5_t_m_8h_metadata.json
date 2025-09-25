@@ -1,0 +1,23 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "_decagon5_t_m_8h",
+  "kind": "file",
+  "name": "Decagon5TM.h",
+  "url": "_decagon5_t_m_8h.html",
+  "brief": "Contains the <a href=\"class_decagon5_t_m.html\" class=\"m-doc\">Decagon5TM</a> subclass of the <a href=\"class_s_d_i12_sensors.html\" class=\"m-doc\">SDI12Sensors</a> class along with the variable subclasses <a href=\"class_decagon5_t_m___ea.html\" class=\"m-doc\">Decagon5TM_<wbr />Ea</a>, <a href=\"class_decagon5_t_m___temp.html\" class=\"m-doc\">Decagon5TM_<wbr />Temp</a>, and <a href=\"class_decagon5_t_m___v_w_c.html\" class=\"m-doc\">Decagon5TM_<wbr />VWC</a>.",
+  "has_details": true,
+  "children": [
+    "sensor-variable-counts",
+    "sensor-timing",
+    "ea",
+    "temperature",
+    "volumetric-water-content"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

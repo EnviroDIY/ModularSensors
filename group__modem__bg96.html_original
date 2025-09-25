@@ -2,9 +2,34 @@
 <html lang="en-US">
 <head>
   <meta charset="UTF-8" />
-  <title>Supported Modems and Communication Modules &raquo; Quectel BG96 topic | ModularSensors0.36.0</title>
+  <title>Supported Modems and Communication Modules &raquo; Quectel BG96 topic | ModularSensors0.37.0</title>
   <link rel="stylesheet" href="m-EnviroDIY+documentation.compiled.css" />
 
+<!-- clean talk scripts -->
+<!-- clean talk scripts -->
+<!-- clean talk scripts -->
+<!-- clean talk scripts -->
+<!-- clean talk scripts -->
+<!-- emoji scripts -->
+<!-- emoji scripts -->
+<!-- emoji scripts -->
+<!-- emoji scripts -->
+<!-- emoji scripts -->
+<!-- highlighter stylesheet -->
+<!-- highlighter stylesheet -->
+<!-- highlighter stylesheet -->
+<!-- highlighter stylesheet -->
+<!-- highlighter stylesheet -->
+<!-- post query stylesheets -->
+<!-- post query stylesheets -->
+<!-- post query stylesheets -->
+<!-- post query stylesheets -->
+<!-- post query stylesheets -->
+<!-- emoji in-line css -->
+<!-- emoji in-line css -->
+<!-- emoji in-line css -->
+<!-- emoji in-line css -->
+<!-- emoji in-line css -->
 <style id="wp-emoji-styles-inline-css" type="text/css">
   img.wp-smiley,
   img.emoji {
@@ -19,10 +44,517 @@
     padding: 0 !important;
   }
 </style>
+<!-- block stylesheets -->
+<!-- block stylesheets -->
+<!-- block stylesheets -->
+<!-- block stylesheets -->
+<!-- block stylesheets -->
+<link
+  rel="stylesheet"
+  id="wp-block-library-css"
+  href="https://www.envirodiy.org/wp-includes/css/dist/block-library/style.min.css?ver=6.8.1"
+  type="text/css"
+  media="all"
+/>
+<style id="classic-theme-styles-inline-css" type="text/css">
+  /*! This file is auto-generated */
+  .wp-block-button__link {
+    color: #fff;
+    background-color: #32373c;
+    border-radius: 9999px;
+    box-shadow: none;
+    text-decoration: none;
+    padding: calc(0.667em + 2px) calc(1.333em + 2px);
+    font-size: 1.125em;
+  }
+  .wp-block-file__button {
+    background: #32373c;
+    color: #fff;
+    text-decoration: none;
+  }
+</style>
+<!-- buddypress stylesheets -->
+<!-- buddypress stylesheets -->
+<!-- buddypress stylesheets -->
+<!-- buddypress stylesheets -->
+<!-- buddypress stylesheets -->
+<!-- heroic knowledge base stylesheets -->
+<!-- heroic knowledge base stylesheets -->
+<!-- heroic knowledge base stylesheets -->
+<!-- heroic knowledge base stylesheets -->
+<!-- heroic knowledge base stylesheets -->
+<!-- word press stylesheets -->
+<!-- word press stylesheets -->
+<!-- word press stylesheets -->
+<!-- word press stylesheets -->
+<!-- word press stylesheets -->
+<link
+  rel="stylesheet"
+  id="wp-components-css"
+  href="https://www.envirodiy.org/wp-includes/css/dist/components/style.min.css?ver=6.8.1"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="wp-preferences-css"
+  href="https://www.envirodiy.org/wp-includes/css/dist/preferences/style.min.css?ver=6.8.1"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="wp-block-editor-css"
+  href="https://www.envirodiy.org/wp-includes/css/dist/block-editor/style.min.css?ver=6.8.1"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="wp-reusable-blocks-css"
+  href="https://www.envirodiy.org/wp-includes/css/dist/reusable-blocks/style.min.css?ver=6.8.1"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="wp-patterns-css"
+  href="https://www.envirodiy.org/wp-includes/css/dist/patterns/style.min.css?ver=6.8.1"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="wp-editor-css"
+  href="https://www.envirodiy.org/wp-includes/css/dist/editor/style.min.css?ver=6.8.1"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="ht-formatting-blocks-modules-styles-css"
+  href="https://www.envirodiy.org/wp-content/plugins/ht-knowledge-base/formatting-blocks/dist/css/ht-formatting-blocks-modules-styles.css?ver=4.0.0"
+  type="text/css"
+  media="all"
+/>
+<!-- word press stylesheets -->
+<!-- word press stylesheets -->
+<!-- word press stylesheets -->
+<!-- word press stylesheets -->
+<!-- word press stylesheets -->
+<link
+  rel="stylesheet"
+  id="wp-components-css"
+  href="https://www.envirodiy.org/wp-includes/css/dist/components/style.min.css?ver=6.8.1"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="wp-preferences-css"
+  href="https://www.envirodiy.org/wp-includes/css/dist/preferences/style.min.css?ver=6.8.1"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="wp-block-editor-css"
+  href="https://www.envirodiy.org/wp-includes/css/dist/block-editor/style.min.css?ver=6.8.1"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="wp-reusable-blocks-css"
+  href="https://www.envirodiy.org/wp-includes/css/dist/reusable-blocks/style.min.css?ver=6.8.1"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="wp-patterns-css"
+  href="https://www.envirodiy.org/wp-includes/css/dist/patterns/style.min.css?ver=6.8.1"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="wp-editor-css"
+  href="https://www.envirodiy.org/wp-includes/css/dist/editor/style.min.css?ver=6.8.1"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="ht-formatting-blocks-modules-styles-css"
+  href="https://www.envirodiy.org/wp-content/plugins/ht-knowledge-base/formatting-blocks/dist/css/ht-formatting-blocks-modules-styles.css?ver=4.0.0"
+  type="text/css"
+  media="all"
+/>
+<!-- word press global inline styles -->
+<!-- word press global inline styles -->
+<!-- word press global inline styles -->
+<!-- word press global inline styles -->
+<!-- word press global inline styles -->
+<style id="global-styles-inline-css" type="text/css">
+  :root {
+    --wp--preset--aspect-ratio--square: 1;
+    --wp--preset--aspect-ratio--4-3: 4/3;
+    --wp--preset--aspect-ratio--3-4: 3/4;
+    --wp--preset--aspect-ratio--3-2: 3/2;
+    --wp--preset--aspect-ratio--2-3: 2/3;
+    --wp--preset--aspect-ratio--16-9: 16/9;
+    --wp--preset--aspect-ratio--9-16: 9/16;
+    --wp--preset--color--black: #000000;
+    --wp--preset--color--cyan-bluish-gray: #abb8c3;
+    --wp--preset--color--white: #ffffff;
+    --wp--preset--color--pale-pink: #f78da7;
+    --wp--preset--color--vivid-red: #cf2e2e;
+    --wp--preset--color--luminous-vivid-orange: #ff6900;
+    --wp--preset--color--luminous-vivid-amber: #fcb900;
+    --wp--preset--color--light-green-cyan: #7bdcb5;
+    --wp--preset--color--vivid-green-cyan: #00d084;
+    --wp--preset--color--pale-cyan-blue: #8ed1fc;
+    --wp--preset--color--vivid-cyan-blue: #0693e3;
+    --wp--preset--color--vivid-purple: #9b51e0;
+    --wp--preset--gradient--vivid-cyan-blue-to-vivid-purple: linear-gradient(
+      135deg,
+      rgba(6, 147, 227, 1) 0%,
+      rgb(155, 81, 224) 100%
+    );
+    --wp--preset--gradient--light-green-cyan-to-vivid-green-cyan: linear-gradient(
+      135deg,
+      rgb(122, 220, 180) 0%,
+      rgb(0, 208, 130) 100%
+    );
+    --wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange: linear-gradient(
+      135deg,
+      rgba(252, 185, 0, 1) 0%,
+      rgba(255, 105, 0, 1) 100%
+    );
+    --wp--preset--gradient--luminous-vivid-orange-to-vivid-red: linear-gradient(
+      135deg,
+      rgba(255, 105, 0, 1) 0%,
+      rgb(207, 46, 46) 100%
+    );
+    --wp--preset--gradient--very-light-gray-to-cyan-bluish-gray: linear-gradient(
+      135deg,
+      rgb(238, 238, 238) 0%,
+      rgb(169, 184, 195) 100%
+    );
+    --wp--preset--gradient--cool-to-warm-spectrum: linear-gradient(
+      135deg,
+      rgb(74, 234, 220) 0%,
+      rgb(151, 120, 209) 20%,
+      rgb(207, 42, 186) 40%,
+      rgb(238, 44, 130) 60%,
+      rgb(251, 105, 98) 80%,
+      rgb(254, 248, 76) 100%
+    );
+    --wp--preset--gradient--blush-light-purple: linear-gradient(
+      135deg,
+      rgb(255, 206, 236) 0%,
+      rgb(152, 150, 240) 100%
+    );
+    --wp--preset--gradient--blush-bordeaux: linear-gradient(
+      135deg,
+      rgb(254, 205, 165) 0%,
+      rgb(254, 45, 45) 50%,
+      rgb(107, 0, 62) 100%
+    );
+    --wp--preset--gradient--luminous-dusk: linear-gradient(
+      135deg,
+      rgb(255, 203, 112) 0%,
+      rgb(199, 81, 192) 50%,
+      rgb(65, 88, 208) 100%
+    );
+    --wp--preset--gradient--pale-ocean: linear-gradient(
+      135deg,
+      rgb(255, 245, 203) 0%,
+      rgb(182, 227, 212) 50%,
+      rgb(51, 167, 181) 100%
+    );
+    --wp--preset--gradient--electric-grass: linear-gradient(
+      135deg,
+      rgb(202, 248, 128) 0%,
+      rgb(113, 206, 126) 100%
+    );
+    --wp--preset--gradient--midnight: linear-gradient(
+      135deg,
+      rgb(2, 3, 129) 0%,
+      rgb(40, 116, 252) 100%
+    );
+    --wp--preset--font-size--small: 13px;
+    --wp--preset--font-size--medium: 20px;
+    --wp--preset--font-size--large: 36px;
+    --wp--preset--font-size--x-large: 42px;
+    --wp--preset--spacing--20: 0.44rem;
+    --wp--preset--spacing--30: 0.67rem;
+    --wp--preset--spacing--40: 1rem;
+    --wp--preset--spacing--50: 1.5rem;
+    --wp--preset--spacing--60: 2.25rem;
+    --wp--preset--spacing--70: 3.38rem;
+    --wp--preset--spacing--80: 5.06rem;
+    --wp--preset--shadow--natural: 6px 6px 9px rgba(0, 0, 0, 0.2);
+    --wp--preset--shadow--deep: 12px 12px 50px rgba(0, 0, 0, 0.4);
+    --wp--preset--shadow--sharp: 6px 6px 0px rgba(0, 0, 0, 0.2);
+    --wp--preset--shadow--outlined: 6px 6px 0px -3px rgba(255, 255, 255, 1),
+      6px 6px rgba(0, 0, 0, 1);
+    --wp--preset--shadow--crisp: 6px 6px 0px rgba(0, 0, 0, 1);
+  }
+  :where(.is-layout-flex) {
+    gap: 0.5em;
+  }
+  :where(.is-layout-grid) {
+    gap: 0.5em;
+  }
+  body .is-layout-flex {
+    display: flex;
+  }
+  .is-layout-flex {
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .is-layout-flex > :is(*, div) {
+    margin: 0;
+  }
+  body .is-layout-grid {
+    display: grid;
+  }
+  .is-layout-grid > :is(*, div) {
+    margin: 0;
+  }
+  :where(.wp-block-columns.is-layout-flex) {
+    gap: 2em;
+  }
+  :where(.wp-block-columns.is-layout-grid) {
+    gap: 2em;
+  }
+  :where(.wp-block-post-template.is-layout-flex) {
+    gap: 1.25em;
+  }
+  :where(.wp-block-post-template.is-layout-grid) {
+    gap: 1.25em;
+  }
+  .has-black-color {
+    color: var(--wp--preset--color--black) !important;
+  }
+  .has-cyan-bluish-gray-color {
+    color: var(--wp--preset--color--cyan-bluish-gray) !important;
+  }
+  .has-white-color {
+    color: var(--wp--preset--color--white) !important;
+  }
+  .has-pale-pink-color {
+    color: var(--wp--preset--color--pale-pink) !important;
+  }
+  .has-vivid-red-color {
+    color: var(--wp--preset--color--vivid-red) !important;
+  }
+  .has-luminous-vivid-orange-color {
+    color: var(--wp--preset--color--luminous-vivid-orange) !important;
+  }
+  .has-luminous-vivid-amber-color {
+    color: var(--wp--preset--color--luminous-vivid-amber) !important;
+  }
+  .has-light-green-cyan-color {
+    color: var(--wp--preset--color--light-green-cyan) !important;
+  }
+  .has-vivid-green-cyan-color {
+    color: var(--wp--preset--color--vivid-green-cyan) !important;
+  }
+  .has-pale-cyan-blue-color {
+    color: var(--wp--preset--color--pale-cyan-blue) !important;
+  }
+  .has-vivid-cyan-blue-color {
+    color: var(--wp--preset--color--vivid-cyan-blue) !important;
+  }
+  .has-vivid-purple-color {
+    color: var(--wp--preset--color--vivid-purple) !important;
+  }
+  .has-black-background-color {
+    background-color: var(--wp--preset--color--black) !important;
+  }
+  .has-cyan-bluish-gray-background-color {
+    background-color: var(--wp--preset--color--cyan-bluish-gray) !important;
+  }
+  .has-white-background-color {
+    background-color: var(--wp--preset--color--white) !important;
+  }
+  .has-pale-pink-background-color {
+    background-color: var(--wp--preset--color--pale-pink) !important;
+  }
+  .has-vivid-red-background-color {
+    background-color: var(--wp--preset--color--vivid-red) !important;
+  }
+  .has-luminous-vivid-orange-background-color {
+    background-color: var(--wp--preset--color--luminous-vivid-orange) !important;
+  }
+  .has-luminous-vivid-amber-background-color {
+    background-color: var(--wp--preset--color--luminous-vivid-amber) !important;
+  }
+  .has-light-green-cyan-background-color {
+    background-color: var(--wp--preset--color--light-green-cyan) !important;
+  }
+  .has-vivid-green-cyan-background-color {
+    background-color: var(--wp--preset--color--vivid-green-cyan) !important;
+  }
+  .has-pale-cyan-blue-background-color {
+    background-color: var(--wp--preset--color--pale-cyan-blue) !important;
+  }
+  .has-vivid-cyan-blue-background-color {
+    background-color: var(--wp--preset--color--vivid-cyan-blue) !important;
+  }
+  .has-vivid-purple-background-color {
+    background-color: var(--wp--preset--color--vivid-purple) !important;
+  }
+  .has-black-border-color {
+    border-color: var(--wp--preset--color--black) !important;
+  }
+  .has-cyan-bluish-gray-border-color {
+    border-color: var(--wp--preset--color--cyan-bluish-gray) !important;
+  }
+  .has-white-border-color {
+    border-color: var(--wp--preset--color--white) !important;
+  }
+  .has-pale-pink-border-color {
+    border-color: var(--wp--preset--color--pale-pink) !important;
+  }
+  .has-vivid-red-border-color {
+    border-color: var(--wp--preset--color--vivid-red) !important;
+  }
+  .has-luminous-vivid-orange-border-color {
+    border-color: var(--wp--preset--color--luminous-vivid-orange) !important;
+  }
+  .has-luminous-vivid-amber-border-color {
+    border-color: var(--wp--preset--color--luminous-vivid-amber) !important;
+  }
+  .has-light-green-cyan-border-color {
+    border-color: var(--wp--preset--color--light-green-cyan) !important;
+  }
+  .has-vivid-green-cyan-border-color {
+    border-color: var(--wp--preset--color--vivid-green-cyan) !important;
+  }
+  .has-pale-cyan-blue-border-color {
+    border-color: var(--wp--preset--color--pale-cyan-blue) !important;
+  }
+  .has-vivid-cyan-blue-border-color {
+    border-color: var(--wp--preset--color--vivid-cyan-blue) !important;
+  }
+  .has-vivid-purple-border-color {
+    border-color: var(--wp--preset--color--vivid-purple) !important;
+  }
+  .has-vivid-cyan-blue-to-vivid-purple-gradient-background {
+    background: var(--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple) !important;
+  }
+  .has-light-green-cyan-to-vivid-green-cyan-gradient-background {
+    background: var(
+      --wp--preset--gradient--light-green-cyan-to-vivid-green-cyan
+    ) !important;
+  }
+  .has-luminous-vivid-amber-to-luminous-vivid-orange-gradient-background {
+    background: var(
+      --wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange
+    ) !important;
+  }
+  .has-luminous-vivid-orange-to-vivid-red-gradient-background {
+    background: var(
+      --wp--preset--gradient--luminous-vivid-orange-to-vivid-red
+    ) !important;
+  }
+  .has-very-light-gray-to-cyan-bluish-gray-gradient-background {
+    background: var(
+      --wp--preset--gradient--very-light-gray-to-cyan-bluish-gray
+    ) !important;
+  }
+  .has-cool-to-warm-spectrum-gradient-background {
+    background: var(--wp--preset--gradient--cool-to-warm-spectrum) !important;
+  }
+  .has-blush-light-purple-gradient-background {
+    background: var(--wp--preset--gradient--blush-light-purple) !important;
+  }
+  .has-blush-bordeaux-gradient-background {
+    background: var(--wp--preset--gradient--blush-bordeaux) !important;
+  }
+  .has-luminous-dusk-gradient-background {
+    background: var(--wp--preset--gradient--luminous-dusk) !important;
+  }
+  .has-pale-ocean-gradient-background {
+    background: var(--wp--preset--gradient--pale-ocean) !important;
+  }
+  .has-electric-grass-gradient-background {
+    background: var(--wp--preset--gradient--electric-grass) !important;
+  }
+  .has-midnight-gradient-background {
+    background: var(--wp--preset--gradient--midnight) !important;
+  }
+  .has-small-font-size {
+    font-size: var(--wp--preset--font-size--small) !important;
+  }
+  .has-medium-font-size {
+    font-size: var(--wp--preset--font-size--medium) !important;
+  }
+  .has-large-font-size {
+    font-size: var(--wp--preset--font-size--large) !important;
+  }
+  .has-x-large-font-size {
+    font-size: var(--wp--preset--font-size--x-large) !important;
+  }
+  :where(.wp-block-post-template.is-layout-flex) {
+    gap: 1.25em;
+  }
+  :where(.wp-block-post-template.is-layout-grid) {
+    gap: 1.25em;
+  }
+  :where(.wp-block-columns.is-layout-flex) {
+    gap: 2em;
+  }
+  :where(.wp-block-columns.is-layout-grid) {
+    gap: 2em;
+  }
+  :root :where(.wp-block-pullquote) {
+    font-size: 1.5em;
+    line-height: 1.6;
+  }
+</style>
+<!-- more buddy press stylesheets -->
+<!-- more buddy press stylesheets -->
+<!-- more buddy press stylesheets -->
+<!-- more buddy press stylesheets -->
+<!-- more buddy press stylesheets -->
+<!-- cleantalk stylesheets -->
+<!-- cleantalk stylesheets -->
+<!-- cleantalk stylesheets -->
+<!-- cleantalk stylesheets -->
+<!-- cleantalk stylesheets -->
+<!-- woocommerce stylesheets -->
+<!-- woocommerce stylesheets -->
+<!-- woocommerce stylesheets -->
+<!-- woocommerce stylesheets -->
+<!-- woocommerce stylesheets -->
+<!-- more stylesheets -->
+<!-- more stylesheets -->
+<!-- more stylesheets -->
+<!-- more stylesheets -->
+<!-- more stylesheets -->
+<link
+  rel="stylesheet"
+  id="dashicons-css"
+  href="https://www.envirodiy.org/wp-includes/css/dashicons.min.css?ver=6.8.1"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="brands-styles-css"
+  href="https://www.envirodiy.org/wp-content/plugins/woocommerce/assets/css/brands.css?ver=9.9.5"
+  type="text/css"
+  media="all"
+/>
 <link
   rel="stylesheet"
   id="gp-parent-style-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/style.css?ver=6.5.4"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/style.css?ver=6.8.1"
   type="text/css"
   media="all"
 />
@@ -30,6 +562,13 @@
   rel="stylesheet"
   id="redux-extendify-styles-css"
   href="https://www.envirodiy.org/wp-content/themes/socialize/lib/framework/redux/assets/css/extendify-utilities.css?ver=4.4.11"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="ghostpool-style-css"
+  href="https://www.envirodiy.org/wp-content/themes/socialize-child/style.css?ver=6.8.1"
   type="text/css"
   media="all"
 />
@@ -139,27 +678,121 @@
 <link
   rel="stylesheet"
   id="fontawesome-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/fonts/font-awesome/css/font-awesome.min.css?ver=6.5.4"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/fonts/font-awesome/css/font-awesome.min.css?ver=6.8.1"
   type="text/css"
   media="all"
 />
 <link
-  rel="preload"
-  as="style"
-  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
+  rel="stylesheet"
+  id="prettyphoto-css"
+  href="https://www.envirodiy.org/wp-content/plugins/js_composer/assets/lib/vendor/prettyphoto/css/prettyPhoto.min.css?ver=8.5"
+  type="text/css"
+  media="all"
 />
 <link
   rel="stylesheet"
-  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
+  id="mediaelement-css"
+  href="https://www.envirodiy.org/wp-includes/js/mediaelement/mediaelementplayer-legacy.min.css?ver=4.2.17"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="wp-mediaelement-css"
+  href="https://www.envirodiy.org/wp-includes/js/mediaelement/wp-mediaelement.min.css?ver=6.8.1"
+  type="text/css"
+  media="all"
+/>
+<!-- more buddy press and woo commerce stylesheets -->
+<!-- more buddy press and woo commerce stylesheets -->
+<!-- more buddy press and woo commerce stylesheets -->
+<!-- more buddy press and woo commerce stylesheets -->
+<!-- more buddy press and woo commerce stylesheets -->
+<!-- google font stylesheets -->
+<!-- google font stylesheets -->
+<!-- google font stylesheets -->
+<!-- google font stylesheets -->
+<!-- google font stylesheets -->
+<link
+  rel="preload"
+  as="style"
+  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.7.1"
+/>
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.7.1"
   media="print"
   onload="this.media='all'"
 />
 <noscript
   ><link
     rel="stylesheet"
-    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
+    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.7.1"
 /></noscript>
-
+<!-- jquery -->
+<!-- jquery -->
+<!-- jquery -->
+<!-- jquery -->
+<!-- jquery -->
+<script
+  type="text/javascript"
+  src="https://www.envirodiy.org/wp-includes/js/jquery/jquery.min.js?ver=3.7.1"
+  id="jquery-core-js"
+></script>
+<script
+  type="text/javascript"
+  src="https://www.envirodiy.org/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.4.1"
+  id="jquery-migrate-js"
+></script>
+<!-- buddy press scripts -->
+<!-- buddy press scripts -->
+<!-- buddy press scripts -->
+<!-- buddy press scripts -->
+<!-- buddy press scripts -->
+<!-- woo commerce scripts -->
+<!-- woo commerce scripts -->
+<!-- woo commerce scripts -->
+<!-- woo commerce scripts -->
+<!-- woo commerce scripts -->
+<!-- woo commerce scripts -->
+<!-- more inclusions -->
+<!-- more inclusions -->
+<!-- more inclusions -->
+<!-- more inclusions -->
+<!-- more inclusions -->
+<!-- HKB CSS Variables -->
+<!-- HKB CSS Variables -->
+<!-- HKB CSS Variables -->
+<!-- HKB CSS Variables -->
+<!-- HKB CSS Variables -->
+<!-- Google tag (gtag.js) -->
+<!-- Google tag (gtag.js) -->
+<!-- Google tag (gtag.js) -->
+<!-- Google tag (gtag.js) -->
+<!-- Google tag (gtag.js) -->
+<!-- images and wp-custom-css -->
+<!-- images and wp-custom-css -->
+<!-- images and wp-custom-css -->
+<!-- images and wp-custom-css -->
+<!-- images and wp-custom-css -->
+<link
+  rel="icon"
+  href="https://www.envirodiy.org/wp-content/uploads/2016/05/cropped-EnviroDIY_LogoMaster_TrueSquare_V5_TwoTree_Trans_notext-32x32.png"
+  sizes="32x32"
+/>
+<link
+  rel="icon"
+  href="https://www.envirodiy.org/wp-content/uploads/2016/05/cropped-EnviroDIY_LogoMaster_TrueSquare_V5_TwoTree_Trans_notext-192x192.png"
+  sizes="192x192"
+/>
+<link
+  rel="apple-touch-icon"
+  href="https://www.envirodiy.org/wp-content/uploads/2016/05/cropped-EnviroDIY_LogoMaster_TrueSquare_V5_TwoTree_Trans_notext-180x180.png"
+/>
+<meta
+  name="msapplication-TileImage"
+  content="https://www.envirodiy.org/wp-content/uploads/2016/05/cropped-EnviroDIY_LogoMaster_TrueSquare_V5_TwoTree_Trans_notext-270x270.png"
+/>
 <style type="text/css" id="wp-custom-css">
   /* Print Styles */
   @media print {
@@ -267,31 +900,6 @@
     font-weight: 400;
     text-decoration: underline;
   }
-  /*BuddyPress styles*/
-  /*Make activity feed content darker*/
-  #buddypress .activity-list .activity-content .activity-inner p {
-    color: #000000;
-  }
-  /*Hide activity filter on activity page*/
-  #activity-filter-select.last {
-    display: none !important;
-  }
-  /*Hide disabled BuddyPress status updates on profile page, activity page*/
-  #latest-update {
-    display: none;
-  }
-  .item-title .update {
-    display: none;
-  }
-  /*Prevent display of comment/favorite links in activity stream. Because the comments do not get applied to posts or forum topics, they just confuse users*/
-  .gp-theme #buddypress .activity-list div.activity-meta a.button,
-  .gp-theme #buddypress .activity .acomment-options a,
-  .gp-theme #buddypress .activity-list li.load-newest a,
-  .widget.buddypress div.item-options a.selected {
-    color: #26a9e0;
-    display: none;
-  }
-  /*End BuddyPress styles*/
   /* Style print link */
   .pdfprnt-buttons > a > span {
     margin: 15px 0;
@@ -330,64 +938,11 @@
   tr:last-child td {
     border-width: 1px;
   }
-  /*bbPress*/
-  /* Make forum title and description larger, remove link underlining */
-  div.bbp-forum-content {
-    font-size: 22px;
-    line-height: 28px;
-  }
-  div.bbp-forum-content p {
-    font-size: 16px;
-    line-height: 22px;
-  }
-  #bbpress-forums a.bbp-forum-title {
-    text-decoration: none;
-  }
-  .widgettitle {
-    border-bottom: 3px solid #92d050 !important;
-  }
-  .bbp-author-name {
-    font-size: 14px;
-  }
-  /*End bbpress styles*/
   #gp-copyright-text,
   #gp-copyright-text a:link,
   #gp-copyright-text a:visited {
     color: #fff;
     font-weight: 400;
-  }
-  /*WooCommerce styles*/
-  bdi {
-    color: #538122;
-    font-weight: 500;
-  }
-  a.button.product_type_simple {
-    display: none;
-  }
-  p.stock.out-of-stock {
-    color: red;
-    font-weight: 500;
-  }
-  .products li * {
-    text-decoration: none !important;
-  }
-  div.gp-entry-cats {
-    color: #333333;
-  }
-  span.woocommerce-Price-amount.amount {
-    text-decoration: none !important;
-  }
-  /* Hide additional information tab */
-  div.woocommerce-tabs {
-    display: none !important;
-  }
-  /*End WooCommerce styles*/
-  /*The Events Calendar*/
-  #tribe-events-content a {
-    color: #0579bd;
-  }
-  #tribe-events-content .wp-block-button__link {
-    color: #ffffff;
   }
   #gp-sidebar-right
     > div
@@ -1201,11 +1756,18 @@
     color: #ffffff;
   }
 </style>
+<!-- other header scripts -->
+<!-- other header scripts -->
+<!-- other header scripts -->
+<!-- other header scripts -->
+<!-- other header scripts -->
   <link rel="icon" href="MS_FavIcon.png" type="image/png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#cb4b16" />
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script type="text/javascript" src="clipboard.js"></script>
+  <script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
 </head>
 
 <body
@@ -1277,39 +1839,9 @@
         </ul>
       </li>
       <li
-        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
-      >
-<a href="page_faq.html" class="menu-link main-menu-link">FAQs</a>        <ul class="sub-menu menu-odd menu-depth-1">
-          <li
-            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
-          >
-<a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>          </li>
-          <li
-            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
-          >
-<a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>          </li>
-          <li
-            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
-          >
-<a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>          </li>
-          <li
-            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
-          >
-<a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>          </li>
-          <li
-            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
-          >
-<a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>          </li>
-          <li
-            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
-          >
-<a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>          </li>
-        </ul>
-      </li>
-      <li
         class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
       >
-<a href="topics.html" class="menu-link main-menu-link">Topics</a>      </li>
+<a href="topics.html" class="menu-link main-menu-link">Modules</a>      </li>
       <li
         class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
       >
@@ -1335,24 +1867,24 @@
     <header id="gp-main-header">
       <div class="gp-container">
         <div id="gp-logo">
-          <a href="index.html" title="ModularSensors 0.36.0">
+          <a href="index.html" title="ModularSensors 0.37.0">
             <img
               src="gp-desktop-logo.png"
-              alt="ModularSensors 0.36.0"
+              alt="ModularSensors 0.37.0"
               width="200"
               height="42"
               class="gp-desktop-logo"
             />
             <img
               src="gp-scrolling-logo.png"
-              alt="ModularSensors 0.36.0"
+              alt="ModularSensors 0.37.0"
               width="264"
               height="55"
               class="gp-scrolling-logo"
             />
             <img
               src="gp-mobile-logo.png"
-              alt="ModularSensors 0.36.0"
+              alt="ModularSensors 0.37.0"
               width="132"
               height="28"
               class="gp-mobile-logo"
@@ -1426,39 +1958,9 @@
                 </ul>
               </li>
               <li
-                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
-              >
-<a href="page_faq.html" class="menu-link main-menu-link" >FAQs</a>                <ul class="sub-menu menu-odd menu-depth-1">
-                  <li
-                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
-                  >
-<a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>                  </li>
-                  <li
-                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
-                  >
-<a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>                  </li>
-                  <li
-                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
-                  >
-<a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>                  </li>
-                  <li
-                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
-                  >
-<a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>                  </li>
-                  <li
-                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
-                  >
-<a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>                  </li>
-                  <li
-                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
-                  >
-<a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>                  </li>
-                </ul>
-              </li>
-              <li
                 class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
               >
-<a href="topics.html"class="menu-link main-menu-link">Topics</a>              </li>
+<a href="topics.html"class="menu-link main-menu-link">Modules</a>              </li>
               <li
                 class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
               >
@@ -1617,34 +2119,34 @@
             </li>
           </ul>
         </nav>
-          <section id="modem_bg96_notes"><h2>Introduction</h2><p>The Quectel BG96 is another LTE CatM1/NB1 chip. This same constructor should work for most boards based on this chip, including the <a href="https://www.dragino.com/products/nb-iot/item/132-nb-iot-bee.html">Dragino</a> and <a href="https://nimbelink.com/products/4g-lte-m-global-quectel/">Nimbelink</a> boards.</p><p>This is the <strong>only</strong> cellular module that I have found to function well on only a 500mA power supply - provided the cellular signal is strong and 2G fallback isn&#x27;t required. To enable 2G fallback, expect power draws of up to 2A.</p></section><section id="modem_bg96_mayfly"><h2>Connecting a BG96 to a Mayfly</h2><p>To my knowledge, there are not any Quectel BG96 modules available that can directly connect to a Mayfly. Although both the Dragino and Nimbelink boards linked above would fit the physical XBee footprint on the Mayfly, neither will work without some additional interface or other modifications. The Dragino module comes really close, but it will not actually work because the BG96 requires more power than the Mayfly can provide on its own but <em>cannot</em> be connected directly to a LiPo because it cannot handle a voltage over 3.6V. The Nimbelink module has the same power supply problem, voltage reference problems, and requires 3 extra ground pins that aren&#x27;t available on the Mayfly.</p></section><section id="modem_bg96_docs"><h2>Manufacturer Documentation</h2><p>The module datasheet and AT commands are available here: <a href="https://www.quectel.com/product/bg96.htm">https:/<wbr />/<wbr />www.quectel.com/<wbr />product/<wbr />bg96.htm</a></p></section><section id="modem_bg96_ctor"><h2>Modem Constructor</h2><p>{{ <a href="class_quectel_b_g96.html#a4c8d6952ccfbb24fd9a4b8562c71cd06" class="m-doc">QuectelBG96::<wbr />QuectelBG96</a> }}</p><hr/></section><section id="modem_bg96_examples"><h2>Example Code</h2><p>The Quectel BG96 is used in the <a href="example_menu.html#menu_walk_quectel_bg96" class="m-doc">menu a la carte</a>.</p><div class="m-code-arduino"><div class="highlight"><div class="line"><a id="l-1" name="l-1"></a><span class="linenos"> 1</span><span class="c1">// For the Dragino, Nimbelink or other boards based on the Quectel BG96</span>
-</div><div class="line"><a id="l-2" name="l-2"></a><span class="linenos"> 2</span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;modems/QuectelBG96.h&gt;</span>
-</div><div class="line"><a id="l-3" name="l-3"></a><span class="linenos"> 3</span>
-</div><div class="line"><a id="l-4" name="l-4"></a><span class="linenos"> 4</span><span class="c1">// NOTE: Extra hardware and software serial ports are created in the &quot;Settings</span>
-</div><div class="line"><a id="l-5" name="l-5"></a><span class="linenos"> 5</span><span class="c1">// for Additional Serial Ports&quot; section</span>
-</div><div class="line"><a id="l-6" name="l-6"></a><span class="linenos"> 6</span><span class="kr">const</span><span class="w"> </span><span class="kr">int32_t</span><span class="w"> </span><span class="n">modemBaud</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">115200</span><span class="p">;</span><span class="w">  </span><span class="c1">// Communication speed of the modem</span>
-</div><div class="line"><a id="l-7" name="l-7"></a><span class="linenos"> 7</span><span class="c1">// NOTE:  This baud rate too fast for an 8MHz board, like the Mayfly!  The</span>
-</div><div class="line"><a id="l-8" name="l-8"></a><span class="linenos"> 8</span><span class="c1">// module should be programmed to a slower baud rate or set to auto-baud using</span>
-</div><div class="line"><a id="l-9" name="l-9"></a><span class="linenos"> 9</span><span class="c1">// the AT+IPR=9600 command.</span>
-</div><div class="line"><a id="l-10" name="l-10"></a><span class="linenos">10</span>
-</div><div class="line"><a id="l-11" name="l-11"></a><span class="linenos">11</span><span class="c1">// Modem Pins - Describe the physical pin connection of your modem to your board</span>
-</div><div class="line"><a id="l-12" name="l-12"></a><span class="linenos">12</span><span class="c1">// NOTE:  Use -1 for pins that do not apply</span>
-</div><div class="line"><a id="l-13" name="l-13"></a><span class="linenos">13</span><span class="c1">// Example pins here are for a Mayfly 1.x and a Dragino IoT Bee</span>
-</div><div class="line"><a id="l-14" name="l-14"></a><span class="linenos">14</span><span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">modemVccPin</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mi">18</span><span class="p">;</span><span class="w">  </span><span class="c1">// MCU pin controlling modem power</span>
-</div><div class="line"><a id="l-15" name="l-15"></a><span class="linenos">15</span><span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">modemStatusPin</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span><span class="w">  </span><span class="c1">// MCU pin used to read modem status</span>
-</div><div class="line"><a id="l-16" name="l-16"></a><span class="linenos">16</span><span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">modemResetPin</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">A5</span><span class="p">;</span><span class="w">  </span><span class="c1">// MCU pin connected to modem reset pin</span>
-</div><div class="line"><a id="l-17" name="l-17"></a><span class="linenos">17</span><span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">modemSleepRqPin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span><span class="w">  </span><span class="c1">// MCU pin for modem sleep/wake request</span>
-</div><div class="line"><a id="l-18" name="l-18"></a><span class="linenos">18</span><span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">modemLEDPin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">redLED</span><span class="p">;</span><span class="w">  </span><span class="c1">// MCU pin connected an LED to show modem</span>
-</div><div class="line"><a id="l-19" name="l-19"></a><span class="linenos">19</span><span class="w">                                    </span><span class="c1">// status</span>
-</div><div class="line"><a id="l-20" name="l-20"></a><span class="linenos">20</span>
-</div><div class="line"><a id="l-21" name="l-21"></a><span class="linenos">21</span><span class="c1">// Network connection information</span>
-</div><div class="line"><a id="l-22" name="l-22"></a><span class="linenos">22</span><span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w"> </span><span class="n">apn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;xxxxx&quot;</span><span class="p">;</span><span class="w">  </span><span class="c1">// APN for GPRS connection</span>
-</div><div class="line"><a id="l-23" name="l-23"></a><span class="linenos">23</span>
-</div><div class="line"><a id="l-24" name="l-24"></a><span class="linenos">24</span><span class="c1">// Create the modem object</span>
-</div><div class="line"><a id="l-25" name="l-25"></a><span class="linenos">25</span><span class="n">QuectelBG96</span><span class="w"> </span><span class="nf">modemBG96</span><span class="p">(</span><span class="o">&amp;</span><span class="n">modemSerial</span><span class="p">,</span><span class="w"> </span><span class="n">modemVccPin</span><span class="p">,</span><span class="w"> </span><span class="n">modemStatusPin</span><span class="p">,</span><span class="w"> </span><span class="n">modemResetPin</span><span class="p">,</span>
-</div><div class="line"><a id="l-26" name="l-26"></a><span class="linenos">26</span><span class="w">                      </span><span class="n">modemSleepRqPin</span><span class="p">,</span><span class="w"> </span><span class="n">apn</span><span class="p">);</span>
-</div><div class="line"><a id="l-27" name="l-27"></a><span class="linenos">27</span><span class="c1">// Create an extra reference to the modem by a generic name</span>
-</div><div class="line"><a id="l-28" name="l-28"></a><span class="linenos">28</span><span class="n">QuectelBG96</span><span class="w"> </span><span class="n">modem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">modemBG96</span><span class="p">;</span>
+          <section id="modem_bg96_notes"><h2>Introduction</h2><p>The Quectel BG96 is another LTE CatM1/NB1 chip. This same constructor should work for most boards based on this chip, including the <a href="https://www.dragino.com/products/nb-iot/item/132-nb-iot-bee.html">Dragino</a> and <a href="https://nimbelink.com/products/4g-lte-m-global-quectel/">Nimbelink</a> boards.</p><p>This is the <strong>only</strong> cellular module that I have found to function well on only a 500mA power supply - provided the cellular signal is strong and 2G fallback isn&#x27;t required. To enable 2G fallback, expect power draws of up to 2A.</p></section><section id="modem_bg96_mayfly"><h2>Connecting a BG96 to a Mayfly</h2><p>To my knowledge, there are not any Quectel BG96 modules available that can directly connect to a Mayfly. Although both the Dragino and Nimbelink boards linked above would fit the physical XBee footprint on the Mayfly, neither will work without some additional interface or other modifications. The Dragino module comes really close, but it will not actually work because the BG96 requires more power than the Mayfly can provide on its own but <em>cannot</em> be connected directly to a LiPo because it cannot handle a voltage over 3.6V. The Nimbelink module has the same power supply problem, voltage reference problems, and requires 3 extra ground pins that aren&#x27;t available on the Mayfly.</p></section><section id="modem_bg96_docs"><h2>Manufacturer Documentation</h2><p>The module datasheet and AT commands are available here: <a href="https://www.quectel.com/product/bg96.htm">https:/<wbr />/<wbr />www.quectel.com/<wbr />product/<wbr />bg96.htm</a></p></section><section id="modem_bg96_ctor"><h2>Modem Constructor</h2><p>{{ <a href="class_quectel_b_g96.html#a4c8d6952ccfbb24fd9a4b8562c71cd06" class="m-doc">QuectelBG96::<wbr />QuectelBG96</a> }}</p><hr/></section><section id="modem_bg96_examples"><h2>Example Code</h2><p>The Quectel BG96 is used in the <a href="example_menu.html#menu_walk_quectel_bg96" class="m-doc">menu a la carte</a>.</p><div class="m-code-arduino"><div class="highlight"><div class="line"><a id="l-1" name="l-1"></a><span class="linenos"> 1</span><span class="c1">// For the Dragino, Nimbelink or other boards based on the Quectel BG96</span></div>
+<div class="line"><a id="l-2" name="l-2"></a><span class="linenos"> 2</span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;modems/QuectelBG96.h&gt;</span></div>
+<div class="line"><a id="l-3" name="l-3"></a><span class="linenos"> 3</span></div>
+<div class="line"><a id="l-4" name="l-4"></a><span class="linenos"> 4</span><span class="c1">// NOTE: Extra hardware and software serial ports are created in the &quot;Settings</span></div>
+<div class="line"><a id="l-5" name="l-5"></a><span class="linenos"> 5</span><span class="c1">// for Additional Serial Ports&quot; section</span></div>
+<div class="line"><a id="l-6" name="l-6"></a><span class="linenos"> 6</span><span class="kr">const</span><span class="w"> </span><span class="kr">int32_t</span><span class="w"> </span><span class="n">modemBaud</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">115200</span><span class="p">;</span><span class="w">  </span><span class="c1">// Communication speed of the modem</span></div>
+<div class="line"><a id="l-7" name="l-7"></a><span class="linenos"> 7</span><span class="c1">// NOTE:  This baud rate too fast for an 8MHz board, like the Mayfly!  The</span></div>
+<div class="line"><a id="l-8" name="l-8"></a><span class="linenos"> 8</span><span class="c1">// module should be programmed to a slower baud rate or set to auto-baud using</span></div>
+<div class="line"><a id="l-9" name="l-9"></a><span class="linenos"> 9</span><span class="c1">// the AT+IPR=9600 command.</span></div>
+<div class="line"><a id="l-10" name="l-10"></a><span class="linenos">10</span></div>
+<div class="line"><a id="l-11" name="l-11"></a><span class="linenos">11</span><span class="c1">// Modem Pins - Describe the physical pin connection of your modem to your board</span></div>
+<div class="line"><a id="l-12" name="l-12"></a><span class="linenos">12</span><span class="c1">// NOTE:  Use -1 for pins that do not apply</span></div>
+<div class="line"><a id="l-13" name="l-13"></a><span class="linenos">13</span><span class="c1">// Example pins here are for a Mayfly 1.x and a Dragino IoT Bee</span></div>
+<div class="line"><a id="l-14" name="l-14"></a><span class="linenos">14</span><span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">modemVccPin</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mi">18</span><span class="p">;</span><span class="w">  </span><span class="c1">// MCU pin controlling modem power</span></div>
+<div class="line"><a id="l-15" name="l-15"></a><span class="linenos">15</span><span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">modemStatusPin</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span><span class="w">  </span><span class="c1">// MCU pin used to read modem status</span></div>
+<div class="line"><a id="l-16" name="l-16"></a><span class="linenos">16</span><span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">modemResetPin</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">A5</span><span class="p">;</span><span class="w">  </span><span class="c1">// MCU pin connected to modem reset pin</span></div>
+<div class="line"><a id="l-17" name="l-17"></a><span class="linenos">17</span><span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">modemSleepRqPin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span><span class="w">  </span><span class="c1">// MCU pin for modem sleep/wake request</span></div>
+<div class="line"><a id="l-18" name="l-18"></a><span class="linenos">18</span><span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">modemLEDPin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">redLED</span><span class="p">;</span><span class="w">  </span><span class="c1">// MCU pin connected an LED to show modem</span></div>
+<div class="line"><a id="l-19" name="l-19"></a><span class="linenos">19</span><span class="w">                                    </span><span class="c1">// status</span></div>
+<div class="line"><a id="l-20" name="l-20"></a><span class="linenos">20</span></div>
+<div class="line"><a id="l-21" name="l-21"></a><span class="linenos">21</span><span class="c1">// Network connection information</span></div>
+<div class="line"><a id="l-22" name="l-22"></a><span class="linenos">22</span><span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w"> </span><span class="n">apn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CELLULAR_APN</span><span class="p">;</span><span class="w">  </span><span class="c1">// APN for GPRS connection</span></div>
+<div class="line"><a id="l-23" name="l-23"></a><span class="linenos">23</span></div>
+<div class="line"><a id="l-24" name="l-24"></a><span class="linenos">24</span><span class="c1">// Create the modem object</span></div>
+<div class="line"><a id="l-25" name="l-25"></a><span class="linenos">25</span><span class="n">QuectelBG96</span><span class="w"> </span><span class="nf">modemBG96</span><span class="p">(</span><span class="o">&amp;</span><span class="n">modemSerial</span><span class="p">,</span><span class="w"> </span><span class="n">modemVccPin</span><span class="p">,</span><span class="w"> </span><span class="n">modemStatusPin</span><span class="p">,</span><span class="w"> </span><span class="n">modemResetPin</span><span class="p">,</span></div>
+<div class="line"><a id="l-26" name="l-26"></a><span class="linenos">26</span><span class="w">                      </span><span class="n">modemSleepRqPin</span><span class="p">,</span><span class="w"> </span><span class="n">apn</span><span class="p">);</span></div>
+<div class="line"><a id="l-27" name="l-27"></a><span class="linenos">27</span><span class="c1">// Create an extra reference to the modem by a generic name</span></div>
+<div class="line"><a id="l-28" name="l-28"></a><span class="linenos">28</span><span class="n">QuectelBG96</span><span class="w"> </span><span class="n">modem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">modemBG96</span><span class="p">;</span>
 </div></div></div></section>
         <section id="nested-classes">
           <h2>Classes</h2>
@@ -1688,13 +2190,13 @@
             </dt>
             <dd>The <a href="classlogger_modem.html#a68051ed68b85195bf188a1914c71a9c8" class="m-doc">loggerModem::<wbr />_wakeDelayTime_ms</a>.</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#ga6df0e54fad1961be2691f16462059c7f" class="m-doc">BG96_ATRESPONSE_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 10000L</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga616c543159143aaddb6504c7007a183e" class="m-doc">BG96_AT_RESPONSE_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 10000L</span></span>
             </dt>
-            <dd>The <a href="classlogger_modem.html#aa9bf26acfae6ec2611b4d7a806dd2489" class="m-doc">loggerModem::<wbr />_max_atresponse_time_ms</a>.</dd>
+            <dd>The <a href="classlogger_modem.html#a1eb0149e16837edc9afaa1a96451c53f" class="m-doc">loggerModem::<wbr />_max_at_response_time_ms</a>.</dd>
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga9b814e89abef176f687a5453c85a8f7e" class="m-doc">BG96_DISCONNECT_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 5000L</span></span>
             </dt>
-            <dd>The <a href="classlogger_modem.html#a32496b2b79dc9317639900a3c385405d" class="m-doc">loggerModem::<wbr />_disconnetTime_ms</a>.</dd>
+            <dd>The <a href="classlogger_modem.html#a6d4306338e19e76002f9280feb3f62be" class="m-doc">loggerModem::<wbr />_disconnectTime_ms</a>.</dd>
           </dl>
         </section>
 
@@ -1812,15 +2314,15 @@
             <hr>
           </div>
         </section>
-        <section class="m-doc-details" id="ga6df0e54fad1961be2691f16462059c7f">
+        <section class="m-doc-details" id="ga616c543159143aaddb6504c7007a183e">
           <div>
 
             <h3>
-              <span class="m-doc-wrap-bumper">#define <a href="#ga6df0e54fad1961be2691f16462059c7f" class="m-doc-self">BG96_ATRESPONSE_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 10000L</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga616c543159143aaddb6504c7007a183e" class="m-doc-self">BG96_AT_RESPONSE_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 10000L</span></span>
               <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_quectel_b_g96_8h.html">&lt;src/modems/QuectelBG96.h&gt;</a></div>
             </h3>
 
-            <p>The <a href="classlogger_modem.html#aa9bf26acfae6ec2611b4d7a806dd2489" class="m-doc">loggerModem::<wbr />_max_atresponse_time_ms</a>.</p>
+            <p>The <a href="classlogger_modem.html#a1eb0149e16837edc9afaa1a96451c53f" class="m-doc">loggerModem::<wbr />_max_at_response_time_ms</a>.</p>
 
 
               <p>The BG96 has USB active at &gt;4.2 sec, status at &gt;4.8 sec, URAT at &gt;4.9</p>
@@ -1836,7 +2338,7 @@
               <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_quectel_b_g96_8h.html">&lt;src/modems/QuectelBG96.h&gt;</a></div>
             </h3>
 
-            <p>The <a href="classlogger_modem.html#a32496b2b79dc9317639900a3c385405d" class="m-doc">loggerModem::<wbr />_disconnetTime_ms</a>.</p>
+            <p>The <a href="classlogger_modem.html#a6d4306338e19e76002f9280feb3f62be" class="m-doc">loggerModem::<wbr />_disconnectTime_ms</a>.</p>
 
 
               <p>Documentation for the BG96 says to allow &gt;2s for clean shutdown.</p>
@@ -1911,7 +2413,7 @@
               >
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.12.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.14.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

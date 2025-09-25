@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "class",
     "id": "class_processor_stats___free_ram",
@@ -13,7 +13,7 @@
     "has_template_details": false,
     "templates": null,
     "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__processor.html#sensor_processor_ram\" class=\"m-doc\">free RAM</a> measured by the MCU.",
-    "description": "<p>This is the amount of free space on the processor when running the program. This is just a diagnostic value. This number <em><strong>should always remain the same for a single logger program</strong></em>. If this number is not constant over time, there is a memory leak and something wrong with your logging program.</p>",
+    "description": "<p>This is the amount of free space on the processor when running the program. This is just a diagnostic value. This number <em><strong>should always remain the same for a single logger program</strong></em>. If this number is not constant over time, there is a memory leak and something wrong with your logging program. There is almost never a reason to store or transmit this value, but it is helpful to check for debugging.</p>",
     "sections": "",
     "deprecated": null,
     "since": null,

@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "file",
     "id": "_modular_sensors_8h",
@@ -34,8 +34,8 @@
         "include": null,
         "has_details": false,
         "name": "MODULAR_SENSORS_VERSION",
-        "initializer": "\"0.36.0\"",
-        "brief": "The current library version number <a href=\"https://semver.org/\">https:/<wbr />/<wbr />semver.org/<wbr /></a> Add hypen &#x27;-&#x27; and alpha number for a branches unique tracking number A pre-release version will always be indicated as slightly ahead of the EnviroDIY branch that it is based on.",
+        "initializer": "\"0.37.0\"",
+        "brief": "The current library version number <a href=\"https://semver.org/\">https:/<wbr />/<wbr />semver.org/<wbr /></a> Add hyphen &#x27;-&#x27; and alpha number for a branches unique tracking number A pre-release version will always be indicated as slightly ahead of the EnviroDIY branch that it is based on.",
         "description": "",
         "return_value": null,
         "deprecated": null,

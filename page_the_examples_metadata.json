@@ -1,0 +1,23 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "page_the_examples",
+  "kind": "page",
+  "name": "Examples Using ModularSensors",
+  "url": "page_the_examples.html",
+  "brief": "",
+  "has_details": 14,
+  "children": [
+    "page_examples_basic",
+    "page_examples_outgoing_data",
+    "page_examples_complex",
+    "page_examples_drwi",
+    "page_examples_menu"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

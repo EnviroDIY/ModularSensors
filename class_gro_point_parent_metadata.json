@@ -1,0 +1,20 @@
+{
+  "is_final": false,
+  "parent": null,
+  "parentGroup": null,
+  "id": "class_gro_point_parent",
+  "kind": "class",
+  "name": "GroPointParent",
+  "url": "class_gro_point_parent.html",
+  "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for all the <a href=\"group__gropoint__group.html\" class=\"m-doc\">GroPoint sensors</a>.",
+  "has_details": true,
+  "children": [
+    "class_gro_point_g_p_l_p8"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null
+}

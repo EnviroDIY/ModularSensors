@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "class",
     "id": "class_atlas_parent",
@@ -650,7 +650,7 @@
             "type": "uint32_t",
             "type_name": "uint32_t timeout",
             "default": "1000L",
-            "description": "The maximum amout of time to wait in ms.",
+            "description": "The maximum amount of time to wait in ms.",
             "direction": ""
           }
         ]

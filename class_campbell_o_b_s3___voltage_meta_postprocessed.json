@@ -1,0 +1,19 @@
+{
+  "is_final": false,
+  "parent": "class_variable",
+  "parentGroup": "group__sensor__obs3",
+  "id": "class_campbell_o_b_s3___voltage",
+  "kind": "class",
+  "name": "CampbellOBS3_Voltage",
+  "url": "class_campbell_o_b_s3___voltage.html",
+  "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__obs3.html#sensor_obs3_voltage\" class=\"m-doc\">raw voltage output</a> from a <a href=\"group__sensor__obs3.html\" class=\"m-doc\">Campbell OBS3+</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null,
+  "leaf_name": "CampbellOBS3_Voltage"
+}

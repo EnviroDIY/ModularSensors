@@ -1,0 +1,17 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "_a_w_s___io_t___publisher_8h",
+  "kind": "file",
+  "name": "AWS_IoT_Publisher.h",
+  "url": "_a_w_s___io_t___publisher_8h.html",
+  "brief": "Contains the <a href=\"class_a_w_s___io_t___publisher.html\" class=\"m-doc\">AWS_<wbr />IoT_<wbr />Publisher</a> subclass of <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> for publishing data to AWS IoT Core using the MQTT protocol.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

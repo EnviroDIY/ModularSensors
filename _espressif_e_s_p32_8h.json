@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "file",
     "id": "_espressif_e_s_p32_8h",
@@ -9,7 +9,7 @@
     "include": null,
     "has_template_details": false,
     "templates": null,
-    "brief": "Contains the EspressifESP32 subclass of <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> which is merely a typedef for the <a href=\"class_espressif_e_s_p8266.html\" class=\"m-doc\">EspressifESP8266</a> class.",
+    "brief": "Contains the <a href=\"class_espressif_e_s_p32.html\" class=\"m-doc\">EspressifESP32</a> subclass of <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> which <em>SHOULD</em> work for essentially any breakout or variant of the ESP32 wifi/bluetooth chip that has been flashed with <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a>&#x27;s AT command firmware.",
     "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside>",
     "sections": "",
     "deprecated": null,
@@ -20,14 +20,40 @@
     "dirs": [],
     "files": [],
     "namespaces": [],
-    "classes": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_espressif_e_s_p32.html",
+        "name": "EspressifESP32",
+        "brief": "The <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> subclass for any breakout of the <a href=\"group__modem__esp32.html\" class=\"m-doc\">Espressif ESP32</a> wifi chip or ESP32 wifi/bluetooth chip that has been flashed with <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a>&#x27;s AT command firmware.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
     "base_classes": [],
     "derived_classes": [],
     "enums": [],
     "typedefs": [],
     "funcs": [],
     "vars": [],
-    "defines": [],
+    "defines": [
+      {
+        "base_url": "_espressif_e_s_p32_8h.html",
+        "id": "a6eaf5199fb5a806d9fe55523566f8409",
+        "include": null,
+        "has_details": false,
+        "name": "TINY_GSM_MODEM_ESP32",
+        "initializer": null,
+        "brief": "The modem type for the underlying TinyGSM library.",
+        "description": "",
+        "return_value": null,
+        "deprecated": null,
+        "since": null,
+        "has_param_details": false,
+        "params": null
+      }
+    ],
     "public_types": [],
     "public_static_funcs": [],
     "typeless_funcs": [],

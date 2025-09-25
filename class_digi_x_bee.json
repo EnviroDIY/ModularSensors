@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "class",
     "id": "class_digi_x_bee",
@@ -99,7 +99,7 @@
         "type": "",
         "name": "DigiXBee",
         "brief": "Construct a new Digi XBee object.",
-        "description": "<p>Should be set to a negative number if the modem should be continuously powered or the power cannot be controlled by the MCU.    \nShould be set to a negative number if the modem status pin cannot be read.    This can be either the pin named <code>ON/SLEEP_N/DIO9</code> or <code>CTS_N/DIO7</code> pin in Digi&#x27;s hardware reference. \nShould be set to a negative number if the modem reset pin is not connected to the MCU.    This shold be the pin called <code>RESET_N</code> in Digi&#x27;s hardware reference. \nShould be set to a negative number if there is no pin usable for deep sleep modes or it is not accessible to the MCU.    This shold be the pin called <code>DTR_N/SLEEP_RQ/DIO8</code> in Digi&#x27;s hardware reference.</p><aside class=\"m-note m-default\"><h4>See also</h4><p><a href=\"classlogger_modem.html#a9f13bc440fea4db11d219e5616214563\" class=\"m-doc\">loggerModem::<wbr />loggerModem</a></p></aside>",
+        "description": "<p>Should be set to a negative number if the modem should be continuously powered or the power cannot be controlled by the MCU.    \nShould be set to a negative number if the modem status pin cannot be read.    This can be either the pin named <code>ON/SLEEP_N/DIO9</code> or <code>CTS_N/DIO7</code> pin in Digi&#x27;s hardware reference. \nShould be set to a negative number if the modem reset pin is not connected to the MCU.    This should be the pin called <code>RESET_N</code> in Digi&#x27;s hardware reference. \nShould be set to a negative number if there is no pin usable for deep sleep modes or it is not accessible to the MCU.    This should be the pin called <code>DTR_N/SLEEP_RQ/DIO8</code> in Digi&#x27;s hardware reference.</p><aside class=\"m-note m-default\"><h4>See also</h4><p><a href=\"classlogger_modem.html#a207f7d1690cab74f5279f13b6efcd71d\" class=\"m-doc\">loggerModem::<wbr />loggerModem</a></p></aside>",
         "return_value": null,
         "return_values": [],
         "exceptions": [],
@@ -222,7 +222,7 @@
         "name": "modemSleepFxn",
         "brief": "Perform the parts of the modem sleep process that are unique to a specific module, as opposed to the parts of setup that are common to all modem modules.",
         "description": "",
-        "return_value": "True if the unique part of the sleep function ran sucessfully.",
+        "return_value": "True if the unique part of the sleep function ran successfully.",
         "return_values": [],
         "exceptions": [],
         "deprecated": null,
@@ -267,7 +267,7 @@
         "name": "modemWakeFxn",
         "brief": "Perform the parts of the modem wake up process that are unique to a specific module, as opposed to the parts of setup that are common to all modem modules.",
         "description": "",
-        "return_value": "True if the unique part of the wake function ran sucessfully - does <em>NOT</em> indicate that the modem is now responsive.",
+        "return_value": "True if the unique part of the wake function ran successfully - does <em>NOT</em> indicate that the modem is now responsive.",
         "return_values": [],
         "exceptions": [],
         "deprecated": null,

@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "class",
     "id": "class_bosch_b_m_p3xx",
@@ -94,7 +94,7 @@
             "type": "Mode",
             "type_name": "Mode mode",
             "default": "FORCED_MODE",
-            "description": "<p>Data sampling mode<br />Possible values are:</p><ul><li><code>FORCED_MODE</code> - a single measurement is made upon request and the sensor immediately returns to sleep. This mode should be used if you are stopping power to the sensor between readings. You should not use this mode if you wish to use the sensor&#x27;s on-board IIR filter.</li><li><code>NORMAL_MODE</code> - the sensor alteranates between sampling and sleeping at intervals set by the sensor output data rate, results can be read whenever needed. This mode should <em>not</em> be used if you will stop power to the sensor between readings. If you wish to use the sensor&#x27;s on-board filtering, you should use normal mode.</li></ul>",
+            "description": "<p>Data sampling mode<br />Possible values are:</p><ul><li><code>FORCED_MODE</code> - a single measurement is made upon request and the sensor immediately returns to sleep. This mode should be used if you are stopping power to the sensor between readings. You should not use this mode if you wish to use the sensor&#x27;s on-board IIR filter.</li><li><code>NORMAL_MODE</code> - the sensor alternates between sampling and sleeping at intervals set by the sensor output data rate, results can be read whenever needed. This mode should <em>not</em> be used if you will stop power to the sensor between readings. If you wish to use the sensor&#x27;s on-board filtering, you should use normal mode.</li></ul>",
             "direction": ""
           },
           {

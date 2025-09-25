@@ -1,0 +1,23 @@
+{
+  "is_final": null,
+  "parent": "dir_7349e89ef19c117195f8e371603e1b1f",
+  "parentGroup": null,
+  "id": "_paleo_terra_redox_8h",
+  "kind": "file",
+  "name": "PaleoTerraRedox.h",
+  "url": "_paleo_terra_redox_8h.html",
+  "brief": "Contains the <a href=\"class_paleo_terra_redox.html\" class=\"m-doc\">PaleoTerraRedox</a> sensor subclass and the variable subclass <a href=\"class_paleo_terra_redox___voltage.html\" class=\"m-doc\">PaleoTerraRedox_<wbr />Voltage</a>.",
+  "has_details": true,
+  "children": [
+    "sensor-variable-counts",
+    "configuration-defines",
+    "sensor-timing",
+    "voltage"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "PaleoTerraRedox.h"
+}

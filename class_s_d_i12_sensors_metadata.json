@@ -1,0 +1,30 @@
+{
+  "is_final": false,
+  "parent": null,
+  "parentGroup": null,
+  "id": "class_s_d_i12_sensors",
+  "kind": "class",
+  "name": "SDI12Sensors",
+  "url": "class_s_d_i12_sensors.html",
+  "brief": "The main class for SDI-12 Sensors.",
+  "has_details": true,
+  "children": [
+    "class_campbell_clari_v_u_e10",
+    "class_campbell_rain_v_u_e10",
+    "class_decagon5_t_m",
+    "class_decagon_c_t_d",
+    "class_decagon_e_s2",
+    "class_in_situ_r_d_o",
+    "class_in_situ_troll_sdi12a",
+    "class_meter_hydros21",
+    "class_meter_teros11",
+    "class_vega_puls21",
+    "class_zebra_tech_d_opto"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null
+}

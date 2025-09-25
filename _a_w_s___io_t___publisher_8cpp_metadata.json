@@ -1,0 +1,17 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "_a_w_s___io_t___publisher_8cpp",
+  "kind": "file",
+  "name": "AWS_IoT_Publisher.cpp",
+  "url": "_a_w_s___io_t___publisher_8cpp.html",
+  "brief": "Implements the <a href=\"class_a_w_s___io_t___publisher.html\" class=\"m-doc\">AWS_<wbr />IoT_<wbr />Publisher</a> class.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

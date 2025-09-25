@@ -1,0 +1,21 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "group__sensor__gplp8",
+  "kind": "group",
+  "name": "GroPoint Profile GPLP-8 Soil Moisture &amp; Temperature",
+  "url": "group__sensor__gplp8.html",
+  "brief": "",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [
+    "class_gro_point_g_p_l_p8",
+    "class_gro_point_g_p_l_p8___moist",
+    "class_gro_point_g_p_l_p8___temp"
+  ],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

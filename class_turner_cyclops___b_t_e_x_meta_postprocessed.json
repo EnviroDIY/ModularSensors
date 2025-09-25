@@ -1,0 +1,19 @@
+{
+  "is_final": false,
+  "parent": "class_variable",
+  "parentGroup": "group__sensor__cyclops",
+  "id": "class_turner_cyclops___b_t_e_x",
+  "kind": "class",
+  "name": "TurnerCyclops_BTEX",
+  "url": "class_turner_cyclops___b_t_e_x.html",
+  "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__cyclops.html#sensor_cyclops_output\" class=\"m-doc\">refined fuels (BTEX) output</a> from a <a href=\"group__sensor__cyclops.html\" class=\"m-doc\">Turner Cyclops-7F</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null,
+  "leaf_name": "TurnerCyclops_BTEX"
+}

@@ -1,0 +1,18 @@
+{
+  "is_final": null,
+  "parent": "dir_68267d1309a1af8e8297ef4c3efbcdba",
+  "parentGroup": null,
+  "id": "_modular_sensors_8h",
+  "kind": "file",
+  "name": "ModularSensors.h",
+  "url": "_modular_sensors_8h.html",
+  "brief": "A simple include file for the Arduino command line interface (CLI).",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "ModularSensors.h"
+}

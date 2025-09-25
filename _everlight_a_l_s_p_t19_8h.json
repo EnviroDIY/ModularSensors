@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "file",
     "id": "_everlight_a_l_s_p_t19_8h",
@@ -9,7 +9,7 @@
     "include": null,
     "has_template_details": false,
     "templates": null,
-    "brief": "Contains the <a href=\"class_everlight_a_l_s_p_t19.html\" class=\"m-doc\">EverlightALSPT19</a> sensor subclass and the variable subclasses <a href=\"class_everlight_a_l_s_p_t19___current.html\" class=\"m-doc\">EverlightALSPT19_<wbr />Current</a> and <a href=\"class_everlight_a_l_s_p_t19___illuminance.html\" class=\"m-doc\">EverlightALSPT19_<wbr />Illuminance</a>.",
+    "brief": "Contains the <a href=\"class_everlight_a_l_s_p_t19.html\" class=\"m-doc\">EverlightALSPT19</a> sensor subclass and the variable subclasses <a href=\"class_everlight_a_l_s_p_t19___voltage.html\" class=\"m-doc\">EverlightALSPT19_<wbr />Voltage</a>, <a href=\"class_everlight_a_l_s_p_t19___current.html\" class=\"m-doc\">EverlightALSPT19_<wbr />Current</a>, and <a href=\"class_everlight_a_l_s_p_t19___illuminance.html\" class=\"m-doc\">EverlightALSPT19_<wbr />Illuminance</a>.",
     "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside><p>These are used for the Everlight ALS-PT19 ambient light sensor.</p>",
     "sections": "",
     "deprecated": null,

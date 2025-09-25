@@ -1,0 +1,18 @@
+{
+  "is_final": false,
+  "parent": null,
+  "parentGroup": null,
+  "id": "class_yosemitech_y520___cond",
+  "kind": "class",
+  "name": "YosemitechY520_Cond",
+  "url": "class_yosemitech_y520___cond.html",
+  "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__y520.html#sensor_y520_cond\" class=\"m-doc\">conductivity output</a> from a <a href=\"group__sensor__y520.html\" class=\"m-doc\">Yosemitech Y520-A 4-electrode conductivity sensor</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null
+}

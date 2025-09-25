@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "dir",
     "id": "dir_1510bd745cd29c20d24c27171ebe5ba5",
@@ -17,7 +17,15 @@
     "example_navigation": null,
     "footer_navigation": null,
     "topics": [],
-    "dirs": [],
+    "dirs": [
+      {
+        "url": "dir_33621a492d112d01d824a5de72c03dae.html",
+        "name": "AWS_IoT_SetCertificates",
+        "brief": "Contains the AWS_IoT_SetCertificates example.",
+        "deprecated": null,
+        "since": null
+      }
+    ],
     "files": [],
     "namespaces": [],
     "classes": [],

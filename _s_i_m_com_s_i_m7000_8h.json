@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "file",
     "id": "_s_i_m_com_s_i_m7000_8h",
@@ -40,10 +40,10 @@
     "defines": [
       {
         "base_url": "_s_i_m_com_s_i_m7000_8h.html",
-        "id": "a3de844090dc454f21bd54bacd4ce053f",
+        "id": "a5d827b68cc0c01467f33034cca8a4ac9",
         "include": null,
         "has_details": false,
-        "name": "TINY_GSM_MODEM_SIM7000",
+        "name": "TINY_GSM_MODEM_SIM7000SSL",
         "initializer": null,
         "brief": "The modem type for the underlying TinyGSM library.",
         "description": "",

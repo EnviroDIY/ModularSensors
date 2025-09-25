@@ -1,0 +1,23 @@
+{
+  "is_final": null,
+  "parent": "dir_7349e89ef19c117195f8e371603e1b1f",
+  "parentGroup": null,
+  "id": "_rain_counter_i2_c_8h",
+  "kind": "file",
+  "name": "RainCounterI2C.h",
+  "url": "_rain_counter_i2_c_8h.html",
+  "brief": "Contains the <a href=\"class_rain_counter_i2_c.html\" class=\"m-doc\">RainCounterI2C</a> sensor subclass and the variable subclasses <a href=\"class_rain_counter_i2_c___tips.html\" class=\"m-doc\">RainCounterI2C_<wbr />Tips</a> and <a href=\"class_rain_counter_i2_c___depth.html\" class=\"m-doc\">RainCounterI2C_<wbr />Depth</a>.",
+  "has_details": true,
+  "children": [
+    "sensor-variable-counts",
+    "sensor-timing",
+    "rain-depth",
+    "tip-count"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "RainCounterI2C.h"
+}

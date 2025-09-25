@@ -1,0 +1,17 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "_watch_dog_a_v_r_8cpp",
+  "kind": "file",
+  "name": "WatchDogAVR.cpp",
+  "url": "_watch_dog_a_v_r_8cpp.html",
+  "brief": "Implements the <a href=\"classextended_watch_dog_a_v_r.html\" class=\"m-doc\">extendedWatchDogAVR</a> class.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

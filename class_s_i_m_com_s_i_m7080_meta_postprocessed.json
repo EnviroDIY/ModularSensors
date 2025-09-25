@@ -1,0 +1,19 @@
+{
+  "is_final": false,
+  "parent": "classlogger_modem",
+  "parentGroup": "group__modem__sim7080",
+  "id": "class_s_i_m_com_s_i_m7080",
+  "kind": "class",
+  "name": "SIMComSIM7080",
+  "url": "class_s_i_m_com_s_i_m7080.html",
+  "brief": "The <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> subclass for modules based on the <a href=\"group__modem__sim7080.html\" class=\"m-doc\">SIMCOM</a>SIM7080&quot;.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null,
+  "leaf_name": "SIMComSIM7080"
+}

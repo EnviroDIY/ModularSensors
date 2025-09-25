@@ -1,0 +1,18 @@
+{
+  "is_final": false,
+  "parent": null,
+  "parentGroup": null,
+  "id": "classlogger_clock",
+  "kind": "class",
+  "name": "loggerClock",
+  "url": "classlogger_clock.html",
+  "brief": "A class for the clock attached to the logger.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null
+}

@@ -1,0 +1,19 @@
+{
+  "is_final": false,
+  "parent": "class_s_i_m_com_s_i_m800",
+  "parentGroup": "group__modem__gprsbee",
+  "id": "class_sodaq2_g_bee_r6",
+  "kind": "class",
+  "name": "Sodaq2GBeeR6",
+  "url": "class_sodaq2_g_bee_r6.html",
+  "brief": "The <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> subclass for the <a href=\"group__modem__gprsbee.html\" class=\"m-doc\">Sodaq 2GBee</a> revisions 6 and higher based on the SIMCOM SIM800H.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null,
+  "leaf_name": "Sodaq2GBeeR6"
+}

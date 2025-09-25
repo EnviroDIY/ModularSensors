@@ -1,0 +1,18 @@
+{
+  "is_final": null,
+  "parent": "dir_d28a4824dc47e487b107a5db32ef43c4",
+  "parentGroup": null,
+  "id": "dir_1f0d976cf68efe45ecce86c6e39bb57d",
+  "kind": "dir",
+  "name": "examples/simple_logging_LearnEnviroDIY",
+  "url": "dir_1f0d976cf68efe45ecce86c6e39bb57d.html",
+  "brief": "Contains the simple_logging_LearnEnviroDIY example.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "simple_logging_LearnEnviroDIY"
+}

@@ -1,0 +1,21 @@
+{
+  "is_final": null,
+  "parent": "group__the__sensors",
+  "parentGroup": null,
+  "id": "group__sensor__maxbotix",
+  "kind": "group",
+  "name": "MaxBotix MaxSonar",
+  "url": "group__sensor__maxbotix.html",
+  "brief": "",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [
+    "class_max_botix_sonar",
+    "class_max_botix_sonar___range"
+  ],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "MaxBotix MaxSonar"
+}

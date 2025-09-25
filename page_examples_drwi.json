@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "page",
     "id": "page_examples_drwi",
@@ -10,7 +10,7 @@
     "has_template_details": false,
     "templates": null,
     "brief": "",
-    "description": "<p><a href=\"page_the_examples.html#examples_drwi\" class=\"m-doc\">DRWI Citizen Science</a></p>",
+    "description": "<p><a href=\"page_the_examples.html#examples_drwi\" class=\"m-doc\">DRWI Citizen Science</a></p><p><a href=\"example_drwi_mayfly1.html\" class=\"m-doc\">DELETE THIS LINK</a></p><p><a href=\"example_drwi_mayfly1_wifi.html\" class=\"m-doc\">DELETE THIS LINK</a></p><p><a href=\"example_drwi_ediylte.html\" class=\"m-doc\">DELETE THIS LINK</a></p><p><a href=\"example_drwi_digilte.html\" class=\"m-doc\">DELETE THIS LINK</a></p><p><a href=\"example_drwi_2g.html\" class=\"m-doc\">DELETE THIS LINK</a></p><p><a href=\"example_drwi_no_cell.html\" class=\"m-doc\">DELETE THIS LINK</a></p>",
     "sections": [],
     "deprecated": null,
     "since": null,

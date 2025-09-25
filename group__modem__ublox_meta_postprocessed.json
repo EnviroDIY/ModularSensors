@@ -1,0 +1,21 @@
+{
+  "is_final": null,
+  "parent": "group__the__modems",
+  "parentGroup": null,
+  "id": "group__modem__ublox",
+  "kind": "group",
+  "name": "Sodaq UBee&#x27;s and other u-blox modules",
+  "url": "group__modem__ublox.html",
+  "brief": "",
+  "has_details": true,
+  "children": [
+    "group__modem__ubee__ltem",
+    "group__modem__ubee__3g"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "Sodaq UBee&#x27;s and other u-blox modules"
+}

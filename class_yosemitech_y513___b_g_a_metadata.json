@@ -1,0 +1,18 @@
+{
+  "is_final": false,
+  "parent": null,
+  "parentGroup": null,
+  "id": "class_yosemitech_y513___b_g_a",
+  "kind": "class",
+  "name": "YosemitechY513_BGA",
+  "url": "class_yosemitech_y513___b_g_a.html",
+  "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__y513.html#sensor_y513_bga\" class=\"m-doc\">blue green algae concentration output</a> from a <a href=\"group__sensor__y513.html\" class=\"m-doc\">Yosemitech Y513 Blue Green Algae (BGA) sensor with wiper</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null
+}

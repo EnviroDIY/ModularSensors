@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "page",
     "id": "page_examples_menu",
@@ -10,7 +10,7 @@
     "has_template_details": false,
     "templates": null,
     "brief": "",
-    "description": "<p><a href=\"page_the_examples.html#examples_everything\" class=\"m-doc\">Everything at Once - a la carte</a></p>",
+    "description": "<p><a href=\"page_the_examples.html#examples_everything\" class=\"m-doc\">Everything at Once - a la carte</a></p><p><a href=\"example_menu.html\" class=\"m-doc\">DELETE THIS LINK</a></p>",
     "sections": [],
     "deprecated": null,
     "since": null,

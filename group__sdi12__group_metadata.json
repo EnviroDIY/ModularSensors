@@ -1,0 +1,29 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "group__sdi12__group",
+  "kind": "group",
+  "name": "SDI-12 Sensors",
+  "url": "group__sdi12__group.html",
+  "brief": "",
+  "has_details": true,
+  "children": [
+    "group__sensor__clarivue",
+    "group__sensor__rainvue",
+    "group__sensor__fivetm",
+    "group__sensor__decagon__ctd",
+    "group__sensor__es2",
+    "group__sensor__insitu__rdo",
+    "group__sensor__insitu__troll",
+    "group__sensor__hydros21",
+    "group__sensor__teros11",
+    "group__sensor__vega__puls21",
+    "group__sensor__dopto"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

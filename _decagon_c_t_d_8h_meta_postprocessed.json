@@ -1,0 +1,24 @@
+{
+  "is_final": null,
+  "parent": "dir_7349e89ef19c117195f8e371603e1b1f",
+  "parentGroup": null,
+  "id": "_decagon_c_t_d_8h",
+  "kind": "file",
+  "name": "DecagonCTD.h",
+  "url": "_decagon_c_t_d_8h.html",
+  "brief": "Contains the <a href=\"class_decagon_c_t_d.html\" class=\"m-doc\">DecagonCTD</a> subclass of the <a href=\"class_s_d_i12_sensors.html\" class=\"m-doc\">SDI12Sensors</a> class along with the variable subclasses <a href=\"class_decagon_c_t_d___cond.html\" class=\"m-doc\">DecagonCTD_<wbr />Cond</a>, <a href=\"class_decagon_c_t_d___temp.html\" class=\"m-doc\">DecagonCTD_<wbr />Temp</a>, and <a href=\"class_decagon_c_t_d___depth.html\" class=\"m-doc\">DecagonCTD_<wbr />Depth</a>.",
+  "has_details": true,
+  "children": [
+    "sensor-variable-counts",
+    "sensor-timing",
+    "conductivity",
+    "temperature",
+    "water-depth"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "DecagonCTD.h"
+}

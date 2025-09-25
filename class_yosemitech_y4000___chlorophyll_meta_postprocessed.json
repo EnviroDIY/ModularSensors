@@ -1,0 +1,19 @@
+{
+  "is_final": false,
+  "parent": "class_variable",
+  "parentGroup": "group__sensor__y4000",
+  "id": "class_yosemitech_y4000___chlorophyll",
+  "kind": "class",
+  "name": "YosemitechY4000_Chlorophyll",
+  "url": "class_yosemitech_y4000___chlorophyll.html",
+  "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__y4000.html#sensor_y4000_chloro\" class=\"m-doc\">chlorophyll concentration output</a> from a <a href=\"group__sensor__y4000.html\" class=\"m-doc\">Yosemitech Y4000 multiparameter sonde</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null,
+  "leaf_name": "YosemitechY4000_Chlorophyll"
+}

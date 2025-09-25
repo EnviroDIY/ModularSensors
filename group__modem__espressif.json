@@ -1,0 +1,331 @@
+{
+  "version": "1.14.0",
+  "compound": {
+    "kind": "group",
+    "id": "group__modem__espressif",
+    "name": "Espressif ESP8266, ESP32, and various ESP32 flavors",
+    "url_base": "group__modem__espressif",
+    "url": "group__modem__espressif.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<section id=\"modem_espressif_notes\"><h2>Introduction</h2><p>These are handy, cheap, and very widely available WiFi and WiFi/Bluetooth modules. They use relatively little power amd can be put in a deep sleep mode to greatly reduce power draw. The types of sleep they can use are dependent on the breakout you have. If you&#x27;re shopping for boards, I strongly recommend getting a breakout that exposes the deep sleep wake up (RSTB/DIO16) pin so that you can put the chip in its lowest power mode. When using the AT command firmware, it is not possible to purposefully enter light sleep mode. The module will enter light sleep on its own after some (undocumented) idle period. In my testing, I&#x27;ve never seen the module drop to the documented light sleep power levels regardless of the length of time idle.</p></section><section id=\"modem_espressif_docs\"><h2>Manufacturer Documentation</h2><p>More information on the ESP8266 is here: <a href=\"https://www.espressif.com/en/products/socs/esp8266\">https:/<wbr />/<wbr />www.espressif.com/<wbr />en/<wbr />products/<wbr />socs/<wbr />esp8266</a> And the page for the ESP32 is here: <a href=\"https://www.espressif.com/en/products/socs/esp32\">https:/<wbr />/<wbr />www.espressif.com/<wbr />en/<wbr />products/<wbr />socs/<wbr />esp32</a></p></section><section id=\"modem_espressif_ctor\"><h2>Modem Constructor</h2><p>{{ <a href=\"class_espressif.html#a73abed51f43849a4a3b6350ff3c5b619\" class=\"m-doc\">Espressif::<wbr />Espressif</a> }}</p></section>",
+    "sections": [
+      [
+        "modem_espressif_notes",
+        "Introduction",
+        []
+      ],
+      [
+        "modem_espressif_docs",
+        "Manufacturer Documentation",
+        []
+      ],
+      [
+        "modem_espressif_ctor",
+        "Modem Constructor",
+        []
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [
+      {
+        "url": "group__modem__esp32.html",
+        "name": "Espressif ESP32 and variants",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "group__modem__esp8266.html",
+        "name": "Espressif ESP8266",
+        "brief": "",
+        "deprecated": null,
+        "since": null
+      }
+    ],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_espressif.html",
+        "name": "Espressif",
+        "brief": "The <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> subclass for almost any <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a> wifi or wifi/bluetooth chip that has been flashed with <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a>&#x27;s AT command firmware.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [
+      {
+        "name": "Modem Pin Settings and Timing",
+        "id": "modem-pin-settings-and-timing",
+        "description": "<p><a name=\"modem_espressif_pins_timing\"></a> The timing and pin level settings for most <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a> modules</p>",
+        "members": [
+          [
+            "define",
+            {
+              "base_url": "group__modem__espressif.html",
+              "id": "ga9cb2ce83a6767396916b2761292270e3",
+              "include": [
+                "&lt;src/modems/Espressif.h&gt;",
+                "_espressif_8h.html"
+              ],
+              "has_details": true,
+              "name": "ESPRESSIF_STATUS_LEVEL",
+              "initializer": "HIGH",
+              "brief": "The <a href=\"classlogger_modem.html#af44caee8dd6acf7c72cd1271441a41cb\" class=\"m-doc\">loggerModem::<wbr />_statusLevel</a>.",
+              "description": "<p>It is not possible to get status from the <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a> modules in deep sleep mode - during deep sleep the pin state is undefined.</p><p>For cases where a pin is defined for light sleep mode, the <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a> documentation states:</p><blockquote><p>since the system needs some time to wake up from light sleep, it is suggested that wait at least 5ms before sending next AT command. The documentation doesn&#x27;t say anything about the time before the pin reaches the expected level. The status level during light sleep is user selectable, this library sets it low for wake and high for sleep. Of course, despite being able to configure light sleep mode for the module, it&#x27;s not actually possible to purposefully enter light sleep via AT commands, so we are dependent on the module deciding it&#x27;s been idle long enough and entering sleep on its own. It is a terrible system. <strong>Use a deep-sleep with reset if possible.</strong></p></blockquote>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__espressif.html",
+              "id": "ga8243519d78b17c4f5581cd64102cf40b",
+              "include": [
+                "&lt;src/modems/Espressif.h&gt;",
+                "_espressif_8h.html"
+              ],
+              "has_details": true,
+              "name": "ESPRESSIF_STATUS_TIME_MS",
+              "initializer": "350",
+              "brief": "The <a href=\"classlogger_modem.html#a755d93cb67e9184a7cdfeae17448667b\" class=\"m-doc\">loggerModem::<wbr />_statusTime_ms</a>.",
+              "description": "<p>It is not possible to get status from the <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a> modules in deep sleep mode - during deep sleep the pin state is undefined.</p><p>For cases where a pin is defined for light sleep mode, the <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a> documentation states:</p><blockquote><p>since the system needs some time to wake up from light sleep, it is suggested that wait at least 5ms before sending next AT command. The documentation doesn&#x27;t say anything about the time before the pin reaches the expected level. The status level during light sleep is user selectable, this library sets it low for wake and high for sleep. Of course, despite being able to configure light sleep mode for the module, it&#x27;s not actually possible to purposefully enter light sleep via AT commands, so we are dependent on the module deciding it&#x27;s been idle long enough and entering sleep on its own. It is a terrible system. <strong>Use a deep-sleep with reset if possible.</strong></p></blockquote>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__espressif.html",
+              "id": "ga5b9db9f47c7ebe4057b725ba1d4aedbb",
+              "include": [
+                "&lt;src/modems/Espressif.h&gt;",
+                "_espressif_8h.html"
+              ],
+              "has_details": true,
+              "name": "ESPRESSIF_RESET_LEVEL",
+              "initializer": "LOW",
+              "brief": "The <a href=\"classlogger_modem.html#a4832f4560020f57bfb2e11ddade73d0a\" class=\"m-doc\">loggerModem::<wbr />_resetLevel</a>.",
+              "description": "<p>The <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a> is reset with a low pulse on the reset pin. The reset time is undocumented but very fast - 1ms seems to be sufficient</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__espressif.html",
+              "id": "gad5871bc178a30198815e7bae6bc6b61f",
+              "include": [
+                "&lt;src/modems/Espressif.h&gt;",
+                "_espressif_8h.html"
+              ],
+              "has_details": true,
+              "name": "ESPRESSIF_RESET_PULSE_MS",
+              "initializer": "1",
+              "brief": "The <a href=\"classlogger_modem.html#a9ee81f2d0dd9e5cdf89e8e469147c38c\" class=\"m-doc\">loggerModem::<wbr />_resetPulse_ms</a>.",
+              "description": "<p>The <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a> is reset with a low pulse on the reset pin. The reset time is undocumented but very fast - 1ms seems to be sufficient</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__espressif.html",
+              "id": "ga8bb797fc930515ba6ba49cbace27fc34",
+              "include": [
+                "&lt;src/modems/Espressif.h&gt;",
+                "_espressif_8h.html"
+              ],
+              "has_details": true,
+              "name": "ESPRESSIF_WAKE_LEVEL",
+              "initializer": "LOW",
+              "brief": "The <a href=\"classlogger_modem.html#a71c42d58d22d8481e6e6f7e5b7d8f0bf\" class=\"m-doc\">loggerModem::<wbr />_wakeLevel</a>.",
+              "description": "<p>This light sleep wake level is user configurable on <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a> modules. This library uses a <code>LOW</code> level for wake.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__espressif.html",
+              "id": "gaa26c178cdc7c802575b20783003a7bb0",
+              "include": [
+                "&lt;src/modems/Espressif.h&gt;",
+                "_espressif_8h.html"
+              ],
+              "has_details": true,
+              "name": "ESPRESSIF_WAKE_PULSE_MS",
+              "initializer": "0",
+              "brief": "The <a href=\"classlogger_modem.html#a1b4e78a1e0963fb1cc970ce6273c124d\" class=\"m-doc\">loggerModem::<wbr />_wakePulse_ms</a>.",
+              "description": "<p>This light sleep wake level is user configurable on <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a> modules. This library uses a <code>LOW</code> level for wake.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__espressif.html",
+              "id": "ga3a95b3cdd340c0267763ef3e5ac26f61",
+              "include": [
+                "&lt;src/modems/Espressif.h&gt;",
+                "_espressif_8h.html"
+              ],
+              "has_details": true,
+              "name": "ESPRESSIF_WAKE_DELAY_MS",
+              "initializer": "0",
+              "brief": "The <a href=\"classlogger_modem.html#a68051ed68b85195bf188a1914c71a9c8\" class=\"m-doc\">loggerModem::<wbr />_wakeDelayTime_ms</a>.",
+              "description": "<p><a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a> modules turn on when power is applied regardless of pin states. No further wake command is needed.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__espressif.html",
+              "id": "ga2c8eb045697f477e9010314a5a7e531c",
+              "include": [
+                "&lt;src/modems/Espressif.h&gt;",
+                "_espressif_8h.html"
+              ],
+              "has_details": true,
+              "name": "ESPRESSIF_AT_RESPONSE_TIME_MS",
+              "initializer": "850",
+              "brief": "The <a href=\"classlogger_modem.html#a1eb0149e16837edc9afaa1a96451c53f\" class=\"m-doc\">loggerModem::<wbr />_max_at_response_time_ms</a>.",
+              "description": "<p>The serial response time after boot (via power on or reset) is undocumented for the ESP8266. Other users online estimate about 350ms.</p><p>In my fiddling, the ESP32 running AT firmware takes a bit longer; 850ms may be safe.</p><p>The serial response time on waking from light sleep is 5ms.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__espressif.html",
+              "id": "gaa2fd5851fbdcdd841c2fd8feee91b7cf",
+              "include": [
+                "&lt;src/modems/Espressif.h&gt;",
+                "_espressif_8h.html"
+              ],
+              "has_details": true,
+              "name": "ESPRESSIF_DISCONNECT_TIME_MS",
+              "initializer": "500",
+              "brief": "The <a href=\"classlogger_modem.html#a6d4306338e19e76002f9280feb3f62be\" class=\"m-doc\">loggerModem::<wbr />_disconnectTime_ms</a>.",
+              "description": "<p>The disconnect time for the ESP8266/ESP32 is not documented (and the status pin isn&#x27;t valid) so this time is just an estimate.</p>",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ],
+          [
+            "define",
+            {
+              "base_url": "group__modem__espressif.html",
+              "id": "ga5a172073e68c24156ce9d6e7e1b938f6",
+              "include": [
+                "&lt;src/modems/Espressif.h&gt;",
+                "_espressif_8h.html"
+              ],
+              "has_details": true,
+              "name": "ESPRESSIF_RECONNECT_TIME_MS",
+              "initializer": "2500",
+              "brief": "The amount of time in ms it takes the ESP8266 to reconnect using saved credentials.",
+              "description": "",
+              "return_value": null,
+              "deprecated": null,
+              "since": null,
+              "has_param_details": false,
+              "params": null
+            }
+          ]
+        ]
+      }
+    ],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": true,
+    "breadcrumb": [
+      [
+        "Supported Modems and Communication Modules",
+        "group__the__modems.html"
+      ],
+      [
+        "Espressif ESP8266, ESP32, and various ESP32 flavors",
+        "group__modem__espressif.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Espressif ESP8266, ESP32, and various ESP32 flavors",
+        "group__modem__espressif.html"
+      ]
+    ]
+  }
+}

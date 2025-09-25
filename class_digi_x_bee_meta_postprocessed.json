@@ -1,0 +1,24 @@
+{
+  "is_final": false,
+  "parent": "classlogger_modem",
+  "parentGroup": "group__modem__digi",
+  "id": "class_digi_x_bee",
+  "kind": "class",
+  "name": "DigiXBee",
+  "url": "class_digi_x_bee.html",
+  "brief": "The parent class for all <a href=\"group__modem__digi.html\" class=\"m-doc\">Digi XBee and XBee3</a> wifi and cellular modules.",
+  "has_details": true,
+  "children": [
+    "class_digi_x_bee3_g_bypass",
+    "class_digi_x_bee_cellular_transparent",
+    "class_digi_x_bee_l_t_e_bypass",
+    "class_digi_x_bee_wifi"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null,
+  "leaf_name": "DigiXBee"
+}

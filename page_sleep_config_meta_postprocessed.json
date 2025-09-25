@@ -1,0 +1,18 @@
+{
+  "is_final": null,
+  "parent": "page_other_notes",
+  "parentGroup": null,
+  "id": "page_sleep_config",
+  "kind": "page",
+  "name": "Modular Sensors Sleep Configurations",
+  "url": "page_sleep_config.html",
+  "brief": "",
+  "has_details": 7,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "Modular Sensors Sleep Configurations"
+}

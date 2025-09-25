@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "file",
     "id": "_logger_modem_macros_8h",
@@ -9,7 +9,7 @@
     "include": null,
     "has_template_details": false,
     "templates": null,
-    "brief": "Contains PRE-ROCESSOR MACROS for use with logger modems.",
+    "brief": "Contains PRE-PROCESSOR MACROS for use with logger modems.",
     "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside><aside class=\"m-note m-info\"><h4>Note</h4><p>These are NOT FUNCTIONS; they are pre-processor macros that I am collecting here to avoid writing the same functions multiple times later.</p></aside>",
     "sections": "",
     "deprecated": null,
@@ -30,11 +30,26 @@
     "defines": [
       {
         "base_url": "_logger_modem_macros_8h.html",
+        "id": "a36ea7a295d2e3fe9260c0cf1e0de184c",
+        "include": null,
+        "has_details": true,
+        "name": "MS_MODEM_NTP_SYNC",
+        "initializer": null,
+        "brief": "A macro to add the line to sync the modem with NTP after it wakes.",
+        "description": "<p>This needs to be called at wake because many modules forget their time when they are powered down.</p>",
+        "return_value": null,
+        "deprecated": null,
+        "since": null,
+        "has_param_details": false,
+        "params": null
+      },
+      {
+        "base_url": "_logger_modem_macros_8h.html",
         "id": "ace5bab37413b7bcc6954068b5c9db9e5",
         "include": null,
         "has_details": true,
         "name": "MS_MODEM_EXTRA_SETUP",
-        "initializer": "    bool specificModem::extraModemSetup(void) { \\\n        bool success = gsmModem.init();         \\\n        gsmClient.init(&gsmModem);              \\\n        _modemName = gsmModem.getModemName();   \\\n        return success;                         \\\n    }",
+        "initializer": "    bool specificModem::extraModemSetup(void) { \\\n        bool success = gsmModem.init();         \\\n        _modemName   = gsmModem.getModemName(); \\\n        ",
         "brief": "Creates an extraModemSetup() function for a specific modem subclass.",
         "description": "<p>This is a passthrough to the TinyGSM init() and getModemName() for a specific modem.</p>",
         "return_value": "The text of an extraModemSetup() function specific to a single modem subclass.",
@@ -130,9 +145,9 @@
         "has_details": true,
         "name": "MS_MODEM_CONNECT_INTERNET",
         "initializer": null,
-        "brief": "Creates a connectInternet(uint32_t maxConnectionTime) function for a specific modem subclass.",
-        "description": "<p>For cellular modems, this uses the TinyGSM waitForNetwork() function for the specific modem and then connects to GPRS using <a href=\"#a037196788b842228149d794b1e90ba29\" class=\"m-doc\">MS_<wbr />MODEM_<wbr />SET_<wbr />APN</a>.</p><p>For WiFi modems, this first checks for pre-existing internet connection and if that isn&#x27;t present uses the specific modem&#x27;s networkConnect(ssid, pwd) function followed by waitForNetwork(uint32_t maxConnectionTime).</p><aside class=\"m-note m-info\"><h4>Note</h4><p>The order of credentials and waiting is reversed between cellular and WiFi modems. WiFi modems must send first credentials and then wait for the connection to be established. Cellular modems on the other hand must first wait for network registration, then provide the access point name, and then establish a GPRS/EPS connection.</p></aside>",
-        "return_value": "The text of a connectInternet(uint32_t maxConnectionTime) function specific to a single modem subclass.",
+        "brief": "Creates a connectInternet() function for a specific modem subclass.",
+        "description": "<p>For cellular modems, this uses the TinyGSM waitForNetwork() function for the specific modem and then connects to GPRS using <a href=\"#a037196788b842228149d794b1e90ba29\" class=\"m-doc\">MS_<wbr />MODEM_<wbr />SET_<wbr />APN</a>.</p><p>For WiFi modems, this first checks for pre-existing internet connection and if that isn&#x27;t present uses the specific modem&#x27;s networkConnect(ssid, pwd) function followed by waitForNetwork().</p><aside class=\"m-note m-info\"><h4>Note</h4><p>The order of credentials and waiting is reversed between cellular and WiFi modems. WiFi modems must send first credentials and then wait for the connection to be established. Cellular modems on the other hand must first wait for network registration, then provide the access point name, and then establish a GPRS/EPS connection.</p></aside>",
+        "return_value": "The text of a connectInternet() function specific to a single modem subclass.",
         "deprecated": null,
         "since": null,
         "has_param_details": true,
@@ -153,6 +168,106 @@
         "brief": "Creates a disconnectInternet() function for a specific modem subclass.",
         "description": "<p>For cellular modems, this is a passthrough to gprsDisconnect() for the specific TinyGSM modem type.</p><p>For Wifi modems, this is a passthrough to networkDisconnect() for the specific TinyGSM modem type</p>",
         "return_value": "The text of a disconnectInternet() function specific to a single modem subclass.",
+        "deprecated": null,
+        "since": null,
+        "has_param_details": true,
+        "params": [
+          [
+            "specificModem",
+            "The modem subclass"
+          ]
+        ]
+      },
+      {
+        "base_url": "_logger_modem_macros_8h.html",
+        "id": "a1e908f5093c67200a9a52397a53fbc76",
+        "include": null,
+        "has_details": true,
+        "name": "MS_MODEM_CREATE_CLIENT",
+        "initializer": "    Client* specificModem::createClient() {                                 \\\n        /* Use the new keyword to create a new client on the **heap** */    \\\n        /* NOTE: Be sure to delete this object when you're done with it! */ \\\n        Client* newClient = new TinyGsmClient(gsmModem);                    \\\n        return newClient;                                                   \\\n    }",
+        "brief": "Creates createClient functions for a specific modem subclass.",
+        "description": "",
+        "return_value": "The text of createClient functions specific to a single modem subclass.",
+        "deprecated": null,
+        "since": null,
+        "has_param_details": true,
+        "params": [
+          [
+            "specificModem",
+            "The modem subclass"
+          ]
+        ]
+      },
+      {
+        "base_url": "_logger_modem_macros_8h.html",
+        "id": "ac097fc29425a83a0dbf81203a73bced5",
+        "include": null,
+        "has_details": true,
+        "name": "MS_MODEM_CREATE_NULL_SECURE_CLIENTS",
+        "initializer": "    Client* specificModem::createSecureClient(                            \\\n        SSLAuthMode, SSLVersion, const char*, const char*, const char*) { \\\n        return nullptr;                                                   \\\n    }                                                                     \\\n    Client* specificModem::createSecureClient(const char*, const char*,   \\\n                                              SSLVersion) {               \\\n        return nullptr;                                                   \\\n    }                                                                     \\\n    Client* specificModem::createSecureClient(const char*, SSLVersion) {  \\\n        return nullptr;                                                   \\\n    }",
+        "brief": "Helper to create null functions for modems that do not support secure clients.",
+        "description": "",
+        "return_value": "The text of createSecureClient functions specific to a single modem subclass.",
+        "deprecated": null,
+        "since": null,
+        "has_param_details": true,
+        "params": [
+          [
+            "specificModem",
+            "The modem subclass"
+          ]
+        ]
+      },
+      {
+        "base_url": "_logger_modem_macros_8h.html",
+        "id": "a5f9df251f965b0a67c82397cfcb03dd3",
+        "include": null,
+        "has_details": true,
+        "name": "MS_MODEM_CREATE_SECURE_CLIENT",
+        "initializer": "    Client* specificModem::createSecureClient() {    \\\n        return nullptr;                              \\\n    }                                                \\\n    ",
+        "brief": "Creates createSecureClient functions for a specific modem subclass.",
+        "description": "<p>For modems that don&#x27;t support SSL, this returns a nullptr.</p>",
+        "return_value": "The text of createClient functions specific to a single modem subclass.",
+        "deprecated": null,
+        "since": null,
+        "has_param_details": true,
+        "params": [
+          [
+            "specificModem",
+            "The modem subclass"
+          ]
+        ]
+      },
+      {
+        "base_url": "_logger_modem_macros_8h.html",
+        "id": "a10257f360bf7c5aca4e8f88f32398b6d",
+        "include": null,
+        "has_details": true,
+        "name": "MS_MODEM_DELETE_CLIENT",
+        "initializer": "    void specificModem::deleteClient(Client* client) {                         \\\n        if (client != nullptr) {                                               \\\n            TinyGsmClient* cast_pointer = static_cast<TinyGsmClient*>(client); \\\n            delete cast_pointer;                                               \\\n        }                                                                      \\\n    }",
+        "brief": "Creates a deleteClient function for a specific modem subclass.",
+        "description": "",
+        "return_value": "The text of deleteClient function specific to a single modem subclass.",
+        "deprecated": null,
+        "since": null,
+        "has_param_details": true,
+        "params": [
+          [
+            "specificModem",
+            "The modem subclass"
+          ]
+        ]
+      },
+      {
+        "base_url": "_logger_modem_macros_8h.html",
+        "id": "a6d7ab93b1e029e69139e4e50fe7cf54b",
+        "include": null,
+        "has_details": true,
+        "name": "MS_MODEM_DELETE_SECURE_CLIENT",
+        "initializer": "    void specificModem::deleteSecureClient(Client*) {}",
+        "brief": "Creates a deleteClient function for a specific modem subclass.",
+        "description": "",
+        "return_value": "The text of deleteSecureClient function specific to a single modem subclass.",
         "deprecated": null,
         "since": null,
         "has_param_details": true,
@@ -216,7 +331,7 @@
         "name": "MS_MODEM_GET_NIST_TIME",
         "initializer": null,
         "brief": "Creates a getNISTTime() function for a specific modem subclass.",
-        "description": "<p>This gets the time from NIST via TIME protocol (rfc868)</p><p>This would be much more efficient if done over UDP, but I&#x27;m doing it over TCP because I don&#x27;t have a UDP library for all the modems.</p><aside class=\"m-note m-info\"><h4>Note</h4><p>We eust ensure that we do not ping the daylight server more than once every 4 seconds. NIST clearly specifies here that this is a requirement for all software that accesses its servers: <a href=\"https://tf.nist.gov/tf-cgi/servers.cgi\">https:/<wbr />/<wbr />tf.nist.gov/<wbr />tf-cgi/<wbr />servers.cgi</a></p></aside>",
+        "description": "<p>This gets the time from NIST via TIME protocol (rfc868)</p><p>This would be much more efficient if done over UDP, but I&#x27;m doing it over TCP because I don&#x27;t have a UDP library for all the modems.</p><aside class=\"m-note m-info\"><h4>Note</h4><p>We must ensure that we do not ping the daylight server more than once every 4 seconds. NIST clearly specifies here that this is a requirement for all software that accesses its servers: <a href=\"https://tf.nist.gov/tf-cgi/servers.cgi\">https:/<wbr />/<wbr />tf.nist.gov/<wbr />tf-cgi/<wbr />servers.cgi</a></p></aside>",
         "return_value": "The text of a getNISTTime() function specific to a single modem subclass.",
         "deprecated": null,
         "since": null,
@@ -236,7 +351,7 @@
         "name": "MS_MODEM_CALC_SIGNAL_QUALITY",
         "initializer": "    rssi = getRSSIFromCSQ(signalQual);           \\\n    ",
         "brief": "Creates a text string of the functions to convert the signal quality returned by a specific modem to RSSI and percent signal strength.",
-        "description": "<p>Most modules return CSQ between 0 and 31. The RSSI in dBm is calculated using getRSSIFromCSQ(int16_t csq) and a the percent strength is calculated using getPctFromCSQ(int16_t csq).</p><p>XBee and ESP8266 modules return RSSI in dBm and the percent strength is calculated using getPctFromRSSI(int16_t rssi).</p>",
+        "description": "<p>Most modules return CSQ between 0 and 31. The RSSI in dBm is calculated using getRSSIFromCSQ(int16_t csq) and a the percent strength is calculated using getPctFromCSQ(int16_t csq).</p><p>XBee and <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a> modules return RSSI in dBm and the percent strength is calculated using getPctFromRSSI(int16_t rssi).</p>",
         "return_value": "Text string containing the functions to put signal strength in the correct units.",
         "deprecated": null,
         "since": null,
@@ -291,7 +406,7 @@
         "name": "MS_MODEM_GET_MODEM_TEMPERATURE_DATA",
         "initializer": "    float specificModem::getModemChipTemperature(void) {   \\\n        ",
         "brief": "Creates a getModemChipTemperature() function for a specific modem subclass.",
-        "description": "<p>This is a passthrough to the specific modem&#x27;s getTemperature() for modems where such data is avaialble</p><p>This returns -9999 for modems that don&#x27;t return such data.</p>",
+        "description": "<p>This is a passthrough to the specific modem&#x27;s getTemperature() for modems where such data is available</p><p>This returns -9999 for modems that don&#x27;t return such data.</p>",
         "return_value": "The text of a getModemChipTemperature() function specific to a single modem subclass.",
         "deprecated": null,
         "since": null,

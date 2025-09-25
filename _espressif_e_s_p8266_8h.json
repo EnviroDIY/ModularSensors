@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "file",
     "id": "_espressif_e_s_p8266_8h",
@@ -9,7 +9,7 @@
     "include": null,
     "has_template_details": false,
     "templates": null,
-    "brief": "Contains the <a href=\"class_espressif_e_s_p8266.html\" class=\"m-doc\">EspressifESP8266</a> subclass of <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> which <em>SHOULD</em> work for essentially any breakout of the Espressif ESP8266 wifi chip or ESP32 wifi/bluetooth chip that has been flashed with Espressif&#x27;s AT command firmware.",
+    "brief": "Contains the <a href=\"class_espressif_e_s_p8266.html\" class=\"m-doc\">EspressifESP8266</a> subclass of <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> which <em>SHOULD</em> work for essentially any breakout of the <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a> ESP8266 wifi chip that has been flashed with <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a>&#x27;s AT command firmware.",
     "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside>",
     "sections": "",
     "deprecated": null,
@@ -25,7 +25,7 @@
         "kind": "class",
         "url": "class_espressif_e_s_p8266.html",
         "name": "EspressifESP8266",
-        "brief": "The <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> subclass for any breakout of the <a href=\"group__modem__esp8266.html\" class=\"m-doc\">Espressif ESP8266</a> wifi chip or ESP32 wifi/bluetooth chip that has been flashed with Espressif&#x27;s AT command firmware.",
+        "brief": "The <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> subclass for any breakout of the <a href=\"group__modem__esp8266.html\" class=\"m-doc\">Espressif ESP8266</a> wifi chip or ESP32 wifi/bluetooth chip that has been flashed with <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a>&#x27;s AT command firmware.",
         "deprecated": null,
         "since": null,
         "templates": null
@@ -34,25 +34,7 @@
     "base_classes": [],
     "derived_classes": [],
     "enums": [],
-    "typedefs": [
-      {
-        "base_url": "_espressif_e_s_p8266_8h.html",
-        "id": "aa65272ec1b1b60c2be4a15d38d96178f",
-        "include": null,
-        "has_details": false,
-        "is_using": false,
-        "type": "<a href=\"class_espressif_e_s_p8266.html\" class=\"m-doc\">EspressifESP8266</a>",
-        "args": "",
-        "name": "EspressifESP32",
-        "brief": "Assign EspressifESP32 as type <a href=\"class_espressif_e_s_p8266.html\" class=\"m-doc\">EspressifESP8266</a> to avoid user confusion.",
-        "description": "",
-        "deprecated": null,
-        "since": null,
-        "is_protected": false,
-        "has_template_details": false,
-        "templates": null
-      }
-    ],
+    "typedefs": [],
     "funcs": [],
     "vars": [],
     "defines": [

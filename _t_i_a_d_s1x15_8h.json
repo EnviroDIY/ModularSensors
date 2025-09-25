@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "file",
     "id": "_t_i_a_d_s1x15_8h",
@@ -10,7 +10,7 @@
     "has_template_details": false,
     "templates": null,
     "brief": "This file contains the <a href=\"class_t_i_a_d_s1x15.html\" class=\"m-doc\">TIADS1x15</a> sensor subclass and the <a href=\"class_t_i_a_d_s1x15___voltage.html\" class=\"m-doc\">TIADS1x15_<wbr />Voltage</a> variable subclass.",
-    "description": "<ul><li><aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Written By: Bobby Schulz <a href=\"mailto:schu3119@umn.edu\">schu3119@umn.edu</a> Edited by Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a> Adapted from <a href=\"_campbell_o_b_s3_8h.html\" class=\"m-doc\">CampbellOBS3.h</a> by Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside></li></ul><p>These are used for any voltage measureable on a TI ADS1115 or ADS1015. There is a multiplier allowed for a voltage divider between the raw voltage and the ADS.</p><p>This depends on the Adafruit ADS1X15 v2.x library</p>",
+    "description": "<ul><li><aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Written By: Bobby Schulz <a href=\"mailto:schu3119@umn.edu\">schu3119@umn.edu</a> Edited by Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a> Adapted from <a href=\"_campbell_o_b_s3_8h.html\" class=\"m-doc\">CampbellOBS3.h</a> by Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside></li></ul><p>These are used for any voltage measurable on a TI ADS1115 or ADS1015. There is a multiplier allowed for a voltage divider between the raw voltage and the ADS.</p><p>This depends on the Adafruit ADS1X15 v2.x library</p>",
     "sections": "",
     "deprecated": null,
     "since": null,
@@ -25,7 +25,7 @@
         "kind": "class",
         "url": "class_t_i_a_d_s1x15.html",
         "name": "TIADS1x15",
-        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__ads1x15.html\" class=\"m-doc\">external votlage as measured by TI ADS1115 or ADS1015</a>.",
+        "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__ads1x15.html\" class=\"m-doc\">external voltage as measured by TI ADS1115 or ADS1015</a>.",
         "deprecated": null,
         "since": null,
         "templates": null

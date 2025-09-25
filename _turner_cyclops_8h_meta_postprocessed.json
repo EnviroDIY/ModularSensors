@@ -1,0 +1,24 @@
+{
+  "is_final": null,
+  "parent": "dir_7349e89ef19c117195f8e371603e1b1f",
+  "parentGroup": null,
+  "id": "_turner_cyclops_8h",
+  "kind": "file",
+  "name": "TurnerCyclops.h",
+  "url": "_turner_cyclops_8h.html",
+  "brief": "Contains the <a href=\"class_turner_cyclops.html\" class=\"m-doc\">TurnerCyclops</a> sensor subclass and the variable subclasses <a href=\"class_turner_cyclops___turbidity.html\" class=\"m-doc\">TurnerCyclops_<wbr />Turbidity</a> and <a href=\"class_turner_cyclops___voltage.html\" class=\"m-doc\">TurnerCyclops_<wbr />Voltage</a>.",
+  "has_details": true,
+  "children": [
+    "sensor-variable-counts",
+    "configuration-defines",
+    "sensor-timing",
+    "calibrated-parameter-output",
+    "voltage"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "TurnerCyclops.h"
+}

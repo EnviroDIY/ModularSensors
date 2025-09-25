@@ -1,0 +1,20 @@
+{
+  "is_final": null,
+  "parent": "dir_d60b8e8795161a141bba4403c07b6046",
+  "parentGroup": null,
+  "id": "_s_i_m_com_s_i_m7000_8h",
+  "kind": "file",
+  "name": "SIMComSIM7000.h",
+  "url": "_s_i_m_com_s_i_m7000_8h.html",
+  "brief": "Contains the <a href=\"class_s_i_m_com_s_i_m7000.html\" class=\"m-doc\">SIMComSIM7000</a> subclass of <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> for Botletics other modules based on the SIMCOM SIM7000.",
+  "has_details": true,
+  "children": [
+    "modem-pin-settings-and-timing"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "SIMComSIM7000.h"
+}

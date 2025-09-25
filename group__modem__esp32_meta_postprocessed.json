@@ -1,0 +1,20 @@
+{
+  "is_final": null,
+  "parent": "group__modem__espressif",
+  "parentGroup": null,
+  "id": "group__modem__esp32",
+  "kind": "group",
+  "name": "Espressif ESP32 and variants",
+  "url": "group__modem__esp32.html",
+  "brief": "",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [
+    "class_espressif_e_s_p32"
+  ],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "Espressif ESP32 and variants"
+}

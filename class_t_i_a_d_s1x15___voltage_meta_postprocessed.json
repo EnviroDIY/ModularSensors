@@ -1,0 +1,19 @@
+{
+  "is_final": false,
+  "parent": "class_variable",
+  "parentGroup": "group__sensor__ads1x15",
+  "id": "class_t_i_a_d_s1x15___voltage",
+  "kind": "class",
+  "name": "TIADS1x15_Voltage",
+  "url": "class_t_i_a_d_s1x15___voltage.html",
+  "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__ads1x15.html#sensor_ads1x15_volt\" class=\"m-doc\">voltage output</a> from a <a href=\"group__sensor__ads1x15.html\" class=\"m-doc\">TI ADS1115 or ADS1015</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null,
+  "leaf_name": "TIADS1x15_Voltage"
+}

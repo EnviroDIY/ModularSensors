@@ -1,0 +1,19 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "group__modem__digi__cellular",
+  "kind": "group",
+  "name": "XBee Cellular",
+  "url": "group__modem__digi__cellular.html",
+  "brief": "",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [
+    "class_digi_x_bee_cellular_transparent"
+  ],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

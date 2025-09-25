@@ -1,0 +1,17 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "example_data_saving",
+  "kind": "page",
+  "name": "Minimizing Cellular Data Use",
+  "url": "example_data_saving.html",
+  "brief": "",
+  "has_details": 11,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

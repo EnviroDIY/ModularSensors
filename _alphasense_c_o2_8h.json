@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "file",
     "id": "_alphasense_c_o2_8h",
@@ -10,7 +10,7 @@
     "has_template_details": false,
     "templates": null,
     "brief": "Contains the <a href=\"class_alphasense_c_o2.html\" class=\"m-doc\">AlphasenseCO2</a> sensor class and the variable subclasses <a href=\"class_alphasense_c_o2___c_o2.html\" class=\"m-doc\">AlphasenseCO2_<wbr />CO2</a> and <a href=\"class_alphasense_c_o2___voltage.html\" class=\"m-doc\">AlphasenseCO2_<wbr />Voltage</a>.",
-    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>2017-2023 Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Written by Anthony Aufdenkampe <a href=\"mailto:aaufdenkampe@limno.com\">aaufdenkampe@limno.com</a> and Bella Henkel <a href=\"mailto:bella.henkel@mnsu.edu\">bella.henkel@mnsu.edu</a> Adapted from <a href=\"_apogee_s_q212_8h.html\" class=\"m-doc\">ApogeeSQ212.h</a> and <a href=\"https://github.com/bellahenkel/Soil-Sensing-Device\">https:/<wbr />/<wbr />github.com/<wbr />bellahenkel/<wbr />Soil-Sensing-Device</a> Edited by Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside><p>These are used for the Alphasense IRC-A1 Nondispersive Infrared (NDIR) Carbon Dioxide (CO2) sensor. This library will almost certainly also work with the Alphasense IRC-AT CO2 sensor (which uses a thermopile detector), although the warmup and stabilization times might be different.</p><p>This depends on the Adafruit ADS1X15 v2.x library.</p>",
+    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Written by Anthony Aufdenkampe <a href=\"mailto:aaufdenkampe@limno.com\">aaufdenkampe@limno.com</a> and Bella Henkel <a href=\"mailto:bella.henkel@mnsu.edu\">bella.henkel@mnsu.edu</a> Adapted from <a href=\"_apogee_s_q212_8h.html\" class=\"m-doc\">ApogeeSQ212.h</a> and <a href=\"https://github.com/bellahenkel/Soil-Sensing-Device\">https:/<wbr />/<wbr />github.com/<wbr />bellahenkel/<wbr />Soil-Sensing-Device</a> Edited by Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside><p>These are used for the Alphasense IRC-A1 Non-Dispersive Infrared (NDIR) Carbon Dioxide (CO2) sensor. This library will almost certainly also work with the Alphasense IRC-AT CO2 sensor (which uses a thermopile detector), although the warmup and stabilization times might be different.</p><p>This depends on the Adafruit ADS1X15 v2.x library.</p>",
     "sections": "",
     "deprecated": null,
     "since": null,

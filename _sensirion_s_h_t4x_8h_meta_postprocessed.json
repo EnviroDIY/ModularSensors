@@ -1,0 +1,23 @@
+{
+  "is_final": null,
+  "parent": "dir_7349e89ef19c117195f8e371603e1b1f",
+  "parentGroup": null,
+  "id": "_sensirion_s_h_t4x_8h",
+  "kind": "file",
+  "name": "SensirionSHT4x.h",
+  "url": "_sensirion_s_h_t4x_8h.html",
+  "brief": "Contains the <a href=\"class_sensirion_s_h_t4x.html\" class=\"m-doc\">SensirionSHT4x</a> sensor subclass and the variable subclasses <a href=\"class_sensirion_s_h_t4x___humidity.html\" class=\"m-doc\">SensirionSHT4x_<wbr />Humidity</a> and <a href=\"class_sensirion_s_h_t4x___temp.html\" class=\"m-doc\">SensirionSHT4x_<wbr />Temp</a>.",
+  "has_details": true,
+  "children": [
+    "sensor-variable-counts",
+    "sensor-timing",
+    "humidity",
+    "temperature"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "SensirionSHT4x.h"
+}

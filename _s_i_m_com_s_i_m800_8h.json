@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "file",
     "id": "_s_i_m_com_s_i_m800_8h",
@@ -9,7 +9,7 @@
     "include": null,
     "has_template_details": false,
     "templates": null,
-    "brief": "Contains the <a href=\"class_s_i_m_com_s_i_m800.html\" class=\"m-doc\">SIMComSIM800</a> subclass of <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> for Adafruit Fona 2G, the Sodaq GPRSBeeR4 and almost any other module based on the SIMCOM SIM800 or SIM900 modules and thier variants.",
+    "brief": "Contains the <a href=\"class_s_i_m_com_s_i_m800.html\" class=\"m-doc\">SIMComSIM800</a> subclass of <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> for Adafruit Fona 2G, the Sodaq GPRSBeeR4 and almost any other module based on the SIMCOM SIM800 or SIM900 modules and their variants.",
     "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside>",
     "sections": "",
     "deprecated": null,
@@ -25,7 +25,7 @@
         "kind": "class",
         "url": "class_s_i_m_com_s_i_m800.html",
         "name": "SIMComSIM800",
-        "brief": "The <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> subclass for the Adafruit Fona 2G, the Sodaq GPRSBeeR4 and almost any other module based on the <a href=\"group__modem__sim800.html\" class=\"m-doc\">SIMCOM SIM800 or SIM900 modules and</a>thier variants&quot;.",
+        "brief": "The <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> subclass for the Adafruit Fona 2G, the Sodaq GPRSBeeR4 and almost any other module based on the <a href=\"group__modem__sim800.html\" class=\"m-doc\">SIMCOM SIM800 or SIM900 modules and</a>their variants&quot;.",
         "deprecated": null,
         "since": null,
         "templates": null

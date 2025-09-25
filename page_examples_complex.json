@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "page",
     "id": "page_examples_complex",
@@ -10,7 +10,7 @@
     "has_template_details": false,
     "templates": null,
     "brief": "",
-    "description": "<p><a href=\"page_the_examples.html#examples_complex\" class=\"m-doc\">Calculations and Complex Logging</a></p>",
+    "description": "<p><a href=\"page_the_examples.html#examples_complex\" class=\"m-doc\">Calculations and Complex Logging</a></p><p><a href=\"example_baro_rho.html\" class=\"m-doc\">DELETE THIS LINK</a></p><p><a href=\"example_double_log.html\" class=\"m-doc\">DELETE THIS LINK</a></p><p><a href=\"example_data_saving.html\" class=\"m-doc\">DELETE THIS LINK</a></p>",
     "sections": [],
     "deprecated": null,
     "since": null,

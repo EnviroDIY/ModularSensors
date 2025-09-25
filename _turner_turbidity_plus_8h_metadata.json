@@ -1,0 +1,23 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "_turner_turbidity_plus_8h",
+  "kind": "file",
+  "name": "TurnerTurbidityPlus.h",
+  "url": "_turner_turbidity_plus_8h.html",
+  "brief": "Contains the <a href=\"class_turner_turbidity_plus.html\" class=\"m-doc\">TurnerTurbidityPlus</a> sensor subclass and the variable subclasses <a href=\"class_turner_turbidity_plus___turbidity.html\" class=\"m-doc\">TurnerTurbidityPlus_<wbr />Turbidity</a> and <a href=\"class_turner_turbidity_plus___voltage.html\" class=\"m-doc\">TurnerTurbidityPlus_<wbr />Voltage</a>.",
+  "has_details": true,
+  "children": [
+    "sensor-variable-counts",
+    "configuration-defines",
+    "sensor-timing",
+    "calibrated-turbidity-output",
+    "voltage"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

@@ -1,0 +1,19 @@
+{
+  "is_final": false,
+  "parent": "class_variable",
+  "parentGroup": "group__sensor__atlas__cond",
+  "id": "class_atlas_scientific_e_c___cond",
+  "kind": "class",
+  "name": "AtlasScientificEC_Cond",
+  "url": "class_atlas_scientific_e_c___cond.html",
+  "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__atlas__cond.html#sensor_atlas_cond_cond\" class=\"m-doc\">conductivity output</a> from an <a href=\"group__sensor__atlas__cond.html\" class=\"m-doc\">Atlas Scientific EC EZO circuit</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null,
+  "leaf_name": "AtlasScientificEC_Cond"
+}

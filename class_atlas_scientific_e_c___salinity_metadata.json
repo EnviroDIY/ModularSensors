@@ -1,0 +1,18 @@
+{
+  "is_final": false,
+  "parent": null,
+  "parentGroup": null,
+  "id": "class_atlas_scientific_e_c___salinity",
+  "kind": "class",
+  "name": "AtlasScientificEC_Salinity",
+  "url": "class_atlas_scientific_e_c___salinity.html",
+  "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__atlas__cond.html#sensor_atlas_cond_salinity\" class=\"m-doc\">salinity output</a> from an <a href=\"group__sensor__atlas__cond.html\" class=\"m-doc\">Atlas Scientific EC EZO circuit</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null
+}

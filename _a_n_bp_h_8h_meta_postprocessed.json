@@ -1,0 +1,29 @@
+{
+  "is_final": null,
+  "parent": "dir_7349e89ef19c117195f8e371603e1b1f",
+  "parentGroup": null,
+  "id": "_a_n_bp_h_8h",
+  "kind": "file",
+  "name": "ANBpH.h",
+  "url": "_a_n_bp_h_8h.html",
+  "brief": "Contains the <a href=\"class_a_n_bp_h.html\" class=\"m-doc\">ANBpH</a> sensor subclass for all ANB Sensors pH sensors and the variable subclasses <a href=\"class_a_n_bp_h__p_h.html\" class=\"m-doc\">ANBpH_<wbr />pH</a>, <a href=\"class_a_n_bp_h___temp.html\" class=\"m-doc\">ANBpH_<wbr />Temp</a>, <a href=\"class_a_n_bp_h___salinity.html\" class=\"m-doc\">ANBpH_<wbr />Salinity</a>, <a href=\"class_a_n_bp_h___sp_cond.html\" class=\"m-doc\">ANBpH_<wbr />SpCond</a> and <a href=\"class_a_n_bp_h___e_c.html\" class=\"m-doc\">ANBpH_<wbr />EC</a>.",
+  "has_details": true,
+  "children": [
+    "sensor-variable-counts",
+    "sensor-timing",
+    "ph",
+    "temperature",
+    "salinity",
+    "specific-conductivity",
+    "electrical-conductivity",
+    "transducer-health-code",
+    "diagnostics-code",
+    "status-code"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "ANBpH.h"
+}

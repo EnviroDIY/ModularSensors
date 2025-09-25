@@ -1,0 +1,25 @@
+{
+  "is_final": false,
+  "parent": null,
+  "parentGroup": null,
+  "id": "classdata_publisher",
+  "kind": "class",
+  "name": "dataPublisher",
+  "url": "classdata_publisher.html",
+  "brief": "The <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> class is a virtual class used by other publishers to distribute data online.",
+  "has_details": true,
+  "children": [
+    "class_a_w_s___io_t___publisher",
+    "class_dream_host_publisher",
+    "class_enviro_d_i_y_publisher",
+    "class_s3_presigned_publisher",
+    "class_thing_speak_publisher",
+    "class_ubidots_publisher"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null
+}

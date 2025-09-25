@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "file",
     "id": "_watch_dog_a_v_r_8h",
@@ -37,7 +37,23 @@
     "typedefs": [],
     "funcs": [],
     "vars": [],
-    "defines": [],
+    "defines": [
+      {
+        "base_url": "_watch_dog_a_v_r_8h.html",
+        "id": "a68e33cc91077ff1748f22becf84306bf",
+        "include": null,
+        "has_details": true,
+        "name": "MAXIMUM_WATCHDOG_PERIOD",
+        "initializer": "static_cast<uint32_t>(F_CPU / 1048576)",
+        "brief": "The longest possible time between watchdog interrupts in seconds.",
+        "description": "<p>For an AVR board, there is one possible watchdog period and the watchdog can be configured to either fire an interrupt at that time or to reset at that time.</p>",
+        "return_value": null,
+        "deprecated": null,
+        "since": null,
+        "has_param_details": false,
+        "params": null
+      }
+    ],
     "public_types": [],
     "public_static_funcs": [],
     "typeless_funcs": [],
@@ -61,7 +77,7 @@
     "has_typedef_details": false,
     "has_func_details": false,
     "has_var_details": false,
-    "has_define_details": false,
+    "has_define_details": true,
     "breadcrumb": [
       [
         "src",

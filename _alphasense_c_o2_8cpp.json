@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "file",
     "id": "_alphasense_c_o2_8cpp",
@@ -10,7 +10,7 @@
     "has_template_details": false,
     "templates": null,
     "brief": "Implements the <a href=\"class_alphasense_c_o2.html\" class=\"m-doc\">AlphasenseCO2</a> class.",
-    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>2017-2022 Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino</p><p>2017-2023 Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Written by Anthony Aufdenkampe <a href=\"mailto:aaufdenkampe@limno.com\">aaufdenkampe@limno.com</a> and Bella Henkel <a href=\"mailto:bella.henkel@mnsu.edu\">bella.henkel@mnsu.edu</a> Adapted from <a href=\"_apogee_s_q212_8h.html\" class=\"m-doc\">ApogeeSQ212.h</a> and <a href=\"https://github.com/bellahenkel/Soil-Sensing-Device\">https:/<wbr />/<wbr />github.com/<wbr />bellahenkel/<wbr />Soil-Sensing-Device</a></p></aside>",
+    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Written by Anthony Aufdenkampe <a href=\"mailto:aaufdenkampe@limno.com\">aaufdenkampe@limno.com</a> and Bella Henkel <a href=\"mailto:bella.henkel@mnsu.edu\">bella.henkel@mnsu.edu</a> Adapted from <a href=\"_apogee_s_q212_8h.html\" class=\"m-doc\">ApogeeSQ212.h</a> and <a href=\"https://github.com/bellahenkel/Soil-Sensing-Device\">https:/<wbr />/<wbr />github.com/<wbr />bellahenkel/<wbr />Soil-Sensing-Device</a></p></aside>",
     "sections": "",
     "deprecated": null,
     "since": null,

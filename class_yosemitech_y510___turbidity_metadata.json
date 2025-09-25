@@ -1,0 +1,18 @@
+{
+  "is_final": false,
+  "parent": null,
+  "parentGroup": null,
+  "id": "class_yosemitech_y510___turbidity",
+  "kind": "class",
+  "name": "YosemitechY510_Turbidity",
+  "url": "class_yosemitech_y510___turbidity.html",
+  "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__y510.html#sensor_y510_turb\" class=\"m-doc\">turbidity output</a> from a <a href=\"group__sensor__y510.html\" class=\"m-doc\">Yosemitech Y510-B optical turbidity sensor</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null
+}

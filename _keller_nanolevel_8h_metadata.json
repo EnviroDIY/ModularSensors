@@ -1,0 +1,22 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "_keller_nanolevel_8h",
+  "kind": "file",
+  "name": "KellerNanolevel.h",
+  "url": "_keller_nanolevel_8h.html",
+  "brief": "Contains the <a href=\"class_keller_nanolevel.html\" class=\"m-doc\">KellerNanolevel</a> sensor subclass and the <a href=\"class_keller_nanolevel___pressure.html\" class=\"m-doc\">KellerNanolevel_<wbr />Pressure</a>, <a href=\"class_keller_nanolevel___temp.html\" class=\"m-doc\">KellerNanolevel_<wbr />Temp</a>, and <a href=\"class_keller_nanolevel___height.html\" class=\"m-doc\">KellerNanolevel_<wbr />Height</a> variable subclasses.",
+  "has_details": true,
+  "children": [
+    "sensor-timing",
+    "pressure",
+    "temperature",
+    "height"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

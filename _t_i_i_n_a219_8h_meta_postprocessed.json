@@ -1,0 +1,25 @@
+{
+  "is_final": null,
+  "parent": "dir_7349e89ef19c117195f8e371603e1b1f",
+  "parentGroup": null,
+  "id": "_t_i_i_n_a219_8h",
+  "kind": "file",
+  "name": "TIINA219.h",
+  "url": "_t_i_i_n_a219_8h.html",
+  "brief": "Contains the <a href=\"class_t_i_i_n_a219.html\" class=\"m-doc\">TIINA219</a> sensor subclass and the variale subclasses <a href=\"class_t_i_i_n_a219___current.html\" class=\"m-doc\">TIINA219_<wbr />Current</a>, <a href=\"class_t_i_i_n_a219___voltage.html\" class=\"m-doc\">TIINA219_<wbr />Voltage</a>, and <a href=\"class_t_i_i_n_a219___power.html\" class=\"m-doc\">TIINA219_<wbr />Power</a>.",
+  "has_details": true,
+  "children": [
+    "sensor-variable-counts",
+    "configuration-defines",
+    "sensor-timing",
+    "current",
+    "bus-voltage",
+    "power"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "TIINA219.h"
+}

@@ -1,0 +1,18 @@
+{
+  "is_final": false,
+  "parent": null,
+  "parentGroup": null,
+  "id": "class_decagon_e_s2___cond",
+  "kind": "class",
+  "name": "DecagonES2_Cond",
+  "url": "class_decagon_e_s2___cond.html",
+  "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__es2.html#sensor_es2_cond\" class=\"m-doc\">conductivity output</a> from a <a href=\"group__sensor__es2.html\" class=\"m-doc\">Decagon ES-2 electrical conductivity sensor</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null
+}

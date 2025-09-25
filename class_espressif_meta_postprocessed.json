@@ -1,0 +1,22 @@
+{
+  "is_final": false,
+  "parent": "classlogger_modem",
+  "parentGroup": "group__modem__espressif",
+  "id": "class_espressif",
+  "kind": "class",
+  "name": "Espressif",
+  "url": "class_espressif.html",
+  "brief": "The <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> subclass for almost any <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a> wifi or wifi/bluetooth chip that has been flashed with <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a>&#x27;s AT command firmware.",
+  "has_details": true,
+  "children": [
+    "class_espressif_e_s_p32",
+    "class_espressif_e_s_p8266"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null,
+  "leaf_name": "Espressif"
+}

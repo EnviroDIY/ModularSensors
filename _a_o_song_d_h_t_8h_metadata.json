@@ -1,0 +1,23 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "_a_o_song_d_h_t_8h",
+  "kind": "file",
+  "name": "AOSongDHT.h",
+  "url": "_a_o_song_d_h_t_8h.html",
+  "brief": "",
+  "has_details": false,
+  "children": [
+    "sensor-variable-counts",
+    "sensor-timing",
+    "humidity",
+    "temperature",
+    "heat-index"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

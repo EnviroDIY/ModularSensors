@@ -1,0 +1,24 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "_bosch_b_m_p3xx_8h",
+  "kind": "file",
+  "name": "BoschBMP3xx.h",
+  "url": "_bosch_b_m_p3xx_8h.html",
+  "brief": "Contains the <a href=\"class_bosch_b_m_p3xx.html\" class=\"m-doc\">BoschBMP3xx</a> sensor subclass and the variable subclasses <a href=\"class_bosch_b_m_p3xx___temp.html\" class=\"m-doc\">BoschBMP3xx_<wbr />Temp</a>, BoschBMP3xx_Humidity, <a href=\"class_bosch_b_m_p3xx___pressure.html\" class=\"m-doc\">BoschBMP3xx_<wbr />Pressure</a>, and <a href=\"class_bosch_b_m_p3xx___altitude.html\" class=\"m-doc\">BoschBMP3xx_<wbr />Altitude</a>.",
+  "has_details": true,
+  "children": [
+    "sensor-variable-counts",
+    "configuration-defines",
+    "sensor-timing",
+    "temperature",
+    "barometric-pressure",
+    "altitude"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

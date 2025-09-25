@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "page",
     "id": "page_faq",
@@ -10,7 +10,7 @@
     "has_template_details": false,
     "templates": null,
     "brief": "",
-    "description": "<p>Here are some links to pages with more detailed information about some common issues with the ModularSensors library.</p><p><a href=\"page_processor_compatibility.html\" class=\"m-doc\">Processor Compatibility</a></p><p><a href=\"page_arduino_streams.html\" class=\"m-doc\">Notes on Arduino Streams and Software Serial</a></p><p><a href=\"page_power_parasites.html\" class=\"m-doc\">Power Draw over Data Lines</a></p><p><a href=\"page_memory_use.html\" class=\"m-doc\">Decreasing Memory Footprint</a></p><p><a href=\"page_code_debugging.html\" class=\"m-doc\">In-Library Debugging</a></p><p><a href=\"page_for_developers.html\" class=\"m-doc\">Developer Setup</a></p><p><a href=\"https://github.com/vshymanskyy/TinyGSM#troubleshooting\">TinyGSM Troubleshooting page</a></p>",
+    "description": "<p>Here are some links to pages with more detailed information about some common issues with the ModularSensors library.</p><p><a href=\"page_processor_compatibility.html\" class=\"m-doc\">Processor Compatibility</a></p><p><a href=\"page_arduino_streams.html\" class=\"m-doc\">Notes on Arduino Streams and Software Serial</a></p><p><a href=\"page_power_parasites.html\" class=\"m-doc\">Power Draw over Data Lines</a></p><p><a href=\"page_memory_use.html\" class=\"m-doc\">Decreasing Memory Footprint</a></p><p><a href=\"page_code_debugging.html\" class=\"m-doc\">In-Library Debugging</a></p><p><a href=\"https://github.com/vshymanskyy/TinyGSM#troubleshooting\">TinyGSM Troubleshooting page</a></p>",
     "sections": [],
     "deprecated": null,
     "since": null,

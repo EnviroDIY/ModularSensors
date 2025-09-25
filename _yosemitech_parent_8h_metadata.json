@@ -1,0 +1,17 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "_yosemitech_parent_8h",
+  "kind": "file",
+  "name": "YosemitechParent.h",
+  "url": "_yosemitech_parent_8h.html",
+  "brief": "Contains the <a href=\"class_yosemitech_parent.html\" class=\"m-doc\">YosemitechParent</a> sensor subclass, itself a parent class for all Yosemitech sensors that communicate via Modbus and are supported by the EnviroDIY Yosemitech library.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

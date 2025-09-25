@@ -1,0 +1,18 @@
+{
+  "is_final": null,
+  "parent": "page_faq",
+  "parentGroup": null,
+  "id": "page_memory_use",
+  "kind": "page",
+  "name": "Decreasing Memory Footprint",
+  "url": "page_memory_use.html",
+  "brief": "",
+  "has_details": 4,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "Decreasing Memory Footprint"
+}

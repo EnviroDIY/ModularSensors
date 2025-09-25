@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "file",
     "id": "_analog_elec_conductivity_8cpp",
@@ -9,7 +9,7 @@
     "include": null,
     "has_template_details": false,
     "templates": null,
-    "brief": "This encapsulates an Electrical Conductivity sensors using an anlog input and onboard ADC and ADC ref.",
+    "brief": "This encapsulates an Electrical Conductivity sensors using an analog input and onboard ADC and ADC ref.",
     "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center and Neil Hancock Part of the EnviroDIY ModularSensors library This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Written By: Neil Hancock <a href=\"mailto:neilh20+aec2008@wLLw.net\">neilh20+aec2008@wLLw.net</a>; Edited by Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside>",
     "sections": "",
     "deprecated": null,

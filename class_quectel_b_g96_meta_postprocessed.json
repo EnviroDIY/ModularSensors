@@ -1,0 +1,19 @@
+{
+  "is_final": false,
+  "parent": "classlogger_modem",
+  "parentGroup": "group__modem__bg96",
+  "id": "class_quectel_b_g96",
+  "kind": "class",
+  "name": "QuectelBG96",
+  "url": "class_quectel_b_g96.html",
+  "brief": "The <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> subclass for Dragino, Nimbelink, or any other module based on the <a href=\"group__modem__bg96.html\" class=\"m-doc\">Quectel BG96</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null,
+  "leaf_name": "QuectelBG96"
+}

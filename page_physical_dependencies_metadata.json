@@ -1,0 +1,17 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "page_physical_dependencies",
+  "kind": "page",
+  "name": "Physical Dependencies",
+  "url": "page_physical_dependencies.html",
+  "brief": "",
+  "has_details": 3,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "file",
     "id": "_thing_speak_publisher_8h",
@@ -37,38 +37,7 @@
     "typedefs": [],
     "funcs": [],
     "vars": [],
-    "defines": [
-      {
-        "base_url": "_thing_speak_publisher_8h.html",
-        "id": "a7e936ffacc2bcbbfeeccf78eb6a5ae88",
-        "include": null,
-        "has_details": true,
-        "name": "THING_SPEAK_USER_NAME",
-        "initializer": "\"MS\"",
-        "brief": "The MQTT User Name.",
-        "description": "<aside class=\"m-note m-info\"><h4>Note</h4><p>The user name doesn&#x27;t actually mean anything for ThingSpeak</p></aside>",
-        "return_value": null,
-        "deprecated": null,
-        "since": null,
-        "has_param_details": false,
-        "params": null
-      },
-      {
-        "base_url": "_thing_speak_publisher_8h.html",
-        "id": "a8fe6c31504cefb61b540a475af0fe078",
-        "include": null,
-        "has_details": true,
-        "name": "THING_SPEAK_CLIENT_NAME",
-        "initializer": "\"MS\"",
-        "brief": "The MQTT Client Name.",
-        "description": "<aside class=\"m-note m-info\"><h4>Note</h4><p>The client name doesn&#x27;t actually mean anything for ThingSpeak</p></aside>",
-        "return_value": null,
-        "deprecated": null,
-        "since": null,
-        "has_param_details": false,
-        "params": null
-      }
-    ],
+    "defines": [],
     "public_types": [],
     "public_static_funcs": [],
     "typeless_funcs": [],
@@ -92,7 +61,7 @@
     "has_typedef_details": false,
     "has_func_details": false,
     "has_var_details": false,
-    "has_define_details": true,
+    "has_define_details": false,
     "breadcrumb": [
       [
         "src",

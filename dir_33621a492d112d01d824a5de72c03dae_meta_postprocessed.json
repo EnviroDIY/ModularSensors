@@ -1,0 +1,18 @@
+{
+  "is_final": null,
+  "parent": "dir_1510bd745cd29c20d24c27171ebe5ba5",
+  "parentGroup": null,
+  "id": "dir_33621a492d112d01d824a5de72c03dae",
+  "kind": "dir",
+  "name": "extras/AWS_IoT_SetCertificates",
+  "url": "dir_33621a492d112d01d824a5de72c03dae.html",
+  "brief": "Contains the AWS_IoT_SetCertificates example.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "AWS_IoT_SetCertificates"
+}

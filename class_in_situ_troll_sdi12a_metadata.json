@@ -1,0 +1,18 @@
+{
+  "is_final": false,
+  "parent": null,
+  "parentGroup": null,
+  "id": "class_in_situ_troll_sdi12a",
+  "kind": "class",
+  "name": "InSituTrollSdi12a",
+  "url": "class_in_situ_troll_sdi12a.html",
+  "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__insitu__troll.html\" class=\"m-doc\">Insitu Level/Aqua TROLL pressure, temperature, and depth sensor</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null
+}

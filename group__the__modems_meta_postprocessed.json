@@ -1,0 +1,29 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "group__the__modems",
+  "kind": "group",
+  "name": "Supported Modems and Communication Modules",
+  "url": "group__the__modems.html",
+  "brief": "",
+  "has_details": true,
+  "children": [
+    "group__modem__measured__variables",
+    "group__modem__digi",
+    "group__modem__espressif",
+    "group__modem__bg96",
+    "group__modem__monarch",
+    "group__modem__sim7000",
+    "group__modem__sim7080",
+    "group__modem__sim800",
+    "group__modem__gprsbee",
+    "group__modem__ublox"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "Supported Modems and Communication Modules"
+}

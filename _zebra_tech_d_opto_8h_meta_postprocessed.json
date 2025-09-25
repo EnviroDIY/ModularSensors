@@ -1,0 +1,24 @@
+{
+  "is_final": null,
+  "parent": "dir_7349e89ef19c117195f8e371603e1b1f",
+  "parentGroup": null,
+  "id": "_zebra_tech_d_opto_8h",
+  "kind": "file",
+  "name": "ZebraTechDOpto.h",
+  "url": "_zebra_tech_d_opto_8h.html",
+  "brief": "Contains the <a href=\"class_zebra_tech_d_opto.html\" class=\"m-doc\">ZebraTechDOpto</a> sensor subclass and the variable subclasses <a href=\"class_zebra_tech_d_opto___temp.html\" class=\"m-doc\">ZebraTechDOpto_<wbr />Temp</a>, <a href=\"class_zebra_tech_d_opto___d_opct.html\" class=\"m-doc\">ZebraTechDOpto_<wbr />DOpct</a>, and <a href=\"class_zebra_tech_d_opto___d_omg_l.html\" class=\"m-doc\">ZebraTechDOpto_<wbr />DOmgL</a>.",
+  "has_details": true,
+  "children": [
+    "sensor-variable-counts",
+    "sensor-timing",
+    "temperature",
+    "dissolved-oxygen-percent-saturation",
+    "dissolved-oxygen-concentration"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "ZebraTechDOpto.h"
+}

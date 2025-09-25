@@ -1,0 +1,19 @@
+{
+  "is_final": false,
+  "parent": "class_atlas_parent",
+  "parentGroup": "group__sensor__atlas__co2",
+  "id": "class_atlas_scientific_c_o2",
+  "kind": "class",
+  "name": "AtlasScientificCO2",
+  "url": "class_atlas_scientific_c_o2.html",
+  "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__atlas__co2.html\" class=\"m-doc\">Atlas Scientific gaseous CO2 and temperature sensor</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null,
+  "leaf_name": "AtlasScientificCO2"
+}

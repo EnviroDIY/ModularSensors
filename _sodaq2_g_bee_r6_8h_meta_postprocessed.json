@@ -1,0 +1,20 @@
+{
+  "is_final": null,
+  "parent": "dir_d60b8e8795161a141bba4403c07b6046",
+  "parentGroup": null,
+  "id": "_sodaq2_g_bee_r6_8h",
+  "kind": "file",
+  "name": "Sodaq2GBeeR6.h",
+  "url": "_sodaq2_g_bee_r6_8h.html",
+  "brief": "Contains the <a href=\"class_sodaq2_g_bee_r6.html\" class=\"m-doc\">Sodaq2GBeeR6</a> subclass of the <a href=\"class_s_i_m_com_s_i_m800.html\" class=\"m-doc\">SIMComSIM800</a> class and is specific to the Sodaq 2GBee revisions 6 and higher based on the SIMCOM SIM800h.",
+  "has_details": true,
+  "children": [
+    "modem-pin-settings-and-timing"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "Sodaq2GBeeR6.h"
+}

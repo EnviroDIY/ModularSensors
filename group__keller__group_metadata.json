@@ -1,0 +1,22 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "group__keller__group",
+  "kind": "group",
+  "name": "Keller Water Level Sensors",
+  "url": "group__keller__group.html",
+  "brief": "",
+  "has_details": true,
+  "children": [
+    "group__sensor__acculevel",
+    "group__sensor__nanolevel"
+  ],
+  "childrenClasses": [
+    "class_keller_parent"
+  ],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

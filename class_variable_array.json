@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "class",
     "id": "class_variable_array",
@@ -229,7 +229,7 @@
         "has_details": true,
         "type": "void",
         "name": "begin",
-        "brief": "Begins the <a href=\"class_variable_array.html\" class=\"m-doc\">VariableArray</a>. Suppiles a variable array, checks the validity of all UUID and outputs the results.",
+        "brief": "Begins the <a href=\"class_variable_array.html\" class=\"m-doc\">VariableArray</a>. Supplies a variable array, checks the validity of all UUID and outputs the results.",
         "description": "",
         "return_value": null,
         "return_values": [],
@@ -262,7 +262,7 @@
             "type": "uint8_t",
             "type_name": "uint8_t variableCount",
             "default": null,
-            "description": "The number of variables in the array. Supercedes any value given in the constructor.",
+            "description": "The number of variables in the array. Supersedes any value given in the constructor.",
             "direction": ""
           },
           {
@@ -270,7 +270,7 @@
             "type": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a>*[]",
             "type_name": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a>* variableList[]",
             "default": null,
-            "description": "An array of pointers to variable objects. The pointers may be to calculated or measured variable objects. Supercedes any value given in the constructor.",
+            "description": "An array of pointers to variable objects. The pointers may be to calculated or measured variable objects. Supersedes any value given in the constructor.",
             "direction": ""
           }
         ]
@@ -282,7 +282,7 @@
         "has_details": true,
         "type": "void",
         "name": "begin",
-        "brief": "Begins the <a href=\"class_variable_array.html\" class=\"m-doc\">VariableArray</a>. Suppiles a variable array and UUIDs, checks the validity of all UUID and outputs the results.",
+        "brief": "Begins the <a href=\"class_variable_array.html\" class=\"m-doc\">VariableArray</a>. Supplies a variable array and UUIDs, checks the validity of all UUID and outputs the results.",
         "description": "",
         "return_value": null,
         "return_values": [],
@@ -315,7 +315,7 @@
             "type": "uint8_t",
             "type_name": "uint8_t variableCount",
             "default": null,
-            "description": "The number of variables in the array. Supercedes any value given in the constructor.",
+            "description": "The number of variables in the array. Supersedes any value given in the constructor.",
             "direction": ""
           },
           {
@@ -323,7 +323,7 @@
             "type": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a>*[]",
             "type_name": "<a href=\"class_variable.html\" class=\"m-doc\">Variable</a>* variableList[]",
             "default": null,
-            "description": "An array of pointers to variable objects. The pointers may be to calculated or measured variable objects. Supercedes any value given in the constructor.",
+            "description": "An array of pointers to variable objects. The pointers may be to calculated or measured variable objects. Supersedes any value given in the constructor.",
             "direction": ""
           },
           {
@@ -980,7 +980,7 @@
       },
       {
         "base_url": "class_variable_array.html",
-        "id": "a2bb5cd78018657e3ef999df0c8d82b58",
+        "id": "a1df2a9ea8e6ccc32a35c847eb8076b5a",
         "include": null,
         "has_details": false,
         "type": "uint8_t",
@@ -988,7 +988,7 @@
         "is_static": false,
         "is_protected": true,
         "is_private": false,
-        "name": "_maxSamplestoAverage",
+        "name": "_maxSamplesToAverage",
         "brief": "The maximum number of samples to average of an single sensor.",
         "description": "",
         "deprecated": null,

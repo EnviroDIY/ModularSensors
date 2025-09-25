@@ -1,0 +1,28 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "_yosemitech_y4000_8h",
+  "kind": "file",
+  "name": "YosemitechY4000.h",
+  "url": "_yosemitech_y4000_8h.html",
+  "brief": "Contains the <a href=\"class_yosemitech_y4000.html\" class=\"m-doc\">YosemitechY4000</a> sensor subclass and the variable subclasses <a href=\"class_yosemitech_y4000___d_omg_l.html\" class=\"m-doc\">YosemitechY4000_<wbr />DOmgL</a>, <a href=\"class_yosemitech_y4000___turbidity.html\" class=\"m-doc\">YosemitechY4000_<wbr />Turbidity</a>, <a href=\"class_yosemitech_y4000___cond.html\" class=\"m-doc\">YosemitechY4000_<wbr />Cond</a>, <a href=\"class_yosemitech_y4000__p_h.html\" class=\"m-doc\">YosemitechY4000_<wbr />pH</a>, <a href=\"class_yosemitech_y4000___temp.html\" class=\"m-doc\">YosemitechY4000_<wbr />Temp</a>, <a href=\"class_yosemitech_y4000___o_r_p.html\" class=\"m-doc\">YosemitechY4000_<wbr />ORP</a>, <a href=\"class_yosemitech_y4000___chlorophyll.html\" class=\"m-doc\">YosemitechY4000_<wbr />Chlorophyll</a>, and <a href=\"class_yosemitech_y4000___b_g_a.html\" class=\"m-doc\">YosemitechY4000_<wbr />BGA</a>.",
+  "has_details": true,
+  "children": [
+    "sensor-variable-counts",
+    "sensor-timing",
+    "dissolved-oxygen-concentration",
+    "turbidity",
+    "conductivity",
+    "ph",
+    "temperature",
+    "orp",
+    "chlorophyll-concentration",
+    "blue-green-algae-concentration"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

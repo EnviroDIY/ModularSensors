@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "class",
     "id": "class_sensirion_s_h_t4x",
@@ -102,7 +102,7 @@
             "type": "bool",
             "type_name": "bool useHeater",
             "default": "true",
-            "description": "Whether or not to run the internal heater of the SHT4x when shutting down the sensor; optional with a default value of true. The internal heater is designed to remove condensed water from the sensor - which will make the sensor stop responding to air humidity changes - and to allow creep-free operation in high humidity environments. The longest the internal heater can run at a time is 1s and the maximum duty load is 5%. Running only 1s per measurment cycle probably isn&#x27;t enough to help with more than very minimal condensation, but it&#x27;s probably the best we can easily do.",
+            "description": "Whether or not to run the internal heater of the SHT4x when shutting down the sensor; optional with a default value of true. The internal heater is designed to remove condensed water from the sensor - which will make the sensor stop responding to air humidity changes - and to allow creep-free operation in high humidity environments. The longest the internal heater can run at a time is 1s and the maximum duty load is 5%. Running only 1s per measurement cycle probably isn&#x27;t enough to help with more than very minimal condensation, but it&#x27;s probably the best we can easily do.",
             "direction": ""
           },
           {
@@ -163,7 +163,7 @@
             "type": "bool",
             "type_name": "bool useHeater",
             "default": "true",
-            "description": "Whether or not to run the internal heater of the SHT4x when shutting down the sensor; optional with a default value of true. The internal heater is designed to remove condensed water from the sensor - which will make the sensor stop responding to air humidity changes - and to allow creep-free operation in high humidity environments. The longest the internal heater can run at a time is 1s and the maximum duty load is 5%. Running only 1s per measurment cycle probably isn&#x27;t enough to help with more than very minimal condensation, but it&#x27;s probably the best we can easily do.",
+            "description": "Whether or not to run the internal heater of the SHT4x when shutting down the sensor; optional with a default value of true. The internal heater is designed to remove condensed water from the sensor - which will make the sensor stop responding to air humidity changes - and to allow creep-free operation in high humidity environments. The longest the internal heater can run at a time is 1s and the maximum duty load is 5%. Running only 1s per measurement cycle probably isn&#x27;t enough to help with more than very minimal condensation, but it&#x27;s probably the best we can easily do.",
             "direction": ""
           },
           {

@@ -1,0 +1,175 @@
+{
+  "version": "1.14.0",
+  "compound": {
+    "kind": "page",
+    "id": "page_sleep_config",
+    "name": "Modular Sensors Sleep Configurations",
+    "url_base": "page_sleep_config",
+    "url": "page_sleep_config.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "",
+    "description": "<p><a name=\"md_docs_2_further-_reading_2_sleep-_configurations\"></a></p><section id=\"sleep-_configurations_steps-for-putting-all-boards-to-sleep\"><h2>Steps for Putting All Boards to Sleep</h2><p>All boards start their bedtime routine with these steps.</p><ul><li>Enable interrupts on the RTC</li><li>Enable the wake ISR on the RTC wake pin</li><li>Stop the I2C (Wire) library<ul><li><strong>WARNING:</strong> After stopping I2C, we can no longer communicate with and I2C based RTCs! Any calls to get the current time, change the alarm settings, reset the alarm flags, or any other event that involves communication with the RTC will fail!</li><li>For an AVR board, this disables the two-wire pin functionality and turns off the internal pull-up resistors. // For a SAMD board, this only disables the I2C sercom and does nothing with // the pins. The Wire.end() function does <strong>NOT</strong> force the pins low.</li></ul></li><li>Force the I2C pins to <code>LOW</code><ul><li>This only works if the SDA and SCL pins are defined in a boards pins.h file. Not all boards define the SDA and SCL pins and those that do only define it for their &quot;main&quot; I2C/TWI interface</li><li>I2C devices have a nasty habit of stealing power from the SCL and SDA pins; this prevents that.</li><li><strong>WARNING:</strong> Any calls to the I2C/Wire library when pins are forced low will cause an endless board hang.</li></ul></li><li>Disable the watch-dog timer<ul><li>If it is enabled the watchdog timer will wake the board every ~8 seconds checking if the board has been inactive too long and needs to be reset.</li><li>We have to chose between allowing the watchdog to save us in a hand during sleep and saving power. We&#x27;ve chosen to save power.</li></ul></li></ul><p>After this, the different processor types have different steps to finish preparing and finally falling asleep.</p></section><section id=\"sleep-_configurations_steps-on-wake-for-all-boards\"><h2>Steps on Wake for All Boards</h2><p>Immediately after their wake interrupt, each processor has different steps to resume operation. But all processors finish their wake routine with these steps</p><ul><li>Re-enable the watch-dog timer</li><li>Restart the I2C (Wire) interface</li><li>Disable any unnecessary timeouts in the Wire library<ul><li>These waits would be caused by a readBytes or parseX being called on wire after the Wire buffer has emptied. The default stream functions - used by wire - wait a timeout period after reading the end of the buffer to see if an interrupt puts something into the buffer. In the case of the Wire library, that will never happen and the timeout period is a useless delay.</li></ul></li><li>Detach RTC interrupt the from the wake pin</li><li>Disable the RTC interrupt</li></ul></section><section id=\"sleep_config_avr\"><h2>AVR</h2><section id=\"sleep_modes_avr\"><h3>AVR Sleep Modes</h3><aside class=\"m-note \"><p>Modular Sensors uses <strong>SLEEP_MODE_PWR_DOWN</strong> sleep mode for AVR boards.</p></aside><p>There are 5 AVR sleep modes supported by the Arduino core. They are defined in the avr/sleep.h file.</p><p>The 5 sleep modes are:</p><ul><li>SLEEP_MODE_IDLE<ul><li>the least power savings</li></ul></li><li>SLEEP_MODE_ADC</li><li>SLEEP_MODE_PWR_SAVE</li><li>SLEEP_MODE_STANDBY</li><li>SLEEP_MODE_PWR_DOWN<ul><li>the most power savings</li></ul></li></ul></section><section id=\"sleep_fxn_avr\"><h3>Steps in Putting an AVR board to sleep</h3><p>After completing the <a href=\"#sleep-_configurations_steps-for-putting-all-boards-to-sleep\" class=\"m-doc\">steps for putting all boards to sleep</a> AVR boards finish their bedtime routine with these steps.</p><ul><li>Disable the onboard USB if it exists (ie, for a Leonardo)<ul><li>Freeze the USB clock, turn off the USB PLL, and then disable the USB.</li></ul></li><li>Set the sleep mode to SLEEP_MODE_PWR_DOWN.</li><li>Temporarily disables interrupts, so no mistakes are made when writing to the processor registers.</li><li>Disable the processor ADC, (This must be disabled before the board will power down.)</li><li>Turn off the brown-out detector, if possible.</li><li>Disable all power-reduction modules (ie, the processor module clocks).<ul><li>NOTE: This only shuts down the various clocks on the processor via the power reduction register! It does NOT actually disable the modules themselves or set the pins to any particular state! This means that the I2C/Serial/Timer/etc pins will still be active and powered unless they are turned off prior to calling this function.</li></ul></li><li>Set the sleep enable bit.</li><li>Wait until the serial ports have finished transmitting.<ul><li>This isn&#x27;t very important on AVR boards, but it&#x27;s good practice.</li></ul></li><li>Actually put the processor into sleep mode.</li></ul></section><section id=\"wake_fxn_avr\"><h3>Steps in Resuming Activity for an AVR board</h3><p><em>Before</em> completing the <a href=\"#sleep-_configurations_steps-on-wake-for-all-boards\" class=\"m-doc\">steps on wake for all boards</a> AVR boards start their wake routine with these steps.</p><ul><li>Temporarily disables interrupts, so no mistakes are made when writing to the processor registers.</li><li>Re-enable all power modules (ie, the processor module clocks)<ul><li>NOTE: This only re-enables the various clocks on the processor! The modules may need to be re-initialized after the clocks re-start.</li></ul></li><li>Clear the SE (sleep enable) bit.</li><li>Re-enable the processor ADC</li><li>Re-enables interrupts</li></ul></section></section><section id=\"sleep_config_samd51\"><h2>SAMD51</h2><section id=\"sleep_modes_samd51\"><h3>SAMD51 Sleep Modes</h3><p>SAMD51 boards have multiple sleep configurations.</p><aside class=\"m-note \"><p>Modular Sensors uses <strong>STANDBY</strong> sleep mode for the SAMD51.</p></aside><p>The STANDBY mode is the lowest power configuration while keeping the state of the logic and the content of the RAM. The HIBERNATE, BACKUP, and OFF modes do not retain RAM and a full reset occurs on wake. The watchdog timer also does not run in any sleep setting deeper than STANDBY.</p><ul><li>Idle<ul><li>PM_SLEEPCFG_SLEEPMODE_IDLE_Val = 0x2</li><li>The CPU is stopped. Synchronous clocks are stopped except when requested. The logic is retained.</li><li>Wake-Up Sources:<ul><li>Synchronous: interrupt generated on synchronous (APB or AHB) clock.</li><li>Asynchronous: interrupt generated on generic clock, external clock, or external event.</li></ul></li></ul></li><li>Standby<ul><li>PM_SLEEPCFG_SLEEPMODE_STANDBY_Val = 0x4</li><li>The CPU is stopped as well as the peripherals. The logic is retained, and power domain gating can be used to fully or partially turn off the PDSYSRAM power domain.</li><li>Wake-Up Sources:<ul><li>Synchronous interrupt only for peripherals configured to run in standby.</li><li>Asynchronous: interrupt generated on generic clock, external clock, or external event.</li></ul></li></ul></li><li>Hibernate<ul><li>PM_SLEEPCFG_SLEEPMODE_HIBERNATE_Val = 0x5</li><li>PDCORESW power domain is turned OFF. The backup power domain is kept powered to allow few features to run (RTC, 32KHz clock sources, and wake-up from external pins). The PDSYSRAM power domain can be retained according to software configuration.</li><li>Wake-Up Sources:<ul><li>Hibernate reset detected by the RSTC</li></ul></li></ul></li><li>Backup<ul><li>PM_SLEEPCFG_SLEEPMODE_BACKUP_Val = 0x6</li><li>Only the backup domain is kept powered to allow few features to run (RTC, 32KHz clock sources, and wake-up from external pins). The PDBKUPRAM power domain can be retained according to software configuration.</li><li>Wake-Up Sources:<ul><li>Backup reset detected by the RSTC</li></ul></li></ul></li><li>Off<ul><li>PM_SLEEPCFG_SLEEPMODE_OFF_Val = 0x7</li><li>The entire device is powered off.</li><li>Wake-Up Sources:<ul><li>External Reset</li></ul></li></ul></li></ul><p>In hibernate and backup modes, &quot;wake-up from external pins&quot;, refers <strong>only</strong> to the reset pin (<code>RESETN</code>) and dedicated RTC tamper detect pins (RTC INn [n=0..4]). The datasheet is a bit misleading in this. <a href=\"https://microchip.my.site.com/s/article/SAM-E5x-D5x--Wakeup-from-Hibernate-Backup-sleep-modes-using-External-Interrupt\">See this Microchip FAQ article for details</a></p><p>RESETN is a dedicated pin.</p><p><a href=\"https://onlinedocs.microchip.com/oxy/GUID-F5813793-E016-46F5-A9E2-718D8BCED496-en-US-14/GUID-6DC09BF1-A273-45E0-AB75-4E4181A06FC2.html?hl=tamper\">From Table 6-7 in the datasheet</a> the tamper detection pins are:</p><table class=\"m-table m-fullwidth m-flat\"><thead><tr><th>RTC Signal</th><th>I/O Pin</th><th>VQFN 48</th><th>TQFP/VQFN/WLCSP 64</th><th>TQFP 100</th><th>TFBGA 120</th><th>TQFP 128</th></tr></thead><tbody><tr><td>IN0</td><td>PB00</td><td>x</td><td>61/A7</td><td>97</td><td>A3</td><td>125</td></tr><tr><td>IN1</td><td>PB02</td><td>47</td><td>63/A8</td><td>99</td><td>A2</td><td>127</td></tr><tr><td>IN2</td><td>PA02</td><td>1</td><td>01/B8</td><td>1</td><td>A1</td><td>1</td></tr><tr><td>IN3</td><td>PC00</td><td>x</td><td>x</td><td>3</td><td>C1</td><td>3</td></tr><tr><td>IN4</td><td>PC01</td><td>x</td><td>x</td><td>4</td><td>C2</td><td>4</td></tr><tr><td>OUT</td><td>PB01</td><td>x</td><td>62/B7</td><td>98</td><td>B3</td><td>126</td></tr></tbody></table></section><section id=\"sleep_pins_samd51\"><h3>SAMD51 Pin Configuration During Sleep</h3><aside class=\"m-note m-danger\"><h4>Warning</h4><p>All pin modes must be reset after the board wakes from sleep. If you are using any custom code (or a &quot;complex loop&quot;) you <strong>must</strong> remember to reset your pin modes on wake. Reset pin modes by calling the <code>pinMode(pin_number, state);</code> and <code>digitalWrite(pin_number, value);</code> functions.</p></aside><aside class=\"m-note m-info\"><h4>Note</h4><p>You can disable pin tri-state by calling <code>Logger::disablePinTristate(true)</code>. You can re-enable pin tri-strate by calling <code>Logger::disablePinTristate(false)</code>. No pin modes are <strong>not</strong> changed when the <code>disablePinTristate()</code> function is called, only when the <code>systemSleep()</code> function is called.</p></aside><p>To prevent power draw by any external pins during sleep, Modular Sensors sets all pins except the RTC interrupt pins to &quot;tri-state.&quot; Tri-state means that for <em>all</em> pins:</p><ul><li>the pin &quot;direction&quot; is set to input (<code>PORT-&gt;Group[port].DIRCLR.reg = pinMask;</code>)</li><li>the pin input buffer is disabled (<code>PORT-&gt;Group[port].PINCFG[pin].bit.INEN = 0;</code>)</li><li>the internal pin pull-up and pull-down resistors are disabled (<code>PORT-&gt;Group[port].PINCFG[pin].bit.PULLEN = 0;</code>)</li></ul></section><section id=\"sleep_peripherals_samd51\"><h3>SAMD51 Peripheral Clocks During Sleep</h3><aside class=\"m-note m-danger\"><h4>Warning</h4><p>This could potential be a problem if you are using an uncommon SAMD peripheral, especially if you are configuring it yourself. Some SAMD libraries that rely on the SAMD51 peripheral system configure the peripheral clocks on each call to the peripheral, but some do it only on when a <code>begin()</code> type function is called. If the peripheral you wish to use always reconfigures the clocks, this will never be a problem for you. If not, you will need to call whatever function is needed to reconfigure the clocks on wake.</p></aside><aside class=\"m-note m-info\"><h4>Note</h4><p>You can disable disabling peripherals by calling <code>Logger::disablePeripheralShutdown(true)</code>. You can re-enable pin tri-strate by calling <code>Logger::disablePeripheralShutdown(false)</code>. No peripheral settings are changed when the <code>disablePeripheralShutdown()</code> function is called, only when the <code>systemSleep()</code> function is called.</p></aside><p>To decrease power use during sleep on the SAMD51, Modular Sensors explicitly disconnects all unused peripherals from the various clocks and and clock sources to prevent them from &quot;[sleepwalking](https://onlinedocs.microchip.com/oxy/GUID-F5813793-E016-46F5-A9E2-718D8BCED496-en-US-14/GUID-FA7D618C-0F98-4A2C-9D24-669C4A3E3CA3.html)&quot;. The SAMD51&#x27;s standby mode turns off clocks <em>except those configured to be running sleepwalking tasks</em>. By disconnecting all unused peripherals from a clock source, we ensure that the clocks aren&#x27;t woken.</p><p>To do this, Modular Sensors disables generic clock generator 7 by disconnecting it from any oscillator source. Then it ties all peripheral timer that are safe to shut down to the disabled generator. This reduces power draw in sleep.</p><p>Some notes on what can and cannot be disabled:</p><ul><li>We CAN disable the EIC controller timer (4) because the controller clock source is set to OSCULP32K.</li><li>We cannot disable the SERCOM peripheral timers for sleep because they&#x27;re only reset with a begin(speed, config), which we do not call within the Modular Sensors library. We force users to call the begin in their sketch so they can choose both the exact type of stream and the baud rate.</li><li>We cannot disable the ADC peripheral timers because they&#x27;re only set in the init for the ADC at startup.</li><li>We CAN disable all of the timer clocks because they&#x27;re reset every time they&#x27;re used by SDI-12 (and others)</li></ul><p>The numbers of all disabled peripherals are:</p><ul><li>4, 5, 6, 9, 11, 12, 13, 14, 15, 16, 17,</li><li>18, 19, 20, 21, 22, 25, 26, 27, 28, 29, 30,</li><li>31, 32, 33, 38, 39, 42, 43, 44, 45, 46, 47</li></ul><aside class=\"m-note m-default\"><h4>See also</h4><p><a href=\"page_samd_clocks.html#samd51_clock_other_libraries\" class=\"m-doc\">The SAMD clock file</a> for a list of which peripherals each of these numbers pertain to.</p></aside></section><section id=\"sleep_fxn_samd51\"><h3>Steps in Putting an SAMD51 board to sleep</h3><p>After completing the <a href=\"#sleep-_configurations_steps-for-putting-all-boards-to-sleep\" class=\"m-doc\">steps for putting all boards to sleep</a> SAMD51 boards finish their bedtime routine with these steps.</p><ul><li>Detach any USB devices (ie, the built in USB drivers for communication with a PC)<ul><li>This is skipped if the TinyUSB library is called for some reason.</li></ul></li><li>Force all pins except the RTC wake and button pins to go to minimum power draw levels (tri-state)</li><li>Configure GCLK7 to be disconnected from an oscillator source.</li><li>Connect all unused peripherals to the source-less GCLK7.</li><li>Wait for all serial ports to finish transmitting<ul><li>This is crucial for the SAMD boards that will continuously wake if they have data remaining in the buffer.</li></ul></li><li>Clear the FPU interrupt because it can prevent us from sleeping.<ul><li><a href=\"https://github.com/maholli/circuitpython/blob/210ce1d1dc9b1c6c615ff2d3201dde89cb75c555/ports/atmel-samd/supervisor/port.c#L654\">See this reference in the Circuit Python code.</a></li></ul></li><li>Set the sleep mode configuration to use STANDBY mode.</li><li>Wait for the sleep mode setting to take<ul><li>From datasheet 18.6.3.3: A small latency happens between the store instruction and actual writing of the SLEEPCFG register due to bridges. Software must ensure that the SLEEPCFG register reads the desired value before executing a WFI instruction.</li></ul></li><li>Configure standby mode to retain all system RAM and disable fast wake.</li><li>Wait for all the board to be ready to sleep.<ul><li>From datasheet 18.6.3.3: After power-up, the MAINVREG low power mode takes some time to stabilize. O Once stabilized, the INTFLAG.SLEEPRDY bit is set. Before entering Standby, Hibernate or Backup mode, software must ensure that the INTFLAG.SLEEPRDY bit is set. SRGD Note: I believe this only applies at power-on, but it&#x27;s probably not a bad idea to check that the flag has been set.</li></ul></li><li>Call the data sync barrier (<code>__DSB();</code>) function to ensure outgoing memory accesses complete.</li><li>Call wait for interrupts (<code>__WFI();</code>) to begin sleeping.<ul><li><a href=\"https://www.eevblog.com/forum/microcontrollers/crashing-through-__wfi/\">See this link for tips on failing to sleep.</a></li></ul></li></ul></section><section id=\"wake_fxn_samd51\"><h3>Steps in Resuming Activity for a SAMD51 board</h3><p><em>Before</em> completing the <a href=\"#sleep-_configurations_steps-on-wake-for-all-boards\" class=\"m-doc\">steps on wake for all boards</a> SAMD51 boards start their wake routine with these steps.</p><ul><li>Re-attach the USB for PC communication</li><li>Re-set the pin modes for the RTC wake pin, SD card SS pin, SD card power pin, button pin, and LED pin.<ul><li>The pins were all set to tri-state to save power.</li></ul></li></ul></section></section><section id=\"sleep_config_samd21\"><h2>SAMD21</h2><section id=\"sleep_modes_samd21\"><h3>SAMD21 Sleep Modes</h3><aside class=\"m-note \"><p>Modular Sensors uses <strong>STANDBY</strong> sleep mode for the SAMD21.</p></aside><p>The SAMD21 has only two sleep modes, idle and standby, with standby having the most power saving. Within the SAMD21 Arduino core and boot loaders, standby mode is referred to as SLEEPDEEP.</p></section><section id=\"sleep_pins_samd21\"><h3>SAMD21 Pin Configuration During Sleep</h3><p>The pin configurations for the SAMD21 are identical to those described above for the SAMD51.</p></section><section id=\"sleep_fxn_samd21\"><h3>Steps in Putting an SAMD21 board to sleep</h3><p>After completing the <a href=\"#sleep-_configurations_steps-for-putting-all-boards-to-sleep\" class=\"m-doc\">steps for putting all boards to sleep</a> SAMD21 boards finish their bedtime routine with these steps.</p><ul><li>Detach any USB devices (ie, the built in USB drivers for communication with a PC)<ul><li>This is skipped if the TinyUSB library is called for some reason.</li></ul></li><li>Force all pins except the RTC wake and button pins to go to minimum power draw levels (tri-state)</li><li>Wait for all serial ports to finish transmitting<ul><li>This is crucial for the SAMD boards that will continuously wake if they have data remaining in the buffer.</li></ul></li><li>Configure flash to <strong>not</strong> power down when in sleep.<ul><li>Datasheet Errata 1.14.2 says this is required.</li></ul></li><li>Disable the systick interrupt.<ul><li>See <a href=\"https://www.avrfreaks.net/forum/samd21-samd21e16b-sporadically-locks-and-does-not-wake-standby-sleep-mode\">https:/<wbr />/<wbr />www.avrfreaks.net/<wbr />forum/<wbr />samd21-samd21e16b-sporadically-locks-and-does-not-wake-standby-sleep-mode</a>.</li><li>Due to a hardware bug on the SAMD21, the SysTick interrupts become active before the flash has powered up from sleep, causing a hard fault. To prevent this the SysTick interrupts are disabled before entering sleep mode.</li></ul></li><li>Set the sleep mode configuration to use STANDBY mode.</li><li>Call the data sync barrier (<code>__DSB();</code>) function to ensure outgoing memory accesses complete.</li><li>Call wait for interrupts (<code>__WFI();</code>) to begin sleeping.<ul><li><a href=\"https://www.eevblog.com/forum/microcontrollers/crashing-through-__wfi/\">See this link for tips on failing to sleep.</a></li></ul></li></ul></section><section id=\"wake_fxn_samd21\"><h3>Steps in Resuming Activity for a SAMD21 board</h3><p><em>Before</em> completing the <a href=\"#sleep-_configurations_steps-on-wake-for-all-boards\" class=\"m-doc\">steps on wake for all boards</a> SAMD21 boards start their wake routine with these steps.</p><ul><li>Re-enable the systick interrupt</li><li>Re-attach the USB for PC communication</li><li>Re-set the pin modes for the RTC wake pin, SD card SS pin, SD card power pin, button pin, and LED pin.<ul><li>The pins were all set to tri-state to save power.</li></ul></li></ul></section></section>",
+    "sections": [
+      [
+        "sleep-_configurations_steps-for-putting-all-boards-to-sleep",
+        "Steps for Putting All Boards to Sleep",
+        []
+      ],
+      [
+        "sleep-_configurations_steps-on-wake-for-all-boards",
+        "Steps on Wake for All Boards",
+        []
+      ],
+      [
+        "sleep_config_avr",
+        "AVR",
+        [
+          [
+            "sleep_modes_avr",
+            "AVR Sleep Modes",
+            []
+          ],
+          [
+            "sleep_fxn_avr",
+            "Steps in Putting an AVR board to sleep",
+            []
+          ],
+          [
+            "wake_fxn_avr",
+            "Steps in Resuming Activity for an AVR board",
+            []
+          ]
+        ]
+      ],
+      [
+        "sleep_config_samd51",
+        "SAMD51",
+        [
+          [
+            "sleep_modes_samd51",
+            "SAMD51 Sleep Modes",
+            []
+          ],
+          [
+            "sleep_pins_samd51",
+            "SAMD51 Pin Configuration During Sleep",
+            []
+          ],
+          [
+            "sleep_peripherals_samd51",
+            "SAMD51 Peripheral Clocks During Sleep",
+            []
+          ],
+          [
+            "sleep_fxn_samd51",
+            "Steps in Putting an SAMD51 board to sleep",
+            []
+          ],
+          [
+            "wake_fxn_samd51",
+            "Steps in Resuming Activity for a SAMD51 board",
+            []
+          ]
+        ]
+      ],
+      [
+        "sleep_config_samd21",
+        "SAMD21",
+        [
+          [
+            "sleep_modes_samd21",
+            "SAMD21 Sleep Modes",
+            []
+          ],
+          [
+            "sleep_pins_samd21",
+            "SAMD21 Pin Configuration During Sleep",
+            []
+          ],
+          [
+            "sleep_fxn_samd21",
+            "Steps in Putting an SAMD21 board to sleep",
+            []
+          ],
+          [
+            "wake_fxn_samd21",
+            "Steps in Resuming Activity for a SAMD21 board",
+            []
+          ]
+        ]
+      ]
+    ],
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": [
+      [
+        "page_samd_clocks.html",
+        "The SAMD clock system"
+      ],
+      [
+        "page_other_notes.html",
+        "Other Sensor and Modem Notes"
+      ],
+      null
+    ],
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "ModularSensors",
+        "index.html"
+      ],
+      [
+        "Other Sensor and Modem Notes",
+        "page_other_notes.html"
+      ],
+      [
+        "Modular Sensors Sleep Configurations",
+        "page_sleep_config.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Modular Sensors Sleep Configurations",
+        "page_sleep_config.html"
+      ]
+    ]
+  }
+}

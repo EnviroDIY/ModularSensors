@@ -1,0 +1,21 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "_max_botix_sonar_8h",
+  "kind": "file",
+  "name": "MaxBotixSonar.h",
+  "url": "_max_botix_sonar_8h.html",
+  "brief": "Contains the <a href=\"class_max_botix_sonar.html\" class=\"m-doc\">MaxBotixSonar</a> sensor subclass and the <a href=\"class_max_botix_sonar___range.html\" class=\"m-doc\">MaxBotixSonar_<wbr />Range</a> variable subclass.",
+  "has_details": true,
+  "children": [
+    "sensor-variable-counts",
+    "sensor-timing",
+    "range"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

@@ -1,0 +1,22 @@
+{
+  "is_final": null,
+  "parent": "group__yosemitech__group",
+  "parentGroup": null,
+  "id": "group__sensor__y533",
+  "kind": "group",
+  "name": "Yosemitech Y533 ORP Sensor",
+  "url": "group__sensor__y533.html",
+  "brief": "",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [
+    "class_yosemitech_y533",
+    "class_yosemitech_y533___o_r_p",
+    "class_yosemitech_y533___temp"
+  ],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "Yosemitech Y533 ORP Sensor"
+}

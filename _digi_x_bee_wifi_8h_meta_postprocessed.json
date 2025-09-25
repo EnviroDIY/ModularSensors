@@ -1,0 +1,20 @@
+{
+  "is_final": null,
+  "parent": "dir_d60b8e8795161a141bba4403c07b6046",
+  "parentGroup": null,
+  "id": "_digi_x_bee_wifi_8h",
+  "kind": "file",
+  "name": "DigiXBeeWifi.h",
+  "url": "_digi_x_bee_wifi_8h.html",
+  "brief": "Contains the <a href=\"class_digi_x_bee_wifi.html\" class=\"m-doc\">DigiXBeeWifi</a> subclass of the <a href=\"class_digi_x_bee.html\" class=\"m-doc\">DigiXBee</a> class for Digi S6B Wifi XBee&#x27;s.",
+  "has_details": true,
+  "children": [
+    "configuration-defines"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "DigiXBeeWifi.h"
+}

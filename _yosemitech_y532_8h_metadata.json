@@ -1,0 +1,23 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "_yosemitech_y532_8h",
+  "kind": "file",
+  "name": "YosemitechY532.h",
+  "url": "_yosemitech_y532_8h.html",
+  "brief": "Contains the <a href=\"class_yosemitech_y532.html\" class=\"m-doc\">YosemitechY532</a> sensor subclass and the variable subclasses <a href=\"class_yosemitech_y532__p_h.html\" class=\"m-doc\">YosemitechY532_<wbr />pH</a>, <a href=\"class_yosemitech_y532___temp.html\" class=\"m-doc\">YosemitechY532_<wbr />Temp</a>, and <a href=\"class_yosemitech_y532___voltage.html\" class=\"m-doc\">YosemitechY532_<wbr />Voltage</a>.",
+  "has_details": true,
+  "children": [
+    "sensor-variable-counts",
+    "sensor-timing",
+    "ph",
+    "temperature",
+    "voltage"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

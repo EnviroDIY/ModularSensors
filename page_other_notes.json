@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "page",
     "id": "page_other_notes",
@@ -10,7 +10,7 @@
     "has_template_details": false,
     "templates": null,
     "brief": "",
-    "description": "<p>Here are links to detailed information about the various supported sensors and modems.</p><p><a href=\"page_sensor_notes.html\" class=\"m-doc\">Notes about Sensors</a></p><p><a href=\"page_modem_notes.html\" class=\"m-doc\">Notes about Modems</a></p>",
+    "description": "<p>Here are links to detailed information about the various supported sensors and modems.</p><p><a href=\"page_sensor_notes.html\" class=\"m-doc\">Notes about Sensors</a></p><p><a href=\"page_modem_notes.html\" class=\"m-doc\">Notes about Modems</a></p><p><a href=\"page_samd_clocks.html\" class=\"m-doc\">The SAMD clock system</a></p><p><a href=\"page_sleep_config.html\" class=\"m-doc\">Modular Sensors Sleep Configurations</a></p>",
     "sections": [],
     "deprecated": null,
     "since": null,

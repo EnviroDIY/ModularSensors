@@ -1,0 +1,22 @@
+{
+  "is_final": false,
+  "parent": "class_sensor",
+  "parentGroup": "group__keller__group",
+  "id": "class_keller_parent",
+  "kind": "class",
+  "name": "KellerParent",
+  "url": "class_keller_parent.html",
+  "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for all <a href=\"group__keller__group.html\" class=\"m-doc\">Keller water level sensors</a>.",
+  "has_details": true,
+  "children": [
+    "class_keller_acculevel",
+    "class_keller_nanolevel"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null,
+  "leaf_name": "KellerParent"
+}

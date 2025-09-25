@@ -1,0 +1,20 @@
+{
+  "is_final": false,
+  "parent": null,
+  "parentGroup": null,
+  "id": "class_s_i_m_com_s_i_m800",
+  "kind": "class",
+  "name": "SIMComSIM800",
+  "url": "class_s_i_m_com_s_i_m800.html",
+  "brief": "The <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> subclass for the Adafruit Fona 2G, the Sodaq GPRSBeeR4 and almost any other module based on the <a href=\"group__modem__sim800.html\" class=\"m-doc\">SIMCOM SIM800 or SIM900 modules and</a>their variants&quot;.",
+  "has_details": true,
+  "children": [
+    "class_sodaq2_g_bee_r6"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null
+}

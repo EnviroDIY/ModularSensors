@@ -1,0 +1,24 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "_processor_stats_8h",
+  "kind": "file",
+  "name": "ProcessorStats.h",
+  "url": "_processor_stats_8h.html",
+  "brief": "Contains the <a href=\"class_processor_stats.html\" class=\"m-doc\">ProcessorStats</a> sensor subclass and the variable subclasses <a href=\"class_processor_stats___battery.html\" class=\"m-doc\">ProcessorStats_<wbr />Battery</a>, <a href=\"class_processor_stats___free_ram.html\" class=\"m-doc\">ProcessorStats_<wbr />FreeRam</a>, and <a href=\"class_processor_stats___sample_number.html\" class=\"m-doc\">ProcessorStats_<wbr />SampleNumber</a>.",
+  "has_details": true,
+  "children": [
+    "sensor-variable-counts",
+    "sensor-timing",
+    "battery-voltage",
+    "available-ram",
+    "sample-number",
+    "cause-of-last-processor-reset"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

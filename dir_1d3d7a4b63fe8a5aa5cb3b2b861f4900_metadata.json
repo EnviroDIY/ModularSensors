@@ -1,0 +1,17 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "dir_1d3d7a4b63fe8a5aa5cb3b2b861f4900",
+  "kind": "dir",
+  "name": "examples/logging_to_ThingSpeak",
+  "url": "dir_1d3d7a4b63fe8a5aa5cb3b2b861f4900.html",
+  "brief": "Contains the logging_to_ThingSpeak example.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

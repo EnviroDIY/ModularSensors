@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "class",
     "id": "class_thing_speak_publisher",
@@ -198,7 +198,7 @@
       },
       {
         "base_url": "class_thing_speak_publisher.html",
-        "id": "a81fb2dfe5806588b6376c789b075b7dd",
+        "id": "a8610624392a8b91a78e994ca0a9bfb18",
         "include": null,
         "has_details": true,
         "type": "",
@@ -240,11 +240,27 @@
             "direction": ""
           },
           {
-            "name": "thingSpeakMQTTKey",
+            "name": "thingSpeakClientName",
             "type": "const char*",
-            "type_name": "const char* thingSpeakMQTTKey",
+            "type_name": "const char* thingSpeakClientName",
             "default": null,
-            "description": "Your MQTT API Key from Account &gt; MyProfile.",
+            "description": "The client name for your MQTT device. This is probably the same as your MQTT device&#x27;s user name.",
+            "direction": ""
+          },
+          {
+            "name": "thingSpeakMQTTUser",
+            "type": "const char*",
+            "type_name": "const char* thingSpeakMQTTUser",
+            "default": null,
+            "description": "The user name for your MQTT device. This is probably the same as your MQTT device&#x27;s client name.",
+            "direction": ""
+          },
+          {
+            "name": "thingSpeakMQTTPassword",
+            "type": "const char*",
+            "type_name": "const char* thingSpeakMQTTPassword",
+            "default": null,
+            "description": "The password for your MQTT device.",
             "direction": ""
           },
           {
@@ -252,15 +268,7 @@
             "type": "const char*",
             "type_name": "const char* thingSpeakChannelID",
             "default": null,
-            "description": "The numeric channel id for your channel",
-            "direction": ""
-          },
-          {
-            "name": "thingSpeakChannelKey",
-            "type": "const char*",
-            "type_name": "const char* thingSpeakChannelKey",
-            "default": null,
-            "description": "The write API key for your channel",
+            "description": "The numeric channel id for your channel.",
             "direction": ""
           },
           {
@@ -275,7 +283,7 @@
       },
       {
         "base_url": "class_thing_speak_publisher.html",
-        "id": "a448f0e8458e8137abb6b7b812f47cd94",
+        "id": "a3a9afec235c0247f05e33686b93b84ba",
         "include": null,
         "has_details": true,
         "type": "",
@@ -325,11 +333,27 @@
             "direction": ""
           },
           {
-            "name": "thingSpeakMQTTKey",
+            "name": "thingSpeakClientName",
             "type": "const char*",
-            "type_name": "const char* thingSpeakMQTTKey",
+            "type_name": "const char* thingSpeakClientName",
             "default": null,
-            "description": "Your MQTT API Key from Account &gt; MyProfile.",
+            "description": "The client name for your MQTT device. This is probably the same as your MQTT device&#x27;s user name.",
+            "direction": ""
+          },
+          {
+            "name": "thingSpeakMQTTUser",
+            "type": "const char*",
+            "type_name": "const char* thingSpeakMQTTUser",
+            "default": null,
+            "description": "The user name for your MQTT device. This is probably the same as your MQTT device&#x27;s client name.",
+            "direction": ""
+          },
+          {
+            "name": "thingSpeakMQTTPassword",
+            "type": "const char*",
+            "type_name": "const char* thingSpeakMQTTPassword",
+            "default": null,
+            "description": "The password for your MQTT device.",
             "direction": ""
           },
           {
@@ -337,15 +361,7 @@
             "type": "const char*",
             "type_name": "const char* thingSpeakChannelID",
             "default": null,
-            "description": "The numeric channel id for your channel",
-            "direction": ""
-          },
-          {
-            "name": "thingSpeakChannelKey",
-            "type": "const char*",
-            "type_name": "const char* thingSpeakChannelKey",
-            "default": null,
-            "description": "The write API key for your channel",
+            "description": "The numeric channel id for your channel.",
             "direction": ""
           },
           {
@@ -443,12 +459,12 @@
       },
       {
         "base_url": "class_thing_speak_publisher.html",
-        "id": "af6e0684f02b6b9ae082302854d53ff2d",
+        "id": "a08f03218c675a5df98f831dd63aa8a49",
         "include": null,
         "has_details": true,
         "type": "void",
-        "name": "setMQTTKey",
-        "brief": "Set the MQTT API Key from Account &gt; MyProfile.",
+        "name": "setMQTTClient",
+        "brief": "The client name for your MQTT device. This is probably the same as your MQTT device&#x27;s user name.",
         "description": "",
         "return_value": null,
         "return_values": [],
@@ -477,11 +493,101 @@
         "has_param_details": true,
         "params": [
           {
-            "name": "thingSpeakMQTTKey",
+            "name": "thingSpeakClientName",
             "type": "const char*",
-            "type_name": "const char* thingSpeakMQTTKey",
+            "type_name": "const char* thingSpeakClientName",
             "default": null,
-            "description": "Your MQTT API Key from Account &gt; MyProfile.",
+            "description": "The client name for your MQTT device. This is probably the same as your MQTT device&#x27;s user name.",
+            "direction": ""
+          }
+        ]
+      },
+      {
+        "base_url": "class_thing_speak_publisher.html",
+        "id": "ac228fd775fd062412e3744de2c81b8b9",
+        "include": null,
+        "has_details": true,
+        "type": "void",
+        "name": "setUserName",
+        "brief": "Set the user name for your MQTT device.",
+        "description": "",
+        "return_value": null,
+        "return_values": [],
+        "exceptions": [],
+        "deprecated": null,
+        "since": null,
+        "is_constexpr": false,
+        "is_consteval": false,
+        "is_explicit": false,
+        "is_virtual": false,
+        "prefix": "",
+        "is_defaulted": false,
+        "is_deleted": false,
+        "is_pure_virtual": false,
+        "is_final": false,
+        "is_override": false,
+        "is_noexcept": false,
+        "is_conditional_noexcept": false,
+        "suffix": "",
+        "is_protected": false,
+        "is_private": false,
+        "is_signal": false,
+        "is_slot": false,
+        "has_template_details": false,
+        "templates": null,
+        "has_param_details": true,
+        "params": [
+          {
+            "name": "thingSpeakMQTTUser",
+            "type": "const char*",
+            "type_name": "const char* thingSpeakMQTTUser",
+            "default": null,
+            "description": "The user name for your MQTT device. This is probably the same as your MQTT device&#x27;s client name.",
+            "direction": ""
+          }
+        ]
+      },
+      {
+        "base_url": "class_thing_speak_publisher.html",
+        "id": "aa61f9205e00b6f102d0ed03c9460721b",
+        "include": null,
+        "has_details": true,
+        "type": "void",
+        "name": "setPassword",
+        "brief": "Set the password for your MQTT device.",
+        "description": "",
+        "return_value": null,
+        "return_values": [],
+        "exceptions": [],
+        "deprecated": null,
+        "since": null,
+        "is_constexpr": false,
+        "is_consteval": false,
+        "is_explicit": false,
+        "is_virtual": false,
+        "prefix": "",
+        "is_defaulted": false,
+        "is_deleted": false,
+        "is_pure_virtual": false,
+        "is_final": false,
+        "is_override": false,
+        "is_noexcept": false,
+        "is_conditional_noexcept": false,
+        "suffix": "",
+        "is_protected": false,
+        "is_private": false,
+        "is_signal": false,
+        "is_slot": false,
+        "has_template_details": false,
+        "templates": null,
+        "has_param_details": true,
+        "params": [
+          {
+            "name": "thingSpeakMQTTPassword",
+            "type": "const char*",
+            "type_name": "const char* thingSpeakMQTTPassword",
+            "default": null,
+            "description": "The password for your MQTT device.",
             "direction": ""
           }
         ]
@@ -533,13 +639,13 @@
       },
       {
         "base_url": "class_thing_speak_publisher.html",
-        "id": "a08e761f0142521223169aba5af2e8b37",
+        "id": "ab78d77c9c80098c2aa898bfb2f702f65",
         "include": null,
         "has_details": true,
         "type": "void",
-        "name": "setChannelKey",
-        "brief": "Set the channel&#x27;s write API key.",
-        "description": "",
+        "name": "setRESTAPIKey",
+        "brief": "Set the ThingSpeak user REST API key.",
+        "description": "<p>This is only used to update the field names on the ThingSpeak channel during the updateMetadata call at boot up. The <em>user</em> REST API key is <strong>NOT</strong> the same as your <em>channel</em> API keys or your MQTT connection credentials. Find this key in your ThingSpeak account under Account &gt; My Profile.</p>",
         "return_value": null,
         "return_values": [],
         "exceptions": [],
@@ -567,23 +673,23 @@
         "has_param_details": true,
         "params": [
           {
-            "name": "thingSpeakChannelKey",
+            "name": "thingSpeakAPIKey",
             "type": "const char*",
-            "type_name": "const char* thingSpeakChannelKey",
+            "type_name": "const char* thingSpeakAPIKey",
             "default": null,
-            "description": "The write API key for your channel",
+            "description": "The ThingSpeak user REST API key",
             "direction": ""
           }
         ]
       },
       {
         "base_url": "class_thing_speak_publisher.html",
-        "id": "a7df259680714264449ef261d5e237874",
+        "id": "ae4768b3e0b4583f5fa05fd3c95f98b35",
         "include": null,
         "has_details": true,
         "type": "void",
         "name": "setThingSpeakParams",
-        "brief": "Sets all 3 ThingSpeak parameters.",
+        "brief": "Sets all 4 ThingSpeak parameters.",
         "description": "",
         "return_value": null,
         "return_values": [],
@@ -612,34 +718,42 @@
         "has_param_details": true,
         "params": [
           {
-            "name": "MQTTKey",
+            "name": "thingSpeakClientName",
             "type": "const char*",
-            "type_name": "const char* MQTTKey",
+            "type_name": "const char* thingSpeakClientName",
             "default": null,
-            "description": "Your MQTT API Key from Account &gt; MyProfile.",
+            "description": "The client name for your MQTT device. This is probably the same as your MQTT device&#x27;s user name.",
             "direction": ""
           },
           {
-            "name": "channelID",
+            "name": "thingSpeakMQTTUser",
             "type": "const char*",
-            "type_name": "const char* channelID",
+            "type_name": "const char* thingSpeakMQTTUser",
             "default": null,
-            "description": "The numeric channel id for your channel",
+            "description": "The user name for your MQTT device. This is probably the same as your MQTT device&#x27;s client name.",
             "direction": ""
           },
           {
-            "name": "channelKey",
+            "name": "thingSpeakMQTTPassword",
             "type": "const char*",
-            "type_name": "const char* channelKey",
+            "type_name": "const char* thingSpeakMQTTPassword",
             "default": null,
-            "description": "The write API key for your channel",
+            "description": "The password for your MQTT device.",
+            "direction": ""
+          },
+          {
+            "name": "thingSpeakChannelID",
+            "type": "const char*",
+            "type_name": "const char* thingSpeakChannelID",
+            "default": null,
+            "description": "The numeric channel id for your channel.",
             "direction": ""
           }
         ]
       },
       {
         "base_url": "class_thing_speak_publisher.html",
-        "id": "ac61e1ab8921dae2cbae02a29466bf807",
+        "id": "a9038a61abd550ebc4f4693eb2c1fa333",
         "include": null,
         "has_details": true,
         "type": "void",
@@ -689,11 +803,27 @@
             "direction": ""
           },
           {
-            "name": "thingSpeakMQTTKey",
+            "name": "thingSpeakClientName",
             "type": "const char*",
-            "type_name": "const char* thingSpeakMQTTKey",
+            "type_name": "const char* thingSpeakClientName",
             "default": null,
-            "description": "Your MQTT API Key from Account &gt; MyProfile.",
+            "description": "The client name for your MQTT device. This is probably the same as your MQTT device&#x27;s user name.",
+            "direction": ""
+          },
+          {
+            "name": "thingSpeakMQTTUser",
+            "type": "const char*",
+            "type_name": "const char* thingSpeakMQTTUser",
+            "default": null,
+            "description": "The user name for your MQTT device. This is probably the same as your MQTT device&#x27;s client name.",
+            "direction": ""
+          },
+          {
+            "name": "thingSpeakMQTTPassword",
+            "type": "const char*",
+            "type_name": "const char* thingSpeakMQTTPassword",
+            "default": null,
+            "description": "The password for your MQTT device.",
             "direction": ""
           },
           {
@@ -701,22 +831,14 @@
             "type": "const char*",
             "type_name": "const char* thingSpeakChannelID",
             "default": null,
-            "description": "The numeric channel id for your channel",
-            "direction": ""
-          },
-          {
-            "name": "thingSpeakChannelKey",
-            "type": "const char*",
-            "type_name": "const char* thingSpeakChannelKey",
-            "default": null,
-            "description": "The write API key for your channel",
+            "description": "The numeric channel id for your channel.",
             "direction": ""
           }
         ]
       },
       {
         "base_url": "class_thing_speak_publisher.html",
-        "id": "a85e6d663a1c2efde5ad3b7e503d5ee49",
+        "id": "ad2f031b2a447c8a2e88234aef6db5fa8",
         "include": null,
         "has_details": true,
         "type": "void",
@@ -758,11 +880,27 @@
             "direction": ""
           },
           {
-            "name": "thingSpeakMQTTKey",
+            "name": "thingSpeakClientName",
             "type": "const char*",
-            "type_name": "const char* thingSpeakMQTTKey",
+            "type_name": "const char* thingSpeakClientName",
             "default": null,
-            "description": "Your MQTT API Key from Account &gt; MyProfile.",
+            "description": "The client name for your MQTT device. This is probably the same as your MQTT device&#x27;s user name.",
+            "direction": ""
+          },
+          {
+            "name": "thingSpeakMQTTUser",
+            "type": "const char*",
+            "type_name": "const char* thingSpeakMQTTUser",
+            "default": null,
+            "description": "The user name for your MQTT device. This is probably the same as your MQTT device&#x27;s client name.",
+            "direction": ""
+          },
+          {
+            "name": "thingSpeakMQTTPassword",
+            "type": "const char*",
+            "type_name": "const char* thingSpeakMQTTPassword",
+            "default": null,
+            "description": "The password for your MQTT device.",
             "direction": ""
           },
           {
@@ -770,28 +908,73 @@
             "type": "const char*",
             "type_name": "const char* thingSpeakChannelID",
             "default": null,
-            "description": "The numeric channel id for your channel",
-            "direction": ""
-          },
-          {
-            "name": "thingSpeakChannelKey",
-            "type": "const char*",
-            "type_name": "const char* thingSpeakChannelKey",
-            "default": null,
-            "description": "The write API key for your channel",
+            "description": "The numeric channel id for your channel.",
             "direction": ""
           }
         ]
       },
       {
         "base_url": "class_thing_speak_publisher.html",
-        "id": "a310a8e38298c12f8816fa81f036b21c5",
+        "id": "a39c5491be92d1c7aa8f9affb713bf97c",
         "include": null,
         "has_details": true,
         "type": "int16_t",
         "name": "publishData",
-        "brief": "Open a socket to the correct receiver and sends out the formatted data.",
+        "brief": "Utilize an attached modem to open a TCP connection to ThingSpeak and publish data over that connection.",
         "description": "<p>This depends on an internet connection already having been made and a client being available.</p>",
+        "return_value": "The PubSubClient status code of the response.",
+        "return_values": [],
+        "exceptions": [],
+        "deprecated": null,
+        "since": null,
+        "is_constexpr": false,
+        "is_consteval": false,
+        "is_explicit": false,
+        "is_virtual": true,
+        "prefix": "",
+        "is_defaulted": false,
+        "is_deleted": false,
+        "is_pure_virtual": false,
+        "is_final": false,
+        "is_override": true,
+        "is_noexcept": false,
+        "is_conditional_noexcept": false,
+        "suffix": "",
+        "is_protected": false,
+        "is_private": false,
+        "is_signal": false,
+        "is_slot": false,
+        "has_template_details": false,
+        "templates": null,
+        "has_param_details": true,
+        "params": [
+          {
+            "name": "outClient",
+            "type": "Client*",
+            "type_name": "Client* outClient",
+            "default": null,
+            "description": "An Arduino client instance to use to print data to. Allows the use of any type of client and multiple clients tied to a single TinyGSM modem instance",
+            "direction": ""
+          },
+          {
+            "name": "forceFlush",
+            "type": "bool",
+            "type_name": "bool forceFlush",
+            "default": "false",
+            "description": "Ask the publisher to flush buffered data immediately.",
+            "direction": ""
+          }
+        ]
+      },
+      {
+        "base_url": "class_thing_speak_publisher.html",
+        "id": "a3e55985d28cd009b61f7d9c1a59c89be",
+        "include": null,
+        "has_details": true,
+        "type": "int16_t",
+        "name": "publishMetadata",
+        "brief": "Open a socket to the correct receiver and send out <em>metadata</em> about the current logger setup.",
+        "description": "<p>This is to be used only when the logger is starting up! As the metadata doesn&#x27;t generally change after start up, there&#x27;s no reason to call this function any other time. There is no sensor data included in this metadata! If there is metadata that has to be included with each data post, that should be included in the publishData function. Because there is no sensor data included in this metadata and it&#x27;s only to be called at boot, there&#x27;s no <code>forceFlush</code> option for this function.</p><p>This depends on an internet connection already having been made and a client being available.</p><aside class=\"m-note m-info\"><h4>Note</h4><p>This does <em>not</em> have to be implemented for each publisher! If it is not implemented, it will return 0.</p></aside>",
         "return_value": "The result of publishing data. May be an http response code or a result code from PubSubClient.",
         "return_values": [],
         "exceptions": [],
@@ -853,6 +1036,69 @@
             "var",
             {
               "base_url": "class_thing_speak_publisher.html",
+              "id": "adcd0bc866125f7f6eea4403abfa57908",
+              "include": null,
+              "has_details": false,
+              "type": "const char*",
+              "is_constexpr": false,
+              "is_static": true,
+              "is_protected": true,
+              "is_private": false,
+              "name": "apiHost",
+              "brief": "The REST API host.",
+              "description": "",
+              "deprecated": null,
+              "since": null,
+              "has_template_details": false,
+              "templates": null
+            }
+          ],
+          [
+            "var",
+            {
+              "base_url": "class_thing_speak_publisher.html",
+              "id": "a0b0ff6fd293cd9cba512d136cd58684f",
+              "include": null,
+              "has_details": false,
+              "type": "const int",
+              "is_constexpr": false,
+              "is_static": true,
+              "is_protected": true,
+              "is_private": false,
+              "name": "apiPort",
+              "brief": "The REST API port.",
+              "description": "",
+              "deprecated": null,
+              "since": null,
+              "has_template_details": false,
+              "templates": null
+            }
+          ],
+          [
+            "var",
+            {
+              "base_url": "class_thing_speak_publisher.html",
+              "id": "ac4669508de335d382226eae114aeb240",
+              "include": null,
+              "has_details": false,
+              "type": "const char*",
+              "is_constexpr": false,
+              "is_static": true,
+              "is_protected": true,
+              "is_private": false,
+              "name": "channelMetaResource",
+              "brief": "The REST API resource to put metadata to.",
+              "description": "",
+              "deprecated": null,
+              "since": null,
+              "has_template_details": false,
+              "templates": null
+            }
+          ],
+          [
+            "var",
+            {
+              "base_url": "class_thing_speak_publisher.html",
               "id": "ac5f2477b9e46cdce318cab5e7ebcd868",
               "include": null,
               "has_details": false,
@@ -884,48 +1130,6 @@
               "is_private": false,
               "name": "mqttPort",
               "brief": "The MQTT port.",
-              "description": "",
-              "deprecated": null,
-              "since": null,
-              "has_template_details": false,
-              "templates": null
-            }
-          ],
-          [
-            "var",
-            {
-              "base_url": "class_thing_speak_publisher.html",
-              "id": "a51beff1bee0e4f9495375dab2e9d3a8c",
-              "include": null,
-              "has_details": false,
-              "type": "const char*",
-              "is_constexpr": false,
-              "is_static": true,
-              "is_protected": true,
-              "is_private": false,
-              "name": "mqttClientName",
-              "brief": "The MQTT client name.",
-              "description": "",
-              "deprecated": null,
-              "since": null,
-              "has_template_details": false,
-              "templates": null
-            }
-          ],
-          [
-            "var",
-            {
-              "base_url": "class_thing_speak_publisher.html",
-              "id": "a19229834d24e1fbc56f53b9ebb0cd7b1",
-              "include": null,
-              "has_details": false,
-              "type": "const char*",
-              "is_constexpr": false,
-              "is_static": true,
-              "is_protected": true,
-              "is_private": false,
-              "name": "mqttUser",
-              "brief": "The MQTT user name.",
               "description": "",
               "deprecated": null,
               "since": null,

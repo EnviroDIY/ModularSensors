@@ -1,0 +1,24 @@
+{
+  "is_final": null,
+  "parent": "indexpage",
+  "parentGroup": null,
+  "id": "page_faq",
+  "kind": "page",
+  "name": "FAQs",
+  "url": "page_faq.html",
+  "brief": "",
+  "has_details": 7,
+  "children": [
+    "page_processor_compatibility",
+    "page_arduino_streams",
+    "page_power_parasites",
+    "page_memory_use",
+    "page_code_debugging"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "FAQs"
+}

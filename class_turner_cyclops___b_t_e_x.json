@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "class",
     "id": "class_turner_cyclops___b_t_e_x",
@@ -13,7 +13,7 @@
     "has_template_details": false,
     "templates": null,
     "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__cyclops.html#sensor_cyclops_output\" class=\"m-doc\">refined fuels (BTEX) output</a> from a <a href=\"group__sensor__cyclops.html\" class=\"m-doc\">Turner Cyclops-7F</a>.",
-    "description": "<aside class=\"m-note m-info\"><h4>Note</h4><p><em><strong>This can only be used for a Cyclops-7F that is configured for fine oil / refined fuels / BTEX!</strong></em> Fine oil models will be marked with a <strong>\u201cG\u201d</strong> at the top of the sensor housing near the cable connections. Fine oil is measured as BTEX (benzene, toluene, ethylbenzene, xylenes).</p></aside><p>BTEX concentration is measured (and should be calibrated) in parts per million (ppm).</p><ul><li>Miminum detection limit: 0.4 ppm</li><li>Linear range: 0-20 ppm</li><li>LED (CWL): 255 nm</li><li>Excitiation wavelength: &lt;=290 nm</li><li>Emission wavelength: 350/50 nm</li><li>Power required (mW @12V): 530</li></ul>",
+    "description": "<aside class=\"m-note m-info\"><h4>Note</h4><p><em><strong>This can only be used for a Cyclops-7F that is configured for fine oil / refined fuels / BTEX!</strong></em> Fine oil models will be marked with a <strong>\u201cG\u201d</strong> at the top of the sensor housing near the cable connections. Fine oil is measured as BTEX (benzene, toluene, ethylbenzene, xylenes).</p></aside><p>BTEX concentration is measured (and should be calibrated) in parts per million (ppm).</p><ul><li>Minimum detection limit: 0.4 ppm</li><li>Linear range: 0-20 ppm</li><li>LED (CWL): 255 nm</li><li>Excitation wavelength: &lt;=290 nm</li><li>Emission wavelength: 350/50 nm</li><li>Power required (mW @12V): 530</li></ul>",
     "sections": "",
     "deprecated": null,
     "since": null,

@@ -1,0 +1,24 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "_logger_modem_8h",
+  "kind": "file",
+  "name": "LoggerModem.h",
+  "url": "_logger_modem_8h.html",
+  "brief": "Contains the <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> class and the variable subclasses <a href=\"class_modem___r_s_s_i.html\" class=\"m-doc\">Modem_<wbr />RSSI</a>, <a href=\"class_modem___signal_percent.html\" class=\"m-doc\">Modem_<wbr />SignalPercent</a>, <a href=\"class_modem___battery_state.html\" class=\"m-doc\">Modem_<wbr />BatteryState</a>, <a href=\"class_modem___battery_percent.html\" class=\"m-doc\">Modem_<wbr />BatteryPercent</a>, and <a href=\"class_modem___battery_voltage.html\" class=\"m-doc\">Modem_<wbr />BatteryVoltage</a> - all of which are implemented as &quot;calculated&quot; variables.",
+  "has_details": true,
+  "children": [
+    "modem-rssi",
+    "modem-percent-full-signal",
+    "modem-battery-charge-state",
+    "modem-battery-charge-percent",
+    "modem-battery-voltage",
+    "modem-chip-temperature"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

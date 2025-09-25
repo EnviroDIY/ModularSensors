@@ -1,0 +1,18 @@
+{
+  "is_final": false,
+  "parent": null,
+  "parentGroup": null,
+  "id": "class_a_o_song_d_h_t___temp",
+  "kind": "class",
+  "name": "AOSongDHT_Temp",
+  "url": "class_a_o_song_d_h_t___temp.html",
+  "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__dht.html#sensor_dht_temperature\" class=\"m-doc\">temperature output</a> from an <a href=\"group__sensor__dht.html\" class=\"m-doc\">AOSong DHT</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null
+}

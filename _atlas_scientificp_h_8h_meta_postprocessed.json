@@ -1,0 +1,23 @@
+{
+  "is_final": null,
+  "parent": "dir_7349e89ef19c117195f8e371603e1b1f",
+  "parentGroup": null,
+  "id": "_atlas_scientificp_h_8h",
+  "kind": "file",
+  "name": "AtlasScientificpH.h",
+  "url": "_atlas_scientificp_h_8h.html",
+  "brief": "Contains the <a href=\"class_atlas_scientific_r_t_d.html\" class=\"m-doc\">AtlasScientificRTD</a> subclass of the <a href=\"class_atlas_parent.html\" class=\"m-doc\">AtlasParent</a> sensor class along with the variable subclass <a href=\"class_atlas_scientificp_h__p_h.html\" class=\"m-doc\">AtlasScientificpH_<wbr />pH</a>.",
+  "has_details": true,
+  "children": [
+    "sensor-variable-counts",
+    "configuration-defines",
+    "sensor-timing",
+    "ph"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "AtlasScientificpH.h"
+}

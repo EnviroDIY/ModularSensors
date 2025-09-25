@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "file",
     "id": "_atlas_scientificp_h_8h",
@@ -10,7 +10,7 @@
     "has_template_details": false,
     "templates": null,
     "brief": "Contains the <a href=\"class_atlas_scientific_r_t_d.html\" class=\"m-doc\">AtlasScientificRTD</a> subclass of the <a href=\"class_atlas_parent.html\" class=\"m-doc\">AtlasParent</a> sensor class along with the variable subclass <a href=\"class_atlas_scientificp_h__p_h.html\" class=\"m-doc\">AtlasScientificpH_<wbr />pH</a>.",
-    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Initial developement for Atlas Sensors was done by Adam Gold Files were edited by Sara Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside><p>These are used for any sensor attached to an Atlas EZO pH circuit.</p><aside class=\"m-note m-info\"><h4>Note</h4><p>Be careful not to confuse the similar variable and sensor object names!</p></aside>",
+    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Initial development for Atlas Sensors was done by Adam Gold Files were edited by Sara Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside><p>These are used for any sensor attached to an Atlas EZO pH circuit.</p><aside class=\"m-note m-info\"><h4>Note</h4><p>Be careful not to confuse the similar variable and sensor object names!</p></aside>",
     "sections": "",
     "deprecated": null,
     "since": null,

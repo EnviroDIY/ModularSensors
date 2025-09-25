@@ -1,0 +1,18 @@
+{
+  "is_final": null,
+  "parent": "dir_d60b8e8795161a141bba4403c07b6046",
+  "parentGroup": null,
+  "id": "_digi_x_bee_wifi_8cpp",
+  "kind": "file",
+  "name": "DigiXBeeWifi.cpp",
+  "url": "_digi_x_bee_wifi_8cpp.html",
+  "brief": "Implements the <a href=\"class_digi_x_bee_wifi.html\" class=\"m-doc\">DigiXBeeWifi</a> class.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "DigiXBeeWifi.cpp"
+}

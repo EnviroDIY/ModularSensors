@@ -1,0 +1,29 @@
+{
+  "is_final": false,
+  "parent": null,
+  "parentGroup": "group__base__classes",
+  "id": "classlogger_modem",
+  "kind": "class",
+  "name": "loggerModem",
+  "url": "classlogger_modem.html",
+  "brief": "The <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> class provides an internet connection for the logger and supplies an Arduino Client instance to use to publish data.",
+  "has_details": true,
+  "children": [
+    "class_digi_x_bee",
+    "class_espressif",
+    "class_quectel_b_g96",
+    "class_s_i_m_com_s_i_m7000",
+    "class_s_i_m_com_s_i_m7080",
+    "class_s_i_m_com_s_i_m800",
+    "class_sequans_monarch",
+    "class_sodaq_u_bee_r410_m",
+    "class_sodaq_u_bee_u201"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null,
+  "leaf_name": "loggerModem"
+}

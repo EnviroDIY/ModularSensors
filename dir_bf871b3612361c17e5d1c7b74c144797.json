@@ -1,0 +1,72 @@
+{
+  "version": "1.14.0",
+  "compound": {
+    "kind": "dir",
+    "id": "dir_bf871b3612361c17e5d1c7b74c144797",
+    "name": "docs/Further-Reading",
+    "url_base": "dir_bf871b3612361c17e5d1c7b74c144797",
+    "url": "dir_bf871b3612361c17e5d1c7b74c144797.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "Contains detailed documentation on specific topics.",
+    "description": "",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "docs",
+        "dir_49e56c817e5e54854c35e136979f97ca.html"
+      ],
+      [
+        "Further-Reading",
+        "dir_bf871b3612361c17e5d1c7b74c144797.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "Further-Reading",
+        "dir_bf871b3612361c17e5d1c7b74c144797.html"
+      ]
+    ]
+  }
+}

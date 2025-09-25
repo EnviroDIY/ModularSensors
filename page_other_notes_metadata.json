@@ -1,0 +1,22 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "page_other_notes",
+  "kind": "page",
+  "name": "Other Sensor and Modem Notes",
+  "url": "page_other_notes.html",
+  "brief": "",
+  "has_details": 5,
+  "children": [
+    "page_sensor_notes",
+    "page_modem_notes",
+    "page_samd_clocks",
+    "page_sleep_config"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

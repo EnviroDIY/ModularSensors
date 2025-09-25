@@ -1,0 +1,22 @@
+{
+  "is_final": null,
+  "parent": "group__yosemitech__group",
+  "parentGroup": null,
+  "id": "group__sensor__y513",
+  "kind": "group",
+  "name": "Yosemitech Y513 self-cleaning Blue Green Algae (BGA) sensor.",
+  "url": "group__sensor__y513.html",
+  "brief": "",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [
+    "class_yosemitech_y513",
+    "class_yosemitech_y513___b_g_a",
+    "class_yosemitech_y513___temp"
+  ],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "Yosemitech Y513 self-cleaning Blue Green Algae (BGA) sensor."
+}

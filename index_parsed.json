@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "index": {
     "symbols": [
       {
@@ -9,6 +9,18 @@
         "url": "classdata_publisher.html",
         "brief": "The <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> class is a virtual class used by other publishers to distribute data online.",
         "children": [
+          {
+            "id": "class_a_w_s___io_t___publisher",
+            "kind": "class",
+            "name": "AWS_IoT_Publisher",
+            "url": "class_a_w_s___io_t___publisher.html",
+            "brief": "The <a href=\"class_a_w_s___io_t___publisher.html\" class=\"m-doc\">AWS_<wbr />IoT_<wbr />Publisher</a> subclass of <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> for publishing data to AWS IoT Core using the MQTT protocol.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false,
+            "is_final": false
+          },
           {
             "id": "class_dream_host_publisher",
             "kind": "class",
@@ -26,7 +38,19 @@
             "kind": "class",
             "name": "EnviroDIYPublisher",
             "url": "class_enviro_d_i_y_publisher.html",
-            "brief": "The <a href=\"class_enviro_d_i_y_publisher.html\" class=\"m-doc\">EnviroDIYPublisher</a> subclass of <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> for publishing data to the Monitor My Watershed/EnviroDIY data portal at <a href=\"http://data.enviroDIY.org\">http:/<wbr />/<wbr />data.enviroDIY.org</a>.",
+            "brief": "The <a href=\"class_enviro_d_i_y_publisher.html\" class=\"m-doc\">EnviroDIYPublisher</a> subclass of <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> for publishing data to the Monitor My Watershed/EnviroDIY data portal at <a href=\"https://monitormywatershed.org/\">https:/<wbr />/<wbr />monitormywatershed.org/<wbr /></a> (formerly at <a href=\"http://data.enviroDIY.org\">http:/<wbr />/<wbr />data.enviroDIY.org</a>).",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false,
+            "is_final": false
+          },
+          {
+            "id": "class_s3_presigned_publisher",
+            "kind": "class",
+            "name": "S3PresignedPublisher",
+            "url": "class_s3_presigned_publisher.html",
+            "brief": "The <a href=\"class_s3_presigned_publisher.html\" class=\"m-doc\">S3PresignedPublisher</a> subclass of <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> is for publishing data to S3 over a pre-signed URL.",
             "children": [],
             "deprecated": null,
             "since": null,
@@ -64,6 +88,18 @@
         "is_final": false
       },
       {
+        "id": "classepoch_time",
+        "kind": "class",
+        "name": "epochTime",
+        "url": "classepoch_time.html",
+        "brief": "A class for dealing with different definitions of the start of the epoch.",
+        "children": [],
+        "deprecated": null,
+        "since": null,
+        "has_nestable_children": false,
+        "is_final": false
+      },
+      {
         "id": "classextended_watch_dog_a_v_r",
         "kind": "class",
         "name": "extendedWatchDogAVR",
@@ -88,11 +124,35 @@
         "is_final": false
       },
       {
+        "id": "class_log_buffer",
+        "kind": "class",
+        "name": "LogBuffer",
+        "url": "class_log_buffer.html",
+        "brief": "This class buffers logged timestamps and variable values for transmission. The log is divided into a number of records. Each record stores the timestamp of the record as a uint32_t, then the value of each variable as a float at that time.",
+        "children": [],
+        "deprecated": null,
+        "since": null,
+        "has_nestable_children": false,
+        "is_final": false
+      },
+      {
         "id": "class_logger",
         "kind": "class",
         "name": "Logger",
         "url": "class_logger.html",
         "brief": "The &quot;Logger&quot; Class handles low power sleep for the main processor, interfacing with the real-time clock and modem, writing to the SD card, and passing data on to the data publishers.",
+        "children": [],
+        "deprecated": null,
+        "since": null,
+        "has_nestable_children": false,
+        "is_final": false
+      },
+      {
+        "id": "classlogger_clock",
+        "kind": "class",
+        "name": "loggerClock",
+        "url": "classlogger_clock.html",
+        "brief": "A class for the clock attached to the logger.",
         "children": [],
         "deprecated": null,
         "since": null,
@@ -168,15 +228,40 @@
             "is_final": false
           },
           {
-            "id": "class_espressif_e_s_p8266",
+            "id": "class_espressif",
             "kind": "class",
-            "name": "EspressifESP8266",
-            "url": "class_espressif_e_s_p8266.html",
-            "brief": "The <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> subclass for any breakout of the <a href=\"group__modem__esp8266.html\" class=\"m-doc\">Espressif ESP8266</a> wifi chip or ESP32 wifi/bluetooth chip that has been flashed with Espressif&#x27;s AT command firmware.",
-            "children": [],
+            "name": "Espressif",
+            "url": "class_espressif.html",
+            "brief": "The <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> subclass for almost any <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a> wifi or wifi/bluetooth chip that has been flashed with <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a>&#x27;s AT command firmware.",
+            "children": [
+              {
+                "id": "class_espressif_e_s_p32",
+                "kind": "class",
+                "name": "EspressifESP32",
+                "url": "class_espressif_e_s_p32.html",
+                "brief": "The <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> subclass for any breakout of the <a href=\"group__modem__esp32.html\" class=\"m-doc\">Espressif ESP32</a> wifi chip or ESP32 wifi/bluetooth chip that has been flashed with <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a>&#x27;s AT command firmware.",
+                "children": [],
+                "deprecated": null,
+                "since": null,
+                "has_nestable_children": false,
+                "is_final": false
+              },
+              {
+                "id": "class_espressif_e_s_p8266",
+                "kind": "class",
+                "name": "EspressifESP8266",
+                "url": "class_espressif_e_s_p8266.html",
+                "brief": "The <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> subclass for any breakout of the <a href=\"group__modem__esp8266.html\" class=\"m-doc\">Espressif ESP8266</a> wifi chip or ESP32 wifi/bluetooth chip that has been flashed with <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a>&#x27;s AT command firmware.",
+                "children": [],
+                "deprecated": null,
+                "since": null,
+                "has_nestable_children": false,
+                "is_final": false
+              }
+            ],
             "deprecated": null,
             "since": null,
-            "has_nestable_children": false,
+            "has_nestable_children": true,
             "is_final": false
           },
           {
@@ -232,7 +317,7 @@
             "kind": "class",
             "name": "SIMComSIM800",
             "url": "class_s_i_m_com_s_i_m800.html",
-            "brief": "The <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> subclass for the Adafruit Fona 2G, the Sodaq GPRSBeeR4 and almost any other module based on the <a href=\"group__modem__sim800.html\" class=\"m-doc\">SIMCOM SIM800 or SIM900 modules and</a>thier variants&quot;.",
+            "brief": "The <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> subclass for the Adafruit Fona 2G, the Sodaq GPRSBeeR4 and almost any other module based on the <a href=\"group__modem__sim800.html\" class=\"m-doc\">SIMCOM SIM800 or SIM900 modules and</a>their variants&quot;.",
             "children": [
               {
                 "id": "class_sodaq2_g_bee_r6",
@@ -307,6 +392,18 @@
             "name": "AnalogElecConductivity",
             "url": "class_analog_elec_conductivity.html",
             "brief": "Class for the analog [Electrical Conductivity monitor](<a href=\"group__sensor__analog__cond.html\" class=\"m-doc\">Conductivity via Analog Electrical Resistance</a>)",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false,
+            "is_final": false
+          },
+          {
+            "id": "class_a_n_bp_h",
+            "kind": "class",
+            "name": "ANBpH",
+            "url": "class_a_n_bp_h.html",
+            "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB pH sensors</a>.",
             "children": [],
             "deprecated": null,
             "since": null,
@@ -488,6 +585,18 @@
             "name": "FreescaleMPL115A2",
             "url": "class_freescale_m_p_l115_a2.html",
             "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__mpl115a2.html\" class=\"m-doc\">Freescale Semiconductor MPL115A2 sensor</a>.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false,
+            "is_final": false
+          },
+          {
+            "id": "class_geolux_hydro_cam",
+            "kind": "class",
+            "name": "GeoluxHydroCam",
+            "url": "class_geolux_hydro_cam.html",
+            "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__hydrocam.html\" class=\"m-doc\">Geolux HydroCam cameras</a>.",
             "children": [],
             "deprecated": null,
             "since": null,
@@ -814,7 +923,7 @@
             "kind": "class",
             "name": "TIADS1x15",
             "url": "class_t_i_a_d_s1x15.html",
-            "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__ads1x15.html\" class=\"m-doc\">external votlage as measured by TI ADS1115 or ADS1015</a>.",
+            "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__ads1x15.html\" class=\"m-doc\">external voltage as measured by TI ADS1115 or ADS1015</a>.",
             "children": [],
             "deprecated": null,
             "since": null,
@@ -1057,6 +1166,102 @@
             "name": "AnalogElecConductivity_EC",
             "url": "class_analog_elec_conductivity___e_c.html",
             "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for electrical conductivity measured using an analog pin connected to electrodes submerged in the medium.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false,
+            "is_final": false
+          },
+          {
+            "id": "class_a_n_bp_h___diagnostic_code",
+            "kind": "class",
+            "name": "ANBpH_DiagnosticCode",
+            "url": "class_a_n_bp_h___diagnostic_code.html",
+            "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__anb__ph.html#sensor_anb_ph_diagnostics\" class=\"m-doc\">diagnostic code output</a> from a an <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB Sensors pH sensor</a>.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false,
+            "is_final": false
+          },
+          {
+            "id": "class_a_n_bp_h___e_c",
+            "kind": "class",
+            "name": "ANBpH_EC",
+            "url": "class_a_n_bp_h___e_c.html",
+            "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__anb__ph.html#sensor_anb_ph_raw_cond\" class=\"m-doc\">raw electrical conductivity output</a> from an <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB Sensors pH sensor</a>.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false,
+            "is_final": false
+          },
+          {
+            "id": "class_a_n_bp_h___health_code",
+            "kind": "class",
+            "name": "ANBpH_HealthCode",
+            "url": "class_a_n_bp_h___health_code.html",
+            "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__anb__ph.html#sensor_anb_ph_health\" class=\"m-doc\">health code output</a> from a an <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB Sensors pH sensor</a>.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false,
+            "is_final": false
+          },
+          {
+            "id": "class_a_n_bp_h__p_h",
+            "kind": "class",
+            "name": "ANBpH_pH",
+            "url": "class_a_n_bp_h__p_h.html",
+            "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__anb__ph.html#sensor_anb_ph_ph\" class=\"m-doc\">pH</a> from an <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB Sensors pH sensor</a>.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false,
+            "is_final": false
+          },
+          {
+            "id": "class_a_n_bp_h___salinity",
+            "kind": "class",
+            "name": "ANBpH_Salinity",
+            "url": "class_a_n_bp_h___salinity.html",
+            "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__anb__ph.html#sensor_anb_ph_salinity\" class=\"m-doc\">salinity output</a> from an <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB Sensors pH sensor</a>.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false,
+            "is_final": false
+          },
+          {
+            "id": "class_a_n_bp_h___sp_cond",
+            "kind": "class",
+            "name": "ANBpH_SpCond",
+            "url": "class_a_n_bp_h___sp_cond.html",
+            "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__anb__ph.html#sensor_anb_ph_spcond\" class=\"m-doc\">specific conductance output</a> from a <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB Sensors pH sensor</a>.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false,
+            "is_final": false
+          },
+          {
+            "id": "class_a_n_bp_h___status_code",
+            "kind": "class",
+            "name": "ANBpH_StatusCode",
+            "url": "class_a_n_bp_h___status_code.html",
+            "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__anb__ph.html#sensor_anb_ph_status\" class=\"m-doc\">status code output</a> from a an <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB Sensors pH sensor</a>.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false,
+            "is_final": false
+          },
+          {
+            "id": "class_a_n_bp_h___temp",
+            "kind": "class",
+            "name": "ANBpH_Temp",
+            "url": "class_a_n_bp_h___temp.html",
+            "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__anb__ph.html#sensor_anb_ph_temp\" class=\"m-doc\">temperature output</a> from a <a href=\"group__sensor__anb__ph.html\" class=\"m-doc\">ANB Sensors pH sensor</a>.",
             "children": [],
             "deprecated": null,
             "since": null,
@@ -1628,6 +1833,30 @@
             "is_final": false
           },
           {
+            "id": "class_geolux_hydro_cam___byte_error",
+            "kind": "class",
+            "name": "GeoluxHydroCam_ByteError",
+            "url": "class_geolux_hydro_cam___byte_error.html",
+            "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__hydrocam.html#sensor_hydrocam_byte_error\" class=\"m-doc\">byte error output</a> from a <a href=\"group__sensor__hydrocam.html\" class=\"m-doc\">Geolux HydroCam camera</a>.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false,
+            "is_final": false
+          },
+          {
+            "id": "class_geolux_hydro_cam___image_size",
+            "kind": "class",
+            "name": "GeoluxHydroCam_ImageSize",
+            "url": "class_geolux_hydro_cam___image_size.html",
+            "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__hydrocam.html#sensor_hydrocam_image_size\" class=\"m-doc\">image size output</a> from a <a href=\"group__sensor__hydrocam.html\" class=\"m-doc\">Geolux HydroCam camera</a>.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false,
+            "is_final": false
+          },
+          {
             "id": "class_gro_point_g_p_l_p8___moist",
             "kind": "class",
             "name": "GroPointGPLP8_Moist",
@@ -2053,6 +2282,18 @@
             "name": "ProcessorStats_FreeRam",
             "url": "class_processor_stats___free_ram.html",
             "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__processor.html#sensor_processor_ram\" class=\"m-doc\">free RAM</a> measured by the MCU.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false,
+            "is_final": false
+          },
+          {
+            "id": "class_processor_stats___reset_code",
+            "kind": "class",
+            "name": "ProcessorStats_ResetCode",
+            "url": "class_processor_stats___reset_code.html",
+            "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__processor.html#sensor_processor_reset\" class=\"m-doc\">reset cause</a> recorded by the MCU.",
             "children": [],
             "deprecated": null,
             "since": null,
@@ -2914,6 +3155,28 @@
             "has_nestable_children": false
           },
           {
+            "id": "dir_4e2180735e085fe2e61c0c3bbfc57a4e",
+            "kind": "dir",
+            "name": "For-Developers",
+            "url": "dir_4e2180735e085fe2e61c0c3bbfc57a4e.html",
+            "brief": "Contains help for developers.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false
+          },
+          {
+            "id": "dir_bf871b3612361c17e5d1c7b74c144797",
+            "kind": "dir",
+            "name": "Further-Reading",
+            "url": "dir_bf871b3612361c17e5d1c7b74c144797.html",
+            "brief": "Contains detailed documentation on specific topics.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false
+          },
+          {
             "id": "dir_5aff51a21a6be6e7766111e7dd6394b1",
             "kind": "dir",
             "name": "Getting-Started",
@@ -2935,10 +3198,176 @@
         "name": "examples",
         "url": "dir_d28a4824dc47e487b107a5db32ef43c4.html",
         "brief": "Contains all of the example sketches. There is only one example in each subfolder - a standard for Arduino coding.",
-        "children": [],
+        "children": [
+          {
+            "id": "dir_1da665868b00a08760245263764589dd",
+            "kind": "dir",
+            "name": "AWS_IoT_Core",
+            "url": "dir_1da665868b00a08760245263764589dd.html",
+            "brief": "Contains the AWS_IoT_Core example.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false
+          },
+          {
+            "id": "dir_559fd0b69d19314f6899905aab4d528d",
+            "kind": "dir",
+            "name": "baro_rho_correction",
+            "url": "dir_559fd0b69d19314f6899905aab4d528d.html",
+            "brief": "Contains the baro_rho_correction example.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false
+          },
+          {
+            "id": "dir_c4053f8fd4b5ada20952740a20c79977",
+            "kind": "dir",
+            "name": "data_saving",
+            "url": "dir_c4053f8fd4b5ada20952740a20c79977.html",
+            "brief": "Contains the data_saving example.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false
+          },
+          {
+            "id": "dir_8bd528b2245da02a4aa0d16357e044ed",
+            "kind": "dir",
+            "name": "double_logger",
+            "url": "dir_8bd528b2245da02a4aa0d16357e044ed.html",
+            "brief": "Contains the double_logger example.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false
+          },
+          {
+            "id": "dir_326967dfeb1e67b32ef68fed2c0e0820",
+            "kind": "dir",
+            "name": "DRWI_2G",
+            "url": "dir_326967dfeb1e67b32ef68fed2c0e0820.html",
+            "brief": "Contains the DRWI_2G example.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false
+          },
+          {
+            "id": "dir_8c83b04f7c9bd03d0ea6355c3dd775f4",
+            "kind": "dir",
+            "name": "DRWI_DigiLTE",
+            "url": "dir_8c83b04f7c9bd03d0ea6355c3dd775f4.html",
+            "brief": "Contains the DRWI_DigiLTE example.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false
+          },
+          {
+            "id": "dir_18c8977bcc782aa64a524338d76aa995",
+            "kind": "dir",
+            "name": "DRWI_Mayfly1",
+            "url": "dir_18c8977bcc782aa64a524338d76aa995.html",
+            "brief": "Contains the DRWI_Mayfly1 example.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false
+          },
+          {
+            "id": "dir_c9cb08a8346f1cf2f1e5adf5f90706d3",
+            "kind": "dir",
+            "name": "DRWI_Mayfly1_WiFi",
+            "url": "dir_c9cb08a8346f1cf2f1e5adf5f90706d3.html",
+            "brief": "Contains the DRWI_Mayfly1_WiFi example.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false
+          },
+          {
+            "id": "dir_445b65392178fa7863d0c6d77e63d5bc",
+            "kind": "dir",
+            "name": "DRWI_NoCellular",
+            "url": "dir_445b65392178fa7863d0c6d77e63d5bc.html",
+            "brief": "Contains the DRWI_NoCellular example.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false
+          },
+          {
+            "id": "dir_ec086e34cdc148a395b8cab3ef455ef7",
+            "kind": "dir",
+            "name": "DRWI_SIM7080LTE",
+            "url": "dir_ec086e34cdc148a395b8cab3ef455ef7.html",
+            "brief": "Contains the DRWI_SIM7080LTE example.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false
+          },
+          {
+            "id": "dir_8252dda727501a4b719d627f9b569c5e",
+            "kind": "dir",
+            "name": "logging_to_MMW",
+            "url": "dir_8252dda727501a4b719d627f9b569c5e.html",
+            "brief": "Contains the logging_to_MMW example.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false
+          },
+          {
+            "id": "dir_1d3d7a4b63fe8a5aa5cb3b2b861f4900",
+            "kind": "dir",
+            "name": "logging_to_ThingSpeak",
+            "url": "dir_1d3d7a4b63fe8a5aa5cb3b2b861f4900.html",
+            "brief": "Contains the logging_to_ThingSpeak example.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false
+          },
+          {
+            "id": "dir_b0a167a91af7ff36804e5b492334c798",
+            "kind": "dir",
+            "name": "simple_logging",
+            "url": "dir_b0a167a91af7ff36804e5b492334c798.html",
+            "brief": "Contains the simple_logging example.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false
+          },
+          {
+            "id": "dir_1f0d976cf68efe45ecce86c6e39bb57d",
+            "kind": "dir",
+            "name": "simple_logging_LearnEnviroDIY",
+            "url": "dir_1f0d976cf68efe45ecce86c6e39bb57d.html",
+            "brief": "Contains the simple_logging_LearnEnviroDIY example.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false
+          },
+          {
+            "id": "dir_7630917be59102bd05d24d147bcb3aa4",
+            "kind": "dir",
+            "name": "single_sensor",
+            "url": "dir_7630917be59102bd05d24d147bcb3aa4.html",
+            "brief": "Contains the single_sensor example.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false
+          }
+        ],
         "deprecated": null,
         "since": null,
-        "has_nestable_children": false
+        "has_nestable_children": true
       },
       {
         "id": "dir_1510bd745cd29c20d24c27171ebe5ba5",
@@ -2946,10 +3375,22 @@
         "name": "extras",
         "url": "dir_1510bd745cd29c20d24c27171ebe5ba5.html",
         "brief": "Contains extra sketches for testing and configuring new sensors.",
-        "children": [],
+        "children": [
+          {
+            "id": "dir_33621a492d112d01d824a5de72c03dae",
+            "kind": "dir",
+            "name": "AWS_IoT_SetCertificates",
+            "url": "dir_33621a492d112d01d824a5de72c03dae.html",
+            "brief": "Contains the AWS_IoT_SetCertificates example.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false
+          }
+        ],
         "deprecated": null,
         "since": null,
-        "has_nestable_children": false
+        "has_nestable_children": true
       },
       {
         "id": "dir_68267d1309a1af8e8297ef4c3efbcdba",
@@ -3076,11 +3517,44 @@
                 "has_nestable_children": false
               },
               {
+                "id": "_espressif_8cpp",
+                "kind": "file",
+                "name": "Espressif.cpp",
+                "url": "_espressif_8cpp.html",
+                "brief": "Implements the <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a> class.",
+                "children": [],
+                "deprecated": null,
+                "since": null,
+                "has_nestable_children": false
+              },
+              {
+                "id": "_espressif_8h",
+                "kind": "file",
+                "name": "Espressif.h",
+                "url": "_espressif_8h.html",
+                "brief": "Contains the <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a> subclass of <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> which is a parent class for the ESP8266, the original ESP32, and the various ESP32 flavors.",
+                "children": [],
+                "deprecated": null,
+                "since": null,
+                "has_nestable_children": false
+              },
+              {
+                "id": "_espressif_e_s_p32_8cpp",
+                "kind": "file",
+                "name": "EspressifESP32.cpp",
+                "url": "_espressif_e_s_p32_8cpp.html",
+                "brief": "Implements the <a href=\"class_espressif_e_s_p32.html\" class=\"m-doc\">EspressifESP32</a> class.",
+                "children": [],
+                "deprecated": null,
+                "since": null,
+                "has_nestable_children": false
+              },
+              {
                 "id": "_espressif_e_s_p32_8h",
                 "kind": "file",
                 "name": "EspressifESP32.h",
                 "url": "_espressif_e_s_p32_8h.html",
-                "brief": "Contains the EspressifESP32 subclass of <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> which is merely a typedef for the <a href=\"class_espressif_e_s_p8266.html\" class=\"m-doc\">EspressifESP8266</a> class.",
+                "brief": "Contains the <a href=\"class_espressif_e_s_p32.html\" class=\"m-doc\">EspressifESP32</a> subclass of <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> which <em>SHOULD</em> work for essentially any breakout or variant of the ESP32 wifi/bluetooth chip that has been flashed with <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a>&#x27;s AT command firmware.",
                 "children": [],
                 "deprecated": null,
                 "since": null,
@@ -3102,7 +3576,7 @@
                 "kind": "file",
                 "name": "EspressifESP8266.h",
                 "url": "_espressif_e_s_p8266_8h.html",
-                "brief": "Contains the <a href=\"class_espressif_e_s_p8266.html\" class=\"m-doc\">EspressifESP8266</a> subclass of <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> which <em>SHOULD</em> work for essentially any breakout of the Espressif ESP8266 wifi chip or ESP32 wifi/bluetooth chip that has been flashed with Espressif&#x27;s AT command firmware.",
+                "brief": "Contains the <a href=\"class_espressif_e_s_p8266.html\" class=\"m-doc\">EspressifESP8266</a> subclass of <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> which <em>SHOULD</em> work for essentially any breakout of the <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a> ESP8266 wifi chip that has been flashed with <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a>&#x27;s AT command firmware.",
                 "children": [],
                 "deprecated": null,
                 "since": null,
@@ -3113,7 +3587,7 @@
                 "kind": "file",
                 "name": "LoggerModemMacros.h",
                 "url": "_logger_modem_macros_8h.html",
-                "brief": "Contains PRE-ROCESSOR MACROS for use with logger modems.",
+                "brief": "Contains PRE-PROCESSOR MACROS for use with logger modems.",
                 "children": [],
                 "deprecated": null,
                 "since": null,
@@ -3223,7 +3697,7 @@
                 "kind": "file",
                 "name": "SIMComSIM800.h",
                 "url": "_s_i_m_com_s_i_m800_8h.html",
-                "brief": "Contains the <a href=\"class_s_i_m_com_s_i_m800.html\" class=\"m-doc\">SIMComSIM800</a> subclass of <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> for Adafruit Fona 2G, the Sodaq GPRSBeeR4 and almost any other module based on the SIMCOM SIM800 or SIM900 modules and thier variants.",
+                "brief": "Contains the <a href=\"class_s_i_m_com_s_i_m800.html\" class=\"m-doc\">SIMComSIM800</a> subclass of <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> for Adafruit Fona 2G, the Sodaq GPRSBeeR4 and almost any other module based on the SIMCOM SIM800 or SIM900 modules and their variants.",
                 "children": [],
                 "deprecated": null,
                 "since": null,
@@ -3308,6 +3782,28 @@
             "brief": "Contains the source code for all <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> subclasses.",
             "children": [
               {
+                "id": "_a_w_s___io_t___publisher_8cpp",
+                "kind": "file",
+                "name": "AWS_IoT_Publisher.cpp",
+                "url": "_a_w_s___io_t___publisher_8cpp.html",
+                "brief": "Implements the <a href=\"class_a_w_s___io_t___publisher.html\" class=\"m-doc\">AWS_<wbr />IoT_<wbr />Publisher</a> class.",
+                "children": [],
+                "deprecated": null,
+                "since": null,
+                "has_nestable_children": false
+              },
+              {
+                "id": "_a_w_s___io_t___publisher_8h",
+                "kind": "file",
+                "name": "AWS_IoT_Publisher.h",
+                "url": "_a_w_s___io_t___publisher_8h.html",
+                "brief": "Contains the <a href=\"class_a_w_s___io_t___publisher.html\" class=\"m-doc\">AWS_<wbr />IoT_<wbr />Publisher</a> subclass of <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> for publishing data to AWS IoT Core using the MQTT protocol.",
+                "children": [],
+                "deprecated": null,
+                "since": null,
+                "has_nestable_children": false
+              },
+              {
                 "id": "_dream_host_publisher_8cpp",
                 "kind": "file",
                 "name": "DreamHostPublisher.cpp",
@@ -3346,6 +3842,28 @@
                 "name": "EnviroDIYPublisher.h",
                 "url": "_enviro_d_i_y_publisher_8h.html",
                 "brief": "Contains the <a href=\"class_enviro_d_i_y_publisher.html\" class=\"m-doc\">EnviroDIYPublisher</a> subclass of <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> for publishing data to the Monitor My Watershed/EnviroDIY data portal at <a href=\"http://data.enviroDIY.org\">http:/<wbr />/<wbr />data.enviroDIY.org</a>.",
+                "children": [],
+                "deprecated": null,
+                "since": null,
+                "has_nestable_children": false
+              },
+              {
+                "id": "_s3_presigned_publisher_8cpp",
+                "kind": "file",
+                "name": "S3PresignedPublisher.cpp",
+                "url": "_s3_presigned_publisher_8cpp.html",
+                "brief": "Implements the <a href=\"class_s3_presigned_publisher.html\" class=\"m-doc\">S3PresignedPublisher</a> class.",
+                "children": [],
+                "deprecated": null,
+                "since": null,
+                "has_nestable_children": false
+              },
+              {
+                "id": "_s3_presigned_publisher_8h",
+                "kind": "file",
+                "name": "S3PresignedPublisher.h",
+                "url": "_s3_presigned_publisher_8h.html",
+                "brief": "Contains the <a href=\"class_s3_presigned_publisher.html\" class=\"m-doc\">S3PresignedPublisher</a> subclass of <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> for publishing data to S3 using a pre-signed URL.",
                 "children": [],
                 "deprecated": null,
                 "since": null,
@@ -3434,7 +3952,7 @@
                 "kind": "file",
                 "name": "AnalogElecConductivity.cpp",
                 "url": "_analog_elec_conductivity_8cpp.html",
-                "brief": "This encapsulates an Electrical Conductivity sensors using an anlog input and onboard ADC and ADC ref.",
+                "brief": "This encapsulates an Electrical Conductivity sensors using an analog input and onboard ADC and ADC ref.",
                 "children": [],
                 "deprecated": null,
                 "since": null,
@@ -3445,7 +3963,29 @@
                 "kind": "file",
                 "name": "AnalogElecConductivity.h",
                 "url": "_analog_elec_conductivity_8h.html",
-                "brief": "Encapsulates an Electrical Conductivity sensors using an anlog input and onboard ADC and ADC ref.",
+                "brief": "Encapsulates an Electrical Conductivity sensors using an analog input and onboard ADC and ADC ref.",
+                "children": [],
+                "deprecated": null,
+                "since": null,
+                "has_nestable_children": false
+              },
+              {
+                "id": "_a_n_bp_h_8cpp",
+                "kind": "file",
+                "name": "ANBpH.cpp",
+                "url": "_a_n_bp_h_8cpp.html",
+                "brief": "Implements the <a href=\"class_a_n_bp_h.html\" class=\"m-doc\">ANBpH</a> class.",
+                "children": [],
+                "deprecated": null,
+                "since": null,
+                "has_nestable_children": false
+              },
+              {
+                "id": "_a_n_bp_h_8h",
+                "kind": "file",
+                "name": "ANBpH.h",
+                "url": "_a_n_bp_h_8h.html",
+                "brief": "Contains the <a href=\"class_a_n_bp_h.html\" class=\"m-doc\">ANBpH</a> sensor subclass for all ANB Sensors pH sensors and the variable subclasses <a href=\"class_a_n_bp_h__p_h.html\" class=\"m-doc\">ANBpH_<wbr />pH</a>, <a href=\"class_a_n_bp_h___temp.html\" class=\"m-doc\">ANBpH_<wbr />Temp</a>, <a href=\"class_a_n_bp_h___salinity.html\" class=\"m-doc\">ANBpH_<wbr />Salinity</a>, <a href=\"class_a_n_bp_h___sp_cond.html\" class=\"m-doc\">ANBpH_<wbr />SpCond</a> and <a href=\"class_a_n_bp_h___e_c.html\" class=\"m-doc\">ANBpH_<wbr />EC</a>.",
                 "children": [],
                 "deprecated": null,
                 "since": null,
@@ -3775,7 +4315,7 @@
                 "kind": "file",
                 "name": "EverlightALSPT19.h",
                 "url": "_everlight_a_l_s_p_t19_8h.html",
-                "brief": "Contains the <a href=\"class_everlight_a_l_s_p_t19.html\" class=\"m-doc\">EverlightALSPT19</a> sensor subclass and the variable subclasses <a href=\"class_everlight_a_l_s_p_t19___current.html\" class=\"m-doc\">EverlightALSPT19_<wbr />Current</a> and <a href=\"class_everlight_a_l_s_p_t19___illuminance.html\" class=\"m-doc\">EverlightALSPT19_<wbr />Illuminance</a>.",
+                "brief": "Contains the <a href=\"class_everlight_a_l_s_p_t19.html\" class=\"m-doc\">EverlightALSPT19</a> sensor subclass and the variable subclasses <a href=\"class_everlight_a_l_s_p_t19___voltage.html\" class=\"m-doc\">EverlightALSPT19_<wbr />Voltage</a>, <a href=\"class_everlight_a_l_s_p_t19___current.html\" class=\"m-doc\">EverlightALSPT19_<wbr />Current</a>, and <a href=\"class_everlight_a_l_s_p_t19___illuminance.html\" class=\"m-doc\">EverlightALSPT19_<wbr />Illuminance</a>.",
                 "children": [],
                 "deprecated": null,
                 "since": null,
@@ -3809,6 +4349,28 @@
                 "name": "FreescaleMPL115A2.h",
                 "url": "_freescale_m_p_l115_a2_8h.html",
                 "brief": "Contains the <a href=\"class_freescale_m_p_l115_a2.html\" class=\"m-doc\">FreescaleMPL115A2</a> sensor subclass and the variable subclasses <a href=\"class_freescale_m_p_l115_a2___temp.html\" class=\"m-doc\">FreescaleMPL115A2_<wbr />Temp</a> and <a href=\"class_freescale_m_p_l115_a2___pressure.html\" class=\"m-doc\">FreescaleMPL115A2_<wbr />Pressure</a>.",
+                "children": [],
+                "deprecated": null,
+                "since": null,
+                "has_nestable_children": false
+              },
+              {
+                "id": "_geolux_hydro_cam_8cpp",
+                "kind": "file",
+                "name": "GeoluxHydroCam.cpp",
+                "url": "_geolux_hydro_cam_8cpp.html",
+                "brief": "Implements the <a href=\"class_geolux_hydro_cam.html\" class=\"m-doc\">GeoluxHydroCam</a> class.",
+                "children": [],
+                "deprecated": null,
+                "since": null,
+                "has_nestable_children": false
+              },
+              {
+                "id": "_geolux_hydro_cam_8h",
+                "kind": "file",
+                "name": "GeoluxHydroCam.h",
+                "url": "_geolux_hydro_cam_8h.html",
+                "brief": "Contains the <a href=\"class_geolux_hydro_cam.html\" class=\"m-doc\">GeoluxHydroCam</a> sensor subclass and the <a href=\"class_geolux_hydro_cam___image_size.html\" class=\"m-doc\">GeoluxHydroCam_<wbr />ImageSize</a> variable subclass.",
                 "children": [],
                 "deprecated": null,
                 "since": null,
@@ -3973,7 +4535,7 @@
                 "kind": "file",
                 "name": "MeaSpecMS5803.h",
                 "url": "_mea_spec_m_s5803_8h.html",
-                "brief": "Contains the <a href=\"class_mea_spec_m_s5803.html\" class=\"m-doc\">MeaSpecMS5803</a> semsor subclass and the variable subclasses <a href=\"class_mea_spec_m_s5803___temp.html\" class=\"m-doc\">MeaSpecMS5803_<wbr />Temp</a> and <a href=\"class_mea_spec_m_s5803___pressure.html\" class=\"m-doc\">MeaSpecMS5803_<wbr />Pressure</a>.",
+                "brief": "Contains the <a href=\"class_mea_spec_m_s5803.html\" class=\"m-doc\">MeaSpecMS5803</a> sensor subclass and the variable subclasses <a href=\"class_mea_spec_m_s5803___temp.html\" class=\"m-doc\">MeaSpecMS5803_<wbr />Temp</a> and <a href=\"class_mea_spec_m_s5803___pressure.html\" class=\"m-doc\">MeaSpecMS5803_<wbr />Pressure</a>.",
                 "children": [],
                 "deprecated": null,
                 "since": null,
@@ -4017,7 +4579,7 @@
                 "kind": "file",
                 "name": "PaleoTerraRedox.h",
                 "url": "_paleo_terra_redox_8h.html",
-                "brief": "Contains the <a href=\"class_paleo_terra_redox.html\" class=\"m-doc\">PaleoTerraRedox</a> semsor subclass and the variable subclass <a href=\"class_paleo_terra_redox___voltage.html\" class=\"m-doc\">PaleoTerraRedox_<wbr />Voltage</a>.",
+                "brief": "Contains the <a href=\"class_paleo_terra_redox.html\" class=\"m-doc\">PaleoTerraRedox</a> sensor subclass and the variable subclass <a href=\"class_paleo_terra_redox___voltage.html\" class=\"m-doc\">PaleoTerraRedox_<wbr />Voltage</a>.",
                 "children": [],
                 "deprecated": null,
                 "since": null,
@@ -4448,6 +5010,17 @@
             "has_nestable_children": false
           },
           {
+            "id": "_clock_support_8h",
+            "kind": "file",
+            "name": "ClockSupport.h",
+            "url": "_clock_support_8h.html",
+            "brief": "Contains the <a href=\"_clock_support_8h.html#a8a843903ff31832bf9472f993feac3c1\" class=\"m-doc\">epochStart</a> class, which is a helper to convert between various time types used by different processors and the <a href=\"classlogger_clock.html\" class=\"m-doc\">loggerClock</a> class.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false
+          },
+          {
             "id": "data_publisher_base_8cpp",
             "kind": "file",
             "name": "dataPublisherBase.cpp",
@@ -4464,6 +5037,17 @@
             "name": "dataPublisherBase.h",
             "url": "data_publisher_base_8h.html",
             "brief": "Contains the <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> class - a virtual class used by other publishers to distribute data online.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false
+          },
+          {
+            "id": "_log_buffer_8cpp",
+            "kind": "file",
+            "name": "LogBuffer.cpp",
+            "url": "_log_buffer_8cpp.html",
+            "brief": "Implements the <a href=\"class_log_buffer.html\" class=\"m-doc\">LogBuffer</a> class.",
             "children": [],
             "deprecated": null,
             "since": null,
@@ -4508,6 +5092,28 @@
             "name": "LoggerModem.h",
             "url": "_logger_modem_8h.html",
             "brief": "Contains the <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> class and the variable subclasses <a href=\"class_modem___r_s_s_i.html\" class=\"m-doc\">Modem_<wbr />RSSI</a>, <a href=\"class_modem___signal_percent.html\" class=\"m-doc\">Modem_<wbr />SignalPercent</a>, <a href=\"class_modem___battery_state.html\" class=\"m-doc\">Modem_<wbr />BatteryState</a>, <a href=\"class_modem___battery_percent.html\" class=\"m-doc\">Modem_<wbr />BatteryPercent</a>, and <a href=\"class_modem___battery_voltage.html\" class=\"m-doc\">Modem_<wbr />BatteryVoltage</a> - all of which are implemented as &quot;calculated&quot; variables.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false
+          },
+          {
+            "id": "_mod_sensor_config_8h",
+            "kind": "file",
+            "name": "ModSensorConfig.h",
+            "url": "_mod_sensor_config_8h.html",
+            "brief": "This file is used to configure the clock and other library settings/preferences for the Modular Sensors Library.",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false
+          },
+          {
+            "id": "_mod_sensor_debug_config_8h",
+            "kind": "file",
+            "name": "ModSensorDebugConfig.h",
+            "url": "_mod_sensor_debug_config_8h.html",
+            "brief": "This file is used to configure the <em>code</em> debugging to be used by the Modular Sensors Library.",
             "children": [],
             "deprecated": null,
             "since": null,
@@ -4732,17 +5338,6 @@
                 "deprecated": null,
                 "since": null,
                 "has_nestable_children": false
-              },
-              {
-                "id": "page_for_developers",
-                "kind": "page",
-                "name": "Developer Setup",
-                "url": "page_for_developers.html",
-                "brief": "",
-                "children": [],
-                "deprecated": null,
-                "since": null,
-                "has_nestable_children": false
               }
             ],
             "deprecated": null,
@@ -4772,6 +5367,28 @@
                 "kind": "page",
                 "name": "Notes about Modems",
                 "url": "page_modem_notes.html",
+                "brief": "",
+                "children": [],
+                "deprecated": null,
+                "since": null,
+                "has_nestable_children": false
+              },
+              {
+                "id": "page_samd_clocks",
+                "kind": "page",
+                "name": "The SAMD clock system",
+                "url": "page_samd_clocks.html",
+                "brief": "",
+                "children": [],
+                "deprecated": null,
+                "since": null,
+                "has_nestable_children": false
+              },
+              {
+                "id": "page_sleep_config",
+                "kind": "page",
+                "name": "Modular Sensors Sleep Configurations",
+                "url": "page_sleep_config.html",
                 "brief": "",
                 "children": [],
                 "deprecated": null,
@@ -4858,6 +5475,17 @@
                     "kind": "page",
                     "name": "Sending data to ThingSpeak",
                     "url": "example_thingspeak.html",
+                    "brief": "",
+                    "children": [],
+                    "deprecated": null,
+                    "since": null,
+                    "has_nestable_children": false
+                  },
+                  {
+                    "id": "example_aws_iot_core",
+                    "kind": "page",
+                    "name": "Publishing data to AWS IoT Core",
+                    "url": "example_aws_iot_core.html",
                     "brief": "",
                     "children": [],
                     "deprecated": null,
@@ -5021,10 +5649,10 @@
             "has_nestable_children": false
           },
           {
-            "id": "license_software-license-agreement-bsd-3-license",
+            "id": "license",
             "kind": "page",
             "name": "Software License Agreement (BSD-3 License)",
-            "url": "license_software-license-agreement-bsd-3-license.html",
+            "url": "license.html",
             "brief": "",
             "children": [],
             "deprecated": null,
@@ -5070,12 +5698,35 @@
         "has_nestable_children": false
       },
       {
-        "id": "page_continuous_intetration",
+        "id": "page_for_developers",
         "kind": "page",
-        "name": "Extra scripts for Continuous Integration Using GitHub Actions",
-        "url": "page_continuous_intetration.html",
+        "name": "Help for Developers",
+        "url": "page_for_developers.html",
         "brief": "",
-        "children": [],
+        "children": [
+          {
+            "id": "page_developer_setup",
+            "kind": "page",
+            "name": "Developer Setup",
+            "url": "page_developer_setup.html",
+            "brief": "",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false
+          },
+          {
+            "id": "page_continuous_intetration",
+            "kind": "page",
+            "name": "Extra scripts for Continuous Integration Using GitHub Actions",
+            "url": "page_continuous_intetration.html",
+            "brief": "",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false
+          }
+        ],
         "deprecated": null,
         "since": null,
         "has_nestable_children": false
@@ -5086,7 +5737,19 @@
         "name": "Extra Helper Sketches",
         "url": "page_extra_helper_sketches.html",
         "brief": "",
-        "children": [],
+        "children": [
+          {
+            "id": "extra_aws_certificates",
+            "kind": "page",
+            "name": "Setting AWS Certificates",
+            "url": "extra_aws_certificates.html",
+            "brief": "",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false
+          }
+        ],
         "deprecated": null,
         "since": null,
         "has_nestable_children": false
@@ -5179,15 +5842,38 @@
             "has_nestable_children": true
           },
           {
-            "id": "group__modem__esp8266",
+            "id": "group__modem__espressif",
             "kind": "group",
-            "name": "Espressif ESP8266 and ESP32",
-            "url": "group__modem__esp8266.html",
+            "name": "Espressif ESP8266, ESP32, and various ESP32 flavors",
+            "url": "group__modem__espressif.html",
             "brief": "",
-            "children": [],
+            "children": [
+              {
+                "id": "group__modem__esp32",
+                "kind": "group",
+                "name": "Espressif ESP32 and variants",
+                "url": "group__modem__esp32.html",
+                "brief": "",
+                "children": [],
+                "deprecated": null,
+                "since": null,
+                "has_nestable_children": false
+              },
+              {
+                "id": "group__modem__esp8266",
+                "kind": "group",
+                "name": "Espressif ESP8266",
+                "url": "group__modem__esp8266.html",
+                "brief": "",
+                "children": [],
+                "deprecated": null,
+                "since": null,
+                "has_nestable_children": false
+              }
+            ],
             "deprecated": null,
             "since": null,
-            "has_nestable_children": false
+            "has_nestable_children": true
           },
           {
             "id": "group__modem__bg96",
@@ -5306,6 +5992,17 @@
             "kind": "group",
             "name": "Conductivity via Analog Electrical Resistance",
             "url": "group__sensor__analog__cond.html",
+            "brief": "",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false
+          },
+          {
+            "id": "group__sensor__anb__ph",
+            "kind": "group",
+            "name": "ANB pH Sensors",
+            "url": "group__sensor__anb__ph.html",
             "brief": "",
             "children": [],
             "deprecated": null,
@@ -5450,6 +6147,17 @@
             "kind": "group",
             "name": "Freescale Semiconductor MPL115A2",
             "url": "group__sensor__mpl115a2.html",
+            "brief": "",
+            "children": [],
+            "deprecated": null,
+            "since": null,
+            "has_nestable_children": false
+          },
+          {
+            "id": "group__sensor__hydrocam",
+            "kind": "group",
+            "name": "Geolux HydroCam",
+            "url": "group__sensor__hydrocam.html",
             "brief": "",
             "children": [],
             "deprecated": null,
@@ -5877,7 +6585,7 @@
               {
                 "id": "group__sensor__y511",
                 "kind": "group",
-                "name": "Yosemitech Y511 Wipered Turbidty Sensor",
+                "name": "Yosemitech Y511 Wipered Turbidity Sensor",
                 "url": "group__sensor__y511.html",
                 "brief": "",
                 "children": [],

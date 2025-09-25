@@ -1,0 +1,18 @@
+{
+  "is_final": false,
+  "parent": null,
+  "parentGroup": null,
+  "id": "class_alphasense_c_o2___voltage",
+  "kind": "class",
+  "name": "AlphasenseCO2_Voltage",
+  "url": "class_alphasense_c_o2___voltage.html",
+  "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__alphasense__co2.html#sensor_alphasense_co2_voltage\" class=\"m-doc\">raw voltage output</a> from an <a href=\"group__sensor__alphasense__co2.html\" class=\"m-doc\">Alphasense IRC-A1 CO2</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null
+}

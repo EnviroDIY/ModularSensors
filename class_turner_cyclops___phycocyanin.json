@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "class",
     "id": "class_turner_cyclops___phycocyanin",
@@ -13,7 +13,7 @@
     "has_template_details": false,
     "templates": null,
     "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__cyclops.html#sensor_cyclops_output\" class=\"m-doc\">phycocyanin output</a> from a <a href=\"group__sensor__cyclops.html\" class=\"m-doc\">Turner Cyclops-7F</a>.",
-    "description": "<aside class=\"m-note m-info\"><h4>Note</h4><p><em><strong>This can only be used for a Cyclops-7F that is configured for phycocyanin (freshwater cyanobacteria)!</strong></em> Phycocyanin models will be marked with a <strong>\u201cP\u201d</strong> at the top of the sensor housing near the cable connections.</p></aside><p>Phycocyanin concentration is measured (and should be calibrated) in parts per billion (ppb).</p><ul><li>Miminum detection limit: 2 ppb (Phycocyanin pigment from Prozyme diluted in Deionized water)</li><li>Linear range: 0-4,500 ppb</li><li>LED (CWL): 590 nm</li><li>Excitiation wavelength: 590/30 nm</li><li>Emission wavelength: &gt;= 645 nm</li><li>Power required (mW @12V): 160</li></ul>",
+    "description": "<aside class=\"m-note m-info\"><h4>Note</h4><p><em><strong>This can only be used for a Cyclops-7F that is configured for phycocyanin (freshwater cyanobacteria)!</strong></em> Phycocyanin models will be marked with a <strong>\u201cP\u201d</strong> at the top of the sensor housing near the cable connections.</p></aside><p>Phycocyanin concentration is measured (and should be calibrated) in parts per billion (ppb).</p><ul><li>Minimum detection limit: 2 ppb (Phycocyanin pigment from Prozyme diluted in Deionized water)</li><li>Linear range: 0-4,500 ppb</li><li>LED (CWL): 590 nm</li><li>Excitation wavelength: 590/30 nm</li><li>Emission wavelength: &gt;= 645 nm</li><li>Power required (mW @12V): 160</li></ul>",
     "sections": "",
     "deprecated": null,
     "since": null,

@@ -1,0 +1,17 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "page_arduino_streams",
+  "kind": "page",
+  "name": "Notes on Arduino Streams and Software Serial",
+  "url": "page_arduino_streams.html",
+  "brief": "",
+  "has_details": 12,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

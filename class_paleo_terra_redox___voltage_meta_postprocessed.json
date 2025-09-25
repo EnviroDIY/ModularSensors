@@ -1,0 +1,19 @@
+{
+  "is_final": false,
+  "parent": "class_variable",
+  "parentGroup": "group__sensor__pt__redox",
+  "id": "class_paleo_terra_redox___voltage",
+  "kind": "class",
+  "name": "PaleoTerraRedox_Voltage",
+  "url": "class_paleo_terra_redox___voltage.html",
+  "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__pt__redox.html#sensor_pt_redox_volt\" class=\"m-doc\">voltage output</a> from a PaleoTerra redox sensor.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null,
+  "leaf_name": "PaleoTerraRedox_Voltage"
+}

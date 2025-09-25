@@ -1,0 +1,18 @@
+{
+  "is_final": null,
+  "parent": "page_examples_complex",
+  "parentGroup": null,
+  "id": "example_baro_rho",
+  "kind": "page",
+  "name": "Calculating Results based on Measured Values",
+  "url": "example_baro_rho.html",
+  "brief": "",
+  "has_details": 11,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "Calculating Results based on Measured Values"
+}

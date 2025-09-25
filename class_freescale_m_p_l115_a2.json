@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "class",
     "id": "class_freescale_m_p_l115_a2",
@@ -54,7 +54,7 @@
         "type": "",
         "name": "FreescaleMPL115A2",
         "brief": "Construct a new <a href=\"class_freescale_m_p_l115_a2.html\" class=\"m-doc\">FreescaleMPL115A2</a> using a secondary <em>hardware</em> I2C instance.",
-        "description": "<aside class=\"m-note m-info\"><h4>Note</h4><p>It is only possible to connect <em>one</em> MPL115A2 at a time on a single I2C bus. Software I2C is also not supported.</p></aside>",
+        "description": "<aside class=\"m-note m-info\"><h4>Note</h4><p>It is only possible to connect <em>one</em> <a href=\"group__sensor__mpl115a2.html#ga8239c08a23b7f1654171d2e4aecfd3dc\" class=\"m-doc\">MPL115A2</a> at a time on a single I2C bus. Software I2C is also not supported.</p></aside>",
         "return_value": null,
         "return_values": [],
         "exceptions": [],
@@ -94,7 +94,7 @@
             "type": "int8_t",
             "type_name": "int8_t powerPin",
             "default": null,
-            "description": "<p>The pin on the mcu controlling power to the MPL115A2 Use -1 if it is continuously powered.</p><ul><li>The MPL115A2 requires a 2.375 - 5.5V power source</li></ul>",
+            "description": "<p>The pin on the mcu controlling power to the <a href=\"group__sensor__mpl115a2.html#ga8239c08a23b7f1654171d2e4aecfd3dc\" class=\"m-doc\">MPL115A2</a> Use -1 if it is continuously powered.</p><ul><li>The <a href=\"group__sensor__mpl115a2.html#ga8239c08a23b7f1654171d2e4aecfd3dc\" class=\"m-doc\">MPL115A2</a> requires a 2.375 - 5.5V power source</li></ul>",
             "direction": ""
           },
           {
@@ -115,7 +115,7 @@
         "type": "",
         "name": "FreescaleMPL115A2",
         "brief": "Construct a new <a href=\"class_freescale_m_p_l115_a2.html\" class=\"m-doc\">FreescaleMPL115A2</a> using the primary hardware I2C instance.",
-        "description": "<aside class=\"m-note m-info\"><h4>Note</h4><p>It is only possible to connect <em>one</em> MPL115A2 at a time on a single I2C bus. Software I2C is also not supported.</p></aside>",
+        "description": "<aside class=\"m-note m-info\"><h4>Note</h4><p>It is only possible to connect <em>one</em> <a href=\"group__sensor__mpl115a2.html#ga8239c08a23b7f1654171d2e4aecfd3dc\" class=\"m-doc\">MPL115A2</a> at a time on a single I2C bus. Software I2C is also not supported.</p></aside>",
         "return_value": null,
         "return_values": [],
         "exceptions": [],
@@ -147,7 +147,7 @@
             "type": "int8_t",
             "type_name": "int8_t powerPin",
             "default": null,
-            "description": "<p>The pin on the mcu controlling power to the MPL115A2 Use -1 if it is continuously powered.</p><ul><li>The MPL115A2 requires a 2.375 - 5.5V power source</li></ul>",
+            "description": "<p>The pin on the mcu controlling power to the <a href=\"group__sensor__mpl115a2.html#ga8239c08a23b7f1654171d2e4aecfd3dc\" class=\"m-doc\">MPL115A2</a> Use -1 if it is continuously powered.</p><ul><li>The <a href=\"group__sensor__mpl115a2.html#ga8239c08a23b7f1654171d2e4aecfd3dc\" class=\"m-doc\">MPL115A2</a> requires a 2.375 - 5.5V power source</li></ul>",
             "direction": ""
           },
           {
@@ -206,7 +206,7 @@
         "type": "bool",
         "name": "setup",
         "brief": "Do any one-time preparations needed before the sensor will be able to take readings.",
-        "description": "<p>This begins the Wire library (sets pin modes for I2C), reads coefficients from the MPL115A2, and updates the <a href=\"class_sensor.html#a1fde72c3ddd07d892dcbfe4a09bcae49\" class=\"m-doc\">_<wbr />sensorStatus</a>. The sensor must be powered for setup. This doesn&#x27;t return anything to indicate failure or success, we just have to hope it worked.</p>",
+        "description": "<p>This begins the Wire library (sets pin modes for I2C), reads coefficients from the <a href=\"group__sensor__mpl115a2.html#ga8239c08a23b7f1654171d2e4aecfd3dc\" class=\"m-doc\">MPL115A2</a>, and updates the <a href=\"class_sensor.html#a1fde72c3ddd07d892dcbfe4a09bcae49\" class=\"m-doc\">_<wbr />sensorStatus</a>. The sensor must be powered for setup. This doesn&#x27;t return anything to indicate failure or success, we just have to hope it worked.</p>",
         "return_value": "True if the setup was successful.",
         "return_values": [],
         "exceptions": [],

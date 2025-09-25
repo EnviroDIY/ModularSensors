@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "class",
     "id": "class_enviro_d_i_y_publisher",
@@ -12,7 +12,7 @@
     ],
     "has_template_details": false,
     "templates": null,
-    "brief": "The <a href=\"class_enviro_d_i_y_publisher.html\" class=\"m-doc\">EnviroDIYPublisher</a> subclass of <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> for publishing data to the Monitor My Watershed/EnviroDIY data portal at <a href=\"http://data.enviroDIY.org\">http:/<wbr />/<wbr />data.enviroDIY.org</a>.",
+    "brief": "The <a href=\"class_enviro_d_i_y_publisher.html\" class=\"m-doc\">EnviroDIYPublisher</a> subclass of <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> for publishing data to the Monitor My Watershed/EnviroDIY data portal at <a href=\"https://monitormywatershed.org/\">https:/<wbr />/<wbr />monitormywatershed.org/<wbr /></a> (formerly at <a href=\"http://data.enviroDIY.org\">http:/<wbr />/<wbr />data.enviroDIY.org</a>).",
     "description": "",
     "sections": "",
     "deprecated": null,
@@ -130,7 +130,7 @@
             "type": "int",
             "type_name": "int sendEveryX",
             "default": "1",
-            "description": "Interval (in units of the logging interval) between attempted data transmissions. NOTE: not implemented by this publisher!",
+            "description": "Interval (in units of the logging interval) between attempted data transmissions.",
             "direction": ""
           }
         ]
@@ -191,7 +191,7 @@
             "type": "int",
             "type_name": "int sendEveryX",
             "default": "1",
-            "description": "Interval (in units of the logging interval) between attempted data transmissions. NOTE: not implemented by this publisher!",
+            "description": "Interval (in units of the logging interval) between attempted data transmissions.",
             "direction": ""
           }
         ]
@@ -260,7 +260,68 @@
             "type": "int",
             "type_name": "int sendEveryX",
             "default": "1",
-            "description": "Interval (in units of the logging interval) between attempted data transmissions. NOTE: not implemented by this publisher!",
+            "description": "Interval (in units of the logging interval) between attempted data transmissions.",
+            "direction": ""
+          }
+        ]
+      },
+      {
+        "base_url": "class_enviro_d_i_y_publisher.html",
+        "id": "a0bb4e62249a251c2210db06214e0882a",
+        "include": null,
+        "has_details": true,
+        "type": "",
+        "name": "EnviroDIYPublisher",
+        "brief": "Construct a new EnviroDIY Publisher object.",
+        "description": "",
+        "return_value": null,
+        "return_values": [],
+        "exceptions": [],
+        "deprecated": null,
+        "since": null,
+        "is_constexpr": false,
+        "is_consteval": false,
+        "is_explicit": false,
+        "is_virtual": false,
+        "prefix": "",
+        "is_defaulted": false,
+        "is_deleted": false,
+        "is_pure_virtual": false,
+        "is_final": false,
+        "is_override": false,
+        "is_noexcept": false,
+        "is_conditional_noexcept": false,
+        "suffix": "",
+        "is_protected": false,
+        "is_private": false,
+        "is_signal": false,
+        "is_slot": false,
+        "has_template_details": false,
+        "templates": null,
+        "has_param_details": true,
+        "params": [
+          {
+            "name": "baseLogger",
+            "type": "<a href=\"class_logger.html\" class=\"m-doc\">Logger</a>&amp;",
+            "type_name": "<a href=\"class_logger.html\" class=\"m-doc\">Logger</a>&amp; baseLogger",
+            "default": null,
+            "description": "The logger supplying the data to be published",
+            "direction": ""
+          },
+          {
+            "name": "registrationToken",
+            "type": "const char*",
+            "type_name": "const char* registrationToken",
+            "default": null,
+            "description": "The registration token for the site on the Monitor My Watershed data portal.",
+            "direction": ""
+          },
+          {
+            "name": "sendEveryX",
+            "type": "int",
+            "type_name": "int sendEveryX",
+            "default": "1",
+            "description": "Interval (in units of the logging interval) between attempted data transmissions.",
             "direction": ""
           }
         ]
@@ -337,7 +398,76 @@
             "type": "int",
             "type_name": "int sendEveryX",
             "default": "1",
-            "description": "Interval (in units of the logging interval) between attempted data transmissions. NOTE: not implemented by this publisher!",
+            "description": "Interval (in units of the logging interval) between attempted data transmissions.",
+            "direction": ""
+          }
+        ]
+      },
+      {
+        "base_url": "class_enviro_d_i_y_publisher.html",
+        "id": "a284da031029b75ed40dad9b930e0a461",
+        "include": null,
+        "has_details": true,
+        "type": "",
+        "name": "EnviroDIYPublisher",
+        "brief": "Construct a new EnviroDIY Publisher object.",
+        "description": "",
+        "return_value": null,
+        "return_values": [],
+        "exceptions": [],
+        "deprecated": null,
+        "since": null,
+        "is_constexpr": false,
+        "is_consteval": false,
+        "is_explicit": false,
+        "is_virtual": false,
+        "prefix": "",
+        "is_defaulted": false,
+        "is_deleted": false,
+        "is_pure_virtual": false,
+        "is_final": false,
+        "is_override": false,
+        "is_noexcept": false,
+        "is_conditional_noexcept": false,
+        "suffix": "",
+        "is_protected": false,
+        "is_private": false,
+        "is_signal": false,
+        "is_slot": false,
+        "has_template_details": false,
+        "templates": null,
+        "has_param_details": true,
+        "params": [
+          {
+            "name": "baseLogger",
+            "type": "<a href=\"class_logger.html\" class=\"m-doc\">Logger</a>&amp;",
+            "type_name": "<a href=\"class_logger.html\" class=\"m-doc\">Logger</a>&amp; baseLogger",
+            "default": null,
+            "description": "The logger supplying the data to be published",
+            "direction": ""
+          },
+          {
+            "name": "inClient",
+            "type": "Client*",
+            "type_name": "Client* inClient",
+            "default": null,
+            "description": "An Arduino client instance to use to print data to. Allows the use of any type of client and multiple clients tied to a single TinyGSM modem instance",
+            "direction": ""
+          },
+          {
+            "name": "registrationToken",
+            "type": "const char*",
+            "type_name": "const char* registrationToken",
+            "default": null,
+            "description": "The registration token for the site on the Monitor My Watershed data portal.",
+            "direction": ""
+          },
+          {
+            "name": "sendEveryX",
+            "type": "int",
+            "type_name": "int sendEveryX",
+            "default": "1",
+            "description": "Interval (in units of the logging interval) between attempted data transmissions.",
             "direction": ""
           }
         ]
@@ -908,7 +1038,105 @@
       },
       {
         "base_url": "class_enviro_d_i_y_publisher.html",
-        "id": "ab2b930cb40f53a3e65fac343cb0df7cd",
+        "id": "a72fd47539532e57777a758c211d1a7ce",
+        "include": null,
+        "has_details": true,
+        "type": "void",
+        "name": "begin",
+        "brief": "Begin the publisher - linking it to the logger but not attaching a client.",
+        "description": "<aside class=\"m-note m-info\"><h4>Note</h4><p>If a client is never specified, the publisher will attempt to create and use a client on a LoggerModem instance tied to the attached logger.</p></aside><p>This can be used as an alternative to adding the logger and client in the constructor.</p>",
+        "return_value": null,
+        "return_values": [],
+        "exceptions": [],
+        "deprecated": null,
+        "since": null,
+        "is_constexpr": false,
+        "is_consteval": false,
+        "is_explicit": false,
+        "is_virtual": false,
+        "prefix": "",
+        "is_defaulted": false,
+        "is_deleted": false,
+        "is_pure_virtual": false,
+        "is_final": false,
+        "is_override": false,
+        "is_noexcept": false,
+        "is_conditional_noexcept": false,
+        "suffix": "",
+        "is_protected": false,
+        "is_private": false,
+        "is_signal": false,
+        "is_slot": false,
+        "has_template_details": false,
+        "templates": null,
+        "has_param_details": true,
+        "params": [
+          {
+            "name": "baseLogger",
+            "type": "<a href=\"class_logger.html\" class=\"m-doc\">Logger</a>&amp;",
+            "type_name": "<a href=\"class_logger.html\" class=\"m-doc\">Logger</a>&amp; baseLogger",
+            "default": null,
+            "description": "The logger supplying the data to be published",
+            "direction": ""
+          },
+          {
+            "name": "registrationToken",
+            "type": "const char*",
+            "type_name": "const char* registrationToken",
+            "default": null,
+            "description": "The registration token for the site on the Monitor My Watershed data portal.",
+            "direction": ""
+          }
+        ]
+      },
+      {
+        "base_url": "class_enviro_d_i_y_publisher.html",
+        "id": "a7934ef716b9248427cb7c259b3b9b5ef",
+        "include": null,
+        "has_details": true,
+        "type": "bool",
+        "name": "connectionNeeded",
+        "brief": "Checks if the publisher needs an Internet connection for the next publishData call (as opposed to just buffering data internally).",
+        "description": "",
+        "return_value": "True if an internet connection is needed for the next publish.",
+        "return_values": [],
+        "exceptions": [],
+        "deprecated": null,
+        "since": null,
+        "is_constexpr": false,
+        "is_consteval": false,
+        "is_explicit": false,
+        "is_virtual": true,
+        "prefix": "",
+        "is_defaulted": false,
+        "is_deleted": false,
+        "is_pure_virtual": false,
+        "is_final": false,
+        "is_override": true,
+        "is_noexcept": false,
+        "is_conditional_noexcept": false,
+        "suffix": "",
+        "is_protected": false,
+        "is_private": false,
+        "is_signal": false,
+        "is_slot": false,
+        "has_template_details": false,
+        "templates": null,
+        "has_param_details": false,
+        "params": [
+          {
+            "name": "",
+            "type": "void",
+            "type_name": "void",
+            "default": null,
+            "description": "",
+            "direction": ""
+          }
+        ]
+      },
+      {
+        "base_url": "class_enviro_d_i_y_publisher.html",
+        "id": "aa0d9ce2ac4f0bf45b787f0c561ce2251",
         "include": null,
         "has_details": true,
         "type": "int16_t",
@@ -948,6 +1176,14 @@
             "default": null,
             "description": "An Arduino client instance to use to print data to. Allows the use of any type of client and multiple clients tied to a single TinyGSM modem instance",
             "direction": ""
+          },
+          {
+            "name": "forceFlush",
+            "type": "bool",
+            "type_name": "bool forceFlush",
+            "default": "false",
+            "description": "Ask the publisher to flush buffered data immediately.",
+            "direction": ""
           }
         ]
       }
@@ -958,10 +1194,93 @@
     "public_vars": [],
     "protected_types": [],
     "protected_static_funcs": [],
-    "protected_funcs": [],
+    "protected_funcs": [
+      {
+        "base_url": "class_enviro_d_i_y_publisher.html",
+        "id": "a845fa26187e853c714bde5cd86cbf78c",
+        "include": null,
+        "has_details": true,
+        "type": "int16_t",
+        "name": "flushDataBuffer",
+        "brief": "Transmit data from the data buffer to an external site.",
+        "description": "<aside class=\"m-note m-info\"><h4>Note</h4><p>A 504 will be returned automatically if the server does not respond within 30 seconds.</p></aside>",
+        "return_value": "The HTTP response code from the publish attempt",
+        "return_values": [],
+        "exceptions": [],
+        "deprecated": null,
+        "since": null,
+        "is_constexpr": false,
+        "is_consteval": false,
+        "is_explicit": false,
+        "is_virtual": false,
+        "prefix": "",
+        "is_defaulted": false,
+        "is_deleted": false,
+        "is_pure_virtual": false,
+        "is_final": false,
+        "is_override": false,
+        "is_noexcept": false,
+        "is_conditional_noexcept": false,
+        "suffix": "",
+        "is_protected": true,
+        "is_private": false,
+        "is_signal": false,
+        "is_slot": false,
+        "has_template_details": false,
+        "templates": null,
+        "has_param_details": true,
+        "params": [
+          {
+            "name": "outClient",
+            "type": "Client*",
+            "type_name": "Client* outClient",
+            "default": null,
+            "description": "The client to publish the data over",
+            "direction": ""
+          }
+        ]
+      }
+    ],
     "protected_slots": [],
     "protected_static_vars": [],
-    "protected_vars": [],
+    "protected_vars": [
+      {
+        "base_url": "class_enviro_d_i_y_publisher.html",
+        "id": "a72f1b8ccb0b0057064ee92c88b5f1111",
+        "include": null,
+        "has_details": false,
+        "type": "<a href=\"class_log_buffer.html\" class=\"m-doc\">LogBuffer</a>",
+        "is_constexpr": false,
+        "is_static": false,
+        "is_protected": true,
+        "is_private": false,
+        "name": "_logBuffer",
+        "brief": "Internal reference to the logger buffer.",
+        "description": "",
+        "deprecated": null,
+        "since": null,
+        "has_template_details": false,
+        "templates": null
+      },
+      {
+        "base_url": "class_enviro_d_i_y_publisher.html",
+        "id": "a3f0261365cd942685b315e5c4f7adea4",
+        "include": null,
+        "has_details": true,
+        "type": "uint8_t",
+        "is_constexpr": false,
+        "is_static": false,
+        "is_protected": true,
+        "is_private": false,
+        "name": "_initialTransmissionsRemaining",
+        "brief": "The number of transmissions remaining at the single minute intervals.",
+        "description": "<p>We send every one of the first five data points at only one minute intervals for faster in-field validation.</p><aside class=\"m-note m-dim\"><h4><a href=\"todo.html#_todo000012\" class=\"m-doc\">Todo</a></h4><p>This should be a user-settable parameter.</p></aside>",
+        "deprecated": null,
+        "since": null,
+        "has_template_details": false,
+        "templates": null
+      }
+    ],
     "private_funcs": [],
     "private_slots": [],
     "related": [],
@@ -1153,7 +1472,7 @@
     "has_enum_details": false,
     "has_typedef_details": false,
     "has_func_details": true,
-    "has_var_details": false,
+    "has_var_details": true,
     "has_define_details": false,
     "breadcrumb": [
       [

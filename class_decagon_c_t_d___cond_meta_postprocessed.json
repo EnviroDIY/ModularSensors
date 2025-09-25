@@ -1,0 +1,19 @@
+{
+  "is_final": false,
+  "parent": "class_variable",
+  "parentGroup": "group__sensor__decagon__ctd",
+  "id": "class_decagon_c_t_d___cond",
+  "kind": "class",
+  "name": "DecagonCTD_Cond",
+  "url": "class_decagon_c_t_d___cond.html",
+  "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__decagon__ctd.html#sensor_decagon_ctd_cond\" class=\"m-doc\">conductivity output</a> from a <a href=\"group__sensor__decagon__ctd.html\" class=\"m-doc\">Decagon CTD-10 3-in-1 water level sensor.</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null,
+  "leaf_name": "DecagonCTD_Cond"
+}

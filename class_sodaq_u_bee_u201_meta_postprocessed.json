@@ -1,0 +1,19 @@
+{
+  "is_final": false,
+  "parent": "classlogger_modem",
+  "parentGroup": "group__modem__ubee__3g",
+  "id": "class_sodaq_u_bee_u201",
+  "kind": "class",
+  "name": "SodaqUBeeU201",
+  "url": "class_sodaq_u_bee_u201.html",
+  "brief": "The <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> subclass for the <a href=\"group__modem__ubee__3g.html\" class=\"m-doc\">2G/<wbr />3G</a> <a href=\"group__modem__ublox.html\" class=\"m-doc\">Sodaq UBee</a> based on the u-blox SARA U201 2G/3G cellular module.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null,
+  "leaf_name": "SodaqUBeeU201"
+}

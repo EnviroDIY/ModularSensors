@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "class",
     "id": "class_dream_host_publisher",
@@ -570,7 +570,7 @@
       },
       {
         "base_url": "class_dream_host_publisher.html",
-        "id": "a69972261f791e1783cf82042b674e737",
+        "id": "a1fa5c8686d6b4b0f317df2665e79bee1",
         "include": null,
         "has_details": true,
         "type": "int16_t",
@@ -609,6 +609,14 @@
             "type_name": "Client* outClient",
             "default": null,
             "description": "An Arduino client instance to use to print data to. Allows the use of any type of client and multiple clients tied to a single TinyGSM modem instance",
+            "direction": ""
+          },
+          {
+            "name": "forceFlush",
+            "type": "bool",
+            "type_name": "bool forceFlush",
+            "default": "false",
+            "description": "Ask the publisher to flush buffered data immediately.",
             "direction": ""
           }
         ]

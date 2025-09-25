@@ -1,0 +1,17 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "dir_559fd0b69d19314f6899905aab4d528d",
+  "kind": "dir",
+  "name": "examples/baro_rho_correction",
+  "url": "dir_559fd0b69d19314f6899905aab4d528d.html",
+  "brief": "Contains the baro_rho_correction example.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

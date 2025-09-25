@@ -1,0 +1,86 @@
+{
+  "version": "1.14.0",
+  "compound": {
+    "kind": "file",
+    "id": "_a_w_s___io_t___publisher_8h",
+    "name": "AWS_IoT_Publisher.h",
+    "url_base": "_a_w_s___io_t___publisher_8h",
+    "url": "_a_w_s___io_t___publisher_8h.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "Contains the <a href=\"class_a_w_s___io_t___publisher.html\" class=\"m-doc\">AWS_<wbr />IoT_<wbr />Publisher</a> subclass of <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> for publishing data to AWS IoT Core using the MQTT protocol.",
+    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside><p>This publisher is meant for a generic AWS IoT Core MQTT connection. It is NOT for a specific AWS IoT Core channel or for any specific website or application that uses IoT Core. See the ReadMe and AWS IoT Core example for more documentation on how to set up an AWS IoT Core instance to receive data from this publisher.</p><p>Your loggerID will be used as your Thing Name, primary topic, and client name for connection. This publisher expects that you use a connection/publish policy that is tied to your thing name. An example policy is in the extras/AWS_IoT_SetCertificates folder.</p><p>All messages are published with QoS 0 and no messages are retained. All connections are made with a clean session.</p><aside class=\"m-note m-danger\"><h4>Warning</h4><p>You cannot connect more than one device with the same ClientID to AWS IoT at the same time. This means you should NEVER program two loggers with the same loggerID with the same sketch. They will not both be able to connect.</p></aside><aside class=\"m-note m-info\"><h4>Note</h4><p>At this time, this library has only very rudimentary support for subscriptions and and data reception. You can subscribe to up to <a href=\"_mod_sensor_config_8h.html#aa7d06086fa60efbe1574808c8c6df29d\" class=\"m-doc\">MS_<wbr />AWS_<wbr />IOT_<wbr />PUBLISHER_<wbr />SUB_<wbr />COUNT</a> topics and set a callback function for incoming messages that will be passed to the underlying PubSubClient instance. This is <strong>ABSOLUTELY NOT</strong> intended for handling any messages except those received over a very brief connection. The MQTT client only stays open briefly while publishing messages! (Until you call <a href=\"class_a_w_s___io_t___publisher.html#aef8cff5600af465bc99388ac11533473\" class=\"m-doc\">AWS_IoT_Publisher::<wbr />closeConnection()</a> or until the time has exceeded <a href=\"_mod_sensor_config_8h.html#ae5a5d4f2ec4419d8e6e3fc38b4109029\" class=\"m-doc\">MS_<wbr />AWS_<wbr />IOT_<wbr />MAX_<wbr />CONNECTION_<wbr />TIME</a>, whichever comes first). This publisher will completely <strong>BLOCK</strong> all further action while waiting for messages. The connection is closed at all other times and the board is in deep sleep. This will only be good for receiving <em>retained</em> messages on topics (that would come through immediately after subscribing) or for receiving messages that are published as an immediate reaction to publishing data. The only tested use case for this is requesting a new S3 presigned URL for image uploads.</p></aside><aside class=\"m-note m-danger\"><h4>Warning</h4><p>AWS IoT Core is only available on the AWS free tier within the first 12 months after initial sign up. After the first 12 months, you will be billed for usage. You are responsible for any and all charges incurred while using AWS IoT Core.</p></aside>",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [
+      {
+        "kind": "class",
+        "url": "class_a_w_s___io_t___publisher.html",
+        "name": "AWS_IoT_Publisher",
+        "brief": "The <a href=\"class_a_w_s___io_t___publisher.html\" class=\"m-doc\">AWS_<wbr />IoT_<wbr />Publisher</a> subclass of <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> for publishing data to AWS IoT Core using the MQTT protocol.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      }
+    ],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "src",
+        "dir_68267d1309a1af8e8297ef4c3efbcdba.html"
+      ],
+      [
+        "publishers",
+        "dir_d557642a802d85ded7abaec913ee220c.html"
+      ],
+      [
+        "AWS_IoT_Publisher.h",
+        "_a_w_s___io_t___publisher_8h.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "AWS_IoT_Publisher.h",
+        "_a_w_s___io_t___publisher_8h.html"
+      ]
+    ]
+  }
+}

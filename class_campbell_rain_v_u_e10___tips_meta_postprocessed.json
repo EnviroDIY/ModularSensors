@@ -1,0 +1,19 @@
+{
+  "is_final": false,
+  "parent": "class_variable",
+  "parentGroup": "group__sensor__rainvue",
+  "id": "class_campbell_rain_v_u_e10___tips",
+  "kind": "class",
+  "name": "CampbellRainVUE10_Tips",
+  "url": "class_campbell_rain_v_u_e10___tips.html",
+  "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__rainvue.html#sensor_rainvue_tips\" class=\"m-doc\">tip count output</a> from a <a href=\"group__sensor__rainvue.html\" class=\"m-doc\">Campbell RainVUE10 precipitation sensor</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null,
+  "leaf_name": "CampbellRainVUE10_Tips"
+}

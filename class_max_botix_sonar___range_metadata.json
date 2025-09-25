@@ -1,0 +1,18 @@
+{
+  "is_final": false,
+  "parent": null,
+  "parentGroup": null,
+  "id": "class_max_botix_sonar___range",
+  "kind": "class",
+  "name": "MaxBotixSonar_Range",
+  "url": "class_max_botix_sonar___range.html",
+  "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__maxbotix.html#sensor_maxbotix_range\" class=\"m-doc\">range output</a> from a <a href=\"group__sensor__maxbotix.html\" class=\"m-doc\">MaxBotix HRXL-MaxSonar ultrasonic range finder</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null
+}

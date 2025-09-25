@@ -1,0 +1,17 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "page_code_debugging",
+  "kind": "page",
+  "name": "In-Library Debugging",
+  "url": "page_code_debugging.html",
+  "brief": "",
+  "has_details": 4,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

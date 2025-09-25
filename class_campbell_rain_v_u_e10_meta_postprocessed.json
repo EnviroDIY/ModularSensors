@@ -1,0 +1,19 @@
+{
+  "is_final": false,
+  "parent": "class_s_d_i12_sensors",
+  "parentGroup": "group__sensor__rainvue",
+  "id": "class_campbell_rain_v_u_e10",
+  "kind": "class",
+  "name": "CampbellRainVUE10",
+  "url": "class_campbell_rain_v_u_e10.html",
+  "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__rainvue.html\" class=\"m-doc\">Campbell RainVUE10 precipitation sensor</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null,
+  "leaf_name": "CampbellRainVUE10"
+}

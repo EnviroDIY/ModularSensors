@@ -1,0 +1,21 @@
+{
+  "is_final": null,
+  "parent": "group__the__sensors",
+  "parentGroup": null,
+  "id": "group__sensor__tally",
+  "kind": "group",
+  "name": "Tally Counter I2C",
+  "url": "group__sensor__tally.html",
+  "brief": "",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [
+    "class_tally_counter_i2_c",
+    "class_tally_counter_i2_c___events"
+  ],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "Tally Counter I2C"
+}

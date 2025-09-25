@@ -1,0 +1,72 @@
+{
+  "version": "1.14.0",
+  "compound": {
+    "kind": "dir",
+    "id": "dir_b0a167a91af7ff36804e5b492334c798",
+    "name": "examples/simple_logging",
+    "url_base": "dir_b0a167a91af7ff36804e5b492334c798",
+    "url": "dir_b0a167a91af7ff36804e5b492334c798.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "Contains the simple_logging example.",
+    "description": "",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "examples",
+        "dir_d28a4824dc47e487b107a5db32ef43c4.html"
+      ],
+      [
+        "simple_logging",
+        "dir_b0a167a91af7ff36804e5b492334c798.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "simple_logging",
+        "dir_b0a167a91af7ff36804e5b492334c798.html"
+      ]
+    ]
+  }
+}

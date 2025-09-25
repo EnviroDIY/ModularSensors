@@ -1,0 +1,19 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "_sodaq_u_bee_u201_8h",
+  "kind": "file",
+  "name": "SodaqUBeeU201.h",
+  "url": "_sodaq_u_bee_u201_8h.html",
+  "brief": "Contains the <a href=\"class_sodaq_u_bee_u201.html\" class=\"m-doc\">SodaqUBeeU201</a> subclass of <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> for the Sodaq UBee based on the u-blox SARA U201 3G cellular module.",
+  "has_details": true,
+  "children": [
+    "modem-pin-settings-and-timing"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

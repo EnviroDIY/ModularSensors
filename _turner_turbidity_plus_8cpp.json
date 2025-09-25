@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "file",
     "id": "_turner_turbidity_plus_8cpp",
@@ -10,7 +10,7 @@
     "has_template_details": false,
     "templates": null,
     "brief": "Implements the <a href=\"class_turner_turbidity_plus.html\" class=\"m-doc\">TurnerTurbidityPlus</a> class.",
-    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>2020 Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a> Adapted from <a href=\"class_turner_cyclops.html\" class=\"m-doc\">TurnerCyclops</a> by Matt Barney <a href=\"mailto:mbarney@tu.org\">mbarney@tu.org</a></p></aside>",
+    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a> Adapted from <a href=\"class_turner_cyclops.html\" class=\"m-doc\">TurnerCyclops</a> by Matt Barney <a href=\"mailto:mbarney@tu.org\">mbarney@tu.org</a></p></aside>",
     "sections": "",
     "deprecated": null,
     "since": null,

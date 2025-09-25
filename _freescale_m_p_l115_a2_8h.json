@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "file",
     "id": "_freescale_m_p_l115_a2_8h",
@@ -10,7 +10,7 @@
     "has_template_details": false,
     "templates": null,
     "brief": "Contains the <a href=\"class_freescale_m_p_l115_a2.html\" class=\"m-doc\">FreescaleMPL115A2</a> sensor subclass and the variable subclasses <a href=\"class_freescale_m_p_l115_a2___temp.html\" class=\"m-doc\">FreescaleMPL115A2_<wbr />Temp</a> and <a href=\"class_freescale_m_p_l115_a2___pressure.html\" class=\"m-doc\">FreescaleMPL115A2_<wbr />Pressure</a>.",
-    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Written By: Bobby Schulz <a href=\"mailto:schu3119@umn.edu\">schu3119@umn.edu</a> Edited by Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside><p>These are used for the Freescale Semiconductor MPL115A2 Miniature I2C Digital Barometer.</p><p>This depends on the <a href=\"https://github.com/adafruit/Adafruit_MPL115A2\">https://github.com/adafruit/Adafruit_<wbr />MPL115A2</a> library</p>",
+    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Written By: Bobby Schulz <a href=\"mailto:schu3119@umn.edu\">schu3119@umn.edu</a> Edited by Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside><p>These are used for the Freescale Semiconductor <a href=\"group__sensor__mpl115a2.html#ga8239c08a23b7f1654171d2e4aecfd3dc\" class=\"m-doc\">MPL115A2</a> Miniature I2C Digital Barometer.</p><p>This depends on the <a href=\"https://github.com/adafruit/Adafruit_MPL115A2\">https://github.com/adafruit/Adafruit_<wbr />MPL115A2</a> library</p>",
     "sections": "",
     "deprecated": null,
     "since": null,

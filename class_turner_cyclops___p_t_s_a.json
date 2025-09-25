@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "class",
     "id": "class_turner_cyclops___p_t_s_a",
@@ -13,7 +13,7 @@
     "has_template_details": false,
     "templates": null,
     "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__cyclops.html#sensor_cyclops_output\" class=\"m-doc\">PTSA output</a> from a <a href=\"group__sensor__cyclops.html\" class=\"m-doc\">Turner Cyclops-7F</a>.",
-    "description": "<aside class=\"m-note m-info\"><h4>Note</h4><p><em><strong>This can only be used for a Cyclops-7F that is configured for PTSA (1,3,6,8-Pyrenetetrasulfonic Acid Tetrasodium Salt)!</strong></em> PTSA models will be marked with an <strong>\u201cA\u201d</strong> at the top of the sensor housing near the cable connections.</p></aside><p>PTSA concentration is measured (and should be calibrated) in parts per billion (ppb).</p><ul><li>Miminum detection limit: 0.1 ppb</li><li>Linear range: 0-650 ppb</li><li>LED (CWL): 365</li><li>Excitiation wavelength: 325/120 nm</li><li>Emission wavelength: 405/10 nm</li><li>Power required (mW @12V): 320</li></ul>",
+    "description": "<aside class=\"m-note m-info\"><h4>Note</h4><p><em><strong>This can only be used for a Cyclops-7F that is configured for PTSA (1,3,6,8-Pyrenetetrasulfonic Acid Tetrasodium Salt)!</strong></em> PTSA models will be marked with an <strong>\u201cA\u201d</strong> at the top of the sensor housing near the cable connections.</p></aside><p>PTSA concentration is measured (and should be calibrated) in parts per billion (ppb).</p><ul><li>Minimum detection limit: 0.1 ppb</li><li>Linear range: 0-650 ppb</li><li>LED (CWL): 365</li><li>Excitation wavelength: 325/120 nm</li><li>Emission wavelength: 405/10 nm</li><li>Power required (mW @12V): 320</li></ul>",
     "sections": "",
     "deprecated": null,
     "since": null,

@@ -1,0 +1,22 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "_yosemitech_y533_8h",
+  "kind": "file",
+  "name": "YosemitechY533.h",
+  "url": "_yosemitech_y533_8h.html",
+  "brief": "Contains the <a href=\"class_yosemitech_y533.html\" class=\"m-doc\">YosemitechY533</a> sensor subclass and the variable subclasses <a href=\"class_yosemitech_y533___o_r_p.html\" class=\"m-doc\">YosemitechY533_<wbr />ORP</a> and <a href=\"class_yosemitech_y533___temp.html\" class=\"m-doc\">YosemitechY533_<wbr />Temp</a>.",
+  "has_details": true,
+  "children": [
+    "sensor-variable-counts",
+    "sensor-timing",
+    "ph",
+    "temperature"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

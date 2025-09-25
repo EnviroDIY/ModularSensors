@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "file",
     "id": "_processor_stats_8h",
@@ -53,6 +53,15 @@
         "url": "class_processor_stats___sample_number.html",
         "name": "ProcessorStats_SampleNumber",
         "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__processor.html#sensor_processor_sampno\" class=\"m-doc\">sample number output</a> from the main processor.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_processor_stats___reset_code.html",
+        "name": "ProcessorStats_ResetCode",
+        "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__processor.html#sensor_processor_reset\" class=\"m-doc\">reset cause</a> recorded by the MCU.",
         "deprecated": null,
         "since": null,
         "templates": null

@@ -1,0 +1,27 @@
+{
+  "is_final": null,
+  "parent": "group__the__sensors",
+  "parentGroup": null,
+  "id": "group__atlas__group",
+  "kind": "group",
+  "name": "Atlas Scientific EZO Circuits",
+  "url": "group__atlas__group.html",
+  "brief": "",
+  "has_details": true,
+  "children": [
+    "group__sensor__atlas__co2",
+    "group__sensor__atlas__do",
+    "group__sensor__atlas__cond",
+    "group__sensor__atlas__orp",
+    "group__sensor__atlas__ph",
+    "group__sensor__atlas__rtd"
+  ],
+  "childrenClasses": [
+    "class_atlas_parent"
+  ],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "Atlas Scientific EZO Circuits"
+}

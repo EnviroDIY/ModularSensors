@@ -1,0 +1,32 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "group__yosemitech__group",
+  "kind": "group",
+  "name": "Yosemitech Sensors",
+  "url": "group__yosemitech__group.html",
+  "brief": "",
+  "has_details": true,
+  "children": [
+    "group__sensor__y4000",
+    "group__sensor__y504",
+    "group__sensor__y510",
+    "group__sensor__y511",
+    "group__sensor__y513",
+    "group__sensor__y514",
+    "group__sensor__y520",
+    "group__sensor__y532",
+    "group__sensor__y533",
+    "group__sensor__y551",
+    "group__sensor__y560",
+    "group__sensor__y700"
+  ],
+  "childrenClasses": [
+    "class_yosemitech_parent"
+  ],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

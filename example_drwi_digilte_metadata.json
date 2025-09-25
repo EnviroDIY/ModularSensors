@@ -1,0 +1,17 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "example_drwi_digilte",
+  "kind": "page",
+  "name": "DRWI Digi LTE Sites",
+  "url": "example_drwi_digilte.html",
+  "brief": "",
+  "has_details": 11,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

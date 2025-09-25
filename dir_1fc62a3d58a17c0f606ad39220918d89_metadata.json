@@ -1,0 +1,22 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "dir_1fc62a3d58a17c0f606ad39220918d89",
+  "kind": "dir",
+  "name": "src/WatchDogs",
+  "url": "dir_1fc62a3d58a17c0f606ad39220918d89.html",
+  "brief": "Contains the source code for setting up the watch-dog reset on the various supported processors.",
+  "has_details": true,
+  "children": [
+    "_watch_dog_a_v_r_8cpp",
+    "_watch_dog_a_v_r_8h",
+    "_watch_dog_s_a_m_d_8cpp",
+    "_watch_dog_s_a_m_d_8h"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

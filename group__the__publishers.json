@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "group",
     "id": "group__the__publishers",
@@ -23,6 +23,15 @@
     "classes": [
       {
         "kind": "class",
+        "url": "class_a_w_s___io_t___publisher.html",
+        "name": "AWS_IoT_Publisher",
+        "brief": "The <a href=\"class_a_w_s___io_t___publisher.html\" class=\"m-doc\">AWS_<wbr />IoT_<wbr />Publisher</a> subclass of <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> for publishing data to AWS IoT Core using the MQTT protocol.",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
         "url": "class_dream_host_publisher.html",
         "name": "DreamHostPublisher",
         "brief": "The <a href=\"class_dream_host_publisher.html\" class=\"m-doc\">DreamHostPublisher</a> subclass of <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> is for publishing data to the Stroud Center&#x27;s now-deprecated DreamHost based live sensor data system.",
@@ -34,7 +43,16 @@
         "kind": "class",
         "url": "class_enviro_d_i_y_publisher.html",
         "name": "EnviroDIYPublisher",
-        "brief": "The <a href=\"class_enviro_d_i_y_publisher.html\" class=\"m-doc\">EnviroDIYPublisher</a> subclass of <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> for publishing data to the Monitor My Watershed/EnviroDIY data portal at <a href=\"http://data.enviroDIY.org\">http:/<wbr />/<wbr />data.enviroDIY.org</a>.",
+        "brief": "The <a href=\"class_enviro_d_i_y_publisher.html\" class=\"m-doc\">EnviroDIYPublisher</a> subclass of <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> for publishing data to the Monitor My Watershed/EnviroDIY data portal at <a href=\"https://monitormywatershed.org/\">https:/<wbr />/<wbr />monitormywatershed.org/<wbr /></a> (formerly at <a href=\"http://data.enviroDIY.org\">http:/<wbr />/<wbr />data.enviroDIY.org</a>).",
+        "deprecated": null,
+        "since": null,
+        "templates": null
+      },
+      {
+        "kind": "class",
+        "url": "class_s3_presigned_publisher.html",
+        "name": "S3PresignedPublisher",
+        "brief": "The <a href=\"class_s3_presigned_publisher.html\" class=\"m-doc\">S3PresignedPublisher</a> subclass of <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> is for publishing data to S3 over a pre-signed URL.",
         "deprecated": null,
         "since": null,
         "templates": null

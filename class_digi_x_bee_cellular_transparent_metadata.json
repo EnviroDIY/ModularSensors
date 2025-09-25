@@ -1,0 +1,18 @@
+{
+  "is_final": false,
+  "parent": null,
+  "parentGroup": null,
+  "id": "class_digi_x_bee_cellular_transparent",
+  "kind": "class",
+  "name": "DigiXBeeCellularTransparent",
+  "url": "class_digi_x_bee_cellular_transparent.html",
+  "brief": "The class for any of <a href=\"group__modem__digi.html\" class=\"m-doc\">Digi Cellular XBee or XBee3</a> modules operating in Digi&#x27;s <a href=\"group__modem__digi__cellular.html\" class=\"m-doc\">&quot;transparent&quot; mode</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null
+}

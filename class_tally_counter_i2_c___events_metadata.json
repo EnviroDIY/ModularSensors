@@ -1,0 +1,18 @@
+{
+  "is_final": false,
+  "parent": null,
+  "parentGroup": null,
+  "id": "class_tally_counter_i2_c___events",
+  "kind": "class",
+  "name": "TallyCounterI2C_Events",
+  "url": "class_tally_counter_i2_c___events.html",
+  "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__tally.html#sensor_tally_events\" class=\"m-doc\">events output</a> from a <a href=\"group__sensor__tally.html\" class=\"m-doc\">Tally Counter I2C</a> - shows the number of events since last read.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null
+}

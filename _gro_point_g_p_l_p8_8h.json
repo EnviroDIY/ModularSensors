@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "file",
     "id": "_gro_point_g_p_l_p8_8h",
@@ -10,7 +10,7 @@
     "has_template_details": false,
     "templates": null,
     "brief": "Contains the <a href=\"class_gro_point_g_p_l_p8.html\" class=\"m-doc\">GroPointGPLP8</a> sensor subclass and the variable subclasses <a href=\"class_gro_point_g_p_l_p8___moist.html\" class=\"m-doc\">GroPointGPLP8_<wbr />Moist</a> and <a href=\"class_gro_point_g_p_l_p8___temp.html\" class=\"m-doc\">GroPointGPLP8_<wbr />Temp</a>.",
-    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Anthony Aufdenkampe <a href=\"mailto:aaufdenkampe@limno.com\">aaufdenkampe@limno.com</a></p></aside><p>These are for the GroPoint Profile GPLP-8 Eight-Segment Soil Moisture and Temperature Profiling Probe.</p><p>This depends on the <a href=\"class_gro_point_parent.html\" class=\"m-doc\">GroPointParent</a> super class.</p><p>Documentation for the Modbus Protocol commands and responses can be found within the documentation in the GroPointModbus library at: <a href=\"https://github.com/EnviroDIY/GroPointModbus\">https:/<wbr />/<wbr />github.com/<wbr />EnviroDIY/<wbr />GroPointModbus</a></p><p>More detailed infromation on each variable can be found in the documentation for the individual sensor probes</p>",
+    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Anthony Aufdenkampe <a href=\"mailto:aaufdenkampe@limno.com\">aaufdenkampe@limno.com</a></p></aside><p>These are for the GroPoint Profile GPLP-8 Eight-Segment Soil Moisture and Temperature Profiling Probe.</p><p>This depends on the <a href=\"class_gro_point_parent.html\" class=\"m-doc\">GroPointParent</a> super class.</p><p>Documentation for the Modbus Protocol commands and responses can be found within the documentation in the GroPointModbus library at: <a href=\"https://github.com/EnviroDIY/GroPointModbus\">https:/<wbr />/<wbr />github.com/<wbr />EnviroDIY/<wbr />GroPointModbus</a></p><p>More detailed information on each variable can be found in the documentation for the individual sensor probes</p>",
     "sections": "",
     "deprecated": null,
     "since": null,

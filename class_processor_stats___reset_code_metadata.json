@@ -1,0 +1,18 @@
+{
+  "is_final": false,
+  "parent": null,
+  "parentGroup": null,
+  "id": "class_processor_stats___reset_code",
+  "kind": "class",
+  "name": "ProcessorStats_ResetCode",
+  "url": "class_processor_stats___reset_code.html",
+  "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__processor.html#sensor_processor_reset\" class=\"m-doc\">reset cause</a> recorded by the MCU.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null
+}

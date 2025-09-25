@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "file",
     "id": "_paleo_terra_redox_8h",
@@ -9,8 +9,8 @@
     "include": null,
     "has_template_details": false,
     "templates": null,
-    "brief": "Contains the <a href=\"class_paleo_terra_redox.html\" class=\"m-doc\">PaleoTerraRedox</a> semsor subclass and the variable subclass <a href=\"class_paleo_terra_redox___voltage.html\" class=\"m-doc\">PaleoTerraRedox_<wbr />Voltage</a>.",
-    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Anthony Aufdenkampe <a href=\"mailto:aaufdenkampe@limno.com\">aaufdenkampe@limno.com</a> with help from Beth Fisher, Evan Host and Bobby Schulz. Heavliy edited by Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside><p>These are for the PaleoTerra redox sensors.</p><p>This depends on Testato&#x27;s <a href=\"https://github.com/Testato/SoftwareWire\">SoftwareWire</a> library if software I2C is needed.</p>",
+    "brief": "Contains the <a href=\"class_paleo_terra_redox.html\" class=\"m-doc\">PaleoTerraRedox</a> sensor subclass and the variable subclass <a href=\"class_paleo_terra_redox___voltage.html\" class=\"m-doc\">PaleoTerraRedox_<wbr />Voltage</a>.",
+    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Anthony Aufdenkampe <a href=\"mailto:aaufdenkampe@limno.com\">aaufdenkampe@limno.com</a> with help from Beth Fisher, Evan Host and Bobby Schulz. Heavily edited by Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside><p>These are for the PaleoTerra redox sensors.</p><p>This depends on Testato&#x27;s <a href=\"https://github.com/Testato/SoftwareWire\">SoftwareWire</a> library if software I2C is needed.</p>",
     "sections": "",
     "deprecated": null,
     "since": null,

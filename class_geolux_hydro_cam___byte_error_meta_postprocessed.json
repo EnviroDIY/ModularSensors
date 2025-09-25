@@ -1,0 +1,19 @@
+{
+  "is_final": false,
+  "parent": "class_variable",
+  "parentGroup": "group__sensor__hydrocam",
+  "id": "class_geolux_hydro_cam___byte_error",
+  "kind": "class",
+  "name": "GeoluxHydroCam_ByteError",
+  "url": "class_geolux_hydro_cam___byte_error.html",
+  "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__hydrocam.html#sensor_hydrocam_byte_error\" class=\"m-doc\">byte error output</a> from a <a href=\"group__sensor__hydrocam.html\" class=\"m-doc\">Geolux HydroCam camera</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null,
+  "leaf_name": "GeoluxHydroCam_ByteError"
+}

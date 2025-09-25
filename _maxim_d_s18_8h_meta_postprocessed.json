@@ -1,0 +1,22 @@
+{
+  "is_final": null,
+  "parent": "dir_7349e89ef19c117195f8e371603e1b1f",
+  "parentGroup": null,
+  "id": "_maxim_d_s18_8h",
+  "kind": "file",
+  "name": "MaximDS18.h",
+  "url": "_maxim_d_s18_8h.html",
+  "brief": "Contains the <a href=\"class_maxim_d_s18.html\" class=\"m-doc\">MaximDS18</a> sensor subclass and the <a href=\"class_maxim_d_s18___temp.html\" class=\"m-doc\">MaximDS18_<wbr />Temp</a> variable subclass.",
+  "has_details": true,
+  "children": [
+    "sensor-variable-counts",
+    "sensor-timing",
+    "temperature"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "MaximDS18.h"
+}

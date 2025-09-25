@@ -1,0 +1,24 @@
+{
+  "is_final": null,
+  "parent": "dir_7349e89ef19c117195f8e371603e1b1f",
+  "parentGroup": null,
+  "id": "_apogee_s_q212_8h",
+  "kind": "file",
+  "name": "ApogeeSQ212.h",
+  "url": "_apogee_s_q212_8h.html",
+  "brief": "Contains the <a href=\"class_apogee_s_q212.html\" class=\"m-doc\">ApogeeSQ212</a> sensor subclass and the variable subclasses <a href=\"class_apogee_s_q212___p_a_r.html\" class=\"m-doc\">ApogeeSQ212_<wbr />PAR</a> and <a href=\"class_apogee_s_q212___voltage.html\" class=\"m-doc\">ApogeeSQ212_<wbr />Voltage</a>.",
+  "has_details": true,
+  "children": [
+    "sensor-variable-counts",
+    "configuration-defines",
+    "sensor-timing",
+    "par",
+    "voltage"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "ApogeeSQ212.h"
+}

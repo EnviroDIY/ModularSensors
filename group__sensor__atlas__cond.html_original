@@ -2,9 +2,34 @@
 <html lang="en-US">
 <head>
   <meta charset="UTF-8" />
-  <title>Supported Sensors &raquo; Atlas Scientific EZO Circuits &raquo; Atlas EZO-EC topic | ModularSensors0.36.0</title>
+  <title>Supported Sensors &raquo; Atlas Scientific EZO Circuits &raquo; Atlas EZO-EC topic | ModularSensors0.37.0</title>
   <link rel="stylesheet" href="m-EnviroDIY+documentation.compiled.css" />
 
+<!-- clean talk scripts -->
+<!-- clean talk scripts -->
+<!-- clean talk scripts -->
+<!-- clean talk scripts -->
+<!-- clean talk scripts -->
+<!-- emoji scripts -->
+<!-- emoji scripts -->
+<!-- emoji scripts -->
+<!-- emoji scripts -->
+<!-- emoji scripts -->
+<!-- highlighter stylesheet -->
+<!-- highlighter stylesheet -->
+<!-- highlighter stylesheet -->
+<!-- highlighter stylesheet -->
+<!-- highlighter stylesheet -->
+<!-- post query stylesheets -->
+<!-- post query stylesheets -->
+<!-- post query stylesheets -->
+<!-- post query stylesheets -->
+<!-- post query stylesheets -->
+<!-- emoji in-line css -->
+<!-- emoji in-line css -->
+<!-- emoji in-line css -->
+<!-- emoji in-line css -->
+<!-- emoji in-line css -->
 <style id="wp-emoji-styles-inline-css" type="text/css">
   img.wp-smiley,
   img.emoji {
@@ -19,10 +44,517 @@
     padding: 0 !important;
   }
 </style>
+<!-- block stylesheets -->
+<!-- block stylesheets -->
+<!-- block stylesheets -->
+<!-- block stylesheets -->
+<!-- block stylesheets -->
+<link
+  rel="stylesheet"
+  id="wp-block-library-css"
+  href="https://www.envirodiy.org/wp-includes/css/dist/block-library/style.min.css?ver=6.8.1"
+  type="text/css"
+  media="all"
+/>
+<style id="classic-theme-styles-inline-css" type="text/css">
+  /*! This file is auto-generated */
+  .wp-block-button__link {
+    color: #fff;
+    background-color: #32373c;
+    border-radius: 9999px;
+    box-shadow: none;
+    text-decoration: none;
+    padding: calc(0.667em + 2px) calc(1.333em + 2px);
+    font-size: 1.125em;
+  }
+  .wp-block-file__button {
+    background: #32373c;
+    color: #fff;
+    text-decoration: none;
+  }
+</style>
+<!-- buddypress stylesheets -->
+<!-- buddypress stylesheets -->
+<!-- buddypress stylesheets -->
+<!-- buddypress stylesheets -->
+<!-- buddypress stylesheets -->
+<!-- heroic knowledge base stylesheets -->
+<!-- heroic knowledge base stylesheets -->
+<!-- heroic knowledge base stylesheets -->
+<!-- heroic knowledge base stylesheets -->
+<!-- heroic knowledge base stylesheets -->
+<!-- word press stylesheets -->
+<!-- word press stylesheets -->
+<!-- word press stylesheets -->
+<!-- word press stylesheets -->
+<!-- word press stylesheets -->
+<link
+  rel="stylesheet"
+  id="wp-components-css"
+  href="https://www.envirodiy.org/wp-includes/css/dist/components/style.min.css?ver=6.8.1"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="wp-preferences-css"
+  href="https://www.envirodiy.org/wp-includes/css/dist/preferences/style.min.css?ver=6.8.1"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="wp-block-editor-css"
+  href="https://www.envirodiy.org/wp-includes/css/dist/block-editor/style.min.css?ver=6.8.1"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="wp-reusable-blocks-css"
+  href="https://www.envirodiy.org/wp-includes/css/dist/reusable-blocks/style.min.css?ver=6.8.1"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="wp-patterns-css"
+  href="https://www.envirodiy.org/wp-includes/css/dist/patterns/style.min.css?ver=6.8.1"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="wp-editor-css"
+  href="https://www.envirodiy.org/wp-includes/css/dist/editor/style.min.css?ver=6.8.1"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="ht-formatting-blocks-modules-styles-css"
+  href="https://www.envirodiy.org/wp-content/plugins/ht-knowledge-base/formatting-blocks/dist/css/ht-formatting-blocks-modules-styles.css?ver=4.0.0"
+  type="text/css"
+  media="all"
+/>
+<!-- word press stylesheets -->
+<!-- word press stylesheets -->
+<!-- word press stylesheets -->
+<!-- word press stylesheets -->
+<!-- word press stylesheets -->
+<link
+  rel="stylesheet"
+  id="wp-components-css"
+  href="https://www.envirodiy.org/wp-includes/css/dist/components/style.min.css?ver=6.8.1"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="wp-preferences-css"
+  href="https://www.envirodiy.org/wp-includes/css/dist/preferences/style.min.css?ver=6.8.1"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="wp-block-editor-css"
+  href="https://www.envirodiy.org/wp-includes/css/dist/block-editor/style.min.css?ver=6.8.1"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="wp-reusable-blocks-css"
+  href="https://www.envirodiy.org/wp-includes/css/dist/reusable-blocks/style.min.css?ver=6.8.1"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="wp-patterns-css"
+  href="https://www.envirodiy.org/wp-includes/css/dist/patterns/style.min.css?ver=6.8.1"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="wp-editor-css"
+  href="https://www.envirodiy.org/wp-includes/css/dist/editor/style.min.css?ver=6.8.1"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="ht-formatting-blocks-modules-styles-css"
+  href="https://www.envirodiy.org/wp-content/plugins/ht-knowledge-base/formatting-blocks/dist/css/ht-formatting-blocks-modules-styles.css?ver=4.0.0"
+  type="text/css"
+  media="all"
+/>
+<!-- word press global inline styles -->
+<!-- word press global inline styles -->
+<!-- word press global inline styles -->
+<!-- word press global inline styles -->
+<!-- word press global inline styles -->
+<style id="global-styles-inline-css" type="text/css">
+  :root {
+    --wp--preset--aspect-ratio--square: 1;
+    --wp--preset--aspect-ratio--4-3: 4/3;
+    --wp--preset--aspect-ratio--3-4: 3/4;
+    --wp--preset--aspect-ratio--3-2: 3/2;
+    --wp--preset--aspect-ratio--2-3: 2/3;
+    --wp--preset--aspect-ratio--16-9: 16/9;
+    --wp--preset--aspect-ratio--9-16: 9/16;
+    --wp--preset--color--black: #000000;
+    --wp--preset--color--cyan-bluish-gray: #abb8c3;
+    --wp--preset--color--white: #ffffff;
+    --wp--preset--color--pale-pink: #f78da7;
+    --wp--preset--color--vivid-red: #cf2e2e;
+    --wp--preset--color--luminous-vivid-orange: #ff6900;
+    --wp--preset--color--luminous-vivid-amber: #fcb900;
+    --wp--preset--color--light-green-cyan: #7bdcb5;
+    --wp--preset--color--vivid-green-cyan: #00d084;
+    --wp--preset--color--pale-cyan-blue: #8ed1fc;
+    --wp--preset--color--vivid-cyan-blue: #0693e3;
+    --wp--preset--color--vivid-purple: #9b51e0;
+    --wp--preset--gradient--vivid-cyan-blue-to-vivid-purple: linear-gradient(
+      135deg,
+      rgba(6, 147, 227, 1) 0%,
+      rgb(155, 81, 224) 100%
+    );
+    --wp--preset--gradient--light-green-cyan-to-vivid-green-cyan: linear-gradient(
+      135deg,
+      rgb(122, 220, 180) 0%,
+      rgb(0, 208, 130) 100%
+    );
+    --wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange: linear-gradient(
+      135deg,
+      rgba(252, 185, 0, 1) 0%,
+      rgba(255, 105, 0, 1) 100%
+    );
+    --wp--preset--gradient--luminous-vivid-orange-to-vivid-red: linear-gradient(
+      135deg,
+      rgba(255, 105, 0, 1) 0%,
+      rgb(207, 46, 46) 100%
+    );
+    --wp--preset--gradient--very-light-gray-to-cyan-bluish-gray: linear-gradient(
+      135deg,
+      rgb(238, 238, 238) 0%,
+      rgb(169, 184, 195) 100%
+    );
+    --wp--preset--gradient--cool-to-warm-spectrum: linear-gradient(
+      135deg,
+      rgb(74, 234, 220) 0%,
+      rgb(151, 120, 209) 20%,
+      rgb(207, 42, 186) 40%,
+      rgb(238, 44, 130) 60%,
+      rgb(251, 105, 98) 80%,
+      rgb(254, 248, 76) 100%
+    );
+    --wp--preset--gradient--blush-light-purple: linear-gradient(
+      135deg,
+      rgb(255, 206, 236) 0%,
+      rgb(152, 150, 240) 100%
+    );
+    --wp--preset--gradient--blush-bordeaux: linear-gradient(
+      135deg,
+      rgb(254, 205, 165) 0%,
+      rgb(254, 45, 45) 50%,
+      rgb(107, 0, 62) 100%
+    );
+    --wp--preset--gradient--luminous-dusk: linear-gradient(
+      135deg,
+      rgb(255, 203, 112) 0%,
+      rgb(199, 81, 192) 50%,
+      rgb(65, 88, 208) 100%
+    );
+    --wp--preset--gradient--pale-ocean: linear-gradient(
+      135deg,
+      rgb(255, 245, 203) 0%,
+      rgb(182, 227, 212) 50%,
+      rgb(51, 167, 181) 100%
+    );
+    --wp--preset--gradient--electric-grass: linear-gradient(
+      135deg,
+      rgb(202, 248, 128) 0%,
+      rgb(113, 206, 126) 100%
+    );
+    --wp--preset--gradient--midnight: linear-gradient(
+      135deg,
+      rgb(2, 3, 129) 0%,
+      rgb(40, 116, 252) 100%
+    );
+    --wp--preset--font-size--small: 13px;
+    --wp--preset--font-size--medium: 20px;
+    --wp--preset--font-size--large: 36px;
+    --wp--preset--font-size--x-large: 42px;
+    --wp--preset--spacing--20: 0.44rem;
+    --wp--preset--spacing--30: 0.67rem;
+    --wp--preset--spacing--40: 1rem;
+    --wp--preset--spacing--50: 1.5rem;
+    --wp--preset--spacing--60: 2.25rem;
+    --wp--preset--spacing--70: 3.38rem;
+    --wp--preset--spacing--80: 5.06rem;
+    --wp--preset--shadow--natural: 6px 6px 9px rgba(0, 0, 0, 0.2);
+    --wp--preset--shadow--deep: 12px 12px 50px rgba(0, 0, 0, 0.4);
+    --wp--preset--shadow--sharp: 6px 6px 0px rgba(0, 0, 0, 0.2);
+    --wp--preset--shadow--outlined: 6px 6px 0px -3px rgba(255, 255, 255, 1),
+      6px 6px rgba(0, 0, 0, 1);
+    --wp--preset--shadow--crisp: 6px 6px 0px rgba(0, 0, 0, 1);
+  }
+  :where(.is-layout-flex) {
+    gap: 0.5em;
+  }
+  :where(.is-layout-grid) {
+    gap: 0.5em;
+  }
+  body .is-layout-flex {
+    display: flex;
+  }
+  .is-layout-flex {
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .is-layout-flex > :is(*, div) {
+    margin: 0;
+  }
+  body .is-layout-grid {
+    display: grid;
+  }
+  .is-layout-grid > :is(*, div) {
+    margin: 0;
+  }
+  :where(.wp-block-columns.is-layout-flex) {
+    gap: 2em;
+  }
+  :where(.wp-block-columns.is-layout-grid) {
+    gap: 2em;
+  }
+  :where(.wp-block-post-template.is-layout-flex) {
+    gap: 1.25em;
+  }
+  :where(.wp-block-post-template.is-layout-grid) {
+    gap: 1.25em;
+  }
+  .has-black-color {
+    color: var(--wp--preset--color--black) !important;
+  }
+  .has-cyan-bluish-gray-color {
+    color: var(--wp--preset--color--cyan-bluish-gray) !important;
+  }
+  .has-white-color {
+    color: var(--wp--preset--color--white) !important;
+  }
+  .has-pale-pink-color {
+    color: var(--wp--preset--color--pale-pink) !important;
+  }
+  .has-vivid-red-color {
+    color: var(--wp--preset--color--vivid-red) !important;
+  }
+  .has-luminous-vivid-orange-color {
+    color: var(--wp--preset--color--luminous-vivid-orange) !important;
+  }
+  .has-luminous-vivid-amber-color {
+    color: var(--wp--preset--color--luminous-vivid-amber) !important;
+  }
+  .has-light-green-cyan-color {
+    color: var(--wp--preset--color--light-green-cyan) !important;
+  }
+  .has-vivid-green-cyan-color {
+    color: var(--wp--preset--color--vivid-green-cyan) !important;
+  }
+  .has-pale-cyan-blue-color {
+    color: var(--wp--preset--color--pale-cyan-blue) !important;
+  }
+  .has-vivid-cyan-blue-color {
+    color: var(--wp--preset--color--vivid-cyan-blue) !important;
+  }
+  .has-vivid-purple-color {
+    color: var(--wp--preset--color--vivid-purple) !important;
+  }
+  .has-black-background-color {
+    background-color: var(--wp--preset--color--black) !important;
+  }
+  .has-cyan-bluish-gray-background-color {
+    background-color: var(--wp--preset--color--cyan-bluish-gray) !important;
+  }
+  .has-white-background-color {
+    background-color: var(--wp--preset--color--white) !important;
+  }
+  .has-pale-pink-background-color {
+    background-color: var(--wp--preset--color--pale-pink) !important;
+  }
+  .has-vivid-red-background-color {
+    background-color: var(--wp--preset--color--vivid-red) !important;
+  }
+  .has-luminous-vivid-orange-background-color {
+    background-color: var(--wp--preset--color--luminous-vivid-orange) !important;
+  }
+  .has-luminous-vivid-amber-background-color {
+    background-color: var(--wp--preset--color--luminous-vivid-amber) !important;
+  }
+  .has-light-green-cyan-background-color {
+    background-color: var(--wp--preset--color--light-green-cyan) !important;
+  }
+  .has-vivid-green-cyan-background-color {
+    background-color: var(--wp--preset--color--vivid-green-cyan) !important;
+  }
+  .has-pale-cyan-blue-background-color {
+    background-color: var(--wp--preset--color--pale-cyan-blue) !important;
+  }
+  .has-vivid-cyan-blue-background-color {
+    background-color: var(--wp--preset--color--vivid-cyan-blue) !important;
+  }
+  .has-vivid-purple-background-color {
+    background-color: var(--wp--preset--color--vivid-purple) !important;
+  }
+  .has-black-border-color {
+    border-color: var(--wp--preset--color--black) !important;
+  }
+  .has-cyan-bluish-gray-border-color {
+    border-color: var(--wp--preset--color--cyan-bluish-gray) !important;
+  }
+  .has-white-border-color {
+    border-color: var(--wp--preset--color--white) !important;
+  }
+  .has-pale-pink-border-color {
+    border-color: var(--wp--preset--color--pale-pink) !important;
+  }
+  .has-vivid-red-border-color {
+    border-color: var(--wp--preset--color--vivid-red) !important;
+  }
+  .has-luminous-vivid-orange-border-color {
+    border-color: var(--wp--preset--color--luminous-vivid-orange) !important;
+  }
+  .has-luminous-vivid-amber-border-color {
+    border-color: var(--wp--preset--color--luminous-vivid-amber) !important;
+  }
+  .has-light-green-cyan-border-color {
+    border-color: var(--wp--preset--color--light-green-cyan) !important;
+  }
+  .has-vivid-green-cyan-border-color {
+    border-color: var(--wp--preset--color--vivid-green-cyan) !important;
+  }
+  .has-pale-cyan-blue-border-color {
+    border-color: var(--wp--preset--color--pale-cyan-blue) !important;
+  }
+  .has-vivid-cyan-blue-border-color {
+    border-color: var(--wp--preset--color--vivid-cyan-blue) !important;
+  }
+  .has-vivid-purple-border-color {
+    border-color: var(--wp--preset--color--vivid-purple) !important;
+  }
+  .has-vivid-cyan-blue-to-vivid-purple-gradient-background {
+    background: var(--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple) !important;
+  }
+  .has-light-green-cyan-to-vivid-green-cyan-gradient-background {
+    background: var(
+      --wp--preset--gradient--light-green-cyan-to-vivid-green-cyan
+    ) !important;
+  }
+  .has-luminous-vivid-amber-to-luminous-vivid-orange-gradient-background {
+    background: var(
+      --wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange
+    ) !important;
+  }
+  .has-luminous-vivid-orange-to-vivid-red-gradient-background {
+    background: var(
+      --wp--preset--gradient--luminous-vivid-orange-to-vivid-red
+    ) !important;
+  }
+  .has-very-light-gray-to-cyan-bluish-gray-gradient-background {
+    background: var(
+      --wp--preset--gradient--very-light-gray-to-cyan-bluish-gray
+    ) !important;
+  }
+  .has-cool-to-warm-spectrum-gradient-background {
+    background: var(--wp--preset--gradient--cool-to-warm-spectrum) !important;
+  }
+  .has-blush-light-purple-gradient-background {
+    background: var(--wp--preset--gradient--blush-light-purple) !important;
+  }
+  .has-blush-bordeaux-gradient-background {
+    background: var(--wp--preset--gradient--blush-bordeaux) !important;
+  }
+  .has-luminous-dusk-gradient-background {
+    background: var(--wp--preset--gradient--luminous-dusk) !important;
+  }
+  .has-pale-ocean-gradient-background {
+    background: var(--wp--preset--gradient--pale-ocean) !important;
+  }
+  .has-electric-grass-gradient-background {
+    background: var(--wp--preset--gradient--electric-grass) !important;
+  }
+  .has-midnight-gradient-background {
+    background: var(--wp--preset--gradient--midnight) !important;
+  }
+  .has-small-font-size {
+    font-size: var(--wp--preset--font-size--small) !important;
+  }
+  .has-medium-font-size {
+    font-size: var(--wp--preset--font-size--medium) !important;
+  }
+  .has-large-font-size {
+    font-size: var(--wp--preset--font-size--large) !important;
+  }
+  .has-x-large-font-size {
+    font-size: var(--wp--preset--font-size--x-large) !important;
+  }
+  :where(.wp-block-post-template.is-layout-flex) {
+    gap: 1.25em;
+  }
+  :where(.wp-block-post-template.is-layout-grid) {
+    gap: 1.25em;
+  }
+  :where(.wp-block-columns.is-layout-flex) {
+    gap: 2em;
+  }
+  :where(.wp-block-columns.is-layout-grid) {
+    gap: 2em;
+  }
+  :root :where(.wp-block-pullquote) {
+    font-size: 1.5em;
+    line-height: 1.6;
+  }
+</style>
+<!-- more buddy press stylesheets -->
+<!-- more buddy press stylesheets -->
+<!-- more buddy press stylesheets -->
+<!-- more buddy press stylesheets -->
+<!-- more buddy press stylesheets -->
+<!-- cleantalk stylesheets -->
+<!-- cleantalk stylesheets -->
+<!-- cleantalk stylesheets -->
+<!-- cleantalk stylesheets -->
+<!-- cleantalk stylesheets -->
+<!-- woocommerce stylesheets -->
+<!-- woocommerce stylesheets -->
+<!-- woocommerce stylesheets -->
+<!-- woocommerce stylesheets -->
+<!-- woocommerce stylesheets -->
+<!-- more stylesheets -->
+<!-- more stylesheets -->
+<!-- more stylesheets -->
+<!-- more stylesheets -->
+<!-- more stylesheets -->
+<link
+  rel="stylesheet"
+  id="dashicons-css"
+  href="https://www.envirodiy.org/wp-includes/css/dashicons.min.css?ver=6.8.1"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="brands-styles-css"
+  href="https://www.envirodiy.org/wp-content/plugins/woocommerce/assets/css/brands.css?ver=9.9.5"
+  type="text/css"
+  media="all"
+/>
 <link
   rel="stylesheet"
   id="gp-parent-style-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/style.css?ver=6.5.4"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/style.css?ver=6.8.1"
   type="text/css"
   media="all"
 />
@@ -30,6 +562,13 @@
   rel="stylesheet"
   id="redux-extendify-styles-css"
   href="https://www.envirodiy.org/wp-content/themes/socialize/lib/framework/redux/assets/css/extendify-utilities.css?ver=4.4.11"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="ghostpool-style-css"
+  href="https://www.envirodiy.org/wp-content/themes/socialize-child/style.css?ver=6.8.1"
   type="text/css"
   media="all"
 />
@@ -139,27 +678,121 @@
 <link
   rel="stylesheet"
   id="fontawesome-css"
-  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/fonts/font-awesome/css/font-awesome.min.css?ver=6.5.4"
+  href="https://www.envirodiy.org/wp-content/themes/socialize/lib/fonts/font-awesome/css/font-awesome.min.css?ver=6.8.1"
   type="text/css"
   media="all"
 />
 <link
-  rel="preload"
-  as="style"
-  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
+  rel="stylesheet"
+  id="prettyphoto-css"
+  href="https://www.envirodiy.org/wp-content/plugins/js_composer/assets/lib/vendor/prettyphoto/css/prettyPhoto.min.css?ver=8.5"
+  type="text/css"
+  media="all"
 />
 <link
   rel="stylesheet"
-  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
+  id="mediaelement-css"
+  href="https://www.envirodiy.org/wp-includes/js/mediaelement/mediaelementplayer-legacy.min.css?ver=4.2.17"
+  type="text/css"
+  media="all"
+/>
+<link
+  rel="stylesheet"
+  id="wp-mediaelement-css"
+  href="https://www.envirodiy.org/wp-includes/js/mediaelement/wp-mediaelement.min.css?ver=6.8.1"
+  type="text/css"
+  media="all"
+/>
+<!-- more buddy press and woo commerce stylesheets -->
+<!-- more buddy press and woo commerce stylesheets -->
+<!-- more buddy press and woo commerce stylesheets -->
+<!-- more buddy press and woo commerce stylesheets -->
+<!-- more buddy press and woo commerce stylesheets -->
+<!-- google font stylesheets -->
+<!-- google font stylesheets -->
+<!-- google font stylesheets -->
+<!-- google font stylesheets -->
+<!-- google font stylesheets -->
+<link
+  rel="preload"
+  as="style"
+  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.7.1"
+/>
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.7.1"
   media="print"
   onload="this.media='all'"
 />
 <noscript
   ><link
     rel="stylesheet"
-    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.5.4"
+    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500%7CRoboto%20Slab:400&#038;subset=latin&#038;display=swap&#038;ver=6.7.1"
 /></noscript>
-
+<!-- jquery -->
+<!-- jquery -->
+<!-- jquery -->
+<!-- jquery -->
+<!-- jquery -->
+<script
+  type="text/javascript"
+  src="https://www.envirodiy.org/wp-includes/js/jquery/jquery.min.js?ver=3.7.1"
+  id="jquery-core-js"
+></script>
+<script
+  type="text/javascript"
+  src="https://www.envirodiy.org/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.4.1"
+  id="jquery-migrate-js"
+></script>
+<!-- buddy press scripts -->
+<!-- buddy press scripts -->
+<!-- buddy press scripts -->
+<!-- buddy press scripts -->
+<!-- buddy press scripts -->
+<!-- woo commerce scripts -->
+<!-- woo commerce scripts -->
+<!-- woo commerce scripts -->
+<!-- woo commerce scripts -->
+<!-- woo commerce scripts -->
+<!-- woo commerce scripts -->
+<!-- more inclusions -->
+<!-- more inclusions -->
+<!-- more inclusions -->
+<!-- more inclusions -->
+<!-- more inclusions -->
+<!-- HKB CSS Variables -->
+<!-- HKB CSS Variables -->
+<!-- HKB CSS Variables -->
+<!-- HKB CSS Variables -->
+<!-- HKB CSS Variables -->
+<!-- Google tag (gtag.js) -->
+<!-- Google tag (gtag.js) -->
+<!-- Google tag (gtag.js) -->
+<!-- Google tag (gtag.js) -->
+<!-- Google tag (gtag.js) -->
+<!-- images and wp-custom-css -->
+<!-- images and wp-custom-css -->
+<!-- images and wp-custom-css -->
+<!-- images and wp-custom-css -->
+<!-- images and wp-custom-css -->
+<link
+  rel="icon"
+  href="https://www.envirodiy.org/wp-content/uploads/2016/05/cropped-EnviroDIY_LogoMaster_TrueSquare_V5_TwoTree_Trans_notext-32x32.png"
+  sizes="32x32"
+/>
+<link
+  rel="icon"
+  href="https://www.envirodiy.org/wp-content/uploads/2016/05/cropped-EnviroDIY_LogoMaster_TrueSquare_V5_TwoTree_Trans_notext-192x192.png"
+  sizes="192x192"
+/>
+<link
+  rel="apple-touch-icon"
+  href="https://www.envirodiy.org/wp-content/uploads/2016/05/cropped-EnviroDIY_LogoMaster_TrueSquare_V5_TwoTree_Trans_notext-180x180.png"
+/>
+<meta
+  name="msapplication-TileImage"
+  content="https://www.envirodiy.org/wp-content/uploads/2016/05/cropped-EnviroDIY_LogoMaster_TrueSquare_V5_TwoTree_Trans_notext-270x270.png"
+/>
 <style type="text/css" id="wp-custom-css">
   /* Print Styles */
   @media print {
@@ -267,31 +900,6 @@
     font-weight: 400;
     text-decoration: underline;
   }
-  /*BuddyPress styles*/
-  /*Make activity feed content darker*/
-  #buddypress .activity-list .activity-content .activity-inner p {
-    color: #000000;
-  }
-  /*Hide activity filter on activity page*/
-  #activity-filter-select.last {
-    display: none !important;
-  }
-  /*Hide disabled BuddyPress status updates on profile page, activity page*/
-  #latest-update {
-    display: none;
-  }
-  .item-title .update {
-    display: none;
-  }
-  /*Prevent display of comment/favorite links in activity stream. Because the comments do not get applied to posts or forum topics, they just confuse users*/
-  .gp-theme #buddypress .activity-list div.activity-meta a.button,
-  .gp-theme #buddypress .activity .acomment-options a,
-  .gp-theme #buddypress .activity-list li.load-newest a,
-  .widget.buddypress div.item-options a.selected {
-    color: #26a9e0;
-    display: none;
-  }
-  /*End BuddyPress styles*/
   /* Style print link */
   .pdfprnt-buttons > a > span {
     margin: 15px 0;
@@ -330,64 +938,11 @@
   tr:last-child td {
     border-width: 1px;
   }
-  /*bbPress*/
-  /* Make forum title and description larger, remove link underlining */
-  div.bbp-forum-content {
-    font-size: 22px;
-    line-height: 28px;
-  }
-  div.bbp-forum-content p {
-    font-size: 16px;
-    line-height: 22px;
-  }
-  #bbpress-forums a.bbp-forum-title {
-    text-decoration: none;
-  }
-  .widgettitle {
-    border-bottom: 3px solid #92d050 !important;
-  }
-  .bbp-author-name {
-    font-size: 14px;
-  }
-  /*End bbpress styles*/
   #gp-copyright-text,
   #gp-copyright-text a:link,
   #gp-copyright-text a:visited {
     color: #fff;
     font-weight: 400;
-  }
-  /*WooCommerce styles*/
-  bdi {
-    color: #538122;
-    font-weight: 500;
-  }
-  a.button.product_type_simple {
-    display: none;
-  }
-  p.stock.out-of-stock {
-    color: red;
-    font-weight: 500;
-  }
-  .products li * {
-    text-decoration: none !important;
-  }
-  div.gp-entry-cats {
-    color: #333333;
-  }
-  span.woocommerce-Price-amount.amount {
-    text-decoration: none !important;
-  }
-  /* Hide additional information tab */
-  div.woocommerce-tabs {
-    display: none !important;
-  }
-  /*End WooCommerce styles*/
-  /*The Events Calendar*/
-  #tribe-events-content a {
-    color: #0579bd;
-  }
-  #tribe-events-content .wp-block-button__link {
-    color: #ffffff;
   }
   #gp-sidebar-right
     > div
@@ -1201,11 +1756,18 @@
     color: #ffffff;
   }
 </style>
+<!-- other header scripts -->
+<!-- other header scripts -->
+<!-- other header scripts -->
+<!-- other header scripts -->
+<!-- other header scripts -->
   <link rel="icon" href="MS_FavIcon.png" type="image/png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#cb4b16" />
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script type="text/javascript" src="clipboard.js"></script>
+  <script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
 </head>
 
 <body
@@ -1277,39 +1839,9 @@
         </ul>
       </li>
       <li
-        class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
-      >
-<a href="page_faq.html" class="menu-link main-menu-link">FAQs</a>        <ul class="sub-menu menu-odd menu-depth-1">
-          <li
-            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
-          >
-<a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>          </li>
-          <li
-            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
-          >
-<a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>          </li>
-          <li
-            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
-          >
-<a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>          </li>
-          <li
-            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
-          >
-<a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>          </li>
-          <li
-            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
-          >
-<a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>          </li>
-          <li
-            class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
-          >
-<a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>          </li>
-        </ul>
-      </li>
-      <li
         class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
       >
-<a href="topics.html" class="menu-link main-menu-link">Topics</a>      </li>
+<a href="topics.html" class="menu-link main-menu-link">Modules</a>      </li>
       <li
         class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
       >
@@ -1335,24 +1867,24 @@
     <header id="gp-main-header">
       <div class="gp-container">
         <div id="gp-logo">
-          <a href="index.html" title="ModularSensors 0.36.0">
+          <a href="index.html" title="ModularSensors 0.37.0">
             <img
               src="gp-desktop-logo.png"
-              alt="ModularSensors 0.36.0"
+              alt="ModularSensors 0.37.0"
               width="200"
               height="42"
               class="gp-desktop-logo"
             />
             <img
               src="gp-scrolling-logo.png"
-              alt="ModularSensors 0.36.0"
+              alt="ModularSensors 0.37.0"
               width="264"
               height="55"
               class="gp-scrolling-logo"
             />
             <img
               src="gp-mobile-logo.png"
-              alt="ModularSensors 0.36.0"
+              alt="ModularSensors 0.37.0"
               width="132"
               height="28"
               class="gp-mobile-logo"
@@ -1426,39 +1958,9 @@
                 </ul>
               </li>
               <li
-                class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"
-              >
-<a href="page_faq.html" class="menu-link main-menu-link" >FAQs</a>                <ul class="sub-menu menu-odd menu-depth-1">
-                  <li
-                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
-                  >
-<a class="menu-link sub-menu-link" href="page_processor_compatibility.html">Processor Compatibility</a>                  </li>
-                  <li
-                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
-                  >
-<a class="menu-link sub-menu-link" href="page_arduino_streams.html">Notes on Arduino Streams and Software Serial</a>                  </li>
-                  <li
-                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
-                  >
-<a class="menu-link sub-menu-link" href="page_power_parasites.html">Power Draw over Data Lines</a>                  </li>
-                  <li
-                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
-                  >
-<a class="menu-link sub-menu-link" href="page_memory_use.html">Decreasing Memory Footprint</a>                  </li>
-                  <li
-                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
-                  >
-<a class="menu-link sub-menu-link" href="page_code_debugging.html">In-Library Debugging</a>                  </li>
-                  <li
-                    class="gp-standard-menu gp-menu-link gp-show-all sub-menu-item menu-item-odd menu-item-depth-1 menu-item menu-item-type-post_type menu-item-object-page"
-                  >
-<a class="menu-link sub-menu-link" href="page_for_developers.html">Developer Setup</a>                  </li>
-                </ul>
-              </li>
-              <li
                 class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
               >
-<a href="topics.html"class="menu-link main-menu-link">Topics</a>              </li>
+<a href="topics.html"class="menu-link main-menu-link">Modules</a>              </li>
               <li
                 class="gp-standard-menu gp-columns-1 gp-show-all main-menu-item menu-item-even menu-item-depth-0 menu-item menu-item-type-post_type menu-item-object-page"
               >
@@ -1626,69 +2128,69 @@
             </li>
           </ul>
         </nav>
-          <p>Classes for the Atlas Scientific EZO-EC conductivity circuit and probes.</p><p>The Atlas Scientifc Conductivity sensor outputs raw conductivity, TDS, salinity, and specific gravity</p><ul><li>Accuracy is ± 2%</li><li>Range is 0.07 − 500,000+ μS/cm</li><li>Resolution is 3 decimal places</li></ul><aside class="m-note m-info"><h4>Note</h4><p>This library <em>DOES NOT</em> support using the built-in temperature compensation for conductivity. The returned result is conductivity, not the more typically reported specific. If you need specific conductance, you should calculate it separately, as shown in the example code below.</p></aside><section id="sensor_atlas_cond_datasheet"><h2>Sensor Datasheet</h2><ul><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_EZO_Datasheet.pdf">Circuit Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_0.1_probe.pdf">K0.1 Probe Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_1.0_probe.pdf">K1.0 Probe Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_10_probe.pdf">K10 Probe Datasheet</a></li></ul></section><section id="sensor_atlas_cond_ctor"><h2>Sensor Constructors</h2><p>{{ <a href="class_atlas_scientific_e_c.html#ac6755ba4cd3de3c492c0aba8ee2aa4fd" class="m-doc">AtlasScientificEC::<wbr />AtlasScientificEC(int8_t, uint8_t, uint8_t)</a> }} {{ <a href="class_atlas_scientific_e_c.html#a9b1691863ebf8b1521f16965e1462043" class="m-doc">AtlasScientificEC::<wbr />AtlasScientificEC(TwoWire*, int8_t, uint8_t, uint8_t)</a> }}</p><hr/></section><section id="sensor_atlas_cond_examples"><h2>Example Code</h2><p>The Atlas conductivity sensor is used in the <a href="example_menu.html#menu_walk_atlas_scientific_ec" class="m-doc">menu a la carte</a> example.</p><div class="m-code-arduino"><div class="highlight"><div class="line"><a id="l-1" name="l-1"></a><span class="linenos"> 1</span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensors/AtlasScientificEC.h&gt;</span>
-</div><div class="line"><a id="l-2" name="l-2"></a><span class="linenos"> 2</span>
-</div><div class="line"><a id="l-3" name="l-3"></a><span class="linenos"> 3</span><span class="c1">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>
-</div><div class="line"><a id="l-4" name="l-4"></a><span class="linenos"> 4</span><span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">AtlasECPower</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">sensorPowerPin</span><span class="p">;</span><span class="w">  </span><span class="c1">// Power pin</span>
-</div><div class="line"><a id="l-5" name="l-5"></a><span class="linenos"> 5</span><span class="kr">uint8_t</span><span class="w">      </span><span class="n">AtlasECi2c_addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x64</span><span class="p">;</span><span class="w">            </span><span class="c1">// Default for EC is 0x64 (100)</span>
-</div><div class="line"><a id="l-6" name="l-6"></a><span class="linenos"> 6</span><span class="c1">// All Atlas sensors have different default I2C addresses, but any of them can</span>
-</div><div class="line"><a id="l-7" name="l-7"></a><span class="linenos"> 7</span><span class="c1">// be re-addressed to any 8 bit number.  If using the default address for any</span>
-</div><div class="line"><a id="l-8" name="l-8"></a><span class="linenos"> 8</span><span class="c1">// Atlas Scientific sensor, you may omit this argument.</span>
-</div><div class="line"><a id="l-9" name="l-9"></a><span class="linenos"> 9</span>
-</div><div class="line"><a id="l-10" name="l-10"></a><span class="linenos">10</span><span class="c1">// Create an Atlas Scientific Conductivity sensor object</span>
-</div><div class="line"><a id="l-11" name="l-11"></a><span class="linenos">11</span><span class="c1">// AtlasScientificEC atlasEC(AtlasECPower, AtlasECi2c_addr);</span>
-</div><div class="line"><a id="l-12" name="l-12"></a><span class="linenos">12</span><span class="n">AtlasScientificEC</span><span class="w"> </span><span class="nf">atlasEC</span><span class="p">(</span><span class="n">AtlasECPower</span><span class="p">);</span>
-</div><div class="line"><a id="l-13" name="l-13"></a><span class="linenos">13</span>
-</div><div class="line"><a id="l-14" name="l-14"></a><span class="linenos">14</span><span class="c1">// Create four variable pointers for the EZO-ES</span>
-</div><div class="line"><a id="l-15" name="l-15"></a><span class="linenos">15</span><span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">atlasCond</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">AtlasScientificEC_Cond</span><span class="p">(</span>
-</div><div class="line"><a id="l-16" name="l-16"></a><span class="linenos">16</span><span class="w">    </span><span class="o">&amp;</span><span class="n">atlasEC</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
-</div><div class="line"><a id="l-17" name="l-17"></a><span class="linenos">17</span><span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">atlasTDS</span><span class="w"> </span><span class="o">=</span>
-</div><div class="line"><a id="l-18" name="l-18"></a><span class="linenos">18</span><span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">AtlasScientificEC_TDS</span><span class="p">(</span><span class="o">&amp;</span><span class="n">atlasEC</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
-</div><div class="line"><a id="l-19" name="l-19"></a><span class="linenos">19</span><span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">atlasSal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">AtlasScientificEC_Salinity</span><span class="p">(</span>
-</div><div class="line"><a id="l-20" name="l-20"></a><span class="linenos">20</span><span class="w">    </span><span class="o">&amp;</span><span class="n">atlasEC</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
-</div><div class="line"><a id="l-21" name="l-21"></a><span class="linenos">21</span><span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">atlasGrav</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">AtlasScientificEC_SpecificGravity</span><span class="p">(</span>
-</div><div class="line"><a id="l-22" name="l-22"></a><span class="linenos">22</span><span class="w">    </span><span class="o">&amp;</span><span class="n">atlasEC</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
-</div><div class="line"><a id="l-23" name="l-23"></a><span class="linenos">23</span>
-</div><div class="line"><a id="l-24" name="l-24"></a><span class="linenos">24</span><span class="c1">// Create a calculated variable for the temperature compensated conductivity</span>
-</div><div class="line"><a id="l-25" name="l-25"></a><span class="linenos">25</span><span class="c1">// (that is, the specific conductance).  For this example, we will use the</span>
-</div><div class="line"><a id="l-26" name="l-26"></a><span class="linenos">26</span><span class="c1">// temperature measured by the Atlas RTD above this.  You could use the</span>
-</div><div class="line"><a id="l-27" name="l-27"></a><span class="linenos">27</span><span class="c1">// temperature returned by any other water temperature sensor if desired.</span>
-</div><div class="line"><a id="l-28" name="l-28"></a><span class="linenos">28</span><span class="c1">// **DO NOT** use your logger board temperature (ie, from the DS3231) to</span>
-</div><div class="line"><a id="l-29" name="l-29"></a><span class="linenos">29</span><span class="c1">// calculate specific conductance!</span>
-</div><div class="line"><a id="l-30" name="l-30"></a><span class="linenos">30</span><span class="kr">float</span><span class="w"> </span><span class="nf">calculateAtlasSpCond</span><span class="p">(</span><span class="kr">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</div><div class="line"><a id="l-31" name="l-31"></a><span class="linenos">31</span><span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="n">spCond</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">-9999</span><span class="p">;</span><span class="w">  </span><span class="c1">// Always safest to start with a bad value</span>
-</div><div class="line"><a id="l-32" name="l-32"></a><span class="linenos">32</span><span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="n">waterTemp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">atlasTemp</span><span class="o">-&gt;</span><span class="n">getValue</span><span class="p">();</span>
-</div><div class="line"><a id="l-33" name="l-33"></a><span class="linenos">33</span><span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="n">rawCond</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">atlasCond</span><span class="o">-&gt;</span><span class="n">getValue</span><span class="p">();</span>
-</div><div class="line"><a id="l-34" name="l-34"></a><span class="linenos">34</span><span class="w">    </span><span class="c1">// ^^ Linearized temperature correction coefficient per degrees Celsius.</span>
-</div><div class="line"><a id="l-35" name="l-35"></a><span class="linenos">35</span><span class="w">    </span><span class="c1">// The value of 0.019 comes from measurements reported here:</span>
-</div><div class="line"><a id="l-36" name="l-36"></a><span class="linenos">36</span><span class="w">    </span><span class="c1">// Hayashi M. Temperature-electrical conductivity relation of water for</span>
-</div><div class="line"><a id="l-37" name="l-37"></a><span class="linenos">37</span><span class="w">    </span><span class="c1">// environmental monitoring and geophysical data inversion. Environ Monit</span>
-</div><div class="line"><a id="l-38" name="l-38"></a><span class="linenos">38</span><span class="w">    </span><span class="c1">// Assess. 2004 Aug-Sep;96(1-3):119-28.</span>
-</div><div class="line"><a id="l-39" name="l-39"></a><span class="linenos">39</span><span class="w">    </span><span class="c1">// doi: 10.1023/b:emas.0000031719.83065.68. PMID: 15327152.</span>
-</div><div class="line"><a id="l-40" name="l-40"></a><span class="linenos">40</span><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">waterTemp</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">-9999</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">rawCond</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">-9999</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</div><div class="line"><a id="l-41" name="l-41"></a><span class="linenos">41</span><span class="w">        </span><span class="c1">// make sure both inputs are good</span>
-</div><div class="line"><a id="l-42" name="l-42"></a><span class="linenos">42</span><span class="w">        </span><span class="kr">float</span><span class="w"> </span><span class="n">temperatureCoef</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.019</span><span class="p">;</span>
-</div><div class="line"><a id="l-43" name="l-43"></a><span class="linenos">43</span><span class="w">        </span><span class="n">spCond</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rawCond</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">temperatureCoef</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">waterTemp</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">25.0</span><span class="p">));</span>
-</div><div class="line"><a id="l-44" name="l-44"></a><span class="linenos">44</span><span class="w">    </span><span class="p">}</span>
-</div><div class="line"><a id="l-45" name="l-45"></a><span class="linenos">45</span><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">spCond</span><span class="p">;</span>
-</div><div class="line"><a id="l-46" name="l-46"></a><span class="linenos">46</span><span class="p">}</span>
-</div><div class="line"><a id="l-47" name="l-47"></a><span class="linenos">47</span>
-</div><div class="line"><a id="l-48" name="l-48"></a><span class="linenos">48</span><span class="c1">// Properties of the calculated variable</span>
-</div><div class="line"><a id="l-49" name="l-49"></a><span class="linenos">49</span><span class="c1">// The number of digits after the decimal place</span>
-</div><div class="line"><a id="l-50" name="l-50"></a><span class="linenos">50</span><span class="kr">const</span><span class="w"> </span><span class="kr">uint8_t</span><span class="w"> </span><span class="n">atlasSpCondResolution</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
-</div><div class="line"><a id="l-51" name="l-51"></a><span class="linenos">51</span><span class="c1">// This must be a value from http://vocabulary.odm2.org/variablename/</span>
-</div><div class="line"><a id="l-52" name="l-52"></a><span class="linenos">52</span><span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w"> </span><span class="n">atlasSpCondName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;specificConductance&quot;</span><span class="p">;</span>
-</div><div class="line"><a id="l-53" name="l-53"></a><span class="linenos">53</span><span class="c1">// This must be a value from http://vocabulary.odm2.org/units/</span>
-</div><div class="line"><a id="l-54" name="l-54"></a><span class="linenos">54</span><span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w"> </span><span class="n">atlasSpCondUnit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;microsiemenPerCentimeter&quot;</span><span class="p">;</span>
-</div><div class="line"><a id="l-55" name="l-55"></a><span class="linenos">55</span><span class="c1">// A short code for the variable</span>
-</div><div class="line"><a id="l-56" name="l-56"></a><span class="linenos">56</span><span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w"> </span><span class="n">atlasSpCondCode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;atlasSpCond&quot;</span><span class="p">;</span>
-</div><div class="line"><a id="l-57" name="l-57"></a><span class="linenos">57</span><span class="c1">// The (optional) universallly unique identifier</span>
-</div><div class="line"><a id="l-58" name="l-58"></a><span class="linenos">58</span><span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w"> </span><span class="n">atlasSpCondUUID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">;</span>
-</div><div class="line"><a id="l-59" name="l-59"></a><span class="linenos">59</span>
-</div><div class="line"><a id="l-60" name="l-60"></a><span class="linenos">60</span><span class="c1">// Finally, create the specific conductance variable and return a pointer to it</span>
-</div><div class="line"><a id="l-61" name="l-61"></a><span class="linenos">61</span><span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">atlasSpCond</span><span class="w"> </span><span class="o">=</span>
-</div><div class="line"><a id="l-62" name="l-62"></a><span class="linenos">62</span><span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">Variable</span><span class="p">(</span><span class="n">calculateAtlasSpCond</span><span class="p">,</span><span class="w"> </span><span class="n">atlasSpCondResolution</span><span class="p">,</span><span class="w"> </span><span class="n">atlasSpCondName</span><span class="p">,</span>
-</div><div class="line"><a id="l-63" name="l-63"></a><span class="linenos">63</span><span class="w">                 </span><span class="n">atlasSpCondUnit</span><span class="p">,</span><span class="w"> </span><span class="n">atlasSpCondCode</span><span class="p">,</span><span class="w"> </span><span class="n">atlasSpCondUUID</span><span class="p">);</span>
+          <p>Classes for the Atlas Scientific EZO-EC conductivity circuit and probes.</p><p>The Atlas Scientific Conductivity sensor outputs raw conductivity, TDS, salinity, and specific gravity</p><ul><li>Accuracy is ± 2%</li><li>Range is 0.07 − 500,000+ μS/cm</li><li>Resolution is 3 decimal places</li></ul><aside class="m-note m-info"><h4>Note</h4><p>This library <em>DOES NOT</em> support using the built-in temperature compensation for conductivity. The returned result is conductivity, not the more typically reported specific. If you need specific conductance, you should calculate it separately, as shown in the example code below.</p></aside><section id="sensor_atlas_cond_datasheet"><h2>Sensor Datasheet</h2><ul><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_EZO_Datasheet.pdf">Circuit Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_0.1_probe.pdf">K0.1 Probe Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_1.0_probe.pdf">K1.0 Probe Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_10_probe.pdf">K10 Probe Datasheet</a></li></ul></section><section id="sensor_atlas_cond_ctor"><h2>Sensor Constructors</h2><p>{{ <a href="class_atlas_scientific_e_c.html#ac6755ba4cd3de3c492c0aba8ee2aa4fd" class="m-doc">AtlasScientificEC::<wbr />AtlasScientificEC(int8_t, uint8_t, uint8_t)</a> }} {{ <a href="class_atlas_scientific_e_c.html#a9b1691863ebf8b1521f16965e1462043" class="m-doc">AtlasScientificEC::<wbr />AtlasScientificEC(TwoWire*, int8_t, uint8_t, uint8_t)</a> }}</p><hr/></section><section id="sensor_atlas_cond_examples"><h2>Example Code</h2><p>The Atlas conductivity sensor is used in the <a href="example_menu.html#menu_walk_atlas_scientific_ec" class="m-doc">menu a la carte</a> example.</p><div class="m-code-arduino"><div class="highlight"><div class="line"><a id="l-1" name="l-1"></a><span class="linenos"> 1</span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensors/AtlasScientificEC.h&gt;</span></div>
+<div class="line"><a id="l-2" name="l-2"></a><span class="linenos"> 2</span></div>
+<div class="line"><a id="l-3" name="l-3"></a><span class="linenos"> 3</span><span class="c1">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span></div>
+<div class="line"><a id="l-4" name="l-4"></a><span class="linenos"> 4</span><span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">AtlasECPower</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">sensorPowerPin</span><span class="p">;</span><span class="w">  </span><span class="c1">// Power pin</span></div>
+<div class="line"><a id="l-5" name="l-5"></a><span class="linenos"> 5</span><span class="kr">uint8_t</span><span class="w">      </span><span class="n">AtlasECi2c_addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x64</span><span class="p">;</span><span class="w">            </span><span class="c1">// Default for EC is 0x64 (100)</span></div>
+<div class="line"><a id="l-6" name="l-6"></a><span class="linenos"> 6</span><span class="c1">// All Atlas sensors have different default I2C addresses, but any of them can</span></div>
+<div class="line"><a id="l-7" name="l-7"></a><span class="linenos"> 7</span><span class="c1">// be re-addressed to any 8 bit number.  If using the default address for any</span></div>
+<div class="line"><a id="l-8" name="l-8"></a><span class="linenos"> 8</span><span class="c1">// Atlas Scientific sensor, you may omit this argument.</span></div>
+<div class="line"><a id="l-9" name="l-9"></a><span class="linenos"> 9</span></div>
+<div class="line"><a id="l-10" name="l-10"></a><span class="linenos">10</span><span class="c1">// Create an Atlas Scientific Conductivity sensor object</span></div>
+<div class="line"><a id="l-11" name="l-11"></a><span class="linenos">11</span><span class="c1">// AtlasScientificEC atlasEC(AtlasECPower, AtlasECi2c_addr);</span></div>
+<div class="line"><a id="l-12" name="l-12"></a><span class="linenos">12</span><span class="n">AtlasScientificEC</span><span class="w"> </span><span class="nf">atlasEC</span><span class="p">(</span><span class="n">AtlasECPower</span><span class="p">);</span></div>
+<div class="line"><a id="l-13" name="l-13"></a><span class="linenos">13</span></div>
+<div class="line"><a id="l-14" name="l-14"></a><span class="linenos">14</span><span class="c1">// Create four variable pointers for the EZO-ES</span></div>
+<div class="line"><a id="l-15" name="l-15"></a><span class="linenos">15</span><span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">atlasCond</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">AtlasScientificEC_Cond</span><span class="p">(</span></div>
+<div class="line"><a id="l-16" name="l-16"></a><span class="linenos">16</span><span class="w">    </span><span class="o">&amp;</span><span class="n">atlasEC</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span></div>
+<div class="line"><a id="l-17" name="l-17"></a><span class="linenos">17</span><span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">atlasTDS</span><span class="w"> </span><span class="o">=</span></div>
+<div class="line"><a id="l-18" name="l-18"></a><span class="linenos">18</span><span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">AtlasScientificEC_TDS</span><span class="p">(</span><span class="o">&amp;</span><span class="n">atlasEC</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span></div>
+<div class="line"><a id="l-19" name="l-19"></a><span class="linenos">19</span><span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">atlasSal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">AtlasScientificEC_Salinity</span><span class="p">(</span></div>
+<div class="line"><a id="l-20" name="l-20"></a><span class="linenos">20</span><span class="w">    </span><span class="o">&amp;</span><span class="n">atlasEC</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span></div>
+<div class="line"><a id="l-21" name="l-21"></a><span class="linenos">21</span><span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">atlasGrav</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">AtlasScientificEC_SpecificGravity</span><span class="p">(</span></div>
+<div class="line"><a id="l-22" name="l-22"></a><span class="linenos">22</span><span class="w">    </span><span class="o">&amp;</span><span class="n">atlasEC</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span></div>
+<div class="line"><a id="l-23" name="l-23"></a><span class="linenos">23</span></div>
+<div class="line"><a id="l-24" name="l-24"></a><span class="linenos">24</span><span class="c1">// Create a calculated variable for the temperature compensated conductivity</span></div>
+<div class="line"><a id="l-25" name="l-25"></a><span class="linenos">25</span><span class="c1">// (that is, the specific conductance).  For this example, we will use the</span></div>
+<div class="line"><a id="l-26" name="l-26"></a><span class="linenos">26</span><span class="c1">// temperature measured by the Atlas RTD above this.  You could use the</span></div>
+<div class="line"><a id="l-27" name="l-27"></a><span class="linenos">27</span><span class="c1">// temperature returned by any other water temperature sensor if desired.</span></div>
+<div class="line"><a id="l-28" name="l-28"></a><span class="linenos">28</span><span class="c1">// **DO NOT** use your logger board temperature (ie, from the DS3231) to</span></div>
+<div class="line"><a id="l-29" name="l-29"></a><span class="linenos">29</span><span class="c1">// calculate specific conductance!</span></div>
+<div class="line"><a id="l-30" name="l-30"></a><span class="linenos">30</span><span class="kr">float</span><span class="w"> </span><span class="nf">calculateAtlasSpCond</span><span class="p">()</span><span class="w"> </span><span class="p">{</span></div>
+<div class="line"><a id="l-31" name="l-31"></a><span class="linenos">31</span><span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="n">spCond</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">-9999</span><span class="p">;</span><span class="w">  </span><span class="c1">// Always safest to start with a bad value</span></div>
+<div class="line"><a id="l-32" name="l-32"></a><span class="linenos">32</span><span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="n">waterTemp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">atlasTemp</span><span class="o">-&gt;</span><span class="n">getValue</span><span class="p">();</span></div>
+<div class="line"><a id="l-33" name="l-33"></a><span class="linenos">33</span><span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="n">rawCond</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">atlasCond</span><span class="o">-&gt;</span><span class="n">getValue</span><span class="p">();</span></div>
+<div class="line"><a id="l-34" name="l-34"></a><span class="linenos">34</span><span class="w">    </span><span class="c1">// ^^ Linearized temperature correction coefficient per degrees Celsius.</span></div>
+<div class="line"><a id="l-35" name="l-35"></a><span class="linenos">35</span><span class="w">    </span><span class="c1">// The value of 0.019 comes from measurements reported here:</span></div>
+<div class="line"><a id="l-36" name="l-36"></a><span class="linenos">36</span><span class="w">    </span><span class="c1">// Hayashi M. Temperature-electrical conductivity relation of water for</span></div>
+<div class="line"><a id="l-37" name="l-37"></a><span class="linenos">37</span><span class="w">    </span><span class="c1">// environmental monitoring and geophysical data inversion. Environ Monit</span></div>
+<div class="line"><a id="l-38" name="l-38"></a><span class="linenos">38</span><span class="w">    </span><span class="c1">// Assess. 2004 Aug-Sep;96(1-3):119-28.</span></div>
+<div class="line"><a id="l-39" name="l-39"></a><span class="linenos">39</span><span class="w">    </span><span class="c1">// doi: 10.1023/b:emas.0000031719.83065.68. PMID: 15327152.</span></div>
+<div class="line"><a id="l-40" name="l-40"></a><span class="linenos">40</span><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">waterTemp</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">-9999</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">rawCond</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">-9999</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></div>
+<div class="line"><a id="l-41" name="l-41"></a><span class="linenos">41</span><span class="w">        </span><span class="c1">// make sure both inputs are good</span></div>
+<div class="line"><a id="l-42" name="l-42"></a><span class="linenos">42</span><span class="w">        </span><span class="kr">float</span><span class="w"> </span><span class="n">temperatureCoef</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.019</span><span class="p">;</span></div>
+<div class="line"><a id="l-43" name="l-43"></a><span class="linenos">43</span><span class="w">        </span><span class="n">spCond</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rawCond</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">temperatureCoef</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">waterTemp</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">25.0</span><span class="p">));</span></div>
+<div class="line"><a id="l-44" name="l-44"></a><span class="linenos">44</span><span class="w">    </span><span class="p">}</span></div>
+<div class="line"><a id="l-45" name="l-45"></a><span class="linenos">45</span><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">spCond</span><span class="p">;</span></div>
+<div class="line"><a id="l-46" name="l-46"></a><span class="linenos">46</span><span class="p">}</span></div>
+<div class="line"><a id="l-47" name="l-47"></a><span class="linenos">47</span></div>
+<div class="line"><a id="l-48" name="l-48"></a><span class="linenos">48</span><span class="c1">// Properties of the calculated variable</span></div>
+<div class="line"><a id="l-49" name="l-49"></a><span class="linenos">49</span><span class="c1">// The number of digits after the decimal place</span></div>
+<div class="line"><a id="l-50" name="l-50"></a><span class="linenos">50</span><span class="kr">const</span><span class="w"> </span><span class="kr">uint8_t</span><span class="w"> </span><span class="n">atlasSpCondResolution</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></div>
+<div class="line"><a id="l-51" name="l-51"></a><span class="linenos">51</span><span class="c1">// This must be a value from http://vocabulary.odm2.org/variablename/</span></div>
+<div class="line"><a id="l-52" name="l-52"></a><span class="linenos">52</span><span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w"> </span><span class="n">atlasSpCondName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;specificConductance&quot;</span><span class="p">;</span></div>
+<div class="line"><a id="l-53" name="l-53"></a><span class="linenos">53</span><span class="c1">// This must be a value from http://vocabulary.odm2.org/units/</span></div>
+<div class="line"><a id="l-54" name="l-54"></a><span class="linenos">54</span><span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w"> </span><span class="n">atlasSpCondUnit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;microsiemenPerCentimeter&quot;</span><span class="p">;</span></div>
+<div class="line"><a id="l-55" name="l-55"></a><span class="linenos">55</span><span class="c1">// A short code for the variable</span></div>
+<div class="line"><a id="l-56" name="l-56"></a><span class="linenos">56</span><span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w"> </span><span class="n">atlasSpCondCode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;atlasSpCond&quot;</span><span class="p">;</span></div>
+<div class="line"><a id="l-57" name="l-57"></a><span class="linenos">57</span><span class="c1">// The (optional) universally unique identifier</span></div>
+<div class="line"><a id="l-58" name="l-58"></a><span class="linenos">58</span><span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w"> </span><span class="n">atlasSpCondUUID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">;</span></div>
+<div class="line"><a id="l-59" name="l-59"></a><span class="linenos">59</span></div>
+<div class="line"><a id="l-60" name="l-60"></a><span class="linenos">60</span><span class="c1">// Finally, create the specific conductance variable and return a pointer to it</span></div>
+<div class="line"><a id="l-61" name="l-61"></a><span class="linenos">61</span><span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">atlasSpCond</span><span class="w"> </span><span class="o">=</span></div>
+<div class="line"><a id="l-62" name="l-62"></a><span class="linenos">62</span><span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">Variable</span><span class="p">(</span><span class="n">calculateAtlasSpCond</span><span class="p">,</span><span class="w"> </span><span class="n">atlasSpCondResolution</span><span class="p">,</span><span class="w"> </span><span class="n">atlasSpCondName</span><span class="p">,</span></div>
+<div class="line"><a id="l-63" name="l-63"></a><span class="linenos">63</span><span class="w">                 </span><span class="n">atlasSpCondUnit</span><span class="p">,</span><span class="w"> </span><span class="n">atlasSpCondCode</span><span class="p">,</span><span class="w"> </span><span class="n">atlasSpCondUUID</span><span class="p">);</span>
 </div></div></div></section>
         <section id="nested-classes">
           <h2>Classes</h2>
@@ -1741,7 +2243,7 @@
         </section>
         <section id="sensor-timing">
           <h2>Sensor Timing</h2>
-<p><a name="sensor_atlas_cond_timing"></a> The sensor timing for an Atlas EC (conducticity) sensor</p>
+<p><a name="sensor_atlas_cond_timing"></a> The sensor timing for an Atlas EC (conductivity) sensor</p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gad9bf87c5271874f53d760c53c01c71a0" class="m-doc">ATLAS_COND_WARM_UP_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 745</span></span>
@@ -1759,7 +2261,7 @@
         </section>
         <section id="conductivity">
           <h2>Conductivity</h2>
-<p><a name="sensor_atlas_cond_cond"></a> The conductivity variable from an Atlas EC (conducticity) sensor</p><ul><li>Accuracy is ± 2%</li><li>Range is 0.07 − 500,000+ μS/cm</li></ul><p>{{ <a href="class_atlas_scientific_e_c___cond.html#ad44468aea10b4bcfd57606c59ff61b2a" class="m-doc">AtlasScientificEC_Cond::<wbr />AtlasScientificEC_Cond</a> }}</p>
+<p><a name="sensor_atlas_cond_cond"></a> The conductivity variable from an Atlas EC (conductivity) sensor</p><ul><li>Accuracy is ± 2%</li><li>Range is 0.07 − 500,000+ μS/cm</li></ul><p>{{ <a href="class_atlas_scientific_e_c___cond.html#ad44468aea10b4bcfd57606c59ff61b2a" class="m-doc">AtlasScientificEC_Cond::<wbr />AtlasScientificEC_Cond</a> }}</p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga667ce2a5b9713eb00613e59c47714fce" class="m-doc">ATLAS_COND_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
@@ -1785,7 +2287,7 @@
         </section>
         <section id="total-dissolved-solids">
           <h2>Total Dissolved Solids</h2>
-<p><a name="sensor_atlas_cond_tds"></a> The TDS variable from an Atlas EC (conducticity) sensor</p><ul><li>Accuracy is ± 2%</li><li>Range is 0.07 − 500,000+ μS/cm</li></ul><p>{{ <a href="class_atlas_scientific_e_c___t_d_s.html#ae00712f12d460890b79b37c1d9e2a2e9" class="m-doc">AtlasScientificEC_TDS::<wbr />AtlasScientificEC_TDS</a> }}</p>
+<p><a name="sensor_atlas_cond_tds"></a> The TDS variable from an Atlas EC (conductivity) sensor</p><ul><li>Accuracy is ± 2%</li><li>Range is 0.07 − 500,000+ μS/cm</li></ul><p>{{ <a href="class_atlas_scientific_e_c___t_d_s.html#ae00712f12d460890b79b37c1d9e2a2e9" class="m-doc">AtlasScientificEC_TDS::<wbr />AtlasScientificEC_TDS</a> }}</p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gafdadeac70a9dbc8afab6b09ba2a5c2dc" class="m-doc">ATLAS_TDS_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
@@ -1811,7 +2313,7 @@
         </section>
         <section id="salinity">
           <h2>Salinity</h2>
-<p><a name="sensor_atlas_cond_salinity"></a> The salinity variable from an Atlas EC (conducticity) sensor</p><ul><li>Accuracy is ± 2%</li><li>Range is 0.07 − 500,000+ μS/cm</li></ul><p>{{ <a href="class_atlas_scientific_e_c___salinity.html#a363fc16327ec6523c320bedf0c8a0086" class="m-doc">AtlasScientificEC_Salinity::<wbr />AtlasScientificEC_Salinity</a> }}</p>
+<p><a name="sensor_atlas_cond_salinity"></a> The salinity variable from an Atlas EC (conductivity) sensor</p><ul><li>Accuracy is ± 2%</li><li>Range is 0.07 − 500,000+ μS/cm</li></ul><p>{{ <a href="class_atlas_scientific_e_c___salinity.html#a363fc16327ec6523c320bedf0c8a0086" class="m-doc">AtlasScientificEC_Salinity::<wbr />AtlasScientificEC_Salinity</a> }}</p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gafb1070f49103c831022c0431a6f21555" class="m-doc">ATLAS_SALINITY_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
@@ -1837,7 +2339,7 @@
         </section>
         <section id="specific-gravity">
           <h2>Specific Gravity</h2>
-<p><a name="sensor_atlas_cond_sg"></a> The specific gravity variable from an Atlas EC (conducticity) sensor</p><ul><li>Accuracy is ± 2%</li><li>Range is 0.07 − 500,000+ μS/cm</li></ul><p>{{ <a href="class_atlas_scientific_e_c___specific_gravity.html#a06cdb977b6ecafc892ec5b79c5e29b85" class="m-doc">AtlasScientificEC_SpecificGravity::<wbr />AtlasScientificEC_SpecificGravity</a> }}</p>
+<p><a name="sensor_atlas_cond_sg"></a> The specific gravity variable from an Atlas EC (conductivity) sensor</p><ul><li>Accuracy is ± 2%</li><li>Range is 0.07 − 500,000+ μS/cm</li></ul><p>{{ <a href="class_atlas_scientific_e_c___specific_gravity.html#a06cdb977b6ecafc892ec5b79c5e29b85" class="m-doc">AtlasScientificEC_SpecificGravity::<wbr />AtlasScientificEC_SpecificGravity</a> }}</p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga62f76255364b3519f394680cbaab42a5" class="m-doc">ATLAS_SG_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
@@ -2323,7 +2825,7 @@
               >
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.12.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.14.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

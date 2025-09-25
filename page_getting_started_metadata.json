@@ -1,0 +1,21 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "page_getting_started",
+  "kind": "page",
+  "name": "Getting Started",
+  "url": "page_getting_started.html",
+  "brief": "",
+  "has_details": 10,
+  "children": [
+    "page_library_dependencies",
+    "page_physical_dependencies",
+    "page_library_terminology"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

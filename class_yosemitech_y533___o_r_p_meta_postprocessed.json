@@ -1,0 +1,19 @@
+{
+  "is_final": false,
+  "parent": "class_variable",
+  "parentGroup": "group__sensor__y533",
+  "id": "class_yosemitech_y533___o_r_p",
+  "kind": "class",
+  "name": "YosemitechY533_ORP",
+  "url": "class_yosemitech_y533___o_r_p.html",
+  "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__y533.html#sensor_y533_orp\" class=\"m-doc\">pH output</a> from a <a href=\"group__sensor__y533.html\" class=\"m-doc\">Yosemitech Y533 ORP sensor</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null,
+  "leaf_name": "YosemitechY533_ORP"
+}

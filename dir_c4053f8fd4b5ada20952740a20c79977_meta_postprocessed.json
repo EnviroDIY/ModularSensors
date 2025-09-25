@@ -1,0 +1,18 @@
+{
+  "is_final": null,
+  "parent": "dir_d28a4824dc47e487b107a5db32ef43c4",
+  "parentGroup": null,
+  "id": "dir_c4053f8fd4b5ada20952740a20c79977",
+  "kind": "dir",
+  "name": "examples/data_saving",
+  "url": "dir_c4053f8fd4b5ada20952740a20c79977.html",
+  "brief": "Contains the data_saving example.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "data_saving"
+}

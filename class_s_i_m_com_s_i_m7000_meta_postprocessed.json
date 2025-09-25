@@ -1,0 +1,19 @@
+{
+  "is_final": false,
+  "parent": "classlogger_modem",
+  "parentGroup": "group__modem__sim7000",
+  "id": "class_s_i_m_com_s_i_m7000",
+  "kind": "class",
+  "name": "SIMComSIM7000",
+  "url": "class_s_i_m_com_s_i_m7000.html",
+  "brief": "The <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> subclass for Botletics, And1, and other modules based on the <a href=\"group__modem__sim7000.html\" class=\"m-doc\">SIMCOM SIM7000</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null,
+  "leaf_name": "SIMComSIM7000"
+}

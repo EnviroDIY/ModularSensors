@@ -1,0 +1,88 @@
+{
+  "version": "1.14.0",
+  "compound": {
+    "kind": "file",
+    "id": "_mod_sensor_debug_config_8h",
+    "name": "ModSensorDebugConfig.h",
+    "url_base": "_mod_sensor_debug_config_8h",
+    "url": "_mod_sensor_debug_config_8h.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "This file is used to configure the <em>code</em> debugging to be used by the Modular Sensors Library.",
+    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside><p>The debugging functionality provided within the library is mostly useful for testing the workings of the library itself. It may not help to find problems with misbehaving sensors.</p><p>For the Arduino IDE, this is the only way to configure these settings. If you are using PlatformIO, you have the option of using this file or changing your configuration using build flags in your platformio.ini. Compile times will be shorter if you use this file instead of build flags, but it is much easier to track changes in your platformio.ini file than in this file.</p>",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": null,
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [
+      {
+        "base_url": "_mod_sensor_debug_config_8h.html",
+        "id": "aa4d31de47301f51fdfd59964acb7cee3",
+        "include": null,
+        "has_details": false,
+        "name": "MS_OUTPUT",
+        "initializer": "Serial",
+        "brief": "The primary output stream for printouts.",
+        "description": "",
+        "return_value": null,
+        "deprecated": null,
+        "since": null,
+        "has_param_details": false,
+        "params": null
+      }
+    ],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "src",
+        "dir_68267d1309a1af8e8297ef4c3efbcdba.html"
+      ],
+      [
+        "ModSensorDebugConfig.h",
+        "_mod_sensor_debug_config_8h.html"
+      ]
+    ],
+    "breadcrumbGroup": [
+      [
+        "ModSensorDebugConfig.h",
+        "_mod_sensor_debug_config_8h.html"
+      ]
+    ]
+  }
+}

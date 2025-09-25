@@ -1,0 +1,24 @@
+{
+  "is_final": null,
+  "parent": "dir_7349e89ef19c117195f8e371603e1b1f",
+  "parentGroup": null,
+  "id": "_atlas_scientific_d_o_8h",
+  "kind": "file",
+  "name": "AtlasScientificDO.h",
+  "url": "_atlas_scientific_d_o_8h.html",
+  "brief": "Contains the <a href=\"class_atlas_scientific_c_o2.html\" class=\"m-doc\">AtlasScientificCO2</a> subclass of the <a href=\"class_atlas_parent.html\" class=\"m-doc\">AtlasParent</a> sensor class along with the variable subclasses <a href=\"class_atlas_scientific_d_o___d_omg_l.html\" class=\"m-doc\">AtlasScientificDO_<wbr />DOmgL</a> and <a href=\"class_atlas_scientific_d_o___d_opct.html\" class=\"m-doc\">AtlasScientificDO_<wbr />DOpct</a>.",
+  "has_details": true,
+  "children": [
+    "sensor-variable-counts",
+    "configuration-defines",
+    "sensor-timing",
+    "do-concentration",
+    "do-percent-saturation"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "AtlasScientificDO.h"
+}

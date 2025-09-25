@@ -1,0 +1,18 @@
+{
+  "is_final": null,
+  "parent": "page_other_notes",
+  "parentGroup": null,
+  "id": "page_samd_clocks",
+  "kind": "page",
+  "name": "The SAMD clock system",
+  "url": "page_samd_clocks.html",
+  "brief": "",
+  "has_details": 6,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "The SAMD clock system"
+}

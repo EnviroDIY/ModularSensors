@@ -1,0 +1,31 @@
+{
+  "is_final": null,
+  "parent": "dir_68267d1309a1af8e8297ef4c3efbcdba",
+  "parentGroup": null,
+  "id": "dir_d557642a802d85ded7abaec913ee220c",
+  "kind": "dir",
+  "name": "src/publishers",
+  "url": "dir_d557642a802d85ded7abaec913ee220c.html",
+  "brief": "Contains the source code for all <a href=\"classdata_publisher.html\" class=\"m-doc\">dataPublisher</a> subclasses.",
+  "has_details": true,
+  "children": [
+    "_a_w_s___io_t___publisher_8cpp",
+    "_a_w_s___io_t___publisher_8h",
+    "_dream_host_publisher_8cpp",
+    "_dream_host_publisher_8h",
+    "_enviro_d_i_y_publisher_8cpp",
+    "_enviro_d_i_y_publisher_8h",
+    "_s3_presigned_publisher_8cpp",
+    "_s3_presigned_publisher_8h",
+    "_thing_speak_publisher_8cpp",
+    "_thing_speak_publisher_8h",
+    "_ubidots_publisher_8cpp",
+    "_ubidots_publisher_8h"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "publishers"
+}

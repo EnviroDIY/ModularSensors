@@ -1,0 +1,24 @@
+{
+  "is_final": null,
+  "parent": "dir_7349e89ef19c117195f8e371603e1b1f",
+  "parentGroup": null,
+  "id": "_meter_hydros21_8h",
+  "kind": "file",
+  "name": "MeterHydros21.h",
+  "url": "_meter_hydros21_8h.html",
+  "brief": "Contains the <a href=\"class_meter_hydros21.html\" class=\"m-doc\">MeterHydros21</a> subclass of the <a href=\"class_s_d_i12_sensors.html\" class=\"m-doc\">SDI12Sensors</a> class along with the variable subclasses <a href=\"class_meter_hydros21___cond.html\" class=\"m-doc\">MeterHydros21_<wbr />Cond</a>, <a href=\"class_meter_hydros21___temp.html\" class=\"m-doc\">MeterHydros21_<wbr />Temp</a>, and <a href=\"class_meter_hydros21___depth.html\" class=\"m-doc\">MeterHydros21_<wbr />Depth</a>.",
+  "has_details": true,
+  "children": [
+    "sensor-variable-counts",
+    "sensor-timing",
+    "conductivity",
+    "temperature",
+    "water-depth"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "MeterHydros21.h"
+}

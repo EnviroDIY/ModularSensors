@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "file",
     "id": "_atlas_scientific_o_r_p_8h",
@@ -10,7 +10,7 @@
     "has_template_details": false,
     "templates": null,
     "brief": "Contains the <a href=\"class_atlas_scientific_r_t_d.html\" class=\"m-doc\">AtlasScientificRTD</a> subclass of the <a href=\"class_atlas_parent.html\" class=\"m-doc\">AtlasParent</a> sensor class along with the variable subclass <a href=\"class_atlas_scientific_o_r_p___potential.html\" class=\"m-doc\">AtlasScientificORP_<wbr />Potential</a>.",
-    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Initial developement for Atlas Sensors was done by Adam Gold Files were edited by Sara Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside><p>These are used for any sensor attached to an Atlas EZO ORP circuit.</p>",
+    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Initial development for Atlas Sensors was done by Adam Gold Files were edited by Sara Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p></aside><p>These are used for any sensor attached to an Atlas EZO ORP circuit.</p>",
     "sections": "",
     "deprecated": null,
     "since": null,

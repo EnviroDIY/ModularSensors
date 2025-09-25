@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "class",
     "id": "class_turner_cyclops___c_d_o_m",
@@ -13,7 +13,7 @@
     "has_template_details": false,
     "templates": null,
     "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__cyclops.html#sensor_cyclops_output\" class=\"m-doc\">CDOM output</a> from a <a href=\"group__sensor__cyclops.html\" class=\"m-doc\">Turner Cyclops-7F</a>.",
-    "description": "<aside class=\"m-note m-info\"><h4>Note</h4><p><em><strong>This can only be used for a Cyclops-7F that is configured for CDOM / fDOM!</strong></em> CDOM models will be marked with a <strong>\u201cU\u201d</strong> at the top of the sensor housing near the cable connections.</p></aside><p>CDOM/fDOM concentration is measured (and should be calibrated) in parts per billion (ppb).</p><ul><li>Miminum detection limit:<ul><li>0.1 ppb Quinine Sulfate</li><li>0.5 ppb PTSA (1,3,6,8-Pyrenetetrasulfonic Acid Tetrasodium Salt)</li></ul></li><li>Linear range:<ul><li>0-1,500 ppb Quinine Sulfate</li><li>0-3,000 ppb PTSA (1,3,6,8-Pyrenetetrasulfonic Acid Tetrasodium Salt)</li></ul></li><li>LED (CWL): 365nm</li><li>Excitiation wavelength: 325/120 nm</li><li>Emission wavelength: 470/60 nm</li><li>Power required (mW @12V): 240</li></ul>",
+    "description": "<aside class=\"m-note m-info\"><h4>Note</h4><p><em><strong>This can only be used for a Cyclops-7F that is configured for CDOM / fDOM!</strong></em> CDOM models will be marked with a <strong>\u201cU\u201d</strong> at the top of the sensor housing near the cable connections.</p></aside><p>CDOM/fDOM concentration is measured (and should be calibrated) in parts per billion (ppb).</p><ul><li>Minimum detection limit:<ul><li>0.1 ppb Quinine Sulfate</li><li>0.5 ppb PTSA (1,3,6,8-Pyrenetetrasulfonic Acid Tetrasodium Salt)</li></ul></li><li>Linear range:<ul><li>0-1,500 ppb Quinine Sulfate</li><li>0-3,000 ppb PTSA (1,3,6,8-Pyrenetetrasulfonic Acid Tetrasodium Salt)</li></ul></li><li>LED (CWL): 365nm</li><li>Excitation wavelength: 325/120 nm</li><li>Emission wavelength: 470/60 nm</li><li>Power required (mW @12V): 240</li></ul>",
     "sections": "",
     "deprecated": null,
     "since": null,

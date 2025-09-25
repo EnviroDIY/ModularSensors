@@ -1,0 +1,17 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "_sensor_base_8h",
+  "kind": "file",
+  "name": "SensorBase.h",
+  "url": "_sensor_base_8h.html",
+  "brief": "Contains the <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> class.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

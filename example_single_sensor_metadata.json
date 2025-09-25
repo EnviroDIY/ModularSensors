@@ -1,0 +1,17 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "example_single_sensor",
+  "kind": "page",
+  "name": "Using a Single Sensor",
+  "url": "example_single_sensor.html",
+  "brief": "",
+  "has_details": 9,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null
+}

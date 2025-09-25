@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "group",
     "id": "group__sensor__mpl115a2",
@@ -10,7 +10,7 @@
     "has_template_details": false,
     "templates": null,
     "brief": "",
-    "description": "<p>Classes for the Freescale Semiconductor MPL115A2 digital barometer.</p><section id=\"sensor_mpl115a2_intro\"><h2>Introduction</h2><p>The Freescale Semiconductor MPL115A2 is a low-cost, low-power absolute pressure sensor with a digital I2C output. It is optimized for barometric measurements. Because this sensor can have only one I2C address (0x60), it is only possible to connect one of these sensors to a single I2C bus. This sensor should be attached to a 2.375-5.5V power source and the power supply to the sensor can be stopped between measurements. Communication with the MPL115A2 is managed by the <a href=\"https://github.com/adafruit/Adafruit_MPL115A2\">Adafruit MPL115A2 library</a>.</p><aside class=\"m-note m-info\"><h4>Note</h4><p>Software I2C is <em>not</em> supported for the AM2315. A secondary hardware I2C on a SAMD board is supported.</p></aside></section><section id=\"sensor_mpl115a2_datasheet\"><h2>Sensor Datasheet</h2><p>Documentation for the sensor can be found at: <a href=\"https://www.adafruit.com/product/992\">https:/<wbr />/<wbr />www.adafruit.com/<wbr />product/<wbr />992</a> and <a href=\"https://github.com/adafruit/Adafruit-MPL115A2-Breakout-PCB\">https:/<wbr />/<wbr />github.com/<wbr />adafruit/<wbr />Adafruit-MPL115A2-Breakout-PCB</a></p><p>A copy of the datasheet is available here: <a href=\"https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Freescale-Semiconductor-MPL115A2.pdf\">https:/<wbr />/<wbr />github.com/<wbr />EnviroDIY/<wbr />ModularSensors/<wbr />wiki/<wbr />Sensor-Datasheets/<wbr />Freescale-Semiconductor-MPL115A2.pdf</a>)</p></section><section id=\"sensor_mpl115a2_ctor\"><h2>Sensor Constructors</h2><p>{{ <a href=\"class_freescale_m_p_l115_a2.html#ab5651d8347d3b464183fc1bce41b16c7\" class=\"m-doc\">FreescaleMPL115A2::<wbr />FreescaleMPL115A2(int8_t, uint8_t)</a> }} {{ <a href=\"class_freescale_m_p_l115_a2.html#a8e0f140fe968d323816dbd7cc377afa0\" class=\"m-doc\">FreescaleMPL115A2::<wbr />FreescaleMPL115A2(TwoWire*, int8_t, uint8_t)</a> }}</p><hr/></section><section id=\"sensor_mpl115a2_examples\"><h2>Example Code</h2><p>The Freescale Semiconductor MPL115A2 is used in the <a href=\"example_menu.html#menu_walk_mpl115a2\" class=\"m-doc\">menu a la carte</a> example.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;sensors/FreescaleMPL115A2.h&gt;</span>\n</div><div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span>\n</div><div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"c1\">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>\n</div><div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">MPLPower</span><span class=\"w\">              </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">sensorPowerPin</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// Power pin</span>\n</div><div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">uint8_t</span><span class=\"w\"> </span><span class=\"n\">MPL115A2ReadingsToAvg</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">1</span><span class=\"p\">;</span>\n</div><div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span>\n</div><div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"c1\">// Create a FreescaleMPL115A2 barometer sensor object</span>\n</div><div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span><span class=\"n\">FreescaleMPL115A2</span><span class=\"w\"> </span><span class=\"nf\">mpl115a2</span><span class=\"p\">(</span><span class=\"n\">MPLPower</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">MPL115A2ReadingsToAvg</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span>\n</div><div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span><span class=\"c1\">// Create pressure and temperature variable pointers for the MPL</span>\n</div><div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">mplPress</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">FreescaleMPL115A2_Pressure</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">mpl115a2</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div><div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">mplTemp</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">FreescaleMPL115A2_Temp</span><span class=\"p\">(</span>\n</div><div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">mpl115a2</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div></div></div></section>",
+    "description": "<p>Classes for the Freescale Semiconductor <a href=\"#ga8239c08a23b7f1654171d2e4aecfd3dc\" class=\"m-doc\">MPL115A2</a> digital barometer.</p><section id=\"sensor_mpl115a2_intro\"><h2>Introduction</h2><p>The Freescale Semiconductor <a href=\"#ga8239c08a23b7f1654171d2e4aecfd3dc\" class=\"m-doc\">MPL115A2</a> is a low-cost, low-power absolute pressure sensor with a digital I2C output. It is optimized for barometric measurements. Because this sensor can have only one I2C address (0x60), it is only possible to connect one of these sensors to a single I2C bus. This sensor should be attached to a 2.375-5.5V power source and the power supply to the sensor can be stopped between measurements. Communication with the <a href=\"#ga8239c08a23b7f1654171d2e4aecfd3dc\" class=\"m-doc\">MPL115A2</a> is managed by the <a href=\"https://github.com/adafruit/Adafruit_MPL115A2\">Adafruit MPL115A2 library</a>.</p><aside class=\"m-note m-info\"><h4>Note</h4><p>Software I2C is <em>not</em> supported for the AM2315. A secondary hardware I2C on a SAMD board is supported.</p></aside></section><section id=\"sensor_mpl115a2_datasheet\"><h2>Sensor Datasheet</h2><p>Documentation for the sensor can be found at: <a href=\"https://www.adafruit.com/product/992\">https:/<wbr />/<wbr />www.adafruit.com/<wbr />product/<wbr />992</a> and <a href=\"https://github.com/adafruit/Adafruit-MPL115A2-Breakout-PCB\">https:/<wbr />/<wbr />github.com/<wbr />adafruit/<wbr />Adafruit-MPL115A2-Breakout-PCB</a></p><p>A copy of the datasheet is available here: <a href=\"https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Freescale-Semiconductor-MPL115A2.pdf\">https:/<wbr />/<wbr />github.com/<wbr />EnviroDIY/<wbr />ModularSensors/<wbr />wiki/<wbr />Sensor-Datasheets/<wbr />Freescale-Semiconductor-MPL115A2.pdf</a>)</p></section><section id=\"sensor_mpl115a2_ctor\"><h2>Sensor Constructors</h2><p>{{ <a href=\"class_freescale_m_p_l115_a2.html#ab5651d8347d3b464183fc1bce41b16c7\" class=\"m-doc\">FreescaleMPL115A2::<wbr />FreescaleMPL115A2(int8_t, uint8_t)</a> }} {{ <a href=\"class_freescale_m_p_l115_a2.html#a8e0f140fe968d323816dbd7cc377afa0\" class=\"m-doc\">FreescaleMPL115A2::<wbr />FreescaleMPL115A2(TwoWire*, int8_t, uint8_t)</a> }}</p><hr/></section><section id=\"sensor_mpl115a2_examples\"><h2>Example Code</h2><p>The Freescale Semiconductor <a href=\"#ga8239c08a23b7f1654171d2e4aecfd3dc\" class=\"m-doc\">MPL115A2</a> is used in the <a href=\"example_menu.html#menu_walk_mpl115a2\" class=\"m-doc\">menu a la carte</a> example.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;sensors/FreescaleMPL115A2.h&gt;</span></div>\n<div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span></div>\n<div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"c1\">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span></div>\n<div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">int8_t</span><span class=\"w\">  </span><span class=\"n\">MPLPower</span><span class=\"w\">              </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"n\">sensorPowerPin</span><span class=\"p\">;</span><span class=\"w\">  </span><span class=\"c1\">// Power pin</span></div>\n<div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span><span class=\"kr\">const</span><span class=\"w\"> </span><span class=\"kr\">uint8_t</span><span class=\"w\"> </span><span class=\"n\">MPL115A2ReadingsToAvg</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"mi\">1</span><span class=\"p\">;</span></div>\n<div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span></div>\n<div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"c1\">// Create a FreescaleMPL115A2 barometer sensor object</span></div>\n<div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span><span class=\"n\">FreescaleMPL115A2</span><span class=\"w\"> </span><span class=\"nf\">mpl115a2</span><span class=\"p\">(</span><span class=\"n\">MPLPower</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"n\">MPL115A2ReadingsToAvg</span><span class=\"p\">);</span></div>\n<div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span></div>\n<div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span><span class=\"c1\">// Create pressure and temperature variable pointers for the MPL</span></div>\n<div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">mplPress</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">FreescaleMPL115A2_Pressure</span><span class=\"p\">(</span></div>\n<div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">mpl115a2</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span></div>\n<div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span><span class=\"n\">Variable</span><span class=\"o\">*</span><span class=\"w\"> </span><span class=\"n\">mplTemp</span><span class=\"w\"> </span><span class=\"o\">=</span><span class=\"w\"> </span><span class=\"k\">new</span><span class=\"w\"> </span><span class=\"n\">FreescaleMPL115A2_Temp</span><span class=\"p\">(</span></div>\n<div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span><span class=\"w\">    </span><span class=\"o\">&amp;</span><span class=\"n\">mpl115a2</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"s\">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class=\"p\">);</span>\n</div></div></div></section>",
     "sections": [
       [
         "sensor_mpl115a2_intro",
@@ -87,7 +87,7 @@
         "args": "",
         "name": "MPL115A2",
         "brief": "typedef for backwards compatibility; use the <a href=\"class_freescale_m_p_l115_a2.html\" class=\"m-doc\">FreescaleMPL115A2</a> class in new code",
-        "description": "<aside class=\"m-note m-danger\"><h4><a href=\"deprecated.html#_deprecated000009\" class=\"m-doc\">Deprecated in v0.33.0</a></h4></aside>",
+        "description": "<aside class=\"m-note m-danger\"><h4><a href=\"deprecated.html#_deprecated000011\" class=\"m-doc\">Deprecated in v0.33.0</a></h4></aside>",
         "deprecated": "deprecated in v0.33.0",
         "since": null,
         "is_protected": false,
@@ -107,7 +107,7 @@
         "args": "",
         "name": "MPL115A2_Temp",
         "brief": "typedef for backwards compatibility; use the <a href=\"class_freescale_m_p_l115_a2___temp.html\" class=\"m-doc\">FreescaleMPL115A2_<wbr />Temp</a> class in new code",
-        "description": "<aside class=\"m-note m-danger\"><h4><a href=\"deprecated.html#_deprecated000010\" class=\"m-doc\">Deprecated in v0.33.0</a></h4></aside>",
+        "description": "<aside class=\"m-note m-danger\"><h4><a href=\"deprecated.html#_deprecated000012\" class=\"m-doc\">Deprecated in v0.33.0</a></h4></aside>",
         "deprecated": "deprecated in v0.33.0",
         "since": null,
         "is_protected": false,
@@ -127,7 +127,7 @@
         "args": "",
         "name": "MPL115A2_Pressure",
         "brief": "typedef for backwards compatibility; use the <a href=\"class_freescale_m_p_l115_a2___pressure.html\" class=\"m-doc\">FreescaleMPL115A2_<wbr />Pressure</a> class in new code",
-        "description": "<aside class=\"m-note m-danger\"><h4><a href=\"deprecated.html#_deprecated000011\" class=\"m-doc\">Deprecated in v0.33.0</a></h4></aside>",
+        "description": "<aside class=\"m-note m-danger\"><h4><a href=\"deprecated.html#_deprecated000013\" class=\"m-doc\">Deprecated in v0.33.0</a></h4></aside>",
         "deprecated": "deprecated in v0.33.0",
         "since": null,
         "is_protected": false,
@@ -160,7 +160,7 @@
       {
         "name": "Sensor Variable Counts",
         "id": "sensor-variable-counts",
-        "description": "<p><a name=\"sensor_mpl115a2_var_counts\"></a> The number of variables that can be returned by the MPL115A2</p>",
+        "description": "<p><a name=\"sensor_mpl115a2_var_counts\"></a> The number of variables that can be returned by the <a href=\"#ga8239c08a23b7f1654171d2e4aecfd3dc\" class=\"m-doc\">MPL115A2</a></p>",
         "members": [
           [
             "define",
@@ -174,7 +174,7 @@
               "has_details": true,
               "name": "MPL115A2_NUM_VARIABLES",
               "initializer": "2",
-              "brief": "<a href=\"class_sensor.html#af26786329fd01b44cf31410d046fc8f3\" class=\"m-doc\">Sensor::<wbr />_numReturnedValues</a>; the MPL115A2 can report 2 values.",
+              "brief": "<a href=\"class_sensor.html#af26786329fd01b44cf31410d046fc8f3\" class=\"m-doc\">Sensor::<wbr />_numReturnedValues</a>; the <a href=\"#ga8239c08a23b7f1654171d2e4aecfd3dc\" class=\"m-doc\">MPL115A2</a> can report 2 values.",
               "description": "",
               "return_value": null,
               "deprecated": null,
@@ -209,7 +209,7 @@
       {
         "name": "Sensor Timing",
         "id": "sensor-timing",
-        "description": "<p><a name=\"sensor_mpl115a2_timing\"></a> The sensor timing for a Freescale MPL115A2</p>",
+        "description": "<p><a name=\"sensor_mpl115a2_timing\"></a> The sensor timing for a Freescale <a href=\"#ga8239c08a23b7f1654171d2e4aecfd3dc\" class=\"m-doc\">MPL115A2</a></p>",
         "members": [
           [
             "define",
@@ -223,7 +223,7 @@
               "has_details": true,
               "name": "MPL115A2_WARM_UP_TIME_MS",
               "initializer": "6",
-              "brief": "<a href=\"class_sensor.html#aaaefd7f306f86382a3dac726531756b4\" class=\"m-doc\">Sensor::<wbr />_warmUpTime_ms</a>; the MPL115A2 takes about 6 ms to respond.",
+              "brief": "<a href=\"class_sensor.html#aaaefd7f306f86382a3dac726531756b4\" class=\"m-doc\">Sensor::<wbr />_warmUpTime_ms</a>; the <a href=\"#ga8239c08a23b7f1654171d2e4aecfd3dc\" class=\"m-doc\">MPL115A2</a> takes about 6 ms to respond.",
               "description": "",
               "return_value": null,
               "deprecated": null,
@@ -244,7 +244,7 @@
               "has_details": true,
               "name": "MPL115A2_STABILIZATION_TIME_MS",
               "initializer": "0",
-              "brief": "<a href=\"class_sensor.html#ad6822ad09fb64658c911ce86820db79c\" class=\"m-doc\">Sensor::<wbr />_stabilizationTime_ms</a>; the MPL115A2 is stable as soon as it warms up (0ms stabilization).",
+              "brief": "<a href=\"class_sensor.html#ad6822ad09fb64658c911ce86820db79c\" class=\"m-doc\">Sensor::<wbr />_stabilizationTime_ms</a>; the <a href=\"#ga8239c08a23b7f1654171d2e4aecfd3dc\" class=\"m-doc\">MPL115A2</a> is stable as soon as it warms up (0ms stabilization).",
               "description": "",
               "return_value": null,
               "deprecated": null,
@@ -265,7 +265,7 @@
               "has_details": true,
               "name": "MPL115A2_MEASUREMENT_TIME_MS",
               "initializer": "3",
-              "brief": "<a href=\"class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba\" class=\"m-doc\">Sensor::<wbr />_measurementTime_ms</a>; the MPL115A2 takes 3ms to complete a measurement.",
+              "brief": "<a href=\"class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba\" class=\"m-doc\">Sensor::<wbr />_measurementTime_ms</a>; the <a href=\"#ga8239c08a23b7f1654171d2e4aecfd3dc\" class=\"m-doc\">MPL115A2</a> takes 3ms to complete a measurement.",
               "description": "",
               "return_value": null,
               "deprecated": null,
@@ -279,7 +279,7 @@
       {
         "name": "Temperature",
         "id": "temperature",
-        "description": "<p><a name=\"sensor_mpl115a2_temp\"></a> The temperature variable from a Freescale MPL115A2</p><ul><li>Range is -20\u00b0C to 85\u00b0C</li><li>Accuracy is not specified on the sensor datasheet</li></ul><p>{{ <a href=\"class_freescale_m_p_l115_a2___temp.html#ade460dd3a26a0d0cec8b4e3994cf9af5\" class=\"m-doc\">FreescaleMPL115A2_Temp::<wbr />FreescaleMPL115A2_Temp</a> }}</p>",
+        "description": "<p><a name=\"sensor_mpl115a2_temp\"></a> The temperature variable from a Freescale <a href=\"#ga8239c08a23b7f1654171d2e4aecfd3dc\" class=\"m-doc\">MPL115A2</a></p><ul><li>Range is -20\u00b0C to 85\u00b0C</li><li>Accuracy is not specified on the sensor datasheet</li></ul><p>{{ <a href=\"class_freescale_m_p_l115_a2___temp.html#ade460dd3a26a0d0cec8b4e3994cf9af5\" class=\"m-doc\">FreescaleMPL115A2_Temp::<wbr />FreescaleMPL115A2_Temp</a> }}</p>",
         "members": [
           [
             "define",
@@ -391,7 +391,7 @@
       {
         "name": "Pressure",
         "id": "pressure",
-        "description": "<p><a name=\"sensor_mpl115a2_pressure\"></a> The pressure variable from a Freescale MPL115A2</p><ul><li>Range is 500-1150 hPa</li><li>Accuracy \u00b110 hPa</li></ul><p>{{ <a href=\"class_freescale_m_p_l115_a2___pressure.html#a4543c8eaae26d2705d7204646a7ba8b9\" class=\"m-doc\">FreescaleMPL115A2_Pressure::<wbr />FreescaleMPL115A2_Pressure</a> }}</p>",
+        "description": "<p><a name=\"sensor_mpl115a2_pressure\"></a> The pressure variable from a Freescale <a href=\"#ga8239c08a23b7f1654171d2e4aecfd3dc\" class=\"m-doc\">MPL115A2</a></p><ul><li>Range is 500-1150 hPa</li><li>Accuracy \u00b110 hPa</li></ul><p>{{ <a href=\"class_freescale_m_p_l115_a2___pressure.html#a4543c8eaae26d2705d7204646a7ba8b9\" class=\"m-doc\">FreescaleMPL115A2_Pressure::<wbr />FreescaleMPL115A2_Pressure</a> }}</p>",
         "members": [
           [
             "define",

@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "dir",
     "id": "dir_d60b8e8795161a141bba4403c07b6046",
@@ -90,9 +90,30 @@
         "since": null
       },
       {
+        "url": "_espressif_8cpp.html",
+        "name": "Espressif.cpp",
+        "brief": "Implements the <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_espressif_8h.html",
+        "name": "Espressif.h",
+        "brief": "Contains the <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a> subclass of <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> which is a parent class for the ESP8266, the original ESP32, and the various ESP32 flavors.",
+        "deprecated": null,
+        "since": null
+      },
+      {
+        "url": "_espressif_e_s_p32_8cpp.html",
+        "name": "EspressifESP32.cpp",
+        "brief": "Implements the <a href=\"class_espressif_e_s_p32.html\" class=\"m-doc\">EspressifESP32</a> class.",
+        "deprecated": null,
+        "since": null
+      },
+      {
         "url": "_espressif_e_s_p32_8h.html",
         "name": "EspressifESP32.h",
-        "brief": "Contains the EspressifESP32 subclass of <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> which is merely a typedef for the <a href=\"class_espressif_e_s_p8266.html\" class=\"m-doc\">EspressifESP8266</a> class.",
+        "brief": "Contains the <a href=\"class_espressif_e_s_p32.html\" class=\"m-doc\">EspressifESP32</a> subclass of <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> which <em>SHOULD</em> work for essentially any breakout or variant of the ESP32 wifi/bluetooth chip that has been flashed with <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a>&#x27;s AT command firmware.",
         "deprecated": null,
         "since": null
       },
@@ -106,14 +127,14 @@
       {
         "url": "_espressif_e_s_p8266_8h.html",
         "name": "EspressifESP8266.h",
-        "brief": "Contains the <a href=\"class_espressif_e_s_p8266.html\" class=\"m-doc\">EspressifESP8266</a> subclass of <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> which <em>SHOULD</em> work for essentially any breakout of the Espressif ESP8266 wifi chip or ESP32 wifi/bluetooth chip that has been flashed with Espressif&#x27;s AT command firmware.",
+        "brief": "Contains the <a href=\"class_espressif_e_s_p8266.html\" class=\"m-doc\">EspressifESP8266</a> subclass of <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> which <em>SHOULD</em> work for essentially any breakout of the <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a> ESP8266 wifi chip that has been flashed with <a href=\"class_espressif.html\" class=\"m-doc\">Espressif</a>&#x27;s AT command firmware.",
         "deprecated": null,
         "since": null
       },
       {
         "url": "_logger_modem_macros_8h.html",
         "name": "LoggerModemMacros.h",
-        "brief": "Contains PRE-ROCESSOR MACROS for use with logger modems.",
+        "brief": "Contains PRE-PROCESSOR MACROS for use with logger modems.",
         "deprecated": null,
         "since": null
       },
@@ -183,7 +204,7 @@
       {
         "url": "_s_i_m_com_s_i_m800_8h.html",
         "name": "SIMComSIM800.h",
-        "brief": "Contains the <a href=\"class_s_i_m_com_s_i_m800.html\" class=\"m-doc\">SIMComSIM800</a> subclass of <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> for Adafruit Fona 2G, the Sodaq GPRSBeeR4 and almost any other module based on the SIMCOM SIM800 or SIM900 modules and thier variants.",
+        "brief": "Contains the <a href=\"class_s_i_m_com_s_i_m800.html\" class=\"m-doc\">SIMComSIM800</a> subclass of <a href=\"classlogger_modem.html\" class=\"m-doc\">loggerModem</a> for Adafruit Fona 2G, the Sodaq GPRSBeeR4 and almost any other module based on the SIMCOM SIM800 or SIM900 modules and their variants.",
         "deprecated": null,
         "since": null
       },

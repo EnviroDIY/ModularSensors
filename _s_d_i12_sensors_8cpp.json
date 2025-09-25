@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "file",
     "id": "_s_d_i12_sensors_8cpp",
@@ -42,6 +42,21 @@
         "since": null,
         "has_param_details": false,
         "params": null
+      },
+      {
+        "base_url": "_s_d_i12_sensors_8cpp.html",
+        "id": "af32aed1f38eb97fa9dfbd68a52ff44b6",
+        "include": null,
+        "has_details": true,
+        "name": "MS_SDI12_USE_CRC",
+        "initializer": "true",
+        "brief": "Whether or not to use CRC checking on the SDI-12 data.",
+        "description": "<aside class=\"m-note m-info\"><h4>Note</h4><p>If this is defined, the SDI-12 library will check the CRC for all sensors! This cannot be set on a per-sensor basis.</p></aside>",
+        "return_value": null,
+        "deprecated": null,
+        "since": null,
+        "has_param_details": false,
+        "params": null
       }
     ],
     "public_types": [],
@@ -67,7 +82,7 @@
     "has_typedef_details": false,
     "has_func_details": false,
     "has_var_details": false,
-    "has_define_details": false,
+    "has_define_details": true,
     "breadcrumb": [
       [
         "src",

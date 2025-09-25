@@ -1,0 +1,19 @@
+{
+  "is_final": false,
+  "parent": "class_variable",
+  "parentGroup": "group__sensor__y504",
+  "id": "class_yosemitech_y504___d_opct",
+  "kind": "class",
+  "name": "YosemitechY504_DOpct",
+  "url": "class_yosemitech_y504___d_opct.html",
+  "brief": "The <a href=\"class_variable.html\" class=\"m-doc\">Variable</a> sub-class used for the <a href=\"group__sensor__y504.html#sensor_y504_dopercent\" class=\"m-doc\">dissolved oxygen percent saturation output</a> from a <a href=\"group__sensor__y504.html\" class=\"m-doc\">Yosemitech Y502-A or Y504-A optical dissolved oxygen sensor</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null,
+  "leaf_name": "YosemitechY504_DOpct"
+}

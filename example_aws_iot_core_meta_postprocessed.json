@@ -1,0 +1,18 @@
+{
+  "is_final": null,
+  "parent": "page_examples_outgoing_data",
+  "parentGroup": null,
+  "id": "example_aws_iot_core",
+  "kind": "page",
+  "name": "Publishing data to AWS IoT Core",
+  "url": "example_aws_iot_core.html",
+  "brief": "",
+  "has_details": 9,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "Publishing data to AWS IoT Core"
+}

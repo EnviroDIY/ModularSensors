@@ -1,0 +1,19 @@
+{
+  "is_final": false,
+  "parent": "class_sensor",
+  "parentGroup": "group__sensor__maxbotix",
+  "id": "class_max_botix_sonar",
+  "kind": "class",
+  "name": "MaxBotixSonar",
+  "url": "class_max_botix_sonar.html",
+  "brief": "The <a href=\"class_sensor.html\" class=\"m-doc\">Sensor</a> sub-class for the <a href=\"group__sensor__maxbotix.html\" class=\"m-doc\">MaxBotix ultrasonic range finders</a>.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "templates": null,
+  "leaf_name": "MaxBotixSonar"
+}

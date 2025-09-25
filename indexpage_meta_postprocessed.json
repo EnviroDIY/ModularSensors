@@ -1,0 +1,27 @@
+{
+  "is_final": null,
+  "parent": null,
+  "parentGroup": null,
+  "id": "indexpage",
+  "kind": "page",
+  "name": "ModularSensors",
+  "url": "index.html",
+  "brief": "",
+  "has_details": 9,
+  "children": [
+    "page_getting_started",
+    "page_faq",
+    "page_other_notes",
+    "page_the_examples",
+    "license",
+    "change_log",
+    "todo",
+    "deprecated"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "ModularSensors"
+}

@@ -1,0 +1,18 @@
+{
+  "is_final": null,
+  "parent": "page_extra_helper_sketches",
+  "parentGroup": null,
+  "id": "extra_aws_certificates",
+  "kind": "page",
+  "name": "Setting AWS Certificates",
+  "url": "extra_aws_certificates.html",
+  "brief": "",
+  "has_details": 10,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "Setting AWS Certificates"
+}

@@ -1,0 +1,18 @@
+{
+  "is_final": null,
+  "parent": "dir_d28a4824dc47e487b107a5db32ef43c4",
+  "parentGroup": null,
+  "id": "dir_445b65392178fa7863d0c6d77e63d5bc",
+  "kind": "dir",
+  "name": "examples/DRWI_NoCellular",
+  "url": "dir_445b65392178fa7863d0c6d77e63d5bc.html",
+  "brief": "Contains the DRWI_NoCellular example.",
+  "has_details": true,
+  "children": [],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "DRWI_NoCellular"
+}

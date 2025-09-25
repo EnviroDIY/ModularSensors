@@ -1,0 +1,79 @@
+{
+  "version": "1.14.0",
+  "compound": {
+    "kind": "example",
+    "id": "_stream__debug_8ino-example",
+    "name": "Stream_Debug.ino",
+    "url_base": "_stream__debug_8ino-example",
+    "url": "_stream__debug_8ino-example.html",
+    "include": null,
+    "has_template_details": false,
+    "templates": null,
+    "brief": "Testing sketch to run StreamDebugger to copy text from one serial output to another.",
+    "description": "<p>Testing sketch to run StreamDebugger to copy text from one serial output to another.</p><div class=\"m-code-arduino\"><div class=\"highlight\"><div class=\"line\"><a id=\"l-1\" name=\"l-1\"></a><span class=\"linenos\"> 1</span><span class=\"cm\">/** =========================================================================</span></div>\n<div class=\"line\"><a id=\"l-2\" name=\"l-2\"></a><span class=\"linenos\"> 2</span><span class=\"cm\"> * @example{lineno} Stream_Debug.ino</span></div>\n<div class=\"line\"><a id=\"l-3\" name=\"l-3\"></a><span class=\"linenos\"> 3</span><span class=\"cm\"> * @brief Testing sketch to run StreamDebugger to copy text from one serial</span></div>\n<div class=\"line\"><a id=\"l-4\" name=\"l-4\"></a><span class=\"linenos\"> 4</span><span class=\"cm\"> * output to another.</span></div>\n<div class=\"line\"><a id=\"l-5\" name=\"l-5\"></a><span class=\"linenos\"> 5</span><span class=\"cm\"> *</span></div>\n<div class=\"line\"><a id=\"l-6\" name=\"l-6\"></a><span class=\"linenos\"> 6</span><span class=\"cm\"> * @m_examplenavigation{page_extra_helper_sketches,}</span></div>\n<div class=\"line\"><a id=\"l-7\" name=\"l-7\"></a><span class=\"linenos\"> 7</span><span class=\"cm\"> * ======================================================================= */</span></div>\n<div class=\"line\"><a id=\"l-8\" name=\"l-8\"></a><span class=\"linenos\"> 8</span></div>\n<div class=\"line\"><a id=\"l-9\" name=\"l-9\"></a><span class=\"linenos\"> 9</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;Arduino.h&gt;</span></div>\n<div class=\"line\"><a id=\"l-10\" name=\"l-10\"></a><span class=\"linenos\">10</span><span class=\"cp\">#include</span><span class=\"w\"> </span><span class=\"cpf\">&lt;StreamDebugger.h&gt;</span></div>\n<div class=\"line\"><a id=\"l-11\" name=\"l-11\"></a><span class=\"linenos\">11</span><span class=\"n\">StreamDebugger</span><span class=\"w\"> </span><span class=\"nf\">StreamDbg</span><span class=\"p\">(</span><span class=\"n\">Serial1</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"nf\">Serial</span><span class=\"p\">);</span></div>\n<div class=\"line\"><a id=\"l-12\" name=\"l-12\"></a><span class=\"linenos\">12</span></div>\n<div class=\"line\"><a id=\"l-13\" name=\"l-13\"></a><span class=\"linenos\">13</span><span class=\"kr\">void</span><span class=\"w\"> </span><span class=\"nb\">setup</span><span class=\"p\">()</span><span class=\"w\"> </span><span class=\"p\">{</span></div>\n<div class=\"line\"><a id=\"l-14\" name=\"l-14\"></a><span class=\"linenos\">14</span><span class=\"w\">    </span><span class=\"nf\">Serial</span><span class=\"p\">.</span><span class=\"nf\">begin</span><span class=\"p\">(</span><span class=\"mi\">115200</span><span class=\"p\">);</span></div>\n<div class=\"line\"><a id=\"l-15\" name=\"l-15\"></a><span class=\"linenos\">15</span><span class=\"w\">    </span><span class=\"nf\">delay</span><span class=\"p\">(</span><span class=\"mi\">50</span><span class=\"p\">);</span></div>\n<div class=\"line\"><a id=\"l-16\" name=\"l-16\"></a><span class=\"linenos\">16</span></div>\n<div class=\"line\"><a id=\"l-17\" name=\"l-17\"></a><span class=\"linenos\">17</span><span class=\"w\">    </span><span class=\"n\">Serial1</span><span class=\"p\">.</span><span class=\"nf\">begin</span><span class=\"p\">(</span><span class=\"mi\">9600</span><span class=\"p\">);</span></div>\n<div class=\"line\"><a id=\"l-18\" name=\"l-18\"></a><span class=\"linenos\">18</span><span class=\"w\">    </span><span class=\"nf\">delay</span><span class=\"p\">(</span><span class=\"mi\">50</span><span class=\"p\">);</span></div>\n<div class=\"line\"><a id=\"l-19\" name=\"l-19\"></a><span class=\"linenos\">19</span></div>\n<div class=\"line\"><a id=\"l-20\" name=\"l-20\"></a><span class=\"linenos\">20</span><span class=\"w\">    </span><span class=\"n\">StreamDbg</span><span class=\"p\">.</span><span class=\"nf\">print</span><span class=\"p\">(</span><span class=\"s\">&quot;AT&quot;</span><span class=\"p\">);</span></div>\n<div class=\"line\"><a id=\"l-21\" name=\"l-21\"></a><span class=\"linenos\">21</span><span class=\"p\">}</span></div>\n<div class=\"line\"><a id=\"l-22\" name=\"l-22\"></a><span class=\"linenos\">22</span></div>\n<div class=\"line\"><a id=\"l-23\" name=\"l-23\"></a><span class=\"linenos\">23</span><span class=\"kr\">void</span><span class=\"w\"> </span><span class=\"nb\">loop</span><span class=\"p\">()</span><span class=\"w\"> </span><span class=\"p\">{</span></div>\n<div class=\"line\"><a id=\"l-24\" name=\"l-24\"></a><span class=\"linenos\">24</span><span class=\"w\">    </span><span class=\"c1\">// Start direct-access from Serial to Serial1</span></div>\n<div class=\"line\"><a id=\"l-25\" name=\"l-25\"></a><span class=\"linenos\">25</span><span class=\"w\">    </span><span class=\"n\">StreamDbg</span><span class=\"p\">.</span><span class=\"n\">directAccess</span><span class=\"p\">();</span></div>\n<div class=\"line\"><a id=\"l-26\" name=\"l-26\"></a><span class=\"linenos\">26</span><span class=\"p\">}</span>\n</div></div></div>",
+    "sections": "",
+    "deprecated": null,
+    "since": null,
+    "example_navigation": null,
+    "footer_navigation": [
+      [
+        "sdi12_address_change_8ino-example.html",
+        "sdi12_address_change.ino"
+      ],
+      [
+        "page_extra_helper_sketches.html",
+        "Extra Helper Sketches"
+      ],
+      [
+        "_l_t_ex_bee__first_connection_8ino-example.html",
+        "LTExBee_FirstConnection.ino"
+      ]
+    ],
+    "topics": [],
+    "dirs": [],
+    "files": [],
+    "namespaces": [],
+    "classes": [],
+    "base_classes": [],
+    "derived_classes": [],
+    "enums": [],
+    "typedefs": [],
+    "funcs": [],
+    "vars": [],
+    "defines": [],
+    "public_types": [],
+    "public_static_funcs": [],
+    "typeless_funcs": [],
+    "public_funcs": [],
+    "signals": [],
+    "public_slots": [],
+    "public_static_vars": [],
+    "public_vars": [],
+    "protected_types": [],
+    "protected_static_funcs": [],
+    "protected_funcs": [],
+    "protected_slots": [],
+    "protected_static_vars": [],
+    "protected_vars": [],
+    "private_funcs": [],
+    "private_slots": [],
+    "related": [],
+    "friend_funcs": [],
+    "groups": [],
+    "has_enum_details": false,
+    "has_typedef_details": false,
+    "has_func_details": false,
+    "has_var_details": false,
+    "has_define_details": false,
+    "breadcrumb": [
+      [
+        "Extra Helper Sketches",
+        "page_extra_helper_sketches.html"
+      ],
+      [
+        "Stream_Debug.ino",
+        "_stream__debug_8ino-example.html"
+      ]
+    ]
+  }
+}

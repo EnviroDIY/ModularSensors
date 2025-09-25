@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.14.0",
   "compound": {
     "kind": "file",
     "id": "_mod_sensor_debugger_8h",
@@ -10,7 +10,7 @@
     "has_template_details": false,
     "templates": null,
     "brief": "Contains template functions used to print out debugging information.",
-    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a> *</p><p>Volodymyr Shymanskyy</p></aside><p>These classes are taken with minor modifications from the debugger in TinyGsmCommon.h from the TinyGSM library authored by Volodymyr Shymanskyy.</p>",
+    "description": "<aside class=\"m-note m-default\"><h4>Copyright</h4><p>Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino. This library is published under the BSD-3 license.</p></aside><aside class=\"m-note m-default\"><h4>Author</h4><p>Sara Geleskie Damiano <a href=\"mailto:sdamiano@stroudcenter.org\">sdamiano@stroudcenter.org</a></p><p>Volodymyr Shymanskyy</p></aside><p>These classes are taken with minor modifications from the debugger in TinyGsmCommon.h from the TinyGSM library authored by Volodymyr Shymanskyy.</p>",
     "sections": "",
     "deprecated": null,
     "since": null,
@@ -24,7 +24,25 @@
     "base_classes": [],
     "derived_classes": [],
     "enums": [],
-    "typedefs": [],
+    "typedefs": [
+      {
+        "base_url": "_mod_sensor_debugger_8h.html",
+        "id": "aa7ead210420dd339e3b693a58497963d",
+        "include": null,
+        "has_details": false,
+        "is_using": false,
+        "type": "const __FlashStringHelper*",
+        "args": "",
+        "name": "GsmConstStr",
+        "brief": "A type for a string stored in flash memory for AVR boards but not for boards that don&#x27;t support it.",
+        "description": "",
+        "deprecated": null,
+        "since": null,
+        "is_protected": false,
+        "has_template_details": false,
+        "templates": null
+      }
+    ],
     "funcs": [
       {
         "base_url": "_mod_sensor_debugger_8h.html",
@@ -33,7 +51,7 @@
         "has_details": true,
         "type": "void",
         "name": "PRINTOUT",
-        "brief": "Prints text to the &quot;debugging&quot; serial port. This is intended for text that should <em>always</em> be printed, even in field operation.",
+        "brief": "Helper to print text to MS_SERIAL_OUTPUT that should <em>always</em> be printed, even in field operation.",
         "description": "",
         "return_value": null,
         "return_values": [],
@@ -85,7 +103,7 @@
         "has_details": true,
         "type": "void",
         "name": "PRINTOUT",
-        "brief": "Prints text to the &quot;debugging&quot; serial port. This is intended for text that should <em>always</em> be printed, even in field operation.",
+        "brief": "Helper to print text to MS_SERIAL_OUTPUT that should <em>always</em> be printed, even in field operation.",
         "description": "",
         "return_value": null,
         "return_values": [],
@@ -149,13 +167,113 @@
     "defines": [
       {
         "base_url": "_mod_sensor_debugger_8h.html",
+        "id": "af36c4b50d69b1b716166cc5ba6608de9",
+        "include": null,
+        "has_details": false,
+        "name": "TINY_GSM_PROGMEM",
+        "initializer": "PROGMEM",
+        "brief": "A macro to use to put strings into flash memory for AVR boards but not for other boards that don&#x27;t support it.",
+        "description": "",
+        "return_value": null,
+        "deprecated": null,
+        "since": null,
+        "has_param_details": false,
+        "params": null
+      },
+      {
+        "base_url": "_mod_sensor_debugger_8h.html",
+        "id": "aeb13a6f7de94e1e36a4ecad3d1abb6d8",
+        "include": null,
+        "has_details": false,
+        "name": "GFP",
+        "initializer": "(reinterpret_cast<",
+        "brief": "A macro to convert a string into a __FlashStringHelper (aka <a href=\"#aa7ead210420dd339e3b693a58497963d\" class=\"m-doc\">GsmConstStr</a>) for AVR boards but not for other boards that don&#x27;t support it.",
+        "description": "",
+        "return_value": null,
+        "deprecated": null,
+        "since": null,
+        "has_param_details": true,
+        "params": [
+          [
+            "x",
+            "The string to convert"
+          ]
+        ]
+      },
+      {
+        "base_url": "_mod_sensor_debugger_8h.html",
+        "id": "ad3002787007c15407a2dd49d38ca3227",
+        "include": null,
+        "has_details": false,
+        "name": "GF",
+        "initializer": "F(x)",
+        "brief": "A macro to store string in flash memory for AVR boards but not for other boards that don&#x27;t support it.",
+        "description": "",
+        "return_value": null,
+        "deprecated": null,
+        "since": null,
+        "has_param_details": true,
+        "params": [
+          [
+            "x",
+            "The string to store in flash memory"
+          ]
+        ]
+      },
+      {
+        "base_url": "_mod_sensor_debugger_8h.html",
+        "id": "a788198c0622777b86a73d6c3ecb7da5d",
+        "include": null,
+        "has_details": false,
+        "name": "MS_DEFAULT_OUTPUT",
+        "initializer": "SERIAL_PORT_USBVIRTUAL",
+        "brief": "The &quot;default&quot; serial output based on defines within the board framework.",
+        "description": "",
+        "return_value": null,
+        "deprecated": null,
+        "since": null,
+        "has_param_details": false,
+        "params": null
+      },
+      {
+        "base_url": "_mod_sensor_debugger_8h.html",
+        "id": "aa4d31de47301f51fdfd59964acb7cee3",
+        "include": null,
+        "has_details": false,
+        "name": "MS_OUTPUT",
+        "initializer": null,
+        "brief": "The serial output for debugging.",
+        "description": "",
+        "return_value": null,
+        "deprecated": null,
+        "since": null,
+        "has_param_details": false,
+        "params": null
+      },
+      {
+        "base_url": "_mod_sensor_debugger_8h.html",
+        "id": "a4f3119618260e0102a5f15ec95760ace",
+        "include": null,
+        "has_details": false,
+        "name": "MS_SERIAL_OUTPUT",
+        "initializer": null,
+        "brief": "The serial output for debugging.",
+        "description": "",
+        "return_value": null,
+        "deprecated": null,
+        "since": null,
+        "has_param_details": false,
+        "params": null
+      },
+      {
+        "base_url": "_mod_sensor_debugger_8h.html",
         "id": "ace29b6c3f8272bc574ec027c030180c6",
         "include": null,
-        "has_details": true,
+        "has_details": false,
         "name": "MS_DBG",
         "initializer": null,
-        "brief": "Prints text to the &quot;debugging&quot; serial port. This is intended for debugging the code of a specific module.",
-        "description": "<p>The name of the header file calling the print command is appended to the end of the text.</p>",
+        "brief": "Helper to print debugging text.",
+        "description": "",
         "return_value": null,
         "deprecated": null,
         "since": null,
@@ -219,7 +337,7 @@
         "has_details": true,
         "name": "MS_DEEP_DBG",
         "initializer": null,
-        "brief": "Prints text to the &quot;debugging&quot; serial port. This is intended for printouts considered to be excessive during &quot;normal&quot; debugging.",
+        "brief": "Helper to print debugging text to MS_SERIAL_OUTPUT. This is intended for printouts considered to be excessive during &quot;normal&quot; debugging.",
         "description": "<p>The name of the header file calling the print command is appended to the end of the text.</p>",
         "return_value": null,
         "deprecated": null,

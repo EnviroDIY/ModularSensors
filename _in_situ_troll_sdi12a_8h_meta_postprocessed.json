@@ -1,0 +1,24 @@
+{
+  "is_final": null,
+  "parent": "dir_7349e89ef19c117195f8e371603e1b1f",
+  "parentGroup": null,
+  "id": "_in_situ_troll_sdi12a_8h",
+  "kind": "file",
+  "name": "InSituTrollSdi12a.h",
+  "url": "_in_situ_troll_sdi12a_8h.html",
+  "brief": "",
+  "has_details": false,
+  "children": [
+    "sensor-variable-counts",
+    "sensor-timing",
+    "pressure",
+    "temperature",
+    "water-depth"
+  ],
+  "childrenClasses": [],
+  "childrenNamespaces": [],
+  "childrenCompoundRefs": [],
+  "deprecated": null,
+  "since": null,
+  "leaf_name": "InSituTrollSdi12a.h"
+}
