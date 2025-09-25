@@ -21,14 +21,14 @@ SodaqUBeeR410M::SodaqUBeeR410M(HardwareSerial* modemStream, int8_t powerPin,
                   R410M_RESET_LEVEL, R410M_RESET_PULSE_MS, modemSleepRqPin,
                   R410M_WAKE_LEVEL, R410M_WAKE_PULSE_MS, R410M_STATUS_TIME_MS,
                   R410M_DISCONNECT_TIME_MS, R410M_WAKE_DELAY_MS,
-                  R410M_ATRESPONSE_TIME_MS),
+                  R410M_AT_RESPONSE_TIME_MS),
 #ifdef MS_SODAQUBEER410M_DEBUG_DEEP
-      _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
-      gsmModem(_modemATDebugger),
+      _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
+      gsmModem(_modemATDebugger)
 #else
-      gsmModem(*modemStream),
+      gsmModem(*modemStream)
 #endif
-      gsmClient(gsmModem) {
+{
     _apn         = apn;
     _modemSerial = modemStream;
 }
@@ -40,14 +40,13 @@ SodaqUBeeR410M::SodaqUBeeR410M(Stream* modemStream, int8_t powerPin,
                   R410M_RESET_LEVEL, R410M_RESET_PULSE_MS, modemSleepRqPin,
                   R410M_WAKE_LEVEL, R410M_WAKE_PULSE_MS, R410M_STATUS_TIME_MS,
                   R410M_DISCONNECT_TIME_MS, R410M_WAKE_DELAY_MS,
-                  R410M_ATRESPONSE_TIME_MS),
+                  R410M_AT_RESPONSE_TIME_MS),
 #ifdef MS_SODAQUBEER410M_DEBUG_DEEP
-      _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
+      _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
       gsmModem(_modemATDebugger),
 #else
       gsmModem(*modemStream),
 #endif
-      gsmClient(gsmModem),
       _apn(apn) {
 }
 #endif
@@ -61,6 +60,11 @@ MS_MODEM_WAKE(SodaqUBeeR410M);
 MS_MODEM_CONNECT_INTERNET(SodaqUBeeR410M);
 MS_MODEM_DISCONNECT_INTERNET(SodaqUBeeR410M);
 MS_MODEM_IS_INTERNET_AVAILABLE(SodaqUBeeR410M);
+
+MS_MODEM_CREATE_CLIENT(SodaqUBeeR410M);
+MS_MODEM_DELETE_CLIENT(SodaqUBeeR410M);
+MS_MODEM_CREATE_SECURE_CLIENT(SodaqUBeeR410M);
+MS_MODEM_DELETE_SECURE_CLIENT(SodaqUBeeR410M);
 
 MS_MODEM_GET_NIST_TIME(SodaqUBeeR410M);
 
@@ -115,7 +119,7 @@ bool SodaqUBeeR410M::modemWakeFxn(void) {
         if (_powerPin >= 0) {
             MS_DBG(F("Waiting for UART to become active and requesting a "
                      "slower baud rate."));
-            delay(_max_atresponse_time_ms +
+            delay(_max_at_response_time_ms +
                   250);  // Must wait for UART port to become active
             _modemSerial->begin(115200);
             gsmModem.setBaud(9600);
@@ -138,8 +142,11 @@ bool SodaqUBeeR410M::modemSleepFxn(void) {
         // Easiest to just go to sleep with the AT command rather than using
         // pins
         MS_DBG(F("Asking u-blox R410M to power down"));
-        return gsmModem.poweroff();
+        bool res = gsmModem.poweroff();
+        gsmModem.stream.flush();
+        return res;
     } else {  // DON'T go to sleep if we can't wake up!
+        gsmModem.stream.flush();
         return true;
     }
 }
@@ -157,7 +164,7 @@ bool SodaqUBeeR410M::modemHardReset(void) {
 #if F_CPU == 8000000L
         MS_DBG(F("Waiting for UART to become active and requesting a slower "
                  "baud rate."));
-        delay(_max_atresponse_time_ms +
+        delay(_max_at_response_time_ms +
               250);  // Must wait for UART port to become active
         _modemSerial->begin(115200);
         gsmModem.setBaud(9600);
@@ -175,11 +182,12 @@ bool SodaqUBeeR410M::modemHardReset(void) {
 
 bool SodaqUBeeR410M::extraModemSetup(void) {
     bool success = gsmModem.init();
-    gsmClient.init(&gsmModem);
-    _modemName = gsmModem.getModemName();
+    _modemName   = gsmModem.getModemName();
     // Turn on network indicator light
     // Pin 16 = GPIO1, function 2 = network status indication
     gsmModem.sendAT(GF("+UGPIOC=16,2"));
     gsmModem.waitResponse();
     return success;
 }
+
+// cSpell:ignore UGPIOC

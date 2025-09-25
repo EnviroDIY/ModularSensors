@@ -42,6 +42,7 @@ bool FreescaleMPL115A2::setup(void) {
 
     // This sensor needs power for setup!
     // The MPL115A2's begin() reads required coefficients from the sensor.
+    delay(10);
     bool wasOn = checkPowerOn();
     if (!wasOn) { powerUp(); }
     waitForWarmUp();
@@ -65,7 +66,7 @@ bool FreescaleMPL115A2::addSingleMeasurementResult(void) {
 
     // Check a measurement was *successfully* started (status bit 6 set)
     // Only go on to get a result if it was
-    if (bitRead(_sensorStatus, 6)) {
+    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
         // Read values
@@ -91,7 +92,7 @@ bool FreescaleMPL115A2::addSingleMeasurementResult(void) {
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)
-    _sensorStatus &= 0b10011111;
+    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
 
     // no way of knowing if successful, just return true
     return true;

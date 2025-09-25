@@ -69,16 +69,23 @@
 #ifndef SRC_SENSORS_CAMPBELLOBS3_H_
 #define SRC_SENSORS_CAMPBELLOBS3_H_
 
-// Debugging Statement
-// #define MS_CAMPBELLOBS3_DEBUG
+// Include the library config before anything else
+#include "ModSensorConfig.h"
 
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
+
+// Define the print label[s] for the debugger
 #ifdef MS_CAMPBELLOBS3_DEBUG
 #define MS_DEBUGGING_STD "CampbellOBS3"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+
+// Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
 
@@ -188,10 +195,10 @@
  * The voltage variable from an OBS3+
  * - Range is 0 to 2.5V
  * - Accuracy:
- *     - 16-bit ADC (ADS1115): < 0.25% (gain error), < 0.25 LSB (offset errror)
+ *     - 16-bit ADC (ADS1115): < 0.25% (gain error), < 0.25 LSB (offset error)
  *       - @m_span{m-dim}@ref #OBS3_VOLTAGE_RESOLUTION = 4@m_endspan
  *     - 12-bit ADC (ADS1015, using build flag ```MS_USE_ADS1015```): < 0.15%
- * (gain error), < 3 LSB (offset errror)
+ * (gain error), < 3 LSB (offset error)
  *       - @m_span{m-dim}@ref #OBS3_VOLTAGE_RESOLUTION = 1@m_endspan
  *
  * {{ @ref CampbellOBS3_Voltage::CampbellOBS3_Voltage }}
@@ -326,7 +333,7 @@ class CampbellOBS3_Turbidity : public Variable {
     explicit CampbellOBS3_Turbidity(
         CampbellOBS3* parentSense, const char* uuid = "",
         const char* varCode = OBS3_TURB_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)OBS3_TURB_VAR_NUM,
+        : Variable(parentSense, (uint8_t)OBS3_TURB_VAR_NUM,
                    (uint8_t)OBS3_RESOLUTION, OBS3_TURB_VAR_NAME,
                    OBS3_TURB_UNIT_NAME, varCode, uuid) {}
     /**
@@ -335,7 +342,7 @@ class CampbellOBS3_Turbidity : public Variable {
      * @note This must be tied with a parent CampbellOBS3 before it can be used.
      */
     CampbellOBS3_Turbidity()
-        : Variable((const uint8_t)OBS3_TURB_VAR_NUM, (uint8_t)OBS3_RESOLUTION,
+        : Variable((uint8_t)OBS3_TURB_VAR_NUM, (uint8_t)OBS3_RESOLUTION,
                    OBS3_TURB_VAR_NAME, OBS3_TURB_UNIT_NAME,
                    OBS3_TURB_DEFAULT_CODE) {}
     /**
@@ -371,7 +378,7 @@ class CampbellOBS3_Voltage : public Variable {
     explicit CampbellOBS3_Voltage(
         CampbellOBS3* parentSense, const char* uuid = "",
         const char* varCode = OBS3_VOLTAGE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)OBS3_VOLTAGE_VAR_NUM,
+        : Variable(parentSense, (uint8_t)OBS3_VOLTAGE_VAR_NUM,
                    (uint8_t)OBS3_VOLTAGE_RESOLUTION, OBS3_VOLTAGE_VAR_NAME,
                    OBS3_VOLTAGE_UNIT_NAME, varCode, uuid) {}
     /**
@@ -380,7 +387,7 @@ class CampbellOBS3_Voltage : public Variable {
      * @note This must be tied with a parent CampbellOBS3 before it can be used.
      */
     CampbellOBS3_Voltage()
-        : Variable((const uint8_t)OBS3_VOLTAGE_VAR_NUM,
+        : Variable((uint8_t)OBS3_VOLTAGE_VAR_NUM,
                    (uint8_t)OBS3_VOLTAGE_RESOLUTION, OBS3_VOLTAGE_VAR_NAME,
                    OBS3_VOLTAGE_UNIT_NAME, OBS3_VOLTAGE_DEFAULT_CODE) {}
     /**

@@ -15,12 +15,14 @@ void setup() {
     delay(1000);
     Serial1.print("+++");
     delay(1000);
+    /* cSpell:disable */
     Serial1.print("ATRE\r");
     Serial1.print("ATWR\r");
     Serial1.print("ATAC\r");
     Serial1.print("ATGT\r");
     Serial1.print("ATFR\r");
     Serial1.print("ATCN\r");
+    /* cSpell:enable */
 }
 
 void loop() {

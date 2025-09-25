@@ -35,6 +35,7 @@ Sodaq2GBeeR6::~Sodaq2GBeeR6() {}
 bool Sodaq2GBeeR6::modemWakeFxn(void) {
     if (_vRefPin >= 0) {
         MS_DBG(F("Enabling voltage reference for GPRSBeeR6 on pin"), _vRefPin);
+        pinMode(_vRefPin, OUTPUT);
         digitalWrite(_vRefPin, HIGH);
     }
     return true;
@@ -49,14 +50,14 @@ bool Sodaq2GBeeR6::modemSleepFxn(void) {
         MS_DBG(F("Disabling voltage reference for GPRSBeeR6 on pin"), _vRefPin);
         digitalWrite(_vRefPin, LOW);
     }
+    gsmModem.stream.flush();
     return success;
 }
 
 bool Sodaq2GBeeR6::extraModemSetup(void) {
     bool success = gsmModem.init();
-    gsmClient.init(&gsmModem);
-    _modemName = gsmModem.getModemName();
-    if (_vRefPin >= 0) pinMode(_vRefPin, OUTPUT);
+    _modemName   = gsmModem.getModemName();
+    if (_vRefPin >= 0) { pinMode(_vRefPin, OUTPUT); }
     return success;
 }
 

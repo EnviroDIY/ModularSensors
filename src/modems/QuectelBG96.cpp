@@ -20,14 +20,13 @@ QuectelBG96::QuectelBG96(Stream* modemStream, int8_t powerPin, int8_t statusPin,
                   BG96_RESET_LEVEL, BG96_RESET_PULSE_MS, modemSleepRqPin,
                   BG96_WAKE_LEVEL, BG96_WAKE_PULSE_MS, BG96_STATUS_TIME_MS,
                   BG96_DISCONNECT_TIME_MS, BG96_WAKE_DELAY_MS,
-                  BG96_ATRESPONSE_TIME_MS),
+                  BG96_AT_RESPONSE_TIME_MS),
 #ifdef MS_QUECTELBG96_DEBUG_DEEP
-      _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
+      _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
       gsmModem(_modemATDebugger),
 #else
       gsmModem(*modemStream),
 #endif
-      gsmClient(gsmModem),
       _apn(apn) {
 }
 
@@ -41,6 +40,11 @@ MS_MODEM_WAKE(QuectelBG96);
 MS_MODEM_CONNECT_INTERNET(QuectelBG96);
 MS_MODEM_DISCONNECT_INTERNET(QuectelBG96);
 MS_MODEM_IS_INTERNET_AVAILABLE(QuectelBG96);
+
+MS_MODEM_CREATE_CLIENT(QuectelBG96);
+MS_MODEM_DELETE_CLIENT(QuectelBG96);
+MS_MODEM_CREATE_SECURE_CLIENT(QuectelBG96);
+MS_MODEM_DELETE_SECURE_CLIENT(QuectelBG96);
 
 MS_MODEM_GET_NIST_TIME(QuectelBG96);
 
@@ -70,8 +74,11 @@ bool QuectelBG96::modemSleepFxn(void) {
         // BG96 must have access to `PWRKEY` pin to sleep
         // Easiest to just go to sleep with the AT command rather than using
         // pins
-        return gsmModem.poweroff();
+        bool res = gsmModem.poweroff();
+        gsmModem.stream.flush();
+        return res;
     }
+    gsmModem.stream.flush();
     return true;  // DON'T go to sleep if we can't wake up!
 }
 

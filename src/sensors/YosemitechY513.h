@@ -59,7 +59,7 @@
 /**
  * @anchor sensor_y513_var_counts
  * @name Sensor Variable Counts
- * The number of variables that can be returned by a Yosemitch Y514
+ * The number of variables that can be returned by a Yosemitech Y514
  */
 /**@{*/
 /// @brief Sensor::_numReturnedValues; the Y513 can report 2 values.
@@ -71,7 +71,7 @@
 /**
  * @anchor sensor_y513_timing
  * @name Sensor Timing
- * The sensor timing for a Yosemitch Y513
+ * The sensor timing for a Yosemitech Y513
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; time before sensor responds after power - 1.3
@@ -88,7 +88,7 @@
 /**
  * @anchor sensor_y513_bga
  * @name Chlorophyll Concentration
- * The blue green algae concentration variable from a Yosemitch Y513
+ * The blue green algae concentration variable from a Yosemitech Y513
  * - Range is 0 to 400 µg/L or 0 to 100 RFU
  * - Accuracy is ± 1 %
  *
@@ -116,7 +116,7 @@
 /**
  * @anchor sensor_y513_temp
  * @name Temperature
- * The temperature variable from a Yosemitch Y513
+ * The temperature variable from a Yosemitech Y513
  * - Range is 0°C to + 50°C
  * - Accuracy is ± 0.2°C
  *
@@ -222,7 +222,7 @@ class YosemitechY513_BGA : public Variable {
     explicit YosemitechY513_BGA(YosemitechY513* parentSense,
                                 const char*     uuid    = "",
                                 const char*     varCode = Y513_BGA_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)Y513_BGA_VAR_NUM,
+        : Variable(parentSense, (uint8_t)Y513_BGA_VAR_NUM,
                    (uint8_t)Y513_BGA_RESOLUTION, Y513_BGA_VAR_NAME,
                    Y513_BGA_UNIT_NAME, varCode, uuid) {}
     /**
@@ -232,9 +232,9 @@ class YosemitechY513_BGA : public Variable {
      * used.
      */
     YosemitechY513_BGA()
-        : Variable((const uint8_t)Y513_BGA_VAR_NUM,
-                   (uint8_t)Y513_BGA_RESOLUTION, Y513_BGA_VAR_NAME,
-                   Y513_BGA_UNIT_NAME, Y513_BGA_DEFAULT_CODE) {}
+        : Variable((uint8_t)Y513_BGA_VAR_NUM, (uint8_t)Y513_BGA_RESOLUTION,
+                   Y513_BGA_VAR_NAME, Y513_BGA_UNIT_NAME,
+                   Y513_BGA_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY513_BGA() object - no action
      * needed.
@@ -267,7 +267,7 @@ class YosemitechY513_Temp : public Variable {
     explicit YosemitechY513_Temp(YosemitechY513* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = Y513_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)Y513_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)Y513_TEMP_VAR_NUM,
                    (uint8_t)Y513_TEMP_RESOLUTION, Y513_TEMP_VAR_NAME,
                    Y513_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -277,9 +277,9 @@ class YosemitechY513_Temp : public Variable {
      * used.
      */
     YosemitechY513_Temp()
-        : Variable((const uint8_t)Y513_TEMP_VAR_NUM,
-                   (uint8_t)Y513_TEMP_RESOLUTION, Y513_TEMP_VAR_NAME,
-                   Y513_TEMP_UNIT_NAME, Y513_TEMP_DEFAULT_CODE) {}
+        : Variable((uint8_t)Y513_TEMP_VAR_NUM, (uint8_t)Y513_TEMP_RESOLUTION,
+                   Y513_TEMP_VAR_NAME, Y513_TEMP_UNIT_NAME,
+                   Y513_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY513_Temp object - no action needed.
      */

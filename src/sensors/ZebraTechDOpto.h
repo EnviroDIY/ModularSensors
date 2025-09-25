@@ -86,11 +86,11 @@
 /**
  * @brief Sensor::_measurementTime_ms; the D-Opto takes 5335ms to complete a
  * measurement.
- * - Excitiation time before measurement: ~5225ms
+ * - Excitation time before measurement: ~5225ms
  * - Maximum measurement duration: ~110ms
  *
  * Obnoxiously, the sensor will not take a "concurrent" measurement and leave
- * the sensor powered on, so we must wait entire ~5200ms exitation time and the
+ * the sensor powered on, so we must wait entire ~5200ms excitation time and the
  * 110ms measurement time each time.
  * There is the ability to do a non-concurrent measurement and leave the
  * sensor powered on, in which case the re-measurement takes ~110ms, but doing
@@ -277,7 +277,7 @@ class ZebraTechDOpto_Temp : public Variable {
     explicit ZebraTechDOpto_Temp(ZebraTechDOpto* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = DOPTO_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)DOPTO_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)DOPTO_TEMP_VAR_NUM,
                    (uint8_t)DOPTO_TEMP_RESOLUTION, DOPTO_TEMP_VAR_NAME,
                    DOPTO_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -287,9 +287,9 @@ class ZebraTechDOpto_Temp : public Variable {
      * used.
      */
     ZebraTechDOpto_Temp()
-        : Variable((const uint8_t)DOPTO_TEMP_VAR_NUM,
-                   (uint8_t)DOPTO_TEMP_RESOLUTION, DOPTO_TEMP_VAR_NAME,
-                   DOPTO_TEMP_UNIT_NAME, DOPTO_TEMP_DEFAULT_CODE) {}
+        : Variable((uint8_t)DOPTO_TEMP_VAR_NUM, (uint8_t)DOPTO_TEMP_RESOLUTION,
+                   DOPTO_TEMP_VAR_NAME, DOPTO_TEMP_UNIT_NAME,
+                   DOPTO_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the ZebraTechDOpto_Temp object - no action needed.
      */
@@ -321,7 +321,7 @@ class ZebraTechDOpto_DOpct : public Variable {
     explicit ZebraTechDOpto_DOpct(
         ZebraTechDOpto* parentSense, const char* uuid = "",
         const char* varCode = DOPTO_DOPCT_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)DOPTO_DOPCT_VAR_NUM,
+        : Variable(parentSense, (uint8_t)DOPTO_DOPCT_VAR_NUM,
                    (uint8_t)DOPTO_DOPCT_RESOLUTION, DOPTO_DOPCT_VAR_NAME,
                    DOPTO_DOPCT_UNIT_NAME, varCode, uuid) {}
     /**
@@ -331,7 +331,7 @@ class ZebraTechDOpto_DOpct : public Variable {
      * used.
      */
     ZebraTechDOpto_DOpct()
-        : Variable((const uint8_t)DOPTO_DOPCT_VAR_NUM,
+        : Variable((uint8_t)DOPTO_DOPCT_VAR_NUM,
                    (uint8_t)DOPTO_DOPCT_RESOLUTION, DOPTO_DOPCT_VAR_NAME,
                    DOPTO_DOPCT_UNIT_NAME, DOPTO_DOPCT_DEFAULT_CODE) {}
     /**
@@ -365,7 +365,7 @@ class ZebraTechDOpto_DOmgL : public Variable {
     explicit ZebraTechDOpto_DOmgL(
         ZebraTechDOpto* parentSense, const char* uuid = "",
         const char* varCode = DOPTO_DOMGL_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)DOPTO_DOMGL_VAR_NUM,
+        : Variable(parentSense, (uint8_t)DOPTO_DOMGL_VAR_NUM,
                    (uint8_t)DOPTO_DOMGL_RESOLUTION, DOPTO_DOMGL_VAR_NAME,
                    DOPTO_DOMGL_UNIT_NAME, varCode, uuid) {}
     /**
@@ -375,7 +375,7 @@ class ZebraTechDOpto_DOmgL : public Variable {
      * used.
      */
     ZebraTechDOpto_DOmgL()
-        : Variable((const uint8_t)DOPTO_DOMGL_VAR_NUM,
+        : Variable((uint8_t)DOPTO_DOMGL_VAR_NUM,
                    (uint8_t)DOPTO_DOMGL_RESOLUTION, DOPTO_DOMGL_VAR_NAME,
                    DOPTO_DOMGL_UNIT_NAME, DOPTO_DOMGL_DEFAULT_CODE) {}
     /**
@@ -385,3 +385,5 @@ class ZebraTechDOpto_DOmgL : public Variable {
 };
 /**@}*/
 #endif  // SRC_SENSORS_ZEBRATECHDOPTO_H_
+
+// cSpell:ignore Pololu

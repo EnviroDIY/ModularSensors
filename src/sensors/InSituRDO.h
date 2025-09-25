@@ -15,7 +15,7 @@
 /* clang-format off */
 /**
  * @defgroup sensor_insitu_rdo In-Situ RDO PRO-X
- * Classes for the InSitue Optical RDO PRO-X process optical dissolved oxygen probe
+ * Classes for the InSitu Optical RDO PRO-X process optical dissolved oxygen probe
  *
  * @ingroup sdi12_group
  *
@@ -59,7 +59,7 @@
  * Win-Situ to change some of the default settings on the sensor.
  *
  * To connect the sensor to Win-Situ, you can use any form of RS485 to USB interface.
- * In-Situ sells one that specifially works with their cables, but any
+ * In-Situ sells one that specifically works with their cables, but any
  * inexpensive converter adapter with automatic flow control should work.
  * The sensor must be powered at a minimum of **12V** (12-36V) to use the
  * RS485/modbus interface.  This is different than the 9.6V - 16V required for
@@ -120,7 +120,7 @@
  *
  * The optical window should only be cleaned when the sensor cap is changed.
  *
- * InSitu recommends using an antifouling guard or airblast adapter to extend deployments and protect your data.
+ * InSitu recommends using an antifouling guard or air blast adapter to extend deployments and protect your data.
  *
  * @section sensor_insitu_rdo_warnings Deployment Notes and Warnings
  * @warning The inside of the controller must be kept free of moisture and humidity.
@@ -218,7 +218,7 @@
  *   - ± 0.2 mg/L of reading from 8-20 mg/L
  *   - ± 10% of reading from 20-50 mg/L
  *
- * @note To acheive maximum accuracy, the sensor must be calibrated using either
+ * @note To achieve maximum accuracy, the sensor must be calibrated using either
  * a one or two point calibration.
  *
  * {{ @ref InSituRDO_DOmgL::InSituRDO_DOmgL }}
@@ -257,7 +257,7 @@
  *   - ± 0.1 mg/L from 0 to 8 mg/L
  *   - ± 0.2 mg/L of reading from 8-20 mg/L
  *   - ± 10% of reading from 20-50 mg/L
- * @note To acheive maximum accuracy, the sensor must be calibrated using either
+ * @note To achieve maximum accuracy, the sensor must be calibrated using either
  * a one or two point calibration.
  *
  * {{ @ref InSituRDO_DOpct::InSituRDO_DOpct }}
@@ -441,7 +441,7 @@ class InSituRDO_DOmgL : public Variable {
     explicit InSituRDO_DOmgL(
         InSituRDO* parentSense, const char* uuid = "",
         const char* varCode = INSITU_RDO_DOMGL_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)INSITU_RDO_DOMGL_VAR_NUM,
+        : Variable(parentSense, (uint8_t)INSITU_RDO_DOMGL_VAR_NUM,
                    (uint8_t)INSITU_RDO_DOMGL_RESOLUTION,
                    INSITU_RDO_DOMGL_VAR_NAME, INSITU_RDO_DOMGL_UNIT_NAME,
                    varCode, uuid) {}
@@ -452,7 +452,7 @@ class InSituRDO_DOmgL : public Variable {
      * used.
      */
     InSituRDO_DOmgL()
-        : Variable((const uint8_t)INSITU_RDO_DOMGL_VAR_NUM,
+        : Variable((uint8_t)INSITU_RDO_DOMGL_VAR_NUM,
                    (uint8_t)INSITU_RDO_DOMGL_RESOLUTION,
                    INSITU_RDO_DOMGL_VAR_NAME, INSITU_RDO_DOMGL_UNIT_NAME,
                    INSITU_RDO_DOMGL_DEFAULT_CODE) {}
@@ -487,7 +487,7 @@ class InSituRDO_DOpct : public Variable {
     explicit InSituRDO_DOpct(
         InSituRDO* parentSense, const char* uuid = "",
         const char* varCode = INSITU_RDO_DOPCT_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)INSITU_RDO_DOPCT_VAR_NUM,
+        : Variable(parentSense, (uint8_t)INSITU_RDO_DOPCT_VAR_NUM,
                    (uint8_t)INSITU_RDO_DOPCT_RESOLUTION,
                    INSITU_RDO_DOPCT_VAR_NAME, INSITU_RDO_DOPCT_UNIT_NAME,
                    varCode, uuid) {}
@@ -498,7 +498,7 @@ class InSituRDO_DOpct : public Variable {
      * used.
      */
     InSituRDO_DOpct()
-        : Variable((const uint8_t)INSITU_RDO_DOPCT_VAR_NUM,
+        : Variable((uint8_t)INSITU_RDO_DOPCT_VAR_NUM,
                    (uint8_t)INSITU_RDO_DOPCT_RESOLUTION,
                    INSITU_RDO_DOPCT_VAR_NAME, INSITU_RDO_DOPCT_UNIT_NAME,
                    INSITU_RDO_DOPCT_DEFAULT_CODE) {}
@@ -532,7 +532,7 @@ class InSituRDO_Temp : public Variable {
      */
     explicit InSituRDO_Temp(InSituRDO* parentSense, const char* uuid = "",
                             const char* varCode = INSITU_RDO_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)INSITU_RDO_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)INSITU_RDO_TEMP_VAR_NUM,
                    (uint8_t)INSITU_RDO_TEMP_RESOLUTION,
                    INSITU_RDO_TEMP_VAR_NAME, INSITU_RDO_TEMP_UNIT_NAME, varCode,
                    uuid) {}
@@ -543,7 +543,7 @@ class InSituRDO_Temp : public Variable {
      * used.
      */
     InSituRDO_Temp()
-        : Variable((const uint8_t)INSITU_RDO_TEMP_VAR_NUM,
+        : Variable((uint8_t)INSITU_RDO_TEMP_VAR_NUM,
                    (uint8_t)INSITU_RDO_TEMP_RESOLUTION,
                    INSITU_RDO_TEMP_VAR_NAME, INSITU_RDO_TEMP_UNIT_NAME,
                    INSITU_RDO_TEMP_DEFAULT_CODE) {}
@@ -578,7 +578,7 @@ class InSituRDO_Pressure : public Variable {
     explicit InSituRDO_Pressure(
         InSituRDO* parentSense, const char* uuid = "",
         const char* varCode = INSITU_RDO_PRESSURE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)INSITU_RDO_PRESSURE_VAR_NUM,
+        : Variable(parentSense, (uint8_t)INSITU_RDO_PRESSURE_VAR_NUM,
                    (uint8_t)INSITU_RDO_PRESSURE_RESOLUTION,
                    INSITU_RDO_PRESSURE_VAR_NAME, INSITU_RDO_PRESSURE_UNIT_NAME,
                    varCode, uuid) {}
@@ -589,7 +589,7 @@ class InSituRDO_Pressure : public Variable {
      * used.
      */
     InSituRDO_Pressure()
-        : Variable((const uint8_t)INSITU_RDO_PRESSURE_VAR_NUM,
+        : Variable((uint8_t)INSITU_RDO_PRESSURE_VAR_NUM,
                    (uint8_t)INSITU_RDO_PRESSURE_RESOLUTION,
                    INSITU_RDO_PRESSURE_VAR_NAME, INSITU_RDO_PRESSURE_UNIT_NAME,
                    INSITU_RDO_PRESSURE_DEFAULT_CODE) {}

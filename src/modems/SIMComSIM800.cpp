@@ -20,14 +20,13 @@ SIMComSIM800::SIMComSIM800(Stream* modemStream, int8_t powerPin,
                   SIM800_RESET_LEVEL, SIM800_RESET_PULSE_MS, modemSleepRqPin,
                   SIM800_WAKE_LEVEL, SIM800_WAKE_PULSE_MS,
                   SIM800_STATUS_TIME_MS, SIM800_DISCONNECT_TIME_MS,
-                  SIM800_WAKE_DELAY_MS, SIM800_ATRESPONSE_TIME_MS),
+                  SIM800_WAKE_DELAY_MS, SIM800_AT_RESPONSE_TIME_MS),
 #ifdef MS_SIMCOMSIM800_DEBUG_DEEP
-      _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
+      _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
       gsmModem(_modemATDebugger),
 #else
       gsmModem(*modemStream),
 #endif
-      gsmClient(gsmModem),
       _apn(apn) {
 }
 
@@ -41,6 +40,11 @@ MS_MODEM_WAKE(SIMComSIM800);
 MS_MODEM_CONNECT_INTERNET(SIMComSIM800);
 MS_MODEM_DISCONNECT_INTERNET(SIMComSIM800);
 MS_MODEM_IS_INTERNET_AVAILABLE(SIMComSIM800);
+
+MS_MODEM_CREATE_CLIENT(SIMComSIM800);
+MS_MODEM_DELETE_CLIENT(SIMComSIM800);
+MS_MODEM_CREATE_SECURE_CLIENT(SIMComSIM800);
+MS_MODEM_DELETE_SECURE_CLIENT(SIMComSIM800);
 
 MS_MODEM_GET_NIST_TIME(SIMComSIM800);
 
@@ -70,8 +74,11 @@ bool SIMComSIM800::modemSleepFxn(void) {
         // Easiest to just go to sleep with the AT command rather than using
         // pins
         MS_DBG(F("Asking SIM800 to power down"));
-        return gsmModem.poweroff();
+        bool res = gsmModem.poweroff();
+        gsmModem.stream.flush();
+        return res;
     } else {  // DON'T go to sleep if we can't wake up!
+        gsmModem.stream.flush();
         return true;
     }
 }

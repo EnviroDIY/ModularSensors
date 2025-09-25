@@ -19,7 +19,7 @@
  * within the documentation in the YosemitechModbus library at:
  * https://github.com/EnviroDIY/YosemitechModbus
  *
- * More detailed infromation on each variable can be found in the documentation
+ * More detailed information on each variable can be found in the documentation
  * for the individual sensor probes
  */
 /* clang-format off */
@@ -65,7 +65,7 @@
 /**
  * @anchor sensor_y4000_var_counts
  * @name Sensor Variable Counts
- * The number of variables that can be returned by a Yosemitch Y4000
+ * The number of variables that can be returned by a Yosemitech Y4000
  */
 /**@{*/
 /// @brief Sensor::_numReturnedValues; the Y4000 can report 8 values.
@@ -77,7 +77,7 @@
 /**
  * @anchor sensor_y4000_timing
  * @name Sensor Timing
- * The sensor timing for a Yosemitch Y4000 multi-parameter sonde
+ * The sensor timing for a Yosemitech Y4000 multi-parameter sonde
  */
 /**@{*/
 /**
@@ -101,7 +101,7 @@
 /**
  * @anchor sensor_y4000_domgl
  * @name Dissolved Oxygen Concentration
- * The dissolved oxygen concentration variable from a Yosemitch Y4000
+ * The dissolved oxygen concentration variable from a Yosemitech Y4000
  * multi-parameter sonde
  * - Range is 0-20mg/L or 0-200% Air Saturation
  * - Accuracy is ± 0.3 mg/L
@@ -130,7 +130,7 @@
 /**
  * @anchor sensor_y4000_turb
  * @name Turbidity
- * The turbidity variable from a Yosemitch Y4000 multi-parameter sonde
+ * The turbidity variable from a Yosemitech Y4000 multi-parameter sonde
  * - Range is 0.1~1000 NTU
  * - Accuracy is ＜5% or 0.3NTU
  *
@@ -157,7 +157,7 @@
 /**
  * @anchor sensor_y4000_cond
  * @name Conductivity
- * The conductivity variable from a Yosemitch Y4000 multi-parameter sonde
+ * The conductivity variable from a Yosemitech Y4000 multi-parameter sonde
  * - Range is 1 µS/cm to 200 mS/cm
  * - Accuracy is ± 1 % Full Scale
  *
@@ -184,7 +184,7 @@
 /**
  * @anchor sensor_y4000_ph
  * @name pH
- * The pH variable from a Yosemitch Y4000 multi-parameter sonde
+ * The pH variable from a Yosemitech Y4000 multi-parameter sonde
  * - Range is 2 to 12 pH units
  * - Accuracy is ± 0.1 pH units
  *
@@ -210,7 +210,7 @@
 /**
  * @anchor sensor_y4000_temp
  * @name Temperature
- * The temperature variable from a Yosemitch Y4000 multi-parameter sonde
+ * The temperature variable from a Yosemitech Y4000 multi-parameter sonde
  * - Range is 0°C to + 50°C
  * - Accuracy is ± 0.2°C
  *
@@ -237,7 +237,7 @@
 /**
  * @anchor sensor_y4000_orp
  * @name ORP
- * The ORP variable from a Yosemitch Y4000 multi-parameter sonde
+ * The ORP variable from a Yosemitech Y4000 multi-parameter sonde
  * - Range is -999 ~ 999 mV
  * - Accuracy is ± 20 mV
  *
@@ -264,8 +264,8 @@
 /**
  * @anchor sensor_y4000_chloro
  * @name Chlorophyll Concentration
- * The chlorophyll concentration variable from a Yosemitch Y4000 multi-parameter
- * sonde
+ * The chlorophyll concentration variable from a Yosemitech Y4000
+ * multi-parameter sonde
  * - Range is 0 to 400 µg/L or 0 to 100 RFU
  * - Accuracy is ± 1 %
  *
@@ -293,7 +293,7 @@
 /**
  * @anchor sensor_y4000_bga
  * @name Blue Green Algae Concentration
- * The BGA variable from a Yosemitch Y4000 multi-parameter sonde
+ * The BGA variable from a Yosemitech Y4000 multi-parameter sonde
  * - Range is 0 to 100 µg/L or 0 to 100 RFU
  * - Accuracy is ±  0.04ug/L PC
  *
@@ -401,7 +401,7 @@ class YosemitechY4000_DOmgL : public Variable {
     explicit YosemitechY4000_DOmgL(
         YosemitechY4000* parentSense, const char* uuid = "",
         const char* varCode = Y4000_DOMGL_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)Y4000_DOMGL_VAR_NUM,
+        : Variable(parentSense, (uint8_t)Y4000_DOMGL_VAR_NUM,
                    (uint8_t)Y4000_DOMGL_RESOLUTION, Y4000_DOMGL_VAR_NAME,
                    Y4000_DOMGL_UNIT_NAME, varCode, uuid) {}
     /**
@@ -411,7 +411,7 @@ class YosemitechY4000_DOmgL : public Variable {
      * used.
      */
     YosemitechY4000_DOmgL()
-        : Variable((const uint8_t)Y4000_DOMGL_VAR_NUM,
+        : Variable((uint8_t)Y4000_DOMGL_VAR_NUM,
                    (uint8_t)Y4000_DOMGL_RESOLUTION, Y4000_DOMGL_VAR_NAME,
                    Y4000_DOMGL_UNIT_NAME, Y4000_DOMGL_DEFAULT_CODE) {}
     /**
@@ -444,7 +444,7 @@ class YosemitechY4000_Turbidity : public Variable {
     explicit YosemitechY4000_Turbidity(
         YosemitechY4000* parentSense, const char* uuid = "",
         const char* varCode = Y4000_TURB_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)Y4000_TURB_VAR_NUM,
+        : Variable(parentSense, (uint8_t)Y4000_TURB_VAR_NUM,
                    (uint8_t)Y4000_TURB_RESOLUTION, Y4000_TURB_VAR_NAME,
                    Y4000_TURB_UNIT_NAME, varCode, uuid) {}
     /**
@@ -454,9 +454,9 @@ class YosemitechY4000_Turbidity : public Variable {
      * used.
      */
     YosemitechY4000_Turbidity()
-        : Variable((const uint8_t)Y4000_TURB_VAR_NUM,
-                   (uint8_t)Y4000_TURB_RESOLUTION, Y4000_TURB_VAR_NAME,
-                   Y4000_TURB_UNIT_NAME, Y4000_TURB_DEFAULT_CODE) {}
+        : Variable((uint8_t)Y4000_TURB_VAR_NUM, (uint8_t)Y4000_TURB_RESOLUTION,
+                   Y4000_TURB_VAR_NAME, Y4000_TURB_UNIT_NAME,
+                   Y4000_TURB_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY4000_Turbidity object - no action needed.
      */
@@ -487,7 +487,7 @@ class YosemitechY4000_Cond : public Variable {
     explicit YosemitechY4000_Cond(YosemitechY4000* parentSense,
                                   const char*      uuid = "",
                                   const char* varCode = Y4000_COND_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)Y4000_COND_VAR_NUM,
+        : Variable(parentSense, (uint8_t)Y4000_COND_VAR_NUM,
                    (uint8_t)Y4000_COND_RESOLUTION, Y4000_COND_VAR_NAME,
                    Y4000_COND_UNIT_NAME, varCode, uuid) {}
     /**
@@ -497,9 +497,9 @@ class YosemitechY4000_Cond : public Variable {
      * used.
      */
     YosemitechY4000_Cond()
-        : Variable((const uint8_t)Y4000_COND_VAR_NUM,
-                   (uint8_t)Y4000_COND_RESOLUTION, Y4000_COND_VAR_NAME,
-                   Y4000_COND_UNIT_NAME, Y4000_COND_DEFAULT_CODE) {}
+        : Variable((uint8_t)Y4000_COND_VAR_NUM, (uint8_t)Y4000_COND_RESOLUTION,
+                   Y4000_COND_VAR_NAME, Y4000_COND_UNIT_NAME,
+                   Y4000_COND_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY4000_Cond object - no action needed.
      */
@@ -530,7 +530,7 @@ class YosemitechY4000_pH : public Variable {
     explicit YosemitechY4000_pH(YosemitechY4000* parentSense,
                                 const char*      uuid = "",
                                 const char* varCode   = Y4000_PH_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)Y4000_PH_VAR_NUM,
+        : Variable(parentSense, (uint8_t)Y4000_PH_VAR_NUM,
                    (uint8_t)Y4000_PH_RESOLUTION, Y4000_PH_VAR_NAME,
                    Y4000_PH_UNIT_NAME, varCode, uuid) {}
     /**
@@ -540,9 +540,9 @@ class YosemitechY4000_pH : public Variable {
      * used.
      */
     YosemitechY4000_pH()
-        : Variable((const uint8_t)Y4000_PH_VAR_NUM,
-                   (uint8_t)Y4000_PH_RESOLUTION, Y4000_PH_VAR_NAME,
-                   Y4000_PH_UNIT_NAME, Y4000_PH_DEFAULT_CODE) {}
+        : Variable((uint8_t)Y4000_PH_VAR_NUM, (uint8_t)Y4000_PH_RESOLUTION,
+                   Y4000_PH_VAR_NAME, Y4000_PH_UNIT_NAME,
+                   Y4000_PH_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY4000_pH object - no action needed.
      */
@@ -573,7 +573,7 @@ class YosemitechY4000_Temp : public Variable {
     explicit YosemitechY4000_Temp(YosemitechY4000* parentSense,
                                   const char*      uuid = "",
                                   const char* varCode = Y4000_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)Y4000_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)Y4000_TEMP_VAR_NUM,
                    (uint8_t)Y4000_TEMP_RESOLUTION, Y4000_TEMP_VAR_NAME,
                    Y4000_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -583,9 +583,9 @@ class YosemitechY4000_Temp : public Variable {
      * used.
      */
     YosemitechY4000_Temp()
-        : Variable((const uint8_t)Y4000_TEMP_VAR_NUM,
-                   (uint8_t)Y4000_TEMP_RESOLUTION, Y4000_TEMP_VAR_NAME,
-                   Y4000_TEMP_UNIT_NAME, Y4000_TEMP_DEFAULT_CODE) {}
+        : Variable((uint8_t)Y4000_TEMP_VAR_NUM, (uint8_t)Y4000_TEMP_RESOLUTION,
+                   Y4000_TEMP_VAR_NAME, Y4000_TEMP_UNIT_NAME,
+                   Y4000_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY4000_Temp object - no action needed.
      */
@@ -616,7 +616,7 @@ class YosemitechY4000_ORP : public Variable {
     explicit YosemitechY4000_ORP(YosemitechY4000* parentSense,
                                  const char*      uuid = "",
                                  const char* varCode   = Y4000_ORP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)Y4000_ORP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)Y4000_ORP_VAR_NUM,
                    (uint8_t)Y4000_ORP_RESOLUTION, Y4000_ORP_VAR_NAME,
                    Y4000_ORP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -626,9 +626,9 @@ class YosemitechY4000_ORP : public Variable {
      * used.
      */
     YosemitechY4000_ORP()
-        : Variable((const uint8_t)Y4000_ORP_VAR_NUM,
-                   (uint8_t)Y4000_ORP_RESOLUTION, Y4000_ORP_VAR_NAME,
-                   Y4000_ORP_UNIT_NAME, Y4000_ORP_DEFAULT_CODE) {}
+        : Variable((uint8_t)Y4000_ORP_VAR_NUM, (uint8_t)Y4000_ORP_RESOLUTION,
+                   Y4000_ORP_VAR_NAME, Y4000_ORP_UNIT_NAME,
+                   Y4000_ORP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY4000_ORP object - no action needed.
      */
@@ -659,7 +659,7 @@ class YosemitechY4000_Chlorophyll : public Variable {
     explicit YosemitechY4000_Chlorophyll(
         YosemitechY4000* parentSense, const char* uuid = "",
         const char* varCode = Y4000_CHLORO_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)Y4000_CHLORO_VAR_NUM,
+        : Variable(parentSense, (uint8_t)Y4000_CHLORO_VAR_NUM,
                    (uint8_t)Y4000_CHLORO_RESOLUTION, Y4000_CHLORO_VAR_NAME,
                    Y4000_CHLORO_UNIT_NAME, varCode, uuid) {}
     /**
@@ -669,7 +669,7 @@ class YosemitechY4000_Chlorophyll : public Variable {
      * used.
      */
     YosemitechY4000_Chlorophyll()
-        : Variable((const uint8_t)Y4000_CHLORO_VAR_NUM,
+        : Variable((uint8_t)Y4000_CHLORO_VAR_NUM,
                    (uint8_t)Y4000_CHLORO_RESOLUTION, Y4000_CHLORO_VAR_NAME,
                    Y4000_CHLORO_UNIT_NAME, Y4000_CHLORO_DEFAULT_CODE) {}
     /**
@@ -703,7 +703,7 @@ class YosemitechY4000_BGA : public Variable {
     explicit YosemitechY4000_BGA(YosemitechY4000* parentSense,
                                  const char*      uuid = "",
                                  const char* varCode   = Y4000_BGA_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)Y4000_BGA_VAR_NUM,
+        : Variable(parentSense, (uint8_t)Y4000_BGA_VAR_NUM,
                    (uint8_t)Y4000_BGA_RESOLUTION, Y4000_BGA_VAR_NAME,
                    Y4000_BGA_UNIT_NAME, varCode, uuid) {}
     /**
@@ -713,9 +713,9 @@ class YosemitechY4000_BGA : public Variable {
      * used.
      */
     YosemitechY4000_BGA()
-        : Variable((const uint8_t)Y4000_BGA_VAR_NUM,
-                   (uint8_t)Y4000_BGA_RESOLUTION, Y4000_BGA_VAR_NAME,
-                   Y4000_BGA_UNIT_NAME, Y4000_BGA_DEFAULT_CODE) {}
+        : Variable((uint8_t)Y4000_BGA_VAR_NUM, (uint8_t)Y4000_BGA_RESOLUTION,
+                   Y4000_BGA_VAR_NAME, Y4000_BGA_UNIT_NAME,
+                   Y4000_BGA_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY4000_BGA object - no action needed.
      */
@@ -723,3 +723,5 @@ class YosemitechY4000_BGA : public Variable {
 };
 /**@}*/
 #endif  // SRC_SENSORS_YOSEMITECHY4000_H_
+
+// cSpell:ignore Y4000Chloro

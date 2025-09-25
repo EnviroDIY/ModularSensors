@@ -25,7 +25,7 @@
  * Your milage may vary.
  *
  * When operated in Digi's "bypass" mode, the u-blox SARA R410M based XBee3 can
- * be implented as a DigiXBeeLTEBypass object - a subclass of DigiXBee and
+ * be implemented as a DigiXBeeLTEBypass object - a subclass of DigiXBee and
  * loggerModem.
  * Bypass refers to the fact that XBee3's main processor is bypassed - acting
  * only as a pass-through to the u-blox cellular component.
@@ -52,13 +52,13 @@
  * It is good practice to select which network you'll be connecting to based
  * on your SIM card and signal availability.
  * Example code for this can also be found in the
- * [menu a la carte example](@ref setup_r4_carrrier).
+ * [menu a la carte example](@ref setup_r4_carrier).
  *
  * @note The network selection for an LTE-M XBee in bypass mode is identical
  * to that for a Sodaq LTE-M UBee or any other module based on the u-blox SARA
  * R4 series.
  *
- * @menusnip{setup_r4_carrrier}
+ * @menusnip{setup_r4_carrier}
  */
 /* clang-format on */
 
@@ -66,10 +66,13 @@
 #ifndef SRC_MODEMS_DIGIXBEELTEBYPASS_H_
 #define SRC_MODEMS_DIGIXBEELTEBYPASS_H_
 
-// Debugging Statement
-// #define MS_DIGIXBEELTEBYPASS_DEBUG
-// #define MS_DIGIXBEELTEBYPASS_DEBUG_DEEP
+// Include the library config before anything else
+#include "ModSensorConfig.h"
 
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
+
+// Define the print label[s] for the debugger
 #ifdef MS_DIGIXBEELTEBYPASS_DEBUG
 #define MS_DEBUGGING_STD "DigiXBeeLTEBypass"
 #endif
@@ -78,16 +81,14 @@
  * @brief The modem type for the underlying TinyGSM library.
  */
 #define TINY_GSM_MODEM_SARAR4
-#ifndef TINY_GSM_RX_BUFFER
-/**
- * @brief The size of the buffer for incoming data.
- */
-#define TINY_GSM_RX_BUFFER 64
-#endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+#undef MS_DEBUGGING_DEEP
+
+// Include other in-library and external dependencies
 #include "TinyGsmClient.h"
 #undef TINY_GSM_MODEM_HAS_WIFI
 #include "DigiXBee.h"
@@ -111,7 +112,7 @@ class DigiXBeeLTEBypass : public DigiXBee {
     /**
      * @brief Construct a new Digi XBee LTE Bypass object.
      *
-     * The constuctor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables,
      * constructs a loggerModem parent class with the appropriate timing for the
      * module, calls the constructor for a TinyGSM modem on the provided
      * modemStream, and creates a TinyGSM Client linked to the modem.
@@ -125,9 +126,9 @@ class DigiXBeeLTEBypass : public DigiXBee {
      * status indicator rather than the true status (`ON/SLEEP_N/DIO9`) pin.
      * This inverts the loggerModem::_statusLevel.
      * @param modemResetPin @copydoc loggerModem::_modemResetPin
-     * This shold be the pin called `RESET_N` in Digi's hardware reference.
+     * This should be the pin called `RESET_N` in Digi's hardware reference.
      * @param modemSleepRqPin @copydoc loggerModem::_modemSleepRqPin
-     * This shold be the pin called `DTR_N/SLEEP_RQ/DIO8` in Digi's hardware
+     * This should be the pin called `DTR_N/SLEEP_RQ/DIO8` in Digi's hardware
      * reference.
      * @param apn The Access Point Name (APN) for the SIM card.
      *
@@ -146,6 +147,21 @@ class DigiXBeeLTEBypass : public DigiXBee {
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
     void disconnectInternet(void) override;
 
+    virtual Client* createClient() override;
+    virtual void    deleteClient(Client* client);
+    virtual Client* createSecureClient() override;
+    virtual void    deleteSecureClient(Client* client);
+    virtual Client* createSecureClient(
+        SSLAuthMode sslAuthMode, SSLVersion sslVersion = SSLVersion::TLS1_2,
+        const char* CAcertName = nullptr, const char* clientCertName = nullptr,
+        const char* clientKeyName = nullptr) override;
+    virtual Client*
+    createSecureClient(const char* pskIdent, const char* psKey,
+                       SSLVersion sslVersion = SSLVersion::TLS1_2) override;
+    virtual Client*
+    createSecureClient(const char* pskTableName,
+                       SSLVersion  sslVersion = SSLVersion::TLS1_2) override;
+
     uint32_t getNISTTime(void) override;
 
     bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
@@ -163,10 +179,6 @@ class DigiXBeeLTEBypass : public DigiXBee {
      * @brief Public reference to the TinyGSM modem.
      */
     TinyGsm gsmModem;
-    /**
-     * @brief Public reference to the TinyGSM Client.
-     */
-    TinyGsmClient gsmClient;
 
  protected:
     bool isInternetAvailable(void) override;
@@ -187,3 +199,5 @@ class DigiXBeeLTEBypass : public DigiXBee {
 };
 /**@}*/
 #endif  // SRC_MODEMS_DIGIXBEELTEBYPASS_H_
+
+// cSpell:ignore SARAR4

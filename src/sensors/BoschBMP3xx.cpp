@@ -42,6 +42,7 @@ bool BoschBMP3xx::setup(void) {
 
     // This sensor needs power for setup!
     // The BMP3XX's begin() reads required calibration data from the sensor.
+    delay(10);
     bool wasOn = checkPowerOn();
     if (!wasOn) { powerUp(); }
     waitForWarmUp();
@@ -123,7 +124,7 @@ bool BoschBMP3xx::setup(void) {
                max_measurementTime_us / 1000) {
             _standbyEnum =
                 static_cast<TimeStandby>(static_cast<int>(_standbyEnum) + 1);
-#if defined(DEBUGGING_SERIAL_OUTPUT) && defined(MS_DEBUGGING_STD)
+#if defined(MS_DEBUGGING_STD)
             _timeStandby_ms = 5.0f * pow(2, static_cast<int>(_standbyEnum));
 #endif
             MS_DBG(_standbyEnum, _timeStandby_ms,
@@ -194,9 +195,9 @@ bool BoschBMP3xx::setup(void) {
     }
     if (!success) {
         // Set the status error bit (bit 7)
-        _sensorStatus |= 0b10000000;
+        setStatusBit(ERROR_OCCURRED);
         // UN-set the set-up bit (bit 0) since setup failed!
-        _sensorStatus &= 0b11111110;
+        clearStatusBit(SETUP_SUCCESSFUL);
     }
     retVal &= success;
 
@@ -239,9 +240,11 @@ bool BoschBMP3xx::wake(void) {
         }
         if (!success) {
             // Set the status error bit (bit 7)
-            _sensorStatus |= 0b10000000;
-            // UN-set the set-up bit (bit 0) since setup failed!
-            _sensorStatus &= 0b11111110;
+            setStatusBit(ERROR_OCCURRED);
+            // Make sure that the wake time and wake success bit (bit 4) are
+            // unset
+            _millisSensorActivated = 0;
+            clearStatusBit(WAKE_SUCCESSFUL);
         }
         return success;
     }
@@ -250,9 +253,6 @@ bool BoschBMP3xx::wake(void) {
 }
 
 
-// To start a measurement we write the command "R" to the sensor
-// NOTE:  documentation says to use a capital "R" but the examples provided
-// by Atlas use a lower case "r".
 bool BoschBMP3xx::startSingleMeasurement(void) {
     // Sensor::startSingleMeasurement() checks that if it's awake/active and
     // sets the timestamp and status bits.  If it returns false, there's no
@@ -284,7 +284,7 @@ bool BoschBMP3xx::addSingleMeasurementResult(void) {
 
     // Check a measurement was *successfully* started (status bit 6 set)
     // Only go on to get a result if it was
-    if (bitRead(_sensorStatus, 6)) {
+    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
         // Read values
@@ -312,7 +312,9 @@ bool BoschBMP3xx::addSingleMeasurementResult(void) {
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)
-    _sensorStatus &= 0b10011111;
+    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
 
     return success;
 }
+
+// cSpell:ignore oversample SEALEVELPRESSURE

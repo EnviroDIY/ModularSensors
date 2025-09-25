@@ -63,16 +63,23 @@
 #ifndef SRC_SENSORS_FREESCALEMPL115A2_H_
 #define SRC_SENSORS_FREESCALEMPL115A2_H_
 
-// Debugging Statement
-// #define MS_FREESCALEMPL115A2_DEBUG
+// Include the library config before anything else
+#include "ModSensorConfig.h"
 
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
+
+// Define the print label[s] for the debugger
 #ifdef MS_FREESCALEMPL115A2_DEBUG
 #define MS_DEBUGGING_STD "FreescaleMPL115A2"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+
+// Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include <Adafruit_MPL115A2.h>
@@ -281,7 +288,7 @@ class FreescaleMPL115A2_Temp : public Variable {
     explicit FreescaleMPL115A2_Temp(
         FreescaleMPL115A2* parentSense, const char* uuid = "",
         const char* varCode = MPL115A2_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)MPL115A2_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)MPL115A2_TEMP_VAR_NUM,
                    (uint8_t)MPL115A2_TEMP_RESOLUTION, MPL115A2_TEMP_VAR_NAME,
                    MPL115A2_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -291,7 +298,7 @@ class FreescaleMPL115A2_Temp : public Variable {
      * used.
      */
     FreescaleMPL115A2_Temp()
-        : Variable((const uint8_t)MPL115A2_TEMP_VAR_NUM,
+        : Variable((uint8_t)MPL115A2_TEMP_VAR_NUM,
                    (uint8_t)MPL115A2_TEMP_RESOLUTION, MPL115A2_TEMP_VAR_NAME,
                    MPL115A2_TEMP_UNIT_NAME, MPL115A2_TEMP_DEFAULT_CODE) {}
     /**
@@ -333,7 +340,7 @@ class FreescaleMPL115A2_Pressure : public Variable {
     explicit FreescaleMPL115A2_Pressure(
         FreescaleMPL115A2* parentSense, const char* uuid = "",
         const char* varCode = MPL115A2_PRESSURE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)MPL115A2_PRESSURE_VAR_NUM,
+        : Variable(parentSense, (uint8_t)MPL115A2_PRESSURE_VAR_NUM,
                    (uint8_t)MPL115A2_PRESSURE_RESOLUTION,
                    MPL115A2_PRESSURE_VAR_NAME, MPL115A2_PRESSURE_UNIT_NAME,
                    varCode, uuid) {}
@@ -344,7 +351,7 @@ class FreescaleMPL115A2_Pressure : public Variable {
      * used.
      */
     FreescaleMPL115A2_Pressure()
-        : Variable((const uint8_t)MPL115A2_PRESSURE_VAR_NUM,
+        : Variable((uint8_t)MPL115A2_PRESSURE_VAR_NUM,
                    (uint8_t)MPL115A2_PRESSURE_RESOLUTION,
                    MPL115A2_PRESSURE_VAR_NAME, MPL115A2_PRESSURE_UNIT_NAME,
                    MPL115A2_PRESSURE_DEFAULT_CODE) {}

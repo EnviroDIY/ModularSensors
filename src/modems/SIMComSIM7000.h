@@ -21,7 +21,7 @@
  *
  * The SIMCom [SIM7000](https://simcom.ee/modules/iot/sim7000e/) Tri-Band
  * LTE-FDD and Dual-Band GPRS/EDGE module solution in a SMT type which
- * supports LTE CAT-M1(eMTC) and NB-IoT up to 375kbps data transfer.
+ * supports LTE CAT-M1(eMTC) and NB-IoT up to 375 kbps data transfer.
  *
  * There are breakouts of several variants made by
  * [AND Technologies](http://www.and-global.com/) or
@@ -51,10 +51,13 @@
 #ifndef SRC_MODEMS_SIMCOMSIM7000_H_
 #define SRC_MODEMS_SIMCOMSIM7000_H_
 
-// Debugging Statement
-// #define MS_SIMCOMSIM7000_DEBUG
-// #define MS_SIMCOMSIM7000_DEBUG_DEEP
+// Include the library config before anything else
+#include "ModSensorConfig.h"
 
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
+
+// Define the print label[s] for the debugger
 #ifdef MS_SIMCOMSIM7000_DEBUG
 #define MS_DEBUGGING_STD "SIMComSIM7000"
 #endif
@@ -62,17 +65,15 @@
 /**
  * @brief The modem type for the underlying TinyGSM library.
  */
-#define TINY_GSM_MODEM_SIM7000
-#ifndef TINY_GSM_RX_BUFFER
-/**
- * @brief The size of the buffer for incoming data.
- */
-#define TINY_GSM_RX_BUFFER 64
-#endif
+#define TINY_GSM_MODEM_SIM7000SSL
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+#undef MS_DEBUGGING_DEEP
+
+// Include other in-library and external dependencies
 #include "TinyGsmClient.h"
 #include "LoggerModem.h"
 
@@ -108,7 +109,7 @@
  * @brief The loggerModem::_resetLevel.
  *
  * The active low level time impulse on `RESET` pin to reset SIM7000 is
- * miniumum 252ms.
+ * minimum 252ms.
  */
 #define SIM7000_RESET_LEVEL LOW
 /**
@@ -142,14 +143,14 @@
  */
 #define SIM7000_WAKE_DELAY_MS 1000L
 /**
- * @brief The loggerModem::_max_atresponse_time_ms.
+ * @brief The loggerModem::_max_at_response_time_ms.
  *
  * Time after end pulse until serial port on SIM7000 becomes active is >4.5sec.
  */
-#define SIM7000_ATRESPONSE_TIME_MS 4500
+#define SIM7000_AT_RESPONSE_TIME_MS 4500
 
 /**
- * @brief The loggerModem::_disconnetTime_ms.
+ * @brief The loggerModem::_disconnectTime_ms.
  *
  * SIM7000 power down (gracefully) takes 1.8-6.9 sec.
  */
@@ -164,7 +165,7 @@ class SIMComSIM7000 : public loggerModem {
  public:
     /**
      * @brief Construct a new SIMComSIM7000 object
-     * The constuctor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables,
      * constructs a loggerModem parent class with the appropriate timing for the
      * module, calls the constructor for a TinyGSM modem on the provided
      * modemStream, and creates a TinyGSM Client linked to the modem.
@@ -194,6 +195,21 @@ class SIMComSIM7000 : public loggerModem {
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
     void disconnectInternet(void) override;
 
+    virtual Client* createClient() override;
+    virtual void    deleteClient(Client* client);
+    virtual Client* createSecureClient() override;
+    virtual void    deleteSecureClient(Client* client);
+    virtual Client* createSecureClient(
+        SSLAuthMode sslAuthMode, SSLVersion sslVersion = SSLVersion::TLS1_2,
+        const char* CAcertName = nullptr, const char* clientCertName = nullptr,
+        const char* clientKeyName = nullptr) override;
+    virtual Client*
+    createSecureClient(const char* pskIdent, const char* psKey,
+                       SSLVersion sslVersion = SSLVersion::TLS1_2) override;
+    virtual Client*
+    createSecureClient(const char* pskTableName,
+                       SSLVersion  sslVersion = SSLVersion::TLS1_2) override;
+
     uint32_t getNISTTime(void) override;
 
     bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
@@ -209,10 +225,6 @@ class SIMComSIM7000 : public loggerModem {
      * @brief Public reference to the TinyGSM modem.
      */
     TinyGsm gsmModem;
-    /**
-     * @brief Public reference to the TinyGSM Client.
-     */
-    TinyGsmClient gsmClient;
 
  protected:
     bool isInternetAvailable(void) override;
@@ -226,3 +238,5 @@ class SIMComSIM7000 : public loggerModem {
 };
 /**@}*/
 #endif  // SRC_MODEMS_SIMCOMSIM7000_H_
+
+// cSpell:ignore kbps

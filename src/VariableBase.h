@@ -14,18 +14,23 @@
 #ifndef SRC_VARIABLEBASE_H_
 #define SRC_VARIABLEBASE_H_
 
-// Debugging Statement
-// #define MS_VARIABLEBASE_DEBUG
+// Include the library config before anything else
+#include "ModSensorConfig.h"
 
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
+
+// Define the print label[s] for the debugger
 #ifdef MS_VARIABLEBASE_DEBUG
 #define MS_DEBUGGING_STD "VariableBase"
 #endif
 
-// Forward Declared Dependences
+// Forward Declared Dependencies
 class Sensor;
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
 
 /**
@@ -59,7 +64,7 @@ class Variable {
      * @brief Construct a new Variable objectfor a measured variable - that is,
      * one whose values are updated by a sensor.
      *
-     * @note This constructor is NOT inteneded to be used outside of this
+     * @note This constructor is NOT intended to be used outside of this
      * libraries.  It is intended to be used internally with sensors defined in
      * this library.
      *
@@ -75,15 +80,15 @@ class Variable {
      * text helping to identify the variable in files.
      * @param uuid A universally unique identifier for the variable.
      */
-    Variable(Sensor* parentSense, const uint8_t sensorVarNum,
+    Variable(Sensor* parentSense, uint8_t sensorVarNum,
              uint8_t decimalResolution, const char* varName,
              const char* varUnit, const char* varCode, const char* uuid);
     /**
-     * @brief Construct a new Variable objectfor a measured variable - that is,
+     * @brief Construct a new Variable object for a measured variable - that is,
      * one whose values are updated by a sensor - but do not tie it to a
      * specific sensor.
      *
-     * @note This constructor is NOT inteneded to be used outside of this
+     * @note This constructor is NOT intended to be used outside of this
      * libraries.  It is intended to be used internally with sensors defined in
      * this library.
      *
@@ -97,7 +102,7 @@ class Variable {
      * @param varCode A custom code for the variable.  This can be any short
      * text helping to identify the variable in files.
      */
-    Variable(const uint8_t sensorVarNum, uint8_t decimalResolution,
+    Variable(uint8_t sensorVarNum, uint8_t decimalResolution,
              const char* varName, const char* varUnit, const char* varCode);
 
     /**
@@ -113,6 +118,10 @@ class Variable {
      * @param varCode A custom code for the variable.  This can be any short
      * text helping to identify the variable in files.
      * @param uuid A universally unique identifier for the variable.
+     *
+     * @warning The `calcFxn` absolutely must return a float value.  If it
+     * returns a value of any other type (ie, some type of integer), your
+     * program will compile but immediately hang.
      */
     Variable(float (*calcFxn)(), uint8_t decimalResolution, const char* varName,
              const char* varUnit, const char* varCode, const char* uuid);
@@ -128,6 +137,10 @@ class Variable {
      * vocabulary](http://vocabulary.odm2.org/units/)
      * @param varCode A custom code for the variable.  This can be any short
      * text helping to identify the variable in files.
+     *
+     * @warning The `calcFxn` absolutely must return a float value.  If it
+     * returns a value of any other type (ie, some type of integer), your
+     * program will compile but immediately hang.
      */
     Variable(float (*calcFxn)(), uint8_t decimalResolution, const char* varName,
              const char* varUnit, const char* varCode);
@@ -144,11 +157,11 @@ class Variable {
     /**
      * @brief Begin for the Variable object
      *
-     * @param parentSense The Sensor object supplying values.  Supercedes any
+     * @param parentSense The Sensor object supplying values.  Supersedes any
      * Sensor supplied in the constructor.
      * @param uuid A universally unique identifier for the variable.
-     * Supercedes any value supplied in the constructor.
-     * @param customVarCode A custom code for the variable.  Supercedes
+     * Supersedes any value supplied in the constructor.
+     * @param customVarCode A custom code for the variable.  Supersedes
      * any value supplied in the constructor.
      * @return A pointer to the variable object
      */
@@ -157,17 +170,17 @@ class Variable {
     /**
      * @brief Begin for the Variable object
      *
-     * @param parentSense The Sensor object supplying values.  Supercedes any
+     * @param parentSense The Sensor object supplying values.  Supersedes any
      * Sensor supplied in the constructor.
      * @param uuid A universally unique identifier for the variable.
-     * Supercedes any value supplied in the constructor.
+     * Supersedes any value supplied in the constructor.
      * @return A pointer to the variable object
      */
     Variable* begin(Sensor* parentSense, const char* uuid);
     /**
      * @brief Begin for the Variable object
      *
-     * @param parentSense The Sensor object supplying values.  Supercedes any
+     * @param parentSense The Sensor object supplying values.  Supersedes any
      * Sensor supplied in the constructor.
      * @return A pointer to the variable object
      */
@@ -176,19 +189,23 @@ class Variable {
     /**
      * @brief Begin for the Variable object
      *
-     * @param calcFxn Any function returning a float value.  Supercedes any
+     * @param calcFxn Any function returning a float value.  Supersedes any
      * function supplied in the constructor.
      * @param decimalResolution The resolution (in decimal places) of the value.
-     * Supercedes any value supplied in the constructor.
+     * Supersedes any value supplied in the constructor.
      * @param varName The name of the variable per the ODM2 variable name
-     * controlled vocabulary.  Supercedes any value supplied in the constructor.
+     * controlled vocabulary.  Supersedes any value supplied in the constructor.
      * @param varUnit The unit of the variable per the ODM2 unit controlled
-     * vocabulary.  Supercedes any value supplied in the constructor.
-     * @param varCode A custom code for the variable.  Supercedes any value
+     * vocabulary.  Supersedes any value supplied in the constructor.
+     * @param varCode A custom code for the variable.  Supersedes any value
      * supplied in the constructor.
      * @param uuid A universally unique identifier for the variable.
-     * Supercedes any value supplied in the constructor.
+     * Supersedes any value supplied in the constructor.
      * @return A pointer to the variable object
+     *
+     * @warning The `calcFxn` absolutely must return a float value.  If it
+     * returns a value of any other type (ie, some type of integer), your
+     * program will compile but immediately hang.
      */
     Variable* begin(float (*calcFxn)(), uint8_t decimalResolution,
                     const char* varName, const char* varUnit,
@@ -196,17 +213,21 @@ class Variable {
     /**
      * @brief Begin for the Variable object
      *
-     * @param calcFxn Any function returning a float value.  Supercedes any
+     * @param calcFxn Any function returning a float value.  Supersedes any
      * function supplied in the constructor.
      * @param decimalResolution The resolution (in decimal places) of the value.
-     * Supercedes any value supplied in the constructor.
+     * Supersedes any value supplied in the constructor.
      * @param varName The name of the variable per the ODM2 variable name
-     * controlled vocabulary.  Supercedes any value supplied in the constructor.
+     * controlled vocabulary.  Supersedes any value supplied in the constructor.
      * @param varUnit The unit of the variable per the ODM2 unit controlled
-     * vocabulary.  Supercedes any value supplied in the constructor.
-     * @param varCode A custom code for the variable.  Supercedes any value
+     * vocabulary.  Supersedes any value supplied in the constructor.
+     * @param varCode A custom code for the variable.  Supersedes any value
      * supplied in the constructor.
      * @return A pointer to the variable object
+     *
+     * @warning The `calcFxn` absolutely must return a float value.  If it
+     * returns a value of any other type (ie, some type of integer), your
+     * program will compile but immediately hang.
      */
     Variable* begin(float (*calcFxn)(), uint8_t decimalResolution,
                     const char* varName, const char* varUnit,
@@ -224,7 +245,7 @@ class Variable {
      */
     void attachSensor(Sensor* parentSense);
     /**
-     * @brief Updates the interally stored data value
+     * @brief Updates the internally stored data value
      *
      * This is the function called by the parent sensor's notifyVariables
      * function
@@ -247,12 +268,12 @@ class Variable {
      *
      * This is a helper needed for dealing with variables in arrays
      *
-     * @return The parent sensor's concatentated name and location.
+     * @return The parent sensor's concatenated name and location.
      */
     String getParentSensorNameAndLocation(void);
 
     /**
-     * @brief Set the calculation function for a calculted variable
+     * @brief Set the calculation function for a calculated variable
      *
      * @param calcFxn Any function returning a float value.
      */
@@ -322,7 +343,14 @@ class Variable {
      *
      * @return The customized code for the variable
      */
-    String getVarUUID(void);
+    String getVarUUIDString(void);
+    // This gets/sets the variable UUID, if one has been assigned
+    /**
+     * @brief Get the customized code for the variable
+     *
+     * @return The customized code for the variable
+     */
+    const char* getVarUUID(void);
     /**
      * @brief Set a customized code for the variable
      *
@@ -342,8 +370,9 @@ class Variable {
     /**
      * @brief Get current value of the variable as a float
      *
-     * @param updateValue True to ask the parent sensor to measure and return a
-     * new value.  Default is false.
+     * @param updateValue True to ask the parent sensor to take a measurement
+     * and return a new value or to re-run the calculation function for a
+     * calculated value.  Default is false.
      * @return The current value of the variable
      */
     float getValue(bool updateValue = false);
@@ -351,8 +380,9 @@ class Variable {
      * @brief Get current value of the variable as a string with the correct
      * decimal resolution
      *
-     * @param updateValue True to ask the parent sensor to measure and return a
-     * new value.  Default is false.
+     * @param updateValue True to ask the parent sensor to take a measurement
+     * and return a new value or to re-run the calculation function for a
+     * calculated value.  Default is false.
      * @return The current value of the variable
      */
     String getValueString(bool updateValue = false);
@@ -395,7 +425,7 @@ class Variable {
     /**
      * @brief The position in the sensor's value array of this variable's value.
      */
-    const uint8_t _sensorVarNum = 0;
+    uint8_t _sensorVarNum = 0;
     /**
      * @brief The resolution (in decimal places) of the value.
      */

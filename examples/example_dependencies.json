@@ -2,11 +2,6 @@
   "action_cache_version": 1,
   "dependencies": [
     {
-      "name": "StreamDebugger",
-      "owner": "vshymanskyy",
-      "version": "~1.0.1"
-    },
-    {
       "name": "NeoSWSerial",
       "version": "https://github.com/SRGDamia1/NeoSWSerial.git"
     },
@@ -26,6 +21,15 @@
       "name": "SDI-12_ExtInts",
       "owner": "envirodiy",
       "version": "https://github.com/EnviroDIY/Arduino-SDI-12#ExtInts"
+    },
+    {
+      "name": "Adafruit NeoPixel",
+      "owner": "adafruit",
+      "url": "https://github.com/adafruit/Adafruit_NeoPixel",
+      "version": "~1.15.1",
+      "note": "Adafruit NeoPixel, for boards with a built in NeoPixel",
+      "authors": ["Adafruit"],
+      "frameworks": "arduino"
     }
   ]
 }

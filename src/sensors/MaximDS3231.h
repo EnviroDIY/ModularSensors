@@ -59,16 +59,23 @@
 #ifndef SRC_SENSORS_MAXIMDS3231_H_
 #define SRC_SENSORS_MAXIMDS3231_H_
 
-// Debugging Statement
-// #define MS_MAXIMDS3231_DEBUG
+// Include the library config before anything else
+#include "ModSensorConfig.h"
 
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
+
+// Define the print label[s] for the debugger
 #ifdef MS_MAXIMDS3231_DEBUG
 #define MS_DEBUGGING_STD "MaximDS3231"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+
+// Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
 
@@ -220,7 +227,7 @@ class MaximDS3231_Temp : public Variable {
      */
     explicit MaximDS3231_Temp(MaximDS3231* parentSense, const char* uuid = "",
                               const char* varCode = DS3231_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)DS3231_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)DS3231_TEMP_VAR_NUM,
                    (uint8_t)DS3231_TEMP_RESOLUTION, DS3231_TEMP_VAR_NAME,
                    DS3231_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -229,7 +236,7 @@ class MaximDS3231_Temp : public Variable {
      * @note This must be tied with a parent MaximDS3231 before it can be used.
      */
     MaximDS3231_Temp()
-        : Variable((const uint8_t)DS3231_TEMP_VAR_NUM,
+        : Variable((uint8_t)DS3231_TEMP_VAR_NUM,
                    (uint8_t)DS3231_TEMP_RESOLUTION, DS3231_TEMP_VAR_NAME,
                    DS3231_TEMP_UNIT_NAME, DS3231_TEMP_DEFAULT_CODE) {}
     /**
@@ -239,3 +246,5 @@ class MaximDS3231_Temp : public Variable {
 };
 /**@}*/
 #endif  // SRC_SENSORS_MAXIMDS3231_H_
+
+// cSpell:ignore temperatureDatalogger

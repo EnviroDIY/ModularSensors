@@ -1,0 +1,28 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "iot:Connect",
+      "Resource": "arn:aws:iot:us-east-1:xxx:client/${iot:Connection.Thing.ThingName}"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iot:Publish",
+      "Resource": "arn:aws:iot:us-east-1:xxx:topic/${iot:Connection.Thing.ThingName}*"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "iot:Connect",
+      "Resource": [
+        "arn:aws:iot:us-east-1:xxx:client/client1",
+        "arn:aws:iot:us-east-1:xxx:client/client2"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iot:Connect",
+      "Resource": "arn:aws:iot:us-east-1:xxx:client/${iot:Connection.Thing.ThingName}"
+    }
+  ]
+}

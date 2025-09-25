@@ -3,7 +3,7 @@
  * @copyright Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino.
  * This library is published under the BSD-3 license.
- * @author Initial developement for Atlas Sensors was done by Adam Gold
+ * @author Initial development for Atlas Sensors was done by Adam Gold
  * Files were edited by Sara Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Contains the AtlasParent sensor subclass which is itself the
@@ -72,16 +72,23 @@
 #ifndef SRC_SENSORS_ATLASPARENT_H_
 #define SRC_SENSORS_ATLASPARENT_H_
 
-// Debugging Statement
-// #define MS_ATLASPARENT_DEBUG
+// Include the library config before anything else
+#include "ModSensorConfig.h"
 
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
+
+// Define the print label[s] for the debugger
 #ifdef MS_ATLASPARENT_DEBUG
 #define MS_DEBUGGING_STD "AtlasParent"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+
+// Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include <Wire.h>
@@ -242,7 +249,7 @@ class AtlasParent : public Sensor {
      * except a status code - the response will be "consumed" and become
      * unavailable.
      *
-     * @param timeout The maximum amout of time to wait in ms.
+     * @param timeout The maximum amount of time to wait in ms.
      * @return True processing completed and a status code was returned
      * within the wait period.
      */

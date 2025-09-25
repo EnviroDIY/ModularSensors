@@ -86,7 +86,7 @@
  * @subsection sensor_bmp3xx_filts_uses Settings by Use Case
  *
  * This is a modified version of Bosch's recommendations for pressure and temperature oversampling,
- * IIR filter coeficients, and output data rates for various applications.
+ * IIR filter coefficients, and output data rates for various applications.
  * This appears as table 10 in the
  * [datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Bosch-BMP390-Datasheet.pdf).
  *
@@ -132,16 +132,23 @@
 #ifndef SRC_SENSORS_BOSCHBMP3XX_H_
 #define SRC_SENSORS_BOSCHBMP3XX_H_
 
-// Debugging Statement
-// #define MS_BOSCHBMP3XX_DEBUG
+// Include the library config before anything else
+#include "ModSensorConfig.h"
 
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
+
+// Define the print label[s] for the debugger
 #ifdef MS_BOSCHBMP3XX_DEBUG
 #define MS_DEBUGGING_STD "BoschBMP3xx"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+
+// Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include <BMP388_DEV.h>
@@ -157,7 +164,7 @@
 /**@{*/
 /// @brief Sensor::_numReturnedValues; the BMP3xx can report 3 values.
 #define BMP3XX_NUM_VARIABLES 3
-/// @brief Sensor::_incCalcValues; altitude is calculted within the Adafruit
+/// @brief Sensor::_incCalcValues; altitude is calculated within the Adafruit
 /// library.
 #define BMP3XX_INC_CALC_VARIABLES 1
 /**@}*/
@@ -348,7 +355,7 @@ class BoschBMP3xx : public Sensor {
      * sensor immediately returns to sleep.  This mode should be used if you are
      * stopping power to the sensor between readings.  You should not use this
      * mode if you wish to use the sensor's on-board IIR filter.
-     * - `NORMAL_MODE` - the sensor alteranates between sampling and sleeping at
+     * - `NORMAL_MODE` - the sensor alternates between sampling and sleeping at
      * intervals set by the sensor output data rate, results can be read
      * whenever needed.  This mode should *not* be used if you will stop power
      * to the sensor between readings.  If you wish to use the sensor's on-board
@@ -435,15 +442,7 @@ class BoschBMP3xx : public Sensor {
     ~BoschBMP3xx();
 
     /**
-     * @brief Wake the sensor up, if necessary.  Do whatever it takes to get a
-     * sensor in the proper state to begin a measurement.
-     *
-     * Verifies that the power is on and updates the #_sensorStatus.  This also
-     * sets the #_millisSensorActivated timestamp.
-     *
-     * @note This does NOT include any wait for sensor readiness.
-     *
-     * @return True if the wake function completed successfully.
+     * @copydoc Sensor::wake()
      */
     bool wake(void) override;
     /**
@@ -485,7 +484,7 @@ class BoschBMP3xx : public Sensor {
      * sensor immediately returns to sleep.  This mode should be used if you are
      * stopping power to the sensor between readings.  You should not use this
      * mode if you wish to use the sensor's on-board IIR filter.
-     * - `NORMAL_MODE` - the sensor alteranates between sampling and sleeping at
+     * - `NORMAL_MODE` - the sensor alternates between sampling and sleeping at
      * intervals set by the sensor output data rate, results can be read
      * whenever needed.  This mode should *not* be used if you will stop power
      * to the sensor between readings.  If you wish to use the sensor's on-board
@@ -607,7 +606,7 @@ class BoschBMP3xx_Temp : public Variable {
      */
     explicit BoschBMP3xx_Temp(BoschBMP3xx* parentSense, const char* uuid = "",
                               const char* varCode = BMP3XX_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)BMP3XX_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)BMP3XX_TEMP_VAR_NUM,
                    (uint8_t)BMP3XX_TEMP_RESOLUTION, BMP3XX_TEMP_VAR_NAME,
                    BMP3XX_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -616,7 +615,7 @@ class BoschBMP3xx_Temp : public Variable {
      * @note This must be tied with a parent BoschBMP3xx before it can be used.
      */
     BoschBMP3xx_Temp()
-        : Variable((const uint8_t)BMP3XX_TEMP_VAR_NUM,
+        : Variable((uint8_t)BMP3XX_TEMP_VAR_NUM,
                    (uint8_t)BMP3XX_TEMP_RESOLUTION, BMP3XX_TEMP_VAR_NAME,
                    BMP3XX_TEMP_UNIT_NAME, BMP3XX_TEMP_DEFAULT_CODE) {}
     /**
@@ -650,7 +649,7 @@ class BoschBMP3xx_Pressure : public Variable {
     explicit BoschBMP3xx_Pressure(
         BoschBMP3xx* parentSense, const char* uuid = "",
         const char* varCode = BMP3XX_PRESSURE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)BMP3XX_PRESSURE_VAR_NUM,
+        : Variable(parentSense, (uint8_t)BMP3XX_PRESSURE_VAR_NUM,
                    (uint8_t)BMP3XX_PRESSURE_RESOLUTION,
                    BMP3XX_PRESSURE_VAR_NAME, BMP3XX_PRESSURE_UNIT_NAME, varCode,
                    uuid) {}
@@ -660,7 +659,7 @@ class BoschBMP3xx_Pressure : public Variable {
      * @note This must be tied with a parent BoschBMP3xx before it can be used.
      */
     BoschBMP3xx_Pressure()
-        : Variable((const uint8_t)BMP3XX_PRESSURE_VAR_NUM,
+        : Variable((uint8_t)BMP3XX_PRESSURE_VAR_NUM,
                    (uint8_t)BMP3XX_PRESSURE_RESOLUTION,
                    BMP3XX_PRESSURE_VAR_NAME, BMP3XX_PRESSURE_UNIT_NAME,
                    BMP3XX_PRESSURE_DEFAULT_CODE) {}
@@ -691,7 +690,7 @@ class BoschBMP3xx_Altitude : public Variable {
     explicit BoschBMP3xx_Altitude(
         BoschBMP3xx* parentSense, const char* uuid = "",
         const char* varCode = BMP3XX_ALTITUDE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)BMP3XX_ALTITUDE_VAR_NUM,
+        : Variable(parentSense, (uint8_t)BMP3XX_ALTITUDE_VAR_NUM,
                    (uint8_t)BMP3XX_ALTITUDE_RESOLUTION,
                    BMP3XX_ALTITUDE_VAR_NAME, BMP3XX_ALTITUDE_UNIT_NAME, varCode,
                    uuid) {}
@@ -701,10 +700,12 @@ class BoschBMP3xx_Altitude : public Variable {
      * @note This must be tied with a parent BoschBMP3xx before it can be used.
      */
     BoschBMP3xx_Altitude()
-        : Variable((const uint8_t)BMP3XX_ALTITUDE_VAR_NUM,
+        : Variable((uint8_t)BMP3XX_ALTITUDE_VAR_NUM,
                    (uint8_t)BMP3XX_ALTITUDE_RESOLUTION,
                    BMP3XX_ALTITUDE_VAR_NAME, BMP3XX_ALTITUDE_UNIT_NAME,
                    BMP3XX_ALTITUDE_DEFAULT_CODE) {}
 };
 /**@}*/
 #endif  // SRC_SENSORS_BOSCHBMP3XX_H_
+
+// cSpell:ignore oversample SEALEVELPRESSURE osrs_p DDIO bmp3xxtimingTest

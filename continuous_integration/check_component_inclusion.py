@@ -48,6 +48,7 @@ def camel_to_snake(name, lower_case=True):
         .replace("5_tm", "_5tm")
         .replace("tiina", "ti_ina")
         .replace("p_h", "_ph")
+        .replace("an_b_", "anb_")
         .replace("mpl115_a2", "mpl115a2")
         .replace("i2_c", "i2c")
         .replace("2_g_", "_2g_")

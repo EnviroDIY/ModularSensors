@@ -3,7 +3,7 @@
  * @copyright Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino.
  * This library is published under the BSD-3 license.
- * @author Initial developement for Atlas Sensors was done by Adam Gold
+ * @author Initial development for Atlas Sensors was done by Adam Gold
  * Files were edited by Sara Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Contains the AtlasScientificCO2 subclass of the AtlasParent sensor
@@ -50,16 +50,23 @@
 #ifndef SRC_SENSORS_ATLASSCIENTIFICCO2_H_
 #define SRC_SENSORS_ATLASSCIENTIFICCO2_H_
 
-// Debugging Statement
-// #define MS_ATLASSCIENTIFICCO2_DEBUG
+// Include the library config before anything else
+#include "ModSensorConfig.h"
 
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
+
+// Define the print label[s] for the debugger
 #ifdef MS_ATLASSCIENTIFICCO2_DEBUG
 #define MS_DEBUGGING_STD "AtlasScientificCO2"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+
+// Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "sensors/AtlasParent.h"
 
@@ -263,7 +270,7 @@ class AtlasScientificCO2_CO2 : public Variable {
     explicit AtlasScientificCO2_CO2(
         AtlasScientificCO2* parentSense, const char* uuid = "",
         const char* varCode = ATLAS_CO2_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ATLAS_CO2_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ATLAS_CO2_VAR_NUM,
                    (uint8_t)ATLAS_CO2_RESOLUTION, ATLAS_CO2_VAR_NAME,
                    ATLAS_CO2_UNIT_NAME, varCode, uuid) {}
     /**
@@ -273,9 +280,9 @@ class AtlasScientificCO2_CO2 : public Variable {
      * used.
      */
     AtlasScientificCO2_CO2()
-        : Variable((const uint8_t)ATLAS_CO2_VAR_NUM,
-                   (uint8_t)ATLAS_CO2_RESOLUTION, ATLAS_CO2_VAR_NAME,
-                   ATLAS_CO2_UNIT_NAME, ATLAS_CO2_DEFAULT_CODE) {}
+        : Variable((uint8_t)ATLAS_CO2_VAR_NUM, (uint8_t)ATLAS_CO2_RESOLUTION,
+                   ATLAS_CO2_VAR_NAME, ATLAS_CO2_UNIT_NAME,
+                   ATLAS_CO2_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AtlasScientificCO2_CO2 object - no action needed.
      */
@@ -306,7 +313,7 @@ class AtlasScientificCO2_Temp : public Variable {
     explicit AtlasScientificCO2_Temp(
         AtlasScientificCO2* parentSense, const char* uuid = "",
         const char* varCode = ATLAS_CO2TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ATLAS_CO2TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ATLAS_CO2TEMP_VAR_NUM,
                    (uint8_t)ATLAS_CO2TEMP_RESOLUTION, ATLAS_CO2TEMP_VAR_NAME,
                    ATLAS_CO2TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -316,7 +323,7 @@ class AtlasScientificCO2_Temp : public Variable {
      * used.
      */
     AtlasScientificCO2_Temp()
-        : Variable((const uint8_t)ATLAS_CO2TEMP_VAR_NUM,
+        : Variable((uint8_t)ATLAS_CO2TEMP_VAR_NUM,
                    (uint8_t)ATLAS_CO2TEMP_RESOLUTION, ATLAS_CO2TEMP_VAR_NAME,
                    ATLAS_CO2TEMP_UNIT_NAME, ATLAS_CO2TEMP_DEFAULT_CODE) {}
     /**

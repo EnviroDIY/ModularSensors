@@ -51,7 +51,7 @@ void DreamHostPublisher::setDreamHostPortalRX(const char* dhUrl) {
 }
 
 
-// A way to begin with everything already set
+// A way to set members in the begin to use with a bare constructor
 void DreamHostPublisher::begin(Logger& baseLogger, Client* inClient,
                                const char* dhUrl) {
     setDreamHostPortalRX(dhUrl);
@@ -65,16 +65,17 @@ void DreamHostPublisher::begin(Logger& baseLogger, const char* dhUrl) {
 
 // Post the data to dream host.
 // int16_t DreamHostPublisher::postDataDreamHost(void)
-int16_t DreamHostPublisher::publishData(Client* outClient) {
+int16_t DreamHostPublisher::publishData(Client* outClient, bool) {
     // Create a buffer for the portions of the request and response
     char     tempBuffer[37] = "";
     uint16_t did_respond    = 0;
+    int16_t  responseCode   = 0;
 
     // Open a TCP/IP connection to DreamHost
     MS_DBG(F("Connecting client"));
     MS_START_DEBUG_TIMER;
     if (outClient->connect(dreamhostHost, dreamhostPort)) {
-        MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms\n"));
+        MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
         txBufferInit(outClient);
 
         // copy the initial post header into the tx buffer
@@ -88,7 +89,8 @@ int16_t DreamHostPublisher::publishData(Client* outClient) {
         txBufferAppend(_baseLogger->getLoggerID());
 
         txBufferAppend(timestampTagDH);
-        ltoa((Logger::markedLocalEpochTime - 946684800), tempBuffer,
+        ltoa(static_cast<uint32_t>(Logger::markedLocalUnixTime - 946684800),
+             tempBuffer,
              10);  // BASE 10
         txBufferAppend(tempBuffer);
 
@@ -113,7 +115,8 @@ int16_t DreamHostPublisher::publishData(Client* outClient) {
 
         // Wait 10 seconds for a response from the server
         uint32_t start = millis();
-        while ((millis() - start) < 10000L && outClient->available() < 12) {
+        while ((millis() - start) < 10000L && outClient->connected() &&
+               outClient->available() < 12) {
             delay(10);
         }
 
@@ -121,6 +124,31 @@ int16_t DreamHostPublisher::publishData(Client* outClient) {
         // We're only reading as far as the http code, anything beyond that
         // we don't care about.
         did_respond = outClient->readBytes(tempBuffer, 12);
+        // Process the HTTP response code
+        // The first 9 characters should be "HTTP/1.1 "
+        if (did_respond > 0) {
+            char responseCode_char[4];
+            memcpy(responseCode_char, tempBuffer + 9, 3);
+            // Null terminate the string
+            memset(responseCode_char + 3, '\0', 1);
+            responseCode = atoi(responseCode_char);
+            PRINTOUT(F("\n-- Response Code --"));
+            PRINTOUT(responseCode);
+        } else {
+            responseCode = 504;
+            PRINTOUT(F("\n-- NO RESPONSE FROM SERVER --"));
+        }
+
+#if defined(MS_OUTPUT) || defined(MS_2ND_OUTPUT)
+        // throw the rest of the response into the tx buffer so we can debug it
+        txBufferInit(nullptr);
+        txBufferAppend(tempBuffer, 12, true);
+        while (outClient->available()) {
+            char c = outClient->read();
+            txBufferAppend(c);
+        }
+        txBufferFlush();
+#endif
 
         // Close the TCP/IP connection
         MS_DBG(F("Stopping client"));
@@ -131,21 +159,7 @@ int16_t DreamHostPublisher::publishData(Client* outClient) {
         PRINTOUT(F("\n -- Unable to Establish Connection to DreamHost --"));
     }
 
-    // Process the HTTP response
-    int16_t responseCode = 0;
-    if (did_respond > 0) {
-        char responseCode_char[4];
-        responseCode_char[3] = 0;
-        for (uint8_t i = 0; i < 3; i++) {
-            responseCode_char[i] = tempBuffer[i + 9];
-        }
-        responseCode = atoi(responseCode_char);
-    } else {
-        responseCode = 504;
-    }
-
-    PRINTOUT(F("\n-- Response Code --"));
-    PRINTOUT(responseCode);
-
     return responseCode;
 }
+
+// cSpell:ignore swrcsensors dreamhosters loggertime

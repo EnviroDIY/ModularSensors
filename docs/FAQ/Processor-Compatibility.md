@@ -1,10 +1,10 @@
-# Processor Compatibility<!-- {#page_processor_compatibility} -->
+# Processor Compatibility<!--! {#page_processor_compatibility} -->
 
-[//]: # ( @tableofcontents )
+<!--! @tableofcontents -->
 
-[//]: # ( @m_footernavigation )
+<!--! @m_footernavigation -->
 
-[//]: # ( Start GitHub Only )
+<!--! @if GITHUB -->
 
 - [Processor Compatibility](#processor-compatibility)
   - [AtMega1284p (EnviroDIY Mayfly, Sodaq Mbili, Mighty 1284)](#atmega1284p-envirodiy-mayfly-sodaq-mbili-mighty-1284)
@@ -15,9 +15,9 @@
   - [AtMega32u4 (Arduino Leonardo/Micro, Adafruit Flora/Feather, etc)](#atmega32u4-arduino-leonardomicro-adafruit-florafeather-etc)
   - [Unsupported Processors](#unsupported-processors)
 
-[//]: # ( End GitHub Only )
+<!--! @endif -->
 
-## AtMega1284p (EnviroDIY Mayfly, Sodaq Mbili, Mighty 1284)<!-- {#processor_1284p} -->
+## AtMega1284p (EnviroDIY Mayfly, Sodaq Mbili, Mighty 1284)<!--! {#processor_1284p} -->
 
 The [EnviroDIY Mayfly](https://envirodiy.org/mayfly/) _is_ the test board for this library.
 _Everything_ is designed to work with this processor.
@@ -44,7 +44,7 @@ Pin 12 should not be used while using AltSoftSerial on the Mighty 1284.
 
 ___
 
-## AtSAMD21 (Arduino Zero, Adafruit Feather M0, Sodaq Autonomo)<!-- {#processor_samd21} -->
+## AtSAMD21 (Arduino Zero, Adafruit Feather M0, Sodaq Autonomo)<!--! {#processor_samd21} -->
 
 Fully supported
 
@@ -81,7 +81,7 @@ Turn off the debugging and double-tap to reset and reprogram if this happens.
 
 ___
 
-## AtMega2560 (Arduino Mega)<!-- {#processor_mega} -->
+## AtMega2560 (Arduino Mega)<!--! {#processor_mega} -->
 
 Should be fully functional, but untested.
 
@@ -96,7 +96,7 @@ Pins 44 and 45 cannot be used while using AltSoftSerial on the AtMega2560.
 
 ___
 
-## AtMega644p (Sanguino)<!-- {#processor_664p} -->
+## AtMega644p (Sanguino)<!--! {#processor_664p} -->
 
 Should be fully functional, but untested.
 
@@ -112,7 +112,7 @@ Pin 12 cannot be used while using AltSoftSerial on the AtMega644p.
 
 ___
 
-## AtMega328p (Arduino Uno, Duemilanove, LilyPad, Mini, Seeeduino Stalker, etc)<!-- {#processor_uno} -->
+## AtMega328p (Arduino Uno, Duemilanove, LilyPad, Mini, Seeeduino Stalker, etc)<!--! {#processor_uno} -->
 
 All functions are supported, but processor doesn't have sufficient power to use all of the functionality of the library.
 You will only be able to use a small number of sensors at one time and may not be able to log data.
@@ -129,7 +129,7 @@ Pin 10 cannot be used while using AltSoftSerial on the AtMega328p.
 
 ___
 
-## AtMega32u4 (Arduino Leonardo/Micro, Adafruit Flora/Feather, etc)<!-- {#processor_32u4} -->
+## AtMega32u4 (Arduino Leonardo/Micro, Adafruit Flora/Feather, etc)<!--! {#processor_32u4} -->
 
 All functions are supported, but processor doesn't have sufficient power to use all of the functionality of the library.
 You will only be able to use a small number of sensors at one time and may not be able to log data.
@@ -153,7 +153,7 @@ Otherwise, you will have to rely on lights on your alert pin or your modem to ve
 
 ___
 
-## Unsupported Processors<!-- {#processor_unsupported} -->
+## Unsupported Processors<!--! {#processor_unsupported} -->
 
 - **ESP8266/ESP32** - Supported _only_ as a communications module (modem) with the default AT command firmware, not supported as an independent controller
 - **AtSAM3X (Arduino Due)** - Unsupported at this time due to clock and sleep issues.

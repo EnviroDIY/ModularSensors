@@ -91,7 +91,7 @@ bool RainCounterI2C::setup(void) {
 
 
 bool RainCounterI2C::addSingleMeasurementResult(void) {
-    // intialize values
+    // initialize values
     float   rain = -9999;  // Number of mm of rain
     int32_t tips = -9999;  // Number of tip events, increased for anemometer
 
@@ -137,9 +137,9 @@ bool RainCounterI2C::addSingleMeasurementResult(void) {
             _rainPerTip;  // Multiply by tip coefficient (0.2 by default)
 
         if (tips < 0)
-            tips = -9999;  // If negetive value results, return failure
+            tips = -9999;  // If negative value results, return failure
         if (rain < 0)
-            rain = -9999;  // If negetive value results, return failure
+            rain = -9999;  // If negative value results, return failure
 
         MS_DBG(F("  Rain:"), rain);
         MS_DBG(F("  Tips:"), tips);
@@ -153,7 +153,7 @@ bool RainCounterI2C::addSingleMeasurementResult(void) {
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)
-    _sensorStatus &= 0b10011111;
+    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
 
     // Return true when finished
     return true;

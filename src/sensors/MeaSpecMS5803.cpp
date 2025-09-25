@@ -37,6 +37,7 @@ bool MeaSpecMS5803::setup(void) {
         Sensor::setup();  // this will set pin modes and the setup status bit
 
     // This sensor needs power for setup!
+    delay(10);
     bool wasOn = checkPowerOn();
     if (!wasOn) { powerUp(); }
     waitForWarmUp();
@@ -62,7 +63,7 @@ bool MeaSpecMS5803::addSingleMeasurementResult(void) {
 
     // Check a measurement was *successfully* started (status bit 6 set)
     // Only go on to get a result if it was
-    if (bitRead(_sensorStatus, 6)) {
+    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
         // Read values
         // NOTE:  These functions actually include the request to begin
@@ -95,7 +96,7 @@ bool MeaSpecMS5803::addSingleMeasurementResult(void) {
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)
-    _sensorStatus &= 0b10011111;
+    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
 
     return success;
 }

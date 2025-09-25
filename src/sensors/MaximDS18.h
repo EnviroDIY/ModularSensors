@@ -9,7 +9,7 @@
  * subclass.
  *
  * These are for the Maxim DS18B20, DS18S20, MAX31820, DS1822, and DS1820
- * vtemperature sensors.
+ * temperature sensors.
  *
  * This depends on Dallas Temperature library, which itself is dependent on the
  * OneWire library.
@@ -81,16 +81,23 @@
 #ifndef SRC_SENSORS_MAXIMDS18_H_
 #define SRC_SENSORS_MAXIMDS18_H_
 
-// Debugging Statement
-// #define MS_MAXIMDS18_DEBUG
+// Include the library config before anything else
+#include "ModSensorConfig.h"
 
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
+
+// Define the print label[s] for the debugger
 #ifdef MS_MAXIMDS18_DEBUG
 #define MS_DEBUGGING_STD "MaximDS18"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+
+// Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include <DallasTemperature.h>
@@ -307,7 +314,7 @@ class MaximDS18_Temp : public Variable {
      */
     explicit MaximDS18_Temp(MaximDS18* parentSense, const char* uuid = "",
                             const char* varCode = DS18_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)DS18_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)DS18_TEMP_VAR_NUM,
                    (uint8_t)DS18_TEMP_RESOLUTION, DS18_TEMP_VAR_NAME,
                    DS18_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -316,9 +323,9 @@ class MaximDS18_Temp : public Variable {
      * @note This must be tied with a parent MaximDS18 before it can be used.
      */
     MaximDS18_Temp()
-        : Variable((const uint8_t)DS18_TEMP_VAR_NUM,
-                   (uint8_t)DS18_TEMP_RESOLUTION, DS18_TEMP_VAR_NAME,
-                   DS18_TEMP_UNIT_NAME, DS18_TEMP_DEFAULT_CODE) {}
+        : Variable((uint8_t)DS18_TEMP_VAR_NUM, (uint8_t)DS18_TEMP_RESOLUTION,
+                   DS18_TEMP_VAR_NAME, DS18_TEMP_UNIT_NAME,
+                   DS18_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the MaximDS18_Temp object - no action needed.
      */

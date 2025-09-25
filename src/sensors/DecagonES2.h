@@ -244,7 +244,7 @@ class DecagonES2_Cond : public Variable {
      */
     explicit DecagonES2_Cond(DecagonES2* parentSense, const char* uuid = "",
                              const char* varCode = ES2_COND_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ES2_COND_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ES2_COND_VAR_NUM,
                    (uint8_t)ES2_COND_RESOLUTION, ES2_COND_VAR_NAME,
                    ES2_COND_UNIT_NAME, varCode, uuid) {}
     /**
@@ -253,9 +253,9 @@ class DecagonES2_Cond : public Variable {
      * @note This must be tied with a parent DecagonES2 before it can be used.
      */
     DecagonES2_Cond()
-        : Variable((const uint8_t)ES2_COND_VAR_NUM,
-                   (uint8_t)ES2_COND_RESOLUTION, ES2_COND_VAR_NAME,
-                   ES2_COND_UNIT_NAME, ES2_COND_DEFAULT_CODE) {}
+        : Variable((uint8_t)ES2_COND_VAR_NUM, (uint8_t)ES2_COND_RESOLUTION,
+                   ES2_COND_VAR_NAME, ES2_COND_UNIT_NAME,
+                   ES2_COND_DEFAULT_CODE) {}
     /**
      * @brief Destroy the DecagonES2_Cond object - no action needed.
      */
@@ -284,7 +284,7 @@ class DecagonES2_Temp : public Variable {
      */
     explicit DecagonES2_Temp(DecagonES2* parentSense, const char* uuid = "",
                              const char* varCode = ES2_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ES2_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ES2_TEMP_VAR_NUM,
                    (uint8_t)ES2_TEMP_RESOLUTION, ES2_TEMP_VAR_NAME,
                    ES2_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -293,9 +293,9 @@ class DecagonES2_Temp : public Variable {
      * @note This must be tied with a parent DecagonES2 before it can be used.
      */
     DecagonES2_Temp()
-        : Variable((const uint8_t)ES2_TEMP_VAR_NUM,
-                   (uint8_t)ES2_TEMP_RESOLUTION, ES2_TEMP_VAR_NAME,
-                   ES2_TEMP_UNIT_NAME, ES2_TEMP_DEFAULT_CODE) {}
+        : Variable((uint8_t)ES2_TEMP_VAR_NUM, (uint8_t)ES2_TEMP_RESOLUTION,
+                   ES2_TEMP_VAR_NAME, ES2_TEMP_UNIT_NAME,
+                   ES2_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the DecagonES2_Temp object - no action needed.
      */

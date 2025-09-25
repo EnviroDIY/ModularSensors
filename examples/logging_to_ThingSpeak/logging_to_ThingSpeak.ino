@@ -22,9 +22,6 @@
 #ifndef TINY_GSM_YIELD_MS
 #define TINY_GSM_YIELD_MS 2
 #endif
-#ifndef MQTT_MAX_PACKET_SIZE
-#define MQTT_MAX_PACKET_SIZE 240
-#endif
 /** End [defines] */
 
 // ==========================================================================
@@ -48,7 +45,7 @@ const char* sketchName = "logging_to_ThingSpeak.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char* LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
-const uint8_t loggingInterval = 15;
+const int8_t loggingInterval = 15;
 // Your logger's timezone.
 const int8_t timeZone = -5;  // Eastern Standard Time
 // NOTE:  Daylight savings time will not be applied!  Please use standard time!
@@ -215,12 +212,16 @@ Logger dataLogger;
 // Any custom name or identifier given to the field on ThingSpeak is irrelevant.
 // No more than 8 fields of data can go to any one channel.  Any fields beyond
 // the eighth in the array will be ignored.
-const char* thingSpeakMQTTKey =
-    "XXXXXXXXXXXXXXXX";  // Your MQTT API Key from Account > MyProfile.
+const char* thingSpeakClientName =
+    "XXXXXXXXXXXXXXXX";  // The client name for your MQTT device
+const char* thingSpeakMQTTUser =
+    "XXXXXXXXXXXXXXXX";  // The user name for your MQTT device.
+const char* thingSpeakMQTTPassword =
+    "XXXXXXXXXXXXXXXX";  // The password for your MQTT device
 const char* thingSpeakChannelID =
     "######";  // The numeric channel id for your channel
-const char* thingSpeakChannelKey =
-    "XXXXXXXXXXXXXXXX";  // The Write API Key for your channel
+const char* thingSpeakAPIKey =
+    "XXXXXXXXXXXXXXXX";  // The ThingSpeak user REST API key
 
 // Create a data publisher for ThingSpeak
 #include <publishers/ThingSpeakPublisher.h>
@@ -233,7 +234,7 @@ ThingSpeakPublisher TsMqtt;
 // ==========================================================================
 /** Start [working_functions] */
 // Flashes the LED's on the primary board
-void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
+void greenRedFlash(uint8_t numFlash = 4, uint8_t rate = 75) {
     for (uint8_t i = 0; i < numFlash; i++) {
         digitalWrite(greenLED, HIGH);
         digitalWrite(redLED, LOW);
@@ -284,13 +285,13 @@ void setup() {
     pinMode(redLED, OUTPUT);
     digitalWrite(redLED, LOW);
     // Blink the LEDs to show the board is on and starting up
-    greenredflash();
+    greenRedFlash();
 
     // Set the timezones for the logger/data and the RTC
     // Logging in the given time zone
     Logger::setLoggerTimeZone(timeZone);
     // It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)
-    Logger::setRTCTimeZone(0);
+    loggerClock::setRTCOffset(0);
 
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modem);
@@ -301,8 +302,9 @@ void setup() {
     // Begin the variable array[s], logger[s], and publisher[s]
     varArray.begin(variableCount, variableList);
     dataLogger.begin(LoggerID, loggingInterval, &varArray);
-    TsMqtt.begin(dataLogger, &modem.gsmClient, thingSpeakMQTTKey,
-                 thingSpeakChannelID, thingSpeakChannelKey);
+    TsMqtt.begin(dataLogger, thingSpeakClientName, thingSpeakMQTTUser,
+                 thingSpeakMQTTPassword, thingSpeakChannelID);
+    TsMqtt.setRESTAPIKey(thingSpeakAPIKey);
 
     // Note:  Please change these battery voltages to match your battery
     // Set up the sensors, except at lowest battery level
@@ -312,24 +314,24 @@ void setup() {
     }
 
     // Sync the clock if it isn't valid or we have battery to spare
-    if (getBatteryVoltage() > 3.55 || !dataLogger.isRTCSane()) {
-        // Synchronize the RTC with NIST
-        // This will also set up the modem
-        dataLogger.syncRTC();
+    if (getBatteryVoltage() > 3.55 || !loggerClock::isRTCSane()) {
+        // Set up the modem, synchronize the RTC with NIST, and publish
+        // configuration information to rename the channel and fields.
+        dataLogger.makeInitialConnections();
     }
 
     // Create the log file, adding the default header to it
     // Do this last so we have the best chance of getting the time correct and
-    // all sensor names correct
-    // Writing to the SD card can be power intensive, so if we're skipping
-    // the sensor setup we'll skip this too.
+    // all sensor names correct.
+    // Writing to the SD card can be power intensive, so if we're skipping the
+    // sensor setup we'll skip this too.
     if (getBatteryVoltage() > 3.4) {
         Serial.println(F("Setting up file on SD card"));
-        dataLogger.turnOnSDcard(
-            true);  // true = wait for card to settle after power up
+        dataLogger.turnOnSDcard(true);
+        // true = wait for card to settle after power up
         dataLogger.createLogFile(true);  // true = write a new header
-        dataLogger.turnOffSDcard(
-            true);  // true = wait for internal housekeeping after write
+        dataLogger.turnOffSDcard(true);
+        // true = wait for internal housekeeping after write
     }
 
     // Call the processor sleep

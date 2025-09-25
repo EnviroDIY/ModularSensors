@@ -3,7 +3,7 @@
  * @copyright Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino.
  * This library is published under the BSD-3 license.
- * @author Initial developement for Atlas Sensors was done by Adam Gold
+ * @author Initial development for Atlas Sensors was done by Adam Gold
  * Files were edited by Sara Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Contains the AtlasScientificCO2 subclass of the AtlasParent sensor
@@ -23,7 +23,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * The Atlas Scientifc DO sensor outputs DO in both mg/L and percent saturation.
+ * The Atlas Scientific DO sensor outputs DO in both mg/L and percent saturation.
  *
  * @section sensor_atlas_do_datasheet Sensor Datasheet
  *
@@ -49,16 +49,23 @@
 #ifndef SRC_SENSORS_ATLASSCIENTIFICDO_H_
 #define SRC_SENSORS_ATLASSCIENTIFICDO_H_
 
-// Debugging Statement
-// #define MS_ATLASSCIENTIFICDO_DEBUG
+// Include the library config before anything else
+#include "ModSensorConfig.h"
 
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
+
+// Define the print label[s] for the debugger
 #ifdef MS_ATLASSCIENTIFICDO_DEBUG
 #define MS_DEBUGGING_STD "AtlasScientificDO"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+
+// Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "sensors/AtlasParent.h"
 
@@ -271,7 +278,7 @@ class AtlasScientificDO_DOmgL : public Variable {
     explicit AtlasScientificDO_DOmgL(
         AtlasScientificDO* parentSense, const char* uuid = "",
         const char* varCode = ATLAS_DOMGL_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ATLAS_DOMGL_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ATLAS_DOMGL_VAR_NUM,
                    (uint8_t)ATLAS_DOMGL_RESOLUTION, ATLAS_DOMGL_VAR_NAME,
                    ATLAS_DOMGL_UNIT_NAME, varCode, uuid) {}
     /**
@@ -281,7 +288,7 @@ class AtlasScientificDO_DOmgL : public Variable {
      * used.
      */
     AtlasScientificDO_DOmgL()
-        : Variable((const uint8_t)ATLAS_DOMGL_VAR_NUM,
+        : Variable((uint8_t)ATLAS_DOMGL_VAR_NUM,
                    (uint8_t)ATLAS_DOMGL_RESOLUTION, ATLAS_DOMGL_VAR_NAME,
                    ATLAS_DOMGL_UNIT_NAME, ATLAS_DOMGL_DEFAULT_CODE) {}
     /**
@@ -314,7 +321,7 @@ class AtlasScientificDO_DOpct : public Variable {
     explicit AtlasScientificDO_DOpct(
         AtlasScientificDO* parentSense, const char* uuid = "",
         const char* varCode = ATLAS_DOPCT_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ATLAS_DOPCT_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ATLAS_DOPCT_VAR_NUM,
                    (uint8_t)ATLAS_DOPCT_RESOLUTION, ATLAS_DOPCT_VAR_NAME,
                    ATLAS_DOPCT_UNIT_NAME, varCode, uuid) {}
     /**
@@ -324,7 +331,7 @@ class AtlasScientificDO_DOpct : public Variable {
      * used.
      */
     AtlasScientificDO_DOpct()
-        : Variable((const uint8_t)ATLAS_DOPCT_VAR_NUM,
+        : Variable((uint8_t)ATLAS_DOPCT_VAR_NUM,
                    (uint8_t)ATLAS_DOPCT_RESOLUTION, ATLAS_DOPCT_VAR_NAME,
                    ATLAS_DOPCT_UNIT_NAME, ATLAS_DOPCT_DEFAULT_CODE) {}
     /**

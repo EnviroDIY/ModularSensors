@@ -60,7 +60,7 @@
 /**
  * @anchor sensor_y520_var_counts
  * @name Sensor Variable Counts
- * The number of variables that can be returned by a Yosemitch Y520
+ * The number of variables that can be returned by a Yosemitech Y520
  */
 /**@{*/
 /// @brief Sensor::_numReturnedValues; the Y520 can report 2 values.
@@ -72,7 +72,7 @@
 /**
  * @anchor sensor_y520_timing
  * @name Sensor Timing
- * The sensor timing for a Yosemitch Y520
+ * The sensor timing for a Yosemitech Y520
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; time before sensor responds after power -
@@ -89,7 +89,7 @@
 /**
  * @anchor sensor_y520_cond
  * @name Conductivity
- * The conductivity variable from a Yosemitch Y520
+ * The conductivity variable from a Yosemitech Y520
  * - Range is 1 µS/cm to 200 mS/cm
  * - Accuracy is ± 1 % Full Scale
  *
@@ -116,7 +116,7 @@
 /**
  * @anchor sensor_y520_temp
  * @name Temperature
- * The temperature variable from a Yosemitch Y520
+ * The temperature variable from a Yosemitech Y520
  * - Range is 0°C to + 50°C
  * - Accuracy is ± 0.2°C
  *
@@ -222,7 +222,7 @@ class YosemitechY520_Cond : public Variable {
     explicit YosemitechY520_Cond(YosemitechY520* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = Y520_COND_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)Y520_COND_VAR_NUM,
+        : Variable(parentSense, (uint8_t)Y520_COND_VAR_NUM,
                    (uint8_t)Y520_COND_RESOLUTION, Y520_COND_VAR_NAME,
                    Y520_COND_UNIT_NAME, varCode, uuid) {}
     /**
@@ -232,9 +232,9 @@ class YosemitechY520_Cond : public Variable {
      * used.
      */
     YosemitechY520_Cond()
-        : Variable((const uint8_t)Y520_COND_VAR_NUM,
-                   (uint8_t)Y520_COND_RESOLUTION, Y520_COND_VAR_NAME,
-                   Y520_COND_UNIT_NAME, Y520_COND_DEFAULT_CODE) {}
+        : Variable((uint8_t)Y520_COND_VAR_NUM, (uint8_t)Y520_COND_RESOLUTION,
+                   Y520_COND_VAR_NAME, Y520_COND_UNIT_NAME,
+                   Y520_COND_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY520_Cond object - no action needed.
      */
@@ -266,7 +266,7 @@ class YosemitechY520_Temp : public Variable {
     explicit YosemitechY520_Temp(YosemitechY520* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = Y520_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)Y520_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)Y520_TEMP_VAR_NUM,
                    (uint8_t)Y520_TEMP_RESOLUTION, Y520_TEMP_VAR_NAME,
                    Y520_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -276,9 +276,9 @@ class YosemitechY520_Temp : public Variable {
      * used.
      */
     YosemitechY520_Temp()
-        : Variable((const uint8_t)Y520_TEMP_VAR_NUM,
-                   (uint8_t)Y520_TEMP_RESOLUTION, Y520_TEMP_VAR_NAME,
-                   Y520_TEMP_UNIT_NAME, Y520_TEMP_DEFAULT_CODE) {}
+        : Variable((uint8_t)Y520_TEMP_VAR_NUM, (uint8_t)Y520_TEMP_RESOLUTION,
+                   Y520_TEMP_VAR_NAME, Y520_TEMP_UNIT_NAME,
+                   Y520_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY520_Temp object - no action needed.
      */

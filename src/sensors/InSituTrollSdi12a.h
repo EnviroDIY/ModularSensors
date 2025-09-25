@@ -30,7 +30,7 @@
  * @section sensor_insitu_troll_intro Introduction
  *
  * > A slim 1.8 cm diameter sensor,
- * > depth measuremente temperature compensated to 0.1% (0.05%) across Full Scale depth range and across temperature range.
+ * > depth measurement temperature compensated to 0.1% (0.05%) across Full Scale depth range and across temperature range.
  * >
  * > Has an internal logger for reliable data collection.
  * >
@@ -46,8 +46,8 @@
  *
  * Parameters are very flexible and need to be aligned used WinSitu with this module.
  *
- * The depth sensor third paramter may need to be created. The expected
- * paramters and order are Pressure (PSI),  Temperature (C),  Depth (ft).
+ * The depth sensor third parameter may need to be created. The expected
+ * parameters and order are Pressure (PSI),  Temperature (C),  Depth (ft).
  *
  * Tested with Level TROLL 500.
  *
@@ -116,7 +116,7 @@
 /**
  * @anchor sensor_insitu_troll_pressure
  * @name Pressure
- * The pressue variable from a In-Situ TROLL
+ * The pressure variable from a In-Situ TROLL
  * - Range is 0 – x (depends on range eg 5psig)
 
  *
@@ -268,7 +268,7 @@ class InSituTrollSdi12a : public SDI12Sensors {
                        ITROLLA_WARM_UP_TIME_MS, ITROLLA_STABILIZATION_TIME_MS,
                        ITROLLA_MEASUREMENT_TIME_MS) {}
     /**
-     * @brief Destroy the ITROL object
+     * @brief Destroy the ITROLL object
      */
     ~InSituTrollSdi12a() {}
 };
@@ -297,7 +297,7 @@ class InSituTrollSdi12a_Pressure : public Variable {
     InSituTrollSdi12a_Pressure(
         Sensor* parentSense, const char* uuid = "",
         const char* varCode = ITROLLA_PRESSURE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ITROLLA_PRESSURE_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ITROLLA_PRESSURE_VAR_NUM,
                    (uint8_t)ITROLLA_PRESSURE_RESOLUTION,
                    ITROLLA_PRESSURE_VAR_NAME, ITROLLA_PRESSURE_UNIT_NAME,
                    varCode, uuid) {}
@@ -308,7 +308,7 @@ class InSituTrollSdi12a_Pressure : public Variable {
      * used.
      */
     InSituTrollSdi12a_Pressure()
-        : Variable((const uint8_t)ITROLLA_PRESSURE_VAR_NUM,
+        : Variable((uint8_t)ITROLLA_PRESSURE_VAR_NUM,
                    (uint8_t)ITROLLA_PRESSURE_RESOLUTION,
                    ITROLLA_PRESSURE_VAR_NAME, ITROLLA_PRESSURE_UNIT_NAME,
                    ITROLLA_PRESSURE_DEFAULT_CODE) {}
@@ -341,7 +341,7 @@ class InSituTrollSdi12a_Temp : public Variable {
      */
     InSituTrollSdi12a_Temp(Sensor* parentSense, const char* uuid = "",
                            const char* varCode = ITROLLA_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ITROLLA_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ITROLLA_TEMP_VAR_NUM,
                    (uint8_t)ITROLLA_TEMP_RESOLUTION, ITROLLA_TEMP_TEMP_VAR_NAME,
                    ITROLLA_TEMP_TEMP_UNIT_NAME, varCode, uuid) {}
 
@@ -352,7 +352,7 @@ class InSituTrollSdi12a_Temp : public Variable {
      * used.
      */
     InSituTrollSdi12a_Temp()
-        : Variable((const uint8_t)ITROLLA_TEMP_VAR_NUM,
+        : Variable((uint8_t)ITROLLA_TEMP_VAR_NUM,
                    (uint8_t)ITROLLA_TEMP_RESOLUTION, ITROLLA_TEMP_TEMP_VAR_NAME,
                    ITROLLA_TEMP_TEMP_UNIT_NAME, ITROLLA_TEMP_DEFAULT_CODE) {}
     /**
@@ -384,7 +384,7 @@ class InSituTrollSdi12a_Depth : public Variable {
      */
     InSituTrollSdi12a_Depth(Sensor* parentSense, const char* uuid = "",
                             const char* varCode = ITROLLA_DEPTH_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ITROLLA_DEPTH_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ITROLLA_DEPTH_VAR_NUM,
                    (uint8_t)ITROLLA_DEPTH_RESOLUTION, ITROLLA_DEPTH_VAR_NAME,
                    ITROLLA_DEPTH_UNIT_NAME, varCode, uuid) {}
     /**
@@ -394,7 +394,7 @@ class InSituTrollSdi12a_Depth : public Variable {
      * used.
      */
     InSituTrollSdi12a_Depth()
-        : Variable((const uint8_t)ITROLLA_DEPTH_VAR_NUM,
+        : Variable((uint8_t)ITROLLA_DEPTH_VAR_NUM,
                    (uint8_t)ITROLLA_DEPTH_RESOLUTION, ITROLLA_DEPTH_VAR_NAME,
                    ITROLLA_DEPTH_UNIT_NAME, ITROLLA_DEPTH_DEFAULT_CODE) {}
     /**
@@ -411,3 +411,5 @@ typedef InSituTrollSdi12a_Temp     InsituTrollSdi12a_Temp;
 typedef InSituTrollSdi12a_Depth    InsituTrollSdi12a_Depth;
 
 #endif  // SRC_SENSORS_INSITUTROLLSDI12_H_
+
+// cSpell:ignore ITROLL ITROLLA

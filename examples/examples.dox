@@ -1,54 +1,88 @@
 /**
- * @dir examples
- *
- * @brief Contains all of the example sketches. There is only one example in each subfolder - a standard for Arduino coding.
- */
-/**
- * @page page_the_examples
- * @m_innerpage{page_examples_basic}
- * @page page_examples_basic Basic Functionality
- * [Basic Functionality](@ref examples_basic)
- * @m_innerpage{example_single_sensor}
- * @m_innerpage{example_simple_logging}
- * @m_innerpage{example_learn_envirodiy}
- */
+@dir examples
+
+@brief Contains all of the example sketches. There is only one example in each subfolder - a standard for Arduino coding.
+*/
+
 
 /**
- * @page page_the_examples
- * @m_innerpage{page_examples_outgoing_data}
- * @page page_examples_outgoing_data Publishing Data
- * [Publishing Data](@ref examples_publishing)
- * @m_innerpage{example_mmw}
- * @m_innerpage{example_thingspeak}
- */
+@page page_the_examples
+
+@subpage page_examples_basic "DELETE THIS LINK"
+
+@page page_examples_basic Basic Functionality
+[Basic Functionality](@ref examples_basic)
+
+@subpage example_single_sensor "DELETE THIS LINK"
+
+@subpage example_simple_logging "DELETE THIS LINK"
+
+@subpage example_learn_envirodiy "DELETE THIS LINK"
+
+*/
 
 /**
- * @page page_the_examples
- * @m_innerpage{page_examples_complex}
- * @page page_examples_complex Calculations and Complex Logging
- * [Calculations and Complex Logging](@ref examples_complex)
- * @m_innerpage{example_baro_rho}
- * @m_innerpage{example_double_log}
- * @m_innerpage{example_data_saving}
- */
+@page page_the_examples
+
+@subpage page_examples_outgoing_data "DELETE THIS LINK"
+
+@page page_examples_outgoing_data Publishing Data
+[Publishing Data](@ref examples_publishing)
+
+@subpage example_mmw "DELETE THIS LINK"
+
+@subpage example_thingspeak "DELETE THIS LINK"
+
+@subpage example_aws_iot_core "DELETE THIS LINK"
+
+*/
 
 /**
- * @page page_the_examples
- * @m_innerpage{page_examples_drwi}
- * @page page_examples_drwi DRWI Citizen Science
- * [DRWI Citizen Science](@ref examples_drwi)
- * @m_innerpage{example_drwi_mayfly1}
- * @m_innerpage{example_drwi_mayfly1_wifi}
- * @m_innerpage{example_drwi_ediylte}
- * @m_innerpage{example_drwi_digilte}
- * @m_innerpage{example_drwi_2g}
- * @m_innerpage{example_drwi_no_cell}
- */
+@page page_the_examples
+
+@subpage page_examples_complex "DELETE THIS LINK"
+
+@page page_examples_complex Calculations and Complex Logging
+[Calculations and Complex Logging](@ref examples_complex)
+
+@subpage example_baro_rho "DELETE THIS LINK"
+
+@subpage example_double_log "DELETE THIS LINK"
+
+@subpage example_data_saving "DELETE THIS LINK"
+
+*/
 
 /**
- * @page page_the_examples
- * @m_innerpage{page_examples_menu}
- * @page page_examples_menu Everything at Once - a la carte
- * [Everything at Once - a la carte](@ref examples_everything)
- * @m_innerpage{example_menu}
- */
+@page page_the_examples
+
+@subpage page_examples_drwi "DELETE THIS LINK"
+
+@page page_examples_drwi DRWI Citizen Science
+[DRWI Citizen Science](@ref examples_drwi)
+
+@subpage example_drwi_mayfly1 "DELETE THIS LINK"
+
+@subpage example_drwi_mayfly1_wifi "DELETE THIS LINK"
+
+@subpage example_drwi_ediylte "DELETE THIS LINK"
+
+@subpage example_drwi_digilte "DELETE THIS LINK"
+
+@subpage example_drwi_2g "DELETE THIS LINK"
+
+@subpage example_drwi_no_cell "DELETE THIS LINK"
+
+*/
+
+/**
+@page page_the_examples
+
+@subpage page_examples_menu "DELETE THIS LINK"
+
+@page page_examples_menu Everything at Once - a la carte
+[Everything at Once - a la carte](@ref examples_everything)
+
+@subpage example_menu "DELETE THIS LINK"
+
+*/

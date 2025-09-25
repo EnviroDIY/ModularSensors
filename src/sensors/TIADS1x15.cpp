@@ -50,10 +50,10 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
 
     // Check a measurement was *successfully* started (status bit 6 set)
     // Only go on to get a result if it was
-    if (bitRead(_sensorStatus, 6)) {
+    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-// Create an Auxillary ADD object
+// Create an auxiliary ADD object
 // We create and set up the ADC object here so that each sensor using
 // the ADC may set the gain appropriately without effecting others.
 #ifndef MS_USE_ADS1015
@@ -87,7 +87,7 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
 
         if (adcVoltage < 3.6 && adcVoltage > -0.3) {
             // Skip results out of range
-            // Apply the gain calculation, with a defualt gain of 10 V/V Gain
+            // Apply the gain calculation, with a default gain of 10 V/V Gain
             calibResult = adcVoltage * _gain;
             MS_DBG(F("  calibResult:"), calibResult);
         } else {  // set invalid voltages back to -9999
@@ -102,7 +102,7 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)
-    _sensorStatus &= 0b10011111;
+    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
 
     if (adcVoltage < 3.6 && adcVoltage > -0.3) {
         return true;

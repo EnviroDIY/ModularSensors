@@ -56,15 +56,15 @@ String YosemitechParent::getSensorLocation(void) {
 bool YosemitechParent::setup(void) {
     bool retVal =
         Sensor::setup();  // this will set pin modes and the setup status bit
-    if (_RS485EnablePin >= 0) pinMode(_RS485EnablePin, OUTPUT);
-    if (_powerPin2 >= 0) pinMode(_powerPin2, OUTPUT);
+    if (_RS485EnablePin >= 0) { pinMode(_RS485EnablePin, OUTPUT); }
+    if (_powerPin2 >= 0) { pinMode(_powerPin2, OUTPUT); }
 
 #ifdef MS_YOSEMITECHPARENT_DEBUG_DEEP
-    _ysensor.setDebugStream(&DEEP_DEBUGGING_SERIAL_OUTPUT);
+    _ysensor.setDebugStream(&MS_SERIAL_OUTPUT);
 #endif
 
     // This sensor begin is just setting more pin modes, etc, no sensor power
-    // required This realy can't fail so adding the return value is just for
+    // required This really can't fail so adding the return value is just for
     // show
     retVal &= _ysensor.begin(_model, _modbusAddress, _stream, _RS485EnablePin);
 
@@ -96,10 +96,12 @@ bool YosemitechParent::wake(void) {
         MS_DBG(getSensorNameAndLocation(), F("activated and measuring."));
     } else {
         MS_DBG(getSensorNameAndLocation(), F("was NOT activated!"));
+        // Set the status error bit (bit 7)
+        setStatusBit(ERROR_OCCURRED);
         // Make sure the activation time is zero and the wake success bit (bit
         // 4) is unset
         _millisSensorActivated = 0;
-        _sensorStatus &= 0b11101111;
+        clearStatusBit(WAKE_SUCCESSFUL);
     }
 
     // Manually activate the brush
@@ -119,9 +121,16 @@ bool YosemitechParent::wake(void) {
 
 
 // The function to put the sensor to sleep
-// Different from the standard in that it stops measurements
+// Different from the standard in that it empties and flushes the stream and
+// stops measurements
 bool YosemitechParent::sleep(void) {
+    // empty then flush the buffer
+    while (_stream->available()) { _stream->read(); }
+    _stream->flush();
+
+    // if it's not powered, it's asleep
     if (!checkPowerOn()) { return true; }
+    // if it was never awake, it's probably asleep
     if (_millisSensorActivated == 0) {
         MS_DBG(getSensorNameAndLocation(), F("was not measuring!"));
         return true;
@@ -143,11 +152,16 @@ bool YosemitechParent::sleep(void) {
         _millisMeasurementRequested = 0;
         // Unset the status bits for sensor activation (bits 3 & 4) and
         // measurement request (bits 5 & 6)
-        _sensorStatus &= 0b10000111;
+        clearStatusBits(WAKE_ATTEMPTED, WAKE_SUCCESSFUL, MEASUREMENT_ATTEMPTED,
+                        MEASUREMENT_SUCCESSFUL);
         MS_DBG(F("Measurements stopped."));
     } else {
         MS_DBG(F("Measurements NOT stopped!"));
     }
+
+    // empty then flush the buffer
+    while (_stream->available()) { _stream->read(); }
+    _stream->flush();
 
     return success;
 }
@@ -156,13 +170,17 @@ bool YosemitechParent::sleep(void) {
 // This turns on sensor power
 void YosemitechParent::powerUp(void) {
     if (_powerPin >= 0) {
+        // Reset power pin mode every power up because pins are set to tri-state
+        // on sleep
+        pinMode(_powerPin, OUTPUT);
         MS_DBG(F("Powering"), getSensorNameAndLocation(), F("with pin"),
                _powerPin);
         digitalWrite(_powerPin, HIGH);
-        // Mark the time that the sensor was powered
-        _millisPowerOn = millis();
     }
     if (_powerPin2 >= 0) {
+        // Reset power pin mode every power up because pins are set to tri-state
+        // on sleep
+        pinMode(_powerPin2, OUTPUT);
         MS_DBG(F("Applying secondary power to"), getSensorNameAndLocation(),
                F("with pin"), _powerPin2);
         digitalWrite(_powerPin2, HIGH);
@@ -170,9 +188,16 @@ void YosemitechParent::powerUp(void) {
     if (_powerPin < 0 && _powerPin2 < 0) {
         MS_DBG(F("Power to"), getSensorNameAndLocation(),
                F("is not controlled by this library."));
+        // Mark the power-on time, just in case it  had not been marked
+        if (_millisPowerOn == 0) _millisPowerOn = millis();
+    } else {
+        // Mark the time that the sensor was powered
+        _millisPowerOn = millis();
     }
+    // Reset enable pin because pins are set to tri-state on sleep
+    if (_RS485EnablePin >= 0) { pinMode(_RS485EnablePin, OUTPUT); }
     // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
-    _sensorStatus |= 0b00000110;
+    setStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL);
 }
 
 
@@ -190,7 +215,9 @@ void YosemitechParent::powerDown(void) {
         _millisMeasurementRequested = 0;
         // Unset the status bits for sensor power (bits 1 & 2),
         // activation (bits 3 & 4), and measurement request (bits 5 & 6)
-        _sensorStatus &= 0b10000001;
+        clearStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL, WAKE_ATTEMPTED,
+                        WAKE_SUCCESSFUL, MEASUREMENT_ATTEMPTED,
+                        MEASUREMENT_SUCCESSFUL);
     }
     if (_powerPin2 >= 0) {
         MS_DBG(F("Turning off secondary power to"), getSensorNameAndLocation(),
@@ -211,7 +238,7 @@ bool YosemitechParent::addSingleMeasurementResult(void) {
 
     // Check a measurement was *successfully* started (status bit 6 set)
     // Only go on to get a result if it was
-    if (bitRead(_sensorStatus, 6)) {
+    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         switch (_model) {
             case Y4000: {
                 // Initialize float variables
@@ -297,8 +324,10 @@ bool YosemitechParent::addSingleMeasurementResult(void) {
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)
-    _sensorStatus &= 0b10011111;
+    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
 
     // Return true when finished
     return success;
 }
+
+// cSpell:ignore ysensor

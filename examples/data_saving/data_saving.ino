@@ -38,7 +38,7 @@
 
 
 // ==========================================================================
-//  Settings for Additional Serial Ports
+//  Creating Additional Serial Ports
 // ==========================================================================
 /** Start [serial_ports] */
 // The modem and a number of sensors communicate over UART/TTL - often called
@@ -47,7 +47,8 @@
 // peripherals as possible.  In some cases (ie, modbus communication) many
 // sensors can share the same serial port.
 
-#if !defined(ARDUINO_ARCH_SAMD) && !defined(ATMEGA2560)  // For AVR boards
+// For AVR boards
+#if !defined(ARDUINO_ARCH_SAMD) && !defined(ATMEGA2560)
 // Unfortunately, most AVR boards have only one or two hardware serial ports,
 // so we'll set up three types of extra software serial ports to use
 
@@ -60,24 +61,21 @@
 AltSoftSerial altSoftSerial;
 #endif  // End software serial for avr boards
 
-
-#if defined(ARDUINO_ARCH_SAMD)
+#if defined(ARDUINO_SAMD_FEATHER_M0)
 #include <wiring_private.h>  // Needed for SAMD pinPeripheral() function
 
-#ifndef ENABLE_SERIAL2
 // Set up a 'new' UART using SERCOM1
 // The Rx will be on digital pin 11, which is SERCOM1's Pad #0
 // The Tx will be on digital pin 10, which is SERCOM1's Pad #2
-// NOTE:  SERCOM1 is undefinied on a "standard" Arduino Zero and many clones,
+// NOTE:  SERCOM1 is undefined on a "standard" Arduino Zero and many clones,
 //        but not all!  Please check the variant.cpp file for you individual
-//        board! Sodaq Autonomo's and Sodaq One's do NOT follow the 'standard'
-//        SERCOM definitions!
+//        board!
 Uart Serial2(&sercom1, 11, 10, SERCOM_RX_PAD_0, UART_TX_PAD_2);
 // Hand over the interrupts to the sercom port
 void SERCOM1_Handler() {
     Serial2.IrqHandler();
 }
-#endif
+#define ENABLE_SERIAL2
 
 #endif  // End hardware serial on SAMD21 boards
 /** End [serial_ports] */
@@ -92,7 +90,7 @@ const char* sketchName = "data_saving.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char* LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
-const uint8_t loggingInterval = 15;
+const int8_t loggingInterval = 15;
 // Your logger's timezone.
 const int8_t timeZone = -5;  // Eastern Standard Time
 // NOTE:  Daylight savings time will not be applied!  Please use standard time!
@@ -104,7 +102,7 @@ const int8_t  greenLED   = 8;       // Pin for the green LED
 const int8_t  redLED     = 9;       // Pin for the red LED
 const int8_t  buttonPin  = 21;      // Pin for debugging mode (ie, button pin)
 const int8_t  wakePin    = 31;  // MCU interrupt/alarm pin to wake from sleep
-// Mayfly 0.x D31 = A7
+// Mayfly 0.x, 1.x D31 = A7
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
@@ -187,8 +185,8 @@ Variable* ds3231Temp =
 // ==========================================================================
 /** Start [modbus_shared] */
 // Create a reference to the serial port for modbus
-#if defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAMD_ZERO) || \
-    defined(ATMEGA2560)
+#if defined(ENABLE_SERIAL2) || defined(ENVIRODIY_STONEFLY_M4) || \
+    defined(ATMEGA2560) || defined(ARDUINO_AVR_MEGA2560)
 HardwareSerial& modbusSerial = Serial2;  // Use hardware serial if possible
 #else
 AltSoftSerial& modbusSerial = altSoftSerial;  // For software serial
@@ -356,8 +354,8 @@ const char* samplingFeature =
 // Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
 // This is only attached to the logger with the shorter variable array
 #include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPOST(loggerToGo, &modem.gsmClient,
-                                 registrationToken, samplingFeature);
+EnviroDIYPublisher EnviroDIYPost(loggerToGo, registrationToken,
+                                 samplingFeature);
 /** End [publishers] */
 
 
@@ -366,7 +364,7 @@ EnviroDIYPublisher EnviroDIYPOST(loggerToGo, &modem.gsmClient,
 // ==========================================================================
 /** Start [working_functions] */
 // Flashes the LED's on the primary board
-void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
+void greenRedFlash(uint8_t numFlash = 4, uint8_t rate = 75) {
     for (uint8_t i = 0; i < numFlash; i++) {
         digitalWrite(greenLED, HIGH);
         digitalWrite(redLED, LOW);
@@ -423,11 +421,10 @@ void setup() {
 
 // Assign pins SERCOM functionality for SAMD boards
 // NOTE:  This must happen *after* the various serial.begin statements
-#if defined(ARDUINO_ARCH_SAMD)
-#ifndef ENABLE_SERIAL2
+#if defined(ARDUINO_SAMD_FEATHER_M0)
+    // Serial2
     pinPeripheral(10, PIO_SERCOM);  // Serial2 Tx/Dout = SERCOM1 Pad #2
     pinPeripheral(11, PIO_SERCOM);  // Serial2 Rx/Din = SERCOM1 Pad #0
-#endif
 #endif
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
@@ -435,13 +432,13 @@ void setup() {
     pinMode(redLED, OUTPUT);
     digitalWrite(redLED, LOW);
     // Blink the LEDs to show the board is on and starting up
-    greenredflash();
+    greenRedFlash();
 
     // Set the timezones for the logger/data and the RTC
     // Logging in the given time zone
     Logger::setLoggerTimeZone(timeZone);
     // It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)
-    Logger::setRTCTimeZone(0);
+    loggerClock::setRTCOffset(0);
 
     // Attach the same modem to both loggers
     // It is only needed for the logger that will be sending out data, but
@@ -469,7 +466,7 @@ void setup() {
     }
 
     // Sync the clock if it isn't valid or we have battery to spare
-    if (getBatteryVoltage() > 3.55 || !loggerAllVars.isRTCSane()) {
+    if (getBatteryVoltage() > 3.55 || !loggerClock::isRTCSane()) {
         // Synchronize the RTC with NIST
         // This will also set up the modem
         loggerAllVars.syncRTC();
@@ -508,7 +505,7 @@ void setup() {
 // sensors update, testing mode starts, or it goes back to sleep.
 void loop() {
     // Reset the watchdog
-    loggerAllVars.watchDogTimer.resetWatchDog();
+    extendedWatchDog::resetWatchDog();
 
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval
@@ -516,7 +513,7 @@ void loop() {
     if (loggerAllVars.checkInterval() && getBatteryVoltage() > 3.4) {
         // Flag to notify that we're in already awake and logging a point
         Logger::isLoggingNow = true;
-        loggerAllVars.watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
 
         // Print a line to show new reading
         Serial.println(F("------------------------------------------"));
@@ -524,7 +521,7 @@ void loop() {
         loggerAllVars.alertOn();
         // Power up the SD Card, but skip any waits after power up
         loggerAllVars.turnOnSDcard(false);
-        loggerAllVars.watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
 
         // Start the stream for the modbus sensors
         // Because RS485 adapters tend to "steal" current from the data pins
@@ -537,7 +534,7 @@ void loop() {
         // NOTE:  The wake function for each sensor should force sensor setup
         // to run if the sensor was not previously set up.
         arrayComplete.completeUpdate();
-        loggerAllVars.watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
 
         // End the stream for the modbus sensors
         // Because RS485 adapters tend to "steal" current from the data pins
@@ -553,48 +550,49 @@ void loop() {
         digitalWrite(6, LOW);
 #endif
 
-#if defined(ARDUINO_SAMD_ZERO)
+#if defined(ARDUINO_SAMD_FEATHER_M0)
         digitalWrite(10, LOW);
         digitalWrite(11, LOW);
 #endif
 
         // Create a csv data record and save it to the log file
         loggerAllVars.logToSD();
-        loggerAllVars.watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
 
         // Connect to the network
         // Again, we're only doing this if the battery is doing well
         if (getBatteryVoltage() > 3.55) {
             if (modem.modemWake()) {
-                loggerAllVars.watchDogTimer.resetWatchDog();
+                extendedWatchDog::resetWatchDog();
                 if (modem.connectInternet()) {
-                    loggerAllVars.watchDogTimer.resetWatchDog();
+                    extendedWatchDog::resetWatchDog();
                     // Publish data to remotes
                     loggerToGo.publishDataToRemotes();
                     modem.updateModemMetadata();
 
-                    loggerAllVars.watchDogTimer.resetWatchDog();
+                    extendedWatchDog::resetWatchDog();
                     // Sync the clock at noon
                     // NOTE:  All loggers have the same clock, pick one
-                    if (Logger::markedLocalEpochTime != 0 &&
-                        Logger::markedLocalEpochTime % 86400 == 43200) {
+                    if (Logger::markedLocalUnixTime != 0 &&
+                        Logger::markedLocalUnixTime % 86400 == 43200) {
                         Serial.println(F("Running a daily clock sync..."));
-                        loggerAllVars.setRTClock(modem.getNISTTime());
+                        loggerClock::setRTClock(modem.getNISTTime(), 0,
+                                                epochStart::unix_epoch);
                     }
 
                     // Disconnect from the network
-                    loggerAllVars.watchDogTimer.resetWatchDog();
+                    extendedWatchDog::resetWatchDog();
                     modem.disconnectInternet();
                 }
             }
             // Turn the modem off
-            loggerAllVars.watchDogTimer.resetWatchDog();
+            extendedWatchDog::resetWatchDog();
             modem.modemSleepPowerDown();
         }
 
         // Cut power from the SD card - without additional housekeeping wait
         loggerAllVars.turnOffSDcard(false);
-        loggerAllVars.watchDogTimer.resetWatchDog();
+        extendedWatchDog::resetWatchDog();
         // Turn off the LED
         loggerAllVars.alertOff();
         // Print a line to show reading ended
@@ -610,7 +608,7 @@ void loop() {
     // NOTE:  The testingISR attached to the button at the end of the "setup()"
     // function turns on the startTesting flag.  So we know if that flag is set
     // then we want to run the testing mode function.
-    if (Logger::startTesting) loggerAllVars.testingMode();
+    if (Logger::startTesting) loggerAllVars.benchTestingMode();
 
     // Call the processor sleep
     // Only need to do this for one of the loggers

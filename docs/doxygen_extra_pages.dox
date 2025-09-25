@@ -13,9 +13,18 @@ Here are some links to pages with more detailed information about some common is
 
 @subpage page_code_debugging
 
-@subpage page_for_developers
-
 [TinyGSM Troubleshooting page](https://github.com/vshymanskyy/TinyGSM#troubleshooting)
+*/
+
+/**
+@page page_for_developers Help for Developers
+
+Here are some links helpful to developers
+
+@subpage page_developer_setup
+
+@subpage page_continuous_intetration
+
 */
 
 /**
@@ -26,4 +35,9 @@ Here are links to detailed information about the various supported sensors and m
 @subpage page_sensor_notes
 
 @subpage page_modem_notes
+
+@subpage page_samd_clocks
+
+@subpage page_sleep_config
+
 */

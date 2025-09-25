@@ -66,27 +66,34 @@
 #ifndef SRC_SENSORS_SDI12SENSORS_H_
 #define SRC_SENSORS_SDI12SENSORS_H_
 
-// Debugging Statement
-// #define MS_SDI12SENSORS_DEBUG
+// Include the library config before anything else
+#include "ModSensorConfig.h"
 
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
+
+// Define the print label[s] for the debugger
 #ifdef MS_SDI12SENSORS_DEBUG
 #define MS_DEBUGGING_STD "SDI12Sensors"
 #endif
-
 #ifdef MS_SDI12SENSORS_DEBUG_DEEP
 #define MS_DEBUGGING_DEEP "SDI12Sensors"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
 #undef MS_DEBUGGING_DEEP
+
+// Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
-#ifdef SDI12_EXTERNAL_PCINT
-#include <SDI12.h>
-#else
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR)) && \
+    !defined(SDI12_EXTERNAL_PCINT)
 #include <SDI12_ExtInts.h>
+#else
+#include <SDI12.h>
 #endif
 // NOTE:  Can use the "regular" sdi-12 library with build flag -D
 // SDI12_EXTERNAL_PCINT Unfortunately, that is not compatible with the Arduino
@@ -201,6 +208,19 @@ class SDI12Sensors : public Sensor {
     String getSensorLocation(void) override;
 
     /**
+     * @brief Calls the begin for the SDI-12 object to set all of the
+     * pre-scalers and timers.
+     */
+    void activate(void);
+
+    /**
+     * @brief Empties the SDI-12 object buffer and then ends it. The end
+     * function unsets all timer pre-scalers and **--crucially--** disables the
+     * interrupts on the SDI-12 data pin.
+     */
+    void deactivate(void);
+
+    /**
      * @brief Do any one-time preparations needed before the sensor will be able
      * to take readings.
      *
@@ -271,10 +291,12 @@ class SDI12Sensors : public Sensor {
     /**
      * @brief Gets the results of either a standard or a concurrent measurement
      *
+     * @param verify_crc True to verify the CRC of the results
+     *
      * @return True if the full number of expected results was
      * returned.
      */
-    virtual bool getResults(void);
+    virtual bool getResults(bool verify_crc);
     /**
      * @brief Internal reference to the SDI-12 object.
      */

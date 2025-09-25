@@ -51,7 +51,7 @@ bool AOSongDHT::addSingleMeasurementResult(void) {
 
     // Check a measurement was *successfully* started (status bit 6 set)
     // Only go on to get a result if it was
-    if (bitRead(_sensorStatus, 6)) {
+    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         // Reading temperature or humidity takes about 250 milliseconds!
         // Make 5 attempts to get a decent reading
         for (uint8_t i = 0; i < 5; i++) {
@@ -63,7 +63,7 @@ bool AOSongDHT::addSingleMeasurementResult(void) {
             // Check if any reads failed
             // If they are NaN (not a number) then something went wrong
             if (!isnan(humid_val) && !isnan(temp_val)) {
-                // Compute heat index in Celsius (isFahreheit = false)
+                // Compute heat index in Celsius (isFahrenheit = false)
                 hi_val = dht_internal.computeHeatIndex(temp_val, humid_val,
                                                        false);
                 MS_DBG(F("  Temp:"), temp_val, F("°C"));
@@ -94,7 +94,7 @@ bool AOSongDHT::addSingleMeasurementResult(void) {
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)
-    _sensorStatus &= 0b10011111;
+    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
 
     return success;
 }

@@ -6,7 +6,7 @@
  * @author Written By: Neil Hancock <neilh20+aec2008@wLLw.net>; Edited by Sara
  * Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief This encapsulates an Electrical Conductivity sensors using an anlog
+ * @brief This encapsulates an Electrical Conductivity sensors using an analog
  * input and onboard ADC and ADC ref.
  */
 
@@ -44,15 +44,6 @@ float AnalogElecConductivity::readEC(uint8_t analogPinNum) {
     float    Rwater_ohms;      // literal value of water
     float    EC_uScm = -9999;  // units are uS per cm
 
-    // Set the resolution for the processor ADC, only applies to SAMD boards.
-#if !defined(ARDUINO_ARCH_AVR)
-    analogReadResolution(ANALOG_EC_ADC_RESOLUTION);
-#endif  // ARDUINO_ARCH_AVR
-    // Set the analog reference mode for the voltage measurement.
-    // If possible, to get the best results, an external reference should be
-    // used.
-    analogReference(ANALOG_EC_ADC_REFERENCE_MODE);
-
     // First measure the analog voltage.
     // The return value from analogRead() is IN BITS NOT IN VOLTS!!
     // Take a priming reading.
@@ -63,7 +54,7 @@ float AnalogElecConductivity::readEC(uint8_t analogPinNum) {
     MS_DEEP_DBG("adc bits=", sensorEC_adc);
 
     if (0 == sensorEC_adc) {
-        // Prevent underflow, can never be ANALOG_EC_ADC_RANGE
+        // Prevent underflow, can never be outside of PROCESSOR_ADC_RANGE
         sensorEC_adc = 1;
     }
 
@@ -71,7 +62,7 @@ float AnalogElecConductivity::readEC(uint8_t analogPinNum) {
 
     // see the header for an explanation of this calculation
     Rwater_ohms = _Rseries_ohms /
-        ((static_cast<float>(ANALOG_EC_ADC_RANGE) /
+        ((static_cast<float>(PROCESSOR_ADC_RANGE) /
           static_cast<float>(sensorEC_adc)) -
          1);
     MS_DEEP_DBG("ohms=", Rwater_ohms);
@@ -87,7 +78,7 @@ float AnalogElecConductivity::readEC(uint8_t analogPinNum) {
 bool AnalogElecConductivity::addSingleMeasurementResult(void) {
     float sensorEC_uScm = -9999;
 
-    if (bitRead(_sensorStatus, 6)) {
+    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
         sensorEC_uScm = readEC(_dataPin);
@@ -102,8 +93,11 @@ bool AnalogElecConductivity::addSingleMeasurementResult(void) {
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)
-    _sensorStatus &= 0b10011111;
+    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
 
     // Return true when finished
     return true;
 }
+
+// cSpell:ignore AnalogElecConductivity Rseries_ohms sensorEC_Konst Rwater_ohms
+// cSpell:ignore anlgEc

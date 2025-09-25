@@ -79,22 +79,27 @@
 #ifndef SRC_SENSORS_KELLERPARENT_H_
 #define SRC_SENSORS_KELLERPARENT_H_
 
-// Debugging Statement
-// #define MS_KELLERPARENT_DEBUG
-// #define MS_KELLERPARENT_DEBUG_DEEP
+// Include the library config before anything else
+#include "ModSensorConfig.h"
 
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
+
+// Define the print label[s] for the debugger
 #ifdef MS_KELLERPARENT_DEBUG
 #define MS_DEBUGGING_STD "KellerParent"
 #endif
-
 #ifdef MS_KELLERPARENT_DEBUG_DEEP
 #define MS_DEBUGGING_DEEP "KellerParent"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
 #undef MS_DEBUGGING_DEEP
+
+// Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include <KellerModbus.h>
@@ -246,6 +251,9 @@ class KellerParent : public Sensor {
      */
     bool setup(void) override;
 
+    // override to empty and flush the stream
+    bool sleep(void) override;
+
     // Override these to use two power pins
     void powerUp(void) override;
     void powerDown(void) override;
@@ -270,7 +278,7 @@ class KellerParent : public Sensor {
      */
     byte _modbusAddress;
     /**
-     * @brief Private reference to the stream for communciation with the
+     * @brief Private reference to the stream for communication with the
      * Keller sensor.
      */
     Stream* _stream;
@@ -286,3 +294,5 @@ class KellerParent : public Sensor {
 };
 /**@}*/
 #endif  // SRC_SENSORS_KELLERPARENT_H_
+
+// cSpell:ignore ksensor

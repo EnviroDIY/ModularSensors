@@ -1,4 +1,4 @@
-# Software License Agreement (BSD-3 License)
+# Software License Agreement (BSD-3 License)<!--! {#license} -->
 
 **Copyright (c) 2010-2024, Stroud Water Research Center (SWRC) and the EnviroDIY Development Team.**
 All rights reserved.

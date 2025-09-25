@@ -5,9 +5,9 @@
  * This library is published under the BSD-3 license.
  * @author Anthony Aufdenkampe <aaufdenkampe@limno.com> with help from Beth
  * Fisher, Evan Host and Bobby Schulz.
- * Heavliy edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ * Heavily edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief Contains the MeaSpecMS5803 semsor subclass and the variable subclasses
+ * @brief Contains the MeaSpecMS5803 sensor subclass and the variable subclasses
  * MeaSpecMS5803_Temp and MeaSpecMS5803_Pressure.
  *
  * These are for the Measurement Specialties MS5803 pressure sensor, which is
@@ -21,7 +21,7 @@
 /* clang-format off */
 /**
  * @defgroup sensor_ms5803 Measurement Specialties MS5803
- * Classes for the Measurement Specialties MS5803 digital preassure sensor.
+ * Classes for the Measurement Specialties MS5803 digital pressure sensor.
  *
  * @ingroup the_sensors
  *
@@ -35,7 +35,7 @@
  * most common.  Although this sensor has the option of either I2C or SPI
  * communication, this library only supports I2C.  The sensor's I2C address is
  * determined the voltage level of the CSB pin; it will be either 0x76 or 0x77.
- * Breakout boards purchased from Sparkfun are set to 0x76 while those from
+ * Breakout boards purchased from SparkFun are set to 0x76 while those from
  * Northern Widget are variable depending on the model as outlined in their
  * [library](https://github.com/NorthernWidget/TP-Downhole_Library). To connect
  * two of these sensors to your system, you must ensure they are soldered so as
@@ -78,16 +78,23 @@
 #ifndef SRC_SENSORS_MEASPECMS5803_H_
 #define SRC_SENSORS_MEASPECMS5803_H_
 
-// Debugging Statement
-// #define MS_MEASPECMS5803_DEBUG
+// Include the library config before anything else
+#include "ModSensorConfig.h"
 
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
+
+// Define the print label[s] for the debugger
 #ifdef MS_MEASPECMS5803_DEBUG
 #define MS_DEBUGGING_STD "MeaSpecMS5803"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+
+// Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include <MS5803.h>
@@ -215,8 +222,8 @@ class MeaSpecMS5803 : public Sensor {
      * @param i2cAddressHex The I2C address of the MS5803; must be either 0x76
      * or 0x77.  The default value is 0x76.
      * @param maxPressure The maximum pressure of the specific MS5803 in bar.
-     * The sensors are maufactured with maximum pressures of 1.1 bar, 1.3 bar, 5
-     * bar, 7 bar, 14 bar, and 30 bar.
+     * The sensors are manufactured with maximum pressures of 1.1 bar, 1.3 bar,
+     * 5 bar, 7 bar, 14 bar, and 30 bar.
      * @note Use "1" for the 1.1 bar module and "2" for the 1.3 bar module.
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
@@ -293,7 +300,7 @@ class MeaSpecMS5803_Temp : public Variable {
     explicit MeaSpecMS5803_Temp(MeaSpecMS5803* parentSense,
                                 const char*    uuid = "",
                                 const char* varCode = MS5803_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)MS5803_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)MS5803_TEMP_VAR_NUM,
                    (uint8_t)MS5803_TEMP_RESOLUTION, MS5803_TEMP_VAR_NAME,
                    MS5803_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -303,7 +310,7 @@ class MeaSpecMS5803_Temp : public Variable {
      * used.
      */
     MeaSpecMS5803_Temp()
-        : Variable((const uint8_t)MS5803_TEMP_VAR_NUM,
+        : Variable((uint8_t)MS5803_TEMP_VAR_NUM,
                    (uint8_t)MS5803_TEMP_RESOLUTION, MS5803_TEMP_VAR_NAME,
                    MS5803_TEMP_UNIT_NAME, MS5803_TEMP_DEFAULT_CODE) {}
     /**
@@ -338,7 +345,7 @@ class MeaSpecMS5803_Pressure : public Variable {
     explicit MeaSpecMS5803_Pressure(
         MeaSpecMS5803* parentSense, const char* uuid = "",
         const char* varCode = MS5803_PRESSURE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)MS5803_PRESSURE_VAR_NUM,
+        : Variable(parentSense, (uint8_t)MS5803_PRESSURE_VAR_NUM,
                    (uint8_t)MS5803_PRESSURE_RESOLUTION,
                    MS5803_PRESSURE_VAR_NAME, MS5803_PRESSURE_UNIT_NAME, varCode,
                    uuid) {}
@@ -349,7 +356,7 @@ class MeaSpecMS5803_Pressure : public Variable {
      * used.
      */
     MeaSpecMS5803_Pressure()
-        : Variable((const uint8_t)MS5803_PRESSURE_VAR_NUM,
+        : Variable((uint8_t)MS5803_PRESSURE_VAR_NUM,
                    (uint8_t)MS5803_PRESSURE_RESOLUTION,
                    MS5803_PRESSURE_VAR_NAME, MS5803_PRESSURE_UNIT_NAME,
                    MS5803_PRESSURE_DEFAULT_CODE) {}

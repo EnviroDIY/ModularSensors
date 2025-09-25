@@ -1,12 +1,12 @@
-# ModularSensors<!-- {#mainpage} -->
+# ModularSensors<!--! {#mainpage} -->
 
 ___
 
-## The EnviroDIY ModularSensors Library<!-- {#mainpage_intro} -->
+## The EnviroDIY ModularSensors Library<!--! {#mainpage_intro} -->
 
 If you're new to EnviroDIY, I suggest you check out the [Just Getting Started](https://envirodiy.github.io/ModularSensors/page_getting_started.html) section of the documentation!
 
-This Arduino library gives environmental sensors a common interface of functions for use with Arduino-compatible dataloggers, such as the EnviroDIY Mayfly.
+This Arduino library gives environmental sensors a common interface of functions for use with Arduino-compatible data loggers, such as the EnviroDIY Mayfly.
 The ModularSensors library is specifically designed to support wireless, solar-powered environmental data logging applications, that is, to:
 
 - Retrieve data from many physical sensors;
@@ -22,11 +22,11 @@ Although this library was written primarily for the [EnviroDIY Mayfly data logge
 
 There is extensive documentation available in the [ModularSensors github pages](https://envirodiy.github.io/ModularSensors/index.html) including details of the class structures and example code.
 
-[//]: # ( @tableofcontents )
+<!--! @tableofcontents -->
 
-[//]: # ( @m_footernavigation )
+<!--! @m_footernavigation -->
 
-[//]: # ( Start GitHub Only )
+<!--! @if GITHUB -->
 
 - [ModularSensors](#modularsensors)
   - [The EnviroDIY ModularSensors Library](#the-envirodiy-modularsensors-library)
@@ -37,15 +37,16 @@ There is extensive documentation available in the [ModularSensors github pages](
   - [License](#license)
   - [Acknowledgments](#acknowledgments)
 
-[//]: # ( End GitHub Only )
+<!--! @endif -->
 
-## Supported Sensors<!-- {#mainpage_supported_sensors} -->
+## Supported Sensors<!--! {#mainpage_supported_sensors} -->
 
 For some generalized information about attaching sensors to an Arduino style board, see the [Sensor Notes page](https://envirodiy.github.io/ModularSensors/page_sensor_notes.html).
 
 - [Processor Metrics: battery voltage, free RAM, sample count](https://envirodiy.github.io/ModularSensors/group__sensor__processor.html)
 - [Maxim DS3231: real time clock](https://envirodiy.github.io/ModularSensors/group__sensor__ds3231.html)
 - [Analog Electrical Conductivity: conductivity](https://envirodiy.github.io/ModularSensors/group__sensor__analog__cond.html)
+- [ANB Sensors pH Sensor: pH](https://envirodiy.github.io/ModularSensors/group__sensor__anb__ph.html)
 - [AOSong AM2315: humidity & temperature](https://envirodiy.github.io/ModularSensors/group__sensor__am2315.html)
 - [AOSong DHT: humidity & temperature](https://envirodiy.github.io/ModularSensors/group__sensor__dht.html)
 - [Apogee SQ-212: quantum light sensor, via TI ADS1115](https://envirodiy.github.io/ModularSensors/group__sensor__sq212.html)
@@ -66,6 +67,7 @@ For some generalized information about attaching sensors to an Arduino style boa
 - [Everlight ALS-PT19 Analog Light Sensor (via processor ADC)](https://envirodiy.github.io/ModularSensors/group__sensor__alspt19.html)
 - [External Arduino I2C Rain Tipping Bucket Counter: rainfall totals](https://envirodiy.github.io/ModularSensors/group__sensor__i2c__rain.html)
 - [Freescale Semiconductor MPL115A2: barometric pressure and temperature](https://envirodiy.github.io/ModularSensors/group__sensor__mpl115a2.html)
+- [Geolux HydroCam](https://envirodiy.github.io/ModularSensors/group__sensor__hydrocam.html)
 - [GroPoint Profile GPLP-8 Eight-Segment Soil Moisture and Temperature Profiling Probe](https://envirodiy.github.io/ModularSensors/group__sensor__gplp8.html)
 - [In-Situ RDO PRO-X: dissolved oxygen](https://envirodiy.github.io/ModularSensors/group__sensor__insitu__rdo.html)
 - [In-Situ SDI-12 TROLLs: pressure, temperature, and depth](https://envirodiy.github.io/ModularSensors/group__sensor__insitu__troll.html)
@@ -98,31 +100,43 @@ For some generalized information about attaching sensors to an Arduino style boa
   - [Y551: UV254/COD, Turbidity, and Temperature](https://envirodiy.github.io/ModularSensors/group__sensor__y551.html)
   - [Y560: Ammonium, Temperature, and pH](https://envirodiy.github.io/ModularSensors/group__sensor__y560.html)
   - [Y700: Pressure and Temperature](https://envirodiy.github.io/ModularSensors/group__sensor__y700.html)
-  - [Y4000 Multiparameter Sonde](https://envirodiy.github.io/ModularSensors/group__sensor__y4000.html)
+  - [Y4000 Multi-parameter Sonde](https://envirodiy.github.io/ModularSensors/group__sensor__y4000.html)
 - [Zebra-Tech D-Opto: dissolved oxygen](https://envirodiy.github.io/ModularSensors/group__sensor__dopto.html)
 
-## Data Endpoints<!-- {#mainpage_data_receivers} -->
+## Data Endpoints<!--! {#mainpage_data_receivers} -->
 
 Within ModularSensors, the "dataPublisher" objects add the functionality to send data to remote web services.
-The currently supported services are the [Monitor My Watershed data portal](http://data.envirodiy.org/), [ThingSpeak](https://thingspeak.com/), and the [Ubidots IoT platform](https://ubidots.com).
+The currently supported services are the [Monitor My Watershed data portal](http://data.envirodiy.org/), [ThingSpeak](https://thingspeak.com/), the [Ubidots IoT platform](https://ubidots.com), [Amazon Web Services IoT Core](https://aws.amazon.com/iot-core/), and [Amazon Web Services Simple Storage Service (S3)](https://aws.amazon.com/s3/).
 
 - [Monitor My Watershed/EnviroDIY Data Portal](https://envirodiy.github.io/ModularSensors/class_enviro_d_i_y_publisher.html)
 - [ThingSpeak](https://envirodiy.github.io/ModularSensors/class_thing_speak_publisher.html)
 - [Ubidots IoT platform](https://envirodiy.github.io/ModularSensors/class_ubidots_publisher.html)
+- [AWS IoT Core](https://envirodiy.github.io/ModularSensors/class_a_w_s___io_t___publisher.html)
+  - Unlike all other publishers, the connection to IoT Core supports a callback on received data and functions to publish custom messages and subscribe to custom topics.
+- [AWS S3](https://envirodiy.github.io/ModularSensors/class_s3_presigned_publisher.html)
+  - The S3 publisher requires you to provide a function that will return an updated pre-signed URL to publish to.
+  - The S3 publisher does **NOT** publish any sensor data by default.
+It is intended for publishing images.
 
-[//]: # ( @todo Page on Data Endpoints )
+<!--! @todo Page on Data Endpoints -->
 
-## Supported Cellular/Wifi Modules:<!-- {#mainpage_modems} -->
+## Supported Cellular/Wifi Modules:<!--! {#mainpage_modems} -->
 
+All cellular and wifi support is through the [TinyGSM](https://github.com/vshymanskyy/TinyGSM) library.
 For information common to all modems and for tables of the proper class, baud rate, and pins to uses, see the [Modem Notes page](https://envirodiy.github.io/ModularSensors/page_modem_notes.html).
 
 - [Digi XBee](https://envirodiy.github.io/ModularSensors/group__modem__digi.html)
-  - Digi XBee® 3 Cellular LTE-M/NB-IoT
-  - Digi XBee® 3 Cellular LTE Cat 1 (AT&T or Verizon)
-  - Digi XBee® Cellular 3G
-  - Digi XBee® Cellular LTE Cat 1 (Verizon)
-  - Digi XBee® Wi-Fi (S6B)
-- [ESP8266](https://envirodiy.github.io/ModularSensors/group__modem__esp8266.html)
+  - [Digi XBee® 3 Cellular LTE-M/NB-IoT - Telit based](https://hub.digi.com/support/products/digi-xbee/digi-xbee-3-global-lte-mnb-iot/)
+    - NOTE: As of 2025-03-27, the Digi XBee 3 Global LTE-M/NB-IoT low power variant does *not* work with AWS IoT Core.
+  - [Digi XBee 3 Cellular LTE-M/NB-IoT - u-Blox based](https://hub.digi.com/support/products/digi-xbee/digi-xbee-3-cellular-lte-mnb-iot-modem/) [*obsolete*]
+  - [Digi XBee® 3 Cellular LTE Cat 1 (AT&T or Verizon)](https://hub.digi.com/support/products/digi-xbee/digi-xbee-3-cellular-lte-cat-1-modem/) [*obsolete*]
+  - [Digi XBee® Cellular 3G](https://hub.digi.com/support/products/digi-xbee/digi-xbee-cellular-3g/) [*obsolete*]
+  - [Digi XBee® Cellular LTE Cat 1 (Verizon)](https://hub.digi.com/support/products/digi-xbee/digi-xbee-cellular-lte-cat-1/) [*obsolete*]
+  - [Digi XBee® Wi-Fi (S6B)](https://hub.digi.com/support/products/digi-xbee/digi-xbee-wi-fi/) [*obsolete*]
+- [Espressif Wifi SoC Modules](https://envirodiy.github.io/ModularSensors/group__modem__espressif.html)
+  - Includes the [ESP8266](https://envirodiy.github.io/ModularSensors/group__modem__esp8266.html), [ESP32, ESP32-C3, ESP32-C2, ESP32-C6, and ESP32-S2](https://envirodiy.github.io/ModularSensors/group__modem__esp32.html)
+  - Requires Espressif modules to be programmed with the [latest AT firmware provided by Espressif](https://github.com/espressif/esp-at).
+  - These Espressif modules are **not** supported as primary processors, only as external communication modules.
 - [QuectelBG96](https://envirodiy.github.io/ModularSensors/group__modem__bg96.html)
 - [Sequans Monarch](https://envirodiy.github.io/ModularSensors/group__modem__monarch.html)
 - [SIM7080](https://envirodiy.github.io/ModularSensors/group__modem__sim7080.html)
@@ -131,17 +145,17 @@ For information common to all modems and for tables of the proper class, baud ra
 - u-blox LTE-M R4 and N4 series, including the [Sodaq uBee](https://envirodiy.github.io/ModularSensors/group__modem__ubee__ltem.html)
 - u-blox 2G, 3G, and 4G, including the [Sodaq 3GBee](https://envirodiy.github.io/ModularSensors/group__modem__ubee__3g.html)
 
-## Contributing<!-- {#mainpage_contributing} -->
+## Contributing<!--! {#mainpage_contributing} -->
 
 Open an [issue](https://github.com/EnviroDIY/ModularSensors/issues) to suggest and discuss potential changes/additions.
 Feel free to open issues about any bugs you find or any sensors you would like to have added.
 
-If you would like to directly help with the coding development of the library, there are some [tips here](https://envirodiy.github.io/ModularSensors/page_for_developers.html) on how to set up PlatformIO so you can fork the library and test programs while in the library repo.
-Please _take time to familiarize yourself with the [terminology, classes and data structures](https://envirodiy.github.io/ModularSensors/page_library_terminology.html) this library uses_.
+If you would like to directly help with the coding development of the library, there are some [tips here](https://envirodiy.github.io/ModularSensors/page_developer_setup.html) on how to set up PlatformIO so you can fork the library and test programs while in the library repo.
+Please *take time to familiarize yourself with the [terminology, classes and data structures](https://envirodiy.github.io/ModularSensors/page_library_terminology.html) this library uses*.
 This library is built to fully take advantage of Objecting Oriented Programing (OOP) approaches and is larger and more complicated than many Arduino libraries.
-There is _extensive_ documentation on our [github pages](https://envirodiy.github.io/ModularSensors/index.html) and an _enormous_ number of comments and debugging printouts in the code itself to help you get going.
+There is doxygen-created documentation on our [github pages](https://envirodiy.github.io/ModularSensors/index.html) and an *enormous* number of comments and debugging printouts in the code itself to help you get going.
 
-## License<!-- {#mainpage_license} -->
+## License<!--! {#mainpage_license} -->
 
 Software sketches and code are released under the BSD 3-Clause License -- See [LICENSE.md](https://github.com/EnviroDIY/ModularSensors/blob/master/LICENSE.md) file for details.
 
@@ -149,31 +163,31 @@ Documentation is licensed as [Creative Commons Attribution-ShareAlike 4.0](https
 
 Hardware designs shared are released, unless otherwise indicated, under the [CERN Open Hardware License 1.2](http://www.ohwr.org/licenses/cern-ohl/v1.2) (CERN_OHL).
 
-## Acknowledgments<!-- {#mainpage_acknowledgments} -->
+## Acknowledgments<!--! {#mainpage_acknowledgments} -->
 
 [EnviroDIY](http://envirodiy.org/)™ is presented by the Stroud Water Research Center, with contributions from a community of enthusiasts sharing do-it-yourself ideas for environmental science and monitoring.
 
 [Sara Damiano](https://github.com/SRGDamia1) is the primary developer of the EnviroDIY ModularSensors library, with input from many [other contributors](https://github.com/EnviroDIY/ModularSensors/graphs/contributors).
 
-This project has benefited from the support from the following funders:
+This project has benefited from the support from the following funding sources:
 
 - William Penn Foundation
 - US Environmental Protection Agency (EPA)
 - National Science Foundation, awards [EAR-0724971](http://www.nsf.gov/awardsearch/showAward?AWD_ID=0724971), [EAR-1331856](http://www.nsf.gov/awardsearch/showAward?AWD_ID=1331856), [ACI-1339834](http://www.nsf.gov/awardsearch/showAward?AWD_ID=1339834)
 - Stroud Water Research Center endowment
 
-[//]: # ( @m_innerpage{page_getting_started} )
+<!--! @m_innerpage{page_getting_started} -->
 
-[//]: # ( @m_innerpage{page_faq} )
+<!--! @m_innerpage{page_faq} -->
 
-[//]: # ( @m_innerpage{page_other_notes} )
+<!--! @m_innerpage{page_other_notes} -->
 
-[//]: # ( @m_innerpage{page_the_examples} )
+<!--! @m_innerpage{page_the_examples} -->
 
-[//]: # ( @m_innerpage{license_software-license-agreement-bsd-3-license} )
+<!--! @m_innerpage{license} -->
 
-[//]: # ( @m_innerpage{change_log} )
+<!--! @m_innerpage{change_log} -->
 
-[//]: # ( @m_innerpage{todo} )
+<!--! @m_innerpage{todo} -->
 
-[//]: # ( @m_innerpage{deprecated} )
+<!--! @m_innerpage{deprecated} -->

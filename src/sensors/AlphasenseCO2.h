@@ -1,6 +1,6 @@
 /**
  * @file AlphasenseCO2.h
- * @copyright 2017-2023 Stroud Water Research Center
+ * @copyright Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Written by Anthony Aufdenkampe <aaufdenkampe@limno.com>
  * and Bella Henkel <bella.henkel@mnsu.edu>
@@ -11,7 +11,7 @@
  * @brief Contains the AlphasenseCO2 sensor class and the variable subclasses
  * AlphasenseCO2_CO2 and AlphasenseCO2_Voltage.
  *
- * These are used for the Alphasense IRC-A1 Nondispersive Infrared (NDIR)
+ * These are used for the Alphasense IRC-A1 Non-Dispersive Infrared (NDIR)
  * Carbon Dioxide (CO2) sensor. This library will almost certainly also work
  * with the Alphasense IRC-AT CO2 sensor (which uses a thermopile detector),
  * although the warmup and stabilization times might be different.
@@ -21,7 +21,7 @@
 /* clang-format off */
 /**
  * @defgroup sensor_alphasense_co2 Alphasense IRC-A1 CO2
- * Classes for the Alphasense IRC-A1 Nondispersive Infrared (NDIR)
+ * Classes for the Alphasense IRC-A1 Non-Dispersive Infrared (NDIR)
  * Carbon Dioxide (CO2) sensor.
  *
  * @ingroup analog_group
@@ -30,7 +30,7 @@
  * @m_footernavigation
  *
  * @section sensor_alphasense_co2_intro Introduction
- * The [Alphasense IRC-A1 Nondispersive Infrared (NDIR) Carbon Dioxide (CO2)
+ * The [Alphasense IRC-A1 Non-Dispersive Infrared (NDIR) Carbon Dioxide (CO2)
  * sensor](https://www.alphasense.com/products/carbon-dioxide/)
  * The CO2 sensor requires a 2-5 V DC power source with a
  * current draw of 20 to 60 mA.  The power supply to the sensor can be
@@ -73,16 +73,23 @@
 #ifndef SRC_SENSORS_ALPHASENSECO2_H_
 #define SRC_SENSORS_ALPHASENSECO2_H_
 
-// Debugging Statement
-// #define MS_ALPHASENSECO2_DEBUG
+// Include the library config before anything else
+#include "ModSensorConfig.h"
 
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
+
+// Define the print label[s] for the debugger
 #ifdef MS_ALPHASENSECO2_DEBUG
 #define MS_DEBUGGING_STD "AlphasenseCO2"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+
+// Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
 
@@ -144,7 +151,7 @@ typedef enum : uint16_t {
 #define ALPHASENSE_CO2_WARM_UP_TIME_MS 200
 /**
  * @brief Sensor::_stabilizationTime_ms;
- * The manufacturer provides the following stablization times:
+ * The manufacturer provides the following stabilization times:
  *   - To final zero ± 100ppm: < 30 s @ 20°C
  *   - To specification: < 30 minutes @ 20°C
  * We found that values leveled off after ~35 s. See:
@@ -324,7 +331,7 @@ class AlphasenseCO2_CO2 : public Variable {
     explicit AlphasenseCO2_CO2(
         AlphasenseCO2* parentSense, const char* uuid = "",
         const char* varCode = ALPHASENSE_CO2_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ALPHASENSE_CO2_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ALPHASENSE_CO2_VAR_NUM,
                    (uint8_t)ALPHASENSE_CO2_RESOLUTION, ALPHASENSE_CO2_VAR_NAME,
                    ALPHASENSE_CO2_UNIT_NAME, varCode, uuid) {}
     /**
@@ -334,7 +341,7 @@ class AlphasenseCO2_CO2 : public Variable {
      * used.
      */
     AlphasenseCO2_CO2()
-        : Variable((const uint8_t)ALPHASENSE_CO2_VAR_NUM,
+        : Variable((uint8_t)ALPHASENSE_CO2_VAR_NUM,
                    (uint8_t)ALPHASENSE_CO2_RESOLUTION, ALPHASENSE_CO2_VAR_NAME,
                    ALPHASENSE_CO2_UNIT_NAME, ALPHASENSE_CO2_DEFAULT_CODE) {}
     /**
@@ -366,7 +373,7 @@ class AlphasenseCO2_Voltage : public Variable {
     explicit AlphasenseCO2_Voltage(
         AlphasenseCO2* parentSense, const char* uuid = "",
         const char* varCode = ALPHASENSE_CO2_VOLTAGE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ALPHASENSE_CO2_VOLTAGE_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ALPHASENSE_CO2_VOLTAGE_VAR_NUM,
                    (uint8_t)ALPHASENSE_CO2_VOLTAGE_RESOLUTION,
                    ALPHASENSE_CO2_VOLTAGE_VAR_NAME,
                    ALPHASENSE_CO2_VOLTAGE_UNIT_NAME, varCode, uuid) {}
@@ -377,7 +384,7 @@ class AlphasenseCO2_Voltage : public Variable {
      * used.
      */
     AlphasenseCO2_Voltage()
-        : Variable((const uint8_t)ALPHASENSE_CO2_VOLTAGE_VAR_NUM,
+        : Variable((uint8_t)ALPHASENSE_CO2_VOLTAGE_VAR_NUM,
                    (uint8_t)ALPHASENSE_CO2_VOLTAGE_RESOLUTION,
                    ALPHASENSE_CO2_VOLTAGE_VAR_NAME,
                    ALPHASENSE_CO2_VOLTAGE_UNIT_NAME,

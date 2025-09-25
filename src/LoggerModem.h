@@ -23,19 +23,27 @@
 #ifndef SRC_LOGGERMODEM_H_
 #define SRC_LOGGERMODEM_H_
 
-// FOR DEBUGGING
-// #define MS_LOGGERMODEM_DEBUG
-// #define MS_LOGGERMODEM_DEBUG_DEEP
+// Include the library config before anything else
+#include "ModSensorConfig.h"
 
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
+
+// Define the print label[s] for the debugger
 #ifdef MS_LOGGERMODEM_DEBUG
 #define MS_DEBUGGING_STD "LoggerModem"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+
+// Include other in-library and external dependencies
 #include "VariableBase.h"
 #include <Arduino.h>
+#include <Client.h>
+#include <TinyGsmEnums.h>
 
 
 /**
@@ -334,17 +342,17 @@ class loggerModem {
      * @param wakeLevel @copybrief loggerModem::_wakeLevel
      * @param wakePulse_ms @copybrief loggerModem::_wakePulse_ms
      * @param max_status_time_ms @copybrief loggerModem::_statusTime_ms
-     * @param max_disconnetTime_ms @copybrief loggerModem::_disconnetTime_ms
+     * @param max_disconnectTime_ms @copybrief loggerModem::_disconnectTime_ms
      * @param wakeDelayTime_ms @copybrief loggerModem::_wakeDelayTime_ms
-     * @param max_atresponse_time_ms @copybrief #_max_atresponse_time_ms
+     * @param max_at_response_time_ms @copybrief #_max_at_response_time_ms
      *
      * @see @ref modem_ctor_variables
      */
     loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
                 int8_t modemResetPin, bool resetLevel, uint32_t resetPulse_ms,
                 int8_t modemSleepRqPin, bool wakeLevel, uint32_t wakePulse_ms,
-                uint32_t max_status_time_ms, uint32_t max_disconnetTime_ms,
-                uint32_t wakeDelayTime_ms, uint32_t max_atresponse_time_ms);
+                uint32_t max_status_time_ms, uint32_t max_disconnectTime_ms,
+                uint32_t wakeDelayTime_ms, uint32_t max_at_response_time_ms);
 
     /**
      * @brief Destroy the logger Modem object - no action taken.
@@ -376,6 +384,21 @@ class loggerModem {
      * @todo Implement this for modems other than the XBee WiFi
      */
     String getModemDevId(void);
+    /**
+     * @brief Set the timezone that the modem will attempt to sync itself to.
+     *
+     * This doesn't *have* to be the same as the RTC or logger timezone, but
+     * you'd be stupid to make it different.
+     *
+     * @note This must be set for SSL connections to work! If the modem does not
+     * have an accurate internal time when attempting an SSL connection, the
+     * connection will fail because the certificates will not be within their
+     * specified valid time ranges.
+     *
+     * @param timeZone The timezone that the modem will attempt to sync itself
+     * to.
+     */
+    void setModemTimeZone(int8_t timeZone);
 
     /**
      * @brief Set up the modem before first use.
@@ -423,7 +446,7 @@ class loggerModem {
      *
      * @m_deprecated_since{0,24,1}
      *
-     * @return True if wake was sucessful, modem should be ready to
+     * @return True if wake was successful, modem should be ready to
      * communicate
      */
     bool wake(void) {
@@ -445,7 +468,7 @@ class loggerModem {
     /**
      * @brief Request that the modem enter its lowest possible power state.
      *
-     * @return True if the modem has sucessfully entered low power
+     * @return True if the modem has successfully entered low power
      * state
      */
     virtual bool modemSleep(void);
@@ -457,7 +480,7 @@ class loggerModem {
      * This allows the modem to shut down all connections cleanly and do any
      * necessary internal housekeeping before stopping power.
      *
-     * @return True if the modem has sucessfully entered low power
+     * @return True if the modem has successfully entered low power
      * state _and_ then powered off
      */
     virtual bool modemSleepPowerDown(void);
@@ -535,16 +558,87 @@ class loggerModem {
      * wait for network registration and data sconnection.  Defaults to 50,000ms
      * (50s).
      * @return True if EPS or GPRS data connection has been
-     * established.  False if the modem wasunresponsive, unable to register with
-     * the cellular network, or unable to establish a EPS or GPRS connection.
+     * established.  False if the modem was unresponsive, unable to register
+     * with the cellular network, or unable to establish a EPS or GPRS
+     * connection.
      */
     virtual bool connectInternet(uint32_t maxConnectionTime = 50000L) = 0;
     /**
-     * @brief Detatch from EPS or GPRS data connection and then deregister from
+     * @brief Detach from EPS or GPRS data connection and then deregister from
      * the cellular network.
      */
     virtual void disconnectInternet(void) = 0;
 
+    /**
+     * @brief Create a new client object using the default socket number
+     *
+     * @return A new client object
+     */
+    virtual Client* createClient() = 0;
+
+    /**
+     * @brief Create a new secure client object using the default socket number
+     *
+     * @return A new secure client object
+     */
+    virtual Client* createSecureClient() = 0;
+    /**
+     * @brief Create a new secure client object using the default socket number
+     *
+     * @param sslAuthMode The SSL authentication mode to use
+     * @param sslVersion The SSL version to use
+     * @param CAcertName The name of the CA certificate to use
+     * @param clientCertName The name of the client certificate to use
+     * @param clientKeyName The name of the client key to use
+     *
+     * @return A new secure client object
+     */
+    virtual Client* createSecureClient(
+        SSLAuthMode sslAuthMode, SSLVersion sslVersion = SSLVersion::TLS1_2,
+        const char* CAcertName = nullptr, const char* clientCertName = nullptr,
+        const char* clientKeyName = nullptr) = 0;
+    /**
+     * @brief Create a new secure client object using the default socket number
+     *
+     * @param pskIdent The pre-shared key identity
+     * @param psKey The pre-shared key
+     * @param sslVersion The SSL version to use
+     *
+     * @return A new secure client object
+     */
+    virtual Client*
+    createSecureClient(const char* pskIdent, const char* psKey,
+                       SSLVersion sslVersion = SSLVersion::TLS1_2) = 0;
+    /**
+     * @brief Create a new secure client object using the default socket number
+     *
+     * @param pskTableName The pre-shared key table name - for modems that
+     * require PSK's in a "table" format
+     * @param sslVersion The SSL version to use
+     *
+     * @return A new secure client object
+     */
+    virtual Client*
+    createSecureClient(const char* pskTableName,
+                       SSLVersion  sslVersion = SSLVersion::TLS1_2) = 0;
+    /**
+     * @brief Attempts to delete a created TinyGsmClient object. We need to do
+     * this to close memory leaks from the create client because we can't delete
+     * the created client from a pointer to the parent because the Arduino
+     * core's client class doesn't have a virtual destructor.
+     *
+     * @param client The client to delete
+     */
+    virtual void deleteClient(Client* client) = 0;
+    /**
+     * @brief Attempts to delete a created TinyGsmSecureClient object. We need
+     * to do this to close memory leaks from the create client because we can't
+     * delete the created client from a pointer to the parent because the
+     * Arduino core's client class doesn't have a virtual destructor.
+     *
+     * @param client The client to delete
+     */
+    virtual void deleteSecureClient(Client* client) = 0;
 
     /**
      * @brief Get the time from NIST via TIME protocol (rfc868).
@@ -616,7 +710,7 @@ class loggerModem {
      * variables. Setting this to 0b11111111 will enable polling for all modem
      * measured variables.
      *
-     * @param pollingBitmask The bitmask indicating which paramters to poll.
+     * @param pollingBitmask The bitmask indicating which parameters to poll.
      *
      * @see loggerModem::_pollModemMetaData
      *
@@ -630,7 +724,7 @@ class loggerModem {
      * variables.  Setting this to 0b11111111 will disable polling for all modem
      * measured variables.
      *
-     * @param pollingBitmask The bitmask indicating which paramters to poll.
+     * @param pollingBitmask The bitmask indicating which parameters to poll.
      *
      * @see loggerModem::_pollModemMetaData
      *
@@ -648,7 +742,7 @@ class loggerModem {
      * parameters.  Setting it to 256 (0b11111111) will enable polling for all
      * parameters.
      *
-     * @param pollingBitmask The bitmask indicating which paramters to poll.
+     * @param pollingBitmask The bitmask indicating which parameters to poll.
      *
      * @see loggerModem::_pollModemMetaData
      */
@@ -742,7 +836,7 @@ class loggerModem {
      *
      * The RSSI is estimated from a look-up assuming no noise.
      *
-     * @param csq A "CSQ" (0-31) signal qualilty
+     * @param csq A "CSQ" (0-31) signal quality
      * @return An RSSI in dBm, making assumptions about the
      * conversion
      */
@@ -752,7 +846,7 @@ class loggerModem {
      *
      * The percent is grabbed from a look-up.
      *
-     * @param csq A "CSQ" (0-31) signal qualilty
+     * @param csq A "CSQ" (0-31) signal quality
      * @return The percent of maximum signal strength.
      */
     static int16_t getPctFromCSQ(int16_t csq);
@@ -803,7 +897,7 @@ class loggerModem {
      * modem modules.
      *
      * @return True if the unique part of the sleep function ran
-     * sucessfully.
+     * successfully.
      */
     virtual bool modemSleepFxn(void) = 0;
     /**
@@ -812,7 +906,7 @@ class loggerModem {
      * all modem modules.
      *
      * @return True if the unique part of the wake function ran
-     * sucessfully - does _NOT_ indicate that the modem is now responsive.
+     * successfully - does _NOT_ indicate that the modem is now responsive.
      */
     virtual bool modemWakeFxn(void) = 0;
     /**
@@ -832,7 +926,7 @@ class loggerModem {
      * If possible, we always want to check if the modem was awake before
      * attempting to wake it up.  Most cellular modules are woken and put to
      * sleep by identical pulses on a sleep or "power" pin.  We don't want to
-     * accidently pulse an already on modem to off.
+     * accidentally pulse an already on modem to off.
      *
      * For most modules, this function is created by the #MS_IS_MODEM_AWAKE
      * macro.
@@ -942,7 +1036,7 @@ class loggerModem {
      * is requested to enter lowest power state (#modemSleep()) and when it
      * should have completed necessary steps to shut down.
      */
-    uint32_t _disconnetTime_ms;
+    uint32_t _disconnectTime_ms;
     /**
      * @brief The time in milliseconds between when the modem is powered and
      * when it is able to receive a wake command.
@@ -960,7 +1054,7 @@ class loggerModem {
      * init().  If the modem does not respond within this time frame (plus a
      * 500ms buffer) a #modemHardReset() will be attempted.
      */
-    uint32_t _max_atresponse_time_ms;
+    uint32_t _max_at_response_time_ms;
     /**@}*/
 
     /**
@@ -1000,11 +1094,6 @@ class loggerModem {
      * completed setup.
      */
     bool _hasBeenSetup = false;
-    /**
-     * @brief Flag.  True indicates that the pins on the mcu attached to the
-     * modem are set to the correct mode (ie, input vs output).
-     */
-    bool _pinModesSet = false;
     /**@}*/
 
     // NOTE:  These must be static so that the modem variables can call the
@@ -1072,7 +1161,7 @@ class loggerModem {
     // modemType gsmModem;
     // modemClientType gsmClient;
 
-    // @TODO: Implement these for all modems; most support it.
+    // @todo: Implement these for all modems; most support it.
 
     /**
      * @brief The modem hardware version.
@@ -1101,6 +1190,19 @@ class loggerModem {
      * @todo Implement this for modems other than the XBee WiFi
      */
     String _modemSerialNumber;
+
+    /**
+     * @brief The timezone that the modem will attempt to sync itself to.
+     *
+     * This doesn't *have* to be the same as the RTC or logger timezone, but
+     * you'd be stupid to make it different.
+     *
+     * @note This must be set for SSL connections to work! If the modem does not
+     * have an accurate internal time when attempting an SSL connection, the
+     * connection will fail because the certificates will not be within their
+     * specified valid time ranges.
+     */
+    int8_t _modemUTCOffset = 0;
 
     /**
      * @brief An 8-bit code for the enabled modem polling variables
@@ -1346,5 +1448,6 @@ class Modem_Temp : public Variable {
     ~Modem_Temp() {}
 };
 
-// #include <LoggerModem.tpp>
 #endif  // SRC_LOGGERMODEM_H_
+
+// cSpell:ignore modemBatterymV

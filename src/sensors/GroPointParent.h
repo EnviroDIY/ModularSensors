@@ -61,22 +61,27 @@
 #ifndef SRC_SENSORS_GROPOINTPARENT_H_
 #define SRC_SENSORS_GROPOINTPARENT_H_
 
-// Debugging Statement
-// #define MS_GROPOINTPARENT_DEBUG
-// #define MS_GROPOINTPARENT_DEBUG_DEEP
+// Include the library config before anything else
+#include "ModSensorConfig.h"
 
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
+
+// Define the print label[s] for the debugger
 #ifdef MS_GROPOINTPARENT_DEBUG
 #define MS_DEBUGGING_STD "GroPointParent"
 #endif
-
 #ifdef MS_GROPOINTPARENT_DEBUG_DEEP
 #define MS_DEBUGGING_DEEP "GroPointParent"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
 #undef MS_DEBUGGING_DEEP
+
+// Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include "GroPointModbus.h"
@@ -169,15 +174,7 @@ class GroPointParent : public Sensor {
      */
     bool setup(void) override;
     /**
-     * @brief Wake the sensor up, if necessary.  Do whatever it takes to get a
-     * sensor in the proper state to begin a measurement.
-     *
-     * Verifies that the power is on and updates the #_sensorStatus.  This also
-     * sets the #_millisSensorActivated timestamp.
-     *
-     * @note This does NOT include any wait for sensor readiness.
-     *
-     * @return True if the wake function completed successfully.
+     * @copydoc Sensor::wake()
      */
     bool wake(void) override;
     /**
@@ -214,7 +211,7 @@ class GroPointParent : public Sensor {
      */
     byte _modbusAddress;
     /**
-     * @brief Private reference to the stream for communciation with the
+     * @brief Private reference to the stream for communication with the
      * GroPoint sensor.
      */
     Stream* _stream;
@@ -230,3 +227,5 @@ class GroPointParent : public Sensor {
 };
 
 #endif  // SRC_SENSORS_GROPOINTPARENT_H_
+
+// cSpell:ignore GPLPX gsensor

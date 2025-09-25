@@ -9,6 +9,7 @@
  */
 
 #include "LoggerModem.h"
+#include "ClockSupport.h"
 
 // Initialize the static members
 int16_t loggerModem::_priorRSSI           = -9999;
@@ -24,9 +25,9 @@ loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
                          uint32_t resetPulse_ms, int8_t modemSleepRqPin,
                          bool wakeLevel, uint32_t wakePulse_ms,
                          uint32_t max_status_time_ms,
-                         uint32_t max_disconnetTime_ms,
+                         uint32_t max_disconnectTime_ms,
                          uint32_t wakeDelayTime_ms,
-                         uint32_t max_atresponse_time_ms)
+                         uint32_t max_at_response_time_ms)
     : _powerPin(powerPin),
       _statusPin(statusPin),
       _statusLevel(statusLevel),
@@ -37,9 +38,9 @@ loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
       _wakeLevel(wakeLevel),
       _wakePulse_ms(wakePulse_ms),
       _statusTime_ms(max_status_time_ms),
-      _disconnetTime_ms(max_disconnetTime_ms),
+      _disconnectTime_ms(max_disconnectTime_ms),
       _wakeDelayTime_ms(wakeDelayTime_ms),
-      _max_atresponse_time_ms(max_atresponse_time_ms),
+      _max_at_response_time_ms(max_at_response_time_ms),
       _modemName("unspecified modem") {}
 
 // Destructor
@@ -54,7 +55,10 @@ void loggerModem::setModemLED(int8_t modemLEDPin) {
     }
 }
 void loggerModem::modemLEDOn(void) {
-    if (_modemLEDPin >= 0) { digitalWrite(_modemLEDPin, HIGH); }
+    if (_modemLEDPin >= 0) {
+        pinMode(_modemLEDPin, OUTPUT);
+        digitalWrite(_modemLEDPin, HIGH);
+    }
 }
 void loggerModem::modemLEDOff(void) {
     if (_modemLEDPin >= 0) { digitalWrite(_modemLEDPin, LOW); }
@@ -64,10 +68,14 @@ String loggerModem::getModemName(void) {
     return _modemName;
 }
 
-// @TODO Implement this for all modems
+// @todo Implement this for all modems
 String loggerModem::getModemDevId(void) {
     return _modemName + F(" Sn ") + _modemSerialNumber + F(" HwVer ") +
         _modemHwVersion + F(" FwVer ") + _modemFwVersion;
+}
+
+void loggerModem::setModemTimeZone(int8_t timeZone) {
+    _modemUTCOffset = timeZone;
 }
 
 void loggerModem::modemPowerUp(void) {
@@ -151,8 +159,8 @@ bool loggerModem::modemSetup(void) {
     MS_DBG(_modemName, F("warms up in"), _wakeDelayTime_ms,
            F("ms, indicates status in"), _statusTime_ms,
            F("ms, is responsive to AT commands in less than"),
-           _max_atresponse_time_ms, F("ms, and takes up to"), _disconnetTime_ms,
-           F("ms to close connections and shut down."));
+           _max_at_response_time_ms, F("ms, and takes up to"),
+           _disconnectTime_ms, F("ms to close connections and shut down."));
 
     // Put the modem back to sleep if it was woken up just for setup
     // Only go to sleep if it had been asleep and is now awake
@@ -210,11 +218,11 @@ bool loggerModem::modemSleepPowerDown(void) {
         // If there's a status pin available, wait until modem shows it's ready
         // to be powered off This allows the modem to shut down gracefully.
         if (_statusPin >= 0) {
-            MS_DBG(F("Waiting up to"), _disconnetTime_ms,
+            MS_DBG(F("Waiting up to"), _disconnectTime_ms,
                    F("milliseconds for graceful shutdown as indicated by pin"),
                    _statusPin, F("going"), !_statusLevel ? F("HIGH") : F("LOW"),
                    F("..."));
-            while (millis() - start < _disconnetTime_ms &&
+            while (millis() - start < _disconnectTime_ms &&
                    digitalRead(_statusPin) ==
                        static_cast<int>(_statusLevel)) {  // wait
             }
@@ -225,10 +233,10 @@ bool loggerModem::modemSleepPowerDown(void) {
                 MS_DBG(F("... shutdown complete after"), millis() - start,
                        F("ms."));
             }
-        } else if (_disconnetTime_ms > 0) {
-            MS_DBG(F("Waiting"), _disconnetTime_ms,
+        } else if (_disconnectTime_ms > 0) {
+            MS_DBG(F("Waiting"), _disconnectTime_ms,
                    F("ms for graceful shutdown."));
-            while (millis() - start < _disconnetTime_ms) {
+            while (millis() - start < _disconnectTime_ms) {
                 // wait
             }
         }
@@ -278,36 +286,31 @@ void loggerModem::setModemResetLevel(bool level) {
 
 void loggerModem::setModemPinModes(void) {
     // Set-up pin modes
-    if (!_pinModesSet) {
-        // NOTE:  We're going to set the power pin mode every time in power up,
-        // just to be safe
-        if (_statusPin >= 0) {
-            MS_DBG(F("Initializing pin"), _statusPin,
-                   F("for modem status with on level expected to be"),
-                   _statusLevel ? F("HIGH") : F("LOW"));
-            pinMode(_statusPin, INPUT);
-        }
-        if (_modemSleepRqPin >= 0) {
-            MS_DBG(F("Initializing pin"), _modemSleepRqPin,
-                   F("for modem sleep with starting value"),
-                   !_wakeLevel ? F("HIGH") : F("LOW"));
-            pinMode(_modemSleepRqPin, OUTPUT);
-            digitalWrite(_modemSleepRqPin, !_wakeLevel);
-        }
-        if (_modemResetPin >= 0) {
-            MS_DBG(F("Initializing pin"), _modemResetPin,
-                   F("for modem reset with starting value"),
-                   !_resetLevel ? F("HIGH") : F("LOW"));
-            pinMode(_modemResetPin, OUTPUT);
-            digitalWrite(_modemResetPin, !_resetLevel);
-        }
-        if (_modemLEDPin >= 0) {
-            MS_DBG(F("Initializing pin"), _modemLEDPin,
-                   F("for modem status LED with starting value 0"));
-            pinMode(_modemLEDPin, OUTPUT);
-            digitalWrite(_modemLEDPin, LOW);
-        }
-        _pinModesSet = true;
+    if (_statusPin >= 0) {
+        MS_DEEP_DBG(F("Initializing pin"), _statusPin,
+                    F("for modem status with on level expected to be"),
+                    _statusLevel ? F("HIGH") : F("LOW"));
+        pinMode(_statusPin, INPUT);
+    }
+    if (_modemSleepRqPin >= 0) {
+        MS_DEEP_DBG(F("Initializing pin"), _modemSleepRqPin,
+                    F("for modem sleep with starting value"),
+                    !_wakeLevel ? F("HIGH") : F("LOW"));
+        pinMode(_modemSleepRqPin, OUTPUT);
+        digitalWrite(_modemSleepRqPin, !_wakeLevel);
+    }
+    if (_modemResetPin >= 0) {
+        MS_DEEP_DBG(F("Initializing pin"), _modemResetPin,
+                    F("for modem reset with starting value"),
+                    !_resetLevel ? F("HIGH") : F("LOW"));
+        pinMode(_modemResetPin, OUTPUT);
+        digitalWrite(_modemResetPin, !_resetLevel);
+    }
+    if (_modemLEDPin >= 0) {
+        MS_DEEP_DBG(F("Initializing pin"), _modemLEDPin,
+                    F("for modem status LED with starting value 0"));
+        pinMode(_modemLEDPin, OUTPUT);
+        digitalWrite(_modemLEDPin, LOW);
     }
 }
 
@@ -463,7 +466,8 @@ uint32_t loggerModem::parseNISTBytes(byte nistBytes[4]) {
     uint32_t secFrom1900 = 0;
     for (uint8_t i = 0; i < 4; i++) {
         MS_DBG(F("Response Byte"), i, ':', static_cast<char>(nistBytes[i]), '=',
-               nistBytes[i], '=', String(nistBytes[i], BIN));
+               static_cast<uint8_t>(nistBytes[i]), '=',
+               String(nistBytes[i], BIN));
         secFrom1900 += 0x000000FF & nistBytes[i];
         if (i + 1 < 4) { secFrom1900 = secFrom1900 << 8; }
     }
@@ -471,14 +475,16 @@ uint32_t loggerModem::parseNISTBytes(byte nistBytes[4]) {
            '=', String(secFrom1900, BIN));
 
     // Return the timestamp
-    uint32_t unixTimeStamp = secFrom1900 - 2208988800;
+    uint32_t unixTimeStamp = secFrom1900 - EPOCH_NIST_TO_UNIX;
     MS_DBG(F("Unix Timestamp returned by NIST (UTC):"), unixTimeStamp);
-    // If before Jan 1, 2019 or after Jan 1, 2030, most likely an error
-    if (unixTimeStamp < 1546300800) {
+    // If before Jan 1, 2025 or after Jan 1, 2035, most likely an error
+    if (unixTimeStamp < EARLIEST_SANE_UNIX_TIMESTAMP) {
         return 0;
-    } else if (unixTimeStamp > 1893456000) {
+    } else if (unixTimeStamp > LATEST_SANE_UNIX_TIMESTAMP) {
         return 0;
     } else {
         return unixTimeStamp;
     }
 }
+
+// cSpell:ignore bpercent

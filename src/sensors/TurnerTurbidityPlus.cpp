@@ -1,6 +1,6 @@
 /**
  * @file TurnerTurbidityPlus.cpp
- * @copyright 2020 Stroud Water Research Center
+ * @copyright Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  * Adapted from TurnerCyclops by Matt Barney <mbarney@tu.org>
@@ -47,15 +47,16 @@ String TurnerTurbidityPlus::getSensorLocation(void) {
 }
 
 void TurnerTurbidityPlus::runWiper() {
-    // Turner Tubidity Plus wiper requires a 50ms LOW signal pulse to trigger one wiper rotation.
-    // Also note: I was unable to trigger multiple rotations without pausing for ~540ms between them.
-    MS_DBG(F("Initate TurbidityPlus wiper on"), getSensorLocation());
+    // Turner Turbidity Plus wiper requires a 50ms LOW signal pulse to trigger
+    // one wiper rotation. Also note: I was unable to trigger multiple rotations
+    // without pausing for ~540ms between them.
+    MS_DBG(F("Turn TurbidityPlus wiper on"), getSensorLocation());
     digitalWrite(_wiperTriggerPin, LOW);
     delay(50);
     digitalWrite(_wiperTriggerPin, HIGH);
-    // It takes ~7.5 sec for a rotation to complete. Wait for that to finish before continuing,
-    // otherwise the sensor will get powered off before wipe completes, and any reading taken
-    // during wiper cycle is invalid.
+    // It takes ~7.5 sec for a rotation to complete. Wait for that to finish
+    // before continuing, otherwise the sensor will get powered off before wipe
+    // completes, and any reading taken during wiper cycle is invalid.
     delay(8000);
     MS_DBG(F("TurbidityPlus wiper cycle should be finished"));
 }
@@ -67,6 +68,9 @@ bool TurnerTurbidityPlus::setup(void) {
 }
 
 bool TurnerTurbidityPlus::wake(void) {
+    // Set the wiper trigger pin mode.
+    // Reset this on every wake because pins are set to tri-state on sleep
+    pinMode(_wiperTriggerPin, OUTPUT);
     // Run the wiper before taking a reading
     runWiper();
 
@@ -88,15 +92,15 @@ void TurnerTurbidityPlus::powerUp(void) {
 bool TurnerTurbidityPlus::addSingleMeasurementResult(void) {
     // Variables to store the results in
     int16_t adcCounts   = -9999;
-    float adcVoltage  = -9999;
-    float calibResult = -9999;
+    float   adcVoltage  = -9999;
+    float   calibResult = -9999;
 
     // Check a measurement was *successfully* started (status bit 6 set)
     // Only go on to get a result if it was
-    if (bitRead(_sensorStatus, 6)) {
+    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-// Create an Auxillary ADD object
+// Create an auxiliary ADD object
 // We create and set up the ADC object here so that each sensor using
 // the ADC may set the gain appropriately without effecting others.
 #ifndef MS_USE_ADS1015
@@ -168,7 +172,7 @@ bool TurnerTurbidityPlus::addSingleMeasurementResult(void) {
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)
-    _sensorStatus &= 0b10011111;
+    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
 
     if (adcVoltage < 5.3 && adcVoltage > -0.3) {
         return true;

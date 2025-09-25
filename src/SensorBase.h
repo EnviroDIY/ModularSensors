@@ -24,25 +24,24 @@
 #ifndef SRC_SENSORBASE_H_
 #define SRC_SENSORBASE_H_
 
-// Debugging Statement
-// #define MS_SENSORBASE_DEBUG
+// Include the library config before anything else
+#include "ModSensorConfig.h"
 
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
+
+// Define the print label[s] for the debugger
 #ifdef MS_SENSORBASE_DEBUG
 #define MS_DEBUGGING_STD "SensorBase"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
-#include <pins_arduino.h>
 
-#ifndef MAX_NUMBER_VARS
-/**
- * @brief The largest number of variables from a single sensor
- */
-#define MAX_NUMBER_VARS 21
-// GroPoint Profile GPLP-8 has 8 Moisture and 13 Temperature values
-#endif
+// Include other in-library and external dependencies
+#include <pins_arduino.h>
 
 class Variable;  // Forward declaration
 
@@ -136,7 +135,7 @@ class Sensor {
      */
     virtual String getSensorName(void);
     /**
-     * @brief Concatentate and returns the name and location of the sensor.
+     * @brief Concatenate and returns the name and location of the sensor.
      *
      * @return A concatenation of the sensor name and its "location"
      * - how it is connected to the mcu.
@@ -168,6 +167,19 @@ class Sensor {
      */
     uint8_t getNumberMeasurementsToAverage(void);
 
+
+    /// @brief The significance of the various status bits
+    typedef enum {
+        SETUP_SUCCESSFUL       = 0,  ///< Whether setup was successful
+        POWER_ATTEMPTED        = 1,  ///< Whether power up was attempted
+        POWER_SUCCESSFUL       = 2,  ///< Whether power up was successful
+        WAKE_ATTEMPTED         = 3,  ///< Whether wake up was attempted
+        WAKE_SUCCESSFUL        = 4,  ///< Whether wake up was successful
+        MEASUREMENT_ATTEMPTED  = 5,  ///< Whether measurement was attempted
+        MEASUREMENT_SUCCESSFUL = 6,  ///< Whether measurement was successful
+        ERROR_OCCURRED         = 7   ///< Whether an error has occurred
+    } sensor_status_bits;
+
     /**
      * @brief Get the 8-bit code for the current status of the sensor.
      *
@@ -180,7 +192,7 @@ class Sensor {
      * - 1 => Attempt made to power sensor
      *
      * Bit 2
-     * - 0 => Power up attampt failed
+     * - 0 => Power up attempt failed
      * - 1 => Power up attempt succeeded
      * - Use the isWarmedUp() function to check if enough time has passed to be
      * ready for sensor communication.
@@ -220,6 +232,60 @@ class Sensor {
     uint8_t getStatus(void);
 
     /**
+     * @brief Get the value of a specific status bit.
+     *
+     * @param bitToGet The status bit to retrieve.
+     * @return The value of the specified status bit (0 or 1).
+     */
+    bool getStatusBit(sensor_status_bits bitToGet);
+
+    /**
+     * @brief Set a specific status bit to 1.
+     *
+     * @param bitToSet The status bit to set.
+     */
+    void setStatusBit(sensor_status_bits bitToSet);
+    /// @brief A helper recursive template to set multiple status bits
+    /// @tparam T The type of the status bit to set - must be a uint8_t
+    /// @param bitToSet The first status bit to set.
+    template <typename T>
+    void setStatusBits(T bitToSet) {
+        setStatusBit(bitToSet);
+    }
+    /// @brief A helper recursive template to set multiple status bits
+    /// @tparam T The type of the status bit to set - must be a uint8_t
+    /// @param firstBit The first status bit to set.
+    /// @param otherBits Any additional status bits to set.
+    template <typename T, typename... Args>
+    void setStatusBits(T firstBit, Args... otherBits) {
+        setStatusBit(firstBit);
+        setStatusBits(otherBits...);
+    }
+
+    /**
+     * @brief Clear a specific status bit (ie, set it to 0).
+     *
+     * @param bitToClear The status bit to clear.
+     */
+    void clearStatusBit(sensor_status_bits bitToClear);
+    /// @brief A helper recursive template to clear multiple status bits
+    /// @tparam T The type of the status bit to set - must be a uint8_t
+    /// @param bitToClear The first status bit to clear.
+    template <typename T>
+    void clearStatusBits(T bitToClear) {
+        clearStatusBit(bitToClear);
+    }
+    /// @brief A helper recursive template to clear multiple status bits
+    /// @tparam T The type of the status bit to set - must be a uint8_t
+    /// @param firstBit The first status bit to clear.
+    /// @param otherBits Any additional status bits to clear.
+    template <typename T, typename... Args>
+    void clearStatusBits(T firstBit, Args... otherBits) {
+        clearStatusBit(firstBit);
+        clearStatusBits(otherBits...);
+    }
+
+    /**
      * @brief Do any one-time preparations needed before the sensor will be able
      * to take readings.
      *
@@ -242,7 +308,7 @@ class Sensor {
      * measurement and get the result, averages all the values, notifies the
      * attached variables that new values are available, puts the sensor back to
      * sleep (if it had been asleep) and powers the sensor down (if it had been
-     * unpowered).   All possible waits are included in this function.  To get
+     * un-powered).   All possible waits are included in this function.  To get
      * new results from a single sensor, this is the function that should be
      * used.  To work with many sensors together, use the VariableArray class
      * which optimizes the timing and waits for many sensors working together.
@@ -323,6 +389,10 @@ class Sensor {
 
     /**
      * @brief The array of result values for each sensor.
+     *
+     * @todo Support int16_t and int32_t directly in the value array so no
+     * casting is needed. This could be done using a template or a union similar
+     * to the modbus library's leFrame union.
      */
     float sensorValues[MAX_NUMBER_VARS];
 
@@ -367,7 +437,7 @@ class Sensor {
      *
      * @param sensorVarNum The position the variable result holds in the
      * variable result array.
-     * @param var A ponter to the Variable object.
+     * @param var A pointer to the Variable object.
      *
      * @note Only one variable can be assigned to each place in the array!
      */
@@ -432,7 +502,7 @@ class Sensor {
      * measurement should have completed
      *
      * @note A true response does _NOT_ indicate that the sensor will now
-     * sucessfully report a result, merely that the specified time for a
+     * successfully report a result, merely that the specified time for a
      * measurement has passed.
      */
     virtual bool isMeasurementComplete(bool debug = false);
@@ -514,7 +584,7 @@ class Sensor {
      */
     uint32_t _stabilizationTime_ms;
     /**
-     * @brief The processor elapsed time when the sensor was activiated - ie,
+     * @brief The processor elapsed time when the sensor was activated - ie,
      * when the wake() function was run.
      *
      * The #_millisSensorActivated value is *usually* set in the wake()
@@ -529,7 +599,7 @@ class Sensor {
      */
     uint32_t _measurementTime_ms;
     /**
-     * @brief The processor elapsed time when a measuremnt was started - ie,
+     * @brief The processor elapsed time when a measurement was started - ie,
      * when the startSingleMeasurement() function was run.
      *
      * The #_millisMeasurementRequested value is set in the

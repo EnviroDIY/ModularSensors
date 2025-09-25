@@ -61,17 +61,23 @@
 #ifndef SRC_MODEMS_SODAQ2GBEER6_H_
 #define SRC_MODEMS_SODAQ2GBEER6_H_
 
-// Debugging Statement
-// #define MS_SODAQ2GBEER6_DEBUG
-// #define MS_SODAQ2GBEER6_DEBUG_DEEP
+// Include the library config before anything else
+#include "ModSensorConfig.h"
 
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
+
+// Define the print label[s] for the debugger
 #ifdef MS_SODAQ2GBEER6_DEBUG
 #define MS_DEBUGGING_STD "Sodaq2GBeeR6"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+
+// Include other in-library and external dependencies
 #include "SIMComSIM800.h"
 
 #ifdef MS_SODAQ2GBEER6_DEBUG_DEEP
@@ -115,7 +121,7 @@ class Sodaq2GBeeR6 : public SIMComSIM800 {
     /**
      * @brief Construct a new Sodaq 2GBee R6 object
      *
-     * The constuctor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables,
      * constructs a loggerModem parent class with the appropriate timing for the
      * module, calls the constructor for a TinyGSM modem on the provided
      * modemStream, and creates a TinyGSM Client linked to the modem.
@@ -133,7 +139,7 @@ class Sodaq2GBeeR6 : public SIMComSIM800 {
     /**
      * @brief Construct a new Sodaq 2GBee R6 object
      *
-     * The constuctor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables,
      * constructs a loggerModem parent class with the appropriate timing for the
      * module, calls the constructor for a TinyGSM modem on the provided
      * modemStream, and creates a TinyGSM Client linked to the modem.
@@ -180,3 +186,5 @@ class Sodaq2GBeeR6 : public SIMComSIM800 {
 };
 /**@}*/
 #endif  // SRC_MODEMS_SODAQ2GBEER6_H_
+
+// cSpell:ignore SODAQ2GBEER6 GPRSBee PWRKEY

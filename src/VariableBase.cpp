@@ -17,7 +17,7 @@
 
 // The constructor for a measured variable - that is, one whose values are
 // updated by a sensor.
-Variable::Variable(Sensor* parentSense, const uint8_t sensorVarNum,
+Variable::Variable(Sensor* parentSense, uint8_t sensorVarNum,
                    uint8_t decimalResolution, const char* varName,
                    const char* varUnit, const char* varCode, const char* uuid)
     : _sensorVarNum(sensorVarNum) {
@@ -29,7 +29,7 @@ Variable::Variable(Sensor* parentSense, const uint8_t sensorVarNum,
 
     attachSensor(parentSense);
 }
-Variable::Variable(const uint8_t sensorVarNum, uint8_t decimalResolution,
+Variable::Variable(uint8_t sensorVarNum, uint8_t decimalResolution,
                    const char* varName, const char* varUnit,
                    const char* varCode)
     : _sensorVarNum(sensorVarNum) {
@@ -197,8 +197,13 @@ void Variable::setVarCode(const char* varCode) {
     _varCode = varCode;
 }
 
-// This returns the variable UUID, if one has been assigned
-String Variable::getVarUUID(void) {
+// This returns the variable UUID as a String, if one has been assigned
+String Variable::getVarUUIDString(void) {
+    return String(_uuid);
+}
+// This returns the variable UUID as a pointer to a const char array, if one has
+// been assigned
+const char* Variable::getVarUUID(void) {
     return _uuid;
 }
 // This sets the UUID
@@ -208,7 +213,7 @@ void Variable::setVarUUID(const char* uuid) {
 // This checks that the UUID is properly formatted
 bool Variable::checkUUIDFormat(void) {
     // If no UUID, move on
-    if (strlen(_uuid) == 0) { return true; }
+    if (_uuid == nullptr || strlen(_uuid) == 0) { return true; }
 
     // Should be 36 characters long with dashes
     if (strlen(_uuid) != 36) {
@@ -244,7 +249,14 @@ float Variable::getValue(bool updateValue) {
         // the calculation because we don't know which sensors those are.
         // Make sure you update the parent sensors manually for a calculated
         // variable!!
-        return _calcFxn();
+        // NOTE: Only run the calculation function if update value is called,
+        // otherwise return the last value. If we run the calculation function
+        // every time we call getValue() or getValueString(), we will get
+        // different values each time - ie, the data on the CSV and each
+        // publisher will report a different value. That is **NOT** the desired
+        // behavior.  Thus, we stash the value.
+        if (updateValue) _currentValue = _calcFxn();
+        return _currentValue;
     } else {
         if (updateValue) parentSensor->update();
         return _currentValue;
@@ -255,11 +267,18 @@ float Variable::getValue(bool updateValue) {
 // This returns the current value of the variable as a string
 // with the correct number of significant figures
 String Variable::getValueString(bool updateValue) {
+    return formatValueString(getValue(updateValue));
+}
+
+
+// This returns a particular value of the variable as a string
+// with the correct number of significant figures
+String Variable::formatValueString(float value) {
     // Need this because otherwise get extra spaces in strings from int
     if (_decimalResolution == 0) {
-        auto val = static_cast<int16_t>(getValue(updateValue));
+        auto val = static_cast<int32_t>(value);
         return String(val);
     } else {
-        return String(getValue(updateValue), _decimalResolution);
+        return String(value, _decimalResolution);
     }
 }

@@ -20,14 +20,13 @@ SIMComSIM7080::SIMComSIM7080(Stream* modemStream, int8_t powerPin,
                   SIM7080_RESET_LEVEL, SIM7080_RESET_PULSE_MS, modemSleepRqPin,
                   SIM7080_WAKE_LEVEL, SIM7080_WAKE_PULSE_MS,
                   SIM7080_STATUS_TIME_MS, SIM7080_DISCONNECT_TIME_MS,
-                  SIM7080_WAKE_DELAY_MS, SIM7080_ATRESPONSE_TIME_MS),
+                  SIM7080_WAKE_DELAY_MS, SIM7080_AT_RESPONSE_TIME_MS),
 #ifdef MS_SIMCOMSIM7080_DEBUG_DEEP
-      _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
+      _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
       gsmModem(_modemATDebugger),
 #else
       gsmModem(*modemStream),
 #endif
-      gsmClient(gsmModem),
       _apn(apn) {
 }
 
@@ -36,13 +35,15 @@ SIMComSIM7080::~SIMComSIM7080() {}
 
 bool SIMComSIM7080::extraModemSetup(void) {
     bool success = gsmModem.init();
-    gsmClient.init(&gsmModem);
-    _modemName = gsmModem.getModemName();
+    _modemName   = gsmModem.getModemName();
 
     // The modem is liable to crash if the send buffer overflows and TinyGSM
     // offers no way to know when that might happen. Reduce the chance of
     // problems by maxing out the send buffer size. This size should accommodate
     // a completely full 8K LogBuffer and a crappy connection.
+    /// TODO: Settings applied via CACFG are meant for *transparent*
+    /// transmission mode, not the "normal" transmission mode used by TinyGSM.
+    /// This may not be necessary (or even functional).
     gsmModem.sendAT(F("+CACFG=\"SNDBUF\",29200"));
     gsmModem.waitResponse();
 
@@ -69,6 +70,11 @@ MS_MODEM_WAKE(SIMComSIM7080);
 MS_MODEM_CONNECT_INTERNET(SIMComSIM7080);
 MS_MODEM_DISCONNECT_INTERNET(SIMComSIM7080);
 MS_MODEM_IS_INTERNET_AVAILABLE(SIMComSIM7080);
+
+MS_MODEM_CREATE_CLIENT(SIMComSIM7080);
+MS_MODEM_DELETE_CLIENT(SIMComSIM7080);
+MS_MODEM_CREATE_SECURE_CLIENT(SIMComSIM7080);
+MS_MODEM_DELETE_SECURE_CLIENT(SIMComSIM7080);
 
 MS_MODEM_GET_NIST_TIME(SIMComSIM7080);
 
@@ -110,8 +116,13 @@ bool SIMComSIM7080::modemSleepFxn(void) {
         // Easiest to just go to sleep with the AT command rather than using
         // pins
         MS_DBG(F("Asking SIM7080 to power down"));
-        return gsmModem.poweroff();
+        bool res = gsmModem.poweroff();
+        gsmModem.stream.flush();
+        return res;
     } else {  // DON'T go to sleep if we can't wake up!
+        gsmModem.stream.flush();
         return true;
     }
 }
+
+// cSpell:ignore CACFG netlight CNETLIGHT CBATCHK CPIN

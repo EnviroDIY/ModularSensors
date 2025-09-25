@@ -6,11 +6,11 @@
  * @author Anthony Aufdenkampe <aaufdenkampe@limno.com>
  * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief Contains the TallyCounterI2C sensor subclass and variable subclasse
+ * @brief Contains the TallyCounterI2C sensor subclass and variable subclasses
  * TallyCounterI2C_Events.
  *
  * This file is for NorthernWidget's Tally external event counter, which is
- * used to measure windspeed or rainfall from reed-switch analog sensors.
+ * used to measure wind speed or rainfall from reed-switch analog sensors.
  *
  * This depends on the [Tally_Library]
  * (https://github.com/EnviroDIY/Tally_Library/tree/Dev_I2C)
@@ -63,7 +63,7 @@
  *
  * ___
  * @section sensor_tally_examples Example Code
- * The Tally countetr is used in the @menulink{tally} example.
+ * The Tally counter is used in the @menulink{tally} example.
  */
 /* clang-format on */
 
@@ -71,16 +71,23 @@
 #ifndef SRC_SENSORS_TallyCounterI2C_H_
 #define SRC_SENSORS_TallyCounterI2C_H_
 
-// Debugging Statement
-// #define MS_TALLYCOUNTERI2C_DEBUG
+// Include the library config before anything else
+#include "ModSensorConfig.h"
 
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
+
+// Define the print label[s] for the debugger
 #ifdef MS_TALLYCOUNTERI2C_DEBUG
 #define MS_DEBUGGING_STD "TallyCounterI2C"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+
+// Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include <Tally_I2C.h>
@@ -257,7 +264,7 @@ class TallyCounterI2C_Events : public Variable {
     explicit TallyCounterI2C_Events(
         TallyCounterI2C* parentSense, const char* uuid = "",
         const char* varCode = TALLY_EVENTS_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)TALLY_EVENTS_VAR_NUM,
+        : Variable(parentSense, (uint8_t)TALLY_EVENTS_VAR_NUM,
                    (uint8_t)TALLY_EVENTS_RESOLUTION, TALLY_EVENTS_VAR_NAME,
                    TALLY_EVENTS_UNIT_NAME, varCode, uuid) {}
     /**
@@ -267,7 +274,7 @@ class TallyCounterI2C_Events : public Variable {
      * used.
      */
     TallyCounterI2C_Events()
-        : Variable((const uint8_t)TALLY_EVENTS_VAR_NUM,
+        : Variable((uint8_t)TALLY_EVENTS_VAR_NUM,
                    (uint8_t)TALLY_EVENTS_RESOLUTION, TALLY_EVENTS_VAR_NAME,
                    TALLY_EVENTS_UNIT_NAME, TALLY_EVENTS_DEFAULT_CODE) {}
     /**

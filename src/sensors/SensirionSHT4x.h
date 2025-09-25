@@ -65,16 +65,23 @@
 #ifndef SRC_SENSORS_SENSIRIONSHT4X_H_
 #define SRC_SENSORS_SENSIRIONSHT4X_H_
 
-// Debugging Statement
-// #define MS_SENSIRION_SHT4X_DEBUG
+// Include the library config before anything else
+#include "ModSensorConfig.h"
 
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
+
+// Define the print label[s] for the debugger
 #ifdef MS_SENSIRION_SHT4X_DEBUG
 #define MS_DEBUGGING_STD "SensirionSHT4x"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+
+// Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include <Adafruit_SHT4x.h>
@@ -206,7 +213,7 @@ class SensirionSHT4x : public Sensor {
      * which will make the sensor stop responding to air humidity changes - and
      * to allow creep-free operation in high humidity environments.  The longest
      * the internal heater can run at a time is 1s and the maximum duty load is
-     * 5%.  Running only 1s per measurment cycle probably isn't enough to help
+     * 5%.  Running only 1s per measurement cycle probably isn't enough to help
      * with more than very minimal condensation, but it's probably the best we
      * can easily do.
      * @param measurementsToAverage The number of measurements to take and
@@ -234,7 +241,7 @@ class SensirionSHT4x : public Sensor {
      * which will make the sensor stop responding to air humidity changes - and
      * to allow creep-free operation in high humidity environments.  The longest
      * the internal heater can run at a time is 1s and the maximum duty load is
-     * 5%.  Running only 1s per measurment cycle probably isn't enough to help
+     * 5%.  Running only 1s per measurement cycle probably isn't enough to help
      * with more than very minimal condensation, but it's probably the best we
      * can easily do.
      * @param measurementsToAverage The number of measurements to take and
@@ -318,7 +325,7 @@ class SensirionSHT4x_Humidity : public Variable {
     explicit SensirionSHT4x_Humidity(
         SensirionSHT4x* parentSense, const char* uuid = "",
         const char* varCode = SHT4X_HUMIDITY_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)SHT4X_HUMIDITY_VAR_NUM,
+        : Variable(parentSense, (uint8_t)SHT4X_HUMIDITY_VAR_NUM,
                    (uint8_t)SHT4X_HUMIDITY_RESOLUTION, SHT4X_HUMIDITY_VAR_NAME,
                    SHT4X_HUMIDITY_UNIT_NAME, varCode, uuid) {}
     /**
@@ -328,7 +335,7 @@ class SensirionSHT4x_Humidity : public Variable {
      * used.
      */
     SensirionSHT4x_Humidity()
-        : Variable((const uint8_t)SHT4X_HUMIDITY_VAR_NUM,
+        : Variable((uint8_t)SHT4X_HUMIDITY_VAR_NUM,
                    (uint8_t)SHT4X_HUMIDITY_RESOLUTION, SHT4X_HUMIDITY_VAR_NAME,
                    SHT4X_HUMIDITY_UNIT_NAME, SHT4X_HUMIDITY_DEFAULT_CODE) {}
     /**
@@ -360,7 +367,7 @@ class SensirionSHT4x_Temp : public Variable {
     explicit SensirionSHT4x_Temp(SensirionSHT4x* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = SHT4X_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)SHT4X_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)SHT4X_TEMP_VAR_NUM,
                    (uint8_t)SHT4X_TEMP_RESOLUTION, SHT4X_TEMP_VAR_NAME,
                    SHT4X_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -370,9 +377,9 @@ class SensirionSHT4x_Temp : public Variable {
      * used.
      */
     SensirionSHT4x_Temp()
-        : Variable((const uint8_t)SHT4X_TEMP_VAR_NUM,
-                   (uint8_t)SHT4X_TEMP_RESOLUTION, SHT4X_TEMP_VAR_NAME,
-                   SHT4X_TEMP_UNIT_NAME, SHT4X_TEMP_DEFAULT_CODE) {}
+        : Variable((uint8_t)SHT4X_TEMP_VAR_NUM, (uint8_t)SHT4X_TEMP_RESOLUTION,
+                   SHT4X_TEMP_VAR_NAME, SHT4X_TEMP_UNIT_NAME,
+                   SHT4X_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the SensirionSHT4x_Temp object - no action needed.
      */
@@ -380,3 +387,5 @@ class SensirionSHT4x_Temp : public Variable {
 };
 /**@}*/
 #endif  // SRC_SENSORS_SENSIRIONSHT4X_H_
+
+// cSpell:ignore preconfigured

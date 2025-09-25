@@ -59,7 +59,7 @@
 /**
  * @anchor sensor_y510_var_counts
  * @name Sensor Variable Counts
- * The number of variables that can be returned by a Yosemitch Y510
+ * The number of variables that can be returned by a Yosemitech Y510
  */
 /**@{*/
 /// @brief Sensor::_numReturnedValues; the Y510 can report 2 values.
@@ -71,7 +71,7 @@
 /**
  * @anchor sensor_y510_timing
  * @name Sensor Timing
- * The sensor timing for a Yosemitch Y510
+ * The sensor timing for a Yosemitech Y510
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; time before sensor responds after power -
@@ -88,7 +88,7 @@
 /**
  * @anchor sensor_y510_turb
  * @name Turbidity
- * The turbidity variable from a Yosemitch Y510
+ * The turbidity variable from a Yosemitech Y510
  * - Range is 0.1 to 1000 NTU
  * - Accuracy is ± 5 % or 0.3 NTU
  *
@@ -115,7 +115,7 @@
 /**
  * @anchor sensor_y510_temp
  * @name Temperature
- * The temperature variable from a Yosemitch Y510
+ * The temperature variable from a Yosemitech Y510
  * - Range is 0°C to + 50°C
  * - Accuracy is ± 0.2°C
  *
@@ -221,7 +221,7 @@ class YosemitechY510_Turbidity : public Variable {
     explicit YosemitechY510_Turbidity(
         YosemitechY510* parentSense, const char* uuid = "",
         const char* varCode = Y510_TURB_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)Y510_TURB_VAR_NUM,
+        : Variable(parentSense, (uint8_t)Y510_TURB_VAR_NUM,
                    (uint8_t)Y510_TURB_RESOLUTION, Y510_TURB_VAR_NAME,
                    Y510_TURB_UNIT_NAME, varCode, uuid) {}
     /**
@@ -231,9 +231,9 @@ class YosemitechY510_Turbidity : public Variable {
      * used.
      */
     YosemitechY510_Turbidity()
-        : Variable((const uint8_t)Y510_TURB_VAR_NUM,
-                   (uint8_t)Y510_TURB_RESOLUTION, Y510_TURB_VAR_NAME,
-                   Y510_TURB_UNIT_NAME, Y510_TURB_DEFAULT_CODE) {}
+        : Variable((uint8_t)Y510_TURB_VAR_NUM, (uint8_t)Y510_TURB_RESOLUTION,
+                   Y510_TURB_VAR_NAME, Y510_TURB_UNIT_NAME,
+                   Y510_TURB_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY510_Turbidity object - no action needed.
      */
@@ -265,7 +265,7 @@ class YosemitechY510_Temp : public Variable {
     explicit YosemitechY510_Temp(YosemitechY510* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = Y510_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)Y510_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)Y510_TEMP_VAR_NUM,
                    (uint8_t)Y510_TEMP_RESOLUTION, Y510_TEMP_VAR_NAME,
                    Y510_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -275,9 +275,9 @@ class YosemitechY510_Temp : public Variable {
      * used.
      */
     YosemitechY510_Temp()
-        : Variable((const uint8_t)Y510_TEMP_VAR_NUM,
-                   (uint8_t)Y510_TEMP_RESOLUTION, Y510_TEMP_VAR_NAME,
-                   Y510_TEMP_UNIT_NAME, Y510_TEMP_DEFAULT_CODE) {}
+        : Variable((uint8_t)Y510_TEMP_VAR_NUM, (uint8_t)Y510_TEMP_RESOLUTION,
+                   Y510_TEMP_VAR_NAME, Y510_TEMP_UNIT_NAME,
+                   Y510_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY510_Temp object - no action needed.
      */

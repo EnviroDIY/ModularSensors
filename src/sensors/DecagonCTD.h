@@ -282,7 +282,7 @@ class DecagonCTD_Cond : public Variable {
      */
     explicit DecagonCTD_Cond(DecagonCTD* parentSense, const char* uuid = "",
                              const char* varCode = CTD_COND_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)CTD_COND_VAR_NUM,
+        : Variable(parentSense, (uint8_t)CTD_COND_VAR_NUM,
                    (uint8_t)CTD_COND_RESOLUTION, CTD_COND_VAR_NAME,
                    CTD_COND_UNIT_NAME, varCode, uuid) {}
     /**
@@ -291,9 +291,9 @@ class DecagonCTD_Cond : public Variable {
      * @note This must be tied with a parent DecagonCTD before it can be used.
      */
     DecagonCTD_Cond()
-        : Variable((const uint8_t)CTD_COND_VAR_NUM,
-                   (uint8_t)CTD_COND_RESOLUTION, CTD_COND_VAR_NAME,
-                   CTD_COND_UNIT_NAME, CTD_COND_DEFAULT_CODE) {}
+        : Variable((uint8_t)CTD_COND_VAR_NUM, (uint8_t)CTD_COND_RESOLUTION,
+                   CTD_COND_VAR_NAME, CTD_COND_UNIT_NAME,
+                   CTD_COND_DEFAULT_CODE) {}
     /**
      * @brief Destroy the DecagonCTD_Cond object - no action needed.
      */
@@ -323,7 +323,7 @@ class DecagonCTD_Temp : public Variable {
      */
     explicit DecagonCTD_Temp(DecagonCTD* parentSense, const char* uuid = "",
                              const char* varCode = CTD_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)CTD_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)CTD_TEMP_VAR_NUM,
                    (uint8_t)CTD_TEMP_RESOLUTION, CTD_TEMP_VAR_NAME,
                    CTD_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -332,9 +332,9 @@ class DecagonCTD_Temp : public Variable {
      * @note This must be tied with a parent DecagonCTD before it can be used.
      */
     DecagonCTD_Temp()
-        : Variable((const uint8_t)CTD_TEMP_VAR_NUM,
-                   (uint8_t)CTD_TEMP_RESOLUTION, CTD_TEMP_VAR_NAME,
-                   CTD_TEMP_UNIT_NAME, CTD_TEMP_DEFAULT_CODE) {}
+        : Variable((uint8_t)CTD_TEMP_VAR_NUM, (uint8_t)CTD_TEMP_RESOLUTION,
+                   CTD_TEMP_VAR_NAME, CTD_TEMP_UNIT_NAME,
+                   CTD_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the DecagonCTD_Temp object - no action needed.
      */
@@ -364,7 +364,7 @@ class DecagonCTD_Depth : public Variable {
      */
     explicit DecagonCTD_Depth(DecagonCTD* parentSense, const char* uuid = "",
                               const char* varCode = CTD_DEPTH_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)CTD_DEPTH_VAR_NUM,
+        : Variable(parentSense, (uint8_t)CTD_DEPTH_VAR_NUM,
                    (uint8_t)CTD_DEPTH_RESOLUTION, CTD_DEPTH_VAR_NAME,
                    CTD_DEPTH_UNIT_NAME, varCode, uuid) {}
     /**
@@ -373,9 +373,9 @@ class DecagonCTD_Depth : public Variable {
      * @note This must be tied with a parent DecagonCTD before it can be used.
      */
     DecagonCTD_Depth()
-        : Variable((const uint8_t)CTD_DEPTH_VAR_NUM,
-                   (uint8_t)CTD_DEPTH_RESOLUTION, CTD_DEPTH_VAR_NAME,
-                   CTD_DEPTH_UNIT_NAME, CTD_DEPTH_DEFAULT_CODE) {}
+        : Variable((uint8_t)CTD_DEPTH_VAR_NUM, (uint8_t)CTD_DEPTH_RESOLUTION,
+                   CTD_DEPTH_VAR_NAME, CTD_DEPTH_UNIT_NAME,
+                   CTD_DEPTH_DEFAULT_CODE) {}
     /**
      * @brief Destroy the DecagonCTD_Depth object - no action needed.
      */

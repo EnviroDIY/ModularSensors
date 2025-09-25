@@ -3,7 +3,7 @@
  * @copyright Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino.
  * This library is published under the BSD-3 license.
- * @author Initial developement for Atlas Sensors was done by Adam Gold
+ * @author Initial development for Atlas Sensors was done by Adam Gold
  * Files were edited by Sara Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Contains the AtlasScientificRTD subclass of the AtlasParent sensor
@@ -233,7 +233,7 @@ class AtlasScientificpH_pH : public Variable {
     explicit AtlasScientificpH_pH(AtlasScientificpH* parentSense,
                                   const char*        uuid = "",
                                   const char* varCode = ATLAS_PH_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ATLAS_PH_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ATLAS_PH_VAR_NUM,
                    (uint8_t)ATLAS_PH_RESOLUTION, ATLAS_PH_VAR_NAME,
                    ATLAS_PH_UNIT_NAME, varCode, uuid) {}
     /**
@@ -243,9 +243,9 @@ class AtlasScientificpH_pH : public Variable {
      * used.
      */
     AtlasScientificpH_pH()
-        : Variable((const uint8_t)ATLAS_PH_VAR_NUM,
-                   (uint8_t)ATLAS_PH_RESOLUTION, ATLAS_PH_VAR_NAME,
-                   ATLAS_PH_UNIT_NAME, ATLAS_PH_DEFAULT_CODE) {}
+        : Variable((uint8_t)ATLAS_PH_VAR_NUM, (uint8_t)ATLAS_PH_RESOLUTION,
+                   ATLAS_PH_VAR_NAME, ATLAS_PH_UNIT_NAME,
+                   ATLAS_PH_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AtlasScientificpH_pH object - no action needed.
      */
@@ -253,3 +253,5 @@ class AtlasScientificpH_pH : public Variable {
 };
 /**@}*/
 #endif  // SRC_SENSORS_ATLASSCIENTIFICPH_H_
+
+// cSpell:ignore AtlasScientificpH AtlaspH

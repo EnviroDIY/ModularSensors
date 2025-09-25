@@ -32,7 +32,7 @@
  * @section sensor_i2c_rain_intro Introduction
  *
  * This module is for use with a simple external I2C tipping bucket counter
- * based on an [Adafriut Trinket](https://www.adafruit.com/product/1501). This
+ * based on an [Adafruit Trinket](https://www.adafruit.com/product/1501). This
  * is *NOT* for direct counting of tips using an interrupt on the main
  * processor.  The construction and programming of the tipping bucket counter is
  * documented on
@@ -41,7 +41,7 @@
  * management.
  *
  * @section sensor_i2c_rain_datasheet Sensor Datasheet
- * - [Adafriut Trinket](https://www.adafruit.com/product/1501)
+ * - [Adafruit Trinket](https://www.adafruit.com/product/1501)
  * - [I2C Tipping Bucket Library](https://github.com/EnviroDIY/TippingBucketRainCounter)
  *
  * @section sensor_i2c_rain_flags Build flags
@@ -71,16 +71,23 @@
 #ifndef SRC_SENSORS_RAINCOUNTERI2C_H_
 #define SRC_SENSORS_RAINCOUNTERI2C_H_
 
-// Debugging Statement
-// #define MS_RAINCOUNTERI2C_DEBUG
+// Include the library config before anything else
+#include "ModSensorConfig.h"
 
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
+
+// Define the print label[s] for the debugger
 #ifdef MS_RAINCOUNTERI2C_DEBUG
 #define MS_DEBUGGING_STD "RainCounterI2C"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+
+// Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include <Wire.h>
@@ -339,7 +346,7 @@ class RainCounterI2C_Tips : public Variable {
     explicit RainCounterI2C_Tips(RainCounterI2C* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode = BUCKET_TIPS_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)BUCKET_TIPS_VAR_NUM,
+        : Variable(parentSense, (uint8_t)BUCKET_TIPS_VAR_NUM,
                    (uint8_t)BUCKET_TIPS_RESOLUTION, BUCKET_TIPS_VAR_NAME,
                    BUCKET_TIPS_UNIT_NAME, varCode, uuid) {}
     /**
@@ -349,7 +356,7 @@ class RainCounterI2C_Tips : public Variable {
      * used.
      */
     RainCounterI2C_Tips()
-        : Variable((const uint8_t)BUCKET_TIPS_VAR_NUM,
+        : Variable((uint8_t)BUCKET_TIPS_VAR_NUM,
                    (uint8_t)BUCKET_TIPS_RESOLUTION, BUCKET_TIPS_VAR_NAME,
                    BUCKET_TIPS_UNIT_NAME, BUCKET_TIPS_DEFAULT_CODE) {}
     /**
@@ -381,7 +388,7 @@ class RainCounterI2C_Depth : public Variable {
     explicit RainCounterI2C_Depth(
         RainCounterI2C* parentSense, const char* uuid = "",
         const char* varCode = BUCKET_RAIN_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)BUCKET_RAIN_VAR_NUM,
+        : Variable(parentSense, (uint8_t)BUCKET_RAIN_VAR_NUM,
                    (uint8_t)BUCKET_RAIN_RESOLUTION, BUCKET_RAIN_VAR_NAME,
                    BUCKET_RAIN_UNIT_NAME, varCode, uuid) {}
     /**
@@ -391,7 +398,7 @@ class RainCounterI2C_Depth : public Variable {
      * used.
      */
     RainCounterI2C_Depth()
-        : Variable((const uint8_t)BUCKET_RAIN_VAR_NUM,
+        : Variable((uint8_t)BUCKET_RAIN_VAR_NUM,
                    (uint8_t)BUCKET_RAIN_RESOLUTION, BUCKET_RAIN_VAR_NAME,
                    BUCKET_RAIN_UNIT_NAME, BUCKET_RAIN_DEFAULT_CODE) {}
     /**

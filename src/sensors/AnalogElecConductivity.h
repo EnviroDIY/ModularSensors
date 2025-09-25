@@ -6,7 +6,7 @@
  * @author Written By: Neil Hancock <neilh20+aec2008@wLLw.net>; Edited by Sara
  * Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief Encapsulates an Electrical Conductivity sensors using an anlog
+ * @brief Encapsulates an Electrical Conductivity sensors using an analog
  * input and onboard ADC and ADC ref.
  */
 /* clang-format off */
@@ -30,7 +30,7 @@
  * For this to work, the power across the circuit **MUST** be turned off between
  * readings.  If the power to the circuit is left on the water will become
  * polarized and the values will not be valid. The water temperature (if used)
- * must be suplied separately for a calculation.
+ * must be supplied separately for a calculation.
  *
  * @note The return from this "sensor" is conductivity - not the typically
  * reported specific conductance, which is referenced to 25°C.  The temperature
@@ -54,7 +54,7 @@
  *                                  ground
  * @endcode
  *
- * The above diagram and the calculations assume the reistance of the analog
+ * The above diagram and the calculations assume the resistance of the analog
  * pins themselves on the Arduino is negligible.
  *
  * @section sensor_analog_cond_calcs Calculating the Conductivity
@@ -71,7 +71,7 @@
  *
  * @note The Vcc going to the circuit (~3.3V) can and will vary, as battery
  * level gets low.  If possible, you should use setup the processor to use an
- * external reference (`-D ANALOG_EC_ADC_REFERENCE_MODE=EXTEERNAL`) and tie
+ * external reference (`-D MS_PROCESSOR_ADC_REFERENCE_MODE=EXTERNAL`) and tie
  * the Aref pin to the sensor power pin.
  *
  * @note The analog reference of the Mayfly is not broken out (and is tied to
@@ -100,7 +100,7 @@
  *  For one AC Power Cord 12t with male IEC 320-C8 connector the cell constant
  * was 2.88.
  *
- * @note These calulations are for the on-board processor ADC, not an external
+ * @note These calculations are for the on-board processor ADC, not an external
  * ACD like the TI ADS1115 built into the Mayfly!
  *
  * @section sensor_analog_cond_ref References
@@ -110,12 +110,12 @@
  * https://link.springer.com/article/10.1023/B:EMAS.0000031719.83065.68
  *
  * @section sensor_analog_cond_flags Build flags
- * - `-D ANALOG_EC_ADC_RESOLUTION=##`
+ * - `-D MS_PROCESSOR_ADC_RESOLUTION=##`
  *      - used to set the resolution of the processor ADC
- *      - @see #ANALOG_EC_ADC_RESOLUTION
- * - `-D ANALOG_EC_ADC_REFERENCE_MODE=xxx`
+ *      - @see #MS_PROCESSOR_ADC_RESOLUTION
+ * - `-D MS_PROCESSOR_ADC_REFERENCE_MODE=xxx`
  *      - used to set the processor ADC value reference mode
- *      - @see #ANALOG_EC_ADC_REFERENCE_MODE
+ *      - @see #MS_PROCESSOR_ADC_REFERENCE_MODE
  *
  * @section sensor_analog_cond_ctor Sensor Constructor
  * {{ @ref AnalogElecConductivity::AnalogElecConductivity }}
@@ -134,10 +134,13 @@
 #ifndef SRC_SENSORS_ANALOGELECCONDUCTIVITY_H_
 #define SRC_SENSORS_ANALOGELECCONDUCTIVITY_H_
 
-// Debugging Statement
-// #define MS_ANALOGELECCONDUCTIVITY_DEBUG
-// #define MS_ANALOGELECCONDUCTIVITY_DEBUG_DEEP
+// Include the library config before anything else
+#include "ModSensorConfig.h"
 
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
+
+// Define the print label[s] for the debugger
 #ifdef MS_ANALOGELECCONDUCTIVITY_DEBUG
 #define MS_DEBUGGING_STD "AnalogElecConductivity"
 #endif
@@ -145,10 +148,13 @@
 #define MS_DEBUGGING_DEEP "AnalogElecConductivity"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
 #undef MS_DEBUGGING_DEEP
+
+// Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include "math.h"
@@ -179,73 +185,6 @@
  * conductivity sensor depending on the processor and ADC in use.
  */
 /**@{*/
-#if !defined(ANALOG_EC_ADC_RESOLUTION) || defined(DOXYGEN)
-/**
- * @brief Default resolution (in bits) of the voltage measurement
- *
- * The default for all boards is 10, use a build flag to change this, if
- * necessary.
- */
-#define ANALOG_EC_ADC_RESOLUTION 10
-#endif  // ANALOG_EC_ADC_RESOLUTION
-/// @brief The maximum possible value of the ADC - one less than the resolution
-/// shifted up one bit.
-#define ANALOG_EC_ADC_MAX ((1 << ANALOG_EC_ADC_RESOLUTION) - 1)
-/// @brief The maximum possible range of the ADC - the resolution shifted up one
-/// bit.
-#define ANALOG_EC_ADC_RANGE (1 << ANALOG_EC_ADC_RESOLUTION)
-
-/* clang-format off */
-#if ! defined (ANALOG_EC_ADC_REFERENCE_MODE) || defined (DOXYGEN)
-#if defined(ARDUINO_ARCH_AVR) || defined (DOXYGEN)
-/**
- * @brief The voltage reference mode for the processor's ADC.
- *
- * For an AVR board, this must be one of:
- * - `DEFAULT`: the default built-in analog reference of 5 volts (on 5V Arduino
- * boards) or 3.3 volts (on 3.3V Arduino boards)
- * - `INTERNAL`: a built-in reference, equal to 1.1 volts on the ATmega168 or
- * ATmega328P and 2.56 volts on the ATmega32U4 and ATmega8 (not available on the
- * Arduino Mega)
- * - `INTERNAL1V1`: a built-in 1.1V reference (Arduino Mega only)
- * - `INTERNAL2V56`: a built-in 2.56V reference (Arduino Mega only)
- * - `EXTERNAL`: the voltage applied to the AREF pin (0 to 5V only) is used as the
- * reference.
- *
- * If not set on an AVR board `DEFAULT` is used.
- *
- * For the best accuracy, use an `EXTERNAL` reference with the AREF pin
- * connected to the power supply for the EC sensor.
- */
-#define ANALOG_EC_ADC_REFERENCE_MODE DEFAULT
-#endif
-#if defined(ARDUINO_ARCH_SAMD) || defined (DOXYGEN)
-/**
- * @brief The voltage reference mode for the processor's ADC.
- *
- * For a SAMD board, this must be one of:
- * - `AR_DEFAULT`: the default built-in analog reference of 3.3V
- * - `AR_INTERNAL`: a built-in 2.23V reference
- * - `AR_INTERNAL1V0`: a built-in 1.0V reference
- * - `AR_INTERNAL1V65`: a built-in 1.65V reference
- * - `AR_INTERNAL2V23`: a built-in 2.23V reference
- * - `AR_EXTERNAL`: the voltage applied to the AREF pin is used as the reference
- *
- * If not set on an SAMD board `AR_DEFAULT` is used.
- *
- * For the best accuracy, use an `EXTERNAL` reference with the AREF pin
- * connected to the power supply for the EC sensor.
- *
- * @see https://www.arduino.cc/reference/en/language/functions/analog-io/analogreference/
- */
-#define ANALOG_EC_ADC_REFERENCE_MODE AR_DEFAULT
-#endif
-#if ! defined (ANALOG_EC_ADC_REFERENCE_MODE)
-#error The processor ADC reference type must be defined!
-#endif  // ANALOG_EC_ADC_REFERENCE_MODE
-#endif  // ARDUINO_ARCH_SAMD
-/* clang-format on */
-
 #if !defined(RSERIES_OHMS_DEF) || defined(DOXYGEN)
 /**
  * @brief The default resistance (in ohms) of the measuring resistor.
@@ -398,7 +337,7 @@ class AnalogElecConductivity : public Sensor {
     float readEC(uint8_t analogPinNum);
 
  private:
-    /// @brief The resistance of the circiut resistor plus any series port
+    /// @brief The resistance of the circuit resistor plus any series port
     /// resistance
     float _Rseries_ohms = RSERIES_OHMS_DEF;
 
@@ -427,8 +366,7 @@ class AnalogElecConductivity_EC : public Variable {
     AnalogElecConductivity_EC(
         AnalogElecConductivity* parentSense, const char* uuid = "",
         const char* varCode = ANALOGELECCONDUCTIVITY_EC_DEFAULT_CODE)
-        : Variable(parentSense,
-                   (const uint8_t)ANALOGELECCONDUCTIVITY_EC_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ANALOGELECCONDUCTIVITY_EC_VAR_NUM,
                    (uint8_t)ANALOGELECCONDUCTIVITY_EC_RESOLUTION,
                    ANALOGELECCONDUCTIVITY_EC_VAR_NAME,
                    ANALOGELECCONDUCTIVITY_EC_UNIT_NAME, varCode, uuid) {}
@@ -440,7 +378,7 @@ class AnalogElecConductivity_EC : public Variable {
      * can be used.
      */
     AnalogElecConductivity_EC()
-        : Variable((const uint8_t)ANALOGELECCONDUCTIVITY_EC_VAR_NUM,
+        : Variable((uint8_t)ANALOGELECCONDUCTIVITY_EC_VAR_NUM,
                    (uint8_t)ANALOGELECCONDUCTIVITY_EC_RESOLUTION,
                    ANALOGELECCONDUCTIVITY_EC_VAR_NAME,
                    ANALOGELECCONDUCTIVITY_EC_UNIT_NAME,
@@ -452,3 +390,6 @@ class AnalogElecConductivity_EC : public Variable {
 };
 /**@}*/
 #endif  // SRC_SENSORS_ANALOGELECCONDUCTIVITY_H_
+
+// cSpell:ignore AnalogElecConductivity Rseries_ohms sensorEC_Konst Rwater
+// cSpell:ignore _elec_ _Konst anlgEc

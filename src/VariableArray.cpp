@@ -16,14 +16,14 @@ VariableArray::VariableArray() {}
 VariableArray::VariableArray(uint8_t variableCount, Variable* variableList[])
     : arrayOfVars(variableList),
       _variableCount(variableCount) {
-    _maxSamplestoAverage = countMaxToAverage();
+    _maxSamplesToAverage = countMaxToAverage();
     _sensorCount         = getSensorCount();
 }
 VariableArray::VariableArray(uint8_t variableCount, Variable* variableList[],
                              const char* uuids[])
     : arrayOfVars(variableList),
       _variableCount(variableCount) {
-    _maxSamplestoAverage = countMaxToAverage();
+    _maxSamplesToAverage = countMaxToAverage();
     _sensorCount         = getSensorCount();
     matchUUIDs(uuids);
 }
@@ -36,7 +36,7 @@ void VariableArray::begin(uint8_t variableCount, Variable* variableList[],
     _variableCount = variableCount;
     arrayOfVars    = variableList;
 
-    _maxSamplestoAverage = countMaxToAverage();
+    _maxSamplesToAverage = countMaxToAverage();
     _sensorCount         = getSensorCount();
     matchUUIDs(uuids);
     checkVariableUUIDs();
@@ -45,12 +45,12 @@ void VariableArray::begin(uint8_t variableCount, Variable* variableList[]) {
     _variableCount = variableCount;
     arrayOfVars    = variableList;
 
-    _maxSamplestoAverage = countMaxToAverage();
+    _maxSamplesToAverage = countMaxToAverage();
     _sensorCount         = getSensorCount();
     checkVariableUUIDs();
 }
 void VariableArray::begin() {
-    _maxSamplestoAverage = countMaxToAverage();
+    _maxSamplesToAverage = countMaxToAverage();
     _sensorCount         = getSensorCount();
     checkVariableUUIDs();
 }
@@ -108,7 +108,7 @@ bool VariableArray::setupSensors(void) {
     uint8_t nSensorsSetup = 0;
     for (uint8_t i = 0; i < _variableCount; i++) {
         if (isLastVarFromSensor(i)  // Skip non-unique sensors
-            && bitRead(arrayOfVars[i]->parentSensor->getStatus(), 0) ==
+            && getSensorStatusBit(i, Sensor::SETUP_SUCCESSFUL) ==
                 1  // already set up
         ) {
             MS_DBG(F("   "), arrayOfVars[i]->getParentSensorNameAndLocation(),
@@ -125,7 +125,7 @@ bool VariableArray::setupSensors(void) {
     while (nSensorsSetup < _sensorCount) {
         for (uint8_t i = 0; i < _variableCount; i++) {
             if (isLastVarFromSensor(i)  // Skip non-unique sensors
-                && bitRead(arrayOfVars[i]->parentSensor->getStatus(), 0) ==
+                && getSensorStatusBit(i, Sensor::SETUP_SUCCESSFUL) ==
                     0  // only set up if it has not yet been set up
             ) {
                 MS_DBG(F("    Set up of"),
@@ -190,7 +190,7 @@ bool VariableArray::sensorsWake(void) {
     // command
     for (uint8_t i = 0; i < _variableCount; i++) {
         if (isLastVarFromSensor(i)  // Skip non-unique sensors
-            && bitRead(arrayOfVars[i]->parentSensor->getStatus(), 3) ==
+            && getSensorStatusBit(i, Sensor::WAKE_ATTEMPTED) ==
                 1  // already attempted to wake
         ) {
             MS_DBG(F("    Wake up of"),
@@ -207,7 +207,7 @@ bool VariableArray::sensorsWake(void) {
     while (nSensorsAwake < _sensorCount) {
         for (uint8_t i = 0; i < _variableCount; i++) {
             if (isLastVarFromSensor(i)  // Skip non-unique sensors
-                && bitRead(arrayOfVars[i]->parentSensor->getStatus(), 3) ==
+                && getSensorStatusBit(i, Sensor::WAKE_ATTEMPTED) ==
                     0  // If no attempts yet made to wake the sensor up
                 && arrayOfVars[i]->parentSensor->isWarmedUp(
                        deepDebugTiming)  // and if it is already warmed up
@@ -342,9 +342,9 @@ bool VariableArray::updateAllSensors(void) {
     // they will be skipped in further looping.
     for (uint8_t i = 0; i < _variableCount; i++) {
         if (lastSensorVariable[i]  // Skip non-unique sensors
-            && (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 3) ==
+            && (getSensorStatusBit(i, Sensor::WAKE_ATTEMPTED) ==
                     0  // No attempt made to wake the sensor up
-                || bitRead(arrayOfVars[i]->parentSensor->getStatus(), 4) ==
+                || getSensorStatusBit(i, Sensor::WAKE_SUCCESSFUL) ==
                     0  // OR Wake up failed
                 )) {
             MS_DBG(i, F("--->>"),
@@ -369,20 +369,19 @@ bool VariableArray::updateAllSensors(void) {
             // Leave this whole section commented out unless you want excessive
             // printouts (ie, thousands of lines) of the timing information!!
             if (lastSensorVariable[i] and
-                nMeasurementsToAverage[i] > nMeasurementsCompleted[i])
-            {
-                MS_DEEP_DBG(i), '-',
-            arrayOfVars[i]->getParentSensorNameAndLocation(), F("- millis:"),
-            millis(), F("- status: 0b"),
-                           bitRead(arrayOfVars[i]->parentSensor->getStatus(),
-            7), bitRead(arrayOfVars[i]->parentSensor->getStatus(), 6),
-                           bitRead(arrayOfVars[i]->parentSensor->getStatus(),
-            5), bitRead(arrayOfVars[i]->parentSensor->getStatus(), 4),
-                           bitRead(arrayOfVars[i]->parentSensor->getStatus(),
-            3), bitRead(arrayOfVars[i]->parentSensor->getStatus(), 2),
-                           bitRead(arrayOfVars[i]->parentSensor->getStatus(),
-            1), bitRead(arrayOfVars[i]->parentSensor->getStatus(), 0), F("-
-            measurement #"), (nMeasurementsCompleted[i] + 1);
+                nMeasurementsToAverage[i] > nMeasurementsCompleted[i]) {
+                MS_DEEP_DBG(
+                    i, '-', arrayOfVars[i]->getParentSensorNameAndLocation(),
+                    F("- millis:"), millis(), F("- status: 0b"),
+                    getSensorStatusBit(i, Sensor::ERROR_OCCURRED),
+                    getSensorStatusBit(i, Sensor::MEASUREMENT_SUCCESSFUL),
+                    getSensorStatusBit(i, Sensor::MEASUREMENT_ATTEMPTED),
+                    getSensorStatusBit(i, Sensor::WAKE_SUCCESSFUL),
+                    getSensorStatusBit(i, Sensor::WAKE_ATTEMPTED),
+                    getSensorStatusBit(i, Sensor::POWER_SUCCESSFUL),
+                    getSensorStatusBit(i, Sensor::POWER_ATTEMPTED),
+                    getSensorStatusBit(i, Sensor::SETUP_SUCCESSFUL),
+                    F("-measurement #"), nMeasurementsCompleted[i] + 1);
             }
             // END CHUNK FOR DEBUGGING!
             ***/
@@ -393,7 +392,7 @@ bool VariableArray::updateAllSensors(void) {
                 // first, make sure the sensor is stable
                 if (arrayOfVars[i]->parentSensor->isStable(deepDebugTiming)) {
                     // now, if the sensor is not currently measuring...
-                    if (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 5) ==
+                    if (getSensorStatusBit(i, Sensor::MEASUREMENT_ATTEMPTED) ==
                         0) {  // NO attempt yet to start a measurement
                         // Start a reading
                         MS_DBG(i, '.', nMeasurementsCompleted[i] + 1,
@@ -467,7 +466,7 @@ bool VariableArray::updateAllSensors(void) {
         }
     }
 
-    // Average measurements and notify varibles of the updates
+    // Average measurements and notify variables of the updates
     MS_DBG(F("----->> Averaging results and notifying all variables. ..."));
     for (uint8_t i = 0; i < _variableCount; i++) {
         if (lastSensorVariable[i]) {
@@ -482,6 +481,11 @@ bool VariableArray::updateAllSensors(void) {
         }
     }
     MS_DBG(F("... Complete. <<-----"));
+
+    MS_DBG(F("Updating calculated variables. ..."));
+    for (uint8_t i = 0; i < _variableCount; i++) {
+        if (arrayOfVars[i]->isCalculated) { arrayOfVars[i]->getValue(true); }
+    }
 
     return success;
 }
@@ -641,14 +645,14 @@ bool VariableArray::completeUpdate(void) {
                 MS_DEEP_DBG(
                     i, '-', arrayOfVars[i]->getParentSensorNameAndLocation(),
                     F("- millis:"), millis(), F("- status: 0b"),
-                    bitRead(arrayOfVars[i]->parentSensor->getStatus(), 7),
-                    bitRead(arrayOfVars[i]->parentSensor->getStatus(), 6),
-                    bitRead(arrayOfVars[i]->parentSensor->getStatus(), 5),
-                    bitRead(arrayOfVars[i]->parentSensor->getStatus(), 4),
-                    bitRead(arrayOfVars[i]->parentSensor->getStatus(), 3),
-                    bitRead(arrayOfVars[i]->parentSensor->getStatus(), 2),
-                    bitRead(arrayOfVars[i]->parentSensor->getStatus(), 1),
-                    bitRead(arrayOfVars[i]->parentSensor->getStatus(), 0),
+                    getSensorStatusBit(i,7),
+                    getSensorStatusBit(i,6),
+                    getSensorStatusBit(i,5),
+                    getSensorStatusBit(i,4),
+                    getSensorStatusBit(i,3),
+                    getSensorStatusBit(i,2),
+                    getSensorStatusBit(i,1),
+                    getSensorStatusBit(i,0),
                     F("- measurement #"), (nMeasurementsCompleted[i] + 1));
             }
             MS_DEEP_DBG(F("----------------------------------"));
@@ -666,7 +670,7 @@ bool VariableArray::completeUpdate(void) {
             // Only do checks on sensors that still have measurements to finish
             if (lastSensorVariable[i] &&
                 nMeasurementsToAverage[i] > nMeasurementsCompleted[i]) {
-                if (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 3) ==
+                if (getSensorStatusBit(i, Sensor::WAKE_ATTEMPTED) ==
                         0  // If no attempts yet made to wake the sensor up
                     && arrayOfVars[i]->parentSensor->isWarmedUp(
                            deepDebugTiming)  // and if it is already warmed up
@@ -691,10 +695,8 @@ bool VariableArray::completeUpdate(void) {
                 // If attempts were made to wake the sensor, but they failed
                 // then we're just bumping up the number of measurements to
                 // completion
-                if (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 3) ==
-                        1 &&
-                    bitRead(arrayOfVars[i]->parentSensor->getStatus(), 4) ==
-                        0) {
+                if (getSensorStatusBit(i, Sensor::WAKE_ATTEMPTED) == 1 &&
+                    getSensorStatusBit(i, Sensor::WAKE_SUCCESSFUL) == 0) {
                     MS_DBG(i, F("--->>"),
                            arrayOfVars[i]->getParentSensorNameAndLocation(),
                            F("did not wake up! No measurements will be taken! "
@@ -710,15 +712,15 @@ bool VariableArray::completeUpdate(void) {
                         nMeasurementsToAverage[i];
                 }
 
-                // If the sensor was successfully awoken/activated...
-                // .. make sure the sensor is stable
-                if (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 4) ==
-                        1 &&
-                    arrayOfVars[i]->parentSensor->isStable(deepDebugTiming)) {
-                    // If no attempt has yet been made to start a measurement,
-                    // start one
-                    if (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 5) ==
+                // If the sensor was successfully awoken/activated, but no
+                // measurement was either started or finished ...
+                if (getSensorStatusBit(i, Sensor::WAKE_SUCCESSFUL) == 1 &&
+                    getSensorStatusBit(i, Sensor::MEASUREMENT_ATTEMPTED) == 0 &&
+                    getSensorStatusBit(i, Sensor::MEASUREMENT_SUCCESSFUL) ==
                         0) {
+                    // .. check if it's stable
+                    if (arrayOfVars[i]->parentSensor->isStable(
+                            deepDebugTiming)) {
                         // Start a reading
                         MS_DBG(i, '.', nMeasurementsCompleted[i] + 1,
                                F("--->> Starting reading"),
@@ -739,13 +741,17 @@ bool VariableArray::completeUpdate(void) {
                                    '.', nMeasurementsCompleted[i] + 1);
                         }
                     }
+                }
 
+                // if measurements have been started, whether or not
+                // successfully...
+                // We aren't checking if the measurement start was successful;
+                // isMeasurementComplete(deepDebugTiming) will do that.
+                // We want the addSingleMeasurementResult() function to fill in
+                // the -9999 results for a failed measurement.
+                if (getSensorStatusBit(i, Sensor::MEASUREMENT_ATTEMPTED) == 1) {
                     // If a measurement is finished, get the result and tick up
-                    // the number of finished measurements.  We aren't bothering
-                    // to check if the measurement start was successful,
-                    // isMeasurementComplete(deepDebugTiming) will do that and
-                    // we stil want the addSingleMeasurementResult() function to
-                    // fill in the -9999 results for a failed measurement.
+                    // the number of finished measurements.
                     if (arrayOfVars[i]->parentSensor->isMeasurementComplete(
                             deepDebugTiming)) {
                         // Get the value
@@ -820,7 +826,12 @@ bool VariableArray::completeUpdate(void) {
         }
     }
 
-    // Average measurements and notify varibles of the updates
+    // // power down all the sensors again, just in case
+    // MS_DBG(F("----->> Running a final power-down of all the sensors. ..."));
+    // sensorsPowerDown();
+    // MS_DBG(F("   ... Complete. <<-----"));
+
+    // Average measurements and notify variables of the updates
     MS_DBG(F("----->> Averaging results and notifying all variables. ..."));
     for (uint8_t i = 0; i < _variableCount; i++) {
         if (lastSensorVariable[i]) {
@@ -834,6 +845,11 @@ bool VariableArray::completeUpdate(void) {
     }
     MS_DBG(F("... Complete. <<-----"));
 
+    MS_DBG(F("Updating calculated variables. ..."));
+    for (uint8_t i = 0; i < _variableCount; i++) {
+        if (arrayOfVars[i]->isCalculated) { arrayOfVars[i]->getValue(true); }
+    }
+
     return success;
 }
 
@@ -844,6 +860,9 @@ void VariableArray::printSensorData(Stream* stream) {
     for (uint8_t i = 0; i < _variableCount; i++) {
         if (arrayOfVars[i]->isCalculated) {
             stream->print(arrayOfVars[i]->getVarName());
+            stream->print(F(" ("));
+            stream->print(arrayOfVars[i]->getVarCode());
+            stream->print(F(") "));
             stream->print(F(" is calculated to be "));
             stream->print(arrayOfVars[i]->getValueString());
             stream->print(F(" "));
@@ -852,24 +871,19 @@ void VariableArray::printSensorData(Stream* stream) {
         } else {
             stream->print(arrayOfVars[i]->getParentSensorNameAndLocation());
             // stream->print(F(" with status 0b"));
-            // stream->print(
-            //     bitRead(arrayOfVars[i]->parentSensor->getStatus(), 7));
-            // stream->print(
-            //     bitRead(arrayOfVars[i]->parentSensor->getStatus(), 6));
-            // stream->print(
-            //     bitRead(arrayOfVars[i]->parentSensor->getStatus(), 5));
-            // stream->print(
-            //     bitRead(arrayOfVars[i]->parentSensor->getStatus(), 4));
-            // stream->print(
-            //     bitRead(arrayOfVars[i]->parentSensor->getStatus(), 3));
-            // stream->print(
-            //     bitRead(arrayOfVars[i]->parentSensor->getStatus(), 2));
-            // stream->print(
-            //     bitRead(arrayOfVars[i]->parentSensor->getStatus(), 1));
-            // stream->print(
-            //     bitRead(arrayOfVars[i]->parentSensor->getStatus(), 0));
+            // stream->print(getSensorStatusBit(i, 7));
+            // stream->print(getSensorStatusBit(i, 6));
+            // stream->print(getSensorStatusBit(i, 5));
+            // stream->print(getSensorStatusBit(i, 4));
+            // stream->print(getSensorStatusBit(i, 3));
+            // stream->print(getSensorStatusBit(i, 2));
+            // stream->print(getSensorStatusBit(i, 1));
+            // stream->print(getSensorStatusBit(i, 0));
             stream->print(F(" reports "));
             stream->print(arrayOfVars[i]->getVarName());
+            stream->print(F(" ("));
+            stream->print(arrayOfVars[i]->getVarCode());
+            stream->print(F(") "));
             stream->print(F(" is "));
             stream->print(arrayOfVars[i]->getValueString());
             stream->print(F(" "));
@@ -902,6 +916,12 @@ bool VariableArray::isLastVarFromSensor(int arrayIndex) {
 }
 
 
+bool VariableArray::getSensorStatusBit(int                        arrayIndex,
+                                       Sensor::sensor_status_bits bitToGet) {
+    if (arrayIndex < 0 || arrayIndex >= _variableCount) { return false; }
+    return arrayOfVars[arrayIndex]->parentSensor->getStatusBit(bitToGet);
+}
+
 // Count the maximum number of measurements needed from a single sensor for the
 // requested averaging
 uint8_t VariableArray::countMaxToAverage(void) {
@@ -925,13 +945,24 @@ bool VariableArray::checkVariableUUIDs(void) {
             PRINTOUT(arrayOfVars[i]->getVarCode(), F("has an invalid UUID!"));
             success = false;
         }
-        for (uint8_t j = i + 1; j < _variableCount; j++) {
-            if (arrayOfVars[i]->getVarUUID() == arrayOfVars[j]->getVarUUID()) {
-                PRINTOUT(arrayOfVars[i]->getVarCode(),
-                         F("has a non-unique UUID!"));
-                success = false;
-                // don't keep looping
-                j = _variableCount;
+        // if (strcmp(arrayOfVars[i]->getVarUUID(),
+        //            "12345678-abcd-1234-ef00-1234567890ab") == 0) {
+        //     PRINTOUT(arrayOfVars[i]->getVarCode(),
+        //              F("has an placeholder UUID!"));
+        //     success = false;
+        // }
+        if (arrayOfVars[i]->getVarUUID() != nullptr &&
+            strlen(arrayOfVars[i]->getVarUUID()) > 0) {
+            for (uint8_t j = i + 1; j < _variableCount; j++) {
+                if (strcmp(arrayOfVars[i]->getVarUUID(),
+                           arrayOfVars[j]->getVarUUID()) == 0 &&
+                    strlen(arrayOfVars[j]->getVarUUID()) > 0) {
+                    PRINTOUT(arrayOfVars[i]->getVarCode(),
+                             F("has a non-unique UUID!"));
+                    success = false;
+                    // don't keep looping
+                    j = _variableCount;
+                }
             }
         }
     }
@@ -939,8 +970,11 @@ bool VariableArray::checkVariableUUIDs(void) {
         PRINTOUT(F("All variable UUID's appear to be correctly formed.\n"));
     // Print out all UUID's to check
     for (uint8_t i = 0; i < _variableCount; i++) {
-        PRINTOUT(arrayOfVars[i]->getVarUUID(), F("->"),
-                 arrayOfVars[i]->getVarCode());
+        if (arrayOfVars[i]->getVarUUID() != nullptr &&
+            strlen(arrayOfVars[i]->getVarUUID()) > 0) {
+            PRINTOUT(arrayOfVars[i]->getVarUUID(), F("->"),
+                     arrayOfVars[i]->getVarCode());
+        }
     }
     PRINTOUT(' ');
     return success;

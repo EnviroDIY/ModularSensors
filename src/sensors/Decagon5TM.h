@@ -63,21 +63,27 @@
 #ifndef SRC_SENSORS_DECAGON5TM_H_
 #define SRC_SENSORS_DECAGON5TM_H_
 
-// Debugging Statement
-// #define MS_DECAGON5TM_DEBUG
+// Include the library config before anything else
+#include "ModSensorConfig.h"
 
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
+
+// Define the print label[s] for the debugger
 #ifdef MS_DECAGON5TM_DEBUG
 #define MS_DEBUGGING_STD "Decagon5TM"
 #endif
-
 #ifdef MS_SDI12SENSORS_DEBUG_DEEP
 #define MS_DEBUGGING_DEEP "SDI12Sensors"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
 #undef MS_DEBUGGING_DEEP
+
+// Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "sensors/SDI12Sensors.h"
 
@@ -280,9 +286,9 @@ class Decagon5TM : public SDI12Sensors {
     ~Decagon5TM() {}
 
     /**
-     * @copydoc SDI12Sensors::getResults()
+     * @copydoc SDI12Sensors::getResults(bool verify_crc)
      */
-    bool getResults(void) override;
+    bool getResults(bool verify_crc) override;
 };
 
 
@@ -309,7 +315,7 @@ class Decagon5TM_Ea : public Variable {
      */
     explicit Decagon5TM_Ea(Decagon5TM* parentSense, const char* uuid = "",
                            const char* varCode = TM_EA_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)TM_EA_VAR_NUM,
+        : Variable(parentSense, (uint8_t)TM_EA_VAR_NUM,
                    (uint8_t)TM_EA_RESOLUTION, TM_EA_VAR_NAME, TM_EA_UNIT_NAME,
                    varCode, uuid) {}
     /**
@@ -318,7 +324,7 @@ class Decagon5TM_Ea : public Variable {
      * @note This must be tied with a parent Decagon5TM before it can be used.
      */
     Decagon5TM_Ea()
-        : Variable((const uint8_t)TM_EA_VAR_NUM, (uint8_t)TM_EA_RESOLUTION,
+        : Variable((uint8_t)TM_EA_VAR_NUM, (uint8_t)TM_EA_RESOLUTION,
                    TM_EA_VAR_NAME, TM_EA_UNIT_NAME, TM_EA_DEFAULT_CODE) {}
     /**
      * @brief Destroy the Decagon5TM_Ea object - no action needed.
@@ -349,7 +355,7 @@ class Decagon5TM_Temp : public Variable {
      */
     explicit Decagon5TM_Temp(Decagon5TM* parentSense, const char* uuid = "",
                              const char* varCode = TM_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)TM_TEMP_VAR_NUM,
+        : Variable(parentSense, (uint8_t)TM_TEMP_VAR_NUM,
                    (uint8_t)TM_TEMP_RESOLUTION, TM_TEMP_VAR_NAME,
                    TM_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
@@ -358,7 +364,7 @@ class Decagon5TM_Temp : public Variable {
      * @note This must be tied with a parent Decagon5TM before it can be used.
      */
     Decagon5TM_Temp()
-        : Variable((const uint8_t)TM_TEMP_VAR_NUM, (uint8_t)TM_TEMP_RESOLUTION,
+        : Variable((uint8_t)TM_TEMP_VAR_NUM, (uint8_t)TM_TEMP_RESOLUTION,
                    TM_TEMP_VAR_NAME, TM_TEMP_UNIT_NAME, TM_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the Decagon5TM_Temp object - no action needed.
@@ -389,7 +395,7 @@ class Decagon5TM_VWC : public Variable {
      */
     explicit Decagon5TM_VWC(Decagon5TM* parentSense, const char* uuid = "",
                             const char* varCode = TM_VWC_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)TM_VWC_VAR_NUM,
+        : Variable(parentSense, (uint8_t)TM_VWC_VAR_NUM,
                    (uint8_t)TM_VWC_RESOLUTION, TM_VWC_VAR_NAME,
                    TM_VWC_UNIT_NAME, varCode, uuid) {}
     /**
@@ -398,7 +404,7 @@ class Decagon5TM_VWC : public Variable {
      * @note This must be tied with a parent Decagon5TM before it can be used.
      */
     Decagon5TM_VWC()
-        : Variable((const uint8_t)TM_VWC_VAR_NUM, (uint8_t)TM_VWC_RESOLUTION,
+        : Variable((uint8_t)TM_VWC_VAR_NUM, (uint8_t)TM_VWC_RESOLUTION,
                    TM_VWC_VAR_NAME, TM_VWC_UNIT_NAME, TM_VWC_DEFAULT_CODE) {}
     /**
      * @brief Destroy the Decagon5TM_VWC object - no action needed.
@@ -407,3 +413,5 @@ class Decagon5TM_VWC : public Variable {
 };
 /**@}*/
 #endif  // SRC_SENSORS_DECAGON5TM_H_
+
+// cSpell:ignore fivetm matric

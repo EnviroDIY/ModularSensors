@@ -2,7 +2,7 @@
  *PaleoTerraRedox.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
+ *Initial library development done by Sara Damiano (sdamiano@stroudcenter.org).
  *
  *This file is for the I2C Redox sensors made by Paleo Terra.  Because these
  *sensors all ship with the same I2C address, this module is also dependent on
@@ -152,9 +152,9 @@ bool PaleoTerraRedox::addSingleMeasurementResult(void) {
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
     // Unset the status bit for a measurement having been requested (bit 5)
-    _sensorStatus &= 0b11011111;
+    clearStatusBit(MEASUREMENT_ATTEMPTED);
     // Set the status bit for measurement completion (bit 6)
-    _sensorStatus |= 0b01000000;
+    setStatusBit(MEASUREMENT_SUCCESSFUL);
 
     return success;
 }

@@ -1,11 +1,11 @@
-# Developer Setup<!-- {#page_for_developers} -->
+# Developer Setup<!--! {#page_developer_setup} -->
 
 If you want to fork this repository and work with it, you'll need to set PlatformIO up a bit differently than you would to merely use this library.
 
 First, fork this repository into your own GitHub space.
 Clone it to your local computer.
 
-Open the folder you've cloned this repo into with either VSCode or Atom.
+Open the folder you've cloned this repo into with VSCode.
 Have PlatformIO create a new project for you, but instead of allowing it to create a new folder, select the folder you've already cloned this repo into.
 
 Create a new source program to work with in a new directory.
@@ -39,7 +39,7 @@ check_patterns =
 check_flags =
     cppcheck: --enable=all, --inline-suppr
     clangtidy: --checks=-*
-; deep search for dependencies, evalulating preprocessor conditionals
+; deep search for dependencies, evaluating preprocessor conditionals
 lib_ldf_mode = deep+
 ; look for the library directory
 lib_extra_dirs = .
@@ -87,7 +87,7 @@ lib_deps =
     envirodiy/SensorModbusMaster
     envirodiy/KellerModbus
     envirodiy/YosemitechModbus
-    vshymanskyy/StreamDebugger
+    https://github.com/EnviroDIY/StreamDebugger.git
 ; The directories for the ModularSensors library source code
 src_filter =
     +<*>

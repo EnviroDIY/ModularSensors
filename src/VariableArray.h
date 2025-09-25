@@ -14,22 +14,27 @@
 #ifndef SRC_VARIABLEARRAY_H_
 #define SRC_VARIABLEARRAY_H_
 
-// Debugging Statement
-// #define MS_VARIABLEARRAY_DEBUG
-// #define MS_VARIABLEARRAY_DEBUG_DEEP
+// Include the library config before anything else
+#include "ModSensorConfig.h"
 
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
+
+// Define the print label[s] for the debugger
 #ifdef MS_VARIABLEARRAY_DEBUG
 #define MS_DEBUGGING_STD "VariableArray"
 #endif
-
 #ifdef MS_VARIABLEARRAY_DEBUG_DEEP
 #define MS_DEBUGGING_DEEP "VariableArray"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
 #undef MS_DEBUGGING_DEEP
+
+// Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
 
@@ -108,24 +113,24 @@ class VariableArray {
     // actually have been created unless we wait until in the setup or loop
     // function of the main program.
     /**
-     * @brief Begins the VariableArray.  Suppiles a variable array, checks the
+     * @brief Begins the VariableArray.  Supplies a variable array, checks the
      * validity of all UUID and outputs the results.
      *
-     * @param variableCount The number of variables in the array.  Supercedes
+     * @param variableCount The number of variables in the array.  Supersedes
      * any value given in the constructor.
      * @param variableList An array of pointers to variable objects.  The
-     * pointers may be to calculated or measured variable objects.  Supercedes
+     * pointers may be to calculated or measured variable objects.  Supersedes
      * any value given in the constructor.
      */
     void begin(uint8_t variableCount, Variable* variableList[]);
     /**
-     * @brief Begins the VariableArray.  Suppiles a variable array and UUIDs,
+     * @brief Begins the VariableArray.  Supplies a variable array and UUIDs,
      * checks the validity of all UUID and outputs the results.
      *
-     * @param variableCount The number of variables in the array.  Supercedes
+     * @param variableCount The number of variables in the array.  Supersedes
      * any value given in the constructor.
      * @param variableList An array of pointers to variable objects.  The
-     * pointers may be to calculated or measured variable objects.  Supercedes
+     * pointers may be to calculated or measured variable objects.  Supersedes
      * any value given in the constructor.
      * @param uuids An array of UUID's.  These are linked 1-to-1 with the
      * variables by array position.
@@ -281,7 +286,7 @@ class VariableArray {
     /**
      * @brief The maximum number of samples to average of an single sensor.
      */
-    uint8_t _maxSamplestoAverage;
+    uint8_t _maxSamplesToAverage;
 
  private:
     /**
@@ -312,6 +317,17 @@ class VariableArray {
      */
     bool checkVariableUUIDs(void);
 
+    /**
+     * @brief Get a specific status bit from the sensor tied to a variable in
+     * the array.
+     *
+     * @param arrayIndex The index of the variable in the sensor variable array
+     * @param bitToGet The specific status bit to get.
+     * @return The value of the requested status bit.
+     */
+    bool getSensorStatusBit(int                        arrayIndex,
+                            Sensor::sensor_status_bits bitToGet);
+
 #ifdef MS_VARIABLEARRAY_DEBUG_DEEP
     /**
      * @brief Prints out the contents of an array with even spaces and commas
@@ -322,12 +338,12 @@ class VariableArray {
      */
     template <typename T>
     void prettyPrintArray(T arrayToPrint[]) {
-        DEEP_DEBUGGING_SERIAL_OUTPUT.print("[,\t");
+        MS_SERIAL_OUTPUT.print("[,\t");
         for (uint8_t i = 0; i < _variableCount; i++) {
-            DEEP_DEBUGGING_SERIAL_OUTPUT.print(arrayToPrint[i]);
-            DEEP_DEBUGGING_SERIAL_OUTPUT.print(",\t");
+            MS_SERIAL_OUTPUT.print(arrayToPrint[i]);
+            MS_SERIAL_OUTPUT.print(",\t");
         }
-        DEEP_DEBUGGING_SERIAL_OUTPUT.println("]");
+        MS_SERIAL_OUTPUT.println("]");
     }
 #else
 /**
@@ -335,7 +351,7 @@ class VariableArray {
  * between the members
  */
 #define prettyPrintArray(...)
-#endif  // DEEP_DEBUGGING_SERIAL_OUTPUT
+#endif  // MS_VARIABLEARRAY_DEBUG_DEEP
 };
 
 #endif  // SRC_VARIABLEARRAY_H_

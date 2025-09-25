@@ -20,14 +20,13 @@ SIMComSIM7000::SIMComSIM7000(Stream* modemStream, int8_t powerPin,
                   SIM7000_RESET_LEVEL, SIM7000_RESET_PULSE_MS, modemSleepRqPin,
                   SIM7000_WAKE_LEVEL, SIM7000_WAKE_PULSE_MS,
                   SIM7000_STATUS_TIME_MS, SIM7000_DISCONNECT_TIME_MS,
-                  SIM7000_WAKE_DELAY_MS, SIM7000_ATRESPONSE_TIME_MS),
+                  SIM7000_WAKE_DELAY_MS, SIM7000_AT_RESPONSE_TIME_MS),
 #ifdef MS_SIMCOMSIM7000_DEBUG_DEEP
-      _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
+      _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
       gsmModem(_modemATDebugger),
 #else
       gsmModem(*modemStream),
 #endif
-      gsmClient(gsmModem),
       _apn(apn) {
 }
 
@@ -41,6 +40,11 @@ MS_MODEM_WAKE(SIMComSIM7000);
 MS_MODEM_CONNECT_INTERNET(SIMComSIM7000);
 MS_MODEM_DISCONNECT_INTERNET(SIMComSIM7000);
 MS_MODEM_IS_INTERNET_AVAILABLE(SIMComSIM7000);
+
+MS_MODEM_CREATE_CLIENT(SIMComSIM7000);
+MS_MODEM_DELETE_CLIENT(SIMComSIM7000);
+MS_MODEM_CREATE_SECURE_CLIENT(SIMComSIM7000);
+MS_MODEM_DELETE_SECURE_CLIENT(SIMComSIM7000);
 
 MS_MODEM_GET_NIST_TIME(SIMComSIM7000);
 
@@ -70,8 +74,11 @@ bool SIMComSIM7000::modemSleepFxn(void) {
         // Easiest to just go to sleep with the AT command rather than using
         // pins
         MS_DBG(F("Asking SIM7000 to power down"));
-        return gsmModem.poweroff();
+        bool res = gsmModem.poweroff();
+        gsmModem.stream.flush();
+        return res;
     } else {  // DON'T go to sleep if we can't wake up!
+        gsmModem.stream.flush();
         return true;
     }
 }

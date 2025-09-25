@@ -3,7 +3,7 @@
  * @copyright Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino.
  * This library is published under the BSD-3 license.
- * @author Initial developement for Atlas Sensors was done by Adam Gold
+ * @author Initial development for Atlas Sensors was done by Adam Gold
  * Files were edited by Sara Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Contains the AtlasScientificCO2 subclass of the AtlasParent sensor
@@ -25,7 +25,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * The Atlas Scientifc Conductivity sensor outputs raw conductivity, TDS,
+ * The Atlas Scientific Conductivity sensor outputs raw conductivity, TDS,
  * salinity, and specific gravity
  * - Accuracy is ± 2%
  * - Range is 0.07 − 500,000+ μS/cm
@@ -57,16 +57,23 @@
 #ifndef SRC_SENSORS_ATLASSCIENTIFICEC_H_
 #define SRC_SENSORS_ATLASSCIENTIFICEC_H_
 
-// Debugging Statement
-// #define MS_ATLASSCIENTIFICEC_DEBUG
+// Include the library config before anything else
+#include "ModSensorConfig.h"
 
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
+
+// Define the print label[s] for the debugger
 #ifdef MS_ATLASSCIENTIFICEC_DEBUG
 #define MS_DEBUGGING_STD "AtlasScientificEC"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+
+// Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "sensors/AtlasParent.h"
 
@@ -103,7 +110,7 @@
 /**
  * @anchor sensor_atlas_cond_timing
  * @name Sensor Timing
- * The sensor timing for an Atlas EC (conducticity) sensor
+ * The sensor timing for an Atlas EC (conductivity) sensor
  */
 /**@{*/
 /**
@@ -128,7 +135,7 @@
 /**
  * @anchor sensor_atlas_cond_cond
  * @name Conductivity
- * The conductivity variable from an Atlas EC (conducticity) sensor
+ * The conductivity variable from an Atlas EC (conductivity) sensor
  * - Accuracy is ± 2%
  * - Range is 0.07 − 500,000+ μS/cm
  *
@@ -154,7 +161,7 @@
 /**
  * @anchor sensor_atlas_cond_tds
  * @name Total Dissolved Solids
- * The TDS variable from an Atlas EC (conducticity) sensor
+ * The TDS variable from an Atlas EC (conductivity) sensor
  * - Accuracy is ± 2%
  * - Range is 0.07 − 500,000+ μS/cm
  *
@@ -180,7 +187,7 @@
 /**
  * @anchor sensor_atlas_cond_salinity
  * @name Salinity
- * The salinity variable from an Atlas EC (conducticity) sensor
+ * The salinity variable from an Atlas EC (conductivity) sensor
  * - Accuracy is ± 2%
  * - Range is 0.07 − 500,000+ μS/cm
  *
@@ -207,7 +214,7 @@
 /**
  * @anchor sensor_atlas_cond_sg
  * @name Specific Gravity
- * The specific gravity variable from an Atlas EC (conducticity) sensor
+ * The specific gravity variable from an Atlas EC (conductivity) sensor
  * - Accuracy is ± 2%
  * - Range is 0.07 − 500,000+ μS/cm
  *
@@ -334,7 +341,7 @@ class AtlasScientificEC_Cond : public Variable {
     explicit AtlasScientificEC_Cond(
         AtlasScientificEC* parentSense, const char* uuid = "",
         const char* varCode = ATLAS_COND_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ATLAS_COND_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ATLAS_COND_VAR_NUM,
                    (uint8_t)ATLAS_COND_RESOLUTION, ATLAS_COND_VAR_NAME,
                    ATLAS_COND_UNIT_NAME, varCode, uuid) {}
     /**
@@ -344,9 +351,9 @@ class AtlasScientificEC_Cond : public Variable {
      * used.
      */
     AtlasScientificEC_Cond()
-        : Variable((const uint8_t)ATLAS_COND_VAR_NUM,
-                   (uint8_t)ATLAS_COND_RESOLUTION, ATLAS_COND_VAR_NAME,
-                   ATLAS_COND_UNIT_NAME, ATLAS_COND_DEFAULT_CODE) {}
+        : Variable((uint8_t)ATLAS_COND_VAR_NUM, (uint8_t)ATLAS_COND_RESOLUTION,
+                   ATLAS_COND_VAR_NAME, ATLAS_COND_UNIT_NAME,
+                   ATLAS_COND_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AtlasScientificEC_Cond object - no action needed.
      */
@@ -377,7 +384,7 @@ class AtlasScientificEC_TDS : public Variable {
     explicit AtlasScientificEC_TDS(AtlasScientificEC* parentSense,
                                    const char*        uuid = "",
                                    const char* varCode = ATLAS_TDS_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ATLAS_TDS_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ATLAS_TDS_VAR_NUM,
                    (uint8_t)ATLAS_TDS_RESOLUTION, ATLAS_TDS_VAR_NAME,
                    ATLAS_TDS_UNIT_NAME, varCode, uuid) {}
     /**
@@ -387,9 +394,9 @@ class AtlasScientificEC_TDS : public Variable {
      * used.
      */
     AtlasScientificEC_TDS()
-        : Variable((const uint8_t)ATLAS_TDS_VAR_NUM,
-                   (uint8_t)ATLAS_TDS_RESOLUTION, ATLAS_TDS_VAR_NAME,
-                   ATLAS_TDS_UNIT_NAME, ATLAS_TDS_DEFAULT_CODE) {}
+        : Variable((uint8_t)ATLAS_TDS_VAR_NUM, (uint8_t)ATLAS_TDS_RESOLUTION,
+                   ATLAS_TDS_VAR_NAME, ATLAS_TDS_UNIT_NAME,
+                   ATLAS_TDS_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AtlasScientificEC_TDS object - no action needed.
      */
@@ -420,7 +427,7 @@ class AtlasScientificEC_Salinity : public Variable {
     explicit AtlasScientificEC_Salinity(
         AtlasScientificEC* parentSense, const char* uuid = "",
         const char* varCode = ATLAS_SALINITY_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ATLAS_SALINITY_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ATLAS_SALINITY_VAR_NUM,
                    (uint8_t)ATLAS_SALINITY_RESOLUTION, ATLAS_SALINITY_VAR_NAME,
                    ATLAS_SALINITY_UNIT_NAME, varCode, uuid) {}
     /**
@@ -430,7 +437,7 @@ class AtlasScientificEC_Salinity : public Variable {
      * used.
      */
     AtlasScientificEC_Salinity()
-        : Variable((const uint8_t)ATLAS_SALINITY_VAR_NUM,
+        : Variable((uint8_t)ATLAS_SALINITY_VAR_NUM,
                    (uint8_t)ATLAS_SALINITY_RESOLUTION, ATLAS_SALINITY_VAR_NAME,
                    ATLAS_SALINITY_UNIT_NAME, ATLAS_SALINITY_DEFAULT_CODE) {}
     /**
@@ -464,7 +471,7 @@ class AtlasScientificEC_SpecificGravity : public Variable {
     explicit AtlasScientificEC_SpecificGravity(
         AtlasScientificEC* parentSense, const char* uuid = "",
         const char* varCode = ATLAS_SG_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)ATLAS_SG_VAR_NUM,
+        : Variable(parentSense, (uint8_t)ATLAS_SG_VAR_NUM,
                    (uint8_t)ATLAS_SG_RESOLUTION, ATLAS_SG_VAR_NAME,
                    ATLAS_SG_UNIT_NAME, varCode, uuid) {}
     /**
@@ -474,9 +481,9 @@ class AtlasScientificEC_SpecificGravity : public Variable {
      * used.
      */
     AtlasScientificEC_SpecificGravity()
-        : Variable((const uint8_t)ATLAS_SG_VAR_NUM,
-                   (uint8_t)ATLAS_SG_RESOLUTION, ATLAS_SG_VAR_NAME,
-                   ATLAS_SG_UNIT_NAME, ATLAS_SG_DEFAULT_CODE) {}
+        : Variable((uint8_t)ATLAS_SG_VAR_NUM, (uint8_t)ATLAS_SG_RESOLUTION,
+                   ATLAS_SG_VAR_NAME, ATLAS_SG_UNIT_NAME,
+                   ATLAS_SG_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AtlasScientificEC_SpecificGravity() object - no action
      * needed.

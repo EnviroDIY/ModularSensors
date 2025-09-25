@@ -1,6 +1,6 @@
-# DRWI Digi LTE Sites<!-- {#example_drwi_digilte} -->
+# DRWI Digi LTE Sites<!--! {#example_drwi_digilte} -->
 
-This example uses the sensors and equipment common to older stations (2016-2020) deployed by groups participating in the DRWI Citizen Science project with the Stroud Water Research Center. It includes a Meter Hydros21 CTD (formerly know as a Decagon), a Campbell OBS3+ (Turbidity), and a Digi XBee3 LTE-M cellular board for communication.  The Digi LTE module also required the use of a EnviroDIY LTEbee Adapter board (discontinued in 2021).  The Digi LTE modules are no longer recommended for use and have been replace by the EnviroDIY LTEbee in all DRWI-SWRC-managed stations.
+This example uses the sensors and equipment common to older stations (2016-2020) deployed by groups participating in the DRWI Citizen Science project with the Stroud Water Research Center. It includes a Meter Hydros21 CTD (formerly know as a Decagon), a Campbell OBS3+ (Turbidity), and a Digi XBee3 LTE-M cellular board for communication.  The Digi LTE module also required the use of a EnviroDIY LTEBee Adapter board (discontinued in 2021).  The Digi LTE modules are no longer recommended for use and have been replace by the EnviroDIY LTEBee in all DRWI-SWRC-managed stations.
 
 The exact hardware configuration used in this example:
 
@@ -11,11 +11,11 @@ The exact hardware configuration used in this example:
 
 _______
 
-[//]: # ( @tableofcontents )
+<!--! @tableofcontents -->
 
-[//]: # ( @m_footernavigation )
+<!--! @m_footernavigation -->
 
-[//]: # ( Start GitHub Only )
+<!--! @if GITHUB -->
 
 - [DRWI Digi LTE Sites](#drwi-digi-lte-sites)
   - [Unique Features of the DRWI Digi LTE Example](#unique-features-of-the-drwi-digi-lte-example)
@@ -26,19 +26,19 @@ _______
     - [Set the universally universal identifiers (UUID) for each variable](#set-the-universally-universal-identifiers-uuid-for-each-variable)
     - [Upload!](#upload)
 
-[//]: # ( End GitHub Only )
+<!--! @endif -->
 
 _______
 
-## Unique Features of the DRWI Digi LTE Example<!-- {#example_drwi_digilte_unique} -->
+## Unique Features of the DRWI Digi LTE Example<!--! {#example_drwi_digilte_unique} -->
 
 - Specifically for sites within the Delaware River Watershed Initiative.
 
 - Uses a Digi XBee3 LTE-M for live data.
 
-## To Use this Example<!-- {#example_drwi_digilte_using} -->
+## To Use this Example<!--! {#example_drwi_digilte_using} -->
 
-### Prepare and set up PlatformIO<!-- {#example_drwi_digilte_pio} -->
+### Prepare and set up PlatformIO<!--! {#example_drwi_digilte_pio} -->
 
 - Register a site and sensors at the Monitor My Watershed/EnviroDIY data portal (<http://monitormywatershed.org/>)
 
@@ -51,7 +51,7 @@ _______
   - Move it into the src directory of your project.
   - Delete main.cpp in that folder.
 
-### Set the logger ID<!-- {#example_drwi_digilte_logger_id} -->
+### Set the logger ID<!--! {#example_drwi_digilte_logger_id} -->
 
 - Change the "XXXX" in this section of code to the loggerID assigned by Stroud:
 
@@ -60,7 +60,7 @@ _______
 const char *LoggerID = "XXXX";
 ```
 
-### Set the calibration coefficients for the Campbell OBS3+<!-- {#example_drwi_digilte_obs3_calibration} -->
+### Set the calibration coefficients for the Campbell OBS3+<!--! {#example_drwi_digilte_obs3_calibration} -->
 
 - The OBS3+ ships with a calibration certificate; you need this sheet!
 
@@ -91,7 +91,7 @@ const float OBSHigh_C = 0.000E+00;  // "C" value [*high* range]
 CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADSi2c_addr, OBS3numberReadings);
 ```
 
-### Set the universally universal identifiers (UUID) for each variable<!-- {#example_drwi_digilte_uuids} -->
+### Set the universally universal identifiers (UUID) for each variable<!--! {#example_drwi_digilte_uuids} -->
 
 - Go back to the web page for your site at the Monitor My Watershed/EnviroDIY data portal (<http://monitormywatershed.org/>)
 
@@ -132,16 +132,16 @@ const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  // Sampli
 
 ```
 
-### Upload!<!-- {#example_drwi_digilte_upload} -->
+### Upload!<!--! {#example_drwi_digilte_upload} -->
 
 - Test everything at home **before** deploying out in the wild!
 
 _______
 
-[//]: # ( @section example_drwi_digilte_pio_config PlatformIO Configuration )
+<!--! @section example_drwi_digilte_pio_config PlatformIO Configuration -->
 
-[//]: # ( @include{lineno} DRWI_DigiLTE/platformio.ini )
+<!--! @include{lineno} DRWI_DigiLTE/platformio.ini -->
 
-[//]: # ( @section example_drwi_digilte_code The Complete Code )
+<!--! @section example_drwi_digilte_code The Complete Code -->
 
-[//]: # ( @include{lineno} DRWI_DigiLTE/DRWI_DigiLTE.ino )
+<!--! @include{lineno} DRWI_DigiLTE/DRWI_DigiLTE.ino -->

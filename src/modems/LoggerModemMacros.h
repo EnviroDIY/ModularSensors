@@ -5,7 +5,7 @@
  * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief Contains PRE-ROCESSOR MACROS for use with logger modems.
+ * @brief Contains PRE-PROCESSOR MACROS for use with logger modems.
  *
  * @note These are NOT FUNCTIONS; they are pre-processor macros that I am
  * collecting here to avoid writing the same functions multiple times later.
@@ -15,6 +15,20 @@
 #ifndef SRC_MODEMS_LOGGERMODEMMACROS_H_
 #define SRC_MODEMS_LOGGERMODEMMACROS_H_
 
+
+/**
+ * @def MS_MODEM_NTP_SYNC
+ * @brief A macro to add the line to sync the modem with NTP after it wakes.
+ *
+ * This needs to be called at wake because many modules forget their time when
+ * they are powered down.
+ */
+#if defined(TINY_GSM_MODEM_HAS_NTP)
+#define MS_MODEM_NTP_SYNC \
+    gsmModem.NTPServerSync("pool.ntp.org", _modemUTCOffset);
+#else
+#define MS_MODEM_NTP_SYNC
+#endif
 
 /**
  * @brief Creates an extraModemSetup() function for a specific modem subclass.
@@ -30,8 +44,8 @@
 #define MS_MODEM_EXTRA_SETUP(specificModem)     \
     bool specificModem::extraModemSetup(void) { \
         bool success = gsmModem.init();         \
-        gsmClient.init(&gsmModem);              \
-        _modemName = gsmModem.getModemName();   \
+        _modemName   = gsmModem.getModemName(); \
+        MS_MODEM_NTP_SYNC                       \
         return success;                         \
     }
 
@@ -73,6 +87,9 @@
         } else {                                                               \
             /** If we can't determine status by pin level, try checking if the \
              * modem responds to AT commands. */                               \
+            MS_DEEP_DBG(                                                       \
+                F("No modem status pins, checking if modem is awake by "       \
+                  "testing AT response"));                                     \
             int8_t i   = 5;                                                    \
             bool   res = false;                                                \
             while (i && !res) {                                                \
@@ -134,9 +151,10 @@
         while (!success && resets < 2) {                                       \
             /** Check that the modem is responding to AT commands. */          \
             MS_START_DEBUG_TIMER;                                              \
-            MS_DBG(F("\nWaiting up to"), _max_atresponse_time_ms, F("ms for"), \
-                   getModemName(), F("to respond to AT commands..."));         \
-            success = gsmModem.testAT(_max_atresponse_time_ms + 500);          \
+            MS_DBG(F("\nWaiting up to"), _max_at_response_time_ms,             \
+                   F("ms for"), getModemName(),                                \
+                   F("to respond to AT commands..."));                         \
+            success = gsmModem.testAT(_max_at_response_time_ms + 500);         \
             if (success) {                                                     \
                 MS_DBG(F("... AT OK after"), MS_PRINT_DEBUG_TIMER,             \
                        F("milliseconds!"));                                    \
@@ -166,8 +184,8 @@
             success = modemSetup();                                            \
         } else {                                                               \
             success &= gsmModem.init();                                        \
+            MS_MODEM_NTP_SYNC                                                  \
         }                                                                      \
-        gsmClient.init(&gsmModem);                                             \
                                                                                \
         if (success) {                                                         \
             modemLEDOn();                                                      \
@@ -179,8 +197,8 @@
         return success;                                                        \
     }
 
-#if defined(TINY_GSM_MODEM_HAS_GPRS)
 /**
+ * @def MS_MODEM_IS_INTERNET_AVAILABLE(specificModem)
  * @brief Creates an isInternetAvailable() function for a specific modem
  * subclass.
  *
@@ -195,50 +213,31 @@
  * @return The text of an isInternetAvailable() function specific to a single
  * modem subclass.
  */
-#define MS_MODEM_IS_INTERNET_AVAILABLE(specificModem) \
-    bool specificModem::isInternetAvailable(void) {   \
-        return gsmModem.isGprsConnected();            \
-    }
-
-#ifndef TINY_GSM_MODEM_XBEE
 /**
- * @brief Creates a text string of the functions to call for a specific modem to
- * set the APN and connect to GPRS during the internet connection sequence.
+ * @def MS_MODEM_DISCONNECT_INTERNET(specificModem)
+ * @brief Creates a disconnectInternet() function for a specific modem subclass.
  *
- * For most cellular modems, this is a passthrough to gprsConnect() for the
- * specific TinyGSM modem type.  For the XBee, this is an empty string.
+ * For cellular modems, this is a passthrough to gprsDisconnect() for the
+ * specific TinyGSM modem type.
  *
- * @return Text string containing the functions to set the APN and connect to
- * GPRS.
+ * For Wifi modems, this is a passthrough to networkDisconnect() for the
+ * specific TinyGSM modem type
+ *
+ * @param specificModem The modem subclass
+ *
+ * @return The text of a disconnectInternet() function specific to a single
+ * modem subclass.
  */
-#define MS_MODEM_SET_APN                                    \
-    MS_DBG(F("... Registered after"), MS_PRINT_DEBUG_TIMER, \
-           F("milliseconds.  Connecting to GPRS..."));      \
-    gsmModem.gprsConnect(_apn, "", "");
-#else  // #ifndef TINY_GSM_MODEM_XBEE
 /**
- * @brief Creates a text string of the functions to call for a specific modem to
- * set the APN and connect to GPRS during the internet connection sequence.
- *
- * For most cellular modems, this is a passthrough to gprsConnect() for the
- * specific TinyGSM modem type.  For the XBee, this is an empty string.
- *
- * @return Text string containing the functions to set the APN and connect to
- * GPRS.
- */
-#define MS_MODEM_SET_APN
-#endif  // #ifndef TINY_GSM_MODEM_XBEE
-
-/**
- * @brief Creates a connectInternet(uint32_t maxConnectionTime) function for a
- * specific modem subclass.
+ * @def MS_MODEM_CONNECT_INTERNET(specificModem)
+ * @brief Creates a connectInternet() function for a specific modem subclass.
  *
  * For cellular modems, this uses the TinyGSM waitForNetwork() function for the
  * specific modem and then connects to GPRS using #MS_MODEM_SET_APN.
  *
  * For WiFi modems, this first checks for pre-existing internet connection and
  * if that isn't present uses the specific modem's networkConnect(ssid, pwd)
- * function followed by waitForNetwork(uint32_t maxConnectionTime).
+ * function followed by waitForNetwork().
  *
  * @note The order of credentials and waiting is reversed between cellular and
  * WiFi modems.  WiFi modems must send first credentials and then wait for the
@@ -248,9 +247,37 @@
  *
  * @param specificModem The modem subclass
  *
- * @return The text of a connectInternet(uint32_t maxConnectionTime) function
- * specific to a single modem subclass.
+ * @return The text of a connectInternet() function specific to a single modem
+ * subclass.
  */
+
+#if defined(TINY_GSM_MODEM_HAS_GPRS)
+#define MS_MODEM_IS_INTERNET_AVAILABLE(specificModem) \
+    bool specificModem::isInternetAvailable(void) {   \
+        return gsmModem.isGprsConnected();            \
+    }
+
+/**
+ * @def MS_MODEM_SET_APN
+ * @brief Creates a text string of the functions to call for a specific modem to
+ * set the APN and connect to GPRS during the internet connection sequence.
+ *
+ * For most cellular modems, this is a passthrough to gprsConnect() for the
+ * specific TinyGSM modem type.  For the XBee, this is an empty string.
+ *
+ * @return Text string containing the functions to set the APN and connect to
+ * GPRS.
+ */
+#ifndef TINY_GSM_MODEM_XBEE
+#define MS_MODEM_SET_APN                                    \
+    MS_DBG(F("... Registered after"), MS_PRINT_DEBUG_TIMER, \
+           F("milliseconds.  Connecting to GPRS..."));      \
+    gsmModem.gprsConnect(_apn, "", "");
+#else
+//^^ #ifndef TINY_GSM_MODEM_XBEE
+#define MS_MODEM_SET_APN
+#endif  // #ifndef TINY_GSM_MODEM_XBEE
+
 #define MS_MODEM_CONNECT_INTERNET(specificModem)                             \
     bool specificModem::connectInternet(uint32_t maxConnectionTime) {        \
         bool success = true;                                                 \
@@ -299,20 +326,6 @@
         return success;                                                      \
     }
 
-/**
- * @brief Creates a disconnectInternet() function for a specific modem subclass.
- *
- * For cellular modems, this is a passthrough to gprsDisconnect() for the
- * specific TinyGSM modem type.
- *
- * For Wifi modems, this is a passthrough to networkDisconnect() for the
- * specific TinyGSM modem type
- *
- * @param specificModem The modem subclass
- *
- * @return The text of a disconnectInternet() function specific to a single
- * modem subclass.
- */
 #define MS_MODEM_DISCONNECT_INTERNET(specificModem)           \
     void specificModem::disconnectInternet(void) {            \
         MS_START_DEBUG_TIMER;                                 \
@@ -321,44 +334,20 @@
                MS_PRINT_DEBUG_TIMER, F("milliseconds."));     \
     }
 
-#else  // from #if defined(TINY_GSM_MODEM_HAS_GPRS) (ie, this is wifi)
+#else
+//^^ from #if defined(TINY_GSM_MODEM_HAS_GPRS) (ie, this is wifi)
 
-/**
- * @brief Creates an isInternetAvailable() function for a specific
- * modem subclass.
- *
- * For cellular modems, this is a passthrough to isGprsConnected() for the
- * specific TinyGSM modem type.
- *
- * For wifi modems, this is a passthrough to isNetworkConnected() for the
- * specific TinyGSM modem type.
- *
- * @param specificModem The modem subclass
- *
- * @return The text of an isInternetAvailable() function specific to a single
- * modem subclass.
- */
 #define MS_MODEM_IS_INTERNET_AVAILABLE(specificModem) \
     bool specificModem::isInternetAvailable(void) {   \
         return gsmModem.isNetworkConnected();         \
     }
 
 /**
+ * @def MS_MODEM_CONNECT_INTERNET(specificModem, auto_reconnect_time)
  * @brief Creates a connectInternet(uint32_t maxConnectionTime) function for a
  * specific modem subclass.
  *
- * For cellular modems, this uses the TinyGSM waitForNetwork() function for the
- * specific modem and then connects to GPRS using #MS_MODEM_SET_APN.
- *
- * For WiFi modems, this first checks for pre-existing internet connection and
- * if that isn't present uses the specific modem's networkConnect(ssid, pwd)
- * function followed by waitForNetwork(uint32_t maxConnectionTime).
- *
- * @note The order of credentials and waiting is reversed between cellular and
- * WiFi modems.  WiFi modems must send first credentials and then wait for the
- * connection to be established.  Cellular modems on the other hand must first
- * wait for network registration, then provide the access point name, and then
- * establish a GPRS/EPS connection.
+ * @see #MS_MODEM_CONNECT_INTERNET(specificModem)
  *
  * @note WiFi modems can frequently reconnect with saved credentials instead of
  * sending new credentials each time.  This function waits for an automatic
@@ -431,20 +420,6 @@
         return success;                                                      \
     }
 
-/**
- * @brief Creates a disconnectInternet() function for a specific modem subclass.
- *
- * For cellular modems, this is a passthrough to gprsDisconnect() for the
- * specific TinyGSM modem type.
- *
- * For Wifi modems, this is a passthrough to networkDisconnect() for the
- * specific TinyGSM modem type
- *
- * @param specificModem The modem subclass
- *
- * @return The text of a disconnectInternet() function specific to a single
- * modem subclass.
- */
 #define MS_MODEM_DISCONNECT_INTERNET(specificModem)       \
     void specificModem::disconnectInternet(void) {        \
         MS_START_DEBUG_TIMER;                             \
@@ -453,6 +428,137 @@
                MS_PRINT_DEBUG_TIMER, F("milliseconds.")); \
     }
 #endif  // #if defined(TINY_GSM_MODEM_HAS_GPRS)
+
+/**
+ * @brief Creates createClient functions for a specific modem subclass.
+ *
+ * @param specificModem The modem subclass
+ *
+ * @return The text of createClient functions specific to a single
+ * modem subclass.
+ */
+#define MS_MODEM_CREATE_CLIENT(specificModem)                               \
+    Client* specificModem::createClient() {                                 \
+        /* Use the new keyword to create a new client on the **heap** */    \
+        /* NOTE: Be sure to delete this object when you're done with it! */ \
+        Client* newClient = new TinyGsmClient(gsmModem);                    \
+        return newClient;                                                   \
+    }
+
+/**
+ * @brief Helper to create null functions for modems that do not support secure
+ * clients.
+ *
+ * @param specificModem The modem subclass
+ *
+ * @return The text of createSecureClient functions specific to a single
+ * modem subclass.
+ */
+#define MS_MODEM_CREATE_NULL_SECURE_CLIENTS(specificModem)                \
+    Client* specificModem::createSecureClient(                            \
+        SSLAuthMode, SSLVersion, const char*, const char*, const char*) { \
+        return nullptr;                                                   \
+    }                                                                     \
+    Client* specificModem::createSecureClient(const char*, const char*,   \
+                                              SSLVersion) {               \
+        return nullptr;                                                   \
+    }                                                                     \
+    Client* specificModem::createSecureClient(const char*, SSLVersion) {  \
+        return nullptr;                                                   \
+    }
+/**
+ * @def MS_MODEM_CREATE_SECURE_CLIENT
+ * @brief Creates createSecureClient functions for a specific modem subclass.
+ *
+ * For modems that don't support SSL, this returns a nullptr.
+ *
+ * @param specificModem The modem subclass
+ *
+ * @return The text of createClient functions specific to a single
+ * modem subclass.
+ */
+#if defined(TINY_GSM_MODEM_HAS_SSL) && defined(TINY_GSM_MODEM_CAN_SPECIFY_CERTS)
+#define MS_MODEM_CREATE_SECURE_CLIENT(specificModem)                           \
+    Client* specificModem::createSecureClient() {                              \
+        /* Use the new keyword to create a new client on the **heap** */       \
+        /* NOTE: Be sure to delete this object when you're done with it! */    \
+        Client* newClient = new TinyGsmClientSecure(gsmModem);                 \
+        return newClient;                                                      \
+    }                                                                          \
+    Client* specificModem::createSecureClient(                                 \
+        SSLAuthMode sslAuthMode, SSLVersion sslVersion,                        \
+        const char* CAcertName, const char* clientCertName,                    \
+        const char* clientKeyName) {                                           \
+        Client* newClient = new TinyGsmClientSecure(                           \
+            gsmModem, sslAuthMode, sslVersion, CAcertName, clientCertName,     \
+            clientKeyName);                                                    \
+        return newClient;                                                      \
+    }                                                                          \
+    Client* specificModem::createSecureClient(                                 \
+        const char* pskIdent, const char* psKey, SSLVersion sslVersion) {      \
+        Client* newClient = new TinyGsmClientSecure(gsmModem, pskIdent, psKey, \
+                                                    sslVersion);               \
+        return newClient;                                                      \
+    }                                                                          \
+    Client* specificModem::createSecureClient(const char* pskTableName,        \
+                                              SSLVersion  sslVersion) {         \
+        Client* newClient = new TinyGsmClientSecure(gsmModem, pskTableName,    \
+                                                    sslVersion);               \
+        return newClient;                                                      \
+    }
+#elif defined(TINY_GSM_MODEM_HAS_SSL)
+#define MS_MODEM_CREATE_SECURE_CLIENT(specificModem)                        \
+    Client* specificModem::createSecureClient() {                           \
+        /* Use the new keyword to create a new client on the **heap** */    \
+        /* NOTE: Be sure to delete this object when you're done with it! */ \
+        Client* newClient = new TinyGsmClientSecure(gsmModem);              \
+        return newClient;                                                   \
+    }                                                                       \
+    MS_MODEM_CREATE_NULL_SECURE_CLIENTS(specificModem)
+#else
+#define MS_MODEM_CREATE_SECURE_CLIENT(specificModem) \
+    Client* specificModem::createSecureClient() {    \
+        return nullptr;                              \
+    }                                                \
+    MS_MODEM_CREATE_NULL_SECURE_CLIENTS(specificModem)
+#endif
+/**
+ * @brief Creates a deleteClient function for a specific modem subclass.
+ *
+ * @param specificModem The modem subclass
+ *
+ * @return The text of deleteClient function specific to a single modem
+ * subclass.
+ */
+#define MS_MODEM_DELETE_CLIENT(specificModem)                                  \
+    void specificModem::deleteClient(Client* client) {                         \
+        if (client != nullptr) {                                               \
+            TinyGsmClient* cast_pointer = static_cast<TinyGsmClient*>(client); \
+            delete cast_pointer;                                               \
+        }                                                                      \
+    }
+/**
+ * @def MS_MODEM_DELETE_SECURE_CLIENT
+ * @brief Creates a deleteClient function for a specific modem subclass.
+ *
+ * @param specificModem The modem subclass
+ *
+ * @return The text of deleteSecureClient function specific to a single modem
+ * subclass.
+ */
+#if defined(TINY_GSM_MODEM_HAS_SSL)
+#define MS_MODEM_DELETE_SECURE_CLIENT(specificModem)         \
+    void specificModem::deleteSecureClient(Client* client) { \
+        if (client != nullptr) {                             \
+            TinyGsmClientSecure* cast_pointer =              \
+                static_cast<TinyGsmClientSecure*>(client);   \
+            delete cast_pointer;                             \
+        }                                                    \
+    }
+#else
+#define MS_MODEM_DELETE_SECURE_CLIENT(specificModem) \
+    void specificModem::deleteSecureClient(Client*) {}
+#endif
 
 /**
  * @brief The port hosting the NIST "time" protocol (37)
@@ -478,7 +584,7 @@
  * This would be much more efficient if done over UDP, but I'm doing it over TCP
  * because I don't have a UDP library for all the modems.
  *
- * @note We eust ensure that we do not ping the daylight server more than once
+ * @note We must ensure that we do not ping the daylight server more than once
  * every 4 seconds.  NIST clearly specifies here that this is a requirement for
  * all software that accesses its servers:
  * https://tf.nist.gov/tf-cgi/servers.cgi
@@ -489,52 +595,58 @@
  * subclass.
  *
  */
-#define MS_MODEM_GET_NIST_TIME(specificModem)                                 \
-    uint32_t specificModem::getNISTTime(void) {                               \
-        /** Check for and bail if not connected to the internet. */           \
-        if (!isInternetAvailable()) {                                         \
-            MS_DBG(F("No internet connection, cannot connect to NIST."));     \
-            return 0;                                                         \
-        }                                                                     \
-                                                                              \
-        /** Try up to 12 times to get a timestamp from NIST. */               \
-        for (uint8_t i = 0; i < 12; i++) {                                    \
-            while (millis() < _lastNISTrequest + 4000) { /* wait */           \
-            }                                                                 \
-                                                                              \
-            /** Make TCP connection. */                                       \
-            MS_DBG(F("\nConnecting to NIST daytime Server"));                 \
-            bool connectionMade = gsmClient.connect("time.nist.gov",          \
-                                                    TIME_PROTOCOL_PORT, 15);  \
-                                                                              \
-            /** Wait up to 5 seconds for a response. */                       \
-            if (connectionMade) {                                             \
-                uint32_t start = millis();                                    \
-                while (gsmClient &&                                           \
-                       gsmClient.available() < NIST_SERVER_RETRYS &&          \
-                       millis() - start < 5000L) {}                           \
-                                                                              \
-                if (gsmClient.available() >= NIST_RESPONSE_BYTES) {           \
-                    MS_DBG(F("NIST responded after"), millis() - start,       \
-                           F("ms"));                                          \
-                    byte response[NIST_RESPONSE_BYTES] = {0};                 \
-                    gsmClient.read(response, NIST_RESPONSE_BYTES);            \
-                    if (gsmClient.connected()) gsmClient.stop();              \
-                    uint32_t nistParsed = parseNISTBytes(response);           \
-                    if (nistParsed != 0) { return parseNISTBytes(response); } \
-                } else {                                                      \
-                    MS_DBG(F("NIST Time server did not respond!"));           \
-                    if (gsmClient.connected()) gsmClient.stop();              \
-                }                                                             \
-            } else {                                                          \
-                MS_DBG(F("Unable to open TCP to NIST!"));                     \
-            }                                                                 \
-        }                                                                     \
-        return 0;                                                             \
+#define MS_MODEM_GET_NIST_TIME(specificModem)                                \
+    uint32_t specificModem::getNISTTime(void) {                              \
+        /** Check for and bail if not connected to the internet. */          \
+        if (!isInternetAvailable()) {                                        \
+            MS_DBG(F("No internet connection, cannot connect to NIST."));    \
+            return 0;                                                        \
+        }                                                                    \
+                                                                             \
+        /** Try up to 12 times to get a timestamp from NIST. */              \
+        for (uint8_t i = 0; i < NIST_SERVER_RETRYS; i++) {                   \
+            while (millis() < _lastNISTrequest + 4000) { /* wait */          \
+            }                                                                \
+                                                                             \
+            /** Make TCP connection. */                                      \
+            TinyGsmClient gsmClient(gsmModem); /*new client, default mux*/   \
+            MS_DBG(F("\nConnecting to NIST daytime Server"));                \
+            bool connectionMade = gsmClient.connect("time.nist.gov",         \
+                                                    TIME_PROTOCOL_PORT, 15); \
+                                                                             \
+            /** Wait up to 5 seconds for a response. */                      \
+            if (connectionMade) {                                            \
+                uint32_t start = millis();                                   \
+                while (gsmClient &&                                          \
+                       gsmClient.available() < NIST_RESPONSE_BYTES &&        \
+                       millis() - start < 5000L) {}                          \
+                                                                             \
+                if (gsmClient.available() >= NIST_RESPONSE_BYTES) {          \
+                    MS_DBG(F("NIST responded after"), millis() - start,      \
+                           F("ms"));                                         \
+                    byte response[NIST_RESPONSE_BYTES] = {0};                \
+                    gsmClient.read(response, NIST_RESPONSE_BYTES);           \
+                    if (gsmClient.connected()) gsmClient.stop();             \
+                    uint32_t nistParsed = parseNISTBytes(response);          \
+                    if (nistParsed != 0) {                                   \
+                        MS_DBG(F("Got non-zero NIST timestamp"));            \
+                        return nistParsed;                                   \
+                    } else {                                                 \
+                        MS_DBG(F("Invalid/Zero NIST timestamp"));            \
+                    }                                                        \
+                } else {                                                     \
+                    MS_DBG(F("NIST Time server did not respond!"));          \
+                    if (gsmClient.connected()) gsmClient.stop();             \
+                }                                                            \
+            } else {                                                         \
+                MS_DBG(F("Unable to open TCP to NIST!"));                    \
+            }                                                                \
+        }                                                                    \
+        return 0;                                                            \
     }
 
-#if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
 /**
+ * @def MS_MODEM_CALC_SIGNAL_QUALITY
  * @brief Creates a text string of the functions to convert the signal quality
  * returned by a specific modem to RSSI and percent signal strength.
  *
@@ -542,37 +654,25 @@
  * using getRSSIFromCSQ(int16_t csq) and a the percent strength is calculated
  * using getPctFromCSQ(int16_t csq).
  *
- * XBee and ESP8266 modules return RSSI in dBm and the percent strength is
+ * XBee and Espressif modules return RSSI in dBm and the percent strength is
  * calculated using getPctFromRSSI(int16_t rssi).
  *
  * @return Text string containing the functions to put signal strength in the
  * correct units.
  */
+#if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266) || \
+    defined(TINY_GSM_MODEM_ESP32)
 #define MS_MODEM_CALC_SIGNAL_QUALITY                            \
     rssi = signalQual;                                          \
     MS_DBG(F("Raw signal is already in units of RSSI:"), rssi); \
     percent = getPctFromRSSI(signalQual);                       \
-    MS_DBG(F("Signal percent calcuated from RSSI:"), percent);
+    MS_DBG(F("Signal percent calculated from RSSI:"), percent);
 #else
-/**
- * @brief Creates a text string of the functions to convert the signal quality
- * returned by a specific modem to RSSI and percent signal strength.
- *
- * Most modules return CSQ between 0 and 31.  The RSSI in dBm is calculated
- * using getRSSIFromCSQ(int16_t csq) and a the percent strength is calculated
- * using getPctFromCSQ(int16_t csq).
- *
- * XBee and ESP8266 modules return RSSI in dBm and the percent strength is
- * calculated using getPctFromRSSI(int16_t rssi).
- *
- * @return Text string containing the functions to put signal strength in the
- * correct units.
- */
 #define MS_MODEM_CALC_SIGNAL_QUALITY             \
     rssi = getRSSIFromCSQ(signalQual);           \
     MS_DBG(F("RSSI Estimated from CSQ:"), rssi); \
     percent = getPctFromCSQ(signalQual);         \
-    MS_DBG(F("Signal percent calcuated from CSQ:"), percent);
+    MS_DBG(F("Signal percent calculated from CSQ:"), percent);
 #endif
 
 /**
@@ -607,8 +707,8 @@
         return true;                                              \
     }
 
-#ifdef TINY_GSM_MODEM_HAS_BATTERY
 /**
+ * @def MS_MODEM_GET_MODEM_BATTERY_DATA(specificModem)
  * @brief Creates a getModemBatteryStats(int8_t& chargeState, int8_t& percent,
  * int16_t& milliVolts) function for a specific modem subclass.
  *
@@ -625,6 +725,7 @@
  * percent, int16_t& milliVolts) function specific to a single modem subclass.
  *
  */
+#ifdef TINY_GSM_MODEM_HAS_BATTERY
 #define MS_MODEM_GET_MODEM_BATTERY_DATA(specificModem)                  \
     bool specificModem::getModemBatteryStats(                           \
         int8_t& chargeState, int8_t& percent, int16_t& milliVolts) {    \
@@ -633,23 +734,6 @@
     }
 
 #else
-/**
- * @brief Creates a getModemBatteryStats(int8_t& chargeState, int8_t& percent,
- * int16_t& milliVolts) function for a specific modem subclass.
- *
- * This is a passthrough to the specific modem's getBattStats(uint8_t&
- * chargeState, int8_t& percent, int16_t& milliVolts) for modems where such
- * data is available.
- *
- * This populates the entered references with -9999s for modems where such data
- * is not available.
- *
- * @param specificModem The modem subclass
- *
- * @return The text of a getModemBatteryStats(int8_t& chargeState, int8_t&
- * percent, int16_t& milliVolts) function specific to a single modem subclass.
- *
- */
 #define MS_MODEM_GET_MODEM_BATTERY_DATA(specificModem)               \
     bool specificModem::getModemBatteryStats(                        \
         int8_t& chargeState, int8_t& percent, int16_t& milliVolts) { \
@@ -661,13 +745,13 @@
     }
 #endif
 
-#ifdef TINY_GSM_MODEM_HAS_TEMPERATURE
 /**
+ * @def MS_MODEM_GET_MODEM_TEMPERATURE_DATA(specificModem)
  * @brief Creates a getModemChipTemperature() function for a specific modem
  * subclass.
  *
  * This is a passthrough to the specific modem's getTemperature() for modems
- * where such data is avaialble
+ * where such data is available
  *
  * This returns -9999 for modems that don't return such data.
  *
@@ -677,6 +761,7 @@
  * modem subclass.
  *
  */
+#ifdef TINY_GSM_MODEM_HAS_TEMPERATURE
 #define MS_MODEM_GET_MODEM_TEMPERATURE_DATA(specificModem) \
     float specificModem::getModemChipTemperature(void) {   \
         MS_DBG(F("Getting temperature:"));                 \
@@ -685,23 +770,7 @@
                                                            \
         return temp;                                       \
     }
-
 #else
-/**
- * @brief Creates a getModemChipTemperature() function for a specific modem
- * subclass.
- *
- * This is a passthrough to the specific modem's getTemperature() for modems
- * where such data is avaialble
- *
- * This returns -9999 for modems that don't return such data.
- *
- * @param specificModem The modem subclass
- *
- * @return The text of a getModemChipTemperature() function specific to a single
- * modem subclass.
- *
- */
 #define MS_MODEM_GET_MODEM_TEMPERATURE_DATA(specificModem)   \
     float specificModem::getModemChipTemperature(void) {     \
         MS_DBG(F("This modem doesn't return temperature!")); \

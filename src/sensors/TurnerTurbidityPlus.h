@@ -35,7 +35,8 @@
  *
  * ___
  * @section sensor_turbidity_plus_examples Example Code
- * The Alphasense CO2 sensor is used in the @menulink{turner_turbidity_plus} example.
+ * The Alphasense CO2 sensor is used in the @menulink{turner_turbidity_plus}
+ * example.
  *
  * @menusnip{turner_turbidity_plus}
  */
@@ -44,16 +45,23 @@
 #ifndef SRC_SENSORS_TURNERTURBIDITYPLUS_H_
 #define SRC_SENSORS_TURNERTURBIDITYPLUS_H_
 
-// Debugging Statement
-// #define MS_TURNERTURBIDITYPLUS_DEBUG
+// Include the library config before anything else
+#include "ModSensorConfig.h"
 
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
+
+// Define the print label[s] for the debugger
 #ifdef MS_TURNERTURBIDITYPLUS_DEBUG
 #define MS_DEBUGGING_STD "TurnerTurbidityPlus"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+
+// Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include <Adafruit_ADS1X15.h>
@@ -150,10 +158,10 @@ typedef enum : uint16_t {
  * - Range is 0 to 3.6V when using an ADS1x15 powered at 3.3V
  *     - Full sensor range is 0-5V
  * - Accuracy:
- *     - 16-bit ADC (ADS1115): < 0.25% (gain error), <0.25 LSB (offset errror)
+ *     - 16-bit ADC (ADS1115): < 0.25% (gain error), <0.25 LSB (offset error)
  *       - @m_span{m-dim}(@ref #TURBIDITY_PLUS_VOLTAGE_RESOLUTION = 4)@m_endspan
  *     - 12-bit ADC (ADS1015, using build flag ```MS_USE_ADS1015```): < 0.15%
- * (gain error), <3 LSB (offset errror)
+ * (gain error), <3 LSB (offset error)
  *       - @m_span{m-dim}(@ref #TURBIDITY_PLUS_VOLTAGE_RESOLUTION = 1)@m_endspan
  *
  * {{ @ref TurnerTurbidityPlus_Voltage::TurnerTurbidityPlus_Voltage }}
@@ -276,8 +284,8 @@ class TurnerTurbidityPlus : public Sensor {
 
  private:
     /**
-     * @brief Internal referece to the pin on the mcu that triggers the sensor's
-     * wiper.
+     * @brief Internal reference to the pin on the mcu that triggers the
+     * sensor's wiper.
      */
     int8_t _wiperTriggerPin;
     /**
@@ -350,7 +358,7 @@ class TurnerTurbidityPlus_Voltage : public Variable {
     explicit TurnerTurbidityPlus_Voltage(
         TurnerTurbidityPlus* parentSense, const char* uuid = "",
         const char* varCode = TURBIDITY_PLUS_VOLTAGE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)TURBIDITY_PLUS_VOLTAGE_VAR_NUM,
+        : Variable(parentSense, (uint8_t)TURBIDITY_PLUS_VOLTAGE_VAR_NUM,
                    (uint8_t)TURBIDITY_PLUS_VOLTAGE_RESOLUTION,
                    TURBIDITY_PLUS_VOLTAGE_VAR_NAME,
                    TURBIDITY_PLUS_VOLTAGE_UNIT_NAME, varCode, uuid) {}
@@ -361,7 +369,7 @@ class TurnerTurbidityPlus_Voltage : public Variable {
      * be used.
      */
     TurnerTurbidityPlus_Voltage()
-        : Variable((const uint8_t)TURBIDITY_PLUS_VOLTAGE_VAR_NUM,
+        : Variable((uint8_t)TURBIDITY_PLUS_VOLTAGE_VAR_NUM,
                    (uint8_t)TURBIDITY_PLUS_VOLTAGE_RESOLUTION,
                    TURBIDITY_PLUS_VOLTAGE_VAR_NAME,
                    TURBIDITY_PLUS_VOLTAGE_UNIT_NAME,
@@ -399,7 +407,7 @@ class TurnerTurbidityPlus_Turbidity : public Variable {
     explicit TurnerTurbidityPlus_Turbidity(
         TurnerTurbidityPlus* parentSense, const char* uuid = "",
         const char* varCode = TURBIDITY_PLUS_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)TURBIDITY_PLUS_VAR_NUM,
+        : Variable(parentSense, (uint8_t)TURBIDITY_PLUS_VAR_NUM,
                    (uint8_t)TURBIDITY_PLUS_RESOLUTION, TURBIDITY_PLUS_VAR_NAME,
                    TURBIDITY_PLUS_UNIT_NAME, varCode, uuid) {}
     /**
@@ -409,7 +417,7 @@ class TurnerTurbidityPlus_Turbidity : public Variable {
      * be used.
      */
     TurnerTurbidityPlus_Turbidity()
-        : Variable((const uint8_t)TURBIDITY_PLUS_VAR_NUM,
+        : Variable((uint8_t)TURBIDITY_PLUS_VAR_NUM,
                    (uint8_t)TURBIDITY_PLUS_RESOLUTION, TURBIDITY_PLUS_VAR_NAME,
                    TURBIDITY_PLUS_UNIT_NAME, TURBIDITY_PLUS_DEFAULT_CODE) {}
     /**

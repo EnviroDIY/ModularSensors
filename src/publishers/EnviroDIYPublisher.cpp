@@ -4,6 +4,7 @@
  * Part of the EnviroDIY ModularSensors library for Arduino.
  * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ * @author Thomas Watson <twatson52@icloud.com>
  *
  * @brief Implements the EnviroDIYPublisher class.
  */
@@ -24,7 +25,7 @@ const char* EnviroDIYPublisher::contentTypeHeader =
     "\r\nContent-Type: application/json\r\n\r\n";
 
 const char* EnviroDIYPublisher::samplingFeatureTag = "{\"sampling_feature\":\"";
-const char* EnviroDIYPublisher::timestampTag       = "\",\"timestamp\":\"";
+const char* EnviroDIYPublisher::timestampTag       = "\",\"timestamp\":";
 
 
 // Constructors
@@ -35,6 +36,7 @@ EnviroDIYPublisher::EnviroDIYPublisher() : dataPublisher() {
 }
 EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, int sendEveryX)
     : dataPublisher(baseLogger, sendEveryX) {
+    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
     setHost("monitormywatershed.org");
     setPath("/api/data-stream/");
     setPort(80);
@@ -42,6 +44,7 @@ EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, int sendEveryX)
 EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
                                        int sendEveryX)
     : dataPublisher(baseLogger, inClient, sendEveryX) {
+    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
     setHost("monitormywatershed.org");
     setPath("/api/data-stream/");
     setPort(80);
@@ -53,6 +56,17 @@ EnviroDIYPublisher::EnviroDIYPublisher(Logger&     baseLogger,
     : dataPublisher(baseLogger, sendEveryX) {
     setToken(registrationToken);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
+    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
+    setHost("monitormywatershed.org");
+    setPath("/api/data-stream/");
+    setPort(80);
+}
+EnviroDIYPublisher::EnviroDIYPublisher(Logger&     baseLogger,
+                                       const char* registrationToken,
+                                       int         sendEveryX)
+    : dataPublisher(baseLogger, sendEveryX) {
+    setToken(registrationToken);
+    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
     setHost("monitormywatershed.org");
     setPath("/api/data-stream/");
     setPort(80);
@@ -64,6 +78,17 @@ EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
     : dataPublisher(baseLogger, inClient, sendEveryX) {
     setToken(registrationToken);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
+    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
+    setHost("monitormywatershed.org");
+    setPath("/api/data-stream/");
+    setPort(80);
+}
+EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
+                                       const char* registrationToken,
+                                       int         sendEveryX)
+    : dataPublisher(baseLogger, inClient, sendEveryX) {
+    setToken(registrationToken);
+    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
     setHost("monitormywatershed.org");
     setPath("/api/data-stream/");
     setPort(80);
@@ -110,17 +135,41 @@ void EnviroDIYPublisher::setToken(const char* registrationToken) {
 
 // Calculates how long the JSON will be
 uint16_t EnviroDIYPublisher::calculateJsonSize() {
-    uint16_t jsonLength = 21;  // {"sampling_feature":"
-    jsonLength += 36;          // sampling feature UUID
-    jsonLength += 15;          // ","timestamp":"
-    jsonLength += 25;          // markedISO8601Time
-    jsonLength += 2;           //  ",
-    for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
+    uint8_t variables = _logBuffer.getNumVariables();
+    int     records   = _logBuffer.getNumRecords();
+    MS_DBG(F("Number of records in log buffer:"), records);
+    MS_DBG(F("Number of variables in log buffer:"), variables);
+    MS_DBG(F("Number of variables in base logger:"),
+           _baseLogger->getArrayVarCount());
+
+    uint16_t jsonLength = strlen(samplingFeatureTag);
+    jsonLength += 36;  // sampling feature UUID
+    jsonLength += strlen(timestampTag);
+    // markedISO8601Time + quotes and commas
+    jsonLength += records * (25 + 2) + records - 1;
+    if (records > 1) {
+        jsonLength += 3;  // [],
+    } else {
+        jsonLength += 1;  // ,
+    }
+    for (uint8_t var = 0; var < variables; var++) {
         jsonLength += 1;   //  "
         jsonLength += 36;  // variable UUID
-        jsonLength += 2;   //  ":
-        jsonLength += _baseLogger->getValueStringAtI(i).length();
-        if (i + 1 != _baseLogger->getArrayVarCount()) {
+        if (records > 1) {
+            jsonLength += 4;  //  ":[]
+        } else {
+            jsonLength += 2;  //  ":
+        }
+
+        for (int rec = 0; rec < records; rec++) {
+            float value = _logBuffer.getRecordValue(rec, var);
+            jsonLength +=
+                _baseLogger->formatValueStringAtI(var, value).length();
+            if (rec + 1 != records) {
+                jsonLength += 1;  // ,
+            }
+        }
+        if (var + 1 != variables) {
             jsonLength += 1;  // ,
         }
     }
@@ -131,13 +180,14 @@ uint16_t EnviroDIYPublisher::calculateJsonSize() {
 }
 
 
-// A way to begin with everything already set
+// A way to set members in the begin to use with a bare constructor
 void EnviroDIYPublisher::begin(Logger& baseLogger, Client* inClient,
                                const char* registrationToken,
                                const char* samplingFeatureUUID) {
     setToken(registrationToken);
     dataPublisher::begin(baseLogger, inClient);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
+    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
 }
 void EnviroDIYPublisher::begin(Logger&     baseLogger,
                                const char* registrationToken,
@@ -145,19 +195,125 @@ void EnviroDIYPublisher::begin(Logger&     baseLogger,
     setToken(registrationToken);
     dataPublisher::begin(baseLogger);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
+    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
+}
+void EnviroDIYPublisher::begin(Logger&     baseLogger,
+                               const char* registrationToken) {
+    setToken(registrationToken);
+    dataPublisher::begin(baseLogger);
+    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
 }
 
+bool EnviroDIYPublisher::connectionNeeded(void) {
+    // compute the send interval, reducing it as the buffer gets more full so we
+    // have less of a chance of losing data
+    int     interval = _sendEveryX;
+    uint8_t percent  = _logBuffer.getPercentFull();
+    MS_DBG(F("Buffer is"), percent, F("percent full"));
+    if (percent >= 50) {
+        interval /= 2;
+    } else if (percent >= 75) {
+        interval /= 4;
+    } else if (percent >= 90) {
+        interval = 1;
+    }
+
+    // the programmed interval is about to be reached by the next record, or it
+    // was just reached and we are trying again
+    bool atSendInterval = false;
+    if (interval <= 1) {
+        atSendInterval = true;
+    } else {
+        int numRecords = _logBuffer.getNumRecords();
+        // where we are relative to the interval
+        int relative = (numRecords % interval);
+        if (relative == (interval - 1)) {
+            // the next sample will put us right at the interval
+            atSendInterval = true;
+        } else if (numRecords >= interval) {  // don't send the first sample
+            if (relative == 0) {
+                // the last sample was the interval, this is the first retry
+                atSendInterval = true;
+            } else if (relative == 1) {
+                // two samples ago was the interval, this is the second retry
+                atSendInterval = true;
+            }
+        }
+    }
+
+    // the initial log transmissions have not completed (we send every one of
+    // the first five data points immediately for field validation)
+    bool initialTransmission = _initialTransmissionsRemaining > 0;
+
+    return atSendInterval || initialTransmission;
+}
 
 // This utilizes an attached modem to make a TCP connection to the
-// EnviroDIY/ODM2DataSharingPortal and then streams out a post request
-// over that connection.
+// EnviroDIY/ODM2DataSharingPortal and then streams out a post request over that
+// connection.
 // The return is the http status code of the response.
-int16_t EnviroDIYPublisher::publishData(Client* outClient) {
+int16_t EnviroDIYPublisher::publishData(Client* outClient, bool forceFlush) {
+    // work around for strange construction order: make sure the number of
+    // variables listed in the log buffer matches the number of variables in the
+    // logger
+    if (_logBuffer.getNumVariables() != _baseLogger->getArrayVarCount()) {
+        MS_DBG(F("Number of variables in log buffer does not match number of "
+                 "variables in logger:"),
+               _logBuffer.getNumVariables(), F("vs"),
+               _baseLogger->getArrayVarCount());
+        MS_DBG(F("Setting number of variables in log buffer to match number of "
+                 "variables in logger. This will erase the buffer."));
+        _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
+    }
+
+    // Do we intend to flush this call? If so, we have just returned true from
+    // connectionNeeded() and the internet is connected and waiting. Check what
+    // that function said so we know to do it after we record this data point.
+    // we also flush if requested (in which case the internet is connected too)
+    bool willFlush = connectionNeeded() || forceFlush;
+    MS_DBG(F("Adding record to buffer"),
+           willFlush ? F("and then \"flushing\" (publishing)")
+                     : F("without publishing"));
+
+    // create record to hold timestamp and variable values in the log buffer
+    int record = _logBuffer.addRecord(
+        static_cast<uint32_t>(Logger::markedLocalUnixTime));
+
+    // write record data if the record was successfully created
+    if (record >= 0) {
+        for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
+            _logBuffer.setRecordValue(record, i, _baseLogger->getValueAtI(i));
+        }
+    }
+
+    if (_initialTransmissionsRemaining > 0) {
+        _initialTransmissionsRemaining -= 1;
+    }
+
+    // do the data buffer flushing if we previously planned to
+    if (willFlush) {
+        return flushDataBuffer(outClient);
+    } else {
+        // HTTP Accepted: data has been accepted for processing but might or
+        // might not eventually be acted upon (i.e. if something causes data in
+        // the buffer to be lost)
+        return 202;
+    }
+}
+
+int16_t EnviroDIYPublisher::flushDataBuffer(Client* outClient) {
     // Create a buffer for the portions of the request and response
     char     tempBuffer[37] = "";
     uint16_t did_respond    = 0;
+    int16_t  responseCode   = 0;
+    if (_baseLogger->getSamplingFeatureUUID() == nullptr ||
+        strlen(_baseLogger->getSamplingFeatureUUID()) == 0) {
+        PRINTOUT(F("A sampling feature UUID must be set before publishing data "
+                   "to Monitor My Watershed!."));
+        return 0;
+    }
 
-    // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
+    // Open a TCP/IP connection to the EnviroDIY Data Portal (WebSDL)
     MS_DBG(F("Connecting client"));
     MS_START_DEBUG_TIMER;
     if (outClient->connect(enviroDIYHost, enviroDIYPort)) {
@@ -186,38 +342,83 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient) {
         txBufferAppend(_baseLogger->getSamplingFeatureUUID());
 
         txBufferAppend(timestampTag);
-        txBufferAppend(
-            Logger::formatDateTime_ISO8601(Logger::markedLocalEpochTime)
-                .c_str());
-        txBufferAppend('"');
+
+        // write out list of timestamps
+        int records = _logBuffer.getNumRecords();
+        if (records > 1) { txBufferAppend('['); }
+        for (int rec = 0; rec < records; rec++) {
+            txBufferAppend('"');
+            uint32_t timestamp = _logBuffer.getRecordTimestamp(rec);
+            txBufferAppend(Logger::formatDateTime_ISO8601(timestamp).c_str());
+            txBufferAppend('"');
+            if (rec + 1 != records) { txBufferAppend(','); }
+        }
+        if (records > 1) { txBufferAppend(']'); }
         txBufferAppend(',');
 
-        for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
+        // write out a list of the values of each variable
+        uint8_t variables = _logBuffer.getNumVariables();
+        for (uint8_t var = 0; var < variables; var++) {
             txBufferAppend('"');
-            txBufferAppend(_baseLogger->getVarUUIDAtI(i).c_str());
+            txBufferAppend(_baseLogger->getVarUUIDAtI(var));
             txBufferAppend('"');
             txBufferAppend(':');
-            txBufferAppend(_baseLogger->getValueStringAtI(i).c_str());
-            if (i + 1 != _baseLogger->getArrayVarCount()) {
+            if (records > 1) { txBufferAppend('['); }
+
+            for (int rec = 0; rec < records; rec++) {
+                float value = _logBuffer.getRecordValue(rec, var);
+                txBufferAppend(
+                    _baseLogger->formatValueStringAtI(var, value).c_str());
+                if (rec + 1 != records) { txBufferAppend(','); }
+            }
+            if (records > 1) { txBufferAppend(']'); }
+
+            if (var + 1 != variables) {
                 txBufferAppend(',');
             } else {
                 txBufferAppend('}');
             }
         }
 
-        // Write out the complete request
+        // Flush the complete request
         txBufferFlush();
 
         // Wait 30 seconds for a response from the server
         uint32_t start = millis();
-        while ((millis() - start) < 30000L && outClient->available() < 12) {
+        while ((millis() - start) < 30000L && outClient->connected() &&
+               outClient->available() < 12) {
             delay(10);
         }
 
-        // Read only the first 12 characters of the response
-        // We're only reading as far as the http code, anything beyond that
-        // we don't care about.
+        // Read only the first 12 characters of the response.
+        // We're only reading as far as the http code, anything beyond that we
+        // don't care about.
         did_respond = outClient->readBytes(tempBuffer, 12);
+        // Process the HTTP response code
+        // The first 9 characters should be "HTTP/1.1 "
+        if (did_respond > 0) {
+            char responseCode_char[4];
+            memcpy(responseCode_char, tempBuffer + 9, 3);
+            // Null terminate the string
+            memset(responseCode_char + 3, '\0', 1);
+            responseCode = atoi(responseCode_char);
+            PRINTOUT(F("\n-- Response Code --"));
+            PRINTOUT(responseCode);
+        } else {
+            responseCode = 504;
+            PRINTOUT(F("\n-- NO RESPONSE FROM SERVER --"));
+        }
+
+#if defined(MS_OUTPUT) || defined(MS_2ND_OUTPUT)
+        // throw the rest of the response into the tx buffer so we can debug it
+        txBufferInit(nullptr);
+        txBufferAppend(tempBuffer, 12, true);
+        while (outClient->available()) {
+            char c = outClient->read();
+            txBufferAppend(c);
+        }
+        txBufferFlush();
+#endif
 
         // Close the TCP/IP connection
         MS_DBG(F("Stopping client"));
@@ -229,21 +430,12 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient) {
                    "Portal --"));
     }
 
-    // Process the HTTP response
-    int16_t responseCode = 0;
-    if (did_respond > 0) {
-        char responseCode_char[4];
-        responseCode_char[3] = 0;
-        for (uint8_t i = 0; i < 3; i++) {
-            responseCode_char[i] = tempBuffer[i + 9];
-        }
-        responseCode = atoi(responseCode_char);
-    } else {
-        responseCode = 504;
+    if (responseCode == 201) {
+        // data was successfully transmitted, we can discard it from the buffer
+        _logBuffer.clear();
     }
-
-    PRINTOUT(F("\n-- Response Code --"));
-    PRINTOUT(responseCode);
 
     return responseCode;
 }
+
+// cSpell:ignore monitormywatershed

@@ -1,4 +1,4 @@
-# Calculating Results based on Measured Values<!-- {#example_baro_rho} -->
+# Calculating Results based on Measured Values<!--! {#example_baro_rho} -->
 
 This example demonstrates how to work with calculated variables and calculates water depth by correcting the total pressure measured by a MeaSpec MS5803 with the atmospheric pressure measured by a Bosch BME280 environmental sensor and the temperature measured by a Maxim DS18 temperature probe.
 
@@ -8,11 +8,11 @@ The sensors used in this example are a Maxim DS18 temperature probe, a Bosch BME
 
 _______
 
-[//]: # ( @tableofcontents )
+<!--! @tableofcontents -->
 
-[//]: # ( @m_footernavigation )
+<!--! @m_footernavigation -->
 
-[//]: # ( Start GitHub Only )
+<!--! @if GITHUB -->
 
 - [Calculating Results based on Measured Values](#calculating-results-based-on-measured-values)
   - [Unique Features of the Barometric Correction Example](#unique-features-of-the-barometric-correction-example)
@@ -22,18 +22,18 @@ _______
     - [Set the universally universal identifiers (UUID) for each variable](#set-the-universally-universal-identifiers-uuid-for-each-variable)
     - [Upload!](#upload)
 
-[//]: # ( End GitHub Only )
+<!--! @endif -->
 
 _______
 
-## Unique Features of the Barometric Correction Example<!-- {#example_baro_rho_unique} -->
+## Unique Features of the Barometric Correction Example<!--! {#example_baro_rho_unique} -->
 
 - All variables are created and named with their parent sensor (as opposed to being created within the variable array).
 - There are multiple calculated variables created and used.
 
-## To Use this Example<!-- {#example_baro_rho_using} -->
+## To Use this Example<!--! {#example_baro_rho_using} -->
 
-### Prepare and set up PlatformIO<!-- {#example_baro_rho_pio} -->
+### Prepare and set up PlatformIO<!--! {#example_baro_rho_pio} -->
 
 - Register a site and sensors at the Monitor My Watershed/EnviroDIY data portal (<http://monitormywatershed.org/>)
 - Create a new PlatformIO project
@@ -45,7 +45,7 @@ _______
   - Move it into the src directory of your project.
   - Delete main.cpp in that folder.
 
-### Set the logger ID<!-- {#example_baro_rho_logger_id} -->
+### Set the logger ID<!--! {#example_baro_rho_logger_id} -->
 
 - Change the "XXXX" in this section of code to the loggerID assigned by Stroud:
 
@@ -54,21 +54,21 @@ _______
 const char *LoggerID = "XXXX";
 ```
 
-### Set the universally universal identifiers (UUID) for each variable<!-- {#example_baro_rho_uuids} -->
+### Set the universally universal identifiers (UUID) for each variable<!--! {#example_baro_rho_uuids} -->
 
 - Go back to the web page for your site at the Monitor My Watershed/EnviroDIY data portal (<http://monitormywatershed.org/>)
 - For each variable, find the dummy UUID (`"12345678-abcd-1234-ef00-1234567890ab"`) and replace it with the real UUID for the variable.
 
-### Upload!<!-- {#example_baro_rho_upload} -->
+### Upload!<!--! {#example_baro_rho_upload} -->
 
 - Test everything at home **before** deploying out in the wild!
 
 _______
 
-[//]: # ( @section example_baro_rho_pio_config PlatformIO Configuration )
+<!--! @section example_baro_rho_pio_config PlatformIO Configuration -->
 
-[//]: # ( @include{lineno} baro_rho_correction/platformio.ini )
+<!--! @include{lineno} baro_rho_correction/platformio.ini -->
 
-[//]: # ( @section example_baro_rho_code The Complete Code )
+<!--! @section example_baro_rho_code The Complete Code -->
 
-[//]: # ( @include{lineno} baro_rho_correction/baro_rho_correction.ino )
+<!--! @include{lineno} baro_rho_correction/baro_rho_correction.ino -->

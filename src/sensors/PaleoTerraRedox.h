@@ -5,9 +5,9 @@
  * This library is published under the BSD-3 license.
  * @author Anthony Aufdenkampe <aaufdenkampe@limno.com> with help from Beth
  * Fisher, Evan Host and Bobby Schulz.
- * Heavliy edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ * Heavily edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief Contains the PaleoTerraRedox semsor subclass and the variable subclass
+ * @brief Contains the PaleoTerraRedox sensor subclass and the variable subclass
  * PaleoTerraRedox_Voltage.
  *
  * These are for the PaleoTerra redox sensors.
@@ -19,7 +19,7 @@
 /* clang-format off */
 /**
  * @defgroup sensor_pt_redox PaleoTerra Redox
- * Classes for the PaleoTerra Redox digital preassure sensor.
+ * Classes for the PaleoTerra Redox sensor.
  *
  * @ingroup the_sensors
  *
@@ -61,16 +61,23 @@
 #ifndef SRC_SENSORS_PALEOTERRAREDOX_H_
 #define SRC_SENSORS_PALEOTERRAREDOX_H_
 
-// Debugging Statement
-// #define MS_PALEOTERRAREDOX_DEBUG
+// Include the library config before anything else
+#include "ModSensorConfig.h"
 
+// Include the debugging config
+#include "ModSensorDebugConfig.h"
+
+// Define the print label[s] for the debugger
 #ifdef MS_PALEOTERRAREDOX_DEBUG
 #define MS_DEBUGGING_STD "PaleoTerraRedox"
 #endif
 
-// Included Dependencies
+// Include the debugger
 #include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+
+// Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include <Wire.h>
@@ -314,7 +321,7 @@ class PaleoTerraRedox_Voltage : public Variable {
     explicit PaleoTerraRedox_Voltage(
         Sensor* parentSense, const char* uuid = "",
         const char* varCode = PTR_VOLTAGE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)PTR_VOLTAGE_VAR_NUM,
+        : Variable(parentSense, (uint8_t)PTR_VOLTAGE_VAR_NUM,
                    (uint8_t)PTR_VOLTAGE_RESOLUTION, PTR_VOLTAGE_VAR_NAME,
                    PTR_VOLTAGE_UNIT_NAME, varCode, uuid) {}
     /**
@@ -324,7 +331,7 @@ class PaleoTerraRedox_Voltage : public Variable {
      * used.
      */
     PaleoTerraRedox_Voltage()
-        : Variable((const uint8_t)PTR_VOLTAGE_VAR_NUM,
+        : Variable((uint8_t)PTR_VOLTAGE_VAR_NUM,
                    (uint8_t)PTR_VOLTAGE_RESOLUTION, PTR_VOLTAGE_VAR_NAME,
                    PTR_VOLTAGE_UNIT_NAME, PTR_VOLTAGE_DEFAULT_CODE) {}
     /**
