@@ -141,9 +141,6 @@ bool GroPointParent::sleep(void) {
         _millisSensorActivated = 0;
         // Unset the measurement request time
         _millisMeasurementRequested = 0;
-        // Unset the number of measurements attempted and succeeded
-        _measurementAttemptsCompleted = 0;
-        _measurementsSucceeded        = 0;
         // Unset the status bits for sensor activation (bits 3 & 4) and
         // measurement request (bits 5 & 6)
         clearStatusBits(WAKE_ATTEMPTED, WAKE_SUCCESSFUL, MEASUREMENT_ATTEMPTED,
@@ -207,9 +204,6 @@ void GroPointParent::powerDown(void) {
         _millisSensorActivated = 0;
         // Unset the measurement request time
         _millisMeasurementRequested = 0;
-        // Unset the number of measurements attempted and succeeded
-        _measurementAttemptsCompleted = 0;
-        _measurementsSucceeded        = 0;
         // Unset the status bits for sensor power (bits 1 & 2),
         // activation (bits 3 & 4), and measurement request (bits 5 & 6)
         clearStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL, WAKE_ATTEMPTED,

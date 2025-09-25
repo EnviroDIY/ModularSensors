@@ -84,9 +84,6 @@ bool AtlasParent::sleep(void) {
         _millisSensorActivated = 0;
         // Unset the measurement request time
         _millisMeasurementRequested = 0;
-        // Unset the number of measurements attempted and succeeded
-        _measurementAttemptsCompleted = 0;
-        _measurementsSucceeded        = 0;
         // Unset the status bits for sensor activation (bits 3 & 4) and
         // measurement request (bits 5 & 6)
         clearStatusBits(WAKE_ATTEMPTED, WAKE_SUCCESSFUL, MEASUREMENT_ATTEMPTED,

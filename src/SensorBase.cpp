@@ -139,9 +139,6 @@ void Sensor::powerDown(void) {
         clearStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL, WAKE_ATTEMPTED,
                         WAKE_SUCCESSFUL, MEASUREMENT_ATTEMPTED,
                         MEASUREMENT_SUCCESSFUL);
-        // Unset the number of measurements attempted and succeeded
-        _measurementAttemptsCompleted = 0;
-        _measurementsSucceeded        = 0;
     } else {
         MS_DBG(F("Power to"), getSensorNameAndLocation(),
                F("is not controlled by this library."));
@@ -296,6 +293,8 @@ void Sensor::clearValues(void) {
         sensorValues[i]               = -9999;
         numberGoodMeasurementsMade[i] = 0;
     }
+    _measurementAttemptsCompleted = 0;
+    _measurementsSucceeded        = 0;
 }
 
 
