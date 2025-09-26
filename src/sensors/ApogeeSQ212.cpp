@@ -43,85 +43,61 @@ String ApogeeSQ212::getSensorLocation(void) {
 
 
 bool ApogeeSQ212::addSingleMeasurementResult(void) {
-    // Variables to store the results in
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return bumpMeasurementAttemptCount(false);
+    }
+
+    bool    success     = false;
     int16_t adcCounts   = -9999;
     float   adcVoltage  = -9999;
     float   calibResult = -9999;
 
-    // Check a measurement was *successfully* started (status bit 6 set)
-    // Only go on to get a result if it was
-    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
 // Create an auxiliary ADD object
 // We create and set up the ADC object here so that each sensor using
 // the ADC may set the gain appropriately without effecting others.
 #ifndef MS_USE_ADS1015
-        Adafruit_ADS1115 ads;  // Use this for the 16-bit version
+    Adafruit_ADS1115 ads;  // Use this for the 16-bit version
 #else
-        Adafruit_ADS1015 ads;  // Use this for the 12-bit version
+    Adafruit_ADS1015 ads;  // Use this for the 12-bit version
 #endif
-        // ADS Library default settings:
-        //  - TI1115 (16 bit)
-        //    - single-shot mode (powers down between conversions)
-        //    - 128 samples per second (8ms conversion time)
-        //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
-        //  - TI1015 (12 bit)
-        //    - single-shot mode (powers down between conversions)
-        //    - 1600 samples per second (625µs conversion time)
-        //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
+    // ADS Library default settings:
+    //  - TI1115 (16 bit)
+    //    - single-shot mode (powers down between conversions)
+    //    - 128 samples per second (8ms conversion time)
+    //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
+    //  - TI1015 (12 bit)
+    //    - single-shot mode (powers down between conversions)
+    //    - 1600 samples per second (625µs conversion time)
+    //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
 
-        // Bump the gain up to 1x = +/- 4.096V range
-        // Sensor return range is 0-2.5V, but the next gain option is 2x which
-        // only allows up to 2.048V
-        ads.setGain(GAIN_ONE);
-        // Begin ADC
-        ads.begin(_i2cAddress);
+    // Bump the gain up to 1x = +/- 4.096V range
+    // Sensor return range is 0-2.5V, but the next gain option is 2x which only
+    // allows up to 2.048V
+    ads.setGain(GAIN_ONE);
+    // Begin ADC
+    ads.begin(_i2cAddress);
 
-        // Read Analog to Digital Converter (ADC)
-        // Taking this reading includes the 8ms conversion delay.
-        // Measure the ADC raw count
-        adcCounts = ads.readADC_SingleEnded(_adsChannel);
-        // Convert ADC raw counts value to voltage (V)
-        adcVoltage = ads.computeVolts(adcCounts);
-        MS_DBG(F("  ads.readADC_SingleEnded("), _adsChannel, F("):"),
-               adcVoltage);
-
-        if (adcVoltage < 3.6 && adcVoltage > -0.3) {
-            // Skip results out of range
-            // Apogee SQ-212 Calibration Factor = 1.0 μmol m-2 s-1 per mV
-            calibResult = 1000 * adcVoltage * SQ212_CALIBRATION_FACTOR;
-            MS_DBG(F("  calibResult:"), calibResult);
-        } else {
-            // set invalid voltages back to -9999
-            adcVoltage = -9999;
-        }
-    } else {
-        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
-    }
-
-    verifyAndAddMeasurementResult(SQ212_PAR_VAR_NUM, calibResult);
-    verifyAndAddMeasurementResult(SQ212_VOLTAGE_VAR_NUM, adcVoltage);
-
-    // Record the time that the measurement was completed
-    _millisMeasurementCompleted = millis();
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
-    // Bump the number of attempted retries
-    _retryAttemptsMade++;
+    // Read Analog to Digital Converter (ADC)
+    // Taking this reading includes the 8ms conversion delay.
+    // Measure the ADC raw count
+    adcCounts = ads.readADC_SingleEnded(_adsChannel);
+    // Convert ADC raw counts value to voltage (V)
+    adcVoltage = ads.computeVolts(adcCounts);
+    MS_DBG(F("  ads.readADC_SingleEnded("), _adsChannel, F("):"), adcVoltage);
 
     if (adcVoltage < 3.6 && adcVoltage > -0.3) {
-        // Bump the number of completed measurement attempts
-        _measurementAttemptsCompleted++;
-        return true;
-    } else if (_retryAttemptsMade >= _allowedMeasurementRetries) {
-        // Bump the number of completed measurement attempts - we've failed but
-        // exceeded retries
-        _measurementAttemptsCompleted++;
-        return false;
-    } else {
-        return false;
+        // Skip results out of range
+        // Apogee SQ-212 Calibration Factor = 1.0 μmol m-2 s-1 per mV
+        calibResult = 1000 * adcVoltage * SQ212_CALIBRATION_FACTOR;
+        MS_DBG(F("  calibResult:"), calibResult);
+        verifyAndAddMeasurementResult(SQ212_PAR_VAR_NUM, calibResult);
+        verifyAndAddMeasurementResult(SQ212_VOLTAGE_VAR_NUM, adcVoltage);
+        success = true;
     }
+
+    // Return success value when finished
+    return bumpMeasurementAttemptCount(success);
 }

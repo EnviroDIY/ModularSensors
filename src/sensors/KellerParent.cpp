@@ -87,71 +87,47 @@ bool KellerParent::sleep(void) {
 
 
 bool KellerParent::addSingleMeasurementResult(void) {
-    bool success = false;
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return bumpMeasurementAttemptCount(false);
+    }
 
-    // Initialize float variables
+    bool  success            = false;
     float waterPressureBar   = -9999;
     float waterTemperatureC  = -9999;
     float waterDepthM        = -9999;
     float waterPressure_mBar = -9999;
 
-    // Check a measurement was *successfully* started (status bit 6 set)
-    // Only go on to get a result if it was
-    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-        // Get Values
-        success     = _ksensor.getValues(waterPressureBar, waterTemperatureC);
-        waterDepthM = _ksensor.calcWaterDepthM(
-            waterPressureBar,
-            waterTemperatureC);  // float calcWaterDepthM(float
-                                 // waterPressureBar, float waterTemperatureC)
+    // Get Values
+    success     = _ksensor.getValues(waterPressureBar, waterTemperatureC);
+    waterDepthM = _ksensor.calcWaterDepthM(
+        waterPressureBar,
+        waterTemperatureC);  // float calcWaterDepthM(float
+                             // waterPressureBar, float waterTemperatureC)
 
-        // Fix not-a-number values
-        if (!success || isnan(waterPressureBar)) waterPressureBar = -9999;
-        if (!success || isnan(waterTemperatureC)) waterTemperatureC = -9999;
-        if (!success || isnan(waterDepthM)) waterDepthM = -9999;
+    // For waterPressureBar, convert bar to millibar
+    if (!isnan(waterPressureBar) && waterPressureBar != -9999)
+        waterPressure_mBar = 1000 * waterPressureBar;
 
-        // For waterPressureBar, convert bar to millibar
-        if (waterPressureBar != -9999)
-            waterPressure_mBar = 1000 * waterPressureBar;
+    MS_DBG(F("  Pressure_mbar:"), waterPressure_mBar);
+    MS_DBG(F("  Temp_C:"), waterTemperatureC);
+    MS_DBG(F("  Height_m:"), waterDepthM);
 
-        MS_DBG(F("  Pressure_mbar:"), waterPressure_mBar);
-        MS_DBG(F("  Temp_C:"), waterTemperatureC);
-        MS_DBG(F("  Height_m:"), waterDepthM);
-    } else {
-        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    success &= (waterPressureBar != -9999 && waterTemperatureC != -9999 &&
+                waterDepthM != -9999);
+
+    if (success) {
+        // Put values into the array
+        verifyAndAddMeasurementResult(KELLER_PRESSURE_VAR_NUM,
+                                      waterPressure_mBar);
+        verifyAndAddMeasurementResult(KELLER_TEMP_VAR_NUM, waterTemperatureC);
+        verifyAndAddMeasurementResult(KELLER_HEIGHT_VAR_NUM, waterDepthM);
     }
 
-    // Put values into the array
-    verifyAndAddMeasurementResult(KELLER_PRESSURE_VAR_NUM, waterPressure_mBar);
-    verifyAndAddMeasurementResult(KELLER_TEMP_VAR_NUM, waterTemperatureC);
-    verifyAndAddMeasurementResult(KELLER_HEIGHT_VAR_NUM, waterDepthM);
-
-    // Record the time that the measurement was completed
-    _millisMeasurementCompleted = millis();
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
-    // Bump the number of attempted retries
-    _retryAttemptsMade++;
-
-    if (success &&
-        (waterPressureBar != -9999 || waterTemperatureC != -9999 ||
-         waterDepthM != -9999)) {
-        // Bump the number of successful measurements
-        // NOTE: Any one of the values being NOT -9999 is not considered a
-        // success!
-        _measurementAttemptsCompleted++;
-    } else if (_retryAttemptsMade >= _allowedMeasurementRetries) {
-        // Bump the number of completed measurement attempts - we've failed but
-        // exceeded retries
-        _measurementAttemptsCompleted++;
-    }
-
-    // Return true when finished
-    return success;
+    // Return success value when finished
+    return bumpMeasurementAttemptCount(success);
 }
 
 // cSpell:ignore ksensor

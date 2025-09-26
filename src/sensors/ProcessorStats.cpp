@@ -289,20 +289,8 @@ bool ProcessorStats::addSingleMeasurementResult(void) {
         MS_DBG(F("Skipping reset cause check on reps"));
     }
 
-    // Record the time that the measurement was completed
-    _millisMeasurementCompleted = millis();
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
-    // Bump the number of attempted retries
-    _retryAttemptsMade++;
-    // NOTE: We don't actually have any criteria for if the reading was any good
-    // or not, so we mark it as completed no matter what.
-    _measurementAttemptsCompleted++;
-
-    // Return true when finished
-    return true;
+    // Return true value when finished
+    return bumpMeasurementAttemptCount(true);
 }
 
 // cSpell:ignore ADALOGGER RSTC RCAUSE BKUPEXIT BODCORE BODVDD BBPS brkval MCUSR

@@ -170,45 +170,40 @@ bool YosemitechParent::sleep(void) {
 
 
 bool YosemitechParent::addSingleMeasurementResult(void) {
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return bumpMeasurementAttemptCount(false);
+    }
+
     bool success = false;
 
-    // Check a measurement was *successfully* started (status bit 6 set)
-    // Only go on to get a result if it was
-    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        switch (_model) {
-            case Y4000: {
-                // Initialize float variables
-                float DOmgL       = -9999;
-                float Turbidity   = -9999;
-                float Cond        = -9999;
-                float pH          = -9999;
-                float Temp        = -9999;
-                float ORP         = -9999;
-                float Chlorophyll = -9999;
-                float BGA         = -9999;
+    switch (_model) {
+        case Y4000: {
+            // Initialize float variables
+            float DOmgL       = -9999;
+            float Turbidity   = -9999;
+            float Cond        = -9999;
+            float pH          = -9999;
+            float Temp        = -9999;
+            float ORP         = -9999;
+            float Chlorophyll = -9999;
+            float BGA         = -9999;
 
-                // Get Values
-                MS_DBG(F("Get Values from"), getSensorNameAndLocation());
-                success = _ysensor.getValues(DOmgL, Turbidity, Cond, pH, Temp,
-                                             ORP, Chlorophyll, BGA);
+            // Get Values
+            MS_DBG(F("Get Values from"), getSensorNameAndLocation());
+            success = _ysensor.getValues(DOmgL, Turbidity, Cond, pH, Temp, ORP,
+                                         Chlorophyll, BGA);
 
-                // Fix not-a-number values
-                if (!success || isnan(DOmgL)) DOmgL = -9999;
-                if (!success || isnan(Turbidity)) Turbidity = -9999;
-                if (!success || isnan(Cond)) Cond = -9999;
-                if (!success || isnan(pH)) pH = -9999;
-                if (!success || isnan(Temp)) Temp = -9999;
-                if (!success || isnan(ORP)) ORP = -9999;
-                if (!success || isnan(Chlorophyll)) Chlorophyll = -9999;
-                if (!success || isnan(BGA)) BGA = -9999;
+            // For conductivity, convert mS/cm to µS/cm
+            if (success && !isnan(Cond)) Cond *= 1000;
 
-                // For conductivity, convert mS/cm to µS/cm
-                if (Cond != -9999) Cond *= 1000;
+            MS_DBG(F("    "), _ysensor.getParameter());
+            MS_DBG(F("    "), DOmgL, ',', Turbidity, ',', Cond, ',', pH, ',',
+                   Temp, ',', ORP, ',', Chlorophyll, ',', BGA);
 
-                MS_DBG(F("    "), _ysensor.getParameter());
-                MS_DBG(F("    "), DOmgL, ',', Turbidity, ',', Cond, ',', pH,
-                       ',', Temp, ',', ORP, ',', Chlorophyll, ',', BGA);
-
+            // NOTE: Success depends on getting values, not on them being valid
+            // numbers!
+            if (success) {
                 // Put values into the array
                 verifyAndAddMeasurementResult(0, DOmgL);
                 verifyAndAddMeasurementResult(1, Turbidity);
@@ -218,65 +213,43 @@ bool YosemitechParent::addSingleMeasurementResult(void) {
                 verifyAndAddMeasurementResult(5, ORP);
                 verifyAndAddMeasurementResult(6, Chlorophyll);
                 verifyAndAddMeasurementResult(7, BGA);
-
-                break;
             }
-            default: {
-                // Initialize float variables
-                float parmValue  = -9999;
-                float tempValue  = -9999;
-                float thirdValue = -9999;
+            break;
+        }
+        default: {
+            // Initialize float variables
+            float parmValue  = -9999;
+            float tempValue  = -9999;
+            float thirdValue = -9999;
 
-                // Get Values
-                MS_DBG(F("Get Values from"), getSensorNameAndLocation());
-                success = _ysensor.getValues(parmValue, tempValue, thirdValue);
+            // Get Values
+            MS_DBG(F("Get Values from"), getSensorNameAndLocation());
+            success = _ysensor.getValues(parmValue, tempValue, thirdValue);
 
-                // Fix not-a-number values
-                if (!success || isnan(parmValue)) parmValue = -9999;
-                if (!success || isnan(tempValue)) tempValue = -9999;
-                if (!success || isnan(thirdValue)) thirdValue = -9999;
+            // For conductivity, convert mS/cm to µS/cm
+            if (_model == Y520 && !isnan(parmValue)) parmValue *= 1000;
 
-                // For conductivity, convert mS/cm to µS/cm
-                if (_model == Y520 && parmValue != -9999) parmValue *= 1000;
+            MS_DBG(F(" "), _ysensor.getParameter(), ':', parmValue);
+            MS_DBG(F("  Temp:"), tempValue);
 
-                MS_DBG(F(" "), _ysensor.getParameter(), ':', parmValue);
-                MS_DBG(F("  Temp:"), tempValue);
+            // Not all sensors return a third value
+            if (_numReturnedValues > 2) { MS_DBG(F("  Third:"), thirdValue); }
 
-                // Not all sensors return a third value
-                if (_numReturnedValues > 2) {
-                    MS_DBG(F("  Third:"), thirdValue);
-                }
 
+            // NOTE: Success depends on getting values, not on them being valid
+            // numbers!
+            if (success) {
                 // Put values into the array
                 verifyAndAddMeasurementResult(0, parmValue);
                 verifyAndAddMeasurementResult(1, tempValue);
                 verifyAndAddMeasurementResult(2, thirdValue);
             }
+            break;
         }
-    } else {
-        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
     }
 
-    // Record the time that the measurement was completed
-    _millisMeasurementCompleted = millis();
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
-    // Bump the number of attempted retries
-    _retryAttemptsMade++;
-
-    if (success) {
-        // Bump the number of completed measurement attempts
-        _measurementAttemptsCompleted++;
-    } else if (_retryAttemptsMade >= _allowedMeasurementRetries) {
-        // Bump the number of completed measurement attempts - we've failed but
-        // exceeded retries
-        _measurementAttemptsCompleted++;
-    }
-
-    // Return true when finished
-    return success;
+    // Return success value when finished
+    return bumpMeasurementAttemptCount(success);
 }
 
 // cSpell:ignore ysensor

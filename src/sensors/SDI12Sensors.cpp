@@ -709,43 +709,23 @@ bool SDI12Sensors::getResults(bool verify_crc) {
 
 #ifndef MS_SDI12_NON_CONCURRENT
 bool SDI12Sensors::addSingleMeasurementResult(void) {
-    bool success = false;
-
-    // Check a measurement was *successfully* started (status bit 6 set)
-    // Only go on to get a result if it was
-    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        success = getResults(MS_SDI12_USE_CRC);
-    } else {
-        // If there's no measurement, need to make sure we send over all
-        // of the "failed" result values
-        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
-        for (uint8_t i = 0; i < _numReturnedValues; i++) {
-            verifyAndAddMeasurementResult(i, static_cast<float>(-9999));
-        }
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return bumpMeasurementAttemptCount(false);
     }
 
-    // Record the time that the measurement was completed
-    _millisMeasurementCompleted = millis();
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
-    // Bump the number of attempted retries
-    _retryAttemptsMade++;
+    bool success = getResults(MS_SDI12_USE_CRC);
 
-    if (success) {
-        // Bump the number of completed measurement attempts
-        _measurementAttemptsCompleted++;
-    } else if (_retryAttemptsMade >= _allowedMeasurementRetries) {
-        // Bump the number of completed measurement attempts - we've failed but
-        // exceeded retries
-        _measurementAttemptsCompleted++;
-    }
-
-    return success;
+    // Return success value when finished
+    return bumpMeasurementAttemptCount(success);
 }
 #else
 bool SDI12Sensors::addSingleMeasurementResult(void) {
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return bumpMeasurementAttemptCount(false);
+    }
+
     bool success = false;
 
     String startCommand;
@@ -807,35 +787,12 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
                 verifyAndAddMeasurementResult(i, static_cast<float>(-9999));
             }
         }
-    } else {
-        // If there's no response, we still need to send over all the failed
-        // values
-        for (uint8_t i = 0; i < _numReturnedValues; i++) {
-            verifyAndAddMeasurementResult(i, static_cast<float>(-9999));
-        }
     }
 
     // Empty the buffer and de-activate the SDI-12 Object
     deactivate();
 
-    // Record the time that the measurement was completed
-    _millisMeasurementCompleted = millis();
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
-    // Bump the number of attempted retries
-    _retryAttemptsMade++;
-
-    if (success) {
-        // Bump the number of completed measurement attempts
-        _measurementAttemptsCompleted++;
-    } else if (_retryAttemptsMade >= _allowedMeasurementRetries) {
-        // Bump the number of completed measurement attempts - we've failed but
-        // exceeded retries
-        _measurementAttemptsCompleted++;
-    }
-
-    return success;
+    // Return success value when finished
+    return bumpMeasurementAttemptCount(success);
 }
 #endif  // #ifndef MS_SDI12_NON_CONCURRENT

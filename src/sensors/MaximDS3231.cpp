@@ -54,6 +54,9 @@ bool MaximDS3231::startSingleMeasurement(void) {
 
 
 bool MaximDS3231::addSingleMeasurementResult(void) {
+    // NOTE: This can't fail! If it does we have much bigger problems because
+    // that means we can't get the timeand the whole system is not working.
+
     // get the temperature value
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
     float tempVal = rtc.getTemperature();
@@ -61,18 +64,6 @@ bool MaximDS3231::addSingleMeasurementResult(void) {
 
     verifyAndAddMeasurementResult(DS3231_TEMP_VAR_NUM, tempVal);
 
-    // Record the time that the measurement was completed
-    _millisMeasurementCompleted = millis();
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
-    // Bump the number of attempted retries
-    _retryAttemptsMade++;
-    // NOTE: We don't actually have any criteria for if the reading was any good
-    // or not, so we mark it as completed no matter what.
-    _measurementAttemptsCompleted++;
-
-    // Return true when finished
-    return true;
+    // Return success value when finished
+    return bumpMeasurementAttemptCount(true);
 }

@@ -187,98 +187,75 @@ bool GeoluxHydroCam::startSingleMeasurement(void) {
 
 
 bool GeoluxHydroCam::addSingleMeasurementResult(void) {
-    // Initialize values
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return bumpMeasurementAttemptCount(false);
+    }
+
     bool    success           = false;
     int32_t bytes_transferred = -9999;
     int32_t byte_error        = -9999;
 
-    // Check a measurement was *successfully* started (status bit 6 set)
-    // Only go on to get a result if it was
-    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        // set a new filename based on the current RTC time
-        String filename = _baseLogger->generateFileName(
-            true, HYDROCAM_FILE_EXTENSION, _filePrefix);
-        MS_DBG(F("Attempting to create the file: "), filename);
+    // set a new filename based on the current RTC time
+    String filename = _baseLogger->generateFileName(
+        true, HYDROCAM_FILE_EXTENSION, _filePrefix);
+    MS_DBG(F("Attempting to create the file: "), filename);
 
-        // Initialise the SD card
-        // skip everything else if there's no SD card, otherwise it might hang
-        if (!_baseLogger->initializeSDCard()) return false;
+    // Initialise the SD card
+    // skip everything else if there's no SD card, otherwise it might hang
+    if (!_baseLogger->initializeSDCard()) return false;
 
-        // Create and then open the file in write mode
-        if (imgFile.open(filename.c_str(), O_CREAT | O_WRITE | O_AT_END)) {
-            MS_DBG(F("Created new file:"), filename);
-            success = true;
-        } else {
-            MS_DBG(F("Failed to create the image file"), filename);
-            success = false;
-        }
-
-        int32_t image_size = _camera.getImageSize();
-        MS_DBG(F("Completed image is"), image_size, F("bytes."));
-        success &= image_size != 0;
-
-        if (success) {
-            // dump anything in the camera stream, just in case
-            _camera.streamDump();
-
-            // Disable the watch-dog timer to reduce interrupts during transfer
-            MS_DBG(F("Disabling the watchdog during file transfer"));
-            extendedWatchDog::disableWatchDog();
-
-            // transfer the image from the camera to a file on the SD card
-            MS_START_DEBUG_TIMER;
-            bytes_transferred = _camera.transferImage(imgFile, image_size);
-            byte_error        = abs(bytes_transferred - image_size);
-            // Close the image file
-            imgFile.close();
-
-            // See how long it took us
-            MS_DBG(F("Wrote"), bytes_transferred, F("of expected"), image_size,
-                   F("bytes to the SD card - a difference of"), byte_error,
-                   F("bytes"));
-            MS_DBG(F("Total read/write time was"), MS_PRINT_DEBUG_TIMER,
-                   F("ms"));
-
-            // Re-enable the watchdog
-            MS_DBG(F("Re-enabling the watchdog after file transfer"));
-            extendedWatchDog::enableWatchDog();
-
-            // Store the last image name
-            _filename = filename;
-
-            success = bytes_transferred == image_size;
-            MS_DBG(F("Image transfer was a"),
-                   success ? F("success") : F("failure"));
-        }
+    // Create and then open the file in write mode
+    if (imgFile.open(filename.c_str(), O_CREAT | O_WRITE | O_AT_END)) {
+        MS_DBG(F("Created new file:"), filename);
+        success = true;
     } else {
-        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+        MS_DBG(F("Failed to create the image file"), filename);
+        success = false;
     }
 
-    verifyAndAddMeasurementResult(HYDROCAM_SIZE_VAR_NUM, bytes_transferred);
-    verifyAndAddMeasurementResult(HYDROCAM_ERROR_VAR_NUM, byte_error);
-
-    // Record the time that the measurement was completed
-    _millisMeasurementCompleted = millis();
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
-    // Bump the number of attempted retries
-    _retryAttemptsMade++;
+    int32_t image_size = _camera.getImageSize();
+    MS_DBG(F("Completed image is"), image_size, F("bytes."));
+    success &= image_size != 0;
 
     if (success) {
-        // Bump the number of successful measurements
-        // NOTE: We consider the measurement a success only if we got all the
-        // bytes we expected!
-        _measurementAttemptsCompleted++;
-    } else if (_retryAttemptsMade >= _allowedMeasurementRetries) {
-        // Bump the number of completed measurement attempts - we've failed but
-        // exceeded retries
-        _measurementAttemptsCompleted++;
+        // dump anything in the camera stream, just in case
+        _camera.streamDump();
+
+        // Disable the watch-dog timer to reduce interrupts during transfer
+        MS_DBG(F("Disabling the watchdog during file transfer"));
+        extendedWatchDog::disableWatchDog();
+
+        // transfer the image from the camera to a file on the SD card
+        MS_START_DEBUG_TIMER;
+        bytes_transferred = _camera.transferImage(imgFile, image_size);
+        byte_error        = abs(bytes_transferred - image_size);
+        // Close the image file
+        imgFile.close();
+
+        // See how long it took us
+        MS_DBG(F("Wrote"), bytes_transferred, F("of expected"), image_size,
+               F("bytes to the SD card - a difference of"), byte_error,
+               F("bytes"));
+        MS_DBG(F("Total read/write time was"), MS_PRINT_DEBUG_TIMER, F("ms"));
+
+        // Re-enable the watchdog
+        MS_DBG(F("Re-enabling the watchdog after file transfer"));
+        extendedWatchDog::enableWatchDog();
+
+        // Store the last image name
+        _filename = filename;
+
+        success = bytes_transferred == image_size;
+        MS_DBG(F("Image transfer was a"),
+               success ? F("success") : F("failure"));
+
+        verifyAndAddMeasurementResult(HYDROCAM_SIZE_VAR_NUM, bytes_transferred);
+        verifyAndAddMeasurementResult(HYDROCAM_ERROR_VAR_NUM, byte_error);
     }
 
-    // Return values shows if we got a not-obviously-bad reading
-    return success;
+    // Return success value when finished
+    return bumpMeasurementAttemptCount(success);
 }
 
 // check if the camera is ready

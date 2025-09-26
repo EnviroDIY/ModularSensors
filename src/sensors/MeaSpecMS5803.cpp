@@ -55,63 +55,36 @@ bool MeaSpecMS5803::setup(void) {
 
 
 bool MeaSpecMS5803::addSingleMeasurementResult(void) {
-    bool success = false;
-
-    // Initialize float variables
-    float temp  = -9999;
-    float press = -9999;
-
-    // Check a measurement was *successfully* started (status bit 6 set)
-    // Only go on to get a result if it was
-    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
-        // Read values
-        // NOTE:  These functions actually include the request to begin
-        // a measurement and the wait for said measurement to finish.
-        // It's pretty fast (max of 11 ms) so we'll just wait.
-        temp  = MS5803_internal.getTemperature(CELSIUS, ADC_512);
-        press = MS5803_internal.getPressure(ADC_4096);
-
-        if (isnan(temp)) temp = -9999;
-        if (isnan(press)) press = -9999;
-        if (temp < -50 || temp > 95) {  // Range is -40°C to +85°C
-            temp  = -9999;
-            press = -9999;
-        }
-        if (press == 0) {  // Returns 0 when disconnected, which is highly
-                           // unlikely to be a real value.
-            temp  = -9999;
-            press = -9999;
-        }
-
-        MS_DBG(F("  Temperature:"), temp);
-        MS_DBG(F("  Pressure:"), press);
-    } else {
-        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return bumpMeasurementAttemptCount(false);
     }
 
-    verifyAndAddMeasurementResult(MS5803_TEMP_VAR_NUM, temp);
-    verifyAndAddMeasurementResult(MS5803_PRESSURE_VAR_NUM, press);
+    bool  success = false;
+    float temp    = -9999;
+    float press   = -9999;
 
-    // Record the time that the measurement was completed
-    _millisMeasurementCompleted = millis();
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
-    // Bump the number of attempted retries
-    _retryAttemptsMade++;
+    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+    // Read values
+    // NOTE:  These functions actually include the request to begin
+    // a measurement and the wait for said measurement to finish.
+    // It's pretty fast (max of 11 ms) so we'll just wait.
+    temp  = MS5803_internal.getTemperature(CELSIUS, ADC_512);
+    press = MS5803_internal.getPressure(ADC_4096);
 
-    if (success && (temp != -9999 || press != -9999)) {
-        // Bump the number of successful measurements
-        // NOTE: Any one of the values being NOT -9999 is not considered a
-        // success!
-        _measurementAttemptsCompleted++;
-    } else if (_retryAttemptsMade >= _allowedMeasurementRetries) {
-        // Bump the number of completed measurement attempts - we've failed but
-        // exceeded retries
-        _measurementAttemptsCompleted++;
+    MS_DBG(F("  Temperature:"), temp);
+    MS_DBG(F("  Pressure:"), press);
+
+    if (!isnan(temp) && !isnan(press) && temp > -50 && temp < 95 &&
+        press != 0) {
+        // Temperature Range is -40°C to +85°C
+        // Pressure returns 0 when disconnected, which is highly unlikely to be
+        // a real value.
+        verifyAndAddMeasurementResult(MS5803_TEMP_VAR_NUM, temp);
+        verifyAndAddMeasurementResult(MS5803_PRESSURE_VAR_NUM, press);
+        success = true;
     }
 
-    return success;
+    // Return success value when finished
+    return bumpMeasurementAttemptCount(success);
 }

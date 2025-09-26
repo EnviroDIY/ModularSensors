@@ -76,34 +76,23 @@ float AnalogElecConductivity::readEC(uint8_t analogPinNum) {
 
 
 bool AnalogElecConductivity::addSingleMeasurementResult(void) {
-    float sensorEC_uScm = -9999;
-
-    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
-
-        sensorEC_uScm = readEC(_dataPin);
-        MS_DBG(F("Water EC (uSm/cm)"), sensorEC_uScm);
-    } else {
-        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return bumpMeasurementAttemptCount(false);
     }
 
+    float sensorEC_uScm = -9999;
+
+    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+
+    sensorEC_uScm = readEC(_dataPin);
+    MS_DBG(F("Water EC (uSm/cm)"), sensorEC_uScm);
+
+    // NOTE: We don't actually have any criteria for if the reading was any good
+    // or not, so we mark it as successful no matter what.
     verifyAndAddMeasurementResult(ANALOGELECCONDUCTIVITY_EC_VAR_NUM,
                                   sensorEC_uScm);
-
-    // Record the time that the measurement was completed
-    _millisMeasurementCompleted = millis();
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
-    // Bump the number of attempted retries
-    _retryAttemptsMade++;
-    // NOTE: We don't actually have any criteria for if the reading was any good
-    // or not, so we mark it as completed no matter what.
-    _measurementAttemptsCompleted++;
-
-    // Return true when finished
-    return true;
+    return bumpMeasurementAttemptCount(true);
 }
 
 // cSpell:ignore AnalogElecConductivity Rseries_ohms sensorEC_Konst Rwater_ohms

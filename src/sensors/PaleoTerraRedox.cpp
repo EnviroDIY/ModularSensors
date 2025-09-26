@@ -97,6 +97,11 @@ bool PaleoTerraRedox::setup(void) {
 
 
 bool PaleoTerraRedox::addSingleMeasurementResult(void) {
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return bumpMeasurementAttemptCount(false);
+    }
+
     bool success = false;
 
     byte config = 0;  // Data transfer values
@@ -104,70 +109,49 @@ bool PaleoTerraRedox::addSingleMeasurementResult(void) {
     float res = 0;  // Calculated voltage in uV
 
     byte i2c_status = -1;
-    if (_millisMeasurementRequested > 0) {
-        _i2c->beginTransmission(_i2cAddressHex);
-        _i2c->write(0b10001100);  // initiate conversion, One-Shot mode, 18
-                                  // bits, PGA x1
-        i2c_status = _i2c->endTransmission();
 
-        delay(300);
+    _i2c->beginTransmission(_i2cAddressHex);
+    _i2c->write(0b10001100);  // initiate conversion, One-Shot mode, 18
+                              // bits, PGA x1
+    i2c_status = _i2c->endTransmission();
 
-        _i2c->requestFrom(int(_i2cAddressHex),
-                          4);  // Get 4 bytes from device
-        byte res1 = _i2c->read();
-        byte res2 = _i2c->read();
-        byte res3 = _i2c->read();
-        config    = _i2c->read();
+    delay(300);
 
-        res      = 0;
-        int sign = bitRead(res1, 1);  // one but least significant bit
-        if (sign == 1) {
-            res1 = ~res1;
-            res2 = ~res2;
-            res3 = ~res3;  // two's complements
-            res  = bitRead(res1, 0) *
-                -1024;  // 256 * 256 * 15.625 uV per LSB = 16
-            res -= res2 * 4;
-            res -= res3 * 0.015625;
-            res -= 0.015625;
-        } else {
-            res = bitRead(res1, 0) *
-                1024;  // 256 * 256 * 15.625 uV per LSB = 16
-            res += res2 * 4;
-            res += res3 * 0.015625;
-        }
+    _i2c->requestFrom(int(_i2cAddressHex),
+                      4);  // Get 4 bytes from device
+    byte res1 = _i2c->read();
+    byte res2 = _i2c->read();
+    byte res3 = _i2c->read();
+    config    = _i2c->read();
+
+    res      = 0;
+    int sign = bitRead(res1, 1);  // one but least significant bit
+    if (sign == 1) {
+        res1 = ~res1;
+        res2 = ~res2;
+        res3 = ~res3;                     // two's complements
+        res  = bitRead(res1, 0) * -1024;  // 256 * 256 * 15.625 uV per LSB = 16
+        res -= res2 * 4;
+        res -= res3 * 0.015625;
+        res -= 0.015625;
     } else {
-        MS_DBG(F("Sensor is not currently measuring!\n"));
+        res = bitRead(res1, 0) * 1024;  // 256 * 256 * 15.625 uV per LSB = 16
+        res += res2 * 4;
+        res += res3 * 0.015625;
     }
 
-    // ADD FAILURE CONDITIONS!!
+    /// @todo ADD FAILURE CONDITIONS for PaleoTerraRedox!!
     if (isnan(res))
         res = -9999;  // list a failure if the sensor returns nan (not sure
                       // how this would happen, keep to be safe)
     else if (res == 0 && i2c_status == 0 && config == 0)
         res = -9999;  // List a failure when the sensor is not connected
-    // Store the results in the sensorValues array
-    verifyAndAddMeasurementResult(PTR_VOLTAGE_VAR_NUM, res);
-
-    // Record the time that the measurement was completed
-    _millisMeasurementCompleted = millis();
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bit for a measurement having been requested (bit 5)
-    clearStatusBit(MEASUREMENT_ATTEMPTED);
-    // Set the status bit for measurement completion (bit 6)
-    setStatusBit(MEASUREMENT_SUCCESSFUL);
-    // Bump the number of attempted retries
-    _retryAttemptsMade++;
-
-    if (success && (res != -9999)) {
-        // Bump the number of completed measurement attempts
-        _measurementAttemptsCompleted++;
-    } else if (_retryAttemptsMade >= _allowedMeasurementRetries) {
-        // Bump the number of completed measurement attempts - we've failed but
-        // exceeded retries
-        _measurementAttemptsCompleted++;
+    success = res != -9999;
+    if (success) {
+        // Store the results in the sensorValues array
+        verifyAndAddMeasurementResult(PTR_VOLTAGE_VAR_NUM, res);
     }
 
-    return success;
+    // Return success value when finished
+    return bumpMeasurementAttemptCount(success);
 }

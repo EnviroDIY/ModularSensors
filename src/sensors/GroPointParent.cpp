@@ -163,6 +163,11 @@ bool GroPointParent::sleep(void) {
 
 
 bool GroPointParent::addSingleMeasurementResult(void) {
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return bumpMeasurementAttemptCount(false);
+    }
+
     bool success  = false;
     bool successT = false;
     // Initialize moisture variables for each probe segment
@@ -170,112 +175,63 @@ bool GroPointParent::addSingleMeasurementResult(void) {
     // Initialize temperature variables for each probe sensor
     float T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13 = -9999;
 
-    // Check a measurement was *successfully* started (status bit 6 set)
-    // Only go on to get a result if it was
-    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        switch (_model) {
-            case GPLP8: {
-                // Get Moisture Values
-                MS_DBG(F("Get Values from"), getSensorNameAndLocation());
-                success = _gsensor.getValues(M1, M2, M3, M4, M5, M6, M7, M8);
+    switch (_model) {
+        case GPLP8: {
+            // Get Moisture Values
+            MS_DBG(F("Get Values from"), getSensorNameAndLocation());
+            success = _gsensor.getValues(M1, M2, M3, M4, M5, M6, M7, M8);
 
-                // Fix not-a-number values
-                if (!success || isnan(M1)) M1 = -9999;
-                if (!success || isnan(M2)) M2 = -9999;
-                if (!success || isnan(M3)) M3 = -9999;
-                if (!success || isnan(M4)) M4 = -9999;
-                if (!success || isnan(M5)) M5 = -9999;
-                if (!success || isnan(M6)) M6 = -9999;
-                if (!success || isnan(M7)) M7 = -9999;
-                if (!success || isnan(M8)) M8 = -9999;
+            MS_DBG(F("    "), _gsensor.getParameter());
+            MS_DBG(F("    "), _gsensor.getUnits());
+            MS_DBG(F("    "), M1, ',', M2, ',', M3, ',', M4, ',', M5, ',', M6,
+                   ',', M7, ',', M8);
 
-                MS_DBG(F("    "), _gsensor.getParameter());
-                MS_DBG(F("    "), _gsensor.getUnits());
-                MS_DBG(F("    "), M1, ',', M2, ',', M3, ',', M4, ',', M5, ',',
-                       M6, ',', M7, ',', M8);
+            // Get Temperature Values
+            successT = _gsensor.getTemperatureValues(
+                T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13);
 
-                // Get Temperature Values
-                successT = _gsensor.getTemperatureValues(
-                    T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13);
+            MS_DBG(F("    "), _gsensor.getParameter1());
+            MS_DBG(F("    "), _gsensor.getUnits1());
+            MS_DBG(F("    "), T1, ',', T2, ',', T3, ',', T4, ',', T5, ',', T6,
+                   ',', T7, ',', T8, ',', T9, ',', T10, ',', T11, ',', T12, ',',
+                   T13);
 
-                // Fix not-a-number values
-                if (!successT || isnan(T1)) T1 = -9999;
-                if (!successT || isnan(T2)) T2 = -9999;
-                if (!successT || isnan(T3)) T3 = -9999;
-                if (!successT || isnan(T4)) T4 = -9999;
-                if (!successT || isnan(T5)) T5 = -9999;
-                if (!successT || isnan(T6)) T6 = -9999;
-                if (!successT || isnan(T7)) T7 = -9999;
-                if (!successT || isnan(T8)) T8 = -9999;
-                if (!successT || isnan(T9)) T9 = -9999;
-                if (!successT || isnan(T10)) T10 = -9999;
-                if (!successT || isnan(T11)) T11 = -9999;
-                if (!successT || isnan(T12)) T12 = -9999;
-                if (!successT || isnan(T13)) T13 = -9999;
-
-                MS_DBG(F("    "), _gsensor.getParameter1());
-                MS_DBG(F("    "), _gsensor.getUnits1());
-                MS_DBG(F("    "), T1, ',', T2, ',', T3, ',', T4, ',', T5, ',',
-                       T6, ',', T7, ',', T8, ',', T9, ',', T10, ',', T11, ',',
-                       T12, ',', T13);
-
-
-                // Put values into the array
-                verifyAndAddMeasurementResult(0, M1);
-                verifyAndAddMeasurementResult(1, M2);
-                verifyAndAddMeasurementResult(2, M3);
-                verifyAndAddMeasurementResult(3, M4);
-                verifyAndAddMeasurementResult(4, M5);
-                verifyAndAddMeasurementResult(5, M6);
-                verifyAndAddMeasurementResult(6, M7);
-                verifyAndAddMeasurementResult(7, M8);
-
-                verifyAndAddMeasurementResult(8, T1);
-                verifyAndAddMeasurementResult(9, T2);
-                verifyAndAddMeasurementResult(10, T3);
-                verifyAndAddMeasurementResult(11, T4);
-                verifyAndAddMeasurementResult(12, T5);
-                verifyAndAddMeasurementResult(13, T6);
-                verifyAndAddMeasurementResult(14, T7);
-                verifyAndAddMeasurementResult(15, T8);
-                verifyAndAddMeasurementResult(16, T9);
-                verifyAndAddMeasurementResult(17, T10);
-                verifyAndAddMeasurementResult(18, T11);
-                verifyAndAddMeasurementResult(19, T12);
-                verifyAndAddMeasurementResult(20, T13);
-
-
-                break;
-            }
-            default: {
-                // Get Values
-                MS_DBG(F("Other GroPoint models not yet implemented."));
-            }
+            break;
         }
-    } else {
-        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+        default: {
+            // Get Values
+            MS_DBG(F("Other GroPoint models not yet implemented."));
+        }
     }
 
-    // Record the time that the measurement was completed
-    _millisMeasurementCompleted = millis();
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
-    // Bump the number of attempted retries
-    _retryAttemptsMade++;
-
     if (success && successT) {
-        // Bump the number of completed measurement attempts
-        _measurementAttemptsCompleted++;
-    } else if (_retryAttemptsMade >= _allowedMeasurementRetries) {
-        // Bump the number of completed measurement attempts - we've failed but
-        // exceeded retries
-        _measurementAttemptsCompleted++;
+        // Put values into the array
+        verifyAndAddMeasurementResult(0, M1);
+        verifyAndAddMeasurementResult(1, M2);
+        verifyAndAddMeasurementResult(2, M3);
+        verifyAndAddMeasurementResult(3, M4);
+        verifyAndAddMeasurementResult(4, M5);
+        verifyAndAddMeasurementResult(5, M6);
+        verifyAndAddMeasurementResult(6, M7);
+        verifyAndAddMeasurementResult(7, M8);
+
+        verifyAndAddMeasurementResult(8, T1);
+        verifyAndAddMeasurementResult(9, T2);
+        verifyAndAddMeasurementResult(10, T3);
+        verifyAndAddMeasurementResult(11, T4);
+        verifyAndAddMeasurementResult(12, T5);
+        verifyAndAddMeasurementResult(13, T6);
+        verifyAndAddMeasurementResult(14, T7);
+        verifyAndAddMeasurementResult(15, T8);
+        verifyAndAddMeasurementResult(16, T9);
+        verifyAndAddMeasurementResult(17, T10);
+        verifyAndAddMeasurementResult(18, T11);
+        verifyAndAddMeasurementResult(19, T12);
+        verifyAndAddMeasurementResult(20, T13);
     }
 
     // Return success value when finished
-    return success && successT;
+    return bumpMeasurementAttemptCount((success && successT));
 }
 
 // cSpell:ignore gsensor

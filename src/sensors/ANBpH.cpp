@@ -294,8 +294,12 @@ bool ANBpH::sleep(void) {
 }
 
 bool ANBpH::addSingleMeasurementResult(void) {
-    bool success = false;
-    // Initialize variables for each value
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return bumpMeasurementAttemptCount(false);
+    }
+
+    bool              success = false;
     float             pH, temp, sal, spcond, raw_cond = -9999;
     ANBHealthCode     health     = ANBHealthCode::UNKNOWN;
     ANBStatusCode     status     = ANBStatusCode::UNKNOWN;
@@ -318,33 +322,38 @@ bool ANBpH::addSingleMeasurementResult(void) {
            ':', time_buff);
 #endif
 
-    // Check a measurement was *successfully* started (status bit 6 set)
-    // Only go on to get a result if it was
-    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        // Print Moisture Values
-        MS_DBG(F("Get Values from"), getSensorNameAndLocation());
-        success = _anb_sensor.getValues(pH, temp, sal, spcond, raw_cond, health,
-                                        diagnostic);
-        status  = _anb_sensor.getStatusCode();
+    MS_DBG(F("Get Values from"), getSensorNameAndLocation());
+    success = _anb_sensor.getValues(pH, temp, sal, spcond, raw_cond, health,
+                                    diagnostic);
+    status  = _anb_sensor.getStatusCode();
 
-        // Print the values for debugging
-        MS_DBG(F("  pH:"), pH);
-        MS_DBG(F("  Temperature (C):"), temp);
-        MS_DBG(F("  Salinity (ppt):"), sal);
-        MS_DBG(F("  Specific Conductance (µS/cm):"), spcond);
-        MS_DBG(F("  Raw Conductance (µS/cm):"), raw_cond);
-        MS_DBG(F("  Health Code:"), static_cast<int16_t>(health), '-',
-               _anb_sensor.getHealthString(health));
-        MS_DBG(F("  Diagnostic Code:"), static_cast<int16_t>(diagnostic), '-',
-               _anb_sensor.getDiagnosticString(diagnostic));
-        MS_DBG(F("  Status Code:"), static_cast<int16_t>(status), '-',
-               _anb_sensor.getStatusString(status));
+    // Print the values for debugging
+    MS_DBG(F("  pH:"), pH);
+    MS_DBG(F("  Temperature (C):"), temp);
+    MS_DBG(F("  Salinity (ppt):"), sal);
+    MS_DBG(F("  Specific Conductance (µS/cm):"), spcond);
+    MS_DBG(F("  Raw Conductance (µS/cm):"), raw_cond);
+    MS_DBG(F("  Health Code:"), static_cast<int16_t>(health), '-',
+           _anb_sensor.getHealthString(health));
+    MS_DBG(F("  Diagnostic Code:"), static_cast<int16_t>(diagnostic), '-',
+           _anb_sensor.getDiagnosticString(diagnostic));
+    MS_DBG(F("  Status Code:"), static_cast<int16_t>(status), '-',
+           _anb_sensor.getStatusString(status));
 
-        if (health == ANBHealthCode::NOT_IMMERSED) {
-            PRINTOUT(F("  WARNING: ANB pH sensor is not immersed!"));
-        }
+    if (health == ANBHealthCode::NOT_IMMERSED) {
+        PRINTOUT(F("  WARNING: ANB pH sensor is not immersed!"));
+    }
 
-        // Put values into the array
+    // We consider a measurement successful if we got a modbus response and
+    // the pH value is in range or the health code says the sensor is not
+    // immersed. We accept the not immersed condition as a successful
+    // measurement because the sensor will not retry for at least 5 minutes
+    // after an immersion error.
+    success &= ((0.0 < pH && pH < 14.00) ||
+                health == ANBHealthCode::NOT_IMMERSED);
+
+    // Put values into the array - if it's a success or our last try
+    if (success || _retryAttemptsMade == _allowedMeasurementRetries - 1) {
         verifyAndAddMeasurementResult(ANB_PH_PH_VAR_NUM, pH);
         verifyAndAddMeasurementResult(ANB_PH_TEMP_VAR_NUM, temp);
         verifyAndAddMeasurementResult(ANB_PH_SALINITY_VAR_NUM, sal);
@@ -356,35 +365,10 @@ bool ANBpH::addSingleMeasurementResult(void) {
                                       static_cast<int16_t>(diagnostic));
         verifyAndAddMeasurementResult(ANB_PH_STATUS_CODE_VAR_NUM,
                                       static_cast<int16_t>(status));
-    } else {
-        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
-    }
-    // Record the time that the measurement was completed
-    _millisMeasurementCompleted = millis();
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
-    // Bump the number of attempted retries
-    _retryAttemptsMade++;
-
-    // We consider a measurement successful if we got a modbus response and
-    // the pH value is in range or the health code says the sensor is not
-    // immersed. We accept the not immersed condition as a successful
-    // measurement because the sensor will not retry for at least 5 minutes
-    // after an immersion error.
-    if (success &&
-        ((0.0 < pH && pH < 14.00) || health == ANBHealthCode::NOT_IMMERSED)) {
-        // Bump the number of completed measurement attempts
-        _measurementAttemptsCompleted++;
-    } else if (_retryAttemptsMade >= _allowedMeasurementRetries) {
-        // Bump the number of completed measurement attempts - we've failed but
-        // exceeded retries
-        _measurementAttemptsCompleted++;
     }
 
     // Return success value when finished
-    return success;
+    return bumpMeasurementAttemptCount(success);
 }
 
 // check if the sensor is ready

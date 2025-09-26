@@ -278,61 +278,32 @@ bool BoschBMP3xx::startSingleMeasurement(void) {
 
 
 bool BoschBMP3xx::addSingleMeasurementResult(void) {
-    bool success = false;
-
-    // Initialize float variables
-    float temp  = -9999;
-    float press = -9999;
-    float alt   = -9999;
-
-    // Check a measurement was *successfully* started (status bit 6 set)
-    // Only go on to get a result if it was
-    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
-
-        // Read values
-        success = bmp_internal.getMeasurements(temp, press, alt);
-
-        // Assume that if all three are 0, really a failed response
-        // May also return a very negative temp when receiving a bad response
-        if (!success) {
-            temp  = -9999;
-            press = -9999;
-            alt   = -9999;
-        }
-
-        MS_DBG(F("  Temperature:"), temp, F("°C"));
-        MS_DBG(F("  Barometric Pressure:"), press, F("Pa"));
-        MS_DBG(F("  Calculated Altitude:"), alt, F("m ASL"));
-    } else {
-        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return bumpMeasurementAttemptCount(false);
     }
 
-    verifyAndAddMeasurementResult(BMP3XX_TEMP_VAR_NUM, temp);
-    verifyAndAddMeasurementResult(BMP3XX_PRESSURE_VAR_NUM, press);
-    verifyAndAddMeasurementResult(BMP3XX_ALTITUDE_VAR_NUM, alt);
+    bool  success = false;
+    float temp    = -9999;
+    float press   = -9999;
+    float alt     = -9999;
 
-    // Record the time that the measurement was completed
-    _millisMeasurementCompleted = millis();
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
-    // Bump the number of attempted retries
-    _retryAttemptsMade++;
+    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+
+    // Read values
+    success = bmp_internal.getMeasurements(temp, press, alt);
+    MS_DBG(F("  Temperature:"), temp, F("°C"));
+    MS_DBG(F("  Barometric Pressure:"), press, F("Pa"));
+    MS_DBG(F("  Calculated Altitude:"), alt, F("m ASL"));
 
     if (success) {
-        // Bump the number of successful measurements
-        // NOTE: This is bumped if we successfully got a response, even if the
-        // results were NaN or otherwise invalid!
-        _measurementAttemptsCompleted++;
-    } else if (_retryAttemptsMade >= _allowedMeasurementRetries) {
-        // Bump the number of completed measurement attempts - we've failed but
-        // exceeded retries
-        _measurementAttemptsCompleted++;
+        verifyAndAddMeasurementResult(BMP3XX_TEMP_VAR_NUM, temp);
+        verifyAndAddMeasurementResult(BMP3XX_PRESSURE_VAR_NUM, press);
+        verifyAndAddMeasurementResult(BMP3XX_ALTITUDE_VAR_NUM, alt);
     }
 
-    return success;
+    // Return success value when finished
+    return bumpMeasurementAttemptCount(success);
 }
 
 // cSpell:ignore oversample SEALEVELPRESSURE
