@@ -721,6 +721,14 @@ class Sensor {
      * be defined at compile time and applied to the entire class.
      */
     Variable* variables[MAX_NUMBER_VARS];
+
+    /**
+     * @brief A helper function to correctly bump the measurement counts and
+     * retries and set the appropriate timestamp and status bits.
+     * @param wasSuccessful True if the measurement attempt was successful.
+     * @return Returns the input parameter wasSuccessful.
+     */
+    bool bumpMeasurementAttemptCount(bool wasSuccessful);
 };
 
 #endif  // SRC_SENSORBASE_H_

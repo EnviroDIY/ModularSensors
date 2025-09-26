@@ -635,3 +635,22 @@ void Sensor::waitForMeasurementCompletion(void) {
         // wait
     }
 }
+
+
+bool Sensor::bumpMeasurementAttemptCount(bool wasSuccessful) {
+    // Record the time that the measurement was completed
+    _millisMeasurementCompleted = millis();
+    // Unset the time stamp for the beginning of this measurement
+    _millisMeasurementRequested = 0;
+    // Unset the status bits for a measurement request (bits 5 & 6)
+    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
+    // Bump the number of attempted retries
+    _retryAttemptsMade++;
+
+    if (wasSuccessful || _retryAttemptsMade >= _allowedMeasurementRetries) {
+        // Bump the number of completed measurement attempts - we've succeeded
+        // or failed but exceeded retries
+        _measurementAttemptsCompleted++;
+    }
+    return wasSuccessful;
+}
