@@ -208,8 +208,7 @@ bool Sensor::setup(void) {
 
 // The function to wake up a sensor
 bool Sensor::wake(void) {
-    MS_DBG(F("Waking"), getSensorNameAndLocation(),
-           F("using default wake of taking no action!"));
+    MS_DBG(F("Waking"), getSensorNameAndLocation(), F("by doing nothing!"));
     // Set the status bit for sensor activation attempt (bit 3)
     // Setting this bit even if the activation failed, to show the attempt was
     // made
@@ -268,7 +267,7 @@ bool Sensor::startSingleMeasurement(void) {
     }
 
     MS_DBG(F("Starting measurement on"), getSensorNameAndLocation(),
-           F("using default start of taking no action!"));
+           F("by doing nothing!"));
     // Set the status bits for measurement requested (bit 5)
     // Setting this bit even if we failed to start a measurement to show that an
     // attempt was made.
