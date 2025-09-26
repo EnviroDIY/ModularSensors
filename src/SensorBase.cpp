@@ -153,10 +153,21 @@ void Sensor::powerUp(void) {
 
 // This turns off sensor power
 void Sensor::powerDown(void) {
-    if (_powerPin >= 0) {
-        MS_DBG(F("Turning off power to"), getSensorNameAndLocation(),
-               F("with pin"), _powerPin);
-        digitalWrite(_powerPin, LOW);
+    if (_powerPin >= 0 || _powerPin2 >= 0) {
+        // Reset power pin mode every power up because pins are set to tri-state
+        // on sleep on SAMD boards
+        if (_powerPin >= 0) {
+            pinMode(_powerPin, OUTPUT);
+            MS_DBG(F("Turning off"), getSensorNameAndLocation(), F("with pin"),
+                   _powerPin);
+            digitalWrite(_powerPin, LOW);
+        }
+        if (_powerPin2 >= 0) {
+            pinMode(_powerPin2, OUTPUT);
+            MS_DBG(F("Turning off secondary power to"),
+                   getSensorNameAndLocation(), F("with pin"), _powerPin2);
+            digitalWrite(_powerPin2, LOW);
+        }
         // Unset the power-on time
         _millisPowerOn = 0;
         // Unset the activation time

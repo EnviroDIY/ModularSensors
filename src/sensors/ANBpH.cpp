@@ -223,7 +223,7 @@ bool ANBpH::wake(void) {
     // Send the command to begin taking readings, trying up to 5 times
     bool    success = false;
     uint8_t ntries  = 0;
-    MS_DBG(F("Start Measurement on"), getSensorNameAndLocation());
+    MS_DBG(F("Start scanning on"), getSensorNameAndLocation());
     while (!success && ntries < 5) {
         MS_DEEP_DBG('(', ntries + 1, F("):"));
         success = _anb_sensor.start();
