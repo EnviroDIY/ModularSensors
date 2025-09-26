@@ -693,9 +693,11 @@ bool VariableArray::completeUpdate(void) {
     // Average measurements and notify variables of the updates
     MS_DBG(F("----->> Averaging results and notifying all variables. ..."));
     for (uint8_t i = 0; i < _sensorCount; i++) {
-        MS_DBG(F("--- Averaging results from"), sName, F("---"));
+        MS_DBG(F("--- Averaging results from"),
+               sensorList[i]->getSensorNameAndLocation(), F("---"));
         sensorList[i]->averageMeasurements();
-        MS_DBG(F("--- Notifying variables from"), sName, F("---"));
+        MS_DBG(F("--- Notifying variables from"),
+               sensorList[i]->getSensorNameAndLocation(), F("---"));
         sensorList[i]->notifyVariables();
     }
     MS_DBG(F("... Complete. <<-----"));
