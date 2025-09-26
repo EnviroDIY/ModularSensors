@@ -337,8 +337,18 @@ void Sensor::clearValues(void) {
         sensorValues[i]               = -9999;
         numberGoodMeasurementsMade[i] = 0;
     }
+    // Reset measurement attempt counters
     _measurementAttemptsCompleted = 0;
     _retryAttemptsMade            = 0;
+    // reset all timing values
+    _millisPowerOn              = 0;
+    _millisSensorActivated      = 0;
+    _millisMeasurementRequested = 0;
+    _millisMeasurementCompleted = 0;
+    // Unset all status bits except setup (bit 0) and error (bit 7)
+    clearStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL, WAKE_ATTEMPTED,
+                    WAKE_SUCCESSFUL, MEASUREMENT_ATTEMPTED,
+                    MEASUREMENT_SUCCESSFUL);
 }
 
 
