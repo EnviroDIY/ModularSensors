@@ -504,26 +504,27 @@ bool ANBpH::isStable(bool debug) {
 
 // The minimum time before we start checking for a result depends on whether
 // the immersion sensor is enabled or not and on the power style.
-// If the immersion sensor is enabled, we wait the minimum time that it
-// would return a not-immersed error to start querying. If the immersion
-// sensor is not enabled, we wait the minimum time for a measurement to be
-// ready based on the power style.
+// If the immersion sensor is enabled and it's the first measurement after
+// applying power, we wait the minimum time that it would return a not-immersed
+// error to start querying because it will return an immersion error much faster
+// than the full sensing time. If the immersion sensor is not enabled or it's
+// not the first measurement after power-up, we wait the minimum time for a
+// measurement to be ready based on the power style.
 uint32_t ANBpH::getStartImmersionErrorWindow(void) {
-    if (!_immersionSensorEnabled) { return getEndMeasurementWindow(); }
-    return (_powerPin >= 0 || _retryAttemptsMade > 0)
-        ? ANB_PH_2ND_IMMERSION_ERROR
-        : ANB_PH_1ST_IMMERSION_ERROR;
+    if (!_immersionSensorEnabled || _powerPin < 0 || _retryAttemptsMade > 0) {
+        return getEndMeasurementWindow();
+    }
+    return ANB_PH_IMMERSION_ERROR;
 }
-
 uint32_t ANBpH::getEndImmersionErrorWindow(void) {
-    if (!_immersionSensorEnabled) { return getEndMeasurementWindow(); }
-    return (_powerPin >= 0 || _retryAttemptsMade > 0)
-        ? ANB_PH_2ND_IMMERSION_ERROR_MAX
-        : ANB_PH_1ST_IMMERSION_ERROR_MAX;
+    if (!_immersionSensorEnabled || _powerPin < 0 || _retryAttemptsMade > 0) {
+        return getEndMeasurementWindow();
+    }
+    return ANB_PH_IMMERSION_ERROR_MAX;
 }
 
 uint32_t ANBpH::getStartMeasurementWindow(void) {
-    if (_powerPin >= 0 || _retryAttemptsMade > 0) {
+    if (_powerPin >= 0 && _retryAttemptsMade == 0) {
         if (_salinityMode == ANBSalinityMode::HIGH_SALINITY) {
             return ANB_PH_1ST_VALUE_HIGH_SALT;
         } else {
@@ -543,7 +544,7 @@ uint32_t ANBpH::getStartMeasurementWindow(void) {
 // If a pin was provided for power, we assume it's on-demand powered and use
 // the maximum wait time for the first measurement as our maximum wait.
 uint32_t ANBpH::getEndMeasurementWindow(void) {
-    if (_powerPin >= 0) {
+    if (_powerPin >= 0 && _retryAttemptsMade == 0) {
         if (_salinityMode == ANBSalinityMode::HIGH_SALINITY) {
             return ANB_PH_1ST_VALUE_HIGH_SALT_MAX;
         } else {

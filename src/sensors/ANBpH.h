@@ -153,37 +153,19 @@
 /// @brief The maximum time to wait for ready to measure.
 #define ANB_PH_STABILIZATION_TIME_MAX 5000L
 
-/// @brief The minimum time before a failure response is returned on the 2nd or
-/// subsequent value when the immersion sensor is not immersed.  This is a guess
-/// based on testing.
-#define ANB_PH_2ND_IMMERSION_ERROR 4000L
-/// @brief The minimum time before a failure response is returned on the 2nd or
-/// subsequent value when the immersion sensor is not immersed.  This is a guess
-/// based on testing.
-#define ANB_PH_2ND_IMMERSION_ERROR_MAX 12000L
-/// @brief The minimum time for the 2nd or subsequent values in high
-/// salinity (documented new output time of 10.5s)
-#define ANB_PH_2ND_VALUE_HIGH_SALT 5000L
-/// @brief The maximum time for the 2nd or subsequent values in high
-/// salinity.
-#define ANB_PH_2ND_VALUE_HIGH_SALT_MAX 15000L
-/// @brief The minimum time for the 2nd or subsequent values in low
-/// salinity (documented new output time of 14s).
-#define ANB_PH_2ND_VALUE_LOW_SALT 6000L
-/// @brief The maximum time for the 2nd or subsequent values in low
-/// salinity (documented new output time of 14s).
-#define ANB_PH_2ND_VALUE_LOW_SALT_MAX 18000L
+/// @brief The minimum time after a new scan after power-up before a failure
+/// response is returned when the immersion sensor is not immersed.
+/// This is a guess based on testing.
+/// @note This only applies when it is the first measurement after power-up and
+/// the immersion sensor is enabled!
+#define ANB_PH_IMMERSION_ERROR 6000L
+/// @brief The minimum time after a new scan after power-up before a failure
+/// response is returned when the immersion sensor is not immersed.
+/// This is a guess based on testing.
+#define ANB_PH_IMMERSION_ERROR_MAX 12000L
 
-/// @brief The minimum time before a failure response is returned on the first
-/// measurement when the immersion sensor is not immersed.  This is a guess
-/// based on testing.
-#define ANB_PH_1ST_IMMERSION_ERROR 6000L
-/// @brief The maximum time before a failure response is returned on the first
-/// measurement when the immersion sensor is not immersed.  This is a guess
-/// based on testing.
-#define ANB_PH_1ST_IMMERSION_ERROR_MAX 12000L
 /// @brief The minimum time for the first value in high salinity (documented min
-/// time of 129s - 9s).
+/// time of 129s).
 #define ANB_PH_1ST_VALUE_HIGH_SALT 120000L
 /// @brief The maximum time for the first value in high salinity (documented max
 /// time of 238s for a long interval delay + 10s).
@@ -194,6 +176,23 @@
 /// @brief The maximum time for the first value in low salinity (documented max
 /// time of 255s for a long interval delay + 10s).
 #define ANB_PH_1ST_VALUE_LOW_SALT_MAX 265000L
+
+/// @brief The minimum time for the 2nd or subsequent values in high
+/// salinity (documented new output time of 10.5s)
+/// @warning After the first reading, the sensor will *always* say the sensor is
+/// ready!  But there will not be a **new** value available before this time.
+#define ANB_PH_2ND_VALUE_HIGH_SALT 10600L
+/// @brief The maximum time to wait for the 2nd or subsequent values in high
+/// salinity.
+#define ANB_PH_2ND_VALUE_HIGH_SALT_MAX 15000L
+/// @brief The minimum time for the 2nd or subsequent values in low
+/// salinity (documented new output time of 14s).
+/// @warning After the first reading, the sensor will *always* say the sensor is
+/// ready!  But there will not be a **new** value available before this time.
+#define ANB_PH_2ND_VALUE_LOW_SALT 14100L
+/// @brief The maximum time to wait for the 2nd or subsequent values in low
+/// salinity.
+#define ANB_PH_2ND_VALUE_LOW_SALT_MAX 18000L
 /**@}*/
 
 /**
