@@ -520,17 +520,20 @@ bool VariableArray::completeUpdate(void) {
 
     while (nSensorsCompleted < _sensorCount) {
         for (uint8_t i = 0; i < _sensorCount; i++) {
+            uint8_t nReq = sensorList[i]->getNumberMeasurementsToAverage();
+            uint8_t nDone =
+                sensorList[i]->getNumberCompleteMeasurementsAttempts();
+#ifdef MS_VARIABLEARRAY_DEBUG || MS_VARIABLEARRAY_DEBUG_DEEP
+            String sName = sensorList[i]->getSensorNameAndLocation();
+#endif
             // Only do checks on sensors that still have measurements to finish
-            if (sensorList[i]->getNumberMeasurementsToAverage() >
-                sensorList[i]->getNumberCompleteMeasurementsAttempts()) {
+            if (nReq > nDone) {
                 if (sensorList[i]->getStatusBit(Sensor::WAKE_ATTEMPTED) ==
                         0  // If no attempts yet made to wake the sensor up
                     && sensorList[i]->isWarmedUp(
                            deepDebugTiming)  // and if it is already warmed up
                 ) {
-                    MS_DBG(i, F("--->> Waking"),
-                           arrayOfVars[i]->getParentSensorNameAndLocation(),
-                           F("..."));
+                    MS_DBG(i, F("--->> Waking"), sName, F("..."));
 
                     // Make a single attempt to wake the sensor after it is
                     // warmed up
@@ -538,7 +541,7 @@ bool VariableArray::completeUpdate(void) {
                     success &= sensorSuccess_wake;
 
                     if (sensorSuccess_wake) {
-                        MS_DBG(F("   ... wake up success. <<---"), i);
+                        MS_DBG(F("   ... wake up succeeded. <<---"), i);
                     } else {
                         MS_DBG(F("   ... wake up failed! <<---"), i);
                     }
@@ -549,8 +552,7 @@ bool VariableArray::completeUpdate(void) {
                 // completion
                 if (sensorList[i]->getStatusBit(Sensor::WAKE_ATTEMPTED) == 1 &&
                     sensorList[i]->getStatusBit(Sensor::WAKE_SUCCESSFUL) == 0) {
-                    MS_DBG(i, F("--->>"),
-                           sensorList[i]->getSensorNameAndLocation(),
+                    MS_DBG(i, F("--->>"), sName,
                            F("did not wake up! No measurements will be taken! "
                              "<<---"),
                            i);
@@ -570,12 +572,8 @@ bool VariableArray::completeUpdate(void) {
                         Sensor::MEASUREMENT_SUCCESSFUL) == 0) {
                     // .. check if it's stable
                     if (sensorList[i]->isStable(deepDebugTiming)) {
-                        // Start a reading
-                        MS_DBG(i, '.', nMeasurementsCompleted[i] + 1,
-                               F("--->> Starting reading"),
-                               nMeasurementsCompleted[i] + 1, F("on"),
-                               sensorList[i]->getSensorNameAndLocation(),
-                               F("..."));
+                        MS_DBG(i, '.', nDone + 1, F("--->> Starting reading"),
+                               nDone + 1, F("on"), sName, F("..."));
 
                         bool sensorSuccess_start =
                             sensorList[i]->startSingleMeasurement();
@@ -583,10 +581,10 @@ bool VariableArray::completeUpdate(void) {
 
                         if (sensorSuccess_start) {
                             MS_DBG(F("   ... start reading succeeded. <<---"),
-                                   i, '.', nMeasurementsCompleted[i] + 1);
+                                   i, '.', nDone + 1);
                         } else {
                             MS_DBG(F("   ... start reading failed! <<---"), i,
-                                   '.', nMeasurementsCompleted[i] + 1);
+                                   '.', nDone + 1);
                         }
                     }
                 }
@@ -603,11 +601,9 @@ bool VariableArray::completeUpdate(void) {
                     // the number of finished measurements.
                     if (sensorList[i]->isMeasurementComplete(deepDebugTiming)) {
                         // Get the value
-                        MS_DBG(i, '.', nMeasurementsCompleted[i] + 1,
+                        MS_DBG(i, '.', nDone + 1,
                                F("--->> Collected result of reading"),
-                               nMeasurementsCompleted[i] + 1, F("from"),
-                               sensorList[i]->getSensorNameAndLocation(),
-                               F("..."));
+                               nDone + 1, F("from"), sName, F("..."));
 
                         bool sensorSuccess_result =
                             sensorList[i]->addSingleMeasurementResult();
@@ -615,20 +611,18 @@ bool VariableArray::completeUpdate(void) {
 
                         if (sensorSuccess_result) {
                             MS_DBG(F("   ... got measurement result. <<---"), i,
-                                   '.', nMeasurementsCompleted[i]);
+                                   '.', nDone + 1);
                         } else {
                             MS_DBG(F("   ... failed to get measurement result! "
                                      "<<---"),
-                                   i, '.', nMeasurementsCompleted[i]);
+                                   i, '.', nDone + 1);
                         }
                     }
                 }
 
                 // If all the measurements are done
-                if (sensorList[i]->getNumberCompleteMeasurementsAttempts() >=
-                    sensorList[i]->getNumberMeasurementsToAverage()) {
-                    MS_DBG(i, F("--->> Finished all measurements from"),
-                           arrayOfVars[i]->getParentSensorNameAndLocation(),
+                if (nDone >= nReq) {
+                    MS_DBG(i, F("--->> Finished all measurements from"), sName,
                            F(", putting it to sleep. ..."));
 
                     // Put the completed sensor to sleep
@@ -670,15 +664,13 @@ bool VariableArray::completeUpdate(void) {
                     }
                     if (canPowerDown) {
                         MS_DBG(
-                            i, F("--->> All measurements from"),
-                            arrayOfVars[i]->getParentSensorNameAndLocation(),
+                            i, F("--->> All measurements from"), sName,
                             F("are complete and no other sensors on the same "
                               "power pin need to take measurements.  "
                               "Powering down all sensors on pin"),
                             sensorList[i]->getPowerPin(), F("..."));
                     } else {
-                        MS_DBG(i, F("--->> All measurements from"),
-                               arrayOfVars[i]->getParentSensorNameAndLocation(),
+                        MS_DBG(i, F("--->> All measurements from"), sName,
                                F("are complete but other sensors on the same "
                                  "power pin still need to take measurements.  "
                                  "Leaving power on pin"),
@@ -701,11 +693,9 @@ bool VariableArray::completeUpdate(void) {
     // Average measurements and notify variables of the updates
     MS_DBG(F("----->> Averaging results and notifying all variables. ..."));
     for (uint8_t i = 0; i < _sensorCount; i++) {
-        MS_DBG(F("--- Averaging results from"),
-               sensorList[i]->getSensorNameAndLocation(), F("---"));
+        MS_DBG(F("--- Averaging results from"), sName, F("---"));
         sensorList[i]->averageMeasurements();
-        MS_DBG(F("--- Notifying variables from"),
-               sensorList[i]->getSensorNameAndLocation(), F("---"));
+        MS_DBG(F("--- Notifying variables from"), sName, F("---"));
         sensorList[i]->notifyVariables();
     }
     MS_DBG(F("... Complete. <<-----"));
