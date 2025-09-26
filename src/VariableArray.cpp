@@ -523,7 +523,7 @@ bool VariableArray::completeUpdate(void) {
             uint8_t nReq = sensorList[i]->getNumberMeasurementsToAverage();
             uint8_t nDone =
                 sensorList[i]->getNumberCompleteMeasurementsAttempts();
-#ifdef MS_VARIABLEARRAY_DEBUG || MS_VARIABLEARRAY_DEBUG_DEEP
+#if defined(MS_VARIABLEARRAY_DEBUG) || defined(MS_VARIABLEARRAY_DEBUG_DEEP)
             String sName = sensorList[i]->getSensorNameAndLocation();
 #endif
             // Only do checks on sensors that still have measurements to finish

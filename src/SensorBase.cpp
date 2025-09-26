@@ -125,7 +125,7 @@ void Sensor::clearStatusBit(sensor_status_bits bitToClear) {
 void Sensor::powerUp(void) {
     if (_powerPin >= 0 || _powerPin2 >= 0) {
         // Reset power pin mode every power up because pins are set to tri-state
-        // on sleep
+        // on sleep on SAMD boards
         if (_powerPin >= 0) {
             pinMode(_powerPin, OUTPUT);
             MS_DBG(F("Powering"), getSensorNameAndLocation(), F("with pin"),
