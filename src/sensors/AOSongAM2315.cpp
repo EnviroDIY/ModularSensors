@@ -59,7 +59,6 @@ bool AOSongAM2315::addSingleMeasurementResult(void) {
     bool  success   = false;
     float temp_val  = -9999;
     float humid_val = -9999;
-    bool  ret_val   = false;
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
