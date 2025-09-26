@@ -24,6 +24,7 @@ ANBpH::ANBpH(byte modbusAddress, Stream* stream, int8_t powerPin,
     _anb_sensor.setDebugStream(&MS_SERIAL_OUTPUT);
 #endif
     setSecondaryPowerPin(powerPin2);
+    setAllowedMeasurementRetries(5);
 }
 ANBpH::ANBpH(byte modbusAddress, Stream& stream, int8_t powerPin,
              int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage)
@@ -38,6 +39,7 @@ ANBpH::ANBpH(byte modbusAddress, Stream& stream, int8_t powerPin,
     _anb_sensor.setDebugStream(&MS_SERIAL_OUTPUT);
 #endif
     setSecondaryPowerPin(powerPin2);
+    setAllowedMeasurementRetries(5);
 }
 // Destructor
 ANBpH::~ANBpH() {}
