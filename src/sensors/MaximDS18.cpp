@@ -130,6 +130,8 @@ bool MaximDS18::setup(void) {
 
     // Tell the sensor that we do NOT want to wait for conversions to finish
     // That is, we're in ASYNC mode and will get values when we're ready
+    // NOTE: This is a setting of the library, not the sensor itself; it is not
+    // changed by the sensor powering down.
     _internalDallasTemp.setWaitForConversion(false);
 
     // Turn the power back off it it had been turned on

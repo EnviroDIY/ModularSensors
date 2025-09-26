@@ -225,7 +225,7 @@ bool Sensor::wake(void) {
         return false;
     }
     // Set the data pin mode on every wake because pins are set to tri-state on
-    // sleep
+    // sleep on SAMD boards
     if (_dataPin >= 0) {
         pinMode(_dataPin, INPUT);
     }  // NOTE:  Not turning on processor pull-up or pull-down!
