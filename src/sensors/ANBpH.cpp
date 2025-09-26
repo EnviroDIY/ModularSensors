@@ -188,47 +188,6 @@ bool ANBpH::setup(void) {
 }
 
 
-// Start measurements
-bool ANBpH::startSingleMeasurement(void) {
-    // Sensor::startSingleMeasurement() checks that if it's awake/active and
-    // sets the timestamp and status bits.  If it returns false, there's no
-    // reason to go on.
-    if (!Sensor::startSingleMeasurement()) return false;
-
-    // If the sensor is being power cycled, set the clock before each
-    // measurement. The sensor stores the measurements on its internal storage,
-    // so it's best to have the correct time.
-    if (_powerPin >= 0) { setSensorRTC(); }
-
-    // Send the command to begin taking readings, trying up to 5 times
-    bool    success = false;
-    uint8_t ntries  = 0;
-    MS_DBG(F("Start Measurement on"), getSensorNameAndLocation());
-    while (!success && ntries < 5) {
-        MS_DEEP_DBG('(', ntries + 1, F("):"));
-        success = _anb_sensor.start();
-        ntries++;
-    }
-
-    if (success) {
-        MS_DEEP_DBG(getSensorNameAndLocation(), F("started a scan."));
-        // Update the time that a measurement was requested
-        _millisMeasurementRequested = millis();
-    } else {
-        // Set the status error bit (bit 7)
-        setStatusBit(ERROR_OCCURRED);
-        // Otherwise, make sure that the measurement start time and success bit
-        // (bit 6) are unset
-        MS_DBG(getSensorNameAndLocation(),
-               F("did not successfully start a measurement."));
-        _millisMeasurementRequested = 0;
-        clearStatusBit(MEASUREMENT_SUCCESSFUL);
-    }
-
-    return success;
-}
-
-
 // This confirms that the sensor is really giving modbus responses so nothing
 // further happens if not. - It's a "check if it's awake" function rather than a
 // "wake it up" function.
@@ -255,6 +214,35 @@ bool ANBpH::wake(void) {
 
     MS_DEEP_DBG(getSensorNameAndLocation(),
                 F("responded properly to modbus commands; it must be awake."));
+
+    // If the sensor is being power cycled, set the clock before each
+    // measurement. The sensor stores the measurements on its internal storage,
+    // so it's best to have the correct time.
+    if (_powerPin >= 0) { setSensorRTC(); }
+
+    // Send the command to begin taking readings, trying up to 5 times
+    bool    success = false;
+    uint8_t ntries  = 0;
+    MS_DBG(F("Start Measurement on"), getSensorNameAndLocation());
+    while (!success && ntries < 5) {
+        MS_DEEP_DBG('(', ntries + 1, F("):"));
+        success = _anb_sensor.start();
+        ntries++;
+    }
+
+    if (success) {
+        MS_DEEP_DBG(getSensorNameAndLocation(), F("started scanning."));
+        // Update the time that a measurement was requested
+        _millisSensorActivated = millis();
+    } else {
+        // Set the status error bit (bit 7)
+        setStatusBit(ERROR_OCCURRED);
+        // Make sure that the wake time and wake success bit (bit 4) are unset
+        _millisSensorActivated = 0;
+        clearStatusBit(WAKE_SUCCESSFUL);
+        return false;
+    }
+
     return true;
 }
 
