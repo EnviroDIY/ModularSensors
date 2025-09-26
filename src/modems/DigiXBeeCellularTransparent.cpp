@@ -239,7 +239,12 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime(void) {
                 byte response[4] = {0};
                 gsmClient.read(response, 4);
                 gsmClient.stop();
-                return parseNISTBytes(response);
+                uint32_t nistParsed = parseNISTBytes(response);
+                if (nistParsed != 0) {
+                    return nistParsed;
+                } else {
+                    MS_DBG(F("NIST response was invalid!"));
+                }
             } else {
                 MS_DBG(F("NIST Time server did not respond!"));
                 gsmClient.stop();

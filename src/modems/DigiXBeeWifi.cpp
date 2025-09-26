@@ -419,7 +419,12 @@ uint32_t DigiXBeeWifi::getNISTTime(void) {
                 byte response[NIST_RESPONSE_BYTES] = {0};
                 gsmClient.read(response, NIST_RESPONSE_BYTES);
                 gsmClient.stop();
-                return parseNISTBytes(response);
+                uint32_t nistParsed = parseNISTBytes(response);
+                if (nistParsed != 0) {
+                    return nistParsed;
+                } else {
+                    MS_DBG(F("NIST response was invalid!"));
+                }
             } else {
                 MS_DBG(F("NIST Time server did not respond!"));
                 gsmClient.stop();
