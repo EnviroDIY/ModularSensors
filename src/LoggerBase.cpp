@@ -198,7 +198,7 @@ void Logger::setLoggingInterval(int16_t loggingIntervalMinutes) {
 
 
 // Sets the number of initial short intervals
-void Logger::setinitialShortIntervals(int16_t initialShortIntervals) {
+void Logger::setInitialShortIntervals(int16_t initialShortIntervals) {
     _remainingShortIntervals = initialShortIntervals;
 }
 

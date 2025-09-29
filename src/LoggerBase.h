@@ -232,7 +232,7 @@ class Logger {
      * regardless of the programmed interval. Useful for fast field
      * verification.
      */
-    void setinitialShortIntervals(int16_t initialShortIntervals);
+    void setInitialShortIntervals(int16_t initialShortIntervals);
     /**
      * @brief Get the number of 1-minute intervals at the start before logging
      * on the regular logging interval
