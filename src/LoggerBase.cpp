@@ -1119,6 +1119,7 @@ void Logger::systemSleep(void) {
     uint32_t startSerialWait = millis();
     SERIAL_PORT_USBVIRTUAL.begin(0);  // baud rate is ignored on USB
     while (!SERIAL_PORT_USBVIRTUAL && (millis() - startSerialWait < 250));
+    MS_DEEP_DBG(F("USBDevice reattached"));
 #endif
 #endif  // USE_TINYUSB
 #endif  // ARDUINO_ARCH_SAMD
