@@ -650,14 +650,16 @@ bool VariableArray::completeUpdate(void) {
                     // share the pin
                     bool canPowerDown = false;
                     for (uint8_t k = 0; k < _sensorCount; k++) {
-                        if ((sensorList[k]->getPowerPin() ==
-                                 sensorList[i]->getPowerPin() ||
-                             sensorList[k]->getSecondaryPowerPin() ==
-                                 sensorList[i]->getPowerPin() ||
-                             sensorList[k]->getPowerPin() ==
-                                 sensorList[i]->getSecondaryPowerPin() ||
-                             sensorList[k]->getSecondaryPowerPin() ==
-                                 sensorList[i]->getSecondaryPowerPin()) &&
+                        if (((sensorList[i]->getPowerPin() >= 0 &&
+                              (sensorList[i]->getPowerPin() ==
+                                   sensorList[k]->getPowerPin() ||
+                               sensorList[i]->getPowerPin() ==
+                                   sensorList[k]->getSecondaryPowerPin())) ||
+                             (sensorList[i]->getSecondaryPowerPin() >= 0 &&
+                              (sensorList[i]->getSecondaryPowerPin() ==
+                                   sensorList[k]->getPowerPin() ||
+                               sensorList[i]->getSecondaryPowerPin() ==
+                                   sensorList[k]->getSecondaryPowerPin()))) &&
                             (sensorList[k]
                                  ->getNumberCompleteMeasurementsAttempts() <
                              sensorList[k]->getNumberMeasurementsToAverage())) {
@@ -671,35 +673,41 @@ bool VariableArray::completeUpdate(void) {
                                        // need to take measurements
                         }
                     }
+                    if (canPowerDown) { sensorList[i]->powerDown(); }
+#if defined(MS_VARIABLEARRAY_DEBUG)
                     if (canPowerDown) {
                         MS_DBG(
                             i, F("--->> All measurements from"), sName,
                             F("are complete and no other sensors on the same "
                               "power pin need to take measurements.  "
-                              "Powering down all sensors on pin"),
-                            sensorList[i]->getPowerPin(), F("..."));
+                              "Powered down all sensors on pin"),
+                            sensorList[i]->getPowerPin(), F("or pin"),
+                            sensorList[i]->getSecondaryPowerPin(), F("..."));
                     } else {
                         MS_DBG(i, F("--->> All measurements from"), sName,
                                F("are complete but other sensors on the same "
                                  "power pin still need to take measurements.  "
                                  "Leaving power on pin"),
                                sensorList[i]->getPowerPin(), F("ON. <<---"));
-#if defined(MS_VARIABLEARRAY_DEBUG_DEEP)
                         for (uint8_t k = 0; k < _sensorCount; k++) {
-                            if ((sensorList[k]->getPowerPin() ==
-                                     sensorList[i]->getPowerPin() ||
-                                 sensorList[k]->getSecondaryPowerPin() ==
-                                     sensorList[i]->getPowerPin() ||
-                                 sensorList[k]->getPowerPin() ==
-                                     sensorList[i]->getSecondaryPowerPin() ||
-                                 sensorList[k]->getSecondaryPowerPin() ==
-                                     sensorList[i]->getSecondaryPowerPin()) &&
+                            if (((sensorList[i]->getPowerPin() >= 0 &&
+                                  (sensorList[i]->getPowerPin() ==
+                                       sensorList[k]->getPowerPin() ||
+                                   sensorList[i]->getPowerPin() ==
+                                       sensorList[k]
+                                           ->getSecondaryPowerPin())) ||
+                                 (sensorList[i]->getSecondaryPowerPin() >= 0 &&
+                                  (sensorList[i]->getSecondaryPowerPin() ==
+                                       sensorList[k]->getPowerPin() ||
+                                   sensorList[i]->getSecondaryPowerPin() ==
+                                       sensorList[k]
+                                           ->getSecondaryPowerPin()))) &&
                                 (sensorList[k]
                                      ->getNumberCompleteMeasurementsAttempts() <
                                  sensorList[k]
                                      ->getNumberMeasurementsToAverage())) {
-                                MS_DEEP_DBG(
-                                    i, sName, F("shares a power pin with"),
+                                MS_DBG(
+                                    sName, F("shares a power pin with"),
                                     sensorList[k]->getSensorNameAndLocation(),
                                     F("which still needs to take"),
                                     sensorList[k]
@@ -707,21 +715,19 @@ bool VariableArray::completeUpdate(void) {
                                         sensorList[k]
                                             ->getNumberCompleteMeasurementsAttempts(),
                                     F("measurements."));
-                                MS_DEEP_DBG(
-                                    sName, F("pins are"),
-                                    sensorList[i]->getPowerPin(), F("and"),
-                                    sensorList[i]->getSecondaryPowerPin());
-                                MS_DEEP_DBG(
+                                MS_DBG(sName, '(', i, ')', F("pins are"),
+                                       sensorList[i]->getPowerPin(), F("and"),
+                                       sensorList[i]->getSecondaryPowerPin());
+                                MS_DBG(
                                     sensorList[k]->getSensorNameAndLocation(),
-                                    F("pins are"), sensorList[i]->getPowerPin(),
-                                    F("and"),
-                                    sensorList[i]->getSecondaryPowerPin());
+                                    '(', k, ')', F("pins are"),
+                                    sensorList[k]->getPowerPin(), F("and"),
+                                    sensorList[k]->getSecondaryPowerPin());
                                 break;
                             }
                         }
-#endif
                     }
-
+#endif
                     nSensorsCompleted++;  // mark the whole sensor as done
                     MS_DBG(F("*****---"), nSensorsCompleted,
                            F("sensors now complete ---*****"));
