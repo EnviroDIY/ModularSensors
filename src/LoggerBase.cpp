@@ -1113,6 +1113,13 @@ void Logger::systemSleep(void) {
     // ^^ Restarts the bus, including re-attaching the NVIC interrupts
     USBDevice.attach();
     // ^^ USB->DEVICE.CTRLB.bit.DETACH = 0; enables USB interrupts
+#if (defined(MS_LOGGERBASE_DEBUG_DEEP) || defined(MS_LOGGERBASE_DEBUG)) && \
+    defined(SERIAL_PORT_USBVIRTUAL)
+    // if debugging is enabled, wait for the USB port to connect
+    uint32_t startSerialWait = millis();
+    SERIAL_PORT_USBVIRTUAL.begin(0);  // baud rate is ignored on USB
+    while (!SERIAL_PORT_USBVIRTUAL && (millis() - startSerialWait < 250));
+#endif
 #endif  // USE_TINYUSB
 #endif  // ARDUINO_ARCH_SAMD
 
