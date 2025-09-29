@@ -15,7 +15,7 @@
 ANBpH::ANBpH(byte modbusAddress, Stream* stream, int8_t powerPin,
              int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage)
     : Sensor("ANBpHSensor", ANB_PH_NUM_VARIABLES, ANB_PH_WARM_UP_TIME_MS,
-             ANB_PH_STABILIZATION_TIME_MS, ANB_PH_1ST_VALUE_HIGH_SALT, powerPin,
+             ANB_PH_STABILIZATION_TIME_MS, ANB_PH_2ND_VALUE_LOW_SALT, powerPin,
              -1, measurementsToAverage, ANB_PH_INC_CALC_VARIABLES),
       _anb_sensor(modbusAddress, stream, enablePin),
       _stream(stream),
@@ -29,7 +29,7 @@ ANBpH::ANBpH(byte modbusAddress, Stream* stream, int8_t powerPin,
 ANBpH::ANBpH(byte modbusAddress, Stream& stream, int8_t powerPin,
              int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage)
     : Sensor("ANBpHSensor", ANB_PH_NUM_VARIABLES, ANB_PH_WARM_UP_TIME_MS,
-             ANB_PH_STABILIZATION_TIME_MS, ANB_PH_1ST_VALUE_HIGH_SALT, powerPin,
+             ANB_PH_STABILIZATION_TIME_MS, ANB_PH_2ND_VALUE_LOW_SALT, powerPin,
              -1, measurementsToAverage, ANB_PH_INC_CALC_VARIABLES),
       _anb_sensor(modbusAddress, stream, enablePin),
       _modbusAddress(modbusAddress),
@@ -156,10 +156,7 @@ bool ANBpH::setup(void) {
     retVal &= intervalSet;
 
     // Set Sensor Salinity Mode
-    MS_DBG(F("Set sensor salinity mode..."));
-    bool salinitySet = _anb_sensor.setSalinityMode(_salinityMode);
-    MS_DBG(F("..."), salinitySet ? F("success") : F("failed"));
-    retVal &= salinitySet;
+    retVal &= setSalinityMode(_salinityMode);
 
     // Set Immersion Rule
     MS_DBG(F("Set sensor immersion rule to"),
@@ -234,6 +231,7 @@ bool ANBpH::wake(void) {
         MS_DEEP_DBG(getSensorNameAndLocation(), F("started scanning."));
         // Update the time that a measurement was requested
         _millisSensorActivated = millis();
+        _lastModbusCommandTime = 0;
     } else {
         // Set the status error bit (bit 7)
         setStatusBit(ERROR_OCCURRED);
@@ -485,28 +483,6 @@ bool ANBpH::isStable(bool debug) {
     }
 }
 
-
-// The minimum time before we start checking for a result depends on whether
-// the immersion sensor is enabled or not and on the power style.
-// If the immersion sensor is enabled and it's the first measurement after
-// applying power, we wait the minimum time that it would return a not-immersed
-// error to start querying because it will return an immersion error much faster
-// than the full sensing time. If the immersion sensor is not enabled or it's
-// not the first measurement after power-up, we wait the minimum time for a
-// measurement to be ready based on the power style.
-uint32_t ANBpH::getStartImmersionErrorWindow(void) {
-    if (!_immersionSensorEnabled || _powerPin < 0 || _retryAttemptsMade > 0) {
-        return getEndMeasurementWindow();
-    }
-    return ANB_PH_IMMERSION_ERROR;
-}
-uint32_t ANBpH::getEndImmersionErrorWindow(void) {
-    if (!_immersionSensorEnabled || _powerPin < 0 || _retryAttemptsMade > 0) {
-        return getEndMeasurementWindow();
-    }
-    return ANB_PH_IMMERSION_ERROR_MAX;
-}
-
 uint32_t ANBpH::getStartMeasurementWindow(void) {
     if (_powerPin >= 0 && _retryAttemptsMade == 0) {
         if (_salinityMode == ANBSalinityMode::HIGH_SALINITY) {
@@ -515,11 +491,7 @@ uint32_t ANBpH::getStartMeasurementWindow(void) {
             return ANB_PH_1ST_VALUE_LOW_SALT;
         }
     } else {
-        if (_salinityMode == ANBSalinityMode::HIGH_SALINITY) {
-            return ANB_PH_2ND_VALUE_HIGH_SALT;
-        } else {
-            return ANB_PH_2ND_VALUE_LOW_SALT;
-        }
+        return 0;
     }
 }
 
@@ -536,9 +508,9 @@ uint32_t ANBpH::getEndMeasurementWindow(void) {
         }
     } else {
         if (_salinityMode == ANBSalinityMode::HIGH_SALINITY) {
-            return ANB_PH_2ND_VALUE_HIGH_SALT_MAX;
+            return ANB_PH_2ND_VALUE_HIGH_SALT;
         } else {
-            return ANB_PH_2ND_VALUE_LOW_SALT_MAX;
+            return ANB_PH_2ND_VALUE_LOW_SALT;
         }
     }
 }
@@ -560,6 +532,25 @@ bool ANBpH::isMeasurementComplete(bool debug) {
     }
 
     uint32_t elapsed_since_meas_start = millis() - _millisMeasurementRequested;
+
+    // After the first measurement, the sensor will always report that a
+    // measurement is ready, but a new value will not be available for at
+    // least 10.5 (high salinity) or 14 (low salinity) seconds.
+    if (_retryAttemptsMade > 0) {
+        if (elapsed_since_meas_start > _measurementTime_ms) {
+            if (debug) {
+                MS_DBG(F("It's been"), elapsed_since_meas_start,
+                       F("ms, and measurement by"), getSensorNameAndLocation(),
+                       F("should be complete!"));
+            }
+            return true;
+        } else {
+            // If the sensor is measuring but the time hasn't passed, we still
+            // need to wait
+            return false;
+        }
+    }
+
     // If we're past the maximum wait time, the measurement failed, but our wait
     // is over
     if (elapsed_since_meas_start > getEndMeasurementWindow()) {
@@ -568,24 +559,12 @@ bool ANBpH::isMeasurementComplete(bool debug) {
                F("timed out waiting for a measurement to complete."));
         return true;  // timeout
     }
-    // If we haven't gotten to the minimum response time, we need to wait
-    if (elapsed_since_meas_start < getStartImmersionErrorWindow()) {
-        return false;
-    }
 
     bool is_ready = false;
-    // Check every half second if we're in the window where the immersion
-    // sensor might return a not-immersed error
-    if (elapsed_since_meas_start > getStartImmersionErrorWindow() &&
-        elapsed_since_meas_start <= getEndImmersionErrorWindow()) {
-        is_ready = isSensorReady(&anbSensor::isMeasurementComplete, 1000L,
-                                 _millisMeasurementRequested);
-    }
     // Since the sensor takes so very long to measure when it's power cycled, if
     // we know it's going to be a while, we drop the query frequency to once
     // every 15 seconds because there's no point in asking more often than that.
-    if (elapsed_since_meas_start > getEndImmersionErrorWindow() &&
-        elapsed_since_meas_start <= getStartMeasurementWindow()) {
+    if (elapsed_since_meas_start <= getStartMeasurementWindow()) {
         is_ready = isSensorReady(&anbSensor::isMeasurementComplete, 15000L,
                                  _millisMeasurementRequested);
     }
@@ -606,8 +585,18 @@ bool ANBpH::isMeasurementComplete(bool debug) {
 
 
 bool ANBpH::setSalinityMode(ANBSalinityMode newSalinityMode) {
+    MS_DBG(F("Set sensor salinity mode..."));
+    bool salinitySet = _anb_sensor.setSalinityMode(newSalinityMode);
+    MS_DBG(F("..."), salinitySet ? F("success") : F("failed"));
+    if (!salinitySet) { return false; }
+    // If we succeeded in setting the salinity mode, update the local copy and
+    // the measurement time
     _salinityMode = newSalinityMode;
-    return _anb_sensor.setSalinityMode(newSalinityMode);
+    if (_salinityMode == ANBSalinityMode::HIGH_SALINITY) {
+        _measurementTime_ms = ANB_PH_2ND_VALUE_HIGH_SALT;
+    } else {
+        _measurementTime_ms = ANB_PH_2ND_VALUE_LOW_SALT;
+    }
 }
 
 bool ANBpH::enableImmersionSensor(bool enable) {
