@@ -647,10 +647,12 @@ bool Sensor::bumpMeasurementAttemptCount(bool wasSuccessful) {
     // Bump the number of attempted retries
     _retryAttemptsMade++;
 
-    if (wasSuccessful || _retryAttemptsMade >= _allowedMeasurementRetries) {
+    if (wasSuccessful || _retryAttemptsMade > _allowedMeasurementRetries) {
         // Bump the number of completed measurement attempts - we've succeeded
         // or failed but exceeded retries
         _measurementAttemptsCompleted++;
+        // Reset the number of retries made for the next measurement attempt
+        _retryAttemptsMade = 0;
     }
     return wasSuccessful;
 }
