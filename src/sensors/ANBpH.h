@@ -180,6 +180,7 @@
 /// @warning After the first reading, the sensor will *always* say the sensor is
 /// ready!  But there will not be a **new** value available before this time.
 #define ANB_PH_2ND_VALUE_LOW_SALT 14100L
+/**@}*/
 
 /**
  * @anchor sensor_anb_ph_ph
