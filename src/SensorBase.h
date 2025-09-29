@@ -381,6 +381,8 @@ class Sensor {
      *
      * Generally this is done by setting the #_powerPin `HIGH`.  Also sets the
      * #_millisPowerOn timestamp and updates the #_sensorStatus.
+     *
+     * @todo Universally support power pins that are active LOW.
      */
     virtual void powerUp(void);
     /**
@@ -389,6 +391,8 @@ class Sensor {
      * Generally this is done by setting the #_powerPin `LOW`.  Also un-sets
      * the #_millisPowerOn timestamp (sets #_millisPowerOn to 0) and updates the
      * #_sensorStatus.
+     *
+     * @todo Universally support power pins that are inactive HIGH.
      */
     virtual void powerDown(void);
 
