@@ -597,6 +597,7 @@ bool ANBpH::setSalinityMode(ANBSalinityMode newSalinityMode) {
     } else {
         _measurementTime_ms = ANB_PH_2ND_VALUE_LOW_SALT;
     }
+    return true;
 }
 
 bool ANBpH::enableImmersionSensor(bool enable) {
