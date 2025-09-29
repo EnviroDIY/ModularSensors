@@ -820,10 +820,6 @@ void Logger::systemSleep(void) {
     digitalWrite(SCL, LOW);
 #endif
 
-    // Disable the watch-dog timer
-    MS_DEEP_DBG(F("Disabling the watchdog"));
-    extendedWatchDog::disableWatchDog();
-
 #if defined(ARDUINO_ARCH_SAMD)
 
     // force all pins to minimum power draw levels (tri-state)
@@ -978,6 +974,12 @@ void Logger::systemSleep(void) {
     SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
 #endif
 
+    // Disable the watch-dog timer - the very last thing before sleeping just in
+    // case anything else goes wrong in between.
+    // NOTE: Because this is last, we can't print a message after disabling the
+    // watch-dog.
+    extendedWatchDog::disableWatchDog();
+
     __DSB();  // Data sync barrier - to ensure outgoing memory accesses
               // complete
     __WFI();  // wait for interrupt
@@ -1059,6 +1061,12 @@ void Logger::systemSleep(void) {
     MS_2ND_OUTPUT.flush();
 #endif
 
+    // Disable the watch-dog timer - the very last thing before sleeping just in
+    // case anything else goes wrong in between.
+    // NOTE: Because this is last, we can't print a message after disabling the
+    // watch-dog.
+    extendedWatchDog::disableWatchDog();
+
     // Actually put the processor into sleep mode.
     // This must happen after the SE bit is set.
     sleep_cpu();
@@ -1070,10 +1078,13 @@ void Logger::systemSleep(void) {
     // ---------------------------------------------------------------------
     // -- The portion below this happens on wake up, after any wake ISR's --
 
+    // Re-enable the watch-dog timer right away!
+    extendedWatchDog::enableWatchDog();
+
 #if defined(ENVIRODIY_STONEFLY_M4)
     pinMode(LED_BUILTIN, OUTPUT);
     digitalWrite(LED_BUILTIN,
-                 HIGH);  // turn off the built-in LED if using a Stonefly M4
+                 HIGH);  // turn on the built-in LED if using a Stonefly M4
 #endif
 
 #if defined(ARDUINO_ARCH_SAMD)
@@ -1126,10 +1137,6 @@ void Logger::systemSleep(void) {
     interrupts();
 
 #endif
-
-    // Re-enable the watch-dog timer
-    MS_DEEP_DBG(F("Re-enabling the watchdog"));
-    extendedWatchDog::enableWatchDog();
 
     // Re-start the I2C interface
     MS_DEEP_DBG(F("Restarting I2C"));
