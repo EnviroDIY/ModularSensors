@@ -344,7 +344,7 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
             if (sensorList[i]->getStatusBit(Sensor::WAKE_ATTEMPTED) == 1 &&
                 sensorList[i]->getStatusBit(Sensor::WAKE_SUCCESSFUL) == 0) {
                 MS_DBG(i, F("--->>"), sName,
-                       F("did not wake up! No measurements will be taken! "
+                       F("failed to wake up! No measurements will be taken! "
                          "<<---"),
                        i);
                 // Set the number of measurements already complete equal to
@@ -445,8 +445,9 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
 
                     if (sensorSuccess_sleep) {
                         MS_DBG(F("   ... succeeded in putting sensor to sleep. "
-                                 "<<---"),
-                               i);
+                                 "Total wake time was"),
+                               millis() - sensorList[i]->_millisSensorActivated,
+                               F("ms <<---"), i);
                     } else {
                         MS_DBG(F("   ... sleep failed! <<---"), i);
                     }
