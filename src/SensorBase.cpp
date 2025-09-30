@@ -482,40 +482,50 @@ bool Sensor::checkPowerOn(bool debug) {
         MS_DBG(F("Checking power status:  Power to"),
                getSensorNameAndLocation());
     }
-    if (_powerPin >= 0 || _powerPin2 >= 0) {
-        auto powerBitNumber =
-            static_cast<int8_t>(log(digitalPinToBitMask(_powerPin)) / log(2));
-        auto powerBitNumber2 =
-            static_cast<int8_t>(log(digitalPinToBitMask(_powerPin2)) / log(2));
-
-        if (bitRead(*portInputRegister(digitalPinToPort(_powerPin)),
-                    powerBitNumber) == LOW ||
-            bitRead(*portInputRegister(digitalPinToPort(_powerPin2)),
-                    powerBitNumber2) == LOW) {
-            if (debug) { MS_DBG(F("was off.")); }
-            // Reset time of power on, in-case it was set to a value
-            _millisPowerOn = 0;
-            // Unset the status bits for sensor power (bits 1 & 2),
-            // activation (bits 3 & 4), and measurement request (bits 5 & 6)
-            clearStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL, WAKE_ATTEMPTED,
-                            WAKE_SUCCESSFUL, MEASUREMENT_ATTEMPTED,
-                            MEASUREMENT_SUCCESSFUL);
-            return false;
-        } else {
-            if (debug) { MS_DBG(" was on."); }
-            // Mark the power-on time, just in case it  had not been marked
-            if (_millisPowerOn == 0) _millisPowerOn = millis();
-            // Set the status bit for sensor power attempt (bit 1) and success
-            // (bit 2)
-            setStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL);
-            return true;
-        }
-    } else {
+    if (_powerPin < 0 && _powerPin2 < 0) {
         if (debug) { MS_DBG(F("is not controlled by this library.")); }
         // Mark the power-on time, just in case it  had not been marked
         if (_millisPowerOn == 0) _millisPowerOn = millis();
         // Set the status bit for sensor power attempt (bit 1) and success (bit
         // 2)
+        setStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL);
+        return true;
+    }
+    bool pp1_off = false;
+    bool pp2_off = false;
+    if (_powerPin >= 0) {
+        auto powerBitNumber =
+            static_cast<int8_t>(log(digitalPinToBitMask(_powerPin)) / log(2));
+        pp1_off = bitRead(*portInputRegister(digitalPinToPort(_powerPin)),
+                          powerBitNumber) == LOW;
+    }
+    if (_powerPin2 >= 0) {
+        auto powerBitNumber2 =
+            static_cast<int8_t>(log(digitalPinToBitMask(_powerPin2)) / log(2));
+        pp2_off = bitRead(*portInputRegister(digitalPinToPort(_powerPin2)),
+                          powerBitNumber2) == LOW;
+    }
+
+    if (pp1_off || pp2_off) {
+        if (debug) { MS_DBG(F("was off.")); }
+        // Unset time of power on, in-case it was set to a value
+        _millisPowerOn = 0;
+        // Unset the activation time
+        _millisSensorActivated = 0;
+        // Unset the measurement request time
+        _millisMeasurementRequested = 0;
+        // Unset the status bits for sensor power (bits 1 & 2),
+        // activation (bits 3 & 4), and measurement request (bits 5 & 6)
+        clearStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL, WAKE_ATTEMPTED,
+                        WAKE_SUCCESSFUL, MEASUREMENT_ATTEMPTED,
+                        MEASUREMENT_SUCCESSFUL);
+        return false;
+    } else {
+        if (debug) { MS_DBG(" was on."); }
+        // Mark the power-on time, just in case it  had not been marked
+        if (_millisPowerOn == 0) _millisPowerOn = millis();
+        // Set the status bit for sensor power attempt (bit 1) and success
+        // (bit 2)
         setStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL);
         return true;
     }
