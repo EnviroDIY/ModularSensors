@@ -1621,7 +1621,7 @@ void Logger::benchTestingMode(bool sleepBeforeReturning) {
         // Update the values from all attached sensors
         // NOTE:  NOT using complete update because we want the sensors to be
         // left on between iterations in testing mode.
-        _internalArray->updateAllSensors();
+        _internalArray->completeUpdate(false, false, false, false);
         // Print out the current logger time
         PRINTOUT(F("Current logger time is"),
                  formatDateTime_ISO8601(getNowLocalEpoch()));
