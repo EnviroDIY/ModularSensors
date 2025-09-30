@@ -457,6 +457,16 @@ bool ANBpH::isStable(bool debug) {
         return true;
     }
 
+    // If we're taking a repeat measurement, we may have already waited for
+    // stabilization after the initial wake, so we can skip this wait.
+    if (_retryAttemptsMade != 0) {
+        if (debug) {
+            MS_DBG(getSensorNameAndLocation(),
+                   F("is retrying and doesn't need to stabilize again."));
+        }
+        return true;
+    }
+
     uint32_t elapsed_since_wake_up = millis() - _millisSensorActivated;
     uint32_t minTime               = _stabilizationTime_ms;
     uint32_t maxTime               = ANB_PH_STABILIZATION_TIME_MAX;

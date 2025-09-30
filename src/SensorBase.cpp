@@ -582,6 +582,16 @@ bool Sensor::isStable(bool debug) {
         return true;
     }
 
+    // If we're taking a repeat measurement, we may have already waited for
+    // stabilization after the initial wake, so we can skip this wait.
+    if (_retryAttemptsMade != 0) {
+        if (debug) {
+            MS_DBG(getSensorNameAndLocation(),
+                   F("is retrying and doesn't need to stabilize again."));
+        }
+        return true;
+    }
+
     uint32_t elapsed_since_wake_up = millis() - _millisSensorActivated;
     // If the sensor has been activated and enough time has elapsed, it's stable
     if (elapsed_since_wake_up > _stabilizationTime_ms) {
