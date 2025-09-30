@@ -24,7 +24,11 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 These resets were an awkward attempt to deal with bad values before feeding any bad values to the `verifyAndAddMeasurementResult()` function which was previously always called even if the sensor returned junk.
 This was probably a hold-over from incorrect implementation and calling of the clearValues function deep in the library history.
   - Also made the return from the `addSingleMeasurementResult()` function consistently false for a bad sensor response and true for a good one - where it's possible to tell the difference.
-- The Sensor::clearValues() function now resets all timing and bits for the sensor in addition to setting all values in the value array to -9999..
+- The Sensor::clearValues() function now resets all timing and bits for the sensor in addition to setting all values in the value array to -9999.
+- Re-wrote some of the logic of the `completeUpdate()` function.
+Also added optional arguments to the `completeUpdate()` function to allow users to specify if the sensors should be powered/woken.
+  - The `updateAllSensors()` function is now deprecated.
+Use `completeUpdate(false, false, false, false)` instead.
 
 ### Added
 

@@ -239,9 +239,10 @@ class VariableArray {
     /**
      * @brief Update the values for all connected sensors.
      *
-     * Does not power or wake/sleep sensors.  Returns a boolean indication the
-     * overall success.  Does NOT return any values.  Repeatedly checks each
-     * sensor's readiness state to optimize timing.
+     * @m_deprecated_since{0,38,0}
+     *
+     * Use completeUpdate() instead and set the powerUp, wake, sleep and
+     * powerDown parameters as needed.
      *
      * @return True if all steps of the update succeeded.
      */
@@ -259,7 +260,8 @@ class VariableArray {
      *
      * @return True if all steps of the update succeeded.
      */
-    bool completeUpdate(void);
+    bool completeUpdate(bool powerUp = true, bool wake = true,
+                        bool sleep = true, bool powerDown = true);
 
     /**
      * @brief Print out the results for all connected sensors to a stream
