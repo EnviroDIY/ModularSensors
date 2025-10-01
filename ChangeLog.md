@@ -43,6 +43,14 @@ Measurements that return bad values even after retries are still not included in
   - The default number of retry attempts for most sensors is 1.
 - Made a secondary power pin a property of all sensors.
 - Added internal function to run the steps of setting the timing and bits after a measurement.
+- Added setter and getter functions for sensor timing variables.
+These values should generally be set in the specific sensor constructors and only changed if you know what you're doing.
+  - `setWarmUpTime(uint32_t warmUpTime_ms)`
+  - `getWarmUpTime()`
+  - `setStabilizationTime(uint32_t stabilizationTime_ms)`
+  - `getStabilizationTime()`
+  - `setMeasurementTime(uint32_t measurementTime_ms)`
+  - `getMeasurementTime()`
 
 ### Removed
 

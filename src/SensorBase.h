@@ -155,6 +155,11 @@ class Sensor {
      */
     virtual int8_t getPowerPin(void);
     /**
+     * @brief Set the pin number controlling sensor power.
+     * @param pin The pin on the mcu controlling power to the sensor.
+     */
+    virtual void setPowerPin(int8_t pin);
+    /**
      * @brief Get the pin number controlling secondary sensor power.
      *
      * @return The pin on the mcu controlling secondary power
@@ -225,6 +230,47 @@ class Sensor {
      */
     void setAllowedMeasurementRetries(uint8_t allowedMeasurementRetries);
 
+    // _warmUpTime_ms _stabilizationTime_ms _measurementTime_ms
+
+    /**
+     * @brief Set the warm-up time for the sensor.
+     * @param warmUpTime_ms The warm-up time in milliseconds.
+     * @remark This is the time between when the sensor is powered on and when
+     * it is ready to receive a wake command.  It should be set in the sensor
+     * constructor. Only change this if you know what you're doing!
+     */
+    void setWarmUpTime(uint32_t warmUpTime_ms);
+    /**
+     * @brief Get the warm-up time for the sensor.
+     * @return The warm-up time in milliseconds.
+     */
+    uint32_t getWarmUpTime(void);
+    /**
+     * @brief Set the stabilization time for the sensor.
+     * @param stabilizationTime_ms The stabilization time in milliseconds.
+     * @remark This is the time between when the sensor receives a wake command
+     * and when it is able to return stable values.  It should be set in the
+     * sensor constructor. Only change this if you know what you're doing!
+     */
+    void setStabilizationTime(uint32_t stabilizationTime_ms);
+    /**
+     * @brief Get the stabilization time for the sensor.
+     * @return The stabilization time in milliseconds.
+     */
+    uint32_t getStabilizationTime(void);
+    /**
+     * @brief Set the measurement time for the sensor.
+     * @param measurementTime_ms The measurement time in milliseconds.
+     * @remark This is the time between when a measurement is started and when
+     * the result value is available.  It should be set in the sensor
+     * constructor. Only change this if you know what you're doing!
+     */
+    void setMeasurementTime(uint32_t measurementTime_ms);
+    /**
+     * @brief Get the measurement time for the sensor.
+     * @return The measurement time in milliseconds.
+     */
+    uint32_t getMeasurementTime(void);
 
     /// @brief The significance of the various status bits
     typedef enum {

@@ -65,6 +65,10 @@ String Sensor::getSensorNameAndLocation(void) {
 int8_t Sensor::getPowerPin(void) {
     return _powerPin;
 }
+// This sets the  power pin
+void Sensor::setPowerPin(int8_t pin) {
+    _powerPin = pin;
+}
 // This returns the number of the secondary power pin
 int8_t Sensor::getSecondaryPowerPin(void) {
     return _powerPin2;
@@ -96,6 +100,25 @@ uint8_t Sensor::getAllowedMeasurementRetries(void) {
     return _allowedMeasurementRetries;
 }
 
+
+void Sensor::setWarmUpTime(uint32_t warmUpTime_ms) {
+    _warmUpTime_ms = warmUpTime_ms;
+}
+uint32_t Sensor::getWarmUpTime(void) {
+    return _warmUpTime_ms;
+}
+void Sensor::setStabilizationTime(uint32_t stabilizationTime_ms) {
+    _stabilizationTime_ms = stabilizationTime_ms;
+}
+uint32_t Sensor::getStabilizationTime(void) {
+    return _stabilizationTime_ms;
+}
+void Sensor::setMeasurementTime(uint32_t measurementTime_ms) {
+    _measurementTime_ms = measurementTime_ms;
+}
+uint32_t Sensor::getMeasurementTime(void) {
+    return _measurementTime_ms;
+}
 
 // This returns the 8-bit code for the current status of the sensor.
 // Bit 0 - 0=Has NOT been set up, 1=Has been setup
