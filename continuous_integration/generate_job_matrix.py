@@ -311,6 +311,11 @@ for pio_env in pio_config.envs():
             elif "mayfly" in example.lower() and pio_env != "mayfly":
                 # skip mayfly examples on non-mayfly builds
                 pass
+            elif "drwi" in example.lower() and (
+                pio_env != "mayfly" and pio_env != "stonefly"
+            ):
+                # skip drwi examples on non-EnviroDIY processor builds
+                pass
             else:
                 command_list.extend(
                     create_logged_command(
