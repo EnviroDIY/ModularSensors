@@ -1633,6 +1633,32 @@ Variable* ads1x15Volt =
 #endif
 
 
+#if defined(BUILD_SENSOR_PROCESSOR_ANALOG)
+// ==========================================================================
+//  External Voltage via Processor ADC
+// ==========================================================================
+/** Start [processor_analog] */
+#include <sensors/ProcessorAnalog.h>
+
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+const int8_t externalAnalogPowerPin = sensorPowerPin;  // Power pin
+const int8_t externalAnalogDataPin  = A0;  // The ADS channel of interest
+const float  externalAnalogMultipler =
+    5.58;                        //  Gain setting if using a voltage divider
+const uint8_t eaReadsToAvg = 1;  // Only read one sample
+
+// Create an External Voltage sensor object
+ProcessorAnalog extAnalog(externalAnalogPowerPin, externalAnalogDataPin,
+                          externalAnalogMultipler, OPERATING_VOLTAGE,
+                          eaReadsToAvg);
+
+// Create a voltage variable pointer
+Variable* extBatteryVolts = new ProcessorAnalog_Voltage(
+    &extAnalog, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [processor_analog] */
+#endif
+
+
 #if defined(BUILD_SENSOR_FREESCALE_MPL115A2)
 // ==========================================================================
 //  Freescale Semiconductor MPL115A2 Barometer
@@ -3095,6 +3121,9 @@ Variable* variableList[] = {
 #if defined(BUILD_SENSOR_TIADS1X15)
     ads1x15Volt,
 #endif
+#if defined(BUILD_SENSOR_PROCESSOR_ANALOG)
+    extAnalog,
+#endif
 #if defined(BUILD_SENSOR_FREESCALE_MPL115A2)
     mplTemp,
     mplPress,
@@ -3581,8 +3610,13 @@ float getBatteryVoltage() {
 void setup() {
     /** Start [setup_flashing_led] */
     // Blink the LEDs to show the board is on and starting up
-    greenRedFlash(3, 35);
+    greenRedFlash(3, 100);
     /** End [setup_flashing_led] */
+
+    // IMMEDIATELY set up the watchdog timer for 5 minutes
+    // The watchdog interval will be reset in the data logger's begin()
+    // function.
+    extendedWatchDog::setupWatchDog(static_cast<uint32_t>(5 * 60));
 
 /** Start [setup_wait] */
 // Wait for USB connection to be established by PC
