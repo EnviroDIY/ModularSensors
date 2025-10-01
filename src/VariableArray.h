@@ -258,6 +258,11 @@ class VariableArray {
      * values.  Repeatedly checks each sensor's readiness state to optimize
      * timing.
      *
+     * @param powerUp If true, powers up all sensors before updating.
+     * @param wake If true, wakes all sensors before updating.
+     * @param sleep If true, puts all sensors to sleep after updating.
+     * @param powerDown If true, cuts power to all sensors after updating.
+     *
      * @return True if all steps of the update succeeded.
      */
     bool completeUpdate(bool powerUp = true, bool wake = true,
