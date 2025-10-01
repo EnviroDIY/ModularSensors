@@ -308,6 +308,9 @@ for pio_env in pio_config.envs():
             if example == "data_saving":
                 # skip this one until I get it updated
                 pass
+            elif "mayfly" in example.lower() and pio_env != "mayfly":
+                # skip mayfly examples on non-mayfly builds
+                pass
             else:
                 command_list.extend(
                     create_logged_command(
