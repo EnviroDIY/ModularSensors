@@ -19,48 +19,18 @@ ProcessorStats::ProcessorStats(const char* version,
              -1, measurementsToAverage, PROCESSOR_INC_CALC_VARIABLES),
       _version(version),
       _boardName(LOGGER_BOARD) {
-    // change the battery related settings for known boards
+    _operatingVoltage  = OPERATING_VOLTAGE;
+    _batteryPin        = BATTERY_PIN;
+    _batteryMultiplier = BATTERY_MULTIPLIER;
+
+    // change the battery related settings for known boards where the pin or
+    // multiplier is version dependent
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
-    _operatingVoltage = 3.3;
-    _batteryPin       = A6;
+    // fix battery multiplier for older Mayfly versions
     if (strcmp(_version, "v0.3") == 0 || strcmp(_version, "v0.4") == 0) {
         _batteryMultiplier = 1.47;
-    } else if (strcmp(_version, "v0.5") == 0 || strcmp(_version, "v0.5b") ||
-               strcmp(_version, "v1.0") || strcmp(_version, "v1.1") == 0) {
-        _batteryMultiplier = 4.7;
-    } else {
-        _batteryPin        = -1;
-        _batteryMultiplier = -1;
     }
-#elif defined(ENVIRODIY_STONEFLY_M4)
-    if (strcmp(_version, "v0.1") == 0) {
-        _operatingVoltage  = 3.3;
-        _batteryPin        = A9;  // aka 75
-        _batteryMultiplier = 4.7;
-    } else {
-        _batteryPin        = -1;
-        _batteryMultiplier = -1;
-    }
-#elif defined(ARDUINO_AVR_FEATHER328P) || defined(ARDUINO_AVR_FEATHER32U4) ||  \
-    defined(ARDUINO_SAMD_FEATHER_M0) || defined(SAMD_FEATHER_M0) ||            \
-    defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS) ||                                \
-    defined(SAMD_FEATHER_M0_EXPRESS) || defined(ARDUINO_FEATHER_M4) ||         \
-    defined(ADAFRUIT_FEATHER_M4_EXPRESS) || defined(ARDUINO_FEATHER_M4_CAN) || \
-    defined(ADAFRUIT_FEATHER_M4_CAN) || defined(ADAFRUIT_FEATHER_M4_ADALOGGER)
-    _operatingVoltage  = 3.3;
-    _batteryPin        = 9;
-    _batteryMultiplier = 2;
-#elif defined(ARDUINO_AVR_SODAQ_MBILI)
-    _operatingVoltage  = 3.3;
-    _batteryPin        = A6;
-    _batteryMultiplier = 1.47;
-#elif defined(ARDUINO_AVR_SODAQ_NDOGO)
-    _operatingVoltage  = 3.3;
-    _batteryPin        = 10;
-    _batteryMultiplier = 1.47;
 #elif defined(ARDUINO_SODAQ_ONE) || defined(ARDUINO_SODAQ_ONE_BETA)
-    _operatingVoltage = 3.3;
-    _batteryPin       = 10;
     if (strcmp(_version, "v0.1") == 0) {
         _batteryMultiplier = 2;
     } else if (strcmp(_version, "v0.2") == 0) {
@@ -69,15 +39,10 @@ ProcessorStats::ProcessorStats(const char* version,
         _batteryMultiplier = -1
     }
 #elif defined(ARDUINO_SODAQ_AUTONOMO)
-    _operatingVoltage  = 3.3;
-    _batteryMultiplier = 1.47;
     if (strcmp(_version, "v0.1") == 0)
         _batteryPin = 48;
     else
         _batteryPin = 33;
-#else
-    _batteryPin        = -1;
-    _batteryMultiplier = -1;
 #endif
 }
 

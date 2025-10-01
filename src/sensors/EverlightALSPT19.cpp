@@ -11,8 +11,6 @@
 #include "EverlightALSPT19.h"
 
 
-// The constructor - because this is I2C, only need the power pin
-// This sensor has a set I2C address of 0XB8
 EverlightALSPT19::EverlightALSPT19(int8_t powerPin, int8_t dataPin,
                                    float supplyVoltage, float loadResistor,
                                    uint8_t measurementsToAverage)
@@ -22,14 +20,18 @@ EverlightALSPT19::EverlightALSPT19(int8_t powerPin, int8_t dataPin,
              measurementsToAverage),
       _supplyVoltage(supplyVoltage),
       _loadResistor(loadResistor) {}
+#if defined(BUILT_IN_ALS_POWER_PIN) && defined(BUILT_IN_ALS_DATA_PIN) && \
+    defined(BUILT_IN_ALS_SUPPLY_VOLTAGE) &&                              \
+    defined(BUILT_IN_ALS_LOADING_RESISTANCE)
 EverlightALSPT19::EverlightALSPT19(uint8_t measurementsToAverage)
     : Sensor("Everlight ALS-PT19", ALSPT19_NUM_VARIABLES,
              ALSPT19_WARM_UP_TIME_MS, ALSPT19_STABILIZATION_TIME_MS,
-             ALSPT19_MEASUREMENT_TIME_MS, MAYFLY_ALS_POWER_PIN,
-             MAYFLY_ALS_DATA_PIN, measurementsToAverage,
+             ALSPT19_MEASUREMENT_TIME_MS, BUILT_IN_ALS_POWER_PIN,
+             BUILT_IN_ALS_DATA_PIN, measurementsToAverage,
              ALSPT19_INC_CALC_VARIABLES),
-      _supplyVoltage(MAYFLY_ALS_SUPPLY_VOLTAGE),
-      _loadResistor(MAYFLY_ALS_LOADING_RESISTANCE) {}
+      _supplyVoltage(BUILT_IN_ALS_SUPPLY_VOLTAGE),
+      _loadResistor(BUILT_IN_ALS_LOADING_RESISTANCE) {}
+#endif
 EverlightALSPT19::~EverlightALSPT19() {}
 
 
