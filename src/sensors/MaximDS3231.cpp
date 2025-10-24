@@ -56,8 +56,7 @@ bool MaximDS3231::startSingleMeasurement(void) {
 
 bool MaximDS3231::addSingleMeasurementResult(void) {
     // NOTE: This can't fail! If it does we have much bigger problems because
-    // that means we can't get the timeand the whole system is not working.
-
+    // that means we can't get the time and the whole system is not working.
     // get the temperature value
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
     float tempVal = rtc.getTemperature();
