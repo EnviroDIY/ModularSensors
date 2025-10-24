@@ -78,8 +78,11 @@ bool AlphasenseCO2::addSingleMeasurementResult(void) {
     // Sensor return range is 0-2.5V, but the next gain option is 2x which
     // only allows up to 2.048V
     ads.setGain(GAIN_ONE);
-    // Begin ADC
-    ads.begin(_i2cAddress);
+    // Begin ADC, returns true if anything was detected at the address
+    if (!ads.begin(_i2cAddress)) {
+        MS_DBG(F("  ADC initialization failed"));
+        return bumpMeasurementAttemptCount(false);
+    }
 
     // Read Analog to Digital Converter (ADC)
     // Taking this reading includes the 8ms conversion delay.

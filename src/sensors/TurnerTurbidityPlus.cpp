@@ -121,8 +121,11 @@ bool TurnerTurbidityPlus::addSingleMeasurementResult(void) {
     //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
 
     ads.setGain(_PGA_gain);
-    // Begin ADC
-    ads.begin(_i2cAddress);
+    // Begin ADC, returns true if anything was detected at the address
+    if (!ads.begin(_i2cAddress)) {
+        MS_DBG(F("  ADC initialization failed"));
+        return bumpMeasurementAttemptCount(false);
+    }
 
     // Print out the calibration curve
     MS_DBG(F("  Input calibration Curve:"), _volt_std, F("V at"), _conc_std,

@@ -75,8 +75,11 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
 
     // Bump the gain up to 1x = +/- 4.096V range
     ads.setGain(GAIN_ONE);
-    // Begin ADC
-    ads.begin(_i2cAddress);
+    // Begin ADC, returns true if anything was detected at the address
+    if (!ads.begin(_i2cAddress)) {
+        MS_DBG(F("  ADC initialization failed"));
+        return bumpMeasurementAttemptCount(false);
+    }
 
     // Read Analog to Digital Converter (ADC)
     // Taking this reading includes the 8ms conversion delay.
