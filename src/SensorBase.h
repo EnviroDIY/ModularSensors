@@ -449,7 +449,14 @@ class Sensor {
      * Verifies that the power is on and updates the #_sensorStatus.  This also
      * sets the #_millisSensorActivated timestamp.
      *
-     * @note This does NOT include any wait for sensor readiness.
+     * @note This does NOT include any wait time for sensor warm-up/readiness.
+     * Between powering the sensor and calling the wake function, most sensors
+     * have a required warm up time.  Use the separate isWarmedUp() function to
+     * check if the sensor is warmed up and use waitForWarmUp() to hold until
+     * the sensor is warmed up if needed.  The warm up time required for each
+     * sensor is held in the _warmUpTime_ms variable.  For *most* sensors, the
+     * warm up is complete when millis() - _millisPowerOn > _warmUpTime_ms.  The
+     * _millisPowerOn variable is set in the powerUp() function.
      *
      * @return True if the wake function completed successfully.
      */
@@ -472,7 +479,14 @@ class Sensor {
      * #_sensorStatus.
      *
      * @note This function does NOT include any waiting for the sensor to be
-     * warmed up or stable!
+     * warmed up or stable.  Between waking and starting measurements, most
+     * sensors have a required stabilization time. Use the separate isStable()
+     * function to check if the sensor ready to start a measurement and use
+     * waitForStability() to hold  until the sensor is ready if needed.  The
+     * stabilization time required for each sensor is held in the
+     * _stabilizationTime_ms variable.  For *most* sensors, the warm up is
+     * complete when millis() - _millisSensorActivated > _stabilizationTime_ms.
+     * The _millisSensorActivated variable is set in the wake() function.
      *
      * @return True if the start measurement function completed
      * successfully.
