@@ -242,7 +242,9 @@ bool YosemitechParent::addSingleMeasurementResult(void) {
                 // Put values into the array
                 verifyAndAddMeasurementResult(0, parmValue);
                 verifyAndAddMeasurementResult(1, tempValue);
-                verifyAndAddMeasurementResult(2, thirdValue);
+                if (_numReturnedValues > 2) {
+                    verifyAndAddMeasurementResult(2, thirdValue);
+                }
             }
             break;
         }
