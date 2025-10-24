@@ -254,6 +254,10 @@ bool GeoluxHydroCam::addSingleMeasurementResult(void) {
 
         verifyAndAddMeasurementResult(HYDROCAM_SIZE_VAR_NUM, bytes_transferred);
         verifyAndAddMeasurementResult(HYDROCAM_ERROR_VAR_NUM, byte_error);
+    } else {
+        MS_DBG(F("Image transfer failed, so not writing any data to SD card."));
+        // Close the image file
+        imgFile.close();
     }
 
     // Return success value when finished
