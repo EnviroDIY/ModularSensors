@@ -168,11 +168,12 @@ bool AtlasParent::addSingleMeasurementResult(void) {
             MS_DBG(F("  No Data"));
             break;
 
-        default: break;
+        default: MS_DBG(F("  Unexpected response code:"), code); break;
     }
     // If the response code is successful, parse the remaining results
     if (success) {
         for (uint8_t i = 0; i < _numReturnedValues; i++) {
+            if (_i2c->available() == 0) { break; }
             float result = _i2c->parseFloat();
             if (isnan(result)) { result = -9999; }
             if (result < -1020) { result = -9999; }
