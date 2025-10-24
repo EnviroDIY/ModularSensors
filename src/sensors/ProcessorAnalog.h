@@ -61,7 +61,7 @@
 #include "ModSensorDebugConfig.h"
 
 // Include the known processors for default values
-#include "KnownProcessors.h"
+#include "sensors/KnownProcessors.h"
 
 // Define the print label[s] for the debugger
 #ifdef MS_PROCESSOR_ANALOG_DEBUG

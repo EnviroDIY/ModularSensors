@@ -48,7 +48,7 @@
 #include "ModSensorConfig.h"
 
 // Include the known processors for default values
-#include "KnownProcessors.h"
+#include "sensors/KnownProcessors.h"
 
 // Include the debugging config
 #include "ModSensorDebugConfig.h"
