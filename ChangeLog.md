@@ -14,8 +14,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - **BREAKING** Changed capitalization of `setInitialShortIntervals(#)` function
   - Previously the 'i' of initial was not capitalized.
-- Made the enabling and disabling of the watch dog the very first and very last steps of sleep to keep the watchdog enabled through the whole getting ready for bed and waking up process.
-- **ANB pH** Changed timing slightly and simplified timing logic.
+- Made the enabling and disabling of the watchdog the very first and very last steps of sleep to keep the watchdog enabled through the whole getting ready for bed and waking up process.- **ANB pH** Changed timing slightly and simplified timing logic.
 - Bumped several dependencies - including crucial bug fixes to SensorModbusMaster.
 - Re-wrote most of the logic for looping variables within the complete update function of the VariableArray.
 - Simplified the `addSingleMeasurementResult()` function of all sensors to use an internal function to help set the bits and timing values and to quit sooner if the measurement was not started successfully.
