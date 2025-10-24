@@ -149,6 +149,9 @@
 /// @brief Decimals places in string representation; a 3.3V processor at 10-bit
 /// resolution should have 3 [3.3V / 1024 ~= 0.0032] .
 #define PROCESSOR_ANALOG_RESOLUTION 3
+#else
+// Default to 10-bit behavior if not specified
+#define PROCESSOR_ANALOG_RESOLUTION 3
 #endif
 /**@}*/
 
