@@ -520,7 +520,7 @@ class ANBpH : public Sensor {
      * for stabilization and then must wait the (very long) "first measurement"
      * time before requesting the first result.
      *
-     * @return True if the the sensor if the sensor started scanning.
+     * @return True if the sensor started scanning.
      */
     bool wake(void) override;
     bool sleep(void) override;
