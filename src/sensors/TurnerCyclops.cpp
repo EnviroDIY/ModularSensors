@@ -90,7 +90,8 @@ bool TurnerCyclops::addSingleMeasurementResult(void) {
     adcCounts = ads.readADC_SingleEnded(_adsChannel);
     // Convert ADC raw counts value to voltage (V)
     adcVoltage = ads.computeVolts(adcCounts);
-    MS_DBG(F("  ads.readADC_SingleEnded("), _adsChannel, F("):"), adcVoltage);
+    MS_DBG(F("  ads.readADC_SingleEnded("), _adsChannel, F("):"), adcCounts,
+           '=', adcVoltage);
 
     if (adcVoltage < 3.6 && adcVoltage > -0.3) {
         // Skip results out of range
