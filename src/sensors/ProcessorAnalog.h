@@ -224,7 +224,7 @@ class ProcessorAnalog_Voltage : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of "extVoltage".
+     * optional with a default value of "analogVoltage".
      */
     explicit ProcessorAnalog_Voltage(
         ProcessorAnalog* parentSense, const char* uuid = "",
