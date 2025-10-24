@@ -106,13 +106,18 @@ bool RainCounterI2C::addSingleMeasurementResult(void) {
                           static_cast<uint8_t>(4))) {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-        uint8_t SerialBuffer[4];    // Create a byte array of 4 bytes
-        uint8_t byte_in = 0;        // Start iterator for reading Bytes
-        while (Wire.available()) {  // slave may send less than requested
-            SerialBuffer[byte_in] = Wire.read();
+        // Create a byte array of 4 bytes to hold incoming data
+        uint8_t SerialBuffer[4] = {0, 0, 0, 0};
+        uint8_t byte_in         = 0;  // Start iterator for reading Bytes
+        while (_i2c->available() && byte_in < 4) {
+            SerialBuffer[byte_in] = _i2c->read();
             MS_DBG(F("  SerialBuffer["), byte_in, F("] = "),
                    SerialBuffer[byte_in]);
             byte_in++;  // increment by 1
+        }
+        if (byte_in < 1) {
+            MS_DBG(F("  No data bytes received"));
+            return bumpMeasurementAttemptCount(false);
         }
 
         // Concatenate bytes into uint32_t by bit-shifting
