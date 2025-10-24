@@ -175,7 +175,7 @@
  * {{ @ref TIINA219_Voltage::TIINA219_Voltage }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; bus voltage should have 4 -
+/// @brief Decimals places in string representation; bus voltage should have 3 -
 /// resolution is 0.001V.
 #define INA219_BUS_VOLTAGE_RESOLUTION 3
 /// @brief Sensor variable number; bus voltage is stored in sensorValues[1].
@@ -238,7 +238,7 @@ class TIINA219 : public Sensor {
      * Use -1 if it is continuously powered.
      * - The INA219 requires input voltage of 3.0-5.5V, which can be turned off
      * between measurements.
-     * @param i2cAddressHex The I2C address of the BME280; can be any number
+     * @param i2cAddressHex The I2C address of the INA219; can be any number
      * between 0x40 and 0x4F.  The default value is 0x40.
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
@@ -255,7 +255,7 @@ class TIINA219 : public Sensor {
      * Use -1 if it is continuously powered.
      * - The INA219 requires input voltage of 3.0-5.5V, which can be turned off
      * between measurements.
-     * @param i2cAddressHex The I2C address of the BME280; can be any number
+     * @param i2cAddressHex The I2C address of the INA219; can be any number
      * between 0x40 and 0x4F.  The default value is 0x40.
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
