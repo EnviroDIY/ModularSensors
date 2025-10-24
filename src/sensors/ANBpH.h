@@ -144,25 +144,24 @@
  * This is the time for communication to begin.
  */
 #define ANB_PH_WARM_UP_TIME_MS 5400L
-/// @brief The maximum time to wait for a modbus response.
+/// @brief The maximum time to wait for a non-error modbus response.
 #define ANB_PH_WARM_UP_TIME_MAX 10000L
 
 /// @brief Sensor::_stabilizationTime_ms; the ANB pH sensor does not need to
-/// stabilize, but we use this time as the check for ready time.
-#define ANB_PH_STABILIZATION_TIME_MS 50
-/// @brief The maximum time to wait for ready to measure.
-#define ANB_PH_STABILIZATION_TIME_MAX 5000L
+/// stabilize - the stabilization and referencing time is included in the time
+/// before the first value.
+#define ANB_PH_STABILIZATION_TIME_MS 0L
 
-/// @brief The minimum time for the first value in high salinity (documented min
-/// time of 129s).
+/// @brief The minimum time for the first value in high salinity (check 5
+/// seconds before the documented min time of 129s).
 /// @note If the immersion sensor is enabled and the sensor is not immersed, a
 /// failure response may be returned sooner
-#define ANB_PH_1ST_VALUE_HIGH_SALT 120000L
+#define ANB_PH_1ST_VALUE_HIGH_SALT 124000L
 /// @brief The maximum time for the first value in high salinity (documented max
 /// time of 238s for a long interval delay + 10s).
 #define ANB_PH_1ST_VALUE_HIGH_SALT_MAX 248000L
 /// @brief The minimum time for the first value in low salinity (documented min
-/// time is 184s, but I got responses at 160s).
+/// time is 184s, but I got responses at 160s so we check 1s before that).
 /// @note If the immersion sensor is enabled and the sensor is not immersed, a
 /// failure response may be returned sooner
 #define ANB_PH_1ST_VALUE_LOW_SALT 159000L
@@ -511,6 +510,18 @@ class ANBpH : public Sensor {
      * @return True if the setup was successful.
      */
     bool setup(void) override;
+    /**
+     * @brief Confirms that the sensor is giving a valid status code in response
+     * to modbus commands, re-sets the RTC, and starts measurements.
+     *
+     * Unlike base Sensor::wake(), this starts measurements (scanning).  ANB pH
+     * sensors have a built-in stabilization and referencing time before they
+     * report the first value so when we start scanning, we're starting the wait
+     * for stabilization and then must wait the (very long) "first measurement"
+     * time before requesting the first result.
+     *
+     * @return True if the the sensor if the sensor started scanning.
+     */
     bool wake(void) override;
     bool sleep(void) override;
 
@@ -520,24 +531,12 @@ class ANBpH : public Sensor {
      * @copydoc Sensor::isWarmedUp(bool debug)
      *
      * For the ANB pH sensor, this waits for both the power-on warm up and for a
-     * valid response from the sensor to a Modbus command.
-     *
-     * @note The timing here is probably not very variable.
-     */
-    bool isWarmedUp(bool debug = false) override;
-
-    /**
-     * @brief Check whether or not enough time has passed between the sensor
-     * responding to any modbus command to giving a valid status code - which
-     * indicates that it's ready to take a measurement.
-     *
-     * @param debug True to output the result to the debugging Serial
-     * @return True indicates that enough time has passed that the sensor is
+     * valid status code response from the sensor - which indicates that it's
      * ready to take a measurement.
      *
      * @note The timing here is probably not very variable.
      */
-    bool isStable(bool debug = false) override;
+    bool isWarmedUp(bool debug = false) override;
 
     /**
      * @brief Check whether or not the pH sensor has completed a measurement.

@@ -18,6 +18,7 @@ ANBpH::ANBpH(byte modbusAddress, Stream* stream, int8_t powerPin,
              ANB_PH_STABILIZATION_TIME_MS, ANB_PH_2ND_VALUE_LOW_SALT, powerPin,
              -1, measurementsToAverage, ANB_PH_INC_CALC_VARIABLES),
       _anb_sensor(modbusAddress, stream, enablePin),
+      _modbusAddress(modbusAddress),
       _stream(stream),
       _RS485EnablePin(enablePin) {
 #ifdef MS_ANB_SENSORS_PH_DEBUG_DEEP
@@ -185,9 +186,6 @@ bool ANBpH::setup(void) {
 }
 
 
-// This confirms that the sensor is really giving modbus responses so nothing
-// further happens if not. - It's a "check if it's awake" function rather than a
-// "wake it up" function.
 bool ANBpH::wake(void) {
     // Sensor::wake() checks if the power pin is on and sets the wake timestamp
     // and status bits.  If it returns false, there's no reason to go on.
@@ -195,7 +193,7 @@ bool ANBpH::wake(void) {
 
     MS_DEEP_DBG(F("Checking for modbus response confirming"),
                 getSensorNameAndLocation(), F("is awake"));
-    bool is_ready = isSensorReady(&anbSensor::gotModbusResponse,
+    bool is_ready = isSensorReady(&anbSensor::isSensorReady,
                                   ANB_PH_MINIMUM_REQUEST_SPACING,
                                   _millisPowerOn);
     if (!is_ready) {
@@ -261,7 +259,7 @@ bool ANBpH::sleep(void) {
         return true;
     }
 
-    // Send the command to begin taking readings, trying up to 5 times
+    // Send the command to stop taking readings, trying up to 5 times
     bool    success = false;
     uint8_t ntries  = 0;
     MS_DBG(F("Stop Measurement on"), getSensorNameAndLocation());
@@ -426,7 +424,7 @@ bool ANBpH::isWarmedUp(bool debug) {
                getSensorNameAndLocation(), F("timed out after power up."));
         return true;  // timeout
     } else if (elapsed_since_power_on > _warmUpTime_ms) {
-        bool is_ready = isSensorReady(&anbSensor::gotModbusResponse,
+        bool is_ready = isSensorReady(&anbSensor::isSensorReady,
                                       ANB_PH_MINIMUM_REQUEST_SPACING,
                                       _millisPowerOn);
         if (is_ready) {
@@ -437,58 +435,6 @@ bool ANBpH::isWarmedUp(bool debug) {
         return is_ready;
     } else {
         // wait at least the minimum warm-up time
-        return false;
-    }
-}
-
-
-// This checks to see if enough time has passed for stability
-bool ANBpH::isStable(bool debug) {
-#if defined(MS_ANB_SENSORS_PH_DEBUG_DEEP) || defined(MS_SENSORBASE_DEBUG)
-    debug = true;
-#endif
-    // If the sensor failed to activate, it will never stabilize, so the
-    // stabilization time is essentially already passed
-    if (!getStatusBit(WAKE_SUCCESSFUL)) {
-        if (debug) {
-            MS_DBG(getSensorNameAndLocation(),
-                   F("is not active and cannot stabilize!"));
-        }
-        return true;
-    }
-
-    // If we're taking a repeat measurement, we may have already waited for
-    // stabilization after the initial wake, so we can skip this wait.
-    if (_retryAttemptsMade != 0) {
-        if (debug) {
-            MS_DBG(getSensorNameAndLocation(),
-                   F("is retrying and doesn't need to stabilize again."));
-        }
-        return true;
-    }
-
-    uint32_t elapsed_since_wake_up = millis() - _millisSensorActivated;
-    uint32_t minTime               = _stabilizationTime_ms;
-    uint32_t maxTime               = ANB_PH_STABILIZATION_TIME_MAX;
-    // If the sensor has been activated and enough time has elapsed, it's stable
-    if (elapsed_since_wake_up > maxTime) {
-        MS_DBG(F("It's been"), elapsed_since_wake_up, F("ms, and"),
-               getSensorNameAndLocation(),
-               F("timed out waiting for a valid status code."));
-        return true;  // timeout
-    } else if (elapsed_since_wake_up > minTime) {
-        bool is_ready = isSensorReady(&anbSensor::isSensorReady,
-                                      ANB_PH_MINIMUM_REQUEST_SPACING,
-                                      _millisSensorActivated);
-        if (is_ready) {
-            MS_DBG(F("It's been"), elapsed_since_wake_up, F("ms, and"),
-                   getSensorNameAndLocation(),
-                   F("gave a valid status code, indicating it's ready to "
-                     "start a measurement."));
-        }
-        return is_ready;
-    } else {
-        // Wait at least the minimum readiness time
         return false;
     }
 }
