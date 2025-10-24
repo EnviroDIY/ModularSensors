@@ -154,7 +154,7 @@ bool RainCounterI2C::addSingleMeasurementResult(void) {
         MS_DBG(F("  Rain:"), rain);
         MS_DBG(F("  Tips:"), tips);
 
-        if (rain != -9999 || tips != -9999) {
+        if (rain != -9999 || tips != -9999) {  // if either is valid
             verifyAndAddMeasurementResult(BUCKET_RAIN_VAR_NUM, rain);
             verifyAndAddMeasurementResult(BUCKET_TIPS_VAR_NUM, tips);
             success = true;
