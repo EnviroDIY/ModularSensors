@@ -56,19 +56,21 @@ bool EverlightALSPT19::addSingleMeasurementResult(void) {
     uint32_t sensor_adc = analogRead(_dataPin);
     MS_DEEP_DBG("  ADC Bits:", sensor_adc);
 
-    if (0 == sensor_adc) {
-        // Prevent underflow, can never be outside of PROCESSOR_ADC_RANGE
-        sensor_adc = 1;
+    if (sensor_adc == 0) {
+        volt_val    = 0.0;
+        current_val = 0.0;
+        lux_val     = 0.0;
+    } else {
+        // convert bits to volts
+        volt_val = (_supplyVoltage / static_cast<float>(PROCESSOR_ADC_MAX)) *
+            static_cast<float>(sensor_adc);
+        // convert volts to current
+        // resistance is entered in kΩ and we want µA
+        current_val = (volt_val / (_loadResistor * 1000)) * 1e6;
+        // convert current to illuminance
+        // from sensor datasheet, typical 200µA current for 1000 Lux
+        lux_val = current_val * (1000. / 200.);
     }
-    // convert bits to volts
-    volt_val = (_supplyVoltage / static_cast<float>(PROCESSOR_ADC_MAX)) *
-        static_cast<float>(sensor_adc);
-    // convert volts to current
-    // resistance is entered in kΩ and we want µA
-    current_val = (volt_val / (_loadResistor * 1000)) * 1e6;
-    // convert current to illuminance
-    // from sensor datasheet, typical 200µA current for 1000 Lux
-    lux_val = current_val * (1000. / 200.);
 
     MS_DBG(F("  Voltage:"), volt_val, F("V"));
     MS_DBG(F("  Current:"), current_val, F("µA"));
