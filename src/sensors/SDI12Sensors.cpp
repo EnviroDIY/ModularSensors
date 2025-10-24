@@ -708,6 +708,9 @@ bool SDI12Sensors::getResults(bool verify_crc) {
 
 
 #ifndef MS_SDI12_NON_CONCURRENT
+// This function is using concurrent measurements, so the MEASUREMENT_SUCCESSFUL
+// bit was set in the specialized startSingleMeasurement function based on
+// whether the response to the SDI-12 start measurement command.
 bool SDI12Sensors::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
@@ -719,7 +722,12 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
     // Return success value when finished
     return bumpMeasurementAttemptCount(success);
 }
-#else
+#else  // concurrent measurement disabled
+// This is for non-concurrent measurements, so this function must both start the
+// measurement and get results at once.  For non-concurrent measurements, the
+// MEASUREMENT_SUCCESSFUL bit is set in the generic sensor
+// startSingleMeasurement function from sensor base, which only verifies that
+// the sensor is awake and capable of starting measurements.
 bool SDI12Sensors::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
@@ -745,7 +753,7 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
             MS_DBG(F("    NON-concurrent measurement started."));
             // Update the time that a measurement was requested
             _millisMeasurementRequested = millis();
-            // Set the status bit for measurement start success (bit 6)
+            // Re-set the status bit for measurement start success (bit 6)
             setStatusBit(MEASUREMENT_SUCCESSFUL);
 
             // Since this is not a concurrent measurement, we must sit around
