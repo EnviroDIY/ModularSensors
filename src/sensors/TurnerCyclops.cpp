@@ -42,6 +42,13 @@ String TurnerCyclops::getSensorLocation(void) {
 }
 
 
+/**
+ * @brief Read the configured ADS channel, apply the sensor's calibration, and store the calibrated concentration and raw voltage when valid.
+ *
+ * If the measurement was not successfully started, no reading is performed. The function updates the sensor's internal measurement-attempt tracking when it finishes.
+ *
+ * @return `true` if a calibrated measurement was recorded and stored, `false` otherwise.
+ */
 bool TurnerCyclops::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {

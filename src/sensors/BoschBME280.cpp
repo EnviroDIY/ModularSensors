@@ -114,6 +114,16 @@ bool BoschBME280::wake(void) {
 }
 
 
+/**
+ * @brief Read the BME280, validate the readings, and add validated measurements to the result set.
+ *
+ * Attempts to read temperature, humidity, pressure, and calculated altitude from the sensor;
+ * if the measurement was not started or the readings indicate a non-response (temperature, pressure,
+ * and humidity all zero, or temperature less than -40 °C), the readings are discarded. Validated
+ * readings are added to the sensor's measurement results.
+ *
+ * @return `true` if readings were considered valid and added to the results, `false` otherwise.
+ */
 bool BoschBME280::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {

@@ -170,7 +170,26 @@
  *
  * @ingroup sensor_tally
  */
-/* clang-format on */
+/**
+ * Construct a TallyCounterI2C sensor using the primary hardware I2C instance.
+ * @param powerPin MCU pin controlling power to the Tally counter; use -1 to indicate continuous power.
+ * @param i2cAddressHex I2C address for the Tally counter (default TALLY_ADDRESS_BASE).
+ */
+/**
+ * Destroy the TallyCounterI2C object.
+ */
+/**
+ * Perform one-time initialization required for the sensor to take readings.
+ * @returns `true` if setup completed successfully, `false` otherwise.
+ */
+/**
+ * Get a human-readable descriptor of where the sensor is mounted or connected.
+ * @returns A string describing the sensor's location.
+ */
+/**
+ * Read a single measurement from the Tally counter and store it in the sensor's variables.
+ * @returns `true` if a measurement was obtained and stored successfully, `false` otherwise.
+ */
 class TallyCounterI2C : public Sensor {
  public:
     /**

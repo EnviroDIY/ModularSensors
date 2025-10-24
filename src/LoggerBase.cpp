@@ -197,7 +197,15 @@ void Logger::setLoggingInterval(int16_t loggingIntervalMinutes) {
 }
 
 
-// Sets the number of initial short intervals
+/**
+ * @brief Set the number of initial short logging intervals.
+ *
+ * When greater than zero, the logger will use one-minute intervals for the specified
+ * number of upcoming logging opportunities before reverting to the configured
+ * regular logging interval.
+ *
+ * @param initialShortIntervals Number of initial one-minute intervals; set to 0 to disable.
+ */
 void Logger::setInitialShortIntervals(int16_t initialShortIntervals) {
     _remainingShortIntervals = initialShortIntervals;
 }
@@ -770,7 +778,18 @@ void Logger::wakeISR(void) {
 
 
 // Puts the system to sleep to conserve battery life.
-// This DOES NOT sleep or wake the sensors!!
+/**
+ * @brief Put the microcontroller into a platform-specific low-power sleep and restore runtime state after wake.
+ *
+ * Prepares and enables an RTC-based wake source, stops I2C activity, optionally tri-states pins and shuts down unused
+ * peripherals to minimize power draw, disables the watchdog immediately before entering sleep, and invokes the
+ * architecture-appropriate sleep instruction. On wake, the function re-enables the watchdog, restores USB/I2C and
+ * peripheral state, reattaches RTC/interrupts, and performs minimal platform-specific reinitialization so normal
+ * execution can continue.
+ *
+ * This function manipulates MCU power/peripheral and pin states but does not put sensors to sleep or wake them; sensor
+ * power management must be handled separately.
+ */
 void Logger::systemSleep(void) {
     MS_DBG(F("\n\nEntering system sleep function.  ZZzzz..."));
 
@@ -1573,7 +1592,18 @@ void Logger::testingISR() {
 }
 
 
-// This defines what to do in the bench testing mode
+/**
+ * @brief Run the hardware bench test sequence and optionally sleep afterwards.
+ *
+ * Performs a bench-testing session: if bench testing is enabled, it powers and
+ * wakes sensors (and wakes/connects the modem if present), performs 25
+ * sensor-update-and-print cycles while updating modem metadata when connected,
+ * then sleeps and powers down sensors and modem. If bench testing is disabled
+ * at compile-time this function returns immediately.
+ *
+ * @param sleepBeforeReturning If `true`, put the system to sleep before
+ *                             returning from the function.
+ */
 void Logger::benchTestingMode(bool sleepBeforeReturning) {
     // If bench testing is not enabled, return now. Allows the function body to
     // be compiled out if this functionality is disabled.

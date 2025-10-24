@@ -15,7 +15,26 @@
 //  The class and functions for interfacing with a sensor
 // ============================================================================
 
-// The constructor
+/**
+ * @brief Initialize a Sensor with its configuration and reset internal state.
+ *
+ * Constructs a Sensor instance configured with pin assignments, timing parameters,
+ * and averaging/return-value counts, and initializes internal arrays and counters
+ * to their default (unset) values.
+ *
+ * @param sensorName Human-readable sensor name.
+ * @param totalReturnedValues Number of values the sensor will produce (returned values).
+ * @param warmUpTime_ms Milliseconds the sensor requires after power-up before use.
+ * @param stabilizationTime_ms Milliseconds the sensor requires after wake before measurements are stable.
+ * @param measurementTime_ms Milliseconds to wait for an individual measurement to complete.
+ * @param powerPin Primary power control pin (-1 if not controlled).
+ * @param dataPin Data pin used to read the sensor (may be -1 if unused).
+ * @param measurementsToAverage Number of measurement samples to collect and average.
+ * @param incCalcValues Number of additional calculated values maintained by the sensor (beyond returned values).
+ *
+ * @note All variable slots are initialized: registered variable pointers set to `nullptr`,
+ *       `sensorValues` set to -9999, and `numberGoodMeasurementsMade` set to 0.
+ */
 Sensor::Sensor(const char* sensorName, const uint8_t totalReturnedValues,
                uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms,
                uint32_t measurementTime_ms, int8_t powerPin, int8_t dataPin,
@@ -61,19 +80,35 @@ String Sensor::getSensorNameAndLocation(void) {
 }
 
 
-// This returns the number of the power pin
+/**
+ * @brief Returns the configured primary power pin number for the sensor.
+ *
+ * @return int8_t Primary power pin number, or -1 if no primary power pin is configured.
+ */
 int8_t Sensor::getPowerPin(void) {
     return _powerPin;
 }
-// This sets the  power pin
+/**
+ * @brief Set the GPIO pin used to control the sensor's primary power supply.
+ *
+ * @param pin GPIO pin number to drive HIGH/LOW for power control; set to -1 to indicate the library should not control sensor power.
+ */
 void Sensor::setPowerPin(int8_t pin) {
     _powerPin = pin;
 }
-// This returns the number of the secondary power pin
+/**
+ * @brief Get the configured secondary power pin for the sensor.
+ *
+ * @return int8_t The secondary power pin number, or -1 if no secondary power pin is configured.
+ */
 int8_t Sensor::getSecondaryPowerPin(void) {
     return _powerPin2;
 }
-// This sets the secondary power pin
+/**
+ * @brief Sets the secondary power control pin for the sensor.
+ *
+ * @param pin Arduino pin number used to control the sensor's secondary power; use -1 to indicate no secondary power pin is controlled.
+ */
 void Sensor::setSecondaryPowerPin(int8_t pin) {
     _powerPin2 = pin;
 }
@@ -84,38 +119,96 @@ void Sensor::setSecondaryPowerPin(int8_t pin) {
 void Sensor::setNumberMeasurementsToAverage(uint8_t nReadings) {
     _measurementsToAverage = nReadings;
 }
+/**
+ * @brief Retrieve the configured number of measurements used for averaging sensor readings.
+ *
+ * @return uint8_t The number of measurements the sensor will average for a single reported value.
+ */
 uint8_t Sensor::getNumberMeasurementsToAverage(void) {
     return _measurementsToAverage;
 }
+/**
+ * @brief Retrieve how many measurement attempts have been completed.
+ *
+ * @return uint8_t The count of completed measurement attempts.
+ */
 uint8_t Sensor::getNumberCompleteMeasurementsAttempts(void) {
     return _measurementAttemptsCompleted;
 }
+/**
+ * @brief Retrieve the number of retry attempts made for the current measurement cycle.
+ *
+ * @return uint8_t Number of retry attempts already performed.
+ */
 uint8_t Sensor::getNumberRetryAttemptsMade(void) {
     return _retryAttemptsMade;
 }
+/**
+ * @brief Set how many retry attempts are allowed for a single measurement.
+ *
+ * @param allowedMeasurementRetries Maximum number of retry attempts to perform before a measurement attempt is considered complete.
+ */
 void Sensor::setAllowedMeasurementRetries(uint8_t allowedMeasurementRetries) {
     _allowedMeasurementRetries = allowedMeasurementRetries;
 }
+/**
+ * @brief Get the configured maximum number of retry attempts for a measurement.
+ *
+ * @return The maximum number of allowed retry attempts for a single measurement.
+ */
 uint8_t Sensor::getAllowedMeasurementRetries(void) {
     return _allowedMeasurementRetries;
 }
 
 
+/**
+ * @brief Set the sensor warm-up duration.
+ *
+ * Specifies how long (in milliseconds) the sensor must be powered before it is
+ * considered warmed up and ready for activation or measurements.
+ *
+ * @param warmUpTime_ms Warm-up time in milliseconds.
+ */
 void Sensor::setWarmUpTime(uint32_t warmUpTime_ms) {
     _warmUpTime_ms = warmUpTime_ms;
 }
+/**
+ * @brief Get the sensor warm-up duration.
+ *
+ * @return Warm-up time in milliseconds.
+ */
 uint32_t Sensor::getWarmUpTime(void) {
     return _warmUpTime_ms;
 }
+/**
+ * @brief Sets the sensor stabilization delay after activation.
+ *
+ * @param stabilizationTime_ms Delay in milliseconds to wait after the sensor is activated before measurements are considered stable.
+ */
 void Sensor::setStabilizationTime(uint32_t stabilizationTime_ms) {
     _stabilizationTime_ms = stabilizationTime_ms;
 }
+/**
+ * @brief Gets how long the sensor requires to stabilize after activation.
+ *
+ * @return The stabilization time in milliseconds. 
+ */
 uint32_t Sensor::getStabilizationTime(void) {
     return _stabilizationTime_ms;
 }
+/**
+ * @brief Set the duration the sensor waits for a measurement to complete.
+ *
+ * @param measurementTime_ms Measurement timeout in milliseconds used to determine when a requested measurement is considered complete.
+ */
 void Sensor::setMeasurementTime(uint32_t measurementTime_ms) {
     _measurementTime_ms = measurementTime_ms;
 }
+/**
+ * @brief Retrieves the configured measurement duration for the sensor.
+ *
+ * @return Measurement duration in milliseconds.
+ */
 uint32_t Sensor::getMeasurementTime(void) {
     return _measurementTime_ms;
 }
@@ -144,7 +237,17 @@ void Sensor::clearStatusBit(sensor_status_bits bitToClear) {
 }
 
 
-// This turns on sensor power
+/**
+ * @brief Powers the sensor hardware and records its power-on time.
+ *
+ * Attempts to drive configured primary and secondary power pins high (if set),
+ * records the time the sensor was powered, and marks power-attempt and
+ * power-success status bits.
+ *
+ * If no power pins are managed by the library, this still ensures the internal
+ * power-on timestamp is set if it was previously zero and marks the same
+ * status bits.
+ */
 void Sensor::powerUp(void) {
     if (_powerPin >= 0 || _powerPin2 >= 0) {
         // Reset power pin mode every power up because pins are set to tri-state
@@ -174,7 +277,17 @@ void Sensor::powerUp(void) {
 }
 
 
-// This turns off sensor power
+/**
+ * @brief Turns off sensor power and clears related timestamps and status bits.
+ *
+ * If one or more configured power pins are controlled by the library, drives
+ * those pins LOW, resets internal timestamps for power-on, activation, and
+ * measurement request, and clears the POWER_ATTEMPTED, POWER_SUCCESSFUL,
+ * WAKE_ATTEMPTED, WAKE_SUCCESSFUL, MEASUREMENT_ATTEMPTED, and
+ * MEASUREMENT_SUCCESSFUL status bits.
+ *
+ * If no power pin is managed by the library, no hardware or state is modified.
+ */
 void Sensor::powerDown(void) {
     if (_powerPin >= 0 || _powerPin2 >= 0) {
         // Reset power pin mode every power up because pins are set to tri-state
@@ -240,7 +353,18 @@ bool Sensor::setup(void) {
 }
 
 
-// The function to wake up a sensor
+/**
+ * @brief Attempts to activate the sensor so it is ready for measurements.
+ *
+ * Performs observable wake actions: records a wake attempt (sets WAKE_ATTEMPTED),
+ * configures the sensor data pin as an input if present, and, when power is
+ * available, marks the sensor as activated (sets WAKE_SUCCESSFUL) and updates
+ * the sensor activation timestamp.
+ *
+ * @return bool `true` if the sensor is marked activated and ready, `false` if
+ * power is not available (the activation timestamp and WAKE_SUCCESSFUL are
+ * cleared in this case).
+ */
 bool Sensor::wake(void) {
     MS_DBG(F("Waking"), getSensorNameAndLocation(), F("by doing nothing!"));
     // Set the status bit for sensor activation attempt (bit 3)
@@ -288,7 +412,15 @@ bool Sensor::sleep(void) {
 
 
 // This is a place holder for starting a single measurement, for those sensors
-// that need no instructions to start a measurement.
+/**
+ * @brief Initiates a single measurement request for sensors that require no explicit trigger.
+ *
+ * Attempts setup if the sensor was never set up, marks that a measurement attempt occurred,
+ * and — if the sensor is awake — records the measurement request time (based on the last
+ * completed measurement or the sensor activation time) and marks the measurement as started.
+ *
+ * @return `true` if the sensor was awake and the measurement request was recorded, `false` otherwise.
+ */
 bool Sensor::startSingleMeasurement(void) {
     bool success = true;
 
@@ -363,7 +495,14 @@ void Sensor::notifyVariables(void) {
 }
 
 
-// This function just empties the value array
+/**
+ * @brief Resets sensor measurement state and clears stored values.
+ *
+ * Clears all returned-value slots and their per-value counters, resets
+ * measurement-attempt and retry counters, clears power/wake/measurement
+ * timestamps, and clears status bits related to power, wake, and measurement
+ * while preserving setup and error status bits.
+ */
 void Sensor::clearValues(void) {
     MS_DBG(F("Clearing value array for"), getSensorNameAndLocation());
     for (uint8_t i = 0; i < _numReturnedValues; i++) {
@@ -499,7 +638,17 @@ bool Sensor::update(void) {
 }
 
 
-// This is a helper function to check if the power needs to be turned on
+/**
+ * @brief Checks whether the sensor's power is currently on and updates internal state accordingly.
+ *
+ * @param debug If true, emit diagnostic messages during the check.
+ * @return true if power is detected or (when no power pins are managed) considered on; false if power is off.
+ *
+ * @details
+ * If no power pins are managed by the library, the function marks the sensor as powered and records the power-on time.
+ * When power is present it ensures the power-on timestamp is set and sets POWER_ATTEMPTED and POWER_SUCCESSFUL status bits.
+ * When power is absent it clears the power-on, activation, and measurement-request timestamps and clears power/wake/measurement related status bits.
+ */
 bool Sensor::checkPowerOn(bool debug) {
     if (debug) {
         MS_DBG(F("Checking power status:  Power to"),
@@ -593,7 +742,16 @@ void Sensor::waitForWarmUp(void) {
 }
 
 
-// This checks to see if enough time has passed for stability
+/**
+ * @brief Determine whether the sensor is currently stable and ready for measurement.
+ *
+ * Returns `true` when the sensor should be considered stable: if the sensor is not active (wake not successful),
+ * if a retry attempt is in progress, or if the elapsed time since activation is greater than the configured
+ * stabilization time. Returns `false` while the sensor is active and the required stabilization interval has not elapsed.
+ *
+ * @param debug If `true`, emit debug messages describing stability checks.
+ * @return bool `true` if the sensor should be considered stable (ready), `false` otherwise.
+ */
 bool Sensor::isStable(bool debug) {
     // If the sensor failed to activate, it will never stabilize, so the
     // stabilization time is essentially already passed
@@ -672,7 +830,11 @@ bool Sensor::isMeasurementComplete(bool debug) {
 
 // This delays until enough time has passed for the sensor to give a new value
 // NOTE:  This is "blocking" - that is, nothing else can happen during this
-// wait.
+/**
+ * @brief Block until the current measurement has finished.
+ *
+ * Spins until the sensor reports the measurement is complete.
+ */
 void Sensor::waitForMeasurementCompletion(void) {
     while (!isMeasurementComplete()) {
         // wait
@@ -680,6 +842,17 @@ void Sensor::waitForMeasurementCompletion(void) {
 }
 
 
+/**
+ * @brief Update measurement-attempt bookkeeping after a measurement attempt.
+ *
+ * Records the completion timestamp, clears the measurement-request timestamp and related
+ * status bits, increments the retry-attempt counter, and—if the attempt succeeded or
+ * the retry count exceeded the allowed retries—increments the completed-attempts
+ * counter and resets the retry counter.
+ *
+ * @param wasSuccessful `true` if the measurement attempt produced a valid result.
+ * @return `true` if the measurement was successful, `false` otherwise.
+ */
 bool Sensor::bumpMeasurementAttemptCount(bool wasSuccessful) {
     // Record the time that the measurement was completed
     _millisMeasurementCompleted = millis();

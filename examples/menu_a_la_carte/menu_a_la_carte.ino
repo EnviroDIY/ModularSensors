@@ -3606,7 +3606,15 @@ float getBatteryVoltage() {
 
 // ==========================================================================
 //  Arduino Setup Function
-// ==========================================================================
+/**
+ * @brief Initialize board hardware, peripherals, data logger, sensors, network, and storage, then enter sleep.
+ *
+ * Performs all startup configuration required before the main logging loop:
+ * sets up LEDs and watchdog, initializes serial ports, SPI and I2C, configures the data logger
+ * (IDs, intervals, variables, pins, and publishers), prepares modem/network settings when present,
+ * sets up sensors (when battery permits), synchronizes the RTC if needed, creates the SD log file,
+ * and finally places the processor into its configured sleep state.
+ */
 void setup() {
     /** Start [setup_flashing_led] */
     // Blink the LEDs to show the board is on and starting up

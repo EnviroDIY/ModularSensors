@@ -186,7 +186,27 @@
  *
  * @ingroup sensor_maxbotix
  */
-/* clang-format on */
+/**
+ * @brief Retrieve the configured sensor location identifier.
+ *
+ * @returns The sensor location string used to tag measurements.
+ */
+/**
+ * @brief No-op sleep handler that flushes the sensor stream.
+ *
+ * Ensures the communication stream is cleared but does not power down the
+ * sensor.
+ *
+ * @returns Always returns true.
+ */
+/**
+ * @brief Add a single range measurement to the sensor's stored values.
+ *
+ * Processes the most recent reader output and stores the resulting range
+ * value into the sensor's measurement array.
+ *
+ * @returns `true` if a valid measurement was recorded, `false` otherwise.
+ */
 class MaxBotixSonar : public Sensor {
  public:
     /**

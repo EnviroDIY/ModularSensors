@@ -32,7 +32,13 @@ bool MaximDS3231::setup(void) {
 }
 
 
-// Sending the device a request to start temp conversion.
+/**
+ * @brief Initiates a single temperature measurement on the DS3231.
+ *
+ * Forces the DS3231 to sample and convert temperature immediately.
+ *
+ * @return bool `true` if the conversion was initiated, `false` if preconditions prevented starting the measurement.
+ */
 bool MaximDS3231::startSingleMeasurement(void) {
     // Sensor::startSingleMeasurement() checks that if it's awake/active and
     // sets the timestamp and status bits.  If it returns false, there's no
@@ -53,6 +59,13 @@ bool MaximDS3231::startSingleMeasurement(void) {
 }
 
 
+/**
+ * @brief Read the DS3231 temperature, record it for the temperature variable, and finalize the measurement attempt.
+ *
+ * Retrieves the current temperature from the DS3231 RTC, stores it as the DS3231 temperature variable, and advances the internal measurement attempt counter to mark completion.
+ *
+ * @return `true` if the measurement attempt counter was advanced to indicate success, `false` otherwise.
+ */
 bool MaximDS3231::addSingleMeasurementResult(void) {
     // NOTE: This can't fail! If it does we have much bigger problems because
     // that means we can't get the timeand the whole system is not working.

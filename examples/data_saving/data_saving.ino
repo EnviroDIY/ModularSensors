@@ -388,7 +388,14 @@ float getBatteryVoltage() {
 // ==========================================================================
 //  Arduino Setup Function
 // ==========================================================================
-/** Start [setup] */
+/**
+ * @brief Initialize hardware, peripherals, and logging subsystems before normal operation.
+ *
+ * Performs board startup tasks including serial and modem initialization, LED setup and blink,
+ * timezone and RTC configuration, attaching the modem to loggers, conditional sensor setup
+ * based on battery voltage, conditional RTC synchronization, creating the log file on SD card,
+ * and placing the processor into its initial low-power sleep state.
+ */
 void setup() {
 // Wait for USB connection to be established by PC
 // NOTE:  Only use this when debugging - if not connected to a PC, this adds an

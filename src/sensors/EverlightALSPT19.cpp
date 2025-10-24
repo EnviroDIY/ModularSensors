@@ -11,7 +11,19 @@
 #include "EverlightALSPT19.h"
 
 
-EverlightALSPT19::EverlightALSPT19(int8_t powerPin, int8_t dataPin,
+/**
+       * @brief Construct a sensor interface for an Everlight ALS-PT19 light sensor.
+       *
+       * Initializes the sensor instance with pins, electrical calibration values, and
+       * the number of measurements to average for each reported sample.
+       *
+       * @param powerPin Digital pin used to switch sensor power (or -1 if always powered).
+       * @param dataPin Analog input pin used to read the sensor voltage.
+       * @param supplyVoltage Sensor supply voltage in volts.
+       * @param loadResistor Load resistor value in kilo-ohms used for current conversion.
+       * @param measurementsToAverage Number of consecutive readings to average per measurement.
+       */
+      EverlightALSPT19::EverlightALSPT19(int8_t powerPin, int8_t dataPin,
                                    float supplyVoltage, float loadResistor,
                                    uint8_t measurementsToAverage)
     : Sensor("Everlight ALS-PT19", ALSPT19_NUM_VARIABLES,
@@ -23,7 +35,15 @@ EverlightALSPT19::EverlightALSPT19(int8_t powerPin, int8_t dataPin,
 #if defined(BUILT_IN_ALS_POWER_PIN) && defined(BUILT_IN_ALS_DATA_PIN) && \
     defined(BUILT_IN_ALS_SUPPLY_VOLTAGE) &&                              \
     defined(BUILT_IN_ALS_LOADING_RESISTANCE)
-EverlightALSPT19::EverlightALSPT19(uint8_t measurementsToAverage)
+/**
+       * @brief Construct an EverlightALS-PT19 sensor configured with board-default pins and hardware constants.
+       *
+       * Initializes the sensor using the built-in power pin, data pin, supply voltage, and load resistor
+       * defined by the build configuration, and sets how many measurements to average per reading.
+       *
+       * @param measurementsToAverage Number of individual measurements to average for each reported sample.
+       */
+      EverlightALSPT19::EverlightALSPT19(uint8_t measurementsToAverage)
     : Sensor("Everlight ALS-PT19", ALSPT19_NUM_VARIABLES,
              ALSPT19_WARM_UP_TIME_MS, ALSPT19_STABILIZATION_TIME_MS,
              ALSPT19_MEASUREMENT_TIME_MS, BUILT_IN_ALS_POWER_PIN,
@@ -35,6 +55,18 @@ EverlightALSPT19::EverlightALSPT19(uint8_t measurementsToAverage)
 EverlightALSPT19::~EverlightALSPT19() {}
 
 
+/**
+ * @brief Perform a single sensor measurement and record voltage, current, and illuminance.
+ *
+ * Performs one measurement cycle if the measurement was started successfully; otherwise records
+ * a failed attempt and returns. Reads the analog sensor value (with a priming read), converts
+ * the ADC reading to voltage, converts that voltage to current in microamps (assuming the
+ * configured load resistor value is in kilo-ohms), and converts current to illuminance in lux
+ * using the sensor's typical datasheet relation (200 µA → 1000 lux). The computed voltage,
+ * current, and illuminance values are added to the sensor's measurement results unconditionally.
+ *
+ * @returns `true` if the measurement attempt was recorded as successful, `false` otherwise.
+ */
 bool EverlightALSPT19::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {

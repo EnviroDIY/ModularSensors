@@ -11,7 +11,20 @@
 #include "ANBpH.h"
 
 // The constructor - need the sensor type, modbus address, power pin, stream for
-// data, and number of readings to average
+/**
+ * @brief Construct an ANBpH sensor driver using a Modbus address and a Stream pointer.
+ *
+ * Initializes the ANBpH instance with the given Modbus address and communication stream,
+ * configures primary and optional secondary power/control pins, and sets the number of
+ * readings to average for measurements.
+ *
+ * @param modbusAddress Modbus slave address of the ANB sensor.
+ * @param stream Pointer to the Stream used for Modbus communication.
+ * @param powerPin Primary power control pin (use a negative value if not controlled).
+ * @param powerPin2 Secondary power control pin (use a negative value if not used).
+ * @param enablePin RS-485 enable/control pin for the Modbus interface.
+ * @param measurementsToAverage Number of readings to average per reported measurement.
+ */
 ANBpH::ANBpH(byte modbusAddress, Stream* stream, int8_t powerPin,
              int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage)
     : Sensor("ANBpHSensor", ANB_PH_NUM_VARIABLES, ANB_PH_WARM_UP_TIME_MS,
@@ -26,6 +39,20 @@ ANBpH::ANBpH(byte modbusAddress, Stream* stream, int8_t powerPin,
     setSecondaryPowerPin(powerPin2);
     setAllowedMeasurementRetries(5);
 }
+/**
+ * @brief Constructs an ANBpH sensor driver for a Modbus-connected ANB pH/EC sensor.
+ *
+ * Initializes the driver with the given Modbus address and communication stream,
+ * configures primary and secondary power control pins, RS-485 enable pin, and
+ * the number of measurements to average.
+ *
+ * @param modbusAddress Modbus slave address of the sensor.
+ * @param stream Stream used for Modbus communication with the sensor.
+ * @param powerPin Primary power control pin (or -1 if always powered).
+ * @param powerPin2 Secondary power control pin (or -1 if unused).
+ * @param enablePin RS-485 transceiver enable/control pin.
+ * @param measurementsToAverage Number of measurements to average per reported value.
+ */
 ANBpH::ANBpH(byte modbusAddress, Stream& stream, int8_t powerPin,
              int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage)
     : Sensor("ANBpHSensor", ANB_PH_NUM_VARIABLES, ANB_PH_WARM_UP_TIME_MS,
@@ -41,7 +68,11 @@ ANBpH::ANBpH(byte modbusAddress, Stream& stream, int8_t powerPin,
     setSecondaryPowerPin(powerPin2);
     setAllowedMeasurementRetries(5);
 }
-// Destructor
+/**
+ * @brief Destroys an ANBpH instance and releases any owned resources.
+ *
+ * Ensures clean teardown of the sensor driver state when the object goes out of scope.
+ */
 ANBpH::~ANBpH() {}
 
 
@@ -54,6 +85,18 @@ String ANBpH::getSensorLocation(void) {
 }
 
 
+/**
+ * @brief Performs hardware and Modbus initialization and configures the ANB pH/EC sensor.
+ *
+ * Initializes pins and power as needed, verifies Modbus communication, reads sensor
+ * identification, and configures operation modes (control mode, power style,
+ * sampling mode, salinity mode, immersion rule) and the sensor RTC. If power was
+ * off before setup, the sensor is powered only for the duration of setup and then
+ * returned to its prior state. On failure the sensor's error and setup status bits
+ * are updated accordingly.
+ *
+ * @return true if all required initialization and configuration steps succeeded, false otherwise.
+ */
 bool ANBpH::setup(void) {
     bool retVal = Sensor::setup();  // this will set pin modes and the setup
                                     // status bit
@@ -187,7 +230,14 @@ bool ANBpH::setup(void) {
 
 // This confirms that the sensor is really giving modbus responses so nothing
 // further happens if not. - It's a "check if it's awake" function rather than a
-// "wake it up" function.
+/**
+ * @brief Prepare the sensor for active measurements by verifying Modbus responsiveness and starting the sensor's scanning mode.
+ *
+ * If the sensor is powered by a control pin, the sensor RTC is synchronized before starting.
+ * On success the internal activation timestamp and related command timing are updated; on failure an error status bit is set and wake-related status/timestamps are cleared.
+ *
+ * @return true if the sensor responded and scanning was started successfully, false otherwise.
+ */
 bool ANBpH::wake(void) {
     // Sensor::wake() checks if the power pin is on and sets the wake timestamp
     // and status bits.  If it returns false, there's no reason to go on.
@@ -247,7 +297,13 @@ bool ANBpH::wake(void) {
 
 // The function to put the sensor to sleep
 // Different from the standard in that it stops measurements and empties and
-// flushes the stream.
+/**
+ * @brief Stop the sensor's active measurements and flush its communication stream.
+ *
+ * Attempts to stop ongoing measurements (retrying up to five times), flushes and clears the underlying Stream buffers, and, on success, clears activation/measurement timestamps and related status bits.
+ *
+ * @return bool `true` if the sensor acknowledged stop and internal activation/measurement state was cleared, `false` otherwise.
+ */
 bool ANBpH::sleep(void) {
     // empty then flush the buffer
     while (_stream->available()) { _stream->read(); }
@@ -291,6 +347,23 @@ bool ANBpH::sleep(void) {
     return success;
 }
 
+/**
+ * @brief Read, validate, and record a single measurement from the ANB pH sensor.
+ *
+ * Attempts to retrieve pH, temperature, salinity, conductance, health, diagnostic,
+ * and status values from the sensor, applies validation, and adds results to the
+ * measurement buffer when the reading is valid or when on the final allowed retry.
+ * A reading is considered valid if the pH is greater than 0 and less than 14,
+ * or if the sensor reports the NOT_IMMERSED health state (the latter is treated
+ * as a valid outcome so the driver will not retry immediately after an immersion error).
+ * When the measurement is accepted, the function records all sensor variables
+ * (pH, temperature, salinity, specific conductance, raw conductance, health code,
+ * diagnostic code, and status code). The function also advances internal retry/attempt
+ * state before returning.
+ *
+ * @return bool `true` if the attempt counter was advanced indicating the measurement
+ *              cycle should proceed or finish, `false` otherwise.
+ */
 bool ANBpH::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
@@ -442,7 +515,14 @@ bool ANBpH::isWarmedUp(bool debug) {
 }
 
 
-// This checks to see if enough time has passed for stability
+/**
+ * @brief Determines whether the sensor has reached its stabilization period and is ready for measurement.
+ *
+ * Considers sensor wake status, retry attempts, configured stabilization window, and the sensor's readiness indication.
+ *
+ * @param debug If `true`, emit debug messages about stability checks.
+ * @return `true` if the sensor is considered stable (not active, retrying, timed out waiting for stabilization, or reports ready after the minimum stabilization time), `false` otherwise.
+ */
 bool ANBpH::isStable(bool debug) {
 #if defined(MS_ANB_SENSORS_PH_DEBUG_DEEP) || defined(MS_SENSORBASE_DEBUG)
     debug = true;
@@ -493,6 +573,14 @@ bool ANBpH::isStable(bool debug) {
     }
 }
 
+/**
+ * Determine the earliest delay after measurement start when a valid sensor reading may first appear.
+ *
+ * @return Milliseconds from measurement start before the first valid measurement is expected;
+ *         returns `ANB_PH_1ST_VALUE_HIGH_SALT` or `ANB_PH_1ST_VALUE_LOW_SALT` for the initial attempt
+ *         when the primary power pin is used, or `0` for subsequent attempts or when the sensor
+ *         is not powered via a primary power pin.
+ */
 uint32_t ANBpH::getStartMeasurementWindow(void) {
     if (_powerPin >= 0 && _retryAttemptsMade == 0) {
         if (_salinityMode == ANBSalinityMode::HIGH_SALINITY) {
@@ -508,7 +596,15 @@ uint32_t ANBpH::getStartMeasurementWindow(void) {
 // If no pin was provided for power, we assume it's always powered and use
 // the maximum wait time for the second measurement as our maximum wait.
 // If a pin was provided for power, we assume it's on-demand powered and use
-// the maximum wait time for the first measurement as our maximum wait.
+/**
+ * @brief Determine the maximum elapsed time window to wait for a measurement to complete.
+ *
+ * Returns the maximum wait time (in milliseconds) appropriate for the current measurement
+ * context. The value differs for the initial, powered measurement versus subsequent attempts,
+ * and also depends on the configured salinity mode.
+ *
+ * @return uint32_t Maximum wait time in milliseconds for the current measurement window.
+ */
 uint32_t ANBpH::getEndMeasurementWindow(void) {
     if (_powerPin >= 0 && _retryAttemptsMade == 0) {
         if (_salinityMode == ANBSalinityMode::HIGH_SALINITY) {
@@ -525,7 +621,14 @@ uint32_t ANBpH::getEndMeasurementWindow(void) {
     }
 }
 
-// This checks to see if enough time has passed for measurement completion
+/**
+ * @brief Determine whether the current measurement period is finished and no further waiting is required.
+ *
+ * Performs timing and readiness checks to decide if a measurement has completed, timed out, or still requires waiting.
+ *
+ * @param debug If `true`, emit debug messages about readiness and timing decisions.
+ * @return `true` if the measurement is complete, timed out, or no measurement was started; `false` if the measurement is still in progress and further waiting is required.
+ */
 bool ANBpH::isMeasurementComplete(bool debug) {
 #if defined(MS_ANB_SENSORS_PH_DEBUG_DEEP)
     debug = true;
@@ -594,6 +697,16 @@ bool ANBpH::isMeasurementComplete(bool debug) {
 }
 
 
+/**
+ * @brief Set the sensor's salinity mode and update the driver's measurement timeout.
+ *
+ * Attempts to apply the specified salinity mode to the underlying sensor. On success,
+ * updates the driver's cached salinity mode and adjusts the internal measurement
+ * duration to the mode-appropriate value.
+ *
+ * @param newSalinityMode Salinity mode to set (e.g., HIGH_SALINITY or LOW_SALINITY).
+ * @return true if the salinity mode was applied and the driver's state updated, false otherwise.
+ */
 bool ANBpH::setSalinityMode(ANBSalinityMode newSalinityMode) {
     MS_DBG(F("Set sensor salinity mode..."));
     bool salinitySet = _anb_sensor.setSalinityMode(newSalinityMode);
@@ -610,6 +723,14 @@ bool ANBpH::setSalinityMode(ANBSalinityMode newSalinityMode) {
     return true;
 }
 
+/**
+ * @brief Enable or disable the sensor's immersion detection feature.
+ *
+ * Sets the driver's cached immersion-enabled flag and forwards the request to the underlying ANB sensor.
+ *
+ * @param enable `true` to enable the immersion sensor, `false` to disable it.
+ * @return `true` if the sensor accepted the change, `false` otherwise.
+ */
 bool ANBpH::enableImmersionSensor(bool enable) {
     _immersionSensorEnabled = enable;
     return _anb_sensor.enableImmersionSensor(enable);

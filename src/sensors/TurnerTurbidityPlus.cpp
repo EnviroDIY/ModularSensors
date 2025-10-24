@@ -83,12 +83,30 @@ void TurnerTurbidityPlus::powerDown(void) {
     return Sensor::powerDown();
 }
 
+/**
+ * @brief Prepare the sensor for operation by setting the wiper trigger pin HIGH and performing standard power-up actions.
+ *
+ * Sets the wiper trigger pin HIGH to power and pre-arm the wiper circuitry so it is ready for a wiping cycle,
+ * then invokes the base sensor power-up routine.
+ */
 void TurnerTurbidityPlus::powerUp(void) {
     // Set the wiper trigger pin HIGH to prepare for wiping.
     digitalWrite(_wiperTriggerPin, HIGH);
     return Sensor::powerUp();
 }
 
+/**
+ * @brief Reads the ADS differential input, applies the sensor-specific calibration,
+ * and adds turbidity and voltage measurement results when valid.
+ *
+ * If the measurement was not started successfully the function exits early without
+ * producing results. Otherwise it reads the configured ADS differential channel,
+ * converts counts to voltage, applies the calibration curve to compute turbidity,
+ * and records both the computed turbidity and the measured voltage when the
+ * voltage is within the sensor's valid range.
+ *
+ * @return `true` if a valid measurement was recorded and the attempt was counted as successful, `false` otherwise.
+ */
 bool TurnerTurbidityPlus::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {

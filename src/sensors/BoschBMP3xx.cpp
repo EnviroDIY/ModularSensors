@@ -253,6 +253,14 @@ bool BoschBMP3xx::wake(void) {
 }
 
 
+/**
+ * @brief Request a single sensor measurement when operating in forced mode and record the request time.
+ *
+ * Calls the base class start to validate wake/active state; if the sensor is configured for forced mode,
+ * issues a forced conversion to the BMP3xx and updates the measurement-request timestamp.
+ *
+ * @return `true` if the sensor is ready or no measurement start was required, `false` if the base start failed.
+ */
 bool BoschBMP3xx::startSingleMeasurement(void) {
     // Sensor::startSingleMeasurement() checks that if it's awake/active and
     // sets the timestamp and status bits.  If it returns false, there's no
@@ -277,6 +285,16 @@ bool BoschBMP3xx::startSingleMeasurement(void) {
 }
 
 
+/**
+ * @brief Process and store a single BMP3xx measurement if one was started.
+ *
+ * Attempts to read temperature, barometric pressure, and calculated altitude from
+ * the BMP3xx sensor and, on success, records those values via
+ * verifyAndAddMeasurementResult. If no measurement was started, the function
+ * increments the measurement attempt count and returns immediately.
+ *
+ * @return `true` if the measurement read was successful (and the attempt count updated accordingly), `false` otherwise.
+ */
 bool BoschBMP3xx::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {

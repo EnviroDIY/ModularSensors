@@ -248,7 +248,19 @@ float getBatteryVoltage() {
 // ==========================================================================
 //  Arduino Setup Function
 // ==========================================================================
-/** Start [setup] */
+/**
+ * @brief Initialize hardware, sensors, logging, and power management, then enter sleep.
+ *
+ * Performs board startup by initializing serial interfaces and the modem, configuring
+ * status LEDs and logger pins, attaching the modem to the logger, and starting the
+ * data logger. Depending on measured battery voltage, sets up sensors and the SD
+ * log file, and synchronizes the RTC if the RTC is invalid or battery is sufficient.
+ * After initialization completes, the processor is placed into the logger's sleep mode.
+ *
+ * @note Sensor setup and SD file creation are skipped when battery voltage is below
+ *       configured safe thresholds; RTC sync occurs only when battery is sufficient
+ *       or the RTC is not sane.
+ */
 void setup() {
     // Start the primary serial connection
     Serial.begin(serialBaud);

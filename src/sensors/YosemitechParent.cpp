@@ -11,7 +11,23 @@
 #include "YosemitechParent.h"
 
 // The constructor - need the sensor type, modbus address, power pin, stream for
-// data, and number of readings to average
+/**
+ * @brief Construct a YosemitechParent sensor instance with communication, power, timing, and measurement configuration.
+ *
+ * @param modbusAddress Modbus address of the Yosemitech sensor.
+ * @param stream Pointer to the Stream used for sensor communication (e.g., Serial).
+ * @param powerPin Primary power control pin (GPIO), or -1 if not used.
+ * @param powerPin2 Secondary power control pin (GPIO), or -1 if not used.
+ * @param enablePin RS485 enable pin (GPIO), or -1 if not used.
+ * @param measurementsToAverage Number of readings to average for each reported measurement.
+ * @param model Specific Yosemitech sensor model identifier.
+ * @param sensName Sensor name passed to the base Sensor class.
+ * @param numVariables Number of reported variables for the sensor.
+ * @param warmUpTime_ms Warm-up time in milliseconds before measurements begin.
+ * @param stabilizationTime_ms Stabilization time in milliseconds after wake before measuring.
+ * @param measurementTime_ms Measurement duration in milliseconds.
+ * @param incCalcValues Number of incremental calculated values maintained by the base Sensor.
+ */
 YosemitechParent::YosemitechParent(
     byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2,
     int8_t enablePin, uint8_t measurementsToAverage, yosemitechModel model,
@@ -27,6 +43,27 @@ YosemitechParent::YosemitechParent(
       _RS485EnablePin(enablePin) {
     setSecondaryPowerPin(powerPin2);
 }
+/**
+ * @brief Construct a YosemitechParent sensor wrapper with communication and power configuration.
+ *
+ * Initializes the YosemitechParent instance with the sensor model and Modbus address, associates
+ * the communication stream and RS-485 enable pin, configures the base Sensor with timing, power,
+ * and averaging parameters, and assigns the secondary power pin.
+ *
+ * @param modbusAddress Modbus slave address for the sensor.
+ * @param stream Reference to the Stream used for sensor communication.
+ * @param powerPin Primary power control pin (passed to base Sensor).
+ * @param powerPin2 Secondary power control pin managed by this class.
+ * @param enablePin Digital pin used to enable the RS-485 transceiver.
+ * @param measurementsToAverage Number of samples to average per reported measurement.
+ * @param model Yosemitech sensor model identifier.
+ * @param sensName Human-readable sensor name (passed to base Sensor).
+ * @param numVariables Number of variables the sensor provides (passed to base Sensor).
+ * @param warmUpTime_ms Time in milliseconds for sensor warm-up (passed to base Sensor).
+ * @param stabilizationTime_ms Time in milliseconds to wait for sensor stabilization (passed to base Sensor).
+ * @param measurementTime_ms Measurement duration in milliseconds (passed to base Sensor).
+ * @param incCalcValues Number of incremental/calculated values (passed to base Sensor).
+ */
 YosemitechParent::YosemitechParent(
     byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2,
     int8_t enablePin, uint8_t measurementsToAverage, yosemitechModel model,
@@ -42,7 +79,12 @@ YosemitechParent::YosemitechParent(
       _RS485EnablePin(enablePin) {
     setSecondaryPowerPin(powerPin2);
 }
-// Destructor
+/**
+ * @brief Default destructor.
+ *
+ * No special cleanup or resource release is performed. The compiler-generated
+ * behavior is sufficient for this class.
+ */
 YosemitechParent::~YosemitechParent() {}
 
 
@@ -55,6 +97,15 @@ String YosemitechParent::getSensorLocation(void) {
 }
 
 
+/**
+ * @brief Configure hardware pins and initialize the Yosemitech sensor instance.
+ *
+ * Configures the RS485 enable pin (if valid) as an output, calls the base Sensor setup,
+ * and initializes the internal Yosemitech sensor object with the configured model,
+ * Modbus address, and communication stream.
+ *
+ * @return true if both base setup and the Yosemitech sensor initialization report success, `false` otherwise.
+ */
 bool YosemitechParent::setup(void) {
     bool retVal =
         Sensor::setup();  // this will set pin modes and the setup status bit
@@ -75,7 +126,18 @@ bool YosemitechParent::setup(void) {
 
 // The function to wake up a sensor
 // Different from the standard in that it waits for warm up and starts
-// measurements
+/**
+ * @brief Power-activates the Yosemitech sensor and begins measurements.
+ *
+ * Configures the RS485 enable pin as OUTPUT (if valid), attempts to start
+ * measurements up to five times, and records activation state and timestamp
+ * on success. On failure, sets the ERROR_OCCURRED status bit, clears the
+ * WAKE_SUCCESSFUL status bit, and resets the activation timestamp. For
+ * certain models (Y511, Y513, Y514, Y551, Y560, Y4000) this also attempts to
+ * manually activate the sensor brush after starting measurements.
+ *
+ * @return true if the sensor successfully began measuring, `false` otherwise.
+ */
 bool YosemitechParent::wake(void) {
     // Sensor::wake() checks if the power pin is on and sets the wake timestamp
     // and status bits.  If it returns false, there's no reason to go on.
@@ -124,7 +186,20 @@ bool YosemitechParent::wake(void) {
 
 // The function to put the sensor to sleep
 // Different from the standard in that it empties and flushes the stream and
-// stops measurements
+/**
+ * @brief Stops active measurements and places the sensor back to sleep.
+ *
+ * Attempts to stop measurements (up to five attempts), flushes any pending
+ * bytes from the communication stream before and after the stop attempts,
+ * and, on success, clears the sensor activation and measurement request
+ * timestamps as well as related status bits.
+ *
+ * If the sensor is already unpowered or was never activated, the function
+ * treats it as already asleep and returns success.
+ *
+ * @return true if measurements were stopped or the sensor was already asleep,
+ *         false if the stop operation failed.
+ */
 bool YosemitechParent::sleep(void) {
     // empty then flush the buffer
     while (_stream->available()) { _stream->read(); }
@@ -169,6 +244,13 @@ bool YosemitechParent::sleep(void) {
 }
 
 
+/**
+ * @brief Retrieve and record a single measurement from the Yosemitech sensor according to its model.
+ *
+ * Queries the underlying Yosemitech sensor for its reported values, converts conductivity from mS/cm to µS/cm for models that return conductivity in mS/cm (Y4000 and Y520), and stores the returned parameters into the measurement results array at the model-appropriate indices. If the measurement was not started successfully, this function updates the measurement attempt count as a failed attempt and returns. The final return value reflects the outcome after updating the measurement attempt counter.
+ *
+ * @return bool `true` if the measurement attempt is considered successful after updating the attempt count, `false` otherwise.
+ */
 bool YosemitechParent::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {

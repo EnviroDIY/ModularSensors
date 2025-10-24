@@ -59,6 +59,18 @@ bool FreescaleMPL115A2::setup(void) {
 }
 
 
+/**
+ * @brief Read a single pressure and temperature measurement and add validated results.
+ *
+ * Reads temperature and pressure from the MPL115A2, validates that neither value is NaN,
+ * that pressure is less than or equal to 115.0 kPa, and that temperature is greater than
+ * or equal to -40.0 °C. If validation succeeds, the temperature and pressure results are
+ * added to the sensor's measurement variables. If the measurement was not started or validation
+ * fails, no results are added. The function always increments the internal measurement-attempt
+ * counter before returning.
+ *
+ * @return `true` if both temperature and pressure passed validation and were added; `false` otherwise.
+ */
 bool FreescaleMPL115A2::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {

@@ -67,6 +67,13 @@ bool TallyCounterI2C::setup(void) {
 }
 
 
+/**
+ * @brief Read the tally counter once and record the event count.
+ *
+ * Reads the current event count from the I2C tally counter, records the value if it is a valid (greater than or equal to zero) event count, clears the counter, and updates the measurement-attempt status. If the measurement was not started successfully, the function immediately reports a failed attempt without reading.
+ *
+ * @return true if the measurement attempt was treated as successful and the result recorded, false otherwise.
+ */
 bool TallyCounterI2C::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {

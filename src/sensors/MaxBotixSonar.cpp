@@ -122,6 +122,19 @@ bool MaxBotixSonar::sleep(void) {
 };
 
 
+/**
+ * @brief Attempt a single sonar measurement by reading and validating the sensor output, retrying up to 25 times.
+ *
+ * Clears any pending serial data, optionally pulses the trigger pin to solicit a reading, then reads numeric range values
+ * from the sensor stream until a valid reading is obtained or the retry limit is reached. A reading is considered valid
+ * when it is greater than 0 and less than the configured maximum range. If configured to do so, the result is converted
+ * from centimeters to millimeters before being recorded.
+ *
+ * If a valid result is obtained, it is passed to verifyAndAddMeasurementResult for storage. If the measurement was not
+ * successfully started (MEASUREMENT_SUCCESSFUL flag not set) the function returns immediately without attempting reads.
+ *
+ * @return true if the measurement attempt was recorded as successful, false otherwise.
+ */
 bool MaxBotixSonar::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {

@@ -177,7 +177,28 @@
  *
  * @ingroup sensor_mpl115a2
  */
-/* clang-format on */
+/**
+ * @brief Perform one-time initialization required for the sensor to take
+ * measurements.
+ *
+ * Initializes the I2C interface, reads calibration coefficients from the
+ * MPL115A2, and updates internal sensor status.
+ *
+ * @return true if setup succeeded, false otherwise.
+ */
+/**
+ * @brief Return a human-readable description of the sensor's location.
+ *
+ * @return A String describing the sensor location.
+ */
+/**
+ * @brief Take a single measurement from the sensor and store the results.
+ *
+ * Reads temperature and pressure from the MPL115A2, processes averaging as
+ * configured, and stores measurement values for the sensor's variables.
+ *
+ * @return true if the measurement was read and stored successfully, false otherwise.
+ */
 class FreescaleMPL115A2 : public Sensor {
  public:
     /**

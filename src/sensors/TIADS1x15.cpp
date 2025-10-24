@@ -42,6 +42,15 @@ String TIADS1x15::getSensorLocation(void) {
 }
 
 
+/**
+ * @brief Perform a single ADC read on the configured ADS1x15 channel and record the calibrated result.
+ *
+ * Checks that a measurement was started, reads the configured ADS1x15 channel, converts raw counts to volts,
+ * validates the voltage is within -0.3 to 3.6 V, scales the voltage by the configured gain, and records the
+ * calibrated measurement. Updates internal measurement-attempt bookkeeping to reflect success or failure.
+ *
+ * @return `true` if a valid measurement was recorded and attempt bookkeeping was updated accordingly, `false` otherwise.
+ */
 bool TIADS1x15::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {

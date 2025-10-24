@@ -42,6 +42,15 @@ String AlphasenseCO2::getSensorLocation(void) {
 }
 
 
+/**
+ * @brief Perform a single CO2 measurement using the ADS1x15 differential input and record CO2 concentration and sensor voltage.
+ *
+ * Reads the differential voltage between ADS channels 2 and 3, converts that voltage to sensor current assuming a 250 Ω series resistor, converts the current to CO2 concentration (ppm) using a linear manufacturer-recommended formula, and records both the calibrated CO2 value and the measured voltage when they fall within expected ranges.
+ *
+ * The function exits immediately without taking a reading if the measurement was not started successfully. It only accepts ADC voltages greater than -0.3 V and less than 3.6 V; values outside that range are ignored and not recorded.
+ *
+ * @returns `true` if a valid CO2 value and voltage were recorded and the measurement attempt count was updated, `false` otherwise.
+ */
 bool AlphasenseCO2::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {

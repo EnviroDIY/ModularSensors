@@ -12,7 +12,22 @@
 #include "KellerParent.h"
 
 // The constructor - need the sensor type, modbus address, power pin, stream for
-// data, and number of readings to average
+/**
+ * @brief Construct a KellerParent sensor with Modbus communication and timing/power configuration.
+ *
+ * @param modbusAddress Modbus slave address of the Keller sensor.
+ * @param stream Pointer to the Stream used for Modbus communication (e.g., Serial).
+ * @param powerPin Primary power-control pin for the sensor.
+ * @param powerPin2 Secondary power-control pin (configured via setSecondaryPowerPin).
+ * @param enablePin RS-485 driver enable/control pin; use a negative value if unused.
+ * @param measurementsToAverage Number of consecutive readings to average per measurement.
+ * @param model Keller sensor model identifier.
+ * @param sensName Human-readable sensor name passed to the base Sensor.
+ * @param numVariables Number of sensor data variables exposed by this sensor instance.
+ * @param warmUpTime_ms Time in milliseconds allocated for sensor warm-up before measurements.
+ * @param stabilizationTime_ms Time in milliseconds to wait for readings to stabilize.
+ * @param measurementTime_ms Time in milliseconds allocated to perform a single measurement.
+ */
 KellerParent::KellerParent(byte modbusAddress, Stream* stream, int8_t powerPin,
                            int8_t powerPin2, int8_t enablePin,
                            uint8_t measurementsToAverage, kellerModel model,
@@ -29,6 +44,25 @@ KellerParent::KellerParent(byte modbusAddress, Stream* stream, int8_t powerPin,
       _RS485EnablePin(enablePin) {
     setSecondaryPowerPin(powerPin2);
 }
+/**
+ * @brief Construct a KellerParent sensor instance configured for Modbus over a provided stream.
+ *
+ * Initializes the base Sensor with timing, power and averaging settings, stores the Keller model,
+ * Modbus address, stream reference, and RS485 enable pin, and configures the secondary power pin.
+ *
+ * @param modbusAddress Modbus device address (1 byte).
+ * @param stream Reference to a Stream used for Modbus communication.
+ * @param powerPin Primary power control pin (or -1 if not used).
+ * @param powerPin2 Secondary power control pin (or -1 if not used); configured via setSecondaryPowerPin.
+ * @param enablePin Digital pin used to control RS-485 transceiver enable (or -1 if not used).
+ * @param measurementsToAverage Number of measurements to average per reported reading.
+ * @param model Keller device model (kellerModel enum) used to initialize protocol/behavior.
+ * @param sensName Human-readable sensor name passed to the base Sensor.
+ * @param numVariables Number of sensor variables the instance will register/report.
+ * @param warmUpTime_ms Warm-up duration in milliseconds before first measurement.
+ * @param stabilizationTime_ms Stabilization time in milliseconds between power-up and valid reading.
+ * @param measurementTime_ms Measurement duration in milliseconds to collect a single reading.
+ */
 KellerParent::KellerParent(byte modbusAddress, Stream& stream, int8_t powerPin,
                            int8_t powerPin2, int8_t enablePin,
                            uint8_t measurementsToAverage, kellerModel model,
@@ -45,7 +79,11 @@ KellerParent::KellerParent(byte modbusAddress, Stream& stream, int8_t powerPin,
       _RS485EnablePin(enablePin) {
     setSecondaryPowerPin(powerPin2);
 }
-// Destructor
+/**
+ * @brief Destroys the KellerParent instance.
+ *
+ * Performs class teardown; no additional cleanup is required on destruction.
+ */
 KellerParent::~KellerParent() {}
 
 
@@ -58,6 +96,14 @@ String KellerParent::getSensorLocation(void) {
 }
 
 
+/**
+ * @brief Initialize the Keller sensor subsystem and configure the RS485 enable pin.
+ *
+ * Performs the class-level setup, configures the RS485 enable pin (if provided),
+ * and initializes the underlying Keller communication wrapper.
+ *
+ * @return `true` if both the base sensor setup and the Keller sensor initialization succeeded, `false` otherwise.
+ */
 bool KellerParent::setup(void) {
     bool retVal =
         Sensor::setup();  // this will set pin modes and the setup status bit
@@ -77,7 +123,13 @@ bool KellerParent::setup(void) {
 
 
 // The function to put the sensor to sleep
-// Different from the standard in that empties and flushes the stream.
+/**
+ * @brief Puts the sensor into sleep mode after clearing and flushing the associated Stream.
+ *
+ * Discards any pending data in the attached Stream's input buffer and flushes the stream output before putting the sensor into its low-power state.
+ *
+ * @return bool `true` if the sensor entered sleep mode, `false` otherwise.
+ */
 bool KellerParent::sleep(void) {
     // empty then flush the buffer
     while (_stream->available()) { _stream->read(); }
@@ -86,6 +138,15 @@ bool KellerParent::sleep(void) {
 };
 
 
+/**
+ * @brief Attempt a single sensor measurement, compute derived values, and store results if valid.
+ *
+ * Queries the Keller sensor for pressure and temperature, computes water depth and pressure in millibar,
+ * and stores those three measurements when all are valid. If the measurement was not started (status bit
+ * MEASUREMENT_SUCCESSFUL not set) the function records a failed attempt and returns immediately.
+ *
+ * @returns `true` if the measurement values were valid and stored, `false` otherwise.
+ */
 bool KellerParent::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {

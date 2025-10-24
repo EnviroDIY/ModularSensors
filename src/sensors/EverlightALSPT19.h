@@ -204,7 +204,31 @@
 /**
  * @brief The Sensor sub-class for the [Everlight ALS-PT19](@ref sensor_alspt19).
  */
-/* clang-format on */
+/**
+ * Create an EverlightALSPT19 sensor with explicit pins, supply voltage, and loading resistor.
+ * @param powerPin MCU pin that controls sensor power; use -1 if the sensor is continuously powered.
+ * @param dataPin MCU ADC pin used to read the sensor output (must be an analog-capable pin).
+ * @param supplyVoltage Supply voltage for the ALS-PT19 in volts.
+ * @param loadResistor Loading resistor value in kiloohms (kΩ).
+ * @param measurementsToAverage Number of readings to take and average for each reported measurement (default 10).
+ */
+/**
+ * Create an EverlightALSPT19 sensor using board-defined pins and resistor values.
+ * @param measurementsToAverage Number of readings to take and average for each reported measurement (default 10).
+ */
+/**
+ * Destroy the EverlightALSPT19 instance.
+ */
+/**
+ * Perform a single sensor measurement and store the results in the sensor's variables.
+ * @returns `true` if the measurement was successfully taken and stored, `false` otherwise.
+ */
+/**
+ * The power supply voltage (volts).
+ */
+/**
+ * The loading resistance (kiloohms).
+ */
 class EverlightALSPT19 : public Sensor {
  public:
     /**

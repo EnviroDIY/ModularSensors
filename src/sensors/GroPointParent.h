@@ -92,7 +92,47 @@
  *
  * @ingroup gropoint_group
  */
-/* clang-format on */
+/**
+ * @brief Create a GroPointParent configured for a Modbus-attached GroPoint sensor.
+ *
+ * @param modbusAddress The Modbus address of the sensor.
+ * @param stream An Arduino Stream used for Modbus communication.
+ * @param powerPin MCU pin that controls power to the GroPoint sensor; use -1 if sensor is always powered.
+ * @param powerPin2 MCU pin that controls power to the RS-485 adapter if different from the sensor power pin; use -1 if not applicable.
+ * @param enablePin MCU pin that controls RS-485 direction enable; use -1 if not applicable.
+ * @param measurementsToAverage Number of individual measurements to take and average for a reported value.
+ * @param model The GroPoint sensor model.
+ * @param sensName Human-readable sensor name.
+ * @param numVariables Number of measured variables the sensor returns.
+ * @param warmUpTime_ms Time in milliseconds from power-on until the sensor can accept a wake command.
+ * @param stabilizationTime_ms Time in milliseconds after wake before stable measurements are available.
+ * @param measurementTime_ms Time in milliseconds between starting a measurement and the result being available.
+ * @param incCalcValues Number of sensor-provided calculated variables to include, if any.
+ */
+
+/**
+ * @copydoc GroPointParent::GroPointParent
+ */
+
+/**
+ * @brief Destroy the GroPointParent instance; no cleanup is performed.
+ */
+
+/**
+ * @brief Perform one-time setup required before measurements can be taken.
+ *
+ * This configures MCU pins and communication timeouts; it does not power the sensor.
+ *
+ * @return True if setup completed successfully.
+ */
+
+/**
+ * @brief Put the sensor into its inactive/sleep state if supported.
+ *
+ * This clears the internal activation timestamp but does not power down the sensor.
+ *
+ * @return True if sleep completed successfully.
+ */
 class GroPointParent : public Sensor {
  public:
     /**

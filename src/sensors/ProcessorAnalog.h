@@ -159,7 +159,23 @@
  *
  * @ingroup sensor_processor_analog
  */
-/* clang-format on */
+/**
+ * @brief Create a ProcessorAnalog sensor that reads an external voltage from a processor ADC pin and applies an optional multiplier.
+ * @param powerPin MCU pin that controls power to the sensor; use -1 if the sensor is continuously powered.
+ * @param dataPin Processor ADC pin used to read the voltage (e.g., A1).
+ * @param voltageMultiplier Multiplier to convert raw `analogRead()` values to the true voltage (accounts for resistor dividers).
+ * @param operatingVoltage Processor operating voltage in volts (typically 3.3 or 5.0).
+ * @param measurementsToAverage Number of samples to average for each reported measurement.
+ */
+
+/**
+ * @brief Destroy the ProcessorAnalog sensor.
+ */
+
+/**
+ * @brief Take a single analog measurement, convert it to voltage, and store the result.
+ * @returns `true` if a valid measurement was recorded, `false` otherwise.
+ */
 class ProcessorAnalog : public Sensor {
  public:
     /**
@@ -217,7 +233,18 @@ class ProcessorAnalog : public Sensor {
  *
  * @ingroup sensor_processor_analog
  */
-/* clang-format on */
+/**
+ * Create a Variable representing the voltage measured by the given ProcessorAnalog.
+ * @param parentSense Pointer to the ProcessorAnalog that provides measurement values.
+ * @param uuid Optional UUID identifying the variable.
+ * @param varCode Optional short code for the variable (default PROCESSOR_ANALOG_DEFAULT_CODE).
+ */
+/**
+ * Create an unbound voltage Variable; must be associated with a ProcessorAnalog before use.
+ */
+/**
+ * Destructor (no runtime action required).
+ */
 class ProcessorAnalog_Voltage : public Variable {
  public:
     /**

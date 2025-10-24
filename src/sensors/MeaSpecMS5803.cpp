@@ -54,6 +54,15 @@ bool MeaSpecMS5803::setup(void) {
 }
 
 
+/**
+ * @brief Read temperature and pressure from the MS5803 and record validated results.
+ *
+ * If the measurement was not started, the attempt count is updated and the function returns failure.
+ * Otherwise this reads temperature (°C) and pressure, validates their ranges (temperature between -50 and 95,
+ * pressure non-zero and not NaN), and records both values when valid.
+ *
+ * @returns `true` if both measurements were valid and recorded, `false` otherwise.
+ */
 bool MeaSpecMS5803::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {

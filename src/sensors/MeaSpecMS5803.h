@@ -206,7 +206,43 @@
  *
  * @ingroup sensor_ms5803
  */
-/* clang-format on */
+/**
+ * @brief Create a MeaSpecMS5803 sensor instance.
+ *
+ * @note Secondary or software I2C is not supported; use the primary hardware I2C.
+ *
+ * @param powerPin MCU pin that controls power to the MS5803, or -1 if sensor is always powered.
+ * @param i2cAddressHex I2C address for the MS5803; must be 0x76 or 0x77 (default 0x76).
+ * @param maxPressure Maximum pressure range of the MS5803 module in bar (common options: 1.1, 1.3, 5, 7, 14, 30). Use 1 for 1.1 bar and 2 for 1.3 bar modules when appropriate.
+ * @param measurementsToAverage Number of measurements to take and average before producing a result (default 1).
+ */
+/**
+ * @brief Destroy the MeaSpecMS5803 object.
+ */
+/**
+ * @brief Prepare the sensor for measurements.
+ *
+ * @return `true` if setup completed successfully, `false` otherwise.
+ */
+/**
+ * @brief Get the sensor's location identifier.
+ *
+ * @return A String describing the sensor location.
+ */
+/**
+ * @brief Add the most recent single measurement to the sensor's results.
+ *
+ * @return `true` if the measurement result was added successfully, `false` otherwise.
+ */
+/**
+ * @brief Private internal MS5803 library instance used for sensor communication.
+ */
+/**
+ * @brief I2C address used to communicate with the MS5803.
+ */
+/**
+ * @brief Maximum supported pressure (in bar) for this sensor instance.
+ */
 class MeaSpecMS5803 : public Sensor {
  public:
     /**

@@ -96,6 +96,13 @@ bool PaleoTerraRedox::setup(void) {
 }
 
 
+/**
+ * @brief Performs a single measurement cycle, converts the sensor response to a voltage, and records the result if valid.
+ *
+ * Attempts a one-shot measurement on the PaleoTerraRedox sensor, converts the raw device response into a voltage value (microvolts), marks the measurement as failed for observed failure conditions, and stores the converted voltage via verifyAndAddMeasurementResult when valid. Always updates the internal measurement attempt tracking and returns that updated success status.
+ *
+ * @return bool `true` if the measurement attempt is considered successful after updating attempt tracking, `false` otherwise.
+ */
 bool PaleoTerraRedox::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {

@@ -222,7 +222,54 @@
  *
  * @ingroup sensor_ina219
  */
-/* clang-format on */
+/**
+ * @brief Construct a TI INA219 sensor object using a secondary hardware I2C instance.
+ * @param theI2C Pointer to a TwoWire instance for I2C communication; must be a hardware I2C peripheral.
+ * @param powerPin MCU pin that controls power to the INA219; use -1 if the module is continuously powered.
+ * @param i2cAddressHex I2C address of the INA219 (0x40–0x4F). Default is INA219_ADDRESS_BASE.
+ * @param measurementsToAverage Number of consecutive measurements to average for each reported sample. Default is 1.
+ */
+/**
+ * @brief Construct a TI INA219 sensor object using the default hardware I2C instance.
+ * @param powerPin MCU pin that controls power to the INA219; use -1 if the module is continuously powered.
+ * @param i2cAddressHex I2C address of the INA219 (0x40–0x4F). Default is INA219_ADDRESS_BASE.
+ * @param measurementsToAverage Number of consecutive measurements to average for each reported sample. Default is 1.
+ */
+/**
+ * @brief Destroy the TI INA219 sensor object.
+ */
+
+/**
+ * @brief Wake the INA219 sensor and read its calibration value.
+ * @return `true` if the sensor wake and calibration read completed successfully, `false` otherwise.
+ */
+
+/**
+ * @brief Perform one-time setup required before taking measurements.
+ * @return `true` if setup completed successfully, `false` otherwise.
+ */
+
+/**
+ * @brief Get a human-readable location string for this sensor.
+ * @return A string describing the sensor's physical or logical location.
+ */
+
+/**
+ * @brief Take a single measurement (or averaged set) and store the result.
+ * @return `true` if a measurement was taken and stored successfully, `false` otherwise.
+ */
+
+/**
+ * @brief Private reference to the underlying Adafruit INA219 driver instance.
+ */
+
+/**
+ * @brief The I2C hardware address assigned to the INA219.
+ */
+
+/**
+ * @brief Pointer to the TwoWire hardware I2C instance used by this sensor.
+ */
 class TIINA219 : public Sensor {
  public:
     /**
@@ -413,7 +460,19 @@ typedef TIINA219_Voltage TIINA219_Volt;
  *
  * @ingroup sensor_ina219
  */
-/* clang-format on */
+/**
+ * Create a TIINA219_Power variable associated with a TIINA219 sensor.
+ * @param parentSense Pointer to the parent TIINA219 that provides measured values.
+ * @param uuid Optional UUID for the variable (default "").
+ * @param varCode Optional short identifier for the variable (default "TIINA219Power").
+ */
+/**
+ * Create an unattached TIINA219_Power variable.
+ * @note Must be assigned a parent TIINA219 before use.
+ */
+/**
+ * Destroy the TIINA219_Power variable.
+ */
 class TIINA219_Power : public Variable {
  public:
     /**

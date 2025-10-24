@@ -42,6 +42,17 @@ String ApogeeSQ212::getSensorLocation(void) {
 }
 
 
+/**
+ * @brief Read ADC, validate the voltage, compute calibrated PAR and store results, then update attempt count.
+ *
+ * Reads the configured ADS channel, converts the raw ADC reading to a voltage, and if the voltage is within
+ * the accepted range (-0.3 V to 3.6 V) computes a calibrated PAR value and adds both the PAR and voltage
+ * measurements to the sensor's results. The calibrated PAR is computed as 1000 * voltage * SQ212_CALIBRATION_FACTOR
+ * (resulting in μmol m^-2 s^-1 given the device's calibration factor). Finally, the function updates the
+ * measurement attempt count to indicate success or failure.
+ *
+ * @return true if the measurement attempt was recorded as successful (valid voltage and results added), false otherwise.
+ */
 bool ApogeeSQ212::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {

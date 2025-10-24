@@ -90,6 +90,18 @@ bool RainCounterI2C::setup(void) {
 }
 
 
+/**
+ * @brief Read tip counts from the I2C rain counter, convert to rainfall and record results.
+ *
+ * Reads up to 4 bytes from the configured I2C address, interprets the bytes to derive
+ * a tip count (supports legacy 1-byte and 4-byte formats), computes rainfall by
+ * multiplying tips by the configured rain-per-tip coefficient, and records valid
+ * rain and tip measurements.
+ *
+ * If the measurement was not started, the function returns immediately without reading.
+ *
+ * @return true if the measurement attempt was recorded as successful, `false` otherwise.
+ */
 bool RainCounterI2C::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {

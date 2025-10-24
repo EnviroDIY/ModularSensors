@@ -11,6 +11,17 @@
 #include "GeoluxHydroCam.h"
 
 
+/**
+ * @brief Construct a GeoluxHydroCam sensor configured to capture and save images.
+ *
+ * @param stream Pointer to the data stream used by the camera for commands and image data.
+ * @param powerPin Primary power-control pin for the camera hardware.
+ * @param baseLogger Reference to the logger used for file naming and operational logging.
+ * @param powerPin2 Secondary power-control pin for the camera hardware.
+ * @param imageResolution String describing the camera resolution to configure (e.g., "640x480").
+ * @param filePrefix Prefix to use when generating saved image filenames.
+ * @param alwaysAutoFocus If true, the camera will run autofocus on wake/start operations.
+ */
 GeoluxHydroCam::GeoluxHydroCam(Stream* stream, int8_t powerPin,
                                Logger& baseLogger, int8_t powerPin2,
                                const char* imageResolution,
@@ -28,6 +39,19 @@ GeoluxHydroCam::GeoluxHydroCam(Stream* stream, int8_t powerPin,
 }
 
 
+/**
+ * @brief Construct a GeoluxHydroCam sensor and initialize its camera and power pins.
+ *
+ * Initializes a GeoluxHydroCam instance configured to use the provided serial stream,
+ * primary and secondary power pins, image resolution, file name prefix, and autofocus
+ * behavior. Binds an internal GeoluxCamera to the given stream and stores a reference
+ * to the provided logger.
+ *
+ * @param powerPin2 Secondary power control pin for the camera hardware.
+ * @param imageResolution Resolution string to configure the camera (e.g., "640x480").
+ * @param filePrefix Prefix to use when generating saved image filenames.
+ * @param alwaysAutoFocus If true, the camera will run autofocus on wake/measurement.
+ */
 GeoluxHydroCam::GeoluxHydroCam(Stream& stream, int8_t powerPin,
                                Logger& baseLogger, int8_t powerPin2,
                                const char* imageResolution,
@@ -44,7 +68,11 @@ GeoluxHydroCam::GeoluxHydroCam(Stream& stream, int8_t powerPin,
     setSecondaryPowerPin(powerPin2);
 }
 
-// Destructor
+/**
+ * @brief Destroys the GeoluxHydroCam instance and performs any necessary cleanup.
+ *
+ * Default destructor; no additional actions are performed here.
+ */
 GeoluxHydroCam::~GeoluxHydroCam() {}
 
 String GeoluxHydroCam::getLastSavedImageName() {
@@ -144,6 +172,16 @@ bool GeoluxHydroCam::sleep(void) {
     return Sensor::sleep();
 };
 
+/**
+ * @brief Initiates a single camera measurement by verifying readiness and requesting a snapshot.
+ *
+ * Verifies the sensor and camera are ready to start a measurement, requests the camera to take a snapshot,
+ * and updates internal measurement state. On success the measurement request timestamp is recorded;
+ * on failure the measurement timestamp and success state are cleared. If the camera is not ready an
+ * error status bit is set.
+ *
+ * @return `true` if the camera accepted the snapshot request and the measurement request time was set, `false` otherwise.
+ */
 bool GeoluxHydroCam::startSingleMeasurement(void) {
     // Sensor::startSingleMeasurement() checks that if it's awake/active and
     // sets the timestamp and status bits.  If it returns false, there's no
@@ -186,6 +224,16 @@ bool GeoluxHydroCam::startSingleMeasurement(void) {
 }
 
 
+/**
+ * @brief Finalizes a single camera measurement by saving the captured image to SD and recording results.
+ *
+ * If the measurement was not started or the SD card cannot be initialized, the function exits without writing.
+ * When a valid image is available, the function creates an SD file using the logger-generated filename,
+ * transfers the image from the camera to the file, records the transferred byte count and any byte discrepancy
+ * as measurement results, and stores the last saved image filename in the object.
+ *
+ * @return true if the image file was written successfully and the measurement attempt count was updated as a success, `false` otherwise.
+ */
 bool GeoluxHydroCam::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {

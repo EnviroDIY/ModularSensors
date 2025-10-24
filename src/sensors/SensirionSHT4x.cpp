@@ -87,6 +87,16 @@ bool SensirionSHT4x::setup(void) {
 }
 
 
+/**
+ * @brief Reads temperature and humidity from the SHT4x sensor and records valid values.
+ *
+ * Reads sensor events, verifies the temperature and relative humidity are valid numbers,
+ * and stores them into the measurement results when both are valid. If the sensor
+ * measurement was not started, the function records a failed attempt and returns.
+ *
+ * @return `true` if valid temperature and humidity were recorded (and the attempt count updated),
+ * `false` otherwise (including the case where no measurement was started).
+ */
 bool SensirionSHT4x::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {

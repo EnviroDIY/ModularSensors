@@ -708,6 +708,14 @@ bool SDI12Sensors::getResults(bool verify_crc) {
 
 
 #ifndef MS_SDI12_NON_CONCURRENT
+/**
+ * @brief Retrieve results for a previously started measurement and record the attempt outcome.
+ *
+ * If no measurement was successfully started, the function records the failed attempt and returns.
+ * Otherwise it collects results and records whether the retrieval succeeded.
+ *
+ * @return `true` if measurement results were successfully retrieved and recorded, `false` otherwise.
+ */
 bool SDI12Sensors::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
@@ -720,6 +728,17 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
     return bumpMeasurementAttemptCount(success);
 }
 #else
+/**
+ * @brief Collects a single non-concurrent SDI-12 measurement and stores its values.
+ *
+ * If a measurement was not started, the function returns immediately after
+ * updating the measurement attempt count. If the sensor responds that it is not
+ * currently measuring, placeholder values of -9999 are recorded for each
+ * expected return value. On success, retrieved measurements are parsed and
+ * saved; the function also updates internal measurement status and attempt bookkeeping.
+ *
+ * @return `true` if measurement results were successfully retrieved and stored, `false` otherwise.
+ */
 bool SDI12Sensors::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {

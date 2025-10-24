@@ -278,7 +278,17 @@
  *
  * @ingroup sensor_cyclops
  */
-/* clang-format on */
+/**
+ * @brief Get the configured sensor location string.
+ *
+ * @returns The sensor location identifier string.
+ */
+
+/**
+ * @brief Read a single measurement from the Cyclops sensor and update internal sensor values.
+ *
+ * @returns `true` if the measurement was successful and sensor values were updated, `false` otherwise.
+ */
 class TurnerCyclops : public Sensor {
  public:
     // The constructor - need the power pin, the ADS1X15 data channel, and the

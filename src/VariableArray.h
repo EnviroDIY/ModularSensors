@@ -40,39 +40,178 @@
 
 
 /**
- * @brief The variable array class defines the logic for iterating through many
- * variable objects.
+ * @brief Manage and operate a collection of Variable objects and their sensors.
  *
- * This takes advantage of various time stamps within the Sensor class to
- * optimize the timing of communications with many sensors.
+ * Coordinates sensor setup, power/wake/sleep cycles, and value updates across
+ * variables to minimize sensor on-time and optimize communication timing.
+ */
+
+/**
+ * @brief Construct a new VariableArray object.
+ */
+
+/**
+ * @brief Construct a new VariableArray object with an initial variable list.
  *
- * In general, the order of the variables in the variable list or array should
- * not matter.  The library attempts to minimize sensor on time as much as
- * possible by requesting data from the each sensor as soon as it is able to
- * report a result, regardless of its position in the array.  The only place the
- * order of the variables will be reflected is in the order of the data columns
- * in data saved by a logger or when sending data to ThingSpeak.
+ * @param variableCount Number of variables in variableList.
+ * @param variableList Array of pointers to Variable objects.
+ */
+
+/**
+ * @brief Construct a new VariableArray object with variables and UUIDs.
  *
- * To use the VariableArray module, you must first create the array of pointers.
- * This should be done outside of the setup() or loop() functions.
- * Remember that for measured variables you must first create a new sensor
- * instance and then one or more new variable instances for that sensor
- * (depending on how many values it can return).
- * The sensor functions for sensors within a variable array take advantage of
- * all of the timestamps and status bits within the sensor object to minimize
- * the amount of time that all sensors are powered and the processor is awake.
- * That is, the first sensor to be warmed up will be set up or activated first;
- * the first sensor to stabilize will be asked for values first.
- * All calculations for any calculated variables happen after all the sensor
- * updating has finished.
- * The order of the variables within the array should not matter, though for
- * code readability, I strongly suggest putting all the variables attached to a
- * single sensor next to each other in the array.
- * When creating a logger, the order of variables in the array determines the
- * order the values will be written to the data file.
+ * @param variableCount Number of variables in variableList.
+ * @param variableList Array of pointers to Variable objects.
+ * @param uuids Array of UUID strings, matched 1:1 with variableList positions.
+ */
+
+/**
+ * @brief Destroy the VariableArray object.
+ */
+
+/**
+ * @brief Initialize the VariableArray with a variable list and validate UUIDs.
  *
- * @ingroup base_classes
+ * @param variableCount Number of variables in variableList. Overrides any constructor value.
+ * @param variableList Array of pointers to Variable objects. Overrides any constructor value.
+ */
+
+/**
+ * @brief Initialize the VariableArray with variables and UUIDs and validate them.
  *
+ * @param variableCount Number of variables in variableList. Overrides any constructor value.
+ * @param variableList Array of pointers to Variable objects. Overrides any constructor value.
+ * @param uuids Array of UUID strings, matched 1:1 with variableList positions.
+ */
+
+/**
+ * @brief Finalize initialization using the internally stored variable list and validate UUIDs.
+ */
+
+/**
+ * @brief Pointer to the array of Variable pointers.
+ */
+
+/**
+ * @brief Get the count of variables managed by this VariableArray.
+ *
+ * @return The number of variables.
+ */
+
+/**
+ * @brief Get the number of calculated variables (not measured by sensors).
+ *
+ * @return The number of calculated variables.
+ */
+
+/**
+ * @brief Get the number of unique sensors associated with the variables.
+ *
+ * Many sensors may provide multiple variables; this returns the sensor count.
+ *
+ * @return The number of sensors.
+ */
+
+/**
+ * @brief Overwrite variables' UUIDs using the provided array, matched by index.
+ *
+ * @param uuids Array of UUID strings to assign to variables by position.
+ */
+
+/**
+ * @brief Run setup for all unique sensors referenced by variables.
+ *
+ * Retries sensor setup up to multiple times when needed. Each sensor is set up once.
+ *
+ * @return `true` if all sensors were set up successfully, `false` otherwise.
+ */
+
+/**
+ * @brief Power up each unique sensor referenced by the variable list.
+ */
+
+/**
+ * @brief Wake each unique sensor and wait for readiness as needed.
+ *
+ * @return `true` if all sensors were awakened successfully, `false` otherwise.
+ */
+
+/**
+ * @brief Put each unique sensor to sleep.
+ *
+ * @return `true` if all sensors were put to sleep successfully, `false` otherwise.
+ */
+
+/**
+ * @brief Power down each unique sensor referenced by the variable list.
+ */
+
+/**
+ * @brief Deprecated: update sensor values using the legacy update flow.
+ *
+ * @m_deprecated_since{0,38,0}
+ *
+ * Use completeUpdate() with appropriate flags instead.
+ *
+ * @return `true` if the legacy update flow reported success, `false` otherwise.
+ */
+
+/**
+ * @brief Perform a full sensor update sequence with configurable phases.
+ *
+ * Optionally runs powerUp, wake, value update, sleep, and powerDown phases for
+ * all unique sensors, waiting for readiness where appropriate.
+ *
+ * @param powerUp If `true`, power up sensors before updating.
+ * @param wake If `true`, wake sensors before updating.
+ * @param sleep If `true`, put sensors to sleep after updating.
+ * @param powerDown If `true`, power down sensors after updating.
+ * @return `true` if all requested phases completed successfully, `false` otherwise.
+ */
+
+/**
+ * @brief Print current sensor values and metadata to the given Stream.
+ *
+ * @param stream Arduino Stream instance to write output to (default: &Serial).
+ */
+
+/**
+ * @brief The count of variables in the array.
+ */
+
+/**
+ * @brief The count of unique sensors tied to variables in the array.
+ */
+
+/**
+ * @brief Check whether the variable at arrayIndex is the last produced by its sensor.
+ *
+ * @param arrayIndex Index of the variable in the array.
+ * @return `true` if the variable is the last for its sensor, `false` otherwise.
+ */
+
+/**
+ * @brief Validate that assigned UUID strings are well-formed for all variables.
+ *
+ * This checks textual UUID format only, not whether a UUID is semantically correct
+ * for a given variable.
+ *
+ * @return `true` if all present UUIDs are validly formed, `false` otherwise.
+ */
+
+/**
+ * @brief Retrieve a specific status bit from the sensor associated with a variable.
+ *
+ * @param arrayIndex Index of the variable in the array.
+ * @param bitToGet Specific sensor status bit to read.
+ * @return The boolean value of the requested status bit.
+ */
+
+/**
+ * @brief Print the contents of an array with aligned spacing and commas (debug only).
+ *
+ * @tparam T Element type of the array to print.
+ * @param arrayToPrint Array of values to print; uses the internal variable count to format output.
  */
 class VariableArray {
  public:

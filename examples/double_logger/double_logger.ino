@@ -301,7 +301,11 @@ void setup() {
 // The processor may also be woken up by another interrupt or level change on a
 // pin - from a button or some other input.
 // The "if" statements in the loop determine what will happen - whether the
-// sensors update, testing mode starts, or it goes back to sleep.
+/**
+ * @brief Executes periodic logging cycles for the two configured loggers and handles daily time synchronization and sleep.
+ *
+ * Checks the 1-minute and 5-minute logger intervals; when an interval is due, updates the corresponding sensors, writes CSV records to the SD card, and toggles the indicator LED for that interval. Once per day at local noon, wakes the modem to obtain network time and updates the RTC. Finally, transitions the processor to the logger-managed sleep state.
+ */
 void loop() {
     // Check if the current time is an even interval of the logging interval
     // For whichever logger we call first, use the checkInterval() function.

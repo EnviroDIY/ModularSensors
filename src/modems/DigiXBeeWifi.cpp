@@ -363,7 +363,14 @@ void DigiXBeeWifi::disconnectInternet(void) {
 }
 
 
-// Get the time from NIST via TIME protocol (rfc868)
+/**
+ * @brief Retrieve the current time from a NIST TIME (RFC 868) server.
+ *
+ * Attempts to contact NIST time servers over the network and parse the returned
+ * TIME-protocol response into epoch seconds.
+ *
+ * @return uint32_t Parsed time in seconds since the Unix epoch (Jan 1, 1970), or `0` on failure.
+ */
 uint32_t DigiXBeeWifi::getNISTTime(void) {
     // bail if not connected to the internet
     if (!isInternetAvailable()) {

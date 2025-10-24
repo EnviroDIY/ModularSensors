@@ -275,7 +275,27 @@
  *
  * @ingroup sensor_bme280
  */
-/* clang-format on */
+/**
+ * @brief Bring the sensor out of low-power state and ensure it is ready for
+ * measurement.
+ *
+ * @returns `true` if the sensor is powered and ready to take measurements,
+ * `false` otherwise.
+ */
+
+/**
+ * @brief Return a human-readable description of the sensor's connection.
+ *
+ * @returns A string describing the sensor's interface and I2C address.
+ */
+
+/**
+ * @brief Read a single measurement from the sensor and append the results to
+ * the parent Sensor's measurement storage.
+ *
+ * @returns `true` if the measurement was read and recorded successfully,
+ * `false` otherwise.
+ */
 class BoschBME280 : public Sensor {
  public:
     /**

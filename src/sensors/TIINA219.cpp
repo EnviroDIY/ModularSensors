@@ -71,6 +71,13 @@ bool TIINA219::wake(void) {
 }
 
 
+/**
+ * @brief Processes a single INA219 measurement: reads values, records valid results, and updates the attempt count.
+ *
+ * If the measurement was not started successfully, records a failed attempt and returns. Otherwise reads current (mA), bus voltage (V), and power (mW) from the INA219, and if none are NaN adds them to the stored measurement results before updating the measurement attempt count.
+ *
+ * @return `true` if the measurement values were valid and recorded, `false` otherwise.
+ */
 bool TIINA219::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {

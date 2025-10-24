@@ -242,10 +242,12 @@ typedef enum : uint16_t {
 /**@}*/
 
 /**
- * @brief The Sensor sub-class for the [Alphasense IRC-A1 CO2](@ref
- * sensor_alphasense_co2) sensor
+ * @brief Take and record a single measurement from the sensor.
  *
- * @ingroup sensor_alphasense_co2
+ * Performs one sensor measurement cycle and stores the resulting value(s)
+ * in the sensor's internal result buffers.
+ *
+ * @returns `true` if the measurement was successfully acquired and recorded, `false` otherwise.
  */
 class AlphasenseCO2 : public Sensor {
  public:

@@ -11,7 +11,16 @@
 #include "ProcessorStats.h"
 
 // If the user only gave the version, we use info from known boards to fill in
-// the gaps
+/**
+ * @brief Construct a ProcessorStats instance for a specific board version.
+ *
+ * Initializes processor monitoring state using the provided board version and
+ * measurement averaging count; applies board- and version-specific adjustments
+ * to battery-related settings when applicable.
+ *
+ * @param version Null-terminated board version string used to adjust board-specific settings.
+ * @param measurementsToAverage Number of measurements to average for processor statistics.
+ */
 ProcessorStats::ProcessorStats(const char* version,
                                uint8_t     measurementsToAverage)
     : Sensor(LOGGER_BOARD, PROCESSOR_NUM_VARIABLES, PROCESSOR_WARM_UP_TIME_MS,
@@ -202,6 +211,14 @@ String ProcessorStats::getLastResetCause() {
 #endif
 
 
+/**
+ * @brief Perform one processor measurement cycle and record available processor metrics.
+ *
+ * Performs and records measurements for battery voltage, free RAM (if not already measured),
+ * sample number (incremented once per new measurement series), and reset cause (if not already measured).
+ *
+ * @returns `true` when the measurement attempt count indicates the measurement cycle is finished, `false` otherwise.
+ */
 bool ProcessorStats::addSingleMeasurementResult(void) {
     float sensorValue_battery = getBatteryVoltage();
     verifyAndAddMeasurementResult(PROCESSOR_BATTERY_VAR_NUM,

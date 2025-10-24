@@ -186,7 +186,15 @@
 /**
  * @brief The Sensor sub-class for the [Sensirion SHT4x](@ref sensor_sht4x).
  */
-/* clang-format on */
+/**
+ * Perform one measurement cycle and add the resulting temperature and humidity
+ * values to the sensor's stored results.
+ *
+ * Reads the SHT4x, applies any configured averaging, and records the final
+ * values for later retrieval.
+ *
+ * @returns true if a measurement was successfully taken and recorded, false otherwise.
+ */
 class SensirionSHT4x : public Sensor {
  public:
     /**

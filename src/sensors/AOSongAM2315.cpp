@@ -50,6 +50,14 @@ bool AOSongAM2315::setup(void) {
 }
 
 
+/**
+ * @brief Read the AM2315 sensor, record valid temperature and humidity measurements, and update attempt status.
+ *
+ * If the measurement start status is not set, the function records the failed attempt and returns `false`.
+ * When readings are valid (finite and not default sentinel values), temperature and humidity are added to the sensor's measurements.
+ *
+ * @return `true` if the measurement was valid and recorded (measurement considered successful), `false` otherwise.
+ */
 bool AOSongAM2315::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {

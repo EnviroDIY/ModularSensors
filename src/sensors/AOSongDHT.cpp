@@ -11,7 +11,18 @@
 #include "AOSongDHT.h"
 
 
-// The constructor - need the power pin, data pin, and type of DHT
+/**
+ * @brief Construct an AOSongDHT sensor with specified power/data pins and DHT type.
+ *
+ * Initializes the sensor base with the AOSongDHT configuration, creates the internal
+ * DHT instance bound to the given data pin and type, stores the sensor type, and
+ * configures the allowed measurement retry count to 5.
+ *
+ * @param powerPin Digital pin used to power the sensor (can be -1 if sensor is always powered).
+ * @param dataPin Digital data pin connected to the DHT sensor.
+ * @param type DHT sensor type identifier (e.g., 11, 12, 21, 22).
+ * @param measurementsToAverage Number of measurements to average for each reported value.
+ */
 AOSongDHT::AOSongDHT(int8_t powerPin, int8_t dataPin, const uint8_t type,
                      uint8_t measurementsToAverage)
     : Sensor("AOSongDHT", DHT_NUM_VARIABLES, DHT_WARM_UP_TIME_MS,
@@ -22,7 +33,11 @@ AOSongDHT::AOSongDHT(int8_t powerPin, int8_t dataPin, const uint8_t type,
     setAllowedMeasurementRetries(5);
 }
 
-// Destructor - does nothing.
+/**
+ * @brief Destructor for AOSongDHT.
+ *
+ * No resources are released and no special cleanup is performed.
+ */
 AOSongDHT::~AOSongDHT() {}
 
 
@@ -43,6 +58,15 @@ String AOSongDHT::getSensorName(void) {
 }
 
 
+/**
+ * @brief Reads the DHT sensor and records temperature, relative humidity, and heat index when a measurement was started.
+ *
+ * If the sensor measurement was not started (MEASUREMENT_SUCCESSFUL is false), this function updates the measurement attempt
+ * count and returns without reading the sensor. When reads succeed, temperature and heat index are in degrees Celsius and
+ * humidity is in percent; the three values are validated and recorded for the sensor.
+ *
+ * @return `true` if the measurement values were validated and recorded, `false` otherwise.
+ */
 bool AOSongDHT::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {

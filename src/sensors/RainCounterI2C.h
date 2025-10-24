@@ -197,7 +197,16 @@
  *
  * @ingroup sensor_i2c_rain
  */
-/* clang-format on */
+/**
+ * @brief Get the sensor's reported location string.
+ *
+ * @return A String describing the sensor location.
+ */
+/**
+ * @brief Read from the device and record a single measurement into the sensor values.
+ *
+ * @return `true` if a new measurement was successfully read and recorded, `false` otherwise.
+ */
 class RainCounterI2C : public Sensor {
  public:
 #if defined(MS_RAIN_SOFTWAREWIRE) || defined(DOXYGEN)

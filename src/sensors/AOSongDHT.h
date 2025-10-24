@@ -218,7 +218,41 @@ static const uint8_t AM2301{21}; /**< AM2301 */
  *
  * @ingroup sensor_dht
  */
-/* clang-format on */
+/**
+ * @brief Construct a new AOSongDHT object.
+ *
+ * @param powerPin The MCU pin controlling power to the AOSong DHT; use -1 if
+ * the sensor is continuously powered. The DHT requires a 3.3–6V power source.
+ * @param dataPin The MCU pin receiving data from the AOSong DHT.
+ * @param type The DHT type (DHT11, DHT21, AM2301, DHT22, or AM2302). Provide
+ * the enum value (no quotation marks).
+ * @param measurementsToAverage Number of measurements to average before
+ * reporting; defaults to 1.
+ */
+
+/**
+ * @brief Destroy the AOSongDHT object.
+ *
+ * No cleanup actions are required.
+ */
+
+/**
+ * @brief Initialize the sensor hardware and prepare it for measurements.
+ *
+ * @returns `true` if initialization succeeded, `false` otherwise.
+ */
+
+/**
+ * @brief Return the sensor's human-readable name.
+ *
+ * @returns The sensor name as a String.
+ */
+
+/**
+ * @brief Take a single reading from the sensor and add it to the measurement buffer.
+ *
+ * @returns `true` if the measurement was read and added successfully, `false` otherwise.
+ */
 class AOSongDHT : public Sensor {
  public:
     /**

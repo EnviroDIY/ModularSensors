@@ -75,6 +75,15 @@ float AnalogElecConductivity::readEC(uint8_t analogPinNum) {
 }
 
 
+/**
+ * @brief Perform a single electrical conductivity measurement, record the value, and update attempt counters.
+ *
+ * If the measurement was not successfully started, the method updates the attempt counter for a failed attempt and returns.
+ * Otherwise it reads conductivity from the configured analog data pin, records the measured conductivity value for the sensor,
+ * and updates the attempt counter for a successful attempt. Measured values are recorded without additional validity filtering.
+ *
+ * @return `true` if the attempt counter was bumped for a successful measurement, `false` if it was bumped for a failed start.
+ */
 bool AnalogElecConductivity::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {

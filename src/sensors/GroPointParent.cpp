@@ -11,7 +11,26 @@
 #include "GroPointParent.h"
 
 // The constructor - need the sensor type, modbus address, power pin, stream for
-// data, and number of readings to average
+/**
+ * @brief Construct a GroPointParent sensor configured for a Modbus/RS-485 GroPoint device.
+ *
+ * Initializes base Sensor timing, power, and averaging configuration and stores
+ * device-specific settings (Modbus address, stream, RS-485 enable pin and model).
+ *
+ * @param modbusAddress Modbus slave address of the GroPoint device.
+ * @param stream Pointer to the Stream used for Modbus/RS-485 communication.
+ * @param powerPin Primary power-control pin for the sensor.
+ * @param powerPin2 Secondary power-control pin (e.g., for a separate power rail or enable line).
+ * @param enablePin GPIO used to toggle the RS-485 transceiver DE/RE (driver/receiver enable).
+ * @param measurementsToAverage Number of readings to average per reported measurement.
+ * @param model Specific GroPoint model variant handled by this instance.
+ * @param sensName Human-readable sensor name passed to the base Sensor.
+ * @param numVariables Number of measurement variables exposed by this sensor.
+ * @param warmUpTime_ms Warm-up time in milliseconds before measurements may be requested.
+ * @param stabilizationTime_ms Stabilization delay in milliseconds between starting and reading measurements.
+ * @param measurementTime_ms Suggested measurement duration in milliseconds.
+ * @param incCalcValues Number of calculated/derived values to include in reported output.
+ */
 GroPointParent::GroPointParent(byte modbusAddress, Stream* stream,
                                int8_t powerPin, int8_t powerPin2,
                                int8_t enablePin, uint8_t measurementsToAverage,
@@ -29,6 +48,27 @@ GroPointParent::GroPointParent(byte modbusAddress, Stream* stream,
       _RS485EnablePin(enablePin) {
     setSecondaryPowerPin(powerPin2);
 }
+/**
+ * @brief Constructs a GroPointParent sensor configured for a specific GroPoint model over Modbus/RS-485.
+ *
+ * Initializes the base Sensor with timing, averaging, and power parameters and stores Modbus/stream configuration
+ * needed to communicate with the GroPoint device. Also sets the secondary power pin via setSecondaryPowerPin()
+ * and records the RS-485 enable pin.
+ *
+ * @param modbusAddress Modbus slave address of the GroPoint device.
+ * @param stream Stream used for Modbus/RS-485 communication with the device.
+ * @param powerPin Primary power control pin for the sensor.
+ * @param powerPin2 Secondary power/control pin (configured via setSecondaryPowerPin()).
+ * @param enablePin Digital pin used to enable the RS-485 transceiver.
+ * @param measurementsToAverage Number of raw measurements to average before producing a reported value.
+ * @param model Specific GroPoint model variant to drive (selects supported channels/behavior).
+ * @param sensName Human-readable sensor name passed to the base Sensor.
+ * @param numVariables Number of reported variables managed by this sensor instance.
+ * @param warmUpTime_ms Warm-up time in milliseconds before measurements are valid.
+ * @param stabilizationTime_ms Stabilization time in milliseconds between power-up and measurement.
+ * @param measurementTime_ms Measurement duration/timeout in milliseconds.
+ * @param incCalcValues Number of internal calculated values to include in reported output.
+ */
 GroPointParent::GroPointParent(byte modbusAddress, Stream& stream,
                                int8_t powerPin, int8_t powerPin2,
                                int8_t enablePin, uint8_t measurementsToAverage,
@@ -46,7 +86,11 @@ GroPointParent::GroPointParent(byte modbusAddress, Stream& stream,
       _RS485EnablePin(enablePin) {
     setSecondaryPowerPin(powerPin2);
 }
-// Destructor
+/**
+ * @brief Cleans up resources used by the GroPointParent instance.
+ *
+ * Performs no special actions beyond normal object destruction.
+ */
 GroPointParent::~GroPointParent() {}
 
 
@@ -59,6 +103,15 @@ String GroPointParent::getSensorLocation(void) {
 }
 
 
+/**
+ * @brief Configure hardware pins and initialize the GroPoint sensor handler.
+ *
+ * Sets up base Sensor state and pin modes, configures the RS-485 enable pin as OUTPUT
+ * when provided, and initializes the internal GroPoint handler with model, Modbus
+ * address, stream, and RS-485 enable pin.
+ *
+ * @return true if the base Sensor setup and GroPoint handler initialization both succeeded, false otherwise.
+ */
 bool GroPointParent::setup(void) {
     bool retVal =
         Sensor::setup();  // this will set pin modes and the setup status bit
@@ -78,7 +131,16 @@ bool GroPointParent::setup(void) {
 
 // The function to wake up a sensor
 // Different from the standard in that it waits for warm up and starts
-// measurements
+/**
+ * @brief Attempts to wake the sensor and start measurements on the GroPoint device.
+ *
+ * Ensures the sensor power is active and configures the RS-485 enable pin if present,
+ * then attempts up to five times to start measurements on the attached GroPoint sensor.
+ * On success, records the sensor activation timestamp. On failure, sets the ERROR_OCCURRED
+ * status bit, clears the activation timestamp, and clears the WAKE_SUCCESSFUL status bit.
+ *
+ * @return true if the sensor began measuring, false otherwise.
+ */
 bool GroPointParent::wake(void) {
     // Sensor::wake() checks if the power pin is on and sets the wake timestamp
     // and status bits.  If it returns false, there's no reason to go on.
@@ -117,7 +179,15 @@ bool GroPointParent::wake(void) {
 
 // The function to put the sensor to sleep
 // Different from the standard in that it stops measurements and empties and
-// flushes the stream.
+/**
+ * @brief Stops active measurements, clears activation state, and flushes the Modbus stream.
+ *
+ * Attempts to stop ongoing measurements on the GroPoint device (retrying up to several times),
+ * empties and flushes the associated Stream buffers before and after the command, and when successful
+ * clears activation/measurement timestamps and related status bits.
+ *
+ * @return bool `true` if the sensor was already asleep or measurements were successfully stopped, `false` otherwise.
+ */
 bool GroPointParent::sleep(void) {
     // empty then flush the buffer
     while (_stream->available()) { _stream->read(); }
@@ -162,6 +232,16 @@ bool GroPointParent::sleep(void) {
 }
 
 
+/**
+ * Acquire a single measurement from the GroPoint sensor and store the results when successful.
+ *
+ * If a measurement was not started, the function records a failed attempt and returns immediately.
+ * For the GPLP8 model, it reads eight moisture values and thirteen temperature values and stores
+ * them into the measurement result array at indices 0–7 (moisture M1–M8) and 8–20 (temperature T1–T13).
+ * The function updates internal attempt bookkeeping before returning.
+ *
+ * @return `true` if both moisture and temperature reads succeeded (after attempt bookkeeping), `false` otherwise.
+ */
 bool GroPointParent::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {

@@ -13,11 +13,31 @@
 
 // Constructors
 VariableArray::VariableArray() {}
+/**
+ * @brief Construct a VariableArray from a list of variable pointers.
+ *
+ * Initializes the internal variable pointer array and variable count, then
+ * calculates the number of distinct sensors represented by those variables.
+ *
+ * @param variableCount Number of entries in `variableList`.
+ * @param variableList Array of pointers to Variable objects; must contain at least `variableCount` elements.
+ */
 VariableArray::VariableArray(uint8_t variableCount, Variable* variableList[])
     : arrayOfVars(variableList),
       _variableCount(variableCount) {
     _sensorCount = getSensorCount();
 }
+/**
+ * @brief Construct a VariableArray with variables and assign UUIDs.
+ *
+ * Initializes the instance with the provided variable pointers and count,
+ * computes the sensor count from those variables, and assigns each provided
+ * UUID string to the corresponding variable.
+ *
+ * @param variableCount Number of entries in `variableList`.
+ * @param variableList Array of pointers to Variable instances (length == variableCount).
+ * @param uuids Array of C-strings containing UUIDs; each entry is applied to the corresponding variable in `variableList`.
+ */
 VariableArray::VariableArray(uint8_t variableCount, Variable* variableList[],
                              const char* uuids[])
     : arrayOfVars(variableList),
@@ -29,6 +49,18 @@ VariableArray::VariableArray(uint8_t variableCount, Variable* variableList[],
 // Destructor
 VariableArray::~VariableArray() {}
 
+/**
+ * @brief Initialize the VariableArray with variables and optional UUIDs.
+ *
+ * Sets the internal variable count and pointer array, recalculates the number of unique
+ * sensors, associates provided UUIDs with each variable (if given), and validates all
+ * variable UUIDs.
+ *
+ * @param variableCount Number of entries in `variableList`.
+ * @param variableList Array of pointers to Variable objects; length must be `variableCount`.
+ * @param uuids Optional array of C-strings containing UUIDs; if non-null, each element is
+ *              assigned to the corresponding variable in `variableList`.
+ */
 void VariableArray::begin(uint8_t variableCount, Variable* variableList[],
                           const char* uuids[]) {
     _variableCount = variableCount;
@@ -38,6 +70,15 @@ void VariableArray::begin(uint8_t variableCount, Variable* variableList[],
     matchUUIDs(uuids);
     checkVariableUUIDs();
 }
+/**
+ * @brief Initialize the VariableArray with a list of variables and validate their UUIDs.
+ *
+ * Sets the internal variable count and array, recalculates the number of unique sensors,
+ * and verifies the format and uniqueness of each variable's UUID.
+ *
+ * @param variableCount Number of entries in @p variableList.
+ * @param variableList  Array of pointers to Variable instances to manage.
+ */
 void VariableArray::begin(uint8_t variableCount, Variable* variableList[]) {
     _variableCount = variableCount;
     arrayOfVars    = variableList;
@@ -45,6 +86,12 @@ void VariableArray::begin(uint8_t variableCount, Variable* variableList[]) {
     _sensorCount = getSensorCount();
     checkVariableUUIDs();
 }
+/**
+ * @brief Recalculates the internal sensor count and validates all variable UUIDs.
+ *
+ * Recomputes the number of unique sensors based on the current variable list and runs UUID format
+ * and uniqueness checks for each variable, updating internal state accordingly.
+ */
 void VariableArray::begin() {
     _sensorCount = getSensorCount();
     checkVariableUUIDs();
@@ -280,11 +327,29 @@ void VariableArray::sensorsPowerDown(void) {
 // This function updates the values for any connected sensors.
 // Please note that this does NOT run the update functions, it instead uses
 // the startSingleMeasurement and addSingleMeasurementResult functions to
-// take advantage of the ability of sensors to be measuring concurrently.
+/**
+ * @brief Performs a measurement cycle for all sensors without altering their power or sleep states.
+ *
+ * Performs updates for every sensor, allowing concurrent measurements where supported, while leaving
+ * sensor power and sleep/wake state unchanged.
+ *
+ * @return true if all sensor updates completed successfully, false otherwise.
+ */
 bool VariableArray::updateAllSensors(void) {
     return completeUpdate(false, false, false, false);
 }
 
+/**
+ * @brief Performs a complete sensor measurement cycle, applies optional power/wake/sleep actions, averages measurements, and notifies variables.
+ *
+ * Executes a full update for every unique sensor managed by this VariableArray: clears previous results, optionally powers up sensors, optionally wakes sensors when warmed up, starts and collects single measurements until each sensor has completed its configured number of measurements, optionally puts sensors to sleep and powers them down when eligible, averages collected measurements, and updates/ notifies all associated variables including recalculation of calculated variables.
+ *
+ * @param powerUp If true, power up all sensors before starting measurements.
+ * @param wake If true, attempt to wake sensors (once warmed up) prior to starting measurements.
+ * @param sleep If true, put sensors to sleep after they finish all required measurements.
+ * @param powerDown If true, power down sensors (and shared power pins) when no remaining sensors require power.
+ * @return true if all invoked sensor operations (wake/start/result collection/sleep/power actions) succeeded for all sensors; `false` if any sensor operation failed.
+ */
 bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
                                    bool powerDown) {
     bool    success           = true;
@@ -613,7 +678,14 @@ void VariableArray::printSensorData(Stream* stream) {
 }
 
 
-// Check for unique sensors
+/**
+ * @brief Determines whether the variable at the given index is the last entry for its parent sensor.
+ *
+ * For calculated variables this always returns false since they do not belong to a sensor.
+ *
+ * @param arrayIndex Index of the variable within arrayOfVars.
+ * @return true if no later variable in arrayOfVars references the same parent sensor, `false` otherwise.
+ */
 bool VariableArray::isLastVarFromSensor(int arrayIndex) {
     // Calculated Variables are never the last variable from a sensor, simply
     // because the don't come from a sensor at all.
@@ -633,6 +705,13 @@ bool VariableArray::isLastVarFromSensor(int arrayIndex) {
 }
 
 
+/**
+ * @brief Retrieve a specific status bit from the sensor that owns the variable at the given index.
+ *
+ * @param arrayIndex Index of the variable in the array whose parent sensor's status bit will be read.
+ * @param bitToGet The specific sensor status bit to retrieve.
+ * @return bool `true` if the requested status bit is set on the parent sensor, `false` otherwise or if the index is out of range.
+ */
 bool VariableArray::getSensorStatusBit(int                        arrayIndex,
                                        Sensor::sensor_status_bits bitToGet) {
     if (arrayIndex < 0 || arrayIndex >= _variableCount) { return false; }
@@ -640,7 +719,15 @@ bool VariableArray::getSensorStatusBit(int                        arrayIndex,
 }
 
 
-// Check that all variable have valid UUID's, if they are assigned
+/**
+ * @brief Validate assigned UUIDs for all variables and report issues.
+ *
+ * Checks each variable's UUID format if a UUID is present, detects non-unique
+ * UUIDs among variables, and prints diagnostics. After validation it prints
+ * all non-empty UUIDs alongside their variable codes.
+ *
+ * @return true if every assigned UUID is correctly formed and unique, false otherwise.
+ */
 bool VariableArray::checkVariableUUIDs(void) {
     bool success = true;
     for (uint8_t i = 0; i < _variableCount; i++) {

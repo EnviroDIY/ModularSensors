@@ -166,7 +166,84 @@
  *
  * @ingroup sensor_pt_redox
  */
-/* clang-format on */
+/**
+ * @brief Construct a PaleoTerraRedox that uses a SoftwareWire instance.
+ *
+ * @param theI2C A SoftwareWire instance to use for I2C communication.
+ * @param powerPin MCU pin controlling sensor power; use -1 if sensor is
+ * continuously powered.
+ * @param i2cAddressHex I2C address of the redox probe.
+ * @param measurementsToAverage Number of readings to average before producing
+ * a reported value.
+ */
+/**
+ * @brief Construct a PaleoTerraRedox and create a SoftwareWire instance.
+ *
+ * @note Creating a dedicated SoftwareWire is only necessary when a separate
+ * I2C bus is required; prefer sharing an existing I2C instance when possible.
+ *
+ * @param powerPin MCU pin controlling sensor power; use -1 if sensor is
+ * continuously powered.
+ * @param dataPin MCU pin used for I2C SDA.
+ * @param clockPin MCU pin used for I2C SCL.
+ * @param i2cAddressHex I2C address of the redox probe.
+ * @param measurementsToAverage Number of readings to average before producing
+ * a reported value.
+ */
+/**
+ * @brief Construct a PaleoTerraRedox that uses a hardware TwoWire instance.
+ *
+ * @param theI2C A TwoWire instance to use for I2C communication.
+ * @param powerPin MCU pin controlling sensor power; use -1 if sensor is
+ * continuously powered.
+ * @param i2cAddressHex I2C address of the redox probe.
+ * @param measurementsToAverage Number of readings to average before producing
+ * a reported value.
+ */
+/**
+ * @brief Construct a PaleoTerraRedox using the primary hardware I2C.
+ *
+ * @param powerPin MCU pin controlling sensor power; use -1 if sensor is
+ * continuously powered.
+ * @param i2cAddressHex I2C address of the redox probe.
+ * @param measurementsToAverage Number of readings to average before producing
+ * a reported value.
+ */
+/**
+ * @brief Destroy the PaleoTerraRedox object.
+ *
+ * Destroys any internally created SoftwareWire instance to avoid memory
+ * leaks.
+ */
+/**
+ * @brief Perform one-time sensor initialization required before measurements.
+ *
+ * @return `true` if initialization succeeded, `false` otherwise.
+ */
+/**
+ * @brief Return the configured sensor location string.
+ *
+ * @return The sensor location as a String.
+ */
+/**
+ * @brief Process and store a single measurement result from the sensor.
+ *
+ * @return `true` if a valid measurement was added to the sensor's results,
+ * `false` otherwise.
+ */
+/**
+ * @brief The I2C address of the redox sensor.
+ */
+/**
+ * @brief Internal reference to the SoftwareWire instance used for I2C.
+ */
+/**
+ * @brief Indicates whether the SoftwareWire instance was created internally
+ * and therefore must be destroyed by this object.
+ */
+/**
+ * @brief Internal reference to the hardware TwoWire instance used for I2C.
+ */
 class PaleoTerraRedox : public Sensor {
  public:
 #if defined(MS_PALEOTERRA_SOFTWAREWIRE) || defined(DOXYGEN)

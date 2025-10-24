@@ -42,6 +42,16 @@ String CampbellOBS3::getSensorLocation(void) {
 }
 
 
+/**
+ * @brief Acquire one ADC measurement, apply the sensor's quadratic calibration, and record results.
+ *
+ * Attempts to read the configured ADC channel, compute voltage, validate it against the acceptable
+ * range (voltage > -0.3 V and voltage < 3.6 V), apply the quadratic calibration curve, and store
+ * both the calibrated turbidity value and the measured voltage when valid. If the measurement was
+ * not started, the function records a failed attempt immediately.
+ *
+ * @return true if a valid calibrated turbidity and corresponding voltage were recorded, false otherwise.
+ */
 bool CampbellOBS3::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {

@@ -195,6 +195,17 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void) {
     return success;
 }
 
+/**
+ * @brief Obtain the current time from the NIST daytime server.
+ *
+ * Attempts to retrieve and parse a 4-byte timestamp from the NIST time server
+ * when an internet connection is available. The function enforces at least a
+ * 4-second gap between NIST requests, will retry up to 12 times, and returns
+ * the first successfully parsed timestamp.
+ *
+ * @return uint32_t Parsed NIST timestamp (seconds since epoch) on success, `0`
+ * if the internet is unavailable or no valid timestamp could be obtained.
+ */
 uint32_t DigiXBeeCellularTransparent::getNISTTime(void) {
     /* bail if not connected to the internet */
     if (!isInternetAvailable()) {

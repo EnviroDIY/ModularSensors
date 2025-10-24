@@ -145,13 +145,48 @@
 /**@}*/
 
 /**
- * @brief The Sensor sub-class for the [Maxim DS3231](@ref sensor_ds3231)
- * when used as a low-accuracy temperature sensor
+ * @brief Sensor subclass for the Maxim DS3231 RTC used as a low-accuracy
+ * temperature sensor.
  *
- * Only need a sleep and wake since these DON'T use the default of powering
- * up and down
+ * Only sleep and wake are required because the RTC remains continuously powered.
  *
  * @ingroup sensor_ds3231
+ */
+/**
+ * @brief Construct a new Maxim DS3231 object
+ *
+ * @param measurementsToAverage Number of samples to average for each reported measurement.
+ */
+/**
+ * @brief Destroy the Maxim DS3231 object
+ */
+/**
+ * @brief Return a human-readable location description for this sensor instance.
+ */
+/**
+ * @brief Perform one-time initialization required before taking readings.
+ *
+ * Starts I2C communication with the DS3231 (if not already started) and disables
+ * any RTC interrupts. The RTC is assumed to be continuously powered.
+ *
+ * @return True if setup completed successfully.
+ */
+/**
+ * @brief Initiate a single temperature measurement.
+ *
+ * Records the measurement request time in #_millisMeasurementRequested.
+ *
+ * @note This does not wait for measurement conversion to complete.
+ *
+ * @return True if the start request was issued successfully.
+ */
+/**
+ * @brief Read and store the result of a single measurement initiated earlier.
+ *
+ * Extracts the temperature reading from the DS3231 and places it into the sensor's
+ * measurement storage for later retrieval.
+ *
+ * @return True if the measurement result was read and stored successfully.
  */
 class MaximDS3231 : public Sensor {
  public:

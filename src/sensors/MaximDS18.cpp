@@ -62,7 +62,21 @@ String MaximDS18::getSensorLocation(void) {
 
 
 // The function to set up connection to a sensor.
-// By default, sets pin modes and returns ready
+/**
+ * @brief Configure the DS18 sensor and prepare it for measurements.
+ *
+ * Performs initialization of internal OneWire and DallasTemperature interfaces,
+ * ensures the device address is known (attempting discovery if not), validates
+ * connectivity, sets 12-bit resolution when supported, and configures the
+ * driver for asynchronous conversions. The sensor may be powered up temporarily
+ * during setup and powered down again before returning.
+ *
+ * On setup failure this sets the ERROR_OCCURRED status bit and clears the
+ * SETUP_SUCCESSFUL status bit; on success those status bits remain unchanged
+ * by this method.
+ *
+ * @return true if the sensor is ready for measurements after setup, false if setup failed.
+ */
 bool MaximDS18::setup(void) {
     uint8_t ntries = 0;
 
@@ -180,6 +194,16 @@ bool MaximDS18::startSingleMeasurement(void) {
 }
 
 
+/**
+ * @brief Process the last temperature measurement and store it if valid.
+ *
+ * Verifies that a measurement was started, reads the temperature (°C) from the stored
+ * OneWire address, and records the value for DS18 sensors unless it equals 85 or -127
+ * (device error codes). Updates internal attempt/measurement tracking via
+ * bumpMeasurementAttemptCount.
+ *
+ * @return bool `true` if the measurement result was recorded and attempt handling reports success, `false` otherwise.
+ */
 bool MaximDS18::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {

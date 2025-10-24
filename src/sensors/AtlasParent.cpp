@@ -135,6 +135,25 @@ bool AtlasParent::startSingleMeasurement(void) {
 }
 
 
+/**
+ * @brief Process the sensor's single-measurement response and record results.
+ *
+ * Requests up to 40 bytes from the device, interprets the leading response code,
+ * and when the code indicates success reads and validates each returned float
+ * result before passing it to verifyAndAddMeasurementResult. If the measurement
+ * was not started, the function immediately records a failed attempt.
+ *
+ * Response code meanings:
+ * - 1: Measurement successful — remaining bytes contain float results.
+ * - 2: Measurement failed.
+ * - 254: Measurement pending.
+ * - 255: No data.
+ *
+ * Parsed float values that are NaN or less than -1020 are normalized to -9999
+ * before being forwarded for verification/storage.
+ *
+ * @return true if the measurement attempt was recorded as successful; `false` otherwise.
+ */
 bool AtlasParent::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {

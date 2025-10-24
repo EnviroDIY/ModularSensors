@@ -13,7 +13,15 @@
 
 
 // The constructor - need the power pin, the data pin, the voltage divider
-// value, and the operating voltage
+/**
+       * @brief Construct a ProcessorAnalog sensor instance with pin configuration and scaling.
+       *
+       * @param powerPin Pin used to power the sensor (or -1 if always powered).
+       * @param dataPin Analog input pin for readings.
+       * @param voltageMultiplier Multiplier to apply to raw ADC-derived voltage to account for divider or scaling (use 1.0 if none).
+       * @param operatingVoltage Reference operating voltage corresponding to the ADC full-scale reading.
+       * @param measurementsToAverage Number of consecutive readings to average for each reported measurement.
+       */
 ProcessorAnalog::ProcessorAnalog(int8_t powerPin, uint8_t dataPin,
                                  float   voltageMultiplier,
                                  float   operatingVoltage,
@@ -25,10 +33,19 @@ ProcessorAnalog::ProcessorAnalog(int8_t powerPin, uint8_t dataPin,
              measurementsToAverage, PROCESSOR_ANALOG_INC_CALC_VARIABLES),
       _voltageMultiplier(voltageMultiplier),
       _operatingVoltage(operatingVoltage) {}
-// Destructor
+/**
+ * @brief Destroy the ProcessorAnalog instance.
+ */
 ProcessorAnalog::~ProcessorAnalog() {}
 
 
+/**
+ * @brief Reads the processor's analog input, converts the ADC reading to a voltage, and records the result.
+ *
+ * Reads the configured analog pin (or fails if no pin and no voltage divider configured), converts the ADC value to a voltage using the stored operating voltage, ADC maximum, and voltage multiplier, and stores the measurement with the processor analog variable index.
+ *
+ * @return bool `true` if the measurement attempt was recorded as successful, `false` if the attempt was recorded as failed.
+ */
 bool ProcessorAnalog::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
