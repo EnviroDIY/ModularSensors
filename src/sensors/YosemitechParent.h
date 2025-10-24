@@ -223,6 +223,17 @@ class YosemitechParent : public Sensor {
      * @return True if the setup was successful.
      */
     bool setup(void) override;
+    /**
+     * @brief Wakes the sensor, starts measurements, and activates brushes.
+     *
+     * Unlike base Sensor::wake(), this starts measurements and activates the
+     * brushes (where applicable).  Yosemitech sensors do not start to stabilize
+     * until after starting measurements.  So we activate the sensor as part of
+     * the wake and then must wait the stabilization time + 1 measurement time
+     * before requesting the first result.
+     *
+     * @return True if the wake function completed successfully.
+     */
     bool wake(void) override;
     /**
      * @brief Puts the sensor to sleep, if necessary.
