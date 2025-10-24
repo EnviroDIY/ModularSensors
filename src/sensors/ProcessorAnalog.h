@@ -191,7 +191,7 @@ class ProcessorAnalog : public Sensor {
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
      */
-    ProcessorAnalog(int8_t powerPin, uint8_t dataPin, float voltageMultiplier,
+    ProcessorAnalog(int8_t powerPin, int8_t dataPin, float voltageMultiplier,
                     float   operatingVoltage      = OPERATING_VOLTAGE,
                     uint8_t measurementsToAverage = 1);
     /**

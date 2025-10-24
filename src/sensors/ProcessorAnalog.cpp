@@ -14,7 +14,7 @@
 
 // The constructor - need the power pin, the data pin, the voltage divider
 // value, and the operating voltage
-ProcessorAnalog::ProcessorAnalog(int8_t powerPin, uint8_t dataPin,
+ProcessorAnalog::ProcessorAnalog(int8_t powerPin, int8_t dataPin,
                                  float   voltageMultiplier,
                                  float   operatingVoltage,
                                  uint8_t measurementsToAverage)
