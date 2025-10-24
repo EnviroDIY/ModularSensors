@@ -127,6 +127,8 @@
 /// @brief Sensor::_measurementTime_ms; the PaleoTerra redox sensor takes 67ms
 /// to complete a measurement.
 #define PTR_MEASUREMENT_TIME_MS 67
+/// @brief The time to wait after starting a conversion before data is ready.
+#define PTR_CONVERSION_WAIT_TIME_MS 300
 /**@}*/
 
 /**

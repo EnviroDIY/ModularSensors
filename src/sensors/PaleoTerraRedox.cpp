@@ -114,8 +114,10 @@ bool PaleoTerraRedox::addSingleMeasurementResult(void) {
     _i2c->write(0b10001100);  // initiate conversion, One-Shot mode, 18
                               // bits, PGA x1
     i2c_status = _i2c->endTransmission();
+    // fail if transmission error
+    if (i2c_status != 0) { return bumpMeasurementAttemptCount(false); }
 
-    delay(300);
+    delay(PTR_CONVERSION_WAIT_TIME_MS);
 
     _i2c->requestFrom(int(_i2cAddressHex),
                       4);  // Get 4 bytes from device
