@@ -203,7 +203,9 @@ bool GeoluxHydroCam::addSingleMeasurementResult(void) {
 
     // Initialise the SD card
     // skip everything else if there's no SD card, otherwise it might hang
-    if (!_baseLogger->initializeSDCard()) return false;
+    if (!_baseLogger->initializeSDCard()) {
+        return bumpMeasurementAttemptCount(false);
+    }
 
     // Create and then open the file in write mode
     if (imgFile.open(filename.c_str(), O_CREAT | O_WRITE | O_AT_END)) {
