@@ -171,9 +171,12 @@ bool GroPointParent::addSingleMeasurementResult(void) {
     bool success  = false;
     bool successT = false;
     // Initialize moisture variables for each probe segment
-    float M1, M2, M3, M4, M5, M6, M7, M8 = -9999;
+    float M1 = -9999, M2 = -9999, M3 = -9999, M4 = -9999, M5 = -9999,
+          M6 = -9999, M7 = -9999, M8 = -9999;
     // Initialize temperature variables for each probe sensor
-    float T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13 = -9999;
+    float T1 = -9999, T2 = -9999, T3 = -9999, T4 = -9999, T5 = -9999,
+          T6 = -9999, T7 = -9999, T8 = -9999, T9 = -9999, T10 = -9999,
+          T11 = -9999, T12 = -9999, T13 = -9999;
 
     switch (_model) {
         case GPLP8: {
