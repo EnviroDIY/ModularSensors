@@ -115,8 +115,9 @@ bool KellerParent::addSingleMeasurementResult(void) {
     MS_DBG(F("  Temp_C:"), waterTemperatureC);
     MS_DBG(F("  Height_m:"), waterDepthM);
 
-    success &= (waterPressureBar != -9999 && waterTemperatureC != -9999 &&
-                waterDepthM != -9999);
+    success &= (!isnan(waterPressureBar) && waterPressureBar != -9999 &&
+                !isnan(waterTemperatureC) && waterTemperatureC != -9999 &&
+                !isnan(waterDepthM) && waterDepthM != -9999);
 
     if (success) {
         // Put values into the array
