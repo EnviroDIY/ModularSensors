@@ -80,7 +80,6 @@ bool TallyCounterI2C::addSingleMeasurementResult(void) {
     // Read data from counter before clear
 
     events = counter_internal.Peek();
-    if (isnan(events)) events = -9999;
 
     // Assume that if negative a failed response
     // May also return a very negative temp when receiving a bad response
