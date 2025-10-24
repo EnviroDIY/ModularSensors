@@ -130,6 +130,10 @@ bool TurnerTurbidityPlus::addSingleMeasurementResult(void) {
     // Print out the calibration curve
     MS_DBG(F("  Input calibration Curve:"), _volt_std, F("V at"), _conc_std,
            F(".  "), _volt_blank, F("V blank."));
+    if (_volt_std == _volt_blank) {
+        MS_DBG(F("Invalid calibration: point voltage equals blank voltage"));
+        return bumpMeasurementAttemptCount(false);
+    }
 
     // Read Analog to Digital Converter (ADC)
     // Taking this reading includes the 8ms conversion delay.
