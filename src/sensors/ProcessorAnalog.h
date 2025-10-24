@@ -169,13 +169,6 @@ class ProcessorAnalog : public Sensor {
      * @brief Construct a new Processor Analog object - need the power pin and
      * the data pin on the processor.
      *
-     * The gain value and number of measurements to average are optional.  If
-     * nothing is given a 1x gain is used.
-     *
-     * @note ModularSensors only supports connecting the ADS1x15 to the primary
-     * hardware I2C instance defined in the Arduino core. Connecting the ADS to
-     * a secondary hardware or software I2C instance is *not* supported!
-     *
      * @param powerPin The pin on the mcu controlling power to the sensor
      * Use -1 if it is continuously powered.
      * @param dataPin The processor ADC port pin to read the voltage from the EC
