@@ -1642,18 +1642,18 @@ Variable* ads1x15Volt =
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const int8_t externalAnalogPowerPin = sensorPowerPin;  // Power pin
-const int8_t externalAnalogDataPin  = A0;  // The ADS channel of interest
+const int8_t externalAnalogDataChannel = A0;  // The ADS channel of interest
 const float  externalAnalogMultiplier =
     5.58;                        //  Gain setting if using a voltage divider
 const uint8_t eaReadsToAvg = 1;  // Only read one sample
 
 // Create an External Voltage sensor object
-ProcessorAnalog extAnalog(externalAnalogPowerPin, externalAnalogDataPin,
+ProcessorAnalog extAnalog(externalAnalogPowerPin, externalAnalogDataChannel,
                           externalAnalogMultiplier, OPERATING_VOLTAGE,
                           eaReadsToAvg);
 
 // Create a voltage variable pointer
-Variable* extAnalogyVolts = new ProcessorAnalog_Voltage(
+Variable* extAnalogVolts = new ProcessorAnalog_Voltage(
     &extAnalog, "12345678-abcd-1234-ef00-1234567890ab");
 /** End [processor_analog] */
 #endif
@@ -3122,7 +3122,7 @@ Variable* variableList[] = {
     ads1x15Volt,
 #endif
 #if defined(BUILD_SENSOR_PROCESSOR_ANALOG)
-    extAnalogyVolts,
+    extAnalogVolts,
 #endif
 #if defined(BUILD_SENSOR_FREESCALE_MPL115A2)
     mplTemp,
