@@ -301,9 +301,19 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
     uint8_t addedSensors = 0;
     for (uint8_t i = 0; i < _variableCount; i++) {
         if (isLastVarFromSensor(i)) {
+            if (addedSensors >= _sensorCount) {
+                MS_DBG(F("ERROR: More unique sensors found than expected!"));
+                return false;
+            }
             sensorList[addedSensors++] = arrayOfVars[i]->parentSensor;
         }
     }
+    if (addedSensors != _sensorCount) {
+        MS_DBG(F("ERROR: Expected"), _sensorCount, F("sensors but found"),
+               addedSensors);
+        return false;
+    }
+
 #if defined(MS_VARIABLEARRAY_DEBUG) || defined(MS_VARIABLEARRAY_DEBUG_DEEP)
     for (uint8_t i = 0; i < _sensorCount; i++) {
         MS_DBG(F("   Sensor"), i, F("is"),
@@ -456,7 +466,8 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
                     // NOTE: We are NOT checking if the sleep command succeeded!
                     // Cut the power, if ready, to this sensors and all that
                     // share the pin
-                    bool canPowerDown = false;
+                    bool canPowerDown = true;  // assume we can power down
+                                               // unless we find a conflict
                     for (uint8_t k = 0; k < _sensorCount; k++) {
                         if (((sensorList[i]->getPowerPin() >= 0 &&
                               (sensorList[i]->getPowerPin() ==
@@ -475,10 +486,6 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
                                                    // still needs to take
                                                    // measurements
                             break;
-                        } else {
-                            canPowerDown =
-                                true;  // no other sensors on this pin need to
-                                       // take measurements
                         }
                     }
                     if (canPowerDown) { sensorList[i]->powerDown(); }
