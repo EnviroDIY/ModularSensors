@@ -240,7 +240,7 @@ class Logger {
      * @return The number of 1-minute intervals at the start before logging
      * on the regular logging interval
      */
-    int16_t getinitialShortIntervals() {
+    int16_t getInitialShortIntervals() {
         return _remainingShortIntervals;
     }
 
