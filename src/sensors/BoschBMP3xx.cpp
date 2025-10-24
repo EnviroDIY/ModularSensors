@@ -270,7 +270,8 @@ bool BoschBMP3xx::startSingleMeasurement(void) {
         _millisMeasurementRequested = millis();
     }
 
-    // NOTE: There's no possibility of failure here - we always return true.
+    // NOTE: There's no way of knowing of a failure here so we always return
+    // true.
     // There's no condition where we would need to bump the number of completed
     // measurement attempts here.
     return true;
@@ -288,18 +289,20 @@ bool BoschBMP3xx::addSingleMeasurementResult(void) {
     float press   = -9999;
     float alt     = -9999;
 
-    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
     // Read values
     success = bmp_internal.getMeasurements(temp, press, alt);
-    MS_DBG(F("  Temperature:"), temp, F("°C"));
-    MS_DBG(F("  Barometric Pressure:"), press, F("Pa"));
-    MS_DBG(F("  Calculated Altitude:"), alt, F("m ASL"));
 
     if (success) {
+        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+        MS_DBG(F("  Temperature:"), temp, F("°C"));
+        MS_DBG(F("  Barometric Pressure:"), press, F("Pa"));
+        MS_DBG(F("  Calculated Altitude:"), alt, F("m ASL"));
         verifyAndAddMeasurementResult(BMP3XX_TEMP_VAR_NUM, temp);
         verifyAndAddMeasurementResult(BMP3XX_PRESSURE_VAR_NUM, press);
         verifyAndAddMeasurementResult(BMP3XX_ALTITUDE_VAR_NUM, alt);
+    } else {
+        MS_DBG(F("Failed to read data from"), getSensorNameAndLocation());
     }
 
     // Return success value when finished
