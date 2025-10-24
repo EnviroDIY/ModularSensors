@@ -89,6 +89,7 @@ bool TIINA219::addSingleMeasurementResult(void) {
     busV_V     = ina219_phy.getBusVoltage_V();
     power_mW   = ina219_phy.getPower_mW();
 
+    // Only success if none of the values are NaN
     success = !isnan(current_mA) && !isnan(busV_V) && !isnan(power_mW);
 
     MS_DBG(F("  Current [mA]:"), current_mA);
