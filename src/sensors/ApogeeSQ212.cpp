@@ -91,8 +91,9 @@ bool ApogeeSQ212::addSingleMeasurementResult(void) {
     adcVoltage = ads.computeVolts(adcCounts);
     MS_DBG(F("  ads.readADC_SingleEnded("), _adsChannel, F("):"), adcVoltage);
 
+    // @todo Verify the voltage range for the SQ-212 sensor
+    // Here we are using the range of the ADS when it is powered at 3.3V
     if (adcVoltage < 3.6 && adcVoltage > -0.3) {
-        // Skip results out of range
         // Apogee SQ-212 Calibration Factor = 1.0 μmol m-2 s-1 per mV
         calibResult = 1000 * adcVoltage * SQ212_CALIBRATION_FACTOR;
         MS_DBG(F("  calibResult:"), calibResult);

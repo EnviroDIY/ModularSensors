@@ -95,8 +95,9 @@ bool CampbellOBS3::addSingleMeasurementResult(void) {
     adcVoltage = ads.computeVolts(adcCounts);
     MS_DBG(F("  ads.readADC_SingleEnded("), _adsChannel, F("):"), adcVoltage);
 
+    // @todo Verify the voltage range for the OBS3 sensor -
+    // Here we are using the range of the ADS when it is powered at 3.3V
     if (adcVoltage < 3.6 && adcVoltage > -0.3) {
-        // Skip results out of range
         // Apply the unique calibration curve for the given sensor
         calibResult = (_x2_coeff_A * sq(adcVoltage)) +
             (_x1_coeff_B * adcVoltage) + _x0_coeff_C;

@@ -89,8 +89,9 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
     adcVoltage = ads.computeVolts(adcCounts);
     MS_DBG(F("  ads.readADC_SingleEnded("), _adsChannel, F("):"), adcVoltage);
 
+    // @todo Verify the range based on the actual power supplied to the ADS.
+    // Here we are using the range of the ADS when it is powered at 3.3V
     if (adcVoltage < 3.6 && adcVoltage > -0.3) {
-        // Skip results out of range
         // Apply the gain calculation, with a default gain of 10 V/V Gain
         calibResult = adcVoltage * _gain;
         MS_DBG(F("  calibResult:"), calibResult);

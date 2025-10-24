@@ -96,8 +96,9 @@ bool TurnerCyclops::addSingleMeasurementResult(void) {
     MS_DBG(F("  ads.readADC_SingleEnded("), _adsChannel, F("):"), adcCounts,
            '=', adcVoltage);
 
+    // @todo Verify the voltage range for the Cyclops sensor
+    // Here we are using the range of the ADS when it is powered at 3.3V
     if (adcVoltage < 3.6 && adcVoltage > -0.3) {
-        // Skip results out of range
         // Apply the unique calibration curve for the given sensor
         calibResult = (_conc_std / (_volt_std - _volt_blank)) *
             (adcVoltage - _volt_blank);

@@ -93,8 +93,9 @@ bool AlphasenseCO2::addSingleMeasurementResult(void) {
     MS_DBG(F("  ads.readADC_Differential_2_3() converted to volts:"),
            adcVoltage);
 
+    // @todo Verify the voltage range for the CO2 sensor
+    // Here we are using the range of the ADS when it is powered at 3.3V
     if (adcVoltage < 3.6 && adcVoltage > -0.3) {
-        // Skip results out of range
         // Convert voltage to current (mA) - assuming a 250 Ohm resistor is in
         // series
         co2Current = (adcVoltage / 250) * 1000;
