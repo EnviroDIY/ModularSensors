@@ -59,12 +59,12 @@ These values should generally be set in the specific sensor constructors and onl
 
 - Remove the unused `_maxSamplesToAverage` parameter of the VariableArray and the `countMaxToAverage()` function which set the parameter.
 - Removed unnecessary copy doc calls for inherited functions and properties.
-- Removed all overrides of the powerUp and powerDown functions that are no-longer needed since all sensors have two power pins built in.
+- Removed all overrides of the powerUp and powerDown functions that are no longer needed since all sensors have two power pins built in.
 
 ### Fixed
 
 - Fixed major bug where sensors with two power pins where either was shared with another sensor may be turned off inappropriately when one of the other sensors was turned off.
-- Correctly retry NIST sync on XBees which a not-sane timestamp is return.
+- Correctly retry NIST sync on XBees when a not-sane timestamp is returned.
 
 ***
 
