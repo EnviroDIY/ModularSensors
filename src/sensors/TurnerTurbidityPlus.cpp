@@ -148,6 +148,10 @@ bool TurnerTurbidityPlus::addSingleMeasurementResult(void) {
             adcCounts = ads.readADC_Differential_2_3();
             break;
         }
+        default: {
+            MS_DBG(F("  Invalid differential mux configuration"));
+            return bumpMeasurementAttemptCount(false);
+        }
     }
     // Convert ADC counts value to voltage (V)
     adcVoltage = ads.computeVolts(adcCounts);
