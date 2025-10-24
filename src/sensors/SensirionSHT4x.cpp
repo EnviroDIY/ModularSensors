@@ -116,6 +116,11 @@ bool SensirionSHT4x::addSingleMeasurementResult(void) {
     MS_DBG(F("  Temp:"), temp_val, F("°C"));
     MS_DBG(F("  Humidity:"), humid_val, '%');
 
+    if (!ret_val) {
+        MS_DBG(F("  getEvent failed; no values read!"));
+    } else if (isnan(temp_val) || isnan(humid_val)) {
+        MS_DBG(F("  Invalid measurement values"));
+    }
 
     if (ret_val && !isnan(temp_val) && !isnan(humid_val)) {
         verifyAndAddMeasurementResult(SHT4X_TEMP_VAR_NUM, temp_val);
