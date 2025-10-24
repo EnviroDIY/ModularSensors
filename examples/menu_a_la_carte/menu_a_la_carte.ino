@@ -1641,7 +1641,7 @@ Variable* ads1x15Volt =
 #include <sensors/ProcessorAnalog.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-const int8_t externalAnalogPowerPin = sensorPowerPin;  // Power pin
+const int8_t externalAnalogPowerPin    = sensorPowerPin;  // Power pin
 const int8_t externalAnalogDataChannel = A0;  // The ADS channel of interest
 const float  externalAnalogMultiplier =
     5.58;                        //  Gain setting if using a voltage divider

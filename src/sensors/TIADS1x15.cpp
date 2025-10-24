@@ -47,6 +47,7 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);
     }
+
     bool    success     = false;
     int16_t adcCounts   = -9999;
     float   adcVoltage  = -9999;

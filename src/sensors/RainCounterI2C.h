@@ -282,7 +282,8 @@ class RainCounterI2C : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool   setup(void) override;
+    bool setup(void) override;
+
     String getSensorLocation(void) override;
 
     bool addSingleMeasurementResult(void) override;
