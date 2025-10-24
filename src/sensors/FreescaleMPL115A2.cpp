@@ -78,7 +78,7 @@ bool FreescaleMPL115A2::addSingleMeasurementResult(void) {
     MS_DBG(F("  Pressure:"), press);
 
     if (!isnan(temp) && !isnan(press) && press >= 50.0 && press <= 115.0 &&
-        temp >= -40.0 && temp <= 105.0) {
+        temp >= -20.0 && temp <= 85.0) {
         verifyAndAddMeasurementResult(MPL115A2_TEMP_VAR_NUM, temp);
         verifyAndAddMeasurementResult(MPL115A2_PRESSURE_VAR_NUM, press);
         success = true;
