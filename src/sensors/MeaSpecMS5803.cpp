@@ -75,8 +75,8 @@ bool MeaSpecMS5803::addSingleMeasurementResult(void) {
     MS_DBG(F("  Temperature:"), temp);
     MS_DBG(F("  Pressure:"), press);
 
-    if (!isnan(temp) && !isnan(press) && temp > -50 && temp < 95 &&
-        press != 0) {
+    if (!isnan(temp) && !isnan(press) && temp >= -40.0 && temp <= 85.0 &&
+        press != 0.0) {
         // Temperature Range is -40°C to +85°C
         // Pressure returns 0 when disconnected, which is highly unlikely to be
         // a real value.
