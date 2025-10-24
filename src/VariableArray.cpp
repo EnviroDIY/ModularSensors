@@ -351,6 +351,10 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
             }
 
             // If attempts were made to wake the sensor, but they failed...
+            // NOTE: We check if the wake was successful even if the wake
+            // parameter is false because we need to know the sensor wake failed
+            // before attempting readings even if the user called wake somewhere
+            // else.
             if (sensorList[i]->getStatusBit(Sensor::WAKE_ATTEMPTED) == 1 &&
                 sensorList[i]->getStatusBit(Sensor::WAKE_SUCCESSFUL) == 0) {
                 MS_DBG(i, F("--->>"), sName,
