@@ -28,6 +28,7 @@ This was probably a hold-over from incorrect implementation and calling of the c
 Also added optional arguments to the `completeUpdate()` function to allow users to specify if the sensors should be powered/woken.
   - The `updateAllSensors()` function is now deprecated.
 Use `completeUpdate(false, false, false, false)` instead.
+- Applied many suggestions from Code Rabbit AI.
 
 ### Added
 
