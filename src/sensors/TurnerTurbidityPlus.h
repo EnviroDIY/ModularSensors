@@ -311,6 +311,8 @@ class TurnerTurbidityPlus : public Sensor {
     /**
      * @brief The programmable gain amplification to set on the ADS 1x15,
      * default is GAIN_DEFAULT (0).
+     *
+     * @todo Determine gain automatically based on the board voltage?
      */
     adsGain_t _PGA_gain;
     /**
