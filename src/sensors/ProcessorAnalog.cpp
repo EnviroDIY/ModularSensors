@@ -34,7 +34,7 @@ bool ProcessorAnalog::addSingleMeasurementResult(void) {
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);
     }
-    if (_dataPin < 0 && _voltageMultiplier <= 0) {
+    if (_dataPin < 0 || _voltageMultiplier <= 0) {
         MS_DBG(F("No analog pin or voltage divider specified!"));
         return bumpMeasurementAttemptCount(false);
     }
