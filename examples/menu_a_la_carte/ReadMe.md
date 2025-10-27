@@ -836,7 +836,7 @@ ___
 ### External Voltage via Processor ADC<!--! {#menu_walk_processor_analog} -->
 
 The Arduino pin controlling power on/off, the analog data pin on the processor, and the multiplier for a voltage divider are required for the sensor constructor.
-If your processor operating voltage is not correctly in KnownProcessors.h, you must input it is the fourth argument; otherwise you can enter `OPERATING_VOLTAGE` for the voltage defined in KnownProcessors.h.
+If your processor operating voltage is not correctly in KnownProcessors.h, you must input it as the fourth argument; otherwise you can enter `OPERATING_VOLTAGE` for the voltage defined in KnownProcessors.h.
 The number of measurements to average, if more than one is desired, goes as the fifth argument.
 
 @see @ref sensor_processor_analog
