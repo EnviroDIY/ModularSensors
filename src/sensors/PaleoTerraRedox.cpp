@@ -117,6 +117,7 @@ bool PaleoTerraRedox::addSingleMeasurementResult(void) {
     // fail if transmission error
     if (i2c_status != 0) { return bumpMeasurementAttemptCount(false); }
 
+    // wait for the conversion to complete
     delay(PTR_CONVERSION_WAIT_TIME_MS);
 
     _i2c->requestFrom(int(_i2cAddressHex),
