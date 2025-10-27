@@ -168,7 +168,7 @@ class YosemitechParent : public Sensor {
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
      * @param model The model of Yosemitech sensor.
-     * @param sensName The name of the sensor.  Defaults to "SDI12-Sensor".
+     * @param sensName The name of the sensor.  Defaults to "Yosemitech-Sensor".
      * @param numVariables The number of variable results returned by the
      * sensor. Defaults to 2.
      * @param warmUpTime_ms The time in ms between when the sensor is powered on
