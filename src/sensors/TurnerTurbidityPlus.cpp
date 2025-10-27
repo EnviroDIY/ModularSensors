@@ -103,8 +103,8 @@ bool TurnerTurbidityPlus::addSingleMeasurementResult(void) {
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
 // Create an auxiliary ADD object
-// We create and set up the ADC object here so that each sensor using
-// the ADC may set the gain appropriately without effecting others.
+// We create and set up the ADC object here so that each sensor using the ADC
+// may set the gain appropriately without effecting others.
 #ifndef MS_USE_ADS1015
     Adafruit_ADS1115 ads;  // Use this for the 16-bit version
 #else

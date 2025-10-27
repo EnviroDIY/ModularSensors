@@ -37,7 +37,8 @@ String AlphasenseCO2::getSensorLocation(void) {
     String sensorLocation = F("ADS1015_0x");
 #endif
     sensorLocation += String(_i2cAddress, HEX);
-    sensorLocation += F("; differential between channels 2 and 3");
+    sensorLocation += F("_adsDiffMux");
+    sensorLocation += String(_adsDiffMux);
     return sensorLocation;
 }
 
@@ -87,11 +88,32 @@ bool AlphasenseCO2::addSingleMeasurementResult(void) {
     // Read Analog to Digital Converter (ADC)
     // Taking this reading includes the 8ms conversion delay.
     // Measure the voltage differential across the two voltage pins
-    adcCounts = ads.readADC_Differential_2_3();
+    switch (_adsDiffMux) {
+        case DIFF_MUX_0_1: {
+            adcCounts = ads.readADC_Differential_0_1();
+            break;
+        }
+        case DIFF_MUX_0_3: {
+            adcCounts = ads.readADC_Differential_0_3();
+            break;
+        }
+        case DIFF_MUX_1_3: {
+            adcCounts = ads.readADC_Differential_1_3();
+            break;
+        }
+        case DIFF_MUX_2_3: {
+            adcCounts = ads.readADC_Differential_2_3();
+            break;
+        }
+        default: {
+            MS_DBG(F("  Invalid differential mux configuration"));
+            return bumpMeasurementAttemptCount(false);
+        }
+    }
     // Convert ADC counts value to voltage (V)
     adcVoltage = ads.computeVolts(adcCounts);
-    MS_DBG(F("  ads.readADC_Differential_2_3() converted to volts:"),
-           adcVoltage);
+    MS_DBG(F("  ads.readADC_Differential("), _adsDiffMux, F("):"),
+           String(adcVoltage, 3));
 
     // @todo Verify the voltage range for the CO2 sensor
     // Here we are using the range of the ADS when it is powered at 3.3V
