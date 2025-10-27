@@ -176,7 +176,7 @@
  */
 /**@{*/
 /// @brief Decimals places in string representation; bus voltage should have 3 -
-/// resolution is 0.001V.
+/// resolution is 0.004V.
 #define INA219_BUS_VOLTAGE_RESOLUTION 3
 /// @brief Sensor variable number; bus voltage is stored in sensorValues[1].
 #define INA219_BUS_VOLTAGE_VAR_NUM 1
