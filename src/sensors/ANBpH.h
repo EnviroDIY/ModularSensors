@@ -170,12 +170,12 @@
 #define ANB_PH_1ST_VALUE_LOW_SALT_MAX 265000L
 
 /// @brief The minimum time for the 2nd or subsequent values in high
-/// salinity (documented new output time of 10.5s)
+/// salinity (documented new output time of 10.5s, add 100ms buffer).
 /// @warning After the first reading, the sensor will *always* say the sensor is
 /// ready!  But there will not be a **new** value available before this time.
 #define ANB_PH_2ND_VALUE_HIGH_SALT 10600L
 /// @brief The minimum time for the 2nd or subsequent values in low
-/// salinity (documented new output time of 14s).
+/// salinity (documented new output time of 14s, add 100ms buffer).
 /// @warning After the first reading, the sensor will *always* say the sensor is
 /// ready!  But there will not be a **new** value available before this time.
 #define ANB_PH_2ND_VALUE_LOW_SALT 14100L
