@@ -199,8 +199,10 @@ bool MaximDS18::addSingleMeasurementResult(void) {
         // Put value into the array
         verifyAndAddMeasurementResult(DS18_TEMP_VAR_NUM, result);
         success = true;
+    } else {
+        MS_DBG(F("  Invalid measurement received from"),
+               getSensorNameAndLocation());
     }
-    MS_DBG(F("  Temperature:"), result, F("°C"));
 
     // Return success value when finished
     return bumpMeasurementAttemptCount(success);
