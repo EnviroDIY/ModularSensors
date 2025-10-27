@@ -72,44 +72,39 @@ bool TIINA219::wake(void) {
 
 
 bool TIINA219::addSingleMeasurementResult(void) {
-    bool success = false;
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return bumpMeasurementAttemptCount(false);
+    }
 
-    // Initialize float variables
+    bool  success    = false;
     float current_mA = -9999;
     float busV_V     = -9999;
     float power_mW   = -9999;
 
-    // Check a measurement was *successfully* started (status bit 6 set)
-    // Only go on to get a result if it was
-    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-        // Read values
-        current_mA = ina219_phy.getCurrent_mA();
-        if (isnan(current_mA)) current_mA = -9999;
-        busV_V = ina219_phy.getBusVoltage_V();
-        if (isnan(busV_V)) busV_V = -9999;
-        power_mW = ina219_phy.getPower_mW();
-        if (isnan(power_mW)) power_mW = -9999;
+    // Read values
+    current_mA = ina219_phy.getCurrent_mA();
+    busV_V     = ina219_phy.getBusVoltage_V();
+    power_mW   = ina219_phy.getPower_mW();
 
-        success = true;
+    // Only success if none of the values are NaN
+    success = !isnan(current_mA) && !isnan(busV_V) && !isnan(power_mW);
 
-        MS_DBG(F("  Current [mA]:"), current_mA);
-        MS_DBG(F("  Bus Voltage [V]:"), busV_V);
-        MS_DBG(F("  Power [mW]:"), power_mW);
-    } else {
-        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    MS_DBG(F("  Current [mA]:"), current_mA);
+    MS_DBG(F("  Bus Voltage [V]:"), busV_V);
+    MS_DBG(F("  Power [mW]:"), power_mW);
+
+    if (success) {
+        verifyAndAddMeasurementResult(INA219_CURRENT_MA_VAR_NUM, current_mA);
+        verifyAndAddMeasurementResult(INA219_BUS_VOLTAGE_VAR_NUM, busV_V);
+        verifyAndAddMeasurementResult(INA219_POWER_MW_VAR_NUM, power_mW);
     }
 
-    verifyAndAddMeasurementResult(INA219_CURRENT_MA_VAR_NUM, current_mA);
-    verifyAndAddMeasurementResult(INA219_BUS_VOLTAGE_VAR_NUM, busV_V);
-    verifyAndAddMeasurementResult(INA219_POWER_MW_VAR_NUM, power_mW);
 
-
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
-
-    return success;
+    // Return success value when finished
+    return bumpMeasurementAttemptCount(success);
 }
+
+// cSpell:ignore TIINA219

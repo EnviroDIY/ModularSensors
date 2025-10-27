@@ -236,7 +236,7 @@ class RainCounterI2C : public Sensor {
     RainCounterI2C(int8_t dataPin, int8_t clockPin,
                    uint8_t i2cAddressHex = 0x08, float rainPerTip = 0.2);
 #endif
-#if !defined(MS_RAIN_SOFTWAREWIRE) | defined DOXYGEN
+#if !defined(MS_RAIN_SOFTWAREWIRE) || defined DOXYGEN
     /**
      * @brief Construct a new Rain Counter I2C object using a secondary
      * *hardware* I2C instance.
@@ -283,14 +283,9 @@ class RainCounterI2C : public Sensor {
      * @return True if the setup was successful.
      */
     bool setup(void) override;
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
+
     String getSensorLocation(void) override;
 
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
     bool addSingleMeasurementResult(void) override;
 
  private:

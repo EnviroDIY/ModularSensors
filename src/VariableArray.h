@@ -239,9 +239,10 @@ class VariableArray {
     /**
      * @brief Update the values for all connected sensors.
      *
-     * Does not power or wake/sleep sensors.  Returns a boolean indication the
-     * overall success.  Does NOT return any values.  Repeatedly checks each
-     * sensor's readiness state to optimize timing.
+     * @m_deprecated_since{0,38,0}
+     *
+     * Use completeUpdate() instead and set the powerUp, wake, sleep and
+     * powerDown parameters as needed.
      *
      * @return True if all steps of the update succeeded.
      */
@@ -257,9 +258,15 @@ class VariableArray {
      * values.  Repeatedly checks each sensor's readiness state to optimize
      * timing.
      *
+     * @param powerUp If true, powers up all sensors before updating.
+     * @param wake If true, wakes all sensors before updating.
+     * @param sleep If true, puts all sensors to sleep after updating.
+     * @param powerDown If true, cuts power to all sensors after updating.
+     *
      * @return True if all steps of the update succeeded.
      */
-    bool completeUpdate(void);
+    bool completeUpdate(bool powerUp = true, bool wake = true,
+                        bool sleep = true, bool powerDown = true);
 
     /**
      * @brief Print out the results for all connected sensors to a stream
@@ -283,10 +290,6 @@ class VariableArray {
      * @brief The count of unique sensors tied to variables in the array
      */
     uint8_t _sensorCount;
-    /**
-     * @brief The maximum number of samples to average of an single sensor.
-     */
-    uint8_t _maxSamplesToAverage;
 
  private:
     /**
@@ -300,13 +303,6 @@ class VariableArray {
      * @return True if the variable is the last in the array.
      */
     bool isLastVarFromSensor(int arrayIndex);
-    /**
-     * @brief Count the maximum number of measurements needed from a single
-     * sensor for the requested averaging
-     *
-     * @return The number of measurements needed.
-     */
-    uint8_t countMaxToAverage(void);
     /**
      * @brief Check that all variable have valid UUID's, if they are assigned
      *

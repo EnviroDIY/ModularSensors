@@ -62,6 +62,9 @@
 // Include the debugging config
 #include "ModSensorDebugConfig.h"
 
+// Include the known processors for default values
+#include "sensors/KnownProcessors.h"
+
 // Define the print label[s] for the debugger
 #ifdef MS_PROCESSORSTATS_DEBUG
 #define MS_DEBUGGING_STD "ProcessorStats"
@@ -75,6 +78,32 @@
 // Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
+
+// Print warnings if expected processor defines are missing
+
+#ifndef LOGGER_BOARD
+#define LOGGER_BOARD "Unknown"
+#pragma message "Warning: LOGGER_BOARD is not defined for this processor.\n" \
+                "The board name can be added by editing KnownProcessors.h."
+#endif
+
+#ifndef BATTERY_PIN
+#define BATTERY_PIN -1
+#pragma message                                                                          \
+    "Warning: BATTERY_PIN is not defined for this processor.\n"                          \
+    "If your processor does not have a built-in pin for measuring the battery voltage,"  \
+    "or you have specified a different pin in your code, you can ignore this message\n." \
+    "The battery pin can be added by editing KnownProcessors.h."
+#endif
+
+#ifndef BATTERY_MULTIPLIER
+#define BATTERY_MULTIPLIER -1
+#pragma message                                                                         \
+    "Warning: BATTERY_MULTIPLIER is not defined for this processor.\n"                  \
+    "If your processor does not have a built-in pin for measuring the battery voltage," \
+    "or you have specified the multiplier in your code, you can ignore this message\n." \
+    "The battery multiplier can be added by editing KnownProcessors.h."
+#endif
 
 /** @ingroup sensor_processor */
 /**@{*/
@@ -234,106 +263,6 @@
 #define PROCESSOR_RESET_DEFAULT_CODE "ResetCode"
 /**@}*/
 
-/**
- * @def LOGGER_BOARD
- * @brief Pretty text for the board name derived from the board's compiler
- * define.
- */
-
-// EnviroDIY boards
-#if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
-#define LOGGER_BOARD "EnviroDIY Mayfly"
-#elif defined(ENVIRODIY_STONEFLY_M4)
-#define LOGGER_BOARD "EnviroDIY Stonefly"
-
-// Sodaq boards
-#elif defined(ARDUINO_SODAQ_EXPLORER)
-#define LOGGER_BOARD "SODAQ ExpLoRer"
-#elif defined(ARDUINO_SODAQ_AUTONOMO)
-#define LOGGER_BOARD "SODAQ Autonomo"
-#elif defined(ARDUINO_SODAQ_ONE_BETA)
-#define LOGGER_BOARD "SODAQ ONE Beta"
-#elif defined(ARDUINO_SODAQ_ONE)
-#define LOGGER_BOARD "SODAQ ONE"
-#elif defined(ARDUINO_AVR_SODAQ_MBILI)
-#define LOGGER_BOARD "SODAQ Mbili"
-#elif defined(ARDUINO_AVR_SODAQ_NDOGO)
-#define LOGGER_BOARD "SODAQ Ndogo"
-#elif defined(ARDUINO_AVR_SODAQ_TATU)
-#define LOGGER_BOARD "SODAQ Tatu"
-#elif defined(ARDUINO_AVR_SODAQ_MOJA)
-#define LOGGER_BOARD "SODAQ Moja"
-
-// Adafruit boards
-#elif defined(ARDUINO_AVR_FEATHER328P)
-#define LOGGER_BOARD "Feather 328p"
-#elif defined(ARDUINO_AVR_FEATHER32U4)
-#define LOGGER_BOARD "Feather 32u4"
-#elif defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS) || \
-    defined(ADAFRUIT_FEATHER_M0_EXPRESS)
-#define LOGGER_BOARD "Feather M0 Express"
-#elif defined(ARDUINO_SAMD_FEATHER_M0) || defined(ADAFRUIT_FEATHER_M0)
-#define LOGGER_BOARD "Feather M0"
-#elif defined(ADAFRUIT_GRAND_CENTRAL_M4)
-#define LOGGER_BOARD "Grand Central"
-#elif defined(ADAFRUIT_FEATHER_M4_ADALOGGER)
-#define LOGGER_BOARD "Feather M4 Adalogger"
-#elif defined(ARDUINO_FEATHER_M4_CAN) || defined(ADAFRUIT_FEATHER_M4_CAN)
-#define LOGGER_BOARD "Feather M4 CAN"
-#elif defined(ARDUINO_FEATHER_M4) || defined(ADAFRUIT_FEATHER_M4_EXPRESS)
-#define LOGGER_BOARD "Feather M4"
-
-// Arduino boards
-#elif defined(ARDUINO_AVR_ADK)
-#define LOGGER_BOARD "Mega Adk"
-// Bluetooth
-#elif defined(ARDUINO_AVR_BT)
-#define LOGGER_BOARD "Bt"
-#elif defined(ARDUINO_AVR_DUEMILANOVE)
-#define LOGGER_BOARD "Duemilanove"
-#elif defined(ARDUINO_AVR_ESPLORA)
-#define LOGGER_BOARD "Esplora"
-#elif defined(ARDUINO_AVR_ETHERNET)
-#define LOGGER_BOARD "Ethernet"
-#elif defined(ARDUINO_AVR_FIO)
-#define LOGGER_BOARD "Fio"
-#elif defined(ARDUINO_AVR_GEMMA)
-#define LOGGER_BOARD "Gemma"
-#elif defined(ARDUINO_AVR_LEONARDO)
-#define LOGGER_BOARD "Leonardo"
-#elif defined(ARDUINO_AVR_LILYPAD)
-#define LOGGER_BOARD "Lilypad"
-#elif defined(ARDUINO_AVR_LILYPAD_USB)
-#define LOGGER_BOARD "Lilypad Usb"
-#elif defined(ARDUINO_AVR_MEGA)
-#define LOGGER_BOARD "Mega"
-#elif defined(ARDUINO_AVR_MEGA2560)
-#define LOGGER_BOARD "Mega 2560"
-#elif defined(ARDUINO_AVR_MICRO)
-#define LOGGER_BOARD "Micro"
-#elif defined(ARDUINO_AVR_MINI)
-#define LOGGER_BOARD "Mini"
-#elif defined(ARDUINO_AVR_NANO)
-#define LOGGER_BOARD "Nano"
-#elif defined(ARDUINO_AVR_NG)
-#define LOGGER_BOARD "NG"
-#elif defined(ARDUINO_AVR_PRO)
-#define LOGGER_BOARD "Pro"
-#elif defined(ARDUINO_AVR_ROBOT_CONTROL)
-#define LOGGER_BOARD "Robot Ctrl"
-#elif defined(ARDUINO_AVR_ROBOT_MOTOR)
-#define LOGGER_BOARD "Robot Motor"
-#elif defined(ARDUINO_AVR_UNO)
-#define LOGGER_BOARD "Uno"
-#elif defined(ARDUINO_AVR_YUN)
-#define LOGGER_BOARD "Yun"
-#elif defined(ARDUINO_SAMD_ZERO)
-#define LOGGER_BOARD "Zero"
-
-#else
-#define LOGGER_BOARD "Unknown"
-#endif
-
 
 // The main class for the Processor
 // Only need a sleep and wake since these DON'T use the default of powering
@@ -407,8 +336,10 @@ class ProcessorStats : public Sensor {
      * voltage measurement!
      */
     ProcessorStats(const char* boardName, const char* version,
-                   int8_t batteryPin, float batteryMultiplier,
-                   float operatingVoltage, uint8_t measurementsToAverage = 1);
+                   int8_t  batteryPin            = BATTERY_PIN,
+                   float   batteryMultiplier     = BATTERY_MULTIPLIER,
+                   float   operatingVoltage      = OPERATING_VOLTAGE,
+                   uint8_t measurementsToAverage = 1);
     /**
      * @brief Destroy the Processor Stats object
      */
@@ -421,9 +352,6 @@ class ProcessorStats : public Sensor {
      */
     String getSensorLocation(void) override;
 
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
     bool addSingleMeasurementResult(void) override;
 
     /**

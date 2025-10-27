@@ -251,9 +251,6 @@ class TurnerTurbidityPlus : public Sensor {
      */
     ~TurnerTurbidityPlus();
 
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
     String getSensorLocation(void) override;
 
     /**
@@ -277,9 +274,6 @@ class TurnerTurbidityPlus : public Sensor {
 
     void powerDown(void) override;
 
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
     bool addSingleMeasurementResult(void) override;
 
  private:
@@ -317,6 +311,8 @@ class TurnerTurbidityPlus : public Sensor {
     /**
      * @brief The programmable gain amplification to set on the ADS 1x15,
      * default is GAIN_DEFAULT (0).
+     *
+     * @todo Determine gain automatically based on the board voltage?
      */
     adsGain_t _PGA_gain;
     /**

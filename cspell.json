@@ -173,6 +173,8 @@
     "micromoles",
     "microsiemen",
     "microsiemens",
+    "milliamp",
+    "milliwatt",
     "Modbus",
     "MODSENSORCONFIG",
     "MODSENSORDEBUGGER",

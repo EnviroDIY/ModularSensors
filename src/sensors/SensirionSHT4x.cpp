@@ -88,47 +88,48 @@ bool SensirionSHT4x::setup(void) {
 
 
 bool SensirionSHT4x::addSingleMeasurementResult(void) {
-    // Initialize float variables
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return bumpMeasurementAttemptCount(false);
+    }
+
+    bool  success   = false;
     float temp_val  = -9999;
     float humid_val = -9999;
     bool  ret_val   = false;
 
-    // Check a measurement was *successfully* started (status bit 6 set)
-    // Only go on to get a result if it was
-    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-        // Make sure the heater is *not* going to run.  We want the ambient
-        // values.
-        sht4x_internal.setHeater(SHT4X_NO_HEATER);
+    // Make sure the heater is *not* going to run.  We want the ambient
+    // values.
+    sht4x_internal.setHeater(SHT4X_NO_HEATER);
 
-        // we need to create Adafruit "sensor events" to use the library
-        sensors_event_t temp_event;
-        sensors_event_t humidity_event;
-        ret_val = sht4x_internal.getEvent(&humidity_event, &temp_event);
+    // we need to create Adafruit "sensor events" to use the library
+    sensors_event_t temp_event;
+    sensors_event_t humidity_event;
+    ret_val = sht4x_internal.getEvent(&humidity_event, &temp_event);
 
-        // get the values from the sensor events
-        temp_val  = temp_event.temperature;
-        humid_val = humidity_event.relative_humidity;
+    // get the values from the sensor events
+    temp_val  = temp_event.temperature;
+    humid_val = humidity_event.relative_humidity;
 
-        if (!ret_val || isnan(temp_val)) temp_val = -9999;
-        if (!ret_val || isnan(humid_val)) humid_val = -9999;
+    MS_DBG(F("  Temp:"), temp_val, F("°C"));
+    MS_DBG(F("  Humidity:"), humid_val, '%');
 
-        MS_DBG(F("  Temp:"), temp_val, F("°C"));
-        MS_DBG(F("  Humidity:"), humid_val, '%');
-    } else {
-        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    if (!ret_val) {
+        MS_DBG(F("  getEvent failed; no values read!"));
+    } else if (isnan(temp_val) || isnan(humid_val)) {
+        MS_DBG(F("  Invalid measurement values"));
     }
 
-    verifyAndAddMeasurementResult(SHT4X_TEMP_VAR_NUM, temp_val);
-    verifyAndAddMeasurementResult(SHT4X_HUMIDITY_VAR_NUM, humid_val);
+    if (ret_val && !isnan(temp_val) && !isnan(humid_val)) {
+        verifyAndAddMeasurementResult(SHT4X_TEMP_VAR_NUM, temp_val);
+        verifyAndAddMeasurementResult(SHT4X_HUMIDITY_VAR_NUM, humid_val);
+        success = true;
+    }
 
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
-
-    return ret_val;
+    // Return success value when finished
+    return bumpMeasurementAttemptCount(success);
 }
 
 

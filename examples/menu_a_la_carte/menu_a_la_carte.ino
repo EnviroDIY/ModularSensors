@@ -1622,7 +1622,7 @@ const float   dividerGain    = 10;  //  Gain setting if using a voltage divider
 const uint8_t evADSi2c_addr  = 0x48;  // The I2C address of the ADS1115 ADC
 const uint8_t VoltReadsToAvg = 1;     // Only read one sample
 
-// Create an External Voltage sensor object
+// Create an TI ADS1x15 sensor object
 TIADS1x15 ads1x15(ADSPower, ADSChannel, dividerGain, evADSi2c_addr,
                   VoltReadsToAvg);
 
@@ -1630,6 +1630,32 @@ TIADS1x15 ads1x15(ADSPower, ADSChannel, dividerGain, evADSi2c_addr,
 Variable* ads1x15Volt =
     new TIADS1x15_Voltage(&ads1x15, "12345678-abcd-1234-ef00-1234567890ab");
 /** End [tiads1x15] */
+#endif
+
+
+#if defined(BUILD_SENSOR_PROCESSOR_ANALOG)
+// ==========================================================================
+//  External Voltage via Processor ADC
+// ==========================================================================
+/** Start [processor_analog] */
+#include <sensors/ProcessorAnalog.h>
+
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+const int8_t processorAnalogPowerPin = sensorPowerPin;  // Power pin
+const int8_t processorAnalogDataPin  = A0;  // Analog input pin (processor ADC)
+const float  processorAnalogMultiplier =
+    5.58;                        //  Gain setting if using a voltage divider
+const uint8_t eaReadsToAvg = 1;  // Only read one sample
+
+// Create an Processor Analog sensor object
+ProcessorAnalog extAnalog(processorAnalogPowerPin, processorAnalogDataPin,
+                          processorAnalogMultiplier, OPERATING_VOLTAGE,
+                          eaReadsToAvg);
+
+// Create a voltage variable pointer
+Variable* extAnalogVolts = new ProcessorAnalog_Voltage(
+    &extAnalog, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [processor_analog] */
 #endif
 
 
@@ -3095,6 +3121,9 @@ Variable* variableList[] = {
 #if defined(BUILD_SENSOR_TIADS1X15)
     ads1x15Volt,
 #endif
+#if defined(BUILD_SENSOR_PROCESSOR_ANALOG)
+    extAnalogVolts,
+#endif
 #if defined(BUILD_SENSOR_FREESCALE_MPL115A2)
     mplTemp,
     mplPress,
@@ -3581,17 +3610,21 @@ float getBatteryVoltage() {
 void setup() {
     /** Start [setup_flashing_led] */
     // Blink the LEDs to show the board is on and starting up
-    greenRedFlash(3, 35);
+    greenRedFlash(3, 100);
     /** End [setup_flashing_led] */
+
+    // IMMEDIATELY set up the watchdog timer for 5 minutes
+    // The watchdog interval will be reset in the data logger's begin()
+    // function.
+    extendedWatchDog::setupWatchDog(static_cast<uint32_t>(5 * 60));
 
 /** Start [setup_wait] */
 // Wait for USB connection to be established by PC
 // NOTE:  Only use this when debugging - if not connected to a PC, this adds an
 // unnecessary startup delay
 #if defined(SERIAL_PORT_USBVIRTUAL)
-    while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000L)) {
-        // wait
-    }
+    while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000L)) {}
+    greenRedFlash(3, 10);
 #endif
     /** End [setup_wait] */
 
@@ -3695,7 +3728,7 @@ void setup() {
     PRINTOUT(F("Setting logging interval to"), loggingInterval, F("minutes"));
     dataLogger.setLoggingInterval(loggingInterval);
     PRINTOUT(F("Setting number of initial 1 minute intervals to 10"));
-    dataLogger.setinitialShortIntervals(10);
+    dataLogger.setInitialShortIntervals(10);
     // Attach the variable array to the logger
     PRINTOUT(F("Attaching the variable array"));
     dataLogger.setVariableArray(&varArray);

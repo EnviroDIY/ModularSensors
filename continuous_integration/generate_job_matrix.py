@@ -2,7 +2,6 @@
 # %%
 import json
 import shutil
-import re
 from typing import List
 from platformio.project.config import ProjectConfig
 import re
@@ -305,18 +304,22 @@ for pio_env in pio_config.envs():
         for compiler, command_list in zip(
             compilers, [arduino_ex_commands, pio_ex_commands]
         ):
+            # Skip examples that need to be updated or don't apply
             if example == "data_saving":
-                # skip this one until I get it updated
-                pass
-            else:
-                command_list.extend(
-                    create_logged_command(
-                        compiler=compiler,
-                        group_title=example,
-                        code_subfolder=example,
-                        pio_env=pio_env,
-                    )
+                continue  # skip until updated
+            if "mayfly" in example.lower() and pio_env != "mayfly":
+                continue  # skip mayfly examples on non-mayfly builds
+            if "drwi" in example.lower() and pio_env not in ["mayfly", "stonefly"]:
+                continue  # skip drwi examples on non-EnviroDIY processor builds
+
+            command_list.extend(
+                create_logged_command(
+                    compiler=compiler,
+                    group_title=example,
+                    code_subfolder=example,
+                    pio_env=pio_env,
                 )
+            )
 
     arduino_job_matrix.append(
         {

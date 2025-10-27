@@ -26,8 +26,9 @@ GroPointParent::GroPointParent(byte modbusAddress, Stream* stream,
       _model(model),
       _modbusAddress(modbusAddress),
       _stream(stream),
-      _RS485EnablePin(enablePin),
-      _powerPin2(powerPin2) {}
+      _RS485EnablePin(enablePin) {
+    setSecondaryPowerPin(powerPin2);
+}
 GroPointParent::GroPointParent(byte modbusAddress, Stream& stream,
                                int8_t powerPin, int8_t powerPin2,
                                int8_t enablePin, uint8_t measurementsToAverage,
@@ -42,8 +43,9 @@ GroPointParent::GroPointParent(byte modbusAddress, Stream& stream,
       _model(model),
       _modbusAddress(modbusAddress),
       _stream(&stream),
-      _RS485EnablePin(enablePin),
-      _powerPin2(powerPin2) {}
+      _RS485EnablePin(enablePin) {
+    setSecondaryPowerPin(powerPin2);
+}
 // Destructor
 GroPointParent::~GroPointParent() {}
 
@@ -61,7 +63,6 @@ bool GroPointParent::setup(void) {
     bool retVal =
         Sensor::setup();  // this will set pin modes and the setup status bit
     if (_RS485EnablePin >= 0) { pinMode(_RS485EnablePin, OUTPUT); }
-    if (_powerPin2 >= 0) { pinMode(_powerPin2, OUTPUT); }
 #ifdef MS_GROPOINTPARENT_DEBUG_DEEP
     _gsensor.setDebugStream(&MS_SERIAL_OUTPUT);
 #endif
@@ -82,6 +83,9 @@ bool GroPointParent::wake(void) {
     // Sensor::wake() checks if the power pin is on and sets the wake timestamp
     // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
+
+    // Reset enable pin because pins are set to tri-state on sleep
+    if (_RS485EnablePin >= 0) { pinMode(_RS485EnablePin, OUTPUT); }
 
     // Send the command to begin taking readings, trying up to 5 times
     bool    success = false;
@@ -158,173 +162,79 @@ bool GroPointParent::sleep(void) {
 }
 
 
-// This turns on sensor power
-void GroPointParent::powerUp(void) {
-    if (_powerPin >= 0) {
-        // Reset power pin mode every power up because pins are set to tri-state
-        // on sleep
-        pinMode(_powerPin, OUTPUT);
-        MS_DBG(F("Powering"), getSensorNameAndLocation(), F("with pin"),
-               _powerPin);
-        digitalWrite(_powerPin, HIGH);
-    }
-    if (_powerPin2 >= 0) {
-        // Reset power pin mode every power up because pins are set to tri-state
-        // on sleep
-        pinMode(_powerPin2, OUTPUT);
-        MS_DBG(F("Applying secondary power to"), getSensorNameAndLocation(),
-               F("with pin"), _powerPin2);
-        digitalWrite(_powerPin2, HIGH);
-    }
-    if (_powerPin < 0 && _powerPin2 < 0) {
-        MS_DBG(F("Power to"), getSensorNameAndLocation(),
-               F("is not controlled by this library."));
-        // Mark the power-on time, just in case it  had not been marked
-        if (_millisPowerOn == 0) _millisPowerOn = millis();
-    } else {
-        // Mark the time that the sensor was powered
-        _millisPowerOn = millis();
-    }
-    // Reset enable pin because pins are set to tri-state on sleep
-    if (_RS485EnablePin >= 0) { pinMode(_RS485EnablePin, OUTPUT); }
-    // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
-    setStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL);
-}
-
-
-// This turns off sensor power
-void GroPointParent::powerDown(void) {
-    if (_powerPin >= 0) {
-        MS_DBG(F("Turning off power to"), getSensorNameAndLocation(),
-               F("with pin"), _powerPin);
-        digitalWrite(_powerPin, LOW);
-        // Unset the power-on time
-        _millisPowerOn = 0;
-        // Unset the activation time
-        _millisSensorActivated = 0;
-        // Unset the measurement request time
-        _millisMeasurementRequested = 0;
-        // Unset the status bits for sensor power (bits 1 & 2),
-        // activation (bits 3 & 4), and measurement request (bits 5 & 6)
-        clearStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL, WAKE_ATTEMPTED,
-                        WAKE_SUCCESSFUL, MEASUREMENT_ATTEMPTED,
-                        MEASUREMENT_SUCCESSFUL);
-    }
-    if (_powerPin2 >= 0) {
-        MS_DBG(F("Turning off secondary power to"), getSensorNameAndLocation(),
-               F("with pin"), _powerPin2);
-        digitalWrite(_powerPin2, LOW);
-    }
-    if (_powerPin < 0 && _powerPin2 < 0) {
-        MS_DBG(F("Power to"), getSensorNameAndLocation(),
-               F("is not controlled by this library."));
-        // Do NOT unset any status bits or timestamps if we didn't really power
-        // down!
-    }
-}
-
-
 bool GroPointParent::addSingleMeasurementResult(void) {
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return bumpMeasurementAttemptCount(false);
+    }
+
     bool success  = false;
     bool successT = false;
     // Initialize moisture variables for each probe segment
-    float M1, M2, M3, M4, M5, M6, M7, M8 = -9999;
+    float M1 = -9999, M2 = -9999, M3 = -9999, M4 = -9999, M5 = -9999,
+          M6 = -9999, M7 = -9999, M8 = -9999;
     // Initialize temperature variables for each probe sensor
-    float T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13 = -9999;
+    float T1 = -9999, T2 = -9999, T3 = -9999, T4 = -9999, T5 = -9999,
+          T6 = -9999, T7 = -9999, T8 = -9999, T9 = -9999, T10 = -9999,
+          T11 = -9999, T12 = -9999, T13 = -9999;
 
-    // Check a measurement was *successfully* started (status bit 6 set)
-    // Only go on to get a result if it was
-    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        switch (_model) {
-            case GPLP8: {
-                // Get Moisture Values
-                MS_DBG(F("Get Values from"), getSensorNameAndLocation());
-                success = _gsensor.getValues(M1, M2, M3, M4, M5, M6, M7, M8);
+    switch (_model) {
+        case GPLP8: {
+            // Get Moisture Values
+            MS_DBG(F("Get Values from"), getSensorNameAndLocation());
+            success = _gsensor.getValues(M1, M2, M3, M4, M5, M6, M7, M8);
 
-                // Fix not-a-number values
-                if (!success || isnan(M1)) M1 = -9999;
-                if (!success || isnan(M2)) M2 = -9999;
-                if (!success || isnan(M3)) M3 = -9999;
-                if (!success || isnan(M4)) M4 = -9999;
-                if (!success || isnan(M5)) M5 = -9999;
-                if (!success || isnan(M6)) M6 = -9999;
-                if (!success || isnan(M7)) M7 = -9999;
-                if (!success || isnan(M8)) M8 = -9999;
+            MS_DBG(F("    "), _gsensor.getParameter());
+            MS_DBG(F("    "), _gsensor.getUnits());
+            MS_DBG(F("    "), M1, ',', M2, ',', M3, ',', M4, ',', M5, ',', M6,
+                   ',', M7, ',', M8);
 
-                MS_DBG(F("    "), _gsensor.getParameter());
-                MS_DBG(F("    "), _gsensor.getUnits());
-                MS_DBG(F("    "), M1, ',', M2, ',', M3, ',', M4, ',', M5, ',',
-                       M6, ',', M7, ',', M8);
+            // Get Temperature Values
+            successT = _gsensor.getTemperatureValues(
+                T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13);
 
-                // Get Temperature Values
-                successT = _gsensor.getTemperatureValues(
-                    T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13);
+            MS_DBG(F("    "), _gsensor.getParameter1());
+            MS_DBG(F("    "), _gsensor.getUnits1());
+            MS_DBG(F("    "), T1, ',', T2, ',', T3, ',', T4, ',', T5, ',', T6,
+                   ',', T7, ',', T8, ',', T9, ',', T10, ',', T11, ',', T12, ',',
+                   T13);
 
-                // Fix not-a-number values
-                if (!successT || isnan(T1)) T1 = -9999;
-                if (!successT || isnan(T2)) T2 = -9999;
-                if (!successT || isnan(T3)) T3 = -9999;
-                if (!successT || isnan(T4)) T4 = -9999;
-                if (!successT || isnan(T5)) T5 = -9999;
-                if (!successT || isnan(T6)) T6 = -9999;
-                if (!successT || isnan(T7)) T7 = -9999;
-                if (!successT || isnan(T8)) T8 = -9999;
-                if (!successT || isnan(T9)) T9 = -9999;
-                if (!successT || isnan(T10)) T10 = -9999;
-                if (!successT || isnan(T11)) T11 = -9999;
-                if (!successT || isnan(T12)) T12 = -9999;
-                if (!successT || isnan(T13)) T13 = -9999;
-
-                MS_DBG(F("    "), _gsensor.getParameter1());
-                MS_DBG(F("    "), _gsensor.getUnits1());
-                MS_DBG(F("    "), T1, ',', T2, ',', T3, ',', T4, ',', T5, ',',
-                       T6, ',', T7, ',', T8, ',', T9, ',', T10, ',', T11, ',',
-                       T12, ',', T13);
-
-
-                // Put values into the array
-                verifyAndAddMeasurementResult(0, M1);
-                verifyAndAddMeasurementResult(1, M2);
-                verifyAndAddMeasurementResult(2, M3);
-                verifyAndAddMeasurementResult(3, M4);
-                verifyAndAddMeasurementResult(4, M5);
-                verifyAndAddMeasurementResult(5, M6);
-                verifyAndAddMeasurementResult(6, M7);
-                verifyAndAddMeasurementResult(7, M8);
-
-                verifyAndAddMeasurementResult(8, T1);
-                verifyAndAddMeasurementResult(9, T2);
-                verifyAndAddMeasurementResult(10, T3);
-                verifyAndAddMeasurementResult(11, T4);
-                verifyAndAddMeasurementResult(12, T5);
-                verifyAndAddMeasurementResult(13, T6);
-                verifyAndAddMeasurementResult(14, T7);
-                verifyAndAddMeasurementResult(15, T8);
-                verifyAndAddMeasurementResult(16, T9);
-                verifyAndAddMeasurementResult(17, T10);
-                verifyAndAddMeasurementResult(18, T11);
-                verifyAndAddMeasurementResult(19, T12);
-                verifyAndAddMeasurementResult(20, T13);
-
-
-                break;
-            }
-            default: {
-                // Get Values
-                MS_DBG(F("Other GroPoint models not yet implemented."));
-            }
+            break;
         }
-    } else {
-        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+        default: {
+            // Get Values
+            MS_DBG(F("Other GroPoint models not yet implemented."));
+        }
     }
 
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
+    if (success && successT) {
+        // Put values into the array
+        verifyAndAddMeasurementResult(0, M1);
+        verifyAndAddMeasurementResult(1, M2);
+        verifyAndAddMeasurementResult(2, M3);
+        verifyAndAddMeasurementResult(3, M4);
+        verifyAndAddMeasurementResult(4, M5);
+        verifyAndAddMeasurementResult(5, M6);
+        verifyAndAddMeasurementResult(6, M7);
+        verifyAndAddMeasurementResult(7, M8);
 
-    // Return true when finished
-    return success && successT;
+        verifyAndAddMeasurementResult(8, T1);
+        verifyAndAddMeasurementResult(9, T2);
+        verifyAndAddMeasurementResult(10, T3);
+        verifyAndAddMeasurementResult(11, T4);
+        verifyAndAddMeasurementResult(12, T5);
+        verifyAndAddMeasurementResult(13, T6);
+        verifyAndAddMeasurementResult(14, T7);
+        verifyAndAddMeasurementResult(15, T8);
+        verifyAndAddMeasurementResult(16, T9);
+        verifyAndAddMeasurementResult(17, T10);
+        verifyAndAddMeasurementResult(18, T11);
+        verifyAndAddMeasurementResult(19, T12);
+        verifyAndAddMeasurementResult(20, T13);
+    }
+
+    // Return success value when finished
+    return bumpMeasurementAttemptCount((success && successT));
 }
 
 // cSpell:ignore gsensor

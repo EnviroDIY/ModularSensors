@@ -43,70 +43,64 @@ String TIADS1x15::getSensorLocation(void) {
 
 
 bool TIADS1x15::addSingleMeasurementResult(void) {
-    // Variables to store the results in
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return bumpMeasurementAttemptCount(false);
+    }
+
+    bool    success     = false;
     int16_t adcCounts   = -9999;
     float   adcVoltage  = -9999;
     float   calibResult = -9999;
 
-    // Check a measurement was *successfully* started (status bit 6 set)
-    // Only go on to get a result if it was
-    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
 // Create an auxiliary ADD object
 // We create and set up the ADC object here so that each sensor using
 // the ADC may set the gain appropriately without effecting others.
 #ifndef MS_USE_ADS1015
-        Adafruit_ADS1115 ads;  // Use this for the 16-bit version
+    Adafruit_ADS1115 ads;  // Use this for the 16-bit version
 #else
-        Adafruit_ADS1015 ads;  // Use this for the 12-bit version
+    Adafruit_ADS1015 ads;  // Use this for the 12-bit version
 #endif
-        // ADS Library default settings:
-        //  - TI1115 (16 bit)
-        //    - single-shot mode (powers down between conversions)
-        //    - 128 samples per second (8ms conversion time)
-        //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
-        //  - TI1015 (12 bit)
-        //    - single-shot mode (powers down between conversions)
-        //    - 1600 samples per second (625µs conversion time)
-        //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
+    // ADS Library default settings:
+    //  - TI1115 (16 bit)
+    //    - single-shot mode (powers down between conversions)
+    //    - 128 samples per second (8ms conversion time)
+    //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
+    //  - TI1015 (12 bit)
+    //    - single-shot mode (powers down between conversions)
+    //    - 1600 samples per second (625µs conversion time)
+    //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
 
-        // Bump the gain up to 1x = +/- 4.096V range
-        ads.setGain(GAIN_ONE);
-        // Begin ADC
-        ads.begin(_i2cAddress);
-
-        // Read Analog to Digital Converter (ADC)
-        // Taking this reading includes the 8ms conversion delay.
-        // Measure the ADC raw count
-        adcCounts = ads.readADC_SingleEnded(_adsChannel);
-        // Convert ADC raw counts value to voltage (V)
-        adcVoltage = ads.computeVolts(adcCounts);
-        MS_DBG(F("  ads.readADC_SingleEnded("), _adsChannel, F("):"),
-               adcVoltage);
-
-        if (adcVoltage < 3.6 && adcVoltage > -0.3) {
-            // Skip results out of range
-            // Apply the gain calculation, with a default gain of 10 V/V Gain
-            calibResult = adcVoltage * _gain;
-            MS_DBG(F("  calibResult:"), calibResult);
-        } else {  // set invalid voltages back to -9999
-            adcVoltage = -9999;
-        }
-    } else {
-        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    // Bump the gain up to 1x = +/- 4.096V range
+    ads.setGain(GAIN_ONE);
+    // Begin ADC, returns true if anything was detected at the address
+    if (!ads.begin(_i2cAddress)) {
+        MS_DBG(F("  ADC initialization failed at 0x"),
+               String(_i2cAddress, HEX));
+        return bumpMeasurementAttemptCount(false);
     }
 
-    verifyAndAddMeasurementResult(TIADS1X15_VAR_NUM, calibResult);
+    // Read Analog to Digital Converter (ADC)
+    // Taking this reading includes the 8ms conversion delay.
+    // Measure the ADC raw count
+    adcCounts = ads.readADC_SingleEnded(_adsChannel);
+    // Convert ADC raw counts value to voltage (V)
+    adcVoltage = ads.computeVolts(adcCounts);
+    MS_DBG(F("  ads.readADC_SingleEnded("), _adsChannel, F("):"), adcCounts,
+           '=', adcVoltage);
 
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
-
+    // @todo Verify the range based on the actual power supplied to the ADS.
+    // Here we are using the range of the ADS when it is powered at 3.3V
     if (adcVoltage < 3.6 && adcVoltage > -0.3) {
-        return true;
-    } else {
-        return false;
+        // Apply the gain calculation, with a default gain of 10 V/V Gain
+        calibResult = adcVoltage * _gain;
+        MS_DBG(F("  calibResult:"), calibResult);
+        verifyAndAddMeasurementResult(TIADS1X15_VAR_NUM, calibResult);
+        success = true;
     }
+
+    // Return success value when finished
+    return bumpMeasurementAttemptCount(success);
 }

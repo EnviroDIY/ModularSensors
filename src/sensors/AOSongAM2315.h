@@ -237,9 +237,6 @@ class AOSongAM2315 : public Sensor {
      */
     bool setup(void) override;
 
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
     bool addSingleMeasurementResult(void) override;
 
  private:

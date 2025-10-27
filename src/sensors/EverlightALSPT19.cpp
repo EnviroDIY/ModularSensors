@@ -11,8 +11,6 @@
 #include "EverlightALSPT19.h"
 
 
-// The constructor - because this is I2C, only need the power pin
-// This sensor has a set I2C address of 0XB8
 EverlightALSPT19::EverlightALSPT19(int8_t powerPin, int8_t dataPin,
                                    float supplyVoltage, float loadResistor,
                                    uint8_t measurementsToAverage)
@@ -22,41 +20,47 @@ EverlightALSPT19::EverlightALSPT19(int8_t powerPin, int8_t dataPin,
              measurementsToAverage),
       _supplyVoltage(supplyVoltage),
       _loadResistor(loadResistor) {}
+#if defined(BUILT_IN_ALS_POWER_PIN) && defined(BUILT_IN_ALS_DATA_PIN) && \
+    defined(BUILT_IN_ALS_SUPPLY_VOLTAGE) &&                              \
+    defined(BUILT_IN_ALS_LOADING_RESISTANCE)
 EverlightALSPT19::EverlightALSPT19(uint8_t measurementsToAverage)
     : Sensor("Everlight ALS-PT19", ALSPT19_NUM_VARIABLES,
              ALSPT19_WARM_UP_TIME_MS, ALSPT19_STABILIZATION_TIME_MS,
-             ALSPT19_MEASUREMENT_TIME_MS, MAYFLY_ALS_POWER_PIN,
-             MAYFLY_ALS_DATA_PIN, measurementsToAverage,
+             ALSPT19_MEASUREMENT_TIME_MS, BUILT_IN_ALS_POWER_PIN,
+             BUILT_IN_ALS_DATA_PIN, measurementsToAverage,
              ALSPT19_INC_CALC_VARIABLES),
-      _supplyVoltage(MAYFLY_ALS_SUPPLY_VOLTAGE),
-      _loadResistor(MAYFLY_ALS_LOADING_RESISTANCE) {}
+      _supplyVoltage(BUILT_IN_ALS_SUPPLY_VOLTAGE),
+      _loadResistor(BUILT_IN_ALS_LOADING_RESISTANCE) {}
+#endif
 EverlightALSPT19::~EverlightALSPT19() {}
 
 
 bool EverlightALSPT19::addSingleMeasurementResult(void) {
-    // Initialize float variables
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return bumpMeasurementAttemptCount(false);
+    }
+
     float volt_val    = -9999;
     float current_val = -9999;
     float lux_val     = -9999;
 
-    // Check a measurement was *successfully* started (status bit 6 set)
-    // Only go on to get a result if it was
-    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-        // First measure the analog voltage.
-        // The return value from analogRead() is IN BITS NOT IN VOLTS!!
-        // Take a priming reading.
-        // First reading will be low - discard
-        analogRead(_dataPin);
-        // Take the reading we'll keep
-        uint32_t sensor_adc = analogRead(_dataPin);
-        MS_DEEP_DBG("  ADC Bits:", sensor_adc);
+    // First measure the analog voltage.
+    // The return value from analogRead() is IN BITS NOT IN VOLTS!!
+    // Take a priming reading.
+    // First reading will be low - discard
+    analogRead(_dataPin);
+    // Take the reading we'll keep
+    uint32_t sensor_adc = analogRead(_dataPin);
+    MS_DEEP_DBG("  ADC Bits:", sensor_adc);
 
-        if (0 == sensor_adc) {
-            // Prevent underflow, can never be outside of PROCESSOR_ADC_RANGE
-            sensor_adc = 1;
-        }
+    if (sensor_adc == 0) {
+        volt_val    = 0.0;
+        current_val = 0.0;
+        lux_val     = 0.0;
+    } else {
         // convert bits to volts
         volt_val = (_supplyVoltage / static_cast<float>(PROCESSOR_ADC_MAX)) *
             static_cast<float>(sensor_adc);
@@ -66,23 +70,16 @@ bool EverlightALSPT19::addSingleMeasurementResult(void) {
         // convert current to illuminance
         // from sensor datasheet, typical 200µA current for 1000 Lux
         lux_val = current_val * (1000. / 200.);
-
-
-        MS_DBG(F("  Voltage:"), volt_val, F("V"));
-        MS_DBG(F("  Current:"), current_val, F("µA"));
-        MS_DBG(F("  Illuminance:"), lux_val, F("lux"));
-    } else {
-        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
     }
 
+    MS_DBG(F("  Voltage:"), volt_val, F("V"));
+    MS_DBG(F("  Current:"), current_val, F("µA"));
+    MS_DBG(F("  Illuminance:"), lux_val, F("lux"));
+
+    // NOTE: We don't actually have any criteria for if the reading was any
+    // good or not, so we mark it as successful no matter what.
     verifyAndAddMeasurementResult(ALSPT19_VOLTAGE_VAR_NUM, volt_val);
     verifyAndAddMeasurementResult(ALSPT19_CURRENT_VAR_NUM, current_val);
     verifyAndAddMeasurementResult(ALSPT19_ILLUMINANCE_VAR_NUM, lux_val);
-
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
-
-    return true;
+    return bumpMeasurementAttemptCount(true);
 }

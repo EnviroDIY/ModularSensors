@@ -18,13 +18,14 @@ GeoluxHydroCam::GeoluxHydroCam(Stream* stream, int8_t powerPin,
     : Sensor("GeoluxHydroCam", HYDROCAM_NUM_VARIABLES, HYDROCAM_WARM_UP_TIME_MS,
              HYDROCAM_STABILIZATION_TIME_MS, HYDROCAM_MEASUREMENT_TIME_MS,
              powerPin, -1, 1, HYDROCAM_INC_CALC_VARIABLES),
-      _powerPin2(powerPin2),
       _imageResolution(imageResolution),
       _filePrefix(filePrefix),
       _alwaysAutoFocus(alwaysAutoFocus),
       _baseLogger(&baseLogger),
       _stream(stream),
-      _camera(stream) {}
+      _camera(stream) {
+    setSecondaryPowerPin(powerPin2);
+}
 
 
 GeoluxHydroCam::GeoluxHydroCam(Stream& stream, int8_t powerPin,
@@ -34,13 +35,14 @@ GeoluxHydroCam::GeoluxHydroCam(Stream& stream, int8_t powerPin,
     : Sensor("GeoluxHydroCam", HYDROCAM_NUM_VARIABLES, HYDROCAM_WARM_UP_TIME_MS,
              HYDROCAM_STABILIZATION_TIME_MS, HYDROCAM_MEASUREMENT_TIME_MS,
              powerPin, -1, 1, HYDROCAM_INC_CALC_VARIABLES),
-      _powerPin2(powerPin2),
       _imageResolution(imageResolution),
       _filePrefix(filePrefix),
       _alwaysAutoFocus(alwaysAutoFocus),
       _baseLogger(&baseLogger),
       _stream(&stream),
-      _camera(&stream) {}
+      _camera(&stream) {
+    setSecondaryPowerPin(powerPin2);
+}
 
 // Destructor
 GeoluxHydroCam::~GeoluxHydroCam() {}
@@ -180,152 +182,86 @@ bool GeoluxHydroCam::startSingleMeasurement(void) {
         clearStatusBit(MEASUREMENT_SUCCESSFUL);
     }
 
-    return true;
-}
-
-
-bool GeoluxHydroCam::addSingleMeasurementResult(void) {
-    // Initialize values
-    bool    success           = false;
-    int32_t bytes_transferred = -9999;
-    int32_t byte_error        = -9999;
-
-    // Check a measurement was *successfully* started (status bit 6 set)
-    // Only go on to get a result if it was
-    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        // set a new filename based on the current RTC time
-        String filename = _baseLogger->generateFileName(
-            true, HYDROCAM_FILE_EXTENSION, _filePrefix);
-        MS_DBG(F("Attempting to create the file: "), filename);
-
-        // Initialise the SD card
-        // skip everything else if there's no SD card, otherwise it might hang
-        if (!_baseLogger->initializeSDCard()) return false;
-
-        // Create and then open the file in write mode
-        if (imgFile.open(filename.c_str(), O_CREAT | O_WRITE | O_AT_END)) {
-            MS_DBG(F("Created new file:"), filename);
-            success = true;
-        } else {
-            MS_DBG(F("Failed to create the image file"), filename);
-            success = false;
-        }
-
-        int32_t image_size = _camera.getImageSize();
-        MS_DBG(F("Completed image is"), image_size, F("bytes."));
-        success &= image_size != 0;
-
-        if (success) {
-            // dump anything in the camera stream, just in case
-            _camera.streamDump();
-
-            // Disable the watch-dog timer to reduce interrupts during transfer
-            MS_DBG(F("Disabling the watchdog during file transfer"));
-            extendedWatchDog::disableWatchDog();
-
-            // transfer the image from the camera to a file on the SD card
-            MS_START_DEBUG_TIMER;
-            bytes_transferred = _camera.transferImage(imgFile, image_size);
-            byte_error        = abs(bytes_transferred - image_size);
-            // Close the image file
-            imgFile.close();
-
-            // See how long it took us
-            MS_DBG(F("Wrote"), bytes_transferred, F("of expected"), image_size,
-                   F("bytes to the SD card - a difference of"), byte_error,
-                   F("bytes"));
-            MS_DBG(F("Total read/write time was"), MS_PRINT_DEBUG_TIMER,
-                   F("ms"));
-
-            // Re-enable the watchdog
-            MS_DBG(F("Re-enabling the watchdog after file transfer"));
-            extendedWatchDog::enableWatchDog();
-
-            // Store the last image name
-            _filename = filename;
-
-            success = bytes_transferred == image_size;
-            MS_DBG(F("Image transfer was a"),
-                   success ? F("success") : F("failure"));
-        }
-    } else {
-        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
-    }
-
-    verifyAndAddMeasurementResult(HYDROCAM_SIZE_VAR_NUM, bytes_transferred);
-    verifyAndAddMeasurementResult(HYDROCAM_ERROR_VAR_NUM, byte_error);
-
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
-
-    // Return values shows if we got a not-obviously-bad reading
     return success;
 }
 
 
-// This turns on sensor power
-void GeoluxHydroCam::powerUp(void) {
-    if (_powerPin >= 0) {
-        // Reset power pin mode every power up because pins are set to tri-state
-        // on sleep
-        pinMode(_powerPin, OUTPUT);
-        MS_DBG(F("Powering"), getSensorNameAndLocation(), F("with pin"),
-               _powerPin);
-        digitalWrite(_powerPin, HIGH);
+bool GeoluxHydroCam::addSingleMeasurementResult(void) {
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return bumpMeasurementAttemptCount(false);
     }
-    if (_powerPin2 >= 0) {
-        // Reset power pin mode every power up because pins are set to tri-state
-        // on sleep
-        pinMode(_powerPin2, OUTPUT);
-        MS_DBG(F("Applying secondary power to"), getSensorNameAndLocation(),
-               F("with pin"), _powerPin2);
-        digitalWrite(_powerPin2, HIGH);
+
+    bool    success           = false;
+    int32_t bytes_transferred = -9999;
+    int32_t byte_error        = -9999;
+
+    // set a new filename based on the current RTC time
+    String filename = _baseLogger->generateFileName(
+        true, HYDROCAM_FILE_EXTENSION, _filePrefix);
+    MS_DBG(F("Attempting to create the file: "), filename);
+
+    // Initialise the SD card
+    // skip everything else if there's no SD card, otherwise it might hang
+    if (!_baseLogger->initializeSDCard()) {
+        return bumpMeasurementAttemptCount(false);
     }
-    if (_powerPin < 0 && _powerPin2 < 0) {
-        MS_DBG(F("Power to"), getSensorNameAndLocation(),
-               F("is not controlled by this library."));
-        // Mark the power-on time, just in case it  had not been marked
-        if (_millisPowerOn == 0) _millisPowerOn = millis();
+
+    // Create and then open the file in write mode
+    if (imgFile.open(filename.c_str(), O_CREAT | O_WRITE | O_AT_END)) {
+        MS_DBG(F("Created new file:"), filename);
+        success = true;
     } else {
-        // Mark the time that the sensor was powered
-        _millisPowerOn = millis();
+        MS_DBG(F("Failed to create the image file"), filename);
+        success = false;
     }
-    // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
-    setStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL);
-}
 
+    int32_t image_size = _camera.getImageSize();
+    MS_DBG(F("Completed image is"), image_size, F("bytes."));
+    success &= image_size != 0;
 
-// This turns off sensor power
-void GeoluxHydroCam::powerDown(void) {
-    if (_powerPin >= 0) {
-        MS_DBG(F("Turning off power to"), getSensorNameAndLocation(),
-               F("with pin"), _powerPin);
-        digitalWrite(_powerPin, LOW);
-        // Unset the power-on time
-        _millisPowerOn = 0;
-        // Unset the activation time
-        _millisSensorActivated = 0;
-        // Unset the measurement request time
-        _millisMeasurementRequested = 0;
-        // Unset the status bits for sensor power (bits 1 & 2),
-        // activation (bits 3 & 4), and measurement request (bits 5 & 6)
-        clearStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL, WAKE_ATTEMPTED,
-                        WAKE_SUCCESSFUL, MEASUREMENT_ATTEMPTED,
-                        MEASUREMENT_SUCCESSFUL);
+    if (success) {
+        // dump anything in the camera stream, just in case
+        _camera.streamDump();
+
+        // Disable the watch-dog timer to reduce interrupts during transfer
+        MS_DBG(F("Disabling the watchdog during file transfer"));
+        extendedWatchDog::disableWatchDog();
+
+        // transfer the image from the camera to a file on the SD card
+        MS_START_DEBUG_TIMER;
+        bytes_transferred = _camera.transferImage(imgFile, image_size);
+        byte_error        = abs(bytes_transferred - image_size);
+        // Close the image file
+        imgFile.close();
+
+        // See how long it took us
+        MS_DBG(F("Wrote"), bytes_transferred, F("of expected"), image_size,
+               F("bytes to the SD card - a difference of"), byte_error,
+               F("bytes"));
+        MS_DBG(F("Total read/write time was"), MS_PRINT_DEBUG_TIMER, F("ms"));
+
+        // Re-enable the watchdog
+        MS_DBG(F("Re-enabling the watchdog after file transfer"));
+        extendedWatchDog::enableWatchDog();
+
+        // Store the last image name
+        _filename = filename;
+
+        success = bytes_transferred == image_size;
+        MS_DBG(F("Image transfer was a"),
+               success ? F("success") : F("failure"));
+
+        verifyAndAddMeasurementResult(HYDROCAM_SIZE_VAR_NUM, bytes_transferred);
+        verifyAndAddMeasurementResult(HYDROCAM_ERROR_VAR_NUM, byte_error);
+    } else {
+        MS_DBG(F("Image transfer failed, so not writing any data to SD card."));
+        // Close the image file
+        imgFile.close();
     }
-    if (_powerPin2 >= 0) {
-        MS_DBG(F("Turning off secondary power to"), getSensorNameAndLocation(),
-               F("with pin"), _powerPin2);
-        digitalWrite(_powerPin2, LOW);
-    }
-    if (_powerPin < 0 && _powerPin2 < 0) {
-        MS_DBG(F("Power to"), getSensorNameAndLocation(),
-               F("is not controlled by this library."));
-        // Do NOT unset any status bits or timestamps if we didn't really power
-        // down!
-    }
+
+    // Return success value when finished
+    return bumpMeasurementAttemptCount(success);
 }
 
 // check if the camera is ready

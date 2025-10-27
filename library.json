@@ -1,6 +1,6 @@
 {
   "name": "EnviroDIY_ModularSensors",
-  "version": "0.36.0",
+  "version": "0.37.0",
   "description": "A library that allows access to multiple sensors through a unified interface.  This allows the user to simply access many sensors to log the data or send the data to data repositories like the EnviroDIY data portal.",
   "keywords": "modular, sensor, sensors, datalogger, logger, low power, sleeping, EnviroDIY, ModularSensors, Mayfly, WikiWatershed, Monitor My Watershed, ThingSpeak",
   "platforms": ["atmelavr", "atmelsam"],
@@ -135,7 +135,7 @@
       "owner": "adafruit",
       "library id": "6214",
       "url": "https://github.com/adafruit/Adafruit_BusIO",
-      "version": "~1.17.2",
+      "version": "~1.17.4",
       "note": "Adafruit BusIO, a dependency of other Adafruit libraries",
       "authors": ["Adafruit"],
       "frameworks": "arduino"
@@ -154,7 +154,7 @@
       "name": "Adafruit ADS1X15",
       "owner": "adafruit",
       "url": "https://github.com/adafruit/Adafruit_ADS1X15",
-      "version": "~2.5.0",
+      "version": "~2.6.0",
       "note": "Driver for TI's ADS1X15: 12 and 16-bit Differential or Single-Ended ADC with PGA and Comparator.",
       "authors": ["Adafruit"],
       "frameworks": "arduino"
@@ -256,7 +256,7 @@
       "owner": "milesburton",
       "library id": "54",
       "url": "https://github.com/milesburton/Arduino-Temperature-Control-Library",
-      "version": "~4.0.4",
+      "version": "~4.0.5",
       "note": "DallasTemperature - Arduino Library for Dallas Temperature ICs (DS18B20, DS18S20, DS1822, DS1820)",
       "authors": ["Guil Barros", "Miles Burton", "Rob Tillart", "Tim Nuewsome"],
       "frameworks": "arduino"
@@ -299,7 +299,7 @@
       "owner": "envirodiy",
       "library id": "1824",
       "url": "https://github.com/EnviroDIY/SensorModbusMaster",
-      "version": "~1.6.5",
+      "version": "~1.6.6",
       "note": "EnviroDIY SensorModbusMaster - Arduino library for communicating via modbus with the Arduino acting as the modbus master.",
       "authors": ["Sara Damiano"],
       "frameworks": "arduino"
@@ -309,7 +309,7 @@
       "owner": "envirodiy",
       "library id": "5439",
       "url": "https://github.com/EnviroDIY/KellerModbus",
-      "version": "~0.2.5",
+      "version": "~0.2.6",
       "note": "Arduino library for communication with Keller pressure and water level sensors via Modbus.",
       "authors": ["Anthony Aufdenkampe"]
     },
@@ -318,7 +318,7 @@
       "owner": "envirodiy",
       "library id": "2078",
       "url": "https://github.com/EnviroDIY/YosemitechModbus",
-      "version": "~0.5.2",
+      "version": "~0.5.3",
       "note": "Arduino library for communication with Yosemitech sensors via Modbus.",
       "authors": ["Sara Damiano", "Anthony Aufdenkampe"],
       "frameworks": "arduino"
@@ -327,7 +327,7 @@
       "name": "GroPointModbus",
       "owner": "envirodiy",
       "url": "https://github.com/EnviroDIY/GroPointModbus",
-      "version": "~0.1.3",
+      "version": "~0.1.4",
       "note": "A library to use an Arduino as a master to control and communicate via modbus with GroPoint soil moisture sensors.",
       "authors": ["Anthony Aufdenkampe"],
       "frameworks": "arduino"
@@ -355,7 +355,7 @@
       "name": "ANBSensorsModbus",
       "owner": "envirodiy",
       "url": "https://github.com/EnviroDIY/ANBSensorsModbus",
-      "version": "~0.2.5",
+      "version": "~0.2.6",
       "note": "A library for communicating with pH sensors manufactured by ANB Sensors using Modbus.",
       "authors": ["Sara Damiano"],
       "frameworks": "arduino"

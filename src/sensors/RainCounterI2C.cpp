@@ -91,9 +91,14 @@ bool RainCounterI2C::setup(void) {
 
 
 bool RainCounterI2C::addSingleMeasurementResult(void) {
-    // initialize values
-    float   rain = -9999;  // Number of mm of rain
-    int32_t tips = -9999;  // Number of tip events, increased for anemometer
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return bumpMeasurementAttemptCount(false);
+    }
+
+    bool    success = false;  // assume the worst
+    float   rain    = -9999;  // Number of mm of rain
+    int32_t tips    = -9999;  // Number of tip events, increased for anemometer
 
     // Get data from external tip counter
     // if the 'requestFrom' returns 0, it means no bytes were received
@@ -101,13 +106,18 @@ bool RainCounterI2C::addSingleMeasurementResult(void) {
                           static_cast<uint8_t>(4))) {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-        uint8_t SerialBuffer[4];    // Create a byte array of 4 bytes
-        uint8_t byte_in = 0;        // Start iterator for reading Bytes
-        while (Wire.available()) {  // slave may send less than requested
-            SerialBuffer[byte_in] = Wire.read();
+        // Create a byte array of 4 bytes to hold incoming data
+        uint8_t SerialBuffer[4] = {0, 0, 0, 0};
+        uint8_t byte_in         = 0;  // Start iterator for reading Bytes
+        while (_i2c->available() && byte_in < 4) {
+            SerialBuffer[byte_in] = _i2c->read();
             MS_DBG(F("  SerialBuffer["), byte_in, F("] = "),
                    SerialBuffer[byte_in]);
             byte_in++;  // increment by 1
+        }
+        if (byte_in < 1) {
+            MS_DBG(F("  No data bytes received"));
+            return bumpMeasurementAttemptCount(false);
         }
 
         // Concatenate bytes into uint32_t by bit-shifting
@@ -143,18 +153,16 @@ bool RainCounterI2C::addSingleMeasurementResult(void) {
 
         MS_DBG(F("  Rain:"), rain);
         MS_DBG(F("  Tips:"), tips);
+
+        if (rain != -9999 && tips != -9999) {  // if both are valid
+            verifyAndAddMeasurementResult(BUCKET_RAIN_VAR_NUM, rain);
+            verifyAndAddMeasurementResult(BUCKET_TIPS_VAR_NUM, tips);
+            success = true;
+        }
     } else {
         MS_DBG(F("No bytes received from"), getSensorNameAndLocation());
     }
 
-    verifyAndAddMeasurementResult(BUCKET_RAIN_VAR_NUM, rain);
-    verifyAndAddMeasurementResult(BUCKET_TIPS_VAR_NUM, tips);
-
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
-
-    // Return true when finished
-    return true;
+    // Return success value when finished
+    return bumpMeasurementAttemptCount(success);
 }

@@ -47,6 +47,9 @@
 // Include the library config before anything else
 #include "ModSensorConfig.h"
 
+// Include the known processors for default values
+#include "sensors/KnownProcessors.h"
+
 // Include the debugging config
 #include "ModSensorDebugConfig.h"
 
@@ -83,23 +86,6 @@
 /// @brief Sensor::_incCalcValues; we calculate photocurrent from the supply
 /// voltage and loading resistance and illuminance from the photocurrent.
 #define ALSPT19_INC_CALC_VARIABLES 2
-/**@}*/
-
-/**
- * @anchor sensor_alspt19_mayfly
- * @name Pin Definitions for the Mayfly
- * Specific pin definitions for the ALS-PT19 built in to the EnviroDIY Mayfly
- * v1.x
- */
-/**@{*/
-/// @brief The power pin for the ALS on the EnviroDIY Mayfly v1.x
-#define MAYFLY_ALS_POWER_PIN -1
-/// @brief The data pin for the ALS on the EnviroDIY Mayfly v1.x
-#define MAYFLY_ALS_DATA_PIN A4
-/// @brief The supply voltage for the ALS on the EnviroDIY Mayfly v1.x
-#define MAYFLY_ALS_SUPPLY_VOLTAGE 3.3
-/// @brief The loading resistance for the ALS on the EnviroDIY Mayfly v1.x
-#define MAYFLY_ALS_LOADING_RESISTANCE 10
 /**@}*/
 
 /**
@@ -240,6 +226,10 @@ class EverlightALSPT19 : public Sensor {
      */
     EverlightALSPT19(int8_t powerPin, int8_t dataPin, float supplyVoltage,
                      float loadResistor, uint8_t measurementsToAverage = 10);
+
+#if defined(BUILT_IN_ALS_POWER_PIN) && defined(BUILT_IN_ALS_DATA_PIN) && \
+    defined(BUILT_IN_ALS_SUPPLY_VOLTAGE) &&                              \
+    defined(BUILT_IN_ALS_LOADING_RESISTANCE)
     /**
      * @brief Construct a new EverlightALSPT19 object with pins and resistors
      * for the EnviroDIY Mayfly 1.x.
@@ -253,14 +243,12 @@ class EverlightALSPT19 : public Sensor {
      * default value of 10.
      */
     explicit EverlightALSPT19(uint8_t measurementsToAverage = 10);
+#endif
     /**
      * @brief Destroy the EverlightALSPT19 object - no action needed.
      */
     ~EverlightALSPT19();
 
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
     bool addSingleMeasurementResult(void) override;
 
  private:

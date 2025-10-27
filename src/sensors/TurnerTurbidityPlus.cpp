@@ -90,93 +90,95 @@ void TurnerTurbidityPlus::powerUp(void) {
 }
 
 bool TurnerTurbidityPlus::addSingleMeasurementResult(void) {
-    // Variables to store the results in
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return bumpMeasurementAttemptCount(false);
+    }
+
+    bool    success     = false;
     int16_t adcCounts   = -9999;
     float   adcVoltage  = -9999;
     float   calibResult = -9999;
 
-    // Check a measurement was *successfully* started (status bit 6 set)
-    // Only go on to get a result if it was
-    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
 // Create an auxiliary ADD object
-// We create and set up the ADC object here so that each sensor using
-// the ADC may set the gain appropriately without effecting others.
+// We create and set up the ADC object here so that each sensor using the ADC
+// may set the gain appropriately without effecting others.
 #ifndef MS_USE_ADS1015
-        Adafruit_ADS1115 ads;  // Use this for the 16-bit version
+    Adafruit_ADS1115 ads;  // Use this for the 16-bit version
 #else
-        Adafruit_ADS1015 ads;  // Use this for the 12-bit version
+    Adafruit_ADS1015 ads;  // Use this for the 12-bit version
 #endif
-        // ADS Library default settings:
-        //  - TI1115 (16 bit)
-        //    - single-shot mode (powers down between conversions)
-        //    - 128 samples per second (8ms conversion time)
-        //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
-        //  - TI1015 (12 bit)
-        //    - single-shot mode (powers down between conversions)
-        //    - 1600 samples per second (625µs conversion time)
-        //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
+    // ADS Library default settings:
+    //  - TI1115 (16 bit)
+    //    - single-shot mode (powers down between conversions)
+    //    - 128 samples per second (8ms conversion time)
+    //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
+    //  - TI1015 (12 bit)
+    //    - single-shot mode (powers down between conversions)
+    //    - 1600 samples per second (625µs conversion time)
+    //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
 
-        ads.setGain(_PGA_gain);
-        // Begin ADC
-        ads.begin(_i2cAddress);
-
-        // Print out the calibration curve
-        MS_DBG(F("  Input calibration Curve:"), _volt_std, F("V at"), _conc_std,
-               F(".  "), _volt_blank, F("V blank."));
-
-        // Read Analog to Digital Converter (ADC)
-        // Taking this reading includes the 8ms conversion delay.
-        // Measure the voltage differential across the two voltage pins
-        switch (_adsDiffMux) {
-            case DIFF_MUX_0_1: {
-                adcCounts = ads.readADC_Differential_0_1();
-                break;
-            }
-            case DIFF_MUX_0_3: {
-                adcCounts = ads.readADC_Differential_0_3();
-                break;
-            }
-            case DIFF_MUX_1_3: {
-                adcCounts = ads.readADC_Differential_1_3();
-                break;
-            }
-            case DIFF_MUX_2_3: {
-                adcCounts = ads.readADC_Differential_2_3();
-                break;
-            }
-        }
-        // Convert ADC counts value to voltage (V)
-        adcVoltage = ads.computeVolts(adcCounts);
-        MS_DBG(F("  ads.readADC_Differential("), _adsDiffMux, F("):"),
-               String(adcVoltage, 3));
-
-        // The ADS1X15 outputs a max value corresponding to Vcc + 0.3V
-        if (adcVoltage < 5.3 && adcVoltage > -0.3) {
-            // Skip results out of range
-            // Apply the unique calibration curve for the given sensor
-            calibResult = (_conc_std / (_volt_std - _volt_blank)) *
-                (adcVoltage - _volt_blank);
-            MS_DBG(F("  calibResult:"), String(calibResult, 3));
-        } else {  // set invalid voltages back to -9999
-            adcVoltage = -9999;
-        }
-    } else {
-        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    ads.setGain(_PGA_gain);
+    // Begin ADC, returns true if anything was detected at the address
+    if (!ads.begin(_i2cAddress)) {
+        MS_DBG(F("  ADC initialization failed at 0x"),
+               String(_i2cAddress, HEX));
+        return bumpMeasurementAttemptCount(false);
     }
 
-    verifyAndAddMeasurementResult(TURBIDITY_PLUS_VAR_NUM, calibResult);
-    verifyAndAddMeasurementResult(TURBIDITY_PLUS_VOLTAGE_VAR_NUM, adcVoltage);
+    // Print out the calibration curve
+    MS_DBG(F("  Input calibration Curve:"), _volt_std, F("V at"), _conc_std,
+           F(".  "), _volt_blank, F("V blank."));
+    const float epsilon = 1e-4f;  // tune to expected sensor precision
+    if (fabs(_volt_std - _volt_blank) < epsilon) {
+        MS_DBG(F("Invalid calibration: point voltage equals blank voltage"));
+        return bumpMeasurementAttemptCount(false);
+    }
 
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
+    // Read Analog to Digital Converter (ADC)
+    // Taking this reading includes the 8ms conversion delay.
+    // Measure the voltage differential across the two voltage pins
+    switch (_adsDiffMux) {
+        case DIFF_MUX_0_1: {
+            adcCounts = ads.readADC_Differential_0_1();
+            break;
+        }
+        case DIFF_MUX_0_3: {
+            adcCounts = ads.readADC_Differential_0_3();
+            break;
+        }
+        case DIFF_MUX_1_3: {
+            adcCounts = ads.readADC_Differential_1_3();
+            break;
+        }
+        case DIFF_MUX_2_3: {
+            adcCounts = ads.readADC_Differential_2_3();
+            break;
+        }
+        default: {
+            MS_DBG(F("  Invalid differential mux configuration"));
+            return bumpMeasurementAttemptCount(false);
+        }
+    }
+    // Convert ADC counts value to voltage (V)
+    adcVoltage = ads.computeVolts(adcCounts);
+    MS_DBG(F("  ads.readADC_Differential("), _adsDiffMux, F("):"),
+           String(adcVoltage, 3));
 
+    // The ADS1X15 outputs a max value corresponding to Vcc + 0.3V
     if (adcVoltage < 5.3 && adcVoltage > -0.3) {
-        return true;
-    } else {
-        return false;
+        // Apply the unique calibration curve for the given sensor
+        calibResult = (_conc_std / (_volt_std - _volt_blank)) *
+            (adcVoltage - _volt_blank);
+        MS_DBG(F("  calibResult:"), String(calibResult, 3));
+        verifyAndAddMeasurementResult(TURBIDITY_PLUS_VAR_NUM, calibResult);
+        verifyAndAddMeasurementResult(TURBIDITY_PLUS_VOLTAGE_VAR_NUM,
+                                      adcVoltage);
+        success = true;
     }
+
+    // Return success value when finished
+    return bumpMeasurementAttemptCount(success);
 }

@@ -10,6 +10,67 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed
+
+- **BREAKING** Changed capitalization of `setInitialShortIntervals(#)` function
+  - Previously the 'i' of initial was not capitalized.
+- Made the enabling and disabling of the watchdog the very first and very last steps of sleep to keep the watchdog enabled through the whole getting ready for bed and waking up process.
+- **ANB pH** Changed timing slightly and simplified timing logic.
+- Bumped several dependencies - including crucial bug fixes to SensorModbusMaster.
+- Re-wrote most of the logic for looping variables within the complete update function of the VariableArray.
+- Simplified the `addSingleMeasurementResult()` function of all sensors to use an internal function to help set the bits and timing values and to quit sooner if the measurement was not started successfully.
+  - The `verifyAndAddMeasurementResult()` is now consistently used in all sensors and is only called when the sensor successfully returned a measurement response.
+  - Also removed all places where sensor values were re-set to -9999 after a measurement failed and then that -9999 was sent to the `verifyAndAddMeasurementResult()` function.
+These resets were an awkward attempt to deal with bad values before feeding any bad values to the `verifyAndAddMeasurementResult()` function which was previously always called even if the sensor returned junk.
+This was probably a hold-over from incorrect implementation and calling of the clearValues function deep in the library history.
+  - Also made the return from the `addSingleMeasurementResult()` function consistently false for a bad sensor response and true for a good one - where it's possible to tell the difference.
+- The Sensor::clearValues() function now resets all timing and bits for the sensor in addition to setting all values in the value array to -9999.
+- Re-wrote some of the logic of the `completeUpdate()` function.
+Also added optional arguments to the `completeUpdate()` function to allow users to specify if the sensors should be powered/woken.
+  - The `updateAllSensors()` function is now deprecated.
+Use `completeUpdate(false, false, false, false)` instead.
+- Applied many suggestions from Code Rabbit AI.
+
+### Added
+
+- **Added support for retrying measurements for all sensors**.
+  - Each sensor now supports a number of possible retry attempts for when the sensor returns a bad or no value.
+The number of retry attempts can be set using the `setAllowedMeasurementRetries(uint8_t)` function.
+  - The number of retries is independent of the number of measurements to average.
+A retry is performed when a sensor doesn't report a value or reports an error value.
+If multiple retries are needed, only the result of the final (successful) retry is stored.
+When multiple 'measurements to average' are requested, the values of each successful measurement is stored and averaged.
+Measurements that return bad values even after retries are still not included in averaging.
+  - The default number of retry attempts for most sensors is 1.
+- Made a secondary power pin a property of all sensors.
+- Added internal function to run the steps of setting the timing and bits after a measurement.
+- Added setter and getter functions for sensor timing variables.
+These values should generally be set in the specific sensor constructors and only changed if you know what you're doing.
+  - `setWarmUpTime(uint32_t warmUpTime_ms)`
+  - `getWarmUpTime()`
+  - `setStabilizationTime(uint32_t stabilizationTime_ms)`
+  - `getStabilizationTime()`
+  - `setMeasurementTime(uint32_t measurementTime_ms)`
+  - `getMeasurementTime()`
+- **NEW SENSOR** Added a new sensor for simple analog voltage using the built-in processor ADC
+- Added KnownProcessors.h and moved defines values for supported built-in sensors on known processors to that file.
+  - This affects ProcessorStats and the Everlight ALS PT-19.
+
+### Removed
+
+- Remove the unused `_maxSamplesToAverage` parameter of the VariableArray and the `countMaxToAverage()` function which set the parameter.
+- Removed unnecessary copy doc calls for inherited functions and properties.
+- Removed all overrides of the powerUp and powerDown functions that are no longer needed since all sensors have two power pins built in.
+
+### Fixed
+
+- Fixed major bug where sensors with two power pins where either was shared with another sensor may be turned off inappropriately when one of the other sensors was turned off.
+- Correctly retry NIST sync on XBees when a not-sane timestamp is returned.
+
+***
+
+## [0.37.0]
+
 > [!note]
 > This release has changes to nearly every file in the entire library (ie, hundreds of files).
 > Many of the changes are spelling and typo fixes found by implementing CSpell code spell checking.
@@ -1082,7 +1143,8 @@ Our first release of the modular sensors library to support easily logging data 
 
 ***
 
-[Unreleased]: https://github.com/EnviroDIY/ModularSensors/compare/v0.36.0...HEAD
+[Unreleased]: https://github.com/EnviroDIY/ModularSensors/compare/v0.37.0...HEAD
+[0.37.0]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.37.0
 [0.36.0]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.36.0
 [0.35.1]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.35.1
 [0.35.0]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.35.0

@@ -79,6 +79,7 @@ ___
       - [Decagon CTD-10 Conductivity, Temperature, and Depth Sensor](#decagon-ctd-10-conductivity-temperature-and-depth-sensor)
     - [Decagon ES2 Conductivity and Temperature Sensor](#decagon-es2-conductivity-and-temperature-sensor)
       - [Everlight ALS-PT19 Ambient Light Sensor](#everlight-als-pt19-ambient-light-sensor)
+    - [External Voltage via Processor ADC](#external-voltage-via-processor-adc)
     - [External Voltage via TI ADS1x15](#external-voltage-via-ti-ads1x15)
     - [Freescale Semiconductor MPL115A2 Miniature I2C Digital Barometer](#freescale-semiconductor-mpl115a2-miniature-i2c-digital-barometer)
     - [Geolux HydroCam Camera](#geolux-hydrocam-camera)
@@ -829,6 +830,18 @@ ___
 @see @ref sensor_alspt19
 
 <!--! @menusnip{everlight_alspt19} -->
+
+___
+
+### External Voltage via Processor ADC<!--! {#menu_walk_processor_analog} -->
+
+The Arduino pin controlling power on/off, the analog data pin on the processor, and the multiplier for a voltage divider are required for the sensor constructor.
+If your processor operating voltage is not correctly in KnownProcessors.h, you must input it as the fourth argument; otherwise you can enter `OPERATING_VOLTAGE` for the voltage defined in KnownProcessors.h.
+The number of measurements to average, if more than one is desired, goes as the fifth argument.
+
+@see @ref sensor_processor_analog
+
+<!--! @menusnip{processor_analog} -->
 
 ___
 

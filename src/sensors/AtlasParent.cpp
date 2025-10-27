@@ -136,63 +136,54 @@ bool AtlasParent::startSingleMeasurement(void) {
 
 
 bool AtlasParent::addSingleMeasurementResult(void) {
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return bumpMeasurementAttemptCount(false);
+    }
+
     bool success = false;
 
-    // Check a measurement was *successfully* started (status bit 6 set)
-    // Only go on to get a result if it was
-    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        // call the circuit and request 40 bytes (this may be more than we need)
-        _i2c->requestFrom(static_cast<int>(_i2cAddressHex), 40, 1);
-        // the first byte is the response code, we read this separately.
-        int code = _i2c->read();
+    // call the circuit and request 40 bytes (this may be more than we need)
+    _i2c->requestFrom(static_cast<int>(_i2cAddressHex), 40, 1);
+    // the first byte is the response code, we read this separately.
+    int code = _i2c->read();
 
-        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
-        // Parse the response code
-        switch (code) {
-            case 1:  // the command was successful.
-                MS_DBG(F("  Measurement successful"));
-                success = true;
-                break;
+    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+    // Parse the response code
+    switch (code) {
+        case 1:  // the command was successful.
+            MS_DBG(F("  Measurement successful"));
+            success = true;
+            break;
 
-            case 2:  // the command has failed.
-                MS_DBG(F("  Measurement Failed"));
-                break;
+        case 2:  // the command has failed.
+            MS_DBG(F("  Measurement Failed"));
+            break;
 
-            case 254:  // the command has not yet been finished calculating.
-                MS_DBG(F("  Measurement Pending"));
-                break;
+        case 254:  // the command has not yet been finished calculating.
+            MS_DBG(F("  Measurement Pending"));
+            break;
 
-            case 255:  // there is no further data to send.
-                MS_DBG(F("  No Data"));
-                break;
+        case 255:  // there is no further data to send.
+            MS_DBG(F("  No Data"));
+            break;
 
-            default: break;
-        }
-        // If the response code is successful, parse the remaining results
-        if (success) {
-            for (uint8_t i = 0; i < _numReturnedValues; i++) {
-                float result = _i2c->parseFloat();
-                if (isnan(result)) { result = -9999; }
-                if (result < -1020) { result = -9999; }
-                MS_DBG(F("  Result #"), i, ':', result);
-                verifyAndAddMeasurementResult(i, result);
-            }
-        }
-    } else {
-        // If there's no measurement, need to make sure we send over all
-        // of the "failed" result values
-        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+        default: MS_DBG(F("  Unexpected response code:"), code); break;
+    }
+    // If the response code is successful, parse the remaining results
+    if (success) {
         for (uint8_t i = 0; i < _numReturnedValues; i++) {
-            verifyAndAddMeasurementResult(i, static_cast<float>(-9999));
+            if (_i2c->available() == 0) { break; }
+            float result = _i2c->parseFloat();
+            if (isnan(result)) { result = -9999; }
+            if (result < -1020) { result = -9999; }
+            MS_DBG(F("  Result #"), i, ':', result);
+            verifyAndAddMeasurementResult(i, result);
         }
     }
 
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
-
-    return success;
+    // Return success value when finished
+    return bumpMeasurementAttemptCount(success);
 }
 
 

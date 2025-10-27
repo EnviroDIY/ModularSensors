@@ -274,9 +274,6 @@ class SensirionSHT4x : public Sensor {
      */
     bool setup(void) override;
 
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
     bool addSingleMeasurementResult(void) override;
 
     /**

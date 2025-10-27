@@ -51,34 +51,31 @@ bool AOSongAM2315::setup(void) {
 
 
 bool AOSongAM2315::addSingleMeasurementResult(void) {
-    // Initialize float variables
-    float temp_val  = -9999;
-    float humid_val = -9999;
-    bool  ret_val   = false;
-
-    // Check a measurement was *successfully* started (status bit 6 set)
-    // Only go on to get a result if it was
-    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
-
-        ret_val = am2315ptr->readTemperatureAndHumidity(&temp_val, &humid_val);
-
-        if (!ret_val || isnan(temp_val)) temp_val = -9999;
-        if (!ret_val || isnan(humid_val)) humid_val = -9999;
-
-        MS_DBG(F("  Temp:"), temp_val, F("°C"));
-        MS_DBG(F("  Humidity:"), humid_val, '%');
-    } else {
-        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return bumpMeasurementAttemptCount(false);
     }
 
-    verifyAndAddMeasurementResult(AM2315_TEMP_VAR_NUM, temp_val);
-    verifyAndAddMeasurementResult(AM2315_HUMIDITY_VAR_NUM, humid_val);
+    bool  success   = false;
+    float temp_val  = -9999;
+    float humid_val = -9999;
 
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
+    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-    return ret_val;
+    success = am2315ptr->readTemperatureAndHumidity(&temp_val, &humid_val);
+
+
+    success &= !isnan(temp_val) && temp_val != -9999 && !isnan(humid_val) &&
+        humid_val != -9999;
+
+    MS_DBG(F("  Temp:"), temp_val, F("°C"));
+    MS_DBG(F("  Humidity:"), humid_val, '%');
+
+    if (success) {
+        verifyAndAddMeasurementResult(AM2315_TEMP_VAR_NUM, temp_val);
+        verifyAndAddMeasurementResult(AM2315_HUMIDITY_VAR_NUM, humid_val);
+    }
+
+    // Return success value when finished
+    return bumpMeasurementAttemptCount(success);
 }
