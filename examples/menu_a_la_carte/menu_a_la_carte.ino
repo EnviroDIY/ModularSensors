@@ -1622,7 +1622,7 @@ const float   dividerGain    = 10;  //  Gain setting if using a voltage divider
 const uint8_t evADSi2c_addr  = 0x48;  // The I2C address of the ADS1115 ADC
 const uint8_t VoltReadsToAvg = 1;     // Only read one sample
 
-// Create an External Voltage sensor object
+// Create an TI ADS1x15 sensor object
 TIADS1x15 ads1x15(ADSPower, ADSChannel, dividerGain, evADSi2c_addr,
                   VoltReadsToAvg);
 
@@ -1641,15 +1641,15 @@ Variable* ads1x15Volt =
 #include <sensors/ProcessorAnalog.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-const int8_t externalAnalogPowerPin    = sensorPowerPin;  // Power pin
-const int8_t externalAnalogDataChannel = A0;  // The ADS channel of interest
-const float  externalAnalogMultiplier =
+const int8_t processorAnalogPowerPin = sensorPowerPin;  // Power pin
+const int8_t processorAnalogDataPin  = A0;  // Analog input pin (processor ADC)
+const float  processorAnalogMultiplier =
     5.58;                        //  Gain setting if using a voltage divider
 const uint8_t eaReadsToAvg = 1;  // Only read one sample
 
-// Create an External Voltage sensor object
-ProcessorAnalog extAnalog(externalAnalogPowerPin, externalAnalogDataChannel,
-                          externalAnalogMultiplier, OPERATING_VOLTAGE,
+// Create an Processor Analog sensor object
+ProcessorAnalog extAnalog(processorAnalogPowerPin, processorAnalogDataPin,
+                          processorAnalogMultiplier, OPERATING_VOLTAGE,
                           eaReadsToAvg);
 
 // Create a voltage variable pointer
