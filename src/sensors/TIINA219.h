@@ -34,7 +34,7 @@
  * of this sensor can be increased to increase sensitivity (at the expense of
  * range) but this library assumes the maximum range.
  *
- * Communications between the INA219 and the mcu is managed by the
+ * Communications between the INA219 and the mcu are managed by the
  * [Adafruit INA219 Library](https://github.com/adafruit/Adafruit_INA219)
  *
  * @note Software I2C is *not* supported for the INA219.
