@@ -368,7 +368,7 @@
 // clang-format on
 /// @brief Decimals places in string representation; the health code has 0.
 #define ANB_PH_HEALTH_CODE_RESOLUTION 0
-/// @brief Sensor variable number; health code is stored in sensorValues[4]
+/// @brief Sensor variable number; health code is stored in sensorValues[5]
 #define ANB_PH_HEALTH_CODE_VAR_NUM 5
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
@@ -404,7 +404,7 @@
 // clang-format on
 /// @brief Decimals places in string representation; the diagnostic code has 0.
 #define ANB_PH_DIAGNOSTIC_CODE_RESOLUTION 0
-/// @brief Sensor variable number; diagnostic code is stored in sensorValues[4]
+/// @brief Sensor variable number; diagnostic code is stored in sensorValues[6]
 #define ANB_PH_DIAGNOSTIC_CODE_VAR_NUM 6
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
@@ -441,7 +441,7 @@
 // clang-format on
 /// @brief Decimals places in string representation; the error code has 0.
 #define ANB_PH_STATUS_CODE_RESOLUTION 0
-/// @brief Sensor variable number; error code is stored in sensorValues[4]
+/// @brief Sensor variable number; error code is stored in sensorValues[7]
 #define ANB_PH_STATUS_CODE_VAR_NUM 7
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
