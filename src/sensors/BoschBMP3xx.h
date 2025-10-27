@@ -291,7 +291,7 @@
 /// datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Bosch-BMP390-Datasheet.pdf)
 /// for resolution at all bandwidths.
 #define BMP3XX_PRESSURE_RESOLUTION 3
-/// @brief Sensor variable number; pressure is stored in sensorValues[2].
+/// @brief Sensor variable number; pressure is stored in sensorValues[1].
 #define BMP3XX_PRESSURE_VAR_NUM 1
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
@@ -316,7 +316,7 @@
 /// @brief Decimals places in string representation; altitude should have 0 -
 /// resolution is 1m.
 #define BMP3XX_ALTITUDE_RESOLUTION 0
-/// @brief Sensor variable number; altitude is stored in sensorValues[3].
+/// @brief Sensor variable number; altitude is stored in sensorValues[2].
 #define BMP3XX_ALTITUDE_VAR_NUM 2
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
