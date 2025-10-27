@@ -81,7 +81,8 @@ bool AlphasenseCO2::addSingleMeasurementResult(void) {
     ads.setGain(GAIN_ONE);
     // Begin ADC, returns true if anything was detected at the address
     if (!ads.begin(_i2cAddress)) {
-        MS_DBG(F("  ADC initialization failed"));
+        MS_DBG(F("  ADC initialization failed at 0x"),
+               String(_i2cAddress, HEX));
         return bumpMeasurementAttemptCount(false);
     }
 

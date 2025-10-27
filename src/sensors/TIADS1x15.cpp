@@ -77,7 +77,8 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
     ads.setGain(GAIN_ONE);
     // Begin ADC, returns true if anything was detected at the address
     if (!ads.begin(_i2cAddress)) {
-        MS_DBG(F("  ADC initialization failed"));
+        MS_DBG(F("  ADC initialization failed at 0x"),
+               String(_i2cAddress, HEX));
         return bumpMeasurementAttemptCount(false);
     }
 
@@ -87,7 +88,8 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
     adcCounts = ads.readADC_SingleEnded(_adsChannel);
     // Convert ADC raw counts value to voltage (V)
     adcVoltage = ads.computeVolts(adcCounts);
-    MS_DBG(F("  ads.readADC_SingleEnded("), _adsChannel, F("):"), adcVoltage);
+    MS_DBG(F("  ads.readADC_SingleEnded("), _adsChannel, F("):"), adcCounts,
+           '=', adcVoltage);
 
     // @todo Verify the range based on the actual power supplied to the ADS.
     // Here we are using the range of the ADS when it is powered at 3.3V

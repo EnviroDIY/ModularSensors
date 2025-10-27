@@ -123,14 +123,15 @@ bool TurnerTurbidityPlus::addSingleMeasurementResult(void) {
     ads.setGain(_PGA_gain);
     // Begin ADC, returns true if anything was detected at the address
     if (!ads.begin(_i2cAddress)) {
-        MS_DBG(F("  ADC initialization failed"));
+        MS_DBG(F("  ADC initialization failed at 0x"),
+               String(_i2cAddress, HEX));
         return bumpMeasurementAttemptCount(false);
     }
 
     // Print out the calibration curve
     MS_DBG(F("  Input calibration Curve:"), _volt_std, F("V at"), _conc_std,
            F(".  "), _volt_blank, F("V blank."));
-    const float epsilon = 1e-6;  // Adjust based on expected precision
+    const float epsilon = 1e-4f;  // tune to expected sensor precision
     if (fabs(_volt_std - _volt_blank) < epsilon) {
         MS_DBG(F("Invalid calibration: point voltage equals blank voltage"));
         return bumpMeasurementAttemptCount(false);
