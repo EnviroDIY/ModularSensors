@@ -122,6 +122,7 @@ bool PaleoTerraRedox::addSingleMeasurementResult(void) {
 
     _i2c->requestFrom(int(_i2cAddressHex),
                       4);  // Get 4 bytes from device
+    if (_i2c->available() != 4) { return bumpMeasurementAttemptCount(false); }
     byte res1 = _i2c->read();
     byte res2 = _i2c->read();
     byte res3 = _i2c->read();
