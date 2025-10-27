@@ -81,8 +81,8 @@ bool TallyCounterI2C::addSingleMeasurementResult(void) {
 
     events = counter_internal.Peek();
 
-    // Assume that if negative a failed response
-    // May also return a very negative temp when receiving a bad response
+    // Assume that if negative, it indicates a failed response
+    // May also return a very negative value when receiving a bad response
     if (events < 0) {
         MS_DBG(getSensorNameAndLocation(),
                F("returns all values 0 or bad, assuming sensor non-response!"));
