@@ -36,7 +36,7 @@ ProcessorStats::ProcessorStats(const char* version,
     } else if (strcmp(_version, "v0.2") == 0) {
         _batteryMultiplier = 1.47;
     } else {
-        _batteryMultiplier = -1
+        _batteryMultiplier = -1;
     }
 #elif defined(ARDUINO_SODAQ_AUTONOMO)
     if (strcmp(_version, "v0.1") == 0)
