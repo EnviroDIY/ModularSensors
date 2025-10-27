@@ -29,6 +29,9 @@ This was probably a hold-over from incorrect implementation and calling of the c
 Also added optional arguments to the `completeUpdate()` function to allow users to specify if the sensors should be powered/woken.
   - The `updateAllSensors()` function is now deprecated.
 Use `completeUpdate(false, false, false, false)` instead.
+    - Previously the `updateAllSensors()` function asked all sensors to update their values, skipping all power, wake, and sleep steps while the `completeUpdate()` function duplicated that functionality and added the power, wake, and sleep.
+The two functions have been consolidated into one function with four arguments, one each for power on, wake, sleep, and power off.
+To achieve the same functionality as the old `updateAllSensors()` function (ie, only updating values), set all of the arguments to false.
 - Applied many suggestions from Code Rabbit AI.
 
 ### Added

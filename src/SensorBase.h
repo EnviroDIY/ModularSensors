@@ -302,8 +302,8 @@ class Sensor {
      * ready for sensor communication.
      *
      * Bit 3
-     * - 0 => Activation/wake attempt made
-     * - 1 => No activation/wake attempt made
+     * - 0 => No Activation/wake attempt made
+     * - 1 => Activation/wake attempt made
      * - check _millisSensorActivated or bit 4 to see if wake() attempt was
      * successful
      * - a failed activation attempt will give _millisSensorActivated = 0
@@ -315,8 +315,8 @@ class Sensor {
      * a measurement.
      *
      * Bit 5
-     * - 0 => Start measurement requested attempt made
-     * - 1 => No measurements have been requested
+     * - 0 => No measurements have been requested
+     * - 1 => Start measurement requested attempt made
      * - check _millisMeasurementRequested or bit 6 to see if
      * startSingleMeasurement() attempt was successful
      * - a failed request attempt will give _millisMeasurementRequested = 0
