@@ -257,7 +257,7 @@ void setup() {
 // NOTE:  Only use this when debugging - if not connected to a PC, this adds an
 // unnecessary startup delay
 #if defined(SERIAL_PORT_USBVIRTUAL)
-    while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000L)) {}
+    while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000L)) { delay(10); }
 #endif
 
     // Print a start-up note to the first serial port
