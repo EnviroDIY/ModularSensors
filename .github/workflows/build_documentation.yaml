@@ -34,7 +34,7 @@ jobs:
     name: Check that all classes are documented in the menu-a-la-carte example
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Set up Python
         uses: actions/setup-python@v6
