@@ -33,7 +33,6 @@ _______
 
 ## Unique Features of the DRWI Mayfly 1.x WiFi Example<!--! {#example_drwi_mayfly1_wifi_unique} -->
 
-- Specifically for sites within the Delaware River Watershed Initiative.
 - Uses a EnviroDIY WiFi Bee based on the Espressif ESP32-WROOM-32
 
 <!--! @section example_drwi_mayfly1_wifi_pio_config PlatformIO Configuration -->
