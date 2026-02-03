@@ -17,8 +17,6 @@
 
 @subpage example_simple_logging "DELETE THIS LINK"
 
-@subpage example_learn_envirodiy "DELETE THIS LINK"
-
 */
 
 /**
@@ -65,12 +63,6 @@
 
 @subpage example_drwi_mayfly1_wifi "DELETE THIS LINK"
 
-@subpage example_drwi_ediylte "DELETE THIS LINK"
-
-@subpage example_drwi_digilte "DELETE THIS LINK"
-
-@subpage example_drwi_2g "DELETE THIS LINK"
-
 @subpage example_drwi_no_cell "DELETE THIS LINK"
 
 */
@@ -84,5 +76,23 @@
 [Everything at Once - a la carte](@ref examples_everything)
 
 @subpage example_menu "DELETE THIS LINK"
+
+*/
+
+/**
+@page page_the_examples
+
+@subpage examples_outdated "DELETE THIS LINK"
+
+@page examples_outdated Examples for Outdated Hardware
+[Examples for Outdated Hardware](@ref examples_outdated)
+
+@subpage example_drwi_ediylte "DELETE THIS LINK"
+
+@subpage example_drwi_digilte "DELETE THIS LINK"
+
+@subpage example_drwi_2g "DELETE THIS LINK"
+
+@subpage example_learn_envirodiy "DELETE THIS LINK"
 
 */
