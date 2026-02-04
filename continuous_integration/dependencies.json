@@ -1,5 +1,5 @@
 {
-  "action_cache_version": 43,
+  "action_cache_version": 44,
   "dependencies": [
     {
       "name": "EnviroDIY_DS3231",
@@ -305,7 +305,7 @@
       "owner": "envirodiy",
       "library id": "5439",
       "url": "https://github.com/EnviroDIY/KellerModbus",
-      "version": "~0.2.6",
+      "version": "~0.2.7",
       "note": "Arduino library for communication with Keller pressure and water level sensors via Modbus.",
       "authors": [
         "Anthony Aufdenkampe"
@@ -316,7 +316,7 @@
       "owner": "envirodiy",
       "library id": "2078",
       "url": "https://github.com/EnviroDIY/YosemitechModbus",
-      "version": "~0.5.3",
+      "version": "~0.5.4",
       "note": "Arduino library for communication with Yosemitech sensors via Modbus.",
       "authors": [
         "Sara Damiano",
@@ -328,7 +328,7 @@
       "name": "GroPointModbus",
       "owner": "envirodiy",
       "url": "https://github.com/EnviroDIY/GroPointModbus",
-      "version": "~0.1.4",
+      "version": "~0.1.5",
       "note": "A library to use an Arduino as a master to control and communicate via modbus with GroPoint soil moisture sensors.",
       "authors": [
         "Anthony Aufdenkampe"
