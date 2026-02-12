@@ -436,7 +436,7 @@ all_sensor_flags = [
     "NO_SENSORS",
 ]
 all_publisher_flags = [
-    "BUILD_PUB_MONITOR_MW_PUBLISHER",
+    "BUILD_PUB_MONITOR_MY_WATERSHED_PUBLISHER",
 ]
 
 

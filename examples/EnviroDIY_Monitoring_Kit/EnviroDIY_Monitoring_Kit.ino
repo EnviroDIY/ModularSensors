@@ -236,13 +236,13 @@ SIMComSIM7080 modem = modem7080;
 // ==========================================================================
 //  Using the Processor as a Sensor
 // ==========================================================================
-/** Start [processor_sensor] */
+/** Start [processor_stats] */
 #include <sensors/ProcessorStats.h>
 
 // Create the main processor chip "sensor" - for general metadata
 const char*    mcuBoardVersion = "v1.1";
 ProcessorStats mcuBoard(mcuBoardVersion, 5);
-/** End [processor_sensor] */
+/** End [processor_stats] */
 
 
 // ==========================================================================

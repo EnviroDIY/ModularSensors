@@ -960,7 +960,7 @@ Variable* modemTemperature =
 // ==========================================================================
 //  Using the Processor as a Sensor
 // ==========================================================================
-/** Start [processor_sensor] */
+/** Start [processor_stats] */
 #include <sensors/ProcessorStats.h>
 
 // Create the main processor chip "sensor" - for general metadata
@@ -983,7 +983,7 @@ Variable* mcuBoardSampNo = new ProcessorStats_SampleNumber(
     &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* mcuBoardReset = new ProcessorStats_ResetCode(
     &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [processor_sensor] */
+/** End [processor_stats] */
 
 
 #if defined(MS_USE_DS3231)
@@ -3344,7 +3344,7 @@ VariableArray varArray(variableCount, variableList);
 #endif
 
 
-#if defined(BUILD_PUB_MONITOR_MW_PUBLISHER) && \
+#if defined(BUILD_PUB_MONITOR_MY_WATERSHED_PUBLISHER) && \
     (!defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM))
 // ==========================================================================
 //  A Publisher to Monitor My Watershed
