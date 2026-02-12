@@ -3994,6 +3994,16 @@ void loop() {
                  F("V; high enough to log and publish data"));
         dataLogger.logDataAndPublish();
     }
+#else
+    } else {
+        // If the battery is good enough to log, log the data but we have no
+        // modem so we can't publish
+        PRINTOUT(F("Battery at"),
+                 mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM],
+                 F("V; high enough to log data"));
+        dataLogger.logData();
+    }
+#endif
 }
 
 /** End [simple_loop] */
