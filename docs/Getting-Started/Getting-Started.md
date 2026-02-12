@@ -146,7 +146,7 @@ This showcases both how to use two different logging instances and how to use so
 - [data_saving](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/)
   - This is another double logger example, but in this case, both loggers are going at the same interval and the only difference between the loggers is the list of variables.
 There are two sets of variables, all coming from Yosemitech sensors.
-Because each sensor outputs temperature and we don't want to waste cellular data sending out multiple nearly identical temperature values, we have one logger that logs every possible variable result to the SD card and another logger that sends only unique results to the EnviroDIY data portal.
+Because each sensor outputs temperature and we don't want to waste cellular data sending out multiple nearly identical temperature values, we have one logger that logs every possible variable result to the SD card and another logger that sends only unique results to Monitor My Watershed.
 This example also shows how to stop power draw from an RS485 adapter with automatic flow detection.
 
 ## Deploying your Station<!--! {#page_getting_started_deploying} -->

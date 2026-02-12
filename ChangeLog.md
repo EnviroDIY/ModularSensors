@@ -16,6 +16,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   - Previously the 'i' of initial was not capitalized.
 - Made the enabling and disabling of the watchdog the very first and very last steps of sleep to keep the watchdog enabled through the whole getting ready for bed and waking up process.
 - **ANB pH** Changed timing slightly and simplified timing logic.
+- **Renamed** The EnviroDIYPublisher has been renamed the MonitorMyWatershedPublisher.
+This reflects changes to the website from years ago.
+There is a shell file and typedef to maintain backwards compatibility.
 - Bumped several dependencies - including crucial bug fixes to SensorModbusMaster.
 - Re-wrote most of the logic for looping variables within the complete update function of the VariableArray.
 - Simplified the `addSingleMeasurementResult()` function of all sensors to use an internal function to help set the bits and timing values and to quit sooner if the measurement was not started successfully.
@@ -33,7 +36,6 @@ Use `completeUpdate(false, false, false, false)` instead.
 The two functions have been consolidated into one function with four arguments, one each for power on, wake, sleep, and power off.
 To achieve the same functionality as the old `updateAllSensors()` function (ie, only updating values), set all of the arguments to false.
 - Applied many suggestions from Code Rabbit AI.
-
 - Moved outdated examples to a new "Outdated" folder, with a subfolder for the DRWI examples
 
 ### Added
@@ -60,12 +62,14 @@ These values should generally be set in the specific sensor constructors and onl
 - **NEW SENSOR** Added a new sensor for simple analog voltage using the built-in processor ADC
 - Added KnownProcessors.h and moved defines values for supported built-in sensors on known processors to that file.
   - This affects ProcessorStats and the Everlight ALS PT-19.
+- Added a new example specific to the [EnviroDIY Monitoring Station Kit](https://www.envirodiy.org/product/envirodiy-monitoring-station-kit/).
 
 ### Removed
 
 - Remove the unused `_maxSamplesToAverage` parameter of the VariableArray and the `countMaxToAverage()` function which set the parameter.
 - Removed unnecessary copy doc calls for inherited functions and properties.
 - Removed all overrides of the powerUp and powerDown functions that are no longer needed since all sensors have two power pins built in.
+- Removed references to the EnviroDIY data portal.
 
 ### Fixed
 

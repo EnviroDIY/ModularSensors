@@ -44,7 +44,7 @@ _______
 
 ### Prepare and set up PlatformIO<!--! {#example_drwi_no_cell_pio} -->
 
-- Register a site and sensors at the Monitor My Watershed/EnviroDIY data portal (<http://monitormywatershed.org/>)
+- Register a site and sensors on [Monitor My Watershed](https://monitormywatershed.org/)
 - Create a new PlatformIO project
 - Replace the contents of the platformio.ini for your new project with the [platformio.ini](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/DRWI_NoCellular/platformio.ini) file in the examples/DRWI_NoCellular folder on GitHub.
   - It is important that your PlatformIO configuration has the lib_ldf_mode and build flags set as they are in the example.
@@ -95,7 +95,7 @@ CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHig
 
 ### Set the universally universal identifiers (UUID) for each variable<!--! {#example_drwi_no_cell_uuids} -->
 
-- Go back to the web page for your site at the Monitor My Watershed/EnviroDIY data portal (<http://monitormywatershed.org/>)
+- Go back to the web page for your site on [Monitor My Watershed](https://monitormywatershed.org/)
 - Find and click the white "View Token UUID List" button above the small map on your site page
 - __VERY CAREFULLY__ check that the variables are in exactly the same order as in the variable array:
 

@@ -1,19 +1,18 @@
 /**
- * @file EnviroDIYPublisher.h
+ * @file MonitorMyWatershedPublisher.h
  * @copyright Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino.
  * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  * @author Thomas Watson <twatson52@icloud.com>
  *
- * @brief Contains the EnviroDIYPublisher subclass of dataPublisher for
- * publishing data to the Monitor My Watershed/EnviroDIY data portal at
- * http://data.enviroDIY.org
+ * @brief Contains the MonitorMyWatershedPublisher subclass of dataPublisher for
+ * publishing data to Monitor My Watershed at https://monitormywatershed.org/
  */
 
 // Header Guards
-#ifndef SRC_PUBLISHERS_ENVIRODIYPUBLISHER_H_
-#define SRC_PUBLISHERS_ENVIRODIYPUBLISHER_H_
+#ifndef SRC_PUBLISHERS_MONITORMYWATERSHEDPUBLISHER_H_
+#define SRC_PUBLISHERS_MONITORMYWATERSHEDPUBLISHER_H_
 
 // Include the library config before anything else
 #include "ModSensorConfig.h"
@@ -22,8 +21,8 @@
 #include "ModSensorDebugConfig.h"
 
 // Define the print label[s] for the debugger
-#ifdef MS_ENVIRODIYPUBLISHER_DEBUG
-#define MS_DEBUGGING_STD "EnviroDIYPublisher"
+#ifdef MS_MONITORMYWATERSHEDPUBLISHER_DEBUG
+#define MS_DEBUGGING_STD "MonitorMyWatershedPublisher"
 #endif
 
 // Include the debugger
@@ -37,24 +36,25 @@
 
 
 // ============================================================================
-//  Functions for the EnviroDIY data portal receivers.
+//  Functions for Monitor My Watershed
 // ============================================================================
 /**
- * @brief The EnviroDIYPublisher subclass of dataPublisher for publishing data
- * to the Monitor My Watershed/EnviroDIY data portal at
- * https://monitormywatershed.org/ (formerly at http://data.enviroDIY.org).
+ * @brief The MonitorMyWatershedPublisher subclass of dataPublisher for
+ * publishing data to Monitor My Watershed at https://monitormywatershed.org/
+ * (formerly at http://data.enviroDIY.org).
  *
  * @ingroup the_publishers
  */
-class EnviroDIYPublisher : public dataPublisher {
+class MonitorMyWatershedPublisher : public dataPublisher {
  public:
     // Constructors
     /**
-     * @brief Construct a new EnviroDIY Publisher object with no members set.
+     * @brief Construct a new Monitor My Watershed Publisher object with no
+     * members set.
      */
-    EnviroDIYPublisher();
+    MonitorMyWatershedPublisher();
     /**
-     * @brief Construct a new EnviroDIY Publisher object
+     * @brief Construct a new Monitor My Watershed Publisher object
      *
      * @note If a client is never specified, the publisher will attempt to
      * create and use a client on a LoggerModem instance tied to the attached
@@ -64,9 +64,10 @@ class EnviroDIYPublisher : public dataPublisher {
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions.
      */
-    explicit EnviroDIYPublisher(Logger& baseLogger, int sendEveryX = 1);
+    explicit MonitorMyWatershedPublisher(Logger& baseLogger,
+                                         int     sendEveryX = 1);
     /**
-     * @brief Construct a new EnviroDIY Publisher object
+     * @brief Construct a new Monitor My Watershed Publisher object
      *
      * @param baseLogger The logger supplying the data to be published
      * @param inClient An Arduino client instance to use to print data to.
@@ -75,110 +76,115 @@ class EnviroDIYPublisher : public dataPublisher {
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions.
      */
-    EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
-                       int sendEveryX = 1);
+    MonitorMyWatershedPublisher(Logger& baseLogger, Client* inClient,
+                                int sendEveryX = 1);
     /**
-     * @brief Construct a new EnviroDIY Publisher object
+     * @brief Construct a new Monitor My Watershed Publisher object
      *
      * @param baseLogger The logger supplying the data to be published
-     * @param registrationToken The registration token for the site on the
-     * Monitor My Watershed data portal.
-     * @param samplingFeatureUUID The sampling feature UUID for the site on the
-     * Monitor My Watershed data portal.
+     * @param registrationToken The registration token for the site on Monitor
+     * My Watershed.
+     * @param samplingFeatureUUID The sampling feature UUID for the site on
+     * Monitor My Watershed.
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions.
      */
-    EnviroDIYPublisher(Logger& baseLogger, const char* registrationToken,
-                       const char* samplingFeatureUUID, int sendEveryX = 1);
+    MonitorMyWatershedPublisher(Logger&     baseLogger,
+                                const char* registrationToken,
+                                const char* samplingFeatureUUID,
+                                int         sendEveryX = 1);
     /**
-     * @brief Construct a new EnviroDIY Publisher object
+     * @brief Construct a new Monitor My Watershed Publisher object
      *
      * @param baseLogger The logger supplying the data to be published
-     * @param registrationToken The registration token for the site on the
-     * Monitor My Watershed data portal.
+     * @param registrationToken The registration token for the site on Monitor
+     * My Watershed.
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions.
      */
-    EnviroDIYPublisher(Logger& baseLogger, const char* registrationToken,
-                       int sendEveryX = 1);
+    MonitorMyWatershedPublisher(Logger&     baseLogger,
+                                const char* registrationToken,
+                                int         sendEveryX = 1);
     /**
-     * @brief Construct a new EnviroDIY Publisher object
-     *
-     * @param baseLogger The logger supplying the data to be published
-     * @param inClient An Arduino client instance to use to print data to.
-     * Allows the use of any type of client and multiple clients tied to a
-     * single TinyGSM modem instance
-     * @param registrationToken The registration token for the site on the
-     * Monitor My Watershed data portal.
-     * @param samplingFeatureUUID The sampling feature UUID for the site on the
-     * Monitor My Watershed data portal.
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions.
-     */
-    EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
-                       const char* registrationToken,
-                       const char* samplingFeatureUUID, int sendEveryX = 1);
-    /**
-     * @brief Construct a new EnviroDIY Publisher object
+     * @brief Construct a new Monitor My Watershed Publisher object
      *
      * @param baseLogger The logger supplying the data to be published
      * @param inClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
-     * @param registrationToken The registration token for the site on the
-     * Monitor My Watershed data portal.
+     * @param registrationToken The registration token for the site on Monitor
+     * My Watershed.
+     * @param samplingFeatureUUID The sampling feature UUID for the site on
+     * Monitor My Watershed.
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions.
      */
-    EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
-                       const char* registrationToken, int sendEveryX = 1);
+    MonitorMyWatershedPublisher(Logger& baseLogger, Client* inClient,
+                                const char* registrationToken,
+                                const char* samplingFeatureUUID,
+                                int         sendEveryX = 1);
     /**
-     * @brief Destroy the EnviroDIY Publisher object
+     * @brief Construct a new Monitor My Watershed Publisher object
+     *
+     * @param baseLogger The logger supplying the data to be published
+     * @param inClient An Arduino client instance to use to print data to.
+     * Allows the use of any type of client and multiple clients tied to a
+     * single TinyGSM modem instance
+     * @param registrationToken The registration token for the site on Monitor
+     * My Watershed.
+     * @param sendEveryX Interval (in units of the logging interval) between
+     * attempted data transmissions.
      */
-    virtual ~EnviroDIYPublisher();
+    MonitorMyWatershedPublisher(Logger& baseLogger, Client* inClient,
+                                const char* registrationToken,
+                                int         sendEveryX = 1);
+    /**
+     * @brief Destroy the Monitor My Watershed Publisher object
+     */
+    virtual ~MonitorMyWatershedPublisher();
 
     // Returns the data destination
     String getEndpoint(void) override {
-        return String(enviroDIYHost) + String(enviroDIYPath);
+        return String(monitorMWHost) + String(monitorMWPath);
     }
 
     /**
-     * @brief Get the EnviroDIY/Monitor My Watershed web host
+     * @brief Get the Monitor My Watershed web host
      *
-     * @return The EnviroDIY/Monitor My Watershed web host
+     * @return The Monitor My Watershed web host
      */
     String getHost(void);
 
     /**
-     * @brief Set the EnviroDIY/Monitor My Watershed web host
+     * @brief Set the Monitor My Watershed web host
      *
-     * @param host The EnviroDIY/Monitor My Watershed web host
+     * @param host The Monitor My Watershed web host
      */
     void setHost(const char* host);
 
     /**
-     * @brief Get the EnviroDIY/Monitor My Watershed API path
+     * @brief Get the Monitor My Watershed API path
      *
-     * @return The EnviroDIY/Monitor My Watershed API path
+     * @return The Monitor My Watershed API path
      */
     String getPath(void);
     /**
-     * @brief Set the EnviroDIY/Monitor My Watershed API path
+     * @brief Set the Monitor My Watershed API path
      *
-     * @param endpoint The EnviroDIY/Monitor My Watershed API path
+     * @param endpoint The Monitor My Watershed API path
      */
     void setPath(const char* endpoint);
 
     /**
-     * @brief Get the EnviroDIY/Monitor My Watershed API port
+     * @brief Get the Monitor My Watershed API port
      *
-     * @return The EnviroDIY/Monitor My Watershed API port
+     * @return The Monitor My Watershed API port
      */
     int getPort(void);
     /**
-     * @brief Set the EnviroDIY/Monitor My Watershed API port
+     * @brief Set the Monitor My Watershed API port
      *
-     * @param port The EnviroDIY/Monitor My Watershed API port
+     * @param port The Monitor My Watershed API port
      */
     void setPort(int port);
 
@@ -186,8 +192,8 @@ class EnviroDIYPublisher : public dataPublisher {
     /**
      * @brief Set the site registration token
      *
-     * @param registrationToken The registration token for the site on the
-     * Monitor My Watershed data portal.
+     * @param registrationToken The registration token for the site on Monitor
+     * My Watershed.
      */
     void setToken(const char* registrationToken);
 
@@ -201,26 +207,26 @@ class EnviroDIYPublisher : public dataPublisher {
 
     /**
      * @copydoc dataPublisher::begin(Logger& baseLogger, Client* inClient)
-     * @param registrationToken The registration token for the site on the
-     * Monitor My Watershed data portal.
-     * @param samplingFeatureUUID The sampling feature UUID for the site on the
-     * Monitor My Watershed data portal.
+     * @param registrationToken The registration token for the site on Monitor
+     * My Watershed.
+     * @param samplingFeatureUUID The sampling feature UUID for the site on
+     * Monitor My Watershed.
      */
     void begin(Logger& baseLogger, Client* inClient,
                const char* registrationToken, const char* samplingFeatureUUID);
     /**
      * @copydoc dataPublisher::begin(Logger& baseLogger)
-     * @param registrationToken The registration token for the site on the
-     * Monitor My Watershed data portal.
-     * @param samplingFeatureUUID The sampling feature UUID for the site on the
-     * Monitor My Watershed data portal.
+     * @param registrationToken The registration token for the site on Monitor
+     * My Watershed.
+     * @param samplingFeatureUUID The sampling feature UUID for the site on
+     * Monitor My Watershed.
      */
     void begin(Logger& baseLogger, const char* registrationToken,
                const char* samplingFeatureUUID);
     /**
      * @copydoc dataPublisher::begin(Logger& baseLogger)
-     * @param registrationToken The registration token for the site on the
-     * Monitor My Watershed data portal.
+     * @param registrationToken The registration token for the site on Monitor
+     * My Watershed.
      */
     void begin(Logger& baseLogger, const char* registrationToken);
 
@@ -233,9 +239,8 @@ class EnviroDIYPublisher : public dataPublisher {
     bool connectionNeeded(void) override;
 
     /**
-     * @brief Utilize an attached modem to open a a TCP connection to the
-     * EnviroDIY/ODM2DataSharingPortal and then stream out a post request over
-     * that connection.
+     * @brief Utilize an attached modem to open a a TCP connection to Monitor My
+     * Watershed and then stream out a post request over that connection.
      *
      * This depends on an internet connection already having been made and a
      * client being available.
@@ -251,22 +256,22 @@ class EnviroDIYPublisher : public dataPublisher {
 
  protected:
     /**
-     * @anchor envirodiy_post_vars
-     * @name Portions of the POST request to EnviroDIY
+     * @anchor monitormw_post_vars
+     * @name Portions of the POST request to Monitor My Watershed
      *
      * @{
      */
-    const char*        enviroDIYPath;        ///< The api path
-    const char*        enviroDIYHost;        ///< The host name
-    int                enviroDIYPort;        ///< The host port
+    const char*        monitorMWPath;        ///< The api path
+    const char*        monitorMWHost;        ///< The host name
+    int                monitorMWPort;        ///< The host port
     static const char* tokenHeader;          ///< The token header text
     static const char* contentLengthHeader;  ///< The content length header text
     static const char* contentTypeHeader;    ///< The content type header text
     /**@}*/
 
     /**
-     * @anchor envirodiy_json_vars
-     * @name Portions of the JSON object for EnviroDIY
+     * @anchor monitormw_json_vars
+     * @name Portions of the JSON object for Monitor My Watershed
      *
      * @{
      */
@@ -303,10 +308,9 @@ class EnviroDIYPublisher : public dataPublisher {
 
  private:
     /**
-     * @brief Internal reference to the EnviroDIY/Monitor My Watershed
-     * registration token.
+     * @brief Internal reference to the Monitor My Watershed registration token.
      */
     const char* _registrationToken = nullptr;
 };
 
-#endif  // SRC_PUBLISHERS_ENVIRODIYPUBLISHER_H_
+#endif  // SRC_PUBLISHERS_MONITORMYWATERSHEDPUBLISHER_H_

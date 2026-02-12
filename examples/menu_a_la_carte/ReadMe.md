@@ -1290,7 +1290,7 @@ Here we use the `new` keyword to create multiple variables and get pointers to t
 
 #### Creating Variables and Pasting UUIDs from MonitorMyWatershed<!--! {#menu_walk_variables_separate_uuids} -->
 
-If you are sending data to monitor my watershed, it is much easier to create the variables in an array and then to paste the UUID's all together as copied from the "View Token UUID List" link for a site.
+If you are sending data to Monitor My Watershed, it is much easier to create the variables in an array and then to paste the UUID's all together as copied from the "View Token UUID List" link for a site.
 If using this method, be very, very, very careful to make sure the order of your variables exactly matches the order of your UUID's.
 
 <!--! @menusnip{variables_separate_uuids} -->
@@ -1609,7 +1609,7 @@ All together, this gives:
 <!--! @menusnip{complex_loop} -->
 
 If you need more help in writing a complex loop, the [double_logger example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/double_logger) demonstrates using a custom loop function in order to log two different groups of sensors at different logging intervals.
-The [data_saving example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/data_saving) shows using a custom loop in order to save cellular data by saving data from many variables on the SD card, but only sending a portion of the data to the EnviroDIY data portal.
+The [data_saving example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/data_saving) shows using a custom loop in order to save cellular data by saving data from many variables on the SD card, but only sending a portion of the data to [Monitor My Watershed](https://monitormywatershed.org/).
 
 <!--! @section example_menu_pio_config PlatformIO Configuration -->
 

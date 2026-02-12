@@ -2,7 +2,7 @@
 
 This is another double logger example, but in this case, both loggers are going at the same interval and the only difference between the loggers is the list of variables.
 There are two sets of variables, all coming from Yosemitech sensors.
-Because each sensor outputs temperature and we don't want to waste cellular data sending out multiple nearly identical temperature values, we have one logger that logs every possible variable result to the SD card and another logger that sends only unique results to the EnviroDIY data portal.
+Because each sensor outputs temperature and we don't want to waste cellular data sending out multiple nearly identical temperature values, we have one logger that logs every possible variable result to the SD card and another logger that sends only unique results to [Monitor My Watershed](https://monitormywatershed.org/).
 
 The modem used in this example is a SIM800 based Sodaq GPRSBee r6.
 
@@ -43,7 +43,7 @@ _______
 
 ### Prepare and set up PlatformIO<!--! {#example_data_saving_pio} -->
 
-- Register a site and sensors at the Monitor My Watershed/EnviroDIY data portal (<http://monitormywatershed.org/>)
+- Register a site and sensors on [Monitor My Watershed](https://monitormywatershed.org/)
 - Create a new PlatformIO project
 - Replace the contents of the platformio.ini for your new project with the [platformio.ini](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/data_saving/platformio.ini) file in the examples/data_saving folder on GitHub.
   - It is important that your PlatformIO configuration has the lib_ldf_mode and build flags set as they are in the example.
@@ -64,7 +64,7 @@ const char *LoggerID = "XXXX";
 
 ### Set the universally universal identifiers (UUID) for each variable<!--! {#example_data_saving_uuids} -->
 
-- Go back to the web page for your site at the Monitor My Watershed/EnviroDIY data portal (<http://monitormywatershed.org/>)
+- Go back to the web page for your site on [Monitor My Watershed](https://monitormywatershed.org/)
 - For each variable, find the dummy UUID (`"12345678-abcd-1234-ef00-1234567890ab"`) and replace it with the real UUID for the variable.
 
 ### Upload!<!--! {#example_data_saving_upload} -->

@@ -59,7 +59,7 @@ ___
 
 ### Publishing to Monitor My Watershed<!--! {#examples_mmw} -->
 
-The logging to Monitor My Watershed example uses a Digi XBee in transparent mode to publish data live from a BME280 and Maxim DS18 to the Monitor My Watershed data portal.
+The logging to Monitor My Watershed example uses a Digi XBee in transparent mode to publish data live from a BME280 and Maxim DS18 to Monitor My Watershed.
 
 - [Instructions for the logging to Monitor My Watershed example](https://envirodiy.github.io/ModularSensors/example_mmw.html)
 - [The logging to Monitor My Watershed example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/logging_to_MMW)
@@ -102,7 +102,7 @@ This showcases both how to use two different logging instances and how to use so
 
 The data saving example is another double logger example, but in this case, both loggers are going at the same interval and the only difference between the loggers is the list of variables.
 There are two sets of variables, all coming from Yosemitech sensors.
-Because each sensor outputs temperature and we don't want to waste cellular data sending out multiple nearly identical temperature values, we have one logger that logs every possible variable result to the SD card and another logger that sends only unique results to the EnviroDIY data portal.
+Because each sensor outputs temperature and we don't want to waste cellular data sending out multiple nearly identical temperature values, we have one logger that logs every possible variable result to the SD card and another logger that sends only unique results to Monitor My Watershed.
 This example also shows how to stop power draw from an RS485 adapter with automatic flow detection.
 
 - [Instructions for the data saving example](https://envirodiy.github.io/ModularSensors/example_data_saving.html)
@@ -146,7 +146,7 @@ ___
 The DRWI Mayfly 1.x LTE example uses the sensors and equipment used by most groups participating in the DRWI (Delaware River Watershed Initiative) Citizen Science project with the Stroud Water Research Center.
 It includes a Meter Hydros 21 (CTD) and a SIM7080G-based EnviroDIY LTEbee for communication.
 This examples also makes use of the on-board light, temperature, and humidity sensors on the Mayfly 1.x.
-The results are saved to the SD card and posted to the Monitor My Watershed data portal. Only to be used with newer Mayfly v1.0 and v1.1 boards.
+The results are saved to the SD card and posted to Monitor My Watershed. Only to be used with newer Mayfly v1.0 and v1.1 boards.
 
 - [Instructions for the Mayfly 1.x LTE DRWI Citizen Science example](https://envirodiy.github.io/ModularSensors/example_drwi_mayfly1.html)
 - [The LTEG DRWI Citizen Science example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/OutdatedHardware/DRWI_CitizenScience/DRWI_Mayfly1)
@@ -164,7 +164,7 @@ The exclusion of the modem and publisher simplifies the code from the other DRWI
 
 The 2G DRWI Citizen Science example uses the sensors and equipment found on older stations used in the DRWI Citizen Science project prior to 2020. The 2G GPRSbee boards no longer function in the USA, so this code should not be used and is only provided to archival and reference purposes.
 It includes a Meter Hydros 21 (formerly know as a Decagon CTD), a Campbell OBS3+, and a Sodaq GPRSBee for communication.
-The results are saved to the SD card and posted to the Monitor My Watershed data portal.
+The results are saved to the SD card and posted to Monitor My Watershed.
 The only difference between this and the other cellular DRWI examples is the type of modem used.
 
 - [Instructions for the 2G DRWI Citizen Science example](https://envirodiy.github.io/ModularSensors/example_drwi_2g.html)
@@ -174,7 +174,7 @@ The only difference between this and the other cellular DRWI examples is the typ
 
 The DRWI Digi LTE example uses the sensors and equipment common to older stations (2016-2020) deployed by groups participating in the DRWI Citizen Science project with the Stroud Water Research Center.
 It includes a Meter Hydros 21 (formerly know as a Decagon CTD), a Campbell OBS3+, and a Digi XBee3 LTE-M for communication.
-The results are saved to the SD card and posted to the Monitor My Watershed data portal.
+The results are saved to the SD card and posted to Monitor My Watershed.
 The only difference between this and the other cellular DRWI examples is the type of modem used.
 
 - [Instructions for the Digi LTE DRWI Citizen Science example](https://envirodiy.github.io/ModularSensors/example_drwi_digilte.html)
@@ -184,7 +184,7 @@ The only difference between this and the other cellular DRWI examples is the typ
 
 The DRWI EnviroDIY LTEbee example uses the sensors and equipment common to newer stations (2016-2020) deployed by groups participating in the DRWI Citizen Science project with the Stroud Water Research Center.
 It includes a Meter Hydros 21 (CTD), a Campbell OBS3+, (Turbidity) and a SIM7080G-based EnviroDIY LTEbee for communication.
-The results are saved to the SD card and posted to the Monitor My Watershed data portal.
+The results are saved to the SD card and posted to Monitor My Watershed.
 The only difference between this and the other cellular DRWI examples below is the type of modem used.
 
 - [Instructions for the EnviroDIY LTEbee DRWI Citizen Science example](https://envirodiy.github.io/ModularSensors/example_drwi_ediylte.html)

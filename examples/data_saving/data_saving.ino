@@ -353,9 +353,9 @@ const char* samplingFeature =
 
 // Create a data publisher for the Monitor My Watershed POST endpoint
 // This is only attached to the logger with the shorter variable array
-#include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher MonitorMWPost(loggerToGo, registrationToken,
-                                 samplingFeature);
+#include <publishers/MonitorMyWatershedPublisher.h>
+MonitorMyWatershedPublisher MonitorMWPost(loggerToGo, registrationToken,
+                                          samplingFeature);
 /** End [publishers] */
 
 
@@ -447,7 +447,8 @@ void setup() {
     loggerAllVars.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin,
                                 greenLED);
 
-    // Set up the connection information with EnviroDIY for both loggers
+    // Set up the connection information with Monitor My Watershed for both
+    // loggers
     // Doing this for both loggers ensures that the header of the csv will have
     // the tokens in it
     loggerAllVars.setSamplingFeatureUUID(samplingFeature);

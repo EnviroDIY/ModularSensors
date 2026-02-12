@@ -958,7 +958,7 @@ class Logger {
     /**
      * @brief Set static variables for the date/time
      *
-     * This is needed so that all data outputs (SD, EnviroDIY, serial printing,
+     * This is needed so that all data outputs (SD, publishers, serial printing,
      * etc) print the same time for updating the sensors - even though the
      * routines to update the sensors and to output the data may take several
      * seconds.  It is not currently possible to output the instantaneous time
@@ -980,7 +980,7 @@ class Logger {
      * That is the value saved in the static variable markedLocalUnixTime.
      *
      * This should be used in conjunction with markTime() to ensure that all
-     * data outputs from a single data update session (SD, EnviroDIY, serial
+     * data outputs from a single data update session (SD, publishers, serial
      * printing, etc) have the same timestamp even though the update routine may
      * take several (or many) seconds.
      *

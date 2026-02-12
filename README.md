@@ -106,9 +106,9 @@ For some generalized information about attaching sensors to an Arduino style boa
 ## Data Endpoints<!--! {#mainpage_data_receivers} -->
 
 Within ModularSensors, the "dataPublisher" objects add the functionality to send data to remote web services.
-The currently supported services are the [Monitor My Watershed data portal](https://monitormywatershed.org/), [ThingSpeak](https://thingspeak.com/), the [Ubidots IoT platform](https://ubidots.com), [Amazon Web Services IoT Core](https://aws.amazon.com/iot-core/), and [Amazon Web Services Simple Storage Service (S3)](https://aws.amazon.com/s3/).
+The currently supported services are [Monitor My Watershed](https://monitormywatershed.org/), [ThingSpeak](https://thingspeak.com/), the [Ubidots IoT platform](https://ubidots.com), [Amazon Web Services IoT Core](https://aws.amazon.com/iot-core/), and [Amazon Web Services Simple Storage Service (S3)](https://aws.amazon.com/s3/).
 
-- [Monitor My Watershed/EnviroDIY Data Portal](https://envirodiy.github.io/ModularSensors/class_enviro_d_i_y_publisher.html)
+- [Monitor My Watershed](https://envirodiy.github.io/ModularSensors/class_monitor_my_watershed_publisher.html)
 - [ThingSpeak](https://envirodiy.github.io/ModularSensors/class_thing_speak_publisher.html)
 - [Ubidots IoT platform](https://envirodiy.github.io/ModularSensors/class_ubidots_publisher.html)
 - [AWS IoT Core](https://envirodiy.github.io/ModularSensors/class_a_w_s___io_t___publisher.html)
