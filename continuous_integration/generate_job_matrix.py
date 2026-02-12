@@ -102,7 +102,7 @@ with open(os.path.join(ci_path, "platformio_to_arduino_boards.json")) as f:
     pio_to_acli = json.load(f)
 
 # Find all of the non-menu examples
-examples_to_build = []
+non_menu_examples = []
 for root, subdirs, files in os.walk(examples_path):
     for filename in files:
         file_path = os.path.join(root, filename)
@@ -113,7 +113,7 @@ for root, subdirs, files in os.walk(examples_path):
             "tests",
             menu_example_name,
         ]:
-            examples_to_build.append(os.path.relpath(root, workspace_path))
+            non_menu_examples.append(os.path.relpath(root, workspace_path))
             if use_verbose:
                 print(f"::debug::\t- example: {filename} (full path: {file_path})")
 
