@@ -1082,11 +1082,6 @@ RECURSIVE              = YES
 # run.
 
 EXCLUDE                = ../src/ReadMe.md \
-                         ../examples/logger_test \
-                         ../examples/logger_test_nonew \
-                         ../examples/YosemitechDO \
-                         ../examples/DRWI_2024_CTDandClarivue_LTE_20240724 \
-                         ../examples/DRWI_Mayfly1_Wifi_5tm_ds18b20_1 \
                          ../ex_one_offs \
                          ../tests \
                          ../sensor_tests \

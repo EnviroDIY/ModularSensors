@@ -34,7 +34,7 @@ jobs:
     name: Check that all classes are documented in the menu-a-la-carte example
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -63,7 +63,7 @@ jobs:
           exit $result_code
 
       - name: Create commit comment
-        uses: peter-evans/commit-comment@v3
+        uses: peter-evans/commit-comment@v4
         if: steps.check_component.outcome=='failure'
         with:
           body: |

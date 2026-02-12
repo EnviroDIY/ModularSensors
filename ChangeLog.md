@@ -34,6 +34,8 @@ The two functions have been consolidated into one function with four arguments, 
 To achieve the same functionality as the old `updateAllSensors()` function (ie, only updating values), set all of the arguments to false.
 - Applied many suggestions from Code Rabbit AI.
 
+- Moved outdated examples to a new "Outdated" folder, with a subfolder for the DRWI examples
+
 ### Added
 
 - **Added support for retrying measurements for all sensors**.
