@@ -314,7 +314,7 @@ for pio_env in pio_config.envs():
             compilers, [arduino_ex_commands, pio_ex_commands]
         ):
             # Skip examples that need to be updated or don't apply
-            if example == "data_saving":
+            if "data_saving" in example.lower():
                 continue  # skip until updated
             if "mayfly" in example.lower() and pio_env != "mayfly":
                 continue  # skip mayfly examples on non-mayfly builds
