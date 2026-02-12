@@ -40,15 +40,15 @@
  * - [Atmel ATmega16U4 32U4 Datasheet Summary](https://github.com/EnviroDIY/ModularSensors/wiki/Processor-Datasheets/Atmel-ATmega16U4-32U4-Datasheet-Summary.pdf)
  * - [Atmel ATmega16U4 32U4 Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Processor-Datasheets/Atmel-ATmega16U4-32U4-Datasheet.pdf)
  *
- * @section sensor_processor_sensor_ctor Sensor Constructor
+ * @section sensor_processor_stats_ctor Sensor Constructor
  * {{ @ref ProcessorStats::ProcessorStats }}
  *
  * ___
- * @section sensor_processor_sensor_examples Example Code
+ * @section sensor_processor_stats_examples Example Code
  * The processor is used as a sensor in all of the examples, including the
- * @menulink{processor_sensor} example.
+ * @menulink{processor_stats} example.
  *
- * @menusnip{processor_sensor}
+ * @menusnip{processor_stats}
  */
 /* clang-format on */
 
@@ -122,7 +122,7 @@
 /**@}*/
 
 /**
- * @anchor sensor_processor_sensor_timing
+ * @anchor sensor_processor_stats_timing
  * @name Sensor Timing
  * The sensor timing for the processor/mcu
  * - Timing variables do not apply to the processor in the same way they do to
