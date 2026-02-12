@@ -227,9 +227,9 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 //  Creating Data Publisher[s]
 // ==========================================================================
 /** Start [publishers] */
-// Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
+// Create a data publisher for the Monitor My Watershed POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPost(dataLogger, registrationToken,
+EnviroDIYPublisher MonitorMWPost(dataLogger, registrationToken,
                                  samplingFeature);
 /** End [publishers] */
 
@@ -308,7 +308,7 @@ void setup() {
 
     // Begin the logger
     dataLogger.begin();
-    EnviroDIYPost.begin(dataLogger, registrationToken, samplingFeature);
+    MonitorMWPost.begin(dataLogger, registrationToken, samplingFeature);
 
     // Note:  Please change these battery voltages to match your battery
     // Set up the sensors, except at lowest battery level

@@ -343,9 +343,9 @@ VariableArray varArray(variableCount, variableList, UUIDs);
 //  A Publisher to Monitor My Watershed
 // ==========================================================================
 /** Start [monitor_my_watershed_publisher] */
-// Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
+// Create a data publisher for the Monitor My Watershed POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPost(dataLogger, registrationToken);
+EnviroDIYPublisher MonitorMWPost(dataLogger, registrationToken);
 /** End [monitor_my_watershed_publisher] */
 #endif
 

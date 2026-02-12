@@ -132,7 +132,7 @@ EspressifESP32 modem = modemESP;
 // ==========================================================================
 //  Using the Processor as a Sensor
 // ==========================================================================
-/** Start [processor_stats] */
+/** Start [processor_sensor] */
 #include <sensors/ProcessorStats.h>
 
 // Create the main processor chip "sensor" - for general metadata
@@ -144,7 +144,7 @@ const char* mcuBoardVersion = "v1.1";
 const char* mcuBoardVersion = "unknown";
 #endif
 ProcessorStats mcuBoard(mcuBoardVersion, 5);
-/** End [processor_stats] */
+/** End [processor_sensor] */
 
 
 // ==========================================================================

@@ -1315,13 +1315,13 @@ ___
 
 Here we set up all three possible data publishers and link all of them to the same Logger object.
 
-#### Monitor My Watershed<!--! {#menu_walk_enviro_diy_publisher} -->
+#### Monitor My Watershed<!--! {#menu_walk_monitor_my_watershed_publisher} -->
 
-To publish data to the Monitor My Watershed / EnviroDIY Data Sharing Portal first you must register yourself as a user at <https://monitormywatershed.org> or <https://data.envirodiy.org>.
+To publish data to the Monitor My Watershed first you must register yourself as a user at <https://monitormywatershed.org>.
 Then you must register your site.
 After registering your site, a sampling feature and registration token for that site should be visible on the site page.
 
-<!--! @menusnip{enviro_diy_publisher} -->
+<!--! @menusnip{monitor_my_watershed_publisher} -->
 
 ___
 

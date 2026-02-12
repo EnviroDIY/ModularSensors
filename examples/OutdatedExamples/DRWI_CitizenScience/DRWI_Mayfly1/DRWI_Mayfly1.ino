@@ -252,9 +252,9 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 //  Creating Data Publisher[s]
 // ==========================================================================
 /** Start [publishers] */
-// Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
+// Create a data publisher for the Monitor My Watershed POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPost(dataLogger, registrationToken,
+EnviroDIYPublisher MonitorMWPost(dataLogger, registrationToken,
                                  samplingFeature);
 /** End [publishers] */
 

@@ -960,7 +960,7 @@ Variable* modemTemperature =
 // ==========================================================================
 //  Using the Processor as a Sensor
 // ==========================================================================
-/** Start [processor_stats] */
+/** Start [processor_sensor] */
 #include <sensors/ProcessorStats.h>
 
 // Create the main processor chip "sensor" - for general metadata
@@ -983,12 +983,13 @@ Variable* mcuBoardSampNo = new ProcessorStats_SampleNumber(
     &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* mcuBoardReset = new ProcessorStats_ResetCode(
     &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [processor_stats] */
+/** End [processor_sensor] */
 
 
 #if defined(MS_USE_DS3231)
 // ==========================================================================
 //  Maxim DS3231 RTC (Real Time Clock)
+//  Built in on Mayfly 0.x and 1.x
 // ==========================================================================
 /** Start [maxim_ds3231] */
 #include <sensors/MaximDS3231.h>
@@ -3343,14 +3344,14 @@ VariableArray varArray(variableCount, variableList);
 #endif
 
 
-#if defined(BUILD_PUB_ENVIRO_DIY_PUBLISHER) && \
+#if defined(BUILD_PUB_MONITOR_MW_PUBLISHER) && \
     (!defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM))
 // ==========================================================================
-//  A Publisher to Monitor My Watershed / EnviroDIY Data Sharing Portal
+//  A Publisher to Monitor My Watershed
 // ==========================================================================
-/** Start [enviro_diy_publisher] */
+/** Start [monitor_my_watershed_publisher] */
 // Device registration and sampling feature information can be obtained after
-// registration at https://monitormywatershed.org or https://data.envirodiy.org
+// registration at https://monitormywatershed.org
 const char* registrationToken =
     "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
 // NOTE: Because we already set the sampling feature with the logger
@@ -3358,10 +3359,10 @@ const char* registrationToken =
 // const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  //
 // Sampling feature UUID
 
-// Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
+// Create a data publisher for the Monitor My Watershed POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPost(dataLogger, registrationToken);
-/** End [enviro_diy_publisher] */
+EnviroDIYPublisher MonitorMWPost(dataLogger, registrationToken);
+/** End [monitor_my_watershed_publisher] */
 #endif
 
 
@@ -3979,6 +3980,7 @@ void loop() {
                  mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM],
                  F("V) going back to sleep."));
         dataLogger.systemSleep();
+#if !defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM)
     } else if (getBatteryVoltage() < 3.55) {
         // At moderate voltage, log data but don't send it over the modem
         PRINTOUT(F("Battery at"),

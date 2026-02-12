@@ -343,18 +343,18 @@ Logger loggerToGo(LoggerID, loggingInterval, &arrayToGo);
 //  Creating Data Publisher[s]
 // ==========================================================================
 /** Start [publishers] */
-// Create a publisher to Monitor My Watershed / EnviroDIY Data Sharing Portal
+// Create a publisher to Monitor My Watershed
 // Device registration and sampling feature information can be obtained after
-// registration at https://monitormywatershed.org or https://data.envirodiy.org
+// registration at https://monitormywatershed.org
 const char* registrationToken =
     "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
 const char* samplingFeature =
     "12345678-abcd-1234-ef00-1234567890ab";  // Sampling feature UUID
 
-// Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
+// Create a data publisher for the Monitor My Watershed POST endpoint
 // This is only attached to the logger with the shorter variable array
 #include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPost(loggerToGo, registrationToken,
+EnviroDIYPublisher MonitorMWPost(loggerToGo, registrationToken,
                                  samplingFeature);
 /** End [publishers] */
 

@@ -9,7 +9,7 @@ The exact hardware configuration used in this example:
 - Hydros21 CTD sensor
 - Campbell OBS3+ turbidity sensor
 
-Before using this example, you must register a site and sensors at the data portal (<http://data.envirodiy.org/>).
+Before using this example, you must register a site and sensors on [Monitor My Watershed](https://monitormywatershed.org).
 After you have registered the site and sensors, the portal will generate a registration token and universally unique identifier (UUID) for each site and further UUID's for each variable.
 You will need to copy all of those UUID values into your sketch to replace the `12345678-abcd-1234-ef00-1234567890ab` place holders in this example.
 __You should register even if your logger will not be sending live data.__  This ensures that the data file your logger writes will be ready to immediately upload to the portal.
