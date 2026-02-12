@@ -73,7 +73,7 @@ Customize the sketch for the version of the kit that you have: cellular, wifi, o
 
 #### Select the Connection Type<!--! {#example_envirodiy_monitoring_kit_connection_type} -->
 
-In lines 28 and 29, select no more than one of the "bee" types that you will be using.
+In lines 31 and 32, select no more than one of the "bee" types that you will be using.
 
 - Activate the modem you wish to use by _removing_ any slashes (```//```) before the bee module you will use.
   - The line should start with ```#define```
@@ -111,7 +111,7 @@ You can leave the configuration for the connection type you're not using as is.
 
 ### Set Data Logging Options<!--! {#example_envirodiy_monitoring_kit_logging_options} -->
 
-Customize your data logging options in lines 42 to 53 of the example.
+Customize your data logging options in lines 45-56 of the example.
 
 #### Set the logger ID<!--! {#example_envirodiy_monitoring_kit_logger_id} -->
 
@@ -148,7 +148,7 @@ const int8_t timeZone = -5;  // Eastern Standard Time
 
 - Go back to the web page for your site on [Monitor My Watershed](http://monitormywatershed.org/)
 - Find and click the white "View Token UUID List" button above the small map on your site page.
-- Paste the copied UUIDs into your sketch, _replacing_  lines 91-106.
+- Paste the copied UUIDs into your sketch, _replacing_  lines 93-108.
 
 ```cpp
 // ---------------------   Beginning of Token UUID List   ---------------------

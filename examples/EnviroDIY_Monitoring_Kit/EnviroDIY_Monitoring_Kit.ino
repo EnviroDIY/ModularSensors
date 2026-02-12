@@ -15,6 +15,9 @@
  * @m_examplenavigation{example_envirodiy_monitoring_kit,}
  * ======================================================================= */
 
+// The Arduino library is needed for every Arduino program.
+#include <Arduino.h>
+
 // ==========================================================================
 //  Configuration for the EnviroDIY Monitoring Station Kit
 // ==========================================================================
@@ -127,9 +130,6 @@ const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  // Sampli
 //  Include the libraries required for any data logger
 // ==========================================================================
 /** Start [includes] */
-// The Arduino library is needed for every Arduino program.
-#include <Arduino.h>
-
 // Include the main header for ModularSensors
 #include <ModularSensors.h>
 /** End [includes] */
@@ -442,7 +442,7 @@ void setup() {
     PRINTOUT(F("Setting logging interval to"), loggingInterval, F("minutes"));
     dataLogger.setLoggingInterval(loggingInterval);
     PRINTOUT(F("Setting number of initial 1 minute intervals to 10"));
-    dataLogger.setinitialShortIntervals(10);
+    dataLogger.setInitialShortIntervals(10);
     // Attach the variable array to the logger
     PRINTOUT(F("Attaching the variable array"));
     dataLogger.setVariableArray(&varArray);
