@@ -66,15 +66,17 @@
 /**
 @page page_the_examples
 
-@subpage examples_outdated "DELETE THIS LINK"
+@subpage page_examples_outdated "DELETE THIS LINK"
 
-@page examples_outdated Examples for Outdated Hardware
+@page page_examples_outdated Examples for Outdated Hardware
 [Examples for Outdated Hardware](@ref examples_outdated)
 
 @subpage example_learn_envirodiy "DELETE THIS LINK"
 
+*/
+
 /**
-@page examples_outdated
+@page page_examples_outdated
 
 @subpage page_examples_drwi "DELETE THIS LINK"
 

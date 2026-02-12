@@ -75,10 +75,10 @@ Customize the sketch for the version of the kit that you have: cellular, wifi, o
 
 In lines 31 and 32, select no more than one of the "bee" types that you will be using.
 
-- Activate the modem you wish to use by _removing_ any slashes (```//```) before the bee module you will use.
-  - The line should start with ```#define```
-- Add two slashes (```//```) in front of the modem you are NOT using.
-- If you are not using any internet connection, put two slashes (```//```) in front of both lines.
+- Activate the modem you wish to use by _removing_ any slashes (`//`) before the bee module you will use.
+  - The line should start with `#define`
+- Add two slashes (`//`) in front of the modem you are NOT using.
+- If you are not using any internet connection, put two slashes (`//`) in front of both lines.
 
 ```cpp
 #define USE_WIFI_BEE
@@ -87,10 +87,10 @@ In lines 31 and 32, select no more than one of the "bee" types that you will be 
 
 #### Add Connection Info<!--! {#example_envirodiy_monitoring_kit_connection_info} -->
 
-Replace the ```your_..``` with the appropriate APN or SSID and password for your network.
+Replace the `your_..` with the appropriate APN or SSID and password for your network.
 
 Your APN is assigned by your SIM card provider.
-If you are using a Hologram SIM card (recommended with the kit) the APN is ```"hologram"```.
+If you are using a Hologram SIM card (recommended with the kit) the APN is `"hologram"`.
 
 The SSID is the name of the wifi network.
 

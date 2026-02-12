@@ -21,6 +21,8 @@ ___
     - [Minimizing Cell Data Usage](#minimizing-cell-data-usage)
   - [Everything at Once - a la carte](#everything-at-once---a-la-carte)
     - [Menu a la carte](#menu-a-la-carte)
+  - [EnviroDIY Sensor Stations](#envirodiy-sensor-stations)
+    - [The EnviroDIY Sensor Station Kit](#the-envirodiy-sensor-station-kit)
   - [Examples for Outdated Hardware](#examples-for-outdated-hardware)
     - [Simple Logging for the Learn EnviroDIY course](#simple-logging-for-the-learn-envirodiy-course)
     - [DRWI Citizen Science](#drwi-citizen-science)
@@ -124,6 +126,17 @@ This example is *NOT* intended to be run in its entirety
   - Unlike the instructions for the other examples which show how to modify the example for your own use, this is a chunk-by-chunk step through of the code with explanations of each portion of the code and links to further documentation on each sensor.
   - There is a table of contents at the top of the walkthrough; I *strongly* recommend using that to skip through to the portions you are interested in
 - [The a la carte example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/menu_a_la_carte)
+
+___
+
+## EnviroDIY Sensor Stations<!--! {#examples_envirodiy} -->
+
+### The EnviroDIY Sensor Station Kit<!--! {#examples_envirodiy_kit} -->
+
+The The EnviroDIY Sensor Station Kit is designed to be used with the [EnviroDIY Monitoring Station Kit](https://www.envirodiy.org/product/envirodiy-monitoring-station-kit/).
+
+- [Instructions for the EnviroDIY sensor station kit example](https://envirodiy.github.io/ModularSensors/example_envirodiy_monitoring_kit.html)
+- [The EnviroDIY sensor station kit example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/example_envirodiy_monitoring_kit)
 
 ___
 

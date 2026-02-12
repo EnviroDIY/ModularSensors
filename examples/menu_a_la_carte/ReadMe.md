@@ -600,7 +600,7 @@ ___
 
 ## Sensors and Measured Variables<!--! {#menu_walk_sensors_and_vars} -->
 
-### The processor as a sensor<!--! {#menu_walk_processor_stats} -->
+### The processor as a sensor<!--! {#menu_walk_processor_sensor} -->
 
 Set options and create the objects for using the processor as a sensor to report battery level, processor free ram, and sample number.
 
@@ -612,7 +612,7 @@ The number of "samples" taken will increase by one for each time another process
 
 @see @ref sensor_processor
 
-<!--! @menusnip{processor_stats} -->
+<!--! @menusnip{processor_sensor} -->
 
 ___
 
