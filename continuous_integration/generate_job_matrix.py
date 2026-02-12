@@ -113,7 +113,7 @@ for root, subdirs, files in os.walk(examples_path):
             "tests",
             menu_example_name,
         ]:
-            non_menu_examples.append(os.path.relpath(root, workspace_path))
+            non_menu_examples.append(os.path.realpath(root))
             if use_verbose:
                 print(f"::debug::\t- example: {filename} (full path: {file_path})")
 
