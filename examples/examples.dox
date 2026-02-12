@@ -54,22 +54,6 @@
 /**
 @page page_the_examples
 
-@subpage page_examples_drwi "DELETE THIS LINK"
-
-@page page_examples_drwi DRWI Citizen Science
-[DRWI Citizen Science](@ref examples_drwi)
-
-@subpage example_drwi_mayfly1 "DELETE THIS LINK"
-
-@subpage example_drwi_mayfly1_wifi "DELETE THIS LINK"
-
-@subpage example_drwi_no_cell "DELETE THIS LINK"
-
-*/
-
-/**
-@page page_the_examples
-
 @subpage page_examples_menu "DELETE THIS LINK"
 
 @page page_examples_menu Everything at Once - a la carte
@@ -87,12 +71,26 @@
 @page examples_outdated Examples for Outdated Hardware
 [Examples for Outdated Hardware](@ref examples_outdated)
 
+@subpage example_learn_envirodiy "DELETE THIS LINK"
+
+/**
+@page examples_outdated
+
+@subpage page_examples_drwi "DELETE THIS LINK"
+
+@page page_examples_drwi DRWI Citizen Science
+[DRWI Citizen Science](@ref examples_drwi)
+
+@subpage example_drwi_mayfly1 "DELETE THIS LINK"
+
+@subpage example_drwi_mayfly1_wifi "DELETE THIS LINK"
+
+@subpage example_drwi_no_cell "DELETE THIS LINK"
+
 @subpage example_drwi_ediylte "DELETE THIS LINK"
 
 @subpage example_drwi_digilte "DELETE THIS LINK"
 
 @subpage example_drwi_2g "DELETE THIS LINK"
-
-@subpage example_learn_envirodiy "DELETE THIS LINK"
 
 */
