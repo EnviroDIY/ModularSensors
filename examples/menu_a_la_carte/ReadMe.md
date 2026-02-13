@@ -1609,7 +1609,6 @@ All together, this gives:
 <!--! @menusnip{complex_loop} -->
 
 If you need more help in writing a complex loop, the [double_logger example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/double_logger) demonstrates using a custom loop function in order to log two different groups of sensors at different logging intervals.
-The [data_saving example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/data_saving) shows using a custom loop in order to save cellular data by saving data from many variables on the SD card, but only sending a portion of the data to [Monitor My Watershed](https://monitormywatershed.org/).
 
 <!--! @section example_menu_pio_config PlatformIO Configuration -->
 
