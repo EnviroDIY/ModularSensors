@@ -35,7 +35,7 @@ _______
 
 ### Prepare and set up PlatformIO<!--! {#example_baro_rho_pio} -->
 
-- Register a site and sensors on [Monitor My Watershed](https://monitormywatershed.org/)
+- Register a site and sensors on [Monitor My Watershed](https://monitormywatershed.org)
 - Create a new PlatformIO project
 - Replace the contents of the platformio.ini for your new project with the [platformio.ini](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/baro_rho_correction/platformio.ini) file in the examples/baro_rho_correction folder on GitHub.
   - It is important that your PlatformIO configuration has the lib_ldf_mode and build flags set as they are in the example.
@@ -56,7 +56,7 @@ const char *LoggerID = "XXXX";
 
 ### Set the universally universal identifiers (UUID) for each variable<!--! {#example_baro_rho_uuids} -->
 
-- Go back to the web page for your site on [Monitor My Watershed](https://monitormywatershed.org/)
+- Go back to the web page for your site on [Monitor My Watershed](https://monitormywatershed.org)
 - For each variable, find the dummy UUID (`"12345678-abcd-1234-ef00-1234567890ab"`) and replace it with the real UUID for the variable.
 
 ### Upload!<!--! {#example_baro_rho_upload} -->

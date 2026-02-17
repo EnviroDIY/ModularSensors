@@ -940,7 +940,7 @@ Bug fix and example re-working
 
 ### Fixed
 
-- Fixes bug in sending data to the WikiWatershed / [Monitor My Watershed](https://monitormywatershed.org/) data sharing portal.
+- Fixes bug in sending data to [Monitor My Watershed](https://monitormywatershed.org).
 
 ***
 
