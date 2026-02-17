@@ -49,12 +49,12 @@ bool TIINA219::setup(void) {
         waitForWarmUp();
     }
 
-    ina219_phy.begin(_i2c);
+    bool success = ina219_phy.begin(_i2c);
 
     // Turn the power back off it it had been turned on
     if (!wasOn) { powerDown(); }
 
-    return true;
+    return success;
 }
 
 
@@ -65,9 +65,9 @@ bool TIINA219::wake(void) {
 
     // Begin/Init needs to be rerun after every power-up to set the calibration
     // coefficient for the INA219 (see p21 of datasheet)
-    ina219_phy.begin(_i2c);
+    bool success = ina219_phy.begin(_i2c);
 
-    return true;
+    return success;
 }
 
 
@@ -89,8 +89,9 @@ bool TIINA219::addSingleMeasurementResult(void) {
     busV_V     = ina219_phy.getBusVoltage_V();
     power_mW   = ina219_phy.getPower_mW();
 
-    // Only success if none of the values are NaN
-    success = !isnan(current_mA) && !isnan(busV_V) && !isnan(power_mW);
+    // Only success if I2C read succeeded and none of the values are NaN
+    success = ina219_phy.success() && !isnan(current_mA) && !isnan(busV_V) &&
+        !isnan(power_mW);
 
     MS_DBG(F("  Current [mA]:"), current_mA);
     MS_DBG(F("  Bus Voltage [V]:"), busV_V);
