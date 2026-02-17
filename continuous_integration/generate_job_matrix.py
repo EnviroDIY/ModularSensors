@@ -103,16 +103,19 @@ with open(os.path.join(ci_path, "platformio_to_arduino_boards.json")) as f:
 
 # Find all of the non-menu examples
 non_menu_examples = []
-for root, subdirs, files in os.walk(examples_path):
+for root, _subdirs, files in os.walk(examples_path):
+    folder_name = os.path.basename(root)
+    if folder_name in {
+        ".history",
+        "logger_test",
+        "archive",
+        "tests",
+        menu_example_name,
+    }:
+        continue
     for filename in files:
         file_path = os.path.join(root, filename)
-        if filename == os.path.split(root)[-1] + ".ino" and root not in [
-            ".history",
-            "logger_test",
-            "archive",
-            "tests",
-            menu_example_name,
-        ]:
+        if filename == f"{folder_name}.ino":
             non_menu_examples.append(os.path.realpath(root))
             if use_verbose:
                 print(f"::debug::\t- example: {filename} (full path: {file_path})")
@@ -314,11 +317,12 @@ for pio_env in pio_config.envs():
             compilers, [arduino_ex_commands, pio_ex_commands]
         ):
             # Skip examples that need to be updated or don't apply
-            if "data_saving" in example.lower():
+            example_name = os.path.basename(example).lower()
+            if "data_saving" in example_name:
                 continue  # skip until updated
-            if "mayfly" in example.lower() and pio_env != "mayfly":
+            if "mayfly" in example_name and pio_env != "mayfly":
                 continue  # skip mayfly examples on non-mayfly builds
-            if "drwi" in example.lower() and pio_env not in ["mayfly", "stonefly"]:
+            if "drwi" in example_name and pio_env not in ["mayfly", "stonefly"]:
                 continue  # skip drwi examples on non-EnviroDIY processor builds
 
             command_list.extend(
