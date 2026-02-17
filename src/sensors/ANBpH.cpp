@@ -182,8 +182,9 @@ bool ANBpH::setup(void) {
 
     // Set Immersion Rule
     MS_DBG(F("Set sensor immersion rule to"),
-           _immersionSensorEnabled ? "enabled" : "disabled", F("..."));
-    bool immersionSet = _anb_sensor.enableImmersionSensor();
+           _immersionSensorEnabled ? F("enabled") : F("disabled"), F("..."));
+    bool immersionSet =
+        _anb_sensor.enableImmersionSensor(_immersionSensorEnabled);
     MS_DBG(F("..."), immersionSet ? F("success") : F("failed"));
     retVal &= immersionSet;
 
