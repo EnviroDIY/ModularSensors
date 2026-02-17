@@ -117,7 +117,7 @@ int16_t UbidotsPublisher::publishData(Client* outClient, bool) {
     if (_baseLogger->getSamplingFeatureUUID() == nullptr ||
         strlen(_baseLogger->getSamplingFeatureUUID()) == 0) {
         PRINTOUT(F("A sampling feature UUID must be set before publishing data "
-                   "to Ubidots!."));
+                   "to Ubidots!"));
         return 0;
     }
 
