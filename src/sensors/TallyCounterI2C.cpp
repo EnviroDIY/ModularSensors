@@ -85,7 +85,7 @@ bool TallyCounterI2C::addSingleMeasurementResult(void) {
     // May also return a very negative value when receiving a bad response
     if (events < 0) {
         MS_DBG(getSensorNameAndLocation(),
-               F("returns all values 0 or bad, assuming sensor non-response!"));
+               F("returned negative value, assuming sensor non-response!"));
         events = -9999;
     } else {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
