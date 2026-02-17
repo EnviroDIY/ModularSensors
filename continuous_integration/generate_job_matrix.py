@@ -29,6 +29,7 @@ if "\\continuous_integration" in workspace_dir:
 workspace_path = os.path.abspath(os.path.realpath(workspace_dir))
 print(f"Workspace Path: {workspace_path}")
 
+
 # %%
 # The examples directory
 examples_dir = "./examples/"
@@ -101,12 +102,20 @@ with open(os.path.join(ci_path, "platformio_to_arduino_boards.json")) as f:
     pio_to_acli = json.load(f)
 
 # Find all of the non-menu examples
-non_menu_examples = [
-    f
-    for f in os.listdir(examples_path)
-    if os.path.isdir(os.path.join(examples_path, f))
-    and f not in [".history", "logger_test", "archive", "tests", menu_example_name]
-]
+non_menu_examples = []
+for root, subdirs, files in os.walk(examples_path):
+    for filename in files:
+        file_path = os.path.join(root, filename)
+        if filename == os.path.split(root)[-1] + ".ino" and root not in [
+            ".history",
+            "logger_test",
+            "archive",
+            "tests",
+            menu_example_name,
+        ]:
+            non_menu_examples.append(os.path.realpath(root))
+            if use_verbose:
+                print(f"::debug::\t- example: {filename} (full path: {file_path})")
 
 # %%
 # read configurations based on existing files and environment variables
@@ -305,7 +314,7 @@ for pio_env in pio_config.envs():
             compilers, [arduino_ex_commands, pio_ex_commands]
         ):
             # Skip examples that need to be updated or don't apply
-            if example == "data_saving":
+            if "data_saving" in example.lower():
                 continue  # skip until updated
             if "mayfly" in example.lower() and pio_env != "mayfly":
                 continue  # skip mayfly examples on non-mayfly builds
@@ -427,7 +436,7 @@ all_sensor_flags = [
     "NO_SENSORS",
 ]
 all_publisher_flags = [
-    "BUILD_PUB_ENVIRO_DIY_PUBLISHER",
+    "BUILD_PUB_MONITOR_MY_WATERSHED_PUBLISHER",
 ]
 
 

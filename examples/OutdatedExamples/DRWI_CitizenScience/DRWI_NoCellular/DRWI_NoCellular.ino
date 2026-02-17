@@ -1,27 +1,16 @@
 /** =========================================================================
- * @example{lineno} DRWI_2G.ino
+ * @example{lineno} DRWI_NoCellular.ino
  * @copyright Stroud Water Research Center
  * @license This example is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief Example for DRWI CitSci 2G sites.
+ * @brief Example for DRWI CitSci without cellular service.
  *
- * See [the walkthrough page](@ref example_drwi_2g) for detailed instructions.
+ * See [the walkthrough page](@ref example_drwi_no_cell) for detailed
+ * instructions.
  *
- * @m_examplenavigation{example_drwi_2g,}
+ * @m_examplenavigation{example_drwi_no_cell,}
  * ======================================================================= */
-
-// ==========================================================================
-//  Defines for TinyGSM
-// ==========================================================================
-/** Start [defines] */
-#ifndef TINY_GSM_RX_BUFFER
-#define TINY_GSM_RX_BUFFER 64
-#endif
-#ifndef TINY_GSM_YIELD_MS
-#define TINY_GSM_YIELD_MS 2
-#endif
-/** End [defines] */
 
 // ==========================================================================
 //  Include the libraries required for any data logger
@@ -40,7 +29,7 @@
 // ==========================================================================
 /** Start [logging_options] */
 // The name of this program file
-const char* sketchName = "DRWI_CitSci.ino";
+const char* sketchName = "DRWI_NoCellular.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char* LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
@@ -57,8 +46,6 @@ const int8_t  redLED     = 9;       // Pin for the red LED
 const int8_t  buttonPin  = 21;      // Pin for debugging mode (ie, button pin)
 const int8_t  wakePin    = 31;  // MCU interrupt/alarm pin to wake from sleep
 // Mayfly 0.x D31 = A7
-// Set the wake pin to -1 if you do not want the main processor to sleep.
-// In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
 const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
@@ -66,43 +53,15 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 
 
 // ==========================================================================
-//  Wifi/Cellular Modem Options
-// ==========================================================================
-/** Start [sodaq_2g_bee_r6] */
-// For the Sodaq 2GBee R6 and R7 based on the SIMCom SIM800
-// NOTE:  The Sodaq GPRSBee doesn't expose the SIM800's reset pin
-#include <modems/Sodaq2GBeeR6.h>
-
-// Create a reference to the serial port for the modem
-HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
-const int32_t   modemBaud   = 9600;     //  SIM800 does auto-bauding by default
-
-// Modem Pins - Describe the physical pin connection of your modem to your board
-// NOTE:  Use -1 for pins that do not apply
-const int8_t modemVccPin    = 23;      // MCU pin controlling modem power
-const int8_t modemStatusPin = 19;      // MCU pin used to read modem status
-const int8_t modemLEDPin    = redLED;  // MCU pin connected an LED to show modem
-                                       // status (-1 if unconnected)
-
-// Network connection information
-const char* apn = "hologram";  // The APN for the gprs connection
-
-Sodaq2GBeeR6 modem2GB(&modemSerial, modemVccPin, modemStatusPin, apn);
-// Create an extra reference to the modem by a generic name
-Sodaq2GBeeR6 modem = modem2GB;
-/** End [sodaq_2g_bee_r6] */
-
-
-// ==========================================================================
 //  Using the Processor as a Sensor
 // ==========================================================================
-/** Start [processor_sensor] */
+/** Start [processor_stats] */
 #include <sensors/ProcessorStats.h>
 
 // Create the main processor chip "sensor" - for general metadata
-const char*    mcuBoardVersion = "v0.5b";
+const char*    mcuBoardVersion = "v1.1";
 ProcessorStats mcuBoard(mcuBoardVersion);
-/** End [processor_sensor] */
+/** End [processor_stats] */
 
 
 // ==========================================================================
@@ -177,12 +136,13 @@ Variable* variableList[] = {
     new CampbellOBS3_Turbidity(&osb3high, "", "TurbHigh"),
     new ProcessorStats_Battery(&mcuBoard),
     new MaximDS3231_Temp(&ds3231),
-    new Modem_RSSI(&modem),
-    new Modem_SignalPercent(&modem)};
+};
 
 // All UUID's, device registration, and sampling feature information can be
 // pasted directly from Monitor My Watershed.  To get the list, click the "View
 // token UUID list" button on the upper right of the site page.
+// Even if not publishing live data, this is needed so the logger file will be
+// "drag-and-drop" ready for manual upload to the portal.
 
 // *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
 // Check the order of your variables in the variable list!!!
@@ -197,9 +157,7 @@ const char* UUIDs[] = {
     "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity (Campbell_OBS3_Turb)
     "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity (Campbell_OBS3_Turb)
     "12345678-abcd-1234-ef00-1234567890ab",  // Battery voltage (EnviroDIY_Mayfly_Batt)
-    "12345678-abcd-1234-ef00-1234567890ab",  // Temperature (EnviroDIY_Mayfly_Temp)
-    "12345678-abcd-1234-ef00-1234567890ab",  // Received signal strength indication (Sodaq_2GBee_RSSI)
-    "12345678-abcd-1234-ef00-1234567890ab"   // Percent full scale (Sodaq_2GBee_SignalPercent)
+    "12345678-abcd-1234-ef00-1234567890ab"   // Temperature (EnviroDIY_Mayfly_Temp)
 };
 const char* registrationToken = "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
 const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  // Sampling feature UUID
@@ -220,17 +178,6 @@ VariableArray varArray(variableCount, variableList, UUIDs);
 // Create a new logger instance
 Logger dataLogger(LoggerID, loggingInterval, &varArray);
 /** End [loggers] */
-
-
-// ==========================================================================
-//  Creating Data Publisher[s]
-// ==========================================================================
-/** Start [publishers] */
-// Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
-#include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPost(dataLogger, registrationToken,
-                                 samplingFeature);
-/** End [publishers] */
 
 
 // ==========================================================================
@@ -276,12 +223,6 @@ void setup() {
 
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
-    Serial.print(F("TinyGSM Library version "));
-    Serial.println(TINYGSM_VERSION);
-    Serial.println();
-
-    // Start the serial connection with the modem
-    modemSerial.begin(modemBaud);
 
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
@@ -297,11 +238,10 @@ void setup() {
     // It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)
     loggerClock::setRTCOffset(0);
 
-    // Attach the modem and information pins to the logger
-    dataLogger.attachModem(modem);
-    modem.setModemLED(modemLEDPin);
+    // Attach information pins to the logger
     dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin,
                              greenLED);
+    dataLogger.setSamplingFeatureUUID(samplingFeature);
 
     // Begin the logger
     dataLogger.begin();
@@ -313,13 +253,6 @@ void setup() {
         varArray.sensorsPowerUp();
         varArray.setupSensors();
         varArray.sensorsPowerDown();
-    }
-
-    // Sync the clock if it isn't valid or we have battery to spare
-    if (getBatteryVoltage() > 3.55 || !loggerClock::isRTCSane()) {
-        // Synchronize the RTC with NIST
-        // This will also set up the modem
-        dataLogger.syncRTC();
     }
 
     // Create the log file, adding the default header to it
@@ -354,13 +287,9 @@ void loop() {
     if (getBatteryVoltage() < 3.4) {
         dataLogger.systemSleep();
     }
-    // At moderate voltage, log data but don't send it over the modem
-    else if (getBatteryVoltage() < 3.55) {
-        dataLogger.logData();
-    }
-    // If the battery is good, send the data to the world
+    // If the battery is OK, log data
     else {
-        dataLogger.logDataAndPublish();
+        dataLogger.logData();
     }
 }
 /** End [loop] */

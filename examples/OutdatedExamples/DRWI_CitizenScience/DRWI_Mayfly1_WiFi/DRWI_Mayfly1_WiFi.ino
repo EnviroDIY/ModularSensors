@@ -1,15 +1,18 @@
 /** =========================================================================
- * @example{lineno} DRWI_NoCellular.ino
+ * @example{lineno} DRWI_Mayfly1_WiFi.ino
  * @copyright Stroud Water Research Center
  * @license This example is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief Example for DRWI CitSci without cellular service.
+ * @brief Example for DRWI CitSci LTE sites.
  *
- * See [the walkthrough page](@ref example_drwi_no_cell) for detailed
- * instructions.
+ * This example shows proper settings for the following configuration:
  *
- * @m_examplenavigation{example_drwi_no_cell,}
+ * Mayfly v1.x board
+ * EnviroDIY ESP32 Wifi Bee module
+ * Hydros21 CTD sensor
+ *
+ * @m_examplenavigation{example_drwi_mayfly1_wifi,}
  * ======================================================================= */
 
 // ==========================================================================
@@ -29,7 +32,7 @@
 // ==========================================================================
 /** Start [logging_options] */
 // The name of this program file
-const char* sketchName = "DRWI_NoCellular.ino";
+const char* sketchName = "DRWI_Mayfly1_WiFi.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char* LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
@@ -40,12 +43,12 @@ const int8_t timeZone = -5;  // Eastern Standard Time
 
 // Set the input and output pins for the logger
 // NOTE:  Use -1 for pins that do not apply
-const int32_t serialBaud = 115200;  // Baud rate for debugging
-const int8_t  greenLED   = 8;       // Pin for the green LED
-const int8_t  redLED     = 9;       // Pin for the red LED
-const int8_t  buttonPin  = 21;      // Pin for debugging mode (ie, button pin)
-const int8_t  wakePin    = 31;  // MCU interrupt/alarm pin to wake from sleep
-// Mayfly 0.x D31 = A7
+const int32_t serialBaud = 57600;  // Baud rate for debugging
+const int8_t  greenLED   = 8;      // Pin for the green LED
+const int8_t  redLED     = 9;      // Pin for the red LED
+const int8_t  buttonPin  = 21;     // Pin for debugging mode (ie, button pin)
+const int8_t  wakePin    = 31;     // MCU interrupt/alarm pin to wake from sleep
+// Mayfly 0.x, 1.x D31 = A7
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
 const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
@@ -53,19 +56,53 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 
 
 // ==========================================================================
+//  Wifi/Cellular Modem Options
+// ==========================================================================
+/** Start [espressif_esp32] */
+#include <modems/EspressifESP32.h>
+
+// Create a reference to the serial port for the modem
+HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
+const int32_t   modemBaud   = 115200;   // Communication speed of the modem
+// NOTE:  This baud rate too fast for the Mayfly.  We'll slow it down in the
+// setup.
+
+// Modem Pins - Describe the physical pin connection of your modem to your board
+// NOTE:  Use -1 for pins that do not apply
+// Example pins here are for a EnviroDIY ESP32 Bluetooth/Wifi Bee with
+// Mayfly 1.1
+const int8_t modemVccPin   = 18;      // MCU pin controlling modem power
+const int8_t modemResetPin = -1;      // MCU pin connected to modem reset pin
+const int8_t modemLEDPin   = redLED;  // MCU pin connected an LED to show modem
+                                      // status
+
+// Network connection information
+const char* wifiId  = "xxxxx";  // WiFi access point name
+const char* wifiPwd = "xxxxx";  // WiFi password (WPA2)
+
+// Create the modem object
+EspressifESP32 modemESP(&modemSerial, modemVccPin, modemResetPin, wifiId,
+                        wifiPwd);
+// Create an extra reference to the modem by a generic name
+EspressifESP32 modem = modemESP;
+/** End [espressif_esp32] */
+
+
+// ==========================================================================
 //  Using the Processor as a Sensor
 // ==========================================================================
-/** Start [processor_sensor] */
+/** Start [processor_stats] */
 #include <sensors/ProcessorStats.h>
 
 // Create the main processor chip "sensor" - for general metadata
 const char*    mcuBoardVersion = "v1.1";
 ProcessorStats mcuBoard(mcuBoardVersion);
-/** End [processor_sensor] */
+/** End [processor_stats] */
 
 
 // ==========================================================================
 //  Maxim DS3231 RTC (Real Time Clock)
+//  Built in on all versions of the Mayfly
 // ==========================================================================
 /** Start [ds3231] */
 #include <sensors/MaximDS3231.h>
@@ -76,35 +113,19 @@ MaximDS3231 ds3231(1);
 
 
 // ==========================================================================
-//  Campbell OBS 3 / OBS 3+ Analog Turbidity Sensor
+//  Sensirion SHT4X Digital Humidity and Temperature Sensor
+//  Built in on Mayfly 1.x
 // ==========================================================================
-/** Start [obs3] */
-#include <sensors/CampbellOBS3.h>
+/** Start [sensirion_sht4x] */
+#include <sensors/SensirionSHT4x.h>
 
-const int8_t  OBS3Power = sensorPowerPin;  // Power pin (-1 if unconnected)
-const uint8_t OBS3NumberReadings = 10;
-const uint8_t ADSi2c_addr        = 0x48;  // The I2C address of the ADS1115 ADC
-// Campbell OBS 3+ *Low* Range Calibration in Volts
-const int8_t OBSLowADSChannel = 0;  // ADS channel for *low* range output
-const float  OBSLow_A         = 0.000E+00;  // "A" value (X^2) [*low* range]
-const float  OBSLow_B         = 1.000E+00;  // "B" value (X) [*low* range]
-const float  OBSLow_C         = 0.000E+00;  // "C" value [*low* range]
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+const int8_t SHT4xPower     = sensorPowerPin;  // Power pin
+const bool   SHT4xUseHeater = true;
 
-// Create a Campbell OBS3+ *low* range sensor object
-CampbellOBS3 osb3low(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B, OBSLow_C,
-                     ADSi2c_addr, OBS3NumberReadings);
-
-
-// Campbell OBS 3+ *High* Range Calibration in Volts
-const int8_t OBSHighADSChannel = 1;  // ADS channel for *high* range output
-const float  OBSHigh_A         = 0.000E+00;  // "A" value (X^2) [*high* range]
-const float  OBSHigh_B         = 1.000E+00;  // "B" value (X) [*high* range]
-const float  OBSHigh_C         = 0.000E+00;  // "C" value [*high* range]
-
-// Create a Campbell OBS3+ *high* range sensor object
-CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B,
-                      OBSHigh_C, ADSi2c_addr, OBS3NumberReadings);
-/** End [obs3] */
+// Create an Sensirion SHT4X sensor object
+SensirionSHT4x sht4x(SHT4xPower, SHT4xUseHeater);
+/** End [sensirion_sht4x] */
 
 
 // ==========================================================================
@@ -124,43 +145,53 @@ MeterHydros21 hydros(*hydrosSDI12address, SDI12Power, SDI12Data,
 /** End [hydros21] */
 
 
+/* clang-format off */
 // ==========================================================================
 //  Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
 /** Start [variable_arrays] */
 Variable* variableList[] = {
-    new MeterHydros21_Cond(&hydros),
-    new MeterHydros21_Temp(&hydros),
-    new MeterHydros21_Depth(&hydros),
-    new CampbellOBS3_Turbidity(&osb3low, "", "TurbLow"),
-    new CampbellOBS3_Turbidity(&osb3high, "", "TurbHigh"),
-    new ProcessorStats_Battery(&mcuBoard),
-    new MaximDS3231_Temp(&ds3231),
+    new MeterHydros21_Cond(&hydros),             // Specific conductance (Meter_Hydros21_Cond)
+    new MeterHydros21_Depth(&hydros),            // Water depth (Meter_Hydros21_Depth)
+    new MeterHydros21_Temp(&hydros),             // Temperature (Meter_Hydros21_Temp)
+    new SensirionSHT4x_Humidity(&sht4x),         // Relative humidity (Sensirion_SHT40_Humidity)
+    new SensirionSHT4x_Temp(&sht4x),             // Temperature (Sensirion_SHT40_Temperature)
+    new ProcessorStats_Battery(&mcuBoard),       // Battery voltage (EnviroDIY_Mayfly_Batt)
+    new Modem_SignalPercent(&modem),             // Percent full scale (EnviroDIY_LTEB_SignalPercent)
 };
 
 // All UUID's, device registration, and sampling feature information can be
-// pasted directly from Monitor My Watershed.  To get the list, click the "View
-// token UUID list" button on the upper right of the site page.
-// Even if not publishing live data, this is needed so the logger file will be
-// "drag-and-drop" ready for manual upload to the portal.
+// pasted directly from Monitor My Watershed.
+// To get the list, click the "View  token UUID list" button on the upper right
+// of the site page.
 
 // *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
 // Check the order of your variables in the variable list!!!
 // Be VERY certain that they match the order of your UUID's!
-// Rearrange the variables in the variable list if necessary to match!
+// Rearrange the variables in the variable list ABOVE if necessary to match!
+// Do not change the order of the variables in the section below.
 // *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
-/* clang-format off */
-const char* UUIDs[] = {
-    "12345678-abcd-1234-ef00-1234567890ab",  // Electrical conductivity (Decagon_CTD-10_Cond)
-    "12345678-abcd-1234-ef00-1234567890ab",  // Temperature (Decagon_CTD-10_Temp)
-    "12345678-abcd-1234-ef00-1234567890ab",  // Water depth (Decagon_CTD-10_Depth)
-    "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity (Campbell_OBS3_Turb)
-    "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity (Campbell_OBS3_Turb)
-    "12345678-abcd-1234-ef00-1234567890ab",  // Battery voltage (EnviroDIY_Mayfly_Batt)
-    "12345678-abcd-1234-ef00-1234567890ab"   // Temperature (EnviroDIY_Mayfly_Temp)
+
+// Replace all of the text in the following section with the UUID array from
+// MonitorMyWatershed
+// ---------------------   Beginning of Token UUID List   ---------------------
+
+
+const char* UUIDs[] =  // UUID array for device sensors
+    {
+        "12345678-abcd-1234-ef00-1234567890ab",  // Specific conductance (Meter_Hydros21_Cond)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Water depth (Meter_Hydros21_Depth)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Temperature (Meter_Hydros21_Temp)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Relative humidity (Sensirion_SHT40_Humidity)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Temperature (Sensirion_SHT40_Temperature)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Battery voltage (EnviroDIY_Mayfly_Batt)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Percent full scale (EnviroDIY_LTEB_SignalPercent)
 };
 const char* registrationToken = "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
 const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  // Sampling feature UUID
+
+
+// -----------------------   End of Token UUID List  -----------------------
 /* clang-format on */
 
 // Count up the number of pointers in the array
@@ -178,6 +209,17 @@ VariableArray varArray(variableCount, variableList, UUIDs);
 // Create a new logger instance
 Logger dataLogger(LoggerID, loggingInterval, &varArray);
 /** End [loggers] */
+
+
+// ==========================================================================
+//  Creating Data Publisher[s]
+// ==========================================================================
+/** Start [publishers] */
+// Create a data publisher for the Monitor My Watershed POST endpoint
+#include <publishers/MonitorMyWatershedPublisher.h>
+MonitorMyWatershedPublisher MonitorMWPost(dataLogger, registrationToken,
+                                          samplingFeature);
+/** End [publishers] */
 
 
 // ==========================================================================
@@ -203,11 +245,10 @@ float getBatteryVoltage() {
     if (mcuBoard.sensorValues[0] == -9999) mcuBoard.update();
     return mcuBoard.sensorValues[0];
 }
-/** End [working_functions] */
 
 
 // ==========================================================================
-//  Arduino Setup Function
+// Arduino Setup Function
 // ==========================================================================
 /** Start [setup] */
 void setup() {
@@ -223,6 +264,12 @@ void setup() {
 
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
+    Serial.print(F("TinyGSM Library version "));
+    Serial.println(TINYGSM_VERSION);
+    Serial.println();
+
+    // Start the serial connection with the modem
+    modemSerial.begin(modemBaud);
 
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
@@ -232,19 +279,24 @@ void setup() {
     // Blink the LEDs to show the board is on and starting up
     greenRedFlash();
 
+    pinMode(20, OUTPUT);  // for proper operation of the onboard flash memory
+                          // chip's ChipSelect (Mayfly v1.0 and later)
+
     // Set the timezones for the logger/data and the RTC
     // Logging in the given time zone
     Logger::setLoggerTimeZone(timeZone);
     // It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)
     loggerClock::setRTCOffset(0);
 
-    // Attach information pins to the logger
+    // Attach the modem and information pins to the logger
+    dataLogger.attachModem(modem);
+    modem.setModemLED(modemLEDPin);
     dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin,
                              greenLED);
-    dataLogger.setSamplingFeatureUUID(samplingFeature);
 
     // Begin the logger
     dataLogger.begin();
+    MonitorMWPost.begin(dataLogger, registrationToken, samplingFeature);
 
     // Note:  Please change these battery voltages to match your battery
     // Set up the sensors, except at lowest battery level
@@ -255,11 +307,31 @@ void setup() {
         varArray.sensorsPowerDown();
     }
 
+    /** Start [setup_esp] */
+    for (int8_t ntries = 5; ntries; ntries--) {
+        // This will also verify communication and set up the modem
+        if (modem.modemWake()) break;
+        // if that didn't work, try changing baud rate
+        modemSerial.begin(115200);
+        modem.gsmModem.sendAT(GF("+UART_DEF=9600,8,1,0,0"));
+        modem.gsmModem.waitResponse();
+        modemSerial.end();
+        modemSerial.begin(9600);
+    }
+    /** End [setup_esp] */
+
+
+    // Sync the clock if it isn't valid or we have battery to spare
+    if (getBatteryVoltage() > 3.55 || !loggerClock::isRTCSane()) {
+        // Synchronize the RTC with NIST
+        // This will also set up the modem
+        dataLogger.syncRTC();
+    }
+
     // Create the log file, adding the default header to it
-    // Do this last so we have the best chance of getting the time correct and
-    // all sensor names correct
-    // Writing to the SD card can be power intensive, so if we're skipping
-    // the sensor setup we'll skip this too.
+    // Do this last so we have the best chance of getting the time correct
+    // and all sensor names correct Writing to the SD card can be power
+    // intensive, so if we're skipping the sensor setup we'll skip this too.
     if (getBatteryVoltage() > 3.4) {
         Serial.println(F("Setting up file on SD card"));
         dataLogger.turnOnSDcard(
@@ -287,9 +359,13 @@ void loop() {
     if (getBatteryVoltage() < 3.4) {
         dataLogger.systemSleep();
     }
-    // If the battery is OK, log data
-    else {
+    // At moderate voltage, log data but don't send it over the modem
+    else if (getBatteryVoltage() < 3.55) {
         dataLogger.logData();
+    }
+    // If the battery is good, send the data to the world
+    else {
+        dataLogger.logDataAndPublish();
     }
 }
 /** End [loop] */

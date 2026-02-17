@@ -1,7 +1,7 @@
 {
   "name": "EnviroDIY_ModularSensors",
   "version": "0.37.0",
-  "description": "A library that allows access to multiple sensors through a unified interface.  This allows the user to simply access many sensors to log the data or send the data to data repositories like the EnviroDIY data portal.",
+  "description": "A library that allows access to multiple sensors through a unified interface.  This allows the user to simply access many sensors to log the data or send the data to data repositories like Monitor My Watershed.",
   "keywords": "modular, sensor, sensors, datalogger, logger, low power, sleeping, EnviroDIY, ModularSensors, Mayfly, WikiWatershed, Monitor My Watershed, ThingSpeak",
   "platforms": ["atmelavr", "atmelsam"],
   "frameworks": "arduino",
@@ -355,7 +355,7 @@
       "name": "ANBSensorsModbus",
       "owner": "envirodiy",
       "url": "https://github.com/EnviroDIY/ANBSensorsModbus",
-      "version": "~0.4.1",
+      "version": "~0.4.2",
       "note": "A library for communicating with pH sensors manufactured by ANB Sensors using Modbus.",
       "authors": ["Sara Damiano"],
       "frameworks": "arduino"

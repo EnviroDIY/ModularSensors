@@ -124,8 +124,7 @@ class AWS_IoT_Publisher : public dataPublisher {
      * file
      * @param clientCertName The name of your client certificate file
      * @param clientKeyName The name of your client private key file
-     * @param samplingFeatureUUID The sampling feature UUID for the site on the
-     * Monitor My Watershed data portal.
+     * @param samplingFeatureUUID The sampling feature UUID
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions. NOTE: not implemented by this publisher!
      *
@@ -164,8 +163,7 @@ class AWS_IoT_Publisher : public dataPublisher {
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
      * @param awsIoTEndpoint The endpoint for your AWS IoT instance
-     * @param samplingFeatureUUID The sampling feature UUID for the site on the
-     * Monitor My Watershed data portal.
+     * @param samplingFeatureUUID The sampling feature UUID
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions. NOTE: not implemented by this publisher!
      */
@@ -389,8 +387,7 @@ class AWS_IoT_Publisher : public dataPublisher {
     /**
      * @copydoc dataPublisher::begin(Logger& baseLogger, Client* inClient)
      * @param awsIoTEndpoint The endpoint for your AWS IoT instance
-     * @param samplingFeatureUUID The sampling feature UUID for the site on the
-     * Monitor My Watershed data portal.
+     * @param samplingFeatureUUID The sampling feature UUID
      */
     void begin(Logger& baseLogger, Client* inClient, const char* awsIoTEndpoint,
                const char* samplingFeatureUUID);
@@ -407,8 +404,7 @@ class AWS_IoT_Publisher : public dataPublisher {
      * file
      * @param clientCertName The name of your client certificate file
      * @param clientKeyName The name of your client private key file
-     * @param samplingFeatureUUID The sampling feature UUID for the site on the
-     * Monitor My Watershed data portal.
+     * @param samplingFeatureUUID The sampling feature UUID
      */
     void begin(Logger& baseLogger, const char* awsIoTEndpoint,
                const char* caCertName, const char* clientCertName,

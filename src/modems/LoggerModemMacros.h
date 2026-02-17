@@ -433,15 +433,17 @@
  * @brief Creates createClient functions for a specific modem subclass.
  *
  * @param specificModem The modem subclass
+ * @param TinyGSMType The type used for the TinyGSM modem
  *
  * @return The text of createClient functions specific to a single
  * modem subclass.
  */
-#define MS_MODEM_CREATE_CLIENT(specificModem)                               \
+#define MS_MODEM_CREATE_CLIENT(specificModem, TinyGSMType)                  \
     Client* specificModem::createClient() {                                 \
         /* Use the new keyword to create a new client on the **heap** */    \
         /* NOTE: Be sure to delete this object when you're done with it! */ \
-        Client* newClient = new TinyGsmClient(gsmModem);                    \
+        Client* newClient =                                                 \
+            new TinyGsm##TinyGSMType::GsmClient##TinyGSMType(gsmModem);     \
         return newClient;                                                   \
     }
 
@@ -450,11 +452,12 @@
  * clients.
  *
  * @param specificModem The modem subclass
+ * @param TinyGSMType The type used for the TinyGSM modem
  *
  * @return The text of createSecureClient functions specific to a single
  * modem subclass.
  */
-#define MS_MODEM_CREATE_NULL_SECURE_CLIENTS(specificModem)                \
+#define MS_MODEM_CREATE_NULL_SECURE_CLIENTS(specificModem, TinyGSMType)   \
     Client* specificModem::createSecureClient(                            \
         SSLAuthMode, SSLVersion, const char*, const char*, const char*) { \
         return nullptr;                                                   \
@@ -473,90 +476,102 @@
  * For modems that don't support SSL, this returns a nullptr.
  *
  * @param specificModem The modem subclass
+ * @param TinyGSMType The type used for the TinyGSM modem
  *
  * @return The text of createClient functions specific to a single
  * modem subclass.
  */
 #if defined(TINY_GSM_MODEM_HAS_SSL) && defined(TINY_GSM_MODEM_CAN_SPECIFY_CERTS)
-#define MS_MODEM_CREATE_SECURE_CLIENT(specificModem)                           \
+#define MS_MODEM_CREATE_SECURE_CLIENT(specificModem, TinyGSMType)              \
     Client* specificModem::createSecureClient() {                              \
         /* Use the new keyword to create a new client on the **heap** */       \
         /* NOTE: Be sure to delete this object when you're done with it! */    \
-        Client* newClient = new TinyGsmClientSecure(gsmModem);                 \
+        Client* newClient =                                                    \
+            new TinyGsm##TinyGSMType::GsmClientSecure##TinyGSMType(gsmModem);  \
         return newClient;                                                      \
     }                                                                          \
     Client* specificModem::createSecureClient(                                 \
         SSLAuthMode sslAuthMode, SSLVersion sslVersion,                        \
         const char* CAcertName, const char* clientCertName,                    \
         const char* clientKeyName) {                                           \
-        Client* newClient = new TinyGsmClientSecure(                           \
-            gsmModem, sslAuthMode, sslVersion, CAcertName, clientCertName,     \
-            clientKeyName);                                                    \
+        Client* newClient =                                                    \
+            new TinyGsm##TinyGSMType::GsmClientSecure##TinyGSMType(            \
+                gsmModem, sslAuthMode, sslVersion, CAcertName, clientCertName, \
+                clientKeyName);                                                \
         return newClient;                                                      \
     }                                                                          \
     Client* specificModem::createSecureClient(                                 \
         const char* pskIdent, const char* psKey, SSLVersion sslVersion) {      \
-        Client* newClient = new TinyGsmClientSecure(gsmModem, pskIdent, psKey, \
-                                                    sslVersion);               \
+        Client* newClient =                                                    \
+            new TinyGsm##TinyGSMType::GsmClientSecure##TinyGSMType(            \
+                gsmModem, pskIdent, psKey, sslVersion);                        \
         return newClient;                                                      \
     }                                                                          \
     Client* specificModem::createSecureClient(const char* pskTableName,        \
                                               SSLVersion  sslVersion) {         \
-        Client* newClient = new TinyGsmClientSecure(gsmModem, pskTableName,    \
-                                                    sslVersion);               \
+        Client* newClient =                                                    \
+            new TinyGsm##TinyGSMType::GsmClientSecure##TinyGSMType(            \
+                gsmModem, pskTableName, sslVersion);                           \
         return newClient;                                                      \
     }
 #elif defined(TINY_GSM_MODEM_HAS_SSL)
-#define MS_MODEM_CREATE_SECURE_CLIENT(specificModem)                        \
-    Client* specificModem::createSecureClient() {                           \
-        /* Use the new keyword to create a new client on the **heap** */    \
-        /* NOTE: Be sure to delete this object when you're done with it! */ \
-        Client* newClient = new TinyGsmClientSecure(gsmModem);              \
-        return newClient;                                                   \
-    }                                                                       \
-    MS_MODEM_CREATE_NULL_SECURE_CLIENTS(specificModem)
+#define MS_MODEM_CREATE_SECURE_CLIENT(specificModem, TinyGSMType)             \
+    Client* specificModem::createSecureClient() {                             \
+        /* Use the new keyword to create a new client on the **heap** */      \
+        /* NOTE: Be sure to delete this object when you're done with it! */   \
+        Client* newClient =                                                   \
+            new TinyGsm##TinyGSMType::GsmClientSecure##TinyGSMType(gsmModem); \
+        return newClient;                                                     \
+    }                                                                         \
+    MS_MODEM_CREATE_NULL_SECURE_CLIENTS(specificModem, TinyGSMType)
 #else
-#define MS_MODEM_CREATE_SECURE_CLIENT(specificModem) \
-    Client* specificModem::createSecureClient() {    \
-        return nullptr;                              \
-    }                                                \
-    MS_MODEM_CREATE_NULL_SECURE_CLIENTS(specificModem)
+#define MS_MODEM_CREATE_SECURE_CLIENT(specificModem, TinyGSMType) \
+    Client* specificModem::createSecureClient() {                 \
+        return nullptr;                                           \
+    }                                                             \
+    MS_MODEM_CREATE_NULL_SECURE_CLIENTS(specificModem, TinyGSMType)
 #endif
 /**
  * @brief Creates a deleteClient function for a specific modem subclass.
  *
  * @param specificModem The modem subclass
+ * @param TinyGSMType The type used for the TinyGSM modem
  *
  * @return The text of deleteClient function specific to a single modem
  * subclass.
  */
-#define MS_MODEM_DELETE_CLIENT(specificModem)                                  \
-    void specificModem::deleteClient(Client* client) {                         \
-        if (client != nullptr) {                                               \
-            TinyGsmClient* cast_pointer = static_cast<TinyGsmClient*>(client); \
-            delete cast_pointer;                                               \
-        }                                                                      \
+#define MS_MODEM_DELETE_CLIENT(specificModem, TinyGSMType)                  \
+    void specificModem::deleteClient(Client* client) {                      \
+        if (client != nullptr) {                                            \
+            TinyGsm##TinyGSMType::GsmClient##TinyGSMType* cast_pointer =    \
+                static_cast<TinyGsm##TinyGSMType::GsmClient##TinyGSMType*>( \
+                    client);                                                \
+            delete cast_pointer;                                            \
+        }                                                                   \
     }
 /**
  * @def MS_MODEM_DELETE_SECURE_CLIENT
  * @brief Creates a deleteClient function for a specific modem subclass.
  *
  * @param specificModem The modem subclass
+ * @param TinyGSMType The type used for the TinyGSM modem
  *
  * @return The text of deleteSecureClient function specific to a single modem
  * subclass.
  */
 #if defined(TINY_GSM_MODEM_HAS_SSL)
-#define MS_MODEM_DELETE_SECURE_CLIENT(specificModem)         \
-    void specificModem::deleteSecureClient(Client* client) { \
-        if (client != nullptr) {                             \
-            TinyGsmClientSecure* cast_pointer =              \
-                static_cast<TinyGsmClientSecure*>(client);   \
-            delete cast_pointer;                             \
-        }                                                    \
+#define MS_MODEM_DELETE_SECURE_CLIENT(specificModem, TinyGSMType)              \
+    void specificModem::deleteSecureClient(Client* client) {                   \
+        if (client != nullptr) {                                               \
+            TinyGsm##TinyGSMType::GsmClientSecure##TinyGSMType* cast_pointer = \
+                static_cast<                                                   \
+                    TinyGsm##TinyGSMType::GsmClientSecure##TinyGSMType*>(      \
+                    client);                                                   \
+            delete cast_pointer;                                               \
+        }                                                                      \
     }
 #else
-#define MS_MODEM_DELETE_SECURE_CLIENT(specificModem) \
+#define MS_MODEM_DELETE_SECURE_CLIENT(specificModem, TinyGSMType) \
     void specificModem::deleteSecureClient(Client*) {}
 #endif
 
@@ -590,12 +605,13 @@
  * https://tf.nist.gov/tf-cgi/servers.cgi
  *
  * @param specificModem The modem subclass
+ * @param TinyGSMType The type used for the TinyGSM modem
  *
  * @return The text of a getNISTTime() function specific to a single modem
  * subclass.
  *
  */
-#define MS_MODEM_GET_NIST_TIME(specificModem)                                \
+#define MS_MODEM_GET_NIST_TIME(specificModem, TinyGSMType)                   \
     uint32_t specificModem::getNISTTime(void) {                              \
         /** Check for and bail if not connected to the internet. */          \
         if (!isInternetAvailable()) {                                        \
@@ -609,7 +625,8 @@
             }                                                                \
                                                                              \
             /** Make TCP connection. */                                      \
-            TinyGsmClient gsmClient(gsmModem); /*new client, default mux*/   \
+            TinyGsm##TinyGSMType::GsmClient##TinyGSMType gsmClient(          \
+                gsmModem); /*new client, default mux*/                       \
             MS_DBG(F("\nConnecting to NIST daytime Server"));                \
             bool connectionMade = gsmClient.connect("time.nist.gov",         \
                                                     TIME_PROTOCOL_PORT, 15); \

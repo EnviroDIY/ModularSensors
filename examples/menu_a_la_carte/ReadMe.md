@@ -27,9 +27,7 @@ ___
 
 - [Example showing all possible functionality](#example-showing-all-possible-functionality)
 - [Walking Through the Code](#walking-through-the-code)
-  - [Defines and Includes](#defines-and-includes)
-    - [Defines for the Arduino IDE](#defines-for-the-arduino-ide)
-    - [Library Includes](#library-includes)
+  - [Library Includes](#library-includes)
   - [Logger Settings](#logger-settings)
     - [Creating Extra Serial Ports](#creating-extra-serial-ports)
       - [AVR Boards](#avr-boards)
@@ -160,31 +158,7 @@ ___
 
 <!--! @endif -->
 
-## Defines and Includes<!--! {#menu_walk_defines_includes} -->
-
-### Defines for the Arduino IDE<!--! {#menu_walk_defines} -->
-
-The top few lines of the examples set defines of buffer sizes and yields needed for the Arduino IDE.
-That IDE read any defines within the top few lines and applies them as build flags for the processor.
-This is *not* standard behavior for C++ (which is what Arduino code really is) - this is a unique aspect of the Arduino IDE.
-
-<!--! @menusnip{defines} -->
-
-If you are using PlatformIO, you should instead set these as global build flags in your platformio.ini.
-This is standard behavior for C++.
-
-```ini
-build_flags =
-    -D SDI12_EXTERNAL_PCINT
-    -D NEOSWSERIAL_EXTERNAL_PCINT
-    -D MQTT_MAX_PACKET_SIZE=240
-    -D TINY_GSM_RX_BUFFER=64
-    -D TINY_GSM_YIELD_MS=2
-```
-
-___
-
-### Library Includes<!--! {#menu_walk_includes} -->
+## Library Includes<!--! {#menu_walk_includes} -->
 
 Next, include the libraries needed for every program using ModularSensors.
 
@@ -1290,7 +1264,7 @@ Here we use the `new` keyword to create multiple variables and get pointers to t
 
 #### Creating Variables and Pasting UUIDs from MonitorMyWatershed<!--! {#menu_walk_variables_separate_uuids} -->
 
-If you are sending data to monitor my watershed, it is much easier to create the variables in an array and then to paste the UUID's all together as copied from the "View Token UUID List" link for a site.
+If you are sending data to Monitor My Watershed, it is much easier to create the variables in an array and then to paste the UUID's all together as copied from the "View Token UUID List" link for a site.
 If using this method, be very, very, very careful to make sure the order of your variables exactly matches the order of your UUID's.
 
 <!--! @menusnip{variables_separate_uuids} -->
@@ -1315,13 +1289,13 @@ ___
 
 Here we set up all three possible data publishers and link all of them to the same Logger object.
 
-#### Monitor My Watershed<!--! {#menu_walk_enviro_diy_publisher} -->
+#### Monitor My Watershed<!--! {#menu_walk_monitor_my_watershed_publisher} -->
 
-To publish data to the Monitor My Watershed / EnviroDIY Data Sharing Portal first you must register yourself as a user at <https://monitormywatershed.org> or <https://data.envirodiy.org>.
+To publish data to the Monitor My Watershed first you must register yourself as a user at <https://monitormywatershed.org>.
 Then you must register your site.
 After registering your site, a sampling feature and registration token for that site should be visible on the site page.
 
-<!--! @menusnip{enviro_diy_publisher} -->
+<!--! @menusnip{monitor_my_watershed_publisher} -->
 
 ___
 
@@ -1609,7 +1583,6 @@ All together, this gives:
 <!--! @menusnip{complex_loop} -->
 
 If you need more help in writing a complex loop, the [double_logger example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/double_logger) demonstrates using a custom loop function in order to log two different groups of sensors at different logging intervals.
-The [data_saving example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/data_saving) shows using a custom loop in order to save cellular data by saving data from many variables on the SD card, but only sending a portion of the data to the EnviroDIY data portal.
 
 <!--! @section example_menu_pio_config PlatformIO Configuration -->
 

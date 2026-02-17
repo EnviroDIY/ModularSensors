@@ -1,35 +1,15 @@
 /** =========================================================================
- * @example{lineno} DRWI_SIM7080LTE.ino
+ * @example{lineno} DRWI_2G.ino
  * @copyright Stroud Water Research Center
  * @license This example is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief Example for DRWI CitSci LTE sites.
+ * @brief Example for DRWI CitSci 2G sites.
  *
- * This example shows proper settings for the following configuration:
+ * See [the walkthrough page](@ref example_drwi_2g) for detailed instructions.
  *
- * Mayfly v1.0 board
- * EnviroDIY SIM7080 LTE module (with Hologram SIM card)
- * Hydros21 CTD sensor
- * Campbell Scientific OBS3+ Turbidity sensor
- *
- * See [the walkthrough page](@ref example_drwi_ediylte) for detailed
- * instructions.
- *
- * @m_examplenavigation{example_drwi_ediylte,}
+ * @m_examplenavigation{example_drwi_2g,}
  * ======================================================================= */
-
-// ==========================================================================
-//  Defines for TinyGSM
-// ==========================================================================
-/** Start [defines] */
-#ifndef TINY_GSM_RX_BUFFER
-#define TINY_GSM_RX_BUFFER 64
-#endif
-#ifndef TINY_GSM_YIELD_MS
-#define TINY_GSM_YIELD_MS 2
-#endif
-/** End [defines] */
 
 // ==========================================================================
 //  Include the libraries required for any data logger
@@ -48,7 +28,7 @@
 // ==========================================================================
 /** Start [logging_options] */
 // The name of this program file
-const char* sketchName = "DRWI_SIM7080LTE.ino";
+const char* sketchName = "DRWI_CitSci.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char* LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
@@ -59,12 +39,14 @@ const int8_t timeZone = -5;  // Eastern Standard Time
 
 // Set the input and output pins for the logger
 // NOTE:  Use -1 for pins that do not apply
-const int32_t serialBaud = 57600;  // Baud rate for debugging
-const int8_t  greenLED   = 8;      // Pin for the green LED
-const int8_t  redLED     = 9;      // Pin for the red LED
-const int8_t  buttonPin  = 21;     // Pin for debugging mode (ie, button pin)
-const int8_t  wakePin    = 31;     // MCU interrupt/alarm pin to wake from sleep
+const int32_t serialBaud = 115200;  // Baud rate for debugging
+const int8_t  greenLED   = 8;       // Pin for the green LED
+const int8_t  redLED     = 9;       // Pin for the red LED
+const int8_t  buttonPin  = 21;      // Pin for debugging mode (ie, button pin)
+const int8_t  wakePin    = 31;  // MCU interrupt/alarm pin to wake from sleep
 // Mayfly 0.x D31 = A7
+// Set the wake pin to -1 if you do not want the main processor to sleep.
+// In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
 const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
@@ -74,50 +56,41 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 // ==========================================================================
 //  Wifi/Cellular Modem Options
 // ==========================================================================
-/** Start [sim_com_sim7080] */
-// For almost anything based on the SIMCom SIM7080G
-#include <modems/SIMComSIM7080.h>
+/** Start [sodaq_2g_bee_r6] */
+// For the Sodaq 2GBee R6 and R7 based on the SIMCom SIM800
+// NOTE:  The Sodaq GPRSBee doesn't expose the SIM800's reset pin
+#include <modems/Sodaq2GBeeR6.h>
 
 // Create a reference to the serial port for the modem
 HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
-const int32_t   modemBaud = 9600;  //  SIM7080 does auto-bauding by default, but
-                                   //  for simplicity we set to 9600
+const int32_t   modemBaud   = 9600;     //  SIM800 does auto-bauding by default
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
-
-const int8_t modemVccPin = 18;
-// MCU pin controlling modem power --- Pin 18 is the power enable pin for the
-// bee socket on Mayfly v1.0, use -1 if using Mayfly 0.5b or if the bee socket
-// is constantly powered (ie you changed SJ18 on Mayfly 1.x to 3.3v)
-const int8_t modemStatusPin  = 19;  // MCU pin used to read modem status
-const int8_t modemSleepRqPin = 23;  // MCU pin for modem sleep/wake request
-const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
-                                    // status
+const int8_t modemVccPin    = 23;      // MCU pin controlling modem power
+const int8_t modemStatusPin = 19;      // MCU pin used to read modem status
+const int8_t modemLEDPin    = redLED;  // MCU pin connected an LED to show modem
+                                       // status (-1 if unconnected)
 
 // Network connection information
-const char* apn =
-    "hologram";  // APN connection name, typically Hologram unless you have a
-                 // different provider's SIM card. Change as needed
+const char* apn = "hologram";  // The APN for the gprs connection
 
-// Create the modem object
-SIMComSIM7080 modem7080(&modemSerial, modemVccPin, modemStatusPin,
-                        modemSleepRqPin, apn);
+Sodaq2GBeeR6 modem2GB(&modemSerial, modemVccPin, modemStatusPin, apn);
 // Create an extra reference to the modem by a generic name
-SIMComSIM7080 modem = modem7080;
-/** End [sim_com_sim7080] */
+Sodaq2GBeeR6 modem = modem2GB;
+/** End [sodaq_2g_bee_r6] */
 
 
 // ==========================================================================
 //  Using the Processor as a Sensor
 // ==========================================================================
-/** Start [processor_sensor] */
+/** Start [processor_stats] */
 #include <sensors/ProcessorStats.h>
 
 // Create the main processor chip "sensor" - for general metadata
-const char*    mcuBoardVersion = "v1.1";
+const char*    mcuBoardVersion = "v0.5b";
 ProcessorStats mcuBoard(mcuBoardVersion);
-/** End [processor_sensor] */
+/** End [processor_stats] */
 
 
 // ==========================================================================
@@ -129,23 +102,6 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 // Create a DS3231 sensor object
 MaximDS3231 ds3231(1);
 /** End [ds3231] */
-
-
-// ==========================================================================
-//  Meter Hydros 21 Conductivity, Temperature, and Depth Sensor
-// ==========================================================================
-/** Start [hydros21] */
-#include <sensors/MeterHydros21.h>
-
-const char*   hydrosSDI12address = "1";  // The SDI-12 Address of the Hydros 21
-const uint8_t hydrosNumberReadings = 6;  // The number of readings to average
-const int8_t  SDI12Power = sensorPowerPin;  // Power pin (-1 if unconnected)
-const int8_t  SDI12Data  = 7;               // The SDI12 data pin
-
-// Create a Meter Hydros 21 sensor object
-MeterHydros21 hydros(*hydrosSDI12address, SDI12Power, SDI12Data,
-                     hydrosNumberReadings);
-/** End [hydros21] */
 
 
 // ==========================================================================
@@ -181,55 +137,60 @@ CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B,
 
 
 // ==========================================================================
+//  Meter Hydros 21 Conductivity, Temperature, and Depth Sensor
+// ==========================================================================
+/** Start [hydros21] */
+#include <sensors/MeterHydros21.h>
+
+const char*   hydrosSDI12address = "1";  // The SDI-12 Address of the Hydros 21
+const uint8_t hydrosNumberReadings = 6;  // The number of readings to average
+const int8_t  SDI12Power = sensorPowerPin;  // Power pin (-1 if unconnected)
+const int8_t  SDI12Data  = 7;               // The SDI12 data pin
+
+// Create a Meter Hydros 21 sensor object
+MeterHydros21 hydros(*hydrosSDI12address, SDI12Power, SDI12Data,
+                     hydrosNumberReadings);
+/** End [hydros21] */
+
+
+// ==========================================================================
 //  Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
 /** Start [variable_arrays] */
 Variable* variableList[] = {
     new MeterHydros21_Cond(&hydros),
-    new MeterHydros21_Depth(&hydros),
     new MeterHydros21_Temp(&hydros),
+    new MeterHydros21_Depth(&hydros),
     new CampbellOBS3_Turbidity(&osb3low, "", "TurbLow"),
     new CampbellOBS3_Turbidity(&osb3high, "", "TurbHigh"),
     new ProcessorStats_Battery(&mcuBoard),
     new MaximDS3231_Temp(&ds3231),
-    new Modem_SignalPercent(&modem),
-};
+    new Modem_RSSI(&modem),
+    new Modem_SignalPercent(&modem)};
 
 // All UUID's, device registration, and sampling feature information can be
-// pasted directly from Monitor My Watershed.
-// To get the list, click the "View  token UUID list" button on the upper right
-// of the site page.
+// pasted directly from Monitor My Watershed.  To get the list, click the "View
+// token UUID list" button on the upper right of the site page.
 
 // *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
 // Check the order of your variables in the variable list!!!
 // Be VERY certain that they match the order of your UUID's!
-// Rearrange the variables in the variable list ABOVE if necessary to match!
-// Do not change the order of the variables in the section below.
+// Rearrange the variables in the variable list if necessary to match!
 // *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
-
-// Replace all of the text in the following section with the UUID array from
-// MonitorMyWatershed
-
 /* clang-format off */
-// ---------------------   Beginning of Token UUID List   ---------------------
-
-
-const char* UUIDs[] =  // UUID array for device sensors
-    {
-        "12345678-abcd-1234-ef00-1234567890ab",  // Specific conductance (Meter_Hydros21_Cond)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Water depth (Meter_Hydros21_Depth)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Temperature (Meter_Hydros21_Temp)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity (Campbell_OBS3_Turb) (Low)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity (Campbell_OBS3_Turb) (High)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Battery voltage (EnviroDIY_Mayfly_Batt)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Battery voltage (EnviroDIY_Mayfly_Batt)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Percent full scale (EnviroDIY_LTEB_SignalPercent)
+const char* UUIDs[] = {
+    "12345678-abcd-1234-ef00-1234567890ab",  // Electrical conductivity (Decagon_CTD-10_Cond)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Temperature (Decagon_CTD-10_Temp)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Water depth (Decagon_CTD-10_Depth)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity (Campbell_OBS3_Turb)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity (Campbell_OBS3_Turb)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Battery voltage (EnviroDIY_Mayfly_Batt)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Temperature (EnviroDIY_Mayfly_Temp)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Received signal strength indication (Sodaq_2GBee_RSSI)
+    "12345678-abcd-1234-ef00-1234567890ab"   // Percent full scale (Sodaq_2GBee_SignalPercent)
 };
 const char* registrationToken = "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
 const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  // Sampling feature UUID
-
-
-// -----------------------   End of Token UUID List  -----------------------
 /* clang-format on */
 
 // Count up the number of pointers in the array
@@ -253,9 +214,9 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 //  Creating Data Publisher[s]
 // ==========================================================================
 /** Start [publishers] */
-// Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
-#include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPost(dataLogger, registrationToken,
+// Create a data publisher for the Monitor My Watershed POST endpoint
+#include <publishers/MonitorMyWatershedPublisher.h>
+MonitorMyWatershedPublisher MonitorMWPost(dataLogger, registrationToken,
                                  samplingFeature);
 /** End [publishers] */
 
@@ -283,10 +244,11 @@ float getBatteryVoltage() {
     if (mcuBoard.sensorValues[0] == -9999) mcuBoard.update();
     return mcuBoard.sensorValues[0];
 }
+/** End [working_functions] */
 
 
 // ==========================================================================
-// Arduino Setup Function
+//  Arduino Setup Function
 // ==========================================================================
 /** Start [setup] */
 void setup() {
@@ -317,9 +279,6 @@ void setup() {
     // Blink the LEDs to show the board is on and starting up
     greenRedFlash();
 
-    pinMode(20, OUTPUT);  // for proper operation of the onboard flash memory
-                          // chip's ChipSelect (Mayfly v1.0 and later)
-
     // Set the timezones for the logger/data and the RTC
     // Logging in the given time zone
     Logger::setLoggerTimeZone(timeZone);
@@ -343,24 +302,6 @@ void setup() {
         varArray.setupSensors();
         varArray.sensorsPowerDown();
     }
-
-    /** Start [setup_sim7080] */
-    modem.setModemWakeLevel(HIGH);   // ModuleFun Bee inverts the signal
-    modem.setModemResetLevel(HIGH);  // ModuleFun Bee inverts the signal
-    Serial.println(F("Waking modem and setting Cellular Carrier Options..."));
-    modem.modemWake();  // NOTE:  This will also set up the modem
-    modem.gsmModem.setBaud(modemBaud);   // Make sure we're *NOT* auto-bauding!
-    modem.gsmModem.setNetworkMode(38);   // set to LTE only
-                                         // 2 Automatic
-                                         // 13 GSM only
-                                         // 38 LTE only
-                                         // 51 GSM and LTE only
-    modem.gsmModem.setPreferredMode(1);  // set to CAT-M
-                                         // 1 CAT-M
-                                         // 2 NB-IoT
-                                         // 3 CAT-M and NB-IoT
-    /** End [setup_sim7080] */
-
 
     // Sync the clock if it isn't valid or we have battery to spare
     if (getBatteryVoltage() > 3.55 || !loggerClock::isRTCSane()) {
@@ -411,5 +352,3 @@ void loop() {
     }
 }
 /** End [loop] */
-
-// cspell: ignore ediylte Turb

@@ -145,7 +145,7 @@ Foreach ($sensorFlag in $sensorFlags)
 }
 
 $publisherFlag = @(`
-    'BUILD_PUB_ENVIRO_DIY_PUBLISHER', `
+    'BUILD_PUB_MONITOR_MY_WATERSHED_PUBLISHER', `
     'BUILD_PUB_DREAM_HOST_PUBLISHER', `
     'BUILD_PUB_THING_SPEAK_PUBLISHER')
 

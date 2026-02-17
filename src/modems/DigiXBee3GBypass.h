@@ -73,7 +73,7 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include "TinyGsmClient.h"
+#include "TinyGsmClientUBLOX.h"
 #undef TINY_GSM_MODEM_HAS_WIFI
 #include "DigiXBee.h"
 
@@ -163,7 +163,7 @@ class DigiXBee3GBypass : public DigiXBee {
     /**
      * @brief Public reference to the TinyGSM modem.
      */
-    TinyGsm gsmModem;
+    TinyGsmUBLOX gsmModem;
 
  protected:
     bool isInternetAvailable(void) override;

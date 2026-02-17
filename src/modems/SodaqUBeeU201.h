@@ -75,7 +75,7 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include "TinyGsmClient.h"
+#include "TinyGsmClientUBLOX.h"
 #include "LoggerModem.h"
 
 #ifdef MS_SODAQUBEEU201_DEBUG_DEEP
@@ -232,7 +232,7 @@ class SodaqUBeeU201 : public loggerModem {
     /**
      * @brief Public reference to the TinyGSM modem.
      */
-    TinyGsm gsmModem;
+    TinyGsmUBLOX gsmModem;
 
  protected:
     bool isInternetAvailable(void) override;

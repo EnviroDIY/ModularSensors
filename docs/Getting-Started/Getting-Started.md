@@ -102,9 +102,6 @@ lib_ldf_mode = deep+
 build_flags =
     -DSDI12_EXTERNAL_PCINT
     -DNEOSWSERIAL_EXTERNAL_PCINT
-    -DMQTT_MAX_PACKET_SIZE=240
-    -DTINY_GSM_RX_BUFFER=64
-    -DTINY_GSM_YIELD_MS=2
 ```
 
 - Download the "ino" file for whatever example you think will be most similar to what you'll be doing.
@@ -133,12 +130,8 @@ It is also over 1500 lines long.
 - [single_sensor](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/single_sensor)
   - This shows making use of the unified set of commands to print data from a MaxBotix ultrasonic range finder to the serial port.
 It also shows creating a calculated variable which is the water depth.
-- [DRWI_CitSci](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/)
-  - This example uses the sensors and equipment standard groups participating in the DRWI Citizen Science project with the Stroud Water Research Center.
-It includes a Meter Hydros 21 (formerly know as a Decagon CTD), a Campbell OBS3+, and a Sodaq GPRSBee for communication.
-The results are saved to the SD card and posted to the Monitor My Watershed data portal.
-- [DRWI_NoCellular](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/DRWI_NoCellular)
-  - This also uses the sensors and equipment standard to the DRWI Citizen Science grant but omits the modem for circumstances where there is no cellular signal.
+- [simple_logging](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/simple_logging)
+  - This shows how to log data a simple sample count and battery voltage to a SD card.
 - [logging_to_ThingSpeak](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/logging_to_ThingSpeak)
   - This uses an ESP8266 to send data to ThingSpeak.
 It also includes a Meter Hydros 21 (formerly know as a Decagon CTD) and a Campbell OBS3+.
@@ -147,10 +140,8 @@ It also includes a Meter Hydros 21 (formerly know as a Decagon CTD) and a Campbe
 - [double_logger](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/double_logger)
   - This is a more complicated example using two different logger instances to log data at two different intervals, in this case, an AM3215 logging every minute, while checking the battery voltage only every 5 minutes.
 This showcases both how to use two different logging instances and how to use some of the functions to set up your own logging loop rather than using the logData() function.
-- [data_saving](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/)
-  - This is another double logger example, but in this case, both loggers are going at the same interval and the only difference between the loggers is the list of variables.
 There are two sets of variables, all coming from Yosemitech sensors.
-Because each sensor outputs temperature and we don't want to waste cellular data sending out multiple nearly identical temperature values, we have one logger that logs every possible variable result to the SD card and another logger that sends only unique results to the EnviroDIY data portal.
+Because each sensor outputs temperature and we don't want to waste cellular data sending out multiple nearly identical temperature values, we have one logger that logs every possible variable result to the SD card and another logger that sends only unique results to Monitor My Watershed.
 This example also shows how to stop power draw from an RS485 adapter with automatic flow detection.
 
 ## Deploying your Station<!--! {#page_getting_started_deploying} -->

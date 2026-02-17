@@ -653,7 +653,7 @@ bool Logger::isRTCSane(void) {
 
 
 // This sets static variables for the date/time - this is needed so that all
-// data outputs (SD, EnviroDIY, serial printing, etc) print the same time
+// data outputs (SD, publishers, serial printing, etc) print the same time
 // for updating the sensors - even though the routines to update the sensors
 // and to output the data may take several seconds.
 // It is not currently possible to output the instantaneous time an individual
@@ -1275,7 +1275,7 @@ void Logger::printFileHeader(Stream* stream) {
     stream->print(F("Data Logger File: "));
     stream->println(_fileName);
 
-    // Adding the sampling feature UUID (only applies to EnviroDIY logger)
+    // Adding the sampling feature UUID
     if (strlen(_samplingFeatureUUID) > 1) {
         stream->print(F("Sampling Feature UUID: "));
         stream->print(_samplingFeatureUUID);

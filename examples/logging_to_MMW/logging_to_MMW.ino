@@ -12,18 +12,6 @@
  * ======================================================================= */
 
 // ==========================================================================
-//  Defines for TinyGSM
-// ==========================================================================
-/** Start [defines] */
-#ifndef TINY_GSM_RX_BUFFER
-#define TINY_GSM_RX_BUFFER 64
-#endif
-#ifndef TINY_GSM_YIELD_MS
-#define TINY_GSM_YIELD_MS 2
-#endif
-/** End [defines] */
-
-// ==========================================================================
 //  Include the libraries required for any data logger
 // ==========================================================================
 /** Start [includes] */
@@ -105,13 +93,13 @@ DigiXBeeCellularTransparent modem = modemXBCT;
 // ==========================================================================
 //  Using the Processor as a Sensor
 // ==========================================================================
-/** Start [processor_sensor] */
+/** Start [processor_stats] */
 #include <sensors/ProcessorStats.h>
 
 // Create the main processor chip "sensor" - for general metadata
 const char*    mcuBoardVersion = "v1.1";
 ProcessorStats mcuBoard(mcuBoardVersion);
-/** End [processor_sensor] */
+/** End [processor_stats] */
 
 
 // ==========================================================================
@@ -204,18 +192,18 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 //  Creating Data Publisher[s]
 // ==========================================================================
 /** Start [publishers] */
-// A Publisher to Monitor My Watershed / EnviroDIY Data Sharing Portal
+// A Publisher to Monitor My Watershed
 // Device registration and sampling feature information can be obtained after
-// registration at https://monitormywatershed.org or https://data.envirodiy.org
+// registration at https://monitormywatershed.org
 const char* registrationToken =
     "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
 const char* samplingFeature =
     "12345678-abcd-1234-ef00-1234567890ab";  // Sampling feature UUID
 
-// Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
-#include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPost(dataLogger, registrationToken,
-                                 samplingFeature);
+// Create a data publisher for the Monitor My Watershed POST endpoint
+#include <publishers/MonitorMyWatershedPublisher.h>
+MonitorMyWatershedPublisher MonitorMWPost(dataLogger, registrationToken,
+                                          samplingFeature);
 /** End [publishers] */
 
 

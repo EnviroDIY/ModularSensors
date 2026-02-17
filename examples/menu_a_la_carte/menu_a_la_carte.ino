@@ -17,18 +17,6 @@
 // this makes sure the argument is expanded before converting to string
 #define STR(X) STR_(X)
 
-// ==========================================================================
-//  Defines for TinyGSM
-// ==========================================================================
-/** Start [defines] */
-#ifndef TINY_GSM_RX_BUFFER
-#define TINY_GSM_RX_BUFFER 64
-#endif
-#ifndef TINY_GSM_YIELD_MS
-#define TINY_GSM_YIELD_MS 2
-#endif
-/** End [defines] */
-
 
 // ==========================================================================
 //  Include the libraries required for any data logger
@@ -989,6 +977,7 @@ Variable* mcuBoardReset = new ProcessorStats_ResetCode(
 #if defined(MS_USE_DS3231)
 // ==========================================================================
 //  Maxim DS3231 RTC (Real Time Clock)
+//  Built in on Mayfly 0.x and 1.x
 // ==========================================================================
 /** Start [maxim_ds3231] */
 #include <sensors/MaximDS3231.h>
@@ -3343,14 +3332,14 @@ VariableArray varArray(variableCount, variableList);
 #endif
 
 
-#if defined(BUILD_PUB_ENVIRO_DIY_PUBLISHER) && \
+#if defined(BUILD_PUB_MONITOR_MY_WATERSHED_PUBLISHER) && \
     (!defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM))
 // ==========================================================================
-//  A Publisher to Monitor My Watershed / EnviroDIY Data Sharing Portal
+//  A Publisher to Monitor My Watershed
 // ==========================================================================
-/** Start [enviro_diy_publisher] */
+/** Start [monitor_my_watershed_publisher] */
 // Device registration and sampling feature information can be obtained after
-// registration at https://monitormywatershed.org or https://data.envirodiy.org
+// registration at https://monitormywatershed.org
 const char* registrationToken =
     "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
 // NOTE: Because we already set the sampling feature with the logger
@@ -3358,10 +3347,10 @@ const char* registrationToken =
 // const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  //
 // Sampling feature UUID
 
-// Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
-#include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPost(dataLogger, registrationToken);
-/** End [enviro_diy_publisher] */
+// Create a data publisher for the Monitor My Watershed POST endpoint
+#include <publishers/MonitorMyWatershedPublisher.h>
+MonitorMyWatershedPublisher MonitorMWPost(dataLogger, registrationToken);
+/** End [monitor_my_watershed_publisher] */
 #endif
 
 
@@ -3804,17 +3793,9 @@ void setup() {
     modem.modemWake();  // NOTE:  This will also set up the modem
     // WARNING: PLEASE REMOVE AUTOBAUDING FOR PRODUCTION CODE!
     if (!modem.gsmModem.testAT()) {
-        PRINTOUT(F("Attempting autobauding.."));
-        uint32_t foundBaud = TinyGsmAutoBaud(modemSerial);
-        if (foundBaud != 0 || (modemBaud > 57600 && F_CPU == 8000000L)) {
-            PRINTOUT(F("Got modem response at baud of"), foundBaud,
-                     F("Firing an attempt to change the baud rate to"),
-                     modemBaud);
-            modem.gsmModem.sendAT(GF("+UART_DEF="), modemBaud, F(",8,1,0,0"));
-            modem.gsmModem.waitResponse();
-            modemSerial.end();
-            modemSerial.begin(modemBaud);
-        }
+        PRINTOUT(F("Attempting to force the modem baud rate."));
+        modem.gsmModem.forceModemBaud(modemSerial,
+                                      static_cast<uint32_t>(modemBaud));
     }
 /** End [setup_esp] */
 #endif
@@ -3835,21 +3816,10 @@ void setup() {
     modem.modemWake();  // NOTE:  This will also set up the modem
     // WARNING: PLEASE REMOVE AUTOBAUDING FOR PRODUCTION CODE!
     if (!modem.gsmModem.testAT()) {
-        PRINTOUT(F("Attempting autobauding.."));
-        uint32_t foundBaud = TinyGsmAutoBaud(modemSerial);
-        if (foundBaud != 0 && !(F_CPU <= 8000000L && foundBaud >= 115200) &&
-            !(F_CPU <= 16000000L && foundBaud > 115200)) {
-            PRINTOUT(F("Got modem response at baud of"), foundBaud,
-                     F("Firing an attempt to change the baud rate to"),
-                     modemBaud);
-            modem.gsmModem.setBaud(
-                modemBaud);  // Make sure we're *NOT* auto-bauding!
-            modem.gsmModem.waitResponse();
-            modemSerial.end();
-            modemSerial.begin(modemBaud);
-        }
+        PRINTOUT(F("Attempting to force the modem baud rate."));
+        modem.gsmModem.forceModemBaud(modemSerial,
+                                      static_cast<uint32_t>(modemBaud));
     }
-    modem.gsmModem.setBaud(modemBaud);   // Make sure we're *NOT* auto-bauding!
     modem.gsmModem.setNetworkMode(38);   // set to LTE only
                                          // 2 Automatic
                                          // 13 GSM only
@@ -3979,6 +3949,7 @@ void loop() {
                  mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM],
                  F("V) going back to sleep."));
         dataLogger.systemSleep();
+#if !defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM)
     } else if (getBatteryVoltage() < 3.55) {
         // At moderate voltage, log data but don't send it over the modem
         PRINTOUT(F("Battery at"),
@@ -3992,6 +3963,16 @@ void loop() {
                  F("V; high enough to log and publish data"));
         dataLogger.logDataAndPublish();
     }
+#else
+    } else {
+        // If the battery is good enough to log, log the data but we have no
+        // modem so we can't publish
+        PRINTOUT(F("Battery at"),
+                 mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM],
+                 F("V; high enough to log data"));
+        dataLogger.logData();
+    }
+#endif
 }
 
 /** End [simple_loop] */

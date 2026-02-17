@@ -1,5 +1,5 @@
 /** =========================================================================
- * @example{lineno} DRWI_Mayfly1.ino
+ * @example{lineno} DRWI_SIM7080LTE.ino
  * @copyright Stroud Water Research Center
  * @license This example is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
@@ -11,24 +11,13 @@
  * Mayfly v1.0 board
  * EnviroDIY SIM7080 LTE module (with Hologram SIM card)
  * Hydros21 CTD sensor
+ * Campbell Scientific OBS3+ Turbidity sensor
  *
- * See [the walkthrough page](@ref example_drwi_mayfly1) for detailed
+ * See [the walkthrough page](@ref example_drwi_ediylte) for detailed
  * instructions.
  *
- * @m_examplenavigation{example_drwi_mayfly1,}
+ * @m_examplenavigation{example_drwi_ediylte,}
  * ======================================================================= */
-
-// ==========================================================================
-//  Defines for TinyGSM
-// ==========================================================================
-/** Start [defines] */
-#ifndef TINY_GSM_RX_BUFFER
-#define TINY_GSM_RX_BUFFER 64
-#endif
-#ifndef TINY_GSM_YIELD_MS
-#define TINY_GSM_YIELD_MS 2
-#endif
-/** End [defines] */
 
 // ==========================================================================
 //  Include the libraries required for any data logger
@@ -47,7 +36,7 @@
 // ==========================================================================
 /** Start [logging_options] */
 // The name of this program file
-const char* sketchName = "DRWI_Mayfly1.ino";
+const char* sketchName = "DRWI_SIM7080LTE.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char* LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
@@ -63,7 +52,7 @@ const int8_t  greenLED   = 8;      // Pin for the green LED
 const int8_t  redLED     = 9;      // Pin for the red LED
 const int8_t  buttonPin  = 21;     // Pin for debugging mode (ie, button pin)
 const int8_t  wakePin    = 31;     // MCU interrupt/alarm pin to wake from sleep
-// Mayfly 0.x, 1.x D31 = A7
+// Mayfly 0.x D31 = A7
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
 const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
@@ -110,18 +99,17 @@ SIMComSIM7080 modem = modem7080;
 // ==========================================================================
 //  Using the Processor as a Sensor
 // ==========================================================================
-/** Start [processor_sensor] */
+/** Start [processor_stats] */
 #include <sensors/ProcessorStats.h>
 
 // Create the main processor chip "sensor" - for general metadata
 const char*    mcuBoardVersion = "v1.1";
 ProcessorStats mcuBoard(mcuBoardVersion);
-/** End [processor_sensor] */
+/** End [processor_stats] */
 
 
 // ==========================================================================
 //  Maxim DS3231 RTC (Real Time Clock)
-//  Built in on all versions of the Mayfly
 // ==========================================================================
 /** Start [ds3231] */
 #include <sensors/MaximDS3231.h>
@@ -129,36 +117,6 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 // Create a DS3231 sensor object
 MaximDS3231 ds3231(1);
 /** End [ds3231] */
-
-
-// ==========================================================================
-//  Everlight ALS-PT19 Ambient Light Sensor
-//  Built in on Mayfly 1.x
-// ==========================================================================
-/** Start [everlight_alspt19] */
-#include <sensors/EverlightALSPT19.h>
-
-// Create a Everlight ALS-PT19 sensor object
-// For an EnviroDIY Mayfly, you can use the abbreviated version
-const uint8_t    alsNumberReadings = 10;
-EverlightALSPT19 alsPt19(alsNumberReadings);
-/** End [everlight_alspt19] */
-
-
-// ==========================================================================
-//  Sensirion SHT4X Digital Humidity and Temperature Sensor
-//  Built in on Mayfly 1.x
-// ==========================================================================
-/** Start [sensirion_sht4x] */
-#include <sensors/SensirionSHT4x.h>
-
-// NOTE: Use -1 for any pins that don't apply or aren't being used.
-const int8_t SHT4xPower     = sensorPowerPin;  // Power pin
-const bool   SHT4xUseHeater = true;
-
-// Create an Sensirion SHT4X sensor object
-SensirionSHT4x sht4x(SHT4xPower, SHT4xUseHeater);
-/** End [sensirion_sht4x] */
 
 
 // ==========================================================================
@@ -178,21 +136,51 @@ MeterHydros21 hydros(*hydrosSDI12address, SDI12Power, SDI12Data,
 /** End [hydros21] */
 
 
-/* clang-format off */
+// ==========================================================================
+//  Campbell OBS 3 / OBS 3+ Analog Turbidity Sensor
+// ==========================================================================
+/** Start [obs3] */
+#include <sensors/CampbellOBS3.h>
+
+const int8_t  OBS3Power = sensorPowerPin;  // Power pin (-1 if unconnected)
+const uint8_t OBS3NumberReadings = 10;
+const uint8_t ADSi2c_addr        = 0x48;  // The I2C address of the ADS1115 ADC
+// Campbell OBS 3+ *Low* Range Calibration in Volts
+const int8_t OBSLowADSChannel = 0;  // ADS channel for *low* range output
+const float  OBSLow_A         = 0.000E+00;  // "A" value (X^2) [*low* range]
+const float  OBSLow_B         = 1.000E+00;  // "B" value (X) [*low* range]
+const float  OBSLow_C         = 0.000E+00;  // "C" value [*low* range]
+
+// Create a Campbell OBS3+ *low* range sensor object
+CampbellOBS3 osb3low(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B, OBSLow_C,
+                     ADSi2c_addr, OBS3NumberReadings);
+
+
+// Campbell OBS 3+ *High* Range Calibration in Volts
+const int8_t OBSHighADSChannel = 1;  // ADS channel for *high* range output
+const float  OBSHigh_A         = 0.000E+00;  // "A" value (X^2) [*high* range]
+const float  OBSHigh_B         = 1.000E+00;  // "B" value (X) [*high* range]
+const float  OBSHigh_C         = 0.000E+00;  // "C" value [*high* range]
+
+// Create a Campbell OBS3+ *high* range sensor object
+CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B,
+                      OBSHigh_C, ADSi2c_addr, OBS3NumberReadings);
+/** End [obs3] */
+
+
 // ==========================================================================
 //  Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
 /** Start [variable_arrays] */
 Variable* variableList[] = {
-    new MeterHydros21_Cond(&hydros),             // Specific conductance (Meter_Hydros21_Cond)
-    new MeterHydros21_Depth(&hydros),            // Water depth (Meter_Hydros21_Depth)
-    new MeterHydros21_Temp(&hydros),             // Temperature (Meter_Hydros21_Temp)
-    new SensirionSHT4x_Humidity(&sht4x),         // Relative humidity (Sensirion_SHT40_Humidity)
-    new SensirionSHT4x_Temp(&sht4x),             // Temperature (Sensirion_SHT40_Temperature)
-    new EverlightALSPT19_Illuminance(&alsPt19),  // Illuminance (Everlight_AnalogALS_Illuminance)
-    new MaximDS3231_Temp(&ds3231),               // Temperature (Maxim_DS3231_Temp)
-    new ProcessorStats_Battery(&mcuBoard),       // Battery voltage (EnviroDIY_Mayfly_Batt)
-    new Modem_SignalPercent(&modem),             // Percent full scale (EnviroDIY_LTEB_SignalPercent)
+    new MeterHydros21_Cond(&hydros),
+    new MeterHydros21_Depth(&hydros),
+    new MeterHydros21_Temp(&hydros),
+    new CampbellOBS3_Turbidity(&osb3low, "", "TurbLow"),
+    new CampbellOBS3_Turbidity(&osb3high, "", "TurbHigh"),
+    new ProcessorStats_Battery(&mcuBoard),
+    new MaximDS3231_Temp(&ds3231),
+    new Modem_SignalPercent(&modem),
 };
 
 // All UUID's, device registration, and sampling feature information can be
@@ -209,6 +197,8 @@ Variable* variableList[] = {
 
 // Replace all of the text in the following section with the UUID array from
 // MonitorMyWatershed
+
+/* clang-format off */
 // ---------------------   Beginning of Token UUID List   ---------------------
 
 
@@ -217,10 +207,9 @@ const char* UUIDs[] =  // UUID array for device sensors
         "12345678-abcd-1234-ef00-1234567890ab",  // Specific conductance (Meter_Hydros21_Cond)
         "12345678-abcd-1234-ef00-1234567890ab",  // Water depth (Meter_Hydros21_Depth)
         "12345678-abcd-1234-ef00-1234567890ab",  // Temperature (Meter_Hydros21_Temp)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Relative humidity (Sensirion_SHT40_Humidity)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Temperature (Sensirion_SHT40_Temperature)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Illuminance (Everlight_AnalogALS_Illuminance)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Temperature (Maxim_DS3231_Temp)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity (Campbell_OBS3_Turb) (Low)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity (Campbell_OBS3_Turb) (High)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Battery voltage (EnviroDIY_Mayfly_Batt)
         "12345678-abcd-1234-ef00-1234567890ab",  // Battery voltage (EnviroDIY_Mayfly_Batt)
         "12345678-abcd-1234-ef00-1234567890ab",  // Percent full scale (EnviroDIY_LTEB_SignalPercent)
 };
@@ -252,10 +241,10 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 //  Creating Data Publisher[s]
 // ==========================================================================
 /** Start [publishers] */
-// Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
-#include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPost(dataLogger, registrationToken,
-                                 samplingFeature);
+// Create a data publisher for the Monitor My Watershed POST endpoint
+#include <publishers/MonitorMyWatershedPublisher.h>
+MonitorMyWatershedPublisher MonitorMWPost(dataLogger, registrationToken,
+                                          samplingFeature);
 /** End [publishers] */
 
 
@@ -410,3 +399,5 @@ void loop() {
     }
 }
 /** End [loop] */
+
+// cspell: ignore ediylte Turb

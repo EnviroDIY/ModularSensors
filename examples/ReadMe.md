@@ -11,22 +11,26 @@ ___
   - [Basic Functionality](#basic-functionality)
     - [Single Sensor](#single-sensor)
     - [Simple Logging](#simple-logging)
-    - [Simple Logging for the Learn EnviroDIY course](#simple-logging-for-the-learn-envirodiy-course)
   - [Publishing Data](#publishing-data)
     - [Publishing to Monitor My Watershed](#publishing-to-monitor-my-watershed)
     - [Publishing to ThingSpeak](#publishing-to-thingspeak)
+    - [Publishing to Data and Images to AWS](#publishing-to-data-and-images-to-aws)
   - [Calculations and Complex Logging](#calculations-and-complex-logging)
     - [Barometric Pressure Correction](#barometric-pressure-correction)
     - [Multiple Logging Intervals](#multiple-logging-intervals)
     - [Minimizing Cell Data Usage](#minimizing-cell-data-usage)
-  - [DRWI Citizen Science](#drwi-citizen-science)
-    - [DRWI Mayfly 1.x LTE](#drwi-mayfly-1x-lte)
-    - [DRWI EnviroDIY LTEbee](#drwi-envirodiy-ltebee)
-    - [DRWI Digi LTE](#drwi-digi-lte)
-    - [DRWI CitSci (2G)](#drwi-citsci-2g)
-    - [DRWI CitSci No Cellular](#drwi-citsci-no-cellular)
   - [Everything at Once - a la carte](#everything-at-once---a-la-carte)
     - [Menu a la carte](#menu-a-la-carte)
+  - [EnviroDIY Sensor Stations](#envirodiy-sensor-stations)
+    - [The EnviroDIY Sensor Station Kit](#the-envirodiy-sensor-station-kit)
+  - [Examples for Outdated Hardware](#examples-for-outdated-hardware)
+    - [Simple Logging for the Learn EnviroDIY course](#simple-logging-for-the-learn-envirodiy-course)
+    - [DRWI Citizen Science](#drwi-citizen-science)
+      - [DRWI Mayfly 1.x LTE](#drwi-mayfly-1x-lte)
+      - [DRWI CitSci No Cellular](#drwi-citsci-no-cellular)
+      - [DRWI CitSci (2G)](#drwi-citsci-2g)
+      - [DRWI Digi LTE](#drwi-digi-lte)
+      - [DRWI EnviroDIY LTEbee](#drwi-envirodiy-ltebee)
 
 <!--! @endif -->
 
@@ -51,21 +55,13 @@ The simple logging example shows how to create multiple sensors, create variable
 - [Instructions for the simple logging example](https://envirodiy.github.io/ModularSensors/example_simple_logging.html)
 - [The simple logging example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/simple_logging)
 
-### Simple Logging for the Learn EnviroDIY course<!--! {#examples_learn_envirodiy} -->
-
-The simple logging example for the [Learn EnviroDIY programming course](https://envirodiy.github.io/LearnEnviroDIY/) shows how to create multiple sensors, create variables for the sensors in a variable array, and log the data from the sensors to an SD card.
-It is very similar to the other simple logging example, with just a few extra sensors.
-
-- [Instructions for the learn EnviroDIY course example](https://envirodiy.github.io/ModularSensors/example_learn_envirodiy.html)
-- [The learn EnviroDIY course example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/simple_logging_LearnEnviroDIY)
-
 ___
 
 ## Publishing Data<!--! {#examples_publishing} -->
 
 ### Publishing to Monitor My Watershed<!--! {#examples_mmw} -->
 
-The logging to Monitor My Watershed example uses a Digi XBee in transparent mode to publish data live from a BME280 and Maxim DS18 to the Monitor My Watershed data portal.
+The logging to Monitor My Watershed example uses a Digi XBee in transparent mode to publish data live from a BME280 and Maxim DS18 to Monitor My Watershed.
 
 - [Instructions for the logging to Monitor My Watershed example](https://envirodiy.github.io/ModularSensors/example_mmw.html)
 - [The logging to Monitor My Watershed example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/logging_to_MMW)
@@ -77,6 +73,13 @@ It also includes a Meter Hydros 21 (formerly know as a Decagon CTD) and a Campbe
 
 - [Instructions for the logging to ThingSpeak example](https://envirodiy.github.io/ModularSensors/example_thingspeak.html)
 - [The logging to ThingSpeak example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/logging_to_ThingSpeak)
+
+### Publishing to Data and Images to AWS<!--! {#examples_aws} -->
+
+The logging numeric data to AWS IoT core and images to S3.
+
+- [Instructions for the logging to ThingSpeak example](https://envirodiy.github.io/ModularSensors/example_aws_iot_core.html)
+- [The logging to ThingSpeak example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/AWS_IoT_Core)
 
 ___
 
@@ -97,69 +100,6 @@ This showcases both how to use two different logging instances and how to use so
 - [Instructions for the double logger example](https://envirodiy.github.io/ModularSensors/example_double_log.html)
 - [The double logger example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/double_logger)
 
-### Minimizing Cell Data Usage<!--! {#examples_data_saving} -->
-
-The data saving example is another double logger example, but in this case, both loggers are going at the same interval and the only difference between the loggers is the list of variables.
-There are two sets of variables, all coming from Yosemitech sensors.
-Because each sensor outputs temperature and we don't want to waste cellular data sending out multiple nearly identical temperature values, we have one logger that logs every possible variable result to the SD card and another logger that sends only unique results to the EnviroDIY data portal.
-This example also shows how to stop power draw from an RS485 adapter with automatic flow detection.
-
-- [Instructions for the data saving example](https://envirodiy.github.io/ModularSensors/example_data_saving.html)
-- [The data saving example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/data_saving)
-
-___
-
-## DRWI Citizen Science<!--! {#examples_drwi} -->
-
-### DRWI Mayfly 1.x LTE<!--! {#examples_drwi_mayfly1} -->
-
-The DRWI Mayfly 1.x LTE example uses the sensors and equipment used by most groups participating in the DRWI (Delaware River Watershed Initiative) Citizen Science project with the Stroud Water Research Center.
-It includes a Meter Hydros 21 (CTD) and a SIM7080G-based EnviroDIY LTEbee for communication.
-This examples also makes use of the on-board light, temperature, and humidity sensors on the Mayfly 1.x.
-The results are saved to the SD card and posted to the Monitor My Watershed data portal. Only to be used with newer Mayfly v1.0 and v1.1 boards.
-
-- [Instructions for the Mayfly 1.x LTE DRWI Citizen Science example](https://envirodiy.github.io/ModularSensors/example_drwi_mayfly1.html)
-- [The LTEG DRWI Citizen Science example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/DRWI_Mayfly1)
-
-### DRWI EnviroDIY LTEbee<!--! {#examples_drwi_ediylte} -->
-
-The DRWI EnviroDIY LTEbee example uses the sensors and equipment common to older stations (2016-2020) deployed by groups participating in the DRWI Citizen Science project with the Stroud Water Research Center.
-It includes a Meter Hydros 21 (CTD), a Campbell OBS3+, (Turbidity) and a SIM7080G-based EnviroDIY LTEbee for communication.
-The results are saved to the SD card and posted to the Monitor My Watershed data portal.
-The only difference between this and the other cellular DRWI examples below is the type of modem used.
-
-- [Instructions for the EnviroDIY LTEbee DRWI Citizen Science example](https://envirodiy.github.io/ModularSensors/example_drwi_ediylte.html)
-- [The EnviroDIY LTE DRWI Citizen Science example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/DRWI_DigiLTE)
-
-### DRWI Digi LTE<!--! {#examples_drwi_digilte} -->
-
-The DRWI Digi LTE example uses the sensors and equipment common to older stations (2016-2020) deployed by groups participating in the DRWI Citizen Science project with the Stroud Water Research Center.
-It includes a Meter Hydros 21 (formerly know as a Decagon CTD), a Campbell OBS3+, and a Digi XBee3 LTE-M for communication.
-The results are saved to the SD card and posted to the Monitor My Watershed data portal.
-The only difference between this and the other cellular DRWI examples is the type of modem used.
-
-- [Instructions for the Digi LTE DRWI Citizen Science example](https://envirodiy.github.io/ModularSensors/example_drwi_digilte.html)
-- [The Digi LTE DRWI Citizen Science example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/DRWI_DigiLTE)
-
-### DRWI CitSci (2G)<!--! {#examples_drwi_2g} -->
-
-The 2G DRWI Citizen Science example uses the sensors and equipment found on older stations used in the DRWI Citizen Science project prior to 2020. The 2G GPRSbee boards no longer function in the USA, so this code should not be used and is only provided to archival and reference purposes.
-It includes a Meter Hydros 21 (formerly know as a Decagon CTD), a Campbell OBS3+, and a Sodaq GPRSBee for communication.
-The results are saved to the SD card and posted to the Monitor My Watershed data portal.
-The only difference between this and the other cellular DRWI examples is the type of modem used.
-
-- [Instructions for the 2G DRWI Citizen Science example](https://envirodiy.github.io/ModularSensors/example_drwi_2g.html)
-- [The 2G DRWI Citizen Science example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/DRWI_CitSci)
-
-### DRWI CitSci No Cellular<!--! {#examples_drwi_no_cell} -->
-
-The DRWI no cellular example uses the sensors and equipment standard to the DRWI Citizen Science project but omits the data publisher for circumstances where there is no cellular signal.
-It includes a Meter Hydros 21 (CTD) and a Campbell OBS3+ (Turbidity).
-The exclusion of the modem and publisher simplifies the code from the other DRWI examples and uses less power than running one of cellular versions without attaching the modem.
-
-- [Instructions for the no-cellular DRWI Citizen Science example](https://envirodiy.github.io/ModularSensors/example_drwi_no_cell.html)
-- [The no-cellular DRWI Citizen Science example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/DRWI_NoCellular)
-
 ___
 
 ## Everything at Once - a la carte<!--! {#examples_everything} -->
@@ -176,3 +116,79 @@ This example is *NOT* intended to be run in its entirety
   - Unlike the instructions for the other examples which show how to modify the example for your own use, this is a chunk-by-chunk step through of the code with explanations of each portion of the code and links to further documentation on each sensor.
   - There is a table of contents at the top of the walkthrough; I *strongly* recommend using that to skip through to the portions you are interested in
 - [The a la carte example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/menu_a_la_carte)
+
+___
+
+## EnviroDIY Sensor Stations<!--! {#examples_envirodiy} -->
+
+### The EnviroDIY Sensor Station Kit<!--! {#examples_envirodiy_kit} -->
+
+The The EnviroDIY Sensor Station Kit is designed to be used with the [EnviroDIY Monitoring Station Kit](https://www.envirodiy.org/product/envirodiy-monitoring-station-kit/).
+
+- [Instructions for the EnviroDIY sensor station kit example](https://envirodiy.github.io/ModularSensors/example_envirodiy_monitoring_kit.html)
+- [The EnviroDIY sensor station kit example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/example_envirodiy_monitoring_kit)
+
+___
+
+## Examples for Outdated Hardware<!--! {#examples_outdated} -->
+
+### Simple Logging for the Learn EnviroDIY course<!--! {#examples_learn_envirodiy} -->
+
+The simple logging example for the [Learn EnviroDIY programming course](https://envirodiy.github.io/LearnEnviroDIY/) shows how to create multiple sensors, create variables for the sensors in a variable array, and log the data from the sensors to an SD card.
+It is very similar to the other simple logging example, with just a few extra sensors.
+
+- [Instructions for the learn EnviroDIY course example](https://envirodiy.github.io/ModularSensors/example_learn_envirodiy.html)
+- [The learn EnviroDIY course example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/simple_logging_LearnEnviroDIY)
+
+___
+
+### DRWI Citizen Science<!--! {#examples_drwi} -->
+
+#### DRWI Mayfly 1.x LTE<!--! {#examples_drwi_mayfly1} -->
+
+The DRWI Mayfly 1.x LTE example uses the sensors and equipment used by most groups participating in the DRWI (Delaware River Watershed Initiative) Citizen Science project with the Stroud Water Research Center.
+It includes a Meter Hydros 21 (CTD) and a SIM7080G-based EnviroDIY LTEbee for communication.
+This examples also makes use of the on-board light, temperature, and humidity sensors on the Mayfly 1.x.
+The results are saved to the SD card and posted to Monitor My Watershed. Only to be used with newer Mayfly v1.0 and v1.1 boards.
+
+- [Instructions for the Mayfly 1.x LTE DRWI Citizen Science example](https://envirodiy.github.io/ModularSensors/example_drwi_mayfly1.html)
+- [The LTEG DRWI Citizen Science example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/OutdatedHardware/DRWI_CitizenScience/DRWI_Mayfly1)
+
+#### DRWI CitSci No Cellular<!--! {#examples_drwi_no_cell} -->
+
+The DRWI no cellular example uses the sensors and equipment standard to the DRWI Citizen Science project but omits the data publisher for circumstances where there is no cellular signal.
+It includes a Meter Hydros 21 (CTD) and a Campbell OBS3+ (Turbidity).
+The exclusion of the modem and publisher simplifies the code from the other DRWI examples and uses less power than running one of cellular versions without attaching the modem.
+
+- [Instructions for the no-cellular DRWI Citizen Science example](https://envirodiy.github.io/ModularSensors/example_drwi_no_cell.html)
+- [The no-cellular DRWI Citizen Science example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/OutdatedHardware/DRWI_CitizenScience/DRWI_NoCellular)
+
+#### DRWI CitSci (2G)<!--! {#examples_drwi_2g} -->
+
+The 2G DRWI Citizen Science example uses the sensors and equipment found on older stations used in the DRWI Citizen Science project prior to 2020. The 2G GPRSbee boards no longer function in the USA, so this code should not be used and is only provided to archival and reference purposes.
+It includes a Meter Hydros 21 (formerly know as a Decagon CTD), a Campbell OBS3+, and a Sodaq GPRSBee for communication.
+The results are saved to the SD card and posted to Monitor My Watershed.
+The only difference between this and the other cellular DRWI examples is the type of modem used.
+
+- [Instructions for the 2G DRWI Citizen Science example](https://envirodiy.github.io/ModularSensors/example_drwi_2g.html)
+- [The 2G DRWI Citizen Science example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/OutdatedHardware/DRWI_CitizenScience/DRWI_CitSci)
+
+#### DRWI Digi LTE<!--! {#examples_drwi_digilte} -->
+
+The DRWI Digi LTE example uses the sensors and equipment common to older stations (2016-2020) deployed by groups participating in the DRWI Citizen Science project with the Stroud Water Research Center.
+It includes a Meter Hydros 21 (formerly know as a Decagon CTD), a Campbell OBS3+, and a Digi XBee3 LTE-M for communication.
+The results are saved to the SD card and posted to Monitor My Watershed.
+The only difference between this and the other cellular DRWI examples is the type of modem used.
+
+- [Instructions for the Digi LTE DRWI Citizen Science example](https://envirodiy.github.io/ModularSensors/example_drwi_digilte.html)
+- [The Digi LTE DRWI Citizen Science example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/OutdatedHardware/DRWI_CitizenScience/DRWI_DigiLTE)
+
+#### DRWI EnviroDIY LTEbee<!--! {#examples_drwi_ediylte} -->
+
+The DRWI EnviroDIY LTEbee example uses the sensors and equipment common to newer stations (2016-2020) deployed by groups participating in the DRWI Citizen Science project with the Stroud Water Research Center.
+It includes a Meter Hydros 21 (CTD), a Campbell OBS3+, (Turbidity) and a SIM7080G-based EnviroDIY LTEbee for communication.
+The results are saved to the SD card and posted to Monitor My Watershed.
+The only difference between this and the other cellular DRWI examples below is the type of modem used.
+
+- [Instructions for the EnviroDIY LTEbee DRWI Citizen Science example](https://envirodiy.github.io/ModularSensors/example_drwi_ediylte.html)
+- [The EnviroDIY LTE DRWI Citizen Science example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/OutdatedHardware/DRWI_CitizenScience/DRWI_DigiLTE)
