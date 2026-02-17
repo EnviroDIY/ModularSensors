@@ -1,0 +1,65 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+early_access: false
+enable_free_tier: true
+language: en
+tone_instructions: ''
+knowledge_base:
+  learnings:
+    scope: auto
+  issues:
+    scope: auto
+  jira:
+    project_keys: []
+  linear:
+    team_keys: []
+chat:
+  auto_reply: true
+reviews:
+  profile: chill
+  request_changes_workflow: false
+  high_level_summary: true
+  high_level_summary_placeholder: '@coderabbitai summary'
+  poem: false
+  review_status: true
+  collapse_walkthrough: true
+  path_filters:
+    - '!**/dependencies.json'
+    - '!**/cspell.json'
+    - '!**/platformio.ini'
+  path_instructions:
+    - path: '**/*.hpp'
+      instructions: >-
+        Review the C++ code, point out issues relative to principles of clean
+        code, expressiveness, and performance.
+  tools:
+    shellcheck:
+      enabled: true
+    ruff:
+      enabled: true
+    markdownlint:
+      enabled: true
+    github-checks:
+      enabled: true
+      timeout_ms: 90000
+    languagetool:
+      enabled: true
+      disabled_rules:
+        - EN_UNPAIRED_BRACKETS
+      disabled_categories:
+        - TYPOS
+        - TYPOGRAPHY
+        - CASING
+      enabled_only: false
+      level: default
+    biome:
+      enabled: true
+    hadolint:
+      enabled: true
+  auto_review:
+    enabled: true
+    ignore_title_keywords:
+      - WIP
+    labels: []
+    drafts: true
+    base_branches:
+      - master
