@@ -135,7 +135,7 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include "TinyGsmClient.h"
+#include "TinyGsmClientSaraR4.h"
 #include "LoggerModem.h"
 
 #ifdef MS_SODAQUBEER410M_DEBUG_DEEP
@@ -337,7 +337,7 @@ class SodaqUBeeR410M : public loggerModem {
     /**
      * @brief Public reference to the TinyGSM modem.
      */
-    TinyGsm gsmModem;
+    TinyGsmSaraR4 gsmModem;
 
 #if F_CPU == 8000000L
     /**

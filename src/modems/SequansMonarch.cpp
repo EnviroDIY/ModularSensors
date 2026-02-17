@@ -40,12 +40,12 @@ MS_MODEM_CONNECT_INTERNET(SequansMonarch);
 MS_MODEM_DISCONNECT_INTERNET(SequansMonarch);
 MS_MODEM_IS_INTERNET_AVAILABLE(SequansMonarch);
 
-MS_MODEM_CREATE_CLIENT(SequansMonarch);
-MS_MODEM_DELETE_CLIENT(SequansMonarch);
-MS_MODEM_CREATE_SECURE_CLIENT(SequansMonarch);
-MS_MODEM_DELETE_SECURE_CLIENT(SequansMonarch);
+MS_MODEM_CREATE_CLIENT(SequansMonarch, SequansMonarch);
+MS_MODEM_DELETE_CLIENT(SequansMonarch, SequansMonarch);
+MS_MODEM_CREATE_SECURE_CLIENT(SequansMonarch, SequansMonarch);
+MS_MODEM_DELETE_SECURE_CLIENT(SequansMonarch, SequansMonarch);
 
-MS_MODEM_GET_NIST_TIME(SequansMonarch);
+MS_MODEM_GET_NIST_TIME(SequansMonarch, SequansMonarch);
 
 MS_MODEM_GET_MODEM_SIGNAL_QUALITY(SequansMonarch);
 MS_MODEM_GET_MODEM_BATTERY_DATA(SequansMonarch);
