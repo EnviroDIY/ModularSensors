@@ -4,7 +4,7 @@ Example sketch to be used with the [EnviroDIY Monitoring Station Kit](https://ww
 
 This example uses the sensors and equipment included with (or recommended for) the [EnviroDIY Monitoring Station Kit](https://www.envirodiy.org/product/envirodiy-monitoring-station-kit/).
 It includes code for a Mayfly 1.x, a [Meter Hydros 21](https://metergroup.com/products/hydros-21/) and either a [SIM7080G-based EnviroDIY LTEbee](https://www.envirodiy.org/product/envirodiy-lte-bee/) or an [EnviroDIY ESP32 Bee](https://www.envirodiy.org/product/envirodiy-esp32-bee-wifi-bluetooth/) for communication.
-This examples also makes use of the on-board light, temperature, and humidity sensors on the Mayfly 1.x.
+This example also makes use of the on-board light, temperature, and humidity sensors on the Mayfly 1.x.
 The results are saved to the SD card and posted to Monitor My Watershed.
 
 > [!NOTE]

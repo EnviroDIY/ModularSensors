@@ -108,7 +108,7 @@ ___
 The "menu a la carte" example shows most of the functions of the library in one gigantic program.
 It has code in it for every possible sensor and modem and for both AVR and SAMD boards.
 It is also over 1500 lines long.
-This examples is intended to be used like an a la carte menu of all possible options where you selected only the portions of code pertinent to you and delete everything else.
+This example is intended to be used like an a la carte menu of all possible options where you selected only the portions of code pertinent to you and delete everything else.
 This example is *NOT* intended to be run in its entirety
 
 - [The menu a la carte walkthrough](https://envirodiy.github.io/ModularSensors/example_menu.html)
@@ -147,7 +147,7 @@ ___
 
 The DRWI Mayfly 1.x LTE example uses the sensors and equipment used by most groups participating in the DRWI (Delaware River Watershed Initiative) Citizen Science project with the Stroud Water Research Center.
 It includes a Meter Hydros 21 (CTD) and a SIM7080G-based EnviroDIY LTEbee for communication.
-This examples also makes use of the on-board light, temperature, and humidity sensors on the Mayfly 1.x.
+This example also makes use of the on-board light, temperature, and humidity sensors on the Mayfly 1.x.
 The results are saved to the SD card and posted to Monitor My Watershed. Only to be used with newer Mayfly v1.0 and v1.1 boards.
 
 - [Instructions for the Mayfly 1.x LTE DRWI Citizen Science example](https://envirodiy.github.io/ModularSensors/example_drwi_mayfly1.html)
