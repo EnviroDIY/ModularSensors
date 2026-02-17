@@ -1041,8 +1041,8 @@ const int8_t  al485EnablePin    = -1;              // Adapter RE/DE pin
 const uint8_t anbNumberReadings = 1;
 
 // Create an ANB pH sensor object
-ANBpH anbPH(anbModbusAddress, modbusSerial, anbPower, alAdapterPower,
-            al485EnablePin, anbNumberReadings);
+ANBpH anbPH(anbModbusAddress, modbusSerial, anbPower, loggingInterval,
+            alAdapterPower, al485EnablePin, anbNumberReadings);
 
 // Create all of the variable pointers for the ANB pH sensor
 Variable* anbPHValue = new ANBpH_pH(&anbPH,
