@@ -11,19 +11,6 @@
  * @m_examplenavigation{example_baro_rho,}
  * ======================================================================= */
 
-// ==========================================================================
-// Defines for TinyGSM
-// NOTE:  These only work with TinyGSM.
-// ==========================================================================
-/** Start [defines] */
-#ifndef TINY_GSM_RX_BUFFER
-#define TINY_GSM_RX_BUFFER 64
-#endif
-#ifndef TINY_GSM_YIELD_MS
-#define TINY_GSM_YIELD_MS 2
-#endif
-/** End [defines] */
-
 
 // ==========================================================================
 //  Include the libraries required for any data logger

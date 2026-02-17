@@ -271,6 +271,18 @@
 #define TINY_GSM_RX_BUFFER 64
 #endif
 
+#ifndef TINY_GSM_YIELD_MS
+/**
+ * @brief The number of milliseconds to yield to the GSM module when using
+ * TinyGSM.
+ *
+ * If you are using a slow baud rate to communicate with your module, this delay
+ * is set  to prevent command responses from being spliced apart.  This is
+ * especially important when using a faster processor.
+ */
+#define TINY_GSM_YIELD_MS 2
+#endif
+
 #ifndef MS_MQTT_MAX_PACKET_SIZE
 /**
  * @brief Configure the size of the PubSubClient buffer for MQTT publishers.

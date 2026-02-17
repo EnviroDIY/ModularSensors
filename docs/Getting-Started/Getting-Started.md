@@ -102,9 +102,6 @@ lib_ldf_mode = deep+
 build_flags =
     -DSDI12_EXTERNAL_PCINT
     -DNEOSWSERIAL_EXTERNAL_PCINT
-    -DMQTT_MAX_PACKET_SIZE=240
-    -DTINY_GSM_RX_BUFFER=64
-    -DTINY_GSM_YIELD_MS=2
 ```
 
 - Download the "ino" file for whatever example you think will be most similar to what you'll be doing.

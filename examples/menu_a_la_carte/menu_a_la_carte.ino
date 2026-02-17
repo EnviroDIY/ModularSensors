@@ -17,18 +17,6 @@
 // this makes sure the argument is expanded before converting to string
 #define STR(X) STR_(X)
 
-// ==========================================================================
-//  Defines for TinyGSM
-// ==========================================================================
-/** Start [defines] */
-#ifndef TINY_GSM_RX_BUFFER
-#define TINY_GSM_RX_BUFFER 64
-#endif
-#ifndef TINY_GSM_YIELD_MS
-#define TINY_GSM_YIELD_MS 2
-#endif
-/** End [defines] */
-
 
 // ==========================================================================
 //  Include the libraries required for any data logger

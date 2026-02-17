@@ -27,9 +27,7 @@ ___
 
 - [Example showing all possible functionality](#example-showing-all-possible-functionality)
 - [Walking Through the Code](#walking-through-the-code)
-  - [Defines and Includes](#defines-and-includes)
-    - [Defines for the Arduino IDE](#defines-for-the-arduino-ide)
-    - [Library Includes](#library-includes)
+  - [Library Includes](#library-includes)
   - [Logger Settings](#logger-settings)
     - [Creating Extra Serial Ports](#creating-extra-serial-ports)
       - [AVR Boards](#avr-boards)
@@ -160,31 +158,7 @@ ___
 
 <!--! @endif -->
 
-## Defines and Includes<!--! {#menu_walk_defines_includes} -->
-
-### Defines for the Arduino IDE<!--! {#menu_walk_defines} -->
-
-The top few lines of the examples set defines of buffer sizes and yields needed for the Arduino IDE.
-That IDE read any defines within the top few lines and applies them as build flags for the processor.
-This is *not* standard behavior for C++ (which is what Arduino code really is) - this is a unique aspect of the Arduino IDE.
-
-<!--! @menusnip{defines} -->
-
-If you are using PlatformIO, you should instead set these as global build flags in your platformio.ini.
-This is standard behavior for C++.
-
-```ini
-build_flags =
-    -D SDI12_EXTERNAL_PCINT
-    -D NEOSWSERIAL_EXTERNAL_PCINT
-    -D MQTT_MAX_PACKET_SIZE=240
-    -D TINY_GSM_RX_BUFFER=64
-    -D TINY_GSM_YIELD_MS=2
-```
-
-___
-
-### Library Includes<!--! {#menu_walk_includes} -->
+## Library Includes<!--! {#menu_walk_includes} -->
 
 Next, include the libraries needed for every program using ModularSensors.
 
