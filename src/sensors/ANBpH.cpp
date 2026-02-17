@@ -10,16 +10,17 @@
 
 #include "ANBpH.h"
 
-// The constructor - need the sensor type, modbus address, power pin, stream for
-// data, and number of readings to average
+// The constructor
 ANBpH::ANBpH(byte modbusAddress, Stream* stream, int8_t powerPin,
-             int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage)
+             int16_t loggingIntervalMinutes, int8_t powerPin2, int8_t enablePin,
+             uint8_t measurementsToAverage)
     : Sensor("ANBpHSensor", ANB_PH_NUM_VARIABLES, ANB_PH_WARM_UP_TIME_MS,
              ANB_PH_STABILIZATION_TIME_MS, ANB_PH_2ND_VALUE_LOW_SALT, powerPin,
              -1, measurementsToAverage, ANB_PH_INC_CALC_VARIABLES),
       _anb_sensor(modbusAddress, stream, enablePin),
       _modbusAddress(modbusAddress),
       _stream(stream),
+      _loggingIntervalMinutes(loggingIntervalMinutes),
       _RS485EnablePin(enablePin) {
 #ifdef MS_ANB_SENSORS_PH_DEBUG_DEEP
     _anb_sensor.setDebugStream(&MS_SERIAL_OUTPUT);
@@ -28,13 +29,15 @@ ANBpH::ANBpH(byte modbusAddress, Stream* stream, int8_t powerPin,
     setAllowedMeasurementRetries(5);
 }
 ANBpH::ANBpH(byte modbusAddress, Stream& stream, int8_t powerPin,
-             int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage)
+             int16_t loggingIntervalMinutes, int8_t powerPin2, int8_t enablePin,
+             uint8_t measurementsToAverage)
     : Sensor("ANBpHSensor", ANB_PH_NUM_VARIABLES, ANB_PH_WARM_UP_TIME_MS,
              ANB_PH_STABILIZATION_TIME_MS, ANB_PH_2ND_VALUE_LOW_SALT, powerPin,
              -1, measurementsToAverage, ANB_PH_INC_CALC_VARIABLES),
       _anb_sensor(modbusAddress, stream, enablePin),
       _modbusAddress(modbusAddress),
       _stream(&stream),
+      _loggingIntervalMinutes(loggingIntervalMinutes),
       _RS485EnablePin(enablePin) {
 #ifdef MS_ANB_SENSORS_PH_DEBUG_DEEP
     _anb_sensor.setDebugStream(&MS_SERIAL_OUTPUT);
@@ -146,11 +149,25 @@ bool ANBpH::setup(void) {
     MS_DBG(F("..."), powerStyleSet ? F("success") : F("failed"));
     retVal &= powerStyleSet;
 
-    bool intervalSet = false;
+    bool     intervalSet        = false;
+    uint16_t programmedInterval = _loggingIntervalMinutes;
+    if (_loggingIntervalMinutes < 10 && _loggingIntervalMinutes != 0) {
+        programmedInterval = 10;
+        MS_DBG(F("Requested interval of"), _loggingIntervalMinutes,
+               F("minutes is too short; using"), programmedInterval,
+               F("minutes."));
+    }
+    if (_loggingIntervalMinutes > 240 && _loggingIntervalMinutes != 0) {
+        programmedInterval = 240;
+        MS_DBG(F("Requested interval of"), _loggingIntervalMinutes,
+               F("minutes is too long; using"), programmedInterval,
+               F("minutes."));
+    }
     if (_powerPin >= 0) {
         // Set sampling interval to the expected sampling interval if the sensor
-        MS_DBG(F("Set sensor sampling interval to 15 minutes..."));
-        intervalSet = _anb_sensor.setIntervalTime(15);
+        MS_DBG(F("Set sensor sampling interval to"), programmedInterval,
+               F("minutes..."));
+        intervalSet = _anb_sensor.setIntervalTime(programmedInterval);
     } else {
         // Set sampling interval to continuous if the sensor will be
         // continuously powered (ie, a power style of ALWAYS_POWERED).

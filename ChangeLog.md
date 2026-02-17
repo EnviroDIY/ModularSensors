@@ -15,7 +15,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **BREAKING** Changed capitalization of `setInitialShortIntervals(#)` function
   - Previously the 'i' of initial was not capitalized.
 - Made the enabling and disabling of the watchdog the very first and very last steps of sleep to keep the watchdog enabled through the whole getting ready for bed and waking up process.
-- **ANB pH** Changed timing slightly and simplified timing logic.
+- **ANB pH**
+  - **BREAKING** The constructor has changed!
+The logging interval has been added as a required parameter for the constructor!
+  - Changed timing slightly and simplified timing logic.
 - **Renamed** The EnviroDIYPublisher has been renamed the MonitorMyWatershedPublisher.
 This reflects changes to the website from years ago.
 There is a shell file and typedef to maintain backwards compatibility.

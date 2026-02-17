@@ -475,6 +475,10 @@ class ANBpH : public Sensor {
      * can be used.
      * @param powerPin The pin on the mcu controlling power to the ANB pH
      * sensor. Use -1 if it is continuously powered.
+     * @param loggingIntervalMinutes The logging interval in minutes.  Even when
+     * the sensor is being powered off between readings, it needs to be told how
+     * often it will be powered on.  This is not used if the sensor power is not
+     * being controlled by the mcu.  Must be between 10 and 240 minutes.
      * @param powerPin2 The pin on the mcu controlling power to the RS485
      * adapter, if it is different from that used to power the sensor.  Use -1
      * or omit if not applicable.
@@ -485,14 +489,24 @@ class ANBpH : public Sensor {
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
+     *
+     * @warning This library does _**NOT**_ verify that the logging interval set
+     * for this sensor matches the logging interval of the logger.  The actual
+     * power on/off and measurement times will be based on the logging interval
+     * of the logger, so if these are not the same, the timing of the
+     * measurements may be very different than expected.  I do not understand
+     * why the sensor needs to know the logging interval when it is powered off,
+     * but it does. I suspect it uses this to balance power across the various
+     * sensing elements to maximize the life of the sensor.
      */
     ANBpH(byte modbusAddress, Stream* stream, int8_t powerPin,
-          int8_t powerPin2 = -1, int8_t enablePin = -1,
-          uint8_t measurementsToAverage = 1);
-    /// @copydoc ANBpH::ANBpH(byte, Stream*, int8_t, int8_t, int8_t, uint8_t)
+          int16_t loggingIntervalMinutes, int8_t powerPin2 = -1,
+          int8_t enablePin = -1, uint8_t measurementsToAverage = 1);
+    /// @copydoc ANBpH::ANBpH(byte, Stream*, int8_t, int16_t, int8_t, int8_t,
+    /// uint8_t)
     ANBpH(byte modbusAddress, Stream& stream, int8_t powerPin,
-          int8_t powerPin2 = -1, int8_t enablePin = -1,
-          uint8_t measurementsToAverage = 1);
+          int16_t loggingIntervalMinutes, int8_t powerPin2 = -1,
+          int8_t enablePin = -1, uint8_t measurementsToAverage = 1);
     /**
      * @brief Destroy the ANB pH object - no action taken
      */
@@ -595,6 +609,12 @@ class ANBpH : public Sensor {
      * ANB pH sensor.
      */
     Stream* _stream;
+    /**
+     * @brief The logging interval in minutes.  Even when the sensor is being
+     * powered off between readings, it needs to be told how often it will be
+     * powered on.
+     */
+    int16_t _loggingIntervalMinutes;
     /**
      * @brief Private reference to the RS-485 adapter's flow direction control
      * pin.
