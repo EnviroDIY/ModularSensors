@@ -2973,7 +2973,7 @@ VariableArray varArray(variableCount, variableList);
 #elif defined(BUILD_TEST_SEPARATE_UUIDS)
 /** Start [variables_separate_uuids] */
 // Version 2: Create two separate arrays, on for the variables and a separate
-// one for the UUID's, then give both as input to the variable array
+// one for the UUIDs, then give both as input to the variable array
 // constructor.  Be cautious when doing this though because order is CRUCIAL!
 Variable* variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard),
@@ -2992,7 +2992,7 @@ const char* UUIDs[] = {
     "12345678-abcd-1234-ef00-1234567890ab",
     "12345678-abcd-1234-ef00-1234567890ab",
     "12345678-abcd-1234-ef00-1234567890ab",
-    //  ... The number of UUID's must match the number of variables!
+    //  ... The number of UUIDs must match the number of variables!
     "12345678-abcd-1234-ef00-1234567890ab",
     "12345678-abcd-1234-ef00-1234567890ab",
     "12345678-abcd-1234-ef00-1234567890ab",
@@ -3000,7 +3000,7 @@ const char* UUIDs[] = {
 };
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
-// Create the VariableArray object and attach the UUID's
+// Create the VariableArray object and attach the UUIDs
 VariableArray varArray(variableCount, variableList, UUIDs);
 /** End [variables_separate_uuids] */
 // ==========================================================================

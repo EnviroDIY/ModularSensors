@@ -105,13 +105,13 @@ Variable* variableList[] = {
 ```
 
 - If any of the variables are in a different order on the web page than in your code **reorder the variables in your code to match the website**.
-- After you are completely certain that you have the order right in the variable section of your code use the teal "Copy" button on the website to copy the section of code containing all of the UUID's.
+- After you are completely certain that you have the order right in the variable section of your code use the teal "Copy" button on the website to copy the section of code containing all of the UUIDs.
 - Paste the code from the website into your program in this section below the variable array
 
 ```cpp
 // *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
 // Check the order of your variables in the variable list!!!
-// Be VERY certain that they match the order of your UUID's!
+// Be VERY certain that they match the order of your UUIDs!
 // Rearrange the variables in the variable list if necessary to match!
 // *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
 /* clang-format off */

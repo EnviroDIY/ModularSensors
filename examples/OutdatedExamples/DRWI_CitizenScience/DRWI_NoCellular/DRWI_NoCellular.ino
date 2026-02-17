@@ -138,7 +138,7 @@ Variable* variableList[] = {
     new MaximDS3231_Temp(&ds3231),
 };
 
-// All UUID's, device registration, and sampling feature information can be
+// All UUIDs, device registration, and sampling feature information can be
 // pasted directly from Monitor My Watershed.  To get the list, click the "View
 // token UUID list" button on the upper right of the site page.
 // Even if not publishing live data, this is needed so the logger file will be
@@ -146,7 +146,7 @@ Variable* variableList[] = {
 
 // *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
 // Check the order of your variables in the variable list!!!
-// Be VERY certain that they match the order of your UUID's!
+// Be VERY certain that they match the order of your UUIDs!
 // Rearrange the variables in the variable list if necessary to match!
 // *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
 /* clang-format off */

@@ -57,11 +57,11 @@ const int8_t timeZone = -5;  // Eastern Standard Time
 
 
 // ==========================================================================
-//  UUID's and Registration Tokens for Monitor My Watershed
+//  UUIDs and Registration Tokens for Monitor My Watershed
 // ==========================================================================
 /** Start [monitor_mw_uuids] */
 
-// All UUID's, device registration, and sampling feature information can be
+// All UUIDs, device registration, and sampling feature information can be
 // pasted directly from Monitor My Watershed.
 // To get the list, click the "View  token UUID list" button on the upper right
 // of the site page.
@@ -319,7 +319,7 @@ Variable* variableList[] = {
 
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
-// Create the VariableArray object and attach the UUID's
+// Create the VariableArray object and attach the UUIDs
 VariableArray varArray(variableCount, variableList, UUIDs);
 /** End [variables_separate_uuids] */
 // ==========================================================================

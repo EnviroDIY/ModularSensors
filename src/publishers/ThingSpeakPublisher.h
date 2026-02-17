@@ -45,7 +45,7 @@
  * array attached to your logger is __crucial__.  The results from the variables
  * in the VariableArray will be sent to ThingSpeak in the order they are in the
  * array; that is, the first variable in the array will be sent as Field1, the
- * second as Field2, etc.  Any UUID's or custom variable codes are ignored for
+ * second as Field2, etc.  Any UUIDs or custom variable codes are ignored for
  * ThingSpeak.  They will only appear in the header of your file on the SD card.
  * Giving a variable a custom variable code like "Field3" will **NOT** make that
  * variable field 3 on ThingSpeak.  The third variable in the array will always

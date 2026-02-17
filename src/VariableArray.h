@@ -95,7 +95,7 @@ class VariableArray {
      * @param variableCount The number of variables in the array
      * @param variableList An array of pointers to variable objects.  The
      * pointers may be to calculated or measured variable objects.
-     * @param uuids An array of UUID's.  These are linked 1-to-1 with the
+     * @param uuids An array of UUIDs.  These are linked 1-to-1 with the
      * variables by array position.
      */
     VariableArray(uint8_t variableCount, Variable* variableList[],
@@ -132,7 +132,7 @@ class VariableArray {
      * @param variableList An array of pointers to variable objects.  The
      * pointers may be to calculated or measured variable objects.  Supersedes
      * any value given in the constructor.
-     * @param uuids An array of UUID's.  These are linked 1-to-1 with the
+     * @param uuids An array of UUIDs.  These are linked 1-to-1 with the
      * variables by array position.
      */
     void begin(uint8_t variableCount, Variable* variableList[],
@@ -180,12 +180,12 @@ class VariableArray {
     uint8_t getSensorCount(void);
 
     /**
-     * @brief Match UUID's from the given variables in the variable array.
+     * @brief Match UUIDs from the given variables in the variable array.
      *
-     * This over-writes all UUID's previously assigned to every variable.  The
+     * This over-writes all UUIDs previously assigned to every variable.  The
      * match is 1-to-1 based on array position.
      *
-     * @param uuids An array of UUID's
+     * @param uuids An array of UUIDs
      */
     void matchUUIDs(const char* uuids[]);
 
@@ -304,11 +304,11 @@ class VariableArray {
      */
     bool isLastVarFromSensor(int arrayIndex);
     /**
-     * @brief Check that all variable have valid UUID's, if they are assigned
+     * @brief Check that all variable have valid UUIDs, if they are assigned
      *
-     * @return True if all variables have valid UUID's.
+     * @return True if all variables have valid UUIDs.
      *
-     * @warning This does not check that the UUID's are the true UUID's for the
+     * @warning This does not check that the UUIDs are the true UUIDs for the
      * variables, just that the text is a validly formed UUID.
      */
     bool checkVariableUUIDs(void);

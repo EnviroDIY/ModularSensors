@@ -61,9 +61,9 @@ Make sure there are quotation marks around the name string, as there are in the 
 
 ### Set your Variable UUIDs
 
-In lines 191-224, find and replace the text `"12345678-abcd-1234-ef00-1234567890ab` with the UUID's for each of your variables, if they have UUIDS.
+In lines 191-224, find and replace the text `"12345678-abcd-1234-ef00-1234567890ab` with the UUIDs for each of your variables, if they have UUIDS.
 Make sure there are quotation marks around the name string, as there are in the example.
-If you do not have UUID's for your variables, delete the string entirely, leaving empty quotes (`""`).
+If you do not have UUIDs for your variables, delete the string entirely, leaving empty quotes (`""`).
 
 _______
 

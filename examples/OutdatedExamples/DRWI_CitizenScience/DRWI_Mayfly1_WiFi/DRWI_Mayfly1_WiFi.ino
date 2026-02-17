@@ -160,14 +160,14 @@ Variable* variableList[] = {
     new Modem_SignalPercent(&modem),             // Percent full scale (EnviroDIY_LTEB_SignalPercent)
 };
 
-// All UUID's, device registration, and sampling feature information can be
+// All UUIDs, device registration, and sampling feature information can be
 // pasted directly from Monitor My Watershed.
 // To get the list, click the "View  token UUID list" button on the upper right
 // of the site page.
 
 // *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
 // Check the order of your variables in the variable list!!!
-// Be VERY certain that they match the order of your UUID's!
+// Be VERY certain that they match the order of your UUIDs!
 // Rearrange the variables in the variable list ABOVE if necessary to match!
 // Do not change the order of the variables in the section below.
 // *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***

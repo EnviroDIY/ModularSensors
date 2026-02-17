@@ -759,7 +759,7 @@ Watchdogs and More
 - A watch-dog timer has been implemented for both the AVR and SAMD21 (and 51) boards to restart the boards in case of failure during logging
   - The watch-dog is turned off during sleep to save power, so recovery is only possible if the failure is while the processor is awake.
 - Added support for Meter Teros 11 soil moisture and temperature sensor
-- Implemented a function to verify that UUID's are at least correctly formed and unique - though it does not verify that they are valid.
+- Implemented a function to verify that UUIDs are at least correctly formed and unique - though it does not verify that they are valid.
 - Pushing to the master branch of this repo will now also cause a re-run of the travis script that updates the EnviroDIY "Libraries" repository.
 - Added debugging variables to modems to track how long they are powered/active.
 

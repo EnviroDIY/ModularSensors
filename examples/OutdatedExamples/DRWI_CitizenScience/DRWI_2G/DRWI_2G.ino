@@ -73,7 +73,7 @@ const int8_t modemLEDPin    = redLED;  // MCU pin connected an LED to show modem
                                        // status (-1 if unconnected)
 
 // Network connection information
-const char* apn = "hologram";  // The APN for the gprs connection
+const char* apn = "YourAPN";  // The APN for the gprs connection
 
 Sodaq2GBeeR6 modem2GB(&modemSerial, modemVccPin, modemStatusPin, apn);
 // Create an extra reference to the modem by a generic name
@@ -168,13 +168,13 @@ Variable* variableList[] = {
     new Modem_RSSI(&modem),
     new Modem_SignalPercent(&modem)};
 
-// All UUID's, device registration, and sampling feature information can be
+// All UUIDs, device registration, and sampling feature information can be
 // pasted directly from Monitor My Watershed.  To get the list, click the "View
 // token UUID list" button on the upper right of the site page.
 
 // *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
 // Check the order of your variables in the variable list!!!
-// Be VERY certain that they match the order of your UUID's!
+// Be VERY certain that they match the order of your UUIDs!
 // Rearrange the variables in the variable list if necessary to match!
 // *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
 /* clang-format off */

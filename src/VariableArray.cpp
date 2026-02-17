@@ -72,7 +72,7 @@ uint8_t VariableArray::getSensorCount(void) {
     return numSensors;
 }
 
-// This matches UUID's from an array of pointers to the variable array
+// This matches UUIDs from an array of pointers to the variable array
 void VariableArray::matchUUIDs(const char* uuids[]) {
     for (uint8_t i = 0; i < _variableCount; i++) {
         arrayOfVars[i]->setVarUUID(uuids[i]);
@@ -651,7 +651,7 @@ bool VariableArray::getSensorStatusBit(int                        arrayIndex,
 }
 
 
-// Check that all variable have valid UUID's, if they are assigned
+// Check that all variable have valid UUIDs, if they are assigned
 bool VariableArray::checkVariableUUIDs(void) {
     bool success = true;
     for (uint8_t i = 0; i < _variableCount; i++) {
@@ -681,8 +681,8 @@ bool VariableArray::checkVariableUUIDs(void) {
         }
     }
     if (success)
-        PRINTOUT(F("All variable UUID's appear to be correctly formed.\n"));
-    // Print out all UUID's to check
+        PRINTOUT(F("All variable UUIDs appear to be correctly formed.\n"));
+    // Print out all UUIDs to check
     for (uint8_t i = 0; i < _variableCount; i++) {
         if (arrayOfVars[i]->getVarUUID() != nullptr &&
             strlen(arrayOfVars[i]->getVarUUID()) > 0) {

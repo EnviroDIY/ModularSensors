@@ -1289,7 +1289,7 @@ void Logger::printFileHeader(Stream* stream) {
     // Next comes the ODM2 unit name
     STREAM_CSV_ROW(F("Result Unit:"), getVarUnitAtI(i))
     // Next comes the variable UUIDs
-    // We'll only add UUID's if we see a UUID for the first variable
+    // We'll only add UUIDs if we see a UUID for the first variable
     if (getVarUUIDAtI(0) != nullptr && strlen(getVarUUIDAtI(0)) > 1) {
         STREAM_CSV_ROW(F("Result UUID:"), getVarUUIDAtI(i))
     }

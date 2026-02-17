@@ -10,7 +10,7 @@ The exact hardware configuration used in this example:
 - Campbell OBS3+ turbidity sensor
 
 Before using this example, you must register a site and sensors on [Monitor My Watershed](https://monitormywatershed.org).
-After you have registered the site and sensors, the portal will generate a registration token and universally unique identifier (UUID) for each site and further UUID's for each variable.
+After you have registered the site and sensors, the portal will generate a registration token and universally unique identifier (UUID) for each site and further UUIDs for each variable.
 You will need to copy all of those UUID values into your sketch to replace the `12345678-abcd-1234-ef00-1234567890ab` place holders in this example.
 __You should register even if your logger will not be sending live data.__  This ensures that the data file your logger writes will be ready to immediately upload to the portal.
 
@@ -106,13 +106,13 @@ Variable* variableList[] = {
 ```
 
 - If any of the variables are in a different order on the web page than in your code __reorder the variables in your code to match the website__.
-- After you are completely certain that you have the order right in the variable section of your code use the teal "Copy" button on the website to copy the section of code containing all of the UUID's.
+- After you are completely certain that you have the order right in the variable section of your code use the teal "Copy" button on the website to copy the section of code containing all of the UUIDs.
 - Paste the code from the website into your program in this section below the variable array
 
 ```cpp
 // *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
 // Check the order of your variables in the variable list!!!
-// Be VERY certain that they match the order of your UUID's!
+// Be VERY certain that they match the order of your UUIDs!
 // Rearrange the variables in the variable list if necessary to match!
 // *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
 /* clang-format off */

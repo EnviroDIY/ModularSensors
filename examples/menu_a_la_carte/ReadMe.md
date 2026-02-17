@@ -1264,8 +1264,8 @@ Here we use the `new` keyword to create multiple variables and get pointers to t
 
 #### Creating Variables and Pasting UUIDs from MonitorMyWatershed<!--! {#menu_walk_variables_separate_uuids} -->
 
-If you are sending data to Monitor My Watershed, it is much easier to create the variables in an array and then to paste the UUID's all together as copied from the "View Token UUID List" link for a site.
-If using this method, be very, very, very careful to make sure the order of your variables exactly matches the order of your UUID's.
+If you are sending data to Monitor My Watershed, it is much easier to create the variables in an array and then to paste the UUIDs all together as copied from the "View Token UUID List" link for a site.
+If using this method, be very, very, very careful to make sure the order of your variables exactly matches the order of your UUIDs.
 
 <!--! @menusnip{variables_separate_uuids} -->
 
