@@ -37,6 +37,7 @@ The two functions have been consolidated into one function with four arguments, 
 To achieve the same functionality as the old `updateAllSensors()` function (ie, only updating values), set all of the arguments to false.
 - Applied many suggestions from Code Rabbit AI.
 - Moved outdated examples to a new "Outdated" folder, with a subfolder for the DRWI examples
+- When importing TinyGSM for the modem objects, the specific modem client headers are now imported directly rather than importing the TinyGsmClient.h header which defines typedefs for the sub-types.
 
 ### Added
 
@@ -70,6 +71,8 @@ These values should generally be set in the specific sensor constructors and onl
 - Removed unnecessary copy doc calls for inherited functions and properties.
 - Removed all overrides of the powerUp and powerDown functions that are no longer needed since all sensors have two power pins built in.
 - Removed references to the EnviroDIY data portal.
+- Removed all defines from examples sketches.
+Defining values to be used by TinyGSM and/or the MQTT library here in addition to any defines in the ModSensorConfig.h or in a build configuration can lead to One Definition Rule violations because the define values are used when creating the classes from the templates in TinyGSM.
 
 ### Fixed
 

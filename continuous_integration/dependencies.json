@@ -1,5 +1,5 @@
 {
-  "action_cache_version": 45,
+  "action_cache_version": 46,
   "dependencies": [
     {
       "name": "EnviroDIY_DS3231",
@@ -68,7 +68,7 @@
     {
       "name": "TinyGSM",
       "owner": "vshymanskyy",
-      "version": "https://github.com/EnviroDIY/TinyGSM#one_rule",
+      "version": "https://github.com/EnviroDIY/TinyGSM",
       "version_note": "~0.13.0",
       "note": "A small Arduino library for GPRS modules.",
       "authors": [

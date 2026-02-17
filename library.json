@@ -355,7 +355,7 @@
       "name": "ANBSensorsModbus",
       "owner": "envirodiy",
       "url": "https://github.com/EnviroDIY/ANBSensorsModbus",
-      "version": "~0.4.1",
+      "version": "~0.4.2",
       "note": "A library for communicating with pH sensors manufactured by ANB Sensors using Modbus.",
       "authors": ["Sara Damiano"],
       "frameworks": "arduino"
