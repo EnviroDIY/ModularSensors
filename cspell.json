@@ -222,6 +222,7 @@
     "RSSI",
     "RUNSTBY",
     "SAMD",
+    "SARAR4",
     "sdamiano",
     "SDCARD",
     "SDHC",
@@ -284,5 +285,11 @@
     "µsec"
   ],
   "ignoreWords": [],
-  "ignorePaths": ["platformio.ini", "*doxyfile*", ".vscode"]
+  "ignorePaths": [
+    "platformio.ini",
+    "*doxyfile*",
+    ".vscode",
+    "library.json",
+    "**/lib/**"
+  ]
 }
