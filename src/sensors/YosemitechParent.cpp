@@ -227,7 +227,9 @@ bool YosemitechParent::addSingleMeasurementResult(void) {
             success = _ysensor.getValues(parmValue, tempValue, thirdValue);
 
             // For conductivity, convert mS/cm to µS/cm
-            if (_model == Y520 && !isnan(parmValue)) parmValue *= 1000;
+            if (_model == Y520 && success && !isnan(parmValue)) {
+                parmValue *= 1000;
+            }
 
             MS_DBG(F(" "), _ysensor.getParameter(), ':', parmValue);
             MS_DBG(F("  Temp:"), tempValue);
