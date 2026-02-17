@@ -108,7 +108,7 @@ bool PaleoTerraRedox::addSingleMeasurementResult(void) {
 
     float res = 0;  // Calculated voltage in uV
 
-    byte i2c_status = -1;
+    byte i2c_status;
 
     _i2c->beginTransmission(_i2cAddressHex);
     _i2c->write(0b10001100);  // initiate conversion, One-Shot mode, 18
