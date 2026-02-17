@@ -268,14 +268,16 @@ class GeoluxHydroCam : public Sensor {
      * because the autofocus takes about 30s. Default false.
      */
     GeoluxHydroCam(Stream* stream, int8_t powerPin, Logger& baseLogger,
-                   int8_t powerPin2, const char* imageResolution = "1600x1200",
+                   int8_t      powerPin2       = -1,
+                   const char* imageResolution = "1600x1200",
                    const char* filePrefix      = nullptr,
                    bool        alwaysAutoFocus = false);
     /**
      * @copydoc GeoluxHydroCam::GeoluxHydroCam
      */
     GeoluxHydroCam(Stream& stream, int8_t powerPin, Logger& baseLogger,
-                   int8_t powerPin2, const char* imageResolution = "1600x1200",
+                   int8_t      powerPin2       = -1,
+                   const char* imageResolution = "1600x1200",
                    const char* filePrefix      = nullptr,
                    bool        alwaysAutoFocus = false);
     /**

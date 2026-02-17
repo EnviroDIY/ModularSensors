@@ -486,11 +486,13 @@ class ANBpH : public Sensor {
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
      */
-    ANBpH(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2,
-          int8_t enablePin = -1, uint8_t measurementsToAverage = 1);
+    ANBpH(byte modbusAddress, Stream* stream, int8_t powerPin,
+          int8_t powerPin2 = -1, int8_t enablePin = -1,
+          uint8_t measurementsToAverage = 1);
     /// @copydoc ANBpH::ANBpH(byte, Stream*, int8_t, int8_t, int8_t, uint8_t)
-    ANBpH(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2,
-          int8_t enablePin = -1, uint8_t measurementsToAverage = 1);
+    ANBpH(byte modbusAddress, Stream& stream, int8_t powerPin,
+          int8_t powerPin2 = -1, int8_t enablePin = -1,
+          uint8_t measurementsToAverage = 1);
     /**
      * @brief Destroy the ANB pH object - no action taken
      */
