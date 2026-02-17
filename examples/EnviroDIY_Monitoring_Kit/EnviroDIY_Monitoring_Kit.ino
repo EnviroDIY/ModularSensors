@@ -414,7 +414,7 @@ void setup() {
 /** Start [setup_serial_begins] */
 // Start the serial connection with the modem
 #if defined(USE_CELLULAR_BEE) || defined(USE_WIFI_BEE)
-    PRINTOUT(F("Starting modem connection at"), modemBaud, F(" baud"));
+    PRINTOUT(F("Starting modem connection at"), modemBaud, F("baud"));
     modemSerial.begin(modemBaud);
 #endif
 
@@ -491,17 +491,9 @@ void setup() {
     modem.modemWake();  // NOTE:  This will also set up the modem
     // WARNING: PLEASE REMOVE AUTOBAUDING FOR PRODUCTION CODE!
     if (!modem.gsmModem.testAT()) {
-        PRINTOUT(F("Attempting autobauding.."));
-        uint32_t foundBaud = TinyGsmAutoBaud(modemSerial);
-        if (foundBaud != 0 || (modemBaud > 57600 && F_CPU == 8000000L)) {
-            PRINTOUT(F("Got modem response at baud of"), foundBaud,
-                     F("Firing an attempt to change the baud rate to"),
-                     modemBaud);
-            modem.gsmModem.sendAT(GF("+UART_DEF="), modemBaud, F(",8,1,0,0"));
-            modem.gsmModem.waitResponse();
-            modemSerial.end();
-            modemSerial.begin(modemBaud);
-        }
+        PRINTOUT(F("Attempting to force the modem baud rate."));
+        modem.gsmModem.forceModemBaud(modemSerial,
+                                      static_cast<uint32_t>(modemBaud));
     }
 /** End [setup_esp] */
 #endif
@@ -514,21 +506,10 @@ void setup() {
     modem.modemWake();  // NOTE:  This will also set up the modem
     // WARNING: PLEASE REMOVE AUTOBAUDING FOR PRODUCTION CODE!
     if (!modem.gsmModem.testAT()) {
-        PRINTOUT(F("Attempting autobauding.."));
-        uint32_t foundBaud = TinyGsmAutoBaud(modemSerial);
-        if (foundBaud != 0 && !(F_CPU <= 8000000L && foundBaud >= 115200) &&
-            !(F_CPU <= 16000000L && foundBaud > 115200)) {
-            PRINTOUT(F("Got modem response at baud of"), foundBaud,
-                     F("Firing an attempt to change the baud rate to"),
-                     modemBaud);
-            modem.gsmModem.setBaud(
-                modemBaud);  // Make sure we're *NOT* auto-bauding!
-            modem.gsmModem.waitResponse();
-            modemSerial.end();
-            modemSerial.begin(modemBaud);
-        }
+        PRINTOUT(F("Attempting to force the modem baud rate."));
+        modem.gsmModem.forceModemBaud(modemSerial,
+                                      static_cast<uint32_t>(modemBaud));
     }
-    modem.gsmModem.setBaud(modemBaud);   // Make sure we're *NOT* auto-bauding!
     modem.gsmModem.setNetworkMode(38);   // set to LTE only
                                          // 2 Automatic
                                          // 13 GSM only
@@ -538,7 +519,7 @@ void setup() {
                                          // 1 CAT-M
                                          // 2 NB-IoT
                                          // 3 CAT-M and NB-IoT
-    /** End [setup_sim7080] */
+/** End [setup_sim7080] */
 #endif
 
     /** Start [setup_clock] */
