@@ -27,7 +27,7 @@ reviews:
     - '!**/cspell.json'
     - '!**/platformio.ini'
   path_instructions:
-    - path: '**/*.hpp'
+    - path: '**/*.h'
       instructions: >-
         Review the C++ code, point out issues relative to principles of clean
         code, expressiveness, and performance.
