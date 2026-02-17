@@ -32,3 +32,7 @@ platformio.ini export-ignore
 
 # Shell Scripts
 *.sh export-ignore
+
+# filters
+*.ino filter=smudgePasswords
+ModSensorDebugConfig.h filter=disableDebug
