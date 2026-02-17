@@ -358,7 +358,7 @@ class Variable {
      */
     void setVarUUID(const char* uuid);
     /**
-     * @brief Verify the the UUID is correctly formatted
+     * @brief Verify the UUID is correctly formatted
      *
      * @return True if the UUID is correctly formatted.
      *

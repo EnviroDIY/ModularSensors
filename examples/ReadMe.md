@@ -18,7 +18,6 @@ ___
   - [Calculations and Complex Logging](#calculations-and-complex-logging)
     - [Barometric Pressure Correction](#barometric-pressure-correction)
     - [Multiple Logging Intervals](#multiple-logging-intervals)
-    - [Minimizing Cell Data Usage](#minimizing-cell-data-usage)
   - [Everything at Once - a la carte](#everything-at-once---a-la-carte)
     - [Menu a la carte](#menu-a-la-carte)
   - [EnviroDIY Sensor Stations](#envirodiy-sensor-stations)
@@ -123,7 +122,7 @@ ___
 
 ### The EnviroDIY Sensor Station Kit<!--! {#examples_envirodiy_kit} -->
 
-The The EnviroDIY Sensor Station Kit is designed to be used with the [EnviroDIY Monitoring Station Kit](https://www.envirodiy.org/product/envirodiy-monitoring-station-kit/).
+The EnviroDIY Sensor Station Kit is designed to be used with the [EnviroDIY Monitoring Station Kit](https://www.envirodiy.org/product/envirodiy-monitoring-station-kit/).
 
 - [Instructions for the EnviroDIY sensor station kit example](https://envirodiy.github.io/ModularSensors/example_envirodiy_monitoring_kit.html)
 - [The EnviroDIY sensor station kit example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/example_envirodiy_monitoring_kit)

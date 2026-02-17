@@ -461,7 +461,7 @@ class BoschBMP3xx : public Sensor {
 
  private:
     /**
-     * @brief Internal reference the the BMP388_DEV object
+     * @brief Internal reference to the BMP388_DEV object
      */
     BMP388_DEV bmp_internal;
 

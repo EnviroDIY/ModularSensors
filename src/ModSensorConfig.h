@@ -277,7 +277,7 @@
  * TinyGSM.
  *
  * If you are using a slow baud rate to communicate with your module, this delay
- * is set  to prevent command responses from being spliced apart.  This is
+ * is set to prevent command responses from being spliced apart.  This is
  * especially important when using a faster processor.
  */
 #define TINY_GSM_YIELD_MS 2

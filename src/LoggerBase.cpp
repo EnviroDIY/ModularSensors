@@ -1294,7 +1294,7 @@ void Logger::printFileHeader(Stream* stream) {
         STREAM_CSV_ROW(F("Result UUID:"), getVarUUIDAtI(i))
     }
 
-    // We'll finish up the the custom variable codes
+    // We'll finish up with the custom variable codes
     String dtRowHeader = F("Date and Time in UTC");
     if (_loggerUTCOffset > 0) {
         dtRowHeader += '+' + _loggerUTCOffset;

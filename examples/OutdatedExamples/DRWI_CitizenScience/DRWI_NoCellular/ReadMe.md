@@ -66,7 +66,7 @@ const char *LoggerID = "XXXX";
 ### Set the calibration coefficients for the Campbell OBS3+<!--! {#example_drwi_no_cell_obs3_calibration} -->
 
 - The OBS3+ ships with a calibration certificate; you need this sheet!
-- Change *__all__* of the the `0.000E+00` and `1.000E+00` values in this section of code to the values on that calibration sheet.
+- Change *__all__* of the `0.000E+00` and `1.000E+00` values in this section of code to the values on that calibration sheet.
 Use numbers from the side of the calibration sheet that shows the calibration in *__volts__*.
   - The sketch will not compile if these values are not entered properly.
   - Do not change any values except those that are `0.000E+00` and `1.000E+00`!

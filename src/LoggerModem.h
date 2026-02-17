@@ -503,7 +503,7 @@ class loggerModem {
     /**
      * @anchor modem_pin_functions
      * @name Pin setting functions
-     * Functions to set or re-set the the pin numbers for the connection between
+     * Functions to set or re-set the pin numbers for the connection between
      * the modem module and the logger MCU.
      */
     /**@{*/
@@ -988,7 +988,7 @@ class loggerModem {
      */
     bool _statusLevel;
     /**
-     * @brief The digital pin number of the pin on the mcu attached the the hard
+     * @brief The digital pin number of the pin on the mcu attached the hard
      * or panic reset pin of the modem.
      *
      * Should be set to a negative number if the modem reset pin is not

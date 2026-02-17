@@ -340,7 +340,7 @@ class BoschBME280 : public Sensor {
 
  private:
     /**
-     * @brief Internal reference the the Adafruit BME object
+     * @brief Internal reference to the Adafruit BME object
      */
     Adafruit_BME280 bme_internal;
     /**

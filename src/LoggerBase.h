@@ -388,7 +388,7 @@ class Logger {
      * Because this sets the pin mode, this function should only be called
      * during the `setup()` or `loop()` portion of an Arduino program.
      *
-     * Once in testing mode, the logger will attempt to connect the the internet
+     * Once in testing mode, the logger will attempt to connect to the internet
      * and take 25 measurements spaced at 5 second intervals writing the results
      * to the main output destination (ie, Serial).  Testing mode cannot be
      * entered while the logger is taking a scheduled measurement.  No data is
