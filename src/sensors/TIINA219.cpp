@@ -100,11 +100,14 @@ bool TIINA219::addSingleMeasurementResult(void) {
 
     // Read values
     current_mA = ina219_phy.getCurrent_mA();
+    success    = ina219_phy.success();
     busV_V     = ina219_phy.getBusVoltage_V();
-    power_mW   = ina219_phy.getPower_mW();
+    success &= ina219_phy.success();
+    power_mW = ina219_phy.getPower_mW();
+    success &= ina219_phy.success();
 
     // Only success if I2C read succeeded and none of the values are NaN
-    success = ina219_phy.success() && !isnan(current_mA) && !isnan(busV_V) &&
+    success = success && !isnan(current_mA) && !isnan(busV_V) &&
         !isnan(power_mW);
 
     MS_DBG(F("  Current [mA]:"), current_mA);
