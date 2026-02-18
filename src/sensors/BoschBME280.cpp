@@ -143,9 +143,11 @@ bool BoschBME280::addSingleMeasurementResult(void) {
     MS_DBG(F("  Barometric Pressure:"), press, F("Pa"));
     MS_DBG(F("  Calculated Altitude:"), alt, F("m ASL"));
 
+    bool values_ok = temp != -9999 && humid != -9999 && press != -9999 &&
+        alt != -9999;
     // Assume that if all three are 0, really a failed response
     // May also return a very negative temp when receiving a bad response
-    if ((temp == 0 && press == 0 && humid == 0) || temp < -40) {
+    if (!values_ok || (temp == 0 && press == 0 && humid == 0) || temp < -40) {
         MS_DBG(F("All values 0 or bad, assuming sensor non-response!"));
     } else {
         verifyAndAddMeasurementResult(BME280_TEMP_VAR_NUM, temp);
