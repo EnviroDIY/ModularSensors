@@ -34,7 +34,7 @@
 // The name of this program file
 const char* sketchName = "DRWI_Mayfly1_WiFi.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char* LoggerID = "XXXXX";
+const char* LoggerID = "YourLoggerID";
 // How frequently (in minutes) to log data
 const int8_t loggingInterval = 15;
 // Your logger's timezone.
@@ -77,8 +77,8 @@ const int8_t modemLEDPin   = redLED;  // MCU pin connected an LED to show modem
                                       // status
 
 // Network connection information
-const char* wifiId  = "xxxxx";  // WiFi access point name
-const char* wifiPwd = "xxxxx";  // WiFi password (WPA2)
+const char* wifiId  = "YourWiFiSSID";      // WiFi access point name
+const char* wifiPwd = "YourWiFiPassword";  // WiFi password (WPA2)
 
 // Create the modem object
 EspressifESP32 modemESP(&modemSerial, modemVccPin, modemResetPin, wifiId,

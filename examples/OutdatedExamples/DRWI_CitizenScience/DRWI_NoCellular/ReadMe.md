@@ -60,7 +60,7 @@ _______
 
 ```cpp
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "XXXX";
+const char *LoggerID = "YourLoggerID";
 ```
 
 ### Set the calibration coefficients for the Campbell OBS3+<!--! {#example_drwi_no_cell_obs3_calibration} -->

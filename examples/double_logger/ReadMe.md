@@ -46,11 +46,11 @@ _______
 
 ### Set the logger ID<!--! {#example_double_log_logger_id} -->
 
-- Change the "XXXX" in this section of code to the loggerID assigned by Stroud:
+- Change the "YourLoggerID" in this section of code to the loggerID assigned by Stroud:
 
 ```cpp
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "XXXX";
+const char *LoggerID = "YourLoggerID";
 ```
 
 ### Upload!<!--! {#example_double_log_upload} -->

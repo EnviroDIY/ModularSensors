@@ -47,11 +47,11 @@ _______
 
 ### Set the logger ID<!--! {#example_baro_rho_logger_id} -->
 
-- Change the "XXXX" in this section of code to the loggerID assigned by Stroud:
+- Change the "YourLoggerID" in this section of code to the loggerID assigned by Stroud:
 
 ```cpp
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "XXXX";
+const char *LoggerID = "YourLoggerID";
 ```
 
 ### Set the universally unique identifiers (UUID) for each variable<!--! {#example_baro_rho_uuids} -->

@@ -99,8 +99,8 @@ const int8_t modemLEDPin =
     redLED;  // MCU pin connected an LED to show modem status
 
 // Network connection information
-const char* wifiId  = "xxxxx";  // The WiFi access point
-const char* wifiPwd = "xxxxx";  // The password for connecting to WiFi
+const char* wifiId = "YourWiFiSSID";  // The WiFi access point
+const char* wifiPwd = "YourWiFiPassword";  // The WiFi password
 
 // Create the loggerModem object
 EspressifESP32 modemESP(&modemSerial, modemVccPin, modemResetPin, wifiId,

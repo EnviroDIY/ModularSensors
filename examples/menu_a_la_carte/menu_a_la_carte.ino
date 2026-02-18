@@ -427,9 +427,9 @@ Logger dataLogger(LoggerID, samplingFeature, loggingInterval);
 // APN for cellular connection
 #define CELLULAR_APN "add_your_cellular_apn"
 // WiFi access point name
-#define WIFI_ID "your_wifi_ssid"
+#define WIFI_ID "YourWiFiSSID"
 // WiFi password (WPA2)
-#define WIFI_PASSWD "your_wifi_password"
+#define WIFI_PASSWD "YourWiFiPassword"
 
 #if defined(BUILD_MODEM_DIGI_XBEE_CELLULAR_TRANSPARENT)
 #define BUILD_HAS_MODEM

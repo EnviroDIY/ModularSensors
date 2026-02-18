@@ -39,29 +39,29 @@ TODO
 
 ### Set your AWS IoT Core Endpoint
 
-In line 60, find and replace the text `YOUR_ENDPOINT-ats.iot.YOUR_REGION.amazonaws.com` with your real endpoint.
+Find and replace the text `YOUR_ENDPOINT-ats.iot.YOUR_REGION.amazonaws.com` with your real endpoint.
 Make sure there are quotation marks around the endpoint string, as there are in the example.
 This must be the same value you used in the AWS_IoT_SetCertificates sketch.
 
 ### Set your Thing Name
 
-In line 62, find and replace the text `YOUR_THING_NAME` with your assigned thing name.
+Find and replace the text `YOUR_THING_NAME` with your assigned thing name.
 Make sure there are quotation marks around the name string, as there are in the example.
 This must be the same value you used in the AWS_IoT_SetCertificates sketch.
 
 ### Set your Sampling Feature (Site) ID
 
-In line 70, find and replace the text `YOUR_SAMPLING_FEATURE_ID` with your assigned sampling feature ID or UUID.
+Find and replace the text `YOUR_SAMPLING_FEATURE_ID` with your assigned sampling feature ID or UUID.
 Make sure there are quotation marks around the name string, as there are in the example.
 
 ### Set your WiFi Credentials
 
-In lines 117-118, find and replace the text `xxxxx` with your wifi name (SSID) and your wifi password.
+Find and replace the text `YourWiFiSSID` with your wifi name (SSID) and `YourWiFiPassword` with your wifi password.
 Make sure there are quotation marks around the name string, as there are in the example.
 
 ### Set your Variable UUIDs
 
-In lines 191-224, find and replace the text `"12345678-abcd-1234-ef00-1234567890ab` with the UUIDs for each of your variables, if they have UUIDS.
+In the section beginning with `Start [variable_arrays]`, find and replace the text `"12345678-abcd-1234-ef00-1234567890ab` with the UUIDs for each of your variables, if they have UUIDS.
 Make sure there are quotation marks around the name string, as there are in the example.
 If you do not have UUIDs for your variables, delete the string entirely, leaving empty quotes (`""`).
 

@@ -30,7 +30,7 @@
 // The name of this program file
 const char* sketchName = "logging_to MMW.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char* LoggerID = "XXXXX";
+const char* LoggerID = "YourLoggerID";
 // How frequently (in minutes) to log data
 const int8_t loggingInterval = 15;
 // Your logger's timezone.
@@ -78,7 +78,7 @@ const int8_t modemLEDPin = redLED;    // MCU pin connected an LED to show modem
                                       // status (-1 if unconnected)
 
 // Network connection information
-const char* apn = "xxxxx";  // The APN for the gprs connection
+const char* apn = "YourAPN";  // The APN for the gprs connection
 
 // NOTE:  If possible, use the `STATUS/SLEEP_not` (XBee pin 13) for status, but
 // the `CTS` pin can also be used if necessary

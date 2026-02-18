@@ -31,7 +31,7 @@
 // The name of this program file
 const char* sketchName = "double_logger.ino";
 // Logger ID - we're only using one logger ID for both "loggers"
-const char* LoggerID = "XXXXX";
+const char* LoggerID = "YourLoggerID";
 // The TWO filenames for the different logging intervals
 const char* FileName5min = "Logger_5MinuteInterval.csv";
 const char* FileName1min = "Logger_1MinuteInterval.csv";
@@ -77,8 +77,8 @@ const int8_t modemLEDPin = redLED;   // MCU pin connected an LED to show modem
                                      // status (-1 if unconnected)
 
 // Network connection information
-const char* wifiId  = "xxxxx";  // WiFi access point, unnecessary for GPRS
-const char* wifiPwd = "xxxxx";  // WiFi password, unnecessary for GPRS
+const char* wifiId = "YourWiFiSSID";  // The WiFi access point
+const char* wifiPwd = "YourWiFiPassword";  // The WiFi password
 
 DigiXBeeWifi modemXBWF(&modemSerial, modemVccPin, modemStatusPin,
                        useCTSforStatus, modemResetPin, modemSleepRqPin, wifiId,

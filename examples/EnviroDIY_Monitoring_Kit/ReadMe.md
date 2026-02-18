@@ -73,7 +73,7 @@ Customize the sketch for the version of the kit that you have: cellular, wifi, o
 
 #### Select the Connection Type<!--! {#example_envirodiy_monitoring_kit_connection_type} -->
 
-In lines 31 and 32, select no more than one of the "bee" types that you will be using.
+In the configuration section, select no more than one of the "bee" types that you will be using.
 
 - Activate the modem you wish to use by _removing_ any slashes (`//`) before the bee module you will use.
   - The line should start with `#define`
@@ -87,7 +87,7 @@ In lines 31 and 32, select no more than one of the "bee" types that you will be 
 
 #### Add Connection Info<!--! {#example_envirodiy_monitoring_kit_connection_info} -->
 
-Replace the `your_..` with the appropriate APN or SSID and password for your network.
+Replace the `Your..` with the appropriate APN or SSID and password for your network.
 
 Your APN is assigned by your SIM card provider.
 If you are using a Hologram SIM card (recommended with the kit) the APN is `"hologram"`.
@@ -104,14 +104,14 @@ You can leave the configuration for the connection type you're not using as is.
 // APN for cellular connection
 #define CELLULAR_APN "add_your_cellular_apn"
 // WiFi access point name
-#define WIFI_ID "your_wifi_ssid"
+#define WIFI_ID "YourWiFiSSID"
 // WiFi password (WPA2)
-#define WIFI_PASSWD "your_wifi_password"
+#define WIFI_PASSWD "YourWiFiPassword"
 ```
 
 ### Set Data Logging Options<!--! {#example_envirodiy_monitoring_kit_logging_options} -->
 
-Customize your data logging options in lines 45-56 of the example.
+Customize your data logging options in `Data Logging Options` section of the example.
 
 #### Set the logger ID<!--! {#example_envirodiy_monitoring_kit_logger_id} -->
 
@@ -119,7 +119,7 @@ We recommend using your logger's serial number as the logger ID.
 
 ```cpp
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "XXXX";
+const char *LoggerID = "YourLoggerID";
 ```
 
 #### Set the logging interval<!--! {#example_envirodiy_monitoring_kit_logging_interval} -->
@@ -148,7 +148,7 @@ const int8_t timeZone = -5;  // Eastern Standard Time
 
 - Go back to the web page for your site on [Monitor My Watershed](http://monitormywatershed.org/)
 - Find and click the white "View Token UUID List" button above the small map on your site page.
-- Paste the copied UUIDs into your sketch, _replacing_  lines 93-108.
+- Paste the copied UUIDs into your sketch, _replacing_ the text between `Beginning of Token UUID List` and `End of Token UUID List`.
 
 ```cpp
 // ---------------------   Beginning of Token UUID List   ---------------------

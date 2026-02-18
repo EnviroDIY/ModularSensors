@@ -44,7 +44,7 @@ _______
 
 ```cpp
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "XXXX";
+const char *LoggerID = "YourLoggerID";
 ```
 
 ### Upload!<!--! {#example_simple_logging_upload} -->

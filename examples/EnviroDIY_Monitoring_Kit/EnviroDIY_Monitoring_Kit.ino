@@ -35,9 +35,9 @@
 // APN for cellular connection
 #define CELLULAR_APN "add_your_cellular_apn"
 // WiFi access point name
-#define WIFI_ID "your_wifi_ssid"
+#define WIFI_ID "YourWiFiSSID"
 // WiFi password (WPA2)
-#define WIFI_PASSWD "your_wifi_password"
+#define WIFI_PASSWD "YourWiFiPassword"
 
 /** End [configuration] */
 
@@ -47,7 +47,7 @@
 // ==========================================================================
 /** Start [logging_options] */
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char* LoggerID = "XXXXX";
+const char* LoggerID = "YourLoggerID";
 // How frequently (in minutes) to log data
 const int8_t loggingInterval = 15;
 // Your logger's timezone.
