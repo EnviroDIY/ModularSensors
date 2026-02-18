@@ -232,7 +232,7 @@ class EverlightALSPT19 : public Sensor {
     defined(BUILT_IN_ALS_LOADING_RESISTANCE)
     /**
      * @brief Construct a new EverlightALSPT19 object with pins and resistors
-     * for the EnviroDIY Mayfly 1.x.
+     * for boards with a built-in ALS-PT19 configured in KnownProcessors.h.
      *
      * This is a short-cut constructor to help users of our own board so they
      * can change the number of readings without changing other arguments or
