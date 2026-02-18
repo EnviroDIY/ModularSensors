@@ -169,7 +169,7 @@ bool MaxBotixSonar::addSingleMeasurementResult(void) {
 
         // Immediately ask for a result and let the stream timeout be our
         // "wait" for the measurement.
-        result = static_cast<uint16_t>(_stream->parseInt());
+        result = static_cast<int16_t>(_stream->parseInt());
         _stream->read();  // To throw away the carriage return
         MS_DBG(F("  Sonar Range:"), result);
         rangeAttempts++;
