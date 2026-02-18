@@ -14,7 +14,7 @@ Mayfly v0.5b has the Bee socket constantly powered, therefore using "-1" is the 
 
 The WiFi antenna is built into the ESP32 Bee - no external antenna is needed
 
-Find and replace `YourWiFiSSID` and `YourWiFiPassword` with your real SSID and password, and edit the UUID section between `Beginning of Token UUID List` and `End of Token UUID List` the correct UUIDs from your specific site on MonitorMyWatershed.
+Find and replace `YourWiFiSSID` and `YourWiFiPassword` with your real SSID and password, and edit the UUID section between `Beginning of Token UUID List` and `End of Token UUID List` with the correct UUIDs from your specific site on MonitorMyWatershed.
 
 _______
 
