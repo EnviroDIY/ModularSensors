@@ -1276,7 +1276,7 @@ void Logger::printFileHeader(Stream* stream) {
     stream->println(_fileName);
 
     // Adding the sampling feature UUID
-    if (strlen(_samplingFeatureUUID) > 1) {
+    if (_samplingFeatureUUID != nullptr && strlen(_samplingFeatureUUID) > 1) {
         stream->print(F("Sampling Feature UUID: "));
         stream->print(_samplingFeatureUUID);
         stream->println(',');
