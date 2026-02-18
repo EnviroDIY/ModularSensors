@@ -139,9 +139,6 @@ It also includes a Meter Hydros 21 (formerly know as a Decagon CTD) and a Campbe
   - This example demonstrates how to work with calculated variables and calculates water depth by correcting the total pressure measured by a Measurement Specialties MS5803 with the atmospheric pressure measured by a Bosch BME280 environmental sensor and the temperature measured by a Maxim DS18 temperature probe.
 - [double_logger](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/double_logger)
   - This is a more complicated example using two different logger instances to log data at two different intervals, in this case, an AM3215 logging every minute, while checking the battery voltage only every 5 minutes.
-This showcases both how to use two different logging instances and how to use some of the functions to set up your own logging loop rather than using the logData() function.
-There are two sets of variables, all coming from Yosemitech sensors.
-Because each sensor outputs temperature and we don't want to waste cellular data sending out multiple nearly identical temperature values, we have one logger that logs every possible variable result to the SD card and another logger that sends only unique results to Monitor My Watershed.
 
 ## Deploying your Station<!--! {#page_getting_started_deploying} -->
 
