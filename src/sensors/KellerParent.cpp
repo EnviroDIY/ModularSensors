@@ -101,15 +101,21 @@ bool KellerParent::addSingleMeasurementResult(void) {
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
     // Get Values
-    success     = _ksensor.getValues(waterPressureBar, waterTemperatureC);
-    waterDepthM = _ksensor.calcWaterDepthM(
-        waterPressureBar,
-        waterTemperatureC);  // float calcWaterDepthM(float
-                             // waterPressureBar, float waterTemperatureC)
+    // the getValues function in the KellerModbus library will *always* return
+    // true, but will set the value variables to -9999 if it fails to get a
+    // value.  So we check for success by checking that the value variables are
+    // not -9999 or NaN.
+    _ksensor.getValues(waterPressureBar, waterTemperatureC);
+    success = (!isnan(waterPressureBar) && waterPressureBar != -9999 &&
+               !isnan(waterTemperatureC) && waterTemperatureC != -9999);
 
-    // For waterPressureBar, convert bar to millibar
-    if (!isnan(waterPressureBar) && waterPressureBar != -9999)
+    if (success) {
+        // calculate depth from pressure and temperature
+        waterDepthM = _ksensor.calcWaterDepthM(waterPressureBar,
+                                               waterTemperatureC);
+        // For waterPressureBar, convert bar to millibar
         waterPressure_mBar = 1000 * waterPressureBar;
+    }
 
     MS_DBG(F("  Pressure_mbar:"), waterPressure_mBar);
     MS_DBG(F("  Temp_C:"), waterTemperatureC);
