@@ -34,8 +34,13 @@ bool ProcessorAnalog::addSingleMeasurementResult(void) {
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);
     }
-    if (_dataPin < 0 || _voltageMultiplier <= 0) {
-        MS_DBG(F("No analog pin or voltage divider specified!"));
+    if (PROCESSOR_ADC_MAX <= 0) {
+        MS_DBG(F("Processor ADC max value is not set or invalid!"));
+        return bumpMeasurementAttemptCount(false);
+    }
+    if (_dataPin < 0 || _operatingVoltage <= 0 || _voltageMultiplier <= 0) {
+        MS_DBG(F("Missing one or more required parameters: analog pin, "
+                 "operating voltage, or voltage divider!"));
         return bumpMeasurementAttemptCount(false);
     }
 
