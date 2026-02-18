@@ -30,14 +30,14 @@ There is a shell file and typedef to maintain backwards compatibility.
 These resets were an awkward attempt to deal with bad values before feeding any bad values to the `verifyAndAddMeasurementResult()` function which was previously always called even if the sensor returned junk.
 This was probably a hold-over from incorrect implementation and calling of the clearValues function deep in the library history.
   - Also made the return from the `addSingleMeasurementResult()` function consistently false for a bad sensor response and true for a good one - where it's possible to tell the difference.
-- The Sensor::clearValues() function now resets all timing and bits for the sensor in addition to setting all values in the value array to -9999.
+- The Sensor::clearValues() function now resets the attempt and retry counts in addition to setting all values in the value array to -9999.
 - Re-wrote some of the logic of the `completeUpdate()` function.
 Also added optional arguments to the `completeUpdate()` function to allow users to specify if the sensors should be powered/woken.
   - The `updateAllSensors()` function is now deprecated.
 Use `completeUpdate(false, false, false, false)` instead.
     - Previously the `updateAllSensors()` function asked all sensors to update their values, skipping all power, wake, and sleep steps while the `completeUpdate()` function duplicated that functionality and added the power, wake, and sleep.
 The two functions have been consolidated into one function with four arguments, one each for power on, wake, sleep, and power off.
-To achieve the same functionality as the old `updateAllSensors()` function (ie, only updating values), set all of the arguments to false.
+To achieve the same functionality as the old `updateAllSensors()` function (ie, only updating values), set all the arguments to false.
 - Applied many suggestions from Code Rabbit AI.
 - Moved outdated examples to a new "Outdated" folder, with a subfolder for the DRWI examples
 - When importing TinyGSM for the modem objects, the specific modem client headers are now imported directly rather than importing the TinyGsmClient.h header which defines typedefs for the sub-types.
@@ -63,6 +63,7 @@ These values should generally be set in the specific sensor constructors and onl
   - `getStabilizationTime()`
   - `setMeasurementTime(uint32_t measurementTime_ms)`
   - `getMeasurementTime()`
+- Added the function `Sensor::clearStatus()` which resets all status bits except setup and error and resets all timing values to 0.
 - **NEW SENSOR** Added a new sensor for simple analog voltage using the built-in processor ADC
 - Added KnownProcessors.h and moved defines values for supported built-in sensors on known processors to that file.
   - This affects ProcessorStats and the Everlight ALS PT-19.

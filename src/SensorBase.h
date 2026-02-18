@@ -524,9 +524,22 @@ class Sensor {
     float sensorValues[MAX_NUMBER_VARS];
 
     /**
-     * @brief Clear the values array - that is, sets all values to -9999.
+     * @brief Clear the values array and reset retry counts.
+     *
+     * This clears the values array by setting all values to -9999, setal all
+     * values in numberGoodMeasurementsMade to 0, and resets the attempt
+     * (#_measurementAttemptsCompleted) and retry (#_retryAttemptsMade) counts.
      */
     void clearValues();
+    /**
+     * @brief This clears all of the status bits and resets timing values.
+     *
+     * This clears all status bits except the setup bit (bit 0) - and the error
+     * bit (bit 7) - that is, it sets bits 1-6 to 0.  It also sets all timing
+     * variables to 0.  This is intended to be used at the start of an update
+     * cycle to clear any old values before beginning a cycle.
+     */
+    void clearStatus();
     /**
      * @brief Verify that a measurement is OK (ie, not -9999) before adding it
      * to the result array

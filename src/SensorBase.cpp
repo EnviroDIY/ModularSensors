@@ -363,7 +363,7 @@ void Sensor::notifyVariables(void) {
 }
 
 
-// This function just empties the value array
+// This function empties the value array and resets the measurement counts.
 void Sensor::clearValues(void) {
     MS_DBG(F("Clearing value array for"), getSensorNameAndLocation());
     for (uint8_t i = 0; i < _numReturnedValues; i++) {
@@ -373,6 +373,10 @@ void Sensor::clearValues(void) {
     // Reset measurement attempt counters
     _measurementAttemptsCompleted = 0;
     _retryAttemptsMade            = 0;
+}
+// This clears all status bits except the setup and error bit and sets the
+// timing values to 0.
+void Sensor::clearStatus(void) {
     // reset all timing values
     _millisPowerOn              = 0;
     _millisSensorActivated      = 0;
@@ -453,6 +457,10 @@ void Sensor::averageMeasurements(void) {
 bool Sensor::update(void) {
     bool ret_val = true;
 
+    // clear all of the status bits and timing values at the start of an update
+    // cycle
+    clearStatus();
+
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
     if (!wasOn) { powerUp(); }
@@ -468,7 +476,8 @@ bool Sensor::update(void) {
     // bail if the wake failed
     if (!ret_val) return ret_val;
 
-    // Clear values before starting loop
+    // Clear stale values and reset the measurement attempt and retry
+    // counts before starting new measurements.
     clearValues();
 
     // Wait for the sensor to stabilize
