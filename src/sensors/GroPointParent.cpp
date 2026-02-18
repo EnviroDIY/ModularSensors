@@ -207,7 +207,7 @@ bool GroPointParent::addSingleMeasurementResult(void) {
         }
     }
 
-    if (success && successT) {
+    if (success) {
         // Put values into the array
         verifyAndAddMeasurementResult(0, M1);
         verifyAndAddMeasurementResult(1, M2);
@@ -217,7 +217,8 @@ bool GroPointParent::addSingleMeasurementResult(void) {
         verifyAndAddMeasurementResult(5, M6);
         verifyAndAddMeasurementResult(6, M7);
         verifyAndAddMeasurementResult(7, M8);
-
+    }
+    if (successT) {
         verifyAndAddMeasurementResult(8, T1);
         verifyAndAddMeasurementResult(9, T2);
         verifyAndAddMeasurementResult(10, T3);
@@ -233,7 +234,8 @@ bool GroPointParent::addSingleMeasurementResult(void) {
         verifyAndAddMeasurementResult(20, T13);
     }
 
-    // Return success value when finished
+    // Return success value when finished.  Success requires both the moisture
+    // and temperature values to be successfully retrieved
     return bumpMeasurementAttemptCount((success && successT));
 }
 

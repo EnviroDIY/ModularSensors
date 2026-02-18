@@ -1,5 +1,5 @@
 /**
- * @file GroPointParent.cpp
+ * @file GroPointParent.h
  * @copyright Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino.
  * This library is published under the BSD-3 license.
