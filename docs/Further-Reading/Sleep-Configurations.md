@@ -186,7 +186,7 @@ RESETN is a dedicated pin.
 
 > [!NOTE]
 > You can disable pin tri-state by calling `Logger::disablePinTristate(true)`.
-> You can re-enable pin tri-strate by calling `Logger::disablePinTristate(false)`.
+> You can re-enable pin tri-state by calling `Logger::disablePinTristate(false)`.
 > No pin modes are **not** changed when the `disablePinTristate()` function is called, only when the `systemSleep()` function is called.
 
 To prevent power draw by any external pins during sleep, Modular Sensors sets all pins except the RTC interrupt pins to "tri-state."  Tri-state means that for *all* pins:
@@ -205,7 +205,7 @@ To prevent power draw by any external pins during sleep, Modular Sensors sets al
 
 > [!NOTE]
 > You can disable disabling peripherals by calling `Logger::disablePeripheralShutdown(true)`.
-> You can re-enable pin tri-strate by calling `Logger::disablePeripheralShutdown(false)`.
+> You can re-enable pin tri-state by calling `Logger::disablePeripheralShutdown(false)`.
 > No peripheral settings are changed when the `disablePeripheralShutdown()` function is called, only when the `systemSleep()` function is called.
 
 To decrease power use during sleep on the SAMD51, Modular Sensors explicitly disconnects all unused peripherals from the various clocks and and clock sources to prevent them from "[sleepwalking](https://onlinedocs.microchip.com/oxy/GUID-F5813793-E016-46F5-A9E2-718D8BCED496-en-US-14/GUID-FA7D618C-0F98-4A2C-9D24-669C4A3E3CA3.html)".
