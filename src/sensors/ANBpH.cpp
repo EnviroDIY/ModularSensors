@@ -323,8 +323,12 @@ bool ANBpH::addSingleMeasurementResult(void) {
         return bumpMeasurementAttemptCount(false);
     }
 
-    bool              success = false;
-    float             pH, temp, sal, spcond, raw_cond = -9999;
+    bool              success    = false;
+    float             pH         = -9999;
+    float             temp       = -9999;
+    float             sal        = -9999;
+    float             spcond     = -9999;
+    float             raw_cond   = -9999;
     ANBHealthCode     health     = ANBHealthCode::UNKNOWN;
     ANBStatusCode     status     = ANBStatusCode::UNKNOWN;
     ANBDiagnosticCode diagnostic = ANBDiagnosticCode::UNKNOWN;
