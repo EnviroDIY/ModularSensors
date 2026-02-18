@@ -76,10 +76,12 @@ bool MeaSpecMS5803::addSingleMeasurementResult(void) {
     MS_DBG(F("  Pressure:"), press);
 
     if (!isnan(temp) && !isnan(press) && temp >= -40.0 && temp <= 85.0 &&
-        press != 0.0) {
+        press != 0.0 && press <= 14000.0) {
         // Temperature Range is -40°C to +85°C
         // Pressure returns 0 when disconnected, which is highly unlikely to be
         // a real value.
+        // Pressure range depends on the model, but the highest pressure model
+        // goes up to 14bar (14,000 mbar)
         verifyAndAddMeasurementResult(MS5803_TEMP_VAR_NUM, temp);
         verifyAndAddMeasurementResult(MS5803_PRESSURE_VAR_NUM, press);
         success = true;
