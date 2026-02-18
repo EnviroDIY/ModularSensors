@@ -54,6 +54,12 @@ bool TIINA219::setup(void) {
     // Turn the power back off it it had been turned on
     if (!wasOn) { powerDown(); }
 
+    if (!success) {
+        // Set the status error bit (bit 7)
+        setStatusBit(ERROR_OCCURRED);
+        // UN-set the set-up bit (bit 0) since setup failed!
+        clearStatusBit(SETUP_SUCCESSFUL);
+    }
     return success;
 }
 
@@ -66,6 +72,14 @@ bool TIINA219::wake(void) {
     // Begin/Init needs to be rerun after every power-up to set the calibration
     // coefficient for the INA219 (see p21 of datasheet)
     bool success = ina219_phy.begin(_i2c);
+    if (!success) {
+        // Set the status error bit (bit 7)
+        setStatusBit(ERROR_OCCURRED);
+        // Make sure that the wake time and wake success bit (bit 4) are
+        // unset
+        _millisSensorActivated = 0;
+        clearStatusBit(WAKE_SUCCESSFUL);
+    }
 
     return success;
 }
