@@ -87,7 +87,7 @@ The 5 sleep modes are:
 
 ### Steps in Putting an AVR board to sleep<!--! {#sleep_fxn_avr} -->
 
-After completing the [steps for putting all boards to sleep](#steps-for-putting-all-boards-to-sleep) AVR boards finish their bedtime routine with these steps.
+After completing the [steps for putting all boards to sleep](#steps-for-putting-all-boards-to-sleep), AVR boards finish their bedtime routine with these steps:
 
 - Disable the onboard USB if it exists (ie, for a Leonardo)
   - Freeze the USB clock, turn off the USB PLL, and then disable the USB.
@@ -106,7 +106,7 @@ This means that the I2C/Serial/Timer/etc pins will still be active and powered u
 
 ### Steps in Resuming Activity for an AVR board<!--! {#wake_fxn_avr} -->
 
-*Before* completing the [steps on wake for all boards](#steps-on-wake-for-all-boards) AVR boards start their wake routine with these steps.
+*Before* completing the [steps on wake for all boards](#steps-on-wake-for-all-boards), AVR boards start their wake routine with these steps:
 
 - Temporarily disables interrupts, so no mistakes are made when writing to the processor registers.
 - Re-enable all power modules (ie, the processor module clocks)
@@ -230,11 +230,11 @@ The numbers of all disabled peripherals are:
 - 18, 19, 20, 21, 22, 25, 26, 27, 28, 29, 30,
 - 31, 32, 33, 38, 39, 42, 43, 44, 45, 46, 47
 
-@see [The SAMD clock file](@ref samd51_clock_other_libraries) for a list of which peripherals each of these numbers pertain to.
+See [The SAMD clock file](@ref samd51_clock_other_libraries) for a list of which peripherals each of these numbers pertain to.
 
 ### Steps in Putting an SAMD51 board to sleep<!--! {#sleep_fxn_samd51} -->
 
-After completing the [steps for putting all boards to sleep](#steps-for-putting-all-boards-to-sleep) SAMD51 boards finish their bedtime routine with these steps.
+After completing the [steps for putting all boards to sleep](#steps-for-putting-all-boards-to-sleep), SAMD51 boards finish their bedtime routine with these steps:
 
 - Detach any USB devices (ie, the built in USB drivers for communication with a PC)
   - This is skipped if the TinyUSB library is called for some reason.
@@ -261,7 +261,7 @@ SRGD Note: I believe this only applies at power-on, but it's probably not a bad 
 
 ### Steps in Resuming Activity for a SAMD51 board<!--! {#wake_fxn_samd51} -->
 
-*Before* completing the [steps on wake for all boards](#steps-on-wake-for-all-boards) SAMD51 boards start their wake routine with these steps.
+*Before* completing the [steps on wake for all boards](#steps-on-wake-for-all-boards), SAMD51 boards start their wake routine with these steps:
 
 - Re-attach the USB for PC communication
 - Re-set the pin modes for the RTC wake pin, SD card SS pin, SD card power pin, button pin, and LED pin.
@@ -283,7 +283,7 @@ The pin configurations for the SAMD21 are identical to those described above for
 
 ### Steps in Putting an SAMD21 board to sleep<!--! {#sleep_fxn_samd21} -->
 
-After completing the [steps for putting all boards to sleep](#steps-for-putting-all-boards-to-sleep) SAMD21 boards finish their bedtime routine with these steps.
+After completing the [steps for putting all boards to sleep](#steps-for-putting-all-boards-to-sleep), SAMD21 boards finish their bedtime routine with these steps:
 
 - Detach any USB devices (ie, the built in USB drivers for communication with a PC)
   - This is skipped if the TinyUSB library is called for some reason.
@@ -303,7 +303,7 @@ To prevent this the SysTick interrupts are disabled before entering sleep mode.
 
 ### Steps in Resuming Activity for a SAMD21 board<!--! {#wake_fxn_samd21} -->
 
-*Before* completing the [steps on wake for all boards](#steps-on-wake-for-all-boards) SAMD21 boards start their wake routine with these steps.
+*Before* completing the [steps on wake for all boards](#steps-on-wake-for-all-boards), SAMD21 boards start their wake routine with these steps:
 
 - Re-enable the systick interrupt
 - Re-attach the USB for PC communication
