@@ -113,14 +113,14 @@ bool SensirionSHT4x::addSingleMeasurementResult(void) {
     temp_val  = temp_event.temperature;
     humid_val = humidity_event.relative_humidity;
 
-    MS_DBG(F("  Temp:"), temp_val, F("°C"));
-    MS_DBG(F("  Humidity:"), humid_val, '%');
-
     if (!ret_val) {
         MS_DBG(F("  getEvent failed; no values read!"));
     } else if (isnan(temp_val) || isnan(humid_val)) {
         MS_DBG(F("  Invalid measurement values"));
     }
+
+    MS_DBG(F("  Temp:"), temp_val, F("°C"));
+    MS_DBG(F("  Humidity:"), humid_val, '%');
 
     if (ret_val && !isnan(temp_val) && !isnan(humid_val)) {
         verifyAndAddMeasurementResult(SHT4X_TEMP_VAR_NUM, temp_val);
@@ -162,8 +162,8 @@ bool SensirionSHT4x::sleep(void) {
     // case 1 second. Usually blocking steps are a problem, but in this case we
     // need the block because ModularSensors does not currently support a sleep
     // time like it supports a wake time.
-    sensors_event_t temp_event;
-    sensors_event_t humidity_event;
+    sensors_event_t temp_event{};
+    sensors_event_t humidity_event{};
     success = sht4x_internal.getEvent(&humidity_event, &temp_event);
 
     // Set the command back to no heat for the next measurement.
