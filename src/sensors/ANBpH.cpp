@@ -151,6 +151,12 @@ bool ANBpH::setup(void) {
 
     bool     intervalSet        = false;
     uint16_t programmedInterval = _loggingIntervalMinutes;
+    if (_loggingIntervalMinutes == 0 && _powerPin >= 0) {
+        programmedInterval = 10;
+        MS_DBG(F("Requested interval of 0 minutes is invalid when power is "
+                 "cycled; using"),
+               programmedInterval, F("minutes."));
+    }
     if (_loggingIntervalMinutes < 10 && _loggingIntervalMinutes != 0) {
         programmedInterval = 10;
         MS_DBG(F("Requested interval of"), _loggingIntervalMinutes,
@@ -371,7 +377,7 @@ bool ANBpH::addSingleMeasurementResult(void) {
                 health == ANBHealthCode::NOT_IMMERSED);
 
     // Put values into the array - if it's a success or our last try
-    if (success || _retryAttemptsMade == _allowedMeasurementRetries - 1) {
+    if (success || _retryAttemptsMade >= _allowedMeasurementRetries) {
         verifyAndAddMeasurementResult(ANB_PH_PH_VAR_NUM, pH);
         verifyAndAddMeasurementResult(ANB_PH_TEMP_VAR_NUM, temp);
         verifyAndAddMeasurementResult(ANB_PH_SALINITY_VAR_NUM, sal);
