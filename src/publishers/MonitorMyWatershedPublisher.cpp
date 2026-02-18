@@ -211,12 +211,12 @@ bool MonitorMyWatershedPublisher::connectionNeeded(void) {
     int     interval = _sendEveryX;
     uint8_t percent  = _logBuffer.getPercentFull();
     MS_DBG(F("Buffer is"), percent, F("percent full"));
-    if (percent >= 50) {
-        interval /= 2;
+    if (percent >= 90) {
+        interval = 1;
     } else if (percent >= 75) {
         interval /= 4;
-    } else if (percent >= 90) {
-        interval = 1;
+    } else if (percent >= 50) {
+        interval /= 2;
     }
 
     // the programmed interval is about to be reached by the next record, or it
@@ -310,6 +310,11 @@ int16_t MonitorMyWatershedPublisher::flushDataBuffer(Client* outClient) {
     if (_baseLogger->getSamplingFeatureUUID() == nullptr ||
         strlen(_baseLogger->getSamplingFeatureUUID()) == 0) {
         PRINTOUT(F("A sampling feature UUID must be set before publishing data "
+                   "to Monitor My Watershed!."));
+        return 0;
+    }
+    if (_registrationToken == nullptr || strlen(_registrationToken) == 0) {
+        PRINTOUT(F("A registration token must be set before publishing data "
                    "to Monitor My Watershed!."));
         return 0;
     }
