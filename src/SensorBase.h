@@ -675,7 +675,7 @@ class Sensor {
      *
      * @note SIGNED int, to allow negative numbers for unused pins
      */
-    int8_t _powerPin2;
+    int8_t _powerPin2 = -1;
     /**
      * @brief The sensor name.
      */
