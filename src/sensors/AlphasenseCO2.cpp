@@ -113,8 +113,8 @@ bool AlphasenseCO2::addSingleMeasurementResult(void) {
     }
     // Convert ADC counts value to voltage (V)
     adcVoltage = ads.computeVolts(adcCounts);
-    MS_DBG(F("  ads.readADC_Differential("), _adsDiffMux, F("):"),
-           String(adcVoltage, 3));
+    MS_DBG(F("  ads.readADC_Differential("), _adsDiffMux, F("):"), adcCounts,
+           '=', String(adcVoltage, 3));
 
     // @todo Verify the voltage range for the CO2 sensor
     // Here we are using the range of the ADS when it is powered at 3.3V

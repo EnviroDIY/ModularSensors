@@ -164,8 +164,8 @@ bool TurnerTurbidityPlus::addSingleMeasurementResult(void) {
     }
     // Convert ADC counts value to voltage (V)
     adcVoltage = ads.computeVolts(adcCounts);
-    MS_DBG(F("  ads.readADC_Differential("), _adsDiffMux, F("):"),
-           String(adcVoltage, 3));
+    MS_DBG(F("  ads.readADC_Differential("), _adsDiffMux, F("):"), adcCounts,
+           '=', String(adcVoltage, 3));
 
     // The ADS1X15 outputs a max value corresponding to Vcc + 0.3V
     if (adcVoltage < 5.3 && adcVoltage > -0.3) {
