@@ -1,5 +1,5 @@
 /**
- * @file ProcessorAnalog.cpp *
+ * @file ProcessorAnalog.cpp
  * @copyright Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino.
  * This library is published under the BSD-3 license.

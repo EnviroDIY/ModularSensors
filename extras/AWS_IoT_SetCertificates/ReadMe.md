@@ -174,7 +174,7 @@ There are some [tips in the Read Me](https://github.com/EnviroDIY/USGS_NGWOS/?ta
 If you see the message `failed to initialize modem`, there's a communication problem between the modem and the Arduino.
 If after the failure message and a delay you do see your modem serial number or firmware version after the message `Modem Info:`, you can ignore this error: it was a baud rate problem and the Arduino adjusted.
 If you don't get the modem info, there's something wrong.
-If your SIM card requires a user name and password to unlock (uncommon), enter those in as the `gprsUser` and `gprsUser` in the GPRS credentials section of the ino file and recompile and re-upload.
+If your SIM card requires a user name and password to unlock (uncommon), enter those in as the `gprsUser` and `gprsPass` in the GPRS credentials section of the ino file and recompile and re-upload.
 Confirm that your wires between the Arduino and your modem are correct and you've set the correct port for `SerialAT` in the line `#define SerialMon Serial`.
 Confirm that your modem has power and that any expected LED's are lit.
 

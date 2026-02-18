@@ -50,7 +50,7 @@ class MonitorMyWatershedPublisher : public dataPublisher {
     // Constructors
     /**
      * @brief Construct a new Monitor My Watershed Publisher object with only
-     * default values for the host, path, and port set..
+     * default values for the host, path, and port set.
      */
     MonitorMyWatershedPublisher();
     /**
@@ -239,7 +239,7 @@ class MonitorMyWatershedPublisher : public dataPublisher {
     bool connectionNeeded(void) override;
 
     /**
-     * @brief Utilize an attached modem to open a a TCP connection to Monitor My
+     * @brief Utilize an attached modem to open a TCP connection to Monitor My
      * Watershed and then stream out a post request over that connection.
      *
      * This depends on an internet connection already having been made and a

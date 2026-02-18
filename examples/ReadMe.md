@@ -108,7 +108,7 @@ ___
 The "menu a la carte" example shows most of the functions of the library in one gigantic program.
 It has code in it for every possible sensor and modem and for both AVR and SAMD boards.
 It is also over 1500 lines long.
-This example is intended to be used like an a la carte menu of all possible options where you selected only the portions of code pertinent to you and delete everything else.
+This example is intended to be used like an a la carte menu of all possible options where you select only the portions of code pertinent to you and delete everything else.
 This example is *NOT* intended to be run in its entirety
 
 - [The menu a la carte walkthrough](https://envirodiy.github.io/ModularSensors/example_menu.html)

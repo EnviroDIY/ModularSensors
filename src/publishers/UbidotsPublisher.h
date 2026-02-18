@@ -166,7 +166,7 @@ class UbidotsPublisher : public dataPublisher {
 
     // Post Data to Ubidots
     /**
-     * @brief Utilize an attached modem to open a a TCP connection to the
+     * @brief Utilize an attached modem to open a TCP connection to the
      * Ubidots API and then stream out a post request over
      * that connection.
      *
