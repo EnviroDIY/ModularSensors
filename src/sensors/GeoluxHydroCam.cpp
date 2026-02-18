@@ -350,12 +350,12 @@ bool GeoluxHydroCam::isStable(bool debug) {
     }
 
     uint32_t elapsed_since_wake_up = millis() - _millisSensorActivated;
-    uint32_t minTime               = _stabilizationTime_ms + _alwaysAutoFocus
-                      ? HYDROCAM_AUTOFOCUS_TIME_MS
+    uint32_t minTime               = _alwaysAutoFocus
+                      ? HYDROCAM_AUTOFOCUS_TIME_MS + _stabilizationTime_ms
                       : 0L;
-    uint32_t maxTime = HYDROCAM_STABILIZATION_TIME_MAX + _alwaysAutoFocus
-        ? HYDROCAM_AUTOFOCUS_TIME_MAX
-        : 0L;
+    uint32_t maxTime               = _alwaysAutoFocus
+                      ? HYDROCAM_AUTOFOCUS_TIME_MAX + HYDROCAM_STABILIZATION_TIME_MAX
+                      : 0L;
     // If the sensor has been activated and enough time has elapsed, it's stable
     if (elapsed_since_wake_up > maxTime) {
         MS_DBG(F("It's been"), elapsed_since_wake_up, F("ms, and"),
