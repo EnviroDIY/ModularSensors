@@ -79,32 +79,6 @@
 #include "VariableBase.h"
 #include "SensorBase.h"
 
-// Print warnings if expected processor defines are missing
-
-#ifndef LOGGER_BOARD
-#define LOGGER_BOARD "Unknown"
-#pragma message "Warning: LOGGER_BOARD is not defined for this processor.\n" \
-                "The board name can be added by editing KnownProcessors.h."
-#endif
-
-#ifndef BATTERY_PIN
-#define BATTERY_PIN -1
-#pragma message                                                                          \
-    "Warning: BATTERY_PIN is not defined for this processor.\n"                          \
-    "If your processor does not have a built-in pin for measuring the battery voltage,"  \
-    "or you have specified a different pin in your code, you can ignore this message\n." \
-    "The battery pin can be added by editing KnownProcessors.h."
-#endif
-
-#ifndef BATTERY_MULTIPLIER
-#define BATTERY_MULTIPLIER -1
-#pragma message                                                                         \
-    "Warning: BATTERY_MULTIPLIER is not defined for this processor.\n"                  \
-    "If your processor does not have a built-in pin for measuring the battery voltage," \
-    "or you have specified the multiplier in your code, you can ignore this message\n." \
-    "The battery multiplier can be added by editing KnownProcessors.h."
-#endif
-
 /** @ingroup sensor_processor */
 /**@{*/
 

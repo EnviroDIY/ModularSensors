@@ -31,6 +31,8 @@ ProcessorStats::ProcessorStats(const char* version,
         _batteryMultiplier = 1.47;
     }
 #elif defined(ARDUINO_SODAQ_ONE) || defined(ARDUINO_SODAQ_ONE_BETA)
+    // only versions v0.1 and v0.2 of the Sodaq One are supported, and they have
+    // different battery pins and multipliers
     if (strcmp(_version, "v0.1") == 0) {
         _batteryMultiplier = 2;
     } else if (strcmp(_version, "v0.2") == 0) {
