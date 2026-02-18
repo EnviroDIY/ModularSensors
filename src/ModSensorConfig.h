@@ -9,7 +9,7 @@
  * settings/preferences for the Modular Sensors Library and some of the
  * underlying libraries.
  *
- * @note This file must be include in every header file in the library - before
+ * @note This file must be included in every header file in the library - before
  * including anything else - to ensure that the settings are applied
  * consistently across all files and that compile time settings trickle down to
  * the underlying libraries.
