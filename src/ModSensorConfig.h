@@ -6,7 +6,13 @@
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief This file is used to configure the clock and other library
- * settings/preferences for the Modular Sensors Library.
+ * settings/preferences for the Modular Sensors Library and some of the
+ * underlying libraries.
+ *
+ * @note This file must be include in every header file in the library - before
+ * including anything else - to ensure that the settings are applied
+ * consistently across all files and that compile time settings trickle down to
+ * the underlying libraries.
  *
  * For the Arduino IDE, this is the only way to configure these settings. If you
  * are using PlatformIO, you have the option of using this file or changing your

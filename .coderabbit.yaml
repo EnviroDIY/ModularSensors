@@ -31,6 +31,10 @@ reviews:
       instructions: >-
         Review the C++ code, point out issues relative to principles of clean
         code, expressiveness, and performance.
+    - path: '**/*.cpp'
+      instructions: >-
+        Review the C++ code, point out issues relative to principles of clean
+        code, expressiveness, and performance.
   tools:
     shellcheck:
       enabled: true

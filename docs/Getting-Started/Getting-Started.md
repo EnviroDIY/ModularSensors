@@ -142,7 +142,6 @@ It also includes a Meter Hydros 21 (formerly know as a Decagon CTD) and a Campbe
 This showcases both how to use two different logging instances and how to use some of the functions to set up your own logging loop rather than using the logData() function.
 There are two sets of variables, all coming from Yosemitech sensors.
 Because each sensor outputs temperature and we don't want to waste cellular data sending out multiple nearly identical temperature values, we have one logger that logs every possible variable result to the SD card and another logger that sends only unique results to Monitor My Watershed.
-This example also shows how to stop power draw from an RS485 adapter with automatic flow detection.
 
 ## Deploying your Station<!--! {#page_getting_started_deploying} -->
 

@@ -988,7 +988,7 @@ class loggerModem {
      */
     bool _statusLevel;
     /**
-     * @brief The digital pin number of the pin on the mcu attached the hard
+     * @brief The digital pin number of the pin on the mcu attached to the hard
      * or panic reset pin of the modem.
      *
      * Should be set to a negative number if the modem reset pin is not

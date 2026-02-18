@@ -296,7 +296,6 @@ void setup() {
 
     // Begin the logger
     dataLogger.begin();
-    MonitorMWPost.begin(dataLogger, registrationToken, samplingFeature);
 
     // Note:  Please change these battery voltages to match your battery
     // Set up the sensors, except at lowest battery level

@@ -478,7 +478,8 @@ class ANBpH : public Sensor {
      * @param loggingIntervalMinutes The logging interval in minutes.  Even when
      * the sensor is being powered off between readings, it needs to be told how
      * often it will be powered on.  This is not used if the sensor power is not
-     * being controlled by the mcu.  Must be between 10 and 240 minutes.
+     * being controlled by the mcu.  Must be between 10 and 240 minutes when
+     * power is cycled; use 0 only for always‑powered mode.
      * @param powerPin2 The pin on the mcu controlling power to the RS485
      * adapter, if it is different from that used to power the sensor.  Use -1
      * or omit if not applicable.

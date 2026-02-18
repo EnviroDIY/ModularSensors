@@ -71,7 +71,7 @@ These values should generally be set in the specific sensor constructors and onl
 
 ### Removed
 
-- Remove the unused `_maxSamplesToAverage` parameter of the VariableArray and the `countMaxToAverage()` function which set the parameter.
+- Removed the unused `_maxSamplesToAverage` parameter of the VariableArray and the `countMaxToAverage()` function which set the parameter.
 - Removed unnecessary copy doc calls for inherited functions and properties.
 - Removed all overrides of the powerUp and powerDown functions that are no longer needed since all sensors have two power pins built in.
 - Removed references to the EnviroDIY data portal.
@@ -211,7 +211,6 @@ If you do not want any output, define `MS_SILENT`.
     - Wire required adapters to the same pin as that providing primary power.
     - Wire required adapters such that they are continuously powered.
     - If you must switch the power to both the sensor and an adapter and either the sensor power or the adapter power are shared with a pin that provides power to any other sensor, call the shared power pin the "sensor" power and the other the "adapter."
-
 
 ***
 
@@ -1209,3 +1208,5 @@ Our first release of the modular sensors library to support easily logging data 
 <!--! @tableofcontents{HTML:1} -->
 
 <!--! @m_footernavigation -->
+
+<!-- cspell:words isnan GPST arounds strcat strcpy PULLUP TIINA Wextra -->

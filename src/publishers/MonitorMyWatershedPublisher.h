@@ -49,8 +49,8 @@ class MonitorMyWatershedPublisher : public dataPublisher {
  public:
     // Constructors
     /**
-     * @brief Construct a new Monitor My Watershed Publisher object with no
-     * members set.
+     * @brief Construct a new Monitor My Watershed Publisher object with only
+     * default values for the host, path, and port set..
      */
     MonitorMyWatershedPublisher();
     /**
