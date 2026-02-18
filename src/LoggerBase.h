@@ -243,6 +243,15 @@ class Logger {
     int16_t getInitialShortIntervals() {
         return _remainingShortIntervals;
     }
+    // Backwards-compatibility shims
+    /** @deprecated use setInitialShortIntervals */
+    void setinitialShortIntervals(int16_t initialShortIntervals) {
+        setInitialShortIntervals(initialShortIntervals);
+    }
+    /** @deprecated use getInitialShortIntervals */
+    int16_t getinitialShortIntervals() {
+        return getInitialShortIntervals();
+    }
 
     /**
      * @brief Set the universally unique identifier (UUID or GUID) of the
