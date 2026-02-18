@@ -173,10 +173,18 @@ bool AtlasParent::addSingleMeasurementResult(void) {
     // If the response code is successful, parse the remaining results
     if (success) {
         for (uint8_t i = 0; i < _numReturnedValues; i++) {
-            if (_i2c->available() == 0) { break; }
+            if (_i2c->available() == 0) {
+                MS_DBG(F("  Incomplete response; aborting parse"));
+                success = false;
+                break;
+            }
             float result = _i2c->parseFloat();
-            if (isnan(result)) { result = -9999; }
-            if (result < -1020) { result = -9999; }
+            if (isnan(result) || result < -1020) {
+                result  = -9999;
+                success = false;
+                MS_DBG(F("  Invalid response for result #"), i);
+                // Don't break - subsequent values may be ok
+            }
             MS_DBG(F("  Result #"), i, ':', result);
             verifyAndAddMeasurementResult(i, result);
         }
