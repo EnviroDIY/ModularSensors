@@ -169,6 +169,9 @@ bool TurnerTurbidityPlus::addSingleMeasurementResult(void) {
 
     // The ADS1X15 outputs a max value corresponding to Vcc + 0.3V
     if (adcVoltage < 5.3 && adcVoltage > -0.3) {
+        // Apply voltage divider factor if using a voltage divider to step down
+        // the voltage
+        adcVoltage *= _voltageDividerFactor;
         // Apply the unique calibration curve for the given sensor
         calibResult = (_conc_std / (_volt_std - _volt_blank)) *
             (adcVoltage - _volt_blank);
