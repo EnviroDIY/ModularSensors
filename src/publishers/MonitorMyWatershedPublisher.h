@@ -261,10 +261,10 @@ class MonitorMyWatershedPublisher : public dataPublisher {
      *
      * @{
      */
-    const char*        monitorMWPath;        ///< The api path
-    const char*        monitorMWHost;        ///< The host name
-    int                monitorMWPort;        ///< The host port
-    static const char* tokenHeader;          ///< The token header text
+    const char*        monitorMWPath = nullptr;  ///< The api path
+    const char*        monitorMWHost = nullptr;  ///< The host name
+    int                monitorMWPort = 80;       ///< The host port
+    static const char* tokenHeader;              ///< The token header text
     static const char* contentLengthHeader;  ///< The content length header text
     static const char* contentTypeHeader;    ///< The content type header text
     /**@}*/
