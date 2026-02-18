@@ -244,11 +244,13 @@ class Logger {
         return _remainingShortIntervals;
     }
     // Backwards-compatibility shims
-    /** @deprecated use setInitialShortIntervals */
+    /// @copydoc setInitialShortIntervals
+    /// @deprecated use setInitialShortIntervals
     void setinitialShortIntervals(int16_t initialShortIntervals) {
         setInitialShortIntervals(initialShortIntervals);
     }
-    /** @deprecated use getInitialShortIntervals */
+    /// @copydoc getInitialShortIntervals
+    /// @deprecated use getInitialShortIntervals
     int16_t getinitialShortIntervals() {
         return getInitialShortIntervals();
     }
