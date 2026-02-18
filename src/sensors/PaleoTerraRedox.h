@@ -215,7 +215,7 @@ class PaleoTerraRedox : public Sensor {
                     uint8_t i2cAddressHex         = MCP3421_ADR,
                     uint8_t measurementsToAverage = 1);
 #endif
-#if !defined(MS_PALEOTERRA_SOFTWAREWIRE) | defined DOXYGEN
+#if !defined(MS_PALEOTERRA_SOFTWAREWIRE) || defined(DOXYGEN)
     /**
      * @brief Construct a new PaleoTerra Redox object using a secondary
      * *hardware* I2C instance.
