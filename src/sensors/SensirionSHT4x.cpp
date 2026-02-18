@@ -105,8 +105,8 @@ bool SensirionSHT4x::addSingleMeasurementResult(void) {
     sht4x_internal.setHeater(SHT4X_NO_HEATER);
 
     // we need to create Adafruit "sensor events" to use the library
-    sensors_event_t temp_event;
-    sensors_event_t humidity_event;
+    sensors_event_t temp_event{};
+    sensors_event_t humidity_event{};
     ret_val = sht4x_internal.getEvent(&humidity_event, &temp_event);
 
     // get the values from the sensor events
