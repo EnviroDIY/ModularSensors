@@ -64,11 +64,11 @@ bool ApogeeSQ212::addSingleMeasurementResult(void) {
     Adafruit_ADS1015 ads;  // Use this for the 12-bit version
 #endif
     // ADS Library default settings:
-    //  - TI1115 (16 bit)
+    //  - TI ADS1115 (16 bit)
     //    - single-shot mode (powers down between conversions)
     //    - 128 samples per second (8ms conversion time)
     //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
-    //  - TI1015 (12 bit)
+    //  - TI ADS1015 (12 bit)
     //    - single-shot mode (powers down between conversions)
     //    - 1600 samples per second (625µs conversion time)
     //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
