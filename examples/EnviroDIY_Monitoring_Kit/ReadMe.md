@@ -40,7 +40,7 @@ _______
       - [Set the logger ID](#set-the-logger-id)
       - [Set the logging interval](#set-the-logging-interval)
       - [Set the time zone](#set-the-time-zone)
-    - [Set the universally universal identifiers (UUID) for each variable](#set-the-universally-universal-identifiers-uuid-for-each-variable)
+    - [Set the universally unique identifiers (UUID) for each variable](#set-the-universally-unique-identifiers-uuid-for-each-variable)
     - [Upload!](#upload)
 
 <!--! @endif -->
@@ -144,7 +144,7 @@ Please use standard time!
 const int8_t timeZone = -5;  // Eastern Standard Time
 ```
 
-### Set the universally universal identifiers (UUID) for each variable<!--! {#example_envirodiy_monitoring_kit_uuids} -->
+### Set the universally unique identifiers (UUID) for each variable<!--! {#example_envirodiy_monitoring_kit_uuids} -->
 
 - Go back to the web page for your site on [Monitor My Watershed](http://monitormywatershed.org/)
 - Find and click the white "View Token UUID List" button above the small map on your site page.
