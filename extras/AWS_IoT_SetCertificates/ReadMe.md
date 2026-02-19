@@ -124,7 +124,7 @@ In the section beginning with `// Select your modem:` remove the slashes (`//`) 
 
 If you are using a cellular modem, find and replace the text `YourAPN` with the APN for your SIM card.
 Make sure there are quotation marks around the APN string, as there are in the example.
-If you are using a Hologram SIM, use the text `hologram`..
+If you are using a Hologram SIM, use the text `hologram`.
 
 If you are using a WiFi modem, find and replace `YourWiFiSSID` and `YourWiFiPassword` with your real SSID and password.
 

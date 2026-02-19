@@ -106,7 +106,7 @@
  * @brief The loggerModem subclass for the [Sodaq 2GBee](@ref modem_gprsbee)
  * revisions 6 and higher based on the SIMCOM SIM800H.
  *
- * @note The Sodaq GPRSBee doesn't expose the SIM800's reset pin..
+ * @note The Sodaq GPRSBee doesn't expose the SIM800's reset pin.
  *
  * @note The power pin of the SIM800 is wired to the XBee's `DTR` pin, the
  * `PWR_KEY` itself is not exposed - it is tied inversely to the power in to the
