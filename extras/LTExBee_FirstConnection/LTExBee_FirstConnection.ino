@@ -19,7 +19,7 @@
 StreamDebugger debugger(Serial1, Serial);
 TinyGsm        gsmModem(debugger);
 
-const char* apn = "hologram";
+const char* apn = "YourAPN";
 
 void setup() {
     // Set the reset pin HIGH to ensure the Bee does not continually reset

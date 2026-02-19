@@ -87,10 +87,10 @@ In the configuration section, select no more than one of the "bee" types that yo
 
 #### Add Connection Info<!--! {#example_envirodiy_monitoring_kit_connection_info} -->
 
-Replace the `Your..` with the appropriate APN or SSID and password for your network.
+Replace `YourAPN` or `YourWiFiSSID` and `YourWiFiPassword` with the appropriate APN or SSID and password for your network.
 
 Your APN is assigned by your SIM card provider.
-If you are using a Hologram SIM card (recommended with the kit) the APN is `"hologram"`.
+If you are using a Hologram SIM card (recommended with the kit) the APN is `hologram`.
 
 The SSID is the name of the wifi network.
 
@@ -102,7 +102,7 @@ You can leave the configuration for the connection type you're not using as is.
 
 ```cpp
 // APN for cellular connection
-#define CELLULAR_APN "add_your_cellular_apn"
+#define CELLULAR_APN "YourAPN"
 // WiFi access point name
 #define WIFI_ID "YourWiFiSSID"
 // WiFi password (WPA2)

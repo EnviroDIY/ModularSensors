@@ -425,7 +425,7 @@ Logger dataLogger(LoggerID, samplingFeature, loggingInterval);
 
 // Network connection information
 // APN for cellular connection
-#define CELLULAR_APN "add_your_cellular_apn"
+#define CELLULAR_APN "YourAPN"
 // WiFi access point name
 #define WIFI_ID "YourWiFiSSID"
 // WiFi password (WPA2)
