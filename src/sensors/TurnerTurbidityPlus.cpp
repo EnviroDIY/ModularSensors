@@ -104,7 +104,7 @@ bool TurnerTurbidityPlus::addSingleMeasurementResult(void) {
 
 // Create an auxiliary ADC object
 // We create and set up the ADC object here so that each sensor using the ADC
-// may set the gain appropriately without effecting others.
+// may set the gain appropriately without affecting others.
 #ifndef MS_USE_ADS1015
     Adafruit_ADS1115 ads;  // Use this for the 16-bit version
 #else
