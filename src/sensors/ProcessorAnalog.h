@@ -171,9 +171,9 @@ class ProcessorAnalog : public Sensor {
      *
      * @param powerPin The pin on the mcu controlling power to the sensor
      * Use -1 if it is continuously powered.
-     * @param dataPin The processor ADC port pin to read the voltage from the EC
-     * probe.  Not all processor pins can be used as analog pins.  Those usable
-     * as analog pins generally are numbered with an "A" in front of the number
+     * @param dataPin The processor ADC pin used to read the target voltage. Not
+     * all processor pins can be used as analog pins.  Those usable as analog
+     * pins generally are numbered with an "A" in front of the number
      * - ie, A1.
      * @param voltageMultiplier Any multiplier needed to convert raw battery
      * readings from `analogRead()` into true battery values based on any
