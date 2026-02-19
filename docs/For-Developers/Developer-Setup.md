@@ -23,17 +23,20 @@ Clone it to your local computer.
 This repository uses Git filters to manage sensitive credentials and debug configurations. After cloning the repository, run one of the following setup scripts to configure the necessary Git filter drivers:
 
 **Windows Command Prompt:**
+
 ```batch
 setupGitFilters.bat
 ```
 
 **PowerShell:**
+
 ```powershell
 .\setupGitFilters.ps1
 ```
 
 **Manual Setup:**
 If you prefer to configure the filters manually, run these Git commands from the repository root:
+
 ```bash
 git config --local filter.smudgePasswords.clean "powershell -ExecutionPolicy Bypass -File filters/cleanPasswords.ps1"
 git config --local filter.smudgePasswords.smudge "powershell -ExecutionPolicy Bypass -File filters/smudgePasswords.ps1"
@@ -42,9 +45,9 @@ git config --local filter.disableDebug.smudge "powershell -ExecutionPolicy Bypas
 ```
 
 These filters provide the following functionality:
+
 - **smudgePasswords** - Manages placeholder credentials in `.ino` example files during development and commits
 - **disableDebug** - Automatically manages debug defines in `ModSensorDebugConfig.h` to keep them disabled in commits but enabled locally
-
 
 ## PlatformIO Setup
 
@@ -117,8 +120,8 @@ lib_ignore =
 ; source code and won't read the dependencies from the library.json like a
 ; typical user would
 lib_deps =
-  	envirodiy/EnviroDIY_DS3231@^1.3.6
-	  arduino-libraries/RTCZero@^1.6.0
+   envirodiy/EnviroDIY_DS3231@^1.3.6
+   arduino-libraries/RTCZero@^1.6.0
     sparkfun/SparkFun Qwiic RTC RV8803 Arduino Library@^1.2.10
     greygnome/EnableInterrupt@^1.1.0
     greiman/SdFat@=2.3.0
