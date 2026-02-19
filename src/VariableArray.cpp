@@ -321,11 +321,43 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
     }
 #endif
 
-    // Clear the timing and status bits
-    MS_DBG(F("----->> Clearing all timing and status bits before taking new "
-             "measurements. ..."));
-    for (uint8_t i = 0; i < _sensorCount; i++) { sensorList[i]->clearStatus(); }
-    MS_DBG(F("   ... Complete. <<-----"));
+    if (powerUp) {
+        // CLear power status bits before powering on.  The powerUp function
+        // will check the actual power state of the sensor and set the bits
+        // accordingly, so it's safe to clear them here before powering up.
+        MS_DEEP_DBG(
+            F("----->> Clearing all power status bits before taking new "
+              "measurements. ..."));
+        for (uint8_t i = 0; i < _sensorCount; i++) {
+            sensorList[i]->clearPowerStatus();
+        }
+        MS_DEEP_DBG(F("   ... Complete. <<-----"));
+
+        // power up all of the sensors together
+        MS_DBG(F("----->> Powering up all sensors together. ..."));
+        sensorsPowerUp();
+        MS_DBG(F("   ... Complete. <<-----"));
+    }
+
+    // NOTE: Don't clear the wake bits/timing!  If the power up function found
+    // the sensor wasn't powered, it will have cleared the wake bits. If we
+    // clear the wake bits here before checking them, then we won't be able to
+    // tell if the sensor was already awake before this function was called.  If
+    // this function is called with wake=false (ie, expecting the sensors to
+    // have been awoken elsewhere), then we need to be able to check if the wake
+    // was successful before attempting readings, so we need to keep the wake
+    // bits intact.
+
+    // Clear all measurement related status bits and timing values before
+    // starting measurements. NOTE: These bits are set and checked **after**
+    // starting a measurement to confirm that the measurement was actually
+    // started, so it's safe to clear them before starting a measurement.
+    MS_DEEP_DBG(F("----->> Clearing all measurement status bits before taking "
+                  "new measurements. ..."));
+    for (uint8_t i = 0; i < _sensorCount; i++) {
+        sensorList[i]->clearMeasurementStatus();
+    }
+    MS_DEEP_DBG(F("   ... Complete. <<-----"));
 
     // Clear the initial variable values arrays and reset the measurement
     // attempt and retry counts.
@@ -333,13 +365,6 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
              "measurements. ..."));
     for (uint8_t i = 0; i < _sensorCount; i++) { sensorList[i]->clearValues(); }
     MS_DBG(F("   ... Complete. <<-----"));
-
-    // power up all of the sensors together
-    if (powerUp) {
-        MS_DBG(F("----->> Powering up all sensors together. ..."));
-        sensorsPowerUp();
-        MS_DBG(F("   ... Complete. <<-----"));
-    }
 
     while (nSensorsCompleted < _sensorCount) {
         for (uint8_t i = 0; i < _sensorCount; i++) {

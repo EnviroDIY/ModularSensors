@@ -541,6 +541,35 @@ class Sensor {
      */
     void clearStatus();
     /**
+     * @brief Clears power-related status bits and resets power timing.
+     *
+     * This clears the POWER_ATTEMPTED and POWER_SUCCESSFUL status bits and
+     * resets the _millisPowerOn timing variable to 0. This is useful when
+     * you need to clear only the power-related status without affecting
+     * wake or measurement status.
+     */
+    void clearPowerStatus();
+    /**
+     * @brief Clears wake-related status bits and resets wake timing.
+     *
+     * This clears the WAKE_ATTEMPTED and WAKE_SUCCESSFUL status bits and
+     * resets the _millisSensorActivated timing variable to 0. This is useful
+     * when you need to clear only the wake-related status without affecting
+     * power or measurement status.
+     */
+    void clearWakeStatus();
+    /**
+     * @brief Clears measurement-related status bits and resets measurement
+     * timing.
+     *
+     * This clears the MEASUREMENT_ATTEMPTED and MEASUREMENT_SUCCESSFUL status
+     * bits and resets both _millisMeasurementRequested and
+     * _millisMeasurementCompleted timing variables to 0. This is useful when
+     * you need to clear only the measurement-related status without affecting
+     * power or wake status.
+     */
+    void clearMeasurementStatus();
+    /**
      * @brief Verify that a measurement is OK (ie, not -9999) before adding it
      * to the result array
      *

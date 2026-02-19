@@ -63,7 +63,7 @@ These values should generally be set in the specific sensor constructors and onl
   - `getStabilizationTime()`
   - `setMeasurementTime(uint32_t measurementTime_ms)`
   - `getMeasurementTime()`
-- Added the function `Sensor::clearStatus()` which resets all status bits except setup and error and resets all timing values to 0.
+- Added the functions `Sensor::clearStatus()`,`Sensor::clearPowerStatus()`,`Sensor::clearWakeStatus()`,and `Sensor::clearMeasurementStatus()` which reset some or all of the sensor status bits and related timing variables.
 - **NEW SENSOR** Added a new sensor for simple analog voltage using the built-in processor ADC
 - Added KnownProcessors.h and moved defines values for supported built-in sensors on known processors to that file.
   - This affects ProcessorStats and the Everlight ALS PT-19.

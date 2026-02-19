@@ -374,18 +374,38 @@ void Sensor::clearValues(void) {
     _measurementAttemptsCompleted = 0;
     _retryAttemptsMade            = 0;
 }
+// This clears power-related status bits and resets power timing.
+void Sensor::clearPowerStatus(void) {
+    // Reset power timing value
+    _millisPowerOn = 0;
+    // Unset power status bits
+    clearStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL);
+}
+
+// This clears wake-related status bits and resets wake timing.
+void Sensor::clearWakeStatus(void) {
+    // Reset wake timing value
+    _millisSensorActivated = 0;
+    // Unset wake status bits
+    clearStatusBits(WAKE_ATTEMPTED, WAKE_SUCCESSFUL);
+}
+
+// This clears measurement-related status bits and resets measurement timing.
+void Sensor::clearMeasurementStatus(void) {
+    // Reset measurement timing values
+    _millisMeasurementRequested = 0;
+    _millisMeasurementCompleted = 0;
+    // Unset measurement status bits
+    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
+}
+
 // This clears all status bits except the setup and error bit and sets the
 // timing values to 0.
 void Sensor::clearStatus(void) {
-    // reset all timing values
-    _millisPowerOn              = 0;
-    _millisSensorActivated      = 0;
-    _millisMeasurementRequested = 0;
-    _millisMeasurementCompleted = 0;
-    // Unset all status bits except setup (bit 0) and error (bit 7)
-    clearStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL, WAKE_ATTEMPTED,
-                    WAKE_SUCCESSFUL, MEASUREMENT_ATTEMPTED,
-                    MEASUREMENT_SUCCESSFUL);
+    // Use the individual clear functions for better maintainability
+    clearPowerStatus();
+    clearWakeStatus();
+    clearMeasurementStatus();
 }
 
 
@@ -455,16 +475,23 @@ void Sensor::averageMeasurements(void) {
 bool Sensor::update(void) {
     bool ret_val = true;
 
-    // clear all of the status bits and timing values at the start of an update
-    // cycle
-    clearStatus();
-
-    // Check if the power is on, turn it on if not
+    // Check if the sensor power is on, turn it on if not
+    // NOTE: The check power on function does **not** check the status bits or
+    // timing values to check if the power is on, but instead checks the actual
+    // state of the power pin(s) to determine if the power is on.  This means
+    // it's safe to clear the power bits before running this check. The check
+    // function will correctly reset the bits as necessary.
+    clearPowerStatus();
     bool wasOn = checkPowerOn();
     if (!wasOn) { powerUp(); }
 
-    // Check if it's awake/active, activate it if not
+    // Check if sensor is awake/active, activate it if not
+    // We're checking the wake status bits here, so don't clear them before this
+    // check!
     bool wasActive = getStatusBit(WAKE_SUCCESSFUL);
+
+    // NOTE: Don't clear the wake bits/timing!
+
     if (!wasActive) {
         // NOT yet awake
         // wait for the sensor to have been powered for long enough to respond
@@ -473,6 +500,13 @@ bool Sensor::update(void) {
     }
     // bail if the wake failed
     if (!ret_val) return ret_val;
+
+    // Clear measurement related status bits and timing values before starting
+    // measurements
+    // NOTE: These bits are set and checked **after** starting a measurement to
+    // confirm that the measurement was actually started, so it's safe to clear
+    // them before starting a measurement.
+    clearMeasurementStatus();
 
     // Clear stale values and reset the measurement attempt and retry
     // counts before starting new measurements.
