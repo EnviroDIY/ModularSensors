@@ -393,18 +393,17 @@ void Sensor::clearStatus(void) {
 // averaged
 void Sensor::verifyAndAddMeasurementResult(uint8_t resultNumber,
                                            float   resultValue) {
+    bool prevResultGood = (sensorValues[resultNumber] != -9999 &&
+                           !isnan(sensorValues[resultNumber]));
+    bool newResultGood  = (resultValue != -9999 && !isnan(resultValue));
     // If the new result is good and there was were only bad results, set the
     // result value as the new result and add 1 to the good result total
-    if ((sensorValues[resultNumber] == -9999 ||
-         isnan(sensorValues[resultNumber])) &&
-        (resultValue != -9999 && !isnan(resultValue))) {
+    if (!prevResultGood && newResultGood) {
         MS_DBG(F("Putting"), resultValue, F("in result array for variable"),
                resultNumber, F("from"), getSensorNameAndLocation());
         sensorValues[resultNumber] = resultValue;
         numberGoodMeasurementsMade[resultNumber] += 1;
-    } else if ((sensorValues[resultNumber] == -9999 ||
-                isnan(sensorValues[resultNumber])) &&
-               (resultValue != -9999 && !isnan(resultValue))) {
+    } else if (prevResultGood && newResultGood) {
         // If the new result is good and there were already good results in
         // place add the new results to the total and add 1 to the good result
         // total
@@ -412,15 +411,14 @@ void Sensor::verifyAndAddMeasurementResult(uint8_t resultNumber,
                resultNumber, F("from"), getSensorNameAndLocation());
         sensorValues[resultNumber] += resultValue;
         numberGoodMeasurementsMade[resultNumber] += 1;
-    } else if (sensorValues[resultNumber] == -9999 && resultValue == -9999) {
-        // If the new result is bad and there were only bad results, do nothing
+    } else if (!prevResultGood && !newResultGood) {
+        // If the new result is bad and there were only bad results, only print
+        // debugging
         MS_DBG(F("Ignoring bad result for variable"), resultNumber, F("from"),
                getSensorNameAndLocation(), F("; no good results yet."));
-    } else if ((sensorValues[resultNumber] == -9999 ||
-                isnan(sensorValues[resultNumber])) &&
-               resultValue == -9999) {
-        // If the new result is bad and there were already good results, do
-        // nothing
+    } else if (prevResultGood && !newResultGood) {
+        // If the new result is bad and there were already good results, only
+        // print debugging
         MS_DBG(F("Ignoring bad result for variable"), resultNumber, F("from"),
                getSensorNameAndLocation(),
                F("; good results already in array."));
