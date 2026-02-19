@@ -234,7 +234,7 @@ bool GeoluxHydroCam::addSingleMeasurementResult(void) {
     // transfer the image from the camera to a file on the SD card
     MS_START_DEBUG_TIMER;
     bytes_transferred = _camera.transferImage(imgFile, image_size);
-    byte_error        = abs(bytes_transferred - image_size);
+    byte_error        = labs(bytes_transferred - image_size);
 
     // Close the image file after transfer
     imgFile.close();
