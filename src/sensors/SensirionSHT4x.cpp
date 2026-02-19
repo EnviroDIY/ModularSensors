@@ -96,7 +96,6 @@ bool SensirionSHT4x::addSingleMeasurementResult(void) {
     bool  success   = false;
     float temp_val  = -9999;
     float humid_val = -9999;
-    bool  ret_val   = false;
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
@@ -107,26 +106,25 @@ bool SensirionSHT4x::addSingleMeasurementResult(void) {
     // we need to create Adafruit "sensor events" to use the library
     sensors_event_t temp_event{};
     sensors_event_t humidity_event{};
-    ret_val = sht4x_internal.getEvent(&humidity_event, &temp_event);
+    success = sht4x_internal.getEvent(&humidity_event, &temp_event);
 
-    // get the values from the sensor events
-    temp_val  = temp_event.temperature;
-    humid_val = humidity_event.relative_humidity;
-
-    if (!ret_val) {
+    if (success) {
+        // if getEvent returns true, get values from the sensor
+        temp_val  = temp_event.temperature;
+        humid_val = humidity_event.relative_humidity;
+    } else {
         MS_DBG(F("  getEvent failed; no values read!"));
-    } else if (isnan(temp_val) || isnan(humid_val)) {
-        MS_DBG(F("  Invalid measurement values"));
+    }
+
+    if (success && !isnan(temp_val) && !isnan(humid_val)) {
+        verifyAndAddMeasurementResult(SHT4X_TEMP_VAR_NUM, temp_val);
+        verifyAndAddMeasurementResult(SHT4X_HUMIDITY_VAR_NUM, humid_val);
+    } else {
+        success = false;
     }
 
     MS_DBG(F("  Temp:"), temp_val, F("°C"));
     MS_DBG(F("  Humidity:"), humid_val, '%');
-
-    if (ret_val && !isnan(temp_val) && !isnan(humid_val)) {
-        verifyAndAddMeasurementResult(SHT4X_TEMP_VAR_NUM, temp_val);
-        verifyAndAddMeasurementResult(SHT4X_HUMIDITY_VAR_NUM, humid_val);
-        success = true;
-    }
 
     // Return success value when finished
     return bumpMeasurementAttemptCount(success);
