@@ -27,6 +27,10 @@
 .travis.yml export-ignore
 id_rsa.enc export-ignore
 
+# Setup scripts
+setupGitFilters.bat export-ignore
+setupGitFilters.ps1 export-ignore
+
 # Platformio
 platformio.ini export-ignore
 
