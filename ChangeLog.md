@@ -12,8 +12,6 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
-- **BREAKING** Changed capitalization of `setInitialShortIntervals(#)` function
-  - Previously the 'i' of initial was not capitalized.
 - Made the enabling and disabling of the watchdog the very first and very last steps of sleep to keep the watchdog enabled through the whole getting ready for bed and waking up process.
 - **ANB pH**
   - **BREAKING** The constructor has changed!
@@ -22,6 +20,9 @@ The logging interval has been added as a required parameter for the constructor!
 - **Renamed** The EnviroDIYPublisher has been renamed the MonitorMyWatershedPublisher.
 This reflects changes to the website from years ago.
 There is a shell file and typedef to maintain backwards compatibility.
+- Changed capitalization of `setInitialShortIntervals(#)` function
+  - Previously the 'i' of initial was not capitalized.
+  - The old `setinitialShortIntervals` remains available via compatibility shim in LoggerBase.h, so existing code is unaffected.
 - Bumped several dependencies - including crucial bug fixes to SensorModbusMaster.
 - Re-wrote most of the logic for looping variables within the complete update function of the VariableArray.
 - Simplified the `addSingleMeasurementResult()` function of all sensors to use an internal function to help set the bits and timing values and to quit sooner if the measurement was not started successfully.
@@ -1209,4 +1210,4 @@ Our first release of the modular sensors library to support easily logging data 
 
 <!--! @m_footernavigation -->
 
-<!-- cspell:words isnan GPST arounds strcat strcpy PULLUP TIINA Wextra -->
+<!-- cspell:words isnan GPST arounds strcat strcpy PULLUP TIINA Wextra setinitialShortIntervals -->
