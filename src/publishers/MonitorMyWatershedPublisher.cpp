@@ -313,6 +313,12 @@ int16_t MonitorMyWatershedPublisher::flushDataBuffer(Client* outClient) {
     char     tempBuffer[37] = "";
     uint16_t did_respond    = 0;
     int16_t  responseCode   = 0;
+
+    // Early return if no records to send
+    if (_logBuffer.getNumRecords() == 0) {
+        MS_DBG(F("No records to send, returning without action"));
+        return 0;
+    }
     if (_baseLogger->getSamplingFeatureUUID() == nullptr ||
         strlen(_baseLogger->getSamplingFeatureUUID()) == 0) {
         PRINTOUT(F("A sampling feature UUID must be set before publishing data "
