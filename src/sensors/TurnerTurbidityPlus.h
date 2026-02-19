@@ -310,7 +310,15 @@ class TurnerTurbidityPlus : public Sensor {
     uint8_t _i2cAddress;
     /**
      * @brief The programmable gain amplification to set on the ADS 1x15,
-     * default is GAIN_DEFAULT (0).
+     * default is GAIN_ONE (+/-4.096V range = Gain 1).
+     *
+     * Other gain options are:
+     *   GAIN_TWOTHIRDS = +/-6.144V range = Gain 2/3,
+     *   GAIN_ONE = +/-4.096V range = Gain 1,
+     *   GAIN_TWO = +/-2.048V range = Gain 2,
+     *   GAIN_FOUR = +/-1.024V range = Gain 4,
+     *   GAIN_EIGHT = +/-0.512V range = Gain 8,
+     *   GAIN_SIXTEEN = +/-0.256V range = Gain 16
      *
      * @todo Determine gain automatically based on the board voltage?
      */
@@ -423,4 +431,7 @@ class TurnerTurbidityPlus_Turbidity : public Variable {
     ~TurnerTurbidityPlus_Turbidity() {}
 };
 /**@}*/
+
+// cspell:words GAIN_TWOTHIRDS
+
 #endif  // SRC_SENSORS_TURNERTURBIDITYPLUS_H_
