@@ -393,13 +393,14 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
                 continue;
             }
 
-            // If attempts were made to wake the sensor, but they failed...
-            // NOTE: We check if the wake was successful even if the wake
-            // parameter is false because we need to know the sensor wake failed
-            // before attempting readings even if the user called wake somewhere
-            // else.
-            if (sensorList[i]->getStatusBit(Sensor::WAKE_ATTEMPTED) == 1 &&
-                sensorList[i]->getStatusBit(Sensor::WAKE_SUCCESSFUL) == 0) {
+            // If attempts were made to wake the sensor, but they failed OR if
+            // we're not waking the sensor but it is not already awake or the
+            // previous wake attempts failed...
+            if ((sensorList[i]->getStatusBit(Sensor::WAKE_ATTEMPTED) == 1 &&
+                 sensorList[i]->getStatusBit(Sensor::WAKE_SUCCESSFUL) == 0) ||
+                (!wake &&
+                 (sensorList[i]->getStatusBit(Sensor::WAKE_ATTEMPTED) == 0 ||
+                  sensorList[i]->getStatusBit(Sensor::WAKE_SUCCESSFUL) == 0))) {
                 MS_DBG(i, F("--->>"), sName,
                        F("failed to wake up! No measurements will be taken! "
                          "<<---"),
@@ -407,8 +408,8 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
                 // Set the number of measurements already complete equal to
                 // whatever total number requested to ensure the sensor is
                 // skipped in further loops. NOTE: These are protected members
-                // of the sensor class; we can only access them because the
-                // variableArray class is a friend of the sensor class.
+                // of the Sensor class; we can only access them because the
+                // VariableArray class is a friend of the Sensor class.
                 sensorList[i]->_measurementAttemptsCompleted =
                     sensorList[i]->_measurementsToAverage;
             }
