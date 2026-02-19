@@ -1,17 +1,63 @@
 # Developer Setup<!--! {#page_developer_setup} -->
 
+<!--! @tableofcontents -->
+
+<!--! @m_footernavigation -->
+
+<!--! @if GITHUB -->
+
+- [Developer Setup](#developer-setup)
+  - [Git Filter Setup](#git-filter-setup)
+  - [PlatformIO Setup](#platformio-setup)
+  - [Debugging](#debugging)
+
+<!--! @endif -->
+
 If you want to fork this repository and work with it, you'll need to set PlatformIO up a bit differently than you would to merely use this library.
 
 First, fork this repository into your own GitHub space.
 Clone it to your local computer.
 
+## Git Filter Setup
+
+This repository uses Git filters to manage sensitive credentials and debug configurations. After cloning the repository, run one of the following setup scripts to configure the necessary Git filter drivers:
+
+**Windows Command Prompt:**
+```batch
+setupGitFilters.bat
+```
+
+**PowerShell:**
+```powershell
+.\setupGitFilters.ps1
+```
+
+**Manual Setup:**
+If you prefer to configure the filters manually, run these Git commands from the repository root:
+```bash
+git config --local filter.smudgePasswords.clean "powershell -ExecutionPolicy Bypass -File filters/cleanPasswords.ps1"
+git config --local filter.smudgePasswords.smudge "powershell -ExecutionPolicy Bypass -File filters/smudgePasswords.ps1"
+git config --local filter.disableDebug.clean "powershell -ExecutionPolicy Bypass -File filters/cleanDebugConfig.ps1"
+git config --local filter.disableDebug.smudge "powershell -ExecutionPolicy Bypass -File filters/smudgeDebugConfig.ps1"
+```
+
+These filters provide the following functionality:
+- **smudgePasswords** - Manages placeholder credentials in `.ino` example files during development and commits
+- **disableDebug** - Automatically manages debug defines in `ModSensorDebugConfig.h` to keep them disabled in commits but enabled locally
+
+
+## PlatformIO Setup
+
+The Arduino IDE is not a good tool for library development.
+Use PlatformIO in VSCode instead.
+
 Open the folder you've cloned this repo into with VSCode.
 Have PlatformIO create a new project for you, but instead of allowing it to create a new folder, select the folder you've already cloned this repo into.
 
-Create a new source program to work with in a new directory.
+Create a new source program to work with in a new directory (ie, a tests directory).
 This is the directory you should reference in the `src_dir` line of your platformio.ini.
 _Also add this directory to your .gitignore file_ so you can test and play with your code without publishing personal passwords or other messiness to the web.
-I recommend you start with one of the programs in the compile_tests folder rather than one of the examples because the compiler test programs are _much_ more extensive and include all sensors and many modems in them.
+I recommend you start with the menu a la carte example for development since it already contains all features and is tested for proper compilation with continuous integration tools.
 
 Set your platformio.ini configuration file up like this:
 
@@ -30,64 +76,86 @@ src_dir = your_directory/your_source_code
 ; Default baud for all examples
 monitor_speed = 115200
 framework = arduino
-; To run code checks; cppcheck and clangtidy must be installed
-check_tool = cppcheck, clangtidy
-check_patterns =
+; To run code checks; clangtidy must be installed
+check_tool = clangtidy
+check_src_filters =
     src
     extras
     examples
 check_flags =
-    cppcheck: --enable=all, --inline-suppr
     clangtidy: --checks=-*
+check_skip_packages = yes
 ; deep search for dependencies, evaluating preprocessor conditionals
 lib_ldf_mode = deep+
+lib_compat_mode = soft
 ; look for the library directory
 lib_extra_dirs = .
+; All these library dependencies must be listed out since we're in the library
+; source code and won't read the dependencies from the library.json like a
+; typical user would
+lib_deps =
+    Adafruit BusIO=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\Adafruit BusIO
+    Adafruit GFX Library=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\Adafruit GFX Library
+    Adafruit MPL115A2=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\Adafruit MPL115A2
+    Adafruit NeoPixel=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\Adafruit NeoPixel
+    Adafruit SH110X=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\Adafruit SH110X
+    Adafruit SSD1306=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\Adafruit SSD1306
+    Adafruit Unified Sensor=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\Adafruit Unified Sensor
+    AltSoftSerial=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\AltSoftSerial
+    BMP388_DEV=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\BMP388_DEV
+    DHT sensor library=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\DHT sensor library
+    EnableInterrupt=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\EnableInterrupt
+    EnviroDIY_DS3231=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\EnviroDIY_DS3231
+    GeoluxCamera=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\GeoluxCamera
+    MS5803=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\MS5803
+    NeoSWSerial=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\NeoSWSerial
+    OneWire=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\OneWire
+    PubSubClient=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\PubSubClient
+    RTCZero=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\RTCZero
+    SDI-12=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\SDI-12
+    SDI-12_ExtInts=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\SDI-12_ExtInts
+    SdFat=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\SdFat
+    SensorModbusMaster=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\SensorModbusMaster
+    SoftwareSerial_ExternalInts=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\SoftwareSerial_ExternalInts
+    SoftwareWire=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\SoftwareWire
+    SparkFun Qwiic RTC RV8803 Arduino Library=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\SparkFun Qwiic RTC RV8803 Arduino Library
+    StreamDebugger=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\StreamDebugger
+    Tally_Library_I2C=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\Tally_Library_I2C
+    TinyGSM=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\TinyGSM
+    YosemitechModbus=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\YosemitechModbus
+    fast_math=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\fast_math
+    ANBSensorsModbus=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\ANBSensorsModbus
+    Adafruit ADS1X15=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\Adafruit ADS1X15
+    Adafruit AM2315=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\Adafruit AM2315
+    Adafruit BME280 Library=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\Adafruit BME280 Library
+    Adafruit INA219=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\Adafruit INA219
+    Adafruit SHT4x Library=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\Adafruit SHT4x Library
+    DallasTemperature=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\DallasTemperature
+    GroPointModbus=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\GroPointModbus
+    KellerModbus=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\KellerModbus
 ; We have to ignore these folders or PlatformIO will double count all the dependencies
 lib_ignore =
     .git
+    .github
+    .history
     .pio
     .vscode
-    doc
+    archive
+    continuous_integration
+    docs
     examples
-    sensor_tests
     extras
-    Adafruit NeoPixel
+    ex_one_offs
+    filters
+    sensor_tests
+    tests
     Adafruit GFX Library
+    Adafruit SH110X
     Adafruit SSD1306
     Adafruit ADXL343
     Adafruit STMPE610
     Adafruit TouchScreen
     Adafruit ILI9341
-; All these library dependencies must be listed out since we're in the library
-; source code and won't read the dependencies from the library.json like a
-; typical user would
-lib_deps =
-    envirodiy/EnviroDIY_DS3231
-    arduino-libraries/RTCZero
-    greygnome/EnableInterrupt
-    greiman/SdFat
-    vshymanskyy/TinyGSM
-    knolleary/PubSubClient
-    adafruit/Adafruit BusIO
-    adafruit/Adafruit Unified Sensor
-    https://github.com/soligen2010/Adafruit_ADS1X15.git
-    adafruit/Adafruit AM2315
-    adafruit/Adafruit BME280 Library
-    adafruit/DHT sensor library
-    adafruit/Adafruit INA219
-    adafruit/Adafruit MPL115A2
-    adafruit/Adafruit SHT4x Library
-    MartinL1/BMP388_DEV
-    paulstoffregen/OneWire
-    milesburton/DallasTemperature
-    envirodiy/SDI-12
-    northernwidget/MS5803
-    https://github.com/EnviroDIY/Tally_Library.git#Dev_I2C
-    envirodiy/SensorModbusMaster
-    envirodiy/KellerModbus
-    envirodiy/YosemitechModbus
-    https://github.com/EnviroDIY/StreamDebugger.git
 ; The directories for the ModularSensors library source code
 src_filter =
     +<*>
@@ -100,13 +168,10 @@ src_filter =
     +<../../src/utils>
 ; Some common build flags
 build_flags =
+    -Wall
+    -Wextra
     -D SDI12_EXTERNAL_PCINT
     -D NEOSWSERIAL_EXTERNAL_PCINT
-    -D MQTT_MAX_PACKET_SIZE=240
-    -D TINY_GSM_RX_BUFFER=64
-    -D TINY_GSM_YIELD_MS=2
-extra_scripts = pre:pioScripts/generate_compile_commands.py
-targets = compiledb
 
 [env:mayfly]
 ; Find your COM port, enter it here, and remove the semicolon at the start of the line
@@ -126,40 +191,15 @@ lib_ignore =
     ${env.lib_ignore}
     RTCZero
     Adafruit Zero DMA Library
+    SDI-12_ExtInts
+    Adafruit TinyUSB Library
+    ESP8266SdFat
 ; Any extra build flags you want
 build_flags =
     ${env.build_flags}
-    -D STANDARD_SERIAL_OUTPUT=Serial
-    -D DEBUGGING_SERIAL_OUTPUT=Serial
-    -D DEEP_DEBUGGING_SERIAL_OUTPUT=Serial
-; when I'm uploading frequently, I disable verification of the write
-upload_flags =
-    -V
-
-
-[env:adafruit_feather_m0]
-; Find your COM port, enter it here, and remove the semicolon at the start of the line
-; upload_port = COM##
-; monitor_port = COM##
-platform = atmelsam
-board = adafruit_feather_m0
-framework = arduino
-; SAMD boards need RTCZero for the real time clock and sleeping
-lib_deps =
-    ${env.lib_deps}
-    RTCZero
-; Most of the software serial libraries won't compile.
-; Use the SERCOM's; they're better anyway
-lib_ignore =
-    ${env.lib_ignore}
-    SoftwareSerial_ExtInts
-    AltSoftSerial
-    NeoSWSerial
-    SoftwareWire
-build_flags =
-    ${env.build_flags}
-build_unflags = -D USE_TINYUSB
 ```
+
+## Debugging
 
 While you're working on development, there is _extensive_ debugging text built into this library.
 More on that is in the [Code Debugging](https://github.com/EnviroDIY/ModularSensors/wiki/Code-Debugging) page.
