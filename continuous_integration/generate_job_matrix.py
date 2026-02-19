@@ -103,7 +103,7 @@ with open(os.path.join(ci_path, "platformio_to_arduino_boards.json")) as f:
 
 # Find all of the non-menu examples
 non_menu_examples = []
-for root, _subdirs, files in os.walk(examples_path):
+for root, subdirs, files in os.walk(examples_path):
     folder_name = os.path.basename(root)
     if folder_name in {
         ".history",
@@ -112,6 +112,7 @@ for root, _subdirs, files in os.walk(examples_path):
         "tests",
         menu_example_name,
     }:
+        subdirs.clear()  # Prevent os.walk from descending into excluded directories
         continue
     for filename in files:
         file_path = os.path.join(root, filename)

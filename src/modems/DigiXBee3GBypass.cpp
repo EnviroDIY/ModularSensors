@@ -107,7 +107,7 @@ bool DigiXBee3GBypass::extraModemSetup(void) {
         /** Disassociate from the network for the lowest power deep sleep. */
         MS_DBG(F("Setting Other Options..."));
         /** Disable remote manager and enable 2G fallback. */
-        gsmModem.sendAT(GF("DO"), 02);
+        gsmModem.sendAT(GF("DO"), 2);
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
         /** Make sure airplane mode is off - bypass and airplane mode are
          * incompatible. */

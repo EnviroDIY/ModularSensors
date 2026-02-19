@@ -130,19 +130,19 @@ bool PaleoTerraRedox::addSingleMeasurementResult(void) {
     config    = _i2c->read();
 
     res      = 0;
-    int sign = bitRead(res1, 1);  // one but least significant bit
-    if (sign == 1) {
-        res1 = ~res1;
-        res2 = ~res2;
-        res3 = ~res3;                     // two's complements
-        res  = bitRead(res1, 0) * -1024;  // 256 * 256 * 15.625 uV per LSB = 16
-        res -= res2 * 4;
-        res -= res3 * 0.015625;
-        res -= 0.015625;
+    // Assemble the 18-bit raw sample from the three bytes
+    uint32_t rawSample = (static_cast<uint32_t>(bitRead(res1, 0)) << 16) | 
+                         (static_cast<uint32_t>(res2) << 8) | 
+                         static_cast<uint32_t>(res3);
+    
+    // Check if this is a negative value (sign bit D17 is set)
+    if (bitRead(res1, 1)) {
+        // Sign-extend the 18-bit value to get correct negative magnitude  
+        int32_t signedSample = rawSample | 0xFFFC0000; // Sign extend from bit 17
+        res = signedSample * 0.015625; // 15.625 uV per LSB
     } else {
-        res = bitRead(res1, 0) * 1024;  // 256 * 256 * 15.625 uV per LSB = 16
-        res += res2 * 4;
-        res += res3 * 0.015625;
+        // Positive value
+        res = rawSample * 0.015625; // 15.625 uV per LSB
     }
 
     /// @todo ADD FAILURE CONDITIONS for PaleoTerraRedox!!

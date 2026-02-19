@@ -49,7 +49,7 @@ _______
 
 ### Set the logger ID<!--! {#example_mmw_logger_id} -->
 
-- Change the text `YourLoggerID` in this section of code to your loggerID or serial number:
+- Change the text `YourLoggerID` in this section of code to your logger ID or serial number:
 
 ```cpp
 // Logger ID, also becomes the prefix for the name of the data file on SD card

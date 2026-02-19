@@ -17,7 +17,7 @@ EverlightALSPT19::EverlightALSPT19(int8_t powerPin, int8_t dataPin,
     : Sensor("Everlight ALS-PT19", ALSPT19_NUM_VARIABLES,
              ALSPT19_WARM_UP_TIME_MS, ALSPT19_STABILIZATION_TIME_MS,
              ALSPT19_MEASUREMENT_TIME_MS, powerPin, dataPin,
-             measurementsToAverage),
+             measurementsToAverage, ALSPT19_INC_CALC_VARIABLES),
       _supplyVoltage(supplyVoltage),
       _loadResistor(loadResistor) {}
 #if defined(BUILT_IN_ALS_POWER_PIN) && defined(BUILT_IN_ALS_DATA_PIN) && \
