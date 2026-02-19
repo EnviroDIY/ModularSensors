@@ -337,6 +337,17 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
         MS_DBG(F("----->> Powering up all sensors together. ..."));
         sensorsPowerUp();
         MS_DBG(F("   ... Complete. <<-----"));
+    } else {
+        // If this function isn't powering the sensors, check whether or not the
+        // sensors are actually powered on before trying to wake them or
+        // assuming they are awake.  If the sensors are not powered, the
+        // checkPowerOn function will reset the power *and wake* bits so the
+        // wake check or wake function will work correctly.
+        MS_DBG(F("----->> Checking the power state of all sensor. ..."));
+        for (uint8_t i = 0; i < _sensorCount; i++) {
+            sensorList[i]->checkPowerOn();
+        }
+        MS_DBG(F("   ... Complete. <<-----"));
     }
 
     // NOTE: Don't clear the wake bits/timing!  If the power up function found
