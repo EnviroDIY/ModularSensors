@@ -56,7 +56,8 @@ _______
 
 ### Set the logger ID<!--! {#example_drwi_no_cell_logger_id} -->
 
-- Change the "XXXX" in this section of code to the loggerID assigned by Stroud:
+- Change the text `YourLoggerID` in this section of code to your loggerID.
+For most DRWI installations, the logger ID was assigned by the Stroud Water Research Center before the station was built.
 
 ```cpp
 // Logger ID, also becomes the prefix for the name of the data file on SD card
