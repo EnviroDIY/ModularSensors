@@ -90,49 +90,6 @@ lib_ldf_mode = deep+
 lib_compat_mode = soft
 ; look for the library directory
 lib_extra_dirs = .
-; All these library dependencies must be listed out since we're in the library
-; source code and won't read the dependencies from the library.json like a
-; typical user would
-lib_deps =
-    Adafruit BusIO=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\Adafruit BusIO
-    Adafruit GFX Library=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\Adafruit GFX Library
-    Adafruit MPL115A2=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\Adafruit MPL115A2
-    Adafruit NeoPixel=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\Adafruit NeoPixel
-    Adafruit SH110X=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\Adafruit SH110X
-    Adafruit SSD1306=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\Adafruit SSD1306
-    Adafruit Unified Sensor=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\Adafruit Unified Sensor
-    AltSoftSerial=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\AltSoftSerial
-    BMP388_DEV=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\BMP388_DEV
-    DHT sensor library=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\DHT sensor library
-    EnableInterrupt=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\EnableInterrupt
-    EnviroDIY_DS3231=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\EnviroDIY_DS3231
-    GeoluxCamera=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\GeoluxCamera
-    MS5803=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\MS5803
-    NeoSWSerial=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\NeoSWSerial
-    OneWire=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\OneWire
-    PubSubClient=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\PubSubClient
-    RTCZero=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\RTCZero
-    SDI-12=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\SDI-12
-    SDI-12_ExtInts=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\SDI-12_ExtInts
-    SdFat=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\SdFat
-    SensorModbusMaster=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\SensorModbusMaster
-    SoftwareSerial_ExternalInts=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\SoftwareSerial_ExternalInts
-    SoftwareWire=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\SoftwareWire
-    SparkFun Qwiic RTC RV8803 Arduino Library=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\SparkFun Qwiic RTC RV8803 Arduino Library
-    StreamDebugger=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\StreamDebugger
-    Tally_Library_I2C=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\Tally_Library_I2C
-    TinyGSM=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\TinyGSM
-    YosemitechModbus=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\YosemitechModbus
-    fast_math=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\fast_math
-    ANBSensorsModbus=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\ANBSensorsModbus
-    Adafruit ADS1X15=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\Adafruit ADS1X15
-    Adafruit AM2315=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\Adafruit AM2315
-    Adafruit BME280 Library=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\Adafruit BME280 Library
-    Adafruit INA219=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\Adafruit INA219
-    Adafruit SHT4x Library=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\Adafruit SHT4x Library
-    DallasTemperature=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\DallasTemperature
-    GroPointModbus=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\GroPointModbus
-    KellerModbus=symlink://C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\lib\KellerModbus
 ; We have to ignore these folders or PlatformIO will double count all the dependencies
 lib_ignore =
     .git
@@ -156,6 +113,44 @@ lib_ignore =
     Adafruit STMPE610
     Adafruit TouchScreen
     Adafruit ILI9341
+; All these library dependencies must be listed out since we're in the library
+; source code and won't read the dependencies from the library.json like a
+; typical user would
+lib_deps =
+  	envirodiy/EnviroDIY_DS3231@^1.3.6
+	  arduino-libraries/RTCZero@^1.6.0
+    sparkfun/SparkFun Qwiic RTC RV8803 Arduino Library@^1.2.10
+    greygnome/EnableInterrupt@^1.1.0
+    greiman/SdFat@=2.3.0
+    TinyGSM=https://github.com/EnviroDIY/TinyGSM
+    knolleary/PubSubClient@^2.8
+    adafruit/Adafruit BusIO@^1.17.4
+    adafruit/Adafruit Unified Sensor@^1.1.15
+    adafruit/Adafruit ADS1X15@^2.6.2
+    adafruit/Adafruit AM2315@^2.2.3
+    adafruit/Adafruit BME280 Library@^2.3.0
+    MartinL1/BMP388_DEV@^1.0.11
+    adafruit/DHT sensor library@^1.4.6
+    adafruit/Adafruit INA219@^1.2.3
+    adafruit/Adafruit MPL115A2@^2.0.2
+    adafruit/Adafruit SHT4x Library@^1.0.5
+    paulstoffregen/OneWire@^2.3.8
+    milesburton/DallasTemperature@^4.0.6
+    envirodiy/SDI-12@^2.3.2
+    SDI-12_ExtInts=https://github.com/EnviroDIY/Arduino-SDI-12#ExtInts
+    northernwidget/MS5803@^0.1.2
+    Tally_Library_I2C=https://github.com/EnviroDIY/Tally_Library.git#Dev_I2C
+    envirodiy/SensorModbusMaster@^1.7.0
+    envirodiy/KellerModbus@^0.2.7
+    envirodiy/YosemitechModbus@^0.5.4
+    envirodiy/GroPointModbus@^0.1.5
+    envirodiy/GeoluxCamera@^0.1.3
+    robtillaart/fast_math@^0.2.4
+    envirodiy/ANBSensorsModbus@^0.4.2
+    StreamDebugger=https://github.com/EnviroDIY/StreamDebugger.git
+    NeoSWSerial=https://github.com/SRGDamia1/NeoSWSerial.git
+    AltSoftSerial=https://github.com/PaulStoffregen/AltSoftSerial.git
+    SoftwareWire=https://github.com/Testato/SoftwareWire.git#v1.5.1
 ; The directories for the ModularSensors library source code
 src_filter =
     +<*>
