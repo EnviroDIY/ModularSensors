@@ -143,6 +143,12 @@ uint16_t MonitorMyWatershedPublisher::calculateJsonSize() {
     MS_DBG(F("Number of variables in base logger:"),
            _baseLogger->getArrayVarCount());
 
+    // Guard against underflow when records == 0
+    if (records == 0) {
+        MS_DBG(F("No records to send, returning minimal JSON size"));
+        return 50;  // Minimal size for empty JSON structure
+    }
+
     uint16_t jsonLength = strlen(samplingFeatureTag);
     jsonLength += 36;  // sampling feature UUID
     jsonLength += strlen(timestampTag);

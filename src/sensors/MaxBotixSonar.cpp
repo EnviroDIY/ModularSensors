@@ -152,7 +152,7 @@ bool MaxBotixSonar::addSingleMeasurementResult(void) {
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
     uint8_t rangeAttempts = 0;
-    while (success == false && rangeAttempts < 25) {
+    while (!success && rangeAttempts < 25) {
         /// @todo unify retries with other sensors?
         // If the sonar is running on a trigger, activating the trigger
         // should in theory happen within the startSingleMeasurement

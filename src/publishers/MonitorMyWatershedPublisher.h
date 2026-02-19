@@ -158,6 +158,11 @@ class MonitorMyWatershedPublisher : public dataPublisher {
     /**
      * @brief Set the Monitor My Watershed web host
      *
+     * @warning The caller must guarantee that the passed C-string remains
+     * valid for the lifetime of this object or until another call to setHost().
+     * Do not pass temporary strings or stack-allocated C-strings that may
+     * be destroyed before all publish calls are complete.
+     *
      * @param host The Monitor My Watershed web host
      */
     void setHost(const char* host);
@@ -170,6 +175,11 @@ class MonitorMyWatershedPublisher : public dataPublisher {
     String getPath(void);
     /**
      * @brief Set the Monitor My Watershed API path
+     *
+     * @warning The caller must guarantee that the passed C-string remains
+     * valid for the lifetime of this object or until another call to setPath().
+     * Do not pass temporary strings or stack-allocated C-strings that may
+     * be destroyed before all publish calls are complete.
      *
      * @param endpoint The Monitor My Watershed API path
      */

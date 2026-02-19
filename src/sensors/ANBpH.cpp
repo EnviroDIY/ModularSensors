@@ -609,7 +609,7 @@ bool ANBpH::setSensorRTC() {
     int8_t  day       = -1;
     int8_t  month     = -1;
     int16_t year      = -1;
-    uint8_t tz_offset = -1;
+    uint8_t tz_offset = 0;  // Neutral value, will be overwritten by getNowParts
     Logger::getNowParts(seconds, minutes, hours, day, month, year, tz_offset);
 #if defined(MS_ANB_SENSORS_PH_DEBUG_DEEP)
     char time_buff_l[20] = {'\0'};
