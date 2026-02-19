@@ -108,8 +108,8 @@ From the required files mentioned above, find and open the file that *ends with*
 As before, you need to see the file in a text editor and you may get a security warning when you open it.
 
 Once you have the file open, it should look like a bunch of random characters sandwiched between the lines `-----BEGIN RSA PRIVATE KEY-----` and `-----END RSA PRIVATE KEY-----`.
-Find and replace the text `paste the private key here` with the text of your certificate.
-Make sure that the text begins and ends with the lines `-----BEGIN RSA PRIVATE KEY-----` and `-----END RSA PRIVATE KEY-----` as it does in the example and in your certificate text.
+Find and replace the text `paste the private key here` with the text of your private key.
+Make sure that the text begins and ends with the lines `-----BEGIN RSA PRIVATE KEY-----` and `-----END RSA PRIVATE KEY-----` as it does in the example and in your private key.
 
 ### Customize the Set Certificates program
 
