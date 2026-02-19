@@ -151,7 +151,7 @@ This example also makes use of the on-board light, temperature, and humidity sen
 The results are saved to the SD card and posted to Monitor My Watershed. Only to be used with newer Mayfly v1.0 and v1.1 boards.
 
 - [Instructions for the Mayfly 1.x LTE DRWI Citizen Science example](https://envirodiy.github.io/ModularSensors/example_drwi_mayfly1.html)
-- [The LTEG DRWI Citizen Science example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/OutdatedExamples/DRWI_CitizenScience/DRWI_Mayfly1)
+- [The Mayfly 1.x LTE DRWI Citizen Science example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/OutdatedExamples/DRWI_CitizenScience/DRWI_Mayfly1)
 
 #### DRWI CitSci No Cellular<!--! {#examples_drwi_no_cell} -->
 

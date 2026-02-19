@@ -526,7 +526,7 @@ class Sensor {
     /**
      * @brief Clear the values array and reset retry counts.
      *
-     * This clears the values array by setting all values to -9999, setal all
+     * This clears the values array by setting all values to -9999, sets all
      * values in numberGoodMeasurementsMade to 0, and resets the attempt
      * (#_measurementAttemptsCompleted) and retry (#_retryAttemptsMade) counts.
      */

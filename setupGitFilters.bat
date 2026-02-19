@@ -6,13 +6,13 @@ echo Setting up Git filter drivers for ModularSensors...
 
 REM Configure the smudgePasswords filter for .ino files
 echo Configuring smudgePasswords filter...
-git config --local filter.smudgePasswords.clean "powershell -ExecutionPolicy Bypass -File filters/cleanPasswords.ps1"
-git config --local filter.smudgePasswords.smudge "powershell -ExecutionPolicy Bypass -File filters/smudgePasswords.ps1"
+git config --local filter.smudgePasswords.clean "powershell -ExecutionPolicy RemoteSigned -File filters/cleanPasswords.ps1"
+git config --local filter.smudgePasswords.smudge "powershell -ExecutionPolicy RemoteSigned -File filters/smudgePasswords.ps1"
 
 REM Configure the disableDebug filter for ModSensorDebugConfig.h
 echo Configuring disableDebug filter...
-git config --local filter.disableDebug.clean "powershell -ExecutionPolicy Bypass -File filters/cleanDebugConfig.ps1"
-git config --local filter.disableDebug.smudge "powershell -ExecutionPolicy Bypass -File filters/smudgeDebugConfig.ps1"
+git config --local filter.disableDebug.clean "powershell -ExecutionPolicy RemoteSigned -File filters/cleanDebugConfig.ps1"
+git config --local filter.disableDebug.smudge "powershell -ExecutionPolicy RemoteSigned -File filters/smudgeDebugConfig.ps1"
 
 echo.
 echo Git filter drivers have been successfully configured!

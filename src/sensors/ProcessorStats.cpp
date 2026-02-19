@@ -27,21 +27,30 @@ ProcessorStats::ProcessorStats(const char* version,
     // multiplier is version dependent
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
     // fix battery multiplier for older Mayfly versions
-    if (strcmp(_version, "v0.3") == 0 || strcmp(_version, "v0.4") == 0) {
+    if (_version != nullptr &&
+        (strcmp(_version, "v0.3") == 0 || strcmp(_version, "v0.4") == 0)) {
         _batteryMultiplier = 1.47;
     }
 #elif defined(ARDUINO_SODAQ_ONE) || defined(ARDUINO_SODAQ_ONE_BETA)
     // only versions v0.1 and v0.2 of the Sodaq One are supported, and they have
     // different battery pins and multipliers
-    if (strcmp(_version, "v0.1") == 0) {
-        _batteryMultiplier = 2;
-    } else if (strcmp(_version, "v0.2") == 0) {
-        _batteryMultiplier = 1.47;
+    if (_version != nullptr) {
+        if (strcmp(_version, "v0.1") == 0) {
+            _batteryMultiplier = 2;
+        } else if (strcmp(_version, "v0.2") == 0) {
+            _batteryMultiplier = 1.47;
+        } else {
+            MS_DBG(F("Unsupported Sodaq One version:"), _version,
+                   F("- setting battery multiplier to -1"));
+            _batteryMultiplier = -1;
+        }
     } else {
+        MS_DBG(F("No Sodaq One version specified - setting battery multiplier "
+                 "to -1"));
         _batteryMultiplier = -1;
     }
 #elif defined(ARDUINO_SODAQ_AUTONOMO)
-    if (strcmp(_version, "v0.1") == 0)
+    if (_version != nullptr && strcmp(_version, "v0.1") == 0)
         _batteryPin = 48;
     else
         _batteryPin = 33;

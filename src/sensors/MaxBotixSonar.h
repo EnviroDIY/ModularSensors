@@ -147,7 +147,9 @@
 /// up (0ms stabilization).
 #define HRXL_STABILIZATION_TIME_MS 0
 /// @brief Sensor::_measurementTime_ms; the HRXL takes 166ms to complete a
-/// measurement.
+/// measurement.  It outputs results at least every 166ms.
+/// @note Because this sensor allows up to 25 retries if a measurement fails,
+/// the actual time to get a measurement may be much longer than 166ms.
 #define HRXL_MEASUREMENT_TIME_MS 250
 /**@}*/
 

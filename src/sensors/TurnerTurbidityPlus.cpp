@@ -174,6 +174,12 @@ bool TurnerTurbidityPlus::addSingleMeasurementResult(void) {
             // down the voltage
             adcVoltage *= _voltageDividerFactor;
         } else {
+            // If the voltage divider factor is not set to a positive value,
+            // print a debugging message and continue without applying a voltage
+            // divider factor.  We continue because the voltage divider factor
+            // can be easily fixed in post-processing if the raw voltage value
+            // is available, and we don't want to lose the voltage reading if
+            // the voltage divider factor is just set incorrectly.
             MS_DBG(F("  Invalid voltage divider factor:"),
                    _voltageDividerFactor,
                    F("Voltage divider will be ignored."));

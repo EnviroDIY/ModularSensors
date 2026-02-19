@@ -39,7 +39,7 @@ String TIINA219::getSensorLocation(void) {
 
 bool TIINA219::setup(void) {
     bool wasOn;
-    Sensor::setup();  // this will set pin modes and the setup status bit
+    bool setupSuccess = Sensor::setup();  // this will set pin modes and the setup status bit
 
     // This sensor needs power for setup!
     delay(10);
@@ -49,7 +49,7 @@ bool TIINA219::setup(void) {
         waitForWarmUp();
     }
 
-    bool success = ina219_phy.begin(_i2c);
+    bool success = setupSuccess && ina219_phy.begin(_i2c);
 
     // Turn the power back off it it had been turned on
     if (!wasOn) { powerDown(); }

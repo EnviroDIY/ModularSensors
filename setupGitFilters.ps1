@@ -6,13 +6,13 @@ Write-Host "Setting up Git filter drivers for ModularSensors..." -ForegroundColo
 
 # Configure the smudgePasswords filter for .ino files
 Write-Host "Configuring smudgePasswords filter..." -ForegroundColor Yellow
-git config --local filter.smudgePasswords.clean "powershell -ExecutionPolicy Bypass -File filters/cleanPasswords.ps1"
-git config --local filter.smudgePasswords.smudge "powershell -ExecutionPolicy Bypass -File filters/smudgePasswords.ps1"
+git config --local filter.smudgePasswords.clean "powershell -ExecutionPolicy RemoteSigned -File filters/cleanPasswords.ps1"
+git config --local filter.smudgePasswords.smudge "powershell -ExecutionPolicy RemoteSigned -File filters/smudgePasswords.ps1"
 
 # Configure the disableDebug filter for ModSensorDebugConfig.h
 Write-Host "Configuring disableDebug filter..." -ForegroundColor Yellow
-git config --local filter.disableDebug.clean "powershell -ExecutionPolicy Bypass -File filters/cleanDebugConfig.ps1"
-git config --local filter.disableDebug.smudge "powershell -ExecutionPolicy Bypass -File filters/smudgeDebugConfig.ps1"
+git config --local filter.disableDebug.clean "powershell -ExecutionPolicy RemoteSigned -File filters/cleanDebugConfig.ps1"
+git config --local filter.disableDebug.smudge "powershell -ExecutionPolicy RemoteSigned -File filters/smudgeDebugConfig.ps1"
 
 Write-Host "`nGit filter drivers have been successfully configured!" -ForegroundColor Green
 Write-Host "`nFilters configured:" -ForegroundColor Cyan
