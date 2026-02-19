@@ -56,7 +56,7 @@ Make sure there are quotation marks around the name string, as there are in the 
 
 ### Set your WiFi Credentials
 
-Find and replace the text `YourWiFiSSID` with your wifi name (SSID) and `YourWiFiPassword` with your wifi password.
+Find and replace the text `YourWiFiSSID` with your WiFi name (SSID) and `YourWiFiPassword` with your WiFi password.
 Make sure there are quotation marks around the name string, as there are in the example.
 
 ### Set your Variable UUIDs
