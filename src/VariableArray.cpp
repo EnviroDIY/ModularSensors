@@ -505,23 +505,32 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
                     bool canPowerDown = true;  // assume we can power down
                                                // unless we find a conflict
                     for (uint8_t k = 0; k < _sensorCount; k++) {
-                        if (((sensorList[i]->getPowerPin() >= 0 &&
-                              (sensorList[i]->getPowerPin() ==
-                                   sensorList[k]->getPowerPin() ||
-                               sensorList[i]->getPowerPin() ==
-                                   sensorList[k]->getSecondaryPowerPin())) ||
-                             (sensorList[i]->getSecondaryPowerPin() >= 0 &&
-                              (sensorList[i]->getSecondaryPowerPin() ==
-                                   sensorList[k]->getPowerPin() ||
-                               sensorList[i]->getSecondaryPowerPin() ==
-                                   sensorList[k]->getSecondaryPowerPin()))) &&
+                        if ((
+                                // Check if sensor i's primary pin matches
+                                // either of sensor k's pins
+                                (sensorList[i]->getPowerPin() >= 0 &&
+                                 (sensorList[i]->getPowerPin() ==
+                                      sensorList[k]->getPowerPin() ||
+                                  sensorList[i]->getPowerPin() ==
+                                      sensorList[k]->getSecondaryPowerPin()))
+                                // Check if sensor i's secondary pin matches
+                                // either of sensor k's pins
+                                ||
+                                (sensorList[i]->getSecondaryPowerPin() >= 0 &&
+                                 (sensorList[i]->getSecondaryPowerPin() ==
+                                      sensorList[k]->getPowerPin() ||
+                                  sensorList[i]->getSecondaryPowerPin() ==
+                                      sensorList[k]->getSecondaryPowerPin())))
+                            // Check if sensor k still needs measurements
+                            &&
                             (sensorList[k]
                                  ->getNumberCompleteMeasurementsAttempts() <
                              sensorList[k]->getNumberMeasurementsToAverage())) {
-                            canPowerDown = false;  // another sensor on this pin
-                                                   // still needs to take
-                                                   // measurements
-                            break;
+                            // If sensors i and k share a primary power pin or a
+                            // secondary power pin and sensor k still needs
+                            // measurements, sensor i can't be powered down
+                            canPowerDown = false;
+                            break;  // stop looping after finding a conflict
                         }
                     }
                     if (canPowerDown) { sensorList[i]->powerDown(); }
@@ -540,6 +549,7 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
                                  "power pin still need to take measurements.  "
                                  "Leaving power on pin"),
                                sensorList[i]->getPowerPin(), F("ON. <<---"));
+                        // Find and report which sensor still needs measurements
                         for (uint8_t k = 0; k < _sensorCount; k++) {
                             if (((sensorList[i]->getPowerPin() >= 0 &&
                                   (sensorList[i]->getPowerPin() ==
