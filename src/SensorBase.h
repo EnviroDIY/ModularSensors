@@ -738,8 +738,8 @@ class Sensor {
      */
     uint8_t _measurementsToAverage;
     /**
-     * @brief The number of measurements attempts by the sensor that have
-     * finished **since last power on**.
+     * @brief The number of measurement attempts completed in the current update
+     * cycle (reset by clearValues()).
      */
     uint8_t _measurementAttemptsCompleted = 0;
     /**
