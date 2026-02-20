@@ -29,6 +29,10 @@
  * @section sensor_turbidity_plus_flags Build flags
  * - ```-D MS_USE_ADS1015```
  *      - switches from the 16-bit ADS1115 to the 12 bit ADS1015
+ * - ```-D TURBIDITY_PLUS_WIPER_TRIGGER_PULSE_MS=x```
+ *      - Changes the wiper trigger pulse duration from 50 ms to x ms
+ * - ```-D TURBIDITY_PLUS_WIPER_ROTATION_WAIT_MS=x```
+ *      - Changes the wiper rotation wait time from 8000 ms to x ms
  *
  * @section sensor_turbidity_plus_ctor Sensor Constructor
  * {{ @ref TurnerTurbidityPlus::TurnerTurbidityPlus }}
@@ -82,6 +86,26 @@
 /// @brief Sensor::_incCalcValues; turbidity is calculated from raw voltage
 /// using the input calibration equation.
 #define TURBIDITY_PLUS_INC_CALC_VARIABLES 1
+/**@}*/
+
+/**
+ * @anchor sensor_turbidity_plus_config
+ * @name Configuration Defines
+ * Defines to set the timing configuration of the Turner Turbidity Plus sensor.
+ */
+/**@{*/
+#if !defined(TURBIDITY_PLUS_WIPER_TRIGGER_PULSE_MS) || defined(DOXYGEN)
+/**
+ * @brief Wiper trigger pulse duration in milliseconds
+ */
+#define TURBIDITY_PLUS_WIPER_TRIGGER_PULSE_MS 50
+#endif
+#if !defined(TURBIDITY_PLUS_WIPER_ROTATION_WAIT_MS) || defined(DOXYGEN)
+/**
+ * @brief Wait time for wiper rotation to complete in milliseconds
+ */
+#define TURBIDITY_PLUS_WIPER_ROTATION_WAIT_MS 8000
+#endif
 /**@}*/
 
 /**
@@ -161,15 +185,14 @@
 #ifdef MS_USE_ADS1015
 /// @brief Decimals places in string representation; voltage should have 1.
 ///  - Resolution:
-///     - 16-bit ADC (ADS1115): 0.125 mV
+///     - 12-bit ADC (ADS1015): 2 mV
 #define TURBIDITY_PLUS_VOLTAGE_RESOLUTION 1
 #else
 /// @brief Decimals places in string representation; voltage should have 4.
 ///  - Resolution:
-///     - 12-bit ADC (ADS1015, using build flag ```MS_USE_ADS1015```): 2 mV
+///     - 16-bit ADC (ADS1115): 0.125 mV
 #define TURBIDITY_PLUS_VOLTAGE_RESOLUTION 4
-#endif
-/**@}*/
+#endif /**@}*/
 /**
  * @brief The Sensor sub-class for the [Turner Turbidity Plus turbidity
  * sensor](@ref sensor_turbidity_plus).
@@ -205,8 +228,7 @@ class TurnerTurbidityPlus : public TIADS1x15 {
      * dividers or gain settings.
      * @param volt_blank The voltage (in volts) measured for a blank. This
      * voltage should be the final voltage *after* accounting for any voltage
-     * @param i2cAddress The I2C address of the ADS 1x15, default is 0x48 (ADDR
-     * = GND)
+     * dividers or gain settings.     * = GND)
      * @param PGA_gain The programmable gain amplification to set on the
      * ADS 1x15, default is GAIN_ONE (0-4.096V).
      * @param measurementsToAverage The number of measurements to take and

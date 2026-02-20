@@ -52,12 +52,12 @@ void TurnerTurbidityPlus::runWiper() {
     // without pausing for ~540ms between them.
     MS_DBG(F("Turn TurbidityPlus wiper on"), getSensorLocation());
     digitalWrite(_wiperTriggerPin, LOW);
-    delay(50);
+    delay(TURBIDITY_PLUS_WIPER_TRIGGER_PULSE_MS);
     digitalWrite(_wiperTriggerPin, HIGH);
     // It takes ~7.5 sec for a rotation to complete. Wait for that to finish
     // before continuing, otherwise the sensor will get powered off before wipe
     // completes, and any reading taken during wiper cycle is invalid.
-    delay(8000);
+    delay(TURBIDITY_PLUS_WIPER_ROTATION_WAIT_MS);
     MS_DBG(F("TurbidityPlus wiper cycle should be finished"));
 }
 
@@ -80,13 +80,13 @@ bool TurnerTurbidityPlus::wake(void) {
 void TurnerTurbidityPlus::powerDown(void) {
     // Set the wiper trigger pin LOW to avoid power drain.
     digitalWrite(_wiperTriggerPin, LOW);
-    return TIADS1x15::powerDown();
+    TIADS1x15::powerDown();
 }
 
 void TurnerTurbidityPlus::powerUp(void) {
     // Set the wiper trigger pin HIGH to prepare for wiping.
     digitalWrite(_wiperTriggerPin, HIGH);
-    return TIADS1x15::powerUp();
+    TIADS1x15::powerUp();
 }
 
 bool TurnerTurbidityPlus::addSingleMeasurementResult(void) {
