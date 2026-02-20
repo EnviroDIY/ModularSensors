@@ -26,6 +26,24 @@ TIADS1x15::TIADS1x15(int8_t powerPin, uint8_t adsChannel,
              TIADS1X15_STABILIZATION_TIME_MS, TIADS1X15_MEASUREMENT_TIME_MS,
              powerPin, -1, measurementsToAverage, TIADS1X15_INC_CALC_VARIABLES),
       _adsChannel(adsChannel),
+      _isDifferential(false),
+      _adsDiffMux(TIADS1X15_DIFF_MUX_0_1), // Default value, not used
+      _voltageMultiplier(voltageMultiplier),
+      _adsGain(adsGain),
+      _i2cAddress(i2cAddress),
+      _adsSupplyVoltage(adsSupplyVoltage) {}
+
+// Constructor for differential measurements
+TIADS1x15::TIADS1x15(int8_t powerPin, tiads1x15_adsDiffMux_t adsDiffMux,
+                     float voltageMultiplier, adsGain_t adsGain,
+                     uint8_t i2cAddress, uint8_t measurementsToAverage,
+                     float adsSupplyVoltage)
+    : Sensor("TIADS1x15", TIADS1X15_NUM_VARIABLES, TIADS1X15_WARM_UP_TIME_MS,
+             TIADS1X15_STABILIZATION_TIME_MS, TIADS1X15_MEASUREMENT_TIME_MS,
+             powerPin, -1, measurementsToAverage, TIADS1X15_INC_CALC_VARIABLES),
+      _adsChannel(0), // Not used for differential
+      _isDifferential(true),
+      _adsDiffMux(adsDiffMux),
       _voltageMultiplier(voltageMultiplier),
       _adsGain(adsGain),
       _i2cAddress(i2cAddress),
@@ -41,8 +59,26 @@ String TIADS1x15::getSensorLocation(void) {
     String sensorLocation = F("ADS1015_0x");
 #endif
     sensorLocation += String(_i2cAddress, HEX);
-    sensorLocation += F("_Channel");
-    sensorLocation += String(_adsChannel);
+    if (_isDifferential) {
+        sensorLocation += F("_Diff");
+        switch (_adsDiffMux) {
+            case TIADS1X15_DIFF_MUX_0_1:
+                sensorLocation += F("0_1");
+                break;
+            case TIADS1X15_DIFF_MUX_0_3:
+                sensorLocation += F("0_3");
+                break;
+            case TIADS1X15_DIFF_MUX_1_3:
+                sensorLocation += F("1_3");
+                break;
+            case TIADS1X15_DIFF_MUX_2_3:
+                sensorLocation += F("2_3");
+                break;
+        }
+    } else {
+        sensorLocation += F("_Channel");
+        sensorLocation += String(_adsChannel);
+    }
     return sensorLocation;
 }
 
@@ -56,7 +92,14 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
     float resultValue = -9999;
-    bool  success     = readVoltageSingleEnded(resultValue);
+    bool  success     = false;
+
+    // Use differential or single-ended reading based on configuration
+    if (_isDifferential) {
+        success = readVoltageDifferential(resultValue);
+    } else {
+        success = readVoltageSingleEnded(resultValue);
+    }
 
     if (success) {
         verifyAndAddMeasurementResult(TIADS1X15_VAR_NUM, resultValue);
@@ -129,6 +172,71 @@ bool TIADS1x15::readVoltageSingleEnded(float& resultValue) {
         success     = true;
     } else {
         MS_DBG(F("  ADC voltage "), adcVoltage, F("V out of valid range"));
+        resultValue = -9999;
+    }
+
+    return success;
+}
+
+bool TIADS1x15::readVoltageDifferential(float& resultValue) {
+    bool    success      = false;
+    int16_t adcCounts    = -9999;
+    float   adcVoltage   = -9999;
+    float   scaledResult = -9999;
+
+// Create an auxiliary ADC object
+#ifndef MS_USE_ADS1015
+    Adafruit_ADS1115 ads;
+#else
+    Adafruit_ADS1015 ads;
+#endif
+
+    // Set the internal gain according to user configuration
+    ads.setGain(_adsGain);
+    
+    if (!ads.begin(_i2cAddress)) {
+        MS_DBG(F("  ADC initialization failed at 0x"),
+               String(_i2cAddress, HEX));
+        return false;
+    }
+
+    // Read differential voltage based on mux configuration
+    switch (_adsDiffMux) {
+        case TIADS1X15_DIFF_MUX_0_1:
+            adcCounts = ads.readADC_Differential_0_1();
+            break;
+        case TIADS1X15_DIFF_MUX_0_3:
+            adcCounts = ads.readADC_Differential_0_3();
+            break;
+        case TIADS1X15_DIFF_MUX_1_3:
+            adcCounts = ads.readADC_Differential_1_3();
+            break;
+        case TIADS1X15_DIFF_MUX_2_3:
+            adcCounts = ads.readADC_Differential_2_3();
+            break;
+        default:
+            MS_DBG(F("  Invalid differential mux configuration"));
+            return false;
+    }
+    
+    // Convert counts to voltage
+    adcVoltage = ads.computeVolts(adcCounts);
+    MS_DBG(F("  Differential ADC counts:"), adcCounts, F(" voltage:"), adcVoltage);
+
+    // Validate range
+    float minValidVoltage = -0.3;
+    float maxValidVoltage = _adsSupplyVoltage + 0.3;
+    if (maxValidVoltage > 5.5) {
+        maxValidVoltage = 5.5;
+    }
+
+    if (adcVoltage < maxValidVoltage && adcVoltage > minValidVoltage) {
+        scaledResult = adcVoltage * _voltageMultiplier;
+        MS_DBG(F("  scaledResult:"), scaledResult);
+        resultValue = scaledResult;
+        success = true;
+    } else {
+        MS_DBG(F("  ADC voltage out of valid range"));
         resultValue = -9999;
     }
 

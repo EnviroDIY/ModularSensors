@@ -190,6 +190,16 @@
 /**@}*/
 
 /**
+ * @brief Enum for the pins used for differential voltages.
+ */
+typedef enum : uint16_t {
+    TIADS1X15_DIFF_MUX_0_1,  ///< differential across pins 0 and 1
+    TIADS1X15_DIFF_MUX_0_3,  ///< differential across pins 0 and 3
+    TIADS1X15_DIFF_MUX_1_3,  ///< differential across pins 1 and 3
+    TIADS1X15_DIFF_MUX_2_3   ///< differential across pins 2 and 3
+} tiads1x15_adsDiffMux_t;
+
+/**
  * @anchor sensor_ads1x15_timing
  * @name Sensor Timing
  * The sensor timing for a TI ADS1x15 analog-to-digital converter (ADC)
@@ -299,6 +309,30 @@ class TIADS1x15 : public Sensor {
               uint8_t   measurementsToAverage = 1,
               float     adsSupplyVoltage      = OPERATING_VOLTAGE);
     /**
+     * @brief Construct a new TIADS1x15 object for differential measurements
+     *
+     * @param powerPin The pin on the mcu controlling power to the sensor
+     * Use -1 if it is continuously powered.
+     * @param adsDiffMux The differential pin configuration for voltage
+     * measurement
+     * @param voltageMultiplier The voltage multiplier, if a voltage divider is
+     * used.
+     * @param adsGain The internal gain setting of the ADS1x15; defaults to
+     * GAIN_ONE for +/- 4.096V range
+     * @param i2cAddress The I2C address of the ADS 1x15, default is 0x48 (ADDR
+     * = GND)
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
+     * @param adsSupplyVoltage The power supply voltage for the ADS1x15 in
+     * volts; defaults to the processor operating voltage from KnownProcessors.h
+     */
+    TIADS1x15(int8_t powerPin, tiads1x15_adsDiffMux_t adsDiffMux,
+              float voltageMultiplier = 1, adsGain_t adsGain = GAIN_ONE,
+              uint8_t i2cAddress            = ADS1115_ADDRESS,
+              uint8_t measurementsToAverage = 1,
+              float   adsSupplyVoltage      = OPERATING_VOLTAGE);
+    /**
      * @brief Destroy the External Voltage object
      */
     ~TIADS1x15();
@@ -346,12 +380,28 @@ class TIADS1x15 : public Sensor {
      */
     virtual bool readVoltageSingleEnded(float& resultValue);
 
+    /**
+     * @brief Read a differential voltage measurement from the ADS1x15
+     *
+     * @param resultValue Reference to store the resulting voltage measurement
+     * @return True if the voltage reading was successful and within valid range
+     */
+    virtual bool readVoltageDifferential(float& resultValue);
+
  private:
     /**
      * @brief Internal reference to the ADS channel number of the device
-     * attached to the TI-ADS1x15
+     * attached to the TI-ADS1x15 (used for single-ended measurements)
      */
     uint8_t _adsChannel;
+    /**
+     * @brief Internal reference to whether we are using differential mode
+     */
+    bool _isDifferential;
+    /**
+     * @brief Internal reference to the differential mux configuration
+     */
+    tiads1x15_adsDiffMux_t _adsDiffMux;
     /**
      * @brief Internal reference to the voltage multiplier for the TI-ADS1x15
      */
