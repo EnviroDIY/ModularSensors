@@ -102,17 +102,24 @@ bool PaleoTerraRedox::addSingleMeasurementResult(void) {
         return bumpMeasurementAttemptCount(false);
     }
 
-    bool success = false;
-
-    byte config = 0;  // Data transfer values
-
-    float res = 0;  // Calculated voltage in uV
+    bool    success  = false;
+    byte    config   = 0;        // Returned config
+    int32_t adcValue = 0;        // Raw ADC value from the sensor
+    float   res      = -9999.0;  // Calculated voltage in uV
 
     byte i2c_status;
 
     _i2c->beginTransmission(_i2cAddressHex);
-    _i2c->write(0b10001100);  // initiate conversion, One-Shot mode, 18
-                              // bits, PGA x1
+    // When writing config:
+    // - Bit 7: RDY (**1** = initiate conversion, 0 = no effect)
+    // - Bit 6-5: No effect on the MCP3421 (set both to 0)
+    // - Bit 4: O/C (1 = Continuous mode, **0** = One-Shot mode)
+    // - Bits 3-2: S1, S0 (00 = 12-bit/240 SPS, 01 = 14-bit/60 SPS, 10 =
+    //   16-bit/15 SPS, **11** = 18-bit/3.75 SPS)
+    // - Bits 1-0: G1, G0 (**00** = PGA x1, 01 = PGA x2, 10 = PGA x4, 11 = PGA
+    //   x8)
+    _i2c->write(
+        0b10001100);  // initiate conversion, One-Shot mode, 18 bits, PGA x1
     i2c_status = _i2c->endTransmission();
     // fail if transmission error
     if (i2c_status != 0) { return bumpMeasurementAttemptCount(false); }
@@ -124,34 +131,39 @@ bool PaleoTerraRedox::addSingleMeasurementResult(void) {
     if (_i2c->requestFrom(int(_i2cAddressHex), 4) != 4) {
         return bumpMeasurementAttemptCount(false);
     }
-    byte res1 = _i2c->read();
-    byte res2 = _i2c->read();
-    byte res3 = _i2c->read();
-    config    = _i2c->read();
+    // per the datasheet, in 18 bit mode:
+    // byte 1: [MMMMMM D17 D16 (1st data byte]
+    // byte 2: [ D15 ~ D8 (2nd data byte)]
+    // byte 3: [ D7 ~ D0 (3rd data byte)]
+    // byte 4: [config byte: RDY, C1, C0, O/C, S1, S0, G1, G0]
+    // NOTE: D17 is MSB (= sign bit), M is repeated MSB of the data byte.
+    byte res1 = _i2c->read();  // byte 1: [MMMMMM D17 D16]
+    byte res2 = _i2c->read();  // byte 2: [ D15 ~ D8 ]
+    byte res3 = _i2c->read();  // byte 3: [ D7 ~ D0 ]
+    config    = _i2c->read();  // byte 4: [config byte]
 
-    res      = 0;
+    res = 0;
     // Assemble the 18-bit raw sample from the three bytes
-    uint32_t rawSample = (static_cast<uint32_t>(bitRead(res1, 0)) << 16) | 
-                         (static_cast<uint32_t>(res2) << 8) | 
-                         static_cast<uint32_t>(res3);
-    
-    // Check if this is a negative value (sign bit D17 is set)
-    if (bitRead(res1, 1)) {
-        // Sign-extend the 18-bit value to get correct negative magnitude  
-        int32_t signedSample = rawSample | 0xFFFC0000; // Sign extend from bit 17
-        res = signedSample * 0.015625; // 15.625 uV per LSB
-    } else {
-        // Positive value
-        res = rawSample * 0.015625; // 15.625 uV per LSB
+    // Only use the lower 2 bits of res1 (D17 D16), ignore sign-extension bits
+    adcValue = ((res1 & 0x03) << 16)  // extract D17 D16 and shift to position
+        | (res2 << 8)                 // shift res2 up to middle byte
+        | res3;  // res3 is already in the right place as the LSB
+
+    // Check if this is a negative value (sign bit 17 is set)
+    if (res1 & 0x02) {  // Test bit 17
+        // Sign-extend the 18-bit value to get correct negative magnitude
+        adcValue |= 0xFF000000;  // Sign extend from bit 17
     }
 
-    /// @todo ADD FAILURE CONDITIONS for PaleoTerraRedox!!
-    if (isnan(res))
-        res = -9999;  // list a failure if the sensor returns nan (not sure
-                      // how this would happen, keep to be safe)
-    else if (res == 0 && i2c_status == 0 && config == 0)
-        res = -9999;  // List a failure when the sensor is not connected
-    success = res != -9999;
+    // convert the raw ADC value to voltage in microvolts (uV)
+    res = adcValue * 0.015625;  // 15.625 uV per LSB
+
+    MS_DBG(F("Raw ADC reading in bits:"), adcValue);
+    MS_DBG(F("Config byte:"), config);
+    MS_DBG(F("Calculated voltage in uV:"), res);
+
+    success = (!isnan(res)) &&
+        !(adcValue == 0 && i2c_status == 0 && config == 0);
     if (success) {
         // Store the results in the sensorValues array
         verifyAndAddMeasurementResult(PTR_VOLTAGE_VAR_NUM, res);

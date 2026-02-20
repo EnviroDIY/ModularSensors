@@ -15,6 +15,9 @@
  * This depends on Testato's
  * [SoftwareWire](https://github.com/Testato/SoftwareWire) library if software
  * I2C is needed.
+ *
+ * @note These sensors are no longer being produced, but this code is being
+ * maintained for users who have them in their monitoring kits.
  */
 /* clang-format off */
 /**
