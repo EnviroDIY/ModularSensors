@@ -63,7 +63,7 @@
 
 // Include other in-library and external dependencies
 #include "VariableBase.h"
-#include "SensorBase.h"
+#include "TIADS1x15.h"
 #include <Adafruit_ADS1X15.h>
 
 /** @ingroup sensor_turbidity_plus */
@@ -82,25 +82,6 @@
 /// @brief Sensor::_incCalcValues; turbidity is calculated from raw voltage
 /// using the input calibration equation.
 #define TURBIDITY_PLUS_INC_CALC_VARIABLES 1
-/**@}*/
-
-/**
- * @anchor sensor__turbidity_plus_config
- * @name Configuration Defines
- * Defines to set the address of the ADD.
- */
-/**@{*/
-/**
- * @brief Enum for the pins used for differential voltages.
- */
-typedef enum : uint16_t {
-    DIFF_MUX_0_1,  ///< differential across pins 0 and 1
-    DIFF_MUX_0_3,  ///< differential across pins 0 and 3
-    DIFF_MUX_1_3,  ///< differential across pins 1 and 3
-    DIFF_MUX_2_3   ///< differential across pins 2 and 3
-} ttp_adsDiffMux_t;
-/// @brief The assumed address of the ADS1115, 1001 000 (ADDR = GND)
-#define ADS1115_ADDRESS 0x48
 /**@}*/
 
 /**
@@ -195,7 +176,7 @@ typedef enum : uint16_t {
  *
  * @ingroup sensor_turbidity_plus
  */
-class TurnerTurbidityPlus : public Sensor {
+class TurnerTurbidityPlus : public TIADS1x15 {
  public:
     // The constructor - need the power pin, the ADS1X15 data channel, and the
     // calibration info
@@ -215,7 +196,7 @@ class TurnerTurbidityPlus : public Sensor {
      * @param wiperTriggerPin The pin on the mcu that triggers the sensor's
      * wiper.
      * @param adsDiffMux Which two pins _on the TI ADS1115_ that will measure
-     * differential voltage. See #ttp_adsDiffMux_t
+     * differential voltage. See #tiads1x15_adsDiffMux_t
      * @param conc_std The concentration of the standard used for a 1-point
      * sensor calibration. The concentration units should be the same as the
      * final measuring units.
@@ -240,7 +221,7 @@ class TurnerTurbidityPlus : public Sensor {
      * requires a voltageDividerFactor of 2. The default value is 1.
      */
     TurnerTurbidityPlus(int8_t powerPin, int8_t wiperTriggerPin,
-                        ttp_adsDiffMux_t adsDiffMux, float conc_std,
+                        tiads1x15_adsDiffMux_t adsDiffMux, float conc_std,
                         float volt_std, float volt_blank,
                         uint8_t   i2cAddress            = ADS1115_ADDRESS,
                         adsGain_t PGA_gain              = GAIN_ONE,
@@ -283,11 +264,6 @@ class TurnerTurbidityPlus : public Sensor {
      */
     int8_t _wiperTriggerPin;
     /**
-     * @brief Which two pins _on the TI ADS1115_ that will measure differential
-     * voltage from the Turbidity Plus. See #ttp_adsDiffMux_t
-     */
-    ttp_adsDiffMux_t _adsDiffMux;
-    /**
      * @brief The concentration of the standard used for a 1-point sensor
      * calibration. The concentration units should be the same as the final
      * measuring units.
@@ -305,25 +281,6 @@ class TurnerTurbidityPlus : public Sensor {
      */
     float _volt_blank;
     /**
-     * @brief Internal reference to the I2C address of the TI-ADS1x15
-     */
-    uint8_t _i2cAddress;
-    /**
-     * @brief The programmable gain amplification to set on the ADS 1x15,
-     * default is GAIN_ONE (+/-4.096V range = Gain 1).
-     *
-     * Other gain options are:
-     *   GAIN_TWOTHIRDS = +/-6.144V range = Gain 2/3,
-     *   GAIN_ONE = +/-4.096V range = Gain 1,
-     *   GAIN_TWO = +/-2.048V range = Gain 2,
-     *   GAIN_FOUR = +/-1.024V range = Gain 4,
-     *   GAIN_EIGHT = +/-0.512V range = Gain 8,
-     *   GAIN_SIXTEEN = +/-0.256V range = Gain 16
-     *
-     * @todo Determine gain automatically based on the board voltage?
-     */
-    adsGain_t _PGA_gain;
-    /**
      * @brief For 3.3V processors like the Mayfly, The Turner's 0-5V output
      * signal must be shifted down to a maximum of 3.3V. This can be done either
      * either with a level-shifting chip (e.g. Adafruit BSS38), OR by connecting
@@ -331,8 +288,8 @@ class TurnerTurbidityPlus : public Sensor {
      * voltageDividerFactor is used for the latter case: e.g., a divider that
      * uses 2 matched resistors will halve the voltage reading and requires a
      * voltageDividerFactor of 2. The default value is 1.
+     * Note: This functionality is now handled by the parent class's _voltageMultiplier.
      */
-    float _voltageDividerFactor;
 };
 
 

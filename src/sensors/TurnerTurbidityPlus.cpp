@@ -9,40 +9,36 @@
 
 
 #include "TurnerTurbidityPlus.h"
+#include "TIADS1x15.h"
 
 
 // The constructor - need the power pin, the data pin, and the calibration info
 TurnerTurbidityPlus::TurnerTurbidityPlus(
-    int8_t powerPin, int8_t wiperTriggerPin, ttp_adsDiffMux_t adsDiffMux,
+    int8_t powerPin, int8_t wiperTriggerPin, tiads1x15_adsDiffMux_t adsDiffMux,
     float conc_std, float volt_std, float volt_blank, uint8_t i2cAddress,
     adsGain_t PGA_gain, uint8_t measurementsToAverage,
     float voltageDividerFactor)
-    : Sensor("TurnerTurbidityPlus", TURBIDITY_PLUS_NUM_VARIABLES,
-             TURBIDITY_PLUS_WARM_UP_TIME_MS,
-             TURBIDITY_PLUS_STABILIZATION_TIME_MS,
-             TURBIDITY_PLUS_MEASUREMENT_TIME_MS, powerPin, -1,
-             measurementsToAverage),
+    : TIADS1x15(powerPin, adsDiffMux, voltageDividerFactor, PGA_gain,
+                i2cAddress, measurementsToAverage),
       _wiperTriggerPin(wiperTriggerPin),
-      _adsDiffMux(adsDiffMux),
       _conc_std(conc_std),
       _volt_std(volt_std),
-      _volt_blank(volt_blank),
-      _i2cAddress(i2cAddress),
-      _PGA_gain(PGA_gain),
-      _voltageDividerFactor(voltageDividerFactor) {}
+      _volt_blank(volt_blank) {
+    // Override timing settings for Turner-specific requirements
+    // These are protected members from the Sensor base class
+    _warmUpTime_ms        = TURBIDITY_PLUS_WARM_UP_TIME_MS;
+    _stabilizationTime_ms = TURBIDITY_PLUS_STABILIZATION_TIME_MS;
+    _measurementTime_ms   = TURBIDITY_PLUS_MEASUREMENT_TIME_MS;
+    // Note: _numReturnedValues and _sensorName are set in the parent class
+}
 // Destructor
 TurnerTurbidityPlus::~TurnerTurbidityPlus() {}
 
 
 String TurnerTurbidityPlus::getSensorLocation(void) {
-#ifndef MS_USE_ADS1015
-    String sensorLocation = F("ADS1115_0x");
-#else
-    String sensorLocation = F("ADS1015_0x");
-#endif
-    sensorLocation += String(_i2cAddress, HEX);
-    sensorLocation += F("_adsDiffMux");
-    sensorLocation += String(_adsDiffMux);
+    // Use TIADS1x15's location with Turner-specific identifier
+    String sensorLocation = TIADS1x15::getSensorLocation();
+    sensorLocation += F("_TurnerTurb");
     return sensorLocation;
 }
 
@@ -64,7 +60,7 @@ void TurnerTurbidityPlus::runWiper() {
 bool TurnerTurbidityPlus::setup(void) {
     // Set up the wiper trigger pin, which is active-LOW.
     pinMode(_wiperTriggerPin, OUTPUT);
-    return Sensor::setup();
+    return TIADS1x15::setup();
 }
 
 bool TurnerTurbidityPlus::wake(void) {
@@ -74,19 +70,19 @@ bool TurnerTurbidityPlus::wake(void) {
     // Run the wiper before taking a reading
     runWiper();
 
-    return Sensor::wake();
+    return TIADS1x15::wake();
 }
 
 void TurnerTurbidityPlus::powerDown(void) {
     // Set the wiper trigger pin LOW to avoid power drain.
     digitalWrite(_wiperTriggerPin, LOW);
-    return Sensor::powerDown();
+    return TIADS1x15::powerDown();
 }
 
 void TurnerTurbidityPlus::powerUp(void) {
     // Set the wiper trigger pin HIGH to prepare for wiping.
     digitalWrite(_wiperTriggerPin, HIGH);
-    return Sensor::powerUp();
+    return TIADS1x15::powerUp();
 }
 
 bool TurnerTurbidityPlus::addSingleMeasurementResult(void) {
@@ -95,38 +91,11 @@ bool TurnerTurbidityPlus::addSingleMeasurementResult(void) {
         return bumpMeasurementAttemptCount(false);
     }
 
-    bool    success     = false;
-    int16_t adcCounts   = -9999;
-    float   adcVoltage  = -9999;
-    float   calibResult = -9999;
+    bool  success     = false;
+    float adcVoltage  = -9999;
+    float calibResult = -9999;
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
-
-// Create an auxiliary ADC object
-// We create and set up the ADC object here so that each sensor using the ADC
-// may set the gain appropriately without affecting others.
-#ifndef MS_USE_ADS1015
-    Adafruit_ADS1115 ads;  // Use this for the 16-bit version
-#else
-    Adafruit_ADS1015 ads;  // Use this for the 12-bit version
-#endif
-    // ADS Library default settings:
-    //  - TI ADS1115 (16 bit)
-    //    - single-shot mode (powers down between conversions)
-    //    - 128 samples per second (8ms conversion time)
-    //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
-    //  - TI ADS1015 (12 bit)
-    //    - single-shot mode (powers down between conversions)
-    //    - 1600 samples per second (625µs conversion time)
-    //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
-
-    ads.setGain(_PGA_gain);
-    // Begin ADC, returns true if anything was detected at the address
-    if (!ads.begin(_i2cAddress)) {
-        MS_DBG(F("  ADC initialization failed at 0x"),
-               String(_i2cAddress, HEX));
-        return bumpMeasurementAttemptCount(false);
-    }
 
     // Print out the calibration curve
     MS_DBG(F("  Input calibration Curve:"), _volt_std, F("V at"), _conc_std,
@@ -137,53 +106,12 @@ bool TurnerTurbidityPlus::addSingleMeasurementResult(void) {
         return bumpMeasurementAttemptCount(false);
     }
 
-    // Read Analog to Digital Converter (ADC)
-    // Taking this reading includes the 8ms conversion delay.
-    // Measure the voltage differential across the two voltage pins
-    switch (_adsDiffMux) {
-        case DIFF_MUX_0_1: {
-            adcCounts = ads.readADC_Differential_0_1();
-            break;
-        }
-        case DIFF_MUX_0_3: {
-            adcCounts = ads.readADC_Differential_0_3();
-            break;
-        }
-        case DIFF_MUX_1_3: {
-            adcCounts = ads.readADC_Differential_1_3();
-            break;
-        }
-        case DIFF_MUX_2_3: {
-            adcCounts = ads.readADC_Differential_2_3();
-            break;
-        }
-        default: {
-            MS_DBG(F("  Invalid differential mux configuration"));
-            return bumpMeasurementAttemptCount(false);
-        }
-    }
-    // Convert ADC counts value to voltage (V)
-    adcVoltage = ads.computeVolts(adcCounts);
-    MS_DBG(F("  ads.readADC_Differential("), _adsDiffMux, F("):"), adcCounts,
-           '=', String(adcVoltage, 3));
-
-    // The ADS1X15 outputs a max value corresponding to Vcc + 0.3V
-    if (adcVoltage < 5.3 && adcVoltage > -0.3) {
-        if (_voltageDividerFactor > 0) {
-            // Apply voltage divider factor if using a voltage divider to step
-            // down the voltage
-            adcVoltage *= _voltageDividerFactor;
-        } else {
-            // If the voltage divider factor is not set to a positive value,
-            // print a debugging message and continue without applying a voltage
-            // divider factor.  We continue because the voltage divider factor
-            // can be easily fixed in post-processing if the raw voltage value
-            // is available, and we don't want to lose the voltage reading if
-            // the voltage divider factor is just set incorrectly.
-            MS_DBG(F("  Invalid voltage divider factor:"),
-                   _voltageDividerFactor,
-                   F("Voltage divider will be ignored."));
-        }
+    // Use the TIADS1x15 differential voltage reading function
+    // Note: Voltage multiplier/divider is automatically applied by the parent
+    // class
+    if (readVoltageDifferential(adcVoltage)) {
+        MS_DBG(F("  Differential voltage (after voltage multiplier):"),
+               String(adcVoltage, 3), F("V"));
         // Apply the unique calibration curve for the given sensor
         calibResult = (_conc_std / (_volt_std - _volt_blank)) *
             (adcVoltage - _volt_blank);
@@ -192,6 +120,8 @@ bool TurnerTurbidityPlus::addSingleMeasurementResult(void) {
         verifyAndAddMeasurementResult(TURBIDITY_PLUS_VOLTAGE_VAR_NUM,
                                       adcVoltage);
         success = true;
+    } else {
+        MS_DBG(F("  Failed to read differential voltage"));
     }
 
     // Return success value when finished
