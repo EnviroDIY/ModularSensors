@@ -234,10 +234,15 @@ bool TIADS1x15::readVoltageDifferential(float& resultValue) {
         case GAIN_FOUR:      fullScaleVoltage = 1.024; break;
         case GAIN_EIGHT:     fullScaleVoltage = 0.512; break;
         case GAIN_SIXTEEN:   fullScaleVoltage = 0.256; break;
+        default:
+            MS_DBG(F("  Unknown ADS gain value:"), _adsGain,
+                   F(" using conservative 4.096V range"));
+            fullScaleVoltage = 4.096;  // Conservative fallback
+            break;
     }
     float minValidVoltage = -fullScaleVoltage;
     float maxValidVoltage = fullScaleVoltage;
-    
+
     MS_DBG(F("  ADS gain setting determines full-scale range"));
     MS_DBG(F("  Valid differential voltage range:"), minValidVoltage, F("V to"),
            maxValidVoltage, F("V"));
@@ -257,7 +262,18 @@ bool TIADS1x15::readVoltageDifferential(float& resultValue) {
 
 // Setter and getter methods for ADS supply voltage
 void TIADS1x15::setADSSupplyVoltage(float adsSupplyVoltage) {
-    _adsSupplyVoltage = adsSupplyVoltage;
+    // Validate supply voltage range: 0.0V to 5.5V per datasheet
+    if (adsSupplyVoltage < 0.0) {
+        MS_DBG(F("ADS supply voltage "), adsSupplyVoltage,
+               F("V is below minimum, clamping to 0.0V"));
+        _adsSupplyVoltage = 0.0;
+    } else if (adsSupplyVoltage > 5.5) {
+        MS_DBG(F("ADS supply voltage "), adsSupplyVoltage,
+               F("V exceeds maximum, clamping to 5.5V"));
+        _adsSupplyVoltage = 5.5;
+    } else {
+        _adsSupplyVoltage = adsSupplyVoltage;
+    }
 }
 
 float TIADS1x15::getADSSupplyVoltage(void) {
