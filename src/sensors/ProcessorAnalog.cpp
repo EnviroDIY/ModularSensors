@@ -34,19 +34,32 @@ bool ProcessorAnalog::addSingleMeasurementResult(void) {
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);
     }
+
+    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+
+    float resultValue = -9999;
+    bool  success     = readVoltageSingleEnded(resultValue);
+
+    if (success) {
+        verifyAndAddMeasurementResult(PROCESSOR_ANALOG_VAR_NUM, resultValue);
+    }
+
+    // Return success value when finished
+    return bumpMeasurementAttemptCount(success);
+}
+
+bool ProcessorAnalog::readVoltageSingleEnded(float& resultValue) {
+    // Validate parameters
     if (PROCESSOR_ADC_MAX <= 0) {
         MS_DBG(F("Processor ADC max value is not set or invalid!"));
-        return bumpMeasurementAttemptCount(false);
+        return false;
     }
     if (_dataPin < 0 || _operatingVoltage <= 0 || _voltageMultiplier <= 0) {
         MS_DBG(F("Missing one or more required parameters: analog pin, "
                  "operating voltage, or voltage divider!"));
-        return bumpMeasurementAttemptCount(false);
+        return false;
     }
 
-    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
-
-    float sensorValue_analog = -9999;
     // Get the analog voltage
     MS_DBG(F("Getting analog voltage from pin"), _dataPin);
     pinMode(_dataPin, INPUT);
@@ -55,15 +68,18 @@ bool ProcessorAnalog::addSingleMeasurementResult(void) {
     analogRead(_dataPin);  // another priming reading
     float rawAnalog = analogRead(_dataPin);
     MS_DBG(F("Raw analog pin reading in bits:"), rawAnalog);
+
     // convert bits to volts
-    sensorValue_analog =
+    float sensorValue_analog =
         (_operatingVoltage / static_cast<float>(PROCESSOR_ADC_MAX)) *
         _voltageMultiplier * rawAnalog;
     MS_DBG(F("Voltage:"), sensorValue_analog);
+
+    resultValue = sensorValue_analog;
+
     // NOTE: We don't actually have any criteria for if the reading was any
     // good or not, so we mark it as successful no matter what.
-    verifyAndAddMeasurementResult(PROCESSOR_ANALOG_VAR_NUM, sensorValue_analog);
-    return bumpMeasurementAttemptCount(true);
+    return true;
 }
 
 void ProcessorAnalog::setVoltageMultiplier(float voltageMultiplier) {

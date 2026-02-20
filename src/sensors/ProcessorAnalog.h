@@ -210,6 +210,15 @@ class ProcessorAnalog : public Sensor {
      */
     float getVoltageMultiplier(void);
 
+ protected:
+    /**
+     * @brief Read a single-ended voltage measurement from the processor ADC
+     *
+     * @param resultValue Reference to store the resulting voltage measurement
+     * @return True if the voltage reading was successful
+     */
+    virtual bool readVoltageSingleEnded(float& resultValue);
+
  private:
     float _voltageMultiplier;  ///< Internal reference to any multiplier needed
                                ///< to convert raw battery readings into true
