@@ -10,34 +10,40 @@
 
 #include "ANBpH.h"
 
-// The constructor - need the sensor type, modbus address, power pin, stream for
-// data, and number of readings to average
+// The constructor
 ANBpH::ANBpH(byte modbusAddress, Stream* stream, int8_t powerPin,
-             int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage)
+             int16_t loggingIntervalMinutes, int8_t powerPin2, int8_t enablePin,
+             uint8_t measurementsToAverage)
     : Sensor("ANBpHSensor", ANB_PH_NUM_VARIABLES, ANB_PH_WARM_UP_TIME_MS,
-             ANB_PH_STABILIZATION_TIME_MS, ANB_PH_1ST_VALUE_HIGH_SALT, powerPin,
+             ANB_PH_STABILIZATION_TIME_MS, ANB_PH_2ND_VALUE_LOW_SALT, powerPin,
              -1, measurementsToAverage, ANB_PH_INC_CALC_VARIABLES),
       _anb_sensor(modbusAddress, stream, enablePin),
+      _modbusAddress(modbusAddress),
       _stream(stream),
-      _RS485EnablePin(enablePin),
-      _powerPin2(powerPin2) {
+      _loggingIntervalMinutes(loggingIntervalMinutes),
+      _RS485EnablePin(enablePin) {
 #ifdef MS_ANB_SENSORS_PH_DEBUG_DEEP
     _anb_sensor.setDebugStream(&MS_SERIAL_OUTPUT);
 #endif
+    setSecondaryPowerPin(powerPin2);
+    setAllowedMeasurementRetries(5);
 }
 ANBpH::ANBpH(byte modbusAddress, Stream& stream, int8_t powerPin,
-             int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage)
+             int16_t loggingIntervalMinutes, int8_t powerPin2, int8_t enablePin,
+             uint8_t measurementsToAverage)
     : Sensor("ANBpHSensor", ANB_PH_NUM_VARIABLES, ANB_PH_WARM_UP_TIME_MS,
-             ANB_PH_STABILIZATION_TIME_MS, ANB_PH_1ST_VALUE_HIGH_SALT, powerPin,
+             ANB_PH_STABILIZATION_TIME_MS, ANB_PH_2ND_VALUE_LOW_SALT, powerPin,
              -1, measurementsToAverage, ANB_PH_INC_CALC_VARIABLES),
       _anb_sensor(modbusAddress, stream, enablePin),
       _modbusAddress(modbusAddress),
       _stream(&stream),
-      _RS485EnablePin(enablePin),
-      _powerPin2(powerPin2) {
+      _loggingIntervalMinutes(loggingIntervalMinutes),
+      _RS485EnablePin(enablePin) {
 #ifdef MS_ANB_SENSORS_PH_DEBUG_DEEP
     _anb_sensor.setDebugStream(&MS_SERIAL_OUTPUT);
 #endif
+    setSecondaryPowerPin(powerPin2);
+    setAllowedMeasurementRetries(5);
 }
 // Destructor
 ANBpH::~ANBpH() {}
@@ -56,7 +62,6 @@ bool ANBpH::setup(void) {
     bool retVal = Sensor::setup();  // this will set pin modes and the setup
                                     // status bit
     if (_RS485EnablePin >= 0) { pinMode(_RS485EnablePin, OUTPUT); }
-    if (_powerPin2 >= 0) { pinMode(_powerPin2, OUTPUT); }
 
     // This sensor needs power for setup!
     delay(10);
@@ -144,26 +149,48 @@ bool ANBpH::setup(void) {
     MS_DBG(F("..."), powerStyleSet ? F("success") : F("failed"));
     retVal &= powerStyleSet;
 
-    // Set sampling mode to continuous
-    // Since we are using controlled mode, continuous sampling means taking a
-    // measurement when asked, rather than at a set interval.
-    // The first pH measurement is returned significantly faster in continuous
-    // mode.
-    MS_DBG(F("Set sensor sampling mode to continuous..."));
-    bool intervalSet = _anb_sensor.setIntervalTime(0);
+    bool     intervalSet        = false;
+    uint16_t programmedInterval = _loggingIntervalMinutes;
+    if (_loggingIntervalMinutes == 0 && _powerPin >= 0) {
+        programmedInterval = 10;
+        MS_DBG(F("Requested interval of 0 minutes is invalid when power is "
+                 "cycled; using"),
+               programmedInterval, F("minutes."));
+    }
+    if (_loggingIntervalMinutes < 10 && _loggingIntervalMinutes != 0) {
+        programmedInterval = 10;
+        MS_DBG(F("Requested interval of"), _loggingIntervalMinutes,
+               F("minutes is too short; using"), programmedInterval,
+               F("minutes."));
+    }
+    if (_loggingIntervalMinutes > 240 && _loggingIntervalMinutes != 0) {
+        programmedInterval = 240;
+        MS_DBG(F("Requested interval of"), _loggingIntervalMinutes,
+               F("minutes is too long; using"), programmedInterval,
+               F("minutes."));
+    }
+    if (_powerPin >= 0) {
+        // Set sampling interval to the expected sampling interval if the sensor
+        MS_DBG(F("Set sensor sampling interval to"), programmedInterval,
+               F("minutes..."));
+        intervalSet = _anb_sensor.setIntervalTime(programmedInterval);
+    } else {
+        // Set sampling interval to continuous if the sensor will be
+        // continuously powered (ie, a power style of ALWAYS_POWERED).
+        MS_DBG(F("Set sensor sampling interval to 0 (continuous)..."));
+        intervalSet = _anb_sensor.setIntervalTime(0);
+    }
     MS_DBG(F("..."), intervalSet ? F("success") : F("failed"));
     retVal &= intervalSet;
 
     // Set Sensor Salinity Mode
-    MS_DBG(F("Set sensor salinity mode..."));
-    bool salinitySet = _anb_sensor.setSalinityMode(_salinityMode);
-    MS_DBG(F("..."), salinitySet ? F("success") : F("failed"));
-    retVal &= salinitySet;
+    retVal &= setSalinityMode(_salinityMode);
 
     // Set Immersion Rule
     MS_DBG(F("Set sensor immersion rule to"),
-           _immersionSensorEnabled ? "enabled" : "disabled", F("..."));
-    bool immersionSet = _anb_sensor.enableImmersionSensor();
+           _immersionSensorEnabled ? F("enabled") : F("disabled"), F("..."));
+    bool immersionSet =
+        _anb_sensor.enableImmersionSensor(_immersionSensorEnabled);
     MS_DBG(F("..."), immersionSet ? F("success") : F("failed"));
     retVal &= immersionSet;
 
@@ -187,50 +214,6 @@ bool ANBpH::setup(void) {
 }
 
 
-// Start measurements
-bool ANBpH::startSingleMeasurement(void) {
-    // Sensor::startSingleMeasurement() checks that if it's awake/active and
-    // sets the timestamp and status bits.  If it returns false, there's no
-    // reason to go on.
-    if (!Sensor::startSingleMeasurement()) return false;
-
-    // If the sensor is being power cycled, set the clock before each
-    // measurement. The sensor stores the measurements on its internal storage,
-    // so it's best to have the correct time.
-    if (_powerPin >= 0) { setSensorRTC(); }
-
-    // Send the command to begin taking readings, trying up to 5 times
-    bool    success = false;
-    uint8_t ntries  = 0;
-    MS_DBG(F("Start Measurement on"), getSensorNameAndLocation());
-    while (!success && ntries < 5) {
-        MS_DEEP_DBG('(', ntries + 1, F("):"));
-        success = _anb_sensor.start();
-        ntries++;
-    }
-
-    if (success) {
-        MS_DEEP_DBG(getSensorNameAndLocation(), F("started a scan."));
-        // Update the time that a measurement was requested
-        _millisMeasurementRequested = millis();
-    } else {
-        // Set the status error bit (bit 7)
-        setStatusBit(ERROR_OCCURRED);
-        // Otherwise, make sure that the measurement start time and success bit
-        // (bit 6) are unset
-        MS_DBG(getSensorNameAndLocation(),
-               F("did not successfully start a measurement."));
-        _millisMeasurementRequested = 0;
-        clearStatusBit(MEASUREMENT_SUCCESSFUL);
-    }
-
-    return success;
-}
-
-
-// This confirms that the sensor is really giving modbus responses so nothing
-// further happens if not. - It's a "check if it's awake" function rather than a
-// "wake it up" function.
 bool ANBpH::wake(void) {
     // Sensor::wake() checks if the power pin is on and sets the wake timestamp
     // and status bits.  If it returns false, there's no reason to go on.
@@ -238,7 +221,7 @@ bool ANBpH::wake(void) {
 
     MS_DEEP_DBG(F("Checking for modbus response confirming"),
                 getSensorNameAndLocation(), F("is awake"));
-    bool is_ready = isSensorReady(&anbSensor::gotModbusResponse,
+    bool is_ready = isSensorReady(&anbSensor::isSensorReady,
                                   ANB_PH_MINIMUM_REQUEST_SPACING,
                                   _millisPowerOn);
     if (!is_ready) {
@@ -254,6 +237,36 @@ bool ANBpH::wake(void) {
 
     MS_DEEP_DBG(getSensorNameAndLocation(),
                 F("responded properly to modbus commands; it must be awake."));
+
+    // If the sensor is being power cycled, set the clock before each
+    // measurement. The sensor stores the measurements on its internal storage,
+    // so it's best to have the correct time.
+    if (_powerPin >= 0) { setSensorRTC(); }
+
+    // Send the command to begin taking readings, trying up to 5 times
+    bool    success = false;
+    uint8_t ntries  = 0;
+    MS_DBG(F("Start scanning on"), getSensorNameAndLocation());
+    while (!success && ntries < 5) {
+        MS_DEEP_DBG('(', ntries + 1, F("):"));
+        success = _anb_sensor.start();
+        ntries++;
+    }
+
+    if (success) {
+        MS_DEEP_DBG(getSensorNameAndLocation(), F("started scanning."));
+        // Update the time that a measurement was requested
+        _millisSensorActivated = millis();
+        _lastModbusCommandTime = 0;
+    } else {
+        // Set the status error bit (bit 7)
+        setStatusBit(ERROR_OCCURRED);
+        // Make sure that the wake time and wake success bit (bit 4) are unset
+        _millisSensorActivated = 0;
+        clearStatusBit(WAKE_SUCCESSFUL);
+        return false;
+    }
+
     return true;
 }
 
@@ -274,7 +287,7 @@ bool ANBpH::sleep(void) {
         return true;
     }
 
-    // Send the command to begin taking readings, trying up to 5 times
+    // Send the command to stop taking readings, trying up to 5 times
     bool    success = false;
     uint8_t ntries  = 0;
     MS_DBG(F("Stop Measurement on"), getSensorNameAndLocation());
@@ -304,77 +317,18 @@ bool ANBpH::sleep(void) {
     return success;
 }
 
-
-// This turns on sensor power
-void ANBpH::powerUp(void) {
-    if (_powerPin >= 0) {
-        // Reset power pin mode every power up because pins are set to tri-state
-        // on sleep
-        pinMode(_powerPin, OUTPUT);
-        MS_DBG(F("Powering"), getSensorNameAndLocation(), F("with pin"),
-               _powerPin);
-        digitalWrite(_powerPin, HIGH);
-    }
-    if (_powerPin2 >= 0) {
-        // Reset power pin mode every power up because pins are set to tri-state
-        // on sleep
-        pinMode(_powerPin2, OUTPUT);
-        MS_DBG(F("Applying secondary power to"), getSensorNameAndLocation(),
-               F("with pin"), _powerPin2);
-        digitalWrite(_powerPin2, HIGH);
-    }
-    if (_powerPin < 0 && _powerPin2 < 0) {
-        MS_DBG(F("Power to"), getSensorNameAndLocation(),
-               F("is not controlled by this library."));
-        // Mark the power-on time, just in case it  had not been marked
-        if (_millisPowerOn == 0) _millisPowerOn = millis();
-    } else {
-        // Mark the time that the sensor was powered
-        _millisPowerOn = millis();
-    }
-    // Reset enable pin because pins are set to tri-state on sleep
-    if (_RS485EnablePin >= 0) { pinMode(_RS485EnablePin, OUTPUT); }
-    // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
-    setStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL);
-}
-
-
-// This turns off sensor power
-void ANBpH::powerDown(void) {
-    if (_powerPin >= 0) {
-        MS_DBG(F("Turning off power to"), getSensorNameAndLocation(),
-               F("with pin"), _powerPin);
-        digitalWrite(_powerPin, LOW);
-        // Unset the power-on time
-        _millisPowerOn = 0;
-        // Unset the activation time
-        _millisSensorActivated = 0;
-        // Unset the measurement request time
-        _millisMeasurementRequested = 0;
-        // Unset the status bits for sensor power (bits 1 & 2),
-        // activation (bits 3 & 4), and measurement request (bits 5 & 6)
-        clearStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL, WAKE_ATTEMPTED,
-                        WAKE_SUCCESSFUL, MEASUREMENT_ATTEMPTED,
-                        MEASUREMENT_SUCCESSFUL);
-    }
-    if (_powerPin2 >= 0) {
-        MS_DBG(F("Turning off secondary power to"), getSensorNameAndLocation(),
-               F("with pin"), _powerPin2);
-        digitalWrite(_powerPin2, LOW);
-    }
-    if (_powerPin < 0 && _powerPin2 < 0) {
-        MS_DBG(F("Power to"), getSensorNameAndLocation(),
-               F("is not controlled by this library."));
-        // Do NOT unset any status bits or timestamps if we didn't really power
-        // down!
-    }
-}
-
-
 bool ANBpH::addSingleMeasurementResult(void) {
-    bool success = false;
-    // Initialize variables for each value
-    float             pH, temp, sal, spcond, raw_cond = -9999;
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return bumpMeasurementAttemptCount(false);
+    }
+
+    bool              success    = false;
+    float             pH         = -9999;
+    float             temp       = -9999;
+    float             sal        = -9999;
+    float             spcond     = -9999;
+    float             raw_cond   = -9999;
     ANBHealthCode     health     = ANBHealthCode::UNKNOWN;
     ANBStatusCode     status     = ANBStatusCode::UNKNOWN;
     ANBDiagnosticCode diagnostic = ANBDiagnosticCode::UNKNOWN;
@@ -396,33 +350,38 @@ bool ANBpH::addSingleMeasurementResult(void) {
            ':', time_buff);
 #endif
 
-    // Check a measurement was *successfully* started (status bit 6 set)
-    // Only go on to get a result if it was
-    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        // Print Moisture Values
-        MS_DBG(F("Get Values from"), getSensorNameAndLocation());
-        success = _anb_sensor.getValues(pH, temp, sal, spcond, raw_cond, health,
-                                        diagnostic);
-        status  = _anb_sensor.getStatusCode();
+    MS_DBG(F("Get Values from"), getSensorNameAndLocation());
+    success = _anb_sensor.getValues(pH, temp, sal, spcond, raw_cond, health,
+                                    diagnostic);
+    status  = _anb_sensor.getStatusCode();
 
-        // Print the values for debugging
-        MS_DBG(F("  pH:"), pH);
-        MS_DBG(F("  Temperature (C):"), temp);
-        MS_DBG(F("  Salinity (ppt):"), sal);
-        MS_DBG(F("  Specific Conductance (µS/cm):"), spcond);
-        MS_DBG(F("  Raw Conductance (µS/cm):"), raw_cond);
-        MS_DBG(F("  Health Code:"), static_cast<int16_t>(health), '-',
-               _anb_sensor.getHealthString(health));
-        MS_DBG(F("  Diagnostic Code:"), static_cast<int16_t>(diagnostic), '-',
-               _anb_sensor.getDiagnosticString(diagnostic));
-        MS_DBG(F("  Status Code:"), static_cast<int16_t>(status), '-',
-               _anb_sensor.getStatusString(status));
+    // Print the values for debugging
+    MS_DBG(F("  pH:"), pH);
+    MS_DBG(F("  Temperature (C):"), temp);
+    MS_DBG(F("  Salinity (ppt):"), sal);
+    MS_DBG(F("  Specific Conductance (µS/cm):"), spcond);
+    MS_DBG(F("  Raw Conductance (µS/cm):"), raw_cond);
+    MS_DBG(F("  Health Code:"), static_cast<int16_t>(health), '-',
+           _anb_sensor.getHealthString(health));
+    MS_DBG(F("  Diagnostic Code:"), static_cast<int16_t>(diagnostic), '-',
+           _anb_sensor.getDiagnosticString(diagnostic));
+    MS_DBG(F("  Status Code:"), static_cast<int16_t>(status), '-',
+           _anb_sensor.getStatusString(status));
 
-        if (health == ANBHealthCode::NOT_IMMERSED) {
-            PRINTOUT(F("  WARNING: ANB pH sensor is not immersed!"));
-        }
+    if (health == ANBHealthCode::NOT_IMMERSED) {
+        PRINTOUT(F("  WARNING: ANB pH sensor is not immersed!"));
+    }
 
-        // Put values into the array
+    // We consider a measurement successful if we got a modbus response and
+    // the pH value is in range or the health code says the sensor is not
+    // immersed. We accept the not immersed condition as a successful
+    // measurement because the sensor will not retry for at least 5 minutes
+    // after an immersion error.
+    success &= ((0.0 < pH && pH < 14.00) ||
+                health == ANBHealthCode::NOT_IMMERSED);
+
+    // Put values into the array - if it's a success or our last try
+    if (success || _retryAttemptsMade >= _allowedMeasurementRetries) {
         verifyAndAddMeasurementResult(ANB_PH_PH_VAR_NUM, pH);
         verifyAndAddMeasurementResult(ANB_PH_TEMP_VAR_NUM, temp);
         verifyAndAddMeasurementResult(ANB_PH_SALINITY_VAR_NUM, sal);
@@ -434,17 +393,10 @@ bool ANBpH::addSingleMeasurementResult(void) {
                                       static_cast<int16_t>(diagnostic));
         verifyAndAddMeasurementResult(ANB_PH_STATUS_CODE_VAR_NUM,
                                       static_cast<int16_t>(status));
-    } else {
-        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
     }
 
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
-
-    // Return true when finished
-    return success;
+    // Return success value when finished
+    return bumpMeasurementAttemptCount(success);
 }
 
 // check if the sensor is ready
@@ -504,7 +456,7 @@ bool ANBpH::isWarmedUp(bool debug) {
                getSensorNameAndLocation(), F("timed out after power up."));
         return true;  // timeout
     } else if (elapsed_since_power_on > _warmUpTime_ms) {
-        bool is_ready = isSensorReady(&anbSensor::gotModbusResponse,
+        bool is_ready = isSensorReady(&anbSensor::isSensorReady,
                                       ANB_PH_MINIMUM_REQUEST_SPACING,
                                       _millisPowerOn);
         if (is_ready) {
@@ -519,80 +471,15 @@ bool ANBpH::isWarmedUp(bool debug) {
     }
 }
 
-
-// This checks to see if enough time has passed for stability
-bool ANBpH::isStable(bool debug) {
-#if defined(MS_ANB_SENSORS_PH_DEBUG_DEEP) || defined(MS_SENSORBASE_DEBUG)
-    debug = true;
-#endif
-    // If the sensor failed to activate, it will never stabilize, so the
-    // stabilization time is essentially already passed
-    if (!getStatusBit(WAKE_SUCCESSFUL)) {
-        if (debug) {
-            MS_DBG(getSensorNameAndLocation(),
-                   F("is not active and cannot stabilize!"));
-        }
-        return true;
-    }
-
-    uint32_t elapsed_since_wake_up = millis() - _millisSensorActivated;
-    uint32_t minTime               = _stabilizationTime_ms;
-    uint32_t maxTime               = ANB_PH_STABILIZATION_TIME_MAX;
-    // If the sensor has been activated and enough time has elapsed, it's stable
-    if (elapsed_since_wake_up > maxTime) {
-        MS_DBG(F("It's been"), elapsed_since_wake_up, F("ms, and"),
-               getSensorNameAndLocation(),
-               F("timed out waiting for a valid status code."));
-        return true;  // timeout
-    } else if (elapsed_since_wake_up > minTime) {
-        bool is_ready = isSensorReady(&anbSensor::isSensorReady,
-                                      ANB_PH_MINIMUM_REQUEST_SPACING,
-                                      _millisSensorActivated);
-        if (is_ready) {
-            MS_DBG(F("It's been"), elapsed_since_wake_up, F("ms, and"),
-                   getSensorNameAndLocation(),
-                   F("gave a valid status code, indicating it's ready to "
-                     "start a measurement."));
-        }
-        return is_ready;
-    } else {
-        // Wait at least the minimum readiness time
-        return false;
-    }
-}
-
-
-// The minimum time before we start checking for a result depends on whether
-// the immersion sensor is enabled or not and on the power style.
-// If the immersion sensor is enabled, we wait the minimum time that it
-// would return a not-immersed error to start querying. If the immersion
-// sensor is not enabled, we wait the minimum time for a measurement to be
-// ready based on the power style.
-uint32_t ANBpH::getStartImmersionErrorWindow(void) {
-    if (!_immersionSensorEnabled) { return getEndMeasurementWindow(); }
-    return _powerPin >= 0 ? ANB_PH_2ND_IMMERSION_ERROR
-                          : ANB_PH_1ST_IMMERSION_ERROR;
-}
-
-uint32_t ANBpH::getEndImmersionErrorWindow(void) {
-    if (!_immersionSensorEnabled) { return getEndMeasurementWindow(); }
-    return _powerPin >= 0 ? ANB_PH_2ND_IMMERSION_ERROR_MAX
-                          : ANB_PH_1ST_IMMERSION_ERROR_MAX;
-}
-
 uint32_t ANBpH::getStartMeasurementWindow(void) {
-    if (_powerPin >= 0) {
+    if (_powerPin >= 0 && _retryAttemptsMade == 0) {
         if (_salinityMode == ANBSalinityMode::HIGH_SALINITY) {
             return ANB_PH_1ST_VALUE_HIGH_SALT;
         } else {
             return ANB_PH_1ST_VALUE_LOW_SALT;
         }
     } else {
-        if (_salinityMode == ANBSalinityMode::HIGH_SALINITY) {
-            return ANB_PH_2ND_VALUE_HIGH_SALT;
-        } else {
-            return ANB_PH_2ND_VALUE_LOW_SALT;
-        }
+        return 0;
     }
 }
 
@@ -601,7 +488,7 @@ uint32_t ANBpH::getStartMeasurementWindow(void) {
 // If a pin was provided for power, we assume it's on-demand powered and use
 // the maximum wait time for the first measurement as our maximum wait.
 uint32_t ANBpH::getEndMeasurementWindow(void) {
-    if (_powerPin >= 0) {
+    if (_powerPin >= 0 && _retryAttemptsMade == 0) {
         if (_salinityMode == ANBSalinityMode::HIGH_SALINITY) {
             return ANB_PH_1ST_VALUE_HIGH_SALT_MAX;
         } else {
@@ -609,9 +496,9 @@ uint32_t ANBpH::getEndMeasurementWindow(void) {
         }
     } else {
         if (_salinityMode == ANBSalinityMode::HIGH_SALINITY) {
-            return ANB_PH_2ND_VALUE_HIGH_SALT_MAX;
+            return ANB_PH_2ND_VALUE_HIGH_SALT;
         } else {
-            return ANB_PH_2ND_VALUE_LOW_SALT_MAX;
+            return ANB_PH_2ND_VALUE_LOW_SALT;
         }
     }
 }
@@ -633,6 +520,25 @@ bool ANBpH::isMeasurementComplete(bool debug) {
     }
 
     uint32_t elapsed_since_meas_start = millis() - _millisMeasurementRequested;
+
+    // After the first measurement, the sensor will always report that a
+    // measurement is ready, but a new value will not be available for at
+    // least 10.5 (high salinity) or 14 (low salinity) seconds.
+    if (_retryAttemptsMade > 0) {
+        if (elapsed_since_meas_start > _measurementTime_ms) {
+            if (debug) {
+                MS_DBG(F("It's been"), elapsed_since_meas_start,
+                       F("ms, and measurement by"), getSensorNameAndLocation(),
+                       F("should be complete!"));
+            }
+            return true;
+        } else {
+            // If the sensor is measuring but the time hasn't passed, we still
+            // need to wait
+            return false;
+        }
+    }
+
     // If we're past the maximum wait time, the measurement failed, but our wait
     // is over
     if (elapsed_since_meas_start > getEndMeasurementWindow()) {
@@ -641,24 +547,12 @@ bool ANBpH::isMeasurementComplete(bool debug) {
                F("timed out waiting for a measurement to complete."));
         return true;  // timeout
     }
-    // If we haven't gotten to the minimum response time, we need to wait
-    if (elapsed_since_meas_start < getStartImmersionErrorWindow()) {
-        return false;
-    }
 
     bool is_ready = false;
-    // Check every half second if we're in the window where the immersion
-    // sensor might return a not-immersed error
-    if (elapsed_since_meas_start > getStartImmersionErrorWindow() &&
-        elapsed_since_meas_start <= getEndImmersionErrorWindow()) {
-        is_ready = isSensorReady(&anbSensor::isMeasurementComplete, 1000L,
-                                 _millisMeasurementRequested);
-    }
     // Since the sensor takes so very long to measure when it's power cycled, if
     // we know it's going to be a while, we drop the query frequency to once
     // every 15 seconds because there's no point in asking more often than that.
-    if (elapsed_since_meas_start > getEndImmersionErrorWindow() &&
-        elapsed_since_meas_start <= getStartMeasurementWindow()) {
+    if (elapsed_since_meas_start <= getStartMeasurementWindow()) {
         is_ready = isSensorReady(&anbSensor::isMeasurementComplete, 15000L,
                                  _millisMeasurementRequested);
     }
@@ -679,8 +573,19 @@ bool ANBpH::isMeasurementComplete(bool debug) {
 
 
 bool ANBpH::setSalinityMode(ANBSalinityMode newSalinityMode) {
+    MS_DBG(F("Set sensor salinity mode..."));
+    bool salinitySet = _anb_sensor.setSalinityMode(newSalinityMode);
+    MS_DBG(F("..."), salinitySet ? F("success") : F("failed"));
+    if (!salinitySet) { return false; }
+    // If we succeeded in setting the salinity mode, update the local copy and
+    // the measurement time
     _salinityMode = newSalinityMode;
-    return _anb_sensor.setSalinityMode(newSalinityMode);
+    if (_salinityMode == ANBSalinityMode::HIGH_SALINITY) {
+        _measurementTime_ms = ANB_PH_2ND_VALUE_HIGH_SALT;
+    } else {
+        _measurementTime_ms = ANB_PH_2ND_VALUE_LOW_SALT;
+    }
+    return true;
 }
 
 bool ANBpH::enableImmersionSensor(bool enable) {
@@ -704,7 +609,7 @@ bool ANBpH::setSensorRTC() {
     int8_t  day       = -1;
     int8_t  month     = -1;
     int16_t year      = -1;
-    uint8_t tz_offset = -1;
+    uint8_t tz_offset = 0;  // Neutral value, will be overwritten by getNowParts
     Logger::getNowParts(seconds, minutes, hours, day, month, year, tz_offset);
 #if defined(MS_ANB_SENSORS_PH_DEBUG_DEEP)
     char time_buff_l[20] = {'\0'};

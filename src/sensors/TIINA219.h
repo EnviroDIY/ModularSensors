@@ -6,7 +6,7 @@
  * @author Written By: Neil Hancock
  * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief Contains the TIINA219 sensor subclass and the variale subclasses
+ * @brief Contains the TIINA219 sensor subclass and the variable subclasses
  * TIINA219_Current, TIINA219_Voltage, and TIINA219_Power.
  *
  * These are for the Texas Instruments INA219 current/voltage sensor.
@@ -24,7 +24,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section sensor_ina219_intro Intruduction
+ * @section sensor_ina219_intro Introduction
  *
  * The [TI INA219](http://www.ti.com/product/INA219) is a bi-directional,
  * high-side, current/power monitor that communicates with the board via I2C.
@@ -34,7 +34,7 @@
  * of this sensor can be increased to increase sensitivity (at the expense of
  * range) but this library assumes the maximum range.
  *
- * Commuincation between the INA219 and the mcu is managed by the
+ * Communications between the INA219 and the mcu are managed by the
  * [Adafruit INA219 Library](https://github.com/adafruit/Adafruit_INA219)
  *
  * @note Software I2C is *not* supported for the INA219.
@@ -119,7 +119,7 @@
 /**
  * @brief Sensor::_stabilizationTime_ms; the INA219 is stable after 4000ms.
  *
- * Stable numbers can be acheived after 500ms, but waiting up to 4s gave more
+ * Stable numbers can be achieved after 500ms, but waiting up to 4s gave more
  * consistent numbers based on tests using INA219timingTest.ino
  */
 #define INA219_STABILIZATION_TIME_MS 4000
@@ -175,8 +175,8 @@
  * {{ @ref TIINA219_Voltage::TIINA219_Voltage }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; bus voltage should have 4 -
-/// resolution is 0.001V.
+/// @brief Decimals places in string representation; bus voltage should have 3 -
+/// resolution is 0.004V.
 #define INA219_BUS_VOLTAGE_RESOLUTION 3
 /// @brief Sensor variable number; bus voltage is stored in sensorValues[1].
 #define INA219_BUS_VOLTAGE_VAR_NUM 1
@@ -238,7 +238,7 @@ class TIINA219 : public Sensor {
      * Use -1 if it is continuously powered.
      * - The INA219 requires input voltage of 3.0-5.5V, which can be turned off
      * between measurements.
-     * @param i2cAddressHex The I2C address of the BME280; can be any number
+     * @param i2cAddressHex The I2C address of the INA219; can be any number
      * between 0x40 and 0x4F.  The default value is 0x40.
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
@@ -255,7 +255,7 @@ class TIINA219 : public Sensor {
      * Use -1 if it is continuously powered.
      * - The INA219 requires input voltage of 3.0-5.5V, which can be turned off
      * between measurements.
-     * @param i2cAddressHex The I2C address of the BME280; can be any number
+     * @param i2cAddressHex The I2C address of the INA219; can be any number
      * between 0x40 and 0x4F.  The default value is 0x40.
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
@@ -291,14 +291,9 @@ class TIINA219 : public Sensor {
      * @return True if the setup was successful.
      */
     bool setup(void) override;
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
+
     String getSensorLocation(void) override;
 
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
     bool addSingleMeasurementResult(void) override;
 
  private:
@@ -454,3 +449,5 @@ class TIINA219_Power : public Variable {
 };
 /**@}*/
 #endif  // SRC_SENSORS_TIINA219_H_
+
+// cSpell:ignore TIINA219

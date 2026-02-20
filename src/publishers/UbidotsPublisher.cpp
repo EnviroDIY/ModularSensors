@@ -106,11 +106,9 @@ void UbidotsPublisher::begin(Logger&     baseLogger,
 }
 
 
-// This utilizes an attached modem to make a TCP connection to the
-// EnviroDIY/ODM2DataSharingPortal and then streams out a post request
-// over that connection.
-// The return is the http status code of the response.
-// int16_t EnviroDIYPublisher::postDataEnviroDIY(void)
+// This utilizes an attached modem to make a TCP connection to Ubidots and then
+// streams out a post request over that connection. The return is the http
+// status code of the response.
 int16_t UbidotsPublisher::publishData(Client* outClient, bool) {
     // Create a buffer for the portions of the request and response
     char     tempBuffer[12] = "";
@@ -119,7 +117,7 @@ int16_t UbidotsPublisher::publishData(Client* outClient, bool) {
     if (_baseLogger->getSamplingFeatureUUID() == nullptr ||
         strlen(_baseLogger->getSamplingFeatureUUID()) == 0) {
         PRINTOUT(F("A sampling feature UUID must be set before publishing data "
-                   "to Monitor My Watershed!."));
+                   "to Ubidots!"));
         return 0;
     }
 

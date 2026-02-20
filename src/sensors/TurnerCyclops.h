@@ -340,14 +340,8 @@ class TurnerCyclops : public Sensor {
      */
     ~TurnerCyclops();
 
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
     String getSensorLocation(void) override;
 
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
     bool addSingleMeasurementResult(void) override;
 
  private:

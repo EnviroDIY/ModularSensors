@@ -12,13 +12,77 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- Made the enabling and disabling of the watchdog the very first and very last steps of sleep to keep the watchdog enabled through the whole getting ready for bed and waking up process.
+- **ANB pH**
+  - **BREAKING** The constructor has changed!
+The logging interval has been added as a required parameter for the constructor!
+  - Changed timing slightly and simplified timing logic.
+- **Renamed** The EnviroDIYPublisher has been renamed the MonitorMyWatershedPublisher.
+This reflects changes to the website from years ago.
+There is a shell file and typedef to maintain backwards compatibility.
+- Changed capitalization of `setInitialShortIntervals(#)` function
+  - Previously the 'i' of initial was not capitalized.
+  - The old `setinitialShortIntervals` remains available via compatibility shim in LoggerBase.h, so existing code is unaffected.
+- Bumped several dependencies - including crucial bug fixes to SensorModbusMaster.
+- Re-wrote most of the logic for looping variables within the complete update function of the VariableArray.
+- Simplified the `addSingleMeasurementResult()` function of all sensors to use an internal function to help set the bits and timing values and to quit sooner if the measurement was not started successfully.
+  - The `verifyAndAddMeasurementResult()` is now consistently used in all sensors and is only called when the sensor successfully returned a measurement response.
+  - Also removed all places where sensor values were re-set to -9999 after a measurement failed and then that -9999 was sent to the `verifyAndAddMeasurementResult()` function.
+These resets were an awkward attempt to deal with bad values before feeding any bad values to the `verifyAndAddMeasurementResult()` function which was previously always called even if the sensor returned junk.
+This was probably a hold-over from incorrect implementation and calling of the clearValues function deep in the library history.
+  - Also made the return from the `addSingleMeasurementResult()` function consistently false for a bad sensor response and true for a good one - where it's possible to tell the difference.
+- The Sensor::clearValues() function now resets the attempt and retry counts in addition to setting all values in the value array to -9999.
+- Re-wrote some of the logic of the `completeUpdate()` function.
+Also added optional arguments to the `completeUpdate()` function to allow users to specify if the sensors should be powered/woken.
+  - The `updateAllSensors()` function is now deprecated.
+Use `completeUpdate(false, false, false, false)` instead.
+    - Previously the `updateAllSensors()` function asked all sensors to update their values, skipping all power, wake, and sleep steps while the `completeUpdate()` function duplicated that functionality and added the power, wake, and sleep.
+The two functions have been consolidated into one function with four arguments, one each for power on, wake, sleep, and power off.
+To achieve the same functionality as the old `updateAllSensors()` function (ie, only updating values), set all the arguments to false.
+- Applied many suggestions from Code Rabbit AI.
 - Moved outdated examples to a new "Outdated" folder, with a subfolder for the DRWI examples
+- When importing TinyGSM for the modem objects, the specific modem client headers are now imported directly rather than importing the TinyGsmClient.h header which defines typedefs for the sub-types.
 
 ### Added
 
+- **Added support for retrying measurements for all sensors**.
+  - Each sensor now supports a number of possible retry attempts for when the sensor returns a bad or no value.
+The number of retry attempts can be set using the `setAllowedMeasurementRetries(uint8_t)` function.
+  - The number of retries is independent of the number of measurements to average.
+A retry is performed when a sensor doesn't report a value or reports an error value.
+If multiple retries are needed, only the result of the final (successful) retry is stored.
+When multiple 'measurements to average' are requested, the values of each successful measurement is stored and averaged.
+Measurements that return bad values even after retries are still not included in averaging.
+  - The default number of retry attempts for most sensors is 1.
+- Made a secondary power pin a property of all sensors.
+- Added internal function to run the steps of setting the timing and bits after a measurement.
+- Added setter and getter functions for sensor timing variables.
+These values should generally be set in the specific sensor constructors and only changed if you know what you're doing.
+  - `setWarmUpTime(uint32_t warmUpTime_ms)`
+  - `getWarmUpTime()`
+  - `setStabilizationTime(uint32_t stabilizationTime_ms)`
+  - `getStabilizationTime()`
+  - `setMeasurementTime(uint32_t measurementTime_ms)`
+  - `getMeasurementTime()`
+- Added the functions `Sensor::clearStatus()`,`Sensor::clearPowerStatus()`,`Sensor::clearWakeStatus()`,and `Sensor::clearMeasurementStatus()` which reset some or all of the sensor status bits and related timing variables.
+- **NEW SENSOR** Added a new sensor for simple analog voltage using the built-in processor ADC
+- Added KnownProcessors.h and moved defines values for supported built-in sensors on known processors to that file.
+  - This affects ProcessorStats and the Everlight ALS PT-19.
+- Added a new example specific to the [EnviroDIY Monitoring Station Kit](https://www.envirodiy.org/product/envirodiy-monitoring-station-kit/).
+
 ### Removed
 
+- Unused `_maxSamplesToAverage` parameter of the VariableArray and the `countMaxToAverage()` function.
+- Unnecessary copy doc calls for inherited functions and properties.
+- All overrides of the powerUp and powerDown functions that are no longer needed since all sensors have two power pins built in.
+- References to the EnviroDIY data portal.
+- All defines from example sketches.
+  - Defining values to be used by TinyGSM and/or the MQTT library here in addition to any defines in ModSensorConfig.h or in a build configuration can lead to One Definition Rule violations because the define values are used when creating the classes from the templates in TinyGSM.
+
 ### Fixed
+
+- Fixed major bug where sensors with two power pins where either was shared with another sensor may be turned off inappropriately when one of the other sensors was turned off.
+- Correctly retry NIST sync on XBees when a not-sane timestamp is returned.
 
 ***
 
@@ -148,7 +212,6 @@ If you do not want any output, define `MS_SILENT`.
     - Wire required adapters to the same pin as that providing primary power.
     - Wire required adapters such that they are continuously powered.
     - If you must switch the power to both the sensor and an adapter and either the sensor power or the adapter power are shared with a pin that provides power to any other sensor, call the shared power pin the "sensor" power and the other the "adapter."
-
 
 ***
 
@@ -697,7 +760,7 @@ Watchdogs and More
 - A watch-dog timer has been implemented for both the AVR and SAMD21 (and 51) boards to restart the boards in case of failure during logging
   - The watch-dog is turned off during sleep to save power, so recovery is only possible if the failure is while the processor is awake.
 - Added support for Meter Teros 11 soil moisture and temperature sensor
-- Implemented a function to verify that UUID's are at least correctly formed and unique - though it does not verify that they are valid.
+- Implemented a function to verify that UUIDs are at least correctly formed and unique - though it does not verify that they are valid.
 - Pushing to the master branch of this repo will now also cause a re-run of the travis script that updates the EnviroDIY "Libraries" repository.
 - Added debugging variables to modems to track how long they are powered/active.
 
@@ -878,7 +941,7 @@ Bug fix and example re-working
 
 ### Fixed
 
-- Fixes bug in sending data to the WikiWatershed / [Monitor My Watershed](https://monitormywatershed.org/) data sharing portal.
+- Fixes bug in sending data to [Monitor My Watershed](https://monitormywatershed.org).
 
 ***
 
@@ -1146,3 +1209,5 @@ Our first release of the modular sensors library to support easily logging data 
 <!--! @tableofcontents{HTML:1} -->
 
 <!--! @m_footernavigation -->
+
+<!-- cspell:words isnan GPST arounds strcat strcpy PULLUP TIINA Wextra setinitialShortIntervals -->

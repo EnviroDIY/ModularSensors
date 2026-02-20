@@ -13,18 +13,6 @@
  * ======================================================================= */
 
 // ==========================================================================
-//  Defines for TinyGSM
-// ==========================================================================
-/** Start [defines] */
-#ifndef TINY_GSM_RX_BUFFER
-#define TINY_GSM_RX_BUFFER 64
-#endif
-#ifndef TINY_GSM_YIELD_MS
-#define TINY_GSM_YIELD_MS 2
-#endif
-/** End [defines] */
-
-// ==========================================================================
 //  Include the libraries required for any data logger
 // ==========================================================================
 /** Start [includes] */
@@ -43,7 +31,7 @@
 // The name of this program file
 const char* sketchName = "logging_to_ThingSpeak.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char* LoggerID = "XXXXX";
+const char* LoggerID = "YourLoggerID";
 // How frequently (in minutes) to log data
 const int8_t loggingInterval = 15;
 // Your logger's timezone.
@@ -88,8 +76,8 @@ const int8_t modemLEDPin =
     redLED;  // MCU pin connected an LED to show modem status
 
 // Network connection information
-const char* wifiId  = "xxxxx";  // The WiFi access point
-const char* wifiPwd = "xxxxx";  // The password for connecting to WiFi
+const char* wifiId = "YourWiFiSSID";  // The WiFi access point
+const char* wifiPwd = "YourWiFiPassword";  // The WiFi password
 
 // Create the loggerModem object
 EspressifESP8266 modemESP(&modemSerial, modemVccPin, modemResetPin, wifiId,
@@ -102,13 +90,13 @@ EspressifESP8266 modem = modemESP;
 // ==========================================================================
 //  Using the Processor as a Sensor
 // ==========================================================================
-/** Start [processor_sensor] */
+/** Start [processor_stats] */
 #include <sensors/ProcessorStats.h>
 
 // Create the main processor chip "sensor" - for general metadata
 const char*    mcuBoardVersion = "v1.1";
 ProcessorStats mcuBoard(mcuBoardVersion);
-/** End [processor_sensor] */
+/** End [processor_stats] */
 
 
 // ==========================================================================

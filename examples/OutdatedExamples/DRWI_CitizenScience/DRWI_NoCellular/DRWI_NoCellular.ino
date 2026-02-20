@@ -31,7 +31,7 @@
 // The name of this program file
 const char* sketchName = "DRWI_NoCellular.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char* LoggerID = "XXXXX";
+const char* LoggerID = "YourLoggerID";
 // How frequently (in minutes) to log data
 const int8_t loggingInterval = 15;
 // Your logger's timezone.
@@ -55,13 +55,13 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 // ==========================================================================
 //  Using the Processor as a Sensor
 // ==========================================================================
-/** Start [processor_sensor] */
+/** Start [processor_stats] */
 #include <sensors/ProcessorStats.h>
 
 // Create the main processor chip "sensor" - for general metadata
 const char*    mcuBoardVersion = "v1.1";
 ProcessorStats mcuBoard(mcuBoardVersion);
-/** End [processor_sensor] */
+/** End [processor_stats] */
 
 
 // ==========================================================================
@@ -138,7 +138,7 @@ Variable* variableList[] = {
     new MaximDS3231_Temp(&ds3231),
 };
 
-// All UUID's, device registration, and sampling feature information can be
+// All UUIDs, device registration, and sampling feature information can be
 // pasted directly from Monitor My Watershed.  To get the list, click the "View
 // token UUID list" button on the upper right of the site page.
 // Even if not publishing live data, this is needed so the logger file will be
@@ -146,7 +146,7 @@ Variable* variableList[] = {
 
 // *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
 // Check the order of your variables in the variable list!!!
-// Be VERY certain that they match the order of your UUID's!
+// Be VERY certain that they match the order of your UUIDs!
 // Rearrange the variables in the variable list if necessary to match!
 // *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
 /* clang-format off */

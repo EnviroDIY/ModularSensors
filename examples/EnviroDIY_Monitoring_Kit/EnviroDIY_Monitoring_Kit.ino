@@ -15,6 +15,9 @@
  * @m_examplenavigation{example_envirodiy_monitoring_kit,}
  * ======================================================================= */
 
+// The Arduino library is needed for every Arduino program.
+#include <Arduino.h>
+
 // ==========================================================================
 //  Configuration for the EnviroDIY Monitoring Station Kit
 // ==========================================================================
@@ -30,11 +33,11 @@
 
 // Add your network information here.
 // APN for cellular connection
-#define CELLULAR_APN "add_your_cellular_apn"
+#define CELLULAR_APN "YourAPN"
 // WiFi access point name
-#define WIFI_ID "your_wifi_ssid"
+#define WIFI_ID "YourWiFiSSID"
 // WiFi password (WPA2)
-#define WIFI_PASSWD "your_wifi_password"
+#define WIFI_PASSWD "YourWiFiPassword"
 
 /** End [configuration] */
 
@@ -44,7 +47,7 @@
 // ==========================================================================
 /** Start [logging_options] */
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char* LoggerID = "XXXXX";
+const char* LoggerID = "YourLoggerID";
 // How frequently (in minutes) to log data
 const int8_t loggingInterval = 15;
 // Your logger's timezone.
@@ -54,11 +57,11 @@ const int8_t timeZone = -5;  // Eastern Standard Time
 
 
 // ==========================================================================
-//  UUID's and Registration Tokens for Monitor My Watershed
+//  UUIDs and Registration Tokens for Monitor My Watershed
 // ==========================================================================
 /** Start [monitor_mw_uuids] */
 
-// All UUID's, device registration, and sampling feature information can be
+// All UUIDs, device registration, and sampling feature information can be
 // pasted directly from Monitor My Watershed.
 // To get the list, click the "View  token UUID list" button on the upper right
 // of the site page.
@@ -111,25 +114,9 @@ const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  // Sampli
 
 
 // ==========================================================================
-//  Defines for TinyGSM
-// ==========================================================================
-/** Start [defines] */
-#ifndef TINY_GSM_RX_BUFFER
-#define TINY_GSM_RX_BUFFER 256
-#endif
-#ifndef TINY_GSM_YIELD_MS
-#define TINY_GSM_YIELD_MS 2
-#endif
-/** End [defines] */
-
-
-// ==========================================================================
 //  Include the libraries required for any data logger
 // ==========================================================================
 /** Start [includes] */
-// The Arduino library is needed for every Arduino program.
-#include <Arduino.h>
-
 // Include the main header for ModularSensors
 #include <ModularSensors.h>
 /** End [includes] */
@@ -178,7 +165,7 @@ Logger dataLogger(LoggerID, samplingFeature, loggingInterval);
 
 // Create a reference to the serial port for the modem
 HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
-const int32_t   modemBaud   = 115200;   // Communication speed of the modem
+int32_t         modemBaud   = 57600;    // Communication speed of the modem
 // NOTE:  This baud rate too fast for the Mayfly.  We'll slow it down in the
 // setup.
 
@@ -236,13 +223,13 @@ SIMComSIM7080 modem = modem7080;
 // ==========================================================================
 //  Using the Processor as a Sensor
 // ==========================================================================
-/** Start [processor_sensor] */
+/** Start [processor_stats] */
 #include <sensors/ProcessorStats.h>
 
 // Create the main processor chip "sensor" - for general metadata
 const char*    mcuBoardVersion = "v1.1";
 ProcessorStats mcuBoard(mcuBoardVersion, 5);
-/** End [processor_sensor] */
+/** End [processor_stats] */
 
 
 // ==========================================================================
@@ -332,7 +319,7 @@ Variable* variableList[] = {
 
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
-// Create the VariableArray object and attach the UUID's
+// Create the VariableArray object and attach the UUIDs
 VariableArray varArray(variableCount, variableList, UUIDs);
 /** End [variables_separate_uuids] */
 // ==========================================================================
@@ -343,9 +330,9 @@ VariableArray varArray(variableCount, variableList, UUIDs);
 //  A Publisher to Monitor My Watershed
 // ==========================================================================
 /** Start [monitor_my_watershed_publisher] */
-// Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
-#include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPost(dataLogger, registrationToken);
+// Create a data publisher for the Monitor My Watershed POST endpoint
+#include <publishers/MonitorMyWatershedPublisher.h>
+MonitorMyWatershedPublisher MonitorMWPost(dataLogger, registrationToken);
 /** End [monitor_my_watershed_publisher] */
 #endif
 
@@ -414,7 +401,7 @@ void setup() {
 /** Start [setup_serial_begins] */
 // Start the serial connection with the modem
 #if defined(USE_CELLULAR_BEE) || defined(USE_WIFI_BEE)
-    PRINTOUT(F("Starting modem connection at"), modemBaud, F(" baud"));
+    PRINTOUT(F("Starting modem connection at"), modemBaud, F("baud"));
     modemSerial.begin(modemBaud);
 #endif
 
@@ -442,7 +429,7 @@ void setup() {
     PRINTOUT(F("Setting logging interval to"), loggingInterval, F("minutes"));
     dataLogger.setLoggingInterval(loggingInterval);
     PRINTOUT(F("Setting number of initial 1 minute intervals to 10"));
-    dataLogger.setinitialShortIntervals(10);
+    dataLogger.setInitialShortIntervals(10);
     // Attach the variable array to the logger
     PRINTOUT(F("Attaching the variable array"));
     dataLogger.setVariableArray(&varArray);
@@ -489,19 +476,13 @@ void setup() {
              F("baud.  This will fail if the baud is mismatched.."));
     modemSerial.begin(modemBaud);
     modem.modemWake();  // NOTE:  This will also set up the modem
-    // WARNING: PLEASE REMOVE AUTOBAUDING FOR PRODUCTION CODE!
+    // WARNING: PLEASE REMOVE BAUD RATE DETECTION/FORCING FOR PRODUCTION CODE!
     if (!modem.gsmModem.testAT()) {
-        PRINTOUT(F("Attempting autobauding.."));
-        uint32_t foundBaud = TinyGsmAutoBaud(modemSerial);
-        if (foundBaud != 0 || (modemBaud > 57600 && F_CPU == 8000000L)) {
-            PRINTOUT(F("Got modem response at baud of"), foundBaud,
-                     F("Firing an attempt to change the baud rate to"),
-                     modemBaud);
-            modem.gsmModem.sendAT(GF("+UART_DEF="), modemBaud, F(",8,1,0,0"));
-            modem.gsmModem.waitResponse();
-            modemSerial.end();
-            modemSerial.begin(modemBaud);
-        }
+        // If the AT command test fails, chances are it's a baud rate issue. Try
+        // to detect the baud rate and force the baud rate to the correct one.
+        PRINTOUT(F("Attempting to force the modem baud rate."));
+        modem.gsmModem.forceModemBaud(modemSerial,
+                                      static_cast<uint32_t>(modemBaud));
     }
 /** End [setup_esp] */
 #endif
@@ -512,23 +493,14 @@ void setup() {
     modem.setModemResetLevel(HIGH);  // ModuleFun Bee inverts the signal
     PRINTOUT(F("Waking modem and setting Cellular Carrier Options..."));
     modem.modemWake();  // NOTE:  This will also set up the modem
-    // WARNING: PLEASE REMOVE AUTOBAUDING FOR PRODUCTION CODE!
+    // WARNING: PLEASE REMOVE BAUD RATE DETECTION/FORCING FOR PRODUCTION CODE!
     if (!modem.gsmModem.testAT()) {
-        PRINTOUT(F("Attempting autobauding.."));
-        uint32_t foundBaud = TinyGsmAutoBaud(modemSerial);
-        if (foundBaud != 0 && !(F_CPU <= 8000000L && foundBaud >= 115200) &&
-            !(F_CPU <= 16000000L && foundBaud > 115200)) {
-            PRINTOUT(F("Got modem response at baud of"), foundBaud,
-                     F("Firing an attempt to change the baud rate to"),
-                     modemBaud);
-            modem.gsmModem.setBaud(
-                modemBaud);  // Make sure we're *NOT* auto-bauding!
-            modem.gsmModem.waitResponse();
-            modemSerial.end();
-            modemSerial.begin(modemBaud);
-        }
+        // If the AT command test fails, chances are it's a baud rate issue. Try
+        // to detect the baud rate and force the baud rate to the correct one.
+        PRINTOUT(F("Attempting to force the modem baud rate."));
+        modem.gsmModem.forceModemBaud(modemSerial,
+                                      static_cast<uint32_t>(modemBaud));
     }
-    modem.gsmModem.setBaud(modemBaud);   // Make sure we're *NOT* auto-bauding!
     modem.gsmModem.setNetworkMode(38);   // set to LTE only
                                          // 2 Automatic
                                          // 13 GSM only
@@ -538,7 +510,7 @@ void setup() {
                                          // 1 CAT-M
                                          // 2 NB-IoT
                                          // 3 CAT-M and NB-IoT
-    /** End [setup_sim7080] */
+/** End [setup_sim7080] */
 #endif
 
     /** Start [setup_clock] */

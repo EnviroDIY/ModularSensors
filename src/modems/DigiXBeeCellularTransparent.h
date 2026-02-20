@@ -96,7 +96,7 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include "TinyGsmClient.h"
+#include "TinyGsmClientXBee.h"
 #undef TINY_GSM_MODEM_HAS_WIFI
 #include "DigiXBee.h"
 
@@ -197,7 +197,7 @@ class DigiXBeeCellularTransparent : public DigiXBee {
     /**
      * @brief Public reference to the TinyGSM modem.
      */
-    TinyGsm gsmModem;
+    TinyGsmXBee gsmModem;
 
  protected:
     bool isInternetAvailable(void) override;

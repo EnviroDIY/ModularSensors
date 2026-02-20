@@ -66,7 +66,7 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include "TinyGsmClient.h"
+#include "TinyGsmClientSIM7080.h"
 #include "LoggerModem.h"
 
 #ifdef MS_SIMCOMSIM7080_DEBUG_DEEP
@@ -219,7 +219,7 @@ class SIMComSIM7080 : public loggerModem {
     /**
      * @brief Public reference to the TinyGSM modem.
      */
-    TinyGsm gsmModem;
+    TinyGsmSim7080 gsmModem;
 
  protected:
     bool isInternetAvailable(void) override;

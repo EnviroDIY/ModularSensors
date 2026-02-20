@@ -68,49 +68,36 @@ bool TallyCounterI2C::setup(void) {
 
 
 bool TallyCounterI2C::addSingleMeasurementResult(void) {
-    bool success = false;
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return bumpMeasurementAttemptCount(false);
+    }
 
-    // Initialize variables
-    int16_t events = -9999;  // Number of events
+    bool    success = false;
+    int16_t events  = -9999;  // Number of events
 
-    // Check a measurement was *successfully* started (status bit 6 set)
-    // Only go on to get a result if it was
-    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+    // Read values
+    // Read data from counter before clear
+
+    events = counter_internal.Peek();
+
+    // Assume that if negative, it indicates a failed response
+    // May also return a very negative value when receiving a bad response
+    if (events < 0) {
+        MS_DBG(getSensorNameAndLocation(),
+               F("returned negative value, assuming sensor non-response!"));
+        events = -9999;
+    } else {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
-
-        // Read values
-        // Read data from counter before clear
-
-        events = counter_internal.Peek();
-        if (isnan(events)) events = -9999;
-
-        // Assume that if negative a failed response
-        // May also return a very negative temp when receiving a bad response
-        if (events < 0) {
-            MS_DBG(F("All values 0 or bad, assuming sensor non-response!"));
-            events = -9999;
-        } else {
-            success = true;
-        }
+        verifyAndAddMeasurementResult(TALLY_EVENTS_VAR_NUM, events);
+        success = true;
 
         // Clear count value
         counter_internal.Clear();
-
-        if (events < 0)
-            events = -9999;  // If negative value results, return failure
-
-        MS_DBG(F("  Events:"), events);
-
-    } else {
-        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
     }
 
-    verifyAndAddMeasurementResult(TALLY_EVENTS_VAR_NUM, events);
+    MS_DBG(F("  Events:"), events);
 
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
-
-    return success;
+    // Return success value when finished
+    return bumpMeasurementAttemptCount(success);
 }

@@ -173,6 +173,9 @@
     "micromoles",
     "microsiemen",
     "microsiemens",
+    "microvolts",
+    "milliamp",
+    "milliwatt",
     "Modbus",
     "MODSENSORCONFIG",
     "MODSENSORDEBUGGER",
@@ -220,6 +223,7 @@
     "RSSI",
     "RUNSTBY",
     "SAMD",
+    "SARAR4",
     "sdamiano",
     "SDCARD",
     "SDHC",
@@ -282,5 +286,11 @@
     "µsec"
   ],
   "ignoreWords": [],
-  "ignorePaths": ["platformio.ini", "*doxyfile*", ".vscode"]
+  "ignorePaths": [
+    "platformio.ini",
+    "*doxyfile*",
+    ".vscode",
+    "library.json",
+    "**/lib/**"
+  ]
 }

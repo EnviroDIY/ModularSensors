@@ -244,19 +244,10 @@ class AOSongDHT : public Sensor {
      */
     ~AOSongDHT();
 
-    /**
-     * @copydoc Sensor::setup()
-     */
     bool setup(void) override;
 
-    /**
-     * @copydoc Sensor::getSensorName()
-     */
     String getSensorName(void) override;
 
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
     bool addSingleMeasurementResult(void) override;
 
  private:

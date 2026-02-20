@@ -222,9 +222,6 @@ class AtlasParent : public Sensor {
      * successfully.
      */
     bool startSingleMeasurement(void) override;
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
     bool addSingleMeasurementResult(void) override;
 
  protected:

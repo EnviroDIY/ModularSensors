@@ -251,9 +251,6 @@ class SDI12Sensors : public Sensor {
      */
     bool startSingleMeasurement(void) override;
 #endif
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
     bool addSingleMeasurementResult(void) override;
 
  protected:

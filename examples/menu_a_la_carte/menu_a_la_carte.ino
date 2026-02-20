@@ -17,18 +17,6 @@
 // this makes sure the argument is expanded before converting to string
 #define STR(X) STR_(X)
 
-// ==========================================================================
-//  Defines for TinyGSM
-// ==========================================================================
-/** Start [defines] */
-#ifndef TINY_GSM_RX_BUFFER
-#define TINY_GSM_RX_BUFFER 64
-#endif
-#ifndef TINY_GSM_YIELD_MS
-#define TINY_GSM_YIELD_MS 2
-#endif
-/** End [defines] */
-
 
 // ==========================================================================
 //  Include the libraries required for any data logger
@@ -437,11 +425,11 @@ Logger dataLogger(LoggerID, samplingFeature, loggingInterval);
 
 // Network connection information
 // APN for cellular connection
-#define CELLULAR_APN "add_your_cellular_apn"
+#define CELLULAR_APN "YourAPN"
 // WiFi access point name
-#define WIFI_ID "your_wifi_ssid"
+#define WIFI_ID "YourWiFiSSID"
 // WiFi password (WPA2)
-#define WIFI_PASSWD "your_wifi_password"
+#define WIFI_PASSWD "YourWiFiPassword"
 
 #if defined(BUILD_MODEM_DIGI_XBEE_CELLULAR_TRANSPARENT)
 #define BUILD_HAS_MODEM
@@ -989,6 +977,7 @@ Variable* mcuBoardReset = new ProcessorStats_ResetCode(
 #if defined(MS_USE_DS3231)
 // ==========================================================================
 //  Maxim DS3231 RTC (Real Time Clock)
+//  Built in on Mayfly 0.x and 1.x
 // ==========================================================================
 /** Start [maxim_ds3231] */
 #include <sensors/MaximDS3231.h>
@@ -1052,8 +1041,8 @@ const int8_t  al485EnablePin    = -1;              // Adapter RE/DE pin
 const uint8_t anbNumberReadings = 1;
 
 // Create an ANB pH sensor object
-ANBpH anbPH(anbModbusAddress, modbusSerial, anbPower, alAdapterPower,
-            al485EnablePin, anbNumberReadings);
+ANBpH anbPH(anbModbusAddress, modbusSerial, anbPower, loggingInterval,
+            alAdapterPower, al485EnablePin, anbNumberReadings);
 
 // Create all of the variable pointers for the ANB pH sensor
 Variable* anbPHValue = new ANBpH_pH(&anbPH,
@@ -1622,7 +1611,7 @@ const float   dividerGain    = 10;  //  Gain setting if using a voltage divider
 const uint8_t evADSi2c_addr  = 0x48;  // The I2C address of the ADS1115 ADC
 const uint8_t VoltReadsToAvg = 1;     // Only read one sample
 
-// Create an External Voltage sensor object
+// Create a TI ADS1x15 sensor object
 TIADS1x15 ads1x15(ADSPower, ADSChannel, dividerGain, evADSi2c_addr,
                   VoltReadsToAvg);
 
@@ -1630,6 +1619,32 @@ TIADS1x15 ads1x15(ADSPower, ADSChannel, dividerGain, evADSi2c_addr,
 Variable* ads1x15Volt =
     new TIADS1x15_Voltage(&ads1x15, "12345678-abcd-1234-ef00-1234567890ab");
 /** End [tiads1x15] */
+#endif
+
+
+#if defined(BUILD_SENSOR_PROCESSOR_ANALOG)
+// ==========================================================================
+//  External Voltage via Processor ADC
+// ==========================================================================
+/** Start [processor_analog] */
+#include <sensors/ProcessorAnalog.h>
+
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+const int8_t processorAnalogPowerPin = sensorPowerPin;  // Power pin
+const int8_t processorAnalogDataPin  = A0;  // Analog input pin (processor ADC)
+const float  processorAnalogMultiplier =
+    5.58;                        //  Gain setting if using a voltage divider
+const uint8_t eaReadsToAvg = 1;  // Only read one sample
+
+// Create an Processor Analog sensor object
+ProcessorAnalog extAnalog(processorAnalogPowerPin, processorAnalogDataPin,
+                          processorAnalogMultiplier, OPERATING_VOLTAGE,
+                          eaReadsToAvg);
+
+// Create a voltage variable pointer
+Variable* extAnalogVolts = new ProcessorAnalog_Voltage(
+    &extAnalog, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [processor_analog] */
 #endif
 
 
@@ -2958,7 +2973,7 @@ VariableArray varArray(variableCount, variableList);
 #elif defined(BUILD_TEST_SEPARATE_UUIDS)
 /** Start [variables_separate_uuids] */
 // Version 2: Create two separate arrays, on for the variables and a separate
-// one for the UUID's, then give both as input to the variable array
+// one for the UUIDs, then give both as input to the variable array
 // constructor.  Be cautious when doing this though because order is CRUCIAL!
 Variable* variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard),
@@ -2977,7 +2992,7 @@ const char* UUIDs[] = {
     "12345678-abcd-1234-ef00-1234567890ab",
     "12345678-abcd-1234-ef00-1234567890ab",
     "12345678-abcd-1234-ef00-1234567890ab",
-    //  ... The number of UUID's must match the number of variables!
+    //  ... The number of UUIDs must match the number of variables!
     "12345678-abcd-1234-ef00-1234567890ab",
     "12345678-abcd-1234-ef00-1234567890ab",
     "12345678-abcd-1234-ef00-1234567890ab",
@@ -2985,7 +3000,7 @@ const char* UUIDs[] = {
 };
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
-// Create the VariableArray object and attach the UUID's
+// Create the VariableArray object and attach the UUIDs
 VariableArray varArray(variableCount, variableList, UUIDs);
 /** End [variables_separate_uuids] */
 // ==========================================================================
@@ -3094,6 +3109,9 @@ Variable* variableList[] = {
 #endif
 #if defined(BUILD_SENSOR_TIADS1X15)
     ads1x15Volt,
+#endif
+#if defined(BUILD_SENSOR_PROCESSOR_ANALOG)
+    extAnalogVolts,
 #endif
 #if defined(BUILD_SENSOR_FREESCALE_MPL115A2)
     mplTemp,
@@ -3314,14 +3332,14 @@ VariableArray varArray(variableCount, variableList);
 #endif
 
 
-#if defined(BUILD_PUB_ENVIRO_DIY_PUBLISHER) && \
+#if defined(BUILD_PUB_MONITOR_MY_WATERSHED_PUBLISHER) && \
     (!defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM))
 // ==========================================================================
-//  A Publisher to Monitor My Watershed / EnviroDIY Data Sharing Portal
+//  A Publisher to Monitor My Watershed
 // ==========================================================================
-/** Start [enviro_diy_publisher] */
+/** Start [monitor_my_watershed_publisher] */
 // Device registration and sampling feature information can be obtained after
-// registration at https://monitormywatershed.org or https://data.envirodiy.org
+// registration at https://monitormywatershed.org
 const char* registrationToken =
     "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
 // NOTE: Because we already set the sampling feature with the logger
@@ -3329,10 +3347,10 @@ const char* registrationToken =
 // const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  //
 // Sampling feature UUID
 
-// Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
-#include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPost(dataLogger, registrationToken);
-/** End [enviro_diy_publisher] */
+// Create a data publisher for the Monitor My Watershed POST endpoint
+#include <publishers/MonitorMyWatershedPublisher.h>
+MonitorMyWatershedPublisher MonitorMWPost(dataLogger, registrationToken);
+/** End [monitor_my_watershed_publisher] */
 #endif
 
 
@@ -3581,17 +3599,21 @@ float getBatteryVoltage() {
 void setup() {
     /** Start [setup_flashing_led] */
     // Blink the LEDs to show the board is on and starting up
-    greenRedFlash(3, 35);
+    greenRedFlash(3, 100);
     /** End [setup_flashing_led] */
+
+    // IMMEDIATELY set up the watchdog timer for 5 minutes
+    // The watchdog interval will be reset in the data logger's begin()
+    // function.
+    extendedWatchDog::setupWatchDog(static_cast<uint32_t>(5 * 60));
 
 /** Start [setup_wait] */
 // Wait for USB connection to be established by PC
 // NOTE:  Only use this when debugging - if not connected to a PC, this adds an
 // unnecessary startup delay
 #if defined(SERIAL_PORT_USBVIRTUAL)
-    while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000L)) {
-        // wait
-    }
+    while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000L)) { delay(10); }
+    greenRedFlash(3, 10);
 #endif
     /** End [setup_wait] */
 
@@ -3695,7 +3717,7 @@ void setup() {
     PRINTOUT(F("Setting logging interval to"), loggingInterval, F("minutes"));
     dataLogger.setLoggingInterval(loggingInterval);
     PRINTOUT(F("Setting number of initial 1 minute intervals to 10"));
-    dataLogger.setinitialShortIntervals(10);
+    dataLogger.setInitialShortIntervals(10);
     // Attach the variable array to the logger
     PRINTOUT(F("Attaching the variable array"));
     dataLogger.setVariableArray(&varArray);
@@ -3771,17 +3793,9 @@ void setup() {
     modem.modemWake();  // NOTE:  This will also set up the modem
     // WARNING: PLEASE REMOVE AUTOBAUDING FOR PRODUCTION CODE!
     if (!modem.gsmModem.testAT()) {
-        PRINTOUT(F("Attempting autobauding.."));
-        uint32_t foundBaud = TinyGsmAutoBaud(modemSerial);
-        if (foundBaud != 0 || (modemBaud > 57600 && F_CPU == 8000000L)) {
-            PRINTOUT(F("Got modem response at baud of"), foundBaud,
-                     F("Firing an attempt to change the baud rate to"),
-                     modemBaud);
-            modem.gsmModem.sendAT(GF("+UART_DEF="), modemBaud, F(",8,1,0,0"));
-            modem.gsmModem.waitResponse();
-            modemSerial.end();
-            modemSerial.begin(modemBaud);
-        }
+        PRINTOUT(F("Attempting to force the modem baud rate."));
+        modem.gsmModem.forceModemBaud(modemSerial,
+                                      static_cast<uint32_t>(modemBaud));
     }
 /** End [setup_esp] */
 #endif
@@ -3802,21 +3816,10 @@ void setup() {
     modem.modemWake();  // NOTE:  This will also set up the modem
     // WARNING: PLEASE REMOVE AUTOBAUDING FOR PRODUCTION CODE!
     if (!modem.gsmModem.testAT()) {
-        PRINTOUT(F("Attempting autobauding.."));
-        uint32_t foundBaud = TinyGsmAutoBaud(modemSerial);
-        if (foundBaud != 0 && !(F_CPU <= 8000000L && foundBaud >= 115200) &&
-            !(F_CPU <= 16000000L && foundBaud > 115200)) {
-            PRINTOUT(F("Got modem response at baud of"), foundBaud,
-                     F("Firing an attempt to change the baud rate to"),
-                     modemBaud);
-            modem.gsmModem.setBaud(
-                modemBaud);  // Make sure we're *NOT* auto-bauding!
-            modem.gsmModem.waitResponse();
-            modemSerial.end();
-            modemSerial.begin(modemBaud);
-        }
+        PRINTOUT(F("Attempting to force the modem baud rate."));
+        modem.gsmModem.forceModemBaud(modemSerial,
+                                      static_cast<uint32_t>(modemBaud));
     }
-    modem.gsmModem.setBaud(modemBaud);   // Make sure we're *NOT* auto-bauding!
     modem.gsmModem.setNetworkMode(38);   // set to LTE only
                                          // 2 Automatic
                                          // 13 GSM only
@@ -3946,6 +3949,7 @@ void loop() {
                  mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM],
                  F("V) going back to sleep."));
         dataLogger.systemSleep();
+#if !defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM)
     } else if (getBatteryVoltage() < 3.55) {
         // At moderate voltage, log data but don't send it over the modem
         PRINTOUT(F("Battery at"),
@@ -3959,6 +3963,16 @@ void loop() {
                  F("V; high enough to log and publish data"));
         dataLogger.logDataAndPublish();
     }
+#else
+    } else {
+        // If the battery is good enough to log, log the data but we have no
+        // modem so we can't publish
+        PRINTOUT(F("Battery at"),
+                 mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM],
+                 F("V; high enough to log data"));
+        dataLogger.logData();
+    }
+#endif
 }
 
 /** End [simple_loop] */

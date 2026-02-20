@@ -144,56 +144,41 @@
  * This is the time for communication to begin.
  */
 #define ANB_PH_WARM_UP_TIME_MS 5400L
-/// @brief The maximum time to wait for a modbus response.
+/// @brief The maximum time to wait for a non-error modbus response.
 #define ANB_PH_WARM_UP_TIME_MAX 10000L
 
 /// @brief Sensor::_stabilizationTime_ms; the ANB pH sensor does not need to
-/// stabilize, but we use this time as the check for ready time.
-#define ANB_PH_STABILIZATION_TIME_MS 50
-/// @brief The maximum time to wait for ready to measure.
-#define ANB_PH_STABILIZATION_TIME_MAX 5000L
+/// stabilize - the stabilization and referencing time is included in the time
+/// before the first value.
+#define ANB_PH_STABILIZATION_TIME_MS 0L
 
-/// @brief The minimum time before a failure response is returned on the 2nd or
-/// subsequent value when the immersion sensor is not immersed.  This is a guess
-/// based on testing.
-#define ANB_PH_2ND_IMMERSION_ERROR 4000L
-/// @brief The minimum time before a failure response is returned on the 2nd or
-/// subsequent value when the immersion sensor is not immersed.  This is a guess
-/// based on testing.
-#define ANB_PH_2ND_IMMERSION_ERROR_MAX 12000L
-/// @brief The minimum time for the 2nd or subsequent values in high
-/// salinity (documented new output time of 10.5s)
-#define ANB_PH_2ND_VALUE_HIGH_SALT 5000L
-/// @brief The maximum time for the 2nd or subsequent values in high
-/// salinity.
-#define ANB_PH_2ND_VALUE_HIGH_SALT_MAX 15000L
-/// @brief The minimum time for the 2nd or subsequent values in low
-/// salinity (documented new output time of 14s).
-#define ANB_PH_2ND_VALUE_LOW_SALT 6000L
-/// @brief The maximum time for the 2nd or subsequent values in low
-/// salinity (documented new output time of 14s).
-#define ANB_PH_2ND_VALUE_LOW_SALT_MAX 18000L
-
-/// @brief The minimum time before a failure response is returned on the first
-/// measurement when the immersion sensor is not immersed.  This is a guess
-/// based on testing.
-#define ANB_PH_1ST_IMMERSION_ERROR 6000L
-/// @brief The maximum time before a failure response is returned on the first
-/// measurement when the immersion sensor is not immersed.  This is a guess
-/// based on testing.
-#define ANB_PH_1ST_IMMERSION_ERROR_MAX 12000L
-/// @brief The minimum time for the first value in high salinity (documented min
-/// time of 129s - 9s).
-#define ANB_PH_1ST_VALUE_HIGH_SALT 120000L
+/// @brief The minimum time for the first value in high salinity (check 5
+/// seconds before the documented min time of 129s).
+/// @note If the immersion sensor is enabled and the sensor is not immersed, a
+/// failure response may be returned sooner
+#define ANB_PH_1ST_VALUE_HIGH_SALT 124000L
 /// @brief The maximum time for the first value in high salinity (documented max
 /// time of 238s for a long interval delay + 10s).
 #define ANB_PH_1ST_VALUE_HIGH_SALT_MAX 248000L
 /// @brief The minimum time for the first value in low salinity (documented min
-/// time is 184s, but I got responses at 160s).
-#define ANB_PH_1ST_VALUE_LOW_SALT 155000L
+/// time is 184s, but I got responses at 160s so we check 1s before that).
+/// @note If the immersion sensor is enabled and the sensor is not immersed, a
+/// failure response may be returned sooner
+#define ANB_PH_1ST_VALUE_LOW_SALT 159000L
 /// @brief The maximum time for the first value in low salinity (documented max
 /// time of 255s for a long interval delay + 10s).
 #define ANB_PH_1ST_VALUE_LOW_SALT_MAX 265000L
+
+/// @brief The minimum time for the 2nd or subsequent values in high
+/// salinity (documented new output time of 10.5s, add 100ms buffer).
+/// @warning After the first reading, the sensor will *always* say the sensor is
+/// ready!  But there will not be a **new** value available before this time.
+#define ANB_PH_2ND_VALUE_HIGH_SALT 10600L
+/// @brief The minimum time for the 2nd or subsequent values in low
+/// salinity (documented new output time of 14s, add 100ms buffer).
+/// @warning After the first reading, the sensor will *always* say the sensor is
+/// ready!  But there will not be a **new** value available before this time.
+#define ANB_PH_2ND_VALUE_LOW_SALT 14100L
 /**@}*/
 
 /**
@@ -383,7 +368,7 @@
 // clang-format on
 /// @brief Decimals places in string representation; the health code has 0.
 #define ANB_PH_HEALTH_CODE_RESOLUTION 0
-/// @brief Sensor variable number; health code is stored in sensorValues[4]
+/// @brief Sensor variable number; health code is stored in sensorValues[5]
 #define ANB_PH_HEALTH_CODE_VAR_NUM 5
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
@@ -419,7 +404,7 @@
 // clang-format on
 /// @brief Decimals places in string representation; the diagnostic code has 0.
 #define ANB_PH_DIAGNOSTIC_CODE_RESOLUTION 0
-/// @brief Sensor variable number; diagnostic code is stored in sensorValues[4]
+/// @brief Sensor variable number; diagnostic code is stored in sensorValues[6]
 #define ANB_PH_DIAGNOSTIC_CODE_VAR_NUM 6
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
@@ -456,7 +441,7 @@
 // clang-format on
 /// @brief Decimals places in string representation; the error code has 0.
 #define ANB_PH_STATUS_CODE_RESOLUTION 0
-/// @brief Sensor variable number; error code is stored in sensorValues[4]
+/// @brief Sensor variable number; error code is stored in sensorValues[7]
 #define ANB_PH_STATUS_CODE_VAR_NUM 7
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
@@ -474,6 +459,9 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the [ANB pH sensors](@ref sensor_anb_ph)
+ *
+ * @note For the ANB pH sensor, the sensor::_measurementTime_ms is the time of the 2nd or subsequent reading.
+ * The time for the first reading after power on is variable and much longer.
  */
 /* clang-format on */
 class ANBpH : public Sensor {
@@ -487,6 +475,11 @@ class ANBpH : public Sensor {
      * can be used.
      * @param powerPin The pin on the mcu controlling power to the ANB pH
      * sensor. Use -1 if it is continuously powered.
+     * @param loggingIntervalMinutes The logging interval in minutes.  Even when
+     * the sensor is being powered off between readings, it needs to be told how
+     * often it will be powered on.  This is not used if the sensor power is not
+     * being controlled by the mcu.  Must be between 10 and 240 minutes when
+     * power is cycled; use 0 only for always‑powered mode.
      * @param powerPin2 The pin on the mcu controlling power to the RS485
      * adapter, if it is different from that used to power the sensor.  Use -1
      * or omit if not applicable.
@@ -497,20 +490,29 @@ class ANBpH : public Sensor {
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
+     *
+     * @warning This library does _**NOT**_ verify that the logging interval set
+     * for this sensor matches the logging interval of the logger.  The actual
+     * power on/off and measurement times will be based on the logging interval
+     * of the logger, so if these are not the same, the timing of the
+     * measurements may be very different than expected.  I do not understand
+     * why the sensor needs to know the logging interval when it is powered off,
+     * but it does. I suspect it uses this to balance power across the various
+     * sensing elements to maximize the life of the sensor.
      */
-    ANBpH(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2,
+    ANBpH(byte modbusAddress, Stream* stream, int8_t powerPin,
+          int16_t loggingIntervalMinutes, int8_t powerPin2 = -1,
           int8_t enablePin = -1, uint8_t measurementsToAverage = 1);
-    /// @copydoc ANBpH::ANBpH(byte, Stream*, int8_t, int8_t, int8_t, uint8_t)
-    ANBpH(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2,
+    /// @copydoc ANBpH::ANBpH(byte, Stream*, int8_t, int16_t, int8_t, int8_t,
+    /// uint8_t)
+    ANBpH(byte modbusAddress, Stream& stream, int8_t powerPin,
+          int16_t loggingIntervalMinutes, int8_t powerPin2 = -1,
           int8_t enablePin = -1, uint8_t measurementsToAverage = 1);
     /**
      * @brief Destroy the ANB pH object - no action taken
      */
     virtual ~ANBpH();
 
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
     String getSensorLocation(void) override;
 
     /**
@@ -525,37 +527,33 @@ class ANBpH : public Sensor {
      * @return True if the setup was successful.
      */
     bool setup(void) override;
+    /**
+     * @brief Confirms that the sensor is giving a valid status code in response
+     * to modbus commands, re-sets the RTC, and starts measurements.
+     *
+     * Unlike base Sensor::wake(), this starts measurements (scanning).  ANB pH
+     * sensors have a built-in stabilization and referencing time before they
+     * report the first value so when we start scanning, we're starting the wait
+     * for stabilization and then must wait the (very long) "first measurement"
+     * time before requesting the first result.
+     *
+     * @return True if the sensor started scanning.
+     */
     bool wake(void) override;
     bool sleep(void) override;
-    bool startSingleMeasurement(void) override;
-    bool addSingleMeasurementResult(void) override;
 
-    // Override these to use two power pins
-    void powerUp(void) override;
-    void powerDown(void) override;
+    bool addSingleMeasurementResult(void) override;
 
     /**
      * @copydoc Sensor::isWarmedUp(bool debug)
      *
      * For the ANB pH sensor, this waits for both the power-on warm up and for a
-     * valid response from the sensor to a Modbus command.
-     *
-     * @note The timing here is probably not very variable.
-     */
-    bool isWarmedUp(bool debug = false) override;
-
-    /**
-     * @brief Check whether or not enough time has passed between the sensor
-     * responding to any modbus command to giving a valid status code - which
-     * indicates that it's ready to take a measurement.
-     *
-     * @param debug True to output the result to the debugging Serial
-     * @return True indicates that enough time has passed that the sensor is
+     * valid status code response from the sensor - which indicates that it's
      * ready to take a measurement.
      *
      * @note The timing here is probably not very variable.
      */
-    bool isStable(bool debug = false) override;
+    bool isWarmedUp(bool debug = false) override;
 
     /**
      * @brief Check whether or not the pH sensor has completed a measurement.
@@ -613,14 +611,16 @@ class ANBpH : public Sensor {
      */
     Stream* _stream;
     /**
+     * @brief The logging interval in minutes.  Even when the sensor is being
+     * powered off between readings, it needs to be told how often it will be
+     * powered on.
+     */
+    int16_t _loggingIntervalMinutes;
+    /**
      * @brief Private reference to the RS-485 adapter's flow direction control
      * pin.
      */
     int8_t _RS485EnablePin;
-    /**
-     * @brief Private reference to the power pin fro the RS-485 adapter.
-     */
-    int8_t _powerPin2;
     /**
      * @brief Private reference to the salinity mode for the ANB pH sensor.
      * @remark The salinity mode is set to low salinity by default.
@@ -655,22 +655,6 @@ class ANBpH : public Sensor {
                        uint32_t spacing   = ANB_PH_MINIMUM_REQUEST_SPACING,
                        uint32_t startTime = 0);
 
-    /**
-     * @brief Get the start of the estimated time window before an immersion
-     * error is returned based on power cycling and the immersion sensor
-     * enablement.     *
-     * @return The start of the estimated time window before an immersion error
-     * is returned.
-     */
-    uint32_t getStartImmersionErrorWindow(void);
-    /**
-     * @brief Get the end of the estimated time window before an immersion
-     * error is returned based on power cycling and the immersion sensor
-     * enablement.
-     * @return The end of the estimated time window before an immersion error
-     * is returned.
-     */
-    uint32_t getEndImmersionErrorWindow(void);
     /**
      * @brief Get the start of the estimated time window for a measurement to
      * complete based on the sensor's current configuration.

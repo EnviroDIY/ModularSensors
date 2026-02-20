@@ -26,8 +26,9 @@ KellerParent::KellerParent(byte modbusAddress, Stream* stream, int8_t powerPin,
       _model(model),
       _modbusAddress(modbusAddress),
       _stream(stream),
-      _RS485EnablePin(enablePin),
-      _powerPin2(powerPin2) {}
+      _RS485EnablePin(enablePin) {
+    setSecondaryPowerPin(powerPin2);
+}
 KellerParent::KellerParent(byte modbusAddress, Stream& stream, int8_t powerPin,
                            int8_t powerPin2, int8_t enablePin,
                            uint8_t measurementsToAverage, kellerModel model,
@@ -41,8 +42,9 @@ KellerParent::KellerParent(byte modbusAddress, Stream& stream, int8_t powerPin,
       _model(model),
       _modbusAddress(modbusAddress),
       _stream(&stream),
-      _RS485EnablePin(enablePin),
-      _powerPin2(powerPin2) {}
+      _RS485EnablePin(enablePin) {
+    setSecondaryPowerPin(powerPin2);
+}
 // Destructor
 KellerParent::~KellerParent() {}
 
@@ -60,7 +62,6 @@ bool KellerParent::setup(void) {
     bool retVal =
         Sensor::setup();  // this will set pin modes and the setup status bit
     if (_RS485EnablePin >= 0) { pinMode(_RS485EnablePin, OUTPUT); }
-    if (_powerPin2 >= 0) { pinMode(_powerPin2, OUTPUT); }
 
 #ifdef MS_KELLERPARENT_DEBUG_DEEP
     _ksensor.setDebugStream(&MS_SERIAL_OUTPUT);
@@ -85,121 +86,55 @@ bool KellerParent::sleep(void) {
 };
 
 
-// This turns on sensor power
-void KellerParent::powerUp(void) {
-    if (_powerPin >= 0) {
-        // Reset power pin mode every power up because pins are set to tri-state
-        // on sleep
-        pinMode(_powerPin, OUTPUT);
-        MS_DBG(F("Powering"), getSensorNameAndLocation(), F("with pin"),
-               _powerPin);
-        digitalWrite(_powerPin, HIGH);
-    }
-    if (_powerPin2 >= 0) {
-        // Reset power pin mode every power up because pins are set to tri-state
-        // on sleep
-        pinMode(_powerPin2, OUTPUT);
-        MS_DBG(F("Applying secondary power to"), getSensorNameAndLocation(),
-               F("with pin"), _powerPin2);
-        digitalWrite(_powerPin2, HIGH);
-    }
-    if (_powerPin < 0 && _powerPin2 < 0) {
-        MS_DBG(F("Power to"), getSensorNameAndLocation(),
-               F("is not controlled by this library."));
-        // Mark the power-on time, just in case it  had not been marked
-        if (_millisPowerOn == 0) _millisPowerOn = millis();
-    } else {
-        // Mark the time that the sensor was powered
-        _millisPowerOn = millis();
-    }
-    // Reset enable pin because pins are set to tri-state on sleep
-    if (_RS485EnablePin >= 0) { pinMode(_RS485EnablePin, OUTPUT); }
-    // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
-    setStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL);
-}
-
-
-// This turns off sensor power
-void KellerParent::powerDown(void) {
-    if (_powerPin >= 0) {
-        MS_DBG(F("Turning off power to"), getSensorNameAndLocation(),
-               F("with pin"), _powerPin);
-        digitalWrite(_powerPin, LOW);
-        // Unset the power-on time
-        _millisPowerOn = 0;
-        // Unset the activation time
-        _millisSensorActivated = 0;
-        // Unset the measurement request time
-        _millisMeasurementRequested = 0;
-        // Unset the status bits for sensor power (bits 1 & 2),
-        // activation (bits 3 & 4), and measurement request (bits 5 & 6)
-        clearStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL, WAKE_ATTEMPTED,
-                        WAKE_SUCCESSFUL, MEASUREMENT_ATTEMPTED,
-                        MEASUREMENT_SUCCESSFUL);
-    }
-    if (_powerPin2 >= 0) {
-        MS_DBG(F("Turning off secondary power to"), getSensorNameAndLocation(),
-               F("with pin"), _powerPin2);
-        digitalWrite(_powerPin2, LOW);
-    }
-    if (_powerPin < 0 && _powerPin2 < 0) {
-        MS_DBG(F("Power to"), getSensorNameAndLocation(),
-               F("is not controlled by this library."));
-        // Do NOT unset any status bits or timestamps if we didn't really power
-        // down!
-    }
-}
-
-
 bool KellerParent::addSingleMeasurementResult(void) {
-    bool success = false;
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return bumpMeasurementAttemptCount(false);
+    }
 
-    // Initialize float variables
+    bool  success            = false;
     float waterPressureBar   = -9999;
     float waterTemperatureC  = -9999;
     float waterDepthM        = -9999;
     float waterPressure_mBar = -9999;
 
-    // Check a measurement was *successfully* started (status bit 6 set)
-    // Only go on to get a result if it was
-    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-        // Get Values
-        success     = _ksensor.getValues(waterPressureBar, waterTemperatureC);
-        waterDepthM = _ksensor.calcWaterDepthM(
-            waterPressureBar,
-            waterTemperatureC);  // float calcWaterDepthM(float
-                                 // waterPressureBar, float waterTemperatureC)
+    // Get Values
+    // the getValues function in the KellerModbus library will *always* return
+    // true, but will set the value variables to -9999 if it fails to get a
+    // value.  So we check for success by checking that the value variables are
+    // not -9999 or NaN.
+    _ksensor.getValues(waterPressureBar, waterTemperatureC);
+    success = (!isnan(waterPressureBar) && waterPressureBar != -9999 &&
+               !isnan(waterTemperatureC) && waterTemperatureC != -9999);
 
-        // Fix not-a-number values
-        if (!success || isnan(waterPressureBar)) waterPressureBar = -9999;
-        if (!success || isnan(waterTemperatureC)) waterTemperatureC = -9999;
-        if (!success || isnan(waterDepthM)) waterDepthM = -9999;
-
+    if (success) {
+        // calculate depth from pressure and temperature
+        waterDepthM = _ksensor.calcWaterDepthM(waterPressureBar,
+                                               waterTemperatureC);
         // For waterPressureBar, convert bar to millibar
-        if (waterPressureBar != -9999)
-            waterPressure_mBar = 1000 * waterPressureBar;
-
-        MS_DBG(F("  Pressure_mbar:"), waterPressure_mBar);
-        MS_DBG(F("  Temp_C:"), waterTemperatureC);
-        MS_DBG(F("  Height_m:"), waterDepthM);
-    } else {
-        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+        waterPressure_mBar = 1000 * waterPressureBar;
     }
 
-    // Put values into the array
-    verifyAndAddMeasurementResult(KELLER_PRESSURE_VAR_NUM, waterPressure_mBar);
-    verifyAndAddMeasurementResult(KELLER_TEMP_VAR_NUM, waterTemperatureC);
-    verifyAndAddMeasurementResult(KELLER_HEIGHT_VAR_NUM, waterDepthM);
+    MS_DBG(F("  Pressure_mbar:"), waterPressure_mBar);
+    MS_DBG(F("  Temp_C:"), waterTemperatureC);
+    MS_DBG(F("  Height_m:"), waterDepthM);
 
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
+    success &= (!isnan(waterPressureBar) && waterPressureBar != -9999 &&
+                !isnan(waterTemperatureC) && waterTemperatureC != -9999 &&
+                !isnan(waterDepthM) && waterDepthM != -9999);
 
-    // Return true when finished
-    return success;
+    if (success) {
+        // Put values into the array
+        verifyAndAddMeasurementResult(KELLER_PRESSURE_VAR_NUM,
+                                      waterPressure_mBar);
+        verifyAndAddMeasurementResult(KELLER_TEMP_VAR_NUM, waterTemperatureC);
+        verifyAndAddMeasurementResult(KELLER_HEIGHT_VAR_NUM, waterDepthM);
+    }
+
+    // Return success value when finished
+    return bumpMeasurementAttemptCount(success);
 }
 
 // cSpell:ignore ksensor

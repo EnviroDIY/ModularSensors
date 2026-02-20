@@ -79,7 +79,7 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include "TinyGsmClient.h"
+#include "TinyGsmClientESP8266.h"
 #include "Espressif.h"
 
 #ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
@@ -158,7 +158,7 @@ class EspressifESP8266 : public Espressif {
     /**
      * @brief Public reference to the TinyGSM modem.
      */
-    TinyGsm gsmModem;
+    TinyGsmESP8266 gsmModem;
 
  protected:
     bool isInternetAvailable(void) override;

@@ -12,7 +12,7 @@
 
 
 // ============================================================================
-//  Functions for the EnviroDIY data portal receivers.
+//  Functions for ThingSpeak
 // ============================================================================
 
 // Constant values for MQTT publish

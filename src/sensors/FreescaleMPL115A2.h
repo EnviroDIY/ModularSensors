@@ -35,7 +35,7 @@
  * is managed by the
  * [Adafruit MPL115A2 library](https://github.com/adafruit/Adafruit_MPL115A2).
  *
- * @note Software I2C is *not* supported for the AM2315.
+ * @note Software I2C is *not* supported for the MPL115A2.
  * A secondary hardware I2C on a SAMD board is supported.
  *
  * @section sensor_mpl115a2_datasheet Sensor Datasheet
@@ -234,14 +234,9 @@ class FreescaleMPL115A2 : public Sensor {
      * @return True if the setup was successful.
      */
     bool setup(void) override;
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
+
     String getSensorLocation(void) override;
 
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
     bool addSingleMeasurementResult(void) override;
 
  private:

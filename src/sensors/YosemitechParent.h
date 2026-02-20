@@ -168,7 +168,7 @@ class YosemitechParent : public Sensor {
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
      * @param model The model of Yosemitech sensor.
-     * @param sensName The name of the sensor.  Defaults to "SDI12-Sensor".
+     * @param sensName The name of the sensor.  Defaults to "Yosemitech-Sensor".
      * @param numVariables The number of variable results returned by the
      * sensor. Defaults to 2.
      * @param warmUpTime_ms The time in ms between when the sensor is powered on
@@ -209,9 +209,6 @@ class YosemitechParent : public Sensor {
      */
     virtual ~YosemitechParent();
 
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
     String getSensorLocation(void) override;
 
     /**
@@ -227,7 +224,15 @@ class YosemitechParent : public Sensor {
      */
     bool setup(void) override;
     /**
-     * @copydoc Sensor::wake()
+     * @brief Wakes the sensor, starts measurements, and activates brushes.
+     *
+     * Unlike base Sensor::wake(), this starts measurements and activates the
+     * brushes (where applicable).  Yosemitech sensors do not start to stabilize
+     * until after starting measurements.  So we activate the sensor as part of
+     * the wake and then must wait the stabilization time + 1 measurement time
+     * before requesting the first result.
+     *
+     * @return True if the wake function completed successfully.
      */
     bool wake(void) override;
     /**
@@ -240,13 +245,6 @@ class YosemitechParent : public Sensor {
      */
     bool sleep(void) override;
 
-    // Override these to use two power pins
-    void powerUp(void) override;
-    void powerDown(void) override;
-
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
     bool addSingleMeasurementResult(void) override;
 
  private:
@@ -273,10 +271,6 @@ class YosemitechParent : public Sensor {
      * pin.
      */
     int8_t _RS485EnablePin;
-    /**
-     * @brief Private reference to the power pin fro the RS-485 adapter.
-     */
-    int8_t _powerPin2;
 };
 
 #endif  // SRC_SENSORS_YOSEMITECHPARENT_H_

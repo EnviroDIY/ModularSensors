@@ -168,9 +168,6 @@ class MaximDS3231 : public Sensor {
      */
     ~MaximDS3231();
 
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
     String getSensorLocation(void) override;
 
     /**
@@ -198,9 +195,6 @@ class MaximDS3231 : public Sensor {
      * successfully. successfully.
      */
     bool startSingleMeasurement(void) override;
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
     bool addSingleMeasurementResult(void) override;
 };
 

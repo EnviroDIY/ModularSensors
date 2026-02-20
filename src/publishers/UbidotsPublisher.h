@@ -35,7 +35,7 @@
 
 
 // ============================================================================
-//  Functions for the EnviroDIY data portal receivers.
+//  Functions for Ubidots
 // ============================================================================
 /**
  * @brief The UbidotsPublisher subclass of dataPublisher for publishing data
@@ -108,7 +108,7 @@ class UbidotsPublisher : public dataPublisher {
                      const char* authenticationToken, const char* deviceID,
                      int sendEveryX = 1);
     /**
-     * @brief Destroy the EnviroDIY Publisher object
+     * @brief Destroy the Ubidots Publisher object
      */
     virtual ~UbidotsPublisher();
 
@@ -166,7 +166,7 @@ class UbidotsPublisher : public dataPublisher {
 
     // Post Data to Ubidots
     /**
-     * @brief Utilize an attached modem to open a a TCP connection to the
+     * @brief Utilize an attached modem to open a TCP connection to the
      * Ubidots API and then stream out a post request over
      * that connection.
      *

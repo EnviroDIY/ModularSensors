@@ -106,9 +106,9 @@ For some generalized information about attaching sensors to an Arduino style boa
 ## Data Endpoints<!--! {#mainpage_data_receivers} -->
 
 Within ModularSensors, the "dataPublisher" objects add the functionality to send data to remote web services.
-The currently supported services are the [Monitor My Watershed data portal](http://data.envirodiy.org/), [ThingSpeak](https://thingspeak.com/), the [Ubidots IoT platform](https://ubidots.com), [Amazon Web Services IoT Core](https://aws.amazon.com/iot-core/), and [Amazon Web Services Simple Storage Service (S3)](https://aws.amazon.com/s3/).
+The currently supported services are [Monitor My Watershed](https://monitormywatershed.org), [ThingSpeak](https://thingspeak.com), the [Ubidots IoT platform](https://ubidots.com), [Amazon Web Services IoT Core](https://aws.amazon.com/iot-core), and [Amazon Web Services Simple Storage Service (S3)](https://aws.amazon.com/s3).
 
-- [Monitor My Watershed/EnviroDIY Data Portal](https://envirodiy.github.io/ModularSensors/class_enviro_d_i_y_publisher.html)
+- [Monitor My Watershed](https://envirodiy.github.io/ModularSensors/class_monitor_my_watershed_publisher.html)
 - [ThingSpeak](https://envirodiy.github.io/ModularSensors/class_thing_speak_publisher.html)
 - [Ubidots IoT platform](https://envirodiy.github.io/ModularSensors/class_ubidots_publisher.html)
 - [AWS IoT Core](https://envirodiy.github.io/ModularSensors/class_a_w_s___io_t___publisher.html)
@@ -150,7 +150,7 @@ For information common to all modems and for tables of the proper class, baud ra
 Open an [issue](https://github.com/EnviroDIY/ModularSensors/issues) to suggest and discuss potential changes/additions.
 Feel free to open issues about any bugs you find or any sensors you would like to have added.
 
-If you would like to directly help with the coding development of the library, there are some [tips here](https://envirodiy.github.io/ModularSensors/page_developer_setup.html) on how to set up PlatformIO so you can fork the library and test programs while in the library repo.
+If you would like to directly help with the coding development of the library, there are some [tips and instructions here](https://envirodiy.github.io/ModularSensors/page_developer_setup.html) on how to set up PlatformIO so you can fork the library and test programs while in the library repo.
 Please *take time to familiarize yourself with the [terminology, classes and data structures](https://envirodiy.github.io/ModularSensors/page_library_terminology.html) this library uses*.
 This library is built to fully take advantage of Objecting Oriented Programing (OOP) approaches and is larger and more complicated than many Arduino libraries.
 There is doxygen-created documentation on our [github pages](https://envirodiy.github.io/ModularSensors/index.html) and an *enormous* number of comments and debugging printouts in the code itself to help you get going.

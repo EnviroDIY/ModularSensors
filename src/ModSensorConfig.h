@@ -6,7 +6,13 @@
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief This file is used to configure the clock and other library
- * settings/preferences for the Modular Sensors Library.
+ * settings/preferences for the Modular Sensors Library and some of the
+ * underlying libraries.
+ *
+ * @note This file must be included in every header file in the library - before
+ * including anything else - to ensure that the settings are applied
+ * consistently across all files and that compile time settings trickle down to
+ * the underlying libraries.
  *
  * For the Arduino IDE, this is the only way to configure these settings. If you
  * are using PlatformIO, you have the option of using this file or changing your
@@ -269,6 +275,18 @@
  * expected incoming message; up to ~1500.
  */
 #define TINY_GSM_RX_BUFFER 64
+#endif
+
+#ifndef TINY_GSM_YIELD_MS
+/**
+ * @brief The number of milliseconds to yield to the GSM module when using
+ * TinyGSM.
+ *
+ * If you are using a slow baud rate to communicate with your module, this delay
+ * is set to prevent command responses from being spliced apart.  This is
+ * especially important when using a faster processor.
+ */
+#define TINY_GSM_YIELD_MS 2
 #endif
 
 #ifndef MS_MQTT_MAX_PACKET_SIZE

@@ -239,9 +239,7 @@ class MaximDS18 : public Sensor {
      * @return True if the setup was successful.
      */
     bool setup(void) override;
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
+
     String getSensorLocation(void) override;
 
     /**
@@ -256,9 +254,6 @@ class MaximDS18 : public Sensor {
      * successfully. successfully.
      */
     bool startSingleMeasurement(void) override;
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
     bool addSingleMeasurementResult(void) override;
 
  private:

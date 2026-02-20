@@ -60,40 +60,32 @@ bool FreescaleMPL115A2::setup(void) {
 
 
 bool FreescaleMPL115A2::addSingleMeasurementResult(void) {
-    // Initialize float variables
-    float temp  = -9999;
-    float press = -9999;
-
-    // Check a measurement was *successfully* started (status bit 6 set)
-    // Only go on to get a result if it was
-    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
-
-        // Read values
-        mpl115a2_internal.getPT(&press, &temp);
-
-        if (isnan(temp)) temp = -9999;
-        if (isnan(press)) press = -9999;
-
-        if (press > 115.0 || temp < -40.0) {
-            temp  = -9999;
-            press = -9999;
-        }
-
-        MS_DBG(F("  Temperature:"), temp);
-        MS_DBG(F("  Pressure:"), press);
-    } else {
-        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return bumpMeasurementAttemptCount(false);
     }
 
-    verifyAndAddMeasurementResult(MPL115A2_TEMP_VAR_NUM, temp);
-    verifyAndAddMeasurementResult(MPL115A2_PRESSURE_VAR_NUM, press);
+    bool  success = false;
+    float temp    = -9999;
+    float press   = -9999;
 
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
+    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-    // no way of knowing if successful, just return true
-    return true;
+    // Read values
+    mpl115a2_internal.getPT(&press, &temp);
+
+    MS_DBG(F("  Temperature:"), temp);
+    MS_DBG(F("  Pressure:"), press);
+
+    if (!isnan(temp) && !isnan(press) && press >= 50.0 && press <= 115.0 &&
+        temp >= -20.0 && temp <= 85.0) {
+        verifyAndAddMeasurementResult(MPL115A2_TEMP_VAR_NUM, temp);
+        verifyAndAddMeasurementResult(MPL115A2_PRESSURE_VAR_NUM, press);
+        success = true;
+    } else {
+        MS_DBG(F("  Values outside expected range or invalid"));
+    }
+
+    // Return success value when finished
+    return bumpMeasurementAttemptCount(success);
 }

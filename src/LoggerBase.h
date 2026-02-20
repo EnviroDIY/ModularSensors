@@ -232,7 +232,7 @@ class Logger {
      * regardless of the programmed interval. Useful for fast field
      * verification.
      */
-    void setinitialShortIntervals(int16_t initialShortIntervals);
+    void setInitialShortIntervals(int16_t initialShortIntervals);
     /**
      * @brief Get the number of 1-minute intervals at the start before logging
      * on the regular logging interval
@@ -240,8 +240,19 @@ class Logger {
      * @return The number of 1-minute intervals at the start before logging
      * on the regular logging interval
      */
-    int16_t getinitialShortIntervals() {
+    int16_t getInitialShortIntervals() {
         return _remainingShortIntervals;
+    }
+    // Backwards-compatibility shims
+    /// @copydoc setInitialShortIntervals
+    /// @deprecated use setInitialShortIntervals
+    void setinitialShortIntervals(int16_t initialShortIntervals) {
+        setInitialShortIntervals(initialShortIntervals);
+    }
+    /// @copydoc getInitialShortIntervals
+    /// @deprecated use getInitialShortIntervals
+    int16_t getinitialShortIntervals() {
+        return getInitialShortIntervals();
     }
 
     /**
@@ -388,7 +399,7 @@ class Logger {
      * Because this sets the pin mode, this function should only be called
      * during the `setup()` or `loop()` portion of an Arduino program.
      *
-     * Once in testing mode, the logger will attempt to connect the the internet
+     * Once in testing mode, the logger will attempt to connect to the internet
      * and take 25 measurements spaced at 5 second intervals writing the results
      * to the main output destination (ie, Serial).  Testing mode cannot be
      * entered while the logger is taking a scheduled measurement.  No data is
@@ -958,7 +969,7 @@ class Logger {
     /**
      * @brief Set static variables for the date/time
      *
-     * This is needed so that all data outputs (SD, EnviroDIY, serial printing,
+     * This is needed so that all data outputs (SD, publishers, serial printing,
      * etc) print the same time for updating the sensors - even though the
      * routines to update the sensors and to output the data may take several
      * seconds.  It is not currently possible to output the instantaneous time
@@ -980,7 +991,7 @@ class Logger {
      * That is the value saved in the static variable markedLocalUnixTime.
      *
      * This should be used in conjunction with markTime() to ensure that all
-     * data outputs from a single data update session (SD, EnviroDIY, serial
+     * data outputs from a single data update session (SD, publishers, serial
      * printing, etc) have the same timestamp even though the update routine may
      * take several (or many) seconds.
      *
