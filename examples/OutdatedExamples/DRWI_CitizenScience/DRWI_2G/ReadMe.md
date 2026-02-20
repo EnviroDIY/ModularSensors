@@ -51,7 +51,7 @@ _______
 
 ### Set the logger ID<!--! {#example_drwi_2g_logger_id} -->
 
-- Change the text `YourLoggerID` in this section of code to your loggerID.
+- Change the text `YourLoggerID` in this section of code to your logger ID.
 For most DRWI installations, the logger ID was assigned by the Stroud Water Research Center before the station was built.
 
 ```cpp

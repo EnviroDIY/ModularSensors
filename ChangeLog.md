@@ -72,12 +72,12 @@ These values should generally be set in the specific sensor constructors and onl
 
 ### Removed
 
-- Removed the unused `_maxSamplesToAverage` parameter of the VariableArray and the `countMaxToAverage()` function which set the parameter.
-- Removed unnecessary copy doc calls for inherited functions and properties.
-- Removed all overrides of the powerUp and powerDown functions that are no longer needed since all sensors have two power pins built in.
-- Removed references to the EnviroDIY data portal.
-- Removed all defines from examples sketches.
-Defining values to be used by TinyGSM and/or the MQTT library here in addition to any defines in the ModSensorConfig.h or in a build configuration can lead to One Definition Rule violations because the define values are used when creating the classes from the templates in TinyGSM.
+- Unused `_maxSamplesToAverage` parameter of the VariableArray and the `countMaxToAverage()` function.
+- Unnecessary copy doc calls for inherited functions and properties.
+- All overrides of the powerUp and powerDown functions that are no longer needed since all sensors have two power pins built in.
+- References to the EnviroDIY data portal.
+- All defines from example sketches.
+  - Defining values to be used by TinyGSM and/or the MQTT library here in addition to any defines in ModSensorConfig.h or in a build configuration can lead to One Definition Rule violations because the define values are used when creating the classes from the templates in TinyGSM.
 
 ### Fixed
 

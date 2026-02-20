@@ -476,8 +476,10 @@ void setup() {
              F("baud.  This will fail if the baud is mismatched.."));
     modemSerial.begin(modemBaud);
     modem.modemWake();  // NOTE:  This will also set up the modem
-    // WARNING: PLEASE REMOVE AUTOBAUDING FOR PRODUCTION CODE!
+    // WARNING: PLEASE REMOVE BAUD RATE DETECTION/FORCING FOR PRODUCTION CODE!
     if (!modem.gsmModem.testAT()) {
+        // If the AT command test fails, chances are it's a baud rate issue. Try
+        // to detect the baud rate and force the baud rate to the correct one.
         PRINTOUT(F("Attempting to force the modem baud rate."));
         modem.gsmModem.forceModemBaud(modemSerial,
                                       static_cast<uint32_t>(modemBaud));
@@ -491,8 +493,10 @@ void setup() {
     modem.setModemResetLevel(HIGH);  // ModuleFun Bee inverts the signal
     PRINTOUT(F("Waking modem and setting Cellular Carrier Options..."));
     modem.modemWake();  // NOTE:  This will also set up the modem
-    // WARNING: PLEASE REMOVE AUTOBAUDING FOR PRODUCTION CODE!
+    // WARNING: PLEASE REMOVE BAUD RATE DETECTION/FORCING FOR PRODUCTION CODE!
     if (!modem.gsmModem.testAT()) {
+        // If the AT command test fails, chances are it's a baud rate issue. Try
+        // to detect the baud rate and force the baud rate to the correct one.
         PRINTOUT(F("Attempting to force the modem baud rate."));
         modem.gsmModem.forceModemBaud(modemSerial,
                                       static_cast<uint32_t>(modemBaud));

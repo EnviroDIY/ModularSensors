@@ -339,16 +339,16 @@ class Variable {
     void setVarCode(const char* varCode);
     // This gets/sets the variable UUID, if one has been assigned
     /**
-     * @brief Get the customized code for the variable
+     * @brief Get the variable's UUID as a String
      *
-     * @return The customized code for the variable
+     * @return The variable's UUID as a String
      */
     String getVarUUIDString(void);
     // This gets/sets the variable UUID, if one has been assigned
     /**
-     * @brief Get the customized code for the variable
+     * @brief Get the variable's UUID as a C-style string
      *
-     * @return The customized code for the variable
+     * @return The variable's UUID as a const char* (or nullptr if not assigned)
      */
     const char* getVarUUID(void);
     /**

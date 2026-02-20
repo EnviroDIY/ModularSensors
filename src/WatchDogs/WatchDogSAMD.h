@@ -146,11 +146,11 @@ class extendedWatchDogSAMD {
     static void clearWDTInterrupt();
 
     /**
-     * @brief Wait for the WDT config bit sync to finish.+
+     * @brief Wait for the WDT config bit sync to finish.
      */
     static void inline waitForWDTBitSync();
     /**
-     * @brief Wait for the GCLK config bit sync to finish.+
+     * @brief Wait for the GCLK config bit sync to finish.
      */
     static void inline waitForGCLKBitSync();
 

@@ -187,7 +187,7 @@ RESETN is a dedicated pin.
 > [!NOTE]
 > You can disable pin tri-state by calling `Logger::disablePinTristate(true)`.
 > You can re-enable pin tri-state by calling `Logger::disablePinTristate(false)`.
-> No pin modes are **not** changed when the `disablePinTristate()` function is called, only when the `systemSleep()` function is called.
+> Pin modes are not changed when `disablePinTristate()` is called; they are only changed when `systemSleep()` is called.
 
 To prevent power draw by any external pins during sleep, Modular Sensors sets all pins except the RTC interrupt pins to "tri-state."  Tri-state means that for *all* pins:
 

@@ -6,7 +6,7 @@ The processor then goes to sleep between readings.
 This example calls on two of the sensors available in this library.
 The example may be run exactly as written.
 
-This is the example you should use to deploy a logger somewhere where you don't want or have access to a way of streaming live data and you won't want to upload data to Monitor My Watershed.
+Use this example to deploy a logger when you cannot stream live data or do not want to upload data to Monitor My Watershed.
 
 _______
 
