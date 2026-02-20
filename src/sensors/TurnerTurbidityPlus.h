@@ -302,16 +302,6 @@ class TurnerTurbidityPlus : public TIADS1x15 {
      * be the final voltage *after* accounting for any voltage.
      */
     float _volt_blank;
-    /**
-     * @brief For 3.3V processors like the Mayfly, The Turner's 0-5V output
-     * signal must be shifted down to a maximum of 3.3V. This can be done either
-     * either with a level-shifting chip (e.g. Adafruit BSS38), OR by connecting
-     * the Turner's output signal via a voltage divider. This
-     * voltageDividerFactor is used for the latter case: e.g., a divider that
-     * uses 2 matched resistors will halve the voltage reading and requires a
-     * voltageDividerFactor of 2. The default value is 1.
-     * Note: This functionality is now handled by the parent class's _voltageMultiplier.
-     */
 };
 
 
