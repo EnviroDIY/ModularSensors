@@ -27,7 +27,9 @@ TIADS1x15::TIADS1x15(int8_t powerPin, uint8_t adsChannel,
              powerPin, -1, measurementsToAverage, TIADS1X15_INC_CALC_VARIABLES),
       _adsChannel(adsChannel),
       _isDifferential(false),
-      _adsDiffMux(TIADS1X15_DIFF_MUX_0_1), // Default value, not used
+      _adsDiffMux(
+          tiads1x15_adsDiffMux_t::TIADS1X15_DIFF_MUX_0_1),  // Default value,
+                                                            // not used
       _voltageMultiplier(voltageMultiplier),
       _adsGain(adsGain),
       _i2cAddress(i2cAddress),
@@ -62,16 +64,16 @@ String TIADS1x15::getSensorLocation(void) {
     if (_isDifferential) {
         sensorLocation += F("_Diff");
         switch (_adsDiffMux) {
-            case TIADS1X15_DIFF_MUX_0_1:
+            case tiads1x15_adsDiffMux_t::TIADS1X15_DIFF_MUX_0_1:
                 sensorLocation += F("0_1");
                 break;
-            case TIADS1X15_DIFF_MUX_0_3:
+            case tiads1x15_adsDiffMux_t::TIADS1X15_DIFF_MUX_0_3:
                 sensorLocation += F("0_3");
                 break;
-            case TIADS1X15_DIFF_MUX_1_3:
+            case tiads1x15_adsDiffMux_t::TIADS1X15_DIFF_MUX_1_3:
                 sensorLocation += F("1_3");
                 break;
-            case TIADS1X15_DIFF_MUX_2_3:
+            case tiads1x15_adsDiffMux_t::TIADS1X15_DIFF_MUX_2_3:
                 sensorLocation += F("2_3");
                 break;
         }
@@ -149,8 +151,7 @@ bool TIADS1x15::readVoltageSingleEnded(float& resultValue) {
     // Convert ADC raw counts value to voltage (V)
     adcVoltage = ads.computeVolts(adcCounts);
     MS_DBG(F("  ads.readADC_SingleEnded("), _adsChannel, F("):"), adcCounts,
-           '=', adcVoltage);
-
+           F(" voltage:"), adcVoltage);
     // Verify the range based on the actual power supplied to the ADS.
     // Valid range is approximately -0.3V to (supply voltage + 0.3V) with
     // absolute maximum of 5.5V per datasheet
@@ -164,7 +165,7 @@ bool TIADS1x15::readVoltageSingleEnded(float& resultValue) {
     MS_DBG(F("  Valid voltage range:"), minValidVoltage, F("V to"),
            maxValidVoltage, F("V"));
 
-    if (adcVoltage < maxValidVoltage && adcVoltage > minValidVoltage) {
+    if (adcVoltage <= maxValidVoltage && adcVoltage >= minValidVoltage) {
         // Apply the voltage multiplier scaling, with a default multiplier of 1
         scaledResult = adcVoltage * _voltageMultiplier;
         MS_DBG(F("  scaledResult:"), scaledResult);
@@ -193,7 +194,7 @@ bool TIADS1x15::readVoltageDifferential(float& resultValue) {
 
     // Set the internal gain according to user configuration
     ads.setGain(_adsGain);
-    
+
     if (!ads.begin(_i2cAddress)) {
         MS_DBG(F("  ADC initialization failed at 0x"),
                String(_i2cAddress, HEX));
@@ -202,23 +203,23 @@ bool TIADS1x15::readVoltageDifferential(float& resultValue) {
 
     // Read differential voltage based on mux configuration
     switch (_adsDiffMux) {
-        case TIADS1X15_DIFF_MUX_0_1:
+        case tiads1x15_adsDiffMux_t::TIADS1X15_DIFF_MUX_0_1:
             adcCounts = ads.readADC_Differential_0_1();
             break;
-        case TIADS1X15_DIFF_MUX_0_3:
+        case tiads1x15_adsDiffMux_t::TIADS1X15_DIFF_MUX_0_3:
             adcCounts = ads.readADC_Differential_0_3();
             break;
-        case TIADS1X15_DIFF_MUX_1_3:
+        case tiads1x15_adsDiffMux_t::TIADS1X15_DIFF_MUX_1_3:
             adcCounts = ads.readADC_Differential_1_3();
             break;
-        case TIADS1X15_DIFF_MUX_2_3:
+        case tiads1x15_adsDiffMux_t::TIADS1X15_DIFF_MUX_2_3:
             adcCounts = ads.readADC_Differential_2_3();
             break;
         default:
             MS_DBG(F("  Invalid differential mux configuration"));
             return false;
     }
-    
+
     // Convert counts to voltage
     adcVoltage = ads.computeVolts(adcCounts);
     MS_DBG(F("  Differential ADC counts:"), adcCounts, F(" voltage:"), adcVoltage);

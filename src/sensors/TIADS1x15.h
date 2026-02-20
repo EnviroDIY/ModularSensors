@@ -192,12 +192,12 @@
 /**
  * @brief Enum for the pins used for differential voltages.
  */
-typedef enum : uint16_t {
+enum class tiads1x15_adsDiffMux_t : uint16_t {
     TIADS1X15_DIFF_MUX_0_1,  ///< differential across pins 0 and 1
     TIADS1X15_DIFF_MUX_0_3,  ///< differential across pins 0 and 3
     TIADS1X15_DIFF_MUX_1_3,  ///< differential across pins 1 and 3
     TIADS1X15_DIFF_MUX_2_3   ///< differential across pins 2 and 3
-} tiads1x15_adsDiffMux_t;
+};
 
 /**
  * @anchor sensor_ads1x15_timing
