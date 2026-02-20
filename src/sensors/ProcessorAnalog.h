@@ -194,6 +194,22 @@ class ProcessorAnalog : public Sensor {
 
     bool addSingleMeasurementResult(void) override;
 
+    /**
+     * @brief Set the voltage multiplier for the processor analog sensor
+     *
+     * @param voltageMultiplier Any multiplier needed to convert raw readings
+     * from analogRead() into true voltage values based on any resistors or
+     * voltage dividers
+     */
+    void setVoltageMultiplier(float voltageMultiplier);
+
+    /**
+     * @brief Get the voltage multiplier for the processor analog sensor
+     *
+     * @return The voltage multiplier value
+     */
+    float getVoltageMultiplier(void);
+
  private:
     float _voltageMultiplier;  ///< Internal reference to any multiplier needed
                                ///< to convert raw battery readings into true

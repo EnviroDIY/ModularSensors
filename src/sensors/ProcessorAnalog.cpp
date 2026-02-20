@@ -65,3 +65,11 @@ bool ProcessorAnalog::addSingleMeasurementResult(void) {
     verifyAndAddMeasurementResult(PROCESSOR_ANALOG_VAR_NUM, sensorValue_analog);
     return bumpMeasurementAttemptCount(true);
 }
+
+void ProcessorAnalog::setVoltageMultiplier(float voltageMultiplier) {
+    _voltageMultiplier = voltageMultiplier;
+}
+
+float ProcessorAnalog::getVoltageMultiplier(void) {
+    return _voltageMultiplier;
+}
