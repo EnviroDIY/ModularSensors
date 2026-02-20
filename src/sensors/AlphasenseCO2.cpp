@@ -24,7 +24,7 @@ AlphasenseCO2::AlphasenseCO2(int8_t powerPin, tiads1x15_adsDiffMux_t adsDiffMux,
     _warmUpTime_ms        = ALPHASENSE_CO2_WARM_UP_TIME_MS;
     _stabilizationTime_ms = ALPHASENSE_CO2_STABILIZATION_TIME_MS;
     _measurementTime_ms   = ALPHASENSE_CO2_MEASUREMENT_TIME_MS;
-    // Set the number of variables returned
+    // Override variable counts from parent class defaults
     _numReturnedValues = ALPHASENSE_CO2_NUM_VARIABLES;
     _incCalcValues     = ALPHASENSE_CO2_INC_CALC_VARIABLES;
     // Set the sensor name

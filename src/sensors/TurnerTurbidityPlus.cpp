@@ -29,7 +29,11 @@ TurnerTurbidityPlus::TurnerTurbidityPlus(
     _warmUpTime_ms        = TURBIDITY_PLUS_WARM_UP_TIME_MS;
     _stabilizationTime_ms = TURBIDITY_PLUS_STABILIZATION_TIME_MS;
     _measurementTime_ms   = TURBIDITY_PLUS_MEASUREMENT_TIME_MS;
-    // Note: _numReturnedValues and _sensorName are set in the parent class
+    // Override variable counts from parent class defaults
+    _numReturnedValues = TURBIDITY_PLUS_NUM_VARIABLES;
+    _incCalcValues     = TURBIDITY_PLUS_INC_CALC_VARIABLES;
+    // Set the sensor name
+    _sensorName = "TurnerTurbidityPlus";
 }
 // Destructor
 TurnerTurbidityPlus::~TurnerTurbidityPlus() {}
@@ -107,8 +111,7 @@ bool TurnerTurbidityPlus::addSingleMeasurementResult(void) {
     }
 
     // Use the TIADS1x15 differential voltage reading function
-    // Note: Voltage multiplier/divider is automatically applied by the parent
-    // class
+    // The voltage multiplier and gain settings are handled by the parent class
     if (readVoltageDifferential(adcVoltage)) {
         MS_DBG(F("  Differential voltage (after voltage multiplier):"),
                String(adcVoltage, 3), F("V"));

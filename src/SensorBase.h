@@ -716,7 +716,7 @@ class Sensor {
      * calculated within the library for the sensor.  The @ref _incCalcValues
      * are *included* in this total.
      */
-    const uint8_t _numReturnedValues;
+    uint8_t _numReturnedValues;
     /**
      * @brief The number of included calculated variables from the sensor, if
      * any.
