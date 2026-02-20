@@ -65,9 +65,15 @@
  * - Response time: < 1ms
  * - Resample time: 860 samples per second (~1.2ms)
  * - Range:
- *   - Range is determined by supply voltage - No more than VDD + 0.3 V r 5.5 V
- *     (whichever is smaller) must be applied to this device.
- *   - 0 - 3.6V [when ADC is powered at 3.3V]
+ *   - Single-ended measurements: Limited by supply voltage (VDD + 0.3V max, absolute max 5.5V)
+ *     - 0 - 3.6V [when ADC is powered at 3.3V]
+ *   - Differential measurements: Limited by internal PGA full-scale range (gain-dependent)
+ *     - GAIN_TWOTHIRDS = ±6.144V
+ *     - GAIN_ONE = ±4.096V
+ *     - GAIN_TWO = ±2.048V
+ *     - GAIN_FOUR = ±1.024V
+ *     - GAIN_EIGHT = ±0.512V
+ *     - GAIN_SIXTEEN = ±0.256V
  * - Accuracy:
  *   - 16-bit ADC (ADS1115): < 0.25% (gain error), <0.25 LSB (offset error)
  *   - 12-bit ADC (ADS1015, using build flag ```MS_USE_ADS1015```): < 0.15% (gain error), <3 LSB (offset error)
@@ -228,7 +234,7 @@ enum class tiads1x15_adsDiffMux_t : uint16_t {
  * @name Voltage
  * The volt variable from a TI ADS1x15 analog-to-digital converter (ADC)
  *   - Range (with no external voltage divider):
- *     - 0 - min(4.096V, supply voltage + 0.3V) voltage + 0.3V)
+ *     - 0 - min(4.096V, supply voltage + 0.3V)
  *   - Accuracy:
  *     - 16-bit ADC (ADS1115): < 0.25% (gain error), <0.25 LSB (offset error)
  *     - 12-bit ADC (ADS1015, using build flag ```MS_USE_ADS1015```): < 0.15%

@@ -224,20 +224,31 @@ bool TIADS1x15::readVoltageDifferential(float& resultValue) {
     adcVoltage = ads.computeVolts(adcCounts);
     MS_DBG(F("  Differential ADC counts:"), adcCounts, F(" voltage:"), adcVoltage);
 
-    // Validate range
-    float minValidVoltage = -0.3;
-    float maxValidVoltage = _adsSupplyVoltage + 0.3;
-    if (maxValidVoltage > 5.5) {
-        maxValidVoltage = 5.5;
+    // Validate range - for differential measurements, use PGA full-scale range
+    // Based on gain setting rather than supply voltage
+    float fullScaleVoltage = 4.096;  // Default for GAIN_ONE
+    switch (_adsGain) {
+        case GAIN_TWOTHIRDS: fullScaleVoltage = 6.144; break;
+        case GAIN_ONE:       fullScaleVoltage = 4.096; break;
+        case GAIN_TWO:       fullScaleVoltage = 2.048; break;
+        case GAIN_FOUR:      fullScaleVoltage = 1.024; break;
+        case GAIN_EIGHT:     fullScaleVoltage = 0.512; break;
+        case GAIN_SIXTEEN:   fullScaleVoltage = 0.256; break;
     }
+    float minValidVoltage = -fullScaleVoltage;
+    float maxValidVoltage = fullScaleVoltage;
+    
+    MS_DBG(F("  ADS gain setting determines full-scale range"));
+    MS_DBG(F("  Valid differential voltage range:"), minValidVoltage, F("V to"),
+           maxValidVoltage, F("V"));
 
-    if (adcVoltage < maxValidVoltage && adcVoltage > minValidVoltage) {
+    if (adcVoltage <= maxValidVoltage && adcVoltage >= minValidVoltage) {
         scaledResult = adcVoltage * _voltageMultiplier;
         MS_DBG(F("  scaledResult:"), scaledResult);
         resultValue = scaledResult;
         success = true;
     } else {
-        MS_DBG(F("  ADC voltage out of valid range"));
+        MS_DBG(F("  Differential voltage out of valid range"));
         resultValue = -9999;
     }
 
