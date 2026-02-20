@@ -16,17 +16,18 @@
 #include <Adafruit_ADS1X15.h>
 
 
-// The constructor - need the power pin the data pin, and gain if non standard
-TIADS1x15::TIADS1x15(int8_t powerPin, uint8_t adsChannel, float gain,
-                     uint8_t i2cAddress, uint8_t measurementsToAverage,
-                     float adsSupplyVoltage_V)
+// The constructor - need the power pin the data pin, and voltage multiplier if
+// non standard
+TIADS1x15::TIADS1x15(int8_t powerPin, uint8_t adsChannel,
+                     float voltageMultiplier, uint8_t i2cAddress,
+                     uint8_t measurementsToAverage, float adsSupplyVoltage)
     : Sensor("TIADS1x15", TIADS1X15_NUM_VARIABLES, TIADS1X15_WARM_UP_TIME_MS,
              TIADS1X15_STABILIZATION_TIME_MS, TIADS1X15_MEASUREMENT_TIME_MS,
              powerPin, -1, measurementsToAverage, TIADS1X15_INC_CALC_VARIABLES),
       _adsChannel(adsChannel),
-      _gain(gain),
+      _voltageMultiplier(voltageMultiplier),
       _i2cAddress(i2cAddress),
-      _adsSupplyVoltage_V(adsSupplyVoltage_V) {}
+      _adsSupplyVoltage(adsSupplyVoltage) {}
 // Destructor
 TIADS1x15::~TIADS1x15() {}
 
@@ -53,13 +54,13 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
     bool    success     = false;
     int16_t adcCounts   = -9999;
     float   adcVoltage  = -9999;
-    float   calibResult = -9999;
+    float   scaledResult = -9999;
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
 // Create an auxiliary ADC object
 // We create and set up the ADC object here so that each sensor using
-// the ADC may set the gain appropriately without effecting others.
+// the ADC may set the internal gain appropriately without affecting others.
 #ifndef MS_USE_ADS1015
     Adafruit_ADS1115 ads;  // Use this for the 16-bit version
 #else
@@ -97,20 +98,20 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
     // Valid range is approximately -0.3V to (supply voltage + 0.3V) with
     // absolute maximum of 5.5V per datasheet
     float minValidVoltage = -0.3;
-    float maxValidVoltage = _adsSupplyVoltage_V + 0.3;
+    float maxValidVoltage = _adsSupplyVoltage + 0.3;
     if (maxValidVoltage > 5.5) {
         maxValidVoltage = 5.5;  // Absolute maximum per datasheet
     }
 
-    MS_DBG(F("  ADS supply voltage:"), _adsSupplyVoltage_V, F("V"));
+    MS_DBG(F("  ADS supply voltage:"), _adsSupplyVoltage, F("V"));
     MS_DBG(F("  Valid voltage range:"), minValidVoltage, F("V to"),
            maxValidVoltage, F("V"));
 
     if (adcVoltage < maxValidVoltage && adcVoltage > minValidVoltage) {
-        // Apply the gain calculation, with a default gain of 10 V/V Gain
-        calibResult = adcVoltage * _gain;
-        MS_DBG(F("  calibResult:"), calibResult);
-        verifyAndAddMeasurementResult(TIADS1X15_VAR_NUM, calibResult);
+        // Apply the voltage multiplier scaling, with a default multiplier of 1
+        scaledResult = adcVoltage * _voltageMultiplier;
+        MS_DBG(F("  scaledResult:"), scaledResult);
+        verifyAndAddMeasurementResult(TIADS1X15_VAR_NUM, scaledResult);
         success = true;
     } else {
         MS_DBG(F("  ADC voltage "), adcVoltage, F("V out of valid range"));
@@ -121,10 +122,10 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
 }
 
 // Setter and getter methods for ADS supply voltage
-void TIADS1x15::setADSSupplyVoltage(float adsSupplyVoltage_V) {
-    _adsSupplyVoltage_V = adsSupplyVoltage_V;
+void TIADS1x15::setADSSupplyVoltage(float adsSupplyVoltage) {
+    _adsSupplyVoltage = adsSupplyVoltage;
 }
 
 float TIADS1x15::getADSSupplyVoltage(void) {
-    return _adsSupplyVoltage_V;
+    return _adsSupplyVoltage;
 }

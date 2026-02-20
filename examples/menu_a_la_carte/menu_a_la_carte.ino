@@ -1607,12 +1607,12 @@ Variable* alsPt19Lux = new EverlightALSPT19_Illuminance(
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const int8_t  ADSPower       = sensorPowerPin;  // Power pin
 const int8_t  ADSChannel     = 2;               // The ADS channel of interest
-const float   dividerGain    = 10;  //  Gain setting if using a voltage divider
-const uint8_t evADSi2c_addr  = 0x48;  // The I2C address of the ADS1115 ADC
-const uint8_t VoltReadsToAvg = 1;     // Only read one sample
+const float   voltageMultiplier = 10;  //  Voltage multiplier if using a voltage divider
+const uint8_t evADSi2c_addr     = 0x48;  // The I2C address of the ADS1115 ADC
+const uint8_t VoltReadsToAvg    = 1;     // Only read one sample
 
 // Create a TI ADS1x15 sensor object
-TIADS1x15 ads1x15(ADSPower, ADSChannel, dividerGain, evADSi2c_addr,
+TIADS1x15 ads1x15(ADSPower, ADSChannel, voltageMultiplier, evADSi2c_addr,
                   VoltReadsToAvg);
 
 // Create a voltage variable pointer

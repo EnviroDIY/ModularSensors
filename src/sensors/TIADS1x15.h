@@ -112,8 +112,8 @@
  * If you are working with an EnviroDIY Mayfly, the easiest voltage divider to
  * connect is the Grove voltage divider sold by seeed studio.  The grove voltage
  * divider is a simple voltage divider designed to measure high external
- * voltages on a low voltage ADC.  This module employs a variable gain via two
- * pairs of voltage dividers, and a unity gain amplification to reduce output
+ * voltages on a low voltage ADC.  This module employs a variable voltage multiplier
+ * via two pairs of voltage dividers, and a unity gain amplification to reduce output
  * impedance of the module.
  *
  * @section sensor_ads1x15_datasheet Sensor Datasheet
@@ -274,8 +274,9 @@ class TIADS1x15 : public Sensor {
      * @brief Construct a new External Voltage object - need the power pin and
      * the data channel on the ADS1x15.
      *
-     * The gain value, I2C address, and number of measurements to average are
-     * optional.  If nothing is given a 1x gain is used.
+     * The voltage multiplier value, I2C address, and number of measurements to
+     * average are optional.  If nothing is given a 1x voltage multiplier is
+     * used.
      *
      * @note ModularSensors only supports connecting the ADS1x15 to the primary
      * hardware I2C instance defined in the Arduino core. Connecting the ADS to
@@ -284,19 +285,20 @@ class TIADS1x15 : public Sensor {
      * @param powerPin The pin on the mcu controlling power to the sensor
      * Use -1 if it is continuously powered.
      * @param adsChannel The ADS channel of interest (0-3).
-     * @param gain The gain multiplier, if a voltage divider is used.
+     * @param voltageMultiplier The voltage multiplier, if a voltage divider is
+     * used.
      * @param i2cAddress The I2C address of the ADS 1x15, default is 0x48 (ADDR
      * = GND)
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
-     * @param adsSupplyVoltage_V The power supply voltage for the ADS1x15 in volts;
-     * defaults to the processor operating voltage from KnownProcessors.h
+     * @param adsSupplyVoltage The power supply voltage for the ADS1x15 in
+     * volts; defaults to the processor operating voltage from KnownProcessors.h
      */
-    TIADS1x15(int8_t powerPin, uint8_t adsChannel, float gain = 1,
+    TIADS1x15(int8_t powerPin, uint8_t adsChannel, float voltageMultiplier = 1,
               uint8_t i2cAddress            = ADS1115_ADDRESS,
               uint8_t measurementsToAverage = 1,
-              float adsSupplyVoltage_V      = OPERATING_VOLTAGE);
+              float   adsSupplyVoltage      = OPERATING_VOLTAGE);
     /**
      * @brief Destroy the External Voltage object
      */
@@ -309,9 +311,10 @@ class TIADS1x15 : public Sensor {
     /**
      * @brief Set the power supply voltage for the ADS1x15
      *
-     * @param adsSupplyVoltage_V The power supply voltage in volts (2.0-5.5V range)
+     * @param adsSupplyVoltage The power supply voltage in volts (2.0-5.5V
+     * range)
      */
-    void setADSSupplyVoltage(float adsSupplyVoltage_V);
+    void setADSSupplyVoltage(float adsSupplyVoltage);
 
     /**
      * @brief Get the power supply voltage for the ADS1x15
@@ -327,9 +330,9 @@ class TIADS1x15 : public Sensor {
      */
     uint8_t _adsChannel;
     /**
-     * @brief Internal reference to the gain setting for the TI-ADS1x15
+     * @brief Internal reference to the voltage multiplier for the TI-ADS1x15
      */
-    float _gain;
+    float _voltageMultiplier;
     /**
      * @brief Internal reference to the I2C address of the TI-ADS1x15
      */
@@ -337,7 +340,7 @@ class TIADS1x15 : public Sensor {
     /**
      * @brief Internal reference to the power supply voltage of the TI-ADS1x15
      */
-    float _adsSupplyVoltage_V;
+    float _adsSupplyVoltage;
 };
 
 /**
