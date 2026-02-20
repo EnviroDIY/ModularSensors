@@ -18,8 +18,8 @@
 // The constructor - need the power pin and the differential mux configuration
 AlphasenseCO2::AlphasenseCO2(int8_t powerPin, tiads1x15_adsDiffMux_t adsDiffMux,
                              uint8_t i2cAddress, uint8_t measurementsToAverage)
-    : TIADS1x15(powerPin, adsDiffMux, 1.0, GAIN_ONE, i2cAddress,
-                measurementsToAverage) {
+    : TIADS1x15(powerPin, adsDiffMux, ALPHASENSE_CO2_VOLTAGE_MULTIPLIER,
+                GAIN_ONE, i2cAddress, measurementsToAverage) {
     // Override timing settings for Alphasense CO2-specific requirements
     _warmUpTime_ms        = ALPHASENSE_CO2_WARM_UP_TIME_MS;
     _stabilizationTime_ms = ALPHASENSE_CO2_STABILIZATION_TIME_MS;
@@ -59,13 +59,14 @@ bool AlphasenseCO2::addSingleMeasurementResult(void) {
     // The voltage multiplier and gain settings are handled by the parent class
     if (readVoltageDifferential(adcVoltage)) {
         MS_DBG(F("  Differential voltage:"), String(adcVoltage, 3), F("V"));
-        // Convert voltage to current (mA) - assuming a 250 Ohm resistor is in
-        // series
-        co2Current = (adcVoltage / 250) * 1000;
-        MS_DBG(F("  co2Current:"), calibResult);
-        // Convert current to ppm (using a formula recommended by the sensor
+        // Convert voltage to current (mA) - using series sense resistor
+        co2Current = (adcVoltage / ALPHASENSE_CO2_SENSE_RESISTOR_OHM) * 1000;
+        MS_DBG(F("  co2Current:"),
+               co2Current);  // Convert current to ppm (using a formula
+                             // recommended by the sensor
         // manufacturer)
-        calibResult = 312.5 * co2Current - 1250;
+        calibResult = ALPHASENSE_CO2_MFG_SCALE * co2Current -
+            ALPHASENSE_CO2_MFG_OFFSET;
         MS_DBG(F("  calibResult:"), calibResult);
         verifyAndAddMeasurementResult(ALPHASENSE_CO2_VAR_NUM, calibResult);
         verifyAndAddMeasurementResult(ALPHASENSE_CO2_VOLTAGE_VAR_NUM,

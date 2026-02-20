@@ -55,8 +55,14 @@
  * @section sensor_alphasense_co2_flags Build flags
  * - ```-D MS_USE_ADS1015```
  *      - switches from the 16-bit ADS1115 to the 12 bit ADS1015
- * - ```-D ALPHASENSE_CO2_CALIBRATION_FACTOR=x```
- *      - Changes the calibration factor from 1 to x
+ * - ```-D ALPHASENSE_CO2_SENSE_RESISTOR_OHM=x```
+ *      - Changes the sense resistor value from 250.0 ohms to x ohms
+ * - ```-D ALPHASENSE_CO2_MFG_SCALE=x```
+ *      - Changes the manufacturer scale factor from 312.5 ppm/mA to x ppm/mA
+ * - ```-D ALPHASENSE_CO2_MFG_OFFSET=x```
+ *      - Changes the manufacturer offset from 1250.0 ppm to x ppm
+ * - ```-D ALPHASENSE_CO2_VOLTAGE_MULTIPLIER=x```
+ *      - Changes the voltage multiplier from 1.0 to x
  *
  * @section sensor_alphasense_co2_ctor Sensor Constructor
  * {{ @ref AlphasenseCO2::AlphasenseCO2 }}
@@ -111,19 +117,35 @@
 /**@}*/
 
 /**
- * @anchor sensor__alphasense_co2_config
+ * @anchor sensor_alphasense_co2_config
  * @name Configuration Defines
  * Defines to set the calibration of the Alphasense CO2 sensor and the address
  * of the ADD.
  */
 /**@{*/
-#if !defined(ALPHASENSE_CO2_CALIBRATION_FACTOR) || defined(DOXYGEN)
+#if !defined(ALPHASENSE_CO2_SENSE_RESISTOR_OHM) || defined(DOXYGEN)
 /**
- * @brief The calibration factor between output in volts and CO2
- * (microeinsteinPerSquareMeterPerSecond) 1 µmol mˉ² sˉ¹ per mV (reciprocal of
- * sensitivity)
+ * @brief Sense resistor value in ohms for current conversion
  */
-#define ALPHASENSE_CO2_CALIBRATION_FACTOR 1
+#define ALPHASENSE_CO2_SENSE_RESISTOR_OHM 250.0
+#endif
+#if !defined(ALPHASENSE_CO2_MFG_SCALE) || defined(DOXYGEN)
+/**
+ * @brief Manufacturer scale factor for CO2 conversion (ppm/mA)
+ */
+#define ALPHASENSE_CO2_MFG_SCALE 312.5
+#endif
+#if !defined(ALPHASENSE_CO2_MFG_OFFSET) || defined(DOXYGEN)
+/**
+ * @brief Manufacturer offset for CO2 conversion (ppm)
+ */
+#define ALPHASENSE_CO2_MFG_OFFSET 1250.0
+#endif
+#if !defined(ALPHASENSE_CO2_VOLTAGE_MULTIPLIER) || defined(DOXYGEN)
+/**
+ * @brief Voltage multiplier for direct voltage reading
+ */
+#define ALPHASENSE_CO2_VOLTAGE_MULTIPLIER 1.0
 #endif
 /**@}*/
 
