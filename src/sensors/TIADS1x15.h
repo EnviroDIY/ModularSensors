@@ -337,6 +337,15 @@ class TIADS1x15 : public Sensor {
      */
     adsGain_t getADSGain(void);
 
+ protected:
+    /**
+     * @brief Read a single-ended voltage measurement from the ADS1x15
+     *
+     * @param resultValue Reference to store the resulting voltage measurement
+     * @return True if the voltage reading was successful and within valid range
+     */
+    virtual bool readVoltageSingleEnded(float& resultValue);
+
  private:
     /**
      * @brief Internal reference to the ADS channel number of the device

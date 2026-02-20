@@ -53,12 +53,24 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
         return bumpMeasurementAttemptCount(false);
     }
 
+    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+
+    float resultValue = -9999;
+    bool  success     = readVoltageSingleEnded(resultValue);
+
+    if (success) {
+        verifyAndAddMeasurementResult(TIADS1X15_VAR_NUM, resultValue);
+    }
+
+    // Return success value when finished
+    return bumpMeasurementAttemptCount(success);
+}
+
+bool TIADS1x15::readVoltageSingleEnded(float& resultValue) {
     bool    success      = false;
     int16_t adcCounts    = -9999;
     float   adcVoltage   = -9999;
     float   scaledResult = -9999;
-
-    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
 // Create an auxiliary ADC object
 // We create and set up the ADC object here so that each sensor using
@@ -84,7 +96,7 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
     if (!ads.begin(_i2cAddress)) {
         MS_DBG(F("  ADC initialization failed at 0x"),
                String(_i2cAddress, HEX));
-        return bumpMeasurementAttemptCount(false);
+        return false;
     }
 
     // Read Analog to Digital Converter (ADC)
@@ -113,14 +125,14 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
         // Apply the voltage multiplier scaling, with a default multiplier of 1
         scaledResult = adcVoltage * _voltageMultiplier;
         MS_DBG(F("  scaledResult:"), scaledResult);
-        verifyAndAddMeasurementResult(TIADS1X15_VAR_NUM, scaledResult);
-        success = true;
+        resultValue = scaledResult;
+        success     = true;
     } else {
         MS_DBG(F("  ADC voltage "), adcVoltage, F("V out of valid range"));
+        resultValue = -9999;
     }
 
-    // Return success value when finished
-    return bumpMeasurementAttemptCount(success);
+    return success;
 }
 
 // Setter and getter methods for ADS supply voltage
