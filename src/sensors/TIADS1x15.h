@@ -216,25 +216,20 @@
  * @anchor sensor_ads1x15_volt
  * @name Voltage
  * The volt variable from a TI ADS1x15 analog-to-digital converter (ADC)
- *   - Range:
- *     - without voltage divider:  0 - 3.6V [when ADC is powered at 3.3V]
- *     - 1/gain = 3x: 0.3 ~ 12.9V
- *     - 1/gain = 10x: 1 ~ 43V
+ *   - Range (with no external voltage divider):
+ *     - 0 - min(4.096V, supply voltage + 0.3V) voltage + 0.3V)
  *   - Accuracy:
  *     - 16-bit ADC (ADS1115): < 0.25% (gain error), <0.25 LSB (offset error)
  *     - 12-bit ADC (ADS1015, using build flag ```MS_USE_ADS1015```): < 0.15%
  * (gain error), <3 LSB (offset error)
- *   - Resolution:
+ *   - Resolution (based on ADC's 4.096V internal reference with 1x gain and no
+ * external voltage divider):
  *     - 16-bit ADC (ADS1115):
  *       - @m_span{m-dim}@ref #TIADS1X15_RESOLUTION = 4@m_endspan
- *       - without voltage divider:  0.125 mV
- *       - 1/gain = 3x: 0.375 mV
- *       - 1/gain = 10x: 1.25 mV
+ *       - 0.125 mV
  *     - 12-bit ADC (ADS1015, using build flag ```MS_USE_ADS1015```):
  *       - @m_span{m-dim}@ref #TIADS1X15_RESOLUTION = 1@m_endspan
- *       - without voltage divider:  2 mV
- *       - 1/gain = 3x: 6 mV
- *       - 1/gain = 10x: 20 mV *
+ *       - 2 mV
  *
  * {{ @ref TIADS1x15_Voltage::TIADS1x15_Voltage }}
  */
