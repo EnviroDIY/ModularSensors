@@ -59,9 +59,9 @@
  * use the fork instead.
  *
  * @section analog_ads1x15_specs Specifications
- * @note *In all cases, we assume that the ADS1x15 is powered at 3.3V and set the ADC's internal gain to 1x.
+ * @note *In all cases, we assume that the ADS1x15 is powered at 3.3V by default with configurable internal gain settings.
  *
- * This divides the bit resolution over the range of 0-4.096V.
+ * The default gain setting is 1x (GAIN_ONE) which divides the bit resolution over the range of 0-4.096V.
  * - Response time: < 1ms
  * - Resample time: 860 samples per second (~1.2ms)
  * - Range:
@@ -162,6 +162,7 @@
 // Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
+#include <Adafruit_ADS1X15.h>
 
 /** @ingroup sensor_ads1x15 */
 /**@{*/
@@ -282,6 +283,8 @@ class TIADS1x15 : public Sensor {
      * @param adsChannel The ADS channel of interest (0-3).
      * @param voltageMultiplier The voltage multiplier, if a voltage divider is
      * used.
+     * @param adsGain The internal gain setting of the ADS1x15; defaults to
+     * GAIN_ONE for +/- 4.096V range
      * @param i2cAddress The I2C address of the ADS 1x15, default is 0x48 (ADDR
      * = GND)
      * @param measurementsToAverage The number of measurements to take and
@@ -291,9 +294,10 @@ class TIADS1x15 : public Sensor {
      * volts; defaults to the processor operating voltage from KnownProcessors.h
      */
     TIADS1x15(int8_t powerPin, uint8_t adsChannel, float voltageMultiplier = 1,
-              uint8_t i2cAddress            = ADS1115_ADDRESS,
-              uint8_t measurementsToAverage = 1,
-              float   adsSupplyVoltage      = OPERATING_VOLTAGE);
+              adsGain_t adsGain               = GAIN_ONE,
+              uint8_t   i2cAddress            = ADS1115_ADDRESS,
+              uint8_t   measurementsToAverage = 1,
+              float     adsSupplyVoltage      = OPERATING_VOLTAGE);
     /**
      * @brief Destroy the External Voltage object
      */
@@ -318,6 +322,21 @@ class TIADS1x15 : public Sensor {
      */
     float getADSSupplyVoltage(void);
 
+    /**
+     * @brief Set the internal gain setting for the ADS1x15
+     *
+     * @param adsGain The internal gain setting (GAIN_TWOTHIRDS, GAIN_ONE,
+     * GAIN_TWO, GAIN_FOUR, GAIN_EIGHT, GAIN_SIXTEEN)
+     */
+    void setADSGain(adsGain_t adsGain);
+
+    /**
+     * @brief Get the internal gain setting for the ADS1x15
+     *
+     * @return The internal gain setting
+     */
+    adsGain_t getADSGain(void);
+
  private:
     /**
      * @brief Internal reference to the ADS channel number of the device
@@ -328,6 +347,10 @@ class TIADS1x15 : public Sensor {
      * @brief Internal reference to the voltage multiplier for the TI-ADS1x15
      */
     float _voltageMultiplier;
+    /**
+     * @brief Internal reference to the internal gain setting of the TI-ADS1x15
+     */
+    adsGain_t _adsGain;
     /**
      * @brief Internal reference to the I2C address of the TI-ADS1x15
      */

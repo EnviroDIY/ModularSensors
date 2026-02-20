@@ -19,13 +19,15 @@
 // The constructor - need the power pin the data pin, and voltage multiplier if
 // non standard
 TIADS1x15::TIADS1x15(int8_t powerPin, uint8_t adsChannel,
-                     float voltageMultiplier, uint8_t i2cAddress,
-                     uint8_t measurementsToAverage, float adsSupplyVoltage)
+                     float voltageMultiplier, adsGain_t adsGain,
+                     uint8_t i2cAddress, uint8_t measurementsToAverage,
+                     float adsSupplyVoltage)
     : Sensor("TIADS1x15", TIADS1X15_NUM_VARIABLES, TIADS1X15_WARM_UP_TIME_MS,
              TIADS1X15_STABILIZATION_TIME_MS, TIADS1X15_MEASUREMENT_TIME_MS,
              powerPin, -1, measurementsToAverage, TIADS1X15_INC_CALC_VARIABLES),
       _adsChannel(adsChannel),
       _voltageMultiplier(voltageMultiplier),
+      _adsGain(adsGain),
       _i2cAddress(i2cAddress),
       _adsSupplyVoltage(adsSupplyVoltage) {}
 // Destructor
@@ -51,9 +53,9 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
         return bumpMeasurementAttemptCount(false);
     }
 
-    bool    success     = false;
-    int16_t adcCounts   = -9999;
-    float   adcVoltage  = -9999;
+    bool    success      = false;
+    int16_t adcCounts    = -9999;
+    float   adcVoltage   = -9999;
     float   scaledResult = -9999;
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
@@ -76,8 +78,8 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
     //    - 1600 samples per second (625µs conversion time)
     //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
 
-    // Bump the gain up to 1x = +/- 4.096V range
-    ads.setGain(GAIN_ONE);
+    // Set the internal gain according to user configuration
+    ads.setGain(_adsGain);
     // Begin ADC, returns true if anything was detected at the address
     if (!ads.begin(_i2cAddress)) {
         MS_DBG(F("  ADC initialization failed at 0x"),
@@ -128,4 +130,12 @@ void TIADS1x15::setADSSupplyVoltage(float adsSupplyVoltage) {
 
 float TIADS1x15::getADSSupplyVoltage(void) {
     return _adsSupplyVoltage;
+}
+
+void TIADS1x15::setADSGain(adsGain_t adsGain) {
+    _adsGain = adsGain;
+}
+
+adsGain_t TIADS1x15::getADSGain(void) {
+    return _adsGain;
 }

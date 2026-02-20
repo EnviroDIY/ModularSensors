@@ -1605,15 +1605,17 @@ Variable* alsPt19Lux = new EverlightALSPT19_Illuminance(
 #include <sensors/TIADS1x15.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-const int8_t  ADSPower       = sensorPowerPin;  // Power pin
-const int8_t  ADSChannel     = 2;               // The ADS channel of interest
-const float   voltageMultiplier = 10;  //  Voltage multiplier if using a voltage divider
-const uint8_t evADSi2c_addr     = 0x48;  // The I2C address of the ADS1115 ADC
-const uint8_t VoltReadsToAvg    = 1;     // Only read one sample
+const int8_t ADSPower   = sensorPowerPin;  // Power pin
+const int8_t ADSChannel = 2;               // The ADS channel of interest
+const float  voltageMultiplier =
+    10;  //  Voltage multiplier if using a voltage divider
+const adsGain_t adsGain = GAIN_ONE;     // The internal gain setting for the ADS
+const uint8_t   evADSi2c_addr  = 0x48;  // The I2C address of the ADS1115 ADC
+const uint8_t   VoltReadsToAvg = 1;     // Only read one sample
 
 // Create a TI ADS1x15 sensor object
-TIADS1x15 ads1x15(ADSPower, ADSChannel, voltageMultiplier, evADSi2c_addr,
-                  VoltReadsToAvg);
+TIADS1x15 ads1x15(ADSPower, ADSChannel, voltageMultiplier, adsGain,
+                  evADSi2c_addr, VoltReadsToAvg);
 
 // Create a voltage variable pointer
 Variable* ads1x15Volt =
