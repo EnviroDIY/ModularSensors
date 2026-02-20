@@ -18,13 +18,15 @@
 
 // The constructor - need the power pin the data pin, and gain if non standard
 TIADS1x15::TIADS1x15(int8_t powerPin, uint8_t adsChannel, float gain,
-                     uint8_t i2cAddress, uint8_t measurementsToAverage)
+                     uint8_t i2cAddress, uint8_t measurementsToAverage,
+                     float adsSupplyVoltage_V)
     : Sensor("TIADS1x15", TIADS1X15_NUM_VARIABLES, TIADS1X15_WARM_UP_TIME_MS,
              TIADS1X15_STABILIZATION_TIME_MS, TIADS1X15_MEASUREMENT_TIME_MS,
              powerPin, -1, measurementsToAverage, TIADS1X15_INC_CALC_VARIABLES),
       _adsChannel(adsChannel),
       _gain(gain),
-      _i2cAddress(i2cAddress) {}
+      _i2cAddress(i2cAddress),
+      _adsSupplyVoltage_V(adsSupplyVoltage_V) {}
 // Destructor
 TIADS1x15::~TIADS1x15() {}
 
@@ -91,16 +93,38 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
     MS_DBG(F("  ads.readADC_SingleEnded("), _adsChannel, F("):"), adcCounts,
            '=', adcVoltage);
 
-    // @todo Verify the range based on the actual power supplied to the ADS.
-    // Here we are using the range of the ADS when it is powered at 3.3V
-    if (adcVoltage < 3.6 && adcVoltage > -0.3) {
+    // Verify the range based on the actual power supplied to the ADS.
+    // Valid range is approximately -0.3V to (supply voltage + 0.3V) with
+    // absolute maximum of 5.5V per datasheet
+    float minValidVoltage = -0.3;
+    float maxValidVoltage = _adsSupplyVoltage_V + 0.3;
+    if (maxValidVoltage > 5.5) {
+        maxValidVoltage = 5.5;  // Absolute maximum per datasheet
+    }
+
+    MS_DBG(F("  ADS supply voltage:"), _adsSupplyVoltage_V, F("V"));
+    MS_DBG(F("  Valid voltage range:"), minValidVoltage, F("V to"),
+           maxValidVoltage, F("V"));
+
+    if (adcVoltage < maxValidVoltage && adcVoltage > minValidVoltage) {
         // Apply the gain calculation, with a default gain of 10 V/V Gain
         calibResult = adcVoltage * _gain;
         MS_DBG(F("  calibResult:"), calibResult);
         verifyAndAddMeasurementResult(TIADS1X15_VAR_NUM, calibResult);
         success = true;
+    } else {
+        MS_DBG(F("  ADC voltage "), adcVoltage, F("V out of valid range"));
     }
 
     // Return success value when finished
     return bumpMeasurementAttemptCount(success);
+}
+
+// Setter and getter methods for ADS supply voltage
+void TIADS1x15::setADSSupplyVoltage(float adsSupplyVoltage_V) {
+    _adsSupplyVoltage_V = adsSupplyVoltage_V;
+}
+
+float TIADS1x15::getADSSupplyVoltage(void) {
+    return _adsSupplyVoltage_V;
 }

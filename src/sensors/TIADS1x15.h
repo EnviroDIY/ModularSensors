@@ -146,6 +146,9 @@
 // Include the debugging config
 #include "ModSensorDebugConfig.h"
 
+// Include known processor settings for default operating voltage
+#include "sensors/KnownProcessors.h"
+
 // Define the print label[s] for the debugger
 #ifdef MS_TIADS1X15_DEBUG
 #define MS_DEBUGGING_STD "TIADS1x15"
@@ -287,10 +290,13 @@ class TIADS1x15 : public Sensor {
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
+     * @param adsSupplyVoltage_V The power supply voltage for the ADS1x15 in volts;
+     * defaults to the processor operating voltage from KnownProcessors.h
      */
     TIADS1x15(int8_t powerPin, uint8_t adsChannel, float gain = 1,
               uint8_t i2cAddress            = ADS1115_ADDRESS,
-              uint8_t measurementsToAverage = 1);
+              uint8_t measurementsToAverage = 1,
+              float adsSupplyVoltage_V      = OPERATING_VOLTAGE);
     /**
      * @brief Destroy the External Voltage object
      */
@@ -299,6 +305,20 @@ class TIADS1x15 : public Sensor {
     String getSensorLocation(void) override;
 
     bool addSingleMeasurementResult(void) override;
+
+    /**
+     * @brief Set the power supply voltage for the ADS1x15
+     *
+     * @param adsSupplyVoltage_V The power supply voltage in volts (2.0-5.5V range)
+     */
+    void setADSSupplyVoltage(float adsSupplyVoltage_V);
+
+    /**
+     * @brief Get the power supply voltage for the ADS1x15
+     *
+     * @return The power supply voltage in volts
+     */
+    float getADSSupplyVoltage(void);
 
  private:
     /**
@@ -314,6 +334,10 @@ class TIADS1x15 : public Sensor {
      * @brief Internal reference to the I2C address of the TI-ADS1x15
      */
     uint8_t _i2cAddress;
+    /**
+     * @brief Internal reference to the power supply voltage of the TI-ADS1x15
+     */
+    float _adsSupplyVoltage_V;
 };
 
 /**
