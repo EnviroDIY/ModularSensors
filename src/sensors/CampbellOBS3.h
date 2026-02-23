@@ -88,6 +88,7 @@
 // Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
+#include "AnalogVoltageBase.h"
 
 /** @ingroup sensor_obs3 */
 /**@{*/
@@ -244,8 +245,24 @@
 /* clang-format on */
 class CampbellOBS3 : public Sensor {
  public:
-    // The constructor - need the power pin, the ADS1X15 data channel, and the
-    // calibration info
+    /**
+     * @brief Construct a new Campbell OBS3 object using a pre-configured
+     * AnalogVoltageBase
+     *
+     * @param powerPin The pin on the mcu controlling power to the OBS3+
+     * Use -1 if it is continuously powered.
+     * @param analogVoltageReader Pointer to an AnalogVoltageBase object for
+     * voltage readings
+     * @param x2_coeff_A The x2 (A) coefficient for calibration _in volts_
+     * @param x1_coeff_B The x (B) coefficient for calibration _in volts_
+     * @param x0_coeff_C The x0 (C) coefficient for calibration _in volts_
+     * @param measurementsToAverage Number of measurements to average
+     * (default=1)
+     */
+    CampbellOBS3(int8_t powerPin, AnalogVoltageBase* analogVoltageReader,
+                 float x2_coeff_A, float x1_coeff_B, float x0_coeff_C,
+                 uint8_t measurementsToAverage = 1);
+
     /**
      * @brief Construct a new Campbell OBS3 object - need the power pin, the
      * ADS1X15 data channel, and the calibration info.
@@ -265,15 +282,41 @@ class CampbellOBS3 : public Sensor {
      * @param x2_coeff_A The x2 (A) coefficient for the calibration _in volts_
      * @param x1_coeff_B The x (B) coefficient for the calibration _in volts_
      * @param x0_coeff_C The x0 (C) coefficient for the calibration _in volts_
+     * @param voltageMultiplier The voltage multiplier for voltage dividers
+     * (default=1)
+     * @param adsGain The internal gain setting (default=GAIN_ONE)
      * @param i2cAddress The I2C address of the ADS 1x15, default is 0x48 (ADDR
      * = GND)
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
+     * @param adsSupplyVoltage ADS supply voltage in volts (default=3.3V)
      */
     CampbellOBS3(int8_t powerPin, uint8_t adsChannel, float x2_coeff_A,
                  float x1_coeff_B, float x0_coeff_C,
-                 uint8_t i2cAddress            = ADS1115_ADDRESS,
+                 uint8_t i2cAddress      = ADS1115_ADDRESS,
+                 float voltageMultiplier = 1.0, adsGain_t adsGain = GAIN_ONE,
+                 uint8_t measurementsToAverage = 1,
+                 float   adsSupplyVoltage      = 3.3);
+
+    /**
+     * @brief Construct a new Campbell OBS3 object using processor ADC
+     *
+     * @param powerPin The pin on the mcu controlling power to the OBS3+
+     * Use -1 if it is continuously powered.
+     * @param dataPin The processor ADC pin for voltage readings
+     * @param x2_coeff_A The x2 (A) coefficient for calibration _in volts_
+     * @param x1_coeff_B The x (B) coefficient for calibration _in volts_
+     * @param x0_coeff_C The x0 (C) coefficient for calibration _in volts_
+     * @param voltageMultiplier The voltage multiplier for voltage dividers
+     * (default=1)
+     * @param operatingVoltage Processor operating voltage (default=3.3V)
+     * @param measurementsToAverage Number of measurements to average
+     * (default=1)
+     */
+    CampbellOBS3(int8_t powerPin, int8_t dataPin, float x2_coeff_A,
+                 float x1_coeff_B, float x0_coeff_C,
+                 float voltageMultiplier = 1.0, float operatingVoltage = 3.3,
                  uint8_t measurementsToAverage = 1);
     /**
      * @brief Destroy the Campbell OBS3 object
@@ -286,17 +329,16 @@ class CampbellOBS3 : public Sensor {
 
  private:
     /**
-     * @brief Internal reference to the ADS channel number of the Campbell OBS
-     * 3+
+     * @brief Internal reference to the analog voltage reading object
      */
-    uint8_t _adsChannel;
+    AnalogVoltageBase* _analogVoltageReader;
+    /**
+     * @brief Internal flag indicating if this instance owns the voltage reader
+     */
+    bool    _ownsVoltageReader;
     float   _x2_coeff_A;  ///< Internal reference to the x^2 coefficient
     float   _x1_coeff_B;  ///< Internal reference to the x coefficient
     float   _x0_coeff_C;  ///< Internal reference to the x^0 coefficient
-    /**
-     * @brief Internal reference to the I2C address of the TI-ADS1x15
-     */
-    uint8_t _i2cAddress;
 };
 
 

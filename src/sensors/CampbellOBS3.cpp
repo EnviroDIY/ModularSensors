@@ -10,35 +10,80 @@
 
 
 #include "CampbellOBS3.h"
+#include "TIADS1x15.h"
+#include "ProcessorAnalog.h"
 #include <Adafruit_ADS1X15.h>
 
 
-// The constructor - need the power pin, the data pin, and the calibration info
-CampbellOBS3::CampbellOBS3(int8_t powerPin, uint8_t adsChannel,
+// Primary constructor using AnalogVoltageBase abstraction
+CampbellOBS3::CampbellOBS3(int8_t             powerPin,
+                           AnalogVoltageBase* analogVoltageReader,
                            float x2_coeff_A, float x1_coeff_B, float x0_coeff_C,
-                           uint8_t i2cAddress, uint8_t measurementsToAverage)
+                           uint8_t measurementsToAverage)
     : Sensor("CampbellOBS3", OBS3_NUM_VARIABLES, OBS3_WARM_UP_TIME_MS,
              OBS3_STABILIZATION_TIME_MS, OBS3_MEASUREMENT_TIME_MS, powerPin, -1,
              measurementsToAverage, OBS3_INC_CALC_VARIABLES),
-      _adsChannel(adsChannel),
+      _analogVoltageReader(analogVoltageReader),
+      _ownsVoltageReader(false),
       _x2_coeff_A(x2_coeff_A),
       _x1_coeff_B(x1_coeff_B),
-      _x0_coeff_C(x0_coeff_C),
-      _i2cAddress(i2cAddress) {}
+      _x0_coeff_C(x0_coeff_C) {}
+
+// Constructor that creates a TIADS1x15 object internally
+CampbellOBS3::CampbellOBS3(int8_t powerPin, uint8_t adsChannel,
+                           float x2_coeff_A, float x1_coeff_B, float x0_coeff_C,
+                           uint8_t measurementsToAverage,
+                           float voltageMultiplier, adsGain_t adsGain,
+                           uint8_t i2cAddress, float adsSupplyVoltage)
+    : Sensor("CampbellOBS3", OBS3_NUM_VARIABLES, OBS3_WARM_UP_TIME_MS,
+             OBS3_STABILIZATION_TIME_MS, OBS3_MEASUREMENT_TIME_MS, powerPin, -1,
+             measurementsToAverage, OBS3_INC_CALC_VARIABLES),
+      _analogVoltageReader(nullptr),
+      _ownsVoltageReader(true),
+      _x2_coeff_A(x2_coeff_A),
+      _x1_coeff_B(x1_coeff_B),
+      _x0_coeff_C(x0_coeff_C) {
+    // Create a TIADS1x15 object for analog voltage reading
+    _analogVoltageReader =
+        new TIADS1x15(powerPin, adsChannel, voltageMultiplier, adsGain,
+                      i2cAddress, measurementsToAverage, adsSupplyVoltage);
+}
+
+// Constructor that creates a ProcessorAnalog object internally
+CampbellOBS3::CampbellOBS3(int8_t powerPin, int8_t dataPin, float x2_coeff_A,
+                           float x1_coeff_B, float x0_coeff_C,
+                           float voltageMultiplier, float operatingVoltage,
+                           uint8_t measurementsToAverage)
+    : Sensor("CampbellOBS3", OBS3_NUM_VARIABLES, OBS3_WARM_UP_TIME_MS,
+             OBS3_STABILIZATION_TIME_MS, OBS3_MEASUREMENT_TIME_MS, powerPin, -1,
+             measurementsToAverage, OBS3_INC_CALC_VARIABLES),
+      _analogVoltageReader(nullptr),
+      _ownsVoltageReader(true),
+      _x2_coeff_A(x2_coeff_A),
+      _x1_coeff_B(x1_coeff_B),
+      _x0_coeff_C(x0_coeff_C) {
+    // Create a ProcessorAnalog object for analog voltage reading
+    _analogVoltageReader =
+        new ProcessorAnalog(powerPin, dataPin, voltageMultiplier,
+                            operatingVoltage, measurementsToAverage);
+}
 // Destructor
-CampbellOBS3::~CampbellOBS3() {}
+CampbellOBS3::~CampbellOBS3() {
+    // Clean up owned voltage reader if created by constructor
+    if (_ownsVoltageReader && _analogVoltageReader != nullptr) {
+        delete _analogVoltageReader;
+        _analogVoltageReader = nullptr;
+    }
+}
 
 
 String CampbellOBS3::getSensorLocation(void) {
-#ifndef MS_USE_ADS1015
-    String sensorLocation = F("ADS1115_0x");
-#else
-    String sensorLocation = F("ADS1015_0x");
-#endif
-    sensorLocation += String(_i2cAddress, HEX);
-    sensorLocation += F("_Channel");
-    sensorLocation += String(_adsChannel);
-    return sensorLocation;
+    if (_analogVoltageReader != nullptr) {
+        return _analogVoltageReader->getSensorLocation();
+    } else {
+        // Fallback for cases where voltage reader is not set
+        return F("CampbellOBS3_UnknownLocation");
+    }
 }
 
 
@@ -48,65 +93,35 @@ bool CampbellOBS3::addSingleMeasurementResult(void) {
         return bumpMeasurementAttemptCount(false);
     }
 
+    // Ensure we have a valid voltage reader
+    if (_analogVoltageReader == nullptr) {
+        MS_DBG(F("  No analog voltage reader configured!"));
+        return bumpMeasurementAttemptCount(false);
+    }
+
     bool    success     = false;
-    int16_t adcCounts   = -9999;
     float   adcVoltage  = -9999;
     float   calibResult = -9999;
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-// Create an auxiliary ADC object
-// We create and set up the ADC object here so that each sensor using
-// the ADC may set the gain appropriately without effecting others.
-#ifndef MS_USE_ADS1015
-    Adafruit_ADS1115 ads;  // Use this for the 16-bit version
-#else
-    Adafruit_ADS1015 ads;  // Use this for the 12-bit version
-#endif
-    // ADS Library default settings:
-    //  - TI ADS1115 (16 bit)
-    //    - single-shot mode (powers down between conversions)
-    //    - 128 samples per second (8ms conversion time)
-    //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
-    //  - TI ADS1015 (12 bit)
-    //    - single-shot mode (powers down between conversions)
-    //    - 1600 samples per second (625µs conversion time)
-    //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
-
-    // Bump the gain up to 1x = +/- 4.096V range
-    // Sensor return range is 0-2.5V, but the next gain option is 2x which
-    // only allows up to 2.048V
-    ads.setGain(GAIN_ONE);
-    // Begin ADC, returns true if anything was detected at the address
-    if (!ads.begin(_i2cAddress)) {
-        MS_DBG(F("  ADC initialization failed at 0x"),
-               String(_i2cAddress, HEX));
-        return bumpMeasurementAttemptCount(false);
-    }
-
     // Print out the calibration curve
     MS_DBG(F("  Input calibration Curve:"), _x2_coeff_A, F("x^2 +"),
            _x1_coeff_B, F("x +"), _x0_coeff_C);
 
-    // Read Analog to Digital Converter (ADC)
-    // Taking this reading includes the 8ms conversion delay.
-    // Measure the ADC raw count
-    adcCounts = ads.readADC_SingleEnded(_adsChannel);
-    // Convert ADC raw counts value to voltage (V)
-    adcVoltage = ads.computeVolts(adcCounts);
-    MS_DBG(F("  ads.readADC_SingleEnded("), _adsChannel, F("):"), adcCounts,
-           '=', adcVoltage);
+    // Use the abstracted voltage reading method
+    success = _analogVoltageReader->readVoltageSingleEnded(adcVoltage);
 
-    // @todo Verify the voltage range for the OBS3 sensor -
-    // Here we are using the range of the ADS when it is powered at 3.3V
-    if (adcVoltage < 3.6 && adcVoltage > -0.3) {
+    if (success) {
         // Apply the unique calibration curve for the given sensor
         calibResult = (_x2_coeff_A * sq(adcVoltage)) +
             (_x1_coeff_B * adcVoltage) + _x0_coeff_C;
         MS_DBG(F("  calibResult:"), calibResult);
         verifyAndAddMeasurementResult(OBS3_TURB_VAR_NUM, calibResult);
         verifyAndAddMeasurementResult(OBS3_VOLTAGE_VAR_NUM, adcVoltage);
-        success = true;
+
+    } else {
+        MS_DBG(F("  Failed to read voltage from analog voltage reader"));
     }
 
     // Return success value when finished
