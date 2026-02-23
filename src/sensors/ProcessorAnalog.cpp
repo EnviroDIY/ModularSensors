@@ -52,7 +52,7 @@ bool ProcessorAnalogBase::readVoltageSingleEnded(float& resultValue) {
 
 String ProcessorAnalogBase::getSensorLocation(void) {
     String sensorLocation = F("ProcessorAnalog_Pin");
-    sensorLocation += String(_analogChannel);
+    sensorLocation += String((int)_analogChannel);
     return sensorLocation;
 }
 

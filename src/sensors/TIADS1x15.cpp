@@ -74,12 +74,11 @@ bool TIADS1x15Base::readVoltageSingleEnded(float& resultValue) {
 
     // Read Analog to Digital Converter (ADC)
     // Validate ADS1x15 channel range for single-ended measurements
-    if (_analogChannel < 0 || _analogChannel > 3) {
+    if (_analogChannel > 3) {
         MS_DBG(F("  Invalid ADS1x15 channel "), _analogChannel,
                F(", valid range is 0-3"));
         return false;
     }
-
     // Taking this reading includes the 8ms conversion delay.
     // Measure the ADC raw count
     adcCounts = ads.readADC_SingleEnded(_analogChannel);
@@ -144,36 +143,39 @@ bool TIADS1x15Base::readVoltageDifferential(float& resultValue) {
     }
 
     // Read differential voltage based on channel configuration
-    uint8_t ch1 = _analogChannel;
-    uint8_t ch2 = _analogDifferentialChannel;
-
-    if ((ch1 == 0 && ch2 == 1) || (ch1 == 1 && ch2 == 0)) {
+    // NOTE: Only canonical ordered pairs are supported (lower channel number
+    // first) to ensure consistent polarity. Pairs like (1,0) are NOT supported
+    // - use (0,1) instead.
+    if (_analogChannel == 0 && _analogDifferentialChannel == 1) {
         adcCounts = ads.readADC_Differential_0_1();
-    } else if ((ch1 == 0 && ch2 == 3) || (ch1 == 3 && ch2 == 0)) {
+    } else if (_analogChannel == 0 && _analogDifferentialChannel == 3) {
         adcCounts = ads.readADC_Differential_0_3();
-    } else if ((ch1 == 1 && ch2 == 3) || (ch1 == 3 && ch2 == 1)) {
+    } else if (_analogChannel == 1 && _analogDifferentialChannel == 3) {
         adcCounts = ads.readADC_Differential_1_3();
-    } else if ((ch1 == 2 && ch2 == 3) || (ch1 == 3 && ch2 == 2)) {
+    } else if (_analogChannel == 2 && _analogDifferentialChannel == 3) {
         adcCounts = ads.readADC_Differential_2_3();
     } else {
-        MS_DBG(F("  Unsupported differential channel combination"));
+        MS_DBG(F("  Unsupported differential channel combination: "),
+               _analogChannel, F("-"), _analogDifferentialChannel);
+        MS_DBG(F("  Use canonical ordered pairs: 0-1, 0-3, 1-3, or 2-3"));
         return false;
     }
 
     // Convert counts to voltage
     adcVoltage = ads.computeVolts(adcCounts);
-    MS_DBG(F("  Differential ADC counts:"), adcCounts, F(" voltage:"), adcVoltage);
+    MS_DBG(F("  Differential ADC counts:"), adcCounts, F(" voltage:"),
+           adcVoltage);
 
     // Validate range - for differential measurements, use PGA full-scale range
     // Based on gain setting rather than supply voltage
     float fullScaleVoltage = 4.096;  // Default for GAIN_ONE
     switch (_adsGain) {
         case GAIN_TWOTHIRDS: fullScaleVoltage = 6.144; break;
-        case GAIN_ONE:       fullScaleVoltage = 4.096; break;
-        case GAIN_TWO:       fullScaleVoltage = 2.048; break;
-        case GAIN_FOUR:      fullScaleVoltage = 1.024; break;
-        case GAIN_EIGHT:     fullScaleVoltage = 0.512; break;
-        case GAIN_SIXTEEN:   fullScaleVoltage = 0.256; break;
+        case GAIN_ONE: fullScaleVoltage = 4.096; break;
+        case GAIN_TWO: fullScaleVoltage = 2.048; break;
+        case GAIN_FOUR: fullScaleVoltage = 1.024; break;
+        case GAIN_EIGHT: fullScaleVoltage = 0.512; break;
+        case GAIN_SIXTEEN: fullScaleVoltage = 0.256; break;
         default:
             MS_DBG(F("  Unknown ADS gain value:"), _adsGain,
                    F(" using conservative 4.096V range"));
@@ -191,7 +193,7 @@ bool TIADS1x15Base::readVoltageDifferential(float& resultValue) {
         scaledResult = adcVoltage * _voltageMultiplier;
         MS_DBG(F("  scaledResult:"), scaledResult);
         resultValue = scaledResult;
-        success = true;
+        success     = true;
     } else {
         MS_DBG(F("  Differential voltage out of valid range"));
         resultValue = -9999;
@@ -201,17 +203,17 @@ bool TIADS1x15Base::readVoltageDifferential(float& resultValue) {
 }
 
 // Validation function for differential channel pairs
-bool TIADS1x15Base::isValidDifferentialPair(uint8_t channel1,
-                                            uint8_t channel2) {
-    // Valid combinations are: 0-1, 0-3, 1-3, or 2-3
-    if ((channel1 == 0 && channel2 == 1) || (channel1 == 1 && channel2 == 0))
-        return true;
-    if ((channel1 == 0 && channel2 == 3) || (channel1 == 3 && channel2 == 0))
-        return true;
-    if ((channel1 == 1 && channel2 == 3) || (channel1 == 3 && channel2 == 1))
-        return true;
-    if ((channel1 == 2 && channel2 == 3) || (channel1 == 3 && channel2 == 2))
-        return true;
+bool TIADS1x15Base::isValidDifferentialPair(int8_t channel1, int8_t channel2) {
+    // Only canonical ordered pairs are valid (lower channel number first)
+    // This ensures consistent polarity: channel1 is positive, channel2 is
+    // negative Valid combinations are: 0-1, 0-3, 1-3, or 2-3 (in that order
+    // only)
+    if (channel1 >= channel2) return false;  // Reject reversed or equal pairs
+
+    if (channel1 == 0 && channel2 == 1) return true;
+    if (channel1 == 0 && channel2 == 3) return true;
+    if (channel1 == 1 && channel2 == 3) return true;
+    if (channel1 == 2 && channel2 == 3) return true;
     return false;
 }
 
@@ -230,7 +232,7 @@ adsGain_t TIADS1x15Base::getADSGain(void) {
 
 // The constructor - need the power pin the data pin, and voltage multiplier if
 // non standard
-TIADS1x15::TIADS1x15(int8_t powerPin, uint8_t adsChannel,
+TIADS1x15::TIADS1x15(int8_t powerPin, int8_t adsChannel,
                      float voltageMultiplier, adsGain_t adsGain,
                      uint8_t i2cAddress, uint8_t measurementsToAverage,
                      float adsSupplyVoltage)
@@ -245,10 +247,13 @@ TIADS1x15::TIADS1x15(int8_t powerPin, uint8_t adsChannel,
         // Invalid channel, clamp to valid range
         _analogChannel = 3;
     }
+    // NOTE: We CANNOT print a warning here about invalid channel because the
+    // Serial object may not be initialized yet, and we don't want to cause a
+    // crash.
 }
 
 // Constructor for differential measurements
-TIADS1x15::TIADS1x15(int8_t powerPin, uint8_t adsChannel1, uint8_t adsChannel2,
+TIADS1x15::TIADS1x15(int8_t powerPin, int8_t adsChannel1, int8_t adsChannel2,
                      float voltageMultiplier, adsGain_t adsGain,
                      uint8_t i2cAddress, uint8_t measurementsToAverage,
                      float adsSupplyVoltage)
@@ -256,7 +261,25 @@ TIADS1x15::TIADS1x15(int8_t powerPin, uint8_t adsChannel1, uint8_t adsChannel2,
              TIADS1X15_STABILIZATION_TIME_MS, TIADS1X15_MEASUREMENT_TIME_MS,
              powerPin, -1, measurementsToAverage, TIADS1X15_INC_CALC_VARIABLES),
       TIADS1x15Base(adsChannel1, adsChannel2, voltageMultiplier, adsGain,
-                    i2cAddress, adsSupplyVoltage) {}
+                    i2cAddress, adsSupplyVoltage) {
+    // Validate that channels are in canonical order (lower number first)
+    if (adsChannel1 >= adsChannel2) {
+        // Force canonical ordering to prevent undefined behavior
+        if (adsChannel1 < adsChannel2) {
+            _analogChannel             = adsChannel1;
+            _analogDifferentialChannel = adsChannel2;
+        } else {
+            _analogChannel             = adsChannel2;
+            _analogDifferentialChannel = adsChannel1;
+        }
+    }
+    // NOTE: We CANNOT print a warning here about invalid channel combinations
+    // because the Serial object may not be initialized yet, and we don't want
+    // to cause a crash.  Calling any function that uses Serial here will cause
+    // a crash if Serial is not initialized, and we don't want to risk that in
+    // the constructor.  Instead, we will just clamp to a valid default pair of
+    // channels (0-1) if the combination is invalid.
+}
 
 // Destructor
 TIADS1x15::~TIADS1x15() {}
@@ -307,4 +330,4 @@ void TIADS1x15::setSupplyVoltage(float supplyVoltage) {
     }
 }
 
-// cspell:words TWOTHIRDS
+// cspell:words GAIN_TWOTHIRDS

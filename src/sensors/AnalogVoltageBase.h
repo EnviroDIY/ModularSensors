@@ -73,7 +73,7 @@ class AnalogVoltageBase {
      *
      * @return The current voltage multiplier
      */
-    float getVoltageMultiplier(void) {
+    float getVoltageMultiplier(void) const {
         return _voltageMultiplier;
     }
 
@@ -91,7 +91,7 @@ class AnalogVoltageBase {
      *
      * @return The current supply voltage in volts
      */
-    float getSupplyVoltage(void) {
+    float getSupplyVoltage(void) const {
         return _supplyVoltage;
     }
 
