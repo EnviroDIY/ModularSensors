@@ -89,6 +89,7 @@
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include "AnalogVoltageBase.h"
+#include <Adafruit_ADS1X15.h>
 
 /** @ingroup sensor_obs3 */
 /**@{*/
@@ -111,16 +112,6 @@
 /// @brief Sensor::_incCalcValues; turbidity is calculated from raw voltage
 /// using the input calibration equation.
 #define OBS3_INC_CALC_VARIABLES 1
-/**@}*/
-
-/**
- * @anchor sensor_obs3_config
- * @name Configuration Defines
- * Defines to set the address of the ADD.
- */
-/**@{*/
-/// @brief The assumed address of the ADS1115, 1001 000 (ADDR = GND)
-#define ADS1115_ADDRESS 0x48
 /**@}*/
 
 /**
@@ -294,7 +285,7 @@ class CampbellOBS3 : public Sensor {
      */
     CampbellOBS3(int8_t powerPin, uint8_t adsChannel, float x2_coeff_A,
                  float x1_coeff_B, float x0_coeff_C,
-                 uint8_t i2cAddress      = ADS1115_ADDRESS,
+                 uint8_t i2cAddress      = MS_DEFAULT_ADS1X15_ADDRESS,
                  float voltageMultiplier = 1.0, adsGain_t adsGain = GAIN_ONE,
                  uint8_t measurementsToAverage = 1,
                  float   adsSupplyVoltage      = 3.3);

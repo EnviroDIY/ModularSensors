@@ -12,7 +12,6 @@
 #include "CampbellOBS3.h"
 #include "TIADS1x15.h"
 #include "ProcessorAnalog.h"
-#include <Adafruit_ADS1X15.h>
 
 
 // Primary constructor using AnalogVoltageBase abstraction

@@ -200,16 +200,6 @@
 /**@}*/
 
 /**
- * @anchor sensor_cyclops_config
- * @name Configuration Defines
- * Defines to help configure the address of the ADD used by the Cyclops
- */
-/**@{*/
-/// @brief The assumed address of the ADS1115, 1001 000 (ADDR = GND)
-#define ADS1115_ADDRESS 0x48
-/**@}*/
-
-/**
  * @anchor sensor_cyclops_timing
  * @name Sensor Timing
  * The sensor timing for an Cyclops-7F
@@ -358,7 +348,7 @@ class TurnerCyclops : public Sensor {
      */
     TurnerCyclops(int8_t powerPin, uint8_t adsChannel, float conc_std,
                   float volt_std, float volt_blank,
-                  uint8_t i2cAddress            = ADS1115_ADDRESS,
+                  uint8_t i2cAddress            = MS_DEFAULT_ADS1X15_ADDRESS,
                   uint8_t measurementsToAverage = 1,
                   float voltageMultiplier = 1.0, adsGain_t adsGain = GAIN_ONE,
                   float adsSupplyVoltage = OPERATING_VOLTAGE);

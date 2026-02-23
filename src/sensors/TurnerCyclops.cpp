@@ -12,7 +12,6 @@
 #include "TurnerCyclops.h"
 #include "TIADS1x15.h"
 #include "ProcessorAnalog.h"
-#include <Adafruit_ADS1X15.h>
 
 
 // Primary constructor using AnalogVoltageBase abstraction
@@ -30,10 +29,10 @@ TurnerCyclops::TurnerCyclops(int8_t             powerPin,
       _ownsVoltageReader(false) {}
 
 // Constructor that creates a TIADS1x15 object internally
-TurnerCyclops::TurnerCyclops(int8_t powerPin, int8_t adsChannel, float conc_std,
-                             float volt_std, float volt_blank,
-                             float voltageMultiplier, adsGain_t adsGain,
+TurnerCyclops::TurnerCyclops(int8_t powerPin, uint8_t adsChannel,
+                             float conc_std, float volt_std, float volt_blank,
                              uint8_t i2cAddress, uint8_t measurementsToAverage,
+                             float voltageMultiplier, adsGain_t adsGain,
                              float adsSupplyVoltage)
     : Sensor("TurnerCyclops", CYCLOPS_NUM_VARIABLES, CYCLOPS_WARM_UP_TIME_MS,
              CYCLOPS_STABILIZATION_TIME_MS, CYCLOPS_MEASUREMENT_TIME_MS,
@@ -52,8 +51,8 @@ TurnerCyclops::TurnerCyclops(int8_t powerPin, int8_t adsChannel, float conc_std,
 // Constructor that creates a ProcessorAnalog object internally
 TurnerCyclops::TurnerCyclops(int8_t powerPin, int8_t dataPin, float conc_std,
                              float volt_std, float volt_blank,
-                             float voltageMultiplier, float operatingVoltage,
-                             uint8_t measurementsToAverage)
+                             uint8_t measurementsToAverage,
+                             float voltageMultiplier, float operatingVoltage)
     : Sensor("TurnerCyclops", CYCLOPS_NUM_VARIABLES, CYCLOPS_WARM_UP_TIME_MS,
              CYCLOPS_STABILIZATION_TIME_MS, CYCLOPS_MEASUREMENT_TIME_MS,
              powerPin, -1, measurementsToAverage, CYCLOPS_INC_CALC_VARIABLES),
@@ -124,6 +123,8 @@ bool TurnerCyclops::addSingleMeasurementResult(void) {
         MS_DBG(F("  calibResult:"), calibResult);
         verifyAndAddMeasurementResult(CYCLOPS_VAR_NUM, calibResult);
         verifyAndAddMeasurementResult(CYCLOPS_VOLTAGE_VAR_NUM, adcVoltage);
+    } else {
+        MS_DBG(F("  Failed to read voltage from analog voltage reader"));
     }
 
     // Return success value when finished

@@ -140,6 +140,9 @@
 // GroPoint Profile GPLP-8 has 8 Moisture and 13 Temperature values
 #endif
 
+//==============================================================
+// Analog voltage configuration
+//==============================================================
 #ifndef MS_PROCESSOR_ADC_RESOLUTION
 /**
  * @brief Select or adjust the processor analog resolution.
@@ -226,6 +229,12 @@
 #error The processor ADC reference type must be defined!
 #endif  // MS_PROCESSOR_ADC_REFERENCE_MODE
 #endif  // ARDUINO_ARCH_SAMD
+
+
+#ifndef MS_DEFAULT_ADS1X15_ADDRESS || defined(DOXYGEN)
+/// @brief The assumed address of the ADS1115 or ADS1015, 1001 000 (ADDR = GND)
+#define MS_DEFAULT_ADS1X15_ADDRESS 0x48
+#endif
 //==============================================================
 
 

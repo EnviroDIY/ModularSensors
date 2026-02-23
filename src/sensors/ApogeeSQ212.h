@@ -126,9 +126,6 @@
  */
 #define SQ212_CALIBRATION_FACTOR 1
 #endif
-
-/// The assumed address of the ADS1115, 1001 000 (ADDR = GND)
-#define ADS1115_ADDRESS 0x48
 /**@}*/
 
 /**
@@ -266,7 +263,7 @@ class ApogeeSQ212 : public Sensor {
      * not support any other configuration.
      */
     ApogeeSQ212(int8_t powerPin, uint8_t adsChannel,
-                uint8_t i2cAddress            = ADS1115_ADDRESS,
+                uint8_t i2cAddress            = MS_DEFAULT_ADS1X15_ADDRESS,
                 uint8_t measurementsToAverage = 1);
     /**
      * @brief Destroy the ApogeeSQ212 object - no action needed

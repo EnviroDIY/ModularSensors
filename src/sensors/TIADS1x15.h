@@ -187,16 +187,6 @@
 /**@}*/
 
 /**
- * @anchor sensor_ads1x15_config
- * @name Configuration Defines
- * Defines to help configure the address of the ADD
- */
-/**@{*/
-/// @brief The assumed address of the ADS1115, 1001 000 (ADDR = GND)
-#define ADS1115_ADDRESS 0x48
-/**@}*/
-
-/**
  * @brief Enum for the pins used for differential voltages.
  */
 enum class tiads1x15_adsDiffMux_t : uint16_t {
@@ -297,8 +287,8 @@ class TIADS1x15Base : public AnalogVoltageBase {
      * Negative sentinels are handled internally where needed.
      */
     explicit TIADS1x15Base(uint8_t adsChannel, float voltageMultiplier = 1.0,
-                           adsGain_t adsGain          = GAIN_ONE,
-                           uint8_t   i2cAddress       = ADS1115_ADDRESS,
+                           adsGain_t adsGain    = GAIN_ONE,
+                           uint8_t   i2cAddress = MS_DEFAULT_ADS1X15_ADDRESS,
                            float     adsSupplyVoltage = OPERATING_VOLTAGE);
 
     /**
@@ -319,8 +309,8 @@ class TIADS1x15Base : public AnalogVoltageBase {
     explicit TIADS1x15Base(uint8_t adsChannel1, uint8_t adsChannel2,
                            float     voltageMultiplier = 1.0,
                            adsGain_t adsGain           = GAIN_ONE,
-                           uint8_t   i2cAddress        = ADS1115_ADDRESS,
-                           float     adsSupplyVoltage  = OPERATING_VOLTAGE);
+                           uint8_t   i2cAddress = MS_DEFAULT_ADS1X15_ADDRESS,
+                           float     adsSupplyVoltage = OPERATING_VOLTAGE);
 
     /**
      * @brief Destroy the TIADS1x15Base object
@@ -433,7 +423,7 @@ class TIADS1x15 : public Sensor, public TIADS1x15Base {
      */
     TIADS1x15(int8_t powerPin, uint8_t adsChannel, float voltageMultiplier = 1,
               adsGain_t adsGain               = GAIN_ONE,
-              uint8_t   i2cAddress            = ADS1115_ADDRESS,
+              uint8_t   i2cAddress            = MS_DEFAULT_ADS1X15_ADDRESS,
               uint8_t   measurementsToAverage = 1,
               float     adsSupplyVoltage      = OPERATING_VOLTAGE);
     /**
@@ -463,7 +453,7 @@ class TIADS1x15 : public Sensor, public TIADS1x15Base {
      */
     TIADS1x15(int8_t powerPin, uint8_t adsChannel1, uint8_t adsChannel2,
               float voltageMultiplier = 1, adsGain_t adsGain = GAIN_ONE,
-              uint8_t i2cAddress            = ADS1115_ADDRESS,
+              uint8_t i2cAddress            = MS_DEFAULT_ADS1X15_ADDRESS,
               uint8_t measurementsToAverage = 1,
               float   adsSupplyVoltage      = OPERATING_VOLTAGE);
     /**
