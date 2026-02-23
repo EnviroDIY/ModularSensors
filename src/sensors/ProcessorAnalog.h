@@ -194,6 +194,17 @@ class ProcessorAnalogBase : public AnalogVoltageBase {
     bool readVoltageSingleEnded(float& resultValue) override;
 
     /**
+     * @brief Read a differential voltage measurement from the processor ADC
+     *
+     * ProcessorAnalog does not support differential measurements, so this
+     * always returns false.
+     *
+     * @param resultValue Reference to store the resulting voltage measurement
+     * @return Always false (differential not supported)
+     */
+    bool readVoltageDifferential(float& resultValue) override;
+
+    /**
      * @brief Get the sensor location string
      *
      * @return A string describing the processor analog pin location

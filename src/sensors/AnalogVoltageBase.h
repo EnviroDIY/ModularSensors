@@ -64,7 +64,7 @@ class AnalogVoltageBase {
      *
      * @param voltageMultiplier The multiplier value for voltage scaling
      */
-    void setVoltageMultiplier(float voltageMultiplier) {
+    virtual void setVoltageMultiplier(float voltageMultiplier) {
         _voltageMultiplier = voltageMultiplier;
     }
 
@@ -119,17 +119,16 @@ class AnalogVoltageBase {
     /**
      * @brief Read a differential voltage measurement
      *
-     * This virtual function provides a default implementation for differential
-     * voltage readings. Derived classes can override this to provide their
-     * specific differential reading implementation.
+     * This pure virtual function must be implemented by derived classes to
+     * provide their specific method of reading differential voltages.
+     *
+     * If the sensor does not support differential measurements, this function
+     * should set the resultValue to -9999.0 and return false.
      *
      * @param resultValue Reference to store the resulting voltage measurement
      * @return True if the voltage reading was successful and within valid range
      */
-    virtual bool readVoltageDifferential(float& resultValue) {
-        resultValue = -9999.0;
-        return false;
-    }
+    virtual bool readVoltageDifferential(float& resultValue) = 0;
 
     /**
      * @brief Get the sensor location string

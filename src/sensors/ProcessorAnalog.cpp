@@ -63,6 +63,12 @@ String ProcessorAnalogBase::getSensorLocation(void) {
     return sensorLocation;
 }
 
+bool ProcessorAnalogBase::readVoltageDifferential(float& resultValue) {
+    // ProcessorAnalog does not support differential measurements
+    resultValue = -9999.0;
+    return false;
+}
+
 // ============================================================================
 // ProcessorAnalog Functions
 // ============================================================================
