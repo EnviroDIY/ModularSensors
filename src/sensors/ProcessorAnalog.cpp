@@ -12,40 +12,9 @@
 #include "ProcessorAnalog.h"
 
 
-// The constructor - need the power pin, the data pin, the voltage divider
-// value, and the operating voltage
-ProcessorAnalog::ProcessorAnalog(int8_t powerPin, int8_t dataPin,
-                                 float   voltageMultiplier,
-                                 float   operatingVoltage,
-                                 uint8_t measurementsToAverage)
-    : Sensor("ProcessorAnalog", PROCESSOR_ANALOG_NUM_VARIABLES,
-             PROCESSOR_ANALOG_WARM_UP_TIME_MS,
-             PROCESSOR_ANALOG_STABILIZATION_TIME_MS,
-             PROCESSOR_ANALOG_MEASUREMENT_TIME_MS, powerPin, dataPin,
-             measurementsToAverage, PROCESSOR_ANALOG_INC_CALC_VARIABLES),
-      ProcessorAnalogBase(dataPin, voltageMultiplier, operatingVoltage) {}
-// Destructor
-ProcessorAnalog::~ProcessorAnalog() {}
-
-
-bool ProcessorAnalog::addSingleMeasurementResult(void) {
-    // Immediately quit if the measurement was not successfully started
-    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        return bumpMeasurementAttemptCount(false);
-    }
-
-    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
-
-    float resultValue = -9999;
-    bool  success     = readVoltageSingleEnded(resultValue);
-
-    if (success) {
-        verifyAndAddMeasurementResult(PROCESSOR_ANALOG_VAR_NUM, resultValue);
-    }
-
-    // Return success value when finished
-    return bumpMeasurementAttemptCount(success);
-}
+// ============================================================================
+// ProcessorAnalogBase Functions
+// ============================================================================
 
 bool ProcessorAnalogBase::readVoltageSingleEnded(float& resultValue) {
     // Validate parameters
@@ -85,4 +54,43 @@ String ProcessorAnalogBase::getSensorLocation(void) {
     String sensorLocation = F("ProcessorAnalog_Pin");
     sensorLocation += String(_analogChannel);
     return sensorLocation;
+}
+
+// ============================================================================
+// ProcessorAnalog Functions
+// ============================================================================
+
+// The constructor - need the power pin, the data pin, the voltage divider
+// value, and the operating voltage
+ProcessorAnalog::ProcessorAnalog(int8_t powerPin, int8_t dataPin,
+                                 float   voltageMultiplier,
+                                 float   operatingVoltage,
+                                 uint8_t measurementsToAverage)
+    : Sensor("ProcessorAnalog", PROCESSOR_ANALOG_NUM_VARIABLES,
+             PROCESSOR_ANALOG_WARM_UP_TIME_MS,
+             PROCESSOR_ANALOG_STABILIZATION_TIME_MS,
+             PROCESSOR_ANALOG_MEASUREMENT_TIME_MS, powerPin, dataPin,
+             measurementsToAverage, PROCESSOR_ANALOG_INC_CALC_VARIABLES),
+      ProcessorAnalogBase(dataPin, voltageMultiplier, operatingVoltage) {}
+
+// Destructor
+ProcessorAnalog::~ProcessorAnalog() {}
+
+bool ProcessorAnalog::addSingleMeasurementResult(void) {
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return bumpMeasurementAttemptCount(false);
+    }
+
+    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+
+    float resultValue = -9999;
+    bool  success     = readVoltageSingleEnded(resultValue);
+
+    if (success) {
+        verifyAndAddMeasurementResult(PROCESSOR_ANALOG_VAR_NUM, resultValue);
+    }
+
+    // Return success value when finished
+    return bumpMeasurementAttemptCount(success);
 }

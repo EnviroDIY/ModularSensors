@@ -16,38 +16,9 @@
 #include <Adafruit_ADS1X15.h>
 
 
-// The constructor - need the power pin the data pin, and voltage multiplier if
-// non standard
-TIADS1x15::TIADS1x15(int8_t powerPin, uint8_t adsChannel,
-                     float voltageMultiplier, adsGain_t adsGain,
-                     uint8_t i2cAddress, uint8_t measurementsToAverage,
-                     float adsSupplyVoltage)
-    : Sensor("TIADS1x15", TIADS1X15_NUM_VARIABLES, TIADS1X15_WARM_UP_TIME_MS,
-             TIADS1X15_STABILIZATION_TIME_MS, TIADS1X15_MEASUREMENT_TIME_MS,
-             powerPin, adsChannel, measurementsToAverage,
-             TIADS1X15_INC_CALC_VARIABLES),
-      TIADS1x15Base(adsChannel, voltageMultiplier, adsGain, i2cAddress,
-                    adsSupplyVoltage) {
-    // Validate ADS1x15 channel range
-    if (adsChannel > 3) {
-        // Invalid channel, clamp to valid range
-        _analogChannel = 3;
-    }
-}
-
-// Constructor for differential measurements
-TIADS1x15::TIADS1x15(int8_t powerPin, uint8_t adsChannel1, uint8_t adsChannel2,
-                     float voltageMultiplier, adsGain_t adsGain,
-                     uint8_t i2cAddress, uint8_t measurementsToAverage,
-                     float adsSupplyVoltage)
-    : Sensor("TIADS1x15", TIADS1X15_NUM_VARIABLES, TIADS1X15_WARM_UP_TIME_MS,
-             TIADS1X15_STABILIZATION_TIME_MS, TIADS1X15_MEASUREMENT_TIME_MS,
-             powerPin, -1, measurementsToAverage, TIADS1X15_INC_CALC_VARIABLES),
-      TIADS1x15Base(adsChannel1, adsChannel2, voltageMultiplier, adsGain, i2cAddress,
-                    adsSupplyVoltage) {}
-// Destructor
-TIADS1x15::~TIADS1x15() {}
-
+// ============================================================================
+// TIADS1x15Base Functions
+// ============================================================================
 
 String TIADS1x15Base::getSensorLocation(void) {
 #ifndef MS_USE_ADS1015
@@ -66,37 +37,6 @@ String TIADS1x15Base::getSensorLocation(void) {
         sensorLocation += String(_analogChannel);
     }
     return sensorLocation;
-}
-
-String TIADS1x15::getSensorLocation(void) {
-    return TIADS1x15Base::getSensorLocation();
-}
-
-
-bool TIADS1x15::addSingleMeasurementResult(void) {
-    // Immediately quit if the measurement was not successfully started
-    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        return bumpMeasurementAttemptCount(false);
-    }
-
-    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
-
-    float resultValue = -9999;
-    bool  success     = false;
-
-    // Use differential or single-ended reading based on configuration
-    if (isDifferential()) {
-        success = readVoltageDifferential(resultValue);
-    } else {
-        success = readVoltageSingleEnded(resultValue);
-    }
-
-    if (success) {
-        verifyAndAddMeasurementResult(TIADS1X15_VAR_NUM, resultValue);
-    }
-
-    // Return success value when finished
-    return bumpMeasurementAttemptCount(success);
 }
 
 bool TIADS1x15Base::readVoltageSingleEnded(float& resultValue) {
@@ -282,6 +222,73 @@ void TIADS1x15Base::setADSGain(adsGain_t adsGain) {
 
 adsGain_t TIADS1x15Base::getADSGain(void) {
     return _adsGain;
+}
+
+// ============================================================================
+// TIADS1x15 Functions
+// ============================================================================
+
+// The constructor - need the power pin the data pin, and voltage multiplier if
+// non standard
+TIADS1x15::TIADS1x15(int8_t powerPin, uint8_t adsChannel,
+                     float voltageMultiplier, adsGain_t adsGain,
+                     uint8_t i2cAddress, uint8_t measurementsToAverage,
+                     float adsSupplyVoltage)
+    : Sensor("TIADS1x15", TIADS1X15_NUM_VARIABLES, TIADS1X15_WARM_UP_TIME_MS,
+             TIADS1X15_STABILIZATION_TIME_MS, TIADS1X15_MEASUREMENT_TIME_MS,
+             powerPin, adsChannel, measurementsToAverage,
+             TIADS1X15_INC_CALC_VARIABLES),
+      TIADS1x15Base(adsChannel, voltageMultiplier, adsGain, i2cAddress,
+                    adsSupplyVoltage) {
+    // Validate ADS1x15 channel range
+    if (adsChannel > 3) {
+        // Invalid channel, clamp to valid range
+        _analogChannel = 3;
+    }
+}
+
+// Constructor for differential measurements
+TIADS1x15::TIADS1x15(int8_t powerPin, uint8_t adsChannel1, uint8_t adsChannel2,
+                     float voltageMultiplier, adsGain_t adsGain,
+                     uint8_t i2cAddress, uint8_t measurementsToAverage,
+                     float adsSupplyVoltage)
+    : Sensor("TIADS1x15", TIADS1X15_NUM_VARIABLES, TIADS1X15_WARM_UP_TIME_MS,
+             TIADS1X15_STABILIZATION_TIME_MS, TIADS1X15_MEASUREMENT_TIME_MS,
+             powerPin, -1, measurementsToAverage, TIADS1X15_INC_CALC_VARIABLES),
+      TIADS1x15Base(adsChannel1, adsChannel2, voltageMultiplier, adsGain,
+                    i2cAddress, adsSupplyVoltage) {}
+
+// Destructor
+TIADS1x15::~TIADS1x15() {}
+
+String TIADS1x15::getSensorLocation(void) {
+    return TIADS1x15Base::getSensorLocation();
+}
+
+bool TIADS1x15::addSingleMeasurementResult(void) {
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return bumpMeasurementAttemptCount(false);
+    }
+
+    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+
+    float resultValue = -9999;
+    bool  success     = false;
+
+    // Use differential or single-ended reading based on configuration
+    if (isDifferential()) {
+        success = readVoltageDifferential(resultValue);
+    } else {
+        success = readVoltageSingleEnded(resultValue);
+    }
+
+    if (success) {
+        verifyAndAddMeasurementResult(TIADS1X15_VAR_NUM, resultValue);
+    }
+
+    // Return success value when finished
+    return bumpMeasurementAttemptCount(success);
 }
 
 // Override setSupplyVoltage in TIADS1x15 to validate range
