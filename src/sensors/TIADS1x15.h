@@ -296,9 +296,10 @@ class TIADS1x15Base : public AnalogVoltageBase {
      * @note adsChannel uses uint8_t to match Adafruit_ADS1X15 expectations.
      * Negative sentinels are handled internally where needed.
      */
-    TIADS1x15Base(uint8_t adsChannel, float voltageMultiplier,
-                  adsGain_t adsGain, uint8_t i2cAddress,
-                  float adsSupplyVoltage);
+    explicit TIADS1x15Base(uint8_t adsChannel, float voltageMultiplier = 1.0,
+                           adsGain_t adsGain          = GAIN_ONE,
+                           uint8_t   i2cAddress       = ADS1115_ADDRESS,
+                           float     adsSupplyVoltage = OPERATING_VOLTAGE);
 
     /**
      * @brief Construct a new TIADS1x15Base object for differential measurements
@@ -315,9 +316,11 @@ class TIADS1x15Base : public AnalogVoltageBase {
      * @note Channel parameters use uint8_t to match Adafruit_ADS1X15
      * expectations. Negative sentinels are handled internally where needed.
      */
-    TIADS1x15Base(uint8_t adsChannel1, uint8_t adsChannel2,
-                  float voltageMultiplier, adsGain_t adsGain,
-                  uint8_t i2cAddress, float adsSupplyVoltage);
+    explicit TIADS1x15Base(uint8_t adsChannel1, uint8_t adsChannel2,
+                           float     voltageMultiplier = 1.0,
+                           adsGain_t adsGain           = GAIN_ONE,
+                           uint8_t   i2cAddress        = ADS1115_ADDRESS,
+                           float     adsSupplyVoltage  = OPERATING_VOLTAGE);
 
     /**
      * @brief Destroy the TIADS1x15Base object

@@ -177,8 +177,8 @@ class ProcessorAnalogBase : public AnalogVoltageBase {
      * @param operatingVoltage The processor's operating voltage; most
      * likely 3.3 or 5.
      */
-    ProcessorAnalogBase(int8_t dataPin, float voltageMultiplier,
-                        float operatingVoltage = OPERATING_VOLTAGE);
+    explicit ProcessorAnalogBase(int8_t dataPin, float voltageMultiplier = 1.0,
+                                 float operatingVoltage = OPERATING_VOLTAGE);
 
     /**
      * @brief Destroy the ProcessorAnalogBase object
@@ -230,9 +230,10 @@ class ProcessorAnalog : public Sensor, public ProcessorAnalogBase {
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
      */
-    ProcessorAnalog(int8_t powerPin, int8_t dataPin, float voltageMultiplier,
-                    float   operatingVoltage      = OPERATING_VOLTAGE,
-                    uint8_t measurementsToAverage = 1);
+    explicit ProcessorAnalog(int8_t powerPin, int8_t dataPin,
+                             float   voltageMultiplier     = 1.0,
+                             float   operatingVoltage      = OPERATING_VOLTAGE,
+                             uint8_t measurementsToAverage = 1);
     /**
      * @brief Destroy the Processor Analog object
      */
