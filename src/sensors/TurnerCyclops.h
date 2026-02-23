@@ -101,6 +101,25 @@
  * possible.  All gain settings and voltage dividers should be in place for
  * the calibration.
  *
+ * The units to use for the calibration point depend on the parameter being measured,
+ * as listed in the table below.
+ *
+ * | ID  | Variable                     | Units                               |
+ * | --- | ---------------------------- | ----------------------------------- |
+ * | C   | TurnerCyclops_Chlorophyll    | micrograms per Liter (µg/L)         |
+ * | R   | TurnerCyclops_Rhodamine      | parts per billion (ppb)             |
+ * | F   | TurnerCyclops_Fluorescein    | parts per billion (ppb)             |
+ * | P   | TurnerCyclops_Phycocyanin    | parts per billion (ppb)             |
+ * | E   | TurnerCyclops_Phycoerythrin  | parts per billion (ppb)             |
+ * | U   | TurnerCyclops_CDOM           | parts per billion (ppb)             |
+ * | O   | TurnerCyclops_CrudeOil       | parts per billion (ppb)             |
+ * | B   | TurnerCyclops_Brighteners    | parts per billion (ppb)             |
+ * | T   | TurnerCyclops_Turbidity      | nephelometric turbidity units (NTU) |
+ * | A   | TurnerCyclops_PTSA           | parts per billion (ppb)             |
+ * | G   | TurnerCyclops_BTEX           | parts per million (ppm)             |
+ * | L   | TurnerCyclops_Tryptophan     | parts per billion (ppb)             |
+ * | D   | TurnerCyclops_RedChlorophyll | micrograms per Liter (µg/L)         |
+ *
  * Before applying any calibration, the analog output from the Cyclops-7F
  * must be converted into a high resolution digital signal.  See the
  * [ADS1115 page](@ref analog_group) for details on the conversion.
@@ -135,6 +154,9 @@
 // Include the debugging config
 #include "ModSensorDebugConfig.h"
 
+// Include known processor settings for default operating voltage
+#include "sensors/KnownProcessors.h"
+
 // Define the print label[s] for the debugger
 #ifdef MS_TURNERCYCLOPS_DEBUG
 #define MS_DEBUGGING_STD "TurnerCyclops"
@@ -148,6 +170,8 @@
 // Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
+#include "AnalogVoltageBase.h"
+#include <Adafruit_ADS1X15.h>
 
 // Sensor Specific Defines
 /** @ingroup sensor_cyclops */
@@ -283,7 +307,6 @@ class TurnerCyclops : public Sensor {
  public:
     // The constructor - need the power pin, the ADS1X15 data channel, and the
     // calibration info
-    /* clang-format off */
     /**
      * @brief Construct a new Turner Cyclops object - need the power pin, the
      * ADS1X15 data channel, and the calibration info.
@@ -298,43 +321,65 @@ class TurnerCyclops : public Sensor {
      * assumes the ADS is powered with 3.3V.
      * - The Cyclops-7F itself requires a 3-15V power supply, which can be
      * turned off between measurements.
-     * @param adsChannel The analog data channel _on the TI ADS1115_ that the
-     * Cyclops is connected to (0-3).
+     * @param analogVoltageReader Pointer to an AnalogVoltageBase object (e.g.,
+     * TIADS1x15 or ProcessorAnalog) that will be used to read the analog
+     * voltage from the sensor
      * @param conc_std The concentration of the standard used for a 1-point
      * sensor calibration.  The concentration units should be the same as the
      * final measuring units.
-     * | ID  | Variable                     | Units                               |
-     * | --- | ---------------------------- | ----------------------------------- |
-     * | C   | TurnerCyclops_Chlorophyll    | micrograms per Liter (µg/L)         |
-     * | R   | TurnerCyclops_Rhodamine      | parts per billion (ppb)             |
-     * | F   | TurnerCyclops_Fluorescein    | parts per billion (ppb)             |
-     * | P   | TurnerCyclops_Phycocyanin    | parts per billion (ppb)             |
-     * | E   | TurnerCyclops_Phycoerythrin  | parts per billion (ppb)             |
-     * | U   | TurnerCyclops_CDOM           | parts per billion (ppb)             |
-     * | O   | TurnerCyclops_CrudeOil       | parts per billion (ppb)             |
-     * | B   | TurnerCyclops_Brighteners    | parts per billion (ppb)             |
-     * | T   | TurnerCyclops_Turbidity      | nephelometric turbidity units (NTU) |
-     * | A   | TurnerCyclops_PTSA           | parts per billion (ppb)             |
-     * | G   | TurnerCyclops_BTEX           | parts per million (ppm)             |
-     * | L   | TurnerCyclops_Tryptophan     | parts per billion (ppb)             |
-     * | D   | TurnerCyclops_RedChlorophyll | micrograms per Liter (µg/L)         |
      * @param volt_std The voltage (in volts) measured for the conc_std.  This
      * voltage should be the final voltage *after* accounting for any voltage
      * dividers or gain settings.
      * @param volt_blank The voltage (in volts) measured for a blank.  This
      * voltage should be the final voltage *after* accounting for any voltage
      * dividers or gain settings.
-     * @param i2cAddress The I2C address of the ADS 1x15, default is 0x48 (ADDR
-     * = GND)
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
      */
-    /* clang-format on */
+    TurnerCyclops(int8_t powerPin, AnalogVoltageBase* analogVoltageReader,
+                  float conc_std, float volt_std, float volt_blank,
+                  uint8_t measurementsToAverage = 1);
+
+    /**
+     * @brief Construct a new Turner Cyclops object using TIADS1x15 - creates
+     * an internal TIADS1x15 object for reading analog voltages
+     *
+     * @param powerPin The pin on the mcu controlling power to the Cyclops-7F
+     * @param adsChannel The ADS channel (0-3) connected to the sensor
+     * @param conc_std The concentration of the standard for calibration
+     * @param volt_std The voltage measured for the conc_std
+     * @param volt_blank The voltage measured for a blank
+     * @param voltageMultiplier The voltage multiplier for voltage dividers
+     * @param adsGain The internal gain setting of the ADS1x15
+     * @param i2cAddress The I2C address of the ADS1x15
+     * @param measurementsToAverage Number of measurements to average
+     * @param adsSupplyVoltage The power supply voltage for the ADS1x15
+     */
     TurnerCyclops(int8_t powerPin, uint8_t adsChannel, float conc_std,
                   float volt_std, float volt_blank,
                   uint8_t i2cAddress            = ADS1115_ADDRESS,
-                  uint8_t measurementsToAverage = 1);
+                  uint8_t measurementsToAverage = 1,
+                  float voltageMultiplier = 1.0, adsGain_t adsGain = GAIN_ONE,
+                  float adsSupplyVoltage = OPERATING_VOLTAGE);
+
+    /**
+     * @brief Construct a new Turner Cyclops object using ProcessorAnalog -
+     * creates an internal ProcessorAnalog object for reading analog voltages
+     *
+     * @param powerPin The pin on the mcu controlling power to the Cyclops-7F
+     * @param dataPin The processor ADC pin connected to the sensor
+     * @param conc_std The concentration of the standard for calibration
+     * @param volt_std The voltage measured for the conc_std
+     * @param volt_blank The voltage measured for a blank
+     * @param voltageMultiplier The voltage multiplier for voltage dividers
+     * @param operatingVoltage The processor's operating voltage
+     * @param measurementsToAverage Number of measurements to average
+     */
+    TurnerCyclops(int8_t powerPin, int8_t dataPin, float conc_std,
+                  float volt_std, float volt_blank,
+                  uint8_t measurementsToAverage = 1, float voltageMultiplier,
+                  float operatingVoltage        = OPERATING_VOLTAGE);
     /**
      * @brief Destroy the Turner Cyclops object
      */
@@ -346,9 +391,9 @@ class TurnerCyclops : public Sensor {
 
  private:
     /**
-     * @brief Internal reference to the ADS channel number of the Turner Cyclops
+     * @brief Internal reference to the analog voltage reading object
      */
-    uint8_t _adsChannel;
+    AnalogVoltageBase* _analogVoltageReader;
     /**
      * @brief The concentration of the standard used for a 1-point sensor
      * calibration.  The concentration units should be the same as the final
@@ -368,9 +413,11 @@ class TurnerCyclops : public Sensor {
      */
     float _volt_blank;
     /**
-     * @brief Internal reference to the I2C address of the TI-ADS1x15
+     * @brief Internal flag to indicate if a _analogVoltageReader was created
+     * when this object was instantiated so that it can be properly deleted in
+     * the destructor if needed.
      */
-    uint8_t _i2cAddress;
+    bool _ownsVoltageReader;
 };
 
 
