@@ -282,60 +282,42 @@ enum class tiads1x15_adsDiffMux_t : uint16_t {
  */
 class TIADS1x15Base : public AnalogVoltageBase {
  public:
-    /**
-     * @brief Check if the two channels form a valid differential pair
-     *
-     * @param channel1 First channel (0-3)
-     * @param channel2 Second channel (0-3)
-     * @return True if the combination is valid (0-1, 0-3, 1-3, or 2-3)
-     */
-    static bool isValidDifferentialPair(int8_t channel1, int8_t channel2);
 
     /**
      * @brief Construct a new TIADS1x15Base object for single-ended measurements
      *
-     * @param adsChannel The ADS channel of interest (0-3).
+     * @param adsChannel The ADS channel of interest (0-3, physical channel
+     * only).
      * @param voltageMultiplier The voltage multiplier for any voltage dividers
      * @param adsGain The internal gain setting of the ADS1x15
      * @param i2cAddress The I2C address of the ADS 1x15
      * @param adsSupplyVoltage The power supply voltage for the ADS1x15 in volts
+     *
+     * @note adsChannel uses uint8_t to match Adafruit_ADS1X15 expectations.
+     * Negative sentinels are handled internally where needed.
      */
-    TIADS1x15Base(int8_t adsChannel, float voltageMultiplier, adsGain_t adsGain,
-                  uint8_t i2cAddress, float adsSupplyVoltage)
-        : AnalogVoltageBase(adsChannel, voltageMultiplier, adsSupplyVoltage,
-                            -1),
-          _adsGain(adsGain),
-          _i2cAddress(i2cAddress) {}
+    TIADS1x15Base(uint8_t adsChannel, float voltageMultiplier,
+                  adsGain_t adsGain, uint8_t i2cAddress,
+                  float adsSupplyVoltage);
 
     /**
      * @brief Construct a new TIADS1x15Base object for differential measurements
      *
      * @param adsChannel1 The first ADS channel for differential measurement
-     * (0-3)
+     * (0-3, physical channel only)
      * @param adsChannel2 The second ADS channel for differential measurement
-     * (0-3)
+     * (0-3, physical channel only)
      * @param voltageMultiplier The voltage multiplier for any voltage dividers
      * @param adsGain The internal gain setting of the ADS1x15
      * @param i2cAddress The I2C address of the ADS 1x15
      * @param adsSupplyVoltage The power supply voltage for the ADS1x15 in volts
+     *
+     * @note Channel parameters use uint8_t to match Adafruit_ADS1X15
+     * expectations. Negative sentinels are handled internally where needed.
      */
-    TIADS1x15Base(int8_t adsChannel1, int8_t adsChannel2,
+    TIADS1x15Base(uint8_t adsChannel1, uint8_t adsChannel2,
                   float voltageMultiplier, adsGain_t adsGain,
-                  uint8_t i2cAddress, float adsSupplyVoltage)
-        : AnalogVoltageBase(adsChannel1, voltageMultiplier, adsSupplyVoltage,
-                            adsChannel2),
-          _adsGain(adsGain),
-          _i2cAddress(i2cAddress) {
-        // Validate differential channel combinations
-        if (!isValidDifferentialPair(adsChannel1, adsChannel2)) {
-            // Default to 0-1 if invalid combination
-            _analogChannel             = 0;
-            _analogDifferentialChannel = 1;
-        }
-        // NOTE: We CANNOT print a warning here about invalid channel clamping
-        // because the Serial object may not be initialized yet, and we don't
-        // want to cause a crash.
-    }
+                  uint8_t i2cAddress, float adsSupplyVoltage);
 
     /**
      * @brief Destroy the TIADS1x15Base object
@@ -380,6 +362,19 @@ class TIADS1x15Base : public AnalogVoltageBase {
      */
     adsGain_t getADSGain(void) const;
 
+    /**
+     * @brief Check if the two channels form a valid differential pair
+     *
+     * @param channel1 First channel (0-3, physical ADS channel indices only)
+     * @param channel2 Second channel (0-3, physical ADS channel indices only)
+     * @return True if the combination is valid (0-1, 0-3, 1-3, or 2-3)
+     *
+     * @note This function expects uint8_t to match
+     * Adafruit_ADS1X15::readADC_SingleEnded(uint8_t) and avoid sign-extension
+     * issues. Negative sentinel values are handled internally.
+     */
+    static bool isValidDifferentialPair(uint8_t channel1, uint8_t channel2);
+
  protected:
     /**
      * @brief Internal reference to the internal gain setting of the TI-ADS1x15
@@ -415,7 +410,8 @@ class TIADS1x15 : public Sensor, public TIADS1x15Base {
      *
      * @param powerPin The pin on the mcu controlling power to the sensor
      * Use -1 if it is continuously powered.
-     * @param adsChannel The ADS channel of interest (0-3).
+     * @param adsChannel The ADS channel of interest (0-3, physical channel
+     * only).
      * @param voltageMultiplier The voltage multiplier, if a voltage divider is
      * used.
      * @param adsGain The internal gain setting of the ADS1x15; defaults to
@@ -427,8 +423,12 @@ class TIADS1x15 : public Sensor, public TIADS1x15Base {
      * default value of 1.
      * @param adsSupplyVoltage The power supply voltage for the ADS1x15 in
      * volts; defaults to the processor operating voltage from KnownProcessors.h
+     *
+     * @note adsChannel uses uint8_t to match
+     * Adafruit_ADS1X15::readADC_SingleEnded(uint8_t) and avoid sign-extension
+     * issues.
      */
-    TIADS1x15(int8_t powerPin, int8_t adsChannel, float voltageMultiplier = 1,
+    TIADS1x15(int8_t powerPin, uint8_t adsChannel, float voltageMultiplier = 1,
               adsGain_t adsGain               = GAIN_ONE,
               uint8_t   i2cAddress            = ADS1115_ADDRESS,
               uint8_t   measurementsToAverage = 1,
@@ -439,9 +439,10 @@ class TIADS1x15 : public Sensor, public TIADS1x15Base {
      * @param powerPin The pin on the mcu controlling power to the sensor
      * Use -1 if it is continuously powered.
      * @param adsChannel1 The first ADS channel for differential measurement
-     * (0-3)
+     * (0-3, physical channel only)
      * @param adsChannel2 The second ADS channel for differential measurement
-     * (0-3) Valid combinations are: 0-1, 0-3, 1-3, or 2-3
+     * (0-3, physical channel only) Valid combinations are: 0-1, 0-3, 1-3, or
+     * 2-3
      * @param voltageMultiplier The voltage multiplier, if a voltage divider is
      * used.
      * @param adsGain The internal gain setting of the ADS1x15; defaults to
@@ -453,8 +454,11 @@ class TIADS1x15 : public Sensor, public TIADS1x15Base {
      * default value of 1.
      * @param adsSupplyVoltage The power supply voltage for the ADS1x15 in
      * volts; defaults to the processor operating voltage from KnownProcessors.h
+     *
+     * @note Channel parameters use uint8_t to match Adafruit_ADS1X15
+     * expectations and avoid sign-extension issues.
      */
-    TIADS1x15(int8_t powerPin, int8_t adsChannel1, int8_t adsChannel2,
+    TIADS1x15(int8_t powerPin, uint8_t adsChannel1, uint8_t adsChannel2,
               float voltageMultiplier = 1, adsGain_t adsGain = GAIN_ONE,
               uint8_t i2cAddress            = ADS1115_ADDRESS,
               uint8_t measurementsToAverage = 1,
@@ -462,7 +466,7 @@ class TIADS1x15 : public Sensor, public TIADS1x15Base {
     /**
      * @brief Destroy the External Voltage object
      */
-    ~TIADS1x15();
+    ~TIADS1x15() override;
 
     String getSensorLocation(void) override;
 

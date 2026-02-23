@@ -178,8 +178,7 @@ class ProcessorAnalogBase : public AnalogVoltageBase {
      * likely 3.3 or 5.
      */
     ProcessorAnalogBase(int8_t dataPin, float voltageMultiplier,
-                        float operatingVoltage = OPERATING_VOLTAGE)
-        : AnalogVoltageBase(dataPin, voltageMultiplier, operatingVoltage, -1) {}
+                        float operatingVoltage = OPERATING_VOLTAGE);
 
     /**
      * @brief Destroy the ProcessorAnalogBase object

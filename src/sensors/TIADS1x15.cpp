@@ -13,7 +13,42 @@
 
 
 #include "TIADS1x15.h"
-#include <Adafruit_ADS1X15.h>
+
+
+// ============================================================================
+// TIADS1x15Base Constructors
+// ============================================================================
+
+// Constructor for single-ended measurements
+TIADS1x15Base::TIADS1x15Base(uint8_t adsChannel, float voltageMultiplier,
+                             adsGain_t adsGain, uint8_t i2cAddress,
+                             float adsSupplyVoltage)
+    : AnalogVoltageBase(adsChannel, voltageMultiplier, adsSupplyVoltage, -1),
+      _adsGain(adsGain),
+      _i2cAddress(i2cAddress) {
+    // NOTE: We DO NOT validate the channel numbers in this constructor!  We
+    // CANNOT print a warning here about invalid channel because the Serial
+    // object may not be initialized yet, and we don't want to cause a crash.
+    // The readVoltageSingleEnded and readVoltageDifferential functions will
+    // handle validation and return false if the channel configuration is
+    // invalid, but we can't do that here in the constructor
+}
+
+// Constructor for differential measurements
+TIADS1x15Base::TIADS1x15Base(uint8_t adsChannel1, uint8_t adsChannel2,
+                             float voltageMultiplier, adsGain_t adsGain,
+                             uint8_t i2cAddress, float adsSupplyVoltage)
+    : AnalogVoltageBase(adsChannel1, voltageMultiplier, adsSupplyVoltage,
+                        adsChannel2),
+      _adsGain(adsGain),
+      _i2cAddress(i2cAddress) {
+    // NOTE: We DO NOT validate the channel numbers and pairings in this
+    // constructor!  We CANNOT print a warning here about invalid channel
+    // because the Serial object may not be initialized yet, and we don't want
+    // to cause a crash. The readVoltageSingleEnded and readVoltageDifferential
+    // functions will handle validation and return false if the channel
+    // configuration is invalid, but we can't do that here in the constructor
+}
 
 
 // ============================================================================
@@ -203,7 +238,8 @@ bool TIADS1x15Base::readVoltageDifferential(float& resultValue) {
 }
 
 // Validation function for differential channel pairs
-bool TIADS1x15Base::isValidDifferentialPair(int8_t channel1, int8_t channel2) {
+bool TIADS1x15Base::isValidDifferentialPair(uint8_t channel1,
+                                            uint8_t channel2) {
     // Only canonical ordered pairs are valid (lower channel number first)
     // This ensures consistent polarity: channel1 is positive, channel2 is
     // negative Valid combinations are: 0-1, 0-3, 1-3, or 2-3 (in that order
@@ -222,7 +258,7 @@ void TIADS1x15Base::setADSGain(adsGain_t adsGain) {
     _adsGain = adsGain;
 }
 
-adsGain_t TIADS1x15Base::getADSGain(void) {
+adsGain_t TIADS1x15Base::getADSGain(void) const {
     return _adsGain;
 }
 
@@ -232,7 +268,7 @@ adsGain_t TIADS1x15Base::getADSGain(void) {
 
 // The constructor - need the power pin the data pin, and voltage multiplier if
 // non standard
-TIADS1x15::TIADS1x15(int8_t powerPin, int8_t adsChannel,
+TIADS1x15::TIADS1x15(int8_t powerPin, uint8_t adsChannel,
                      float voltageMultiplier, adsGain_t adsGain,
                      uint8_t i2cAddress, uint8_t measurementsToAverage,
                      float adsSupplyVoltage)
@@ -242,18 +278,16 @@ TIADS1x15::TIADS1x15(int8_t powerPin, int8_t adsChannel,
              TIADS1X15_INC_CALC_VARIABLES),
       TIADS1x15Base(adsChannel, voltageMultiplier, adsGain, i2cAddress,
                     adsSupplyVoltage) {
-    // Validate ADS1x15 channel range
-    if (adsChannel > 3) {
-        // Invalid channel, clamp to valid range
-        _analogChannel = 3;
-    }
-    // NOTE: We CANNOT print a warning here about invalid channel because the
-    // Serial object may not be initialized yet, and we don't want to cause a
-    // crash.
+    // NOTE: We DO NOT validate the channel numbers in this constructor!  We
+    // CANNOT print a warning here about invalid channel because the Serial
+    // object may not be initialized yet, and we don't want to cause a crash.
+    // The readVoltageSingleEnded and readVoltageDifferential functions will
+    // handle validation and return false if the channel configuration is
+    // invalid, but we can't do that here in the constructor
 }
 
 // Constructor for differential measurements
-TIADS1x15::TIADS1x15(int8_t powerPin, int8_t adsChannel1, int8_t adsChannel2,
+TIADS1x15::TIADS1x15(int8_t powerPin, uint8_t adsChannel1, uint8_t adsChannel2,
                      float voltageMultiplier, adsGain_t adsGain,
                      uint8_t i2cAddress, uint8_t measurementsToAverage,
                      float adsSupplyVoltage)
@@ -262,23 +296,12 @@ TIADS1x15::TIADS1x15(int8_t powerPin, int8_t adsChannel1, int8_t adsChannel2,
              powerPin, -1, measurementsToAverage, TIADS1X15_INC_CALC_VARIABLES),
       TIADS1x15Base(adsChannel1, adsChannel2, voltageMultiplier, adsGain,
                     i2cAddress, adsSupplyVoltage) {
-    // Validate that channels are in canonical order (lower number first)
-    if (adsChannel1 >= adsChannel2) {
-        // Force canonical ordering to prevent undefined behavior
-        if (adsChannel1 < adsChannel2) {
-            _analogChannel             = adsChannel1;
-            _analogDifferentialChannel = adsChannel2;
-        } else {
-            _analogChannel             = adsChannel2;
-            _analogDifferentialChannel = adsChannel1;
-        }
-    }
-    // NOTE: We CANNOT print a warning here about invalid channel combinations
+    // NOTE: We DO NOT validate the channel numbers and pairings in this
+    // constructor!  We CANNOT print a warning here about invalid channel
     // because the Serial object may not be initialized yet, and we don't want
-    // to cause a crash.  Calling any function that uses Serial here will cause
-    // a crash if Serial is not initialized, and we don't want to risk that in
-    // the constructor.  Instead, we will just clamp to a valid default pair of
-    // channels (0-1) if the combination is invalid.
+    // to cause a crash. The readVoltageSingleEnded and readVoltageDifferential
+    // functions will handle validation and return false if the channel
+    // configuration is invalid, but we can't do that here in the constructor
 }
 
 // Destructor

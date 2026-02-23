@@ -13,6 +13,16 @@
 
 
 // ============================================================================
+// ProcessorAnalogBase Constructor
+// ============================================================================
+
+ProcessorAnalogBase::ProcessorAnalogBase(int8_t dataPin,
+                                         float  voltageMultiplier,
+                                         float  operatingVoltage)
+    : AnalogVoltageBase(dataPin, voltageMultiplier, operatingVoltage, -1) {}
+
+
+// ============================================================================
 // ProcessorAnalogBase Functions
 // ============================================================================
 
@@ -38,12 +48,9 @@ bool ProcessorAnalogBase::readVoltageSingleEnded(float& resultValue) {
     MS_DBG(F("Raw analog pin reading in bits:"), rawAnalog);
 
     // convert bits to volts
-    float sensorValue_analog =
-        (_supplyVoltage / static_cast<float>(PROCESSOR_ADC_MAX)) *
+    resultValue = (_supplyVoltage / static_cast<float>(PROCESSOR_ADC_MAX)) *
         _voltageMultiplier * rawAnalog;
-    MS_DBG(F("Voltage:"), sensorValue_analog);
-
-    resultValue = sensorValue_analog;
+    MS_DBG(F("Voltage:"), resultValue);
 
     // NOTE: We don't actually have any criteria for if the reading was any
     // good or not, so we mark it as successful no matter what.
@@ -52,7 +59,7 @@ bool ProcessorAnalogBase::readVoltageSingleEnded(float& resultValue) {
 
 String ProcessorAnalogBase::getSensorLocation(void) {
     String sensorLocation = F("ProcessorAnalog_Pin");
-    sensorLocation += String((int)_analogChannel);
+    sensorLocation += String(static_cast<int>(_analogChannel));
     return sensorLocation;
 }
 
