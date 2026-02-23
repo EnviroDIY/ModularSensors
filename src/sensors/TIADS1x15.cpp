@@ -26,12 +26,19 @@ TIADS1x15Base::TIADS1x15Base(uint8_t adsChannel, float voltageMultiplier,
     : AnalogVoltageBase(adsChannel, voltageMultiplier, adsSupplyVoltage, -1),
       _adsGain(adsGain),
       _i2cAddress(i2cAddress) {
-    // NOTE: We DO NOT validate the channel numbers in this constructor!  We
-    // CANNOT print a warning here about invalid channel because the Serial
-    // object may not be initialized yet, and we don't want to cause a crash.
-    // The readVoltageSingleEnded and readVoltageDifferential functions will
-    // handle validation and return false if the channel configuration is
-    // invalid, but we can't do that here in the constructor
+    // Clamp supply voltage to valid ADS1x15 range: 0.0V to 5.5V per datasheet
+    // This clamp is done silently!
+    if (_supplyVoltage < 0.0f) {
+        _supplyVoltage = 0.0f;
+    } else if (_supplyVoltage > 5.5f) {
+        _supplyVoltage = 5.5f;
+    }
+    // NOTE: We DO NOT clamp or validate the channel numbers in this
+    // constructor!  We CANNOT print a warning here about invalid channel
+    // because the Serial object may not be initialized yet, and we don't want
+    // to cause a crash. The readVoltageSingleEnded and readVoltageDifferential
+    // functions will handle validation and return false if the channel
+    // configuration is invalid, but we can't do that here in the constructor
 }
 
 // Constructor for differential measurements
@@ -42,7 +49,14 @@ TIADS1x15Base::TIADS1x15Base(uint8_t adsChannel1, uint8_t adsChannel2,
                         adsChannel2),
       _adsGain(adsGain),
       _i2cAddress(i2cAddress) {
-    // NOTE: We DO NOT validate the channel numbers and pairings in this
+    // Clamp supply voltage to valid ADS1x15 range: 0.0V to 5.5V per datasheet
+    // This clamp is done silently!
+    if (_supplyVoltage < 0.0f) {
+        _supplyVoltage = 0.0f;
+    } else if (_supplyVoltage > 5.5f) {
+        _supplyVoltage = 5.5f;
+    }
+    // NOTE: We DO NOT clamp orvalidate the channel numbers and pairings in this
     // constructor!  We CANNOT print a warning here about invalid channel
     // because the Serial object may not be initialized yet, and we don't want
     // to cause a crash. The readVoltageSingleEnded and readVoltageDifferential
@@ -203,7 +217,7 @@ bool TIADS1x15Base::readVoltageDifferential(float& resultValue) {
 
     // Validate range - for differential measurements, use PGA full-scale range
     // Based on gain setting rather than supply voltage
-    float fullScaleVoltage = 4.096;  // Default for GAIN_ONE
+    float fullScaleVoltage;
     switch (_adsGain) {
         case GAIN_TWOTHIRDS: fullScaleVoltage = 6.144; break;
         case GAIN_ONE: fullScaleVoltage = 4.096; break;
@@ -246,11 +260,8 @@ bool TIADS1x15Base::isValidDifferentialPair(uint8_t channel1,
     // only)
     if (channel1 >= channel2) return false;  // Reject reversed or equal pairs
 
-    if (channel1 == 0 && channel2 == 1) return true;
-    if (channel1 == 0 && channel2 == 3) return true;
-    if (channel1 == 1 && channel2 == 3) return true;
-    if (channel1 == 2 && channel2 == 3) return true;
-    return false;
+    return (channel1 == 0 && (channel2 == 1 || channel2 == 3)) ||
+        (channel1 == 1 && channel2 == 3) || (channel1 == 2 && channel2 == 3);
 }
 
 // Setter and getter methods for ADS gain

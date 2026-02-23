@@ -372,9 +372,9 @@ class TIADS1x15Base : public AnalogVoltageBase {
      * @param channel2 Second channel (0-3, physical ADS channel indices only)
      * @return True if the combination is valid (0-1, 0-3, 1-3, or 2-3)
      *
-     * @note This function expects uint8_t to match
-     * Adafruit_ADS1X15::readADC_SingleEnded(uint8_t) and avoid sign-extension
-     * issues. Negative sentinel values are handled internally.
+     * @note Channel parameters use uint8_t to be consistent with the
+     * Adafruit_ADS1X15 channel type convention and to avoid sign-extension
+     * when computing hardware MUX configuration values internally.
      */
     static bool isValidDifferentialPair(uint8_t channel1, uint8_t channel2);
 
