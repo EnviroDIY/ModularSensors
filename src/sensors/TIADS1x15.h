@@ -168,6 +168,7 @@
 // Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
+#include "AnalogVoltageBase.h"
 #include <Adafruit_ADS1X15.h>
 
 /** @ingroup sensor_ads1x15 */
@@ -272,6 +273,118 @@ enum class tiads1x15_adsDiffMux_t : uint16_t {
 #endif
 /**@}*/
 
+/**
+ * @brief TI ADS1x15 base class that inherits from AnalogVoltageBase
+ *
+ * This class provides ADS1x15-specific analog functionality on top of
+ * the generic AnalogVoltageBase class. It handles ADS configuration,
+ * I2C communication, and differential/single-ended measurement modes.
+ */
+class TIADS1x15Base : public AnalogVoltageBase {
+ public:
+    /**
+     * @brief Check if the two channels form a valid differential pair
+     *
+     * @param channel1 First channel (0-3)
+     * @param channel2 Second channel (0-3)
+     * @return True if the combination is valid (0-1, 0-3, 1-3, or 2-3)
+     */
+    static bool isValidDifferentialPair(uint8_t channel1, uint8_t channel2);
+
+    /**
+     * @brief Construct a new TIADS1x15Base object for single-ended measurements
+     *
+     * @param adsChannel The ADS channel of interest (0-3).
+     * @param voltageMultiplier The voltage multiplier for any voltage dividers
+     * @param adsGain The internal gain setting of the ADS1x15
+     * @param i2cAddress The I2C address of the ADS 1x15
+     * @param adsSupplyVoltage The power supply voltage for the ADS1x15 in volts
+     */
+    TIADS1x15Base(uint8_t adsChannel, float voltageMultiplier,
+                  adsGain_t adsGain, uint8_t i2cAddress,
+                  float adsSupplyVoltage)
+        : AnalogVoltageBase(adsChannel, voltageMultiplier, adsSupplyVoltage, -1),
+          _adsGain(adsGain),
+          _i2cAddress(i2cAddress) {}
+
+    /**
+     * @brief Construct a new TIADS1x15Base object for differential measurements
+     *
+     * @param adsChannel1 The first ADS channel for differential measurement (0-3)
+     * @param adsChannel2 The second ADS channel for differential measurement (0-3)
+     * @param voltageMultiplier The voltage multiplier for any voltage dividers
+     * @param adsGain The internal gain setting of the ADS1x15
+     * @param i2cAddress The I2C address of the ADS 1x15
+     * @param adsSupplyVoltage The power supply voltage for the ADS1x15 in volts
+     */
+    TIADS1x15Base(uint8_t adsChannel1, uint8_t adsChannel2, float voltageMultiplier,
+                  adsGain_t adsGain, uint8_t i2cAddress,
+                  float adsSupplyVoltage)
+        : AnalogVoltageBase(adsChannel1, voltageMultiplier, adsSupplyVoltage, adsChannel2),
+          _adsGain(adsGain),
+          _i2cAddress(i2cAddress) {
+        // Validate differential channel combinations
+        if (!isValidDifferentialPair(adsChannel1, adsChannel2)) {
+            // Default to 0-1 if invalid combination
+            _analogChannel = 0;
+            _analogDifferentialChannel = 1;
+        }
+    }
+
+    /**
+     * @brief Destroy the TIADS1x15Base object
+     */
+    virtual ~TIADS1x15Base() = default;
+
+    /**
+     * @brief Read a single-ended voltage measurement from the ADS1x15
+     *
+     * @param resultValue Reference to store the resulting voltage measurement
+     * @return True if the voltage reading was successful
+     */
+    bool readVoltageSingleEnded(float& resultValue) override;
+
+    /**
+     * @brief Read a differential voltage measurement from the ADS1x15
+     *
+     * @param resultValue Reference to store the resulting voltage measurement
+     * @return True if the voltage reading was successful and within valid range
+     */
+    bool readVoltageDifferential(float& resultValue) override;
+
+    /**
+     * @brief Get the sensor location string
+     *
+     * @return A string describing the ADS1x15 sensor location
+     */
+    String getSensorLocation(void) override;
+
+    /**
+     * @brief Set the internal gain setting for the ADS1x15
+     *
+     * @param adsGain The internal gain setting (GAIN_TWOTHIRDS, GAIN_ONE,
+     * GAIN_TWO, GAIN_FOUR, GAIN_EIGHT, GAIN_SIXTEEN)
+     */
+    void setADSGain(adsGain_t adsGain);
+
+    /**
+     * @brief Get the internal gain setting for the ADS1x15
+     *
+     * @return The internal gain setting
+     */
+    adsGain_t getADSGain(void);
+
+ protected:
+    /**
+     * @brief Internal reference to the internal gain setting of the TI-ADS1x15
+     */
+    adsGain_t _adsGain;
+    /**
+     * @brief Internal reference to the I2C address of the TI-ADS1x15
+     */
+    uint8_t _i2cAddress;
+};
+
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
@@ -280,7 +393,7 @@ enum class tiads1x15_adsDiffMux_t : uint16_t {
  * @ingroup sensor_ads1x15
  */
 /* clang-format on */
-class TIADS1x15 : public Sensor {
+class TIADS1x15 : public Sensor, public TIADS1x15Base {
  public:
     /**
      * @brief Construct a new External Voltage object - need the power pin and
@@ -319,8 +432,9 @@ class TIADS1x15 : public Sensor {
      *
      * @param powerPin The pin on the mcu controlling power to the sensor
      * Use -1 if it is continuously powered.
-     * @param adsDiffMux The differential pin configuration for voltage
-     * measurement
+     * @param adsChannel1 The first ADS channel for differential measurement (0-3)
+     * @param adsChannel2 The second ADS channel for differential measurement (0-3)
+     *   Valid combinations are: 0-1, 0-3, 1-3, or 2-3
      * @param voltageMultiplier The voltage multiplier, if a voltage divider is
      * used.
      * @param adsGain The internal gain setting of the ADS1x15; defaults to
@@ -333,7 +447,7 @@ class TIADS1x15 : public Sensor {
      * @param adsSupplyVoltage The power supply voltage for the ADS1x15 in
      * volts; defaults to the processor operating voltage from KnownProcessors.h
      */
-    TIADS1x15(int8_t powerPin, tiads1x15_adsDiffMux_t adsDiffMux,
+    TIADS1x15(int8_t powerPin, uint8_t adsChannel1, uint8_t adsChannel2,
               float voltageMultiplier = 1, adsGain_t adsGain = GAIN_ONE,
               uint8_t i2cAddress            = ADS1115_ADDRESS,
               uint8_t measurementsToAverage = 1,
@@ -350,80 +464,13 @@ class TIADS1x15 : public Sensor {
     /**
      * @brief Set the power supply voltage for the ADS1x15
      *
-     * @param adsSupplyVoltage The power supply voltage in volts (2.0-5.5V
+     * @param supplyVoltage The power supply voltage in volts (2.0-5.5V
      * range)
      */
-    void setADSSupplyVoltage(float adsSupplyVoltage);
-
-    /**
-     * @brief Get the power supply voltage for the ADS1x15
-     *
-     * @return The power supply voltage in volts
-     */
-    float getADSSupplyVoltage(void);
-
-    /**
-     * @brief Set the internal gain setting for the ADS1x15
-     *
-     * @param adsGain The internal gain setting (GAIN_TWOTHIRDS, GAIN_ONE,
-     * GAIN_TWO, GAIN_FOUR, GAIN_EIGHT, GAIN_SIXTEEN)
-     */
-    void setADSGain(adsGain_t adsGain);
-
-    /**
-     * @brief Get the internal gain setting for the ADS1x15
-     *
-     * @return The internal gain setting
-     */
-    adsGain_t getADSGain(void);
-
- protected:
-    /**
-     * @brief Read a single-ended voltage measurement from the ADS1x15
-     *
-     * @param resultValue Reference to store the resulting voltage measurement
-     * @return True if the voltage reading was successful and within valid range
-     */
-    virtual bool readVoltageSingleEnded(float& resultValue);
-
-    /**
-     * @brief Read a differential voltage measurement from the ADS1x15
-     *
-     * @param resultValue Reference to store the resulting voltage measurement
-     * @return True if the voltage reading was successful and within valid range
-     */
-    virtual bool readVoltageDifferential(float& resultValue);
+    void setSupplyVoltage(float supplyVoltage) override;
 
  private:
-    /**
-     * @brief Internal reference to the ADS channel number of the device
-     * attached to the TI-ADS1x15 (used for single-ended measurements)
-     */
-    uint8_t _adsChannel;
-    /**
-     * @brief Internal reference to whether we are using differential mode
-     */
-    bool _isDifferential;
-    /**
-     * @brief Internal reference to the differential mux configuration
-     */
-    tiads1x15_adsDiffMux_t _adsDiffMux;
-    /**
-     * @brief Internal reference to the voltage multiplier for the TI-ADS1x15
-     */
-    float _voltageMultiplier;
-    /**
-     * @brief Internal reference to the internal gain setting of the TI-ADS1x15
-     */
-    adsGain_t _adsGain;
-    /**
-     * @brief Internal reference to the I2C address of the TI-ADS1x15
-     */
-    uint8_t _i2cAddress;
-    /**
-     * @brief Internal reference to the power supply voltage of the TI-ADS1x15
-     */
-    float _adsSupplyVoltage;
+    // No additional private members - all ADS-specific parameters are now in TIADS1x15Base
 };
 
 /**

@@ -76,6 +76,7 @@
 // Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
+#include "AnalogVoltageBase.h"
 
 /** @ingroup sensor_processor_analog */
 /**@{*/
@@ -155,6 +156,52 @@
 #endif
 /**@}*/
 
+/**
+ * @brief Processor analog base class that inherits from AnalogVoltageBase
+ *
+ * This class provides processor-specific analog functionality on top of
+ * the generic AnalogVoltageBase class. It handles processor ADC configuration
+ * and maintains the data pin information for analog readings.
+ */
+class ProcessorAnalogBase : public AnalogVoltageBase {
+ public:
+    /**
+     * @brief Construct a new ProcessorAnalogBase object
+     *
+     * @param dataPin The processor ADC pin used to read the target voltage. Not
+     * all processor pins can be used as analog pins.  Those usable as analog
+     * pins generally are numbered with an "A" in front of the number - ie, A1.
+     * @param voltageMultiplier Any multiplier needed to convert raw battery
+     * readings from `analogRead()` into true battery values based on any
+     * resistors or voltage dividers
+     * @param operatingVoltage The processor's operating voltage; most
+     * likely 3.3 or 5.
+     */
+    ProcessorAnalogBase(int8_t dataPin, float voltageMultiplier,
+                        float operatingVoltage = OPERATING_VOLTAGE)
+        : AnalogVoltageBase(dataPin, voltageMultiplier, operatingVoltage, -1) {}
+
+    /**
+     * @brief Destroy the ProcessorAnalogBase object
+     */
+    virtual ~ProcessorAnalogBase() = default;
+
+    /**
+     * @brief Read a single-ended voltage measurement from the processor ADC
+     *
+     * @param resultValue Reference to store the resulting voltage measurement
+     * @return True if the voltage reading was successful
+     */
+    bool readVoltageSingleEnded(float& resultValue) override;
+
+    /**
+     * @brief Get the sensor location string
+     *
+     * @return A string describing the processor analog pin location
+     */
+    String getSensorLocation(void) override;
+};
+
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
@@ -163,7 +210,7 @@
  * @ingroup sensor_processor_analog
  */
 /* clang-format on */
-class ProcessorAnalog : public Sensor {
+class ProcessorAnalog : public Sensor, public ProcessorAnalogBase {
  public:
     /**
      * @brief Construct a new Processor Analog object - need the power pin and
@@ -193,39 +240,6 @@ class ProcessorAnalog : public Sensor {
     ~ProcessorAnalog();
 
     bool addSingleMeasurementResult(void) override;
-
-    /**
-     * @brief Set the voltage multiplier for the processor analog sensor
-     *
-     * @param voltageMultiplier Any multiplier needed to convert raw readings
-     * from analogRead() into true voltage values based on any resistors or
-     * voltage dividers
-     */
-    void setVoltageMultiplier(float voltageMultiplier);
-
-    /**
-     * @brief Get the voltage multiplier for the processor analog sensor
-     *
-     * @return The voltage multiplier value
-     */
-    float getVoltageMultiplier(void);
-
- protected:
-    /**
-     * @brief Read a single-ended voltage measurement from the processor ADC
-     *
-     * @param resultValue Reference to store the resulting voltage measurement
-     * @return True if the voltage reading was successful
-     */
-    virtual bool readVoltageSingleEnded(float& resultValue);
-
- private:
-    float _voltageMultiplier;  ///< Internal reference to any multiplier needed
-                               ///< to convert raw battery readings into true
-                               ///< battery values based on any resistors or
-                               ///< voltage dividers
-    float _operatingVoltage;   ///< Internal reference to processor's operating
-                               ///< voltage
 };
 
 

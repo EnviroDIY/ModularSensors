@@ -23,8 +23,7 @@ ProcessorAnalog::ProcessorAnalog(int8_t powerPin, int8_t dataPin,
              PROCESSOR_ANALOG_STABILIZATION_TIME_MS,
              PROCESSOR_ANALOG_MEASUREMENT_TIME_MS, powerPin, dataPin,
              measurementsToAverage, PROCESSOR_ANALOG_INC_CALC_VARIABLES),
-      _voltageMultiplier(voltageMultiplier),
-      _operatingVoltage(operatingVoltage) {}
+      ProcessorAnalogBase(dataPin, voltageMultiplier, operatingVoltage) {}
 // Destructor
 ProcessorAnalog::~ProcessorAnalog() {}
 
@@ -48,30 +47,30 @@ bool ProcessorAnalog::addSingleMeasurementResult(void) {
     return bumpMeasurementAttemptCount(success);
 }
 
-bool ProcessorAnalog::readVoltageSingleEnded(float& resultValue) {
+bool ProcessorAnalogBase::readVoltageSingleEnded(float& resultValue) {
     // Validate parameters
     if (PROCESSOR_ADC_MAX <= 0) {
         MS_DBG(F("Processor ADC max value is not set or invalid!"));
         return false;
     }
-    if (_dataPin < 0 || _operatingVoltage <= 0 || _voltageMultiplier <= 0) {
+    if (_analogChannel < 0 || _supplyVoltage <= 0 || _voltageMultiplier <= 0) {
         MS_DBG(F("Missing one or more required parameters: analog pin, "
                  "operating voltage, or voltage divider!"));
         return false;
     }
 
     // Get the analog voltage
-    MS_DBG(F("Getting analog voltage from pin"), _dataPin);
-    pinMode(_dataPin, INPUT);
-    analogRead(_dataPin);  // priming reading
+    MS_DBG(F("Getting analog voltage from pin"), _analogChannel);
+    pinMode(_analogChannel, INPUT);
+    analogRead(_analogChannel);  // priming reading
     // The return value from analogRead() is IN BITS NOT IN VOLTS!!
-    analogRead(_dataPin);  // another priming reading
-    float rawAnalog = analogRead(_dataPin);
+    analogRead(_analogChannel);  // another priming reading
+    float rawAnalog = analogRead(_analogChannel);
     MS_DBG(F("Raw analog pin reading in bits:"), rawAnalog);
 
     // convert bits to volts
     float sensorValue_analog =
-        (_operatingVoltage / static_cast<float>(PROCESSOR_ADC_MAX)) *
+        (_supplyVoltage / static_cast<float>(PROCESSOR_ADC_MAX)) *
         _voltageMultiplier * rawAnalog;
     MS_DBG(F("Voltage:"), sensorValue_analog);
 
@@ -82,10 +81,8 @@ bool ProcessorAnalog::readVoltageSingleEnded(float& resultValue) {
     return true;
 }
 
-void ProcessorAnalog::setVoltageMultiplier(float voltageMultiplier) {
-    _voltageMultiplier = voltageMultiplier;
-}
-
-float ProcessorAnalog::getVoltageMultiplier(void) {
-    return _voltageMultiplier;
+String ProcessorAnalogBase::getSensorLocation(void) {
+    String sensorLocation = F("ProcessorAnalog_Pin");
+    sensorLocation += String(_analogChannel);
+    return sensorLocation;
 }

@@ -24,64 +24,52 @@ TIADS1x15::TIADS1x15(int8_t powerPin, uint8_t adsChannel,
                      float adsSupplyVoltage)
     : Sensor("TIADS1x15", TIADS1X15_NUM_VARIABLES, TIADS1X15_WARM_UP_TIME_MS,
              TIADS1X15_STABILIZATION_TIME_MS, TIADS1X15_MEASUREMENT_TIME_MS,
-             powerPin, -1, measurementsToAverage, TIADS1X15_INC_CALC_VARIABLES),
-      _adsChannel(adsChannel),
-      _isDifferential(false),
-      _adsDiffMux(
-          tiads1x15_adsDiffMux_t::TIADS1X15_DIFF_MUX_0_1),  // Default value,
-                                                            // not used
-      _voltageMultiplier(voltageMultiplier),
-      _adsGain(adsGain),
-      _i2cAddress(i2cAddress),
-      _adsSupplyVoltage(adsSupplyVoltage) {}
+             powerPin, adsChannel, measurementsToAverage,
+             TIADS1X15_INC_CALC_VARIABLES),
+      TIADS1x15Base(adsChannel, voltageMultiplier, adsGain, i2cAddress,
+                    adsSupplyVoltage) {
+    // Validate ADS1x15 channel range
+    if (adsChannel > 3) {
+        // Invalid channel, clamp to valid range
+        _analogChannel = 3;
+    }
+}
 
 // Constructor for differential measurements
-TIADS1x15::TIADS1x15(int8_t powerPin, tiads1x15_adsDiffMux_t adsDiffMux,
+TIADS1x15::TIADS1x15(int8_t powerPin, uint8_t adsChannel1, uint8_t adsChannel2,
                      float voltageMultiplier, adsGain_t adsGain,
                      uint8_t i2cAddress, uint8_t measurementsToAverage,
                      float adsSupplyVoltage)
     : Sensor("TIADS1x15", TIADS1X15_NUM_VARIABLES, TIADS1X15_WARM_UP_TIME_MS,
              TIADS1X15_STABILIZATION_TIME_MS, TIADS1X15_MEASUREMENT_TIME_MS,
              powerPin, -1, measurementsToAverage, TIADS1X15_INC_CALC_VARIABLES),
-      _adsChannel(0), // Not used for differential
-      _isDifferential(true),
-      _adsDiffMux(adsDiffMux),
-      _voltageMultiplier(voltageMultiplier),
-      _adsGain(adsGain),
-      _i2cAddress(i2cAddress),
-      _adsSupplyVoltage(adsSupplyVoltage) {}
+      TIADS1x15Base(adsChannel1, adsChannel2, voltageMultiplier, adsGain, i2cAddress,
+                    adsSupplyVoltage) {}
 // Destructor
 TIADS1x15::~TIADS1x15() {}
 
 
-String TIADS1x15::getSensorLocation(void) {
+String TIADS1x15Base::getSensorLocation(void) {
 #ifndef MS_USE_ADS1015
     String sensorLocation = F("ADS1115_0x");
 #else
     String sensorLocation = F("ADS1015_0x");
 #endif
     sensorLocation += String(_i2cAddress, HEX);
-    if (_isDifferential) {
+    if (isDifferential()) {
         sensorLocation += F("_Diff");
-        switch (_adsDiffMux) {
-            case tiads1x15_adsDiffMux_t::TIADS1X15_DIFF_MUX_0_1:
-                sensorLocation += F("0_1");
-                break;
-            case tiads1x15_adsDiffMux_t::TIADS1X15_DIFF_MUX_0_3:
-                sensorLocation += F("0_3");
-                break;
-            case tiads1x15_adsDiffMux_t::TIADS1X15_DIFF_MUX_1_3:
-                sensorLocation += F("1_3");
-                break;
-            case tiads1x15_adsDiffMux_t::TIADS1X15_DIFF_MUX_2_3:
-                sensorLocation += F("2_3");
-                break;
-        }
+        sensorLocation += String(_analogChannel);
+        sensorLocation += F("_");
+        sensorLocation += String(_analogDifferentialChannel);
     } else {
         sensorLocation += F("_Channel");
-        sensorLocation += String(_adsChannel);
+        sensorLocation += String(_analogChannel);
     }
     return sensorLocation;
+}
+
+String TIADS1x15::getSensorLocation(void) {
+    return TIADS1x15Base::getSensorLocation();
 }
 
 
@@ -97,7 +85,7 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
     bool  success     = false;
 
     // Use differential or single-ended reading based on configuration
-    if (_isDifferential) {
+    if (isDifferential()) {
         success = readVoltageDifferential(resultValue);
     } else {
         success = readVoltageSingleEnded(resultValue);
@@ -111,7 +99,7 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
     return bumpMeasurementAttemptCount(success);
 }
 
-bool TIADS1x15::readVoltageSingleEnded(float& resultValue) {
+bool TIADS1x15Base::readVoltageSingleEnded(float& resultValue) {
     bool    success      = false;
     int16_t adcCounts    = -9999;
     float   adcVoltage   = -9999;
@@ -145,23 +133,30 @@ bool TIADS1x15::readVoltageSingleEnded(float& resultValue) {
     }
 
     // Read Analog to Digital Converter (ADC)
+    // Validate ADS1x15 channel range for single-ended measurements
+    if (_analogChannel < 0 || _analogChannel > 3) {
+        MS_DBG(F("  Invalid ADS1x15 channel "), _analogChannel,
+               F(", valid range is 0-3"));
+        return false;
+    }
+
     // Taking this reading includes the 8ms conversion delay.
     // Measure the ADC raw count
-    adcCounts = ads.readADC_SingleEnded(_adsChannel);
+    adcCounts = ads.readADC_SingleEnded(_analogChannel);
     // Convert ADC raw counts value to voltage (V)
     adcVoltage = ads.computeVolts(adcCounts);
-    MS_DBG(F("  ads.readADC_SingleEnded("), _adsChannel, F("):"), adcCounts,
+    MS_DBG(F("  ads.readADC_SingleEnded("), _analogChannel, F("):"), adcCounts,
            F(" voltage:"), adcVoltage);
     // Verify the range based on the actual power supplied to the ADS.
     // Valid range is approximately -0.3V to (supply voltage + 0.3V) with
     // absolute maximum of 5.5V per datasheet
     float minValidVoltage = -0.3;
-    float maxValidVoltage = _adsSupplyVoltage + 0.3;
+    float maxValidVoltage = _supplyVoltage + 0.3;
     if (maxValidVoltage > 5.5) {
         maxValidVoltage = 5.5;  // Absolute maximum per datasheet
     }
 
-    MS_DBG(F("  ADS supply voltage:"), _adsSupplyVoltage, F("V"));
+    MS_DBG(F("  ADS supply voltage:"), _supplyVoltage, F("V"));
     MS_DBG(F("  Valid voltage range:"), minValidVoltage, F("V to"),
            maxValidVoltage, F("V"));
 
@@ -179,7 +174,7 @@ bool TIADS1x15::readVoltageSingleEnded(float& resultValue) {
     return success;
 }
 
-bool TIADS1x15::readVoltageDifferential(float& resultValue) {
+bool TIADS1x15Base::readVoltageDifferential(float& resultValue) {
     bool    success      = false;
     int16_t adcCounts    = -9999;
     float   adcVoltage   = -9999;
@@ -201,23 +196,28 @@ bool TIADS1x15::readVoltageDifferential(float& resultValue) {
         return false;
     }
 
-    // Read differential voltage based on mux configuration
-    switch (_adsDiffMux) {
-        case tiads1x15_adsDiffMux_t::TIADS1X15_DIFF_MUX_0_1:
-            adcCounts = ads.readADC_Differential_0_1();
-            break;
-        case tiads1x15_adsDiffMux_t::TIADS1X15_DIFF_MUX_0_3:
-            adcCounts = ads.readADC_Differential_0_3();
-            break;
-        case tiads1x15_adsDiffMux_t::TIADS1X15_DIFF_MUX_1_3:
-            adcCounts = ads.readADC_Differential_1_3();
-            break;
-        case tiads1x15_adsDiffMux_t::TIADS1X15_DIFF_MUX_2_3:
-            adcCounts = ads.readADC_Differential_2_3();
-            break;
-        default:
-            MS_DBG(F("  Invalid differential mux configuration"));
-            return false;
+    // Validate differential channel combination
+    if (!isValidDifferentialPair(_analogChannel, _analogDifferentialChannel)) {
+        MS_DBG(F("  Invalid differential channel pair: "), _analogChannel,
+               F("-"), _analogDifferentialChannel);
+        return false;
+    }
+
+    // Read differential voltage based on channel configuration
+    uint8_t ch1 = _analogChannel;
+    uint8_t ch2 = _analogDifferentialChannel;
+
+    if ((ch1 == 0 && ch2 == 1) || (ch1 == 1 && ch2 == 0)) {
+        adcCounts = ads.readADC_Differential_0_1();
+    } else if ((ch1 == 0 && ch2 == 3) || (ch1 == 3 && ch2 == 0)) {
+        adcCounts = ads.readADC_Differential_0_3();
+    } else if ((ch1 == 1 && ch2 == 3) || (ch1 == 3 && ch2 == 1)) {
+        adcCounts = ads.readADC_Differential_1_3();
+    } else if ((ch1 == 2 && ch2 == 3) || (ch1 == 3 && ch2 == 2)) {
+        adcCounts = ads.readADC_Differential_2_3();
+    } else {
+        MS_DBG(F("  Unsupported differential channel combination"));
+        return false;
     }
 
     // Convert counts to voltage
@@ -260,30 +260,44 @@ bool TIADS1x15::readVoltageDifferential(float& resultValue) {
     return success;
 }
 
-// Setter and getter methods for ADS supply voltage
-void TIADS1x15::setADSSupplyVoltage(float adsSupplyVoltage) {
-    // Validate supply voltage range: 0.0V to 5.5V per datasheet
-    if (adsSupplyVoltage < 0.0) {
-        MS_DBG(F("ADS supply voltage "), adsSupplyVoltage,
-               F("V is below minimum, clamping to 0.0V"));
-        _adsSupplyVoltage = 0.0;
-    } else if (adsSupplyVoltage > 5.5) {
-        MS_DBG(F("ADS supply voltage "), adsSupplyVoltage,
-               F("V exceeds maximum, clamping to 5.5V"));
-        _adsSupplyVoltage = 5.5;
-    } else {
-        _adsSupplyVoltage = adsSupplyVoltage;
-    }
+// Validation function for differential channel pairs
+bool TIADS1x15Base::isValidDifferentialPair(uint8_t channel1,
+                                            uint8_t channel2) {
+    // Valid combinations are: 0-1, 0-3, 1-3, or 2-3
+    if ((channel1 == 0 && channel2 == 1) || (channel1 == 1 && channel2 == 0))
+        return true;
+    if ((channel1 == 0 && channel2 == 3) || (channel1 == 3 && channel2 == 0))
+        return true;
+    if ((channel1 == 1 && channel2 == 3) || (channel1 == 3 && channel2 == 1))
+        return true;
+    if ((channel1 == 2 && channel2 == 3) || (channel1 == 3 && channel2 == 2))
+        return true;
+    return false;
 }
 
-float TIADS1x15::getADSSupplyVoltage(void) {
-    return _adsSupplyVoltage;
-}
-
-void TIADS1x15::setADSGain(adsGain_t adsGain) {
+// Setter and getter methods for ADS gain
+void TIADS1x15Base::setADSGain(adsGain_t adsGain) {
     _adsGain = adsGain;
 }
 
-adsGain_t TIADS1x15::getADSGain(void) {
+adsGain_t TIADS1x15Base::getADSGain(void) {
     return _adsGain;
 }
+
+// Override setSupplyVoltage in TIADS1x15 to validate range
+void TIADS1x15::setSupplyVoltage(float supplyVoltage) {
+    // Validate supply voltage range: 0.0V to 5.5V per datasheet
+    if (supplyVoltage < 0.0) {
+        MS_DBG(F("ADS supply voltage "), supplyVoltage,
+               F("V is below minimum, clamping to 0.0V"));
+        _supplyVoltage = 0.0;
+    } else if (supplyVoltage > 5.5) {
+        MS_DBG(F("ADS supply voltage "), supplyVoltage,
+               F("V exceeds maximum, clamping to 5.5V"));
+        _supplyVoltage = 5.5;
+    } else {
+        _supplyVoltage = supplyVoltage;
+    }
+}
+
+// cspell:words TWOTHIRDS
