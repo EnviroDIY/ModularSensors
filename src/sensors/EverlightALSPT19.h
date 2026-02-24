@@ -199,6 +199,8 @@
 #define ALSPT19_ILLUMINANCE_DEFAULT_CODE "ALSPT19Lux"
 /**@}*/
 
+// Forward declaration
+class AnalogVoltageBase;
 
 /* clang-format off */
 /**

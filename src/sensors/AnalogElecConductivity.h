@@ -260,6 +260,9 @@
 #define ANALOGELECCONDUCTIVITY_EC_DEFAULT_CODE "anlgEc"
 /**@}*/
 
+// Forward declaration
+class AnalogVoltageBase;
+
 /**
  * @brief Class for the analog [Electrical Conductivity monitor](@ref
  * sensor_analog_cond)
