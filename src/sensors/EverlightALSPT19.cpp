@@ -13,14 +13,15 @@
 
 
 EverlightALSPT19::EverlightALSPT19(int8_t powerPin, int8_t dataPin,
-                                   float supplyVoltage, float loadResistor,
+                                   float alsSupplyVoltage, float loadResistor,
                                    uint8_t            measurementsToAverage,
                                    AnalogVoltageBase* analogVoltageReader)
     : Sensor("Everlight ALS-PT19", ALSPT19_NUM_VARIABLES,
              ALSPT19_WARM_UP_TIME_MS, ALSPT19_STABILIZATION_TIME_MS,
              ALSPT19_MEASUREMENT_TIME_MS, powerPin, dataPin,
              measurementsToAverage, ALSPT19_INC_CALC_VARIABLES),
-      _supplyVoltage(supplyVoltage),
+      _alsSupplyVoltage((alsSupplyVoltage > 0.0f) ? alsSupplyVoltage
+                                                  : OPERATING_VOLTAGE),
       _loadResistor(loadResistor) {
     // If no analog voltage reader was provided, create a default one
     if (analogVoltageReader == nullptr) {
@@ -42,7 +43,7 @@ EverlightALSPT19::EverlightALSPT19(uint8_t            measurementsToAverage,
              ALSPT19_MEASUREMENT_TIME_MS, BUILT_IN_ALS_POWER_PIN,
              BUILT_IN_ALS_DATA_PIN, measurementsToAverage,
              ALSPT19_INC_CALC_VARIABLES),
-      _supplyVoltage(BUILT_IN_ALS_SUPPLY_VOLTAGE),
+      _alsSupplyVoltage(BUILT_IN_ALS_SUPPLY_VOLTAGE),
       _loadResistor(BUILT_IN_ALS_LOADING_RESISTANCE) {
     // If no analog voltage reader was provided, create a default one
     if (analogVoltageReader == nullptr) {
@@ -107,6 +108,19 @@ bool EverlightALSPT19::addSingleMeasurementResult(void) {
                                                            adcVoltage);
 
     if (success) {
+        // From the datasheet:
+        // The output voltage V(out) is the product of photocurrent I(PH) and
+        // loading resistor R(L):
+        // - V(out) = I(PH) * R(L)
+        // At saturation:
+        // - V(out) ＝ Vcc－0.4V
+        if (adcVoltage > _alsSupplyVoltage - 0.4) {
+            MS_DBG(getSensorNameAndLocation(),
+                   F("Light sensor has reached saturation!  Clamping current "
+                     "and illumination values!"));
+            adcVoltage = _alsSupplyVoltage - 0.4;
+        }
+
         // convert volts to current
         // resistance is entered in kΩ and we want µA
         float current_val = (adcVoltage / (_loadResistor * 1000)) * 1e6;
@@ -114,7 +128,7 @@ bool EverlightALSPT19::addSingleMeasurementResult(void) {
 
         // convert current to illuminance
         // from sensor datasheet, typical 200µA current for 1000 Lux
-        float calibResult = current_val * (1000. / 200.);
+        float calibResult = current_val * (1000. / ALSPT19_CURRENT_PER_LUX);
         MS_DBG(F("  Illuminance:"), calibResult, F("lux"));
 
         verifyAndAddMeasurementResult(ALSPT19_VOLTAGE_VAR_NUM, adcVoltage);
