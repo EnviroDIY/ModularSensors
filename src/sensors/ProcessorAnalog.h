@@ -199,7 +199,8 @@ class ProcessorAnalogBase : public AnalogVoltageBase {
      * ProcessorAnalog does not support differential measurements, so this
      * always returns false.
      *
-     * @param resultValue Reference to store the resulting voltage measurement
+     * @param resultValue Reference to store the resulting voltage measurement.
+     * This will be set to -9999.0 to indicate an invalid reading.
      * @return Always false (differential not supported)
      */
     bool readVoltageDifferential(float& resultValue) override;

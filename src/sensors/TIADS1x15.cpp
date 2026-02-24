@@ -56,8 +56,8 @@ TIADS1x15Base::TIADS1x15Base(uint8_t adsChannel1, uint8_t adsChannel2,
     } else if (_supplyVoltage > 5.5f) {
         _supplyVoltage = 5.5f;
     }
-    // NOTE: We DO NOT clamp orvalidate the channel numbers and pairings in this
-    // constructor!  We CANNOT print a warning here about invalid channel
+    // NOTE: We DO NOT clamp or validate the channel numbers and pairings in
+    // this constructor!  We CANNOT print a warning here about invalid channel
     // because the Serial object may not be initialized yet, and we don't want
     // to cause a crash. The readVoltageSingleEnded and readVoltageDifferential
     // functions will handle validation and return false if the channel

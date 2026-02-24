@@ -245,8 +245,8 @@ class TurnerTurbidityPlus : public TIADS1x15 {
     TurnerTurbidityPlus(int8_t powerPin, int8_t wiperTriggerPin,
                         tiads1x15_adsDiffMux_t adsDiffMux, float conc_std,
                         float volt_std, float volt_blank,
-                        uint8_t   i2cAddress            = ADS1115_ADDRESS,
-                        adsGain_t PGA_gain              = GAIN_ONE,
+                        uint8_t   i2cAddress = MS_DEFAULT_ADS1X15_ADDRESS,
+                        adsGain_t PGA_gain   = GAIN_ONE,
                         uint8_t   measurementsToAverage = 1,
                         float     voltageDividerFactor  = 1);
     /**
