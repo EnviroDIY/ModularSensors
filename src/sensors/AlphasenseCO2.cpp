@@ -48,20 +48,13 @@ AlphasenseCO2::~AlphasenseCO2() {
 
 
 String AlphasenseCO2::getSensorLocation(void) {
-    if (_analogVoltageReader != nullptr) {
-        String sensorLocation = _analogVoltageReader->getSensorLocation();
-        sensorLocation += F("_Diff_");
-        sensorLocation += String(_dataPin);
-        sensorLocation += F("_");
-        sensorLocation += String(_analogReferenceChannel);
-        return sensorLocation;
-    } else {
-        String sensorLocation = F("Unknown_AnalogVoltageReader_Diff_");
-        sensorLocation += String(_dataPin);
-        sensorLocation += F("_");
-        sensorLocation += String(_analogReferenceChannel);
-        return sensorLocation;
-    }
+    // NOTE: The constructor guarantees that _analogVoltageReader is not null
+    String sensorLocation = _analogVoltageReader->getSensorLocation();
+    sensorLocation += F("_Diff_");
+    sensorLocation += String(_dataPin);
+    sensorLocation += F("_");
+    sensorLocation += String(_analogReferenceChannel);
+    return sensorLocation;
 }
 
 
@@ -83,7 +76,10 @@ bool AlphasenseCO2::addSingleMeasurementResult(void) {
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-    // Read differential voltage using the AnalogVoltageBase interface
+    // Read the differential voltage using the AnalogVoltageBase interface
+    // NOTE: All implementations of the AnalogVoltageBase class validate both
+    // the input channel and the resulting voltage, so we can trust that a
+    // successful read will give us a valid voltage value to work with.
     success = _analogVoltageReader->readVoltageDifferential(
         _dataPin, _analogReferenceChannel, adcVoltage);
 
