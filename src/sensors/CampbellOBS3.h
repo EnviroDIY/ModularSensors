@@ -9,8 +9,6 @@
  * CampbellOBS3_Turbidity and CampbellOBS3_Voltage.
  *
  * These are used for the Campbell Scientific OBS-3+.
- *
- * This depends on the Adafruit ADS1X15 v2.x library
  */
 /* clang-format off */
 /**

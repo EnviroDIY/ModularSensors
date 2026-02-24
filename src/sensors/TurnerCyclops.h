@@ -9,8 +9,6 @@
  * TurnerCyclops_Turbidity and TurnerCyclops_Voltage.
  *
  * These are used for the Turner Scientific Cyclops-7F.
- *
- * This depends on the Adafruit ADS1X15 v2.x library
  */
 /* clang-format off */
 /**
@@ -291,8 +289,6 @@
 /* clang-format on */
 class TurnerCyclops : public Sensor {
  public:
-    // The constructor - need the power pin, the ADS1X15 data channel, and the
-    // calibration info
     /**
      * @brief Construct a new Turner Cyclops object - need the power pin, the
      * analog data channel, and the calibration info.
@@ -324,7 +320,9 @@ class TurnerCyclops : public Sensor {
      * default value of 1.
      * @param analogVoltageReader Pointer to an AnalogVoltageBase object for
      * voltage measurements.  Pass nullptr (the default) to have the constructor
-     * internally create and own a TIADS1x15Base instance.
+     * internally create and own a TIADS1x15Base instance.  If a non-null
+     * pointer is supplied, the caller retains ownership and must ensure its
+     * lifetime exceeds that of this object.
      */
     TurnerCyclops(int8_t powerPin, uint8_t analogChannel, float conc_std,
                   float volt_std, float volt_blank,

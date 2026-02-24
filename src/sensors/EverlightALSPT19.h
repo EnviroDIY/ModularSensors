@@ -228,6 +228,11 @@ class EverlightALSPT19 : public Sensor {
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 10.
+     * @param analogVoltageReader Pointer to an AnalogVoltageBase object for
+     * voltage measurements.  Pass nullptr (the default) to have the constructor
+     * internally create and own a ProcessorAnalogBase instance. If a non-null
+     * pointer is supplied, the caller retains ownership and must ensure its
+     * lifetime exceeds that of this object.
      */
     EverlightALSPT19(int8_t powerPin, int8_t dataPin, float supplyVoltage,
                      float loadResistor, uint8_t measurementsToAverage = 10,
@@ -248,6 +253,11 @@ class EverlightALSPT19 : public Sensor {
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 10.
+     * @param analogVoltageReader Pointer to an AnalogVoltageBase object for
+     * voltage measurements.  Pass nullptr (the default) to have the constructor
+     * internally create and own a ProcessorAnalogBase instance. If a non-null
+     * pointer is supplied, the caller retains ownership and must ensure its
+     * lifetime exceeds that of this object.
      */
     explicit EverlightALSPT19(uint8_t            measurementsToAverage = 10,
                               AnalogVoltageBase* analogVoltageReader = nullptr);

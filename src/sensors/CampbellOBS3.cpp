@@ -75,7 +75,11 @@ bool CampbellOBS3::addSingleMeasurementResult(void) {
     MS_DBG(F("  Input calibration Curve:"), _x2_coeff_A, F("x^2 +"),
            _x1_coeff_B, F("x +"), _x0_coeff_C);
 
-    // Read voltage using the AnalogVoltageBase interface
+    // Read the single-ended analog voltage using the AnalogVoltageBase
+    // interface.
+    // NOTE: All implementations of the AnalogVoltageBase class validate both
+    // the input channel and the resulting voltage, so we can trust that a
+    // successful read will give us a valid voltage value to work with.
     success = _analogVoltageReader->readVoltageSingleEnded(_dataPin,
                                                            adcVoltage);
     if (success) {

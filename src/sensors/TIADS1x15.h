@@ -62,6 +62,7 @@
  * @note *In all cases, we assume that the ADS1x15 is powered at 3.3V by default with configurable internal gain settings.
  *
  * The default gain setting is 1x (GAIN_ONE) which divides the bit resolution over the range of 0-4.096V.
+ * In single-ended mode the actual ceiling is min(FSR, VDD + 0.3V) — typically 3.6V at 3.3V supply.
  * - Response time: < 1ms
  * - Resample time: 860 samples per second (~1.2ms)
  * - Range:

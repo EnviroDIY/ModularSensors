@@ -128,7 +128,10 @@ bool TurnerTurbidityPlus::addSingleMeasurementResult(void) {
         return bumpMeasurementAttemptCount(false);
     }
 
-    // Read differential voltage using the AnalogVoltageBase interface
+    // Read the differential voltage using the AnalogVoltageBase interface.
+    // NOTE: All implementations of the AnalogVoltageBase class validate both
+    // the input channel and the resulting voltage, so we can trust that a
+    // successful read will give us a valid voltage value to work with.
     success = _analogVoltageReader->readVoltageDifferential(
         _dataPin, _analogReferenceChannel, adcVoltage);
 

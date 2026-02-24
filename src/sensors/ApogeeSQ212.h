@@ -264,10 +264,6 @@ class ApogeeSQ212 : public Sensor {
      * allocate a TIADS1x15Base object automatically (owned and deleted by this
      * instance).  If a non-null pointer is supplied, the caller retains
      * ownership and must ensure its lifetime exceeds that of this object.
-     *
-     * @note  The ADS is expected to be either continuously powered or have its
-     * power controlled by the same pin as the SQ-212.  This library does not
-     * support any other configuration.
      */
     ApogeeSQ212(int8_t powerPin, uint8_t analogChannel,
                 uint8_t            measurementsToAverage = 1,

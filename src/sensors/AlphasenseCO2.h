@@ -15,8 +15,6 @@
  * Carbon Dioxide (CO2) sensor. This library will almost certainly also work
  * with the Alphasense IRC-AT CO2 sensor (which uses a thermopile detector),
  * although the warmup and stabilization times might be different.
- *
- * This depends on the Adafruit ADS1X15 v2.x library.
  */
 /* clang-format off */
 /**
@@ -119,8 +117,7 @@
 /**
  * @anchor sensor_alphasense_co2_config
  * @name Configuration Defines
- * Defines to set the calibration of the Alphasense CO2 sensor and the address
- * of the ADD.
+ * Defines to set the calibration of the Alphasense CO2 sensor.
  */
 /**@{*/
 #if !defined(ALPHASENSE_CO2_SENSE_RESISTOR_OHM) || defined(DOXYGEN)
@@ -281,11 +278,9 @@ class AlphasenseCO2 : public Sensor {
      * default value of 7.
      * @param analogVoltageReader Pointer to an AnalogVoltageBase object for
      * voltage measurements.  Pass nullptr (the default) to have the constructor
-     * internally create and own a TIADS1x15Base instance.
-     *
-     * @note  The ADS is expected to be either continuously powered or have
-     * its power controlled by the same pin as the Alphasense CO2 sensor.  This
-     * library does not support any other configuration.
+     * internally create and own a TIADS1x15Base instance.  If a non-null
+     * pointer is supplied, the caller retains ownership and must ensure its
+     * lifetime exceeds that of this object.
      *
      * @warning In library versions 0.37.0 and earlier, a different constructor
      * was used that required an enum object instead of two different analog

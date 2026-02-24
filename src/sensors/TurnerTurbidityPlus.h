@@ -10,8 +10,6 @@
  * subclasses TurnerTurbidityPlus_Turbidity and TurnerTurbidityPlus_Voltage.
  *
  * These are used for the Turner Turbidity Plus.
- *
- * This depends on the Adafruit ADS1X15 v2.x library.
  */
 /**
  * @defgroup sensor_turbidity_plus Turner Turbidity Plus
@@ -234,7 +232,9 @@ class TurnerTurbidityPlus : public Sensor {
      * default value of 1.
      * @param analogVoltageReader Pointer to an AnalogVoltageBase object for
      * voltage measurements.  Pass nullptr (the default) to have the constructor
-     * internally create and own a TIADS1x15Base instance.
+     * internally create and own a TIADS1x15Base instance.  If a non-null
+     * pointer is supplied, the caller retains ownership and must ensure its
+     * lifetime exceeds that of this object.
      *
      * @attention For 3.3V processors like the Mayfly, The Turner's 0-5V output
      * signal must be shifted down to a maximum of 3.3V. This can be done either

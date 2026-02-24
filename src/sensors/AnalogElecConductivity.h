@@ -288,8 +288,10 @@ class AnalogElecConductivity : public Sensor {
      * @param measurementsToAverage The number of measurements to average;
      * optional with default value of 1.
      * @param analogVoltageReader Pointer to an AnalogVoltageBase object for
-     * voltage measurements; optional with a default of a new ProcessorAnalogBase
-     * object. The private member _analogVoltageReader will store this pointer.
+     * voltage measurements.  Pass nullptr (the default) to have the constructor
+     * internally create and own a ProcessorAnalogBase instance. If a non-null
+     * pointer is supplied, the caller retains ownership and must ensure its
+     * lifetime exceeds that of this object.
      */
     AnalogElecConductivity(int8_t powerPin, int8_t dataPin,
                            float   Rseries_ohms          = RSERIES_OHMS_DEF,
