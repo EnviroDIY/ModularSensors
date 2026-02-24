@@ -53,8 +53,8 @@ bool TIADS1x15Base::readVoltageSingleEnded(int8_t analogChannel,
                                            float& resultValue) {
     bool    success      = false;
     int16_t adcCounts    = -9999;
-    float   adcVoltage   = -9999;
-    float   scaledResult = -9999;
+    float   adcVoltage   = -9999.0f;
+    float   scaledResult = -9999.0f;
 
 // Create an auxiliary ADC object
 // We create and set up the ADC object here so that each sensor using
@@ -100,10 +100,10 @@ bool TIADS1x15Base::readVoltageSingleEnded(int8_t analogChannel,
     // Verify the range based on the actual power supplied to the ADS.
     // Valid range is approximately -0.3V to (supply voltage + 0.3V) with
     // absolute maximum of 5.5V per datasheet
-    float minValidVoltage = -0.3;
-    float maxValidVoltage = _supplyVoltage + 0.3;
-    if (maxValidVoltage > 5.5) {
-        maxValidVoltage = 5.5;  // Absolute maximum per datasheet
+    float minValidVoltage = -0.3f;
+    float maxValidVoltage = _supplyVoltage + 0.3f;
+    if (maxValidVoltage > 5.5f) {
+        maxValidVoltage = 5.5f;  // Absolute maximum per datasheet
     }
 
     MS_DBG(F("  ADS supply voltage:"), _supplyVoltage, F("V"));
@@ -118,7 +118,7 @@ bool TIADS1x15Base::readVoltageSingleEnded(int8_t analogChannel,
         success     = true;
     } else {
         MS_DBG(F("  ADC voltage "), adcVoltage, F("V out of valid range"));
-        resultValue = -9999;
+        resultValue = -9999.0f;
     }
 
     return success;
@@ -129,8 +129,8 @@ bool TIADS1x15Base::readVoltageDifferential(int8_t analogChannel,
                                             float& resultValue) {
     bool    success      = false;
     int16_t adcCounts    = -9999;
-    float   adcVoltage   = -9999;
-    float   scaledResult = -9999;
+    float   adcVoltage   = -9999.0f;
+    float   scaledResult = -9999.0f;
 
 // Create an auxiliary ADC object
 #ifndef MS_USE_ADS1015
@@ -150,8 +150,9 @@ bool TIADS1x15Base::readVoltageDifferential(int8_t analogChannel,
 
     // Validate differential channel combination
     if (!isValidDifferentialPair(analogChannel, analogReferenceChannel)) {
-        MS_DBG(F("  Invalid differential channel pair: "), analogChannel,
-               F("-"), analogReferenceChannel);
+        MS_DBG(F("  Unsupported differential channel combination: "),
+               analogChannel, F("-"), analogReferenceChannel);
+        MS_DBG(F("  Use canonical ordered pairs: 0-1, 0-3, 1-3, or 2-3"));
         return false;
     }
 
@@ -167,11 +168,6 @@ bool TIADS1x15Base::readVoltageDifferential(int8_t analogChannel,
         adcCounts = ads.readADC_Differential_1_3();
     } else if (analogChannel == 2 && analogReferenceChannel == 3) {
         adcCounts = ads.readADC_Differential_2_3();
-    } else {
-        MS_DBG(F("  Unsupported differential channel combination: "),
-               analogChannel, F("-"), analogReferenceChannel);
-        MS_DBG(F("  Use canonical ordered pairs: 0-1, 0-3, 1-3, or 2-3"));
-        return false;
     }
 
     // Convert counts to voltage
@@ -183,16 +179,16 @@ bool TIADS1x15Base::readVoltageDifferential(int8_t analogChannel,
     // Based on gain setting rather than supply voltage
     float fullScaleVoltage;
     switch (_adsGain) {
-        case GAIN_TWOTHIRDS: fullScaleVoltage = 6.144; break;
-        case GAIN_ONE: fullScaleVoltage = 4.096; break;
-        case GAIN_TWO: fullScaleVoltage = 2.048; break;
-        case GAIN_FOUR: fullScaleVoltage = 1.024; break;
-        case GAIN_EIGHT: fullScaleVoltage = 0.512; break;
-        case GAIN_SIXTEEN: fullScaleVoltage = 0.256; break;
+        case GAIN_TWOTHIRDS: fullScaleVoltage = 6.144f; break;
+        case GAIN_ONE: fullScaleVoltage = 4.096f; break;
+        case GAIN_TWO: fullScaleVoltage = 2.048f; break;
+        case GAIN_FOUR: fullScaleVoltage = 1.024f; break;
+        case GAIN_EIGHT: fullScaleVoltage = 0.512f; break;
+        case GAIN_SIXTEEN: fullScaleVoltage = 0.256f; break;
         default:
             MS_DBG(F("  Unknown ADS gain value:"), _adsGain,
                    F(" using conservative 4.096V range"));
-            fullScaleVoltage = 4.096;  // Conservative fallback
+            fullScaleVoltage = 4.096f;  // Conservative fallback
             break;
     }
     float minValidVoltage = -fullScaleVoltage;
@@ -209,7 +205,7 @@ bool TIADS1x15Base::readVoltageDifferential(int8_t analogChannel,
         success     = true;
     } else {
         MS_DBG(F("  Differential voltage out of valid range"));
-        resultValue = -9999;
+        resultValue = -9999.0f;
     }
 
     return success;
