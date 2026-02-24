@@ -45,8 +45,10 @@ ApogeeSQ212::~ApogeeSQ212() {
 
 String ApogeeSQ212::getSensorLocation(void) {
     if (_analogVoltageReader != nullptr) {
-        return _analogVoltageReader->getSensorLocation() + F("_Channel") +
-            String(_dataPin);
+        String sensorLocation = _analogVoltageReader->getSensorLocation();
+        sensorLocation += F("_Channel");
+        sensorLocation += String(_dataPin);
+        return sensorLocation;
     } else {
         String sensorLocation = F("Unknown_AnalogVoltageReader_Channel");
         sensorLocation += String(_dataPin);
