@@ -104,7 +104,7 @@ bool ProcessorAnalog::addSingleMeasurementResult(void) {
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-    float resultValue = -9999;
+    float resultValue = -9999.0f;
     bool  success     = readVoltageSingleEnded(_dataPin, resultValue);
 
     if (success) {
