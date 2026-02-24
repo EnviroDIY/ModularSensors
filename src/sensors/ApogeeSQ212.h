@@ -292,10 +292,10 @@ class ApogeeSQ212 : public Sensor {
 
  private:
     /// @brief Pointer to analog voltage reader
-    AnalogVoltageBase* _analogVoltageReader;
+    AnalogVoltageBase* _analogVoltageReader = nullptr;
     /// @brief Flag to track if this object owns the analog voltage reader and
     /// should delete it in the destructor
-    bool _ownsAnalogVoltageReader;
+    bool _ownsAnalogVoltageReader = false;
 };
 
 

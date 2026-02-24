@@ -254,7 +254,7 @@ class EverlightALSPT19 : public Sensor {
 #endif
     /**
      * @brief Destroy the EverlightALSPT19 object.
-     * 
+     *
      * Conditionally deletes the _analogVoltageReader member if the ownership
      * flag _ownsAnalogVoltageReader is true, otherwise leaves it unmodified.
      */
@@ -282,10 +282,10 @@ class EverlightALSPT19 : public Sensor {
      */
     float _loadResistor;
     /// @brief Pointer to analog voltage reader
-    AnalogVoltageBase* _analogVoltageReader;
+    AnalogVoltageBase* _analogVoltageReader = nullptr;
     /// @brief Flag to track if this object owns the analog voltage reader and
     /// should delete it in the destructor
-    bool _ownsAnalogVoltageReader;
+    bool _ownsAnalogVoltageReader = false;
 };
 
 

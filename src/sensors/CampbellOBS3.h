@@ -289,10 +289,10 @@ class CampbellOBS3 : public Sensor {
     float _x1_coeff_B;  ///< Internal reference to the x coefficient
     float _x0_coeff_C;  ///< Internal reference to the x^0 coefficient
     /// @brief Pointer to analog voltage reader
-    AnalogVoltageBase* _analogVoltageReader;
+    AnalogVoltageBase* _analogVoltageReader = nullptr;
     /// @brief Flag to track if this object owns the analog voltage reader and
     /// should delete it in the destructor
-    bool _ownsAnalogVoltageReader;
+    bool _ownsAnalogVoltageReader = false;
 };
 
 

@@ -342,10 +342,10 @@ class AnalogElecConductivity : public Sensor {
     /// @brief the cell constant for the circuit
     float _sensorEC_Konst = SENSOREC_KONST_DEF;
     /// @brief Pointer to analog voltage reader
-    AnalogVoltageBase* _analogVoltageReader;
+    AnalogVoltageBase* _analogVoltageReader = nullptr;
     /// @brief Flag to track if this object owns the analog voltage reader and
     /// should delete it in the destructor
-    bool _ownsAnalogVoltageReader;
+    bool _ownsAnalogVoltageReader = false;
 };
 
 /**

@@ -323,10 +323,10 @@ class AlphasenseCO2 : public Sensor {
      */
     int8_t _analogReferenceChannel;
     /// @brief Pointer to analog voltage reader
-    AnalogVoltageBase* _analogVoltageReader;
+    AnalogVoltageBase* _analogVoltageReader = nullptr;
     /// @brief Flag to track if this object owns the analog voltage reader and
     /// should delete it in the destructor
-    bool _ownsAnalogVoltageReader;
+    bool _ownsAnalogVoltageReader = false;
 };
 
 
