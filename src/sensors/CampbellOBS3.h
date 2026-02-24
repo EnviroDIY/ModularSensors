@@ -243,19 +243,15 @@ class CampbellOBS3 : public Sensor {
      * default values for voltage readings, but a pointer to a custom
      * AnalogVoltageBase object can be passed in if desired.
      *
-     * @note ModularSensors only supports connecting the ADS1x15 to the primary
-     * hardware I2C instance defined in the Arduino core.  Connecting the ADS to
-     * a secondary hardware or software I2C instance is *not* supported!
-     *
      * @param powerPin The pin on the mcu controlling power to the OBS3+
      * Use -1 if it is continuously powered.
      * - The OBS-3 itself requires a 5-15V power supply, which can be turned off
      * between measurements.
-     * @param analogChannel The analog data channel or processor pin that the
-     * OBS3 is connected to.  The significance of the channel number depends on
-     * the specific AnalogVoltageBase implementation used for voltage readings.
-     * For example, with the TI ADS1x15, this would be the ADC channel (0-3)
-     * that the sensor is connected to.
+     * @param analogChannel The analog data channel or processor pin for voltage
+     * measurements.  The significance of the channel number depends on the
+     * specific AnalogVoltageBase implementation used for voltage readings. For
+     * example, with the TI ADS1x15, this would be the ADC channel (0-3) that
+     * the sensor is connected to.
      * @param x2_coeff_A The x2 (A) coefficient for the calibration _in volts_
      * @param x1_coeff_B The x (B) coefficient for the calibration _in volts_
      * @param x0_coeff_C The x0 (C) coefficient for the calibration _in volts_
@@ -263,8 +259,8 @@ class CampbellOBS3 : public Sensor {
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
      * @param analogVoltageReader Pointer to an AnalogVoltageBase object for
-     * voltage measurements; optional with a default of a new TIADS1x15Base
-     * object.
+     * voltage measurements.  Pass nullptr (the default) to have the constructor
+     * internally create and own a TIADS1x15Base instance.
      */
     CampbellOBS3(int8_t powerPin, uint8_t analogChannel, float x2_coeff_A,
                  float x1_coeff_B, float x0_coeff_C,
@@ -274,6 +270,15 @@ class CampbellOBS3 : public Sensor {
      * @brief Destroy the Campbell OBS3 object
      */
     ~CampbellOBS3();
+
+    // Delete copy constructor and copy assignment operator to prevent shallow
+    // copies
+    CampbellOBS3(const CampbellOBS3&)            = delete;
+    CampbellOBS3& operator=(const CampbellOBS3&) = delete;
+
+    // Delete move constructor and move assignment operator
+    CampbellOBS3(CampbellOBS3&&)            = delete;
+    CampbellOBS3& operator=(CampbellOBS3&&) = delete;
 
     String getSensorLocation(void) override;
 

@@ -210,10 +210,6 @@ class TurnerTurbidityPlus : public Sensor {
      * default values for voltage readings, but a pointer to a custom
      * AnalogVoltageBase object can be passed in if desired.
      *
-     * @note ModularSensors only supports connecting the ADS1x15 to the primary
-     * hardware I2C instance defined in the Arduino core. Connecting the ADS to
-     * a secondary hardware or software I2C instance is *not* supported!
-     *
      * @param powerPin The pin on the mcu controlling power to the Turbidity
      * Plus Use -1 if it is continuously powered.
      * - The Turbidity Plus requires a 3-15V power supply, which can be turned
@@ -237,13 +233,13 @@ class TurnerTurbidityPlus : public Sensor {
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
      * @param analogVoltageReader Pointer to an AnalogVoltageBase object for
-     * voltage measurements; optional with a default of a new TIADS1x15Base
-     * object.
+     * voltage measurements.  Pass nullptr (the default) to have the constructor
+     * internally create and own a TIADS1x15Base instance.
      *
      * @attention For 3.3V processors like the Mayfly, The Turner's 0-5V output
      * signal must be shifted down to a maximum of 3.3V. This can be done either
-     * either with a level-shifting chip (e.g. Adafruit BSS38), OR by connecting
-     * the Turner's output signal via a voltage divider. By default, the
+     * with a level-shifting chip (e.g. Adafruit BSS38), OR by connecting the
+     * Turner's output signal via a voltage divider. By default, the
      * TurnerTurbidityPlus object does **NOT** include any level-shifting or
      * voltage dividers. To have a voltage divider applied correctly, you must
      * supply a pointer to a custom AnalogVoltageBase object that applies the
@@ -269,6 +265,15 @@ class TurnerTurbidityPlus : public Sensor {
      * @brief Destroy the Turner Turbidity Plus object
      */
     ~TurnerTurbidityPlus();
+
+    // Delete copy constructor and copy assignment operator to prevent shallow
+    // copies
+    TurnerTurbidityPlus(const TurnerTurbidityPlus&)            = delete;
+    TurnerTurbidityPlus& operator=(const TurnerTurbidityPlus&) = delete;
+
+    // Delete move constructor and move assignment operator
+    TurnerTurbidityPlus(TurnerTurbidityPlus&&)            = delete;
+    TurnerTurbidityPlus& operator=(TurnerTurbidityPlus&&) = delete;
 
     String getSensorLocation(void) override;
 

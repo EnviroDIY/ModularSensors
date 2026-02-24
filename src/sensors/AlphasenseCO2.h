@@ -269,10 +269,6 @@ class AlphasenseCO2 : public Sensor {
      * default values for voltage readings, but a pointer to a custom
      * AnalogVoltageBase object can be passed in if desired.
      *
-     * @note ModularSensors only supports connecting the ADS1x15 to the primary
-     * hardware I2C instance defined in the Arduino core. Connecting the ADS to
-     * a secondary hardware or software I2C instance is *not* supported!
-     *
      * @param powerPin The pin on the mcu controlling power to the
      * Alphasense CO2 sensor.  Use -1 if it is continuously powered.
      * - The Alphasense CO2 sensor requires 2-5 V DC; current draw 20-60 mA
@@ -284,8 +280,9 @@ class AlphasenseCO2 : public Sensor {
      * average before giving a "final" result from the sensor; optional with a
      * default value of 7.
      * @param analogVoltageReader Pointer to an AnalogVoltageBase object for
-     * voltage measurements; optional with a default of a new TIADS1x15Base
-     * object.
+     * voltage measurements.  Pass nullptr (the default) to have the constructor
+     * internally create and own a TIADS1x15Base instance.
+     *
      * @note  The ADS is expected to be either continuously powered or have
      * its power controlled by the same pin as the Alphasense CO2 sensor.  This
      * library does not support any other configuration.
@@ -305,6 +302,15 @@ class AlphasenseCO2 : public Sensor {
      * @brief Destroy the AlphasenseCO2 object
      */
     ~AlphasenseCO2();
+
+    // Delete copy constructor and copy assignment operator to prevent shallow
+    // copies
+    AlphasenseCO2(const AlphasenseCO2&)            = delete;
+    AlphasenseCO2& operator=(const AlphasenseCO2&) = delete;
+
+    // Delete move constructor and move assignment operator
+    AlphasenseCO2(AlphasenseCO2&&)            = delete;
+    AlphasenseCO2& operator=(AlphasenseCO2&&) = delete;
 
     String getSensorLocation(void) override;
 

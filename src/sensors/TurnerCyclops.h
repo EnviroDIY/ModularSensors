@@ -301,21 +301,15 @@ class TurnerCyclops : public Sensor {
      * default values for voltage readings, but a pointer to a custom
      * AnalogVoltageBase object can be passed in if desired.
      *
-     * @note ModularSensors only supports connecting the ADS1x15 to the primary
-     * hardware I2C instance defined in the Arduino core.  Connecting the ADS to
-     * a secondary hardware or software I2C instance is *not* supported!
-     *
      * @param powerPin The pin on the mcu controlling power to the Cyclops-7F
      * Use -1 if it is continuously powered.
-     * - The ADS1x15 requires an input voltage of 2.0-5.5V, but this library
-     * assumes the ADS is powered with 3.3V.
      * - The Cyclops-7F itself requires a 3-15V power supply, which can be
      * turned off between measurements.
-     * @param analogChannel The analog data channel or processor pin that the
-     * OBS3 is connected to.  The significance of the channel number depends on
-     * the specific AnalogVoltageBase implementation used for voltage readings.
-     * For example, with the TI ADS1x15, this would be the ADC channel (0-3)
-     * that the sensor is connected to.
+     * @param analogChannel The analog data channel or processor pin for voltage
+     * measurements.  The significance of the channel number depends on the
+     * specific AnalogVoltageBase implementation used for voltage readings. For
+     * example, with the TI ADS1x15, this would be the ADC channel (0-3) that
+     * the sensor is connected to.
      * @param conc_std The concentration of the standard used for a 1-point
      * sensor calibration.  The concentration units should be the same as the
      * final measuring units.
@@ -329,8 +323,8 @@ class TurnerCyclops : public Sensor {
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
      * @param analogVoltageReader Pointer to an AnalogVoltageBase object for
-     * voltage measurements; optional with a default of a new TIADS1x15Base
-     * object.
+     * voltage measurements.  Pass nullptr (the default) to have the constructor
+     * internally create and own a TIADS1x15Base instance.
      */
     TurnerCyclops(int8_t powerPin, uint8_t analogChannel, float conc_std,
                   float volt_std, float volt_blank,
@@ -340,6 +334,15 @@ class TurnerCyclops : public Sensor {
      * @brief Destroy the Turner Cyclops object
      */
     ~TurnerCyclops();
+
+    // Delete copy constructor and copy assignment operator to prevent shallow
+    // copies
+    TurnerCyclops(const TurnerCyclops&)            = delete;
+    TurnerCyclops& operator=(const TurnerCyclops&) = delete;
+
+    // Delete move constructor and move assignment operator
+    TurnerCyclops(TurnerCyclops&&)            = delete;
+    TurnerCyclops& operator=(TurnerCyclops&&) = delete;
 
     String getSensorLocation(void) override;
 

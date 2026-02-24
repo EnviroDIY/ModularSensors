@@ -248,27 +248,26 @@ class ApogeeSQ212 : public Sensor {
      * default values for voltage readings, but a pointer to a custom
      * AnalogVoltageBase object can be passed in if desired.
      *
-     * @note ModularSensors only supports connecting the ADS1x15 to the primary
-     * hardware I2C instance defined in the Arduino core. Connecting the ADS to
-     * a secondary hardware or software I2C instance is *not* supported!
-     *
      * @param powerPin The pin on the mcu controlling power to the Apogee
      * SQ-212.  Use -1 if it is continuously powered.
      * - The SQ-212 requires 3.3 to 24 V DC; current draw 10 µA
-     * @param analogChannel The analog data channel or processor pin that the
-     * OBS3 is connected to.  The significance of the channel number depends on
-     * the specific AnalogVoltageBase implementation used for voltage readings.
-     * For example, with the TI ADS1x15, this would be the ADC channel (0-3)
-     * that the sensor is connected to.
+     * @param analogChannel The analog data channel or processor pin for voltage
+     * measurements.  The significance of the channel number depends on the
+     * specific AnalogVoltageBase implementation used for voltage readings. For
+     * example, with the TI ADS1x15, this would be the ADC channel (0-3) that
+     * the sensor is connected to.
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
      * @param analogVoltageReader Pointer to an AnalogVoltageBase object for
-     * voltage measurements; optional with a default of a new TIADS1x15Base
-     * object.
-     * @note  The ADS is expected to be either continuously powered or have
-     * its power controlled by the same pin as the SQ-212.  This library does
-     * not support any other configuration.
+     * voltage measurements.  Pass nullptr (the default) to have the constructor
+     * allocate a TIADS1x15Base object automatically (owned and deleted by this
+     * instance).  If a non-null pointer is supplied, the caller retains
+     * ownership and must ensure its lifetime exceeds that of this object.
+     *
+     * @note  The ADS is expected to be either continuously powered or have its
+     * power controlled by the same pin as the SQ-212.  This library does not
+     * support any other configuration.
      */
     ApogeeSQ212(int8_t powerPin, uint8_t analogChannel,
                 uint8_t            measurementsToAverage = 1,
@@ -277,6 +276,15 @@ class ApogeeSQ212 : public Sensor {
      * @brief Destroy the ApogeeSQ212 object
      */
     ~ApogeeSQ212();
+
+    // Delete copy constructor and copy assignment operator to prevent shallow
+    // copies
+    ApogeeSQ212(const ApogeeSQ212&)            = delete;
+    ApogeeSQ212& operator=(const ApogeeSQ212&) = delete;
+
+    // Delete move constructor and move assignment operator
+    ApogeeSQ212(ApogeeSQ212&&)            = delete;
+    ApogeeSQ212& operator=(ApogeeSQ212&&) = delete;
 
     String getSensorLocation(void) override;
 
