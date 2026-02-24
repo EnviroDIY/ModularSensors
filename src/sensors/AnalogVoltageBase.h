@@ -40,19 +40,13 @@ class AnalogVoltageBase {
     /**
      * @brief Construct a new AnalogVoltageBase object
      *
-     * @param analogChannel The analog channel/pin for voltage readings
      * @param voltageMultiplier The voltage multiplier for any voltage dividers
      * @param supplyVoltage The supply/operating voltage for the analog system
-     * @param analogDifferentialChannel The second channel for differential
-     * measurements (-1 if not used)
      */
-    AnalogVoltageBase(int8_t analogChannel, float voltageMultiplier = 1.0,
-                      float  supplyVoltage             = OPERATING_VOLTAGE,
-                      int8_t analogDifferentialChannel = -1)
-        : _analogChannel(analogChannel),
-          _voltageMultiplier(voltageMultiplier),
-          _supplyVoltage(supplyVoltage),
-          _analogDifferentialChannel(analogDifferentialChannel) {}
+    AnalogVoltageBase(float voltageMultiplier = 1.0,
+                      float supplyVoltage     = OPERATING_VOLTAGE)
+        : _voltageMultiplier(voltageMultiplier),
+          _supplyVoltage(supplyVoltage) {}
 
     /**
      * @brief Destroy the AnalogVoltageBase object
@@ -96,25 +90,17 @@ class AnalogVoltageBase {
     }
 
     /**
-     * @brief Check if this instance is configured for differential measurements
-     *
-     * @return True if both analog channels are valid pins (>=0) for
-     * differential measurements
-     */
-    bool isDifferential(void) const {
-        return (_analogChannel >= 0 && _analogDifferentialChannel >= 0);
-    }
-
-    /**
      * @brief Read a single-ended voltage measurement
      *
      * This pure virtual function must be implemented by derived classes to
      * provide their specific method of reading analog voltages.
      *
+     * @param analogChannel The analog channel/pin for voltage readings
      * @param resultValue Reference to store the resulting voltage measurement
      * @return True if the voltage reading was successful and within valid range
      */
-    virtual bool readVoltageSingleEnded(float& resultValue) = 0;
+    virtual bool readVoltageSingleEnded(int8_t analogChannel,
+                                        float& resultValue) = 0;
 
     /**
      * @brief Read a differential voltage measurement
@@ -125,10 +111,16 @@ class AnalogVoltageBase {
      * If the sensor does not support differential measurements, this function
      * should set the resultValue to -9999.0 and return false.
      *
+     * @param analogChannel The primary analog channel for differential
+     * measurement
+     * @param analogReferenceChannel The secondary (reference) analog channel
+     * for differential measurement
      * @param resultValue Reference to store the resulting voltage measurement
      * @return True if the voltage reading was successful and within valid range
      */
-    virtual bool readVoltageDifferential(float& resultValue) = 0;
+    virtual bool readVoltageDifferential(int8_t analogChannel,
+                                         int8_t analogReferenceChannel,
+                                         float& resultValue) = 0;
 
     /**
      * @brief Get the sensor location string
@@ -141,14 +133,6 @@ class AnalogVoltageBase {
     virtual String getSensorLocation(void) = 0;
 
  protected:
-    /**
-     * @brief Internal reference to the analog channel/pin
-     *
-     * For TIADS1x15: ADS channel (0-3)
-     * For ProcessorAnalog: processor ADC pin number
-     */
-    int8_t _analogChannel;
-
     /**
      * @brief Internal reference to the voltage multiplier
      *
@@ -163,15 +147,6 @@ class AnalogVoltageBase {
      * For ProcessorAnalog: the processor operating voltage
      */
     float _supplyVoltage;
-
-    /**
-     * @brief Internal reference to the second analog channel for differential
-     * measurements
-     *
-     * For TIADS1x15: second ADS channel for differential readings (-1 if not
-     * used) For ProcessorAnalog: not used (-1)
-     */
-    int8_t _analogDifferentialChannel;
 };
 
 #endif  // SRC_SENSORS_ANALOGVOLTAGEBASE_H_

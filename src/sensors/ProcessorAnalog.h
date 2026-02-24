@@ -168,17 +168,14 @@ class ProcessorAnalogBase : public AnalogVoltageBase {
     /**
      * @brief Construct a new ProcessorAnalogBase object
      *
-     * @param dataPin The processor ADC pin used to read the target voltage. Not
-     * all processor pins can be used as analog pins.  Those usable as analog
-     * pins generally are numbered with an "A" in front of the number - ie, A1.
      * @param voltageMultiplier Any multiplier needed to convert raw battery
      * readings from `analogRead()` into true battery values based on any
      * resistors or voltage dividers
      * @param operatingVoltage The processor's operating voltage; most
      * likely 3.3 or 5.
      */
-    explicit ProcessorAnalogBase(int8_t dataPin, float voltageMultiplier = 1.0,
-                                 float operatingVoltage = OPERATING_VOLTAGE);
+    explicit ProcessorAnalogBase(float voltageMultiplier = 1.0,
+                                 float operatingVoltage  = OPERATING_VOLTAGE);
 
     /**
      * @brief Destroy the ProcessorAnalogBase object
@@ -188,10 +185,13 @@ class ProcessorAnalogBase : public AnalogVoltageBase {
     /**
      * @brief Read a single-ended voltage measurement from the processor ADC
      *
+     * @param analogChannel The processor ADC pin used to read the target
+     * voltage
      * @param resultValue Reference to store the resulting voltage measurement
      * @return True if the voltage reading was successful
      */
-    bool readVoltageSingleEnded(float& resultValue) override;
+    bool readVoltageSingleEnded(int8_t analogChannel,
+                                float& resultValue) override;
 
     /**
      * @brief Read a differential voltage measurement from the processor ADC
@@ -199,11 +199,16 @@ class ProcessorAnalogBase : public AnalogVoltageBase {
      * ProcessorAnalog does not support differential measurements, so this
      * always returns false.
      *
+     * @param analogChannel The primary analog channel (ignored)
+     * @param analogReferenceChannel The secondary (reference) analog channel
+     * (ignored)
      * @param resultValue Reference to store the resulting voltage measurement.
      * This will be set to -9999.0 to indicate an invalid reading.
      * @return Always false (differential not supported)
      */
-    bool readVoltageDifferential(float& resultValue) override;
+    bool readVoltageDifferential(int8_t analogChannel,
+                                 int8_t analogReferenceChannel,
+                                 float& resultValue) override;
 
     /**
      * @brief Get the sensor location string
