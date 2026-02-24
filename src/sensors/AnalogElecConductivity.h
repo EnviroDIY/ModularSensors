@@ -288,12 +288,22 @@ class AnalogElecConductivity : public Sensor {
     AnalogElecConductivity(int8_t powerPin, int8_t dataPin,
                            float   Rseries_ohms          = RSERIES_OHMS_DEF,
                            float   sensorEC_Konst        = SENSOREC_KONST_DEF,
-                           uint8_t measurementsToAverage = 1);
+                           uint8_t measurementsToAverage = 1,
+                           AnalogVoltageBase* analogVoltageReader = nullptr);
 
     /**
      * @brief Destroy the AnalogElecConductivity object - no action needed.
      */
     ~AnalogElecConductivity();
+
+    // Delete copy constructor and copy assignment operator to prevent shallow
+    // copies
+    AnalogElecConductivity(const AnalogElecConductivity&)            = delete;
+    AnalogElecConductivity& operator=(const AnalogElecConductivity&) = delete;
+
+    // Delete move constructor and move assignment operator
+    AnalogElecConductivity(AnalogElecConductivity&&)            = delete;
+    AnalogElecConductivity& operator=(AnalogElecConductivity&&) = delete;
 
     /**
      * @brief Report the sensor info.
@@ -318,21 +328,6 @@ class AnalogElecConductivity : public Sensor {
         _Rseries_ohms = sourceResistance_ohms;
     }
 
-    /**
-     * @brief reads the calculated EC from an analog pin using the analog pin
-     * number set in the constructor.
-     *
-     * @return The electrical conductance value
-     */
-    float readEC(void);
-    /**
-     * @brief reads the calculated EC from an analog pin.
-     *
-     * @param analogPinNum Analog port pin number
-     * @return The electrical conductance value
-     */
-    float readEC(uint8_t analogPinNum);
-
  private:
     /// @brief The resistance of the circuit resistor plus any series port
     /// resistance
@@ -340,6 +335,11 @@ class AnalogElecConductivity : public Sensor {
 
     /// @brief the cell constant for the circuit
     float _sensorEC_Konst = SENSOREC_KONST_DEF;
+    AnalogVoltageBase*
+         _analogVoltageReader;      ///< Pointer to analog voltage reader
+    bool _ownsAnalogVoltageReader;  ///< Flag to track if this object owns the
+                                    ///< analog voltage reader and should delete
+                                    ///< it in the destructor
 };
 
 /**

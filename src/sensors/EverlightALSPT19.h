@@ -219,17 +219,22 @@ class EverlightALSPT19 : public Sensor {
      * as analog pins generally are numbered with an "A" in front of the number
      * - ie, A1.
      * @param supplyVoltage The power supply voltage (in volts) of the ALS-PT19.
+     * This does not have to be the same as the board operating voltage or the
+     * supply voltage of the analog AnalogVoltageBase reader, but it is needed
+     * to calculate the current and illuminance.
      * @param loadResistor The size of the loading resistor, in kilaohms (kΩ).
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 10.
      */
     EverlightALSPT19(int8_t powerPin, int8_t dataPin, float supplyVoltage,
-                     float loadResistor, uint8_t measurementsToAverage = 10);
+                     float loadResistor, uint8_t measurementsToAverage = 10,
+                     AnalogVoltageBase* analogVoltageReader = nullptr);
 
-#if defined(BUILT_IN_ALS_POWER_PIN) && defined(BUILT_IN_ALS_DATA_PIN) && \
-    defined(BUILT_IN_ALS_SUPPLY_VOLTAGE) &&                              \
-    defined(BUILT_IN_ALS_LOADING_RESISTANCE)
+#if (defined(BUILT_IN_ALS_POWER_PIN) && defined(BUILT_IN_ALS_DATA_PIN) && \
+     defined(BUILT_IN_ALS_SUPPLY_VOLTAGE) &&                              \
+     defined(BUILT_IN_ALS_LOADING_RESISTANCE)) ||                         \
+    defined(DOXYGEN)
     /**
      * @brief Construct a new EverlightALSPT19 object with pins and resistors
      * for boards with a built-in ALS-PT19 configured in KnownProcessors.h.
@@ -242,14 +247,25 @@ class EverlightALSPT19 : public Sensor {
      * average before giving a "final" result from the sensor; optional with a
      * default value of 10.
      */
-    explicit EverlightALSPT19(uint8_t measurementsToAverage = 10);
+    explicit EverlightALSPT19(uint8_t            measurementsToAverage = 10,
+                              AnalogVoltageBase* analogVoltageReader = nullptr);
 #endif
     /**
      * @brief Destroy the EverlightALSPT19 object - no action needed.
      */
     ~EverlightALSPT19();
 
-    bool addSingleMeasurementResult(void) override;
+    // Delete copy constructor and copy assignment operator to prevent shallow
+    // copies
+    EverlightALSPT19(const EverlightALSPT19&)            = delete;
+    EverlightALSPT19& operator=(const EverlightALSPT19&) = delete;
+
+    // Delete move constructor and move assignment operator
+    EverlightALSPT19(EverlightALSPT19&&)            = delete;
+    EverlightALSPT19& operator=(EverlightALSPT19&&) = delete;
+
+    String getSensorLocation(void) override;
+    bool   addSingleMeasurementResult(void) override;
 
  private:
     /**
@@ -260,6 +276,11 @@ class EverlightALSPT19 : public Sensor {
      * @brief The loading resistance
      */
     float _loadResistor;
+    AnalogVoltageBase*
+         _analogVoltageReader;      ///< Pointer to analog voltage reader
+    bool _ownsAnalogVoltageReader;  ///< Flag to track if this object owns the
+                                    ///< analog voltage reader and should delete
+                                    ///< it in the destructor
 };
 
 
