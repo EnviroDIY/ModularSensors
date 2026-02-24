@@ -87,6 +87,12 @@ bool EverlightALSPT19::addSingleMeasurementResult(void) {
         return bumpMeasurementAttemptCount(false);
     }
 
+    // Check if we have a valid load resistor
+    if (_loadResistor <= 0) {
+        MS_DBG(getSensorNameAndLocation(), F("Invalid load resistor value"));
+        return bumpMeasurementAttemptCount(false);
+    }
+
     bool  success    = false;
     float adcVoltage = -9999.0f;
 
