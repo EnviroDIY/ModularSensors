@@ -291,11 +291,11 @@ class ApogeeSQ212 : public Sensor {
     bool addSingleMeasurementResult(void) override;
 
  private:
-    AnalogVoltageBase*
-         _analogVoltageReader;      ///< Pointer to analog voltage reader
-    bool _ownsAnalogVoltageReader;  ///< Flag to track if this object owns the
-                                    ///< analog voltage reader and should delete
-                                    ///< it in the destructor
+    /// @brief Pointer to analog voltage reader
+    AnalogVoltageBase* _analogVoltageReader;
+    /// @brief Flag to track if this object owns the analog voltage reader and
+    /// should delete it in the destructor
+    bool _ownsAnalogVoltageReader;
 };
 
 
