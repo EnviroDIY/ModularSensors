@@ -71,8 +71,7 @@ bool TurnerCyclops::addSingleMeasurementResult(void) {
     }
 
     bool  success     = false;
-    float adcVoltage  = -9999;
-    float calibResult = -9999;
+    float adcVoltage  = -9999.0f;
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
@@ -90,7 +89,7 @@ bool TurnerCyclops::addSingleMeasurementResult(void) {
                                                            adcVoltage);
     if (success) {
         // Apply the unique calibration curve for the given sensor
-        calibResult = (_conc_std / (_volt_std - _volt_blank)) *
+        float calibResult = (_conc_std / (_volt_std - _volt_blank)) *
             (adcVoltage - _volt_blank);
         MS_DBG(F("  calibResult:"), calibResult);
         verifyAndAddMeasurementResult(CYCLOPS_VAR_NUM, calibResult);

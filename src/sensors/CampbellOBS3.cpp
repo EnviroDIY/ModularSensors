@@ -70,8 +70,7 @@ bool CampbellOBS3::addSingleMeasurementResult(void) {
     }
 
     bool  success     = false;
-    float adcVoltage  = -9999;
-    float calibResult = -9999;
+    float adcVoltage  = -9999.0f;
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
@@ -84,7 +83,7 @@ bool CampbellOBS3::addSingleMeasurementResult(void) {
                                                            adcVoltage);
     if (success) {
         // Apply the unique calibration curve for the given sensor
-        calibResult = (_x2_coeff_A * sq(adcVoltage)) +
+        float calibResult = (_x2_coeff_A * sq(adcVoltage)) +
             (_x1_coeff_B * adcVoltage) + _x0_coeff_C;
         MS_DBG(F("  calibResult:"), calibResult);
         verifyAndAddMeasurementResult(OBS3_TURB_VAR_NUM, calibResult);

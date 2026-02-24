@@ -78,10 +78,8 @@ bool AlphasenseCO2::addSingleMeasurementResult(void) {
         return bumpMeasurementAttemptCount(false);
     }
 
-    bool  success     = false;
-    float adcVoltage  = -9999;
-    float co2Current  = -9999;
-    float calibResult = -9999;
+    bool  success    = false;
+    float adcVoltage = -9999;
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
@@ -92,17 +90,18 @@ bool AlphasenseCO2::addSingleMeasurementResult(void) {
     if (success) {
         // Convert voltage to current (mA) - assuming a 250 Ohm resistor is in
         // series
-        co2Current = (adcVoltage / ALPHASENSE_CO2_SENSE_RESISTOR_OHM) * 1000;
+        float co2Current = (adcVoltage / ALPHASENSE_CO2_SENSE_RESISTOR_OHM) *
+            1000;
         MS_DBG(F("  co2Current:"), co2Current);
 
         // Convert current to ppm (using a formula recommended by the sensor
         // manufacturer)
-        calibResult = ALPHASENSE_CO2_MFG_SCALE * co2Current -
+        float calibResult = ALPHASENSE_CO2_MFG_SCALE * co2Current -
             ALPHASENSE_CO2_MFG_OFFSET;
         MS_DBG(F("  calibResult:"), calibResult);
-        verifyAndAddMeasurementResult(ALPHASENSE_CO2_VAR_NUM, calibResult);
         verifyAndAddMeasurementResult(ALPHASENSE_CO2_VOLTAGE_VAR_NUM,
                                       adcVoltage);
+        verifyAndAddMeasurementResult(ALPHASENSE_CO2_VAR_NUM, calibResult);
     } else {
         MS_DBG(F("  Failed to read differential voltage from analog reader"));
     }

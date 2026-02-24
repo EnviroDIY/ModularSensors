@@ -68,10 +68,8 @@ bool ApogeeSQ212::addSingleMeasurementResult(void) {
         return bumpMeasurementAttemptCount(false);
     }
 
-    bool    success     = false;
-    int16_t adcCounts   = -9999;
-    float   adcVoltage  = -9999;
-    float   calibResult = -9999;
+    bool  success    = false;
+    float adcVoltage = -9999.0f;
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
@@ -86,7 +84,7 @@ bool ApogeeSQ212::addSingleMeasurementResult(void) {
         // it must be set as a preprocessor definition when compiling the
         // library, e.g. by adding -DSQ212_CALIBRATION_FACTOR=0.95 to the
         // compiler flags.
-        calibResult = 1000 * adcVoltage * SQ212_CALIBRATION_FACTOR;
+        float calibResult = 1000 * adcVoltage * SQ212_CALIBRATION_FACTOR;
         MS_DBG(F("  calibResult:"), calibResult);
         verifyAndAddMeasurementResult(SQ212_PAR_VAR_NUM, calibResult);
         verifyAndAddMeasurementResult(SQ212_VOLTAGE_VAR_NUM, adcVoltage);

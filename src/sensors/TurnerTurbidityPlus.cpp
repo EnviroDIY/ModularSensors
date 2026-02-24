@@ -121,9 +121,8 @@ bool TurnerTurbidityPlus::addSingleMeasurementResult(void) {
         return bumpMeasurementAttemptCount(false);
     }
 
-    bool  success     = false;
-    float adcVoltage  = -9999;
-    float calibResult = -9999;
+    bool  success    = false;
+    float adcVoltage = -9999;
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
@@ -142,12 +141,12 @@ bool TurnerTurbidityPlus::addSingleMeasurementResult(void) {
 
     if (success) {
         // Apply the unique calibration curve for the given sensor
-        calibResult = (_conc_std / (_volt_std - _volt_blank)) *
+        float calibResult = (_conc_std / (_volt_std - _volt_blank)) *
             (adcVoltage - _volt_blank);
         MS_DBG(F("  calibResult:"), String(calibResult, 3));
-        verifyAndAddMeasurementResult(TURBIDITY_PLUS_VAR_NUM, calibResult);
         verifyAndAddMeasurementResult(TURBIDITY_PLUS_VOLTAGE_VAR_NUM,
                                       adcVoltage);
+        verifyAndAddMeasurementResult(TURBIDITY_PLUS_VAR_NUM, calibResult);
     } else {
         MS_DBG(F("  Failed to read differential voltage from analog reader"));
     }
