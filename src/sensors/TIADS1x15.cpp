@@ -85,7 +85,7 @@ bool TIADS1x15Base::readVoltageSingleEnded(int8_t analogChannel,
 
     // Read Analog to Digital Converter (ADC)
     // Validate ADS1x15 channel range for single-ended measurements
-    if (analogChannel > 3) {
+    if (analogChannel < 0 || analogChannel > 3) {
         MS_DBG(F("  Invalid ADS1x15 channel "), analogChannel,
                F(", valid range is 0-3"));
         return false;
