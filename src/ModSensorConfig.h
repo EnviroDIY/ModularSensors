@@ -231,7 +231,17 @@
 #endif  // !defined(MS_PROCESSOR_ADC_REFERENCE_MODE) || defined(DOXYGEN)
 
 #if !defined(MS_DEFAULT_ADS1X15_ADDRESS) || defined(DOXYGEN)
-/// @brief The assumed address of the ADS1115 or ADS1015, 1001 000 (ADDR = GND)
+/**
+ * @brief The default I²C address of the ADS1115 or ADS1015 external ADC.
+ *
+ * Valid addresses depend on the ADDR pin connection:
+ * - `0x48` – ADDR to GND (default)
+ * - `0x49` – ADDR to VDD
+ * - `0x4A` – ADDR to SDA
+ * - `0x4B` – ADDR to SCL
+ *
+ * Override with a build flag: `-DMS_DEFAULT_ADS1X15_ADDRESS=0x49`
+ */
 #define MS_DEFAULT_ADS1X15_ADDRESS 0x48
 #endif  // !defined(MS_DEFAULT_ADS1X15_ADDRESS) || defined(DOXYGEN)
 //==============================================================
