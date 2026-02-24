@@ -300,7 +300,9 @@ class AnalogElecConductivity : public Sensor {
                            AnalogVoltageBase* analogVoltageReader = nullptr);
 
     /**
-     * @brief Destroy the AnalogElecConductivity object - no action needed.
+     * @brief Destroy the AnalogElecConductivity object.
+     *
+     * Deletes the internal analog voltage reader if this object owns it.
      */
     ~AnalogElecConductivity();
 

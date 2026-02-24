@@ -80,6 +80,8 @@ bool AnalogElecConductivity::addSingleMeasurementResult(void) {
         // Estimate Resistance of Liquid
         // see the header for an explanation of this calculation
         // Convert voltage back to ADC equivalent for existing calculation
+        // NOTE: The supplyVoltage is already clamped by the
+        // _analogVoltageReader
         float supplyVoltage = _analogVoltageReader->getSupplyVoltage();
         float adcRatio      = adcVoltage / supplyVoltage;
 

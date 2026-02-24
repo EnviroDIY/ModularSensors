@@ -26,7 +26,9 @@ TIADS1x15Base::TIADS1x15Base(float voltageMultiplier, adsGain_t adsGain,
       _adsGain(adsGain),
       _i2cAddress(i2cAddress) {
     // Clamp supply voltage to valid ADS1x15 range: 0.0V to 5.5V per datasheet
-    // This clamp is done silently!
+    // NOTE: This clamp is intentionally silent — Serial/MS_DBG is NOT safe to
+    // call during construction (the Serial object may not be initialized yet on
+    // Arduino targets). Use setSupplyVoltage() at runtime for logged clamping.
     if (_supplyVoltage < 0.0f) {
         _supplyVoltage = 0.0f;
     } else if (_supplyVoltage > 5.5f) {
@@ -168,6 +170,12 @@ bool TIADS1x15Base::readVoltageDifferential(int8_t analogChannel,
         adcCounts = ads.readADC_Differential_1_3();
     } else if (analogChannel == 2 && analogReferenceChannel == 3) {
         adcCounts = ads.readADC_Differential_2_3();
+    } else {
+        // Should never reach here; isValidDifferentialPair must have been
+        // widened without updating this dispatch table.
+        MS_DBG(F(
+            "  Internal error: unhandled differential pair after validation"));
+        return false;
     }
 
     // Convert counts to voltage

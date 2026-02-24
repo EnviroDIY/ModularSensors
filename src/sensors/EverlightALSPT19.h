@@ -28,14 +28,14 @@
  * @section sensor_alspt19_datasheet Sensor Datasheet
  * [Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Everlight-ALS-PT19.pdf)
  *
- * @section sensor_analog_cond_flags Build flags
+ * @section sensor_alspt19_config_flags Build flags
  * - `-D ALSPT19_CURRENT_PER_LUX=##`
  *      - used to set current equivalent to 1000lux, which is used to calculate
  *        lux from the sensor
  *
  * @section sensor_alspt19_ctor Sensor Constructors
- * {{ @ref EverlightALSPT19::EverlightALSPT19(uint8_t) }}
- * {{ @ref EverlightALSPT19::EverlightALSPT19(int8_t, int8_t, float, float, uint8_t) }}
+ * {{ @ref EverlightALSPT19::EverlightALSPT19(uint8_t, AnalogVoltageBase*) }}
+ * {{ @ref EverlightALSPT19::EverlightALSPT19(int8_t, int8_t, float, float, uint8_t, AnalogVoltageBase*) }}
  *
  * @section sensor_alspt19_examples Example Code
  *
@@ -96,7 +96,7 @@
 /**
  * @anchor sensor_alspt19_config
  * @name Configuration Defines
- * Defines to for the ALS calibration between current and lux.
+ * Define for the ALS calibration between current and lux.
  */
 /**@{*/
 #if !defined(ALSPT19_CURRENT_PER_LUX) || defined(DOXYGEN)

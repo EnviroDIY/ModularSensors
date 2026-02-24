@@ -1608,8 +1608,9 @@ Variable* alsPt19Lux = new EverlightALSPT19_Illuminance(
 const int8_t ADSPower   = sensorPowerPin;  // Power pin
 const int8_t ADSChannel = 2;               // The ADS channel of interest
 const float  voltageMultiplier =
-    10.0f;  // Voltage multiplier: 1.0f for direct connection, (R_top + R_bottom) / R_bottom for voltage divider
-            // Default 10.0f assumes specific divider; change to 1.0f for direct ADS connection
+    1.0f;  // Voltage multiplier for an external voltage divider
+// use 1.0f for direct connection
+// use (R_top + R_bottom) / R_bottom for voltage divider
 const adsGain_t adsGain = GAIN_ONE;     // The internal gain setting for the ADS
 const uint8_t   evADSi2c_addr  = 0x48;  // The I2C address of the ADS1115 ADC
 const uint8_t   VoltReadsToAvg = 1;     // Only read one sample
