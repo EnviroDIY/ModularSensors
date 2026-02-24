@@ -24,12 +24,8 @@ EverlightALSPT19::EverlightALSPT19(int8_t powerPin, int8_t dataPin,
       _loadResistor(loadResistor) {
     // If no analog voltage reader was provided, create a default one
     if (analogVoltageReader == nullptr) {
-        _analogVoltageReader = new ProcessorAnalogBase();
-        if (_analogVoltageReader != nullptr) {
-            _ownsAnalogVoltageReader = true;
-        } else {
-            _ownsAnalogVoltageReader = false;
-        }
+        _analogVoltageReader     = new ProcessorAnalogBase();
+        _ownsAnalogVoltageReader = true;
     } else {
         _analogVoltageReader     = analogVoltageReader;
         _ownsAnalogVoltageReader = false;
@@ -51,11 +47,7 @@ EverlightALSPT19::EverlightALSPT19(uint8_t            measurementsToAverage,
     // If no analog voltage reader was provided, create a default one
     if (analogVoltageReader == nullptr) {
         _analogVoltageReader     = new ProcessorAnalogBase();
-        if (_analogVoltageReader != nullptr) {
-            _ownsAnalogVoltageReader = true;
-        } else {
-            _ownsAnalogVoltageReader = false;
-        }
+        _ownsAnalogVoltageReader = true;
     } else {
         _analogVoltageReader     = analogVoltageReader;
         _ownsAnalogVoltageReader = false;

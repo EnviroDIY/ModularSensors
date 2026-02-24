@@ -30,12 +30,8 @@ TurnerTurbidityPlus::TurnerTurbidityPlus(
       _analogReferenceChannel(analogReferenceChannel) {
     // If no analog voltage reader was provided, create a default one
     if (analogVoltageReader == nullptr) {
-        _analogVoltageReader = new TIADS1x15Base();
-        if (_analogVoltageReader != nullptr) {
-            _ownsAnalogVoltageReader = true;
-        } else {
-            _ownsAnalogVoltageReader = false;
-        }
+        _analogVoltageReader     = new TIADS1x15Base();
+        _ownsAnalogVoltageReader = true;
     } else {
         _analogVoltageReader     = analogVoltageReader;
         _ownsAnalogVoltageReader = false;

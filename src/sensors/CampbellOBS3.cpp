@@ -26,12 +26,8 @@ CampbellOBS3::CampbellOBS3(int8_t powerPin, uint8_t analogChannel,
       _x0_coeff_C(x0_coeff_C) {
     // If no analog voltage reader was provided, create a default one
     if (analogVoltageReader == nullptr) {
-        _analogVoltageReader = new TIADS1x15Base();
-        if (_analogVoltageReader != nullptr) {
-            _ownsAnalogVoltageReader = true;
-        } else {
-            _ownsAnalogVoltageReader = false;
-        }
+        _analogVoltageReader     = new TIADS1x15Base();
+        _ownsAnalogVoltageReader = true;
     } else {
         _analogVoltageReader     = analogVoltageReader;
         _ownsAnalogVoltageReader = false;
@@ -73,8 +69,8 @@ bool CampbellOBS3::addSingleMeasurementResult(void) {
         return bumpMeasurementAttemptCount(false);
     }
 
-    bool  success     = false;
-    float adcVoltage  = -9999.0f;
+    bool  success    = false;
+    float adcVoltage = -9999.0f;
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 

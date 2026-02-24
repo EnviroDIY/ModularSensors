@@ -26,12 +26,8 @@ AnalogElecConductivity::AnalogElecConductivity(
       _sensorEC_Konst(sensorEC_Konst) {
     // If no analog voltage reader was provided, create a default one
     if (analogVoltageReader == nullptr) {
-        _analogVoltageReader = new ProcessorAnalogBase();
-        if (_analogVoltageReader != nullptr) {
-            _ownsAnalogVoltageReader = true;
-        } else {
-            _ownsAnalogVoltageReader = false;
-        }
+        _analogVoltageReader     = new ProcessorAnalogBase();
+        _ownsAnalogVoltageReader = true;
     } else {
         _analogVoltageReader     = analogVoltageReader;
         _ownsAnalogVoltageReader = false;
