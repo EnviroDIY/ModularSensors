@@ -97,8 +97,7 @@
 
 // Include other in-library and external dependencies
 #include "VariableBase.h"
-#include "TIADS1x15.h"
-#include <Adafruit_ADS1X15.h>
+#include "SensorBase.h"
 
 /** @ingroup sensor_alphasense_co2 */
 /**@{*/
@@ -148,6 +147,16 @@
 #define ALPHASENSE_CO2_VOLTAGE_MULTIPLIER 1.0
 #endif
 /**@}*/
+
+/**
+ * @brief Enum for the pins used for differential voltages.
+ */
+typedef enum : uint16_t {
+    DIFF_MUX_0_1,  ///< differential across pins 0 and 1
+    DIFF_MUX_0_3,  ///< differential across pins 0 and 3
+    DIFF_MUX_1_3,  ///< differential across pins 1 and 3
+    DIFF_MUX_2_3   ///< differential across pins 2 and 3
+} aco2_adsDiffMux_t;
 
 /**
  * @anchor sensor_alphasense_co2_timing
@@ -259,7 +268,7 @@
  *
  * @ingroup sensor_alphasense_co2
  */
-class AlphasenseCO2 : public TIADS1x15 {
+class AlphasenseCO2 : public Sensor {
  public:
     /**
      * @brief Construct a new Alphasense IRC-A1 CO2 object - need the power pin
@@ -275,7 +284,7 @@ class AlphasenseCO2 : public TIADS1x15 {
      * - The Alphasense CO2 sensor requires 2-5 V DC; current draw 20-60 mA
      * - The ADS1115 requires 2.0-5.5V but is assumed to be powered at 3.3V
      * @param adsDiffMux Which two pins _on the TI ADS1115_ that will measure
-     * differential voltage. See tiads1x15_adsDiffMux_t.
+     * differential voltage. See #aco2_adsDiffMux_t.
      * @param i2cAddress The I2C address of the ADS 1x15, default is 0x48 (ADDR
      * = GND)
      * @param measurementsToAverage The number of measurements to take and
@@ -285,8 +294,8 @@ class AlphasenseCO2 : public TIADS1x15 {
      * its power controlled by the same pin as the Alphasense CO2 sensor.  This
      * library does not support any other configuration.
      */
-    AlphasenseCO2(int8_t powerPin, tiads1x15_adsDiffMux_t adsDiffMux = tiads1x15_adsDiffMux_t::TIADS1X15_DIFF_MUX_2_3,
-                  uint8_t i2cAddress            = ADS1115_ADDRESS,
+    AlphasenseCO2(int8_t powerPin, aco2_adsDiffMux_t adsDiffMux = DIFF_MUX_2_3,
+                  uint8_t i2cAddress            = MS_DEFAULT_ADS1X15_ADDRESS,
                   uint8_t measurementsToAverage = 7);
     /**
      * @brief Destroy the AlphasenseCO2 object - no action needed
@@ -304,7 +313,15 @@ class AlphasenseCO2 : public TIADS1x15 {
     bool addSingleMeasurementResult(void) override;
 
  private:
-    // All differential mux and I2C address functionality is now handled by the parent TIADS1x15 class
+    /**
+     * @brief Which two pins _on the TI ADS1115_ that will measure differential
+     * voltage from the Turbidity Plus. See #aco2_adsDiffMux_t
+     */
+    aco2_adsDiffMux_t _adsDiffMux;
+    /**
+     * @brief Internal reference to the I2C address of the TI-ADS1x15
+     */
+    uint8_t _i2cAddress;
 };
 
 

@@ -1001,8 +1001,8 @@ Variable* ds3231Temp =
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const int8_t      AlphasenseCO2Power = sensorPowerPin;  // Power pin
-tiads1x15_adsDiffMux_t AlphasenseDiffMux =
-    tiads1x15_adsDiffMux_t::TIADS1X15_DIFF_MUX_2_3;  // Differential voltage config
+aco2_adsDiffMux_t AlphasenseDiffMux =
+    DIFF_MUX_2_3;  // Differential voltage config
 const uint8_t AlphasenseCO2ADSi2c_addr =
     0x48;  // The I2C address of the ADS1115 ADC
 
@@ -2301,7 +2301,7 @@ Variable* cyclopsRedChloro = new TurnerCyclops_RedChlorophyll(
 const int8_t     turbidityPlusPower = sensorPowerPin;  // Power pin
 const int8_t     turbidityPlusWiper = relayPowerPin;   // Wiper pin
 ttp_adsDiffMux_t turbidityPlusDiffMux =
-    tiads1x15_adsDiffMux_t::TIADS1X15_DIFF_MUX_2_3;  // Differential voltage config
+    DIFF_MUX_2_3;  // Differential voltage config
 const uint8_t turbidityPlusNumberReadings = 10;
 const uint8_t turbidityPlusADSi2c_addr =
     0x48;                                 // The I2C address of the ADS1115 ADC

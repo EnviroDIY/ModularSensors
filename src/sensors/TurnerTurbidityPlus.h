@@ -67,7 +67,7 @@
 
 // Include other in-library and external dependencies
 #include "VariableBase.h"
-#include "TIADS1x15.h"
+#include "SensorBase.h"
 #include <Adafruit_ADS1X15.h>
 
 /** @ingroup sensor_turbidity_plus */
@@ -107,6 +107,16 @@
 #define TURBIDITY_PLUS_WIPER_ROTATION_WAIT_MS 8000
 #endif
 /**@}*/
+
+/**
+ * @brief Enum for the pins used for differential voltages.
+ */
+typedef enum : uint16_t {
+    DIFF_MUX_0_1,  ///< differential across pins 0 and 1
+    DIFF_MUX_0_3,  ///< differential across pins 0 and 3
+    DIFF_MUX_1_3,  ///< differential across pins 1 and 3
+    DIFF_MUX_2_3   ///< differential across pins 2 and 3
+} ttp_adsDiffMux_t;
 
 /**
  * @anchor sensor_turbidity_plus_timing
@@ -199,7 +209,7 @@
  *
  * @ingroup sensor_turbidity_plus
  */
-class TurnerTurbidityPlus : public TIADS1x15 {
+class TurnerTurbidityPlus : public Sensor {
  public:
     // The constructor - need the power pin, the ADS1X15 data channel, and the
     // calibration info
@@ -219,7 +229,7 @@ class TurnerTurbidityPlus : public TIADS1x15 {
      * @param wiperTriggerPin The pin on the mcu that triggers the sensor's
      * wiper.
      * @param adsDiffMux Which two pins _on the TI ADS1115_ that will measure
-     * differential voltage. See #tiads1x15_adsDiffMux_t
+     * differential voltage. See #ttp_adsDiffMux_t
      * @param conc_std The concentration of the standard used for a 1-point
      * sensor calibration. The concentration units should be the same as the
      * final measuring units.
@@ -228,7 +238,8 @@ class TurnerTurbidityPlus : public TIADS1x15 {
      * dividers or gain settings.
      * @param volt_blank The voltage (in volts) measured for a blank. This
      * voltage should be the final voltage *after* accounting for any voltage
-     * dividers or gain settings.     * = GND)
+     * @param i2cAddress The I2C address of the ADS 1x15, default is 0x48 (ADDR
+     * = GND)
      * @param PGA_gain The programmable gain amplification to set on the
      * ADS 1x15, default is GAIN_ONE (0-4.096V).
      * @param measurementsToAverage The number of measurements to take and
@@ -243,7 +254,7 @@ class TurnerTurbidityPlus : public TIADS1x15 {
      * requires a voltageDividerFactor of 2. The default value is 1.
      */
     TurnerTurbidityPlus(int8_t powerPin, int8_t wiperTriggerPin,
-                        tiads1x15_adsDiffMux_t adsDiffMux, float conc_std,
+                        ttp_adsDiffMux_t adsDiffMux, float conc_std,
                         float volt_std, float volt_blank,
                         uint8_t   i2cAddress = MS_DEFAULT_ADS1X15_ADDRESS,
                         adsGain_t PGA_gain   = GAIN_ONE,
@@ -286,6 +297,11 @@ class TurnerTurbidityPlus : public TIADS1x15 {
      */
     int8_t _wiperTriggerPin;
     /**
+     * @brief Which two pins _on the TI ADS1115_ that will measure differential
+     * voltage from the Turbidity Plus. See #ttp_adsDiffMux_t
+     */
+    ttp_adsDiffMux_t _adsDiffMux;
+    /**
      * @brief The concentration of the standard used for a 1-point sensor
      * calibration. The concentration units should be the same as the final
      * measuring units.
@@ -302,6 +318,35 @@ class TurnerTurbidityPlus : public TIADS1x15 {
      * be the final voltage *after* accounting for any voltage.
      */
     float _volt_blank;
+    /**
+     * @brief Internal reference to the I2C address of the TI-ADS1x15
+     */
+    uint8_t _i2cAddress;
+    /**
+     * @brief The programmable gain amplification to set on the ADS 1x15,
+     * default is GAIN_ONE (+/-4.096V range = Gain 1).
+     *
+     * Other gain options are:
+     *   GAIN_TWOTHIRDS = +/-6.144V range = Gain 2/3,
+     *   GAIN_ONE = +/-4.096V range = Gain 1,
+     *   GAIN_TWO = +/-2.048V range = Gain 2,
+     *   GAIN_FOUR = +/-1.024V range = Gain 4,
+     *   GAIN_EIGHT = +/-0.512V range = Gain 8,
+     *   GAIN_SIXTEEN = +/-0.256V range = Gain 16
+     *
+     * @todo Determine gain automatically based on the board voltage?
+     */
+    adsGain_t _PGA_gain;
+    /**
+     * @brief For 3.3V processors like the Mayfly, The Turner's 0-5V output
+     * signal must be shifted down to a maximum of 3.3V. This can be done either
+     * either with a level-shifting chip (e.g. Adafruit BSS38), OR by connecting
+     * the Turner's output signal via a voltage divider. This
+     * voltageDividerFactor is used for the latter case: e.g., a divider that
+     * uses 2 matched resistors will halve the voltage reading and requires a
+     * voltageDividerFactor of 2. The default value is 1.
+     */
+    float _voltageDividerFactor;
 };
 
 
