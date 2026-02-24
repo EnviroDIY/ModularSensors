@@ -251,7 +251,10 @@ class EverlightALSPT19 : public Sensor {
                               AnalogVoltageBase* analogVoltageReader = nullptr);
 #endif
     /**
-     * @brief Destroy the EverlightALSPT19 object - no action needed.
+     * @brief Destroy the EverlightALSPT19 object.
+     * 
+     * Conditionally deletes the _analogVoltageReader member if the ownership
+     * flag _ownsAnalogVoltageReader is true, otherwise leaves it unmodified.
      */
     ~EverlightALSPT19();
 

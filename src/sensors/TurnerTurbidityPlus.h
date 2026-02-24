@@ -238,7 +238,7 @@ class TurnerTurbidityPlus : public Sensor {
      *
      * @attention For 3.3V processors like the Mayfly, The Turner's 0-5V output
      * signal must be shifted down to a maximum of 3.3V. This can be done either
-     * with a level-shifting chip (e.g. Adafruit BSS38), OR by connecting the
+     * with a level-shifting chip (e.g. Adafruit BSS138), OR by connecting the
      * Turner's output signal via a voltage divider. By default, the
      * TurnerTurbidityPlus object does **NOT** include any level-shifting or
      * voltage dividers. To have a voltage divider applied correctly, you must

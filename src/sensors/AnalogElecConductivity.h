@@ -284,6 +284,9 @@ class AnalogElecConductivity : public Sensor {
      * typical standard sized lamp-type plug.
      * @param measurementsToAverage The number of measurements to average;
      * optional with default value of 1.
+     * @param analogVoltageReader Pointer to an AnalogVoltageBase object for
+     * voltage measurements; optional with a default of a new ProcessorAnalogBase
+     * object. The private member _analogVoltageReader will store this pointer.
      */
     AnalogElecConductivity(int8_t powerPin, int8_t dataPin,
                            float   Rseries_ohms          = RSERIES_OHMS_DEF,

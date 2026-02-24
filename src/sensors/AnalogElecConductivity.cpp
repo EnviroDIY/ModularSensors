@@ -103,7 +103,7 @@ bool AnalogElecConductivity::addSingleMeasurementResult(void) {
         float EC_uScm = -9999.0f;  // units are uS per cm
         if (Rwater_ohms > 0) {
             EC_uScm = 1000000.0f / (Rwater_ohms * _sensorEC_Konst);
-            MS_DBG(F("Water EC (uSm/cm)"), EC_uScm);
+            MS_DBG(F("Water EC (uS/cm)"), EC_uScm);
             verifyAndAddMeasurementResult(ANALOGELECCONDUCTIVITY_EC_VAR_NUM,
                                           EC_uScm);
         } else {

@@ -68,7 +68,7 @@ bool ProcessorAnalogBase::readVoltageDifferential(
     int8_t /*analogChannel*/, int8_t /*analogReferenceChannel*/,
     float& resultValue) {
     // ProcessorAnalog does not support differential measurements
-    resultValue = -9999.0;
+    resultValue = -9999.0f;
     return false;
 }
 

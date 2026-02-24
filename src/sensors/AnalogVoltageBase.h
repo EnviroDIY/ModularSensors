@@ -31,9 +31,11 @@
  *
  * This class provides a unified interface for analog voltage reading,
  * whether from external ADCs (like TI ADS1x15) or processor built-in ADCs.
- * Classes that inherit from this base must implement the
- * readVoltageSingleEnded method to provide their specific voltage reading
- * implementation.
+ * Classes that inherit from this base must implement three pure virtual
+ * methods:
+ * - readVoltageSingleEnded() for single-ended voltage measurements,
+ * - readVoltageDifferential() for differential voltage measurements, and
+ * - getSensorLocation() to provide sensor location identification.
  */
 class AnalogVoltageBase {
  public:
@@ -141,14 +143,14 @@ class AnalogVoltageBase {
 
  protected:
     /**
-     * @brief Internal reference to the voltage multiplier
+     * @brief Stored voltage multiplier value
      *
      * Multiplier to apply for voltage divider calculations
      */
     float _voltageMultiplier;
 
     /**
-     * @brief Internal reference to the supply voltage
+     * @brief Stored supply voltage value
      *
      * For TIADS1x15: the ADS supply voltage
      * For ProcessorAnalog: the processor operating voltage
