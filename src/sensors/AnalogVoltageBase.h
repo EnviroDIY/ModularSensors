@@ -49,7 +49,8 @@ class AnalogVoltageBase {
                       float supplyVoltage     = OPERATING_VOLTAGE)
         : _voltageMultiplier((voltageMultiplier > 0.0f) ? voltageMultiplier
                                                         : 1.0f),
-          _supplyVoltage(supplyVoltage) {}
+          _supplyVoltage((supplyVoltage > 0.0f) ? supplyVoltage
+                                                : OPERATING_VOLTAGE) {}
 
     /**
      * @brief Destroy the AnalogVoltageBase object
