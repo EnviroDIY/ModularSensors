@@ -271,7 +271,7 @@ class TIADS1x15Base : public AnalogVoltageBase {
      * @param i2cAddress The I2C address of the ADS 1x15
      * @param adsSupplyVoltage The power supply voltage for the ADS1x15 in volts
      */
-    explicit TIADS1x15Base(float     voltageMultiplier = 1.0,
+    explicit TIADS1x15Base(float     voltageMultiplier = 1.0f,
                            adsGain_t adsGain           = GAIN_ONE,
                            uint8_t   i2cAddress = MS_DEFAULT_ADS1X15_ADDRESS,
                            float     adsSupplyVoltage = OPERATING_VOLTAGE);

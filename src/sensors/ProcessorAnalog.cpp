@@ -30,11 +30,13 @@ bool ProcessorAnalogBase::readVoltageSingleEnded(int8_t analogChannel,
     // Validate parameters
     if (PROCESSOR_ADC_MAX <= 0) {
         MS_DBG(F("Processor ADC max value is not set or invalid!"));
+        resultValue = -9999.0f;
         return false;
     }
     if (analogChannel < 0 || _supplyVoltage <= 0 || _voltageMultiplier <= 0) {
         MS_DBG(F("Missing one or more required parameters: analog pin, "
                  "operating voltage, or voltage divider!"));
+        resultValue = -9999.0f;
         return false;
     }
 

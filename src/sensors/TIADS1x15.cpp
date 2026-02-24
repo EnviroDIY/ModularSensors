@@ -327,14 +327,14 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
 // Override setSupplyVoltage in TIADS1x15 to validate range
 void TIADS1x15::setSupplyVoltage(float supplyVoltage) {
     // Validate supply voltage range: 0.0V to 5.5V per datasheet
-    if (supplyVoltage < 0.0) {
+    if (supplyVoltage < 0.0f) {
         MS_DBG(F("ADS supply voltage "), supplyVoltage,
                F("V is below minimum, clamping to 0.0V"));
-        _supplyVoltage = 0.0;
-    } else if (supplyVoltage > 5.5) {
+        _supplyVoltage = 0.0f;
+    } else if (supplyVoltage > 5.5f) {
         MS_DBG(F("ADS supply voltage "), supplyVoltage,
                F("V exceeds maximum, clamping to 5.5V"));
-        _supplyVoltage = 5.5;
+        _supplyVoltage = 5.5f;
     } else {
         _supplyVoltage = supplyVoltage;
     }
