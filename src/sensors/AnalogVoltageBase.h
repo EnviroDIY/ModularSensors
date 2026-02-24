@@ -43,9 +43,10 @@ class AnalogVoltageBase {
      * @param voltageMultiplier The voltage multiplier for any voltage dividers
      * @param supplyVoltage The supply/operating voltage for the analog system
      */
-    AnalogVoltageBase(float voltageMultiplier = 1.0,
+    AnalogVoltageBase(float voltageMultiplier = 1.0f,
                       float supplyVoltage     = OPERATING_VOLTAGE)
-        : _voltageMultiplier(voltageMultiplier),
+        : _voltageMultiplier((voltageMultiplier > 0.0f) ? voltageMultiplier
+                                                        : 1.0f),
           _supplyVoltage(supplyVoltage) {}
 
     /**
@@ -57,14 +58,15 @@ class AnalogVoltageBase {
      * @brief Set the voltage multiplier for voltage divider calculations
      *
      * @param voltageMultiplier The multiplier value for voltage scaling
-     * 
-     * @note The multiplier must be positive (> 0). Values <= 0 will be 
-     * automatically clamped to 0.001 to prevent division-by-zero errors
-     * and maintain valid voltage calculations.
+     *
+     * @note The multiplier must be positive (> 0). Values <= 0 will be
+     * set to 1 to prevent division-by-zero errors and maintain valid voltage
+     * calculations.
      */
     virtual void setVoltageMultiplier(float voltageMultiplier) {
-        // Clamp to minimum value to prevent division-by-zero and invalid readings
-        _voltageMultiplier = (voltageMultiplier > 0.0f) ? voltageMultiplier : 0.001f;
+        // If the input voltage multiplier is not positive, set it to 1.
+        _voltageMultiplier = (voltageMultiplier > 0.0f) ? voltageMultiplier
+                                                        : 1.0f;
     }
 
     /**
@@ -82,9 +84,8 @@ class AnalogVoltageBase {
      * @param supplyVoltage The supply voltage in volts
      */
     virtual void setSupplyVoltage(float supplyVoltage) {
-        _supplyVoltage = supplyVoltage;
+        if (supplyVoltage > 0.0f) { _supplyVoltage = supplyVoltage; }
     }
-
     /**
      * @brief Get the supply voltage for the analog system
      *
