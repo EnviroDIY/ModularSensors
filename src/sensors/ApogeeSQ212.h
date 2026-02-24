@@ -242,9 +242,11 @@ class ApogeeSQ212 : public Sensor {
  public:
     /**
      * @brief Construct a new Apogee SQ-212 object - need the power pin and the
-     * analog data channel.  By default, this constructor will use a new
-     * TIADS1x15Base object with all default values for voltage readings, but a
-     * pointer to a custom AnalogVoltageBase object can be passed in if desired.
+     * analog data channel.
+     *
+     * By default, this constructor will use a new TIADS1x15Base object with all
+     * default values for voltage readings, but a pointer to a custom
+     * AnalogVoltageBase object can be passed in if desired.
      *
      * @note ModularSensors only supports connecting the ADS1x15 to the primary
      * hardware I2C instance defined in the Arduino core. Connecting the ADS to

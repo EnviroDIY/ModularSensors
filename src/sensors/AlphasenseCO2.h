@@ -98,6 +98,7 @@
 // Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
+#include "AnalogVoltageBase.h"
 
 /** @ingroup sensor_alphasense_co2 */
 /**@{*/
@@ -147,16 +148,6 @@
 #define ALPHASENSE_CO2_VOLTAGE_MULTIPLIER 1.0
 #endif
 /**@}*/
-
-/**
- * @brief Enum for the pins used for differential voltages.
- */
-typedef enum : uint16_t {
-    DIFF_MUX_0_1,  ///< differential across pins 0 and 1
-    DIFF_MUX_0_3,  ///< differential across pins 0 and 3
-    DIFF_MUX_1_3,  ///< differential across pins 1 and 3
-    DIFF_MUX_2_3   ///< differential across pins 2 and 3
-} aco2_adsDiffMux_t;
 
 /**
  * @anchor sensor_alphasense_co2_timing
@@ -272,8 +263,11 @@ class AlphasenseCO2 : public Sensor {
  public:
     /**
      * @brief Construct a new Alphasense IRC-A1 CO2 object - need the power pin
-     * and the on the ADS1x15. Designed to read differential voltage between ads
-     * channels 2 and 3
+     * and the analog data and reference channels.
+     *
+     * By default, this constructor will use a new TIADS1x15Base object with all
+     * default values for voltage readings, but a pointer to a custom
+     * AnalogVoltageBase object can be passed in if desired.
      *
      * @note ModularSensors only supports connecting the ADS1x15 to the primary
      * hardware I2C instance defined in the Arduino core. Connecting the ADS to
@@ -282,46 +276,51 @@ class AlphasenseCO2 : public Sensor {
      * @param powerPin The pin on the mcu controlling power to the
      * Alphasense CO2 sensor.  Use -1 if it is continuously powered.
      * - The Alphasense CO2 sensor requires 2-5 V DC; current draw 20-60 mA
-     * - The ADS1115 requires 2.0-5.5V but is assumed to be powered at 3.3V
-     * @param adsDiffMux Which two pins _on the TI ADS1115_ that will measure
-     * differential voltage. See #aco2_adsDiffMux_t.
-     * @param i2cAddress The I2C address of the ADS 1x15, default is 0x48 (ADDR
-     * = GND)
+     * @param analogChannel The primary analog channel for differential
+     * measurement
+     * @param analogReferenceChannel The secondary (reference) analog channel
+     * for differential measurement
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
-     * default value of 7 [seconds], which is one period of the cycle.
+     * default value of 7.
+     * @param analogVoltageReader Pointer to an AnalogVoltageBase object for
+     * voltage measurements; optional with a default of a new TIADS1x15Base
+     * object.
      * @note  The ADS is expected to be either continuously powered or have
      * its power controlled by the same pin as the Alphasense CO2 sensor.  This
      * library does not support any other configuration.
+     *
+     * @warning In library versions 0.37.0 and earlier, a different constructor
+     * was used that required an enum object instead of two different analog
+     * channel inputs for the differential voltage measurement. If you are using
+     * code from a previous version of the library, make sure to update your
+     * code to use the new constructor and provide the correct analog channel
+     * inputs for the differential voltage measurement.
      */
-    AlphasenseCO2(int8_t powerPin, aco2_adsDiffMux_t adsDiffMux = DIFF_MUX_2_3,
-                  uint8_t i2cAddress            = MS_DEFAULT_ADS1X15_ADDRESS,
-                  uint8_t measurementsToAverage = 7);
+    AlphasenseCO2(int8_t powerPin, int8_t analogChannel,
+                  int8_t             analogReferenceChannel,
+                  uint8_t            measurementsToAverage = 7,
+                  AnalogVoltageBase* analogVoltageReader   = nullptr);
     /**
-     * @brief Destroy the AlphasenseCO2 object - no action needed
+     * @brief Destroy the AlphasenseCO2 object
      */
     ~AlphasenseCO2();
 
-    /**
-     * @brief Report the I1C address of the ADS and the channel that the
-     * Alphasense CO2 sensor is attached to.
-     *
-     * @return **String** Text describing how the sensor is attached to the mcu.
-     */
     String getSensorLocation(void) override;
 
     bool addSingleMeasurementResult(void) override;
 
  private:
+
     /**
-     * @brief Which two pins _on the TI ADS1115_ that will measure differential
-     * voltage from the Turbidity Plus. See #aco2_adsDiffMux_t
+     * @brief The second (reference) pin for differential voltage measurements.
      */
-    aco2_adsDiffMux_t _adsDiffMux;
-    /**
-     * @brief Internal reference to the I2C address of the TI-ADS1x15
-     */
-    uint8_t _i2cAddress;
+    int8_t _analogReferenceChannel;
+    AnalogVoltageBase*
+         _analogVoltageReader;      ///< Pointer to analog voltage reader
+    bool _ownsAnalogVoltageReader;  ///< Flag to track if this object owns the
+                                    ///< analog voltage reader and should delete
+                                    ///< it in the destructor
 };
 
 

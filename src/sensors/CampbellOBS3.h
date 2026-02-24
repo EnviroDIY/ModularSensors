@@ -237,10 +237,11 @@ class CampbellOBS3 : public Sensor {
  public:
     /**
      * @brief Construct a new Campbell OBS3 object - need the power pin, the
-     * analog data channel, and the calibration info.  By default, this
-     * constructor will use a new TIADS1x15Base object with all default values
-     * for voltage readings, but a pointer to a custom AnalogVoltageBase object
-     * can be passed in if desired.
+     * analog data channel, and the calibration info.
+     *
+     * By default, this constructor will use a new TIADS1x15Base object with all
+     * default values for voltage readings, but a pointer to a custom
+     * AnalogVoltageBase object can be passed in if desired.
      *
      * @note ModularSensors only supports connecting the ADS1x15 to the primary
      * hardware I2C instance defined in the Arduino core.  Connecting the ADS to
