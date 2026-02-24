@@ -56,11 +56,16 @@ EverlightALSPT19::~EverlightALSPT19() {
 
 
 String EverlightALSPT19::getSensorLocation(void) {
-    // NOTE: The constructor guarantees that _analogVoltageReader is not null
-    String sensorLocation = _analogVoltageReader->getSensorLocation();
-    sensorLocation += F("_");
-    sensorLocation += String(_dataPin);
-    return sensorLocation;
+    if (_analogVoltageReader != nullptr) {
+        String sensorLocation = _analogVoltageReader->getSensorLocation();
+        sensorLocation += F("_");
+        sensorLocation += String(_dataPin);
+        return sensorLocation;
+    } else {
+        String sensorLocation = F("Unknown_AnalogVoltageReader_");
+        sensorLocation += String(_dataPin);
+        return sensorLocation;
+    }
 }
 
 

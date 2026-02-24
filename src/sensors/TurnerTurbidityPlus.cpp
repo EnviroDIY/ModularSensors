@@ -44,13 +44,20 @@ TurnerTurbidityPlus::~TurnerTurbidityPlus() {
 
 
 String TurnerTurbidityPlus::getSensorLocation(void) {
-    // NOTE: The constructor guarantees that _analogVoltageReader is not null
-    String sensorLocation = _analogVoltageReader->getSensorLocation();
-    sensorLocation += F("_Diff_");
-    sensorLocation += String(_dataPin);
-    sensorLocation += F("_");
-    sensorLocation += String(_analogReferenceChannel);
-    return sensorLocation;
+    if (_analogVoltageReader != nullptr) {
+        String sensorLocation = _analogVoltageReader->getSensorLocation();
+        sensorLocation += F("_Diff_");
+        sensorLocation += String(_dataPin);
+        sensorLocation += F("_");
+        sensorLocation += String(_analogReferenceChannel);
+        return sensorLocation;
+    } else {
+        String sensorLocation = F("Unknown_AnalogVoltageReader_Diff_");
+        sensorLocation += String(_dataPin);
+        sensorLocation += F("_");
+        sensorLocation += String(_analogReferenceChannel);
+        return sensorLocation;
+    }
 }
 
 void TurnerTurbidityPlus::runWiper() {
