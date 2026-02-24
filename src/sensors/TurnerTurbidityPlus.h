@@ -69,7 +69,6 @@
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include "AnalogVoltageBase.h"
-#include <Adafruit_ADS1X15.h>
 
 /** @ingroup sensor_turbidity_plus */
 /**@{*/
@@ -193,7 +192,8 @@
 ///  - Resolution:
 ///     - 16-bit ADC (ADS1115): 0.125 mV
 #define TURBIDITY_PLUS_VOLTAGE_RESOLUTION 4
-#endif /**@}*/
+#endif
+/**@}*/
 /**
  * @brief The Sensor sub-class for the [Turner Turbidity Plus turbidity
  * sensor](@ref sensor_turbidity_plus).

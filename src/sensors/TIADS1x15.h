@@ -153,7 +153,7 @@
 #include "ModSensorDebugConfig.h"
 
 // Include known processor settings for default operating voltage
-#include "sensors/KnownProcessors.h"
+#include "KnownProcessors.h"
 
 // Define the print label[s] for the debugger
 #ifdef MS_TIADS1X15_DEBUG
