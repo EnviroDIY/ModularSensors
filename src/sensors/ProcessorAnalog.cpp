@@ -92,6 +92,10 @@ ProcessorAnalog::ProcessorAnalog(int8_t powerPin, int8_t dataPin,
 // Destructor
 ProcessorAnalog::~ProcessorAnalog() {}
 
+String ProcessorAnalog::getSensorLocation() {
+    return ProcessorAnalogBase::getSensorLocation();
+}
+
 bool ProcessorAnalog::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {

@@ -256,6 +256,8 @@ class ProcessorAnalog : public Sensor, public ProcessorAnalogBase {
      */
     ~ProcessorAnalog();
 
+    String getSensorLocation() override;
+
     bool addSingleMeasurementResult(void) override;
 };
 
