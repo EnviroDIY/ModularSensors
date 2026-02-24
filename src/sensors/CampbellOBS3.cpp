@@ -26,8 +26,12 @@ CampbellOBS3::CampbellOBS3(int8_t powerPin, uint8_t analogChannel,
       _x0_coeff_C(x0_coeff_C) {
     // If no analog voltage reader was provided, create a default one
     if (analogVoltageReader == nullptr) {
-        _analogVoltageReader     = new TIADS1x15Base();
-        _ownsAnalogVoltageReader = true;
+        _analogVoltageReader = new TIADS1x15Base();
+        if (_analogVoltageReader != nullptr) {
+            _ownsAnalogVoltageReader = true;
+        } else {
+            _ownsAnalogVoltageReader = false;
+        }
     } else {
         _analogVoltageReader     = analogVoltageReader;
         _ownsAnalogVoltageReader = false;

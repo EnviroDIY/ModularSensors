@@ -29,8 +29,12 @@ AlphasenseCO2::AlphasenseCO2(int8_t powerPin, int8_t analogChannel,
       _analogReferenceChannel(analogReferenceChannel) {
     // If no analog voltage reader was provided, create a default one
     if (analogVoltageReader == nullptr) {
-        _analogVoltageReader     = new TIADS1x15Base();
-        _ownsAnalogVoltageReader = true;
+        _analogVoltageReader = new TIADS1x15Base();
+        if (_analogVoltageReader != nullptr) {
+            _ownsAnalogVoltageReader = true;
+        } else {
+            _ownsAnalogVoltageReader = false;
+        }
     } else {
         _analogVoltageReader     = analogVoltageReader;
         _ownsAnalogVoltageReader = false;

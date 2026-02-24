@@ -26,7 +26,11 @@ ApogeeSQ212::ApogeeSQ212(int8_t powerPin, uint8_t analogChannel,
     // If no analog voltage reader was provided, create a default one
     if (analogVoltageReader == nullptr) {
         _analogVoltageReader     = new TIADS1x15Base();
-        _ownsAnalogVoltageReader = true;
+        if (_analogVoltageReader != nullptr) {
+            _ownsAnalogVoltageReader = true;
+        } else {
+            _ownsAnalogVoltageReader = false;
+        }
     } else {
         _analogVoltageReader     = analogVoltageReader;
         _ownsAnalogVoltageReader = false;
