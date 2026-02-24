@@ -157,7 +157,7 @@
  */
 #if defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
 #define MS_PROCESSOR_ADC_RESOLUTION 10
-#else
+#elif defined(ARDUINO_ARCH_SAMD)
 #define MS_PROCESSOR_ADC_RESOLUTION 12
 #endif
 #if !defined(MS_PROCESSOR_ADC_RESOLUTION)
@@ -233,7 +233,7 @@
 #if !defined(MS_DEFAULT_ADS1X15_ADDRESS) || defined(DOXYGEN)
 /// @brief The assumed address of the ADS1115 or ADS1015, 1001 000 (ADDR = GND)
 #define MS_DEFAULT_ADS1X15_ADDRESS 0x48
-#endif  // MS_DEFAULT_ADS1X15_ADDRESS
+#endif  // !defined(MS_DEFAULT_ADS1X15_ADDRESS) || defined(DOXYGEN)
 //==============================================================
 
 
