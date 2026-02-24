@@ -95,6 +95,7 @@
 // Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
+#include "AnalogVoltageBase.h"
 
 /** @ingroup sensor_sq212 */
 /**@{*/
@@ -241,7 +242,9 @@ class ApogeeSQ212 : public Sensor {
  public:
     /**
      * @brief Construct a new Apogee SQ-212 object - need the power pin and the
-     * data channel on the ADS1x15.
+     * analog data channel.  By default, this constructor will use a new
+     * TIADS1x15Base object with all default values for voltage readings, but a
+     * pointer to a custom AnalogVoltageBase object can be passed in if desired.
      *
      * @note ModularSensors only supports connecting the ADS1x15 to the primary
      * hardware I2C instance defined in the Arduino core. Connecting the ADS to
@@ -250,45 +253,39 @@ class ApogeeSQ212 : public Sensor {
      * @param powerPin The pin on the mcu controlling power to the Apogee
      * SQ-212.  Use -1 if it is continuously powered.
      * - The SQ-212 requires 3.3 to 24 V DC; current draw 10 µA
-     * - The ADS1115 requires 2.0-5.5V but is assumed to be powered at 3.3V
-     * @param adsChannel The analog data channel the Apogee SQ-212 is connected
-     * to _on the TI ADS1115_ (0-3).
-     * @param i2cAddress The I2C address of the ADS 1x15, default is 0x48 (ADDR
-     * = GND)
+     * @param analogChannel The analog data channel or processor pin that the
+     * OBS3 is connected to.  The significance of the channel number depends on
+     * the specific AnalogVoltageBase implementation used for voltage readings.
+     * For example, with the TI ADS1x15, this would be the ADC channel (0-3)
+     * that the sensor is connected to.
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
+     * @param analogVoltageReader Pointer to an AnalogVoltageBase object for
+     * voltage measurements; optional with a default of a new TIADS1x15Base
+     * object.
      * @note  The ADS is expected to be either continuously powered or have
      * its power controlled by the same pin as the SQ-212.  This library does
      * not support any other configuration.
      */
-    ApogeeSQ212(int8_t powerPin, uint8_t adsChannel,
-                uint8_t i2cAddress            = MS_DEFAULT_ADS1X15_ADDRESS,
-                uint8_t measurementsToAverage = 1);
+    ApogeeSQ212(int8_t powerPin, uint8_t analogChannel,
+                uint8_t            measurementsToAverage = 1,
+                AnalogVoltageBase* analogVoltageReader   = nullptr);
     /**
-     * @brief Destroy the ApogeeSQ212 object - no action needed
+     * @brief Destroy the ApogeeSQ212 object
      */
     ~ApogeeSQ212();
 
-    /**
-     * @brief Report the I1C address of the ADS and the channel that the SQ-212
-     * is attached to.
-     *
-     * @return Text describing how the sensor is attached to the mcu.
-     */
     String getSensorLocation(void) override;
 
     bool addSingleMeasurementResult(void) override;
 
  private:
-    /**
-     * @brief Internal reference to the ADS channel number of the Apogee SQ-212
-     */
-    uint8_t _adsChannel;
-    /**
-     * @brief Internal reference to the I2C address of the TI-ADS1x15
-     */
-    uint8_t _i2cAddress;
+    AnalogVoltageBase*
+         _analogVoltageReader;      ///< Pointer to analog voltage reader
+    bool _ownsAnalogVoltageReader;  ///< Flag to track if this object owns the
+                                    ///< analog voltage reader and should delete
+                                    ///< it in the destructor
 };
 
 

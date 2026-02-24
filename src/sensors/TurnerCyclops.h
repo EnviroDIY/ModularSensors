@@ -167,6 +167,7 @@
 // Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
+#include "AnalogVoltageBase.h"
 
 // Sensor Specific Defines
 /** @ingroup sensor_cyclops */
@@ -294,7 +295,10 @@ class TurnerCyclops : public Sensor {
     // calibration info
     /**
      * @brief Construct a new Turner Cyclops object - need the power pin, the
-     * ADS1X15 data channel, and the calibration info.
+     * analog data channel, and the calibration info.  By default, this
+     * constructor will use a new TIADS1x15Base object with all default values
+     * for voltage readings, but a pointer to a custom AnalogVoltageBase object
+     * can be passed in if desired.
      *
      * @note ModularSensors only supports connecting the ADS1x15 to the primary
      * hardware I2C instance defined in the Arduino core.  Connecting the ADS to
@@ -306,8 +310,11 @@ class TurnerCyclops : public Sensor {
      * assumes the ADS is powered with 3.3V.
      * - The Cyclops-7F itself requires a 3-15V power supply, which can be
      * turned off between measurements.
-     * @param adsChannel The analog data channel _on the TI ADS1115_ that the
-     * Cyclops is connected to (0-3).
+     * @param analogChannel The analog data channel or processor pin that the
+     * OBS3 is connected to.  The significance of the channel number depends on
+     * the specific AnalogVoltageBase implementation used for voltage readings.
+     * For example, with the TI ADS1x15, this would be the ADC channel (0-3)
+     * that the sensor is connected to.
      * @param conc_std The concentration of the standard used for a 1-point
      * sensor calibration.  The concentration units should be the same as the
      * final measuring units.
@@ -317,16 +324,17 @@ class TurnerCyclops : public Sensor {
      * @param volt_blank The voltage (in volts) measured for a blank.  This
      * voltage should be the final voltage *after* accounting for any voltage
      * dividers or gain settings.
-     * @param i2cAddress The I2C address of the ADS 1x15, default is 0x48 (ADDR
-     * = GND)
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
+     * @param analogVoltageReader Pointer to an AnalogVoltageBase object for
+     * voltage measurements; optional with a default of a new TIADS1x15Base
+     * object.
      */
-    TurnerCyclops(int8_t powerPin, uint8_t adsChannel, float conc_std,
+    TurnerCyclops(int8_t powerPin, uint8_t analogChannel, float conc_std,
                   float volt_std, float volt_blank,
-                  uint8_t i2cAddress            = MS_DEFAULT_ADS1X15_ADDRESS,
-                  uint8_t measurementsToAverage = 1);
+                  uint8_t            measurementsToAverage = 1,
+                  AnalogVoltageBase* analogVoltageReader   = nullptr);
     /**
      * @brief Destroy the Turner Cyclops object
      */
@@ -337,10 +345,6 @@ class TurnerCyclops : public Sensor {
     bool addSingleMeasurementResult(void) override;
 
  private:
-    /**
-     * @brief Internal reference to the ADS channel number of the Turner Cyclops
-     */
-    uint8_t _adsChannel;
     /**
      * @brief The concentration of the standard used for a 1-point sensor
      * calibration.  The concentration units should be the same as the final
@@ -359,10 +363,11 @@ class TurnerCyclops : public Sensor {
      * settings.
      */
     float _volt_blank;
-    /**
-     * @brief Internal reference to the I2C address of the TI-ADS1x15
-     */
-    uint8_t _i2cAddress;
+    AnalogVoltageBase*
+         _analogVoltageReader;      ///< Pointer to analog voltage reader
+    bool _ownsAnalogVoltageReader;  ///< Flag to track if this object owns the
+                                    ///< analog voltage reader and should delete
+                                    ///< it in the destructor
 };
 
 

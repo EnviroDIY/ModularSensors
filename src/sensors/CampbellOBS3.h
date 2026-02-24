@@ -88,6 +88,7 @@
 // Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
+#include "AnalogVoltageBase.h"
 
 /** @ingroup sensor_obs3 */
 /**@{*/
@@ -234,11 +235,12 @@
 /* clang-format on */
 class CampbellOBS3 : public Sensor {
  public:
-    // The constructor - need the power pin, the ADS1X15 data channel, and the
-    // calibration info
     /**
      * @brief Construct a new Campbell OBS3 object - need the power pin, the
-     * ADS1X15 data channel, and the calibration info.
+     * analog data channel, and the calibration info.  By default, this
+     * constructor will use a new TIADS1x15Base object with all default values
+     * for voltage readings, but a pointer to a custom AnalogVoltageBase object
+     * can be passed in if desired.
      *
      * @note ModularSensors only supports connecting the ADS1x15 to the primary
      * hardware I2C instance defined in the Arduino core.  Connecting the ADS to
@@ -246,25 +248,27 @@ class CampbellOBS3 : public Sensor {
      *
      * @param powerPin The pin on the mcu controlling power to the OBS3+
      * Use -1 if it is continuously powered.
-     * - The ADS1x15 requires an input voltage of 2.0-5.5V, but this library
-     * assumes the ADS is powered with 3.3V.
      * - The OBS-3 itself requires a 5-15V power supply, which can be turned off
      * between measurements.
-     * @param adsChannel The analog data channel _on the TI ADS1115_ that the
-     * OBS3 is connected to (0-3).
+     * @param analogChannel The analog data channel or processor pin that the
+     * OBS3 is connected to.  The significance of the channel number depends on
+     * the specific AnalogVoltageBase implementation used for voltage readings.
+     * For example, with the TI ADS1x15, this would be the ADC channel (0-3)
+     * that the sensor is connected to.
      * @param x2_coeff_A The x2 (A) coefficient for the calibration _in volts_
      * @param x1_coeff_B The x (B) coefficient for the calibration _in volts_
      * @param x0_coeff_C The x0 (C) coefficient for the calibration _in volts_
-     * @param i2cAddress The I2C address of the ADS 1x15, default is 0x48 (ADDR
-     * = GND)
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
+     * @param analogVoltageReader Pointer to an AnalogVoltageBase object for
+     * voltage measurements; optional with a default of a new TIADS1x15Base
+     * object.
      */
-    CampbellOBS3(int8_t powerPin, uint8_t adsChannel, float x2_coeff_A,
+    CampbellOBS3(int8_t powerPin, uint8_t analogChannel, float x2_coeff_A,
                  float x1_coeff_B, float x0_coeff_C,
-                 uint8_t i2cAddress            = MS_DEFAULT_ADS1X15_ADDRESS,
-                 uint8_t measurementsToAverage = 1);
+                 uint8_t            measurementsToAverage = 1,
+                 AnalogVoltageBase* analogVoltageReader   = nullptr);
     /**
      * @brief Destroy the Campbell OBS3 object
      */
@@ -275,18 +279,14 @@ class CampbellOBS3 : public Sensor {
     bool addSingleMeasurementResult(void) override;
 
  private:
-    /**
-     * @brief Internal reference to the ADS channel number of the Campbell OBS
-     * 3+
-     */
-    uint8_t _adsChannel;
-    float   _x2_coeff_A;  ///< Internal reference to the x^2 coefficient
-    float   _x1_coeff_B;  ///< Internal reference to the x coefficient
-    float   _x0_coeff_C;  ///< Internal reference to the x^0 coefficient
-    /**
-     * @brief Internal reference to the I2C address of the TI-ADS1x15
-     */
-    uint8_t _i2cAddress;
+    float _x2_coeff_A;  ///< Internal reference to the x^2 coefficient
+    float _x1_coeff_B;  ///< Internal reference to the x coefficient
+    float _x0_coeff_C;  ///< Internal reference to the x^0 coefficient
+    AnalogVoltageBase*
+         _analogVoltageReader;      ///< Pointer to analog voltage reader
+    bool _ownsAnalogVoltageReader;  ///< Flag to track if this object owns the
+                                    ///< analog voltage reader and should delete
+                                    ///< it in the destructor
 };
 
 

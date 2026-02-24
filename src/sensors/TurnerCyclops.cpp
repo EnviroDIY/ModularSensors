@@ -10,35 +10,50 @@
 
 
 #include "TurnerCyclops.h"
-#include <Adafruit_ADS1X15.h>
+#include "TIADS1x15.h"
 
 
 // The constructor - need the power pin, the data pin, and the calibration info
-TurnerCyclops::TurnerCyclops(int8_t powerPin, uint8_t adsChannel,
+TurnerCyclops::TurnerCyclops(int8_t powerPin, uint8_t analogChannel,
                              float conc_std, float volt_std, float volt_blank,
-                             uint8_t i2cAddress, uint8_t measurementsToAverage)
+                             uint8_t            measurementsToAverage,
+                             AnalogVoltageBase* analogVoltageReader)
     : Sensor("TurnerCyclops", CYCLOPS_NUM_VARIABLES, CYCLOPS_WARM_UP_TIME_MS,
              CYCLOPS_STABILIZATION_TIME_MS, CYCLOPS_MEASUREMENT_TIME_MS,
-             powerPin, -1, measurementsToAverage, CYCLOPS_INC_CALC_VARIABLES),
-      _adsChannel(adsChannel),
+             powerPin, analogChannel, measurementsToAverage,
+             CYCLOPS_INC_CALC_VARIABLES),
       _conc_std(conc_std),
       _volt_std(volt_std),
-      _volt_blank(volt_blank),
-      _i2cAddress(i2cAddress) {}
+      _volt_blank(volt_blank) {
+    // If no analog voltage reader was provided, create a default one
+    if (analogVoltageReader == nullptr) {
+        _analogVoltageReader     = new TIADS1x15Base();
+        _ownsAnalogVoltageReader = true;
+    } else {
+        _analogVoltageReader     = analogVoltageReader;
+        _ownsAnalogVoltageReader = false;
+    }
+}
+
 // Destructor
-TurnerCyclops::~TurnerCyclops() {}
+TurnerCyclops::~TurnerCyclops() {
+    // Clean up the analog voltage reader if we created it
+    if (_ownsAnalogVoltageReader && _analogVoltageReader != nullptr) {
+        delete _analogVoltageReader;
+        _analogVoltageReader = nullptr;
+    }
+}
 
 
 String TurnerCyclops::getSensorLocation(void) {
-#ifndef MS_USE_ADS1015
-    String sensorLocation = F("ADS1115_0x");
-#else
-    String sensorLocation = F("ADS1015_0x");
-#endif
-    sensorLocation += String(_i2cAddress, HEX);
-    sensorLocation += F("_Channel");
-    sensorLocation += String(_adsChannel);
-    return sensorLocation;
+    if (_analogVoltageReader != nullptr) {
+        return _analogVoltageReader->getSensorLocation() + F("_Channel") +
+            String(_dataPin);
+    } else {
+        String sensorLocation = F("Unknown_AnalogVoltageReader_Channel");
+        sensorLocation += String(_dataPin);
+        return sensorLocation;
+    }
 }
 
 
@@ -48,41 +63,18 @@ bool TurnerCyclops::addSingleMeasurementResult(void) {
         return bumpMeasurementAttemptCount(false);
     }
 
-    bool    success     = false;
-    int16_t adcCounts   = -9999;
-    float   adcVoltage  = -9999;
-    float   calibResult = -9999;
-
-    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
-
-// Create an auxiliary ADC object
-// We create and set up the ADC object here so that each sensor using
-// the ADC may set the gain appropriately without effecting others.
-#ifndef MS_USE_ADS1015
-    Adafruit_ADS1115 ads;  // Use this for the 16-bit version
-#else
-    Adafruit_ADS1015 ads;  // Use this for the 12-bit version
-#endif
-    // ADS Library default settings:
-    //  - TI ADS1115 (16 bit)
-    //    - single-shot mode (powers down between conversions)
-    //    - 128 samples per second (8ms conversion time)
-    //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
-    //  - TI ADS1015 (12 bit)
-    //    - single-shot mode (powers down between conversions)
-    //    - 1600 samples per second (625µs conversion time)
-    //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
-
-    // Bump the gain up to 1x = +/- 4.096V range
-    // Sensor return range is 0-2.5V, but the next gain option is 2x which
-    // only allows up to 2.048V
-    ads.setGain(GAIN_ONE);
-    // Begin ADC, returns true if anything was detected at the address
-    if (!ads.begin(_i2cAddress)) {
-        MS_DBG(F("  ADC initialization failed at 0x"),
-               String(_i2cAddress, HEX));
+    // Check if we have a valid analog voltage reader
+    if (_analogVoltageReader == nullptr) {
+        MS_DBG(getSensorNameAndLocation(),
+               F("No analog voltage reader available"));
         return bumpMeasurementAttemptCount(false);
     }
+
+    bool  success     = false;
+    float adcVoltage  = -9999;
+    float calibResult = -9999;
+
+    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
     // Print out the calibration curve
     MS_DBG(F("  Input calibration Curve:"), _volt_std, F("V at"), _conc_std,
@@ -93,25 +85,19 @@ bool TurnerCyclops::addSingleMeasurementResult(void) {
         return bumpMeasurementAttemptCount(false);
     }
 
-    // Read Analog to Digital Converter (ADC)
-    // Taking this reading includes the 8ms conversion delay.
-    // Measure the ADC raw count
-    adcCounts = ads.readADC_SingleEnded(_adsChannel);
-    // Convert ADC raw counts value to voltage (V)
-    adcVoltage = ads.computeVolts(adcCounts);
-    MS_DBG(F("  ads.readADC_SingleEnded("), _adsChannel, F("):"), adcCounts,
-           '=', adcVoltage);
-
-    // @todo Verify the voltage range for the Cyclops sensor
-    // Here we are using the range of the ADS when it is powered at 3.3V
-    if (adcVoltage < 3.6 && adcVoltage > -0.3) {
+    // Read voltage using the AnalogVoltageBase interface
+    success = _analogVoltageReader->readVoltageSingleEnded(_dataPin,
+                                                           adcVoltage);
+    if (success) {
         // Apply the unique calibration curve for the given sensor
         calibResult = (_conc_std / (_volt_std - _volt_blank)) *
             (adcVoltage - _volt_blank);
         MS_DBG(F("  calibResult:"), calibResult);
         verifyAndAddMeasurementResult(CYCLOPS_VAR_NUM, calibResult);
         verifyAndAddMeasurementResult(CYCLOPS_VOLTAGE_VAR_NUM, adcVoltage);
-        success = true;
+
+    } else {
+        MS_DBG(F("  Failed to get valid voltage from analog reader"));
     }
 
     // Return success value when finished
