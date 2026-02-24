@@ -22,16 +22,11 @@ EverlightALSPT19::EverlightALSPT19(int8_t powerPin, int8_t dataPin,
              measurementsToAverage, ALSPT19_INC_CALC_VARIABLES),
       _alsSupplyVoltage((alsSupplyVoltage > 0.0f) ? alsSupplyVoltage
                                                   : OPERATING_VOLTAGE),
-      _loadResistor(loadResistor) {
-    // If no analog voltage reader was provided, create a default one
-    if (analogVoltageReader == nullptr) {
-        _analogVoltageReader     = new ProcessorAnalogBase();
-        _ownsAnalogVoltageReader = true;
-    } else {
-        _analogVoltageReader     = analogVoltageReader;
-        _ownsAnalogVoltageReader = false;
-    }
-}
+      _loadResistor(loadResistor),
+      // If no analog voltage reader was provided, create a default one
+      _analogVoltageReader(analogVoltageReader ? analogVoltageReader
+                                               : new ProcessorAnalogBase()),
+      _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {}
 #if (defined(BUILT_IN_ALS_POWER_PIN) && defined(BUILT_IN_ALS_DATA_PIN) && \
      defined(BUILT_IN_ALS_SUPPLY_VOLTAGE) &&                              \
      defined(BUILT_IN_ALS_LOADING_RESISTANCE)) ||                         \
@@ -44,16 +39,10 @@ EverlightALSPT19::EverlightALSPT19(uint8_t            measurementsToAverage,
              BUILT_IN_ALS_DATA_PIN, measurementsToAverage,
              ALSPT19_INC_CALC_VARIABLES),
       _alsSupplyVoltage(BUILT_IN_ALS_SUPPLY_VOLTAGE),
-      _loadResistor(BUILT_IN_ALS_LOADING_RESISTANCE) {
-    // If no analog voltage reader was provided, create a default one
-    if (analogVoltageReader == nullptr) {
-        _analogVoltageReader     = new ProcessorAnalogBase();
-        _ownsAnalogVoltageReader = true;
-    } else {
-        _analogVoltageReader     = analogVoltageReader;
-        _ownsAnalogVoltageReader = false;
-    }
-}
+      _loadResistor(BUILT_IN_ALS_LOADING_RESISTANCE),
+      _analogVoltageReader(analogVoltageReader ? analogVoltageReader
+                                               : new ProcessorAnalogBase()),
+      _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {}
 #endif
 
 // Destructor

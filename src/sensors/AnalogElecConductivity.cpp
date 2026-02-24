@@ -23,16 +23,11 @@ AnalogElecConductivity::AnalogElecConductivity(
              ANALOGELECCONDUCTIVITY_MEASUREMENT_TIME_MS, powerPin, dataPin,
              measurementsToAverage, ANALOGELECCONDUCTIVITY_INC_CALC_VARIABLES),
       _Rseries_ohms(Rseries_ohms),
-      _sensorEC_Konst(sensorEC_Konst) {
-    // If no analog voltage reader was provided, create a default one
-    if (analogVoltageReader == nullptr) {
-        _analogVoltageReader     = new ProcessorAnalogBase();
-        _ownsAnalogVoltageReader = true;
-    } else {
-        _analogVoltageReader     = analogVoltageReader;
-        _ownsAnalogVoltageReader = false;
-    }
-}
+      _sensorEC_Konst(sensorEC_Konst),
+      // If no analog voltage reader was provided, create a default one
+      _analogVoltageReader(analogVoltageReader ? analogVoltageReader
+                                               : new ProcessorAnalogBase()),
+      _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {}
 
 // Destructor
 AnalogElecConductivity::~AnalogElecConductivity() {

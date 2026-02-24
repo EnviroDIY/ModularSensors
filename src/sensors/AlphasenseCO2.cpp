@@ -26,16 +26,11 @@ AlphasenseCO2::AlphasenseCO2(int8_t powerPin, int8_t analogChannel,
              ALPHASENSE_CO2_MEASUREMENT_TIME_MS, powerPin, analogChannel,
              measurementsToAverage, ALPHASENSE_CO2_INC_CALC_VARIABLES),
 
-      _analogReferenceChannel(analogReferenceChannel) {
-    // If no analog voltage reader was provided, create a default one
-    if (analogVoltageReader == nullptr) {
-        _analogVoltageReader     = new TIADS1x15Base();
-        _ownsAnalogVoltageReader = true;
-    } else {
-        _analogVoltageReader     = analogVoltageReader;
-        _ownsAnalogVoltageReader = false;
-    }
-}
+      _analogReferenceChannel(analogReferenceChannel),
+      // If no analog voltage reader was provided, create a default one
+      _analogVoltageReader(analogVoltageReader ? analogVoltageReader
+                                               : new TIADS1x15Base()),
+      _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {}
 
 // Destructor
 AlphasenseCO2::~AlphasenseCO2() {

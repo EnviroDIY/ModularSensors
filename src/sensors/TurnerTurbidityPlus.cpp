@@ -27,16 +27,11 @@ TurnerTurbidityPlus::TurnerTurbidityPlus(
       _conc_std(conc_std),
       _volt_std(volt_std),
       _volt_blank(volt_blank),
-      _analogReferenceChannel(analogReferenceChannel) {
-    // If no analog voltage reader was provided, create a default one
-    if (analogVoltageReader == nullptr) {
-        _analogVoltageReader     = new TIADS1x15Base();
-        _ownsAnalogVoltageReader = true;
-    } else {
-        _analogVoltageReader     = analogVoltageReader;
-        _ownsAnalogVoltageReader = false;
-    }
-}
+      _analogReferenceChannel(analogReferenceChannel),
+      // If no analog voltage reader was provided, create a default one
+      _analogVoltageReader(analogVoltageReader ? analogVoltageReader
+                                               : new TIADS1x15Base()),
+      _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {}
 
 // Destructor
 TurnerTurbidityPlus::~TurnerTurbidityPlus() {
