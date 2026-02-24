@@ -228,13 +228,12 @@
 #if !defined(MS_PROCESSOR_ADC_REFERENCE_MODE)
 #error The processor ADC reference type must be defined!
 #endif  // MS_PROCESSOR_ADC_REFERENCE_MODE
-#endif  // ARDUINO_ARCH_SAMD
+#endif  // !defined(MS_PROCESSOR_ADC_REFERENCE_MODE) || defined(DOXYGEN)
 
-
-#ifndef MS_DEFAULT_ADS1X15_ADDRESS || defined(DOXYGEN)
+#if !defined(MS_DEFAULT_ADS1X15_ADDRESS) || defined(DOXYGEN)
 /// @brief The assumed address of the ADS1115 or ADS1015, 1001 000 (ADDR = GND)
 #define MS_DEFAULT_ADS1X15_ADDRESS 0x48
-#endif
+#endif  // MS_DEFAULT_ADS1X15_ADDRESS
 //==============================================================
 
 

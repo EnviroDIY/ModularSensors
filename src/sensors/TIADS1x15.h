@@ -427,7 +427,7 @@ class TIADS1x15 : public Sensor, public TIADS1x15Base {
      * @param adsSupplyVoltage The power supply voltage for the ADS1x15 in
      * volts; defaults to the processor operating voltage from KnownProcessors.h
      */
-    TIADS1x15(int8_t powerPin, int8_t adsChannel1, uint8_t adsChannel2,
+    TIADS1x15(int8_t powerPin, int8_t adsChannel1, int8_t adsChannel2,
               float voltageMultiplier = 1, adsGain_t adsGain = GAIN_ONE,
               uint8_t i2cAddress            = MS_DEFAULT_ADS1X15_ADDRESS,
               uint8_t measurementsToAverage = 1,
@@ -457,7 +457,7 @@ class TIADS1x15 : public Sensor, public TIADS1x15Base {
      * For single-ended measurements: -1 (not used)
      * For differential measurements: the second ADS channel (0-3)
      */
-    int8_t _adsDifferentialChannel;
+    int8_t _adsDifferentialChannel = -1;
 
     /**
      * @brief Helper function to check if this sensor is configured for

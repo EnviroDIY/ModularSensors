@@ -206,8 +206,8 @@ class ProcessorAnalogBase : public AnalogVoltageBase {
      * This will be set to -9999.0 to indicate an invalid reading.
      * @return Always false (differential not supported)
      */
-    bool readVoltageDifferential(int8_t analogChannel,
-                                 int8_t analogReferenceChannel,
+    bool readVoltageDifferential(int8_t /*analogChannel*/,
+                                 int8_t /*analogReferenceChannel*/,
                                  float& resultValue) override;
 
     /**

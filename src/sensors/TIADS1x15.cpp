@@ -262,7 +262,7 @@ TIADS1x15::TIADS1x15(int8_t powerPin, int8_t adsChannel,
 }
 
 // Constructor for differential measurements
-TIADS1x15::TIADS1x15(int8_t powerPin, int8_t adsChannel1, uint8_t adsChannel2,
+TIADS1x15::TIADS1x15(int8_t powerPin, int8_t adsChannel1, int8_t adsChannel2,
                      float voltageMultiplier, adsGain_t adsGain,
                      uint8_t i2cAddress, uint8_t measurementsToAverage,
                      float adsSupplyVoltage)

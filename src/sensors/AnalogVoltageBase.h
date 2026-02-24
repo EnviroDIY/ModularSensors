@@ -57,9 +57,14 @@ class AnalogVoltageBase {
      * @brief Set the voltage multiplier for voltage divider calculations
      *
      * @param voltageMultiplier The multiplier value for voltage scaling
+     * 
+     * @note The multiplier must be positive (> 0). Values <= 0 will be 
+     * automatically clamped to 0.001 to prevent division-by-zero errors
+     * and maintain valid voltage calculations.
      */
     virtual void setVoltageMultiplier(float voltageMultiplier) {
-        _voltageMultiplier = voltageMultiplier;
+        // Clamp to minimum value to prevent division-by-zero and invalid readings
+        _voltageMultiplier = (voltageMultiplier > 0.0f) ? voltageMultiplier : 0.001f;
     }
 
     /**
