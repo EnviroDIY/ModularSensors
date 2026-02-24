@@ -12,8 +12,6 @@
  * ApogeeSQ212_PAR and ApogeeSQ212_Voltage.
  *
  * These are used for the Apogee SQ-212 quantum light sensor.
- *
- * This depends on the Adafruit ADS1X15 v2.x library.
  */
 /* clang-format off */
 /**
@@ -265,7 +263,7 @@ class ApogeeSQ212 : public Sensor {
      * instance).  If a non-null pointer is supplied, the caller retains
      * ownership and must ensure its lifetime exceeds that of this object.
      */
-    ApogeeSQ212(int8_t powerPin, uint8_t analogChannel,
+    ApogeeSQ212(int8_t powerPin, int8_t analogChannel,
                 uint8_t            measurementsToAverage = 1,
                 AnalogVoltageBase* analogVoltageReader   = nullptr);
     /**

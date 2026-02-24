@@ -324,7 +324,7 @@ class TurnerCyclops : public Sensor {
      * pointer is supplied, the caller retains ownership and must ensure its
      * lifetime exceeds that of this object.
      */
-    TurnerCyclops(int8_t powerPin, uint8_t analogChannel, float conc_std,
+    TurnerCyclops(int8_t powerPin, int8_t analogChannel, float conc_std,
                   float volt_std, float volt_blank,
                   uint8_t            measurementsToAverage = 1,
                   AnalogVoltageBase* analogVoltageReader   = nullptr);

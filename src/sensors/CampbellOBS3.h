@@ -258,9 +258,11 @@ class CampbellOBS3 : public Sensor {
      * default value of 1.
      * @param analogVoltageReader Pointer to an AnalogVoltageBase object for
      * voltage measurements.  Pass nullptr (the default) to have the constructor
-     * internally create and own a TIADS1x15Base instance.
+     * internally create and own a TIADS1x15Base instance.  If a non-null
+     * pointer is supplied, the caller retains ownership and must ensure its
+     * lifetime exceeds that of this object.
      */
-    CampbellOBS3(int8_t powerPin, uint8_t analogChannel, float x2_coeff_A,
+    CampbellOBS3(int8_t powerPin, int8_t analogChannel, float x2_coeff_A,
                  float x1_coeff_B, float x0_coeff_C,
                  uint8_t            measurementsToAverage = 1,
                  AnalogVoltageBase* analogVoltageReader   = nullptr);

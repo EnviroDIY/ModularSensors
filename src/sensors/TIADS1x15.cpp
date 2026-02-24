@@ -212,8 +212,7 @@ bool TIADS1x15Base::readVoltageDifferential(int8_t analogChannel,
 }
 
 // Validation function for differential channel pairs
-bool TIADS1x15Base::isValidDifferentialPair(uint8_t channel1,
-                                            uint8_t channel2) {
+bool TIADS1x15Base::isValidDifferentialPair(int8_t channel1, int8_t channel2) {
     // Only canonical ordered pairs are valid (lower channel number first)
     // This ensures consistent polarity: channel1 is positive, channel2 is
     // negative Valid combinations are: 0-1, 0-3, 1-3, or 2-3 (in that order

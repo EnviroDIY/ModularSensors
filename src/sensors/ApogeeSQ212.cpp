@@ -17,7 +17,7 @@
 
 
 // The constructor - need the power pin and the data pin
-ApogeeSQ212::ApogeeSQ212(int8_t powerPin, uint8_t analogChannel,
+ApogeeSQ212::ApogeeSQ212(int8_t powerPin, int8_t analogChannel,
                          uint8_t            measurementsToAverage,
                          AnalogVoltageBase* analogVoltageReader)
     : Sensor("ApogeeSQ212", SQ212_NUM_VARIABLES, SQ212_WARM_UP_TIME_MS,

@@ -340,7 +340,7 @@ class TIADS1x15Base : public AnalogVoltageBase {
      * Adafruit_ADS1X15 channel type convention and to avoid sign-extension
      * when computing hardware MUX configuration values internally.
      */
-    static bool isValidDifferentialPair(uint8_t channel1, uint8_t channel2);
+    static bool isValidDifferentialPair(int8_t channel1, int8_t channel2);
 
  protected:
     /**
