@@ -316,9 +316,10 @@ class AnalogElecConductivity : public Sensor {
      * optional with default value of 1.
      * @param analogVoltageReader Pointer to an AnalogVoltageBase object for
      * voltage measurements.  Pass nullptr (the default) to have the constructor
-     * internally create and own a ProcessorAnalogBase instance. If a non-null
-     * pointer is supplied, the caller retains ownership and must ensure its
-     * lifetime exceeds that of this object.
+     * internally create and own an analog voltage reader.  For backward
+     * compatibility, the default reader uses the processor's internal ADC. If a
+     * non-null pointer is supplied, the caller retains ownership and must
+     * ensure its lifetime exceeds that of this object.
      */
     AnalogElecConductivity(
         int8_t powerPin, int8_t dataPin,

@@ -176,7 +176,7 @@ class AnalogVoltageBase {
      * differential measurements, or the sole channel for single-ended
      * measurements).
      * @param analogReferenceChannel The secondary (reference) analog channel
-     * for differential measurement. Optional with a default of -1.
+     * for differential measurement. Use -1 for a single-ended analog sensor.
      *
      * @return A string describing the analog sensor location
      */

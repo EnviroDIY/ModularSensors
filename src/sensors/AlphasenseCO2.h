@@ -282,9 +282,10 @@ class AlphasenseCO2 : public Sensor {
      * default value of 7.
      * @param analogVoltageReader Pointer to an AnalogVoltageBase object for
      * voltage measurements.  Pass nullptr (the default) to have the constructor
-     * internally create and own a TIADS1x15Base instance.  If a non-null
-     * pointer is supplied, the caller retains ownership and must ensure its
-     * lifetime exceeds that of this object.
+     * internally create and own an analog voltage reader.  For backward
+     * compatibility, the default reader uses a TI ADS1115 or ADS10115.  If a
+     * non-null pointer is supplied, the caller retains ownership and must
+     * ensure its lifetime exceeds that of this object.
      *
      * @warning In library versions 0.37.0 and earlier, a different constructor
      * was used that required an enum object instead of two different analog
@@ -320,7 +321,7 @@ class AlphasenseCO2 : public Sensor {
     /**
      * @brief The second (reference) pin for differential voltage measurements.
      */
-    int8_t _analogReferenceChannel;
+    int8_t _analogReferenceChannel = -1;
     /// @brief Pointer to analog voltage reader
     AnalogVoltageBase* _analogVoltageReader = nullptr;
     /// @brief Flag to track if this object owns the analog voltage reader and
