@@ -33,16 +33,10 @@ EverlightALSPT19::EverlightALSPT19(int8_t powerPin, int8_t dataPin,
     defined(DOXYGEN)
 EverlightALSPT19::EverlightALSPT19(uint8_t            measurementsToAverage,
                                    AnalogVoltageBase* analogVoltageReader)
-    : Sensor("Everlight ALS-PT19", ALSPT19_NUM_VARIABLES,
-             ALSPT19_WARM_UP_TIME_MS, ALSPT19_STABILIZATION_TIME_MS,
-             ALSPT19_MEASUREMENT_TIME_MS, BUILT_IN_ALS_POWER_PIN,
-             BUILT_IN_ALS_DATA_PIN, measurementsToAverage,
-             ALSPT19_INC_CALC_VARIABLES),
-      _alsSupplyVoltage(BUILT_IN_ALS_SUPPLY_VOLTAGE),
-      _loadResistor(BUILT_IN_ALS_LOADING_RESISTANCE),
-      _analogVoltageReader(analogVoltageReader ? analogVoltageReader
-                                               : new ProcessorAnalogBase()),
-      _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {}
+    : EverlightALSPT19(BUILT_IN_ALS_POWER_PIN, BUILT_IN_ALS_DATA_PIN,
+                       BUILT_IN_ALS_SUPPLY_VOLTAGE,
+                       BUILT_IN_ALS_LOADING_RESISTANCE, measurementsToAverage,
+                       analogVoltageReader) {}
 #endif
 
 // Destructor
@@ -50,7 +44,6 @@ EverlightALSPT19::~EverlightALSPT19() {
     // Clean up the analog voltage reader if we created it
     if (_ownsAnalogVoltageReader && _analogVoltageReader != nullptr) {
         delete _analogVoltageReader;
-        _analogVoltageReader = nullptr;
     }
 }
 
@@ -122,7 +115,7 @@ bool EverlightALSPT19::addSingleMeasurementResult(void) {
 
         // convert current to illuminance
         // from sensor datasheet, typical 200µA current for 1000 Lux
-        float calibResult = current_val * (1000. / ALSPT19_CURRENT_PER_LUX);
+        float calibResult = current_val * (1000.0f / ALSPT19_CURRENT_PER_LUX);
         MS_DBG(F("  Illuminance:"), calibResult, F("lux"));
 
         verifyAndAddMeasurementResult(ALSPT19_VOLTAGE_VAR_NUM, adcVoltage);

@@ -47,7 +47,11 @@ class AnalogVoltageBase {
      */
     AnalogVoltageBase(float voltageMultiplier = 1.0f,
                       float supplyVoltage     = OPERATING_VOLTAGE)
-        : _voltageMultiplier((voltageMultiplier > 0.0f) ? voltageMultiplier
+        :  // NOTE: These clamps are intentionally silent — Serial/MS_DBG is NOT
+           // safe to call during construction (the Serial object may not be
+           // initialized yet on Arduino targets). Use setSupplyVoltage() at
+           // runtime for logged clamping.
+          _voltageMultiplier((voltageMultiplier > 0.0f) ? voltageMultiplier
                                                         : 1.0f),
           _supplyVoltage((supplyVoltage > 0.0f) ? supplyVoltage
                                                 : OPERATING_VOLTAGE) {}

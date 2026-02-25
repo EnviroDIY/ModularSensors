@@ -38,7 +38,6 @@ TurnerTurbidityPlus::~TurnerTurbidityPlus() {
     // Clean up the analog voltage reader if we created it
     if (_ownsAnalogVoltageReader && _analogVoltageReader != nullptr) {
         delete _analogVoltageReader;
-        _analogVoltageReader = nullptr;
     }
 }
 
@@ -117,7 +116,7 @@ bool TurnerTurbidityPlus::addSingleMeasurementResult(void) {
     }
 
     bool  success    = false;
-    float adcVoltage = -9999;
+    float adcVoltage = -9999.0f;
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 

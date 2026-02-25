@@ -33,7 +33,6 @@ ApogeeSQ212::~ApogeeSQ212() {
     // Clean up the analog voltage reader if we created it
     if (_ownsAnalogVoltageReader && _analogVoltageReader != nullptr) {
         delete _analogVoltageReader;
-        _analogVoltageReader = nullptr;
     }
 }
 
@@ -85,7 +84,7 @@ bool ApogeeSQ212::addSingleMeasurementResult(void) {
         // it must be set as a preprocessor definition when compiling the
         // library, e.g. by adding -DSQ212_CALIBRATION_FACTOR=0.95 to the
         // compiler flags.
-        float calibResult = 1000 * adcVoltage * SQ212_CALIBRATION_FACTOR;
+        float calibResult = 1000.0f * adcVoltage * SQ212_CALIBRATION_FACTOR;
         MS_DBG(F("  calibResult:"), calibResult);
         verifyAndAddMeasurementResult(SQ212_PAR_VAR_NUM, calibResult);
         verifyAndAddMeasurementResult(SQ212_VOLTAGE_VAR_NUM, adcVoltage);

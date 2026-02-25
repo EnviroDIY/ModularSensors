@@ -24,7 +24,8 @@ TIADS1x15Base::TIADS1x15Base(float voltageMultiplier, adsGain_t adsGain,
                              uint8_t i2cAddress, float adsSupplyVoltage)
     : AnalogVoltageBase(voltageMultiplier, adsSupplyVoltage),
       _adsGain(adsGain),
-      _i2cAddress(i2cAddress) {
+      _i2cAddress(i2cAddress),
+      _adsDifferentialChannel(-1) {
     // Clamp supply voltage to valid ADS1x15 range: 0.0V to 5.5V per datasheet
     // NOTE: This clamp is intentionally silent — Serial/MS_DBG is NOT safe to
     // call during construction (the Serial object may not be initialized yet on
@@ -254,8 +255,9 @@ TIADS1x15::TIADS1x15(int8_t powerPin, int8_t adsChannel,
              TIADS1X15_STABILIZATION_TIME_MS, TIADS1X15_MEASUREMENT_TIME_MS,
              powerPin, adsChannel, measurementsToAverage,
              TIADS1X15_INC_CALC_VARIABLES),
-      TIADS1x15Base(voltageMultiplier, adsGain, i2cAddress, adsSupplyVoltage),
-      _adsDifferentialChannel(-1) {
+      TIADS1x15Base(voltageMultiplier, adsGain, i2cAddress, adsSupplyVoltage) {
+    // Set for single-ended measurements
+    setDifferentialChannel(-1);
     // NOTE: We DO NOT validate the channel numbers in this constructor!  We
     // CANNOT print a warning here about invalid channel because the Serial
     // object may not be initialized yet, and we don't want to cause a crash.
@@ -273,8 +275,9 @@ TIADS1x15::TIADS1x15(int8_t powerPin, int8_t adsChannel1, int8_t adsChannel2,
              TIADS1X15_STABILIZATION_TIME_MS, TIADS1X15_MEASUREMENT_TIME_MS,
              powerPin, adsChannel1, measurementsToAverage,
              TIADS1X15_INC_CALC_VARIABLES),
-      TIADS1x15Base(voltageMultiplier, adsGain, i2cAddress, adsSupplyVoltage),
-      _adsDifferentialChannel(adsChannel2) {
+      TIADS1x15Base(voltageMultiplier, adsGain, i2cAddress, adsSupplyVoltage) {
+    // Set for differential measurements
+    setDifferentialChannel(adsChannel2);
     // NOTE: We DO NOT validate the channel numbers and pairings in this
     // constructor!  We CANNOT print a warning here about invalid channel
     // because the Serial object may not be initialized yet, and we don't want

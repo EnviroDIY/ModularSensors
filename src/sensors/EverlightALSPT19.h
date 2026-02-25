@@ -315,9 +315,9 @@ class EverlightALSPT19 : public Sensor {
 
  private:
     /// @brief The PT-19 power supply voltage
-    float _alsSupplyVoltage;
+    float _alsSupplyVoltage = 0.0f;
     /// @brief The loading resistance
-    float _loadResistor;
+    float _loadResistor = 0.0f;
     /// @brief Pointer to analog voltage reader
     AnalogVoltageBase* _analogVoltageReader = nullptr;
     /// @brief Flag to track if this object owns the analog voltage reader and

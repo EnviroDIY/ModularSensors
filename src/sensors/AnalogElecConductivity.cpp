@@ -34,7 +34,6 @@ AnalogElecConductivity::~AnalogElecConductivity() {
     // Clean up the analog voltage reader if we created it
     if (_ownsAnalogVoltageReader && _analogVoltageReader != nullptr) {
         delete _analogVoltageReader;
-        _analogVoltageReader = nullptr;
     }
 }
 
@@ -90,7 +89,9 @@ bool AnalogElecConductivity::addSingleMeasurementResult(void) {
 
         if (adcRatio >= 1.0) {
             // Prevent division issues when voltage reaches supply voltage
-            adcRatio = 0.999;
+            MS_DBG(F("  ADC ratio clamped from"), adcRatio, F("to"),
+                   ANALOGELECCONDUCTIVITY_ADC_MAX_RATIO);
+            adcRatio = ANALOGELECCONDUCTIVITY_ADC_MAX_RATIO;
         }
 
         float Rwater_ohms = _Rseries_ohms * adcRatio / (1.0 - adcRatio);

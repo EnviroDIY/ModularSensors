@@ -104,19 +104,19 @@
  *
  * | ID  | Variable                     | Units                               |
  * | --- | ---------------------------- | ----------------------------------- |
+ * | U   | TurnerCyclops_CDOM           | parts per billion (ppb)             |
  * | C   | TurnerCyclops_Chlorophyll    | micrograms per Liter (µg/L)         |
- * | R   | TurnerCyclops_Rhodamine      | parts per billion (ppb)             |
+ * | D   | TurnerCyclops_RedChlorophyll | micrograms per Liter (µg/L)         |
  * | F   | TurnerCyclops_Fluorescein    | parts per billion (ppb)             |
+ * | O   | TurnerCyclops_CrudeOil       | parts per billion (ppb)             |
+ * | G   | TurnerCyclops_BTEX           | parts per million (ppm)             |
+ * | B   | TurnerCyclops_Brighteners    | parts per billion (ppb)             |
  * | P   | TurnerCyclops_Phycocyanin    | parts per billion (ppb)             |
  * | E   | TurnerCyclops_Phycoerythrin  | parts per billion (ppb)             |
- * | U   | TurnerCyclops_CDOM           | parts per billion (ppb)             |
- * | O   | TurnerCyclops_CrudeOil       | parts per billion (ppb)             |
- * | B   | TurnerCyclops_Brighteners    | parts per billion (ppb)             |
- * | T   | TurnerCyclops_Turbidity      | nephelometric turbidity units (NTU) |
  * | A   | TurnerCyclops_PTSA           | parts per billion (ppb)             |
- * | G   | TurnerCyclops_BTEX           | parts per million (ppm)             |
+ * | R   | TurnerCyclops_Rhodamine      | parts per billion (ppb)             |
  * | L   | TurnerCyclops_Tryptophan     | parts per billion (ppb)             |
- * | D   | TurnerCyclops_RedChlorophyll | micrograms per Liter (µg/L)         |
+ * | T   | TurnerCyclops_Turbidity      | nephelometric turbidity units (NTU) |
  *
  * Before applying any calibration, the analog output from the Cyclops-7F
  * must be converted into a high resolution digital signal.  See the
@@ -293,9 +293,9 @@ class TurnerCyclops : public Sensor {
      * @brief Construct a new Turner Cyclops object - need the power pin, the
      * analog data channel, and the calibration info.
      *
-     * By default, this constructor will use a new TIADS1x15Base object with all
-     * default values for voltage readings, but a pointer to a custom
-     * AnalogVoltageBase object can be passed in if desired.
+     * By default, this constructor will internally create a default
+     * AnalogVoltageBase implementation for voltage readings, but a pointer to
+     * a custom AnalogVoltageBase object can be passed in if desired.
      *
      * @param powerPin The pin on the mcu controlling power to the Cyclops-7F
      * Use -1 if it is continuously powered.

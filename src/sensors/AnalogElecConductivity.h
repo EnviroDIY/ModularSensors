@@ -116,6 +116,15 @@
  * - `-D MS_PROCESSOR_ADC_REFERENCE_MODE=xxx`
  *      - used to set the processor ADC value reference mode
  *      - @see #MS_PROCESSOR_ADC_REFERENCE_MODE
+ * - `-D ANALOGELECCONDUCTIVITY_RSERIES_OHMS=###`
+ *      - used to set the default resistance of the measuring resistor in ohms
+ *      - @see #ANALOGELECCONDUCTIVITY_RSERIES_OHMS
+ * - `-D ANALOGELECCONDUCTIVITY_KONST=x.x`
+ *      - used to set the cell constant for EC measurements
+ *      - @see #ANALOGELECCONDUCTIVITY_KONST
+ * - `-D ANALOGELECCONDUCTIVITY_ADC_MAX_RATIO=x.xxx`
+ *      - used to set the maximum ADC ratio to prevent division by zero
+ *      - @see #ANALOGELECCONDUCTIVITY_ADC_MAX_RATIO
  *
  * @section sensor_analog_cond_ctor Sensor Constructor
  * {{ @ref AnalogElecConductivity::AnalogElecConductivity }}
@@ -185,15 +194,15 @@
  * conductivity sensor depending on the processor and ADC in use.
  */
 /**@{*/
-#if !defined(RSERIES_OHMS_DEF) || defined(DOXYGEN)
+#if !defined(ANALOGELECCONDUCTIVITY_RSERIES_OHMS) || defined(DOXYGEN)
 /**
  * @brief The default resistance (in ohms) of the measuring resistor.
  * This should not be less than 300 ohms when measuring EC in water.
  */
-#define RSERIES_OHMS_DEF 499
-#endif  // RSERIES_OHMS_DEF
+#define ANALOGELECCONDUCTIVITY_RSERIES_OHMS 499
+#endif  // ANALOGELECCONDUCTIVITY_RSERIES_OHMS
 
-#if !defined(SENSOREC_KONST_DEF) || defined(DOXYGEN)
+#if !defined(ANALOGELECCONDUCTIVITY_KONST) || defined(DOXYGEN)
 /**
  * @brief Cell Constant For EC Measurements.
  *
@@ -205,8 +214,20 @@
  * and fluid to get a better estimate for K.
  * Default to 1.0, and can be set at startup.
  */
-#define SENSOREC_KONST_DEF 1.0
-#endif  // SENSOREC_KONST_DEF
+#define ANALOGELECCONDUCTIVITY_KONST 1.0
+#endif  // ANALOGELECCONDUCTIVITY_KONST
+
+#if !defined(ANALOGELECCONDUCTIVITY_ADC_MAX_RATIO) || defined(DOXYGEN)
+/**
+ * @brief Maximum ADC ratio to prevent division by zero in resistance
+ * calculation.
+ *
+ * This value clamps the ADC ratio when the measured voltage approaches the
+ * supply voltage, preventing division by zero in the water resistance
+ * calculation. Must be less than 1.0.
+ */
+#define ANALOGELECCONDUCTIVITY_ADC_MAX_RATIO 0.999f
+#endif  // ANALOGELECCONDUCTIVITY_ADC_MAX_RATIO
 /**@}*/
 
 /**
@@ -293,11 +314,12 @@ class AnalogElecConductivity : public Sensor {
      * pointer is supplied, the caller retains ownership and must ensure its
      * lifetime exceeds that of this object.
      */
-    AnalogElecConductivity(int8_t powerPin, int8_t dataPin,
-                           float   Rseries_ohms          = RSERIES_OHMS_DEF,
-                           float   sensorEC_Konst        = SENSOREC_KONST_DEF,
-                           uint8_t measurementsToAverage = 1,
-                           AnalogVoltageBase* analogVoltageReader = nullptr);
+    AnalogElecConductivity(
+        int8_t powerPin, int8_t dataPin,
+        float              Rseries_ohms   = ANALOGELECCONDUCTIVITY_RSERIES_OHMS,
+        float              sensorEC_Konst = ANALOGELECCONDUCTIVITY_KONST,
+        uint8_t            measurementsToAverage = 1,
+        AnalogVoltageBase* analogVoltageReader   = nullptr);
 
     /**
      * @brief Destroy the AnalogElecConductivity object.
@@ -341,10 +363,10 @@ class AnalogElecConductivity : public Sensor {
  private:
     /// @brief The resistance of the circuit resistor plus any series port
     /// resistance
-    float _Rseries_ohms = RSERIES_OHMS_DEF;
+    float _Rseries_ohms = ANALOGELECCONDUCTIVITY_RSERIES_OHMS;
 
     /// @brief the cell constant for the circuit
-    float _sensorEC_Konst = SENSOREC_KONST_DEF;
+    float _sensorEC_Konst = ANALOGELECCONDUCTIVITY_KONST;
     /// @brief Pointer to analog voltage reader
     AnalogVoltageBase* _analogVoltageReader = nullptr;
     /// @brief Flag to track if this object owns the analog voltage reader and

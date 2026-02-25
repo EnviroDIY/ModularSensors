@@ -237,9 +237,9 @@ class CampbellOBS3 : public Sensor {
      * @brief Construct a new Campbell OBS3 object - need the power pin, the
      * analog data channel, and the calibration info.
      *
-     * By default, this constructor will use a new TIADS1x15Base object with all
-     * default values for voltage readings, but a pointer to a custom
-     * AnalogVoltageBase object can be passed in if desired.
+     * By default, this constructor will internally create a default
+     * AnalogVoltageBase implementation for voltage readings, but a pointer to
+     * a custom AnalogVoltageBase object can be passed in if desired.
      *
      * @param powerPin The pin on the mcu controlling power to the OBS3+
      * Use -1 if it is continuously powered.
@@ -285,9 +285,9 @@ class CampbellOBS3 : public Sensor {
     bool addSingleMeasurementResult(void) override;
 
  private:
-    float _x2_coeff_A;  ///< Internal reference to the x^2 coefficient
-    float _x1_coeff_B;  ///< Internal reference to the x coefficient
-    float _x0_coeff_C;  ///< Internal reference to the x^0 coefficient
+    float _x2_coeff_A;  ///< The x^2 (A) calibration coefficient
+    float _x1_coeff_B;  ///< The x^1 (B) calibration coefficient
+    float _x0_coeff_C;  ///< The x^0 (C) calibration coefficient
     /// @brief Pointer to analog voltage reader
     AnalogVoltageBase* _analogVoltageReader = nullptr;
     /// @brief Flag to track if this object owns the analog voltage reader and

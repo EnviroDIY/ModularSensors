@@ -262,9 +262,9 @@ class AlphasenseCO2 : public Sensor {
      * @brief Construct a new Alphasense IRC-A1 CO2 object - need the power pin
      * and the analog data and reference channels.
      *
-     * By default, this constructor will use a new TIADS1x15Base object with all
-     * default values for voltage readings, but a pointer to a custom
-     * AnalogVoltageBase object can be passed in if desired.
+     * By default, this constructor will internally create a default
+     * AnalogVoltageBase implementation for voltage readings, but a pointer to
+     * a custom AnalogVoltageBase object can be passed in if desired.
      *
      * @param powerPin The pin on the mcu controlling power to the
      * Alphasense CO2 sensor.  Use -1 if it is continuously powered.

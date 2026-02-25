@@ -34,7 +34,6 @@ CampbellOBS3::~CampbellOBS3() {
     // Clean up the analog voltage reader if we created it
     if (_ownsAnalogVoltageReader && _analogVoltageReader != nullptr) {
         delete _analogVoltageReader;
-        _analogVoltageReader = nullptr;
     }
 }
 

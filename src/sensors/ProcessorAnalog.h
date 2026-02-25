@@ -247,16 +247,16 @@ class ProcessorAnalog : public Sensor, public ProcessorAnalogBase {
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
      */
-    explicit ProcessorAnalog(int8_t powerPin, int8_t dataPin,
-                             float   voltageMultiplier     = 1.0f,
-                             float   operatingVoltage      = OPERATING_VOLTAGE,
-                             uint8_t measurementsToAverage = 1);
+    ProcessorAnalog(int8_t powerPin, int8_t dataPin,
+                    float   voltageMultiplier     = 1.0f,
+                    float   operatingVoltage      = OPERATING_VOLTAGE,
+                    uint8_t measurementsToAverage = 1);
     /**
      * @brief Destroy the Processor Analog object
      */
     ~ProcessorAnalog();
 
-    String getSensorLocation() override;
+    String getSensorLocation(void) override;
 
     bool addSingleMeasurementResult(void) override;
 };
