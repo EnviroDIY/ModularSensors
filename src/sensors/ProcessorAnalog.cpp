@@ -50,7 +50,8 @@ bool ProcessorAnalogBase::readVoltageSingleEnded(int8_t analogChannel,
     MS_DBG(F("Raw analog pin reading in bits:"), rawAnalog);
 
     // convert bits to volts
-    resultValue = (_supplyVoltage / static_cast<float>(PROCESSOR_ADC_MAX)) *
+    // Use (PROCESSOR_ADC_MAX + 1) as divisor for correct 2^n scaling
+    resultValue = (_supplyVoltage / static_cast<float>(PROCESSOR_ADC_MAX + 1)) *
         _voltageMultiplier * rawAnalog;
     MS_DBG(F("Voltage:"), resultValue);
 
