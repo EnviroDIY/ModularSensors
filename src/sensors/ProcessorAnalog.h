@@ -186,7 +186,8 @@ class ProcessorAnalogBase : public AnalogVoltageBase {
      * @brief Read a single-ended voltage measurement from the processor ADC
      *
      * @param analogChannel The processor ADC pin used to read the target
-     * voltage
+     * voltage.  Negative or invalid channel numbers are not clamped and will
+     * cause the reading to fail and emit a warning.
      * @param resultValue Reference to store the resulting voltage measurement
      * @return True if the voltage reading was successful
      */

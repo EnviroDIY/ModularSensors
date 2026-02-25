@@ -286,7 +286,8 @@ class TIADS1x15Base : public AnalogVoltageBase {
      * @brief Read a single-ended voltage measurement from the ADS1x15
      *
      * @param analogChannel The ADS channel of interest (0-3, physical channel
-     * only)
+     * only).  Negative or invalid channel numbers are not clamped and will
+     * cause the reading to fail and emit a warning.
      * @param resultValue Reference to store the resulting voltage measurement
      * @return True if the voltage reading was successful
      */
@@ -296,10 +297,14 @@ class TIADS1x15Base : public AnalogVoltageBase {
     /**
      * @brief Read a differential voltage measurement from the ADS1x15
      *
-     * @param analogChannel The first ADS channel for differential measurement
-     * (0-3, physical channel only)
-     * @param analogReferenceChannel The second (reference) ADS channel for
-     * differential measurement (0-3, physical channel only)
+     * @param analogChannel The primary analog channel for differential
+     * measurement. Negative or invalid channel numbers or parings between the
+     * analogChannel and analogReferenceChannel are not clamped and will cause
+     * the reading to fail and emit a warning.
+     * @param analogReferenceChannel The secondary (reference) analog channel
+     * for differential measurement. Negative or invalid channel numbers or
+     * parings between the analogChannel and analogReferenceChannel are not
+     * clamped and will cause the reading to fail and emit a warning.
      * @param resultValue Reference to store the resulting voltage measurement
      * @return True if the voltage reading was successful and within valid range
      */
@@ -375,7 +380,7 @@ class TIADS1x15Base : public AnalogVoltageBase {
     /**
      * @brief Set the differential channel for differential measurements
      *
-     * @param differentialChannel The secondary (reference) channel for 
+     * @param differentialChannel The secondary (reference) channel for
      * differential measurements (0-3), or -1 for single-ended
      */
     void setDifferentialChannel(int8_t differentialChannel) {

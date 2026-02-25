@@ -37,8 +37,8 @@
  *
  * ___
  * @section sensor_turbidity_plus_examples Example Code
- * The Alphasense CO2 sensor is used in the @menulink{turner_turbidity_plus}
- * example.
+ * The Turner Turbidity Plus sensor is used in the
+ * @menulink{turner_turbidity_plus} example.
  *
  * @menusnip{turner_turbidity_plus}
  */
@@ -215,9 +215,13 @@ class TurnerTurbidityPlus : public Sensor {
      * @param wiperTriggerPin The pin on the mcu that triggers the sensor's
      * wiper.
      * @param analogChannel The primary analog channel for differential
-     * measurement
+     * measurement. Negative or invalid channel numbers or parings between the
+     * analogChannel and analogReferenceChannel are not clamped and will cause
+     * the reading to fail and emit a warning.
      * @param analogReferenceChannel The secondary (reference) analog channel
-     * for differential measurement
+     * for differential measurement. Negative or invalid channel numbers or
+     * parings between the analogChannel and analogReferenceChannel are not
+     * clamped and will cause the reading to fail and emit a warning.
      * @param conc_std The concentration of the standard used for a 1-point
      * sensor calibration. The concentration units should be the same as the
      * final measuring units.

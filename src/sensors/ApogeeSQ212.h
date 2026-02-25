@@ -253,7 +253,8 @@ class ApogeeSQ212 : public Sensor {
      * measurements.  The significance of the channel number depends on the
      * specific AnalogVoltageBase implementation used for voltage readings. For
      * example, with the TI ADS1x15, this would be the ADC channel (0-3) that
-     * the sensor is connected to.
+     * the sensor is connected to.  Negative or invalid channel numbers are not
+     * clamped and will cause the reading to fail and emit a warning.
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
