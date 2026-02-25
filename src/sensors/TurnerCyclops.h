@@ -120,7 +120,7 @@
  *
  * Before applying any calibration, the analog output from the Cyclops-7F
  * must be converted into a high resolution digital signal.  See the
- * [ADS1115 page](@ref analog_group) for details on the conversion.
+ * [analog group](@ref analog_group) for details on supported ADC backends.
  *
  * @section sensor_cyclops_datasheet Sensor Datasheet
  * - [Main Information Page](https://www.turnerdesigns.com/cyclops-7f-submersible-fluorometer)
@@ -128,8 +128,6 @@
  * - [Manual](http://docs.turnerdesigns.com/t2/doc/manuals/998-2100.pdf)
  *
  * @section sensor_cyclops_flags Build flags
- * - ```-D MS_USE_ADS1015```
- *      - switches from the 16-bit ADS1115 to the 12 bit ADS1015
  * - `-D CYCLOPS_CALIBRATION_EPSILON=x.xf`
  *     - Sets the tolerance for validating the calibration values
  *

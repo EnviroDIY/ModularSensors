@@ -82,7 +82,7 @@ bool AlphasenseCO2::addSingleMeasurementResult(void) {
 
         // Convert current to ppm (using a formula recommended by the sensor
         // manufacturer)
-        float calibResult = ALPHASENSE_CO2_MFG_SCALE * co2Current -
+        float calibResult = (ALPHASENSE_CO2_MFG_SCALE * co2Current) -
             ALPHASENSE_CO2_MFG_OFFSET;
         MS_DBG(F("  calibResult:"), calibResult);
         verifyAndAddMeasurementResult(ALPHASENSE_CO2_VOLTAGE_VAR_NUM,

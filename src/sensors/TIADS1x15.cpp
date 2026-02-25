@@ -50,7 +50,7 @@ String TIADS1x15Base::getAnalogLocation(int8_t analogChannel,
     sensorLocation += F("ADS1015_0x");
 #endif
     sensorLocation += String(_i2cAddress, HEX);
-    if (!isValidDifferentialPair(analogChannel, analogReferenceChannel)) {
+    if (isValidDifferentialPair(analogChannel, analogReferenceChannel)) {
         sensorLocation += F("_Diff_");
         sensorLocation += String(analogChannel);
         sensorLocation += F("_");
@@ -313,6 +313,12 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
     if (isValidDifferentialPair(_dataPin, _analogReferenceChannel)) {
         success = readVoltageDifferential(_dataPin, _analogReferenceChannel,
                                           resultValue);
+        if (_analogReferenceChannel >= 0 && _analogReferenceChannel <= 3) {
+            MS_DBG(F("  Warning: reference channel "), _analogReferenceChannel,
+                   F(" set but pair is not a valid differential config;"
+                     " falling back to single-ended on channel "),
+                   _dataPin);
+        }
     } else {
         success = readVoltageSingleEnded(_dataPin, resultValue);
     }

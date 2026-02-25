@@ -174,8 +174,8 @@ class ProcessorAnalogBase : public AnalogVoltageBase {
      * @param operatingVoltage The processor's operating voltage; most
      * likely 3.3 or 5.
      */
-    explicit ProcessorAnalogBase(float voltageMultiplier = 1.0f,
-                                 float operatingVoltage  = OPERATING_VOLTAGE);
+    ProcessorAnalogBase(float voltageMultiplier = 1.0f,
+                        float operatingVoltage  = OPERATING_VOLTAGE);
 
     /**
      * @brief Destroy the ProcessorAnalogBase object
@@ -207,8 +207,8 @@ class ProcessorAnalogBase : public AnalogVoltageBase {
      * This will be set to -9999.0 to indicate an invalid reading.
      * @return Always false (differential not supported)
      */
-    bool readVoltageDifferential(int8_t /*analogChannel*/,
-                                 int8_t /*analogReferenceChannel*/,
+    bool readVoltageDifferential(int8_t analogChannel,
+                                 int8_t analogReferenceChannel,
                                  float& resultValue) override;
 
     String getAnalogLocation(int8_t analogChannel,

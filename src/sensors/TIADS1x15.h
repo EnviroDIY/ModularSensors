@@ -61,20 +61,20 @@
  * @section analog_ads1x15_specs Specifications
  * @note *In all cases, we assume that the ADS1x15 is powered at 3.3V by default with configurable internal gain settings.
  *
- * The default gain setting is 1x (GAIN_ONE) which divides the bit resolution over the range of 0-4.096V.
- * In single-ended mode the actual ceiling is min(FSR, VDD + 0.3V) — typically 3.6V at 3.3V supply.
+ * The default gain setting is 1x (GAIN_ONE) which provides a PGA full-scale range (±4.096V).
+ * In single-ended mode the actual ceiling is min(Full-Scale Range (FSR), VDD + 0.3V) — typically 3.6V at 3.3V supply.
  * - Response time: < 1ms
  * - Resample time: 860 samples per second (~1.2ms)
  * - Range:
  *   - Single-ended measurements: Limited by supply voltage (VDD + 0.3V max, absolute max 5.5V)
  *     - 0 - 3.6V [when ADC is powered at 3.3V]
- *   - Differential measurements: Limited by internal PGA full-scale range (gain-dependent)
- *     - GAIN_TWOTHIRDS = ±6.144V
- *     - GAIN_ONE = ±4.096V
- *     - GAIN_TWO = ±2.048V
- *     - GAIN_FOUR = ±1.024V
- *     - GAIN_EIGHT = ±0.512V
- *     - GAIN_SIXTEEN = ±0.256V
+ *   - Differential measurements: Limited by PGA full-scale range (gain-dependent)
+ *     - GAIN_TWOTHIRDS = ±6.144V PGA full-scale range
+ *     - GAIN_ONE = ±4.096V PGA full-scale range
+ *     - GAIN_TWO = ±2.048V PGA full-scale range
+ *     - GAIN_FOUR = ±1.024V PGA full-scale range
+ *     - GAIN_EIGHT = ±0.512V PGA full-scale range
+ *     - GAIN_SIXTEEN = ±0.256V PGA full-scale range
  * - Accuracy:
  *   - 16-bit ADC (ADS1115): < 0.25% (gain error), <0.25 LSB (offset error)
  *   - 12-bit ADC (ADS1015, using build flag ```MS_USE_ADS1015```): < 0.15% (gain error), <3 LSB (offset error)

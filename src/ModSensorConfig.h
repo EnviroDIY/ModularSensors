@@ -186,10 +186,16 @@
 /// @brief The maximum possible range of the ADC - the resolution shifted up one
 /// bit.
 #define PROCESSOR_ADC_RANGE (1 << MS_PROCESSOR_ADC_RESOLUTION)
-/// @brief The maximum analog channel number supported by the processor ADC.
-/// This conservative limit accommodates various Arduino platforms (Uno, Mega, etc.)
+#ifndef PROCESSOR_ANALOG_MAX_CHANNEL
+/**
+ * @brief Upper bound used to sanity-check analog channel numbers at runtime.
+ *
+ * This is not a hardware limit but a validation ceiling that exceeds the
+ * largest channel index found on any supported Arduino platform (e.g. Mega:
+ * A0–A15). Override with -D PROCESSOR_ANALOG_MAX_CHANNEL=<n> if needed.
+ */
 #define PROCESSOR_ANALOG_MAX_CHANNEL 100
-
+#endif  // PROCESSOR_ANALOG_MAX_CHANNEL
 #if !defined(MS_PROCESSOR_ADC_REFERENCE_MODE) || defined(DOXYGEN)
 #if defined(ARDUINO_ARCH_AVR) || defined(DOXYGEN)
 /**

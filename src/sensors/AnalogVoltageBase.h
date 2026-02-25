@@ -45,7 +45,7 @@
  * methods:
  * - readVoltageSingleEnded() for single-ended voltage measurements,
  * - readVoltageDifferential() for differential voltage measurements, and
- * - getSensorLocation() to provide sensor location identification.
+ * - getAnalogLocation() to provide sensor location identification.
  */
 class AnalogVoltageBase {
  public:

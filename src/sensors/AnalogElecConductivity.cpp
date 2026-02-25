@@ -64,9 +64,10 @@ bool AnalogElecConductivity::addSingleMeasurementResult(void) {
         return bumpMeasurementAttemptCount(false);
     }
 
-    // Check if we have a valid load resistor
-    if (_sensorEC_Konst <= 0) {
-        MS_DBG(getSensorNameAndLocation(), F("Invalid cell constant"));
+    // Check if we have a resistance and cell constant
+    if (_Rseries_ohms <= 0 || _sensorEC_Konst <= 0) {
+        MS_DBG(getSensorNameAndLocation(),
+               F(" has an invalid cell constant or resistor value!"));
         return bumpMeasurementAttemptCount(false);
     }
 
@@ -95,12 +96,12 @@ bool AnalogElecConductivity::addSingleMeasurementResult(void) {
             adcRatio = ANALOGELECCONDUCTIVITY_ADC_MAX_RATIO;
         }
 
-        float Rwater_ohms = _Rseries_ohms * adcRatio / (1.0 - adcRatio);
+        float Rwater_ohms = _Rseries_ohms * adcRatio / (1.0f - adcRatio);
         MS_DBG(F("  Resistance:"), Rwater_ohms, F("ohms"));
 
         // Convert to EC
         float EC_uScm = -9999.0f;  // units are uS per cm
-        if (Rwater_ohms > 0) {
+        if (Rwater_ohms > 0.0f) {
             EC_uScm = 1000000.0f / (Rwater_ohms * _sensorEC_Konst);
             MS_DBG(F("Water EC (uS/cm)"), EC_uScm);
             verifyAndAddMeasurementResult(ANALOGELECCONDUCTIVITY_EC_VAR_NUM,

@@ -54,8 +54,6 @@
  * SQ-212-215 Manual.pdf)
  *
  * @section sensor_sq212_flags Build flags
- * - ```-D MS_USE_ADS1015```
- *      - switches from the 16-bit ADS1115 to the 12 bit ADS1015
  * - ```-D SQ212_CALIBRATION_FACTOR=x```
  *      - Changes the calibration factor from 1 to x
  *

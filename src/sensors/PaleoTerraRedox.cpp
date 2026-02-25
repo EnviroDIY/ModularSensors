@@ -146,9 +146,11 @@ bool PaleoTerraRedox::addSingleMeasurementResult(void) {
     // Assemble the 18-bit raw sample from the three bytes
     // Only use the lower 2 bits of res1 (D17 D16), ignore sign-extension bits
     // Cast to uint32_t to ensure sufficient bit width for left shift operations
-    adcValue = (((uint32_t)(res1 & 0x03)) << 16)  // extract D17 D16 and shift to position
-        | (((uint32_t)res2) << 8)                 // shift res2 up to middle byte
-        | ((uint32_t)res3);  // res3 is already in the right place as the LSB
+    adcValue = static_cast<int32_t>(
+        (((uint32_t)(res1 & 0x03))
+         << 16)                    // extract D17 D16 and shift to position
+        | (((uint32_t)res2) << 8)  // shift res2 up to middle byte
+        | ((uint32_t)res3));  // res3 is already in the right place as the LSB
 
     // Check if this is a negative value (sign bit 17 is set)
     if (res1 & 0x02) {  // Test bit 17

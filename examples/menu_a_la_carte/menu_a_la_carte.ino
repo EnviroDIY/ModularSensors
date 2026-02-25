@@ -1611,12 +1611,14 @@ const float  voltageMultiplier =
     1.0f;  // Voltage multiplier for an external voltage divider
 // use 1.0f for direct connection
 // use (R_top + R_bottom) / R_bottom for voltage divider
-const adsGain_t adsGain = GAIN_ONE;     // The internal gain setting for the ADS
-const uint8_t   evADSi2c_addr  = 0x48;  // The I2C address of the ADS1115 ADC
-const uint8_t   VoltReadsToAvg = 1;     // Only read one sample
+const adsGain_t adsPGAGain = GAIN_ONE;  // The internal gain setting for the ADS
+// GAIN_ONE  => +/-4.096V range; use GAIN_TWOTHIRDS (+/-6.144V) for inputs
+// > 4.096V GAIN_TWO  => +/-2.048V, GAIN_FOUR => +/-1.024V, etc.
+const uint8_t evADSi2c_addr  = 0x48;  // The I2C address of the ADS1115 ADC
+const uint8_t VoltReadsToAvg = 1;     // Only read one sample
 
 // Create a TI ADS1x15 sensor object
-TIADS1x15 ads1x15(ADSPower, ADSChannel, voltageMultiplier, adsGain,
+TIADS1x15 ads1x15(ADSPower, ADSChannel, voltageMultiplier, adsPGAGain,
                   evADSi2c_addr, VoltReadsToAvg);
 
 // Create a voltage variable pointer
@@ -4126,4 +4128,4 @@ void loop() {
 // cspell: ignore RDOSDI TROLLSDI acculev nanolev TMSDI ELEC fivetm tallyi
 // cspell: ignore kmph TIINA Chloro Fluoroscein PTSA BTEX ECpwrPin anlg spcond
 // cspell: ignore Relia NEOPIXEL RESTAPI autobauding xbeec
-// cspell: ignore CFUN UMNOPROF URAT PHEC
+// cspell: ignore CFUN UMNOPROF URAT PHEC GAIN_TWOTHIRDS

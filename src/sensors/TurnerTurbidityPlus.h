@@ -25,8 +25,6 @@
  * [Datasheet](http://docs.turnerdesigns.com/t2/doc/brochures/S-0210.pdf)
  *
  * @section sensor_turbidity_plus_flags Build flags
- * - ```-D MS_USE_ADS1015```
- *      - switches from the 16-bit ADS1115 to the 12 bit ADS1015
  * - ```-D TURBIDITY_PLUS_WIPER_TRIGGER_PULSE_MS=x```
  *      - Changes the wiper trigger pulse duration from 50 ms to x ms
  * - ```-D TURBIDITY_PLUS_WIPER_ROTATION_WAIT_MS=x```
@@ -435,7 +433,5 @@ class TurnerTurbidityPlus_Turbidity : public Variable {
     ~TurnerTurbidityPlus_Turbidity() {}
 };
 /**@}*/
-
-// cspell:words GAIN_TWOTHIRDS
 
 #endif  // SRC_SENSORS_TURNERTURBIDITYPLUS_H_

@@ -48,10 +48,6 @@
  * for the calibrated turbidity.  To get both high and low range values, create
  * two sensor objects!
  *
- * @section sensor_obs3_flags Build flags
- * - ```-D MS_USE_ADS1015```
- *      - switches from the 16-bit ADS1115 to the 12 bit ADS1015
- *
  * @section sensor_obs3_ctor Sensor Constructor
  * {{ @ref CampbellOBS3::CampbellOBS3 }}
  *

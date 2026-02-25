@@ -98,11 +98,11 @@ bool EverlightALSPT19::addSingleMeasurementResult(void) {
         // - V(out) = I(PH) * R(L)
         // At saturation:
         // - V(out) ＝ Vcc－0.4V
-        if (adcVoltage > _alsSupplyVoltage - 0.4) {
+        if (adcVoltage > _alsSupplyVoltage - 0.4f) {
             MS_DBG(getSensorNameAndLocation(),
                    F("Light sensor has reached saturation!  Clamping current "
                      "and illumination values!"));
-            adcVoltage = _alsSupplyVoltage - 0.4;
+            adcVoltage = _alsSupplyVoltage - 0.4f;
         }
 
         // convert volts to current

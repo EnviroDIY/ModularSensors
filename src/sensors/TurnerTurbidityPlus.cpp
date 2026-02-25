@@ -107,7 +107,6 @@ bool TurnerTurbidityPlus::addSingleMeasurementResult(void) {
         return bumpMeasurementAttemptCount(false);
     }
 
-    bool  success    = false;
     float adcVoltage = -9999.0f;
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
@@ -125,7 +124,7 @@ bool TurnerTurbidityPlus::addSingleMeasurementResult(void) {
     // NOTE: All implementations of the AnalogVoltageBase class validate both
     // the input channel and the resulting voltage, so we can trust that a
     // successful read will give us a valid voltage value to work with.
-    success = _analogVoltageReader->readVoltageDifferential(
+    bool success = _analogVoltageReader->readVoltageDifferential(
         _dataPin, _analogReferenceChannel, adcVoltage);
 
     if (success) {

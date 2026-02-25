@@ -199,7 +199,7 @@
  * @brief The default resistance (in ohms) of the measuring resistor.
  * This should not be less than 300 ohms when measuring EC in water.
  */
-#define ANALOGELECCONDUCTIVITY_RSERIES_OHMS 499
+#define ANALOGELECCONDUCTIVITY_RSERIES_OHMS 499.0f
 #endif  // ANALOGELECCONDUCTIVITY_RSERIES_OHMS
 
 #if !defined(ANALOGELECCONDUCTIVITY_KONST) || defined(DOXYGEN)
@@ -214,7 +214,7 @@
  * and fluid to get a better estimate for K.
  * Default to 1.0, and can be set at startup.
  */
-#define ANALOGELECCONDUCTIVITY_KONST 1.0
+#define ANALOGELECCONDUCTIVITY_KONST 1.0f
 #endif  // ANALOGELECCONDUCTIVITY_KONST
 
 #if !defined(ANALOGELECCONDUCTIVITY_ADC_MAX_RATIO) || defined(DOXYGEN)
@@ -228,6 +228,12 @@
  */
 #define ANALOGELECCONDUCTIVITY_ADC_MAX_RATIO 0.999f
 #endif  // ANALOGELECCONDUCTIVITY_ADC_MAX_RATIO
+
+// Compile-time validation of ADC maximum ratio constraint
+static_assert(
+    ANALOGELECCONDUCTIVITY_ADC_MAX_RATIO > 0.0f &&
+        ANALOGELECCONDUCTIVITY_ADC_MAX_RATIO < 1.0f,
+    "ANALOGELECCONDUCTIVITY_ADC_MAX_RATIO must be in the range (0.0, 1.0)");
 /**@}*/
 
 /**

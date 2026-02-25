@@ -51,8 +51,6 @@
  * [Datasheet](https://www.alphasense.com/wp-content/uploads/2018/04/IRC-A1.pdf)
  *
  * @section sensor_alphasense_co2_flags Build flags
- * - ```-D MS_USE_ADS1015```
- *      - switches from the 16-bit ADS1115 to the 12 bit ADS1015
  * - ```-D ALPHASENSE_CO2_SENSE_RESISTOR_OHM=x```
  *      - Changes the sense resistor value from 250.0 ohms to x ohms
  * - ```-D ALPHASENSE_CO2_MFG_SCALE=x```
@@ -104,7 +102,7 @@
 /**
  * @anchor sensor_alphasense_co2_var_counts
  * @name Sensor Variable Counts
- * The number of variables that can be returned by the Apogee SQ-212
+ * The number of variables that can be returned by the Alphasense CO2 sensor
  */
 /**@{*/
 /// @brief Sensor::_numReturnedValues; the Alphasense CO2 sensor can report 2

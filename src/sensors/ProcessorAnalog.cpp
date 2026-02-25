@@ -35,10 +35,8 @@ bool ProcessorAnalogBase::readVoltageSingleEnded(int8_t analogChannel,
     // Validate parameters
     if (analogChannel < 0 || analogChannel > PROCESSOR_ANALOG_MAX_CHANNEL ||
         _supplyVoltage <= 0 || _voltageMultiplier <= 0) {
-        MS_DBG(F("Invalid configuration: analog channel (must be 0-"),
-               PROCESSOR_ANALOG_MAX_CHANNEL,
-               F("), supply voltage, "
-                 "or voltage multiplier is not set!"));
+        MS_DBG(F("Invalid configuration: either the analog channel, the supply "
+                 "voltage, or the voltage multiplier is not set correctly!"));
         resultValue = -9999.0f;
         return false;
     }
@@ -69,8 +67,7 @@ String
 ProcessorAnalogBase::getAnalogLocation(int8_t analogChannel,
                                        int8_t /*analogReferenceChannel*/) {
     String sensorLocation;
-    sensorLocation += F("ProcessorAnalog");
-    sensorLocation += F("_Pin");
+    sensorLocation += F("ProcessorAnalog_Pin");
     sensorLocation += String(analogChannel);
     return sensorLocation;
 }
@@ -79,6 +76,7 @@ bool ProcessorAnalogBase::readVoltageDifferential(
     int8_t /*analogChannel*/, int8_t /*analogReferenceChannel*/,
     float& resultValue) {
     // ProcessorAnalog does not support differential measurements
+    MS_DBG(F("ProcessorAnalog does not support differential measurements"));
     resultValue = -9999.0f;
     return false;
 }
