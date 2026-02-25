@@ -26,6 +26,16 @@
 // Include the known processors for default values
 #include "KnownProcessors.h"
 
+// Define the print label[s] for the debugger
+#ifdef MS_ANALOGVOLTAGEBASE_DEBUG
+#define MS_DEBUGGING_STD "AnalogVoltageBase"
+#endif
+
+// Include the debugger
+#include "ModSensorDebugger.h"
+// Undefine the debugger label[s]
+#undef MS_DEBUGGING_STD
+
 /**
  * @brief Abstract base class for analog voltage reading systems.
  *
@@ -72,8 +82,13 @@ class AnalogVoltageBase {
      */
     virtual void setVoltageMultiplier(float voltageMultiplier) {
         // If the input voltage multiplier is not positive, set it to 1.
-        _voltageMultiplier = (voltageMultiplier > 0.0f) ? voltageMultiplier
-                                                        : 1.0f;
+        if (voltageMultiplier <= 0.0f) {
+            MS_DBG(F("Invalid voltage multiplier "), voltageMultiplier,
+                   F(", clamping to 1.0"));
+            _voltageMultiplier = 1.0f;
+        } else {
+            _voltageMultiplier = voltageMultiplier;
+        }
     }
 
     /**
@@ -91,8 +106,13 @@ class AnalogVoltageBase {
      * @param supplyVoltage The supply voltage in volts
      */
     virtual void setSupplyVoltage(float supplyVoltage) {
-        _supplyVoltage = (supplyVoltage > 0.0f) ? supplyVoltage
-                                                : OPERATING_VOLTAGE;
+        if (supplyVoltage <= 0.0f) {
+            MS_DBG(F("Invalid supply voltage "), supplyVoltage,
+                   F(", clamping to "), OPERATING_VOLTAGE, F("V"));
+            _supplyVoltage = OPERATING_VOLTAGE;
+        } else {
+            _supplyVoltage = supplyVoltage;
+        }
     }
     /**
      * @brief Get the supply voltage for the analog system
@@ -109,7 +129,9 @@ class AnalogVoltageBase {
      * This pure virtual function must be implemented by derived classes to
      * provide their specific method of reading analog voltages.
      *
-     * @param analogChannel The analog channel/pin for voltage readings
+     * @param analogChannel The analog channel/pin for voltage readings.
+     * Negative or invalid channel numbers are not clamped and will cause the
+     * reading to fail and emit a warning.
      * @param resultValue Reference to store the resulting voltage measurement
      * @return True if the voltage reading was successful and within valid range
      */
@@ -126,9 +148,13 @@ class AnalogVoltageBase {
      * should set the resultValue to -9999.0 and return false.
      *
      * @param analogChannel The primary analog channel for differential
-     * measurement
+     * measurement. Negative or invalid channel numbers or parings between the
+     * analogChannel and analogReferenceChannel are not clamped and will cause
+     * the reading to fail and emit a warning.
      * @param analogReferenceChannel The secondary (reference) analog channel
-     * for differential measurement
+     * for differential measurement. Negative or invalid channel numbers or
+     * parings between the analogChannel and analogReferenceChannel are not
+     * clamped and will cause the reading to fail and emit a warning.
      * @param resultValue Reference to store the resulting voltage measurement
      * @return True if the voltage reading was successful and within valid range
      */
