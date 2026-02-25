@@ -72,8 +72,7 @@ bool TurnerCyclops::addSingleMeasurementResult(void) {
     // Print out the calibration curve
     MS_DBG(F("  Input calibration Curve:"), _volt_std, F("V at"), _conc_std,
            F(".  "), _volt_blank, F("V blank."));
-    const float epsilon = 1e-4f;  // tune to expected sensor precision
-    if (fabs(_volt_std - _volt_blank) < epsilon) {
+    if (fabs(_volt_std - _volt_blank) < CYCLOPS_CALIBRATION_EPSILON) {
         MS_DBG(F("Invalid calibration: point voltage equals blank voltage"));
         return bumpMeasurementAttemptCount(false);
     }

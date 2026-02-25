@@ -130,6 +130,8 @@
  * @section sensor_cyclops_flags Build flags
  * - ```-D MS_USE_ADS1015```
  *      - switches from the 16-bit ADS1115 to the 12 bit ADS1015
+ * - `-D CYCLOPS_CALIBRATION_EPSILON=x.xf`
+ *     - Sets the tolerance for validating the calibration values
  *
  * @section sensor_cyclops_ctor Sensor Constructor
  * {{ @ref TurnerCyclops::TurnerCyclops }}
@@ -170,6 +172,27 @@
 // Sensor Specific Defines
 /** @ingroup sensor_cyclops */
 /**@{*/
+
+/**
+ * @anchor sensor_cyclops_config
+ * @name Configuration Parameters
+ * Configuration parameters for the Turner Cyclops-7F sensor
+ */
+/**@{*/
+/**
+ * @brief Minimum voltage difference threshold for calibration validation
+ *
+ * This epsilon value is used to validate that the calibration standard voltage
+ * and blank voltage are sufficiently different to provide a meaningful
+ * calibration. If the absolute difference between these voltages is less than
+ * this threshold, the calibration is considered invalid.
+ *
+ * @note This should be tuned to match the expected precision of the sensor
+ * and ADC system. A value of 1e-4f (0.0001V or 0.1mV) is appropriate for
+ * most high-precision ADC configurations.
+ */
+#define CYCLOPS_CALIBRATION_EPSILON 1e-4f
+/**@}*/
 
 /**
  * @anchor sensor_cyclops_var_counts
@@ -305,7 +328,8 @@ class TurnerCyclops : public Sensor {
      * measurements.  The significance of the channel number depends on the
      * specific AnalogVoltageBase implementation used for voltage readings. For
      * example, with the TI ADS1x15, this would be the ADC channel (0-3) that
-     * the sensor is connected to.
+     * the sensor is connected to.  Negative or invalid channel numbers are not
+     * clamped and will cause the reading to fail and emit a warning.
      * @param conc_std The concentration of the standard used for a 1-point
      * sensor calibration.  The concentration units should be the same as the
      * final measuring units.
