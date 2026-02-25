@@ -313,7 +313,7 @@ class TIADS1x15Base : public AnalogVoltageBase {
                                  float& resultValue) override;
 
     String getAnalogLocation(int8_t analogChannel,
-                             int8_t analogReferenceChannel = -1) override;
+                             int8_t analogReferenceChannel) override;
 
     /**
      * @brief Set the internal gain setting for the ADS1x15

@@ -41,7 +41,7 @@ TurnerCyclops::~TurnerCyclops() {
 
 String TurnerCyclops::getSensorLocation(void) {
     if (_analogVoltageReader != nullptr) {
-        return _analogVoltageReader->getAnalogLocation(_dataPin);
+        return _analogVoltageReader->getAnalogLocation(_dataPin, -1);
     } else {
         return String("Unknown_AnalogVoltageReader");
     }

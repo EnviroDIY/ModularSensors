@@ -41,7 +41,7 @@ AnalogElecConductivity::~AnalogElecConductivity() {
 String AnalogElecConductivity::getSensorLocation(void) {
     String sensorLocation;
     if (_analogVoltageReader != nullptr) {
-        sensorLocation = _analogVoltageReader->getAnalogLocation(_dataPin);
+        sensorLocation = _analogVoltageReader->getAnalogLocation(_dataPin, -1);
     } else {
         sensorLocation = F("Unknown_AnalogVoltageReader");
     }

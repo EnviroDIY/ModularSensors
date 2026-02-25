@@ -40,7 +40,7 @@ CampbellOBS3::~CampbellOBS3() {
 
 String CampbellOBS3::getSensorLocation(void) {
     if (_analogVoltageReader != nullptr) {
-        return _analogVoltageReader->getAnalogLocation(_dataPin);
+        return _analogVoltageReader->getAnalogLocation(_dataPin, -1);
     } else {
         return String("Unknown_AnalogVoltageReader");
     }

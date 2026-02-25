@@ -212,7 +212,7 @@ class ProcessorAnalogBase : public AnalogVoltageBase {
                                  float& resultValue) override;
 
     String getAnalogLocation(int8_t analogChannel,
-                             int8_t analogReferenceChannel = -1) override;
+                             int8_t analogReferenceChannel) override;
 };
 
 /* clang-format off */
