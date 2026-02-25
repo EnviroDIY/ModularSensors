@@ -394,8 +394,8 @@ class TIADS1x15Base : public AnalogVoltageBase {
 class TIADS1x15 : public Sensor, public TIADS1x15Base {
  public:
     /**
-     * @brief Construct a new External Voltage object - need the power pin and
-     * the data channel on the ADS1x15.
+     * @brief Construct a new TIADS1x15 object for single-ended or differential
+     * voltage measurements
      *
      * The voltage multiplier value, I2C address, and number of measurements to
      * average are optional.  If nothing is given a 1x voltage multiplier is
@@ -408,7 +408,8 @@ class TIADS1x15 : public Sensor, public TIADS1x15Base {
      * @param powerPin The pin on the mcu controlling power to the sensor
      * Use -1 if it is continuously powered.
      * @param adsChannel The ADS channel of interest (0-3, physical channel
-     * only).
+     * only). For differential measurements, this is the first (positive)
+     * channel.
      * @param voltageMultiplier The voltage multiplier, if a voltage divider is
      * used.
      * @param adsGain The internal gain setting of the ADS1x15; defaults to
@@ -420,39 +421,17 @@ class TIADS1x15 : public Sensor, public TIADS1x15Base {
      * default value of 1.
      * @param adsSupplyVoltage The power supply voltage for the ADS1x15 in
      * volts; defaults to the processor operating voltage from KnownProcessors.h
+     * @param differentialChannel The second (reference/negative) ADS channel
+     * for differential measurement (0-3, physical channel only). Valid pairs
+     * are: 0-1, 0-3, 1-3, or 2-3. Use -1 (default) for single-ended
+     * measurements.
      */
     TIADS1x15(int8_t powerPin, int8_t adsChannel,
               float voltageMultiplier = 1.0f, adsGain_t adsGain = GAIN_ONE,
               uint8_t i2cAddress            = MS_DEFAULT_ADS1X15_ADDRESS,
               uint8_t measurementsToAverage = 1,
-              float   adsSupplyVoltage      = OPERATING_VOLTAGE);
-    /**
-     * @brief Construct a new TIADS1x15 object for differential measurements
-     *
-     * @param powerPin The pin on the mcu controlling power to the sensor
-     * Use -1 if it is continuously powered.
-     * @param adsChannel1 The first (measurement) ADS channel for differential
-     * measurement (0-3, physical channel only)
-     * @param adsChannel2 The second (reference) ADS channel for differential
-     * measurement (0-3, physical channel only) Valid combinations are: 0-1,
-     * 0-3, 1-3, or 2-3
-     * @param voltageMultiplier The voltage multiplier, if a voltage divider is
-     * used.
-     * @param adsGain The internal gain setting of the ADS1x15; defaults to
-     * GAIN_ONE for +/- 4.096V range
-     * @param i2cAddress The I2C address of the ADS 1x15, default is 0x48 (ADDR
-     * = GND)
-     * @param measurementsToAverage The number of measurements to take and
-     * average before giving a "final" result from the sensor; optional with a
-     * default value of 1.
-     * @param adsSupplyVoltage The power supply voltage for the ADS1x15 in
-     * volts; defaults to the processor operating voltage from KnownProcessors.h
-     */
-    TIADS1x15(int8_t powerPin, int8_t adsChannel1, int8_t adsChannel2,
-              float voltageMultiplier = 1, adsGain_t adsGain = GAIN_ONE,
-              uint8_t i2cAddress            = MS_DEFAULT_ADS1X15_ADDRESS,
-              uint8_t measurementsToAverage = 1,
-              float   adsSupplyVoltage      = OPERATING_VOLTAGE);
+              float   adsSupplyVoltage      = OPERATING_VOLTAGE,
+              int8_t  differentialChannel   = -1);
     /**
      * @brief Destroy the External Voltage object
      */

@@ -250,34 +250,14 @@ adsGain_t TIADS1x15Base::getADSGain(void) const {
 TIADS1x15::TIADS1x15(int8_t powerPin, int8_t adsChannel,
                      float voltageMultiplier, adsGain_t adsGain,
                      uint8_t i2cAddress, uint8_t measurementsToAverage,
-                     float adsSupplyVoltage)
+                     float adsSupplyVoltage, int8_t differentialChannel)
     : Sensor("TIADS1x15", TIADS1X15_NUM_VARIABLES, TIADS1X15_WARM_UP_TIME_MS,
              TIADS1X15_STABILIZATION_TIME_MS, TIADS1X15_MEASUREMENT_TIME_MS,
              powerPin, adsChannel, measurementsToAverage,
              TIADS1X15_INC_CALC_VARIABLES),
       TIADS1x15Base(voltageMultiplier, adsGain, i2cAddress, adsSupplyVoltage) {
-    // Set for single-ended measurements
-    setDifferentialChannel(-1);
-    // NOTE: We DO NOT validate the channel numbers in this constructor!  We
-    // CANNOT print a warning here about invalid channel because the Serial
-    // object may not be initialized yet, and we don't want to cause a crash.
-    // The readVoltageSingleEnded and readVoltageDifferential functions will
-    // handle validation and return false if the channel configuration is
-    // invalid, but we can't do that here in the constructor
-}
-
-// Constructor for differential measurements
-TIADS1x15::TIADS1x15(int8_t powerPin, int8_t adsChannel1, int8_t adsChannel2,
-                     float voltageMultiplier, adsGain_t adsGain,
-                     uint8_t i2cAddress, uint8_t measurementsToAverage,
-                     float adsSupplyVoltage)
-    : Sensor("TIADS1x15", TIADS1X15_NUM_VARIABLES, TIADS1X15_WARM_UP_TIME_MS,
-             TIADS1X15_STABILIZATION_TIME_MS, TIADS1X15_MEASUREMENT_TIME_MS,
-             powerPin, adsChannel1, measurementsToAverage,
-             TIADS1X15_INC_CALC_VARIABLES),
-      TIADS1x15Base(voltageMultiplier, adsGain, i2cAddress, adsSupplyVoltage) {
-    // Set for differential measurements
-    setDifferentialChannel(adsChannel2);
+    // Set differential channel configuration
+    setDifferentialChannel(differentialChannel);
     // NOTE: We DO NOT validate the channel numbers and pairings in this
     // constructor!  We CANNOT print a warning here about invalid channel
     // because the Serial object may not be initialized yet, and we don't want
