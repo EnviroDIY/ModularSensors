@@ -105,9 +105,8 @@ bool EverlightALSPT19::addSingleMeasurementResult(void) {
             MS_DBG(getSensorNameAndLocation(),
                    F("Light sensor has reached saturation!  Clamping current "
                      "and illumination values!"));
-            adcVoltage = _alsSupplyVoltage - 0.4f;
+            adcVoltage = max(0.0f, _alsSupplyVoltage - 0.4f);
         }
-
         // convert volts to current
         // resistance is entered in kΩ and we want µA
         float current_val = (adcVoltage / (_loadResistor * 1000.0f)) * 1e6f;

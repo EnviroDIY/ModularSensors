@@ -65,10 +65,6 @@ bool TurnerCyclops::addSingleMeasurementResult(void) {
         return bumpMeasurementAttemptCount(false);
     }
 
-    float adcVoltage = -9999.0f;
-
-    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
-
     // Print out the calibration curve
     MS_DBG(F("  Input calibration Curve:"), _volt_std, F("V at"), _conc_std,
            F(".  "), _volt_blank, F("V blank."));
@@ -76,6 +72,10 @@ bool TurnerCyclops::addSingleMeasurementResult(void) {
         MS_DBG(F("Invalid calibration: point voltage equals blank voltage"));
         return bumpMeasurementAttemptCount(false);
     }
+
+    float adcVoltage = -9999.0f;
+
+    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
     // Read the single-ended analog voltage using the AnalogVoltageBase
     // interface.

@@ -64,13 +64,13 @@ bool CampbellOBS3::addSingleMeasurementResult(void) {
         return bumpMeasurementAttemptCount(false);
     }
 
-    float adcVoltage = -9999.0f;
-
-    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
-
     // Print out the calibration curve
     MS_DBG(F("  Input calibration Curve:"), _x2_coeff_A, F("x^2 +"),
            _x1_coeff_B, F("x +"), _x0_coeff_C);
+
+    float adcVoltage = -9999.0f;
+
+    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
     // Read the single-ended analog voltage using the AnalogVoltageBase
     // interface.

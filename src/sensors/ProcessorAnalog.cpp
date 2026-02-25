@@ -114,7 +114,11 @@ ProcessorAnalog::~ProcessorAnalog() {
 }
 
 String ProcessorAnalog::getSensorLocation() {
-    return _analogVoltageReader->getAnalogLocation(_dataPin, -1);
+    if (_analogVoltageReader != nullptr) {
+        return _analogVoltageReader->getAnalogLocation(_dataPin, -1);
+    } else {
+        return String("Unknown_AnalogVoltageReader");
+    }
 }
 
 bool ProcessorAnalog::addSingleMeasurementResult(void) {

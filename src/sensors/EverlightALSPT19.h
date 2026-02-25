@@ -253,7 +253,7 @@ class EverlightALSPT19 : public Sensor {
      * - ie, A1.
      * @param alsSupplyVoltage The power supply voltage (in volts) of the
      * ALS-PT19. This does not have to be the same as the board operating
-     * voltage or the supply voltage of the analog AnalogVoltageBase reader.
+     * voltage or the supply voltage of the AnalogVoltageBase reader.
      * This is used to clamp the light values when the sensor is over-saturated.
      * @param loadResistor The size of the loading resistor, in kiloohms (kΩ).
      * @param measurementsToAverage The number of measurements to take and

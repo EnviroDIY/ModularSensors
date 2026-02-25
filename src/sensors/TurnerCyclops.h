@@ -347,7 +347,7 @@ class TurnerCyclops : public Sensor {
      * @param analogVoltageReader Pointer to an AnalogVoltageBase object for
      * voltage measurements.  Pass nullptr (the default) to have the constructor
      * internally create and own an analog voltage reader.  For backward
-     * compatibility, the default reader uses a TI ADS1115 or ADS10115.  If a
+     * compatibility, the default reader uses a TI ADS1115 or ADS1015.  If a
      * non-null pointer is supplied, the caller retains ownership and must
      * ensure its lifetime exceeds that of this object.
      */

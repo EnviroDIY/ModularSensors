@@ -304,8 +304,12 @@ TIADS1x15::~TIADS1x15() {
 }
 
 String TIADS1x15::getSensorLocation(void) {
-    return _analogVoltageReader->getAnalogLocation(_dataPin,
-                                                   _analogReferenceChannel);
+    if (_analogVoltageReader != nullptr) {
+        return _analogVoltageReader->getAnalogLocation(_dataPin,
+                                                       _analogReferenceChannel);
+    } else {
+        return String("Unknown_AnalogVoltageReader");
+    }
 }
 
 bool TIADS1x15::addSingleMeasurementResult(void) {
@@ -314,10 +318,10 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
         return bumpMeasurementAttemptCount(false);
     }
 
-    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
-
     float resultValue = -9999.0f;
     bool  success     = false;
+
+    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
     // Use differential or single-ended reading based on configuration
     if (_analogVoltageReader->isValidDifferentialPair(
@@ -325,7 +329,7 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
         success = _analogVoltageReader->readVoltageDifferential(
             _dataPin, _analogReferenceChannel, resultValue);
     } else {
-        if (_analogReferenceChannel >= 0 && _analogReferenceChannel <= 3) {
+        if (_analogReferenceChannel >= 0) {
             MS_DBG(F("  Warning: reference channel "), _analogReferenceChannel,
                    F(" set but pair is not a valid differential config;"
                      " falling back to single-ended on channel "),
