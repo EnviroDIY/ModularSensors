@@ -33,10 +33,11 @@ bool ProcessorAnalogBase::readVoltageSingleEnded(int8_t analogChannel,
                   "MS_PROCESSOR_ADC_RESOLUTION configuration.");
 
     // Validate parameters
-    if (analogChannel < 0 || analogChannel > 100 || _supplyVoltage <= 0 ||
-        _voltageMultiplier <= 0) {
-        MS_DBG(F("Invalid configuration: analog channel (must be 0-100), "
-                 "supply voltage, "
+    if (analogChannel < 0 || analogChannel > PROCESSOR_ANALOG_MAX_CHANNEL ||
+        _supplyVoltage <= 0 || _voltageMultiplier <= 0) {
+        MS_DBG(F("Invalid configuration: analog channel (must be 0-"),
+               PROCESSOR_ANALOG_MAX_CHANNEL,
+               F("), supply voltage, "
                  "or voltage multiplier is not set!"));
         resultValue = -9999.0f;
         return false;
@@ -48,7 +49,8 @@ bool ProcessorAnalogBase::readVoltageSingleEnded(int8_t analogChannel,
     analogRead(analogChannel);  // priming reading
     // The return value from analogRead() is IN BITS NOT IN VOLTS!!
     analogRead(analogChannel);  // another priming reading
-    float rawAnalog = analogRead(analogChannel);
+    int   rawAdc    = analogRead(analogChannel);
+    float rawAnalog = static_cast<float>(rawAdc);
     MS_DBG(F("Raw analog pin reading in bits:"), rawAnalog);
 
     // convert bits to volts
