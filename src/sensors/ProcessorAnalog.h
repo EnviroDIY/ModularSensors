@@ -223,7 +223,7 @@ class ProcessorAnalogBase : public AnalogVoltageBase {
  * @ingroup sensor_processor_analog
  */
 /* clang-format on */
-class ProcessorAnalog : public Sensor, public ProcessorAnalogBase {
+class ProcessorAnalog : public Sensor {
  public:
     /**
      * @brief Construct a new Processor Analog object - need the power pin and
@@ -235,19 +235,16 @@ class ProcessorAnalog : public Sensor, public ProcessorAnalogBase {
      * all processor pins can be used as analog pins.  Those usable as analog
      * pins generally are numbered with an "A" in front of the number
      * - ie, A1.
-     * @param voltageMultiplier Any multiplier needed to convert raw battery
-     * readings from `analogRead()` into true battery values based on any
-     * resistors or voltage dividers
-     * @param operatingVoltage The processor's operating voltage; most
-     * likely 3.3 or 5.
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
+     * @param analogBase Pointer to ProcessorAnalogBase object for analog
+     * functionality. If nullptr (default), creates a new ProcessorAnalogBase
+     * with default settings.
      */
     ProcessorAnalog(int8_t powerPin, int8_t dataPin,
-                    float   voltageMultiplier     = 1.0f,
-                    float   operatingVoltage      = OPERATING_VOLTAGE,
-                    uint8_t measurementsToAverage = 1);
+                    uint8_t              measurementsToAverage = 1,
+                    ProcessorAnalogBase* analogBase            = nullptr);
     /**
      * @brief Destroy the Processor Analog object
      */
@@ -256,6 +253,19 @@ class ProcessorAnalog : public Sensor, public ProcessorAnalogBase {
     String getSensorLocation(void) override;
 
     bool addSingleMeasurementResult(void) override;
+
+ private:
+    /**
+     * @brief Pointer to the ProcessorAnalogBase object providing analog
+     * functionality
+     */
+    ProcessorAnalogBase* _analogBase = nullptr;
+
+    /**
+     * @brief Whether this object owns the _analogBase pointer and should delete
+     * it
+     */
+    bool _ownsAnalogBase = false;
 };
 
 

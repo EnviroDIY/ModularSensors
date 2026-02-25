@@ -270,15 +270,22 @@ void TIADS1x15Base::setSupplyVoltage(float supplyVoltage) {
 // The constructor - need the power pin the data pin, and voltage multiplier if
 // non standard
 TIADS1x15::TIADS1x15(int8_t powerPin, int8_t adsChannel,
-                     float voltageMultiplier, adsGain_t adsGain,
-                     uint8_t i2cAddress, uint8_t measurementsToAverage,
-                     float adsSupplyVoltage, int8_t analogReferenceChannel)
+                     int8_t analogReferenceChannel, uint8_t measurementsToAverage,
+                     TIADS1x15Base* adsBase)
     : Sensor("TIADS1x15", TIADS1X15_NUM_VARIABLES, TIADS1X15_WARM_UP_TIME_MS,
              TIADS1X15_STABILIZATION_TIME_MS, TIADS1X15_MEASUREMENT_TIME_MS,
              powerPin, adsChannel, measurementsToAverage,
              TIADS1X15_INC_CALC_VARIABLES),
-      TIADS1x15Base(voltageMultiplier, adsGain, i2cAddress, adsSupplyVoltage),
       _analogReferenceChannel(analogReferenceChannel) {
+    // If no ADS base provided, create one with default settings
+    if (adsBase == nullptr) {
+        _adsBase = new TIADS1x15Base();
+        _ownsAdsBase = true;
+    } else {
+        _adsBase = adsBase;
+        _ownsAdsBase = false;
+    }
+    
     // NOTE: We DO NOT validate the channel numbers and pairings in this
     // constructor!  We CANNOT print a warning here about invalid channel
     // because the Serial object may not be initialized yet, and we don't want
@@ -288,10 +295,16 @@ TIADS1x15::TIADS1x15(int8_t powerPin, int8_t adsChannel,
 }
 
 // Destructor
-TIADS1x15::~TIADS1x15() {}
+TIADS1x15::~TIADS1x15() {
+    // Clean up the ADS base object if we created it
+    if (_ownsAdsBase && _adsBase != nullptr) {
+        delete _adsBase;
+        _adsBase = nullptr;
+    }
+}
 
 String TIADS1x15::getSensorLocation(void) {
-    return TIADS1x15Base::getAnalogLocation(_dataPin, _analogReferenceChannel);
+    return _adsBase->getAnalogLocation(_dataPin, _analogReferenceChannel);
 }
 
 bool TIADS1x15::addSingleMeasurementResult(void) {
@@ -306,8 +319,8 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
     bool  success     = false;
 
     // Use differential or single-ended reading based on configuration
-    if (isValidDifferentialPair(_dataPin, _analogReferenceChannel)) {
-        success = readVoltageDifferential(_dataPin, _analogReferenceChannel,
+    if (_adsBase->isValidDifferentialPair(_dataPin, _analogReferenceChannel)) {
+        success = _adsBase->readVoltageDifferential(_dataPin, _analogReferenceChannel,
                                           resultValue);
     } else {
         if (_analogReferenceChannel >= 0 && _analogReferenceChannel <= 3) {
@@ -316,7 +329,7 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
                      " falling back to single-ended on channel "),
                    _dataPin);
         }
-        success = readVoltageSingleEnded(_dataPin, resultValue);
+        success = _adsBase->readVoltageSingleEnded(_dataPin, resultValue);
     }
 
     if (success) {

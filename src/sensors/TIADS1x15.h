@@ -397,15 +397,11 @@ class TIADS1x15Base : public AnalogVoltageBase {
  * @ingroup sensor_ads1x15
  */
 /* clang-format on */
-class TIADS1x15 : public Sensor, public TIADS1x15Base {
+class TIADS1x15 : public Sensor {
  public:
     /**
      * @brief Construct a new TIADS1x15 object for single-ended or differential
      * voltage measurements
-     *
-     * The voltage multiplier value, I2C address, and number of measurements to
-     * average are optional.  If nothing is given a 1x voltage multiplier is
-     * used.
      *
      * @note ModularSensors only supports connecting the ADS1x15 to the primary
      * hardware I2C instance defined in the Arduino core. Connecting the ADS to
@@ -416,28 +412,20 @@ class TIADS1x15 : public Sensor, public TIADS1x15Base {
      * @param adsChannel The ADS channel of interest (0-3, physical channel
      * only). For differential measurements, this is the first (positive)
      * channel.
-     * @param voltageMultiplier The voltage multiplier, if a voltage divider is
-     * used.
-     * @param adsGain The internal gain setting of the ADS1x15; defaults to
-     * GAIN_ONE for +/- 4.096V range
-     * @param i2cAddress The I2C address of the ADS 1x15, default is 0x48 (ADDR
-     * = GND)
-     * @param measurementsToAverage The number of measurements to take and
-     * average before giving a "final" result from the sensor; optional with a
-     * default value of 1.
-     * @param adsSupplyVoltage The power supply voltage for the ADS1x15 in
-     * volts; defaults to the processor operating voltage from KnownProcessors.h
      * @param analogReferenceChannel The second (reference/negative) ADS channel
      * for differential measurement (0-3, physical channel only). Valid pairs
      * are: 0-1, 0-3, 1-3, or 2-3. Use -1 (default) for single-ended
      * measurements.
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
+     * @param adsBase Pointer to TIADS1x15Base object for ADS functionality.
+     * If nullptr (default), creates a new TIADS1x15Base with default settings.
      */
     TIADS1x15(int8_t powerPin, int8_t adsChannel,
-              float voltageMultiplier = 1.0f, adsGain_t adsGain = GAIN_ONE,
-              uint8_t i2cAddress             = MS_DEFAULT_ADS1X15_ADDRESS,
-              uint8_t measurementsToAverage  = 1,
-              float   adsSupplyVoltage       = OPERATING_VOLTAGE,
-              int8_t  analogReferenceChannel = -1);
+              int8_t         analogReferenceChannel = -1,
+              uint8_t        measurementsToAverage  = 1,
+              TIADS1x15Base* adsBase                = nullptr);
     /**
      * @brief Destroy the External Voltage object
      */
@@ -456,6 +444,16 @@ class TIADS1x15 : public Sensor, public TIADS1x15Base {
      * For differential measurements: the second ADS channel (0-3)
      */
     int8_t _analogReferenceChannel = -1;
+
+    /**
+     * @brief Pointer to the TIADS1x15Base object providing ADS functionality
+     */
+    TIADS1x15Base* _adsBase = nullptr;
+
+    /**
+     * @brief Whether this object owns the _adsBase pointer and should delete it
+     */
+    bool _ownsAdsBase = false;
 };
 
 /**

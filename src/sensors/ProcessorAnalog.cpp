@@ -88,21 +88,34 @@ bool ProcessorAnalogBase::readVoltageDifferential(
 // The constructor - need the power pin, the data pin, the voltage divider
 // value, and the operating voltage
 ProcessorAnalog::ProcessorAnalog(int8_t powerPin, int8_t dataPin,
-                                 float   voltageMultiplier,
-                                 float   operatingVoltage,
-                                 uint8_t measurementsToAverage)
+                                 uint8_t              measurementsToAverage,
+                                 ProcessorAnalogBase* analogBase)
     : Sensor("ProcessorAnalog", PROCESSOR_ANALOG_NUM_VARIABLES,
              PROCESSOR_ANALOG_WARM_UP_TIME_MS,
              PROCESSOR_ANALOG_STABILIZATION_TIME_MS,
              PROCESSOR_ANALOG_MEASUREMENT_TIME_MS, powerPin, dataPin,
-             measurementsToAverage, PROCESSOR_ANALOG_INC_CALC_VARIABLES),
-      ProcessorAnalogBase(voltageMultiplier, operatingVoltage) {}
+             measurementsToAverage, PROCESSOR_ANALOG_INC_CALC_VARIABLES) {
+    // If no analog base provided, create one with default settings
+    if (analogBase == nullptr) {
+        _analogBase     = new ProcessorAnalogBase();
+        _ownsAnalogBase = true;
+    } else {
+        _analogBase     = analogBase;
+        _ownsAnalogBase = false;
+    }
+}
 
 // Destructor
-ProcessorAnalog::~ProcessorAnalog() {}
+ProcessorAnalog::~ProcessorAnalog() {
+    // Clean up the analog base object if we created it
+    if (_ownsAnalogBase && _analogBase != nullptr) {
+        delete _analogBase;
+        _analogBase = nullptr;
+    }
+}
 
 String ProcessorAnalog::getSensorLocation() {
-    return ProcessorAnalogBase::getAnalogLocation(_dataPin, -1);
+    return _analogBase->getAnalogLocation(_dataPin, -1);
 }
 
 bool ProcessorAnalog::addSingleMeasurementResult(void) {
@@ -114,7 +127,7 @@ bool ProcessorAnalog::addSingleMeasurementResult(void) {
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
     float resultValue = -9999.0f;
-    bool  success     = readVoltageSingleEnded(_dataPin, resultValue);
+    bool  success = _analogBase->readVoltageSingleEnded(_dataPin, resultValue);
 
     if (success) {
         verifyAndAddMeasurementResult(PROCESSOR_ANALOG_VAR_NUM, resultValue);
