@@ -271,11 +271,18 @@ class TIADS1x15Base : public AnalogVoltageBase {
      * @param adsGain The internal gain setting of the ADS1x15
      * @param i2cAddress The I2C address of the ADS 1x15
      * @param adsSupplyVoltage The power supply voltage for the ADS1x15 in volts
+     * @param adsDataRate The data rate for the ADS1x15 (samples per second)
      */
     explicit TIADS1x15Base(float     voltageMultiplier = 1.0f,
                            adsGain_t adsGain           = GAIN_ONE,
                            uint8_t   i2cAddress = MS_DEFAULT_ADS1X15_ADDRESS,
-                           float     adsSupplyVoltage = OPERATING_VOLTAGE);
+                           float     adsSupplyVoltage = OPERATING_VOLTAGE,
+#ifndef MS_USE_ADS1015
+                           uint16_t adsDataRate = RATE_ADS1115_128SPS
+#else
+                           uint16_t adsDataRate = RATE_ADS1015_1600SPS
+#endif
+    );
 
     /**
      * @brief Destroy the TIADS1x15Base object
@@ -328,7 +335,21 @@ class TIADS1x15Base : public AnalogVoltageBase {
      *
      * @return The internal gain setting
      */
-    adsGain_t getADSGain(void) const;
+    adsGain_t getADSGain(void);
+
+    /**
+     * @brief Set the data rate for the ADS1x15
+     *
+     * @param adsDataRate The data rate setting (samples per second)
+     */
+    void setADSDataRate(uint16_t adsDataRate);
+
+    /**
+     * @brief Get the data rate for the ADS1x15
+     *
+     * @return The data rate setting (samples per second)
+     */
+    uint16_t getADSDataRate(void);
 
     /**
      * @brief Check if the two channels form a valid differential pair
@@ -355,13 +376,17 @@ class TIADS1x15Base : public AnalogVoltageBase {
 
  protected:
     /**
-     * @brief Internal reference to the internal gain setting of the TI-ADS1x15
-     */
-    adsGain_t _adsGain;
-    /**
      * @brief Internal reference to the I2C address of the TI-ADS1x15
      */
     uint8_t _i2cAddress;
+    /**
+     * @brief Per-instance ADS1x15 driver to maintain separate I2C state
+     */
+#ifndef MS_USE_ADS1015
+    Adafruit_ADS1115 _ads;  // 16-bit version
+#else
+    Adafruit_ADS1015 _ads;  // 12-bit version
+#endif
 };
 
 /* clang-format off */

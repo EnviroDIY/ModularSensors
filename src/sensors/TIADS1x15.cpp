@@ -21,9 +21,9 @@
 
 // Constructor
 TIADS1x15Base::TIADS1x15Base(float voltageMultiplier, adsGain_t adsGain,
-                             uint8_t i2cAddress, float adsSupplyVoltage)
+                             uint8_t i2cAddress, float adsSupplyVoltage,
+                             uint16_t adsDataRate)
     : AnalogVoltageBase(voltageMultiplier, adsSupplyVoltage),
-      _adsGain(adsGain),
       _i2cAddress(i2cAddress) {
     // Clamp supply voltage to valid ADS1x15 range: 0.0V to 5.5V per datasheet
     // NOTE: This clamp is intentionally silent — Serial/MS_DBG is NOT safe to
@@ -34,6 +34,21 @@ TIADS1x15Base::TIADS1x15Base(float voltageMultiplier, adsGain_t adsGain,
     } else if (_supplyVoltage > 5.5f) {
         _supplyVoltage = 5.5f;
     }
+    // ADS Library default settings:
+    //  - TI ADS1115 (16 bit)
+    //    - single-shot mode (powers down between conversions)
+    //    - 128 samples per second (8ms conversion time)
+    //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
+    //  - TI ADS1015 (12 bit)
+    //    - single-shot mode (powers down between conversions)
+    //    - 1600 samples per second (625µs conversion time)
+    //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
+
+    // Initialize the per-instance ADS driver
+    _ads.setGain(adsGain);
+    _ads.setDataRate(adsDataRate);
+
+    _ads.begin(_i2cAddress);
 }
 
 
@@ -69,30 +84,12 @@ bool TIADS1x15Base::readVoltageSingleEnded(int8_t analogChannel,
     float   adcVoltage   = -9999.0f;
     float   scaledResult = -9999.0f;
 
-// Create an auxiliary ADC object
-// We create and set up the ADC object here so that each sensor using
-// the ADC may set the internal gain appropriately without affecting others.
-#ifndef MS_USE_ADS1015
-    Adafruit_ADS1115 ads;  // Use this for the 16-bit version
-#else
-    Adafruit_ADS1015 ads;  // Use this for the 12-bit version
-#endif
-    // ADS Library default settings:
-    //  - TI ADS1115 (16 bit)
-    //    - single-shot mode (powers down between conversions)
-    //    - 128 samples per second (8ms conversion time)
-    //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
-    //  - TI ADS1015 (12 bit)
-    //    - single-shot mode (powers down between conversions)
-    //    - 1600 samples per second (625µs conversion time)
-    //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
+    // Use the per-instance ADS driver (gain configured in constructor)
 
-    // Set the internal gain according to user configuration
-    ads.setGain(_adsGain);
-    // Begin ADC, returns true if anything was detected at the address
-    if (!ads.begin(_i2cAddress)) {
-        MS_DBG(F("  ADC initialization failed at 0x"),
-               String(_i2cAddress, HEX));
+    // Verify ADC is available (already initialized in constructor)
+    // Note: The ADS driver may return false if I2C communication fails
+    if (!_ads.begin(_i2cAddress)) {
+        MS_DBG(F("  ADC communication failed at 0x"), String(_i2cAddress, HEX));
         return false;
     }
 
@@ -105,21 +102,31 @@ bool TIADS1x15Base::readVoltageSingleEnded(int8_t analogChannel,
     }
     // Taking this reading includes the 8ms conversion delay.
     // Measure the ADC raw count
-    adcCounts = ads.readADC_SingleEnded(analogChannel);
+    adcCounts = _ads.readADC_SingleEnded(analogChannel);
     // Convert ADC raw counts value to voltage (V)
-    adcVoltage = ads.computeVolts(adcCounts);
-    MS_DBG(F("  ads.readADC_SingleEnded("), analogChannel, F("):"), adcCounts,
+    adcVoltage = _ads.computeVolts(adcCounts);
+    MS_DBG(F("  _ads.readADC_SingleEnded("), analogChannel, F("):"), adcCounts,
            F(" voltage:"), adcVoltage);
-    // Verify the range based on the actual power supplied to the ADS.
-    // Valid range is approximately -0.3V to (supply voltage + 0.3V) with
-    // absolute maximum of 5.5V per datasheet
-    float minValidVoltage = -0.3f;
-    float maxValidVoltage = _supplyVoltage + 0.3f;
-    if (maxValidVoltage > 5.5f) {
-        maxValidVoltage = 5.5f;  // Absolute maximum per datasheet
-    }
+
+    // Verify the range based on both PGA full-scale range and supply voltage
+    // For single-ended measurements, the valid range is constrained by:
+    // 1. PGA full-scale range (±FSR based on gain setting)
+    // 2. Supply voltage limits (approximately -0.3V to supply+0.3V)
+    // 3. Absolute maximum of 5.5V per datasheet
+
+    float pgaFullScaleRange = _ads.getFsRange();
+    float minValidVoltage   = -0.3f;  // Per datasheet
+
+    // Take the minimum of PGA FSR and supply-based limit
+    float maxValidVoltage = pgaFullScaleRange;
+    float supplyBasedMax  = _supplyVoltage + 0.3f;
+    if (supplyBasedMax < maxValidVoltage) { maxValidVoltage = supplyBasedMax; }
+
+    // Apply absolute maximum per datasheet
+    if (maxValidVoltage > 5.5f) { maxValidVoltage = 5.5f; }
 
     MS_DBG(F("  ADS supply voltage:"), _supplyVoltage, F("V"));
+    MS_DBG(F("  PGA full-scale range:"), pgaFullScaleRange, F("V"));
     MS_DBG(F("  Valid voltage range:"), minValidVoltage, F("V to"),
            maxValidVoltage, F("V"));
 
@@ -145,19 +152,10 @@ bool TIADS1x15Base::readVoltageDifferential(int8_t analogChannel,
     float   adcVoltage   = -9999.0f;
     float   scaledResult = -9999.0f;
 
-// Create an auxiliary ADC object
-#ifndef MS_USE_ADS1015
-    Adafruit_ADS1115 ads;
-#else
-    Adafruit_ADS1015 ads;
-#endif
-
-    // Set the internal gain according to user configuration
-    ads.setGain(_adsGain);
-
-    if (!ads.begin(_i2cAddress)) {
-        MS_DBG(F("  ADC initialization failed at 0x"),
-               String(_i2cAddress, HEX));
+    // Use the per-instance ADS driver (configured in constructor)
+    // Verify ADC is available
+    if (!_ads.begin(_i2cAddress)) {
+        MS_DBG(F("  ADC communication failed at 0x"), String(_i2cAddress, HEX));
         return false;
     }
 
@@ -174,13 +172,13 @@ bool TIADS1x15Base::readVoltageDifferential(int8_t analogChannel,
     // first) to ensure consistent polarity. Pairs like (1,0) are NOT supported
     // - use (0,1) instead.
     if (analogChannel == 0 && analogReferenceChannel == 1) {
-        adcCounts = ads.readADC_Differential_0_1();
+        adcCounts = _ads.readADC_Differential_0_1();
     } else if (analogChannel == 0 && analogReferenceChannel == 3) {
-        adcCounts = ads.readADC_Differential_0_3();
+        adcCounts = _ads.readADC_Differential_0_3();
     } else if (analogChannel == 1 && analogReferenceChannel == 3) {
-        adcCounts = ads.readADC_Differential_1_3();
+        adcCounts = _ads.readADC_Differential_1_3();
     } else if (analogChannel == 2 && analogReferenceChannel == 3) {
-        adcCounts = ads.readADC_Differential_2_3();
+        adcCounts = _ads.readADC_Differential_2_3();
     } else {
         // Should never reach here; isValidDifferentialPair must have been
         // widened without updating this dispatch table.
@@ -190,26 +188,13 @@ bool TIADS1x15Base::readVoltageDifferential(int8_t analogChannel,
     }
 
     // Convert counts to voltage
-    adcVoltage = ads.computeVolts(adcCounts);
+    adcVoltage = _ads.computeVolts(adcCounts);
     MS_DBG(F("  Differential ADC counts:"), adcCounts, F(" voltage:"),
            adcVoltage);
 
     // Validate range - for differential measurements, use PGA full-scale range
     // Based on gain setting rather than supply voltage
-    float fullScaleVoltage;
-    switch (_adsGain) {
-        case GAIN_TWOTHIRDS: fullScaleVoltage = 6.144f; break;
-        case GAIN_ONE: fullScaleVoltage = 4.096f; break;
-        case GAIN_TWO: fullScaleVoltage = 2.048f; break;
-        case GAIN_FOUR: fullScaleVoltage = 1.024f; break;
-        case GAIN_EIGHT: fullScaleVoltage = 0.512f; break;
-        case GAIN_SIXTEEN: fullScaleVoltage = 0.256f; break;
-        default:
-            MS_DBG(F("  Unknown ADS gain value:"), _adsGain,
-                   F(" using conservative 4.096V range"));
-            fullScaleVoltage = 4.096f;  // Conservative fallback
-            break;
-    }
+    float fullScaleVoltage = _ads.getFsRange();
     float minValidVoltage = -fullScaleVoltage;
     float maxValidVoltage = fullScaleVoltage;
 
@@ -244,11 +229,22 @@ bool TIADS1x15Base::isValidDifferentialPair(int8_t channel1, int8_t channel2) {
 
 // Setter and getter methods for ADS gain
 void TIADS1x15Base::setADSGain(adsGain_t adsGain) {
-    _adsGain = adsGain;
+    // Update the per-instance driver with new gain setting
+    _ads.setGain(adsGain);
 }
 
-adsGain_t TIADS1x15Base::getADSGain(void) const {
-    return _adsGain;
+adsGain_t TIADS1x15Base::getADSGain(void) {
+    return _ads.getGain();
+}
+
+// Setter and getter methods for ADS data rate
+void TIADS1x15Base::setADSDataRate(uint16_t adsDataRate) {
+    // Update the per-instance driver with new data rate setting
+    _ads.setDataRate(adsDataRate);
+}
+
+uint16_t TIADS1x15Base::getADSDataRate(void) {
+    return _ads.getDataRate();
 }
 
 // Override setSupplyVoltage in TIADS1x15Base to validate ADS range
