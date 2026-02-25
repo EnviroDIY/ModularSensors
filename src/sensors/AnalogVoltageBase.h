@@ -82,7 +82,7 @@ class AnalogVoltageBase {
      */
     virtual void setVoltageMultiplier(float voltageMultiplier) {
         // If the input voltage multiplier is not positive, set it to 1.
-        if (voltageMultiplier <= 0.0f) {
+        if (!(voltageMultiplier > 0.0f)) {  // rejects NaN, -inf, and <= 0
             MS_DBG(F("Invalid voltage multiplier "), voltageMultiplier,
                    F(", clamping to 1.0"));
             _voltageMultiplier = 1.0f;
@@ -109,7 +109,7 @@ class AnalogVoltageBase {
      * clamped to OPERATING_VOLTAGE to maintain a valid reference.
      */
     virtual void setSupplyVoltage(float supplyVoltage) {
-        if (supplyVoltage <= 0.0f) {
+        if (!(supplyVoltage > 0.0f)) {  // rejects NaN, -inf, and <= 0
             MS_DBG(F("Invalid supply voltage "), supplyVoltage,
                    F(", clamping to "), OPERATING_VOLTAGE, F("V"));
             _supplyVoltage = OPERATING_VOLTAGE;
@@ -117,6 +117,7 @@ class AnalogVoltageBase {
             _supplyVoltage = supplyVoltage;
         }
     }
+
     /**
      * @brief Get the supply voltage for the analog system
      *
@@ -176,7 +177,7 @@ class AnalogVoltageBase {
      * differential measurements, or the sole channel for single-ended
      * measurements).
      * @param analogReferenceChannel The secondary (reference) analog channel
-     * for differential measurement. Use -1 for a single-ended analog sensor.
+     * for differential measurement. Set to -1 for a single-ended analog sensor.
      *
      * @return A string describing the analog sensor location
      */

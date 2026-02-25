@@ -141,15 +141,16 @@ class AnalogVoltageBase;
  */
 #define SQ212_WARM_UP_TIME_MS 2
 /**
- * @brief Sensor::_stabilizationTime_ms; the ADS1115 is stable after 2ms.
+ * @brief Sensor::_stabilizationTime_ms; the default ADS1115 voltage reader is
+ * stable after 2ms.
  *
  * The stabilization time of the SQ-212 itself is not known!
  *
  * @todo Measure stabilization time of the SQ-212
  */
 #define SQ212_STABILIZATION_TIME_MS 2
-/// @brief Sensor::_measurementTime_ms; ADS1115 takes almost 2ms to complete a
-/// measurement (860/sec).
+/// @brief Sensor::_measurementTime_ms; with the default ADS1115 voltage reader,
+/// it takes almost 2ms to complete a measurement (860/sec).
 #define SQ212_MEASUREMENT_TIME_MS 2
 /**@}*/
 

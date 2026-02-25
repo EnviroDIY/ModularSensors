@@ -29,6 +29,8 @@
  *      - Changes the wiper trigger pulse duration from 50 ms to x ms
  * - ```-D TURBIDITY_PLUS_WIPER_ROTATION_WAIT_MS=x```
  *      - Changes the wiper rotation wait time from 8000 ms to x ms
+ * - ```-D TURBIDITY_PLUS_CALIBRATION_EPSILON=x```
+ *      - Changes the calibration validation epsilon from 1e-4 to x
  *
  * @section sensor_turbidity_plus_ctor Sensor Constructor
  * {{ @ref TurnerTurbidityPlus::TurnerTurbidityPlus }}
@@ -103,6 +105,12 @@ class AnalogVoltageBase;
  * @brief Wait time for wiper rotation to complete in milliseconds
  */
 #define TURBIDITY_PLUS_WIPER_ROTATION_WAIT_MS 8000
+#endif
+#if !defined(TURBIDITY_PLUS_CALIBRATION_EPSILON) || defined(DOXYGEN)
+/**
+ * @brief Epsilon value for calibration validation to detect invalid calibration curves
+ */
+#define TURBIDITY_PLUS_CALIBRATION_EPSILON 1e-4f
 #endif
 /**@}*/
 
@@ -332,7 +340,7 @@ class TurnerTurbidityPlus : public Sensor {
     /**
      * @brief The second (reference) pin for differential voltage measurements.
      */
-    int8_t _analogReferenceChannel;
+    int8_t _analogReferenceChannel = -1;
     /// @brief Pointer to analog voltage reader
     AnalogVoltageBase* _analogVoltageReader = nullptr;
     /// @brief Flag to track if this object owns the analog voltage reader and

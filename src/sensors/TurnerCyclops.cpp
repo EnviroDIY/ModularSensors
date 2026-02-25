@@ -46,7 +46,7 @@ String TurnerCyclops::getSensorLocation(void) {
     if (_analogVoltageReader != nullptr) {
         return _analogVoltageReader->getAnalogLocation(_dataPin, -1);
     } else {
-        return String("Unknown_AnalogVoltageReader");
+        return String(F("Unknown_AnalogVoltageReader"));
     }
 }
 
@@ -67,7 +67,7 @@ bool TurnerCyclops::addSingleMeasurementResult(void) {
     // Print out the calibration curve
     MS_DBG(F("  Input calibration Curve:"), _volt_std, F("V at"), _conc_std,
            F(".  "), _volt_blank, F("V blank."));
-    if (fabs(_volt_std - _volt_blank) < CYCLOPS_CALIBRATION_EPSILON) {
+    if (fabsf(_volt_std - _volt_blank) < CYCLOPS_CALIBRATION_EPSILON) {
         MS_DBG(F("Invalid calibration: point voltage equals blank voltage"));
         return bumpMeasurementAttemptCount(false);
     }

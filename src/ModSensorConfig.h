@@ -57,7 +57,7 @@
  * Override with a build flag: `-DMS_DEFAULT_ADS1X15_ADDRESS=0x49`
  */
 #define MS_DEFAULT_ADS1X15_ADDRESS 0x48
-#endif  // !defined(MS_DEFAULT_ADS1X15_ADDRESS) || defined(DOXYGEN)
+#endif
 //==============================================================
 
 //==============================================================
@@ -186,16 +186,16 @@
 /// @brief The maximum possible range of the ADC - the resolution shifted up one
 /// bit.
 #define PROCESSOR_ADC_RANGE (1 << MS_PROCESSOR_ADC_RESOLUTION)
-#ifndef PROCESSOR_ANALOG_MAX_CHANNEL
+#ifndef MS_PROCESSOR_ANALOG_MAX_CHANNEL
 /**
  * @brief Upper bound used to sanity-check analog channel numbers at runtime.
  *
  * This is not a hardware limit but a validation ceiling that exceeds the
  * largest channel index found on any supported Arduino platform (e.g. Mega:
- * A0–A15). Override with -D PROCESSOR_ANALOG_MAX_CHANNEL=<n> if needed.
+ * A0–A15). Override with -D MS_PROCESSOR_ANALOG_MAX_CHANNEL=<n> if needed.
  */
-#define PROCESSOR_ANALOG_MAX_CHANNEL 100
-#endif  // PROCESSOR_ANALOG_MAX_CHANNEL
+#define MS_PROCESSOR_ANALOG_MAX_CHANNEL 100
+#endif  // MS_PROCESSOR_ANALOG_MAX_CHANNEL
 #if !defined(MS_PROCESSOR_ADC_REFERENCE_MODE) || defined(DOXYGEN)
 #if defined(ARDUINO_ARCH_AVR) || defined(DOXYGEN)
 /**
@@ -252,7 +252,7 @@
 #if !defined(MS_PROCESSOR_ADC_REFERENCE_MODE)
 #error The processor ADC reference type must be defined!
 #endif  // MS_PROCESSOR_ADC_REFERENCE_MODE
-#endif  // !defined(MS_PROCESSOR_ADC_REFERENCE_MODE) || defined(DOXYGEN)
+#endif
 //==============================================================
 
 

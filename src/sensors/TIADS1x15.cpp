@@ -13,6 +13,7 @@
 
 
 #include "TIADS1x15.h"
+#include <Wire.h>
 
 
 // ============================================================================
@@ -86,10 +87,10 @@ bool TIADS1x15Base::readVoltageSingleEnded(int8_t analogChannel,
 
     // Use the per-instance ADS driver (gain configured in constructor)
 
-    // Verify ADC is available (already initialized in constructor)
-    // Note: The ADS driver may return false if I2C communication fails
-    if (!_ads.begin(_i2cAddress)) {
-        MS_DBG(F("  ADC communication failed at 0x"), String(_i2cAddress, HEX));
+    // Verify I2C connectivity with a lightweight probe
+    Wire.beginTransmission(_i2cAddress);
+    if (Wire.endTransmission() != 0) {
+        MS_DBG(F("  I2C communication failed at 0x"), String(_i2cAddress, HEX));
         return false;
     }
 
@@ -153,9 +154,10 @@ bool TIADS1x15Base::readVoltageDifferential(int8_t analogChannel,
     float   scaledResult = -9999.0f;
 
     // Use the per-instance ADS driver (configured in constructor)
-    // Verify ADC is available
-    if (!_ads.begin(_i2cAddress)) {
-        MS_DBG(F("  ADC communication failed at 0x"), String(_i2cAddress, HEX));
+    // Verify I2C connectivity with a lightweight probe
+    Wire.beginTransmission(_i2cAddress);
+    if (Wire.endTransmission() != 0) {
+        MS_DBG(F("  I2C communication failed at 0x"), String(_i2cAddress, HEX));
         return false;
     }
 
@@ -307,13 +309,20 @@ String TIADS1x15::getSensorLocation(void) {
         return _analogVoltageReader->getAnalogLocation(_dataPin,
                                                        _analogReferenceChannel);
     } else {
-        return String("Unknown_AnalogVoltageReader");
+        return String(F("Unknown_AnalogVoltageReader"));
     }
 }
 
 bool TIADS1x15::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return bumpMeasurementAttemptCount(false);
+    }
+
+    // Check if we have a valid analog voltage reader
+    if (_analogVoltageReader == nullptr) {
+        MS_DBG(getSensorNameAndLocation(),
+               F("No analog voltage reader available"));
         return bumpMeasurementAttemptCount(false);
     }
 

@@ -33,7 +33,7 @@ bool ProcessorAnalogBase::readVoltageSingleEnded(int8_t analogChannel,
                   "MS_PROCESSOR_ADC_RESOLUTION configuration.");
 
     // Validate parameters
-    if (analogChannel < 0 || analogChannel > PROCESSOR_ANALOG_MAX_CHANNEL ||
+    if (analogChannel < 0 || analogChannel > MS_PROCESSOR_ANALOG_MAX_CHANNEL ||
         _supplyVoltage <= 0 || _voltageMultiplier <= 0) {
         MS_DBG(F("Invalid configuration: either the analog channel, the supply "
                  "voltage, or the voltage multiplier is not set correctly!"));
@@ -117,13 +117,20 @@ String ProcessorAnalog::getSensorLocation() {
     if (_analogVoltageReader != nullptr) {
         return _analogVoltageReader->getAnalogLocation(_dataPin, -1);
     } else {
-        return String("Unknown_AnalogVoltageReader");
+        return String(F("Unknown_AnalogVoltageReader"));
     }
 }
 
 bool ProcessorAnalog::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return bumpMeasurementAttemptCount(false);
+    }
+
+    // Check if we have a valid analog voltage reader
+    if (_analogVoltageReader == nullptr) {
+        MS_DBG(getSensorNameAndLocation(),
+               F("No analog voltage reader available"));
         return bumpMeasurementAttemptCount(false);
     }
 

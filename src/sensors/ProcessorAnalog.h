@@ -221,11 +221,7 @@ createProcessorAnalogBase(bool& ownsAnalogVoltageReader) {
     ProcessorAnalogBase* reader = new ProcessorAnalogBase();
     // verify that the voltage reader was created successfully
     // this could fail silently on no-exceptions Arduino targets
-    if (reader != nullptr) {
-        ownsAnalogVoltageReader = true;
-    } else {
-        ownsAnalogVoltageReader = false;
-    }
+    ownsAnalogVoltageReader = (reader != nullptr);
     return reader;
 }
 

@@ -45,7 +45,7 @@ String CampbellOBS3::getSensorLocation(void) {
     if (_analogVoltageReader != nullptr) {
         return _analogVoltageReader->getAnalogLocation(_dataPin, -1);
     } else {
-        return String("Unknown_AnalogVoltageReader");
+        return String(F("Unknown_AnalogVoltageReader"));
     }
 }
 

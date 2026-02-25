@@ -394,11 +394,7 @@ inline TIADS1x15Base* createTIADS1x15Base(bool& ownsAnalogVoltageReader) {
     TIADS1x15Base* reader = new TIADS1x15Base();
     // verify that the voltage reader was created successfully
     // this could fail silently on no-exceptions Arduino targets
-    if (reader != nullptr) {
-        ownsAnalogVoltageReader = true;
-    } else {
-        ownsAnalogVoltageReader = false;
-    }
+    ownsAnalogVoltageReader = (reader != nullptr);
     return reader;
 }
 

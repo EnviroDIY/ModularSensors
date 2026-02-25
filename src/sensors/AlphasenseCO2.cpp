@@ -49,7 +49,7 @@ String AlphasenseCO2::getSensorLocation(void) {
         return _analogVoltageReader->getAnalogLocation(_dataPin,
                                                        _analogReferenceChannel);
     } else {
-        return String("Unknown_AnalogVoltageReader");
+        return String(F("Unknown_AnalogVoltageReader"));
     }
 }
 

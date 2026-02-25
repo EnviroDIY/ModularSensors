@@ -1612,8 +1612,6 @@ const float  voltageMultiplier =
 // use 1.0f for direct connection
 // use (R_top + R_bottom) / R_bottom for voltage divider
 const adsGain_t adsPGAGain = GAIN_ONE;  // The internal gain setting for the ADS
-// GAIN_ONE  => +/-4.096V range; use GAIN_TWOTHIRDS (+/-6.144V) for inputs
-// > 4.096V GAIN_TWO  => +/-2.048V, GAIN_FOUR => +/-1.024V, etc.
 const uint8_t evADSi2c_addr  = 0x48;  // The I2C address of the ADS1115 ADC
 const uint8_t VoltReadsToAvg = 1;     // Only read one sample
 

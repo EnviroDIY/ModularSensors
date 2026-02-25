@@ -246,9 +246,9 @@ class CampbellOBS3 : public Sensor {
      * @param analogChannel The analog data channel or processor pin for voltage
      * measurements.  The significance of the channel number depends on the
      * specific AnalogVoltageBase implementation used for voltage readings. For
-     * example, with the TI ADS1x15, this would be the ADC channel (0-3) that
-     * the sensor is connected to.  Negative or invalid channel numbers are not
-     * clamped and will cause the reading to fail and emit a warning.
+     * example, with the default TI ADS1x15, this would be the ADC channel (0-3)
+     * that the sensor is connected to.  Negative or invalid channel numbers are
+     * not clamped and will cause the reading to fail and emit a warning.
      * @param x2_coeff_A The x2 (A) coefficient for the calibration _in volts_
      * @param x1_coeff_B The x (B) coefficient for the calibration _in volts_
      * @param x0_coeff_C The x0 (C) coefficient for the calibration _in volts_

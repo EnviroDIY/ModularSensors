@@ -94,7 +94,7 @@ bool AnalogElecConductivity::addSingleMeasurementResult(void) {
         }
         float adcRatio = adcVoltage / supplyVoltage;
 
-        if (adcRatio >= 1.0) {
+        if (adcRatio >= 1.0f) {
             // Prevent division issues when voltage reaches supply voltage
             MS_DBG(F("  ADC ratio clamped from"), adcRatio, F("to"),
                    ANALOGELECCONDUCTIVITY_ADC_MAX_RATIO);

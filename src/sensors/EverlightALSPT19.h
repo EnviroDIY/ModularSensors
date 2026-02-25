@@ -116,7 +116,7 @@
  * Lux, which doesn't appear to align with the datasheet.
  */
 #define ALSPT19_UA_PER_1000LUX 200.0f
-#endif  // !defined(ALSPT19_UA_PER_1000LUX) || defined(DOXYGEN)
+#endif
 /**@}*/
 
 /**

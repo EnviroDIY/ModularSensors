@@ -193,7 +193,7 @@ class AnalogVoltageBase;
  * most high-precision ADC configurations.
  */
 #define CYCLOPS_CALIBRATION_EPSILON 1e-4f
-#endif  // !defined(CYCLOPS_CALIBRATION_EPSILON) || defined(DOXYGEN)
+#endif
 /**@}*/
 
 /**
