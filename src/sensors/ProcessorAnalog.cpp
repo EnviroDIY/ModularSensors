@@ -94,13 +94,13 @@ ProcessorAnalog::ProcessorAnalog(int8_t powerPin, int8_t dataPin,
              PROCESSOR_ANALOG_WARM_UP_TIME_MS,
              PROCESSOR_ANALOG_STABILIZATION_TIME_MS,
              PROCESSOR_ANALOG_MEASUREMENT_TIME_MS, powerPin, dataPin,
-             measurementsToAverage, PROCESSOR_ANALOG_INC_CALC_VARIABLES) {
+             measurementsToAverage, PROCESSOR_ANALOG_INC_CALC_VARIABLES),
+      _analogVoltageReader(analogVoltageReader),
+      _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {
     // If no analog base provided, create one with default settings
     if (analogVoltageReader == nullptr) {
-        _analogVoltageReader = createProcessorAnalogBase(_ownsAnalogVoltageReader);
-    } else {
-        _analogVoltageReader     = analogVoltageReader;
-        _ownsAnalogVoltageReader = false;
+        _analogVoltageReader =
+            createProcessorAnalogBase(_ownsAnalogVoltageReader);
     }
 }
 

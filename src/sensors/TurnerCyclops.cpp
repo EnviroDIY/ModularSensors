@@ -24,13 +24,12 @@ TurnerCyclops::TurnerCyclops(int8_t powerPin, int8_t analogChannel,
              CYCLOPS_INC_CALC_VARIABLES),
       _conc_std(conc_std),
       _volt_std(volt_std),
-      _volt_blank(volt_blank) {
+      _volt_blank(volt_blank),
+      _analogVoltageReader(analogVoltageReader),
+      _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {
     // If no analog voltage reader was provided, create a default one
     if (analogVoltageReader == nullptr) {
         _analogVoltageReader = createTIADS1x15Base(_ownsAnalogVoltageReader);
-    } else {
-        _analogVoltageReader     = analogVoltageReader;
-        _ownsAnalogVoltageReader = false;
     }
 }
 

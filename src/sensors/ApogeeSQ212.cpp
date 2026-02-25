@@ -22,13 +22,12 @@ ApogeeSQ212::ApogeeSQ212(int8_t powerPin, int8_t analogChannel,
                          AnalogVoltageBase* analogVoltageReader)
     : Sensor("ApogeeSQ212", SQ212_NUM_VARIABLES, SQ212_WARM_UP_TIME_MS,
              SQ212_STABILIZATION_TIME_MS, SQ212_MEASUREMENT_TIME_MS, powerPin,
-             analogChannel, measurementsToAverage, SQ212_INC_CALC_VARIABLES) {
+             analogChannel, measurementsToAverage, SQ212_INC_CALC_VARIABLES),
+      _analogVoltageReader(analogVoltageReader),
+      _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {
     // If no analog voltage reader was provided, create a default one
     if (analogVoltageReader == nullptr) {
         _analogVoltageReader = createTIADS1x15Base(_ownsAnalogVoltageReader);
-    } else {
-        _analogVoltageReader     = analogVoltageReader;
-        _ownsAnalogVoltageReader = false;
     }
 }
 

@@ -277,13 +277,12 @@ TIADS1x15::TIADS1x15(int8_t powerPin, int8_t adsChannel,
              TIADS1X15_STABILIZATION_TIME_MS, TIADS1X15_MEASUREMENT_TIME_MS,
              powerPin, adsChannel, measurementsToAverage,
              TIADS1X15_INC_CALC_VARIABLES),
-      _analogReferenceChannel(analogReferenceChannel) {
+      _analogReferenceChannel(analogReferenceChannel),
+      _analogVoltageReader(analogVoltageReader),
+      _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {
     // If no analog voltage reader was provided, create a default one
     if (analogVoltageReader == nullptr) {
         _analogVoltageReader = createTIADS1x15Base(_ownsAnalogVoltageReader);
-    } else {
-        _analogVoltageReader     = analogVoltageReader;
-        _ownsAnalogVoltageReader = false;
     }
 
     // NOTE: We DO NOT validate the channel numbers and pairings in this
