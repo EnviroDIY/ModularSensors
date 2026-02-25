@@ -27,14 +27,16 @@ ProcessorAnalogBase::ProcessorAnalogBase(float voltageMultiplier,
 
 bool ProcessorAnalogBase::readVoltageSingleEnded(int8_t analogChannel,
                                                  float& resultValue) {
+    // Compile-time validation of ADC configuration
+    static_assert(PROCESSOR_ADC_MAX > 0,
+                  "PROCESSOR_ADC_MAX must be greater than 0. Check "
+                  "MS_PROCESSOR_ADC_RESOLUTION configuration.");
+
     // Validate parameters
-    if (PROCESSOR_ADC_MAX <= 0) {
-        MS_DBG(F("Processor ADC max value is not set or invalid!"));
-        resultValue = -9999.0f;
-        return false;
-    }
-    if (analogChannel < 0 || _supplyVoltage <= 0 || _voltageMultiplier <= 0) {
-        MS_DBG(F("Invalid configuration: analog channel, supply voltage, "
+    if (analogChannel < 0 || analogChannel > 100 || _supplyVoltage <= 0 ||
+        _voltageMultiplier <= 0) {
+        MS_DBG(F("Invalid configuration: analog channel (must be 0-100), "
+                 "supply voltage, "
                  "or voltage multiplier is not set!"));
         resultValue = -9999.0f;
         return false;
@@ -51,7 +53,8 @@ bool ProcessorAnalogBase::readVoltageSingleEnded(int8_t analogChannel,
 
     // convert bits to volts
     // Use (PROCESSOR_ADC_MAX + 1) as divisor for correct 2^n scaling
-    resultValue = (_supplyVoltage / static_cast<float>(PROCESSOR_ADC_MAX + 1)) *
+    resultValue =
+        (_supplyVoltage / (static_cast<float>(PROCESSOR_ADC_MAX) + 1.0f)) *
         _voltageMultiplier * rawAnalog;
     MS_DBG(F("Voltage:"), resultValue);
 
