@@ -95,6 +95,8 @@ bool EverlightALSPT19::addSingleMeasurementResult(void) {
                                                            adcVoltage);
 
     if (success) {
+        verifyAndAddMeasurementResult(ALSPT19_VOLTAGE_VAR_NUM, adcVoltage);
+
         // From the datasheet:
         // The output voltage V(out) is the product of photocurrent I(PH) and
         // loading resistor R(L):
@@ -118,7 +120,6 @@ bool EverlightALSPT19::addSingleMeasurementResult(void) {
         float calibResult = current_val * (1000.0f / ALSPT19_CURRENT_PER_LUX);
         MS_DBG(F("  Illuminance:"), calibResult, F("lux"));
 
-        verifyAndAddMeasurementResult(ALSPT19_VOLTAGE_VAR_NUM, adcVoltage);
         verifyAndAddMeasurementResult(ALSPT19_CURRENT_VAR_NUM, current_val);
         verifyAndAddMeasurementResult(ALSPT19_ILLUMINANCE_VAR_NUM, calibResult);
     } else {

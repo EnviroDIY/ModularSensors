@@ -215,12 +215,12 @@ class TurnerTurbidityPlus : public Sensor {
      * @param wiperTriggerPin The pin on the mcu that triggers the sensor's
      * wiper.
      * @param analogChannel The primary analog channel for differential
-     * measurement. Negative or invalid channel numbers or parings between the
+     * measurement. Negative or invalid channel numbers or pairings between the
      * analogChannel and analogReferenceChannel are not clamped and will cause
      * the reading to fail and emit a warning.
      * @param analogReferenceChannel The secondary (reference) analog channel
      * for differential measurement. Negative or invalid channel numbers or
-     * parings between the analogChannel and analogReferenceChannel are not
+     * pairings between the analogChannel and analogReferenceChannel are not
      * clamped and will cause the reading to fail and emit a warning.
      * @param conc_std The concentration of the standard used for a 1-point
      * sensor calibration. The concentration units should be the same as the

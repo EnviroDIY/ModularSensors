@@ -69,6 +69,12 @@ bool AnalogElecConductivity::addSingleMeasurementResult(void) {
         return bumpMeasurementAttemptCount(false);
     }
 
+    // Check if we have a valid load resistor
+    if (_sensorEC_Konst <= 0) {
+        MS_DBG(getSensorNameAndLocation(), F("Invalid cell constant"));
+        return bumpMeasurementAttemptCount(false);
+    }
+
     bool  success    = false;
     float adcVoltage = -9999.0f;
 

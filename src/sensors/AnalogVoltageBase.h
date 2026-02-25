@@ -104,6 +104,9 @@ class AnalogVoltageBase {
      * @brief Set the supply voltage for the analog system
      *
      * @param supplyVoltage The supply voltage in volts
+     *
+     * @note The supply voltage must be positive (> 0). Values <= 0 will be
+     * clamped to OPERATING_VOLTAGE to maintain a valid reference.
      */
     virtual void setSupplyVoltage(float supplyVoltage) {
         if (supplyVoltage <= 0.0f) {
@@ -148,12 +151,12 @@ class AnalogVoltageBase {
      * should set the resultValue to -9999.0 and return false.
      *
      * @param analogChannel The primary analog channel for differential
-     * measurement. Negative or invalid channel numbers or parings between the
+     * measurement. Negative or invalid channel numbers or pairings between the
      * analogChannel and analogReferenceChannel are not clamped and will cause
      * the reading to fail and emit a warning.
      * @param analogReferenceChannel The secondary (reference) analog channel
      * for differential measurement. Negative or invalid channel numbers or
-     * parings between the analogChannel and analogReferenceChannel are not
+     * pairings between the analogChannel and analogReferenceChannel are not
      * clamped and will cause the reading to fail and emit a warning.
      * @param resultValue Reference to store the resulting voltage measurement
      * @return True if the voltage reading was successful and within valid range

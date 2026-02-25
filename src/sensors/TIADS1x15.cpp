@@ -24,8 +24,7 @@ TIADS1x15Base::TIADS1x15Base(float voltageMultiplier, adsGain_t adsGain,
                              uint8_t i2cAddress, float adsSupplyVoltage)
     : AnalogVoltageBase(voltageMultiplier, adsSupplyVoltage),
       _adsGain(adsGain),
-      _i2cAddress(i2cAddress),
-      _adsDifferentialChannel(-1) {
+      _i2cAddress(i2cAddress) {
     // Clamp supply voltage to valid ADS1x15 range: 0.0V to 5.5V per datasheet
     // NOTE: This clamp is intentionally silent — Serial/MS_DBG is NOT safe to
     // call during construction (the Serial object may not be initialized yet on
@@ -241,6 +240,22 @@ adsGain_t TIADS1x15Base::getADSGain(void) const {
     return _adsGain;
 }
 
+// Override setSupplyVoltage in TIADS1x15Base to validate ADS range
+void TIADS1x15Base::setSupplyVoltage(float supplyVoltage) {
+    // Validate supply voltage range: 0.0V to 5.5V per datasheet
+    if (supplyVoltage < 0.0f) {
+        MS_DBG(F("ADS supply voltage "), supplyVoltage,
+               F("V is below minimum, clamping to 0.0V"));
+        _supplyVoltage = 0.0f;
+    } else if (supplyVoltage > 5.5f) {
+        MS_DBG(F("ADS supply voltage "), supplyVoltage,
+               F("V exceeds maximum, clamping to 5.5V"));
+        _supplyVoltage = 5.5f;
+    } else {
+        _supplyVoltage = supplyVoltage;
+    }
+}
+
 // ============================================================================
 // TIADS1x15 Functions
 // ============================================================================
@@ -250,14 +265,13 @@ adsGain_t TIADS1x15Base::getADSGain(void) const {
 TIADS1x15::TIADS1x15(int8_t powerPin, int8_t adsChannel,
                      float voltageMultiplier, adsGain_t adsGain,
                      uint8_t i2cAddress, uint8_t measurementsToAverage,
-                     float adsSupplyVoltage, int8_t differentialChannel)
+                     float adsSupplyVoltage, int8_t analogReferenceChannel)
     : Sensor("TIADS1x15", TIADS1X15_NUM_VARIABLES, TIADS1X15_WARM_UP_TIME_MS,
              TIADS1X15_STABILIZATION_TIME_MS, TIADS1X15_MEASUREMENT_TIME_MS,
              powerPin, adsChannel, measurementsToAverage,
              TIADS1X15_INC_CALC_VARIABLES),
-      TIADS1x15Base(voltageMultiplier, adsGain, i2cAddress, adsSupplyVoltage) {
-    // Set differential channel configuration
-    setDifferentialChannel(differentialChannel);
+      TIADS1x15Base(voltageMultiplier, adsGain, i2cAddress, adsSupplyVoltage),
+      _analogReferenceChannel(analogReferenceChannel) {
     // NOTE: We DO NOT validate the channel numbers and pairings in this
     // constructor!  We CANNOT print a warning here about invalid channel
     // because the Serial object may not be initialized yet, and we don't want
@@ -271,11 +285,11 @@ TIADS1x15::~TIADS1x15() {}
 
 String TIADS1x15::getSensorLocation(void) {
     String sensorLocation = TIADS1x15Base::getSensorLocation();
-    if (isDifferential()) {
+    if (isValidDifferentialPair(_dataPin, _analogReferenceChannel)) {
         sensorLocation += F("_Diff");
         sensorLocation += String(_dataPin);
         sensorLocation += F("_");
-        sensorLocation += String(_adsDifferentialChannel);
+        sensorLocation += String(_analogReferenceChannel);
     } else {
         sensorLocation += F("_Channel");
         sensorLocation += String(_dataPin);
@@ -295,8 +309,8 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
     bool  success     = false;
 
     // Use differential or single-ended reading based on configuration
-    if (isDifferential()) {
-        success = readVoltageDifferential(_dataPin, _adsDifferentialChannel,
+    if (isValidDifferentialPair(_dataPin, _analogReferenceChannel)) {
+        success = readVoltageDifferential(_dataPin, _analogReferenceChannel,
                                           resultValue);
     } else {
         success = readVoltageSingleEnded(_dataPin, resultValue);
@@ -308,22 +322,6 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
 
     // Return success value when finished
     return bumpMeasurementAttemptCount(success);
-}
-
-// Override setSupplyVoltage in TIADS1x15 to validate range
-void TIADS1x15::setSupplyVoltage(float supplyVoltage) {
-    // Validate supply voltage range: 0.0V to 5.5V per datasheet
-    if (supplyVoltage < 0.0f) {
-        MS_DBG(F("ADS supply voltage "), supplyVoltage,
-               F("V is below minimum, clamping to 0.0V"));
-        _supplyVoltage = 0.0f;
-    } else if (supplyVoltage > 5.5f) {
-        MS_DBG(F("ADS supply voltage "), supplyVoltage,
-               F("V exceeds maximum, clamping to 5.5V"));
-        _supplyVoltage = 5.5f;
-    } else {
-        _supplyVoltage = supplyVoltage;
-    }
 }
 
 // cspell:words GAIN_TWOTHIRDS

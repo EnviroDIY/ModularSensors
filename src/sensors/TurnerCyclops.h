@@ -179,6 +179,7 @@
  * Configuration parameters for the Turner Cyclops-7F sensor
  */
 /**@{*/
+#if !defined(CYCLOPS_CALIBRATION_EPSILON) || defined(DOXYGEN)
 /**
  * @brief Minimum voltage difference threshold for calibration validation
  *
@@ -192,6 +193,7 @@
  * most high-precision ADC configurations.
  */
 #define CYCLOPS_CALIBRATION_EPSILON 1e-4f
+#endif  // !defined(CYCLOPS_CALIBRATION_EPSILON) || defined(DOXYGEN)
 /**@}*/
 
 /**

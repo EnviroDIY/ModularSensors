@@ -298,12 +298,12 @@ class TIADS1x15Base : public AnalogVoltageBase {
      * @brief Read a differential voltage measurement from the ADS1x15
      *
      * @param analogChannel The primary analog channel for differential
-     * measurement. Negative or invalid channel numbers or parings between the
+     * measurement. Negative or invalid channel numbers or pairings between the
      * analogChannel and analogReferenceChannel are not clamped and will cause
      * the reading to fail and emit a warning.
      * @param analogReferenceChannel The secondary (reference) analog channel
      * for differential measurement. Negative or invalid channel numbers or
-     * parings between the analogChannel and analogReferenceChannel are not
+     * pairings between the analogChannel and analogReferenceChannel are not
      * clamped and will cause the reading to fail and emit a warning.
      * @param resultValue Reference to store the resulting voltage measurement
      * @return True if the voltage reading was successful and within valid range
@@ -347,6 +347,16 @@ class TIADS1x15Base : public AnalogVoltageBase {
      */
     static bool isValidDifferentialPair(int8_t channel1, int8_t channel2);
 
+    /**
+     * @brief Set the supply voltage for the ADS1x15
+     *
+     * @param supplyVoltage The supply voltage in volts
+     *
+     * @note Valid range is 0.0V to 5.5V per ADS1x15 datasheet. Values outside
+     * this range will be clamped with debug logging.
+     */
+    void setSupplyVoltage(float supplyVoltage) override;
+
  protected:
     /**
      * @brief Internal reference to the internal gain setting of the TI-ADS1x15
@@ -356,36 +366,6 @@ class TIADS1x15Base : public AnalogVoltageBase {
      * @brief Internal reference to the I2C address of the TI-ADS1x15
      */
     uint8_t _i2cAddress;
-
-    /**
-     * @brief Internal reference to the secondary (reference) analog channel for
-     * differential measurements
-     *
-     * For single-ended measurements: -1 (not used)
-     * For differential measurements: the second ADS channel (0-3)
-     */
-    int8_t _adsDifferentialChannel = -1;
-
-    /**
-     * @brief Helper function to check if this sensor is configured for
-     * differential measurements
-     *
-     * @return True if this sensor uses differential measurements, false for
-     * single-ended
-     */
-    bool isDifferential() const {
-        return _adsDifferentialChannel != -1;
-    }
-
-    /**
-     * @brief Set the differential channel for differential measurements
-     *
-     * @param differentialChannel The secondary (reference) channel for
-     * differential measurements (0-3), or -1 for single-ended
-     */
-    void setDifferentialChannel(int8_t differentialChannel) {
-        _adsDifferentialChannel = differentialChannel;
-    }
 };
 
 /* clang-format off */
@@ -426,17 +406,17 @@ class TIADS1x15 : public Sensor, public TIADS1x15Base {
      * default value of 1.
      * @param adsSupplyVoltage The power supply voltage for the ADS1x15 in
      * volts; defaults to the processor operating voltage from KnownProcessors.h
-     * @param differentialChannel The second (reference/negative) ADS channel
+     * @param analogReferenceChannel The second (reference/negative) ADS channel
      * for differential measurement (0-3, physical channel only). Valid pairs
      * are: 0-1, 0-3, 1-3, or 2-3. Use -1 (default) for single-ended
      * measurements.
      */
     TIADS1x15(int8_t powerPin, int8_t adsChannel,
               float voltageMultiplier = 1.0f, adsGain_t adsGain = GAIN_ONE,
-              uint8_t i2cAddress            = MS_DEFAULT_ADS1X15_ADDRESS,
-              uint8_t measurementsToAverage = 1,
-              float   adsSupplyVoltage      = OPERATING_VOLTAGE,
-              int8_t  differentialChannel   = -1);
+              uint8_t i2cAddress             = MS_DEFAULT_ADS1X15_ADDRESS,
+              uint8_t measurementsToAverage  = 1,
+              float   adsSupplyVoltage       = OPERATING_VOLTAGE,
+              int8_t  analogReferenceChannel = -1);
     /**
      * @brief Destroy the External Voltage object
      */
@@ -446,13 +426,15 @@ class TIADS1x15 : public Sensor, public TIADS1x15Base {
 
     bool addSingleMeasurementResult(void) override;
 
+ private:
     /**
-     * @brief Set the power supply voltage for the ADS1x15
+     * @brief Internal reference to the secondary (reference) analog channel for
+     * differential measurements
      *
-     * @param supplyVoltage The power supply voltage in volts (2.0-5.5V
-     * range)
+     * For single-ended measurements: -1 (not used)
+     * For differential measurements: the second ADS channel (0-3)
      */
-    void setSupplyVoltage(float supplyVoltage) override;
+    int8_t _analogReferenceChannel = -1;
 };
 
 /**

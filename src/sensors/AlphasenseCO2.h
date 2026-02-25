@@ -270,12 +270,12 @@ class AlphasenseCO2 : public Sensor {
      * Alphasense CO2 sensor.  Use -1 if it is continuously powered.
      * - The Alphasense CO2 sensor requires 2-5 V DC; current draw 20-60 mA
      * @param analogChannel The primary analog channel for differential
-     * measurement. Negative or invalid channel numbers or parings between the
+     * measurement. Negative or invalid channel numbers or pairings between the
      * analogChannel and analogReferenceChannel are not clamped and will cause
      * the reading to fail and emit a warning.
      * @param analogReferenceChannel The secondary (reference) analog channel
      * for differential measurement. Negative or invalid channel numbers or
-     * parings between the analogChannel and analogReferenceChannel are not
+     * pairings between the analogChannel and analogReferenceChannel are not
      * clamped and will cause the reading to fail and emit a warning.
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a

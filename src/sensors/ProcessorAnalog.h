@@ -211,11 +211,6 @@ class ProcessorAnalogBase : public AnalogVoltageBase {
                                  int8_t /*analogReferenceChannel*/,
                                  float& resultValue) override;
 
-    /**
-     * @brief Get the sensor location string
-     *
-     * @return A string describing the processor analog pin location
-     */
     String getSensorLocation(void) override;
 };
 

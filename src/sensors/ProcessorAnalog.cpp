@@ -97,7 +97,10 @@ ProcessorAnalog::ProcessorAnalog(int8_t powerPin, int8_t dataPin,
 ProcessorAnalog::~ProcessorAnalog() {}
 
 String ProcessorAnalog::getSensorLocation() {
-    return ProcessorAnalogBase::getSensorLocation();
+    String sensorLocation = ProcessorAnalogBase::getSensorLocation();
+    sensorLocation += F("_Pin");
+    sensorLocation += String(_dataPin);
+    return sensorLocation;
 }
 
 bool ProcessorAnalog::addSingleMeasurementResult(void) {
