@@ -124,25 +124,25 @@
 /**
  * @brief Sense resistor value in ohms for current conversion
  */
-#define ALPHASENSE_CO2_SENSE_RESISTOR_OHM 250.0
+#define ALPHASENSE_CO2_SENSE_RESISTOR_OHM 250.0f
 #endif
 #if !defined(ALPHASENSE_CO2_MFG_SCALE) || defined(DOXYGEN)
 /**
  * @brief Manufacturer scale factor for CO2 conversion (ppm/mA)
  */
-#define ALPHASENSE_CO2_MFG_SCALE 312.5
+#define ALPHASENSE_CO2_MFG_SCALE 312.5f
 #endif
 #if !defined(ALPHASENSE_CO2_MFG_OFFSET) || defined(DOXYGEN)
 /**
  * @brief Manufacturer offset for CO2 conversion (ppm)
  */
-#define ALPHASENSE_CO2_MFG_OFFSET 1250.0
+#define ALPHASENSE_CO2_MFG_OFFSET 1250.0f
 #endif
 #if !defined(ALPHASENSE_CO2_VOLTAGE_MULTIPLIER) || defined(DOXYGEN)
 /**
  * @brief Voltage multiplier for direct voltage reading
  */
-#define ALPHASENSE_CO2_VOLTAGE_MULTIPLIER 1.0
+#define ALPHASENSE_CO2_VOLTAGE_MULTIPLIER 1.0f
 #endif
 /**@}*/
 
