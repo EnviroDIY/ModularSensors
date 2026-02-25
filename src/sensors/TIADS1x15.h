@@ -390,6 +390,24 @@ class TIADS1x15Base : public AnalogVoltageBase {
 };
 
 // Inline utility function implementation
+/**
+ * @brief Create a TIADS1x15Base analog voltage reader with ownership tracking
+ *
+ * This utility function safely creates a new TIADS1x15Base object with default
+ * settings and verifies it was created successfully. It handles the pattern of
+ * creating default analog voltage readers when none is provided to sensor
+ * constructors.
+ *
+ * @param[out] ownsAnalogVoltageReader Reference to bool that tracks ownership.
+ *   Set to true if the reader was created successfully, false if creation
+ * failed.
+ * @return Pointer to created TIADS1x15Base object, or nullptr if creation
+ * failed
+ *
+ * @note This function is designed for use in sensor constructors that need a
+ * default analog voltage reader. The ownership flag should be used to determine
+ * whether the returned pointer needs to be deleted in the sensor's destructor.
+ */
 inline TIADS1x15Base* createTIADS1x15Base(bool& ownsAnalogVoltageReader) {
     TIADS1x15Base* reader = new TIADS1x15Base();
     // verify that the voltage reader was created successfully

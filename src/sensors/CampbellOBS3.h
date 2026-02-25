@@ -285,9 +285,12 @@ class CampbellOBS3 : public Sensor {
     bool addSingleMeasurementResult(void) override;
 
  private:
-    float _x2_coeff_A;  ///< The x^2 (A) calibration coefficient
-    float _x1_coeff_B;  ///< The x^1 (B) calibration coefficient
-    float _x0_coeff_C;  ///< The x^0 (C) calibration coefficient
+    /// @brief The x^2 (A) calibration coefficient
+    float _x2_coeff_A;
+    /// @brief The x^1 (B) calibration coefficient
+    float _x1_coeff_B;
+    /// @brief The x^0 (C) calibration coefficient
+    float _x0_coeff_C;
     /// @brief Pointer to analog voltage reader
     AnalogVoltageBase* _analogVoltageReader = nullptr;
     /// @brief Flag to track if this object owns the analog voltage reader and

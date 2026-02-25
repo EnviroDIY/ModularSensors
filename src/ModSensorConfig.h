@@ -192,7 +192,7 @@
  *
  * This is not a hardware limit but a validation ceiling that exceeds the
  * largest channel index found on any supported Arduino platform (e.g. Mega:
- * A0–A15). Override with -D MS_PROCESSOR_ANALOG_MAX_CHANNEL=<n> if needed.
+ * A0–A15). Override with -D MS_PROCESSOR_ANALOG_MAX_CHANNEL=x if needed.
  */
 #define MS_PROCESSOR_ANALOG_MAX_CHANNEL 100
 #endif  // MS_PROCESSOR_ANALOG_MAX_CHANNEL
