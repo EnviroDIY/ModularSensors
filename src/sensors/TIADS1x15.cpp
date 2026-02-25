@@ -313,13 +313,13 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
     if (isValidDifferentialPair(_dataPin, _analogReferenceChannel)) {
         success = readVoltageDifferential(_dataPin, _analogReferenceChannel,
                                           resultValue);
+    } else {
         if (_analogReferenceChannel >= 0 && _analogReferenceChannel <= 3) {
             MS_DBG(F("  Warning: reference channel "), _analogReferenceChannel,
                    F(" set but pair is not a valid differential config;"
                      " falling back to single-ended on channel "),
                    _dataPin);
         }
-    } else {
         success = readVoltageSingleEnded(_dataPin, resultValue);
     }
 

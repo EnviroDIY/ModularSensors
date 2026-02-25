@@ -64,13 +64,12 @@ bool AlphasenseCO2::addSingleMeasurementResult(void) {
         return bumpMeasurementAttemptCount(false);
     }
 
-    bool  success    = false;
     float adcVoltage = -9999;
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
     // Read differential voltage using the AnalogVoltageBase interface
-    success = _analogVoltageReader->readVoltageDifferential(
+    bool success = _analogVoltageReader->readVoltageDifferential(
         _dataPin, _analogReferenceChannel, adcVoltage);
 
     if (success) {

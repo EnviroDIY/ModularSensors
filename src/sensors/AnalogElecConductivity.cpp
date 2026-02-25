@@ -71,29 +71,34 @@ bool AnalogElecConductivity::addSingleMeasurementResult(void) {
         return bumpMeasurementAttemptCount(false);
     }
 
-    bool  success    = false;
     float adcVoltage = -9999.0f;
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
     // Read the analog voltage using the AnalogVoltageBase interface
-    success = _analogVoltageReader->readVoltageSingleEnded(_dataPin,
-                                                           adcVoltage);
+    bool success = _analogVoltageReader->readVoltageSingleEnded(_dataPin,
+                                                                adcVoltage);
 
     if (success) {
         // Estimate Resistance of Liquid
         // see the header for an explanation of this calculation
         // Convert voltage back to ADC equivalent for existing calculation
-        // NOTE: The supplyVoltage is validated and clamped by the
-        // _analogVoltageReader and cannot be 0.
         float supplyVoltage = _analogVoltageReader->getSupplyVoltage();
-        float adcRatio      = adcVoltage / supplyVoltage;
+        if (supplyVoltage <= 0.0f) {
+            MS_DBG(F("  Invalid supply voltage from analog reader"));
+            return bumpMeasurementAttemptCount(false);
+        }
+        float adcRatio = adcVoltage / supplyVoltage;
 
         if (adcRatio >= 1.0) {
             // Prevent division issues when voltage reaches supply voltage
             MS_DBG(F("  ADC ratio clamped from"), adcRatio, F("to"),
                    ANALOGELECCONDUCTIVITY_ADC_MAX_RATIO);
             adcRatio = ANALOGELECCONDUCTIVITY_ADC_MAX_RATIO;
+        } else if (adcRatio < 0.0f) {
+            MS_DBG(F("  Negative ADC ratio ("), adcRatio,
+                   F("); negative supply or ADC voltage"));
+            return bumpMeasurementAttemptCount(false);
         }
 
         float Rwater_ohms = _Rseries_ohms * adcRatio / (1.0f - adcRatio);

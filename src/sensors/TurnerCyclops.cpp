@@ -61,7 +61,6 @@ bool TurnerCyclops::addSingleMeasurementResult(void) {
         return bumpMeasurementAttemptCount(false);
     }
 
-    bool  success    = false;
     float adcVoltage = -9999.0f;
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
@@ -79,8 +78,8 @@ bool TurnerCyclops::addSingleMeasurementResult(void) {
     // NOTE: All implementations of the AnalogVoltageBase class validate both
     // the input channel and the resulting voltage, so we can trust that a
     // successful read will give us a valid voltage value to work with.
-    success = _analogVoltageReader->readVoltageSingleEnded(_dataPin,
-                                                           adcVoltage);
+    bool success = _analogVoltageReader->readVoltageSingleEnded(_dataPin,
+                                                                adcVoltage);
     if (success) {
         // Apply the unique calibration curve for the given sensor
         float calibResult = (_conc_std / (_volt_std - _volt_blank)) *

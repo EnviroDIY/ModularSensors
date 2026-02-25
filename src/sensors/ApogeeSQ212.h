@@ -91,7 +91,9 @@
 // Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
-#include "AnalogVoltageBase.h"
+
+// Forward declaration
+class AnalogVoltageBase;
 
 /** @ingroup sensor_sq212 */
 /**@{*/
