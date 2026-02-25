@@ -389,6 +389,19 @@ class TIADS1x15Base : public AnalogVoltageBase {
 #endif
 };
 
+// Inline utility function implementation
+inline TIADS1x15Base* createTIADS1x15Base(bool& ownsAnalogVoltageReader) {
+    TIADS1x15Base* reader = new TIADS1x15Base();
+    // verify that the voltage reader was created successfully
+    // this could fail silently on no-exceptions Arduino targets
+    if (reader != nullptr) {
+        ownsAnalogVoltageReader = true;
+    } else {
+        ownsAnalogVoltageReader = false;
+    }
+    return reader;
+}
+
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
@@ -419,13 +432,14 @@ class TIADS1x15 : public Sensor {
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
-     * @param adsBase Pointer to TIADS1x15Base object for ADS functionality.
-     * If nullptr (default), creates a new TIADS1x15Base with default settings.
+     * @param analogVoltageReader Pointer to TIADS1x15Base object for ADS
+     * functionality. If nullptr (default), creates a new TIADS1x15Base with
+     * default settings.
      */
     TIADS1x15(int8_t powerPin, int8_t adsChannel,
               int8_t         analogReferenceChannel = -1,
               uint8_t        measurementsToAverage  = 1,
-              TIADS1x15Base* adsBase                = nullptr);
+              TIADS1x15Base* analogVoltageReader    = nullptr);
     /**
      * @brief Destroy the External Voltage object
      */
@@ -448,12 +462,13 @@ class TIADS1x15 : public Sensor {
     /**
      * @brief Pointer to the TIADS1x15Base object providing ADS functionality
      */
-    TIADS1x15Base* _adsBase = nullptr;
+    TIADS1x15Base* _analogVoltageReader = nullptr;
 
     /**
-     * @brief Whether this object owns the _adsBase pointer and should delete it
+     * @brief Whether this object owns the _analogVoltageReader pointer and
+     * should delete it
      */
-    bool _ownsAdsBase = false;
+    bool _ownsAnalogVoltageReader = false;
 };
 
 /**

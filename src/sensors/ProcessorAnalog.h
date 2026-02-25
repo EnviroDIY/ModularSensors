@@ -215,6 +215,20 @@ class ProcessorAnalogBase : public AnalogVoltageBase {
                              int8_t analogReferenceChannel) override;
 };
 
+// Inline utility function implementation
+inline ProcessorAnalogBase*
+createProcessorAnalogBase(bool& ownsAnalogVoltageReader) {
+    ProcessorAnalogBase* reader = new ProcessorAnalogBase();
+    // verify that the voltage reader was created successfully
+    // this could fail silently on no-exceptions Arduino targets
+    if (reader != nullptr) {
+        ownsAnalogVoltageReader = true;
+    } else {
+        ownsAnalogVoltageReader = false;
+    }
+    return reader;
+}
+
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
@@ -238,13 +252,13 @@ class ProcessorAnalog : public Sensor {
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
-     * @param analogBase Pointer to ProcessorAnalogBase object for analog
-     * functionality. If nullptr (default), creates a new ProcessorAnalogBase
-     * with default settings.
+     * @param analogVoltageReader Pointer to ProcessorAnalogBase object for
+     * analog functionality. If nullptr (default), creates a new
+     * ProcessorAnalogBase with default settings.
      */
     ProcessorAnalog(int8_t powerPin, int8_t dataPin,
                     uint8_t              measurementsToAverage = 1,
-                    ProcessorAnalogBase* analogBase            = nullptr);
+                    ProcessorAnalogBase* analogVoltageReader   = nullptr);
     /**
      * @brief Destroy the Processor Analog object
      */
@@ -259,13 +273,13 @@ class ProcessorAnalog : public Sensor {
      * @brief Pointer to the ProcessorAnalogBase object providing analog
      * functionality
      */
-    ProcessorAnalogBase* _analogBase = nullptr;
+    ProcessorAnalogBase* _analogVoltageReader = nullptr;
 
     /**
-     * @brief Whether this object owns the _analogBase pointer and should delete
-     * it
+     * @brief Whether this object owns the _analogVoltageReader pointer and
+     * should delete it
      */
-    bool _ownsAnalogBase = false;
+    bool _ownsAnalogVoltageReader = false;
 };
 
 

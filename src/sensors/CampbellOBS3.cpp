@@ -23,11 +23,15 @@ CampbellOBS3::CampbellOBS3(int8_t powerPin, int8_t analogChannel,
              analogChannel, measurementsToAverage, OBS3_INC_CALC_VARIABLES),
       _x2_coeff_A(x2_coeff_A),
       _x1_coeff_B(x1_coeff_B),
-      _x0_coeff_C(x0_coeff_C),
-      // If no analog voltage reader was provided, create a default one
-      _analogVoltageReader(analogVoltageReader ? analogVoltageReader
-                                               : new TIADS1x15Base()),
-      _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {}
+      _x0_coeff_C(x0_coeff_C) {
+    // If no analog voltage reader was provided, create a default one
+    if (analogVoltageReader == nullptr) {
+        _analogVoltageReader = createTIADS1x15Base(_ownsAnalogVoltageReader);
+    } else {
+        _analogVoltageReader     = analogVoltageReader;
+        _ownsAnalogVoltageReader = false;
+    }
+}
 
 // Destructor
 CampbellOBS3::~CampbellOBS3() {

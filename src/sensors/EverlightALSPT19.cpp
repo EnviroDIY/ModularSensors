@@ -22,11 +22,15 @@ EverlightALSPT19::EverlightALSPT19(int8_t powerPin, int8_t dataPin,
              measurementsToAverage, ALSPT19_INC_CALC_VARIABLES),
       _alsSupplyVoltage((alsSupplyVoltage > 0.0f) ? alsSupplyVoltage
                                                   : OPERATING_VOLTAGE),
-      _loadResistor(loadResistor),
-      // If no analog voltage reader was provided, create a default one
-      _analogVoltageReader(analogVoltageReader ? analogVoltageReader
-                                               : new ProcessorAnalogBase()),
-      _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {}
+      _loadResistor(loadResistor) {
+    // If no analog voltage reader was provided, create a default one
+    if (analogVoltageReader == nullptr) {
+        _analogVoltageReader = createProcessorAnalogBase(_ownsAnalogVoltageReader);
+    } else {
+        _analogVoltageReader     = analogVoltageReader;
+        _ownsAnalogVoltageReader = false;
+    }
+}
 #if (defined(BUILT_IN_ALS_POWER_PIN) && defined(BUILT_IN_ALS_DATA_PIN) && \
      defined(BUILT_IN_ALS_SUPPLY_VOLTAGE) &&                              \
      defined(BUILT_IN_ALS_LOADING_RESISTANCE)) ||                         \
