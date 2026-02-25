@@ -29,7 +29,7 @@
  * [Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Everlight-ALS-PT19.pdf)
  *
  * @section sensor_alspt19_config_flags Build flags
- * - `-D ALSPT19_CURRENT_PER_LUX=##`
+ * - `-D ALSPT19_UA_PER_1000LUX=##`
  *      - used to set current equivalent to 1000lux, which is used to calculate
  *        lux from the sensor
  *
@@ -99,7 +99,7 @@
  * Define for the ALS calibration between current and lux.
  */
 /**@{*/
-#if !defined(ALSPT19_CURRENT_PER_LUX) || defined(DOXYGEN)
+#if !defined(ALSPT19_UA_PER_1000LUX) || defined(DOXYGEN)
 /**
  * @brief The default current (in µA) that is equivalent to 1000 lux of
  * illuminance.
@@ -115,8 +115,8 @@
  * @todo Find the source of the calibration of typical 200µA current for 1000
  * Lux, which doesn't appear to align with the datasheet.
  */
-#define ALSPT19_CURRENT_PER_LUX 200.0f
-#endif  // ALSPT19_CURRENT_PER_LUX
+#define ALSPT19_UA_PER_1000LUX 200.0f
+#endif  // !defined(ALSPT19_UA_PER_1000LUX) || defined(DOXYGEN)
 /**@}*/
 
 /**

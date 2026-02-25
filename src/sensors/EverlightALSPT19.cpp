@@ -111,7 +111,7 @@ bool EverlightALSPT19::addSingleMeasurementResult(void) {
 
         // convert current to illuminance
         // from sensor datasheet, typical 200µA current for 1000 Lux
-        float calibResult = current_val * (1000.0f / ALSPT19_CURRENT_PER_LUX);
+        float calibResult = current_val * (1000.0f / ALSPT19_UA_PER_1000LUX);
         MS_DBG(F("  Illuminance:"), calibResult, F("lux"));
 
         verifyAndAddMeasurementResult(ALSPT19_CURRENT_VAR_NUM, current_val);
