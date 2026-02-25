@@ -41,13 +41,24 @@ TIADS1x15Base::TIADS1x15Base(float voltageMultiplier, adsGain_t adsGain,
 // TIADS1x15Base Functions
 // ============================================================================
 
-String TIADS1x15Base::getSensorLocation(void) {
+String TIADS1x15Base::getAnalogLocation(int8_t analogChannel,
+                                        int8_t analogReferenceChannel) {
+    String sensorLocation;
 #ifndef MS_USE_ADS1015
-    String sensorLocation = F("ADS1115_0x");
+    sensorLocation += F("ADS1115_0x");
 #else
-    String sensorLocation = F("ADS1015_0x");
+    sensorLocation += F("ADS1015_0x");
 #endif
     sensorLocation += String(_i2cAddress, HEX);
+    if (!isValidDifferentialPair(analogChannel, analogReferenceChannel)) {
+        sensorLocation += F("_Diff_");
+        sensorLocation += String(analogChannel);
+        sensorLocation += F("_");
+        sensorLocation += String(analogReferenceChannel);
+    } else {
+        sensorLocation += F("_Channel");
+        sensorLocation += String(analogChannel);
+    }
     return sensorLocation;
 }
 
@@ -284,17 +295,7 @@ TIADS1x15::TIADS1x15(int8_t powerPin, int8_t adsChannel,
 TIADS1x15::~TIADS1x15() {}
 
 String TIADS1x15::getSensorLocation(void) {
-    String sensorLocation = TIADS1x15Base::getSensorLocation();
-    if (isValidDifferentialPair(_dataPin, _analogReferenceChannel)) {
-        sensorLocation += F("_Diff");
-        sensorLocation += String(_dataPin);
-        sensorLocation += F("_");
-        sensorLocation += String(_analogReferenceChannel);
-    } else {
-        sensorLocation += F("_Channel");
-        sensorLocation += String(_dataPin);
-    }
-    return sensorLocation;
+    return TIADS1x15Base::getAnalogLocation(_dataPin, _analogReferenceChannel);
 }
 
 bool TIADS1x15::addSingleMeasurementResult(void) {

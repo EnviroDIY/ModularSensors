@@ -50,14 +50,9 @@ EverlightALSPT19::~EverlightALSPT19() {
 
 String EverlightALSPT19::getSensorLocation(void) {
     if (_analogVoltageReader != nullptr) {
-        String sensorLocation = _analogVoltageReader->getSensorLocation();
-        sensorLocation += F("_");
-        sensorLocation += String(_dataPin);
-        return sensorLocation;
+        return _analogVoltageReader->getAnalogLocation(_dataPin);
     } else {
-        String sensorLocation = F("Unknown_AnalogVoltageReader_");
-        sensorLocation += String(_dataPin);
-        return sensorLocation;
+        return String("Unknown_AnalogVoltageReader");
     }
 }
 

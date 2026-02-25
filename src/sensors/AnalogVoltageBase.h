@@ -166,14 +166,21 @@ class AnalogVoltageBase {
                                          float& resultValue) = 0;
 
     /**
-     * @brief Get the sensor location string
+     * @brief Construct a String describing the analog sensor location from the
+     * input channels.
      *
      * This pure virtual function must be implemented by derived classes to
      * provide their specific sensor location identification string.
      *
-     * @return A string describing the sensor location
+     * @param analogChannel The primary analog channel for differential
+     * measurement.
+     * @param analogReferenceChannel The secondary (reference) analog channel
+     * for differential measurement. Optional with a default of -1.
+     *
+     * @return A string describing the analog sensor location
      */
-    virtual String getSensorLocation(void) = 0;
+    virtual String getAnalogLocation(int8_t analogChannel,
+                                     int8_t analogReferenceChannel = -1) = 0;
 
  protected:
     /**

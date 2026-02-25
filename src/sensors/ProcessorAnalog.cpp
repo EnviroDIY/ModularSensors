@@ -65,8 +65,13 @@ bool ProcessorAnalogBase::readVoltageSingleEnded(int8_t analogChannel,
     return true;
 }
 
-String ProcessorAnalogBase::getSensorLocation(void) {
-    String sensorLocation = F("ProcessorAnalog");
+String
+ProcessorAnalogBase::getAnalogLocation(int8_t analogChannel,
+                                       int8_t /*analogReferenceChannel*/) {
+    String sensorLocation;
+    sensorLocation += F("ProcessorAnalog");
+    sensorLocation += F("_Pin");
+    sensorLocation += String(analogChannel);
     return sensorLocation;
 }
 
@@ -99,10 +104,7 @@ ProcessorAnalog::ProcessorAnalog(int8_t powerPin, int8_t dataPin,
 ProcessorAnalog::~ProcessorAnalog() {}
 
 String ProcessorAnalog::getSensorLocation() {
-    String sensorLocation = ProcessorAnalogBase::getSensorLocation();
-    sensorLocation += F("_Pin");
-    sensorLocation += String(_dataPin);
-    return sensorLocation;
+    return ProcessorAnalogBase::getAnalogLocation(_dataPin);
 }
 
 bool ProcessorAnalog::addSingleMeasurementResult(void) {

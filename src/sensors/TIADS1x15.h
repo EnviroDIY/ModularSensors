@@ -312,12 +312,8 @@ class TIADS1x15Base : public AnalogVoltageBase {
                                  int8_t analogReferenceChannel,
                                  float& resultValue) override;
 
-    /**
-     * @brief Get the sensor location string
-     *
-     * @return A string describing the ADS1x15 sensor location
-     */
-    String getSensorLocation(void) override;
+    String getAnalogLocation(int8_t analogChannel,
+                             int8_t analogReferenceChannel = -1) override;
 
     /**
      * @brief Set the internal gain setting for the ADS1x15
