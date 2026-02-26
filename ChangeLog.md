@@ -97,7 +97,7 @@ If you are using code from a previous version of the library, make sure to updat
   - *Potentially breaking* The constructors for all of these analog-based classes have changed!
 Previously the I2C address of the ADS1x15 was an optional input parameter which came *before* the optional input parameter for the number of measurements to average.
 The input parameter for the I2C address has been *removed* and the input for the number of measurements to average has been moved up in the order!
-For users who used the default values, this will have no affect.
+For users who used the default values, this will have no effect.
 For users who provided both a custom I2C address and a custom number of measurements, this will cause a compiler error.
 For users who provided a custom I2C address *but not a custom number of measurements* this will cause a *silent failure* because the custom I2C address will be used as the measurement count and the default I2C address will be used.
 Users who need a custom I2C address for the ADS1x15 must construct a TIADS1x15Base object with the correct address and pass a pointer to that object to the constructor.
@@ -184,7 +184,7 @@ These values should generally be set in the specific sensor constructors and onl
 - Added the functions `Sensor::clearStatus()`,`Sensor::clearPowerStatus()`,`Sensor::clearWakeStatus()`,and `Sensor::clearMeasurementStatus()` which reset some or all of the sensor status bits and related timing variables.
 - Added an abstract AnalogVoltageBase class with two concrete classes for analog voltage measurements: ProcessorAnalogBase and TIADS1x15Base.
 All supported analog sensors can now accept a pointer to an object of any concrete subclass of the AnalogVoltageBase class to use for raw voltage measurements.
-By default the existing analog sensors will create an AnalogVoltageBase class object internally for whichever type of ADC (processor or ADS1x15) the sensor was originally coded to use.
+By default, existing analog sensors will create an internal concrete AnalogVoltageBase subclass instance for whichever ADC type (processor or ADS1x15) the sensor was originally coded to use.
 This affects the following classes:
   - AlphasenseCO2
   - AnalogElecConductivity
@@ -196,7 +196,7 @@ This affects the following classes:
 
 #### Library Wide
 
-- Added KnownProcessors.h and moved defines valued for supported built-in sensors on known processors to that file.
+- Added KnownProcessors.h and moved define values for supported built-in sensors on known processors to that file.
   - This affects ProcessorStats and the Everlight ALS PT-19.
 - Added a new example specific to the [EnviroDIY Monitoring Station Kit](https://www.envirodiy.org/product/envirodiy-monitoring-station-kit/).
 
