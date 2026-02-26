@@ -279,6 +279,15 @@ class ProcessorAnalog : public Sensor {
      */
     ~ProcessorAnalog();
 
+    // Delete copy constructor and copy assignment operator to prevent shallow
+    // copies
+    ProcessorAnalog(const ProcessorAnalog&)            = delete;
+    ProcessorAnalog& operator=(const ProcessorAnalog&) = delete;
+
+    // Delete move constructor and move assignment operator
+    ProcessorAnalog(ProcessorAnalog&&)            = delete;
+    ProcessorAnalog& operator=(ProcessorAnalog&&) = delete;
+
     String getSensorLocation(void) override;
 
     bool addSingleMeasurementResult(void) override;

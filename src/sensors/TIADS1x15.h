@@ -455,9 +455,18 @@ class TIADS1x15 : public Sensor {
               uint8_t        measurementsToAverage  = 1,
               TIADS1x15Base* analogVoltageReader    = nullptr);
     /**
-     * @brief Destroy the External Voltage object
+     * @brief Destroy the TIADS1x15 object
      */
     ~TIADS1x15() override;
+
+    // Delete copy constructor and copy assignment operator to prevent shallow
+    // copies
+    TIADS1x15(const TIADS1x15&)            = delete;
+    TIADS1x15& operator=(const TIADS1x15&) = delete;
+
+    // Delete move constructor and move assignment operator
+    TIADS1x15(TIADS1x15&&)            = delete;
+    TIADS1x15& operator=(TIADS1x15&&) = delete;
 
     String getSensorLocation(void) override;
 
