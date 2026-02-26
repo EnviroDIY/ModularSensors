@@ -196,7 +196,7 @@ This affects the following classes:
 
 #### Library Wide
 
-- Added KnownProcessors.h and moved defines valued for supported built-in sensors on known processors to that file.
+- Added KnownProcessors.h and moved define values for supported built-in sensors on known processors to that file.
   - This affects ProcessorStats and the Everlight ALS PT-19.
 - Added a new example specific to the [EnviroDIY Monitoring Station Kit](https://www.envirodiy.org/product/envirodiy-monitoring-station-kit/).
 
