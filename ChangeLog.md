@@ -184,7 +184,7 @@ These values should generally be set in the specific sensor constructors and onl
 - Added the functions `Sensor::clearStatus()`,`Sensor::clearPowerStatus()`,`Sensor::clearWakeStatus()`,and `Sensor::clearMeasurementStatus()` which reset some or all of the sensor status bits and related timing variables.
 - Added an abstract AnalogVoltageBase class with two concrete classes for analog voltage measurements: ProcessorAnalogBase and TIADS1x15Base.
 All supported analog sensors can now accept a pointer to an object of any concrete subclass of the AnalogVoltageBase class to use for raw voltage measurements.
-By default the existing analog sensors will create an AnalogVoltageBase class object internally for whichever type of ADC (processor or ADS1x15) the sensor was originally coded to use.
+By default, existing analog sensors will create an internal concrete AnalogVoltageBase subclass instance for whichever ADC type (processor or ADS1x15) the sensor was originally coded to use.
 This affects the following classes:
   - AlphasenseCO2
   - AnalogElecConductivity
