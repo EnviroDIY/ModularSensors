@@ -201,14 +201,6 @@ class AnalogVoltageBase {
 
  protected:
     /**
-     * @brief Convert voltage resolution to appropriate decimal places
-     *
-     * @param voltageResolution The voltage resolution in volts per LSB
-     * @return The number of decimal places needed to represent the resolution
-     */
-    uint8_t voltageResolutionToDecimalPlaces(float voltageResolution);
-
-    /**
      * @brief Stored voltage multiplier value
      *
      * Multiplier to apply for voltage divider calculations
@@ -223,24 +215,5 @@ class AnalogVoltageBase {
      */
     float _supplyVoltage;
 };
-
-// Inline implementation of voltageResolutionToDecimalPlaces
-inline uint8_t
-AnalogVoltageBase::voltageResolutionToDecimalPlaces(float voltageResolution) {
-    if (voltageResolution <= 0.0f) {
-        return 4;  // Default to 4 decimal places for invalid input
-    }
-
-    // Calculate the number of decimal places needed to represent the resolution
-    // We want at least one significant digit beyond the resolution
-    float log10Resolution = log10f(voltageResolution);
-    int   decimalPlaces   = static_cast<int>(-log10Resolution) + 1;
-
-    // Clamp to reasonable bounds (0-6 decimal places)
-    if (decimalPlaces < 0) decimalPlaces = 0;
-    if (decimalPlaces > 6) decimalPlaces = 6;
-
-    return static_cast<uint8_t>(decimalPlaces);
-}
 
 #endif  // SRC_SENSORS_ANALOGVOLTAGEBASE_H_
