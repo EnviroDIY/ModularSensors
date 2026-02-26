@@ -1048,13 +1048,13 @@ AlphasenseCO2 alphasenseCO2_c(asCO2Power, asCO2Channel1, asCO2Channel2,
 byte anbModbusAddress =
     0x55;  // The modbus address of ANB pH Sensor (0x55 is the default)
 const int8_t  anbPower       = sensorPowerPin;  // ANB pH Sensor power pin
-const int8_t  alAdapterPower = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  al485EnablePin = -1;              // Adapter RE/DE pin
+const int8_t  anbAdapterPower = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  anb485EnablePin = -1;              // Adapter RE/DE pin
 const uint8_t anbNReadings   = 1;
 
 // Create an ANB pH sensor object
 ANBpH anbPH(anbModbusAddress, modbusSerial, anbPower, loggingInterval,
-            alAdapterPower, al485EnablePin, anbNReadings);
+            anbAdapterPower, anb485EnablePin, anbNReadings);
 
 // Create all of the variable pointers for the ANB pH sensor
 Variable* anbPHValue = new ANBpH_pH(&anbPH,
@@ -1465,7 +1465,6 @@ Variable* clarivueError = new CampbellClariVUE10_ErrorCode(
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const int8_t  OBS3Power       = sensorPowerPin;  // Power pin
 const uint8_t OBS3NReadings   = 10;
-const uint8_t OBS3AdsI2C_addr = 0x48;  // The I2C address of the ADS1115 ADC
 
 const int8_t OBSLowADSChannel = 0;  // ADS channel for *low* range output
 
@@ -2317,7 +2316,6 @@ Variable* inaPower = new TIINA219_Power(&ina219,
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const int8_t  cyclopsPower       = sensorPowerPin;  // Power pin
 const uint8_t cyclopsNReadings   = 10;
-const uint8_t cyclopsAdsI2C_addr = 0x48;  // The I2C address of the ADS1115 ADC
 const int8_t  cyclopsADSChannel  = 0;     // ADS channel
 
 // Cyclops calibration information
@@ -2415,7 +2413,6 @@ const float ttPlusBlankVolt =
     0.000;  // The voltage (in volts) measured for a blank.
 
 // Create a Turner Turbidity Plus sensor object
-const uint8_t       ttPlusReadings = 10;
 TurnerTurbidityPlus turbidityPlus(ttPlusPower, ttPlusWiper, ttPlusChannel1,
                                   ttPlusChannel2, ttPlusStdConc, ttPlusStdVolt,
                                   ttPlusBlankVolt, ttPlusReadings);
