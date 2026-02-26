@@ -998,23 +998,35 @@ Variable* ds3231Temp =
 // ==========================================================================
 /** Start [alphasense_co2] */
 #include <sensors/AlphasenseCO2.h>
+#include <sensors/TIADS1x15.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-const int8_t      AlphasenseCO2Power = sensorPowerPin;  // Power pin
-aco2_adsDiffMux_t AlphasenseDiffMux =
-    DIFF_MUX_2_3;  // Differential voltage config
-const uint8_t AlphasenseCO2ADSi2c_addr =
-    0x48;  // The I2C address of the ADS1115 ADC
+const int8_t  asCO2Power    = sensorPowerPin;  // Power pin
+const int8_t  asCO2Channel1 = 2;               // First differential channel
+const int8_t  asCO2Channel2 = 3;               // Second differential channel
+const uint8_t asCO2Meas     = 1;               // Second differential channel
 
 // Create an Alphasense CO2 sensor object
-AlphasenseCO2 alphasenseCO2(AlphasenseCO2Power, AlphasenseDiffMux,
-                            AlphasenseCO2ADSi2c_addr);
+AlphasenseCO2 alphasenseCO2(asCO2Power, asCO2Channel1, asCO2Channel2,
+                            asCO2Meas);
 
 // Create PAR and raw voltage variable pointers for the CO2
 Variable* asCO2        = new AlphasenseCO2_CO2(&alphasenseCO2,
                                                "12345678-abcd-1234-ef00-1234567890ab");
 Variable* asco2voltage = new AlphasenseCO2_Voltage(
     &alphasenseCO2, "12345678-abcd-1234-ef00-1234567890ab");
+
+// create a custom analog reader based on the TI ADS1115 (optional)
+float         AsCO2Multiplier = 1.0f;      // factor for a voltage divider
+adsGain_t     AsCO2AdsGain    = GAIN_ONE;  // gain of the ADS1115
+float         AsCO2adsSupply  = 3.3f;      // supply voltage of the ADS1115
+const uint8_t AsCO2i2c_addr   = 0x48;      // The I2C address of the ADS1115 ADC
+TIADS1x15Base AsCO2ADS(AsCO2Multiplier, AsCO2AdsGain, AsCO2adsSupply,
+                       AsCO2i2c_addr);
+
+// Create an Alphasense CO2 sensor object with the custom TIADS1x15Base
+AlphasenseCO2 alphasenseCO2_c(asCO2Power, asCO2Channel1, asCO2Channel2,
+                              asCO2Meas, &AsCO2ADS);
 /** End [alphasense_co2] */
 #endif
 
@@ -1035,14 +1047,14 @@ Variable* asco2voltage = new AlphasenseCO2_Voltage(
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 byte anbModbusAddress =
     0x55;  // The modbus address of ANB pH Sensor (0x55 is the default)
-const int8_t  anbPower          = sensorPowerPin;  // ANB pH Sensor power pin
-const int8_t  alAdapterPower    = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  al485EnablePin    = -1;              // Adapter RE/DE pin
-const uint8_t anbNumberReadings = 1;
+const int8_t  anbPower       = sensorPowerPin;  // ANB pH Sensor power pin
+const int8_t  alAdapterPower = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  al485EnablePin = -1;              // Adapter RE/DE pin
+const uint8_t anbNReadings   = 1;
 
 // Create an ANB pH sensor object
 ANBpH anbPH(anbModbusAddress, modbusSerial, anbPower, loggingInterval,
-            alAdapterPower, al485EnablePin, anbNumberReadings);
+            alAdapterPower, al485EnablePin, anbNReadings);
 
 // Create all of the variable pointers for the ANB pH sensor
 Variable* anbPHValue = new ANBpH_pH(&anbPH,
@@ -1120,20 +1132,32 @@ Variable* dhtHI   = new AOSongDHT_HI(&dht,
 // ==========================================================================
 /** Start [apogee_sq212] */
 #include <sensors/ApogeeSQ212.h>
+#include <sensors/TIADS1x15.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-const int8_t  SQ212Power       = sensorPowerPin;  // Power pin
-const int8_t  SQ212ADSChannel  = 3;     // The ADS channel for the SQ212
-const uint8_t SQ212ADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
+const int8_t  sq212Power      = sensorPowerPin;  // Power pin
+const int8_t  sq212ADSChannel = 3;  // The ADS channel for the SQ212
+const uint8_t sq212Readings   = 1;  // The ADS channel for the SQ212
 
-// Create an Apogee SQ212 sensor object
-ApogeeSQ212 SQ212(SQ212Power, SQ212ADSChannel, SQ212ADSi2c_addr);
+// Create an Apogee SQ212 sensor object with the default voltage reader
+ApogeeSQ212 sq212(sq212Power, sq212ADSChannel);
 
 // Create PAR and raw voltage variable pointers for the SQ212
 Variable* sq212PAR =
-    new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-ef00-1234567890ab");
+    new ApogeeSQ212_PAR(&sq212, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* sq212voltage =
-    new ApogeeSQ212_Voltage(&SQ212, "12345678-abcd-1234-ef00-1234567890ab");
+    new ApogeeSQ212_Voltage(&sq212, "12345678-abcd-1234-ef00-1234567890ab");
+
+// create a custom analog reader based on the TI ADS1115 (optional)
+float         sq212Multiplier = 1.0f;      // factor for a voltage divider
+adsGain_t     sq212AdsGain    = GAIN_ONE;  // gain of the ADS1115
+float         sq212adsSupply  = 3.3f;      // supply voltage of the ADS1115
+const uint8_t sq212i2c_addr   = 0x48;      // The I2C address of the ADS1115 ADC
+TIADS1x15Base sq212ADS(sq212Multiplier, sq212AdsGain, sq212adsSupply,
+                       sq212i2c_addr);
+
+// Create an Apogee SQ212 sensor object with the custom TIADS1x15Base
+ApogeeSQ212 sq212_c(sq212Power, sq212ADSChannel, sq212Readings, &sq212ADS);
 /** End [apogee_sq212] */
 #endif
 
@@ -1436,11 +1460,12 @@ Variable* clarivueError = new CampbellClariVUE10_ErrorCode(
 // ==========================================================================
 /** Start [campbell_obs3] */
 #include <sensors/CampbellOBS3.h>
+#include <sensors/TIADS1x15.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-const int8_t  OBS3Power          = sensorPowerPin;  // Power pin
-const uint8_t OBS3NumberReadings = 10;
-const uint8_t OBS3ADSi2c_addr    = 0x48;  // The I2C address of the ADS1115 ADC
+const int8_t  OBS3Power       = sensorPowerPin;  // Power pin
+const uint8_t OBS3NReadings   = 10;
+const uint8_t OBS3AdsI2C_addr = 0x48;  // The I2C address of the ADS1115 ADC
 
 const int8_t OBSLowADSChannel = 0;  // ADS channel for *low* range output
 
@@ -1451,7 +1476,7 @@ const float OBSLow_C = 0.000E+00;  // "C" value [*low* range]
 
 // Create a Campbell OBS3+ *low* range sensor object
 CampbellOBS3 osb3low(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B, OBSLow_C,
-                     OBS3ADSi2c_addr, OBS3NumberReadings);
+                     OBS3NReadings);
 
 // Create turbidity and voltage variable pointers for the low range  of the OBS3
 Variable* obs3TurbLow = new CampbellOBS3_Turbidity(
@@ -1469,13 +1494,31 @@ const float OBSHigh_C = 0.000E+00;  // "C" value [*high* range]
 
 // Create a Campbell OBS3+ *high* range sensor object
 CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B,
-                      OBSHigh_C, OBS3ADSi2c_addr, OBS3NumberReadings);
+                      OBSHigh_C, OBS3NReadings);
 
 // Create turbidity and voltage variable pointers for the high range of the OBS3
 Variable* obs3TurbHigh = new CampbellOBS3_Turbidity(
     &osb3high, "12345678-abcd-1234-ef00-1234567890ab", "TurbHigh");
 Variable* obs3VoltHigh = new CampbellOBS3_Voltage(
     &osb3high, "12345678-abcd-1234-ef00-1234567890ab", "TurbHighV");
+
+// create a custom analog reader based on the TI ADS1115 (optional)
+float         OBS3Multiplier       = 1.0f;      // factor for a voltage divider
+adsGain_t     OBS3AdsGain          = GAIN_ONE;  // gain of the ADS1115
+float         OBS3AdsSupplyVoltage = 3.3f;      // supply voltage of the ADS1115
+const uint8_t OBS3AdsI2C_addr = 0x48;  // The I2C address of the ADS1115 ADC
+TIADS1x15Base OBSADS(OBS3Multiplier, OBS3AdsGain, OBS3AdsSupplyVoltage,
+                     OBS3AdsI2C_addr);
+
+// Create a Campbell OBS3+ *low* range sensor object with the custom
+// TIADS1x15Base
+CampbellOBS3 osb3low_c(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B,
+                       OBSLow_C, OBS3NReadings, &OBSADS);
+
+// Create a Campbell OBS3+ *high* range sensor object with the custom
+// TIADS1x15Base
+CampbellOBS3 osb3high_c(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B,
+                        OBSHigh_C, OBS3NReadings, &OBSADS);
 /** End [campbell_obs3] */
 #endif
 
@@ -1517,13 +1560,13 @@ Variable* rainvueRainRateMax = new CampbellRainVUE10_RainRateMax(
 #include <sensors/DecagonCTD.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-const char*   CTDSDI12address   = "1";  // The SDI-12 Address of the CTD
-const uint8_t CTDNumberReadings = 6;    // The number of readings to average
-const int8_t  CTDPower          = sensorPowerPin;  // Power pin
-const int8_t  CTDData           = sdi12DataPin;    // The SDI-12 data pin
+const char*   CTDSDI12address = "1";  // The SDI-12 Address of the CTD
+const uint8_t CTDNReadings    = 6;    // The number of readings to average
+const int8_t  CTDPower        = sensorPowerPin;  // Power pin
+const int8_t  CTDData         = sdi12DataPin;    // The SDI-12 data pin
 
 // Create a Decagon CTD sensor object
-DecagonCTD ctd(*CTDSDI12address, CTDPower, CTDData, CTDNumberReadings);
+DecagonCTD ctd(*CTDSDI12address, CTDPower, CTDData, CTDNReadings);
 
 // Create conductivity, temperature, and depth variable pointers for the CTD
 Variable* ctdCond = new DecagonCTD_Cond(&ctd,
@@ -1544,13 +1587,13 @@ Variable* ctdDepth =
 #include <sensors/DecagonES2.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-const char*   ES2SDI12address   = "3";  // The SDI-12 Address of the ES2
-const int8_t  ES2Power          = sensorPowerPin;  // Power pin
-const int8_t  ES2Data           = sdi12DataPin;    // The SDI-12 data pin
-const uint8_t ES2NumberReadings = 5;
+const char*   ES2SDI12address = "3";  // The SDI-12 Address of the ES2
+const int8_t  ES2Power        = sensorPowerPin;  // Power pin
+const int8_t  ES2Data         = sdi12DataPin;    // The SDI-12 data pin
+const uint8_t ES2NReadings    = 5;
 
 // Create a Decagon ES2 sensor object
-DecagonES2 es2(*ES2SDI12address, ES2Power, ES2Data, ES2NumberReadings);
+DecagonES2 es2(*ES2SDI12address, ES2Power, ES2Data, ES2NReadings);
 
 // Create specific conductance and temperature variable pointers for the ES2
 Variable* es2Cond = new DecagonES2_Cond(&es2,
@@ -1567,6 +1610,7 @@ Variable* es2Temp = new DecagonES2_Temp(&es2,
 // ==========================================================================
 /** Start [everlight_alspt19] */
 #include <sensors/EverlightALSPT19.h>
+#include <sensors/ProcessorAnalog.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const int8_t alsPower = sensorPowerPin;  // Power pin
@@ -1577,14 +1621,15 @@ const int8_t alsData = A4;  // The ALS PT-19 data pin
 #endif
 const int8_t  alsSupply     = 3.3;  // The ALS PT-19 supply power voltage
 const int8_t  alsResistance = 10;   // The ALS PT-19 loading resistance (in kΩ)
-const uint8_t alsNumberReadings = 10;
+const uint8_t alsNReadings  = 10;
 
 // Create a Everlight ALS-PT19 sensor object
 EverlightALSPT19 alsPt19(alsPower, alsData, alsSupply, alsResistance,
-                         alsNumberReadings);
+                         alsNReadings);
 
-// For an EnviroDIY Mayfly, you can use the abbreviated version
-// EverlightALSPT19 alsPt19(alsNumberReadings);
+// For a board with ALS parameters set in KnownProcessors.h (ie, an EnviroDIY
+// Mayfly or Stonefly), you can simply do:
+// EverlightALSPT19 alsPt19_mf(alsNReadings);
 
 // Create voltage, current, and illuminance variable pointers for the ALS-PT19
 Variable* alsPt19Volt = new EverlightALSPT19_Voltage(
@@ -1592,7 +1637,17 @@ Variable* alsPt19Volt = new EverlightALSPT19_Voltage(
 Variable* alsPt19Current = new EverlightALSPT19_Current(
     &alsPt19, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* alsPt19Lux = new EverlightALSPT19_Illuminance(
-    &alsPt19, "12345678-abcd-1234-ef00-1234567890ab");
+    &alsPt19, "b7cf9961-246a-4443-b57f-0526fecfea8f");
+
+// create a custom analog reader based on the Processor ADC (optional)
+float               alsMultiplier = 1.0f;  // factor for a voltage divider
+float               alsAdsSupply = 3.3f;  // supply voltage of the Processor ADC
+ProcessorAnalogBase alsADS(alsMultiplier, alsAdsSupply);
+
+// Create an Everlight ALS-PT19 sensor object with the custom
+// ProcessorAnalogBase
+EverlightALSPT19 alsPt19_c(alsPower, alsData, alsSupply, alsResistance,
+                           alsNReadings, &alsADS);
 /** End [everlight_alspt19] */
 #endif
 
@@ -1605,19 +1660,32 @@ Variable* alsPt19Lux = new EverlightALSPT19_Illuminance(
 #include <sensors/TIADS1x15.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-const int8_t ADSPower   = sensorPowerPin;  // Power pin
-const int8_t ADSChannel = 2;               // The ADS channel of interest
-const float  voltageMultiplier =
-    1.0f;  // Voltage multiplier for an external voltage divider
-// use 1.0f for direct connection
-// use (R_top + R_bottom) / R_bottom for voltage divider
-const adsGain_t adsPGAGain = GAIN_ONE;  // The internal gain setting for the ADS
-const uint8_t evADSi2c_addr  = 0x48;  // The I2C address of the ADS1115 ADC
-const uint8_t VoltReadsToAvg = 1;     // Only read one sample
+const int8_t evADSPower = sensorPowerPin;  // Power pin
+const int8_t evADSChannel1 =
+    2;  // The first ADS channel (or only for single-ended readings)
+const int8_t evADSChannel2 =
+    3;  // The second ADS channel (for differential readings).  Pass -1 for
+        // single-ended readings.
+const uint8_t evReadsToAvg = 1;  // Only read one sample
 
-// Create a TI ADS1x15 sensor object
-TIADS1x15 ads1x15(ADSPower, ADSChannel, voltageMultiplier, adsPGAGain,
-                  evADSi2c_addr, VoltReadsToAvg);
+// Create a single-ended External Voltage sensor object with the default
+// TIADS1x15Base
+TIADS1x15 ads1x15(evADSPower, evADSChannel1);
+// Create a differential External Voltage sensor object with the default
+// TIADS1x15Base
+TIADS1x15 ads1x15_d(evADSPower, evADSChannel1, evADSChannel2);
+
+// create a custom ADS instance (optional)
+float         evVoltageMultiplier = 1.0f;      // factor for a voltage divider
+adsGain_t     evAdsGain           = GAIN_ONE;  // gain of the ADS1115
+float         evAdsSupplyVoltage  = 3.3f;      // supply voltage of the ADS1115
+const uint8_t evAdsI2C_addr       = 0x48;  // The I2C address of the ADS1115 ADC
+TIADS1x15Base evADS(evVoltageMultiplier, evAdsGain, evAdsSupplyVoltage,
+                    evAdsI2C_addr);
+
+// Create a single ended External Voltage sensor object with the custom
+// TIADS1x15Base
+TIADS1x15 ads1x15_c(evADSPower, evADSChannel1, -1, evReadsToAvg, &evADS);
 
 // Create a voltage variable pointer
 Variable* ads1x15Volt =
@@ -1634,20 +1702,29 @@ Variable* ads1x15Volt =
 #include <sensors/ProcessorAnalog.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-const int8_t processorAnalogPowerPin = sensorPowerPin;  // Power pin
-const int8_t processorAnalogDataPin  = A0;  // Analog input pin (processor ADC)
-const float  processorAnalogMultiplier =
-    5.58;                        //  Gain setting if using a voltage divider
-const uint8_t eaReadsToAvg = 1;  // Only read one sample
+const int8_t  processorAnalogPowerPin = sensorPowerPin;  // Power pin
+const int8_t  processorAnalogDataPin  = A0;  // Analog input pin (processor ADC)
+const uint8_t processorAnalogNReadings = 1;  // Only read one sample
 
-// Create an Processor Analog sensor object
-ProcessorAnalog extAnalog(processorAnalogPowerPin, processorAnalogDataPin,
-                          processorAnalogMultiplier, OPERATING_VOLTAGE,
-                          eaReadsToAvg);
+// Create a Processor Analog sensor object with the default ProcessorAnalogBase
+ProcessorAnalog processorAnalog(processorAnalogPowerPin, processorAnalogDataPin,
+                                processorAnalogNReadings);
+
+// create a custom analog reader based on the Processor ADC (optional)
+float processorAnalogMultiplier = 1.0f;  // factor for a voltage divider
+float processorAnalogSupply     = 3.3f;  // supply voltage of the Processor ADC
+ProcessorAnalogBase processorAnalogBaseCustom(processorAnalogMultiplier,
+                                              processorAnalogSupply);
+
+// Create a Processor Analog sensor object with the custom ProcessorAnalogBase
+ProcessorAnalog processorAnalog_c(processorAnalogPowerPin,
+                                  processorAnalogDataPin,
+                                  processorAnalogNReadings,
+                                  &processorAnalogBaseCustom);
 
 // Create a voltage variable pointer
-Variable* extAnalogVolts = new ProcessorAnalog_Voltage(
-    &extAnalog, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* processorAnalogVolts = new ProcessorAnalog_Voltage(
+    &processorAnalog, "12345678-abcd-1234-ef00-1234567890ab");
 /** End [processor_analog] */
 #endif
 
@@ -1719,16 +1796,16 @@ Variable* hydrocamByteError = new GeoluxHydroCam_ByteError(
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 byte gplp8ModbusAddress = 0x19;  // The modbus address of the gplp8
 // Raw Request >>> {0x19, 0x03, 0x00, 0xC8, 0x00, 0x01, 0x06, 0x2C}
-const int8_t  gplp8AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  gplp8SensorPower    = relayPowerPin;   // Sensor power pin
-const int8_t  gplp8EnablePin      = -1;              // Adapter RE/DE pin
-const uint8_t gplp8NumberReadings = 1;
+const int8_t  gplp8AdapterPower = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  gplp8SensorPower  = relayPowerPin;   // Sensor power pin
+const int8_t  gplp8EnablePin    = -1;              // Adapter RE/DE pin
+const uint8_t gplp8NReadings    = 1;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
 // power consumption
 
 // Create a GroPoint Profile GPLP-8 sensor object
 GroPointGPLP8 gplp8(gplp8ModbusAddress, modbusSerial, gplp8AdapterPower,
-                    gplp8SensorPower, gplp8EnablePin, gplp8NumberReadings);
+                    gplp8SensorPower, gplp8EnablePin, gplp8NReadings);
 
 // Create moisture variable pointers for each segment of the GPLP-8
 Variable* gplp8Moist1 = new GroPointGPLP8_Moist(
@@ -1787,13 +1864,13 @@ Variable* gplp8Temp13 = new GroPointGPLP8_Temp(
 #include <sensors/InSituRDO.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-const char*   RDOSDI12address   = "5";  // The SDI-12 Address of the RDO PRO-X
-const int8_t  RDOPower          = sensorPowerPin;  // Power pin
-const int8_t  RDOData           = sdi12DataPin;    // The SDI-12 data pin
-const uint8_t RDONumberReadings = 3;
+const char*   rdoSDI12address = "5";  // The SDI-12 Address of the RDO PRO-X
+const int8_t  rdoPower        = sensorPowerPin;  // Power pin
+const int8_t  rdoData         = sdi12DataPin;    // The SDI-12 data pin
+const uint8_t rdoNReadings    = 3;
 
 // Create an In-Situ RDO PRO-X dissolved oxygen sensor object
-InSituRDO insituRDO(*RDOSDI12address, RDOPower, RDOData, RDONumberReadings);
+InSituRDO insituRDO(*rdoSDI12address, rdoPower, rdoData, rdoNReadings);
 
 // Create dissolved oxygen percent, dissolved oxygen concentration, temperature,
 // and oxygen partial pressure variable pointers for the RDO PRO-X
@@ -1817,16 +1894,16 @@ Variable* rdoO2pp =
 #include <sensors/InSituTrollSdi12a.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-const char* TROLLSDI12address =
+const char* trollSDI12address =
     "1";  // The SDI-12 Address of the Aqua/Level TROLL
-const int8_t TROLLPower =
+const int8_t trollPower =
     sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t  TROLLData           = sdi12DataPin;  // The SDI-12 data pin
-const uint8_t TROLLNumberReadings = 2;  // The number of readings to average
+const int8_t  trollData      = sdi12DataPin;  // The SDI-12 data pin
+const uint8_t trollNReadings = 2;  // The number of readings to average
 
 // Create an In-Situ TROLL sensor object
-InSituTrollSdi12a insituTROLL(*TROLLSDI12address, TROLLPower, TROLLData,
-                              TROLLNumberReadings);
+InSituTrollSdi12a insituTROLL(*trollSDI12address, trollPower, trollData,
+                              trollNReadings);
 
 // Create pressure, temperature, and depth variable pointers for the TROLL
 Variable* trollPressure = new InSituTrollSdi12a_Pressure(
@@ -1857,13 +1934,12 @@ byte acculevelModbusAddress  = 0x01;  // The modbus address of KellerAcculevel
 const int8_t  acculevelPower = relayPowerPin;   // Acculevel Sensor power pin
 const int8_t  alAdapterPower = sensorPowerPin;  // RS485 adapter power pin
 const int8_t  al485EnablePin = -1;              // Adapter RE/DE pin
-const uint8_t acculevelNumberReadings = 5;
+const uint8_t acculevelNReadings = 5;
 // The manufacturer recommends taking and averaging a few readings
 
 // Create a Keller Acculevel sensor object
 KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, alAdapterPower,
-                          acculevelPower, al485EnablePin,
-                          acculevelNumberReadings);
+                          acculevelPower, al485EnablePin, acculevelNReadings);
 
 // Create pressure, temperature, and height variable pointers for the Acculevel
 Variable* acculevPress = new KellerAcculevel_Pressure(
@@ -1894,13 +1970,12 @@ byte nanolevelModbusAddress  = 0x01;  // The modbus address of KellerNanolevel
 const int8_t  nlAdapterPower = sensorPowerPin;  // RS485 adapter power pin
 const int8_t  nanolevelPower = relayPowerPin;   // Sensor power pin
 const int8_t  nl485EnablePin = -1;              // Adapter RE/DE pin
-const uint8_t nanolevelNumberReadings = 5;
+const uint8_t nanolevelNReadings = 5;
 // The manufacturer recommends taking and averaging a few readings
 
 // Create a Keller Nanolevel sensor object
 KellerNanolevel nanolevel(nanolevelModbusAddress, modbusSerial, nlAdapterPower,
-                          nanolevelPower, nl485EnablePin,
-                          nanolevelNumberReadings);
+                          nanolevelPower, nl485EnablePin, nanolevelNReadings);
 
 // Create pressure, temperature, and height variable pointers for the Nanolevel
 Variable* nanolevPress = new KellerNanolevel_Pressure(
@@ -1930,12 +2005,12 @@ Variable* nanolevHeight = new KellerNanolevel_Height(
 const int8_t SonarPower    = sensorPowerPin;  // Excite (power) pin
 const int8_t Sonar1Trigger = -1;              // Trigger pin
 // Trigger should be a *unique* negative number if unconnected
-const int16_t Sonar1MaxRange       = 9999;  // Maximum range of sonar
-const uint8_t sonar1NumberReadings = 3;     // The number of readings to average
+const int16_t Sonar1MaxRange  = 9999;  // Maximum range of sonar
+const uint8_t sonar1NReadings = 3;     // The number of readings to average
 
 // Create a MaxBotix Sonar sensor object
 MaxBotixSonar sonar1(sonarSerial, SonarPower, Sonar1Trigger, Sonar1MaxRange,
-                     sonar1NumberReadings);
+                     sonar1NReadings);
 
 // Create an ultrasonic range variable pointer
 Variable* sonar1Range =
@@ -1957,12 +2032,12 @@ Variable* sonar1Range =
 DeviceAddress OneWireAddress1 = {0x28, 0xFF, 0xBD, 0xBA,
                                  0x81, 0x16, 0x03, 0x0C};
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-const int8_t OneWirePower       = sensorPowerPin;  // Power pin
-const int8_t OneWireBus         = A0;              // OneWire Bus Pin
-const int8_t ds18NumberReadings = 3;
+const int8_t OneWirePower  = sensorPowerPin;  // Power pin
+const int8_t OneWireBus    = A0;              // OneWire Bus Pin
+const int8_t ds18NReadings = 3;
 
 // Create a Maxim DS18 sensor objects (use this form for a known address)
-MaximDS18 ds18(OneWireAddress1, OneWirePower, OneWireBus, ds18NumberReadings);
+MaximDS18 ds18(OneWireAddress1, OneWirePower, OneWireBus, ds18NReadings);
 
 // Create a Maxim DS18 sensor object (use this form for a single sensor on bus
 // with an unknown address)
@@ -2039,13 +2114,13 @@ Variable* fivetmTemp =
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const char*   hydros21SDI12address = "1";  // The SDI-12 Address of the Hydros21
-const uint8_t hydros21NumberReadings = 6;  // The number of readings to average
-const int8_t  hydros21Power          = sensorPowerPin;  // Power pin
-const int8_t  hydros21Data           = sdi12DataPin;    // The SDI-12 data pin
+const uint8_t hydros21NReadings    = 6;    // The number of readings to average
+const int8_t  hydros21Power        = sensorPowerPin;  // Power pin
+const int8_t  hydros21Data         = sdi12DataPin;    // The SDI-12 data pin
 
 // Create a Decagon Hydros21 sensor object
 MeterHydros21 hydros21(*hydros21SDI12address, hydros21Power, hydros21Data,
-                       hydros21NumberReadings);
+                       hydros21NReadings);
 
 // Create conductivity, temperature, and depth variable pointers for the
 // Hydros21
@@ -2070,11 +2145,11 @@ Variable* hydros21Depth =
 const char*   teros11SDI12address = "4";  // The SDI-12 Address of the Teros 11
 const int8_t  terosPower          = sensorPowerPin;  // Power pin
 const int8_t  terosData           = sdi12DataPin;    // The SDI-12 data pin
-const uint8_t teros11NumberReadings = 3;  // The number of readings to average
+const uint8_t teros11NReadings    = 3;  // The number of readings to average
 
 // Create a METER TEROS 11 sensor object
 MeterTeros11 teros11(*teros11SDI12address, terosPower, terosData,
-                     teros11NumberReadings);
+                     teros11NReadings);
 
 // Create the matric potential, volumetric water content, and temperature
 // variable pointers for the Teros 11
@@ -2236,11 +2311,13 @@ Variable* inaPower = new TIINA219_Power(&ina219,
 // ==========================================================================
 /** Start [turner_cyclops] */
 #include <sensors/TurnerCyclops.h>
+#include <sensors/TIADS1x15.h>
+#include <sensors/ProcessorAnalog.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-const int8_t  cyclopsPower          = sensorPowerPin;  // Power pin
-const uint8_t cyclopsNumberReadings = 10;
-const uint8_t cyclopsADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
+const int8_t  cyclopsPower       = sensorPowerPin;  // Power pin
+const uint8_t cyclopsNReadings   = 10;
+const uint8_t cyclopsAdsI2C_addr = 0x48;  // The I2C address of the ADS1115 ADC
 const int8_t  cyclopsADSChannel  = 0;     // ADS channel
 
 // Cyclops calibration information
@@ -2253,8 +2330,7 @@ const float cyclopsBlankVolt =
 
 // Create a Turner Cyclops sensor object
 TurnerCyclops cyclops(cyclopsPower, cyclopsADSChannel, cyclopsStdConc,
-                      cyclopsStdVolt, cyclopsBlankVolt, cyclopsADSi2c_addr,
-                      cyclopsNumberReadings);
+                      cyclopsStdVolt, cyclopsBlankVolt, cyclopsNReadings);
 
 // Create the voltage variable pointer - used for any type of Cyclops
 Variable* cyclopsVoltage =
@@ -2288,6 +2364,29 @@ Variable* cyclopsTryptophan = new TurnerCyclops_Tryptophan(
     &cyclops, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* cyclopsRedChloro = new TurnerCyclops_RedChlorophyll(
     &cyclops, "12345678-abcd-1234-ef00-1234567890ab");
+
+// create a custom analog reader based on the TI ADS1115 (optional)
+float         cyclopsMultiplier       = 1.0f;  // factor for a voltage divider
+adsGain_t     cyclopsAdsGain          = GAIN_ONE;  // gain of the ADS1115
+float         cyclopsAdsSupplyVoltage = 3.3f;  // supply voltage of the ADS1115
+const uint8_t cyclopsAdsI2C_addr = 0x48;  // The I2C address of the ADS1115 ADC
+TIADS1x15Base cyclopsADS(cyclopsMultiplier, cyclopsAdsGain,
+                         cyclopsAdsSupplyVoltage, cyclopsAdsI2C_addr);
+
+// Create a Turner Cyclops sensor object with the custom ADS instance
+TurnerCyclops cyclops_c(cyclopsPower, cyclopsADSChannel, cyclopsStdConc,
+                        cyclopsStdVolt, cyclopsBlankVolt, cyclopsNReadings,
+                        &cyclopsADS);
+
+// create a custom analog reader based on the Processor ADC (optional)
+float cyclopsMultiplier2 = 1.0f;  // factor for a voltage divider
+float cyclopsSupply2     = 3.3f;  // supply voltage of the Processor ADC
+ProcessorAnalogBase cyclopsADS2(cyclopsMultiplier2, cyclopsSupply2);
+
+// Create a Turner Cyclops sensor object with the custom ADS instance
+TurnerCyclops cyclops_c2(cyclopsPower, cyclopsADSChannel, cyclopsStdConc,
+                         cyclopsStdVolt, cyclopsBlankVolt, cyclopsNReadings,
+                         &cyclopsADS2);
 /** End [turner_cyclops] */
 #endif
 
@@ -2298,39 +2397,48 @@ Variable* cyclopsRedChloro = new TurnerCyclops_RedChlorophyll(
 // ==========================================================================
 /** Start [turner_turbidity_plus] */
 #include <sensors/TurnerTurbidityPlus.h>
+#include <sensors/TIADS1x15.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-const int8_t     turbidityPlusPower = sensorPowerPin;  // Power pin
-const int8_t     turbidityPlusWiper = relayPowerPin;   // Wiper pin
-ttp_adsDiffMux_t turbidityPlusDiffMux =
-    DIFF_MUX_2_3;  // Differential voltage config
-const uint8_t turbidityPlusNumberReadings = 10;
-const uint8_t turbidityPlusADSi2c_addr =
-    0x48;                                 // The I2C address of the ADS1115 ADC
-adsGain_t turbidityPlusGain  = GAIN_ONE;  // The gain of the ADS
-float tpVoltageDividerFactor = 1;  // The factor for a voltage divider, if any
+const int8_t  ttPlusPower    = sensorPowerPin;  // Power pin
+const int8_t  ttPlusWiper    = relayPowerPin;   // Wiper pin
+const int8_t  ttPlusChannel1 = 2;               // First differential channel
+const int8_t  ttPlusChannel2 = 3;               // Second differential channel
+const uint8_t ttPlusReadings = 10;
 
 // Turbidity Plus calibration information
-const float turbidityPlusStdConc = 1.000;  // Concentration of the standard used
-                                           // for a 1-point sensor calibration.
-const float turbidityPlusStdVolt =
+const float ttPlusStdConc = 1.000;  // Concentration of the standard used
+                                    // for a 1-point sensor calibration.
+const float ttPlusStdVolt =
     1.000;  // The voltage (in volts) measured for the conc_std.
-const float turbidityPlusBlankVolt =
+const float ttPlusBlankVolt =
     0.000;  // The voltage (in volts) measured for a blank.
 
 // Create a Turner Turbidity Plus sensor object
-TurnerTurbidityPlus turbidityPlus(turbidityPlusPower, turbidityPlusWiper,
-                                  turbidityPlusDiffMux, turbidityPlusStdConc,
-                                  turbidityPlusStdVolt, turbidityPlusBlankVolt,
-                                  turbidityPlusADSi2c_addr, turbidityPlusGain,
-                                  turbidityPlusNumberReadings,
-                                  tpVoltageDividerFactor);
+const uint8_t       ttPlusReadings = 10;
+TurnerTurbidityPlus turbidityPlus(ttPlusPower, ttPlusWiper, ttPlusChannel1,
+                                  ttPlusChannel2, ttPlusStdConc, ttPlusStdVolt,
+                                  ttPlusBlankVolt, ttPlusReadings);
 
 // Create the variable pointers
 Variable* turbidityPlusVoltage = new TurnerTurbidityPlus_Voltage(
     &turbidityPlus, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* turbidityPlusTurbidity = new TurnerTurbidityPlus_Turbidity(
     &turbidityPlus, "12345678-abcd-1234-ef00-1234567890ab");
+
+// create a custom analog reader based on the TI ADS1115 (optional)
+float         ttPlusMultiplier = 1.0f;      // factor for a voltage divider
+adsGain_t     ttPlusAdsGain    = GAIN_ONE;  // gain of the ADS1115
+float         ttPlusAdsSupply  = 3.3f;      // supply voltage of the ADS1115
+const uint8_t ttPlusI2C_addr   = 0x48;  // The I2C address of the ADS1115 ADC
+TIADS1x15Base ttPlusADS(ttPlusMultiplier, ttPlusAdsGain, ttPlusAdsSupply,
+                        ttPlusI2C_addr);
+
+// Create a Turner Turbidity Plus sensor object with the custom TIADS1x15Base
+TurnerTurbidityPlus turbidityPlus_c(ttPlusPower, ttPlusWiper, ttPlusChannel1,
+                                    ttPlusChannel2, ttPlusStdConc,
+                                    ttPlusStdVolt, ttPlusBlankVolt,
+                                    ttPlusReadings, &ttPlusADS);
 /** End [turner_turbidity_plus] */
 #endif
 
@@ -2341,16 +2449,18 @@ Variable* turbidityPlusTurbidity = new TurnerTurbidityPlus_Turbidity(
 // ==========================================================================
 /** Start [analog_elec_conductivity] */
 #include <sensors/AnalogElecConductivity.h>
+#include <sensors/ProcessorAnalog.h>
 
-const int8_t ECpwrPin   = A4;  // Power pin (-1 if continuously powered)
-const int8_t ECdataPin1 = A0;  // Data pin (must be an analog pin, ie A#)
+const int8_t  analogECPower = A4;     // Power pin (-1 if continuously powered)
+const int8_t  analogECData  = A0;     // Data pin (must be an analog pin, ie A#)
+const uint8_t analogECNReadings = 1;  // The number of readings to average
 
 // Create an Analog Electrical Conductivity sensor object
-AnalogElecConductivity analogEC_phy(ECpwrPin, ECdataPin1);
+AnalogElecConductivity analogEC(analogECPower, analogECData);
 
 // Create a conductivity variable pointer for the analog sensor
 Variable* analogEc_cond = new AnalogElecConductivity_EC(
-    &analogEC_phy, "12345678-abcd-1234-ef00-1234567890ab");
+    &analogEC, "12345678-abcd-1234-ef00-1234567890ab");
 
 // Create a calculated variable for the temperature compensated conductivity
 // (that is, the specific conductance).  For this example, we will use the
@@ -2393,6 +2503,17 @@ Variable* analogEc_spcond = new Variable(
     calculateAnalogSpCond, analogSpCondResolution, analogSpCondName,
     analogSpCondUnit, analogSpCondCode, analogSpCondUUID);
 /** End [analog_elec_conductivity] */
+
+// create a custom analog reader based on the Processor ADC (optional)
+float analogECMultiplier = 1.0f;  // factor for a voltage divider
+float analogECSupply     = 3.3f;  // supply voltage of the Processor ADC
+ProcessorAnalogBase analogECADS(analogECMultiplier, analogECSupply);
+
+// Create a Turner analogEC sensor object with the custom ADS instance
+AnalogElecConductivity analogEC_c(analogECPower, analogECData,
+                                  ANALOGELECCONDUCTIVITY_RSERIES_OHMS,
+                                  ANALOGELECCONDUCTIVITY_KONST,
+                                  analogECNReadings, &analogECADS);
 #endif
 
 
@@ -2443,17 +2564,17 @@ Variable* VegaPulsError =
 // for Additional Serial Ports" section
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-byte          y504ModbusAddress  = 0x04;  // The modbus address of the Y504
-const int8_t  y504AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  y504SensorPower    = relayPowerPin;   // Sensor power pin
-const int8_t  y504EnablePin      = -1;              // Adapter RE/DE pin
-const uint8_t y504NumberReadings = 5;
+byte          y504ModbusAddress = 0x04;  // The modbus address of the Y504
+const int8_t  y504AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  y504SensorPower   = relayPowerPin;   // Sensor power pin
+const int8_t  y504EnablePin     = -1;              // Adapter RE/DE pin
+const uint8_t y504NReadings     = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
 // power consumption
 
 // Create a Yosemitech Y504 dissolved oxygen sensor object
 YosemitechY504 y504(y504ModbusAddress, modbusSerial, y504AdapterPower,
-                    y504SensorPower, y504EnablePin, y504NumberReadings);
+                    y504SensorPower, y504EnablePin, y504NReadings);
 
 // Create the dissolved oxygen percent, dissolved oxygen concentration, and
 // temperature variable pointers for the Y504
@@ -2481,17 +2602,17 @@ Variable* y504Temp =
 // for Additional Serial Ports" section
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-byte          y510ModbusAddress  = 0x0B;  // The modbus address of the Y510
-const int8_t  y510AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  y510SensorPower    = relayPowerPin;   // Sensor power pin
-const int8_t  y510EnablePin      = -1;              // Adapter RE/DE pin
-const uint8_t y510NumberReadings = 5;
+byte          y510ModbusAddress = 0x0B;  // The modbus address of the Y510
+const int8_t  y510AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  y510SensorPower   = relayPowerPin;   // Sensor power pin
+const int8_t  y510EnablePin     = -1;              // Adapter RE/DE pin
+const uint8_t y510NReadings     = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
 // power consumption
 
 // Create a Y510-B Turbidity sensor object
 YosemitechY510 y510(y510ModbusAddress, modbusSerial, y510AdapterPower,
-                    y510SensorPower, y510EnablePin, y510NumberReadings);
+                    y510SensorPower, y510EnablePin, y510NReadings);
 
 // Create turbidity and temperature variable pointers for the Y510
 Variable* y510Turb =
@@ -2516,17 +2637,17 @@ Variable* y510Temp =
 // for Additional Serial Ports" section
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-byte          y511ModbusAddress  = 0x1A;  // The modbus address of the Y511
-const int8_t  y511AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  y511SensorPower    = relayPowerPin;   // Sensor power pin
-const int8_t  y511EnablePin      = -1;              // Adapter RE/DE pin
-const uint8_t y511NumberReadings = 5;
+byte          y511ModbusAddress = 0x1A;  // The modbus address of the Y511
+const int8_t  y511AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  y511SensorPower   = relayPowerPin;   // Sensor power pin
+const int8_t  y511EnablePin     = -1;              // Adapter RE/DE pin
+const uint8_t y511NReadings     = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
 // power consumption
 
 // Create a Y511-A Turbidity sensor object
 YosemitechY511 y511(y511ModbusAddress, modbusSerial, y511AdapterPower,
-                    y511SensorPower, y511EnablePin, y511NumberReadings);
+                    y511SensorPower, y511EnablePin, y511NReadings);
 
 // Create turbidity and temperature variable pointers for the Y511
 Variable* y511Turb =
@@ -2551,17 +2672,17 @@ Variable* y511Temp =
 // for Additional Serial Ports" section
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-byte          y513ModbusAddress  = 0x13;  // The modbus address of the Y513
-const int8_t  y513AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  y513SensorPower    = relayPowerPin;   // Sensor power pin
-const int8_t  y513EnablePin      = -1;              // Adapter RE/DE pin
-const uint8_t y513NumberReadings = 5;
+byte          y513ModbusAddress = 0x13;  // The modbus address of the Y513
+const int8_t  y513AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  y513SensorPower   = relayPowerPin;   // Sensor power pin
+const int8_t  y513EnablePin     = -1;              // Adapter RE/DE pin
+const uint8_t y513NReadings     = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
 // power consumption
 
 // Create a Y513 Blue Green Algae (BGA) sensor object
 YosemitechY513 y513(y513ModbusAddress, modbusSerial, y513AdapterPower,
-                    y513SensorPower, y513EnablePin, y513NumberReadings);
+                    y513SensorPower, y513EnablePin, y513NReadings);
 
 // Create Blue Green Algae (BGA) concentration and temperature variable
 // pointers for the Y513
@@ -2586,17 +2707,17 @@ Variable* y513Temp =
 // for Additional Serial Ports" section
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-byte          y514ModbusAddress  = 0x14;  // The modbus address of the Y514
-const int8_t  y514AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  y514SensorPower    = relayPowerPin;   // Sensor power pin
-const int8_t  y514EnablePin      = -1;              // Adapter RE/DE pin
-const uint8_t y514NumberReadings = 5;
+byte          y514ModbusAddress = 0x14;  // The modbus address of the Y514
+const int8_t  y514AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  y514SensorPower   = relayPowerPin;   // Sensor power pin
+const int8_t  y514EnablePin     = -1;              // Adapter RE/DE pin
+const uint8_t y514NReadings     = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
 // power consumption
 
 // Create a Y514 chlorophyll sensor object
 YosemitechY514 y514(y514ModbusAddress, modbusSerial, y514AdapterPower,
-                    y514SensorPower, y514EnablePin, y514NumberReadings);
+                    y514SensorPower, y514EnablePin, y514NReadings);
 
 // Create chlorophyll concentration and temperature variable pointers for the
 // Y514
@@ -2622,17 +2743,17 @@ Variable* y514Temp =
 // for Additional Serial Ports" section
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-byte          y520ModbusAddress  = 0x20;  // The modbus address of the Y520
-const int8_t  y520AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  y520SensorPower    = relayPowerPin;   // Sensor power pin
-const int8_t  y520EnablePin      = -1;              // Adapter RE/DE pin
-const uint8_t y520NumberReadings = 5;
+byte          y520ModbusAddress = 0x20;  // The modbus address of the Y520
+const int8_t  y520AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  y520SensorPower   = relayPowerPin;   // Sensor power pin
+const int8_t  y520EnablePin     = -1;              // Adapter RE/DE pin
+const uint8_t y520NReadings     = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
 // power consumption
 
 // Create a Y520 conductivity sensor object
 YosemitechY520 y520(y520ModbusAddress, modbusSerial, y520AdapterPower,
-                    y520SensorPower, y520EnablePin, y520NumberReadings);
+                    y520SensorPower, y520EnablePin, y520NReadings);
 
 // Create specific conductance and temperature variable pointers for the Y520
 Variable* y520Cond =
@@ -2657,16 +2778,16 @@ Variable* y520Temp =
 // for Additional Serial Ports" section
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-byte          y532ModbusAddress  = 0x32;  // The modbus address of the Y532
-const int8_t  y532AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  y532SensorPower    = relayPowerPin;   // Sensor power pin
-const int8_t  y532EnablePin      = 4;               // Adapter RE/DE pin
-const uint8_t y532NumberReadings = 1;
+byte          y532ModbusAddress = 0x32;  // The modbus address of the Y532
+const int8_t  y532AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  y532SensorPower   = relayPowerPin;   // Sensor power pin
+const int8_t  y532EnablePin     = 4;               // Adapter RE/DE pin
+const uint8_t y532NReadings     = 1;
 // The manufacturer actually doesn't mention averaging for this one
 
 // Create a Yosemitech Y532 pH sensor object
 YosemitechY532 y532(y532ModbusAddress, modbusSerial, y532AdapterPower,
-                    y532SensorPower, y532EnablePin, y532NumberReadings);
+                    y532SensorPower, y532EnablePin, y532NReadings);
 
 // Create pH, electrical potential, and temperature variable pointers for the
 // Y532
@@ -2694,16 +2815,16 @@ Variable* y532Temp =
 // for Additional Serial Ports" section
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-byte          y533ModbusAddress  = 0x32;  // The modbus address of the Y533
-const int8_t  y533AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  y533SensorPower    = relayPowerPin;   // Sensor power pin
-const int8_t  y533EnablePin      = 4;               // Adapter RE/DE pin
-const uint8_t y533NumberReadings = 1;
+byte          y533ModbusAddress = 0x32;  // The modbus address of the Y533
+const int8_t  y533AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  y533SensorPower   = relayPowerPin;   // Sensor power pin
+const int8_t  y533EnablePin     = 4;               // Adapter RE/DE pin
+const uint8_t y533NReadings     = 1;
 // The manufacturer actually doesn't mention averaging for this one
 
 // Create a Yosemitech Y533 ORP sensor object
 YosemitechY533 y533(y533ModbusAddress, modbusSerial, y533AdapterPower,
-                    y533SensorPower, y533EnablePin, y533NumberReadings);
+                    y533SensorPower, y533EnablePin, y533NReadings);
 
 // Create ORP and temperature variable pointers for the Y533
 Variable* y533ORP =
@@ -2728,17 +2849,17 @@ Variable* y533Temp =
 // for Additional Serial Ports" section
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-byte          y551ModbusAddress  = 0x50;  // The modbus address of the Y551
-const int8_t  y551AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  y551SensorPower    = relayPowerPin;   // Sensor power pin
-const int8_t  y551EnablePin      = -1;              // Adapter RE/DE pin
-const uint8_t y551NumberReadings = 5;
+byte          y551ModbusAddress = 0x50;  // The modbus address of the Y551
+const int8_t  y551AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  y551SensorPower   = relayPowerPin;   // Sensor power pin
+const int8_t  y551EnablePin     = -1;              // Adapter RE/DE pin
+const uint8_t y551NReadings     = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
 // power consumption
 
 // Create a Y551 chemical oxygen demand sensor object
 YosemitechY551 y551(y551ModbusAddress, modbusSerial, y551AdapterPower,
-                    y551SensorPower, y551EnablePin, y551NumberReadings);
+                    y551SensorPower, y551EnablePin, y551NReadings);
 
 // Create COD, turbidity, and temperature variable pointers for the Y551
 Variable* y551COD =
@@ -2768,16 +2889,16 @@ Variable* y551Temp =
 byte y560ModbusAddress =
     0x60;  // The modbus address of the Y560.
            // NOTE: Hexidecimal 0x60 = 96 decimal used by Yosemitech SmartPC
-const int8_t  y560AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  y560SensorPower    = relayPowerPin;   // Sensor power pin
-const int8_t  y560EnablePin      = -1;              // Adapter RE/DE pin
-const uint8_t y560NumberReadings = 3;
+const int8_t  y560AdapterPower = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  y560SensorPower  = relayPowerPin;   // Sensor power pin
+const int8_t  y560EnablePin    = -1;              // Adapter RE/DE pin
+const uint8_t y560NReadings    = 3;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
 // power consumption
 
 // Create a Y560 Ammonium Probe object
 YosemitechY560 y560(y560ModbusAddress, modbusSerial, y560AdapterPower,
-                    y560SensorPower, y560EnablePin, y560NumberReadings);
+                    y560SensorPower, y560EnablePin, y560NReadings);
 
 // Create COD, turbidity, and temperature variable pointers for the Y560
 Variable* y560NH4_N =
@@ -2804,17 +2925,17 @@ Variable* y560Temp =
 // for Additional Serial Ports" section
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-byte          y700ModbusAddress  = 0x70;  // The modbus address of the Y700
-const int8_t  y700AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  y700SensorPower    = relayPowerPin;   // Sensor power pin
-const int8_t  y700EnablePin      = -1;              // Adapter RE/DE pin
-const uint8_t y700NumberReadings = 5;
+byte          y700ModbusAddress = 0x70;  // The modbus address of the Y700
+const int8_t  y700AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  y700SensorPower   = relayPowerPin;   // Sensor power pin
+const int8_t  y700EnablePin     = -1;              // Adapter RE/DE pin
+const uint8_t y700NReadings     = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
 // power consumption
 
 // Create a Y700 pressure sensor object
 YosemitechY700 y700(y700ModbusAddress, modbusSerial, y700AdapterPower,
-                    y700SensorPower, y700EnablePin, y700NumberReadings);
+                    y700SensorPower, y700EnablePin, y700NReadings);
 
 // Create pressure and temperature variable pointers for the Y700
 Variable* y700Pres =
@@ -2840,17 +2961,17 @@ Variable* y700Temp =
 // for Additional Serial Ports" section
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-byte          y4000ModbusAddress  = 0x05;  // The modbus address of the Y4000
-const int8_t  y4000AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  y4000SensorPower    = relayPowerPin;   // Sensor power pin
-const int8_t  y4000EnablePin      = -1;              // Adapter RE/DE pin
-const uint8_t y4000NumberReadings = 5;
+byte          y4000ModbusAddress = 0x05;  // The modbus address of the Y4000
+const int8_t  y4000AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  y4000SensorPower   = relayPowerPin;   // Sensor power pin
+const int8_t  y4000EnablePin     = -1;              // Adapter RE/DE pin
+const uint8_t y4000NReadings     = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
 // power consumption
 
 // Create a Yosemitech Y4000 multi-parameter sensor object
 YosemitechY4000 y4000(y4000ModbusAddress, modbusSerial, y4000AdapterPower,
-                      y4000SensorPower, y4000EnablePin, y4000NumberReadings);
+                      y4000SensorPower, y4000EnablePin, y4000NReadings);
 
 // Create all of the variable pointers for the Y4000
 Variable* y4000DO =
@@ -3115,7 +3236,7 @@ Variable* variableList[] = {
     ads1x15Volt,
 #endif
 #if defined(BUILD_SENSOR_PROCESSOR_ANALOG)
-    extAnalogVolts,
+    processorAnalogVolts,
 #endif
 #if defined(BUILD_SENSOR_FREESCALE_MPL115A2)
     mplTemp,
@@ -4120,10 +4241,12 @@ void loop() {
 /** End [complex_loop] */
 
 
-// cspell: ignore EDBG XBCT XBLTEB XBWF SVZM BatterymV Atlasp oversample
-// cspell: ignore asco2voltage atlasGrav Hayashi emas PMID temperatureCoef
-// cspell: ignore ClariVUESDI12address RainVUESDI12address Turb CTDSDI
-// cspell: ignore RDOSDI TROLLSDI acculev nanolev TMSDI ELEC fivetm tallyi
-// cspell: ignore kmph TIINA Chloro Fluoroscein PTSA BTEX ECpwrPin anlg spcond
-// cspell: ignore Relia NEOPIXEL RESTAPI autobauding xbeec
-// cspell: ignore CFUN UMNOPROF URAT PHEC GAIN_TWOTHIRDS
+// cspell: words EDBG XBCT XBLTEB XBWF SVZM BatterymV Atlasp oversample
+// cspell: words asco2voltage atlasGrav Hayashi emas PMID temperatureCoef
+// cspell: words ClariVUESDI12address RainVUESDI12address Turb CTDSDI
+// cspell: words RDOSDI TROLLSDI acculev nanolev TMSDI ELEC fivetm tallyi
+// cspell: words kmph TIINA Chloro Fluoroscein PTSA BTEX analogECPower anlg
+// cspell: words spcond Relia NEOPIXEL RESTAPI autobauding xbeec CFUN UMNOPROF
+// cspell: words URAT PHEC GAIN_TWOTHIRDS anbPHEC OBSADS CTDNReadings rdoDOmgL
+// cspell: words ANALOGELECCONDUCTIVITY_RSERIES_OHMS analogECADS
+// cspell: words ANALOGELECCONDUCTIVITY_KONST

@@ -112,7 +112,6 @@ MaximDS3231 ds3231(1);
 
 const int8_t  OBS3Power = sensorPowerPin;  // Power pin (-1 if unconnected)
 const uint8_t OBS3NumberReadings = 10;
-const uint8_t ADSi2c_addr        = 0x48;  // The I2C address of the ADS1115 ADC
 // Campbell OBS 3+ *Low* Range Calibration in Volts
 const int8_t OBSLowADSChannel = 0;  // ADS channel for *low* range output
 const float  OBSLow_A         = 0.000E+00;  // "A" value (X^2) [*low* range]
@@ -121,7 +120,7 @@ const float  OBSLow_C         = 0.000E+00;  // "C" value [*low* range]
 
 // Create a Campbell OBS3+ *low* range sensor object
 CampbellOBS3 osb3low(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B, OBSLow_C,
-                     ADSi2c_addr, OBS3NumberReadings);
+                     OBS3NumberReadings);
 
 
 // Campbell OBS 3+ *High* Range Calibration in Volts
@@ -132,7 +131,7 @@ const float  OBSHigh_C         = 0.000E+00;  // "C" value [*high* range]
 
 // Create a Campbell OBS3+ *high* range sensor object
 CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B,
-                      OBSHigh_C, ADSi2c_addr, OBS3NumberReadings);
+                      OBSHigh_C, OBS3NumberReadings);
 /** End [obs3] */
 
 
@@ -217,7 +216,7 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 // Create a data publisher for the Monitor My Watershed POST endpoint
 #include <publishers/MonitorMyWatershedPublisher.h>
 MonitorMyWatershedPublisher MonitorMWPost(dataLogger, registrationToken,
-                                 samplingFeature);
+                                          samplingFeature);
 /** End [publishers] */
 
 
