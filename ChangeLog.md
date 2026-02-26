@@ -99,7 +99,7 @@ Previously the I2C address of the ADS1x15 was an optional input parameter which 
 The input parameter for the I2C address has been *removed* and the input for the number of measurements to average has been moved up in the order!
 For users who used the default values, this will have no affect.
 For users who provided both a custom I2C address and a custom number of measurements, this will cause a compiler error.
-For uses who provided a custom I2C address *but not a custom number of measurements* this will cause a *silent failure* because the custom I2C address will be used as the measurement count and the default I2C address will be used.
+For users who provided a custom I2C address *but not a custom number of measurements* this will cause a *silent failure* because the custom I2C address will be used as the measurement count and the default I2C address will be used.
 Users who need a custom I2C address for the ADS1x15 must construct a TIADS1x15Base object with the correct address and pass a pointer to that object to the constructor.
 - **AnalogElecConductivity**
   - *Renamed* configuration defines to have the prefix `ANALOGELECCONDUCTIVITY` and moved other defaults to defines.
@@ -151,7 +151,7 @@ To achieve the same functionality as the old `updateAllSensors()` function (ie, 
 - Moved outdated examples to a new "Outdated" folder, with a subfolder for the DRWI examples
 - When importing TinyGSM for the modem objects, the specific modem client headers are now imported directly rather than importing the TinyGsmClient.h header which defines typedefs for the sub-types.
 - Moved the define for the default address used for a TI ADS from multiple individual files to the ModSensorConfig and renamed to `MS_DEFAULT_ADS1X15_ADDRESS`.
-- Within ModSensorConfig removed the default `MS_PROCESSOR_ADC_RESOLUTION` for all processors and clarified that the 12 bit default only applies to SAMD processors.
+- Within ModSensorConfig removed the default `MS_PROCESSOR_ADC_RESOLUTION` for all processors and clarified that the 12-bit default only applies to SAMD processors.
 This is *not* breaking because only AVR and SAMD processors were supported anyway.
 
 ### Added
@@ -214,7 +214,7 @@ This affects the following classes:
 - Fixed major bug where sensors with two power pins where either was shared with another sensor may be turned off inappropriately when one of the other sensors was turned off.
 - Correctly retry NIST sync on XBees when a not-sane timestamp is returned.
 - Improved ADC bit-width handling with explicit type casting for safer arithmetic operations.
-Enhanced null-pointer validation and error handling across analog voltage reading paths.
+- Enhanced null-pointer validation and error handling across analog voltage reading paths.
 
 ***
 
