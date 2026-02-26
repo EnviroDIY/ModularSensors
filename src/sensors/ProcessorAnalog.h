@@ -61,7 +61,7 @@
 #include "ModSensorDebugConfig.h"
 
 // Include the known processors for default values
-#include "sensors/KnownProcessors.h"
+#include "KnownProcessors.h"
 
 // Define the print label[s] for the debugger
 #ifdef MS_PROCESSOR_ANALOG_DEBUG
@@ -76,6 +76,7 @@
 // Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
+#include "AnalogVoltageBase.h"
 
 /** @ingroup sensor_processor_analog */
 /**@{*/
@@ -155,6 +156,87 @@
 #endif
 /**@}*/
 
+/**
+ * @brief Processor analog base class that inherits from AnalogVoltageBase
+ *
+ * This class provides processor-specific analog functionality on top of the
+ * generic AnalogVoltageBase class. It handles processor ADC configuration and
+ * processor-based analog voltage reads for requested channels.
+ */
+class ProcessorAnalogBase : public AnalogVoltageBase {
+ public:
+    /**
+     * @brief Construct a new ProcessorAnalogBase object
+     *
+     * @param voltageMultiplier Any multiplier needed to convert raw battery
+     * readings from `analogRead()` into true battery values based on any
+     * resistors or voltage dividers
+     * @param operatingVoltage The processor's operating voltage; most
+     * likely 3.3 or 5.
+     */
+    ProcessorAnalogBase(float voltageMultiplier = 1.0f,
+                        float operatingVoltage  = OPERATING_VOLTAGE);
+
+    /**
+     * @brief Destroy the ProcessorAnalogBase object
+     */
+    virtual ~ProcessorAnalogBase() = default;
+
+    /**
+     * @brief Initialize the processor analog system
+     *
+     * For processor analog systems, no special initialization is required
+     * beyond what is done in the constructor, so this function does nothing.
+     *
+     * @return Always true indicating successful initialization
+     */
+    bool begin(void) override;
+
+    /**
+     * @brief Read a single-ended voltage measurement from the processor ADC
+     *
+     * @param analogChannel The processor ADC pin used to read the target
+     * voltage.  Negative or invalid channel numbers are not clamped and will
+     * cause the reading to fail and emit a warning.
+     * @param resultValue Reference to store the resulting voltage measurement
+     * @return True if the voltage reading was successful
+     */
+    bool readVoltageSingleEnded(int8_t analogChannel,
+                                float& resultValue) override;
+
+    /**
+     * @brief Read a differential voltage measurement from the processor ADC
+     *
+     * ProcessorAnalog does not support differential measurements, so this
+     * always returns false.
+     *
+     * @param analogChannel The primary analog channel (ignored)
+     * @param analogReferenceChannel The secondary (reference) analog channel
+     * (ignored)
+     * @param resultValue Reference to store the resulting voltage measurement.
+     * This will be set to -9999.0 to indicate an invalid reading.
+     * @return Always false (differential not supported)
+     */
+    bool readVoltageDifferential(int8_t analogChannel,
+                                 int8_t analogReferenceChannel,
+                                 float& resultValue) override;
+
+    String getAnalogLocation(int8_t analogChannel,
+                             int8_t analogReferenceChannel) override;
+
+    /**
+     * @brief Calculate the analog resolution in volts for the processor ADC
+     *
+     * For processor ADCs, this calculates the voltage resolution based on the
+     * configured ADC resolution and supply voltage. The calculation uses:
+     * - ADC resolution in bits: MS_PROCESSOR_ADC_RESOLUTION
+     * - Full scale range: processor supply voltage (single-ended, 0V to Vcc)
+     *
+     * @return The analog resolution in volts per LSB
+     */
+    float calculateAnalogResolutionVolts(void) override;
+};
+
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
@@ -175,32 +257,46 @@ class ProcessorAnalog : public Sensor {
      * all processor pins can be used as analog pins.  Those usable as analog
      * pins generally are numbered with an "A" in front of the number
      * - ie, A1.
-     * @param voltageMultiplier Any multiplier needed to convert raw battery
-     * readings from `analogRead()` into true battery values based on any
-     * resistors or voltage dividers
-     * @param operatingVoltage The processor's operating voltage; most
-     * likely 3.3 or 5.
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
+     * @param analogVoltageReader Pointer to ProcessorAnalogBase object for
+     * analog functionality. If nullptr (default), creates a new
+     * ProcessorAnalogBase with default settings.
      */
-    ProcessorAnalog(int8_t powerPin, int8_t dataPin, float voltageMultiplier,
-                    float   operatingVoltage      = OPERATING_VOLTAGE,
-                    uint8_t measurementsToAverage = 1);
+    ProcessorAnalog(int8_t powerPin, int8_t dataPin,
+                    uint8_t              measurementsToAverage = 1,
+                    ProcessorAnalogBase* analogVoltageReader   = nullptr);
     /**
      * @brief Destroy the Processor Analog object
      */
     ~ProcessorAnalog();
 
+    // Delete copy constructor and copy assignment operator to prevent shallow
+    // copies
+    ProcessorAnalog(const ProcessorAnalog&)            = delete;
+    ProcessorAnalog& operator=(const ProcessorAnalog&) = delete;
+
+    // Delete move constructor and move assignment operator
+    ProcessorAnalog(ProcessorAnalog&&)            = delete;
+    ProcessorAnalog& operator=(ProcessorAnalog&&) = delete;
+
+    String getSensorLocation(void) override;
+
     bool addSingleMeasurementResult(void) override;
 
  private:
-    float _voltageMultiplier;  ///< Internal reference to any multiplier needed
-                               ///< to convert raw battery readings into true
-                               ///< battery values based on any resistors or
-                               ///< voltage dividers
-    float _operatingVoltage;   ///< Internal reference to processor's operating
-                               ///< voltage
+    /**
+     * @brief Pointer to the ProcessorAnalogBase object providing analog
+     * functionality
+     */
+    ProcessorAnalogBase* _analogVoltageReader = nullptr;
+
+    /**
+     * @brief Whether this object owns the _analogVoltageReader pointer and
+     * should delete it
+     */
+    bool _ownsAnalogVoltageReader = false;
 };
 
 

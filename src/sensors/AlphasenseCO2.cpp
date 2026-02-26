@@ -12,34 +12,63 @@
 
 
 #include "AlphasenseCO2.h"
-#include <Adafruit_ADS1X15.h>
+#include "TIADS1x15.h"
 
 
 // The constructor - need the power pin and the data pin
-AlphasenseCO2::AlphasenseCO2(int8_t powerPin, aco2_adsDiffMux_t adsDiffMux,
-                             uint8_t i2cAddress, uint8_t measurementsToAverage)
+AlphasenseCO2::AlphasenseCO2(int8_t powerPin, int8_t analogChannel,
+                             int8_t             analogReferenceChannel,
+                             uint8_t            measurementsToAverage,
+                             AnalogVoltageBase* analogVoltageReader)
     : Sensor("AlphasenseCO2", ALPHASENSE_CO2_NUM_VARIABLES,
              ALPHASENSE_CO2_WARM_UP_TIME_MS,
              ALPHASENSE_CO2_STABILIZATION_TIME_MS,
-             ALPHASENSE_CO2_MEASUREMENT_TIME_MS, powerPin, -1,
+             ALPHASENSE_CO2_MEASUREMENT_TIME_MS, powerPin, analogChannel,
              measurementsToAverage, ALPHASENSE_CO2_INC_CALC_VARIABLES),
-      _adsDiffMux(adsDiffMux),
-      _i2cAddress(i2cAddress) {}
+
+      _analogReferenceChannel(analogReferenceChannel),
+      // If no analog voltage reader was provided, create a default one
+      _analogVoltageReader(
+          analogVoltageReader == nullptr
+              ? new TIADS1x15Base(ALPHASENSE_CO2_VOLTAGE_MULTIPLIER)
+              : analogVoltageReader),
+      _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {}
 
 // Destructor
-AlphasenseCO2::~AlphasenseCO2() {}
+AlphasenseCO2::~AlphasenseCO2() {
+    // Clean up the analog voltage reader if we created it
+    if (_ownsAnalogVoltageReader && _analogVoltageReader != nullptr) {
+        delete _analogVoltageReader;
+    }
+}
 
 
 String AlphasenseCO2::getSensorLocation(void) {
-#ifndef MS_USE_ADS1015
-    String sensorLocation = F("ADS1115_0x");
-#else
-    String sensorLocation = F("ADS1015_0x");
-#endif
-    sensorLocation += String(_i2cAddress, HEX);
-    sensorLocation += F("_adsDiffMux");
-    sensorLocation += String(_adsDiffMux);
-    return sensorLocation;
+    if (_analogVoltageReader != nullptr) {
+        return _analogVoltageReader->getAnalogLocation(_dataPin,
+                                                       _analogReferenceChannel);
+    } else {
+        return String(F("Unknown_AnalogVoltageReader"));
+    }
+}
+
+
+bool AlphasenseCO2::setup(void) {
+    bool sensorSetupSuccess         = Sensor::setup();
+    bool analogVoltageReaderSuccess = false;
+
+    if (_analogVoltageReader != nullptr) {
+        analogVoltageReaderSuccess = _analogVoltageReader->begin();
+        if (!analogVoltageReaderSuccess) {
+            MS_DBG(getSensorNameAndLocation(),
+                   F("Analog voltage reader initialization failed"));
+        }
+    } else {
+        MS_DBG(getSensorNameAndLocation(),
+               F("No analog voltage reader to initialize"));
+    }
+
+    return sensorSetupSuccess && analogVoltageReaderSuccess;
 }
 
 
@@ -49,87 +78,44 @@ bool AlphasenseCO2::addSingleMeasurementResult(void) {
         return bumpMeasurementAttemptCount(false);
     }
 
-    bool    success     = false;
-    int16_t adcCounts   = -9999;
-    float   adcVoltage  = -9999;
-    float   co2Current  = -9999;
-    float   calibResult = -9999;
-
-    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
-
-// Create an auxiliary ADC object
-// We create and set up the ADC object here so that each sensor using the ADC
-// may set the gain appropriately without effecting others.
-#ifndef MS_USE_ADS1015
-    Adafruit_ADS1115 ads;  // Use this for the 16-bit version
-#else
-    Adafruit_ADS1015 ads;  // Use this for the 12-bit version
-#endif
-    // ADS Library default settings:
-    //  - TI ADS1115 (16 bit)
-    //    - single-shot mode (powers down between conversions)
-    //    - 128 samples per second (8ms conversion time)
-    //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
-    //  - TI ADS1015 (12 bit)
-    //    - single-shot mode (powers down between conversions)
-    //    - 1600 samples per second (625µs conversion time)
-    //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
-
-    // Bump the gain up to 1x = +/- 4.096V range
-    // Sensor return range is 0-2.5V, but the next gain option is 2x which
-    // only allows up to 2.048V
-    ads.setGain(GAIN_ONE);
-    // Begin ADC, returns true if anything was detected at the address
-    if (!ads.begin(_i2cAddress)) {
-        MS_DBG(F("  ADC initialization failed at 0x"),
-               String(_i2cAddress, HEX));
+    // Check if we have a valid analog voltage reader
+    if (_analogVoltageReader == nullptr) {
+        MS_DBG(getSensorNameAndLocation(),
+               F("No analog voltage reader available"));
+        return bumpMeasurementAttemptCount(false);
+    }
+    // validate the resistor value
+    if (ALPHASENSE_CO2_SENSE_RESISTOR_OHM <= 0) {
+        MS_DBG(F("  Error: Invalid sense resistor value"),
+               ALPHASENSE_CO2_SENSE_RESISTOR_OHM);
         return bumpMeasurementAttemptCount(false);
     }
 
-    // Read Analog to Digital Converter (ADC)
-    // Taking this reading includes the 8ms conversion delay.
-    // Measure the voltage differential across the two voltage pins
-    switch (_adsDiffMux) {
-        case DIFF_MUX_0_1: {
-            adcCounts = ads.readADC_Differential_0_1();
-            break;
-        }
-        case DIFF_MUX_0_3: {
-            adcCounts = ads.readADC_Differential_0_3();
-            break;
-        }
-        case DIFF_MUX_1_3: {
-            adcCounts = ads.readADC_Differential_1_3();
-            break;
-        }
-        case DIFF_MUX_2_3: {
-            adcCounts = ads.readADC_Differential_2_3();
-            break;
-        }
-        default: {
-            MS_DBG(F("  Invalid differential mux configuration"));
-            return bumpMeasurementAttemptCount(false);
-        }
-    }
-    // Convert ADC counts value to voltage (V)
-    adcVoltage = ads.computeVolts(adcCounts);
-    MS_DBG(F("  ads.readADC_Differential("), _adsDiffMux, F("):"), adcCounts,
-           '=', String(adcVoltage, 3));
+    float adcVoltage = -9999;
 
-    // @todo Verify the voltage range for the CO2 sensor
-    // Here we are using the range of the ADS when it is powered at 3.3V
-    if (adcVoltage < 3.6 && adcVoltage > -0.3) {
+    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+
+    // Read differential voltage using the AnalogVoltageBase interface
+    bool success = _analogVoltageReader->readVoltageDifferential(
+        _dataPin, _analogReferenceChannel, adcVoltage);
+
+    if (success) {
         // Convert voltage to current (mA) - assuming a 250 Ohm resistor is in
         // series
-        co2Current = (adcVoltage / 250) * 1000;
+        float co2Current = (adcVoltage / ALPHASENSE_CO2_SENSE_RESISTOR_OHM) *
+            1000.0f;
+        MS_DBG(F("  co2Current:"), co2Current);
+
         // Convert current to ppm (using a formula recommended by the sensor
         // manufacturer)
-        calibResult = 312.5 * co2Current - 1250;
+        float calibResult = (ALPHASENSE_CO2_MFG_SCALE * co2Current) -
+            ALPHASENSE_CO2_MFG_OFFSET;
         MS_DBG(F("  calibResult:"), calibResult);
-        verifyAndAddMeasurementResult(ALPHASENSE_CO2_VAR_NUM, calibResult);
         verifyAndAddMeasurementResult(ALPHASENSE_CO2_VOLTAGE_VAR_NUM,
                                       adcVoltage);
-        success = true;
+        verifyAndAddMeasurementResult(ALPHASENSE_CO2_VAR_NUM, calibResult);
+    } else {
+        MS_DBG(F("  Failed to read differential voltage from analog reader"));
     }
 
     // Return success value when finished

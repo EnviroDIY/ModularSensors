@@ -67,3 +67,4 @@ reviews:
     drafts: true
     base_branches:
       - master
+      - develop

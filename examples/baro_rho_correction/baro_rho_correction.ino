@@ -483,3 +483,5 @@ void loop() {
     }
 }
 /** End [loop] */
+
+// cspell: words baro

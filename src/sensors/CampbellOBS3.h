@@ -9,8 +9,6 @@
  * CampbellOBS3_Turbidity and CampbellOBS3_Voltage.
  *
  * These are used for the Campbell Scientific OBS-3+.
- *
- * This depends on the Adafruit ADS1X15 v2.x library
  */
 /* clang-format off */
 /**
@@ -50,10 +48,6 @@
  * for the calibrated turbidity.  To get both high and low range values, create
  * two sensor objects!
  *
- * @section sensor_obs3_flags Build flags
- * - ```-D MS_USE_ADS1015```
- *      - switches from the 16-bit ADS1115 to the 12 bit ADS1015
- *
  * @section sensor_obs3_ctor Sensor Constructor
  * {{ @ref CampbellOBS3::CampbellOBS3 }}
  *
@@ -89,6 +83,9 @@
 #include "VariableBase.h"
 #include "SensorBase.h"
 
+// Forward declaration
+class AnalogVoltageBase;
+
 /** @ingroup sensor_obs3 */
 /**@{*/
 
@@ -110,16 +107,6 @@
 /// @brief Sensor::_incCalcValues; turbidity is calculated from raw voltage
 /// using the input calibration equation.
 #define OBS3_INC_CALC_VARIABLES 1
-/**@}*/
-
-/**
- * @anchor sensor_obs3_config
- * @name Configuration Defines
- * Defines to set the address of the ADD.
- */
-/**@{*/
-/// @brief The assumed address of the ADS1115, 1001 000 (ADDR = GND)
-#define ADS1115_ADDRESS 0x48
 /**@}*/
 
 /**
@@ -244,59 +231,81 @@
 /* clang-format on */
 class CampbellOBS3 : public Sensor {
  public:
-    // The constructor - need the power pin, the ADS1X15 data channel, and the
-    // calibration info
     /**
      * @brief Construct a new Campbell OBS3 object - need the power pin, the
-     * ADS1X15 data channel, and the calibration info.
+     * analog data channel, and the calibration info.
      *
-     * @note ModularSensors only supports connecting the ADS1x15 to the primary
-     * hardware I2C instance defined in the Arduino core.  Connecting the ADS to
-     * a secondary hardware or software I2C instance is *not* supported!
+     * By default, this constructor will internally create a default
+     * AnalogVoltageBase implementation for voltage readings, but a pointer to
+     * a custom AnalogVoltageBase object can be passed in if desired.
      *
      * @param powerPin The pin on the mcu controlling power to the OBS3+
      * Use -1 if it is continuously powered.
-     * - The ADS1x15 requires an input voltage of 2.0-5.5V, but this library
-     * assumes the ADS is powered with 3.3V.
      * - The OBS-3 itself requires a 5-15V power supply, which can be turned off
      * between measurements.
-     * @param adsChannel The analog data channel _on the TI ADS1115_ that the
-     * OBS3 is connected to (0-3).
+     * @param analogChannel The analog data channel or processor pin for voltage
+     * measurements.  The significance of the channel number depends on the
+     * specific AnalogVoltageBase implementation used for voltage readings. For
+     * example, with the default TI ADS1x15, this would be the ADC channel (0-3)
+     * that the sensor is connected to.  Negative or invalid channel numbers are
+     * not clamped and will cause the reading to fail and emit a warning.
      * @param x2_coeff_A The x2 (A) coefficient for the calibration _in volts_
      * @param x1_coeff_B The x (B) coefficient for the calibration _in volts_
      * @param x0_coeff_C The x0 (C) coefficient for the calibration _in volts_
-     * @param i2cAddress The I2C address of the ADS 1x15, default is 0x48 (ADDR
-     * = GND)
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
+     * @param analogVoltageReader Pointer to an AnalogVoltageBase object for
+     * voltage measurements.  Pass nullptr (the default) to have the constructor
+     * internally create and own an analog voltage reader.  For backward
+     * compatibility, the default reader uses a TI ADS1115 or ADS1015.  If a
+     * non-null pointer is supplied, the caller retains ownership and must
+     * ensure its lifetime exceeds that of this object.
+     *
+     * @warning In library versions 0.37.0 and earlier, a different constructor
+     * was used that the I2C address of the ADS1x15 was an optional input
+     * parameter which came *before* the optional input parameter for the number
+     * of measurements to average.  The input parameter for the I2C address has
+     * been *removed* and the input for the number of measurements to average
+     * has been moved up in the order!  Please update your code to prevent a
+     * compiler error or a silent reading error.
      */
-    CampbellOBS3(int8_t powerPin, uint8_t adsChannel, float x2_coeff_A,
+    CampbellOBS3(int8_t powerPin, int8_t analogChannel, float x2_coeff_A,
                  float x1_coeff_B, float x0_coeff_C,
-                 uint8_t i2cAddress            = ADS1115_ADDRESS,
-                 uint8_t measurementsToAverage = 1);
+                 uint8_t            measurementsToAverage = 1,
+                 AnalogVoltageBase* analogVoltageReader   = nullptr);
     /**
      * @brief Destroy the Campbell OBS3 object
      */
     ~CampbellOBS3();
 
+    // Delete copy constructor and copy assignment operator to prevent shallow
+    // copies
+    CampbellOBS3(const CampbellOBS3&)            = delete;
+    CampbellOBS3& operator=(const CampbellOBS3&) = delete;
+
+    // Delete move constructor and move assignment operator
+    CampbellOBS3(CampbellOBS3&&)            = delete;
+    CampbellOBS3& operator=(CampbellOBS3&&) = delete;
+
     String getSensorLocation(void) override;
+
+    bool setup(void) override;
 
     bool addSingleMeasurementResult(void) override;
 
  private:
-    /**
-     * @brief Internal reference to the ADS channel number of the Campbell OBS
-     * 3+
-     */
-    uint8_t _adsChannel;
-    float   _x2_coeff_A;  ///< Internal reference to the x^2 coefficient
-    float   _x1_coeff_B;  ///< Internal reference to the x coefficient
-    float   _x0_coeff_C;  ///< Internal reference to the x^0 coefficient
-    /**
-     * @brief Internal reference to the I2C address of the TI-ADS1x15
-     */
-    uint8_t _i2cAddress;
+    /// @brief The x^2 (A) calibration coefficient
+    float _x2_coeff_A;
+    /// @brief The x^1 (B) calibration coefficient
+    float _x1_coeff_B;
+    /// @brief The x^0 (C) calibration coefficient
+    float _x0_coeff_C;
+    /// @brief Pointer to analog voltage reader
+    AnalogVoltageBase* _analogVoltageReader = nullptr;
+    /// @brief Flag to track if this object owns the analog voltage reader and
+    /// should delete it in the destructor
+    bool _ownsAnalogVoltageReader = false;
 };
 
 

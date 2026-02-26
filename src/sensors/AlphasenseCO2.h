@@ -15,8 +15,6 @@
  * Carbon Dioxide (CO2) sensor. This library will almost certainly also work
  * with the Alphasense IRC-AT CO2 sensor (which uses a thermopile detector),
  * although the warmup and stabilization times might be different.
- *
- * This depends on the Adafruit ADS1X15 v2.x library.
  */
 /* clang-format off */
 /**
@@ -53,10 +51,14 @@
  * [Datasheet](https://www.alphasense.com/wp-content/uploads/2018/04/IRC-A1.pdf)
  *
  * @section sensor_alphasense_co2_flags Build flags
- * - ```-D MS_USE_ADS1015```
- *      - switches from the 16-bit ADS1115 to the 12 bit ADS1015
- * - ```-D ALPHASENSE_CO2_CALIBRATION_FACTOR=x```
- *      - Changes the calibration factor from 1 to x
+ * - ```-D ALPHASENSE_CO2_SENSE_RESISTOR_OHM=x```
+ *      - Changes the sense resistor value from 250.0 ohms to x ohms
+ * - ```-D ALPHASENSE_CO2_MFG_SCALE=x```
+ *      - Changes the manufacturer scale factor from 312.5 ppm/mA to x ppm/mA
+ * - ```-D ALPHASENSE_CO2_MFG_OFFSET=x```
+ *      - Changes the manufacturer offset from 1250.0 ppm to x ppm
+ * - ```-D ALPHASENSE_CO2_VOLTAGE_MULTIPLIER=x```
+ *      - Changes the voltage multiplier from 1.0 to x
  *
  * @section sensor_alphasense_co2_ctor Sensor Constructor
  * {{ @ref AlphasenseCO2::AlphasenseCO2 }}
@@ -93,13 +95,16 @@
 #include "VariableBase.h"
 #include "SensorBase.h"
 
+// Forward declaration
+class AnalogVoltageBase;
+
 /** @ingroup sensor_alphasense_co2 */
 /**@{*/
 
 /**
  * @anchor sensor_alphasense_co2_var_counts
  * @name Sensor Variable Counts
- * The number of variables that can be returned by the Apogee SQ-212
+ * The number of variables that can be returned by the Alphasense CO2 sensor
  */
 /**@{*/
 /// @brief Sensor::_numReturnedValues; the Alphasense CO2 sensor can report 2
@@ -110,31 +115,35 @@
 /**@}*/
 
 /**
- * @anchor sensor__alphasense_co2_config
+ * @anchor sensor_alphasense_co2_config
  * @name Configuration Defines
- * Defines to set the calibration of the Alphasense CO2 sensor and the address
- * of the ADD.
+ * Defines to set the calibration of the Alphasense CO2 sensor.
  */
 /**@{*/
-#if !defined(ALPHASENSE_CO2_CALIBRATION_FACTOR) || defined(DOXYGEN)
+#if !defined(ALPHASENSE_CO2_SENSE_RESISTOR_OHM) || defined(DOXYGEN)
 /**
- * @brief The calibration factor between output in volts and CO2
- * (microeinsteinPerSquareMeterPerSecond) 1 µmol mˉ² sˉ¹ per mV (reciprocal of
- * sensitivity)
+ * @brief Sense resistor value in ohms for current conversion
  */
-#define ALPHASENSE_CO2_CALIBRATION_FACTOR 1
+#define ALPHASENSE_CO2_SENSE_RESISTOR_OHM 250.0f
 #endif
+#if !defined(ALPHASENSE_CO2_MFG_SCALE) || defined(DOXYGEN)
 /**
- * @brief Enum for the pins used for differential voltages.
+ * @brief Manufacturer scale factor for CO2 conversion (ppm/mA)
  */
-typedef enum : uint16_t {
-    DIFF_MUX_0_1,  ///< differential across pins 0 and 1
-    DIFF_MUX_0_3,  ///< differential across pins 0 and 3
-    DIFF_MUX_1_3,  ///< differential across pins 1 and 3
-    DIFF_MUX_2_3   ///< differential across pins 2 and 3
-} aco2_adsDiffMux_t;
-/// @brief The assumed address of the ADS1115, 1001 000 (ADDR = GND)
-#define ADS1115_ADDRESS 0x48
+#define ALPHASENSE_CO2_MFG_SCALE 312.5f
+#endif
+#if !defined(ALPHASENSE_CO2_MFG_OFFSET) || defined(DOXYGEN)
+/**
+ * @brief Manufacturer offset for CO2 conversion (ppm)
+ */
+#define ALPHASENSE_CO2_MFG_OFFSET 1250.0f
+#endif
+#if !defined(ALPHASENSE_CO2_VOLTAGE_MULTIPLIER) || defined(DOXYGEN)
+/**
+ * @brief Voltage multiplier for direct voltage reading
+ */
+#define ALPHASENSE_CO2_VOLTAGE_MULTIPLIER 1.0f
+#endif
 /**@}*/
 
 /**
@@ -251,56 +260,77 @@ class AlphasenseCO2 : public Sensor {
  public:
     /**
      * @brief Construct a new Alphasense IRC-A1 CO2 object - need the power pin
-     * and the on the ADS1x15. Designed to read differential voltage between ads
-     * channels 2 and 3
+     * and the analog data and reference channels.
      *
-     * @note ModularSensors only supports connecting the ADS1x15 to the primary
-     * hardware I2C instance defined in the Arduino core. Connecting the ADS to
-     * a secondary hardware or software I2C instance is *not* supported!
+     * By default, this constructor will internally create a default
+     * AnalogVoltageBase implementation for voltage readings, but a pointer to
+     * a custom AnalogVoltageBase object can be passed in if desired.
      *
      * @param powerPin The pin on the mcu controlling power to the
      * Alphasense CO2 sensor.  Use -1 if it is continuously powered.
      * - The Alphasense CO2 sensor requires 2-5 V DC; current draw 20-60 mA
-     * - The ADS1115 requires 2.0-5.5V but is assumed to be powered at 3.3V
-     * @param adsDiffMux Which two pins _on the TI ADS1115_ that will measure
-     * differential voltage. See #aco2_adsDiffMux_t.
-     * @param i2cAddress The I2C address of the ADS 1x15, default is 0x48 (ADDR
-     * = GND)
+     * @param analogChannel The primary analog channel for differential
+     * measurement. Negative or invalid channel numbers or pairings between the
+     * analogChannel and analogReferenceChannel are not clamped and will cause
+     * the reading to fail and emit a warning.
+     * @param analogReferenceChannel The secondary (reference) analog channel
+     * for differential measurement. Negative or invalid channel numbers or
+     * pairings between the analogChannel and analogReferenceChannel are not
+     * clamped and will cause the reading to fail and emit a warning.
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
-     * default value of 7 [seconds], which is one period of the cycle.
-     * @note  The ADS is expected to be either continuously powered or have
-     * its power controlled by the same pin as the Alphasense CO2 sensor.  This
-     * library does not support any other configuration.
+     * default value of 7.
+     * @param analogVoltageReader Pointer to an AnalogVoltageBase object for
+     * voltage measurements.  Pass nullptr (the default) to have the constructor
+     * internally create and own an analog voltage reader.  For backward
+     * compatibility, the default reader uses a TI ADS1115 or ADS1015.  If a
+     * non-null pointer is supplied, the caller retains ownership and must
+     * ensure its lifetime exceeds that of this object.
+     *
+     * @warning In library versions 0.37.0 and earlier, a different constructor
+     * was used that required an enum object instead of two different analog
+     * channel inputs for the differential voltage measurement. If you are using
+     * code from a previous version of the library, make sure to update your
+     * code to use the new constructor and provide the correct analog channel
+     * inputs for the differential voltage measurement.
      */
-    AlphasenseCO2(int8_t powerPin, aco2_adsDiffMux_t adsDiffMux = DIFF_MUX_2_3,
-                  uint8_t i2cAddress            = ADS1115_ADDRESS,
-                  uint8_t measurementsToAverage = 7);
+    AlphasenseCO2(int8_t powerPin, int8_t analogChannel,
+                  int8_t             analogReferenceChannel,
+                  uint8_t            measurementsToAverage = 7,
+                  AnalogVoltageBase* analogVoltageReader   = nullptr);
     /**
-     * @brief Destroy the AlphasenseCO2 object - no action needed
+     * @brief Destroy the AlphasenseCO2 object
      */
     ~AlphasenseCO2();
 
-    /**
-     * @brief Report the I1C address of the ADS and the channel that the
-     * Alphasense CO2 sensor is attached to.
-     *
-     * @return **String** Text describing how the sensor is attached to the mcu.
-     */
+    // Delete copy constructor and copy assignment operator to prevent shallow
+    // copies
+    AlphasenseCO2(const AlphasenseCO2&)            = delete;
+    AlphasenseCO2& operator=(const AlphasenseCO2&) = delete;
+
+    // Delete move constructor and move assignment operator
+    AlphasenseCO2(AlphasenseCO2&&)            = delete;
+    AlphasenseCO2& operator=(AlphasenseCO2&&) = delete;
+
     String getSensorLocation(void) override;
+
+    bool setup(void) override;
 
     bool addSingleMeasurementResult(void) override;
 
  private:
+
     /**
-     * @brief Which two pins _on the TI ADS1115_ that will measure differential
-     * voltage from the Turbidity Plus. See #aco2_adsDiffMux_t
+     * @brief The second (reference) pin for differential voltage measurements.
+     *
+     * @note The primary pin is stored as Sensor::_dataPin.
      */
-    aco2_adsDiffMux_t _adsDiffMux;
-    /**
-     * @brief Internal reference to the I2C address of the TI-ADS1x15
-     */
-    uint8_t _i2cAddress;
+    int8_t _analogReferenceChannel = -1;
+    /// @brief Pointer to analog voltage reader
+    AnalogVoltageBase* _analogVoltageReader = nullptr;
+    /// @brief Flag to track if this object owns the analog voltage reader and
+    /// should delete it in the destructor
+    bool _ownsAnalogVoltageReader = false;
 };
 
 

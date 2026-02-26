@@ -28,9 +28,14 @@
  * @section sensor_alspt19_datasheet Sensor Datasheet
  * [Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Everlight-ALS-PT19.pdf)
  *
+ * @section sensor_alspt19_config_flags Build flags
+ * - `-D ALSPT19_UA_PER_1000LUX=##`
+ *      - used to set current equivalent to 1000lux, which is used to calculate
+ *        lux from the sensor
+ *
  * @section sensor_alspt19_ctor Sensor Constructors
- * {{ @ref EverlightALSPT19::EverlightALSPT19(uint8_t) }}
- * {{ @ref EverlightALSPT19::EverlightALSPT19(int8_t, int8_t, float, float, uint8_t) }}
+ * {{ @ref EverlightALSPT19::EverlightALSPT19(uint8_t, AnalogVoltageBase*) }}
+ * {{ @ref EverlightALSPT19::EverlightALSPT19(int8_t, int8_t, float, float, uint8_t, AnalogVoltageBase*) }}
  *
  * @section sensor_alspt19_examples Example Code
  *
@@ -48,7 +53,7 @@
 #include "ModSensorConfig.h"
 
 // Include the known processors for default values
-#include "sensors/KnownProcessors.h"
+#include "KnownProcessors.h"
 
 // Include the debugging config
 #include "ModSensorDebugConfig.h"
@@ -86,6 +91,32 @@
 /// @brief Sensor::_incCalcValues; we calculate photocurrent from the supply
 /// voltage and loading resistance and illuminance from the photocurrent.
 #define ALSPT19_INC_CALC_VARIABLES 2
+/**@}*/
+
+/**
+ * @anchor sensor_alspt19_config
+ * @name Configuration Defines
+ * Define for the ALS calibration between current and lux.
+ */
+/**@{*/
+#if !defined(ALSPT19_UA_PER_1000LUX) || defined(DOXYGEN)
+/**
+ * @brief The default current (in µA) that is equivalent to 1000 lux of
+ * illuminance.
+ *
+ * Extrapolating from plots in the sensor datasheet
+ * - Incandescent light: ~5,000µA for 10,000 lux (500 for 1000)
+ * - Fluorescent light: ~1,500µA for 10,000 lux (150 for 1000)
+ * - 6500K white LED: 150µA for 1000 Lux
+ *
+ * @attention The default of 200.0f has been used by this library, but I'm
+ * unclear the origin of this number.
+ *
+ * @todo Find the source of the calibration of typical 200µA current for 1000
+ * Lux, which doesn't appear to align with the datasheet.
+ */
+#define ALSPT19_UA_PER_1000LUX 200.0f
+#endif
 /**@}*/
 
 /**
@@ -199,6 +230,8 @@
 #define ALSPT19_ILLUMINANCE_DEFAULT_CODE "ALSPT19Lux"
 /**@}*/
 
+// Forward declaration
+class AnalogVoltageBase;
 
 /* clang-format off */
 /**
@@ -218,18 +251,29 @@ class EverlightALSPT19 : public Sensor {
      * probe.  Not all processor pins can be used as analog pins.  Those usable
      * as analog pins generally are numbered with an "A" in front of the number
      * - ie, A1.
-     * @param supplyVoltage The power supply voltage (in volts) of the ALS-PT19.
-     * @param loadResistor The size of the loading resistor, in kilaohms (kΩ).
+     * @param alsSupplyVoltage The power supply voltage (in volts) of the
+     * ALS-PT19. This does not have to be the same as the board operating
+     * voltage or the supply voltage of the AnalogVoltageBase reader.
+     * This is used to clamp the light values when the sensor is over-saturated.
+     * @param loadResistor The size of the loading resistor, in kiloohms (kΩ).
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 10.
+     * @param analogVoltageReader Pointer to an AnalogVoltageBase object for
+     * voltage measurements.  Pass nullptr (the default) to have the constructor
+     * internally create and own an analog voltage reader.  For backward
+     * compatibility, the default reader uses the processor's internal ADC. If a
+     * non-null pointer is supplied, the caller retains ownership and must
+     * ensure its lifetime exceeds that of this object.
      */
-    EverlightALSPT19(int8_t powerPin, int8_t dataPin, float supplyVoltage,
-                     float loadResistor, uint8_t measurementsToAverage = 10);
+    EverlightALSPT19(int8_t powerPin, int8_t dataPin, float alsSupplyVoltage,
+                     float loadResistor, uint8_t measurementsToAverage = 10,
+                     AnalogVoltageBase* analogVoltageReader = nullptr);
 
-#if defined(BUILT_IN_ALS_POWER_PIN) && defined(BUILT_IN_ALS_DATA_PIN) && \
-    defined(BUILT_IN_ALS_SUPPLY_VOLTAGE) &&                              \
-    defined(BUILT_IN_ALS_LOADING_RESISTANCE)
+#if (defined(BUILT_IN_ALS_POWER_PIN) && defined(BUILT_IN_ALS_DATA_PIN) && \
+     defined(BUILT_IN_ALS_SUPPLY_VOLTAGE) &&                              \
+     defined(BUILT_IN_ALS_LOADING_RESISTANCE)) ||                         \
+    defined(DOXYGEN)
     /**
      * @brief Construct a new EverlightALSPT19 object with pins and resistors
      * for boards with a built-in ALS-PT19 configured in KnownProcessors.h.
@@ -241,25 +285,49 @@ class EverlightALSPT19 : public Sensor {
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 10.
+     * @param analogVoltageReader Pointer to an AnalogVoltageBase object for
+     * voltage measurements.  Pass nullptr (the default) to have the constructor
+     * internally create and own an analog voltage reader.  For backward
+     * compatibility, the default reader uses the processor's internal ADC. If a
+     * non-null pointer is supplied, the caller retains ownership and must
+     * ensure its lifetime exceeds that of this object.
      */
-    explicit EverlightALSPT19(uint8_t measurementsToAverage = 10);
+    explicit EverlightALSPT19(uint8_t            measurementsToAverage = 10,
+                              AnalogVoltageBase* analogVoltageReader = nullptr);
 #endif
     /**
-     * @brief Destroy the EverlightALSPT19 object - no action needed.
+     * @brief Destroy the EverlightALSPT19 object.
+     *
+     * Conditionally deletes the _analogVoltageReader member if the ownership
+     * flag _ownsAnalogVoltageReader is true, otherwise leaves it unmodified.
      */
     ~EverlightALSPT19();
+
+    // Delete copy constructor and copy assignment operator to prevent shallow
+    // copies
+    EverlightALSPT19(const EverlightALSPT19&)            = delete;
+    EverlightALSPT19& operator=(const EverlightALSPT19&) = delete;
+
+    // Delete move constructor and move assignment operator
+    EverlightALSPT19(EverlightALSPT19&&)            = delete;
+    EverlightALSPT19& operator=(EverlightALSPT19&&) = delete;
+
+    String getSensorLocation(void) override;
+
+    bool setup(void) override;
 
     bool addSingleMeasurementResult(void) override;
 
  private:
-    /**
-     * @brief The power supply voltage
-     */
-    float _supplyVoltage;
-    /**
-     * @brief The loading resistance
-     */
-    float _loadResistor;
+    /// @brief The PT-19 power supply voltage
+    float _alsSupplyVoltage = 0.0f;
+    /// @brief The loading resistance
+    float _loadResistor = 0.0f;
+    /// @brief Pointer to analog voltage reader
+    AnalogVoltageBase* _analogVoltageReader = nullptr;
+    /// @brief Flag to track if this object owns the analog voltage reader and
+    /// should delete it in the destructor
+    bool _ownsAnalogVoltageReader = false;
 };
 
 

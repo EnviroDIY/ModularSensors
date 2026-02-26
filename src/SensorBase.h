@@ -726,7 +726,7 @@ class Sensor {
      * from any calculated variables that are created on-the-fly and depend on
      * multiple other sensors.
      */
-    uint8_t _incCalcValues;
+    const uint8_t _incCalcValues;
     /**
      * @brief The number of measurements from the sensor to average.
      *

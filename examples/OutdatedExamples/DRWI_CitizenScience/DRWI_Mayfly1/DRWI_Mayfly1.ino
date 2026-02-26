@@ -85,7 +85,7 @@ const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
 // Network connection information
 const char* apn =
     "YourAPN";  // APN connection name, typically Hologram unless you have a
-                 // different provider's SIM card. Change as needed
+                // different provider's SIM card. Change as needed
 
 // Create the modem object
 SIMComSIM7080 modem7080(&modemSerial, modemVccPin, modemStatusPin,

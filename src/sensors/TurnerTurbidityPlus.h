@@ -10,8 +10,6 @@
  * subclasses TurnerTurbidityPlus_Turbidity and TurnerTurbidityPlus_Voltage.
  *
  * These are used for the Turner Turbidity Plus.
- *
- * This depends on the Adafruit ADS1X15 v2.x library.
  */
 /**
  * @defgroup sensor_turbidity_plus Turner Turbidity Plus
@@ -27,16 +25,20 @@
  * [Datasheet](http://docs.turnerdesigns.com/t2/doc/brochures/S-0210.pdf)
  *
  * @section sensor_turbidity_plus_flags Build flags
- * - ```-D MS_USE_ADS1015```
- *      - switches from the 16-bit ADS1115 to the 12 bit ADS1015
+ * - ```-D TURBIDITY_PLUS_WIPER_TRIGGER_PULSE_MS=x```
+ *      - Changes the wiper trigger pulse duration from 50 ms to x ms
+ * - ```-D TURBIDITY_PLUS_WIPER_ROTATION_WAIT_MS=x```
+ *      - Changes the wiper rotation wait time from 8000 ms to x ms
+ * - ```-D TURBIDITY_PLUS_CALIBRATION_EPSILON=x```
+ *      - Changes the calibration validation epsilon from 1e-4 to x
  *
  * @section sensor_turbidity_plus_ctor Sensor Constructor
  * {{ @ref TurnerTurbidityPlus::TurnerTurbidityPlus }}
  *
  * ___
  * @section sensor_turbidity_plus_examples Example Code
- * The Alphasense CO2 sensor is used in the @menulink{turner_turbidity_plus}
- * example.
+ * The Turner Turbidity Plus sensor is used in the
+ * @menulink{turner_turbidity_plus} example.
  *
  * @menusnip{turner_turbidity_plus}
  */
@@ -64,7 +66,9 @@
 // Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
-#include <Adafruit_ADS1X15.h>
+
+// Forward declaration
+class AnalogVoltageBase;
 
 /** @ingroup sensor_turbidity_plus */
 /**@{*/
@@ -85,22 +89,29 @@
 /**@}*/
 
 /**
- * @anchor sensor__turbidity_plus_config
+ * @anchor sensor_turbidity_plus_config
  * @name Configuration Defines
- * Defines to set the address of the ADD.
+ * Defines to set the timing configuration of the Turner Turbidity Plus sensor.
  */
 /**@{*/
+#if !defined(TURBIDITY_PLUS_WIPER_TRIGGER_PULSE_MS) || defined(DOXYGEN)
 /**
- * @brief Enum for the pins used for differential voltages.
+ * @brief Wiper trigger pulse duration in milliseconds
  */
-typedef enum : uint16_t {
-    DIFF_MUX_0_1,  ///< differential across pins 0 and 1
-    DIFF_MUX_0_3,  ///< differential across pins 0 and 3
-    DIFF_MUX_1_3,  ///< differential across pins 1 and 3
-    DIFF_MUX_2_3   ///< differential across pins 2 and 3
-} ttp_adsDiffMux_t;
-/// @brief The assumed address of the ADS1115, 1001 000 (ADDR = GND)
-#define ADS1115_ADDRESS 0x48
+#define TURBIDITY_PLUS_WIPER_TRIGGER_PULSE_MS 50
+#endif
+#if !defined(TURBIDITY_PLUS_WIPER_ROTATION_WAIT_MS) || defined(DOXYGEN)
+/**
+ * @brief Wait time for wiper rotation to complete in milliseconds
+ */
+#define TURBIDITY_PLUS_WIPER_ROTATION_WAIT_MS 8000
+#endif
+#if !defined(TURBIDITY_PLUS_CALIBRATION_EPSILON) || defined(DOXYGEN)
+/**
+ * @brief Epsilon value for calibration validation to detect invalid calibration curves
+ */
+#define TURBIDITY_PLUS_CALIBRATION_EPSILON 1e-4f
+#endif
 /**@}*/
 
 /**
@@ -180,12 +191,12 @@ typedef enum : uint16_t {
 #ifdef MS_USE_ADS1015
 /// @brief Decimals places in string representation; voltage should have 1.
 ///  - Resolution:
-///     - 16-bit ADC (ADS1115): 0.125 mV
+///     - 12-bit ADC (ADS1015): 2 mV
 #define TURBIDITY_PLUS_VOLTAGE_RESOLUTION 1
 #else
 /// @brief Decimals places in string representation; voltage should have 4.
 ///  - Resolution:
-///     - 12-bit ADC (ADS1015, using build flag ```MS_USE_ADS1015```): 2 mV
+///     - 16-bit ADC (ADS1115): 0.125 mV
 #define TURBIDITY_PLUS_VOLTAGE_RESOLUTION 4
 #endif
 /**@}*/
@@ -197,25 +208,28 @@ typedef enum : uint16_t {
  */
 class TurnerTurbidityPlus : public Sensor {
  public:
-    // The constructor - need the power pin, the ADS1X15 data channel, and the
-    // calibration info
     /**
      * @brief Construct a new Turner Turbidity Plus object - need the power pin,
-     * the ADS1X15 data channel, and the calibration info.
+     * the analog data and reference channels, and the calibration info.
      *
-     * @note ModularSensors only supports connecting the ADS1x15 to the primary
-     * hardware I2C instance defined in the Arduino core. Connecting the ADS to
-     * a secondary hardware or software I2C instance is *not* supported!
+     * By default, this constructor will internally create a default
+     * AnalogVoltageBase implementation for voltage readings, but a pointer to
+     * a custom AnalogVoltageBase object can be passed in if desired.
      *
      * @param powerPin The pin on the mcu controlling power to the Turbidity
      * Plus Use -1 if it is continuously powered.
-     * - The ADS1x15 requires an input voltage of 2.0-5.5V
-     * - The Turbidity Plus itself requires a 3-15V power supply, which can be
-     * turned off between measurements.
+     * - The Turbidity Plus requires a 3-15V power supply, which can be turned
+     * off between measurements.
      * @param wiperTriggerPin The pin on the mcu that triggers the sensor's
      * wiper.
-     * @param adsDiffMux Which two pins _on the TI ADS1115_ that will measure
-     * differential voltage. See #ttp_adsDiffMux_t
+     * @param analogChannel The primary analog channel for differential
+     * measurement. Negative or invalid channel numbers or pairings between the
+     * analogChannel and analogReferenceChannel are not clamped and will cause
+     * the reading to fail and emit a warning.
+     * @param analogReferenceChannel The secondary (reference) analog channel
+     * for differential measurement. Negative or invalid channel numbers or
+     * pairings between the analogChannel and analogReferenceChannel are not
+     * clamped and will cause the reading to fail and emit a warning.
      * @param conc_std The concentration of the standard used for a 1-point
      * sensor calibration. The concentration units should be the same as the
      * final measuring units.
@@ -224,32 +238,55 @@ class TurnerTurbidityPlus : public Sensor {
      * dividers or gain settings.
      * @param volt_blank The voltage (in volts) measured for a blank. This
      * voltage should be the final voltage *after* accounting for any voltage
-     * @param i2cAddress The I2C address of the ADS 1x15, default is 0x48 (ADDR
-     * = GND)
-     * @param PGA_gain The programmable gain amplification to set on the
-     * ADS 1x15, default is GAIN_ONE (0-4.096V).
+     * dividers or gain settings.
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
-     * @param voltageDividerFactor For 3.3V processors like the Mayfly, The
-     * Turner's 0-5V output signal must be shifted down to a maximum of 3.3V.
-     * This can be done either either with a level-shifting chip (e.g. Adafruit
-     * BSS38), OR by connecting the Turner's output signal via a voltage
-     * divider. This voltageDividerFactor is used for the latter case: e.g., a
-     * divider that uses 2 matched resistors will halve the voltage reading and
-     * requires a voltageDividerFactor of 2. The default value is 1.
+     * @param analogVoltageReader Pointer to an AnalogVoltageBase object for
+     * voltage measurements.  Pass nullptr (the default) to have the constructor
+     * internally create and own an analog voltage reader.  For backward
+     * compatibility, the default reader uses a TI ADS1115 or ADS1015.  If a
+     * non-null pointer is supplied, the caller retains ownership and must
+     * ensure its lifetime exceeds that of this object.
+     *
+     * @attention For 3.3V processors like the Mayfly, The Turner's 0-5V output
+     * signal must be shifted down to a maximum of 3.3V. This can be done either
+     * with a level-shifting chip (e.g. Adafruit BSS138), OR by connecting the
+     * Turner's output signal via a voltage divider. By default, the
+     * TurnerTurbidityPlus object does **NOT** include any level-shifting or
+     * voltage dividers. To have a voltage divider applied correctly, you must
+     * supply a pointer to a custom AnalogVoltageBase object that applies the
+     * voltage divider to the raw voltage readings. For example, if you are
+     * using a simple voltage divider with two equal resistors, you would need
+     * to use an AnalogVoltageBase object that multiplies the raw voltage
+     * readings by 2 to account for the halving of the signal by the voltage
+     * divider.
+     *
+     * @warning In library versions 0.37.0 and earlier, a different constructor
+     * was used that required an enum object instead of two different analog
+     * channel inputs for the differential voltage measurement. If you are using
+     * code from a previous version of the library, make sure to update your
+     * code to use the new constructor and provide the correct analog channel
+     * inputs for the differential voltage measurement.
      */
     TurnerTurbidityPlus(int8_t powerPin, int8_t wiperTriggerPin,
-                        ttp_adsDiffMux_t adsDiffMux, float conc_std,
-                        float volt_std, float volt_blank,
-                        uint8_t   i2cAddress            = ADS1115_ADDRESS,
-                        adsGain_t PGA_gain              = GAIN_ONE,
-                        uint8_t   measurementsToAverage = 1,
-                        float     voltageDividerFactor  = 1);
+                        int8_t analogChannel, int8_t analogReferenceChannel,
+                        float conc_std, float volt_std, float volt_blank,
+                        uint8_t            measurementsToAverage = 1,
+                        AnalogVoltageBase* analogVoltageReader   = nullptr);
     /**
      * @brief Destroy the Turner Turbidity Plus object
      */
     ~TurnerTurbidityPlus();
+
+    // Delete copy constructor and copy assignment operator to prevent shallow
+    // copies
+    TurnerTurbidityPlus(const TurnerTurbidityPlus&)            = delete;
+    TurnerTurbidityPlus& operator=(const TurnerTurbidityPlus&) = delete;
+
+    // Delete move constructor and move assignment operator
+    TurnerTurbidityPlus(TurnerTurbidityPlus&&)            = delete;
+    TurnerTurbidityPlus& operator=(TurnerTurbidityPlus&&) = delete;
 
     String getSensorLocation(void) override;
 
@@ -283,11 +320,6 @@ class TurnerTurbidityPlus : public Sensor {
      */
     int8_t _wiperTriggerPin;
     /**
-     * @brief Which two pins _on the TI ADS1115_ that will measure differential
-     * voltage from the Turbidity Plus. See #ttp_adsDiffMux_t
-     */
-    ttp_adsDiffMux_t _adsDiffMux;
-    /**
      * @brief The concentration of the standard used for a 1-point sensor
      * calibration. The concentration units should be the same as the final
      * measuring units.
@@ -304,35 +336,18 @@ class TurnerTurbidityPlus : public Sensor {
      * be the final voltage *after* accounting for any voltage.
      */
     float _volt_blank;
+
     /**
-     * @brief Internal reference to the I2C address of the TI-ADS1x15
-     */
-    uint8_t _i2cAddress;
-    /**
-     * @brief The programmable gain amplification to set on the ADS 1x15,
-     * default is GAIN_ONE (+/-4.096V range = Gain 1).
+     * @brief The second (reference) pin for differential voltage measurements.
      *
-     * Other gain options are:
-     *   GAIN_TWOTHIRDS = +/-6.144V range = Gain 2/3,
-     *   GAIN_ONE = +/-4.096V range = Gain 1,
-     *   GAIN_TWO = +/-2.048V range = Gain 2,
-     *   GAIN_FOUR = +/-1.024V range = Gain 4,
-     *   GAIN_EIGHT = +/-0.512V range = Gain 8,
-     *   GAIN_SIXTEEN = +/-0.256V range = Gain 16
-     *
-     * @todo Determine gain automatically based on the board voltage?
+     * @note The primary pin is stored as Sensor::_dataPin.
      */
-    adsGain_t _PGA_gain;
-    /**
-     * @brief For 3.3V processors like the Mayfly, The Turner's 0-5V output
-     * signal must be shifted down to a maximum of 3.3V. This can be done either
-     * either with a level-shifting chip (e.g. Adafruit BSS38), OR by connecting
-     * the Turner's output signal via a voltage divider. This
-     * voltageDividerFactor is used for the latter case: e.g., a divider that
-     * uses 2 matched resistors will halve the voltage reading and requires a
-     * voltageDividerFactor of 2. The default value is 1.
-     */
-    float _voltageDividerFactor;
+    int8_t _analogReferenceChannel = -1;
+    /// @brief Pointer to analog voltage reader
+    AnalogVoltageBase* _analogVoltageReader = nullptr;
+    /// @brief Flag to track if this object owns the analog voltage reader and
+    /// should delete it in the destructor
+    bool _ownsAnalogVoltageReader = false;
 };
 
 
@@ -431,7 +446,5 @@ class TurnerTurbidityPlus_Turbidity : public Variable {
     ~TurnerTurbidityPlus_Turbidity() {}
 };
 /**@}*/
-
-// cspell:words GAIN_TWOTHIRDS
 
 #endif  // SRC_SENSORS_TURNERTURBIDITYPLUS_H_
