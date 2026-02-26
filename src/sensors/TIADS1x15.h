@@ -465,11 +465,12 @@ class TIADS1x15 : public Sensor {
 
  private:
     /**
-     * @brief Internal reference to the secondary (reference) analog channel for
-     * differential measurements
+     * @brief The second (reference) pin for differential voltage measurements.
      *
      * For single-ended measurements: -1 (not used)
      * For differential measurements: the second ADS channel (0-3)
+     *
+     * @note The primary pin is stored as Sensor::_dataPin.
      */
     int8_t _analogReferenceChannel = -1;
 

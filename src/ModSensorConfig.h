@@ -166,7 +166,8 @@
  * higher than what your processor actually supports. This does **not** apply to
  * the TI ADS1115 or ADS1015 external ADS.
  *
- * The default for AVR boards is 10 and for other boards is 12.
+ * The default for AVR boards is 10 and for SAMD boards is 12.  The library
+ * currently only supports AVR and SAMD platforms.
  *
  * Future note: The ESP32 has a 12 bit ADC and the ESP8266 has a 10 bit ADC.
  */

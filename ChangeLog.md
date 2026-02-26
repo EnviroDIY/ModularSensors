@@ -6,25 +6,112 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<!-- @tableofcontents{XML:1,HTML:1} -->
+
+<!--! @m_footernavigation -->
+
+<!--! @if GITHUB -->
+
+- [ChangeLog](#changelog)
+  - [Unreleased](#unreleased)
+  - [0.37.0](#0370)
+  - [0.36.0](#0360)
+  - [0.35.1](#0351)
+  - [0.35.0](#0350)
+  - [\[0.34.1\]](#0341)
+  - [0.34.0](#0340)
+  - [0.33.4](#0334)
+  - [0.33.3](#0333)
+  - [0.33.2](#0332)
+  - [0.33.1 - 2022-04-11](#0331---2022-04-11)
+  - [0.33.0 - 2022-04-01](#0330---2022-04-01)
+  - [0.32.2 - 2021-11-23](#0322---2021-11-23)
+  - [0.32.0 - 2021-11-19](#0320---2021-11-19)
+  - [0.31.2 - 2021-11-03](#0312---2021-11-03)
+  - [0.31.0 - 2021-11-02](#0310---2021-11-02)
+  - [0.30.0 - 2021-07-06](#0300---2021-07-06)
+  - [0.29.1 - 2021-07-01](#0291---2021-07-01)
+  - [0.29.0 - 2021-05-19](#0290---2021-05-19)
+  - [0.28.5 - 2021-05-11](#0285---2021-05-11)
+  - [0.28.4 - 2021-05-05](#0284---2021-05-05)
+  - [0.28.3 - 2021-03-24](#0283---2021-03-24)
+  - [\[0.28.01\] - 2021-02-10](#02801---2021-02-10)
+  - [0.28.0 - 2021-02-10](#0280---2021-02-10)
+  - [0.27.8 - 2021-01-19](#0278---2021-01-19)
+  - [0.27.7 - 2021-01-19](#0277---2021-01-19)
+  - [0.27.6 - 2021-01-19](#0276---2021-01-19)
+  - [0.27.5 - 2020-12-15](#0275---2020-12-15)
+  - [0.25.0 - 2020-06-25](#0250---2020-06-25)
+  - [0.24.1 - 2020-03-02](#0241---2020-03-02)
+  - [0.23.13 - 2019-09-19](#02313---2019-09-19)
+  - [0.23.11 - 2019-09-11](#02311---2019-09-11)
+  - [0.22.5 - 2019-06-24](#0225---2019-06-24)
+  - [0.21.4 - 2019-05-02](#0214---2019-05-02)
+  - [0.21.3 - 2019-05-02](#0213---2019-05-02)
+  - [0.21.2 - 2019-03-19](#0212---2019-03-19)
+  - [0.21.0 - 2019-03-06](#0210---2019-03-06)
+  - [0.19.6 - 2019-02-27](#0196---2019-02-27)
+  - [0.19.3 - 2019-01-15](#0193---2019-01-15)
+  - [0.19.2 - 2018-12-22](#0192---2018-12-22)
+  - [0.17.2 - 2018-11-27](#0172---2018-11-27)
+  - [0.12.2 - 2018-09-25](#0122---2018-09-25)
+  - [0.11.6 - 2018-05-11](#0116---2018-05-11)
+  - [0.11.3 - 2018-05-03](#0113---2018-05-03)
+  - [0.9.0 - 2018-04-17](#090---2018-04-17)
+  - [0.6.10 - 2018-02-26](#0610---2018-02-26)
+  - [0.6.9 - 2018-02-26](#069---2018-02-26)
+  - [0.5.4-beta - 2018-01-18](#054-beta---2018-01-18)
+  - [\[0.3.0\]-beta - 2017-06-07](#030-beta---2017-06-07)
+  - [\[0.2.5\]-beta - 2017-05-31](#025-beta---2017-05-31)
+  - [\[0.2.4\]-beta - 2017-05-17](#024-beta---2017-05-17)
+  - [\[0.2.2\]-beta - 2017-05-09](#022-beta---2017-05-09)
+
+<!--! @endif -->
+
 ***
 
 ## [Unreleased]
 
 ### Changed
 
-- Made the enabling and disabling of the watchdog the very first and very last steps of sleep to keep the watchdog enabled through the whole getting ready for bed and waking up process.
-- **ANB pH**
+#### Individual Sensors
+
+- **ANBpH**
   - **BREAKING** The constructor has changed!
 The logging interval has been added as a required parameter for the constructor!
   - Changed timing slightly and simplified timing logic.
-- **Renamed** The EnviroDIYPublisher has been renamed the MonitorMyWatershedPublisher.
-This reflects changes to the website from years ago.
-There is a shell file and typedef to maintain backwards compatibility.
-- Changed capitalization of `setInitialShortIntervals(#)` function
-  - Previously the 'i' of initial was not capitalized.
-  - The old `setinitialShortIntervals` remains available via compatibility shim in LoggerBase.h, so existing code is unaffected.
-- Bumped several dependencies - including crucial bug fixes to SensorModbusMaster.
-- Re-wrote most of the logic for looping variables within the complete update function of the VariableArray.
+- **AlphasenseCO2** and **TurnerTurbidityPlus**
+  - **BREAKING**  The constructors for both of these analog-based classes have changed!
+Previously the constructor required an enum object for the supported differential channels.
+The new constructor requires of two different analog channel numbers as inputs for the differential voltage measurement.
+If you are using code from a previous version of the library, make sure to update your code to use the new constructor and provide the correct analog channel inputs for the differential voltage measurement.
+  - Moved resistor settings and calibration values into the following preprocessor defines that can be modified to tweak the library if necessary:
+    - `ALPHASENSE_CO2_SENSE_RESISTOR_OHM` (defaults to `250.0f`)
+    - `ALPHASENSE_CO2_MFG_SCALE` (defaults to `312.5f`)
+    - `ALPHASENSE_CO2_MFG_OFFSET` (defaults to `1250.0f`)
+    - `ALPHASENSE_CO2_VOLTAGE_MULTIPLIER` (defaults to `1.0f`)
+    - `TURBIDITY_PLUS_WIPER_TRIGGER_PULSE_MS` (defaults to `50`)
+    - `TURBIDITY_PLUS_WIPER_ROTATION_WAIT_MS` (defaults to `8000`)
+    - `TURBIDITY_PLUS_CALIBRATION_EPSILON` (defaults to `1e-4f`)
+- **ApogeeSQ212**, **TIADS1x15**, **CampbellOBS3**, and **TurnerCyclops**
+  - *Potentially breaking* The constructors for all of these analog-based classes have changed!
+Previously the I2C address of the ADS1x15 was an optional input parameter which came *before* the optional input parameter for the number of measurements to average.
+The input parameter for the I2C address has been *removed* and the input for the number of measurements to average has been moved up in the order!
+For users who used the default values, this will have no affect.
+For users who provided both a custom I2C address and a custom number of measurements, this will cause a compiler error.
+For uses who provided a custom I2C address *but not a custom number of measurements* this will cause a *silent failure* because the custom I2C address will be used as the measurement count and the default I2C address will be used.
+Users who need a custom I2C address for the ADS1x15 must construct a TIADS1x15Base object with the correct address and pass a pointer to that object to the constructor.
+- **AnalogElecConductivity**
+  - *Renamed* configuration defines to have the prefix `ANALOGELECCONDUCTIVITY` and moved other defaults to defines.
+This affects the following defines:
+    - `ANALOGELECCONDUCTIVITY_RSERIES_OHMS` (formerly `RSERIES_OHMS_DEF`)
+    - `ANALOGELECCONDUCTIVITY_KONST` (formerly `SENSOREC_KONST_DEF`)
+    - `ANALOGELECCONDUCTIVITY_ADC_MAX_RATIO` (formerly a hardcoded value of `0.999f`)
+- **EverlightALSPT19**
+  - Moved the calibration constant between current and lux to the `ALSPT19_UA_PER_1000LUX` preprocessor define.
+
+#### All Sensors
+
 - Simplified the `addSingleMeasurementResult()` function of all sensors to use an internal function to help set the bits and timing values and to quit sooner if the measurement was not started successfully.
   - The `verifyAndAddMeasurementResult()` is now consistently used in all sensors and is only called when the sensor successfully returned a measurement response.
   - Also removed all places where sensor values were re-set to -9999 after a measurement failed and then that -9999 was sent to the `verifyAndAddMeasurementResult()` function.
@@ -32,6 +119,23 @@ These resets were an awkward attempt to deal with bad values before feeding any 
 This was probably a hold-over from incorrect implementation and calling of the clearValues function deep in the library history.
   - Also made the return from the `addSingleMeasurementResult()` function consistently false for a bad sensor response and true for a good one - where it's possible to tell the difference.
 - The Sensor::clearValues() function now resets the attempt and retry counts in addition to setting all values in the value array to -9999.
+
+#### Individual Publishers
+
+- *Renamed* The EnviroDIYPublisher has been renamed the MonitorMyWatershedPublisher.
+This reflects changes to the website from years ago.
+There is a shell file and typedef to maintain backwards compatibility.
+
+#### All Publishers
+
+- Changed capitalization of `setInitialShortIntervals(#)` function
+  - Previously the 'i' of initial was not capitalized.
+  - The old `setinitialShortIntervals` remains available via compatibility shim in LoggerBase.h, so existing code is unaffected.
+
+#### Loggers and Variable Arrays
+
+- Made the enabling and disabling of the watchdog the very first and very last steps of sleep to keep the watchdog enabled through the whole getting ready for bed and waking up process.
+- Re-wrote most of the logic for looping variables within the complete update function of the VariableArray.
 - Re-wrote some of the logic of the `completeUpdate()` function.
 Also added optional arguments to the `completeUpdate()` function to allow users to specify if the sensors should be powered/woken.
   - The `updateAllSensors()` function is now deprecated.
@@ -39,11 +143,24 @@ Use `completeUpdate(false, false, false, false)` instead.
     - Previously the `updateAllSensors()` function asked all sensors to update their values, skipping all power, wake, and sleep steps while the `completeUpdate()` function duplicated that functionality and added the power, wake, and sleep.
 The two functions have been consolidated into one function with four arguments, one each for power on, wake, sleep, and power off.
 To achieve the same functionality as the old `updateAllSensors()` function (ie, only updating values), set all the arguments to false.
+
+#### Library Wide
+
+- Bumped several dependencies - including crucial bug fixes to SensorModbusMaster.
 - Applied many suggestions from Code Rabbit AI.
 - Moved outdated examples to a new "Outdated" folder, with a subfolder for the DRWI examples
 - When importing TinyGSM for the modem objects, the specific modem client headers are now imported directly rather than importing the TinyGsmClient.h header which defines typedefs for the sub-types.
+- Moved the define for the default address used for a TI ADS from multiple individual files to the ModSensorConfig and renamed to `MS_DEFAULT_ADS1X15_ADDRESS`.
+- Within ModSensorConfig removed the default `MS_PROCESSOR_ADC_RESOLUTION` for all processors and clarified that the 12 bit default only applies to SAMD processors.
+This is *not* breaking because only AVR and SAMD processors were supported anyway.
 
 ### Added
+
+#### New Sensors
+
+- **NEW SENSOR** Added a new sensor for simple analog voltage using the built-in processor ADC
+
+#### Features for All Sensors
 
 - **Added support for retrying measurements for all sensors**.
   - Each sensor now supports a number of possible retry attempts for when the sensor returns a bad or no value.
@@ -65,8 +182,21 @@ These values should generally be set in the specific sensor constructors and onl
   - `setMeasurementTime(uint32_t measurementTime_ms)`
   - `getMeasurementTime()`
 - Added the functions `Sensor::clearStatus()`,`Sensor::clearPowerStatus()`,`Sensor::clearWakeStatus()`,and `Sensor::clearMeasurementStatus()` which reset some or all of the sensor status bits and related timing variables.
-- **NEW SENSOR** Added a new sensor for simple analog voltage using the built-in processor ADC
-- Added KnownProcessors.h and moved defines values for supported built-in sensors on known processors to that file.
+- Added an abstract AnalogVoltageBase class with two concrete classes for analog voltage measurements: ProcessorAnalogBase and TIADS1x15Base.
+All supported analog sensors can now accept a pointer to an object of any concrete subclass of the AnalogVoltageBase class to use for raw voltage measurements.
+By default the existing analog sensors will create an AnalogVoltageBase class object internally for whichever type of ADC (processor or ADS1x15) the sensor was originally coded to use.
+This affects the following classes:
+  - AlphasenseCO2
+  - AnalogElecConductivity
+  - ApogeeSQ212
+  - CampbellOBS3
+  - EverlightALSPT19
+  - TurnerCyclops
+  - TurnerTurbidityPlus
+
+#### Library Wide
+
+- Added KnownProcessors.h and moved defines valued for supported built-in sensors on known processors to that file.
   - This affects ProcessorStats and the Everlight ALS PT-19.
 - Added a new example specific to the [EnviroDIY Monitoring Station Kit](https://www.envirodiy.org/product/envirodiy-monitoring-station-kit/).
 
@@ -83,6 +213,8 @@ These values should generally be set in the specific sensor constructors and onl
 
 - Fixed major bug where sensors with two power pins where either was shared with another sensor may be turned off inappropriately when one of the other sensors was turned off.
 - Correctly retry NIST sync on XBees when a not-sane timestamp is returned.
+- Improved ADC bit-width handling with explicit type casting for safer arithmetic operations.
+Enhanced null-pointer validation and error handling across analog voltage reading paths.
 
 ***
 
@@ -1210,4 +1342,4 @@ Our first release of the modular sensors library to support easily logging data 
 
 <!--! @m_footernavigation -->
 
-<!-- cspell:words isnan GPST arounds strcat strcpy PULLUP TIINA Wextra setinitialShortIntervals -->
+<!-- cspell:words isnan GPST arounds strcat strcpy PULLUP TIINA Wextra setinitialShortIntervals RSeries AnalogElecConductivity Konst SensorEC -->

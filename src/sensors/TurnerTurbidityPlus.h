@@ -339,6 +339,8 @@ class TurnerTurbidityPlus : public Sensor {
 
     /**
      * @brief The second (reference) pin for differential voltage measurements.
+     *
+     * @note The primary pin is stored as Sensor::_dataPin.
      */
     int8_t _analogReferenceChannel = -1;
     /// @brief Pointer to analog voltage reader

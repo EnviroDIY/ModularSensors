@@ -27,7 +27,8 @@ EverlightALSPT19::EverlightALSPT19(int8_t powerPin, int8_t dataPin,
       _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {
     // If no analog voltage reader was provided, create a default one
     if (analogVoltageReader == nullptr) {
-        _analogVoltageReader = createProcessorAnalogBase(_ownsAnalogVoltageReader);
+        _analogVoltageReader =
+            createProcessorAnalogBase(_ownsAnalogVoltageReader);
     }
 }
 #if (defined(BUILT_IN_ALS_POWER_PIN) && defined(BUILT_IN_ALS_DATA_PIN) && \
@@ -72,10 +73,15 @@ bool EverlightALSPT19::addSingleMeasurementResult(void) {
                F("No analog voltage reader available"));
         return bumpMeasurementAttemptCount(false);
     }
-
     // Check if we have a valid load resistor
     if (_loadResistor <= 0) {
         MS_DBG(getSensorNameAndLocation(), F("Invalid load resistor value"));
+        return bumpMeasurementAttemptCount(false);
+    }
+    // Check if we have a valid calibration constant
+    if (ALSPT19_UA_PER_1000LUX <= 0) {
+        MS_DBG(getSensorNameAndLocation(),
+               F("Invalid current-to-lux calibration factor"));
         return bumpMeasurementAttemptCount(false);
     }
 
@@ -110,13 +116,12 @@ bool EverlightALSPT19::addSingleMeasurementResult(void) {
         // resistance is entered in kΩ and we want µA
         float current_val = (adcVoltage / (_loadResistor * 1000.0f)) * 1e6f;
         MS_DBG(F("  Current:"), current_val, F("µA"));
+        verifyAndAddMeasurementResult(ALSPT19_CURRENT_VAR_NUM, current_val);
 
         // convert current to illuminance
         // from sensor datasheet, typical 200µA current for 1000 Lux
         float calibResult = current_val * (1000.0f / ALSPT19_UA_PER_1000LUX);
         MS_DBG(F("  Illuminance:"), calibResult, F("lux"));
-
-        verifyAndAddMeasurementResult(ALSPT19_CURRENT_VAR_NUM, current_val);
         verifyAndAddMeasurementResult(ALSPT19_ILLUMINANCE_VAR_NUM, calibResult);
     } else {
         MS_DBG(F("  Failed to get valid voltage from analog reader"));

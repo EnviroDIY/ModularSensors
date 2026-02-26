@@ -308,10 +308,11 @@ class AnalogElecConductivity : public Sensor {
      * as analog pins generally are numbered with an "A" in front of the number
      * - ie, A1.
      * @param Rseries_ohms The resistance of the resistor series (R) in the
-     * line; optional with default value of 499.
+     * line; optional with default value of
+     * #ANALOGELECCONDUCTIVITY_RSERIES_OHMS (499).
      * @param sensorEC_Konst The cell constant for the sensing circuit; optional
-     * with default value of 2.88 - which is what has been measured for a
-     * typical standard sized lamp-type plug.
+     * with default value of #ANALOGELECCONDUCTIVITY_KONST (1.0f) - this should
+     * be calibrated for each specific sensing setup.
      * @param measurementsToAverage The number of measurements to average;
      * optional with default value of 1.
      * @param analogVoltageReader Pointer to an AnalogVoltageBase object for

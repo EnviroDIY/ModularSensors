@@ -66,6 +66,12 @@ bool AlphasenseCO2::addSingleMeasurementResult(void) {
                F("No analog voltage reader available"));
         return bumpMeasurementAttemptCount(false);
     }
+    // validate the resistor value
+    if (ALPHASENSE_CO2_SENSE_RESISTOR_OHM <= 0) {
+        MS_DBG(F("  Error: Invalid sense resistor value"),
+               ALPHASENSE_CO2_SENSE_RESISTOR_OHM);
+        return bumpMeasurementAttemptCount(false);
+    }
 
     float adcVoltage = -9999;
 

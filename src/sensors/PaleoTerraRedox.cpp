@@ -155,7 +155,7 @@ bool PaleoTerraRedox::addSingleMeasurementResult(void) {
     // Check if this is a negative value (sign bit 17 is set)
     if (res1 & 0x02) {  // Test bit 17
         // Sign-extend the 18-bit value to get correct negative magnitude
-        adcValue |= 0xFF000000;  // Sign extend from bit 17
+        adcValue |= 0xFFFC0000;  // Sign extend from bit 17 (set all bits 18-31)
     }
 
     // convert the raw ADC value to voltage in microvolts (uV)

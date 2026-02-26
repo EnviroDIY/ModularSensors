@@ -338,13 +338,15 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
             _dataPin, _analogReferenceChannel, resultValue);
     } else {
         if (_analogReferenceChannel >= 0) {
-            MS_DBG(F("  Warning: reference channel "), _analogReferenceChannel,
-                   F(" set but pair is not a valid differential config;"
-                     " falling back to single-ended on channel "),
-                   _dataPin);
+            // Differential was requested but pair is invalid - fail the measurement
+            MS_DBG(F("  Error: Invalid differential pair ("), _dataPin, F("-"),
+                   _analogReferenceChannel, F("). Measurement failed."));
+            success = false;
+        } else {
+            // No reference channel specified, use single-ended
+            success = _analogVoltageReader->readVoltageSingleEnded(_dataPin,
+                                                                   resultValue);
         }
-        success = _analogVoltageReader->readVoltageSingleEnded(_dataPin,
-                                                               resultValue);
     }
 
     if (success) {

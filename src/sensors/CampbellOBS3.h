@@ -261,6 +261,14 @@ class CampbellOBS3 : public Sensor {
      * compatibility, the default reader uses a TI ADS1115 or ADS1015.  If a
      * non-null pointer is supplied, the caller retains ownership and must
      * ensure its lifetime exceeds that of this object.
+     *
+     * @warning In library versions 0.37.0 and earlier, a different constructor
+     * was used that the I2C address of the ADS1x15 was an optional input
+     * parameter which came *before* the optional input parameter for the number
+     * of measurements to average.  The input parameter for the I2C address has
+     * been *removed* and the input for the number of measurements to average
+     * has been moved up in the order!  Please update your code to prevent a
+     * compiler error or a silent reading error.
      */
     CampbellOBS3(int8_t powerPin, int8_t analogChannel, float x2_coeff_A,
                  float x1_coeff_B, float x0_coeff_C,
