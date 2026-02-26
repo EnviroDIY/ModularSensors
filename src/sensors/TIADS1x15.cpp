@@ -252,6 +252,8 @@ bool TIADS1x15Base::isValidDifferentialPair(int8_t channel1, int8_t channel2) {
 void TIADS1x15Base::setADSGain(adsGain_t adsGain) {
     // Update the per-instance driver with new gain setting
     _ads.setGain(adsGain);
+    // Keep cached value in sync
+    _adsGain = adsGain;
 }
 
 adsGain_t TIADS1x15Base::getADSGain(void) {
@@ -262,6 +264,8 @@ adsGain_t TIADS1x15Base::getADSGain(void) {
 void TIADS1x15Base::setADSDataRate(uint16_t adsDataRate) {
     // Update the per-instance driver with new data rate setting
     _ads.setDataRate(adsDataRate);
+    // Keep cached value in sync
+    _adsDataRate = adsDataRate;
 }
 
 uint16_t TIADS1x15Base::getADSDataRate(void) {

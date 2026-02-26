@@ -95,7 +95,7 @@ float ProcessorAnalogBase::calculateAnalogResolutionVolts(void) {
     // (single-ended measurements from 0V to supply voltage)
     float fullScaleRangeVolts = _supplyVoltage;
 
-    if (resolutionBits == 0 || resolutionBits > 32 ||
+    if (resolutionBits == 0 || resolutionBits >= 32 ||
         fullScaleRangeVolts <= 0.0f) {
         MS_DBG(F("Invalid ADC configuration - bits: "), resolutionBits,
                F(", supply voltage: "), fullScaleRangeVolts, F("V"));

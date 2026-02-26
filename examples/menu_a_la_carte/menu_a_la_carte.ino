@@ -1004,7 +1004,7 @@ Variable* ds3231Temp =
 const int8_t  asCO2Power    = sensorPowerPin;  // Power pin
 const int8_t  asCO2Channel1 = 2;               // First differential channel
 const int8_t  asCO2Channel2 = 3;               // Second differential channel
-const uint8_t asCO2Meas     = 1;               // Second differential channel
+const uint8_t asCO2Meas     = 1;               // Number of readings to average
 
 // Create an Alphasense CO2 sensor object
 AlphasenseCO2 alphasenseCO2(asCO2Power, asCO2Channel1, asCO2Channel2,
@@ -1137,7 +1137,7 @@ Variable* dhtHI   = new AOSongDHT_HI(&dht,
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const int8_t  sq212Power      = sensorPowerPin;  // Power pin
 const int8_t  sq212ADSChannel = 3;  // The ADS channel for the SQ212
-const uint8_t sq212Readings   = 1;  // The ADS channel for the SQ212
+const uint8_t sq212Readings   = 1;  // The number of readings to average
 
 // Create an Apogee SQ212 sensor object with the default voltage reader
 ApogeeSQ212 sq212(sq212Power, sq212ADSChannel);
@@ -2506,7 +2506,7 @@ float analogECMultiplier = 1.0f;  // factor for a voltage divider
 float analogECSupply     = 3.3f;  // supply voltage of the Processor ADC
 ProcessorAnalogBase analogECADS(analogECMultiplier, analogECSupply);
 
-// Create a Turner analogEC sensor object with the custom ADS instance
+// Create an AnalogElecConductivity sensor object with the custom ADS instance
 AnalogElecConductivity analogEC_c(analogECPower, analogECData,
                                   ANALOGELECCONDUCTIVITY_RSERIES_OHMS,
                                   ANALOGELECCONDUCTIVITY_KONST,

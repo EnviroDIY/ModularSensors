@@ -44,11 +44,13 @@
  *
  * This class provides a unified interface for analog voltage reading,
  * whether from external ADCs (like TI ADS1x15) or processor built-in ADCs.
- * Classes that inherit from this base must implement three pure virtual
+ * Classes that inherit from this base must implement five pure virtual
  * methods:
+ * - begin() for hardware initialization,
  * - readVoltageSingleEnded() for single-ended voltage measurements,
- * - readVoltageDifferential() for differential voltage measurements, and
- * - getAnalogLocation() to provide sensor location identification.
+ * - readVoltageDifferential() for differential voltage measurements,
+ * - getAnalogLocation() to provide sensor location identification, and
+ * - calculateAnalogResolutionVolts() to compute voltage resolution.
  */
 class AnalogVoltageBase {
  public:

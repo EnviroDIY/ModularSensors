@@ -55,9 +55,9 @@ String AlphasenseCO2::getSensorLocation(void) {
 
 
 bool AlphasenseCO2::setup(void) {
-    bool sensorSetupSuccess = Sensor::setup();
+    bool sensorSetupSuccess         = Sensor::setup();
     bool analogVoltageReaderSuccess = false;
-    
+
     if (_analogVoltageReader != nullptr) {
         analogVoltageReaderSuccess = _analogVoltageReader->begin();
         if (!analogVoltageReaderSuccess) {
@@ -68,7 +68,7 @@ bool AlphasenseCO2::setup(void) {
         MS_DBG(getSensorNameAndLocation(),
                F("No analog voltage reader to initialize"));
     }
-    
+
     return sensorSetupSuccess && analogVoltageReaderSuccess;
 }
 
@@ -104,7 +104,7 @@ bool AlphasenseCO2::addSingleMeasurementResult(void) {
         // Convert voltage to current (mA) - assuming a 250 Ohm resistor is in
         // series
         float co2Current = (adcVoltage / ALPHASENSE_CO2_SENSE_RESISTOR_OHM) *
-            1000;
+            1000.0f;
         MS_DBG(F("  co2Current:"), co2Current);
 
         // Convert current to ppm (using a formula recommended by the sensor

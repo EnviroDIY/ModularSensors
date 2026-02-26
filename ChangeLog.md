@@ -83,7 +83,7 @@ The logging interval has been added as a required parameter for the constructor!
 - **AlphasenseCO2** and **TurnerTurbidityPlus**
   - **BREAKING**  The constructors for both of these analog-based classes have changed!
 Previously the constructor required an enum object for the supported differential channels.
-The new constructor requires of two different analog channel numbers as inputs for the differential voltage measurement.
+The new constructor requires two different analog channel numbers as inputs for the differential voltage measurement.
 If you are using code from a previous version of the library, make sure to update your code to use the new constructor and provide the correct analog channel inputs for the differential voltage measurement.
   - Moved resistor settings and calibration values into the following preprocessor defines that can be modified to tweak the library if necessary:
     - `ALPHASENSE_CO2_SENSE_RESISTOR_OHM` (defaults to `250.0f`)
@@ -144,7 +144,7 @@ Use `completeUpdate(false, false, false, false)` instead.
 The two functions have been consolidated into one function with four arguments, one each for power on, wake, sleep, and power off.
 To achieve the same functionality as the old `updateAllSensors()` function (ie, only updating values), set all the arguments to false.
 
-#### Library Wide
+#### Library-Wide
 
 - Bumped several dependencies - including crucial bug fixes to SensorModbusMaster.
 - Applied many suggestions from Code Rabbit AI.
@@ -194,7 +194,7 @@ This affects the following classes:
   - TurnerCyclops
   - TurnerTurbidityPlus
 
-#### Library Wide
+#### Library-Wide
 
 - Added KnownProcessors.h and moved define values for supported built-in sensors on known processors to that file.
   - This affects ProcessorStats and the Everlight ALS PT-19.
