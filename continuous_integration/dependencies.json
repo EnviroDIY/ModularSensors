@@ -1,5 +1,5 @@
 {
-  "action_cache_version": 46,
+  "action_cache_version": 47,
   "dependencies": [
     {
       "name": "EnviroDIY_DS3231",
@@ -162,7 +162,7 @@
       "owner": "adafruit",
       "library id": "19",
       "url": "https://github.com/adafruit/DHT-sensor-library",
-      "version": "~1.4.6",
+      "version": "~1.4.7",
       "note": "AOSong DHT Sensor Library by Adafruit",
       "authors": [
         "Adafruit"
@@ -276,6 +276,18 @@
         "Chad Sandell",
         "Sara Damiano"
       ]
+    },
+    {
+      "name": "BlueRobotics MS5837 Library",
+      "owner": "bluerobotics",
+      "url": "https://github.com/bluerobotics/BlueRobotics_MS5837_Library",
+      "version": "https://github.com/bluerobotics/BlueRobotics_MS5837_Library",
+      "version_note": "~0.1.2",
+      "note": "Library for TE Connectivity MS5837 pressure sensor, commonly deployed in Blue Robotics Bar02/Bar30 sensors",
+      "authors": [
+        "Blue Robotics"
+      ],
+      "frameworks": "arduino"
     },
     {
       "name": "Tally_Library_I2C",

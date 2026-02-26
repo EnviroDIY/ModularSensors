@@ -133,7 +133,7 @@ lib_deps =
     adafruit/Adafruit AM2315@^2.2.3
     adafruit/Adafruit BME280 Library@^2.3.0
     MartinL1/BMP388_DEV@^1.0.11
-    adafruit/DHT sensor library@^1.4.6
+    adafruit/DHT sensor library@^1.4.7
     adafruit/Adafruit INA219@^1.2.3
     adafruit/Adafruit MPL115A2@^2.0.2
     adafruit/Adafruit SHT4x Library@^1.0.5
@@ -150,6 +150,7 @@ lib_deps =
     envirodiy/GeoluxCamera@^0.1.3
     robtillaart/fast_math@^0.2.4
     envirodiy/ANBSensorsModbus@^0.4.2
+    BlueRobotics MS5837 Library=https://github.com/bluerobotics/BlueRobotics_MS5837_Library
     StreamDebugger=https://github.com/EnviroDIY/StreamDebugger.git
     NeoSWSerial=https://github.com/SRGDamia1/NeoSWSerial.git
     AltSoftSerial=https://github.com/PaulStoffregen/AltSoftSerial.git
