@@ -24,14 +24,11 @@ AnalogElecConductivity::AnalogElecConductivity(
              measurementsToAverage, ANALOGELECCONDUCTIVITY_INC_CALC_VARIABLES),
       _Rseries_ohms(Rseries_ohms),
       _sensorEC_Konst(sensorEC_Konst),
-      _analogVoltageReader(analogVoltageReader),
-      _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {
-    // If no analog voltage reader was provided, create a default one
-    if (analogVoltageReader == nullptr) {
-        _analogVoltageReader =
-            createProcessorAnalogBase(_ownsAnalogVoltageReader);
-    }
-}
+      // If no analog voltage reader was provided, create a default one
+      _analogVoltageReader(analogVoltageReader == nullptr
+                               ? new ProcessorAnalogBase()
+                               : analogVoltageReader),
+      _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {}
 
 // Destructor
 AnalogElecConductivity::~AnalogElecConductivity() {
@@ -56,9 +53,9 @@ String AnalogElecConductivity::getSensorLocation(void) {
 
 
 bool AnalogElecConductivity::setup(void) {
-    bool sensorSetupSuccess = Sensor::setup();
+    bool sensorSetupSuccess         = Sensor::setup();
     bool analogVoltageReaderSuccess = false;
-    
+
     if (_analogVoltageReader != nullptr) {
         analogVoltageReaderSuccess = _analogVoltageReader->begin();
         if (!analogVoltageReaderSuccess) {
@@ -69,7 +66,7 @@ bool AnalogElecConductivity::setup(void) {
         MS_DBG(getSensorNameAndLocation(),
                F("No analog voltage reader to initialize"));
     }
-    
+
     return sensorSetupSuccess && analogVoltageReaderSuccess;
 }
 

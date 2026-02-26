@@ -25,13 +25,11 @@ TurnerCyclops::TurnerCyclops(int8_t powerPin, int8_t analogChannel,
       _conc_std(conc_std),
       _volt_std(volt_std),
       _volt_blank(volt_blank),
-      _analogVoltageReader(analogVoltageReader),
-      _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {
-    // If no analog voltage reader was provided, create a default one
-    if (analogVoltageReader == nullptr) {
-        _analogVoltageReader = createTIADS1x15Base(_ownsAnalogVoltageReader);
-    }
-}
+      // If no analog voltage reader was provided, create a default one
+      _analogVoltageReader(analogVoltageReader == nullptr
+                               ? new TIADS1x15Base()
+                               : analogVoltageReader),
+      _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {}
 
 // Destructor
 TurnerCyclops::~TurnerCyclops() {
@@ -52,9 +50,9 @@ String TurnerCyclops::getSensorLocation(void) {
 
 
 bool TurnerCyclops::setup(void) {
-    bool sensorSetupSuccess = Sensor::setup();
+    bool sensorSetupSuccess         = Sensor::setup();
     bool analogVoltageReaderSuccess = false;
-    
+
     if (_analogVoltageReader != nullptr) {
         analogVoltageReaderSuccess = _analogVoltageReader->begin();
         if (!analogVoltageReaderSuccess) {
@@ -65,7 +63,7 @@ bool TurnerCyclops::setup(void) {
         MS_DBG(getSensorNameAndLocation(),
                F("No analog voltage reader to initialize"));
     }
-    
+
     return sensorSetupSuccess && analogVoltageReaderSuccess;
 }
 

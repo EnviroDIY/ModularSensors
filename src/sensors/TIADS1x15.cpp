@@ -348,13 +348,11 @@ TIADS1x15::TIADS1x15(int8_t powerPin, int8_t adsChannel,
              powerPin, adsChannel, measurementsToAverage,
              TIADS1X15_INC_CALC_VARIABLES),
       _analogReferenceChannel(analogReferenceChannel),
-      _analogVoltageReader(analogVoltageReader),
+      // If no analog voltage reader was provided, create a default one
+      _analogVoltageReader(analogVoltageReader == nullptr
+                               ? new TIADS1x15Base()
+                               : analogVoltageReader),
       _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {
-    // If no analog voltage reader was provided, create a default one
-    if (analogVoltageReader == nullptr) {
-        _analogVoltageReader = createTIADS1x15Base(_ownsAnalogVoltageReader);
-    }
-
     // NOTE: We DO NOT validate the channel numbers and pairings in this
     // constructor!  We CANNOT print a warning here about invalid channel
     // because the Serial object may not be initialized yet, and we don't want
@@ -383,9 +381,9 @@ String TIADS1x15::getSensorLocation(void) {
 
 
 bool TIADS1x15::setup(void) {
-    bool sensorSetupSuccess = Sensor::setup();
+    bool sensorSetupSuccess         = Sensor::setup();
     bool analogVoltageReaderSuccess = false;
-    
+
     if (_analogVoltageReader != nullptr) {
         analogVoltageReaderSuccess = _analogVoltageReader->begin();
         if (!analogVoltageReaderSuccess) {
@@ -396,7 +394,7 @@ bool TIADS1x15::setup(void) {
         MS_DBG(getSensorNameAndLocation(),
                F("No analog voltage reader to initialize"));
     }
-    
+
     return sensorSetupSuccess && analogVoltageReaderSuccess;
 }
 

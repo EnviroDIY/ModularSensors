@@ -28,13 +28,11 @@ TurnerTurbidityPlus::TurnerTurbidityPlus(
       _volt_std(volt_std),
       _volt_blank(volt_blank),
       _analogReferenceChannel(analogReferenceChannel),
-      _analogVoltageReader(analogVoltageReader),
-      _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {
-    // If no analog voltage reader was provided, create a default one
-    if (analogVoltageReader == nullptr) {
-        _analogVoltageReader = createTIADS1x15Base(_ownsAnalogVoltageReader);
-    }
-}
+      // If no analog voltage reader was provided, create a default one
+      _analogVoltageReader(analogVoltageReader == nullptr
+                               ? new TIADS1x15Base()
+                               : analogVoltageReader),
+      _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {}
 
 // Destructor
 TurnerTurbidityPlus::~TurnerTurbidityPlus() {
@@ -72,9 +70,9 @@ void TurnerTurbidityPlus::runWiper() {
 bool TurnerTurbidityPlus::setup(void) {
     // Set up the wiper trigger pin, which is active-LOW.
     pinMode(_wiperTriggerPin, OUTPUT);
-    bool sensorSetupSuccess = Sensor::setup();
+    bool sensorSetupSuccess         = Sensor::setup();
     bool analogVoltageReaderSuccess = false;
-    
+
     if (_analogVoltageReader != nullptr) {
         analogVoltageReaderSuccess = _analogVoltageReader->begin();
         if (!analogVoltageReaderSuccess) {
@@ -85,7 +83,7 @@ bool TurnerTurbidityPlus::setup(void) {
         MS_DBG(getSensorNameAndLocation(),
                F("No analog voltage reader to initialize"));
     }
-    
+
     return sensorSetupSuccess && analogVoltageReaderSuccess;
 }
 

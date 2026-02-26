@@ -24,13 +24,11 @@ CampbellOBS3::CampbellOBS3(int8_t powerPin, int8_t analogChannel,
       _x2_coeff_A(x2_coeff_A),
       _x1_coeff_B(x1_coeff_B),
       _x0_coeff_C(x0_coeff_C),
-      _analogVoltageReader(analogVoltageReader),
-      _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {
-    // If no analog voltage reader was provided, create a default one
-    if (analogVoltageReader == nullptr) {
-        _analogVoltageReader = createTIADS1x15Base(_ownsAnalogVoltageReader);
-    }
-}
+      // If no analog voltage reader was provided, create a default one
+      _analogVoltageReader(analogVoltageReader == nullptr
+                               ? new TIADS1x15Base()
+                               : analogVoltageReader),
+      _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {}
 
 // Destructor
 CampbellOBS3::~CampbellOBS3() {
@@ -51,9 +49,9 @@ String CampbellOBS3::getSensorLocation(void) {
 
 
 bool CampbellOBS3::setup(void) {
-    bool sensorSetupSuccess = Sensor::setup();
+    bool sensorSetupSuccess         = Sensor::setup();
     bool analogVoltageReaderSuccess = false;
-    
+
     if (_analogVoltageReader != nullptr) {
         analogVoltageReaderSuccess = _analogVoltageReader->begin();
         if (!analogVoltageReaderSuccess) {
@@ -64,7 +62,7 @@ bool CampbellOBS3::setup(void) {
         MS_DBG(getSensorNameAndLocation(),
                F("No analog voltage reader to initialize"));
     }
-    
+
     return sensorSetupSuccess && analogVoltageReaderSuccess;
 }
 

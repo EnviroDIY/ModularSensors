@@ -238,35 +238,6 @@ class ProcessorAnalogBase : public AnalogVoltageBase {
 
 };
 
-// Inline utility function implementation
-/**
- * @brief Create a ProcessorAnalogBase analog voltage reader with ownership
- * tracking
- *
- * This utility function safely creates a new ProcessorAnalogBase object with
- * default settings and verifies it was created successfully. It handles the
- * pattern of creating default analog voltage readers when none is provided to
- * sensor constructors.
- *
- * @param[out] ownsAnalogVoltageReader Reference to bool that tracks ownership.
- *   Set to true if the reader was created successfully, false if creation
- * failed.
- * @return Pointer to created ProcessorAnalogBase object, or nullptr if creation
- * failed
- *
- * @note This function is designed for use in sensor constructors that need a
- * default analog voltage reader. The ownership flag should be used to determine
- * whether the returned pointer needs to be deleted in the sensor's destructor.
- */
-inline ProcessorAnalogBase*
-createProcessorAnalogBase(bool& ownsAnalogVoltageReader) {
-    ProcessorAnalogBase* reader = new ProcessorAnalogBase();
-    // verify that the voltage reader was created successfully
-    // this could fail silently on no-exceptions Arduino targets
-    ownsAnalogVoltageReader = (reader != nullptr);
-    return reader;
-}
-
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the

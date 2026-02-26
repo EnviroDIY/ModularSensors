@@ -22,15 +22,13 @@ EverlightALSPT19::EverlightALSPT19(int8_t powerPin, int8_t dataPin,
              measurementsToAverage, ALSPT19_INC_CALC_VARIABLES),
       _alsSupplyVoltage((alsSupplyVoltage > 0.0f) ? alsSupplyVoltage
                                                   : OPERATING_VOLTAGE),
+      // If no analog voltage reader was provided, create a default one
       _loadResistor(loadResistor),
-      _analogVoltageReader(analogVoltageReader),
-      _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {
-    // If no analog voltage reader was provided, create a default one
-    if (analogVoltageReader == nullptr) {
-        _analogVoltageReader =
-            createProcessorAnalogBase(_ownsAnalogVoltageReader);
-    }
-}
+      _analogVoltageReader(analogVoltageReader == nullptr
+                               ? new ProcessorAnalogBase()
+                               : analogVoltageReader),
+      _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {}
+
 #if (defined(BUILT_IN_ALS_POWER_PIN) && defined(BUILT_IN_ALS_DATA_PIN) && \
      defined(BUILT_IN_ALS_SUPPLY_VOLTAGE) &&                              \
      defined(BUILT_IN_ALS_LOADING_RESISTANCE)) ||                         \
@@ -62,9 +60,9 @@ String EverlightALSPT19::getSensorLocation(void) {
 
 
 bool EverlightALSPT19::setup(void) {
-    bool sensorSetupSuccess = Sensor::setup();
+    bool sensorSetupSuccess         = Sensor::setup();
     bool analogVoltageReaderSuccess = false;
-    
+
     if (_analogVoltageReader != nullptr) {
         analogVoltageReaderSuccess = _analogVoltageReader->begin();
         if (!analogVoltageReaderSuccess) {
@@ -75,7 +73,7 @@ bool EverlightALSPT19::setup(void) {
         MS_DBG(getSensorNameAndLocation(),
                F("No analog voltage reader to initialize"));
     }
-    
+
     return sensorSetupSuccess && analogVoltageReaderSuccess;
 }
 

@@ -23,13 +23,11 @@ ApogeeSQ212::ApogeeSQ212(int8_t powerPin, int8_t analogChannel,
     : Sensor("ApogeeSQ212", SQ212_NUM_VARIABLES, SQ212_WARM_UP_TIME_MS,
              SQ212_STABILIZATION_TIME_MS, SQ212_MEASUREMENT_TIME_MS, powerPin,
              analogChannel, measurementsToAverage, SQ212_INC_CALC_VARIABLES),
-      _analogVoltageReader(analogVoltageReader),
-      _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {
-    // If no analog voltage reader was provided, create a default one
-    if (analogVoltageReader == nullptr) {
-        _analogVoltageReader = createTIADS1x15Base(_ownsAnalogVoltageReader);
-    }
-}
+      // If no analog voltage reader was provided, create a default one
+      _analogVoltageReader(analogVoltageReader == nullptr
+                               ? new TIADS1x15Base()
+                               : analogVoltageReader),
+      _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {}
 
 // Destructor
 ApogeeSQ212::~ApogeeSQ212() {
@@ -50,9 +48,9 @@ String ApogeeSQ212::getSensorLocation(void) {
 
 
 bool ApogeeSQ212::setup(void) {
-    bool sensorSetupSuccess = Sensor::setup();
+    bool sensorSetupSuccess         = Sensor::setup();
     bool analogVoltageReaderSuccess = false;
-    
+
     if (_analogVoltageReader != nullptr) {
         analogVoltageReaderSuccess = _analogVoltageReader->begin();
         if (!analogVoltageReaderSuccess) {
@@ -63,7 +61,7 @@ bool ApogeeSQ212::setup(void) {
         MS_DBG(getSensorNameAndLocation(),
                F("No analog voltage reader to initialize"));
     }
-    
+
     return sensorSetupSuccess && analogVoltageReaderSuccess;
 }
 
