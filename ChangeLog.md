@@ -227,7 +227,7 @@ This affects the following classes:
 
 ### Changed
 
-- **BREAKING** Converted the watch-dog classes in to static classes with all static function and a **deleted constructor**.
+- **BREAKING** Converted the watch-dog classes into static classes with all static function and a **deleted constructor**.
   - Any code that attempted to interact with the watchdog (ie, with a "complex loop") must now call the extendedWatchDog class directly, ie: `extendedWatchDog::resetWatchDog();` rather than `dataLogger.watchDogTimer.resetWatchDog();`
 - **BREAKING** Renamed `markedLocalEpochTime` to `markedLocalUnixTime` to clarify the start of the epoch that we're marking down.
 - **BREAKING** Renamed `markedUTCEpochTime` to `markedUTCUnixTime` to clarify the start of the epoch that we're marking down.
@@ -249,7 +249,7 @@ I realized this was a problem for analog values I tried to read that reported co
   - `Logger::setRTClock(UTCEpochSeconds)`; use `loggerClock::setRTClock(ts, utcOffset, epoch)` in new code.
   - `Logger::isRTCSane()`; use `loggerClock::isRTCSane()` in new code.
   - `Logger::wakeISR()`; use `loggerClock::rtcISR()` in new code.
-- Support timestamps as time_t objects instead of uint32_t where every sensible.
+- Support timestamps as time_t objects instead of uint32_t wherever sensible.
   - The size of a uint32_t is always 32 bits, but the size of the time_t object varies by processor - for some it is 32 bits, for other 64.
 - Changed the watchdog from a fixed 15 minute reset timer to 2x the logging interval (or at least 5 minutes).
 - Modified all examples which define a sercom serial port for SAMD21 processors to require the defines for the supported processors.
@@ -275,7 +275,7 @@ This should only make a difference for my compilation tests, real users should p
 
 ### Added
 
-- **CONFIGURATION** Added a two configuration files (ModSensorConfig.h and ModSensorDebugConfig.h) that all files read from to check for configuration-related defines.
+- **CONFIGURATION** Added two configuration files (ModSensorConfig.h and ModSensorDebugConfig.h) that all files read from to check for configuration-related defines.
 This allows Arduino IDE users who are unable to use build flags to more easily configure the library or enable debugging.
 It also allows PlatformIO users to avoid the time-consuming re-compile of all their libraries required when changing build flags.
   - **ALL** library configuration build flags previously in any other header file for the library have been moved into the ModSensorConfig.h file, including ADC, SDI-12, and variable array options.
@@ -290,7 +290,7 @@ If no epoch start is given, it is assumed to be UNIX (January 1, 1970).
   - The supported epochs are given in the enum epochStart.
 - Storing _buttonPinMode internally.
 - Added a single define (`MS_OUTPUT`) to use for all outputs from ModularSensors.
-- Added support for sending printouts and debugging to two different serial ports.  This is useful for devices (like SAMD) that use a built in USB serial port which is turned off when the device sleeps.  If `MS_2ND_OUTPUT` is defined, output will go to *both* `MS_2ND_OUTPUT` and to `MS_OUTPUT`.
+- Added support for sending printouts and debugging to two different serial ports. This is useful for devices (like SAMD) that use a built in USB serial port which is turned off when the device sleeps.  If `MS_2ND_OUTPUT` is defined, output will go to *both* `MS_2ND_OUTPUT` and to `MS_OUTPUT`.
 - Added example code for flashing boards with a neo-pixel in the menu example.
 - **NEW SENSOR** Added support for [Geolux HydroCam](https://www.geolux-radars.com/hydrocam)
 - **NEW SENSOR** Added support for [ANB Sensors pH Sensors](https://www.anbsensors.com/)
@@ -1043,7 +1043,7 @@ Support for all Atlas Scientific I2C sensors, compiler-safe begin functions
 
 ## [0.19.6] - 2019-02-27
 
-Modem Improvements & ADS1X15 Generalization
+Modem Improvements & ADS1x15 Generalization
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2579301.svg)](https://doi.org/10.5281/zenodo.2579301)
 

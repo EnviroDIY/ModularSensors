@@ -159,9 +159,9 @@
 /**
  * @brief Processor analog base class that inherits from AnalogVoltageBase
  *
- * This class provides processor-specific analog functionality on top of
- * the generic AnalogVoltageBase class. It handles processor ADC configuration
- * and maintains the data pin information for analog readings.
+ * This class provides processor-specific analog functionality on top of the
+ * generic AnalogVoltageBase class. It handles processor ADC configuration and
+ * processor-based analog voltage reads for requested channels.
  */
 class ProcessorAnalogBase : public AnalogVoltageBase {
  public:
@@ -235,7 +235,6 @@ class ProcessorAnalogBase : public AnalogVoltageBase {
      * @return The analog resolution in volts per LSB
      */
     float calculateAnalogResolutionVolts(void) override;
-
 };
 
 /* clang-format off */

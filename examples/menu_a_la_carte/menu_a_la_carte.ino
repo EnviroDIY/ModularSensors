@@ -1021,8 +1021,8 @@ float         AsCO2Multiplier = 1.0f;      // factor for a voltage divider
 adsGain_t     AsCO2AdsGain    = GAIN_ONE;  // gain of the ADS1115
 float         AsCO2adsSupply  = 3.3f;      // supply voltage of the ADS1115
 const uint8_t AsCO2i2c_addr   = 0x48;      // The I2C address of the ADS1115 ADC
-TIADS1x15Base AsCO2ADS(AsCO2Multiplier, AsCO2AdsGain, AsCO2adsSupply,
-                       AsCO2i2c_addr);
+TIADS1x15Base AsCO2ADS(AsCO2Multiplier, AsCO2AdsGain, AsCO2i2c_addr,
+                       AsCO2adsSupply);
 
 // Create an Alphasense CO2 sensor object with the custom TIADS1x15Base
 AlphasenseCO2 alphasenseCO2_c(asCO2Power, asCO2Channel1, asCO2Channel2,
@@ -1047,10 +1047,10 @@ AlphasenseCO2 alphasenseCO2_c(asCO2Power, asCO2Channel1, asCO2Channel2,
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 byte anbModbusAddress =
     0x55;  // The modbus address of ANB pH Sensor (0x55 is the default)
-const int8_t  anbPower       = sensorPowerPin;  // ANB pH Sensor power pin
+const int8_t  anbPower        = sensorPowerPin;  // ANB pH Sensor power pin
 const int8_t  anbAdapterPower = sensorPowerPin;  // RS485 adapter power pin
 const int8_t  anb485EnablePin = -1;              // Adapter RE/DE pin
-const uint8_t anbNReadings   = 1;
+const uint8_t anbNReadings    = 1;               // Number of readings
 
 // Create an ANB pH sensor object
 ANBpH anbPH(anbModbusAddress, modbusSerial, anbPower, loggingInterval,
@@ -1153,8 +1153,8 @@ float         sq212Multiplier = 1.0f;      // factor for a voltage divider
 adsGain_t     sq212AdsGain    = GAIN_ONE;  // gain of the ADS1115
 float         sq212adsSupply  = 3.3f;      // supply voltage of the ADS1115
 const uint8_t sq212i2c_addr   = 0x48;      // The I2C address of the ADS1115 ADC
-TIADS1x15Base sq212ADS(sq212Multiplier, sq212AdsGain, sq212adsSupply,
-                       sq212i2c_addr);
+TIADS1x15Base sq212ADS(sq212Multiplier, sq212AdsGain, sq212i2c_addr,
+                       sq212adsSupply);
 
 // Create an Apogee SQ212 sensor object with the custom TIADS1x15Base
 ApogeeSQ212 sq212_c(sq212Power, sq212ADSChannel, sq212Readings, &sq212ADS);
@@ -1463,8 +1463,8 @@ Variable* clarivueError = new CampbellClariVUE10_ErrorCode(
 #include <sensors/TIADS1x15.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-const int8_t  OBS3Power       = sensorPowerPin;  // Power pin
-const uint8_t OBS3NReadings   = 10;
+const int8_t  OBS3Power     = sensorPowerPin;  // Power pin
+const uint8_t OBS3NReadings = 10;
 
 const int8_t OBSLowADSChannel = 0;  // ADS channel for *low* range output
 
@@ -1506,8 +1506,8 @@ float         OBS3Multiplier       = 1.0f;      // factor for a voltage divider
 adsGain_t     OBS3AdsGain          = GAIN_ONE;  // gain of the ADS1115
 float         OBS3AdsSupplyVoltage = 3.3f;      // supply voltage of the ADS1115
 const uint8_t OBS3AdsI2C_addr = 0x48;  // The I2C address of the ADS1115 ADC
-TIADS1x15Base OBSADS(OBS3Multiplier, OBS3AdsGain, OBS3AdsSupplyVoltage,
-                     OBS3AdsI2C_addr);
+TIADS1x15Base OBSADS(OBS3Multiplier, OBS3AdsGain, OBS3AdsI2C_addr,
+                     OBS3AdsSupplyVoltage);
 
 // Create a Campbell OBS3+ *low* range sensor object with the custom
 // TIADS1x15Base
@@ -1679,8 +1679,8 @@ float         evVoltageMultiplier = 1.0f;      // factor for a voltage divider
 adsGain_t     evAdsGain           = GAIN_ONE;  // gain of the ADS1115
 float         evAdsSupplyVoltage  = 3.3f;      // supply voltage of the ADS1115
 const uint8_t evAdsI2C_addr       = 0x48;  // The I2C address of the ADS1115 ADC
-TIADS1x15Base evADS(evVoltageMultiplier, evAdsGain, evAdsSupplyVoltage,
-                    evAdsI2C_addr);
+TIADS1x15Base evADS(evVoltageMultiplier, evAdsGain, evAdsI2C_addr,
+                    evAdsSupplyVoltage);
 
 // Create a single ended External Voltage sensor object with the custom
 // TIADS1x15Base
@@ -2314,9 +2314,9 @@ Variable* inaPower = new TIINA219_Power(&ina219,
 #include <sensors/ProcessorAnalog.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-const int8_t  cyclopsPower       = sensorPowerPin;  // Power pin
-const uint8_t cyclopsNReadings   = 10;
-const int8_t  cyclopsADSChannel  = 0;     // ADS channel
+const int8_t  cyclopsPower      = sensorPowerPin;  // Power pin
+const uint8_t cyclopsNReadings  = 10;
+const int8_t  cyclopsADSChannel = 0;  // ADS channel
 
 // Cyclops calibration information
 const float cyclopsStdConc = 1.000;  // Concentration of the standard used
@@ -2368,8 +2368,8 @@ float         cyclopsMultiplier       = 1.0f;  // factor for a voltage divider
 adsGain_t     cyclopsAdsGain          = GAIN_ONE;  // gain of the ADS1115
 float         cyclopsAdsSupplyVoltage = 3.3f;  // supply voltage of the ADS1115
 const uint8_t cyclopsAdsI2C_addr = 0x48;  // The I2C address of the ADS1115 ADC
-TIADS1x15Base cyclopsADS(cyclopsMultiplier, cyclopsAdsGain,
-                         cyclopsAdsSupplyVoltage, cyclopsAdsI2C_addr);
+TIADS1x15Base cyclopsADS(cyclopsMultiplier, cyclopsAdsGain, cyclopsAdsI2C_addr,
+                         cyclopsAdsSupplyVoltage);
 
 // Create a Turner Cyclops sensor object with the custom ADS instance
 TurnerCyclops cyclops_c(cyclopsPower, cyclopsADSChannel, cyclopsStdConc,
@@ -2428,8 +2428,8 @@ float         ttPlusMultiplier = 1.0f;      // factor for a voltage divider
 adsGain_t     ttPlusAdsGain    = GAIN_ONE;  // gain of the ADS1115
 float         ttPlusAdsSupply  = 3.3f;      // supply voltage of the ADS1115
 const uint8_t ttPlusI2C_addr   = 0x48;  // The I2C address of the ADS1115 ADC
-TIADS1x15Base ttPlusADS(ttPlusMultiplier, ttPlusAdsGain, ttPlusAdsSupply,
-                        ttPlusI2C_addr);
+TIADS1x15Base ttPlusADS(ttPlusMultiplier, ttPlusAdsGain, ttPlusI2C_addr,
+                        ttPlusAdsSupply);
 
 // Create a Turner Turbidity Plus sensor object with the custom TIADS1x15Base
 TurnerTurbidityPlus turbidityPlus_c(ttPlusPower, ttPlusWiper, ttPlusChannel1,
