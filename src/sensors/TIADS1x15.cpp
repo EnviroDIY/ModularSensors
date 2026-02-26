@@ -25,7 +25,9 @@ TIADS1x15Base::TIADS1x15Base(float voltageMultiplier, adsGain_t adsGain,
                              uint8_t i2cAddress, float adsSupplyVoltage,
                              uint16_t adsDataRate)
     : AnalogVoltageBase(voltageMultiplier, adsSupplyVoltage),
-      _i2cAddress(i2cAddress) {
+      _i2cAddress(i2cAddress),
+      _adsGain(adsGain),
+      _adsDataRate(adsDataRate) {
     // Clamp supply voltage to valid ADS1x15 range: 0.0V to 5.5V per datasheet
     // NOTE: This clamp is intentionally silent — Serial/MS_DBG is NOT safe to
     // call during construction (the Serial object may not be initialized yet on
@@ -35,6 +37,17 @@ TIADS1x15Base::TIADS1x15Base(float voltageMultiplier, adsGain_t adsGain,
     } else if (_supplyVoltage > 5.5f) {
         _supplyVoltage = 5.5f;
     }
+    // ADS initialization is deferred to begin() function for safe I2C
+    // communication
+}
+
+
+// ============================================================================
+// TIADS1x15Base Functions
+// ============================================================================
+
+bool TIADS1x15Base::begin(void) {
+    // Initialize the per-instance ADS driver with stored configuration
     // ADS Library default settings:
     //  - TI ADS1115 (16 bit)
     //    - single-shot mode (powers down between conversions)
@@ -45,17 +58,23 @@ TIADS1x15Base::TIADS1x15Base(float voltageMultiplier, adsGain_t adsGain,
     //    - 1600 samples per second (625µs conversion time)
     //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
 
-    // Initialize the per-instance ADS driver
-    _ads.setGain(adsGain);
-    _ads.setDataRate(adsDataRate);
+    // Configure the ADS with stored settings
+    _ads.setGain(_adsGain);
+    _ads.setDataRate(_adsDataRate);
 
-    _ads.begin(_i2cAddress);
+    // Initialize I2C communication with the ADS
+    bool success = _ads.begin(_i2cAddress);
+
+    if (success) {
+        MS_DBG(F("ADS1x15 initialized successfully at address 0x"),
+               String(_i2cAddress, HEX));
+    } else {
+        MS_DBG(F("ADS1x15 initialization failed at address 0x"),
+               String(_i2cAddress, HEX));
+    }
+
+    return success;
 }
-
-
-// ============================================================================
-// TIADS1x15Base Functions
-// ============================================================================
 
 String TIADS1x15Base::getAnalogLocation(int8_t analogChannel,
                                         int8_t analogReferenceChannel) {
@@ -356,6 +375,25 @@ String TIADS1x15::getSensorLocation(void) {
     } else {
         return String(F("Unknown_AnalogVoltageReader"));
     }
+}
+
+
+bool TIADS1x15::setup(void) {
+    bool sensorSetupSuccess = Sensor::setup();
+    bool analogVoltageReaderSuccess = false;
+    
+    if (_analogVoltageReader != nullptr) {
+        analogVoltageReaderSuccess = _analogVoltageReader->begin();
+        if (!analogVoltageReaderSuccess) {
+            MS_DBG(getSensorNameAndLocation(),
+                   F("Analog voltage reader initialization failed"));
+        }
+    } else {
+        MS_DBG(getSensorNameAndLocation(),
+               F("No analog voltage reader to initialize"));
+    }
+    
+    return sensorSetupSuccess && analogVoltageReaderSuccess;
 }
 
 bool TIADS1x15::addSingleMeasurementResult(void) {

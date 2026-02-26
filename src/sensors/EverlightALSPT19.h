@@ -313,7 +313,10 @@ class EverlightALSPT19 : public Sensor {
     EverlightALSPT19& operator=(EverlightALSPT19&&) = delete;
 
     String getSensorLocation(void) override;
-    bool   addSingleMeasurementResult(void) override;
+
+    bool setup(void) override;
+
+    bool addSingleMeasurementResult(void) override;
 
  private:
     /// @brief The PT-19 power supply voltage

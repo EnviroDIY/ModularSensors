@@ -290,6 +290,8 @@ class CampbellOBS3 : public Sensor {
 
     String getSensorLocation(void) override;
 
+    bool setup(void) override;
+
     bool addSingleMeasurementResult(void) override;
 
  private:

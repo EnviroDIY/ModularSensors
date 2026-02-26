@@ -183,6 +183,16 @@ class ProcessorAnalogBase : public AnalogVoltageBase {
     virtual ~ProcessorAnalogBase() = default;
 
     /**
+     * @brief Initialize the processor analog system
+     *
+     * For processor analog systems, no special initialization is required
+     * beyond what is done in the constructor, so this function does nothing.
+     *
+     * @return Always true indicating successful initialization
+     */
+    bool begin(void) override;
+
+    /**
      * @brief Read a single-ended voltage measurement from the processor ADC
      *
      * @param analogChannel The processor ADC pin used to read the target

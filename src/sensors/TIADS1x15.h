@@ -290,6 +290,17 @@ class TIADS1x15Base : public AnalogVoltageBase {
     virtual ~TIADS1x15Base() = default;
 
     /**
+     * @brief Initialize the ADS1x15 analog voltage reading system
+     *
+     * This function performs hardware initialization that cannot be safely
+     * done in the constructor, including I2C communication with the ADS1x15
+     * device to configure gain and data rate settings.
+     *
+     * @return True if the initialization was successful, false otherwise
+     */
+    bool begin(void) override;
+
+    /**
      * @brief Read a single-ended voltage measurement from the ADS1x15
      *
      * @param analogChannel The ADS channel of interest (0-3, physical channel
@@ -400,6 +411,14 @@ class TIADS1x15Base : public AnalogVoltageBase {
      */
     uint8_t _i2cAddress;
     /**
+     * @brief The internal gain setting for the ADS1x15
+     */
+    adsGain_t _adsGain;
+    /**
+     * @brief The data rate setting for the ADS1x15
+     */
+    uint16_t _adsDataRate;
+    /**
      * @brief Per-instance ADS1x15 driver to maintain separate I2C state
      */
 #ifndef MS_USE_ADS1015
@@ -489,6 +508,8 @@ class TIADS1x15 : public Sensor {
     TIADS1x15& operator=(TIADS1x15&&) = delete;
 
     String getSensorLocation(void) override;
+
+    bool setup(void) override;
 
     bool addSingleMeasurementResult(void) override;
 

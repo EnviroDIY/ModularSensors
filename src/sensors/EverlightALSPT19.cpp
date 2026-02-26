@@ -61,6 +61,25 @@ String EverlightALSPT19::getSensorLocation(void) {
 }
 
 
+bool EverlightALSPT19::setup(void) {
+    bool sensorSetupSuccess = Sensor::setup();
+    bool analogVoltageReaderSuccess = false;
+    
+    if (_analogVoltageReader != nullptr) {
+        analogVoltageReaderSuccess = _analogVoltageReader->begin();
+        if (!analogVoltageReaderSuccess) {
+            MS_DBG(getSensorNameAndLocation(),
+                   F("Analog voltage reader initialization failed"));
+        }
+    } else {
+        MS_DBG(getSensorNameAndLocation(),
+               F("No analog voltage reader to initialize"));
+    }
+    
+    return sensorSetupSuccess && analogVoltageReaderSuccess;
+}
+
+
 bool EverlightALSPT19::addSingleMeasurementResult(void) {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {

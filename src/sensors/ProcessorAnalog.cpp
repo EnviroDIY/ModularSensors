@@ -25,6 +25,12 @@ ProcessorAnalogBase::ProcessorAnalogBase(float voltageMultiplier,
 // ProcessorAnalogBase Functions
 // ============================================================================
 
+bool ProcessorAnalogBase::begin(void) {
+    // For processor analog systems, no special initialization is required
+    // beyond what is done in the constructor
+    return true;
+}
+
 bool ProcessorAnalogBase::readVoltageSingleEnded(int8_t analogChannel,
                                                  float& resultValue) {
     // Compile-time validation of ADC configuration

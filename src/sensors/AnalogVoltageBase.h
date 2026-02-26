@@ -75,6 +75,19 @@ class AnalogVoltageBase {
     virtual ~AnalogVoltageBase() = default;
 
     /**
+     * @brief Initialize the analog voltage reading system
+     *
+     * This pure virtual function must be implemented by derived classes to
+     * perform any initialization that cannot be safely done in the constructor.
+     * This includes hardware setup that depends on other systems being
+     * initialized, Serial communication being available, or operations that
+     * might need to communicate with external devices.
+     *
+     * @return True if the initialization was successful, false otherwise
+     */
+    virtual bool begin(void) = 0;
+
+    /**
      * @brief Set the voltage multiplier for voltage divider calculations
      *
      * @param voltageMultiplier The multiplier value for voltage scaling

@@ -72,7 +72,21 @@ void TurnerTurbidityPlus::runWiper() {
 bool TurnerTurbidityPlus::setup(void) {
     // Set up the wiper trigger pin, which is active-LOW.
     pinMode(_wiperTriggerPin, OUTPUT);
-    return Sensor::setup();
+    bool sensorSetupSuccess = Sensor::setup();
+    bool analogVoltageReaderSuccess = false;
+    
+    if (_analogVoltageReader != nullptr) {
+        analogVoltageReaderSuccess = _analogVoltageReader->begin();
+        if (!analogVoltageReaderSuccess) {
+            MS_DBG(getSensorNameAndLocation(),
+                   F("Analog voltage reader initialization failed"));
+        }
+    } else {
+        MS_DBG(getSensorNameAndLocation(),
+               F("No analog voltage reader to initialize"));
+    }
+    
+    return sensorSetupSuccess && analogVoltageReaderSuccess;
 }
 
 bool TurnerTurbidityPlus::wake(void) {
