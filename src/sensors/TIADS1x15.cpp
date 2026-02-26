@@ -265,6 +265,51 @@ void TIADS1x15Base::setSupplyVoltage(float supplyVoltage) {
     }
 }
 
+float TIADS1x15Base::calculateAnalogResolutionVolts(void) {
+    // Determine ADC resolution based on model
+#ifndef MS_USE_ADS1015
+    uint8_t resolutionBits = 16;  // ADS1115 is 16-bit
+#else
+    uint8_t resolutionBits = 12;  // ADS1015 is 12-bit
+#endif
+
+    // Get the current PGA full-scale range from the gain setting
+    float pgaFullScaleRange = _ads.getFsRange();
+
+    // For single-ended measurements, the actual usable range is limited by:
+    // 1. PGA full-scale range (gain-dependent)
+    // 2. Supply voltage + 0.3V (per datasheet)
+    // 3. Absolute maximum 5.5V (per datasheet)
+    float effectiveFullScale = pgaFullScaleRange;
+    float supplyBasedMax     = _supplyVoltage + 0.3f;
+    if (supplyBasedMax < effectiveFullScale) {
+        effectiveFullScale = supplyBasedMax;
+    }
+    if (effectiveFullScale > 5.5f) { effectiveFullScale = 5.5f; }
+
+    // Calculate the total number of ADC codes
+    uint32_t totalCodes = 1UL << resolutionBits;  // 2^resolutionBits
+
+    // Voltage resolution is the effective full scale range divided by total
+    // codes
+    float resolutionVolts = effectiveFullScale / static_cast<float>(totalCodes);
+
+    MS_DBG(F("ADS resolution calculation:"));
+#ifndef MS_USE_ADS1015
+    MS_DBG(F("  ADC model: ADS1115 (16-bit)"));
+#else
+    MS_DBG(F("  ADC model: ADS1015 (12-bit)"));
+#endif
+    MS_DBG(F("  PGA full scale range: "), pgaFullScaleRange, F("V"));
+    MS_DBG(F("  Supply voltage: "), _supplyVoltage, F("V"));
+    MS_DBG(F("  Effective full scale: "), effectiveFullScale, F("V"));
+    MS_DBG(F("  Resolution bits: "), resolutionBits);
+    MS_DBG(F("  Total codes: "), totalCodes);
+    MS_DBG(F("  Voltage resolution: "), resolutionVolts, F("V/LSB"));
+
+    return resolutionVolts;
+}
+
 // ============================================================================
 // TIADS1x15 Functions
 // ============================================================================
@@ -338,7 +383,8 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
             _dataPin, _analogReferenceChannel, resultValue);
     } else {
         if (_analogReferenceChannel >= 0) {
-            // Differential was requested but pair is invalid - fail the measurement
+            // Differential was requested but pair is invalid - fail the
+            // measurement
             MS_DBG(F("  Error: Invalid differential pair ("), _dataPin, F("-"),
                    _analogReferenceChannel, F("). Measurement failed."));
             success = false;

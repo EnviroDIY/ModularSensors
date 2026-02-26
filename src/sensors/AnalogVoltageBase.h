@@ -26,6 +26,9 @@
 // Include the known processors for default values
 #include "KnownProcessors.h"
 
+// Include math library for log10 function
+#include <math.h>
+
 // Define the print label[s] for the debugger
 #ifdef MS_ANALOGVOLTAGEBASE_DEBUG
 #define MS_DEBUGGING_STD "AnalogVoltageBase"
@@ -184,7 +187,27 @@ class AnalogVoltageBase {
     virtual String getAnalogLocation(int8_t analogChannel,
                                      int8_t analogReferenceChannel) = 0;
 
+    /**
+     * @brief Calculate the analog resolution in volts based on the ADC
+     * characteristics
+     *
+     * This pure virtual function must be implemented by derived classes to
+     * provide their specific analog resolution calculation based on their ADC
+     * characteristics (bit resolution, gain settings, supply voltage, etc.).
+     *
+     * @return The analog resolution in volts per LSB
+     */
+    virtual float calculateAnalogResolutionVolts(void) = 0;
+
  protected:
+    /**
+     * @brief Convert voltage resolution to appropriate decimal places
+     *
+     * @param voltageResolution The voltage resolution in volts per LSB
+     * @return The number of decimal places needed to represent the resolution
+     */
+    uint8_t voltageResolutionToDecimalPlaces(float voltageResolution);
+
     /**
      * @brief Stored voltage multiplier value
      *
@@ -200,5 +223,24 @@ class AnalogVoltageBase {
      */
     float _supplyVoltage;
 };
+
+// Inline implementation of voltageResolutionToDecimalPlaces
+inline uint8_t
+AnalogVoltageBase::voltageResolutionToDecimalPlaces(float voltageResolution) {
+    if (voltageResolution <= 0.0f) {
+        return 4;  // Default to 4 decimal places for invalid input
+    }
+
+    // Calculate the number of decimal places needed to represent the resolution
+    // We want at least one significant digit beyond the resolution
+    float log10Resolution = log10f(voltageResolution);
+    int   decimalPlaces   = static_cast<int>(-log10Resolution) + 1;
+
+    // Clamp to reasonable bounds (0-6 decimal places)
+    if (decimalPlaces < 0) decimalPlaces = 0;
+    if (decimalPlaces > 6) decimalPlaces = 6;
+
+    return static_cast<uint8_t>(decimalPlaces);
+}
 
 #endif  // SRC_SENSORS_ANALOGVOLTAGEBASE_H_

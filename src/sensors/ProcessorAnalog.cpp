@@ -81,6 +81,38 @@ bool ProcessorAnalogBase::readVoltageDifferential(
     return false;
 }
 
+float ProcessorAnalogBase::calculateAnalogResolutionVolts(void) {
+    // Use the configured processor ADC resolution
+    uint8_t resolutionBits = MS_PROCESSOR_ADC_RESOLUTION;
+
+    // For processor ADCs, the full scale range is the supply voltage
+    // (single-ended measurements from 0V to supply voltage)
+    float fullScaleRangeVolts = _supplyVoltage;
+
+    if (resolutionBits == 0 || resolutionBits > 32 ||
+        fullScaleRangeVolts <= 0.0f) {
+        MS_DBG(F("Invalid ADC configuration - bits: "), resolutionBits,
+               F(", supply voltage: "), fullScaleRangeVolts, F("V"));
+        return -9999.0f;
+    }
+
+    // Calculate the total number of ADC codes
+    uint32_t totalCodes = 1UL << resolutionBits;  // 2^resolutionBits
+
+    // Voltage resolution is the full scale range divided by total codes
+    float resolutionVolts = fullScaleRangeVolts /
+        static_cast<float>(totalCodes);
+
+    MS_DBG(F("Processor ADC resolution calculation:"));
+    MS_DBG(F("  ADC resolution: "), resolutionBits, F(" bits"));
+    MS_DBG(F("  Supply voltage: "), fullScaleRangeVolts, F("V"));
+    MS_DBG(F("  Total codes: "), totalCodes);
+    MS_DBG(F("  Voltage resolution: "), resolutionVolts, F("V/LSB"));
+
+    return resolutionVolts;
+}
+
+
 // ============================================================================
 // ProcessorAnalog Functions
 // ============================================================================

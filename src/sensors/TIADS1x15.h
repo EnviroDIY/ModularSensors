@@ -374,6 +374,26 @@ class TIADS1x15Base : public AnalogVoltageBase {
      */
     void setSupplyVoltage(float supplyVoltage) override;
 
+    /**
+     * @brief Calculate the analog resolution in volts for the ADS1x15
+     *
+     * For ADS1x15, this calculates the voltage resolution based on the current
+     * gain setting, supply voltage, and ADC bit resolution. The resolution
+     * depends on:
+     * - ADC model: 12-bit (ADS1015) or 16-bit (ADS1115)
+     * - Gain setting: determines PGA full-scale range
+     * - Supply voltage: limits actual usable range for single-ended
+     * measurements
+     *
+     * The effective full scale range is the minimum of:
+     * - PGA full-scale range (gain-dependent)
+     * - Supply voltage + 0.3V (for single-ended measurements)
+     * - Absolute maximum 5.5V per datasheet
+     *
+     * @return The analog resolution in volts per LSB
+     */
+    float calculateAnalogResolutionVolts(void) override;
+
  protected:
     /**
      * @brief Internal reference to the I2C address of the TI-ADS1x15

@@ -213,6 +213,19 @@ class ProcessorAnalogBase : public AnalogVoltageBase {
 
     String getAnalogLocation(int8_t analogChannel,
                              int8_t analogReferenceChannel) override;
+
+    /**
+     * @brief Calculate the analog resolution in volts for the processor ADC
+     *
+     * For processor ADCs, this calculates the voltage resolution based on the
+     * configured ADC resolution and supply voltage. The calculation uses:
+     * - ADC resolution in bits: MS_PROCESSOR_ADC_RESOLUTION
+     * - Full scale range: processor supply voltage (single-ended, 0V to Vcc)
+     *
+     * @return The analog resolution in volts per LSB
+     */
+    float calculateAnalogResolutionVolts(void) override;
+
 };
 
 // Inline utility function implementation
