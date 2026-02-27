@@ -60,9 +60,6 @@
 #endif
 
 // Static assert to validate ADS1X15 I2C address is valid
-static_assert(
-    MS_DEFAULT_ADS1X15_ADDRESS >= 0x08 && MS_DEFAULT_ADS1X15_ADDRESS <= 0x77,
-    "MS_DEFAULT_ADS1X15_ADDRESS must be a valid 7-bit I2C address (0x08-0x77)");
 static_assert(MS_DEFAULT_ADS1X15_ADDRESS == 0x48 ||
                   MS_DEFAULT_ADS1X15_ADDRESS == 0x49 ||
                   MS_DEFAULT_ADS1X15_ADDRESS == 0x4A ||
@@ -195,12 +192,12 @@ static_assert(MAX_NUMBER_VARS > 0 && MAX_NUMBER_VARS <= 21,
 #if !defined(MS_PROCESSOR_ADC_RESOLUTION)
 #error The processor ADC resolution must be defined!
 #endif  // MS_PROCESSOR_ADC_RESOLUTION
+#endif
 
 // Static assert to validate ADC resolution is reasonable
 static_assert(MS_PROCESSOR_ADC_RESOLUTION >= 8 &&
                   MS_PROCESSOR_ADC_RESOLUTION <= 16,
               "MS_PROCESSOR_ADC_RESOLUTION must be between 8 and 16 bits");
-#endif
 
 /// @brief The maximum possible value of the ADC - one less than the resolution
 /// shifted up one bit.
