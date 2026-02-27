@@ -80,7 +80,7 @@ bool YosemitechParent::wake(void) {
     // Sensor::wake() checks if the power pin is on and sets the wake timestamp
     // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
-    // reset pin mode, incase the pins were tri-stated during sleep
+    // reset pin mode, in case the pins were tri-stated during sleep
     if (_RS485EnablePin >= 0) { pinMode(_RS485EnablePin, OUTPUT); }
 
     // Send the command to begin taking readings, trying up to 5 times
