@@ -287,13 +287,13 @@
       "authors": ["Bobby Schulz", "Andrew Wickert", "Chad Sandell", "Sara Damiano"]
     },
     {
-      "name": "BlueRobotics MS5837 Library",
-      "owner": "bluerobotics",
-      "url": "https://github.com/bluerobotics/BlueRobotics_MS5837_Library",
-      "version": "https://github.com/bluerobotics/BlueRobotics_MS5837_Library",
-      "version_note": "~0.1.2",
-      "note": "Library for TE Connectivity MS5837 pressure sensor, commonly deployed in Blue Robotics Bar02/Bar30 sensors",
-      "authors": ["Blue Robotics"],
+      "name": "MS5837",
+      "owner": "robtillaart",
+      "library id": "6205",
+      "url": "https://github.com/RobTillaart/MS5837",
+      "version": "~0.3.2",
+      "note": "Arduino library for the MS5837 temperature and pressure sensor and compatibles",
+      "authors": ["Rob Tillaart"],
       "frameworks": "arduino"
     },
     {

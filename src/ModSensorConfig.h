@@ -197,6 +197,27 @@
  */
 #define MS_PROCESSOR_ANALOG_MAX_CHANNEL 100
 #endif  // MS_PROCESSOR_ANALOG_MAX_CHANNEL
+
+//==============================================================
+// Environmental sensor configuration
+//==============================================================
+#if !defined(MS_SEA_LEVEL_PRESSURE_HPA) || defined(DOXYGEN)
+/**
+ * @brief The atmospheric pressure at sea level in hPa for barometric sensors.
+ *
+ * This value is used by environmental sensors (BME280, BMP3xx, MS5837) for
+ * calculating altitude and depth measurements. The default value is standard
+ * atmospheric pressure at sea level (1013.25 hPa). Adjust this value based on
+ * local atmospheric conditions for more accurate calculations.
+ *
+ * @note In library versions prior to 0.37.0, this variable was named
+ * SEALEVELPRESSURE_HPA. and was defined in the header files for the BME280 and
+ * BMP3xx sensors.
+ */
+#define MS_SEA_LEVEL_PRESSURE_HPA 1013.25f
+#endif
+//==============================================================
+
 #if !defined(MS_PROCESSOR_ADC_REFERENCE_MODE) || defined(DOXYGEN)
 #if defined(ARDUINO_ARCH_AVR) || defined(DOXYGEN)
 /**
@@ -389,6 +410,8 @@
  */
 // #define MS_S3PRESIGNED_PREVENT_REUSE
 //==============================================================
+
+// cSpell:words SEALEVELPRESSURE
 
 
 #endif  // SRC_MODSENSORCONFIG_H_

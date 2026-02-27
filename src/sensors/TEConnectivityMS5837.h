@@ -11,11 +11,11 @@
  * These are for the TE Connectivity MS5837 pressure sensor. This sensor is
  * commonly deployed in Blue Robotics Bar02/Bar30 pressure sensors for
  * underwater/high-pressure applications and is commonly used for depth
- * measurement. Blue Robotics maintains the MS5837 Arduino library for
+ * measurement. Rob Tillaart maintains the MS5837 Arduino library for
  * communication with this sensor.
  *
- * This depends on the Blue Robotics MS5837 library at
- * https://github.com/bluerobotics/BlueRobotics_MS5837_Library
+ * This depends on the Rob Tillaart MS5837 library at
+ * https://github.com/RobTillaart/MS5837
  */
 /* clang-format off */
 /**
@@ -46,7 +46,7 @@
  * Only the primary hardware I2C defined in the Arduino core can be used.
  *
  * The lower level communication between the mcu and the MS5837 is handled by the
- * [Blue Robotics MS5837 library](https://github.com/bluerobotics/BlueRobotics_MS5837_Library).
+ * [Rob Tillaart MS5837 library](https://github.com/RobTillaart/MS5837).
  *
  * @section sensor_ms5837_datasheet Sensor Datasheet
  *
@@ -56,6 +56,20 @@
  * Blue Robotics deployable versions:
  * https://bluerobotics.com/store/sensors-sonars-cameras/sensors/bar02-sensor-r1-rp/
  * https://bluerobotics.com/store/sensors-sonars-cameras/sensors/bar30-sensor-r1/
+ *
+ * @section sensor_bme280_flags Build flags
+ * - ```-D MS5837_DEFAULT_FLUID_DENSITY=0.99802f```
+ *      - Changes the default fluid density used for depth calculations. The
+ * default value is for water at 20°C. For seawater, use approximately 1.025f.
+ * For other fluids, consult density tables and enter the density in grams per
+ * cm³.
+ * - ```-D MS_SEA_LEVEL_PRESSURE_HPA=1013.25f```
+ *      - Changes the default air pressure used for altitude and depth
+ * calculations. The default value is standard atmospheric pressure at sea level
+ * (1013.25 mBar). Adjust based on local atmospheric conditions or altitude for
+ * more accurate depth measurements.
+ *      - The same sea level pressure flag is used for BMP3xx, BME280, and
+ * MS5837 sensors.
  *
  * @section sensor_ms5837_ctor Sensor Constructor
  * {{ @ref TEConnectivityMS5837::TEConnectivityMS5837 }}
@@ -97,6 +111,17 @@
 /**@{*/
 
 /**
+ * @anchor sensor_ms5837_config
+ * @name Sensor Configuration
+ * Build-time configuration for the MS5837
+ */
+/**@{*/
+/// @brief Default fluid density for depth calculations (grams/cm³)
+/// Water at 20°C = 0.99802 g/cm³
+#define MS5837_DEFAULT_FLUID_DENSITY 0.99802f
+/**@}*/
+
+/**
  * @anchor sensor_ms5837_var_counts
  * @name Sensor Variable Counts
  * The number of variables that can be returned by the MS5837
@@ -104,8 +129,8 @@
 /**@{*/
 /// @brief Sensor::_numReturnedValues; the MS5837 can report 2 values.
 #define MS5837_NUM_VARIABLES 2
-/// @brief Sensor::_incCalcValues; we don't calculate any additional values.
-#define MS5837_INC_CALC_VARIABLES 0
+/// @brief Sensor::_incCalcValues; we calculate depth and altitude values.
+#define MS5837_INC_CALC_VARIABLES 2
 /**@}*/
 
 /**
@@ -189,6 +214,57 @@
 #define MS5837_PRESSURE_DEFAULT_CODE "TEConnectivityMS5837Pressure"
 /**@}*/
 
+/**
+ * @anchor sensor_ms5837_depth
+ * @name Depth
+ * The depth variable calculated from a TE Connectivity MS5837
+ * - Calculated from pressure using the configured fluid density
+ * - Accuracy depends on pressure sensor accuracy and fluid density accuracy
+ * - Resolution is 1mm (0.001m)
+ *
+ * {{ @ref TEConnectivityMS5837_Depth::TEConnectivityMS5837_Depth }}
+ */
+/**@{*/
+/// @brief Decimals places in string representation; depth should have 3.
+#define MS5837_DEPTH_RESOLUTION 3
+/// @brief Sensor variable number; depth is stored in sensorValues[2].
+#define MS5837_DEPTH_VAR_NUM 2
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "waterDepth"
+#define MS5837_DEPTH_VAR_NAME "waterDepth"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "meter"
+#define MS5837_DEPTH_UNIT_NAME "meter"
+/// @brief Default variable short code; "TEConnectivityMS5837Depth"
+#define MS5837_DEPTH_DEFAULT_CODE "TEConnectivityMS5837Depth"
+/**@}*/
+
+/**
+ * @anchor sensor_ms5837_altitude
+ * @name Altitude
+ * The altitude variable calculated from a TE Connectivity MS5837
+ * - Calculated from barometric pressure using standard atmosphere equations
+ * - Accuracy depends on pressure sensor accuracy and reference air pressure
+ * - Resolution is 0.01m
+ *
+ * {{ @ref TEConnectivityMS5837_Altitude::TEConnectivityMS5837_Altitude }}
+ */
+/**@{*/
+/// @brief Decimals places in string representation; altitude should have 2.
+#define MS5837_ALTITUDE_RESOLUTION 2
+/// @brief Sensor variable number; altitude is stored in sensorValues[3].
+#define MS5837_ALTITUDE_VAR_NUM 3
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "altitude"
+#define MS5837_ALTITUDE_VAR_NAME "altitude"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "meter"
+#define MS5837_ALTITUDE_UNIT_NAME "meter"
+/// @brief Default variable short code; "TEConnectivityMS5837Altitude"
+#define MS5837_ALTITUDE_DEFAULT_CODE "TEConnectivityMS5837Altitude"
+/**@}*/
 
 /* clang-format off */
 /**
@@ -210,16 +286,23 @@ class TEConnectivityMS5837 : public Sensor {
      * @param powerPin The pin on the mcu controlling power to the MS5837
      * Use -1 if it is continuously powered.
      * - The MS5837 requires a 1.7 - 3.6V power source
-     * @param model The model of MS5837 sensor. Use MS5837::MS5837_02BA for
-     * 2 bar range sensors or MS5837::MS5837_30BA for 30 bar range sensors.
-     * Default is MS5837::MS5837_30BA.
+     * @param model The model of MS5837 sensor. Use MS5837_TYPE_02 for
+     * 2 bar range sensors or MS5837_TYPE_30 for 30 bar range sensors.
+     * Default is MS5837_TYPE_02.
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
+     * @param fluidDensity The density of the fluid for depth calculations
+     * (grams/cm³); optional with default value from
+     * MS5837_DEFAULT_FLUID_DENSITY.
+     * @param airPressure The air pressure for altitude/depth calculations
+     * (mBar); optional with default value from MS_SEA_LEVEL_PRESSURE_HPA.
      */
-    explicit TEConnectivityMS5837(int8_t  powerPin,
-                                  uint8_t model = MS5837::MS5837_02BA,
-                                  uint8_t measurementsToAverage = 1);
+    explicit TEConnectivityMS5837(
+        int8_t powerPin, uint8_t model = MS5837_TYPE_02,
+        uint8_t measurementsToAverage = 1,
+        float   fluidDensity          = MS5837_DEFAULT_FLUID_DENSITY,
+        float   airPressure           = MS_SEA_LEVEL_PRESSURE_HPA);
     /**
      * @brief Destroy the TEConnectivityMS5837 object
      */
@@ -249,6 +332,14 @@ class TEConnectivityMS5837 : public Sensor {
      * @brief The model of the MS5837.
      */
     uint8_t _model;
+    /**
+     * @brief The fluid density for depth calculations (grams/cm³).
+     */
+    float _fluidDensity;
+    /**
+     * @brief The air pressure for altitude/depth calculations (mBar).
+     */
+    float _airPressure;
 };
 
 
@@ -340,6 +431,97 @@ class TEConnectivityMS5837_Pressure : public Variable {
      * needed.
      */
     ~TEConnectivityMS5837_Pressure() {}
+};
+
+
+/* clang-format off */
+/**
+ * @brief The Variable sub-class used for the
+ * [depth output](@ref sensor_ms5837_depth) calculated from a
+ * [TE Connectivity MS5837 digital pressure sensor](@ref sensor_ms5837).
+ *
+ * @ingroup sensor_ms5837
+ */
+/* clang-format on */
+class TEConnectivityMS5837_Depth : public Variable {
+ public:
+    /**
+     * @brief Construct a new TEConnectivityMS5837_Depth object.
+     *
+     * @param parentSense The parent TEConnectivityMS5837 providing the result
+     * values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of "TEConnectivityMS5837Depth".
+     */
+    explicit TEConnectivityMS5837_Depth(
+        TEConnectivityMS5837* parentSense, const char* uuid = "",
+        const char* varCode = MS5837_DEPTH_DEFAULT_CODE)
+        : Variable(parentSense, (uint8_t)MS5837_DEPTH_VAR_NUM,
+                   (uint8_t)MS5837_DEPTH_RESOLUTION, MS5837_DEPTH_VAR_NAME,
+                   MS5837_DEPTH_UNIT_NAME, varCode, uuid) {}
+    /**
+     * @brief Construct a new TEConnectivityMS5837_Depth object.
+     *
+     * @note This must be tied with a parent TEConnectivityMS5837 before it can
+     * be used.
+     */
+    TEConnectivityMS5837_Depth()
+        : Variable((uint8_t)MS5837_DEPTH_VAR_NUM,
+                   (uint8_t)MS5837_DEPTH_RESOLUTION, MS5837_DEPTH_VAR_NAME,
+                   MS5837_DEPTH_UNIT_NAME, MS5837_DEPTH_DEFAULT_CODE) {}
+    /**
+     * @brief Destroy the TEConnectivityMS5837_Depth object - no action needed.
+     */
+    ~TEConnectivityMS5837_Depth() {}
+};
+
+
+/* clang-format off */
+/**
+ * @brief The Variable sub-class used for the
+ * [altitude output](@ref sensor_ms5837_altitude) calculated from a
+ * [TE Connectivity MS5837 digital pressure sensor](@ref sensor_ms5837).
+ *
+ * @ingroup sensor_ms5837
+ */
+/* clang-format on */
+class TEConnectivityMS5837_Altitude : public Variable {
+ public:
+    /**
+     * @brief Construct a new TEConnectivityMS5837_Altitude object.
+     *
+     * @param parentSense The parent TEConnectivityMS5837 providing the result
+     * values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of "TEConnectivityMS5837Altitude".
+     */
+    explicit TEConnectivityMS5837_Altitude(
+        TEConnectivityMS5837* parentSense, const char* uuid = "",
+        const char* varCode = MS5837_ALTITUDE_DEFAULT_CODE)
+        : Variable(parentSense, (uint8_t)MS5837_ALTITUDE_VAR_NUM,
+                   (uint8_t)MS5837_ALTITUDE_RESOLUTION,
+                   MS5837_ALTITUDE_VAR_NAME, MS5837_ALTITUDE_UNIT_NAME, varCode,
+                   uuid) {}
+    /**
+     * @brief Construct a new TEConnectivityMS5837_Altitude object.
+     *
+     * @note This must be tied with a parent TEConnectivityMS5837 before it can
+     * be used.
+     */
+    TEConnectivityMS5837_Altitude()
+        : Variable((uint8_t)MS5837_ALTITUDE_VAR_NUM,
+                   (uint8_t)MS5837_ALTITUDE_RESOLUTION,
+                   MS5837_ALTITUDE_VAR_NAME, MS5837_ALTITUDE_UNIT_NAME,
+                   MS5837_ALTITUDE_DEFAULT_CODE) {}
+    /**
+     * @brief Destroy the TEConnectivityMS5837_Altitude object - no action
+     * needed.
+     */
+    ~TEConnectivityMS5837_Altitude() {}
 };
 /**@}*/
 #endif  // SRC_SENSORS_TECONNECTIVITYMS5837_H_

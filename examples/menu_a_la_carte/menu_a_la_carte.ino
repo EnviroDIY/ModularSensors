@@ -2079,24 +2079,32 @@ Variable* ms5803Temp =
 
 #if defined(BUILD_SENSOR_TE_CONNECTIVITY_MS5837)
 // ==========================================================================
-//  TE Connectivity MS5837 Pressure Sensor (deployed in Blue Robotics Bar02/Bar30)
+//  TE Connectivity MS5837 Pressure Sensor (deployed in Blue Robotics
+//  Bar02/Bar30)
 // ==========================================================================
 /** Start [te_connectivity_ms5837] */
 #include <sensors/TEConnectivityMS5837.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const int8_t  MS5837Power = sensorPowerPin;  // Power pin
-const uint8_t MS5837model = MS5837_30BA;     // Model: MS5837_02BA for 2bar range or MS5837_30BA for 30bar range
+const uint8_t MS5837model =
+    MS5837_TYPE_30;  // Model: MS5837_TYPE_02 for 2bar range or
+                     // MS5837_TYPE_30 for 30bar range
 const uint8_t MS5837ReadingsToAvg = 1;
 
 // Create a TE Connectivity MS5837 pressure and temperature sensor object
 TEConnectivityMS5837 ms5837(MS5837Power, MS5837model, MS5837ReadingsToAvg);
 
-// Create pressure and temperature variable pointers for the MS5837
-Variable* ms5837Press =
-    new TEConnectivityMS5837_Pressure(&ms5837, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* ms5837Temp =
-    new TEConnectivityMS5837_Temp(&ms5837, "12345678-abcd-1234-ef00-1234567890ab");
+// Create pressure, temperature, depth, and altitude variable pointers for the
+// MS5837
+Variable* ms5837Press = new TEConnectivityMS5837_Pressure(
+    &ms5837, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* ms5837Temp = new TEConnectivityMS5837_Temp(
+    &ms5837, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* ms5837Depth = new TEConnectivityMS5837_Depth(
+    &ms5837, "12345678-abcd-1234-ef00-1234567890ac");
+Variable* ms5837Alt = new TEConnectivityMS5837_Altitude(
+    &ms5837, "12345678-abcd-1234-ef00-1234567890ad");
 /** End [te_connectivity_ms5837] */
 #endif
 
@@ -3320,6 +3328,12 @@ Variable* variableList[] = {
 #if defined(BUILD_SENSOR_MEA_SPEC_MS5803)
     ms5803Temp,
     ms5803Press,
+#endif
+#if defined(BUILD_SENSOR_TE_CONNECTIVITY_MS5837)
+    ms5837Temp,
+    ms5837Press,
+    ms5837Depth,
+    ms5837Alt,
 #endif
 #if defined(BUILD_SENSOR_DECAGON_5TM)
     fivetmEa,

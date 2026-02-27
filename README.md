@@ -77,7 +77,7 @@ For some generalized information about attaching sensors to an Arduino style boa
   - [Nanolevel](https://envirodiy.github.io/ModularSensors/group__sensor__nanolevel.html)
 - [MaxBotix MaxSonar: water level](https://envirodiy.github.io/ModularSensors/group__sensor__maxbotix.html)
 - [Maxim DS18: temperature](https://envirodiy.github.io/ModularSensors/group__sensor__ds18.html)
-- [Measurement Specialties MS5803: pressure and temperature](https://envirodiy.github.io/ModularSensors/group__sensor__ms5803.html)
+- [Measurement Specialties/TE Connectivity MS5803: pressure and temperature](https://envirodiy.github.io/ModularSensors/group__sensor__ms5803.html)
 - [TE Connectivity MS5837: pressure and temperature (deployed as Blue Robotics Bar02/Bar30)](https://envirodiy.github.io/ModularSensors/group__sensor__ms5837.html)
 - Meter Environmental Soil Moisture Probes: soil Ea and volumetric water content
   - [Meter ECH2O 5TM](https://envirodiy.github.io/ModularSensors/group__sensor__fivetm.html)
@@ -156,7 +156,7 @@ Feel free to open issues about any bugs you find or any sensors you would like t
 
 If you would like to directly help with the coding development of the library, there are some [tips and instructions here](https://envirodiy.github.io/ModularSensors/page_developer_setup.html) on how to set up PlatformIO so you can fork the library and test programs while in the library repo.
 Please *take time to familiarize yourself with the [terminology, classes and data structures](https://envirodiy.github.io/ModularSensors/page_library_terminology.html) this library uses*.
-This library is built to fully take advantage of Objecting Oriented Programming (OOP) approaches and is larger and more complicated than many Arduino libraries.
+This library is built to fully take advantage of Object Oriented Programming (OOP) approaches and is larger and more complicated than many Arduino libraries.
 There is doxygen-created documentation on our [github pages](https://envirodiy.github.io/ModularSensors/index.html) and an *enormous* number of comments and debugging printouts in the code itself to help you get going.
 
 ## License<!--! {#mainpage_license} -->
