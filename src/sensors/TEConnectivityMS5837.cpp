@@ -11,36 +11,36 @@
 #include "TEConnectivityMS5837.h"
 
 
-// Primary implementation constructor using type-safe enum
-TEConnectivityMS5837::TEConnectivityMS5837(TwoWire* theI2C, int8_t powerPin,
-                                           MS5837Model model,
-                                           uint8_t     measurementsToAverage,
-                                           uint16_t    overSamplingRatio,
-                                           float       fluidDensity,
-                                           float       airPressure)
-    : Sensor("TEConnectivityMS5837", MS5837_NUM_VARIABLES,
-             MS5837_WARM_UP_TIME_MS, MS5837_STABILIZATION_TIME_MS,
-             MS5837_MEASUREMENT_TIME_MS, powerPin, -1, measurementsToAverage,
-             MS5837_INC_CALC_VARIABLES),
-      MS5837_internal(theI2C),
-      _wire(theI2C),
-      _model(static_cast<uint8_t>(model)),
-      _fluidDensity(fluidDensity),
-      _airPressure(airPressure),
-      _overSamplingRatio(overSamplingRatio) {}
-
-// Delegating constructors
+// Primary implementation constructor using uint8_t model
 TEConnectivityMS5837::TEConnectivityMS5837(TwoWire* theI2C, int8_t powerPin,
                                            uint8_t  model,
                                            uint8_t  measurementsToAverage,
                                            uint16_t overSamplingRatio,
                                            float    fluidDensity,
                                            float    airPressure)
-    : TEConnectivityMS5837(theI2C, powerPin, static_cast<MS5837Model>(model),
+    : Sensor("TEConnectivityMS5837", MS5837_NUM_VARIABLES,
+             MS5837_WARM_UP_TIME_MS, MS5837_STABILIZATION_TIME_MS,
+             MS5837_MEASUREMENT_TIME_MS, powerPin, -1, measurementsToAverage,
+             MS5837_INC_CALC_VARIABLES),
+      MS5837_internal(theI2C),
+      _wire(theI2C),
+      _model(model),
+      _fluidDensity(fluidDensity),
+      _airPressure(airPressure),
+      _overSamplingRatio(overSamplingRatio) {}
+
+// Delegating constructors
+TEConnectivityMS5837::TEConnectivityMS5837(TwoWire* theI2C, int8_t powerPin,
+                                           MS5837Model model,
+                                           uint8_t     measurementsToAverage,
+                                           uint16_t    overSamplingRatio,
+                                           float       fluidDensity,
+                                           float       airPressure)
+    : TEConnectivityMS5837(theI2C, powerPin, static_cast<uint8_t>(model),
                            measurementsToAverage, overSamplingRatio,
                            fluidDensity, airPressure) {}
 
-TEConnectivityMS5837::TEConnectivityMS5837(int8_t powerPin, MS5837Model model,
+TEConnectivityMS5837::TEConnectivityMS5837(int8_t powerPin, uint8_t model,
                                            uint8_t  measurementsToAverage,
                                            uint16_t overSamplingRatio,
                                            float    fluidDensity,
@@ -48,12 +48,12 @@ TEConnectivityMS5837::TEConnectivityMS5837(int8_t powerPin, MS5837Model model,
     : TEConnectivityMS5837(&Wire, powerPin, model, measurementsToAverage,
                            overSamplingRatio, fluidDensity, airPressure) {}
 
-TEConnectivityMS5837::TEConnectivityMS5837(int8_t powerPin, uint8_t model,
+TEConnectivityMS5837::TEConnectivityMS5837(int8_t powerPin, MS5837Model model,
                                            uint8_t  measurementsToAverage,
                                            uint16_t overSamplingRatio,
                                            float    fluidDensity,
                                            float    airPressure)
-    : TEConnectivityMS5837(&Wire, powerPin, static_cast<MS5837Model>(model),
+    : TEConnectivityMS5837(&Wire, powerPin, static_cast<uint8_t>(model),
                            measurementsToAverage, overSamplingRatio,
                            fluidDensity, airPressure) {}
 
@@ -62,17 +62,12 @@ TEConnectivityMS5837::~TEConnectivityMS5837() {}
 
 
 String TEConnectivityMS5837::getSensorName(void) {
-    String modelStr = F("TEConnectivityMS5837_");
-    switch (_model) {
-        case static_cast<uint8_t>(MS5837Model::MS5837_02BA):
-            modelStr += F("02BA");
-            break;
-        case static_cast<uint8_t>(MS5837Model::MS5837_30BA):
-            modelStr += F("30BA");
-            break;
-        case static_cast<uint8_t>(MS5837Model::MS5803_01BA):
-            modelStr += F("01BA");
-            break;
+    auto   modelEnum = static_cast<MS5837Model>(_model);
+    String modelStr  = F("TEConnectivityMS5837_");
+    switch (modelEnum) {
+        case MS5837Model::MS5837_02BA: modelStr += F("02BA"); break;
+        case MS5837Model::MS5837_30BA: modelStr += F("30BA"); break;
+        case MS5837Model::MS5803_01BA: modelStr += F("01BA"); break;
         default: modelStr += F("Unknown"); break;
     }
     return modelStr;

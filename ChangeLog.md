@@ -159,6 +159,13 @@ This is *not* breaking because only AVR and SAMD processors were supported anywa
 #### New Sensors
 
 - **NEW SENSOR** Added a new sensor for simple analog voltage using the built-in processor ADC
+- **NEW SENSOR** Added support for the TE Connectivity (Meas Specialties) MS5837
+  - This is the sensor embedded in the Blue Robotics Bar02 and Bar30 sensors
+
+#### New Features for Specific Sensors
+
+- **TIADS1x15**
+  - Added support for a secondary hardware I2C instance.
 
 #### Features for All Sensors
 

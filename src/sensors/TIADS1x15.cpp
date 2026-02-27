@@ -115,8 +115,8 @@ bool TIADS1x15Base::readVoltageSingleEnded(int8_t analogChannel,
     // Use the per-instance ADS driver (gain configured in constructor)
 
     // Verify I2C connectivity with a lightweight probe
-    Wire.beginTransmission(_i2cAddress);
-    if (Wire.endTransmission() != 0) {
+    _wire->beginTransmission(_i2cAddress);
+    if (_wire->endTransmission() != 0) {
         MS_DBG(F("  I2C communication failed at 0x"), String(_i2cAddress, HEX));
         return false;
     }
@@ -182,8 +182,8 @@ bool TIADS1x15Base::readVoltageDifferential(int8_t analogChannel,
 
     // Use the per-instance ADS driver (configured in constructor)
     // Verify I2C connectivity with a lightweight probe
-    Wire.beginTransmission(_i2cAddress);
-    if (Wire.endTransmission() != 0) {
+    _wire->beginTransmission(_i2cAddress);
+    if (_wire->endTransmission() != 0) {
         MS_DBG(F("  I2C communication failed at 0x"), String(_i2cAddress, HEX));
         return false;
     }

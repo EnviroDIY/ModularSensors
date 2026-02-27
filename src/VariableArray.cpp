@@ -738,8 +738,9 @@ bool VariableArray::checkVariableUUIDs(void) {
             }
         }
     }
-    if (success)
+    if (success) {
         PRINTOUT(F("All variable UUIDs appear to be correctly formed.\n"));
+    }
     // Print out all UUIDs to check
     for (uint8_t i = 0; i < _variableCount; i++) {
         if (arrayOfVars[i]->getVarUUID() != nullptr &&
