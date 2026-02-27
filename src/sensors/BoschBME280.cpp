@@ -16,7 +16,7 @@ BoschBME280::BoschBME280(TwoWire* theI2C, int8_t powerPin,
                          uint8_t i2cAddressHex, uint8_t measurementsToAverage)
     : Sensor("BoschBME280", BME280_NUM_VARIABLES, BME280_WARM_UP_TIME_MS,
              BME280_STABILIZATION_TIME_MS, BME280_MEASUREMENT_TIME_MS, powerPin,
-             -1, measurementsToAverage),
+             -1, measurementsToAverage, BME280_INC_CALC_VARIABLES),
       _i2cAddressHex(i2cAddressHex),
       _i2c(theI2C) {}
 
@@ -66,7 +66,7 @@ bool BoschBME280::setup(void) {
     }
     retVal &= success;
 
-    // Turn the power back off it it had been turned on
+    // Turn the power back off if it had been turned on
     if (!wasOn) { powerDown(); }
 
     return retVal;
@@ -145,7 +145,7 @@ bool BoschBME280::addSingleMeasurementResult(void) {
 
     bool values_ok = temp != -9999 && humid != -9999 && press != -9999 &&
         alt != -9999;
-    // Assume that if all three are 0, really a failed response
+    // Assume that if all four are 0, it's really a failed response
     // May also return a very negative temp when receiving a bad response
     if (!values_ok || (temp == 0 && press == 0 && humid == 0) || temp < -40) {
         MS_DBG(F("All values 0 or bad, assuming sensor non-response!"));
@@ -160,5 +160,3 @@ bool BoschBME280::addSingleMeasurementResult(void) {
     // Return success value when finished
     return bumpMeasurementAttemptCount(success);
 }
-
-

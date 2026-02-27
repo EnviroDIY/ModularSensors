@@ -113,8 +113,8 @@ bool TEConnectivityMS5837::addSingleMeasurementResult(void) {
         // Calculate depth in meters
         // Note: fluidDensity is set in the MS5837_internal object at setup and
         // used in the getDepth() function. The fluidDensity is only set in the
-        // constructor and cannot be changed, so there's no reason to re-pass
-        // the value to the internal object here.
+        // constructor and further setters and getters are not provided, so
+        // there's no reason to re-pass the value to the internal object here.
         depth = MS5837_internal.getDepth();
     } else {
         MS_DBG(F("  Read failed, error:"), MS5837_internal.getLastError());

@@ -6,10 +6,9 @@
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Contains the BoschBMP3xx sensor subclass and the variable subclasses
- * BoschBMP3xx_Temp, BoschBMP3xx_Humidity, BoschBMP3xx_Pressure, and
- * BoschBMP3xx_Altitude.
+ * BoschBMP3xx_Temp, BoschBMP3xx_Pressure, and BoschBMP3xx_Altitude.
  *
- * These are used for the Bosch BMP3xx digital pressure and humidity sensor.
+ * These are used for the Bosch BMP3xx digital pressure and temperature sensor.
  *
  * This depends on the [MartinL1's BMP388
  * library](https://github.com/MartinL1/BMP388_DEV).
@@ -163,11 +162,8 @@
 /**@{*/
 /// @brief Sensor::_numReturnedValues; the BMP3xx can report 3 values.
 #define BMP3XX_NUM_VARIABLES 3
-/// @brief Sensor::_incCalcValues; altitude is calculated within the Adafruit
-/// library.
+/// @brief Sensor::_incCalcValues; altitude is calculated from pressure.
 #define BMP3XX_INC_CALC_VARIABLES 1
-/**@}*/
-
 /**
  * @anchor sensor_bmp3xx_timing
  * @name Sensor Timing
@@ -241,7 +237,7 @@
  */
 /**@{*/
 /// @brief Decimals places in string representation; temperature should have 5 -
-/// resolution is 0.0.00015°C at the hightest oversampling.  See table 7 in the
+/// resolution is 0.00015°C at the hightest oversampling.  See table 7 in the
 /// [sensor
 /// datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Bosch-BMP390-Datasheet.pdf)
 /// for resolution at all bandwidths.
@@ -638,6 +634,10 @@ class BoschBMP3xx_Pressure : public Variable {
                    (uint8_t)BMP3XX_PRESSURE_RESOLUTION,
                    BMP3XX_PRESSURE_VAR_NAME, BMP3XX_PRESSURE_UNIT_NAME,
                    BMP3XX_PRESSURE_DEFAULT_CODE) {}
+    /**
+     * @brief Destroy the BoschBMP3xx_Pressure object - no action needed.
+     */
+    ~BoschBMP3xx_Pressure() {}
 };
 
 
@@ -679,6 +679,10 @@ class BoschBMP3xx_Altitude : public Variable {
                    (uint8_t)BMP3XX_ALTITUDE_RESOLUTION,
                    BMP3XX_ALTITUDE_VAR_NAME, BMP3XX_ALTITUDE_UNIT_NAME,
                    BMP3XX_ALTITUDE_DEFAULT_CODE) {}
+    /**
+     * @brief Destroy the BoschBMP3xx_Altitude object - no action needed.
+     */
+    ~BoschBMP3xx_Altitude() {}
 };
 /**@}*/
 #endif  // SRC_SENSORS_BOSCHBMP3XX_H_

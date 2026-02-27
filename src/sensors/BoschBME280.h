@@ -465,6 +465,10 @@ class BoschBME280_Pressure : public Variable {
                    (uint8_t)BME280_PRESSURE_RESOLUTION,
                    BME280_PRESSURE_VAR_NAME, BME280_PRESSURE_UNIT_NAME,
                    BME280_PRESSURE_DEFAULT_CODE) {}
+    /**
+     * @brief Destroy the BoschBME280_Pressure object - no action needed.
+     */
+    ~BoschBME280_Pressure() {}
 };
 
 
@@ -506,6 +510,10 @@ class BoschBME280_Altitude : public Variable {
                    (uint8_t)BME280_ALTITUDE_RESOLUTION,
                    BME280_ALTITUDE_VAR_NAME, BME280_ALTITUDE_UNIT_NAME,
                    BME280_ALTITUDE_DEFAULT_CODE) {}
+    /**
+     * @brief Destroy the BoschBME280_Altitude object - no action needed.
+     */
+    ~BoschBME280_Altitude() {}
 };
 /**@}*/
 #endif  // SRC_SENSORS_BOSCHBME280_H_
