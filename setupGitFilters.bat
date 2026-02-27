@@ -21,4 +21,5 @@ echo Filters configured:
 echo   smudgePasswords - Manages credentials in .ino files
 echo   disableDebug    - Manages debug defines in ModSensorDebugConfig.h
 echo.
-echo You may need to run "git checkout HEAD -- ." to apply filters to existing files.
+echo To re-apply filters to existing files, first commit or stash local changes.
+echo Then re-checkout only the affected files (for example, specific .ino files and ModSensorDebugConfig.h).
