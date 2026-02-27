@@ -164,6 +164,8 @@
 #define BMP3XX_NUM_VARIABLES 3
 /// @brief Sensor::_incCalcValues; altitude is calculated from pressure.
 #define BMP3XX_INC_CALC_VARIABLES 1
+/**@}*/
+
 /**
  * @anchor sensor_bmp3xx_timing
  * @name Sensor Timing
@@ -237,7 +239,7 @@
  */
 /**@{*/
 /// @brief Decimals places in string representation; temperature should have 5 -
-/// resolution is 0.00015°C at the hightest oversampling.  See table 7 in the
+/// resolution is 0.00015°C at the highest oversampling.  See table 7 in the
 /// [sensor
 /// datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Bosch-BMP390-Datasheet.pdf)
 /// for resolution at all bandwidths.
