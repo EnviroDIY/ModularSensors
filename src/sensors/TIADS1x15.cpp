@@ -20,11 +20,12 @@
 // TIADS1x15Base Constructors
 // ============================================================================
 
-// Constructor
-TIADS1x15Base::TIADS1x15Base(float voltageMultiplier, adsGain_t adsGain,
-                             uint8_t i2cAddress, float adsSupplyVoltage,
-                             uint16_t adsDataRate)
+// Constructor with TwoWire instance
+TIADS1x15Base::TIADS1x15Base(TwoWire* theI2C, float voltageMultiplier,
+                             adsGain_t adsGain, uint8_t i2cAddress,
+                             float adsSupplyVoltage, uint16_t adsDataRate)
     : AnalogVoltageBase(voltageMultiplier, adsSupplyVoltage),
+      _wire(theI2C),
       _i2cAddress(i2cAddress),
       _adsGain(adsGain),
       _adsDataRate(adsDataRate) {
@@ -40,6 +41,13 @@ TIADS1x15Base::TIADS1x15Base(float voltageMultiplier, adsGain_t adsGain,
     // ADS initialization is deferred to begin() function for safe I2C
     // communication
 }
+
+// Constructor using default Wire instance
+TIADS1x15Base::TIADS1x15Base(float voltageMultiplier, adsGain_t adsGain,
+                             uint8_t i2cAddress, float adsSupplyVoltage,
+                             uint16_t adsDataRate)
+    : TIADS1x15Base(&Wire, voltageMultiplier, adsGain, i2cAddress,
+                    adsSupplyVoltage, adsDataRate) {}
 
 
 // ============================================================================
@@ -63,7 +71,7 @@ bool TIADS1x15Base::begin(void) {
     _ads.setDataRate(_adsDataRate);
 
     // Initialize I2C communication with the ADS
-    bool success = _ads.begin(_i2cAddress);
+    bool success = _ads.begin(_i2cAddress, _wire);
 
     if (success) {
         MS_DBG(F("ADS1x15 initialized successfully at address 0x"),
