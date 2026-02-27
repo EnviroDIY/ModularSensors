@@ -116,9 +116,23 @@
  * Build-time configuration for the MS5837
  */
 /**@{*/
-/// @brief Default fluid density for depth calculations (grams/cm³)
-/// Water at 20°C = 0.99802 g/cm³
+#if !defined(MS5837_DEFAULT_FLUID_DENSITY) || defined(DOXYGEN)
+/**
+ * @brief Default fluid density for depth calculations (grams/cm³)
+ *
+ * Water at 20°C = 0.99802 g/cm³. For seawater, use approximately 1.025 g/cm³.
+ * For other fluids, consult density tables and enter the density in grams per
+ * cm³. This can be overridden at compile time with -D
+ * MS5837_DEFAULT_FLUID_DENSITY=value
+ */
 #define MS5837_DEFAULT_FLUID_DENSITY 0.99802f
+#endif
+
+// Static assert to validate fluid density is reasonable
+static_assert(MS5837_DEFAULT_FLUID_DENSITY > 0.1f &&
+                  MS5837_DEFAULT_FLUID_DENSITY <= 5.0f,
+              "MS5837_DEFAULT_FLUID_DENSITY must be between 0.1 and 5.0 g/cm³ "
+              "(reasonable fluid density range)");
 /**@}*/
 
 /**

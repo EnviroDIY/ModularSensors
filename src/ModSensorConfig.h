@@ -58,6 +58,17 @@
  */
 #define MS_DEFAULT_ADS1X15_ADDRESS 0x48
 #endif
+
+// Static assert to validate ADS1X15 I2C address is valid
+static_assert(
+    MS_DEFAULT_ADS1X15_ADDRESS >= 0x08 && MS_DEFAULT_ADS1X15_ADDRESS <= 0x77,
+    "MS_DEFAULT_ADS1X15_ADDRESS must be a valid 7-bit I2C address (0x08-0x77)");
+static_assert(MS_DEFAULT_ADS1X15_ADDRESS == 0x48 ||
+                  MS_DEFAULT_ADS1X15_ADDRESS == 0x49 ||
+                  MS_DEFAULT_ADS1X15_ADDRESS == 0x4A ||
+                  MS_DEFAULT_ADS1X15_ADDRESS == 0x4B,
+              "MS_DEFAULT_ADS1X15_ADDRESS should be 0x48, 0x49, 0x4A, or 0x4B "
+              "for ADS1X15");
 //==============================================================
 
 //==============================================================
@@ -155,6 +166,11 @@
 // GroPoint Profile GPLP-8 has 8 Moisture and 13 Temperature values
 #endif
 
+// Static assert to the maximum number of variables is no more than the largest
+// number of variables from any sensor. Anything more is a waste of memory.
+static_assert(MAX_NUMBER_VARS > 0 && MAX_NUMBER_VARS <= 21,
+              "MAX_NUMBER_VARS must be between 1 and 21");
+
 //==============================================================
 // Analog voltage configuration
 //==============================================================
@@ -179,6 +195,11 @@
 #if !defined(MS_PROCESSOR_ADC_RESOLUTION)
 #error The processor ADC resolution must be defined!
 #endif  // MS_PROCESSOR_ADC_RESOLUTION
+
+// Static assert to validate ADC resolution is reasonable
+static_assert(MS_PROCESSOR_ADC_RESOLUTION >= 8 &&
+                  MS_PROCESSOR_ADC_RESOLUTION <= 16,
+              "MS_PROCESSOR_ADC_RESOLUTION must be between 8 and 16 bits");
 #endif
 
 /// @brief The maximum possible value of the ADC - one less than the resolution
@@ -198,6 +219,11 @@
 #define MS_PROCESSOR_ANALOG_MAX_CHANNEL 100
 #endif  // MS_PROCESSOR_ANALOG_MAX_CHANNEL
 
+// Static assert to validate analog channel maximum is reasonable
+static_assert(MS_PROCESSOR_ANALOG_MAX_CHANNEL > 0 &&
+                  MS_PROCESSOR_ANALOG_MAX_CHANNEL <= 255,
+              "MS_PROCESSOR_ANALOG_MAX_CHANNEL must be between 1 and 255");
+
 //==============================================================
 // Environmental sensor configuration
 //==============================================================
@@ -216,6 +242,12 @@
  */
 #define MS_SEA_LEVEL_PRESSURE_HPA 1013.25f
 #endif
+
+// Static assert to validate sea level pressure is reasonable
+static_assert(MS_SEA_LEVEL_PRESSURE_HPA >= 800.0f &&
+                  MS_SEA_LEVEL_PRESSURE_HPA <= 1200.0f,
+              "MS_SEA_LEVEL_PRESSURE_HPA must be between 800 and 1200 hPa "
+              "(reasonable atmospheric pressure range)");
 //==============================================================
 
 #if !defined(MS_PROCESSOR_ADC_REFERENCE_MODE) || defined(DOXYGEN)
@@ -287,6 +319,9 @@
  */
 #define MAX_NUMBER_SENDERS 4
 #endif
+// Static asserts to validate AWS IoT publisher counts are reasonable
+static_assert(MAX_NUMBER_SENDERS >= 0 && MAX_NUMBER_SENDERS <= 16,
+              "MAX_NUMBER_SENDERS must be between 0 and 16");
 
 #ifndef MS_ALWAYS_FLUSH_PUBLISHERS
 /**
@@ -315,6 +350,10 @@
 #define MS_SEND_BUFFER_SIZE 1360
 #endif
 
+// Static assert to validate send buffer size is reasonable
+static_assert(MS_SEND_BUFFER_SIZE >= 32 && MS_SEND_BUFFER_SIZE <= 2048,
+              "MS_SEND_BUFFER_SIZE must be between 32 and 2048 bytes");
+
 #ifndef TINY_GSM_RX_BUFFER
 /**
  * @brief The size of the buffer for incoming data.
@@ -325,6 +364,11 @@
  */
 #define TINY_GSM_RX_BUFFER 64
 #endif
+
+// Static assert to validate GSM RX buffer size is reasonable
+static_assert(TINY_GSM_RX_BUFFER >= 16 && TINY_GSM_RX_BUFFER <= 2048,
+              "TINY_GSM_RX_BUFFER must be between 16 and 2048 bytes");
+
 
 #ifndef TINY_GSM_YIELD_MS
 /**
@@ -337,6 +381,10 @@
  */
 #define TINY_GSM_YIELD_MS 2
 #endif
+
+// Static assert to validate GSM yield time is reasonable
+static_assert(TINY_GSM_YIELD_MS >= 0 && TINY_GSM_YIELD_MS <= 1000,
+              "TINY_GSM_YIELD_MS must be between 0 and 1000 milliseconds");
 
 #ifndef MS_MQTT_MAX_PACKET_SIZE
 /**
@@ -352,6 +400,11 @@
  */
 #define MS_MQTT_MAX_PACKET_SIZE 1536
 #endif
+
+// Static assert to validate MQTT packet size is reasonable
+static_assert(MS_MQTT_MAX_PACKET_SIZE >= 128 && MS_MQTT_MAX_PACKET_SIZE <= 4096,
+              "MS_MQTT_MAX_PACKET_SIZE must be between 128 and 4096 bytes");
+
 //==============================================================
 
 
@@ -374,6 +427,15 @@
  */
 #define MS_AWS_IOT_PUBLISHER_PUB_COUNT 4
 #endif
+
+// Static asserts to validate AWS IoT publisher counts are reasonable
+static_assert(
+    MS_AWS_IOT_PUBLISHER_SUB_COUNT >= 0 && MS_AWS_IOT_PUBLISHER_SUB_COUNT <= 8,
+    "MS_AWS_IOT_PUBLISHER_SUB_COUNT must be between 0 and 8 (AWS limit)");
+static_assert(MS_AWS_IOT_PUBLISHER_PUB_COUNT >= 0 &&
+                  MS_AWS_IOT_PUBLISHER_PUB_COUNT <= 16,
+              "MS_AWS_IOT_PUBLISHER_PUB_COUNT must be between 0 and 16");
+
 #ifndef MS_AWS_IOT_MAX_CONNECTION_TIME
 /**
  * @brief The maximum time to wait for subscriptions after publishing data to
