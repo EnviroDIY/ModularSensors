@@ -10,26 +10,61 @@
 
 #include "TEConnectivityMS5837.h"
 
+// Include math library for log function
+#include <math.h>
 
-// The constructor - because this is I2C, only need the power pin
-TEConnectivityMS5837::TEConnectivityMS5837(int8_t powerPin, uint8_t model,
-                                           uint8_t measurementsToAverage,
-                                           float   fluidDensity,
-                                           float   airPressure)
+
+// The constructor
+TEConnectivityMS5837::TEConnectivityMS5837(TwoWire* theI2C, int8_t powerPin,
+                                           uint8_t  model,
+                                           uint8_t  measurementsToAverage,
+                                           uint16_t overSamplingRatio,
+                                           float    fluidDensity,
+                                           float    airPressure)
     : Sensor("TEConnectivityMS5837", MS5837_NUM_VARIABLES,
              MS5837_WARM_UP_TIME_MS, MS5837_STABILIZATION_TIME_MS,
              MS5837_MEASUREMENT_TIME_MS, powerPin, -1, measurementsToAverage,
              MS5837_INC_CALC_VARIABLES),
+      MS5837_internal(theI2C),
+      _wire(theI2C),
       _model(model),
       _fluidDensity(fluidDensity),
-      _airPressure(airPressure) {}
+      _airPressure(airPressure),
+      _overSamplingRatio(overSamplingRatio) {}
+TEConnectivityMS5837::TEConnectivityMS5837(int8_t powerPin, uint8_t model,
+                                           uint8_t  measurementsToAverage,
+                                           uint16_t overSamplingRatio,
+                                           float    fluidDensity,
+                                           float    airPressure)
+    : TEConnectivityMS5837(&Wire, powerPin, model, measurementsToAverage,
+                           overSamplingRatio, fluidDensity, airPressure) {};
+
+// Enum-based constructors
+TEConnectivityMS5837::TEConnectivityMS5837(int8_t powerPin, MS5837Model model,
+                                           uint8_t  measurementsToAverage,
+                                           uint16_t overSamplingRatio,
+                                           float    fluidDensity,
+                                           float    airPressure)
+    : TEConnectivityMS5837(powerPin, static_cast<uint8_t>(model),
+                           measurementsToAverage, overSamplingRatio,
+                           fluidDensity, airPressure) {}
+
+TEConnectivityMS5837::TEConnectivityMS5837(TwoWire* theI2C, int8_t powerPin,
+                                           MS5837Model model,
+                                           uint8_t     measurementsToAverage,
+                                           uint16_t    overSamplingRatio,
+                                           float       fluidDensity,
+                                           float       airPressure)
+    : TEConnectivityMS5837(theI2C, powerPin, static_cast<uint8_t>(model),
+                           measurementsToAverage, overSamplingRatio,
+                           fluidDensity, airPressure) {}
 
 // Destructor
 TEConnectivityMS5837::~TEConnectivityMS5837() {}
 
 
-String TEConnectivityMS5837::getSensorLocation(void) {
-    String modelStr = F("I2C_0x76_");
+String TEConnectivityMS5837::getSensorName(void) {
+    String modelStr = F("TEConnectivityMS5837_");
     switch (_model) {
         case MS5837_TYPE_02: modelStr += F("02BA"); break;
         case MS5837_TYPE_30: modelStr += F("30BA"); break;
@@ -37,6 +72,11 @@ String TEConnectivityMS5837::getSensorLocation(void) {
         default: modelStr += F("Unknown"); break;
     }
     return modelStr;
+}
+
+
+String TEConnectivityMS5837::getSensorLocation(void) {
+    return F("I2C_0x76");
 }
 
 
@@ -53,6 +93,15 @@ bool TEConnectivityMS5837::setup(void) {
     // Set the sensor model and initialize the sensor
     success &= MS5837_internal.begin(_model);
 
+    // Validate that the pressure range is reasonable for the sensor model and
+    // change the model if possible based on the pressure sensitivity read from
+    // the sensor.
+    if (changeModelIfPossible()) {
+        // If the model was changed, we need to re-initialize the sensor with
+        // the new model.
+        success &= MS5837_internal.reset(_model);
+    }
+
     if (success) {
         // Set the fluid density for depth calculations
         MS5837_internal.setDensity(_fluidDensity);
@@ -67,6 +116,32 @@ bool TEConnectivityMS5837::setup(void) {
         setStatusBit(ERROR_OCCURRED);
         // UN-set the set-up bit (bit 0) since setup failed!
         clearStatusBit(SETUP_SUCCESSFUL);
+    }
+
+    return success;
+}
+
+
+bool TEConnectivityMS5837::wake(void) {
+    // Run the parent wake function
+    if (!Sensor::wake()) return false;
+
+    bool success = true;
+    // Re-initialize the sensor communication, if the sensor was powered down
+    if (_powerPin >= 0) {
+        success = MS5837_internal.begin(_model);
+        // There's no need to validate the model or change the fluid density or
+        // other parameters. Those are not affected by power cycling the sensor.
+    }
+    if (!success) {
+        MS_DBG(getSensorNameAndLocation(),
+               F("Wake failed - sensor re-initialization failed"));
+        // Set the status error bit (bit 7)
+        setStatusBit(ERROR_OCCURRED);
+        // Make sure that the wake time and wake success bit (bit 4) are
+        // unset
+        _millisSensorActivated = 0;
+        clearStatusBit(WAKE_SUCCESSFUL);
     }
 
     return success;
@@ -90,25 +165,90 @@ bool TEConnectivityMS5837::addSingleMeasurementResult(void) {
                F("mBar. Expected range: 500-1200"));
         return bumpMeasurementAttemptCount(false);
     }
+    if (_overSamplingRatio != 256 && _overSamplingRatio != 512 &&
+        _overSamplingRatio != 1024 && _overSamplingRatio != 2048 &&
+        _overSamplingRatio != 4096 && _overSamplingRatio != 8192) {
+        MS_DBG(F("Invalid oversampling ratio:"), _overSamplingRatio,
+               F(". Valid values: 256, 512, 1024, 2048, 4096, 8192"));
+        return bumpMeasurementAttemptCount(false);
+    }
 
     float temp  = -9999;
     float press = -9999;
     float depth = -9999;
     float alt   = -9999;
 
-    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
     // Read values from the sensor - returns 0 on success
-    bool success = MS5837_internal.read() == 0;
+    int OSR = log(_overSamplingRatio) / log(2);
+    MS_DBG(F("  Requesting OSR:"), OSR, F("for oversampling ratio:"),
+           _overSamplingRatio);
+    // Convert oversampling ratio to the value expected by the MS5837 library
+    // (8-13 for oversampling ratios 256-8192)
+    int  read_return = MS5837_internal.read(OSR);
+    bool success     = read_return == 0;
     if (success) {
         // Get temperature in Celsius
         temp = MS5837_internal.getTemperature();
 
         // Get pressure in millibar
         press = MS5837_internal.getPressure();
+    } else {
+        MS_DBG(F("  Read failed, error:"), MS5837_internal.getLastError(),
+               F("Return value from read():"), read_return);
+        return bumpMeasurementAttemptCount(false);
+    }
+
+    // Validate the readings
+    float maxPressure = 0.0f;
+    switch (_model) {
+        case MS5803_TYPE_01: maxPressure = 1000.0f; break;  // 1 bar = 1000 mbar
+        case MS5837_TYPE_02: maxPressure = 2000.0f; break;  // 2 bar = 2000 mbar
+        case MS5837_TYPE_30:
+            maxPressure = 30000.0f;
+            break;  // 30 bar = 30000 mbar
+        default: maxPressure = 30000.0; break;
+    }
+
+    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+
+    // Pressure returns 0 when disconnected, which is highly unlikely to be
+    // a real value.
+    // Pressure range depends on the model; allow 5% over max pressure
+    if (!isnan(press) && press > 0.0f && press <= maxPressure * 1.05f) {
+        MS_DBG(F("  Pressure:"), press);
+        verifyAndAddMeasurementResult(MS5837_PRESSURE_VAR_NUM, press);
+    } else if (!isnan(press)) {
+        MS_DBG(F("  Pressure out of range:"), press);
+        success = false;
+    } else {
+        MS_DBG(F("  Pressure is NaN"));
+        success = false;
+    }
+
+    // Temperature Range is -40°C to +85°C
+    if (!isnan(temp) && temp >= -40.0f && temp <= 85.0f) {
+        MS_DBG(F("  Temperature:"), temp);
+        verifyAndAddMeasurementResult(MS5837_TEMP_VAR_NUM, temp);
+    } else if (!isnan(temp)) {
+        MS_DBG(F("  Temperature out of range:"), temp);
+        success = false;
+    } else {
+        MS_DBG(F("  Temperature is NaN"));
+        success = false;
+    }
+
+    if (success) {
+        // Calculate and store depth and altitude only if input temperature and
+        // depth are are valid
+        // If the temperature and pressure are valid - and we've already checked
+        // for reasonable air pressure and fluid density, then the altitude and
+        // depth will be valid.
 
         // Calculate altitude in meters using configured air pressure
         alt = MS5837_internal.getAltitude(_airPressure);
+        MS_DBG(F("  Altitude:"), alt);
+        verifyAndAddMeasurementResult(MS5837_ALTITUDE_VAR_NUM, alt);
 
         // Calculate depth in meters
         // Note: fluidDensity is set in the MS5837_internal object at setup and
@@ -116,54 +256,75 @@ bool TEConnectivityMS5837::addSingleMeasurementResult(void) {
         // constructor and further setters and getters are not provided, so
         // there's no reason to re-pass the value to the internal object here.
         depth = MS5837_internal.getDepth();
+        MS_DBG(F("  Depth:"), depth);
+        verifyAndAddMeasurementResult(MS5837_DEPTH_VAR_NUM, depth);
     } else {
-        MS_DBG(F("  Read failed, error:"), MS5837_internal.getLastError());
-        return bumpMeasurementAttemptCount(false);
-    }
-
-    MS_DBG(F("  Temperature:"), temp);
-    MS_DBG(F("  Pressure:"), press);
-    MS_DBG(F("  Depth:"), depth);
-    MS_DBG(F("  Altitude:"), alt);
-
-    // Validate the readings
-    float maxPressure = 0;
-    switch (_model) {
-        case MS5803_TYPE_01: maxPressure = 1000.0; break;  // 1 bar = 1000 mbar
-        case MS5837_TYPE_02: maxPressure = 2000.0; break;  // 2 bar = 2000 mbar
-        case MS5837_TYPE_30:
-            maxPressure = 30000.0;
-            break;  // 30 bar = 30000 mbar
-        default: maxPressure = 30000.0; break;
-    }
-
-    if (!isnan(temp) && !isnan(press) && temp >= -40.0 && temp <= 85.0 &&
-        press > 0.0 &&
-        press <= maxPressure * 1.05) {  // allow 5% over max pressure
-        // Temperature Range is -40°C to +85°C
-        // Pressure returns 0 when disconnected, which is highly unlikely to be
-        // a real value.
-        // Pressure range depends on the model
-        verifyAndAddMeasurementResult(MS5837_TEMP_VAR_NUM, temp);
-        verifyAndAddMeasurementResult(MS5837_PRESSURE_VAR_NUM, press);
-
-        // Store calculated values if they are valid
-        if (!isnan(depth) && depth >= -2000.0 && depth <= 2000.0) {
-            // Reasonable depth range from -2000m to +2000m
-            verifyAndAddMeasurementResult(MS5837_DEPTH_VAR_NUM, depth);
-        } else if (!isnan(depth)) {
-            MS_DBG(F("  Depth out of range:"), depth);
-        }
-        if (!isnan(alt) && alt >= -1000.0 && alt <= 10000.0) {
-            // Reasonable altitude range from -1000m to +10000m
-            verifyAndAddMeasurementResult(MS5837_ALTITUDE_VAR_NUM, alt);
-        } else if (!isnan(alt)) {
-            MS_DBG(F("  Altitude out of range:"), alt);
-        }
-
-        success = true;
+        MS_DBG(
+            F("  Invalid readings, skipping depth and altitude calculations"));
     }
 
     // Return success value when finished
     return bumpMeasurementAttemptCount(success);
+}
+
+
+bool TEConnectivityMS5837::changeModelIfPossible() {
+    MS_DBG(F("Attempting to read SENS_T1 from PROM of sensor at address"),
+           String(MS5837_internal.getAddress(), HEX));
+
+    bool    success = true;
+    uint8_t address = MS5837_internal.getAddress();
+
+    // Verify I2C connectivity with a lightweight probe
+    _wire->beginTransmission(address);
+    if (_wire->endTransmission() != 0) {
+        MS_DBG(F("  I2C communication failed at 0x"), String(address, HEX));
+        return false;
+    }
+
+    // MS5837_CMD_READ_PROM  = 0xA0
+    // Read SENS_T1 from PROM 1 [0xA0 + (1*2)]
+    _wire->beginTransmission(address);
+    _wire->write(0xA0 + (1 * 2));
+    success &= _wire->endTransmission() == 0;
+    if (!success) {
+        MS_DBG(F("Failed to request SENS_T1 from PROM. Unable to validate "
+                 "pressure range."));
+        return false;
+    }
+
+    uint8_t length = 2;
+    if (_wire->requestFrom(address, length) != length) {
+        MS_DBG(F("Failed to retrieve SENS_T1 from PROM. Unable to validate "
+                 "pressure range."));
+        return false;
+    }
+    uint16_t SENS_T1 = (_wire->read() << 8) | _wire->read();
+    MS_DBG(F("SENS_T1 value:"), SENS_T1);
+
+    // Values from
+    // https://github.com/ArduPilot/ardupilot/pull/29122#issuecomment-2877269114
+    const uint16_t MS5837_02BA_MAX_SENSITIVITY = 49000;
+    const uint16_t MS5837_02BA_30BA_SEPARATION = 37000;
+    const uint16_t MS5837_30BA_MIN_SENSITIVITY = 26000;
+    // PROM Word 1 represents the sensor's pressure sensitivity calibration
+    // NOTE: The calibrated pressure sensitivity value (SENS_T1) is **not** the
+    // same as the as the pressure range from the datasheet!
+    //  Set _model according to the experimental pressure sensitivity thresholds
+    if (SENS_T1 > MS5837_30BA_MIN_SENSITIVITY &&
+        SENS_T1 < MS5837_02BA_30BA_SEPARATION && _model == 1) {
+        MS_DBG(
+            F("SENS_T1 value indicates 30BA model, but model is set to 02BA"));
+        MS_DBG(F("Changing model to 30BA"));
+        _model = 0;
+        return false;  // Return false to indicate that the model was changed
+    } else if (SENS_T1 > MS5837_02BA_30BA_SEPARATION &&
+               SENS_T1 < MS5837_02BA_MAX_SENSITIVITY && _model == 0) {
+        MS_DBG(
+            F("SENS_T1 value indicates 02BA model, but model is set to 30BA"));
+        MS_DBG(F("Setting model to 02BA"));
+        _model = 1;
+        return false;  // Return false to indicate that the model was changed
+    }
+    return true;
 }

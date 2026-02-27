@@ -150,7 +150,7 @@ lib_deps =
     envirodiy/GeoluxCamera@^0.1.3
     robtillaart/fast_math@^0.2.4
     envirodiy/ANBSensorsModbus@^0.4.2
-    BlueRobotics MS5837 Library=https://github.com/bluerobotics/BlueRobotics_MS5837_Library
+    robtillaart/MS5837@^0.3.2
     StreamDebugger=https://github.com/EnviroDIY/StreamDebugger.git
     NeoSWSerial=https://github.com/SRGDamia1/NeoSWSerial.git
     AltSoftSerial=https://github.com/PaulStoffregen/AltSoftSerial.git

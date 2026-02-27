@@ -2086,11 +2086,12 @@ Variable* ms5803Temp =
 #include <sensors/TEConnectivityMS5837.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-const int8_t  MS5837Power = sensorPowerPin;  // Power pin
-const uint8_t MS5837model =
-    MS5837_TYPE_30;  // Model: MS5837_TYPE_02 for 2bar range or
-                     // MS5837_TYPE_30 for 30bar range
-const uint8_t MS5837ReadingsToAvg = 1;
+const int8_t        MS5837Power       = sensorPowerPin;  // Power pin
+const MS5837Model   MS5837model       = MS5837Model::MS5837_02BA;
+// - MS5837Model::MS5837_30BA for 30 bar range sensors (MS5837-30BA)
+// - MS5837Model::MS5837_02BA for 2 bar range sensors (MS5837-02BA)
+// - MS5837Model::MS5803_01BA for 1 bar range sensors (MS5803-01BA)
+const uint8_t       MS5837ReadingsToAvg = 1;
 
 // Create a TE Connectivity MS5837 pressure and temperature sensor object
 TEConnectivityMS5837 ms5837(MS5837Power, MS5837model, MS5837ReadingsToAvg);

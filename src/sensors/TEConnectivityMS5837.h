@@ -133,6 +133,29 @@ static_assert(MS5837_DEFAULT_FLUID_DENSITY > 0.1f &&
                   MS5837_DEFAULT_FLUID_DENSITY <= 5.0f,
               "MS5837_DEFAULT_FLUID_DENSITY must be between 0.1 and 5.0 g/cm³ "
               "(reasonable fluid density range)");
+
+#if !defined(MS5837_DEFAULT_OVERSAMPLING_RATIO) || defined(DOXYGEN)
+/**
+ * @brief Default oversampling ratio for pressure and temperature measurements
+ *
+ * Higher oversampling ratios provide better resolution and noise reduction but
+ * increase measurement time. Valid values are: 256, 512, 1024, 2048, 4096,
+ * 8192. Default is 4096 for good balance of accuracy and speed. This can be
+ * overridden at compile time with -D MS5837_DEFAULT_OVERSAMPLING_RATIO=value
+ */
+#define MS5837_DEFAULT_OVERSAMPLING_RATIO 4096
+#endif
+
+// Static assert to validate oversampling ratio is one of the valid values
+static_assert(
+    MS5837_DEFAULT_OVERSAMPLING_RATIO == 256 ||
+        MS5837_DEFAULT_OVERSAMPLING_RATIO == 512 ||
+        MS5837_DEFAULT_OVERSAMPLING_RATIO == 1024 ||
+        MS5837_DEFAULT_OVERSAMPLING_RATIO == 2048 ||
+        MS5837_DEFAULT_OVERSAMPLING_RATIO == 4096 ||
+        MS5837_DEFAULT_OVERSAMPLING_RATIO == 8192,
+    "MS5837_DEFAULT_OVERSAMPLING_RATIO must be one of: 256, 512, 1024, "
+    "2048, 4096, 8192 (valid MS5837 oversampling ratios)");
 /**@}*/
 
 /**
@@ -142,7 +165,7 @@ static_assert(MS5837_DEFAULT_FLUID_DENSITY > 0.1f &&
  */
 /**@{*/
 /// @brief Sensor::_numReturnedValues; the MS5837 can report 2 values.
-#define MS5837_NUM_VARIABLES 2
+#define MS5837_NUM_VARIABLES 4
 /// @brief Sensor::_incCalcValues; we calculate depth and altitude values.
 #define MS5837_INC_CALC_VARIABLES 2
 /**@}*/
@@ -280,6 +303,24 @@ static_assert(MS5837_DEFAULT_FLUID_DENSITY > 0.1f &&
 #define MS5837_ALTITUDE_DEFAULT_CODE "TEConnectivityMS5837Altitude"
 /**@}*/
 
+/**
+ * @brief Supported MS5837/MS5803 sensor models
+ *
+ * These enum values correspond to the **math model** values used in the Rob
+ * Tillaart MS5837 library.  They are **not** equivalent to the "type" values
+ * defined in that library, which are not used in the MS5837 class.  The math
+ * model values are used to set the correct calibration coefficients and
+ * calculations for the different sensor models, which have different pressure
+ * ranges and sensitivities.
+ *
+ * @ingroup sensor_ms5837
+ */
+enum class MS5837Model : uint8_t {
+    MS5837_30BA = 0,  ///< MS5837-30BA: 30 bar range sensor
+    MS5837_02BA = 1,  ///< MS5837-02BA: 2 bar range sensor
+    MS5803_01BA = 2   ///< MS5803-01BA: 1 bar range sensor
+};
+
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
@@ -291,18 +332,16 @@ static_assert(MS5837_DEFAULT_FLUID_DENSITY > 0.1f &&
 class TEConnectivityMS5837 : public Sensor {
  public:
     /**
-     * @brief Construct a new TEConnectivityMS5837 object.
-     *
-     * @note Neither secondary hardware nor software I2C is supported for the
-     * MS5837. Only the primary hardware I2C defined in the Arduino core can be
-     * used.
+     * @brief Construct a new TEConnectivityMS5837 object using the default
+     * Hardware Wire instance.
      *
      * @param powerPin The pin on the mcu controlling power to the MS5837
      * Use -1 if it is continuously powered.
      * - The MS5837 requires a 1.7 - 3.6V power source
-     * @param model The model of MS5837 sensor. Use MS5837_TYPE_02 for
-     * 2 bar range sensors or MS5837_TYPE_30 for 30 bar range sensors.
-     * Default is MS5837_TYPE_02.
+     * @param model The model of MS5837 sensor.
+     *   - 0 for 30 bar range sensors (MS5837-30BA)
+     *   - 1 for 2 bar range sensors (MS5837-02BA)
+     *   - 2 for 1 bar range sensors (MS5803-01BA)
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
@@ -311,12 +350,89 @@ class TEConnectivityMS5837 : public Sensor {
      * MS5837_DEFAULT_FLUID_DENSITY.
      * @param airPressure The air pressure for altitude/depth calculations
      * (mBar); optional with default value from MS_SEA_LEVEL_PRESSURE_HPA.
+     * @param overSamplingRatio The oversampling ratio for pressure and
+     * temperature measurements; optional with default value from
+     * MS5837_DEFAULT_OVERSAMPLING_RATIO. Valid values: 256, 512, 1024, 2048,
+     * 4096, 8192.
+     *
+     * @warning This can be used for the MS5803-01BA sensor, but **only** for
+     * that exact model of MS5803.  For any other MS5803 model, use the
+     * MeasSpecMS5803 class instead of this class.
      */
     explicit TEConnectivityMS5837(
-        int8_t powerPin, uint8_t model = MS5837_TYPE_02,
-        uint8_t measurementsToAverage = 1,
-        float   fluidDensity          = MS5837_DEFAULT_FLUID_DENSITY,
-        float   airPressure           = MS_SEA_LEVEL_PRESSURE_HPA);
+        int8_t powerPin, uint8_t model, uint8_t measurementsToAverage = 1,
+        uint16_t overSamplingRatio = MS5837_DEFAULT_OVERSAMPLING_RATIO,
+        float    fluidDensity      = MS5837_DEFAULT_FLUID_DENSITY,
+        float    airPressure       = MS_SEA_LEVEL_PRESSURE_HPA);
+    /**
+     * @brief Construct a new TEConnectivityMS5837 object using a secondary
+     * *hardware* I2C instance.
+     *
+     * @copydetails TEConnectivityMS5837::TEConnectivityMS5837(int8_t, uint8_t,
+     * uint8_t, float, float)
+     *
+     * @param theI2C A TwoWire instance for I2C communication.  Due to the
+     * limitations of the Arduino core, only a hardware I2C instance can be
+     * used.  For an AVR board, there is only one I2C instance possible and this
+     * form of the constructor should not be used.  For a SAMD board, this can
+     * be used if a secondary I2C port is created on one of the extra SERCOMs.
+     */
+    TEConnectivityMS5837(
+        TwoWire* theI2C, int8_t powerPin, uint8_t model,
+        uint8_t  measurementsToAverage = 1,
+        uint16_t overSamplingRatio     = MS5837_DEFAULT_OVERSAMPLING_RATIO,
+        float    fluidDensity          = MS5837_DEFAULT_FLUID_DENSITY,
+        float    airPressure           = MS_SEA_LEVEL_PRESSURE_HPA);
+
+    /**
+     * @brief Construct a new TEConnectivityMS5837 object using the default
+     * Hardware Wire instance with enum model type.
+     *
+     * @param powerPin The pin on the mcu controlling power to the MS5837
+     * Use -1 if it is continuously powered.
+     * - The MS5837 requires a 1.7 - 3.6V power source
+     * @param model The model of MS5837 sensor using enum type.
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
+     * @param overSamplingRatio The oversampling ratio for pressure and
+     * temperature measurements; optional with default value from
+     * MS5837_DEFAULT_OVERSAMPLING_RATIO. Valid values: 256, 512, 1024, 2048,
+     * 4096, 8192.
+     * @param fluidDensity The density of the fluid for depth calculations
+     * (grams/cm³); optional with default value from
+     * MS5837_DEFAULT_FLUID_DENSITY.
+     * @param airPressure The air pressure for altitude/depth calculations
+     * (mBar); optional with default value from MS_SEA_LEVEL_PRESSURE_HPA.
+     *
+     * @warning This can be used for the MS5803-01BA sensor, but **only** for
+     * that exact model of MS5803.  For any other MS5803 model, use the
+     * MeasSpecMS5803 class instead of this class.
+     */
+    explicit TEConnectivityMS5837(
+        int8_t powerPin, MS5837Model model, uint8_t measurementsToAverage = 1,
+        uint16_t overSamplingRatio = MS5837_DEFAULT_OVERSAMPLING_RATIO,
+        float    fluidDensity      = MS5837_DEFAULT_FLUID_DENSITY,
+        float    airPressure       = MS_SEA_LEVEL_PRESSURE_HPA);
+    /**
+     * @brief Construct a new TEConnectivityMS5837 object using a secondary
+     * *hardware* I2C instance.
+     *
+     * @copydetails TEConnectivityMS5837::TEConnectivityMS5837(int8_t,
+     * MS5837Model, uint8_t, float, float)
+     *
+     * @param theI2C A TwoWire instance for I2C communication.  Due to the
+     * limitations of the Arduino core, only a hardware I2C instance can be
+     * used.  For an AVR board, there is only one I2C instance possible and this
+     * form of the constructor should not be used.  For a SAMD board, this can
+     * be used if a secondary I2C port is created on one of the extra SERCOMs.
+     */
+    TEConnectivityMS5837(
+        TwoWire* theI2C, int8_t powerPin, MS5837Model model,
+        uint8_t  measurementsToAverage = 1,
+        uint16_t overSamplingRatio     = MS5837_DEFAULT_OVERSAMPLING_RATIO,
+        float    fluidDensity          = MS5837_DEFAULT_FLUID_DENSITY,
+        float    airPressure           = MS_SEA_LEVEL_PRESSURE_HPA);
     /**
      * @brief Destroy the TEConnectivityMS5837 object
      */
@@ -333,6 +449,19 @@ class TEConnectivityMS5837 : public Sensor {
      */
     bool setup(void) override;
 
+    /**
+     * @brief Wake the sensor and re-establish communication.
+     *
+     * This re-runs the MS5837_internal begin method to re-establish I2C
+     * communication, re-read the sensor calibration constants, and ensure that
+     * the sensor itself has loaded the calibration PROM into its internal
+     * register.  This is required after every power cycle of the sensor.
+     *
+     * @return True if the wake was successful.
+     */
+    bool wake(void) override;
+
+    String getSensorName(void) override;
     String getSensorLocation(void) override;
 
     bool addSingleMeasurementResult(void) override;
@@ -342,6 +471,10 @@ class TEConnectivityMS5837 : public Sensor {
      * @brief Private internal reference to the MS5837 object.
      */
     MS5837 MS5837_internal;
+    /**
+     * @brief An internal reference to the hardware Wire instance.
+     */
+    TwoWire* _wire;  // Hardware Wire
     /**
      * @brief The model of the MS5837.
      */
@@ -354,6 +487,32 @@ class TEConnectivityMS5837 : public Sensor {
      * @brief The air pressure for altitude/depth calculations (mBar).
      */
     float _airPressure;
+    /**
+     * @brief The oversampling ratio for pressure and temperature measurements.
+     */
+    uint16_t _overSamplingRatio;
+
+    /**
+     * @brief Attempts to validate the pressure range of the sensor by reading
+     * the SENS_T1 calibration value and change the model if the value indicates
+     * a different model than the one currently configured.
+     *
+     * @note This will only change the configuration if a valid SENS_T1 value is
+     * returned, one of the MS5837 models is currently configured, and the
+     * SENS_T1 value indicates the other MS5837 model based on experimentally
+     * derived sensitivity thresholds. If the SENS_T1 cannot be retrieved, the
+     * value is out of the expected range for both models, or a MS5803 is
+     * configured, no changes will be made.
+     *
+     * The thresholds used for determining whether to change the model
+     * configuration are taken from the Blue Robotics MS5837 library and are
+     * based on experimental results posted here:
+     * https://github.com/ArduPilot/ardupilot/pull/29122#issuecomment-2877269114
+     *
+     * @return True if the model value was changed based on the returned SENS_T1
+     * value, false otherwise.
+     */
+    bool changeModelIfPossible();
 };
 
 
