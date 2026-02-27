@@ -177,8 +177,8 @@ bool BoschBMP3xx::setup(void) {
         bmp_internal.setIIRFilter(_filterCoeffEnum);
 
         MS_DBG(F("Setting sea level atmospheric pressure to"),
-               SEALEVELPRESSURE_HPA);
-        bmp_internal.setSeaLevelPressure(SEALEVELPRESSURE_HPA);
+               MS_SEA_LEVEL_PRESSURE_HPA);
+        bmp_internal.setSeaLevelPressure(MS_SEA_LEVEL_PRESSURE_HPA);
 
         // if we plan to operate in normal mode, set that up and begin sampling
         // at the specified intervals
@@ -309,4 +309,4 @@ bool BoschBMP3xx::addSingleMeasurementResult(void) {
     return bumpMeasurementAttemptCount(success);
 }
 
-// cSpell:ignore oversample SEALEVELPRESSURE
+// cSpell:words oversample

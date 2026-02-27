@@ -111,11 +111,10 @@
  * - [BMP388 Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Bosch-BMP388-Datasheet.pdf)
  *
  * @section sensor_bmp3xx_flags Build flags
- * - ```-D SEALEVELPRESSURE_HPA```
+ * - ```-D MS_SEA_LEVEL_PRESSURE_HPA```
  *      - use to adjust the sea level pressure used to calculate altitude from measured barometric pressure
  *      - if not defined, 1013.25 is used
- *      - The same sea level pressure flag is used for both the BMP3xx and the BME280.
- * Whatever you select will be used for both sensors.
+ *      - The same sea level pressure flag is used for BMP3xx, BME280, and MS5837 sensors.
  *
  * @section sensor_bmp3xx_ctor Sensor Constructors
  * {{ @ref BoschBMP3xx::BoschBMP3xx(int8_t, Mode, Oversampling, Oversampling, IIRFilter, TimeStandby, uint8_t) }}
@@ -167,19 +166,6 @@
 /// @brief Sensor::_incCalcValues; altitude is calculated within the Adafruit
 /// library.
 #define BMP3XX_INC_CALC_VARIABLES 1
-/**@}*/
-
-/**
- * @anchor sensor_bme3xx_config
- * @name Configuration Defines
- * Defines to set the calibration of the calculated base pressure used to
- * calculate altitude by the BME3xx.
- */
-/**@{*/
-#if !defined(SEALEVELPRESSURE_HPA) || defined(DOXYGEN)
-/// The atmospheric pressure at sea level
-#define SEALEVELPRESSURE_HPA (1013.25)
-#endif
 /**@}*/
 
 /**
@@ -320,8 +306,8 @@
 #define BMP3XX_ALTITUDE_VAR_NUM 2
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
-/// "heightAboveSeaFloor"
-#define BMP3XX_ALTITUDE_VAR_NAME "heightAboveSeaFloor"
+/// "altitude"
+#define BMP3XX_ALTITUDE_VAR_NAME "altitude"
 /// @brief Variable unit name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "meter"
 #define BMP3XX_ALTITUDE_UNIT_NAME "meter"
@@ -697,4 +683,4 @@ class BoschBMP3xx_Altitude : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_BOSCHBMP3XX_H_
 
-// cSpell:ignore oversample SEALEVELPRESSURE osrs_p DDIO bmp3xxtimingTest
+// cSpell:words oversample osrs_p DDIO bmp3xxtimingTest

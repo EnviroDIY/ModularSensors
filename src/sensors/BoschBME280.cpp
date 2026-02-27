@@ -135,7 +135,7 @@ bool BoschBME280::addSingleMeasurementResult(void) {
     if (isnan(humid)) humid = -9999;
     press = bme_internal.readPressure();
     if (isnan(press)) press = -9999;
-    alt = bme_internal.readAltitude(SEALEVELPRESSURE_HPA);
+    alt = bme_internal.readAltitude(MS_SEA_LEVEL_PRESSURE_HPA);
     if (isnan(alt)) alt = -9999;
 
     MS_DBG(F("  Temperature:"), temp, F("°C"));
@@ -161,4 +161,4 @@ bool BoschBME280::addSingleMeasurementResult(void) {
     return bumpMeasurementAttemptCount(success);
 }
 
-// cSpell:ignore SEALEVELPRESSURE_HPA
+
