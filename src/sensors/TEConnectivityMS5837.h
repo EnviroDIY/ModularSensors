@@ -57,7 +57,7 @@
  * https://bluerobotics.com/store/sensors-sonars-cameras/sensors/bar02-sensor-r1-rp/
  * https://bluerobotics.com/store/sensors-sonars-cameras/sensors/bar30-sensor-r1/
  *
- * @section sensor_bme280_flags Build flags
+ * @section sensor_ms5837_flags Build flags
  * - ```-D MS5837_DEFAULT_FLUID_DENSITY=0.99802f```
  *      - Changes the default fluid density used for depth calculations. The
  * default value is for water at 20°C. For seawater, use approximately 1.025f.

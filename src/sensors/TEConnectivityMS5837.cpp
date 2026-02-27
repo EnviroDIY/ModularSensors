@@ -53,18 +53,16 @@ bool TEConnectivityMS5837::setup(void) {
     // Set the sensor model and initialize the sensor
     success &= MS5837_internal.begin(_model);
 
-    // Set the fluid density for depth calculations
-    MS5837_internal.setDensity(_fluidDensity);
-
-    if (!success) {
-        MS_DBG(getSensorNameAndLocation(), F("Failed to initialize sensor"));
-        success = false;
+    if (success) {
+        // Set the fluid density for depth calculations
+        MS5837_internal.setDensity(_fluidDensity);
     }
 
     // Turn the power back off if it had been turned on
     if (!wasOn) { powerDown(); }
 
     if (!success) {
+        MS_DBG(getSensorNameAndLocation(), F("Failed to initialize sensor"));
         // Set the status error bit (bit 7)
         setStatusBit(ERROR_OCCURRED);
         // UN-set the set-up bit (bit 0) since setup failed!
@@ -100,9 +98,6 @@ bool TEConnectivityMS5837::addSingleMeasurementResult(void) {
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-    // Set fluid density for depth calculations
-    MS5837_internal.setDensity(_fluidDensity);
-
     // Read values from the sensor - returns 0 on success
     bool success = MS5837_internal.read() == 0;
     if (success) {
@@ -116,6 +111,10 @@ bool TEConnectivityMS5837::addSingleMeasurementResult(void) {
         alt = MS5837_internal.getAltitude(_airPressure);
 
         // Calculate depth in meters
+        // Note: fluidDensity is set in the MS5837_internal object at setup and
+        // used in the getDepth() function. The fluidDensity is only set in the
+        // constructor and cannot be changed, so there's no reason to re-pass
+        // the value to the internal object here.
         depth = MS5837_internal.getDepth();
     } else {
         MS_DBG(F("  Read failed, error:"), MS5837_internal.getLastError());
@@ -152,10 +151,14 @@ bool TEConnectivityMS5837::addSingleMeasurementResult(void) {
         if (!isnan(depth) && depth >= -2000.0 && depth <= 2000.0) {
             // Reasonable depth range from -2000m to +2000m
             verifyAndAddMeasurementResult(MS5837_DEPTH_VAR_NUM, depth);
+        } else if (!isnan(depth)) {
+            MS_DBG(F("  Depth out of range:"), depth);
         }
         if (!isnan(alt) && alt >= -1000.0 && alt <= 10000.0) {
             // Reasonable altitude range from -1000m to +10000m
             verifyAndAddMeasurementResult(MS5837_ALTITUDE_VAR_NUM, alt);
+        } else if (!isnan(alt)) {
+            MS_DBG(F("  Altitude out of range:"), alt);
         }
 
         success = true;
