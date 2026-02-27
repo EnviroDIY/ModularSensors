@@ -10,52 +10,50 @@
 
 #include "TEConnectivityMS5837.h"
 
-// Include math library for log function
-#include <math.h>
 
-
-// The constructor
-TEConnectivityMS5837::TEConnectivityMS5837(TwoWire* theI2C, int8_t powerPin,
-                                           uint8_t  model,
-                                           uint8_t  measurementsToAverage,
-                                           uint16_t overSamplingRatio,
-                                           float    fluidDensity,
-                                           float    airPressure)
-    : Sensor("TEConnectivityMS5837", MS5837_NUM_VARIABLES,
-             MS5837_WARM_UP_TIME_MS, MS5837_STABILIZATION_TIME_MS,
-             MS5837_MEASUREMENT_TIME_MS, powerPin, -1, measurementsToAverage,
-             MS5837_INC_CALC_VARIABLES),
-      MS5837_internal(theI2C),
-      _wire(theI2C),
-      _model(model),
-      _fluidDensity(fluidDensity),
-      _airPressure(airPressure),
-      _overSamplingRatio(overSamplingRatio) {}
-TEConnectivityMS5837::TEConnectivityMS5837(int8_t powerPin, uint8_t model,
-                                           uint8_t  measurementsToAverage,
-                                           uint16_t overSamplingRatio,
-                                           float    fluidDensity,
-                                           float    airPressure)
-    : TEConnectivityMS5837(&Wire, powerPin, model, measurementsToAverage,
-                           overSamplingRatio, fluidDensity, airPressure) {};
-
-// Enum-based constructors
-TEConnectivityMS5837::TEConnectivityMS5837(int8_t powerPin, MS5837Model model,
-                                           uint8_t  measurementsToAverage,
-                                           uint16_t overSamplingRatio,
-                                           float    fluidDensity,
-                                           float    airPressure)
-    : TEConnectivityMS5837(powerPin, static_cast<uint8_t>(model),
-                           measurementsToAverage, overSamplingRatio,
-                           fluidDensity, airPressure) {}
-
+// Primary implementation constructor using type-safe enum
 TEConnectivityMS5837::TEConnectivityMS5837(TwoWire* theI2C, int8_t powerPin,
                                            MS5837Model model,
                                            uint8_t     measurementsToAverage,
                                            uint16_t    overSamplingRatio,
                                            float       fluidDensity,
                                            float       airPressure)
-    : TEConnectivityMS5837(theI2C, powerPin, static_cast<uint8_t>(model),
+    : Sensor("TEConnectivityMS5837", MS5837_NUM_VARIABLES,
+             MS5837_WARM_UP_TIME_MS, MS5837_STABILIZATION_TIME_MS,
+             MS5837_MEASUREMENT_TIME_MS, powerPin, -1, measurementsToAverage,
+             MS5837_INC_CALC_VARIABLES),
+      MS5837_internal(theI2C),
+      _wire(theI2C),
+      _model(static_cast<uint8_t>(model)),
+      _fluidDensity(fluidDensity),
+      _airPressure(airPressure),
+      _overSamplingRatio(overSamplingRatio) {}
+
+// Delegating constructors
+TEConnectivityMS5837::TEConnectivityMS5837(TwoWire* theI2C, int8_t powerPin,
+                                           uint8_t  model,
+                                           uint8_t  measurementsToAverage,
+                                           uint16_t overSamplingRatio,
+                                           float    fluidDensity,
+                                           float    airPressure)
+    : TEConnectivityMS5837(theI2C, powerPin, static_cast<MS5837Model>(model),
+                           measurementsToAverage, overSamplingRatio,
+                           fluidDensity, airPressure) {}
+
+TEConnectivityMS5837::TEConnectivityMS5837(int8_t powerPin, MS5837Model model,
+                                           uint8_t  measurementsToAverage,
+                                           uint16_t overSamplingRatio,
+                                           float    fluidDensity,
+                                           float    airPressure)
+    : TEConnectivityMS5837(&Wire, powerPin, model, measurementsToAverage,
+                           overSamplingRatio, fluidDensity, airPressure) {}
+
+TEConnectivityMS5837::TEConnectivityMS5837(int8_t powerPin, uint8_t model,
+                                           uint8_t  measurementsToAverage,
+                                           uint16_t overSamplingRatio,
+                                           float    fluidDensity,
+                                           float    airPressure)
+    : TEConnectivityMS5837(&Wire, powerPin, static_cast<MS5837Model>(model),
                            measurementsToAverage, overSamplingRatio,
                            fluidDensity, airPressure) {}
 
@@ -66,9 +64,15 @@ TEConnectivityMS5837::~TEConnectivityMS5837() {}
 String TEConnectivityMS5837::getSensorName(void) {
     String modelStr = F("TEConnectivityMS5837_");
     switch (_model) {
-        case MS5837_TYPE_02: modelStr += F("02BA"); break;
-        case MS5837_TYPE_30: modelStr += F("30BA"); break;
-        case MS5803_TYPE_01: modelStr += F("01BA"); break;
+        case static_cast<uint8_t>(MS5837Model::MS5837_02BA):
+            modelStr += F("02BA");
+            break;
+        case static_cast<uint8_t>(MS5837Model::MS5837_30BA):
+            modelStr += F("30BA");
+            break;
+        case static_cast<uint8_t>(MS5837Model::MS5803_01BA):
+            modelStr += F("01BA");
+            break;
         default: modelStr += F("Unknown"); break;
     }
     return modelStr;
@@ -96,7 +100,7 @@ bool TEConnectivityMS5837::setup(void) {
     // Validate that the pressure range is reasonable for the sensor model and
     // change the model if possible based on the pressure sensitivity read from
     // the sensor.
-    if (changeModelIfPossible()) {
+    if (validateAndCorrectModel()) {
         // If the model was changed, we need to re-initialize the sensor with
         // the new model.
         success &= MS5837_internal.reset(_model);
@@ -180,7 +184,18 @@ bool TEConnectivityMS5837::addSingleMeasurementResult(void) {
 
 
     // Read values from the sensor - returns 0 on success
-    int OSR = log(_overSamplingRatio) / log(2);
+    int OSR;
+    switch (_overSamplingRatio) {
+        case 256: OSR = 8; break;
+        case 512: OSR = 9; break;
+        case 1024: OSR = 10; break;
+        case 2048: OSR = 11; break;
+        case 4096: OSR = 12; break;
+        case 8192: OSR = 13; break;
+        default:
+            OSR = 12;
+            break;  // fallback, though validation above should prevent this
+    }
     MS_DBG(F("  Requesting OSR:"), OSR, F("for oversampling ratio:"),
            _overSamplingRatio);
     // Convert oversampling ratio to the value expected by the MS5837 library
@@ -202,12 +217,16 @@ bool TEConnectivityMS5837::addSingleMeasurementResult(void) {
     // Validate the readings
     float maxPressure = 0.0f;
     switch (_model) {
-        case MS5803_TYPE_01: maxPressure = 1000.0f; break;  // 1 bar = 1000 mbar
-        case MS5837_TYPE_02: maxPressure = 2000.0f; break;  // 2 bar = 2000 mbar
-        case MS5837_TYPE_30:
+        case static_cast<uint8_t>(MS5837Model::MS5803_01BA):
+            maxPressure = 1000.0f;
+            break;  // 1 bar = 1000 mbar
+        case static_cast<uint8_t>(MS5837Model::MS5837_02BA):
+            maxPressure = 2000.0f;
+            break;  // 2 bar = 2000 mbar
+        case static_cast<uint8_t>(MS5837Model::MS5837_30BA):
             maxPressure = 30000.0f;
             break;  // 30 bar = 30000 mbar
-        default: maxPressure = 30000.0; break;
+        default: maxPressure = 30000.0f; break;
     }
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
@@ -268,36 +287,37 @@ bool TEConnectivityMS5837::addSingleMeasurementResult(void) {
 }
 
 
-bool TEConnectivityMS5837::changeModelIfPossible() {
+bool TEConnectivityMS5837::validateAndCorrectModel() {
     MS_DBG(F("Attempting to read SENS_T1 from PROM of sensor at address"),
            String(MS5837_internal.getAddress(), HEX));
 
-    bool    success = true;
     uint8_t address = MS5837_internal.getAddress();
 
     // Verify I2C connectivity with a lightweight probe
     _wire->beginTransmission(address);
     if (_wire->endTransmission() != 0) {
         MS_DBG(F("  I2C communication failed at 0x"), String(address, HEX));
-        return false;
+        return false;  // can't change the model since we can't communicate with
+                       // the sensor at all
     }
 
     // MS5837_CMD_READ_PROM  = 0xA0
     // Read SENS_T1 from PROM 1 [0xA0 + (1*2)]
     _wire->beginTransmission(address);
     _wire->write(0xA0 + (1 * 2));
-    success &= _wire->endTransmission() == 0;
-    if (!success) {
+    if (_wire->endTransmission() != 0) {
         MS_DBG(F("Failed to request SENS_T1 from PROM. Unable to validate "
                  "pressure range."));
-        return false;
+        return false;  // can't change the model since we can't request the
+                       // calibration value
     }
 
     uint8_t length = 2;
     if (_wire->requestFrom(address, length) != length) {
         MS_DBG(F("Failed to retrieve SENS_T1 from PROM. Unable to validate "
                  "pressure range."));
-        return false;
+        return false;  // can't change the model since we can't retrieve the
+                       // calibration value
     }
     uint16_t SENS_T1 = (_wire->read() << 8) | _wire->read();
     MS_DBG(F("SENS_T1 value:"), SENS_T1);
@@ -312,19 +332,21 @@ bool TEConnectivityMS5837::changeModelIfPossible() {
     // same as the as the pressure range from the datasheet!
     //  Set _model according to the experimental pressure sensitivity thresholds
     if (SENS_T1 > MS5837_30BA_MIN_SENSITIVITY &&
-        SENS_T1 < MS5837_02BA_30BA_SEPARATION && _model == 1) {
+        SENS_T1 < MS5837_02BA_30BA_SEPARATION &&
+        _model == static_cast<uint8_t>(MS5837Model::MS5837_02BA)) {
         MS_DBG(
             F("SENS_T1 value indicates 30BA model, but model is set to 02BA"));
         MS_DBG(F("Changing model to 30BA"));
-        _model = 0;
-        return false;  // Return false to indicate that the model was changed
+        _model = static_cast<uint8_t>(MS5837Model::MS5837_30BA);
+        return true;  // Return true to indicate that the model was changed
     } else if (SENS_T1 > MS5837_02BA_30BA_SEPARATION &&
-               SENS_T1 < MS5837_02BA_MAX_SENSITIVITY && _model == 0) {
+               SENS_T1 < MS5837_02BA_MAX_SENSITIVITY &&
+               _model == static_cast<uint8_t>(MS5837Model::MS5837_30BA)) {
         MS_DBG(
             F("SENS_T1 value indicates 02BA model, but model is set to 30BA"));
         MS_DBG(F("Setting model to 02BA"));
-        _model = 1;
-        return false;  // Return false to indicate that the model was changed
+        _model = static_cast<uint8_t>(MS5837Model::MS5837_02BA);
+        return true;  // Return true to indicate that the model was changed
     }
-    return true;
+    return false;  // Model was not changed
 }

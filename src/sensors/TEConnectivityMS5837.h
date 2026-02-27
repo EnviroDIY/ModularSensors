@@ -369,7 +369,7 @@ class TEConnectivityMS5837 : public Sensor {
      * *hardware* I2C instance.
      *
      * @copydetails TEConnectivityMS5837::TEConnectivityMS5837(int8_t, uint8_t,
-     * uint8_t, float, float)
+     * uint8_t, uint16_t, float, float)
      *
      * @param theI2C A TwoWire instance for I2C communication.  Due to the
      * limitations of the Arduino core, only a hardware I2C instance can be
@@ -419,7 +419,7 @@ class TEConnectivityMS5837 : public Sensor {
      * *hardware* I2C instance.
      *
      * @copydetails TEConnectivityMS5837::TEConnectivityMS5837(int8_t,
-     * MS5837Model, uint8_t, float, float)
+     * MS5837Model, uint8_t, uint16_t, float, float)
      *
      * @param theI2C A TwoWire instance for I2C communication.  Due to the
      * limitations of the Arduino core, only a hardware I2C instance can be
@@ -493,9 +493,14 @@ class TEConnectivityMS5837 : public Sensor {
     uint16_t _overSamplingRatio;
 
     /**
-     * @brief Attempts to validate the pressure range of the sensor by reading
-     * the SENS_T1 calibration value and change the model if the value indicates
-     * a different model than the one currently configured.
+     * @brief Validates the configured sensor model against hardware and
+     * corrects it if a mismatch is detected.
+     *
+     * This method reads the SENS_T1 calibration value from the sensor's PROM
+     * and compares it against known sensitivity thresholds to determine if the
+     * configured model matches the actual hardware. If a mismatch is detected
+     * and the correct model can be determined, the model configuration is
+     * automatically updated.
      *
      * @note This will only change the configuration if a valid SENS_T1 value is
      * returned, one of the MS5837 models is currently configured, and the
@@ -512,7 +517,7 @@ class TEConnectivityMS5837 : public Sensor {
      * @return True if the model value was changed based on the returned SENS_T1
      * value, false otherwise.
      */
-    bool changeModelIfPossible();
+    bool validateAndCorrectModel();
 };
 
 
