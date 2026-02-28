@@ -437,7 +437,7 @@ class TEConnectivityMS5837 : public Sensor {
     /**
      * @brief Destroy the TEConnectivityMS5837 object
      */
-    ~TEConnectivityMS5837() = default;
+    ~TEConnectivityMS5837();
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
