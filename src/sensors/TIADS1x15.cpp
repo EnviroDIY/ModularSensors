@@ -25,7 +25,7 @@ TIADS1x15Base::TIADS1x15Base(TwoWire* theI2C, float voltageMultiplier,
                              adsGain_t adsGain, uint8_t i2cAddress,
                              float adsSupplyVoltage, uint16_t adsDataRate)
     : AnalogVoltageBase(voltageMultiplier, adsSupplyVoltage),
-      _wire(theI2C),
+      _wire(theI2C != nullptr ? theI2C : &Wire),
       _i2cAddress(i2cAddress),
       _adsGain(adsGain),
       _adsDataRate(adsDataRate) {

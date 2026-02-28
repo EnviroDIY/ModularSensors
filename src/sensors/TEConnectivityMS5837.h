@@ -42,8 +42,8 @@
  * If you are also using one of those sensors, make sure that the address for
  * that sensor does not conflict with the address of this sensor.
  *
- * @note Neither secondary hardware nor software I2C is supported for the MS5837.
- * Only the primary hardware I2C defined in the Arduino core can be used.
+ * @note This sensor supports both primary and secondary hardware I2C instances
+ * through TwoWire* constructor parameters. Software I2C is not supported.
  *
  * The lower level communication between the mcu and the MS5837 is handled by the
  * [Rob Tillaart MS5837 library](https://github.com/RobTillaart/MS5837).

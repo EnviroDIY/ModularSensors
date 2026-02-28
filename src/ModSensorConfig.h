@@ -317,6 +317,7 @@ static_assert(MS_SEA_LEVEL_PRESSURE_HPA >= 800.0f &&
 #define MAX_NUMBER_SENDERS 4
 #endif
 // Static assert to validate MAX_NUMBER_SENDERS is reasonable
+// Upper limit of 16 is set to constrain memory usage and array sizing
 static_assert(MAX_NUMBER_SENDERS >= 0 && MAX_NUMBER_SENDERS <= 16,
               "MAX_NUMBER_SENDERS must be between 0 and 16");
 #ifndef MS_ALWAYS_FLUSH_PUBLISHERS

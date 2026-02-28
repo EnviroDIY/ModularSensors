@@ -19,7 +19,7 @@ FreescaleMPL115A2::FreescaleMPL115A2(TwoWire* theI2C, int8_t powerPin,
     : Sensor("FreescaleMPL115A2", MPL115A2_NUM_VARIABLES,
              MPL115A2_WARM_UP_TIME_MS, MPL115A2_STABILIZATION_TIME_MS,
              MPL115A2_MEASUREMENT_TIME_MS, powerPin, -1, measurementsToAverage),
-      _i2c(theI2C) {}
+      _i2c(theI2C != nullptr ? theI2C : &Wire) {}
 FreescaleMPL115A2::FreescaleMPL115A2(int8_t  powerPin,
                                      uint8_t measurementsToAverage)
     : Sensor("FreescaleMPL115A2", MPL115A2_NUM_VARIABLES,
