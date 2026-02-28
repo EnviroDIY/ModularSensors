@@ -115,9 +115,7 @@ bool TIADS1x15Base::readVoltageSingleEnded(int8_t analogChannel,
     // Use the per-instance ADS driver (gain configured in constructor)
 
     // Verify I2C connectivity with a lightweight probe
-    _wire->beginTransmission(_i2cAddress);
-    if (_wire->endTransmission() != 0) {
-        MS_DBG(F("  I2C communication failed at 0x"), String(_i2cAddress, HEX));
+    if (!probeI2C()) {
         return false;
     }
 
@@ -182,9 +180,7 @@ bool TIADS1x15Base::readVoltageDifferential(int8_t analogChannel,
 
     // Use the per-instance ADS driver (configured in constructor)
     // Verify I2C connectivity with a lightweight probe
-    _wire->beginTransmission(_i2cAddress);
-    if (_wire->endTransmission() != 0) {
-        MS_DBG(F("  I2C communication failed at 0x"), String(_i2cAddress, HEX));
+    if (!probeI2C()) {
         return false;
     }
 
@@ -339,6 +335,15 @@ float TIADS1x15Base::calculateAnalogResolutionVolts(void) {
     MS_DBG(F("  Voltage resolution: "), resolutionVolts, F("V/LSB"));
 
     return resolutionVolts;
+}
+
+bool TIADS1x15Base::probeI2C(void) {
+    _wire->beginTransmission(_i2cAddress);
+    if (_wire->endTransmission() != 0) {
+        MS_DBG(F("  I2C communication failed at 0x"), String(_i2cAddress, HEX));
+        return false;
+    }
+    return true;
 }
 
 // ============================================================================

@@ -457,6 +457,13 @@ class TIADS1x15Base : public AnalogVoltageBase {
 #else
     Adafruit_ADS1015 _ads;  // 12-bit version
 #endif
+
+    /**
+     * @brief Probe I2C connectivity to the ADS device
+     * 
+     * @return true if device responds, false if communication failed
+     */
+    bool probeI2C(void);
 };
 
 /* clang-format off */

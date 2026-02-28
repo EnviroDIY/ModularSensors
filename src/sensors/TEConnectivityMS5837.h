@@ -6,7 +6,8 @@
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Contains the TEConnectivityMS5837 sensor subclass and the variable
- * subclasses TEConnectivityMS5837_Temp and TEConnectivityMS5837_Pressure.
+ * subclasses TEConnectivityMS5837_Temp, TEConnectivityMS5837_Pressure,
+ * TEConnectivityMS5837_Depth, and TEConnectivityMS5837_Altitude.
  *
  * These are for the TE Connectivity MS5837 pressure sensor. This sensor is
  * commonly deployed in Blue Robotics Bar02/Bar30 pressure sensors for
@@ -436,7 +437,7 @@ class TEConnectivityMS5837 : public Sensor {
     /**
      * @brief Destroy the TEConnectivityMS5837 object
      */
-    ~TEConnectivityMS5837();
+    ~TEConnectivityMS5837() = default;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
