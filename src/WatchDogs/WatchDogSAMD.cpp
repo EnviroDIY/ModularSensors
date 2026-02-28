@@ -120,8 +120,8 @@ void extendedWatchDogSAMD::enableWatchDog() {
     // before the interrupt is generated, relative to the start of the watchdog
     // time-out period. This must be less than the size of the watchdog period
     // or the interrupt will not be generated.
-    // Use the maximum offset for the longest time before the interrupt in normal
-    // mode.
+    // Use the maximum offset for the longest time before the interrupt in
+    // normal mode.
     // This is irrelevant in windowed mode.
     // 0xA = 8192 clock cycles @ 1024hz = 8 seconds
 

@@ -19,7 +19,7 @@ _______
   - [To Use this Example](#to-use-this-example)
     - [Prepare and set up PlatformIO](#prepare-and-set-up-platformio)
     - [Set the logger ID](#set-the-logger-id)
-    - [Set the universally unique identifiers (UUID) for each variable](#set-the-universally-unique-identifiers-uuid-for-each-variable)
+    - [Set the universally unique identifiers (UUIDs) for each variable](#set-the-universally-unique-identifiers-uuids-for-each-variable)
     - [Upload!](#upload)
 
 <!--! @endif -->
@@ -54,7 +54,7 @@ _______
 const char *LoggerID = "YourLoggerID";
 ```
 
-### Set the universally unique identifiers (UUID) for each variable<!--! {#example_baro_rho_uuids} -->
+### Set the universally unique identifiers (UUIDs) for each variable<!--! {#example_baro_rho_uuids} -->
 
 - Go back to the web page for your site on [Monitor My Watershed](https://monitormywatershed.org)
 - For each variable, find the dummy UUID (`"12345678-abcd-1234-ef00-1234567890ab"`) and replace it with the real UUID for the variable.

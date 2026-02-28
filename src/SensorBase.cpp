@@ -515,14 +515,33 @@ bool Sensor::update(void) {
     // Wait for the sensor to stabilize
     waitForStability();
 
-    // loop through as many measurements as requested
-    for (uint8_t j = 0; j < _measurementsToAverage; j++) {
+    // loop through until we have the requested number of successful
+    // measurements
+    while (_measurementAttemptsCompleted < _measurementsToAverage) {
         // start a measurement
-        ret_val &= startSingleMeasurement();
+        bool measurementStarted = startSingleMeasurement();
+        if (!measurementStarted) {
+            ret_val = false;
+            // Use bumpMeasurementAttemptCount to track failed attempts
+            if (!bumpMeasurementAttemptCount(false)) {
+                // If we've exhausted retries for this measurement, break
+                break;
+            }
+            continue;  // Try again if retries are available
+        }
+
         // wait for the measurement to finish
         waitForMeasurementCompletion();
+
         // get the measurement result
-        ret_val &= addSingleMeasurementResult();
+        bool measurementSuccessful = addSingleMeasurementResult();
+        ret_val &= measurementSuccessful;
+
+        // Use bumpMeasurementAttemptCount to handle retry logic
+        if (!bumpMeasurementAttemptCount(measurementSuccessful)) {
+            // If we've exhausted retries and still failed, break
+            if (!measurementSuccessful) { break; }
+        }
     }
 
     averageMeasurements();

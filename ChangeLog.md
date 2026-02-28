@@ -290,7 +290,7 @@ If no epoch start is given, it is assumed to be UNIX (January 1, 1970).
   - The supported epochs are given in the enum epochStart.
 - Storing _buttonPinMode internally.
 - Added a single define (`MS_OUTPUT`) to use for all outputs from ModularSensors.
-- Added support for sending printouts and debugging to two different serial ports. This is useful for devices (like SAMD) that use a built in USB serial port which is turned off when the device sleeps.  If `MS_2ND_OUTPUT` is defined, output will go to *both* `MS_2ND_OUTPUT` and to `MS_OUTPUT`.
+- Added support for sending printouts and debugging to two different serial ports. This is useful for devices (like SAMD) that use a built-in USB serial port which is turned off when the device sleeps.  If `MS_2ND_OUTPUT` is defined, output will go to *both* `MS_2ND_OUTPUT` and to `MS_OUTPUT`.
 - Added example code for flashing boards with a neo-pixel in the menu example.
 - **NEW SENSOR** Added support for [Geolux HydroCam](https://www.geolux-radars.com/hydrocam)
 - **NEW SENSOR** Added support for [ANB Sensors pH Sensors](https://www.anbsensors.com/)

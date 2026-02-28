@@ -311,10 +311,11 @@ float TIADS1x15Base::calculateAnalogResolutionVolts(void) {
     if (effectiveFullScale > 5.5f) { effectiveFullScale = 5.5f; }
 
     // Calculate the total number of ADC codes
-    uint32_t totalCodes = 1UL << resolutionBits;  // 2^resolutionBits
+    // For single-ended measurements, only positive codes are used: 2^(N-1)
+    uint32_t totalCodes = 1UL << (resolutionBits - 1);
 
-    // Voltage resolution is the effective full scale range divided by total
-    // codes
+    // Voltage resolution is the effective full scale range divided by positive
+    // code count
     float resolutionVolts = effectiveFullScale / static_cast<float>(totalCodes);
 
     MS_DBG(F("ADS resolution calculation:"));

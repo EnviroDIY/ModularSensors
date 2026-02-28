@@ -108,7 +108,8 @@ class AnalogVoltageBase;
 #endif
 #if !defined(TURBIDITY_PLUS_CALIBRATION_EPSILON) || defined(DOXYGEN)
 /**
- * @brief Epsilon value for calibration validation to detect invalid calibration curves
+ * @brief Epsilon value for calibration validation to detect invalid calibration
+ * curves
  */
 #define TURBIDITY_PLUS_CALIBRATION_EPSILON 1e-4f
 #endif

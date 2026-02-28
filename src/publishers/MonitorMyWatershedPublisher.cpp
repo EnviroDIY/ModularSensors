@@ -331,6 +331,13 @@ int16_t MonitorMyWatershedPublisher::flushDataBuffer(Client* outClient) {
         return 0;
     }
 
+    // Check for valid client before attempting connection
+    if (outClient == nullptr) {
+        PRINTOUT(F("No client available for publishing data to Monitor My "
+                   "Watershed!"));
+        return 0;
+    }
+
     // Open a TCP/IP connection to Monitor My Watershed
     MS_DBG(F("Connecting client"));
     MS_START_DEBUG_TIMER;

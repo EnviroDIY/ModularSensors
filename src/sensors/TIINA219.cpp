@@ -17,6 +17,7 @@ TIINA219::TIINA219(TwoWire* theI2C, int8_t powerPin, uint8_t i2cAddressHex,
     : Sensor("TIINA219", INA219_NUM_VARIABLES, INA219_WARM_UP_TIME_MS,
              INA219_STABILIZATION_TIME_MS, INA219_MEASUREMENT_TIME_MS, powerPin,
              -1, measurementsToAverage),
+      ina219_phy(i2cAddressHex),
       _i2cAddressHex(i2cAddressHex),
       _i2c(theI2C) {}
 TIINA219::TIINA219(int8_t powerPin, uint8_t i2cAddressHex,
@@ -24,6 +25,7 @@ TIINA219::TIINA219(int8_t powerPin, uint8_t i2cAddressHex,
     : Sensor("TIINA219", INA219_NUM_VARIABLES, INA219_WARM_UP_TIME_MS,
              INA219_STABILIZATION_TIME_MS, INA219_MEASUREMENT_TIME_MS, powerPin,
              -1, measurementsToAverage, INA219_INC_CALC_VARIABLES),
+      ina219_phy(i2cAddressHex),
       _i2cAddressHex(i2cAddressHex),
       _i2c(&Wire) {}
 // Destructor
@@ -39,7 +41,8 @@ String TIINA219::getSensorLocation(void) {
 
 bool TIINA219::setup(void) {
     bool wasOn;
-    bool setupSuccess = Sensor::setup();  // this will set pin modes and the setup status bit
+    bool setupSuccess =
+        Sensor::setup();  // this will set pin modes and the setup status bit
 
     // This sensor needs power for setup!
     delay(10);

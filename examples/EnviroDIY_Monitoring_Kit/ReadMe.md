@@ -40,7 +40,7 @@ _______
       - [Set the logger ID](#set-the-logger-id)
       - [Set the logging interval](#set-the-logging-interval)
       - [Set the time zone](#set-the-time-zone)
-    - [Set the universally unique identifiers (UUID) for each variable](#set-the-universally-unique-identifiers-uuid-for-each-variable)
+    - [Set the universally unique identifiers (UUIDs) for each variable](#set-the-universally-unique-identifiers-uuids-for-each-variable)
     - [Upload!](#upload)
 
 <!--! @endif -->
@@ -87,7 +87,7 @@ In the configuration section, select no more than one of the "bee" types that yo
 
 #### Add Connection Info<!--! {#example_envirodiy_monitoring_kit_connection_info} -->
 
-Replace `YourAPN` or `YourWiFiSSID` and `YourWiFiPassword` with the appropriate APN or SSID and password for your network.
+Replace `YourAPN` or both `YourWiFiSSID` and `YourWiFiPassword` with the appropriate APN or SSID and password for your network.
 
 Your APN is assigned by your SIM card provider.
 If you are using a Hologram SIM card (recommended with the kit) the APN is `hologram`.
@@ -144,7 +144,7 @@ Please use standard time!
 const int8_t timeZone = -5;  // Eastern Standard Time
 ```
 
-### Set the universally unique identifiers (UUID) for each variable<!--! {#example_envirodiy_monitoring_kit_uuids} -->
+### Set the universally unique identifiers (UUIDs) for each variable<!--! {#example_envirodiy_monitoring_kit_uuids} -->
 
 - Go back to the web page for your site on [Monitor My Watershed](http://monitormywatershed.org/)
 - Find and click the white "View Token UUID List" button above the small map on your site page.

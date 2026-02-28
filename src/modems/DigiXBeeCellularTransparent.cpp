@@ -218,7 +218,7 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime(void) {
 
         /* This is the IP address of time-e-wwv.nist.gov  */
         /* XBee's address lookup falters on time.nist.gov */
-        IPAddress     ip(132, 163, 97, 6);
+        IPAddress                  ip(132, 163, 97, 6);
         TinyGsmXBee::GsmClientXBee gsmClient(
             gsmModem); /*create client, default mux*/
         connectionMade = gsmClient.connect(ip, 37, 15);
