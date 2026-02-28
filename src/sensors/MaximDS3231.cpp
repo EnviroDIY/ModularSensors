@@ -46,23 +46,27 @@ bool MaximDS3231::startSingleMeasurement(void) {
     MS_DBG(F("Forcing new temperature reading by DS3231"));
     rtc.convertTemperature(false);
 
+    // NOTE: There's no way of knowing if there's a failure here so we always
+    // return true.
+    // There's no condition where we would need to bump the number of completed
+    // measurement attempts here.
     return true;
 }
 
 
 bool MaximDS3231::addSingleMeasurementResult(void) {
-    // get the temperature value
+    // NOTE: If this fails we have much bigger problems than just a lost
+    // temperature value. That is, if I2C communication with the clock fails,
+    // the system is too broken to even ask for this temperature.
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
     float tempVal = rtc.getTemperature();
     MS_DBG(F("  Temp:"), tempVal, F("°C"));
 
     verifyAndAddMeasurementResult(DS3231_TEMP_VAR_NUM, tempVal);
 
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
+    // Check if temperature is valid before marking success
+    bool success = !isnan(tempVal);
 
-    // Return true when finished
-    return true;
+    // Return success value when finished
+    return bumpMeasurementAttemptCount(success);
 }

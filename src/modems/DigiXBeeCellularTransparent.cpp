@@ -41,10 +41,10 @@ MS_MODEM_CONNECT_INTERNET(DigiXBeeCellularTransparent);
 MS_MODEM_DISCONNECT_INTERNET(DigiXBeeCellularTransparent);
 MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeCellularTransparent);
 
-MS_MODEM_CREATE_CLIENT(DigiXBeeCellularTransparent);
-MS_MODEM_DELETE_CLIENT(DigiXBeeCellularTransparent);
-MS_MODEM_CREATE_SECURE_CLIENT(DigiXBeeCellularTransparent);
-MS_MODEM_DELETE_SECURE_CLIENT(DigiXBeeCellularTransparent);
+MS_MODEM_CREATE_CLIENT(DigiXBeeCellularTransparent, XBee);
+MS_MODEM_DELETE_CLIENT(DigiXBeeCellularTransparent, XBee);
+MS_MODEM_CREATE_SECURE_CLIENT(DigiXBeeCellularTransparent, XBee);
+MS_MODEM_DELETE_SECURE_CLIENT(DigiXBeeCellularTransparent, XBee);
 
 MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBeeCellularTransparent);
 MS_MODEM_GET_MODEM_BATTERY_DATA(DigiXBeeCellularTransparent);
@@ -218,8 +218,9 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime(void) {
 
         /* This is the IP address of time-e-wwv.nist.gov  */
         /* XBee's address lookup falters on time.nist.gov */
-        IPAddress     ip(132, 163, 97, 6);
-        TinyGsmClient gsmClient(gsmModem); /*create client, default mux*/
+        IPAddress                  ip(132, 163, 97, 6);
+        TinyGsmXBee::GsmClientXBee gsmClient(
+            gsmModem); /*create client, default mux*/
         connectionMade = gsmClient.connect(ip, 37, 15);
         /* Wait again so NIST doesn't refuse us! */
         delay(4000L);
@@ -239,7 +240,12 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime(void) {
                 byte response[4] = {0};
                 gsmClient.read(response, 4);
                 gsmClient.stop();
-                return parseNISTBytes(response);
+                uint32_t nistParsed = parseNISTBytes(response);
+                if (nistParsed != 0) {
+                    return nistParsed;
+                } else {
+                    MS_DBG(F("NIST response was invalid!"));
+                }
             } else {
                 MS_DBG(F("NIST Time server did not respond!"));
                 gsmClient.stop();

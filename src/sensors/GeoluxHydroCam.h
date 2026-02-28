@@ -268,14 +268,16 @@ class GeoluxHydroCam : public Sensor {
      * because the autofocus takes about 30s. Default false.
      */
     GeoluxHydroCam(Stream* stream, int8_t powerPin, Logger& baseLogger,
-                   int8_t powerPin2, const char* imageResolution = "1600x1200",
+                   int8_t      powerPin2       = -1,
+                   const char* imageResolution = "1600x1200",
                    const char* filePrefix      = nullptr,
                    bool        alwaysAutoFocus = false);
     /**
      * @copydoc GeoluxHydroCam::GeoluxHydroCam
      */
     GeoluxHydroCam(Stream& stream, int8_t powerPin, Logger& baseLogger,
-                   int8_t powerPin2, const char* imageResolution = "1600x1200",
+                   int8_t      powerPin2       = -1,
+                   const char* imageResolution = "1600x1200",
                    const char* filePrefix      = nullptr,
                    bool        alwaysAutoFocus = false);
     /**
@@ -290,9 +292,6 @@ class GeoluxHydroCam : public Sensor {
      */
     String getLastSavedImageName();
 
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
     String getSensorLocation(void) override;
 
     /**
@@ -324,20 +323,8 @@ class GeoluxHydroCam : public Sensor {
     bool wake(void) override;
     bool sleep(void) override;
 
-
-    /**
-     * @copydoc Sensor::startSingleMeasurement()
-     */
     bool startSingleMeasurement(void) override;
-
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
     bool addSingleMeasurementResult(void) override;
-
-    // Override these to use two power pins
-    void powerUp(void) override;
-    void powerDown(void) override;
 
     /**
      * @copydoc Sensor::isWarmedUp(bool debug)
@@ -374,10 +361,6 @@ class GeoluxHydroCam : public Sensor {
     bool isMeasurementComplete(bool debug = false) override;
 
  private:
-    /**
-     * @brief Private reference to the power pin fro the RS-485 adapter.
-     */
-    int8_t _powerPin2;
     const char*
         _imageResolution;  ///< The image resolution from the Geolux HydroCam
     const char*

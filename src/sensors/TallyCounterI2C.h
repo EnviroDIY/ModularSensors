@@ -216,16 +216,10 @@ class TallyCounterI2C : public Sensor {
      * @return True if the setup was successful.
      */
     bool setup(void) override;
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
 
     String getSensorLocation(void) override;
 
     // bool startSingleMeasurement(void) override;  // for forced mode
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
     bool addSingleMeasurementResult(void) override;
 
  private:

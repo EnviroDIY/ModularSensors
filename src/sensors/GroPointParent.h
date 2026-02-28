@@ -1,5 +1,5 @@
 /**
- * @file GroPointParent.cpp
+ * @file GroPointParent.h
  * @copyright Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino.
  * This library is published under the BSD-3 license.
@@ -156,9 +156,6 @@ class GroPointParent : public Sensor {
      */
     virtual ~GroPointParent();
 
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
     String getSensorLocation(void) override;
 
     /**
@@ -173,9 +170,7 @@ class GroPointParent : public Sensor {
      * @return True if the setup was successful.
      */
     bool setup(void) override;
-    /**
-     * @copydoc Sensor::wake()
-     */
+
     bool wake(void) override;
     /**
      * @brief Puts the sensor to sleep, if necessary.
@@ -187,13 +182,6 @@ class GroPointParent : public Sensor {
      */
     bool sleep(void) override;
 
-    // Override these to use two power pins
-    void powerUp(void) override;
-    void powerDown(void) override;
-
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
     bool addSingleMeasurementResult(void) override;
 
  private:
@@ -220,10 +208,6 @@ class GroPointParent : public Sensor {
      * pin.
      */
     int8_t _RS485EnablePin;
-    /**
-     * @brief Private reference to the power pin fro the RS-485 adapter.
-     */
-    int8_t _powerPin2;
 };
 
 #endif  // SRC_SENSORS_GROPOINTPARENT_H_

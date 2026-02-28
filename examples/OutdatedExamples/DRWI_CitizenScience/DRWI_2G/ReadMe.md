@@ -23,7 +23,7 @@ _______
     - [Prepare and set up PlatformIO](#prepare-and-set-up-platformio)
     - [Set the logger ID](#set-the-logger-id)
     - [Set the calibration coefficients for the Campbell OBS3+](#set-the-calibration-coefficients-for-the-campbell-obs3)
-    - [Set the universally universal identifiers (UUID) for each variable](#set-the-universally-universal-identifiers-uuid-for-each-variable)
+    - [Set the universally unique identifiers (UUIDs) for each variable](#set-the-universally-unique-identifiers-uuids-for-each-variable)
     - [Upload!](#upload)
 
 <!--! @endif -->
@@ -39,7 +39,7 @@ _______
 
 ### Prepare and set up PlatformIO<!--! {#example_drwi_2g_pio} -->
 
-- Register a site and sensors at the Monitor My Watershed/EnviroDIY data portal (<http://monitormywatershed.org/>)
+- Register a site and sensors on [Monitor My Watershed](https://monitormywatershed.org)
 - Create a new PlatformIO project
 - Replace the contents of the platformio.ini for your new project with the [platformio.ini](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/DRWI_CitSci/platformio.ini) file in the examples/DRWI_CitSci folder on GitHub.
   - It is important that your PlatformIO configuration has the lib_ldf_mode and build flags set as they are in the example.
@@ -51,17 +51,18 @@ _______
 
 ### Set the logger ID<!--! {#example_drwi_2g_logger_id} -->
 
-- Change the "XXXX" in this section of code to the loggerID assigned by Stroud:
+- Change the text `YourLoggerID` in this section of code to your logger ID.
+For most DRWI installations, the logger ID was assigned by the Stroud Water Research Center before the station was built.
 
 ```cpp
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "XXXX";
+const char *LoggerID = "YourLoggerID";
 ```
 
 ### Set the calibration coefficients for the Campbell OBS3+<!--! {#example_drwi_2g_obs3_calibration} -->
 
 - The OBS3+ ships with a calibration certificate; you need this sheet!
-- Change _**all**_ of the the `0.000E+00` and `1.000E+00` values in this section of code to the values on that calibration sheet.
+- Change _**all**_ of the `0.000E+00` and `1.000E+00` values in this section of code to the values on that calibration sheet.
 Use numbers from the side of the calibration sheet that shows the calibration in _**volts**_.
   - The sketch will not compile if these values are not entered properly.
   - Do not change any values except those that are `0.000E+00` and `1.000E+00`!
@@ -88,9 +89,9 @@ const float OBSHigh_C = 0.000E+00;  // "C" value [*high* range]
 CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADSi2c_addr, OBS3numberReadings);
 ```
 
-### Set the universally universal identifiers (UUID) for each variable<!--! {#example_drwi_2g_uuids} -->
+### Set the universally unique identifiers (UUIDs) for each variable<!--! {#example_drwi_2g_uuids} -->
 
-- Go back to the web page for your site at the Monitor My Watershed/EnviroDIY data portal (<http://monitormywatershed.org/>)
+- Go back to the web page for your site on [Monitor My Watershed](https://monitormywatershed.org)
 - Find and click the white "View Token UUID List" button above the small map on your site page
 - **VERY CAREFULLY** check that the variables are in exactly the same order as in the variable array:
 
@@ -101,13 +102,13 @@ Variable* variableList[] = {
 ```
 
 - If any of the variables are in a different order on the web page than in your code **reorder the variables in your code to match the website**.
-- After you are completely certain that you have the order right in the variable section of your code use the teal "Copy" button on the website to copy the section of code containing all of the UUID's.
+- After you are completely certain that you have the order right in the variable section of your code use the teal "Copy" button on the website to copy the section of code containing all the UUIDs.
 - Paste the code from the website into your program in this section below the variable array
 
 ```cpp
 // *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
 // Check the order of your variables in the variable list!!!
-// Be VERY certain that they match the order of your UUID's!
+// Be VERY certain that they match the order of your UUIDs!
 // Rearrange the variables in the variable list if necessary to match!
 // *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
 /* clang-format off */

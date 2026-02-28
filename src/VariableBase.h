@@ -20,6 +20,9 @@
 // Include the debugging config
 #include "ModSensorDebugConfig.h"
 
+// Include math library for log10f function
+#include <math.h>
+
 // Define the print label[s] for the debugger
 #ifdef MS_VARIABLEBASE_DEBUG
 #define MS_DEBUGGING_STD "VariableBase"
@@ -339,16 +342,16 @@ class Variable {
     void setVarCode(const char* varCode);
     // This gets/sets the variable UUID, if one has been assigned
     /**
-     * @brief Get the customized code for the variable
+     * @brief Get the variable's UUID as a String
      *
-     * @return The customized code for the variable
+     * @return The variable's UUID as a String
      */
     String getVarUUIDString(void);
     // This gets/sets the variable UUID, if one has been assigned
     /**
-     * @brief Get the customized code for the variable
+     * @brief Get the variable's UUID as a C-style string
      *
-     * @return The customized code for the variable
+     * @return The variable's UUID as a const char* (or nullptr if not assigned)
      */
     const char* getVarUUID(void);
     /**
@@ -358,7 +361,7 @@ class Variable {
      */
     void setVarUUID(const char* uuid);
     /**
-     * @brief Verify the the UUID is correctly formatted
+     * @brief Verify the UUID is correctly formatted
      *
      * @return True if the UUID is correctly formatted.
      *
@@ -403,6 +406,36 @@ class Variable {
      * @brief Internal note as to whether the value is calculated.
      */
     bool isCalculated = false;
+
+    /**
+     * @brief Convert measurement resolution to appropriate decimal places
+     *
+     * This static utility function converts any measurement resolution value to
+     * the appropriate number of decimal places for variable resolution
+     * settings. Works with any float resolution value (voltage, temperature,
+     * pressure, etc.).
+     *
+     * @param resolution The measurement resolution (e.g., volts per LSB,
+     * degrees per count, etc.)
+     * @return The number of decimal places needed to represent the resolution
+     */
+    static inline uint8_t floatResolutionToDecimalPlaces(float resolution) {
+        if (resolution <= 0.0f) {
+            return 4;  // Default to 4 decimal places for invalid input
+        }
+
+        // Calculate the number of decimal places needed to represent the
+        // resolution We want at least one significant digit beyond the
+        // resolution
+        float log10Resolution = log10f(resolution);
+        int   decimalPlaces   = static_cast<int>(-log10Resolution) + 1;
+
+        // Clamp to reasonable bounds (0-6 decimal places)
+        if (decimalPlaces < 0) decimalPlaces = 0;
+        if (decimalPlaces > 6) decimalPlaces = 6;
+
+        return static_cast<uint8_t>(decimalPlaces);
+    }
 
  protected:
     /**

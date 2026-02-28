@@ -6,7 +6,13 @@
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief This file is used to configure the clock and other library
- * settings/preferences for the Modular Sensors Library.
+ * settings/preferences for the Modular Sensors Library and some of the
+ * underlying libraries.
+ *
+ * @note This file must be included in every header file in the library - before
+ * including anything else - to ensure that the settings are applied
+ * consistently across all files and that compile time settings trickle down to
+ * the underlying libraries.
  *
  * For the Arduino IDE, this is the only way to configure these settings. If you
  * are using PlatformIO, you have the option of using this file or changing your
@@ -37,6 +43,21 @@
 // This is for sensors that use the external ADC for analog voltage
 // measurements.
 // #define MS_USE_ADS1015
+
+#if !defined(MS_DEFAULT_ADS1X15_ADDRESS) || defined(DOXYGEN)
+/**
+ * @brief The default I²C address of the ADS1115 or ADS1015 external ADC.
+ *
+ * Valid addresses depend on the ADDR pin connection:
+ * - `0x48` – ADDR to GND (default)
+ * - `0x49` – ADDR to VDD
+ * - `0x4A` – ADDR to SDA
+ * - `0x4B` – ADDR to SCL
+ *
+ * Override with a build flag: `-DMS_DEFAULT_ADS1X15_ADDRESS=0x49`
+ */
+#define MS_DEFAULT_ADS1X15_ADDRESS 0x48
+#endif
 //==============================================================
 
 //==============================================================
@@ -134,6 +155,9 @@
 // GroPoint Profile GPLP-8 has 8 Moisture and 13 Temperature values
 #endif
 
+//==============================================================
+// Analog voltage configuration
+//==============================================================
 #ifndef MS_PROCESSOR_ADC_RESOLUTION
 /**
  * @brief Select or adjust the processor analog resolution.
@@ -142,13 +166,14 @@
  * higher than what your processor actually supports. This does **not** apply to
  * the TI ADS1115 or ADS1015 external ADS.
  *
- * The default for AVR boards is 10 and for other boards is 12.
+ * The default for AVR boards is 10 and for SAMD boards is 12.  The library
+ * currently only supports AVR and SAMD platforms.
  *
  * Future note: The ESP32 has a 12 bit ADC and the ESP8266 has a 10 bit ADC.
  */
 #if defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
 #define MS_PROCESSOR_ADC_RESOLUTION 10
-#else
+#elif defined(ARDUINO_ARCH_SAMD)
 #define MS_PROCESSOR_ADC_RESOLUTION 12
 #endif
 #if !defined(MS_PROCESSOR_ADC_RESOLUTION)
@@ -162,7 +187,16 @@
 /// @brief The maximum possible range of the ADC - the resolution shifted up one
 /// bit.
 #define PROCESSOR_ADC_RANGE (1 << MS_PROCESSOR_ADC_RESOLUTION)
-
+#ifndef MS_PROCESSOR_ANALOG_MAX_CHANNEL
+/**
+ * @brief Upper bound used to sanity-check analog channel numbers at runtime.
+ *
+ * This is not a hardware limit but a validation ceiling that exceeds the
+ * largest channel index found on any supported Arduino platform (e.g. Mega:
+ * A0–A15). Override with -D MS_PROCESSOR_ANALOG_MAX_CHANNEL=x if needed.
+ */
+#define MS_PROCESSOR_ANALOG_MAX_CHANNEL 100
+#endif  // MS_PROCESSOR_ANALOG_MAX_CHANNEL
 #if !defined(MS_PROCESSOR_ADC_REFERENCE_MODE) || defined(DOXYGEN)
 #if defined(ARDUINO_ARCH_AVR) || defined(DOXYGEN)
 /**
@@ -219,7 +253,7 @@
 #if !defined(MS_PROCESSOR_ADC_REFERENCE_MODE)
 #error The processor ADC reference type must be defined!
 #endif  // MS_PROCESSOR_ADC_REFERENCE_MODE
-#endif  // ARDUINO_ARCH_SAMD
+#endif
 //==============================================================
 
 
@@ -269,6 +303,18 @@
  * expected incoming message; up to ~1500.
  */
 #define TINY_GSM_RX_BUFFER 64
+#endif
+
+#ifndef TINY_GSM_YIELD_MS
+/**
+ * @brief The number of milliseconds to yield to the GSM module when using
+ * TinyGSM.
+ *
+ * If you are using a slow baud rate to communicate with your module, this delay
+ * is set to prevent command responses from being spliced apart.  This is
+ * especially important when using a faster processor.
+ */
+#define TINY_GSM_YIELD_MS 2
 #endif
 
 #ifndef MS_MQTT_MAX_PACKET_SIZE

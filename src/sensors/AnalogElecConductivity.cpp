@@ -11,92 +11,134 @@
  */
 
 #include "AnalogElecConductivity.h"
+#include "ProcessorAnalog.h"
 
 // For Mayfly version; the battery resistor depends on it
-AnalogElecConductivity::AnalogElecConductivity(int8_t powerPin, int8_t dataPin,
-                                               float   Rseries_ohms,
-                                               float   sensorEC_Konst,
-                                               uint8_t measurementsToAverage)
+AnalogElecConductivity::AnalogElecConductivity(
+    int8_t powerPin, int8_t dataPin, float Rseries_ohms, float sensorEC_Konst,
+    uint8_t measurementsToAverage, AnalogVoltageBase* analogVoltageReader)
     : Sensor("AnalogElecConductivity", ANALOGELECCONDUCTIVITY_NUM_VARIABLES,
              ANALOGELECCONDUCTIVITY_WARM_UP_TIME_MS,
              ANALOGELECCONDUCTIVITY_STABILIZATION_TIME_MS,
              ANALOGELECCONDUCTIVITY_MEASUREMENT_TIME_MS, powerPin, dataPin,
              measurementsToAverage, ANALOGELECCONDUCTIVITY_INC_CALC_VARIABLES),
       _Rseries_ohms(Rseries_ohms),
-      _sensorEC_Konst(sensorEC_Konst) {}
+      _sensorEC_Konst(sensorEC_Konst),
+      // If no analog voltage reader was provided, create a default one
+      _analogVoltageReader(analogVoltageReader == nullptr
+                               ? new ProcessorAnalogBase()
+                               : analogVoltageReader),
+      _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {}
+
 // Destructor
-AnalogElecConductivity::~AnalogElecConductivity() {}
+AnalogElecConductivity::~AnalogElecConductivity() {
+    // Clean up the analog voltage reader if we created it
+    if (_ownsAnalogVoltageReader && _analogVoltageReader != nullptr) {
+        delete _analogVoltageReader;
+    }
+}
+
 
 String AnalogElecConductivity::getSensorLocation(void) {
-    String sensorLocation = F("anlgEc Proc Data/Pwr");
-    sensorLocation += String(_dataPin) + "/" + String(_powerPin);
+    String sensorLocation;
+    if (_analogVoltageReader != nullptr) {
+        sensorLocation = _analogVoltageReader->getAnalogLocation(_dataPin, -1);
+    } else {
+        sensorLocation = F("Unknown_AnalogVoltageReader");
+    }
+    sensorLocation += F("_Pwr");
+    sensorLocation += String(_powerPin);
     return sensorLocation;
 }
 
 
-float AnalogElecConductivity::readEC() {
-    return readEC(_dataPin);
-}
+bool AnalogElecConductivity::setup(void) {
+    bool sensorSetupSuccess         = Sensor::setup();
+    bool analogVoltageReaderSuccess = false;
 
-
-float AnalogElecConductivity::readEC(uint8_t analogPinNum) {
-    uint32_t sensorEC_adc;
-    float    Rwater_ohms;      // literal value of water
-    float    EC_uScm = -9999;  // units are uS per cm
-
-    // First measure the analog voltage.
-    // The return value from analogRead() is IN BITS NOT IN VOLTS!!
-    // Take a priming reading.
-    // First reading will be low - discard
-    analogRead(analogPinNum);
-    // Take the reading we'll keep
-    sensorEC_adc = analogRead(analogPinNum);
-    MS_DEEP_DBG("adc bits=", sensorEC_adc);
-
-    if (0 == sensorEC_adc) {
-        // Prevent underflow, can never be outside of PROCESSOR_ADC_RANGE
-        sensorEC_adc = 1;
+    if (_analogVoltageReader != nullptr) {
+        analogVoltageReaderSuccess = _analogVoltageReader->begin();
+        if (!analogVoltageReaderSuccess) {
+            MS_DBG(getSensorNameAndLocation(),
+                   F("Analog voltage reader initialization failed"));
+        }
+    } else {
+        MS_DBG(getSensorNameAndLocation(),
+               F("No analog voltage reader to initialize"));
     }
 
-    // Estimate Resistance of Liquid
-
-    // see the header for an explanation of this calculation
-    Rwater_ohms = _Rseries_ohms /
-        ((static_cast<float>(PROCESSOR_ADC_RANGE) /
-          static_cast<float>(sensorEC_adc)) -
-         1);
-    MS_DEEP_DBG("ohms=", Rwater_ohms);
-
-    // Convert to EC
-    EC_uScm = 1000000 / (Rwater_ohms * _sensorEC_Konst);
-    MS_DEEP_DBG("cond=", EC_uScm);
-
-    return EC_uScm;
+    return sensorSetupSuccess && analogVoltageReaderSuccess;
 }
 
 
 bool AnalogElecConductivity::addSingleMeasurementResult(void) {
-    float sensorEC_uScm = -9999;
-
-    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
-
-        sensorEC_uScm = readEC(_dataPin);
-        MS_DBG(F("Water EC (uSm/cm)"), sensorEC_uScm);
-    } else {
-        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return bumpMeasurementAttemptCount(false);
     }
 
-    verifyAndAddMeasurementResult(ANALOGELECCONDUCTIVITY_EC_VAR_NUM,
-                                  sensorEC_uScm);
+    // Check if we have a valid analog voltage reader
+    if (_analogVoltageReader == nullptr) {
+        MS_DBG(getSensorNameAndLocation(),
+               F("No analog voltage reader available"));
+        return bumpMeasurementAttemptCount(false);
+    }
 
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
+    // Check if we have a resistance and cell constant
+    if (_Rseries_ohms <= 0 || _sensorEC_Konst <= 0) {
+        MS_DBG(getSensorNameAndLocation(),
+               F(" has an invalid cell constant or resistor value!"));
+        return bumpMeasurementAttemptCount(false);
+    }
 
-    // Return true when finished
-    return true;
+    float adcVoltage = -9999.0f;
+
+    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+
+    // Read the analog voltage using the AnalogVoltageBase interface
+    bool success = _analogVoltageReader->readVoltageSingleEnded(_dataPin,
+                                                                adcVoltage);
+
+    if (success) {
+        // Estimate Resistance of Liquid
+        // see the header for an explanation of this calculation
+        // Convert voltage back to ADC equivalent for existing calculation
+        float supplyVoltage = _analogVoltageReader->getSupplyVoltage();
+        if (supplyVoltage <= 0.0f) {
+            MS_DBG(F("  Invalid supply voltage from analog reader"));
+            return bumpMeasurementAttemptCount(false);
+        }
+        float adcRatio = adcVoltage / supplyVoltage;
+
+        if (adcRatio >= 1.0f) {
+            // Prevent division issues when voltage reaches supply voltage
+            MS_DBG(F("  ADC ratio clamped from"), adcRatio, F("to"),
+                   ANALOGELECCONDUCTIVITY_ADC_MAX_RATIO);
+            adcRatio = ANALOGELECCONDUCTIVITY_ADC_MAX_RATIO;
+        } else if (adcRatio < 0.0f) {
+            MS_DBG(F("  Negative ADC ratio ("), adcRatio,
+                   F("); negative supply or ADC voltage"));
+            return bumpMeasurementAttemptCount(false);
+        }
+
+        float Rwater_ohms = _Rseries_ohms * adcRatio / (1.0f - adcRatio);
+        MS_DBG(F("  Resistance:"), Rwater_ohms, F("ohms"));
+
+        // Convert to EC
+        float EC_uScm = -9999.0f;  // units are uS per cm
+        if (Rwater_ohms > 0.0f) {
+            EC_uScm = 1000000.0f / (Rwater_ohms * _sensorEC_Konst);
+            MS_DBG(F("Water EC (uS/cm)"), EC_uScm);
+            verifyAndAddMeasurementResult(ANALOGELECCONDUCTIVITY_EC_VAR_NUM,
+                                          EC_uScm);
+        } else {
+            MS_DBG(F("  Invalid resistance; cannot calculate EC"));
+            success = false;
+        }
+    } else {
+        MS_DBG(F("  Failed to get valid voltage from analog reader"));
+    }
+    return bumpMeasurementAttemptCount(success);
 }
 
 // cSpell:ignore AnalogElecConductivity Rseries_ohms sensorEC_Konst Rwater_ohms

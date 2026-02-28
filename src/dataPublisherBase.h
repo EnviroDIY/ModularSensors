@@ -369,6 +369,10 @@ class dataPublisher {
      * memory leak because we cannot delete from the pointer because the
      * destructor for a client in the Arduino core isn't virtual.
      *
+     * @note The client must be deleted by the same type of modem that created
+     * it.  This is unlikely to be an issue unless you're trying to use two
+     * modems on the same logger.
+     *
      * @param client The client to delete
      */
     virtual void deleteClient(Client* client);

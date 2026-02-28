@@ -87,10 +87,10 @@ bool DigiXBeeWifi::connectInternet(uint32_t maxConnectionTime) {
 }
 MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeWifi);
 
-MS_MODEM_CREATE_CLIENT(DigiXBeeWifi);
-MS_MODEM_DELETE_CLIENT(DigiXBeeWifi);
-MS_MODEM_CREATE_SECURE_CLIENT(DigiXBeeWifi);
-MS_MODEM_DELETE_SECURE_CLIENT(DigiXBeeWifi);
+MS_MODEM_CREATE_CLIENT(DigiXBeeWifi, XBee);
+MS_MODEM_DELETE_CLIENT(DigiXBeeWifi, XBee);
+MS_MODEM_CREATE_SECURE_CLIENT(DigiXBeeWifi, XBee);
+MS_MODEM_DELETE_SECURE_CLIENT(DigiXBeeWifi, XBee);
 
 MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBeeWifi);
 MS_MODEM_GET_MODEM_BATTERY_DATA(DigiXBeeWifi);
@@ -352,9 +352,10 @@ bool DigiXBeeWifi::extraModemSetup(void) {
 void DigiXBeeWifi::disconnectInternet(void) {
     // Ensure Wifi XBee IP socket torn down by forcing connection to
     // localhost IP For A XBee S6B bug, then force restart.
-    TinyGsmClient gsmClient(gsmModem);  // need to create again to force close
-    String        oldRemoteIp = gsmClient.remoteIP();
-    IPAddress     newHostIp   = IPAddress(127, 0, 0, 1);  // localhost
+    TinyGsmXBee::GsmClientXBee gsmClient(
+        gsmModem);  // need to create again to force close
+    String    oldRemoteIp = gsmClient.remoteIP();
+    IPAddress newHostIp   = IPAddress(127, 0, 0, 1);  // localhost
     gsmClient.connect(newHostIp, 80);
     MS_DBG(gsmModem.getBeeName(), oldRemoteIp, F("disconnectInternet set to"),
            gsmClient.remoteIP());
@@ -401,7 +402,7 @@ uint32_t DigiXBeeWifi::getNISTTime(void) {
 
         // NOTE:  This "connect" only sets up the connection parameters, the TCP
         // socket isn't actually opened until we first send data (the '!' below)
-        TinyGsmClient gsmClient(gsmModem);
+        TinyGsmXBee::GsmClientXBee gsmClient(gsmModem);
         connectionMade = gsmClient.connect(nistIPs[i], TIME_PROTOCOL_PORT);
         // Need to send something before connection is made
         gsmClient.println('!');
@@ -419,7 +420,12 @@ uint32_t DigiXBeeWifi::getNISTTime(void) {
                 byte response[NIST_RESPONSE_BYTES] = {0};
                 gsmClient.read(response, NIST_RESPONSE_BYTES);
                 gsmClient.stop();
-                return parseNISTBytes(response);
+                uint32_t nistParsed = parseNISTBytes(response);
+                if (nistParsed != 0) {
+                    return nistParsed;
+                } else {
+                    MS_DBG(F("NIST response was invalid!"));
+                }
             } else {
                 MS_DBG(F("NIST Time server did not respond!"));
                 gsmClient.stop();

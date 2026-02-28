@@ -9,7 +9,7 @@ The exact hardware configuration used in this example:
 - Hydros21 CTD sensor
 - Campbell Scientific OBS3+ Turbidity sensor
 
-An EnviroDIY LTE SIM7080 module can be used with the older Mayfly v0.5b boards if you change line 101 (for modemVccPin) from 18 to -1.
+An EnviroDIY LTE SIM7080 module can be used with the older Mayfly v0.5b boards if you change the modemVccPin from 18 to -1.
 This is because the Mayfly v1.0 board has a separate 3.3v regulator to power the Bee socket and is controlled by turning pin 18 on or off.
 Mayfly v0.5b has the Bee socket constantly powered, therefore using "-1" is the proper setting for that line of code.
 

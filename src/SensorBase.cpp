@@ -22,10 +22,11 @@ Sensor::Sensor(const char* sensorName, const uint8_t totalReturnedValues,
                uint8_t measurementsToAverage, uint8_t incCalcValues)
     : _dataPin(dataPin),
       _powerPin(powerPin),
+      _powerPin2(-1),
       _sensorName(sensorName),
       _numReturnedValues(totalReturnedValues),
-      _measurementsToAverage(measurementsToAverage),
       _incCalcValues(incCalcValues),
+      _measurementsToAverage(measurementsToAverage),
       _warmUpTime_ms(warmUpTime_ms),
       _stabilizationTime_ms(stabilizationTime_ms),
       _measurementTime_ms(measurementTime_ms) {
@@ -64,6 +65,18 @@ String Sensor::getSensorNameAndLocation(void) {
 int8_t Sensor::getPowerPin(void) {
     return _powerPin;
 }
+// This sets the  power pin
+void Sensor::setPowerPin(int8_t pin) {
+    _powerPin = pin;
+}
+// This returns the number of the secondary power pin
+int8_t Sensor::getSecondaryPowerPin(void) {
+    return _powerPin2;
+}
+// This sets the secondary power pin
+void Sensor::setSecondaryPowerPin(int8_t pin) {
+    _powerPin2 = pin;
+}
 
 
 // These functions get and set the number of readings to average for a sensor
@@ -74,7 +87,38 @@ void Sensor::setNumberMeasurementsToAverage(uint8_t nReadings) {
 uint8_t Sensor::getNumberMeasurementsToAverage(void) {
     return _measurementsToAverage;
 }
+uint8_t Sensor::getNumberCompleteMeasurementsAttempts(void) {
+    return _measurementAttemptsCompleted;
+}
+uint8_t Sensor::getNumberRetryAttemptsMade(void) {
+    return _retryAttemptsMade;
+}
+void Sensor::setAllowedMeasurementRetries(uint8_t allowedMeasurementRetries) {
+    _allowedMeasurementRetries = allowedMeasurementRetries;
+}
+uint8_t Sensor::getAllowedMeasurementRetries(void) {
+    return _allowedMeasurementRetries;
+}
 
+
+void Sensor::setWarmUpTime(uint32_t warmUpTime_ms) {
+    _warmUpTime_ms = warmUpTime_ms;
+}
+uint32_t Sensor::getWarmUpTime(void) {
+    return _warmUpTime_ms;
+}
+void Sensor::setStabilizationTime(uint32_t stabilizationTime_ms) {
+    _stabilizationTime_ms = stabilizationTime_ms;
+}
+uint32_t Sensor::getStabilizationTime(void) {
+    return _stabilizationTime_ms;
+}
+void Sensor::setMeasurementTime(uint32_t measurementTime_ms) {
+    _measurementTime_ms = measurementTime_ms;
+}
+uint32_t Sensor::getMeasurementTime(void) {
+    return _measurementTime_ms;
+}
 
 // This returns the 8-bit code for the current status of the sensor.
 // Bit 0 - 0=Has NOT been set up, 1=Has been setup
@@ -102,13 +146,21 @@ void Sensor::clearStatusBit(sensor_status_bits bitToClear) {
 
 // This turns on sensor power
 void Sensor::powerUp(void) {
-    if (_powerPin >= 0) {
+    if (_powerPin >= 0 || _powerPin2 >= 0) {
         // Reset power pin mode every power up because pins are set to tri-state
-        // on sleep
-        pinMode(_powerPin, OUTPUT);
-        MS_DBG(F("Powering"), getSensorNameAndLocation(), F("with pin"),
-               _powerPin);
-        digitalWrite(_powerPin, HIGH);
+        // on sleep on SAMD boards
+        if (_powerPin >= 0) {
+            pinMode(_powerPin, OUTPUT);
+            MS_DBG(F("Powering"), getSensorNameAndLocation(), F("with pin"),
+                   _powerPin);
+            digitalWrite(_powerPin, HIGH);
+        }
+        if (_powerPin2 >= 0) {
+            pinMode(_powerPin2, OUTPUT);
+            MS_DBG(F("Giving secondary power to"), getSensorNameAndLocation(),
+                   F("with pin"), _powerPin2);
+            digitalWrite(_powerPin2, HIGH);
+        }
         // Mark the time that the sensor was powered
         _millisPowerOn = millis();
     } else {
@@ -124,10 +176,21 @@ void Sensor::powerUp(void) {
 
 // This turns off sensor power
 void Sensor::powerDown(void) {
-    if (_powerPin >= 0) {
-        MS_DBG(F("Turning off power to"), getSensorNameAndLocation(),
-               F("with pin"), _powerPin);
-        digitalWrite(_powerPin, LOW);
+    if (_powerPin >= 0 || _powerPin2 >= 0) {
+        // Reset power pin mode every power up because pins are set to tri-state
+        // on sleep on SAMD boards
+        if (_powerPin >= 0) {
+            pinMode(_powerPin, OUTPUT);
+            MS_DBG(F("Turning off"), getSensorNameAndLocation(), F("with pin"),
+                   _powerPin);
+            digitalWrite(_powerPin, LOW);
+        }
+        if (_powerPin2 >= 0) {
+            pinMode(_powerPin2, OUTPUT);
+            MS_DBG(F("Turning off secondary power to"),
+                   getSensorNameAndLocation(), F("with pin"), _powerPin2);
+            digitalWrite(_powerPin2, LOW);
+        }
         // Unset the power-on time
         _millisPowerOn = 0;
         // Unset the activation time
@@ -179,8 +242,7 @@ bool Sensor::setup(void) {
 
 // The function to wake up a sensor
 bool Sensor::wake(void) {
-    MS_DBG(F("Waking"), getSensorNameAndLocation(),
-           F("using default wake of taking no action!"));
+    MS_DBG(F("Waking"), getSensorNameAndLocation(), F("by doing nothing!"));
     // Set the status bit for sensor activation attempt (bit 3)
     // Setting this bit even if the activation failed, to show the attempt was
     // made
@@ -196,13 +258,17 @@ bool Sensor::wake(void) {
         return false;
     }
     // Set the data pin mode on every wake because pins are set to tri-state on
-    // sleep
+    // sleep on SAMD boards
     if (_dataPin >= 0) {
         pinMode(_dataPin, INPUT);
     }  // NOTE:  Not turning on processor pull-up or pull-down!
 
     // Mark the time that the sensor was activated
-    _millisSensorActivated = millis();
+    // NOTE: If we didn't do anything to wake the sensor, we **don't**
+    // want to mark the time as **now** but as the last time we did do
+    // something.  Since we didn't actively wake the sensor, we assume the
+    // measurement was started at power on.
+    _millisSensorActivated = _millisPowerOn;
     // Set the status bit for sensor wake/activation success (bit 4)
     setStatusBit(WAKE_SUCCESSFUL);
 
@@ -235,7 +301,7 @@ bool Sensor::startSingleMeasurement(void) {
     }
 
     MS_DBG(F("Starting measurement on"), getSensorNameAndLocation(),
-           F("using default start of taking no action!"));
+           F("by doing nothing!"));
     // Set the status bits for measurement requested (bit 5)
     // Setting this bit even if we failed to start a measurement to show that an
     // attempt was made.
@@ -245,7 +311,18 @@ bool Sensor::startSingleMeasurement(void) {
     // Only mark the measurement request time if it is
     if (getStatusBit(WAKE_SUCCESSFUL)) {
         // Mark the time that a measurement was requested
-        _millisMeasurementRequested = millis();
+        // NOTE: If we didn't do anything to start a measurement, we **don't**
+        // want to mark the time as **now** but as the last time we did do
+        // something.  Since we didn't actively start the measurement, we assume
+        // the measurement was started either at wake or at the time the last
+        // measurement was finished.
+        if (_millisMeasurementCompleted != 0) {
+            _millisMeasurementRequested =
+                _millisMeasurementCompleted;  // immediately after last
+                                              // measurement
+        } else {
+            _millisMeasurementRequested = _millisSensorActivated;  // at wake
+        }
         // Set the status bit for measurement start success (bit 6)
         setStatusBit(MEASUREMENT_SUCCESSFUL);
     } else {
@@ -286,13 +363,49 @@ void Sensor::notifyVariables(void) {
 }
 
 
-// This function just empties the value array
+// This function empties the value array and resets the measurement counts.
 void Sensor::clearValues(void) {
     MS_DBG(F("Clearing value array for"), getSensorNameAndLocation());
     for (uint8_t i = 0; i < _numReturnedValues; i++) {
         sensorValues[i]               = -9999;
         numberGoodMeasurementsMade[i] = 0;
     }
+    // Reset measurement attempt counters
+    _measurementAttemptsCompleted = 0;
+    _retryAttemptsMade            = 0;
+}
+// This clears power-related status bits and resets power timing.
+void Sensor::clearPowerStatus(void) {
+    // Reset power timing value
+    _millisPowerOn = 0;
+    // Unset power status bits
+    clearStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL);
+}
+
+// This clears wake-related status bits and resets wake timing.
+void Sensor::clearWakeStatus(void) {
+    // Reset wake timing value
+    _millisSensorActivated = 0;
+    // Unset wake status bits
+    clearStatusBits(WAKE_ATTEMPTED, WAKE_SUCCESSFUL);
+}
+
+// This clears measurement-related status bits and resets measurement timing.
+void Sensor::clearMeasurementStatus(void) {
+    // Reset measurement timing values
+    _millisMeasurementRequested = 0;
+    _millisMeasurementCompleted = 0;
+    // Unset measurement status bits
+    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
+}
+
+// This clears all status bits except the setup and error bit and sets the
+// timing values to 0.
+void Sensor::clearStatus(void) {
+    // Use the individual clear functions for better maintainability
+    clearPowerStatus();
+    clearWakeStatus();
+    clearMeasurementStatus();
 }
 
 
@@ -300,18 +413,17 @@ void Sensor::clearValues(void) {
 // averaged
 void Sensor::verifyAndAddMeasurementResult(uint8_t resultNumber,
                                            float   resultValue) {
+    bool prevResultGood = (sensorValues[resultNumber] != -9999 &&
+                           !isnan(sensorValues[resultNumber]));
+    bool newResultGood  = (resultValue != -9999 && !isnan(resultValue));
     // If the new result is good and there was were only bad results, set the
     // result value as the new result and add 1 to the good result total
-    if ((sensorValues[resultNumber] == -9999 ||
-         isnan(sensorValues[resultNumber])) &&
-        (resultValue != -9999 && !isnan(resultValue))) {
+    if (!prevResultGood && newResultGood) {
         MS_DBG(F("Putting"), resultValue, F("in result array for variable"),
                resultNumber, F("from"), getSensorNameAndLocation());
         sensorValues[resultNumber] = resultValue;
         numberGoodMeasurementsMade[resultNumber] += 1;
-    } else if ((sensorValues[resultNumber] == -9999 ||
-                isnan(sensorValues[resultNumber])) &&
-               (resultValue != -9999 && !isnan(resultValue))) {
+    } else if (prevResultGood && newResultGood) {
         // If the new result is good and there were already good results in
         // place add the new results to the total and add 1 to the good result
         // total
@@ -319,15 +431,14 @@ void Sensor::verifyAndAddMeasurementResult(uint8_t resultNumber,
                resultNumber, F("from"), getSensorNameAndLocation());
         sensorValues[resultNumber] += resultValue;
         numberGoodMeasurementsMade[resultNumber] += 1;
-    } else if (sensorValues[resultNumber] == -9999 && resultValue == -9999) {
-        // If the new result is bad and there were only bad results, do nothing
+    } else if (!prevResultGood && !newResultGood) {
+        // If the new result is bad and there were only bad results, only print
+        // debugging
         MS_DBG(F("Ignoring bad result for variable"), resultNumber, F("from"),
                getSensorNameAndLocation(), F("; no good results yet."));
-    } else if ((sensorValues[resultNumber] == -9999 ||
-                isnan(sensorValues[resultNumber])) &&
-               resultValue == -9999) {
-        // If the new result is bad and there were already good results, do
-        // nothing
+    } else if (prevResultGood && !newResultGood) {
+        // If the new result is bad and there were already good results, only
+        // print debugging
         MS_DBG(F("Ignoring bad result for variable"), resultNumber, F("from"),
                getSensorNameAndLocation(),
                F("; good results already in array."));
@@ -364,12 +475,23 @@ void Sensor::averageMeasurements(void) {
 bool Sensor::update(void) {
     bool ret_val = true;
 
-    // Check if the power is on, turn it on if not
+    // Check if the sensor power is on, turn it on if not
+    // NOTE: The check power on function does **not** check the status bits or
+    // timing values to check if the power is on, but instead checks the actual
+    // state of the power pin(s) to determine if the power is on.  This means
+    // it's safe to clear the power bits before running this check. The check
+    // function will correctly reset the bits as necessary.
+    clearPowerStatus();
     bool wasOn = checkPowerOn();
     if (!wasOn) { powerUp(); }
 
-    // Check if it's awake/active, activate it if not
+    // Check if sensor is awake/active, activate it if not
+    // We're checking the wake status bits here, so don't clear them before this
+    // check!
     bool wasActive = getStatusBit(WAKE_SUCCESSFUL);
+
+    // NOTE: Don't clear the wake bits/timing!
+
     if (!wasActive) {
         // NOT yet awake
         // wait for the sensor to have been powered for long enough to respond
@@ -379,20 +501,47 @@ bool Sensor::update(void) {
     // bail if the wake failed
     if (!ret_val) return ret_val;
 
-    // Clear values before starting loop
+    // Clear measurement related status bits and timing values before starting
+    // measurements
+    // NOTE: These bits are set and checked **after** starting a measurement to
+    // confirm that the measurement was actually started, so it's safe to clear
+    // them before starting a measurement.
+    clearMeasurementStatus();
+
+    // Clear stale values and reset the measurement attempt and retry
+    // counts before starting new measurements.
     clearValues();
 
     // Wait for the sensor to stabilize
     waitForStability();
 
-    // loop through as many measurements as requested
-    for (uint8_t j = 0; j < _measurementsToAverage; j++) {
+    // loop through until we have the requested number of successful
+    // measurements
+    while (_measurementAttemptsCompleted < _measurementsToAverage) {
         // start a measurement
-        ret_val &= startSingleMeasurement();
+        bool measurementStarted = startSingleMeasurement();
+        if (!measurementStarted) {
+            ret_val = false;
+            // Use bumpMeasurementAttemptCount to track failed attempts
+            if (!bumpMeasurementAttemptCount(false)) {
+                // If we've exhausted retries for this measurement, break
+                break;
+            }
+            continue;  // Try again if retries are available
+        }
+
         // wait for the measurement to finish
         waitForMeasurementCompletion();
+
         // get the measurement result
-        ret_val &= addSingleMeasurementResult();
+        bool measurementSuccessful = addSingleMeasurementResult();
+        ret_val &= measurementSuccessful;
+
+        // Use bumpMeasurementAttemptCount to handle retry logic
+        if (!bumpMeasurementAttemptCount(measurementSuccessful)) {
+            // If we've exhausted retries and still failed, break
+            if (!measurementSuccessful) { break; }
+        }
     }
 
     averageMeasurements();
@@ -416,36 +565,50 @@ bool Sensor::checkPowerOn(bool debug) {
         MS_DBG(F("Checking power status:  Power to"),
                getSensorNameAndLocation());
     }
-    if (_powerPin >= 0) {
-        auto powerBitNumber =
-            static_cast<int8_t>(log(digitalPinToBitMask(_powerPin)) / log(2));
-
-        if (bitRead(*portInputRegister(digitalPinToPort(_powerPin)),
-                    powerBitNumber) == LOW) {
-            if (debug) { MS_DBG(F("was off.")); }
-            // Reset time of power on, in-case it was set to a value
-            _millisPowerOn = 0;
-            // Unset the status bits for sensor power (bits 1 & 2),
-            // activation (bits 3 & 4), and measurement request (bits 5 & 6)
-            clearStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL, WAKE_ATTEMPTED,
-                            WAKE_SUCCESSFUL, MEASUREMENT_ATTEMPTED,
-                            MEASUREMENT_SUCCESSFUL);
-            return false;
-        } else {
-            if (debug) { MS_DBG(" was on."); }
-            // Mark the power-on time, just in case it  had not been marked
-            if (_millisPowerOn == 0) _millisPowerOn = millis();
-            // Set the status bit for sensor power attempt (bit 1) and success
-            // (bit 2)
-            setStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL);
-            return true;
-        }
-    } else {
+    if (_powerPin < 0 && _powerPin2 < 0) {
         if (debug) { MS_DBG(F("is not controlled by this library.")); }
         // Mark the power-on time, just in case it  had not been marked
         if (_millisPowerOn == 0) _millisPowerOn = millis();
         // Set the status bit for sensor power attempt (bit 1) and success (bit
         // 2)
+        setStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL);
+        return true;
+    }
+    bool pp1_off = false;
+    bool pp2_off = false;
+    if (_powerPin >= 0) {
+        auto powerBitNumber =
+            static_cast<int8_t>(log(digitalPinToBitMask(_powerPin)) / log(2));
+        pp1_off = bitRead(*portInputRegister(digitalPinToPort(_powerPin)),
+                          powerBitNumber) == LOW;
+    }
+    if (_powerPin2 >= 0) {
+        auto powerBitNumber2 =
+            static_cast<int8_t>(log(digitalPinToBitMask(_powerPin2)) / log(2));
+        pp2_off = bitRead(*portInputRegister(digitalPinToPort(_powerPin2)),
+                          powerBitNumber2) == LOW;
+    }
+
+    if (pp1_off || pp2_off) {
+        if (debug) { MS_DBG(F("was off.")); }
+        // Unset time of power on, in-case it was set to a value
+        _millisPowerOn = 0;
+        // Unset the activation time
+        _millisSensorActivated = 0;
+        // Unset the measurement request time
+        _millisMeasurementRequested = 0;
+        // Unset the status bits for sensor power (bits 1 & 2),
+        // activation (bits 3 & 4), and measurement request (bits 5 & 6)
+        clearStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL, WAKE_ATTEMPTED,
+                        WAKE_SUCCESSFUL, MEASUREMENT_ATTEMPTED,
+                        MEASUREMENT_SUCCESSFUL);
+        return false;
+    } else {
+        if (debug) { MS_DBG(" was on."); }
+        // Mark the power-on time, just in case it  had not been marked
+        if (_millisPowerOn == 0) _millisPowerOn = millis();
+        // Set the status bit for sensor power attempt (bit 1) and success
+        // (bit 2)
         setStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL);
         return true;
     }
@@ -498,6 +661,16 @@ bool Sensor::isStable(bool debug) {
         if (debug) {
             MS_DBG(getSensorNameAndLocation(),
                    F("is not active and cannot stabilize!"));
+        }
+        return true;
+    }
+
+    // If we're taking a repeat measurement, we may have already waited for
+    // stabilization after the initial wake, so we can skip this wait.
+    if (_retryAttemptsMade != 0) {
+        if (debug) {
+            MS_DBG(getSensorNameAndLocation(),
+                   F("is retrying and doesn't need to stabilize again."));
         }
         return true;
     }
@@ -564,4 +737,25 @@ void Sensor::waitForMeasurementCompletion(void) {
     while (!isMeasurementComplete()) {
         // wait
     }
+}
+
+
+bool Sensor::bumpMeasurementAttemptCount(bool wasSuccessful) {
+    // Record the time that the measurement was completed
+    _millisMeasurementCompleted = millis();
+    // Unset the time stamp for the beginning of this measurement
+    _millisMeasurementRequested = 0;
+    // Unset the status bits for a measurement request (bits 5 & 6)
+    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
+    // Bump the number of attempted retries
+    _retryAttemptsMade++;
+
+    if (wasSuccessful || _retryAttemptsMade > _allowedMeasurementRetries) {
+        // Bump the number of completed measurement attempts - we've succeeded
+        // or failed but exceeded retries
+        _measurementAttemptsCompleted++;
+        // Reset the number of retries made for the next measurement attempt
+        _retryAttemptsMade = 0;
+    }
+    return wasSuccessful;
 }

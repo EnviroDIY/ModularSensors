@@ -79,7 +79,7 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include "TinyGsmClient.h"
+#include "TinyGsmClientSequansMonarch.h"
 #include "LoggerModem.h"
 
 #ifdef MS_SEQUANSMONARCH_DEBUG_DEEP
@@ -257,7 +257,7 @@ class SequansMonarch : public loggerModem {
     /**
      * @brief Public reference to the TinyGSM modem.
      */
-    TinyGsm gsmModem;
+    TinyGsmSequansMonarch gsmModem;
 
  protected:
     bool isInternetAvailable(void) override;

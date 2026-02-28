@@ -320,9 +320,6 @@ class BoschBME280 : public Sensor {
      */
     ~BoschBME280();
 
-    /**
-     * @copydoc Sensor::wake()
-     */
     bool wake(void) override;
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -335,20 +332,15 @@ class BoschBME280 : public Sensor {
      * @return True if the setup was successful.
      */
     bool setup(void) override;
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
+
     String getSensorLocation(void) override;
 
     // bool startSingleMeasurement(void) override;  // for forced mode
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
     bool addSingleMeasurementResult(void) override;
 
  private:
     /**
-     * @brief Internal reference the the Adafruit BME object
+     * @brief Internal reference to the Adafruit BME object
      */
     Adafruit_BME280 bme_internal;
     /**

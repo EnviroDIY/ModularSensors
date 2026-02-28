@@ -77,12 +77,12 @@ Unfortunately, the Stonefly cannot read the certificates from your computer, so 
 
 #### Set your AWS IoT Core Endpoint
 
-In line 11, find and replace the text `YOUR_ENDPOINT-ats.iot.YOUR_REGION.amazonaws.com` with your real endpoint.
+Find and replace the text `YOUR_ENDPOINT-ats.iot.YOUR_REGION.amazonaws.com` with your real endpoint.
 Make sure there are quotation marks around the endpoint string, as there are in the example.
 
 #### Set your Thing Name
 
-In line 13, find and replace the text `YOUR_THING_NAME` with your assigned thing name.
+Find and replace the text `YOUR_THING_NAME` with your assigned thing name.
 Make sure there are quotation marks around the name string, as there are in the example.
 
 #### Set your AWS IoT Core Client Certificate
@@ -99,7 +99,7 @@ On Windows:
 - Open the file anyway.
 
 Once you have the file open, it should look like a bunch of random characters sandwiched between the lines `-----BEGIN CERTIFICATE-----` and `-----END CERTIFICATE-----`.
-Find and replace the text `paste the certificate here` in approximately line 47 of with the text of your certificate.
+Find and replace the text `paste the certificate here` with the text of your certificate.
 Make sure that the text begins and ends with the lines `-----BEGIN CERTIFICATE-----` and `-----END CERTIFICATE-----` as it does in the example and in your certificate text.
 
 #### Set your AWS IoT Core Client Private Key
@@ -108,11 +108,8 @@ From the required files mentioned above, find and open the file that *ends with*
 As before, you need to see the file in a text editor and you may get a security warning when you open it.
 
 Once you have the file open, it should look like a bunch of random characters sandwiched between the lines `-----BEGIN RSA PRIVATE KEY-----` and `-----END RSA PRIVATE KEY-----`.
-Find and replace the text `paste the private key here` in approximately line 71 of with the text of your certificate.
-Make sure that the text begins and ends with the lines `-----BEGIN RSA PRIVATE KEY-----` and `-----END RSA PRIVATE KEY-----` as it does in the example and in your certificate text.
-
-> [!NOTE]
-> The line number where the private key starts may change based on the length of the certificate pasted above it.
+Find and replace the text `paste the private key here` with the text of your private key.
+Make sure that the text begins and ends with the lines `-----BEGIN RSA PRIVATE KEY-----` and `-----END RSA PRIVATE KEY-----` as it does in the example and in your private key.
 
 ### Customize the Set Certificates program
 
@@ -121,15 +118,15 @@ Since all of the private information went into the config file modified above, o
 
 #### Select your Modem
 
-In lines 27-31 remove the slashes (`//`) before the modem that you want to use and add slashes to all of the others.
+In the section beginning with `// Select your modem:` remove the slashes (`//`) before the modem that you want to use and add slashes to all of the others.
 
 #### Set your cellular APN or Wifi credentials
 
-If you are using a cellular modem, in line 78, find and replace the text `hologram` with the APN for your SIM card.
+If you are using a cellular modem, find and replace the text `YourAPN` with the APN for your SIM card.
 Make sure there are quotation marks around the APN string, as there are in the example.
-If you are using a Hologram SIM, you don't need to change this.
+If you are using a Hologram SIM, use the text `hologram`.
 
-If you are using a WiFi modem, in lines 83-84 find and replace `YourWiFiSSID` and `YourWiFiPassword` with your real SSID and password.
+If you are using a WiFi modem, find and replace `YourWiFiSSID` and `YourWiFiPassword` with your real SSID and password.
 
 ## Upload to your Board
 
@@ -177,8 +174,8 @@ There are some [tips in the Read Me](https://github.com/EnviroDIY/USGS_NGWOS/?ta
 If you see the message `failed to initialize modem`, there's a communication problem between the modem and the Arduino.
 If after the failure message and a delay you do see your modem serial number or firmware version after the message `Modem Info:`, you can ignore this error: it was a baud rate problem and the Arduino adjusted.
 If you don't get the modem info, there's something wrong.
-If your SIM card requires a user name and password to unlock (uncommon), enter those in lines 79 and 80 of the ino file and recompile and re-upload.
-Confirm that your wires between the Arduino and your modem are correct and you've set the correct port for `SerialAT` in line 45.
+If your SIM card requires a user name and password to unlock (uncommon), enter those in as the `gprsUser` and `gprsPass` in the GPRS credentials section of the ino file and recompile and re-upload.
+Confirm that your wires between the Arduino and your modem are correct and you've set the correct port for `SerialAT` in the line `#define SerialAT Serial1`.
 Confirm that your modem has power and that any expected LED's are lit.
 
 ### The certificates fail to load on the modem

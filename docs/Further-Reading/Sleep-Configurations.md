@@ -87,7 +87,7 @@ The 5 sleep modes are:
 
 ### Steps in Putting an AVR board to sleep<!--! {#sleep_fxn_avr} -->
 
-After completing the [steps for putting all boards to sleep](#steps-for-putting-all-boards-to-sleep) AVR boards finish their bedtime routine with these steps.
+After completing the [steps for putting all boards to sleep](#steps-for-putting-all-boards-to-sleep), AVR boards finish their bedtime routine with these steps:
 
 - Disable the onboard USB if it exists (ie, for a Leonardo)
   - Freeze the USB clock, turn off the USB PLL, and then disable the USB.
@@ -106,7 +106,7 @@ This means that the I2C/Serial/Timer/etc pins will still be active and powered u
 
 ### Steps in Resuming Activity for an AVR board<!--! {#wake_fxn_avr} -->
 
-*Before* completing the [steps on wake for all boards](#steps-on-wake-for-all-boards) AVR boards start their wake routine with these steps.
+*Before* completing the [steps on wake for all boards](#steps-on-wake-for-all-boards), AVR boards start their wake routine with these steps:
 
 - Temporarily disables interrupts, so no mistakes are made when writing to the processor registers.
 - Re-enable all power modules (ie, the processor module clocks)
@@ -186,8 +186,8 @@ RESETN is a dedicated pin.
 
 > [!NOTE]
 > You can disable pin tri-state by calling `Logger::disablePinTristate(true)`.
-> You can re-enable pin tri-strate by calling `Logger::disablePinTristate(false)`.
-> No pin modes are **not** changed when the `disablePinTristate()` function is called, only when the `systemSleep()` function is called.
+> You can re-enable pin tri-state by calling `Logger::disablePinTristate(false)`.
+> Pin modes are not changed when `disablePinTristate()` is called; they are only changed when `systemSleep()` is called.
 
 To prevent power draw by any external pins during sleep, Modular Sensors sets all pins except the RTC interrupt pins to "tri-state."  Tri-state means that for *all* pins:
 
@@ -205,7 +205,7 @@ To prevent power draw by any external pins during sleep, Modular Sensors sets al
 
 > [!NOTE]
 > You can disable disabling peripherals by calling `Logger::disablePeripheralShutdown(true)`.
-> You can re-enable pin tri-strate by calling `Logger::disablePeripheralShutdown(false)`.
+> You can re-enable peripheral shutdown by calling `Logger::disablePeripheralShutdown(false)`.
 > No peripheral settings are changed when the `disablePeripheralShutdown()` function is called, only when the `systemSleep()` function is called.
 
 To decrease power use during sleep on the SAMD51, Modular Sensors explicitly disconnects all unused peripherals from the various clocks and and clock sources to prevent them from "[sleepwalking](https://onlinedocs.microchip.com/oxy/GUID-F5813793-E016-46F5-A9E2-718D8BCED496-en-US-14/GUID-FA7D618C-0F98-4A2C-9D24-669C4A3E3CA3.html)".
@@ -230,13 +230,13 @@ The numbers of all disabled peripherals are:
 - 18, 19, 20, 21, 22, 25, 26, 27, 28, 29, 30,
 - 31, 32, 33, 38, 39, 42, 43, 44, 45, 46, 47
 
-@see [The SAMD clock file](@ref samd51_clock_other_libraries) for a list of which peripherals each of these numbers pertain to.
+See [The SAMD clock file](@ref samd51_clock_other_libraries) for a list of which peripherals each of these numbers pertain to.
 
 ### Steps in Putting an SAMD51 board to sleep<!--! {#sleep_fxn_samd51} -->
 
-After completing the [steps for putting all boards to sleep](#steps-for-putting-all-boards-to-sleep) SAMD51 boards finish their bedtime routine with these steps.
+After completing the [steps for putting all boards to sleep](#steps-for-putting-all-boards-to-sleep), SAMD51 boards finish their bedtime routine with these steps:
 
-- Detach any USB devices (ie, the built in USB drivers for communication with a PC)
+- Detach any USB devices (ie, the built-in USB drivers for communication with a PC)
   - This is skipped if the TinyUSB library is called for some reason.
 - Force all pins except the RTC wake and button pins to go to minimum power draw levels (tri-state)
 - Configure GCLK7 to be disconnected from an oscillator source.
@@ -261,7 +261,7 @@ SRGD Note: I believe this only applies at power-on, but it's probably not a bad 
 
 ### Steps in Resuming Activity for a SAMD51 board<!--! {#wake_fxn_samd51} -->
 
-*Before* completing the [steps on wake for all boards](#steps-on-wake-for-all-boards) SAMD51 boards start their wake routine with these steps.
+*Before* completing the [steps on wake for all boards](#steps-on-wake-for-all-boards), SAMD51 boards start their wake routine with these steps:
 
 - Re-attach the USB for PC communication
 - Re-set the pin modes for the RTC wake pin, SD card SS pin, SD card power pin, button pin, and LED pin.
@@ -283,9 +283,9 @@ The pin configurations for the SAMD21 are identical to those described above for
 
 ### Steps in Putting an SAMD21 board to sleep<!--! {#sleep_fxn_samd21} -->
 
-After completing the [steps for putting all boards to sleep](#steps-for-putting-all-boards-to-sleep) SAMD21 boards finish their bedtime routine with these steps.
+After completing the [steps for putting all boards to sleep](#steps-for-putting-all-boards-to-sleep), SAMD21 boards finish their bedtime routine with these steps:
 
-- Detach any USB devices (ie, the built in USB drivers for communication with a PC)
+- Detach any USB devices (ie, the built-in USB drivers for communication with a PC)
   - This is skipped if the TinyUSB library is called for some reason.
 - Force all pins except the RTC wake and button pins to go to minimum power draw levels (tri-state)
 - Wait for all serial ports to finish transmitting
@@ -303,7 +303,7 @@ To prevent this the SysTick interrupts are disabled before entering sleep mode.
 
 ### Steps in Resuming Activity for a SAMD21 board<!--! {#wake_fxn_samd21} -->
 
-*Before* completing the [steps on wake for all boards](#steps-on-wake-for-all-boards) SAMD21 boards start their wake routine with these steps.
+*Before* completing the [steps on wake for all boards](#steps-on-wake-for-all-boards), SAMD21 boards start their wake routine with these steps:
 
 - Re-enable the systick interrupt
 - Re-attach the USB for PC communication

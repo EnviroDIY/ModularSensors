@@ -66,7 +66,7 @@ If you want to send data to multiple channels, you must create individual logger
 - Order the variables in your variable array in the same order as your fields are on ThingSpeak.
   - This order is **crucial**.
 The results from the variables in the VariableArray will be sent to ThingSpeak in the order they are in the array; that is, the first variable in the array will be sent as Field1, the second as Field2, etc.
-  - Any UUID's or custom variable codes are ignored for ThingSpeak.
+  - Any UUIDs or custom variable codes are ignored for ThingSpeak.
 They will only appear in the header of your file on the SD card.
 - Find this information for your ThingSpeak account and channel and put it into logging_to_ThingSpeak.ino:
 

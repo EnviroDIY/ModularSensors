@@ -26,7 +26,7 @@ void extendedWatchDogSAMD::setupWatchDog(uint32_t resetTime_s) {
     extendedWatchDogSAMD::_barksUntilReset = _resetTime_s /
         MAXIMUM_WATCHDOG_PERIOD;
     MS_DEEP_DBG(F("WDT Reset time:"), _resetTime_s,
-                F(" Maximim time between barks"), MAXIMUM_WATCHDOG_PERIOD,
+                F(" Maximum time between barks"), MAXIMUM_WATCHDOG_PERIOD,
                 F(" Barks until reset:"), _barksUntilReset);
 
     // Steps:
@@ -38,7 +38,7 @@ void extendedWatchDogSAMD::setupWatchDog(uint32_t resetTime_s) {
     //   - The WDT **cannot** be cleared until after the end of the
     //   closed-window period.  Attempting a clear during the closed window
     //   causes a reset.
-    //   - 0xB - 16384 clockcycles @ 1024hz = 16 seconds
+    //   - 0xB - 16384 clock cycles @ 1024hz = 16 seconds
     // - Set the watchdog time-out period to the maximum value
     //   - In windowed mode, the time-out period (or open window) starts at
     //   the end of the closed window period
@@ -48,9 +48,9 @@ void extendedWatchDogSAMD::setupWatchDog(uint32_t resetTime_s) {
     //   is, because we're going to clear the watchdog or issue a reset as
     //   soon as the early warning interrupt fires to tell us that the open
     //   window has started.
-    //   - 0xB - 16384 clockcycles @ 1024hz = 16 seconds
+    //   - 0xB - 16384 clock cycles @ 1024hz = 16 seconds
     // - Set the watchdog early warning offset value to the minimum value.
-    //   - 0x0 - 8 clockcycles @ 1024hz ~= 7.8ms
+    //   - 0x0 - 8 clock cycles @ 1024hz ~= 7.8ms
     //   - The early warning offset isn't relevant in windowed mode.
     // - Enable windowed mode
 
@@ -110,20 +110,20 @@ void extendedWatchDogSAMD::enableWatchDog() {
 
     WDT->CONFIG.bit.PER = 0xB;  // Period/Open window period
     // ^^ Use the maximum period for both windowed and normal mode
-    // 0xB = 16384 clockcycles @ 1024hz = 16 seconds
+    // 0xB = 16384 clock cycles @ 1024hz = 16 seconds
     WDT->CONFIG.bit.WINDOW = 0xB;  // Closed window period
     // ^^ Use the maximum closed window period for windowed mode
     // This is irrelevant for normal mode
-    // 0xB = 16384 clockcycles @ 1024hz = 16 seconds
+    // 0xB = 16384 clock cycles @ 1024hz = 16 seconds
     WDT->EWCTRL.bit.EWOFFSET = 0xA;  // Early Warning Offset
     // ^^ The Early Warning Offset bits define the number of GCLK_WDT clocks
     // before the interrupt is generated, relative to the start of the watchdog
     // time-out period. This must be less than the size of the watchdog period
     // or the interrupt will not be generated.
-    // Use the maximum offset for the longest time before the interrut in normal
-    // mode.
+    // Use the maximum offset for the longest time before the interrupt in
+    // normal mode.
     // This is irrelevant in windowed mode.
-    // 0xA = 8192 clockcycles @ 1024hz = 8 seconds
+    // 0xA = 8192 clock cycles @ 1024hz = 8 seconds
 
     // WDT->INTFLAG.bit.EW  = 1;  // Clear any pending interrupt flags
     WDT->INTENSET.bit.EW = 1;  // Enable early warning interrupt
@@ -237,7 +237,7 @@ void extendedWatchDogSAMD::configureClockGenerator() {
                 GENERIC_CLOCK_GENERATOR_MS);
     GCLK->GENCTRL.reg = static_cast<uint32_t>(
         GCLK_GENCTRL_ID(GENERIC_CLOCK_GENERATOR_MS) |  // Select GCLK
-        GCLK_GENCTRL_GENEN |          // Enable the generic clock clontrol
+        GCLK_GENCTRL_GENEN |          // Enable the generic clock controller
         GCLK_GENCTRL_SRC_OSCULP32K |  // Select the built-in ultra-low power
                                       // internal oscillator
         GCLK_GENCTRL_IDC |            // improve duty cycle
@@ -257,7 +257,7 @@ void extendedWatchDogSAMD::configureWDTClock() {
     //^^ SAMD21
     // Per datasheet 16.6.3.3 the generic clock must be disabled before being
     // re-enabled with a new clock source setting.
-    MS_DEEP_DBG(F("Disabling WDT peripeheral clock for configuration"));
+    MS_DEEP_DBG(F("Disabling WDT peripheral clock for configuration"));
     // this will set all bits but the ID to 0, disabling everything
     // See https://github.com/arduino-libraries/ArduinoLowPower/issues/30
     GCLK->CLKCTRL.reg = static_cast<uint16_t>(GCLK_CLKCTRL_ID(GCM_WDT));
@@ -270,7 +270,7 @@ void extendedWatchDogSAMD::configureWDTClock() {
     GCLK->CLKCTRL.reg = static_cast<uint16_t>(
         GCLK_CLKCTRL_GEN(GENERIC_CLOCK_GENERATOR_MS) |  // Select generic clock
                                                         // generator
-        GCLK_CLKCTRL_CLKEN |        // Enable the generic clock clontrol
+        GCLK_CLKCTRL_CLKEN |        // Enable the generic clock controller
         GCLK_CLKCTRL_ID(GCM_WDT));  // Feed the GCLK to the WDT
     waitForGCLKBitSync();
 #endif
@@ -327,7 +327,7 @@ void extendedWatchDogSAMD::configureEICClock() {
 
     // Per datasheet 16.6.3.3 the generic clock must be disabled before being
     // re-enabled with a new clock source setting.
-    MS_DEEP_DBG(F("Disabling EIC peripeheral clock for configuration"));
+    MS_DEEP_DBG(F("Disabling EIC peripheral clock for configuration"));
     // this will set all bits but the ID to 0, disabling everything
     // See https://github.com/arduino-libraries/ArduinoLowPower/issues/30
     GCLK->CLKCTRL.reg = static_cast<uint16_t>(GCLK_CLKCTRL_ID(GCM_EIC));
@@ -340,7 +340,7 @@ void extendedWatchDogSAMD::configureEICClock() {
     GCLK->CLKCTRL.reg = static_cast<uint16_t>(
         GCLK_CLKCTRL_GEN(GENERIC_CLOCK_GENERATOR_MS) |  // Select generic clock
                                                         // generator
-        GCLK_CLKCTRL_CLKEN |        // Enable the generic clock clontrol
+        GCLK_CLKCTRL_CLKEN |        // Enable the generic clock controller
         GCLK_CLKCTRL_ID(GCM_EIC));  // Feed the GCLK to the EIC
     waitForGCLKBitSync();
 
@@ -427,5 +427,7 @@ void WDT_Handler(void) {
     }
 }
 
+// cspell:words EWCTRL EWOFFSET INTENSET ULP32KOSC GCLK_GENCTRL_GENEN APBAMASK
+// cspell:words  GCLK_CLKCTRL_CLKEN irqn CKSEL
 
 #endif

@@ -88,7 +88,7 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include "TinyGsmClient.h"
+#include "TinyGsmClientBG96.h"
 #include "LoggerModem.h"
 
 #ifdef MS_QUECTELBG96_DEBUG_DEEP
@@ -238,7 +238,7 @@ class QuectelBG96 : public loggerModem {
     /**
      * @brief Public reference to the TinyGSM modem.
      */
-    TinyGsm gsmModem;
+    TinyGsmBG96 gsmModem;
 
  protected:
     bool isInternetAvailable(void) override;

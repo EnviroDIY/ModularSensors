@@ -4,7 +4,7 @@ This shows the simplest use of a "logger" object.
 That is, creating an array of variable objects and then creating a logger object that utilizes those variables to update all of the variable results together and save the data to a SD card.
 The processor then goes to sleep between readings.
 
-This is the example you should use to deploy a logger somewhere where you don't want or have access to a way of streaming live data and you won't want to upload data to the Monitor My Watershed data portal.
+This is the example you should use to deploy a logger somewhere where you don't want or have access to a way of streaming live data and you won't want to upload data to Monitor My Watershed.
 
 _______
 
@@ -40,11 +40,11 @@ _______
 
 ### Set the logger ID<!--! {#example_simple_logging_logger_id} -->
 
-- Change the "XXXX" in this section of code to the loggerID assigned by Stroud:
+- Change the text `YourLoggerID` in this section of code to your logger ID or serial number:
 
 ```cpp
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "XXXX";
+const char *LoggerID = "YourLoggerID";
 ```
 
 ### Upload!<!--! {#example_simple_logging_upload} -->

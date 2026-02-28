@@ -27,21 +27,6 @@
  * ======================================================================= */
 
 // ==========================================================================
-//  Defines for TinyGSM
-// ==========================================================================
-/** Start [defines] */
-#ifndef TINY_GSM_RX_BUFFER
-#define TINY_GSM_RX_BUFFER 64
-#endif
-#ifndef TINY_GSM_YIELD_MS
-#define TINY_GSM_YIELD_MS 2
-#endif
-#ifndef MQTT_MAX_PACKET_SIZE
-#define MQTT_MAX_PACKET_SIZE 1024
-#endif
-/** End [defines] */
-
-// ==========================================================================
 //  Include the libraries required for any data logger
 // ==========================================================================
 /** Start [includes] */
@@ -114,8 +99,8 @@ const int8_t modemLEDPin =
     redLED;  // MCU pin connected an LED to show modem status
 
 // Network connection information
-const char* wifiId  = "xxxxx";  // The WiFi access point
-const char* wifiPwd = "xxxxx";  // The password for connecting to WiFi
+const char* wifiId  = "YourWiFiSSID";      // The WiFi access point
+const char* wifiPwd = "YourWiFiPassword";  // The WiFi password
 
 // Create the loggerModem object
 EspressifESP32 modemESP(&modemSerial, modemVccPin, modemResetPin, wifiId,
@@ -160,8 +145,8 @@ const int8_t alsData = A8;  // The ALS PT-19 data pin
 #else
 const int8_t alsData = A4;  // The ALS PT-19 data pin
 #endif
-const int8_t  alsSupply     = 3.3;  // The ALS PT-19 supply power voltage
-const int8_t  alsResistance = 10;   // The ALS PT-19 loading resistance (in kΩ)
+const float   alsSupply     = 3.3f;  // The ALS PT-19 supply power voltage
+const int8_t  alsResistance = 10;    // The ALS PT-19 loading resistance (in kΩ)
 const uint8_t alsNumberReadings = 10;
 
 // Create a Everlight ALS-PT19 sensor object

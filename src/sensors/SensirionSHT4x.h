@@ -274,9 +274,6 @@ class SensirionSHT4x : public Sensor {
      */
     bool setup(void) override;
 
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
     bool addSingleMeasurementResult(void) override;
 
     /**
@@ -293,7 +290,7 @@ class SensirionSHT4x : public Sensor {
      */
     bool _useHeater;
     /**
-     * @brief Internal reference the the Adafruit BME object
+     * @brief Internal reference to the Adafruit SHT4x object
      */
     Adafruit_SHT4x sht4x_internal;
     /**

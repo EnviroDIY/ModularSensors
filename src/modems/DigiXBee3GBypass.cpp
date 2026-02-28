@@ -38,12 +38,12 @@ MS_MODEM_CONNECT_INTERNET(DigiXBee3GBypass);
 MS_MODEM_DISCONNECT_INTERNET(DigiXBee3GBypass);
 MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBee3GBypass);
 
-MS_MODEM_CREATE_CLIENT(DigiXBee3GBypass);
-MS_MODEM_DELETE_CLIENT(DigiXBee3GBypass);
-MS_MODEM_CREATE_SECURE_CLIENT(DigiXBee3GBypass);
-MS_MODEM_DELETE_SECURE_CLIENT(DigiXBee3GBypass);
+MS_MODEM_CREATE_CLIENT(DigiXBee3GBypass, UBLOX);
+MS_MODEM_DELETE_CLIENT(DigiXBee3GBypass, UBLOX);
+MS_MODEM_CREATE_SECURE_CLIENT(DigiXBee3GBypass, UBLOX);
+MS_MODEM_DELETE_SECURE_CLIENT(DigiXBee3GBypass, UBLOX);
 
-MS_MODEM_GET_NIST_TIME(DigiXBee3GBypass);
+MS_MODEM_GET_NIST_TIME(DigiXBee3GBypass, UBLOX);
 
 MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBee3GBypass);
 MS_MODEM_GET_MODEM_BATTERY_DATA(DigiXBee3GBypass);
@@ -107,7 +107,7 @@ bool DigiXBee3GBypass::extraModemSetup(void) {
         /** Disassociate from the network for the lowest power deep sleep. */
         MS_DBG(F("Setting Other Options..."));
         /** Disable remote manager and enable 2G fallback. */
-        gsmModem.sendAT(GF("DO"), 02);
+        gsmModem.sendAT(GF("DO"), 2);
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
         /** Make sure airplane mode is off - bypass and airplane mode are
          * incompatible. */

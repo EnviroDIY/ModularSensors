@@ -95,7 +95,7 @@ class VariableArray {
      * @param variableCount The number of variables in the array
      * @param variableList An array of pointers to variable objects.  The
      * pointers may be to calculated or measured variable objects.
-     * @param uuids An array of UUID's.  These are linked 1-to-1 with the
+     * @param uuids An array of UUIDs.  These are linked 1-to-1 with the
      * variables by array position.
      */
     VariableArray(uint8_t variableCount, Variable* variableList[],
@@ -132,7 +132,7 @@ class VariableArray {
      * @param variableList An array of pointers to variable objects.  The
      * pointers may be to calculated or measured variable objects.  Supersedes
      * any value given in the constructor.
-     * @param uuids An array of UUID's.  These are linked 1-to-1 with the
+     * @param uuids An array of UUIDs.  These are linked 1-to-1 with the
      * variables by array position.
      */
     void begin(uint8_t variableCount, Variable* variableList[],
@@ -180,12 +180,12 @@ class VariableArray {
     uint8_t getSensorCount(void);
 
     /**
-     * @brief Match UUID's from the given variables in the variable array.
+     * @brief Match UUIDs from the given variables in the variable array.
      *
-     * This over-writes all UUID's previously assigned to every variable.  The
+     * This over-writes all UUIDs previously assigned to every variable.  The
      * match is 1-to-1 based on array position.
      *
-     * @param uuids An array of UUID's
+     * @param uuids An array of UUIDs
      */
     void matchUUIDs(const char* uuids[]);
 
@@ -239,9 +239,10 @@ class VariableArray {
     /**
      * @brief Update the values for all connected sensors.
      *
-     * Does not power or wake/sleep sensors.  Returns a boolean indication the
-     * overall success.  Does NOT return any values.  Repeatedly checks each
-     * sensor's readiness state to optimize timing.
+     * @m_deprecated_since{0,38,0}
+     *
+     * Use completeUpdate() instead and set the powerUp, wake, sleep and
+     * powerDown parameters as needed.
      *
      * @return True if all steps of the update succeeded.
      */
@@ -257,9 +258,15 @@ class VariableArray {
      * values.  Repeatedly checks each sensor's readiness state to optimize
      * timing.
      *
+     * @param powerUp If true, powers up all sensors before updating.
+     * @param wake If true, wakes all sensors before updating.
+     * @param sleep If true, puts all sensors to sleep after updating.
+     * @param powerDown If true, cuts power to all sensors after updating.
+     *
      * @return True if all steps of the update succeeded.
      */
-    bool completeUpdate(void);
+    bool completeUpdate(bool powerUp = true, bool wake = true,
+                        bool sleep = true, bool powerDown = true);
 
     /**
      * @brief Print out the results for all connected sensors to a stream
@@ -283,10 +290,6 @@ class VariableArray {
      * @brief The count of unique sensors tied to variables in the array
      */
     uint8_t _sensorCount;
-    /**
-     * @brief The maximum number of samples to average of an single sensor.
-     */
-    uint8_t _maxSamplesToAverage;
 
  private:
     /**
@@ -301,18 +304,11 @@ class VariableArray {
      */
     bool isLastVarFromSensor(int arrayIndex);
     /**
-     * @brief Count the maximum number of measurements needed from a single
-     * sensor for the requested averaging
+     * @brief Check that all variables have valid UUIDs, if they are assigned
      *
-     * @return The number of measurements needed.
-     */
-    uint8_t countMaxToAverage(void);
-    /**
-     * @brief Check that all variable have valid UUID's, if they are assigned
+     * @return True if all variables have valid UUIDs.
      *
-     * @return True if all variables have valid UUID's.
-     *
-     * @warning This does not check that the UUID's are the true UUID's for the
+     * @warning This does not check that the UUIDs are the true UUIDs for the
      * variables, just that the text is a validly formed UUID.
      */
     bool checkVariableUUIDs(void);

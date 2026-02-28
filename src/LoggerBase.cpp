@@ -198,7 +198,7 @@ void Logger::setLoggingInterval(int16_t loggingIntervalMinutes) {
 
 
 // Sets the number of initial short intervals
-void Logger::setinitialShortIntervals(int16_t initialShortIntervals) {
+void Logger::setInitialShortIntervals(int16_t initialShortIntervals) {
     _remainingShortIntervals = initialShortIntervals;
 }
 
@@ -653,7 +653,7 @@ bool Logger::isRTCSane(void) {
 
 
 // This sets static variables for the date/time - this is needed so that all
-// data outputs (SD, EnviroDIY, serial printing, etc) print the same time
+// data outputs (SD, publishers, serial printing, etc) print the same time
 // for updating the sensors - even though the routines to update the sensors
 // and to output the data may take several seconds.
 // It is not currently possible to output the instantaneous time an individual
@@ -820,10 +820,6 @@ void Logger::systemSleep(void) {
     digitalWrite(SCL, LOW);
 #endif
 
-    // Disable the watch-dog timer
-    MS_DEEP_DBG(F("Disabling the watchdog"));
-    extendedWatchDog::disableWatchDog();
-
 #if defined(ARDUINO_ARCH_SAMD)
 
     // force all pins to minimum power draw levels (tri-state)
@@ -978,6 +974,12 @@ void Logger::systemSleep(void) {
     SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
 #endif
 
+    // Disable the watch-dog timer - the very last thing before sleeping just in
+    // case anything else goes wrong in between.
+    // NOTE: Because this is last, we can't print a message after disabling the
+    // watch-dog.
+    extendedWatchDog::disableWatchDog();
+
     __DSB();  // Data sync barrier - to ensure outgoing memory accesses
               // complete
     __WFI();  // wait for interrupt
@@ -1059,6 +1061,12 @@ void Logger::systemSleep(void) {
     MS_2ND_OUTPUT.flush();
 #endif
 
+    // Disable the watch-dog timer - the very last thing before sleeping just in
+    // case anything else goes wrong in between.
+    // NOTE: Because this is last, we can't print a message after disabling the
+    // watch-dog.
+    extendedWatchDog::disableWatchDog();
+
     // Actually put the processor into sleep mode.
     // This must happen after the SE bit is set.
     sleep_cpu();
@@ -1070,10 +1078,13 @@ void Logger::systemSleep(void) {
     // ---------------------------------------------------------------------
     // -- The portion below this happens on wake up, after any wake ISR's --
 
+    // Re-enable the watch-dog timer right away!
+    extendedWatchDog::enableWatchDog();
+
 #if defined(ENVIRODIY_STONEFLY_M4)
     pinMode(LED_BUILTIN, OUTPUT);
     digitalWrite(LED_BUILTIN,
-                 HIGH);  // turn off the built-in LED if using a Stonefly M4
+                 HIGH);  // turn on the built-in LED if using a Stonefly M4
 #endif
 
 #if defined(ARDUINO_ARCH_SAMD)
@@ -1102,6 +1113,14 @@ void Logger::systemSleep(void) {
     // ^^ Restarts the bus, including re-attaching the NVIC interrupts
     USBDevice.attach();
     // ^^ USB->DEVICE.CTRLB.bit.DETACH = 0; enables USB interrupts
+#if (defined(MS_LOGGERBASE_DEBUG_DEEP) || defined(MS_LOGGERBASE_DEBUG)) && \
+    defined(SERIAL_PORT_USBVIRTUAL)
+    // if debugging is enabled, wait for the USB port to connect
+    uint32_t startSerialWait = millis();
+    SERIAL_PORT_USBVIRTUAL.begin(0);  // baud rate is ignored on USB
+    while (!SERIAL_PORT_USBVIRTUAL && (millis() - startSerialWait < 250));
+    MS_DEEP_DBG(F("USBDevice reattached"));
+#endif
 #endif  // USE_TINYUSB
 #endif  // ARDUINO_ARCH_SAMD
 
@@ -1126,10 +1145,6 @@ void Logger::systemSleep(void) {
     interrupts();
 
 #endif
-
-    // Re-enable the watch-dog timer
-    MS_DEEP_DBG(F("Re-enabling the watchdog"));
-    extendedWatchDog::enableWatchDog();
 
     // Re-start the I2C interface
     MS_DEEP_DBG(F("Restarting I2C"));
@@ -1260,8 +1275,8 @@ void Logger::printFileHeader(Stream* stream) {
     stream->print(F("Data Logger File: "));
     stream->println(_fileName);
 
-    // Adding the sampling feature UUID (only applies to EnviroDIY logger)
-    if (strlen(_samplingFeatureUUID) > 1) {
+    // Adding the sampling feature UUID
+    if (_samplingFeatureUUID != nullptr && strlen(_samplingFeatureUUID) > 1) {
         stream->print(F("Sampling Feature UUID: "));
         stream->print(_samplingFeatureUUID);
         stream->println(',');
@@ -1274,12 +1289,12 @@ void Logger::printFileHeader(Stream* stream) {
     // Next comes the ODM2 unit name
     STREAM_CSV_ROW(F("Result Unit:"), getVarUnitAtI(i))
     // Next comes the variable UUIDs
-    // We'll only add UUID's if we see a UUID for the first variable
+    // We'll only add UUIDs if we see a UUID for the first variable
     if (getVarUUIDAtI(0) != nullptr && strlen(getVarUUIDAtI(0)) > 1) {
         STREAM_CSV_ROW(F("Result UUID:"), getVarUUIDAtI(i))
     }
 
-    // We'll finish up the the custom variable codes
+    // We'll finish up with the custom variable codes
     String dtRowHeader = F("Date and Time in UTC");
     if (_loggerUTCOffset > 0) {
         dtRowHeader += '+' + _loggerUTCOffset;
@@ -1604,9 +1619,9 @@ void Logger::benchTestingMode(bool sleepBeforeReturning) {
 
         extendedWatchDog::resetWatchDog();
         // Update the values from all attached sensors
-        // NOTE:  NOT using complete update because we want the sensors to be
-        // left on between iterations in testing mode.
-        _internalArray->updateAllSensors();
+        // NOTE:  Use completeUpdate with all flags false so sensors stay
+        // powered and awake between iterations in testing mode.
+        _internalArray->completeUpdate(false, false, false, false);
         // Print out the current logger time
         PRINTOUT(F("Current logger time is"),
                  formatDateTime_ISO8601(getNowLocalEpoch()));

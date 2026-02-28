@@ -9,80 +9,139 @@
  */
 
 #include "EverlightALSPT19.h"
+#include "ProcessorAnalog.h"
 
 
-// The constructor - because this is I2C, only need the power pin
-// This sensor has a set I2C address of 0XB8
 EverlightALSPT19::EverlightALSPT19(int8_t powerPin, int8_t dataPin,
-                                   float supplyVoltage, float loadResistor,
-                                   uint8_t measurementsToAverage)
+                                   float alsSupplyVoltage, float loadResistor,
+                                   uint8_t            measurementsToAverage,
+                                   AnalogVoltageBase* analogVoltageReader)
     : Sensor("Everlight ALS-PT19", ALSPT19_NUM_VARIABLES,
              ALSPT19_WARM_UP_TIME_MS, ALSPT19_STABILIZATION_TIME_MS,
              ALSPT19_MEASUREMENT_TIME_MS, powerPin, dataPin,
-             measurementsToAverage),
-      _supplyVoltage(supplyVoltage),
-      _loadResistor(loadResistor) {}
-EverlightALSPT19::EverlightALSPT19(uint8_t measurementsToAverage)
-    : Sensor("Everlight ALS-PT19", ALSPT19_NUM_VARIABLES,
-             ALSPT19_WARM_UP_TIME_MS, ALSPT19_STABILIZATION_TIME_MS,
-             ALSPT19_MEASUREMENT_TIME_MS, MAYFLY_ALS_POWER_PIN,
-             MAYFLY_ALS_DATA_PIN, measurementsToAverage,
-             ALSPT19_INC_CALC_VARIABLES),
-      _supplyVoltage(MAYFLY_ALS_SUPPLY_VOLTAGE),
-      _loadResistor(MAYFLY_ALS_LOADING_RESISTANCE) {}
-EverlightALSPT19::~EverlightALSPT19() {}
+             measurementsToAverage, ALSPT19_INC_CALC_VARIABLES),
+      _alsSupplyVoltage((alsSupplyVoltage > 0.0f) ? alsSupplyVoltage
+                                                  : OPERATING_VOLTAGE),
+      // If no analog voltage reader was provided, create a default one
+      _loadResistor(loadResistor),
+      _analogVoltageReader(analogVoltageReader == nullptr
+                               ? new ProcessorAnalogBase()
+                               : analogVoltageReader),
+      _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {}
+
+#if (defined(BUILT_IN_ALS_POWER_PIN) && defined(BUILT_IN_ALS_DATA_PIN) && \
+     defined(BUILT_IN_ALS_SUPPLY_VOLTAGE) &&                              \
+     defined(BUILT_IN_ALS_LOADING_RESISTANCE)) ||                         \
+    defined(DOXYGEN)
+EverlightALSPT19::EverlightALSPT19(uint8_t            measurementsToAverage,
+                                   AnalogVoltageBase* analogVoltageReader)
+    : EverlightALSPT19(BUILT_IN_ALS_POWER_PIN, BUILT_IN_ALS_DATA_PIN,
+                       BUILT_IN_ALS_SUPPLY_VOLTAGE,
+                       BUILT_IN_ALS_LOADING_RESISTANCE, measurementsToAverage,
+                       analogVoltageReader) {}
+#endif
+
+// Destructor
+EverlightALSPT19::~EverlightALSPT19() {
+    // Clean up the analog voltage reader if we created it
+    if (_ownsAnalogVoltageReader && _analogVoltageReader != nullptr) {
+        delete _analogVoltageReader;
+    }
+}
+
+
+String EverlightALSPT19::getSensorLocation(void) {
+    if (_analogVoltageReader != nullptr) {
+        return _analogVoltageReader->getAnalogLocation(_dataPin, -1);
+    } else {
+        return String(F("Unknown_AnalogVoltageReader"));
+    }
+}
+
+
+bool EverlightALSPT19::setup(void) {
+    bool sensorSetupSuccess         = Sensor::setup();
+    bool analogVoltageReaderSuccess = false;
+
+    if (_analogVoltageReader != nullptr) {
+        analogVoltageReaderSuccess = _analogVoltageReader->begin();
+        if (!analogVoltageReaderSuccess) {
+            MS_DBG(getSensorNameAndLocation(),
+                   F("Analog voltage reader initialization failed"));
+        }
+    } else {
+        MS_DBG(getSensorNameAndLocation(),
+               F("No analog voltage reader to initialize"));
+    }
+
+    return sensorSetupSuccess && analogVoltageReaderSuccess;
+}
 
 
 bool EverlightALSPT19::addSingleMeasurementResult(void) {
-    // Initialize float variables
-    float volt_val    = -9999;
-    float current_val = -9999;
-    float lux_val     = -9999;
-
-    // Check a measurement was *successfully* started (status bit 6 set)
-    // Only go on to get a result if it was
-    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
-
-        // First measure the analog voltage.
-        // The return value from analogRead() is IN BITS NOT IN VOLTS!!
-        // Take a priming reading.
-        // First reading will be low - discard
-        analogRead(_dataPin);
-        // Take the reading we'll keep
-        uint32_t sensor_adc = analogRead(_dataPin);
-        MS_DEEP_DBG("  ADC Bits:", sensor_adc);
-
-        if (0 == sensor_adc) {
-            // Prevent underflow, can never be outside of PROCESSOR_ADC_RANGE
-            sensor_adc = 1;
-        }
-        // convert bits to volts
-        volt_val = (_supplyVoltage / static_cast<float>(PROCESSOR_ADC_MAX)) *
-            static_cast<float>(sensor_adc);
-        // convert volts to current
-        // resistance is entered in kΩ and we want µA
-        current_val = (volt_val / (_loadResistor * 1000)) * 1e6;
-        // convert current to illuminance
-        // from sensor datasheet, typical 200µA current for 1000 Lux
-        lux_val = current_val * (1000. / 200.);
-
-
-        MS_DBG(F("  Voltage:"), volt_val, F("V"));
-        MS_DBG(F("  Current:"), current_val, F("µA"));
-        MS_DBG(F("  Illuminance:"), lux_val, F("lux"));
-    } else {
-        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return bumpMeasurementAttemptCount(false);
     }
 
-    verifyAndAddMeasurementResult(ALSPT19_VOLTAGE_VAR_NUM, volt_val);
-    verifyAndAddMeasurementResult(ALSPT19_CURRENT_VAR_NUM, current_val);
-    verifyAndAddMeasurementResult(ALSPT19_ILLUMINANCE_VAR_NUM, lux_val);
+    // Check if we have a valid analog voltage reader
+    if (_analogVoltageReader == nullptr) {
+        MS_DBG(getSensorNameAndLocation(),
+               F("No analog voltage reader available"));
+        return bumpMeasurementAttemptCount(false);
+    }
+    // Check if we have a valid load resistor
+    if (_loadResistor <= 0) {
+        MS_DBG(getSensorNameAndLocation(), F("Invalid load resistor value"));
+        return bumpMeasurementAttemptCount(false);
+    }
+    // Check if we have a valid calibration constant
+    if (ALSPT19_UA_PER_1000LUX <= 0) {
+        MS_DBG(getSensorNameAndLocation(),
+               F("Invalid current-to-lux calibration factor"));
+        return bumpMeasurementAttemptCount(false);
+    }
 
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
+    float adcVoltage = -9999.0f;
 
-    return true;
+    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+
+    // Read the single-ended analog voltage using the AnalogVoltageBase
+    // interface.
+    // NOTE: All implementations of the AnalogVoltageBase class validate both
+    // the input channel and the resulting voltage, so we can trust that a
+    // successful read will give us a valid voltage value to work with.
+    bool success = _analogVoltageReader->readVoltageSingleEnded(_dataPin,
+                                                                adcVoltage);
+
+    if (success) {
+        verifyAndAddMeasurementResult(ALSPT19_VOLTAGE_VAR_NUM, adcVoltage);
+
+        // From the datasheet:
+        // The output voltage V(out) is the product of photocurrent I(PH) and
+        // loading resistor R(L):
+        // - V(out) = I(PH) * R(L)
+        // At saturation:
+        // - V(out) ＝ Vcc－0.4V
+        if (adcVoltage > _alsSupplyVoltage - 0.4f) {
+            MS_DBG(getSensorNameAndLocation(),
+                   F("Light sensor has reached saturation!  Clamping current "
+                     "and illumination values!"));
+            adcVoltage = max(0.0f, _alsSupplyVoltage - 0.4f);
+        }
+        // convert volts to current
+        // resistance is entered in kΩ and we want µA
+        float current_val = (adcVoltage / (_loadResistor * 1000.0f)) * 1e6f;
+        MS_DBG(F("  Current:"), current_val, F("µA"));
+        verifyAndAddMeasurementResult(ALSPT19_CURRENT_VAR_NUM, current_val);
+
+        // convert current to illuminance
+        // from sensor datasheet, typical 200µA current for 1000 Lux
+        float calibResult = current_val * (1000.0f / ALSPT19_UA_PER_1000LUX);
+        MS_DBG(F("  Illuminance:"), calibResult, F("lux"));
+        verifyAndAddMeasurementResult(ALSPT19_ILLUMINANCE_VAR_NUM, calibResult);
+    } else {
+        MS_DBG(F("  Failed to get valid voltage from analog reader"));
+    }
+    return bumpMeasurementAttemptCount(success);
 }

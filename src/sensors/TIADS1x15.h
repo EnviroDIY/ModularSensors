@@ -59,15 +59,22 @@
  * use the fork instead.
  *
  * @section analog_ads1x15_specs Specifications
- * @note *In all cases, we assume that the ADS1x15 is powered at 3.3V and set the ADC's internal gain to 1x.
+ * @note *In all cases, we assume that the ADS1x15 is powered at 3.3V by default with configurable internal gain settings.
  *
- * This divides the bit resolution over the range of 0-4.096V.
+ * The default gain setting is 1x (GAIN_ONE) which provides a PGA full-scale range (±4.096V).
+ * In single-ended mode the actual ceiling is min(Full-Scale Range (FSR), VDD + 0.3V) — typically 3.6V at 3.3V supply.
  * - Response time: < 1ms
  * - Resample time: 860 samples per second (~1.2ms)
  * - Range:
- *   - Range is determined by supply voltage - No more than VDD + 0.3 V r 5.5 V
- *     (whichever is smaller) must be applied to this device.
- *   - 0 - 3.6V [when ADC is powered at 3.3V]
+ *   - Single-ended measurements: Limited by supply voltage (VDD + 0.3V max, absolute max 5.5V)
+ *     - 0 - 3.6V [when ADC is powered at 3.3V]
+ *   - Differential measurements: Limited by PGA full-scale range (gain-dependent)
+ *     - GAIN_TWOTHIRDS = ±6.144V PGA full-scale range
+ *     - GAIN_ONE = ±4.096V PGA full-scale range
+ *     - GAIN_TWO = ±2.048V PGA full-scale range
+ *     - GAIN_FOUR = ±1.024V PGA full-scale range
+ *     - GAIN_EIGHT = ±0.512V PGA full-scale range
+ *     - GAIN_SIXTEEN = ±0.256V PGA full-scale range
  * - Accuracy:
  *   - 16-bit ADC (ADS1115): < 0.25% (gain error), <0.25 LSB (offset error)
  *   - 12-bit ADC (ADS1015, using build flag ```MS_USE_ADS1015```): < 0.15% (gain error), <3 LSB (offset error)
@@ -112,8 +119,8 @@
  * If you are working with an EnviroDIY Mayfly, the easiest voltage divider to
  * connect is the Grove voltage divider sold by seeed studio.  The grove voltage
  * divider is a simple voltage divider designed to measure high external
- * voltages on a low voltage ADC.  This module employs a variable gain via two
- * pairs of voltage dividers, and a unity gain amplification to reduce output
+ * voltages on a low voltage ADC.  This module employs a variable voltage multiplier
+ * via two pairs of voltage dividers, and a unity gain amplification to reduce output
  * impedance of the module.
  *
  * @section sensor_ads1x15_datasheet Sensor Datasheet
@@ -146,6 +153,9 @@
 // Include the debugging config
 #include "ModSensorDebugConfig.h"
 
+// Include known processor settings for default operating voltage
+#include "KnownProcessors.h"
+
 // Define the print label[s] for the debugger
 #ifdef MS_TIADS1X15_DEBUG
 #define MS_DEBUGGING_STD "TIADS1x15"
@@ -159,6 +169,8 @@
 // Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
+#include "AnalogVoltageBase.h"
+#include <Adafruit_ADS1X15.h>
 
 /** @ingroup sensor_ads1x15 */
 /**@{*/
@@ -173,16 +185,6 @@
 #define TIADS1X15_NUM_VARIABLES 1
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define TIADS1X15_INC_CALC_VARIABLES 0
-/**@}*/
-
-/**
- * @anchor sensor_ads1x15_config
- * @name Configuration Defines
- * Defines to help configure the address of the ADD
- */
-/**@{*/
-/// @brief The assumed address of the ADS1115, 1001 000 (ADDR = GND)
-#define ADS1115_ADDRESS 0x48
 /**@}*/
 
 /**
@@ -213,25 +215,20 @@
  * @anchor sensor_ads1x15_volt
  * @name Voltage
  * The volt variable from a TI ADS1x15 analog-to-digital converter (ADC)
- *   - Range:
- *     - without voltage divider:  0 - 3.6V [when ADC is powered at 3.3V]
- *     - 1/gain = 3x: 0.3 ~ 12.9V
- *     - 1/gain = 10x: 1 ~ 43V
+ *   - Range (with no external voltage divider):
+ *     - 0 - min(4.096V, supply voltage + 0.3V)
  *   - Accuracy:
  *     - 16-bit ADC (ADS1115): < 0.25% (gain error), <0.25 LSB (offset error)
  *     - 12-bit ADC (ADS1015, using build flag ```MS_USE_ADS1015```): < 0.15%
  * (gain error), <3 LSB (offset error)
- *   - Resolution:
+ *   - Resolution (based on ADC's 4.096V internal reference with 1x gain and no
+ * external voltage divider):
  *     - 16-bit ADC (ADS1115):
  *       - @m_span{m-dim}@ref #TIADS1X15_RESOLUTION = 4@m_endspan
- *       - without voltage divider:  0.125 mV
- *       - 1/gain = 3x: 0.375 mV
- *       - 1/gain = 10x: 1.25 mV
+ *       - 0.125 mV
  *     - 12-bit ADC (ADS1015, using build flag ```MS_USE_ADS1015```):
  *       - @m_span{m-dim}@ref #TIADS1X15_RESOLUTION = 1@m_endspan
- *       - without voltage divider:  2 mV
- *       - 1/gain = 3x: 6 mV
- *       - 1/gain = 10x: 20 mV *
+ *       - 2 mV
  *
  * {{ @ref TIADS1x15_Voltage::TIADS1x15_Voltage }}
  */
@@ -257,6 +254,180 @@
 #endif
 /**@}*/
 
+/**
+ * @brief TI ADS1x15 base class that inherits from AnalogVoltageBase
+ *
+ * This class provides ADS1x15-specific analog functionality on top of
+ * the generic AnalogVoltageBase class. It handles ADS configuration,
+ * I2C communication, and differential/single-ended measurement modes.
+ */
+class TIADS1x15Base : public AnalogVoltageBase {
+ public:
+
+    /**
+     * @brief Construct a new TIADS1x15Base object
+     *
+     * @param voltageMultiplier The voltage multiplier for any voltage dividers
+     * @param adsGain The internal gain setting of the ADS1x15
+     * @param i2cAddress The I2C address of the ADS 1x15
+     * @param adsSupplyVoltage The power supply voltage for the ADS1x15 in volts
+     * @param adsDataRate The data rate for the ADS1x15 (samples per second)
+     */
+    explicit TIADS1x15Base(float     voltageMultiplier = 1.0f,
+                           adsGain_t adsGain           = GAIN_ONE,
+                           uint8_t   i2cAddress = MS_DEFAULT_ADS1X15_ADDRESS,
+                           float     adsSupplyVoltage = OPERATING_VOLTAGE,
+#ifndef MS_USE_ADS1015
+                           uint16_t adsDataRate = RATE_ADS1115_128SPS
+#else
+                           uint16_t adsDataRate = RATE_ADS1015_1600SPS
+#endif
+    );
+
+    /**
+     * @brief Destroy the TIADS1x15Base object
+     */
+    virtual ~TIADS1x15Base() = default;
+
+    /**
+     * @brief Initialize the ADS1x15 analog voltage reading system
+     *
+     * This function performs hardware initialization that cannot be safely
+     * done in the constructor, including I2C communication with the ADS1x15
+     * device to configure gain and data rate settings.
+     *
+     * @return True if the initialization was successful, false otherwise
+     */
+    bool begin(void) override;
+
+    /**
+     * @brief Read a single-ended voltage measurement from the ADS1x15
+     *
+     * @param analogChannel The ADS channel of interest (0-3, physical channel
+     * only).  Negative or invalid channel numbers are not clamped and will
+     * cause the reading to fail and emit a warning.
+     * @param resultValue Reference to store the resulting voltage measurement
+     * @return True if the voltage reading was successful
+     */
+    bool readVoltageSingleEnded(int8_t analogChannel,
+                                float& resultValue) override;
+
+    /**
+     * @brief Read a differential voltage measurement from the ADS1x15
+     *
+     * @param analogChannel The primary analog channel for differential
+     * measurement. Negative or invalid channel numbers or pairings between the
+     * analogChannel and analogReferenceChannel are not clamped and will cause
+     * the reading to fail and emit a warning.
+     * @param analogReferenceChannel The secondary (reference) analog channel
+     * for differential measurement. Negative or invalid channel numbers or
+     * pairings between the analogChannel and analogReferenceChannel are not
+     * clamped and will cause the reading to fail and emit a warning.
+     * @param resultValue Reference to store the resulting voltage measurement
+     * @return True if the voltage reading was successful and within valid range
+     */
+    bool readVoltageDifferential(int8_t analogChannel,
+                                 int8_t analogReferenceChannel,
+                                 float& resultValue) override;
+
+    String getAnalogLocation(int8_t analogChannel,
+                             int8_t analogReferenceChannel) override;
+
+    /**
+     * @brief Set the internal gain setting for the ADS1x15
+     *
+     * @param adsGain The internal gain setting (GAIN_TWOTHIRDS, GAIN_ONE,
+     * GAIN_TWO, GAIN_FOUR, GAIN_EIGHT, GAIN_SIXTEEN)
+     */
+    void setADSGain(adsGain_t adsGain);
+
+    /**
+     * @brief Get the internal gain setting for the ADS1x15
+     *
+     * @return The internal gain setting
+     */
+    adsGain_t getADSGain(void);
+
+    /**
+     * @brief Set the data rate for the ADS1x15
+     *
+     * @param adsDataRate The data rate setting (samples per second)
+     */
+    void setADSDataRate(uint16_t adsDataRate);
+
+    /**
+     * @brief Get the data rate for the ADS1x15
+     *
+     * @return The data rate setting (samples per second)
+     */
+    uint16_t getADSDataRate(void);
+
+    /**
+     * @brief Check if the two channels form a valid differential pair
+     *
+     * @param channel1 First channel (0-3, physical ADS channel indices only)
+     * @param channel2 Second channel (0-3, physical ADS channel indices only)
+     * @return True if the combination is valid (0-1, 0-3, 1-3, or 2-3)
+     *
+     * @note Channel parameters use int8_t, consistent with the rest of the
+     * ModularSensors channel conventions. Negative values indicate invalid
+     * channels.
+     */
+    static bool isValidDifferentialPair(int8_t channel1, int8_t channel2);
+
+    /**
+     * @brief Set the supply voltage for the ADS1x15
+     *
+     * @param supplyVoltage The supply voltage in volts
+     *
+     * @note Valid range is 0.0V to 5.5V per ADS1x15 datasheet. Values outside
+     * this range will be clamped with debug logging.
+     */
+    void setSupplyVoltage(float supplyVoltage) override;
+
+    /**
+     * @brief Calculate the analog resolution in volts for the ADS1x15
+     *
+     * For ADS1x15, this calculates the voltage resolution based on the current
+     * gain setting, supply voltage, and ADC bit resolution. The resolution
+     * depends on:
+     * - ADC model: 12-bit (ADS1015) or 16-bit (ADS1115)
+     * - Gain setting: determines PGA full-scale range
+     * - Supply voltage: limits actual usable range for single-ended
+     * measurements
+     *
+     * The effective full scale range is the minimum of:
+     * - PGA full-scale range (gain-dependent)
+     * - Supply voltage + 0.3V (for single-ended measurements)
+     * - Absolute maximum 5.5V per datasheet
+     *
+     * @return The analog resolution in volts per LSB
+     */
+    float calculateAnalogResolutionVolts(void) override;
+
+ protected:
+    /**
+     * @brief Internal reference to the I2C address of the TI-ADS1x15
+     */
+    uint8_t _i2cAddress;
+    /**
+     * @brief The internal gain setting for the ADS1x15
+     */
+    adsGain_t _adsGain;
+    /**
+     * @brief The data rate setting for the ADS1x15
+     */
+    uint16_t _adsDataRate;
+    /**
+     * @brief Per-instance ADS1x15 driver to maintain separate I2C state
+     */
+#ifndef MS_USE_ADS1015
+    Adafruit_ADS1115 _ads;  // 16-bit version
+#else
+    Adafruit_ADS1015 _ads;  // 12-bit version
+#endif
+};
+
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
@@ -268,11 +439,8 @@
 class TIADS1x15 : public Sensor {
  public:
     /**
-     * @brief Construct a new External Voltage object - need the power pin and
-     * the data channel on the ADS1x15.
-     *
-     * The gain value, I2C address, and number of measurements to average are
-     * optional.  If nothing is given a 1x gain is used.
+     * @brief Construct a new TIADS1x15 object for single-ended or differential
+     * voltage measurements
      *
      * @note ModularSensors only supports connecting the ADS1x15 to the primary
      * hardware I2C instance defined in the Arduino core. Connecting the ADS to
@@ -280,46 +448,65 @@ class TIADS1x15 : public Sensor {
      *
      * @param powerPin The pin on the mcu controlling power to the sensor
      * Use -1 if it is continuously powered.
-     * @param adsChannel The ADS channel of interest (0-3).
-     * @param gain The gain multiplier, if a voltage divider is used.
-     * @param i2cAddress The I2C address of the ADS 1x15, default is 0x48 (ADDR
-     * = GND)
+     * @param adsChannel The ADS channel of interest (0-3, physical channel
+     * only). For differential measurements, this is the first (positive)
+     * channel.
+     * @param analogReferenceChannel The second (reference/negative) ADS channel
+     * for differential measurement (0-3, physical channel only). Valid pairs
+     * are: 0-1, 0-3, 1-3, or 2-3. Use -1 (default) for single-ended
+     * measurements.
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
+     * @param analogVoltageReader Pointer to TIADS1x15Base object for ADS
+     * functionality. If nullptr (default), creates a new TIADS1x15Base with
+     * default settings.
      */
-    TIADS1x15(int8_t powerPin, uint8_t adsChannel, float gain = 1,
-              uint8_t i2cAddress            = ADS1115_ADDRESS,
-              uint8_t measurementsToAverage = 1);
+    TIADS1x15(int8_t powerPin, int8_t adsChannel,
+              int8_t         analogReferenceChannel = -1,
+              uint8_t        measurementsToAverage  = 1,
+              TIADS1x15Base* analogVoltageReader    = nullptr);
     /**
-     * @brief Destroy the External Voltage object
+     * @brief Destroy the TIADS1x15 object
      */
-    ~TIADS1x15();
+    ~TIADS1x15() override;
 
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
+    // Delete copy constructor and copy assignment operator to prevent shallow
+    // copies
+    TIADS1x15(const TIADS1x15&)            = delete;
+    TIADS1x15& operator=(const TIADS1x15&) = delete;
+
+    // Delete move constructor and move assignment operator
+    TIADS1x15(TIADS1x15&&)            = delete;
+    TIADS1x15& operator=(TIADS1x15&&) = delete;
+
     String getSensorLocation(void) override;
 
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
+    bool setup(void) override;
+
     bool addSingleMeasurementResult(void) override;
 
  private:
     /**
-     * @brief Internal reference to the ADS channel number of the device
-     * attached to the TI-ADS1x15
+     * @brief The second (reference) pin for differential voltage measurements.
+     *
+     * For single-ended measurements: -1 (not used)
+     * For differential measurements: the second ADS channel (0-3)
+     *
+     * @note The primary pin is stored as Sensor::_dataPin.
      */
-    uint8_t _adsChannel;
+    int8_t _analogReferenceChannel = -1;
+
     /**
-     * @brief Internal reference to the gain setting for the TI-ADS1x15
+     * @brief Pointer to the TIADS1x15Base object providing ADS functionality
      */
-    float _gain;
+    TIADS1x15Base* _analogVoltageReader = nullptr;
+
     /**
-     * @brief Internal reference to the I2C address of the TI-ADS1x15
+     * @brief Whether this object owns the _analogVoltageReader pointer and
+     * should delete it
      */
-    uint8_t _i2cAddress;
+    bool _ownsAnalogVoltageReader = false;
 };
 
 /**
@@ -383,4 +570,7 @@ class TIADS1x15_Voltage : public Variable {
 typedef TIADS1x15_Voltage ExternalVoltage_Volt;
 
 /**@}*/
+
+// cspell:words GAIN_TWOTHIRDS
+
 #endif  // SRC_SENSORS_TIADS1X15_H_

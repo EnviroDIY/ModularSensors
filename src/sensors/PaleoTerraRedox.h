@@ -15,6 +15,9 @@
  * This depends on Testato's
  * [SoftwareWire](https://github.com/Testato/SoftwareWire) library if software
  * I2C is needed.
+ *
+ * @note These sensors are no longer being produced, but this code is being
+ * maintained for users who have them in their monitoring kits.
  */
 /* clang-format off */
 /**
@@ -127,6 +130,8 @@
 /// @brief Sensor::_measurementTime_ms; the PaleoTerra redox sensor takes 67ms
 /// to complete a measurement.
 #define PTR_MEASUREMENT_TIME_MS 67
+/// @brief The time to wait after starting a conversion before data is ready.
+#define PTR_CONVERSION_WAIT_TIME_MS 300
 /**@}*/
 
 /**
@@ -213,7 +218,7 @@ class PaleoTerraRedox : public Sensor {
                     uint8_t i2cAddressHex         = MCP3421_ADR,
                     uint8_t measurementsToAverage = 1);
 #endif
-#if !defined(MS_PALEOTERRA_SOFTWAREWIRE) | defined DOXYGEN
+#if !defined(MS_PALEOTERRA_SOFTWAREWIRE) || defined(DOXYGEN)
     /**
      * @brief Construct a new PaleoTerra Redox object using a secondary
      * *hardware* I2C instance.
@@ -264,14 +269,9 @@ class PaleoTerraRedox : public Sensor {
      * @return True if the setup was successful.
      */
     bool setup(void) override;
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
+
     String getSensorLocation(void) override;
 
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
     bool addSingleMeasurementResult(void) override;
 
  private:

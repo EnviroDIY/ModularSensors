@@ -130,6 +130,8 @@ bool MaximDS18::setup(void) {
 
     // Tell the sensor that we do NOT want to wait for conversions to finish
     // That is, we're in ASYNC mode and will get values when we're ready
+    // NOTE: This is a setting of the library, not the sensor itself; it is not
+    // changed by the sensor powering down.
     _internalDallasTemp.setWaitForConversion(false);
 
     // Turn the power back off it it had been turned on
@@ -179,37 +181,29 @@ bool MaximDS18::startSingleMeasurement(void) {
 
 
 bool MaximDS18::addSingleMeasurementResult(void) {
-    bool success = false;
-
-    // Initialize float variable
-    float result = -9999;
-
-    // Check a measurement was *successfully* started (status bit 6 set)
-    // Only go on to get a result if it was
-    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
-        result = _internalDallasTemp.getTempC(_OneWireAddress);
-        MS_DBG(F("  Received"), result, F("°C"));
-
-        // If a DS18 cannot get a good measurement, it returns 85
-        // If the sensor is not properly connected, it returns -127
-        if (result == 85 || result == -127) {
-            result = -9999;
-        } else {
-            success = true;
-        }
-        MS_DBG(F("  Temperature:"), result, F("°C"));
-    } else {
-        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return bumpMeasurementAttemptCount(false);
     }
 
-    // Put value into the array
-    verifyAndAddMeasurementResult(DS18_TEMP_VAR_NUM, result);
+    bool  success = false;
+    float result  = -9999;
 
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
+    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+    result = _internalDallasTemp.getTempC(_OneWireAddress);
+    MS_DBG(F("  Received"), result, F("°C"));
 
-    return success;
+    // If a DS18 cannot get a good measurement, it returns 85
+    // If the sensor is not properly connected, it returns -127
+    if (result != 85 && result != -127) {
+        // Put value into the array
+        verifyAndAddMeasurementResult(DS18_TEMP_VAR_NUM, result);
+        success = true;
+    } else {
+        MS_DBG(F("  Invalid measurement received from"),
+               getSensorNameAndLocation());
+    }
+
+    // Return success value when finished
+    return bumpMeasurementAttemptCount(success);
 }

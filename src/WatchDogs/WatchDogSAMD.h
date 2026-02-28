@@ -42,7 +42,7 @@
  *
  * For a SAMD board, we can get the longest possible time between interrupts by
  * using the maximum closed window period in "windowed" mode and setting the
- * early warning interrupt that opens the window to occur at the mimimum
+ * early warning interrupt that opens the window to occur at the minimum
  * possible time before a reset fires. The maximum number of clock cycles for
  * the closed window period is 16384 cycles on both a SAMD21 and SAM(D/E)51.
  *
@@ -50,7 +50,7 @@
  * CLK_WDT_OSC clock sourced from the ULP32KOSC.
  *
  * On a SAMD21 the WDT can be clocked from any clock source with the maximum
- * dividor depending on the selected clock generator. To save power, we force
+ * divider depending on the selected clock generator. To save power, we force
  * the SAMD21 to use the ULP32KOSC for the WDT and EIC. For simplicity of code,
  * we use a 32x divisor on the ULP32KOSC to match the SAM(D/E)51 1.024kHz
  * CLK_WDT_OSC.
@@ -136,7 +136,7 @@ class extendedWatchDogSAMD {
     static void configureWDTClock();
     /**
      * @brief Configure the peripheral clock for the external interrupt
-     * congtroller (EIC) - sourced from the generic clock generator
+     * controller (EIC) - sourced from the generic clock generator
      */
     static void configureEICClock();
 
@@ -146,11 +146,11 @@ class extendedWatchDogSAMD {
     static void clearWDTInterrupt();
 
     /**
-     * @brief Wait for the WDT config bit sync to finish.+
+     * @brief Wait for the WDT config bit sync to finish.
      */
     static void inline waitForWDTBitSync();
     /**
-     * @brief Wait for the GCLK config bit sync to finish.+
+     * @brief Wait for the GCLK config bit sync to finish.
      */
     static void inline waitForGCLKBitSync();
 
@@ -166,5 +166,7 @@ class extendedWatchDogSAMD {
      */
     static uint32_t _resetTime_s;
 };
+
+// cspell:words ULP32KOSC
 
 #endif  // SRC_WATCHDOGS_WATCHDOGSAMD_H_

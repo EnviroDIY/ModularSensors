@@ -13,18 +13,6 @@
  * ======================================================================= */
 
 // ==========================================================================
-//  Defines for TinyGSM
-// ==========================================================================
-/** Start [defines] */
-#ifndef TINY_GSM_RX_BUFFER
-#define TINY_GSM_RX_BUFFER 64
-#endif
-#ifndef TINY_GSM_YIELD_MS
-#define TINY_GSM_YIELD_MS 2
-#endif
-/** End [defines] */
-
-// ==========================================================================
 //  Include the libraries required for any data logger
 // ==========================================================================
 /** Start [includes] */
@@ -43,7 +31,7 @@
 // The name of this program file
 const char* sketchName = "double_logger.ino";
 // Logger ID - we're only using one logger ID for both "loggers"
-const char* LoggerID = "XXXXX";
+const char* LoggerID = "YourLoggerID";
 // The TWO filenames for the different logging intervals
 const char* FileName5min = "Logger_5MinuteInterval.csv";
 const char* FileName1min = "Logger_1MinuteInterval.csv";
@@ -89,8 +77,8 @@ const int8_t modemLEDPin = redLED;   // MCU pin connected an LED to show modem
                                      // status (-1 if unconnected)
 
 // Network connection information
-const char* wifiId  = "xxxxx";  // WiFi access point, unnecessary for GPRS
-const char* wifiPwd = "xxxxx";  // WiFi password, unnecessary for GPRS
+const char* wifiId  = "YourWiFiSSID";      // The WiFi access point
+const char* wifiPwd = "YourWiFiPassword";  // The WiFi password
 
 DigiXBeeWifi modemXBWF(&modemSerial, modemVccPin, modemStatusPin,
                        useCTSforStatus, modemResetPin, modemSleepRqPin, wifiId,
@@ -103,13 +91,13 @@ DigiXBeeWifi modem = modemXBWF;
 // ==========================================================================
 //  Using the Processor as a Sensor
 // ==========================================================================
-/** Start [processor_sensor] */
+/** Start [processor_stats] */
 #include <sensors/ProcessorStats.h>
 
 // Create the main processor chip "sensor" - for general metadata
 const char*    mcuBoardVersion = "v1.1";
 ProcessorStats mcuBoard(mcuBoardVersion);
-/** End [processor_sensor] */
+/** End [processor_stats] */
 
 
 // ==========================================================================
@@ -311,27 +299,8 @@ void loop() {
         // Turn on the LED to show we're taking a reading
         digitalWrite(greenLED, HIGH);
 
-        // Send power to all of the sensors (do this directly on the
-        // VariableArray)
-        Serial.print(F("Powering sensors...\n"));
-        array1min.sensorsPowerUp();
-        extendedWatchDog::resetWatchDog();
-        // Wake up all of the sensors (do this directly on the VariableArray)
-        Serial.print(F("Waking sensors...\n"));
-        array1min.sensorsWake();
-        extendedWatchDog::resetWatchDog();
-        // Update the values from all attached sensors (do this directly on the
-        // VariableArray)
-        Serial.print(F("Updating sensor values...\n"));
-        array1min.updateAllSensors();
-        extendedWatchDog::resetWatchDog();
-        // Put sensors to sleep (do this directly on the VariableArray)
-        Serial.print(F("Putting sensors back to sleep...\n"));
-        array1min.sensorsSleep();
-        extendedWatchDog::resetWatchDog();
-        // Cut sensor power (do this directly on the VariableArray)
-        Serial.print(F("Cutting sensor power...\n"));
-        array1min.sensorsPowerDown();
+        Serial.print(F("Running a complete sensor update...\n"));
+        array1min.completeUpdate();
         extendedWatchDog::resetWatchDog();
 
         // Stream the csv data to the SD card
@@ -354,27 +323,9 @@ void loop() {
         // Turn on the LED to show we're taking a reading
         digitalWrite(redLED, HIGH);
 
-        // Send power to all of the sensors (do this directly on the
-        // VariableArray)
-        Serial.print(F("Powering sensors...\n"));
-        array5min.sensorsPowerUp();
-        extendedWatchDog::resetWatchDog();
-        // Wake up all of the sensors (do this directly on the VariableArray)
-        Serial.print(F("Waking sensors...\n"));
-        array5min.sensorsWake();
-        extendedWatchDog::resetWatchDog();
-        // Update the values from all attached sensors (do this directly on the
-        // VariableArray)
-        Serial.print(F("Updating sensor values...\n"));
-        array5min.updateAllSensors();
-        extendedWatchDog::resetWatchDog();
-        // Put sensors to sleep (do this directly on the VariableArray)
-        Serial.print(F("Putting sensors back to sleep...\n"));
-        array5min.sensorsSleep();
-        extendedWatchDog::resetWatchDog();
-        // Cut sensor power (do this directly on the VariableArray)
-        Serial.print(F("Cutting sensor power...\n"));
-        array5min.sensorsPowerDown();
+        // Complete sensor update on this VariableArray
+        Serial.print(F("Running a complete sensor update...\n"));
+        array5min.completeUpdate();
         extendedWatchDog::resetWatchDog();
 
         // Stream the csv data to the SD card
@@ -409,3 +360,5 @@ void loop() {
     logger1min.systemSleep();
 }
 /** End [loop] */
+
+// cspell: words modemXBWF
