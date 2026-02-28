@@ -165,7 +165,7 @@ The exclusion of the modem and publisher simplifies the code from the other DRWI
 #### DRWI CitSci (2G)<!--! {#examples_drwi_2g} -->
 
 The 2G DRWI Citizen Science example uses the sensors and equipment found on older stations used in the DRWI Citizen Science project before 2020.
-The 2G GPRSbee boards no longer function in the USA, so this code should not be used and is only provided to archival and reference purposes.
+The 2G GPRSbee boards no longer function in the USA, so this code should not be used and is only provided for archival and reference purposes.
 It includes a Meter Hydros 21 (formerly know as a Decagon CTD), a Campbell OBS3+, and a Sodaq GPRSBee for communication.
 The results are saved to the SD card and posted to Monitor My Watershed.
 The only difference between this and the other cellular DRWI examples is the type of modem used.
