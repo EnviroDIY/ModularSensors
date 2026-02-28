@@ -48,8 +48,9 @@
  * on the ADS1x15.  The ADS1x15 requires an input voltage of 2.0-5.5V, but *this library
  * always assumes the ADS is powered with 3.3V*.
  *
- * @note ModularSensors only supports connecting the ADS1x15 to primary hardware I2C instance.
- * Connecting the ADS to a secondary hardware or software I2C instance is *not* supported!
+ * @note ModularSensors supports connecting the ADS1x15 to primary hardware I2C instance
+ * or to a secondary hardware I2C instance using the TwoWire parameter in the constructor.
+ * Software I2C is *not* supported!
  *
  * Communication with the ADS1x15 depends on the
  * [soligen2010 fork of the Adafruit ADS1015 library](https://github.com/soligen2010/Adafruit_ADS1X15).
@@ -267,6 +268,32 @@ class TIADS1x15Base : public AnalogVoltageBase {
     /**
      * @brief Construct a new TIADS1x15Base object
      *
+     * @param theI2C A TwoWire instance for I2C communication.  Due to the
+     * speed and sensitivity requirements of the ADS1x15, only hardware I2C is
+     * supported.  For AVR boards, this will be Wire.  For SAMD boards, this
+     * can be Wire, Wire1, Wire2, etc..
+     * @param voltageMultiplier The voltage multiplier for any voltage dividers
+     * @param adsGain The internal gain setting of the ADS1x15
+     * @param i2cAddress The I2C address of the ADS 1x15
+     * @param adsSupplyVoltage The power supply voltage for the ADS1x15 in volts
+     * @param adsDataRate The data rate for the ADS1x15 (samples per second)
+     */
+    explicit TIADS1x15Base(TwoWire* theI2C,
+                           float     voltageMultiplier = 1.0f,
+                           adsGain_t adsGain           = GAIN_ONE,
+                           uint8_t   i2cAddress = MS_DEFAULT_ADS1X15_ADDRESS,
+                           float     adsSupplyVoltage = OPERATING_VOLTAGE,
+#ifndef MS_USE_ADS1015
+                           uint16_t adsDataRate = RATE_ADS1115_128SPS
+#else
+                           uint16_t adsDataRate = RATE_ADS1015_1600SPS
+#endif
+    );
+
+    /**
+     * @brief Construct a new TIADS1x15Base object using the default hardware
+     * Wire instance.
+     *
      * @param voltageMultiplier The voltage multiplier for any voltage dividers
      * @param adsGain The internal gain setting of the ADS1x15
      * @param i2cAddress The I2C address of the ADS 1x15
@@ -407,6 +434,10 @@ class TIADS1x15Base : public AnalogVoltageBase {
 
  protected:
     /**
+     * @brief An internal reference to the hardware Wire instance.
+     */
+    TwoWire* _wire;
+    /**
      * @brief Internal reference to the I2C address of the TI-ADS1x15
      */
     uint8_t _i2cAddress;
@@ -426,6 +457,13 @@ class TIADS1x15Base : public AnalogVoltageBase {
 #else
     Adafruit_ADS1015 _ads;  // 12-bit version
 #endif
+
+    /**
+     * @brief Probe I2C connectivity to the ADS device
+     * 
+     * @return true if device responds, false if communication failed
+     */
+    bool probeI2C(void);
 };
 
 /* clang-format off */

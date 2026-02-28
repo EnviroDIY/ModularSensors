@@ -90,6 +90,7 @@ ___
     - [Maxbotix HRXL Ultrasonic Range Finder](#maxbotix-hrxl-ultrasonic-range-finder)
     - [Maxim DS18 One Wire Temperature Sensor](#maxim-ds18-one-wire-temperature-sensor)
     - [Measurement Specialties MS5803-14BA Pressure Sensor](#measurement-specialties-ms5803-14ba-pressure-sensor)
+    - [TE Connectivity MS5837 Pressure Sensor](#te-connectivity-ms5837-pressure-sensor)
     - [Meter SDI-12 Sensors](#meter-sdi-12-sensors)
       - [Meter ECH2O Soil Moisture Sensor](#meter-ech2o-soil-moisture-sensor)
       - [Meter Hydros 21 Conductivity, Temperature, and Depth Sensor](#meter-hydros-21-conductivity-temperature-and-depth-sensor)
@@ -731,7 +732,7 @@ ___
 
 Here is the code for the Bosch BME280 environmental sensor.
 The only input needed is the Arduino pin controlling power on/off; the i2cAddressHex is optional as is the number of readings to average.
-Keep in mind that the possible I2C addresses of the BME280 match those of the MS5803; when using those sensors together, make sure they are set to opposite addresses.
+Keep in mind that the I2C address (0x76) of the BME280 matches those of some configurations of the MS5803, MS5837, BMP388, and BMP390 sensors; when using those sensors together, make sure they are set to different addresses.
 
 @see @ref sensor_bme280
 
@@ -740,6 +741,8 @@ Keep in mind that the possible I2C addresses of the BME280 match those of the MS
 ___
 
 ### Bosch BMP388 and BMP398 Pressure Sensors<!--! {#menu_walk_bosch_bmp3xx} -->
+
+Keep in mind that the I2C address (0x76) of the BMP388/BMP390 sensors matches those of some configurations of the MS5803, MS5837, and BME280 sensors; when using those sensors together, make sure they are set to different addresses.
 
 @see @ref sensor_bmp3xx
 
@@ -948,11 +951,23 @@ ___
 ### Measurement Specialties MS5803-14BA Pressure Sensor<!--! {#menu_walk_mea_spec_ms5803} -->
 
 The only input needed is the Arduino pin controlling power on/off; the i2cAddressHex and maximum pressure are optional as is the number of readings to average.
-Keep in mind that the possible I2C addresses of the MS5803 match those of the BME280.
+Keep in mind that the I2C address (0x76) of the MS5803 matches those of some configurations of the MS5837, BME280, BMP388, and BMP390 sensors; when using those sensors together, make sure they are set to different addresses.
 
 @see @ref sensor_ms5803
 
 <!--! @menusnip{mea_spec_ms5803} -->
+
+___
+
+### TE Connectivity MS5837 Pressure Sensor<!--! {#menu_walk_te_connectivity_ms5837} -->
+
+The MS5837 is commonly used in Blue Robotics Bar02/Bar30 pressure sensors for underwater applications and depth measurement.
+The only required input is the Arduino pin controlling power on/off; the sensor model, fluid density, air pressure, and number of readings to average are optional.
+Keep in mind that the I2C address (0x76) of the MS5837 matches those of some configurations of the MS5803, BME280, BMP388, and BMP390 sensors.
+
+@see @ref sensor_ms5837
+
+<!--! @menusnip{te_connectivity_ms5837} -->
 
 ___
 

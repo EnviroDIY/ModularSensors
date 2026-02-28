@@ -45,6 +45,7 @@ For some generalized information about attaching sensors to an Arduino style boa
 
 - [Processor Metrics: battery voltage, free RAM, sample count](https://envirodiy.github.io/ModularSensors/group__sensor__processor.html)
 - [Maxim DS3231: real time clock](https://envirodiy.github.io/ModularSensors/group__sensor__ds3231.html)
+- [Alphasense IRC-A1: CO2 and temperature, via TI ADS1115](https://envirodiy.github.io/ModularSensors/group__sensor__alphasense__co2.html)
 - [Analog Electrical Conductivity: conductivity](https://envirodiy.github.io/ModularSensors/group__sensor__analog__cond.html)
 - [ANB Sensors pH Sensor: pH](https://envirodiy.github.io/ModularSensors/group__sensor__anb__ph.html)
 - [AOSong AM2315: humidity & temperature](https://envirodiy.github.io/ModularSensors/group__sensor__am2315.html)
@@ -76,17 +77,20 @@ For some generalized information about attaching sensors to an Arduino style boa
   - [Nanolevel](https://envirodiy.github.io/ModularSensors/group__sensor__nanolevel.html)
 - [MaxBotix MaxSonar: water level](https://envirodiy.github.io/ModularSensors/group__sensor__maxbotix.html)
 - [Maxim DS18: temperature](https://envirodiy.github.io/ModularSensors/group__sensor__ds18.html)
-- [Measurement Specialties MS5803: pressure and temperature](https://envirodiy.github.io/ModularSensors/group__sensor__ms5803.html)
+- [Measurement Specialties/TE Connectivity MS5803: pressure and temperature](https://envirodiy.github.io/ModularSensors/group__sensor__ms5803.html)
+- [TE Connectivity MS5837: pressure and temperature (deployed as Blue Robotics Bar02/Bar30)](https://envirodiy.github.io/ModularSensors/group__sensor__ms5837.html)
 - Meter Environmental Soil Moisture Probes: soil Ea and volumetric water content
   - [Meter ECH2O 5TM](https://envirodiy.github.io/ModularSensors/group__sensor__fivetm.html)
   - [Meter Teros 11](https://envirodiy.github.io/ModularSensors/group__sensor__teros11.html)
 - [Meter Environmental Hydros 21: conductivity, temperature & depth](https://envirodiy.github.io/ModularSensors/group__sensor__hydros21.html)
 - [Northern Widget Tally Event Counter: number of events](https://envirodiy.github.io/ModularSensors/group__sensor__tally.html)
 - [PaleoTerra Redox Sensor: redox potential](https://envirodiy.github.io/ModularSensors/group__sensor__pt__redox.html)
+- [Processor Analog Voltage: external voltage using built-in ADC](https://envirodiy.github.io/ModularSensors/group__sensor__processor__analog.html)
 - [Sensirion SHT40: humidity & temperature](https://envirodiy.github.io/ModularSensors/group__sensor__sht4x.html)
 - [TI ADS1115: external voltage with support for divided current](https://envirodiy.github.io/ModularSensors/group__sensor__ads1x15.html)
 - [TI INA219: current, voltage, and power draw](https://envirodiy.github.io/ModularSensors/group__sensor__ina219.html)
 - [Turner Cyclops-7F: various parameters](https://envirodiy.github.io/ModularSensors/group__sensor__cyclops.html)
+- [Turner Turbidity Plus: turbidity, via TI ADS1115](https://envirodiy.github.io/ModularSensors/group__sensor__turbidity__plus.html)
 - [Vega Puls 21: radar distance](https://envirodiy.github.io/ModularSensors/group__sensor__vega__puls21.html)
 - [Yosemitech: water quality sensors](https://envirodiy.github.io/ModularSensors/group__yosemitech__group.html)
   - [Y502-A or Y504-A: Optical DO and Temperature](https://envirodiy.github.io/ModularSensors/group__sensor__y504.html)
@@ -152,7 +156,7 @@ Feel free to open issues about any bugs you find or any sensors you would like t
 
 If you would like to directly help with the coding development of the library, there are some [tips and instructions here](https://envirodiy.github.io/ModularSensors/page_developer_setup.html) on how to set up PlatformIO so you can fork the library and test programs while in the library repo.
 Please *take time to familiarize yourself with the [terminology, classes and data structures](https://envirodiy.github.io/ModularSensors/page_library_terminology.html) this library uses*.
-This library is built to fully take advantage of Objecting Oriented Programing (OOP) approaches and is larger and more complicated than many Arduino libraries.
+This library is built to fully take advantage of Object-Oriented Programming (OOP) approaches and is larger and more complicated than many Arduino libraries.
 There is doxygen-created documentation on our [github pages](https://envirodiy.github.io/ModularSensors/index.html) and an *enormous* number of comments and debugging printouts in the code itself to help you get going.
 
 ## License<!--! {#mainpage_license} -->

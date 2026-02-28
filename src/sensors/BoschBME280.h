@@ -66,11 +66,10 @@
  * [Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Bosch-BME280-Datasheet.pdf)
  *
  * @section sensor_bme280_flags Build flags
- * - ```-D SEALEVELPRESSURE_HPA```
+ * - ```-D MS_SEA_LEVEL_PRESSURE_HPA```
  *      - use to adjust the sea level pressure used to calculate altitude from measured barometric pressure
  *      - if not defined, 1013.25 is used
- *      - The same sea level pressure flag is used for both the BMP3xx and the BME280.
- * Whatever you select will be used for both sensors.
+ *      - The same sea level pressure flag is used for BME280, BMP3xx, and MS5837 sensors.
  *
  * @section sensor_bme280_ctor Sensor Constructors
  * {{ @ref BoschBME280::BoschBME280(int8_t, uint8_t, uint8_t) }}
@@ -123,19 +122,6 @@
 /// @brief Sensor::_incCalcValues; altitude is calculated within the Adafruit
 /// library.
 #define BME280_INC_CALC_VARIABLES 1
-/**@}*/
-
-/**
- * @anchor sensor_bme280_config
- * @name Configuration Defines
- * Defines to set the calibration of the calculated base pressure used to
- * calculate altitude by the BME280.
- */
-/**@{*/
-#if !defined(SEALEVELPRESSURE_HPA) || defined(DOXYGEN)
-/// The atmospheric pressure at sea level
-#define SEALEVELPRESSURE_HPA (1013.25)
-#endif
 /**@}*/
 
 /**
@@ -260,8 +246,8 @@
 #define BME280_ALTITUDE_VAR_NUM 3
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
-/// "heightAboveSeaFloor"
-#define BME280_ALTITUDE_VAR_NAME "heightAboveSeaFloor"
+/// "altitude"
+#define BME280_ALTITUDE_VAR_NAME "altitude"
 /// @brief Variable unit name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "meter"
 #define BME280_ALTITUDE_UNIT_NAME "meter"
@@ -479,6 +465,10 @@ class BoschBME280_Pressure : public Variable {
                    (uint8_t)BME280_PRESSURE_RESOLUTION,
                    BME280_PRESSURE_VAR_NAME, BME280_PRESSURE_UNIT_NAME,
                    BME280_PRESSURE_DEFAULT_CODE) {}
+    /**
+     * @brief Destroy the BoschBME280_Pressure object - no action needed.
+     */
+    ~BoschBME280_Pressure() {}
 };
 
 
@@ -520,8 +510,10 @@ class BoschBME280_Altitude : public Variable {
                    (uint8_t)BME280_ALTITUDE_RESOLUTION,
                    BME280_ALTITUDE_VAR_NAME, BME280_ALTITUDE_UNIT_NAME,
                    BME280_ALTITUDE_DEFAULT_CODE) {}
+    /**
+     * @brief Destroy the BoschBME280_Altitude object - no action needed.
+     */
+    ~BoschBME280_Altitude() {}
 };
 /**@}*/
 #endif  // SRC_SENSORS_BOSCHBME280_H_
-
-// cSpell:ignore SEALEVELPRESSURE_HPA

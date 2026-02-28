@@ -18,7 +18,7 @@ SensirionSHT4x::SensirionSHT4x(TwoWire* theI2C, int8_t powerPin, bool useHeater,
              SHT4X_STABILIZATION_TIME_MS, SHT4X_MEASUREMENT_TIME_MS, powerPin,
              -1, measurementsToAverage),
       _useHeater(useHeater),
-      _i2c(theI2C) {}
+      _i2c(theI2C != nullptr ? theI2C : &Wire) {}
 SensirionSHT4x::SensirionSHT4x(int8_t powerPin, bool useHeater,
                                uint8_t measurementsToAverage)
     : Sensor("SensirionSHT4x", SHT4X_NUM_VARIABLES, SHT4X_WARM_UP_TIME_MS,
