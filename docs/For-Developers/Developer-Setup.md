@@ -133,7 +133,7 @@ lib_deps =
     adafruit/Adafruit AM2315@^2.2.3
     adafruit/Adafruit BME280 Library@^2.3.0
     MartinL1/BMP388_DEV@^1.0.11
-    adafruit/DHT sensor library@^1.4.7
+    adafruit/DHT sensor library@^1.4.6
     adafruit/Adafruit INA219@^1.2.3
     adafruit/Adafruit MPL115A2@^2.0.2
     adafruit/Adafruit SHT4x Library@^1.0.5

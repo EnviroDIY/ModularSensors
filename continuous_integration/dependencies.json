@@ -162,7 +162,7 @@
       "owner": "adafruit",
       "library id": "19",
       "url": "https://github.com/adafruit/DHT-sensor-library",
-      "version": "~1.4.7",
+      "version": "~1.4.6",
       "note": "AOSong DHT Sensor Library by Adafruit",
       "authors": [
         "Adafruit"
