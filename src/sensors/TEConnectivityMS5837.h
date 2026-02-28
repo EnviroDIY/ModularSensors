@@ -165,7 +165,7 @@ static_assert(
  * The number of variables that can be returned by the MS5837
  */
 /**@{*/
-/// @brief Sensor::_numReturnedValues; the MS5837 can report 2 values.
+/// @brief Sensor::_numReturnedValues; the MS5837 can report 4 values.
 #define MS5837_NUM_VARIABLES 4
 /// @brief Sensor::_incCalcValues; we calculate depth and altitude values.
 #define MS5837_INC_CALC_VARIABLES 2
