@@ -27,7 +27,9 @@ TEConnectivityMS5837::TEConnectivityMS5837(TwoWire* theI2C, int8_t powerPin,
       _model(model),
       _fluidDensity(fluidDensity),
       _airPressure(airPressure),
-      _overSamplingRatio(overSamplingRatio) {}
+      _overSamplingRatio(overSamplingRatio) {
+    setAllowedMeasurementRetries(MS5837_DEFAULT_MEASUREMENT_RETRIES);
+}
 
 // Delegating constructors
 TEConnectivityMS5837::TEConnectivityMS5837(TwoWire* theI2C, int8_t powerPin,

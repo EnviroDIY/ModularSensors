@@ -59,6 +59,10 @@
  * https://bluerobotics.com/store/sensors-sonars-cameras/sensors/bar30-sensor-r1/
  *
  * @section sensor_ms5837_flags Build flags
+ * - ```-D MS5837_DEFAULT_MEASUREMENT_RETRIES=5```
+ *      - Changes the default number of measurement retries when a measurement
+ * fails. The default value is 5. Higher values provide better reliability but
+ * may increase total measurement time on sensor failures.
  * - ```-D MS5837_DEFAULT_FLUID_DENSITY=0.99802f```
  *      - Changes the default fluid density used for depth calculations. The
  * default value is for water at 20°C. For seawater, use approximately 1.025f.
@@ -117,6 +121,25 @@
  * Build-time configuration for the MS5837
  */
 /**@{*/
+#if !defined(MS5837_DEFAULT_MEASUREMENT_RETRIES) || defined(DOXYGEN)
+/**
+ * @brief Default number of measurement retries
+ *
+ * The default number of times to retry a measurement when it fails. Higher
+ * values provide better reliability but may increase total measurement time on
+ * sensor failures. This can be set at runtime for individual sensors and the
+ * default can be overridden at compile time with `-D
+ * MS5837_DEFAULT_MEASUREMENT_RETRIES=value`
+ */
+#define MS5837_DEFAULT_MEASUREMENT_RETRIES 5
+#endif
+
+// Static assert to validate measurement retries is reasonable
+static_assert(MS5837_DEFAULT_MEASUREMENT_RETRIES >= 0 &&
+                  MS5837_DEFAULT_MEASUREMENT_RETRIES <= 20,
+              "MS5837_DEFAULT_MEASUREMENT_RETRIES must be between 0 and 20 "
+              "(reasonable measurement retry range)");
+
 #if !defined(MS5837_DEFAULT_FLUID_DENSITY) || defined(DOXYGEN)
 /**
  * @brief Default fluid density for depth calculations (grams/cm³)
