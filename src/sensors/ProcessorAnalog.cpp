@@ -177,6 +177,8 @@ bool ProcessorAnalog::addSingleMeasurementResult(void) {
 
     if (success) {
         verifyAndAddMeasurementResult(PROCESSOR_ANALOG_VAR_NUM, resultValue);
+    } else {
+        MS_DBG(F("  Failed to get valid voltage from analog reader"));
     }
 
     // Return success value when finished
