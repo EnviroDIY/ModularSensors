@@ -1291,7 +1291,7 @@ Here we set up all three possible data publishers and link all of them to the sa
 
 #### Monitor My Watershed<!--! {#menu_walk_monitor_my_watershed_publisher} -->
 
-To publish data to the Monitor My Watershed first you must register yourself as a user at <https://monitormywatershed.org>.
+To publish data to Monitor My Watershed, you must first register as a user at <https://monitormywatershed.org>.
 Then you must register your site.
 After registering your site, a sampling feature and registration token for that site should be visible on the site page.
 
