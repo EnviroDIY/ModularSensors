@@ -611,6 +611,23 @@
  * subclass.
  *
  */
+#if defined(TINY_GSM_MODEM_ESP8266) || defined(TINY_GSM_MODEM_ESP32) ||   \
+    defined(TINY_GSM_MODEM_SIM7070) || defined(TINY_GSM_MODEM_SIM7080) || \
+    defined(TINY_GSM_MODEM_SIM7090)
+#define MS_MODEM_GET_NIST_TIME(specificModem, TinyGSMType)                 \
+    uint32_t specificModem::getNISTTime(void) {                            \
+        /** Check for and bail if not connected to the internet. */        \
+        if (!isInternetAvailable()) {                                      \
+            MS_DBG(F("No internet connection, cannot get network time.")); \
+            return 0;                                                      \
+        }                                                                  \
+                                                                           \
+        MS_DBG("Asking modem to sync with NTP");                           \
+        gsmModem.NTPServerSync("pool.ntp.org", 0); /*UTC!*/                \
+        gsmModem.waitForTimeSync();                                        \
+        return gsmModem.getNetworkEpoch(TinyGSM_EpochStart::UNIX);         \
+    }
+#else
 #define MS_MODEM_GET_NIST_TIME(specificModem, TinyGSMType)                   \
     uint32_t specificModem::getNISTTime(void) {                              \
         /** Check for and bail if not connected to the internet. */          \
@@ -661,6 +678,7 @@
         }                                                                    \
         return 0;                                                            \
     }
+#endif
 
 /**
  * @def MS_MODEM_CALC_SIGNAL_QUALITY
