@@ -611,9 +611,7 @@
  * subclass.
  *
  */
-#if defined(TINY_GSM_MODEM_ESP8266) || defined(TINY_GSM_MODEM_ESP32) ||   \
-    defined(TINY_GSM_MODEM_SIM7070) || defined(TINY_GSM_MODEM_SIM7080) || \
-    defined(TINY_GSM_MODEM_SIM7090)
+#if defined(TINY_GSM_MODEM_ESP8266) || defined(TINY_GSM_MODEM_ESP32)
 #define MS_MODEM_GET_NIST_TIME(specificModem, TinyGSMType)                 \
     uint32_t specificModem::getNISTTime(void) {                            \
         /** Check for and bail if not connected to the internet. */        \
