@@ -382,7 +382,9 @@ bool loggerClock::setRTClock(epochTime in_time, int8_t utcOffset) {
     // If the RTC is already within 5 seconds of the input time, just quit
     if (abs(new_rtc_value - prev_rtc_value) < 5) {
         PRINTOUT(F("Clock already within 5 seconds of time."));
-        return false;
+        // return true because the clock is correctly set, even if we didn't
+        // actually set it
+        return true;
     }
 
     MS_DEEP_DBG(F("Setting raw RTC value to:"), new_rtc_value);
