@@ -21,13 +21,11 @@ AtlasScientificEC::AtlasScientificEC(TwoWire* theI2C, int8_t powerPin,
                   ATLAS_COND_WARM_UP_TIME_MS, ATLAS_COND_STABILIZATION_TIME_MS,
                   ATLAS_COND_MEASUREMENT_TIME_MS,
                   ATLAS_COND_INC_CALC_VARIABLES) {}
+// Delegating constructor
 AtlasScientificEC::AtlasScientificEC(int8_t powerPin, uint8_t i2cAddressHex,
                                      uint8_t measurementsToAverage)
-    : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
-                  "AtlasScientificEC", ATLAS_COND_NUM_VARIABLES,
-                  ATLAS_COND_WARM_UP_TIME_MS, ATLAS_COND_STABILIZATION_TIME_MS,
-                  ATLAS_COND_MEASUREMENT_TIME_MS,
-                  ATLAS_COND_INC_CALC_VARIABLES) {}
+    : AtlasScientificEC(&Wire, powerPin, i2cAddressHex, measurementsToAverage) {
+}
 
 // Destructor
 AtlasScientificEC::~AtlasScientificEC() {}

@@ -16,23 +16,18 @@ MaxBotixSonar::MaxBotixSonar(Stream* stream, int8_t powerPin, int8_t triggerPin,
                              bool convertCm)
     : Sensor("MaxBotixMaxSonar", HRXL_NUM_VARIABLES, HRXL_WARM_UP_TIME_MS,
              HRXL_STABILIZATION_TIME_MS, HRXL_MEASUREMENT_TIME_MS, powerPin, -1,
-             measurementsToAverage),
+             measurementsToAverage, HRXL_INC_CALC_VARIABLES),
       _maxRange(maxRange),
       _triggerPin(triggerPin),
       _convertCm(convertCm),
       _stream(stream) {}
 
-
+// Delegating constructor
 MaxBotixSonar::MaxBotixSonar(Stream& stream, int8_t powerPin, int8_t triggerPin,
                              int16_t maxRange, uint8_t measurementsToAverage,
                              bool convertCm)
-    : Sensor("MaxBotixMaxSonar", HRXL_NUM_VARIABLES, HRXL_WARM_UP_TIME_MS,
-             HRXL_STABILIZATION_TIME_MS, HRXL_MEASUREMENT_TIME_MS, powerPin, -1,
-             measurementsToAverage, HRXL_INC_CALC_VARIABLES),
-      _maxRange(maxRange),
-      _triggerPin(triggerPin),
-      _convertCm(convertCm),
-      _stream(&stream) {}
+    : MaxBotixSonar(&stream, powerPin, triggerPin, maxRange,
+                    measurementsToAverage, convertCm) {}
 
 // Destructor
 MaxBotixSonar::~MaxBotixSonar() {}

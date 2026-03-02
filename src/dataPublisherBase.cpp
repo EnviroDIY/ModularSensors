@@ -32,13 +32,11 @@ dataPublisher::dataPublisher(Logger& baseLogger, int sendEveryX)
     _baseModem =
         _baseLogger->registerDataPublisher(this);  // register self with logger
 }
+// Delegating constructor
 dataPublisher::dataPublisher(Logger& baseLogger, Client* inClient,
                              int sendEveryX)
-    : _baseLogger(&baseLogger),
-      _inClient(inClient),
-      _sendEveryX(sendEveryX) {
-    _baseModem =
-        _baseLogger->registerDataPublisher(this);  // register self with logger
+    : dataPublisher(baseLogger, sendEveryX) {
+    _inClient = inClient;
 }
 // Destructor
 dataPublisher::~dataPublisher() {}

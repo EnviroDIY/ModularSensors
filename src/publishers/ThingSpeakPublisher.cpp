@@ -26,36 +26,40 @@ const int   ThingSpeakPublisher::mqttPort            = 1883;
 
 
 // Constructors
-ThingSpeakPublisher::ThingSpeakPublisher() : dataPublisher() {}
-ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, int sendEveryX)
-    : dataPublisher(baseLogger, sendEveryX) {}
-ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
-                                         int sendEveryX)
-    : dataPublisher(baseLogger, inClient, sendEveryX) {}
+// Primary constructor with all MQTT parameters and client
 ThingSpeakPublisher::ThingSpeakPublisher(Logger&     baseLogger,
                                          const char* thingSpeakClientName,
                                          const char* thingSpeakMQTTUser,
                                          const char* thingSpeakMQTTPassword,
                                          const char* thingSpeakChannelID,
-                                         int         sendEveryX)
+                                         Client* inClient, int sendEveryX)
     : dataPublisher(baseLogger, sendEveryX) {
-    setMQTTClient(thingSpeakClientName);
-    setUserName(thingSpeakMQTTUser);
-    setPassword(thingSpeakMQTTPassword);
-    setChannelID(thingSpeakChannelID);
+    if (thingSpeakClientName) setMQTTClient(thingSpeakClientName);
+    if (thingSpeakMQTTUser) setUserName(thingSpeakMQTTUser);
+    if (thingSpeakMQTTPassword) setPassword(thingSpeakMQTTPassword);
+    if (thingSpeakChannelID) setChannelID(thingSpeakChannelID);
+    if (inClient) _inClient = inClient;
 }
+
+// Delegating constructors
+ThingSpeakPublisher::ThingSpeakPublisher() : dataPublisher() {}
+ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, int sendEveryX)
+    : ThingSpeakPublisher(baseLogger, nullptr, nullptr, nullptr, nullptr,
+                          nullptr, sendEveryX) {}
+ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
+                                         int sendEveryX)
+    : ThingSpeakPublisher(baseLogger, nullptr, nullptr, nullptr, nullptr,
+                          inClient, sendEveryX) {}
+// Delegating constructor
 ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
                                          const char* thingSpeakClientName,
                                          const char* thingSpeakMQTTUser,
                                          const char* thingSpeakMQTTPassword,
                                          const char* thingSpeakChannelID,
                                          int         sendEveryX)
-    : dataPublisher(baseLogger, inClient, sendEveryX) {
-    setMQTTClient(thingSpeakClientName);
-    setUserName(thingSpeakMQTTUser);
-    setPassword(thingSpeakMQTTPassword);
-    setChannelID(thingSpeakChannelID);
-}
+    : ThingSpeakPublisher(baseLogger, thingSpeakClientName, thingSpeakMQTTUser,
+                          thingSpeakMQTTPassword, thingSpeakChannelID, inClient,
+                          sendEveryX) {}
 // Destructor
 ThingSpeakPublisher::~ThingSpeakPublisher() {}
 

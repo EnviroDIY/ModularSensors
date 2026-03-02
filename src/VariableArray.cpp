@@ -18,11 +18,10 @@ VariableArray::VariableArray(uint8_t variableCount, Variable* variableList[])
       _variableCount(variableCount) {
     _sensorCount = getSensorCount();
 }
+// Delegating constructor
 VariableArray::VariableArray(uint8_t variableCount, Variable* variableList[],
                              const char* uuids[])
-    : arrayOfVars(variableList),
-      _variableCount(variableCount) {
-    _sensorCount = getSensorCount();
+    : VariableArray(variableCount, variableList) {
     matchUUIDs(uuids);
 }
 

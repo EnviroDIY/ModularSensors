@@ -153,6 +153,7 @@ To achieve the same functionality as the old `updateAllSensors()` function (ie, 
 - Moved the define for the default address used for a TI ADS from multiple individual files to the ModSensorConfig and renamed to `MS_DEFAULT_ADS1X15_ADDRESS`.
 - Within ModSensorConfig removed the default `MS_PROCESSOR_ADC_RESOLUTION` for all processors and clarified that the 12-bit default only applies to SAMD processors.
 This is *not* breaking because only AVR and SAMD processors were supported anyway.
+- Converted as many duplicated constructors as possible into delegating constructors.
 
 ### Added
 

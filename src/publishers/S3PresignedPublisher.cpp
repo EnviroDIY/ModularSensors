@@ -18,24 +18,27 @@ const char* S3PresignedPublisher::contentLengthHeader = "\r\nContent-Length: ";
 const char* S3PresignedPublisher::contentTypeHeader   = "\r\nContent-Type: ";
 
 // Constructors
-S3PresignedPublisher::S3PresignedPublisher() : dataPublisher() {}
+// Primary constructor with all parameters
 S3PresignedPublisher::S3PresignedPublisher(Logger&     baseLogger,
                                            const char* caCertName,
                                            String (*getUrlFxn)(String),
                                            String (*getFileNameFxn)(void),
                                            int sendEveryX)
     : dataPublisher(baseLogger, sendEveryX) {
-    setCACertName(caCertName);
-    setURLUpdateFunction(getUrlFxn);
-    setFileUpdateFunction(getFileNameFxn);
+    if (caCertName) setCACertName(caCertName);
+    if (getUrlFxn) setURLUpdateFunction(getUrlFxn);
+    if (getFileNameFxn) setFileUpdateFunction(getFileNameFxn);
 }
+
+// Delegating constructors
+S3PresignedPublisher::S3PresignedPublisher() : dataPublisher() {}
 S3PresignedPublisher::S3PresignedPublisher(Logger& baseLogger, Client* inClient,
                                            String (*getUrlFxn)(String),
                                            String (*getFileNameFxn)(void),
                                            int sendEveryX)
-    : dataPublisher(baseLogger, inClient, sendEveryX) {
-    setURLUpdateFunction(getUrlFxn);
-    setFileUpdateFunction(getFileNameFxn);
+    : S3PresignedPublisher(baseLogger, static_cast<const char*>(nullptr),
+                           getUrlFxn, getFileNameFxn, sendEveryX) {
+    if (inClient) _inClient = inClient;
 }
 // Destructor
 S3PresignedPublisher::~S3PresignedPublisher() {}
