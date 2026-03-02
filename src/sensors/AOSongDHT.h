@@ -45,6 +45,11 @@
  * @section sensor_dht_datasheet Sensor Datasheet
  * [Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AOSong-DHT22-Datasheet.pdf)
  *
+ * @section sensor_dht_config_flags Build flags
+ * - `-D DHT_DEFAULT_MEASUREMENT_RETRIES=##`
+ *      - used to set the default number of measurement retries for DHT sensors
+ *        when communication errors occur
+ *
  * @section sensor_dht_ctor Sensor Constructor
  * {{ @ref AOSongDHT::AOSongDHT }}
  *
@@ -101,6 +106,28 @@ static const uint8_t AM2301{21}; /**< AM2301 */
 
 /** @ingroup sensor_dht */
 /**@{*/
+
+/**
+ * @anchor sensor_dht_config
+ * @name Configuration Defines
+ * Define for the DHT measurement retry behavior.
+ */
+/**@{*/
+#if !defined(DHT_DEFAULT_MEASUREMENT_RETRIES) || defined(DOXYGEN)
+/**
+ * @brief The default number of measurement retries for DHT sensors when
+ * communication errors occur.
+ *
+ * DHT sensors use a single-wire protocol that can be susceptible to timing
+ * issues and communication errors. This define sets the default number of
+ * retries when a measurement fails.
+ *
+ * @note The default value of 5 retries provides good reliability while
+ * preventing excessive delays in case of persistent communication issues.
+ */
+#define DHT_DEFAULT_MEASUREMENT_RETRIES 5
+#endif
+/**@}*/
 
 /**
  * @anchor sensor_dht_var_counts

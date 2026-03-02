@@ -58,6 +58,11 @@
  * the time the logger woke or other sensors took measurements by the time it
  * takes the pH sensor to warm up and take a reading.
  *
+ * @section sensor_anb_ph_config_flags Build flags
+ * - `-D ANB_PH_DEFAULT_MEASUREMENT_RETRIES=##`
+ *      - used to set the default number of measurement retries for ANB pH sensors
+ *        when communication errors occur
+ *
  * @section sensor_anb_ph_ctor Sensor Constructor
  * {{ @ref ANBpH::ANBpH }}
  *
@@ -100,6 +105,28 @@
 
 /** @ingroup sensor_anb_ph */
 /**@{*/
+
+/**
+ * @anchor sensor_anb_ph_config
+ * @name Configuration Defines
+ * Define for the ANB pH measurement retry behavior.
+ */
+/**@{*/
+#if !defined(ANB_PH_DEFAULT_MEASUREMENT_RETRIES) || defined(DOXYGEN)
+/**
+ * @brief The default number of measurement retries for ANB pH sensors when
+ * communication errors occur.
+ *
+ * ANB pH sensors use Modbus communication which can be susceptible to
+ * communication errors, especially in harsh environmental conditions. This
+ * define sets the default number of retries when a measurement fails.
+ *
+ * @note The default value of 5 retries provides good reliability while
+ * preventing excessive delays in case of persistent communication issues.
+ */
+#define ANB_PH_DEFAULT_MEASUREMENT_RETRIES 5
+#endif
+/**@}*/
 
 /**
  * @brief The minimum spacing between requesting responses from the sensor.
