@@ -80,20 +80,6 @@
 /**@{*/
 
 /**
- * @anchor sensor_alspt19_var_counts
- * @name Sensor Variable Counts
- * The number of variables that can be returned by an ALS-PT19
- */
-/**@{*/
-/// @brief Sensor::_numReturnedValues; the ALS-PT19 can report 1 "raw" value
-/// (voltage) and we calculate current and illuminance from it.
-#define ALSPT19_NUM_VARIABLES 3
-/// @brief Sensor::_incCalcValues; we calculate photocurrent from the supply
-/// voltage and loading resistance and illuminance from the photocurrent.
-#define ALSPT19_INC_CALC_VARIABLES 2
-/**@}*/
-
-/**
  * @anchor sensor_alspt19_config
  * @name Configuration Defines
  * Define for the ALS calibration between current and lux.
@@ -117,6 +103,20 @@
  */
 #define ALSPT19_UA_PER_1000LUX 200.0f
 #endif
+/**@}*/
+
+/**
+ * @anchor sensor_alspt19_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by an ALS-PT19
+ */
+/**@{*/
+/// @brief Sensor::_numReturnedValues; the ALS-PT19 can report 1 "raw" value
+/// (voltage) and we calculate current and illuminance from it.
+#define ALSPT19_NUM_VARIABLES 3
+/// @brief Sensor::_incCalcValues; we calculate photocurrent from the supply
+/// voltage and loading resistance and illuminance from the photocurrent.
+#define ALSPT19_INC_CALC_VARIABLES 2
 /**@}*/
 
 /**

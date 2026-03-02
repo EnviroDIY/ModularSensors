@@ -172,22 +172,6 @@
 /**@{*/
 
 /**
- * @anchor sensor_analog_cond_parts_var_counts
- * @name Sensor Variable Counts
- * The number of variables that can be returned by the analog conductivity
- * sensor
- */
-/**@{*/
-/// @brief Sensor::_numReturnedValues; we only get one value from the analog
-/// conductivity sensor.
-#define ANALOGELECCONDUCTIVITY_NUM_VARIABLES 1
-/// @brief Sensor::_incCalcValues; we don't calculate any additional values
-/// though we recommend users include a temperature sensor and calculate
-/// specific conductance in their own program.
-#define ANALOGELECCONDUCTIVITY_INC_CALC_VARIABLES 0
-/**@}*/
-
-/**
  * @anchor sensor_analog_cond_parts_config
  * @name Configuration Defines
  * Defines to help configure the range and resolution of the home-made
@@ -234,6 +218,22 @@ static_assert(
     ANALOGELECCONDUCTIVITY_ADC_MAX_RATIO > 0.0f &&
         ANALOGELECCONDUCTIVITY_ADC_MAX_RATIO < 1.0f,
     "ANALOGELECCONDUCTIVITY_ADC_MAX_RATIO must be in the range (0.0, 1.0)");
+/**@}*/
+
+/**
+ * @anchor sensor_analog_cond_parts_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the analog conductivity
+ * sensor
+ */
+/**@{*/
+/// @brief Sensor::_numReturnedValues; we only get one value from the analog
+/// conductivity sensor.
+#define ANALOGELECCONDUCTIVITY_NUM_VARIABLES 1
+/// @brief Sensor::_incCalcValues; we don't calculate any additional values
+/// though we recommend users include a temperature sensor and calculate
+/// specific conductance in their own program.
+#define ANALOGELECCONDUCTIVITY_INC_CALC_VARIABLES 0
 /**@}*/
 
 /**

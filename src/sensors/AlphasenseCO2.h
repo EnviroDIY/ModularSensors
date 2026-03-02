@@ -102,19 +102,6 @@ class AnalogVoltageBase;
 /**@{*/
 
 /**
- * @anchor sensor_alphasense_co2_var_counts
- * @name Sensor Variable Counts
- * The number of variables that can be returned by the Alphasense CO2 sensor
- */
-/**@{*/
-/// @brief Sensor::_numReturnedValues; the Alphasense CO2 sensor can report 2
-/// values, raw voltage and calculated CO2.
-#define ALPHASENSE_CO2_NUM_VARIABLES 2
-/// @brief Sensor::_incCalcValues; CO2 is calculated from the raw voltage.
-#define ALPHASENSE_CO2_INC_CALC_VARIABLES 1
-/**@}*/
-
-/**
  * @anchor sensor_alphasense_co2_config
  * @name Configuration Defines
  * Defines to set the calibration of the Alphasense CO2 sensor.
@@ -144,6 +131,19 @@ class AnalogVoltageBase;
  */
 #define ALPHASENSE_CO2_VOLTAGE_MULTIPLIER 1.0f
 #endif
+/**@}*/
+
+/**
+ * @anchor sensor_alphasense_co2_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the Alphasense CO2 sensor
+ */
+/**@{*/
+/// @brief Sensor::_numReturnedValues; the Alphasense CO2 sensor can report 2
+/// values, raw voltage and calculated CO2.
+#define ALPHASENSE_CO2_NUM_VARIABLES 2
+/// @brief Sensor::_incCalcValues; CO2 is calculated from the raw voltage.
+#define ALPHASENSE_CO2_INC_CALC_VARIABLES 1
 /**@}*/
 
 /**

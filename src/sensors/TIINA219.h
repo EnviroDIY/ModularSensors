@@ -87,6 +87,16 @@
 /**@{*/
 
 /**
+ * @anchor sensor_ina219_config
+ * @name Configuration Defines
+ * Defines to set the address of the INA219.
+ */
+/**@{*/
+/// @brief The default address of the INA219
+#define INA219_ADDRESS_BASE 0x40
+/**@}*/
+
+/**
  * @anchor sensor_ina219_var_counts
  * @name Sensor Variable Counts
  * The number of variables that can be returned by the INA219
@@ -96,16 +106,6 @@
 #define INA219_NUM_VARIABLES 3
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define INA219_INC_CALC_VARIABLES 0
-/**@}*/
-
-/**
- * @anchor sensor_ina219_config
- * @name Configuration Defines
- * Defines to set the address of the INA219.
- */
-/**@{*/
-/// @brief The default address of the INA219
-#define INA219_ADDRESS_BASE 0x40
 /**@}*/
 
 /**

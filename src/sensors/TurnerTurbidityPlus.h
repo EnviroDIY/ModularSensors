@@ -74,21 +74,6 @@ class AnalogVoltageBase;
 /**@{*/
 
 /**
- * @anchor sensor_turbidity_plus_var_counts
- * @name Sensor Variable Counts
- * The number of variables that can be returned by Turbidity Plus
- */
-/**@{*/
-/**
- * @brief Sensor::_numReturnedValues; the Turbidity Plus can report 2 values.
- */
-#define TURBIDITY_PLUS_NUM_VARIABLES 2
-/// @brief Sensor::_incCalcValues; turbidity is calculated from raw voltage
-/// using the input calibration equation.
-#define TURBIDITY_PLUS_INC_CALC_VARIABLES 1
-/**@}*/
-
-/**
  * @anchor sensor_turbidity_plus_config
  * @name Configuration Defines
  * Defines to set the timing configuration of the Turner Turbidity Plus sensor.
@@ -113,6 +98,21 @@ class AnalogVoltageBase;
  */
 #define TURBIDITY_PLUS_CALIBRATION_EPSILON 1e-4f
 #endif
+/**@}*/
+
+/**
+ * @anchor sensor_turbidity_plus_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by Turbidity Plus
+ */
+/**@{*/
+/**
+ * @brief Sensor::_numReturnedValues; the Turbidity Plus can report 2 values.
+ */
+#define TURBIDITY_PLUS_NUM_VARIABLES 2
+/// @brief Sensor::_incCalcValues; turbidity is calculated from raw voltage
+/// using the input calibration equation.
+#define TURBIDITY_PLUS_INC_CALC_VARIABLES 1
 /**@}*/
 
 /**
