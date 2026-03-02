@@ -192,8 +192,8 @@ bool TEConnectivityMS5837::addSingleMeasurementResult(void) {
                    _overSamplingRatio, F(". Unable to map to OSR value."));
             return bumpMeasurementAttemptCount(false);
     }
-    MS_DBG(F("  Requesting OSR:"), OSR, F("for oversampling ratio:"),
-           _overSamplingRatio);
+    MS_DBG(F("  Requesting"), OSR, F("bit OSR (oversampling ratio:"),
+           _overSamplingRatio, F(")"));
     // Convert oversampling ratio to the value expected by the MS5837 library
     // (8-13 for oversampling ratios 256-8192)
     int  read_return = MS5837_internal.read(OSR);
