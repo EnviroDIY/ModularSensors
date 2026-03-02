@@ -129,6 +129,24 @@ void ThingSpeakPublisher::begin(Logger&     baseLogger,
 
 // This sends the data to ThingSpeak
 int16_t ThingSpeakPublisher::publishData(Client* outClient, bool) {
+    // Validate required MQTT parameters before proceeding
+    if (_thingSpeakChannelID == nullptr || strlen(_thingSpeakChannelID) == 0) {
+        MS_DBG(F("ERROR: ThingSpeak Channel ID is required but not set!"));
+        return -1;
+    }
+    if (_thingSpeakClientName == nullptr) {
+        MS_DBG(F("ERROR: ThingSpeak Client Name is required but not set!"));
+        return -1;
+    }
+    if (_thingSpeakMQTTUser == nullptr) {
+        MS_DBG(F("ERROR: ThingSpeak MQTT User is required but not set!"));
+        return -1;
+    }
+    if (_thingSpeakMQTTPassword == nullptr) {
+        MS_DBG(F("ERROR: ThingSpeak MQTT Password is required but not set!"));
+        return -1;
+    }
+    
     bool retVal = false;
 
     // Make sure we don't have too many fields
