@@ -154,9 +154,9 @@ bool TEConnectivityMS5837::addSingleMeasurementResult(void) {
     }
 
     // Validate configuration parameters
-    if (_fluidDensity <= 0.0 || _fluidDensity > 5.0) {
+    if (_fluidDensity <= 0.1 || _fluidDensity > 5.0) {
         MS_DBG(F("Invalid fluid density:"), _fluidDensity,
-               F("g/cm³. Expected range: (0.0-5.0]"));
+               F("g/cm³. Expected range: (0.1-5.0]"));
         return bumpMeasurementAttemptCount(false);
     }
     if (_airPressure < 500.0 || _airPressure > 1200.0) {
