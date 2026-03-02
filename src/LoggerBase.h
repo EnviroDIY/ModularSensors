@@ -477,7 +477,7 @@ class Logger {
      * @brief The initial number of samples to log at an interval of 1 minute
      * for fast field verification
      */
-    int8_t _remainingShortIntervals = 5;
+    int16_t _remainingShortIntervals = 5;
     /**
      * @brief Digital pin number on the mcu controlling the SD card slave
      * select.
