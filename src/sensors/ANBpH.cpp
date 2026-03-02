@@ -20,7 +20,27 @@ ANBpH::ANBpH(byte modbusAddress, Stream* stream, int8_t powerPin,
       _anb_sensor(modbusAddress, stream, enablePin),
       _modbusAddress(modbusAddress),
       _stream(stream),
-      _loggingIntervalMinutes(loggingIntervalMinutes),
+      _loggingIntervalMinutes([powerPin, loggingIntervalMinutes]() -> int16_t {
+          // NOTE: These clamps are intentionally silent — Serial/MS_DBG is NOT
+          // safe to call during construction (the Serial object may not be
+          // initialized yet on Arduino targets).
+          // Validate and normalize loggingIntervalMinutes based on powerPin
+          if (powerPin != -1) {  // Cycled power
+              if (loggingIntervalMinutes == 0) {
+                  return 10;  // Force to minimum for cycled power
+              }
+              return (loggingIntervalMinutes < 10) ? 10
+                  : (loggingIntervalMinutes > 240) ? 240
+                                                   : loggingIntervalMinutes;
+          } else {  // Always-powered (powerPin == -1)
+              if (loggingIntervalMinutes == 0) {
+                  return 0;  // Allow 0 for always-on mode
+              }
+              return (loggingIntervalMinutes < 10) ? 10
+                  : (loggingIntervalMinutes > 240) ? 240
+                                                   : loggingIntervalMinutes;
+          }
+      }()),
       _RS485EnablePin(enablePin) {
 #ifdef MS_ANB_SENSORS_PH_DEBUG_DEEP
     _anb_sensor.setDebugStream(&MS_SERIAL_OUTPUT);
@@ -28,23 +48,12 @@ ANBpH::ANBpH(byte modbusAddress, Stream* stream, int8_t powerPin,
     setSecondaryPowerPin(powerPin2);
     setAllowedMeasurementRetries(5);
 }
+// Delegating constructor
 ANBpH::ANBpH(byte modbusAddress, Stream& stream, int8_t powerPin,
              int16_t loggingIntervalMinutes, int8_t powerPin2, int8_t enablePin,
              uint8_t measurementsToAverage)
-    : Sensor("ANBpHSensor", ANB_PH_NUM_VARIABLES, ANB_PH_WARM_UP_TIME_MS,
-             ANB_PH_STABILIZATION_TIME_MS, ANB_PH_2ND_VALUE_LOW_SALT, powerPin,
-             -1, measurementsToAverage, ANB_PH_INC_CALC_VARIABLES),
-      _anb_sensor(modbusAddress, stream, enablePin),
-      _modbusAddress(modbusAddress),
-      _stream(&stream),
-      _loggingIntervalMinutes(loggingIntervalMinutes),
-      _RS485EnablePin(enablePin) {
-#ifdef MS_ANB_SENSORS_PH_DEBUG_DEEP
-    _anb_sensor.setDebugStream(&MS_SERIAL_OUTPUT);
-#endif
-    setSecondaryPowerPin(powerPin2);
-    setAllowedMeasurementRetries(5);
-}
+    : ANBpH(modbusAddress, &stream, powerPin, loggingIntervalMinutes, powerPin2,
+            enablePin, measurementsToAverage) {}
 // Destructor
 ANBpH::~ANBpH() {}
 

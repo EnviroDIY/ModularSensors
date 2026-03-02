@@ -155,6 +155,18 @@
 // GroPoint Profile GPLP-8 has 8 Moisture and 13 Temperature values
 #endif
 
+#if 0
+#ifndef MS_NUMBER_SUPPORTED_POWER_PINS
+/**
+ * @brief The maximum number of power pins the library can support for a single
+ * sensor.
+ *
+ * @warning There is currently no support for this functionality and changing this value will not do anything. This is a placeholder for possible. future functionality to support multiple power pins per sensor.
+ */
+#define MS_NUMBER_SUPPORTED_POWER_PINS 2
+#endif
+#endif
+
 //==============================================================
 // Analog voltage configuration
 //==============================================================
