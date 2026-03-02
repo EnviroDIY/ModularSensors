@@ -27,12 +27,12 @@ const int   ThingSpeakPublisher::mqttPort            = 1883;
 
 // Constructors
 // Primary constructor with all MQTT parameters and client
-ThingSpeakPublisher::ThingSpeakPublisher(Logger&     baseLogger,
+ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
                                          const char* thingSpeakClientName,
                                          const char* thingSpeakMQTTUser,
                                          const char* thingSpeakMQTTPassword,
                                          const char* thingSpeakChannelID,
-                                         Client* inClient, int sendEveryX)
+                                         int         sendEveryX)
     : dataPublisher(baseLogger, sendEveryX) {
     if (thingSpeakClientName) setMQTTClient(thingSpeakClientName);
     if (thingSpeakMQTTUser) setUserName(thingSpeakMQTTUser);
@@ -44,22 +44,25 @@ ThingSpeakPublisher::ThingSpeakPublisher(Logger&     baseLogger,
 // Delegating constructors
 ThingSpeakPublisher::ThingSpeakPublisher() : dataPublisher() {}
 ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, int sendEveryX)
-    : ThingSpeakPublisher(baseLogger, nullptr, nullptr, nullptr, nullptr,
-                          nullptr, sendEveryX) {}
+    : ThingSpeakPublisher(
+          baseLogger, nullptr, static_cast<const char*>(nullptr),
+          static_cast<const char*>(nullptr), static_cast<const char*>(nullptr),
+          static_cast<const char*>(nullptr), sendEveryX) {}
 ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
                                          int sendEveryX)
-    : ThingSpeakPublisher(baseLogger, nullptr, nullptr, nullptr, nullptr,
-                          inClient, sendEveryX) {}
-// Delegating constructor
-ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
+    : ThingSpeakPublisher(
+          baseLogger, inClient, static_cast<const char*>(nullptr),
+          static_cast<const char*>(nullptr), static_cast<const char*>(nullptr),
+          static_cast<const char*>(nullptr), sendEveryX) {}
+ThingSpeakPublisher::ThingSpeakPublisher(Logger&     baseLogger,
                                          const char* thingSpeakClientName,
                                          const char* thingSpeakMQTTUser,
                                          const char* thingSpeakMQTTPassword,
                                          const char* thingSpeakChannelID,
                                          int         sendEveryX)
-    : ThingSpeakPublisher(baseLogger, thingSpeakClientName, thingSpeakMQTTUser,
-                          thingSpeakMQTTPassword, thingSpeakChannelID, inClient,
-                          sendEveryX) {}
+    : ThingSpeakPublisher(baseLogger, nullptr, thingSpeakClientName,
+                          thingSpeakMQTTUser, thingSpeakMQTTPassword,
+                          thingSpeakChannelID, sendEveryX) {}
 // Destructor
 ThingSpeakPublisher::~ThingSpeakPublisher() {}
 

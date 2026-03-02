@@ -21,7 +21,8 @@
 Variable::Variable(Sensor* parentSense, uint8_t sensorVarNum,
                    uint8_t decimalResolution, const char* varName,
                    const char* varUnit, const char* varCode, const char* uuid)
-    : _sensorVarNum(sensorVarNum), isCalculated(false) {
+    : isCalculated(false),
+      _sensorVarNum(sensorVarNum) {
     if (uuid) setVarUUID(uuid);
     if (varCode) setVarCode(varCode);
     if (varUnit) setVarUnit(varUnit);
