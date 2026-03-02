@@ -141,8 +141,10 @@ static_assert(MS5837_DEFAULT_FLUID_DENSITY > 0.1f &&
  *
  * Higher oversampling ratios provide better resolution and noise reduction but
  * increase measurement time. Valid values are: 256, 512, 1024, 2048, 4096,
- * 8192. Default is 4096 for good balance of accuracy and speed. This can be
- * overridden at compile time with -D MS5837_DEFAULT_OVERSAMPLING_RATIO=value
+ * 8192.  This can be overridden at compile time with
+ * `-D MS5837_DEFAULT_OVERSAMPLING_RATIO=value`
+ *
+ * @note The 13-bit (8192) sampling mode is not available on the MS5803.
  */
 #define MS5837_DEFAULT_OVERSAMPLING_RATIO 4096
 #endif
@@ -185,8 +187,10 @@ static_assert(
 /**
  * @brief Sensor::_measurementTime_ms; the MS5837 takes 20ms to complete a
  * measurement.
- * - Sensor takes about 0.5 / 1.1 / 2.1 / 4.1 / 8.22 ms to respond
- * at oversampling ratios: 256 / 512 / 1024 / 2048 / 4096, respectively.
+ * - Sensor takes about 0.5 / 1.1 / 2.1 / 4.1 / 8.22 / 16.44 ms to respond
+ * at oversampling ratios: 256 / 512 / 1024 / 2048 / 4096 / 8192, respectively.
+ *
+ * @note The 13-bit (8192) sampling mode is not available on the MS5803.
  */
 #define MS5837_MEASUREMENT_TIME_MS 20
 /**@}*/
