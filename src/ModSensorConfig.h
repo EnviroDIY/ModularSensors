@@ -38,27 +38,61 @@
 // #define MS_USE_RTC_ZERO
 //==============================================================
 
-//==============================================================
-// Select ADS1015 instead of the ADS1115, if desired
-// This is for sensors that use the external ADC for analog voltage
-// measurements.
-// #define MS_USE_ADS1015
 
-#if !defined(MS_DEFAULT_ADS1X15_ADDRESS) || defined(DOXYGEN)
+//==============================================================
+// Time-stamp configurations
+//==============================================================
+#ifndef MS_LOGGER_EPOCH
 /**
- * @brief The default I²C address of the ADS1115 or ADS1015 external ADC.
- *
- * Valid addresses depend on the ADDR pin connection:
- * - `0x48` – ADDR to GND (default)
- * - `0x49` – ADDR to VDD
- * - `0x4A` – ADDR to SDA
- * - `0x4B` – ADDR to SCL
- *
- * Override with a build flag: `-DMS_DEFAULT_ADS1X15_ADDRESS=0x49`
+ * @brief The epoch start to use for the logger
  */
-#define MS_DEFAULT_ADS1X15_ADDRESS 0x48
+#define MS_LOGGER_EPOCH epochStart::unix_epoch
+#endif
+
+#ifndef EARLIEST_SANE_UNIX_TIMESTAMP
+/**
+ * @brief The earliest unix timestamp that can be considered sane.
+ *
+ * January 1, 2025
+ */
+#define EARLIEST_SANE_UNIX_TIMESTAMP 1735689600
+#endif
+
+#ifndef LATEST_SANE_UNIX_TIMESTAMP
+/**
+ * @brief The latest unix timestamp that can be considered sane.
+ *
+ * January 1, 2035
+ */
+#define LATEST_SANE_UNIX_TIMESTAMP 2051222400
 #endif
 //==============================================================
+
+
+//==============================================================
+// Variable configurations
+//==============================================================
+#ifndef MS_INVALID_VALUE
+/**
+ * @brief The value used to represent an invalid or missing measurement.
+ *
+ * Every sensor will use this value to indicate that a measurement is invalid
+ * or missing.
+ */
+#define MS_INVALID_VALUE -9999.0
+
+// GroPoint Profile GPLP-8 has 8 Moisture and 13 Temperature values
+#endif
+#ifndef MAX_NUMBER_VARS
+/**
+ * @brief The largest number of variables from a single sensor.
+ *
+ * Every sensor will create a buffer of this length for holding variable values.
+ * Decrease this value to save a memory.
+ */
+#define MAX_NUMBER_VARS 21
+// GroPoint Profile GPLP-8 has 8 Moisture and 13 Temperature values
+#endif
 
 //==============================================================
 // Disable concurrent polling of SDI-12 sensors, if needed
@@ -110,62 +144,27 @@
 #endif
 //==============================================================
 
-
 //==============================================================
-// Time-stamp configurations
-//==============================================================
-#ifndef MS_LOGGER_EPOCH
-/**
- * @brief The epoch start to use for the logger
- */
-#define MS_LOGGER_EPOCH epochStart::unix_epoch
-#endif
+// Select ADS1015 instead of the ADS1115, if desired
+// This is for sensors that use the external ADC for analog voltage
+// measurements.
+// #define MS_USE_ADS1015
 
-#ifndef EARLIEST_SANE_UNIX_TIMESTAMP
+#if !defined(MS_DEFAULT_ADS1X15_ADDRESS) || defined(DOXYGEN)
 /**
- * @brief The earliest unix timestamp that can be considered sane.
+ * @brief The default I²C address of the ADS1115 or ADS1015 external ADC.
  *
- * January 1, 2025
- */
-#define EARLIEST_SANE_UNIX_TIMESTAMP 1735689600
-#endif
-
-#ifndef LATEST_SANE_UNIX_TIMESTAMP
-/**
- * @brief The latest unix timestamp that can be considered sane.
+ * Valid addresses depend on the ADDR pin connection:
+ * - `0x48` – ADDR to GND (default)
+ * - `0x49` – ADDR to VDD
+ * - `0x4A` – ADDR to SDA
+ * - `0x4B` – ADDR to SCL
  *
- * January 1, 2035
+ * Override with a build flag: `-DMS_DEFAULT_ADS1X15_ADDRESS=0x49`
  */
-#define LATEST_SANE_UNIX_TIMESTAMP 2051222400
+#define MS_DEFAULT_ADS1X15_ADDRESS 0x48
 #endif
 //==============================================================
-
-
-//==============================================================
-// Variable configurations
-//==============================================================
-#ifndef MAX_NUMBER_VARS
-/**
- * @brief The largest number of variables from a single sensor.
- *
- * Every sensor will create a buffer of this length for holding variable values.
- * Decrease this value to save a memory.
- */
-#define MAX_NUMBER_VARS 21
-// GroPoint Profile GPLP-8 has 8 Moisture and 13 Temperature values
-#endif
-
-#if 0
-#ifndef MS_NUMBER_SUPPORTED_POWER_PINS
-/**
- * @brief The maximum number of power pins the library can support for a single
- * sensor.
- *
- * @warning There is currently no support for this functionality and changing this value will not do anything. This is a placeholder for possible. future functionality to support multiple power pins per sensor.
- */
-#define MS_NUMBER_SUPPORTED_POWER_PINS 2
-#endif
-#endif
 
 //==============================================================
 // Analog voltage configuration
