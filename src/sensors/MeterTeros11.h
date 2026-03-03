@@ -143,7 +143,7 @@
  */
 /**@{*/
 /**
- * @brief Decimals places in string representation; EA should have 1.
+ * @brief Decimal places in string representation; EA should have 1.
  */
 #define TEROS11_COUNT_RESOLUTION 1
 /// @brief Sensor variable number; EA is stored in sensorValues[0].
@@ -173,7 +173,7 @@
  */
 /**@{*/
 /**
- * @brief Decimals places in string representation; temperature should have 2.
+ * @brief Decimal places in string representation; temperature should have 2.
  *
  * 1 is reported, adding extra digit to resolution to allow the proper number
  * of significant figures for averaging - resolution is 0.1°C
@@ -206,7 +206,7 @@
  */
 /**@{*/
 /**
- * @brief Decimals places in string representation; EA should have 5.
+ * @brief Decimal places in string representation; EA should have 5.
  *
  * 4 are reported, adding extra digit to resolution to allow the proper number
  * of significant figures for averaging - resolution is 0.00001
@@ -243,7 +243,7 @@
  */
 /**@{*/
 /**
- * @brief Decimals places in string representation; VWC should have 3.
+ * @brief Decimal places in string representation; VWC should have 3.
  *
  * 2 are reported, adding extra digit to resolution to allow the proper number
  * of significant figures for averaging - Resolution is 0.001 m3/m3 (0.1% VWC)

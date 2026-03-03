@@ -113,7 +113,7 @@
  * {{ @ref AtlasScientificpH_pH::AtlasScientificpH_pH }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; pH should have 3 -
+/// @brief Decimal places in string representation; pH should have 3 -
 /// resolution is 0.001.
 #define ATLAS_PH_RESOLUTION 3
 /// @brief Sensor variable number; pH is stored in sensorValues[0].

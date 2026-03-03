@@ -131,7 +131,7 @@
  * {{ @ref AtlasScientificDO_DOmgL::AtlasScientificDO_DOmgL }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; dissolved oxygen
+/// @brief Decimal places in string representation; dissolved oxygen
 /// concentration should have 2 - resolution is 0.01 mg/L.
 #define ATLAS_DOMGL_RESOLUTION 2
 /// @brief Sensor variable number; dissolved oxygen concentration is stored in
@@ -159,7 +159,7 @@
  * {{ @ref AtlasScientificDO_DOpct::AtlasScientificDO_DOpct }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; dissolved oxygen percent
+/// @brief Decimal places in string representation; dissolved oxygen percent
 /// should have 1 - resolution is 0.1 % saturation.
 #define ATLAS_DOPCT_RESOLUTION 1
 /// @brief Sensor variable number; dissolved oxygen percent is stored in

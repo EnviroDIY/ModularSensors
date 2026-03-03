@@ -83,7 +83,7 @@
  * {{ @ref KellerAcculevel_Pressure::KellerAcculevel_Pressure }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; pressure should have 5 -
+/// @brief Decimal places in string representation; pressure should have 5 -
 /// resolution is 0.002%.
 #define ACCULEVEL_PRESSURE_RESOLUTION 5
 /// @brief Default variable short code; "kellerAccuPress"
@@ -100,7 +100,7 @@
  * {{ @ref KellerAcculevel_Temp::KellerAcculevel_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 2 -
+/// @brief Decimal places in string representation; temperature should have 2 -
 /// resolution is 0.01°C.
 #define ACCULEVEL_TEMP_RESOLUTION 2
 /// @brief Default variable short code; "kellerAccuTemp"
@@ -117,7 +117,7 @@
  * {{ @ref KellerAcculevel_Height::KellerAcculevel_Height }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; height should have 4 -
+/// @brief Decimal places in string representation; height should have 4 -
 /// resolution is 0.002%.
 #define ACCULEVEL_HEIGHT_RESOLUTION 4
 /// @brief Default variable short code; "kellerAccuHeight"

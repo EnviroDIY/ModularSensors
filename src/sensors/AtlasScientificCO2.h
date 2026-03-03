@@ -122,7 +122,7 @@
  * {{ @ref AtlasScientificCO2_CO2::AtlasScientificCO2_CO2 }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; CO2 should have 1 -
+/// @brief Decimal places in string representation; CO2 should have 1 -
 /// resolution is 1 ppm.
 #define ATLAS_CO2_RESOLUTION 1
 /// @brief Sensor variable number; CO2 is stored in sensorValues[0].
@@ -149,7 +149,7 @@
  * {{ @ref AtlasScientificCO2_Temp::AtlasScientificCO2_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; CO2TEMP should have 0 -
+/// @brief Decimal places in string representation; CO2TEMP should have 0 -
 /// resolution is 1°C.
 #define ATLAS_CO2TEMP_RESOLUTION 0
 /// @brief Sensor variable number; CO2TEMP is stored in sensorValues[1].

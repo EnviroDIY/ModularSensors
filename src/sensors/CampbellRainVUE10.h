@@ -122,7 +122,7 @@
  * {{ @ref CampbellRainVUE10_Precipitation::CampbellRainVUE10_Precipitation }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; depth should have 2
+/// @brief Decimal places in string representation; depth should have 2
 /// (resolution is 0.01 inches).
 #define RAINVUE10_PRECIPITATION_RESOLUTION 2
 /// @brief Sensor variable number; precipitation is stored in sensorValues[0]
@@ -148,7 +148,7 @@
  * {{ @ref CampbellRainVUE10_Tips::CampbellRainVUE10_Tips }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; the number of tips should
+/// @brief Decimal places in string representation; the number of tips should
 /// have 0 - resolution is 1 tip.
 #define RAINVUE10_TIPS_RESOLUTION 0
 /// @brief Sensor variable number; tips is stored in sensorValues[1].
@@ -183,7 +183,7 @@
  * {{ @ref CampbellRainVUE10_RainRateAve::CampbellRainVUE10_RainRateAve }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; the rainfall intensity
+/// @brief Decimal places in string representation; the rainfall intensity
 /// has 2.
 #define RAINVUE10_RAINRATEAVE_RESOLUTION 2
 /// @brief Sensor variable number; average intensity is stored in
@@ -210,7 +210,7 @@
  * {{ @ref CampbellRainVUE10_RainRateMax::CampbellRainVUE10_RainRateMax }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; the rainfall intensity
+/// @brief Decimal places in string representation; the rainfall intensity
 /// has 2.
 #define RAINVUE10_RAINRATEMAX_RESOLUTION 2
 /// @brief Sensor variable number; average intensity is stored in

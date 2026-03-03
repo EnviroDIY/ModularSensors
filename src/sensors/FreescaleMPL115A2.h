@@ -125,7 +125,7 @@
  * {{ @ref FreescaleMPL115A2_Temp::FreescaleMPL115A2_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 2 -
+/// @brief Decimal places in string representation; temperature should have 2 -
 /// resolution is 0.01°C.
 #define MPL115A2_TEMP_RESOLUTION 2
 /// @brief Sensor variable number; temperature is stored in sensorValues[0].
@@ -152,7 +152,7 @@
  * {{ @ref FreescaleMPL115A2_Pressure::FreescaleMPL115A2_Pressure }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; pressure should have 2 -
+/// @brief Decimal places in string representation; pressure should have 2 -
 /// resolution is 1.5 hPa.
 #define MPL115A2_PRESSURE_RESOLUTION 2
 /// @brief Sensor variable number; pressure is stored in sensorValues[1].

@@ -127,7 +127,7 @@
  * {{ @ref MaximDS3231_Temp::MaximDS3231_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 2 -
+/// @brief Decimal places in string representation; temperature should have 2 -
 /// resolution is -0.25°C (10 bit).
 #define DS3231_TEMP_RESOLUTION 2
 /// @brief Sensor variable number; temperature is stored in sensorValues[0].

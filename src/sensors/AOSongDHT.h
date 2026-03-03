@@ -167,7 +167,7 @@ static const uint8_t AM2301{21}; /**< AM2301 */
  * {{ @ref AOSongDHT_Humidity::AOSongDHT_Humidity }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; humidity should have 1 (0.1
+/// @brief Decimal places in string representation; humidity should have 1 (0.1
 /// % RH for DHT22 and 1 % RH for DHT11)
 #define DHT_HUMIDITY_RESOLUTION 1
 /// @brief Sensor variable number; humidity is stored in sensorValues[0].
@@ -194,7 +194,7 @@ static const uint8_t AM2301{21}; /**< AM2301 */
  * {{ @ref AOSongDHT_Temp::AOSongDHT_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 1 -
+/// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define DHT_TEMP_RESOLUTION 1
 /// @brief Sensor variable number; temperature is stored in sensorValues[1].
@@ -221,7 +221,7 @@ static const uint8_t AM2301{21}; /**< AM2301 */
  * {{ @ref AOSongDHT_HI::AOSongDHT_HI }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; heat index should have 1 -
+/// @brief Decimal places in string representation; heat index should have 1 -
 /// resolution is 0.1°C
 #define DHT_HI_RESOLUTION 1
 /// @brief Sensor variable number; HI is stored in sensorValues[2].

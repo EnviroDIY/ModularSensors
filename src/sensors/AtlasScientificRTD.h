@@ -117,7 +117,7 @@
  * {{ @ref AtlasScientificRTD_Temp::AtlasScientificRTD_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 3 -
+/// @brief Decimal places in string representation; temperature should have 3 -
 /// resolution is 0.001°C.
 #define ATLAS_RTD_RESOLUTION 3
 /// @brief Sensor variable number; RTD is stored in sensorValues[0].

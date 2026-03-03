@@ -142,7 +142,7 @@
  * {{ @ref AtlasScientificEC_Cond::AtlasScientificEC_Cond }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; conductivity should have 3.
+/// @brief Decimal places in string representation; conductivity should have 3.
 #define ATLAS_COND_RESOLUTION 3
 /// @brief Sensor variable number; conductivity is stored in sensorValues[0].
 #define ATLAS_COND_VAR_NUM 0
@@ -168,7 +168,7 @@
  * {{ @ref AtlasScientificEC_TDS::AtlasScientificEC_TDS }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; TDS should have 3.
+/// @brief Decimal places in string representation; TDS should have 3.
 #define ATLAS_TDS_RESOLUTION 3
 /// @brief Sensor variable number; TDS is stored in sensorValues[1].
 #define ATLAS_TDS_VAR_NUM 1
@@ -194,7 +194,7 @@
  * {{ @ref AtlasScientificEC_Salinity::AtlasScientificEC_Salinity }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; salinity should have 3.
+/// @brief Decimal places in string representation; salinity should have 3.
 #define ATLAS_SALINITY_RESOLUTION 3
 /// @brief Sensor variable number; salinity is stored in sensorValues[2].
 #define ATLAS_SALINITY_VAR_NUM 2
@@ -222,7 +222,7 @@
  */
 /* clang-format on */
 /**@{*/
-/// @brief Decimals places in string representation; specific gravity should
+/// @brief Decimal places in string representation; specific gravity should
 /// have 3.
 #define ATLAS_SG_RESOLUTION 3
 /// @brief Sensor variable number; specific gravity is stored in

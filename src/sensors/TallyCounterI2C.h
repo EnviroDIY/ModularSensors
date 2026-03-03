@@ -147,7 +147,7 @@
  * {{ @ref TallyCounterI2C_Events::TallyCounterI2C_Events }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; events are an integer
+/// @brief Decimal places in string representation; events are an integer
 /// should be 0 - resolution is 1 event.
 #define TALLY_EVENTS_RESOLUTION 0
 /// @brief Sensor variable number; events is stored in sensorValues[0].

@@ -109,7 +109,7 @@
  * {{ @ref AtlasScientificORP_Potential::AtlasScientificORP_Potential }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; ORP should have 1 -
+/// @brief Decimal places in string representation; ORP should have 1 -
 /// resolution is 0.1 mV.
 #define ATLAS_ORP_RESOLUTION 1
 /// @brief Sensor variable number; ORP is stored in sensorValues[0].

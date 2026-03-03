@@ -72,7 +72,7 @@
  */
 /**@{*/
 /**
- * @brief Decimals places in string representation; RSSI should have 0.
+ * @brief Decimal places in string representation; RSSI should have 0.
  *
  * RSSI is a rough calculation, so it has 0 decimal place resolution
  */
@@ -100,7 +100,7 @@
  */
 /**@{*/
 /**
- * @brief Decimals places in string representation; percent signal should have
+ * @brief Decimal places in string representation; percent signal should have
  * 0.
  *
  * Percent signal is a rough calculation, so it has 0 decimal place resolution
@@ -134,7 +134,7 @@
  */
 /**@{*/
 /**
- * @brief Decimals places in string representation; battery state should have 0.
+ * @brief Decimal places in string representation; battery state should have 0.
  *
  * Battery state is a code value; it has 0 decimal place resolution
  */
@@ -166,7 +166,7 @@
  * {{ @ref Modem_BatteryPercent::Modem_BatteryPercent }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; battery charge percent
+/// @brief Decimal places in string representation; battery charge percent
 /// should have 0.
 #define MODEM_BATTERY_PERCENT_RESOLUTION 0
 /// @brief The bit mask for loggerModem::_pollModemMetaData to enable modem
@@ -196,7 +196,7 @@
  */
 /**@{*/
 /**
- * @brief Decimals places in string representation; battery voltage should have
+ * @brief Decimal places in string representation; battery voltage should have
  * 0.
  *
  * No supported module has higher than 1mV resolution in battery reading.
@@ -228,7 +228,7 @@
  */
 /**@{*/
 /**
- * @brief Decimals places in string representation; temperature should
+ * @brief Decimal places in string representation; temperature should
  * have 1.
  *
  * Most modules that can measure temperature measure to 0.1°C
@@ -260,7 +260,7 @@
  * {{ @ref Modem_ActivationDuration::Modem_ActivationDuration }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; total active time should
+/// @brief Decimal places in string representation; total active time should
 /// have 3.
 #define MODEM_ACTIVATION_RESOLUTION 3
 /// @brief The bit mask for loggerModem::_pollModemMetaData to enable modem
@@ -287,7 +287,7 @@
  * {{ @ref Modem_PoweredDuration::Modem_PoweredDuration }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; total powered time should
+/// @brief Decimal places in string representation; total powered time should
 /// have 3.
 #define MODEM_POWERED_RESOLUTION 3
 /// @brief The bit mask for loggerModem::_pollModemMetaData to enable modem

@@ -147,7 +147,7 @@
  */
 /**@{*/
 /**
- * @brief Decimals places in string representation; voltage should have 0
+ * @brief Decimal places in string representation; voltage should have 0
  *
  * The true resolution depends on the ADC, the supply voltage, and the loading
  * resistor, but for simplicity we will use 3, which is an appropriate value for
@@ -178,7 +178,7 @@
  */
 /**@{*/
 /**
- * @brief Decimals places in string representation; voltage should have 0
+ * @brief Decimal places in string representation; voltage should have 0
  *
  * The true resolution depends on the ADC, the supply voltage, and the loading
  * resistor, but for simplicity we will use 0 as this is not a high precision
@@ -209,7 +209,7 @@
  */
 /**@{*/
 /**
- * @brief Decimals places in string representation; illuminance should have 0
+ * @brief Decimal places in string representation; illuminance should have 0
  *
  * The true resolution depends on the ADC, the supply voltage, the loading
  * resistor, and the light source, but for simplicity we will use 0 as this is

@@ -155,10 +155,10 @@ class AnalogVoltageBase;
 /// @brief Default variable short code; "TurnerTurbidity"
 #define TURBIDITY_PLUS_DEFAULT_CODE "TurnerTurbidity"
 #ifdef MS_USE_ADS1015
-/// @brief Decimals places in string representation; 1.
+/// @brief Decimal places in string representation; 1.
 #define TURBIDITY_PLUS_RESOLUTION 1
 #else
-/// @brief Decimals places in string representation; 5.
+/// @brief Decimal places in string representation; 5.
 #define TURBIDITY_PLUS_RESOLUTION 5
 #endif
 /**@}*/
@@ -190,12 +190,12 @@ class AnalogVoltageBase;
 /// @brief Default variable short code; "TurbidityPlusVoltage"
 #define TURBIDITY_PLUS_VOLTAGE_DEFAULT_CODE "TurbidityPlusVoltage"
 #ifdef MS_USE_ADS1015
-/// @brief Decimals places in string representation; voltage should have 1.
+/// @brief Decimal places in string representation; voltage should have 1.
 ///  - Resolution:
 ///     - 12-bit ADC (ADS1015): 2 mV
 #define TURBIDITY_PLUS_VOLTAGE_RESOLUTION 1
 #else
-/// @brief Decimals places in string representation; voltage should have 4.
+/// @brief Decimal places in string representation; voltage should have 4.
 ///  - Resolution:
 ///     - 16-bit ADC (ADS1115): 0.125 mV
 #define TURBIDITY_PLUS_VOLTAGE_RESOLUTION 4

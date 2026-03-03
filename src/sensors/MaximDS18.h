@@ -153,7 +153,7 @@
  * {{ @ref MaximDS18_Temp::MaximDS18_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 4.
+/// @brief Decimal places in string representation; temperature should have 4.
 #define DS18_TEMP_RESOLUTION 4
 /// @brief Sensor variable number; temperature is stored in sensorValues[0].
 #define DS18_TEMP_VAR_NUM 0

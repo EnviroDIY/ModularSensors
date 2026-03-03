@@ -268,7 +268,7 @@ static_assert(
  */
 /**@{*/
 /**
- * @brief Decimals places in string representation; EC should have 1
+ * @brief Decimal places in string representation; EC should have 1
  *
  * Range of 0-3V3 with 10bit ADC - resolution of 0.003 = 3 µS/cm.
  */

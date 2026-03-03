@@ -143,7 +143,7 @@
  */
 /**@{*/
 /**
- * @brief Decimals places in string representation; rain depth should have 2.
+ * @brief Decimal places in string representation; rain depth should have 2.
  *
  * Resolution is typically either 0.01" or 0.2mm of rainfall, depending on
  * if bucket is calibrated to English or metric units.
@@ -172,7 +172,7 @@
  * {{ @ref RainCounterI2C_Tips::RainCounterI2C_Tips }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; the number of tips should
+/// @brief Decimal places in string representation; the number of tips should
 /// have 0 - resolution is 1 tip.
 #define BUCKET_TIPS_RESOLUTION 0
 /// @brief Sensor variable number; the number of tips is stored in

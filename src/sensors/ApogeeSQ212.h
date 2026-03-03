@@ -171,11 +171,11 @@ class AnalogVoltageBase;
  */
 /**@{*/
 #ifdef MS_USE_ADS1015
-/// @brief Decimals places in string representation; PAR should have 0 when
+/// @brief Decimal places in string representation; PAR should have 0 when
 /// using an ADS1015.
 #define SQ212_PAR_RESOLUTION 0
 #else
-/// @brief Decimals places in string representation; PAR should have 4 when
+/// @brief Decimal places in string representation; PAR should have 4 when
 /// using an ADS1115.
 #define SQ212_PAR_RESOLUTION 4
 #endif
@@ -222,11 +222,11 @@ class AnalogVoltageBase;
 /// @brief Default variable short code; "SQ212Voltage"
 #define SQ212_VOLTAGE_DEFAULT_CODE "SQ212Voltage"
 #ifdef MS_USE_ADS1015
-/// @brief Decimals places in string representation; voltage should have 1 when
+/// @brief Decimal places in string representation; voltage should have 1 when
 /// used with an ADS1015.
 #define SQ212_VOLTAGE_RESOLUTION 1
 #else
-/// @brief Decimals places in string representation; voltage should have 4 when
+/// @brief Decimal places in string representation; voltage should have 4 when
 /// used with an ADS1115.
 #define SQ212_VOLTAGE_RESOLUTION 4
 #endif

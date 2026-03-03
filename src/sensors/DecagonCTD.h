@@ -110,7 +110,7 @@
  */
 /**@{*/
 /**
- * @brief Decimals places in string representation; conductivity should have 1.
+ * @brief Decimal places in string representation; conductivity should have 1.
  *
  * 0 are reported, adding extra digit to resolution to allow the proper number
  * of significant figures for averaging - resolution is 0.001 mS/cm = 1 µS/cm
@@ -141,7 +141,7 @@
  */
 /**@{*/
 /**
- * @brief Decimals places in string representation; temperature should have 2.
+ * @brief Decimal places in string representation; temperature should have 2.
  *
  * 1 is reported, adding extra digit to resolution to allow the proper number
  * of significant figures for averaging  - resolution is 0.1°C
@@ -172,7 +172,7 @@
  */
 /**@{*/
 /**
- * @brief Decimals places in string representation; depth should have 1.
+ * @brief Decimal places in string representation; depth should have 1.
  *
  * 0 are reported, adding extra digit to resolution to allow the proper number
  * of significant figures for averaging - resolution is 2 mm

@@ -201,11 +201,11 @@ class AnalogVoltageBase;
 /// @brief Default variable short code; "AlphasenseCO2ppm"
 #define ALPHASENSE_CO2_DEFAULT_CODE "AlphasenseCO2ppm"
 #ifdef MS_USE_ADS1015
-/// @brief Decimals places in string representation; CO2 should have 0 when
+/// @brief Decimal places in string representation; CO2 should have 0 when
 /// using an ADS1015.
 #define ALPHASENSE_CO2_RESOLUTION 0
 #else
-/// @brief Decimals places in string representation; CO2 should have 4 when
+/// @brief Decimal places in string representation; CO2 should have 4 when
 /// using an ADS1115.
 #define ALPHASENSE_CO2_RESOLUTION 4
 #endif
@@ -240,11 +240,11 @@ class AnalogVoltageBase;
 /// @brief Default variable short code; "AlphasenseCO2Voltage"
 #define ALPHASENSE_CO2_VOLTAGE_DEFAULT_CODE "AlphasenseCO2Voltage"
 #ifdef MS_USE_ADS1015
-/// @brief Decimals places in string representation; voltage should have 1 when
+/// @brief Decimal places in string representation; voltage should have 1 when
 /// used with an ADS1015.
 #define ALPHASENSE_CO2_VOLTAGE_RESOLUTION 1
 #else
-/// @brief Decimals places in string representation; voltage should have 4 when
+/// @brief Decimal places in string representation; voltage should have 4 when
 /// used with an ADS1115.
 #define ALPHASENSE_CO2_VOLTAGE_RESOLUTION 4
 #endif

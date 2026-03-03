@@ -96,7 +96,7 @@
  * {{ @ref YosemitechY533_ORP::YosemitechY533_ORP }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; ph should have 2 -
+/// @brief Decimal places in string representation; ph should have 2 -
 /// resolution is 1 mV units.
 #define Y533_ORP_RESOLUTION 0
 /// @brief Sensor variable number; ORP is stored in sensorValues[0].
@@ -125,7 +125,7 @@
  * {{ @ref YosemitechY533_Temp::YosemitechY533_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 1 -
+/// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define Y533_TEMP_RESOLUTION 1
 /// @brief Sensor variable number; temperature is stored in sensorValues[1].

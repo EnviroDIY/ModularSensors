@@ -146,7 +146,7 @@
  */
 /**@{*/
 /**
- * @brief Decimals places in string representation; current should have 1.
+ * @brief Decimal places in string representation; current should have 1.
  *  - resolution is 12-bit
  *     - 0.8mA using +/-3.2 Amp range
  *     - 0.1mA using +/-0.4 Amp range
@@ -175,7 +175,7 @@
  * {{ @ref TIINA219_Voltage::TIINA219_Voltage }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; bus voltage should have 3 -
+/// @brief Decimal places in string representation; bus voltage should have 3 -
 /// resolution is 0.004V.
 #define INA219_BUS_VOLTAGE_RESOLUTION 3
 /// @brief Sensor variable number; bus voltage is stored in sensorValues[1].
@@ -199,7 +199,7 @@
  * {{ @ref TIINA219_Power::TIINA219_Power }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; power draw should have 2 -
+/// @brief Decimal places in string representation; power draw should have 2 -
 /// resolution is 0.01mW.
 #define INA219_POWER_MW_RESOLUTION 2
 /// @brief Sensor variable number; power draw is stored in sensorValues[2].

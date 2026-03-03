@@ -95,7 +95,7 @@
  * {{ @ref YosemitechY513_BGA::YosemitechY513_BGA }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; blue green algae
+/// @brief Decimal places in string representation; blue green algae
 /// concentration should have 1 - resolution is 0.1 µg/L / 0.1 RFU.
 #define Y513_BGA_RESOLUTION 1
 /// @brief Sensor variable number; blue green algae concentration is stored in
@@ -123,7 +123,7 @@
  * {{ @ref YosemitechY513_Temp::YosemitechY513_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 1 -
+/// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define Y513_TEMP_RESOLUTION 1
 /// @brief Sensor variable number; temperature is stored in sensorValues[1].

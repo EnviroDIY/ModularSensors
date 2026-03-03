@@ -101,7 +101,7 @@
  * {{ @ref GroPointGPLP8_Moist::GroPointGPLP8_Moist }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; soil moisture should have 1
+/// @brief Decimal places in string representation; soil moisture should have 1
 /// - resolution is 0.1 %.
 #define GPLP8_MOIST_RESOLUTION 1
 /// @brief Variable name in
@@ -124,7 +124,7 @@
  * {{ @ref GroPointGPLP8_Temp::GroPointGPLP8_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 1 -
+/// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define GPLP8_TEMP_RESOLUTION 1
 /// @brief Variable name in

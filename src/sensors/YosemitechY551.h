@@ -99,7 +99,7 @@
  * {{ @ref YosemitechY551_COD::YosemitechY551_COD }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; cod should have 2 -
+/// @brief Decimal places in string representation; cod should have 2 -
 /// resolution is 0.01 mg/L COD.
 #define Y551_COD_RESOLUTION 2
 /// @brief Sensor variable number; COD is stored in sensorValues[0].
@@ -126,7 +126,7 @@
  * {{ @ref YosemitechY551_Temp::YosemitechY551_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 2 -
+/// @brief Decimal places in string representation; temperature should have 2 -
 /// resolution is 0.01°C.
 #define Y551_TEMP_RESOLUTION 2
 /// @brief Sensor variable number; temperature is stored in sensorValues[1].
@@ -153,7 +153,7 @@
  * {{ @ref YosemitechY551_Turbidity::YosemitechY551_Turbidity }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; turbidity should have 2 -
+/// @brief Decimal places in string representation; turbidity should have 2 -
 /// resolution is 0.01 NTU.
 #define Y551_TURB_RESOLUTION 2
 /// @brief Sensor variable number; turbidity is stored in sensorValues[2].

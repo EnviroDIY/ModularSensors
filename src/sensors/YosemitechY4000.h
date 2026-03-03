@@ -109,7 +109,7 @@
  * {{ @ref YosemitechY4000_DOmgL::YosemitechY4000_DOmgL }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; dissolved oxygen
+/// @brief Decimal places in string representation; dissolved oxygen
 /// concentration should have 2 - resolution is 0.01 mg/L.
 #define Y4000_DOMGL_RESOLUTION 2
 /// @brief Sensor variable number; dissolved oxygen concentration is stored in
@@ -137,7 +137,7 @@
  * {{ @ref YosemitechY4000_Turbidity::YosemitechY4000_Turbidity }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; turbidity should have 2 -
+/// @brief Decimal places in string representation; turbidity should have 2 -
 /// resolution is 0.01 NTU.
 #define Y4000_TURB_RESOLUTION 2
 /// @brief Sensor variable number; turbidity is stored in sensorValues[1].
@@ -164,7 +164,7 @@
  * {{ @ref YosemitechY4000_Cond::YosemitechY4000_Cond }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; conductivity should have 1
+/// @brief Decimal places in string representation; conductivity should have 1
 /// - resolution is 0.1 µS/cm.
 #define Y4000_COND_RESOLUTION 1
 /// @brief Sensor variable number; conductivity is stored in sensorValues[2].
@@ -191,7 +191,7 @@
  * {{ @ref YosemitechY4000_pH::YosemitechY4000_pH }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; ph should have 2 -
+/// @brief Decimal places in string representation; ph should have 2 -
 /// resolution is 0.01 pH units.
 #define Y4000_PH_RESOLUTION 2
 /// @brief Sensor variable number; pH is stored in sensorValues[3].
@@ -217,7 +217,7 @@
  * {{ @ref YosemitechY4000_Temp::YosemitechY4000_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 1 -
+/// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define Y4000_TEMP_RESOLUTION 1
 /// @brief Sensor variable number; temperature is stored in sensorValues[4].
@@ -244,7 +244,7 @@
  * {{ @ref YosemitechY4000_ORP::YosemitechY4000_ORP }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; orp should have 0 -
+/// @brief Decimal places in string representation; orp should have 0 -
 /// resolution is 1 mV.
 #define Y4000_ORP_RESOLUTION 0
 /// @brief Sensor variable number; ORP is stored in sensorValues[5].
@@ -272,7 +272,7 @@
  * {{ @ref YosemitechY4000_Chlorophyll::YosemitechY4000_Chlorophyll }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; chlorophyll concentration
+/// @brief Decimal places in string representation; chlorophyll concentration
 /// should have 1 - resolution is 0.1 µg/L / 0.1 RFU.
 #define Y4000_CHLORO_RESOLUTION 1
 /// @brief Sensor variable number; chlorophyll concentration is stored in
@@ -300,7 +300,7 @@
  * {{ @ref YosemitechY4000_BGA::YosemitechY4000_BGA }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; bga should have 2 -
+/// @brief Decimal places in string representation; bga should have 2 -
 /// resolution is 0.01 µg/L / 0.01 RFU.
 #define Y4000_BGA_RESOLUTION 2
 /// @brief Sensor variable number; BGA is stored in sensorValues[7].
