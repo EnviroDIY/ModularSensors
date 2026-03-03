@@ -228,7 +228,7 @@ static_assert(
  * {{ @ref TEConnectivityMS5837_Temp::TEConnectivityMS5837_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 2 -
+/// @brief Decimal places in string representation; temperature should have 2 -
 /// resolution is <0.01°C.
 #define MS5837_TEMP_RESOLUTION 2
 /// @brief Sensor variable number; temperature is stored in sensorValues[0].
@@ -264,7 +264,7 @@ static_assert(
  * {{ @ref TEConnectivityMS5837_Pressure::TEConnectivityMS5837_Pressure }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; pressure should have 3.
+/// @brief Decimal places in string representation; pressure should have 3.
 #define MS5837_PRESSURE_RESOLUTION 3
 /// @brief Sensor variable number; pressure is stored in sensorValues[1].
 #define MS5837_PRESSURE_VAR_NUM 1
@@ -290,7 +290,7 @@ static_assert(
  * {{ @ref TEConnectivityMS5837_Depth::TEConnectivityMS5837_Depth }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; depth should have 3.
+/// @brief Decimal places in string representation; depth should have 3.
 #define MS5837_DEPTH_RESOLUTION 3
 /// @brief Sensor variable number; depth is stored in sensorValues[2].
 #define MS5837_DEPTH_VAR_NUM 2
@@ -316,7 +316,7 @@ static_assert(
  * {{ @ref TEConnectivityMS5837_Altitude::TEConnectivityMS5837_Altitude }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; altitude should have 2.
+/// @brief Decimal places in string representation; altitude should have 2.
 #define MS5837_ALTITUDE_RESOLUTION 2
 /// @brief Sensor variable number; altitude is stored in sensorValues[3].
 #define MS5837_ALTITUDE_VAR_NUM 3
