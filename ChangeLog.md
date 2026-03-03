@@ -110,7 +110,7 @@ This affects the following defines:
 - **EverlightALSPT19**
   - Moved the calibration constant between current and lux to the `ALSPT19_UA_PER_1000LUX` preprocessor define.
 - **Bosch BMP3xx**
-  - Changed the default oversampling for both pressure and temperature to 1x (no oversampling) which is what is recommended by the datasheet for ultra-low-power mode operation - including weather and environmental monitoring.
+  - Changed the default oversampling for both pressure and temperature to 1x (no oversampling) as recommended by the datasheet for weather and environmental monitoring.
 
 #### All Sensors
 
@@ -163,7 +163,7 @@ This is *not* breaking because only AVR and SAMD processors were supported anywa
 
 - **NEW SENSOR** Added a new sensor for simple analog voltage using the built-in processor ADC
 - **NEW SENSOR** Added support for the TE Connectivity (Meas Specialties) MS5837
-  - This is the sensor embedded in the Blue Robotics Bar02 and Bar30 sensors
+  - This is the sensor embedded in the Blue Robotics Bar02 and Bar30 sensors.
 
 #### New Features for Specific Sensors
 

@@ -78,7 +78,7 @@ For some generalized information about attaching sensors to an Arduino style boa
 - [MaxBotix MaxSonar: water level](https://envirodiy.github.io/ModularSensors/group__sensor__maxbotix.html)
 - [Maxim DS18: temperature](https://envirodiy.github.io/ModularSensors/group__sensor__ds18.html)
 - [Measurement Specialties/TE Connectivity MS5803: pressure and temperature](https://envirodiy.github.io/ModularSensors/group__sensor__ms5803.html)
-- [TE Connectivity MS5837: pressure and temperature (deployed as Blue Robotics Bar02/Bar30)](https://envirodiy.github.io/ModularSensors/group__sensor__ms5837.html)
+- [Measurement Specialties/TE Connectivity MS5837: pressure and temperature (deployed as Blue Robotics Bar02/Bar30)](https://envirodiy.github.io/ModularSensors/group__sensor__ms5837.html)
 - Meter Environmental Soil Moisture Probes: soil Ea and volumetric water content
   - [Meter ECH2O 5TM](https://envirodiy.github.io/ModularSensors/group__sensor__fivetm.html)
   - [Meter Teros 11](https://envirodiy.github.io/ModularSensors/group__sensor__teros11.html)

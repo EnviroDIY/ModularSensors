@@ -373,15 +373,15 @@ class TEConnectivityMS5837 : public Sensor {
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
+     * @param overSamplingRatio The oversampling ratio for pressure and
+     * temperature measurements; optional with default value from
+     * MS5837_DEFAULT_OVERSAMPLING_RATIO. Valid values: 256, 512, 1024, 2048,
+     * 4096, 8192.
      * @param fluidDensity The density of the fluid for depth calculations
      * (grams/cm³); optional with default value from
      * MS5837_DEFAULT_FLUID_DENSITY.
      * @param airPressure The air pressure for altitude/depth calculations
      * (mBar); optional with default value from MS_SEA_LEVEL_PRESSURE_HPA.
-     * @param overSamplingRatio The oversampling ratio for pressure and
-     * temperature measurements; optional with default value from
-     * MS5837_DEFAULT_OVERSAMPLING_RATIO. Valid values: 256, 512, 1024, 2048,
-     * 4096, 8192.
      *
      * @warning This can be used for the MS5803-01BA sensor, but **only** for
      * that exact model of MS5803.  For any other MS5803 model, use the
@@ -505,6 +505,9 @@ class TEConnectivityMS5837 : public Sensor {
     TwoWire* _wire;  // Hardware Wire
     /**
      * @brief The model of the MS5837.
+     *
+     * @note This is stored as a uint8_t for easier comparison with the math
+     * model values used in the Rob Tillaart MS5837 library.
      */
     uint8_t _model;
     /**

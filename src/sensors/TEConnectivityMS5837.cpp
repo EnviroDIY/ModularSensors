@@ -97,7 +97,7 @@ bool TEConnectivityMS5837::setup(void) {
     // Validate that the pressure range is reasonable for the sensor model and
     // change the model if possible based on the pressure sensitivity read from
     // the sensor.
-    if (validateAndCorrectModel()) {
+    if (success && validateAndCorrectModel()) {
         // If the model was changed, we need to re-initialize the sensor with
         // the new model.
         success &= MS5837_internal.reset(_model);
@@ -166,22 +166,10 @@ bool TEConnectivityMS5837::addSingleMeasurementResult(void) {
                F("mBar. Expected range: 500-1200"));
         return bumpMeasurementAttemptCount(false);
     }
-    if (_overSamplingRatio != 256 && _overSamplingRatio != 512 &&
-        _overSamplingRatio != 1024 && _overSamplingRatio != 2048 &&
-        _overSamplingRatio != 4096 && _overSamplingRatio != 8192) {
-        MS_DBG(F("Invalid oversampling ratio:"), _overSamplingRatio,
-               F(". Valid values: 256, 512, 1024, 2048, 4096, 8192"));
-        return bumpMeasurementAttemptCount(false);
-    }
-
-    float temp  = -9999;
-    float press = -9999;
-    float depth = -9999;
-    float alt   = -9999;
-
 
     // Read values from the sensor - returns 0 on success
-    int OSR;
+    // Map oversampling ratio to OSR value and validate
+    int OSR = -1;
     switch (_overSamplingRatio) {
         case 256: OSR = 8; break;
         case 512: OSR = 9; break;
@@ -190,14 +178,19 @@ bool TEConnectivityMS5837::addSingleMeasurementResult(void) {
         case 4096: OSR = 12; break;
         case 8192: OSR = 13; break;
         default:
-            MS_DBG(F("Unexpected _overSamplingRatio value:"),
-                   _overSamplingRatio, F(". Unable to map to OSR value."));
+            MS_DBG(F("Invalid oversampling ratio:"), _overSamplingRatio,
+                   F(". Valid values: 256, 512, 1024, 2048, 4096, 8192"));
             return bumpMeasurementAttemptCount(false);
     }
     MS_DBG(F("  Requesting"), OSR, F("bit OSR (oversampling ratio:"),
            _overSamplingRatio, F(")"));
-    // Convert oversampling ratio to the value expected by the MS5837 library
-    // (8-13 for oversampling ratios 256-8192)
+
+    float temp  = -9999;
+    float press = -9999;
+    float depth = -9999;
+    float alt   = -9999;
+
+    // Read values from the sensor - returns 0 on success
     int  read_return = MS5837_internal.read(OSR);
     bool success     = read_return == 0;
     if (success) {
@@ -257,7 +250,7 @@ bool TEConnectivityMS5837::addSingleMeasurementResult(void) {
 
     if (success) {
         // Calculate and store depth and altitude only if input temperature and
-        // depth are are valid
+        // pressure are valid
         // If the temperature and pressure are valid - and we've already checked
         // for reasonable air pressure and fluid density, then the altitude and
         // depth will be valid.
@@ -317,7 +310,9 @@ bool TEConnectivityMS5837::validateAndCorrectModel() {
         return false;  // can't change the model since we can't retrieve the
                        // calibration value
     }
-    uint16_t SENS_T1 = (_wire->read() << 8) | _wire->read();
+    uint8_t  highByte = _wire->read();
+    uint8_t  lowByte  = _wire->read();
+    uint16_t SENS_T1  = (highByte << 8) | lowByte;
     MS_DBG(F("SENS_T1 value:"), SENS_T1);
 
     // Values from

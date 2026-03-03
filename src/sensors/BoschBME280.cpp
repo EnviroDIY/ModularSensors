@@ -142,10 +142,12 @@ bool BoschBME280::addSingleMeasurementResult(void) {
 
     bool values_ok = temp != -9999 && humid != -9999 && press != -9999 &&
         alt != -9999;
-    // Assume that if all four are 0, it's really a failed response
-    // May also return a very negative temp when receiving a bad response
+    // Assume that if temperature, pressure, and humidity are all 0, it's really
+    // a failed response. A temperature below -40°C (outside sensor range) also
+    // indicates a bad response.
     if (!values_ok || (temp == 0 && press == 0 && humid == 0) || temp < -40) {
-        MS_DBG(F("All values 0 or bad, assuming sensor non-response!"));
+        MS_DBG(F("Invalid reading (missing, all zeros, or out of range), "
+                 "assuming sensor non-response!"));
     } else {
         verifyAndAddMeasurementResult(BME280_TEMP_VAR_NUM, temp);
         verifyAndAddMeasurementResult(BME280_HUMIDITY_VAR_NUM, humid);
