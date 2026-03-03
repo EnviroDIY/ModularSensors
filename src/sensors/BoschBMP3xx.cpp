@@ -68,8 +68,8 @@ bool BoschBMP3xx::setup(void) {
     // The enum values for oversampling match with the values of osr_p and osr_t
     auto typ_measurementTime_us = static_cast<uint32_t>(
         234 +
-        1 * (392 + (pow(2, static_cast<int>(_pressureOversampleEnum))) * 2020) +
-        1 * (163 + (pow(2, static_cast<int>(_tempOversampleEnum))) * 2020));
+        1 * (392 + (1U << static_cast<int>(_pressureOversampleEnum)) * 2020) +
+        1 * (163 + (1U << static_cast<int>(_tempOversampleEnum)) * 2020));
     float max_measurementTime_us = static_cast<float>(typ_measurementTime_us) *
         1.18;
     // Set the sensor measurement time to the safety-factored max time
@@ -105,13 +105,12 @@ bool BoschBMP3xx::setup(void) {
                  "recommended"));
     }
 
-
     // convert the standby time enum value into the time between readouts from
     // the BMP's
     // ADC NOTE:  The ADC will return repeated values if the ADC's ODR (output
     // data rate) is set faster than the actual measurement time, given
     // oversampling.
-    float _timeStandby_ms = 5.0f * pow(2, static_cast<int>(_standbyEnum));
+    float _timeStandby_ms = 5.0f * (1U << static_cast<int>(_standbyEnum));
     // warn if an impossible sampling rate is selected
     if ((_timeStandby_ms < max_measurementTime_us / 1000) &&
         _mode == NORMAL_MODE) {
@@ -120,12 +119,12 @@ bool BoschBMP3xx::setup(void) {
                _measurementTime_ms,
                F("ms needed for temperature and pressure oversampling."));
         // bump up the standby time to a possible value
-        while (5.0f * pow(2, static_cast<int>(_standbyEnum)) <
+        while (5.0f * (1U << static_cast<int>(_standbyEnum)) <
                max_measurementTime_us / 1000) {
             _standbyEnum =
                 static_cast<TimeStandby>(static_cast<int>(_standbyEnum) + 1);
 #if defined(MS_DEBUGGING_STD)
-            _timeStandby_ms = 5.0f * pow(2, static_cast<int>(_standbyEnum));
+            _timeStandby_ms = 5.0f * (1U << static_cast<int>(_standbyEnum));
 #endif
             MS_DBG(_standbyEnum, _timeStandby_ms,
                    static_cast<int>(max_measurementTime_us / 1000));
@@ -138,13 +137,13 @@ bool BoschBMP3xx::setup(void) {
     // the value of the enum is the power of the number of samples
     if (_filterCoeffEnum != IIR_FILTER_OFF && _mode == NORMAL_MODE) {
         MS_DBG(F("BMP388/390's IIR filter will only be fully initialized"),
-               pow(2, static_cast<int>(_filterCoeffEnum)) * _timeStandby_ms,
+               (1U << static_cast<int>(_filterCoeffEnum)) * _timeStandby_ms,
                F("ms after power on"));
     }
     if (_filterCoeffEnum != IIR_FILTER_OFF && _mode == FORCED_MODE) {
         MS_DBG(
             F("BMP388/390's IIR filter will only be fully initialized after"),
-            pow(2, static_cast<int>(_filterCoeffEnum)), F("samples"));
+            (1U << static_cast<int>(_filterCoeffEnum)), F("samples"));
     }
 
     if (_mode == FORCED_MODE) {
@@ -163,33 +162,39 @@ bool BoschBMP3xx::setup(void) {
                  "trim parameters"));
         success = bmp_internal.begin(_i2cAddressHex);
 
-        // Set up oversampling and filter initialization
-        // Using the filter selection recommended for "Weather monitoring
-        // (lowest power)" in table 10 of the sensor datasheet
+        if (success) {
+            // The sea level pressure is used for calculating altitude. This is
+            // stored as a parameter of the bmp_internal object and only needs
+            // to be sent once at setup, not repeated at wake, even if we're not
+            // continuously powered.
+            MS_DBG(F("Setting sea level atmospheric pressure to"),
+                   MS_SEA_LEVEL_PRESSURE_HPA);
+            bmp_internal.setSeaLevelPressure(MS_SEA_LEVEL_PRESSURE_HPA);
 
-        // Oversampling setting
-        MS_DBG(F("Sending BMP3xx oversampling settings"));
-        bmp_internal.setTempOversampling(_tempOversampleEnum);
-        bmp_internal.setPresOversampling(_pressureOversampleEnum);
+            // Oversampling settings - these settings are sent to the BMP3xx and
+            // need to be repeated at wake if we're not continuously powered
+            MS_DBG(F("Sending BMP3xx oversampling settings"));
+            bmp_internal.setTempOversampling(_tempOversampleEnum);
+            bmp_internal.setPresOversampling(_pressureOversampleEnum);
 
-        // Coefficient of the filter (in samples)
-        MS_DBG(F("Sending BMP3xx IIR Filter settings"));
-        bmp_internal.setIIRFilter(_filterCoeffEnum);
-
-        MS_DBG(F("Setting sea level atmospheric pressure to"),
-               SEALEVELPRESSURE_HPA);
-        bmp_internal.setSeaLevelPressure(SEALEVELPRESSURE_HPA);
-
-        // if we plan to operate in normal mode, set that up and begin sampling
-        // at the specified intervals
-        // if we're going to operate in forced mode, this isn't needed
-        if (_mode == NORMAL_MODE) {
-            // Standby time between samples in normal sampling mode - doesn't
-            // apply in forced mode
-            MS_DBG(F(
-                "Sending BMP3xx stand-by time and starting normal conversion"));
-            bmp_internal.setTimeStandby(_standbyEnum);
-            bmp_internal.startNormalConversion();
+            // if we plan to operate in normal mode, set that up, configure
+            // standby time and filtering, and begin sampling at the specified
+            // intervals if we're going to operate in forced mode, this isn't
+            // needed
+            if (_mode == NORMAL_MODE) {
+                // Coefficient of the filter (in samples)
+                MS_DBG(F("Sending BMP3xx IIR Filter settings"));
+                bmp_internal.setIIRFilter(_filterCoeffEnum);
+                // Standby time between samples in normal sampling mode -
+                // doesn't apply in forced mode
+                MS_DBG(F("Sending BMP3xx stand-by time and starting normal "
+                         "conversion"));
+                bmp_internal.setTimeStandby(_standbyEnum);
+                bmp_internal.startNormalConversion();
+            }
+        } else {
+            MS_DBG(F("Failed to connect to BMP3xx, attempt"), ntries + 1,
+                   F("of 5"));
         }
         ntries++;
     }
@@ -213,9 +218,13 @@ bool BoschBMP3xx::wake(void) {
     // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
 
-    // if the power has gone off, we need to re-read the coefficients,
-    // we don't need to do anything if always powered.
-    // NOTE:  only forced sampling is supported with switched power
+    // If the power has gone off, we need to re-read the coefficients and
+    // reconfigure the oversampling settings, since the sensor will have lost
+    // its memory of those things.  If the power has not gone off, then the
+    // sensor will still have those things set and we don't need to do anything.
+    // NOTE:  Only forced sampling with the IIR filter disabled is supported
+    // with switched power.  There's no reason to resend the IIR filter and
+    // standby settings because those only apply to continuous power.
     if (_powerPin >= 0) {  // Run begin fxn because it returns true or false
                            // for success in contact
         // Make 5 attempts
@@ -227,11 +236,8 @@ bool BoschBMP3xx::wake(void) {
                   "trim parameters"));
             success = bmp_internal.begin(_i2cAddressHex);
 
-            // Set up oversampling and filter initialization
-            // Using the filter selection recommended for "Weather monitoring
-            // (lowest power)" in table 10 of the sensor datasheet
-
-            // Oversampling setting
+            // Oversampling settings - these settings are sent to the BMP3xx and
+            // need to be repeated at wake if we're not continuously powered
             MS_DBG(F("Sending BMP3xx oversampling settings"));
             bmp_internal.setTempOversampling(_tempOversampleEnum);
             bmp_internal.setPresOversampling(_pressureOversampleEnum);
@@ -309,4 +315,4 @@ bool BoschBMP3xx::addSingleMeasurementResult(void) {
     return bumpMeasurementAttemptCount(success);
 }
 
-// cSpell:ignore oversample SEALEVELPRESSURE
+// cSpell:words oversample

@@ -1,5 +1,5 @@
 {
-  "action_cache_version": 46,
+  "action_cache_version": 47,
   "dependencies": [
     {
       "name": "EnviroDIY_DS3231",
@@ -276,6 +276,18 @@
         "Chad Sandell",
         "Sara Damiano"
       ]
+    },
+    {
+      "name": "MS5837",
+      "owner": "robtillaart",
+      "library id": "6205",
+      "url": "https://github.com/RobTillaart/MS5837",
+      "version": "~0.3.2",
+      "note": "Arduino library for the MS5837 temperature and pressure sensor and compatibles",
+      "authors": [
+        "Rob Tillaart"
+      ],
+      "frameworks": "arduino"
     },
     {
       "name": "Tally_Library_I2C",
