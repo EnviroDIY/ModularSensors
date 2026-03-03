@@ -627,32 +627,37 @@
     }
 #elif defined(TINY_GSM_MODEM_HAS_NTP) && defined(TINY_GSM_MODEM_HAS_TIME)
 #include "ClockSupport.h"
-#define MS_MODEM_GET_NIST_TIME(specificModem, TinyGSMType)                     \
-    uint32_t specificModem::getNISTTime(void) {                                \
-        /** Check for and bail if not connected to the internet. */            \
-        if (!isInternetAvailable()) {                                          \
-            MS_DBG(F("No internet connection, cannot get network time."));     \
-            return 0;                                                          \
-        }                                                                      \
-                                                                               \
-        MS_DBG("Asking modem to sync with NTP");                               \
-        gsmModem.NTPServerSync("pool.ntp.org", 0); /*UTC!*/                    \
-        gsmModem.waitForTimeSync();                                            \
-                                                                               \
-        /* Create ints to hold time parts */                                   \
-        int seconds = 0;                                                       \
-        int minutes = 0;                                                       \
-        int hours   = 0;                                                       \
-        int day     = 0;                                                       \
-        int month   = 0;                                                       \
-        int year    = 0;                                                       \
-        /* Fetch the time as parts */                                          \
-        bool success = gsmModem.getNetworkTime(year, &month, &day, &hours,     \
-                                               &minutes, &seconds, 0);         \
-        if (!success) { return 0; }                                            \
-        tm     timeParts = {seconds, minutes, hours, day, month, year - 1900}; \
-        time_t timeTimeT = mktime(&timeParts);                                 \
-        return epochTime(timeTimeT, epochStart::unix_epoch);                   \
+#define MS_MODEM_GET_NIST_TIME(specificModem, TinyGSMType)                    \
+    uint32_t specificModem::getNISTTime(void) {                               \
+        /** Check for and bail if not connected to the internet. */           \
+        if (!isInternetAvailable()) {                                         \
+            MS_DBG(F("No internet connection, cannot get network time."));    \
+            return 0;                                                         \
+        }                                                                     \
+                                                                              \
+        MS_DBG("Asking modem to sync with NTP");                              \
+        gsmModem.NTPServerSync("pool.ntp.org", 0); /*UTC!*/                   \
+        gsmModem.waitForTimeSync();                                           \
+                                                                              \
+        /* Create ints to hold time parts */                                  \
+        int seconds = 0;                                                      \
+        int minutes = 0;                                                      \
+        int hours   = 0;                                                      \
+        int day     = 0;                                                      \
+        int month   = 0;                                                      \
+        int year    = 0;                                                      \
+        /* Fetch the time as parts */                                         \
+        bool success = gsmModem.getNetworkTime(year, &month, &day, &hours,    \
+                                               &minutes, &seconds, 0);        \
+        if (!success) { return 0; }                                           \
+        tm timeParts = {                                                      \
+            static_cast<uint8_t>(seconds),     static_cast<uint8_t>(minutes), \
+            static_cast<uint8_t>(hours),       static_cast<uint8_t>(day),     \
+            static_cast<uint8_t>(month - 1),   /* tm_mon is 0-11 */           \
+            static_cast<uint16_t>(year - 1900) /* tm_year is since 1900 */    \
+        };                                                                    \
+        time_t timeTimeT = mktime(&timeParts);                                \
+        return static_cast<uint32_t>(timeTimeT);                              \
     }
 #else
 #define MS_MODEM_GET_NIST_TIME(specificModem, TinyGSMType)                   \
