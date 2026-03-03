@@ -119,7 +119,7 @@
  * {{ @ref CampbellClariVUE10_Turbidity::CampbellClariVUE10_Turbidity }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; turbidity should have 1
+/// @brief Decimal places in string representation; turbidity should have 1
 /// (resolution is 0.2 FNU).
 #define CLARIVUE10_TURBIDITY_RESOLUTION 1
 /// @brief Sensor variable number; turbidity is stored in sensorValues[0]
@@ -146,7 +146,7 @@
  * {{ @ref CampbellClariVUE10_Temp::CampbellClariVUE10_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 2 -
+/// @brief Decimal places in string representation; temperature should have 2 -
 /// resolution is 0.01°C.
 #define CLARIVUE10_TEMP_RESOLUTION 2
 /// @brief Sensor variable number; temperature is stored in sensorValues[5].
@@ -172,7 +172,7 @@
  * {{ @ref CampbellClariVUE10_ErrorCode::CampbellClariVUE10_ErrorCode }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; the error code has 0.
+/// @brief Decimal places in string representation; the error code has 0.
 #define CLARIVUE10_ERRORCODE_RESOLUTION 0
 /// @brief Sensor variable number; error code is stored in sensorValues[2]
 #define CLARIVUE10_ERRORCODE_VAR_NUM 6

@@ -26,36 +26,43 @@ const int   ThingSpeakPublisher::mqttPort            = 1883;
 
 
 // Constructors
-ThingSpeakPublisher::ThingSpeakPublisher() : dataPublisher() {}
-ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, int sendEveryX)
-    : dataPublisher(baseLogger, sendEveryX) {}
+// Primary constructor with all MQTT parameters and client
 ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
-                                         int sendEveryX)
-    : dataPublisher(baseLogger, inClient, sendEveryX) {}
-ThingSpeakPublisher::ThingSpeakPublisher(Logger&     baseLogger,
                                          const char* thingSpeakClientName,
                                          const char* thingSpeakMQTTUser,
                                          const char* thingSpeakMQTTPassword,
                                          const char* thingSpeakChannelID,
                                          int         sendEveryX)
     : dataPublisher(baseLogger, sendEveryX) {
-    setMQTTClient(thingSpeakClientName);
-    setUserName(thingSpeakMQTTUser);
-    setPassword(thingSpeakMQTTPassword);
-    setChannelID(thingSpeakChannelID);
+    if (thingSpeakClientName) setMQTTClient(thingSpeakClientName);
+    if (thingSpeakMQTTUser) setUserName(thingSpeakMQTTUser);
+    if (thingSpeakMQTTPassword) setPassword(thingSpeakMQTTPassword);
+    if (thingSpeakChannelID) setChannelID(thingSpeakChannelID);
+    if (inClient) _inClient = inClient;
 }
+
+// Delegating constructors
+ThingSpeakPublisher::ThingSpeakPublisher() : dataPublisher() {}
+ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, int sendEveryX)
+    : ThingSpeakPublisher(
+          baseLogger, nullptr, static_cast<const char*>(nullptr),
+          static_cast<const char*>(nullptr), static_cast<const char*>(nullptr),
+          static_cast<const char*>(nullptr), sendEveryX) {}
 ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
+                                         int sendEveryX)
+    : ThingSpeakPublisher(
+          baseLogger, inClient, static_cast<const char*>(nullptr),
+          static_cast<const char*>(nullptr), static_cast<const char*>(nullptr),
+          static_cast<const char*>(nullptr), sendEveryX) {}
+ThingSpeakPublisher::ThingSpeakPublisher(Logger&     baseLogger,
                                          const char* thingSpeakClientName,
                                          const char* thingSpeakMQTTUser,
                                          const char* thingSpeakMQTTPassword,
                                          const char* thingSpeakChannelID,
                                          int         sendEveryX)
-    : dataPublisher(baseLogger, inClient, sendEveryX) {
-    setMQTTClient(thingSpeakClientName);
-    setUserName(thingSpeakMQTTUser);
-    setPassword(thingSpeakMQTTPassword);
-    setChannelID(thingSpeakChannelID);
-}
+    : ThingSpeakPublisher(baseLogger, nullptr, thingSpeakClientName,
+                          thingSpeakMQTTUser, thingSpeakMQTTPassword,
+                          thingSpeakChannelID, sendEveryX) {}
 // Destructor
 ThingSpeakPublisher::~ThingSpeakPublisher() {}
 
@@ -122,6 +129,24 @@ void ThingSpeakPublisher::begin(Logger&     baseLogger,
 
 // This sends the data to ThingSpeak
 int16_t ThingSpeakPublisher::publishData(Client* outClient, bool) {
+    // Validate required MQTT parameters before proceeding
+    if (_thingSpeakChannelID == nullptr || strlen(_thingSpeakChannelID) == 0) {
+        MS_DBG(F("ERROR: ThingSpeak Channel ID is required but not set!"));
+        return -1;
+    }
+    if (_thingSpeakClientName == nullptr) {
+        MS_DBG(F("ERROR: ThingSpeak Client Name is required but not set!"));
+        return -1;
+    }
+    if (_thingSpeakMQTTUser == nullptr) {
+        MS_DBG(F("ERROR: ThingSpeak MQTT User is required but not set!"));
+        return -1;
+    }
+    if (_thingSpeakMQTTPassword == nullptr) {
+        MS_DBG(F("ERROR: ThingSpeak MQTT Password is required but not set!"));
+        return -1;
+    }
+    
     bool retVal = false;
 
     // Make sure we don't have too many fields

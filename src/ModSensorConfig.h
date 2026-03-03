@@ -38,35 +38,65 @@
 // #define MS_USE_RTC_ZERO
 //==============================================================
 
-//==============================================================
-// Select ADS1015 instead of the ADS1115, if desired
-// This is for sensors that use the external ADC for analog voltage
-// measurements.
-// #define MS_USE_ADS1015
 
-#if !defined(MS_DEFAULT_ADS1X15_ADDRESS) || defined(DOXYGEN)
+//==============================================================
+// Time-stamp configurations
+//==============================================================
+#ifndef MS_LOGGER_EPOCH
 /**
- * @brief The default I²C address of the ADS1115 or ADS1015 external ADC.
- *
- * Valid addresses depend on the ADDR pin connection:
- * - `0x48` – ADDR to GND (default)
- * - `0x49` – ADDR to VDD
- * - `0x4A` – ADDR to SDA
- * - `0x4B` – ADDR to SCL
- *
- * Override with a build flag: `-DMS_DEFAULT_ADS1X15_ADDRESS=0x49`
+ * @brief The epoch start to use for the logger
  */
-#define MS_DEFAULT_ADS1X15_ADDRESS 0x48
+#define MS_LOGGER_EPOCH epochStart::unix_epoch
 #endif
 
-// Static assert to validate ADS1X15 I2C address is valid
-static_assert(MS_DEFAULT_ADS1X15_ADDRESS == 0x48 ||
-                  MS_DEFAULT_ADS1X15_ADDRESS == 0x49 ||
-                  MS_DEFAULT_ADS1X15_ADDRESS == 0x4A ||
-                  MS_DEFAULT_ADS1X15_ADDRESS == 0x4B,
-              "MS_DEFAULT_ADS1X15_ADDRESS should be 0x48, 0x49, 0x4A, or 0x4B "
-              "for ADS1X15");
+#ifndef EARLIEST_SANE_UNIX_TIMESTAMP
+/**
+ * @brief The earliest unix timestamp that can be considered sane.
+ *
+ * January 1, 2025
+ */
+#define EARLIEST_SANE_UNIX_TIMESTAMP 1735689600
+#endif
+
+#ifndef LATEST_SANE_UNIX_TIMESTAMP
+/**
+ * @brief The latest unix timestamp that can be considered sane.
+ *
+ * January 1, 2035
+ */
+#define LATEST_SANE_UNIX_TIMESTAMP 2051222400
+#endif
 //==============================================================
+
+
+//==============================================================
+// Variable configurations
+//==============================================================
+#ifndef MS_INVALID_VALUE
+/**
+ * @brief The value used to represent an invalid or missing measurement.
+ *
+ * Every sensor will use this value to indicate that a measurement is invalid
+ * or missing.
+ */
+#define MS_INVALID_VALUE -9999.0
+
+// GroPoint Profile GPLP-8 has 8 Moisture and 13 Temperature values
+#endif
+#ifndef MAX_NUMBER_VARS
+/**
+ * @brief The largest number of variables from a single sensor.
+ *
+ * Every sensor will create a buffer of this length for holding variable values.
+ * Decrease this value to save a memory.
+ */
+#define MAX_NUMBER_VARS 21
+// GroPoint Profile GPLP-8 has 8 Moisture and 13 Temperature values
+#endif
+// Static assert to the maximum number of variables is no more than the largest
+// number of variables from any sensor. Anything more is a waste of memory.
+static_assert(MAX_NUMBER_VARS > 0 && MAX_NUMBER_VARS <= 21,
+              "MAX_NUMBER_VARS must be between 1 and 21");
 
 //==============================================================
 // Disable concurrent polling of SDI-12 sensors, if needed
@@ -120,53 +150,36 @@ static_assert(MS_DEFAULT_ADS1X15_ADDRESS == 0x48 ||
 
 
 //==============================================================
-// Time-stamp configurations
+// External ADC configuration and defaults
 //==============================================================
-#ifndef MS_LOGGER_EPOCH
-/**
- * @brief The epoch start to use for the logger
- */
-#define MS_LOGGER_EPOCH epochStart::unix_epoch
-#endif
+// Select ADS1015 instead of the ADS1115, if desired
+// This is for sensors that use the external ADC for analog voltage
+// measurements.
+// #define MS_USE_ADS1015
 
-#ifndef EARLIEST_SANE_UNIX_TIMESTAMP
+#if !defined(MS_DEFAULT_ADS1X15_ADDRESS) || defined(DOXYGEN)
 /**
- * @brief The earliest unix timestamp that can be considered sane.
+ * @brief The default I²C address of the ADS1115 or ADS1015 external ADC.
  *
- * January 1, 2025
- */
-#define EARLIEST_SANE_UNIX_TIMESTAMP 1735689600
-#endif
-
-#ifndef LATEST_SANE_UNIX_TIMESTAMP
-/**
- * @brief The latest unix timestamp that can be considered sane.
+ * Valid addresses depend on the ADDR pin connection:
+ * - `0x48` – ADDR to GND (default)
+ * - `0x49` – ADDR to VDD
+ * - `0x4A` – ADDR to SDA
+ * - `0x4B` – ADDR to SCL
  *
- * January 1, 2035
+ * Override with a build flag: `-DMS_DEFAULT_ADS1X15_ADDRESS=0x49`
  */
-#define LATEST_SANE_UNIX_TIMESTAMP 2051222400
+#define MS_DEFAULT_ADS1X15_ADDRESS 0x48
 #endif
+// Static assert to validate ADS1X15 I2C address is valid
+static_assert(MS_DEFAULT_ADS1X15_ADDRESS == 0x48 ||
+                  MS_DEFAULT_ADS1X15_ADDRESS == 0x49 ||
+                  MS_DEFAULT_ADS1X15_ADDRESS == 0x4A ||
+                  MS_DEFAULT_ADS1X15_ADDRESS == 0x4B,
+              "MS_DEFAULT_ADS1X15_ADDRESS should be 0x48, 0x49, 0x4A, or 0x4B "
+              "for ADS1X15");
 //==============================================================
 
-
-//==============================================================
-// Variable configurations
-//==============================================================
-#ifndef MAX_NUMBER_VARS
-/**
- * @brief The largest number of variables from a single sensor.
- *
- * Every sensor will create a buffer of this length for holding variable values.
- * Decrease this value to save a memory.
- */
-#define MAX_NUMBER_VARS 21
-// GroPoint Profile GPLP-8 has 8 Moisture and 13 Temperature values
-#endif
-
-// Static assert to the maximum number of variables is no more than the largest
-// number of variables from any sensor. Anything more is a waste of memory.
-static_assert(MAX_NUMBER_VARS > 0 && MAX_NUMBER_VARS <= 21,
-              "MAX_NUMBER_VARS must be between 1 and 21");
 
 //==============================================================
 // Analog voltage configuration
@@ -193,7 +206,6 @@ static_assert(MAX_NUMBER_VARS > 0 && MAX_NUMBER_VARS <= 21,
 #error The processor ADC resolution must be defined!
 #endif  // MS_PROCESSOR_ADC_RESOLUTION
 #endif
-
 // Static assert to validate ADC resolution is reasonable
 static_assert(MS_PROCESSOR_ADC_RESOLUTION >= 8 &&
                   MS_PROCESSOR_ADC_RESOLUTION <= 16,
@@ -215,37 +227,10 @@ static_assert(MS_PROCESSOR_ADC_RESOLUTION >= 8 &&
  */
 #define MS_PROCESSOR_ANALOG_MAX_CHANNEL 100
 #endif  // MS_PROCESSOR_ANALOG_MAX_CHANNEL
-
 // Static assert to validate analog channel maximum is reasonable
 static_assert(MS_PROCESSOR_ANALOG_MAX_CHANNEL > 0 &&
                   MS_PROCESSOR_ANALOG_MAX_CHANNEL <= 255,
               "MS_PROCESSOR_ANALOG_MAX_CHANNEL must be between 1 and 255");
-
-//==============================================================
-// Environmental sensor configuration
-//==============================================================
-#if !defined(MS_SEA_LEVEL_PRESSURE_HPA) || defined(DOXYGEN)
-/**
- * @brief The atmospheric pressure at sea level in hPa for barometric sensors.
- *
- * This value is used by environmental sensors (BME280, BMP3xx, MS5837) for
- * calculating altitude and depth measurements. The default value is standard
- * atmospheric pressure at sea level (1013.25 hPa). Adjust this value based on
- * local atmospheric conditions for more accurate calculations.
- *
- * @note In library versions prior to 0.37.0, this variable was named
- * SEALEVELPRESSURE_HPA. and was defined in the header files for the BME280 and
- * BMP3xx sensors.
- */
-#define MS_SEA_LEVEL_PRESSURE_HPA 1013.25f
-#endif
-
-// Static assert to validate sea level pressure is reasonable
-static_assert(MS_SEA_LEVEL_PRESSURE_HPA >= 800.0f &&
-                  MS_SEA_LEVEL_PRESSURE_HPA <= 1200.0f,
-              "MS_SEA_LEVEL_PRESSURE_HPA must be between 800 and 1200 hPa "
-              "(reasonable atmospheric pressure range)");
-//==============================================================
 
 #if !defined(MS_PROCESSOR_ADC_REFERENCE_MODE) || defined(DOXYGEN)
 #if defined(ARDUINO_ARCH_AVR) || defined(DOXYGEN)
@@ -308,6 +293,32 @@ static_assert(MS_SEA_LEVEL_PRESSURE_HPA >= 800.0f &&
 
 
 //==============================================================
+// Environmental sensor configuration
+//==============================================================
+#if !defined(MS_SEA_LEVEL_PRESSURE_HPA) || defined(DOXYGEN)
+/**
+ * @brief The atmospheric pressure at sea level in hPa for barometric sensors.
+ *
+ * This value is used by environmental sensors (BME280, BMP3xx, MS5837) for
+ * calculating altitude and depth measurements. The default value is standard
+ * atmospheric pressure at sea level (1013.25 hPa). Adjust this value based on
+ * local atmospheric conditions for more accurate calculations.
+ *
+ * @note In library versions prior to 0.37.0, this variable was named
+ * SEALEVELPRESSURE_HPA. and was defined in the header files for the BME280 and
+ * BMP3xx sensors.
+ */
+#define MS_SEA_LEVEL_PRESSURE_HPA 1013.25f
+#endif
+// Static assert to validate sea level pressure is reasonable
+static_assert(MS_SEA_LEVEL_PRESSURE_HPA >= 800.0f &&
+                  MS_SEA_LEVEL_PRESSURE_HPA <= 1200.0f,
+              "MS_SEA_LEVEL_PRESSURE_HPA must be between 800 and 1200 hPa "
+              "(reasonable atmospheric pressure range)");
+//==============================================================
+
+
+//==============================================================
 // Publisher configuration
 //==============================================================
 #ifndef MAX_NUMBER_SENDERS
@@ -346,7 +357,6 @@ static_assert(MAX_NUMBER_SENDERS >= 0 && MAX_NUMBER_SENDERS <= 16,
  */
 #define MS_SEND_BUFFER_SIZE 1360
 #endif
-
 // Static assert to validate send buffer size is reasonable
 static_assert(MS_SEND_BUFFER_SIZE >= 32 && MS_SEND_BUFFER_SIZE <= 2048,
               "MS_SEND_BUFFER_SIZE must be between 32 and 2048 bytes");
@@ -361,7 +371,6 @@ static_assert(MS_SEND_BUFFER_SIZE >= 32 && MS_SEND_BUFFER_SIZE <= 2048,
  */
 #define TINY_GSM_RX_BUFFER 64
 #endif
-
 // Static assert to validate GSM RX buffer size is reasonable
 static_assert(TINY_GSM_RX_BUFFER >= 16 && TINY_GSM_RX_BUFFER <= 2048,
               "TINY_GSM_RX_BUFFER must be between 16 and 2048 bytes");
@@ -378,7 +387,6 @@ static_assert(TINY_GSM_RX_BUFFER >= 16 && TINY_GSM_RX_BUFFER <= 2048,
  */
 #define TINY_GSM_YIELD_MS 2
 #endif
-
 // Static assert to validate GSM yield time is reasonable
 static_assert(TINY_GSM_YIELD_MS >= 0 && TINY_GSM_YIELD_MS <= 1000,
               "TINY_GSM_YIELD_MS must be between 0 and 1000 milliseconds");
@@ -397,7 +405,6 @@ static_assert(TINY_GSM_YIELD_MS >= 0 && TINY_GSM_YIELD_MS <= 1000,
  */
 #define MS_MQTT_MAX_PACKET_SIZE 1536
 #endif
-
 // Static assert to validate MQTT packet size is reasonable
 static_assert(MS_MQTT_MAX_PACKET_SIZE >= 128 && MS_MQTT_MAX_PACKET_SIZE <= 4096,
               "MS_MQTT_MAX_PACKET_SIZE must be between 128 and 4096 bytes");
@@ -424,7 +431,6 @@ static_assert(MS_MQTT_MAX_PACKET_SIZE >= 128 && MS_MQTT_MAX_PACKET_SIZE <= 4096,
  */
 #define MS_AWS_IOT_PUBLISHER_PUB_COUNT 4
 #endif
-
 // Static asserts to validate AWS IoT publisher counts are reasonable
 static_assert(
     MS_AWS_IOT_PUBLISHER_SUB_COUNT >= 0 && MS_AWS_IOT_PUBLISHER_SUB_COUNT <= 8,
@@ -469,6 +475,7 @@ static_assert(MS_AWS_IOT_PUBLISHER_PUB_COUNT >= 0 &&
  */
 // #define MS_S3PRESIGNED_PREVENT_REUSE
 //==============================================================
+
 
 // cSpell:words SEALEVELPRESSURE
 

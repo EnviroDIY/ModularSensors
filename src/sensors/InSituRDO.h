@@ -225,7 +225,7 @@
  */
 /**@{*/
 /**
- * @brief Decimals places in string representation; dissolved oxygen
+ * @brief Decimal places in string representation; dissolved oxygen
  * concentration should have 2 - resolution is 0.01 mg/L.
  *
  * Contrary to the spec sheet, the actual resolution returned by the sensor in
@@ -264,7 +264,7 @@
  */
 /**@{*/
 /**
- * @brief Decimals places in string representation; dissolved oxygen percent
+ * @brief Decimal places in string representation; dissolved oxygen percent
  * saturation should have 1.
  *
  * The actual resolution returned by the sensor in SDI-12 mode is 0.00001 %.
@@ -299,7 +299,7 @@
 /**@{*/
 /// @brief
 /**
- * @brief Decimals places in string representation; temperature should have 2 -
+ * @brief Decimal places in string representation; temperature should have 2 -
  * resolution is 0.01°C.
  *
  * The spec sheet lists 2 decimal resolution, but the returned value has 5.
@@ -332,7 +332,7 @@
  * {{ @ref InSituRDO_Pressure::InSituRDO_Pressure }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; pressure should have 3
+/// @brief Decimal places in string representation; pressure should have 3
 #define INSITU_RDO_PRESSURE_RESOLUTION 2
 /// @brief Variable number; temperature is stored in sensorValues[3].
 #define INSITU_RDO_PRESSURE_VAR_NUM 3

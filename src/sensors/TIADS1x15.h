@@ -247,10 +247,10 @@
 #define TIADS1X15_DEFAULT_CODE "extVoltage"
 
 #ifdef MS_USE_ADS1015
-/// @brief Decimals places in string representation; voltage should have 1.
+/// @brief Decimal places in string representation; voltage should have 1.
 #define TIADS1X15_RESOLUTION 1
 #else
-/// @brief Decimals places in string representation; voltage should have 4.
+/// @brief Decimal places in string representation; voltage should have 4.
 #define TIADS1X15_RESOLUTION 4
 #endif
 /**@}*/

@@ -143,7 +143,7 @@
  * {{ @ref PaleoTerraRedox_Voltage::PaleoTerraRedox_Voltage }}
  */
 /**@{*/
-/** @brief Decimals places in string representation; voltage should have 2.
+/** @brief Decimal places in string representation; voltage should have 2.
  *
  * Resolution is 1mV and 1 extra digit is added to increase the number of
  * significant figures to allow for averaging of multiple measurements.

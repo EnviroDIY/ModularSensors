@@ -158,10 +158,10 @@ class AnalogVoltageBase;
 /// Variable number; turbidity is stored in sensorValues[0].
 #define OBS3_TURB_VAR_NUM 0
 #ifdef MS_USE_ADS1015
-/// @brief Decimals places in string representation; turbidity should have 1.
+/// @brief Decimal places in string representation; turbidity should have 1.
 #define OBS3_RESOLUTION 1
 #else
-/// @brief Decimals places in string representation; turbidity should have 5.
+/// @brief Decimal places in string representation; turbidity should have 5.
 #define OBS3_RESOLUTION 5
 #endif
 /// @brief Variable name in
@@ -204,12 +204,12 @@ class AnalogVoltageBase;
 #define OBS3_VOLTAGE_DEFAULT_CODE "OBS3Voltage"
 
 #ifdef MS_USE_ADS1015
-/// @brief Decimals places in string representation; voltage should have 1.
+/// @brief Decimal places in string representation; voltage should have 1.
 ///  - Resolution:
 ///     - 16-bit ADC (ADS1115): 0.125 mV
 #define OBS3_VOLTAGE_RESOLUTION 1
 #else
-/// @brief Decimals places in string representation; voltage should have 4.
+/// @brief Decimal places in string representation; voltage should have 4.
 ///  - Resolution:
 ///     - 12-bit ADC (ADS1015, using build flag ```MS_USE_ADS1015```): 2 mV
 #define OBS3_VOLTAGE_RESOLUTION 4

@@ -55,6 +55,17 @@
 /**@{*/
 
 /**
+ * @anchor sensor_atlas_rtd_config
+ * @name Configuration Defines
+ * Defines to configure and set the address of the Atlas RTD (temperature)
+ * sensor
+ */
+/**@{*/
+/// @brief The default I2C address of the Atlas RTD sensor is 0x66 (102)
+#define ATLAS_RTD_I2C_ADDR 0x66
+/**@}*/
+
+/**
  * @anchor sensor_atlas_rtd_var_counts
  * @name Sensor Variable Counts
  * The number of variables that can be returned by the Atlas RTD (temperature)
@@ -66,17 +77,6 @@
 #define ATLAS_RTD_NUM_VARIABLES 1
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define ATLAS_RTD_INC_CALC_VARIABLES 0
-/**@}*/
-
-/**
- * @anchor sensor_atlas_rtd_config
- * @name Configuration Defines
- * Defines to configure and set the address of the Atlas RTD (temperature)
- * sensor
- */
-/**@{*/
-/// @brief The default I2C address of the Atlas RTD sensor is 0x66 (102)
-#define ATLAS_RTD_I2C_ADDR 0x66
 /**@}*/
 
 /**
@@ -117,7 +117,7 @@
  * {{ @ref AtlasScientificRTD_Temp::AtlasScientificRTD_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 3 -
+/// @brief Decimal places in string representation; temperature should have 3 -
 /// resolution is 0.001°C.
 #define ATLAS_RTD_RESOLUTION 3
 /// @brief Sensor variable number; RTD is stored in sensorValues[0].

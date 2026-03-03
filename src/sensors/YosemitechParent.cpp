@@ -27,21 +27,17 @@ YosemitechParent::YosemitechParent(
       _RS485EnablePin(enablePin) {
     setSecondaryPowerPin(powerPin2);
 }
+// Delegating constructor
 YosemitechParent::YosemitechParent(
     byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2,
     int8_t enablePin, uint8_t measurementsToAverage, yosemitechModel model,
     const char* sensName, uint8_t numVariables, uint32_t warmUpTime_ms,
     uint32_t stabilizationTime_ms, uint32_t measurementTime_ms,
     uint8_t incCalcValues)
-    : Sensor(sensName, numVariables, warmUpTime_ms, stabilizationTime_ms,
-             measurementTime_ms, powerPin, -1, measurementsToAverage,
-             incCalcValues),
-      _model(model),
-      _modbusAddress(modbusAddress),
-      _stream(&stream),
-      _RS485EnablePin(enablePin) {
-    setSecondaryPowerPin(powerPin2);
-}
+    : YosemitechParent(modbusAddress, &stream, powerPin, powerPin2, enablePin,
+                       measurementsToAverage, model, sensName, numVariables,
+                       warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
+                       incCalcValues) {}
 // Destructor
 YosemitechParent::~YosemitechParent() {}
 
@@ -80,7 +76,7 @@ bool YosemitechParent::wake(void) {
     // Sensor::wake() checks if the power pin is on and sets the wake timestamp
     // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
-    // reset pin mode, incase the pins were tri-stated during sleep
+    // reset pin mode, in case the pins were tri-stated during sleep
     if (_RS485EnablePin >= 0) { pinMode(_RS485EnablePin, OUTPUT); }
 
     // Send the command to begin taking readings, trying up to 5 times

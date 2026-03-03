@@ -96,7 +96,7 @@
  * {{ @ref YosemitechY532_pH::YosemitechY532_pH }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; pH should have 2 -
+/// @brief Decimal places in string representation; pH should have 2 -
 /// resolution is 0.01 pH units.
 #define Y532_PH_RESOLUTION 2
 /// @brief Sensor variable number; pH is stored in sensorValues[0].
@@ -122,7 +122,7 @@
  * {{ @ref YosemitechY532_Temp::YosemitechY532_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 1 -
+/// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define Y532_TEMP_RESOLUTION 1
 /// @brief Sensor variable number; temperature is stored in sensorValues[1].
@@ -149,7 +149,7 @@
  * {{ @ref YosemitechY532_Voltage::YosemitechY532_Voltage }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; voltage should have 0 -
+/// @brief Decimal places in string representation; voltage should have 0 -
 /// resolution is 1mV.
 #define Y532_VOLTAGE_RESOLUTION 0
 /// @brief Sensor variable number; voltage is stored in sensorValues[2].

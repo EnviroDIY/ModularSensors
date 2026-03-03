@@ -97,7 +97,7 @@
  * {{ @ref YosemitechY514_Chlorophyll::YosemitechY514_Chlorophyll }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; chlorophyll concentration
+/// @brief Decimal places in string representation; chlorophyll concentration
 /// should have 1 - resolution is 0.1 µg/L / 0.1 RFU.
 #define Y514_CHLORO_RESOLUTION 1
 /// @brief Sensor variable number; chlorophyll concentration is stored in
@@ -125,7 +125,7 @@
  * {{ @ref YosemitechY514_Temp::YosemitechY514_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 1 -
+/// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define Y514_TEMP_RESOLUTION 1
 /// @brief Sensor variable number; temperature is stored in sensorValues[1].

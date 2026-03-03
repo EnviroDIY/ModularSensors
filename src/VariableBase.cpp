@@ -15,55 +15,47 @@
 //  The class and functions for interfacing with a specific variable.
 // ============================================================================
 
+// Primary constructors with UUID parameter
 // The constructor for a measured variable - that is, one whose values are
 // updated by a sensor.
 Variable::Variable(Sensor* parentSense, uint8_t sensorVarNum,
                    uint8_t decimalResolution, const char* varName,
                    const char* varUnit, const char* varCode, const char* uuid)
-    : _sensorVarNum(sensorVarNum) {
-    setVarUUID(uuid);
-    setVarCode(varCode);
-    setVarUnit(varUnit);
-    setVarName(varName);
+    : isCalculated(false),
+      _sensorVarNum(sensorVarNum) {
+    if (uuid) setVarUUID(uuid);
+    if (varCode) setVarCode(varCode);
+    if (varUnit) setVarUnit(varUnit);
+    if (varName) setVarName(varName);
     setResolution(decimalResolution);
-
-    attachSensor(parentSense);
+    if (parentSense) attachSensor(parentSense);
 }
-Variable::Variable(uint8_t sensorVarNum, uint8_t decimalResolution,
-                   const char* varName, const char* varUnit,
-                   const char* varCode)
-    : _sensorVarNum(sensorVarNum) {
-    setVarCode(varCode);
-    setVarUnit(varUnit);
-    setVarName(varName);
-    setResolution(decimalResolution);
-}
-
 
 // The constructor for a calculated variable  - that is, one whose value is
 // calculated by the calcFxn which returns a float.
 Variable::Variable(float (*calcFxn)(), uint8_t decimalResolution,
                    const char* varName, const char* varUnit,
                    const char* varCode, const char* uuid)
-    : isCalculated(true) {
-    setVarUUID(uuid);
-    setVarCode(varCode);
-    setVarUnit(varUnit);
-    setVarName(varName);
+    : isCalculated(calcFxn != nullptr),
+      _calcFxn(nullptr) {
+    if (uuid) setVarUUID(uuid);
+    if (varCode) setVarCode(varCode);
+    if (varUnit) setVarUnit(varUnit);
+    if (varName) setVarName(varName);
     setResolution(decimalResolution);
-
-    setCalculation(calcFxn);
+    if (calcFxn) setCalculation(calcFxn);
 }
+
+// Delegating constructors
+Variable::Variable(uint8_t sensorVarNum, uint8_t decimalResolution,
+                   const char* varName, const char* varUnit,
+                   const char* varCode)
+    : Variable(nullptr, sensorVarNum, decimalResolution, varName, varUnit,
+               varCode, nullptr) {}
 Variable::Variable(float (*calcFxn)(), uint8_t decimalResolution,
                    const char* varName, const char* varUnit,
                    const char* varCode)
-    : isCalculated(true) {
-    setVarCode(varCode);
-    setVarUnit(varUnit);
-    setVarName(varName);
-    setResolution(decimalResolution);
-
-    setCalculation(calcFxn);
+    : Variable(calcFxn, decimalResolution, varName, varUnit, varCode, nullptr) {
 }
 
 // constructor with no arguments
@@ -159,7 +151,8 @@ String Variable::getParentSensorNameAndLocation(void) {
 
 // This ties a calculated variable to its calculation function
 void Variable::setCalculation(float (*calcFxn)()) {
-    if (isCalculated) { _calcFxn = calcFxn; }
+    _calcFxn     = calcFxn;
+    isCalculated = (calcFxn != nullptr);
 }
 
 
@@ -255,10 +248,20 @@ float Variable::getValue(bool updateValue) {
         // different values each time - ie, the data on the CSV and each
         // publisher will report a different value. That is **NOT** the desired
         // behavior.  Thus, we stash the value.
-        if (updateValue) _currentValue = _calcFxn();
+        if (updateValue && _calcFxn != nullptr) {
+            _currentValue = _calcFxn();
+        } else if (updateValue && _calcFxn == nullptr) {
+            // If no calculation function is set, return error value
+            _currentValue = -9999;
+        }
         return _currentValue;
     } else {
-        if (updateValue) parentSensor->update();
+        if (updateValue && parentSensor != nullptr) {
+            parentSensor->update();
+        } else if (updateValue && parentSensor == nullptr) {
+            // If no parent sensor is set, return error value
+            _currentValue = -9999;
+        }
         return _currentValue;
     }
 }

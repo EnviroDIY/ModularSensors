@@ -113,7 +113,7 @@
  * {{ @ref ZebraTechDOpto_Temp::ZebraTechDOpto_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 2 -
+/// @brief Decimal places in string representation; temperature should have 2 -
 /// resolution is 0.01°C.
 #define DOPTO_TEMP_RESOLUTION 2
 /// @brief Sensor variable number; temperature is stored in sensorValues[0].
@@ -140,7 +140,7 @@
  * {{ @ref ZebraTechDOpto_DOpct::ZebraTechDOpto_DOpct }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; dissolved oxygen percent
+/// @brief Decimal places in string representation; dissolved oxygen percent
 /// should have 2.
 #define DOPTO_DOPCT_RESOLUTION 2
 /// @brief Sensor variable number; dissolved oxygen percent is stored in
@@ -168,7 +168,7 @@
  * {{ @ref ZebraTechDOpto_DOmgL::ZebraTechDOpto_DOmgL }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; dissolved oxygen
+/// @brief Decimal places in string representation; dissolved oxygen
 /// concentration should have 3 - resolution is 0.01 % / 0.001 PPM.
 #define DOPTO_DOMGL_RESOLUTION 3
 /// @brief Sensor variable number; dissolved oxygen concentration is stored in

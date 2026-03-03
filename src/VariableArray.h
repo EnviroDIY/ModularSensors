@@ -304,7 +304,7 @@ class VariableArray {
      */
     bool isLastVarFromSensor(int arrayIndex);
     /**
-     * @brief Check that all variable have valid UUIDs, if they are assigned
+     * @brief Check that all variables have valid UUIDs, if they are assigned
      *
      * @return True if all variables have valid UUIDs.
      *

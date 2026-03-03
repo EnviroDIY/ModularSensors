@@ -18,11 +18,10 @@ VariableArray::VariableArray(uint8_t variableCount, Variable* variableList[])
       _variableCount(variableCount) {
     _sensorCount = getSensorCount();
 }
+// Delegating constructor
 VariableArray::VariableArray(uint8_t variableCount, Variable* variableList[],
                              const char* uuids[])
-    : arrayOfVars(variableList),
-      _variableCount(variableCount) {
-    _sensorCount = getSensorCount();
+    : VariableArray(variableCount, variableList) {
     matchUUIDs(uuids);
 }
 
@@ -405,6 +404,7 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
                        F("failed to wake up! No measurements will be taken! "
                          "<<---"),
                        i);
+                success = false;
                 // Set the number of measurements already complete equal to
                 // whatever total number requested to ensure the sensor is
                 // skipped in further loops. NOTE: These are protected members

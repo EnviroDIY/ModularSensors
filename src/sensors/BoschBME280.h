@@ -161,7 +161,7 @@
  * {{ @ref BoschBME280_Temp::BoschBME280_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 2 -
+/// @brief Decimal places in string representation; temperature should have 2 -
 /// resolution is 0.01°C.
 #define BME280_TEMP_RESOLUTION 2
 /// @brief Sensor variable number; temperature is stored in sensorValues[0].
@@ -186,7 +186,7 @@
  * {{ @ref BoschBME280_Humidity::BoschBME280_Humidity }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; humidity should have 3-
+/// @brief Decimal places in string representation; humidity should have 3-
 /// resolution is 0.008 % RH (16 bit).
 #define BME280_HUMIDITY_RESOLUTION 3
 /// @brief Sensor variable number; humidity is stored in sensorValues[1].
@@ -214,7 +214,7 @@
  * {{ @ref BoschBME280_Pressure::BoschBME280_Pressure }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; barometric pressure should
+/// @brief Decimal places in string representation; barometric pressure should
 /// have 2.
 #define BME280_PRESSURE_RESOLUTION 2
 /// @brief Sensor variable number; pressure is stored in sensorValues[2].
@@ -239,7 +239,7 @@
  * {{ @ref BoschBME280_Altitude::BoschBME280_Altitude }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; altitude should have 0 -
+/// @brief Decimal places in string representation; altitude should have 0 -
 /// resolution is 1m.
 #define BME280_ALTITUDE_RESOLUTION 0
 /// @brief Sensor variable number; altitude is stored in sensorValues[3].

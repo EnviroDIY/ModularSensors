@@ -96,7 +96,7 @@
  * {{ @ref YosemitechY520_Cond::YosemitechY520_Cond }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; conductivity should have 1
+/// @brief Decimal places in string representation; conductivity should have 1
 /// - resolution is 0.1 µS/cm.
 #define Y520_COND_RESOLUTION 1
 /// @brief Sensor variable number; conductivity is stored in sensorValues[0].
@@ -123,7 +123,7 @@
  * {{ @ref YosemitechY520_Temp::YosemitechY520_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 1 -
+/// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define Y520_TEMP_RESOLUTION 1
 /// @brief Sensor variable number; temperature is stored in sensorValues[1].

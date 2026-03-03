@@ -87,6 +87,16 @@
 /**@{*/
 
 /**
+ * @anchor sensor_ina219_config
+ * @name Configuration Defines
+ * Defines to set the address of the INA219.
+ */
+/**@{*/
+/// @brief The default address of the INA219
+#define INA219_ADDRESS_BASE 0x40
+/**@}*/
+
+/**
  * @anchor sensor_ina219_var_counts
  * @name Sensor Variable Counts
  * The number of variables that can be returned by the INA219
@@ -96,16 +106,6 @@
 #define INA219_NUM_VARIABLES 3
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define INA219_INC_CALC_VARIABLES 0
-/**@}*/
-
-/**
- * @anchor sensor_ina219_config
- * @name Configuration Defines
- * Defines to set the address of the INA219.
- */
-/**@{*/
-/// @brief The default address of the INA219
-#define INA219_ADDRESS_BASE 0x40
 /**@}*/
 
 /**
@@ -146,7 +146,7 @@
  */
 /**@{*/
 /**
- * @brief Decimals places in string representation; current should have 1.
+ * @brief Decimal places in string representation; current should have 1.
  *  - resolution is 12-bit
  *     - 0.8mA using +/-3.2 Amp range
  *     - 0.1mA using +/-0.4 Amp range
@@ -175,7 +175,7 @@
  * {{ @ref TIINA219_Voltage::TIINA219_Voltage }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; bus voltage should have 3 -
+/// @brief Decimal places in string representation; bus voltage should have 3 -
 /// resolution is 0.004V.
 #define INA219_BUS_VOLTAGE_RESOLUTION 3
 /// @brief Sensor variable number; bus voltage is stored in sensorValues[1].
@@ -199,7 +199,7 @@
  * {{ @ref TIINA219_Power::TIINA219_Power }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; power draw should have 2 -
+/// @brief Decimal places in string representation; power draw should have 2 -
 /// resolution is 0.01mW.
 #define INA219_POWER_MW_RESOLUTION 2
 /// @brief Sensor variable number; power draw is stored in sensorValues[2].

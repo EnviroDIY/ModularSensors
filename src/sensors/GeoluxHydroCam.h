@@ -172,7 +172,7 @@
  * {{ @ref GeoluxHydroCam_ImageSize::GeoluxHydroCam_ImageSize }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; image size should have 0 -
+/// @brief Decimal places in string representation; image size should have 0 -
 /// resolution is 1 byte.
 #define HYDROCAM_SIZE_RESOLUTION 0
 /// @brief Sensor variable number; image size is stored in sensorValues[0].
@@ -198,7 +198,7 @@
  * {{ @ref GeoluxHydroCam_ByteError::GeoluxHydroCam_ByteError }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; byte error should have
+/// @brief Decimal places in string representation; byte error should have
 /// 0 - resolution is 1 byte.
 #define HYDROCAM_ERROR_RESOLUTION 0
 /// @brief Sensor variable number; byte error is stored in sensorValues[1].

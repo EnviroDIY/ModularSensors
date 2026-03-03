@@ -32,27 +32,30 @@ const char* UbidotsPublisher::payload = "{";
 
 
 // Constructors
-UbidotsPublisher::UbidotsPublisher() : dataPublisher() {}
-UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, int sendEveryX)
-    : dataPublisher(baseLogger, sendEveryX) {}
-UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, Client* inClient,
-                                   int sendEveryX)
-    : dataPublisher(baseLogger, inClient, sendEveryX) {}
+// Primary constructor with authentication parameters
 UbidotsPublisher::UbidotsPublisher(Logger&     baseLogger,
                                    const char* authenticationToken,
                                    const char* deviceID, int sendEveryX)
     : dataPublisher(baseLogger, sendEveryX) {
-    setToken(authenticationToken);
-    _baseLogger->setSamplingFeatureUUID(deviceID);
+    if (authenticationToken) setToken(authenticationToken);
+    if (deviceID) _baseLogger->setSamplingFeatureUUID(deviceID);
     MS_DBG(F("dataPublisher object created"));
+}
+
+// Delegating constructors
+UbidotsPublisher::UbidotsPublisher() : dataPublisher() {}
+UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, int sendEveryX)
+    : UbidotsPublisher(baseLogger, nullptr, nullptr, sendEveryX) {}
+UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, Client* inClient,
+                                   int sendEveryX)
+    : UbidotsPublisher(baseLogger, nullptr, nullptr, sendEveryX) {
+    if (inClient) _inClient = inClient;
 }
 UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, Client* inClient,
                                    const char* authenticationToken,
                                    const char* deviceID, int sendEveryX)
-    : dataPublisher(baseLogger, inClient, sendEveryX) {
-    setToken(authenticationToken);
-    _baseLogger->setSamplingFeatureUUID(deviceID);
-    MS_DBG(F("dataPublisher object created"));
+    : UbidotsPublisher(baseLogger, authenticationToken, deviceID, sendEveryX) {
+    if (inClient) _inClient = inClient;
 }
 // Destructor
 UbidotsPublisher::~UbidotsPublisher() {}
@@ -117,6 +120,12 @@ int16_t UbidotsPublisher::publishData(Client* outClient, bool) {
     if (_baseLogger->getSamplingFeatureUUID() == nullptr ||
         strlen(_baseLogger->getSamplingFeatureUUID()) == 0) {
         PRINTOUT(F("A sampling feature UUID must be set before publishing data "
+                   "to Ubidots!"));
+        return 0;
+    }
+    if (_authenticationToken == nullptr ||
+        strlen(_authenticationToken) == 0) {
+        PRINTOUT(F("An authentication token must be set before publishing data "
                    "to Ubidots!"));
         return 0;
     }

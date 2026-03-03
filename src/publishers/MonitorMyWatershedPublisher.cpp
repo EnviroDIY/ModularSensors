@@ -31,19 +31,7 @@ const char* MonitorMyWatershedPublisher::timestampTag = "\",\"timestamp\":";
 
 
 // Constructors
-MonitorMyWatershedPublisher::MonitorMyWatershedPublisher() : dataPublisher() {
-    setHost("monitormywatershed.org");
-    setPath("/api/data-stream/");
-    setPort(80);
-}
-MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(Logger& baseLogger,
-                                                         int     sendEveryX)
-    : dataPublisher(baseLogger, sendEveryX) {
-    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
-    setHost("monitormywatershed.org");
-    setPath("/api/data-stream/");
-    setPort(80);
-}
+// Primary constructor with client
 MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(Logger& baseLogger,
                                                          Client* inClient,
                                                          int     sendEveryX)
@@ -53,47 +41,48 @@ MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(Logger& baseLogger,
     setPath("/api/data-stream/");
     setPort(80);
 }
+
+// Delegating constructors
+MonitorMyWatershedPublisher::MonitorMyWatershedPublisher() : dataPublisher() {
+    // NOTE: _logBuffer is not initialized here because _baseLogger is null
+    // Must call begin(Logger&, ...) before use to properly initialize
+    // _logBuffer
+    setHost("monitormywatershed.org");
+    setPath("/api/data-stream/");
+    setPort(80);
+}
+MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(Logger& baseLogger,
+                                                         int     sendEveryX)
+    : MonitorMyWatershedPublisher(baseLogger, static_cast<Client*>(nullptr),
+                                  sendEveryX) {}
+
 MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
     Logger& baseLogger, const char* registrationToken,
     const char* samplingFeatureUUID, int sendEveryX)
-    : dataPublisher(baseLogger, sendEveryX) {
-    setToken(registrationToken);
-    _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
-    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
-    setHost("monitormywatershed.org");
-    setPath("/api/data-stream/");
-    setPort(80);
+    : MonitorMyWatershedPublisher(baseLogger, static_cast<Client*>(nullptr),
+                                  sendEveryX) {
+    if (registrationToken) setToken(registrationToken);
+    if (samplingFeatureUUID)
+        _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
 }
+// Delegating constructor
 MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
     Logger& baseLogger, const char* registrationToken, int sendEveryX)
-    : dataPublisher(baseLogger, sendEveryX) {
-    setToken(registrationToken);
-    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
-    setHost("monitormywatershed.org");
-    setPath("/api/data-stream/");
-    setPort(80);
-}
+    : MonitorMyWatershedPublisher(baseLogger, registrationToken, nullptr,
+                                  sendEveryX) {}
+// Delegating constructor
 MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
     Logger& baseLogger, Client* inClient, const char* registrationToken,
     const char* samplingFeatureUUID, int sendEveryX)
-    : dataPublisher(baseLogger, inClient, sendEveryX) {
-    setToken(registrationToken);
-    _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
-    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
-    setHost("monitormywatershed.org");
-    setPath("/api/data-stream/");
-    setPort(80);
+    : MonitorMyWatershedPublisher(baseLogger, registrationToken, samplingFeatureUUID, sendEveryX) {
+    if (inClient) _inClient = inClient;
 }
+// Delegating constructor
 MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
     Logger& baseLogger, Client* inClient, const char* registrationToken,
     int sendEveryX)
-    : dataPublisher(baseLogger, inClient, sendEveryX) {
-    setToken(registrationToken);
-    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
-    setHost("monitormywatershed.org");
-    setPath("/api/data-stream/");
-    setPort(80);
-}
+    : MonitorMyWatershedPublisher(baseLogger, inClient, registrationToken,
+                                  nullptr, sendEveryX) {}
 // Destructor
 MonitorMyWatershedPublisher::~MonitorMyWatershedPublisher() {}
 
@@ -328,6 +317,13 @@ int16_t MonitorMyWatershedPublisher::flushDataBuffer(Client* outClient) {
     if (_registrationToken == nullptr || strlen(_registrationToken) == 0) {
         PRINTOUT(F("A registration token must be set before publishing data "
                    "to Monitor My Watershed!."));
+        return 0;
+    }
+
+    // Check for valid client before attempting connection
+    if (outClient == nullptr) {
+        PRINTOUT(F("No client available for publishing data to Monitor My "
+                   "Watershed!"));
         return 0;
     }
 

@@ -19,7 +19,7 @@ AOSongDHT::AOSongDHT(int8_t powerPin, int8_t dataPin, const uint8_t type,
              dataPin, measurementsToAverage, DHT_INC_CALC_VARIABLES),
       dht_internal(dataPin, type),
       _dhtType(type) {
-    setAllowedMeasurementRetries(5);
+    setAllowedMeasurementRetries(DHT_DEFAULT_MEASUREMENT_RETRIES);
 }
 
 // Destructor - does nothing.
@@ -72,6 +72,8 @@ bool AOSongDHT::addSingleMeasurementResult(void) {
         verifyAndAddMeasurementResult(DHT_HUMIDITY_VAR_NUM, humid_val);
         verifyAndAddMeasurementResult(DHT_HI_VAR_NUM, hi_val);
         success = true;
+    } else {
+        MS_DBG(F("  DHT read failed (NaN temperature/humidity)."));
     }
 
     // Return success value when finished

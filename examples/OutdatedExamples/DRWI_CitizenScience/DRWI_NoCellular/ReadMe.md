@@ -28,7 +28,7 @@ _______
     - [Prepare and set up PlatformIO](#prepare-and-set-up-platformio)
     - [Set the logger ID](#set-the-logger-id)
     - [Set the calibration coefficients for the Campbell OBS3+](#set-the-calibration-coefficients-for-the-campbell-obs3)
-    - [Set the universally unique identifiers (UUID) for each variable](#set-the-universally-unique-identifiers-uuid-for-each-variable)
+    - [Set the universally unique identifiers (UUIDs) for each variable](#set-the-universally-unique-identifiers-uuids-for-each-variable)
     - [Upload!](#upload)
 
 <!--! @endif -->
@@ -94,7 +94,7 @@ const float OBSHigh_C = 0.000E+00;  // "C" value [*high* range]
 CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADSi2c_addr, OBS3numberReadings);
 ```
 
-### Set the universally unique identifiers (UUID) for each variable<!--! {#example_drwi_no_cell_uuids} -->
+### Set the universally unique identifiers (UUIDs) for each variable<!--! {#example_drwi_no_cell_uuids} -->
 
 - Go back to the web page for your site on [Monitor My Watershed](https://monitormywatershed.org)
 - Find and click the white "View Token UUID List" button above the small map on your site page

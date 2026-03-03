@@ -163,7 +163,7 @@
  * {{ @ref MaxBotixSonar_Range::MaxBotixSonar_Range }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; range should have 0 -
+/// @brief Decimal places in string representation; range should have 0 -
 /// resolution is 1mm (except for models which have range 10mm).
 #define HRXL_RESOLUTION 0
 /// @brief Sensor variable number; range is stored in sensorValues[0].

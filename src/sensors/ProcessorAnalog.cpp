@@ -123,8 +123,8 @@ float ProcessorAnalogBase::calculateAnalogResolutionVolts(void) {
 // ProcessorAnalog Functions
 // ============================================================================
 
-// The constructor - need the power pin, the data pin, the voltage divider
-// value, and the operating voltage
+// The constructor - need the power pin, the data pin, and the number of
+// measurements to average, with an optional external analog reader
 ProcessorAnalog::ProcessorAnalog(int8_t powerPin, int8_t dataPin,
                                  uint8_t              measurementsToAverage,
                                  ProcessorAnalogBase* analogVoltageReader)
@@ -177,6 +177,8 @@ bool ProcessorAnalog::addSingleMeasurementResult(void) {
 
     if (success) {
         verifyAndAddMeasurementResult(PROCESSOR_ANALOG_VAR_NUM, resultValue);
+    } else {
+        MS_DBG(F("  Failed to get valid voltage from analog reader"));
     }
 
     // Return success value when finished

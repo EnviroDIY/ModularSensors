@@ -75,7 +75,7 @@
  * {{ @ref KellerNanolevel_Pressure::KellerNanolevel_Pressure }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; pressure should have 5 -
+/// @brief Decimal places in string representation; pressure should have 5 -
 /// resolution is 0.002%.
 #define NANOLEVEL_PRESSURE_RESOLUTION 5
 /// @brief Default variable short code; "kellerNanoPress"
@@ -92,7 +92,7 @@
  * {{ @ref KellerNanolevel_Temp::KellerNanolevel_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 2 -
+/// @brief Decimal places in string representation; temperature should have 2 -
 /// resolution is 0.01°C.
 #define NANOLEVEL_TEMP_RESOLUTION 2
 /// @brief Default variable short code; "kellerNanoTemp"
@@ -109,7 +109,7 @@
  * {{ @ref KellerNanolevel_Height::KellerNanolevel_Height }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; height should have 4 -
+/// @brief Decimal places in string representation; height should have 4 -
 /// resolution is 0.002%.
 #define NANOLEVEL_HEIGHT_RESOLUTION 4
 /// @brief Default variable short code; "kellerNanoHeight"

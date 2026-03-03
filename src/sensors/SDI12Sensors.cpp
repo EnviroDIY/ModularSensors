@@ -48,6 +48,7 @@ SDI12Sensors::SDI12Sensors(char SDI12address, int8_t powerPin, int8_t dataPin,
       _SDI12Internal(dataPin),
       _SDI12address(SDI12address),
       _extraWakeTime(extraWakeTime) {}
+// Delegating constructor
 SDI12Sensors::SDI12Sensors(char* SDI12address, int8_t powerPin, int8_t dataPin,
                            uint8_t       measurementsToAverage,
                            const char*   sensorName,
@@ -56,12 +57,11 @@ SDI12Sensors::SDI12Sensors(char* SDI12address, int8_t powerPin, int8_t dataPin,
                            uint32_t      stabilizationTime_ms,
                            uint32_t measurementTime_ms, int8_t extraWakeTime,
                            uint8_t incCalcValues)
-    : Sensor(sensorName, totalReturnedValues, warmUpTime_ms,
-             stabilizationTime_ms, measurementTime_ms, powerPin, dataPin,
-             measurementsToAverage, incCalcValues),
-      _SDI12Internal(dataPin),
-      _SDI12address(*SDI12address),
-      _extraWakeTime(extraWakeTime) {}
+    : SDI12Sensors(*SDI12address, powerPin, dataPin, measurementsToAverage,
+                   sensorName, totalReturnedValues, warmUpTime_ms,
+                   stabilizationTime_ms, measurementTime_ms, extraWakeTime,
+                   incCalcValues) {}
+// Delegating constructor
 SDI12Sensors::SDI12Sensors(int SDI12address, int8_t powerPin, int8_t dataPin,
                            uint8_t       measurementsToAverage,
                            const char*   sensorName,
@@ -70,12 +70,10 @@ SDI12Sensors::SDI12Sensors(int SDI12address, int8_t powerPin, int8_t dataPin,
                            uint32_t      stabilizationTime_ms,
                            uint32_t measurementTime_ms, int8_t extraWakeTime,
                            uint8_t incCalcValues)
-    : Sensor(sensorName, totalReturnedValues, warmUpTime_ms,
-             stabilizationTime_ms, measurementTime_ms, powerPin, dataPin,
-             measurementsToAverage, incCalcValues),
-      _SDI12Internal(dataPin),
-      _SDI12address(static_cast<char>(SDI12address + '0')),
-      _extraWakeTime(extraWakeTime) {}
+    : SDI12Sensors(static_cast<char>(SDI12address + '0'), powerPin, dataPin,
+                   measurementsToAverage, sensorName, totalReturnedValues,
+                   warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
+                   extraWakeTime, incCalcValues) {}
 // Destructor
 SDI12Sensors::~SDI12Sensors() {}
 

@@ -6,7 +6,7 @@
  * @author Initial development for Atlas Sensors was done by Adam Gold
  * Files were edited by Sara Damiano <sdamiano@stroudcenter.org>
  *
- * @brief Implements the AtlasScientificCO2 class.
+ * @brief Implements the AtlasScientificDO class.
  */
 
 // Included Dependencies
@@ -20,12 +20,11 @@ AtlasScientificDO::AtlasScientificDO(TwoWire* theI2C, int8_t powerPin,
                   "AtlasScientificDO", ATLAS_DO_NUM_VARIABLES,
                   ATLAS_DO_WARM_UP_TIME_MS, ATLAS_DO_STABILIZATION_TIME_MS,
                   ATLAS_DO_MEASUREMENT_TIME_MS, ATLAS_DO_INC_CALC_VARIABLES) {}
+// Delegating constructor
 AtlasScientificDO::AtlasScientificDO(int8_t powerPin, uint8_t i2cAddressHex,
                                      uint8_t measurementsToAverage)
-    : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
-                  "AtlasScientificDO", ATLAS_DO_NUM_VARIABLES,
-                  ATLAS_DO_WARM_UP_TIME_MS, ATLAS_DO_STABILIZATION_TIME_MS,
-                  ATLAS_DO_MEASUREMENT_TIME_MS, ATLAS_DO_INC_CALC_VARIABLES) {}
+    : AtlasScientificDO(&Wire, powerPin, i2cAddressHex, measurementsToAverage) {
+}
 
 // Destructor
 AtlasScientificDO::~AtlasScientificDO() {}

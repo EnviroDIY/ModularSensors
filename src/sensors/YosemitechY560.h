@@ -97,7 +97,7 @@
  * {{ @ref YosemitechY560_NH4_N::YosemitechY560_NH4_N }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; NH4_N should have 1 -
+/// @brief Decimal places in string representation; NH4_N should have 1 -
 /// resolution is 0.1 mg/L.
 #define Y560_NH4_N_RESOLUTION 1
 /// @brief Sensor variable number; NH4_N is stored in sensorValues[0].
@@ -124,7 +124,7 @@
  * {{ @ref YosemitechY560_Temp::YosemitechY560_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 1 -
+/// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define Y560_TEMP_RESOLUTION 1
 /// @brief Sensor variable number; temperature is stored in sensorValues[1].
@@ -151,7 +151,7 @@
  * {{ @ref YosemitechY560_pH::YosemitechY560_pH }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; pH should have 2 -
+/// @brief Decimal places in string representation; pH should have 2 -
 /// resolution is 0.01 pH units.
 #define Y560_PH_RESOLUTION 2
 /// @brief Sensor variable number; pH is stored in sensorValues[2].

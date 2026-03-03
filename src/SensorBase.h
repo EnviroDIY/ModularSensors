@@ -43,10 +43,6 @@
 // Include other in-library and external dependencies
 #include <pins_arduino.h>
 
-/// @brief The maximum number of power pins the library can support for a single
-/// sensor.
-#define NUMBER_SUPPORTED_POWER_PINS 2
-
 class Variable;       // Forward declaration
 class VariableArray;  // Forward declaration
 

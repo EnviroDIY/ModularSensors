@@ -198,8 +198,8 @@ bool GeoluxHydroCam::addSingleMeasurementResult(void) {
 
     int32_t image_size = _camera.getImageSize();
     MS_DBG(F("Completed image is"), image_size, F("bytes."));
-    if (image_size == 0) {
-        MS_DBG(F("Camera returned an image size of 0, which means the snapshot "
+    if (image_size <= 0) {
+        MS_DBG(F("Camera returned an image size <= 0, which means the snapshot "
                  "failed!"));
         return bumpMeasurementAttemptCount(false);
     }

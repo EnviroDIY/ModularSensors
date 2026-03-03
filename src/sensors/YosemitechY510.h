@@ -95,7 +95,7 @@
  * {{ @ref YosemitechY510_Turbidity::YosemitechY510_Turbidity }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; turbidity should have 2 -
+/// @brief Decimal places in string representation; turbidity should have 2 -
 /// resolution is 0.01 NTU.
 #define Y510_TURB_RESOLUTION 2
 /// @brief Sensor variable number; turbidity is stored in sensorValues[0].
@@ -122,7 +122,7 @@
  * {{ @ref YosemitechY510_Temp::YosemitechY510_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 1 -
+/// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define Y510_TEMP_RESOLUTION 1
 /// @brief Sensor variable number; temperature is stored in sensorValues[1].

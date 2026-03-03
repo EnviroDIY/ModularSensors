@@ -81,6 +81,18 @@
 /**@{*/
 
 /**
+ * @anchor sensor_atlas_cond_config
+ * @name Configuration Defines
+ * Defines to configure and set the address of the Atlas conductivity
+ * sensor
+ */
+/**@{*/
+/// @brief The default I2C address of the Atlas conductivity sensor is 0x64
+/// (100)
+#define ATLAS_COND_I2C_ADDR 0x64
+/**@}*/
+
+/**
  * @anchor sensor_atlas_cond_var_counts
  * @name Sensor Variable Counts
  * The number of variables that can be returned by the Atlas conductivity sensor
@@ -93,18 +105,6 @@
 /// though we recommend users include a temperature sensor and calculate
 /// specific conductance in their own program.
 #define ATLAS_COND_INC_CALC_VARIABLES 0
-/**@}*/
-
-/**
- * @anchor sensor_atlas_cond_config
- * @name Configuration Defines
- * Defines to configure and set the address of the Atlas conductivity
- * sensor
- */
-/**@{*/
-/// @brief The default I2C address of the Atlas conductivity sensor is 0x64
-/// (100)
-#define ATLAS_COND_I2C_ADDR 0x64
 /**@}*/
 
 /**
@@ -142,7 +142,7 @@
  * {{ @ref AtlasScientificEC_Cond::AtlasScientificEC_Cond }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; conductivity should have 3.
+/// @brief Decimal places in string representation; conductivity should have 3.
 #define ATLAS_COND_RESOLUTION 3
 /// @brief Sensor variable number; conductivity is stored in sensorValues[0].
 #define ATLAS_COND_VAR_NUM 0
@@ -168,7 +168,7 @@
  * {{ @ref AtlasScientificEC_TDS::AtlasScientificEC_TDS }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; TDS should have 3.
+/// @brief Decimal places in string representation; TDS should have 3.
 #define ATLAS_TDS_RESOLUTION 3
 /// @brief Sensor variable number; TDS is stored in sensorValues[1].
 #define ATLAS_TDS_VAR_NUM 1
@@ -194,7 +194,7 @@
  * {{ @ref AtlasScientificEC_Salinity::AtlasScientificEC_Salinity }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; salinity should have 3.
+/// @brief Decimal places in string representation; salinity should have 3.
 #define ATLAS_SALINITY_RESOLUTION 3
 /// @brief Sensor variable number; salinity is stored in sensorValues[2].
 #define ATLAS_SALINITY_VAR_NUM 2
@@ -222,7 +222,7 @@
  */
 /* clang-format on */
 /**@{*/
-/// @brief Decimals places in string representation; specific gravity should
+/// @brief Decimal places in string representation; specific gravity should
 /// have 3.
 #define ATLAS_SG_RESOLUTION 3
 /// @brief Sensor variable number; specific gravity is stored in

@@ -125,7 +125,7 @@
  */
 /**@{*/
 /**
- * @brief Decimals places in string representation; battery voltage should
+ * @brief Decimal places in string representation; battery voltage should
  * have 3.
  *
  * The resolution is of the EnviroDIY Mayfly is 0.005V, we will use that
@@ -160,7 +160,7 @@
  * {{ @ref ProcessorStats_FreeRam::ProcessorStats_FreeRam }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; ram should have 0 -
+/// @brief Decimal places in string representation; ram should have 0 -
 /// resolution is 1 bit.
 #define PROCESSOR_RAM_RESOLUTION 0
 /// @brief Free RAM is stored in sensorValues[1]
@@ -190,7 +190,7 @@
  * {{ @ref ProcessorStats_SampleNumber::ProcessorStats_SampleNumber }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; sample number should have
+/// @brief Decimal places in string representation; sample number should have
 /// 0 - resolution is 1.
 #define PROCESSOR_SAMPNUM_RESOLUTION 0
 /// @brief Sample number is stored in sensorValues[2]
@@ -220,7 +220,7 @@
  * {{ @ref ProcessorStats_ResetCode::ProcessorStats_ResetCode }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; ram should have 0 -
+/// @brief Decimal places in string representation; ram should have 0 -
 /// it's just a code
 #define PROCESSOR_RESET_RESOLUTION 0
 /// @brief Free RAM is stored in sensorValues[1]

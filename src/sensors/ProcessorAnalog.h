@@ -143,11 +143,11 @@
 #define PROCESSOR_ANALOG_DEFAULT_CODE "analogVoltage"
 
 #if MS_PROCESSOR_ADC_RESOLUTION == 12
-/// @brief Decimals places in string representation; a 3.3V processor at 12-bit
+/// @brief Decimal places in string representation; a 3.3V processor at 12-bit
 /// resolution should have 4 [3.3V / 4096 ~= 0.0008] .
 #define PROCESSOR_ANALOG_RESOLUTION 4
 #elif MS_PROCESSOR_ADC_RESOLUTION == 10
-/// @brief Decimals places in string representation; a 3.3V processor at 10-bit
+/// @brief Decimal places in string representation; a 3.3V processor at 10-bit
 /// resolution should have 3 [3.3V / 1024 ~= 0.0032] .
 #define PROCESSOR_ANALOG_RESOLUTION 3
 #else

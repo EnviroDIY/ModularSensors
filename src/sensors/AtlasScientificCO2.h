@@ -74,6 +74,16 @@
 /**@{*/
 
 /**
+ * @anchor sensor_atlas_co2_config
+ * @name Configuration Defines
+ * Defines to configure and set the address of the Atlas CO2 sensor
+ */
+/**@{*/
+/// @brief The default I2C address of the Atlas CO2 sensor is 0x69 (105)
+#define ATLAS_CO2_I2C_ADDR 0x69
+/**@}*/
+
+/**
  * @anchor sensor_atlas_co2_var_counts
  * @name Sensor Variable Counts
  * The number of variables that can be returned by the Atlas CO2 sensor
@@ -83,16 +93,6 @@
 #define ATLAS_CO2_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define ATLAS_CO2_INC_CALC_VARIABLES 0
-/**@}*/
-
-/**
- * @anchor sensor_atlas_co2_config
- * @name Configuration Defines
- * Defines to configure and set the address of the Atlas CO2 sensor
- */
-/**@{*/
-/// @brief The default I2C address of the Atlas CO2 sensor is 0x69 (105)
-#define ATLAS_CO2_I2C_ADDR 0x69
 /**@}*/
 
 /**
@@ -122,7 +122,7 @@
  * {{ @ref AtlasScientificCO2_CO2::AtlasScientificCO2_CO2 }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; CO2 should have 1 -
+/// @brief Decimal places in string representation; CO2 should have 1 -
 /// resolution is 1 ppm.
 #define ATLAS_CO2_RESOLUTION 1
 /// @brief Sensor variable number; CO2 is stored in sensorValues[0].
@@ -149,7 +149,7 @@
  * {{ @ref AtlasScientificCO2_Temp::AtlasScientificCO2_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; CO2TEMP should have 0 -
+/// @brief Decimal places in string representation; CO2TEMP should have 0 -
 /// resolution is 1°C.
 #define ATLAS_CO2TEMP_RESOLUTION 0
 /// @brief Sensor variable number; CO2TEMP is stored in sensorValues[1].

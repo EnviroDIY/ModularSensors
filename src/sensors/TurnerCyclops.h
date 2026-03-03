@@ -255,10 +255,10 @@ class AnalogVoltageBase;
 /// Variable number; the primary variable is stored in sensorValues[0].
 #define CYCLOPS_VAR_NUM 0
 #ifdef MS_USE_ADS1015
-/// @brief Decimals places in string representation; 1.
+/// @brief Decimal places in string representation; 1.
 #define CYCLOPS_RESOLUTION 1
 #else
-/// @brief Decimals places in string representation; 5.
+/// @brief Decimal places in string representation; 5.
 #define CYCLOPS_RESOLUTION 5
 #endif
 /**@}*/
@@ -292,12 +292,12 @@ class AnalogVoltageBase;
 #define CYCLOPS_VOLTAGE_DEFAULT_CODE "CyclopsVoltage"
 
 #ifdef MS_USE_ADS1015
-/// @brief Decimals places in string representation; voltage should have 1.
+/// @brief Decimal places in string representation; voltage should have 1.
 ///  - Resolution:
 ///     - 16-bit ADC (ADS1115): 0.125 mV
 #define CYCLOPS_VOLTAGE_RESOLUTION 1
 #else
-/// @brief Decimals places in string representation; voltage should have 4.
+/// @brief Decimal places in string representation; voltage should have 4.
 ///  - Resolution:
 ///     - 12-bit ADC (ADS1015, using build flag ```MS_USE_ADS1015```): 2 mV
 #define CYCLOPS_VOLTAGE_RESOLUTION 4

@@ -29,6 +29,7 @@ KellerParent::KellerParent(byte modbusAddress, Stream* stream, int8_t powerPin,
       _RS485EnablePin(enablePin) {
     setSecondaryPowerPin(powerPin2);
 }
+// Delegating constructor
 KellerParent::KellerParent(byte modbusAddress, Stream& stream, int8_t powerPin,
                            int8_t powerPin2, int8_t enablePin,
                            uint8_t measurementsToAverage, kellerModel model,
@@ -36,15 +37,9 @@ KellerParent::KellerParent(byte modbusAddress, Stream& stream, int8_t powerPin,
                            uint32_t warmUpTime_ms,
                            uint32_t stabilizationTime_ms,
                            uint32_t measurementTime_ms)
-    : Sensor(sensName, numVariables, warmUpTime_ms, stabilizationTime_ms,
-             measurementTime_ms, powerPin, -1, measurementsToAverage,
-             KELLER_INC_CALC_VARIABLES),
-      _model(model),
-      _modbusAddress(modbusAddress),
-      _stream(&stream),
-      _RS485EnablePin(enablePin) {
-    setSecondaryPowerPin(powerPin2);
-}
+    : KellerParent(modbusAddress, &stream, powerPin, powerPin2, enablePin,
+                   measurementsToAverage, model, sensName, numVariables,
+                   warmUpTime_ms, stabilizationTime_ms, measurementTime_ms) {}
 // Destructor
 KellerParent::~KellerParent() {}
 
@@ -121,9 +116,7 @@ bool KellerParent::addSingleMeasurementResult(void) {
     MS_DBG(F("  Temp_C:"), waterTemperatureC);
     MS_DBG(F("  Height_m:"), waterDepthM);
 
-    success &= (!isnan(waterPressureBar) && waterPressureBar != -9999 &&
-                !isnan(waterTemperatureC) && waterTemperatureC != -9999 &&
-                !isnan(waterDepthM) && waterDepthM != -9999);
+    success &= (!isnan(waterDepthM) && waterDepthM != -9999);
 
     if (success) {
         // Put values into the array

@@ -97,6 +97,16 @@
 /**@{*/
 
 /**
+ * @anchor sensor_tally_config
+ * @name Configuration Defines
+ * Defines to set the address of the Tally event counter.
+ */
+/**@{*/
+/// @brief The default address of the Tally
+#define TALLY_ADDRESS_BASE 0x33
+/**@}*/
+
+/**
  * @anchor sensor_tally_var_counts
  * @name Sensor Variable Counts
  * The number of variables that can be returned by the Tally event counter
@@ -106,16 +116,6 @@
 #define TALLY_NUM_VARIABLES 1
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define TALLY_INC_CALC_VARIABLES 0
-/**@}*/
-
-/**
- * @anchor sensor_tally_config
- * @name Configuration Defines
- * Defines to set the address of the Tally event counter.
- */
-/**@{*/
-/// @brief The default address of the Tally
-#define TALLY_ADDRESS_BASE 0x33
 /**@}*/
 
 /**
@@ -147,7 +147,7 @@
  * {{ @ref TallyCounterI2C_Events::TallyCounterI2C_Events }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; events are an integer
+/// @brief Decimal places in string representation; events are an integer
 /// should be 0 - resolution is 1 event.
 #define TALLY_EVENTS_RESOLUTION 0
 /// @brief Sensor variable number; events is stored in sensorValues[0].

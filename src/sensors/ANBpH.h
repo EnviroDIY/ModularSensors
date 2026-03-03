@@ -58,6 +58,11 @@
  * the time the logger woke or other sensors took measurements by the time it
  * takes the pH sensor to warm up and take a reading.
  *
+ * @section sensor_anb_ph_config_flags Build flags
+ * - `-D ANB_PH_DEFAULT_MEASUREMENT_RETRIES=##`
+ *      - used to set the default number of measurement retries for ANB pH sensors
+ *        when communication errors occur
+ *
  * @section sensor_anb_ph_ctor Sensor Constructor
  * {{ @ref ANBpH::ANBpH }}
  *
@@ -100,6 +105,28 @@
 
 /** @ingroup sensor_anb_ph */
 /**@{*/
+
+/**
+ * @anchor sensor_anb_ph_config
+ * @name Configuration Defines
+ * Define for the ANB pH measurement retry behavior.
+ */
+/**@{*/
+#if !defined(ANB_PH_DEFAULT_MEASUREMENT_RETRIES) || defined(DOXYGEN)
+/**
+ * @brief The default number of measurement retries for ANB pH sensors when
+ * communication errors occur.
+ *
+ * ANB pH sensors use Modbus communication which can be susceptible to
+ * communication errors, especially in harsh environmental conditions. This
+ * define sets the default number of retries when a measurement fails.
+ *
+ * @note The default value of 5 retries provides good reliability while
+ * preventing excessive delays in case of persistent communication issues.
+ */
+#define ANB_PH_DEFAULT_MEASUREMENT_RETRIES 5
+#endif
+/**@}*/
 
 /**
  * @brief The minimum spacing between requesting responses from the sensor.
@@ -194,7 +221,7 @@
  * {{ @ref ANBpH_pH::ANBpH_pH }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; soil moisture should have 1
+/// @brief Decimal places in string representation; soil moisture should have 1
 /// - resolution is 0.01.
 #define ANB_PH_PH_RESOLUTION 2
 /// @brief Sensor variable number; pH is stored in sensorValues[0].
@@ -218,7 +245,7 @@
  * {{ @ref ANBpH_Temp::ANBpH_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 1 -
+/// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.01°C.
 #define ANB_PH_TEMP_RESOLUTION 2
 /// @brief Sensor variable number; temperature is stored in sensorValues[1].
@@ -251,7 +278,7 @@
  * {{ @ref ANBpH_Salinity::ANBpH_Salinity }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; salinity should have 2.
+/// @brief Decimal places in string representation; salinity should have 2.
 #define ANB_PH_SALINITY_RESOLUTION 2
 /// @brief Sensor variable number; salinity is stored in sensorValues[2].
 #define ANB_PH_SALINITY_VAR_NUM 2
@@ -285,7 +312,7 @@
  * {{ @ref ANBpH_SpCond::ANBpH_SpCond }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; specific conductance
+/// @brief Decimal places in string representation; specific conductance
 /// should have 2.
 #define ANB_PH_SPCOND_RESOLUTION 2
 /// @brief Sensor variable number; specific conductance is stored in
@@ -322,7 +349,7 @@
  * {{ @ref ANBpH_EC::ANBpH_EC }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; raw electrical conductivity
+/// @brief Decimal places in string representation; raw electrical conductivity
 /// should have 2.
 #define ANB_PH_EC_RESOLUTION 3
 /// @brief Sensor variable number; conductivity is stored in sensorValues[4].
@@ -366,7 +393,7 @@
  */
 /**@{*/
 // clang-format on
-/// @brief Decimals places in string representation; the health code has 0.
+/// @brief Decimal places in string representation; the health code has 0.
 #define ANB_PH_HEALTH_CODE_RESOLUTION 0
 /// @brief Sensor variable number; health code is stored in sensorValues[5]
 #define ANB_PH_HEALTH_CODE_VAR_NUM 5
@@ -402,7 +429,7 @@
  */
 /**@{*/
 // clang-format on
-/// @brief Decimals places in string representation; the diagnostic code has 0.
+/// @brief Decimal places in string representation; the diagnostic code has 0.
 #define ANB_PH_DIAGNOSTIC_CODE_RESOLUTION 0
 /// @brief Sensor variable number; diagnostic code is stored in sensorValues[6]
 #define ANB_PH_DIAGNOSTIC_CODE_VAR_NUM 6
@@ -439,7 +466,7 @@
  */
 /**@{*/
 // clang-format on
-/// @brief Decimals places in string representation; the error code has 0.
+/// @brief Decimal places in string representation; the error code has 0.
 #define ANB_PH_STATUS_CODE_RESOLUTION 0
 /// @brief Sensor variable number; error code is stored in sensorValues[7]
 #define ANB_PH_STATUS_CODE_VAR_NUM 7

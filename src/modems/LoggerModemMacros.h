@@ -611,6 +611,50 @@
  * subclass.
  *
  */
+#if defined(TINY_GSM_MODEM_ESP8266) || defined(TINY_GSM_MODEM_ESP32)
+#define MS_MODEM_GET_NIST_TIME(specificModem, TinyGSMType)                 \
+    uint32_t specificModem::getNISTTime(void) {                            \
+        /** Check for and bail if not connected to the internet. */        \
+        if (!isInternetAvailable()) {                                      \
+            MS_DBG(F("No internet connection, cannot get network time.")); \
+            return 0;                                                      \
+        }                                                                  \
+                                                                           \
+        MS_DBG("Asking modem to sync with NTP");                           \
+        gsmModem.NTPServerSync("pool.ntp.org", 0); /*UTC!*/                \
+        gsmModem.waitForTimeSync();                                        \
+        return gsmModem.getNetworkEpoch(TinyGSM_EpochStart::UNIX);         \
+    }
+#elif defined(TINY_GSM_MODEM_HAS_NTP) && defined(TINY_GSM_MODEM_HAS_TIME)
+#include "ClockSupport.h"
+#define MS_MODEM_GET_NIST_TIME(specificModem, TinyGSMType)                     \
+    uint32_t specificModem::getNISTTime(void) {                                \
+        /** Check for and bail if not connected to the internet. */            \
+        if (!isInternetAvailable()) {                                          \
+            MS_DBG(F("No internet connection, cannot get network time."));     \
+            return 0;                                                          \
+        }                                                                      \
+                                                                               \
+        MS_DBG("Asking modem to sync with NTP");                               \
+        gsmModem.NTPServerSync("pool.ntp.org", 0); /*UTC!*/                    \
+        gsmModem.waitForTimeSync();                                            \
+                                                                               \
+        /* Create ints to hold time parts */                                   \
+        int seconds = 0;                                                       \
+        int minutes = 0;                                                       \
+        int hours   = 0;                                                       \
+        int day     = 0;                                                       \
+        int month   = 0;                                                       \
+        int year    = 0;                                                       \
+        /* Fetch the time as parts */                                          \
+        bool success = gsmModem.getNetworkTime(year, &month, &day, &hours,     \
+                                               &minutes, &seconds, 0);         \
+        if (!success) { return 0; }                                            \
+        tm     timeParts = {seconds, minutes, hours, day, month, year - 1900}; \
+        time_t timeTimeT = mktime(&timeParts);                                 \
+        return epochTime(timeTimeT, epochStart::unix_epoch);                   \
+    }
+#else
 #define MS_MODEM_GET_NIST_TIME(specificModem, TinyGSMType)                   \
     uint32_t specificModem::getNISTTime(void) {                              \
         /** Check for and bail if not connected to the internet. */          \
@@ -661,6 +705,7 @@
         }                                                                    \
         return 0;                                                            \
     }
+#endif
 
 /**
  * @def MS_MODEM_CALC_SIGNAL_QUALITY

@@ -26,25 +26,14 @@ ANBpH::ANBpH(byte modbusAddress, Stream* stream, int8_t powerPin,
     _anb_sensor.setDebugStream(&MS_SERIAL_OUTPUT);
 #endif
     setSecondaryPowerPin(powerPin2);
-    setAllowedMeasurementRetries(5);
+    setAllowedMeasurementRetries(ANB_PH_DEFAULT_MEASUREMENT_RETRIES);
 }
+// Delegating constructor
 ANBpH::ANBpH(byte modbusAddress, Stream& stream, int8_t powerPin,
              int16_t loggingIntervalMinutes, int8_t powerPin2, int8_t enablePin,
              uint8_t measurementsToAverage)
-    : Sensor("ANBpHSensor", ANB_PH_NUM_VARIABLES, ANB_PH_WARM_UP_TIME_MS,
-             ANB_PH_STABILIZATION_TIME_MS, ANB_PH_2ND_VALUE_LOW_SALT, powerPin,
-             -1, measurementsToAverage, ANB_PH_INC_CALC_VARIABLES),
-      _anb_sensor(modbusAddress, stream, enablePin),
-      _modbusAddress(modbusAddress),
-      _stream(&stream),
-      _loggingIntervalMinutes(loggingIntervalMinutes),
-      _RS485EnablePin(enablePin) {
-#ifdef MS_ANB_SENSORS_PH_DEBUG_DEEP
-    _anb_sensor.setDebugStream(&MS_SERIAL_OUTPUT);
-#endif
-    setSecondaryPowerPin(powerPin2);
-    setAllowedMeasurementRetries(5);
-}
+    : ANBpH(modbusAddress, &stream, powerPin, loggingIntervalMinutes, powerPin2,
+            enablePin, measurementsToAverage) {}
 // Destructor
 ANBpH::~ANBpH() {}
 
@@ -151,23 +140,46 @@ bool ANBpH::setup(void) {
 
     bool     intervalSet        = false;
     uint16_t programmedInterval = _loggingIntervalMinutes;
-    if (_loggingIntervalMinutes == 0 && _powerPin >= 0) {
-        programmedInterval = 10;
-        MS_DBG(F("Requested interval of 0 minutes is invalid when power is "
-                 "cycled; using"),
-               programmedInterval, F("minutes."));
-    }
-    if (_loggingIntervalMinutes < 10 && _loggingIntervalMinutes != 0) {
-        programmedInterval = 10;
-        MS_DBG(F("Requested interval of"), _loggingIntervalMinutes,
-               F("minutes is too short; using"), programmedInterval,
-               F("minutes."));
-    }
-    if (_loggingIntervalMinutes > 240 && _loggingIntervalMinutes != 0) {
-        programmedInterval = 240;
-        MS_DBG(F("Requested interval of"), _loggingIntervalMinutes,
-               F("minutes is too long; using"), programmedInterval,
-               F("minutes."));
+
+    // Validate and normalize loggingIntervalMinutes based on powerPin
+    int16_t originalInterval = _loggingIntervalMinutes;  // Store original for debug messages
+    if (_powerPin >= 0) {  // Cycled power
+        if (_loggingIntervalMinutes == 0) {
+            programmedInterval = 10;
+            _loggingIntervalMinutes = 10;  // Update the stored value
+            MS_DBG(F("Requested interval of"), originalInterval,
+                   F("minutes is invalid when power is cycled; using"),
+                   programmedInterval, F("minutes."));
+        } else if (_loggingIntervalMinutes < 10) {
+            programmedInterval = 10;
+            _loggingIntervalMinutes = 10;  // Update the stored value
+            MS_DBG(F("Requested interval of"), originalInterval,
+                   F("minutes is too short; using"), programmedInterval,
+                   F("minutes."));
+        } else if (_loggingIntervalMinutes > 240) {
+            programmedInterval = 240;
+            _loggingIntervalMinutes = 240;  // Update the stored value
+            MS_DBG(F("Requested interval of"), originalInterval,
+                   F("minutes is too long; using"), programmedInterval,
+                   F("minutes."));
+        }
+    } else {  // Always-powered (powerPin == -1)
+        if (_loggingIntervalMinutes == 0) {
+            programmedInterval = 0;  // Allow 0 for always-on mode
+            // No need to change _loggingIntervalMinutes
+        } else if (_loggingIntervalMinutes < 10) {
+            programmedInterval = 10;
+            _loggingIntervalMinutes = 10;  // Update the stored value
+            MS_DBG(F("Requested interval of"), originalInterval,
+                   F("minutes is too short; using"), programmedInterval,
+                   F("minutes."));
+        } else if (_loggingIntervalMinutes > 240) {
+            programmedInterval = 240;
+            _loggingIntervalMinutes = 240;  // Update the stored value
+            MS_DBG(F("Requested interval of"), originalInterval,
+                   F("minutes is too long; using"), programmedInterval,
+                   F("minutes."));
+        }
     }
     if (_powerPin >= 0) {
         // Set sampling interval to the expected sampling interval if the sensor

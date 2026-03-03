@@ -20,13 +20,10 @@ BoschBME280::BoschBME280(TwoWire* theI2C, int8_t powerPin,
       _i2cAddressHex(i2cAddressHex),
       _i2c(theI2C != nullptr ? theI2C : &Wire) {}
 
+// Delegating constructor
 BoschBME280::BoschBME280(int8_t powerPin, uint8_t i2cAddressHex,
                          uint8_t measurementsToAverage)
-    : Sensor("BoschBME280", BME280_NUM_VARIABLES, BME280_WARM_UP_TIME_MS,
-             BME280_STABILIZATION_TIME_MS, BME280_MEASUREMENT_TIME_MS, powerPin,
-             -1, measurementsToAverage, BME280_INC_CALC_VARIABLES),
-      _i2cAddressHex(i2cAddressHex),
-      _i2c(&Wire) {}
+    : BoschBME280(&Wire, powerPin, i2cAddressHex, measurementsToAverage) {}
 
 // Destructor
 BoschBME280::~BoschBME280() {}

@@ -80,7 +80,8 @@ bool MeaSpecMS5803::addSingleMeasurementResult(void) {
         // Temperature Range is -40°C to +85°C
         // Pressure returns 0 when disconnected, which is highly unlikely to be
         // a real value.
-        // Pressure range depends on the model; validation uses _maxPressure * 1000.0
+        // Pressure range depends on the model; validation uses _maxPressure *
+        // 1000.0
         verifyAndAddMeasurementResult(MS5803_TEMP_VAR_NUM, temp);
         verifyAndAddMeasurementResult(MS5803_PRESSURE_VAR_NUM, press);
         success = true;

@@ -238,7 +238,7 @@
  * {{ @ref BoschBMP3xx_Temp::BoschBMP3xx_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 5 -
+/// @brief Decimal places in string representation; temperature should have 5 -
 /// resolution is 0.00015°C at the highest oversampling.  See table 7 in the
 /// [sensor
 /// datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Bosch-BMP390-Datasheet.pdf)
@@ -269,7 +269,7 @@
  * {{ @ref BoschBMP3xx_Pressure::BoschBMP3xx_Pressure }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; barometric pressure should
+/// @brief Decimal places in string representation; barometric pressure should
 /// have 3.  Resolution of output data in highest resolution mode at lowest
 /// bandwidth is 0.016 Pa.  See table 6 in the [sensor
 /// datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Bosch-BMP390-Datasheet.pdf)
@@ -297,7 +297,7 @@
  * {{ @ref BoschBMP3xx_Altitude::BoschBMP3xx_Altitude }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; altitude should have 0 -
+/// @brief Decimal places in string representation; altitude should have 0 -
 /// resolution is 1m.
 #define BMP3XX_ALTITUDE_RESOLUTION 0
 /// @brief Sensor variable number; altitude is stored in sensorValues[2].

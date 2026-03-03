@@ -100,7 +100,7 @@
  * {{ @ref YosemitechY504_DOpct::YosemitechY504_DOpct }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; dissolved oxygen percent
+/// @brief Decimal places in string representation; dissolved oxygen percent
 /// should have 1 - resolution is 0.1%.
 #define Y504_DOPCT_RESOLUTION 1
 /// @brief Sensor variable number; dissolved oxygen percent is stored in
@@ -128,7 +128,7 @@
  * {{ @ref YosemitechY504_Temp::YosemitechY504_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 1 -
+/// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define Y504_TEMP_RESOLUTION 1
 /// @brief Sensor variable number; temperature is stored in sensorValues[1].
@@ -155,7 +155,7 @@
  * {{ @ref YosemitechY504_DOmgL::YosemitechY504_DOmgL }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; dissolved oxygen
+/// @brief Decimal places in string representation; dissolved oxygen
 /// concentration should have 2 - resolution is 0.01 mg/L.
 #define Y504_DOMGL_RESOLUTION 2
 /// @brief Sensor variable number; dissolved oxygen concentration is stored in

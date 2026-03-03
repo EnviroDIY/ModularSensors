@@ -236,7 +236,7 @@ See [The SAMD clock file](@ref samd51_clock_other_libraries) for a list of which
 
 After completing the [steps for putting all boards to sleep](#steps-for-putting-all-boards-to-sleep), SAMD51 boards finish their bedtime routine with these steps:
 
-- Detach any USB devices (ie, the built in USB drivers for communication with a PC)
+- Detach any USB devices (ie, the built-in USB drivers for communication with a PC)
   - This is skipped if the TinyUSB library is called for some reason.
 - Force all pins except the RTC wake and button pins to go to minimum power draw levels (tri-state)
 - Configure GCLK7 to be disconnected from an oscillator source.
@@ -285,7 +285,7 @@ The pin configurations for the SAMD21 are identical to those described above for
 
 After completing the [steps for putting all boards to sleep](#steps-for-putting-all-boards-to-sleep), SAMD21 boards finish their bedtime routine with these steps:
 
-- Detach any USB devices (ie, the built in USB drivers for communication with a PC)
+- Detach any USB devices (ie, the built-in USB drivers for communication with a PC)
   - This is skipped if the TinyUSB library is called for some reason.
 - Force all pins except the RTC wake and button pins to go to minimum power draw levels (tri-state)
 - Wait for all serial ports to finish transmitting

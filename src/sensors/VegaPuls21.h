@@ -113,7 +113,7 @@
  * {{ @ref VegaPuls21_Stage::VegaPuls21_Stage }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; stage in meters should have
+/// @brief Decimal places in string representation; stage in meters should have
 /// 3 - resolution is 1mm.
 #define VEGAPULS21_STAGE_RESOLUTION 3
 /// @brief Sensor variable number; stage is stored in sensorValues[0].
@@ -139,7 +139,7 @@
  * {{ @ref VegaPuls21_Distance::VegaPuls21_Distance }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; distance in meters should
+/// @brief Decimal places in string representation; distance in meters should
 /// have 3 - resolution is 1mm.
 #define VEGAPULS21_DISTANCE_RESOLUTION 3
 /// @brief Sensor variable number; stage is stored in sensorValues[1].
@@ -164,7 +164,7 @@
  * {{ @ref VegaPuls21_Temp::VegaPuls21_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 1 -
+/// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define VEGAPULS21_TEMP_RESOLUTION 1
 /// @brief Sensor variable number; temperature is stored in sensorValues[2].
@@ -189,7 +189,7 @@
  * {{ @ref VegaPuls21_Reliability::VegaPuls21_Reliability }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; reliability should have 1
+/// @brief Decimal places in string representation; reliability should have 1
 /// (resolution is 0.1 dB).
 #define VEGAPULS21_RELIABILITY_RESOLUTION 1
 /// @brief Sensor variable number; reliability is stored in sensorValues[3]
@@ -215,7 +215,7 @@
  * {{ @ref VegaPuls21_ErrorCode::VegaPuls21_ErrorCode }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; the error code has 0.
+/// @brief Decimal places in string representation; the error code has 0.
 #define VEGAPULS21_ERRORCODE_RESOLUTION 0
 /// @brief Sensor variable number; error code is stored in sensorValues[4]
 #define VEGAPULS21_ERRORCODE_VAR_NUM 4

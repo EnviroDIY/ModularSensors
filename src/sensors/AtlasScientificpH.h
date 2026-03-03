@@ -52,6 +52,16 @@
 /**@{*/
 
 /**
+ * @anchor sensor_atlas_ph_config
+ * @name Configuration Defines
+ * Defines to configure and set the address of the Atlas pH sensor
+ */
+/**@{*/
+/// @brief The default I2C address of the Atlas pH sensor is 0x63 (99)
+#define ATLAS_PH_I2C_ADDR 0x63
+/**@}*/
+
+/**
  * @anchor sensor_atlas_ph_var_counts
  * @name Sensor Variable Counts
  * The number of variables that can be returned by the Atlas pH sensor
@@ -62,16 +72,6 @@
 #define ATLAS_PH_NUM_VARIABLES 1
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define ATLAS_PH_INC_CALC_VARIABLES 0
-/**@}*/
-
-/**
- * @anchor sensor_atlas_ph_config
- * @name Configuration Defines
- * Defines to configure and set the address of the Atlas pH sensor
- */
-/**@{*/
-/// @brief The default I2C address of the Atlas pH sensor is 0x63 (99)
-#define ATLAS_PH_I2C_ADDR 0x63
 /**@}*/
 
 /**
@@ -113,7 +113,7 @@
  * {{ @ref AtlasScientificpH_pH::AtlasScientificpH_pH }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; pH should have 3 -
+/// @brief Decimal places in string representation; pH should have 3 -
 /// resolution is 0.001.
 #define ATLAS_PH_RESOLUTION 3
 /// @brief Sensor variable number; pH is stored in sensorValues[0].

@@ -26,9 +26,6 @@
 // Include the known processors for default values
 #include "KnownProcessors.h"
 
-// Include math library for log10 function
-#include <math.h>
-
 // Define the print label[s] for the debugger
 #ifdef MS_ANALOGVOLTAGEBASE_DEBUG
 #define MS_DEBUGGING_STD "AnalogVoltageBase"
