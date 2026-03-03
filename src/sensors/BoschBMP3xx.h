@@ -353,11 +353,23 @@ class BoschBMP3xx : public Sensor {
      * - `OVERSAMPLING_X8`
      * - `OVERSAMPLING_X16`,
      * - `OVERSAMPLING_X32`
+     * <br>Optional with a default of `OVERSAMPLING_SKIP` (no oversampling).
+     * This is what is recommended in the datasheet for the lowest power use
+     * case including environmental and weather monitoring, but you may want to
+     * use oversampling for better resolution.
+     * See @ref sensor_bmp3xx_pressure_osr for recommended pressure oversampling
+     * settings.
      *
      * @param tempOversample Temperature oversampling setting
      * <br>Possible values are the same as those for pressureOversample.  Using
      * temperature oversampling above X2 is not recommended as it does not
      * further improve pressure data quality.
+     * <br>Optional with a default of `OVERSAMPLING_SKIP` (no oversampling).
+     * This is what is recommended in the datasheet for the lowest power use
+     * case including environmental and weather monitoring, but you may want to
+     * use oversampling for better resolution.
+     * See @ref sensor_bmp3xx_temp_osr for recommended temperature oversampling
+     * settings.
      *
      * @param filterCoeff Coefficient of the infinite impulse response (IIR)
      * filter (in samples).
@@ -415,8 +427,8 @@ class BoschBMP3xx : public Sensor {
      * @ref sensor_bmp3xx_filts_uses for recommended settings
      */
     explicit BoschBMP3xx(int8_t powerPin, Mode mode = FORCED_MODE,
-                         Oversampling pressureOversample = OVERSAMPLING_X16,
-                         Oversampling tempOversample     = OVERSAMPLING_X2,
+                         Oversampling pressureOversample = OVERSAMPLING_SKIP,
+                         Oversampling tempOversample     = OVERSAMPLING_SKIP,
                          IIRFilter    filterCoeff        = IIR_FILTER_OFF,
                          TimeStandby  timeStandby        = TIME_STANDBY_10MS,
                          uint8_t      i2cAddressHex      = 0x76);

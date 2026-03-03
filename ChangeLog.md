@@ -109,6 +109,8 @@ This affects the following defines:
     - `ANALOGELECCONDUCTIVITY_ADC_MAX_RATIO` (formerly a hardcoded value of `0.999f`)
 - **EverlightALSPT19**
   - Moved the calibration constant between current and lux to the `ALSPT19_UA_PER_1000LUX` preprocessor define.
+- **Bosch BMP3xx**
+  - Changed the default oversampling for both pressure and temperature to 1x (no oversampling) which is what is recommended by the datasheet for ultra-low-power mode operation - including weather and environmental monitoring.
 
 #### All Sensors
 
