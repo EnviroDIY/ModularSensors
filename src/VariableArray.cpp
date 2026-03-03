@@ -642,9 +642,22 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
 //  Calculated Variable results will be included
 void VariableArray::printSensorData(Stream* stream) {
     for (uint8_t i = 0; i < _variableCount; i++) {
-        if (i > 0 &&
-            arrayOfVars[i]->parentSensor != arrayOfVars[i - 1]->parentSensor) {
-            stream->println();
+        if (i > 0) {
+            // Check if we need to add a line break between different sensors
+            // For calculated variables or when parentSensor pointers differ
+            bool differentSensors = false;
+
+            // If either variable is calculated, treat as different sensors
+            if (arrayOfVars[i]->isCalculated ||
+                arrayOfVars[i - 1]->isCalculated) {
+                differentSensors = true;
+            } else {
+                // Direct pointer comparison works safely even with nulls
+                differentSensors = (arrayOfVars[i]->parentSensor !=
+                                    arrayOfVars[i - 1]->parentSensor);
+            }
+
+            if (differentSensors) { stream->println(); }
         }
         if (arrayOfVars[i]->isCalculated) {
             stream->print(arrayOfVars[i]->getVarName());
