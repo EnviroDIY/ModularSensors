@@ -142,7 +142,9 @@ bool ANBpH::setup(void) {
     uint16_t programmedInterval = _loggingIntervalMinutes;
 
     // Validate and normalize loggingIntervalMinutes based on powerPin
+#if defined(MS_ANB_SENSORS_PH_DEBUG) || defined(MS_ANB_SENSORS_PH_DEBUG_DEEP)
     int16_t originalInterval = _loggingIntervalMinutes;  // Store original for debug messages
+#endif
     if (_powerPin >= 0) {  // Cycled power
         if (_loggingIntervalMinutes == 0) {
             programmedInterval = 10;
