@@ -516,30 +516,27 @@ bool Sensor::update(void) {
 
     // loop through until we have the requested number of successful
     // measurements
+    // NOTE: The number of measurement attempts completed is bumped by
+    // bumpMeasurementAttemptCount() only after success or the last retry
+    // attempt, so it's safe to check this value to determine if we have the
+    // requested number of successful measurements.
     while (_measurementAttemptsCompleted < _measurementsToAverage) {
         // start a measurement
-        bool measurementStarted = startSingleMeasurement();
-        if (!measurementStarted) {
-            ret_val = false;
-            // Use bumpMeasurementAttemptCount to track failed attempts
-            if (!bumpMeasurementAttemptCount(false)) {
-                // If we've exhausted retries for this measurement, break
-                break;
-            }
-            continue;  // Try again if retries are available
-        }
+        ret_val &= startSingleMeasurement();
+        if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+            // If the measurement didn't start, bump the measurement attempt
+            // count to trigger retry logic, but skip waiting for measurement
+            // completion and adding a result since we didn't actually start a
+            // measurement
+            bumpMeasurementAttemptCount(false);
+        } else {
+            // wait for the measurement to finish
+            waitForMeasurementCompletion();
 
-        // wait for the measurement to finish
-        waitForMeasurementCompletion();
-
-        // get the measurement result
-        bool measurementSuccessful = addSingleMeasurementResult();
-        ret_val &= measurementSuccessful;
-
-        // Use bumpMeasurementAttemptCount to handle retry logic
-        if (!bumpMeasurementAttemptCount(measurementSuccessful)) {
-            // If we've exhausted retries and still failed, break
-            if (!measurementSuccessful) { break; }
+            // get the measurement result - this should call
+            // bumpMeasurementAttemptCount() and update the measurement attempt
+            // and retry counts as needed
+            ret_val &= addSingleMeasurementResult();
         }
     }
 
@@ -756,5 +753,7 @@ bool Sensor::bumpMeasurementAttemptCount(bool wasSuccessful) {
         // Reset the number of retries made for the next measurement attempt
         _retryAttemptsMade = 0;
     }
+    // Return the input parameter so it's easy to use this in a return statement
+    // to pass forward a value
     return wasSuccessful;
 }
