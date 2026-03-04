@@ -221,8 +221,8 @@
  * {{ @ref ANBpH_pH::ANBpH_pH }}
  */
 /**@{*/
-/// @brief Decimal places in string representation; soil moisture should have 1
-/// - resolution is 0.01.
+/// @brief Decimal places in string representation; pH should have 2 -
+/// resolution is 0.01.
 #define ANB_PH_PH_RESOLUTION 2
 /// @brief Sensor variable number; pH is stored in sensorValues[0].
 #define ANB_PH_PH_VAR_NUM 0
@@ -245,7 +245,7 @@
  * {{ @ref ANBpH_Temp::ANBpH_Temp }}
  */
 /**@{*/
-/// @brief Decimal places in string representation; temperature should have 1 -
+/// @brief Decimal places in string representation; temperature should have 2 -
 /// resolution is 0.01°C.
 #define ANB_PH_TEMP_RESOLUTION 2
 /// @brief Sensor variable number; temperature is stored in sensorValues[1].

@@ -420,7 +420,7 @@ class Variable {
      * @return The number of decimal places needed to represent the resolution
      */
     static inline uint8_t floatResolutionToDecimalPlaces(float resolution) {
-        if (resolution <= 0.0f) {
+        if (resolution <= 0.0f || isnan(resolution)) {
             return 4;  // Default to 4 decimal places for invalid input
         }
 

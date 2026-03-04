@@ -106,6 +106,8 @@ bool KellerParent::addSingleMeasurementResult() {
          !isnan(waterTemperatureC) && waterTemperatureC != MS_INVALID_VALUE);
 
     if (success) {
+        // For waterPressureBar, convert bar to millibar
+        waterPressure_mBar = 1000 * waterPressureBar;
         // display values for debugging
         MS_DBG(F("  Pressure_mbar:"), waterPressure_mBar);
         MS_DBG(F("  Temp_C:"), waterTemperatureC);
@@ -117,8 +119,6 @@ bool KellerParent::addSingleMeasurementResult() {
         // calculate depth from pressure and temperature
         waterDepthM = _ksensor.calcWaterDepthM(waterPressureBar,
                                                waterTemperatureC);
-        // For waterPressureBar, convert bar to millibar
-        waterPressure_mBar = 1000 * waterPressureBar;
         // display value for debugging
         MS_DBG(F("  Height_m:"), waterDepthM);
     }
