@@ -58,34 +58,26 @@ class ThingSpeakPublisher : public dataPublisher {
  public:
     // Constructors
     /**
-     * @brief Construct a new ThingSpeak Publisher object with no members
-     * initialized.
-     */
-    ThingSpeakPublisher();
-    /**
-     * @brief Construct a new ThingSpeak Publisher object
-     *
-     * @note If a client is never specified, the publisher will attempt to
-     * create and use a client on a LoggerModem instance tied to the attached
-     * logger.
-     *
-     * @param baseLogger The logger supplying the data to be published
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. NOTE: not implemented by this publisher!
-     */
-    explicit ThingSpeakPublisher(Logger& baseLogger, int sendEveryX = 1);
-    /**
      * @brief Construct a new ThingSpeak Publisher object
      *
      * @param baseLogger The logger supplying the data to be published
      * @param inClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
+     * @param thingSpeakClientName The client name for your MQTT device. This is
+     * probably the same as your MQTT device's user name.
+     * @param thingSpeakMQTTUser The user name for your MQTT device. This is
+     * probably the same as your MQTT device's client name.
+     * @param thingSpeakMQTTPassword The password for your MQTT device.
+     * @param thingSpeakChannelID The numeric channel id for your channel.
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions. NOTE: not implemented by this publisher!
      */
     ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
-                        int sendEveryX = 1);
+                        const char* thingSpeakClientName,
+                        const char* thingSpeakMQTTUser,
+                        const char* thingSpeakMQTTPassword,
+                        const char* thingSpeakChannelID, int sendEveryX = 1);
     /**
      * @brief Construct a new ThingSpeak Publisher object
      *
@@ -110,20 +102,28 @@ class ThingSpeakPublisher : public dataPublisher {
      * @param inClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
-     * @param thingSpeakClientName The client name for your MQTT device. This is
-     * probably the same as your MQTT device's user name.
-     * @param thingSpeakMQTTUser The user name for your MQTT device. This is
-     * probably the same as your MQTT device's client name.
-     * @param thingSpeakMQTTPassword The password for your MQTT device.
-     * @param thingSpeakChannelID The numeric channel id for your channel.
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions. NOTE: not implemented by this publisher!
      */
     ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
-                        const char* thingSpeakClientName,
-                        const char* thingSpeakMQTTUser,
-                        const char* thingSpeakMQTTPassword,
-                        const char* thingSpeakChannelID, int sendEveryX = 1);
+                        int sendEveryX = 1);
+    /**
+     * @brief Construct a new ThingSpeak Publisher object
+     *
+     * @note If a client is never specified, the publisher will attempt to
+     * create and use a client on a LoggerModem instance tied to the attached
+     * logger.
+     *
+     * @param baseLogger The logger supplying the data to be published
+     * @param sendEveryX Interval (in units of the logging interval) between
+     * attempted data transmissions. NOTE: not implemented by this publisher!
+     */
+    explicit ThingSpeakPublisher(Logger& baseLogger, int sendEveryX = 1);
+    /**
+     * @brief Construct a new ThingSpeak Publisher object with no members
+     * initialized.
+     */
+    ThingSpeakPublisher();
     /**
      * @brief Destroy the ThingSpeak Publisher object
      */

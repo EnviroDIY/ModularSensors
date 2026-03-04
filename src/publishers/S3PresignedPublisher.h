@@ -135,10 +135,6 @@ class S3PresignedPublisher : public dataPublisher {
  public:
     // Constructors
     /**
-     * @brief Construct a new S3 Publisher object with no members set.
-     */
-    S3PresignedPublisher();
-    /**
      * @brief Construct a new S3 Publisher object
      *
      * @param baseLogger The logger supplying the data to be published
@@ -173,6 +169,10 @@ class S3PresignedPublisher : public dataPublisher {
                          String (*getUrlFxn)(String) = nullptr,
                          String (*getFileNameFxn)()  = nullptr,
                          int sendEveryX              = 1);
+    /**
+     * @brief Construct a new S3 Publisher object with no members set.
+     */
+    S3PresignedPublisher();
     /**
      * @brief Destroy the S3 Publisher object
      */

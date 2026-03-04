@@ -42,18 +42,6 @@ ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
 }
 
 // Delegating constructors
-ThingSpeakPublisher::ThingSpeakPublisher() : dataPublisher() {}
-ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, int sendEveryX)
-    : ThingSpeakPublisher(
-          baseLogger, nullptr, static_cast<const char*>(nullptr),
-          static_cast<const char*>(nullptr), static_cast<const char*>(nullptr),
-          static_cast<const char*>(nullptr), sendEveryX) {}
-ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
-                                         int sendEveryX)
-    : ThingSpeakPublisher(
-          baseLogger, inClient, static_cast<const char*>(nullptr),
-          static_cast<const char*>(nullptr), static_cast<const char*>(nullptr),
-          static_cast<const char*>(nullptr), sendEveryX) {}
 ThingSpeakPublisher::ThingSpeakPublisher(Logger&     baseLogger,
                                          const char* thingSpeakClientName,
                                          const char* thingSpeakMQTTUser,
@@ -63,6 +51,18 @@ ThingSpeakPublisher::ThingSpeakPublisher(Logger&     baseLogger,
     : ThingSpeakPublisher(baseLogger, nullptr, thingSpeakClientName,
                           thingSpeakMQTTUser, thingSpeakMQTTPassword,
                           thingSpeakChannelID, sendEveryX) {}
+ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
+                                         int sendEveryX)
+    : ThingSpeakPublisher(
+          baseLogger, inClient, static_cast<const char*>(nullptr),
+          static_cast<const char*>(nullptr), static_cast<const char*>(nullptr),
+          static_cast<const char*>(nullptr), sendEveryX) {}
+ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, int sendEveryX)
+    : ThingSpeakPublisher(
+          baseLogger, nullptr, static_cast<const char*>(nullptr),
+          static_cast<const char*>(nullptr), static_cast<const char*>(nullptr),
+          static_cast<const char*>(nullptr), sendEveryX) {}
+ThingSpeakPublisher::ThingSpeakPublisher() : dataPublisher() {}
 
 
 void ThingSpeakPublisher::setMQTTClient(const char* thingSpeakClientName) {

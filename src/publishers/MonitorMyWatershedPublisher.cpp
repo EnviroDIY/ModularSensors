@@ -31,31 +31,17 @@ const char* MonitorMyWatershedPublisher::timestampTag = "\",\"timestamp\":";
 
 
 // Constructors
-// Primary constructor with client
-MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(Logger& baseLogger,
-                                                         Client* inClient,
-                                                         int     sendEveryX)
-    : dataPublisher(baseLogger, inClient, sendEveryX) {
-    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
-    setHost("monitormywatershed.org");
-    setPath("/api/data-stream/");
-    setPort(80);
+// Primary constructor with all parameters
+MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
+    Logger& baseLogger, Client* inClient, const char* registrationToken,
+    const char* samplingFeatureUUID, int sendEveryX)
+    : MonitorMyWatershedPublisher(baseLogger, inClient, sendEveryX) {
+    if (registrationToken) setToken(registrationToken);
+    if (samplingFeatureUUID)
+        _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
 }
 
 // Delegating constructors
-MonitorMyWatershedPublisher::MonitorMyWatershedPublisher() : dataPublisher() {
-    // NOTE: _logBuffer is not initialized here because _baseLogger is null
-    // Must call begin(Logger&, ...) before use to properly initialize
-    // _logBuffer
-    setHost("monitormywatershed.org");
-    setPath("/api/data-stream/");
-    setPort(80);
-}
-MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(Logger& baseLogger,
-                                                         int     sendEveryX)
-    : MonitorMyWatershedPublisher(baseLogger, static_cast<Client*>(nullptr),
-                                  sendEveryX) {}
-
 MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
     Logger& baseLogger, const char* registrationToken,
     const char* samplingFeatureUUID, int sendEveryX)
@@ -65,26 +51,36 @@ MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
     if (samplingFeatureUUID)
         _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
 }
-// Delegating constructor
-MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
-    Logger& baseLogger, const char* registrationToken, int sendEveryX)
-    : MonitorMyWatershedPublisher(baseLogger, registrationToken, nullptr,
-                                  sendEveryX) {}
-// Delegating constructor
-MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
-    Logger& baseLogger, Client* inClient, const char* registrationToken,
-    const char* samplingFeatureUUID, int sendEveryX)
-    : MonitorMyWatershedPublisher(baseLogger, inClient, sendEveryX) {
-    if (registrationToken) setToken(registrationToken);
-    if (samplingFeatureUUID)
-        _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
-}
-// Delegating constructor
 MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
     Logger& baseLogger, Client* inClient, const char* registrationToken,
     int sendEveryX)
     : MonitorMyWatershedPublisher(baseLogger, inClient, registrationToken,
                                   nullptr, sendEveryX) {}
+MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(Logger& baseLogger,
+                                                         Client* inClient,
+                                                         int     sendEveryX)
+    : dataPublisher(baseLogger, inClient, sendEveryX) {
+    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
+    setHost("monitormywatershed.org");
+    setPath("/api/data-stream/");
+    setPort(80);
+}
+MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
+    Logger& baseLogger, const char* registrationToken, int sendEveryX)
+    : MonitorMyWatershedPublisher(baseLogger, registrationToken, nullptr,
+                                  sendEveryX) {}
+MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(Logger& baseLogger,
+                                                         int     sendEveryX)
+    : MonitorMyWatershedPublisher(baseLogger, static_cast<Client*>(nullptr),
+                                  sendEveryX) {}
+MonitorMyWatershedPublisher::MonitorMyWatershedPublisher() : dataPublisher() {
+    // NOTE: _logBuffer is not initialized here because _baseLogger is null
+    // Must call begin(Logger&, ...) before use to properly initialize
+    // _logBuffer
+    setHost("monitormywatershed.org");
+    setPath("/api/data-stream/");
+    setPort(80);
+}
 
 // Returns the data destination
 String MonitorMyWatershedPublisher::getHost() {

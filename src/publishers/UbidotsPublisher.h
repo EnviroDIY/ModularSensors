@@ -47,32 +47,24 @@ class UbidotsPublisher : public dataPublisher {
  public:
     // Constructors
     /**
-     * @brief Construct a new Ubidots Publisher object with no members set.
-     */
-    UbidotsPublisher();
-    /**
-     * @brief Construct a new Ubidots Publisher object
-     *
-     * @note If a client is never specified, the publisher will attempt to
-     * create and use a client on a LoggerModem instance tied to the attached
-     * logger.
-     *
-     * @param baseLogger The logger supplying the data to be published
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. NOTE: not implemented by this publisher!
-     */
-    explicit UbidotsPublisher(Logger& baseLogger, int sendEveryX = 1);
-    /**
      * @brief Construct a new Ubidots Publisher object
      *
      * @param baseLogger The logger supplying the data to be published
      * @param inClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
+     * @param authenticationToken The authentication token from Ubidots, either
+     * the Organization's Integration Token (under Users > Organization menu,
+     * visible by Admin only) OR the STEM User's Device Token (under the
+     * specific device's setup panel).
+     * @param deviceID The device API Label from Ubidots, derived from the
+     * user-specified device name.
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions. NOTE: not implemented by this publisher!
      */
-    UbidotsPublisher(Logger& baseLogger, Client* inClient, int sendEveryX = 1);
+    UbidotsPublisher(Logger& baseLogger, Client* inClient,
+                     const char* authenticationToken, const char* deviceID,
+                     int sendEveryX = 1);
     /**
      * @brief Construct a new Ubidots Publisher object
      *
@@ -95,18 +87,26 @@ class UbidotsPublisher : public dataPublisher {
      * @param inClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
-     * @param authenticationToken The authentication token from Ubidots, either
-     * the Organization's Integration Token (under Users > Organization menu,
-     * visible by Admin only) OR the STEM User's Device Token (under the
-     * specific device's setup panel).
-     * @param deviceID The device API Label from Ubidots, derived from the
-     * user-specified device name.
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions. NOTE: not implemented by this publisher!
      */
-    UbidotsPublisher(Logger& baseLogger, Client* inClient,
-                     const char* authenticationToken, const char* deviceID,
-                     int sendEveryX = 1);
+    UbidotsPublisher(Logger& baseLogger, Client* inClient, int sendEveryX = 1);
+    /**
+     * @brief Construct a new Ubidots Publisher object
+     *
+     * @note If a client is never specified, the publisher will attempt to
+     * create and use a client on a LoggerModem instance tied to the attached
+     * logger.
+     *
+     * @param baseLogger The logger supplying the data to be published
+     * @param sendEveryX Interval (in units of the logging interval) between
+     * attempted data transmissions. NOTE: not implemented by this publisher!
+     */
+    explicit UbidotsPublisher(Logger& baseLogger, int sendEveryX = 1);
+    /**
+     * @brief Construct a new Ubidots Publisher object with no members set.
+     */
+    UbidotsPublisher();
     /**
      * @brief Destroy the Ubidots Publisher object
      */

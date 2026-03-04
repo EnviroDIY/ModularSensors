@@ -48,21 +48,18 @@ class DreamHostPublisher : public dataPublisher {
  public:
     // Constructors
     /**
-     * @brief Construct a new DreamHost Publisher object with no members set.
-     */
-    DreamHostPublisher();
-    /**
      * @brief Construct a new DreamHost Publisher object
      *
-     * @note If a client is never specified, the publisher will attempt to
-     * create and use a client on a LoggerModem instance tied to the attached
-     * logger.
-     *
      * @param baseLogger The logger supplying the data to be published
+     * @param inClient An Arduino client instance to use to print data to.
+     * Allows the use of any type of client and multiple clients tied to a
+     * single TinyGSM modem instance
+     * @param dhUrl The URL for sending data to DreamHost
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions. NOTE: not implemented by this publisher!
      */
-    explicit DreamHostPublisher(Logger& baseLogger, int sendEveryX = 1);
+    DreamHostPublisher(Logger& baseLogger, Client* inClient, const char* dhUrl,
+                       int sendEveryX = 1);
     /**
      * @brief Construct a new DreamHost Publisher object
      *
@@ -88,16 +85,19 @@ class DreamHostPublisher : public dataPublisher {
     /**
      * @brief Construct a new DreamHost Publisher object
      *
+     * @note If a client is never specified, the publisher will attempt to
+     * create and use a client on a LoggerModem instance tied to the attached
+     * logger.
+     *
      * @param baseLogger The logger supplying the data to be published
-     * @param inClient An Arduino client instance to use to print data to.
-     * Allows the use of any type of client and multiple clients tied to a
-     * single TinyGSM modem instance
-     * @param dhUrl The URL for sending data to DreamHost
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions. NOTE: not implemented by this publisher!
      */
-    DreamHostPublisher(Logger& baseLogger, Client* inClient, const char* dhUrl,
-                       int sendEveryX = 1);
+    explicit DreamHostPublisher(Logger& baseLogger, int sendEveryX = 1);
+    /**
+     * @brief Construct a new DreamHost Publisher object with no members set.
+     */
+    DreamHostPublisher();
     /**
      * @brief Destroy the DreamHost Publisher object
      */

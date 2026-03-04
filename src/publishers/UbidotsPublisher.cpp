@@ -32,7 +32,15 @@ const char* UbidotsPublisher::payload = "{";
 
 
 // Constructors
-// Primary constructor with authentication parameters
+// Primary constructor with all authentication parameters and client
+UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, Client* inClient,
+                                   const char* authenticationToken,
+                                   const char* deviceID, int sendEveryX)
+    : UbidotsPublisher(baseLogger, authenticationToken, deviceID, sendEveryX) {
+    if (inClient) _inClient = inClient;
+}
+
+// Delegating constructors
 UbidotsPublisher::UbidotsPublisher(Logger&     baseLogger,
                                    const char* authenticationToken,
                                    const char* deviceID, int sendEveryX)
@@ -41,22 +49,14 @@ UbidotsPublisher::UbidotsPublisher(Logger&     baseLogger,
     if (deviceID) _baseLogger->setSamplingFeatureUUID(deviceID);
     MS_DBG(F("dataPublisher object created"));
 }
-
-// Delegating constructors
-UbidotsPublisher::UbidotsPublisher() : dataPublisher() {}
-UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, int sendEveryX)
-    : UbidotsPublisher(baseLogger, nullptr, nullptr, sendEveryX) {}
 UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, Client* inClient,
                                    int sendEveryX)
     : UbidotsPublisher(baseLogger, nullptr, nullptr, sendEveryX) {
     if (inClient) _inClient = inClient;
 }
-UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, Client* inClient,
-                                   const char* authenticationToken,
-                                   const char* deviceID, int sendEveryX)
-    : UbidotsPublisher(baseLogger, authenticationToken, deviceID, sendEveryX) {
-    if (inClient) _inClient = inClient;
-}
+UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, int sendEveryX)
+    : UbidotsPublisher(baseLogger, nullptr, nullptr, sendEveryX) {}
+UbidotsPublisher::UbidotsPublisher() : dataPublisher() {}
 
 
 void UbidotsPublisher::setToken(const char* authenticationToken) {

@@ -22,28 +22,27 @@ const char* DreamHostPublisher::loggerTag      = "?LoggerID=";
 const char* DreamHostPublisher::timestampTagDH = "&Loggertime=";
 
 // Constructors
-// Primary constructor with Client parameter
+// Primary constructor with all parameters
+DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client* inClient,
+                                       const char* dhUrl, int sendEveryX)
+    : DreamHostPublisher(baseLogger, inClient, sendEveryX) {
+    if (dhUrl) setDreamHostPortalRX(dhUrl);
+}
+
+// Delegating constructors
 DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client* inClient,
                                        int sendEveryX)
     : dataPublisher(baseLogger, inClient, sendEveryX) {}
-
-// Default constructor (base class initialization)
-DreamHostPublisher::DreamHostPublisher() : dataPublisher() {}
-// Delegating constructors
-DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, int sendEveryX)
-    : DreamHostPublisher(baseLogger, static_cast<Client*>(nullptr),
-                         sendEveryX) {}
 DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, const char* dhUrl,
                                        int sendEveryX)
     : DreamHostPublisher(baseLogger, static_cast<Client*>(nullptr),
                          sendEveryX) {
     if (dhUrl) setDreamHostPortalRX(dhUrl);
 }
-DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client* inClient,
-                                       const char* dhUrl, int sendEveryX)
-    : DreamHostPublisher(baseLogger, inClient, sendEveryX) {
-    if (dhUrl) setDreamHostPortalRX(dhUrl);
-}
+DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, int sendEveryX)
+    : DreamHostPublisher(baseLogger, static_cast<Client*>(nullptr),
+                         sendEveryX) {}
+DreamHostPublisher::DreamHostPublisher() : dataPublisher() {}
 
 
 // Functions for private SWRC server

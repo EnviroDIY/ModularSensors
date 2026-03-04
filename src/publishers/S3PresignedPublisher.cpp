@@ -18,7 +18,7 @@ const char* S3PresignedPublisher::contentLengthHeader = "\r\nContent-Length: ";
 const char* S3PresignedPublisher::contentTypeHeader   = "\r\nContent-Type: ";
 
 // Constructors
-// Primary constructor with all parameters
+// Primary constructor with certificate
 S3PresignedPublisher::S3PresignedPublisher(Logger&     baseLogger,
                                            const char* caCertName,
                                            String (*getUrlFxn)(String),
@@ -31,7 +31,6 @@ S3PresignedPublisher::S3PresignedPublisher(Logger&     baseLogger,
 }
 
 // Delegating constructors
-S3PresignedPublisher::S3PresignedPublisher() : dataPublisher() {}
 S3PresignedPublisher::S3PresignedPublisher(Logger& baseLogger, Client* inClient,
                                            String (*getUrlFxn)(String),
                                            String (*getFileNameFxn)(),
@@ -40,6 +39,7 @@ S3PresignedPublisher::S3PresignedPublisher(Logger& baseLogger, Client* inClient,
                            getUrlFxn, getFileNameFxn, sendEveryX) {
     if (inClient) _inClient = inClient;
 }
+S3PresignedPublisher::S3PresignedPublisher() : dataPublisher() {}
 
 
 void S3PresignedPublisher::setPort(int port) {

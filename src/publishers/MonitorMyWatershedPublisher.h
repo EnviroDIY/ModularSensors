@@ -49,23 +49,53 @@ class MonitorMyWatershedPublisher : public dataPublisher {
  public:
     // Constructors
     /**
-     * @brief Construct a new Monitor My Watershed Publisher object with only
-     * default values for the host, path, and port set.
-     */
-    MonitorMyWatershedPublisher();
-    /**
      * @brief Construct a new Monitor My Watershed Publisher object
      *
-     * @note If a client is never specified, the publisher will attempt to
-     * create and use a client on a LoggerModem instance tied to the attached
-     * logger.
-     *
      * @param baseLogger The logger supplying the data to be published
+     * @param inClient An Arduino client instance to use to print data to.
+     * Allows the use of any type of client and multiple clients tied to a
+     * single TinyGSM modem instance
+     * @param registrationToken The registration token for the site on Monitor
+     * My Watershed.
+     * @param samplingFeatureUUID The sampling feature UUID for the site on
+     * Monitor My Watershed.
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions.
      */
-    explicit MonitorMyWatershedPublisher(Logger& baseLogger,
-                                         int     sendEveryX = 1);
+    MonitorMyWatershedPublisher(Logger& baseLogger, Client* inClient,
+                                const char* registrationToken,
+                                const char* samplingFeatureUUID,
+                                int         sendEveryX = 1);
+    /**
+     * @brief Construct a new Monitor My Watershed Publisher object
+     *
+     * @param baseLogger The logger supplying the data to be published
+     * @param registrationToken The registration token for the site on Monitor
+     * My Watershed.
+     * @param samplingFeatureUUID The sampling feature UUID for the site on
+     * Monitor My Watershed.
+     * @param sendEveryX Interval (in units of the logging interval) between
+     * attempted data transmissions.
+     */
+    MonitorMyWatershedPublisher(Logger&     baseLogger,
+                                const char* registrationToken,
+                                const char* samplingFeatureUUID,
+                                int         sendEveryX = 1);
+    /**
+     * @brief Construct a new Monitor My Watershed Publisher object
+     *
+     * @param baseLogger The logger supplying the data to be published
+     * @param inClient An Arduino client instance to use to print data to.
+     * Allows the use of any type of client and multiple clients tied to a
+     * single TinyGSM modem instance
+     * @param registrationToken The registration token for the site on Monitor
+     * My Watershed.
+     * @param sendEveryX Interval (in units of the logging interval) between
+     * attempted data transmissions.
+     */
+    MonitorMyWatershedPublisher(Logger& baseLogger, Client* inClient,
+                                const char* registrationToken,
+                                int         sendEveryX = 1);
     /**
      * @brief Construct a new Monitor My Watershed Publisher object
      *
@@ -84,21 +114,6 @@ class MonitorMyWatershedPublisher : public dataPublisher {
      * @param baseLogger The logger supplying the data to be published
      * @param registrationToken The registration token for the site on Monitor
      * My Watershed.
-     * @param samplingFeatureUUID The sampling feature UUID for the site on
-     * Monitor My Watershed.
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions.
-     */
-    MonitorMyWatershedPublisher(Logger&     baseLogger,
-                                const char* registrationToken,
-                                const char* samplingFeatureUUID,
-                                int         sendEveryX = 1);
-    /**
-     * @brief Construct a new Monitor My Watershed Publisher object
-     *
-     * @param baseLogger The logger supplying the data to be published
-     * @param registrationToken The registration token for the site on Monitor
-     * My Watershed.
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions.
      */
@@ -108,36 +123,21 @@ class MonitorMyWatershedPublisher : public dataPublisher {
     /**
      * @brief Construct a new Monitor My Watershed Publisher object
      *
-     * @param baseLogger The logger supplying the data to be published
-     * @param inClient An Arduino client instance to use to print data to.
-     * Allows the use of any type of client and multiple clients tied to a
-     * single TinyGSM modem instance
-     * @param registrationToken The registration token for the site on Monitor
-     * My Watershed.
-     * @param samplingFeatureUUID The sampling feature UUID for the site on
-     * Monitor My Watershed.
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions.
-     */
-    MonitorMyWatershedPublisher(Logger& baseLogger, Client* inClient,
-                                const char* registrationToken,
-                                const char* samplingFeatureUUID,
-                                int         sendEveryX = 1);
-    /**
-     * @brief Construct a new Monitor My Watershed Publisher object
+     * @note If a client is never specified, the publisher will attempt to
+     * create and use a client on a LoggerModem instance tied to the attached
+     * logger.
      *
      * @param baseLogger The logger supplying the data to be published
-     * @param inClient An Arduino client instance to use to print data to.
-     * Allows the use of any type of client and multiple clients tied to a
-     * single TinyGSM modem instance
-     * @param registrationToken The registration token for the site on Monitor
-     * My Watershed.
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions.
      */
-    MonitorMyWatershedPublisher(Logger& baseLogger, Client* inClient,
-                                const char* registrationToken,
-                                int         sendEveryX = 1);
+    explicit MonitorMyWatershedPublisher(Logger& baseLogger,
+                                         int     sendEveryX = 1);
+    /**
+     * @brief Construct a new Monitor My Watershed Publisher object with only
+     * default values for the host, path, and port set.
+     */
+    MonitorMyWatershedPublisher();
     /**
      * @brief Destroy the Monitor My Watershed Publisher object
      */
