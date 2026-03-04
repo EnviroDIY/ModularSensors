@@ -355,7 +355,21 @@ class SodaqUBeeR410M : public loggerModem {
 
  private:
     const char* _apn;  ///< Internal reference to the cellular APN
+
+#if F_CPU == 8000000L || defined(DOXYGEN)
+    /**
+     * @brief Configure modem to use a lower baud rate (9600) for slow
+     * processors.
+     *
+     * This helper method encapsulates the baud rate switching logic needed for
+     * F_CPU == 8000000L to slow down the R4/N4's default 115200 baud rate. The
+     * baud rate setting is NOT saved to non-volatile memory, so it must be
+     * changed every time after losing power.
+     */
+    void configureLowBaudRate();
+#endif
 };
+
 /**@}*/
 #endif  // SRC_MODEMS_SODAQUBEER410M_H_
 

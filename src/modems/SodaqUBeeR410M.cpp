@@ -113,18 +113,7 @@ bool SodaqUBeeR410M::modemWakeFxn() {
 // The baud rate setting is NOT saved to non-volatile memory, so it must
 // be changed every time after loosing power.
 #if F_CPU == 8000000L
-        if (_powerPin >= 0) {
-            MS_DBG(F("Waiting for UART to become active and requesting a "
-                     "slower baud rate."));
-            delay(_max_at_response_time_ms +
-                  250);  // Must wait for UART port to become active
-            _modemSerial->begin(115200);
-            gsmModem.setBaud(9600);
-            _modemSerial->end();
-            _modemSerial->begin(9600);
-            gsmModem.sendAT(GF("E0"));
-            gsmModem.waitResponse();
-        }
+        if (_powerPin >= 0) { configureLowBaudRate(); }
 #endif
         return true;
     } else {
@@ -159,16 +148,7 @@ bool SodaqUBeeR410M::modemHardReset() {
         delay(_resetPulse_ms);
         digitalWrite(_modemResetPin, !_resetLevel);
 #if F_CPU == 8000000L
-        MS_DBG(F("Waiting for UART to become active and requesting a slower "
-                 "baud rate."));
-        delay(_max_at_response_time_ms +
-              250);  // Must wait for UART port to become active
-        _modemSerial->begin(115200);
-        gsmModem.setBaud(9600);
-        _modemSerial->end();
-        _modemSerial->begin(9600);
-        gsmModem.sendAT(GF("E0"));
-        gsmModem.waitResponse();
+        configureLowBaudRate();
 #endif
         return gsmModem.init();
     } else {
@@ -186,5 +166,21 @@ bool SodaqUBeeR410M::extraModemSetup() {
     gsmModem.waitResponse();
     return success;
 }
+
+
+#if F_CPU == 8000000L
+void SodaqUBeeR410M::configureLowBaudRate() {
+    MS_DBG(F("Waiting for UART to become active and requesting a slower "
+             "baud rate."));
+    delay(_max_at_response_time_ms +
+          250);  // Must wait for UART port to become active
+    _modemSerial->begin(115200);
+    gsmModem.setBaud(9600);
+    _modemSerial->end();
+    _modemSerial->begin(9600);
+    gsmModem.sendAT(GF("E0"));
+    gsmModem.waitResponse();
+}
+#endif
 
 // cSpell:ignore UGPIOC
