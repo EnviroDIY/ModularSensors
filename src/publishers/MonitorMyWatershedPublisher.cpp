@@ -91,7 +91,7 @@ String MonitorMyWatershedPublisher::getHost() {
     return String(monitorMWHost);
 }
 
-// Returns the data destination
+// Sets the data destination host
 void MonitorMyWatershedPublisher::setHost(const char* host) {
     monitorMWHost = host;
 }
@@ -101,7 +101,7 @@ String MonitorMyWatershedPublisher::getPath() {
     return String(monitorMWPath);
 }
 
-// Returns the data destination
+// Sets the data destination path/endpoint
 void MonitorMyWatershedPublisher::setPath(const char* endpoint) {
     monitorMWPath = endpoint;
 }
@@ -111,7 +111,7 @@ int MonitorMyWatershedPublisher::getPort() {
     return monitorMWPort;
 }
 
-// Returns the data destination
+// Sets the data destination port
 void MonitorMyWatershedPublisher::setPort(int port) {
     monitorMWPort = port;
 }
@@ -304,25 +304,25 @@ int16_t MonitorMyWatershedPublisher::flushDataBuffer(Client* outClient) {
     // Early return if no records to send
     if (_logBuffer.getNumRecords() == 0) {
         MS_DBG(F("No records to send, returning without action"));
-        return 0;
+        return -1;
     }
     if (_baseLogger->getSamplingFeatureUUID() == nullptr ||
         strlen(_baseLogger->getSamplingFeatureUUID()) == 0) {
         PRINTOUT(F("A sampling feature UUID must be set before publishing data "
                    "to Monitor My Watershed!."));
-        return 0;
+        return -2;
     }
     if (_registrationToken == nullptr || strlen(_registrationToken) == 0) {
         PRINTOUT(F("A registration token must be set before publishing data "
                    "to Monitor My Watershed!."));
-        return 0;
+        return -3;
     }
 
     // Check for valid client before attempting connection
     if (outClient == nullptr) {
         PRINTOUT(F("No client available for publishing data to Monitor My "
                    "Watershed!"));
-        return 0;
+        return -4;
     }
 
     // Open a TCP/IP connection to Monitor My Watershed
@@ -412,7 +412,7 @@ int16_t MonitorMyWatershedPublisher::flushDataBuffer(Client* outClient) {
             char responseCode_char[4];
             memcpy(responseCode_char, tempBuffer + 9, 3);
             // Null terminate the string
-            memset(responseCode_char + 3, '\0', 1);
+            responseCode_char[3] = '\0';
             responseCode = atoi(responseCode_char);
             PRINTOUT(F("\n-- Response Code --"));
             PRINTOUT(responseCode);

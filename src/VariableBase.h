@@ -236,8 +236,6 @@ class Variable {
                     const char* varName, const char* varUnit,
                     const char* varCode);
 
-    // This sets up the variable (generally attaching it to its parent)
-    // bool setup();
 
     /**
      * @brief Notify the parent sensor that it has an observing variable.
