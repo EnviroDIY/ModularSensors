@@ -407,7 +407,7 @@ class ProcessorStats_Battery : public Variable {
     /**
      * @brief Destroy the ProcessorStats_Battery object - no action needed.
      */
-    ~ProcessorStats_Battery() {}
+    ~ProcessorStats_Battery() = default;
 };
 
 
@@ -458,7 +458,7 @@ class ProcessorStats_FreeRam : public Variable {
     /**
      * @brief Destroy the ProcessorStats_FreeRam object - no action needed.
      */
-    ~ProcessorStats_FreeRam() {}
+    ~ProcessorStats_FreeRam() = default;
 };
 
 
@@ -508,7 +508,7 @@ class ProcessorStats_SampleNumber : public Variable {
      * @brief Destroy the ProcessorStats_SampleNumber() object - no action
      * needed.
      */
-    ~ProcessorStats_SampleNumber() {}
+    ~ProcessorStats_SampleNumber() = default;
 };
 
 
@@ -558,7 +558,7 @@ class ProcessorStats_ResetCode : public Variable {
     /**
      * @brief Destroy the ProcessorStats_ResetCode object - no action needed.
      */
-    ~ProcessorStats_ResetCode() {}
+    ~ProcessorStats_ResetCode() = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_PROCESSORSTATS_H_

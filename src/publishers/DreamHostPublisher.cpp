@@ -29,7 +29,6 @@ DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client* inClient,
 
 // Default constructor (base class initialization)
 DreamHostPublisher::DreamHostPublisher() : dataPublisher() {}
-
 // Delegating constructors
 DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, int sendEveryX)
     : DreamHostPublisher(baseLogger, static_cast<Client*>(nullptr),
@@ -45,8 +44,6 @@ DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client* inClient,
     : DreamHostPublisher(baseLogger, inClient, sendEveryX) {
     if (dhUrl) setDreamHostPortalRX(dhUrl);
 }
-// Destructor
-DreamHostPublisher::~DreamHostPublisher() {}
 
 
 // Functions for private SWRC server

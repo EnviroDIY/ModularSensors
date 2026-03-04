@@ -155,7 +155,7 @@ class Variable {
     /**
      * @brief Destroy the Variable object - no action taken.
      */
-    ~Variable();
+    ~Variable() = default;
 
     /**
      * @brief Begin for the Variable object

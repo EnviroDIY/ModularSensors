@@ -357,7 +357,7 @@ class AtlasScientificEC_Cond : public Variable {
     /**
      * @brief Destroy the AtlasScientificEC_Cond object - no action needed.
      */
-    ~AtlasScientificEC_Cond() {}
+    ~AtlasScientificEC_Cond() = default;
 };
 
 /* clang-format off */
@@ -400,7 +400,7 @@ class AtlasScientificEC_TDS : public Variable {
     /**
      * @brief Destroy the AtlasScientificEC_TDS object - no action needed.
      */
-    ~AtlasScientificEC_TDS() {}
+    ~AtlasScientificEC_TDS() = default;
 };
 
 /* clang-format off */
@@ -444,7 +444,7 @@ class AtlasScientificEC_Salinity : public Variable {
      * @brief Destroy the AtlasScientificEC_Salinity() object - no action
      * needed.
      */
-    ~AtlasScientificEC_Salinity() {}
+    ~AtlasScientificEC_Salinity() = default;
 };
 
 /* clang-format off */
@@ -488,7 +488,7 @@ class AtlasScientificEC_SpecificGravity : public Variable {
      * @brief Destroy the AtlasScientificEC_SpecificGravity() object - no action
      * needed.
      */
-    ~AtlasScientificEC_SpecificGravity() {}
+    ~AtlasScientificEC_SpecificGravity() = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_ATLASSCIENTIFICEC_H_

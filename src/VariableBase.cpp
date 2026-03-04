@@ -57,11 +57,8 @@ Variable::Variable(float (*calcFxn)(), uint8_t decimalResolution,
                    const char* varCode)
     : Variable(calcFxn, decimalResolution, varName, varUnit, varCode, nullptr) {
 }
-
 // constructor with no arguments
 Variable::Variable() : isCalculated(true) {}
-// Destructor
-Variable::~Variable() {}
 
 
 // This does all of the setup that can't happen in the constructors

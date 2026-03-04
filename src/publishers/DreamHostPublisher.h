@@ -101,7 +101,7 @@ class DreamHostPublisher : public dataPublisher {
     /**
      * @brief Destroy the DreamHost Publisher object
      */
-    virtual ~DreamHostPublisher();
+    virtual ~DreamHostPublisher() = default;
 
     // Returns the data destination
     String getEndpoint(void) override {

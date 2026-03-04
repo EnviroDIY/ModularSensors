@@ -54,7 +54,7 @@ class LogBuffer {
     /**
      * @brief Destroys the buffer.
      */
-    virtual ~LogBuffer();
+    virtual ~LogBuffer() = default;
 
     /**
      * @brief Sets the number of variables the buffer will store in each record.

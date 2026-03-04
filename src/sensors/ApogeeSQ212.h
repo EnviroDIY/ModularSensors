@@ -344,7 +344,7 @@ class ApogeeSQ212_PAR : public Variable {
     /**
      * @brief Destroy the ApogeeSQ212_PAR object - no action needed.
      */
-    ~ApogeeSQ212_PAR() {}
+    ~ApogeeSQ212_PAR() = default;
 };
 
 
@@ -387,7 +387,7 @@ class ApogeeSQ212_Voltage : public Variable {
     /**
      * @brief Destroy the ApogeeSQ212_Voltage object - no action needed.
      */
-    ~ApogeeSQ212_Voltage() {}
+    ~ApogeeSQ212_Voltage() = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_APOGEESQ212_H_

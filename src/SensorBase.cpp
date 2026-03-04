@@ -37,8 +37,6 @@ Sensor::Sensor(const char* sensorName, const uint8_t totalReturnedValues,
         numberGoodMeasurementsMade[i] = 0;
     }
 }
-// Destructor
-Sensor::~Sensor() {}
 
 
 // This gets the place the sensor is installed ON THE MAYFLY (ie, pin number)

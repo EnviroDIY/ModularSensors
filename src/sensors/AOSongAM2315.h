@@ -290,7 +290,7 @@ class AOSongAM2315_Humidity : public Variable {
     /**
      * @brief Destroy the AOSongAM2315_Humidity object - no action needed.
      */
-    ~AOSongAM2315_Humidity() {}
+    ~AOSongAM2315_Humidity() = default;
 };
 
 
@@ -330,7 +330,7 @@ class AOSongAM2315_Temp : public Variable {
     /**
      * @brief Destroy the AOSongAM2315_Temp object - no action needed.
      */
-    ~AOSongAM2315_Temp() {}
+    ~AOSongAM2315_Temp() = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_AOSONGAM2315_H_

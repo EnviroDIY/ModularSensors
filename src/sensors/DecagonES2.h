@@ -218,7 +218,7 @@ class DecagonES2 : public SDI12Sensors {
     /**
      * @brief Destroy the Decagon ES2 object
      */
-    ~DecagonES2() {}
+    ~DecagonES2() = default;
 };
 
 
@@ -259,7 +259,7 @@ class DecagonES2_Cond : public Variable {
     /**
      * @brief Destroy the DecagonES2_Cond object - no action needed.
      */
-    ~DecagonES2_Cond() {}
+    ~DecagonES2_Cond() = default;
 };
 
 /* clang-format off */
@@ -299,7 +299,7 @@ class DecagonES2_Temp : public Variable {
     /**
      * @brief Destroy the DecagonES2_Temp object - no action needed.
      */
-    ~DecagonES2_Temp() {}
+    ~DecagonES2_Temp() = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_DECAGONES2_H_

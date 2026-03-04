@@ -23,9 +23,6 @@ Espressif::Espressif(Stream* modemStream, int8_t powerPin, int8_t modemResetPin,
       _ssid(ssid),
       _pwd(pwd) {}
 
-// Destructor
-Espressif::~Espressif() {}
-
 // A helper function to wait for the esp to boot and immediately change some
 // settings We'll use this in the wake function
 bool Espressif::ESPwaitForBoot(void) {

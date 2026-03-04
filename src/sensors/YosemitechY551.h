@@ -224,7 +224,7 @@ class YosemitechY551 : public YosemitechParent {
     /**
      * @brief Destroy the Yosemitech Y551 object
      */
-    ~YosemitechY551() {}
+    ~YosemitechY551() = default;
 };
 
 
@@ -268,7 +268,7 @@ class YosemitechY551_COD : public Variable {
     /**
      * @brief Destroy the YosemitechY551_COD object - no action needed.
      */
-    ~YosemitechY551_COD() {}
+    ~YosemitechY551_COD() = default;
 };
 
 
@@ -312,7 +312,7 @@ class YosemitechY551_Temp : public Variable {
     /**
      * @brief Destroy the YosemitechY551_Temp object - no action needed.
      */
-    ~YosemitechY551_Temp() {}
+    ~YosemitechY551_Temp() = default;
 };
 
 
@@ -356,7 +356,7 @@ class YosemitechY551_Turbidity : public Variable {
     /**
      * @brief Destroy the YosemitechY551_Turbidity object - no action needed.
      */
-    ~YosemitechY551_Turbidity() {}
+    ~YosemitechY551_Turbidity() = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_YOSEMITECHY551_H_

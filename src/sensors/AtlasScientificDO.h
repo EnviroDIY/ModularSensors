@@ -294,7 +294,7 @@ class AtlasScientificDO_DOmgL : public Variable {
     /**
      * @brief Destroy the AtlasScientificDO_DOmgL object - no action needed.
      */
-    ~AtlasScientificDO_DOmgL() {}
+    ~AtlasScientificDO_DOmgL() = default;
 };
 
 /* clang-format off */
@@ -337,7 +337,7 @@ class AtlasScientificDO_DOpct : public Variable {
     /**
      * @brief Destroy the AtlasScientificDO_DOpct object - no action needed.
      */
-    ~AtlasScientificDO_DOpct() {}
+    ~AtlasScientificDO_DOpct() = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_ATLASSCIENTIFICDO_H_

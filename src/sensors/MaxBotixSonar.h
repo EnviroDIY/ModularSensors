@@ -311,7 +311,7 @@ class MaxBotixSonar_Range : public Variable {
     /**
      * @brief Destroy the MaxBotixSonar_Range object - no action needed.
      */
-    ~MaxBotixSonar_Range() {}
+    ~MaxBotixSonar_Range() = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_MAXBOTIXSONAR_H_

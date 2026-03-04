@@ -196,7 +196,7 @@ class YosemitechY533 : public YosemitechParent {
     /**
      * @brief Destroy the Yosemitech Y533 object
      */
-    ~YosemitechY533() {}
+    ~YosemitechY533() = default;
 };
 
 
@@ -240,7 +240,7 @@ class YosemitechY533_ORP : public Variable {
     /**
      * @brief Destroy the YosemitechY533_ORP object - no action needed.
      */
-    ~YosemitechY533_ORP() {}
+    ~YosemitechY533_ORP() = default;
 };
 
 
@@ -284,7 +284,7 @@ class YosemitechY533_Temp : public Variable {
     /**
      * @brief Destroy the YosemitechY533_Temp object - no action needed.
      */
-    ~YosemitechY533_Temp() {}
+    ~YosemitechY533_Temp() = default;
 };
 
 /**@}*/

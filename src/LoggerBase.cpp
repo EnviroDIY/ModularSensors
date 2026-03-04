@@ -178,8 +178,6 @@ Logger::Logger() {
     // Set a datetime callback for automatic time-stamping of files by SdFat
     SdFile::dateTimeCallback(fileDateTimeCallback);
 }
-// Destructor
-Logger::~Logger() {}
 
 
 // ===================================================================== //

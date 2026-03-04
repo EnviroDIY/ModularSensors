@@ -397,7 +397,7 @@ class TurnerTurbidityPlus_Voltage : public Variable {
     /**
      * @brief Destroy the TurnerTurbidityPlus_Voltage object - no action needed.
      */
-    ~TurnerTurbidityPlus_Voltage() {}
+    ~TurnerTurbidityPlus_Voltage() = default;
 };
 
 
@@ -444,7 +444,7 @@ class TurnerTurbidityPlus_Turbidity : public Variable {
      * @brief Destroy the TurnerTurbidityPlus_Turbidity object - no action
      * needed.
      */
-    ~TurnerTurbidityPlus_Turbidity() {}
+    ~TurnerTurbidityPlus_Turbidity() = default;
 };
 /**@}*/
 

@@ -319,7 +319,7 @@ class AOSongDHT_Humidity : public Variable {
     /**
      * @brief Destroy the AOSongDHT_Humidity object - no action needed.
      */
-    ~AOSongDHT_Humidity() {}
+    ~AOSongDHT_Humidity() = default;
 };
 
 
@@ -360,7 +360,7 @@ class AOSongDHT_Temp : public Variable {
     /**
      * @brief Destroy the AOSongDHT_Temp object - no action needed.
      */
-    ~AOSongDHT_Temp() {}
+    ~AOSongDHT_Temp() = default;
 };
 
 
@@ -400,7 +400,7 @@ class AOSongDHT_HI : public Variable {
     /**
      * @brief Destroy the AOSongDHT_HI object - no action needed.
      */
-    ~AOSongDHT_HI() {}
+    ~AOSongDHT_HI() = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_AOSONGDHT_H_

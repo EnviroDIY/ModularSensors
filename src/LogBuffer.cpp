@@ -14,8 +14,6 @@
 
 // Constructor
 LogBuffer::LogBuffer() {}
-// Destructor
-LogBuffer::~LogBuffer() {}
 
 void LogBuffer::setNumVariables(uint8_t numVariables_) {
     // each record is one uint32_t to hold the timestamp, plus N floats to hold

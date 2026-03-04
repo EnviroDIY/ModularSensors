@@ -123,7 +123,7 @@ class EspressifESP32 : public Espressif {
     /**
      * @brief Destroy the Espressif ESP32 object - no action taken
      */
-    ~EspressifESP32();
+    ~EspressifESP32() = default;
 
     bool modemWake(void) override;
 

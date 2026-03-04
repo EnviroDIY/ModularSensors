@@ -459,7 +459,7 @@ class GeoluxHydroCam_ImageSize : public Variable {
     /**
      * @brief Destroy the GeoluxHydroCam_ImageSize object - no action needed.
      */
-    ~GeoluxHydroCam_ImageSize() {}
+    ~GeoluxHydroCam_ImageSize() = default;
 };
 
 
@@ -504,7 +504,7 @@ class GeoluxHydroCam_ByteError : public Variable {
      * @brief Destroy the GeoluxHydroCam_ByteError object - no action
      * needed.
      */
-    ~GeoluxHydroCam_ByteError() {}
+    ~GeoluxHydroCam_ByteError() = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_GEOLUXHYDROCAM_H_

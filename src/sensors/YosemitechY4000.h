@@ -373,7 +373,7 @@ class YosemitechY4000 : public YosemitechParent {
     /**
      * @brief Destroy the Yosemitech Y4000 object
      */
-    ~YosemitechY4000() {}
+    ~YosemitechY4000() = default;
 };
 
 
@@ -417,7 +417,7 @@ class YosemitechY4000_DOmgL : public Variable {
     /**
      * @brief Destroy the YosemitechY4000_DOmgL object - no action needed.
      */
-    ~YosemitechY4000_DOmgL() {}
+    ~YosemitechY4000_DOmgL() = default;
 };
 
 /* clang-format off */
@@ -460,7 +460,7 @@ class YosemitechY4000_Turbidity : public Variable {
     /**
      * @brief Destroy the YosemitechY4000_Turbidity object - no action needed.
      */
-    ~YosemitechY4000_Turbidity() {}
+    ~YosemitechY4000_Turbidity() = default;
 };
 
 /* clang-format off */
@@ -503,7 +503,7 @@ class YosemitechY4000_Cond : public Variable {
     /**
      * @brief Destroy the YosemitechY4000_Cond object - no action needed.
      */
-    ~YosemitechY4000_Cond() {}
+    ~YosemitechY4000_Cond() = default;
 };
 
 /* clang-format off */
@@ -546,7 +546,7 @@ class YosemitechY4000_pH : public Variable {
     /**
      * @brief Destroy the YosemitechY4000_pH object - no action needed.
      */
-    ~YosemitechY4000_pH() {}
+    ~YosemitechY4000_pH() = default;
 };
 
 /* clang-format off */
@@ -589,7 +589,7 @@ class YosemitechY4000_Temp : public Variable {
     /**
      * @brief Destroy the YosemitechY4000_Temp object - no action needed.
      */
-    ~YosemitechY4000_Temp() {}
+    ~YosemitechY4000_Temp() = default;
 };
 
 /* clang-format off */
@@ -632,7 +632,7 @@ class YosemitechY4000_ORP : public Variable {
     /**
      * @brief Destroy the YosemitechY4000_ORP object - no action needed.
      */
-    ~YosemitechY4000_ORP() {}
+    ~YosemitechY4000_ORP() = default;
 };
 
 /* clang-format off */
@@ -676,7 +676,7 @@ class YosemitechY4000_Chlorophyll : public Variable {
      * @brief Destroy the YosemitechY4000_Chlorophyll() object - no action
      * needed.
      */
-    ~YosemitechY4000_Chlorophyll() {}
+    ~YosemitechY4000_Chlorophyll() = default;
 };
 
 /* clang-format off */
@@ -719,7 +719,7 @@ class YosemitechY4000_BGA : public Variable {
     /**
      * @brief Destroy the YosemitechY4000_BGA object - no action needed.
      */
-    ~YosemitechY4000_BGA() {}
+    ~YosemitechY4000_BGA() = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_YOSEMITECHY4000_H_

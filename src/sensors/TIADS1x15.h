@@ -595,7 +595,7 @@ class TIADS1x15_Voltage : public Variable {
     /**
      * @brief Destroy the TIADS1x15_Voltage object - no action needed.
      */
-    ~TIADS1x15_Voltage() {}
+    ~TIADS1x15_Voltage() = default;
 };
 
 /**

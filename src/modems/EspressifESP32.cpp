@@ -26,9 +26,6 @@ EspressifESP32::EspressifESP32(Stream* modemStream, int8_t powerPin,
 {
 }
 
-// Destructor
-EspressifESP32::~EspressifESP32() {}
-
 MS_IS_MODEM_AWAKE(EspressifESP32);
 MS_MODEM_WAKE(EspressifESP32);
 

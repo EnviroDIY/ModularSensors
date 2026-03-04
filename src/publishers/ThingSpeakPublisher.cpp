@@ -63,8 +63,6 @@ ThingSpeakPublisher::ThingSpeakPublisher(Logger&     baseLogger,
     : ThingSpeakPublisher(baseLogger, nullptr, thingSpeakClientName,
                           thingSpeakMQTTUser, thingSpeakMQTTPassword,
                           thingSpeakChannelID, sendEveryX) {}
-// Destructor
-ThingSpeakPublisher::~ThingSpeakPublisher() {}
 
 
 void ThingSpeakPublisher::setMQTTClient(const char* thingSpeakClientName) {

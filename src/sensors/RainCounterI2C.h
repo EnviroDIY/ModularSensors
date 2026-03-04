@@ -357,7 +357,7 @@ class RainCounterI2C_Tips : public Variable {
     /**
      * @brief Destroy the RainCounterI2C_Tips object - no action needed.
      */
-    ~RainCounterI2C_Tips() {}
+    ~RainCounterI2C_Tips() = default;
 };
 
 /**
@@ -399,7 +399,7 @@ class RainCounterI2C_Depth : public Variable {
     /**
      * @brief Destroy the RainCounterI2C_Depth object - no action needed.
      */
-    ~RainCounterI2C_Depth() {}
+    ~RainCounterI2C_Depth() = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_RAINCOUNTERI2C_H_

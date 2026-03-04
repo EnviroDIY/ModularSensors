@@ -374,7 +374,7 @@ class AlphasenseCO2_CO2 : public Variable {
     /**
      * @brief Destroy the AlphasenseCO2_CO2 object - no action needed.
      */
-    ~AlphasenseCO2_CO2() {}
+    ~AlphasenseCO2_CO2() = default;
 };
 
 
@@ -419,7 +419,7 @@ class AlphasenseCO2_Voltage : public Variable {
     /**
      * @brief Destroy the AlphasenseCO2_Voltage object - no action needed.
      */
-    ~AlphasenseCO2_Voltage() {}
+    ~AlphasenseCO2_Voltage() = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_ALPHASENSECO2_H_

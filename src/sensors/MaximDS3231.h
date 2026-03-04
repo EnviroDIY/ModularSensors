@@ -236,7 +236,7 @@ class MaximDS3231_Temp : public Variable {
     /**
      * @brief Destroy the MaximDS3231_Temp object - no action needed.
      */
-    ~MaximDS3231_Temp() {}
+    ~MaximDS3231_Temp() = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_MAXIMDS3231_H_

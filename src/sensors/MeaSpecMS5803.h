@@ -311,7 +311,7 @@ class MeaSpecMS5803_Temp : public Variable {
     /**
      * @brief Destroy the MeaSpecMS5803_Temp object - no action needed.
      */
-    ~MeaSpecMS5803_Temp() {}
+    ~MeaSpecMS5803_Temp() = default;
 };
 
 
@@ -358,7 +358,7 @@ class MeaSpecMS5803_Pressure : public Variable {
     /**
      * @brief Destroy the MeaSpecMS5803_Pressure object - no action needed.
      */
-    ~MeaSpecMS5803_Pressure() {}
+    ~MeaSpecMS5803_Pressure() = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_MEASPECMS5803_H_

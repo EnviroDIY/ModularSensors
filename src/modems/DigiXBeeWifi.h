@@ -135,7 +135,7 @@ class DigiXBeeWifi : public DigiXBee {
     /**
      * @brief Destroy the Digi XBee Wifi object - no action taken
      */
-    ~DigiXBeeWifi();
+    ~DigiXBeeWifi() = default;
 
     bool modemWake(void) override;
 

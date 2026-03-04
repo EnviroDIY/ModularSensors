@@ -40,8 +40,6 @@ S3PresignedPublisher::S3PresignedPublisher(Logger& baseLogger, Client* inClient,
                            getUrlFxn, getFileNameFxn, sendEveryX) {
     if (inClient) _inClient = inClient;
 }
-// Destructor
-S3PresignedPublisher::~S3PresignedPublisher() {}
 
 
 void S3PresignedPublisher::setPort(int port) {

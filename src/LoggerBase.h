@@ -178,7 +178,7 @@ class Logger {
     /**
      * @brief Destroy the Logger object - takes no action.
      */
-    virtual ~Logger();
+    virtual ~Logger() = default;
 
     // ===================================================================== //
     /**

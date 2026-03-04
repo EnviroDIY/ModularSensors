@@ -32,9 +32,6 @@ DigiXBeeWifi::DigiXBeeWifi(Stream* modemStream, int8_t powerPin,
       _maintainAssociation(maintainAssociation) {
 }
 
-// Destructor
-DigiXBeeWifi::~DigiXBeeWifi() {}
-
 MS_IS_MODEM_AWAKE(DigiXBeeWifi);
 MS_MODEM_WAKE(DigiXBeeWifi);
 

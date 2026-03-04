@@ -298,7 +298,7 @@ class VegaPuls21 : public SDI12Sensors {
     /**
      * @brief Destroy the VEGAPULS C 21 object
      */
-    ~VegaPuls21() {}
+    ~VegaPuls21() = default;
 };
 
 
@@ -344,7 +344,7 @@ class VegaPuls21_Stage : public Variable {
     /**
      * @brief Destroy the VegaPuls21_Stage object - no action needed.
      */
-    ~VegaPuls21_Stage() {}
+    ~VegaPuls21_Stage() = default;
 };
 
 
@@ -390,7 +390,7 @@ class VegaPuls21_Distance : public Variable {
     /**
      * @brief Destroy the VegaPuls21_Distance object - no action needed.
      */
-    ~VegaPuls21_Distance() {}
+    ~VegaPuls21_Distance() = default;
 };
 
 
@@ -435,7 +435,7 @@ class VegaPuls21_Temp : public Variable {
     /**
      * @brief Destroy the VegaPuls21_Temp object - no action needed.
      */
-    ~VegaPuls21_Temp() {}
+    ~VegaPuls21_Temp() = default;
 };
 
 
@@ -483,7 +483,7 @@ class VegaPuls21_Reliability : public Variable {
      * @brief Destroy the VegaPuls21_Reliability object - no action
      * needed.
      */
-    ~VegaPuls21_Reliability() {}
+    ~VegaPuls21_Reliability() = default;
 };
 
 
@@ -531,7 +531,7 @@ class VegaPuls21_ErrorCode : public Variable {
      * @brief Destroy the VegaPuls21_ErrorCode object - no action
      * needed.
      */
-    ~VegaPuls21_ErrorCode() {}
+    ~VegaPuls21_ErrorCode() = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_VEGAPULS21_H_

@@ -140,7 +140,7 @@ class DigiXBeeLTEBypass : public DigiXBee {
     /**
      * @brief Destroy the Digi XBee LTE Bypass object - no action needed
      */
-    ~DigiXBeeLTEBypass();
+    ~DigiXBeeLTEBypass() = default;
 
     bool modemWake(void) override;
 

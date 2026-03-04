@@ -286,7 +286,7 @@ class AtlasScientificCO2_CO2 : public Variable {
     /**
      * @brief Destroy the AtlasScientificCO2_CO2 object - no action needed.
      */
-    ~AtlasScientificCO2_CO2() {}
+    ~AtlasScientificCO2_CO2() = default;
 };
 
 /* clang-format off */
@@ -329,7 +329,7 @@ class AtlasScientificCO2_Temp : public Variable {
     /**
      * @brief Destroy the AtlasScientificCO2_Temp object - no action needed.
      */
-    ~AtlasScientificCO2_Temp() {}
+    ~AtlasScientificCO2_Temp() = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_ATLASSCIENTIFICCO2_H_

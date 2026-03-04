@@ -85,9 +85,6 @@ MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
     int sendEveryX)
     : MonitorMyWatershedPublisher(baseLogger, inClient, registrationToken,
                                   nullptr, sendEveryX) {}
-// Destructor
-MonitorMyWatershedPublisher::~MonitorMyWatershedPublisher() {}
-
 
 // Returns the data destination
 String MonitorMyWatershedPublisher::getHost(void) {

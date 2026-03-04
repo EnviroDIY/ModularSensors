@@ -337,7 +337,7 @@ class PaleoTerraRedox_Voltage : public Variable {
     /**
      * @brief Destroy the PaleoTerraRedox_Voltage object - no action needed.
      */
-    ~PaleoTerraRedox_Voltage() {}
+    ~PaleoTerraRedox_Voltage() = default;
 };
 
 /**

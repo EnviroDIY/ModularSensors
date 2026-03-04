@@ -43,9 +43,6 @@ loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
       _max_at_response_time_ms(max_at_response_time_ms),
       _modemName("unspecified modem") {}
 
-// Destructor
-loggerModem::~loggerModem() {}
-
 
 void loggerModem::setModemLED(int8_t modemLEDPin) {
     _modemLEDPin = modemLEDPin;

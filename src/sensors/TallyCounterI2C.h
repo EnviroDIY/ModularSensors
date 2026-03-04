@@ -274,7 +274,7 @@ class TallyCounterI2C_Events : public Variable {
     /**
      * @brief Destroy the BoschBME280_Temp object - no action needed.
      */
-    ~TallyCounterI2C_Events() {}
+    ~TallyCounterI2C_Events() = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_TallyCounterI2C_H_

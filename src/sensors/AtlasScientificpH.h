@@ -203,7 +203,7 @@ class AtlasScientificpH : public AtlasParent {
     /**
      * @brief Destroy the Atlas Scientific pH object
      */
-    ~AtlasScientificpH() {}
+    ~AtlasScientificpH() = default;
 };
 
 
@@ -249,7 +249,7 @@ class AtlasScientificpH_pH : public Variable {
     /**
      * @brief Destroy the AtlasScientificpH_pH object - no action needed.
      */
-    ~AtlasScientificpH_pH() {}
+    ~AtlasScientificpH_pH() = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_ATLASSCIENTIFICPH_H_

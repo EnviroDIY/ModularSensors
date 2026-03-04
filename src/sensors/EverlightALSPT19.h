@@ -371,7 +371,7 @@ class EverlightALSPT19_Voltage : public Variable {
     /**
      * @brief Destroy the EverlightALSPT19_Voltage object - no action needed.
      */
-    ~EverlightALSPT19_Voltage() {}
+    ~EverlightALSPT19_Voltage() = default;
 };
 
 
@@ -415,7 +415,7 @@ class EverlightALSPT19_Current : public Variable {
     /**
      * @brief Destroy the EverlightALSPT19_Current object - no action needed.
      */
-    ~EverlightALSPT19_Current() {}
+    ~EverlightALSPT19_Current() = default;
 };
 
 
@@ -460,7 +460,7 @@ class EverlightALSPT19_Illuminance : public Variable {
      * @brief Destroy the EverlightALSPT19_Illuminance object - no action
      * needed.
      */
-    ~EverlightALSPT19_Illuminance() {}
+    ~EverlightALSPT19_Illuminance() = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_EVERLIGHTALSPT19_H_

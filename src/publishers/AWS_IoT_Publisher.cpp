@@ -41,6 +41,7 @@ AWS_IoT_Publisher::AWS_IoT_Publisher(
     init();
 }
 
+
 // Delegating constructors
 AWS_IoT_Publisher::AWS_IoT_Publisher() : dataPublisher() {
     init();
@@ -85,9 +86,6 @@ void AWS_IoT_Publisher::init() {
         contentGetrFxns[i] = nullptr;
     }
 }
-// Destructor
-AWS_IoT_Publisher::~AWS_IoT_Publisher() {}
-
 
 void AWS_IoT_Publisher::setEndpoint(const char* awsIoTEndpoint) {
     _awsIoTEndpoint = awsIoTEndpoint;

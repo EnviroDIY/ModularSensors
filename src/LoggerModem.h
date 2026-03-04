@@ -357,7 +357,7 @@ class loggerModem {
     /**
      * @brief Destroy the logger Modem object - no action taken.
      */
-    virtual ~loggerModem();
+    virtual ~loggerModem() = default;
 
     /**
      * @brief Set an LED to turn on (pin will be `HIGH`) when the modem is on.
@@ -1257,7 +1257,7 @@ class Modem_RSSI : public Variable {
     /**
      * @brief Destroy the Modem_RSSI object - no action needed.
      */
-    ~Modem_RSSI() {}
+    ~Modem_RSSI() = default;
 };
 
 
@@ -1292,7 +1292,7 @@ class Modem_SignalPercent : public Variable {
     /**
      * @brief Destroy the Modem_SignalPercent object - no action needed.
      */
-    ~Modem_SignalPercent() {}
+    ~Modem_SignalPercent() = default;
 };
 
 
@@ -1330,7 +1330,7 @@ class Modem_BatteryState : public Variable {
     /**
      * @brief Destroy the Modem_BatteryState object - no action needed.
      */
-    ~Modem_BatteryState() {}
+    ~Modem_BatteryState() = default;
 };
 
 
@@ -1369,7 +1369,7 @@ class Modem_BatteryPercent : public Variable {
     /**
      * @brief Destroy the Modem_BatteryPercent object - no action needed.
      */
-    ~Modem_BatteryPercent() {}
+    ~Modem_BatteryPercent() = default;
 };
 
 
@@ -1408,7 +1408,7 @@ class Modem_BatteryVoltage : public Variable {
     /**
      * @brief Destroy the Modem_BatteryVoltage object - no action needed.
      */
-    ~Modem_BatteryVoltage() {}
+    ~Modem_BatteryVoltage() = default;
 };
 
 
@@ -1445,7 +1445,7 @@ class Modem_Temp : public Variable {
     /**
      * @brief Destroy the Modem_Temp object - no action needed.
      */
-    ~Modem_Temp() {}
+    ~Modem_Temp() = default;
 };
 
 #endif  // SRC_LOGGERMODEM_H_

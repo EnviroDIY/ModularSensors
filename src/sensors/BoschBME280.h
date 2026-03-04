@@ -378,7 +378,7 @@ class BoschBME280_Temp : public Variable {
     /**
      * @brief Destroy the BoschBME280_Temp object - no action needed.
      */
-    ~BoschBME280_Temp() {}
+    ~BoschBME280_Temp() = default;
 };
 
 
@@ -423,7 +423,7 @@ class BoschBME280_Humidity : public Variable {
     /**
      * @brief Destroy the BoschBME280_Humidity object - no action needed.
      */
-    ~BoschBME280_Humidity() {}
+    ~BoschBME280_Humidity() = default;
 };
 
 
@@ -468,7 +468,7 @@ class BoschBME280_Pressure : public Variable {
     /**
      * @brief Destroy the BoschBME280_Pressure object - no action needed.
      */
-    ~BoschBME280_Pressure() {}
+    ~BoschBME280_Pressure() = default;
 };
 
 
@@ -513,7 +513,7 @@ class BoschBME280_Altitude : public Variable {
     /**
      * @brief Destroy the BoschBME280_Altitude object - no action needed.
      */
-    ~BoschBME280_Altitude() {}
+    ~BoschBME280_Altitude() = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_BOSCHBME280_H_

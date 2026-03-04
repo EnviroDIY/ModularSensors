@@ -34,8 +34,6 @@ ANBpH::ANBpH(byte modbusAddress, Stream& stream, int8_t powerPin,
              uint8_t measurementsToAverage)
     : ANBpH(modbusAddress, &stream, powerPin, loggingIntervalMinutes, powerPin2,
             enablePin, measurementsToAverage) {}
-// Destructor
-ANBpH::~ANBpH() {}
 
 
 // The sensor installation location on the Mayfly

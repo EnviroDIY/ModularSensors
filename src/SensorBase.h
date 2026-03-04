@@ -118,7 +118,7 @@ class Sensor {
     /**
      * @brief Destroy the Sensor object - no action taken.
      */
-    virtual ~Sensor();
+    virtual ~Sensor() = default;
 
     // These functions are dependent on the constructor and return the
     // constructor values.

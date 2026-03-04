@@ -221,7 +221,7 @@ class YosemitechY560 : public YosemitechParent {
     /**
      * @brief Destroy the Yosemitech Y560 object
      */
-    ~YosemitechY560() {}
+    ~YosemitechY560() = default;
 };
 
 
@@ -265,7 +265,7 @@ class YosemitechY560_NH4_N : public Variable {
     /**
      * @brief Destroy the YosemitechY560_NH4_N object - no action needed.
      */
-    ~YosemitechY560_NH4_N() {}
+    ~YosemitechY560_NH4_N() = default;
 };
 
 
@@ -309,7 +309,7 @@ class YosemitechY560_Temp : public Variable {
     /**
      * @brief Destroy the YosemitechY560_Temp object - no action needed.
      */
-    ~YosemitechY560_Temp() {}
+    ~YosemitechY560_Temp() = default;
 };
 
 
@@ -352,7 +352,7 @@ class YosemitechY560_pH : public Variable {
     /**
      * @brief Destroy the YosemitechY560_pH object - no action needed.
      */
-    ~YosemitechY560_pH() {}
+    ~YosemitechY560_pH() = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_YOSEMITECHY560_H_

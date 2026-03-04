@@ -425,7 +425,7 @@ class AnalogElecConductivity_EC : public Variable {
     /**
      * @brief Destroy the AnalogElecConductivity_EC object - no action needed.
      */
-    ~AnalogElecConductivity_EC() {}
+    ~AnalogElecConductivity_EC() = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_ANALOGELECCONDUCTIVITY_H_

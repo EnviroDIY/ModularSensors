@@ -338,7 +338,7 @@ class SensirionSHT4x_Humidity : public Variable {
     /**
      * @brief Destroy the SensirionSHT4x_Humidity object - no action needed.
      */
-    ~SensirionSHT4x_Humidity() {}
+    ~SensirionSHT4x_Humidity() = default;
 };
 
 
@@ -380,7 +380,7 @@ class SensirionSHT4x_Temp : public Variable {
     /**
      * @brief Destroy the SensirionSHT4x_Temp object - no action needed.
      */
-    ~SensirionSHT4x_Temp() {}
+    ~SensirionSHT4x_Temp() = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_SENSIRIONSHT4X_H_

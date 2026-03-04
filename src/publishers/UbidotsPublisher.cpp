@@ -57,8 +57,6 @@ UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, Client* inClient,
     : UbidotsPublisher(baseLogger, authenticationToken, deviceID, sendEveryX) {
     if (inClient) _inClient = inClient;
 }
-// Destructor
-UbidotsPublisher::~UbidotsPublisher() {}
 
 
 void UbidotsPublisher::setToken(const char* authenticationToken) {

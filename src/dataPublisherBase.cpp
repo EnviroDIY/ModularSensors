@@ -38,8 +38,6 @@ dataPublisher::dataPublisher(Logger& baseLogger, Client* inClient,
     : dataPublisher(baseLogger, sendEveryX) {
     _inClient = inClient;
 }
-// Destructor
-dataPublisher::~dataPublisher() {}
 
 
 // Sets the client

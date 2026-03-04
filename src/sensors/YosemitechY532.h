@@ -220,7 +220,7 @@ class YosemitechY532 : public YosemitechParent {
     /**
      * @brief Destroy the Yosemitech Y532 object
      */
-    ~YosemitechY532() {}
+    ~YosemitechY532() = default;
 };
 
 
@@ -263,7 +263,7 @@ class YosemitechY532_pH : public Variable {
     /**
      * @brief Destroy the YosemitechY532_pH object - no action needed.
      */
-    ~YosemitechY532_pH() {}
+    ~YosemitechY532_pH() = default;
 };
 
 
@@ -307,7 +307,7 @@ class YosemitechY532_Temp : public Variable {
     /**
      * @brief Destroy the YosemitechY532_Temp object - no action needed.
      */
-    ~YosemitechY532_Temp() {}
+    ~YosemitechY532_Temp() = default;
 };
 
 
@@ -351,7 +351,7 @@ class YosemitechY532_Voltage : public Variable {
     /**
      * @brief Destroy the YosemitechY532_Voltage object - no action needed.
      */
-    ~YosemitechY532_Voltage() {}
+    ~YosemitechY532_Voltage() = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_YOSEMITECHY532_H_

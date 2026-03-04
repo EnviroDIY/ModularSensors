@@ -193,7 +193,7 @@ class YosemitechY700 : public YosemitechParent {
     /**
      * @brief Destroy the Yosemitech Y700 object
      */
-    ~YosemitechY700() {}
+    ~YosemitechY700() = default;
 };
 
 
@@ -237,7 +237,7 @@ class YosemitechY700_Pressure : public Variable {
     /**
      * @brief Destroy the YosemitechY700_Pressure object - no action needed.
      */
-    ~YosemitechY700_Pressure() {}
+    ~YosemitechY700_Pressure() = default;
 };
 
 
@@ -281,7 +281,7 @@ class YosemitechY700_Temp : public Variable {
     /**
      * @brief Destroy the YosemitechY700_Temp object - no action needed.
      */
-    ~YosemitechY700_Temp() {}
+    ~YosemitechY700_Temp() = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_YOSEMITECHY700_H_

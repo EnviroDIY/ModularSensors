@@ -606,7 +606,7 @@ class BoschBMP3xx_Temp : public Variable {
     /**
      * @brief Destroy the BoschBMP3xx_Temp object - no action needed.
      */
-    ~BoschBMP3xx_Temp() {}
+    ~BoschBMP3xx_Temp() = default;
 };
 
 
@@ -651,7 +651,7 @@ class BoschBMP3xx_Pressure : public Variable {
     /**
      * @brief Destroy the BoschBMP3xx_Pressure object - no action needed.
      */
-    ~BoschBMP3xx_Pressure() {}
+    ~BoschBMP3xx_Pressure() = default;
 };
 
 
@@ -696,7 +696,7 @@ class BoschBMP3xx_Altitude : public Variable {
     /**
      * @brief Destroy the BoschBMP3xx_Altitude object - no action needed.
      */
-    ~BoschBMP3xx_Altitude() {}
+    ~BoschBMP3xx_Altitude() = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_BOSCHBMP3XX_H_

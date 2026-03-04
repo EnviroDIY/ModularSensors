@@ -351,7 +351,7 @@ class TIINA219_Current : public Variable {
     /**
      * @brief Destroy the TIINA219_Current object - no action needed.
      */
-    ~TIINA219_Current() {}
+    ~TIINA219_Current() = default;
 };
 
 
@@ -394,7 +394,7 @@ class TIINA219_Voltage : public Variable {
     /**
      * @brief Destroy the TIINA219_Voltage object - no action needed.
      */
-    ~TIINA219_Voltage() {}
+    ~TIINA219_Voltage() = default;
 };
 
 /**
@@ -445,7 +445,7 @@ class TIINA219_Power : public Variable {
     /**
      * @brief Destroy the TIINA219_Power object - no action needed.
      */
-    ~TIINA219_Power() {}
+    ~TIINA219_Power() = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_TIINA219_H_

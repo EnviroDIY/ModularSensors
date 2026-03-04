@@ -299,7 +299,7 @@ class FreescaleMPL115A2_Temp : public Variable {
     /**
      * @brief Destroy the FreescaleMPL115A2_Temp object - no action needed.
      */
-    ~FreescaleMPL115A2_Temp() {}
+    ~FreescaleMPL115A2_Temp() = default;
 };
 
 /**
@@ -353,7 +353,7 @@ class FreescaleMPL115A2_Pressure : public Variable {
     /**
      * @brief Destroy the FreescaleMPL115A2_Pressure object - no action needed.
      */
-    ~FreescaleMPL115A2_Pressure() {}
+    ~FreescaleMPL115A2_Pressure() = default;
 };
 
 /**

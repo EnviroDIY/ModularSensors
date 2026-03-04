@@ -255,7 +255,7 @@ class CampbellClariVUE10 : public SDI12Sensors {
     /**
      * @brief Destroy the Campbell ClariVUE10 object
      */
-    ~CampbellClariVUE10() {}
+    ~CampbellClariVUE10() = default;
 };
 
 
@@ -303,7 +303,7 @@ class CampbellClariVUE10_Turbidity : public Variable {
      * @brief Destroy the CampbellClariVUE10_Turbidity object - no action
      * needed.
      */
-    ~CampbellClariVUE10_Turbidity() {}
+    ~CampbellClariVUE10_Turbidity() = default;
 };
 
 
@@ -349,7 +349,7 @@ class CampbellClariVUE10_Temp : public Variable {
     /**
      * @brief Destroy the CampbellClariVUE10_Temp object - no action needed.
      */
-    ~CampbellClariVUE10_Temp() {}
+    ~CampbellClariVUE10_Temp() = default;
 };
 
 
@@ -397,7 +397,7 @@ class CampbellClariVUE10_ErrorCode : public Variable {
      * @brief Destroy the CampbellClariVUE10_ErrorCode object - no action
      * needed.
      */
-    ~CampbellClariVUE10_ErrorCode() {}
+    ~CampbellClariVUE10_ErrorCode() = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_CAMPBELLCLARIVUE10_H_

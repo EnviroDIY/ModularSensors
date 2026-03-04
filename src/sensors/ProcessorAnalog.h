@@ -343,7 +343,7 @@ class ProcessorAnalog_Voltage : public Variable {
     /**
      * @brief Destroy the ProcessorAnalog_Voltage object - no action needed.
      */
-    ~ProcessorAnalog_Voltage() {}
+    ~ProcessorAnalog_Voltage() = default;
 };
 
 /**@}*/

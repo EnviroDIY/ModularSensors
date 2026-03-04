@@ -100,7 +100,7 @@ class dataPublisher {
     /**
      * @brief Destroy the data publisher object - no action is taken.
      */
-    virtual ~dataPublisher();
+    virtual ~dataPublisher() = default;
 
     /**
      * @brief Set the Client object.

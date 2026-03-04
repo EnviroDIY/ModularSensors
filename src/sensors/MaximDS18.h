@@ -324,7 +324,7 @@ class MaximDS18_Temp : public Variable {
     /**
      * @brief Destroy the MaximDS18_Temp object - no action needed.
      */
-    ~MaximDS18_Temp() {}
+    ~MaximDS18_Temp() = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_MAXIMDS18_H_

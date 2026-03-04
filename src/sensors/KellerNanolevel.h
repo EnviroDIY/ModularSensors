@@ -171,7 +171,7 @@ class KellerNanolevel : public KellerParent {
     /**
      * @brief Destroy the Keller Nanolevel object
      */
-    ~KellerNanolevel() {}
+    ~KellerNanolevel() = default;
 };
 
 
@@ -217,7 +217,7 @@ class KellerNanolevel_Pressure : public Variable {
     /**
      * @brief Destroy the KellerNanolevel_Pressure object - no action needed.
      */
-    ~KellerNanolevel_Pressure() {}
+    ~KellerNanolevel_Pressure() = default;
 };
 
 
@@ -261,7 +261,7 @@ class KellerNanolevel_Temp : public Variable {
     /**
      * @brief Destroy the KellerNanolevel_Temp object - no action needed.
      */
-    ~KellerNanolevel_Temp() {}
+    ~KellerNanolevel_Temp() = default;
 };
 
 
@@ -305,7 +305,7 @@ class KellerNanolevel_Height : public Variable {
     /**
      * @brief Destroy the KellerNanolevel_Height object - no action needed.
      */
-    ~KellerNanolevel_Height() {}
+    ~KellerNanolevel_Height() = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_KELLERNANOLEVEL_H_
