@@ -79,7 +79,7 @@
  * Every sensor will use this value to indicate that a measurement is invalid
  * or missing.
  */
-#define MS_INVALID_VALUE -9999.0
+#define MS_INVALID_VALUE -9999
 
 // GroPoint Profile GPLP-8 has 8 Moisture and 13 Temperature values
 #endif
