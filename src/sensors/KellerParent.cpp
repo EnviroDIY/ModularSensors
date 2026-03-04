@@ -93,35 +93,37 @@ bool KellerParent::addSingleMeasurementResult(void) {
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-    // Get Values
-    // the getValues function in the KellerModbus library will *always* return
-    // true, but will set the value variables to MS_INVALID_VALUE if it fails to
-    // get a value.  So we check for success by checking that the value
-    // variables are not MS_INVALID_VALUE or NaN.
-    _ksensor.getValues(waterPressureBar, waterTemperatureC);
-    success =
+    // NOTE: As of KellerModbus library version 0.2.7, the getValues function
+    // will *always* return true.  We set the success with it here for
+    // future-readiness.
+    success = _ksensor.getValues(waterPressureBar, waterTemperatureC);
+    // Since we can't depend on the return value, we check for success by
+    // checking that the value variables are not MS_INVALID_VALUE or NaN.
+    success &=
         (!isnan(waterPressureBar) && waterPressureBar != MS_INVALID_VALUE &&
          !isnan(waterTemperatureC) && waterTemperatureC != MS_INVALID_VALUE);
 
     if (success) {
+        // display values for debugging
+        MS_DBG(F("  Pressure_mbar:"), waterPressure_mBar);
+        MS_DBG(F("  Temp_C:"), waterTemperatureC);
+        // Put pressure and temperature into the array
+        verifyAndAddMeasurementResult(KELLER_PRESSURE_VAR_NUM,
+                                      waterPressure_mBar);
+        verifyAndAddMeasurementResult(KELLER_TEMP_VAR_NUM, waterTemperatureC);
+
         // calculate depth from pressure and temperature
         waterDepthM = _ksensor.calcWaterDepthM(waterPressureBar,
                                                waterTemperatureC);
         // For waterPressureBar, convert bar to millibar
         waterPressure_mBar = 1000 * waterPressureBar;
+        // display value for debugging
+        MS_DBG(F("  Height_m:"), waterDepthM);
     }
-
-    MS_DBG(F("  Pressure_mbar:"), waterPressure_mBar);
-    MS_DBG(F("  Temp_C:"), waterTemperatureC);
-    MS_DBG(F("  Height_m:"), waterDepthM);
 
     success &= (!isnan(waterDepthM) && waterDepthM != MS_INVALID_VALUE);
 
     if (success) {
-        // Put values into the array
-        verifyAndAddMeasurementResult(KELLER_PRESSURE_VAR_NUM,
-                                      waterPressure_mBar);
-        verifyAndAddMeasurementResult(KELLER_TEMP_VAR_NUM, waterTemperatureC);
         verifyAndAddMeasurementResult(KELLER_HEIGHT_VAR_NUM, waterDepthM);
     }
 
