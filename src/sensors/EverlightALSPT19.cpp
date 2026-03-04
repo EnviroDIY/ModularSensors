@@ -95,12 +95,6 @@ bool EverlightALSPT19::addSingleMeasurementResult() {
         MS_DBG(getSensorNameAndLocation(), F("Invalid load resistor value"));
         return bumpMeasurementAttemptCount(false);
     }
-    // Check if we have a valid calibration constant
-    if (ALSPT19_UA_PER_1000LUX <= 0) {
-        MS_DBG(getSensorNameAndLocation(),
-               F("Invalid current-to-lux calibration factor"));
-        return bumpMeasurementAttemptCount(false);
-    }
 
     float adcVoltage = MS_INVALID_VALUE;
 

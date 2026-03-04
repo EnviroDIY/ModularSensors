@@ -102,6 +102,7 @@
  * Lux, which doesn't appear to align with the datasheet.
  */
 #define ALSPT19_UA_PER_1000LUX 200.0f
+static_assert(ALSPT19_UA_PER_1000LUX > 0, "Current-to-lux calibration factor must be positive");
 #endif
 /**@}*/
 
