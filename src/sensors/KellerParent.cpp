@@ -45,7 +45,7 @@ KellerParent::KellerParent(byte modbusAddress, Stream& stream, int8_t powerPin,
 // The sensor installation location on the Mayfly
 String KellerParent::getSensorLocation() {
     String sensorLocation;
-    sensorLocation.reserve(12); // Reserve for "modbus_0x" + 2 hex chars
+    sensorLocation.reserve(12);  // Reserve for "modbus_0x" + 2 hex chars
     sensorLocation = F("modbus_0x");
     if (_modbusAddress < 16) sensorLocation += "0";
     sensorLocation += String(_modbusAddress, HEX);
