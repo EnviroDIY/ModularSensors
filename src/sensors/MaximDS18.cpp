@@ -38,7 +38,9 @@ MaximDS18::MaximDS18(int8_t powerPin, int8_t dataPin,
 
 // Turns the address into a printable string
 String MaximDS18::makeAddressString(DeviceAddress owAddr) {
-    String addrStr = F("Pin");
+    String addrStr;
+    addrStr.reserve(50); // Reserve for "Pin" + pin# + "{0x##,0x##...}" (8 addresses)
+    addrStr = F("Pin");
     addrStr += (_dataPin);
     addrStr += '{';
     for (uint8_t i = 0; i < 8; i++) {

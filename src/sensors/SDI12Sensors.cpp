@@ -279,7 +279,9 @@ String SDI12Sensors::getSensorSerialNumber() {
 
 // The sensor installation location on the Mayfly
 String SDI12Sensors::getSensorLocation() {
-    String sensorLocation = F("SDI12-");
+    String sensorLocation;
+    sensorLocation.reserve(20); // Reserve for "SDI12-" + address + "_Pin" + pin
+    sensorLocation = F("SDI12-");
     sensorLocation += String(_SDI12address) + F("_Pin") + String(_dataPin);
     return sensorLocation;
 }

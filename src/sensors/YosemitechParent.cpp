@@ -42,7 +42,9 @@ YosemitechParent::YosemitechParent(
 
 // The sensor installation location on the Mayfly
 String YosemitechParent::getSensorLocation() {
-    String sensorLocation = F("modbus_0x");
+    String sensorLocation;
+    sensorLocation.reserve(12); // Reserve for "modbus_0x" + 2 hex chars
+    sensorLocation = F("modbus_0x");
     if (_modbusAddress < 16) sensorLocation += "0";
     sensorLocation += String(_modbusAddress, HEX);
     return sensorLocation;

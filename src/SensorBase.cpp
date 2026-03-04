@@ -41,7 +41,9 @@ Sensor::Sensor(const char* sensorName, const uint8_t totalReturnedValues,
 
 // This gets the place the sensor is installed ON THE MAYFLY (ie, pin number)
 String Sensor::getSensorLocation() {
-    String senseLoc = F("Pin");
+    String senseLoc;
+    senseLoc.reserve(10); // Reserve for "Pin" + pin number
+    senseLoc = F("Pin");
     senseLoc += String(_dataPin);
     return senseLoc;
 }

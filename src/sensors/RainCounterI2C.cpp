@@ -65,11 +65,15 @@ RainCounterI2C::~RainCounterI2C() {}
 
 String RainCounterI2C::getSensorLocation() {
 #if defined(MS_RAIN_SOFTWAREWIRE)
-    String address = F("SoftwareWire");
+    String address;
+    address.reserve(25); // Reserve for "SoftwareWire" + pin# + "_0x" + hex chars
+    address = F("SoftwareWire");
     if (_dataPin >= 0) address += _dataPin;
     address += F("_0x");
 #else
-    String address = F("I2C_0x");
+    String address;
+    address.reserve(10); // Reserve for "I2C_0x" + 2 hex chars
+    address = F("I2C_0x");
 #endif
     address += String(_i2cAddressHex, HEX);
     return address;

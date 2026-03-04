@@ -24,7 +24,9 @@ MeaSpecMS5803::MeaSpecMS5803(int8_t powerPin, uint8_t i2cAddressHex,
 
 
 String MeaSpecMS5803::getSensorLocation() {
-    String address = F("I2C_0x");
+    String address;
+    address.reserve(10); // Reserve for "I2C_0x" + 2 hex chars
+    address = F("I2C_0x");
     address += String(_i2cAddressHex, HEX);
     return address;
 }

@@ -77,7 +77,10 @@ ProcessorStats::ProcessorStats(const char* boardName, const char* version,
 
 
 String ProcessorStats::getSensorLocation() {
-    return String(_boardName) + " " + String(_version);
+    String result;
+    result.reserve(50); // Reserve for board name + " " + version
+    result = String(_boardName) + " " + String(_version);
+    return result;
 }
 
 float ProcessorStats::getBatteryVoltage() {

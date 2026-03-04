@@ -28,7 +28,9 @@ BoschBMP3xx::BoschBMP3xx(int8_t powerPin, Mode mode,
 
 
 String BoschBMP3xx::getSensorLocation() {
-    String address = F("I2C_0x");
+    String address;
+    address.reserve(10); // Reserve for "I2C_0x" + 2 hex chars
+    address = F("I2C_0x");
     address += String(_i2cAddressHex, HEX);
     return address;
 }
