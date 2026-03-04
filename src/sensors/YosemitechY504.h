@@ -227,7 +227,7 @@ class YosemitechY504 : public YosemitechParent {
     /**
      * @brief Destroy the Yosemitech Y504 object
      */
-    ~YosemitechY504() = default;
+    ~YosemitechY504() override = default;
 };
 
 
@@ -271,7 +271,7 @@ class YosemitechY504_DOpct : public Variable {
     /**
      * @brief Destroy the YosemitechY504_DOpct object - no action needed.
      */
-    ~YosemitechY504_DOpct() = default;
+    ~YosemitechY504_DOpct() override = default;
 };
 
 
@@ -315,7 +315,7 @@ class YosemitechY504_Temp : public Variable {
     /**
      * @brief Destroy the YosemitechY504_Temp object - no action needed.
      */
-    ~YosemitechY504_Temp() = default;
+    ~YosemitechY504_Temp() override = default;
 };
 
 
@@ -359,7 +359,7 @@ class YosemitechY504_DOmgL : public Variable {
     /**
      * @brief Destroy the YosemitechY504_DOmgL object - no action needed.
      */
-    ~YosemitechY504_DOmgL() = default;
+    ~YosemitechY504_DOmgL() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_YOSEMITECHY504_H_

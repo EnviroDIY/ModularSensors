@@ -1257,7 +1257,7 @@ class Modem_RSSI : public Variable {
     /**
      * @brief Destroy the Modem_RSSI object - no action needed.
      */
-    ~Modem_RSSI() = default;
+    ~Modem_RSSI() override = default;
 };
 
 
@@ -1292,7 +1292,7 @@ class Modem_SignalPercent : public Variable {
     /**
      * @brief Destroy the Modem_SignalPercent object - no action needed.
      */
-    ~Modem_SignalPercent() = default;
+    ~Modem_SignalPercent() override = default;
 };
 
 
@@ -1330,7 +1330,7 @@ class Modem_BatteryState : public Variable {
     /**
      * @brief Destroy the Modem_BatteryState object - no action needed.
      */
-    ~Modem_BatteryState() = default;
+    ~Modem_BatteryState() override = default;
 };
 
 
@@ -1369,7 +1369,7 @@ class Modem_BatteryPercent : public Variable {
     /**
      * @brief Destroy the Modem_BatteryPercent object - no action needed.
      */
-    ~Modem_BatteryPercent() = default;
+    ~Modem_BatteryPercent() override = default;
 };
 
 
@@ -1408,7 +1408,7 @@ class Modem_BatteryVoltage : public Variable {
     /**
      * @brief Destroy the Modem_BatteryVoltage object - no action needed.
      */
-    ~Modem_BatteryVoltage() = default;
+    ~Modem_BatteryVoltage() override = default;
 };
 
 
@@ -1445,7 +1445,7 @@ class Modem_Temp : public Variable {
     /**
      * @brief Destroy the Modem_Temp object - no action needed.
      */
-    ~Modem_Temp() = default;
+    ~Modem_Temp() override = default;
 };
 
 #endif  // SRC_LOGGERMODEM_H_

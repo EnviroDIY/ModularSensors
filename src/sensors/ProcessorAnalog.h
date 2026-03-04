@@ -180,7 +180,7 @@ class ProcessorAnalogBase : public AnalogVoltageBase {
     /**
      * @brief Destroy the ProcessorAnalogBase object
      */
-    virtual ~ProcessorAnalogBase() = default;
+    virtual ~ProcessorAnalogBase() override = default;
 
     /**
      * @brief Initialize the processor analog system
@@ -270,7 +270,7 @@ class ProcessorAnalog : public Sensor {
     /**
      * @brief Destroy the Processor Analog object
      */
-    ~ProcessorAnalog();
+    ~ProcessorAnalog() override;
 
     // Delete copy constructor and copy assignment operator to prevent shallow
     // copies
@@ -343,7 +343,7 @@ class ProcessorAnalog_Voltage : public Variable {
     /**
      * @brief Destroy the ProcessorAnalog_Voltage object - no action needed.
      */
-    ~ProcessorAnalog_Voltage() = default;
+    ~ProcessorAnalog_Voltage() override = default;
 };
 
 /**@}*/

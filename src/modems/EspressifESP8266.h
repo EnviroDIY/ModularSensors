@@ -122,7 +122,7 @@ class EspressifESP8266 : public Espressif {
     /**
      * @brief Destroy the Espressif ESP8266 object - no action taken
      */
-    ~EspressifESP8266() = default;
+    ~EspressifESP8266() override = default;
 
     bool modemWake(void) override;
 

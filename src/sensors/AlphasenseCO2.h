@@ -301,7 +301,7 @@ class AlphasenseCO2 : public Sensor {
     /**
      * @brief Destroy the AlphasenseCO2 object
      */
-    ~AlphasenseCO2();
+    ~AlphasenseCO2() override;
 
     // Delete copy constructor and copy assignment operator to prevent shallow
     // copies
@@ -374,7 +374,7 @@ class AlphasenseCO2_CO2 : public Variable {
     /**
      * @brief Destroy the AlphasenseCO2_CO2 object - no action needed.
      */
-    ~AlphasenseCO2_CO2() = default;
+    ~AlphasenseCO2_CO2() override = default;
 };
 
 
@@ -419,7 +419,7 @@ class AlphasenseCO2_Voltage : public Variable {
     /**
      * @brief Destroy the AlphasenseCO2_Voltage object - no action needed.
      */
-    ~AlphasenseCO2_Voltage() = default;
+    ~AlphasenseCO2_Voltage() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_ALPHASENSECO2_H_

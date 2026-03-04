@@ -269,7 +269,7 @@ class AOSongDHT : public Sensor {
     /**
      * @brief Destroy the AOSongDHT object - no action needed.
      */
-    ~AOSongDHT() = default;
+    ~AOSongDHT() override = default;
 
     bool setup(void) override;
 
@@ -319,7 +319,7 @@ class AOSongDHT_Humidity : public Variable {
     /**
      * @brief Destroy the AOSongDHT_Humidity object - no action needed.
      */
-    ~AOSongDHT_Humidity() = default;
+    ~AOSongDHT_Humidity() override = default;
 };
 
 
@@ -360,7 +360,7 @@ class AOSongDHT_Temp : public Variable {
     /**
      * @brief Destroy the AOSongDHT_Temp object - no action needed.
      */
-    ~AOSongDHT_Temp() = default;
+    ~AOSongDHT_Temp() override = default;
 };
 
 
@@ -400,7 +400,7 @@ class AOSongDHT_HI : public Variable {
     /**
      * @brief Destroy the AOSongDHT_HI object - no action needed.
      */
-    ~AOSongDHT_HI() = default;
+    ~AOSongDHT_HI() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_AOSONGDHT_H_

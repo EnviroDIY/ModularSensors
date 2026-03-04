@@ -267,7 +267,7 @@ class TIINA219 : public Sensor {
     /**
      * @brief Destroy the TI INA219 object
      */
-    ~TIINA219() = default;
+    ~TIINA219() override = default;
 
     /**
      * @brief Wake the sensor up and read the calibration coefficient from it.
@@ -351,7 +351,7 @@ class TIINA219_Current : public Variable {
     /**
      * @brief Destroy the TIINA219_Current object - no action needed.
      */
-    ~TIINA219_Current() = default;
+    ~TIINA219_Current() override = default;
 };
 
 
@@ -394,7 +394,7 @@ class TIINA219_Voltage : public Variable {
     /**
      * @brief Destroy the TIINA219_Voltage object - no action needed.
      */
-    ~TIINA219_Voltage() = default;
+    ~TIINA219_Voltage() override = default;
 };
 
 /**
@@ -445,7 +445,7 @@ class TIINA219_Power : public Variable {
     /**
      * @brief Destroy the TIINA219_Power object - no action needed.
      */
-    ~TIINA219_Power() = default;
+    ~TIINA219_Power() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_TIINA219_H_

@@ -277,7 +277,7 @@ class MeterHydros21 : public SDI12Sensors {
     /**
      * @brief Destroy the Meter Hydros 21 object
      */
-    ~MeterHydros21() = default;
+    ~MeterHydros21() override = default;
 };
 
 
@@ -320,7 +320,7 @@ class MeterHydros21_Cond : public Variable {
     /**
      * @brief Destroy the MeterHydros21_Cond object - no action needed.
      */
-    ~MeterHydros21_Cond() = default;
+    ~MeterHydros21_Cond() override = default;
 };
 
 
@@ -363,7 +363,7 @@ class MeterHydros21_Temp : public Variable {
     /**
      * @brief Destroy the MeterHydros21_Temp object - no action needed.
      */
-    ~MeterHydros21_Temp() = default;
+    ~MeterHydros21_Temp() override = default;
 };
 
 
@@ -406,7 +406,7 @@ class MeterHydros21_Depth : public Variable {
     /**
      * @brief Destroy the MeterHydros21_Depth object - no action needed.
      */
-    ~MeterHydros21_Depth() = default;
+    ~MeterHydros21_Depth() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_METERHYDROS21_H_

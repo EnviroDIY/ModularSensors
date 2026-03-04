@@ -253,7 +253,7 @@ class SensirionSHT4x : public Sensor {
     /**
      * @brief Destroy the SensirionSHT4x object - no action needed.
      */
-    ~SensirionSHT4x() = default;
+    ~SensirionSHT4x() override = default;
 
     /**
      * @brief Report the I2C address of the SHT4x - which is always 0x44.
@@ -338,7 +338,7 @@ class SensirionSHT4x_Humidity : public Variable {
     /**
      * @brief Destroy the SensirionSHT4x_Humidity object - no action needed.
      */
-    ~SensirionSHT4x_Humidity() = default;
+    ~SensirionSHT4x_Humidity() override = default;
 };
 
 
@@ -380,7 +380,7 @@ class SensirionSHT4x_Temp : public Variable {
     /**
      * @brief Destroy the SensirionSHT4x_Temp object - no action needed.
      */
-    ~SensirionSHT4x_Temp() = default;
+    ~SensirionSHT4x_Temp() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_SENSIRIONSHT4X_H_

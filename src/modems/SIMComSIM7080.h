@@ -183,7 +183,7 @@ class SIMComSIM7080 : public loggerModem {
     /**
      * @brief Destroy the SIMComSIM7080 object - no action needed
      */
-    ~SIMComSIM7080() = default;
+    ~SIMComSIM7080() override = default;
 
     bool modemWake(void) override;
 

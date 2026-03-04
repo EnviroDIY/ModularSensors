@@ -366,7 +366,7 @@ class TurnerCyclops : public Sensor {
     /**
      * @brief Destroy the Turner Cyclops object
      */
-    ~TurnerCyclops();
+    ~TurnerCyclops() override;
 
     // Delete copy constructor and copy assignment operator to prevent shallow
     // copies
@@ -456,7 +456,7 @@ class TurnerCyclops_Voltage : public Variable {
     /**
      * @brief Destroy the Turner Cyclops Voltage object - no action needed.
      */
-    ~TurnerCyclops_Voltage() = default;
+    ~TurnerCyclops_Voltage() override = default;
 };
 
 
@@ -514,7 +514,7 @@ class TurnerCyclops_Chlorophyll : public Variable {
      * @brief Destroy the Turner Cyclops Chlorophyll variable object - no action
      * needed.
      */
-    ~TurnerCyclops_Chlorophyll() = default;
+    ~TurnerCyclops_Chlorophyll() override = default;
 };
 
 
@@ -571,7 +571,7 @@ class TurnerCyclops_Rhodamine : public Variable {
      * @brief Destroy the Turner Cyclops Rhodamine variable object - no action
      * needed.
      */
-    ~TurnerCyclops_Rhodamine() = default;
+    ~TurnerCyclops_Rhodamine() override = default;
 };
 
 
@@ -627,7 +627,7 @@ class TurnerCyclops_Fluorescein : public Variable {
      * @brief Destroy the Turner Cyclops Fluorescein variable object - no action
      * needed.
      */
-    ~TurnerCyclops_Fluorescein() = default;
+    ~TurnerCyclops_Fluorescein() override = default;
 };
 
 
@@ -686,7 +686,7 @@ class TurnerCyclops_Phycocyanin : public Variable {
      * @brief Destroy the Turner Cyclops Phycocyanin variable object - no action
      * needed.
      */
-    ~TurnerCyclops_Phycocyanin() = default;
+    ~TurnerCyclops_Phycocyanin() override = default;
 };
 
 
@@ -743,7 +743,7 @@ class TurnerCyclops_Phycoerythrin : public Variable {
      * @brief Destroy the Turner Cyclops Phycoerythrin variable object - no
      * action needed.
      */
-    ~TurnerCyclops_Phycoerythrin() = default;
+    ~TurnerCyclops_Phycoerythrin() override = default;
 };
 
 
@@ -805,7 +805,7 @@ class TurnerCyclops_CDOM : public Variable {
      * @brief Destroy the Turner Cyclops CDOM variable object - no action
      * needed.
      */
-    ~TurnerCyclops_CDOM() = default;
+    ~TurnerCyclops_CDOM() override = default;
 };
 
 
@@ -864,7 +864,7 @@ class TurnerCyclops_CrudeOil : public Variable {
      * @brief Destroy the Turner Cyclops CrudeOil variable object - no action
      * needed.
      */
-    ~TurnerCyclops_CrudeOil() = default;
+    ~TurnerCyclops_CrudeOil() override = default;
 };
 
 
@@ -923,7 +923,7 @@ class TurnerCyclops_Brighteners : public Variable {
     /**
      * @brief Destroy the Turner Cyclops Brighteners object - no action needed.
      */
-    ~TurnerCyclops_Brighteners() = default;
+    ~TurnerCyclops_Brighteners() override = default;
 };
 
 
@@ -980,7 +980,7 @@ class TurnerCyclops_Turbidity : public Variable {
      * @brief Destroy the Turner Cyclops Turbidity variable object - no action
      * needed.
      */
-    ~TurnerCyclops_Turbidity() = default;
+    ~TurnerCyclops_Turbidity() override = default;
 };
 
 
@@ -1037,7 +1037,7 @@ class TurnerCyclops_PTSA : public Variable {
      * @brief Destroy the Turner Cyclops PTSA variable object - no action
      * needed.
      */
-    ~TurnerCyclops_PTSA() = default;
+    ~TurnerCyclops_PTSA() override = default;
 };
 
 
@@ -1094,7 +1094,7 @@ class TurnerCyclops_BTEX : public Variable {
      * @brief Destroy the Turner Cyclops BTEX variable object - no action
      * needed.
      */
-    ~TurnerCyclops_BTEX() = default;
+    ~TurnerCyclops_BTEX() override = default;
 };
 
 
@@ -1150,7 +1150,7 @@ class TurnerCyclops_Tryptophan : public Variable {
      * @brief Destroy the Turner Cyclops Tryptophan variable object - no action
      * needed.
      */
-    ~TurnerCyclops_Tryptophan() = default;
+    ~TurnerCyclops_Tryptophan() override = default;
 };
 
 
@@ -1208,7 +1208,7 @@ class TurnerCyclops_RedChlorophyll : public Variable {
      * @brief Destroy the Turner Cyclops Red Chlorophyll variable object - no
      * action needed.
      */
-    ~TurnerCyclops_RedChlorophyll() = default;
+    ~TurnerCyclops_RedChlorophyll() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_TURNERCYCLOPS_H_

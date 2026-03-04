@@ -257,7 +257,7 @@ class PaleoTerraRedox : public Sensor {
      * @brief Destroy the PaleoTerra Redox object.  Also destroy the software
      * I2C instance if one was created.
      */
-    ~PaleoTerraRedox();
+    ~PaleoTerraRedox() override;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -337,7 +337,7 @@ class PaleoTerraRedox_Voltage : public Variable {
     /**
      * @brief Destroy the PaleoTerraRedox_Voltage object - no action needed.
      */
-    ~PaleoTerraRedox_Voltage() = default;
+    ~PaleoTerraRedox_Voltage() override = default;
 };
 
 /**

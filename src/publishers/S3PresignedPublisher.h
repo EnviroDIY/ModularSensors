@@ -176,7 +176,7 @@ class S3PresignedPublisher : public dataPublisher {
     /**
      * @brief Destroy the S3 Publisher object
      */
-    virtual ~S3PresignedPublisher() = default;
+    virtual ~S3PresignedPublisher() override = default;
 
     /**
      * @brief Set the S3 host name

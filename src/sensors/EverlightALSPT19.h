@@ -301,7 +301,7 @@ class EverlightALSPT19 : public Sensor {
      * Conditionally deletes the _analogVoltageReader member if the ownership
      * flag _ownsAnalogVoltageReader is true, otherwise leaves it unmodified.
      */
-    ~EverlightALSPT19();
+    ~EverlightALSPT19() override;
 
     // Delete copy constructor and copy assignment operator to prevent shallow
     // copies
@@ -371,7 +371,7 @@ class EverlightALSPT19_Voltage : public Variable {
     /**
      * @brief Destroy the EverlightALSPT19_Voltage object - no action needed.
      */
-    ~EverlightALSPT19_Voltage() = default;
+    ~EverlightALSPT19_Voltage() override = default;
 };
 
 
@@ -415,7 +415,7 @@ class EverlightALSPT19_Current : public Variable {
     /**
      * @brief Destroy the EverlightALSPT19_Current object - no action needed.
      */
-    ~EverlightALSPT19_Current() = default;
+    ~EverlightALSPT19_Current() override = default;
 };
 
 
@@ -460,7 +460,7 @@ class EverlightALSPT19_Illuminance : public Variable {
      * @brief Destroy the EverlightALSPT19_Illuminance object - no action
      * needed.
      */
-    ~EverlightALSPT19_Illuminance() = default;
+    ~EverlightALSPT19_Illuminance() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_EVERLIGHTALSPT19_H_

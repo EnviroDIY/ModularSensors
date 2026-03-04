@@ -435,7 +435,7 @@ class BoschBMP3xx : public Sensor {
     /**
      * @brief Destroy the Bosch BMP3xx object
      */
-    ~BoschBMP3xx() = default;
+    ~BoschBMP3xx() override = default;
 
     bool wake(void) override;
     /**
@@ -651,7 +651,7 @@ class BoschBMP3xx_Pressure : public Variable {
     /**
      * @brief Destroy the BoschBMP3xx_Pressure object - no action needed.
      */
-    ~BoschBMP3xx_Pressure() = default;
+    ~BoschBMP3xx_Pressure() override = default;
 };
 
 
@@ -696,7 +696,7 @@ class BoschBMP3xx_Altitude : public Variable {
     /**
      * @brief Destroy the BoschBMP3xx_Altitude object - no action needed.
      */
-    ~BoschBMP3xx_Altitude() = default;
+    ~BoschBMP3xx_Altitude() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_BOSCHBMP3XX_H_

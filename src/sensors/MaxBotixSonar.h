@@ -222,7 +222,7 @@ class MaxBotixSonar : public Sensor {
     /**
      * @brief Destroy the MaxBotix Sonar object
      */
-    ~MaxBotixSonar() = default;
+    ~MaxBotixSonar() override = default;
 
     String getSensorLocation(void) override;
 
@@ -311,7 +311,7 @@ class MaxBotixSonar_Range : public Variable {
     /**
      * @brief Destroy the MaxBotixSonar_Range object - no action needed.
      */
-    ~MaxBotixSonar_Range() = default;
+    ~MaxBotixSonar_Range() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_MAXBOTIXSONAR_H_

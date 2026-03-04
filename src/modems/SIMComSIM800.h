@@ -190,7 +190,7 @@ class SIMComSIM800 : public loggerModem {
     /**
      * @brief Destroy the SIMComSIM800 object - no action taken
      */
-    ~SIMComSIM800() = default;
+    ~SIMComSIM800() override = default;
 
     bool modemWake(void) override;
 

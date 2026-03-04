@@ -193,7 +193,7 @@ class YosemitechY510 : public YosemitechParent {
     /**
      * @brief Destroy the Yosemitech Y510 object
      */
-    ~YosemitechY510() = default;
+    ~YosemitechY510() override = default;
 };
 
 
@@ -237,7 +237,7 @@ class YosemitechY510_Turbidity : public Variable {
     /**
      * @brief Destroy the YosemitechY510_Turbidity object - no action needed.
      */
-    ~YosemitechY510_Turbidity() = default;
+    ~YosemitechY510_Turbidity() override = default;
 };
 
 
@@ -281,7 +281,7 @@ class YosemitechY510_Temp : public Variable {
     /**
      * @brief Destroy the YosemitechY510_Temp object - no action needed.
      */
-    ~YosemitechY510_Temp() = default;
+    ~YosemitechY510_Temp() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_YOSEMITECHY510_H_

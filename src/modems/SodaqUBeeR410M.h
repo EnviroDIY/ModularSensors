@@ -297,7 +297,7 @@ class SodaqUBeeR410M : public loggerModem {
     /**
      * @brief Destroy the Sodaq UBee R410M object - no action needed
      */
-    ~SodaqUBeeR410M() = default;
+    ~SodaqUBeeR410M() override = default;
 
     bool modemWake(void) override;
 

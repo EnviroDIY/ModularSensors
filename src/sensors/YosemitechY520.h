@@ -194,7 +194,7 @@ class YosemitechY520 : public YosemitechParent {
     /**
      * @brief Destroy the Yosemitech Y520 object
      */
-    ~YosemitechY520() = default;
+    ~YosemitechY520() override = default;
 };
 
 
@@ -238,7 +238,7 @@ class YosemitechY520_Cond : public Variable {
     /**
      * @brief Destroy the YosemitechY520_Cond object - no action needed.
      */
-    ~YosemitechY520_Cond() = default;
+    ~YosemitechY520_Cond() override = default;
 };
 
 
@@ -282,7 +282,7 @@ class YosemitechY520_Temp : public Variable {
     /**
      * @brief Destroy the YosemitechY520_Temp object - no action needed.
      */
-    ~YosemitechY520_Temp() = default;
+    ~YosemitechY520_Temp() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_YOSEMITECHY520_H_

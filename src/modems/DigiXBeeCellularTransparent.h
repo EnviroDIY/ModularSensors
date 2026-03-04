@@ -159,7 +159,7 @@ class DigiXBeeCellularTransparent : public DigiXBee {
      * @brief Destroy the Digi XBee Cellular Transparent object - no action
      * needed
      */
-    ~DigiXBeeCellularTransparent() = default;
+    ~DigiXBeeCellularTransparent() override = default;
 
     bool modemWake(void) override;
 

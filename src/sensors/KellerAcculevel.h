@@ -179,7 +179,7 @@ class KellerAcculevel : public KellerParent {
     /**
      * @brief Destroy the Keller Acculevel object
      */
-    ~KellerAcculevel() = default;
+    ~KellerAcculevel() override = default;
 };
 
 
@@ -225,7 +225,7 @@ class KellerAcculevel_Pressure : public Variable {
     /**
      * @brief Destroy the KellerAcculevel_Pressure object - no action needed.
      */
-    ~KellerAcculevel_Pressure() = default;
+    ~KellerAcculevel_Pressure() override = default;
 };
 
 
@@ -269,7 +269,7 @@ class KellerAcculevel_Temp : public Variable {
     /**
      * @brief Destroy the KellerAcculevel_Temp object - no action needed.
      */
-    ~KellerAcculevel_Temp() = default;
+    ~KellerAcculevel_Temp() override = default;
 };
 
 
@@ -313,7 +313,7 @@ class KellerAcculevel_Height : public Variable {
     /**
      * @brief Destroy the KellerAcculevel_Height object - no action needed.
      */
-    ~KellerAcculevel_Height() = default;
+    ~KellerAcculevel_Height() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_KELLERACCULEVEL_H_

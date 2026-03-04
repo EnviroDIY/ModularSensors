@@ -220,7 +220,7 @@ class FreescaleMPL115A2 : public Sensor {
     /**
      * @brief Destroy the FreescaleMPL115A2 object
      */
-    ~FreescaleMPL115A2() = default;
+    ~FreescaleMPL115A2() override = default;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -299,7 +299,7 @@ class FreescaleMPL115A2_Temp : public Variable {
     /**
      * @brief Destroy the FreescaleMPL115A2_Temp object - no action needed.
      */
-    ~FreescaleMPL115A2_Temp() = default;
+    ~FreescaleMPL115A2_Temp() override = default;
 };
 
 /**
@@ -353,7 +353,7 @@ class FreescaleMPL115A2_Pressure : public Variable {
     /**
      * @brief Destroy the FreescaleMPL115A2_Pressure object - no action needed.
      */
-    ~FreescaleMPL115A2_Pressure() = default;
+    ~FreescaleMPL115A2_Pressure() override = default;
 };
 
 /**

@@ -239,7 +239,7 @@ class AtlasScientificDO : public AtlasParent {
     /**
      * @brief Destroy the Atlas Scientific DO object
      */
-    ~AtlasScientificDO() = default;
+    ~AtlasScientificDO() override = default;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -294,7 +294,7 @@ class AtlasScientificDO_DOmgL : public Variable {
     /**
      * @brief Destroy the AtlasScientificDO_DOmgL object - no action needed.
      */
-    ~AtlasScientificDO_DOmgL() = default;
+    ~AtlasScientificDO_DOmgL() override = default;
 };
 
 /* clang-format off */
@@ -337,7 +337,7 @@ class AtlasScientificDO_DOpct : public Variable {
     /**
      * @brief Destroy the AtlasScientificDO_DOpct object - no action needed.
      */
-    ~AtlasScientificDO_DOpct() = default;
+    ~AtlasScientificDO_DOpct() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_ATLASSCIENTIFICDO_H_

@@ -230,7 +230,7 @@ class AtlasScientificCO2 : public AtlasParent {
     /**
      * @brief Destroy the Atlas Scientific CO2 object.
      */
-    ~AtlasScientificCO2() = default;
+    ~AtlasScientificCO2() override = default;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -285,7 +285,7 @@ class AtlasScientificCO2_CO2 : public Variable {
     /**
      * @brief Destroy the AtlasScientificCO2_CO2 object - no action needed.
      */
-    ~AtlasScientificCO2_CO2() = default;
+    ~AtlasScientificCO2_CO2() override = default;
 };
 
 /* clang-format off */
@@ -328,7 +328,7 @@ class AtlasScientificCO2_Temp : public Variable {
     /**
      * @brief Destroy the AtlasScientificCO2_Temp object - no action needed.
      */
-    ~AtlasScientificCO2_Temp() = default;
+    ~AtlasScientificCO2_Temp() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_ATLASSCIENTIFICCO2_H_

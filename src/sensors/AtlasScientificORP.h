@@ -197,7 +197,7 @@ class AtlasScientificORP : public AtlasParent {
     /**
      * @brief Destroy the Atlas Scientific ORP object
      */
-    ~AtlasScientificORP() = default;
+    ~AtlasScientificORP() override = default;
 };
 
 
@@ -242,7 +242,7 @@ class AtlasScientificORP_Potential : public Variable {
      * @brief Destroy the AtlasScientificORP_Potential() object - no action
      * needed.
      */
-    ~AtlasScientificORP_Potential() = default;
+    ~AtlasScientificORP_Potential() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_ATLASSCIENTIFICORP_H_

@@ -538,7 +538,7 @@ class ANBpH : public Sensor {
     /**
      * @brief Destroy the ANB pH object - no action taken
      */
-    virtual ~ANBpH() = default;
+    virtual ~ANBpH() override = default;
 
     String getSensorLocation(void) override;
 
@@ -746,7 +746,7 @@ class ANBpH_pH : public Variable {
     /**
      * @brief Destroy the ANBpH_pH object - no action needed.
      */
-    ~ANBpH_pH() = default;
+    ~ANBpH_pH() override = default;
 };
 
 /* clang-format off */
@@ -785,7 +785,7 @@ class ANBpH_Temp : public Variable {
     /**
      * @brief Destroy the ANBpH_Temp object - no action needed.
      */
-    ~ANBpH_Temp() = default;
+    ~ANBpH_Temp() override = default;
 };
 
 /* clang-format off */
@@ -827,7 +827,7 @@ class ANBpH_Salinity : public Variable {
      * @brief Destroy the ANBpH_Salinity() object - no action
      * needed.
      */
-    ~ANBpH_Salinity() = default;
+    ~ANBpH_Salinity() override = default;
 };
 
 
@@ -866,7 +866,7 @@ class ANBpH_SpCond : public Variable {
     /**
      * @brief Destroy the ANBpH_SpCond object - no action needed.
      */
-    ~ANBpH_SpCond() = default;
+    ~ANBpH_SpCond() override = default;
 };
 
 /* clang-format off */
@@ -905,7 +905,7 @@ class ANBpH_EC : public Variable {
     /**
      * @brief Destroy the ANBpH_EC object - no action needed.
      */
-    ~ANBpH_EC() = default;
+    ~ANBpH_EC() override = default;
 };
 
 
@@ -950,7 +950,7 @@ class ANBpH_HealthCode : public Variable {
      * @brief Destroy the ANBpH_HealthCode object - no action
      * needed.
      */
-    ~ANBpH_HealthCode() = default;
+    ~ANBpH_HealthCode() override = default;
 };
 
 
@@ -996,7 +996,7 @@ class ANBpH_DiagnosticCode : public Variable {
      * @brief Destroy the ANBpH_DiagnosticCode object - no action
      * needed.
      */
-    ~ANBpH_DiagnosticCode() = default;
+    ~ANBpH_DiagnosticCode() override = default;
 };
 
 
@@ -1041,7 +1041,7 @@ class ANBpH_StatusCode : public Variable {
      * @brief Destroy the ANBpH_StatusCode object - no action
      * needed.
      */
-    ~ANBpH_StatusCode() = default;
+    ~ANBpH_StatusCode() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_ANB_SENSORS_PH_H_

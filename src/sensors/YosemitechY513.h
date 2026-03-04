@@ -194,7 +194,7 @@ class YosemitechY513 : public YosemitechParent {
     /**
      * @brief Destroy the Yosemitech Y513 object
      */
-    ~YosemitechY513() = default;
+    ~YosemitechY513() override = default;
 };
 
 
@@ -239,7 +239,7 @@ class YosemitechY513_BGA : public Variable {
      * @brief Destroy the YosemitechY513_BGA() object - no action
      * needed.
      */
-    ~YosemitechY513_BGA() = default;
+    ~YosemitechY513_BGA() override = default;
 };
 
 
@@ -283,7 +283,7 @@ class YosemitechY513_Temp : public Variable {
     /**
      * @brief Destroy the YosemitechY513_Temp object - no action needed.
      */
-    ~YosemitechY513_Temp() = default;
+    ~YosemitechY513_Temp() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_YOSEMITECHY513_H_

@@ -278,7 +278,7 @@ class TurnerTurbidityPlus : public Sensor {
     /**
      * @brief Destroy the Turner Turbidity Plus object
      */
-    ~TurnerTurbidityPlus();
+    ~TurnerTurbidityPlus() override;
 
     // Delete copy constructor and copy assignment operator to prevent shallow
     // copies
@@ -397,7 +397,7 @@ class TurnerTurbidityPlus_Voltage : public Variable {
     /**
      * @brief Destroy the TurnerTurbidityPlus_Voltage object - no action needed.
      */
-    ~TurnerTurbidityPlus_Voltage() = default;
+    ~TurnerTurbidityPlus_Voltage() override = default;
 };
 
 
@@ -444,7 +444,7 @@ class TurnerTurbidityPlus_Turbidity : public Variable {
      * @brief Destroy the TurnerTurbidityPlus_Turbidity object - no action
      * needed.
      */
-    ~TurnerTurbidityPlus_Turbidity() = default;
+    ~TurnerTurbidityPlus_Turbidity() override = default;
 };
 /**@}*/
 

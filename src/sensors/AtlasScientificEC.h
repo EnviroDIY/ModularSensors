@@ -302,7 +302,7 @@ class AtlasScientificEC : public AtlasParent {
     /**
      * @brief Destroy the Atlas Scientific EC object
      */
-    ~AtlasScientificEC() = default;
+    ~AtlasScientificEC() override = default;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -357,7 +357,7 @@ class AtlasScientificEC_Cond : public Variable {
     /**
      * @brief Destroy the AtlasScientificEC_Cond object - no action needed.
      */
-    ~AtlasScientificEC_Cond() = default;
+    ~AtlasScientificEC_Cond() override = default;
 };
 
 /* clang-format off */
@@ -400,7 +400,7 @@ class AtlasScientificEC_TDS : public Variable {
     /**
      * @brief Destroy the AtlasScientificEC_TDS object - no action needed.
      */
-    ~AtlasScientificEC_TDS() = default;
+    ~AtlasScientificEC_TDS() override = default;
 };
 
 /* clang-format off */
@@ -444,7 +444,7 @@ class AtlasScientificEC_Salinity : public Variable {
      * @brief Destroy the AtlasScientificEC_Salinity() object - no action
      * needed.
      */
-    ~AtlasScientificEC_Salinity() = default;
+    ~AtlasScientificEC_Salinity() override = default;
 };
 
 /* clang-format off */
@@ -488,7 +488,7 @@ class AtlasScientificEC_SpecificGravity : public Variable {
      * @brief Destroy the AtlasScientificEC_SpecificGravity() object - no action
      * needed.
      */
-    ~AtlasScientificEC_SpecificGravity() = default;
+    ~AtlasScientificEC_SpecificGravity() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_ATLASSCIENTIFICEC_H_

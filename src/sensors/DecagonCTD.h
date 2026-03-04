@@ -256,7 +256,7 @@ class DecagonCTD : public SDI12Sensors {
     /**
      * @brief Destroy the Decagon CTD object
      */
-    ~DecagonCTD() = default;
+    ~DecagonCTD() override = default;
 };
 
 
@@ -297,7 +297,7 @@ class DecagonCTD_Cond : public Variable {
     /**
      * @brief Destroy the DecagonCTD_Cond object - no action needed.
      */
-    ~DecagonCTD_Cond() = default;
+    ~DecagonCTD_Cond() override = default;
 };
 
 
@@ -338,7 +338,7 @@ class DecagonCTD_Temp : public Variable {
     /**
      * @brief Destroy the DecagonCTD_Temp object - no action needed.
      */
-    ~DecagonCTD_Temp() = default;
+    ~DecagonCTD_Temp() override = default;
 };
 
 
@@ -379,7 +379,7 @@ class DecagonCTD_Depth : public Variable {
     /**
      * @brief Destroy the DecagonCTD_Depth object - no action needed.
      */
-    ~DecagonCTD_Depth() = default;
+    ~DecagonCTD_Depth() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_decagon_ctd_H_

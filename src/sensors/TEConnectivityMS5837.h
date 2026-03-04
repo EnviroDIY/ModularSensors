@@ -464,7 +464,7 @@ class TEConnectivityMS5837 : public Sensor {
     /**
      * @brief Destroy the TEConnectivityMS5837 object
      */
-    ~TEConnectivityMS5837() = default;
+    ~TEConnectivityMS5837() override = default;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -592,7 +592,7 @@ class TEConnectivityMS5837_Temp : public Variable {
     /**
      * @brief Destroy the TEConnectivityMS5837_Temp object - no action needed.
      */
-    ~TEConnectivityMS5837_Temp() = default;
+    ~TEConnectivityMS5837_Temp() override = default;
 };
 
 
@@ -639,7 +639,7 @@ class TEConnectivityMS5837_Pressure : public Variable {
      * @brief Destroy the TEConnectivityMS5837_Pressure object - no action
      * needed.
      */
-    ~TEConnectivityMS5837_Pressure() = default;
+    ~TEConnectivityMS5837_Pressure() override = default;
 };
 
 
@@ -683,7 +683,7 @@ class TEConnectivityMS5837_Depth : public Variable {
     /**
      * @brief Destroy the TEConnectivityMS5837_Depth object - no action needed.
      */
-    ~TEConnectivityMS5837_Depth() = default;
+    ~TEConnectivityMS5837_Depth() override = default;
 };
 
 
@@ -730,7 +730,7 @@ class TEConnectivityMS5837_Altitude : public Variable {
      * @brief Destroy the TEConnectivityMS5837_Altitude object - no action
      * needed.
      */
-    ~TEConnectivityMS5837_Altitude() = default;
+    ~TEConnectivityMS5837_Altitude() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_TECONNECTIVITYMS5837_H_

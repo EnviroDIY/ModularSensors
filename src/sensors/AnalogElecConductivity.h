@@ -334,7 +334,7 @@ class AnalogElecConductivity : public Sensor {
      *
      * Deletes the internal analog voltage reader if this object owns it.
      */
-    ~AnalogElecConductivity();
+    ~AnalogElecConductivity() override;
 
     // Delete copy constructor and copy assignment operator to prevent shallow
     // copies
@@ -425,7 +425,7 @@ class AnalogElecConductivity_EC : public Variable {
     /**
      * @brief Destroy the AnalogElecConductivity_EC object - no action needed.
      */
-    ~AnalogElecConductivity_EC() = default;
+    ~AnalogElecConductivity_EC() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_ANALOGELECCONDUCTIVITY_H_

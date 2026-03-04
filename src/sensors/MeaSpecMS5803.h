@@ -235,7 +235,7 @@ class MeaSpecMS5803 : public Sensor {
     /**
      * @brief Destroy the MeaSpecMS5803 object
      */
-    ~MeaSpecMS5803() = default;
+    ~MeaSpecMS5803() override = default;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -311,7 +311,7 @@ class MeaSpecMS5803_Temp : public Variable {
     /**
      * @brief Destroy the MeaSpecMS5803_Temp object - no action needed.
      */
-    ~MeaSpecMS5803_Temp() = default;
+    ~MeaSpecMS5803_Temp() override = default;
 };
 
 
@@ -358,7 +358,7 @@ class MeaSpecMS5803_Pressure : public Variable {
     /**
      * @brief Destroy the MeaSpecMS5803_Pressure object - no action needed.
      */
-    ~MeaSpecMS5803_Pressure() = default;
+    ~MeaSpecMS5803_Pressure() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_MEASPECMS5803_H_

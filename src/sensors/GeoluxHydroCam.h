@@ -283,7 +283,7 @@ class GeoluxHydroCam : public Sensor {
     /**
      * @brief Destroy the Geolux HydroCam object
      */
-    ~GeoluxHydroCam() = default;
+    ~GeoluxHydroCam() override = default;
 
     /**
      * @brief Extra unique function to retrieve the name of the last saved image
@@ -459,7 +459,7 @@ class GeoluxHydroCam_ImageSize : public Variable {
     /**
      * @brief Destroy the GeoluxHydroCam_ImageSize object - no action needed.
      */
-    ~GeoluxHydroCam_ImageSize() = default;
+    ~GeoluxHydroCam_ImageSize() override = default;
 };
 
 
@@ -504,7 +504,7 @@ class GeoluxHydroCam_ByteError : public Variable {
      * @brief Destroy the GeoluxHydroCam_ByteError object - no action
      * needed.
      */
-    ~GeoluxHydroCam_ByteError() = default;
+    ~GeoluxHydroCam_ByteError() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_GEOLUXHYDROCAM_H_

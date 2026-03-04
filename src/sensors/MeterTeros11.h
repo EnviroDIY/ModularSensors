@@ -330,7 +330,7 @@ class MeterTeros11 : public SDI12Sensors {
     /**
      * @brief Destroy the Meter Teros 11 object
      */
-    ~MeterTeros11() = default;
+    ~MeterTeros11() override = default;
 
     /**
      * @copydoc SDI12Sensors::getResults(bool verify_crc)
@@ -379,7 +379,7 @@ class MeterTeros11_Count : public Variable {
     /**
      * @brief Destroy the MeterTeros11_Count object - no action needed.
      */
-    ~MeterTeros11_Count() = default;
+    ~MeterTeros11_Count() override = default;
 };
 
 
@@ -421,7 +421,7 @@ class MeterTeros11_Temp : public Variable {
     /**
      * @brief Destroy the MeterTeros11_Temp object - no action needed.
      */
-    ~MeterTeros11_Temp() = default;
+    ~MeterTeros11_Temp() override = default;
 };
 
 
@@ -464,7 +464,7 @@ class MeterTeros11_Ea : public Variable {
     /**
      * @brief Destroy the MeterTeros11_Ea object - no action needed.
      */
-    ~MeterTeros11_Ea() = default;
+    ~MeterTeros11_Ea() override = default;
 };
 
 
@@ -506,7 +506,7 @@ class MeterTeros11_VWC : public Variable {
     /**
      * @brief Destroy the MeterTeros11_VWC object - no action needed.
      */
-    ~MeterTeros11_VWC() = default;
+    ~MeterTeros11_VWC() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_METERTEROS11_H_

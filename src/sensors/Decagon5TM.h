@@ -283,7 +283,7 @@ class Decagon5TM : public SDI12Sensors {
     /**
      * @brief Destroy the Decagon 5TM object
      */
-    ~Decagon5TM() = default;
+    ~Decagon5TM() override = default;
 
     /**
      * @copydoc SDI12Sensors::getResults(bool verify_crc)
@@ -329,7 +329,7 @@ class Decagon5TM_Ea : public Variable {
     /**
      * @brief Destroy the Decagon5TM_Ea object - no action needed.
      */
-    ~Decagon5TM_Ea() = default;
+    ~Decagon5TM_Ea() override = default;
 };
 
 
@@ -369,7 +369,7 @@ class Decagon5TM_Temp : public Variable {
     /**
      * @brief Destroy the Decagon5TM_Temp object - no action needed.
      */
-    ~Decagon5TM_Temp() = default;
+    ~Decagon5TM_Temp() override = default;
 };
 
 
@@ -409,7 +409,7 @@ class Decagon5TM_VWC : public Variable {
     /**
      * @brief Destroy the Decagon5TM_VWC object - no action needed.
      */
-    ~Decagon5TM_VWC() = default;
+    ~Decagon5TM_VWC() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_DECAGON5TM_H_

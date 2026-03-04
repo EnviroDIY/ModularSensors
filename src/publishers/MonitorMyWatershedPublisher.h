@@ -141,7 +141,7 @@ class MonitorMyWatershedPublisher : public dataPublisher {
     /**
      * @brief Destroy the Monitor My Watershed Publisher object
      */
-    virtual ~MonitorMyWatershedPublisher() = default;
+    virtual ~MonitorMyWatershedPublisher() override = default;
 
     // Returns the data destination
     String getEndpoint(void) override {

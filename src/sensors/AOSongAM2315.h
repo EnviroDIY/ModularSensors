@@ -213,9 +213,9 @@ class AOSongAM2315 : public Sensor {
      */
     explicit AOSongAM2315(int8_t powerPin, uint8_t measurementsToAverage = 1);
     /**
-     * @brief Destroy the AOSongAM2315 object - no action needed.
+     * @brief Destroy the AOSongAM2315 object
      */
-    ~AOSongAM2315();
+    ~AOSongAM2315() override;
 
     /**
      * @brief Report the I2C address of the AM2315 - which is always 0xB8.
@@ -330,7 +330,7 @@ class AOSongAM2315_Temp : public Variable {
     /**
      * @brief Destroy the AOSongAM2315_Temp object - no action needed.
      */
-    ~AOSongAM2315_Temp() = default;
+    ~AOSongAM2315_Temp() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_AOSONGAM2315_H_

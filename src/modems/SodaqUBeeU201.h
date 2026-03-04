@@ -196,7 +196,7 @@ class SodaqUBeeU201 : public loggerModem {
     /**
      * @brief Destroy the Sodaq UBee U201 object - no action taken
      */
-    ~SodaqUBeeU201() = default;
+    ~SodaqUBeeU201() override = default;
 
     bool modemWake(void) override;
 

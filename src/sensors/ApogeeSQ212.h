@@ -280,7 +280,7 @@ class ApogeeSQ212 : public Sensor {
     /**
      * @brief Destroy the ApogeeSQ212 object
      */
-    ~ApogeeSQ212();
+    ~ApogeeSQ212() override;
 
     // Delete copy constructor and copy assignment operator to prevent shallow
     // copies
@@ -344,7 +344,7 @@ class ApogeeSQ212_PAR : public Variable {
     /**
      * @brief Destroy the ApogeeSQ212_PAR object - no action needed.
      */
-    ~ApogeeSQ212_PAR() = default;
+    ~ApogeeSQ212_PAR() override = default;
 };
 
 
@@ -387,7 +387,7 @@ class ApogeeSQ212_Voltage : public Variable {
     /**
      * @brief Destroy the ApogeeSQ212_Voltage object - no action needed.
      */
-    ~ApogeeSQ212_Voltage() = default;
+    ~ApogeeSQ212_Voltage() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_APOGEESQ212_H_

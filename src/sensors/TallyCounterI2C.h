@@ -203,7 +203,7 @@ class TallyCounterI2C : public Sensor {
     /**
      * @brief Destroy the Tally Counter object
      */
-    ~TallyCounterI2C() = default;
+    ~TallyCounterI2C() override = default;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -272,9 +272,9 @@ class TallyCounterI2C_Events : public Variable {
                    (uint8_t)TALLY_EVENTS_RESOLUTION, TALLY_EVENTS_VAR_NAME,
                    TALLY_EVENTS_UNIT_NAME, TALLY_EVENTS_DEFAULT_CODE) {}
     /**
-     * @brief Destroy the BoschBME280_Temp object - no action needed.
+     * @brief Destroy the TallyCounterI2C_Events object - no action needed.
      */
-    ~TallyCounterI2C_Events() = default;
+    ~TallyCounterI2C_Events() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_TallyCounterI2C_H_

@@ -165,7 +165,7 @@ class SDI12Sensors : public Sensor {
     /**
      * @brief Destroy the SDI12Sensors object - no action taken
      */
-    virtual ~SDI12Sensors() = default;
+    virtual ~SDI12Sensors() override = default;
 
     /**
      * @brief Get the stored sensor vendor name returned by a previously called

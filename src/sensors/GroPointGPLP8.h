@@ -193,7 +193,7 @@ class GroPointGPLP8 : public GroPointParent {
     /**
      * @brief Destroy the GroPoint GPLP8 object
      */
-    ~GroPointGPLP8() = default;
+    ~GroPointGPLP8() override = default;
 };
 
 
@@ -247,7 +247,7 @@ class GroPointGPLP8_Moist : public Variable {
     /**
      * @brief Destroy the GroPointGPLP8_Moist object - no action needed.
      */
-    ~GroPointGPLP8_Moist() = default;
+    ~GroPointGPLP8_Moist() override = default;
 };
 
 /* clang-format off */
@@ -299,7 +299,7 @@ class GroPointGPLP8_Temp : public Variable {
     /**
      * @brief Destroy the GroPointGPLP8_Temp object - no action needed.
      */
-    ~GroPointGPLP8_Temp() = default;
+    ~GroPointGPLP8_Temp() override = default;
 };
 
 /**@}*/

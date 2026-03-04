@@ -196,7 +196,7 @@ class YosemitechY514 : public YosemitechParent {
     /**
      * @brief Destroy the Yosemitech Y514 object
      */
-    ~YosemitechY514() = default;
+    ~YosemitechY514() override = default;
 };
 
 
@@ -241,7 +241,7 @@ class YosemitechY514_Chlorophyll : public Variable {
      * @brief Destroy the YosemitechY514_Chlorophyll() object - no action
      * needed.
      */
-    ~YosemitechY514_Chlorophyll() = default;
+    ~YosemitechY514_Chlorophyll() override = default;
 };
 
 
@@ -285,7 +285,7 @@ class YosemitechY514_Temp : public Variable {
     /**
      * @brief Destroy the YosemitechY514_Temp object - no action needed.
      */
-    ~YosemitechY514_Temp() = default;
+    ~YosemitechY514_Temp() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_YOSEMITECHY514_H_

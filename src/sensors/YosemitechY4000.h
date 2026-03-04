@@ -373,7 +373,7 @@ class YosemitechY4000 : public YosemitechParent {
     /**
      * @brief Destroy the Yosemitech Y4000 object
      */
-    ~YosemitechY4000() = default;
+    ~YosemitechY4000() override = default;
 };
 
 
@@ -417,7 +417,7 @@ class YosemitechY4000_DOmgL : public Variable {
     /**
      * @brief Destroy the YosemitechY4000_DOmgL object - no action needed.
      */
-    ~YosemitechY4000_DOmgL() = default;
+    ~YosemitechY4000_DOmgL() override = default;
 };
 
 /* clang-format off */
@@ -460,7 +460,7 @@ class YosemitechY4000_Turbidity : public Variable {
     /**
      * @brief Destroy the YosemitechY4000_Turbidity object - no action needed.
      */
-    ~YosemitechY4000_Turbidity() = default;
+    ~YosemitechY4000_Turbidity() override = default;
 };
 
 /* clang-format off */
@@ -503,7 +503,7 @@ class YosemitechY4000_Cond : public Variable {
     /**
      * @brief Destroy the YosemitechY4000_Cond object - no action needed.
      */
-    ~YosemitechY4000_Cond() = default;
+    ~YosemitechY4000_Cond() override = default;
 };
 
 /* clang-format off */
@@ -546,7 +546,7 @@ class YosemitechY4000_pH : public Variable {
     /**
      * @brief Destroy the YosemitechY4000_pH object - no action needed.
      */
-    ~YosemitechY4000_pH() = default;
+    ~YosemitechY4000_pH() override = default;
 };
 
 /* clang-format off */
@@ -589,7 +589,7 @@ class YosemitechY4000_Temp : public Variable {
     /**
      * @brief Destroy the YosemitechY4000_Temp object - no action needed.
      */
-    ~YosemitechY4000_Temp() = default;
+    ~YosemitechY4000_Temp() override = default;
 };
 
 /* clang-format off */
@@ -632,7 +632,7 @@ class YosemitechY4000_ORP : public Variable {
     /**
      * @brief Destroy the YosemitechY4000_ORP object - no action needed.
      */
-    ~YosemitechY4000_ORP() = default;
+    ~YosemitechY4000_ORP() override = default;
 };
 
 /* clang-format off */
@@ -676,7 +676,7 @@ class YosemitechY4000_Chlorophyll : public Variable {
      * @brief Destroy the YosemitechY4000_Chlorophyll() object - no action
      * needed.
      */
-    ~YosemitechY4000_Chlorophyll() = default;
+    ~YosemitechY4000_Chlorophyll() override = default;
 };
 
 /* clang-format off */
@@ -719,7 +719,7 @@ class YosemitechY4000_BGA : public Variable {
     /**
      * @brief Destroy the YosemitechY4000_BGA object - no action needed.
      */
-    ~YosemitechY4000_BGA() = default;
+    ~YosemitechY4000_BGA() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_YOSEMITECHY4000_H_

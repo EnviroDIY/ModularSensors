@@ -221,7 +221,7 @@ class DigiXBee : public loggerModem {
     /**
      * @brief Destroy the Digi XBee object - no action taken
      */
-    virtual ~DigiXBee() = default;
+    virtual ~DigiXBee() override = default;
 
  protected:
     bool modemSleepFxn(void) override;

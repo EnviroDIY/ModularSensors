@@ -110,7 +110,7 @@ class UbidotsPublisher : public dataPublisher {
     /**
      * @brief Destroy the Ubidots Publisher object
      */
-    virtual ~UbidotsPublisher() = default;
+    virtual ~UbidotsPublisher() override = default;
 
     // Returns the data destination
     /**

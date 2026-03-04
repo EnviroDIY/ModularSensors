@@ -270,7 +270,7 @@ class InSituTrollSdi12a : public SDI12Sensors {
     /**
      * @brief Destroy the ITROLL object
      */
-    ~InSituTrollSdi12a() = default;
+    ~InSituTrollSdi12a() override = default;
 };
 
 
@@ -315,7 +315,7 @@ class InSituTrollSdi12a_Pressure : public Variable {
     /**
      * @brief Destroy the InSituTrollSdi12a_Pressure object - no action needed.
      */
-    ~InSituTrollSdi12a_Pressure() = default;
+    ~InSituTrollSdi12a_Pressure() override = default;
 };
 
 
@@ -358,7 +358,7 @@ class InSituTrollSdi12a_Temp : public Variable {
     /**
      * @brief Destroy the InSituTrollSdi12a_Temp object - no action needed.
      */
-    ~InSituTrollSdi12a_Temp() = default;
+    ~InSituTrollSdi12a_Temp() override = default;
 };
 
 
@@ -400,7 +400,7 @@ class InSituTrollSdi12a_Depth : public Variable {
     /**
      * @brief Destroy the InSituTrollSdi12a_Depth object - no action needed.
      */
-    ~InSituTrollSdi12a_Depth() = default;
+    ~InSituTrollSdi12a_Depth() override = default;
 };
 /**@}*/
 

@@ -221,7 +221,7 @@ class SequansMonarch : public loggerModem {
     /**
      * @brief Destroy the Sequans Monarch object - no action taken
      */
-    ~SequansMonarch() = default;
+    ~SequansMonarch() override = default;
 
     bool modemWake(void) override;
 

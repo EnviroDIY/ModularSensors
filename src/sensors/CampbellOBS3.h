@@ -277,7 +277,7 @@ class CampbellOBS3 : public Sensor {
     /**
      * @brief Destroy the Campbell OBS3 object
      */
-    ~CampbellOBS3();
+    ~CampbellOBS3() override;
 
     // Delete copy constructor and copy assignment operator to prevent shallow
     // copies
@@ -351,7 +351,7 @@ class CampbellOBS3_Turbidity : public Variable {
     /**
      * @brief Destroy the Campbell OBS3 Turbidity object
      */
-    ~CampbellOBS3_Turbidity() = default;
+    ~CampbellOBS3_Turbidity() override = default;
 };
 
 
@@ -396,7 +396,7 @@ class CampbellOBS3_Voltage : public Variable {
     /**
      * @brief Destroy the CampbellOBS3_Voltage object - no action needed.
      */
-    ~CampbellOBS3_Voltage() = default;
+    ~CampbellOBS3_Voltage() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_CAMPBELLOBS3_H_

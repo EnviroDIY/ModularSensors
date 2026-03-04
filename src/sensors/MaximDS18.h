@@ -225,7 +225,7 @@ class MaximDS18 : public Sensor {
     /**
      * @brief Destroy the Maxim DS18 object
      */
-    ~MaximDS18() = default;
+    ~MaximDS18() override = default;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -324,7 +324,7 @@ class MaximDS18_Temp : public Variable {
     /**
      * @brief Destroy the MaximDS18_Temp object - no action needed.
      */
-    ~MaximDS18_Temp() = default;
+    ~MaximDS18_Temp() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_MAXIMDS18_H_

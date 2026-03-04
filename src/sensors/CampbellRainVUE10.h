@@ -294,7 +294,7 @@ class CampbellRainVUE10 : public SDI12Sensors {
     /**
      * @brief Destroy the Campbell RainVUE10 object
      */
-    ~CampbellRainVUE10() = default;
+    ~CampbellRainVUE10() override = default;
 };
 
 
@@ -342,7 +342,7 @@ class CampbellRainVUE10_Precipitation : public Variable {
      * @brief Destroy the CampbellRainVUE10_Precipitation object - no action
      * needed.
      */
-    ~CampbellRainVUE10_Precipitation() = default;
+    ~CampbellRainVUE10_Precipitation() override = default;
 };
 
 
@@ -386,7 +386,7 @@ class CampbellRainVUE10_Tips : public Variable {
     /**
      * @brief Destroy the CampbellRainVUE10_Tips object - no action needed.
      */
-    ~CampbellRainVUE10_Tips() = default;
+    ~CampbellRainVUE10_Tips() override = default;
 };
 
 
@@ -434,7 +434,7 @@ class CampbellRainVUE10_RainRateAve : public Variable {
      * @brief Destroy the CampbellRainVUE10_RainRateAve object - no action
      * needed.
      */
-    ~CampbellRainVUE10_RainRateAve() = default;
+    ~CampbellRainVUE10_RainRateAve() override = default;
 };
 
 /* clang-format off */
@@ -483,7 +483,7 @@ class CampbellRainVUE10_RainRateMax : public Variable {
      * @brief Destroy the CampbellRainVUE10_RainRateMax object - no action
      * needed.
      */
-    ~CampbellRainVUE10_RainRateMax() = default;
+    ~CampbellRainVUE10_RainRateMax() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_CAMPBELLRAINVUE10_H_

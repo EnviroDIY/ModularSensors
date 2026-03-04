@@ -205,7 +205,7 @@ class AtlasScientificRTD : public AtlasParent {
     /**
      * @brief Destroy the Atlas Scientific RTD object
      */
-    ~AtlasScientificRTD() = default;
+    ~AtlasScientificRTD() override = default;
 };
 
 /* clang-format off */
@@ -248,7 +248,7 @@ class AtlasScientificRTD_Temp : public Variable {
     /**
      * @brief Destroy the AtlasScientificRTD_Temp object - no action needed.
      */
-    ~AtlasScientificRTD_Temp() = default;
+    ~AtlasScientificRTD_Temp() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_ATLASSCIENTIFICRTD_H_

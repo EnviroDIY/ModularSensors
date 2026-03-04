@@ -317,7 +317,7 @@ class ProcessorStats : public Sensor {
     /**
      * @brief Destroy the Processor Stats object
      */
-    ~ProcessorStats() = default;
+    ~ProcessorStats() override = default;
 
     /**
      * @copydoc Sensor::getSensorLocation()
@@ -407,7 +407,7 @@ class ProcessorStats_Battery : public Variable {
     /**
      * @brief Destroy the ProcessorStats_Battery object - no action needed.
      */
-    ~ProcessorStats_Battery() = default;
+    ~ProcessorStats_Battery() override = default;
 };
 
 
@@ -458,7 +458,7 @@ class ProcessorStats_FreeRam : public Variable {
     /**
      * @brief Destroy the ProcessorStats_FreeRam object - no action needed.
      */
-    ~ProcessorStats_FreeRam() = default;
+    ~ProcessorStats_FreeRam() override = default;
 };
 
 
@@ -508,7 +508,7 @@ class ProcessorStats_SampleNumber : public Variable {
      * @brief Destroy the ProcessorStats_SampleNumber() object - no action
      * needed.
      */
-    ~ProcessorStats_SampleNumber() = default;
+    ~ProcessorStats_SampleNumber() override = default;
 };
 
 
@@ -558,7 +558,7 @@ class ProcessorStats_ResetCode : public Variable {
     /**
      * @brief Destroy the ProcessorStats_ResetCode object - no action needed.
      */
-    ~ProcessorStats_ResetCode() = default;
+    ~ProcessorStats_ResetCode() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_PROCESSORSTATS_H_

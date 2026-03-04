@@ -413,7 +413,7 @@ class InSituRDO : public SDI12Sensors {
     /**
      * @brief Destroy the In-Situ RDO object
      */
-    ~InSituRDO() = default;
+    ~InSituRDO() override = default;
 };
 
 
@@ -459,7 +459,7 @@ class InSituRDO_DOmgL : public Variable {
     /**
      * @brief Destroy the InSituRDO_DOmgL object - no action needed.
      */
-    ~InSituRDO_DOmgL() = default;
+    ~InSituRDO_DOmgL() override = default;
 };
 
 
@@ -505,7 +505,7 @@ class InSituRDO_DOpct : public Variable {
     /**
      * @brief Destroy the InSituRDO_DOpct object - no action needed.
      */
-    ~InSituRDO_DOpct() = default;
+    ~InSituRDO_DOpct() override = default;
 };
 
 
@@ -550,7 +550,7 @@ class InSituRDO_Temp : public Variable {
     /**
      * @brief Destroy the InSituRDO_Temp object - no action needed.
      */
-    ~InSituRDO_Temp() = default;
+    ~InSituRDO_Temp() override = default;
 };
 
 
@@ -596,7 +596,7 @@ class InSituRDO_Pressure : public Variable {
     /**
      * @brief Destroy the InSituRDO_Pressure object - no action needed.
      */
-    ~InSituRDO_Pressure() = default;
+    ~InSituRDO_Pressure() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_INSITURDO_H_

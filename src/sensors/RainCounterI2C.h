@@ -271,7 +271,7 @@ class RainCounterI2C : public Sensor {
      * @brief Destroy the Rain Counter I2C object.  Also destroy the software
      * I2C instance if one was created.
      */
-    ~RainCounterI2C();
+    ~RainCounterI2C() override;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -357,7 +357,7 @@ class RainCounterI2C_Tips : public Variable {
     /**
      * @brief Destroy the RainCounterI2C_Tips object - no action needed.
      */
-    ~RainCounterI2C_Tips() = default;
+    ~RainCounterI2C_Tips() override = default;
 };
 
 /**
@@ -399,7 +399,7 @@ class RainCounterI2C_Depth : public Variable {
     /**
      * @brief Destroy the RainCounterI2C_Depth object - no action needed.
      */
-    ~RainCounterI2C_Depth() = default;
+    ~RainCounterI2C_Depth() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_RAINCOUNTERI2C_H_

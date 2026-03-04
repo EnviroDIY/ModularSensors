@@ -249,7 +249,7 @@ class ZebraTechDOpto : public SDI12Sensors {
     /**
      * @brief Destroy the Zebra-Tech DOpto object
      */
-    ~ZebraTechDOpto() = default;
+    ~ZebraTechDOpto() override = default;
 };
 
 
@@ -293,7 +293,7 @@ class ZebraTechDOpto_Temp : public Variable {
     /**
      * @brief Destroy the ZebraTechDOpto_Temp object - no action needed.
      */
-    ~ZebraTechDOpto_Temp() = default;
+    ~ZebraTechDOpto_Temp() override = default;
 };
 
 
@@ -337,7 +337,7 @@ class ZebraTechDOpto_DOpct : public Variable {
     /**
      * @brief Destroy the ZebraTechDOpto_DOpct object - no action needed.
      */
-    ~ZebraTechDOpto_DOpct() = default;
+    ~ZebraTechDOpto_DOpct() override = default;
 };
 
 
@@ -381,7 +381,7 @@ class ZebraTechDOpto_DOmgL : public Variable {
     /**
      * @brief Destroy the ZebraTechDOpto_DOmgL object - no action needed.
      */
-    ~ZebraTechDOpto_DOmgL() = default;
+    ~ZebraTechDOpto_DOmgL() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_ZEBRATECHDOPTO_H_
