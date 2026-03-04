@@ -199,8 +199,8 @@ class KellerNanolevel_Pressure : public Variable {
     explicit KellerNanolevel_Pressure(
         KellerNanolevel* parentSense, const char* uuid = "",
         const char* varCode = NANOLEVEL_PRESSURE_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)KELLER_PRESSURE_VAR_NUM,
-                   (uint8_t)NANOLEVEL_PRESSURE_RESOLUTION,
+        : Variable(parentSense, static_cast<uint8_t>(KELLER_PRESSURE_VAR_NUM),
+                   static_cast<uint8_t>(NANOLEVEL_PRESSURE_RESOLUTION),
                    KELLER_PRESSURE_VAR_NAME, KELLER_PRESSURE_UNIT_NAME, varCode,
                    uuid) {}
     /**
@@ -210,8 +210,8 @@ class KellerNanolevel_Pressure : public Variable {
      * used.
      */
     KellerNanolevel_Pressure()
-        : Variable((uint8_t)KELLER_PRESSURE_VAR_NUM,
-                   (uint8_t)NANOLEVEL_PRESSURE_RESOLUTION,
+        : Variable(static_cast<uint8_t>(KELLER_PRESSURE_VAR_NUM),
+                   static_cast<uint8_t>(NANOLEVEL_PRESSURE_RESOLUTION),
                    KELLER_PRESSURE_VAR_NAME, KELLER_PRESSURE_UNIT_NAME,
                    NANOLEVEL_PRESSURE_DEFAULT_CODE) {}
     /**
@@ -245,9 +245,10 @@ class KellerNanolevel_Temp : public Variable {
     explicit KellerNanolevel_Temp(
         KellerNanolevel* parentSense, const char* uuid = "",
         const char* varCode = NANOLEVEL_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)KELLER_TEMP_VAR_NUM,
-                   (uint8_t)NANOLEVEL_TEMP_RESOLUTION, KELLER_TEMP_VAR_NAME,
-                   KELLER_TEMP_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(KELLER_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(NANOLEVEL_TEMP_RESOLUTION),
+                   KELLER_TEMP_VAR_NAME, KELLER_TEMP_UNIT_NAME, varCode, uuid) {
+    }
     /**
      * @brief Construct a new KellerNanolevel_Temp object.
      *
@@ -255,9 +256,10 @@ class KellerNanolevel_Temp : public Variable {
      * used.
      */
     KellerNanolevel_Temp()
-        : Variable((uint8_t)KELLER_TEMP_VAR_NUM,
-                   (uint8_t)NANOLEVEL_TEMP_RESOLUTION, KELLER_TEMP_VAR_NAME,
-                   KELLER_TEMP_UNIT_NAME, NANOLEVEL_TEMP_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(KELLER_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(NANOLEVEL_TEMP_RESOLUTION),
+                   KELLER_TEMP_VAR_NAME, KELLER_TEMP_UNIT_NAME,
+                   NANOLEVEL_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the KellerNanolevel_Temp object - no action needed.
      */
@@ -289,9 +291,10 @@ class KellerNanolevel_Height : public Variable {
     explicit KellerNanolevel_Height(
         KellerNanolevel* parentSense, const char* uuid = "",
         const char* varCode = NANOLEVEL_HEIGHT_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)KELLER_HEIGHT_VAR_NUM,
-                   (uint8_t)NANOLEVEL_HEIGHT_RESOLUTION, KELLER_HEIGHT_VAR_NAME,
-                   KELLER_HEIGHT_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(KELLER_HEIGHT_VAR_NUM),
+                   static_cast<uint8_t>(NANOLEVEL_HEIGHT_RESOLUTION),
+                   KELLER_HEIGHT_VAR_NAME, KELLER_HEIGHT_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Construct a new KellerNanolevel_Height object.
      *
@@ -299,9 +302,10 @@ class KellerNanolevel_Height : public Variable {
      * used.
      */
     KellerNanolevel_Height()
-        : Variable((uint8_t)KELLER_HEIGHT_VAR_NUM,
-                   (uint8_t)NANOLEVEL_HEIGHT_RESOLUTION, KELLER_HEIGHT_VAR_NAME,
-                   KELLER_HEIGHT_UNIT_NAME, NANOLEVEL_HEIGHT_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(KELLER_HEIGHT_VAR_NUM),
+                   static_cast<uint8_t>(NANOLEVEL_HEIGHT_RESOLUTION),
+                   KELLER_HEIGHT_VAR_NAME, KELLER_HEIGHT_UNIT_NAME,
+                   NANOLEVEL_HEIGHT_DEFAULT_CODE) {}
     /**
      * @brief Destroy the KellerNanolevel_Height object - no action needed.
      */

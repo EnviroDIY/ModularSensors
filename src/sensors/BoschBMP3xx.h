@@ -593,18 +593,20 @@ class BoschBMP3xx_Temp : public Variable {
      */
     explicit BoschBMP3xx_Temp(BoschBMP3xx* parentSense, const char* uuid = "",
                               const char* varCode = BMP3XX_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)BMP3XX_TEMP_VAR_NUM,
-                   (uint8_t)BMP3XX_TEMP_RESOLUTION, BMP3XX_TEMP_VAR_NAME,
-                   BMP3XX_TEMP_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(BMP3XX_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(BMP3XX_TEMP_RESOLUTION),
+                   BMP3XX_TEMP_VAR_NAME, BMP3XX_TEMP_UNIT_NAME, varCode, uuid) {
+    }
     /**
      * @brief Construct a new BoschBMP3xx_Temp object.
      *
      * @note This must be tied with a parent BoschBMP3xx before it can be used.
      */
     BoschBMP3xx_Temp()
-        : Variable((uint8_t)BMP3XX_TEMP_VAR_NUM,
-                   (uint8_t)BMP3XX_TEMP_RESOLUTION, BMP3XX_TEMP_VAR_NAME,
-                   BMP3XX_TEMP_UNIT_NAME, BMP3XX_TEMP_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(BMP3XX_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(BMP3XX_TEMP_RESOLUTION),
+                   BMP3XX_TEMP_VAR_NAME, BMP3XX_TEMP_UNIT_NAME,
+                   BMP3XX_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the BoschBMP3xx_Temp object - no action needed.
      */
@@ -636,8 +638,8 @@ class BoschBMP3xx_Pressure : public Variable {
     explicit BoschBMP3xx_Pressure(
         BoschBMP3xx* parentSense, const char* uuid = "",
         const char* varCode = BMP3XX_PRESSURE_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)BMP3XX_PRESSURE_VAR_NUM,
-                   (uint8_t)BMP3XX_PRESSURE_RESOLUTION,
+        : Variable(parentSense, static_cast<uint8_t>(BMP3XX_PRESSURE_VAR_NUM),
+                   static_cast<uint8_t>(BMP3XX_PRESSURE_RESOLUTION),
                    BMP3XX_PRESSURE_VAR_NAME, BMP3XX_PRESSURE_UNIT_NAME, varCode,
                    uuid) {}
     /**
@@ -646,8 +648,8 @@ class BoschBMP3xx_Pressure : public Variable {
      * @note This must be tied with a parent BoschBMP3xx before it can be used.
      */
     BoschBMP3xx_Pressure()
-        : Variable((uint8_t)BMP3XX_PRESSURE_VAR_NUM,
-                   (uint8_t)BMP3XX_PRESSURE_RESOLUTION,
+        : Variable(static_cast<uint8_t>(BMP3XX_PRESSURE_VAR_NUM),
+                   static_cast<uint8_t>(BMP3XX_PRESSURE_RESOLUTION),
                    BMP3XX_PRESSURE_VAR_NAME, BMP3XX_PRESSURE_UNIT_NAME,
                    BMP3XX_PRESSURE_DEFAULT_CODE) {}
     /**
@@ -681,8 +683,8 @@ class BoschBMP3xx_Altitude : public Variable {
     explicit BoschBMP3xx_Altitude(
         BoschBMP3xx* parentSense, const char* uuid = "",
         const char* varCode = BMP3XX_ALTITUDE_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)BMP3XX_ALTITUDE_VAR_NUM,
-                   (uint8_t)BMP3XX_ALTITUDE_RESOLUTION,
+        : Variable(parentSense, static_cast<uint8_t>(BMP3XX_ALTITUDE_VAR_NUM),
+                   static_cast<uint8_t>(BMP3XX_ALTITUDE_RESOLUTION),
                    BMP3XX_ALTITUDE_VAR_NAME, BMP3XX_ALTITUDE_UNIT_NAME, varCode,
                    uuid) {}
     /**
@@ -691,8 +693,8 @@ class BoschBMP3xx_Altitude : public Variable {
      * @note This must be tied with a parent BoschBMP3xx before it can be used.
      */
     BoschBMP3xx_Altitude()
-        : Variable((uint8_t)BMP3XX_ALTITUDE_VAR_NUM,
-                   (uint8_t)BMP3XX_ALTITUDE_RESOLUTION,
+        : Variable(static_cast<uint8_t>(BMP3XX_ALTITUDE_VAR_NUM),
+                   static_cast<uint8_t>(BMP3XX_ALTITUDE_RESOLUTION),
                    BMP3XX_ALTITUDE_VAR_NAME, BMP3XX_ALTITUDE_UNIT_NAME,
                    BMP3XX_ALTITUDE_DEFAULT_CODE) {}
     /**

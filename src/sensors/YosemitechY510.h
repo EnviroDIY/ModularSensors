@@ -221,9 +221,9 @@ class YosemitechY510_Turbidity : public Variable {
     explicit YosemitechY510_Turbidity(
         YosemitechY510* parentSense, const char* uuid = "",
         const char* varCode = Y510_TURB_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)Y510_TURB_VAR_NUM,
-                   (uint8_t)Y510_TURB_RESOLUTION, Y510_TURB_VAR_NAME,
-                   Y510_TURB_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(Y510_TURB_VAR_NUM),
+                   static_cast<uint8_t>(Y510_TURB_RESOLUTION),
+                   Y510_TURB_VAR_NAME, Y510_TURB_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY510_Turbidity object.
      *
@@ -231,7 +231,8 @@ class YosemitechY510_Turbidity : public Variable {
      * used.
      */
     YosemitechY510_Turbidity()
-        : Variable((uint8_t)Y510_TURB_VAR_NUM, (uint8_t)Y510_TURB_RESOLUTION,
+        : Variable(static_cast<uint8_t>(Y510_TURB_VAR_NUM),
+                   static_cast<uint8_t>(Y510_TURB_RESOLUTION),
                    Y510_TURB_VAR_NAME, Y510_TURB_UNIT_NAME,
                    Y510_TURB_DEFAULT_CODE) {}
     /**
@@ -265,9 +266,9 @@ class YosemitechY510_Temp : public Variable {
     explicit YosemitechY510_Temp(YosemitechY510* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = Y510_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)Y510_TEMP_VAR_NUM,
-                   (uint8_t)Y510_TEMP_RESOLUTION, Y510_TEMP_VAR_NAME,
-                   Y510_TEMP_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(Y510_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(Y510_TEMP_RESOLUTION),
+                   Y510_TEMP_VAR_NAME, Y510_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY510_Temp object.
      *
@@ -275,7 +276,8 @@ class YosemitechY510_Temp : public Variable {
      * used.
      */
     YosemitechY510_Temp()
-        : Variable((uint8_t)Y510_TEMP_VAR_NUM, (uint8_t)Y510_TEMP_RESOLUTION,
+        : Variable(static_cast<uint8_t>(Y510_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(Y510_TEMP_RESOLUTION),
                    Y510_TEMP_VAR_NAME, Y510_TEMP_UNIT_NAME,
                    Y510_TEMP_DEFAULT_CODE) {}
     /**

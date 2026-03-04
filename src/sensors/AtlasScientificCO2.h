@@ -271,9 +271,9 @@ class AtlasScientificCO2_CO2 : public Variable {
     explicit AtlasScientificCO2_CO2(
         AtlasScientificCO2* parentSense, const char* uuid = "",
         const char* varCode = ATLAS_CO2_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)ATLAS_CO2_VAR_NUM,
-                   (uint8_t)ATLAS_CO2_RESOLUTION, ATLAS_CO2_VAR_NAME,
-                   ATLAS_CO2_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(ATLAS_CO2_VAR_NUM),
+                   static_cast<uint8_t>(ATLAS_CO2_RESOLUTION),
+                   ATLAS_CO2_VAR_NAME, ATLAS_CO2_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new AtlasScientificCO2_CO2 object.
      *
@@ -281,7 +281,8 @@ class AtlasScientificCO2_CO2 : public Variable {
      * used.
      */
     AtlasScientificCO2_CO2()
-        : Variable((uint8_t)ATLAS_CO2_VAR_NUM, (uint8_t)ATLAS_CO2_RESOLUTION,
+        : Variable(static_cast<uint8_t>(ATLAS_CO2_VAR_NUM),
+                   static_cast<uint8_t>(ATLAS_CO2_RESOLUTION),
                    ATLAS_CO2_VAR_NAME, ATLAS_CO2_UNIT_NAME,
                    ATLAS_CO2_DEFAULT_CODE) {}
     /**
@@ -314,9 +315,10 @@ class AtlasScientificCO2_Temp : public Variable {
     explicit AtlasScientificCO2_Temp(
         AtlasScientificCO2* parentSense, const char* uuid = "",
         const char* varCode = ATLAS_CO2TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)ATLAS_CO2TEMP_VAR_NUM,
-                   (uint8_t)ATLAS_CO2TEMP_RESOLUTION, ATLAS_CO2TEMP_VAR_NAME,
-                   ATLAS_CO2TEMP_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(ATLAS_CO2TEMP_VAR_NUM),
+                   static_cast<uint8_t>(ATLAS_CO2TEMP_RESOLUTION),
+                   ATLAS_CO2TEMP_VAR_NAME, ATLAS_CO2TEMP_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Construct a new AtlasScientificCO2_Temp object.
      *
@@ -324,9 +326,10 @@ class AtlasScientificCO2_Temp : public Variable {
      * used.
      */
     AtlasScientificCO2_Temp()
-        : Variable((uint8_t)ATLAS_CO2TEMP_VAR_NUM,
-                   (uint8_t)ATLAS_CO2TEMP_RESOLUTION, ATLAS_CO2TEMP_VAR_NAME,
-                   ATLAS_CO2TEMP_UNIT_NAME, ATLAS_CO2TEMP_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(ATLAS_CO2TEMP_VAR_NUM),
+                   static_cast<uint8_t>(ATLAS_CO2TEMP_RESOLUTION),
+                   ATLAS_CO2TEMP_VAR_NAME, ATLAS_CO2TEMP_UNIT_NAME,
+                   ATLAS_CO2TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AtlasScientificCO2_Temp object - no action needed.
      */

@@ -282,8 +282,8 @@ class AOSongAM2315_Humidity : public Variable {
     explicit AOSongAM2315_Humidity(
         AOSongAM2315* parentSense, const char* uuid = "",
         const char* varCode = AM2315_HUMIDITY_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)AM2315_HUMIDITY_VAR_NUM,
-                   (uint8_t)AM2315_HUMIDITY_RESOLUTION,
+        : Variable(parentSense, static_cast<uint8_t>(AM2315_HUMIDITY_VAR_NUM),
+                   static_cast<uint8_t>(AM2315_HUMIDITY_RESOLUTION),
                    AM2315_HUMIDITY_VAR_NAME, AM2315_HUMIDITY_UNIT_NAME, varCode,
                    uuid) {}
     /**
@@ -292,8 +292,8 @@ class AOSongAM2315_Humidity : public Variable {
      * @note This must be tied with a parent AOSongAM2315 before it can be used.
      */
     AOSongAM2315_Humidity()
-        : Variable((uint8_t)AM2315_HUMIDITY_VAR_NUM,
-                   (uint8_t)AM2315_HUMIDITY_RESOLUTION,
+        : Variable(static_cast<uint8_t>(AM2315_HUMIDITY_VAR_NUM),
+                   static_cast<uint8_t>(AM2315_HUMIDITY_RESOLUTION),
                    AM2315_HUMIDITY_VAR_NAME, AM2315_HUMIDITY_UNIT_NAME,
                    AM2315_HUMIDITY_DEFAULT_CODE) {}
     /**
@@ -324,18 +324,20 @@ class AOSongAM2315_Temp : public Variable {
      */
     explicit AOSongAM2315_Temp(AOSongAM2315* parentSense, const char* uuid = "",
                                const char* varCode = AM2315_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)AM2315_TEMP_VAR_NUM,
-                   (uint8_t)AM2315_TEMP_RESOLUTION, AM2315_TEMP_VAR_NAME,
-                   AM2315_TEMP_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(AM2315_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(AM2315_TEMP_RESOLUTION),
+                   AM2315_TEMP_VAR_NAME, AM2315_TEMP_UNIT_NAME, varCode, uuid) {
+    }
     /**
      * @brief Construct a new AOSongAM2315_Temp object.
      *
      * @note This must be tied with a parent AOSongAM2315 before it can be used.
      */
     AOSongAM2315_Temp()
-        : Variable((uint8_t)AM2315_TEMP_VAR_NUM,
-                   (uint8_t)AM2315_TEMP_RESOLUTION, AM2315_TEMP_VAR_NAME,
-                   AM2315_TEMP_UNIT_NAME, AM2315_TEMP_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(AM2315_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(AM2315_TEMP_RESOLUTION),
+                   AM2315_TEMP_VAR_NAME, AM2315_TEMP_UNIT_NAME,
+                   AM2315_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AOSongAM2315_Temp object - no action needed.
      */

@@ -321,9 +321,10 @@ class PaleoTerraRedox_Voltage : public Variable {
     explicit PaleoTerraRedox_Voltage(
         Sensor* parentSense, const char* uuid = "",
         const char* varCode = PTR_VOLTAGE_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)PTR_VOLTAGE_VAR_NUM,
-                   (uint8_t)PTR_VOLTAGE_RESOLUTION, PTR_VOLTAGE_VAR_NAME,
-                   PTR_VOLTAGE_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(PTR_VOLTAGE_VAR_NUM),
+                   static_cast<uint8_t>(PTR_VOLTAGE_RESOLUTION),
+                   PTR_VOLTAGE_VAR_NAME, PTR_VOLTAGE_UNIT_NAME, varCode, uuid) {
+    }
     /**
      * @brief Construct a new PaleoTerraRedox_Voltage object.
      *
@@ -331,9 +332,10 @@ class PaleoTerraRedox_Voltage : public Variable {
      * used.
      */
     PaleoTerraRedox_Voltage()
-        : Variable((uint8_t)PTR_VOLTAGE_VAR_NUM,
-                   (uint8_t)PTR_VOLTAGE_RESOLUTION, PTR_VOLTAGE_VAR_NAME,
-                   PTR_VOLTAGE_UNIT_NAME, PTR_VOLTAGE_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(PTR_VOLTAGE_VAR_NUM),
+                   static_cast<uint8_t>(PTR_VOLTAGE_RESOLUTION),
+                   PTR_VOLTAGE_VAR_NAME, PTR_VOLTAGE_UNIT_NAME,
+                   PTR_VOLTAGE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the PaleoTerraRedox_Voltage object - no action needed.
      */

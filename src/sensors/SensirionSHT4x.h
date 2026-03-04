@@ -322,9 +322,10 @@ class SensirionSHT4x_Humidity : public Variable {
     explicit SensirionSHT4x_Humidity(
         SensirionSHT4x* parentSense, const char* uuid = "",
         const char* varCode = SHT4X_HUMIDITY_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)SHT4X_HUMIDITY_VAR_NUM,
-                   (uint8_t)SHT4X_HUMIDITY_RESOLUTION, SHT4X_HUMIDITY_VAR_NAME,
-                   SHT4X_HUMIDITY_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(SHT4X_HUMIDITY_VAR_NUM),
+                   static_cast<uint8_t>(SHT4X_HUMIDITY_RESOLUTION),
+                   SHT4X_HUMIDITY_VAR_NAME, SHT4X_HUMIDITY_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Construct a new SensirionSHT4x_Humidity object.
      *
@@ -332,9 +333,10 @@ class SensirionSHT4x_Humidity : public Variable {
      * used.
      */
     SensirionSHT4x_Humidity()
-        : Variable((uint8_t)SHT4X_HUMIDITY_VAR_NUM,
-                   (uint8_t)SHT4X_HUMIDITY_RESOLUTION, SHT4X_HUMIDITY_VAR_NAME,
-                   SHT4X_HUMIDITY_UNIT_NAME, SHT4X_HUMIDITY_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(SHT4X_HUMIDITY_VAR_NUM),
+                   static_cast<uint8_t>(SHT4X_HUMIDITY_RESOLUTION),
+                   SHT4X_HUMIDITY_VAR_NAME, SHT4X_HUMIDITY_UNIT_NAME,
+                   SHT4X_HUMIDITY_DEFAULT_CODE) {}
     /**
      * @brief Destroy the SensirionSHT4x_Humidity object - no action needed.
      */
@@ -364,9 +366,9 @@ class SensirionSHT4x_Temp : public Variable {
     explicit SensirionSHT4x_Temp(SensirionSHT4x* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = SHT4X_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)SHT4X_TEMP_VAR_NUM,
-                   (uint8_t)SHT4X_TEMP_RESOLUTION, SHT4X_TEMP_VAR_NAME,
-                   SHT4X_TEMP_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(SHT4X_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(SHT4X_TEMP_RESOLUTION),
+                   SHT4X_TEMP_VAR_NAME, SHT4X_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new SensirionSHT4x_Temp object.
      *
@@ -374,7 +376,8 @@ class SensirionSHT4x_Temp : public Variable {
      * used.
      */
     SensirionSHT4x_Temp()
-        : Variable((uint8_t)SHT4X_TEMP_VAR_NUM, (uint8_t)SHT4X_TEMP_RESOLUTION,
+        : Variable(static_cast<uint8_t>(SHT4X_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(SHT4X_TEMP_RESOLUTION),
                    SHT4X_TEMP_VAR_NAME, SHT4X_TEMP_UNIT_NAME,
                    SHT4X_TEMP_DEFAULT_CODE) {}
     /**

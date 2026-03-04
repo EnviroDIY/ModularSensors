@@ -1249,7 +1249,8 @@ class Modem_RSSI : public Variable {
      */
     explicit Modem_RSSI(loggerModem* parentModem, const char* uuid = "",
                         const char* varCode = MODEM_RSSI_DEFAULT_CODE)
-        : Variable(&parentModem->getModemRSSI, (uint8_t)MODEM_RSSI_RESOLUTION,
+        : Variable(&parentModem->getModemRSSI,
+                   static_cast<uint8_t>(MODEM_RSSI_RESOLUTION),
                    &*MODEM_RSSI_VAR_NAME, &*MODEM_RSSI_UNIT_NAME, varCode,
                    uuid) {
         parentModem->enableMetadataPolling(MODEM_RSSI_ENABLE_BITMASK);
@@ -1284,7 +1285,7 @@ class Modem_SignalPercent : public Variable {
         loggerModem* parentModem, const char* uuid = "",
         const char* varCode = MODEM_PERCENT_SIGNAL_DEFAULT_CODE)
         : Variable(&parentModem->getModemSignalPercent,
-                   (uint8_t)MODEM_PERCENT_SIGNAL_RESOLUTION,
+                   static_cast<uint8_t>(MODEM_PERCENT_SIGNAL_RESOLUTION),
                    &*MODEM_PERCENT_SIGNAL_VAR_NAME,
                    &*MODEM_PERCENT_SIGNAL_UNIT_NAME, varCode, uuid) {
         parentModem->enableMetadataPolling(MODEM_PERCENT_SIGNAL_ENABLE_BITMASK);
@@ -1322,7 +1323,7 @@ class Modem_BatteryState : public Variable {
         loggerModem* parentModem, const char* uuid = "",
         const char* varCode = MODEM_BATTERY_STATE_DEFAULT_CODE)
         : Variable(&parentModem->getModemBatteryChargeState,
-                   (uint8_t)MODEM_BATTERY_STATE_RESOLUTION,
+                   static_cast<uint8_t>(MODEM_BATTERY_STATE_RESOLUTION),
                    &*MODEM_BATTERY_STATE_VAR_NAME,
                    &*MODEM_BATTERY_STATE_UNIT_NAME, varCode, uuid) {
         parentModem->enableMetadataPolling(MODEM_BATTERY_STATE_ENABLE_BITMASK);
@@ -1360,7 +1361,7 @@ class Modem_BatteryPercent : public Variable {
         loggerModem* parentModem, const char* uuid = "",
         const char* varCode = MODEM_BATTERY_PERCENT_DEFAULT_CODE)
         : Variable(&parentModem->getModemBatteryChargePercent,
-                   (uint8_t)MODEM_BATTERY_PERCENT_RESOLUTION,
+                   static_cast<uint8_t>(MODEM_BATTERY_PERCENT_RESOLUTION),
                    &*MODEM_BATTERY_PERCENT_VAR_NAME,
                    &*MODEM_BATTERY_PERCENT_UNIT_NAME, varCode, uuid) {
         parentModem->enableMetadataPolling(
@@ -1399,7 +1400,7 @@ class Modem_BatteryVoltage : public Variable {
         loggerModem* parentModem, const char* uuid = "",
         const char* varCode = MODEM_BATTERY_VOLTAGE_DEFAULT_CODE)
         : Variable(&parentModem->getModemBatteryVoltage,
-                   (uint8_t)MODEM_BATTERY_VOLTAGE_RESOLUTION,
+                   static_cast<uint8_t>(MODEM_BATTERY_VOLTAGE_RESOLUTION),
                    &*MODEM_BATTERY_VOLTAGE_VAR_NAME,
                    &*MODEM_BATTERY_VOLTAGE_UNIT_NAME, varCode, uuid) {
         parentModem->enableMetadataPolling(
@@ -1437,7 +1438,7 @@ class Modem_Temp : public Variable {
     explicit Modem_Temp(loggerModem* parentModem, const char* uuid = "",
                         const char* varCode = MODEM_TEMPERATURE_DEFAULT_CODE)
         : Variable(&parentModem->getModemTemperature,
-                   (uint8_t)MODEM_TEMPERATURE_RESOLUTION,
+                   static_cast<uint8_t>(MODEM_TEMPERATURE_RESOLUTION),
                    &*MODEM_TEMPERATURE_VAR_NAME, &*MODEM_TEMPERATURE_UNIT_NAME,
                    varCode, uuid) {
         parentModem->enableMetadataPolling(MODEM_TEMPERATURE_ENABLE_BITMASK);

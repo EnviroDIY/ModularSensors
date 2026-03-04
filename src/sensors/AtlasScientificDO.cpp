@@ -23,7 +23,8 @@ AtlasScientificDO::AtlasScientificDO(TwoWire* theI2C, int8_t powerPin,
 // Delegating constructor
 AtlasScientificDO::AtlasScientificDO(int8_t powerPin, uint8_t i2cAddressHex,
                                      uint8_t measurementsToAverage)
-    : AtlasScientificDO(&Wire, powerPin, i2cAddressHex, measurementsToAverage) {}
+    : AtlasScientificDO(&Wire, powerPin, i2cAddressHex, measurementsToAverage) {
+}
 
 
 // Setup

@@ -309,16 +309,17 @@ class MaximDS18_Temp : public Variable {
      */
     explicit MaximDS18_Temp(MaximDS18* parentSense, const char* uuid = "",
                             const char* varCode = DS18_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)DS18_TEMP_VAR_NUM,
-                   (uint8_t)DS18_TEMP_RESOLUTION, DS18_TEMP_VAR_NAME,
-                   DS18_TEMP_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(DS18_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(DS18_TEMP_RESOLUTION),
+                   DS18_TEMP_VAR_NAME, DS18_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new MaximDS18_Temp object.
      *
      * @note This must be tied with a parent MaximDS18 before it can be used.
      */
     MaximDS18_Temp()
-        : Variable((uint8_t)DS18_TEMP_VAR_NUM, (uint8_t)DS18_TEMP_RESOLUTION,
+        : Variable(static_cast<uint8_t>(DS18_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(DS18_TEMP_RESOLUTION),
                    DS18_TEMP_VAR_NAME, DS18_TEMP_UNIT_NAME,
                    DS18_TEMP_DEFAULT_CODE) {}
     /**

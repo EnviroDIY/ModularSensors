@@ -258,9 +258,10 @@ class TallyCounterI2C_Events : public Variable {
     explicit TallyCounterI2C_Events(
         TallyCounterI2C* parentSense, const char* uuid = "",
         const char* varCode = TALLY_EVENTS_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)TALLY_EVENTS_VAR_NUM,
-                   (uint8_t)TALLY_EVENTS_RESOLUTION, TALLY_EVENTS_VAR_NAME,
-                   TALLY_EVENTS_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(TALLY_EVENTS_VAR_NUM),
+                   static_cast<uint8_t>(TALLY_EVENTS_RESOLUTION),
+                   TALLY_EVENTS_VAR_NAME, TALLY_EVENTS_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Construct a new TallyCounterI2C_Events object.
      *
@@ -268,9 +269,10 @@ class TallyCounterI2C_Events : public Variable {
      * used.
      */
     TallyCounterI2C_Events()
-        : Variable((uint8_t)TALLY_EVENTS_VAR_NUM,
-                   (uint8_t)TALLY_EVENTS_RESOLUTION, TALLY_EVENTS_VAR_NAME,
-                   TALLY_EVENTS_UNIT_NAME, TALLY_EVENTS_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(TALLY_EVENTS_VAR_NUM),
+                   static_cast<uint8_t>(TALLY_EVENTS_RESOLUTION),
+                   TALLY_EVENTS_VAR_NAME, TALLY_EVENTS_UNIT_NAME,
+                   TALLY_EVENTS_DEFAULT_CODE) {}
     /**
      * @brief Destroy the TallyCounterI2C_Events object - no action needed.
      */

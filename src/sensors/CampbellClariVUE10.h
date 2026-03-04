@@ -283,8 +283,9 @@ class CampbellClariVUE10_Turbidity : public Variable {
     explicit CampbellClariVUE10_Turbidity(
         CampbellClariVUE10* parentSense, const char* uuid = "",
         const char* varCode = CLARIVUE10_TURBIDITY_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)CLARIVUE10_TURBIDITY_VAR_NUM,
-                   (uint8_t)CLARIVUE10_TURBIDITY_RESOLUTION,
+        : Variable(parentSense,
+                   static_cast<uint8_t>(CLARIVUE10_TURBIDITY_VAR_NUM),
+                   static_cast<uint8_t>(CLARIVUE10_TURBIDITY_RESOLUTION),
                    CLARIVUE10_TURBIDITY_VAR_NAME,
                    CLARIVUE10_TURBIDITY_UNIT_NAME, varCode, uuid) {}
     /**
@@ -294,8 +295,8 @@ class CampbellClariVUE10_Turbidity : public Variable {
      * used.
      */
     CampbellClariVUE10_Turbidity()
-        : Variable((uint8_t)CLARIVUE10_TURBIDITY_VAR_NUM,
-                   (uint8_t)CLARIVUE10_TURBIDITY_RESOLUTION,
+        : Variable(static_cast<uint8_t>(CLARIVUE10_TURBIDITY_VAR_NUM),
+                   static_cast<uint8_t>(CLARIVUE10_TURBIDITY_RESOLUTION),
                    CLARIVUE10_TURBIDITY_VAR_NAME,
                    CLARIVUE10_TURBIDITY_UNIT_NAME,
                    CLARIVUE10_TURBIDITY_DEFAULT_CODE) {}
@@ -331,8 +332,8 @@ class CampbellClariVUE10_Temp : public Variable {
     explicit CampbellClariVUE10_Temp(
         CampbellClariVUE10* parentSense, const char* uuid = "",
         const char* varCode = CLARIVUE10_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)CLARIVUE10_TEMP_VAR_NUM,
-                   (uint8_t)CLARIVUE10_TEMP_RESOLUTION,
+        : Variable(parentSense, static_cast<uint8_t>(CLARIVUE10_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(CLARIVUE10_TEMP_RESOLUTION),
                    CLARIVUE10_TEMP_VAR_NAME, CLARIVUE10_TEMP_UNIT_NAME, varCode,
                    uuid) {}
     /**
@@ -342,8 +343,8 @@ class CampbellClariVUE10_Temp : public Variable {
      * used.
      */
     CampbellClariVUE10_Temp()
-        : Variable((uint8_t)CLARIVUE10_TEMP_VAR_NUM,
-                   (uint8_t)CLARIVUE10_TEMP_RESOLUTION,
+        : Variable(static_cast<uint8_t>(CLARIVUE10_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(CLARIVUE10_TEMP_RESOLUTION),
                    CLARIVUE10_TEMP_VAR_NAME, CLARIVUE10_TEMP_UNIT_NAME,
                    CLARIVUE10_TEMP_DEFAULT_CODE) {}
     /**
@@ -377,8 +378,9 @@ class CampbellClariVUE10_ErrorCode : public Variable {
     explicit CampbellClariVUE10_ErrorCode(
         CampbellClariVUE10* parentSense, const char* uuid = "",
         const char* varCode = CLARIVUE10_ERRORCODE_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)CLARIVUE10_ERRORCODE_VAR_NUM,
-                   (uint8_t)CLARIVUE10_ERRORCODE_RESOLUTION,
+        : Variable(parentSense,
+                   static_cast<uint8_t>(CLARIVUE10_ERRORCODE_VAR_NUM),
+                   static_cast<uint8_t>(CLARIVUE10_ERRORCODE_RESOLUTION),
                    CLARIVUE10_ERRORCODE_VAR_NAME,
                    CLARIVUE10_ERRORCODE_UNIT_NAME, varCode, uuid) {}
     /**
@@ -388,8 +390,8 @@ class CampbellClariVUE10_ErrorCode : public Variable {
      * used.
      */
     CampbellClariVUE10_ErrorCode()
-        : Variable((uint8_t)CLARIVUE10_ERRORCODE_VAR_NUM,
-                   (uint8_t)CLARIVUE10_ERRORCODE_RESOLUTION,
+        : Variable(static_cast<uint8_t>(CLARIVUE10_ERRORCODE_VAR_NUM),
+                   static_cast<uint8_t>(CLARIVUE10_ERRORCODE_RESOLUTION),
                    CLARIVUE10_ERRORCODE_VAR_NAME,
                    CLARIVUE10_ERRORCODE_UNIT_NAME,
                    CLARIVUE10_ERRORCODE_DEFAULT_CODE) {}

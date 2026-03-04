@@ -341,9 +341,10 @@ class RainCounterI2C_Tips : public Variable {
     explicit RainCounterI2C_Tips(RainCounterI2C* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode = BUCKET_TIPS_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)BUCKET_TIPS_VAR_NUM,
-                   (uint8_t)BUCKET_TIPS_RESOLUTION, BUCKET_TIPS_VAR_NAME,
-                   BUCKET_TIPS_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(BUCKET_TIPS_VAR_NUM),
+                   static_cast<uint8_t>(BUCKET_TIPS_RESOLUTION),
+                   BUCKET_TIPS_VAR_NAME, BUCKET_TIPS_UNIT_NAME, varCode, uuid) {
+    }
     /**
      * @brief Construct a new RainCounterI2C_Tips object.
      *
@@ -351,9 +352,10 @@ class RainCounterI2C_Tips : public Variable {
      * used.
      */
     RainCounterI2C_Tips()
-        : Variable((uint8_t)BUCKET_TIPS_VAR_NUM,
-                   (uint8_t)BUCKET_TIPS_RESOLUTION, BUCKET_TIPS_VAR_NAME,
-                   BUCKET_TIPS_UNIT_NAME, BUCKET_TIPS_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(BUCKET_TIPS_VAR_NUM),
+                   static_cast<uint8_t>(BUCKET_TIPS_RESOLUTION),
+                   BUCKET_TIPS_VAR_NAME, BUCKET_TIPS_UNIT_NAME,
+                   BUCKET_TIPS_DEFAULT_CODE) {}
     /**
      * @brief Destroy the RainCounterI2C_Tips object - no action needed.
      */
@@ -383,9 +385,10 @@ class RainCounterI2C_Depth : public Variable {
     explicit RainCounterI2C_Depth(
         RainCounterI2C* parentSense, const char* uuid = "",
         const char* varCode = BUCKET_RAIN_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)BUCKET_RAIN_VAR_NUM,
-                   (uint8_t)BUCKET_RAIN_RESOLUTION, BUCKET_RAIN_VAR_NAME,
-                   BUCKET_RAIN_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(BUCKET_RAIN_VAR_NUM),
+                   static_cast<uint8_t>(BUCKET_RAIN_RESOLUTION),
+                   BUCKET_RAIN_VAR_NAME, BUCKET_RAIN_UNIT_NAME, varCode, uuid) {
+    }
     /**
      * @brief Construct a new RainCounterI2C_Depth object.
      *
@@ -393,9 +396,10 @@ class RainCounterI2C_Depth : public Variable {
      * used.
      */
     RainCounterI2C_Depth()
-        : Variable((uint8_t)BUCKET_RAIN_VAR_NUM,
-                   (uint8_t)BUCKET_RAIN_RESOLUTION, BUCKET_RAIN_VAR_NAME,
-                   BUCKET_RAIN_UNIT_NAME, BUCKET_RAIN_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(BUCKET_RAIN_VAR_NUM),
+                   static_cast<uint8_t>(BUCKET_RAIN_RESOLUTION),
+                   BUCKET_RAIN_VAR_NAME, BUCKET_RAIN_UNIT_NAME,
+                   BUCKET_RAIN_DEFAULT_CODE) {}
     /**
      * @brief Destroy the RainCounterI2C_Depth object - no action needed.
      */

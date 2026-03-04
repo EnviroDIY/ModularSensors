@@ -304,9 +304,10 @@ class MeterHydros21_Cond : public Variable {
     explicit MeterHydros21_Cond(
         MeterHydros21* parentSense, const char* uuid = "",
         const char* varCode = HYDROS21_COND_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)HYDROS21_COND_VAR_NUM,
-                   (uint8_t)HYDROS21_COND_RESOLUTION, HYDROS21_COND_VAR_NAME,
-                   HYDROS21_COND_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(HYDROS21_COND_VAR_NUM),
+                   static_cast<uint8_t>(HYDROS21_COND_RESOLUTION),
+                   HYDROS21_COND_VAR_NAME, HYDROS21_COND_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Construct a new MeterHydros21_Cond object.
      *
@@ -314,9 +315,10 @@ class MeterHydros21_Cond : public Variable {
      * used.
      */
     MeterHydros21_Cond()
-        : Variable((uint8_t)HYDROS21_COND_VAR_NUM,
-                   (uint8_t)HYDROS21_COND_RESOLUTION, HYDROS21_COND_VAR_NAME,
-                   HYDROS21_COND_UNIT_NAME, HYDROS21_COND_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(HYDROS21_COND_VAR_NUM),
+                   static_cast<uint8_t>(HYDROS21_COND_RESOLUTION),
+                   HYDROS21_COND_VAR_NAME, HYDROS21_COND_UNIT_NAME,
+                   HYDROS21_COND_DEFAULT_CODE) {}
     /**
      * @brief Destroy the MeterHydros21_Cond object - no action needed.
      */
@@ -347,9 +349,10 @@ class MeterHydros21_Temp : public Variable {
     explicit MeterHydros21_Temp(
         MeterHydros21* parentSense, const char* uuid = "",
         const char* varCode = HYDROS21_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)HYDROS21_TEMP_VAR_NUM,
-                   (uint8_t)HYDROS21_TEMP_RESOLUTION, HYDROS21_TEMP_VAR_NAME,
-                   HYDROS21_TEMP_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(HYDROS21_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(HYDROS21_TEMP_RESOLUTION),
+                   HYDROS21_TEMP_VAR_NAME, HYDROS21_TEMP_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Construct a new MeterHydros21_Temp object.
      *
@@ -357,9 +360,10 @@ class MeterHydros21_Temp : public Variable {
      * used.
      */
     MeterHydros21_Temp()
-        : Variable((uint8_t)HYDROS21_TEMP_VAR_NUM,
-                   (uint8_t)HYDROS21_TEMP_RESOLUTION, HYDROS21_TEMP_VAR_NAME,
-                   HYDROS21_TEMP_UNIT_NAME, HYDROS21_TEMP_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(HYDROS21_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(HYDROS21_TEMP_RESOLUTION),
+                   HYDROS21_TEMP_VAR_NAME, HYDROS21_TEMP_UNIT_NAME,
+                   HYDROS21_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the MeterHydros21_Temp object - no action needed.
      */
@@ -390,9 +394,10 @@ class MeterHydros21_Depth : public Variable {
     explicit MeterHydros21_Depth(
         MeterHydros21* parentSense, const char* uuid = "",
         const char* varCode = HYDROS21_DEPTH_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)HYDROS21_DEPTH_VAR_NUM,
-                   (uint8_t)HYDROS21_DEPTH_RESOLUTION, HYDROS21_DEPTH_VAR_NAME,
-                   HYDROS21_DEPTH_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(HYDROS21_DEPTH_VAR_NUM),
+                   static_cast<uint8_t>(HYDROS21_DEPTH_RESOLUTION),
+                   HYDROS21_DEPTH_VAR_NAME, HYDROS21_DEPTH_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Construct a new MeterHydros21_Depth object.
      *
@@ -400,9 +405,10 @@ class MeterHydros21_Depth : public Variable {
      * used.
      */
     MeterHydros21_Depth()
-        : Variable((uint8_t)HYDROS21_DEPTH_VAR_NUM,
-                   (uint8_t)HYDROS21_DEPTH_RESOLUTION, HYDROS21_DEPTH_VAR_NAME,
-                   HYDROS21_DEPTH_UNIT_NAME, HYDROS21_DEPTH_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(HYDROS21_DEPTH_VAR_NUM),
+                   static_cast<uint8_t>(HYDROS21_DEPTH_RESOLUTION),
+                   HYDROS21_DEPTH_VAR_NAME, HYDROS21_DEPTH_UNIT_NAME,
+                   HYDROS21_DEPTH_DEFAULT_CODE) {}
     /**
      * @brief Destroy the MeterHydros21_Depth object - no action needed.
      */

@@ -576,9 +576,10 @@ class TEConnectivityMS5837_Temp : public Variable {
     explicit TEConnectivityMS5837_Temp(
         TEConnectivityMS5837* parentSense, const char* uuid = "",
         const char* varCode = MS5837_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)MS5837_TEMP_VAR_NUM,
-                   (uint8_t)MS5837_TEMP_RESOLUTION, MS5837_TEMP_VAR_NAME,
-                   MS5837_TEMP_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(MS5837_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(MS5837_TEMP_RESOLUTION),
+                   MS5837_TEMP_VAR_NAME, MS5837_TEMP_UNIT_NAME, varCode, uuid) {
+    }
     /**
      * @brief Construct a new TEConnectivityMS5837_Temp object.
      *
@@ -586,9 +587,10 @@ class TEConnectivityMS5837_Temp : public Variable {
      * be used.
      */
     TEConnectivityMS5837_Temp()
-        : Variable((uint8_t)MS5837_TEMP_VAR_NUM,
-                   (uint8_t)MS5837_TEMP_RESOLUTION, MS5837_TEMP_VAR_NAME,
-                   MS5837_TEMP_UNIT_NAME, MS5837_TEMP_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(MS5837_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(MS5837_TEMP_RESOLUTION),
+                   MS5837_TEMP_VAR_NAME, MS5837_TEMP_UNIT_NAME,
+                   MS5837_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the TEConnectivityMS5837_Temp object - no action needed.
      */
@@ -620,8 +622,8 @@ class TEConnectivityMS5837_Pressure : public Variable {
     explicit TEConnectivityMS5837_Pressure(
         TEConnectivityMS5837* parentSense, const char* uuid = "",
         const char* varCode = MS5837_PRESSURE_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)MS5837_PRESSURE_VAR_NUM,
-                   (uint8_t)MS5837_PRESSURE_RESOLUTION,
+        : Variable(parentSense, static_cast<uint8_t>(MS5837_PRESSURE_VAR_NUM),
+                   static_cast<uint8_t>(MS5837_PRESSURE_RESOLUTION),
                    MS5837_PRESSURE_VAR_NAME, MS5837_PRESSURE_UNIT_NAME, varCode,
                    uuid) {}
     /**
@@ -631,8 +633,8 @@ class TEConnectivityMS5837_Pressure : public Variable {
      * be used.
      */
     TEConnectivityMS5837_Pressure()
-        : Variable((uint8_t)MS5837_PRESSURE_VAR_NUM,
-                   (uint8_t)MS5837_PRESSURE_RESOLUTION,
+        : Variable(static_cast<uint8_t>(MS5837_PRESSURE_VAR_NUM),
+                   static_cast<uint8_t>(MS5837_PRESSURE_RESOLUTION),
                    MS5837_PRESSURE_VAR_NAME, MS5837_PRESSURE_UNIT_NAME,
                    MS5837_PRESSURE_DEFAULT_CODE) {}
     /**
@@ -667,9 +669,10 @@ class TEConnectivityMS5837_Depth : public Variable {
     explicit TEConnectivityMS5837_Depth(
         TEConnectivityMS5837* parentSense, const char* uuid = "",
         const char* varCode = MS5837_DEPTH_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)MS5837_DEPTH_VAR_NUM,
-                   (uint8_t)MS5837_DEPTH_RESOLUTION, MS5837_DEPTH_VAR_NAME,
-                   MS5837_DEPTH_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(MS5837_DEPTH_VAR_NUM),
+                   static_cast<uint8_t>(MS5837_DEPTH_RESOLUTION),
+                   MS5837_DEPTH_VAR_NAME, MS5837_DEPTH_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Construct a new TEConnectivityMS5837_Depth object.
      *
@@ -677,9 +680,10 @@ class TEConnectivityMS5837_Depth : public Variable {
      * be used.
      */
     TEConnectivityMS5837_Depth()
-        : Variable((uint8_t)MS5837_DEPTH_VAR_NUM,
-                   (uint8_t)MS5837_DEPTH_RESOLUTION, MS5837_DEPTH_VAR_NAME,
-                   MS5837_DEPTH_UNIT_NAME, MS5837_DEPTH_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(MS5837_DEPTH_VAR_NUM),
+                   static_cast<uint8_t>(MS5837_DEPTH_RESOLUTION),
+                   MS5837_DEPTH_VAR_NAME, MS5837_DEPTH_UNIT_NAME,
+                   MS5837_DEPTH_DEFAULT_CODE) {}
     /**
      * @brief Destroy the TEConnectivityMS5837_Depth object - no action needed.
      */
@@ -711,8 +715,8 @@ class TEConnectivityMS5837_Altitude : public Variable {
     explicit TEConnectivityMS5837_Altitude(
         TEConnectivityMS5837* parentSense, const char* uuid = "",
         const char* varCode = MS5837_ALTITUDE_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)MS5837_ALTITUDE_VAR_NUM,
-                   (uint8_t)MS5837_ALTITUDE_RESOLUTION,
+        : Variable(parentSense, static_cast<uint8_t>(MS5837_ALTITUDE_VAR_NUM),
+                   static_cast<uint8_t>(MS5837_ALTITUDE_RESOLUTION),
                    MS5837_ALTITUDE_VAR_NAME, MS5837_ALTITUDE_UNIT_NAME, varCode,
                    uuid) {}
     /**
@@ -722,8 +726,8 @@ class TEConnectivityMS5837_Altitude : public Variable {
      * be used.
      */
     TEConnectivityMS5837_Altitude()
-        : Variable((uint8_t)MS5837_ALTITUDE_VAR_NUM,
-                   (uint8_t)MS5837_ALTITUDE_RESOLUTION,
+        : Variable(static_cast<uint8_t>(MS5837_ALTITUDE_VAR_NUM),
+                   static_cast<uint8_t>(MS5837_ALTITUDE_RESOLUTION),
                    MS5837_ALTITUDE_VAR_NAME, MS5837_ALTITUDE_UNIT_NAME,
                    MS5837_ALTITUDE_DEFAULT_CODE) {}
     /**

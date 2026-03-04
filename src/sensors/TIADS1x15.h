@@ -579,9 +579,9 @@ class TIADS1x15_Voltage : public Variable {
      */
     explicit TIADS1x15_Voltage(TIADS1x15* parentSense, const char* uuid = "",
                                const char* varCode = TIADS1X15_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)TIADS1X15_VAR_NUM,
-                   (uint8_t)TIADS1X15_RESOLUTION, TIADS1X15_VAR_NAME,
-                   TIADS1X15_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(TIADS1X15_VAR_NUM),
+                   static_cast<uint8_t>(TIADS1X15_RESOLUTION),
+                   TIADS1X15_VAR_NAME, TIADS1X15_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new TIADS1x15_Voltage object.
      *
@@ -589,7 +589,8 @@ class TIADS1x15_Voltage : public Variable {
      * used.
      */
     TIADS1x15_Voltage()
-        : Variable((uint8_t)TIADS1X15_VAR_NUM, (uint8_t)TIADS1X15_RESOLUTION,
+        : Variable(static_cast<uint8_t>(TIADS1X15_VAR_NUM),
+                   static_cast<uint8_t>(TIADS1X15_RESOLUTION),
                    TIADS1X15_VAR_NAME, TIADS1X15_UNIT_NAME,
                    TIADS1X15_DEFAULT_CODE) {}
     /**

@@ -334,8 +334,8 @@ class TIINA219_Current : public Variable {
     explicit TIINA219_Current(
         TIINA219* parentSense, const char* uuid = "",
         const char* varCode = INA219_CURRENT_MA_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)INA219_CURRENT_MA_VAR_NUM,
-                   (uint8_t)INA219_CURRENT_MA_RESOLUTION,
+        : Variable(parentSense, static_cast<uint8_t>(INA219_CURRENT_MA_VAR_NUM),
+                   static_cast<uint8_t>(INA219_CURRENT_MA_RESOLUTION),
                    INA219_CURRENT_MA_VAR_NAME, INA219_CURRENT_MA_UNIT_NAME,
                    varCode, uuid) {}
     /**
@@ -344,8 +344,8 @@ class TIINA219_Current : public Variable {
      * @note This must be tied with a parent TIINA219 before it can be used.
      */
     TIINA219_Current()
-        : Variable((uint8_t)INA219_CURRENT_MA_VAR_NUM,
-                   (uint8_t)INA219_CURRENT_MA_RESOLUTION,
+        : Variable(static_cast<uint8_t>(INA219_CURRENT_MA_VAR_NUM),
+                   static_cast<uint8_t>(INA219_CURRENT_MA_RESOLUTION),
                    INA219_CURRENT_MA_VAR_NAME, INA219_CURRENT_MA_UNIT_NAME,
                    INA219_CURRENT_MA_DEFAULT_CODE) {}
     /**
@@ -377,8 +377,9 @@ class TIINA219_Voltage : public Variable {
     explicit TIINA219_Voltage(
         TIINA219* parentSense, const char* uuid = "",
         const char* varCode = INA219_BUS_VOLTAGE_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)INA219_BUS_VOLTAGE_VAR_NUM,
-                   (uint8_t)INA219_BUS_VOLTAGE_RESOLUTION,
+        : Variable(parentSense,
+                   static_cast<uint8_t>(INA219_BUS_VOLTAGE_VAR_NUM),
+                   static_cast<uint8_t>(INA219_BUS_VOLTAGE_RESOLUTION),
                    INA219_BUS_VOLTAGE_VAR_NAME, INA219_BUS_VOLTAGE_UNIT_NAME,
                    varCode, uuid) {}
     /**
@@ -387,8 +388,8 @@ class TIINA219_Voltage : public Variable {
      * @note This must be tied with a parent TIINA219 before it can be used.
      */
     TIINA219_Voltage()
-        : Variable((uint8_t)INA219_BUS_VOLTAGE_VAR_NUM,
-                   (uint8_t)INA219_BUS_VOLTAGE_RESOLUTION,
+        : Variable(static_cast<uint8_t>(INA219_BUS_VOLTAGE_VAR_NUM),
+                   static_cast<uint8_t>(INA219_BUS_VOLTAGE_RESOLUTION),
                    INA219_BUS_VOLTAGE_VAR_NAME, INA219_BUS_VOLTAGE_UNIT_NAME,
                    INA219_BUS_VOLTAGE_DEFAULT_CODE) {}
     /**
@@ -428,8 +429,8 @@ class TIINA219_Power : public Variable {
      */
     explicit TIINA219_Power(TIINA219* parentSense, const char* uuid = "",
                             const char* varCode = INA219_POWER_MW_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)INA219_POWER_MW_VAR_NUM,
-                   (uint8_t)INA219_POWER_MW_RESOLUTION,
+        : Variable(parentSense, static_cast<uint8_t>(INA219_POWER_MW_VAR_NUM),
+                   static_cast<uint8_t>(INA219_POWER_MW_RESOLUTION),
                    INA219_POWER_MW_VAR_NAME, INA219_POWER_MW_UNIT_NAME, varCode,
                    uuid) {}
     /**
@@ -438,8 +439,8 @@ class TIINA219_Power : public Variable {
      * @note This must be tied with a parent TIINA219 before it can be used.
      */
     TIINA219_Power()
-        : Variable((uint8_t)INA219_POWER_MW_VAR_NUM,
-                   (uint8_t)INA219_POWER_MW_RESOLUTION,
+        : Variable(static_cast<uint8_t>(INA219_POWER_MW_VAR_NUM),
+                   static_cast<uint8_t>(INA219_POWER_MW_RESOLUTION),
                    INA219_POWER_MW_VAR_NAME, INA219_POWER_MW_UNIT_NAME,
                    INA219_POWER_MW_DEFAULT_CODE) {}
     /**

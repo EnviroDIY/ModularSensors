@@ -329,16 +329,17 @@ class ApogeeSQ212_PAR : public Variable {
      */
     explicit ApogeeSQ212_PAR(ApogeeSQ212* parentSense, const char* uuid = "",
                              const char* varCode = SQ212_PAR_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)SQ212_PAR_VAR_NUM,
-                   (uint8_t)SQ212_PAR_RESOLUTION, SQ212_PAR_VAR_NAME,
-                   SQ212_PAR_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(SQ212_PAR_VAR_NUM),
+                   static_cast<uint8_t>(SQ212_PAR_RESOLUTION),
+                   SQ212_PAR_VAR_NAME, SQ212_PAR_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new ApogeeSQ212_PAR object.
      *
      * @note This must be tied with a parent ApogeeSQ212 before it can be used.
      */
     ApogeeSQ212_PAR()
-        : Variable((uint8_t)SQ212_PAR_VAR_NUM, (uint8_t)SQ212_PAR_RESOLUTION,
+        : Variable(static_cast<uint8_t>(SQ212_PAR_VAR_NUM),
+                   static_cast<uint8_t>(SQ212_PAR_RESOLUTION),
                    SQ212_PAR_VAR_NAME, SQ212_PAR_UNIT_NAME,
                    SQ212_PAR_DEFAULT_CODE) {}
     /**
@@ -372,18 +373,20 @@ class ApogeeSQ212_Voltage : public Variable {
     explicit ApogeeSQ212_Voltage(
         ApogeeSQ212* parentSense, const char* uuid = "",
         const char* varCode = SQ212_VOLTAGE_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)SQ212_VOLTAGE_VAR_NUM,
-                   (uint8_t)SQ212_VOLTAGE_RESOLUTION, SQ212_VOLTAGE_VAR_NAME,
-                   SQ212_VOLTAGE_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(SQ212_VOLTAGE_VAR_NUM),
+                   static_cast<uint8_t>(SQ212_VOLTAGE_RESOLUTION),
+                   SQ212_VOLTAGE_VAR_NAME, SQ212_VOLTAGE_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Construct a new ApogeeSQ212_Voltage object.
      *
      * @note This must be tied with a parent ApogeeSQ212 before it can be used.
      */
     ApogeeSQ212_Voltage()
-        : Variable((uint8_t)SQ212_VOLTAGE_VAR_NUM,
-                   (uint8_t)SQ212_VOLTAGE_RESOLUTION, SQ212_VOLTAGE_VAR_NAME,
-                   SQ212_VOLTAGE_UNIT_NAME, SQ212_VOLTAGE_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(SQ212_VOLTAGE_VAR_NUM),
+                   static_cast<uint8_t>(SQ212_VOLTAGE_RESOLUTION),
+                   SQ212_VOLTAGE_VAR_NAME, SQ212_VOLTAGE_UNIT_NAME,
+                   SQ212_VOLTAGE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the ApogeeSQ212_Voltage object - no action needed.
      */

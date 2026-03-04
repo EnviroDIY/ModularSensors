@@ -227,9 +227,9 @@ class AtlasScientificORP_Potential : public Variable {
     explicit AtlasScientificORP_Potential(
         AtlasScientificORP* parentSense, const char* uuid = "",
         const char* varCode = ATLAS_ORP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)ATLAS_ORP_VAR_NUM,
-                   (uint8_t)ATLAS_ORP_RESOLUTION, ATLAS_ORP_VAR_NAME,
-                   ATLAS_ORP_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(ATLAS_ORP_VAR_NUM),
+                   static_cast<uint8_t>(ATLAS_ORP_RESOLUTION),
+                   ATLAS_ORP_VAR_NAME, ATLAS_ORP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new AtlasScientificORP_Potential object.
      *
@@ -237,7 +237,8 @@ class AtlasScientificORP_Potential : public Variable {
      * used.
      */
     AtlasScientificORP_Potential()
-        : Variable((uint8_t)ATLAS_ORP_VAR_NUM, (uint8_t)ATLAS_ORP_RESOLUTION,
+        : Variable(static_cast<uint8_t>(ATLAS_ORP_VAR_NUM),
+                   static_cast<uint8_t>(ATLAS_ORP_RESOLUTION),
                    ATLAS_ORP_VAR_NAME, ATLAS_ORP_UNIT_NAME,
                    ATLAS_ORP_DEFAULT_CODE) {}
     /**

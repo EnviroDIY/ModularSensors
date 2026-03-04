@@ -235,8 +235,8 @@ class AtlasScientificpH_pH : public Variable {
     explicit AtlasScientificpH_pH(AtlasScientificpH* parentSense,
                                   const char*        uuid = "",
                                   const char* varCode = ATLAS_PH_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)ATLAS_PH_VAR_NUM,
-                   (uint8_t)ATLAS_PH_RESOLUTION, ATLAS_PH_VAR_NAME,
+        : Variable(parentSense, static_cast<uint8_t>(ATLAS_PH_VAR_NUM),
+                   static_cast<uint8_t>(ATLAS_PH_RESOLUTION), ATLAS_PH_VAR_NAME,
                    ATLAS_PH_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new AtlasScientificpH_pH object.
@@ -245,9 +245,9 @@ class AtlasScientificpH_pH : public Variable {
      * used.
      */
     AtlasScientificpH_pH()
-        : Variable((uint8_t)ATLAS_PH_VAR_NUM, (uint8_t)ATLAS_PH_RESOLUTION,
-                   ATLAS_PH_VAR_NAME, ATLAS_PH_UNIT_NAME,
-                   ATLAS_PH_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(ATLAS_PH_VAR_NUM),
+                   static_cast<uint8_t>(ATLAS_PH_RESOLUTION), ATLAS_PH_VAR_NAME,
+                   ATLAS_PH_UNIT_NAME, ATLAS_PH_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AtlasScientificpH_pH object - no action needed.
      */

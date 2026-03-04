@@ -280,9 +280,10 @@ class AtlasScientificDO_DOmgL : public Variable {
     explicit AtlasScientificDO_DOmgL(
         AtlasScientificDO* parentSense, const char* uuid = "",
         const char* varCode = ATLAS_DOMGL_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)ATLAS_DOMGL_VAR_NUM,
-                   (uint8_t)ATLAS_DOMGL_RESOLUTION, ATLAS_DOMGL_VAR_NAME,
-                   ATLAS_DOMGL_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(ATLAS_DOMGL_VAR_NUM),
+                   static_cast<uint8_t>(ATLAS_DOMGL_RESOLUTION),
+                   ATLAS_DOMGL_VAR_NAME, ATLAS_DOMGL_UNIT_NAME, varCode, uuid) {
+    }
     /**
      * @brief Construct a new AtlasScientificDO_DOmgL object.
      *
@@ -290,9 +291,10 @@ class AtlasScientificDO_DOmgL : public Variable {
      * used.
      */
     AtlasScientificDO_DOmgL()
-        : Variable((uint8_t)ATLAS_DOMGL_VAR_NUM,
-                   (uint8_t)ATLAS_DOMGL_RESOLUTION, ATLAS_DOMGL_VAR_NAME,
-                   ATLAS_DOMGL_UNIT_NAME, ATLAS_DOMGL_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(ATLAS_DOMGL_VAR_NUM),
+                   static_cast<uint8_t>(ATLAS_DOMGL_RESOLUTION),
+                   ATLAS_DOMGL_VAR_NAME, ATLAS_DOMGL_UNIT_NAME,
+                   ATLAS_DOMGL_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AtlasScientificDO_DOmgL object - no action needed.
      */
@@ -323,9 +325,10 @@ class AtlasScientificDO_DOpct : public Variable {
     explicit AtlasScientificDO_DOpct(
         AtlasScientificDO* parentSense, const char* uuid = "",
         const char* varCode = ATLAS_DOPCT_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)ATLAS_DOPCT_VAR_NUM,
-                   (uint8_t)ATLAS_DOPCT_RESOLUTION, ATLAS_DOPCT_VAR_NAME,
-                   ATLAS_DOPCT_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(ATLAS_DOPCT_VAR_NUM),
+                   static_cast<uint8_t>(ATLAS_DOPCT_RESOLUTION),
+                   ATLAS_DOPCT_VAR_NAME, ATLAS_DOPCT_UNIT_NAME, varCode, uuid) {
+    }
     /**
      * @brief Construct a new AtlasScientificDO_DOpct object.
      *
@@ -333,9 +336,10 @@ class AtlasScientificDO_DOpct : public Variable {
      * used.
      */
     AtlasScientificDO_DOpct()
-        : Variable((uint8_t)ATLAS_DOPCT_VAR_NUM,
-                   (uint8_t)ATLAS_DOPCT_RESOLUTION, ATLAS_DOPCT_VAR_NAME,
-                   ATLAS_DOPCT_UNIT_NAME, ATLAS_DOPCT_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(ATLAS_DOPCT_VAR_NUM),
+                   static_cast<uint8_t>(ATLAS_DOPCT_RESOLUTION),
+                   ATLAS_DOPCT_VAR_NAME, ATLAS_DOPCT_UNIT_NAME,
+                   ATLAS_DOPCT_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AtlasScientificDO_DOpct object - no action needed.
      */

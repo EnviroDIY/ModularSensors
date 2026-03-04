@@ -222,9 +222,9 @@ class YosemitechY520_Cond : public Variable {
     explicit YosemitechY520_Cond(YosemitechY520* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = Y520_COND_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)Y520_COND_VAR_NUM,
-                   (uint8_t)Y520_COND_RESOLUTION, Y520_COND_VAR_NAME,
-                   Y520_COND_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(Y520_COND_VAR_NUM),
+                   static_cast<uint8_t>(Y520_COND_RESOLUTION),
+                   Y520_COND_VAR_NAME, Y520_COND_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY520_Cond object.
      *
@@ -232,7 +232,8 @@ class YosemitechY520_Cond : public Variable {
      * used.
      */
     YosemitechY520_Cond()
-        : Variable((uint8_t)Y520_COND_VAR_NUM, (uint8_t)Y520_COND_RESOLUTION,
+        : Variable(static_cast<uint8_t>(Y520_COND_VAR_NUM),
+                   static_cast<uint8_t>(Y520_COND_RESOLUTION),
                    Y520_COND_VAR_NAME, Y520_COND_UNIT_NAME,
                    Y520_COND_DEFAULT_CODE) {}
     /**
@@ -266,9 +267,9 @@ class YosemitechY520_Temp : public Variable {
     explicit YosemitechY520_Temp(YosemitechY520* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = Y520_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)Y520_TEMP_VAR_NUM,
-                   (uint8_t)Y520_TEMP_RESOLUTION, Y520_TEMP_VAR_NAME,
-                   Y520_TEMP_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(Y520_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(Y520_TEMP_RESOLUTION),
+                   Y520_TEMP_VAR_NAME, Y520_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY520_Temp object.
      *
@@ -276,7 +277,8 @@ class YosemitechY520_Temp : public Variable {
      * used.
      */
     YosemitechY520_Temp()
-        : Variable((uint8_t)Y520_TEMP_VAR_NUM, (uint8_t)Y520_TEMP_RESOLUTION,
+        : Variable(static_cast<uint8_t>(Y520_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(Y520_TEMP_RESOLUTION),
                    Y520_TEMP_VAR_NAME, Y520_TEMP_UNIT_NAME,
                    Y520_TEMP_DEFAULT_CODE) {}
     /**

@@ -389,8 +389,8 @@ class ProcessorStats_Battery : public Variable {
     explicit ProcessorStats_Battery(
         ProcessorStats* parentSense, const char* uuid = "",
         const char* varCode = PROCESSOR_BATTERY_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)PROCESSOR_BATTERY_VAR_NUM,
-                   (uint8_t)PROCESSOR_BATTERY_RESOLUTION,
+        : Variable(parentSense, static_cast<uint8_t>(PROCESSOR_BATTERY_VAR_NUM),
+                   static_cast<uint8_t>(PROCESSOR_BATTERY_RESOLUTION),
                    PROCESSOR_BATTERY_VAR_NAME, PROCESSOR_BATTERY_UNIT_NAME,
                    varCode, uuid) {}
     /**
@@ -400,8 +400,8 @@ class ProcessorStats_Battery : public Variable {
      * used.
      */
     ProcessorStats_Battery()
-        : Variable((uint8_t)PROCESSOR_BATTERY_VAR_NUM,
-                   (uint8_t)PROCESSOR_BATTERY_RESOLUTION,
+        : Variable(static_cast<uint8_t>(PROCESSOR_BATTERY_VAR_NUM),
+                   static_cast<uint8_t>(PROCESSOR_BATTERY_RESOLUTION),
                    PROCESSOR_BATTERY_VAR_NAME, PROCESSOR_BATTERY_UNIT_NAME,
                    PROCESSOR_BATTERY_DEFAULT_CODE) {}
     /**
@@ -442,9 +442,10 @@ class ProcessorStats_FreeRam : public Variable {
     explicit ProcessorStats_FreeRam(
         ProcessorStats* parentSense, const char* uuid = "",
         const char* varCode = PROCESSOR_RAM_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)PROCESSOR_RAM_VAR_NUM,
-                   (uint8_t)PROCESSOR_RAM_RESOLUTION, PROCESSOR_RAM_VAR_NAME,
-                   PROCESSOR_RAM_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(PROCESSOR_RAM_VAR_NUM),
+                   static_cast<uint8_t>(PROCESSOR_RAM_RESOLUTION),
+                   PROCESSOR_RAM_VAR_NAME, PROCESSOR_RAM_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Construct a new ProcessorStats_FreeRam object.
      *
@@ -452,9 +453,10 @@ class ProcessorStats_FreeRam : public Variable {
      * used.
      */
     ProcessorStats_FreeRam()
-        : Variable((uint8_t)PROCESSOR_RAM_VAR_NUM,
-                   (uint8_t)PROCESSOR_RAM_RESOLUTION, PROCESSOR_RAM_VAR_NAME,
-                   PROCESSOR_RAM_UNIT_NAME, PROCESSOR_RAM_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(PROCESSOR_RAM_VAR_NUM),
+                   static_cast<uint8_t>(PROCESSOR_RAM_RESOLUTION),
+                   PROCESSOR_RAM_VAR_NAME, PROCESSOR_RAM_UNIT_NAME,
+                   PROCESSOR_RAM_DEFAULT_CODE) {}
     /**
      * @brief Destroy the ProcessorStats_FreeRam object - no action needed.
      */
@@ -489,8 +491,8 @@ class ProcessorStats_SampleNumber : public Variable {
     explicit ProcessorStats_SampleNumber(
         ProcessorStats* parentSense, const char* uuid = "",
         const char* varCode = PROCESSOR_SAMPNUM_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)PROCESSOR_SAMPNUM_VAR_NUM,
-                   (uint8_t)PROCESSOR_SAMPNUM_RESOLUTION,
+        : Variable(parentSense, static_cast<uint8_t>(PROCESSOR_SAMPNUM_VAR_NUM),
+                   static_cast<uint8_t>(PROCESSOR_SAMPNUM_RESOLUTION),
                    PROCESSOR_SAMPNUM_VAR_NAME, PROCESSOR_SAMPNUM_UNIT_NAME,
                    varCode, uuid) {}
     /**
@@ -500,8 +502,8 @@ class ProcessorStats_SampleNumber : public Variable {
      * used.
      */
     ProcessorStats_SampleNumber()
-        : Variable((uint8_t)PROCESSOR_SAMPNUM_VAR_NUM,
-                   (uint8_t)PROCESSOR_SAMPNUM_RESOLUTION,
+        : Variable(static_cast<uint8_t>(PROCESSOR_SAMPNUM_VAR_NUM),
+                   static_cast<uint8_t>(PROCESSOR_SAMPNUM_RESOLUTION),
                    PROCESSOR_SAMPNUM_VAR_NAME, PROCESSOR_SAMPNUM_UNIT_NAME,
                    PROCESSOR_SAMPNUM_DEFAULT_CODE) {}
     /**
@@ -540,8 +542,8 @@ class ProcessorStats_ResetCode : public Variable {
     explicit ProcessorStats_ResetCode(
         ProcessorStats* parentSense, const char* uuid = "",
         const char* varCode = PROCESSOR_RESET_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)PROCESSOR_RESET_VAR_NUM,
-                   (uint8_t)PROCESSOR_RESET_RESOLUTION,
+        : Variable(parentSense, static_cast<uint8_t>(PROCESSOR_RESET_VAR_NUM),
+                   static_cast<uint8_t>(PROCESSOR_RESET_RESOLUTION),
                    PROCESSOR_RESET_VAR_NAME, PROCESSOR_RESET_UNIT_NAME, varCode,
                    uuid) {}
     /**
@@ -551,8 +553,8 @@ class ProcessorStats_ResetCode : public Variable {
      * used.
      */
     ProcessorStats_ResetCode()
-        : Variable((uint8_t)PROCESSOR_RESET_VAR_NUM,
-                   (uint8_t)PROCESSOR_RESET_RESOLUTION,
+        : Variable(static_cast<uint8_t>(PROCESSOR_RESET_VAR_NUM),
+                   static_cast<uint8_t>(PROCESSOR_RESET_RESOLUTION),
                    PROCESSOR_RESET_VAR_NAME, PROCESSOR_RESET_UNIT_NAME,
                    PROCESSOR_RESET_DEFAULT_CODE) {}
     /**

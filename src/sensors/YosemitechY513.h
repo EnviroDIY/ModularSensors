@@ -222,8 +222,8 @@ class YosemitechY513_BGA : public Variable {
     explicit YosemitechY513_BGA(YosemitechY513* parentSense,
                                 const char*     uuid    = "",
                                 const char*     varCode = Y513_BGA_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)Y513_BGA_VAR_NUM,
-                   (uint8_t)Y513_BGA_RESOLUTION, Y513_BGA_VAR_NAME,
+        : Variable(parentSense, static_cast<uint8_t>(Y513_BGA_VAR_NUM),
+                   static_cast<uint8_t>(Y513_BGA_RESOLUTION), Y513_BGA_VAR_NAME,
                    Y513_BGA_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY513_BGA object.
@@ -232,9 +232,9 @@ class YosemitechY513_BGA : public Variable {
      * used.
      */
     YosemitechY513_BGA()
-        : Variable((uint8_t)Y513_BGA_VAR_NUM, (uint8_t)Y513_BGA_RESOLUTION,
-                   Y513_BGA_VAR_NAME, Y513_BGA_UNIT_NAME,
-                   Y513_BGA_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(Y513_BGA_VAR_NUM),
+                   static_cast<uint8_t>(Y513_BGA_RESOLUTION), Y513_BGA_VAR_NAME,
+                   Y513_BGA_UNIT_NAME, Y513_BGA_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY513_BGA() object - no action
      * needed.
@@ -267,9 +267,9 @@ class YosemitechY513_Temp : public Variable {
     explicit YosemitechY513_Temp(YosemitechY513* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = Y513_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)Y513_TEMP_VAR_NUM,
-                   (uint8_t)Y513_TEMP_RESOLUTION, Y513_TEMP_VAR_NAME,
-                   Y513_TEMP_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(Y513_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(Y513_TEMP_RESOLUTION),
+                   Y513_TEMP_VAR_NAME, Y513_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY513_Temp object.
      *
@@ -277,7 +277,8 @@ class YosemitechY513_Temp : public Variable {
      * used.
      */
     YosemitechY513_Temp()
-        : Variable((uint8_t)Y513_TEMP_VAR_NUM, (uint8_t)Y513_TEMP_RESOLUTION,
+        : Variable(static_cast<uint8_t>(Y513_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(Y513_TEMP_RESOLUTION),
                    Y513_TEMP_VAR_NAME, Y513_TEMP_UNIT_NAME,
                    Y513_TEMP_DEFAULT_CODE) {}
     /**
