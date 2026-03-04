@@ -222,7 +222,7 @@ class MaxBotixSonar : public Sensor {
     /**
      * @brief Destroy the MaxBotix Sonar object
      */
-    ~MaxBotixSonar();
+    ~MaxBotixSonar() = default;
 
     String getSensorLocation(void) override;
 

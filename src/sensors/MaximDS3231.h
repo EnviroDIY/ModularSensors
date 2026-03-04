@@ -166,7 +166,7 @@ class MaximDS3231 : public Sensor {
     /**
      * @brief Destroy the Maxim DS3231 object
      */
-    ~MaximDS3231();
+    ~MaximDS3231() = default;
 
     String getSensorLocation(void) override;
 

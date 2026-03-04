@@ -207,7 +207,7 @@ class YosemitechParent : public Sensor {
     /**
      * @brief Destroy the Yosemitech Parent object - no action taken
      */
-    virtual ~YosemitechParent();
+    virtual ~YosemitechParent() = default;
 
     String getSensorLocation(void) override;
 

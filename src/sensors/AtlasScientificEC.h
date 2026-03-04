@@ -302,7 +302,7 @@ class AtlasScientificEC : public AtlasParent {
     /**
      * @brief Destroy the Atlas Scientific EC object
      */
-    ~AtlasScientificEC();
+    ~AtlasScientificEC() = default;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able

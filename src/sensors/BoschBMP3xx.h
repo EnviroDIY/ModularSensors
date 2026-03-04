@@ -435,7 +435,7 @@ class BoschBMP3xx : public Sensor {
     /**
      * @brief Destroy the Bosch BMP3xx object
      */
-    ~BoschBMP3xx();
+    ~BoschBMP3xx() = default;
 
     bool wake(void) override;
     /**

@@ -27,8 +27,6 @@ Sodaq2GBeeR6::Sodaq2GBeeR6(Stream* modemStream, int8_t vRefPin,
     setVRefPin(vRefPin);
 }
 
-// Destructor
-Sodaq2GBeeR6::~Sodaq2GBeeR6() {}
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean

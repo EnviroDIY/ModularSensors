@@ -44,8 +44,6 @@ GeoluxHydroCam::GeoluxHydroCam(Stream& stream, int8_t powerPin,
     setSecondaryPowerPin(powerPin2);
 }
 
-// Destructor
-GeoluxHydroCam::~GeoluxHydroCam() {}
 
 String GeoluxHydroCam::getLastSavedImageName() {
     return _filename;

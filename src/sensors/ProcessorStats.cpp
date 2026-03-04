@@ -75,9 +75,6 @@ ProcessorStats::ProcessorStats(const char* boardName, const char* version,
       _batteryMultiplier(batteryMultiplier),
       _operatingVoltage(operatingVoltage) {}
 
-// Destructor
-ProcessorStats::~ProcessorStats() {}
-
 
 String ProcessorStats::getSensorLocation(void) {
     return String(_boardName) + " " + String(_version);

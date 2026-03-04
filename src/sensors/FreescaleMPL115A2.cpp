@@ -25,8 +25,6 @@ FreescaleMPL115A2::FreescaleMPL115A2(TwoWire* theI2C, int8_t powerPin,
 FreescaleMPL115A2::FreescaleMPL115A2(int8_t  powerPin,
                                      uint8_t measurementsToAverage)
     : FreescaleMPL115A2(&Wire, powerPin, measurementsToAverage) {}
-// Destructor
-FreescaleMPL115A2::~FreescaleMPL115A2() {}
 
 
 String FreescaleMPL115A2::getSensorLocation(void) {

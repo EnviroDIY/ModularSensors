@@ -25,8 +25,6 @@ VariableArray::VariableArray(uint8_t variableCount, Variable* variableList[],
     matchUUIDs(uuids);
 }
 
-// Destructor
-VariableArray::~VariableArray() {}
 
 void VariableArray::begin(uint8_t variableCount, Variable* variableList[],
                           const char* uuids[]) {

@@ -283,7 +283,7 @@ class GeoluxHydroCam : public Sensor {
     /**
      * @brief Destroy the Geolux HydroCam object
      */
-    ~GeoluxHydroCam();
+    ~GeoluxHydroCam() = default;
 
     /**
      * @brief Extra unique function to retrieve the name of the last saved image

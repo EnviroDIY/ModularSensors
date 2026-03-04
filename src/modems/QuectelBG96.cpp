@@ -30,9 +30,6 @@ QuectelBG96::QuectelBG96(Stream* modemStream, int8_t powerPin, int8_t statusPin,
       _apn(apn) {
 }
 
-// Destructor
-QuectelBG96::~QuectelBG96() {}
-
 MS_MODEM_EXTRA_SETUP(QuectelBG96);
 MS_IS_MODEM_AWAKE(QuectelBG96);
 MS_MODEM_WAKE(QuectelBG96);

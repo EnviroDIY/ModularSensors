@@ -235,7 +235,7 @@ class MeaSpecMS5803 : public Sensor {
     /**
      * @brief Destroy the MeaSpecMS5803 object
      */
-    ~MeaSpecMS5803();
+    ~MeaSpecMS5803() = default;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able

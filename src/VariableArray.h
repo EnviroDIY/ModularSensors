@@ -103,7 +103,7 @@ class VariableArray {
     /**
      * @brief Destroy the Variable Array object - no action taken.
      */
-    ~VariableArray();
+    ~VariableArray() = default;
 
     // "Begins" the VariableArray - attaches the number and array of variables
     // Not doing this in the constructor because we expect the VariableArray to

@@ -26,8 +26,6 @@ SensirionSHT4x::SensirionSHT4x(int8_t powerPin, bool useHeater,
              -1, measurementsToAverage, SHT4X_INC_CALC_VARIABLES),
       _useHeater(useHeater),
       _i2c(&Wire) {}
-// Destructor
-SensirionSHT4x::~SensirionSHT4x() {}
 
 
 String SensirionSHT4x::getSensorLocation(void) {

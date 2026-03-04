@@ -228,10 +228,9 @@ class AtlasScientificCO2 : public AtlasParent {
                                 uint8_t measurementsToAverage = 1);
 
     /**
-     * @brief Destroy the Atlas Scientific CO2 object.  Also destroy the
-     * software I2C instance if one was created.
+     * @brief Destroy the Atlas Scientific CO2 object.
      */
-    ~AtlasScientificCO2();
+    ~AtlasScientificCO2() = default;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able

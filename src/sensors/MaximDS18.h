@@ -225,7 +225,7 @@ class MaximDS18 : public Sensor {
     /**
      * @brief Destroy the Maxim DS18 object
      */
-    ~MaximDS18();
+    ~MaximDS18() = default;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able

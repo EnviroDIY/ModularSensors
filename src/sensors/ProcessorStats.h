@@ -317,7 +317,7 @@ class ProcessorStats : public Sensor {
     /**
      * @brief Destroy the Processor Stats object
      */
-    ~ProcessorStats();
+    ~ProcessorStats() = default;
 
     /**
      * @copydoc Sensor::getSensorLocation()

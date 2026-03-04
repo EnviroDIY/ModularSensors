@@ -269,7 +269,7 @@ class AOSongDHT : public Sensor {
     /**
      * @brief Destroy the AOSongDHT object - no action needed.
      */
-    ~AOSongDHT();
+    ~AOSongDHT() = default;
 
     bool setup(void) override;
 

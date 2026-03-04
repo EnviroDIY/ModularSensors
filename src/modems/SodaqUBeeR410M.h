@@ -223,8 +223,6 @@
  */
 class SodaqUBeeR410M : public loggerModem {
  public:
-    // Constructor/Destructor
-
 #if F_CPU == 8000000L
     /**
      * @brief Construct a new Sodaq UBee R410M object
@@ -299,7 +297,7 @@ class SodaqUBeeR410M : public loggerModem {
     /**
      * @brief Destroy the Sodaq UBee R410M object - no action needed
      */
-    ~SodaqUBeeR410M();
+    ~SodaqUBeeR410M() = default;
 
     bool modemWake(void) override;
 

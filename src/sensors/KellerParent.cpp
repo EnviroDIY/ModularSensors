@@ -40,8 +40,6 @@ KellerParent::KellerParent(byte modbusAddress, Stream& stream, int8_t powerPin,
     : KellerParent(modbusAddress, &stream, powerPin, powerPin2, enablePin,
                    measurementsToAverage, model, sensName, numVariables,
                    warmUpTime_ms, stabilizationTime_ms, measurementTime_ms) {}
-// Destructor
-KellerParent::~KellerParent() {}
 
 
 // The sensor installation location on the Mayfly

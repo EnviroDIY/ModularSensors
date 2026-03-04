@@ -304,7 +304,7 @@ class BoschBME280 : public Sensor {
     /**
      * @brief Destroy the Bosch BME280 object
      */
-    ~BoschBME280();
+    ~BoschBME280() = default;
 
     bool wake(void) override;
     /**

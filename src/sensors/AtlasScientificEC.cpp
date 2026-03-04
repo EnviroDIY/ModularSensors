@@ -27,9 +27,6 @@ AtlasScientificEC::AtlasScientificEC(int8_t powerPin, uint8_t i2cAddressHex,
     : AtlasScientificEC(&Wire, powerPin, i2cAddressHex, measurementsToAverage) {
 }
 
-// Destructor
-AtlasScientificEC::~AtlasScientificEC() {}
-
 
 // Setup
 bool AtlasScientificEC::setup() {

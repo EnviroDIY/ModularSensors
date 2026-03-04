@@ -25,9 +25,6 @@ BoschBME280::BoschBME280(int8_t powerPin, uint8_t i2cAddressHex,
                          uint8_t measurementsToAverage)
     : BoschBME280(&Wire, powerPin, i2cAddressHex, measurementsToAverage) {}
 
-// Destructor
-BoschBME280::~BoschBME280() {}
-
 
 String BoschBME280::getSensorLocation(void) {
     String address = F("I2C_0x");

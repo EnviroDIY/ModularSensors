@@ -34,8 +34,6 @@ MaximDS18::MaximDS18(int8_t powerPin, int8_t dataPin,
       _addressKnown(false),
       _internalOneWire(dataPin),
       _internalDallasTemp(&_internalOneWire) {}
-// Destructor
-MaximDS18::~MaximDS18() {}
 
 
 // Turns the address into a printable string

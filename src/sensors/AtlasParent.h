@@ -171,10 +171,9 @@ class AtlasParent : public Sensor {
                 uint32_t measurementTime_ms = 0, uint8_t incCalcValues = 0);
 
     /**
-     * @brief Destroy the Atlas Parent object.  Also destroy the software I2C
-     * instance if one was created.
+     * @brief Destroy the Atlas Parent object.
      */
-    virtual ~AtlasParent();
+    virtual ~AtlasParent() = default;
 
     /**
      * @brief Return the I2C address of the EZO circuit.

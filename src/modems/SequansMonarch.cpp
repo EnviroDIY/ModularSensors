@@ -30,8 +30,6 @@ SequansMonarch::SequansMonarch(Stream* modemStream, int8_t powerPin,
       _apn(apn) {
 }
 
-// Destructor
-SequansMonarch::~SequansMonarch() {}
 
 MS_IS_MODEM_AWAKE(SequansMonarch);
 MS_MODEM_WAKE(SequansMonarch);

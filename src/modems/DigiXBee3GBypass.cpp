@@ -28,9 +28,6 @@ DigiXBee3GBypass::DigiXBee3GBypass(Stream* modemStream, int8_t powerPin,
       _apn(apn) {
 }
 
-// Destructor
-DigiXBee3GBypass::~DigiXBee3GBypass() {}
-
 MS_IS_MODEM_AWAKE(DigiXBee3GBypass);
 MS_MODEM_WAKE(DigiXBee3GBypass);
 

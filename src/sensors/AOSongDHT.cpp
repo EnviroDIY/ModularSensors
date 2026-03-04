@@ -22,9 +22,6 @@ AOSongDHT::AOSongDHT(int8_t powerPin, int8_t dataPin, const uint8_t type,
     setAllowedMeasurementRetries(DHT_DEFAULT_MEASUREMENT_RETRIES);
 }
 
-// Destructor - does nothing.
-AOSongDHT::~AOSongDHT() {}
-
 
 bool AOSongDHT::setup(void) {
     dht_internal.begin();    // Start up the sensor (only sets pin modes, sensor

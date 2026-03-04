@@ -25,8 +25,6 @@ BoschBMP3xx::BoschBMP3xx(int8_t powerPin, Mode mode,
       _filterCoeffEnum(filterCoeff),
       _standbyEnum(timeStandby),
       _i2cAddressHex(i2cAddressHex) {}
-// Destructor
-BoschBMP3xx::~BoschBMP3xx() {}
 
 
 String BoschBMP3xx::getSensorLocation(void) {

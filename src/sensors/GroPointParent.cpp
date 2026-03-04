@@ -42,8 +42,6 @@ GroPointParent::GroPointParent(byte modbusAddress, Stream& stream,
                      measurementsToAverage, model, sensName, numVariables,
                      warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
                      incCalcValues) {}
-// Destructor
-GroPointParent::~GroPointParent() {}
 
 
 // The sensor installation location on the Mayfly

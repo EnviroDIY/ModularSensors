@@ -203,7 +203,7 @@ class TallyCounterI2C : public Sensor {
     /**
      * @brief Destroy the Tally Counter object
      */
-    ~TallyCounterI2C();
+    ~TallyCounterI2C() = default;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able

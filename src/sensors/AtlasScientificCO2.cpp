@@ -27,9 +27,6 @@ AtlasScientificCO2::AtlasScientificCO2(int8_t powerPin, uint8_t i2cAddressHex,
     : AtlasScientificCO2(&Wire, powerPin, i2cAddressHex,
                          measurementsToAverage) {}
 
-// Destructor
-AtlasScientificCO2::~AtlasScientificCO2() {}
-
 
 // Setup
 bool AtlasScientificCO2::setup() {

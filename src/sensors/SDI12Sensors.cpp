@@ -74,8 +74,6 @@ SDI12Sensors::SDI12Sensors(int SDI12address, int8_t powerPin, int8_t dataPin,
                    measurementsToAverage, sensorName, totalReturnedValues,
                    warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
                    extraWakeTime, incCalcValues) {}
-// Destructor
-SDI12Sensors::~SDI12Sensors() {}
 
 
 bool SDI12Sensors::setup(void) {

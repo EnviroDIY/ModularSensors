@@ -34,8 +34,6 @@ AtlasParent::AtlasParent(int8_t powerPin, uint8_t i2cAddressHex,
     : AtlasParent(&Wire, powerPin, i2cAddressHex, measurementsToAverage,
                   sensorName, totalReturnedValues, warmUpTime_ms,
                   stabilizationTime_ms, measurementTime_ms, incCalcValues) {}
-// Destructors
-AtlasParent::~AtlasParent() {}
 
 
 String AtlasParent::getSensorLocation(void) {

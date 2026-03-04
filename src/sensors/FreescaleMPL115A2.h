@@ -220,7 +220,7 @@ class FreescaleMPL115A2 : public Sensor {
     /**
      * @brief Destroy the FreescaleMPL115A2 object
      */
-    ~FreescaleMPL115A2();
+    ~FreescaleMPL115A2() = default;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able

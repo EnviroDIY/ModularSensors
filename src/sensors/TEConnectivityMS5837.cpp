@@ -59,9 +59,6 @@ TEConnectivityMS5837::TEConnectivityMS5837(int8_t powerPin, MS5837Model model,
                            measurementsToAverage, overSamplingRatio,
                            fluidDensity, airPressure) {}
 
-// Destructor
-TEConnectivityMS5837::~TEConnectivityMS5837() {}
-
 
 String TEConnectivityMS5837::getSensorName(void) {
     auto   modelEnum = static_cast<MS5837Model>(_model);

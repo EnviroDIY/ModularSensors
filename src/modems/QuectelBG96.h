@@ -200,7 +200,7 @@ class QuectelBG96 : public loggerModem {
     /**
      * @brief Destroy the Quectel BG96 object - no action taken
      */
-    ~QuectelBG96();
+    ~QuectelBG96() = default;
 
     bool modemWake(void) override;
 

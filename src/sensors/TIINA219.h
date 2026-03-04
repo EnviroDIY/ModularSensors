@@ -267,7 +267,7 @@ class TIINA219 : public Sensor {
     /**
      * @brief Destroy the TI INA219 object
      */
-    ~TIINA219();
+    ~TIINA219() = default;
 
     /**
      * @brief Wake the sensor up and read the calibration coefficient from it.

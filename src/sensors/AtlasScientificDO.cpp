@@ -26,9 +26,6 @@ AtlasScientificDO::AtlasScientificDO(int8_t powerPin, uint8_t i2cAddressHex,
     : AtlasScientificDO(&Wire, powerPin, i2cAddressHex, measurementsToAverage) {
 }
 
-// Destructor
-AtlasScientificDO::~AtlasScientificDO() {}
-
 
 // Setup
 bool AtlasScientificDO::setup() {

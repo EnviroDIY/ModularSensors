@@ -30,8 +30,6 @@ SIMComSIM7080::SIMComSIM7080(Stream* modemStream, int8_t powerPin,
       _apn(apn) {
 }
 
-// Destructor
-SIMComSIM7080::~SIMComSIM7080() {}
 
 bool SIMComSIM7080::extraModemSetup(void) {
     bool success = gsmModem.init();

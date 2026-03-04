@@ -30,9 +30,6 @@ SIMComSIM7000::SIMComSIM7000(Stream* modemStream, int8_t powerPin,
       _apn(apn) {
 }
 
-// Destructor
-SIMComSIM7000::~SIMComSIM7000() {}
-
 MS_MODEM_EXTRA_SETUP(SIMComSIM7000);
 MS_IS_MODEM_AWAKE(SIMComSIM7000);
 MS_MODEM_WAKE(SIMComSIM7000);

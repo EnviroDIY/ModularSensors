@@ -253,7 +253,7 @@ class SensirionSHT4x : public Sensor {
     /**
      * @brief Destroy the SensirionSHT4x object - no action needed.
      */
-    ~SensirionSHT4x();
+    ~SensirionSHT4x() = default;
 
     /**
      * @brief Report the I2C address of the SHT4x - which is always 0x44.

@@ -239,7 +239,7 @@ class AtlasScientificDO : public AtlasParent {
     /**
      * @brief Destroy the Atlas Scientific DO object
      */
-    ~AtlasScientificDO();
+    ~AtlasScientificDO() = default;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able

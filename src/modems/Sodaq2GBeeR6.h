@@ -162,7 +162,7 @@ class Sodaq2GBeeR6 : public SIMComSIM800 {
     /**
      * @brief Destroy the Sodaq 2GBee R6 object - no action taken
      */
-    ~Sodaq2GBeeR6();
+    ~Sodaq2GBeeR6() = default;
 
     /**
      * @brief Sets the pin to use to control voltage reference on the GPRSBee.

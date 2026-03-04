@@ -125,7 +125,7 @@ class DigiXBee3GBypass : public DigiXBee {
     /**
      * @brief Destroy the Digi XBee 3G Bypass object - no action needed
      */
-    ~DigiXBee3GBypass();
+    ~DigiXBee3GBypass() = default;
 
     bool modemWake(void) override;
 

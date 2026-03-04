@@ -30,9 +30,6 @@ SIMComSIM800::SIMComSIM800(Stream* modemStream, int8_t powerPin,
       _apn(apn) {
 }
 
-// Destructor
-SIMComSIM800::~SIMComSIM800() {}
-
 MS_MODEM_EXTRA_SETUP(SIMComSIM800);
 MS_IS_MODEM_AWAKE(SIMComSIM800);
 MS_MODEM_WAKE(SIMComSIM800);

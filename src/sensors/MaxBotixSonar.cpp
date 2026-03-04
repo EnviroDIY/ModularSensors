@@ -29,9 +29,6 @@ MaxBotixSonar::MaxBotixSonar(Stream& stream, int8_t powerPin, int8_t triggerPin,
     : MaxBotixSonar(&stream, powerPin, triggerPin, maxRange,
                     measurementsToAverage, convertCm) {}
 
-// Destructor
-MaxBotixSonar::~MaxBotixSonar() {}
-
 
 // unfortunately, we really cannot know where the stream is attached.
 String MaxBotixSonar::getSensorLocation(void) {
