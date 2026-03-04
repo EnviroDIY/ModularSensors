@@ -147,7 +147,7 @@ int16_t ThingSpeakPublisher::publishData(Client* outClient, bool) {
         return -1;
     }
 
-    bool retVal = false;
+    int16_t status = 0;
 
     // Make sure we don't have too many fields
     // A channel can have a max of 8 fields
@@ -211,7 +211,8 @@ int16_t ThingSpeakPublisher::publishData(Client* outClient, bool) {
         MS_DBG(F("Publishing to ThingSpeak"));
         PRINTOUT(F("\nTopic ["), strlen(topicBuffer), F("]:"), topicBuffer);
         PRINTOUT(F("Message ["), strlen(txBuffer), F("]:"), txBuffer);
-        retVal = _mqttClient.publish(topicBuffer, txBuffer, false);
+        bool publishSuccess = _mqttClient.publish(topicBuffer, txBuffer, false);
+        status              = publishSuccess ? 1 : 0;
 
         PRINTOUT(F("ThingSpeak topic published!  Current state:"),
                  parseMQTTState(_mqttClient.state()));
@@ -219,7 +220,7 @@ int16_t ThingSpeakPublisher::publishData(Client* outClient, bool) {
         PRINTOUT(F("MQTT connection failed with state:"),
                  parseMQTTState(_mqttClient.state()));
         delay(1000);
-        retVal = false;
+        status = 0;
     }
 
     // Disconnect from MQTT
@@ -227,7 +228,7 @@ int16_t ThingSpeakPublisher::publishData(Client* outClient, bool) {
     MS_RESET_DEBUG_TIMER
     _mqttClient.disconnect();
     MS_DBG(F("Disconnected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
-    return retVal;
+    return status;
 }
 
 // This updates your channel field names on ThingSpeak
