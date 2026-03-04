@@ -88,33 +88,29 @@ class AWS_IoT_Publisher : public dataPublisher {
  public:
     // Constructors
     /**
-     * @brief Construct a new AWS IoT Core Publisher object with no members
-     * initialized.
-     */
-    AWS_IoT_Publisher();
-    /**
-     * @brief Construct a new AWS IoT Core Publisher object
-     *
-     * @note If a client is never specified, the publisher will attempt to
-     * create and use a client on a LoggerModem instance tied to the attached
-     * logger.
-     *
-     * @param baseLogger The logger supplying the data to be published
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. NOTE: not implemented by this publisher!
-     */
-    explicit AWS_IoT_Publisher(Logger& baseLogger, int sendEveryX = 1);
-    /**
      * @brief Construct a new AWS IoT Core Publisher object
      *
      * @param baseLogger The logger supplying the data to be published
      * @param inClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
+     * @param awsIoTEndpoint The endpoint for your AWS IoT instance
+     * @param caCertName The name of your certificate authority certificate
+     * file
+     * @param clientCertName The name of your client certificate file
+     * @param clientKeyName The name of your client private key file
+     * @param samplingFeatureUUID The sampling feature UUID
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions. NOTE: not implemented by this publisher!
+     *
+     * @note The inputs to this are the **NAMES** of the certificate **files**
+     * as they are stored on you modem module, not the content of the
+     * certificates.
      */
-    AWS_IoT_Publisher(Logger& baseLogger, Client* inClient, int sendEveryX = 1);
+    AWS_IoT_Publisher(Logger& baseLogger, Client* inClient,
+                      const char* awsIoTEndpoint, const char* caCertName,
+                      const char* clientCertName, const char* clientKeyName,
+                      const char* samplingFeatureUUID, int sendEveryX = 1);
     /**
      * @brief Construct a new AWS IoT Core Publisher object
      *
@@ -170,6 +166,34 @@ class AWS_IoT_Publisher : public dataPublisher {
     AWS_IoT_Publisher(Logger& baseLogger, Client* inClient,
                       const char* awsIoTEndpoint,
                       const char* samplingFeatureUUID, int sendEveryX = 1);
+    /**
+     * @brief Construct a new AWS IoT Core Publisher object
+     *
+     * @param baseLogger The logger supplying the data to be published
+     * @param inClient An Arduino client instance to use to print data to.
+     * Allows the use of any type of client and multiple clients tied to a
+     * single TinyGSM modem instance
+     * @param sendEveryX Interval (in units of the logging interval) between
+     * attempted data transmissions. NOTE: not implemented by this publisher!
+     */
+    AWS_IoT_Publisher(Logger& baseLogger, Client* inClient, int sendEveryX = 1);
+    /**
+     * @brief Construct a new AWS IoT Core Publisher object
+     *
+     * @note If a client is never specified, the publisher will attempt to
+     * create and use a client on a LoggerModem instance tied to the attached
+     * logger.
+     *
+     * @param baseLogger The logger supplying the data to be published
+     * @param sendEveryX Interval (in units of the logging interval) between
+     * attempted data transmissions. NOTE: not implemented by this publisher!
+     */
+    explicit AWS_IoT_Publisher(Logger& baseLogger, int sendEveryX = 1);
+    /**
+     * @brief Construct a new AWS IoT Core Publisher object with no members
+     * initialized.
+     */
+    AWS_IoT_Publisher();
     /**
      * @brief Destroy the AWS IoT Core Publisher object
      */
