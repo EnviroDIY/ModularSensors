@@ -253,6 +253,8 @@ float Variable::getValue(bool updateValue) {
         } else if (updateValue && _calcFxn == nullptr) {
             // If no calculation function is set, return error value
             _currentValue = MS_INVALID_VALUE;
+            MS_DBG(
+                F("ERROR! Calculated variable has no calculation function!"));
         }
         return _currentValue;
     } else {
@@ -261,6 +263,7 @@ float Variable::getValue(bool updateValue) {
         } else if (updateValue && parentSensor == nullptr) {
             // If no parent sensor is set, return error value
             _currentValue = MS_INVALID_VALUE;
+            MS_DBG(F("ERROR! Variable has no parent sensor!"));
         }
         return _currentValue;
     }

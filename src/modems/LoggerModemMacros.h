@@ -786,7 +786,7 @@
  * This populates the entered references with invalid values for modems where
  * such data is not available.
  *
- * @warning This function does **not** use #MS_INVALID_VALUE  for the invalid
+ * @warning This function does **not** use #MS_INVALID_VALUE for the invalid
  * values! This is because of the size of the int variables and the standards
  * within TinyGSM.
  *

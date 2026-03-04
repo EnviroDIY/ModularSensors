@@ -524,11 +524,7 @@ bool DigiXBeeWifi::updateModemMetadata(void) {
         chip_temp       = getModemChipTemperature();
         MS_DBG(F("CURRENT Modem temperature(C):"),
                loggerModem::_priorModemTemp);
-        if (chip_temp != MS_INVALID_VALUE) {
-            loggerModem::_priorModemTemp = chip_temp;
-        } else {
-            loggerModem::_priorModemTemp = static_cast<float>(MS_INVALID_VALUE);
-        }
+        loggerModem::_priorModemTemp = chip_temp;
 
         success &= ((chip_temp != MS_INVALID_VALUE) && (chip_temp != 0));
     } else {

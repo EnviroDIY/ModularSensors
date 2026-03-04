@@ -74,9 +74,10 @@ MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
 MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
     Logger& baseLogger, Client* inClient, const char* registrationToken,
     const char* samplingFeatureUUID, int sendEveryX)
-    : MonitorMyWatershedPublisher(baseLogger, registrationToken,
-                                  samplingFeatureUUID, sendEveryX) {
-    if (inClient) _inClient = inClient;
+    : MonitorMyWatershedPublisher(baseLogger, inClient, sendEveryX) {
+    if (registrationToken) setToken(registrationToken);
+    if (samplingFeatureUUID)
+        _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
 }
 // Delegating constructor
 MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
@@ -183,22 +184,21 @@ void MonitorMyWatershedPublisher::begin(Logger& baseLogger, Client* inClient,
                                         const char* samplingFeatureUUID) {
     setToken(registrationToken);
     dataPublisher::begin(baseLogger, inClient);
-    _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
+    if (samplingFeatureUUID != nullptr) {
+        _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
+    }
     _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
 }
 void MonitorMyWatershedPublisher::begin(Logger&     baseLogger,
                                         const char* registrationToken,
                                         const char* samplingFeatureUUID) {
-    setToken(registrationToken);
-    dataPublisher::begin(baseLogger);
-    _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
-    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
+    begin(baseLogger, static_cast<Client*>(nullptr), registrationToken,
+          samplingFeatureUUID);
 }
 void MonitorMyWatershedPublisher::begin(Logger&     baseLogger,
                                         const char* registrationToken) {
-    setToken(registrationToken);
-    dataPublisher::begin(baseLogger);
-    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
+    begin(baseLogger, static_cast<Client*>(nullptr), registrationToken,
+          nullptr);
 }
 
 bool MonitorMyWatershedPublisher::connectionNeeded(void) {

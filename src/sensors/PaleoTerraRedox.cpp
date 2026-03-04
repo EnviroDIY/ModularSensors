@@ -142,7 +142,6 @@ bool PaleoTerraRedox::addSingleMeasurementResult(void) {
     byte res3 = _i2c->read();  // byte 3: [ D7 ~ D0 ]
     config    = _i2c->read();  // byte 4: [config byte]
 
-    res = 0;
     // Assemble the 18-bit raw sample from the three bytes
     // Only use the lower 2 bits of res1 (D17 D16), ignore sign-extension bits
     // Cast to uint32_t to ensure sufficient bit width for left shift operations

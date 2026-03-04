@@ -524,8 +524,8 @@ class Sensor {
      *
      * This clears the values array by setting all values to #MS_INVALID_VALUE,
      * sets all values in numberGoodMeasurementsMade to 0, and resets the
-     * attempt
-     * (#_measurementAttemptsCompleted) and retry (#_retryAttemptsMade) counts.
+     * attempt (#_measurementAttemptsCompleted) and retry (#_retryAttemptsMade)
+     * counts.
      */
     void clearValues();
     /**
