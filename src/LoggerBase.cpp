@@ -915,7 +915,7 @@ void Logger::systemSleep() {
     // https://github.com/adafruit/circuitpython/blob/65cfcb83f279869c7b38eb5891ddac557dba155b/ports/atmel-samd/common-hal/alarm/__init__.c#L146
     if (__get_FPSCR() & ~(0x9f)) {
         __set_FPSCR(__get_FPSCR() & ~(0x9f));
-        () __get_FPSCR();
+        (void)__get_FPSCR();
     }
 
     // Set the sleep config
