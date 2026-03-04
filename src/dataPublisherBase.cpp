@@ -22,22 +22,19 @@ const char* dataPublisher::putHeader  = "PUT ";
 const char* dataPublisher::HTTPtag    = " HTTP/1.1";
 const char* dataPublisher::hostHeader = "\r\nHost: ";
 
-// Constructors
-dataPublisher::dataPublisher() {}
-
-dataPublisher::dataPublisher(Logger& baseLogger, int sendEveryX)
+// Primary constructor
+dataPublisher::dataPublisher(Logger& baseLogger, Client* inClient,
+                             int sendEveryX)
     : _baseLogger(&baseLogger),
-      _inClient(nullptr),
+      _inClient(inClient),
       _sendEveryX(sendEveryX) {
     _baseModem =
         _baseLogger->registerDataPublisher(this);  // register self with logger
 }
-// Delegating constructor
-dataPublisher::dataPublisher(Logger& baseLogger, Client* inClient,
-                             int sendEveryX)
-    : dataPublisher(baseLogger, sendEveryX) {
-    _inClient = inClient;
-}
+// Constructors
+dataPublisher::dataPublisher(Logger& baseLogger, int sendEveryX)
+    : dataPublisher(baseLogger, nullptr, sendEveryX) {}
+dataPublisher::dataPublisher() {}
 
 
 // Sets the client

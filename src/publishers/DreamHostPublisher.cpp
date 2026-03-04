@@ -65,7 +65,6 @@ void DreamHostPublisher::begin(Logger& baseLogger, const char* dhUrl) {
 
 
 // Post the data to dream host.
-// int16_t DreamHostPublisher::postDataDreamHost()
 int16_t DreamHostPublisher::publishData(Client* outClient, bool) {
     // Validate required DreamHost URL is set before proceeding
     if (_DreamHostPortalRX == nullptr) {

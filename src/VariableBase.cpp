@@ -24,7 +24,8 @@ Variable::Variable(Sensor* parentSense, uint8_t sensorVarNum,
     : isCalculated(false),
       parentSensor(nullptr),
       _currentValue(MS_INVALID_VALUE),
-      _sensorVarNum(sensorVarNum) {
+      _sensorVarNum(sensorVarNum),
+      _calcFxn(nullptr) {
     if (uuid) setVarUUID(uuid);
     if (varCode) setVarCode(varCode);
     if (varUnit) setVarUnit(varUnit);

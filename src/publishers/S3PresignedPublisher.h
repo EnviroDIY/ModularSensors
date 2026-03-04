@@ -353,7 +353,7 @@ class S3PresignedPublisher : public dataPublisher {
     /**
      * @brief Private reference to function used fetch a new file name.
      */
-    String (*_getFileNameFxn)();
+    String (*_getFileNameFxn)() = nullptr;
     /**
      * @brief The name of your certificate authority certificate file
      */
