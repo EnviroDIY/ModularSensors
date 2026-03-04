@@ -113,6 +113,9 @@ class AnalogVoltageBase;
  */
 #define ALPHASENSE_CO2_SENSE_RESISTOR_OHM 250.0f
 #endif
+// Compile-time validation of configuration constants
+static_assert(ALPHASENSE_CO2_SENSE_RESISTOR_OHM > 0, 
+              "Sense resistor value must be positive");
 #if !defined(ALPHASENSE_CO2_MFG_SCALE) || defined(DOXYGEN)
 /**
  * @brief Manufacturer scale factor for CO2 conversion (ppm/mA)
