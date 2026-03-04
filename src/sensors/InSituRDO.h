@@ -332,7 +332,7 @@
  * {{ @ref InSituRDO_Pressure::InSituRDO_Pressure }}
  */
 /**@{*/
-/// @brief Decimal places in string representation; pressure should have 3
+/// @brief Decimal places in string representation; pressure should have 2
 #define INSITU_RDO_PRESSURE_RESOLUTION 2
 /// @brief Variable number; temperature is stored in sensorValues[3].
 #define INSITU_RDO_PRESSURE_VAR_NUM 3

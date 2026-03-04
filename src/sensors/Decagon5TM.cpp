@@ -46,7 +46,8 @@ bool Decagon5TM::getResults(bool verify_crc) {
 
     // VWC = 3.879e-4*raw-0.6956;  // equation for mineral soils
 
-    // range check on temp; range is - 40°C to + 50°C
+    // range check on temp; range is - 40°C to + 50°C (with 10°C margin beyond
+    // spec)
     if (temp < -50 || temp > 60) {
         temp = MS_INVALID_VALUE;
         MS_DBG(F("WARNING:  temperature results out of range (-50-60)!"));

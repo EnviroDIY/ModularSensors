@@ -96,7 +96,7 @@
  * {{ @ref YosemitechY533_ORP::YosemitechY533_ORP }}
  */
 /**@{*/
-/// @brief Decimal places in string representation; ph should have 2 -
+/// @brief Decimal places in string representation; ORP should have 0 -
 /// resolution is 1 mV units.
 #define Y533_ORP_RESOLUTION 0
 /// @brief Sensor variable number; ORP is stored in sensorValues[0].

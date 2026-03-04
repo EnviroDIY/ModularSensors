@@ -67,7 +67,8 @@ bool MeterTeros11::getResults(bool verify_crc) {
 
     // VWC = 3.879e-4*raw-0.6956;  // equation for mineral soils
 
-    // range check on temp; range is - 40°C to + 50°C
+    // range check on temp; sensor range is -40°C to +50°C; add an extra 10°C
+    // buffer on either side
     if (temp < -50 || temp > 60) {
         temp = MS_INVALID_VALUE;
         MS_DBG(F("WARNING:  temperature results out of range (-50-60)!"));

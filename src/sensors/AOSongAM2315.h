@@ -217,6 +217,15 @@ class AOSongAM2315 : public Sensor {
      */
     ~AOSongAM2315() override;
 
+    // Delete copy constructor and copy assignment operator to prevent shallow
+    // copies
+    AOSongAM2315(const AOSongAM2315&)            = delete;
+    AOSongAM2315& operator=(const AOSongAM2315&) = delete;
+
+    // Delete move constructor and move assignment operator
+    AOSongAM2315(AOSongAM2315&&)            = delete;
+    AOSongAM2315& operator=(AOSongAM2315&&) = delete;
+
     /**
      * @brief Report the I2C address of the AM2315 - which is always 0xB8.
      *
@@ -290,7 +299,7 @@ class AOSongAM2315_Humidity : public Variable {
     /**
      * @brief Destroy the AOSongAM2315_Humidity object - no action needed.
      */
-    ~AOSongAM2315_Humidity() = default;
+    ~AOSongAM2315_Humidity() override = default;
 };
 
 

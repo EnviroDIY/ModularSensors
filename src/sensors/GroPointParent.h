@@ -44,9 +44,6 @@
  * AltSoftSerial and HardwareSerial work fine.
  * Up to two power pins are provided so that the RS485 adapter, the sensor and/or an external power relay can be controlled separately.
  * If the power to everything is controlled by the same pin, use -1 for the second power pin or omit the argument.
- * If they are controlled by different pins _and no other sensors are dependent on power from either pin_ then the order of the pins doesn't matter.
- * If the RS485 adapter, sensor, or relay are controlled by different pins _and any other sensors are controlled by the same pins_ you should put the shared pin first and the un-shared pin second.
- * Both pins _cannot_ be shared pins.
  *
  * By default, this library cuts power to the sensors between readings, causing them to lose track of their brushing interval.
  * The library manually activates the brushes as part of the "wake" command.

@@ -305,6 +305,8 @@
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
 /// "altitude"
+/// @remark In library versions 0.37.0 and earlier, this variable was
+/// incorrectly named "heightAboveSeaFloor"
 #define BMP3XX_ALTITUDE_VAR_NAME "altitude"
 /// @brief Variable unit name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "meter"
@@ -606,7 +608,7 @@ class BoschBMP3xx_Temp : public Variable {
     /**
      * @brief Destroy the BoschBMP3xx_Temp object - no action needed.
      */
-    ~BoschBMP3xx_Temp() = default;
+    ~BoschBMP3xx_Temp() override = default;
 };
 
 

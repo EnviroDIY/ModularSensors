@@ -247,6 +247,8 @@
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
 /// "altitude"
+/// @remark In library versions 0.37.0 and earlier, this variable was
+/// incorrectly named "heightAboveSeaFloor"
 #define BME280_ALTITUDE_VAR_NAME "altitude"
 /// @brief Variable unit name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "meter"
@@ -304,7 +306,7 @@ class BoschBME280 : public Sensor {
     /**
      * @brief Destroy the Bosch BME280 object
      */
-    ~BoschBME280() = default;
+    ~BoschBME280() override = default;
 
     bool wake(void) override;
     /**
@@ -468,7 +470,7 @@ class BoschBME280_Pressure : public Variable {
     /**
      * @brief Destroy the BoschBME280_Pressure object - no action needed.
      */
-    ~BoschBME280_Pressure() = default;
+    ~BoschBME280_Pressure() override = default;
 };
 
 

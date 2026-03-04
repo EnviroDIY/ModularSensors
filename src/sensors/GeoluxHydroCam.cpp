@@ -214,7 +214,8 @@ bool GeoluxHydroCam::addSingleMeasurementResult(void) {
         return bumpMeasurementAttemptCount(false);
     }
 
-    // Create and then open the file in write mode
+    // Open the file in write mode - creating a new file if it doesn't exist or
+    // appending to the end an existing one
     if (imgFile.open(filename.c_str(), O_CREAT | O_WRITE | O_AT_END)) {
         MS_DBG(F("Created new file:"), filename);
     } else {
@@ -232,7 +233,8 @@ bool GeoluxHydroCam::addSingleMeasurementResult(void) {
     // transfer the image from the camera to a file on the SD card
     MS_START_DEBUG_TIMER;
     bytes_transferred = _camera.transferImage(imgFile, image_size);
-    byte_error        = labs(bytes_transferred - image_size);
+    byte_error = (bytes_transferred >= 0) ? labs(bytes_transferred - image_size)
+                                          : MS_INVALID_VALUE;
 
     // Close the image file after transfer
     imgFile.close();

@@ -266,7 +266,7 @@
 #define OPERATING_VOLTAGE 3.3
 #pragma message                                                                                \
     "Warning: OPERATING_VOLTAGE is not defined for this processor.\n"                          \
-    "If you have specified the operating voltage in your code, you can ignore this message\n." \
+    "If you have specified the operating voltage in your code, you can ignore this message.\n" \
     "The operating voltage can be added by editing KnownProcessors.h."
 #endif
 #ifndef BATTERY_PIN
@@ -274,7 +274,7 @@
 #pragma message                                                                          \
     "Warning: BATTERY_PIN is not defined for this processor.\n"                          \
     "If your processor does not have a built-in pin for measuring the battery voltage,"  \
-    "or you have specified a different pin in your code, you can ignore this message\n." \
+    "or you have specified a different pin in your code, you can ignore this message.\n" \
     "The battery pin can be added by editing KnownProcessors.h."
 #endif
 
@@ -283,7 +283,7 @@
 #pragma message                                                                         \
     "Warning: BATTERY_MULTIPLIER is not defined for this processor.\n"                  \
     "If your processor does not have a built-in pin for measuring the battery voltage," \
-    "or you have specified the multiplier in your code, you can ignore this message\n." \
+    "or you have specified the multiplier in your code, you can ignore this message.\n" \
     "The battery multiplier can be added by editing KnownProcessors.h."
 #endif
 
