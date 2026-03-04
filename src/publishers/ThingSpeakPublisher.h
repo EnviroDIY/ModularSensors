@@ -130,7 +130,7 @@ class ThingSpeakPublisher : public dataPublisher {
     virtual ~ThingSpeakPublisher() override = default;
 
     // Returns the data destination
-    String getEndpoint(void) override {
+    String getEndpoint() override {
         return String(mqttServer);
     }
 

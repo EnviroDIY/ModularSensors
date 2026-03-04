@@ -41,7 +41,7 @@ YosemitechParent::YosemitechParent(
 
 
 // The sensor installation location on the Mayfly
-String YosemitechParent::getSensorLocation(void) {
+String YosemitechParent::getSensorLocation() {
     String sensorLocation = F("modbus_0x");
     if (_modbusAddress < 16) sensorLocation += "0";
     sensorLocation += String(_modbusAddress, HEX);
@@ -49,7 +49,7 @@ String YosemitechParent::getSensorLocation(void) {
 }
 
 
-bool YosemitechParent::setup(void) {
+bool YosemitechParent::setup() {
     bool retVal =
         Sensor::setup();  // this will set pin modes and the setup status bit
     if (_RS485EnablePin >= 0) { pinMode(_RS485EnablePin, OUTPUT); }
@@ -70,7 +70,7 @@ bool YosemitechParent::setup(void) {
 // The function to wake up a sensor
 // Different from the standard in that it waits for warm up and starts
 // measurements
-bool YosemitechParent::wake(void) {
+bool YosemitechParent::wake() {
     // Sensor::wake() checks if the power pin is on and sets the wake timestamp
     // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
@@ -120,7 +120,7 @@ bool YosemitechParent::wake(void) {
 // The function to put the sensor to sleep
 // Different from the standard in that it empties and flushes the stream and
 // stops measurements
-bool YosemitechParent::sleep(void) {
+bool YosemitechParent::sleep() {
     // empty then flush the buffer
     while (_stream->available()) { _stream->read(); }
     _stream->flush();
@@ -164,7 +164,7 @@ bool YosemitechParent::sleep(void) {
 }
 
 
-bool YosemitechParent::addSingleMeasurementResult(void) {
+bool YosemitechParent::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);

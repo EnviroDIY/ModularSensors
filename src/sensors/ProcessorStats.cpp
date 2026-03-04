@@ -76,11 +76,11 @@ ProcessorStats::ProcessorStats(const char* boardName, const char* version,
       _operatingVoltage(operatingVoltage) {}
 
 
-String ProcessorStats::getSensorLocation(void) {
+String ProcessorStats::getSensorLocation() {
     return String(_boardName) + " " + String(_version);
 }
 
-float ProcessorStats::getBatteryVoltage(void) {
+float ProcessorStats::getBatteryVoltage() {
     float sensorValue_battery = MS_INVALID_VALUE;
     if (_batteryPin >= 0 && _batteryMultiplier > 0) {
         // Get the battery voltage
@@ -165,7 +165,7 @@ int16_t FreeRam() {
     return &stack_dummy - sbrk(0);
 }
 
-uint8_t ProcessorStats::getLastResetCode(void) {
+uint8_t ProcessorStats::getLastResetCode() {
     return PM->RCAUSE.reg;
 }
 String ProcessorStats::getLastResetCause() {
@@ -196,7 +196,7 @@ int16_t FreeRam() {
     return sensorValue_freeRam;
 }
 
-uint8_t ProcessorStats::getLastResetCode(void) {
+uint8_t ProcessorStats::getLastResetCode() {
     return MCUSR;
 }
 String ProcessorStats::getLastResetCause() {
@@ -213,7 +213,7 @@ String ProcessorStats::getLastResetCause() {
 #endif
 
 
-bool ProcessorStats::addSingleMeasurementResult(void) {
+bool ProcessorStats::addSingleMeasurementResult() {
     // NOTE: We don't need to check if a measurement was started successfully
     // because there is no way for it to fail!
 

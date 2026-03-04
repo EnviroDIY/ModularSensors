@@ -27,7 +27,7 @@ DigiXBee::DigiXBee(int8_t powerPin, int8_t statusPin, bool useCTSStatus,
 // After enabling pin sleep, the sleep request pin is held `LOW` to keep the
 // XBee on. Enable pin sleep in the setup function or using XCTU prior to
 // connecting the XBee
-bool DigiXBee::modemWakeFxn(void) {
+bool DigiXBee::modemWakeFxn() {
     if (_modemSleepRqPin >= 0) {
         // Don't go to sleep if there's not a wake pin!
         MS_DBG(F("Setting pin"), _modemSleepRqPin,
@@ -40,7 +40,7 @@ bool DigiXBee::modemWakeFxn(void) {
 }
 
 
-bool DigiXBee::modemSleepFxn(void) {
+bool DigiXBee::modemSleepFxn() {
     if (_modemSleepRqPin >= 0) {
         MS_DBG(F("Setting pin"), _modemSleepRqPin,
                !_wakeLevel ? F("HIGH") : F("LOW"), F("to put"), _modemName,

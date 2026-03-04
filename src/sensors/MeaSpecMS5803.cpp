@@ -23,14 +23,14 @@ MeaSpecMS5803::MeaSpecMS5803(int8_t powerPin, uint8_t i2cAddressHex,
       _maxPressure(maxPressure) {}
 
 
-String MeaSpecMS5803::getSensorLocation(void) {
+String MeaSpecMS5803::getSensorLocation() {
     String address = F("I2C_0x");
     address += String(_i2cAddressHex, HEX);
     return address;
 }
 
 
-bool MeaSpecMS5803::setup(void) {
+bool MeaSpecMS5803::setup() {
     bool retVal =
         Sensor::setup();  // this will set pin modes and the setup status bit
 
@@ -52,7 +52,7 @@ bool MeaSpecMS5803::setup(void) {
 }
 
 
-bool MeaSpecMS5803::addSingleMeasurementResult(void) {
+bool MeaSpecMS5803::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);

@@ -48,7 +48,7 @@ MS_MODEM_GET_MODEM_BATTERY_DATA(DigiXBeeCellularTransparent);
 MS_MODEM_GET_MODEM_TEMPERATURE_DATA(DigiXBeeCellularTransparent);
 
 // We turn off airplane mode in the wake.
-bool DigiXBeeCellularTransparent::modemWakeFxn(void) {
+bool DigiXBeeCellularTransparent::modemWakeFxn() {
     if (_modemSleepRqPin >= 0) {
         // Don't go to sleep if there's not a wake pin!
         MS_DBG(F("Setting pin"), _modemSleepRqPin,
@@ -71,7 +71,7 @@ bool DigiXBeeCellularTransparent::modemWakeFxn(void) {
 
 
 // We turn on airplane mode in before sleep
-bool DigiXBeeCellularTransparent::modemSleepFxn(void) {
+bool DigiXBeeCellularTransparent::modemSleepFxn() {
     if (_modemSleepRqPin >= 0) {
         MS_DBG(F("Turning on airplane mode..."));
         if (gsmModem.commandMode()) {
@@ -95,7 +95,7 @@ bool DigiXBeeCellularTransparent::modemSleepFxn(void) {
 }
 
 
-bool DigiXBeeCellularTransparent::extraModemSetup(void) {
+bool DigiXBeeCellularTransparent::extraModemSetup() {
     bool success = true;
     /** First run the TinyGSM init() function for the XBee. */
     MS_DBG(F("Initializing the XBee..."));
@@ -192,7 +192,7 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void) {
     return success;
 }
 
-uint32_t DigiXBeeCellularTransparent::getNISTTime(void) {
+uint32_t DigiXBeeCellularTransparent::getNISTTime() {
     /* bail if not connected to the internet */
     if (!isInternetAvailable()) {
         MS_DBG(F("No internet connection, cannot connect to NIST."));
@@ -255,7 +255,7 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime(void) {
 }
 
 
-bool DigiXBeeCellularTransparent::updateModemMetadata(void) {
+bool DigiXBeeCellularTransparent::updateModemMetadata() {
     bool success = true;
 
     // Unset whatever we had previously

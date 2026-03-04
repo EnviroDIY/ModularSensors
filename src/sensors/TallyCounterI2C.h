@@ -215,12 +215,12 @@ class TallyCounterI2C : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
+    bool setup() override;
 
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
-    // bool startSingleMeasurement(void) override;  // for forced mode
-    bool addSingleMeasurementResult(void) override;
+    // bool startSingleMeasurement() override;  // for forced mode
+    bool addSingleMeasurementResult() override;
 
  private:
     /**

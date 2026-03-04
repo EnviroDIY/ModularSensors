@@ -176,7 +176,7 @@ void dataPublisher::txBufferFlush(bool debug_flush) {
     }
 }
 
-bool dataPublisher::connectionNeeded(void) {
+bool dataPublisher::connectionNeeded() {
     // connection is always needed unless publisher has special logic
     return true;
 }

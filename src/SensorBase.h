@@ -130,26 +130,26 @@ class Sensor {
      *
      * @return Text describing how the sensor is attached to the mcu.
      */
-    virtual String getSensorLocation(void);
+    virtual String getSensorLocation();
     /**
      * @brief Get the name of the sensor.
      *
      * @return The sensor name as given in the constructor.
      */
-    virtual String getSensorName(void);
+    virtual String getSensorName();
     /**
      * @brief Concatenate and returns the name and location of the sensor.
      *
      * @return A concatenation of the sensor name and its "location"
      * - how it is connected to the mcu.
      */
-    String getSensorNameAndLocation(void);
+    String getSensorNameAndLocation();
     /**
      * @brief Get the pin number controlling sensor power.
      *
      * @return The pin on the mcu controlling power to the sensor.
      */
-    virtual int8_t getPowerPin(void);
+    virtual int8_t getPowerPin();
     /**
      * @brief Set the pin number controlling sensor power.
      * @param pin The pin on the mcu controlling power to the sensor.
@@ -164,7 +164,7 @@ class Sensor {
      * to an adapter or converter needed to talk to the sensor - ie, an RS232
      * adapter, an RS485 adapter, or an IO multiplexer.
      */
-    virtual int8_t getSecondaryPowerPin(void);
+    virtual int8_t getSecondaryPowerPin();
     /**
      * @brief Set the pin number controlling secondary sensor power.
      *
@@ -193,14 +193,14 @@ class Sensor {
      *
      * @copydetails _measurementsToAverage
      */
-    uint8_t getNumberMeasurementsToAverage(void);
+    uint8_t getNumberMeasurementsToAverage();
     /**
      * @brief Get the number of measurement attempts that have been made and
      * completed (whether successful or not).
      *
      * @return The number of complete measurement attempts.
      */
-    uint8_t getNumberCompleteMeasurementsAttempts(void);
+    uint8_t getNumberCompleteMeasurementsAttempts();
     /**
      * @brief Get the number of retry attempts that have been made for a
      * measurement
@@ -212,13 +212,13 @@ class Sensor {
      * sensor. For some it may be that if any values were returned, for others
      * that a specific value is in range, etc.
      */
-    uint8_t getNumberRetryAttemptsMade(void);
+    uint8_t getNumberRetryAttemptsMade();
     /**
      * @brief Get the number of allowed retries if a measurement fails.
      *
      * @return The number of allowed retries.
      */
-    uint8_t getAllowedMeasurementRetries(void);
+    uint8_t getAllowedMeasurementRetries();
     /**
      * @brief Set the number of retries if a measurement fails.
      *
@@ -240,7 +240,7 @@ class Sensor {
      * @brief Get the warm-up time for the sensor.
      * @return The warm-up time in milliseconds.
      */
-    uint32_t getWarmUpTime(void);
+    uint32_t getWarmUpTime();
     /**
      * @brief Set the stabilization time for the sensor.
      * @param stabilizationTime_ms The stabilization time in milliseconds.
@@ -253,7 +253,7 @@ class Sensor {
      * @brief Get the stabilization time for the sensor.
      * @return The stabilization time in milliseconds.
      */
-    uint32_t getStabilizationTime(void);
+    uint32_t getStabilizationTime();
     /**
      * @brief Set the measurement time for the sensor.
      * @param measurementTime_ms The measurement time in milliseconds.
@@ -266,7 +266,7 @@ class Sensor {
      * @brief Get the measurement time for the sensor.
      * @return The measurement time in milliseconds.
      */
-    uint32_t getMeasurementTime(void);
+    uint32_t getMeasurementTime();
 
     /// @brief The significance of the various status bits
     typedef enum {
@@ -329,7 +329,7 @@ class Sensor {
      *
      * @return The status as a uint8_t.
      */
-    uint8_t getStatus(void);
+    uint8_t getStatus();
 
     /**
      * @brief Get the value of a specific status bit.
@@ -394,7 +394,7 @@ class Sensor {
      *
      * @return True if the setup was successful.
      */
-    virtual bool setup(void);
+    virtual bool setup();
 
     /**
      * @brief Update the sensor's values.
@@ -416,7 +416,7 @@ class Sensor {
      * @return True if all steps of the sensor update completed
      * successfully.
      */
-    virtual bool update(void);
+    virtual bool update();
 
     /**
      * @brief Turn on the sensor power, if applicable.
@@ -426,7 +426,7 @@ class Sensor {
      *
      * @todo Universally support power pins that are active LOW.
      */
-    virtual void powerUp(void);
+    virtual void powerUp();
     /**
      * @brief Turn off the sensor power, if applicable.
      *
@@ -436,7 +436,7 @@ class Sensor {
      *
      * @todo Universally support power pins that are inactive HIGH.
      */
-    virtual void powerDown(void);
+    virtual void powerDown();
 
     /**
      * @brief Wake the sensor up, if necessary.  Do whatever it takes to get a
@@ -456,7 +456,7 @@ class Sensor {
      *
      * @return True if the wake function completed successfully.
      */
-    virtual bool wake(void);
+    virtual bool wake();
     /**
      * @brief Puts the sensor to sleep, if necessary.
      *
@@ -466,7 +466,7 @@ class Sensor {
      *
      * @return True if the sleep function completed successfully.
      */
-    virtual bool sleep(void);
+    virtual bool sleep();
 
     /**
      * @brief Tell the sensor to start a single measurement, if needed.
@@ -487,7 +487,7 @@ class Sensor {
      * @return True if the start measurement function completed
      * successfully.
      */
-    virtual bool startSingleMeasurement(void);
+    virtual bool startSingleMeasurement();
 
     /**
      * @brief Get the results from a single measurement.
@@ -503,7 +503,7 @@ class Sensor {
      *
      * @return True if the function completed successfully.
      */
-    virtual bool addSingleMeasurementResult(void) = 0;
+    virtual bool addSingleMeasurementResult() = 0;
 
     /**
      * @brief The array of result values for each sensor.
@@ -596,7 +596,7 @@ class Sensor {
      * @brief Average the results of all measurements by dividing the sum of
      * all measurements by the number of measurements taken.
      */
-    void averageMeasurements(void);
+    void averageMeasurements();
 
     /**
      * @brief Register a variable object to a sensor.
@@ -611,7 +611,7 @@ class Sensor {
     /**
      * @brief Notify attached variables of new values.
      */
-    void notifyVariables(void);
+    void notifyVariables();
 
 
     /**
@@ -637,7 +637,7 @@ class Sensor {
      * @brief Hold all further program execution until this sensor is ready to
      * receive commands.
      */
-    void waitForWarmUp(void);
+    void waitForWarmUp();
 
     /**
      * @brief Check whether or not enough time has passed between the sensor
@@ -656,7 +656,7 @@ class Sensor {
      * @brief Hold all further program execution until this sensor is reporting
      * stable values.
      */
-    void waitForStability(void);
+    void waitForStability();
 
     /**
      * @brief Check whether or not enough time has passed between when the
@@ -676,7 +676,7 @@ class Sensor {
      * @brief Hold all further program execution until this sensor is has
      * finished the current measurement.
      */
-    void waitForMeasurementCompletion(void);
+    void waitForMeasurementCompletion();
 
 
  protected:

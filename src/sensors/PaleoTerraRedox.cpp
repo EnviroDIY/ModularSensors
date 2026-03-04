@@ -68,7 +68,7 @@ PaleoTerraRedox::~PaleoTerraRedox() {}
 #endif
 
 
-String PaleoTerraRedox::getSensorLocation(void) {
+String PaleoTerraRedox::getSensorLocation() {
 #if defined(MS_PALEOTERRA_SOFTWAREWIRE)
     String address = F("SoftwareWire");
     if (_dataPin >= 0) address += _dataPin;
@@ -81,7 +81,7 @@ String PaleoTerraRedox::getSensorLocation(void) {
 }
 
 
-bool PaleoTerraRedox::setup(void) {
+bool PaleoTerraRedox::setup() {
     _i2c->begin();  // Start the wire library (sensor power not required)
     // Eliminate any potential extra waits in the wire library
     // These waits would be caused by a readBytes or parseX being called
@@ -96,7 +96,7 @@ bool PaleoTerraRedox::setup(void) {
 }
 
 
-bool PaleoTerraRedox::addSingleMeasurementResult(void) {
+bool PaleoTerraRedox::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);

@@ -237,7 +237,7 @@ class Variable {
                     const char* varCode);
 
     // This sets up the variable (generally attaching it to its parent)
-    // bool setup(void);
+    // bool setup();
 
     /**
      * @brief Notify the parent sensor that it has an observing variable.
@@ -265,7 +265,7 @@ class Variable {
      *
      * @return The parent sensor name
      */
-    String getParentSensorName(void);
+    String getParentSensorName();
     /**
      * @brief Get the parent sensor name and location, if applicable.
      *
@@ -273,7 +273,7 @@ class Variable {
      *
      * @return The parent sensor's concatenated name and location.
      */
-    String getParentSensorNameAndLocation(void);
+    String getParentSensorNameAndLocation();
 
     /**
      * @brief Set the calculation function for a calculated variable
@@ -288,7 +288,7 @@ class Variable {
      *
      * @return the variable resolution
      */
-    uint8_t getResolution(void);
+    uint8_t getResolution();
     /**
      * @brief Set the variable's resolution
      *
@@ -300,7 +300,7 @@ class Variable {
      *
      * @return The variable name
      */
-    String getVarName(void);
+    String getVarName();
     /**
      * @brief Set the variable name.
      *
@@ -316,7 +316,7 @@ class Variable {
      *
      * @return The variable unit
      */
-    String getVarUnit(void);
+    String getVarUnit();
     /**
      * @brief Set the variable unit.
      *
@@ -332,7 +332,7 @@ class Variable {
      *
      * @return The customized code for the variable
      */
-    String getVarCode(void);
+    String getVarCode();
     /**
      * @brief Set a customized code for the variable
      *
@@ -346,14 +346,14 @@ class Variable {
      *
      * @return The variable's UUID as a String
      */
-    String getVarUUIDString(void);
+    String getVarUUIDString();
     // This gets/sets the variable UUID, if one has been assigned
     /**
      * @brief Get the variable's UUID as a C-style string
      *
      * @return The variable's UUID as a const char* (or nullptr if not assigned)
      */
-    const char* getVarUUID(void);
+    const char* getVarUUID();
     /**
      * @brief Set a customized code for the variable
      *
@@ -368,7 +368,7 @@ class Variable {
      * @note This only checks the _format_ of the UUID.  It does not in any way
      * indicate that the value of the UUID is correct.
      */
-    bool checkUUIDFormat(void);
+    bool checkUUIDFormat();
 
     /**
      * @brief Get current value of the variable as a float
@@ -452,7 +452,7 @@ class Variable {
      * @brief Private reference to function used to calculate the variables
      * value.
      */
-    float (*_calcFxn)(void) = nullptr;
+    float (*_calcFxn)() = nullptr;
 
 
     /**

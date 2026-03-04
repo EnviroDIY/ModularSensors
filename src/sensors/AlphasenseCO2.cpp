@@ -43,7 +43,7 @@ AlphasenseCO2::~AlphasenseCO2() {
 }
 
 
-String AlphasenseCO2::getSensorLocation(void) {
+String AlphasenseCO2::getSensorLocation() {
     if (_analogVoltageReader != nullptr) {
         return _analogVoltageReader->getAnalogLocation(_dataPin,
                                                        _analogReferenceChannel);
@@ -53,7 +53,7 @@ String AlphasenseCO2::getSensorLocation(void) {
 }
 
 
-bool AlphasenseCO2::setup(void) {
+bool AlphasenseCO2::setup() {
     bool sensorSetupSuccess         = Sensor::setup();
     bool analogVoltageReaderSuccess = false;
 
@@ -72,7 +72,7 @@ bool AlphasenseCO2::setup(void) {
 }
 
 
-bool AlphasenseCO2::addSingleMeasurementResult(void) {
+bool AlphasenseCO2::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);

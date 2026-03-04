@@ -30,14 +30,14 @@ TIINA219::TIINA219(int8_t powerPin, uint8_t i2cAddressHex,
       _i2c(&Wire) {}
 
 
-String TIINA219::getSensorLocation(void) {
+String TIINA219::getSensorLocation() {
     String address = F("I2C_0x");
     address += String(_i2cAddressHex, HEX);
     return address;
 }
 
 
-bool TIINA219::setup(void) {
+bool TIINA219::setup() {
     bool wasOn;
     bool setupSuccess =
         Sensor::setup();  // this will set pin modes and the setup status bit
@@ -65,7 +65,7 @@ bool TIINA219::setup(void) {
 }
 
 
-bool TIINA219::wake(void) {
+bool TIINA219::wake() {
     // Sensor::wake() checks if the power pin is on and sets the wake timestamp
     // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
@@ -86,7 +86,7 @@ bool TIINA219::wake(void) {
 }
 
 
-bool TIINA219::addSingleMeasurementResult(void) {
+bool TIINA219::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);

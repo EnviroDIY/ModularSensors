@@ -23,14 +23,14 @@ AOSongDHT::AOSongDHT(int8_t powerPin, int8_t dataPin, const uint8_t type,
 }
 
 
-bool AOSongDHT::setup(void) {
+bool AOSongDHT::setup() {
     dht_internal.begin();    // Start up the sensor (only sets pin modes, sensor
                              // power not required)
     return Sensor::setup();  // this will set pin modes and the setup status bit
 }
 
 
-String AOSongDHT::getSensorName(void) {
+String AOSongDHT::getSensorName() {
     switch (_dhtType) {
         case 11: return "AOSongDHT11";
         case 12: return "AOSongDHT12";
@@ -40,7 +40,7 @@ String AOSongDHT::getSensorName(void) {
 }
 
 
-bool AOSongDHT::addSingleMeasurementResult(void) {
+bool AOSongDHT::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);

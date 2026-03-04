@@ -176,7 +176,7 @@ class dataPublisher {
      *
      * @return The URL or HOST to receive published data
      */
-    virtual String getEndpoint(void) = 0;
+    virtual String getEndpoint() = 0;
 
 
     /**
@@ -185,7 +185,7 @@ class dataPublisher {
      *
      * @return True if an internet connection is needed for the next publish.
      */
-    virtual bool connectionNeeded(void);
+    virtual bool connectionNeeded();
 
     /**
      * @brief Opens a socket to the correct receiver and sends out the formatted

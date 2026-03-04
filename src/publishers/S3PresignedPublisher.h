@@ -154,9 +154,9 @@ class S3PresignedPublisher : public dataPublisher {
      * it is stored on you modem module, not the actual certificate content.
      */
     S3PresignedPublisher(Logger& baseLogger, const char* caCertName,
-                         String (*getUrlFxn)(String)    = nullptr,
-                         String (*getFileNameFxn)(void) = nullptr,
-                         int sendEveryX                 = 1);
+                         String (*getUrlFxn)(String) = nullptr,
+                         String (*getFileNameFxn)()  = nullptr,
+                         int sendEveryX              = 1);
     /**
      * @brief Construct a new S3 Publisher object
      *
@@ -170,9 +170,9 @@ class S3PresignedPublisher : public dataPublisher {
      * attempted data transmissions. NOTE: not implemented by this publisher!
      */
     S3PresignedPublisher(Logger& baseLogger, Client* inClient,
-                         String (*getUrlFxn)(String)    = nullptr,
-                         String (*getFileNameFxn)(void) = nullptr,
-                         int sendEveryX                 = 1);
+                         String (*getUrlFxn)(String) = nullptr,
+                         String (*getFileNameFxn)()  = nullptr,
+                         int sendEveryX              = 1);
     /**
      * @brief Destroy the S3 Publisher object
      */
@@ -204,7 +204,7 @@ class S3PresignedPublisher : public dataPublisher {
     void setPort(int port);
 
     // Returns the data destination
-    String getEndpoint(void) override {
+    String getEndpoint() override {
         return String(s3_parent_host);
     }
 
@@ -252,7 +252,7 @@ class S3PresignedPublisher : public dataPublisher {
      *
      * @param getFileNameFxn A function to call to get a new filename
      */
-    void setFileUpdateFunction(String (*getFileNameFxn)(void));
+    void setFileUpdateFunction(String (*getFileNameFxn)());
 
     /**
      * @brief Set the name of your certificate authority certificate file.
@@ -353,7 +353,7 @@ class S3PresignedPublisher : public dataPublisher {
     /**
      * @brief Private reference to function used fetch a new file name.
      */
-    String (*_getFileNameFxn)(void);
+    String (*_getFileNameFxn)();
     /**
      * @brief The name of your certificate authority certificate file
      */

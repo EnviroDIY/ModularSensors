@@ -540,7 +540,7 @@ class ANBpH : public Sensor {
      */
     virtual ~ANBpH() override = default;
 
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -553,7 +553,7 @@ class ANBpH : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
+    bool setup() override;
     /**
      * @brief Confirms that the sensor is giving a valid status code in response
      * to modbus commands, re-sets the RTC, and starts measurements.
@@ -566,10 +566,10 @@ class ANBpH : public Sensor {
      *
      * @return True if the sensor started scanning.
      */
-    bool wake(void) override;
-    bool sleep(void) override;
+    bool wake() override;
+    bool sleep() override;
 
-    bool addSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult() override;
 
     /**
      * @copydoc Sensor::isWarmedUp(bool debug)
@@ -688,14 +688,14 @@ class ANBpH : public Sensor {
      * @return The start of the estimated time window for a measurement to
      * complete.
      */
-    uint32_t getStartMeasurementWindow(void);
+    uint32_t getStartMeasurementWindow();
     /**
      * @brief Get the end of the estimated time window for a measurement to
      * complete based on the sensor's current configuration.
      * @return The end of the estimated time window for a measurement to
      * complete.
      */
-    uint32_t getEndMeasurementWindow(void);
+    uint32_t getEndMeasurementWindow();
     /**
      * @brief Set the sensor's real time clock (RTC) to the current time.
      *
@@ -707,7 +707,7 @@ class ANBpH : public Sensor {
      *
      * @return True if the RTC was successfully set, false if not.
      */
-    bool setSensorRTC(void);
+    bool setSensorRTC();
 };
 
 

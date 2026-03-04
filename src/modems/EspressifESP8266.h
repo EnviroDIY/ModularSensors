@@ -124,10 +124,10 @@ class EspressifESP8266 : public Espressif {
      */
     ~EspressifESP8266() override = default;
 
-    bool modemWake(void) override;
+    bool modemWake() override;
 
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-    void disconnectInternet(void) override;
+    void disconnectInternet() override;
 
     virtual Client* createClient() override;
     virtual void    deleteClient(Client* client);
@@ -144,12 +144,12 @@ class EspressifESP8266 : public Espressif {
     createSecureClient(const char* pskTableName,
                        SSLVersion  sslVersion = SSLVersion::TLS1_2) override;
 
-    uint32_t getNISTTime(void) override;
+    uint32_t getNISTTime() override;
 
     bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
     bool  getModemBatteryStats(int8_t& chargeState, int8_t& percent,
                                int16_t& milliVolts) override;
-    float getModemChipTemperature(void) override;
+    float getModemChipTemperature() override;
 
 #ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
@@ -161,10 +161,10 @@ class EspressifESP8266 : public Espressif {
     TinyGsmESP8266 gsmModem;
 
  protected:
-    bool isInternetAvailable(void) override;
-    bool modemSleepFxn(void) override;
-    bool extraModemSetup(void) override;
-    bool isModemAwake(void) override;
+    bool isInternetAvailable() override;
+    bool modemSleepFxn() override;
+    bool extraModemSetup() override;
+    bool isModemAwake() override;
 };
 /**@}*/
 #endif  // SRC_MODEMS_ESPRESSIFESP8266_H_

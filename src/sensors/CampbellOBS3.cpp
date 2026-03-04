@@ -39,7 +39,7 @@ CampbellOBS3::~CampbellOBS3() {
 }
 
 
-String CampbellOBS3::getSensorLocation(void) {
+String CampbellOBS3::getSensorLocation() {
     if (_analogVoltageReader != nullptr) {
         return _analogVoltageReader->getAnalogLocation(_dataPin, -1);
     } else {
@@ -48,7 +48,7 @@ String CampbellOBS3::getSensorLocation(void) {
 }
 
 
-bool CampbellOBS3::setup(void) {
+bool CampbellOBS3::setup() {
     bool sensorSetupSuccess         = Sensor::setup();
     bool analogVoltageReaderSuccess = false;
 
@@ -67,7 +67,7 @@ bool CampbellOBS3::setup(void) {
 }
 
 
-bool CampbellOBS3::addSingleMeasurementResult(void) {
+bool CampbellOBS3::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);

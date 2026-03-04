@@ -26,14 +26,14 @@ BoschBME280::BoschBME280(int8_t powerPin, uint8_t i2cAddressHex,
     : BoschBME280(&Wire, powerPin, i2cAddressHex, measurementsToAverage) {}
 
 
-String BoschBME280::getSensorLocation(void) {
+String BoschBME280::getSensorLocation() {
     String address = F("I2C_0x");
     address += String(_i2cAddressHex, HEX);
     return address;
 }
 
 
-bool BoschBME280::setup(void) {
+bool BoschBME280::setup() {
     bool retVal =
         Sensor::setup();  // this will set pin modes and the setup status bit
 
@@ -67,7 +67,7 @@ bool BoschBME280::setup(void) {
 }
 
 
-bool BoschBME280::wake(void) {
+bool BoschBME280::wake() {
     // Sensor::wake() checks if the power pin is on and sets the wake timestamp
     // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
@@ -108,7 +108,7 @@ bool BoschBME280::wake(void) {
 }
 
 
-bool BoschBME280::addSingleMeasurementResult(void) {
+bool BoschBME280::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);

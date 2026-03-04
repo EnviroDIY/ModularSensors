@@ -209,7 +209,7 @@ class YosemitechParent : public Sensor {
      */
     virtual ~YosemitechParent() override = default;
 
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -222,7 +222,7 @@ class YosemitechParent : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
+    bool setup() override;
     /**
      * @brief Wakes the sensor, starts measurements, and activates brushes.
      *
@@ -234,7 +234,7 @@ class YosemitechParent : public Sensor {
      *
      * @return True if the wake function completed successfully.
      */
-    bool wake(void) override;
+    bool wake() override;
     /**
      * @brief Puts the sensor to sleep, if necessary.
      *
@@ -243,9 +243,9 @@ class YosemitechParent : public Sensor {
      *
      * @return True if the sleep function completed successfully.
      */
-    bool sleep(void) override;
+    bool sleep() override;
 
-    bool addSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult() override;
 
  private:
     /**

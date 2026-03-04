@@ -20,14 +20,14 @@ TallyCounterI2C::TallyCounterI2C(int8_t powerPin, uint8_t i2cAddressHex)
       _i2cAddressHex(i2cAddressHex) {}
 
 
-String TallyCounterI2C::getSensorLocation(void) {
+String TallyCounterI2C::getSensorLocation() {
     String address = F("I2C_0x");
     address += String(_i2cAddressHex, HEX);
     return address;
 }
 
 
-bool TallyCounterI2C::setup(void) {
+bool TallyCounterI2C::setup() {
     bool retVal =
         Sensor::setup();  // this will set pin modes and the setup status bit
 
@@ -65,7 +65,7 @@ bool TallyCounterI2C::setup(void) {
 }
 
 
-bool TallyCounterI2C::addSingleMeasurementResult(void) {
+bool TallyCounterI2C::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);

@@ -54,7 +54,7 @@ TIADS1x15Base::TIADS1x15Base(float voltageMultiplier, adsGain_t adsGain,
 // TIADS1x15Base Functions
 // ============================================================================
 
-bool TIADS1x15Base::begin(void) {
+bool TIADS1x15Base::begin() {
     // Initialize the per-instance ADS driver with stored configuration
     // ADS Library default settings:
     //  - TI ADS1115 (16 bit)
@@ -256,7 +256,7 @@ void TIADS1x15Base::setADSGain(adsGain_t adsGain) {
     _adsGain = adsGain;
 }
 
-adsGain_t TIADS1x15Base::getADSGain(void) {
+adsGain_t TIADS1x15Base::getADSGain() {
     return _ads.getGain();
 }
 
@@ -268,7 +268,7 @@ void TIADS1x15Base::setADSDataRate(uint16_t adsDataRate) {
     _adsDataRate = adsDataRate;
 }
 
-uint16_t TIADS1x15Base::getADSDataRate(void) {
+uint16_t TIADS1x15Base::getADSDataRate() {
     return _ads.getDataRate();
 }
 
@@ -288,7 +288,7 @@ void TIADS1x15Base::setSupplyVoltage(float supplyVoltage) {
     }
 }
 
-float TIADS1x15Base::calculateAnalogResolutionVolts(void) {
+float TIADS1x15Base::calculateAnalogResolutionVolts() {
     // Determine ADC resolution based on model
 #ifndef MS_USE_ADS1015
     uint8_t resolutionBits = 16;  // ADS1115 is 16-bit
@@ -334,7 +334,7 @@ float TIADS1x15Base::calculateAnalogResolutionVolts(void) {
     return resolutionVolts;
 }
 
-bool TIADS1x15Base::probeI2C(void) {
+bool TIADS1x15Base::probeI2C() {
     _wire->beginTransmission(_i2cAddress);
     if (_wire->endTransmission() != 0) {
         MS_DBG(F("  I2C communication failed at 0x"), String(_i2cAddress, HEX));
@@ -380,7 +380,7 @@ TIADS1x15::~TIADS1x15() {
     }
 }
 
-String TIADS1x15::getSensorLocation(void) {
+String TIADS1x15::getSensorLocation() {
     if (_analogVoltageReader != nullptr) {
         return _analogVoltageReader->getAnalogLocation(_dataPin,
                                                        _analogReferenceChannel);
@@ -390,7 +390,7 @@ String TIADS1x15::getSensorLocation(void) {
 }
 
 
-bool TIADS1x15::setup(void) {
+bool TIADS1x15::setup() {
     bool sensorSetupSuccess         = Sensor::setup();
     bool analogVoltageReaderSuccess = false;
 
@@ -408,7 +408,7 @@ bool TIADS1x15::setup(void) {
     return sensorSetupSuccess && analogVoltageReaderSuccess;
 }
 
-bool TIADS1x15::addSingleMeasurementResult(void) {
+bool TIADS1x15::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);

@@ -377,11 +377,11 @@ class TurnerCyclops : public Sensor {
     TurnerCyclops(TurnerCyclops&&)            = delete;
     TurnerCyclops& operator=(TurnerCyclops&&) = delete;
 
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
-    bool setup(void) override;
+    bool setup() override;
 
-    bool addSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult() override;
 
  private:
     /**

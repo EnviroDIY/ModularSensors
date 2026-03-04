@@ -43,7 +43,7 @@ TurnerTurbidityPlus::~TurnerTurbidityPlus() {
 }
 
 
-String TurnerTurbidityPlus::getSensorLocation(void) {
+String TurnerTurbidityPlus::getSensorLocation() {
     if (_analogVoltageReader != nullptr) {
         return _analogVoltageReader->getAnalogLocation(_dataPin,
                                                        _analogReferenceChannel);
@@ -67,7 +67,7 @@ void TurnerTurbidityPlus::runWiper() {
     MS_DBG(F("TurbidityPlus wiper cycle should be finished"));
 }
 
-bool TurnerTurbidityPlus::setup(void) {
+bool TurnerTurbidityPlus::setup() {
     // Set up the wiper trigger pin, which is active-LOW.
     pinMode(_wiperTriggerPin, OUTPUT);
     bool sensorSetupSuccess         = Sensor::setup();
@@ -87,7 +87,7 @@ bool TurnerTurbidityPlus::setup(void) {
     return sensorSetupSuccess && analogVoltageReaderSuccess;
 }
 
-bool TurnerTurbidityPlus::wake(void) {
+bool TurnerTurbidityPlus::wake() {
     // Set the wiper trigger pin mode.
     // Reset this on every wake because pins are set to tri-state on sleep
     pinMode(_wiperTriggerPin, OUTPUT);
@@ -97,19 +97,19 @@ bool TurnerTurbidityPlus::wake(void) {
     return Sensor::wake();
 }
 
-void TurnerTurbidityPlus::powerDown(void) {
+void TurnerTurbidityPlus::powerDown() {
     // Set the wiper trigger pin LOW to avoid power drain.
     digitalWrite(_wiperTriggerPin, LOW);
     Sensor::powerDown();
 }
 
-void TurnerTurbidityPlus::powerUp(void) {
+void TurnerTurbidityPlus::powerUp() {
     // Set the wiper trigger pin HIGH to prepare for wiping.
     digitalWrite(_wiperTriggerPin, HIGH);
     Sensor::powerUp();
 }
 
-bool TurnerTurbidityPlus::addSingleMeasurementResult(void) {
+bool TurnerTurbidityPlus::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);

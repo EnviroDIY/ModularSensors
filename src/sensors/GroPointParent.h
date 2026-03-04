@@ -153,7 +153,7 @@ class GroPointParent : public Sensor {
      */
     virtual ~GroPointParent() override = default;
 
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -166,9 +166,9 @@ class GroPointParent : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
+    bool setup() override;
 
-    bool wake(void) override;
+    bool wake() override;
     /**
      * @brief Puts the sensor to sleep, if necessary.
      *
@@ -177,9 +177,9 @@ class GroPointParent : public Sensor {
      *
      * @return True if the sleep function completed successfully.
      */
-    bool sleep(void) override;
+    bool sleep() override;
 
-    bool addSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult() override;
 
  private:
     /**

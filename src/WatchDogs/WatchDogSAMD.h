@@ -71,7 +71,7 @@
 /**
  * @brief ISR handler for watchdog timer early warning (WDT EW) interrupt
  */
-void WDT_Handler(void);
+void WDT_Handler();
 
 /**
  * @brief The extendedWatchDogSAMD class uses the early warning interrupt to of

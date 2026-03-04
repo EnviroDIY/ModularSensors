@@ -439,7 +439,7 @@ class BoschBMP3xx : public Sensor {
      */
     ~BoschBMP3xx() override = default;
 
-    bool wake(void) override;
+    bool wake() override;
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
      * to take readings.
@@ -450,12 +450,12 @@ class BoschBMP3xx : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
+    bool setup() override;
 
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
-    bool startSingleMeasurement(void) override;
-    bool addSingleMeasurementResult(void) override;
+    bool startSingleMeasurement() override;
+    bool addSingleMeasurementResult() override;
 
  private:
     /**

@@ -371,7 +371,7 @@ class loggerModem {
      *
      * @return The modem name
      */
-    String getModemName(void);
+    String getModemName();
 
     /**
      * @brief Get a detailed printable description of the modem.
@@ -383,7 +383,7 @@ class loggerModem {
      *
      * @todo Implement this for modems other than the XBee WiFi
      */
-    String getModemDevId(void);
+    String getModemDevId();
     /**
      * @brief Set the timezone that the modem will attempt to sync itself to.
      *
@@ -408,7 +408,7 @@ class loggerModem {
      *
      * @return True if setup was successful
      */
-    virtual bool modemSetup(void);
+    virtual bool modemSetup();
     /**
      * @brief Retained for backwards compatibility; use modemSetup() in new
      * code.
@@ -417,7 +417,7 @@ class loggerModem {
      *
      * @return True if setup was successful
      */
-    bool setup(void) {
+    bool setup() {
         return modemSetup();
     }
 
@@ -440,7 +440,7 @@ class loggerModem {
      *
      * @return True if the modem is responsive and ready for action.
      */
-    virtual bool modemWake(void) = 0;
+    virtual bool modemWake() = 0;
     /**
      * @brief Retained for backwards compatibility; use modemWake() in new code.
      *
@@ -449,14 +449,14 @@ class loggerModem {
      * @return True if wake was successful, modem should be ready to
      * communicate
      */
-    bool wake(void) {
+    bool wake() {
         return modemWake();
     }
 
     /**
      * @brief Power the modem by setting the modem power pin high.
      */
-    virtual void modemPowerUp(void);
+    virtual void modemPowerUp();
     /**
      * @brief Cut power to the modem by setting the modem power pin low.
      *
@@ -464,14 +464,14 @@ class loggerModem {
      * allows for graceful shut down.  You should use modemSleepPowerDown()
      * whenever possible.
      */
-    virtual void modemPowerDown(void);
+    virtual void modemPowerDown();
     /**
      * @brief Request that the modem enter its lowest possible power state.
      *
      * @return True if the modem has successfully entered low power
      * state
      */
-    virtual bool modemSleep(void);
+    virtual bool modemSleep();
     /**
      * @brief Request that the modem enter its lowest possible power state and
      * then set the power pin low after the modem has indicated it has
@@ -483,7 +483,7 @@ class loggerModem {
      * @return True if the modem has successfully entered low power
      * state _and_ then powered off
      */
-    virtual bool modemSleepPowerDown(void);
+    virtual bool modemSleepPowerDown();
     /**@}*/
 
     /**
@@ -497,7 +497,7 @@ class loggerModem {
      * reset failed to fix the communication issue or because a reset is not
      * possible with the current pin/modem configuration.
      */
-    virtual bool modemHardReset(void);
+    virtual bool modemHardReset();
 
 
     /**
@@ -567,7 +567,7 @@ class loggerModem {
      * @brief Detach from EPS or GPRS data connection and then deregister from
      * the cellular network.
      */
-    virtual void disconnectInternet(void) = 0;
+    virtual void disconnectInternet() = 0;
 
     /**
      * @brief Create a new client object using the default socket number
@@ -650,7 +650,7 @@ class loggerModem {
      *
      * @return The number of seconds since Jan 1, 1970 IN UTC
      */
-    virtual uint32_t getNISTTime(void) = 0;
+    virtual uint32_t getNISTTime() = 0;
     /**@}*/
 
 
@@ -702,7 +702,7 @@ class loggerModem {
      *
      * @return The temperature in degrees Celsius
      */
-    virtual float getModemChipTemperature(void) = 0;
+    virtual float getModemChipTemperature() = 0;
 
 
     /**
@@ -756,7 +756,7 @@ class loggerModem {
      * was successful and the values of the internal static variables should
      * be valid.
      */
-    virtual bool updateModemMetadata(void);
+    virtual bool updateModemMetadata();
     /**@}*/
 
     /**
@@ -867,16 +867,16 @@ class loggerModem {
     /**
      * @brief Turn on the modem LED/alert pin - sets it `HIGH`
      */
-    void modemLEDOn(void);
+    void modemLEDOn();
     /**
      * @brief Turn off the modem LED/alert pin - sets it `LOW`
      */
-    void modemLEDOff(void);
+    void modemLEDOff();
     /**
      * @brief Set the processor pin modes (input vs output, with and without
      * pull-up) for all pins connected between the modem module and the mcu.
      */
-    virtual void setModemPinModes(void);
+    virtual void setModemPinModes();
     /**@}*/
 
     /**
@@ -890,7 +890,7 @@ class loggerModem {
      * @return True if there is an active data connection to the
      * internet.
      */
-    virtual bool isInternetAvailable(void) = 0;
+    virtual bool isInternetAvailable() = 0;
     /**
      * @brief Perform the parts of the modem sleep process that are unique to a
      * specific module, as opposed to the parts of setup that are common to all
@@ -899,7 +899,7 @@ class loggerModem {
      * @return True if the unique part of the sleep function ran
      * successfully.
      */
-    virtual bool modemSleepFxn(void) = 0;
+    virtual bool modemSleepFxn() = 0;
     /**
      * @brief Perform the parts of the modem wake up process that are unique to
      * a specific module, as opposed to the parts of setup that are common to
@@ -908,7 +908,7 @@ class loggerModem {
      * @return True if the unique part of the wake function ran
      * successfully - does _NOT_ indicate that the modem is now responsive.
      */
-    virtual bool modemWakeFxn(void) = 0;
+    virtual bool modemWakeFxn() = 0;
     /**
      * @brief Perform the parts of the modem set up process that are unique to a
      * specific module, as opposed to the parts of setup that are common to all
@@ -919,7 +919,7 @@ class loggerModem {
      *
      * @return True if the extra setup succeeded.
      */
-    virtual bool extraModemSetup(void) = 0;
+    virtual bool extraModemSetup() = 0;
     /**
      * @brief Check if the modem was awake using all possible means.
      *
@@ -941,7 +941,7 @@ class loggerModem {
      *
      * @return True if the modem is already awake.
      */
-    virtual bool isModemAwake(void) = 0;
+    virtual bool isModemAwake() = 0;
     /**@}*/
 
     /**
@@ -1225,7 +1225,7 @@ class loggerModem {
     uint8_t _pollModemMetaData = 0;
 };
 
-// typedef float (loggerModem::_*loggerGetValueFxn)(void);
+// typedef float (loggerModem::_*loggerGetValueFxn)();
 
 // Classes for the modem variables
 

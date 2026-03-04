@@ -31,12 +31,12 @@ AOSongAM2315::~AOSongAM2315() {
 }
 
 
-String AOSongAM2315::getSensorLocation(void) {
+String AOSongAM2315::getSensorLocation() {
     return F("I2C_0xB8");
 }
 
 
-bool AOSongAM2315::setup(void) {
+bool AOSongAM2315::setup() {
     _i2c->begin();  // Start the wire library (sensor power not required)
     // Eliminate any potential extra waits in the wire library
     // These waits would be caused by a readBytes or parseX being called
@@ -50,7 +50,7 @@ bool AOSongAM2315::setup(void) {
 }
 
 
-bool AOSongAM2315::addSingleMeasurementResult(void) {
+bool AOSongAM2315::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);

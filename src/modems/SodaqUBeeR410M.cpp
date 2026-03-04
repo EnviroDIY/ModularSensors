@@ -71,7 +71,7 @@ MS_MODEM_GET_MODEM_TEMPERATURE_DATA(SodaqUBeeR410M);
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
-bool SodaqUBeeR410M::modemWakeFxn(void) {
+bool SodaqUBeeR410M::modemWakeFxn() {
     // SARA R4/N4 series must power on and then pulse on
     if (_modemSleepRqPin >= 0) {
         MS_DBG(F("Sending a"), _wakePulse_ms, F("ms"),
@@ -133,7 +133,7 @@ bool SodaqUBeeR410M::modemWakeFxn(void) {
 }
 
 
-bool SodaqUBeeR410M::modemSleepFxn(void) {
+bool SodaqUBeeR410M::modemSleepFxn() {
     if (_modemSleepRqPin >= 0) {
         // R410 must have access to `PWR_ON` pin to sleep
         // Easiest to just go to sleep with the AT command rather than using
@@ -149,7 +149,7 @@ bool SodaqUBeeR410M::modemSleepFxn(void) {
 }
 
 
-bool SodaqUBeeR410M::modemHardReset(void) {
+bool SodaqUBeeR410M::modemHardReset() {
     if (_modemResetPin >= 0) {
         MS_DBG(F("Doing a hard reset on the modem by setting pin"),
                _modemResetPin, _resetLevel ? F("HIGH") : F("LOW"), F("for"),
@@ -177,7 +177,7 @@ bool SodaqUBeeR410M::modemHardReset(void) {
     }
 }
 
-bool SodaqUBeeR410M::extraModemSetup(void) {
+bool SodaqUBeeR410M::extraModemSetup() {
     bool success = gsmModem.init();
     _modemName   = gsmModem.getModemName();
     // Turn on network indicator light

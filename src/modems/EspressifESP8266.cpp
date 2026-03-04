@@ -44,7 +44,7 @@ MS_MODEM_GET_MODEM_SIGNAL_QUALITY(EspressifESP8266);
 MS_MODEM_GET_MODEM_BATTERY_DATA(EspressifESP8266);
 MS_MODEM_GET_MODEM_TEMPERATURE_DATA(EspressifESP8266);
 
-bool EspressifESP8266::modemSleepFxn(void) {
+bool EspressifESP8266::modemSleepFxn() {
     // Use this if you have an MCU pin connected to the ESP's reset pin to wake
     // from deep sleep.  We'll also put it in deep sleep before yanking power.
     if (_modemResetPin >= 0 || _powerPin >= 0) {
@@ -64,7 +64,7 @@ bool EspressifESP8266::modemSleepFxn(void) {
 }
 
 // Set up the light-sleep status pin, if applicable
-bool EspressifESP8266::extraModemSetup(void) {
+bool EspressifESP8266::extraModemSetup() {
     if (_modemSleepRqPin >= 0) { digitalWrite(_modemSleepRqPin, !_wakeLevel); }
     gsmModem.init();
     _modemName = gsmModem.getModemName();

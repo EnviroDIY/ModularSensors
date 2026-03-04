@@ -475,7 +475,7 @@ class TEConnectivityMS5837 : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
+    bool setup() override;
 
     /**
      * @brief Wake the sensor and re-establish communication.
@@ -487,12 +487,12 @@ class TEConnectivityMS5837 : public Sensor {
      *
      * @return True if the wake was successful.
      */
-    bool wake(void) override;
+    bool wake() override;
 
-    String getSensorName(void) override;
-    String getSensorLocation(void) override;
+    String getSensorName() override;
+    String getSensorLocation() override;
 
-    bool addSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult() override;
 
  private:
     /**

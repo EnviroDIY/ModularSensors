@@ -224,8 +224,8 @@ class DigiXBee : public loggerModem {
     virtual ~DigiXBee() override = default;
 
  protected:
-    bool modemSleepFxn(void) override;
-    bool modemWakeFxn(void) override;
+    bool modemSleepFxn() override;
+    bool modemWakeFxn() override;
 };
 /**@}*/
 #endif  // SRC_MODEMS_DIGIXBEE_H_

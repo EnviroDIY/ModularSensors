@@ -312,11 +312,11 @@ class AlphasenseCO2 : public Sensor {
     AlphasenseCO2(AlphasenseCO2&&)            = delete;
     AlphasenseCO2& operator=(AlphasenseCO2&&) = delete;
 
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
-    bool setup(void) override;
+    bool setup() override;
 
-    bool addSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult() override;
 
  private:
 

@@ -119,7 +119,7 @@ class UbidotsPublisher : public dataPublisher {
      *
      * @return The URL or HOST to receive published data
      */
-    String getEndpoint(void) override {
+    String getEndpoint() override {
         return String(ubidotsHost);
     }
 

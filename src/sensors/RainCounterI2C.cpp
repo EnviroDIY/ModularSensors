@@ -63,7 +63,7 @@ RainCounterI2C::~RainCounterI2C() {}
 #endif
 
 
-String RainCounterI2C::getSensorLocation(void) {
+String RainCounterI2C::getSensorLocation() {
 #if defined(MS_RAIN_SOFTWAREWIRE)
     String address = F("SoftwareWire");
     if (_dataPin >= 0) address += _dataPin;
@@ -76,7 +76,7 @@ String RainCounterI2C::getSensorLocation(void) {
 }
 
 
-bool RainCounterI2C::setup(void) {
+bool RainCounterI2C::setup() {
     _i2c->begin();  // Start the wire library (sensor power not required)
     // Eliminate any potential extra waits in the wire library
     // These waits would be caused by a readBytes or parseX being called
@@ -90,7 +90,7 @@ bool RainCounterI2C::setup(void) {
 }
 
 
-bool RainCounterI2C::addSingleMeasurementResult(void) {
+bool RainCounterI2C::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);

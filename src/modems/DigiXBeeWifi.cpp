@@ -93,7 +93,7 @@ MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBeeWifi);
 MS_MODEM_GET_MODEM_BATTERY_DATA(DigiXBeeWifi);
 MS_MODEM_GET_MODEM_TEMPERATURE_DATA(DigiXBeeWifi);
 
-bool DigiXBeeWifi::extraModemSetup(void) {
+bool DigiXBeeWifi::extraModemSetup() {
     bool success = true;
     /** First run the TinyGSM init() function for the XBee. */
     MS_DBG(F("Initializing the XBee..."));
@@ -346,7 +346,7 @@ bool DigiXBeeWifi::extraModemSetup(void) {
 }
 
 
-void DigiXBeeWifi::disconnectInternet(void) {
+void DigiXBeeWifi::disconnectInternet() {
     // Ensure Wifi XBee IP socket torn down by forcing connection to
     // localhost IP For A XBee S6B bug, then force restart.
     TinyGsmXBee::GsmClientXBee gsmClient(
@@ -362,7 +362,7 @@ void DigiXBeeWifi::disconnectInternet(void) {
 
 
 // Get the time from NIST via TIME protocol (rfc868)
-uint32_t DigiXBeeWifi::getNISTTime(void) {
+uint32_t DigiXBeeWifi::getNISTTime() {
     // bail if not connected to the internet
     if (!isInternetAvailable()) {
         MS_DBG(F("No internet connection, cannot connect to NIST."));
@@ -435,7 +435,7 @@ uint32_t DigiXBeeWifi::getNISTTime(void) {
 }
 
 
-bool DigiXBeeWifi::updateModemMetadata(void) {
+bool DigiXBeeWifi::updateModemMetadata() {
     bool success = true;
 
     // Unset whatever we had previously

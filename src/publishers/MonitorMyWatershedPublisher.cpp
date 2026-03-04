@@ -87,7 +87,7 @@ MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
                                   nullptr, sendEveryX) {}
 
 // Returns the data destination
-String MonitorMyWatershedPublisher::getHost(void) {
+String MonitorMyWatershedPublisher::getHost() {
     return String(monitorMWHost);
 }
 
@@ -97,7 +97,7 @@ void MonitorMyWatershedPublisher::setHost(const char* host) {
 }
 
 // Returns the data destination
-String MonitorMyWatershedPublisher::getPath(void) {
+String MonitorMyWatershedPublisher::getPath() {
     return String(monitorMWPath);
 }
 
@@ -107,7 +107,7 @@ void MonitorMyWatershedPublisher::setPath(const char* endpoint) {
 }
 
 // Returns the data destination
-int MonitorMyWatershedPublisher::getPort(void) {
+int MonitorMyWatershedPublisher::getPort() {
     return monitorMWPort;
 }
 
@@ -198,7 +198,7 @@ void MonitorMyWatershedPublisher::begin(Logger&     baseLogger,
           nullptr);
 }
 
-bool MonitorMyWatershedPublisher::connectionNeeded(void) {
+bool MonitorMyWatershedPublisher::connectionNeeded() {
     // compute the send interval, reducing it as the buffer gets more full so we
     // have less of a chance of losing data
     int     interval = _sendEveryX;

@@ -22,7 +22,7 @@ const char* S3PresignedPublisher::contentTypeHeader   = "\r\nContent-Type: ";
 S3PresignedPublisher::S3PresignedPublisher(Logger&     baseLogger,
                                            const char* caCertName,
                                            String (*getUrlFxn)(String),
-                                           String (*getFileNameFxn)(void),
+                                           String (*getFileNameFxn)(),
                                            int sendEveryX)
     : dataPublisher(baseLogger, sendEveryX) {
     if (caCertName) setCACertName(caCertName);
@@ -34,7 +34,7 @@ S3PresignedPublisher::S3PresignedPublisher(Logger&     baseLogger,
 S3PresignedPublisher::S3PresignedPublisher() : dataPublisher() {}
 S3PresignedPublisher::S3PresignedPublisher(Logger& baseLogger, Client* inClient,
                                            String (*getUrlFxn)(String),
-                                           String (*getFileNameFxn)(void),
+                                           String (*getFileNameFxn)(),
                                            int sendEveryX)
     : S3PresignedPublisher(baseLogger, static_cast<const char*>(nullptr),
                            getUrlFxn, getFileNameFxn, sendEveryX) {
@@ -52,8 +52,7 @@ void S3PresignedPublisher::setHost(const char* host) {
 void S3PresignedPublisher::setURLUpdateFunction(String (*getUrlFxn)(String)) {
     _getUrlFxn = getUrlFxn;
 }
-void S3PresignedPublisher::setFileUpdateFunction(
-    String (*getFileNameFxn)(void)) {
+void S3PresignedPublisher::setFileUpdateFunction(String (*getFileNameFxn)()) {
     _getFileNameFxn = getFileNameFxn;
 }
 

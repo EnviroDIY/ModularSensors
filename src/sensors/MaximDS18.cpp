@@ -54,14 +54,14 @@ String MaximDS18::makeAddressString(DeviceAddress owAddr) {
 
 
 // This gets the place the sensor is installed ON THE MAYFLY (ie, pin number)
-String MaximDS18::getSensorLocation(void) {
+String MaximDS18::getSensorLocation() {
     return makeAddressString(_OneWireAddress);
 }
 
 
 // The function to set up connection to a sensor.
 // By default, sets pin modes and returns ready
-bool MaximDS18::setup(void) {
+bool MaximDS18::setup() {
     uint8_t ntries = 0;
 
     bool retVal =
@@ -149,7 +149,7 @@ bool MaximDS18::setup(void) {
 // Sending the device a request to start temp conversion.
 // Because we put ourselves in ASYNC mode in setup, we don't have to wait for
 // finish
-bool MaximDS18::startSingleMeasurement(void) {
+bool MaximDS18::startSingleMeasurement() {
     // Sensor::startSingleMeasurement() checks that if it's awake/active and
     // sets the timestamp and status bits.  If it returns false, there's no
     // reason to go on.
@@ -178,7 +178,7 @@ bool MaximDS18::startSingleMeasurement(void) {
 }
 
 
-bool MaximDS18::addSingleMeasurementResult(void) {
+bool MaximDS18::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);

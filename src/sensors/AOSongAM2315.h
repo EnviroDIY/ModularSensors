@@ -231,7 +231,7 @@ class AOSongAM2315 : public Sensor {
      *
      * @return Text describing how the sensor is attached to the mcu.
      */
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -244,9 +244,9 @@ class AOSongAM2315 : public Sensor {
      * @return True if the setup was successful.  For the AOSong AM2315
      * the result will always be true.
      */
-    bool setup(void) override;
+    bool setup() override;
 
-    bool addSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult() override;
 
  private:
     /**

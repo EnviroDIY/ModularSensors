@@ -18,12 +18,12 @@ MaximDS3231::MaximDS3231(uint8_t measurementsToAverage)
              measurementsToAverage, DS3231_INC_CALC_VARIABLES) {}
 
 
-String MaximDS3231::getSensorLocation(void) {
+String MaximDS3231::getSensorLocation() {
     return F("I2C_0x68");
 }
 
 
-bool MaximDS3231::setup(void) {
+bool MaximDS3231::setup() {
     rtc.begin();  // NOTE:  This also turns off interrupts on the RTC!
     return Sensor::setup();  // this will set pin modes and the setup status bit
     // The clock should be continuously powered, so we never need to worry about
@@ -32,7 +32,7 @@ bool MaximDS3231::setup(void) {
 
 
 // Sending the device a request to start temp conversion.
-bool MaximDS3231::startSingleMeasurement(void) {
+bool MaximDS3231::startSingleMeasurement() {
     // Sensor::startSingleMeasurement() checks that if it's awake/active and
     // sets the timestamp and status bits.  If it returns false, there's no
     // reason to go on.
@@ -53,7 +53,7 @@ bool MaximDS3231::startSingleMeasurement(void) {
 }
 
 
-bool MaximDS3231::addSingleMeasurementResult(void) {
+bool MaximDS3231::addSingleMeasurementResult() {
     // NOTE: If this fails we have much bigger problems than just a lost
     // temperature value. That is, if I2C communication with the clock fails,
     // the system is too broken to even ask for this temperature.

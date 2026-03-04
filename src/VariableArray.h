@@ -155,7 +155,7 @@ class VariableArray {
      *
      * @return The number of variables
      */
-    uint8_t getVariableCount(void) {
+    uint8_t getVariableCount() {
         return _variableCount;
     }
 
@@ -165,7 +165,7 @@ class VariableArray {
      * @return The number of calculated (ie, not measured by a
      * sensor) variables
      */
-    uint8_t getCalculatedVariableCount(void);
+    uint8_t getCalculatedVariableCount();
 
     // This counts and returns the number of sensors
     /**
@@ -177,7 +177,7 @@ class VariableArray {
      *
      * @return The number of sensors
      */
-    uint8_t getSensorCount(void);
+    uint8_t getSensorCount();
 
     /**
      * @brief Match UUIDs from the given variables in the variable array.
@@ -202,14 +202,14 @@ class VariableArray {
      * @return True indicates all sensors have been set up
      * successfully.
      */
-    bool setupSensors(void);
+    bool setupSensors();
 
     /**
      * @brief Power up each sensor.
      *
      * Runs the powerUp sensor function for each unique sensor.
      */
-    void sensorsPowerUp(void);
+    void sensorsPowerUp();
 
     /**
      * @brief Wake up each sensor.
@@ -219,7 +219,7 @@ class VariableArray {
      *
      * @return True if all wake functions were run successfully.
      */
-    bool sensorsWake(void);
+    bool sensorsWake();
 
     /**
      * @brief Put all sensors to sleep
@@ -228,13 +228,13 @@ class VariableArray {
      *
      * @return True if all sleep functions were run successfully.
      */
-    bool sensorsSleep(void);
+    bool sensorsSleep();
 
     /**
      * @brief Cut power to all sensors.
      * Runs the powerDown sensor function for each unique sensor.
      */
-    void sensorsPowerDown(void);
+    void sensorsPowerDown();
 
     /**
      * @brief Update the values for all connected sensors.
@@ -246,7 +246,7 @@ class VariableArray {
      *
      * @return True if all steps of the update succeeded.
      */
-    bool updateAllSensors(void);
+    bool updateAllSensors();
 
     // This function powers, wakes, updates values, sleeps and powers down.
 
@@ -311,7 +311,7 @@ class VariableArray {
      * @warning This does not check that the UUIDs are the true UUIDs for the
      * variables, just that the text is a validly formed UUID.
      */
-    bool checkVariableUUIDs(void);
+    bool checkVariableUUIDs();
 
     /**
      * @brief Get a specific status bit from the sensor tied to a variable in

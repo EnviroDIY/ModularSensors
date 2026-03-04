@@ -42,7 +42,7 @@
  * subclass.
  */
 #define MS_MODEM_EXTRA_SETUP(specificModem)     \
-    bool specificModem::extraModemSetup(void) { \
+    bool specificModem::extraModemSetup() {     \
         bool success = gsmModem.init();         \
         _modemName   = gsmModem.getModemName(); \
         MS_MODEM_NTP_SYNC                       \
@@ -59,7 +59,7 @@
  * subclass.
  */
 #define MS_IS_MODEM_AWAKE(specificModem)                                       \
-    bool specificModem::isModemAwake(void) {                                   \
+    bool specificModem::isModemAwake() {                                       \
         if (_wakePulse_ms == 0 && _modemSleepRqPin >= 0) {                     \
             /** If the wake up is one where a pin is held (0 wake time) and    \
              * that pin is defined, then we're going to check the level of the \
@@ -117,7 +117,7 @@
  * subclass.
  */
 #define MS_MODEM_WAKE(specificModem)                                           \
-    bool specificModem::modemWake(void) {                                      \
+    bool specificModem::modemWake() {                                          \
         /** Set-up pin modes.                                                  \
           Because the modem calls wake BEFORE the first setup, we must set     \
           the pin modes in the wake function. */                               \
@@ -253,7 +253,7 @@
 
 #if defined(TINY_GSM_MODEM_HAS_GPRS)
 #define MS_MODEM_IS_INTERNET_AVAILABLE(specificModem) \
-    bool specificModem::isInternetAvailable(void) {   \
+    bool specificModem::isInternetAvailable() {       \
         return gsmModem.isGprsConnected();            \
     }
 
@@ -327,7 +327,7 @@
     }
 
 #define MS_MODEM_DISCONNECT_INTERNET(specificModem)           \
-    void specificModem::disconnectInternet(void) {            \
+    void specificModem::disconnectInternet() {                \
         MS_START_DEBUG_TIMER;                                 \
         gsmModem.gprsDisconnect();                            \
         MS_DBG(F("Disconnected from cellular network after"), \
@@ -338,7 +338,7 @@
 //^^ from #if defined(TINY_GSM_MODEM_HAS_GPRS) (ie, this is wifi)
 
 #define MS_MODEM_IS_INTERNET_AVAILABLE(specificModem) \
-    bool specificModem::isInternetAvailable(void) {   \
+    bool specificModem::isInternetAvailable() {       \
         return gsmModem.isNetworkConnected();         \
     }
 
@@ -421,7 +421,7 @@
     }
 
 #define MS_MODEM_DISCONNECT_INTERNET(specificModem)       \
-    void specificModem::disconnectInternet(void) {        \
+    void specificModem::disconnectInternet() {            \
         MS_START_DEBUG_TIMER;                             \
         gsmModem.networkDisconnect();                     \
         MS_DBG(F("Disconnected from WiFi network after"), \
@@ -613,7 +613,7 @@
  */
 #if defined(TINY_GSM_MODEM_ESP8266) || defined(TINY_GSM_MODEM_ESP32)
 #define MS_MODEM_GET_NIST_TIME(specificModem, TinyGSMType)                 \
-    uint32_t specificModem::getNISTTime(void) {                            \
+    uint32_t specificModem::getNISTTime() {                                \
         /** Check for and bail if not connected to the internet. */        \
         if (!isInternetAvailable()) {                                      \
             MS_DBG(F("No internet connection, cannot get network time.")); \
@@ -628,7 +628,7 @@
 #elif defined(TINY_GSM_MODEM_HAS_NTP) && defined(TINY_GSM_MODEM_HAS_TIME)
 #include "ClockSupport.h"
 #define MS_MODEM_GET_NIST_TIME(specificModem, TinyGSMType)                     \
-    uint32_t specificModem::getNISTTime(void) {                                \
+    uint32_t specificModem::getNISTTime() {                                    \
         /** Check for and bail if not connected to the internet. */            \
         if (!isInternetAvailable()) {                                          \
             MS_DBG(F("No internet connection, cannot get network time."));     \
@@ -663,7 +663,7 @@
     }
 #else
 #define MS_MODEM_GET_NIST_TIME(specificModem, TinyGSMType)                   \
-    uint32_t specificModem::getNISTTime(void) {                              \
+    uint32_t specificModem::getNISTTime() {                                  \
         /** Check for and bail if not connected to the internet. */          \
         if (!isInternetAvailable()) {                                        \
             MS_DBG(F("No internet connection, cannot connect to NIST."));    \
@@ -836,7 +836,7 @@
  */
 #ifdef TINY_GSM_MODEM_HAS_TEMPERATURE
 #define MS_MODEM_GET_MODEM_TEMPERATURE_DATA(specificModem) \
-    float specificModem::getModemChipTemperature(void) {   \
+    float specificModem::getModemChipTemperature() {       \
         MS_DBG(F("Getting temperature:"));                 \
         float temp = gsmModem.getTemperature();            \
         MS_DBG(F("Temperature:"), temp);                   \
@@ -845,7 +845,7 @@
     }
 #else
 #define MS_MODEM_GET_MODEM_TEMPERATURE_DATA(specificModem)   \
-    float specificModem::getModemChipTemperature(void) {     \
+    float specificModem::getModemChipTemperature() {         \
         MS_DBG(F("This modem doesn't return temperature!")); \
         return static_cast<float>(MS_INVALID_VALUE);         \
     }

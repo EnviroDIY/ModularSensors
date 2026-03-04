@@ -289,12 +289,12 @@ class TurnerTurbidityPlus : public Sensor {
     TurnerTurbidityPlus(TurnerTurbidityPlus&&)            = delete;
     TurnerTurbidityPlus& operator=(TurnerTurbidityPlus&&) = delete;
 
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
     /**
      * @brief Run one wiper cycle
      */
-    void runWiper(void);
+    void runWiper();
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -304,15 +304,15 @@ class TurnerTurbidityPlus : public Sensor {
      *
      * @return **bool** True if the setup was successful.
      */
-    bool setup(void) override;
+    bool setup() override;
 
-    bool wake(void) override;
+    bool wake() override;
 
-    void powerUp(void) override;
+    void powerUp() override;
 
-    void powerDown(void) override;
+    void powerDown() override;
 
-    bool addSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult() override;
 
  private:
     /**

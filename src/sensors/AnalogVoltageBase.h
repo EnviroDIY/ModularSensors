@@ -84,7 +84,7 @@ class AnalogVoltageBase {
      *
      * @return True if the initialization was successful, false otherwise
      */
-    virtual bool begin(void) = 0;
+    virtual bool begin() = 0;
 
     /**
      * @brief Set the voltage multiplier for voltage divider calculations
@@ -111,7 +111,7 @@ class AnalogVoltageBase {
      *
      * @return The current voltage multiplier
      */
-    float getVoltageMultiplier(void) const {
+    float getVoltageMultiplier() const {
         return _voltageMultiplier;
     }
 
@@ -138,7 +138,7 @@ class AnalogVoltageBase {
      *
      * @return The current supply voltage in volts
      */
-    float getSupplyVoltage(void) const {
+    float getSupplyVoltage() const {
         return _supplyVoltage;
     }
 
@@ -209,7 +209,7 @@ class AnalogVoltageBase {
      *
      * @return The analog resolution in volts per LSB
      */
-    virtual float calculateAnalogResolutionVolts(void) = 0;
+    virtual float calculateAnalogResolutionVolts() = 0;
 
  protected:
     /**

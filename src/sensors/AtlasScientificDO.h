@@ -253,7 +253,7 @@ class AtlasScientificDO : public AtlasParent {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
+    bool setup() override;
 };
 
 /* clang-format off */

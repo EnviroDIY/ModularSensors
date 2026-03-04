@@ -233,11 +233,11 @@ class FreescaleMPL115A2 : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
+    bool setup() override;
 
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
-    bool addSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult() override;
 
  private:
     /**

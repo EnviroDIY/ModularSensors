@@ -516,7 +516,7 @@ loggerModem* Logger::registerDataPublisher(dataPublisher* publisher) {
     return _logModem;
 }
 
-bool Logger::checkRemotesConnectionNeeded(void) {
+bool Logger::checkRemotesConnectionNeeded() {
     MS_DBG(F("Asking publishers if they need a connection."));
 
     bool needed = false;
@@ -541,7 +541,7 @@ void Logger::publishDataToRemotes(bool forceFlush) {
         }
     }
 }
-void Logger::sendDataToRemotes(void) {
+void Logger::sendDataToRemotes() {
     publishDataToRemotes();
 }
 void Logger::publishMetadataToRemotes() {
@@ -577,7 +577,7 @@ void Logger::setLoggerTimeZone(int8_t timeZone) {
     }
 #endif
 }
-int8_t Logger::getLoggerTimeZone(void) {
+int8_t Logger::getLoggerTimeZone() {
     return Logger::_loggerUTCOffset;
 }
 // Sets the static timezone that the RTC is programmed in
@@ -587,7 +587,7 @@ int8_t Logger::getLoggerTimeZone(void) {
 void Logger::setRTCTimeZone(int8_t timeZone) {
     loggerClock::setRTCOffset(timeZone);
 }
-int8_t Logger::getRTCTimeZone(void) {
+int8_t Logger::getRTCTimeZone() {
     return loggerClock::getRTCOffset();
 }
 
@@ -613,7 +613,7 @@ void Logger::setTZOffset(int8_t offset) {
                  F("hours behind the logging timezone"));
     }
 }
-int8_t Logger::getTZOffset(void) {
+int8_t Logger::getTZOffset() {
     return Logger::_loggerRTCOffset;
 }
 time_t Logger::getNowLocalEpoch() {
@@ -645,7 +645,7 @@ void Logger::formatDateTime(char* buffer, const char* fmt,
                                 Logger::_loggerEpoch);
 }
 // This checks that the logger time is within a "sane" range
-bool Logger::isRTCSane(void) {
+bool Logger::isRTCSane() {
     return loggerClock::isRTCSane();
 }
 
@@ -657,7 +657,7 @@ bool Logger::isRTCSane(void) {
 // It is not currently possible to output the instantaneous time an individual
 // sensor was updated, just a single marked time.  By custom, this should be
 // called before updating the sensors, not after.
-void Logger::markTime(void) {
+void Logger::markTime() {
     MS_DEEP_DBG(F("Marking time..."));
     Logger::markedUTCUnixTime   = getNowUTCEpoch();
     Logger::markedLocalUnixTime = markedUTCUnixTime +
@@ -667,7 +667,7 @@ void Logger::markTime(void) {
 
 // This checks to see if the CURRENT time is an even interval of the logging
 // rate
-bool Logger::checkInterval(void) {
+bool Logger::checkInterval() {
     bool     retval;
     uint32_t checkTime = static_cast<uint32_t>(getNowLocalEpoch());
     int16_t  interval  = _loggingIntervalMinutes;
@@ -723,7 +723,7 @@ bool Logger::checkInterval(void) {
 
 
 // This checks to see if the MARKED time is an even interval of the logging rate
-bool Logger::checkMarkedInterval(void) {
+bool Logger::checkMarkedInterval() {
     int16_t interval = _loggingIntervalMinutes;
     // If we're within the range of our initial short intervals, we're logging,
     // then set the interval to 1.
@@ -762,14 +762,14 @@ bool Logger::checkMarkedInterval(void) {
 // In this case, we're doing nothing, we just want the processor to wake
 // This must be a static function (which means it can only call other static
 // functions.)
-void Logger::wakeISR(void) {
+void Logger::wakeISR() {
     MS_DEEP_DBG(F("\nInterrupt on wake pin!"));
 }
 
 
 // Puts the system to sleep to conserve battery life.
 // This DOES NOT sleep or wake the sensors!!
-void Logger::systemSleep(void) {
+void Logger::systemSleep() {
     MS_DBG(F("\n\nEntering system sleep function.  ZZzzz..."));
 
 #if !defined(MS_USE_RTC_ZERO)
@@ -915,7 +915,7 @@ void Logger::systemSleep(void) {
     // https://github.com/adafruit/circuitpython/blob/65cfcb83f279869c7b38eb5891ddac557dba155b/ports/atmel-samd/common-hal/alarm/__init__.c#L146
     if (__get_FPSCR() & ~(0x9f)) {
         __set_FPSCR(__get_FPSCR() & ~(0x9f));
-        (void)__get_FPSCR();
+        () __get_FPSCR();
     }
 
     // Set the sleep config
@@ -1239,7 +1239,7 @@ String Logger::generateFileName(bool include_time, const char* extension,
 // This generates a file name from the logger id and the current date
 // This will be used if the setFileName function is not called before the
 // begin() function is called.
-void Logger::generateAutoFileName(void) {
+void Logger::generateAutoFileName() {
     // Generate the file name from logger ID and date
     auto fileName = generateFileName(false, ".csv");
     setFileName(fileName);
@@ -1320,7 +1320,7 @@ void Logger::printSensorDataCSV(Stream* stream) {
 }
 
 // Protected helper function - This checks if the SD card is available and ready
-bool Logger::initializeSDCard(void) {
+bool Logger::initializeSDCard() {
     // If we don't know the slave select of the sd card, we can't use it
     if (_SDCardSSPin < 0) {
         PRINTOUT(F("Slave/Chip select pin for SD card has not been set."));
@@ -1463,7 +1463,7 @@ bool Logger::openFile(String& filename, bool createFile,
 // These functions create a file on the SD card with the given filename and
 // set the proper timestamps to the file.
 // The filename may either be the one set by
-// setFileName(String)/setFileName(void) or can be specified in the function. If
+// setFileName(String)/setFileName() or can be specified in the function. If
 // specified, it will also write a header to the file based on the sensors in
 // the group. This can be used to force a logger to create a file with a
 // secondary file name.
@@ -1488,7 +1488,7 @@ bool Logger::createLogFile(bool writeDefaultHeader) {
 // These functions write a file on the SD card with the given filename and
 // set the proper timestamps to the file.
 // The filename may either be the one set by
-// setFileName(String)/setFileName(void) or can be specified in the function. If
+// setFileName(String)/setFileName() or can be specified in the function. If
 // the file does not already exist, the file will be created. This can be used
 // to force a logger to write to a file with a secondary file name.
 bool Logger::logToSD(String& filename, String& rec) {
@@ -1521,7 +1521,7 @@ bool Logger::logToSD(String& rec) {
 }
 // NOTE:  This is structured differently than the version with a string input
 // record.  This is to avoid the creation/passing of very long strings.
-bool Logger::logToSD(void) {
+bool Logger::logToSD() {
     // Get a new file name if the name is blank
     if (_fileName == "") generateAutoFileName();
 

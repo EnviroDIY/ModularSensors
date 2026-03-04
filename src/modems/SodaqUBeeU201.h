@@ -198,10 +198,10 @@ class SodaqUBeeU201 : public loggerModem {
      */
     ~SodaqUBeeU201() override = default;
 
-    bool modemWake(void) override;
+    bool modemWake() override;
 
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-    void disconnectInternet(void) override;
+    void disconnectInternet() override;
 
     virtual Client* createClient() override;
     virtual void    deleteClient(Client* client);
@@ -218,12 +218,12 @@ class SodaqUBeeU201 : public loggerModem {
     createSecureClient(const char* pskTableName,
                        SSLVersion  sslVersion = SSLVersion::TLS1_2) override;
 
-    uint32_t getNISTTime(void) override;
+    uint32_t getNISTTime() override;
 
     bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
     bool  getModemBatteryStats(int8_t& chargeState, int8_t& percent,
                                int16_t& milliVolts) override;
-    float getModemChipTemperature(void) override;
+    float getModemChipTemperature() override;
 
 #ifdef MS_SODAQUBEEU201_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
@@ -235,11 +235,11 @@ class SodaqUBeeU201 : public loggerModem {
     TinyGsmUBLOX gsmModem;
 
  protected:
-    bool isInternetAvailable(void) override;
-    bool modemSleepFxn(void) override;
-    bool modemWakeFxn(void) override;
-    bool extraModemSetup(void) override;
-    bool isModemAwake(void) override;
+    bool isInternetAvailable() override;
+    bool modemSleepFxn() override;
+    bool modemWakeFxn() override;
+    bool extraModemSetup() override;
+    bool isModemAwake() override;
 
  private:
     const char* _apn;  ///< Internal reference to the cellular APN

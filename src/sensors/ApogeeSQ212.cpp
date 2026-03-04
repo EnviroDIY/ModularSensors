@@ -38,7 +38,7 @@ ApogeeSQ212::~ApogeeSQ212() {
 }
 
 
-String ApogeeSQ212::getSensorLocation(void) {
+String ApogeeSQ212::getSensorLocation() {
     if (_analogVoltageReader != nullptr) {
         return _analogVoltageReader->getAnalogLocation(_dataPin, -1);
     } else {
@@ -47,7 +47,7 @@ String ApogeeSQ212::getSensorLocation(void) {
 }
 
 
-bool ApogeeSQ212::setup(void) {
+bool ApogeeSQ212::setup() {
     bool sensorSetupSuccess         = Sensor::setup();
     bool analogVoltageReaderSuccess = false;
 
@@ -66,7 +66,7 @@ bool ApogeeSQ212::setup(void) {
 }
 
 
-bool ApogeeSQ212::addSingleMeasurementResult(void) {
+bool ApogeeSQ212::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);

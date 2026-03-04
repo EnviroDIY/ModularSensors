@@ -271,11 +271,11 @@ class AOSongDHT : public Sensor {
      */
     ~AOSongDHT() override = default;
 
-    bool setup(void) override;
+    bool setup() override;
 
-    String getSensorName(void) override;
+    String getSensorName() override;
 
-    bool addSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult() override;
 
  private:
     DHT     dht_internal;  ///< Internal reference to the Adafruit DHT object

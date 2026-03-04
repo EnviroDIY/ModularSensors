@@ -324,7 +324,7 @@ class TIADS1x15Base : public AnalogVoltageBase {
      *
      * @return True if the initialization was successful, false otherwise
      */
-    bool begin(void) override;
+    bool begin() override;
 
     /**
      * @brief Read a single-ended voltage measurement from the ADS1x15
@@ -372,7 +372,7 @@ class TIADS1x15Base : public AnalogVoltageBase {
      *
      * @return The internal gain setting
      */
-    adsGain_t getADSGain(void);
+    adsGain_t getADSGain();
 
     /**
      * @brief Set the data rate for the ADS1x15
@@ -386,7 +386,7 @@ class TIADS1x15Base : public AnalogVoltageBase {
      *
      * @return The data rate setting (samples per second)
      */
-    uint16_t getADSDataRate(void);
+    uint16_t getADSDataRate();
 
     /**
      * @brief Check if the two channels form a valid differential pair
@@ -429,7 +429,7 @@ class TIADS1x15Base : public AnalogVoltageBase {
      *
      * @return The analog resolution in volts per LSB
      */
-    float calculateAnalogResolutionVolts(void) override;
+    float calculateAnalogResolutionVolts() override;
 
  protected:
     /**
@@ -462,7 +462,7 @@ class TIADS1x15Base : public AnalogVoltageBase {
      *
      * @return true if device responds, false if communication failed
      */
-    bool probeI2C(void);
+    bool probeI2C();
 };
 
 /* clang-format off */
@@ -517,11 +517,11 @@ class TIADS1x15 : public Sensor {
     TIADS1x15(TIADS1x15&&)            = delete;
     TIADS1x15& operator=(TIADS1x15&&) = delete;
 
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
-    bool setup(void) override;
+    bool setup() override;
 
-    bool addSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult() override;
 
  private:
     /**

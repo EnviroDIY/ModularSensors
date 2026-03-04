@@ -176,7 +176,7 @@ class AWS_IoT_Publisher : public dataPublisher {
     virtual ~AWS_IoT_Publisher() override = default;
 
     // Returns the data destination
-    String getEndpoint(void) override {
+    String getEndpoint() override {
         return String(_awsIoTEndpoint);
     }
 
@@ -343,7 +343,7 @@ class AWS_IoT_Publisher : public dataPublisher {
      * @param contentGetrFxn A function to call to get the content to publish.
      * The function should return a pointer to a char array.
      */
-    void addPublishRequest(const char* topic, String (*contentGetrFxn)(void));
+    void addPublishRequest(const char* topic, String (*contentGetrFxn)());
     /**
      * @brief Removes a topic from the publish list.
      *
@@ -489,7 +489,7 @@ class AWS_IoT_Publisher : public dataPublisher {
     /**
      * @brief An array of functions to call to get publish content
      */
-    String (*contentGetrFxns[MS_AWS_IOT_PUBLISHER_PUB_COUNT])(void);
+    String (*contentGetrFxns[MS_AWS_IOT_PUBLISHER_PUB_COUNT])();
     /// constructor helper
     void init();
 };

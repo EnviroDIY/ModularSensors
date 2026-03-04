@@ -227,7 +227,7 @@ void loggerClock::setRTCOffset(int8_t offsetHours) {
     }
 #endif
 }
-int8_t loggerClock::getRTCOffset(void) {
+int8_t loggerClock::getRTCOffset() {
     return loggerClock::_rtcUTCOffset;
 }
 
@@ -397,7 +397,7 @@ bool loggerClock::setRTClock(epochTime in_time, int8_t utcOffset) {
 }
 
 // This checks that the logger time is within a "sane" range
-bool loggerClock::isRTCSane(void) {
+bool loggerClock::isRTCSane() {
     time_t curRTC  = getRawRTCNow();
     bool   is_sane = isEpochTimeSane(curRTC, loggerClock::_rtcUTCOffset,
                                      loggerClock::_rtcEpoch);
@@ -531,7 +531,7 @@ void loggerClock::disableRTCInterrupts() {
 #endif
 }
 
-void loggerClock::resetClockInterruptStatus(void) {
+void loggerClock::resetClockInterruptStatus() {
     MS_DBG(F("Clearing all interrupt flags on the"), MS_CLOCK_NAME);
 #if defined(MS_USE_RV8803)
     // NOTE: We're not going to bother to call getInterruptFlag(x) to see which
@@ -554,7 +554,7 @@ void loggerClock::resetClockInterruptStatus(void) {
 #endif
 }
 
-void loggerClock::rtcISR(void) {
+void loggerClock::rtcISR() {
 #if defined(MS_CLOCKSUPPORT_DEBUG) || defined(MS_LOGGERBASE_DEBUG_DEEP)
     // This is bad practice - calling a Serial.print from an ISR
     // But.. it's so helpful for debugging!

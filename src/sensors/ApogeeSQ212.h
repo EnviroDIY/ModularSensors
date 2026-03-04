@@ -291,11 +291,11 @@ class ApogeeSQ212 : public Sensor {
     ApogeeSQ212(ApogeeSQ212&&)            = delete;
     ApogeeSQ212& operator=(ApogeeSQ212&&) = delete;
 
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
-    bool setup(void) override;
+    bool setup() override;
 
-    bool addSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult() override;
 
  private:
     /// @brief Pointer to analog voltage reader

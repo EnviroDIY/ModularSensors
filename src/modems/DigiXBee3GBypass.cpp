@@ -48,7 +48,7 @@ MS_MODEM_GET_MODEM_BATTERY_DATA(DigiXBee3GBypass);
 // mode
 MS_MODEM_GET_MODEM_TEMPERATURE_DATA(DigiXBee3GBypass);
 
-bool DigiXBee3GBypass::extraModemSetup(void) {
+bool DigiXBee3GBypass::extraModemSetup() {
     bool success = false;
     MS_DBG(F("Putting XBee into command mode..."));
     for (uint8_t i = 0; i < 5; i++) {
@@ -145,7 +145,7 @@ bool DigiXBee3GBypass::extraModemSetup(void) {
     return success;
 }
 
-bool DigiXBee3GBypass::modemHardReset(void) {
+bool DigiXBee3GBypass::modemHardReset() {
     bool success = false;
     // If the u-blox cellular component isn't responding but the Digi processor
     // is, use the Digi API to reset the cellular component

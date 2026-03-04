@@ -39,7 +39,7 @@ AnalogElecConductivity::~AnalogElecConductivity() {
 }
 
 
-String AnalogElecConductivity::getSensorLocation(void) {
+String AnalogElecConductivity::getSensorLocation() {
     String sensorLocation;
     if (_analogVoltageReader != nullptr) {
         sensorLocation = _analogVoltageReader->getAnalogLocation(_dataPin, -1);
@@ -52,7 +52,7 @@ String AnalogElecConductivity::getSensorLocation(void) {
 }
 
 
-bool AnalogElecConductivity::setup(void) {
+bool AnalogElecConductivity::setup() {
     bool sensorSetupSuccess         = Sensor::setup();
     bool analogVoltageReaderSuccess = false;
 
@@ -71,7 +71,7 @@ bool AnalogElecConductivity::setup(void) {
 }
 
 
-bool AnalogElecConductivity::addSingleMeasurementResult(void) {
+bool AnalogElecConductivity::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);

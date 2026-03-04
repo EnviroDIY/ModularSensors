@@ -279,7 +279,7 @@ class TIINA219 : public Sensor {
      *
      * @return True if the wake function completed successfully.
      */
-    bool wake(void) override;
+    bool wake() override;
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
      * to take readings.
@@ -290,11 +290,11 @@ class TIINA219 : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
+    bool setup() override;
 
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
-    bool addSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult() override;
 
  private:
     /**

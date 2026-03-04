@@ -143,7 +143,7 @@ void AWS_IoT_Publisher::removeSubTopic(const char* topic) {
 }
 
 void AWS_IoT_Publisher::addPublishRequest(const char* topic,
-                                          String (*contentGetrFxn)(void)) {
+                                          String (*contentGetrFxn)()) {
     for (uint8_t i = 0; i < MS_AWS_IOT_PUBLISHER_PUB_COUNT; i++) {
         if (pub_topics[i] == nullptr) {
             pub_topics[i]      = topic;

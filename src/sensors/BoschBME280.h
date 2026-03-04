@@ -308,7 +308,7 @@ class BoschBME280 : public Sensor {
      */
     ~BoschBME280() override = default;
 
-    bool wake(void) override;
+    bool wake() override;
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
      * to take readings.
@@ -319,12 +319,12 @@ class BoschBME280 : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
+    bool setup() override;
 
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
-    // bool startSingleMeasurement(void) override;  // for forced mode
-    bool addSingleMeasurementResult(void) override;
+    // bool startSingleMeasurement() override;  // for forced mode
+    bool addSingleMeasurementResult() override;
 
  private:
     /**

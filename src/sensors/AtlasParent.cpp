@@ -36,14 +36,14 @@ AtlasParent::AtlasParent(int8_t powerPin, uint8_t i2cAddressHex,
                   stabilizationTime_ms, measurementTime_ms, incCalcValues) {}
 
 
-String AtlasParent::getSensorLocation(void) {
+String AtlasParent::getSensorLocation() {
     String address = F("I2C_0x");
     address += String(_i2cAddressHex, HEX);
     return address;
 }
 
 
-bool AtlasParent::setup(void) {
+bool AtlasParent::setup() {
     _i2c->begin();  // Start the wire library (sensor power not required)
     // Eliminate any potential extra waits in the wire library
     // These waits would be caused by a readBytes or parseX being called
@@ -59,7 +59,7 @@ bool AtlasParent::setup(void) {
 
 // The function to put the sensor to sleep
 // The Atlas sensors must be told to sleep
-bool AtlasParent::sleep(void) {
+bool AtlasParent::sleep() {
     if (!checkPowerOn()) { return true; }
     if (_millisSensorActivated == 0) {
         MS_DBG(getSensorNameAndLocation(), F("was not measuring!"));
@@ -97,7 +97,7 @@ bool AtlasParent::sleep(void) {
 // To start a measurement we write the command "R" to the sensor
 // NOTE:  documentation says to use a capital "R" but the examples provided
 // by Atlas use a lower case "r".
-bool AtlasParent::startSingleMeasurement(void) {
+bool AtlasParent::startSingleMeasurement() {
     // Sensor::startSingleMeasurement() checks that if it's awake/active and
     // sets the timestamp and status bits.  If it returns false, there's no
     // reason to go on.
@@ -132,7 +132,7 @@ bool AtlasParent::startSingleMeasurement(void) {
 }
 
 
-bool AtlasParent::addSingleMeasurementResult(void) {
+bool AtlasParent::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);

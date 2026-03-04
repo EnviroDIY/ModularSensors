@@ -238,9 +238,9 @@ class MaximDS18 : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
+    bool setup() override;
 
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
     /**
      * @brief Tell the sensor to start a single measurement, if needed.
@@ -253,8 +253,8 @@ class MaximDS18 : public Sensor {
      * @return True if the start measurement function completed
      * successfully. successfully.
      */
-    bool startSingleMeasurement(void) override;
-    bool addSingleMeasurementResult(void) override;
+    bool startSingleMeasurement() override;
+    bool addSingleMeasurementResult() override;
 
  private:
     /**

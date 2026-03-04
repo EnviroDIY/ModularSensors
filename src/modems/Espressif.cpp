@@ -25,7 +25,7 @@ Espressif::Espressif(Stream* modemStream, int8_t powerPin, int8_t modemResetPin,
 
 // A helper function to wait for the esp to boot and immediately change some
 // settings We'll use this in the wake function
-bool Espressif::ESPwaitForBoot(void) {
+bool Espressif::ESPwaitForBoot() {
     // Wait for boot - finished when characters start coming
     // NOTE: After every "hard" reset (either power off or via RST-B), the ESP
     // sends out a boot log from the ROM on UART1 at 74880 baud.  We're not
@@ -51,7 +51,7 @@ bool Espressif::ESPwaitForBoot(void) {
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
-bool Espressif::modemWakeFxn(void) {
+bool Espressif::modemWakeFxn() {
     bool success = true;
     if (_powerPin >= 0) {  // Turns on when power is applied
         MS_DEEP_DBG(

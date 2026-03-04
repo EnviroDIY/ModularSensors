@@ -25,7 +25,7 @@ ProcessorAnalogBase::ProcessorAnalogBase(float voltageMultiplier,
 // ProcessorAnalogBase Functions
 // ============================================================================
 
-bool ProcessorAnalogBase::begin(void) {
+bool ProcessorAnalogBase::begin() {
     // For processor analog systems, no special initialization is required
     // beyond what is done in the constructor
     return true;
@@ -87,7 +87,7 @@ bool ProcessorAnalogBase::readVoltageDifferential(
     return false;
 }
 
-float ProcessorAnalogBase::calculateAnalogResolutionVolts(void) {
+float ProcessorAnalogBase::calculateAnalogResolutionVolts() {
     // Use the configured processor ADC resolution
     uint8_t resolutionBits = MS_PROCESSOR_ADC_RESOLUTION;
 
@@ -156,7 +156,7 @@ String ProcessorAnalog::getSensorLocation() {
     }
 }
 
-bool ProcessorAnalog::addSingleMeasurementResult(void) {
+bool ProcessorAnalog::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);

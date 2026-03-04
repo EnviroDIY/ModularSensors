@@ -161,10 +161,10 @@ class DigiXBeeCellularTransparent : public DigiXBee {
      */
     ~DigiXBeeCellularTransparent() override = default;
 
-    bool modemWake(void) override;
+    bool modemWake() override;
 
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-    void disconnectInternet(void) override;
+    void disconnectInternet() override;
 
     virtual Client* createClient() override;
     virtual void    deleteClient(Client* client);
@@ -181,14 +181,14 @@ class DigiXBeeCellularTransparent : public DigiXBee {
     createSecureClient(const char* pskTableName,
                        SSLVersion  sslVersion = SSLVersion::TLS1_2) override;
 
-    uint32_t getNISTTime(void) override;
+    uint32_t getNISTTime() override;
 
     bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
     bool  getModemBatteryStats(int8_t& chargeState, int8_t& percent,
                                int16_t& milliVolts) override;
-    float getModemChipTemperature(void) override;
+    float getModemChipTemperature() override;
 
-    bool updateModemMetadata(void) override;
+    bool updateModemMetadata() override;
 
 #ifdef MS_DIGIXBEECELLULARTRANSPARENT_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
@@ -200,9 +200,9 @@ class DigiXBeeCellularTransparent : public DigiXBee {
     TinyGsmXBee gsmModem;
 
  protected:
-    bool isInternetAvailable(void) override;
-    bool modemWakeFxn(void) override;
-    bool modemSleepFxn(void) override;
+    bool isInternetAvailable() override;
+    bool modemWakeFxn() override;
+    bool modemSleepFxn() override;
     /**
      * @copybrief loggerModem::extraModemSetup()
      *
@@ -212,8 +212,8 @@ class DigiXBeeCellularTransparent : public DigiXBee {
      *
      * @return True if the extra setup succeeded.
      */
-    bool extraModemSetup(void) override;
-    bool isModemAwake(void) override;
+    bool extraModemSetup() override;
+    bool isModemAwake() override;
 
  private:
     const char* _apn;   ///< Internal reference to the cellular APN

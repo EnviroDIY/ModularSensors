@@ -50,7 +50,7 @@ EverlightALSPT19::~EverlightALSPT19() {
 }
 
 
-String EverlightALSPT19::getSensorLocation(void) {
+String EverlightALSPT19::getSensorLocation() {
     if (_analogVoltageReader != nullptr) {
         return _analogVoltageReader->getAnalogLocation(_dataPin, -1);
     } else {
@@ -59,7 +59,7 @@ String EverlightALSPT19::getSensorLocation(void) {
 }
 
 
-bool EverlightALSPT19::setup(void) {
+bool EverlightALSPT19::setup() {
     bool sensorSetupSuccess         = Sensor::setup();
     bool analogVoltageReaderSuccess = false;
 
@@ -78,7 +78,7 @@ bool EverlightALSPT19::setup(void) {
 }
 
 
-bool EverlightALSPT19::addSingleMeasurementResult(void) {
+bool EverlightALSPT19::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);

@@ -40,7 +40,7 @@ TurnerCyclops::~TurnerCyclops() {
 }
 
 
-String TurnerCyclops::getSensorLocation(void) {
+String TurnerCyclops::getSensorLocation() {
     if (_analogVoltageReader != nullptr) {
         return _analogVoltageReader->getAnalogLocation(_dataPin, -1);
     } else {
@@ -49,7 +49,7 @@ String TurnerCyclops::getSensorLocation(void) {
 }
 
 
-bool TurnerCyclops::setup(void) {
+bool TurnerCyclops::setup() {
     bool sensorSetupSuccess         = Sensor::setup();
     bool analogVoltageReaderSuccess = false;
 
@@ -68,7 +68,7 @@ bool TurnerCyclops::setup(void) {
 }
 
 
-bool TurnerCyclops::addSingleMeasurementResult(void) {
+bool TurnerCyclops::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);

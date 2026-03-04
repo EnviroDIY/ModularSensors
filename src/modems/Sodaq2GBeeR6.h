@@ -173,9 +173,9 @@ class Sodaq2GBeeR6 : public SIMComSIM800 {
     void setVRefPin(int8_t vRefPin);
 
  protected:
-    bool modemSleepFxn(void) override;
-    bool modemWakeFxn(void) override;
-    bool extraModemSetup(void) override;
+    bool modemSleepFxn() override;
+    bool modemWakeFxn() override;
+    bool extraModemSetup() override;
 
  private:
     /**

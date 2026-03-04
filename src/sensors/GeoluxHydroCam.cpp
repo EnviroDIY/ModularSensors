@@ -50,12 +50,12 @@ String GeoluxHydroCam::getLastSavedImageName() {
 }
 
 
-String GeoluxHydroCam::getSensorLocation(void) {
+String GeoluxHydroCam::getSensorLocation() {
     return F("cameraSerial");
 }
 
 
-bool GeoluxHydroCam::setup(void) {
+bool GeoluxHydroCam::setup() {
     MS_DEEP_DBG(F("Setting up Geolux HydroCam sensor..."));
     bool success =
         Sensor::setup();  // this will set pin modes and the setup status bit
@@ -112,7 +112,7 @@ bool GeoluxHydroCam::setup(void) {
 }
 
 
-bool GeoluxHydroCam::wake(void) {
+bool GeoluxHydroCam::wake() {
     // Sensor::wake() checks if the power pin is on and sets the wake timestamp
     // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
@@ -135,14 +135,14 @@ bool GeoluxHydroCam::wake(void) {
 
 // The function to put the sensor to sleep
 // Different from the standard in that empties and flushes the stream.
-bool GeoluxHydroCam::sleep(void) {
+bool GeoluxHydroCam::sleep() {
     // empty then flush the buffer
     while (_stream->available()) { _stream->read(); }
     _stream->flush();
     return Sensor::sleep();
 };
 
-bool GeoluxHydroCam::startSingleMeasurement(void) {
+bool GeoluxHydroCam::startSingleMeasurement() {
     // Sensor::startSingleMeasurement() checks that if it's awake/active and
     // sets the timestamp and status bits.  If it returns false, there's no
     // reason to go on.
@@ -184,7 +184,7 @@ bool GeoluxHydroCam::startSingleMeasurement(void) {
 }
 
 
-bool GeoluxHydroCam::addSingleMeasurementResult(void) {
+bool GeoluxHydroCam::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);

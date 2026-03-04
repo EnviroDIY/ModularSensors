@@ -27,14 +27,14 @@ BoschBMP3xx::BoschBMP3xx(int8_t powerPin, Mode mode,
       _i2cAddressHex(i2cAddressHex) {}
 
 
-String BoschBMP3xx::getSensorLocation(void) {
+String BoschBMP3xx::getSensorLocation() {
     String address = F("I2C_0x");
     address += String(_i2cAddressHex, HEX);
     return address;
 }
 
 
-bool BoschBMP3xx::setup(void) {
+bool BoschBMP3xx::setup() {
     bool retVal =
         Sensor::setup();  // this will set pin modes and the setup status bit
 
@@ -211,7 +211,7 @@ bool BoschBMP3xx::setup(void) {
 }
 
 
-bool BoschBMP3xx::wake(void) {
+bool BoschBMP3xx::wake() {
     // Sensor::wake() checks if the power pin is on and sets the wake timestamp
     // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
@@ -257,7 +257,7 @@ bool BoschBMP3xx::wake(void) {
 }
 
 
-bool BoschBMP3xx::startSingleMeasurement(void) {
+bool BoschBMP3xx::startSingleMeasurement() {
     // Sensor::startSingleMeasurement() checks that if it's awake/active and
     // sets the timestamp and status bits.  If it returns false, there's no
     // reason to go on.
@@ -282,7 +282,7 @@ bool BoschBMP3xx::startSingleMeasurement(void) {
 }
 
 
-bool BoschBMP3xx::addSingleMeasurementResult(void) {
+bool BoschBMP3xx::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);

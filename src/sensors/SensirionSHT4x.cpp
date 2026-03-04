@@ -28,12 +28,12 @@ SensirionSHT4x::SensirionSHT4x(int8_t powerPin, bool useHeater,
       _i2c(&Wire) {}
 
 
-String SensirionSHT4x::getSensorLocation(void) {
+String SensirionSHT4x::getSensorLocation() {
     return F("I2C_0x44");
 }
 
 
-bool SensirionSHT4x::setup(void) {
+bool SensirionSHT4x::setup() {
     _i2c->begin();  // Start the wire library (sensor power not required)
     // Eliminate any potential extra waits in the wire library
     // These waits would be caused by a readBytes or parseX being called
@@ -85,7 +85,7 @@ bool SensirionSHT4x::setup(void) {
 }
 
 
-bool SensirionSHT4x::addSingleMeasurementResult(void) {
+bool SensirionSHT4x::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);
@@ -130,7 +130,7 @@ bool SensirionSHT4x::addSingleMeasurementResult(void) {
 
 
 // The function to run the internal heater before going to sleep
-bool SensirionSHT4x::sleep(void) {
+bool SensirionSHT4x::sleep() {
     if (_useHeater) { return Sensor::sleep(); }
 
     if (!checkPowerOn()) { return true; }

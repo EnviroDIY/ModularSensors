@@ -43,7 +43,7 @@ KellerParent::KellerParent(byte modbusAddress, Stream& stream, int8_t powerPin,
 
 
 // The sensor installation location on the Mayfly
-String KellerParent::getSensorLocation(void) {
+String KellerParent::getSensorLocation() {
     String sensorLocation = F("modbus_0x");
     if (_modbusAddress < 16) sensorLocation += "0";
     sensorLocation += String(_modbusAddress, HEX);
@@ -51,7 +51,7 @@ String KellerParent::getSensorLocation(void) {
 }
 
 
-bool KellerParent::setup(void) {
+bool KellerParent::setup() {
     bool retVal =
         Sensor::setup();  // this will set pin modes and the setup status bit
     if (_RS485EnablePin >= 0) { pinMode(_RS485EnablePin, OUTPUT); }
@@ -71,7 +71,7 @@ bool KellerParent::setup(void) {
 
 // The function to put the sensor to sleep
 // Different from the standard in that empties and flushes the stream.
-bool KellerParent::sleep(void) {
+bool KellerParent::sleep() {
     // empty then flush the buffer
     while (_stream->available()) { _stream->read(); }
     _stream->flush();
@@ -79,7 +79,7 @@ bool KellerParent::sleep(void) {
 };
 
 
-bool KellerParent::addSingleMeasurementResult(void) {
+bool KellerParent::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);

@@ -45,7 +45,7 @@ GroPointParent::GroPointParent(byte modbusAddress, Stream& stream,
 
 
 // The sensor installation location on the Mayfly
-String GroPointParent::getSensorLocation(void) {
+String GroPointParent::getSensorLocation() {
     String sensorLocation = F("modbus_0x");
     if (_modbusAddress < 16) sensorLocation += "0";
     sensorLocation += String(_modbusAddress, HEX);
@@ -53,7 +53,7 @@ String GroPointParent::getSensorLocation(void) {
 }
 
 
-bool GroPointParent::setup(void) {
+bool GroPointParent::setup() {
     bool retVal =
         Sensor::setup();  // this will set pin modes and the setup status bit
     if (_RS485EnablePin >= 0) { pinMode(_RS485EnablePin, OUTPUT); }
@@ -73,7 +73,7 @@ bool GroPointParent::setup(void) {
 // The function to wake up a sensor
 // Different from the standard in that it waits for warm up and starts
 // measurements
-bool GroPointParent::wake(void) {
+bool GroPointParent::wake() {
     // Sensor::wake() checks if the power pin is on and sets the wake timestamp
     // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
@@ -112,7 +112,7 @@ bool GroPointParent::wake(void) {
 // The function to put the sensor to sleep
 // Different from the standard in that it stops measurements and empties and
 // flushes the stream.
-bool GroPointParent::sleep(void) {
+bool GroPointParent::sleep() {
     // empty then flush the buffer
     while (_stream->available()) { _stream->read(); }
     _stream->flush();
@@ -156,7 +156,7 @@ bool GroPointParent::sleep(void) {
 }
 
 
-bool GroPointParent::addSingleMeasurementResult(void) {
+bool GroPointParent::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);

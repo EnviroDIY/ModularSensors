@@ -50,7 +50,7 @@ MS_MODEM_GET_MODEM_TEMPERATURE_DATA(SodaqUBeeU201);
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
-bool SodaqUBeeU201::modemWakeFxn(void) {
+bool SodaqUBeeU201::modemWakeFxn() {
     // SARA/LISA U2/G2 and SARA G3 series turn on when power is applied
     // No pulsing required in this case
     if (_powerPin >= 0) { return true; }
@@ -69,7 +69,7 @@ bool SodaqUBeeU201::modemWakeFxn(void) {
 }
 
 
-bool SodaqUBeeU201::modemSleepFxn(void) {
+bool SodaqUBeeU201::modemSleepFxn() {
     if (_powerPin >= 0 || _modemSleepRqPin >= 0) {
         // will go on with power on
         // Easiest to just go to sleep with the AT command rather than using
@@ -84,7 +84,7 @@ bool SodaqUBeeU201::modemSleepFxn(void) {
     }
 }
 
-bool SodaqUBeeU201::extraModemSetup(void) {
+bool SodaqUBeeU201::extraModemSetup() {
     bool success = gsmModem.init();
     _modemName   = gsmModem.getModemName();
     // Turn on network indicator light

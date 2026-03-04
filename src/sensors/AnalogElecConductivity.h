@@ -350,11 +350,11 @@ class AnalogElecConductivity : public Sensor {
      *
      * @return Text describing how the sensor is attached to the mcu.
      */
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
-    bool setup(void) override;
+    bool setup() override;
 
-    bool addSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult() override;
 
     /**
      * @brief Set EC constants for internal calculations.

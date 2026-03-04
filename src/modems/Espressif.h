@@ -211,7 +211,7 @@ class Espressif : public loggerModem {
     Stream* _modemStream;
 
  protected:
-    bool modemWakeFxn(void) override;
+    bool modemWakeFxn() override;
 
  protected:
     /**
@@ -222,7 +222,7 @@ class Espressif : public loggerModem {
      * @return True if text (assumed to be the start message) was received;
      * false if text was received after boot.
      */
-    bool        ESPwaitForBoot(void);
+    bool        ESPwaitForBoot();
     const char* _ssid;  ///< Internal reference to the WiFi SSID
     const char* _pwd;   ///< Internal reference to the WiFi password
 };

@@ -324,9 +324,9 @@ class ProcessorStats : public Sensor {
      *
      * This returns the processor name as read from the compiler variable.
      */
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
-    bool addSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult() override;
 
     /**
      * @brief A helper to get battery voltage as measured by a direct connection
@@ -334,7 +334,7 @@ class ProcessorStats : public Sensor {
      *
      * @return The battery voltage in volts
      */
-    float getBatteryVoltage(void);
+    float getBatteryVoltage();
 
 /**
  * @brief Get the processor code for the last reset cause
@@ -342,16 +342,16 @@ class ProcessorStats : public Sensor {
  * @return The processor code for the last reset cause
  */
 #if !defined(__SAMD51__)
-    uint8_t getLastResetCode(void);
+    uint8_t getLastResetCode();
 #else
-    uint16_t getLastResetCode(void);
+    uint16_t getLastResetCode();
 #endif
     /**
      * @brief Get the cause of the last reset as a string description.
      *
      * @return A string describing the last reset cause
      */
-    String getLastResetCause(void);
+    String getLastResetCause();
 
  private:
     const char* _version;      ///< Internal reference to the board version

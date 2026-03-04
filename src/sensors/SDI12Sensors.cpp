@@ -76,7 +76,7 @@ SDI12Sensors::SDI12Sensors(int SDI12address, int8_t powerPin, int8_t dataPin,
                    extraWakeTime, incCalcValues) {}
 
 
-bool SDI12Sensors::setup(void) {
+bool SDI12Sensors::setup() {
     bool retVal =
         Sensor::setup();  // this will set pin modes and the setup status bit
 
@@ -122,7 +122,7 @@ bool SDI12Sensors::setup(void) {
 }
 
 
-void SDI12Sensors::activate(void) {
+void SDI12Sensors::activate() {
     // Begin the SDI-12 interface
     _SDI12Internal.begin();
 
@@ -130,7 +130,7 @@ void SDI12Sensors::activate(void) {
     _SDI12Internal.clearBuffer();
 }
 
-void SDI12Sensors::deactivate(void) {
+void SDI12Sensors::deactivate() {
     // Empty the SDI-12 buffer
     _SDI12Internal.clearBuffer();
 
@@ -140,7 +140,7 @@ void SDI12Sensors::deactivate(void) {
 }
 
 
-bool SDI12Sensors::requestSensorAcknowledgement(void) {
+bool SDI12Sensors::requestSensorAcknowledgement() {
     // Empty the buffer
     _SDI12Internal.clearBuffer();
 
@@ -186,7 +186,7 @@ bool SDI12Sensors::requestSensorAcknowledgement(void) {
 
 
 // A helper function to run the "sensor info" SDI12 command
-bool SDI12Sensors::getSensorInfo(void) {
+bool SDI12Sensors::getSensorInfo() {
     activate();
 
     // Check that the sensor is there and responding
@@ -257,28 +257,28 @@ bool SDI12Sensors::getSensorInfo(void) {
 
 
 // The sensor vendor
-String SDI12Sensors::getSensorVendor(void) {
+String SDI12Sensors::getSensorVendor() {
     return _sensorVendor;
 }
 
 // The sensor model
-String SDI12Sensors::getSensorModel(void) {
+String SDI12Sensors::getSensorModel() {
     return _sensorModel;
 }
 
 // The sensor version
-String SDI12Sensors::getSensorVersion(void) {
+String SDI12Sensors::getSensorVersion() {
     return _sensorVersion;
 }
 
 // The sensor serial number
-String SDI12Sensors::getSensorSerialNumber(void) {
+String SDI12Sensors::getSensorSerialNumber() {
     return _sensorSerialNumber;
 }
 
 
 // The sensor installation location on the Mayfly
-String SDI12Sensors::getSensorLocation(void) {
+String SDI12Sensors::getSensorLocation() {
     String sensorLocation = F("SDI12-");
     sensorLocation += String(_SDI12address) + F("_Pin") + String(_dataPin);
     return sensorLocation;
@@ -371,7 +371,7 @@ int8_t SDI12Sensors::startSDI12Measurement(bool isConcurrent) {
 
 #ifndef MS_SDI12_NON_CONCURRENT
 // Sending the command to get a concurrent measurement
-bool SDI12Sensors::startSingleMeasurement(void) {
+bool SDI12Sensors::startSingleMeasurement() {
     // Sensor::startSingleMeasurement() checks that if it's awake/active and
     // sets the timestamp and status bits.  If it returns false, there's no
     // reason to go on.
@@ -707,7 +707,7 @@ bool SDI12Sensors::getResults(bool verify_crc) {
 // This function is using concurrent measurements, so the MEASUREMENT_SUCCESSFUL
 // bit was set in the specialized startSingleMeasurement function based on
 // whether the response to the SDI-12 start measurement command.
-bool SDI12Sensors::addSingleMeasurementResult(void) {
+bool SDI12Sensors::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);
@@ -724,7 +724,7 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
 // MEASUREMENT_SUCCESSFUL bit is set in the generic sensor
 // startSingleMeasurement function from sensor base, which only verifies that
 // the sensor is awake and capable of starting measurements.
-bool SDI12Sensors::addSingleMeasurementResult(void) {
+bool SDI12Sensors::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);

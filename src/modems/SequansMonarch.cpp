@@ -51,7 +51,7 @@ MS_MODEM_GET_MODEM_TEMPERATURE_DATA(SequansMonarch);
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
-bool SequansMonarch::modemWakeFxn(void) {
+bool SequansMonarch::modemWakeFxn() {
     // Module turns on when power is applied
     // No pulsing required in this case
     if (_powerPin >= 0) {
@@ -88,7 +88,7 @@ bool SequansMonarch::modemWakeFxn(void) {
 }
 
 
-bool SequansMonarch::modemSleepFxn(void) {
+bool SequansMonarch::modemSleepFxn() {
     if (_powerPin >= 0 || _modemResetPin >= 0) {
         // Module will go on with power on
         // Easiest to just go to sleep with the AT command rather than using
@@ -117,7 +117,7 @@ bool SequansMonarch::modemSleepFxn(void) {
 }
 
 
-bool SequansMonarch::extraModemSetup(void) {
+bool SequansMonarch::extraModemSetup() {
     bool success = gsmModem.init();
     _modemName   = gsmModem.getModemName();
     // Turn on the LED

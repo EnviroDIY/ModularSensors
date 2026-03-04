@@ -288,11 +288,11 @@ class CampbellOBS3 : public Sensor {
     CampbellOBS3(CampbellOBS3&&)            = delete;
     CampbellOBS3& operator=(CampbellOBS3&&) = delete;
 
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
-    bool setup(void) override;
+    bool setup() override;
 
-    bool addSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult() override;
 
  private:
     /// @brief The x^2 (A) calibration coefficient

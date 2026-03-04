@@ -224,7 +224,7 @@ class MaxBotixSonar : public Sensor {
      */
     ~MaxBotixSonar() override = default;
 
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -236,7 +236,7 @@ class MaxBotixSonar : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
+    bool setup() override;
     /**
      * @brief Wake the sensor up, if necessary.  Do whatever it takes to get a
      * sensor in the proper state to begin a measurement.
@@ -251,11 +251,11 @@ class MaxBotixSonar : public Sensor {
      *
      * @return True if the wake function completed successfully.
      */
-    bool wake(void) override;
+    bool wake() override;
     // override to empty and flush the stream
-    bool sleep(void) override;
+    bool sleep() override;
 
-    bool addSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult() override;
 
  private:
     int16_t _maxRange;    ///< The maximum range of the Maxbotix sonar

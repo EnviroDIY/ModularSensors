@@ -40,7 +40,7 @@ Sensor::Sensor(const char* sensorName, const uint8_t totalReturnedValues,
 
 
 // This gets the place the sensor is installed ON THE MAYFLY (ie, pin number)
-String Sensor::getSensorLocation(void) {
+String Sensor::getSensorLocation() {
     String senseLoc = F("Pin");
     senseLoc += String(_dataPin);
     return senseLoc;
@@ -48,19 +48,19 @@ String Sensor::getSensorLocation(void) {
 
 
 // This returns the name of the sensor.
-String Sensor::getSensorName(void) {
+String Sensor::getSensorName() {
     return _sensorName;
 }
 
 
 // This concatenates and returns the name and location.
-String Sensor::getSensorNameAndLocation(void) {
+String Sensor::getSensorNameAndLocation() {
     return getSensorName() + " at " + getSensorLocation();
 }
 
 
 // This returns the number of the power pin
-int8_t Sensor::getPowerPin(void) {
+int8_t Sensor::getPowerPin() {
     return _powerPin;
 }
 // This sets the  power pin
@@ -68,7 +68,7 @@ void Sensor::setPowerPin(int8_t pin) {
     _powerPin = pin;
 }
 // This returns the number of the secondary power pin
-int8_t Sensor::getSecondaryPowerPin(void) {
+int8_t Sensor::getSecondaryPowerPin() {
     return _powerPin2;
 }
 // This sets the secondary power pin
@@ -82,19 +82,19 @@ void Sensor::setSecondaryPowerPin(int8_t pin) {
 void Sensor::setNumberMeasurementsToAverage(uint8_t nReadings) {
     _measurementsToAverage = nReadings;
 }
-uint8_t Sensor::getNumberMeasurementsToAverage(void) {
+uint8_t Sensor::getNumberMeasurementsToAverage() {
     return _measurementsToAverage;
 }
-uint8_t Sensor::getNumberCompleteMeasurementsAttempts(void) {
+uint8_t Sensor::getNumberCompleteMeasurementsAttempts() {
     return _measurementAttemptsCompleted;
 }
-uint8_t Sensor::getNumberRetryAttemptsMade(void) {
+uint8_t Sensor::getNumberRetryAttemptsMade() {
     return _retryAttemptsMade;
 }
 void Sensor::setAllowedMeasurementRetries(uint8_t allowedMeasurementRetries) {
     _allowedMeasurementRetries = allowedMeasurementRetries;
 }
-uint8_t Sensor::getAllowedMeasurementRetries(void) {
+uint8_t Sensor::getAllowedMeasurementRetries() {
     return _allowedMeasurementRetries;
 }
 
@@ -102,19 +102,19 @@ uint8_t Sensor::getAllowedMeasurementRetries(void) {
 void Sensor::setWarmUpTime(uint32_t warmUpTime_ms) {
     _warmUpTime_ms = warmUpTime_ms;
 }
-uint32_t Sensor::getWarmUpTime(void) {
+uint32_t Sensor::getWarmUpTime() {
     return _warmUpTime_ms;
 }
 void Sensor::setStabilizationTime(uint32_t stabilizationTime_ms) {
     _stabilizationTime_ms = stabilizationTime_ms;
 }
-uint32_t Sensor::getStabilizationTime(void) {
+uint32_t Sensor::getStabilizationTime() {
     return _stabilizationTime_ms;
 }
 void Sensor::setMeasurementTime(uint32_t measurementTime_ms) {
     _measurementTime_ms = measurementTime_ms;
 }
-uint32_t Sensor::getMeasurementTime(void) {
+uint32_t Sensor::getMeasurementTime() {
     return _measurementTime_ms;
 }
 
@@ -127,7 +127,7 @@ uint32_t Sensor::getMeasurementTime(void) {
 // bit 5 - 0=Measurement start attempted, 1=No measurements have been requested
 // bit 6 - 0=Measurement start failed, 1=Measurement attempt succeeded
 // Bit 7 - 0=No known errors, 1=Some sort of error has occurred
-uint8_t Sensor::getStatus(void) {
+uint8_t Sensor::getStatus() {
     return _sensorStatus;
 }
 
@@ -143,7 +143,7 @@ void Sensor::clearStatusBit(sensor_status_bits bitToClear) {
 
 
 // This turns on sensor power
-void Sensor::powerUp(void) {
+void Sensor::powerUp() {
     if (_powerPin >= 0 || _powerPin2 >= 0) {
         // Reset power pin mode every power up because pins are set to tri-state
         // on sleep on SAMD boards
@@ -173,7 +173,7 @@ void Sensor::powerUp(void) {
 
 
 // This turns off sensor power
-void Sensor::powerDown(void) {
+void Sensor::powerDown() {
     if (_powerPin >= 0 || _powerPin2 >= 0) {
         // Reset power pin mode every power up because pins are set to tri-state
         // on sleep on SAMD boards
@@ -211,7 +211,7 @@ void Sensor::powerDown(void) {
 
 // The function to set up connection to a sensor.
 // By default, sets pin modes and returns true
-bool Sensor::setup(void) {
+bool Sensor::setup() {
     MS_DBG(F("Setting up"), getSensorName(), F("attached at"),
            getSensorLocation(), F("which can return up to"), _numReturnedValues,
            F("variable[s]"), _incCalcValues,
@@ -239,7 +239,7 @@ bool Sensor::setup(void) {
 
 
 // The function to wake up a sensor
-bool Sensor::wake(void) {
+bool Sensor::wake() {
     MS_DBG(F("Waking"), getSensorNameAndLocation(), F("by doing nothing!"));
     // Set the status bit for sensor activation attempt (bit 3)
     // Setting this bit even if the activation failed, to show the attempt was
@@ -276,7 +276,7 @@ bool Sensor::wake(void) {
 
 // The function to put a sensor to sleep
 // Does NOT power down the sensor!
-bool Sensor::sleep(void) {
+bool Sensor::sleep() {
     // If nothing needs to be done to make the sensor go to sleep, we'll leave
     // the bits and time stamps set because running the sleep function doesn't
     // do anything.  If the sensor has a power pin and it is powered down, then
@@ -287,7 +287,7 @@ bool Sensor::sleep(void) {
 
 // This is a place holder for starting a single measurement, for those sensors
 // that need no instructions to start a measurement.
-bool Sensor::startSingleMeasurement(void) {
+bool Sensor::startSingleMeasurement() {
     bool success = true;
 
     // check if the sensor was successfully set up, run set up if not
@@ -340,7 +340,7 @@ void Sensor::registerVariable(int sensorVarNum, Variable* var) {
     variables[sensorVarNum] = var;
 }
 
-void Sensor::notifyVariables(void) {
+void Sensor::notifyVariables() {
     MS_DBG(F("Notifying variables registered to"), getSensorNameAndLocation(),
            F("of value update."));
 
@@ -362,7 +362,7 @@ void Sensor::notifyVariables(void) {
 
 
 // This function empties the value array and resets the measurement counts.
-void Sensor::clearValues(void) {
+void Sensor::clearValues() {
     MS_DBG(F("Clearing value array for"), getSensorNameAndLocation());
     for (uint8_t i = 0; i < _numReturnedValues; i++) {
         sensorValues[i]               = MS_INVALID_VALUE;
@@ -373,7 +373,7 @@ void Sensor::clearValues(void) {
     _retryAttemptsMade            = 0;
 }
 // This clears power-related status bits and resets power timing.
-void Sensor::clearPowerStatus(void) {
+void Sensor::clearPowerStatus() {
     // Reset power timing value
     _millisPowerOn = 0;
     // Unset power status bits
@@ -381,7 +381,7 @@ void Sensor::clearPowerStatus(void) {
 }
 
 // This clears wake-related status bits and resets wake timing.
-void Sensor::clearWakeStatus(void) {
+void Sensor::clearWakeStatus() {
     // Reset wake timing value
     _millisSensorActivated = 0;
     // Unset wake status bits
@@ -389,7 +389,7 @@ void Sensor::clearWakeStatus(void) {
 }
 
 // This clears measurement-related status bits and resets measurement timing.
-void Sensor::clearMeasurementStatus(void) {
+void Sensor::clearMeasurementStatus() {
     // Reset measurement timing values
     _millisMeasurementRequested = 0;
     _millisMeasurementCompleted = 0;
@@ -399,7 +399,7 @@ void Sensor::clearMeasurementStatus(void) {
 
 // This clears all status bits except the setup and error bit and sets the
 // timing values to 0.
-void Sensor::clearStatus(void) {
+void Sensor::clearStatus() {
     // Use the individual clear functions for better maintainability
     clearPowerStatus();
     clearWakeStatus();
@@ -458,7 +458,7 @@ void Sensor::verifyAndAddMeasurementResult(uint8_t resultNumber,
 }
 
 
-void Sensor::averageMeasurements(void) {
+void Sensor::averageMeasurements() {
     MS_DBG(F("Averaging results from"), getSensorNameAndLocation(), F("over"),
            _measurementsToAverage, F("reading[s]"));
     for (uint8_t i = 0; i < _numReturnedValues; i++) {
@@ -471,7 +471,7 @@ void Sensor::averageMeasurements(void) {
 
 // This updates a sensor value by checking it's power, waking it, taking as many
 // readings as requested, then putting the sensor to sleep and powering down.
-bool Sensor::update(void) {
+bool Sensor::update() {
     bool ret_val = true;
 
     // Check if the sensor power is on, turn it on if not
@@ -642,7 +642,7 @@ bool Sensor::isWarmedUp(bool debug) {
 // is - to be ready to communicate and to be asked to take readings
 // NOTE:  This is "blocking" - that is, nothing else can happen during this
 // wait.
-void Sensor::waitForWarmUp(void) {
+void Sensor::waitForWarmUp() {
     while (!isWarmedUp()) {
         // wait
     }
@@ -690,7 +690,7 @@ bool Sensor::isStable(bool debug) {
 // taking readings
 // NOTE:  This is "blocking" - that is, nothing else can happen during this
 // wait.
-void Sensor::waitForStability(void) {
+void Sensor::waitForStability() {
     while (!isStable()) {
         // wait
     }
@@ -729,7 +729,7 @@ bool Sensor::isMeasurementComplete(bool debug) {
 // This delays until enough time has passed for the sensor to give a new value
 // NOTE:  This is "blocking" - that is, nothing else can happen during this
 // wait.
-void Sensor::waitForMeasurementCompletion(void) {
+void Sensor::waitForMeasurementCompletion() {
     while (!isMeasurementComplete()) {
         // wait
     }

@@ -120,7 +120,7 @@ void Variable::onSensorUpdate(Sensor* parentSense) {
 
 // This is a helper - it returns the name of the parent sensor, if applicable
 // This is needed for dealing with variables in arrays
-String Variable::getParentSensorName(void) {
+String Variable::getParentSensorName() {
     if (isCalculated) {
         return "Calculated";
     } else if (parentSensor == nullptr) {
@@ -134,7 +134,7 @@ String Variable::getParentSensorName(void) {
 
 // This is a helper - it returns the name and location of the parent sensor, if
 // applicable This is needed for dealing with variables in arrays
-String Variable::getParentSensorNameAndLocation(void) {
+String Variable::getParentSensorNameAndLocation() {
     if (isCalculated) {
         return "Calculated";
     } else if (parentSensor == nullptr) {
@@ -154,7 +154,7 @@ void Variable::setCalculation(float (*calcFxn)()) {
 
 
 // This gets/sets the variable's resolution for value strings
-uint8_t Variable::getResolution(void) {
+uint8_t Variable::getResolution() {
     return _decimalResolution;
 }
 void Variable::setResolution(uint8_t decimalResolution) {
@@ -163,7 +163,7 @@ void Variable::setResolution(uint8_t decimalResolution) {
 
 // This gets/sets the variable's name using
 // http://vocabulary.odm2.org/variablename/
-String Variable::getVarName(void) {
+String Variable::getVarName() {
     return _varName;
 }
 void Variable::setVarName(const char* varName) {
@@ -171,7 +171,7 @@ void Variable::setVarName(const char* varName) {
 }
 
 // This gets/sets the variable's unit using http://vocabulary.odm2.org/units/
-String Variable::getVarUnit(void) {
+String Variable::getVarUnit() {
     return _varUnit;
 }
 void Variable::setVarUnit(const char* varUnit) {
@@ -179,7 +179,7 @@ void Variable::setVarUnit(const char* varUnit) {
 }
 
 // This returns a customized code for the variable
-String Variable::getVarCode(void) {
+String Variable::getVarCode() {
     return _varCode;
 }
 // This sets the variable code to a new custom value
@@ -188,12 +188,12 @@ void Variable::setVarCode(const char* varCode) {
 }
 
 // This returns the variable UUID as a String, if one has been assigned
-String Variable::getVarUUIDString(void) {
+String Variable::getVarUUIDString() {
     return String(_uuid);
 }
 // This returns the variable UUID as a pointer to a const char array, if one has
 // been assigned
-const char* Variable::getVarUUID(void) {
+const char* Variable::getVarUUID() {
     return _uuid;
 }
 // This sets the UUID
@@ -201,7 +201,7 @@ void Variable::setVarUUID(const char* uuid) {
     _uuid = uuid;
 }
 // This checks that the UUID is properly formatted
-bool Variable::checkUUIDFormat(void) {
+bool Variable::checkUUIDFormat() {
     // If no UUID, move on
     if (_uuid == nullptr || strlen(_uuid) == 0) { return true; }
 

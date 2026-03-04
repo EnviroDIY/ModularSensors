@@ -260,7 +260,7 @@ class SensirionSHT4x : public Sensor {
      *
      * @return Text describing how the sensor is attached to the mcu.
      */
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -272,9 +272,9 @@ class SensirionSHT4x : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
+    bool setup() override;
 
-    bool addSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult() override;
 
     /**
      * @copydoc Sensor::sleep()
@@ -282,7 +282,7 @@ class SensirionSHT4x : public Sensor {
      * If opted for, we run the SHT4x's internal heater for 1s before going to
      * sleep.
      */
-    bool sleep(void) override;
+    bool sleep() override;
 
  private:
     /**

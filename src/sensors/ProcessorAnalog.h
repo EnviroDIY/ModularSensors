@@ -190,7 +190,7 @@ class ProcessorAnalogBase : public AnalogVoltageBase {
      *
      * @return Always true indicating successful initialization
      */
-    bool begin(void) override;
+    bool begin() override;
 
     /**
      * @brief Read a single-ended voltage measurement from the processor ADC
@@ -234,7 +234,7 @@ class ProcessorAnalogBase : public AnalogVoltageBase {
      *
      * @return The analog resolution in volts per LSB
      */
-    float calculateAnalogResolutionVolts(void) override;
+    float calculateAnalogResolutionVolts() override;
 };
 
 /* clang-format off */
@@ -281,9 +281,9 @@ class ProcessorAnalog : public Sensor {
     ProcessorAnalog(ProcessorAnalog&&)            = delete;
     ProcessorAnalog& operator=(ProcessorAnalog&&) = delete;
 
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
-    bool addSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult() override;
 
  private:
     /**

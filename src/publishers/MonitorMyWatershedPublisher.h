@@ -144,7 +144,7 @@ class MonitorMyWatershedPublisher : public dataPublisher {
     virtual ~MonitorMyWatershedPublisher() override = default;
 
     // Returns the data destination
-    String getEndpoint(void) override {
+    String getEndpoint() override {
         return String(monitorMWHost) + String(monitorMWPath);
     }
 
@@ -153,7 +153,7 @@ class MonitorMyWatershedPublisher : public dataPublisher {
      *
      * @return The Monitor My Watershed web host
      */
-    String getHost(void);
+    String getHost();
 
     /**
      * @brief Set the Monitor My Watershed web host
@@ -172,7 +172,7 @@ class MonitorMyWatershedPublisher : public dataPublisher {
      *
      * @return The Monitor My Watershed API path
      */
-    String getPath(void);
+    String getPath();
     /**
      * @brief Set the Monitor My Watershed API path
      *
@@ -190,7 +190,7 @@ class MonitorMyWatershedPublisher : public dataPublisher {
      *
      * @return The Monitor My Watershed API port
      */
-    int getPort(void);
+    int getPort();
     /**
      * @brief Set the Monitor My Watershed API port
      *
@@ -246,7 +246,7 @@ class MonitorMyWatershedPublisher : public dataPublisher {
      *
      * @return True if an internet connection is needed for the next publish.
      */
-    bool connectionNeeded(void) override;
+    bool connectionNeeded() override;
 
     /**
      * @brief Utilize an attached modem to open a TCP connection to Monitor My

@@ -48,7 +48,7 @@ void VariableArray::begin() {
 }
 
 // This counts and returns the number of calculated variables
-uint8_t VariableArray::getCalculatedVariableCount(void) {
+uint8_t VariableArray::getCalculatedVariableCount() {
     uint8_t numCalc = 0;
     // Check for unique sensors
     for (uint8_t i = 0; i < _variableCount; i++) {
@@ -60,7 +60,7 @@ uint8_t VariableArray::getCalculatedVariableCount(void) {
 
 
 // This counts and returns the number of sensors
-uint8_t VariableArray::getSensorCount(void) {
+uint8_t VariableArray::getSensorCount() {
     uint8_t numSensors = 0;
     // Check for unique sensors
     for (uint8_t i = 0; i < _variableCount; i++) {
@@ -81,7 +81,7 @@ void VariableArray::matchUUIDs(const char* uuids[]) {
 // NOTE:  Calculated variables will always be skipped in this process because
 // a calculated variable will never be marked as the last variable from a
 // sensor.
-bool VariableArray::setupSensors(void) {
+bool VariableArray::setupSensors() {
     bool success = true;
 
     // #ifdef MS_VARIABLEARRAY_DEBUG_DEEP
@@ -149,7 +149,7 @@ bool VariableArray::setupSensors(void) {
 // NOTE:  Calculated variables will always be skipped in this process because
 // a calculated variable will never be marked as the last variable from a
 // sensor.
-void VariableArray::sensorsPowerUp(void) {
+void VariableArray::sensorsPowerUp() {
     MS_DBG(F("Powering up sensors..."));
     for (uint8_t i = 0; i < _variableCount; i++) {
         if (isLastVarFromSensor(i)) {  // Skip non-unique sensors
@@ -167,7 +167,7 @@ void VariableArray::sensorsPowerUp(void) {
 // NOTE:  Calculated variables will always be skipped in this process because
 // a calculated variable will never be marked as the last variable from a
 // sensor.
-bool VariableArray::sensorsWake(void) {
+bool VariableArray::sensorsWake() {
     MS_DBG(F("Waking sensors..."));
     bool    success       = true;
     uint8_t nSensorsAwake = 0;
@@ -234,7 +234,7 @@ bool VariableArray::sensorsWake(void) {
 // NOTE:  Calculated variables will always be skipped in this process because
 // a calculated variable will never be marked as the last variable from a
 // sensor.
-bool VariableArray::sensorsSleep(void) {
+bool VariableArray::sensorsSleep() {
     MS_DBG(F("Putting sensors to sleep..."));
     bool success = true;
     for (uint8_t i = 0; i < _variableCount; i++) {
@@ -261,7 +261,7 @@ bool VariableArray::sensorsSleep(void) {
 // NOTE:  Calculated variables will always be skipped in this process because
 // a calculated variable will never be marked as the last variable from a
 // sensor.
-void VariableArray::sensorsPowerDown(void) {
+void VariableArray::sensorsPowerDown() {
     MS_DBG(F("Powering down sensors..."));
     for (uint8_t i = 0; i < _variableCount; i++) {
         if (isLastVarFromSensor(i)) {  // Skip non-unique sensors
@@ -278,7 +278,7 @@ void VariableArray::sensorsPowerDown(void) {
 // Please note that this does NOT run the update functions, it instead uses
 // the startSingleMeasurement and addSingleMeasurementResult functions to
 // take advantage of the ability of sensors to be measuring concurrently.
-bool VariableArray::updateAllSensors(void) {
+bool VariableArray::updateAllSensors() {
     return completeUpdate(false, false, false, false);
 }
 
@@ -721,7 +721,7 @@ bool VariableArray::getSensorStatusBit(int                        arrayIndex,
 
 
 // Check that all variable have valid UUIDs, if they are assigned
-bool VariableArray::checkVariableUUIDs(void) {
+bool VariableArray::checkVariableUUIDs() {
     bool success = true;
     for (uint8_t i = 0; i < _variableCount; i++) {
         if (!arrayOfVars[i]->checkUUIDFormat()) {

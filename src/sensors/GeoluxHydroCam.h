@@ -292,7 +292,7 @@ class GeoluxHydroCam : public Sensor {
      */
     String getLastSavedImageName();
 
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -306,7 +306,7 @@ class GeoluxHydroCam : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
+    bool setup() override;
     /**
      * @brief Wake the sensor up, if necessary.  Do whatever it takes to get a
      * sensor in the proper state to begin a measurement.
@@ -320,11 +320,11 @@ class GeoluxHydroCam : public Sensor {
      *
      * @return True if the wake function completed successfully.
      */
-    bool wake(void) override;
-    bool sleep(void) override;
+    bool wake() override;
+    bool sleep() override;
 
-    bool startSingleMeasurement(void) override;
-    bool addSingleMeasurementResult(void) override;
+    bool startSingleMeasurement() override;
+    bool addSingleMeasurementResult() override;
 
     /**
      * @copydoc Sensor::isWarmedUp(bool debug)

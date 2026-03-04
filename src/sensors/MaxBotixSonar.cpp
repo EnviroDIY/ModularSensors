@@ -31,14 +31,14 @@ MaxBotixSonar::MaxBotixSonar(Stream& stream, int8_t powerPin, int8_t triggerPin,
 
 
 // unfortunately, we really cannot know where the stream is attached.
-String MaxBotixSonar::getSensorLocation(void) {
+String MaxBotixSonar::getSensorLocation() {
     // attach the trigger pin to the stream number
     String loc = "sonarStream_trigger" + String(_triggerPin);
     return loc;
 }
 
 
-bool MaxBotixSonar::setup(void) {
+bool MaxBotixSonar::setup() {
     // Set up the trigger, if applicable
     if (_triggerPin >= 0) {
         pinMode(_triggerPin, OUTPUT);
@@ -54,7 +54,7 @@ bool MaxBotixSonar::setup(void) {
 
 
 // Parsing and tossing the header lines in the wake-up
-bool MaxBotixSonar::wake(void) {
+bool MaxBotixSonar::wake() {
     // Sensor::wake() checks if the power pin is on and sets the wake timestamp
     // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
@@ -106,7 +106,7 @@ bool MaxBotixSonar::wake(void) {
 
 // The function to put the sensor to sleep
 // Different from the standard in that empties and flushes the stream.
-bool MaxBotixSonar::sleep(void) {
+bool MaxBotixSonar::sleep() {
     // empty then flush the buffer
     while (_stream->available()) { _stream->read(); }
     _stream->flush();
@@ -114,7 +114,7 @@ bool MaxBotixSonar::sleep(void) {
 };
 
 
-bool MaxBotixSonar::addSingleMeasurementResult(void) {
+bool MaxBotixSonar::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);

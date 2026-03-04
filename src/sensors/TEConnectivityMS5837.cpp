@@ -60,7 +60,7 @@ TEConnectivityMS5837::TEConnectivityMS5837(int8_t powerPin, MS5837Model model,
                            fluidDensity, airPressure) {}
 
 
-String TEConnectivityMS5837::getSensorName(void) {
+String TEConnectivityMS5837::getSensorName() {
     auto   modelEnum = static_cast<MS5837Model>(_model);
     String modelStr  = F("TEConnectivityMS5837_");
     switch (modelEnum) {
@@ -73,12 +73,12 @@ String TEConnectivityMS5837::getSensorName(void) {
 }
 
 
-String TEConnectivityMS5837::getSensorLocation(void) {
+String TEConnectivityMS5837::getSensorLocation() {
     return F("I2C_0x76");
 }
 
 
-bool TEConnectivityMS5837::setup(void) {
+bool TEConnectivityMS5837::setup() {
     bool success =
         Sensor::setup();  // this will set pin modes and the setup status bit
 
@@ -120,7 +120,7 @@ bool TEConnectivityMS5837::setup(void) {
 }
 
 
-bool TEConnectivityMS5837::wake(void) {
+bool TEConnectivityMS5837::wake() {
     // Run the parent wake function
     if (!Sensor::wake()) return false;
 
@@ -146,7 +146,7 @@ bool TEConnectivityMS5837::wake(void) {
 }
 
 
-bool TEConnectivityMS5837::addSingleMeasurementResult(void) {
+bool TEConnectivityMS5837::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);

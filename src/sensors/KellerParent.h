@@ -233,7 +233,7 @@ class KellerParent : public Sensor {
      */
     virtual ~KellerParent() override = default;
 
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -246,12 +246,12 @@ class KellerParent : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
+    bool setup() override;
 
     // override to empty and flush the stream
-    bool sleep(void) override;
+    bool sleep() override;
 
-    bool addSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult() override;
 
  private:
     /**

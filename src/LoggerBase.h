@@ -747,7 +747,7 @@ class Logger {
      *
      * @return True if any remotes need a connection.
      */
-    bool checkRemotesConnectionNeeded(void);
+    bool checkRemotesConnectionNeeded();
     /**
      * @brief Publish data to all registered data publishers.
      *
@@ -760,7 +760,7 @@ class Logger {
      *
      * @m_deprecated_since{0,22,5}
      */
-    void sendDataToRemotes(void);
+    void sendDataToRemotes();
     /**
      * @brief Publish **metadata** to all registered data publishers.
      *
@@ -812,7 +812,7 @@ class Logger {
      * @return The timezone data is be saved to the SD card in.  This
      * is not be the same as the timezone of the real time clock.
      */
-    static int8_t getLoggerTimeZone(void);
+    static int8_t getLoggerTimeZone();
 
     /**
      * @brief A passthrough to loggerClock::setRTCOffset(int8_t offsetHours);
@@ -837,7 +837,7 @@ class Logger {
      *
      * @return The offset of the real-time clock (RTC) from UTC in hours
      */
-    static int8_t getRTCTimeZone(void);
+    static int8_t getRTCTimeZone();
     /**
      * @brief Set the offset between the built-in clock and the time zone
      * where the data is being recorded.
@@ -857,7 +857,7 @@ class Logger {
      * @return The offset between the built-in clock and the time
      * zone where the data is being recorded.
      */
-    static int8_t getTZOffset(void);
+    static int8_t getTZOffset();
 
     /**
      * @brief Get the current epoch time from the RTC and correct it to the
@@ -964,7 +964,7 @@ class Logger {
      * @return True if the current time on the RTC passes sanity range
      * checking
      */
-    static bool isRTCSane(void);
+    static bool isRTCSane();
 
     /**
      * @brief Set static variables for the date/time
@@ -976,7 +976,7 @@ class Logger {
      * an individual sensor was updated, just a single marked time.  By custom,
      * this should be called before updating the sensors, not after.
      */
-    static void markTime(void);
+    static void markTime();
 
     /**
      * @brief Check if the CURRENT time is an even interval of the logging rate
@@ -984,7 +984,7 @@ class Logger {
      * @return True if the current time on the RTC is an even interval
      * of the logging rate.
      */
-    bool checkInterval(void);
+    bool checkInterval();
 
     /**
      * @brief Check if the MARKED time is an even interval of the logging rate -
@@ -998,7 +998,7 @@ class Logger {
      * @return True if the marked time is an even interval of the
      * logging rate.
      */
-    bool checkMarkedInterval(void);
+    bool checkMarkedInterval();
 
  protected:
     /**
@@ -1113,7 +1113,7 @@ class Logger {
      *
      * Use loggerClock::rtcISR() in new code!
      */
-    static void wakeISR(void);
+    static void wakeISR();
 
     /**
      * @brief Put the mcu to sleep to conserve battery life and handle
@@ -1126,7 +1126,7 @@ class Logger {
      * I2C device during sleep (ie, thorough an interrupt) will cause the board
      * to hang indefinitely.
      */
-    void systemSleep(void);
+    void systemSleep();
 
 #if defined(ARDUINO_ARCH_SAMD)
  public:
@@ -1227,7 +1227,7 @@ class Logger {
      *
      * @return The name of the file data is currently being saved to.
      */
-    String getFileName(void) {
+    String getFileName() {
         return _fileName;
     }
 
@@ -1259,7 +1259,7 @@ class Logger {
      *
      * @return True if the SD card is ready
      */
-    bool initializeSDCard(void);
+    bool initializeSDCard();
 
     /**
      * @brief Create a file on the SD card and set the created, modified, and
@@ -1330,7 +1330,7 @@ class Logger {
      * @return True if the file was successfully accessed or created
      * _and_ data appended to it.
      */
-    bool logToSD(void);
+    bool logToSD();
 
     /**
      * @brief Generate a file name with the current date and time appended to
@@ -1368,7 +1368,7 @@ class Logger {
      *
      * @note This cannot be called until *after* the RTC is started
      */
-    void generateAutoFileName(void);
+    void generateAutoFileName();
 
     /**
      * @brief This function is used to automatically mark files as
@@ -1422,7 +1422,7 @@ class Logger {
      * @brief The interrupt service routine called when an interrupt is detected
      * on the pin assigned for "testing" mode.
      */
-    static void testingISR(void);
+    static void testingISR();
 
     /**
      * @brief Execute bench testing mode if enabled.

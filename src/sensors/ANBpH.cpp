@@ -37,7 +37,7 @@ ANBpH::ANBpH(byte modbusAddress, Stream& stream, int8_t powerPin,
 
 
 // The sensor installation location on the Mayfly
-String ANBpH::getSensorLocation(void) {
+String ANBpH::getSensorLocation() {
     String sensorLocation = F("modbus_0x");
     if (_modbusAddress < 16) sensorLocation += "0";
     sensorLocation += String(_modbusAddress, HEX);
@@ -45,7 +45,7 @@ String ANBpH::getSensorLocation(void) {
 }
 
 
-bool ANBpH::setup(void) {
+bool ANBpH::setup() {
     bool retVal = Sensor::setup();  // this will set pin modes and the setup
                                     // status bit
     if (_RS485EnablePin >= 0) { pinMode(_RS485EnablePin, OUTPUT); }
@@ -227,7 +227,7 @@ bool ANBpH::setup(void) {
 }
 
 
-bool ANBpH::wake(void) {
+bool ANBpH::wake() {
     // Sensor::wake() checks if the power pin is on and sets the wake timestamp
     // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
@@ -287,7 +287,7 @@ bool ANBpH::wake(void) {
 // The function to put the sensor to sleep
 // Different from the standard in that it stops measurements and empties and
 // flushes the stream.
-bool ANBpH::sleep(void) {
+bool ANBpH::sleep() {
     // empty then flush the buffer
     while (_stream->available()) { _stream->read(); }
     _stream->flush();
@@ -330,7 +330,7 @@ bool ANBpH::sleep(void) {
     return success;
 }
 
-bool ANBpH::addSingleMeasurementResult(void) {
+bool ANBpH::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);
@@ -484,7 +484,7 @@ bool ANBpH::isWarmedUp(bool debug) {
     }
 }
 
-uint32_t ANBpH::getStartMeasurementWindow(void) {
+uint32_t ANBpH::getStartMeasurementWindow() {
     if (_powerPin >= 0 && _retryAttemptsMade == 0) {
         if (_salinityMode == ANBSalinityMode::HIGH_SALINITY) {
             return ANB_PH_1ST_VALUE_HIGH_SALT;
@@ -500,7 +500,7 @@ uint32_t ANBpH::getStartMeasurementWindow(void) {
 // the maximum wait time for the second measurement as our maximum wait.
 // If a pin was provided for power, we assume it's on-demand powered and use
 // the maximum wait time for the first measurement as our maximum wait.
-uint32_t ANBpH::getEndMeasurementWindow(void) {
+uint32_t ANBpH::getEndMeasurementWindow() {
     if (_powerPin >= 0 && _retryAttemptsMade == 0) {
         if (_salinityMode == ANBSalinityMode::HIGH_SALINITY) {
             return ANB_PH_1ST_VALUE_HIGH_SALT_MAX;

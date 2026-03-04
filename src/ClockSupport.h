@@ -374,7 +374,7 @@ class loggerClock {
      *
      * @return The offset of the real-time clock (RTC) from UTC in hours
      */
-    static int8_t getRTCOffset(void);
+    static int8_t getRTCOffset();
 
     /**
      * @brief Get the current Universal Coordinated Time (UTC) epoch time from
@@ -511,7 +511,7 @@ class loggerClock {
      * @return True if the current time on the RTC passes sanity range
      * checking
      */
-    static bool isRTCSane(void);
+    static bool isRTCSane();
     /**
      * @brief Check that a given epoch time (seconds since 1970) is within a
      * "sane" range.
@@ -587,7 +587,7 @@ class loggerClock {
      * For some clocks, we need to reset the clock's interrupt flag so the next
      * interrupt will fire.
      */
-    static void rtcISR(void);
+    static void rtcISR();
 
     /**
      * @brief Start up the real-time clock.

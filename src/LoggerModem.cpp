@@ -51,22 +51,22 @@ void loggerModem::setModemLED(int8_t modemLEDPin) {
         digitalWrite(_modemLEDPin, LOW);
     }
 }
-void loggerModem::modemLEDOn(void) {
+void loggerModem::modemLEDOn() {
     if (_modemLEDPin >= 0) {
         pinMode(_modemLEDPin, OUTPUT);
         digitalWrite(_modemLEDPin, HIGH);
     }
 }
-void loggerModem::modemLEDOff(void) {
+void loggerModem::modemLEDOff() {
     if (_modemLEDPin >= 0) { digitalWrite(_modemLEDPin, LOW); }
 }
 
-String loggerModem::getModemName(void) {
+String loggerModem::getModemName() {
     return _modemName;
 }
 
 // @todo Implement this for all modems
-String loggerModem::getModemDevId(void) {
+String loggerModem::getModemDevId() {
     return _modemName + F(" Sn ") + _modemSerialNumber + F(" HwVer ") +
         _modemHwVersion + F(" FwVer ") + _modemFwVersion;
 }
@@ -75,7 +75,7 @@ void loggerModem::setModemTimeZone(int8_t timeZone) {
     _modemUTCOffset = timeZone;
 }
 
-void loggerModem::modemPowerUp(void) {
+void loggerModem::modemPowerUp() {
     if (_powerPin >= 0) {
         if (_modemSleepRqPin >= 0) {
             // For most modules, the sleep pin should be held high during power
@@ -99,7 +99,7 @@ void loggerModem::modemPowerUp(void) {
     }
 }
 
-void loggerModem::modemPowerDown(void) {
+void loggerModem::modemPowerDown() {
     if (_powerPin >= 0) {
         MS_DBG(F("Turning off power to"), getModemName(), F("with pin"),
                _powerPin);
@@ -112,7 +112,7 @@ void loggerModem::modemPowerDown(void) {
     }
 }
 
-bool loggerModem::modemSetup(void) {
+bool loggerModem::modemSetup() {
     // NOTE:  Set flag FIRST to stop infinite loop between modemSetup() and
     // modemWake()
     bool success  = true;
@@ -177,7 +177,7 @@ bool loggerModem::modemSetup(void) {
 }
 
 // Nicely put the modem to sleep and power down
-bool loggerModem::modemSleep(void) {
+bool loggerModem::modemSleep() {
     bool success = true;
     MS_DBG(F("Putting"), getModemName(), F("to sleep."));
 
@@ -203,7 +203,7 @@ bool loggerModem::modemSleep(void) {
 }
 
 // Nicely put the modem to sleep and power down
-bool loggerModem::modemSleepPowerDown(void) {
+bool loggerModem::modemSleepPowerDown() {
     bool     success = true;
     uint32_t start   = millis();
     MS_DBG(F("Turning"), getModemName(), F("off."));
@@ -256,7 +256,7 @@ bool loggerModem::modemSleepPowerDown(void) {
 }
 
 // Perform a hard/panic reset for when the modem is completely unresponsive
-bool loggerModem::modemHardReset(void) {
+bool loggerModem::modemHardReset() {
     if (_modemResetPin >= 0) {
         MS_DBG(F("Doing a hard reset on the modem by setting pin"),
                _modemResetPin, _resetLevel ? F("HIGH") : F("LOW"), F("for"),
@@ -281,7 +281,7 @@ void loggerModem::setModemResetLevel(bool level) {
 }
 
 
-void loggerModem::setModemPinModes(void) {
+void loggerModem::setModemPinModes() {
     // Set-up pin modes
     if (_statusPin >= 0) {
         MS_DEEP_DBG(F("Initializing pin"), _statusPin,
@@ -323,7 +323,7 @@ void loggerModem::setMetadataPolling(uint8_t pollingBitmask) {
 }
 
 
-bool loggerModem::updateModemMetadata(void) {
+bool loggerModem::updateModemMetadata() {
     bool success = true;
 
     // Unset whatever we had previously

@@ -27,12 +27,12 @@ FreescaleMPL115A2::FreescaleMPL115A2(int8_t  powerPin,
     : FreescaleMPL115A2(&Wire, powerPin, measurementsToAverage) {}
 
 
-String FreescaleMPL115A2::getSensorLocation(void) {
+String FreescaleMPL115A2::getSensorLocation() {
     return F("I2C_0x60");
 }
 
 
-bool FreescaleMPL115A2::setup(void) {
+bool FreescaleMPL115A2::setup() {
     bool retVal =
         Sensor::setup();  // this will set pin modes and the setup status bit
 
@@ -55,7 +55,7 @@ bool FreescaleMPL115A2::setup(void) {
 }
 
 
-bool FreescaleMPL115A2::addSingleMeasurementResult(void) {
+bool FreescaleMPL115A2::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
         return bumpMeasurementAttemptCount(false);
