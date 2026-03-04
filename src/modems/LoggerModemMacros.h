@@ -15,6 +15,10 @@
 #ifndef SRC_MODEMS_LOGGERMODEMMACROS_H_
 #define SRC_MODEMS_LOGGERMODEMMACROS_H_
 
+#if defined(TINY_GSM_MODEM_HAS_NTP) && defined(TINY_GSM_MODEM_HAS_TIME)
+#include "ClockSupport.h"
+#endif
+
 
 /**
  * @def MS_MODEM_NTP_SYNC
@@ -626,7 +630,6 @@
         return gsmModem.getNetworkEpoch(TinyGSM_EpochStart::UNIX);         \
     }
 #elif defined(TINY_GSM_MODEM_HAS_NTP) && defined(TINY_GSM_MODEM_HAS_TIME)
-#include "ClockSupport.h"
 #define MS_MODEM_GET_NIST_TIME(specificModem, TinyGSMType)                     \
     uint32_t specificModem::getNISTTime() {                                    \
         /** Check for and bail if not connected to the internet. */            \
@@ -672,8 +675,7 @@
                                                                              \
         /** Try up to 12 times to get a timestamp from NIST. */              \
         for (uint8_t i = 0; i < NIST_SERVER_RETRYS; i++) {                   \
-            while (millis() < _lastNISTrequest + 4000) { /* wait */          \
-            }                                                                \
+            while (millis() < _lastNISTrequest + 4000) { yield(); }          \
                                                                              \
             /** Make TCP connection. */                                      \
             TinyGsm##TinyGSMType::GsmClient##TinyGSMType gsmClient(          \
@@ -687,7 +689,9 @@
                 uint32_t start = millis();                                   \
                 while (gsmClient &&                                          \
                        gsmClient.available() < NIST_RESPONSE_BYTES &&        \
-                       millis() - start < 5000L) {}                          \
+                       millis() - start < 5000L) {                           \
+                    yield();                                                 \
+                }                                                            \
                                                                              \
                 if (gsmClient.available() >= NIST_RESPONSE_BYTES) {          \
                     MS_DBG(F("NIST responded after"), millis() - start,      \

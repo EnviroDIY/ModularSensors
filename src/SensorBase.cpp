@@ -646,7 +646,7 @@ bool Sensor::isWarmedUp(bool debug) {
 // wait.
 void Sensor::waitForWarmUp() {
     while (!isWarmedUp()) {
-        // wait
+        yield();  // Allow other tasks to run
     }
 }
 
@@ -694,7 +694,7 @@ bool Sensor::isStable(bool debug) {
 // wait.
 void Sensor::waitForStability() {
     while (!isStable()) {
-        // wait
+        yield();  // Allow other tasks to run
     }
 }
 
@@ -733,7 +733,7 @@ bool Sensor::isMeasurementComplete(bool debug) {
 // wait.
 void Sensor::waitForMeasurementCompletion() {
     while (!isMeasurementComplete()) {
-        // wait
+        yield();  // Allow other tasks to run
     }
 }
 
