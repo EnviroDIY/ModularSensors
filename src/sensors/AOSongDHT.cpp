@@ -50,9 +50,9 @@ bool AOSongDHT::addSingleMeasurementResult(void) {
     }
 
     bool  success   = false;
-    float humid_val = -9999;
-    float temp_val  = -9999;
-    float hi_val    = -9999;
+    float humid_val = MS_INVALID_VALUE;
+    float temp_val  = MS_INVALID_VALUE;
+    float hi_val    = MS_INVALID_VALUE;
 
     // Reading temperature or humidity takes about 250 milliseconds!
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));

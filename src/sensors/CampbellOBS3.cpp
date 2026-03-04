@@ -84,7 +84,7 @@ bool CampbellOBS3::addSingleMeasurementResult(void) {
     MS_DBG(F("  Input calibration Curve:"), _x2_coeff_A, F("x^2 +"),
            _x1_coeff_B, F("x +"), _x0_coeff_C);
 
-    float adcVoltage = -9999.0f;
+    float adcVoltage = MS_INVALID_VALUE;
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 

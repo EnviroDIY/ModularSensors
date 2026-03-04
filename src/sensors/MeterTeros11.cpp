@@ -22,8 +22,8 @@ bool MeterTeros11::getResults(bool verify_crc) {
     float raw  = sensorValues[TEROS11_COUNT_VAR_NUM];
 
     // Set up the float variables for calculated variable
-    float ea  = -9999;
-    float VWC = -9999;
+    float ea  = MS_INVALID_VALUE;
+    float VWC = MS_INVALID_VALUE;
 
     // Calculate the dielectric EA from the raw count value.
     // Equation 8 from the Teros 11 user manual:
@@ -32,9 +32,9 @@ bool MeterTeros11::getResults(bool verify_crc) {
         MS_DBG(
             F("WARNING:  raw results out of range (0-5000)!  Cannot calculate "
               "Ea or VWC"));
-        raw = -9999;
+        raw = MS_INVALID_VALUE;
     }
-    if (raw != -9999) {
+    if (raw != MS_INVALID_VALUE) {
         ea = ((2.887e-9 * (raw * raw * raw)) - (2.08e-5 * (raw * raw)) +
               (5.276e-2 * raw) - 43.39) *
             ((2.887e-9 * (raw * raw * raw)) - (2.08e-5 * (raw * raw)) +
@@ -47,10 +47,10 @@ bool MeterTeros11::getResults(bool verify_crc) {
     if (ea < 0 || ea > 350) {
         MS_DBG(F("WARNING:  Ea results out of range (0-350)!  Cannot calculate "
                  "VWC"));
-        ea = -9999;
+        ea = MS_INVALID_VALUE;
     }
     // calculate
-    if (ea != -9999) {
+    if (ea != MS_INVALID_VALUE) {
         VWC = (4.3e-6 * (ea * ea * ea)) - (5.5e-4 * (ea * ea)) +
             (2.92e-2 * ea) - 5.3e-2;
         VWC *= 100;  // Convert to actual percent
@@ -69,7 +69,7 @@ bool MeterTeros11::getResults(bool verify_crc) {
 
     // range check on temp; range is - 40°C to + 50°C
     if (temp < -50 || temp > 60) {
-        temp = -9999;
+        temp = MS_INVALID_VALUE;
         MS_DBG(F("WARNING:  temperature results out of range (-50-60)!"));
     }
 
@@ -79,5 +79,5 @@ bool MeterTeros11::getResults(bool verify_crc) {
     verifyAndAddMeasurementResult(TEROS11_EA_VAR_NUM, ea);
     verifyAndAddMeasurementResult(TEROS11_VWC_VAR_NUM, VWC);
 
-    return success && temp != -9999;
+    return success && temp != MS_INVALID_VALUE;
 }

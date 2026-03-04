@@ -252,7 +252,7 @@ float Variable::getValue(bool updateValue) {
             _currentValue = _calcFxn();
         } else if (updateValue && _calcFxn == nullptr) {
             // If no calculation function is set, return error value
-            _currentValue = -9999;
+            _currentValue = MS_INVALID_VALUE;
         }
         return _currentValue;
     } else {
@@ -260,7 +260,7 @@ float Variable::getValue(bool updateValue) {
             parentSensor->update();
         } else if (updateValue && parentSensor == nullptr) {
             // If no parent sensor is set, return error value
-            _currentValue = -9999;
+            _currentValue = MS_INVALID_VALUE;
         }
         return _currentValue;
     }

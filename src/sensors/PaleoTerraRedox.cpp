@@ -103,9 +103,9 @@ bool PaleoTerraRedox::addSingleMeasurementResult(void) {
     }
 
     bool    success  = false;
-    byte    config   = 0;        // Returned config
-    int32_t adcValue = 0;        // Raw ADC value from the sensor
-    float   res      = -9999.0;  // Calculated voltage in uV
+    byte    config   = 0;                 // Returned config
+    int32_t adcValue = 0;                 // Raw ADC value from the sensor
+    float   res      = MS_INVALID_VALUE;  // Calculated voltage in uV
 
     byte i2c_status;
 

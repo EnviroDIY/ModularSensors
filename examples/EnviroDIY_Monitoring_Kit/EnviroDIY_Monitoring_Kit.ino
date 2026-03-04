@@ -361,7 +361,7 @@ void greenRedFlash(uint8_t numFlash = 4, uint8_t rate = 75) {
 // Uses the processor sensor object to read the battery voltage
 // NOTE: This will actually return the battery level from the previous update!
 float getBatteryVoltage() {
-    if (mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM] == -9999 ||
+    if (mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM] == MS_INVALID_VALUE ||
         mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM] == 0) {
         mcuBoard.update();
     }

@@ -60,8 +60,8 @@
  *
  * @section sensor_anb_ph_config_flags Build flags
  * - `-D ANB_PH_DEFAULT_MEASUREMENT_RETRIES=##`
- *      - used to set the default number of measurement retries for ANB pH sensors
- *        when communication errors occur
+ *      - used to set the default number of measurement retries for ANB pH
+ * sensors when communication errors occur
  *
  * @section sensor_anb_ph_ctor Sensor Constructor
  * {{ @ref ANBpH::ANBpH }}

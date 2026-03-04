@@ -94,8 +94,8 @@ bool SensirionSHT4x::addSingleMeasurementResult(void) {
     }
 
     bool  success   = false;
-    float temp_val  = -9999;
-    float humid_val = -9999;
+    float temp_val  = MS_INVALID_VALUE;
+    float humid_val = MS_INVALID_VALUE;
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 

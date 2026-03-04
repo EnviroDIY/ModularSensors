@@ -514,16 +514,17 @@ class Sensor {
      *
      * @note The values in this array will not be usable until after the sensor
      * completes all requested measurements! Prior to that, the values in this
-     * array will be the sum of all good values measured so far (or -9999 if no
-     * good values have been measured yet).
+     * array will be the sum of all good values measured so far (or
+     * #MS_INVALID_VALUE if no good values have been measured yet).
      */
     float sensorValues[MAX_NUMBER_VARS];
 
     /**
      * @brief Clear the values array and reset retry counts.
      *
-     * This clears the values array by setting all values to -9999, sets all
-     * values in numberGoodMeasurementsMade to 0, and resets the attempt
+     * This clears the values array by setting all values to #MS_INVALID_VALUE,
+     * sets all values in numberGoodMeasurementsMade to 0, and resets the
+     * attempt
      * (#_measurementAttemptsCompleted) and retry (#_retryAttemptsMade) counts.
      */
     void clearValues();
@@ -566,16 +567,16 @@ class Sensor {
      */
     void clearMeasurementStatus();
     /**
-     * @brief Verify that a measurement is OK (ie, not -9999) before adding it
-     * to the result array
+     * @brief Verify that a measurement is OK (ie, not #MS_INVALID_VALUE) before
+     * adding it to the result array
      *
      * @param resultNumber The position of the result within the result array.
      * @param resultValue The value of the result.
      */
     void verifyAndAddMeasurementResult(uint8_t resultNumber, float resultValue);
     /**
-     * @brief Verify that a measurement is OK (ie, not -9999) before adding it
-     * to the result array
+     * @brief Verify that a measurement is OK (ie, not #MS_INVALID_VALUE) before
+     * adding it to the result array
      *
      * @param resultNumber The position of the result within the result array.
      * @param resultValue The value of the result.
@@ -727,10 +728,10 @@ class Sensor {
      * @brief The number of measurements from the sensor to average.
      *
      * This will become the number of readings actually taken by a sensor prior
-     * to data averaging.  Any "bad" (-9999) values returned by the sensor will
-     * not be included in the final averaging.  This means that the actual
-     * number of "good" values that are averaged may be less than what was
-     * requested.
+     * to data averaging.  Any "bad" (#MS_INVALID_VALUE) values returned by the
+     * sensor will not be included in the final averaging.  This means that the
+     * actual number of "good" values that are averaged may be less than what
+     * was requested.
      */
     uint8_t _measurementsToAverage;
     /**

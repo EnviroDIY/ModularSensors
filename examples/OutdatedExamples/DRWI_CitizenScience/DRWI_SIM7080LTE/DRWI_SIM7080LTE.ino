@@ -86,7 +86,7 @@ const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
 // Network connection information
 const char* apn =
     "YourAPN";  // APN connection name, typically Hologram unless you have a
-                // different provider's SIM card. Change as needed
+                 // different provider's SIM card. Change as needed
 
 // Create the modem object
 SIMComSIM7080 modem7080(&modemSerial, modemVccPin, modemStatusPin,
@@ -267,7 +267,7 @@ void greenRedFlash(uint8_t numFlash = 4, uint8_t rate = 75) {
 // Reads the battery voltage
 // NOTE: This will actually return the battery level from the previous update!
 float getBatteryVoltage() {
-    if (mcuBoard.sensorValues[0] == -9999) mcuBoard.update();
+    if (mcuBoard.sensorValues[0] == MS_INVALID_VALUE) mcuBoard.update();
     return mcuBoard.sensorValues[0];
 }
 

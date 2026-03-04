@@ -76,8 +76,8 @@ const int8_t modemLEDPin =
     redLED;  // MCU pin connected an LED to show modem status
 
 // Network connection information
-const char* wifiId  = "YourWiFiSSID";      // The WiFi access point
-const char* wifiPwd = "YourWiFiPassword";  // The WiFi password
+const char* wifiId  = "YourWiFiSSID";  // The WiFi access point
+const char* wifiPwd = "YourWiFiPassword";       // The WiFi password
 
 // Create the loggerModem object
 EspressifESP8266 modemESP(&modemSerial, modemVccPin, modemResetPin, wifiId,
@@ -236,7 +236,7 @@ void greenRedFlash(uint8_t numFlash = 4, uint8_t rate = 75) {
 // Reads the battery voltage
 // NOTE: This will actually return the battery level from the previous update!
 float getBatteryVoltage() {
-    if (mcuBoard.sensorValues[0] == -9999) mcuBoard.update();
+    if (mcuBoard.sensorValues[0] == MS_INVALID_VALUE) mcuBoard.update();
     return mcuBoard.sensorValues[0];
 }
 /** End [working_functions] */

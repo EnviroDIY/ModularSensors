@@ -125,7 +125,7 @@ bool MaxBotixSonar::addSingleMeasurementResult(void) {
 
     // Initialize values
     bool    success = false;
-    int16_t result  = -9999;
+    int16_t result  = MS_INVALID_VALUE;
 
     // Clear anything out of the stream buffer
     auto junkChars = static_cast<uint8_t>(_stream->available());
@@ -177,7 +177,7 @@ bool MaxBotixSonar::addSingleMeasurementResult(void) {
         if (result <= 0 || result >= _maxRange) {
             MS_DBG(F("  Bad or Suspicious Result, Retry Attempt #"),
                    rangeAttempts);
-            result = -9999;
+            result = MS_INVALID_VALUE;
         } else {
             MS_DBG(F("  Good result found"));
             // convert result from cm to mm if convertCm is set to true

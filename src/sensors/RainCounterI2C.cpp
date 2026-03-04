@@ -96,9 +96,10 @@ bool RainCounterI2C::addSingleMeasurementResult(void) {
         return bumpMeasurementAttemptCount(false);
     }
 
-    bool    success = false;  // assume the worst
-    float   rain    = -9999;  // Number of mm of rain
-    int32_t tips    = -9999;  // Number of tip events, increased for anemometer
+    bool    success = false;             // assume the worst
+    float   rain    = MS_INVALID_VALUE;  // Number of mm of rain
+    int32_t tips =
+        MS_INVALID_VALUE;  // Number of tip events, increased for anemometer
 
     // Get data from external tip counter
     // if the 'requestFrom' returns 0, it means no bytes were received
@@ -147,14 +148,17 @@ bool RainCounterI2C::addSingleMeasurementResult(void) {
             _rainPerTip;  // Multiply by tip coefficient (0.2 by default)
 
         if (tips < 0)
-            tips = -9999;  // If negative value results, return failure
+            tips =
+                MS_INVALID_VALUE;  // If negative value results, return failure
         if (rain < 0)
-            rain = -9999;  // If negative value results, return failure
+            rain =
+                MS_INVALID_VALUE;  // If negative value results, return failure
 
         MS_DBG(F("  Rain:"), rain);
         MS_DBG(F("  Tips:"), tips);
 
-        if (rain != -9999 && tips != -9999) {  // if both are valid
+        if (rain != MS_INVALID_VALUE &&
+            tips != MS_INVALID_VALUE) {  // if both are valid
             verifyAndAddMeasurementResult(BUCKET_RAIN_VAR_NUM, rain);
             verifyAndAddMeasurementResult(BUCKET_TIPS_VAR_NUM, tips);
             success = true;

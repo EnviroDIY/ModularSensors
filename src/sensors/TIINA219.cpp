@@ -95,9 +95,9 @@ bool TIINA219::addSingleMeasurementResult(void) {
     }
 
     bool  success    = false;
-    float current_mA = -9999;
-    float busV_V     = -9999;
-    float power_mW   = -9999;
+    float current_mA = MS_INVALID_VALUE;
+    float busV_V     = MS_INVALID_VALUE;
+    float power_mW   = MS_INVALID_VALUE;
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 

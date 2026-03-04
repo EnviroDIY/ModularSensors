@@ -123,8 +123,7 @@ int16_t UbidotsPublisher::publishData(Client* outClient, bool) {
                    "to Ubidots!"));
         return 0;
     }
-    if (_authenticationToken == nullptr ||
-        strlen(_authenticationToken) == 0) {
+    if (_authenticationToken == nullptr || strlen(_authenticationToken) == 0) {
         PRINTOUT(F("An authentication token must be set before publishing data "
                    "to Ubidots!"));
         return 0;

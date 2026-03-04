@@ -177,14 +177,14 @@ bool YosemitechParent::addSingleMeasurementResult(void) {
     switch (_model) {
         case Y4000: {
             // Initialize float variables
-            float DOmgL       = -9999;
-            float Turbidity   = -9999;
-            float Cond        = -9999;
-            float pH          = -9999;
-            float Temp        = -9999;
-            float ORP         = -9999;
-            float Chlorophyll = -9999;
-            float BGA         = -9999;
+            float DOmgL       = MS_INVALID_VALUE;
+            float Turbidity   = MS_INVALID_VALUE;
+            float Cond        = MS_INVALID_VALUE;
+            float pH          = MS_INVALID_VALUE;
+            float Temp        = MS_INVALID_VALUE;
+            float ORP         = MS_INVALID_VALUE;
+            float Chlorophyll = MS_INVALID_VALUE;
+            float BGA         = MS_INVALID_VALUE;
 
             // Get Values
             MS_DBG(F("Get Values from"), getSensorNameAndLocation());
@@ -215,9 +215,9 @@ bool YosemitechParent::addSingleMeasurementResult(void) {
         }
         default: {
             // Initialize float variables
-            float parmValue  = -9999;
-            float tempValue  = -9999;
-            float thirdValue = -9999;
+            float parmValue  = MS_INVALID_VALUE;
+            float tempValue  = MS_INVALID_VALUE;
+            float thirdValue = MS_INVALID_VALUE;
 
             // Get Values
             MS_DBG(F("Get Values from"), getSensorNameAndLocation());

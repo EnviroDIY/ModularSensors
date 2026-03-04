@@ -291,9 +291,9 @@ bool BoschBMP3xx::addSingleMeasurementResult(void) {
     }
 
     bool  success = false;
-    float temp    = -9999;
-    float press   = -9999;
-    float alt     = -9999;
+    float temp    = MS_INVALID_VALUE;
+    float press   = MS_INVALID_VALUE;
+    float alt     = MS_INVALID_VALUE;
 
 
     // Read values

@@ -84,7 +84,7 @@ String ProcessorStats::getSensorLocation(void) {
 }
 
 float ProcessorStats::getBatteryVoltage(void) {
-    float sensorValue_battery = -9999;
+    float sensorValue_battery = MS_INVALID_VALUE;
     if (_batteryPin >= 0 && _batteryMultiplier > 0) {
         // Get the battery voltage
         MS_DBG(F("Getting battery voltage from pin"), _batteryPin);
@@ -233,7 +233,7 @@ bool ProcessorStats::addSingleMeasurementResult(void) {
 #if !defined(__SAMD51__)
         float sensorValue_freeRam = FreeRam();
 #else
-        float sensorValue_freeRam = -9999;
+        float sensorValue_freeRam = MS_INVALID_VALUE;
 #endif
 
         verifyAndAddMeasurementResult(PROCESSOR_RAM_VAR_NUM,

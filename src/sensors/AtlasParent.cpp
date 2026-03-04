@@ -179,7 +179,7 @@ bool AtlasParent::addSingleMeasurementResult(void) {
             }
             float result = _i2c->parseFloat();
             if (isnan(result) || result < -1020) {
-                result  = -9999;
+                result  = MS_INVALID_VALUE;
                 success = false;
                 MS_DBG(F("  Invalid response for result #"), i);
                 // Don't break - subsequent values may be ok

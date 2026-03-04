@@ -74,7 +74,8 @@ MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
 MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
     Logger& baseLogger, Client* inClient, const char* registrationToken,
     const char* samplingFeatureUUID, int sendEveryX)
-    : MonitorMyWatershedPublisher(baseLogger, registrationToken, samplingFeatureUUID, sendEveryX) {
+    : MonitorMyWatershedPublisher(baseLogger, registrationToken,
+                                  samplingFeatureUUID, sendEveryX) {
     if (inClient) _inClient = inClient;
 }
 // Delegating constructor

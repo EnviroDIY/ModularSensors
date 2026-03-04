@@ -118,30 +118,30 @@ bool BoschBME280::addSingleMeasurementResult(void) {
     }
 
     bool  success = false;
-    float temp    = -9999;
-    float humid   = -9999;
-    float press   = -9999;
-    float alt     = -9999;
+    float temp    = MS_INVALID_VALUE;
+    float humid   = MS_INVALID_VALUE;
+    float press   = MS_INVALID_VALUE;
+    float alt     = MS_INVALID_VALUE;
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
     // Read values
     temp = bme_internal.readTemperature();
-    if (isnan(temp)) temp = -9999;
+    if (isnan(temp)) temp = MS_INVALID_VALUE;
     humid = bme_internal.readHumidity();
-    if (isnan(humid)) humid = -9999;
+    if (isnan(humid)) humid = MS_INVALID_VALUE;
     press = bme_internal.readPressure();
-    if (isnan(press)) press = -9999;
+    if (isnan(press)) press = MS_INVALID_VALUE;
     alt = bme_internal.readAltitude(MS_SEA_LEVEL_PRESSURE_HPA);
-    if (isnan(alt)) alt = -9999;
+    if (isnan(alt)) alt = MS_INVALID_VALUE;
 
     MS_DBG(F("  Temperature:"), temp, F("°C"));
     MS_DBG(F("  Humidity:"), humid, F("%RH"));
     MS_DBG(F("  Barometric Pressure:"), press, F("Pa"));
     MS_DBG(F("  Calculated Altitude:"), alt, F("m ASL"));
 
-    bool values_ok = temp != -9999 && humid != -9999 && press != -9999 &&
-        alt != -9999;
+    bool values_ok = temp != MS_INVALID_VALUE && humid != MS_INVALID_VALUE &&
+        press != MS_INVALID_VALUE && alt != MS_INVALID_VALUE;
     // Assume that if temperature, pressure, and humidity are all 0, it's really
     // a failed response. A temperature below -40°C (outside sensor range) also
     // indicates a bad response.

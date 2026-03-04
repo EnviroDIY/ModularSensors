@@ -57,16 +57,16 @@ bool AOSongAM2315::addSingleMeasurementResult(void) {
     }
 
     bool  success   = false;
-    float temp_val  = -9999;
-    float humid_val = -9999;
+    float temp_val  = MS_INVALID_VALUE;
+    float humid_val = MS_INVALID_VALUE;
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
     success = am2315ptr->readTemperatureAndHumidity(&temp_val, &humid_val);
 
 
-    success &= !isnan(temp_val) && temp_val != -9999 && !isnan(humid_val) &&
-        humid_val != -9999;
+    success &= !isnan(temp_val) && temp_val != MS_INVALID_VALUE &&
+        !isnan(humid_val) && humid_val != MS_INVALID_VALUE;
 
     MS_DBG(F("  Temp:"), temp_val, F("°C"));
     MS_DBG(F("  Humidity:"), humid_val, '%');

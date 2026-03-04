@@ -33,7 +33,7 @@ Sensor::Sensor(const char* sensorName, const uint8_t totalReturnedValues,
     // Clear arrays
     for (uint8_t i = 0; i < MAX_NUMBER_VARS; i++) {
         variables[i]                  = nullptr;
-        sensorValues[i]               = -9999;
+        sensorValues[i]               = MS_INVALID_VALUE;
         numberGoodMeasurementsMade[i] = 0;
     }
 }
@@ -367,7 +367,7 @@ void Sensor::notifyVariables(void) {
 void Sensor::clearValues(void) {
     MS_DBG(F("Clearing value array for"), getSensorNameAndLocation());
     for (uint8_t i = 0; i < _numReturnedValues; i++) {
-        sensorValues[i]               = -9999;
+        sensorValues[i]               = MS_INVALID_VALUE;
         numberGoodMeasurementsMade[i] = 0;
     }
     // Reset measurement attempt counters
@@ -413,9 +413,10 @@ void Sensor::clearStatus(void) {
 // averaged
 void Sensor::verifyAndAddMeasurementResult(uint8_t resultNumber,
                                            float   resultValue) {
-    bool prevResultGood = (sensorValues[resultNumber] != -9999 &&
+    bool prevResultGood = (sensorValues[resultNumber] != MS_INVALID_VALUE &&
                            !isnan(sensorValues[resultNumber]));
-    bool newResultGood  = (resultValue != -9999 && !isnan(resultValue));
+    bool newResultGood  = (resultValue != MS_INVALID_VALUE &&
+                          !isnan(resultValue));
     // If the new result is good and there was were only bad results, set the
     // result value as the new result and add 1 to the good result total
     if (!prevResultGood && newResultGood) {

@@ -783,8 +783,12 @@
  * chargeState, int8_t& percent, int16_t& milliVolts) for modems where such
  * data is available.
  *
- * This populates the entered references with -9999s for modems where such data
- * is not available.
+ * This populates the entered references with invalid values for modems where
+ * such data is not available.
+ *
+ * @warning This function does **not** use #MS_INVALID_VALUE  for the invalid
+ * values! This is because of the size of the int variables and the standards
+ * within TinyGSM.
  *
  * @param specificModem The modem subclass
  *
@@ -820,7 +824,7 @@
  * This is a passthrough to the specific modem's getTemperature() for modems
  * where such data is available
  *
- * This returns -9999 for modems that don't return such data.
+ * This returns #MS_INVALID_VALUE for modems that don't return such data.
  *
  * @param specificModem The modem subclass
  *
@@ -841,7 +845,7 @@
 #define MS_MODEM_GET_MODEM_TEMPERATURE_DATA(specificModem)   \
     float specificModem::getModemChipTemperature(void) {     \
         MS_DBG(F("This modem doesn't return temperature!")); \
-        return static_cast<float>(-9999);                    \
+        return static_cast<float>(MS_INVALID_VALUE);         \
     }
 #endif
 

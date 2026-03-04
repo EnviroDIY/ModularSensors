@@ -74,7 +74,7 @@ bool TallyCounterI2C::addSingleMeasurementResult(void) {
     }
 
     bool    success = false;
-    int16_t events  = -9999;  // Number of events
+    int16_t events  = MS_INVALID_VALUE;  // Number of events
 
     // Read values
     // Read data from counter before clear
@@ -86,7 +86,7 @@ bool TallyCounterI2C::addSingleMeasurementResult(void) {
     if (events < 0) {
         MS_DBG(getSensorNameAndLocation(),
                F("returned negative value, assuming sensor non-response!"));
-        events = -9999;
+        events = MS_INVALID_VALUE;
     } else {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
         verifyAndAddMeasurementResult(TALLY_EVENTS_VAR_NUM, events);

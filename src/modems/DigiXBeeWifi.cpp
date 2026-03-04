@@ -442,12 +442,12 @@ bool DigiXBeeWifi::updateModemMetadata(void) {
     bool success = true;
 
     // Unset whatever we had previously
-    loggerModem::_priorRSSI           = -9999;
-    loggerModem::_priorSignalPercent  = -9999;
-    loggerModem::_priorBatteryState   = -9999;
-    loggerModem::_priorBatteryPercent = -9999;
-    loggerModem::_priorBatteryPercent = -9999;
-    loggerModem::_priorModemTemp      = -9999;
+    loggerModem::_priorRSSI           = MS_INVALID_VALUE;
+    loggerModem::_priorSignalPercent  = MS_INVALID_VALUE;
+    loggerModem::_priorBatteryState   = MS_INVALID_VALUE;
+    loggerModem::_priorBatteryPercent = MS_INVALID_VALUE;
+    loggerModem::_priorBatteryVoltage = MS_INVALID_VALUE;
+    loggerModem::_priorModemTemp      = MS_INVALID_VALUE;
 
     MS_DBG(F("Modem polling settings:"), String(_pollModemMetaData, BIN));
 
@@ -474,14 +474,14 @@ bool DigiXBeeWifi::updateModemMetadata(void) {
 
         // Try up to 5 times to get a signal quality
         int8_t  num_trys_remaining = 5;
-        int16_t rssi               = -9999;
+        int16_t rssi               = MS_INVALID_VALUE;
         do {
             rssi = gsmModem.getSignalQuality();
             MS_DBG(F("Raw signal quality ("), num_trys_remaining, F("):"),
                    rssi);
-            if (rssi != 0 && rssi != -9999) break;
+            if (rssi != 0 && rssi != MS_INVALID_VALUE) break;
             num_trys_remaining--;
-        } while ((rssi == 0 || rssi == -9999) && num_trys_remaining);
+        } while ((rssi == 0 || rssi == MS_INVALID_VALUE) && num_trys_remaining);
 
 
         // Convert signal quality to a percent
@@ -492,7 +492,7 @@ bool DigiXBeeWifi::updateModemMetadata(void) {
         loggerModem::_priorRSSI = rssi;
         MS_DBG(F("CURRENT RSSI:"), rssi);
 
-        success &= ((rssi != -9999) && (rssi != 0));
+        success &= ((rssi != MS_INVALID_VALUE) && (rssi != 0));
     } else {
         MS_DBG(F("Polling for both RSSI and signal strength is disabled"));
     }
@@ -508,7 +508,8 @@ bool DigiXBeeWifi::updateModemMetadata(void) {
             loggerModem::_priorBatteryVoltage =
                 static_cast<float>(volt_mV / 1000);
         } else {
-            loggerModem::_priorBatteryVoltage = static_cast<float>(-9999);
+            loggerModem::_priorBatteryVoltage =
+                static_cast<float>(MS_INVALID_VALUE);
         }
 
         success &= ((volt_mV != 9999) && (volt_mV != 0));
@@ -519,17 +520,17 @@ bool DigiXBeeWifi::updateModemMetadata(void) {
     if ((_pollModemMetaData & MODEM_TEMPERATURE_ENABLE_BITMASK) ==
         MODEM_TEMPERATURE_ENABLE_BITMASK) {
         MS_DBG(F("Getting chip temperature:"));
-        float chip_temp = -9999;
+        float chip_temp = MS_INVALID_VALUE;
         chip_temp       = getModemChipTemperature();
         MS_DBG(F("CURRENT Modem temperature(C):"),
                loggerModem::_priorModemTemp);
-        if (chip_temp != -9999.f) {
+        if (chip_temp != MS_INVALID_VALUE) {
             loggerModem::_priorModemTemp = chip_temp;
         } else {
-            loggerModem::_priorModemTemp = static_cast<float>(-9999);
+            loggerModem::_priorModemTemp = static_cast<float>(MS_INVALID_VALUE);
         }
 
-        success &= ((chip_temp != -9999.f) && (chip_temp != 0));
+        success &= ((chip_temp != MS_INVALID_VALUE) && (chip_temp != 0));
     } else {
         MS_DBG(F("Polling for modem chip temperature is disabled"));
     }

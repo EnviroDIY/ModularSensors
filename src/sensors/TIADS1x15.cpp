@@ -108,16 +108,14 @@ String TIADS1x15Base::getAnalogLocation(int8_t analogChannel,
 bool TIADS1x15Base::readVoltageSingleEnded(int8_t analogChannel,
                                            float& resultValue) {
     bool    success      = false;
-    int16_t adcCounts    = -9999;
-    float   adcVoltage   = -9999.0f;
-    float   scaledResult = -9999.0f;
+    int16_t adcCounts    = MS_INVALID_VALUE;
+    float   adcVoltage   = MS_INVALID_VALUE;
+    float   scaledResult = MS_INVALID_VALUE;
 
     // Use the per-instance ADS driver (gain configured in constructor)
 
     // Verify I2C connectivity with a lightweight probe
-    if (!probeI2C()) {
-        return false;
-    }
+    if (!probeI2C()) { return false; }
 
     // Read Analog to Digital Converter (ADC)
     // Validate ADS1x15 channel range for single-ended measurements
@@ -164,7 +162,7 @@ bool TIADS1x15Base::readVoltageSingleEnded(int8_t analogChannel,
         success     = true;
     } else {
         MS_DBG(F("  ADC voltage "), adcVoltage, F("V out of valid range"));
-        resultValue = -9999.0f;
+        resultValue = MS_INVALID_VALUE;
     }
 
     return success;
@@ -174,15 +172,13 @@ bool TIADS1x15Base::readVoltageDifferential(int8_t analogChannel,
                                             int8_t analogReferenceChannel,
                                             float& resultValue) {
     bool    success      = false;
-    int16_t adcCounts    = -9999;
-    float   adcVoltage   = -9999.0f;
-    float   scaledResult = -9999.0f;
+    int16_t adcCounts    = MS_INVALID_VALUE;
+    float   adcVoltage   = MS_INVALID_VALUE;
+    float   scaledResult = MS_INVALID_VALUE;
 
     // Use the per-instance ADS driver (configured in constructor)
     // Verify I2C connectivity with a lightweight probe
-    if (!probeI2C()) {
-        return false;
-    }
+    if (!probeI2C()) { return false; }
 
     // Validate differential channel combination
     if (!isValidDifferentialPair(analogChannel, analogReferenceChannel)) {
@@ -234,7 +230,7 @@ bool TIADS1x15Base::readVoltageDifferential(int8_t analogChannel,
         success     = true;
     } else {
         MS_DBG(F("  Differential voltage out of valid range"));
-        resultValue = -9999.0f;
+        resultValue = MS_INVALID_VALUE;
     }
 
     return success;
@@ -425,7 +421,7 @@ bool TIADS1x15::addSingleMeasurementResult(void) {
         return bumpMeasurementAttemptCount(false);
     }
 
-    float resultValue = -9999.0f;
+    float resultValue = MS_INVALID_VALUE;
     bool  success     = false;
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));

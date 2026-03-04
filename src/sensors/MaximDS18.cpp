@@ -187,7 +187,7 @@ bool MaximDS18::addSingleMeasurementResult(void) {
     }
 
     bool  success = false;
-    float result  = -9999;
+    float result  = MS_INVALID_VALUE;
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
     result = _internalDallasTemp.getTempC(_OneWireAddress);

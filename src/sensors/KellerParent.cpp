@@ -88,21 +88,22 @@ bool KellerParent::addSingleMeasurementResult(void) {
     }
 
     bool  success            = false;
-    float waterPressureBar   = -9999;
-    float waterTemperatureC  = -9999;
-    float waterDepthM        = -9999;
-    float waterPressure_mBar = -9999;
+    float waterPressureBar   = MS_INVALID_VALUE;
+    float waterTemperatureC  = MS_INVALID_VALUE;
+    float waterDepthM        = MS_INVALID_VALUE;
+    float waterPressure_mBar = MS_INVALID_VALUE;
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
     // Get Values
     // the getValues function in the KellerModbus library will *always* return
-    // true, but will set the value variables to -9999 if it fails to get a
-    // value.  So we check for success by checking that the value variables are
-    // not -9999 or NaN.
+    // true, but will set the value variables to MS_INVALID_VALUE if it fails to
+    // get a value.  So we check for success by checking that the value
+    // variables are not MS_INVALID_VALUE or NaN.
     _ksensor.getValues(waterPressureBar, waterTemperatureC);
-    success = (!isnan(waterPressureBar) && waterPressureBar != -9999 &&
-               !isnan(waterTemperatureC) && waterTemperatureC != -9999);
+    success =
+        (!isnan(waterPressureBar) && waterPressureBar != MS_INVALID_VALUE &&
+         !isnan(waterTemperatureC) && waterTemperatureC != MS_INVALID_VALUE);
 
     if (success) {
         // calculate depth from pressure and temperature
@@ -116,7 +117,7 @@ bool KellerParent::addSingleMeasurementResult(void) {
     MS_DBG(F("  Temp_C:"), waterTemperatureC);
     MS_DBG(F("  Height_m:"), waterDepthM);
 
-    success &= (!isnan(waterDepthM) && waterDepthM != -9999);
+    success &= (!isnan(waterDepthM) && waterDepthM != MS_INVALID_VALUE);
 
     if (success) {
         // Put values into the array

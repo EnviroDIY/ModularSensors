@@ -185,10 +185,10 @@ bool TEConnectivityMS5837::addSingleMeasurementResult(void) {
     MS_DBG(F("  Requesting"), OSR, F("bit OSR (oversampling ratio:"),
            _overSamplingRatio, F(")"));
 
-    float temp  = -9999;
-    float press = -9999;
-    float depth = -9999;
-    float alt   = -9999;
+    float temp  = MS_INVALID_VALUE;
+    float press = MS_INVALID_VALUE;
+    float depth = MS_INVALID_VALUE;
+    float alt   = MS_INVALID_VALUE;
 
     // Read values from the sensor - returns 0 on success
     int  read_return = MS5837_internal.read(OSR);

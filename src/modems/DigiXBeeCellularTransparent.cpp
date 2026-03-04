@@ -262,15 +262,14 @@ bool DigiXBeeCellularTransparent::updateModemMetadata(void) {
     bool success = true;
 
     // Unset whatever we had previously
-    loggerModem::_priorRSSI           = -9999;
-    loggerModem::_priorSignalPercent  = -9999;
-    loggerModem::_priorBatteryState   = -9999;
-    loggerModem::_priorBatteryPercent = -9999;
-    loggerModem::_priorBatteryPercent = -9999;
-    loggerModem::_priorModemTemp      = -9999;
-
+    loggerModem::_priorRSSI           = MS_INVALID_VALUE;
+    loggerModem::_priorSignalPercent  = MS_INVALID_VALUE;
+    loggerModem::_priorBatteryState   = MS_INVALID_VALUE;
+    loggerModem::_priorBatteryPercent = MS_INVALID_VALUE;
+    loggerModem::_priorBatteryVoltage = MS_INVALID_VALUE;
+    loggerModem::_priorModemTemp      = MS_INVALID_VALUE;
     // Initialize variable
-    int16_t signalQual = -9999;
+    int16_t signalQual = MS_INVALID_VALUE;
 
     MS_DBG(F("Modem polling settings:"), String(_pollModemMetaData, BIN));
 
@@ -299,9 +298,9 @@ bool DigiXBeeCellularTransparent::updateModemMetadata(void) {
             MS_DBG(F("Getting signal quality:"));
             signalQual = gsmModem.getSignalQuality();
             MS_DBG(F("Raw signal quality:"), signalQual);
-            if (signalQual != 0 && signalQual != -9999) break;
+            if (signalQual != 0 && signalQual != MS_INVALID_VALUE) break;
             delay(250);
-        } while ((signalQual == 0 || signalQual == -9999) &&
+        } while ((signalQual == 0 || signalQual == MS_INVALID_VALUE) &&
                  millis() - startMillis < 15000L && success);
 
         // Convert signal quality to RSSI

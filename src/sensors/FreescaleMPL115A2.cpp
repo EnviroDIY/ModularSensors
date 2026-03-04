@@ -64,8 +64,8 @@ bool FreescaleMPL115A2::addSingleMeasurementResult(void) {
     }
 
     bool  success = false;
-    float temp    = -9999;
-    float press   = -9999;
+    float temp    = MS_INVALID_VALUE;
+    float press   = MS_INVALID_VALUE;
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 

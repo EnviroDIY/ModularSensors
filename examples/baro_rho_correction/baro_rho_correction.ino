@@ -211,8 +211,9 @@ float calculateWaterPressure(void) {
     float baroPressureFromBME280  = bme280Press->getValue();
     float waterPressure           = totalPressureFromMS5803 -
         (baroPressureFromBME280) * 0.01;
-    if (totalPressureFromMS5803 == -9999 || baroPressureFromBME280 == -9999) {
-        waterPressure = -9999;
+    if (totalPressureFromMS5803 == MS_INVALID_VALUE ||
+        baroPressureFromBME280 == MS_INVALID_VALUE) {
+        waterPressure = MS_INVALID_VALUE;
     }
     // Serial.print(F("Water pressure is "));  // for debugging
     // Serial.println(waterPressure);  // for debugging
@@ -240,7 +241,8 @@ Variable* calcWaterPress = new Variable(
 // This calculation gives a final result in mm of water
 float calculateWaterDepthRaw(void) {
     float waterDepth = calculateWaterPressure() * 10.1972;
-    if (calculateWaterPressure() == -9999) waterDepth = -9999;
+    if (calculateWaterPressure() == MS_INVALID_VALUE)
+        waterDepth = MS_INVALID_VALUE;
     // Serial.print(F("'Raw' water depth is "));  // for debugging
     // Serial.println(waterDepth);  // for debugging
     return waterDepth;
@@ -282,8 +284,9 @@ float calculateWaterDepthTempCorrected(void) {
     // from P = rho * g * h
     float rhoDepth = 1000 * waterPressurePa /
         (waterDensity * gravitationalConstant);
-    if (calculateWaterPressure() == -9999 || waterTemperatureC == -9999) {
-        rhoDepth = -9999;
+    if (calculateWaterPressure() == MS_INVALID_VALUE ||
+        waterTemperatureC == MS_INVALID_VALUE) {
+        rhoDepth = MS_INVALID_VALUE;
     }
     // Serial.print(F("Temperature corrected water depth is "));  // for
     // debugging Serial.println(rhoDepth);  // for debugging
@@ -374,7 +377,7 @@ void greenRedFlash(uint8_t numFlash = 4, uint8_t rate = 75) {
 // Uses the processor sensor to read the battery voltage
 // NOTE: This will actually return the battery level from the previous update!
 float getBatteryVoltage() {
-    if (mcuBoard.sensorValues[0] == -9999) mcuBoard.update();
+    if (mcuBoard.sensorValues[0] == MS_INVALID_VALUE) mcuBoard.update();
     return mcuBoard.sensorValues[0];
 }
 /** End [working_functions] */

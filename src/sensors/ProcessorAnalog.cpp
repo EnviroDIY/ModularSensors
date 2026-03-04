@@ -43,7 +43,7 @@ bool ProcessorAnalogBase::readVoltageSingleEnded(int8_t analogChannel,
         _supplyVoltage <= 0 || _voltageMultiplier <= 0) {
         MS_DBG(F("Invalid configuration: either the analog channel, the supply "
                  "voltage, or the voltage multiplier is not set correctly!"));
-        resultValue = -9999.0f;
+        resultValue = MS_INVALID_VALUE;
         return false;
     }
 
@@ -83,7 +83,7 @@ bool ProcessorAnalogBase::readVoltageDifferential(
     float& resultValue) {
     // ProcessorAnalog does not support differential measurements
     MS_DBG(F("ProcessorAnalog does not support differential measurements"));
-    resultValue = -9999.0f;
+    resultValue = MS_INVALID_VALUE;
     return false;
 }
 
@@ -99,7 +99,7 @@ float ProcessorAnalogBase::calculateAnalogResolutionVolts(void) {
         fullScaleRangeVolts <= 0.0f) {
         MS_DBG(F("Invalid ADC configuration - bits: "), resolutionBits,
                F(", supply voltage: "), fullScaleRangeVolts, F("V"));
-        return -9999.0f;
+        return MS_INVALID_VALUE;
     }
 
     // Calculate the total number of ADC codes
@@ -171,7 +171,7 @@ bool ProcessorAnalog::addSingleMeasurementResult(void) {
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-    float resultValue = -9999.0f;
+    float resultValue = MS_INVALID_VALUE;
     bool  success     = _analogVoltageReader->readVoltageSingleEnded(_dataPin,
                                                                      resultValue);
 

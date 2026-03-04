@@ -120,7 +120,7 @@ This affects the following defines:
 These resets were an awkward attempt to deal with bad values before feeding any bad values to the `verifyAndAddMeasurementResult()` function which was previously always called even if the sensor returned junk.
 This was probably a hold-over from incorrect implementation and calling of the clearValues function deep in the library history.
   - Also made the return from the `addSingleMeasurementResult()` function consistently false for a bad sensor response and true for a good one - where it's possible to tell the difference.
-- The Sensor::clearValues() function now resets the attempt and retry counts in addition to setting all values in the value array to -9999.
+- The Sensor::clearValues() function now resets the attempt and retry counts in addition to setting all values in the value array to MS_INVALID_VALUE.
 
 #### Individual Publishers
 
@@ -206,6 +206,7 @@ This affects the following classes:
 
 #### Library-Wide
 
+- Added a configuration define for MS_INVALID_VALUE and replaced all occurrences of the standard -9999 with this define.
 - Added KnownProcessors.h and moved define values for supported built-in sensors on known processors to that file.
   - This affects ProcessorStats and the Everlight ALS PT-19.
 - Added a new example specific to the [EnviroDIY Monitoring Station Kit](https://www.envirodiy.org/product/envirodiy-monitoring-station-kit/).

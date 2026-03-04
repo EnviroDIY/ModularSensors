@@ -146,7 +146,7 @@ int16_t ThingSpeakPublisher::publishData(Client* outClient, bool) {
         MS_DBG(F("ERROR: ThingSpeak MQTT Password is required but not set!"));
         return -1;
     }
-    
+
     bool retVal = false;
 
     // Make sure we don't have too many fields

@@ -1327,7 +1327,7 @@ Variable* atlasGrav = new AtlasScientificEC_SpecificGravity(
 // **DO NOT** use your logger board temperature (ie, from the DS3231) to
 // calculate specific conductance!
 float calculateAtlasSpCond() {
-    float spCond    = -9999;  // Always safest to start with a bad value
+    float spCond = MS_INVALID_VALUE;  // Always safest to start with a bad value
     float waterTemp = atlasTemp->getValue();
     float rawCond   = atlasCond->getValue();
     // ^^ Linearized temperature correction coefficient per degrees Celsius.
@@ -1336,7 +1336,7 @@ float calculateAtlasSpCond() {
     // environmental monitoring and geophysical data inversion. Environ Monit
     // Assess. 2004 Aug-Sep;96(1-3):119-28.
     // doi: 10.1023/b:emas.0000031719.83065.68. PMID: 15327152.
-    if (waterTemp != -9999 && rawCond != -9999) {
+    if (waterTemp != MS_INVALID_VALUE && rawCond != MS_INVALID_VALUE) {
         // make sure both inputs are good
         float temperatureCoef = 0.019;
         spCond = rawCond / (1 + temperatureCoef * (waterTemp - 25.0));
@@ -2086,12 +2086,12 @@ Variable* ms5803Temp =
 #include <sensors/TEConnectivityMS5837.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-const int8_t        MS5837Power       = sensorPowerPin;  // Power pin
-const MS5837Model   MS5837model       = MS5837Model::MS5837_02BA;
+const int8_t      MS5837Power = sensorPowerPin;  // Power pin
+const MS5837Model MS5837model = MS5837Model::MS5837_02BA;
 // - MS5837Model::MS5837_30BA for 30 bar range sensors (MS5837-30BA)
 // - MS5837Model::MS5837_02BA for 2 bar range sensors (MS5837-02BA)
 // - MS5837Model::MS5803_01BA for 1 bar range sensors (MS5803-01BA)
-const uint8_t       MS5837ReadingsToAvg = 1;
+const uint8_t MS5837ReadingsToAvg = 1;
 
 // Create a TE Connectivity MS5837 pressure and temperature sensor object
 TEConnectivityMS5837 ms5837(MS5837Power, MS5837model, MS5837ReadingsToAvg);
@@ -2499,7 +2499,7 @@ Variable* analogEc_cond = new AnalogElecConductivity_EC(
 // temperature sensor if desired.  **DO NOT** use your logger board temperature
 // (ie, from the DS3231) to calculate specific conductance!
 float calculateAnalogSpCond() {
-    float spCond          = -9999;  // Always safest to start with a bad value
+    float spCond = MS_INVALID_VALUE;  // Always safest to start with a bad value
     float waterTemp       = ds18Temp->getValue();
     float rawCond         = analogEc_cond->getValue();
     float temperatureCoef = 0.019;
@@ -2509,7 +2509,7 @@ float calculateAnalogSpCond() {
     // environmental monitoring and geophysical data inversion. Environ Monit
     // Assess. 2004 Aug-Sep;96(1-3):119-28.
     // doi: 10.1023/b:emas.0000031719.83065.68. PMID: 15327152.
-    if (waterTemp != -9999 && rawCond != -9999) {
+    if (waterTemp != MS_INVALID_VALUE && rawCond != MS_INVALID_VALUE) {
         // make sure both inputs are good
         spCond = rawCond / (1 + temperatureCoef * (waterTemp - 25.0));
     }
@@ -3064,11 +3064,12 @@ Variable* dOptoTemp =
 // variable->getValue()
 
 float calculateVariableValue() {
-    float calculatedResult = -9999;  // Always safest to start with a bad value
+    float calculatedResult =
+        MS_INVALID_VALUE;  // Always safest to start with a bad value
     // float inputVar1 = variable1->getValue();
     // float inputVar2 = variable2->getValue();
     // make sure both inputs are good
-    // if (inputVar1 != -9999 && inputVar2 != -9999) {
+    // if (inputVar1 != MS_INVALID_VALUE && inputVar2 != MS_INVALID_VALUE) {
     //     calculatedResult = inputVar1 + inputVar2;
     // }
     return calculatedResult;
@@ -3745,7 +3746,7 @@ void greenRedFlash(uint8_t numFlash = 4, uint8_t rate = 75) {
 // Uses the processor sensor object to read the battery voltage
 // NOTE: This will actually return the battery level from the previous update!
 float getBatteryVoltage() {
-    if (mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM] == -9999 ||
+    if (mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM] == MS_INVALID_VALUE ||
         mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM] == 0) {
         mcuBoard.update();
     }

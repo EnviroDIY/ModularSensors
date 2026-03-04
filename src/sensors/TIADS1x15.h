@@ -278,9 +278,8 @@ class TIADS1x15Base : public AnalogVoltageBase {
      * @param adsSupplyVoltage The power supply voltage for the ADS1x15 in volts
      * @param adsDataRate The data rate for the ADS1x15 (samples per second)
      */
-    explicit TIADS1x15Base(TwoWire* theI2C,
-                           float     voltageMultiplier = 1.0f,
-                           adsGain_t adsGain           = GAIN_ONE,
+    explicit TIADS1x15Base(TwoWire* theI2C, float voltageMultiplier = 1.0f,
+                           adsGain_t adsGain    = GAIN_ONE,
                            uint8_t   i2cAddress = MS_DEFAULT_ADS1X15_ADDRESS,
                            float     adsSupplyVoltage = OPERATING_VOLTAGE,
 #ifndef MS_USE_ADS1015
@@ -460,7 +459,7 @@ class TIADS1x15Base : public AnalogVoltageBase {
 
     /**
      * @brief Probe I2C connectivity to the ADS device
-     * 
+     *
      * @return true if device responds, false if communication failed
      */
     bool probeI2C(void);

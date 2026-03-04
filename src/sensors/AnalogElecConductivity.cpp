@@ -91,7 +91,7 @@ bool AnalogElecConductivity::addSingleMeasurementResult(void) {
         return bumpMeasurementAttemptCount(false);
     }
 
-    float adcVoltage = -9999.0f;
+    float adcVoltage = MS_INVALID_VALUE;
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
@@ -125,7 +125,7 @@ bool AnalogElecConductivity::addSingleMeasurementResult(void) {
         MS_DBG(F("  Resistance:"), Rwater_ohms, F("ohms"));
 
         // Convert to EC
-        float EC_uScm = -9999.0f;  // units are uS per cm
+        float EC_uScm = MS_INVALID_VALUE;  // units are uS per cm
         if (Rwater_ohms > 0.0f) {
             EC_uScm = 1000000.0f / (Rwater_ohms * _sensorEC_Konst);
             MS_DBG(F("Water EC (uS/cm)"), EC_uScm);

@@ -442,9 +442,9 @@ class Variable {
      * @brief The current data value
      *
      * When we create the variable, we also want to initialize it with a current
-     * value of -9999 (ie, a bad result).
+     * value of #MS_INVALID_VALUE (ie, a bad result).
      */
-    float _currentValue = -9999;
+    float _currentValue = MS_INVALID_VALUE;
 
 
  private:

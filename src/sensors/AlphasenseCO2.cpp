@@ -91,7 +91,7 @@ bool AlphasenseCO2::addSingleMeasurementResult(void) {
         return bumpMeasurementAttemptCount(false);
     }
 
-    float adcVoltage = -9999;
+    float adcVoltage = MS_INVALID_VALUE;
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 

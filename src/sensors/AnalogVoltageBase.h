@@ -164,7 +164,7 @@ class AnalogVoltageBase {
      * provide their specific method of reading differential voltages.
      *
      * If the sensor does not support differential measurements, this function
-     * should set the resultValue to -9999.0 and return false.
+     * should set the resultValue to #MS_INVALID_VALUE and return false.
      *
      * @param analogChannel The primary analog channel for differential
      * measurement. Negative or invalid channel numbers or pairings between the

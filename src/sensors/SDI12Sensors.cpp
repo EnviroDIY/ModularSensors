@@ -97,8 +97,8 @@ bool SDI12Sensors::setup(void) {
     // by the SDI-12 protocol for a sensor response.
     // May want to bump it up even further here.
     _SDI12Internal.setTimeout(150);
-    // Force the timeout value to be -9999 (This should be library default.)
-    _SDI12Internal.setTimeoutValue(-9999);
+    // Force the timeout value to be MS_INVALID_VALUE
+    _SDI12Internal.setTimeoutValue(MS_INVALID_VALUE);
 
 #if defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
     // Allow the SDI-12 library access to interrupts
@@ -613,10 +613,10 @@ bool SDI12Sensors::getResults(bool verify_crc) {
                        F("Parsed value:"), String(result, len_post_dec));
 #endif
                 // The SDI-12 library should return our set timeout value of
-                // -9999 on timeout
-                if (result == -9999 || isnan(result)) {
+                // MS_INVALID_VALUE on timeout
+                if (result == MS_INVALID_VALUE || isnan(result)) {
                     MS_DBG(F("Result is not valid!"));
-                    result = -9999;
+                    result = MS_INVALID_VALUE;
                 }
                 // Put the read value into the temporary buffer. After each
                 // result is read, tick up the number of results received so
@@ -624,7 +624,7 @@ bool SDI12Sensors::getResults(bool verify_crc) {
                 // buffer.
                 cmd_rx[cmd_results] = result;
                 // add how many results we have
-                if (result != -9999) {
+                if (result != MS_INVALID_VALUE) {
                     gotResults = true;
                     cmd_results++;
                 }
@@ -790,7 +790,8 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
             MS_DBG(getSensorNameAndLocation(),
                    F("is not currently measuring!"));
             for (uint8_t i = 0; i < _numReturnedValues; i++) {
-                verifyAndAddMeasurementResult(i, static_cast<float>(-9999));
+                verifyAndAddMeasurementResult(
+                    i, static_cast<float>(MS_INVALID_VALUE));
             }
         }
     }

@@ -214,7 +214,7 @@ class ProcessorAnalogBase : public AnalogVoltageBase {
      * @param analogReferenceChannel The secondary (reference) analog channel
      * (ignored)
      * @param resultValue Reference to store the resulting voltage measurement.
-     * This will be set to -9999.0 to indicate an invalid reading.
+     * This will be set to #MS_INVALID_VALUE to indicate an invalid reading.
      * @return Always false (differential not supported)
      */
     bool readVoltageDifferential(int8_t analogChannel,

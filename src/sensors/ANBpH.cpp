@@ -143,23 +143,24 @@ bool ANBpH::setup(void) {
 
     // Validate and normalize loggingIntervalMinutes based on powerPin
 #if defined(MS_ANB_SENSORS_PH_DEBUG) || defined(MS_ANB_SENSORS_PH_DEBUG_DEEP)
-    int16_t originalInterval = _loggingIntervalMinutes;  // Store original for debug messages
+    int16_t originalInterval =
+        _loggingIntervalMinutes;  // Store original for debug messages
 #endif
     if (_powerPin >= 0) {  // Cycled power
         if (_loggingIntervalMinutes == 0) {
-            programmedInterval = 10;
+            programmedInterval      = 10;
             _loggingIntervalMinutes = 10;  // Update the stored value
             MS_DBG(F("Requested interval of"), originalInterval,
                    F("minutes is invalid when power is cycled; using"),
                    programmedInterval, F("minutes."));
         } else if (_loggingIntervalMinutes < 10) {
-            programmedInterval = 10;
+            programmedInterval      = 10;
             _loggingIntervalMinutes = 10;  // Update the stored value
             MS_DBG(F("Requested interval of"), originalInterval,
                    F("minutes is too short; using"), programmedInterval,
                    F("minutes."));
         } else if (_loggingIntervalMinutes > 240) {
-            programmedInterval = 240;
+            programmedInterval      = 240;
             _loggingIntervalMinutes = 240;  // Update the stored value
             MS_DBG(F("Requested interval of"), originalInterval,
                    F("minutes is too long; using"), programmedInterval,
@@ -170,13 +171,13 @@ bool ANBpH::setup(void) {
             programmedInterval = 0;  // Allow 0 for always-on mode
             // No need to change _loggingIntervalMinutes
         } else if (_loggingIntervalMinutes < 10) {
-            programmedInterval = 10;
+            programmedInterval      = 10;
             _loggingIntervalMinutes = 10;  // Update the stored value
             MS_DBG(F("Requested interval of"), originalInterval,
                    F("minutes is too short; using"), programmedInterval,
                    F("minutes."));
         } else if (_loggingIntervalMinutes > 240) {
-            programmedInterval = 240;
+            programmedInterval      = 240;
             _loggingIntervalMinutes = 240;  // Update the stored value
             MS_DBG(F("Requested interval of"), originalInterval,
                    F("minutes is too long; using"), programmedInterval,
@@ -338,11 +339,11 @@ bool ANBpH::addSingleMeasurementResult(void) {
     }
 
     bool              success    = false;
-    float             pH         = -9999;
-    float             temp       = -9999;
-    float             sal        = -9999;
-    float             spcond     = -9999;
-    float             raw_cond   = -9999;
+    float             pH         = MS_INVALID_VALUE;
+    float             temp       = MS_INVALID_VALUE;
+    float             sal        = MS_INVALID_VALUE;
+    float             spcond     = MS_INVALID_VALUE;
+    float             raw_cond   = MS_INVALID_VALUE;
     ANBHealthCode     health     = ANBHealthCode::UNKNOWN;
     ANBStatusCode     status     = ANBStatusCode::UNKNOWN;
     ANBDiagnosticCode diagnostic = ANBDiagnosticCode::UNKNOWN;
