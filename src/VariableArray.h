@@ -79,8 +79,15 @@ class VariableArray {
     // Constructors
     /**
      * @brief Construct a new Variable Array object
+     *
+     * @param variableCount The number of variables in the array
+     * @param variableList An array of pointers to variable objects.  The
+     * pointers may be to calculated or measured variable objects.
+     * @param uuids An array of UUIDs.  These are linked 1-to-1 with the
+     * variables by array position.
      */
-    VariableArray();
+    VariableArray(uint8_t variableCount, Variable* variableList[],
+                  const char* uuids[]);
     /**
      * @brief Construct a new Variable Array object
      *
@@ -91,15 +98,8 @@ class VariableArray {
     VariableArray(uint8_t variableCount, Variable* variableList[]);
     /**
      * @brief Construct a new Variable Array object
-     *
-     * @param variableCount The number of variables in the array
-     * @param variableList An array of pointers to variable objects.  The
-     * pointers may be to calculated or measured variable objects.
-     * @param uuids An array of UUIDs.  These are linked 1-to-1 with the
-     * variables by array position.
      */
-    VariableArray(uint8_t variableCount, Variable* variableList[],
-                  const char* uuids[]);
+    VariableArray();
     /**
      * @brief Destroy the Variable Array object - no action taken.
      */

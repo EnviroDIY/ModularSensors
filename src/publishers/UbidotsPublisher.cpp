@@ -45,9 +45,12 @@ UbidotsPublisher::UbidotsPublisher(Logger&     baseLogger,
                                    const char* authenticationToken,
                                    const char* deviceID, int sendEveryX)
     : dataPublisher(baseLogger, sendEveryX) {
-    if (authenticationToken) setToken(authenticationToken);
-    if (deviceID) _baseLogger->setSamplingFeatureUUID(deviceID);
-    MS_DBG(F("dataPublisher object created"));
+    if (authenticationToken && authenticationToken[0] != '\0') {
+        setToken(authenticationToken);
+    }
+    if (deviceID && deviceID[0] != '\0') {
+        _baseLogger->setSamplingFeatureUUID(deviceID);
+    }
 }
 UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, Client* inClient,
                                    int sendEveryX)
@@ -61,7 +64,6 @@ UbidotsPublisher::UbidotsPublisher() : dataPublisher() {}
 
 void UbidotsPublisher::setToken(const char* authenticationToken) {
     _authenticationToken = authenticationToken;
-    MS_DBG(F("Registration token set!"));
 }
 
 

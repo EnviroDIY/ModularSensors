@@ -12,18 +12,20 @@
 
 
 // Constructors
-VariableArray::VariableArray() {}
-VariableArray::VariableArray(uint8_t variableCount, Variable* variableList[])
-    : arrayOfVars(variableList),
-      _variableCount(variableCount) {
-    _sensorCount = getSensorCount();
-}
-// Delegating constructor
+// Primary constructor with all parameters
 VariableArray::VariableArray(uint8_t variableCount, Variable* variableList[],
                              const char* uuids[])
     : VariableArray(variableCount, variableList) {
     matchUUIDs(uuids);
 }
+
+// Delegating constructors
+VariableArray::VariableArray(uint8_t variableCount, Variable* variableList[])
+    : arrayOfVars(variableList),
+      _variableCount(variableCount) {
+    _sensorCount = getSensorCount();
+}
+VariableArray::VariableArray() {}
 
 
 void VariableArray::begin(uint8_t variableCount, Variable* variableList[],

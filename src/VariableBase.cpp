@@ -15,9 +15,9 @@
 //  The class and functions for interfacing with a specific variable.
 // ============================================================================
 
-// Primary constructors with UUID parameter
-// The constructor for a measured variable - that is, one whose values are
-// updated by a sensor.
+// Primary constructors
+// The constructor for a measured variable with UUID - that is, one whose values
+// are updated by a sensor.
 Variable::Variable(Sensor* parentSense, uint8_t sensorVarNum,
                    uint8_t decimalResolution, const char* varName,
                    const char* varUnit, const char* varCode, const char* uuid)
@@ -34,8 +34,8 @@ Variable::Variable(Sensor* parentSense, uint8_t sensorVarNum,
     if (parentSense) attachSensor(parentSense);
 }
 
-// The constructor for a calculated variable  - that is, one whose value is
-// calculated by the calcFxn which returns a float.
+// The constructor for a calculated variable with UUID - that is, one whose
+// value is calculated by the calcFxn which returns a float.
 Variable::Variable(float (*calcFxn)(), uint8_t decimalResolution,
                    const char* varName, const char* varUnit,
                    const char* varCode, const char* uuid)
@@ -62,7 +62,7 @@ Variable::Variable(float (*calcFxn)(), uint8_t decimalResolution,
                    const char* varCode)
     : Variable(calcFxn, decimalResolution, varName, varUnit, varCode, nullptr) {
 }
-// constructor with no arguments
+// Default constructor with no arguments
 Variable::Variable() : isCalculated(true) {}
 
 
