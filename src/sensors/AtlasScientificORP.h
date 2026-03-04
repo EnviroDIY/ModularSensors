@@ -55,8 +55,10 @@
  * Defines to configure and set the address of the Atlas ORP sensor
  */
 /**@{*/
+#ifndef ATLAS_ORP_I2C_ADDR
 /// @brief The default I2C address of the Atlas ORP sensor is 0x62 (98)
 #define ATLAS_ORP_I2C_ADDR 0x62
+#endif
 /**@}*/
 
 /**

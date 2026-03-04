@@ -61,8 +61,10 @@
  * sensor
  */
 /**@{*/
+#ifndef ATLAS_RTD_I2C_ADDR
 /// @brief The default I2C address of the Atlas RTD sensor is 0x66 (102)
 #define ATLAS_RTD_I2C_ADDR 0x66
+#endif
 /**@}*/
 
 /**

@@ -79,8 +79,10 @@
  * Defines to configure and set the address of the Atlas CO2 sensor
  */
 /**@{*/
+#ifndef ATLAS_CO2_I2C_ADDR
 /// @brief The default I2C address of the Atlas CO2 sensor is 0x69 (105)
 #define ATLAS_CO2_I2C_ADDR 0x69
+#endif
 /**@}*/
 
 /**

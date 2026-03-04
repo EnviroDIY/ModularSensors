@@ -57,8 +57,10 @@
  * Defines to configure and set the address of the Atlas pH sensor
  */
 /**@{*/
+#ifndef ATLAS_PH_I2C_ADDR
 /// @brief The default I2C address of the Atlas pH sensor is 0x63 (99)
 #define ATLAS_PH_I2C_ADDR 0x63
+#endif
 /**@}*/
 
 /**

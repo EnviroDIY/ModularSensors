@@ -78,8 +78,10 @@
  * Defines to configure and set the address of the Atlas DO sensor
  */
 /**@{*/
+#ifndef ATLAS_DO_I2C_ADDR
 /// @brief The default I2C address of the Atlas DO sensor is 0x61 (97)
 #define ATLAS_DO_I2C_ADDR 0x61
+#endif
 /**@}*/
 
 /**
