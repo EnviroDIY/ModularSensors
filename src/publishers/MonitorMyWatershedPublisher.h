@@ -145,7 +145,8 @@ class MonitorMyWatershedPublisher : public dataPublisher {
 
     // Returns the data destination
     String getEndpoint() override {
-        return String(monitorMWHost) + String(monitorMWPath);
+        return String(monitorMWHost ? monitorMWHost : "") +
+            String(monitorMWPath ? monitorMWPath : "");
     }
 
     /**

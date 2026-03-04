@@ -67,6 +67,13 @@ void DreamHostPublisher::begin(Logger& baseLogger, const char* dhUrl) {
 // Post the data to dream host.
 // int16_t DreamHostPublisher::postDataDreamHost()
 int16_t DreamHostPublisher::publishData(Client* outClient, bool) {
+    // Validate required DreamHost URL is set before proceeding
+    if (_DreamHostPortalRX == nullptr) {
+        MS_DBG(F("ERROR: DreamHost Portal RX URL not set. Call begin() or "
+                 "setDreamHostPortalRX() first."));
+        return -1;
+    }
+
     // Create a buffer for the portions of the request and response
     char     tempBuffer[37] = "";
     uint16_t did_respond    = 0;

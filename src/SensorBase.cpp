@@ -602,7 +602,7 @@ bool Sensor::checkPowerOn(bool debug) {
                         MEASUREMENT_SUCCESSFUL);
         return false;
     } else {
-        if (debug) { MS_DBG(" was on."); }
+        if (debug) { MS_DBG(F("was on.")); }
         // Mark the power-on time, just in case it  had not been marked
         if (_millisPowerOn == 0) _millisPowerOn = millis();
         // Set the status bit for sensor power attempt (bit 1) and success
