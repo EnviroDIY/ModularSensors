@@ -22,6 +22,8 @@ Variable::Variable(Sensor* parentSense, uint8_t sensorVarNum,
                    uint8_t decimalResolution, const char* varName,
                    const char* varUnit, const char* varCode, const char* uuid)
     : isCalculated(false),
+      parentSensor(nullptr),
+      _currentValue(MS_INVALID_VALUE),
       _sensorVarNum(sensorVarNum) {
     if (uuid) setVarUUID(uuid);
     if (varCode) setVarCode(varCode);
@@ -36,8 +38,7 @@ Variable::Variable(Sensor* parentSense, uint8_t sensorVarNum,
 Variable::Variable(float (*calcFxn)(), uint8_t decimalResolution,
                    const char* varName, const char* varUnit,
                    const char* varCode, const char* uuid)
-    : isCalculated(calcFxn != nullptr),
-      _calcFxn(nullptr) {
+    : _calcFxn(nullptr) {
     if (uuid) setVarUUID(uuid);
     if (varCode) setVarCode(varCode);
     if (varUnit) setVarUnit(varUnit);
@@ -250,8 +251,8 @@ float Variable::getValue(bool updateValue) {
         } else if (updateValue && _calcFxn == nullptr) {
             // If no calculation function is set, return error value
             _currentValue = MS_INVALID_VALUE;
-            MS_DBG(
-                F("ERROR! Calculated variable has no calculation function!"));
+            MS_DBG(F("ERROR! Calculated variable"), getVarCode(),
+                   F("has no calculation function!"));
         }
         return _currentValue;
     } else {
@@ -260,7 +261,8 @@ float Variable::getValue(bool updateValue) {
         } else if (updateValue && parentSensor == nullptr) {
             // If no parent sensor is set, return error value
             _currentValue = MS_INVALID_VALUE;
-            MS_DBG(F("ERROR! Variable has no parent sensor!"));
+            MS_DBG(F("ERROR! Variable"), getVarCode(),
+                   F("has no parent sensor!"));
         }
         return _currentValue;
     }

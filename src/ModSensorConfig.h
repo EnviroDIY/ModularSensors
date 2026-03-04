@@ -80,8 +80,6 @@
  * or missing.
  */
 #define MS_INVALID_VALUE -9999
-
-// GroPoint Profile GPLP-8 has 8 Moisture and 13 Temperature values
 #endif
 #ifndef MAX_NUMBER_VARS
 /**
@@ -97,29 +95,6 @@
 // number of variables from any sensor. Anything more is a waste of memory.
 static_assert(MAX_NUMBER_VARS > 0 && MAX_NUMBER_VARS <= 21,
               "MAX_NUMBER_VARS must be between 1 and 21");
-
-//==============================================================
-// Disable concurrent polling of SDI-12 sensors, if needed
-// Concurrent measurement support was introduced in version 1.2 (April 12, 1996)
-// of the specification and all sensors that claim to use version 1.2 or higher
-// must support it.
-// That being said.. some new sensors are fussy and will incorrectly abort
-// concurrent measurements due to noise or other sensors on the bus.
-// NOTE:  By default, concurrent measurements are used for all SDI-12 sensors!
-// NOTE: This single setting applies to all SDI-12 sensors; it cannot be set on
-// a per-sensor basis.
-// #define MS_SDI12_NON_CONCURRENT
-
-// Disable CRC checking for SDI-12 sensors, if needed
-// This may be necessary if using older or fussy sensors
-// CRC support in SDI-12 was implemented with version 1.3 (April 7, 2000) and
-// all sensors that claim to use version 1.3 or higher must support it.
-// NOTE:  By default, CRCs are used for all SDI-12 sensors!
-// NOTE: This single setting applies to all SDI-12 sensors; it cannot be set on
-// a per-sensor basis.
-// #define MS_SDI12_NO_CRC_CHECK
-//==============================================================
-
 //==============================================================
 #ifndef MS_LOGGERBASE_BUTTON_BENCH_TEST
 /**
@@ -150,39 +125,7 @@ static_assert(MAX_NUMBER_VARS > 0 && MAX_NUMBER_VARS <= 21,
 
 
 //==============================================================
-// External ADC configuration and defaults
-//==============================================================
-// Select ADS1015 instead of the ADS1115, if desired
-// This is for sensors that use the external ADC for analog voltage
-// measurements.
-// #define MS_USE_ADS1015
-
-#if !defined(MS_DEFAULT_ADS1X15_ADDRESS) || defined(DOXYGEN)
-/**
- * @brief The default I²C address of the ADS1115 or ADS1015 external ADC.
- *
- * Valid addresses depend on the ADDR pin connection:
- * - `0x48` – ADDR to GND (default)
- * - `0x49` – ADDR to VDD
- * - `0x4A` – ADDR to SDA
- * - `0x4B` – ADDR to SCL
- *
- * Override with a build flag: `-DMS_DEFAULT_ADS1X15_ADDRESS=0x49`
- */
-#define MS_DEFAULT_ADS1X15_ADDRESS 0x48
-#endif
-// Static assert to validate ADS1X15 I2C address is valid
-static_assert(MS_DEFAULT_ADS1X15_ADDRESS == 0x48 ||
-                  MS_DEFAULT_ADS1X15_ADDRESS == 0x49 ||
-                  MS_DEFAULT_ADS1X15_ADDRESS == 0x4A ||
-                  MS_DEFAULT_ADS1X15_ADDRESS == 0x4B,
-              "MS_DEFAULT_ADS1X15_ADDRESS should be 0x48, 0x49, 0x4A, or 0x4B "
-              "for ADS1X15");
-//==============================================================
-
-
-//==============================================================
-// Analog voltage configuration
+// Processor ADC configuration
 //==============================================================
 #ifndef MS_PROCESSOR_ADC_RESOLUTION
 /**
@@ -289,6 +232,62 @@ static_assert(MS_PROCESSOR_ANALOG_MAX_CHANNEL > 0 &&
 #error The processor ADC reference type must be defined!
 #endif  // MS_PROCESSOR_ADC_REFERENCE_MODE
 #endif
+//==============================================================
+
+
+//==============================================================
+// External ADC configuration and defaults
+//==============================================================
+// Select ADS1015 instead of the ADS1115, if desired
+// This is for sensors that use the external ADC for analog voltage
+// measurements.
+// #define MS_USE_ADS1015
+
+#if !defined(MS_DEFAULT_ADS1X15_ADDRESS) || defined(DOXYGEN)
+/**
+ * @brief The default I²C address of the ADS1115 or ADS1015 external ADC.
+ *
+ * Valid addresses depend on the ADDR pin connection:
+ * - `0x48` – ADDR to GND (default)
+ * - `0x49` – ADDR to VDD
+ * - `0x4A` – ADDR to SDA
+ * - `0x4B` – ADDR to SCL
+ *
+ * Override with a build flag: `-DMS_DEFAULT_ADS1X15_ADDRESS=0x49`
+ */
+#define MS_DEFAULT_ADS1X15_ADDRESS 0x48
+#endif
+// Static assert to validate ADS1X15 I2C address is valid
+static_assert(MS_DEFAULT_ADS1X15_ADDRESS == 0x48 ||
+                  MS_DEFAULT_ADS1X15_ADDRESS == 0x49 ||
+                  MS_DEFAULT_ADS1X15_ADDRESS == 0x4A ||
+                  MS_DEFAULT_ADS1X15_ADDRESS == 0x4B,
+              "MS_DEFAULT_ADS1X15_ADDRESS should be 0x48, 0x49, 0x4A, or 0x4B "
+              "for ADS1X15");
+//==============================================================
+
+//==============================================================
+// SDI-12 Configuration
+//==============================================================
+// Disable concurrent polling of SDI-12 sensors, if needed
+// Concurrent measurement support was introduced in version 1.2 (April 12, 1996)
+// of the specification and all sensors that claim to use version 1.2 or higher
+// must support it.
+// That being said.. some new sensors are fussy and will incorrectly abort
+// concurrent measurements due to noise or other sensors on the bus.
+// NOTE:  By default, concurrent measurements are used for all SDI-12 sensors!
+// NOTE: This single setting applies to all SDI-12 sensors; it cannot be set on
+// a per-sensor basis.
+// #define MS_SDI12_NON_CONCURRENT
+
+// Disable CRC checking for SDI-12 sensors, if needed
+// This may be necessary if using older or fussy sensors
+// CRC support in SDI-12 was implemented with version 1.3 (April 7, 2000) and
+// all sensors that claim to use version 1.3 or higher must support it.
+// NOTE:  By default, CRCs are used for all SDI-12 sensors!
+// NOTE: This single setting applies to all SDI-12 sensors; it cannot be set on
+// a per-sensor basis.
+// #define MS_SDI12_NO_CRC_CHECK
 //==============================================================
 
 
