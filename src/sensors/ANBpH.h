@@ -538,7 +538,7 @@ class ANBpH : public Sensor {
     /**
      * @brief Destroy the ANB pH object - no action taken
      */
-    virtual ~ANBpH() override = default;
+    ~ANBpH() override = default;
 
     String getSensorLocation() override;
 

@@ -173,7 +173,7 @@ class AtlasParent : public Sensor {
     /**
      * @brief Destroy the Atlas Parent object.
      */
-    virtual ~AtlasParent() override = default;
+    ~AtlasParent() override = default;
 
     /**
      * @brief Return the I2C address of the EZO circuit.

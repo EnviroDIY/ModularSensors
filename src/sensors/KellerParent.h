@@ -231,7 +231,7 @@ class KellerParent : public Sensor {
     /**
      * @brief Destroy the Keller Parent object - no action taken
      */
-    virtual ~KellerParent() override = default;
+    ~KellerParent() override = default;
 
     String getSensorLocation() override;
 

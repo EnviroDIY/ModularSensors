@@ -180,7 +180,7 @@ class ProcessorAnalogBase : public AnalogVoltageBase {
     /**
      * @brief Destroy the ProcessorAnalogBase object
      */
-    virtual ~ProcessorAnalogBase() override = default;
+    ~ProcessorAnalogBase() override = default;
 
     /**
      * @brief Initialize the processor analog system

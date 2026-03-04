@@ -34,9 +34,8 @@ bool DigiXBee::modemWakeFxn() {
                _wakeLevel ? F("HIGH") : F("LOW"), F("to wake"), _modemName);
         digitalWrite(_modemSleepRqPin, _wakeLevel);
         return true;
-    } else {
-        return true;
     }
+    return true;
 }
 
 
@@ -47,7 +46,6 @@ bool DigiXBee::modemSleepFxn() {
                F("to sleep"));
         digitalWrite(_modemSleepRqPin, !_wakeLevel);
         return true;
-    } else {
-        return true;
     }
+    return true;
 }

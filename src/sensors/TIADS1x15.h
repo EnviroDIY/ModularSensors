@@ -313,7 +313,7 @@ class TIADS1x15Base : public AnalogVoltageBase {
     /**
      * @brief Destroy the TIADS1x15Base object
      */
-    virtual ~TIADS1x15Base() override = default;
+    ~TIADS1x15Base() override = default;
 
     /**
      * @brief Initialize the ADS1x15 analog voltage reading system

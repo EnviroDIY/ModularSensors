@@ -173,7 +173,7 @@ class AWS_IoT_Publisher : public dataPublisher {
     /**
      * @brief Destroy the AWS IoT Core Publisher object
      */
-    virtual ~AWS_IoT_Publisher() override = default;
+    ~AWS_IoT_Publisher() override = default;
 
     // Returns the data destination
     String getEndpoint() override {

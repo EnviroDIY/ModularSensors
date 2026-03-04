@@ -66,8 +66,8 @@ bool EspressifESP32::modemSleepFxn() {
 // Set up the light-sleep status pin, if applicable
 bool EspressifESP32::extraModemSetup() {
     if (_modemSleepRqPin >= 0) { digitalWrite(_modemSleepRqPin, !_wakeLevel); }
-    gsmModem.init();
-    _modemName = gsmModem.getModemName();
+    bool success = gsmModem.init();
+    _modemName   = gsmModem.getModemName();
     // AT+CWCOUNTRY=<country_policy>,<country_code>,<start_channel>,<total_channel_count>
     // <country_policy>:
     //     0: will change the county code to be the same as the AP that the
@@ -81,8 +81,8 @@ bool EspressifESP32::extraModemSetup() {
     gsmModem.sendAT(
         GF("+CWCOUNTRY=0,\"US\",1,13"));  // Set country code to default to US,
                                           // but allow to change if the AP is
-    gsmModem.waitResponse();
-    return true;
+    success &= gsmModem.waitResponse() == 1;
+    return success;
 }
 
 // cSpell:ignore CWCOUNTRY

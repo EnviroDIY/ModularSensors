@@ -66,7 +66,7 @@ bool EspressifESP8266::modemSleepFxn() {
 // Set up the light-sleep status pin, if applicable
 bool EspressifESP8266::extraModemSetup() {
     if (_modemSleepRqPin >= 0) { digitalWrite(_modemSleepRqPin, !_wakeLevel); }
-    gsmModem.init();
-    _modemName = gsmModem.getModemName();
-    return true;
+    bool success = gsmModem.init();
+    _modemName   = gsmModem.getModemName();
+    return success;
 }

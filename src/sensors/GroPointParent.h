@@ -151,7 +151,7 @@ class GroPointParent : public Sensor {
     /**
      * @brief Destroy the GroPoint Parent object - no action taken
      */
-    virtual ~GroPointParent() override = default;
+    ~GroPointParent() override = default;
 
     String getSensorLocation() override;
 

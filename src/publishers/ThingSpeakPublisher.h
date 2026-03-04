@@ -127,7 +127,7 @@ class ThingSpeakPublisher : public dataPublisher {
     /**
      * @brief Destroy the ThingSpeak Publisher object
      */
-    virtual ~ThingSpeakPublisher() override = default;
+    ~ThingSpeakPublisher() override = default;
 
     // Returns the data destination
     String getEndpoint() override {

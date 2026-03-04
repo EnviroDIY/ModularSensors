@@ -200,7 +200,7 @@ class Espressif : public loggerModem {
     /**
      * @brief Destroy the Espressif object - no action taken
      */
-    virtual ~Espressif() override = default;
+    ~Espressif() override = default;
 
     /**
      * @brief A pointer to the Arduino serial Stream used for communication
