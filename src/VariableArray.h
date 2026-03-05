@@ -313,6 +313,49 @@ class VariableArray {
     bool checkVariableUUIDs();
 
     /**
+     * @brief Check if a sensor has failed to wake up or is not ready for use.
+     *
+     * @param sensorIndex Index of the sensor in _sensorList to check
+     * @param wake Whether we are currently in wake mode
+     * @return True if sensor wake failed or is not ready
+     */
+    bool isSensorWakeFailure(uint8_t sensorIndex, bool wake);
+
+    /**
+     * @brief Check if a sensor should be woken up now.
+     *
+     * @param sensorIndex Index of the sensor in _sensorList to check
+     * @param wake Whether we are currently in wake mode
+     * @param deepDebugTiming Whether to use deep debug timing
+     * @return True if sensor should be woken up
+     */
+    bool shouldWakeSensor(uint8_t sensorIndex, bool wake, bool deepDebugTiming);
+
+    /**
+     * @brief Check if a sensor is ready to start measurements.
+     *
+     * @param sensorIndex Index of the sensor in _sensorList to check
+     * @return True if sensor is awake and ready for measurements
+     */
+    bool isSensorReadyToMeasure(uint8_t sensorIndex);
+
+    /**
+     * @brief Check if measurements have been attempted on a sensor.
+     *
+     * @param sensorIndex Index of the sensor in _sensorList to check
+     * @return True if measurement attempt has been made
+     */
+    bool isMeasurementAttempted(uint8_t sensorIndex);
+
+    /**
+     * @brief Check if all required measurements are complete for a sensor.
+     *
+     * @param sensorIndex Index of the sensor in _sensorList to check
+     * @return True if all measurements are complete
+     */
+    bool areMeasurementsComplete(uint8_t sensorIndex);
+
+    /**
      * @brief Check if sensor can be powered down safely
      *
      * This helper function checks if a sensor can be powered down by verifying

@@ -115,6 +115,49 @@ bool VariableArray::populateSensorList() {
     return true;
 }
 
+// Helper function to check if sensor wake failed or is not ready
+inline bool VariableArray::isSensorWakeFailure(uint8_t sensorIndex, bool wake) {
+    bool wakeAttempted =
+        _sensorList[sensorIndex]->getStatusBit(Sensor::WAKE_ATTEMPTED) == 1;
+    bool wakeSuccessful =
+        _sensorList[sensorIndex]->getStatusBit(Sensor::WAKE_SUCCESSFUL) == 1;
+    bool wakeFailedAfterAttempt = wakeAttempted && !wakeSuccessful;
+    bool notWakingButNotAwake   = !wake && (!wakeAttempted || !wakeSuccessful);
+    return wakeFailedAfterAttempt || notWakingButNotAwake;
+}
+
+// Helper function to check if sensor should be woken up
+inline bool VariableArray::shouldWakeSensor(uint8_t sensorIndex, bool wake,
+                                            bool deepDebugTiming) {
+    bool wakeAttempted =
+        _sensorList[sensorIndex]->getStatusBit(Sensor::WAKE_ATTEMPTED) == 1;
+    return wake && !wakeAttempted &&
+        _sensorList[sensorIndex]->isWarmedUp(deepDebugTiming);
+}
+
+// Helper function to check if sensor is ready to start measurements
+inline bool VariableArray::isSensorReadyToMeasure(uint8_t sensorIndex) {
+    bool wakeSuccessful =
+        _sensorList[sensorIndex]->getStatusBit(Sensor::WAKE_SUCCESSFUL) == 1;
+    bool measurementAttempted = _sensorList[sensorIndex]->getStatusBit(
+                                    Sensor::MEASUREMENT_ATTEMPTED) == 1;
+    bool measurementSuccessful = _sensorList[sensorIndex]->getStatusBit(
+                                     Sensor::MEASUREMENT_SUCCESSFUL) == 1;
+    return wakeSuccessful && !measurementAttempted && !measurementSuccessful;
+}
+
+// Helper function to check if measurements have been attempted
+inline bool VariableArray::isMeasurementAttempted(uint8_t sensorIndex) {
+    return _sensorList[sensorIndex]->getStatusBit(
+               Sensor::MEASUREMENT_ATTEMPTED) == 1;
+}
+
+// Helper function to check if all measurements are complete
+inline bool VariableArray::areMeasurementsComplete(uint8_t sensorIndex) {
+    return _sensorList[sensorIndex]->getCompletedMeasurements() >=
+        _sensorList[sensorIndex]->getNumberMeasurementsToAverage();
+}
+
 // Helper function to check if sensor can be powered down safely with debug
 // output
 bool VariableArray::canPowerDownSensor(uint8_t sensorIndex) {
@@ -458,12 +501,7 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
             // If attempts were made to wake the sensor, but they failed OR if
             // we're not waking the sensor but it is not already awake or the
             // previous wake attempts failed...
-            if ((_sensorList[i]->getStatusBit(Sensor::WAKE_ATTEMPTED) == 1 &&
-                 _sensorList[i]->getStatusBit(Sensor::WAKE_SUCCESSFUL) == 0) ||
-                (!wake &&
-                 (_sensorList[i]->getStatusBit(Sensor::WAKE_ATTEMPTED) == 0 ||
-                  _sensorList[i]->getStatusBit(Sensor::WAKE_SUCCESSFUL) ==
-                      0))) {
+            if (isSensorWakeFailure(i, wake)) {
                 MS_DBG(i, F("--->>"), sName,
                        F("failed to wake up! No measurements will be taken! "
                          "<<---"),
@@ -478,13 +516,7 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
                     _sensorList[i]->_measurementsToAverage;
             }
 
-            if (wake
-                // ^^ if we're supposed to wake the sensors
-                && _sensorList[i]->getStatusBit(Sensor::WAKE_ATTEMPTED) == 0
-                // ^^ And no attempts yet made to wake the sensor up
-                && _sensorList[i]->isWarmedUp(deepDebugTiming)
-                // ^^ and if it is already warmed up
-            ) {
+            if (shouldWakeSensor(i, wake, deepDebugTiming)) {
                 MS_DBG(i, F("--->> Waking"), sName, F("..."));
 
                 // Make a single attempt to wake the sensor after it is
@@ -501,11 +533,7 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
 
             // If the sensor was successfully awoken/activated, but no
             // measurement was either started or finished ...
-            if (_sensorList[i]->getStatusBit(Sensor::WAKE_SUCCESSFUL) == 1 &&
-                _sensorList[i]->getStatusBit(Sensor::MEASUREMENT_ATTEMPTED) ==
-                    0 &&
-                _sensorList[i]->getStatusBit(Sensor::MEASUREMENT_SUCCESSFUL) ==
-                    0) {
+            if (isSensorReadyToMeasure(i)) {
                 // .. check if it's stable
                 if (_sensorList[i]->isStable(deepDebugTiming)) {
                     MS_DBG(cycCount, F("--->> Starting reading on"), sName,
@@ -529,8 +557,7 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
             // successfully...
             // We aren't checking if the measurement start was successful;
             // isMeasurementComplete(deepDebugTiming) will do that.
-            if (_sensorList[i]->getStatusBit(Sensor::MEASUREMENT_ATTEMPTED) ==
-                1) {
+            if (isMeasurementAttempted(i)) {
                 // If a measurement is finished, get the result and tick up
                 // the number of finished measurements.
                 if (_sensorList[i]->isMeasurementComplete(deepDebugTiming)) {
@@ -555,7 +582,7 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
             }
 
             // If all the measurements are now complete
-            if (_sensorList[i]->getCompletedMeasurements() >= nReq) {
+            if (areMeasurementsComplete(i)) {
                 if (sleep) {
                     MS_DBG(i, F("--->> Finished all measurements from"), sName,
                            F(", putting it to sleep. ..."));
