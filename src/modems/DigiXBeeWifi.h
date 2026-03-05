@@ -154,7 +154,7 @@ class DigiXBeeWifi : public DigiXBee {
     Client*
     createSecureClient(const char* pskIdent, const char* psKey,
                        SSLVersion sslVersion = SSLVersion::TLS1_2) override;
-    virtual Client*
+    Client*
     createSecureClient(const char* pskTableName,
                        SSLVersion  sslVersion = SSLVersion::TLS1_2) override;
 

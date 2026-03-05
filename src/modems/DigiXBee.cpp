@@ -29,11 +29,9 @@ DigiXBee::DigiXBee(int8_t powerPin, int8_t statusPin, bool useCTSStatus,
 // connecting the XBee
 bool DigiXBee::modemWakeFxn() {
     if (_modemSleepRqPin >= 0) {
-        // Don't go to sleep if there's not a wake pin!
         MS_DBG(F("Setting pin"), _modemSleepRqPin,
                _wakeLevel ? F("HIGH") : F("LOW"), F("to wake"), _modemName);
         digitalWrite(_modemSleepRqPin, _wakeLevel);
-        return true;
     }
     return true;
 }
@@ -45,7 +43,6 @@ bool DigiXBee::modemSleepFxn() {
                !_wakeLevel ? F("HIGH") : F("LOW"), F("to put"), _modemName,
                F("to sleep"));
         digitalWrite(_modemSleepRqPin, !_wakeLevel);
-        return true;
     }
     return true;
 }

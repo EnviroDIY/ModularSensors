@@ -62,8 +62,10 @@ Variable::Variable(float (*calcFxn)(), uint8_t decimalResolution,
                    const char* varCode)
     : Variable(calcFxn, decimalResolution, varName, varUnit, varCode, nullptr) {
 }
-// Default constructor with no arguments
-Variable::Variable() : isCalculated(true) {}
+// Default constructor with no arguments - delegates to ensure all members are
+// initialized
+Variable::Variable()
+    : Variable(nullptr, 0, 0, nullptr, nullptr, nullptr, nullptr) {}
 
 
 // This does all of the setup that can't happen in the constructors

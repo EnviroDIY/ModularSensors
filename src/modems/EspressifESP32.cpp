@@ -67,21 +67,24 @@ bool EspressifESP32::modemSleepFxn() {
 bool EspressifESP32::extraModemSetup() {
     if (_modemSleepRqPin >= 0) { digitalWrite(_modemSleepRqPin, !_wakeLevel); }
     bool success = gsmModem.init();
-    _modemName   = gsmModem.getModemName();
-    // AT+CWCOUNTRY=<country_policy>,<country_code>,<start_channel>,<total_channel_count>
-    // <country_policy>:
-    //     0: will change the county code to be the same as the AP that the
-    //     ESP32 is connected to.
-    //     1: the country code will not change, always be the one set by
-    //     command.
-    // <country_code>: country code. Maximum length: 3 characters. Refer to ISO
-    //     3166-1 alpha-2 for country codes.
-    // <start_channel>: the channel number to start. Range: [1,14].
-    // <total_channel_count>: total number of channels.
-    gsmModem.sendAT(
-        GF("+CWCOUNTRY=0,\"US\",1,13"));  // Set country code to default to US,
-                                          // but allow to change if the AP is
-    success &= gsmModem.waitResponse() == 1;
+    _modemName   = gsmModem.getModemName();  // Name is set by the ESP32 modem
+                                           // object independent of the init fxn
+    if (success) {
+        // AT+CWCOUNTRY=<country_policy>,<country_code>,<start_channel>,<total_channel_count>
+        // <country_policy>:
+        //     0: will change the county code to be the same as the AP that the
+        //     ESP32 is connected to.
+        //     1: the country code will not change, always be the one set by
+        //     command.
+        // <country_code>: country code. Maximum length: 3 characters. Refer to
+        //     ISO 3166-1 alpha-2 for country codes.
+        // <start_channel>: the channel number to start. Range: [1,14].
+        // <total_channel_count>: total number of channels.
+        gsmModem.sendAT(GF(
+            "+CWCOUNTRY=0,\"US\",1,13"));  // Set country code to default to US,
+                                           // but allow to change if the AP is
+        success &= gsmModem.waitResponse() == 1;
+    }
     return success;
 }
 

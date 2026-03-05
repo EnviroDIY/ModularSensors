@@ -123,18 +123,17 @@ bool SodaqUBeeR410M::modemWakeFxn() {
 
 
 bool SodaqUBeeR410M::modemSleepFxn() {
+    bool res = true;
+    // Only go to sleep if we can wake up!
     if (_modemSleepRqPin >= 0) {
         // R410 must have access to `PWR_ON` pin to sleep
         // Easiest to just go to sleep with the AT command rather than using
         // pins
         MS_DBG(F("Asking u-blox R410M to power down"));
-        bool res = gsmModem.poweroff();
-        gsmModem.stream.flush();
-        return res;
-    } else {  // DON'T go to sleep if we can't wake up!
-        gsmModem.stream.flush();
-        return true;
+        res = gsmModem.poweroff();
     }
+    gsmModem.stream.flush();
+    return res;
 }
 
 
@@ -163,7 +162,7 @@ bool SodaqUBeeR410M::extraModemSetup() {
     // Turn on network indicator light
     // Pin 16 = GPIO1, function 2 = network status indication
     gsmModem.sendAT(GF("+UGPIOC=16,2"));
-    gsmModem.waitResponse();
+    success &= gsmModem.waitResponse() == 1;
     return success;
 }
 

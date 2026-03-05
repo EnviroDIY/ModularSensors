@@ -1225,8 +1225,6 @@ class loggerModem {
     uint8_t _pollModemMetaData = 0;
 };
 
-// typedef float (loggerModem::_*loggerGetValueFxn)();
-
 // Classes for the modem variables
 
 /**

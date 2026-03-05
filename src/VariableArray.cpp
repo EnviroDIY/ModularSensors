@@ -25,7 +25,9 @@ VariableArray::VariableArray(uint8_t variableCount, Variable* variableList[])
       _variableCount(variableCount) {
     _sensorCount = getSensorCount();
 }
-VariableArray::VariableArray() {}
+// Default constructor with no arguments - delegates to ensure all members are
+// initialized
+VariableArray::VariableArray() : VariableArray(0, nullptr) {}
 
 
 void VariableArray::begin(uint8_t variableCount, Variable* variableList[],

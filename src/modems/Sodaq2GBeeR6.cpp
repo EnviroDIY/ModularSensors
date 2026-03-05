@@ -46,6 +46,7 @@ bool Sodaq2GBeeR6::modemSleepFxn() {
     bool success = gsmModem.poweroff();
     if (_vRefPin >= 0) {
         MS_DBG(F("Disabling voltage reference for GPRSBeeR6 on pin"), _vRefPin);
+        pinMode(_vRefPin, OUTPUT);
         digitalWrite(_vRefPin, LOW);
     }
     gsmModem.stream.flush();
@@ -55,7 +56,6 @@ bool Sodaq2GBeeR6::modemSleepFxn() {
 bool Sodaq2GBeeR6::extraModemSetup() {
     bool success = gsmModem.init();
     _modemName   = gsmModem.getModemName();
-    if (_vRefPin >= 0) { pinMode(_vRefPin, OUTPUT); }
     return success;
 }
 

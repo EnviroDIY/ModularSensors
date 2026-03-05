@@ -124,7 +124,7 @@ bool SequansMonarch::extraModemSetup() {
     gsmModem.sendAT(GF("+SQNLED=1"));
     success &= static_cast<bool>(gsmModem.waitResponse());
     // Enable power save mode if we're not going to cut power or use reset
-    if (!(_powerPin >= 0) && !(_modemResetPin >= 0) && _modemSleepRqPin >= 0) {
+    if (_powerPin < 0 && _modemResetPin < 0 && _modemSleepRqPin >= 0) {
         MS_DBG(
             "Enabling power save mode tracking area update [PSM TAU] timers");
         // Requested Periodic TAU (Time in between Tracking Area Updates) = 101

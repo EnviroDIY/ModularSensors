@@ -98,11 +98,15 @@ void extendedWatchDogAVR::clearWDTInterrupt() {
 
 /**
  * @brief ISR for watchdog early warning
+ *
+ * This makes multi cycle WDT possible.
  */
 ISR(WDT_vect) {
     MS_DEEP_DBG(F("\nWatchdog interrupt!"));
-    extendedWatchDogAVR::_barksUntilReset--;  // Increment down the counter,
-                                              // makes multi cycle WDT possible
+    // De-increment down the counter, but don't allow to roll-over
+    if (extendedWatchDogAVR::_barksUntilReset > 0) {
+        extendedWatchDogAVR::_barksUntilReset--;
+    }
     if (extendedWatchDogAVR::_barksUntilReset == 0) {
         MS_DEEP_DBG(F("The dog has barked enough; resetting the board."));
         MCUSR = 0;  // reset flags
