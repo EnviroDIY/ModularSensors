@@ -21,11 +21,11 @@
 Variable::Variable(Sensor* parentSense, uint8_t sensorVarNum,
                    uint8_t decimalResolution, const char* varName,
                    const char* varUnit, const char* varCode, const char* uuid)
-    : isCalculated(false),
-      parentSensor(nullptr),
+    : parentSensor(nullptr),
+      isCalculated(false),
       _currentValue(MS_INVALID_VALUE),
-      _sensorVarNum(sensorVarNum),
-      _calcFxn(nullptr) {
+      _calcFxn(nullptr),
+      _sensorVarNum(sensorVarNum) {
     if (uuid) setVarUUID(uuid);
     if (varCode) setVarCode(varCode);
     if (varUnit) setVarUnit(varUnit);
@@ -39,8 +39,8 @@ Variable::Variable(Sensor* parentSense, uint8_t sensorVarNum,
 Variable::Variable(float (*calcFxn)(), uint8_t decimalResolution,
                    const char* varName, const char* varUnit,
                    const char* varCode, const char* uuid)
-    : isCalculated(false),
-      parentSensor(nullptr),
+    : parentSensor(nullptr),
+      isCalculated(false),
       _currentValue(MS_INVALID_VALUE),
       _calcFxn(nullptr) {
     if (uuid) setVarUUID(uuid);
