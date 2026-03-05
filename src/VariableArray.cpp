@@ -115,6 +115,74 @@ bool VariableArray::populateSensorList() {
     return true;
 }
 
+// Helper function to check if sensor can be powered down safely with debug
+// output
+bool VariableArray::canPowerDownSensor(uint8_t sensorIndex) {
+    // NOTE: We are NOT checking if the sleep command succeeded!
+    // Check if it's safe to cut power to this sensor and all that share the pin
+    bool canPowerDown =
+        true;  // assume we can power down unless we find a conflict
+
+    for (uint8_t k = 0; k < _sensorCount; k++) {
+        if ((
+                // Check if sensor i's primary pin matches either of sensor k's
+                // pins
+                (_sensorList[sensorIndex]->getPowerPin() >= 0 &&
+                 (_sensorList[sensorIndex]->getPowerPin() ==
+                      _sensorList[k]->getPowerPin() ||
+                  _sensorList[sensorIndex]->getPowerPin() ==
+                      _sensorList[k]->getSecondaryPowerPin()))
+                // Check if sensor i's secondary pin matches either of sensor
+                // k's pins
+                || (_sensorList[sensorIndex]->getSecondaryPowerPin() >= 0 &&
+                    (_sensorList[sensorIndex]->getSecondaryPowerPin() ==
+                         _sensorList[k]->getPowerPin() ||
+                     _sensorList[sensorIndex]->getSecondaryPowerPin() ==
+                         _sensorList[k]->getSecondaryPowerPin())))
+            // Check if sensor k still needs measurements
+            && (_sensorList[k]->getCompletedMeasurements() <
+                _sensorList[k]->getNumberMeasurementsToAverage())) {
+            // If sensors share a power pin and sensor k still needs
+            // measurements, can't power down
+            canPowerDown = false;
+
+            // Debug output for conflict detection
+            MS_DBG(sensorIndex, F("--->> All measurements from"),
+                   _sensorList[sensorIndex]->getSensorNameAndLocation(),
+                   F("are complete but other sensors on the same power pin "
+                     "still need to take measurements.  "
+                     "Leaving power on pin"),
+                   _sensorList[sensorIndex]->getPowerPin(), F("ON. <<---"));
+            MS_DBG(_sensorList[sensorIndex]->getSensorNameAndLocation(),
+                   F("shares a power pin with"),
+                   _sensorList[k]->getSensorNameAndLocation(),
+                   F("which still needs to take"),
+                   _sensorList[k]->getNumberMeasurementsToAverage() -
+                       _sensorList[k]->getCompletedMeasurements(),
+                   F("measurements."));
+            MS_DEEP_DBG(_sensorList[sensorIndex]->getSensorNameAndLocation(),
+                        '(', sensorIndex, ')', F("pins are"),
+                        _sensorList[sensorIndex]->getPowerPin(), F("and"),
+                        _sensorList[sensorIndex]->getSecondaryPowerPin());
+            MS_DEEP_DBG(_sensorList[k]->getSensorNameAndLocation(), '(', k, ')',
+                        F("pins are"), _sensorList[k]->getPowerPin(), F("and"),
+                        _sensorList[k]->getSecondaryPowerPin());
+
+            break;  // stop looping after finding a conflict
+        }
+    }
+
+    if (canPowerDown) {
+        MS_DBG(sensorIndex, F("--->> All measurements from"),
+               _sensorList[sensorIndex]->getSensorNameAndLocation(),
+               F("are complete and no other sensors on the same power pin need "
+                 "to take measurements. This sensor can be powered down."),
+               F("<<---"));
+    }
+
+    return canPowerDown;
+}
+
 // Public functions for interfacing with a list of sensors
 // This sets up all of the sensors in the list
 // NOTE:  Calculated variables will always be skipped in this process because
@@ -506,95 +574,17 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
                         MS_DBG(F("   ... sleep failed! <<---"), i);
                     }
                 }
+                // NOTE: We are NOT checking if the sleep command succeeded!
                 if (powerDown) {
-                    // NOTE: We are NOT checking if the sleep command succeeded!
                     // Cut the power, if ready, to this sensors and all that
                     // share the pin
-                    bool canPowerDown = true;  // assume we can power down
-                                               // unless we find a conflict
-                    for (uint8_t k = 0; k < _sensorCount; k++) {
-                        if ((
-                                // Check if sensor i's primary pin matches
-                                // either of sensor k's pins
-                                (_sensorList[i]->getPowerPin() >= 0 &&
-                                 (_sensorList[i]->getPowerPin() ==
-                                      _sensorList[k]->getPowerPin() ||
-                                  _sensorList[i]->getPowerPin() ==
-                                      _sensorList[k]->getSecondaryPowerPin()))
-                                // Check if sensor i's secondary pin matches
-                                // either of sensor k's pins
-                                ||
-                                (_sensorList[i]->getSecondaryPowerPin() >= 0 &&
-                                 (_sensorList[i]->getSecondaryPowerPin() ==
-                                      _sensorList[k]->getPowerPin() ||
-                                  _sensorList[i]->getSecondaryPowerPin() ==
-                                      _sensorList[k]->getSecondaryPowerPin())))
-                            // Check if sensor k still needs measurements
-                            && (_sensorList[k]->getCompletedMeasurements() <
-                                _sensorList[k]
-                                    ->getNumberMeasurementsToAverage())) {
-                            // If sensors i and k share a primary power pin or a
-                            // secondary power pin and sensor k still needs
-                            // measurements, sensor i can't be powered down
-                            canPowerDown = false;
-                            break;  // stop looping after finding a conflict
-                        }
+                    if (canPowerDownSensor(i)) {
+                        MS_DBG(F("Powering down all sensors on pin"),
+                               _sensorList[i]->getPowerPin(), F("or pin"),
+                               _sensorList[i]->getSecondaryPowerPin(),
+                               F("..."));
+                        _sensorList[i]->powerDown();
                     }
-                    if (canPowerDown) { _sensorList[i]->powerDown(); }
-#if defined(MS_VARIABLEARRAY_DEBUG)
-                    if (canPowerDown) {
-                        MS_DBG(
-                            i, F("--->> All measurements from"), sName,
-                            F("are complete and no other sensors on the same "
-                              "power pin need to take measurements.  "
-                              "Powered down all sensors on pin"),
-                            _sensorList[i]->getPowerPin(), F("or pin"),
-                            _sensorList[i]->getSecondaryPowerPin(), F("..."));
-                    } else {
-                        MS_DBG(i, F("--->> All measurements from"), sName,
-                               F("are complete but other sensors on the same "
-                                 "power pin still need to take measurements.  "
-                                 "Leaving power on pin"),
-                               _sensorList[i]->getPowerPin(), F("ON. <<---"));
-                        // Find and report which sensor still needs measurements
-                        for (uint8_t k = 0; k < _sensorCount; k++) {
-                            if (((_sensorList[i]->getPowerPin() >= 0 &&
-                                  (_sensorList[i]->getPowerPin() ==
-                                       _sensorList[k]->getPowerPin() ||
-                                   _sensorList[i]->getPowerPin() ==
-                                       _sensorList[k]
-                                           ->getSecondaryPowerPin())) ||
-                                 (_sensorList[i]->getSecondaryPowerPin() >= 0 &&
-                                  (_sensorList[i]->getSecondaryPowerPin() ==
-                                       _sensorList[k]->getPowerPin() ||
-                                   _sensorList[i]->getSecondaryPowerPin() ==
-                                       _sensorList[k]
-                                           ->getSecondaryPowerPin()))) &&
-                                (_sensorList[k]->getCompletedMeasurements() <
-                                 _sensorList[k]
-                                     ->getNumberMeasurementsToAverage())) {
-                                MS_DBG(
-                                    sName, F("shares a power pin with"),
-                                    sensorList[k]->getSensorNameAndLocation(),
-                                    F("which still needs to take"),
-                                    sensorList[k]
-                                            ->getNumberMeasurementsToAverage() -
-                                        sensorList[k]
-                                            ->getCompletedMeasurements(),
-                                    F("measurements."));
-                                MS_DBG(sName, '(', i, ')', F("pins are"),
-                                       _sensorList[i]->getPowerPin(), F("and"),
-                                       _sensorList[i]->getSecondaryPowerPin());
-                                MS_DBG(
-                                    _sensorList[k]->getSensorNameAndLocation(),
-                                    '(', k, ')', F("pins are"),
-                                    _sensorList[k]->getPowerPin(), F("and"),
-                                    _sensorList[k]->getSecondaryPowerPin());
-                                break;
-                            }
-                        }
-                    }
-#endif
                 }
                 nSensorsCompleted++;  // mark the whole sensor as done
                 MS_DBG(F("*****---"), nSensorsCompleted,

@@ -313,6 +313,20 @@ class VariableArray {
     bool checkVariableUUIDs();
 
     /**
+     * @brief Check if sensor can be powered down safely
+     *
+     * This helper function checks if a sensor can be powered down by verifying
+     * that no other sensors sharing the same power pins still need
+     * measurements. Provides comprehensive debug output about the power
+     * management decision.
+     *
+     * @param sensorIndex Index of the sensor in _sensorList to check
+     * @return True if sensor can be safely powered down, false if it must stay
+     * powered
+     */
+    bool canPowerDownSensor(uint8_t sensorIndex);
+
+    /**
      * @brief Get a specific status bit from the sensor tied to a variable in
      * the array.
      *
