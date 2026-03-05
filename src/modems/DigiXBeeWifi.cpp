@@ -523,7 +523,9 @@ bool DigiXBeeWifi::updateModemMetadata() {
         MS_DBG(F("CURRENT Modem temperature(C):"),
                loggerModem::_priorModemTemp);
 
-        success &= ((chip_temp != MS_INVALID_VALUE) && (chip_temp != 0));
+        // TinyGSM returns -9999 when it fails to get a temperature reading, so
+        // check for that as well as the invalid value
+        success &= ((chip_temp != MS_INVALID_VALUE) && (chip_temp != -9999));
     } else {
         MS_DBG(F("Polling for modem chip temperature is disabled"));
     }
