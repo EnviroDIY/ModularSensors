@@ -273,10 +273,12 @@ class VariableArray {
      *
      * This prints current variable values - both those from sensors and
      * calculated variables - along with meta-data to a stream (either hardware
-     * or software serial).  By default, it will print to the first Serial port.
-     * Note that the input is a pointer to a stream instance
-     * - to use a hardware serial instance you must use an ampersand before the
-     * serial name (ie, &Serial1).
+     * or software serial).  This does not include all possible variables from
+     * each sensor, only those variables that are in the variable list.
+     *
+     * By default, it will print to the first Serial port. Note that the input
+     * is a pointer to a stream instance - to use a hardware serial instance you
+     * must use an ampersand before the serial name (ie, &Serial1).
      *
      * @param stream An Arduino Stream instance
      */

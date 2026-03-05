@@ -471,6 +471,39 @@ void Sensor::averageMeasurements() {
 }
 
 
+void Sensor::printData(Stream* stream) {
+    for (uint8_t i = 0; i < _numReturnedValues; i++) {
+        stream->print(getSensorNameAndLocation());
+        // stream->print(F(" with status 0b"));
+        // stream->print(getStatusBit(7));
+        // stream->print(getStatusBit(6));
+        // stream->print(getStatusBit(5));
+        // stream->print(getStatusBit(4));
+        // stream->print(getStatusBit(3));
+        // stream->print(getStatusBit(2));
+        // stream->print(getStatusBit(1));
+        // stream->print(getStatusBit(0));
+        stream->print(F(" reports "));
+        if (variables[i] != nullptr) {
+            stream->print(variables[i]->getVarName());
+            stream->print(F(" ("));
+            stream->print(variables[i]->getVarCode());
+            stream->print(F(")"));
+            stream->print(F(" is "));
+            stream->print(variables[i]->getValueString());
+            stream->print(F(" "));
+            stream->print(variables[i]->getVarUnit());
+        } else {
+            stream->print(F("variable #"));
+            stream->print(i);
+            stream->print(F(" is "));
+            stream->print(sensorValues[i]);
+        }
+        stream->println();
+    }
+}
+
+
 // This updates a sensor value by checking it's power, waking it, taking as many
 // readings as requested, then putting the sensor to sleep and powering down.
 bool Sensor::update() {

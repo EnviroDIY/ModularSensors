@@ -599,6 +599,27 @@ class Sensor {
     void averageMeasurements();
 
     /**
+     * @brief Print out the results from a measurement - whether or not there is
+     * a variable attached to the sensor to receive the results.
+     *
+     * If there is a variable attached to the sensor, the printed info will
+     * include the variable name, units, and code and the value will be
+     * formatted with the correct number of decimal places.  If there is no
+     * variable attached to the sensor, the printed info will only include the
+     * variable number position and the value will printed to two decimal
+     * places.
+     *
+     * @todo Figure out a way to have a sensor figure out the metadata about its
+     * own variables. Currently that is stored in the variable objects, but it
+     * is also a property of the sensor's results.
+     * See issue [498](https://github.com/EnviroDIY/ModularSensors/issues/498)
+     * for more discussion.
+     *
+     * @param stream An Arduino Stream instance
+     */
+    virtual void printData(Stream* stream = &Serial);
+
+    /**
      * @brief Register a variable object to a sensor.
      *
      * @param sensorVarNum The position the variable result holds in the
