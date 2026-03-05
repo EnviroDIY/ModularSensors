@@ -23,7 +23,6 @@ VariableArray::VariableArray(uint8_t variableCount, Variable* variableList[],
 VariableArray::VariableArray(uint8_t variableCount, Variable* variableList[])
     : arrayOfVars(variableList),
       _variableCount(variableCount) {
-    _sensorCount = getSensorCount();
     populateSensorList();
 }
 // Default constructor with no arguments - delegates to ensure all members are
@@ -36,7 +35,6 @@ void VariableArray::begin(uint8_t variableCount, Variable* variableList[],
     _variableCount = variableCount;
     arrayOfVars    = variableList;
 
-    _sensorCount = getSensorCount();
     populateSensorList();
     matchUUIDs(uuids);
     checkVariableUUIDs();
@@ -45,12 +43,10 @@ void VariableArray::begin(uint8_t variableCount, Variable* variableList[]) {
     _variableCount = variableCount;
     arrayOfVars    = variableList;
 
-    _sensorCount = getSensorCount();
     populateSensorList();
     checkVariableUUIDs();
 }
 void VariableArray::begin() {
-    _sensorCount = getSensorCount();
     populateSensorList();
     checkVariableUUIDs();
 }
@@ -67,14 +63,9 @@ uint8_t VariableArray::getCalculatedVariableCount() {
 }
 
 
-// This counts and returns the number of sensors
+// This returns the number of sensors
 uint8_t VariableArray::getSensorCount() {
-    uint8_t numSensors = 0;
-    // Check for unique sensors
-    for (uint8_t i = 0; i < _variableCount; i++) {
-        if (isLastVarFromSensor(i)) numSensors++;
-    }
-    return numSensors;
+    return _sensorCount;
 }
 
 // This matches UUIDs from an array of pointers to the variable array
@@ -87,23 +78,40 @@ void VariableArray::matchUUIDs(const char* uuids[]) {
 // This populates the internal sensor list from the variable array
 bool VariableArray::populateSensorList() {
     uint8_t addedSensors = 0;
+
+    // Clear the sensor list first
+    for (uint8_t i = 0; i < MAX_NUMBER_SENSORS; i++) {
+        _sensorList[i] = nullptr;
+    }
+
     for (uint8_t i = 0; i < _variableCount; i++) {
-        if (isLastVarFromSensor(i)) {
-            if (addedSensors >= _sensorCount ||
-                addedSensors >= MAX_NUMBER_SENSORS) {
+        // Skip calculated variables since they don't have parent sensors
+        if (arrayOfVars[i]->isCalculated) { continue; }
+
+        Sensor* currentSensor = arrayOfVars[i]->parentSensor;
+
+        // Check if this sensor is already in the list
+        bool alreadyInList = false;
+        for (uint8_t j = 0; j < addedSensors; j++) {
+            if (_sensorList[j] == currentSensor) {
+                alreadyInList = true;
+                break;
+            }
+        }
+
+        // If not already in list, add it
+        if (!alreadyInList) {
+            if (addedSensors >= MAX_NUMBER_SENSORS) {
                 // Unfortunately silent so this can be run in the constructor
                 // before the serial port is set up.
                 return false;
             }
-            _sensorList[addedSensors++] = arrayOfVars[i]->parentSensor;
+            _sensorList[addedSensors++] = currentSensor;
         }
     }
 
-    if (addedSensors != _sensorCount) {
-        // Unfortunately silent so this can be run in the constructor
-        // before the serial port is set up.
-        return false;
-    }
+    // Update the sensor count to match what we actually found
+    _sensorCount = addedSensors;
 
     return true;
 }

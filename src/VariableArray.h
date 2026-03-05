@@ -167,7 +167,6 @@ class VariableArray {
      */
     uint8_t getCalculatedVariableCount();
 
-    // This counts and returns the number of sensors
     /**
      * @brief Get the number of sensors associated with the variables in the
      * array.
