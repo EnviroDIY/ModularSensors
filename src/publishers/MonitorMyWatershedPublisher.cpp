@@ -251,8 +251,10 @@ int16_t MonitorMyWatershedPublisher::publishData(Client* outClient,
                  "variables in logger:"),
                _logBuffer.getNumVariables(), F("vs"),
                _baseLogger->getArrayVarCount());
-        MS_DBG(F("Setting number of variables in log buffer to match number of "
-                 "variables in logger. This will erase the buffer."));
+        PRINTOUT(
+            F("Setting number of variables in log buffer to match number of "
+              "variables in logger."));
+        PRINTOUT(F("THIS WILL ERASE THE BUFFER AND DELETE ANY UNSENT DATA!"));
         _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
     }
 
@@ -276,7 +278,7 @@ int16_t MonitorMyWatershedPublisher::publishData(Client* outClient,
         }
     }
 
-    if (_initialTransmissionsRemaining > 0) {
+    if (record >= 0 && _initialTransmissionsRemaining > 0) {
         _initialTransmissionsRemaining -= 1;
     }
 
