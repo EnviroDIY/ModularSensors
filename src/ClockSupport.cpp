@@ -181,6 +181,8 @@ const uint32_t epochTime::leapSeconds[NUMBER_LEAP_SECONDS] = LEAP_SECONDS;
 
 // Initialize the processor epoch
 epochStart loggerClock::_core_epoch = epochStart::y2k_epoch;
+// Initialize the processor timezone offset
+int16_t loggerClock::_core_tz = 0;
 // Initialize the static timezone
 int8_t loggerClock::_rtcUTCOffset = 0;
 
@@ -565,8 +567,10 @@ void loggerClock::rtcISR() {
 }
 
 void loggerClock::begin() {
-    MS_DBG(F("Getting the epoch the processor uses for gmtime"));
+    MS_DBG(F("Getting the epoch the processor core uses for gmtime"));
     loggerClock::_core_epoch = getProcessorEpochStart();
+    MS_DBG(F("Getting the timezone the processor core uses for mktime"));
+    loggerClock::_core_tz = getProcessorTimeZone();
     PRINTOUT(F("An"), MS_CLOCK_NAME, F("will be used as the real time clock"));
     MS_DBG(F("Beginning"), MS_CLOCK_NAME, F("real time clock"));
     rtcBegin();
@@ -581,6 +585,8 @@ void loggerClock::begin() {
            static_cast<uint32_t>(static_cast<uint32_t>(_core_epoch) -
                                  static_cast<uint32_t>(epochStart::unix_epoch)),
            F("seconds"));
+    MS_DBG(F("The processor considers local time to be"), _core_tz,
+           F("seconds ("), _core_tz / 3600, F("hours) offset from UTC"));
     MS_DBG(F("The attached"), MS_CLOCK_NAME, F("uses a"),
            epochTime::printEpochName(_rtcEpoch),
            F("epoch internally, which starts"),
@@ -614,7 +620,58 @@ epochStart loggerClock::getProcessorEpochStart() {
         case 1980: ret_val = epochStart::gps_epoch; break;
         case 1900: ret_val = epochStart::nist_epoch; break;
     }
+    loggerClock::_core_epoch = ret_val;
     return ret_val;
+}
+
+// This is yet another awkward function, but time support varies across device
+// cores and I'm not sure if there is a better way to get the timezone offset
+// that the processor/core considers "local time".  We need to know this because
+// the mktime function converts the input time to the number of seconds since
+// the epoch in the processor's timezone. The UTC version of the function
+// (timegm(&timeParts)) is not available on all platforms, and I have no idea
+// how to consistently set or detect the timezone across platforms, so instead
+// we will just use mktime and then compare the returned timestamp to the known
+// epoch start to figure out the offset.
+int16_t loggerClock::getProcessorTimeZone() {
+    // Create a time struct for Jan 1, 2000 at 00:00:00 in the processor's epoch
+    tm timeParts       = {};
+    timeParts.tm_sec   = 0;
+    timeParts.tm_min   = 0;
+    timeParts.tm_hour  = 0;
+    timeParts.tm_mday  = 1;
+    timeParts.tm_mon   = 0;   /* tm_mon is 0-11 */
+    timeParts.tm_year  = 100; /* tm_year is since 1900 */
+    timeParts.tm_wday  = 0;   /* day of week, will be calculated */
+    timeParts.tm_yday  = 0;   /* day of year, will be calculated */
+    timeParts.tm_isdst = 0;   /* daylight saving time flag */
+    time_t timeTimeT   = mktime(&timeParts);
+    // make a epoch time from the converted time
+    // NOTE: Re-run getProcessorEpochStart() instead of calling _core_epoch in
+    // case the functions are called out of order and _core_epoch hasn't been
+    // set yet.
+    epochTime timeEpoch(timeTimeT, getProcessorEpochStart());
+    // convert to Y2K epoch
+    time_t timeY2K = epochTime::convert_epoch(timeEpoch, epochStart::y2k_epoch);
+    // Since we started with Jan 1, 2000, the offset from the input time and 0
+    // in the Y2K epoch can only be caused by timezone shifts within the mktime
+    // function.
+    // Since time_t can be unsigned and is > 16 bit, we do checks before
+    // casting. If the timeY2K is less than 24 hours, it's a positive offset of
+    // that many seconds. If it's more than 24 hours, it's a negative offset of
+    // tz_offset (because the time would have rolled back to the previous day).
+    int16_t tz_offset;
+    if (timeY2K < 60 * 60 * 24) {
+        tz_offset = static_cast<int16_t>(timeY2K);
+    } else if (-1 * timeY2K < 60 * 60 * 24) {  // force roll-over and check size
+        tz_offset = static_cast<int16_t>(-1 * (-1 * timeY2K));
+    } else {  // If the difference is more than 24 hours, something is wrong and
+              // we should just return 0 (UTC)
+        tz_offset = static_cast<int16_t>(0);
+        // NOTE: Do this silently in case Serial isn't initialzed yet.
+    }
+    loggerClock::_core_tz = tz_offset;
+    return tz_offset;
 }
 
 inline time_t loggerClock::tsToRawRTC(time_t ts, int8_t utcOffset,

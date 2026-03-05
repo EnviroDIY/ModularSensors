@@ -330,6 +330,15 @@ class epochTime {
  * deleted constructor.
  *
  * @todo Support half/quarter hour time zones
+ *
+ * Dealing with time is **hard**! This library only supports the bare minimum of
+ * what I think is necessary to get the logger's clock working and to convert
+ * between different epoch types. It does not support time zones (other than a
+ * static offset from UTC), daylight savings time, or any of the other
+ * complications of time.
+ *
+ * If you though handling time was simple, read this:
+ * https://gist.github.com/timvisee/fcda9bbdff88d45cc9061606b4b923ca
  */
 class loggerClock {
  public:
@@ -607,6 +616,16 @@ class loggerClock {
         return loggerClock::_core_epoch;
     };
     /**
+     * @brief Get the timezone offset for the processor/Arduino core in seconds
+     * from UTC
+     *
+     * @return The timezone offset for the processor/Arduino core in seconds
+     * from UTC
+     */
+    static int16_t getCoreTimeZone() {
+        return loggerClock::_core_tz;
+    };
+    /**
      * @brief Get the epoch start for the RTC as an epochStart object
      *
      * @return The epoch start for the RTC
@@ -618,7 +637,8 @@ class loggerClock {
  protected:
 
     /**
-     * @brief Figure out where the epoch starts for the processor.
+     * @brief Figure out what epoch start is defined for the Arduino core used
+     * by the processor.
      *
      * The real time clock libraries mostly document this, but the cores for the
      * various Arduino processors don't. The time.h file is not much more than a
@@ -629,10 +649,23 @@ class loggerClock {
     static epochStart getProcessorEpochStart();
 
     /**
-     * @brief The start of the epoch for the processor's internal time.h
+     * @brief Figure out the timezone offset defined for the Arduino core used
+     * by the processor.
+     *
+     * @return The timezone offset in seconds from UTC
+     */
+    static int16_t getProcessorTimeZone();
+
+    /**
+     * @brief The start of the epoch for the processor core's internal time.h
      * library.
      */
     static epochStart _core_epoch;
+
+    /**
+     * @brief The timezone used by the processor core's internal time.h library.
+     */
+    static int16_t _core_tz;
 
     /**
      * @brief The static offset data of the real time clock from UTC in hours
